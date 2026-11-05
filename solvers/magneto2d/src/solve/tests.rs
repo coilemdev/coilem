@@ -133,6 +133,7 @@ fn metadata_test_artifact(
                 stator_inner_radius_mm: 65.0,
                 stator_slot_outer_radius_mm: 89.0,
                 stator_outer_radius_mm: 100.0,
+                outer_rotor: None,
             },
         },
         rotor_angle_mech_deg: None,
@@ -190,6 +191,7 @@ fn full_slot_winding_import_artifact(slot_count: u32, pole_count: u32) -> SolveM
                 stator_inner_radius_mm: 65.0,
                 stator_slot_outer_radius_mm: 89.0,
                 stator_outer_radius_mm: 100.0,
+                outer_rotor: None,
             },
         },
         rotor_angle_mech_deg: None,
@@ -1428,6 +1430,7 @@ fn outer_dirichlet_boundary_nodes_excludes_rotor_inner_bore() {
             stator_inner_radius_mm: 64.0,
             stator_slot_outer_radius_mm: 96.0,
             stator_outer_radius_mm: 108.0,
+            outer_rotor: None,
         },
     };
 
@@ -1466,6 +1469,7 @@ fn motor_boundary_set_deduplicates_legacy_multi_pitch_nodes_in_input_order() {
             stator_inner_radius_mm: 64.0,
             stator_slot_outer_radius_mm: 96.0,
             stator_outer_radius_mm: 108.0,
+            outer_rotor: None,
         },
     };
 
@@ -1765,6 +1769,7 @@ fn airgap_brbt_profile_bins_radial_and_tangential_fields() {
             stator_inner_radius_mm: 17.0,
             stator_slot_outer_radius_mm: 21.0,
             stator_outer_radius_mm: 25.0,
+            outer_rotor: None,
         },
     };
     let fields = vec![
@@ -1889,6 +1894,7 @@ fn pm_source_work_scale_adjusts_exported_energy_components() {
             stator_inner_radius_mm: 2.0,
             stator_slot_outer_radius_mm: 3.0,
             stator_outer_radius_mm: 4.0,
+            outer_rotor: None,
         },
     };
     let materials = vec![MaterialProps {
@@ -1971,6 +1977,7 @@ fn pm_sidewall_quadrature_diagnostic_scales_pm_corner_terms_only_when_enabled() 
             stator_inner_radius_mm: 2.0,
             stator_slot_outer_radius_mm: 3.0,
             stator_outer_radius_mm: 4.0,
+            outer_rotor: None,
         },
     };
     let materials = vec![MaterialProps {
@@ -2050,6 +2057,7 @@ fn pm_sidewall_quadrature_diagnostic_can_scale_local_coenergy() {
             stator_inner_radius_mm: 2.0,
             stator_slot_outer_radius_mm: 3.0,
             stator_outer_radius_mm: 4.0,
+            outer_rotor: None,
         },
     };
     let materials = vec![MaterialProps {
@@ -2360,6 +2368,7 @@ fn rotor_region_labels_rotate_with_requested_angle() {
             stator_inner_radius_mm: 17.0,
             stator_slot_outer_radius_mm: 20.0,
             stator_outer_radius_mm: 25.0,
+            outer_rotor: None,
         },
     };
     let centroids = vec![

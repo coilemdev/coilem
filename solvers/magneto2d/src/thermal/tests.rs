@@ -30,6 +30,7 @@ fn mesh_info(n_nodes: usize, n_tris: usize) -> MeshInfo {
         stator_inner_radius_mm: 0.0,
         stator_slot_outer_radius_mm: 0.0,
         stator_outer_radius_mm: 0.0,
+        outer_rotor: None,
     }
 }
 

@@ -1515,6 +1515,7 @@ fn build_follow_flux_mesh(
             stator_inner_radius_mm: 0.0,
             stator_slot_outer_radius_mm: 0.0,
             stator_outer_radius_mm: 0.0,
+            outer_rotor: None,
         },
     };
     Ok((mesh, materials, current_densities, region_labels))

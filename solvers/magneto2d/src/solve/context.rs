@@ -197,7 +197,9 @@ pub(super) fn single_angle_context_artifact(
     solve_mesh_artifact: Option<SolveMeshArtifact>,
 ) -> Result<(Option<SolveMeshArtifact>, bool), String> {
     if let Some(artifact) = solve_mesh_artifact {
-        let rotor_baked_in_mesh = config.topology.eq_ignore_ascii_case("IPM")
+        // An outer rotor's magnets are meshed in place at every angle; the SPM
+        // re-tag band assumes magnets outside an inner rotor.
+        let rotor_baked_in_mesh = (config.topology.eq_ignore_ascii_case("IPM") || config.is_outer_rotor())
             && is_imported_mesh_input(&artifact.mesh.info);
         return Ok((Some(artifact), rotor_baked_in_mesh));
     }
