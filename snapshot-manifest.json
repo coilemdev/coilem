@@ -6430,8 +6430,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2876,
-      "sha256": "57268451c729cda2d56b330883bcf316efac8722caaba46a3c01a3782d6bb6dc"
+      "bytes": 2920,
+      "sha256": "c22782fd2f0c01f9bfaeb504f01253c48cd6d63356b77d48170353578e573894"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 57951,
-      "sha256": "f9468769b170e5df043aa199eab2f65c8f306efbf9061a5f5ba9a59b83684c5d"
+      "bytes": 58225,
+      "sha256": "cb83f4ac6d81e0687dbfc6ca95d9d89b5c3f3a5ef689a89da2facfca55a926e0"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7280,8 +7280,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8317,
-      "sha256": "96c1e25999a9bb81d0c6dd584a6ccb743c3431c330813d7e69ecac44600050de"
+      "bytes": 8478,
+      "sha256": "eba7765b98f3d0bc01c24fe80f0f770fb9923fd6d414bd2ca69a2f69259b9c2d"
     },
     {
       "path": "frontend/src/public/fieldPositionLink.ts",
@@ -12302,6 +12302,16 @@
       "path": "tools/export_lrk_reference.py",
       "bytes": 3634,
       "sha256": "176670074258fc60fc569ab836f184024d498bf6e805a635d68390ef1fcfcf7d"
+    },
+    {
+      "path": "frontend/scripts/test-field-stroke-width.mjs",
+      "bytes": 1333,
+      "sha256": "fcf5bc4ac3d7cfc36aa6f488bbd3e3196bb2905443f91267f8b27b2435d89a98"
+    },
+    {
+      "path": "frontend/src/public/fieldStrokeWidth.ts",
+      "bytes": 804,
+      "sha256": "736031fed811c6c95136dcfe40fef3de0aa8221744133c2e9950902836560b18"
     }
   ],
   "public_patches": [
