@@ -31,14 +31,15 @@ def write(path, value):
     temporary.replace(path)
 
 
-def copy_job(source, target):
+def copy_job(source, target, *, omit_runtime=False):
     def link_or_copy(src, dst):
         try:
             os.link(src, dst)
         except OSError:
             shutil.copyfile(src, dst)
         return dst
-    shutil.copytree(source, target, copy_function=link_or_copy)
+    shutil.copytree(source, target, copy_function=link_or_copy,
+                    ignore=shutil.ignore_patterns('native-runtime', '*.tmp', 'run.lock') if omit_runtime else None)
 
 
 def repair_prius(prior, output, selected, registry, expected, contract, collect):
@@ -78,12 +79,14 @@ def repair_prius(prior, output, selected, registry, expected, contract, collect)
         merged['jobs'].append(job)
         merged['job_states'][name] = state
         finishes.extend(a['finished_utc'] for a in state['attempts'] if a['status'] == 'COMPLETE')
+        print(f'Verified completed {name}; retaining original measurement', flush=True)
     write(output / 'registration.json', merged)
     try:
         for name in selected:
             if name in completed:
                 continue
             case = output / 'repair-attempts' / name
+            print(f'Collecting missing {name} with the frozen candidate', flush=True)
             collect(name, case)
             registration = read(case / 'registration.json')
             contract.verify_registered_identity(registration)
@@ -151,7 +154,11 @@ def main():
                      lambda name, path: run('tools.benchmark_prius', '--out', path,
                                              '--curve', '--refinement', '--only', name))
     else:
-        copy_job(prior, output)
+        parent_sha = digest(prior / 'run_manifest.json')
+        copy_job(prior, output, omit_runtime=True)
+        write(output / 'repair-receipt.json', {'parent_manifest_sha256': parent_sha,
+            'source_run_id': os.environ.get('SOURCE_RUN'), 'requests_mutated': False,
+            'original_raw_fields_retained_in_source_run': True})
         manifest = read(output / 'run_manifest.json')
         options = ['tools.run_benchmarks', '--resume', '--suite', receipt['plan']['suite'],
                    '--phases', 'A', 'B', 'C', 'D', '--out-dir', output, '--archive-runtime']
@@ -163,7 +170,8 @@ def main():
     write(output / 'workflow-receipt.json', {'candidate': receipt['identity']['commit'],
         'plan_sha256': receipt['plan']['plan_sha256'], 'shard': shard,
         'run_url': os.environ.get('COILEM_WORKFLOW_RUN_URL'), 'binary_sha256': digest(binary),
-        'repair_tool_sha256': digest(Path(__file__)), 'source_candidate_relabelled': False})
+        'repair_tool_sha256': digest(Path(__file__)), 'source_candidate_relabelled': False,
+        'source_run_id': os.environ.get('SOURCE_RUN')})
 
 
 if __name__ == '__main__':

@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 12540,
-      "sha256": "53e5157f87d2b2b380290ca1ac4f09041afa774dc4de12f6e4da89a23ad8d063"
+      "bytes": 12626,
+      "sha256": "591393587ee3ab8e10b62d9793b65a9f796890a8755e2e8f4669c2737e5975b3"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -12180,8 +12180,8 @@
     },
     {
       "path": "tools/repair_benchmark_shard.py",
-      "bytes": 8085,
-      "sha256": "6dd429f41c8ff2874cdc7fb01446963bf14048a28d4d1dd8f390e7835b5c9243"
+      "bytes": 8765,
+      "sha256": "0b5579d1270a5785728897ce31870ef0481c38e0ef8a67f1cb08d6c9642d40d4"
     }
   ],
   "public_patches": [
@@ -32746,6 +32746,18 @@
       "path": "tools/download_benchmark_shards.py",
       "source_sha256": "e5e51df465e6ef9f841a678ca2c81181e87e43b78beae41014513d297b21e97e",
       "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "cf3074921e5875ed6fe357219e1505578d89e9bf",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "53e5157f87d2b2b380290ca1ac4f09041afa774dc4de12f6e4da89a23ad8d063",
+      "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
+    },
+    {
+      "base_commit": "cf3074921e5875ed6fe357219e1505578d89e9bf",
+      "path": "tools/repair_benchmark_shard.py",
+      "source_sha256": "6dd429f41c8ff2874cdc7fb01446963bf14048a28d4d1dd8f390e7835b5c9243",
+      "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
     }
   ]
 }

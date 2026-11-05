@@ -132,7 +132,7 @@ jobs:
       fail-fast: false
       matrix:
         runner: ${{ fromJSON(needs.plan.outputs.platforms || '["windows-2022", "macos-15"]') }}
-    runs-on: ${{ matrix.runner }}
+    runs-on: ${{ inputs.source_run && 'ubuntu-24.04' || matrix.runner }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -221,6 +221,7 @@ jobs:
         if: ${{ inputs.source_run }}
         env:
           SHARD: ${{ matrix.id }}
+          SOURCE_RUN: ${{ inputs.source_run }}
         run: >-
           python "$GITHUB_WORKSPACE/automation/tools/repair_benchmark_shard.py"
           --candidate-root "$GITHUB_WORKSPACE/candidate" --shard "$SHARD"
