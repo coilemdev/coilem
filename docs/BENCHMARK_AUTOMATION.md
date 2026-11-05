@@ -52,6 +52,12 @@ check on `main` and `release/v0.5.1`, enable required code-owner review, and
 protect the qualification rules listed in `.github/CODEOWNERS`. Merely committing
 a workflow or CODEOWNERS file cannot enable those repository settings.
 
+Later metadata-only pushes reuse compatible in-progress or completed PR
+collections. The cache key includes guarded sources, registered contracts,
+collector/grader code and the locked collection environment. It does not
+replace the runtime source guard. Reuse verifies ancestry and retains the
+original measured commit; an advanced physics identity cannot use old fields.
+
 ## Measured carry-forward
 
 After both platforms finish, trusted tooling from the PR base compares the new

@@ -20,7 +20,13 @@ def apply(publication, root, candidate):
         raise ValueError('Need an immutable candidate SHA')
     actual = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
     if actual != candidate:
-        raise ValueError('PR advanced after measurement; do not overwrite it')
+        ancestor = subprocess.run(['git', '-C', str(root), 'merge-base', '--is-ancestor', candidate, actual],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if ancestor.returncode:
+            raise ValueError('PR advanced incompatibly after measurement; do not overwrite it')
+        # The strict release check below still requires every current guarded
+        # source to match the actual measured candidate. Metadata may advance;
+        # the field commit is never relabeled as the publication commit.
     # Never execute an edited candidate registry under the publisher's token.
     registry = 'backend/benchmark_suite/physics.py'
     if sha(root / registry) != sha(ROOT / registry):

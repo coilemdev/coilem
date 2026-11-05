@@ -29,7 +29,10 @@ def plan(root=ROOT, *, count=8, suite=BENCHMARK_SUITE_FILE):
     record = read(root / "benchmarks/records/windows-x86_64.json")
     suite_groups = balance([c["id"] for c in spec["cases"]], record.get("case_runtime_s", {}), count)
     prius_names = [name for name, _ in jobs(True, True)]
-    prius_groups = balance(prius_names, {}, min(count, 4))
+    prius_path = record.get("prius_report", "benchmarks/candidate-qualification-20261103/prius/app-results.json")
+    prius_report = read(root / prius_path)
+    prius_times = {job["job"]: job["metrics"].get("elapsed_s") for job in prius_report["jobs"]}
+    prius_groups = balance(prius_names, prius_times, min(count, 4))
     shards = [
         {"id": f"{kind}-{i:02d}", "kind": kind, "cases": cases}
         for kind, groups in (("suite", suite_groups), ("prius", prius_groups))

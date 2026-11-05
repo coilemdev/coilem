@@ -314,7 +314,7 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     snapshot_path = ROOT / "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json"
     assert hashlib.sha256(snapshot_path.read_bytes()).hexdigest() == report["source_sha256"]["snapshot-manifest.json"]
     measured_sources = {entry["path"]: entry["sha256"] for entry in json.loads(snapshot_path.read_text(encoding="utf-8"))["files"]}
-    historical = json.loads((ROOT / "benchmarks/records/windows-x86_64.json").read_text())["physics_files"]
+    historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())["physics_files"]
     guarded = set(historical) | set(PRIUS_EXTRA_PHYSICS)
     assert report["analysis_runner_sha256"] == measured_sources["tools/report_prius_benchmark.py"]
     assert guarded <= set(report["source_sha256"])

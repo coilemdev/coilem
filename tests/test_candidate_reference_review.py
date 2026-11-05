@@ -25,7 +25,7 @@ NATIVE = ROOT / "benchmarks/windows-v050-20261102-88aae101/native"
 def measured_source_hashes(monkeypatch):
     """Model the measured build for replay; leave every evidence-file hash real."""
     recorded = read(NATIVE / "run_manifest.json")["identity"]["source_files"]
-    historical = read(ROOT / "benchmarks/records/windows-x86_64.json")["physics_files"]
+    historical = read(ROOT / "benchmarks/records-historical/v050/windows-x86_64.json")["physics_files"]
     sources = {ROOT / name: recorded[name] for name in historical}
     monkeypatch.setattr(candidate_join, "physics_sources", lambda _: tuple(historical))
 

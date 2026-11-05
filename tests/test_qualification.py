@@ -82,7 +82,7 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, m
     qualification = classify_qualification(_fixture(fixture))
     assert qualification["status"] == "qualified"
     assert qualification["reason"].startswith(reason)
-    assert qualification["basis"] == "coilEM benchmark report, measured at 88aae101"
+    assert qualification["basis"] == QUALIFICATION_BASIS
     assert qualification["reference"].endswith("docs/VALIDATION.md#qualification-status")
 
 

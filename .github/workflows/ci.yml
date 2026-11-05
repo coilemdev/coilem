@@ -28,7 +28,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: public-candidate-${{ github.workflow }}-${{ github.ref }}${{ inputs.performance_recheck_run && format('-performance-recheck-{0}', github.run_id) || '' }}
+  group: public-candidate-${{ github.workflow }}-${{ github.ref }}-${{ github.event.pull_request.head.sha || github.sha }}${{ inputs.performance_recheck_run && format('-performance-recheck-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
@@ -254,11 +254,17 @@ jobs:
             frontend/test-results/performance-acceptance.json
 
   qualification-impact:
+    permissions:
+      contents: read
+      actions: read
     if: ${{ github.event_name == 'pull_request' || inputs.qualification_base }}
     runs-on: ubuntu-24.04
     outputs:
       physics_change: ${{ steps.impact.outputs.physics_change }}
       measurement_required: ${{ steps.impact.outputs.measurement_required }}
+      reuse_run_id: ${{ steps.impact.outputs.reuse_run_id }}
+      collection_state: ${{ steps.impact.outputs.collection_state }}
+      measurement_candidate: ${{ steps.impact.outputs.measurement_candidate }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -269,6 +275,8 @@ jobs:
           python-version: '3.12'
       - id: impact
         env:
+          GH_TOKEN: ${{ github.token }}
+          QUALIFICATION_PR_BRANCH: ${{ github.event.pull_request.head.ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha || inputs.qualification_base }}
         run: python -m tools.physics_impact --base "$BASE_SHA" --plan
 
@@ -314,7 +322,7 @@ jobs:
 
   qualification-publication:
     needs: [qualification-impact, qualification-measure]
-    if: ${{ needs.qualification-impact.outputs.measurement_required == 'true' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ always() && needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (needs.qualification-measure.result == 'success' || needs.qualification-impact.outputs.collection_state == 'complete') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -330,7 +338,8 @@ jobs:
           persist-credentials: false
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
           path: candidate
           persist-credentials: false
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
@@ -340,6 +349,8 @@ jobs:
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: benchmark-joined-*
+          run-id: ${{ needs.qualification-impact.outputs.reuse_run_id || github.run_id }}
+          github-token: ${{ github.token }}
           path: ${{ runner.temp }}/measured
       - name: Compare both platforms against previous and owner-approved evidence
         working-directory: automation
@@ -351,7 +362,7 @@ jobs:
       - name: Apply verified compact evidence and recheck qualification
         working-directory: automation
         env:
-          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+          CANDIDATE_SHA: ${{ needs.qualification-impact.outputs.measurement_candidate || github.event.pull_request.head.sha }}
         run: >-
           python -m tools.qualification_publish --root ../candidate
           --publication "$RUNNER_TEMP/prepared/publication" --candidate "$CANDIDATE_SHA"

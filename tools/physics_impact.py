@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import os
@@ -50,6 +51,55 @@ def changed_physics(root, base):
     return sorted(set(changed))
 
 
+def measurement_key(root, ref=None):
+    """Collection cache key, not a replacement for the runtime physics guard."""
+    names = registry_sources(root) | set(PRIUS_EXTRA_PHYSICS) | {REGISTRY, 'requirements.lock',
+        'solvers/magneto2d/Cargo.toml', '.github/workflows/release-benchmarks.yml', 'backend/resources.py',
+        'tools/benchmark_prius.py', 'tools/prius_benchmark_contract.py', 'tools/report_prius_benchmark.py'}
+    current = git(root, 'ls-tree', '-r', '--name-only', 'HEAD').decode().splitlines()
+    names.update(n for n in current if n.startswith(('benchmarks/abcd-v1.6/', 'benchmarks/reference-baselines/',
+                                                     'backend/benchmark_suite/', 'docs/benchmarks/pyleecan-prius-v1/')))
+    present = set(git(root, 'ls-tree', '-r', '--name-only', ref or 'HEAD').decode().splitlines())
+    values = {}
+    for name in sorted(names):
+        if ref:
+            content = git(root, 'show', f'{ref}:{name}') if name in present else None
+        else:
+            content = (root / name).read_bytes() if (root / name).is_file() else None
+        values[name] = hashlib.sha256(content).hexdigest() if content is not None else None
+    return hashlib.sha256(json.dumps(values, sort_keys=True).encode()).hexdigest()
+
+
+def github(endpoint):
+    return json.loads(subprocess.check_output(['gh', 'api', endpoint]))
+
+
+def reusable_collection(root, key, repository, branch, current_run):
+    from urllib.parse import quote
+
+    runs = github(f'repos/{repository}/actions/workflows/ci.yml/runs?branch={quote(branch, safe="")}&event=pull_request&per_page=30')
+    for run in runs['workflow_runs']:
+        if str(run['id']) == str(current_run) or run.get('conclusion') in ('cancelled', 'timed_out'):
+            continue
+        previous = run['head_sha']
+        ancestor = subprocess.run(['git', '-C', str(root), 'merge-base', '--is-ancestor', previous, 'HEAD'],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if ancestor.returncode or measurement_key(root, previous) != key:
+            continue
+        jobs = github(f'repos/{repository}/actions/runs/{run["id"]}/jobs?per_page=100')['jobs']
+        measured = [j for j in jobs if j['name'].startswith('qualification-measure /')
+                    or (j['name'] == 'qualification-measure' and j.get('conclusion') != 'skipped')]
+        if not measured:
+            continue
+        artifacts = github(f'repos/{repository}/actions/runs/{run["id"]}/artifacts?per_page=100')['artifacts']
+        names = {a['name'] for a in artifacts if not a.get('expired')}
+        if {'benchmark-joined-windows-2022', 'benchmark-joined-macos-15'} <= names:
+            return {'reuse_run_id': str(run['id']), 'collection_state': 'complete', 'measurement_candidate': previous}
+        if run['status'] != 'completed' and all(j.get('conclusion') not in ('failure', 'cancelled', 'timed_out') for j in measured):
+            return {'reuse_run_id': str(run['id']), 'collection_state': 'in_progress', 'measurement_candidate': previous}
+    return {'reuse_run_id': '', 'collection_state': 'new', 'measurement_candidate': ''}
+
+
 def assess(root, base):
     changed = changed_physics(root, base)
     errors = check(root) if changed else []
@@ -66,11 +116,22 @@ def main():
     parser.add_argument('--plan', action='store_true', help='Emit impact even when evidence is pending')
     args = parser.parse_args()
     result = assess(ROOT, args.base)
+    result['physics_identity'] = measurement_key(ROOT) if result['physics_change'] else ''
+    result.update(reuse_run_id='', collection_state='new', measurement_candidate=result['head'])
+    if (args.plan and result['measurement_required'] and os.environ.get('GH_TOKEN')
+            and os.environ.get('QUALIFICATION_PR_BRANCH')):
+        cached = reusable_collection(ROOT, result['physics_identity'], os.environ['GITHUB_REPOSITORY'],
+                                     os.environ['QUALIFICATION_PR_BRANCH'], os.environ['GITHUB_RUN_ID'])
+        if cached['reuse_run_id']:
+            result.update(cached)
+            result['measurement_required'] = False
     print(json.dumps(result, indent=2))
     if output := os.environ.get('GITHUB_OUTPUT'):
         with open(output, 'a', encoding='utf-8') as stream:
             for key in ('physics_change', 'measurement_required'):
                 stream.write(f'{key}={str(result[key]).lower()}\n')
+            for key in ('physics_identity', 'reuse_run_id', 'collection_state', 'measurement_candidate'):
+                stream.write(f'{key}={result[key]}\n')
     if summary := os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(summary, 'a', encoding='utf-8') as stream:
             stream.write('### Qualification evidence\n\n' + result['status'] + '\n\n')

@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 16417,
-      "sha256": "d49e09e2745f6511265a2531cc4b4afd927d66032b93f21725b0f129cc267218"
+      "bytes": 17204,
+      "sha256": "784a6acb2d762e74946ad61a3bee6dd9f27dde192a6ca1f0ace0a02fb6297dea"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 19251,
-      "sha256": "2a5495f23cd732566024108da9420bbe7cb4f41ef3b90fa40b222582f3d535a0"
+      "bytes": 19267,
+      "sha256": "722419a2da78b77dcb9aab6122be9fd8eadce9f2c98d3aaec802ae9c137e5166"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -8280,8 +8280,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 18856,
-      "sha256": "afc0619a6c8b6aefb47f82ce24874fd06e8d02b059faeade3b7e6b8514927ca9"
+      "bytes": 18828,
+      "sha256": "65f68a7cce1b02f9206caa650911e57d7869b35cd91214dc7a64cc5cf6af0a3f"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -10705,8 +10705,8 @@
     },
     {
       "path": "tests/test_candidate_reference_review.py",
-      "bytes": 7962,
-      "sha256": "c2f8726f707f8748e2762c69bcf4b2068746eedaa8e7b1fca0608cac33295100"
+      "bytes": 7978,
+      "sha256": "560b488ddba3a0456dee882ab7f392d2c654832eccd959f10d2884e6ae748119"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
@@ -12085,8 +12085,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 5670,
-      "sha256": "42c80ed89719ab97ca17bbad012db614e0a928a0f8544da908cfe6f7a7af0bbd"
+      "bytes": 6043,
+      "sha256": "ff3b7d3f7199fd8f12b0eb2c30785110d68ffe6af4bf92ed7f18f6df6c1c1a9a"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12095,8 +12095,8 @@
     },
     {
       "path": "tests/test_physics_impact.py",
-      "bytes": 2632,
-      "sha256": "fc8447ec4ba570d0e59c3d8203bcc70efbbf4ea028720f7b18518d8a814e275e"
+      "bytes": 5043,
+      "sha256": "1a6ffe39a89be20001a88fc12b593877a3479d66089bade339466a86c34a5076"
     },
     {
       "path": "tools/benchmark_archive.py",
@@ -12110,8 +12110,8 @@
     },
     {
       "path": "tools/benchmark_shards.py",
-      "bytes": 2136,
-      "sha256": "4ecaddedf2984b9683a9cc6628caea374d8d5b6eebb3e7967babf719f261c47d"
+      "bytes": 2398,
+      "sha256": "a8d38b0eaa4bd2bd5cbb09ee3b4c7bf85eaccdbaabe6343375f035f2ec0ea6a9"
     },
     {
       "path": "tools/join_benchmark_runs.py",
@@ -12120,8 +12120,8 @@
     },
     {
       "path": "tools/physics_impact.py",
-      "bytes": 3712,
-      "sha256": "05935a71af85e9fe1b0a0c23bc4ea571f56a3ed1c2402734a7ab3ef57bc6f300"
+      "bytes": 7705,
+      "sha256": "9c178cf30c8cc49b10845d7dc9d3fff2bd8fee9d9803e54c223a50c381a8c87a"
     },
     {
       "path": ".github/workflows/qualification-weekly.yml",
@@ -12150,8 +12150,18 @@
     },
     {
       "path": "tools/qualification_publish.py",
-      "bytes": 3976,
-      "sha256": "d5f888d12385d25928eeb9a614c168c352c7c30caaaacdd5fdfd8f834fe4b493"
+      "bytes": 4453,
+      "sha256": "b02a11ef080906cdf87762f1114fd458455b0ed4abb8ce654bf2b11b49cfc3cf"
+    },
+    {
+      "path": "benchmarks/records-historical/v050/macos-arm64.json",
+      "bytes": 35228,
+      "sha256": "112b1f1333772c4f77817dd581607ffa1cd6ff39a955e046a00cb39e2dcddfc1"
+    },
+    {
+      "path": "benchmarks/records-historical/v050/windows-x86_64.json",
+      "bytes": 35231,
+      "sha256": "5631fe3068de56b00a1ef4b8861964c1b09aa93b5a9afb7fd5449410e5278b0d"
     }
   ],
   "public_patches": [
@@ -32590,6 +32600,60 @@
       "path": "tools/benchmark_ci.py",
       "source_sha256": "bb07cc5fe901b95cbebdff8808353feef7bbed4503929f297cdc8a5b5c4c9fbe",
       "reason": "Reject abbreviated or mismatched measurement candidate identities."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "d49e09e2745f6511265a2531cc4b4afd927d66032b93f21725b0f129cc267218",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "42c80ed89719ab97ca17bbad012db614e0a928a0f8544da908cfe6f7a7af0bbd",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "c2f8726f707f8748e2762c69bcf4b2068746eedaa8e7b1fca0608cac33295100",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_physics_impact.py",
+      "source_sha256": "fc8447ec4ba570d0e59c3d8203bcc70efbbf4ea028720f7b18518d8a814e275e",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "2a5495f23cd732566024108da9420bbe7cb4f41ef3b90fa40b222582f3d535a0",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "afc0619a6c8b6aefb47f82ce24874fd06e8d02b059faeade3b7e6b8514927ca9",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/physics_impact.py",
+      "source_sha256": "05935a71af85e9fe1b0a0c23bc4ea571f56a3ed1c2402734a7ab3ef57bc6f300",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/qualification_publish.py",
+      "source_sha256": "d5f888d12385d25928eeb9a614c168c352c7c30caaaacdd5fdfd8f834fe4b493",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/benchmark_shards.py",
+      "source_sha256": "4ecaddedf2984b9683a9cc6628caea374d8d5b6eebb3e7967babf719f261c47d",
+      "reason": "Reuse compatible measurements across metadata pushes and balance Prius by measured runtimes."
     }
   ]
 }
