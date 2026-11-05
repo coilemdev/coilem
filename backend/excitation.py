@@ -158,6 +158,27 @@ def _resolve_public_six_step(
     )
 
 
+def resolve_public_current_profile(
+    mode: ExcitationMode, amplitude_a: float, convention: str, electrical_angle_cw_deg: float,
+    *, axis_offset_deg: float = 0, current_angle_deg: float = 0, advance_deg: float = 0,
+) -> PhaseCurrentSample:
+    """Explicit geometry-independent profiles in the public clockwise frame.
+
+    Reference fixtures can supply their audited winding axis/phase order
+    without inventing an editable inner-rotor MotorConfig.
+    """
+    if mode == IDEAL_SIX_STEP_120:
+        if convention != "plateau":
+            raise ValueError("Six-step current requires the plateau convention")
+        return _resolve_public_six_step(amplitude_a, electrical_angle_cw_deg+axis_offset_deg, advance_deg)
+    if mode != SINUSOIDAL or convention not in ("rms", "peak"):
+        raise ValueError("Sinusoidal current requires RMS or peak convention")
+    peak = amplitude_a*(math.sqrt(2) if convention == "rms" else 1)
+    angle = electrical_angle_cw_deg+current_angle_deg+axis_offset_deg
+    currents = tuple(peak*math.cos(math.radians(angle+offset)) for offset in (0, 120, 240))
+    return PhaseCurrentSample(SINUSOIDAL, currents, wrap_360(electrical_angle_cw_deg), 90-angle, None)
+
+
 def resolve_phase_current_sample(
     config: MotorConfig,
     rotor_electrical_angle_deg: float,

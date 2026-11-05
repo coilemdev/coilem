@@ -35,6 +35,10 @@ import { designErrorText } from './designErrors';
 import { windingLayerWording } from './toothCoils';
 import { PublicLanding } from './PublicLanding';
 import { HalbachWorkspace } from './halbach/HalbachWorkspace';
+import type { OutrunnerProject } from './outrunner/project';
+const OUTRUNNER_BUILD_ENABLED = import.meta.env.VITE_COILEM_EXPERIMENTAL_OUTRUNNER === '1';
+const OutrunnerWorkspace = OUTRUNNER_BUILD_ENABLED
+  ? lazy(() => import('./outrunner/OutrunnerWorkspace').then((module) => ({ default: module.OutrunnerWorkspace }))) : null;
 import {
   changeTopologyPreservingAirgap,
   magneticAirgapMm,
@@ -564,6 +568,8 @@ export function App() {
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
   const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
+  const [outrunnerEnabled, setOutrunnerEnabled] = useState(false);
+  const [outrunnerProject, setOutrunnerProject] = useState<OutrunnerProject | null>(null);
   const [geometryStale, setGeometryStale] = useState(true);
   const [previewNetworkFailed, setPreviewNetworkFailed] = useState(false);
   const [backendRecovery, setBackendRecovery] = useState(0);
@@ -1082,6 +1088,8 @@ export function App() {
           sameElmerCapability(current, nextElmerCapability) ? current : nextElmerCapability
         ));
         const nextExperimentalRotors = experimentalRotorsFromHealth(health);
+        const outrunnerCapability = (health.capabilities as PublicJson | undefined)?.experimental_outrunner as PublicJson | undefined;
+        setOutrunnerEnabled(OUTRUNNER_BUILD_ENABLED && outrunnerCapability?.enabled === true);
         setExperimentalRotors((current) => (
           current.enabled === nextExperimentalRotors.enabled && current.switch === nextExperimentalRotors.switch
             ? current
@@ -1093,6 +1101,7 @@ export function App() {
         setConnectionStatus('offline');
         setElmerCapability(ELMER_API_UNAVAILABLE);
         setExperimentalRotors(EXPERIMENTAL_ROTORS_OFF);
+        setOutrunnerEnabled(false);
       },
       onReconnect: () => setBackendRecovery((current) => current + 1),
     });
@@ -1399,7 +1408,21 @@ export function App() {
 
   const openDesignFile = async (file: File) => {
     try {
-      const parsed = parseDesignFile(await file.text());
+      const text = await file.text();
+      let frozenProject: OutrunnerProject | null = null;
+      if (OUTRUNNER_BUILD_ENABLED) {
+        const { parseOutrunnerProject } = await import('./outrunner/project');
+        frozenProject = parseOutrunnerProject(text);
+      }
+      if (JSON.parse(text)?.kind === 'coilem_frozen_reference') {
+        if (!OUTRUNNER_BUILD_ENABLED) throw new Error('This local experiment requires the opt-in outrunner UI build.');
+        if (!outrunnerEnabled) throw new Error('Start this local checkout with COILEM_EXPERIMENTAL_OUTRUNNER=1 to open the outrunner experiment.');
+        if (busy === 'solve') throw new Error('Finish or cancel the current analysis before opening another motor.');
+        if (!frozenProject) throw new Error('Unknown frozen reference file.');
+        setOutrunnerProject(frozenProject);
+        return;
+      }
+      const parsed = parseDesignFile(text);
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
       if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
@@ -1643,6 +1666,15 @@ export function App() {
   const meshElements = Number(mesh?.mesh_info.num_triangles || mesh?.triangles.length || 0);
   const meshQuality = Number(mesh?.mesh_qa.min_triangle_quality || 0);
 
+  const openOutrunner = OUTRUNNER_BUILD_ENABLED && outrunnerEnabled && busy !== 'solve' ? (profile?: 'benchmark') => {
+    void import('./outrunner/project').then(({ DEFAULT_OUTRUNNER_PROJECT, BENCHMARK_OUTRUNNER_PROJECT }) => setOutrunnerProject(profile === 'benchmark' ? BENCHMARK_OUTRUNNER_PROJECT : DEFAULT_OUTRUNNER_PROJECT));
+  } : undefined;
+  if (outrunnerProject && OutrunnerWorkspace) return <Suspense fallback={<p>Opening local experiment…</p>}>
+    <OutrunnerWorkspace initialProject={outrunnerProject} appVersion={appVersion} connectionStatus={connectionStatus}
+      onHome={() => { setOutrunnerProject(null); setShowLanding(false); setView('design'); }}
+      onOpenOtherDesign={(file) => { setOutrunnerProject(null); void openDesignFile(file); }} />
+  </Suspense>;
+
   if (tutorialsView) {
     // Keep the shell and top bar, as the private app does across its lesson routes.
     // Without them the tutorials area loses the backend connection indicator, so a
@@ -1669,6 +1701,7 @@ export function App() {
           onResetDesign={resetDesign}
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
+          onOpenOutrunner={openOutrunner}
           onNewDesign={startNewDesign}
           experimentalRotors={experimentalRotors.enabled}
           tutorialCatalog={tutorialsView === 'catalog'}
@@ -1767,6 +1800,7 @@ export function App() {
           onResetDesign={resetDesign}
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
+          onOpenOutrunner={openOutrunner}
           onNewDesign={startNewDesign}
           experimentalRotors={experimentalRotors.enabled}
           workflowDisabled
@@ -1806,6 +1840,7 @@ export function App() {
       selectedSolver={selectedSolver}
       elmerCapability={elmerCapability}
       experimentalRotors={experimentalRotors}
+      onOpenOutrunner={openOutrunner}
       geometryStale={geometryStale}
       error={error}
       errorDetails={errorDetails}

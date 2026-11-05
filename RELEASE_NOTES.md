@@ -1,3 +1,11 @@
+# Planned coilEM 0.5.5 — experimental outrunner support
+
+- LRK 12s/14p outer-rotor reference in the shared Design / Solve / Results workflow.
+- Ideal six-step (default), sinusoidal and fixed-current benchmark excitation,
+  actual mesh and field playback, phase/tooth previews and exploded 3D view.
+- Pending developer review and numerical qualification; experimental flags remain
+  required. See the [v0.5.5 review scope](docs/experiments/femm-outrunner-v051/V055-REVIEW.md).
+
 # coilEM 0.5.1 — unreleased fixes
 
 - Correct the performance CSV header to `section,field,unit,value,sample_index`.

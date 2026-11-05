@@ -1,0 +1,482 @@
+{
+  "convention": "femm_lrk_clockwise_currents/v1",
+  "vectors": [
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 0,
+      "currents_A": [
+        0.0,
+        4.0,
+        -4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 29.999999999,
+      "currents_A": [
+        0.0,
+        4.0,
+        -4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 30,
+      "currents_A": [
+        -4.0,
+        4.0,
+        0.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 30.000000001,
+      "currents_A": [
+        -4.0,
+        4.0,
+        0.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 60,
+      "currents_A": [
+        -4.0,
+        4.0,
+        0.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 90,
+      "currents_A": [
+        -4.0,
+        0.0,
+        4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 120,
+      "currents_A": [
+        -4.0,
+        0.0,
+        4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 180,
+      "currents_A": [
+        0.0,
+        -4.0,
+        4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 300,
+      "currents_A": [
+        4.0,
+        0.0,
+        -4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau"
+      },
+      "angle_clockwise_electrical_deg": 360,
+      "currents_A": [
+        0.0,
+        4.0,
+        -4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 0,
+      "currents_A": [
+        2.4492935982947064e-16,
+        3.4641016151377535,
+        -3.4641016151377544
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 29.999999999,
+      "currents_A": [
+        -1.9999999999395397,
+        4.0,
+        -2.0000000000604596
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 30,
+      "currents_A": [
+        -1.9999999999999991,
+        4.0,
+        -2.0000000000000018
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 30.000000001,
+      "currents_A": [
+        -2.00000000006046,
+        4.0,
+        -1.9999999999395406
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 60,
+      "currents_A": [
+        -3.464101615137755,
+        3.4641016151377544,
+        -7.347880794884119e-16
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 90,
+      "currents_A": [
+        -4.0,
+        1.999999999999999,
+        2.0000000000000004
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 120,
+      "currents_A": [
+        -3.4641016151377544,
+        1.2246467991473533e-15,
+        3.4641016151377535
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 180,
+      "currents_A": [
+        -7.347880794884119e-16,
+        -3.4641016151377553,
+        3.4641016151377544
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 300,
+      "currents_A": [
+        3.4641016151377544,
+        -1.7145055188062944e-15,
+        -3.4641016151377553
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak"
+      },
+      "angle_clockwise_electrical_deg": 360,
+      "currents_A": [
+        1.2246467991473533e-15,
+        3.464101615137755,
+        -3.4641016151377566
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 0,
+      "currents_A": [
+        3.4638242249419736e-16,
+        4.898979485566355,
+        -4.898979485566357
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 29.999999999,
+      "currents_A": [
+        -2.8284271246606867,
+        5.656854249492381,
+        -2.828427124831693
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 30,
+      "currents_A": [
+        -2.828427124746189,
+        5.656854249492381,
+        -2.828427124746193
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 30.000000001,
+      "currents_A": [
+        -2.828427124831694,
+        5.656854249492381,
+        -2.8284271246606876
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 60,
+      "currents_A": [
+        -4.898979485566357,
+        4.898979485566357,
+        -1.039147267482592e-15
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 90,
+      "currents_A": [
+        -5.656854249492381,
+        2.8284271247461885,
+        2.8284271247461907
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 120,
+      "currents_A": [
+        -4.898979485566357,
+        1.7319121124709869e-15,
+        4.898979485566355
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 180,
+      "currents_A": [
+        -1.039147267482592e-15,
+        -4.8989794855663575,
+        4.898979485566357
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 300,
+      "currents_A": [
+        4.898979485566357,
+        -2.4246769574593815e-15,
+        -4.8989794855663575
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms"
+      },
+      "angle_clockwise_electrical_deg": 360,
+      "currents_A": [
+        1.7319121124709869e-15,
+        4.898979485566357,
+        -4.898979485566359
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau",
+        "commutation_advance_deg": 15
+      },
+      "angle_clockwise_electrical_deg": 0,
+      "currents_A": [
+        0.0,
+        4.0,
+        -4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau",
+        "commutation_advance_deg": 15
+      },
+      "angle_clockwise_electrical_deg": 75,
+      "currents_A": [
+        -4.0,
+        0.0,
+        4.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau",
+        "commutation_advance_deg": 15
+      },
+      "angle_clockwise_electrical_deg": 240,
+      "currents_A": [
+        4.0,
+        -4.0,
+        0.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak",
+        "current_angle_deg": 30
+      },
+      "angle_clockwise_electrical_deg": 0,
+      "currents_A": [
+        -1.9999999999999991,
+        4.0,
+        -2.0000000000000018
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak",
+        "current_angle_deg": 30
+      },
+      "angle_clockwise_electrical_deg": 75,
+      "currents_A": [
+        -3.8637033051562732,
+        1.035276180410083,
+        2.8284271247461894
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "peak",
+        "current_angle_deg": 30
+      },
+      "angle_clockwise_electrical_deg": 240,
+      "currents_A": [
+        4.0,
+        -1.9999999999999993,
+        -1.999999999999997
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms",
+        "current_amplitude_A": 0
+      },
+      "angle_clockwise_electrical_deg": 0,
+      "currents_A": [
+        0.0,
+        0.0,
+        -0.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms",
+        "current_amplitude_A": 0
+      },
+      "angle_clockwise_electrical_deg": 75,
+      "currents_A": [
+        -0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "settings": {
+        "excitation_mode": "sinusoidal",
+        "current_amplitude_convention": "rms",
+        "current_amplitude_A": 0
+      },
+      "angle_clockwise_electrical_deg": 240,
+      "currents_A": [
+        0.0,
+        -0.0,
+        0.0
+      ]
+    }
+  ]
+}

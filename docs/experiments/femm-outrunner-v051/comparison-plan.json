@@ -1,0 +1,114 @@
+{
+  "schema_kind": "experimental_comparison_plan",
+  "schema_version": 1,
+  "status": "DRAFT_UNMEASURED",
+  "fixture_id": "femm_lrk_12s14p_v1",
+  "base_branch": "release/v0.5.1",
+  "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+  "local_only": true,
+  "source_sha256": {
+    "WholeMotor.fem": "e69cce40a56f0c9840892a122cda86e5b3fa69d0b0c6ccc718d4d430b059253e",
+    "WholeMotorSlidingBand.fem": "62dc72be4e4de0161dc1538bd35f921480a5169647238f8b4057ec88762105ee",
+    "HalfMotorSlidingBand.fem": "2fae75121f569d9ce6e1960270d88e978b6d4cadd04f23860a7a73b8b3f2265b"
+  },
+  "native_convention": {
+    "angle_positive": "CCW",
+    "angle_zero": "source_file_geometry",
+    "torque_body": "outer_rotor_all_magnets_and_back_iron",
+    "phase_order": ["A", "B", "C"],
+    "ui_angle_sign": -1,
+    "ui_torque_sign": -1,
+    "allow_fit_or_phase_permutation": false
+  },
+  "physics": {
+    "pole_count": 14,
+    "slot_count": 12,
+    "stack_length_mm": 10,
+    "main_airgap_radii_mm": [12.8, 13.0],
+    "dirichlet_az_zero_radii_mm": [6.5, 15.39],
+    "magnet_radii_mm": [13.0, 14.0],
+    "back_iron_radii_mm": [14.14, 15.39],
+    "magnet_relative_permeability": 1.049,
+    "magnet_coercivity_A_per_m": 979000,
+    "magnet_derived_Br_T": 1.2905298196199053,
+    "stator_lamination_fill": 0.95,
+    "material_law_parity": "UNVERIFIED",
+    "phase_connection": "not_inferred_from_source"
+  },
+  "lanes": [
+    "unchanged_femm_source_reproduction",
+    "same_femm_mesh_magneto2d_diagnostic",
+    "independent_gmsh_magneto2d_comparison"
+  ],
+  "cases": [
+    {
+      "id": "source_point_bc_4A",
+      "mechanical_angle_deg": [0],
+      "phase_current_A": [0, 4, -4]
+    },
+    {
+      "id": "orientation_bc_4A",
+      "mechanical_angle_rational_deg": [[-1, 7], [0, 1], [1, 7]],
+      "phase_current_A": [0, 4, -4]
+    },
+    {
+      "id": "current_sensitivity_at_source_zero",
+      "mechanical_angle_deg": [0],
+      "conducting_current_A": [-6, -4, -2, -1, 0, 1, 2, 4, 6],
+      "phase_current_rule": "[0,I,-I]"
+    },
+    {
+      "id": "fixed_current_torque_period",
+      "phase_current_A": [0, 4, -4],
+      "grid": {"start_deg": 0, "period_rational_mechanical_deg": [360, 7], "unique_samples": 192, "refined_unique_samples": 384, "solve_repeated_endpoint": true}
+    },
+    {
+      "id": "noload_linkage_and_bemf",
+      "phase_current_A": [0, 0, 0],
+      "normalization_speed_rpm": 1000,
+      "grid": {"start_deg": 0, "period_rational_mechanical_deg": [360, 7], "unique_samples": 192, "refined_unique_samples": 384, "solve_repeated_endpoint": true}
+    },
+    {
+      "id": "cogging_period",
+      "phase_current_A": [0, 0, 0],
+      "grid": {"start_deg": 0, "period_rational_mechanical_deg": [30, 7], "unique_samples": 96, "refined_unique_samples": 192, "solve_repeated_endpoint": true}
+    }
+  ],
+  "required_self_checks": [
+    "femm_producer_smoke_and_owned_process_cleanup",
+    "source_hash_and_boundary_assignment_audit",
+    "material_coupon_and_effective_law_parity",
+    "source_ampere_turn_conservation",
+    "same_mesh_region_identity_audit",
+    "torque_body_and_outer_motion_sign_audit",
+    "independent_spatial_and_angular_convergence",
+    "full_mechanical_turn_periodicity_and_closure",
+    "zero_current_after_loaded_run",
+    "gauge_invariant_phase_linkage",
+    "fresh_cached_current_and_material_identity"
+  ],
+  "mesh_gap_target_mm": [0.05, 0.025, 0.0125],
+  "gates": {
+    "source_ampere_turn_absolute_Aturn": 1e-9,
+    "source_ampere_turn_relative": 1e-10,
+    "static_torque_relative": 0.02,
+    "static_torque_floor_Nm": 5e-5,
+    "loaded_waveform_nrmse_relative_to_reference_peak": 0.02,
+    "phase_linkage_relative_L2": 0.01,
+    "bemf_fundamental_amplitude_relative": 0.02,
+    "bemf_fundamental_phase_electrical_deg": 1,
+    "current_sensitivity_relative": 0.03,
+    "cogging_pp_and_fundamental_relative": 0.10,
+    "cogging_absolute_floor_Nm": 5e-6,
+    "reference_cogging_mean_and_closure_relative_to_pp": 0.01,
+    "reference_cogging_mean_and_closure_floor_Nm": 5e-6,
+    "linkage_closure_relative_to_peak": 0.001,
+    "linkage_closure_floor_Wb": 1e-9,
+    "loaded_torque_and_linkage_mesh_change_relative": 0.005,
+    "cogging_mesh_change_relative": 0.02,
+    "relative_or_floor_rule": "abs(candidate-reference) <= max(relative*abs(reference), absolute_floor) where both are defined"
+  },
+  "excluded_claims": ["hardware_accuracy", "FEICHAO_motor_equivalence", "efficiency", "losses", "thermal", "ESC_PWM", "generic_editable_outrunners", "half_model_magneto2d_support", "terminal_Kv_without_connection_definition"],
+  "registration": "none; does not modify ABCD or historical cogging evidence",
+  "results": null
+}

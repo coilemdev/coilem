@@ -23,12 +23,13 @@ export function fitTransform(
   frame?: ViewportFrame,
 ): { map: (point: [number, number]) => [number, number]; scale: number } {
   const box = frame ?? { x: 0, y: 0, width, height };
-  const xs = points.map(([x]) => x);
-  const ys = points.map(([, y]) => y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
+  // Fine meshes exceed the browser's function-argument limit. Accumulate
+  // bounds instead of spreading every mesh node into Math.min / Math.max.
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const [x, y] of points) {
+    minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+    minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+  }
   const spanX = Math.max(maxX - minX, 1);
   const spanY = Math.max(maxY - minY, 1);
   const padding = Math.min(box.width, box.height) * 0.075;

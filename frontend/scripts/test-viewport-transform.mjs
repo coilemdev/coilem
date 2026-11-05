@@ -23,4 +23,9 @@ for (const [width, height] of [[1000, 700], [760, 600], [400, 500]]) {
     }
   }
 }
-console.log('shifted and full viewport zoom checks passed');
+const fineMeshPoints = Array.from({ length: 250000 }, (_, i) => [i % 201 - 100, Math.floor(i / 201) % 201 - 100]);
+const fineTransform = fitTransform(fineMeshPoints, 1000, 700);
+const referenceTransform = fitTransform(points, 1000, 700);
+assert.equal(fineTransform.scale, referenceTransform.scale, 'fine mesh bounds preserve the same fit without argument overflow');
+assert.deepEqual(fineTransform.map([0, 0]), referenceTransform.map([0, 0]));
+console.log('shifted, full and 250k-node viewport zoom checks passed');

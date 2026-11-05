@@ -24,6 +24,8 @@ import {
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
 } from './MotorCanvas';
+import { MotorWorkflowShell } from './MotorWorkflowShell';
+import { RotorArrangement } from './RotorArrangement';
 import { WindingLayoutView } from './WindingLayoutView';
 import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } from './toothCoils';
 import {
@@ -170,6 +172,7 @@ interface CoilEmWorkspaceProps {
   onResetDesign?: () => void;
   onLoadExample?: (exampleId: PublicExampleId) => void;
   onOpenHalbach?: () => void;
+  onOpenOutrunner?: (profile?: 'benchmark') => void;
   onHome: () => void;
   onStepChange: (step: PublicWorkflowStep) => void;
   onTopologyChange: (topology: MotorConfig['topology']) => void;
@@ -392,7 +395,7 @@ type StatusTagTone = 'good' | 'info' | 'warning' | 'running';
 
 /** A short status pill whose details open on hover or keyboard focus, so run
  * status and qualification don't take a full-width card each (#110). */
-function StatusTag({
+export function StatusTag({
   tone,
   label,
   heading,
@@ -499,6 +502,7 @@ export function CoilEmTopBar({
   onResetDesign,
   onLoadExample,
   onOpenHalbach,
+  onOpenOutrunner,
   onNewDesign,
   experimentalRotors = false,
   workflowDisabled = false,
@@ -507,7 +511,9 @@ export function CoilEmTopBar({
   onTutorialCatalog,
   runHistoryOpen: controlledRunHistoryOpen,
   onRunHistoryOpenChange,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'appVersion' | 'onHome' | 'onStepChange'> & {
+  showRunHistory = true,
+}: Pick<CoilEmWorkspaceProps, 'activeStep' | 'connectionStatus' | 'appVersion' | 'onHome' | 'onStepChange'> & {
+  config: { topology: string; rotor: { pole_count: number }; stator: { slot_count: number } };
   solveAvailable: boolean;
   resultReady: boolean;
   solveRunning: boolean;
@@ -517,6 +523,7 @@ export function CoilEmTopBar({
   onResetDesign?: () => void;
   onLoadExample?: (exampleId: PublicExampleId) => void;
   onOpenHalbach?: () => void;
+  onOpenOutrunner?: (profile?: 'benchmark') => void;
   onNewDesign?: () => void;
   experimentalRotors?: boolean;
   workflowDisabled?: boolean;
@@ -525,6 +532,7 @@ export function CoilEmTopBar({
   onTutorialCatalog?: () => void;
   runHistoryOpen?: boolean;
   onRunHistoryOpenChange?: (open: boolean) => void;
+  showRunHistory?: boolean;
 }) {
   const [designMenuOpen, setDesignMenuOpen] = useState(false);
   const [examplesMenuOpen, setExamplesMenuOpen] = useState(false);
@@ -673,6 +681,14 @@ export function CoilEmTopBar({
                         ))}
                       </>
                     )}
+                    {onOpenOutrunner && <button type="button" role="menuitem" onClick={closeMenuThen(onOpenOutrunner)}>
+                      <strong>LRK outrunner 14p / 12s <span className="public-example-experimental-tag">Local experiment</span></strong>
+                      <small>Six-step drive · torque and back-EMF</small>
+                    </button>}
+                    {onOpenOutrunner && <button type="button" role="menuitem" onClick={closeMenuThen(() => onOpenOutrunner('benchmark'))}>
+                      <strong>LRK fixed-current benchmark <span className="public-example-experimental-tag">Local experiment</span></strong>
+                      <small>Published comparison · fixed 0 / +4 / −4 A</small>
+                    </button>}
                     {onOpenHalbach && (
                       <>
                         <span className="menu-divider" role="presentation" />
@@ -738,7 +754,7 @@ export function CoilEmTopBar({
         )}
       </div>
       <div className="topbar-right">
-        {!tutorialCatalog && <button
+        {!tutorialCatalog && showRunHistory && <button
           type="button"
           className="public-run-history-button"
           aria-label="Previous runs"
@@ -801,7 +817,7 @@ interface NumberRowProps {
   onChange: (value: number) => void;
 }
 
-function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled, onChange }: NumberRowProps) {
+export function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled, onChange }: NumberRowProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [draftValue, setDraftValue] = useState(() => String(value));
 
@@ -1017,7 +1033,7 @@ function ComponentDetailCard({ selection, config, geometry, onClose }: {
 }
 
 /** A collapsible panel section: Design's parameter groups and the Solve setup. */
-function ParameterSectionBlock<Id extends string = PublicParameterSection>({
+export function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   id,
   label,
   summary,
@@ -1072,7 +1088,7 @@ function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent, onOpenOutrunner }: Pick<CoilEmWorkspaceProps,
   'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
@@ -1080,6 +1096,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   selectedComponent: PublicMotorComponentSelection | null;
   onNext: () => void;
   onClearComponent: () => void;
+  onOpenOutrunner?: (profile?: 'benchmark') => void;
 }) {
   // null = every section collapsed. Clicking the open section's header used to be
   // a no-op: the toggle tested `current === section` and then returned `section`
@@ -1272,6 +1289,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             />
           </label>
         </div>
+        {matchesSearch('topology') && <RotorArrangement value="inrunner" disabled={disabled} onOutrunner={onOpenOutrunner} />}
         {matchesSearch('topology') && <div className="param-section param-primary-section" data-guide="topology-selector">
           <div className="param-section-label">Topology</div>
           <div className="topology-cards">
@@ -2672,7 +2690,7 @@ function defaultRunPlanWidth(): number {
 }
 
 /** "about 30–55 s" or "about 2–4 min": a range, because run time varies by computer. */
-function formatRunTimeRange(validation: SolveValidation): string {
+export function formatRunTimeRange(validation: Pick<SolveValidation, 'estimated_solve_time_s' | 'estimated_solve_time_range_s'>): string {
   const [low, high] = validation.estimated_solve_time_range_s
     ?? [validation.estimated_solve_time_s, validation.estimated_solve_time_s];
   if (high < 90) {
@@ -4425,8 +4443,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
   }, [props.editFeedback?.id, props.editFeedback?.affectedKind]);
 
   return (
-    <div className="public-coilem-shell">
-      <CoilEmTopBar
+    <MotorWorkflowShell topBar={<CoilEmTopBar
         config={props.config}
         activeStep={props.activeStep}
         solveAvailable={!props.blankDesign}
@@ -4442,13 +4459,12 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         onResetDesign={props.onResetDesign}
         onLoadExample={props.onLoadExample}
         onOpenHalbach={props.onOpenHalbach}
+        onOpenOutrunner={props.onOpenOutrunner}
         onNewDesign={props.onNewDesign}
         experimentalRotors={props.experimentalRotors?.enabled ?? false}
         runHistoryOpen={runHistoryOpen}
         onRunHistoryOpenChange={setRunHistoryOpen}
-      />
-      <main className="workflow-stage-shell">
-        <div className="workflow-stage-content">
+      />}>
           {props.activeStep === 'design' && (
             <div className={`design-workspace workflow-stage-content${designViewportExpanded ? ' is-viewport-expanded' : ''}`}>
               <div className="design-workspace-main">
@@ -4475,6 +4491,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   onRefreshGeometry={props.onRefreshGeometry}
                   onClearComponent={() => setSelectedComponent(null)}
                   onNext={() => props.onStepChange('solve')}
+                  onOpenOutrunner={props.onOpenOutrunner}
                 />
                 {props.blankDesign ? (
                   <section className="viewport viewport-cad viewport-cad-grid public-motor-viewport public-blank-design" aria-label="Blank design canvas">
@@ -4520,8 +4537,6 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
           )}
           {props.activeStep === 'solve' && <SolveStage config={props.config} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
           {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
-        </div>
-      </main>
-    </div>
+    </MotorWorkflowShell>
   );
 }

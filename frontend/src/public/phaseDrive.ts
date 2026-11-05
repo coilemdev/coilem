@@ -21,7 +21,9 @@
 export type ExcitationMode = 'sinusoidal' | 'ideal_six_step_120';
 
 export interface PhaseDrive {
-  mode: ExcitationMode;
+  mode: ExcitationMode | 'fixed_phase_currents';
+  fixedCurrentsA?: [number, number, number];
+  phaseOrder?: readonly [0 | 1 | 2, 0 | 1 | 2, 0 | 1 | 2];
   /** Displayed angle, interpreted using the preview's explicit convention. */
   currentAngleDeg: number;
   currentAngleReference: 'q_axis' | 'pyleecan_d_axis';
@@ -56,23 +58,28 @@ export function rotorElectricalDeg(rotorMechDeg: number, poleCount: number): num
 
 /** A / B / C terminal currents at a rotor electrical angle, each in -1..1. */
 export function phaseCurrents(drive: PhaseDrive, rotorElecDeg: number): [number, number, number] {
+  const ordered = (values: [number, number, number]): [number, number, number] => drive.phaseOrder
+    ? drive.phaseOrder.map(index => values[index]) as [number, number, number] : values;
   if (!(drive.currentAmplitudeA > 0)) return [0, 0, 0];
+  if (drive.mode === 'fixed_phase_currents') {
+    return (drive.fixedCurrentsA ?? [0, 0, 0]).map(value => value/drive.currentAmplitudeA) as [number, number, number];
+  }
   if (drive.mode === 'ideal_six_step_120') {
     let effective = wrap360(rotorElecDeg + drive.axisOffsetDeg + drive.commutationAdvanceDeg);
     // Snap representation noise onto a commutation boundary, as the backend does.
     const boundary = Math.round(effective / 60) * 60;
     if (Math.abs(effective - boundary) <= 1e-12) effective = wrap360(boundary);
     const [a, b, c] = PUBLIC_SIX_STEP_TABLE[Math.floor(effective / 60) % 6];
-    return [a, b, c];
+    return ordered([a, b, c]);
   }
   if (drive.currentAngleReference === 'pyleecan_d_axis') {
     const source = rotorElecDeg + drive.currentAngleDeg;
     const at = (offset: number) => Math.cos(((source + offset) * Math.PI) / 180);
-    return [at(0), at(-120), at(120)];
+    return ordered([at(0), at(-120), at(120)]);
   }
   const source = 90 - rotorElecDeg - drive.currentAngleDeg - drive.axisOffsetDeg;
   const at = (offset: number) => Math.sin(((source - offset) * Math.PI) / 180);
-  return [at(0), at(120), at(240)];
+  return ordered([at(0), at(120), at(240)]);
 }
 
 export interface Rect {
@@ -198,13 +205,14 @@ export function slotCurrents(sides: WindingSide[], slotCount: number, currents: 
  * down by each slot's out-of-page current, so the flux a tooth sends into the
  * airgap — an N pole — follows the running sum of slot currents, about its mean.
  */
-export function toothPoles(currentsBySlot: number[]): number[] {
+export function toothPoles(currentsBySlot: number[], facing: 'inward' | 'outward' = 'inward'): number[] {
   let running = 0;
   const sums = currentsBySlot.map((current) => (running += current));
   const mean = sums.reduce((total, value) => total + value, 0) / Math.max(1, sums.length);
   const poles = sums.map((value) => value - mean);
   const peak = Math.max(0, ...poles.map(Math.abs));
-  return peak > 1e-9 ? poles.map((value) => value / peak) : poles.map(() => 0);
+  const sign = facing === 'outward' ? -1 : 1;
+  return peak > 1e-9 ? poles.map((value) => sign*value / peak) : poles.map(() => 0);
 }
 
 /** The tooth at an angle (radians, counter-clockwise from +x): tooth k spans slots k to k+1. */
