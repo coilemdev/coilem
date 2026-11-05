@@ -48,7 +48,7 @@ def solve_selected_analyses(
     # loaded sweep. The map computes its own torque, flux and loss dependencies.
     result = solver.solve(base_config, on_progress=base_progress if on_progress else None, solve_mesh_key=solve_mesh_key)
     settings = config.torque_speed_analysis
-    if settings is None or not map_supported:
+    if settings is None or not map_supported or not options.torque_speed_envelope:
         return result
     with protect_result_cache(result):
         return _attach_map_analysis(solver, config, result, on_progress, should_stop, started)
@@ -56,18 +56,10 @@ def solve_selected_analyses(
 
 def _attach_map_analysis(solver, config, result, on_progress, should_stop, started):
     settings = config.torque_speed_analysis
-    options = config.solve_options or SolveOptionsConfig()
     if should_stop():
         raise SolveCancelledError("Analysis cancelled.")
-    try:
-        store = MapStore(user_data_root() / "performance_maps", map_scope_key(config, settings.preset))
-        flux_map = store.covering_map(settings.limits.peak_current_A)
-    except (ValueError, OSError):
-        if options.torque_speed_envelope:
-            raise
-        return result
-    if flux_map is None and not options.torque_speed_envelope:
-        return result
+    store = MapStore(user_data_root() / "performance_maps", map_scope_key(config, settings.preset))
+    flux_map = store.covering_map(settings.limits.peak_current_A)
 
     if flux_map is None:
         total = map_solve_count(*map_grid(settings.limits.peak_current_A, settings.preset))
@@ -95,7 +87,15 @@ def _attach_map_analysis(solver, config, result, on_progress, should_stop, start
     resistance = winding.phase_resistance_ohm if winding is not None else 0
     temperature = winding.winding_temperature_C if winding is not None else 20
     mechanical = float(config.solve_params.mechanical_loss_W or 0) if config.solve_params else 0
-    try:
+    failed = [point for point in flux_map.points if point.status != "ok"]
+    envelope = efficiency = None
+    reason = None
+    if failed:
+        reason = (
+            f"{len(failed)} of {len(flux_map.points)} map points have no solved result. "
+            "Retry the analysis to reuse completed points and retry failures."
+        )
+    else:
         envelope = torque_speed_envelope(
             flux_map, settings.limits, phase_resistance_ohm=resistance, winding_temperature_C=temperature,
         )
@@ -103,14 +103,10 @@ def _attach_map_analysis(solver, config, result, on_progress, should_stop, start
             flux_map, settings.limits, phase_resistance_ohm=resistance, winding_temperature_C=temperature,
             mechanical_loss_W=mechanical, envelope=envelope, control=settings.control,
         )
-    except ValueError:
-        if options.torque_speed_envelope:
-            raise
-        # An unusable historical map must not fail an unrelated analysis.
-        return result
     result.torque_speed_analysis = TorqueSpeedAnalysisResult(
         settings=settings.model_copy(deep=True), map=flux_map, torque_agreement_pct=map_agreement_pct(flux_map),
         envelope=envelope, efficiency_map=efficiency, winding_resistance=winding, mechanical_loss_W=mechanical,
+        status="partial" if failed else "complete", status_reason=reason,
     )
     result.summary.solve_time_s = time.perf_counter() - started
     result.solve_metadata.solve_time_s = result.summary.solve_time_s

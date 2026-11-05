@@ -171,8 +171,15 @@ The map includes its own torque, flux-linkage and loss solves, so it can run
 with all other analyses off. Preview uses 29 solves; Standard uses 61.
 The Accuracy plan still controls mesh density. Cancel keeps completed map
 points for resume, and changing drive limits reuses a covering map when possible.
-Results shows the Torque–speed tab when the run contains a requested or
-reused map; its curves, settings and map data are stored with the run.
+Results shows the Torque–speed tab only when the map is selected. Unticking
+it leaves cached points available for a later requested map without attaching
+them to the current run. Its curves, settings and map data are stored with the run.
+If a map point fails, the run keeps completed operating-point analyses and
+map points, with the failed current, angle and error in Results, PDF and CSV.
+Curves are unavailable for that partial map. Run the same analysis again to
+retry failed points while reusing successful ones. Winding resistance is
+reported even when Losses & efficiency is off; no-current field results show
+the actual zero current rather than the design's loaded current setting.
 
 For the first run, keep **Accuracy plan → Standard**:
 

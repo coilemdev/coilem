@@ -106,6 +106,23 @@ def test_a_grid_that_is_not_one_period_has_no_record() -> None:
     assert half_open.endpoint_mismatch_Nm is None
 
 
+@pytest.mark.parametrize("mean,current,requested,reason", [
+    (10, 0, True, "0 A run"),
+    (10, 1e-6, True, "0 A run"),
+    (10, 20, False, "not requested"),
+    (1e-10, 20, True, "near zero"),
+    (0, 20, True, "near zero"),
+])
+def test_unavailable_loaded_share_records_its_actual_reason(mean, current, requested, reason):
+    angles, torque = _analytic(24)
+    record = cogging_record(angles, torque, slot_count=12, pole_count=8, method="arkkio",
+                            loaded_mean_torque_Nm=mean, loaded_current_A=current, loaded_torque_requested=requested)
+    assert record.peak_to_peak_of_loaded_pct is None
+    assert reason in record.loaded_comparison_reason
+    if not requested:
+        assert record.loaded_mean_torque_Nm is None
+
+
 def test_reused_endpoints_have_no_remesh_noise_measurement() -> None:
     angles, torque = _analytic(24)
     independent = cogging_record(angles, torque, slot_count=12, pole_count=8, method="weighted_stress")
@@ -270,7 +287,9 @@ def _stored_result() -> dict:
     assert record is not None
     # The Results test (frontend/scripts/test-cogging-view.mjs) reads this stored record.
     # Platforms round the DFT differently in the last bits, so floats match to 1e-9.
-    _assert_close(record.model_dump(mode="json"), sweep["record"])
+    # The historical waveform/summary bytes stay unchanged; the new optional
+    # explanation is absent on these older successful comparisons.
+    _assert_close(record.model_dump(mode="json", exclude={"loaded_comparison_reason"}), sweep["record"])
     angles = sweep["electrical_angle_deg"]
     return {
         "summary": {

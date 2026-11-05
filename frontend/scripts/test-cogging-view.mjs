@@ -51,7 +51,11 @@ assert.deepEqual(view.waveform.electricalDeg, example.electrical_angle_deg);
 // A run without a loaded torque says so instead of a percentage.
 const open = coggingView({ summary: { cogging: { ...record, peak_to_peak_of_loaded_pct: null, loaded_mean_torque_Nm: null } } }, 8);
 assert.equal(open.rows.find((item) => item.key === 'loaded-share').value, '—');
-assert.match(open.rows.find((item) => item.key === 'loaded-share').hint, /no current/);
+assert.match(open.rows.find((item) => item.key === 'loaded-share').hint, /comparison unavailable/);
+for (const reason of ['Loaded torque was not requested.', 'No loaded torque (0 A run).', 'Loaded mean torque is near zero.']) {
+  const unavailable = coggingView({ summary: { cogging: { ...record, peak_to_peak_of_loaded_pct: null, loaded_comparison_reason: reason } } }, 8);
+  assert.equal(unavailable.rows.find((item) => item.key === 'loaded-share').hint, reason);
+}
 assert.equal(open.waveform, null);
 assert.equal(coggingView({ summary: { cogging: null } }, 8), null);
 

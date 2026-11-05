@@ -46,6 +46,10 @@ assert.equal(analysisSummary(mapOnly, 'elmer'), 'Select analyses');
 const reopenedMap = parseDesignFile(JSON.stringify(mapOnly)).config;
 assert.equal(reopenedMap.solve_options.torque_speed_envelope, true);
 assert.deepEqual(reopenedMap.torque_speed_analysis, mapOnly.torque_speed_analysis);
+const deselected = setAnalysisOption(reopenedMap, 'torque_speed_envelope', false);
+assert.equal(asPublicConfig(deselected).torque_speed_analysis, null, 'unticked maps are omitted from the solve request');
+assert.deepEqual(deselected.torque_speed_analysis, reopenedMap.torque_speed_analysis, 'the design keeps settings for a later requested map');
+assert.deepEqual(asPublicConfig(setAnalysisOption(deselected, 'torque_speed_envelope', true)).torque_speed_analysis, reopenedMap.torque_speed_analysis);
 assert.equal(defaultResultPlot({ ...result, summary: { ...result.summary, back_emf_fundamental_V: null }, torque_speed_analysis: {} }), 'performance');
 assert.throws(() => parseDesignFile(JSON.stringify({ ...mapOnly, torque_speed_analysis: {
   ...mapOnly.torque_speed_analysis, limits: { ...mapOnly.torque_speed_analysis.limits, dc_bus_V: -5 },

@@ -195,8 +195,8 @@
     },
     {
       "path": "backend/cogging.py",
-      "bytes": 5353,
-      "sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471"
+      "bytes": 6090,
+      "sha256": "ab2dd6a687f11bc44b2ff1f02e527eca6c79ac3ab19561d0d6242b071d9d6c2d"
     },
     {
       "path": "backend/custom_materials.py",
@@ -495,13 +495,13 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 26220,
-      "sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41"
+      "bytes": 26271,
+      "sha256": "001932b621bd27b154a45b57f91cf294d7c34a27138f64f625bc26d18e4eb92b"
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 8415,
-      "sha256": "1f5e7e60b554264c391119cbf6a8440c18798dcefbb4edf0a880481dad1814ac"
+      "bytes": 9047,
+      "sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 90731,
-      "sha256": "55e35d23ef37133ccb5954f5cfbd03213a272320a62f0d7d35be1bf0600922ce"
+      "bytes": 92238,
+      "sha256": "23df8c12e0f2ec616ab2fa867b6cd6181fd136cc7f1eaffa465e6cafd1dcbabd"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 53808,
-      "sha256": "cd21c9684b1c918267c7622eab17349d080c2806b4e94e9c8f2929ef4f7e2cef"
+      "bytes": 54282,
+      "sha256": "0cd5395ba39c80d9f9dbaaaf18cfda0eac63f5e7f4297dc4409213a00a7d9387"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 154394,
-      "sha256": "8e810a648f9a00ef16adc3cb6d75f83fd411211e135b2d8ad3175dd31c99af98"
+      "bytes": 154790,
+      "sha256": "afcf0eff8af7fdbae866691182dc0da06600c865da7e8e442f478d677984035e"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 15621,
-      "sha256": "5c5440e121a32ccffeeffda80ecb8af3c0ae9cc15a5d487528a03c118abbb430"
+      "bytes": 16168,
+      "sha256": "afa5304bef56bc74da5ce0bccef04e988dcae4ee3d491a9f279be941a0f63478"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 11363,
-      "sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355"
+      "bytes": 12560,
+      "sha256": "837e708036fe44232afbbd1a4bcb0d48d869453607b871c82fe377c585f9c48b"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/scripts/test-cogging-view.mjs",
-      "bytes": 5125,
-      "sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256"
+      "bytes": 5505,
+      "sha256": "0e67e322ba663cdad48b43d516461dcfcdc2195f5235084d2e8a4b7a1d9e522c"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 5329,
-      "sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93"
+      "bytes": 6119,
+      "sha256": "3be2fd8ad488bafda2a21f00bff1406d7e03bdde2d4c448c21f40f6ce1a6bad2"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 239550,
-      "sha256": "394f7c8ec300c1f8ee7693dcf9107d132ab62b6b1c4f3edbff6428bae011469d"
+      "bytes": 240349,
+      "sha256": "a3917e013c6b0aa7a0ecff25d08260b4daea5049988212ac34d1570da3b55691"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 21228,
-      "sha256": "62747afa4798530f8126dc14a5d361a7ea90cd76a356c1972bc9327d47a11724"
+      "bytes": 22151,
+      "sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -7060,8 +7060,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 29122,
-      "sha256": "5017b4ffde00c5a596f48c51cf9b61a86365a6c94cb65de601e5b56a54b25b80"
+      "bytes": 30541,
+      "sha256": "7db8ac9f05457b49408af13668c0d7a9b49489df743c5c2a2ee22b178fd822f9"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -7090,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 10305,
-      "sha256": "389b87b5a7609039295451c8294a4e8c6482723c3fffc8d8e6b900238a42c1bf"
+      "bytes": 10597,
+      "sha256": "2bcb1dfcd914cbf24aaf94e7870e2c098ebc22ec8a686f29ab0de3858e5e40d0"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/coggingView.ts",
-      "bytes": 7333,
-      "sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40"
+      "bytes": 7335,
+      "sha256": "41a34a396f269b512c306e0a54fe90ee03baecb2b98f46421d97ed9f60ccb78a"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 23675,
-      "sha256": "d757a572c6cdcdc84bd55d58d3e7aceee4714e6485f5a2b68255b57cd9d95a13"
+      "bytes": 23719,
+      "sha256": "0024f25b19c0b0289c2d2a139c52fba555912003afe257f9ada051d4738d4837"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7445,8 +7445,8 @@
     },
     {
       "path": "frontend/src/public/performance.ts",
-      "bytes": 9053,
-      "sha256": "c22c1c9339bae5c2168fb5445b5bfff17b0ce037136da79049219707ae38797e"
+      "bytes": 9183,
+      "sha256": "f7606ecfbbd50c1aa43eed0acc126aa3cda9574e88ecec70a8cbf2c27f35d544"
     },
     {
       "path": "frontend/src/public/performanceView.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 1376,
-      "sha256": "ff2e954c4dd8db61bc1a381fefbd1ca207043bf7e6ebfe2e86735eaa6aa68df7"
+      "bytes": 1336,
+      "sha256": "a97820d23dc70952293b181fad9cc77e61be8f8e5f53645f7c187df0bcb92f4f"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7480,8 +7480,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 6811,
-      "sha256": "8de831f462409f13f25a0b104f75db69a771e533c6a4ba28355ff1c3f028a6f3"
+      "bytes": 7323,
+      "sha256": "1801ba7639820b750d0d7b461ce64912ae6fddda1b0ad09e1b1d787e88e6c452"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 289527,
-      "sha256": "5341219916534e65930fe24f3f3c6cc3faf64981f85adb605f8c978313e8cc9b"
+      "bytes": 289866,
+      "sha256": "5e42a8719ace552b27a0167e5151e0d3590d061cd62e17534a30ebc20b3ed49a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 48838,
-      "sha256": "b8e89181c7b4cd44b5f8be27179c2ced4d9c5fc77f2929845389d832605c35c0"
+      "bytes": 53737,
+      "sha256": "5dd04c6e6845a5910605b7630236d000fe2246b77ec31069b3f5ccf6b1a9a7aa"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7975,8 +7975,8 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 20831,
-      "sha256": "9e39651841b9e5fe9c3212b9a750c7cd42c2655c5ddf471ef4a1beca6a508561"
+      "bytes": 21764,
+      "sha256": "e0df19f89a86c1b41e36df8ba3f84481ef58d7731cbfccdaa59938720eab9913"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
@@ -8225,8 +8225,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32847,
-      "sha256": "5b509c42418deffd3e93463b16a214b550056be114dd1e4a292e8db7c1b8393a"
+      "bytes": 32867,
+      "sha256": "4c11aa55c6b3a36d7ed70e369150c76fc607209259386e9d18a28446d4e183ab"
     },
     {
       "path": "tests/test_public_security.py",
@@ -11590,8 +11590,8 @@
     },
     {
       "path": "frontend/scripts/test-analysis-options.mjs",
-      "bytes": 4077,
-      "sha256": "be4c8931fed34850de12b62237df9172f1af492f536e2cf5486991f0d10967b5"
+      "bytes": 4577,
+      "sha256": "810026835bf38824b57de8eb5c1114e9bf0e2a1410ac77a8ad0bccd66c6850be"
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
@@ -11605,13 +11605,13 @@
     },
     {
       "path": "tests/test_analysis_options.py",
-      "bytes": 9331,
-      "sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a"
+      "bytes": 11246,
+      "sha256": "bd37a808c180b44ae2635fa20d59b2f139f8765a6d9e8ea0562ae99d6cd5f0a9"
     },
     {
       "path": "backend/selected_analyses.py",
-      "bytes": 5405,
-      "sha256": "d4a6aa5a156f2e109583882bed98b46e0a548f5b38c8637eef13a1df27c5c849"
+      "bytes": 5399,
+      "sha256": "da1867335ffd642f2d136c25243687e2e64ded0b6d5b3b548862760c74e0ebb0"
     },
     {
       "path": "frontend/src/public/TorqueSpeedSettings.tsx",
@@ -11625,8 +11625,8 @@
     },
     {
       "path": "tests/test_torque_speed_analysis.py",
-      "bytes": 7591,
-      "sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc"
+      "bytes": 14332,
+      "sha256": "356a89d420b4c85bc290e7faa8c6eeb56dd14e850a8836ebc80e5b94e133283f"
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
@@ -32830,6 +32830,174 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d",
       "reason": "Guide first-time users through Analysis before the accuracy plan and Run, preserving selections and supporting direct Solve navigation."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/cogging.py",
+      "source_sha256": "6390a269a6c10f27090fda28c875a7293ea3cc3eb06c08a155634dd6a716e471",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/models/performance.py",
+      "source_sha256": "3c1d372db1184dc56ef4fac2370514edd7cbdbcc85df80fd9eac6b2130f1db41",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/models/result.py",
+      "source_sha256": "1f5e7e60b554264c391119cbf6a8440c18798dcefbb4edf0a880481dad1814ac",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/public_report.py",
+      "source_sha256": "55e35d23ef37133ccb5954f5cfbd03213a272320a62f0d7d35be1bf0600922ce",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "cd21c9684b1c918267c7622eab17349d080c2806b4e94e9c8f2929ef4f7e2cef",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/selected_analyses.py",
+      "source_sha256": "d4a6aa5a156f2e109583882bed98b46e0a548f5b38c8637eef13a1df27c5c849",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "8e810a648f9a00ef16adc3cb6d75f83fd411211e135b2d8ad3175dd31c99af98",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "5c5440e121a32ccffeeffda80ecb8af3c0ae9cc15a5d487528a03c118abbb430",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "6d91478217346b54ada343cc3db37851a6b3be22553cb50f7892b27a2df0f355",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "be4c8931fed34850de12b62237df9172f1af492f536e2cf5486991f0d10967b5",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-cogging-view.mjs",
+      "source_sha256": "aca173cc4cd2df77b76248ca98ed642ebc25158921ce0e765388cc91b24c7256",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/scripts/test-result-summary.mjs",
+      "source_sha256": "f068727fa89ba1a925f194b53a9cdd51b52b8b2c7141446d620278bab3e89c93",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "cbd479e216e1e225562699fd7b35d45b4d3b37a5bf757bc79f249f547e4ed48c",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "62747afa4798530f8126dc14a5d361a7ea90cd76a356c1972bc9327d47a11724",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "5017b4ffde00c5a596f48c51cf9b61a86365a6c94cb65de601e5b56a54b25b80",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "389b87b5a7609039295451c8294a4e8c6482723c3fffc8d8e6b900238a42c1bf",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/coggingView.ts",
+      "source_sha256": "167fa38b4f81581451498d406ce1a886d35928f72f7d137d58929ac767b8fc40",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "d757a572c6cdcdc84bd55d58d3e7aceee4714e6485f5a2b68255b57cd9d95a13",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/performance.ts",
+      "source_sha256": "c22c1c9339bae5c2168fb5445b5bfff17b0ce037136da79049219707ae38797e",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "ff2e954c4dd8db61bc1a381fefbd1ca207043bf7e6ebfe2e86735eaa6aa68df7",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/resultMetrics.ts",
+      "source_sha256": "8de831f462409f13f25a0b104f75db69a771e533c6a4ba28355ff1c3f028a6f3",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "c664eea9912876f6afb4f1a7498adc5736a0c42f2bdaad1b123dd06aa65b1a2d",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_analysis_options.py",
+      "source_sha256": "9fcf7dcbfca7690dbf2aafd0eb2ecb4f3e1b9856328a6d99f1c2f0c0dff8087a",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_cogging.py",
+      "source_sha256": "9e39651841b9e5fe9c3212b9a750c7cd42c2655c5ddf471ef4a1beca6a508561",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_torque_speed_analysis.py",
+      "source_sha256": "c1a6c15a39be2af9d8b76e52b8951100d9426399b694168ed52a7db6cd3a8bdc",
+      "reason": "Preserve completed analyses and retryable partial maps, respect selected outputs, report actual field current and independent winding resistance, and allow cancellable long API map batches."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "5341219916534e65930fe24f3f3c6cc3faf64981f85adb605f8c978313e8cc9b",
+      "reason": "Preserve partial analyses and truthful selected-output reporting, with regression tests and partial-map warnings."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "5b509c42418deffd3e93463b16a214b550056be114dd1e4a292e8db7c1b8393a",
+      "reason": "Preserve partial analyses and truthful selected-output reporting, with regression tests and partial-map warnings."
+    },
+    {
+      "base_commit": "6a10da09902a46d2f24929fdb4a6ac1ce0209399",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "6b5a90a869c440963ff68753af701aa7a84269136ba2a9dd70d6faed48f3918e",
+      "reason": "Integrate historical replay fixtures with qualification automation without rewriting measured evidence."
     }
   ]
 }

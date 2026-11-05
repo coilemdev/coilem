@@ -8,8 +8,8 @@ export function asPublicConfig(config: MotorConfig, solver: PublicSolverId = 'ma
     || config.solve_params.solve_quality === 'fine');
   return {
     ...applyPublicSolverSettings(config),
-    ...(solver === 'elmer' ? { torque_speed_analysis: null }
-      : config.solve_options.torque_speed_envelope ? { torque_speed_analysis: torqueSpeedSettings(config) } : {}),
+    torque_speed_analysis: solver !== 'elmer' && config.solve_options.torque_speed_envelope
+      ? torqueSpeedSettings(config) : null,
     solve_options: {
       ...config.solve_options,
       // Keep the project's Magneto2D choice while omitting the unsupported

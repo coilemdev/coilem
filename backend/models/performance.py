@@ -180,6 +180,7 @@ class CoggingTorque(BaseModel):
     )
     harmonics: list[CoggingHarmonic] = Field(default_factory=list, description="Up to the sampling limit, fundamental first")
     loaded_mean_torque_Nm: Optional[float] = Field(default=None, description="Mean loaded torque of the same run, when it had current")
+    loaded_comparison_reason: Optional[str] = None
     peak_to_peak_of_loaded_pct: Optional[float] = Field(
         default=None, ge=0, description="peak_to_peak_Nm as a percentage of |loaded_mean_torque_Nm|"
     )

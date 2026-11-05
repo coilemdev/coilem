@@ -100,7 +100,7 @@ import { LessonProgressStepper } from '../components/tutorials/LessonProgressSte
 import { designErrorSection } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
-import { torqueRippleView } from './resultMetrics';
+import { solvedPhaseCurrent, torqueRippleView } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -3007,13 +3007,18 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
         <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
       </div>
+      {torqueSpeed?.status === 'partial' && <p className="performance-message is-warning" role="status">
+        Torque–speed map incomplete: completed analyses and points are saved. Review failed points under Torque–speed and run again to retry.
+      </p>}
       {showAllResults ? (
         <div id={allResultsId}>
           <section className="motor-constants public-result-list" aria-labelledby={resultsHeadingId}>
             <h3 id={resultsHeadingId}>Performance</h3>
             <table>
               <tbody>
-                {result.torque_speed_analysis && resultRow('Torque–speed map', String(result.torque_speed_analysis.map.points.length), 'points')}
+                {torqueSpeed && resultRow('Torque–speed map', torqueSpeed.status === 'partial'
+                  ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
+                  : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
                 {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
@@ -3035,7 +3040,9 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
           <h3 id={resultsHeadingId}>Key results</h3>
           <table>
             <tbody>
-                {result.torque_speed_analysis && resultRow('Torque–speed map', String(result.torque_speed_analysis.map.points.length), 'points')}
+                {torqueSpeed && resultRow('Torque–speed map', torqueSpeed.status === 'partial'
+                  ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
+                  : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
                 {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
@@ -3076,7 +3083,9 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
       </>}
       {activePlot === 'cogging' && result.cogging_torque_waveform && <CompactLiveChart state="complete" label="Cogging torque" unit="N·m" angles={result.cogging_torque_waveform.electrical_angle_deg} series={[{ label: 'Cogging', values: result.cogging_torque_waveform.torque_Nm, color: '#f59e0b' }]} />}
       {activePlot === 'torque-speed' && torqueSpeed && <CompactTorqueSpeedChart analysis={torqueSpeed} currentConvention={result.solve_metadata.current_amplitude_convention} />}
-      <p>{activePlot === 'torque-speed' ? 'Open Full results for power–speed curves and the efficiency map.' : 'Move along a curve to show that position in the field view; click to keep it.'}</p>
+      <p>{activePlot === 'torque-speed'
+        ? torqueSpeed?.status === 'partial' ? 'Completed map points are retained for retry.' : 'Open Full results for power–speed curves and the efficiency map.'
+        : 'Move along a curve to show that position in the field view; click to keep it.'}</p>
       </>}
     </section>
   );
@@ -4231,7 +4240,7 @@ function ReportStage({
     ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',
-      value: `${formatNumber(config.solve_params.current_amplitude_A)} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
+      value: `${formatNumber(solvedPhaseCurrent(config, result))} A ${sixStep ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     },
     { label: 'Excitation', value: sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal' },
     ...(reportQualification ? [{ label: 'Qualification', value: qualificationLabel(reportQualification) }] : []),

@@ -106,7 +106,7 @@ export function coggingView(
     { key: 'loaded-share', label: 'Of loaded torque', value: show(ratio, 3), unit: finite(ratio) ? '%' : '',
       hint: finite(ratio)
         ? `Peak to peak as a share of this run's mean loaded torque, ${show(record.loaded_mean_torque_Nm)} N·m.`
-        : 'This run has no current, so there is no loaded torque to compare with.' },
+        : record.loaded_comparison_reason ?? 'Loaded torque comparison unavailable.' },
     { key: 'method', label: 'Method', value: method, unit: '', hint: 'Torque extraction method of the cogging waveform.' },
     { key: 'positions', label: 'Positions', value: String(record.positions_per_period), unit: 'per period',
       hint: 'Sampled positions per cogging period, plus the repeated end. Congruent positions may share a mesh and solution.' },
