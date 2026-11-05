@@ -25,6 +25,15 @@ redundant temporary archive copies are removed before the next download, while
 the originals remain on the server. Prius retained inputs are verified and linked
 into the join without a second physical copy.
 
+If a shard times out, dispatch with `source_run` and a `retry_shards` JSON array
+of `platform/shard` IDs. Repairs download the original binary and require the
+same candidate and execution identity. Native jobs use verified resume;
+Prius jobs preserve verified completed cases and collect only missing cases
+through the frozen candidate's own collector. The derived registration records
+the parent and case hashes. Failed attempts remain in raw artifacts. Finish
+with a join-only dispatch using `reuse_run` plus `supplement_runs` (a JSON array
+of repair-run IDs); every original request and result keeps its measured bytes.
+
 ## Disk and retention
 
 Keep output outside the checkout. A–D jobs use `--archive-runtime`: every raw

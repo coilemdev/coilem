@@ -13,6 +13,7 @@
 /tools/benchmark_*.py @coilemdev
 /tools/join_benchmark_runs.py @coilemdev
 /tools/download_benchmark_shards.py @coilemdev
+/tools/repair_benchmark_shard.py @coilemdev
 /tools/build_benchmark_record.py @coilemdev
 /tools/report_prius_benchmark.py @coilemdev
 /tools/prius_benchmark_contract.py @coilemdev

@@ -17,6 +17,18 @@ on:
         description: Full immutable candidate SHA; blank uses this ref
         type: string
         default: ''
+      source_run:
+        description: 'Original run for repairing selected shards with the original binary'
+        type: string
+        default: ''
+      retry_shards:
+        description: 'JSON array of platform/shard IDs to repair, e.g. ["macos-15/prius-00"]'
+        type: string
+        default: '[]'
+      supplement_runs:
+        description: 'JSON array of repair-run IDs to include in a join-only run'
+        type: string
+        default: '[]'
       reuse_run:
         description: 'Optional completed collection run ID: rejoin original fields without solving'
         type: string
@@ -37,6 +49,15 @@ on:
       python:
         type: string
         default: '3.12'
+      source_run:
+        type: string
+        default: ''
+      retry_shards:
+        type: string
+        default: '[]'
+      supplement_runs:
+        type: string
+        default: '[]'
       reuse_run:
         type: string
         default: ''
@@ -66,8 +87,8 @@ jobs:
     if: ${{ !inputs.reuse_run }}
     runs-on: ubuntu-24.04
     outputs:
-      matrix: ${{ steps.plan.outputs.matrix }}
-      platforms: ${{ steps.plan.outputs.platforms }}
+      matrix: ${{ steps.filter.outputs.matrix }}
+      platforms: ${{ steps.filter.outputs.platforms }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -81,6 +102,29 @@ jobs:
         env:
           SELECTED_RUNNER: ${{ inputs.runner || 'both' }}
         run: python -m tools.benchmark_ci plan --runner "$SELECTED_RUNNER" --directory "$RUNNER_TEMP/plan"
+      - id: filter
+        env:
+          MATRIX: ${{ steps.plan.outputs.matrix }}
+          RETRIES: ${{ inputs.retry_shards || '[]' }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+        run: |
+          python - <<'PYTHON'
+          import json, os
+          matrix = json.loads(os.environ['MATRIX'])
+          retry = json.loads(os.environ['RETRIES'])
+          if not isinstance(retry, list) or len(retry) != len(set(retry)):
+              raise SystemExit('retry_shards must be a unique JSON array')
+          if bool(retry) != bool(os.environ['SOURCE_RUN']):
+              raise SystemExit('source_run and retry_shards must be supplied together')
+          if retry:
+              expected = {r['runner']+'/'+r['id'] for r in matrix['include']}
+              if not set(retry) <= expected:
+                  raise SystemExit('Unknown retry shard')
+              matrix['include'] = [r for r in matrix['include'] if r['runner']+'/'+r['id'] in retry]
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              stream.write('matrix='+json.dumps(matrix)+'\n')
+              stream.write('platforms='+json.dumps(sorted({r['runner'] for r in matrix['include']}))+'\n')
+          PYTHON
 
   build:
     needs: plan
@@ -105,11 +149,19 @@ jobs:
           python -m pip install -r requirements.lock
           python -m pip install -e ".[dev]"
           python -m pip check
-      - run: |
+      - if: ${{ !inputs.source_run }}
+        run: |
           python tools/verify_snapshot.py --publication
           rustup toolchain install 1.94.0 --profile minimal
           cargo +1.94.0 build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
           python -m tools.benchmark_ci binary --directory "$RUNNER_TEMP/binary"
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: ${{ inputs.source_run }}
+        with:
+          run-id: ${{ inputs.source_run }}
+          github-token: ${{ github.token }}
+          name: benchmark-binary-${{ matrix.runner }}
+          path: ${{ runner.temp }}/binary
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: benchmark-binary-${{ matrix.runner }}
@@ -148,10 +200,31 @@ jobs:
           cp "$RUNNER_TEMP"/collection/magneto2d* solvers/magneto2d/target/release/
           chmod +x solvers/magneto2d/target/release/magneto2d* || true
       - name: Collect unchanged full-grid requests
+        if: ${{ !inputs.source_run }}
         env:
           SHARD_ID: ${{ matrix.id }}
           COLLECTION: ${{ inputs.collection || 'registered' }}
         run: python -m tools.benchmark_ci shard --shard "$SHARD_ID" --collection "$COLLECTION" --directory "$RUNNER_TEMP/collection"
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        if: ${{ inputs.source_run }}
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: automation
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: ${{ inputs.source_run }}
+        with:
+          run-id: ${{ inputs.source_run }}
+          github-token: ${{ github.token }}
+          name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
+          path: ${{ runner.temp }}/collection/prior
+      - name: Reuse verified completed cases and collect only missing fields
+        if: ${{ inputs.source_run }}
+        env:
+          SHARD: ${{ matrix.id }}
+        run: >-
+          python "$GITHUB_WORKSPACE/automation/tools/repair_benchmark_shard.py"
+          --candidate-root "$GITHUB_WORKSPACE/candidate" --shard "$SHARD"
+          --directory "$RUNNER_TEMP/collection"
       - name: Keep compact join inputs separate from raw runtimes
         if: success()
         run: |
@@ -178,7 +251,7 @@ jobs:
 
   join:
     needs: [plan, collect]
-    if: ${{ always() && (inputs.reuse_run || needs.collect.result == 'success') }}
+    if: ${{ always() && !inputs.source_run && (inputs.reuse_run || needs.collect.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:
@@ -203,9 +276,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SOURCE_RUN: ${{ inputs.reuse_run || github.run_id }}
           PLATFORM: ${{ matrix.runner }}
+          SUPPLEMENTS: ${{ inputs.supplement_runs || '[]' }}
         run: >-
           python "$GITHUB_WORKSPACE/automation/tools/download_benchmark_shards.py"
-          --run-id "$SOURCE_RUN" --runner "$PLATFORM" --out "$RUNNER_TEMP/qualification/shards"
+          --run-id "$SOURCE_RUN" --runner "$PLATFORM" --out "$RUNNER_TEMP/qualification/shards" --supplements "$SUPPLEMENTS"
       - name: Verify coverage and immutable evidence, then regenerate reports
         run: python -m tools.benchmark_ci join --directory "$RUNNER_TEMP/qualification"
       - name: Build the provisional platform record without field solves
