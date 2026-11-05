@@ -161,12 +161,13 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     if (!reference) throw new Error('Unknown published geometry reference.');
     config.geometry_reference = source.geometry_reference as PublishedReferenceId;
     const caseId = source.reference_case;
-    const registered = typeof caseId === 'string' && Object.prototype.hasOwnProperty.call(reference.cases, caseId) ? reference.cases[caseId] : null;
+    const registered = typeof caseId === 'string' && Object.prototype.hasOwnProperty.call(reference.cases, caseId)
+      ? reference.cases[caseId] : caseId == null && reference.caseOptional ? { magnetTemperatureC: null } : null;
     const temperature = registered?.magnetTemperatureC ?? null;
     if (!registered || !isRecord(source.solve_params) || (source.solve_params.magnet_temperature_C ?? null) !== temperature) {
       throw new Error('The published reference requires a registered case and its fixed magnet temperature.');
     }
-    config.reference_case = caseId as MotorConfig['reference_case'];
+    config.reference_case = (caseId ?? null) as MotorConfig['reference_case'];
     config.solve_params.magnet_temperature_C = temperature;
     if (typeof source.solve_params.magneto2d_workers === 'number') config.solve_params.magneto2d_workers = source.solve_params.magneto2d_workers;
     if (typeof source.solve_params.motor_input_dc_bus_V === 'number') config.solve_params.motor_input_dc_bus_V = source.solve_params.motor_input_dc_bus_V;

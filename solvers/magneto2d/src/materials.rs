@@ -76,6 +76,8 @@ impl MaterialProps {
             "N38" => (1.260, 1.05),
             "N42" => (1.315, 1.05),
             "Prius_2004_NdFeB" => (1.240, 1.05),
+            // LRK reference "NdFeB 40 MGOe": Hc 979 kA/m, mu_r 1.049.
+            "LRK_NdFeB_40MGOe" => (1.2905298196199053, 1.049),
             // ORNL/TM-2004/137 Fig. 14 demagnetization line. See MATERIALS.md.
             "ORNL_Prius_2004_NdFeB" => (1.235, 1.12),
             "N45" => (1.350, 1.05),
@@ -143,6 +145,7 @@ fn known_magnet_grade(grade: &str) -> bool {
             | "N42"
             | "Prius_2004_NdFeB"
             | "ORNL_Prius_2004_NdFeB"
+            | "LRK_NdFeB_40MGOe"
             | "N45"
             | "N48"
             | "N48SH"

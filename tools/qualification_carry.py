@@ -28,6 +28,8 @@ REFERENCE_SOURCES = (
     'backend/public_material_catalog.py', 'backend/winding_utils.py', 'backend/excitation.py',
     'backend/reference_models/prius.py', 'backend/reference_models/pyleecan_prius_2004.json',
     'backend/reference_models/pyleecan_prius_2004_config.json', 'backend/torque_metrics.py',
+    'backend/reference_models/lrk.py', 'backend/reference_models/lrk_12s14p_source.json',
+    'backend/reference_models/lrk_12s14p_config.json',
     'backend/back_emf_harmonics.py', 'backend/dq_flux_linkage.py', 'backend/models/config.py',
     'materials/electrical-steel/M350-50A.csv',
 )

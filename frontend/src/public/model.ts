@@ -73,8 +73,8 @@ export interface PublicMotorComponentSelection {
 
 export interface MotorConfig {
   schema_version: '1.0';
-  geometry_reference?: 'pyleecan_prius_2004';
-  reference_case?: 'prius-2004-tutorial-bemf-v1' | 'prius-2004-loaded-torque-v1';
+  geometry_reference?: 'pyleecan_prius_2004' | 'lrk_12s14p';
+  reference_case?: 'prius-2004-tutorial-bemf-v1' | 'prius-2004-loaded-torque-v1' | 'lrk-12s14p-fixed-current-v1' | null;
   topology: Topology;
   /** Absent means an inner rotor; the backend omits it for inner rotors too. */
   rotor_layout?: RotorLayout;

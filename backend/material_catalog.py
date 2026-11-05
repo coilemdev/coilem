@@ -93,6 +93,16 @@ MAGNET_PROPERTIES = {
         "density_kg_m3": 7450,
         "relative_permeability": 1.12,
     },
+    "LRK_NdFeB_40MGOe": {
+        # The LRK reference's linear "NdFeB 40 MGOe": Hc 979 kA/m, mu_r 1.049, Br = mu0*mu_r*Hc.
+        "name": "LRK reference NdFeB 40 MGOe",
+        "remanence_T": 1.2905298196199053,
+        "coercivity_bH_kA_m": -979,
+        "coercivity_bM_kA_m": -79.6,
+        "max_energy_kJ_m3": 318,
+        "density_kg_m3": 7450,
+        "relative_permeability": 1.049,
+    },
     "Prius_2004_NdFeB": {
         "name": "Prius 2004 / Pyleecan NdFeB",
         "remanence_T": 1.24,

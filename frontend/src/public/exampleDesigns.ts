@@ -7,6 +7,8 @@ import rotatingField6p36s from './examples/rotating_field_6p36s.coilem?raw';
 
 import priusTutorial from './examples/prius-2004-tutorial-bemf-v1.coilem?raw';
 import priusLoaded from './examples/prius-2004-loaded-torque-v1.coilem?raw';
+import lrkSixStep from './examples/lrk-12s14p-six-step.coilem?raw';
+import lrkFixedCurrent from './examples/lrk-12s14p-fixed-current-v1.coilem?raw';
 
 import { parseDesignFile } from './designFile';
 import { cloneDefaultConfig, type MotorConfig } from './model';
@@ -20,7 +22,9 @@ export type PublicExampleId =
   | 'ipm-14p-flat-buried-large'
   | 'spm-24p-small'
   | 'ornl-prius-2004-holem50'
-  | 'honda-accord-2005';
+  | 'honda-accord-2005'
+  | 'lrk-12s14p-six-step'
+  | 'lrk-12s14p-fixed-current-v1';
 
 export interface PublicExampleOption {
   id: PublicExampleId;
@@ -33,7 +37,14 @@ export interface PublicExampleOption {
    * facts from the cited source, never licensed or proprietary data.
    */
   benchmark?: boolean;
+  /** Held back until the owner clears redistribution of its source data. */
+  pendingDataRights?: boolean;
 }
+
+// The LRK examples embed the source model's B-H curves, whose redistribution
+// rights are unconfirmed (as for the quarantined M19 samples in material_catalog.py).
+// A local build sets VITE_COILEM_LRK_EXAMPLES=1 to review them.
+const PENDING_DATA_RIGHTS_SHOWN = import.meta.env.VITE_COILEM_LRK_EXAMPLES === '1';
 
 export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
   { id: 'prius-2004-tutorial-bemf-v1', label: 'Pyleecan Prius 8p48s · BEMF', detail: '1000 rpm · 20°C · no load · software reference', benchmark: true },
@@ -56,6 +67,14 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
     detail: 'ORNL hardware data · tooth coils',
     benchmark: true,
   },
+  { id: 'lrk-12s14p-six-step', label: 'LRK outrunner 14p / 12s', detail: 'Outer rotor · six-step 4 A · software reference', pendingDataRights: true },
+  {
+    id: 'lrk-12s14p-fixed-current-v1',
+    label: 'LRK 14p / 12s · Fixed current',
+    detail: 'Published comparison · 0 / −4 / +4 A · software reference',
+    benchmark: true,
+    pendingDataRights: true,
+  },
 ];
 
 export type PublicExampleGroup = 'motor' | 'benchmark';
@@ -66,7 +85,9 @@ export function publicExampleOptions(
   group: PublicExampleGroup = 'motor',
 ): readonly PublicExampleOption[] {
   return PUBLIC_EXAMPLE_OPTIONS.filter(
-    (option) => (experimentalRotors || !option.experimental) && Boolean(option.benchmark) === (group === 'benchmark'),
+    (option) => (experimentalRotors || !option.experimental)
+      && (PENDING_DATA_RIGHTS_SHOWN || !option.pendingDataRights)
+      && Boolean(option.benchmark) === (group === 'benchmark'),
   );
 }
 
@@ -79,6 +100,8 @@ const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, strin
   'spm-24p-small': spm24pSmall,
   'ornl-prius-2004-holem50': ornlPrius2004HoleM50,
   'honda-accord-2005': hondaAccord2005,
+  'lrk-12s14p-six-step': lrkSixStep,
+  'lrk-12s14p-fixed-current-v1': lrkFixedCurrent,
 };
 
 export function createPublicExampleDesign(exampleId: PublicExampleId): { name: string; config: MotorConfig } {
