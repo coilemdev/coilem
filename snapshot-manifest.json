@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 10989,
-      "sha256": "9388f312f386dc7a42a68e3ac0283b325923d8684187750f41670a62427e745b"
+      "bytes": 12415,
+      "sha256": "8c121959828eb792cb1a4e27a57a726af13920e8588174828fbe4178a5e214a9"
     },
     {
       "path": "SECURITY.md",
@@ -6535,8 +6535,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
-      "bytes": 2089,
-      "sha256": "f0637c36da3daaeccf73203d4abe7adf991514b6b34fd32888c6344b5e84a2da"
+      "bytes": 2558,
+      "sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0"
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
@@ -7380,8 +7380,8 @@
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
-      "bytes": 1102,
-      "sha256": "f42254517c49492dc95014537cb9eb30863f3ffa1e9e81bd50e0575258093571"
+      "bytes": 1331,
+      "sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -12976,7 +12976,7 @@
     {
       "path": "frontend/src/public/examples/spm_outrunner_14p12s.coilem",
       "bytes": 3055,
-      "sha256": "ff442c20752420c16dff610110c83c1796eee42428a0f2ef14058afcc484346e"
+      "sha256": "4a9602f6aeeaf38940e07c08f15d229746523da7df8eec32ef853cf6d941dd9f"
     },
     {
       "path": "frontend/src/public/publishedReferences.ts",
