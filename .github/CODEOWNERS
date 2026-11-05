@@ -1,0 +1,24 @@
+# Qualification rules require owner review. Also enable required code-owner
+# reviews and the "qualification evidence required" check on main after v0.5.1 lands.
+/.github/CODEOWNERS @coilemdev
+/.github/workflows/ci.yml @coilemdev
+/.github/workflows/release-benchmarks.yml @coilemdev
+/.github/workflows/qualification-*.yml @coilemdev
+/backend/benchmark_suite/physics.py @coilemdev
+/backend/benchmark_suite/record.py @coilemdev
+/backend/benchmark_suite/ @coilemdev
+/backend/resources.py @coilemdev
+/backend/qualification.py @coilemdev
+/tools/physics_impact.py @coilemdev
+/tools/benchmark_*.py @coilemdev
+/tools/join_benchmark_runs.py @coilemdev
+/tools/download_benchmark_shards.py @coilemdev
+/tools/repair_benchmark_shard.py @coilemdev
+/tools/build_benchmark_record.py @coilemdev
+/tools/report_prius_benchmark.py @coilemdev
+/tools/prius_benchmark_contract.py @coilemdev
+/tools/qualification_*.py @coilemdev
+/tools/qualify_benchmark_candidate.py @coilemdev
+/tools/release/qualification.py @coilemdev
+/benchmarks/reference-baselines/ @coilemdev
+/benchmarks/qualification-policy.json @coilemdev

@@ -1,0 +1,60 @@
+name: Weekly qualification drift
+
+on:
+  schedule:
+    - cron: '17 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  measure:
+    uses: ./.github/workflows/release-benchmarks.yml
+    with:
+      candidate: ${{ github.sha }}
+
+  compare:
+    needs: measure
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.lock
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          pattern: benchmark-joined-*
+          path: ${{ runner.temp }}/measured
+      - name: Compare measured values with the registered and approved baselines
+        id: compare
+        continue-on-error: true
+        run: >-
+          python -m tools.qualification_carry
+          --windows "$RUNNER_TEMP/measured/benchmark-joined-windows-2022"
+          --macos "$RUNNER_TEMP/measured/benchmark-joined-macos-15"
+          --out "$RUNNER_TEMP/review"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: weekly-qualification-comparison
+          path: ${{ runner.temp }}/review
+          retention-days: 90
+      - name: Open one issue for unexplained drift
+        if: ${{ always() && (needs.measure.result != 'success' || steps.compare.outcome == 'failure') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [[ "$(gh issue list --state open --search '"Weekly qualification drift" in:title' --json number --jq length)" == 0 ]]; then
+            gh issue create --title 'Weekly qualification drift needs review' --body "Measured evidence differs or is incomplete. Review the comparison artifacts: $RUN_URL"
+          fi
+          exit 1

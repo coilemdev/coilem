@@ -1,115 +1,307 @@
 name: coilEM release numerical benchmark
 
-# Dispatch at the frozen candidate ref. Field collection is intentionally
-# manual and separate from coarse CI smoke tests and package publication.
 on:
   workflow_dispatch:
     inputs:
       runner:
-        description: Platform for the full native A/B/C/D collection
+        description: Platforms to measure
         type: choice
-        options: [macos-15, windows-2022, ubuntu-24.04]
-        default: macos-15
+        options: [both, macos-15, windows-2022, ubuntu-24.04]
+        default: both
       python:
-        description: Locked Python runtime to measure
+        description: Locked Python runtime
         type: choice
         options: ['3.12', '3.15']
         default: '3.12'
       candidate:
-        description: Optional full candidate SHA to measure instead of the workflow ref
+        description: Full immutable candidate SHA; blank uses this ref
+        type: string
+        default: ''
+      source_run:
+        description: 'Original run for repairing selected shards with the original binary'
+        type: string
+        default: ''
+      retry_shards:
+        description: 'JSON array of platform/shard IDs to repair, e.g. ["macos-15/prius-00"]'
+        type: string
+        default: '[]'
+      supplement_runs:
+        description: 'JSON array of repair-run IDs to include in a join-only run'
+        type: string
+        default: '[]'
+      reuse_run:
+        description: 'Optional completed collection run ID: rejoin original fields without solving'
         type: string
         default: ''
       collection:
-        description: Registered comparison, or the full protocol 1.6 native fields for a later verified reference join
+        description: Compare to registered references or collect native only
         type: choice
         options: [registered, protocol16-native-only]
+        default: registered
+  workflow_call:
+    inputs:
+      candidate:
+        type: string
+        required: true
+      runner:
+        type: string
+        default: both
+      python:
+        type: string
+        default: '3.12'
+      source_run:
+        type: string
+        default: ''
+      retry_shards:
+        type: string
+        default: '[]'
+      supplement_runs:
+        type: string
+        default: '[]'
+      reuse_run:
+        type: string
+        default: ''
+      collection:
+        type: string
         default: registered
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
-  group: release-benchmark-${{ github.ref }}-${{ inputs.candidate }}-${{ inputs.collection }}-${{ inputs.runner }}-${{ inputs.python }}
+  group: numerical-${{ github.ref }}-${{ inputs.candidate }}-${{ inputs.runner }}-${{ inputs.collection }}-${{ inputs.reuse_run }}
   cancel-in-progress: false
 
+defaults:
+  run:
+    shell: bash
+    working-directory: candidate
+
+env:
+  COILEM_BUILD_COMMIT: ${{ inputs.candidate || github.sha }}
+  COILEM_WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
 jobs:
-  benchmark:
-    name: Full native A/B/C/D (${{ inputs.runner }}, Python ${{ inputs.python }})
-    runs-on: ${{ inputs.runner }}
-    timeout-minutes: 180
-    defaults:
-      run:
-        shell: bash
-    env:
-      COILEM_BUILD_COMMIT: ${{ inputs.candidate || github.sha }}
-      RUST_TOOLCHAIN: '1.94.0'
+  plan:
+    if: ${{ !inputs.reuse_run }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.filter.outputs.matrix }}
+      platforms: ${{ steps.filter.outputs.platforms }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: ${{ inputs.python }}
-      - name: Install the documented Linux mesh libraries
+          python-version: ${{ inputs.python || '3.12' }}
+      - run: python -m pip install -r requirements.lock
+      - id: plan
+        env:
+          SELECTED_RUNNER: ${{ inputs.runner || 'both' }}
+        run: python -m tools.benchmark_ci plan --runner "$SELECTED_RUNNER" --directory "$RUNNER_TEMP/plan"
+      - id: filter
+        env:
+          MATRIX: ${{ steps.plan.outputs.matrix }}
+          RETRIES: ${{ inputs.retry_shards || '[]' }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+        run: |
+          python - <<'PYTHON'
+          import json, os
+          matrix = json.loads(os.environ['MATRIX'])
+          retry = json.loads(os.environ['RETRIES'])
+          if not isinstance(retry, list) or len(retry) != len(set(retry)):
+              raise SystemExit('retry_shards must be a unique JSON array')
+          if bool(retry) != bool(os.environ['SOURCE_RUN']):
+              raise SystemExit('source_run and retry_shards must be supplied together')
+          if retry:
+              expected = {r['runner']+'/'+r['id'] for r in matrix['include']}
+              if not set(retry) <= expected:
+                  raise SystemExit('Unknown retry shard')
+              matrix['include'] = [r for r in matrix['include'] if r['runner']+'/'+r['id'] in retry]
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as stream:
+              stream.write('matrix='+json.dumps(matrix)+'\n')
+              stream.write('platforms='+json.dumps(sorted({r['runner'] for r in matrix['include']}))+'\n')
+          PYTHON
+
+  build:
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(needs.plan.outputs.platforms || '["windows-2022", "macos-15"]') }}
+    runs-on: ${{ inputs.source_run && 'ubuntu-24.04' || matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ inputs.python || '3.12' }}
+      - name: Install Linux mesh libraries
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
-      - name: Verify the exact measured candidate
-        env:
-          REQUESTED_CANDIDATE: ${{ inputs.candidate || github.sha }}
-        run: |
-          python - <<'PY'
-          import os, re, subprocess
-          expected = os.environ['REQUESTED_CANDIDATE']
-          if not re.fullmatch(r'[0-9a-fA-F]{40}', expected):
-              raise SystemExit('candidate must be a full immutable commit SHA')
-          actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-          if actual.lower() != expected.lower():
-              raise SystemExit('checkout did not resolve to the requested candidate')
-          print('Measured candidate:', actual)
-          PY
-      - name: Install the locked backend environment
-        run: |
+      - run: |
           python -m pip install -r requirements.lock
           python -m pip install -e ".[dev]"
           python -m pip check
-      - name: Verify the source snapshot and publication contents
-        run: python tools/verify_snapshot.py --publication
-      - name: Build with the release Rust toolchain
+      - if: ${{ !inputs.source_run }}
         run: |
-          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
-          rustup default "$RUST_TOOLCHAIN"
-          cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
-      - name: Collect the complete requested suite
-        env:
-          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-release-benchmark-user-data
-          COLLECTION: ${{ inputs.collection }}
-        run: |
-          args=(--phases A B C D --pdf --out-dir "$RUNNER_TEMP/coilem-release-benchmark")
-          if [[ "$COLLECTION" == protocol16-native-only ]]; then
-            args+=(--suite benchmarks/abcd-v1.6/benchmark_spec.json --no-reference)
-          fi
-          python -m tools.run_benchmarks "${args[@]}"
-      - name: Record workflow and field source separately
-        if: always()
-        env:
-          WORKFLOW_COMMIT: ${{ github.sha }}
-          COLLECTION: ${{ inputs.collection }}
-          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: |
-          python - <<'PY'
-          import json, os, pathlib, subprocess
-          output = pathlib.Path(os.environ['RUNNER_TEMP']) / 'coilem-release-benchmark'
-          if output.is_dir():
-              measured = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-              receipt = {'workflow_commit': os.environ['WORKFLOW_COMMIT'], 'measured_commit': measured,
-                         'collection': os.environ['COLLECTION'], 'workflow_run_url': os.environ['WORKFLOW_RUN_URL']}
-              (output / 'workflow_receipt.json').write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf-8')
-          PY
-      - name: Retain complete reports, fixtures and registered measurements
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+          python tools/verify_snapshot.py --publication
+          rustup toolchain install 1.94.0 --profile minimal
+          cargo +1.94.0 build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+          python -m tools.benchmark_ci binary --directory "$RUNNER_TEMP/binary"
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: ${{ inputs.source_run }}
         with:
-          name: native-${{ inputs.runner }}-py${{ inputs.python }}-${{ inputs.candidate || github.sha }}
-          path: ${{ runner.temp }}/coilem-release-benchmark
-          if-no-files-found: warn
+          run-id: ${{ inputs.source_run }}
+          github-token: ${{ github.token }}
+          name: benchmark-binary-${{ matrix.runner }}
+          path: ${{ runner.temp }}/binary
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: benchmark-binary-${{ matrix.runner }}
+          path: ${{ runner.temp }}/binary
+          retention-days: 90
+
+  collect:
+    needs: [plan, build]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ inputs.python || '3.12' }}
+      - name: Install Linux mesh libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
+      - run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+          python -m pip check
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: benchmark-binary-${{ matrix.runner }}
+          path: ${{ runner.temp }}/collection
+      - name: Install the exact platform build at the standard solver path
+        run: |
+          mkdir -p solvers/magneto2d/target/release
+          cp "$RUNNER_TEMP"/collection/magneto2d* solvers/magneto2d/target/release/
+          chmod +x solvers/magneto2d/target/release/magneto2d* || true
+      - name: Collect unchanged full-grid requests
+        if: ${{ !inputs.source_run }}
+        env:
+          SHARD_ID: ${{ matrix.id }}
+          COLLECTION: ${{ inputs.collection || 'registered' }}
+        run: python -m tools.benchmark_ci shard --shard "$SHARD_ID" --collection "$COLLECTION" --directory "$RUNNER_TEMP/collection"
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        if: ${{ inputs.source_run }}
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: automation
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: ${{ inputs.source_run }}
+        with:
+          run-id: ${{ inputs.source_run }}
+          github-token: ${{ github.token }}
+          name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
+          path: ${{ runner.temp }}/collection/prior
+      - name: Reuse verified completed cases and collect only missing fields
+        if: ${{ inputs.source_run }}
+        env:
+          SHARD: ${{ matrix.id }}
+          SOURCE_RUN: ${{ inputs.source_run }}
+        run: >-
+          python "$GITHUB_WORKSPACE/automation/tools/repair_benchmark_shard.py"
+          --candidate-root "$GITHUB_WORKSPACE/candidate" --shard "$SHARD"
+          --directory "$RUNNER_TEMP/collection"
+      - name: Keep compact join inputs separate from raw runtimes
+        if: success()
+        run: |
+          python - <<'PYTHON'
+          import os, pathlib, shutil
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'collection'
+          shutil.copytree(root / 'out', root / 'compact',
+                          ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock'))
+          PYTHON
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: success()
+        with:
+          name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
+          path: ${{ runner.temp }}/collection/compact
+          compression-level: 0
+          retention-days: 90
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: benchmark-raw-${{ matrix.runner }}-${{ matrix.id }}
+          path: ${{ runner.temp }}/collection/out
+          compression-level: 0
+          retention-days: 90
+
+  join:
+    needs: [plan, collect]
+    if: ${{ always() && !inputs.source_run && (inputs.reuse_run || needs.collect.result == 'success') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(needs.plan.outputs.platforms || (inputs.runner && inputs.runner != 'both' && format('["{0}"]', inputs.runner) || '["windows-2022", "macos-15"]')) }}
+    runs-on: ${{ matrix.runner }}
+    # Legacy artifacts can include tens of GB of raw archives. Transfer time
+    # must not truncate a zero-solve verification of completed measurements.
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ inputs.python || '3.12' }}
+      - run: python -m pip install -r requirements.lock
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: automation
+      - name: Download compact evidence, one shard at a time
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.reuse_run || github.run_id }}
+          PLATFORM: ${{ matrix.runner }}
+          SUPPLEMENTS: ${{ inputs.supplement_runs || '[]' }}
+        run: >-
+          python "$GITHUB_WORKSPACE/automation/tools/download_benchmark_shards.py"
+          --run-id "$SOURCE_RUN" --runner "$PLATFORM" --out "$RUNNER_TEMP/qualification/shards" --supplements "$SUPPLEMENTS"
+      - name: Verify coverage and immutable evidence, then regenerate reports
+        run: python -m tools.benchmark_ci join --directory "$RUNNER_TEMP/qualification"
+      - name: Build the provisional platform record without field solves
+        if: ${{ inputs.collection != 'protocol16-native-only' }}
+        env:
+          PYTHONPATH: ${{ github.workspace }}/candidate
+        run: >-
+          python "$GITHUB_WORKSPACE/automation/tools/build_benchmark_record.py"
+          "$RUNNER_TEMP/qualification/joined-suite/report"
+          --out "$RUNNER_TEMP/qualification/platform-record.json" --record-source joined-suite/report
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: benchmark-joined-${{ matrix.runner }}
+          path: |
+            ${{ runner.temp }}/qualification/joined-suite/report
+            ${{ runner.temp }}/qualification/joined-suite/run_manifest.json
+            ${{ runner.temp }}/qualification/prius-report
+            ${{ runner.temp }}/qualification/join-receipt.json
+            ${{ runner.temp }}/qualification/download-receipt.json
+            ${{ runner.temp }}/qualification/platform-record.json
           retention-days: 90

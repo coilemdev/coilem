@@ -1,0 +1,32 @@
+{
+  "schema": "coilem.qualification_policy/v1",
+  "approved_reports": {
+    "windows-x86_64": {
+      "file": "benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json",
+      "sha256": "07b4957d5d0a7e3f3be26a726b467b6d5ac6a5f80c6c811a91cc3f3ae7eac287"
+    },
+    "macos-arm64": {
+      "file": "benchmarks/candidate-qualification-20261103/macos/report/benchmark_summary.json",
+      "sha256": "8a2b3f750819528dbe9a0f18c438aa583600ee1959fbdefd34184d8596f0fd63"
+    }
+  },
+  "approved_prius": {
+    "file": "benchmarks/candidate-qualification-20261103/prius/app-results.json",
+    "sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac"
+  },
+  "additional_replay_tolerances": {
+    "lambda_d_Wb": [
+      0.005,
+      1e-06
+    ],
+    "lambda_q_Wb": [
+      0.005,
+      1e-06
+    ],
+    "lambda_pm_Wb": [
+      0.0005,
+      1e-06
+    ]
+  },
+  "note": "Replay tolerances decide automatic acceptance only; FEMM gates and reference review remain unchanged. Approved baselines are immutable and require owner review to replace."
+}

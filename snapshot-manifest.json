@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 10498,
-      "sha256": "4dab52b7aa214242693ceb1f03c572c6aed9f7df7466c30a18c324cd659d7a82"
+      "bytes": 17262,
+      "sha256": "f31548ecf1bcfcb06a7c24a5fe8252c107b3be2edd8162f8a74501a22acd7e9a"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 5215,
-      "sha256": "06ffe983e40114ca1a213a25106e28774e540c4c793c7a73a8f3dffbe3d19005"
+      "bytes": 12862,
+      "sha256": "7b9d22573d4a0a30b99412fc5d6bc75a2b4a4afd6a7b5f8d16356a4a961ce5b6"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -125,8 +125,8 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 22035,
-      "sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f"
+      "bytes": 22578,
+      "sha256": "a990898368922b95030f76a47681dbdad273a4886e439c0c4117968fe5e8cb80"
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
@@ -165,8 +165,8 @@
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 10789,
-      "sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0"
+      "bytes": 11258,
+      "sha256": "6ee344236e0f87d30e0b32e371e92d314c5c0b7bdd8f792fccbc9ddc5e38669b"
     },
     {
       "path": "backend/benchmark_suite/references.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 9843,
-      "sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390"
+      "bytes": 10791,
+      "sha256": "7cbe477f2567c7fdc45f36a39a05067d2e0af8aac64675be47678fbf8a60408f"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -8195,8 +8195,8 @@
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
-      "bytes": 15849,
-      "sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c"
+      "bytes": 16600,
+      "sha256": "5cd9c96a96722d2417bb9e455502a92337956b24cd3fc327724dea3a6547c13d"
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 19246,
-      "sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9"
+      "bytes": 19267,
+      "sha256": "722419a2da78b77dcb9aab6122be9fd8eadce9f2c98d3aaec802ae9c137e5166"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -8280,8 +8280,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 19122,
-      "sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b"
+      "bytes": 18828,
+      "sha256": "65f68a7cce1b02f9206caa650911e57d7869b35cd91214dc7a64cc5cf6af0a3f"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -8295,8 +8295,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 8899,
-      "sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94"
+      "bytes": 10572,
+      "sha256": "ecc7f190e4a7289b4df72f9488b9043c554d8cfcbbcd5553f443b0140ebf4825"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8380,8 +8380,8 @@
     },
     {
       "path": "tools/benchmark_prius.py",
-      "bytes": 13019,
-      "sha256": "ead3ec38f13ef09e380a545a904efb9f38354d55d85735bf4c25726c40bc76cc"
+      "bytes": 13926,
+      "sha256": "1345c63f4868e05da249d7f0a6d6d27d0f368a7eca7a0a125af7f74ffb644d20"
     },
     {
       "path": "tools/benchmark_suite/external.py",
@@ -8400,8 +8400,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 9313,
-      "sha256": "bb5afa136f6bd542d862429630731ffbe9b20c57f044861e2b782a3bbac298c5"
+      "bytes": 9918,
+      "sha256": "5b9366e38b4ddd5c3473fe2491964c257954947d1ee1c081c308747bff07d6ab"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 12136,
-      "sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf"
+      "bytes": 12245,
+      "sha256": "8a441224262935bd9985bacfb66ae8575f6759a743e8565348485bd13595f929"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 23508,
-      "sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646"
+      "bytes": 24049,
+      "sha256": "79670a1f78cd2fe09adca5b908641f4c2fbf4bb5d0f289b1d228ae322ab05f7c"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -10705,13 +10705,13 @@
     },
     {
       "path": "tests/test_candidate_reference_review.py",
-      "bytes": 7857,
-      "sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd"
+      "bytes": 7978,
+      "sha256": "560b488ddba3a0456dee882ab7f392d2c654832eccd959f10d2884e6ae748119"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
-      "bytes": 5356,
-      "sha256": "4799c9ab299e064d94e1ac943ec4d1d27e1a00550431c2be4db79a097da0f12c"
+      "bytes": 6326,
+      "sha256": "54da9cfad3d4733478179db325b3766207a307a712089c75aa16ae8cf367a861"
     },
     {
       "path": "tools/review_protocol16_references.py",
@@ -12077,6 +12077,111 @@
       "path": "tests/fixtures/convergence_report_snapshot.txt",
       "bytes": 1351,
       "sha256": "0c54e83310827473e8f56afddf9612787a1dd6b4d5733075e7c852a4a608610c"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "bytes": 1090,
+      "sha256": "911c39c01eb173cef9f9d5d4945abdefcbf3f0dd93cb3d0edb516825b65fe95d"
+    },
+    {
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "bytes": 7822,
+      "sha256": "ee6d4bdc84108675371507edf16aeaf4ca52f6df9deba8acc83e01c15dbb91d0"
+    },
+    {
+      "path": "tests/test_benchmark_shards.py",
+      "bytes": 4799,
+      "sha256": "29eb6a6bcfac2bc6d0bc105e11143b5906c1df437115ac3f00580ed17fb738dc"
+    },
+    {
+      "path": "tests/test_physics_impact.py",
+      "bytes": 5129,
+      "sha256": "57b86729a9c31e4377c7a5a3c9116c4f737c71b49c83ba5fac5c08b4f4bbb7b5"
+    },
+    {
+      "path": "tools/benchmark_archive.py",
+      "bytes": 2051,
+      "sha256": "fef8b8224cf259de6a148877a9fd712e166492582ce134ddd0e161926009f443"
+    },
+    {
+      "path": "tools/benchmark_ci.py",
+      "bytes": 4996,
+      "sha256": "a4761eafab716f3c28dc5c040925189addadd5a83b74d1555fc4fdeb9c8388c9"
+    },
+    {
+      "path": "tools/benchmark_shards.py",
+      "bytes": 2398,
+      "sha256": "a8d38b0eaa4bd2bd5cbb09ee3b4c7bf85eaccdbaabe6343375f035f2ec0ea6a9"
+    },
+    {
+      "path": "tools/join_benchmark_runs.py",
+      "bytes": 9064,
+      "sha256": "23fb056ec0c6a8bb7fb4c79bb47e0294ed8bcf865f5d924b3bc3eb418e3159f0"
+    },
+    {
+      "path": "tools/physics_impact.py",
+      "bytes": 7705,
+      "sha256": "9c178cf30c8cc49b10845d7dc9d3fff2bd8fee9d9803e54c223a50c381a8c87a"
+    },
+    {
+      "path": ".github/workflows/qualification-weekly.yml",
+      "bytes": 2205,
+      "sha256": "1b6bca141c836a6920f97f50533e30f82989aaa4a8d325daa8b9610c6015f087"
+    },
+    {
+      "path": "benchmarks/qualification-policy.json",
+      "bytes": 1074,
+      "sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b"
+    },
+    {
+      "path": "tests/test_qualification_carry.py",
+      "bytes": 7213,
+      "sha256": "dfcf5dcd43e0d73a64d96919fe567640708309156ff45e45fa2e59074c60d4de"
+    },
+    {
+      "path": "tests/test_qualification_publish.py",
+      "bytes": 3029,
+      "sha256": "eda57a6c02cf8951c20bb8f2f62f4f2ed9f02015f2824baf598700904c668fc1"
+    },
+    {
+      "path": "tools/qualification_carry.py",
+      "bytes": 15145,
+      "sha256": "c2650bbaa95656b554290b26cb62107101a0effa0f2527bbe0c5ef986aa9747d"
+    },
+    {
+      "path": "tools/qualification_publish.py",
+      "bytes": 4453,
+      "sha256": "b02a11ef080906cdf87762f1114fd458455b0ed4abb8ce654bf2b11b49cfc3cf"
+    },
+    {
+      "path": "benchmarks/records-historical/v050/macos-arm64.json",
+      "bytes": 35228,
+      "sha256": "112b1f1333772c4f77817dd581607ffa1cd6ff39a955e046a00cb39e2dcddfc1"
+    },
+    {
+      "path": "benchmarks/records-historical/v050/windows-x86_64.json",
+      "bytes": 35231,
+      "sha256": "5631fe3068de56b00a1ef4b8861964c1b09aa93b5a9afb7fd5449410e5278b0d"
+    },
+    {
+      "path": "tests/test_benchmark_download.py",
+      "bytes": 1104,
+      "sha256": "bd7bee128b38b47ecadf41fa1b0191a94926e0df535086791abb9c9c451a0331"
+    },
+    {
+      "path": "tools/download_benchmark_shards.py",
+      "bytes": 3636,
+      "sha256": "0a2c68610f175cd77f2de444a46f96e0df0ea8df3dc734c764076d088ae13a56"
+    },
+    {
+      "path": "tests/test_benchmark_repair.py",
+      "bytes": 5361,
+      "sha256": "5681ff1dfaf0a5a2e9e11de5cdba85b0e73a4395faf1c71f58e2b05dfa235389"
+    },
+    {
+      "path": "tools/repair_benchmark_shard.py",
+      "bytes": 8765,
+      "sha256": "0b5579d1270a5785728897ce31870ef0481c38e0ef8a67f1cb08d6c9642d40d4"
     }
   ],
   "public_patches": [
@@ -32377,6 +32482,324 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "07e7d8c2b4e4534c5aeadc2f458cd1ee65226c417436d9c642d12fda7091d8ea",
       "reason": "Restack performance acceptance on the refreshed analysis UI, preserving main convergence reporting and all measured acceptance evidence."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "06ffe983e40114ca1a213a25106e28774e540c4c793c7a73a8f3dffbe3d19005",
+      "reason": "Parallel qualification collection and verified runtime retention (#194 items 1 and 5)."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "2c13c449677ce559c5646376e266da3aa976e6c0d473acafc43023c9733c5c4f",
+      "reason": "Parallel qualification collection and verified runtime retention (#194 items 1 and 5)."
+    },
+    {
+      "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",
+      "path": "tools/benchmark_prius.py",
+      "source_sha256": "ead3ec38f13ef09e380a545a904efb9f38354d55d85735bf4c25726c40bc76cc",
+      "reason": "Parallel qualification collection and verified runtime retention (#194 items 1 and 5)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "4dab52b7aa214242693ceb1f03c572c6aed9f7df7466c30a18c324cd659d7a82",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "2528d96e3e0b08cd0a692c0a4e31055be14f56f721e0e47b6cc40270e90264b3",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "0b53f8095ab2f386f5dcc9a325d43f1c675e5dcb110fa4981a4188ef7ad72dcd",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "0e6bd89312cc7bb104dcc7ada15b7630d3fd502dc62f4e33ec002e1f3b69a4a9",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "27524d89a6a2bb055105425250aeaa0c07878242",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b",
+      "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "bf173e6beae957be9a21100292da7f4d7eff722805fd8d10b916def4faa44c2f",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "efa1902f6f5354cc6405f8b5f75f6725b4c2aaf6991d447fc201dbafe29a44e7",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/benchmark_suite/record.py",
+      "source_sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/qualification.py",
+      "source_sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "e18ccaade38bf85b4e2def3d9218275ba40f3578e538e20cec9226c28411ad07",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_benchmark_shards.py",
+      "source_sha256": "a33d2340440c5d46f821b55d9df084c9e3070d2ef704493bcdbffbd5458784c2",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_prius_benchmark_collection.py",
+      "source_sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/benchmark_prius.py",
+      "source_sha256": "0c7241396f0d31c819506895cf8221e19581ac379005e2fe41d56274f00d4ac4",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "bb5afa136f6bd542d862429630731ffbe9b20c57f044861e2b782a3bbac298c5",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "7d651ad3be2e1e9953a986d055f050757d7265037cb2bccbc57dbc3ad1ba6b2a",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/qualify_benchmark_candidate.py",
+      "source_sha256": "4799c9ab299e064d94e1ac943ec4d1d27e1a00550431c2be4db79a097da0f12c",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/release/qualification.py",
+      "source_sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "6788d61b0a8ee83b6b90e4fc85059067c8971cdd",
+      "path": "tools/benchmark_ci.py",
+      "source_sha256": "bb07cc5fe901b95cbebdff8808353feef7bbed4503929f297cdc8a5b5c4c9fbe",
+      "reason": "Reject abbreviated or mismatched measurement candidate identities."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "d49e09e2745f6511265a2531cc4b4afd927d66032b93f21725b0f129cc267218",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "42c80ed89719ab97ca17bbad012db614e0a928a0f8544da908cfe6f7a7af0bbd",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_candidate_reference_review.py",
+      "source_sha256": "c2f8726f707f8748e2762c69bcf4b2068746eedaa8e7b1fca0608cac33295100",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_physics_impact.py",
+      "source_sha256": "fc8447ec4ba570d0e59c3d8203bcc70efbbf4ea028720f7b18518d8a814e275e",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "2a5495f23cd732566024108da9420bbe7cb4f41ef3b90fa40b222582f3d535a0",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tests/test_qualification.py",
+      "source_sha256": "afc0619a6c8b6aefb47f82ce24874fd06e8d02b059faeade3b7e6b8514927ca9",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/physics_impact.py",
+      "source_sha256": "05935a71af85e9fe1b0a0c23bc4ea571f56a3ed1c2402734a7ab3ef57bc6f300",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/qualification_publish.py",
+      "source_sha256": "d5f888d12385d25928eeb9a614c168c352c7c30caaaacdd5fdfd8f834fe4b493",
+      "reason": "Reuse compatible measurements across metadata pushes and freeze historical replay records."
+    },
+    {
+      "base_commit": "4a75da701893c5b5d95aeaad56fc63c46ec68bef",
+      "path": "tools/benchmark_shards.py",
+      "source_sha256": "4ecaddedf2984b9683a9cc6628caea374d8d5b6eebb3e7967babf719f261c47d",
+      "reason": "Reuse compatible measurements across metadata pushes and balance Prius by measured runtimes."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/CODEOWNERS",
+      "source_sha256": "13f8e0cf55de82cf33195453888c50d1495523e45647deefe3f406d4d5bca331",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "784a6acb2d762e74946ad61a3bee6dd9f27dde192a6ca1f0ace0a02fb6297dea",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/qualification-weekly.yml",
+      "source_sha256": "0510c5c5daac60059ae4d891254f8df2c0eb7c376ac99d04291a694f56bb3e74",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "acfb0bff3c0d2653b63e6f125ddf15e7b83fedbb943bb069570dd2dc4d5d630b",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "ff3b7d3f7199fd8f12b0eb2c30785110d68ffe6af4bf92ed7f18f6df6c1c1a9a",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tests/test_physics_impact.py",
+      "source_sha256": "1a6ffe39a89be20001a88fc12b593877a3479d66089bade339466a86c34a5076",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "6d72518515a8a299a31d481727291d415cb985b4a838c749a5d7fee43d3ff42b",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "009ed33799387a986aa2aee34bc31218d378486c5fae72b08b1d841d36574dde",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": ".github/CODEOWNERS",
+      "source_sha256": "1893dc7983ae690522302eeed62d1465dd23b717eb522da7671e15d6b8493f4e",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "b911e37b41213fbe1426cee8f6e92a399d7b2c0eb285d08e8ffdd6fc390cb648",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "a8111303f7c060596f0785139207a68b432d3298e79327f115f0dc0d05bff74b",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "e7040d1d918d33592439b8a0013a78a62838e4f2",
+      "path": "tools/download_benchmark_shards.py",
+      "source_sha256": "e5e51df465e6ef9f841a678ca2c81181e87e43b78beae41014513d297b21e97e",
+      "reason": "Recover failed shards without changing the measured candidate or recomputing completed cases."
+    },
+    {
+      "base_commit": "cf3074921e5875ed6fe357219e1505578d89e9bf",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "53e5157f87d2b2b380290ca1ac4f09041afa774dc4de12f6e4da89a23ad8d063",
+      "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
+    },
+    {
+      "base_commit": "cf3074921e5875ed6fe357219e1505578d89e9bf",
+      "path": "tools/repair_benchmark_shard.py",
+      "source_sha256": "6dd429f41c8ff2874cdc7fb01446963bf14048a28d4d1dd8f390e7835b5c9243",
+      "reason": "Relay unchanged binaries without consuming Mac build capacity and retain repair provenance."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "backend/qualification.py",
+      "source_sha256": "35dc7e72aa4e2cf6cadb2a79b40bb4a08c208eec47c964d2dfc72943e5af87aa",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": "a15e175fd0d04e2631e56ca4b948d1afedab2e8ab2069d21f91ed6cf38b43399",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "256cdf53af0e1ac7cc86acc998ebd197ab179fdb",
+      "path": "tools/release/qualification.py",
+      "source_sha256": "1279cb6292e8e89dae68f3ad0fa5b02c2ec2a89359eb0884ccd09df2bccf7aae",
+      "reason": "Preserve legacy Prius evidence discovery in the qualification gate (#194)."
+    },
+    {
+      "base_commit": "c7f51b57d0632a2eb59fa4d498e614d516a51335",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "591393587ee3ab8e10b62d9793b65a9f796890a8755e2e8f4669c2737e5975b3",
+      "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
+    },
+    {
+      "base_commit": "c7f51b57d0632a2eb59fa4d498e614d516a51335",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "875f940330ed5a1f8cf819b660cd0ad017bccdb27bbfd42aa46f833ad9634d89",
+      "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
+    },
+    {
+      "base_commit": "6ad8f3d6eef8855042e349bb954e1d6793bc6c0d",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "e0a77dc54f12feb6cf0cd9017b94d2ba7b9ba8c2e84bdd507fd69c4e741962ff",
+      "reason": "Report reference-review reasons separately from numerical movement (#194)."
+    },
+    {
+      "base_commit": "6ad8f3d6eef8855042e349bb954e1d6793bc6c0d",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "2bd1ca7c85568d58c26ce9061fbe571596a521afc944b973036e445704e7ee58",
+      "reason": "Report reference-review reasons separately from numerical movement (#194)."
     },
     {
       "base_commit": "9054b2150d224305430c0efb64e7f6c8fc7cc529",

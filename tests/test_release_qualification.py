@@ -15,7 +15,8 @@ def _write(root, name, value):
 
 def _measured(root):
     digest = _write(root, "backend/motor.py", "value = 1\n")
-    _write(root, "backend/qualification.py", 'QUALIFICATION_REPORT = "report.json"\nQUALIFICATION_BASIS = "measured at aaaaaaa"\n')
+    _write(root, "backend/qualification.py", 'QUALIFICATION_REPORT = "platform/windows-x86_64/benchmark_summary.json"\n'
+           'QUALIFICATION_BASIS = "measured at aaaaaaa"\n')
     _write(root, "backend/resources.py", 'BENCHMARK_SUITE_FILE = "suite.json"\nBENCHMARK_REFERENCE_BUNDLE_DIR = "references"\n')
     _write(root, "backend/benchmark_suite/physics.py", 'def physics_sources(root):\n    return ("backend/motor.py",)\n')
     suite = _write(root, "suite.json", {"protocol_version": "1.6.0", "cases": [{"id": "motor"}]})
@@ -33,7 +34,7 @@ def _measured(root):
     bundle = hashlib.sha256(json.dumps({
         "manifest": manifest_sha, "records": reference["records"],
     }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
-    _write(root, "report.json", {
+    _write(root, "platform/windows-x86_64/benchmark_summary.json", {
         "run": {"status": "COMPLETE", "reference_mode": "FROZEN_REFERENCE",
                 "identity": {"dirty": False, "commit": "a" * 40, "protocol_version": "1.6.0", "source_files": {"backend/motor.py": digest}},
                 "selection": {"spec_sha256": suite, "bundle_sha256": bundle}},
@@ -44,7 +45,7 @@ def _measured(root):
             "physics_files": {"backend/motor.py": digest}, "suite_sha256": suite, "reference_bundle_sha256": bundle,
             "measured_commit": "a" * 40, "source": f"platform/{key}",
         })
-        _write(root, f"platform/{key}/benchmark_summary.json", json.loads((root / "report.json").read_text()))
+        _write(root, f"platform/{key}/benchmark_summary.json", json.loads((root / "platform/windows-x86_64/benchmark_summary.json").read_text()))
     sources = {"backend/motor.py": digest}
     for name in PRIUS_EXTRA_PHYSICS:
         sources[name] = _write(root, name, "value = 1\n")
@@ -80,11 +81,11 @@ def test_release_gate_rejects_a_different_candidate_or_protocol(tmp_path):
 
 def test_release_gate_requires_the_loader_bundle_digest_not_the_manifest_digest(tmp_path):
     _measured(tmp_path)
-    report = json.loads((tmp_path / "report.json").read_text())
+    report = json.loads((tmp_path / "platform/windows-x86_64/benchmark_summary.json").read_text())
     report["run"]["selection"]["bundle_sha256"] = hashlib.sha256(
         (tmp_path / "references/manifest.json").read_bytes()
     ).hexdigest()
-    _write(tmp_path, "report.json", report)
+    _write(tmp_path, "platform/windows-x86_64/benchmark_summary.json", report)
     assert "qualification report does not use the registered frozen reference bundle" in check(tmp_path)
 
 
@@ -147,6 +148,33 @@ def test_prius_grader_must_match_the_before_field_snapshot(tmp_path):
     assert "Prius analysis code is not bound to its before-field source snapshot" in check(tmp_path)
 
 
+def test_release_gate_finds_legacy_prius_report_without_importing_candidate_code(tmp_path):
+    _measured(tmp_path)
+    destination = tmp_path / "legacy/prius"
+    destination.parent.mkdir(parents=True)
+    (tmp_path / "docs/benchmarks/pyleecan-prius-v1").rename(destination)
+    _write(tmp_path, "backend/qualification.py", (
+        'LEGACY_PRIUS_QUALIFICATION_REPORT = "legacy/prius/app-results.json"\n'
+        'PRIUS_QUALIFICATION_REPORT = record.get("prius_report", LEGACY_PRIUS_QUALIFICATION_REPORT)\n'
+        'raise AssertionError("Candidate code must not execute")\n'))
+    assert check(tmp_path) == []
+    _write(tmp_path, "backend/public_policy.py", "value = 2\n")
+    assert "Prius measured-source mismatch: backend/public_policy.py" in check(tmp_path)
+
+
+def test_registered_prius_report_takes_precedence_over_legacy_default(tmp_path):
+    _measured(tmp_path)
+    record_path = "benchmarks/records/windows-x86_64.json"
+    record = json.loads((tmp_path / record_path).read_text())
+    record["prius_report"] = "published/prius/app-results.json"
+    _write(tmp_path, record_path, record)
+    destination = tmp_path / "published/prius"
+    destination.parent.mkdir(parents=True)
+    (tmp_path / "docs/benchmarks/pyleecan-prius-v1").rename(destination)
+    _write(tmp_path, "backend/qualification.py", 'LEGACY_PRIUS_QUALIFICATION_REPORT = "absent/app-results.json"\n')
+    assert check(tmp_path) == []
+
+
 def test_missing_evidence_fails_closed(tmp_path):
     assert check(tmp_path)
 
@@ -154,9 +182,9 @@ def test_missing_evidence_fails_closed(tmp_path):
 def test_supported_failure_or_yellow_cannot_pass_the_release_gate(tmp_path):
     _measured(tmp_path)
     for status in ("FAIL", "YELLOW", "UNSUPPORTED"):
-        report = json.loads((tmp_path / "report.json").read_text())
+        report = json.loads((tmp_path / "platform/windows-x86_64/benchmark_summary.json").read_text())
         report["rows"][0]["status"] = status
-        _write(tmp_path, "report.json", report)
+        _write(tmp_path, "platform/windows-x86_64/benchmark_summary.json", report)
         assert "qualification report has a supported case without passing registered gates" in check(tmp_path)
         _write(tmp_path, "platform/macos-arm64/benchmark_summary.json", report)
         assert "macos-arm64 platform record lacks matching complete measured candidate evidence" in check(tmp_path)
