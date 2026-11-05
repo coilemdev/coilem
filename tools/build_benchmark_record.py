@@ -66,6 +66,11 @@ def regrade(summary, *, suite=SPEC, bundle=DEFAULT_BUNDLE):
             if reference is not None:
                 raw["femm-standard"] = {"result": reference}
             evaluation = evaluate_bldc(protocols[row["id"]], raw, golden)
+        elif case["phase"] == "E":
+            from backend.benchmark_suite.cogging_metrics import evaluate_cogging
+
+            evaluation = evaluate_cogging(row["measurements"]["native"], reference,
+                                          configs[row["id"], "native"], case["cogging_floor_Nm"])
         else:
             evaluation = evaluate_abc(row["measurements"]["native"], reference, configs[row["id"], "native"])
             if case.get("dq_reference") and reference is not None and evaluation["status"] in ("PASS", "YELLOW", "FAIL"):

@@ -35,11 +35,15 @@ TOLERANCES = {
     "mean_torque_Nm": (0.005, 0.001),
     "back_emf_fundamental_V": (0.0005, 0.001),
     "back_emf_peak_V": (0.015, 0.001),
+    "cogging_peak_to_peak_Nm": (0.005, 0.0001),
+    "cogging_first_harmonic_Nm": (0.005, 0.0001),
 }
 VALUE_LABELS = {
     "mean_torque_Nm": ("mean torque", "N·m"),
     "back_emf_fundamental_V": ("back-EMF fundamental", "V"),
     "back_emf_peak_V": ("back-EMF peak", "V"),
+    "cogging_peak_to_peak_Nm": ("cogging peak-to-peak", "N·m"),
+    "cogging_first_harmonic_Nm": ("cogging first harmonic", "N·m"),
 }
 EVALUATED = ("PASS", "YELLOW", "FAIL")
 
@@ -72,6 +76,10 @@ def gated_values(row):
     if row["status"] not in EVALUATED:
         return {}
     measurements = row["measurements"]
+    if row["phase"] == "E":
+        cogging = measurements["native"]["summary"]["cogging"]
+        return {"cogging_peak_to_peak_Nm": cogging["peak_to_peak_Nm"],
+                "cogging_first_harmonic_Nm": cogging["first_harmonic_Nm"]}
     if row["phase"] == "D":
         # fsum is exact, so the mean is the same on every Python version
         # (3.12 changed how sum() rounds floats).

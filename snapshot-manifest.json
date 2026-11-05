@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 12181,
-      "sha256": "bf173e6beae957be9a21100292da7f4d7eff722805fd8d10b916def4faa44c2f"
+      "bytes": 16417,
+      "sha256": "d49e09e2745f6511265a2531cc4b4afd927d66032b93f21725b0f129cc267218"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 6338,
-      "sha256": "b1e2d366838e8585517f779e5fb6a3f1c56f6c5963069dfb0469c13000f744e1"
+      "bytes": 6455,
+      "sha256": "acfb0bff3c0d2653b63e6f125ddf15e7b83fedbb943bb069570dd2dc4d5d630b"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -125,8 +125,8 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 22518,
-      "sha256": "efa1902f6f5354cc6405f8b5f75f6725b4c2aaf6991d447fc201dbafe29a44e7"
+      "bytes": 22578,
+      "sha256": "a990898368922b95030f76a47681dbdad273a4886e439c0c4117968fe5e8cb80"
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
@@ -165,8 +165,8 @@
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 10789,
-      "sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0"
+      "bytes": 11258,
+      "sha256": "6ee344236e0f87d30e0b32e371e92d314c5c0b7bdd8f792fccbc9ddc5e38669b"
     },
     {
       "path": "backend/benchmark_suite/references.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 9843,
-      "sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390"
+      "bytes": 10558,
+      "sha256": "35dc7e72aa4e2cf6cadb2a79b40bb4a08c208eec47c964d2dfc72943e5af87aa"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -8195,8 +8195,8 @@
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
-      "bytes": 15849,
-      "sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c"
+      "bytes": 16600,
+      "sha256": "5cd9c96a96722d2417bb9e455502a92337956b24cd3fc327724dea3a6547c13d"
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
@@ -8295,8 +8295,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 8899,
-      "sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94"
+      "bytes": 9158,
+      "sha256": "a15e175fd0d04e2631e56ca4b948d1afedab2e8ab2069d21f91ed6cf38b43399"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8380,8 +8380,8 @@
     },
     {
       "path": "tools/benchmark_prius.py",
-      "bytes": 13853,
-      "sha256": "0c7241396f0d31c819506895cf8221e19581ac379005e2fe41d56274f00d4ac4"
+      "bytes": 13926,
+      "sha256": "1345c63f4868e05da249d7f0a6d6d27d0f368a7eca7a0a125af7f74ffb644d20"
     },
     {
       "path": "tools/benchmark_suite/external.py",
@@ -8400,8 +8400,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 9313,
-      "sha256": "bb5afa136f6bd542d862429630731ffbe9b20c57f044861e2b782a3bbac298c5"
+      "bytes": 9612,
+      "sha256": "6d72518515a8a299a31d481727291d415cb985b4a838c749a5d7fee43d3ff42b"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 12136,
-      "sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf"
+      "bytes": 12120,
+      "sha256": "1279cb6292e8e89dae68f3ad0fa5b02c2ec2a89359eb0884ccd09df2bccf7aae"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 23508,
-      "sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646"
+      "bytes": 24049,
+      "sha256": "79670a1f78cd2fe09adca5b908641f4c2fbf4bb5d0f289b1d228ae322ab05f7c"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -10710,8 +10710,8 @@
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
-      "bytes": 5356,
-      "sha256": "4799c9ab299e064d94e1ac943ec4d1d27e1a00550431c2be4db79a097da0f12c"
+      "bytes": 6326,
+      "sha256": "54da9cfad3d4733478179db325b3766207a307a712089c75aa16ae8cf367a861"
     },
     {
       "path": "tools/review_protocol16_references.py",
@@ -12085,13 +12085,13 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 3171,
-      "sha256": "e18ccaade38bf85b4e2def3d9218275ba40f3578e538e20cec9226c28411ad07"
+      "bytes": 5670,
+      "sha256": "42c80ed89719ab97ca17bbad012db614e0a928a0f8544da908cfe6f7a7af0bbd"
     },
     {
       "path": "tests/test_benchmark_shards.py",
-      "bytes": 4702,
-      "sha256": "a33d2340440c5d46f821b55d9df084c9e3070d2ef704493bcdbffbd5458784c2"
+      "bytes": 4799,
+      "sha256": "29eb6a6bcfac2bc6d0bc105e11143b5906c1df437115ac3f00580ed17fb738dc"
     },
     {
       "path": "tests/test_physics_impact.py",
@@ -12115,13 +12115,43 @@
     },
     {
       "path": "tools/join_benchmark_runs.py",
-      "bytes": 8491,
-      "sha256": "7d651ad3be2e1e9953a986d055f050757d7265037cb2bccbc57dbc3ad1ba6b2a"
+      "bytes": 8979,
+      "sha256": "009ed33799387a986aa2aee34bc31218d378486c5fae72b08b1d841d36574dde"
     },
     {
       "path": "tools/physics_impact.py",
       "bytes": 3712,
       "sha256": "05935a71af85e9fe1b0a0c23bc4ea571f56a3ed1c2402734a7ab3ef57bc6f300"
+    },
+    {
+      "path": ".github/workflows/qualification-weekly.yml",
+      "bytes": 2189,
+      "sha256": "0510c5c5daac60059ae4d891254f8df2c0eb7c376ac99d04291a694f56bb3e74"
+    },
+    {
+      "path": "benchmarks/qualification-policy.json",
+      "bytes": 1074,
+      "sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b"
+    },
+    {
+      "path": "tests/test_qualification_carry.py",
+      "bytes": 6317,
+      "sha256": "e0a77dc54f12feb6cf0cd9017b94d2ba7b9ba8c2e84bdd507fd69c4e741962ff"
+    },
+    {
+      "path": "tests/test_qualification_publish.py",
+      "bytes": 3029,
+      "sha256": "eda57a6c02cf8951c20bb8f2f62f4f2ed9f02015f2824baf598700904c668fc1"
+    },
+    {
+      "path": "tools/qualification_carry.py",
+      "bytes": 14731,
+      "sha256": "2bd1ca7c85568d58c26ce9061fbe571596a521afc944b973036e445704e7ee58"
+    },
+    {
+      "path": "tools/qualification_publish.py",
+      "bytes": 3976,
+      "sha256": "d5f888d12385d25928eeb9a614c168c352c7c30caaaacdd5fdfd8f834fe4b493"
     }
   ],
   "public_patches": [
@@ -32470,6 +32500,90 @@
       "path": "tests/test_qualification.py",
       "source_sha256": "28a5860e98119f0061f116c3f3df3fcdba308c2b69daea5d2c950a6a41c4bf2b",
       "reason": "Centralize physics PR evidence freshness and preserve immutable historical replay (#194 item 2)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "bf173e6beae957be9a21100292da7f4d7eff722805fd8d10b916def4faa44c2f",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "efa1902f6f5354cc6405f8b5f75f6725b4c2aaf6991d447fc201dbafe29a44e7",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/benchmark_suite/record.py",
+      "source_sha256": "3e84cd2419b395ffac51a95b96643bd0a51f54fd956a95329639f3233322d2c0",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "backend/qualification.py",
+      "source_sha256": "c9ec5e5975b4a29c997e41008fde110d99910abed077054a87e89d656118b390",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "e18ccaade38bf85b4e2def3d9218275ba40f3578e538e20cec9226c28411ad07",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_benchmark_shards.py",
+      "source_sha256": "a33d2340440c5d46f821b55d9df084c9e3070d2ef704493bcdbffbd5458784c2",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_prius_benchmark_collection.py",
+      "source_sha256": "fc9bb2e82de96828dfa30983f9ec5463cecd7d822624caca1971c73dae45d85c",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tests/test_release_qualification.py",
+      "source_sha256": "98d206fd08ef68821d9f1e4fdad514303c43c4ff0ca13c2cd46fed9b52012e94",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/benchmark_prius.py",
+      "source_sha256": "0c7241396f0d31c819506895cf8221e19581ac379005e2fe41d56274f00d4ac4",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "bb5afa136f6bd542d862429630731ffbe9b20c57f044861e2b782a3bbac298c5",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "7d651ad3be2e1e9953a986d055f050757d7265037cb2bccbc57dbc3ad1ba6b2a",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/qualify_benchmark_candidate.py",
+      "source_sha256": "4799c9ab299e064d94e1ac943ec4d1d27e1a00550431c2be4db79a097da0f12c",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/release/qualification.py",
+      "source_sha256": "ee23f74ab423e766ad07283158bb233735ac4dbf175880e00ccc59ea915651bf",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
+    },
+    {
+      "base_commit": "1f6626c845ef823cf5eaf3dabba78a1450ad2c2d",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "ab48e96e50d892f68158f3e467cd0621bf039430c14e3e04217632e11ff8f646",
+      "reason": "Carry fresh measured qualification evidence with owner review for moved values (#194 item 3)."
     }
   ]
 }

@@ -59,10 +59,10 @@ jobs:
       matrix: ${{ steps.plan.outputs.matrix }}
       platforms: ${{ steps.plan.outputs.platforms }}
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
       - run: python -m pip install -r requirements.lock
@@ -80,10 +80,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
       - run: |
@@ -95,7 +95,7 @@ jobs:
           rustup toolchain install 1.94.0 --profile minimal
           cargo +1.94.0 build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
           python -m tools.benchmark_ci binary --directory "$RUNNER_TEMP/binary"
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: benchmark-binary-${{ matrix.runner }}
           path: ${{ runner.temp }}/binary
@@ -109,17 +109,17 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
       - run: |
           python -m pip install -r requirements.lock
           python -m pip install -e ".[dev]"
           python -m pip check
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: benchmark-binary-${{ matrix.runner }}
           path: ${{ runner.temp }}/collection
@@ -133,7 +133,7 @@ jobs:
           SHARD_ID: ${{ matrix.id }}
           COLLECTION: ${{ inputs.collection || 'registered' }}
         run: python -m tools.benchmark_ci shard --shard "$SHARD_ID" --collection "$COLLECTION" --directory "$RUNNER_TEMP/collection"
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
@@ -150,20 +150,20 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
       - run: python -m pip install -r requirements.lock
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           pattern: benchmark-shard-${{ matrix.runner }}-*
           path: ${{ runner.temp }}/qualification/shards
       - name: Verify coverage and immutable evidence, then regenerate reports
         run: python -m tools.benchmark_ci join --directory "$RUNNER_TEMP/qualification"
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
           name: benchmark-joined-${{ matrix.runner }}

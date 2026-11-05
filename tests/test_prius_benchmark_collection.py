@@ -19,6 +19,23 @@ ROOT = Path(__file__).resolve().parents[1]
 pytestmark = pytest.mark.pr
 
 
+def test_named_shard_jobs_are_repeatable_and_resume_preserves_selection(collection):
+    collection.run("--curve", "--job", "loaded-torque-32", "--job", "curve-60-16")
+    reg = collection.registration()
+    assert {j["job"] for j in reg["jobs"]} == {"loaded-torque-32", "curve-60-16"}
+    count = len(collection.state.calls)
+    collection.run("--resume")
+    assert len(collection.state.calls) == count
+
+
+@pytest.mark.parametrize("selected", [["missing"], ["loaded-torque-32", "loaded-torque-32"]])
+def test_invalid_shard_job_selection_executes_no_fields(collection, selected):
+    args = [arg for name in selected for arg in ("--job", name)]
+    with pytest.raises(SystemExit):
+        collection.run(*args)
+    assert not collection.state.calls
+
+
 @pytest.fixture
 def collection(tmp_path, monkeypatch):
     checkout = tmp_path / "checkout"

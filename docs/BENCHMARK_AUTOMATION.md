@@ -51,3 +51,44 @@ workflow dispatch. Make `qualification evidence required` a required status
 check on `main` and `release/v0.5.1`, enable required code-owner review, and
 protect the qualification rules listed in `.github/CODEOWNERS`. Merely committing
 a workflow or CODEOWNERS file cannot enable those repository settings.
+
+## Measured carry-forward
+
+After both platforms finish, trusted tooling from the PR base compares the new
+run to the previous record and the hash-bound approved reports in
+`benchmarks/qualification-policy.json`. A ready result contains newly measured
+records and regenerated reports, with the real field candidate and unchanged
+FEMM provenance. The publisher commits compact evidence to the PR branch and
+explicitly dispatches CI for that publication commit (a token-generated push
+does not itself trigger another Actions run). An advanced PR head cannot be
+overwritten. Fork PRs receive measurements as artifacts; write-back is limited
+to branches in this repository.
+
+The fast path checks existing torque/Back-EMF tolerances plus d/q flux values;
+its additional replay tolerances are explicit in the owner-controlled policy.
+Cogging records have their own p-p/H1 metrics. These are replay comparisons,
+not wider FEMM accuracy gates. The fixed approved baseline prevents cumulative
+drift through successive automatic updates.
+
+Moved values produce `REVIEW.md`, `comparison.csv` (previous, new, approved and
+FEMM values), and `decision.json`; they do not publish. After reviewing the
+specific measurements, the owner can rerun `tools.qualification_carry` with
+`--accept-moved`. That flag never overrides changed verdicts, failed FEMM gates,
+incomplete Prius checks or incompatible reference contracts. Replacing approved
+anchors is a separate owner-reviewed policy change, not an automatic reset.
+
+Reference reuse checks the registered suite, requests, material/geometry/source
+interpretation and metric definitions against the approved report. Changed
+reference contracts produce `REFERENCE_REVIEW_REQUIRED`. The immutable bundle
+is never retagged or rewritten to name a new candidate. The zero-solve candidate
+join supports `--reuse-reviewed-reference` only after this compatibility check.
+
+The public qualification basis and report path follow the primary registered
+record. The release gate still requires actual matching Windows/macOS/Prius
+measurements; changing hashes alone cannot qualify a build. A weekly workflow
+compares fresh measurements and opens one issue for unexplained drift.
+
+Item 4 of #194 is deliberately excluded: the physics source registry remains
+unchanged, no solver modules are split, and dependency identity/fingerprints
+are not introduced here. Changed configuration/model code may therefore still
+need reference review even when a developer expects unchanged fields.

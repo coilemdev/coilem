@@ -18,9 +18,10 @@ def join_suite(shards, *, suite, bundle, output):
     spec = load_suite(suite)
     expected = [(case["id"], job["stage"]) for case in spec["cases"] for job in case["jobs"]]
     configs, protocols, golden = inputs(spec, spec["cases"])
-    original, gathered, receipts = None, {}, []
+    original, gathered, receipts, intervals = None, {}, [], []
     for folder in shards:
         manifest = read(folder / "run_manifest.json")
+        intervals.append((manifest["started_at"], manifest["completed_at"]))
         if manifest["status"] != "COMPLETE" or manifest["smoke"] or manifest["identity"].get("dirty") is not False:
             raise ValueError("Need complete, clean, full-grid shards")
         if manifest["selection"]["spec_sha256"] != sha(suite):
@@ -31,7 +32,8 @@ def join_suite(shards, *, suite, bundle, output):
             selection = common
         if manifest["identity"] != original["identity"] or common != selection:
             raise ValueError("Mixed candidate, binary, environment or reference identities")
-        if manifest["reference_mode"] != original["reference_mode"]:
+        if (manifest["reference_mode"] != original["reference_mode"]
+                or manifest.get("reference_commit") != original.get("reference_commit")):
             raise ValueError("Mixed reference modes")
         selected = set(manifest["selection"]["case_ids"])
         if len(selected) != len(manifest["selection"]["case_ids"]):
@@ -65,6 +67,7 @@ def join_suite(shards, *, suite, bundle, output):
     # Everything is validated before creating a derived output. Originals stay immutable.
     output.mkdir(parents=True, exist_ok=False)
     merged = copy.deepcopy(original)
+    merged.update(started_at=min(i[0] for i in intervals), completed_at=max(i[1] for i in intervals))
     merged["selection"]["case_ids"] = [case["id"] for case in spec["cases"]]
     merged["jobs"] = []
     for key in expected:
@@ -89,9 +92,10 @@ def join_prius(shards, output):
     from backend.public_policy import parse_public_motor_config
 
     expected = {name: parse_public_motor_config(body).model_dump(mode="json") for name, body in prius_jobs(True, True)}
-    first, gathered, receipts = None, {}, []
+    first, gathered, receipts, intervals = None, {}, [], []
     for folder in shards:
         registration = read(folder / "registration.json")
+        intervals.append((registration["started_utc"], registration["finished_utc"]))
         verify_registered_identity(registration)
         grading_inputs(folder, registration)
         if not registration.get("complete") or registration["status"] != "COMPLETE" or registration["source_dirty"]:
@@ -117,6 +121,7 @@ def join_prius(shards, output):
         raise ValueError("Incomplete Prius coverage")
     output.mkdir(parents=True, exist_ok=False)
     merged = copy.deepcopy(first)
+    merged.update(started_utc=min(i[0] for i in intervals), finished_utc=max(i[1] for i in intervals))
     merged.update(jobs=[], job_states={}, selection={"curve": True, "refinement": True, "only": None,
                   "jobs": [{"job": name, "request": body} for name, body in expected.items()]})
     for entry in first["frozen_inputs"].values():

@@ -11,6 +11,7 @@ runs, so the app and its exports say what the docs say.
 
 from __future__ import annotations
 
+import re
 from fractions import Fraction
 from typing import Literal, TypedDict
 
@@ -30,11 +31,26 @@ QualificationStatus = Literal["qualified", "experimental", "unsupported"]
 # The basis, reasons and caveats travel in public preview, solve and saved-run
 # payloads, which must not name the reference solver or thermal analysis
 # (tools/smoke_public_runtime.py); docs/VALIDATION.md names the report in full.
-QUALIFICATION_BASIS = "coilEM benchmark report, measured at 88aae101"
-# Repository path of the report behind every reason below. tests/test_qualification.py
-# checks the reasons against its outcomes and its sources against the current code.
-QUALIFICATION_REPORT = "benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json"
-PRIUS_QUALIFICATION_REPORT = "benchmarks/candidate-qualification-20261103/prius/app-results.json"
+def _registered_qualification():
+    from backend.resources import BENCHMARK_RECORDS_DIR, read_data_json
+
+    try:
+        record = read_data_json(f"{BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
+        if (isinstance(record, dict) and record.get("schema") == "coilem.benchmark_record/v1"
+                and isinstance(record.get("measured_commit"), str) and re.fullmatch("[0-9a-f]{40}", record["measured_commit"])
+                and isinstance(record.get("source"), str)):
+            return record
+        return {}
+    except (OSError, ValueError, KeyError, TypeError):
+        return {}
+
+
+_QUALIFICATION_RECORD = _registered_qualification()
+QUALIFICATION_BASIS = "coilEM benchmark report, measured at " + (_QUALIFICATION_RECORD["measured_commit"][:8]
+                                                              if _QUALIFICATION_RECORD else "unavailable")
+QUALIFICATION_REPORT = _QUALIFICATION_RECORD.get("source", "unavailable") + "/benchmark_summary.json"
+PRIUS_QUALIFICATION_REPORT = _QUALIFICATION_RECORD.get(
+    "prius_report", "benchmarks/candidate-qualification-20261103/prius/app-results.json")
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
@@ -48,7 +64,8 @@ def evidence_matches_runtime() -> bool:
 
     try:
         record = read_data_json(f"{BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
-        return record["measured_commit"][:7] in QUALIFICATION_BASIS and check_physics(record)["status"] == "MATCH"
+        return (record["measured_commit"] == _QUALIFICATION_RECORD.get("measured_commit")
+                and check_physics(record)["status"] == "MATCH")
     except (OSError, ValueError, KeyError, TypeError):
         return False
 

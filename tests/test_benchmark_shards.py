@@ -108,7 +108,10 @@ def test_archive_verifies_contents_before_removing_runtime(tmp_path):
 def test_archive_refuses_links_without_deleting_originals(tmp_path):
     runtime = tmp_path / "runtime"
     runtime.mkdir()
-    (runtime / "link").symlink_to(tmp_path / "outside")
+    try:
+        (runtime / "link").symlink_to(tmp_path / "outside")
+    except OSError:
+        pytest.skip("This runner cannot create symbolic links")
     with pytest.raises(ValueError, match="symbolic"):
         archive_runtime(runtime, tmp_path / "archive.tar.gz")
     assert runtime.is_dir()
