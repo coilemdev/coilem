@@ -16,6 +16,7 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
   const [exact, setExact] = useState<PublicFieldLinePlot | null>(null);
   const [playing, setPlaying] = useState(false);
   const [fps, setFps] = useState(5);
+  const [direction, setDirection] = useState<'clockwise' | 'counterclockwise'>('clockwise');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [heat, setHeat] = useState(true), [mesh, setMesh] = useState(false), [lines, setLines] = useState(true);
@@ -100,7 +101,9 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
     const hasEndpoint = selected.length > 2 && Math.abs(selected[selected.length-1].angle_ccw_deg-selected[0].angle_ccw_deg-360/7) < 1e-7;
     const count = selected.length-(hasEndpoint ? 1 : 0);
     const advance = async () => {
-      const next = (cursor.current+1) % count;
+      // Stored solver angles are positive CCW. Reverse the actual frames for
+      // the same clockwise playback default as the regular motor workspace.
+      const next = (cursor.current+(direction === 'clockwise' ? -1 : 1)+count) % count;
       try {
         await load(selected[next].index);
         if (stopped) return;
@@ -110,7 +113,7 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
     };
     timer = window.setTimeout(advance, 1000/fps);
     return () => { stopped = true; window.clearTimeout(timer); };
-  }, [playing, fps, runId, selectedKey]);
+  }, [playing, fps, direction, runId, selectedKey]);
   const frame = selected[position];
   const ready = selected.filter((item) => item.raster_ready).length;
   return <div className="outrunner-field-viewer">
@@ -123,7 +126,7 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
       {(loading || !current) && <div className="outrunner-field-buffer" role="status">Preparing actual solved frame…</div>}
     </div>
     <div className="outrunner-field-controls">
-      <div className="public-dock-strip">{viewControls || <strong>Field solution</strong>}<span>{frame ? `${(current?.descriptor.case.angle_ccw_deg ?? frame.angle_ccw_deg).toFixed(2)}° mech · ${((current?.descriptor.case.angle_ccw_deg ?? frame.angle_ccw_deg)*7).toFixed(1)}° elec` : 'No completed field yet'}</span>
+      <div className="public-dock-strip">{viewControls || <strong>Field solution</strong>}<span>{frame ? `Source: ${(current?.descriptor.case.angle_ccw_deg ?? frame.angle_ccw_deg).toFixed(2)}° mech CCW · ${((current?.descriptor.case.angle_ccw_deg ?? frame.angle_ccw_deg)*7).toFixed(1)}° elec` : 'No completed field yet'}</span>
         <span className="public-dock-strip-end" ref={setNavigationSlot} /></div>
       <div className="outrunner-field-transport">
         <button className="public-field-transport-play" aria-label={playing ? 'Pause field solution' : 'Play field solution'} disabled={selected.length < 2}
@@ -133,6 +136,9 @@ export function OutrunnerFieldViewer({ runId, geometry, completed, viewControls 
           disabled={!selected.length} onChange={(event) => { setPlaying(false); setPosition(event.target.valueAsNumber); }} />
         <select aria-label="Field playback speed" value={fps} onChange={(event) => setFps(Number(event.target.value))}>
           {[1, 2, 5, 10].map((speed) => <option key={speed} value={speed}>{speed} frames/s</option>)}</select>
+        <select aria-label="Field playback direction" value={direction} title="Clockwise plays the actual CCW source frames in reverse order."
+          onChange={(event) => setDirection(event.target.value as typeof direction)}>
+          <option value="clockwise">Clockwise</option><option value="counterclockwise">Counterclockwise</option></select>
         <select aria-label="Solved field family" value={family} onChange={(event) => setFamily(event.target.value)}>
           {[...new Set(frames.map((item) => item.family))].map((value) => <option key={value} value={value}>{value === 'loaded' ? 'Loaded torque' : value === 'noload' ? 'No-load BEMF' : 'Original point'}</option>)}</select>
       </div>

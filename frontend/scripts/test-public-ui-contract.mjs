@@ -663,7 +663,7 @@ assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, pha
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 // ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
-assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\)\)/);
+assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\), outerRotor \? 'outward' : 'inward'\)/);
 // Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
 assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
 assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
@@ -677,9 +677,9 @@ assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
 // The Phases strips are a 1 s scope at the preview speed, frequency shown in the
 // heading and in each strip (test-phase-drive.mjs checks the cycle count).
 assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
-assert.match(motorCanvasSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
+assert.match(motorCanvasSource, /const frequencyHz = fixed \? 0 : electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
 assert.match(motorCanvasSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
-assert.match(motorCanvasSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
+assert.match(motorCanvasSource, /context\.fillText\(fixed \? .* : formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
 assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);

@@ -9,7 +9,7 @@
 .outrunner-setting { display:grid; grid-template-columns:1fr auto; gap:8px; margin:12px; color:var(--text-secondary); font-size:12px; }
 .outrunner-setting > select,.outrunner-setting > input { grid-column:1/-1; width:100%; padding:9px; border:1px solid var(--border-default); border-radius:7px; color:var(--text-primary); background:var(--bg-input); font:12px var(--font-sans); }
 .outrunner-setting > span { color:var(--text-muted); font:11px var(--font-mono); }
-.public-coilem-shell .outrunner-motor-viewport { --viewport-dock-height:112px; }
+.public-coilem-shell .outrunner-motor-viewport { --viewport-dock-height:148px; }
 .outrunner-angle-control { display:inline-flex; align-items:center; gap:10px; color:var(--text-muted); font:11px var(--font-mono); }
 .outrunner-angle-control input { width:110px; accent-color:var(--accent-primary); }
 .outrunner-angle-control output { min-width:72px; color:var(--text-secondary); }

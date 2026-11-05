@@ -1,0 +1,53 @@
+import assert from 'node:assert/strict';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { chromium } from '@playwright/test';
+import { importTypeScriptModule } from './import-typescript-module.mjs';
+const base = process.env.COILEM_OUTRUNNER_REVIEW_URL || 'http://127.0.0.1:58152';
+const project = JSON.parse(await readFile(new URL('../src/public/outrunner/lrk_12s14p.coilem', import.meta.url), 'utf8'));
+const response = await fetch(base+'/experimental/outrunner/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(project) });
+assert.ok(response.ok);
+const { referenceGeometry } = await importTypeScriptModule(new URL('../src/public/outrunner/geometry.ts', import.meta.url));
+const { slotCurrents, toothPoles } = await importTypeScriptModule(new URL('../src/public/phaseDrive.ts', import.meta.url));
+const geometry = referenceGeometry(await response.json(), project);
+assert.equal(new Set(geometry.winding_layout.map(side => side.slot_index)).size, 12);
+const slots = slotCurrents(geometry.winding_layout, 12, [0, 1, -1]);
+assert.deepEqual(slots, [0, -1, 1, -1, 1, 0, 0, 1, -1, 1, -1, 0]);
+const poles = toothPoles(slots, 'outward');
+assert.equal(poles.filter(value => value > .06).length, 2);
+assert.equal(poles.filter(value => value < -.06).length, 2);
+const output = new URL('../../output/femm-outrunner-review/phases-smoke/', import.meta.url);
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({ channel: 'chromium', headless: true });
+try {
+  const page = await browser.newPage({ viewport: { width: 1660, height: 1120 } }), errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.addInitScript(() => {
+    window.__phaseTexts = [];
+    const original = CanvasRenderingContext2D.prototype.fillText;
+    CanvasRenderingContext2D.prototype.fillText = function(text, ...args) {
+      window.__phaseTexts.push(String(text));
+      if (window.__phaseTexts.length > 1000) window.__phaseTexts.shift();
+      return original.call(this, text, ...args);
+    };
+  });
+  await page.goto(base);
+  await page.getByRole('button', { name: 'Design file menu' }).click();
+  await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
+  await page.getByRole('menuitem', { name: /LRK outrunner 14p/ }).click();
+  await page.getByRole('button', { name: 'Phases', exact: true }).click();
+  await page.waitForFunction(() => window.__phaseTexts.includes('FIXED PHASE CURRENTS') && window.__phaseTexts.includes('-4.0 A'));
+  await page.getByRole('button', { name: 'Tooth poles', exact: true }).click();
+  assert.equal(await page.getByRole('button', { name: 'Tooth poles', exact: true }).getAttribute('aria-pressed'), 'true');
+  await page.getByRole('button', { name: 'Play motor preview', exact: true }).click();
+  await page.waitForFunction(() => Number(document.querySelector('input[aria-label="Rotor position CW mechanical degrees"]')?.value) > 20);
+  await page.getByRole('button', { name: 'Pause motor preview', exact: true }).click();
+  await page.screenshot({ path: new URL('design-phases-poles.png', output).pathname.replace(/^\/(\w:)/, '$1'), fullPage: true });
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await page.getByRole('button', { name: 'Show Geometry view', exact: true }).click();
+  await page.getByRole('button', { name: 'Phases', exact: true }).click();
+  await page.getByRole('button', { name: 'Tooth poles', exact: true }).click();
+  await page.screenshot({ path: new URL('solve-phases-poles.png', output).pathname.replace(/^\/(\w:)/, '$1'), fullPage: true });
+  assert.deepEqual(errors, []);
+  await writeFile(new URL('receipt.json', output), JSON.stringify({ status: 'PASS', exact_12_slot_signed_map: true, fixed_phase_currents_A: [0, 4, -4], outward_north_teeth: 2, outward_south_teeth: 2, design_and_solve_controls: true, clockwise_preview: true, page_errors: errors }, null, 2));
+  console.log('PASS: exact winding signs, outward tooth polarity, common phase renderer, Design/Solve controls and clockwise preview');
+} finally { await browser.close(); }

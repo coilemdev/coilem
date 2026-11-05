@@ -71,6 +71,8 @@ interface MotorCanvasProps {
   onComponentSelect?: (component: PublicMotorComponentSelection | null) => void;
   /** Needed by the Dims layer: tooth, slot, magnet and yoke sizes are config-only. */
   config?: MotorConfig;
+  /** Explicit source excitation for reference geometry without a MotorConfig. */
+  phaseDrive?: PhaseDrive;
   activeDimension?: DimensionId | null;
   /** Previewed from the readout without committing a selection. */
   hoveredDimension?: DimensionId | null;
@@ -533,8 +535,10 @@ function drawGeometry(
   // Tooth poles, with or without Phases: each stator tooth turns N or S with the
   // slot currents either side of it.
   const statorSlotCount = Number(data.metadata.slot_count || 0);
+  const outerRotor = data.metadata.radial_layout === 'outer_rotor';
+  const slotOffsetRad = Number(data.metadata.slot_angle_offset_deg || 0)*Math.PI/180;
   const poleByTooth = showToothPoles && currents && data.winding_layout?.length && statorSlotCount > 0
-    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
+    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents), outerRotor ? 'outward' : 'inward')
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
   const magnetPoleLabels: MagnetPoleLabel[] = [];
@@ -663,7 +667,7 @@ function drawGeometry(
         (sum, [x, y]) => [sum[0] + x / region.points.length, sum[1] + y / region.points.length],
         [0, 0],
       );
-      const strength = poleByTooth[toothIndexAt(Math.atan2(meanY, meanX), statorSlotCount)] ?? 0;
+      const strength = poleByTooth[toothIndexAt(Math.atan2(meanY, meanX)-slotOffsetRad, statorSlotCount)] ?? 0;
       if (Math.abs(strength) > 0.06) {
         context.fillStyle = strength > 0 ? PUBLIC_MOTOR_COLORS.magnetNorth : PUBLIC_MOTOR_COLORS.magnetSouth;
         context.globalAlpha = 0.14 + 0.5 * Math.abs(strength);
@@ -673,6 +677,26 @@ function drawGeometry(
         const toothWidthPx = (2 * Math.PI * Math.hypot(labelX - origin[0], labelY - origin[1])) / statorSlotCount * 0.42;
         toothPoleLabels.push({ x: labelX, y: labelY, north: strength > 0, strength: Math.abs(strength), size: Math.min(14, toothWidthPx * 0.55) });
       }
+    }
+    if (poleByTooth && outerRotor && /stator_yoke/i.test(region.region_type)) {
+      // The exact source stator is one connected steel region. Clip display
+      // sectors to its real contour, preserving slots and the bore hole.
+      const root = Number(data.metadata.tooth_root_radius_mm || innerRadiusMm);
+      const pitch = 2*Math.PI/statorSlotCount;
+      context.save(); context.clip('evenodd');
+      poleByTooth.forEach((strength, index) => {
+        if (Math.abs(strength) <= .06) return;
+        const start = slotOffsetRad+index*pitch, end = start+pitch;
+        const sector = new Path2D();
+        sector.arc(origin[0], origin[1], outerRadiusMm*scale, -end, -start);
+        sector.arc(origin[0], origin[1], root*scale, -start, -end, true); sector.closePath();
+        context.fillStyle = strength > 0 ? PUBLIC_MOTOR_COLORS.magnetNorth : PUBLIC_MOTOR_COLORS.magnetSouth;
+        context.globalAlpha = .14+.5*Math.abs(strength); context.fill(sector);
+        const middle = (start+end)/2, radius = root+(outerRadiusMm-root)*.6;
+        const [x, y] = map([radius*Math.cos(middle), radius*Math.sin(middle)]);
+        toothPoleLabels.push({ x, y, north: strength > 0, strength: Math.abs(strength), size: 13 });
+      });
+      context.restore();
     }
     let splitHalves: MagnetPoleLabel[] | null = null;
     if (isVShapeMagnet && usesSplitPolarity) {
@@ -966,7 +990,8 @@ function drawPhaseDrive(
   const phases = ['A', 'B', 'C'] as const;
   // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
   // time at the preview speed, so twice the speed shows twice as many.
-  const frequencyHz = electricalFrequencyHz(previewRpm, drive.poleCount);
+  const fixed = drive.mode === 'fixed_phase_currents';
+  const frequencyHz = fixed ? 0 : electricalFrequencyHz(previewRpm, drive.poleCount);
   const windowElecDeg = 360 * frequencyHz * PHASE_SCOPE_WINDOW_S;
   const strips = phaseStrips(panel);
   const lead = Math.max(10, statorRadiusPx * 0.08);
@@ -982,12 +1007,12 @@ function drawPhaseDrive(
   context.font = '700 10px ui-monospace, monospace';
   context.textAlign = 'left';
   context.textBaseline = 'bottom';
-  context.fillText(`${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
+  context.fillText(fixed ? 'FIXED PHASE CURRENTS' : `${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
   // What sets the frequency, and the sweep the strips show.
   context.fillStyle = 'rgba(148, 163, 184, 0.6)';
   context.font = '600 9px ui-monospace, monospace';
   context.textBaseline = 'top';
-  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+  context.fillText(fixed ? 'Same fixed currents as Solve · DC excitation' : `${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];
@@ -1022,7 +1047,7 @@ function drawPhaseDrive(
     context.font = '700 9px ui-monospace, monospace';
     context.textAlign = 'right';
     context.textBaseline = 'top';
-    context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
+    context.fillText(fixed ? `${(currents[index]*drive.currentAmplitudeA).toFixed(1)} A` : formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
 
     const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg);
     context.beginPath();
@@ -1305,6 +1330,7 @@ export function MotorCanvas({
   highlightComponentKind = null,
   onComponentSelect,
   config,
+  phaseDrive: explicitPhaseDrive,
   activeDimension = null,
   hoveredDimension = null,
   onDimensionSelect,
@@ -1325,7 +1351,7 @@ export function MotorCanvas({
   const solveParams = config?.solve_params;
   const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
   const metadataPoles = Number(geometry?.metadata.pole_count);
-  const phaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
+  const configuredPhaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
     ? {
       mode: solveParams.excitation_mode,
       currentAngleDeg: solveParams.current_angle_deg,
@@ -1347,6 +1373,7 @@ export function MotorCanvas({
     config?.geometry_reference,
     geometry?.metadata.phase_current_convention,
   ]);
+  const phaseDrive = explicitPhaseDrive ?? configuredPhaseDrive;
   const hitRegionsRef = useRef<HitRegion[]>([]);
   const dimensionHitsRef = useRef<DimensionHit[]>([]);
   const meshHitsRef = useRef<MeshTriangleHit[]>([]);

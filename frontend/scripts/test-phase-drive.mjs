@@ -26,6 +26,17 @@ const fixture = async (name) => JSON.parse(await readFile(new URL(`../../tests/f
 const drive = (overrides) => ({ mode: 'sinusoidal', currentAngleReference: 'q_axis', currentAmplitudeA: 1, currentAngleDeg: 0, commutationAdvanceDeg: 0, axisOffsetDeg: 0, poleCount: 8, ...overrides });
 const close = (actual, expected, label, tolerance = 1e-9) => actual.forEach((value, index) => assert.ok(Math.abs(value - expected[index]) <= tolerance, `${label}: ${actual} != ${expected}`));
 
+// The source outrunner sweeps use fixed circuit currents. Their phase preview
+// must not invent sinusoidal commutation while only the rotor moves.
+const fixed = drive({ mode: 'fixed_phase_currents', currentAmplitudeA: 4, fixedCurrentsA: [0, 4, -4], poleCount: 14 });
+for (const angle of [0, 35, 120, 359]) close(phaseCurrents(fixed, angle), [0, 1, -1], 'fixed source currents');
+close(phaseCurrents({ ...fixed, currentAmplitudeA: 0 }, 35), [0, 0, 0], 'fixed no-load');
+// On a tooth centred at +x, an out-of-page upper coil side and into-page
+// lower side drive flux outward: N for an outer-rotor stator.
+const outward = toothPoles([-1, 1], 'outward');
+assert.ok(outward[0] > 0);
+close(outward, toothPoles([-1, 1]).map(value => -value), 'opposite gap-facing normals');
+
 // Six-step: the public clockwise sector table, boundaries included.
 const sixStep = await fixture('bldc_six_step_golden_vectors.json');
 assert.equal(sixStep.rotation_convention, 'public_clockwise_positive');

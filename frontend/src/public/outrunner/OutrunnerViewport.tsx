@@ -7,6 +7,7 @@ import { referenceGeometry, type ReferencePreview } from './geometry';
 import type { OutrunnerProject } from './project';
 import { OutrunnerFieldViewer } from './OutrunnerFieldViewer';
 import type { RunState } from './types';
+import type { PhaseDrive } from '../phaseDrive';
 
 export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = false, meshError = '', context = 'design', run = null, inspection }: {
   preview: ReferencePreview | null; project: OutrunnerProject; mesh?: MeshPreview | null; meshBusy?: boolean; meshError?: string;
@@ -18,6 +19,12 @@ export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = fa
   const [angle, setAngle] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [rpm, setRpm] = useState(18);
+  const [toothPoles, setToothPoles] = useState(false);
+  const drive = useMemo<PhaseDrive>(() => ({ mode: 'fixed_phase_currents',
+    fixedCurrentsA: project.analysis.loaded_currents_A as [number, number, number],
+    currentAmplitudeA: Math.max(...project.analysis.loaded_currents_A.map(Math.abs)),
+    currentAngleDeg: 0, currentAngleReference: 'q_axis', commutationAdvanceDeg: 0, axisOffsetDeg: 0, poleCount: 14,
+  }), [project.analysis.loaded_currents_A]);
   const [meshMode, setMeshMode] = useState<PublicMeshDisplayMode>('geometry');
   const [edges, setEdges] = useState(true);
   const [hoveredMesh, setHoveredMesh] = useState<PublicMeshElementSelection | null>(null);
@@ -47,12 +54,13 @@ export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = fa
   return <section className="viewport viewport-cad viewport-cad-grid public-motor-viewport outrunner-motor-viewport" aria-label="Outrunner motor viewport">
     {view !== 'field' && <div className="viewport-label viewport-label-cad">SPM 14p / 12s · outer rotor</div>}
     {view === '2d' && <><div className="public-viewport-stage public-viewport-stage-2d"><MotorCanvas geometry={geometry} mesh={null} mode="geometry"
-      layer={layer} rotorAngleDeg={-angle} windingType="concentrated" selectedComponent={selected} onComponentSelect={setSelected} navigationSlot={navigationSlot} /></div>
+      layer={layer} rotorAngleDeg={angle} windingType="concentrated" selectedComponent={selected} onComponentSelect={setSelected} navigationSlot={navigationSlot}
+      phaseDrive={drive} showToothPoles={toothPoles} previewRpm={rpm} /></div>
       <div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">
         <span><i className="phase-a" />A</span><span><i className="phase-b" />B</span><span><i className="phase-c" />C</span><span>⊙ out · ⊗ in</span>
       </div></>}
     {view === '3d' && <div className="public-viewport-stage public-viewport-stage-3d"><ReferenceMotor3D geometry={geometry}
-      resetSignal={reset} rotorAngleDeg={-angle} explodedAmount={0} onComponentSelect={setSelected} /></div>}
+      resetSignal={reset} rotorAngleDeg={angle} explodedAmount={0} onComponentSelect={setSelected} /></div>}
     {view === 'mesh' && <div className="public-viewport-stage public-viewport-stage-2d"><MotorCanvas geometry={geometry} mesh={mesh} mode="mesh"
       layer="none" meshDisplayMode={meshMode} showMeshEdges={edges} meshQualities={quality.qualities} meshQualityThreshold={quality.threshold}
       navigationSlot={navigationSlot} onMeshElementHover={setHoveredMesh} />
@@ -91,8 +99,10 @@ export function OutrunnerViewport({ preview, project, mesh = null, meshBusy = fa
           <button aria-label="Reset motor preview" onClick={() => { setPlaying(false); setAngle(0); }}>■</button>
           <label className="outrunner-angle-control">Speed <input className="outrunner-preview-rpm" aria-label="Preview speed (RPM)" type="number" min="1" max="300" value={rpm}
             onChange={(event) => { const value = event.target.valueAsNumber; if (Number.isFinite(value) && value > 0 && value <= 300) setRpm(value); }} />RPM</label>
-          <label className="outrunner-angle-control">Rotor position <input aria-label="Rotor position CCW mechanical degrees" type="range"
-          min="0" max="360" step="0.1" value={angle} onChange={(event) => { setPlaying(false); setAngle(event.target.valueAsNumber); }} /><output>{angle.toFixed(1)}° CCW</output></label></>}
+          {view === '2d' && <><button className="public-dock-toggle" aria-pressed={layer === 'phases'} onClick={() => setLayer(current => current === 'phases' ? 'windings' : 'phases')}>Phases</button>
+            <button className="public-dock-toggle" aria-pressed={toothPoles} onClick={() => setToothPoles(value => !value)}>Tooth poles</button></>}
+          <label className="outrunner-angle-control">Rotor position <input aria-label="Rotor position CW mechanical degrees" type="range"
+          min="0" max="360" step="0.1" value={angle} onChange={(event) => { setPlaying(false); setAngle(event.target.valueAsNumber); }} /><output>{angle.toFixed(1)}° CW</output></label></>}
       </div>
     </div>}
   </section>;

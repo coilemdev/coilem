@@ -20,6 +20,8 @@ const openFixture = async () => {
   await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
   await page.getByRole('menuitem', { name: /LRK outrunner 14p/ }).click();
   await page.getByRole('region', { name: 'Outrunner motor viewport' }).waitFor();
+  await page.waitForFunction(() => ![...document.querySelectorAll('button')].find(button => button.textContent === 'Continue to Solve')?.disabled);
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 };
 const waitMesh = gap => page.waitForFunction(expected => {
   const label = document.querySelector('.viewport-cad-status')?.textContent || '';
@@ -30,9 +32,28 @@ try {
   await page.goto(base);
   await page.evaluate(({ retained, legacy }) => localStorage.setItem(`coilem.outrunner.run:${legacy.project.fixture_id}`, JSON.stringify({ run_id: retained, ...legacy })), { retained, legacy });
   await openFixture();
-  const angle = page.getByLabel('Rotor position CCW mechanical degrees');
+  const angle = page.getByLabel('Rotor position CW mechanical degrees');
+  const magnetProfile = () => page.locator('canvas[aria-label="geometry motor view, none layer"]').evaluate(canvas => {
+    const context = canvas.getContext('2d'), { width, height } = canvas;
+    const pixels = context.getImageData(0, 0, width, height).data;
+    const radius = Math.min(width, height)*.85*13.5/30.78;
+    return Array.from({ length: 720 }, (_, i) => {
+      const radians = i*Math.PI/360;
+      const x = Math.round(width/2+radius*Math.cos(radians)), y = Math.round(height/2+radius*Math.sin(radians));
+      const index = (y*width+x)*4;
+      return pixels[index]-pixels[index+2];
+    });
+  });
+  const initialProfile = await magnetProfile();
+  await angle.fill('5');
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const turnedProfile = await magnetProfile();
+  const errorForShift = shift => initialProfile.reduce((sum, value, i) => sum+(value-turnedProfile[(i+shift+720)%720])**2, 0);
+  const clockwiseError = errorForShift(10), counterclockwiseError = errorForShift(-10);
+  assert.ok(clockwiseError < counterclockwiseError*.6, `magnet pixels must move clockwise: ${clockwiseError} vs ${counterclockwiseError}`);
+  receipt.clockwise_magnet_pixels = { clockwiseError, counterclockwiseError };
   await page.getByRole('button', { name: 'Play motor preview', exact: true }).click();
-  await page.waitForFunction(() => Number(document.querySelector('input[aria-label="Rotor position CCW mechanical degrees"]')?.value) > 10);
+  await page.waitForFunction(() => Number(document.querySelector('input[aria-label="Rotor position CW mechanical degrees"]')?.value) > 10);
   await page.getByRole('button', { name: 'Pause motor preview', exact: true }).click();
   assert.ok(Number(await angle.inputValue()) > 10);
   receipt.design_play = true;
@@ -75,10 +96,12 @@ try {
   assert.notEqual(heatHashes[0], heatHashes[1]);
   receipt.actual_field_heat_sha256 = heatHashes;
   await shot('field-angle-24');
+  assert.equal(await page.getByLabel('Field playback direction').inputValue(), 'clockwise');
   await page.getByRole('button', { name: 'Play field solution', exact: true }).click();
-  await page.waitForFunction(() => Number(document.querySelector('input[aria-label="Solved field position"]')?.value) > 24, null, { timeout: 120000 });
+  await page.waitForFunction(() => Number(document.querySelector('input[aria-label="Solved field position"]')?.value) < 24, null, { timeout: 120000 });
   await page.getByRole('button', { name: 'Pause field solution', exact: true }).click();
   receipt.field_playback = true;
+  receipt.clockwise_preview_and_field_playback = true;
   console.log('PASS legacy 49-point restore and real changing solved-field playback');
   await page.getByRole('button', { name: /Results/ }).first().click();
   await page.getByRole('tab', { name: 'Field solution', exact: true }).click();
