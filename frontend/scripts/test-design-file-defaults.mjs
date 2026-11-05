@@ -142,3 +142,11 @@ const upstreamNotice = (await readFile(new URL('../../THIRD_PARTY_NOTICES.md', i
 assert.equal(PYLEECAN_REFERENCE_NOTICE.license_text.trim(), upstreamNotice, 'standalone designs must carry the complete upstream license');
 assert.equal(JSON.parse(serializeDesignFile(cloneDefaultConfig(), 'Ordinary motor')).reference_notice, undefined);
 console.log('both Pyleecan reference cases preserve source identity and fixed model on save/reopen');
+
+// The rotor layout survives save and reopen; inner rotors stay unmarked, as
+// the backend omits the field for them.
+const outer = { ...cloneDefaultConfig(), rotor_layout: 'outer' };
+assert.equal(parseDesignFile(serializeDesignFile(outer, 'Outrunner')).config.rotor_layout, 'outer');
+assert.equal(parseDesignFile(serializeDesignFile(cloneDefaultConfig(), 'Inrunner')).config.rotor_layout, undefined);
+assert.equal(JSON.parse(serializeDesignFile(cloneDefaultConfig(), 'Inrunner')).rotor_layout, undefined);
+console.log('rotor layout preserved on save/reopen');

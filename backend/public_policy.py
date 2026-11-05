@@ -9,6 +9,7 @@ from pydantic import ValidationError
 
 from backend.magneto2d_adapter import get_magneto2d_winding_support_error
 from backend.models import MotorConfig
+from backend.rotor_layout import is_outer_rotor
 
 SUPPORTED_PUBLIC_IPM_TOPOLOGIES = frozenset({"flat_buried", "v_shape"})
 # Experimental rotor families: not public support and no qualification claim.
@@ -260,7 +261,7 @@ def public_config_support_error(
 
     if config.topology == "IPM":
         ipm_topology = str(config.rotor.ipm_topology or "flat_buried")
-        experimental = allow_experimental_rotors or experimental_rotors_enabled() or config.geometry_reference == "pyleecan_prius_2004"
+        experimental = allow_experimental_rotors or experimental_rotors_enabled() or config.geometry_reference is not None
         accepted = SUPPORTED_PUBLIC_IPM_TOPOLOGIES | (EXPERIMENTAL_IPM_TOPOLOGIES if experimental else frozenset())
         if ipm_topology not in accepted:
             return PublicConfigError(
@@ -273,6 +274,13 @@ def public_config_support_error(
             "solve_params is required for native mesh and solve requests.",
             field="solve_params",
         )
+
+    if is_outer_rotor(config):
+        if solver_id == "elmer":
+            return PublicConfigError("Outer-rotor designs use the built-in Magneto2D solver.", field="solver")
+        if require_solve_params:
+            # Lifted once the field boundary, magnet re-tag and torque body are layout-aware.
+            return PublicConfigError("Solving outer-rotor designs is not available yet.", field="rotor_layout")
 
     if solver_id == "elmer" and config.solve_options is not None and config.solve_options.cogging_torque:
         return PublicConfigError(

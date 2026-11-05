@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from backend.models import MotorConfig
+from backend.reference_models import reference_model
 
 # v3: config.materials joined the payload. The solve-mesh artifact's physics
 # contract embeds material KEYS per region (e.g. "magnet:N42",
@@ -83,10 +84,9 @@ def build_topology_geometry_provenance(
         winding_payload["coil_span"] = coil_span
 
     reference = {}
-    if _value(config, "geometry_reference") == "pyleecan_prius_2004":
-        from backend.reference_models.prius import geometry_asset_sha256
-
-        reference = {"geometry_reference": "pyleecan_prius_2004", "geometry_asset_sha256": geometry_asset_sha256()}
+    model = reference_model(_value(config, "geometry_reference"))
+    if model is not None:
+        reference = {"geometry_reference": model.reference_id, "geometry_asset_sha256": model.geometry_asset_sha256()}
 
     return {
         "schema_version": TOPOLOGY_PROVENANCE_SCHEMA_VERSION,

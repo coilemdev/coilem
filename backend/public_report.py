@@ -54,6 +54,7 @@ from backend.models.performance import (
     MAGNET_TEMPERATURE_STATUS_REASON,
     PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 )
+from backend.reference_models import reference_model
 from backend.report_numbers import format_report_number
 
 PUBLIC_REPORT_SCHEMA = "coilem.single_run_report.v1"
@@ -165,6 +166,11 @@ def _kt_rms(summary: Mapping[str, Any]) -> float | None:
     if isinstance(kt, bool) or not isinstance(kt, (int, float)) or not math.isfinite(kt):
         return None
     return kt * math.sqrt(2)
+
+
+def _current_angle_label(geometry_reference: Any) -> str:
+    reference = reference_model(geometry_reference)
+    return reference.current_angle_label if reference is not None else "Current angle"
 
 
 def _plain(value: Any) -> str:
@@ -803,13 +809,9 @@ def _design_setting_groups(config: Mapping[str, Any]) -> list[tuple[str, list[tu
         ),
         ("Analyses", _setting_group(_mapping(config.get("solve_options")), ())),
     ]
-    if config.get("geometry_reference") == "pyleecan_prius_2004":
-        groups.insert(0, ("Published software reference", [
-            ("Case ID", _plain(config.get("reference_case"))),
-            ("Geometry reference", "pyleecan_prius_2004"),
-            ("Current angle convention", "Pyleecan d-axis Phi0"),
-            ("Magnet temperature", f"{_pdf_text(solve_params.get('magnet_temperature_C'))} C"),
-        ]))
+    reference = reference_model(config.get("geometry_reference"))
+    if reference is not None and reference.report_settings is not None:
+        groups.insert(0, ("Published software reference", reference.report_settings(config, solve_params)))
     return [(title, entries) for title, entries in groups if entries]
 
 
@@ -1776,7 +1778,7 @@ def build_public_run_pdf(
                     ),
                     (
                         "Commutation advance" if six_step else (
-                            "Pyleecan d-axis Phi0" if _mapping(request.get("resolved_config")).get("geometry_reference") else "Current angle"
+                            _current_angle_label(_mapping(request.get("resolved_config")).get("geometry_reference"))
                         ),
                         f"{_pdf_text(solve_params.get('commutation_advance_deg') if six_step else solve_params.get('current_angle_deg'))} deg",
                     ),

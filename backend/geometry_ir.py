@@ -13,6 +13,9 @@ from typing import Literal
 
 from backend.geometry_drawer import MotorGeometry, compute_geometry
 from backend.models import MotorConfig
+from backend.models.config import RotorLayout
+from backend.reference_models import reference_model
+from backend.rotor_layout import require_inner_rotor
 from backend.solver_environment import solver_setting
 from backend.winding_utils import (
     SlotLayerAssignment,
@@ -129,6 +132,7 @@ class GeometryIR:
     slot_count: int
     regions: tuple[GeometryIRRegion, ...]
     metadata: dict[str, float | int | str | None] = field(default_factory=dict)
+    rotor_layout: RotorLayout = "inner"
 
     def validation_report(self) -> GeometryIRValidationReport:
         return validate_geometry_ir(self)
@@ -141,10 +145,12 @@ def build_geometry_ir(
 ) -> GeometryIR:
     """Build the shared geometry IR from a motor configuration."""
 
+    if not config.geometry_reference:
+        require_inner_rotor(config, "the parametric geometry generator yet")
     geom = geom or compute_geometry(config)
-    if config.geometry_reference == "pyleecan_prius_2004":
-        from backend.reference_models.prius import build
-        return build(config, geom)
+    reference = reference_model(config)
+    if reference is not None:
+        return reference.build_ir(config, geom)
     topology = str(config.topology).upper()
     ipm_topology = str(getattr(config.rotor, "ipm_topology", "") or "").lower()
     if topology == "SPM":
