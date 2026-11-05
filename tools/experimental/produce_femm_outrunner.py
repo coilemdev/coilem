@@ -11,6 +11,7 @@ import gzip
 import hashlib
 import json
 import shutil
+import subprocess
 import threading
 import time
 from pathlib import Path
@@ -31,7 +32,6 @@ def write_json(path: Path, data: dict) -> None:
 
 def main() -> None:
     import femm
-    import pythoncom
     import win32com.client
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -40,6 +40,7 @@ def main() -> None:
     parser.add_argument("--samples", type=int, default=48)
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--case-timeout", type=float, default=180)
+    parser.add_argument("--reuse-from", type=Path, help="Copy only identical verified completed requests from a prior producer run")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
     cases = [SweepCase.from_dict(x) for x in json.loads(args.manifest.read_text())["cases"]] if args.manifest else initial_cases(args.samples)
@@ -57,11 +58,44 @@ def main() -> None:
     if manifest_path.exists() and json.loads(manifest_path.read_text()) != json.loads(json.dumps(manifest)):
         raise ValueError("Existing output belongs to a different request")
     write_json(manifest_path, manifest)
+    if args.reuse_from:
+        previous_manifest = json.loads((args.reuse_from/"manifest.json").read_text())
+        if previous_manifest["source_sha256"] != expected:
+            raise ValueError("Reused FEMM sources differ")
+        previous_cases = {x["id"]: x for x in previous_manifest["cases"]}
+        for case in cases:
+            old_folder, new_folder = args.reuse_from/case.id, args.out/case.id
+            if case.to_dict() != previous_cases.get(case.id) and json.loads(json.dumps(case.to_dict())) != previous_cases.get(case.id):
+                continue
+            if new_folder.exists() or not (old_folder/"result.json").exists():
+                continue
+            row = json.loads((old_folder/"result.json").read_text())
+            if row["status"] != "COMPLETE" or row["case"] != previous_cases[case.id]:
+                continue
+            if digest(old_folder/"model.ans.gz") != row["answer_archive_sha256"] or digest(old_folder/"model.fem") != row["model_sha256"]:
+                raise ValueError("Reused reference evidence changed")
+            with gzip.open(old_folder/"model.ans.gz", "rb") as stream:
+                if hashlib.sha256(stream.read()).hexdigest() != row["answer_sha256"]:
+                    raise ValueError("Reused uncompressed answer changed")
+            new_folder.mkdir()
+            for name in ("result.json", "model.fem", "model.ans.gz"):
+                shutil.copy2(old_folder/name, new_folder/name)
+            write_json(new_folder/"reuse.json", {"from": str(old_folder.resolve()), "exact_case_and_evidence_verified": True})
 
     def femm_processes():
-        wmi = win32com.client.GetObject("winmgmts:")
-        query = "SELECT ProcessId,CreationDate FROM Win32_Process WHERE Name='femm.exe'"
-        return {int(p.ProcessId): str(p.CreationDate) for p in wmi.ExecQuery(query)}
+        # Run process inventory outside pyFEMM's COM apartment. Its server
+        # shutdown can invalidate later WMI moniker access in that apartment.
+        command = (
+            "Get-CimInstance Win32_Process -Filter \"Name='femm.exe'\" | "
+            "Select-Object ProcessId,@{Name='Created';Expression={$_.CreationDate.ToUniversalTime().Ticks.ToString()}} | "
+            "ConvertTo-Json -Compress"
+        )
+        process = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", command],
+                                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        rows = json.loads(process.stdout) if process.stdout.strip() else []
+        if isinstance(rows, dict):
+            rows = [rows]
+        return {int(row["ProcessId"]): row["Created"] for row in rows}
 
     before = femm_processes()
     femm.HandleToFEMM = win32com.client.DispatchEx("femm.ActiveFEMM")
@@ -72,19 +106,15 @@ def main() -> None:
     write_json(args.out/"producer-session.json", {"owned_femm_pid": pid, "creation_date": created, "status": "RUNNING"})
 
     def terminate_owned():
-        pythoncom.CoInitialize()
-        try:
-            wmi = win32com.client.GetObject("winmgmts:")
-            for process in wmi.ExecQuery(f"SELECT * FROM Win32_Process WHERE ProcessId={pid}"):
-                if str(process.CreationDate) == created and str(process.Name).lower() == "femm.exe":
-                    # Only the isolated server and solver children born to that
-                    # exact live process are eligible for cleanup.
-                    for child in wmi.ExecQuery(f"SELECT * FROM Win32_Process WHERE ParentProcessId={pid}"):
-                        if str(child.Name).lower() in ("fkn.exe", "triangle.exe"):
-                            child.Terminate()
-                    process.Terminate()
-        finally:
-            pythoncom.CoUninitialize()
+        command = (
+            f"$ownedServer = Get-CimInstance Win32_Process -Filter \"ProcessId={pid} AND Name='femm.exe'\"; "
+            f"if ($ownedServer -and $ownedServer.CreationDate.ToUniversalTime().Ticks.ToString() -eq '{created}') {{ "
+            f"Get-CimInstance Win32_Process -Filter \"ParentProcessId={pid}\" | "
+            "Where-Object { $_.Name -in @('fkn.exe','triangle.exe') } | Invoke-CimMethod -MethodName Terminate | Out-Null; "
+            "$ownedServer | Invoke-CimMethod -MethodName Terminate | Out-Null }"
+        )
+        subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", command],
+                       capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
     try:
         femm.callfemm("setcompatibilitymode(0)")

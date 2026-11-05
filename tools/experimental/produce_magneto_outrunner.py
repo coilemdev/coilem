@@ -5,6 +5,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -43,6 +44,7 @@ def main() -> None:
     parser.add_argument("--nonlinear-tolerance", type=float, default=1e-5)
     parser.add_argument("--family", nargs="*")
     parser.add_argument("--case", nargs="*")
+    parser.add_argument("--reuse-from", type=Path, help="Copy identical completed requests after matching solver/physics policy and raw hashes")
     args = parser.parse_args()
     if not 1e-8 <= args.nonlinear_tolerance <= 1e-4:
         raise ValueError("Nonlinear tolerance outside reviewed range")
@@ -67,6 +69,28 @@ def main() -> None:
     if path.exists() and json.loads(path.read_text()) != json.loads(json.dumps(manifest)):
         raise ValueError("Output already belongs to a different experiment")
     write_json(path, manifest)
+    if args.reuse_from:
+        previous_manifest = json.loads((args.reuse_from/"manifest.json").read_text())
+        if {k: v for k, v in previous_manifest.items() if k != "cases"} != {k: v for k, v in manifest.items() if k != "cases"}:
+            raise ValueError("Reused solver, fixture, material or mesh policy differs")
+        previous_cases = {x["id"]: x for x in previous_manifest["cases"]}
+        for case in cases:
+            old_folder, new_folder = args.reuse_from/case.id, args.out/case.id
+            if json.loads(json.dumps(case.to_dict())) != previous_cases.get(case.id):
+                continue
+            if new_folder.exists() or not (old_folder/"result.json").exists():
+                continue
+            row = json.loads((old_folder/"result.json").read_text())
+            if row["status"] != "COMPLETE" or row["case"] != previous_cases[case.id]:
+                continue
+            for name, expected in row["raw_sha256"].items():
+                with gzip.open(old_folder/(name+".gz"), "rb") as stream:
+                    if hashlib.sha256(stream.read()).hexdigest() != expected:
+                        raise ValueError("Reused field evidence changed")
+            new_folder.mkdir()
+            for name in ("result.json", "problem.json.gz", "field.json.gz", "mesh.json.gz", "stdout.txt", "stderr.txt"):
+                shutil.copy2(old_folder/name, new_folder/name)
+            write_json(new_folder/"reuse.json", {"from": str(old_folder.resolve()), "exact_case_policy_and_evidence_verified": True})
     mesh, previous_angle = None, None
     for case in cases:
         folder = args.out/case.id
