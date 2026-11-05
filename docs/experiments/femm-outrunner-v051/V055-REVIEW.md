@@ -1,6 +1,6 @@
 # Outrunner support — v0.5.5 review scope
 
-Target release: **v0.5.5**. Status: local experimental implementation for developer review. Intended branch: `codex/v055-outrunner`, based on current public `main`. The directory name records the original v0.5.1 validation baseline. Product and native-solver version numbers have not been bumped.
+Target release: **v0.5.5**. Status: local experimental implementation for developer review. Branch: **`codex/v055-outrunner`**, rebased without conflicts onto fetched public `main` **a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f** on 2026-11-05. All 12 replayed patches match the pre-rebase series. The directory name records the original v0.5.1 validation baseline. Product and native-solver version numbers have not been bumped.
 
 ## User-visible behavior
 
@@ -30,4 +30,4 @@ Raw local receipts live under `output/femm-outrunner-review/` (untracked), parti
 
 ## Release decision
 
-The UI build flag and source-checkout backend flag still gate the experimental fixture. Ordinary release bundles exclude the fixture/workspace chunks, and ordinary backend launches omit its routes. Before v0.5.5 publication, developer review must decide the distribution/attribution of the source fixture, experimental availability policy, and which open numerical gates are required. No PR, push, release publication or default release enablement has occurred as part of this local work.
+The UI build flag and source-checkout backend flag still gate the experimental fixture. Ordinary release bundles exclude the fixture/workspace chunks, and ordinary backend launches omit its routes. Before v0.5.5 publication, developer review must decide the distribution/attribution of the source fixture, experimental availability policy, and which open numerical gates are required. The publication snapshot inventory is intentionally still the upstream inventory: at feature commit 78d8c2a, 14 listed files have changed and 55 new tracked files are unlisted. The existing snapshot gate therefore does not pass this local experimental tree; updating the reviewed distribution inventory is required before merge/release, rather than weakening the gate. No PR, push, release publication or default release enablement has occurred as part of this local work.

@@ -1,6 +1,18 @@
 # Local workstream checkpoint
 
-Updated 2026-11-05. Branch `codex/femm-outrunner-v051`, worktree `C:/bench/coilem-outrunner-v051-20261105`, current release base `9369b776ed6f29b9920ce65f77ae2e868db5e9cc`. Original numerical measurements used `cf6e8a90e4a33c34dc7ff81886e353b9950961d5`; preserve that historical provenance in the comparison report. User authorized independent work and as many useful **local** commits as needed. Do not push, open a PR, merge, publish, change a release, or modify the original dirty checkout.
+Updated 2026-11-05. Branch **`codex/v055-outrunner`**, worktree `C:/bench/coilem-outrunner-v051-20261105`, current main base **`a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f`**. Target release: **v0.5.5**; see [developer review scope](V055-REVIEW.md). Original numerical measurements used `cf6e8a90e4a33c34dc7ff81886e353b9950961d5`; preserve that historical provenance in the comparison report. User authorized independent work, local commits and rebasing onto latest main. The user will open a PR for developer review later. Do not push, open a PR, merge, publish, enable a default release feature, or modify the original dirty checkout.
+
+## Latest: running modes, exploded view and current-main rebase
+
+Fetched current `origin/main` and rebased all 12 local outrunner commits onto **a4f9f4d** without conflicts. `git range-diff` confirms all replayed patches are identical, and the complete backend/frontend/experimental-tool/test trees match the pre-main-rebase tip. Local feature commit is now **78d8c2a**. Backup **codex/outrunner-before-main-v055-20261105** preserves pre-rebase tip **125c913**; the earlier v0.5.1 branch remains local. No remote branch was changed.
+
+The normal LRK example now defaults to **Ideal six-step (120°)**, 4 A plateau. Operating point also offers **Sinusoidal** (RMS/peak and current angle) and **Fixed-current benchmark**. The separate benchmark example, bundled original `.coilem`, and legacy files with no mode retain the original fixed 0/+4/−4 A source currents. Running modes advance clockwise with geometry-derived excitation axes and source-channel mapping; benchmark signs and evidence remain unchanged. No PWM/controller model is implied. Phases/Tooth poles and run-plan traces follow the selected actual excitation. The 3D view now has the shared Exploded toggle/slider, part visibility and camera fitting for the separated assembly.
+
+Verification: **158 targeted Python tests passed**, Ruff clean, **39 frontend/backend excitation vectors matched**. Six independent native Preview solves at 0°/60°/120° CW electrical produced 55.364/55.437/55.393 mN·m for six-step 4 A plateau and 47.963/48.037/47.993 mN·m for sinusoidal 4 A peak. Browser checks passed all mode choices, saved-mode roundtrip, fresh running-mode solves, original fixed benchmark **−55.4093 mN·m**, shared workflow, and exploded controls. The final 100% exploded camera framing was visually checked. Full `npm run build` passed again after the main rebase, including both TypeScript projects and the default 36-file emitted-bundle audit. These selected running points do not constitute complete commutated-waveform or hardware qualification.
+
+The existing publication snapshot manifest has not been refreshed for this local experiment: 14 tracked entries differ and 55 new tracked files are unlisted at feature commit 78d8c2a. The developer review must cover the source fixture's distribution/attribution and publication inventory before merge/release. Do not describe the branch as passing the publication gate or weaken that gate. Default bundles and backend launches still exclude the opt-in experiment.
+
+Current user UI: **http://127.0.0.1:58151/**, launcher **15416**, actual server **22764**, immutable bundle `output/femm-outrunner-review/ui-v055-outrunner-bundle`, original `ui-smoke-data` root. All seven user runs were COMPLETE before the owned server was refreshed. The promoted UI passed default/mode/100%-explode/benchmark checks with zero page errors (`operating-modes-browser/promoted-v055-receipt.json`); screenshot reviewed. This supersedes every older server reference below. Do not overwrite the active bundle. Local receipts: `operating-modes-native-check-v2`, `operating-modes-browser`, `ui-workflow-smoke`, and `v055-main-public-build.log`.
 
 ## Rebase onto current release/v0.5.1
 
@@ -66,8 +78,8 @@ The first overly strict linear/nonlinear solve attempts failed and remain in `sa
 Use the original checkout's existing runtime environment explicitly:
 
 ```powershell
-& 'C:\Users\14845\Documents\GitHub\coilem-launch\.venv\Scripts\python.exe' -m pytest tests/test_experimental_outrunner.py -q
-& 'C:\Users\14845\Documents\GitHub\coilem-launch\.venv\Scripts\python.exe' -m tools.experimental.compare_femm_outrunner --answer output/femm-outrunner-review/published-point/WholeMotor.ans --binary solvers/magneto2d/target/release/magneto2d.exe --mesh native --out output/femm-outrunner-review/native-g025-v1 --gap-size-mm 0.025
+python -m pytest tests/test_experimental_outrunner.py -q
+python -m tools.experimental.compare_femm_outrunner --answer output/femm-outrunner-review/published-point/WholeMotor.ans --binary solvers/magneto2d/target/release/magneto2d.exe --mesh native --out output/femm-outrunner-review/native-g025-v1 --gap-size-mm 0.025
 ```
 
 The default `python` is Conda and has pyFEMM, win32com, NumPy, and Matplotlib. The `.venv` has the application's pinned dependencies and pytest/ruff but no pyFEMM or Matplotlib. The isolated COM producer prototype is `output/femm-outrunner-review/reference_probe.py`; promote it to a reproducible development tool before using it for a sweep. Its COM `DispatchEx` avoids attaching to a user's session. Initial Lua attempt/correction records remain alongside the successful `.ans` files.
