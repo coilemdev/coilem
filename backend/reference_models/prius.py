@@ -311,7 +311,8 @@ def exact_currents(artifact, config, rotor_angle_deg):
     return artifact
 
 
-def build(config, geom):
+def build(config, geom, rotor_angle_deg=None):
+    # The rotor angle is read back from the turned magnets in geom.
     from backend.geometry_drawer import compute_geometry
 
     baseline = compute_geometry(config)
@@ -402,6 +403,7 @@ def model():
         exact_currents=exact_currents,
         solver_overrides=solver_overrides,
         postprocess_report=postprocess_report,
+        owns_flux_linkage=True,
         published_winding=published_winding,
         published_winding_label="published Pyleecan phase/sign matrix",
         wire=WireSpec(wire_bare_diameter_mm=0.912, strands_in_hand=13, end_turn_extension_mm=19.366),

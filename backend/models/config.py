@@ -354,7 +354,7 @@ class MaterialsConfig(BaseModel):
     # Keep in sync with backend.material_catalog.MAGNET_PROPERTIES keys. Unknown
     # grades must 422 at config parse time — never crash post-solve demag.
     magnet_grade: Literal[
-        "N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB", "ORNL_Prius_2004_NdFeB"
+        "N35", "N42", "N48", "N52", "N48SH", "Ferrite_Y30", "Prius_2004_NdFeB", "ORNL_Prius_2004_NdFeB", "LRK_NdFeB_40MGOe"
     ] = Field(default="N42", description="Magnet grade")
     conductor: Literal["copper", "aluminum"] = Field(
         default="copper", description="Conductor material"
@@ -697,10 +697,10 @@ class MotorConfig(BaseModel):
     """Complete motor configuration."""
 
     schema_version: str = Field(default="1.0", description="Schema version")
-    geometry_reference: Optional[Literal["pyleecan_prius_2004"]] = Field(
+    geometry_reference: Optional[Literal["pyleecan_prius_2004", "lrk_12s14p"]] = Field(
         default=None, description="Pinned published geometry; its geometry, winding and materials are fixed"
     )
-    reference_case: Optional[Literal["prius-2004-tutorial-bemf-v1", "prius-2004-loaded-torque-v1"]] = None
+    reference_case: Optional[Literal["prius-2004-tutorial-bemf-v1", "prius-2004-loaded-torque-v1", "lrk-12s14p-fixed-current-v1"]] = None
     topology: Literal["IPM", "SPM"] = Field(default="IPM", description="Motor topology")
     # Declared before stator and rotor so their validators can read it.
     rotor_layout: RotorLayout = Field(

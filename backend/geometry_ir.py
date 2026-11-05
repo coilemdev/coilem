@@ -142,15 +142,23 @@ def build_geometry_ir(
     config: MotorConfig,
     *,
     geom: MotorGeometry | None = None,
+    rotor_angle_deg: float | None = None,
 ) -> GeometryIR:
-    """Build the shared geometry IR from a motor configuration."""
+    """Build the shared geometry IR from a motor configuration.
+
+    Parametric rotors arrive already turned in ``geom``; a published
+    reference may need the native rotor angle itself.
+    """
 
     if not config.geometry_reference:
         require_inner_rotor(config, "the parametric geometry generator yet")
     geom = geom or compute_geometry(config)
     reference = reference_model(config)
     if reference is not None:
-        return reference.build_ir(config, geom)
+        ir = reference.build_ir(config, geom, rotor_angle_deg)
+        if not reference.owns_flux_linkage:
+            _require_generic_winding_map(config, ir)
+        return ir
     topology = str(config.topology).upper()
     ipm_topology = str(getattr(config.rotor, "ipm_topology", "") or "").lower()
     if topology == "SPM":
@@ -706,6 +714,24 @@ def slot_layer_split(config: MotorConfig) -> SlotLayerSplit | None:
     if concentrated_uses_tooth_coils(config.stator.slot_count, config.rotor.pole_count):
         return "tangential"
     return None
+
+
+def _require_generic_winding_map(config: MotorConfig, ir: GeometryIR) -> None:
+    """A reference's winding regions must carry the generic map's phase and direction.
+
+    The solver bins slot regions by that map for flux linkage, back-EMF and
+    d/q. A mismatch would leave torque right and those silently wrong.
+    """
+
+    for region in ir.regions:
+        if region.kind != "SlotWinding":
+            continue
+        _, phase, direction, slot, *layer = (region.source_group or "").split(":")
+        layer_index = int(layer[0].removeprefix("layer")) if layer else 1
+        expected = slot_layer_assignments(config, int(slot.removeprefix("slot")))[layer_index - 1]
+        if (expected.phase, expected.direction) != (phase, direction):
+            raise ValueError(f"Reference winding {region.region_id} is {phase}/{direction}; the generic map has "
+                             f"{expected.phase}/{expected.direction}")
 
 
 def slot_layer_assignments(config: MotorConfig, slot_index: int) -> tuple[SlotLayerAssignment, ...]:

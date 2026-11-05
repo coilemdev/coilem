@@ -38,6 +38,7 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/public_material_catalog.py",
     "backend/public_policy.py",
     "backend/reference_models/prius.py",
+    "backend/reference_models/lrk.py",
     "backend/solver/__init__.py",
     "backend/solver/_helpers.py",
     "backend/solver_contract.py",
@@ -54,6 +55,8 @@ PHYSICS_DATA_SOURCES = (
     "materials/electrical-steel/M350-50A.csv",
     "backend/reference_models/pyleecan_prius_2004.json",
     "backend/reference_models/pyleecan_prius_2004_config.json",
+    "backend/reference_models/lrk_12s14p_source.json",
+    "backend/reference_models/lrk_12s14p_config.json",
 )
 SOLVER_LOCK_FILE = "solvers/magneto2d/Cargo.lock"
 SOLVER_SOURCE_DIR = "solvers/magneto2d/src"
