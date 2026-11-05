@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 17262,
-      "sha256": "f31548ecf1bcfcb06a7c24a5fe8252c107b3be2edd8162f8a74501a22acd7e9a"
+      "bytes": 17464,
+      "sha256": "d5f187e4c49a3fc4e895f95c6d74629473ca66f204a1296b1dca6ce1df552ba7"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 8617,
-      "sha256": "981420a333581824c694f0997a2b68574694f814f309e5b92c600a0ca2abcaf0"
+      "bytes": 9110,
+      "sha256": "2e033db76f11dc266691041e30fcdc9a766971ecb6f69c2f65e6f65f57b7778c"
     },
     {
       "path": "SECURITY.md",
@@ -510,8 +510,8 @@
     },
     {
       "path": "backend/performance_report.py",
-      "bytes": 46906,
-      "sha256": "affad22641d1e90ccb54d404498598d413ec58271fcb359cf44bcdbfb6947eff"
+      "bytes": 46885,
+      "sha256": "81405571d9faa31ba6df6a265158a977bad90dcb1f64eb3c07b4121ba5c27d8f"
     },
     {
       "path": "backend/platform_info.py",
@@ -6415,13 +6415,13 @@
     },
     {
       "path": "frontend/package-lock.json",
-      "bytes": 64005,
-      "sha256": "1d6a19d5865d27923023a3cce865bcc0d05e99e33ad4bce152cb246c72a847c3"
+      "bytes": 64759,
+      "sha256": "faae05ff692a80a1964a2c5c63c76699e9a28913a8c0f5dc668f463cbf263a51"
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2687,
-      "sha256": "e0e373cc1cf26656eb12ee28a860fea99bfd5b38f5bf46e82bdd0bcf3700faf5"
+      "bytes": 2876,
+      "sha256": "57268451c729cda2d56b330883bcf316efac8722caaba46a3c01a3782d6bb6dc"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 24049,
-      "sha256": "79670a1f78cd2fe09adca5b908641f4c2fbf4bb5d0f289b1d228ae322ab05f7c"
+      "bytes": 24083,
+      "sha256": "0151bd392f6a6d3221f45158b64a57e464cc25172b6c132462a08c0bdc63364f"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -11645,23 +11645,23 @@
     },
     {
       "path": "frontend/playwright.performance.config.ts",
-      "bytes": 2384,
-      "sha256": "9a80831312e0dbfec1c477ed6d57f206f62bb74563265e4cc74869e88333cd6c"
+      "bytes": 2661,
+      "sha256": "e10e23f29663b51604ff76cacafdd2993f4af5e5722764b220c28b0aaf94f3dc"
     },
     {
       "path": "frontend/tests/performance-acceptance.spec.ts",
-      "bytes": 14076,
-      "sha256": "77e02cc8669d60244cc6cf3c00214e1b4c837d5768385f64ad05f98954a72a90"
+      "bytes": 16687,
+      "sha256": "ff22f123733e1688fc5297c9248d4475d1363da6e0b8ac81da8ce9a4943bae8e"
     },
     {
       "path": "tools/check_performance_acceptance.py",
-      "bytes": 4470,
-      "sha256": "81fa47e431e516b7119688b7250ba3beb59cb630d7e53afd4de3be680c67c5a2"
+      "bytes": 20497,
+      "sha256": "595330c53eac5723906ff9b50270fb0c814158cd838dc36869529b0d359f3761"
     },
     {
       "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
-      "bytes": 8795,
-      "sha256": "a1026740c2b1a7b1221142a822cfcc19345c67c09a744bedc5c351d98906a209"
+      "bytes": 13072,
+      "sha256": "d0dd36ff5dbb2e94b5c151a5c49d368305122cdabe2f22b8b6863f8abe9a0ac3"
     },
     {
       "path": "docs/benchmarks/performance-acceptance-139-142/macos/spm-8p12s/request.json",
@@ -12182,6 +12182,51 @@
       "path": "tools/repair_benchmark_shard.py",
       "bytes": 8765,
       "sha256": "0b5579d1270a5785728897ce31870ef0481c38e0ef8a67f1cb08d6c9642d40d4"
+    },
+    {
+      "path": "frontend/playwright.performance-harness.config.ts",
+      "bytes": 357,
+      "sha256": "97cc02ed9dc12995e2444de1a6741fc53d1626275a86a53873dfb04b296b45b1"
+    },
+    {
+      "path": "frontend/scripts/test-performance-lifecycle.mjs",
+      "bytes": 4120,
+      "sha256": "8d5a72b94e1a000fb88a9837ae21e0ac51cdb8776481b461365a886dadb34f03"
+    },
+    {
+      "path": "frontend/tests/performance-capture.ts",
+      "bytes": 1987,
+      "sha256": "8d4475b4ba343b81c9abe2dc83087f55a37936135d44e268b55bc9847c30ef58"
+    },
+    {
+      "path": "frontend/tests/performance-harness.spec.ts",
+      "bytes": 1376,
+      "sha256": "e6c104dfea109bded1fcba0a7ecc6b3f8da31547f703416e90b151bc52cd2e32"
+    },
+    {
+      "path": "frontend/tests/performance-lifecycle.ts",
+      "bytes": 741,
+      "sha256": "5af91393e38ff21a0326227a89e822942e59bd727b0c1a378a96ba0c9569a11c"
+    },
+    {
+      "path": "frontend/tests/performance-reporter.ts",
+      "bytes": 2295,
+      "sha256": "8e2a37fcbe0d7c36d54880fab0341eb0f73277a2f7cf7d05678773976801f2ab"
+    },
+    {
+      "path": "frontend/tsconfig.performance.json",
+      "bytes": 302,
+      "sha256": "50d76469fdd1d55fdaae303787618aa618a068dd77803e24fac5460feeb4ed19"
+    },
+    {
+      "path": "tests/test_performance_acceptance.py",
+      "bytes": 9340,
+      "sha256": "85ed68592fda1a1b1c1833c61c39ee12aad00143cfb34f85e057f3318319a3fd"
+    },
+    {
+      "path": "tools/regenerate_performance_csvs.py",
+      "bytes": 5202,
+      "sha256": "454cd7ae92aa020718623b1ffb09b67132e96cb8c98db68f953aeea9fd52bda3"
     },
     {
       "path": "tests/test_benchmark_evidence_checksums.py",
@@ -33086,6 +33131,66 @@
       "path": "tests/test_pyleecan_reference_fixture.py",
       "source_sha256": "9a3cda1f70f308a49e872b8e0577bbb8583bf66508ace0c183537856017c4d36",
       "reason": "Bind historical cogging rejection to immutable evidence independently of refreshed live records."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "f31548ecf1bcfcb06a7c24a5fe8252c107b3be2edd8162f8a74501a22acd7e9a",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "981420a333581824c694f0997a2b68574694f814f309e5b92c600a0ca2abcaf0",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "backend/performance_report.py",
+      "source_sha256": "affad22641d1e90ccb54d404498598d413ec58271fcb359cf44bcdbfb6947eff",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
+      "source_sha256": "a1026740c2b1a7b1221142a822cfcc19345c67c09a744bedc5c351d98906a209",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "1d6a19d5865d27923023a3cce865bcc0d05e99e33ad4bce152cb246c72a847c3",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/package.json",
+      "source_sha256": "e0e373cc1cf26656eb12ee28a860fea99bfd5b38f5bf46e82bdd0bcf3700faf5",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/playwright.performance.config.ts",
+      "source_sha256": "9a80831312e0dbfec1c477ed6d57f206f62bb74563265e4cc74869e88333cd6c",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "frontend/tests/performance-acceptance.spec.ts",
+      "source_sha256": "77e02cc8669d60244cc6cf3c00214e1b4c837d5768385f64ad05f98954a72a90",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "tools/check_performance_acceptance.py",
+      "source_sha256": "81fa47e431e516b7119688b7250ba3beb59cb630d7e53afd4de3be680c67c5a2",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
+    },
+    {
+      "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "79670a1f78cd2fe09adca5b908641f4c2fbf4bb5d0f289b1d228ae322ab05f7c",
+      "reason": "Harden acceptance isolation, export validation and evidence retention without changing measured physics."
     },
     {
       "base_commit": "cf6e8a90e4a33c34dc7ff81886e353b9950961d5",

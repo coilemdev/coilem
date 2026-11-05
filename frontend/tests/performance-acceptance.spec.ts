@@ -6,6 +6,8 @@ import os from 'node:os';
 import { resolve, join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { formatSignificant as significant } from '../src/public/numberFormat';
+import { screenshotPanel } from './performance-capture';
+import type { TorqueSpeedAnalysisResult } from '../src/public/performance';
 
 const examples = [
   { id: 'spm-8p12s', menu: 'SPM 8p/12s' },
@@ -28,12 +30,16 @@ async function section(page: Page, key: string) {
   if (await header.getAttribute('aria-expanded') !== 'true') await header.click();
 }
 
+
 for (const example of examples.filter((item) => requested.includes(item.id))) {
   test(`Standard map and Performance view: ${example.id}`, async ({ page, browser }) => {
     const output = join(evidenceRoot, example.id);
-    await mkdir(output, { recursive: true });
+    await mkdir(evidenceRoot, { recursive: true });
+    // Never combine a new attempt with stale passing receipts/downloads.
+    await mkdir(output);
     const save = async (name: string, value: unknown) => writeFile(join(output, name), `${JSON.stringify(value, null, 2)}\n`);
-    const measured = recheckDirectory
+    await save('attempt.json', { example: example.id, started_utc: new Date().toISOString(), phase: 'setup' });
+    const measured: TorqueSpeedAnalysisResult | null = recheckDirectory
       ? JSON.parse(await readFile(resolve(recheckDirectory, example.id, 'analysis.json'), 'utf8')) : null;
     if (measured) {
       expect(measured.map.points).toHaveLength(70);
@@ -101,14 +107,46 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const existingScopes = await readdir(mapDirectory).catch(() => []);
     const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
     await expect(run).toBeEnabled({ timeout: 120_000 });
+    if (measured) {
+      const request = JSON.parse(await readFile(resolve(recheckDirectory!, example.id, 'request.json'), 'utf8'));
+      const status = await page.request.post('/performance/map/status', { data: {
+        request, map: { preset: 'standard', peak_current_A: measured.settings.limits.peak_current_A },
+      } });
+      expect(status.ok(), 'recheck map identity preflight').toBe(true);
+      const stored = await status.json();
+      expect(stored.scope_key, 'recheck needs the original map identity; never start a cold grid').toBe(measured.map.scope_key);
+      expect(stored.map).toEqual(measured.map);
+    }
     if (setupOnly) {
       console.log(`${example.id}: setup only; no solve or acceptance result recorded`);
       return;
     }
+    if (measured) {
+      // Check the UI's actual submitted configuration as well as the archived
+      // request above. Forward the real request/response only after confirming
+      // it has the seeded covering map; never turn a recheck into a cold run.
+      await page.route('**/solve/stream', async (route) => {
+        try {
+          const request = route.request().postDataJSON();
+          const status = await page.request.post('/performance/map/status', { data: {
+            request, map: { preset: 'standard', peak_current_A: measured.settings.limits.peak_current_A },
+          } });
+          expect(status.ok()).toBe(true);
+          const stored = await status.json();
+          expect(stored.scope_key, 'submitted configuration must reuse the measured map').toBe(measured.map.scope_key);
+          expect(stored.map).toEqual(measured.map);
+        } catch (error) {
+          await route.abort();
+          throw error;
+        }
+        await route.continue();
+      });
+    }
     const submitted = page.waitForRequest((request) => new URL(request.url()).pathname === '/solve/stream');
-    const finished = page.waitForResponse((response) => new URL(response.url()).pathname === '/solve/stream', { timeout: 85 * 60_000 });
+    const finished = page.waitForResponse((response) => new URL(response.url()).pathname === '/solve/stream', { timeout: 110 * 60_000 });
     const startedUtc = new Date().toISOString();
     const started = performance.now();
+    await save('attempt.json', { example: example.id, started_utc: startedUtc, phase: 'request_started', recheck: !!measured });
     await run.click();
     const request = (await submitted).postDataJSON();
     await save(measured ? 'recheck-request.json' : 'request.json', request);
@@ -129,9 +167,10 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const completed = events.find((event) => event.kind === 'complete');
     expect(completed, 'real solve must finish').toBeTruthy();
     const result = completed!.data;
-    const analysis = result.torque_speed_analysis;
+    const analysis: TorqueSpeedAnalysisResult = result.torque_speed_analysis;
     expect(analysis).toBeTruthy();
     await save('analysis.json', analysis);
+    await save('attempt.json', { example: example.id, started_utc: startedUtc, phase: 'stream_completed', browser_request_wall_s: wallSeconds });
     const progress = events.filter((event) => event.kind === 'progress' && event.data.stage === 'torque_speed_map').map((event) => event.data);
     if (!measured) {
       await save('map-progress.json', progress);
@@ -150,6 +189,7 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
       expect(existingScopes).toContain(analysis.map.scope_key);
       expect(analysis.map).toEqual(measured.map);
       expect(progress).toEqual([]);
+      await save('recheck-progress.json', progress);
       await save('recheck.json', {
         source_commit: source, measured_map_sha256: sha256(JSON.stringify(measured.map)),
         returned_map_sha256: sha256(JSON.stringify(analysis.map)), grid_resolved_again: false,
@@ -169,29 +209,37 @@ for (const example of examples.filter((item) => requested.includes(item.id))) {
     const curves = await torque.locator('path[stroke]').evaluateAll((paths) => paths.map((path) => path.getAttribute('d')));
     expect(curves).toHaveLength(2);
     expect(curves.every((path) => path && path.length > 100 && !/NaN|Infinity/.test(path))).toBe(true);
-    const peak = analysis.envelope.curves.find((curve: { limit: string }) => curve.limit === 'peak');
-    const efficiency = analysis.efficiency_map.efficiency_pct.flat().filter((value: unknown) => typeof value === 'number');
+    const peak = analysis.envelope!.curves.find((curve) => curve.limit === 'peak')!;
+    const efficiency = analysis.efficiency_map!.efficiency_pct.flat().filter((value): value is number => typeof value === 'number');
     const stats = await panel.locator('.performance-stats').innerText();
     expect(stats).toContain(significant(peak.torque_Nm[0]));
     expect(stats).toContain(significant(peak.peak_power_W / 1000));
     expect(stats).toContain(Math.max(...efficiency).toFixed(1));
-    await panel.screenshot({ path: join(output, 'torque-efficiency.png'), animations: 'disabled' });
+    await screenshotPanel(page, join(output, 'torque-efficiency.png'));
     const quantity = panel.getByRole('group', { name: 'Envelope quantity', exact: true });
     await quantity.getByRole('button', { name: 'Power', exact: true }).click();
     await expect(panel.getByRole('img', { name: 'Power against speed for the drive limits', exact: true })).toBeVisible();
     const efficiencyChart = panel.getByRole('img', { name: /^Efficiency over speed and torque/ });
     await expect(efficiencyChart).toBeVisible();
     expect(await efficiencyChart.locator('rect[fill]').count()).toBe(efficiency.length);
-    await panel.screenshot({ path: join(output, 'power-efficiency.png'), animations: 'disabled' });
+    await screenshotPanel(page, join(output, 'power-efficiency.png'));
     await panel.getByText('Map details: Ld, Lq and torque check', { exact: true }).click();
     await expect(panel.locator('.performance-inductance tbody tr')).toHaveCount(6);
-    await panel.screenshot({ path: join(output, 'map-details.png'), animations: 'disabled' });
+    await screenshotPanel(page, join(output, 'map-details.png'));
+    let reportRequest: unknown;
+    page.on('request', (request) => {
+      if (new URL(request.url()).pathname === '/performance/report/csv') {
+        reportRequest = request.postDataJSON();
+      }
+    });
     for (const [label, filename] of [['PDF report', 'performance.pdf'], ['Performance CSV', 'performance.csv'], ['id/iq table', 'idiq.csv'], ['Map points CSV', 'map.csv']]) {
       await panel.getByRole('button', { name: 'Export', exact: true }).click();
       const pending = page.waitForEvent('download');
       await panel.getByRole('group', { name: 'Downloads', exact: true }).getByRole('button', { name: label, exact: true }).click();
       await (await pending).saveAs(join(output, filename));
     }
+    expect(reportRequest, 'capture the actual report inputs').toBeTruthy();
+    await save('report-request.json', reportRequest);
     expect(errors).toEqual([]);
     expect(git('rev-parse', 'HEAD')).toBe(source);
     expect(git('status', '--porcelain', '--untracked-files=no')).toBe('');
