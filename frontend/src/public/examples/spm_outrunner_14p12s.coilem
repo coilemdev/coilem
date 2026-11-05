@@ -13,7 +13,7 @@
     "ID_mm": 10.0,
     "slot_count": 12,
     "stack_length_mm": 6.0,
-    "slot_opening_mm": 2.0,
+    "slot_opening_mm": 4.0,
     "tooth_width_mm": 2.0,
     "yoke_thickness_mm": 2.0,
     "tooth_shoe_enabled": false,
