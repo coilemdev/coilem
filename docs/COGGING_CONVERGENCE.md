@@ -14,6 +14,12 @@ and fixes the defaults:
 The data is in [COGGING_CONVERGENCE.json](COGGING_CONVERGENCE.json): every
 run's per-method numbers and its WST and contour waveforms.
 
+The angular convergence study below is historical evidence from one macOS
+8p/12s motor. It is not a sampling guarantee for other slot/pole combinations.
+The later [Windows comparison](benchmarks/cogging-windows-20261103/README.md)
+covers the proposed twelve-fixture matrix; it preserves two normal-mesh
+YELLOW outcomes and does not register or qualify Phase E.
+
 ## Setup
 
 - **Design:** the app's 8p/12s example,
@@ -89,7 +95,14 @@ What the table shows:
 exact and the fundamental within 2.6% of 96 positions, at 25 field solves.
 High accuracy's 48 brings the fundamental within 0.3%. Preview's 12 is within
 9% on the fundamental and keeps the peak-to-peak here, but it resolves only
-up to the fifth harmonic, so it is for iteration.
+up to the fifth harmonic, so it is for iteration. This favorable peak-to-peak
+result belongs to the 8p/12s example. Selecting every other sample of the
+retained 24-position FEMM waveform for `spm_4p12s_simple__tight_airgap__cogging`
+reduces p-p from 0.480780 to 0.450594 N·m, a 6.28% underestimate. This is an
+angular-sampling diagnostic on existing reference data, not a new field solve
+or a comparison of native mesh presets. Preview can miss peaks and alias
+higher harmonics; check Standard/High accuracy and angular convergence for
+the design of interest.
 
 ## Mesh
 
@@ -137,7 +150,7 @@ memory down on a nearly full disk.
 | --- | ---: | ---: | --- |
 | `spm_8p12s_example_shoed__cogging`, corner refinement on | 1.3341 | 0.3422 | The Standard run above |
 | The same, as registered (corner refinement off) | 1.2567 | 0.3415 | End mismatch 9.8% |
-| The other 11 Phase E cases | — | — | Still to run: the first was stopped at 4.5 GB free |
+| The other 11 Phase E cases | — | — | Not measured in this macOS step study; see the later Windows matrix |
 
 ## Not covered
 

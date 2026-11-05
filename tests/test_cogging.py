@@ -391,7 +391,8 @@ def test_pdf_and_csv_do_not_turn_an_unavailable_end_mismatch_into_zero() -> None
 
 
 @pytest.mark.weekly
-def test_a_real_solve_of_the_example_returns_its_cogging_period(tmp_path, monkeypatch) -> None:
+@pytest.mark.parametrize("current", [0.0, 30.0], ids=["zero-current", "loaded"])
+def test_a_real_solve_of_the_example_returns_its_cogging_period(tmp_path, monkeypatch, current) -> None:
     """The public pipeline end to end, at Preview: the record reaches the result and the period closes."""
 
     from backend.solver import Magneto2DSolver
@@ -399,6 +400,7 @@ def test_a_real_solve_of_the_example_returns_its_cogging_period(tmp_path, monkey
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
     config = _config("quick", back_emf=False, thd_analysis=False)
     config.solve_params.mesh_density = "coarse"
+    config.solve_params.current_amplitude_A = current
     result = Magneto2DSolver(launch_surface=True).solve(config)
     record = result.summary.cogging
     waveform = result.cogging_torque_waveform
@@ -410,4 +412,94 @@ def test_a_real_solve_of_the_example_returns_its_cogging_period(tmp_path, monkey
     limits = _example_sweep()["limits"]
     assert record.endpoint_mismatch_Nm <= limits["endpoint_mismatch_fraction"] * record.peak_to_peak_Nm
     assert abs(record.mean_Nm) <= limits["mean_fraction"] * record.peak_to_peak_Nm
-    assert record.peak_to_peak_of_loaded_pct is not None
+    if current == 0:
+        assert record.peak_to_peak_of_loaded_pct is None
+        assert record.loaded_comparison_reason == "No loaded torque (0 A run)."
+        raw = config.model_dump(mode="json")
+        args = {"project": raw, "request": {"resolved_config": raw}, "result": result.model_dump(mode="json"), "material": {}, "manifest": {}}
+        text = " ".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(build_public_run_pdf(**args))).pages)
+        assert "No loaded torque (0 A run)." in text
+        rows = list(csv.reader(io.StringIO(build_public_run_csv(**args).decode())))
+        assert ["cogging", "peak_to_peak_of_loaded_pct", "%", "", ""] in rows
+    else:
+        assert record.peak_to_peak_of_loaded_pct is not None
+
+
+def test_launch_surface_flips_the_cogging_waveform_before_summarizing_it():
+    from backend.solver import Magneto2DSolver
+    from backend.solver._helpers import _aggregate_per_angle_mesh_sweep
+
+    config = _config(back_emf=False, thd_analysis=False, flux_density=False)
+    native = {
+        'config_summary': {}, 'mesh_info': {'num_triangles': 1000},
+        'operating_point': {'resolved_phase_current_peak_a': 20.0}, 'solve_info': {'total_time_ms': 10},
+        'results': {'torque_nm': 2.0, 'torque_weighted_stress_nm': 2.0, 'peak_b_tooth_t': 1.0, 'peak_b_yoke_t': 1.0},
+    }
+    report = _aggregate_per_angle_mesh_sweep(config, [native, native], None, [0.0, 180.0],
+                                             mesh_generation_time_ms=0, include_visual_frames=False)
+    angles, torque = _analytic(24)
+    torque = [value + 0.02 for value in torque]
+    torque[-1] += 0.003  # sign flip must preserve the independent endpoint mismatch
+    report['sweep'].update(_cogging_sweep_series([
+        {'results': {'torque_nm': value, 'torque_weighted_stress_nm': value}} for value in torque
+    ], angles, independent_endpoints=True))
+    original = deepcopy(report)
+    mathematical = Magneto2DSolver.build_result_from_reports(config, report, native)
+    public = Magneto2DSolver.build_result_from_reports(config, report, native, launch_surface=True)
+    assert mathematical.cogging_torque_waveform.torque_Nm == pytest.approx(torque)
+    assert public.cogging_torque_waveform.torque_Nm == pytest.approx([-value for value in torque])
+    assert public.summary.cogging.mean_Nm == pytest.approx(-mathematical.summary.cogging.mean_Nm)
+    for field in ('peak_to_peak_Nm', 'peak_Nm', 'first_harmonic_Nm', 'endpoint_mismatch_Nm'):
+        assert getattr(public.summary.cogging, field) == pytest.approx(getattr(mathematical.summary.cogging, field))
+    assert public.summary.cogging_torque_Nm == public.summary.cogging.peak_to_peak_Nm
+    assert report == original, 'postprocessing a stored report must not change its original sign or samples'
+
+
+@pytest.mark.parametrize('route', ['/solve/validate', '/solve', '/solve/stream'])
+def test_public_elmer_rejects_cogging_before_discovery_or_solver_launch(monkeypatch, route):
+    from backend.public_main import app
+    from backend.public_routes import solve as routes
+
+    def forbidden(*args, **kwargs):
+        pytest.fail('unsupported public cogging must not discover or launch Elmer')
+
+    monkeypatch.setenv('COILEM_ENABLE_ELMER', '1')
+    monkeypatch.setattr(routes, 'discover_elmer', forbidden)
+    monkeypatch.setattr(routes, '_create_public_solver', forbidden)
+    config = _config()
+    response = TestClient(app, base_url='http://127.0.0.1').post(route, json={'config': config.model_dump(mode='json'), 'solver': 'elmer'})
+    if route.endswith('/stream'):
+        assert response.status_code == 200
+        assert 'event: error' in response.text and 'event: complete' not in response.text
+        error = json.loads(next(line[6:] for line in response.text.splitlines() if line.startswith('data: ')))
+    else:
+        assert response.status_code == 400
+        error = response.json()['detail']
+    assert error['error_code'] == 'UNSUPPORTED_LAUNCH_CONFIG'
+    assert error['field'] == 'solve_options.cogging_torque'
+    assert 'Cogging' in error['message'] or 'cogging' in error['message']
+
+
+@pytest.mark.parametrize('has_cogging', [True, False], ids=['cogging', 'legacy'])
+def test_saved_comparison_preserves_optional_cogging_without_reprocessing(tmp_path, has_cogging):
+    from backend.solve_workspace import SolveWorkspace
+
+    result = _stored_result()
+    if not has_cogging:
+        result['summary'].pop('cogging')
+        result.pop('cogging_torque_waveform')
+    config = _config().model_dump(mode='json')
+    workspace = SolveWorkspace(tmp_path)
+    location = workspace.begin_run(project_name='Cogging comparison', config=config,
+                                   submitted_request={'config': config}).complete(result)
+    original = (location.path / 'result.json').read_bytes()
+    compared = SolveWorkspace(tmp_path).load_run_comparison(location.project_slug, location.run_id)['result']
+    assert compared['summary'].get('cogging') == result['summary'].get('cogging')
+    waveform = compared['cogging_torque_waveform']
+    if has_cogging:
+        assert waveform['electrical_angle_deg'] == result['cogging_torque_waveform']['electrical_angle_deg']
+        # Comparison reads the CSV's existing 12-significant-digit samples.
+        assert waveform['torque_Nm'] == pytest.approx(result['cogging_torque_waveform']['torque_Nm'], rel=1e-11, abs=1e-14)
+    else:
+        assert waveform is None
+    assert (location.path / 'result.json').read_bytes() == original

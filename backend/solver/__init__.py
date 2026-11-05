@@ -663,6 +663,9 @@ def _angle_mesh_cache_scope_key(
             if clockwise_positive
             else "counterclockwise_positive_solver"
         ),
+        # A rotated artifact cached with reuse on is not an independently
+        # meshed position when a developer later disables reuse.
+        "slot_pitch_mesh_reuse": gmsh_mesh_reuse_enabled(),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, default=str).encode("utf-8")

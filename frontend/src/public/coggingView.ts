@@ -85,7 +85,9 @@ export function coggingPlanNote(
   const span = period ? ` (${degrees(period.elecDeg)} electrical, ${degrees(period.mechDeg)} mechanical)` : '';
   const sampling = positions !== null ? `, at ${positions} positions plus the repeated end` : '';
   const corners = cornerRefinement ? '' : ' Corner refinement is off, which makes cogging much noisier; turn it on under Advanced options.';
-  return `Adds a no-current sweep over one cogging period${span}${sampling}. Experimental: no cogging benchmark gate yet.${corners}`;
+  const preview = positions === 12
+    ? ' Preview is for iteration: 12 positions can miss peaks and higher harmonics. Check convergence with Standard or High accuracy.' : '';
+  return `Adds a no-current sweep over one cogging period${span}${sampling}. Experimental: no cogging benchmark gate yet.${preview}${corners}`;
 }
 
 /** The card's content, or null for a run without a cogging sweep. */
