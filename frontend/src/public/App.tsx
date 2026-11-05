@@ -1670,7 +1670,9 @@ export function App() {
     void import('./outrunner/project').then(({ DEFAULT_OUTRUNNER_PROJECT }) => setOutrunnerProject(DEFAULT_OUTRUNNER_PROJECT));
   } : undefined;
   if (outrunnerProject && OutrunnerWorkspace) return <Suspense fallback={<p>Opening local experiment…</p>}>
-    <OutrunnerWorkspace initialProject={outrunnerProject} onHome={() => setOutrunnerProject(null)} />
+    <OutrunnerWorkspace initialProject={outrunnerProject} appVersion={appVersion} connectionStatus={connectionStatus}
+      onHome={() => { setOutrunnerProject(null); setShowLanding(false); setView('design'); }}
+      onOpenOtherDesign={(file) => { setOutrunnerProject(null); void openDesignFile(file); }} />
   </Suspense>;
 
   if (tutorialsView) {

@@ -546,7 +546,7 @@ function drawGeometry(
   const concentratedWinding = windingType === 'concentrated' && slotCount >= 3;
   const origin = map([0, 0]);
   const [, boundingRadiusMm] = radialExtentMm(points);
-  const outerRadiusPx = Math.max(1, (Number(data.metadata.stator_od_mm || 0) / 2 || boundingRadiusMm) * scale);
+  const outerRadiusPx = Math.max(1, (Number(data.metadata.outer_radius_mm || 0) || Number(data.metadata.stator_od_mm || 0) / 2 || boundingRadiusMm) * scale);
   const pendingMarkers: Array<{ x: number; y: number; radius: number; outOfPage: boolean; ring: string }> = [];
   interface ComponentPath {
     points: Array<[number, number]>;

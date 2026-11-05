@@ -14,7 +14,7 @@ const PARTS: Array<{ id: Part; label: string }> = [
   { id: 'rotor', label: 'Rotor' }, { id: 'magnets', label: 'Magnets' }, { id: 'airgap', label: 'Air gap' },
 ];
 interface Props {
-  config: MotorConfig;
+  config?: MotorConfig;
   geometry?: GeometryPreview | null;
   resetSignal: number;
   rotorAngleDeg: number;
@@ -38,10 +38,10 @@ export function ReferenceMotor3D(props: Props) {
   const [hidden, setHidden] = useState<ReadonlySet<Part>>(() => new Set());
   const hiddenRef = useRef(hidden);
   hiddenRef.current = hidden;
-  const preview = geometry === undefined ? (fetched?.config === config ? fetched.preview : null) : geometry;
+  const preview = geometry === undefined ? (fetched && fetched.config === config ? fetched.preview : null) : geometry;
 
   useEffect(() => {
-    if (geometry !== undefined) return;
+    if (geometry !== undefined || !config) return;
     const abort = new AbortController();
     setError('');
     void fetch(`${PUBLIC_API_BASE}/preview`, {
@@ -64,8 +64,10 @@ export function ReferenceMotor3D(props: Props) {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(MOTOR_3D_FOV, 1, .1, 10000);
-    const radius = config.stator.OD_mm / 2, depth = config.stator.stack_length_mm;
-    const assembled = new THREE.Vector3(...motor3DCameraOffset(config));
+    const radius = Number(preview.metadata.outer_radius_mm) || (config ? config.stator.OD_mm / 2 : 1);
+    const depth = Number(preview.metadata.stack_length_mm) || config?.stator.stack_length_mm || 1;
+    const cameraOffset: [number, number, number] = config ? motor3DCameraOffset(config) : [radius * 1.35, -radius * 1.65, radius * 3.6];
+    const assembled = new THREE.Vector3(...cameraOffset);
     const controls = new OrbitControls(camera, canvas);
     controls.enablePan = true;
     controls.minDistance = radius * 1.2;
