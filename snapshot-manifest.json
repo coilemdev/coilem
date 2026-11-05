@@ -12135,8 +12135,8 @@
     },
     {
       "path": "tests/test_qualification_carry.py",
-      "bytes": 6317,
-      "sha256": "e0a77dc54f12feb6cf0cd9017b94d2ba7b9ba8c2e84bdd507fd69c4e741962ff"
+      "bytes": 7213,
+      "sha256": "dfcf5dcd43e0d73a64d96919fe567640708309156ff45e45fa2e59074c60d4de"
     },
     {
       "path": "tests/test_qualification_publish.py",
@@ -12145,8 +12145,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 14731,
-      "sha256": "2bd1ca7c85568d58c26ce9061fbe571596a521afc944b973036e445704e7ee58"
+      "bytes": 15145,
+      "sha256": "c2650bbaa95656b554290b26cb62107101a0effa0f2527bbe0c5ef986aa9747d"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -32788,6 +32788,18 @@
       "path": "docs/BENCHMARK_AUTOMATION.md",
       "source_sha256": "875f940330ed5a1f8cf819b660cd0ad017bccdb27bbfd42aa46f833ad9634d89",
       "reason": "Allow independent platform rejoins and headroom for legacy artifact transfers (#194)."
+    },
+    {
+      "base_commit": "6ad8f3d6eef8855042e349bb954e1d6793bc6c0d",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "e0a77dc54f12feb6cf0cd9017b94d2ba7b9ba8c2e84bdd507fd69c4e741962ff",
+      "reason": "Report reference-review reasons separately from numerical movement (#194)."
+    },
+    {
+      "base_commit": "6ad8f3d6eef8855042e349bb954e1d6793bc6c0d",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "2bd1ca7c85568d58c26ce9061fbe571596a521afc944b973036e445704e7ee58",
+      "reason": "Report reference-review reasons separately from numerical movement (#194)."
     }
   ]
 }

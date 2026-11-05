@@ -107,6 +107,21 @@ def test_moved_values_emit_table_and_do_not_publish(platform_inputs, tmp_path):
     assert (tmp_path / 'review/comparison.csv').is_file() and not (tmp_path / 'review/publication').exists()
 
 
+def test_changed_reference_requires_review_even_when_numbers_match_and_moves_are_accepted(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    path = platforms['windows-x86_64'] / 'joined-suite/report/benchmark_summary.json'
+    changed = read(path)
+    changed['run']['identity']['source_files']['backend/geometry_ir.py'] = 'changed reference model'
+    write(path, changed)
+    output = tmp_path / 'reference-review'
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=output, accept_moved=True)
+    assert result['status'] == 'REFERENCE_REVIEW_REQUIRED' and not result['moved_values']
+    review = (output / 'REVIEW.md').read_text()
+    assert review.startswith('# Reference review required\n')
+    assert 'backend/geometry_ir.py' in review and 'cannot override' in review
+    assert 'values moved' not in review and not (output / 'publication').exists()
+
+
 def test_missing_platform_or_mixed_candidates_cannot_publish(platform_inputs, tmp_path):
     platforms, root = platform_inputs
     with pytest.raises(ValueError, match='Both platform'):

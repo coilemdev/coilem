@@ -200,12 +200,19 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
                 'accepted_moved_values': bool(all_moved and accept_moved),
                 'approved_policy_sha256': sha(baseline / POLICY), 'measurements_mutated': False}
     write(output / 'decision.json', decision)
-    heading = 'Qualification evidence ready' if status == 'READY' else 'Owner review required: values moved'
+    heading = {'READY': 'Qualification evidence ready',
+               'REFERENCE_REVIEW_REQUIRED': 'Reference review required',
+               'OWNER_REVIEW_REQUIRED': 'Owner review required: values moved'}[status]
     lines = [f'# {heading}', '', f'Measured candidate: `{candidate}`.', '',
-             '[Full old / new / approved / FEMM comparison](comparison.csv)', '',
-             '| Platform | Case | Metric | Baseline | Old | New |', '|---|---|---|---|---:|---:|']
-    lines.extend(f'| {d["platform"]} | {d["case"]} | {d["metric"]} | {d["baseline"]} | {d["old"]} | {d["new"]} |'
-                 for d in all_moved)
+             '[Full old / new / approved / FEMM comparison](comparison.csv)', '']
+    if reference_errors:
+        lines.extend(['Reference compatibility needs owner review. Accepting moved values cannot override this check.', ''])
+        lines.extend(f'- {error["platform"]}: {error["reason"]}' for error in reference_errors)
+        lines.append('')
+    if all_moved:
+        lines.extend(['| Platform | Case | Metric | Baseline | Old | New |', '|---|---|---|---|---:|---:|'])
+        lines.extend(f'| {d["platform"]} | {d["case"]} | {d["metric"]} | {d["baseline"]} | {d["old"]} | {d["new"]} |'
+                     for d in all_moved)
     (output / 'REVIEW.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     if status != 'READY':
         return decision
