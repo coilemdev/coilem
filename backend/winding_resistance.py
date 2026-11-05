@@ -45,22 +45,18 @@ from typing import Sequence
 from backend.geometry_ir import GeometryIR, build_geometry_ir
 from backend.geometry_ir_tessellation import polygon_centroid, tessellate_ir_region
 from backend.models import MotorConfig, WindingCoil
-from backend.models.config import WireSpec
 from backend.models.performance import (
     PHASE_RESISTANCE_DERIVED_WIRE_STATUS_REASON,
     PHASE_RESISTANCE_STATUS_REASON,
     WindingResistance,
 )
+from backend.reference_models import reference_model
 
 REFERENCE_TEMPERATURE_C = 20.0
 # A common design guideline for random-wound round wire, not a standard;
 # set winding.wire.slot_fill_limit for needle-wound or hairpin coils.
 DEFAULT_COPPER_FILL_LIMIT = 0.45
 _SLOT_SIDE = re.compile(r":slot(\d+)(?::layer(\d+))?$")
-# Conductors published with a pinned reference design (see the module docstring).
-REFERENCE_WIRES = {
-    "pyleecan_prius_2004": WireSpec(wire_bare_diameter_mm=0.912, strands_in_hand=13, end_turn_extension_mm=19.366),
-}
 
 
 @dataclass(frozen=True)
@@ -99,9 +95,11 @@ def winding_resistance(
     paths = winding.parallel_paths
     series_turns = stator.slot_count * conductors_per_slot / 6.0
     wire = winding.wire
-    published = wire is None and config.geometry_reference in REFERENCE_WIRES
+    # A pinned reference design brings its published conductor (see the module docstring).
+    reference = reference_model(config)
+    published = wire is None and reference is not None and reference.wire is not None
     if published:
-        wire = REFERENCE_WIRES[config.geometry_reference]
+        wire = reference.wire
     fill_limit = wire.slot_fill_limit if wire is not None and wire.slot_fill_limit is not None else DEFAULT_COPPER_FILL_LIMIT
     notes: list[str] = []
 

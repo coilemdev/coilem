@@ -22,7 +22,9 @@ from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.logging_utils import log_event
 from backend.material_contract import electrical_steel_preflight_records
 from backend.models import MotorConfig, SolveOptionsConfig
+from backend.reference_models import reference_model
 from backend.resources import PACKAGED_BIN_DIR, packaged_file_path
+from backend.rotor_layout import is_outer_rotor
 from backend.solver_environment import solver_environment_provenance, solver_process_environment, solver_setting
 from backend.sweep_planning import loaded_angle_grid, loaded_sweep_plan
 from backend.topology_provenance import (
@@ -532,6 +534,9 @@ def get_magneto2d_support_error(config: MotorConfig) -> str | None:
     non_spm_error = _non_spm_import_lane_error(config)
     if non_spm_error is not None:
         return non_spm_error
+    if is_outer_rotor(config) and config.solve_params.rotor_rotation_model != "remesh_per_step":
+        # The fixed-mesh lane re-tags magnets in a band outside an inner rotor.
+        return "Outer-rotor designs require rotor_rotation_model='remesh_per_step'."
 
     return None
 
@@ -653,6 +658,8 @@ def build_magneto2d_payload(config: MotorConfig) -> dict[str, Any]:
                 ),
             }
         )
+    if is_outer_rotor(config):
+        payload["rotor_layout"] = "outer"
     return payload
 
 
@@ -770,11 +777,9 @@ def _magneto2d_env_overrides(config: MotorConfig) -> dict[str, str]:
     }.get(str(torque_method), "contour")
     overrides["MAGNETO2D_COGGING_TORQUE_METHOD"] = cogging_method_env
 
-    if config.geometry_reference == "pyleecan_prius_2004":
-        from backend.reference_models.prius import magnet_br_factor
-
-        overrides.update(COILEM_MAGNET_BR_SCALE="0" if armature_only_field else str(magnet_br_factor(config)), MAGNETO2D_NONLINEAR_TOL="1e-8",
-                         MAGNETO2D_NEWTON_TOL="1e-9", MAGNETO2D_NONLINEAR_MAX_ITER=str(config.solve_params.max_nonlinear_iterations or 200))
+    reference = reference_model(config)
+    if reference is not None and reference.solver_overrides is not None:
+        overrides.update(reference.solver_overrides(config, armature_only_field))
 
     return overrides
 
@@ -1281,11 +1286,9 @@ def run_magneto2d_report(
             and report_text.rstrip().endswith("}")
         )
         report["solver_environment"] = solver_environment
-        if config.geometry_reference == "pyleecan_prius_2004":
-            from backend.reference_models.prius import extract_winding_report, report_reference_sources
-
-            report_reference_sources(report, config, solve_mesh_artifact)
-            extract_winding_report(report, config, solve_mesh_artifact)
+        reference = reference_model(config)
+        if reference is not None and reference.postprocess_report is not None:
+            reference.postprocess_report(report, config, solve_mesh_artifact)
             appendable = False
         if persist_artifacts_dir is not None:
             shutil.copy2(input_path, persist_artifacts_dir / f"{prefix}_input.json")

@@ -2,10 +2,12 @@
 
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_serializer, model_validator
 
 from backend.custom_materials import CustomSteel, is_custom_steel_id
 from backend.models.performance import DriveControl, DriveLimits
+
+RotorLayout = Literal["inner", "outer"]
 
 MIN_IPM_MAGNET_WIDTH_MM = 0.1
 MIN_SPM_MAGNET_WIDTH_MM = 5.0
@@ -14,19 +16,50 @@ MIN_SPM_MAGNET_WIDTH_MM = 5.0
 MIN_STATOR_SLOT_OPENING_MM = 1.93
 MIN_STATOR_TOOTH_WIDTH_MM = 2.0
 
+# Outer rotors cover RC and drone outrunners, so the schema floors on the
+# stator and rotor fields are theirs. MotorConfig re-applies these original
+# inner-rotor floors, which leaves every inrunner limit unchanged.
+INNER_LAYOUT_FLOORS_MM = {
+    "stator": {
+        "OD_mm": 30.0,
+        "ID_mm": 20.0,
+        "stack_length_mm": 10.0,
+        "slot_opening_mm": MIN_STATOR_SLOT_OPENING_MM,
+        "tooth_width_mm": MIN_STATOR_TOOTH_WIDTH_MM,
+        "yoke_thickness_mm": 2.0,
+    },
+    "rotor": {"OD_mm": 15.0, "magnet_thickness_mm": 2.0},
+}
+OUTER_SPM_MIN_MAGNET_WIDTH_MM = 1.0
+
+
+def _check_inner_layout_floors(section: str, model: BaseModel) -> None:
+    for field, floor in INNER_LAYOUT_FLOORS_MM[section].items():
+        value = getattr(model, field)
+        if value < floor:
+            raise ValueError(
+                f"{section}.{field} must be at least {floor:g} mm for an inner-rotor (inrunner) design"
+            )
+
 
 class StatorConfig(BaseModel):
     """Stator geometry and properties."""
 
-    OD_mm: float = Field(..., ge=30, le=500, description="Outer diameter in mm")
-    ID_mm: float = Field(..., ge=20, le=450, description="Inner diameter (bore) in mm")
+    OD_mm: float = Field(
+        ..., ge=10, le=500,
+        description="Outer diameter in mm; the air-gap face (tooth tips) of an outer-rotor stator",
+    )
+    ID_mm: float = Field(
+        ..., ge=2, le=450,
+        description="Inner diameter in mm: the bore of an inner-rotor stator, or the hub bore of an outer-rotor stator",
+    )
     slot_count: int = Field(..., ge=6, le=96, description="Number of slots")
-    stack_length_mm: float = Field(..., ge=10, le=300, description="Stack length in mm")
+    stack_length_mm: float = Field(..., ge=2, le=300, description="Stack length in mm")
     slot_opening_mm: float = Field(
         ...,
-        ge=MIN_STATOR_SLOT_OPENING_MM,
+        ge=0.5,
         le=50,
-        description="Bore-side slot opening width in mm",
+        description="Slot opening width at the air-gap face in mm",
     )
     # Schema v3 made this the physical tooth width at the yoke-side slot body
     # instead of a bore-pitch offset, so the same motor now stores a larger number
@@ -37,11 +70,11 @@ class StatorConfig(BaseModel):
     # range.
     tooth_width_mm: float = Field(
         ...,
-        ge=MIN_STATOR_TOOTH_WIDTH_MM,
+        ge=0.5,
         le=260,
         description="Tooth width at the slot body beside the yoke, in mm",
     )
-    yoke_thickness_mm: float = Field(..., ge=2, le=100, description="Yoke thickness in mm")
+    yoke_thickness_mm: float = Field(..., ge=0.5, le=100, description="Yoke thickness in mm")
     tooth_shoe_enabled: bool = Field(
         default=False, description="Add a widened shoe (tooth tip) at the stator bore."
     )
@@ -92,14 +125,17 @@ class StatorConfig(BaseModel):
 class RotorConfig(BaseModel):
     """Rotor geometry and magnet properties."""
 
-    OD_mm: float = Field(..., ge=15, le=450, description="Outer diameter in mm")
+    OD_mm: float = Field(..., ge=10, le=450, description="Outer diameter in mm")
     ID_mm: Optional[float] = Field(
         default=None,
         ge=0,
         le=440,
-        description="Optional inner diameter in mm",
+        description=(
+            "Inner diameter in mm: the optional shaft bore of an inner rotor, "
+            "or the magnet seat (back-iron inner face) of an outer rotor"
+        ),
     )
-    magnet_thickness_mm: float = Field(..., ge=2, le=50, description="Magnet thickness in mm")
+    magnet_thickness_mm: float = Field(..., ge=0.5, le=50, description="Magnet thickness in mm")
     magnet_width_mm: float = Field(
         ...,
         ge=MIN_IPM_MAGNET_WIDTH_MM,
@@ -666,6 +702,11 @@ class MotorConfig(BaseModel):
     )
     reference_case: Optional[Literal["prius-2004-tutorial-bemf-v1", "prius-2004-loaded-torque-v1"]] = None
     topology: Literal["IPM", "SPM"] = Field(default="IPM", description="Motor topology")
+    # Declared before stator and rotor so their validators can read it.
+    rotor_layout: RotorLayout = Field(
+        default="inner",
+        description="'inner': rotor inside the stator (inrunner); 'outer': rotor outside the stator (outrunner)",
+    )
     stator: StatorConfig = Field(..., description="Stator configuration")
     rotor: RotorConfig = Field(..., description="Rotor configuration")
     winding: WindingConfig = Field(..., description="Winding configuration")
@@ -686,11 +727,31 @@ class MotorConfig(BaseModel):
             raise ValueError("schema_version must be '1.0'")
         return v
 
+    @field_validator("stator")
+    @classmethod
+    def inner_stator_keeps_its_floors(cls, v, info):
+        if info.data and info.data.get("rotor_layout", "inner") == "inner":
+            _check_inner_layout_floors("stator", v)
+        return v
+
     @field_validator("rotor")
     @classmethod
     def rotor_must_fit_in_stator(cls, v, info):
-        """Rotor OD must be less than stator ID."""
-        if info.data and "stator" in info.data and v.OD_mm >= info.data["stator"].ID_mm:
+        """An inner rotor fits the stator bore; an outer rotor's magnets clear the stator OD."""
+        if not info.data:
+            return v
+        if info.data.get("rotor_layout", "inner") == "outer":
+            if v.ID_mm is None:
+                raise ValueError("An outer rotor requires rotor.ID_mm, the magnet seat diameter")
+            magnet_face_mm = v.ID_mm - 2.0 * v.magnet_thickness_mm
+            if "stator" in info.data and magnet_face_mm <= info.data["stator"].OD_mm:
+                raise ValueError(
+                    f"Outer-rotor magnet face ({magnet_face_mm:g}mm, rotor ID minus two magnet "
+                    f"thicknesses) must be larger than stator OD ({info.data['stator'].OD_mm}mm)"
+                )
+            return v
+        _check_inner_layout_floors("rotor", v)
+        if "stator" in info.data and v.OD_mm >= info.data["stator"].ID_mm:
             raise ValueError(
                 f"Rotor OD ({v.OD_mm}mm) must be less than stator ID "
                 f"({info.data['stator'].ID_mm}mm)"
@@ -700,12 +761,28 @@ class MotorConfig(BaseModel):
     @model_validator(mode="after")
     def magnet_width_must_match_topology(self):
         """Keep SPM surface magnets at the legacy floor while allowing narrow IPM slabs."""
-        if self.topology == "SPM" and self.rotor.magnet_width_mm < MIN_SPM_MAGNET_WIDTH_MM:
+        floor = OUTER_SPM_MIN_MAGNET_WIDTH_MM if self.rotor_layout == "outer" else MIN_SPM_MAGNET_WIDTH_MM
+        if self.topology == "SPM" and self.rotor.magnet_width_mm < floor:
             raise ValueError(
                 "rotor.magnet_width_mm must be at least "
-                f"{MIN_SPM_MAGNET_WIDTH_MM:g} mm for SPM surface magnets"
+                f"{floor:g} mm for SPM surface magnets"
             )
         return self
+
+    @model_validator(mode="after")
+    def outer_rotor_is_spm(self):
+        if self.rotor_layout == "outer" and self.topology != "SPM":
+            raise ValueError("Outer-rotor (outrunner) designs support SPM surface magnets only")
+        return self
+
+    @model_serializer(mode="wrap")
+    def omit_inner_rotor_layout(self, handler):
+        # Inner is the historical layout. Leaving it out keeps every existing
+        # config dump, cache key and run record byte-identical.
+        data = handler(self)
+        if data.get("rotor_layout") == "inner":
+            del data["rotor_layout"]
+        return data
 
     @model_validator(mode="after")
     def excitation_contract_must_be_supported(self):
@@ -716,7 +793,7 @@ class MotorConfig(BaseModel):
         if sp.excitation_mode == "ideal_six_step_120":
             if self.topology != "SPM":
                 raise ValueError(
-                    "ideal_six_step_120 excitation is supported only for inner-rotor SPM in the MVP"
+                    "ideal_six_step_120 excitation is supported only for SPM in the MVP"
                 )
             if sp.current_amplitude_convention != "plateau":
                 raise ValueError(
@@ -732,13 +809,17 @@ class MotorConfig(BaseModel):
 
     @model_validator(mode="after")
     def magnet_temperature_requires_coefficients(self):
-        if not self.geometry_reference and self.stator.slot_opening_mm < 2.0:
+        if not self.geometry_reference and self.rotor_layout == "inner" and self.stator.slot_opening_mm < 2.0:
             raise ValueError("Editable designs require slot_opening_mm >= 2 mm")
         if self.solve_params is not None and self.solve_params.magnet_temperature_C is not None:
             if self.geometry_reference:
+                from backend.reference_models import reference_model
+
                 # The pinned reference keeps its published cases.
-                if self.geometry_reference != "pyleecan_prius_2004" or self.solve_params.magnet_temperature_C not in (20, 60):
-                    raise ValueError("The Prius reference runs its magnets at 20 or 60 °C only.")
+                reference = reference_model(self)
+                if self.solve_params.magnet_temperature_C not in reference.magnet_temperatures_C:
+                    temperatures = " or ".join(f"{value:g}" for value in reference.magnet_temperatures_C)
+                    raise ValueError(f"The {reference.label} reference runs its magnets at {temperatures} °C only.")
             else:
                 from backend.magnet_temperature import magnet_temperature_unavailable_reason
 
@@ -748,7 +829,8 @@ class MotorConfig(BaseModel):
         if self.reference_case and not self.geometry_reference:
             raise ValueError("A reference case requires its pinned geometry reference")
         if self.geometry_reference:
-            from backend.reference_models.prius import check_config
-            check_config(self)
+            from backend.reference_models import reference_model
+
+            reference_model(self).check_config(self)
         return self
 
