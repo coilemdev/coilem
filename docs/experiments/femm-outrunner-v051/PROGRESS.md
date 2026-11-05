@@ -48,6 +48,22 @@ The CLI accepts `--reuse-solve-dir` for postprocessing only after checking ident
 
 ## Next independent work
 
+### Active sweep continuation (2026-11-05)
+
+User explicitly requested other operating points, torque and BEMF curves, followed by a `.coilem` example that opens in the UI and reproduces them once cross-angle matching is sound. This extends the original local workstream; preserve both requirements.
+
+- Mesh policy v2 at 0.025 mm completed: 212,890 nodes / 425,228 elements, WST **-0.05531150903 N·m**, linkage errors **-0.2760%, +0.3866%, +0.5386%**. Versus v2 0.05 mm: torque changes about 0.18%, phase linkages change less than 0.006%. Raw evidence: `native-v2-g025`.
+- New resumable tools: `produce_femm_outrunner`, `produce_magneto_outrunner`, `analyze_outrunner_sweep`. Shared explicit cases/derivatives: `backend.experimental.outrunner_sweep`. No app dependency changes.
+- Initial sweep: 48 unique angles plus an independently solved electrical endpoint, both loaded [0,4,-4] and no-load; six signed-angle/motion controls, five current controls, no-load full-turn closure. This is a staged diagnostic; it does NOT fulfill the preregistered 192/384 grids.
+- FEMM uses the full sliding model's OUTER angle (property 11). Reference outer torque = **minus** raw gap integral, fixed before the sweep and checked against physical group-2 rotation. Both results are retained. Off-zero source-mesh WST/sliding differences can exceed source-zero agreement; assess reference discretization uncertainty explicitly.
+- Initial native sweep uses independent Gmsh mesh policy v2, gap 0.05 mm, explicit original source-point steel law. Material spline parity remains unverified.
+- BEMF: zero-current phase linkage, `e=-omega_mechanical*d(lambda)/d(theta_mechanical)`, positive CCW, 1000 rpm normalization. Full spectral derivative (no harmonic truncation) and fourth-order periodic difference sensitivity. Preserve phase order and report line-to-line separately; do not infer terminal connection/Kv.
+- Each completed case has immutable hashed raw fields compressed losslessly, its exact request, convergence and linkage/torque. Resume verifies request/asset/binary identities and evidence hashes. Interrupted directories are renamed and retained. Failed cases require a fresh output directory.
+- The desktop app crashed during initial foreground tools. Two completed FEMM cases survived; processes ended. Sweeps were restarted as hidden detached workers so they can outlive the app: FEMM Python PID **25268**, native Python PID **2276** (verify PID/command before control; they may already have exited). FEMM producer owns one DispatchEx COM server and only cleans its exact PID/creation identity and solver children.
+- Worker logs: `output/femm-outrunner-review/sweep48-femm.log`, `sweep48-femm-error.log`, `sweep48-native.log`, `sweep48-native-error.log`. Case roots: `sweep48-femm`, `sweep48-native`. Inspect logs/results before starting another worker; never run duplicate writers.
+- Resume FEMM with Conda `python -m tools.experimental.produce_femm_outrunner --source-dir output/femm-outrunner-review/source --out output/femm-outrunner-review/sweep48-femm --samples 48`. Resume native with app Python `-m tools.experimental.produce_magneto_outrunner --manifest output/femm-outrunner-review/sweep48-femm/manifest.json --binary solvers/magneto2d/target/release/magneto2d.exe --out output/femm-outrunner-review/sweep48-native --gap-size-mm 0.05`.
+- Planned UI uses a distinct frozen-reference design envelope, never fake inner-rotor dimensions. Public `.coilem` parser currently accepts MotorConfig and one Prius reference only; app paths must explicitly recognize the experimental fixture before ordinary parsing. Gate local UI/backend support behind an opt-in flag; preserve ordinary models and expose exact named analyses/save/reopen.
+
 1. Finish and run focused tests/lint; commit the verified frozen fixture, geometry, diagnostics, and this checkpoint locally.
 2. Run 0.025/0.0125 mm native mesh controls and a solve-tolerance control. Keep body-selected WST, raw contours, and field/linkage evidence distinct.
 3. Promote the FEMM producer; capture +/-outer-motion probes, no-load fields, a current perturbation, and a small initial angle grid. Freeze exact requests and retain failures.
