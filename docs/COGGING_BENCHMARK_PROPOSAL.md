@@ -34,6 +34,24 @@ Both sides' numbers come from `backend/cogging.py`, so they use one definition:
   gate requires a measured closing endpoint, and either waveform missing
   that endpoint makes the comparison INCOMPLETE.
 
+Before the numerical gates, the harness recomputes the candidate's summary
+from its retained waveform and checks the stored peak-to-peak, peak,
+fundamental amplitude, mean, period, position count and harmonic spectrum.
+A recorded endpoint mismatch must also agree; an unavailable endpoint
+diagnostic stays unavailable, since a waveform cannot prove mesh independence.
+Missing, non-finite or inconsistent summary values make the case INCOMPLETE,
+including native-only runs. The harness does not repair or rewrite the record.
+Consistency allows only serialization/platform rounding (relative `1e-9`,
+absolute `1e-12`); the numerical gate bands and registered floors below are
+unchanged. The gates use the recomputed values after that check passes.
+
+`backend/cogging.py` is part of the guarded physics-source registry, like
+the Back-EMF harmonic and torque summaries. A record missing its hash, or
+measured with different source bytes, cannot qualify the current build.
+Historical reports retain their measured sources and can be audited under
+their original registry; adding a source to today's registry does not add
+it to old evidence. Fresh, matching measurements are required before release.
+
 ## Cases
 
 Twelve motors, one per geometry: the full table, with each case's floor, is

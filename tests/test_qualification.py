@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
 from collections import defaultdict
@@ -108,6 +109,16 @@ def test_report_preserves_its_registered_measured_physics_sources() -> None:
     record = json.loads(Path("benchmarks/records/windows-x86_64.json").read_text())
     measured = REPORT["run"]["identity"]["source_files"]
     assert all(measured[path] == digest for path, digest in record["physics_files"].items())
+
+
+@pytest.mark.parametrize("path", PHYSICS_SOURCES)
+def test_changed_or_unmeasured_physics_cannot_keep_historical_qualification(path: str) -> None:
+    measured = REPORT["run"]["identity"]["source_files"]
+    if hashlib.sha256(Path(path).read_bytes()).hexdigest() != measured.get(path):
+        # Keep the guard: changed physics must lose its qualified claim. The
+        # strict release command additionally refuses publication until remeasured.
+        assert not qualification_module.evidence_matches_runtime()
+        assert classify_qualification(MotorConfig.model_validate(SPM_CONCENTRATED))["status"] == "experimental"
 
 
 def test_reasons_match_the_report_outcomes(measured_build) -> None:

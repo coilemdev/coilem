@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+from collections import Counter
 from copy import deepcopy
 from pathlib import Path
 
@@ -11,7 +12,7 @@ import pytest
 
 from backend.benchmark_suite import PHASE_LABELS, PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.cogging_metrics import COGGING_METHOD, evaluate_cogging
-from backend.benchmark_suite.contract import canonical, sha
+from backend.benchmark_suite.contract import canonical, sha, write
 from backend.benchmark_suite.references import load_suite
 from backend.cogging import cogging_period, cogging_record
 
@@ -161,3 +162,134 @@ def test_a_missing_closing_endpoint_cannot_pass_the_benchmark(missing) -> None:
     evaluation = evaluate_cogging(_candidate(candidate_wave), _reference(reference_wave), CONFIG, FLOOR)
     assert evaluation["status"] == "INCOMPLETE"
     assert "MISSING" in evaluation["gates"].values()
+
+
+@pytest.mark.parametrize("field", [
+    "positions_per_period", "period_elec_deg", "period_mech_deg", "fundamental_order",
+    "peak_to_peak_Nm", "peak_Nm", "first_harmonic_Nm", "mean_Nm", "endpoint_mismatch_Nm",
+])
+@pytest.mark.parametrize("with_reference", [False, True])
+def test_stored_summary_cannot_override_its_waveform(field, with_reference):
+    candidate = _candidate()
+    candidate["summary"]["cogging"][field] += 1
+    before = deepcopy(candidate)
+    evaluation = evaluate_cogging(candidate, _reference(_waveform()) if with_reference else None, CONFIG, FLOOR)
+    assert evaluation["status"] == "INCOMPLETE"
+    assert evaluation["gates"]["candidate_cogging_summary"] == "FAIL"
+    assert field in evaluation["reason"]
+    assert "cogging_peak_to_peak" not in evaluation["gates"], "inconsistent evidence must never reach the numerical gates"
+    assert candidate == before
+
+
+@pytest.mark.parametrize("field", ["order", "multiple", "amplitude_Nm"])
+def test_the_retained_harmonic_spectrum_must_also_match_the_waveform(field):
+    candidate = _candidate()
+    candidate["summary"]["cogging"]["harmonics"][1][field] += 1
+    evaluation = evaluate_cogging(candidate, _reference(_waveform()), CONFIG, FLOOR)
+    assert evaluation["status"] == "INCOMPLETE"
+    assert "harmonics[1]" in evaluation["reason"]
+
+
+@pytest.mark.parametrize("field,value", [
+    ("peak_to_peak_Nm", float("nan")), ("first_harmonic_Nm", float("inf")),
+    ("peak_to_peak_Nm", None), ("peak_Nm", "0.6"), ("peak_Nm", 10**1000), ("positions_per_period", True),
+    ("harmonics", None), ("harmonics", []), ("harmonics", ["invalid"]),
+])
+def test_malformed_or_missing_summary_values_are_incomplete(field, value):
+    candidate = _candidate()
+    candidate["summary"]["cogging"][field] = value
+    evaluation = evaluate_cogging(candidate, _reference(_waveform()), CONFIG, FLOOR)
+    assert evaluation["status"] == "INCOMPLETE"
+    assert field in evaluation["reason"]
+
+
+def test_a_changed_waveform_cannot_reuse_its_earlier_summary():
+    candidate = _candidate()
+    candidate["cogging_torque_waveform"] = _waveform(1.15)
+    assert evaluate_cogging(candidate, _reference(_waveform()), CONFIG, FLOOR)["status"] == "INCOMPLETE"
+
+
+@pytest.mark.parametrize("value", [float("inf"), 10**1000])
+def test_unrepresentable_waveform_values_are_incomplete(value):
+    candidate = _candidate()
+    candidate["cogging_torque_waveform"]["torque_Nm"][0] = value
+    assert evaluate_cogging(candidate, _reference(_waveform()), CONFIG, FLOOR)["status"] == "INCOMPLETE"
+
+
+def test_nonuniform_candidate_positions_are_not_a_complete_sweep():
+    candidate = _candidate()
+    candidate["cogging_torque_waveform"]["electrical_angle_deg"][5] += 0.5
+    evaluation = evaluate_cogging(candidate, _reference(_waveform()), CONFIG, FLOOR)
+    assert evaluation["status"] == "INCOMPLETE" and "uniform" in evaluation["reason"]
+
+
+def test_serialization_rounding_is_allowed_but_gates_use_recomputed_numbers():
+    candidate, reference = _candidate(), _reference(_waveform())
+    candidate["summary"]["cogging"]["peak_to_peak_Nm"] *= 1 + 1e-11
+    candidate["summary"]["cogging"]["first_harmonic_Nm"] *= 1 + 1e-11
+    # A closing waveform does not establish independent native endpoints.
+    candidate["summary"]["cogging"]["endpoint_mismatch_Nm"] = None
+    before = deepcopy((candidate, reference))
+    evaluation = evaluate_cogging(candidate, reference, CONFIG, FLOOR)
+    assert evaluation["status"] == "PASS"
+    assert evaluation["cogging"]["peak_to_peak_error_Nm"] == 0
+    assert evaluation["cogging"]["first_harmonic_error_Nm"] == 0
+    assert evaluation["cogging"]["candidate"]["endpoint_mismatch_Nm"] is None
+    assert (candidate, reference) == before
+
+
+@pytest.mark.parametrize("stale", [False, True])
+def test_report_pipeline_rejects_inconsistent_candidates_even_with_valid_artifact_hashes(tmp_path, stale):
+    from backend.benchmark_suite.cli import evaluate
+
+    case = next(case for case in load_suite(SPEC)["cases"] if "example_shoed" in case["id"])
+    config = json.loads((ROOT / case["jobs"][0]["fixture"]).read_text())
+    identity = {"commit": "synthetic-test-candidate"}
+    candidate = _candidate()
+    if stale:
+        candidate["summary"]["cogging"]["peak_to_peak_Nm"] += 0.1
+    write(tmp_path / "request.json", {"identity": identity, "config": config})
+    write(tmp_path / "result.json", {
+        "status": "COMPLETE", "request_sha256": sha(tmp_path / "request.json"),
+        "identity_before": identity, "identity_after": identity, "result": candidate,
+    })
+    job = {"case_id": case["id"], "stage": "native", "status": "COMPLETE", "request": "request.json", "result": "result.json",
+           "request_sha256": sha(tmp_path / "request.json"), "result_sha256": sha(tmp_path / "result.json")}
+    original = (tmp_path / "result.json").read_bytes()
+    rows = evaluate(tmp_path, {"identity": identity, "jobs": [job], "smoke": False}, [case],
+                    {(case["id"], "native"): config}, {}, {}, {case["id"]: _reference(_waveform())})
+    assert rows[0]["status"] == ("INCOMPLETE" if stale else "PASS")
+    if stale:
+        assert "peak_to_peak_Nm" in rows[0]["evaluation"]["reason"]
+    assert (tmp_path / "result.json").read_bytes() == original
+
+
+def test_retained_windows_waveforms_reproduce_the_original_outcomes_without_rewriting_evidence():
+    folder = ROOT / "docs/benchmarks/cogging-windows-20261103"
+    report_path, waves_path = folder / "results.json", folder / "waveforms.json"
+    original = (report_path.read_bytes(), waves_path.read_bytes())
+    report, waves = json.loads(original[0]), json.loads(original[1])
+    measured = {case["case_id"]: case for case in report["cases"]}
+    cases = {case["id"]: case for case in load_suite(SPEC)["cases"]}
+    outcomes = Counter()
+    for case in waves["cases"]:
+        saved = measured[case["case_id"]]
+        config = json.loads((ROOT / cases[case["case_id"]]["jobs"][0]["fixture"]).read_text())
+        angles, torque = case["electrical_angle_deg"], case["magneto2d_normal_torque_Nm"]
+        # Re-evaluation from retained fields is a diagnostic, not a new measured
+        # candidate. Keep its original stored metrics and provenance unchanged.
+        record = cogging_record(angles, torque, slot_count=saved["slots"], pole_count=saved["poles"], method=COGGING_METHOD)
+        stored = record.model_dump(mode="json")
+        for field in ("peak_Nm", "peak_to_peak_Nm", "first_harmonic_Nm", "mean_Nm", "endpoint_mismatch_Nm", "method"):
+            stored[field] = saved["normal_native"][field]
+        candidate = {"summary": {"cogging": stored}, "solve_metadata": {"solver_name": "magneto2d-0.4.0", "mesh_source": "native"},
+                     "cogging_torque_waveform": {"electrical_angle_deg": angles, "torque_Nm": torque}}
+        reference = {"cogging_torque_waveform": {"electrical_angle_deg": angles, "torque_Nm": case[
+            "femm_refined_torque_Nm" if saved["selected_reference_mesh"] != "baseline" else "femm_baseline_torque_Nm"
+        ]}}
+        evaluation = evaluate_cogging(candidate, reference, config, saved["cogging_floor_Nm"])
+        assert evaluation["status"] == saved["normal_vs_selected_reference"]["status"]
+        assert evaluation["gates"] == saved["normal_vs_selected_reference"]["gates"]
+        outcomes[evaluation["status"]] += 1
+    assert outcomes == report["normal_selected_reference_counts"] == {"PASS": 10, "YELLOW": 2}
+    assert (report_path.read_bytes(), waves_path.read_bytes()) == original

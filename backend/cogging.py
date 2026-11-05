@@ -8,8 +8,9 @@ revolution, and noise measures. An exact solve averages to zero over the
 period and repeats at its end. The endpoint mismatch measures remesh noise
 only when the endpoints were independently meshed and solved.
 
-It does not decide what is measured, only how a measured waveform is
-summarised, so it is not a physics source (backend/benchmark_suite/physics.py).
+Its summary defines Phase E's numerical comparison, so this module is a
+guarded physics source (backend/benchmark_suite/physics.py). Changing it
+requires matching measured-source evidence before qualification.
 """
 
 from __future__ import annotations

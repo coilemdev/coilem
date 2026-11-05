@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from backend.benchmark_suite.physics import physics_sources
 from backend.excitation import resolve_phase_current_sample
 from backend.geometry_drawer import compute_geometry
 from backend.geometry_ir import build_geometry_ir
@@ -292,6 +293,15 @@ def test_preview_symbols_and_winding_layout_use_the_same_published_labels_as_the
         assert actual[coil.slot_in][1] != actual[coil.slot_out][1]
 
 
+def test_new_cogging_source_keeps_historical_motor_and_prius_evidence_unqualified():
+    from tools.release.qualification import check
+
+    assert "backend/cogging.py" in physics_sources(ROOT)
+    errors = check(ROOT)
+    assert "qualification physics mismatch: backend/cogging.py" in errors
+    assert "Prius measured-source mismatch: backend/cogging.py" in errors
+
+
 def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sources():
     folder = ROOT / "docs/benchmarks/pyleecan-prius-v1"
     report = json.loads((folder / "app-results.json").read_text(encoding="utf-8"))
@@ -314,6 +324,9 @@ def test_published_app_evidence_keeps_complete_actual_grids_and_its_measured_sou
     snapshot_path = ROOT / "benchmarks/candidate-qualification-20261103/prius/source-snapshot.json"
     assert hashlib.sha256(snapshot_path.read_bytes()).hexdigest() == report["source_sha256"]["snapshot-manifest.json"]
     measured_sources = {entry["path"]: entry["sha256"] for entry in json.loads(snapshot_path.read_text(encoding="utf-8"))["files"]}
+    # Use the original qualification registry for this historical audit. A
+    # later source addition cannot be present in an earlier field snapshot.
+    # The live release gate still checks every source in today's registry.
     historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())["physics_files"]
     guarded = set(historical) | set(PRIUS_EXTRA_PHYSICS)
     assert report["analysis_runner_sha256"] == measured_sources["tools/report_prius_benchmark.py"]
