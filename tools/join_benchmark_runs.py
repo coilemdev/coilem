@@ -11,6 +11,7 @@ from backend.benchmark_suite.contract import canonical, checked_path, read, sha,
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.benchmark_suite.report import build
 from tools.benchmark_prius import jobs as prius_jobs
+from tools.download_benchmark_shards import link_or_copy
 from tools.prius_benchmark_contract import grading_inputs, verify_completed_job, verify_registered_identity
 
 
@@ -131,7 +132,7 @@ def join_prius(shards, output):
     for name in expected:
         folder, job, state = gathered[name]
         target = checked_path(output, job["directory"])
-        shutil.copytree(checked_path(folder, job["directory"]), target)
+        shutil.copytree(checked_path(folder, job["directory"]), target, copy_function=link_or_copy)
         merged["jobs"].append(job)
         merged["job_states"][name] = state
     merged["shard_join"] = {"registrations_sha256": receipts, "measurements_mutated": False}

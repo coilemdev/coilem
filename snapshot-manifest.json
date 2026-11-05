@@ -25,13 +25,13 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 17204,
-      "sha256": "784a6acb2d762e74946ad61a3bee6dd9f27dde192a6ca1f0ace0a02fb6297dea"
+      "bytes": 17262,
+      "sha256": "f31548ecf1bcfcb06a7c24a5fe8252c107b3be2edd8162f8a74501a22acd7e9a"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 6455,
-      "sha256": "acfb0bff3c0d2653b63e6f125ddf15e7b83fedbb943bb069570dd2dc4d5d630b"
+      "bytes": 9241,
+      "sha256": "b911e37b41213fbe1426cee8f6e92a399d7b2c0eb285d08e8ffdd6fc390cb648"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -8400,8 +8400,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 9612,
-      "sha256": "6d72518515a8a299a31d481727291d415cb985b4a838c749a5d7fee43d3ff42b"
+      "bytes": 9918,
+      "sha256": "5b9366e38b4ddd5c3473fe2491964c257954947d1ee1c081c308747bff07d6ab"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -12080,13 +12080,13 @@
     },
     {
       "path": ".github/CODEOWNERS",
-      "bytes": 790,
-      "sha256": "13f8e0cf55de82cf33195453888c50d1495523e45647deefe3f406d4d5bca331"
+      "bytes": 1046,
+      "sha256": "1893dc7983ae690522302eeed62d1465dd23b717eb522da7671e15d6b8493f4e"
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 6043,
-      "sha256": "ff3b7d3f7199fd8f12b0eb2c30785110d68ffe6af4bf92ed7f18f6df6c1c1a9a"
+      "bytes": 6960,
+      "sha256": "a8111303f7c060596f0785139207a68b432d3298e79327f115f0dc0d05bff74b"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12095,8 +12095,8 @@
     },
     {
       "path": "tests/test_physics_impact.py",
-      "bytes": 5043,
-      "sha256": "1a6ffe39a89be20001a88fc12b593877a3479d66089bade339466a86c34a5076"
+      "bytes": 5129,
+      "sha256": "57b86729a9c31e4377c7a5a3c9116c4f737c71b49c83ba5fac5c08b4f4bbb7b5"
     },
     {
       "path": "tools/benchmark_archive.py",
@@ -12115,8 +12115,8 @@
     },
     {
       "path": "tools/join_benchmark_runs.py",
-      "bytes": 8979,
-      "sha256": "009ed33799387a986aa2aee34bc31218d378486c5fae72b08b1d841d36574dde"
+      "bytes": 9064,
+      "sha256": "23fb056ec0c6a8bb7fb4c79bb47e0294ed8bcf865f5d924b3bc3eb418e3159f0"
     },
     {
       "path": "tools/physics_impact.py",
@@ -12125,8 +12125,8 @@
     },
     {
       "path": ".github/workflows/qualification-weekly.yml",
-      "bytes": 2189,
-      "sha256": "0510c5c5daac60059ae4d891254f8df2c0eb7c376ac99d04291a694f56bb3e74"
+      "bytes": 2205,
+      "sha256": "1b6bca141c836a6920f97f50533e30f82989aaa4a8d325daa8b9610c6015f087"
     },
     {
       "path": "benchmarks/qualification-policy.json",
@@ -12162,6 +12162,16 @@
       "path": "benchmarks/records-historical/v050/windows-x86_64.json",
       "bytes": 35231,
       "sha256": "5631fe3068de56b00a1ef4b8861964c1b09aa93b5a9afb7fd5449410e5278b0d"
+    },
+    {
+      "path": "tests/test_benchmark_download.py",
+      "bytes": 1104,
+      "sha256": "bd7bee128b38b47ecadf41fa1b0191a94926e0df535086791abb9c9c451a0331"
+    },
+    {
+      "path": "tools/download_benchmark_shards.py",
+      "bytes": 2964,
+      "sha256": "e5e51df465e6ef9f841a678ca2c81181e87e43b78beae41014513d297b21e97e"
     }
   ],
   "public_patches": [
@@ -32654,6 +32664,54 @@
       "path": "tools/benchmark_shards.py",
       "source_sha256": "4ecaddedf2984b9683a9cc6628caea374d8d5b6eebb3e7967babf719f261c47d",
       "reason": "Reuse compatible measurements across metadata pushes and balance Prius by measured runtimes."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/CODEOWNERS",
+      "source_sha256": "13f8e0cf55de82cf33195453888c50d1495523e45647deefe3f406d4d5bca331",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "784a6acb2d762e74946ad61a3bee6dd9f27dde192a6ca1f0ace0a02fb6297dea",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/qualification-weekly.yml",
+      "source_sha256": "0510c5c5daac60059ae4d891254f8df2c0eb7c376ac99d04291a694f56bb3e74",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "acfb0bff3c0d2653b63e6f125ddf15e7b83fedbb943bb069570dd2dc4d5d630b",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "ff3b7d3f7199fd8f12b0eb2c30785110d68ffe6af4bf92ed7f18f6df6c1c1a9a",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tests/test_physics_impact.py",
+      "source_sha256": "1a6ffe39a89be20001a88fc12b593877a3479d66089bade339466a86c34a5076",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tools/build_benchmark_record.py",
+      "source_sha256": "6d72518515a8a299a31d481727291d415cb985b4a838c749a5d7fee43d3ff42b",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
+    },
+    {
+      "base_commit": "9c89f1e527885ed53f9c9ba8d1ce3f03f0a27207",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "009ed33799387a986aa2aee34bc31218d378486c5fae72b08b1d841d36574dde",
+      "reason": "Bound join disk use, retain original measurements and preserve LF bytes in Windows tests."
     }
   ]
 }

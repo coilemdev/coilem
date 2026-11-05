@@ -13,7 +13,7 @@ def git(root, *args):
 def put(root, name, text):
     path = root / name
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text)
+    path.write_text(text, encoding='utf-8', newline='\n')
 
 
 @pytest.fixture
@@ -21,6 +21,7 @@ def repo(tmp_path):
     git(tmp_path, 'init')
     git(tmp_path, 'config', 'user.name', 'Test')
     git(tmp_path, 'config', 'user.email', 'test@example.com')
+    git(tmp_path, 'config', 'core.autocrlf', 'false')
     put(tmp_path, '.gitignore', '__pycache__/\n')
     put(tmp_path, physics_impact.REGISTRY, 'def physics_sources(root):\n    return ("backend/field.py",)\n')
     put(tmp_path, 'backend/field.py', 'original')

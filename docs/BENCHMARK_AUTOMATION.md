@@ -12,7 +12,18 @@ and use its full immutable candidate SHA. Build artifacts must be installed at
 the standard solver path; setting `COILEM_MAGNETO2D_BINARY` would invalidate
 source verification. Full collection is separate from the existing smoke test.
 The 45-minute wall-time goal needs measurement on both hosted runner pools;
-queue time and platform concurrency limits can affect it.
+queue time and platform concurrency limits can affect it. Collection jobs have
+a 90-minute safety limit so the timing target does not truncate valid fields.
+Standard runners are retained; actual wall times are reported separately.
+
+Use dispatch input `reuse_run` with the original collection run ID and its exact
+measured candidate SHA to rebuild the joins without any field solves. The
+workflow uses its own current download tooling while grading with the frozen
+candidate's backend. This also recovers legacy artifacts that bundled large
+raw archives with compact inputs. Downloads are staged one shard at a time;
+redundant temporary archive copies are removed before the next download, while
+the originals remain on the server. Prius retained inputs are verified and linked
+into the join without a second physical copy.
 
 ## Disk and retention
 
@@ -47,10 +58,12 @@ publication commits. Historical unit tests replay their original records;
 they never promote those records to qualify a changed build.
 
 Ready physics PRs start the parallel workflow automatically. Draft PRs can use
-workflow dispatch. Make `qualification evidence required` a required status
-check on `main` and `release/v0.5.1`, enable required code-owner review, and
+workflow dispatch. After v0.5.1 lands on `main`, make
+`qualification evidence required` a required status check there, enable required code-owner review, and
 protect the qualification rules listed in `.github/CODEOWNERS`. Merely committing
 a workflow or CODEOWNERS file cannot enable those repository settings.
+The release integration branch stays open for pending physics PRs and their
+eventual frozen candidate qualification; its checks are informational.
 
 Later metadata-only pushes reuse compatible in-progress or completed PR
 collections. The cache key includes guarded sources, registered contracts,

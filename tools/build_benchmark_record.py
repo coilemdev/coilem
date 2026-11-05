@@ -109,9 +109,12 @@ def main(argv=None):
                         help="Explicit registered suite; does not change the runtime default")
     parser.add_argument("--reference-bundle", type=Path,
                         help="Explicit frozen reference bundle; does not promote its review status")
+    parser.add_argument("--record-source", help="Relative publication path of this report in a new candidate artifact")
     parser.add_argument("--historical-record", type=Path,
                         help="Reproduce this published record's original source registry without extending its qualification")
     args = parser.parse_args(argv)
+    if args.historical_record and args.record_source:
+        parser.error("A historical record's source cannot be replaced")
     if CHECKOUT is None:
         parser.error("build records from a source checkout")
     summary = read(args.evidence / "benchmark_summary.json")
@@ -143,7 +146,8 @@ def main(argv=None):
     if missing:
         raise SystemExit(f"The run did not record these physics sources: {', '.join(missing)}")
     graded, spec = regrade(summary, suite=args.suite or SPEC, bundle=args.reference_bundle or DEFAULT_BUNDLE)
-    source = args.evidence.resolve().relative_to(CHECKOUT).as_posix() if args.evidence.resolve().is_relative_to(CHECKOUT) else args.evidence.name
+    source = args.record_source or (args.evidence.resolve().relative_to(CHECKOUT).as_posix()
+                                    if args.evidence.resolve().is_relative_to(CHECKOUT) else args.evidence.name)
     note = (
         f"Graded from the recorded measurements (harness {identity['harness_version']}, protocol {identity['protocol_version']}) "
         f"against suite {spec['protocol_version']} and the frozen reference bundle, with zero field solves."

@@ -297,6 +297,9 @@ jobs:
         run: python -m tools.physics_impact --base "$BASE_SHA"
 
   qualification-measure:
+    permissions:
+      contents: read
+      actions: read
     needs: qualification-impact
     if: ${{ needs.qualification-impact.outputs.measurement_required == 'true' && !github.event.pull_request.draft }}
     uses: ./.github/workflows/release-benchmarks.yml

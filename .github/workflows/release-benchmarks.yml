@@ -6,7 +6,7 @@ on:
       runner:
         description: Platforms to measure
         type: choice
-        options: [both, macos-15, windows-2022]
+        options: [both, macos-15, windows-2022, ubuntu-24.04]
         default: both
       python:
         description: Locked Python runtime
@@ -15,6 +15,10 @@ on:
         default: '3.12'
       candidate:
         description: Full immutable candidate SHA; blank uses this ref
+        type: string
+        default: ''
+      reuse_run:
+        description: 'Optional completed collection run ID: rejoin original fields without solving'
         type: string
         default: ''
       collection:
@@ -33,20 +37,25 @@ on:
       python:
         type: string
         default: '3.12'
+      reuse_run:
+        type: string
+        default: ''
       collection:
         type: string
         default: registered
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
-  group: numerical-${{ github.ref }}-${{ inputs.candidate }}-${{ inputs.runner }}-${{ inputs.collection }}
+  group: numerical-${{ github.ref }}-${{ inputs.candidate }}-${{ inputs.runner }}-${{ inputs.collection }}-${{ inputs.reuse_run }}
   cancel-in-progress: false
 
 defaults:
   run:
     shell: bash
+    working-directory: candidate
 
 env:
   COILEM_BUILD_COMMIT: ${{ inputs.candidate || github.sha }}
@@ -54,6 +63,7 @@ env:
 
 jobs:
   plan:
+    if: ${{ !inputs.reuse_run }}
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
@@ -62,6 +72,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
@@ -76,16 +87,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: ${{ fromJSON(needs.plan.outputs.platforms) }}
+        runner: ${{ fromJSON(needs.plan.outputs.platforms || '["windows-2022", "macos-15"]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
+      - name: Install Linux mesh libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
       - run: |
           python -m pip install -r requirements.lock
           python -m pip install -e ".[dev]"
@@ -107,14 +122,18 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
+      - name: Install Linux mesh libraries
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
       - run: |
           python -m pip install -r requirements.lock
           python -m pip install -e ".[dev]"
@@ -133,36 +152,70 @@ jobs:
           SHARD_ID: ${{ matrix.id }}
           COLLECTION: ${{ inputs.collection || 'registered' }}
         run: python -m tools.benchmark_ci shard --shard "$SHARD_ID" --collection "$COLLECTION" --directory "$RUNNER_TEMP/collection"
+      - name: Keep compact join inputs separate from raw runtimes
+        if: success()
+        run: |
+          python - <<'PYTHON'
+          import os, pathlib, shutil
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'collection'
+          shutil.copytree(root / 'out', root / 'compact',
+                          ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock'))
+          PYTHON
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: success()
+        with:
+          name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
+          path: ${{ runner.temp }}/collection/compact
+          compression-level: 0
+          retention-days: 90
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
-          name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
+          name: benchmark-raw-${{ matrix.runner }}-${{ matrix.id }}
           path: ${{ runner.temp }}/collection/out
           compression-level: 0
           retention-days: 90
 
   join:
     needs: [plan, collect]
+    if: ${{ always() && (inputs.reuse_run || needs.collect.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:
-        runner: ${{ fromJSON(needs.plan.outputs.platforms) }}
+        runner: ${{ fromJSON(needs.plan.outputs.platforms || '["windows-2022", "macos-15"]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ inputs.python || '3.12' }}
       - run: python -m pip install -r requirements.lock
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          pattern: benchmark-shard-${{ matrix.runner }}-*
-          path: ${{ runner.temp }}/qualification/shards
+          ref: ${{ github.workflow_sha }}
+          path: automation
+      - name: Download compact evidence, one shard at a time
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN: ${{ inputs.reuse_run || github.run_id }}
+          PLATFORM: ${{ matrix.runner }}
+        run: >-
+          python "$GITHUB_WORKSPACE/automation/tools/download_benchmark_shards.py"
+          --run-id "$SOURCE_RUN" --runner "$PLATFORM" --out "$RUNNER_TEMP/qualification/shards"
       - name: Verify coverage and immutable evidence, then regenerate reports
         run: python -m tools.benchmark_ci join --directory "$RUNNER_TEMP/qualification"
+      - name: Build the provisional platform record without field solves
+        if: ${{ inputs.collection != 'protocol16-native-only' }}
+        env:
+          PYTHONPATH: ${{ github.workspace }}/candidate
+        run: >-
+          python "$GITHUB_WORKSPACE/automation/tools/build_benchmark_record.py"
+          "$RUNNER_TEMP/qualification/joined-suite/report"
+          --out "$RUNNER_TEMP/qualification/platform-record.json" --record-source joined-suite/report
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
@@ -172,4 +225,6 @@ jobs:
             ${{ runner.temp }}/qualification/joined-suite/run_manifest.json
             ${{ runner.temp }}/qualification/prius-report
             ${{ runner.temp }}/qualification/join-receipt.json
+            ${{ runner.temp }}/qualification/download-receipt.json
+            ${{ runner.temp }}/qualification/platform-record.json
           retention-days: 90
