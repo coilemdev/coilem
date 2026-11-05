@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_pyleecan_reference_fixture.py",
-      "bytes": 19921,
-      "sha256": "9a3cda1f70f308a49e872b8e0577bbb8583bf66508ace0c183537856017c4d36"
+      "bytes": 20555,
+      "sha256": "56e287124967014fefa05c0688b62e7ccc2019906c4b378536140f9b9b49422c"
     },
     {
       "path": "tests/test_pyleecan_tutorial.py",
@@ -33070,6 +33070,12 @@
       "path": "tests/test_qualification.py",
       "source_sha256": "d6320009aeb0a145653023c3529b0eeb20794d93a6e2558bc442a908715906b1",
       "reason": "Integrate historical replay fixtures with qualification automation without rewriting measured evidence."
+    },
+    {
+      "base_commit": "92f1600642a0ad6630274bbecba5650399b9270f",
+      "path": "tests/test_pyleecan_reference_fixture.py",
+      "source_sha256": "9a3cda1f70f308a49e872b8e0577bbb8583bf66508ace0c183537856017c4d36",
+      "reason": "Bind historical cogging rejection to immutable evidence independently of refreshed live records."
     }
   ]
 }
