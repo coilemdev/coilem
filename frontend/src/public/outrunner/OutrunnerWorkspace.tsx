@@ -1,37 +1,30 @@
 import { useEffect, useState } from 'react';
-import { PUBLIC_API_BASE } from '../api';
 import type { PublicConnectionStatus } from '../CoilEmWorkspace';
-import { DEFAULT_OUTRUNNER_PROJECT, parseOutrunnerProject, type OutrunnerProject } from './project';
+import type { MeshPreview } from '../model';
+import { DEFAULT_OUTRUNNER_PROJECT, normalizeOutrunnerProject, parseOutrunnerProject, sameOutrunnerProject, type OutrunnerProject } from './project';
 import { OutrunnerWorkflow } from './OutrunnerWorkflow';
 import type { ReferencePreview } from './geometry';
-import type { Analysis, RunState } from './types';
+import type { Analysis, RunEstimate, RunState } from './types';
+import { outrunnerRequest as api } from './api';
 import './outrunner.css';
-
-async function api<T>(path: string, body?: unknown): Promise<T> {
-  const response = await fetch(`${PUBLIC_API_BASE}/experimental/outrunner${path}`, body === undefined ? undefined : {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    const message = typeof data.detail === 'string' ? data.detail
-      : Array.isArray(data.detail) ? data.detail[0]?.msg : data.detail?.message;
-    throw new Error(String(message || `Local analysis request failed (${response.status}).`).slice(0, 500));
-  }
-  return data as T;
-}
 
 export function OutrunnerWorkspace({ initialProject, onHome, onOpenOtherDesign, connectionStatus, appVersion }: {
   initialProject: OutrunnerProject; onHome: () => void; onOpenOtherDesign?: (file: File) => void;
   connectionStatus?: PublicConnectionStatus; appVersion?: string | null;
 }) {
-  const [project, setProject] = useState(initialProject);
+  const [project, setProject] = useState(() => normalizeOutrunnerProject(initialProject));
   const [geometry, setGeometry] = useState<ReferencePreview | null>(null);
   const [analysis, setAnalysis] = useState<Analysis>('both');
   const [run, setRun] = useState<RunState | null>(null);
   const [error, setError] = useState('');
   const [starting, setStarting] = useState(false);
+  const [mesh, setMesh] = useState<MeshPreview | null>(null);
+  const [meshBusy, setMeshBusy] = useState(false);
+  const [meshError, setMeshError] = useState('');
+  const [estimate, setEstimate] = useState<RunEstimate | null>(null);
   const busy = starting || run?.status === 'QUEUED' || run?.status === 'RUNNING';
   const jobKey = `coilem.outrunner.run:${project.fixture_id}`;
+  const meshKey = JSON.stringify([project.fixture_asset_sha256, project.analysis.mesh_policy, project.analysis.gap_size_mm, project.analysis.bulk_size_mm]);
 
   useEffect(() => {
     let cancelled = false;
@@ -39,12 +32,28 @@ export function OutrunnerWorkspace({ initialProject, onHome, onOpenOtherDesign, 
     api<ReferencePreview>('/preview', project).then((value) => { if (!cancelled) { setGeometry(value); setError(''); } })
       .catch((failure) => { if (!cancelled) setError(`The local experimental workspace is unavailable: ${String(failure.message)}`); });
     return () => { cancelled = true; };
-  }, [project]);
+  }, [project.fixture_data]);
+
+  useEffect(() => {
+    const abort = new AbortController();
+    setMesh(null); setMeshBusy(true); setMeshError('');
+    void api<MeshPreview>('/mesh-preview', project, abort.signal).then((value) => { if (!abort.signal.aborted) setMesh(value); })
+      .catch((failure) => { if (!abort.signal.aborted) setMeshError(failure.message); })
+      .finally(() => { if (!abort.signal.aborted) setMeshBusy(false); });
+    return () => abort.abort();
+  }, [meshKey]);
+
+  useEffect(() => {
+    const abort = new AbortController();
+    void api<RunEstimate>('/estimate', { project, analysis }, abort.signal).then(setEstimate)
+      .catch((failure) => { if (!abort.signal.aborted) setError(failure.message); });
+    return () => abort.abort();
+  }, [project.analysis, analysis]);
 
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(jobKey) || 'null');
-      if (saved && JSON.stringify(saved.project) === JSON.stringify(project)) {
+      if (saved && sameOutrunnerProject(saved.project, project)) {
         setAnalysis(saved.analysis);
         api<RunState>(`/runs/${saved.run_id}`).then(setRun).catch(() => undefined);
       }
@@ -83,10 +92,13 @@ export function OutrunnerWorkspace({ initialProject, onHome, onOpenOtherDesign, 
     } catch (failure) { setError(failure instanceof Error ? failure.message : String(failure)); }
   };
   const updateAnalysis = (update: Partial<OutrunnerProject['analysis']>) => {
-    setProject((previous) => ({ ...previous, analysis: { ...previous.analysis, ...update } }));
+    const changesMesh = ['unique_samples', 'gap_size_mm', 'bulk_size_mm', 'nonlinear_tolerance'].some((key) => key in update);
+    setProject((previous) => ({ ...previous, analysis: { ...previous.analysis, ...update,
+      ...(changesMesh && !update.accuracy_plan ? { accuracy_plan: 'custom' as const } : {}) } }));
     setRun(null);
   };
   return <OutrunnerWorkflow project={project} geometry={geometry} analysis={analysis} run={run} busy={Boolean(busy)} error={error}
+    mesh={mesh} meshBusy={meshBusy} meshError={meshError} estimate={estimate}
     appVersion={appVersion} connectionStatus={connectionStatus} onHome={onHome} onOpenFile={(file) => void openFile(file)}
     onReset={() => { if (!busy) { setProject(DEFAULT_OUTRUNNER_PROJECT); setRun(null); } }}
     onStart={() => void start()} onResume={() => void start(true)}

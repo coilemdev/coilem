@@ -3543,8 +3543,10 @@
     "source_page": "https://www.femm.info/wiki/SlidingBandBenchmark"
   },
   "analysis": {
+    "accuracy_plan": "standard",
     "unique_samples": 48,
     "gap_size_mm": 0.05,
+    "bulk_size_mm": 0.25,
     "speed_rpm": 1000.0,
     "loaded_currents_A": [
       0.0,

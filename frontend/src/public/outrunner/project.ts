@@ -10,8 +10,10 @@ export interface OutrunnerProject {
   coordinate_convention: 'source_native_CCW_outer_rotor';
   fixture_data: Record<string, unknown>;
   analysis: {
-    unique_samples: 48 | 96 | 192 | 384;
-    gap_size_mm: 0.05 | 0.025 | 0.0125;
+    accuracy_plan: 'preview' | 'standard' | 'high_accuracy' | 'custom';
+    unique_samples: 24 | 48 | 96 | 192 | 384;
+    gap_size_mm: 0.1 | 0.05 | 0.025 | 0.0125;
+    bulk_size_mm: 0.5 | 0.25 | 0.125;
     speed_rpm: number;
     loaded_currents_A: number[];
     nonlinear_tolerance: 0.00001 | 0.000001;
@@ -22,9 +24,29 @@ export interface OutrunnerProject {
 
 export const DEFAULT_OUTRUNNER_PROJECT = JSON.parse(bundledProject) as OutrunnerProject;
 
+export function normalizeOutrunnerProject(project: OutrunnerProject): OutrunnerProject {
+  const analysis = { ...project.analysis };
+  if (analysis.bulk_size_mm === undefined) analysis.bulk_size_mm = 0.25;
+  if (!analysis.accuracy_plan) {
+    analysis.accuracy_plan = analysis.unique_samples === 48 && analysis.gap_size_mm === .05 && analysis.bulk_size_mm === .25
+      && analysis.nonlinear_tolerance === 1e-5 ? 'standard' : 'custom';
+  }
+  return { ...project, analysis };
+}
+
+function canonical(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value && typeof value === 'object') return `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => `${JSON.stringify(key)}:${canonical(item)}`).join(',')}}`;
+  return JSON.stringify(value) ?? 'null';
+}
+
+export function sameOutrunnerProject(left: OutrunnerProject, right: OutrunnerProject): boolean {
+  return canonical(normalizeOutrunnerProject(left)) === canonical(normalizeOutrunnerProject(right));
+}
+
 /** Recognize this envelope before the ordinary motor parser can apply defaults. */
 export function parseOutrunnerProject(text: string): OutrunnerProject | null {
-  const raw = JSON.parse(text) as Partial<OutrunnerProject>;
+  let raw = JSON.parse(text) as Partial<OutrunnerProject>;
   if (raw?.kind !== 'coilem_frozen_reference') return null;
   const pinned = DEFAULT_OUTRUNNER_PROJECT;
   if (raw.format_version !== 1 || raw.fixture_id !== pinned.fixture_id
@@ -33,8 +55,10 @@ export function parseOutrunnerProject(text: string): OutrunnerProject | null {
     || typeof raw.name !== 'string' || !raw.name.trim()) {
     throw new Error('The frozen reference identity or required settings are missing or unsupported.');
   }
-  const analysis = raw.analysis;
-  if (![48, 96, 192, 384].includes(analysis.unique_samples) || ![0.05, 0.025, 0.0125].includes(analysis.gap_size_mm)
+  raw = normalizeOutrunnerProject(raw as OutrunnerProject);
+  const analysis = raw.analysis!;
+  if (![24, 48, 96, 192, 384].includes(analysis.unique_samples) || ![0.1, 0.05, 0.025, 0.0125].includes(analysis.gap_size_mm)
+    || ![0.5, 0.25, 0.125].includes(analysis.bulk_size_mm) || !['preview', 'standard', 'high_accuracy', 'custom'].includes(analysis.accuracy_plan)
     || !Number.isFinite(analysis.speed_rpm) || analysis.speed_rpm <= 0 || analysis.speed_rpm > 100000
     || !Array.isArray(analysis.loaded_currents_A) || analysis.loaded_currents_A.length !== 3
     || !analysis.loaded_currents_A.every((value) => Number.isFinite(value) && Math.abs(value) <= 20)

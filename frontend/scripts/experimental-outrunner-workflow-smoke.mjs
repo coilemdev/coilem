@@ -45,7 +45,9 @@ try {
   assert.deepEqual(saved, original);
   await page.locator('input[type=file][accept*=".coilem"]').setInputFiles(target);
   await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
-  await page.getByLabel('Analysis', { exact: true }).selectOption('source_point');
+  await page.getByRole('button', { name: /^Analysis/ }).first().click();
+  await page.getByRole('radio', { name: 'Original operating point only', exact: true }).check();
+  await page.waitForFunction(() => !document.querySelector('.public-solve-footer .public-run-btn')?.disabled);
   await screenshot('solve-setup');
   await page.getByRole('button', { name: '▶ Run analysis', exact: true }).click();
   await page.getByRole('heading', { name: 'Original operating point', exact: true }).waitFor({ timeout: 120000 });

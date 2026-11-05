@@ -395,7 +395,7 @@ type StatusTagTone = 'good' | 'info' | 'warning' | 'running';
 
 /** A short status pill whose details open on hover or keyboard focus, so run
  * status and qualification don't take a full-width card each (#110). */
-function StatusTag({
+export function StatusTag({
   tone,
   label,
   heading,
@@ -813,7 +813,7 @@ interface NumberRowProps {
   onChange: (value: number) => void;
 }
 
-function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled, onChange }: NumberRowProps) {
+export function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled, onChange }: NumberRowProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [draftValue, setDraftValue] = useState(() => String(value));
 
@@ -1029,7 +1029,7 @@ function ComponentDetailCard({ selection, config, geometry, onClose }: {
 }
 
 /** A collapsible panel section: Design's parameter groups and the Solve setup. */
-function ParameterSectionBlock<Id extends string = PublicParameterSection>({
+export function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   id,
   label,
   summary,
@@ -2686,7 +2686,7 @@ function defaultRunPlanWidth(): number {
 }
 
 /** "about 30–55 s" or "about 2–4 min": a range, because run time varies by computer. */
-function formatRunTimeRange(validation: SolveValidation): string {
+export function formatRunTimeRange(validation: Pick<SolveValidation, 'estimated_solve_time_s' | 'estimated_solve_time_range_s'>): string {
   const [low, high] = validation.estimated_solve_time_range_s
     ?? [validation.estimated_solve_time_s, validation.estimated_solve_time_s];
   if (high < 90) {
