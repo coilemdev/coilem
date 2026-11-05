@@ -198,11 +198,13 @@ export function slotCurrents(sides: WindingSide[], slotCount: number, currents: 
  * down by each slot's out-of-page current, so the flux a tooth sends into the
  * airgap — an N pole — follows the running sum of slot currents, about its mean.
  */
-export function toothPoles(currentsBySlot: number[]): number[] {
+export function toothPoles(currentsBySlot: number[], statorFaces: 'inward' | 'outward' = 'inward'): number[] {
   let running = 0;
   const sums = currentsBySlot.map((current) => (running += current));
   const mean = sums.reduce((total, value) => total + value, 0) / Math.max(1, sums.length);
-  const poles = sums.map((value) => value - mean);
+  // An outer rotor's stator faces outward, so rotor-to-stator runs inward and every pole flips.
+  const sign = statorFaces === 'outward' ? -1 : 1;
+  const poles = sums.map((value) => sign * (value - mean));
   const peak = Math.max(0, ...poles.map(Math.abs));
   return peak > 1e-9 ? poles.map((value) => value / peak) : poles.map(() => 0);
 }
