@@ -15,6 +15,7 @@ import numpy as np
 from backend.experimental.femm_outrunner import ASSET_SHA256, FixtureMesh, source
 from backend.experimental.outrunner_geometry import generate_native_mesh
 from backend.experimental.outrunner_project import OutrunnerProject
+from backend.experimental.outrunner_storage import read_json, replace_file, write_json
 from backend.field_lines import build_field_line_plot_from_mesh
 from backend.public_field_playback import (
     FLUX_COLOR_SCALE,
@@ -56,7 +57,7 @@ def _write_gzip(path: Path, value: dict) -> None:
     temporary = path.with_suffix(path.suffix+".tmp")
     with gzip.open(temporary, "wb", compresslevel=3) as stream:
         stream.write(json.dumps(value, allow_nan=False, separators=(",", ":")).encode())
-    temporary.replace(path)
+    replace_file(temporary, path)
 
 
 def region_names() -> list[str]:
@@ -133,7 +134,7 @@ def run_folder(run_id: str) -> Path:
 
 
 def completed_frames(run_id: str) -> list[dict]:
-    state = json.loads((run_folder(run_id)/"state.json").read_text())
+    state = read_json(run_folder(run_id)/"state.json")
     return [{"index": index, "case_id": row["case"]["id"], "family": row["case"]["family"],
              "angle_ccw_deg": row["case"]["angle_ccw_deg"], "currents_A": row["case"]["currents_A"],
              "torque_Nm": row["outer_rotor_torque_Nm"],
@@ -147,7 +148,7 @@ def _frame_identity(row: dict) -> dict:
 
 def _frame_ready(path: Path, row: dict) -> bool:
     try:
-        return json.loads(path.read_text())["identity"] == _frame_identity(row)
+        return read_json(path)["identity"] == _frame_identity(row)
     except (OSError, ValueError, KeyError):
         return False
 
@@ -165,13 +166,13 @@ def prepare_playback(run_id: str) -> dict:
                 for frame in completed_frames(run_id):
                     if not frame["raster_ready"]:
                         prepare_frame(run_id, frame["index"])
-                state = json.loads((run_folder(run_id)/"state.json").read_text())
+                state = read_json(run_folder(run_id)/"state.json")
                 if state["status"] not in ("RUNNING", "QUEUED"):
                     if all(frame["raster_ready"] for frame in completed_frames(run_id)):
                         break
                 time.sleep(0.5)
         except Exception as exc:
-            (run_folder(run_id)/"playback-error.json").write_text(json.dumps({"error": str(exc)}), encoding="utf-8")
+            write_json(run_folder(run_id)/"playback-error.json", {"error": str(exc)})
         finally:
             with _LOCK:
                 _PREPARING.discard(run_id)
@@ -181,7 +182,7 @@ def prepare_playback(run_id: str) -> dict:
 
 def _case(run_id: str, index: int) -> tuple[Path, dict]:
     folder = run_folder(run_id)
-    state = json.loads((folder/"state.json").read_text())
+    state = read_json(folder/"state.json")
     rows = state.get("rows", [])
     if index < 0 or index >= len(rows):
         raise ValueError("This solved frame is not available yet")
@@ -215,7 +216,7 @@ def prepare_frame(run_id: str, index: int) -> dict:
     with _lock(output):
         receipt = output/"frame.json"
         if receipt.exists():
-            result = json.loads(receipt.read_text())
+            result = read_json(receipt)
             if result["identity"] == expected:
                 return result
         data = _verified_json(folder, row, "mesh.json")
@@ -247,7 +248,7 @@ def prepare_frame(run_id: str, index: int) -> dict:
         for name, layer in (("base", base), ("heat", heat), ("mesh", mesh), ("lines", lines)):
             temp = output/(name+".tmp")
             layer.save(temp, format="WEBP", lossless=True, method=1)
-            temp.replace(output/(name+".webp"))
+            replace_file(temp, output/(name+".webp"))
         result = {"identity": expected, "frame_index": index, "case": row["case"], "width": size, "height": size,
                   "viewBox": " ".join(str(value) for value in view_box), "minB": minimum, "maxB": maximum,
                   "colorScale": {"minB": FLUX_COLOR_SCALE["min"], "maxB": FLUX_COLOR_SCALE["max"],
@@ -255,7 +256,7 @@ def prepare_frame(run_id: str, index: int) -> dict:
                   "contourLevelCount": len(payload["contour_levels"]),
                   "contourSegmentCount": sum(len(level["segments_mm"]) for level in payload["contour_levels"]),
                   "vectorCues": _direction_cues(payload, level_stride=2)}
-        receipt.write_text(json.dumps(result, allow_nan=False), encoding="utf-8")
+        write_json(receipt, result)
         return result
 
 

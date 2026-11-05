@@ -18,6 +18,7 @@ import numpy as np
 from backend.experimental.femm_outrunner import build_field_problem, phase_linkage, source
 from backend.experimental.outrunner_geometry import build_ir
 from backend.experimental.outrunner_project import QUALITY_PRESETS, OutrunnerProject, OutrunnerRunRequest
+from backend.experimental.outrunner_storage import read_json, write_json
 from backend.experimental.outrunner_stress import weighted_stress_torque
 from backend.experimental.outrunner_sweep import PERIOD_DEG, SweepCase, bemf, fundamental
 from backend.experimental.outrunner_visuals import native_mesh, prepare_playback
@@ -45,9 +46,7 @@ def _folder(run_id: str) -> Path:
 
 
 def _write(path: Path, data: dict) -> None:
-    temp = path.with_suffix(".tmp")
-    temp.write_text(json.dumps(data, allow_nan=False, indent=2)+"\n", encoding="utf-8")
-    temp.replace(path)
+    write_json(path, data)
 
 
 def preview(project: OutrunnerProject) -> dict:
@@ -170,15 +169,16 @@ def _worker(run_id: str, request: OutrunnerRunRequest, cancel: threading.Event) 
         cases.extend(SweepCase(f"{family}_{i:04d}", PERIOD_DEG*i/count, currents, family) for i in range(count+1))
     started = time.monotonic()
     state = {"run_id": run_id, "status": "RUNNING", "stage": "Preparing", "completed": 0, "total": len(cases),
-             "qualification": "DIAGNOSTIC_ONLY", "elapsed_s": 0, "estimate": estimate(request)}
-    _write(folder/"state.json", state)
+             "qualification": "DIAGNOSTIC_ONLY", "elapsed_s": 0}
     try:
+        state["estimate"] = estimate(request)
+        _write(folder/"state.json", state)
         binary = ensure_magneto2d_binary().resolve()
         binary_sha = hashlib.sha256(binary.read_bytes()).hexdigest()
         identity_path = folder/"identity.json"
         identity = {"binary_sha256": binary_sha, "source_sha256": request.project.source_sha256,
                     "asset_sha256": request.project.fixture_asset_sha256}
-        if identity_path.exists() and json.loads(identity_path.read_text()) != identity:
+        if identity_path.exists() and read_json(identity_path) != identity:
             raise ValueError("Resume requires the identical binary and frozen fixture")
         _write(identity_path, identity)
         for case in cases:
@@ -186,7 +186,7 @@ def _worker(run_id: str, request: OutrunnerRunRequest, cancel: threading.Event) 
                 raise InterruptedError("Cancelled")
             case_folder = folder/case.id
             if (case_folder/"result.json").exists():
-                row = json.loads((case_folder/"result.json").read_text())
+                row = read_json(case_folder/"result.json")
                 if row["case"] != json.loads(json.dumps(case.to_dict())):
                     raise ValueError("Stored request differs")
                 for name, expected in row["raw_sha256"].items():
@@ -216,9 +216,11 @@ def _worker(run_id: str, request: OutrunnerRunRequest, cancel: threading.Event) 
         state.update(status="ERROR", error=str(exc))
     finally:
         state["elapsed_s"] = time.monotonic()-started
-        _write(folder/"state.json", state)
-        with _LOCK:
-            _ACTIVE.pop(run_id, None)
+        try:
+            _write(folder/"state.json", state)
+        finally:
+            with _LOCK:
+                _ACTIVE.pop(run_id, None)
 
 
 def start(request: OutrunnerRunRequest, run_id: str | None = None) -> dict:
@@ -227,7 +229,7 @@ def start(request: OutrunnerRunRequest, run_id: str | None = None) -> dict:
             raise ValueError("An experimental outrunner analysis is already running")
         if run_id:
             folder = _folder(run_id)
-            saved = OutrunnerRunRequest.model_validate_json((folder/"request.json").read_text())
+            saved = OutrunnerRunRequest.model_validate(read_json(folder/"request.json"))
             if saved != request:
                 raise ValueError("Resume requires the original saved design and analysis")
         else:
@@ -237,9 +239,13 @@ def start(request: OutrunnerRunRequest, run_id: str | None = None) -> dict:
             _write(folder/"project.coilem", request.project.model_dump())
             _write(folder/"request.json", request.model_dump())
         cancel = threading.Event()
-        _ACTIVE[run_id] = cancel
         _write(folder/"state.json", {"run_id": run_id, "status": "QUEUED", "completed": 0, "total": 0})
-        threading.Thread(target=_worker, args=(run_id, request, cancel), daemon=True).start()
+        _ACTIVE[run_id] = cancel
+        try:
+            threading.Thread(target=_worker, args=(run_id, request, cancel), daemon=True).start()
+        except Exception:
+            _ACTIVE.pop(run_id, None)
+            raise
     return {"run_id": run_id, "status": "QUEUED"}
 
 
@@ -252,12 +258,12 @@ def estimate(request: OutrunnerRunRequest) -> dict:
         if not re.fullmatch(r"[a-f0-9]{32}", path.parent.name):
             continue
         try:
-            old = OutrunnerRunRequest.model_validate_json(path.read_text())
+            old = OutrunnerRunRequest.model_validate(read_json(path))
             if (old.project.analysis.gap_size_mm, old.project.analysis.bulk_size_mm, old.project.analysis.nonlinear_tolerance) != (
                 settings.gap_size_mm, settings.bulk_size_mm, settings.nonlinear_tolerance
             ):
                 continue
-            state = json.loads((path.parent/"state.json").read_text())
+            state = read_json(path.parent/"state.json")
             observed.extend(float(row["elapsed_s"])*(1 if row.get("duration_includes_archive") else 1.15)
                             for row in state.get("rows", []) if 0 < row.get("elapsed_s", 0) < 600)
         except (ValueError, OSError, KeyError):
@@ -278,7 +284,7 @@ def estimate(request: OutrunnerRunRequest) -> dict:
 
 
 def status(run_id: str) -> dict:
-    state = json.loads((_folder(run_id)/"state.json").read_text())
+    state = read_json(_folder(run_id)/"state.json")
     with _LOCK:
         if state["status"] in ("QUEUED", "RUNNING") and run_id not in _ACTIVE:
             state["status"] = "INTERRUPTED"
