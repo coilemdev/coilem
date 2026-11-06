@@ -83,5 +83,16 @@ redistribution rights of the source model's B-H curves are confirmed.
 
 ## Validation
 
-See the validation section of the 0.5.5 release notes for the measured LRK
-comparison and the self-consistency checks on the hobby designs.
+- **LRK against its published solution.** Through the normal pipeline on the
+  fine mesh, 9 of the 11 published torque points pass the pointwise rule,
+  |error| ≤ max(2%, 0.05 mN·m). The source point is −0.36%, and the two misses
+  are near-zero torques. The back-EMF fundamental is −0.62%.
+- **Self-consistency on hobby designs.** On the 12/14 starter and a 9/12
+  18 mm design, the mean torque agrees with 1.5·p·λ·I within 0.3%, and the
+  phases balance. The 9/12 design's mean torque moves less than 0.05% from the
+  normal to the very fine mesh.
+- **Benchmark.** Outer rotors are experimental in the app: no registered
+  benchmark fixture is an outer rotor. Phase F, proposed as
+  [protocol 1.8.0](../benchmarks/abcd-v1.8/README.md), adds 10 outer-rotor cases
+  graded with Phase A's gates against FEMM 4.2. The
+  [FEMM request](OUTRUNNER_FEMM_REQUEST.md) describes the reference run.

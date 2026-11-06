@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 11066,
-      "sha256": "014dc151863604726ec557ee9dd14f960ac263bd31dd412b2041190562129360"
+      "bytes": 11502,
+      "sha256": "e9be6e0384886ce1a5bfb01d7ac2473cc78d6e5b681bc612fdf178d9f69d65c8"
     },
     {
       "path": "SECURITY.md",
@@ -6075,8 +6075,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 51443,
-      "sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84"
+      "bytes": 52699,
+      "sha256": "fb8a608c962d550869ac0af040c25288a3eea56133cfbc9f858d09e2de048893"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -12260,8 +12260,8 @@
     },
     {
       "path": "docs/OUTRUNNER.md",
-      "bytes": 4500,
-      "sha256": "60bc5c37d61a0746449a920801cae7b4b4dc1f7f4ebf538422fce99ce2d03c0a"
+      "bytes": 5260,
+      "sha256": "e003c6cc6f679bd7ee8ab65d28386fa93dcaa5a4d73ea95ed6a593e7647c57c3"
     },
     {
       "path": "frontend/src/public/RotorArrangement.tsx",
@@ -12372,6 +12372,11 @@
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json",
       "bytes": 2536,
       "sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5"
+    },
+    {
+      "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
+      "bytes": 15559,
+      "sha256": "73dcd2203f5abc5cf1141580f3399e2caa61e4d02a88acf88201098bcc46968a"
     },
     {
       "path": "frontend/src/public/examples/joint_outrunner_36s40p.coilem",
