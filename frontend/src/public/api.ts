@@ -57,6 +57,7 @@ export interface PublicRunListRecord {
   started_at?: string | null;
   completed_at?: string | null;
   solver_name?: string | null;
+  field_playback_removed_at?: string | null;
 }
 
 export interface PublicRunStoragePolicy {
@@ -66,6 +67,8 @@ export interface PublicRunStoragePolicy {
   accepting_new_runs: boolean;
   automatic_durable_run_deletion: boolean;
   recommended_keep_latest_per_project: number;
+  automatic_field_playback_removal?: boolean;
+  field_playback_keep_latest_per_project?: number;
 }
 
 export interface PublicRunListPayload extends PublicJson {

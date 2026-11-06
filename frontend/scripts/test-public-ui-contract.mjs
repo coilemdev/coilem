@@ -381,6 +381,9 @@ assert.match(workspaceSource, /Manage previous runs/);
 assert.match(workspaceSource, /needsRunStorageRecovery\(props\.error\)/);
 assert.match(runComparisonSource, /aria-label="Local run storage"/);
 assert.match(runComparisonSource, /Saved results stay on this computer and are never removed automatically/);
+// Field playback is the one part older runs give up (#212); the dialog says so and marks them.
+assert.match(runComparisonSource, /is kept for each design's newest \$\{storage\.field_playback_keep_latest_per_project\} runs/);
+assert.match(runComparisonSource, /record\.field_playback_removed_at \? ' · field playback removed' : ''/);
 assert.match(runComparisonSource, /Delete an older saved or incomplete run below/);
 assert.match(runComparisonSource, /Delete permanently/);
 assert.match(runComparisonSource, /record\.status === 'running'/);

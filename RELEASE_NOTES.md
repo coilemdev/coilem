@@ -43,6 +43,17 @@
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.
+- **Smaller saved runs.** A saved run keeps each field frame as float32 arrays
+  in an xz stream (`.f32.xz`), a quarter to a third of the gzipped JSON, and
+  hard-links its frames and playback images from the solve cache instead of
+  copying them. A run of the 8-pole / 12-slot example drops from about 242 MB to
+  141 MB ([public issue 212](https://github.com/coilemdev/coilem/issues/212)).
+  The solve still reads its physics from the cache's full-precision JSON, so
+  results are unchanged, and runs saved earlier still open.
+- **Older runs give up field playback.** Each design keeps field playback for its
+  newest 5 runs (`COILEM_FIELD_PLAYBACK_KEEP_RUNS`); older runs keep their
+  results, report and design, and **Manage previous runs** marks them. A full
+  workspace removes the oldest runs' playback before it refuses a solve.
 - **Experimental until benchmarked.** No registered benchmark fixture is an
   outer rotor, so every outer-rotor design reports experimental. Phase F,
   proposed as [protocol 1.8.0](benchmarks/abcd-v1.8/README.md), adds 10

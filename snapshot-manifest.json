@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13139,
-      "sha256": "0394bac7d6b20efeb0f7adb5b83b016651f7a7636d0630e0c005d907e73178fc"
+      "bytes": 13976,
+      "sha256": "e17d0b48000934aec47558aefaeb1279ddda6c31bcb401370d1d65eee25d1142"
     },
     {
       "path": "SECURITY.md",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 17336,
-      "sha256": "57ec4bd523b76bbb5c75813ecd8c37e933bc48344350e43cdb21f96ce1f5d6e3"
+      "bytes": 18390,
+      "sha256": "b8390e78c773b8210494b3826d63e351e7da53783bdf3350fbc8b2193ed26808"
     },
     {
       "path": "backend/field_composition.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 92289,
-      "sha256": "59c639926d0b7cf525e495d810f7140bf3b73c7a29280f494c8077ac021dff0f"
+      "bytes": 92296,
+      "sha256": "e0b570fe210c2420acf580227a457192bdcb632577038acbb470eb0817087b47"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 54282,
-      "sha256": "0cd5395ba39c80d9f9dbaaaf18cfda0eac63f5e7f4297dc4409213a00a7d9387"
+      "bytes": 54385,
+      "sha256": "e69e802876db32fc3c0a2b9bca8df2867b900e4f93279f648e37fe3ba00028b7"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 46626,
-      "sha256": "2c877064d6fea1a53467afcdb2a024ee625bd1b32a64f53b39626be3bd5b2a6d"
+      "bytes": 56628,
+      "sha256": "f3e15a97729090a4379d843ea804d222a73e9cd17a66c330db647dbf0f90c008"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -5970,8 +5970,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16168,
-      "sha256": "afa5304bef56bc74da5ce0bccef04e988dcae4ee3d491a9f279be941a0f63478"
+      "bytes": 16500,
+      "sha256": "d30a0d6d23d9ebf8752826b66c4421d24587cdf0230179b0d4635d21c559ef45"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 5022,
-      "sha256": "459ec9b52236f335abf97d2d5add0e05f4537fed5bfa7dd8b78840521bb00857"
+      "bytes": 6280,
+      "sha256": "52dd42d808d67ef6864bae8de88b49c199f7b6f5a3c20f0b6262853e9bd46fc3"
     },
     {
       "path": "frontend/package-lock.json",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 164752,
-      "sha256": "3aa3450f74b3a743b864f5a9fc7639283dbbf8aa11eb17b06b2e86aaa5df371a"
+      "bytes": 165087,
+      "sha256": "dd21be64589a26bed477eb395b583a36ba7e17329626d38732950383f9b1e7d8"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7090,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 24919,
-      "sha256": "72ad3eace275fb12786a28aa2d14909e8d57a9804d3310ade03ac149edb420e2"
+      "bytes": 25348,
+      "sha256": "b6d26075c891df36665a1dd3a851428a072f6c137a1234d75a2a57811c666a9e"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7135,8 +7135,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 13775,
-      "sha256": "59ed4057eaf491bfec34953306457d0de426a5696f92e2a92f9af817a6cebaa8"
+      "bytes": 13917,
+      "sha256": "46c54390d8315810acacf8c0ff1d20441f5c3864ee4d008643f58281e1b65524"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -12422,6 +12422,16 @@
       "path": "frontend/src/public/examples/drone_outrunner_36s40p_b.coilem",
       "bytes": 8356,
       "sha256": "fb7b7e1137bbb1168c8263636abd1c8891fa0cd49504658e1b481fa0d2abcc8a"
+    },
+    {
+      "path": "backend/field_frame_codec.py",
+      "bytes": 6884,
+      "sha256": "1d3d54c63a1b75829fdef64ed0474b40861be6ff425f698a7f22f71102288310"
+    },
+    {
+      "path": "tests/test_compact_run_storage.py",
+      "bytes": 14347,
+      "sha256": "45fb52056b651fb79be6268dfd232d10f9db9b5ad2fc85d56d2009e57b5afaae"
     }
   ],
   "public_patches": [

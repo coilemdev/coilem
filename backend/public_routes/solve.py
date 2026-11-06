@@ -14,6 +14,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse, StreamingResponse
 
+from backend import field_frame_codec
 from backend.convergence_reporting import convergence_report
 from backend.elmer.capabilities import ElmerCapabilities, discover_elmer
 from backend.elmer.errors import (
@@ -719,12 +720,12 @@ def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
             not artifact_id.startswith(RUN_ARTIFACT_PREFIX)
             and path.parent.name != "field_line_frames"
         )
-        or not path.name.endswith(".json.gz")
+        or not path.name.endswith((".json.gz", field_frame_codec.SUFFIX))
     ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="field frame not found")
     try:
         artifact_payload = read_field_line_frame_artifact(path)
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError) as exc:  # a JSON or compact frame that does not parse
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="field frame could not be read",
