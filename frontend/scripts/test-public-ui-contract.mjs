@@ -1318,7 +1318,7 @@ assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh
 assert.match(solvedFieldSource, /<RpmField\s+value=\{playbackRpm\}\s+min=\{PUBLIC_FIELD_PLAYBACK_MIN_RPM\}\s+max=\{PUBLIC_FIELD_PLAYBACK_MAX_RPM\}\s+label="Speed"\s+ariaLabel="Playback speed \(RPM\)"/);
 assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
-assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1/);
+assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 0\.1;/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30/);

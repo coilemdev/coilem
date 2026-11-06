@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 14151,
-      "sha256": "03d9092f3d665121b7731a3032cfca6a612bc738e36f7169530b64fd707e9b95"
+      "bytes": 14226,
+      "sha256": "d60ed6ae2e00e7389ebdf3a22ab3e9ac3bff73159e4a0044e3c267444d320d29"
     },
     {
       "path": "SECURITY.md",
@@ -6500,8 +6500,8 @@
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
-      "bytes": 10401,
-      "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3"
+      "bytes": 10765,
+      "sha256": "4c6505f4b567b492cc0e490395d8da29d530cc9fdbf8cc462a7be6f88d0ea1c2"
     },
     {
       "path": "frontend/scripts/test-field-position-link.mjs",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163382,
-      "sha256": "2121aeb65a3b1c4dc5a1465d3c56839ec70b2d35c15cb2645dfef545e71e193c"
+      "bytes": 163386,
+      "sha256": "a2efb391f5e825249f69b884881ab05baa2f0b5bd9a819cd99ee1003eab59cfb"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 55496,
-      "sha256": "1296225b2e99ee91ade302a78147c93d3536c750e81e8edb45c84bf7af405811"
+      "bytes": 55519,
+      "sha256": "6a48417b06e6f6db23ccaf3f97d13437bcf8cd68f9783b61b6f13814776d165a"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7265,8 +7265,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 12743,
-      "sha256": "a759c3332b20c0a6c0e58bbd00e64d1f9f3393b4f5405347a7ded59ddfa6cf6d"
+      "bytes": 12828,
+      "sha256": "30aacc1c55a9bb95ffe8ec86ffe6a13f9d21995532a6321da5261c7618502a66"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
@@ -13030,8 +13030,8 @@
     },
     {
       "path": "frontend/scripts/test-rpm-steps.mjs",
-      "bytes": 2574,
-      "sha256": "fe0caa7215390f866d7a6fd6fa41bd9b2f5afd43ca0b66360a3526a169bac3d4"
+      "bytes": 2585,
+      "sha256": "a2f0f002c7d6082e0da7484b171d83853fedda9376676be42b40736dc059e049"
     },
     {
       "path": "frontend/scripts/test-sector-framing.mjs",
@@ -13075,8 +13075,8 @@
     },
     {
       "path": "frontend/src/public/rpmSteps.ts",
-      "bytes": 1743,
-      "sha256": "ea84851580e9409515ec41329910c0415d7edd95b6dbe0ae3fd5e3cb914795f1"
+      "bytes": 1794,
+      "sha256": "9a6ac0d111381baae886106e94d73c846d624522057233823d24c74bf6c813ca"
     },
     {
       "path": "frontend/src/public/sectorFraming.ts",
