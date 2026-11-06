@@ -13,6 +13,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
+from backend import field_frame_codec
+
 AIRGAP_RECORD_ARTIFACT_SCHEMA = "openem.airgap_field_records.v1"
 FIELD_LINE_FRAME_ARTIFACT_SCHEMA = "openem.field_line_frame.v1"
 DISPLAY_AIRGAP_RECORD_LIMIT = 720
@@ -188,10 +190,13 @@ def restore_noload_mesh(frame: dict[str, Any]) -> dict[str, Any]:
 
 
 def read_field_line_frame_artifact(path: Path) -> dict[str, Any]:
-    """Read a stored field-frame artifact with its no-load plot complete again."""
+    """Read a stored field-frame artifact, gzipped JSON or compact, with its no-load plot complete again."""
 
-    with gzip.open(path, "rt", encoding="utf-8") as fh:
-        payload = json.load(fh)
+    if field_frame_codec.is_compact_field_frame(path):
+        payload = field_frame_codec.decode_compact_field_frame(path.read_bytes())
+    else:
+        with gzip.open(path, "rt", encoding="utf-8") as fh:
+            payload = json.load(fh)
     if isinstance(payload, dict) and isinstance(payload.get("field_line_frame"), dict):
         payload["field_line_frame"] = restore_noload_mesh(payload["field_line_frame"])
     return payload
@@ -414,6 +419,27 @@ def write_airgap_records_artifact(
         return None
 
 
+def compact_field_frame_path(path: Path) -> Path:
+    """Where the compact copy of a cached ``….json.gz`` field frame is written."""
+
+    return path.with_name(path.name.removesuffix(".json.gz") + field_frame_codec.SUFFIX)
+
+
+def _write_compact_field_frame(path: Path, payload: dict[str, Any]) -> None:
+    """Write the compact copy a saved run keeps instead of the gzipped JSON.
+
+    The solve reads its physics from the JSON copy, so a failure here only
+    leaves the run keeping the JSON, as before.
+    """
+
+    staging = path.with_name(f".{path.name}.writing")
+    try:
+        staging.write_bytes(field_frame_codec.encode_compact_field_frame(payload))
+        os.replace(staging, path)
+    except Exception:
+        staging.unlink(missing_ok=True)
+
+
 def _field_line_frame_segment_count(frame: dict[str, Any] | None) -> int:
     contours = frame.get("contour_levels") if isinstance(frame, dict) else None
     if not isinstance(contours, list):
@@ -466,6 +492,7 @@ def write_field_line_frame_artifact(
             "field_line_frame": frame_payload,
         }
         _write_json_gz(path, payload)
+        _write_compact_field_frame(compact_field_frame_path(path), payload)
         return {
             "artifact_id": encode_solve_cache_artifact_id(path),
             "format": "json.gz",
