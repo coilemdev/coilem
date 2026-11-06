@@ -1351,7 +1351,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       </ParameterSectionBlock>}
 
       {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
-        <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
+        <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={64} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" hint={outer ? 'Outside of the rotor back-iron ring.' : undefined} min={outer ? 10 : 15} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
         {outer && <NumberRow label="Magnet Seat" value={config.rotor.ID_mm ?? 0} unit="mm" hint="Rotor ID: the back-iron face the magnets sit on." min={4} step={0.1} disabled={disabled} onChange={set('rotor', 'ID_mm', 'rotor')} />}
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>

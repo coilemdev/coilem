@@ -135,6 +135,22 @@ def test_parametric_outer_rotor_geometry_covers_its_annulus(slots, poles, layers
     assert magnet.magnetization_xy == pytest.approx((-1.0, 0.0))
 
 
+def test_a_36_slot_40_pole_outrunner_builds_and_64_poles_is_the_cap():
+    # Robot-joint and large drone outrunners run 40 poles and more: the dimensions of the
+    # 36-slot / 40-pole joint motor in MDPI Electronics 12(2):397 (2023), Table 1.
+    raw = outer_config()
+    raw["stator"].update(OD_mm=76.4, ID_mm=58.5, slot_count=36, stack_length_mm=7.0, slot_opening_mm=2.5,
+                         tooth_width_mm=2.0, yoke_thickness_mm=1.5)
+    raw["rotor"].update(ID_mm=81.0, OD_mm=84.0, magnet_thickness_mm=1.8, magnet_width_mm=5.53, pole_count=40)
+    raw["winding"].update(type="concentrated", layers=2)
+    ir = build_geometry_ir(MotorConfig.model_validate(raw), rotor_angle_deg=0.0)
+    assert ir.validation_report().issues == ()
+    assert sum(region.kind == "Magnet" for region in ir.regions) == 40
+    assert sum(region.kind == "SlotWinding" for region in ir.regions) == 72
+    with pytest.raises(ValidationError, match="less than or equal to 64"):
+        MotorConfig.model_validate({**raw, "rotor": {**raw["rotor"], "pole_count": 66}})
+
+
 def test_outer_rotor_geometry_checks():
     from backend.geometry import validate_geometry
 
