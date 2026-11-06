@@ -35,6 +35,10 @@
   magnets on the inner face, and the shaft runs through the hub on its bearings.
   The explode, part toggles and phase links work as before. Published reference
   motors still extrude their cross-section.
+- **Phase wiring as it is wound.** In both layouts the 3D view now draws each
+  phase as one continuous wire: every coil has its own start and finish lead, and
+  each finish crosses behind the stack to the next coil's start, a short hop
+  between neighbouring teeth, from the drive lead to the star point.
 - **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
   band (radial thickness up to half its outer radius) opens zoomed on the top of
   the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
