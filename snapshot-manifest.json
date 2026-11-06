@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 14765,
-      "sha256": "8a7ef7cf185eb09cf8d9a8cd41cb5793cd90b35c07b0181d7b9f81191e0467be"
+      "bytes": 15071,
+      "sha256": "467611899684014505bf6d2a0c65b7968bbfd65db1cd69cd59380e24ed1318a5"
     },
     {
       "path": "SECURITY.md",
@@ -6430,8 +6430,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3036,
-      "sha256": "84c5d1bfde023d120636a8fb37d82b4af4338c3ee8b68d67baed30d1353818d1"
+      "bytes": 3073,
+      "sha256": "b954e51e8470f1134561fd9ba18294f808161329559aceb82eb478f61a7bf6a6"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7085,8 +7085,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 85001,
-      "sha256": "e00c19c4d9b635d1da364f686a6dc547dea569857ccd1216e1c94e4e9221e23a"
+      "bytes": 85159,
+      "sha256": "3aaddf24ab72eb1676bdb1070cb2a99d287445a242dff466dd7b929c802bfa75"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7170,8 +7170,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 17058,
-      "sha256": "1cf0728f14824e04e8ecc278d748bd30d24d1709e5bc5f246431d444fc40f5c9"
+      "bytes": 19113,
+      "sha256": "0ea1a04793de36befab217687ae0f5ff3af3378ccd46b5895dee7159f1e25489"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -12437,6 +12437,11 @@
       "path": "tests/test_compact_run_storage.py",
       "bytes": 18762,
       "sha256": "89294068a0fe6c1190347a1d782ee29161f98ba6036f29aa52b0a1294fa22459"
+    },
+    {
+      "path": "frontend/scripts/test-coil-wiring.mjs",
+      "bytes": 4075,
+      "sha256": "580d7349a3406d4f44f8137e2011d8620e75e4a960c1c453fa1adc85c13a1919"
     }
   ],
   "public_patches": [

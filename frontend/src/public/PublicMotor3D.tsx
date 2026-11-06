@@ -1159,6 +1159,7 @@ function ParametricMotor3D({
           toothCoilByTooth ? toothCoilByTooth.get(slot)?.phase ?? null : (['A', 'C', 'B'] as const)[slot % 3]
         ),
         bundleCenterRadius: concentratedCoil.bundleCenterRadius,
+        coilLeads: { start: concentratedCoil.startLead, finish: concentratedCoil.finishLead },
         stackHalf: stackDepth / 2,
         axialOverhang: concentratedCoil.axialOverhang,
         wireRadius: concentratedCoil.wireRadius,
@@ -1180,8 +1181,8 @@ function ParametricMotor3D({
         makeSelectable(mesh, {
           id: `3d-harness-${phase}`,
           kind: 'harness',
-          label: `Phase ${phase} rear links · drive lead`,
-          role: 'Series jumpers joining the phase coils behind the stack, out to the drive lead',
+          label: `Phase ${phase} wire · crossovers and drive lead`,
+          role: 'One continuous wire: each coil’s finish crosses behind the stack to the next coil’s start, from the drive lead to the star point',
           phase,
         });
         harnessGroup?.add(mesh);
