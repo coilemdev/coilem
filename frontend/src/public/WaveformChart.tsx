@@ -18,6 +18,8 @@ export interface WaveformSeries {
   values: number[];
   color: string;
   dashArray?: string;
+  /** A reading shown after the legend label, for example "6.36 V rms". */
+  legendValue?: string;
 }
 
 interface WaveformChartProps {
@@ -139,8 +141,8 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
           disabled={visible && plottedSeries.length === 1}
           title={`${visible ? 'Hide' : 'Show'} ${item.label}`}
           onClick={() => toggleSeries(item, index)}
-        ><i style={swatchStyle} />{text}</button>
-      : <span key={key} aria-label={item.label}><i style={swatchStyle} />{text}</span>;
+        ><i style={swatchStyle} />{text}{item.legendValue && <b className="public-waveform-legend-value">{item.legendValue}</b>}</button>
+      : <span key={key} aria-label={item.legendValue ? `${item.label} ${item.legendValue}` : item.label}><i style={swatchStyle} />{text}{item.legendValue && <b className="public-waveform-legend-value">{item.legendValue}</b>}</span>;
   };
 
   return (

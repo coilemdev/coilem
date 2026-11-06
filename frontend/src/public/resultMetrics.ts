@@ -39,6 +39,92 @@ export function torqueRange(samples: readonly number[]): { min: number; max: num
   return finite.length < 2 ? null : { min: Math.min(...finite), max: Math.max(...finite) };
 }
 
+/** One row of the Back EMF readings, in volts at the run's speed. */
+export interface BackEmfReading {
+  label: 'Phase' | 'Line (wye)';
+  /** The fundamental's rms, the headline's convention. */
+  rmsV: number;
+  /** The solved waveform's largest magnitude; null without a whole electrical cycle. */
+  peakV: number | null;
+  /** The solved waveform's max − min; null without a whole electrical cycle. */
+  peakToPeakV: number | null;
+}
+
+// A Preview run solves only part of a cycle, which can miss the peak.
+function coversElectricalCycle(anglesDeg: readonly number[]): boolean {
+  const angles = anglesDeg.filter(Number.isFinite).sort((left, right) => left - right);
+  if (angles.length < 3) return false;
+  const steps = angles.slice(1).map((angle, index) => angle - angles[index]).sort((left, right) => left - right);
+  return angles[angles.length - 1] - angles[0] + steps[Math.floor(steps.length / 2)] >= 359.5;
+}
+
+function waveformExtremes(samples: readonly number[]): { peak: number; peakToPeak: number } | null {
+  const finite = samples.filter(Number.isFinite);
+  if (finite.length < 3) return null;
+  const max = Math.max(...finite);
+  const min = Math.min(...finite);
+  return { peak: Math.max(max, -min), peakToPeak: max - min };
+}
+
+/**
+ * The Back EMF card's readings: phase (line-to-neutral) and line-to-line, each as
+ * the fundamental's rms and the solved waveform's peak and peak-to-peak. Papers and
+ * datasheets often quote a peak and a scope reads peak-to-peak, and with harmonics
+ * the peak is not √2 × rms. The line voltage is phase A − B, the terminal voltage of
+ * a wye connection; its fundamental is √3 times the phase's.
+ */
+export function backEmfReadings(
+  waveform: SolveResult['back_emf_waveform'],
+  phaseFundamentalRmsV: number | null,
+): BackEmfReading[] | null {
+  if (typeof phaseFundamentalRmsV !== 'number' || !Number.isFinite(phaseFundamentalRmsV)) return null;
+  const angles = waveform.electrical_angle_deg;
+  const line = waveform.line_ab_V?.length
+    ? waveform.line_ab_V
+    : waveform.phase_a_V.map((value, index) => value - (waveform.phase_b_V[index] ?? Number.NaN));
+  const row = (label: BackEmfReading['label'], rmsV: number, samples: readonly number[]): BackEmfReading => ({
+    label,
+    rmsV,
+    peakV: waveformMeasure(angles, samples, 'peak'),
+    peakToPeakV: waveformMeasure(angles, samples, 'pk-pk'),
+  });
+  return [row('Phase', phaseFundamentalRmsV, waveform.phase_a_V), row('Line (wye)', Math.sqrt(3) * phaseFundamentalRmsV, line)];
+}
+
+/** How a waveform's size is read: the fundamental's rms, the peak, or the peak-to-peak swing. */
+export type WaveformMeasure = 'rms' | 'peak' | 'pk-pk';
+
+/**
+ * A solved waveform's fundamental rms, peak or peak-to-peak, or null without a whole
+ * electrical cycle of samples (a Preview window). The rms is the fundamental's, the
+ * convention of the Back EMF headline; peak and peak-to-peak include the harmonics.
+ */
+export function waveformMeasure(anglesDeg: readonly number[], values: readonly number[], measure: WaveformMeasure): number | null {
+  if (values.length !== anglesDeg.length || !coversElectricalCycle(anglesDeg)) return null;
+  if (measure === 'rms') {
+    let cosine = 0;
+    let sine = 0;
+    let count = 0;
+    anglesDeg.forEach((angle, index) => {
+      const value = values[index];
+      if (!Number.isFinite(angle) || !Number.isFinite(value)) return;
+      cosine += value * Math.cos((angle * Math.PI) / 180);
+      sine += value * Math.sin((angle * Math.PI) / 180);
+      count += 1;
+    });
+    return count < 3 ? null : ((2 / count) * Math.hypot(cosine, sine)) / Math.SQRT2;
+  }
+  const extremes = waveformExtremes(values);
+  return extremes === null ? null : measure === 'peak' ? extremes.peak : extremes.peakToPeak;
+}
+
+/** Volts to three figures: "6.36", "17.4", "231". */
+export function formatVolts(volts: number | null): string {
+  if (volts === null || !Number.isFinite(volts)) return '—';
+  const magnitude = Math.abs(volts);
+  return volts.toFixed(magnitude < 10 ? 2 : magnitude < 100 ? 1 : 0);
+}
+
 /** How the torque ripple reads: a percentage, or the peak-to-peak swing when a percentage means nothing. */
 export interface TorqueRippleView {
   /** Ripple in %, or null when the average torque is too small for one. */
