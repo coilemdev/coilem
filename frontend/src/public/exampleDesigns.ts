@@ -4,6 +4,7 @@ import ipm14pFlatBuriedLarge from './examples/validation_ipm_14p_flat_buried_lar
 import ornlPrius2004HoleM50 from './examples/ornl_prius_2004_holem50.coilem?raw';
 import spm24pSmall from './examples/validation_spm_24p_small.openem?raw';
 import rotatingField6p36s from './examples/rotating_field_6p36s.coilem?raw';
+import spmOutrunner14p12s from './examples/spm_outrunner_14p12s.coilem?raw';
 
 import priusTutorial from './examples/prius-2004-tutorial-bemf-v1.coilem?raw';
 import priusLoaded from './examples/prius-2004-loaded-torque-v1.coilem?raw';
@@ -18,6 +19,7 @@ export type PublicExampleId =
   | 'prius-2004-loaded-torque-v1'
   | 'spm-8p12s'
   | 'rotating-field-6p36s'
+  | 'spm-outrunner-14p12s'
   | 'ipm-10p-v-shape-medium'
   | 'ipm-14p-flat-buried-large'
   | 'spm-24p-small'
@@ -51,6 +53,7 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
   { id: 'prius-2004-loaded-torque-v1', label: 'Pyleecan Prius 8p48s · Loaded torque', detail: '2000 rpm · 60°C · 250 A peak · software reference', benchmark: true },
   { id: 'spm-8p12s', label: 'SPM 8p/12s', detail: 'Starter motor' },
   { id: 'rotating-field-6p36s', label: 'SPM 6p/36s', detail: 'Three pole pairs · distributed winding' },
+  { id: 'spm-outrunner-14p12s', label: 'SPM outrunner 14p/12s', detail: 'Outer rotor · drone class · tooth coils' },
   { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium' },
   { id: 'ipm-14p-flat-buried-large', label: 'IPM 14p flat buried', detail: 'Large' },
   { id: 'spm-24p-small', label: 'SPM 24p', detail: 'Small' },
@@ -95,6 +98,7 @@ const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, strin
   'prius-2004-tutorial-bemf-v1': priusTutorial,
   'prius-2004-loaded-torque-v1': priusLoaded,
   'rotating-field-6p36s': rotatingField6p36s,
+  'spm-outrunner-14p12s': spmOutrunner14p12s,
   'ipm-10p-v-shape-medium': ipm10pVShapeMedium,
   'ipm-14p-flat-buried-large': ipm14pFlatBuriedLarge,
   'spm-24p-small': spm24pSmall,

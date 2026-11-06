@@ -1,5 +1,6 @@
 /// <reference lib="webworker" />
 
+import { fieldStrokeScale } from './fieldStrokeWidth';
 import { FIXED_FLUX_SCALE, FLUX_OVER_RANGE_INDEX, fluxColor, fluxColorIndex } from './fluxColorScale';
 
 type RasterSource = 'resultant' | 'pm' | 'armature';
@@ -76,6 +77,7 @@ function rasterize(plot: FieldPlotPayload) {
     width + padding * 2,
     height + padding * 2,
   ];
+  const strokeScale = fieldStrokeScale(viewBox[2], viewBox[3]);
   const values = plot.element_b_mag_t.filter(Number.isFinite);
   const minB = values.length ? Math.min(...values) : 0;
   const maxB = values.length ? Math.max(...values) : 0;
@@ -99,7 +101,7 @@ function rasterize(plot: FieldPlotPayload) {
   baseLayer.context.fillStyle = '#202733';
   baseLayer.context.fill();
   baseLayer.context.strokeStyle = 'rgba(255,255,255,.03)';
-  baseLayer.context.lineWidth = 0.08;
+  baseLayer.context.lineWidth = 0.08 * strokeScale;
   baseLayer.context.stroke();
 
   const meshLayer = configuredCanvas(viewBox);
@@ -109,7 +111,7 @@ function rasterize(plot: FieldPlotPayload) {
     if (points) addTriangle(meshLayer.context, points);
   });
   meshLayer.context.strokeStyle = 'rgba(203,213,225,.42)';
-  meshLayer.context.lineWidth = 0.11;
+  meshLayer.context.lineWidth = 0.11 * strokeScale;
   meshLayer.context.lineJoin = 'round';
   meshLayer.context.stroke();
 
@@ -139,7 +141,7 @@ function rasterize(plot: FieldPlotPayload) {
     });
   });
   lineLayer.context.strokeStyle = '#ffd166';
-  lineLayer.context.lineWidth = 0.28;
+  lineLayer.context.lineWidth = 0.28 * strokeScale;
   lineLayer.context.lineCap = 'round';
   lineLayer.context.shadowColor = 'rgba(255,145,0,.9)';
   lineLayer.context.shadowBlur = 0.45;

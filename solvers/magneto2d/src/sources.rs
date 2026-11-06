@@ -98,13 +98,7 @@ pub(crate) fn phase_currents_for_excitation(
     let rotor_elec_deg = rotor_angle_rad.to_degrees() * pole_pairs;
     let advance_deg = sp.commutation_advance_deg();
     // Commutate on the rotor's position relative to phase A's axis (#91).
-    let axis_offset_deg = winding_phase_axis_offset_elec_deg(
-        &config.winding.winding_type,
-        config.stator.slot_count,
-        config.rotor.pole_count,
-        config.winding.layers,
-        config.winding.coil_span,
-    );
+    let axis_offset_deg = phase_axis_offset_deg(config);
     let (effective_deg, table) =
         if sp.excitation_rotation_convention_label() == "clockwise_positive_ui" {
             (
@@ -656,6 +650,25 @@ pub fn concentrated_slot_sides(slot: usize, slot_count: u32, pole_count: u32, la
     }
 }
 
+/// Phase A's axis as the rotor flux sees it. A gap-facing north pole drives flux
+/// inward through an outer rotor's stator, the reverse of an inner rotor, which
+/// puts phase A's flux axis half a cycle on. Mirrors
+/// `backend.excitation.phase_axis_offset_deg`.
+pub fn phase_axis_offset_deg(config: &MotorConfig) -> f64 {
+    let offset = winding_phase_axis_offset_elec_deg(
+        &config.winding.winding_type,
+        config.stator.slot_count,
+        config.rotor.pole_count,
+        config.winding.layers,
+        config.winding.coil_span,
+    );
+    if config.is_outer_rotor() {
+        offset + 180.0
+    } else {
+        offset
+    }
+}
+
 /// Electrical angle of phase A's axis, which the current-angle convention and
 /// six-step commutation absorb (#91). The convention puts phase A's axis at 0
 /// degrees, where a one-slot phase belt has it; wider belts put it at their
@@ -1057,6 +1070,7 @@ mod tests {
                 stator_inner_radius_mm: 0.0,
                 stator_slot_outer_radius_mm: 0.0,
                 stator_outer_radius_mm: 0.0,
+                outer_rotor: None,
             },
         };
         let centroids = vec![[0.001667, 0.000333], [0.002333, 0.000667]];

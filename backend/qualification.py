@@ -25,6 +25,7 @@ from backend.models.performance import (
 )
 from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
 from backend.reference_models import reference_model
+from backend.rotor_layout import is_outer_rotor
 from backend.winding_utils import concentrated_uses_tooth_coils
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
@@ -111,6 +112,9 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
     reference = reference_model(config)
     if reference is not None:
         return ("experimental", reference.qualification_reason)
+    if is_outer_rotor(config):
+        # Every registered fixture is an inner rotor, so no inner-rotor combination's evidence carries over.
+        return "experimental", "Outer-rotor SPM: no benchmark fixture measures an outer rotor yet."
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"

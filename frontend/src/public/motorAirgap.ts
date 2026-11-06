@@ -4,6 +4,12 @@ export const PUBLIC_AIRGAP_LAUNCH_MIN_MM = 0.3;
 export const PUBLIC_AIRGAP_PRACTICAL_MIN_MM = 0.5;
 export const PUBLIC_AIRGAP_PRACTICAL_MAX_MM = 1.5;
 export const PUBLIC_AIRGAP_LARGE_MM = 2;
+// Outer rotors cover RC and drone outrunners, whose gaps run a few tenths of a
+// millimetre. The launch minimum matches backend MIN_OUTER_AIRGAP_MM.
+export const OUTER_ROTOR_AIRGAP_LAUNCH_MIN_MM = 0.1;
+export const OUTER_ROTOR_AIRGAP_PRACTICAL_MIN_MM = 0.15;
+export const OUTER_ROTOR_AIRGAP_PRACTICAL_MAX_MM = 1;
+export const OUTER_ROTOR_AIRGAP_LARGE_MM = 1.5;
 const PUBLIC_MIN_ROTOR_OD_MM = 15;
 const PUBLIC_MAX_ROTOR_OD_MM = 450;
 const PUBLIC_MIN_MAGNET_THICKNESS_MM = 2;
@@ -27,6 +33,10 @@ export function rotorAirgapBoundaryRadiusMm(config: MotorConfig): number {
 }
 
 export function magneticAirgapMm(config: MotorConfig): number {
+  if (config.rotor_layout === 'outer') {
+    // An outer rotor's magnets sit on its inner face (rotor ID) and face the stator OD.
+    return Math.max(0, (config.rotor.ID_mm ?? 0) / 2 - config.rotor.magnet_thickness_mm - config.stator.OD_mm / 2);
+  }
   return Math.max(0, config.stator.ID_mm / 2 - rotorAirgapBoundaryRadiusMm(config));
 }
 
@@ -86,30 +96,35 @@ export function changeTopologyPreservingAirgap(
   };
 }
 
-export function publicAirgapHealth(airgapMm: number): PublicAirgapHealth {
+export function publicAirgapHealth(airgapMm: number, rotorLayout: MotorConfig['rotor_layout'] = 'inner'): PublicAirgapHealth {
+  const outer = rotorLayout === 'outer';
+  const launchMin = outer ? OUTER_ROTOR_AIRGAP_LAUNCH_MIN_MM : PUBLIC_AIRGAP_LAUNCH_MIN_MM;
+  const practicalMin = outer ? OUTER_ROTOR_AIRGAP_PRACTICAL_MIN_MM : PUBLIC_AIRGAP_PRACTICAL_MIN_MM;
+  const practicalMax = outer ? OUTER_ROTOR_AIRGAP_PRACTICAL_MAX_MM : PUBLIC_AIRGAP_PRACTICAL_MAX_MM;
+  const large = outer ? OUTER_ROTOR_AIRGAP_LARGE_MM : PUBLIC_AIRGAP_LARGE_MM;
   const measured = `Calculated magnetic airgap is ${airgapMm.toFixed(2)} mm.`;
-  if (airgapMm < PUBLIC_AIRGAP_LAUNCH_MIN_MM) {
+  if (airgapMm < launchMin) {
     return {
       severity: 'warning',
       title: 'Airgap is below the launch minimum',
-      copy: `${measured} At least ${PUBLIC_AIRGAP_LAUNCH_MIN_MM.toFixed(2)} mm is required.`,
+      copy: `${measured} At least ${launchMin.toFixed(2)} mm is required.`,
     };
   }
-  if (airgapMm < PUBLIC_AIRGAP_PRACTICAL_MIN_MM) {
+  if (airgapMm < practicalMin) {
     return {
       severity: 'warning',
       title: 'Airgap is tighter than recommended',
-      copy: `${measured} The current practical range is ${PUBLIC_AIRGAP_PRACTICAL_MIN_MM.toFixed(2)}–${PUBLIC_AIRGAP_PRACTICAL_MAX_MM.toFixed(2)} mm.`,
+      copy: `${measured} The current practical range is ${practicalMin.toFixed(2)}–${practicalMax.toFixed(2)} mm.`,
     };
   }
-  if (airgapMm <= PUBLIC_AIRGAP_PRACTICAL_MAX_MM) {
+  if (airgapMm <= practicalMax) {
     return {
       severity: 'positive',
       title: 'Airgap is in the practical range',
-      copy: `${measured} Recommended range ${PUBLIC_AIRGAP_PRACTICAL_MIN_MM.toFixed(2)}–${PUBLIC_AIRGAP_PRACTICAL_MAX_MM.toFixed(2)} mm.`,
+      copy: `${measured} Recommended range ${practicalMin.toFixed(2)}–${practicalMax.toFixed(2)} mm.`,
     };
   }
-  if (airgapMm <= PUBLIC_AIRGAP_LARGE_MM) {
+  if (airgapMm <= large) {
     return {
       severity: 'warning',
       title: 'Airgap is larger than typical',

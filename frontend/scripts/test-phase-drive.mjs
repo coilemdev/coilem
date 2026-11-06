@@ -198,3 +198,9 @@ for (const mode of ['sinusoidal', 'ideal_six_step_120']) {
   }
 }
 console.log('Prius convention and zero-current checks passed');
+
+// An outer rotor's stator faces outward: every tooth pole flips.
+const inwardPoles = toothPoles([1, -1, 0, 0, 0, 0]);
+const outwardPoles = toothPoles([1, -1, 0, 0, 0, 0], 'outward');
+assert.deepEqual(outwardPoles, inwardPoles.map((value) => -value + 0));
+console.log('outer-rotor tooth pole checks passed');

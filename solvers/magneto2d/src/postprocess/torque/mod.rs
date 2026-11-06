@@ -1150,7 +1150,8 @@ pub fn compute_torque_weighted_stress_debug_with_az(
     let mut airgap_triangles = Vec::new();
     let mut global_to_local = vec![None; mesh.nodes.len()];
     let mut local_to_global = Vec::new();
-    let include_slots = !weighted_stress_airgap_only();
+    // The slot domain lies outward of the gap; an outer rotor's slots are inward.
+    let include_slots = !weighted_stress_airgap_only() && !mesh.info.is_outer_rotor();
     let physical_bounds = weighted_stress_physical_bounds(mesh, include_slots);
     let domain_regions = if include_slots {
         vec!["Airgap".to_string(), "SlotWinding".to_string()]

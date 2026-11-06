@@ -334,17 +334,32 @@ MIN_OUTER_AIRGAP_MM = 0.1
 
 
 def _validate_outer_rotor_geometry(config: MotorConfig) -> list[ErrorResponse]:
-    """The radial checks that hold for an outer rotor; MotorConfig already orders its radii."""
+    """The checks that hold for an outer rotor; MotorConfig already orders its radii."""
+
+    stator, rotor = config.stator, config.rotor
+    errors = []
+
+    def fail(message: str, field: str, suggestion: str) -> None:
+        errors.append(ErrorResponse(error_code="INVALID_GEOMETRY", message=message, field=field, suggestion=suggestion))
 
     airgap = outer_rotor_airgap_mm(config)
-    if airgap >= MIN_OUTER_AIRGAP_MM:
-        return []
-    return [ErrorResponse(
-        error_code="INVALID_GEOMETRY",
-        message=f"Airgap {airgap:.2f}mm is less than minimum {MIN_OUTER_AIRGAP_MM}mm",
-        field="rotor.ID_mm",
-        suggestion=f"Increase rotor ID_mm by at least {2 * (MIN_OUTER_AIRGAP_MM - airgap):.2f}mm or decrease stator OD_mm",
-    )]
+    if airgap < MIN_OUTER_AIRGAP_MM:
+        fail(f"Airgap {airgap:.2f}mm is less than minimum {MIN_OUTER_AIRGAP_MM}mm", "rotor.ID_mm",
+             f"Increase rotor ID_mm by at least {2 * (MIN_OUTER_AIRGAP_MM - airgap):.2f}mm or decrease stator OD_mm")
+    slot_depth = (stator.OD_mm - stator.ID_mm) / 2 - stator.yoke_thickness_mm
+    if slot_depth < 0.5:
+        fail(f"The {stator.yoke_thickness_mm:g}mm yoke leaves {slot_depth:.2f}mm for the slots", "stator.yoke_thickness_mm",
+             "Reduce yoke_thickness_mm or the hub bore (stator ID_mm)")
+    elif slot_body_pitch_mm(config) - stator.tooth_width_mm < 0.3:
+        fail(f"Tooth width {stator.tooth_width_mm:g}mm leaves no slot at the slot bottom "
+             f"({slot_body_pitch_mm(config):.2f}mm pitch)", "stator.tooth_width_mm", "Reduce tooth_width_mm or the slot count")
+    if config.topology == "SPM":
+        magnet_mid_r = magnet_radial_center_mm(config)
+        pole_pitch_mm = 2 * math.pi * magnet_mid_r / rotor.pole_count
+        if rotor.magnet_width_mm >= pole_pitch_mm:
+            fail(f"Magnet width {rotor.magnet_width_mm:g}mm exceeds the {pole_pitch_mm:.2f}mm pole pitch at the magnet centre",
+                 "rotor.magnet_width_mm", f"Use magnets narrower than {pole_pitch_mm:.2f}mm")
+    return errors
 
 
 def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:

@@ -312,6 +312,7 @@ mod tests {
                 stator_inner_radius_mm: 0.0,
                 stator_slot_outer_radius_mm: 0.0,
                 stator_outer_radius_mm: 0.0,
+                outer_rotor: None,
             },
         };
         let materials = vec![MaterialProps::new(1.0, 2.0, 0.0)];
@@ -353,6 +354,7 @@ mod tests {
                 stator_inner_radius_mm: 0.0,
                 stator_slot_outer_radius_mm: 0.0,
                 stator_outer_radius_mm: 1.0,
+                outer_rotor: None,
             },
         };
         let materials = vec![MaterialProps::new(1.0, 0.0, 0.0); mesh.triangles.len()];
@@ -509,6 +511,7 @@ mod tests {
                 stator_inner_radius_mm: 0.0,
                 stator_slot_outer_radius_mm: 0.0,
                 stator_outer_radius_mm: 0.0,
+                outer_rotor: None,
             },
         };
 
@@ -708,6 +711,7 @@ mod tests {
                 stator_inner_radius_mm: 0.0,
                 stator_slot_outer_radius_mm: 0.0,
                 stator_outer_radius_mm: 0.0,
+                outer_rotor: None,
             },
         };
 
