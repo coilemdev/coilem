@@ -18,6 +18,17 @@
   side of the tooth body. Most real outrunners have them. The Benchmarks menu
   adds one: a published 36-slot / 40-pole robot-joint outrunner, with its
   measured back-EMF and torque in its description.
+- **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
+  band (radial thickness up to half its outer radius) opens zoomed on the top of
+  the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
+  the arrow keys over the view, turn the motor under the view with a short
+  animation, so every sector reads the same way up with its labels level. A dial
+  shows where on the ring you are and turns there when clicked; **Sector** and
+  **Fit** switch between the ring and the whole motor.
+- **Slower preview and field playback.** The Design preview's speed and the
+  solved-field playback in Solve and Results go down to 0.1 RPM, in tenths below
+  1 RPM, so the phases, the tooth poles and the field can be followed slowly. The
+  phase scope's frequency and rev/s keep two figures at these speeds.
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.

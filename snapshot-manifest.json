@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 11502,
-      "sha256": "e9be6e0384886ce1a5bfb01d7ac2473cc78d6e5b681bc612fdf178d9f69d65c8"
+      "bytes": 12347,
+      "sha256": "677969025291c578535d162a256ff6f037147ff0b580afd0a6802696016b17eb"
     },
     {
       "path": "SECURITY.md",
@@ -6430,8 +6430,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2920,
-      "sha256": "c22782fd2f0c01f9bfaeb504f01253c48cd6d63356b77d48170353578e573894"
+      "bytes": 2995,
+      "sha256": "6eb38eba8d9ee0706aa35bd88a6dbc4c68f7870f4a2dab7455691a7a858d4422"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6510,8 +6510,8 @@
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
-      "bytes": 10401,
-      "sha256": "772e47122f0d5154706aa5c542f0dd4fb27a8c826d006661cc8fa42485834aa3"
+      "bytes": 10765,
+      "sha256": "4c6505f4b567b492cc0e490395d8da29d530cc9fdbf8cc462a7be6f88d0ea1c2"
     },
     {
       "path": "frontend/scripts/test-field-position-link.mjs",
@@ -6570,8 +6570,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 12550,
-      "sha256": "daf00e88d0af8e4d745b61f5e043f2accc70a065053293c23a93ea6a16e75e87"
+      "bytes": 13013,
+      "sha256": "50aef7a03616a8c66409faa4da5e8f13dbfab0e09565fa9322b193311bc5b14f"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163084,
-      "sha256": "b973d1152eaafa94e044506cf8395ecd14b44b2eedd2a036f00b1675fd7406e6"
+      "bytes": 163386,
+      "sha256": "a2efb391f5e825249f69b884881ab05baa2f0b5bd9a819cd99ee1003eab59cfb"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6615,8 +6615,8 @@
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
-      "bytes": 1565,
-      "sha256": "c81995eb6c0599cd4d3054a1d1493511e33840ceceddff659492bf056ffb6b90"
+      "bytes": 2566,
+      "sha256": "00438ce61f26d5eaff9d67eed5b915df18ec581e4b93296478340b2e72c78ec4"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 241809,
-      "sha256": "86009738497ed66040c0c1182c2ce68c99759d68c73ec50217959bce8173306d"
+      "bytes": 241914,
+      "sha256": "88ea07c0ac189180931e0eddcca6ec4d3a36f5319e82d15c15522750217ed832"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 58225,
-      "sha256": "cb83f4ac6d81e0687dbfc6ca95d9d89b5c3f3a5ef689a89da2facfca55a926e0"
+      "bytes": 61182,
+      "sha256": "bf6c096256476b9198007ecfe0e6a3d0b02a0047f8754df53e30c58ab2fd0ea2"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 60796,
-      "sha256": "a61a98d9d8c20defef9aa40c1ce7c9d1a609d312e8b62f1ca4f8ff43fcada0d8"
+      "bytes": 62321,
+      "sha256": "4da15534d775915f104bdc667fa6e09462416e07fb33c573b21af2d42f88b34d"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7105,18 +7105,18 @@
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
-      "bytes": 2663,
-      "sha256": "d3f7d1ba52373c604cc30050c151175648af28c73b87749ff70433d1da45c1ec"
+      "bytes": 3034,
+      "sha256": "c20f53c0d8a66526ad077204185b9ea0365bec820686b3cd51cf85774bffa73c"
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 55402,
-      "sha256": "a0513c6dacb2ac0e098bde1dcff76189b69d6968c1147bee888ba4205be8844a"
+      "bytes": 55519,
+      "sha256": "6a48417b06e6f6db23ccaf3f97d13437bcf8cd68f9783b61b6f13814776d165a"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 6451,
-      "sha256": "12b008ddba348dc82d4aab2da463dda5f28b9a97ba08051742d32e49e7747a9f"
+      "bytes": 16825,
+      "sha256": "c53384988bc96652f35966e2bb79db000636fe53873e0adff569ed8430dd9df7"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -7275,8 +7275,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 12743,
-      "sha256": "a759c3332b20c0a6c0e58bbd00e64d1f9f3393b4f5405347a7ded59ddfa6cf6d"
+      "bytes": 12828,
+      "sha256": "30aacc1c55a9bb95ffe8ec86ffe6a13f9d21995532a6321da5261c7618502a66"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
@@ -7295,8 +7295,8 @@
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
-      "bytes": 1973,
-      "sha256": "c89d39a926f8ef2e2c9daeed16e9f723bc71456be54456d14f56bd97c2962848"
+      "bytes": 2901,
+      "sha256": "592bc6b95ae184a976a14ac1fb01f386c61462f3723aa63e2403ffe7eba91cbb"
     },
     {
       "path": "frontend/src/public/flatIpmBurialHealth.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 9584,
-      "sha256": "3e05eb1ec9e544349702ee6a734b6a1ef8ee446d40059c9534ec6320f6d90bb7"
+      "bytes": 10048,
+      "sha256": "9713ec90ab410f4989063e829e6e7697b755e94a7b5216d6b70816771378117b"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -7505,8 +7505,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 289866,
-      "sha256": "5e42a8719ace552b27a0167e5151e0d3590d061cd62e17534a30ebc20b3ed49a"
+      "bytes": 290501,
+      "sha256": "3418f10c5028b815aab9ddd23007f1a309b46099469d423feca67b75e7c3f203"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7530,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
-      "bytes": 2177,
-      "sha256": "f9c62cb7a0387e646974b3655842e21d127f0e11ef40131363931135daea6290"
+      "bytes": 2517,
+      "sha256": "3f38eeb560678e3bca9bde3a4b701dd171c7fdec66b090be0a6ab0de74c2d83c"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
@@ -12392,6 +12392,26 @@
       "path": "tools/make_outrunner_phase_f.py",
       "bytes": 8404,
       "sha256": "c9a0a33e2b4fb07abf41a43717e51d73de8c4b84fc50960920aebebd36f00f8f"
+    },
+    {
+      "path": "frontend/scripts/test-sector-framing.mjs",
+      "bytes": 3688,
+      "sha256": "2262465fc92e562f1790c63bfe302f47902a66136335176540d3c3339f1cfd9d"
+    },
+    {
+      "path": "frontend/src/public/sectorFraming.ts",
+      "bytes": 3265,
+      "sha256": "58dd90355ef2a8ab4e4772db1ba86c7e590cb8423e4ece33c0106495a52c56d7"
+    },
+    {
+      "path": "frontend/scripts/test-rpm-steps.mjs",
+      "bytes": 2585,
+      "sha256": "a2f0f002c7d6082e0da7484b171d83853fedda9376676be42b40736dc059e049"
+    },
+    {
+      "path": "frontend/src/public/rpmSteps.ts",
+      "bytes": 1794,
+      "sha256": "9a6ac0d111381baae886106e94d73c846d624522057233823d24c74bf6c813ca"
     }
   ],
   "public_patches": [

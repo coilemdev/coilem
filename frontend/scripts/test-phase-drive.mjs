@@ -11,6 +11,7 @@ const {
   TRACE_AMPLITUDE,
   electricalFrequencyHz,
   formatHz,
+  formatRevPerSecond,
   scopeWindowElecDeg,
   phaseCurrents,
   phaseDriveFrame,
@@ -95,6 +96,10 @@ assert.ok(Math.abs(electricalFrequencyHz(18, 8) - 1.2) < 1e-12);
 assert.ok(Math.abs(electricalFrequencyHz(2400, 14) - 280) < 1e-9, 'rated speed: 280 Hz');
 assert.ok(Math.abs(scopeWindowElecDeg(18, 14) - 756) < 1e-9);
 assert.deepEqual([formatHz(2.1), formatHz(0.3), formatHz(11.67)], ['2.1 Hz', '0.30 Hz', '12 Hz']);
+// A slow preview keeps two figures: 0.1 rpm on the 40-pole joint motor is 0.033 Hz,
+// and its 0.0017 rev/s must not read as 0.00.
+assert.deepEqual([formatHz(electricalFrequencyHz(0.1, 40)), formatHz(electricalFrequencyHz(0.1, 2)), formatHz(0)], ['0.033 Hz', '0.0017 Hz', '0.00 Hz']);
+assert.deepEqual([formatRevPerSecond(18), formatRevPerSecond(6), formatRevPerSecond(0.1), formatRevPerSecond(0.5)], ['0.30', '0.10', '0.0017', '0.0083']);
 const scopeStrip = { x: 0, y: 0, width: 330, height: 90 };
 const crossings = (rpm, poles, mode = 'sinusoidal') => {
   const values = waveformTrace(drive({ mode, poleCount: poles }), 0, 123, scopeStrip, scopeWindowElecDeg(rpm, poles))

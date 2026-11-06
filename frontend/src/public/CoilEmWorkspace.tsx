@@ -17,6 +17,7 @@ import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
 import { publishedReference } from './publishedReferences';
 import { RotorArrangement } from './RotorArrangement';
+import { outerRotorRing } from './sectorFraming';
 
 import {
   MotorCanvas,
@@ -2358,11 +2359,11 @@ function ViewportChrome({
               <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
               <RpmField
                 value={animationRpm}
-                min={1}
+                min={0.1}
                 max={100}
                 label="Speed"
                 ariaLabel="Preview speed (RPM)"
-                title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+                title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
               {/* Phases only means something while the rotor turns: it shades the
@@ -4391,7 +4392,7 @@ function ReportStage({
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} />}
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
-      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
+      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
       </>}
     </div>
   );

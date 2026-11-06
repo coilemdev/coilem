@@ -644,7 +644,7 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 // The rotor preview uses the field playback's transport, and the winding
 // legend sits in the canvas corner like the field view's legends.
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
-assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
+assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
 // Phases only means something while the rotor turns, so it is a toggle beside the
 // preview speed (2D only), not one of the static overlays; it is the winding overlay
 // shaded by phase current, so Winding stays pressed under it.
@@ -659,7 +659,7 @@ assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'pha
 // Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
 assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
-assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
+assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor, rotationRad\)/);
 assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
@@ -962,7 +962,7 @@ assert.match(styleSource, /\.public-solved-field-viewer \{ grid-template-columns
 assert.match(workspaceSource, /aria-label="Field solution" aria-pressed=\{solveView === 'field'\}[^\n]*?><span className="public-solve-tab-long">Field solution<\/span><span className="public-solve-tab-short" aria-hidden="true">Field<\/span><\/button>/);
 assert.match(styleSource, /@container \(max-width: 460px\) \{\s*\.public-motor-viewport \.public-dock-strip \.public-primary-view-modes button,\s*\.public-dock-strip \.public-solve-view-switch button \{ padding: 0 7px; \}\s*\.public-dock-strip \.public-solve-tab-long \{ display: none; \}/);
 assert.match(styleSource, /@container \(max-width: 380px\) \{\s*\.public-field-dock \.public-field-physics-info \{ display: none; \}/);
-assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\) \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\):not\(\.is-sector\):not\(\.is-sector-step\) \{ display: none; \}/);
 // The flux legend never covers the motor: the field view's canvas box narrows
 // so the motor moves left (and shrinks only if it must), checked against each
 // legend label at its height; a legend below the plot (Results) moves nothing.
@@ -1151,7 +1151,7 @@ assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
 assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport'\}/);
-assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
+assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
@@ -1251,7 +1251,7 @@ assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
 // The lead label's \"?\" explains why 90° elec is not a right angle on screen.
-assert.match(fieldResultSource, /<g className=\"public-field-axis-help\">\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
+assert.match(fieldResultSource, /<g className=\"public-field-axis-help\" transform=\{upright\(arcLabelX, arcLabelY\)\}>\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
 assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
 assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
 assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
@@ -1318,7 +1318,7 @@ assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh
 assert.match(solvedFieldSource, /<RpmField\s+value=\{playbackRpm\}\s+min=\{PUBLIC_FIELD_PLAYBACK_MIN_RPM\}\s+max=\{PUBLIC_FIELD_PLAYBACK_MAX_RPM\}\s+label="Speed"\s+ariaLabel="Playback speed \(RPM\)"/);
 assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
-assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1/);
+assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 0\.1;/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30/);
@@ -1333,8 +1333,10 @@ assert.match(styleSource, /\.public-field-playback \{[^}]*grid-template-columns:
 assert.match(styleSource, /\.public-rpm-field \{[^}]*display: inline-flex;[^}]*min-height: 36px;/);
 assert.match(styleSource, /\.public-rpm-field input \{[^}]*width: 54px;[^}]*font-variant-numeric: tabular-nums;/);
 assert.match(rpmFieldSource, /type="number"/);
-assert.match(rpmFieldSource, /inputMode="numeric"/);
-assert.match(rpmFieldSource, /const clamp = \(rpm: number\) => Math\.min\(max, Math\.max\(min, Math\.round\(rpm\)\)\);/);
+assert.match(rpmFieldSource, /inputMode=\{min < 1 \? 'decimal' : 'numeric'\}/);
+assert.match(rpmFieldSource, /step=\{nativeRpmStep\(min\)\}/);
+assert.match(rpmFieldSource, /onChange\(clampRpm\(parsed, min, max\)\)/);
+assert.match(rpmFieldSource, /const next = steppedRpm\(value, parsed, min, max\);/);
 assert.match(rpmFieldSource, /event\.shiftKey/);
 assert.match(rpmFieldSource, /commit\(event\.currentTarget\.value\);/);
 assert.match(rpmFieldSource, /cancelledRef\.current = true;\s+onChange\(valueBeforeEditRef\.current\);/);
@@ -1376,7 +1378,7 @@ assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
 assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
-assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame\)/);
+assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);

@@ -1,4 +1,5 @@
-export const PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1;
+// Down to 0.1 RPM so a many-pole motor's field can be followed slowly (rpmSteps).
+export const PUBLIC_FIELD_PLAYBACK_MIN_RPM = 0.1;
 export const PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100;
 export const PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18;
 
