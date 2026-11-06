@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13381,
-      "sha256": "9c2e92e9d7f6cb9008eef6ebf4705d70b26db51cff0570fb6a0cf870645db0a6"
+      "bytes": 13750,
+      "sha256": "fd2078e5d5eb503a2f07ff285fae2a8d013b6656b5c4c77bdd77a93a2ea115b2"
     },
     {
       "path": "SECURITY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2920,
-      "sha256": "dc2ef16e8926940a590006743b8e1c1617e16c07cbb7b34a3478253b15fa7ef2"
+      "bytes": 2960,
+      "sha256": "492c9325390c9b662459ba8daf28c8b903b6ed5e856eccaeeb30ecf0908d67fd"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163084,
-      "sha256": "b973d1152eaafa94e044506cf8395ecd14b44b2eedd2a036f00b1675fd7406e6"
+      "bytes": 163193,
+      "sha256": "861e14608c0613901167d147b7a2474676c249e4558a754baaf8b050d33e700b"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 241809,
-      "sha256": "86009738497ed66040c0c1182c2ce68c99759d68c73ec50217959bce8173306d"
+      "bytes": 241889,
+      "sha256": "d5a3774b7adb482e98bfceee720b3d10dcce13b4c5fb0e903731a1f4b3e92f7c"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 58225,
-      "sha256": "cb83f4ac6d81e0687dbfc6ca95d9d89b5c3f3a5ef689a89da2facfca55a926e0"
+      "bytes": 59264,
+      "sha256": "53448e49cbf6e746fbd4c815c309dbe80b77d9114e420c511ca10a242c67d086"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7045,8 +7045,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 60796,
-      "sha256": "a61a98d9d8c20defef9aa40c1ce7c9d1a609d312e8b62f1ca4f8ff43fcada0d8"
+      "bytes": 61787,
+      "sha256": "efc89ac980567a2d66ccdcf745758b32bb68b425ae9aa93f915e149e4901844c"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7100,13 +7100,13 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 55402,
-      "sha256": "a0513c6dacb2ac0e098bde1dcff76189b69d6968c1147bee888ba4205be8844a"
+      "bytes": 55496,
+      "sha256": "1296225b2e99ee91ade302a78147c93d3536c750e81e8edb45c84bf7af405811"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 6451,
-      "sha256": "12b008ddba348dc82d4aab2da463dda5f28b9a97ba08051742d32e49e7747a9f"
+      "bytes": 11999,
+      "sha256": "a697295acfefdf50dfd7eb92f7a597f1501d880ef553c5b40ac190ab9b2383c2"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 289866,
-      "sha256": "5e42a8719ace552b27a0167e5151e0d3590d061cd62e17534a30ebc20b3ed49a"
+      "bytes": 290057,
+      "sha256": "c6a629ccb515610ec311d70b36b4037c2e1757dabcd89767b5f7101e6ecde539"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -13029,6 +13029,11 @@
       "sha256": "fcf5bc4ac3d7cfc36aa6f488bbd3e3196bb2905443f91267f8b27b2435d89a98"
     },
     {
+      "path": "frontend/scripts/test-sector-framing.mjs",
+      "bytes": 3058,
+      "sha256": "c2c288c6b72d97766b79c978ec17bc764d4734aa20d6a0f1857a116f2acfa46f"
+    },
+    {
       "path": "frontend/src/public/RotorArrangement.tsx",
       "bytes": 1201,
       "sha256": "75c60a42663f59d6b3ee6ce93f9d672474d75eb2447de774cd8eeb4f322c8f82"
@@ -13062,6 +13067,11 @@
       "path": "frontend/src/public/publishedReferences.ts",
       "bytes": 4367,
       "sha256": "2586b62d144b8fc5d90171ea1a0c8fc0575eb750a264a5a82ca1d99661ca0159"
+    },
+    {
+      "path": "frontend/src/public/sectorFraming.ts",
+      "bytes": 3286,
+      "sha256": "5a7a4bdeda854e03b789afbe7c343e9a69309ef58e6216086f4542b1335388b5"
     },
     {
       "path": "tests/test_lrk_reference.py",

@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { outerRotorRing } from './sectorFraming';
 
 import { getPublicFieldFrame } from './api';
 import {
@@ -1141,6 +1142,7 @@ export function SolvedFieldViewer({
         {(activeDetailRaster || visibleRaster || visiblePlot) && (
           <>
             <FieldResultPlot
+              ring={outerRotorRing(config)}
               plot={visiblePlot}
               raster={activeDetailRaster ?? visibleRaster}
               highResolutionPlot={exactVectorPlot}

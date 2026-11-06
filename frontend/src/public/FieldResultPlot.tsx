@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -27,6 +28,7 @@ import {
 } from './ViewportNavigation';
 import { currentAngleNote, fieldAxisArrowPaths, leadAngleExplanation, qAxisOffsetDeg, rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import { motorFitWidthBesideLegend } from './fieldLegendFit';
+import { ringKey, sectorView, type RingMm } from './sectorFraming';
 import { fieldStrokeScale } from './fieldStrokeWidth';
 import {
   fieldRangeForViewport,
@@ -541,6 +543,7 @@ export function FieldResultPlot({
   fieldAxes = null,
   pmLines = false,
   navigationSlot = null,
+  ring = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -580,8 +583,25 @@ export function FieldResultPlot({
   fieldAxes?: FieldAxesOptions | null;
   /** Render the zoom controls here instead of over the plot (the solved-field viewer's control dock). */
   navigationSlot?: HTMLElement | null;
+  /** An outrunner's active ring: a thin one opens on its sector (sectorFraming.ts). */
+  ring?: RingMm | null;
 }) {
-  const navigation = useViewportNavigation();
+  const ringInnerMm = ring?.innerMm;
+  const ringOuterMm = ring?.outerMm;
+  // The plot fits the motor's extents plus 2.5% padding per side into the smaller side of the view.
+  const sectorForSize = useCallback((width: number, height: number, angleDeg: number) => sectorView(
+    ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
+    width,
+    height,
+    Math.min(width, height) / (2 * 1.05),
+    angleDeg,
+  ), [ringInnerMm, ringOuterMm]);
+  const navigation = useViewportNavigation(
+    undefined,
+    undefined,
+    sectorForSize,
+    ringKey(ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null),
+  );
   const sourcePlot = highResolutionPlot ?? plot;
   const prepared = useMemo(() => {
     if (!sourcePlot) return null;
@@ -1239,6 +1259,9 @@ export function FieldResultPlot({
               onZoomIn={navigation.zoomIn}
               onZoomOut={navigation.zoomOut}
               onReset={navigation.reset}
+              onSector={navigation.sector}
+              onSectorStep={navigation.sectorStep}
+              sectorActive={navigation.sectorActive}
             />
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;

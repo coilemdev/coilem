@@ -989,7 +989,9 @@ body {
 .public-viewport-nav-controls button { display: grid; min-width: 27px; height: 27px; padding: 0 7px; place-items: center; border: 0; border-radius: 6px; color: var(--text-secondary); background: transparent; font: 700 11px var(--font-mono); cursor: pointer; }
 .public-viewport-nav-controls button:hover:not(:disabled) { color: var(--text-accent); background: rgba(245, 158, 11, .12); }
 .public-viewport-nav-controls button:disabled { color: var(--text-disabled); cursor: not-allowed; }
-.public-viewport-nav-controls button.is-fit { min-width: 34px; font-size: 9px; }
+.public-viewport-nav-controls button.is-fit,
+.public-viewport-nav-controls button.is-sector { min-width: 34px; font-size: 9px; }
+.public-viewport-nav-controls button.is-sector-step { min-width: 22px; padding: 0 5px; font-size: 14px; }
 .public-viewport-nav-controls > span { min-width: 34px; color: var(--text-muted); font: 9px var(--font-mono); text-align: center; }
 .public-viewport-expand { position: absolute; z-index: 15; top: 14px; right: 14px; display: grid; width: 37px; height: 37px; padding: 0; place-items: center; border: 1px solid var(--border-default); border-radius: 9px; color: var(--text-secondary); background: rgba(10, 12, 17, .9); box-shadow: var(--shadow-md); cursor: pointer; }
 .public-viewport-expand svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
@@ -4751,7 +4753,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   .public-field-dock .public-field-physics-info { display: none; }
 }
 @container (max-width: 340px) {
-  .public-dock-strip-end .public-viewport-nav-controls button:not(.is-fit) { display: none; }
+  .public-dock-strip-end .public-viewport-nav-controls button:not(.is-fit):not(.is-sector):not(.is-sector-step) { display: none; }
 }
 /* Completed results open on four key numbers; one toggle shows the rest. */
 .public-result-list-toggle { display: flex; width: 100%; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); background: transparent; font: 600 12px var(--font-mono); cursor: pointer; }

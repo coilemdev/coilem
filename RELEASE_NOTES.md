@@ -18,6 +18,11 @@
   side of the tooth body. Most real outrunners have them. The Benchmarks menu
   adds one: a published 36-slot / 40-pole robot-joint outrunner, with its
   measured back-EMF and torque in its description.
+- **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
+  band (radial thickness up to half its outer radius) opens zoomed on the top of
+  the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
+  the arrow keys over the view, step round the ring; **Sector** and **Fit**
+  switch between the ring and the whole motor.
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.
