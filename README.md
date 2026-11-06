@@ -7,17 +7,19 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The source identifies as **coilEM 0.5.0 Developer Preview**, with
-**Magneto2D 0.4.0**. Version 0.5.0 has not been frozen or released;
-coilEM 0.4.0 remains the published release. The
-[release notes](RELEASE_NOTES.md) describe 0.4.0; the
-[0.5.0 release notes](docs/RELEASE_0_5_0.md) list what 0.5.0 changes and what
-qualification still has to establish. The [v0.5.0 evidence index](benchmarks/v0.5.0/README.md)
-includes the completed physical Windows protocol 1.6 run at `88aae101` and the
-published Mac comparison with its original pins. The [reference review](benchmarks/candidate-qualification-20261103/README.md)
-is complete, and the new Windows Prius audit passes all 10 software checks.
-Same-candidate Mac qualification remains pending. The PyPI install commands below select the
-published release until 0.5.0 is published.
+The source identifies as **coilEM 0.5.1 Developer Preview**, with
+**Magneto2D 0.4.0**. Version 0.5.1 passes the registered A-D release qualification gate
+with source-matched Windows/macOS and Prius software evidence. See
+[release status](PUBLICATION_STATUS.md) for packaging and publication.
+The [release notes](RELEASE_NOTES.md) and [0.5.1 release plan](docs/RELEASE_0_5_1.md)
+track its scope and remaining gates. The [Windows evidence](benchmarks/windows-v051-20261105-a4f9f4d/README.md)
+records 46 A–D PASS and 336/336 gates on the integration merge, including a
+complete overnight fresh FEMM repeat. Proposed cogging coverage records
+10 PASS / 2 YELLOW against the selected references and remains under review.
+The [accepted qualification records](benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json)
+retain measured commit `a4f9f4d`; all 64 guarded physics hashes match the
+versioned release code. The owner accepted reference reuse, one near-zero
+Prius observation difference, and the experimental cogging scope.
 
 The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the historical
 Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,
@@ -34,7 +36,8 @@ Windows and macOS each record 46 PASS, the planned unsupported legacy ORNL
 Prius and 336/336 gates against the reviewed FEMM references, and the
 exact-candidate Pyleecan Prius passes all 10 software checks. The
 [release qualification gate](benchmarks/v0.5.0/release-qualification.json)
-passes; v0.5.0 is not released until it is tagged and published.
+passes. Version 0.5.0 was published on November 3, 2026; this historical
+qualification does not qualify the 0.5.1 candidate.
 
 ![coilEM workspace](docs/images/coilem-landing-page.png)
 
@@ -229,7 +232,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The source application is **coilEM 0.5.0** and the solver is **Magneto2D 0.4.0**.
+The source application is **coilEM 0.5.1** and the solver is **Magneto2D 0.4.0**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

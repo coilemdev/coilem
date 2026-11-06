@@ -1,0 +1,44 @@
+{
+  "schema": "coilem.qualification_carry/v1",
+  "status": "READY_AFTER_OWNER_REVIEW",
+  "candidate": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "moved_values": [
+    {
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.026539302148737773,
+      "new": 0.03018132993388819,
+      "tolerance": 0.001
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.026539302148737773,
+      "new": 0.03018132993388819,
+      "tolerance": 0.001
+    }
+  ],
+  "reference_review": [
+    {
+      "platform": "windows-x86_64",
+      "reason": "Reference model or metric interpretation needs review: backend/models/config.py"
+    },
+    {
+      "platform": "macos-arm64",
+      "reason": "Reference model or metric interpretation needs review: backend/models/config.py"
+    }
+  ],
+  "accepted_moved_values": true,
+  "approved_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "measurements_mutated": false,
+  "reference_review_accepted": true,
+  "owner_decisions": {
+    "file": "benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json",
+    "sha256": "d3a204c84463e2ade8a6281fe584c65a702361680e908a2f1232c3fecedfe5c6"
+  },
+  "automatic_policy_changed": false
+}

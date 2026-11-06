@@ -67,6 +67,19 @@ def test_reference_reuse_preserves_registration_and_rejects_changed_geometry():
 
 @pytest.fixture
 def platform_inputs(tmp_path, monkeypatch):
+    # These scenarios replay the approved v0.5.0 context, independently of
+    # whichever measured candidate the live platform registry now publishes.
+    previous_records = {
+        (ROOT / f'benchmarks/records/{key}.json').resolve():
+        ROOT / f'benchmarks/records-historical/v050/{key}.json'
+        for key in ('windows-x86_64', 'macos-arm64')
+    }
+    original_read = carry.read
+
+    def historical_read(path):
+        return original_read(previous_records.get(Path(path).resolve(), path))
+
+    monkeypatch.setattr(carry, 'read', historical_read)
     root = tmp_path / 'candidate'
     field = root / 'backend/test_field.py'
     field.parent.mkdir(parents=True)

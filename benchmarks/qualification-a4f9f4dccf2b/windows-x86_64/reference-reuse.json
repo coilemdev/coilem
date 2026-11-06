@@ -1,0 +1,17 @@
+{
+  "schema": "coilem.reference_reuse/v1",
+  "candidate": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "decision": "ACCEPTED_BY_OWNER_AFTER_SOURCE_REVIEW",
+  "owner_decisions_sha256": "d3a204c84463e2ade8a6281fe584c65a702361680e908a2f1232c3fecedfe5c6",
+  "owner_decisions": "benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json",
+  "source_changes_reviewed": {
+    "backend/models/config.py": {
+      "before_sha256": "a952b7de1d095d93f1ec460c14d4360aab19cd23df49857fbb3e28c90e14590c",
+      "after_sha256": "66a6ccf5b1ce562ba2c5bf5c578dcb7099056e54bb642dec21dbbcd9a35c4515"
+    }
+  },
+  "suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+  "bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
+  "registered_requests_sha256": "c72bc74d2771f8adc9ba5da0e72b9f22b35edc4c421331982301447ad2ac28a6",
+  "reference_fields_mutated": false
+}

@@ -1,12 +1,12 @@
 {
   "schema": "coilem.benchmark_record/v1",
   "platform": "macos-arm64",
-  "source": "benchmarks/candidate-qualification-20261103/macos/report",
-  "measured_commit": "88aae101fd487795e7fe5300737679f4133790fd",
+  "source": "benchmarks/qualification-a4f9f4dccf2b/macos-arm64/report",
+  "measured_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
   "environment": {
-    "platform": "macOS-15.7.3-arm64-arm-64bit",
+    "platform": "macOS-15.8.2-arm64-arm-64bit",
     "machine": "arm64",
-    "python": "3.12.13",
+    "python": "3.12.10",
     "dependencies": {
       "gmsh": "4.15.2",
       "meshio": "5.3.5",
@@ -16,10 +16,11 @@
   },
   "suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
   "reference_bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
-  "evaluation": "Graded from the recorded measurements (harness 1.8.0, protocol 1.6.0) against suite 1.6.0 and the frozen reference bundle, with zero field solves.",
+  "evaluation": "Regraded against the unchanged registered protocol 1.6 references; manual owner review accepts the recorded source-compatibility and Prius observation exceptions. No new field solves or measurement relabeling.",
   "physics_files": {
     "backend/airgap_sampling.py": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
     "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+    "backend/cogging.py": "523cab95d8260a557794c4e965afa979168f0a7008559e37c88e302c6bb0e7ff",
     "backend/dq_flux_linkage.py": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8",
     "backend/excitation.py": "58419d436989bb1ac588e2404c82348c63695dbbe66c6977fae131f0210d9a28",
     "backend/geometry.py": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
@@ -33,16 +34,16 @@
     "backend/material_catalog.py": "4227dfbbddd82167b780f2284de59bcc0db69840a865de145612a9dda99fa198",
     "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
     "backend/magnet_temperature.py": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e",
-    "backend/models/config.py": "a952b7de1d095d93f1ec460c14d4360aab19cd23df49857fbb3e28c90e14590c",
+    "backend/models/config.py": "66a6ccf5b1ce562ba2c5bf5c578dcb7099056e54bb642dec21dbbcd9a35c4515",
     "backend/public_material_catalog.py": "1d9f1469c3ca6c26f6b8fea23fd29b1c607fac69c9febff1f65ff473a2d99680",
-    "backend/public_policy.py": "973142eed90de1bea7b46d33fde3691028580098aa09663624b773f6d7b228d8",
+    "backend/public_policy.py": "f3831f5bad3e29efc30e71956b0ee6576dfe365b9ca62527897c7cdfefbf273a",
     "backend/reference_models/prius.py": "f90ef88e3558edf867b766d651f815f68c95b93e03b910235e7272ef0581d645",
-    "backend/solver/__init__.py": "f5378d1d99b4a4c7d3972d16fd73f998ffb224bca86e1b68052a16ea6453b6c2",
-    "backend/solver/_helpers.py": "501da88b80e60061d96fe46e69868a319916605a1f68e6c7f94cda3b42cc6a51",
+    "backend/solver/__init__.py": "da860577bd583caa43786b58e8660e241acebdc505dc179efbdad27854fcaa8b",
+    "backend/solver/_helpers.py": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
     "backend/solver_contract.py": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
     "backend/solver_environment.py": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
     "backend/steel_flux_metrics.py": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
-    "backend/sweep_planning.py": "1a36902ae5e1eb460228200c5ea9f93e463cd56c14c7a21db2a154fe848d8d14",
+    "backend/sweep_planning.py": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c",
     "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
     "backend/topology_provenance.py": "5e7e205348f731f2a57bdb3e362984c58a8c5711d26d08a22419b2b940b8e046",
     "backend/winding_resistance.py": "f9025679b019ae06981d208b662ba9133b8bf3c264b60c26aa8abe9ca248fbbf",
@@ -83,52 +84,52 @@
     "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
   },
   "case_runtime_s": {
-    "spm_4p12s_simple__baseline": 35.1,
-    "spm_4p12s_simple__high_current": 35.7,
-    "spm_4p12s_simple__tight_airgap": 26.6,
-    "spm_4p12s_simple_noload__baseline": 39.3,
-    "spm_4p12s_simple_noload__high_current": 37.5,
-    "spm_4p12s_simple_noload__tight_airgap": 29.9,
-    "spm_8p12s_concentrated__baseline": 74.6,
-    "spm_8p12s_concentrated__high_current": 72.2,
-    "spm_8p12s_concentrated__tight_airgap": 78.1,
-    "spm_8p12s_reference_angle30__baseline": 67.1,
-    "ipm_flat_12s10p_fscw_contract": 124.0,
-    "ipm_flat_24s16p_industrial_contract": 125.0,
-    "ipm_flat_4p12s_micro_contract": 94.7,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract": 211.9,
-    "ipm_flat_8p12s_fsae_contract": 191.9,
-    "ipm_flat_8p12s_fsae_thin_bridge_contract": 209.8,
-    "ipm_vshape_8p12s_baseline_contract": 155.5,
-    "ipm_vshape_8p12s_deep_apex_high_output_v1": 157.9,
-    "ipm_vshape_8p12s_narrow_angle_contract": 161.6,
-    "ipm_vshape_8p12s_pocket_offset_contract": 156.8,
-    "ipm_vshape_8p12s_thin_bridge_contract": 124.1,
-    "ipm_vshape_8p12s_wide_angle_high_output_v1": 126.8,
-    "spm_12p36s_distributed_femm_validation": 63.8,
-    "spm_8p24s_distributed_femm_validation": 61.3,
-    "spm_8p48s_chorded_5_6": 216.5,
-    "spm_8p48s_distributed_femm_validation": 47.9,
-    "spm_14p12s_high_pole": 217.5,
-    "spm_4p12s_small": 111.5,
-    "spm_8p12s_reference": 138.3,
-    "spm_8p12s_example_shoed": 85.6,
-    "spm_8p12s_concentrated__magnet_60C": 81.9,
-    "spm_8p12s_concentrated__magnet_100C": 80.5,
-    "spm_8p12s_concentrated__dq_I20_g0": 82.9,
-    "spm_8p12s_concentrated__dq_I20_g30": 82.6,
-    "spm_8p12s_concentrated__dq_I20_g60": 80.2,
-    "spm_8p12s_concentrated__dq_I40_g0": 82.2,
-    "spm_8p12s_concentrated__dq_I40_g30": 81.6,
-    "spm_8p12s_concentrated__dq_I40_g60": 84.5,
-    "ipm_flat_8p12s_fsae_contract__magnet_60C": 220.2,
-    "ipm_flat_8p12s_fsae_contract__magnet_100C": 233.1,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 226.7,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 218.7,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 216.2,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 223.8,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 213.1,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 218.2
+    "spm_4p12s_simple__baseline": 95.5,
+    "spm_4p12s_simple__high_current": 149.6,
+    "spm_4p12s_simple__tight_airgap": 93.8,
+    "spm_4p12s_simple_noload__baseline": 106.0,
+    "spm_4p12s_simple_noload__high_current": 125.0,
+    "spm_4p12s_simple_noload__tight_airgap": 129.2,
+    "spm_8p12s_concentrated__baseline": 558.2,
+    "spm_8p12s_concentrated__high_current": 435.3,
+    "spm_8p12s_concentrated__tight_airgap": 476.8,
+    "spm_8p12s_reference_angle30__baseline": 325.6,
+    "ipm_flat_12s10p_fscw_contract": 424.5,
+    "ipm_flat_24s16p_industrial_contract": 411.8,
+    "ipm_flat_4p12s_micro_contract": 287.6,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract": 541.9,
+    "ipm_flat_8p12s_fsae_contract": 581.0,
+    "ipm_flat_8p12s_fsae_thin_bridge_contract": 466.3,
+    "ipm_vshape_8p12s_baseline_contract": 372.3,
+    "ipm_vshape_8p12s_deep_apex_high_output_v1": 435.3,
+    "ipm_vshape_8p12s_narrow_angle_contract": 439.3,
+    "ipm_vshape_8p12s_pocket_offset_contract": 413.4,
+    "ipm_vshape_8p12s_thin_bridge_contract": 259.3,
+    "ipm_vshape_8p12s_wide_angle_high_output_v1": 292.6,
+    "spm_12p36s_distributed_femm_validation": 146.1,
+    "spm_8p24s_distributed_femm_validation": 148.7,
+    "spm_8p48s_chorded_5_6": 466.5,
+    "spm_8p48s_distributed_femm_validation": 138.9,
+    "spm_14p12s_high_pole": 564.7,
+    "spm_4p12s_small": 278.9,
+    "spm_8p12s_reference": 345.3,
+    "spm_8p12s_example_shoed": 315.5,
+    "spm_8p12s_concentrated__magnet_60C": 294.1,
+    "spm_8p12s_concentrated__magnet_100C": 258.9,
+    "spm_8p12s_concentrated__dq_I20_g0": 238.7,
+    "spm_8p12s_concentrated__dq_I20_g30": 182.5,
+    "spm_8p12s_concentrated__dq_I20_g60": 359.7,
+    "spm_8p12s_concentrated__dq_I40_g0": 180.5,
+    "spm_8p12s_concentrated__dq_I40_g30": 430.7,
+    "spm_8p12s_concentrated__dq_I40_g60": 297.1,
+    "ipm_flat_8p12s_fsae_contract__magnet_60C": 376.5,
+    "ipm_flat_8p12s_fsae_contract__magnet_100C": 504.0,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 614.3,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 548.7,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 494.2,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 381.3,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 497.8,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 538.6
   },
   "cases": {
     "ipm_flat_12s10p_fscw_contract": {
@@ -211,9 +212,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.56742802147706,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 2.5674280214770566,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I100_g0": {
@@ -231,9 +232,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 5.161495716142782,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 5.161495716142779,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I100_g30": {
@@ -251,9 +252,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.673674421042003,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 4.673674421041991,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I100_g60": {
@@ -271,9 +272,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.7911748081235785,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 2.791174808123565,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I50_g0": {
@@ -291,9 +292,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.56742802147706,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 2.5674280214770566,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I50_g30": {
@@ -311,9 +312,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2763073992279574,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 2.2763073992279415,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I50_g60": {
@@ -331,9 +332,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 1.3346722117512937,
-        "back_emf_fundamental_V": 7.658144182482818,
-        "back_emf_peak_V": 11.210167803920173
+        "mean_torque_Nm": 1.3346722117512977,
+        "back_emf_fundamental_V": 7.658144182483134,
+        "back_emf_peak_V": 11.210167803922952
       }
     },
     "ipm_flat_8p12s_fsae_contract__magnet_100C": {
@@ -348,9 +349,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2217449940537333,
-        "back_emf_fundamental_V": 6.6151973473218835,
-        "back_emf_peak_V": 9.68501441929898
+        "mean_torque_Nm": 2.221744994053733,
+        "back_emf_fundamental_V": 6.615197347326536,
+        "back_emf_peak_V": 9.685014419312072
       }
     },
     "ipm_flat_8p12s_fsae_contract__magnet_60C": {
@@ -365,9 +366,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.394213751851663,
-        "back_emf_fundamental_V": 7.135043040342892,
-        "back_emf_peak_V": 10.445408107451291
+        "mean_torque_Nm": 2.394213751851658,
+        "back_emf_fundamental_V": 7.135043040343115,
+        "back_emf_peak_V": 10.445408107803631
       }
     },
     "ipm_flat_8p12s_fsae_thin_bridge_contract": {
@@ -382,8 +383,8 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 3.170676017352533,
-        "back_emf_fundamental_V": 9.550698650739596,
+        "mean_torque_Nm": 3.170676017352523,
+        "back_emf_fundamental_V": 9.55069865073972,
         "back_emf_peak_V": 14.103449037647009
       }
     },
@@ -979,5 +980,9 @@
         "back_emf_peak_V": 164.87454802320838
       }
     }
-  }
+  },
+  "prius_report": "benchmarks/qualification-a4f9f4dccf2b/macos-arm64/prius/app-results.json",
+  "carry_receipt": "benchmarks/qualification-a4f9f4dccf2b/macos-arm64/carry-receipt.json",
+  "reference_reuse": "benchmarks/qualification-a4f9f4dccf2b/macos-arm64/reference-reuse.json",
+  "owner_decisions": "benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json"
 }

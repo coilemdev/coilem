@@ -1,0 +1,68 @@
+{
+  "schema": "coilem.qualification_publication_projection/v1",
+  "measured_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "source_run": 42081140200,
+  "note": "Machine-local diagnostic paths are redacted for publication. Original artifacts and their hashes remain preserved. Numerical values, gate verdicts, requests, conventions and measured identities are unchanged.",
+  "files": [
+    {
+      "platform": "windows-x86_64",
+      "file": "report/benchmark_summary.json",
+      "original_sha256": "f0a338581f7f105904870b8b7d9ad05276ac912e75b28bd734dd389aef6b0c57",
+      "published_sha256": "f0a338581f7f105904870b8b7d9ad05276ac912e75b28bd734dd389aef6b0c57",
+      "path_values_redacted": 0,
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/coilem_benchmark_report.html",
+      "original_sha256": "2fed7f3b0b7794cc92cae1497a502df969b5365d786e4adf185873a399b1f74b",
+      "published_sha256": "2fed7f3b0b7794cc92cae1497a502df969b5365d786e4adf185873a399b1f74b",
+      "path_values_redacted": 0,
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/benchmark_summary.json",
+      "original_sha256": "487a571c1fbb05f0fb906d01582e52d89287cfa00bd685e9ca23b58834c1d2e8",
+      "published_sha256": "5e61e1977984b5bb24018cd6c268891f8c62947c54cfbcd444a197ac82b446aa",
+      "path_values_redacted": 43,
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/coilem_benchmark_report.html",
+      "original_sha256": "24ad131fc635caa905d2d49851ae370ca0eca92206f41a6b7d17937836ad9af2",
+      "published_sha256": "0ec649cdcdf97f2fd3c39100918139b61811fc4fa60d11ea61ecb9e0bf1a2ad3",
+      "path_values_redacted": 43,
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "684cfdbd5b2018bfd48179a995bb2c7d297cca5e4152d04184b5bff7ac491bf3",
+      "published_sha256": "684cfdbd5b2018bfd48179a995bb2c7d297cca5e4152d04184b5bff7ac491bf3",
+      "purpose": "Index the exact public projection bytes; original index remains in the source artifact.",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "a7fa8961f37cf6ec24d7ceb288a0cb579acee2d869f2583c7988dc02bd81fd97",
+      "published_sha256": "1c0a49125869093a21fb9aecdeafb16e37063a2b23370b6dad863e809bb72e62",
+      "purpose": "Index the exact public projection bytes; original index remains in the source artifact.",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    }
+  ]
+}
