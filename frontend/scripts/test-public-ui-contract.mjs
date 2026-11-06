@@ -376,11 +376,18 @@ assert.match(workspaceSource, /PublicRunComparison/);
 assert.match(workspaceSource, /elmerCapability\.feature_enabled && <ParameterSectionBlock id="solver" label="Solver"/);
 assert.match(workspaceSource, /aria-label="Previous runs"/);
 assert.match(workspaceSource, /Review or compare completed analyses without starting another solve/);
-assert.match(workspaceSource, /<PublicRunComparison manageRuns/);
+assert.match(workspaceSource, /<PublicRunComparison\s+manageRuns/);
+// An earlier run's stored result opens from Previous runs, its playback drawn from its frames.
+assert.match(runComparisonSource, /record\.status === 'complete' && !confirming[\s\S]*?Open results/);
+assert.match(workspaceSource, /onOpenRunResults=\{props\.onOpenRunResults\}/);
+assert.match(appSource, /onOpenRunResults=\{\(savedRun\) => void restoreSavedRun\(savedRun, 'results'\)\}/);
 assert.match(workspaceSource, /Manage previous runs/);
 assert.match(workspaceSource, /needsRunStorageRecovery\(props\.error\)/);
 assert.match(runComparisonSource, /aria-label="Local run storage"/);
 assert.match(runComparisonSource, /Saved results stay on this computer and are never removed automatically/);
+// Field playback is the one part older runs give up (#212); the dialog says so and marks them.
+assert.match(runComparisonSource, /is kept for each design's newest \$\{storage\.field_playback_keep_latest_per_project\} runs/);
+assert.match(runComparisonSource, /record\.field_playback_removed_at \? ' · field playback removed' : ''/);
 assert.match(runComparisonSource, /Delete an older saved or incomplete run below/);
 assert.match(runComparisonSource, /Delete permanently/);
 assert.match(runComparisonSource, /record\.status === 'running'/);

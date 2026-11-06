@@ -21,6 +21,8 @@ interface LoadedRun {
 interface PublicRunComparisonProps {
   currentResult?: SolveResult | null;
   manageRuns?: boolean;
+  /** Opens a completed run's stored result in Solve and Results. */
+  onOpenRun?: (run: PublicRunListRecord) => void;
 }
 
 const METRICS: Array<{
@@ -156,7 +158,7 @@ function excitationProvenance(result: ComparisonResult): string {
   return `Ideal six-step (120°) · ${advance} · ${metadata.phase_connection || 'wye'} · ${metadata.current_amplitude_convention || 'plateau'}`;
 }
 
-export function PublicRunComparison({ currentResult, manageRuns = false }: PublicRunComparisonProps) {
+export function PublicRunComparison({ currentResult, manageRuns = false, onOpenRun }: PublicRunComparisonProps) {
   const currentSaved = currentResult?.saved_run;
   const [allRecords, setAllRecords] = useState<PublicRunListRecord[]>([]);
   const [records, setRecords] = useState<PublicRunListRecord[]>([]);
@@ -367,7 +369,12 @@ export function PublicRunComparison({ currentResult, manageRuns = false }: Publi
             <div>
               <span className="eyebrow">Local run storage</span>
               <strong>{storage ? `${formatBytes(storage.used_bytes)} of ${formatBytes(storage.max_bytes)} used` : 'Checking saved runs…'}</strong>
-              <small>Saved results stay on this computer and are never removed automatically.</small>
+              <small>
+                Saved results stay on this computer and are never removed automatically.
+                {storage?.field_playback_keep_latest_per_project
+                  ? ` Field playback, most of a run's size, is kept for each design's newest ${storage.field_playback_keep_latest_per_project} runs, and older runs give theirs up first when storage fills; their results and reports stay.`
+                  : ''}
+              </small>
             </div>
             {storage && (
               <span className={`public-run-storage-state${storage.accepting_new_runs ? '' : ' is-full'}`}>
@@ -404,11 +411,14 @@ export function PublicRunComparison({ currentResult, manageRuns = false }: Publi
                   <article className="public-run-storage-row" role="listitem" key={key} data-run-id={record.run_id}>
                     <div>
                       <strong>{record.project_name || record.project_slug}</strong>
-                      <small>{storedRunTime(record)} · {record.run_id}</small>
+                      <small>{storedRunTime(record)} · {record.run_id}{record.field_playback_removed_at ? ' · field playback removed' : ''}</small>
                     </div>
                     <span className={`public-run-storage-status is-${record.status}`}>{storedRunStatus(record)}</span>
                     <span className="public-run-storage-size">{formatBytes(record.size_bytes)}</span>
                     <div className="public-run-storage-actions">
+                      {onOpenRun && record.status === 'complete' && !confirming && (
+                        <button type="button" disabled={deletingKey !== null} onClick={() => onOpenRun(record)}>Open results</button>
+                      )}
                       {confirming ? (
                         <>
                           <button type="button" className="danger" disabled={deleting} onClick={() => void deleteRun(record)}>{deleting ? 'Deleting…' : 'Delete permanently'}</button>
