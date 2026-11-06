@@ -1212,6 +1212,20 @@ def narrowest_tooth_width_mm(config: MotorConfig) -> float:
     if not stator.tooth_shoe_enabled:
         return min(bore_width_mm, yoke_width_mm)
 
+    if is_outer_rotor(config):
+        # The shoe is at the stator OD and the body runs in to the slot bottom; the
+        # shoulder samples the body taper there, as backend.geometry_ir draws it.
+        gap_r = stator.OD_mm / 2.0
+        bottom_r = gap_r - _slot_radial_depth_mm(config)
+        if bottom_r >= gap_r - 1e-9:
+            return min(bore_width_mm, yoke_width_mm)
+        gap_body_half_rad = max(0.0, math.pi / stator.slot_count - (_slot_mouth_width_mm(config) / 2.0) / gap_r)
+        bottom_half_rad = yoke_width_mm / (2.0 * bottom_r)
+        shoulder_r = max(gap_r - stator.tooth_shoe_height_mm, bottom_r + 1e-6)
+        fraction = (gap_r - shoulder_r) / (gap_r - bottom_r)
+        shoulder_width_mm = 2.0 * shoulder_r * (gap_body_half_rad + fraction * (bottom_half_rad - gap_body_half_rad))
+        return max(0.0, min(bore_width_mm, shoulder_width_mm, yoke_width_mm))
+
     bore_r = stator.ID_mm / 2.0
     slot_outer_r = bore_r + _slot_radial_depth_mm(config)
     if slot_outer_r <= bore_r + 1e-9:
@@ -1250,7 +1264,8 @@ def tooth_width_geometry_limit_mm(config: MotorConfig) -> float:
     """
 
     stator = config.stator
-    # The air-gap face: an outer rotor's slots open at the stator OD (no shoes there).
+    # The air-gap face: an outer rotor's slots open at the stator OD. Its tooth-width
+    # advisory is off (backend.geometry), so only the unshoed bore width matters there.
     bore_r = (stator.OD_mm if is_outer_rotor(config) else stator.ID_mm) / 2.0
     slot_outer_r = bore_r + _slot_radial_depth_mm(config)
     slot_pitch_rad = 2.0 * math.pi / stator.slot_count
