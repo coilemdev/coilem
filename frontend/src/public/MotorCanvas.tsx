@@ -25,6 +25,7 @@ import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
   STRIP_LABEL,
+  coilSideOutOfPage,
   electricalFrequencyHz,
   formatHz,
   formatRevPerSecond,
@@ -36,6 +37,7 @@ import {
   toothIndexAt,
   toothPoles,
   waveformTrace,
+  windingSymbolSide,
   type PhaseDrive,
   type Rect,
 } from './phaseDrive';
@@ -596,8 +598,47 @@ function drawGeometry(
   context.fill();
 
   context.lineJoin = 'round';
+  // Coil-side marks: ⊙ for current out of the page, ⊗ into it, drawn as rings at
+  // the preview glyphs' places and sizes (its two-bar ⊗ became two squares on
+  // small motors; one ring per side here). With Phases each mark shows the way its
+  // current flows now, so a phase driven negative turns all its marks round and a
+  // switched-off phase shows none; otherwise it shows the winding's own sense.
+  let lastCross: { phase: string; x: number; y: number; marker: number | null } | null = null;
+  const coilSideMark = (region: (typeof data.regions)[number]): boolean => {
+    if (region.region_type !== 'winding_symbol' || layer === 'materials') return false;
+    const side = windingSymbolSide(region.label);
+    if (!side) return false;
+    const corners = region.points.slice(0, -1);
+    const [cx, cy] = corners.reduce<[number, number]>(
+      (sum, [x, y]) => [sum[0] + x / corners.length, sum[1] + y / corners.length],
+      [0, 0],
+    );
+    const radiusMm = Math.max(...corners.map(([x, y]) => Math.hypot(x - cx, y - cy)));
+    if (side.direction === 'out' && lastCross?.phase === side.phase && Math.hypot(cx - lastCross.x, cy - lastCross.y) < radiusMm) {
+      // The ⊗'s second bar: centre the mark between the two.
+      if (lastCross.marker !== null) {
+        const [x, y] = map([(cx + lastCross.x) / 2, (cy + lastCross.y) / 2]);
+        Object.assign(pendingMarkers[lastCross.marker], { x, y });
+      }
+      lastCross = null;
+      return true;
+    }
+    const live = layer === 'phases' && currents !== null;
+    const outOfPage = live
+      ? coilSideOutOfPage(side.direction, currents[{ A: 0, B: 1, C: 2 }[side.phase]])
+      : side.direction === 'in';
+    let marker: number | null = null;
+    if (outOfPage !== null) {
+      const [x, y] = map([cx, cy]);
+      const ring = layer === 'phases' || layer === 'windings' ? PHASE_COLORS[side.phase] : 'rgba(226, 232, 240, 0.8)';
+      marker = pendingMarkers.push({ x, y, radius: Math.max(3, radiusMm * scale * 1.1), outOfPage, ring }) - 1;
+    }
+    lastCross = side.direction === 'out' ? { phase: side.phase, x: cx, y: cy, marker } : null;
+    return true;
+  };
   data.regions.forEach((region, regionIndex) => {
     if (region.points.length < 2) return;
+    if (coilSideMark(region)) return;
     const slotNumber = slotNumberFromRegion(region.region_type);
     const [innerRadiusMm, outerRadiusMm] = radialExtentMm(region.points);
     if (/^airgap$/i.test(region.region_type)) {
