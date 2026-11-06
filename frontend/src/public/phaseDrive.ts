@@ -185,6 +185,25 @@ export interface WindingSide {
   direction: 'in' | 'out';
 }
 
+/** Below this share of full current a phase counts as switched off: its coil sides show no direction. */
+export const COIL_SIDE_CURRENT_FLOOR = 0.02;
+
+/**
+ * Which way current flows in a coil side right now: true out of the page (⊙),
+ * false into it (⊗), null while its phase carries next to none. An "in" side
+ * carries +J out of the page, so a negative phase current turns every mark round.
+ */
+export function coilSideOutOfPage(direction: WindingSide['direction'], phaseCurrent: number): boolean | null {
+  if (!Number.isFinite(phaseCurrent) || Math.abs(phaseCurrent) < COIL_SIDE_CURRENT_FLOOR) return null;
+  return (direction === 'in') === (phaseCurrent > 0);
+}
+
+/** The phase and direction of a preview's coil-side glyph, from its label ("A+ (in)", "B− (out)"). */
+export function windingSymbolSide(label: string | null | undefined): Pick<WindingSide, 'phase' | 'direction'> | null {
+  const match = /^([ABC])[+−-] \((in|out)\)$/.exec(label ?? '');
+  return match ? { phase: match[1] as WindingSide['phase'], direction: match[2] as WindingSide['direction'] } : null;
+}
+
 /**
  * Net current out of the page in each slot, as a share of a full slot's
  * conductors. An "in" side carries +J, out of the page (the solver's source sign,
