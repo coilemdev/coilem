@@ -19,8 +19,14 @@ For an outer rotor the fields mean:
 | `stator.OD_mm` | stator outside | air-gap face (tooth tips) |
 | `stator.ID_mm` | bore facing the rotor | hub bore inside the yoke |
 | `stator.slot_opening_mm` | mouth at the bore | mouth at the stator OD |
+| `stator.tooth_shoe_*` | shoe at the bore | shoe at the stator OD |
 | `rotor.ID_mm` | optional shaft bore | magnet seat (back-iron inner face), required |
 | `rotor.OD_mm` | magnet seat | outside of the back-iron ring |
+
+Tooth shoes work the same way for both layouts, at the air-gap face. With a shoe,
+`slot_opening_mm` is the tooth-body opening, and the physical mouth is two
+`tooth_shoe_overhang_mm` narrower. The shoulder sits `tooth_shoe_height_mm` in
+from the face.
 
 Outer rotors are SPM only. Their size floors suit RC and drone motors (stator OD
 from 10 mm, magnets from 0.5 mm); inner rotors keep the original floors. The air
@@ -70,8 +76,7 @@ redistribution rights of the source model's B-H curves are confirmed.
 
 ## Current limits
 
-- SPM only; no tooth shoes on parametric outer stators (the slot mouth narrows to
-  the gap instead); two-layer windings must be tooth coils (side by side).
+- SPM only; two-layer windings must be tooth coils (side by side).
 - Elmer, the fixed-mesh rotation lane and the dimension overlay are not available
   for outer rotors; the solved-field view omits the air-gap ring and stator pole
   labels.

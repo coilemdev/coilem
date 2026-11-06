@@ -1390,23 +1390,23 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
 
       {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
         {outer
-          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint="Slot mouth at the stator OD, facing the rotor." min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
+          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
           : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
         <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
         <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
-        {!outer && <ToggleRow
+        <ToggleRow
           label="Tooth Shoe"
           checked={Boolean(config.stator.tooth_shoe_enabled)}
-          hint="Adds a widened tooth tip at the bore, leaving a narrower physical slot mouth ahead of the winding pocket."
+          hint={`Adds a widened tooth tip at the ${outer ? 'stator OD' : 'bore'}, leaving a narrower physical slot mouth ahead of the winding pocket.`}
           disabled={disabled}
           onChange={set('stator', 'tooth_shoe_enabled', 'advanced')}
-        />}
-        {!outer && config.stator.tooth_shoe_enabled && <>
+        />
+        {config.stator.tooth_shoe_enabled && <>
           <NumberRow
             label="Shoe Height"
             value={config.stator.tooth_shoe_height_mm ?? 1.5}
             unit="mm"
-            hint="Radial distance from the bore to the tooth-body shoulder."
+            hint={outer ? 'Radial distance in from the stator OD to the tooth-body shoulder.' : 'Radial distance from the bore to the tooth-body shoulder.'}
             min={0.5}
             max={10}
             step={0.1}

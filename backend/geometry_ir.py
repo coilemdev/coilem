@@ -180,8 +180,6 @@ def _build_outer_rotor_geometry_ir(config: MotorConfig, geom: MotorGeometry) -> 
     surface magnets on the rotor's inner face, A=0 on the rotor OD and hub bore.
     """
 
-    if config.stator.tooth_shoe_enabled:
-        raise OuterRotorUnsupportedError("Tooth shoes are not available for outer rotors yet.")
     layer_split = slot_layer_split(config)
     if layer_split == "radial":
         raise OuterRotorUnsupportedError("Radially stacked two-layer windings are not available for outer rotors yet.")
@@ -194,9 +192,41 @@ def _build_outer_rotor_geometry_ir(config: MotorConfig, geom: MotorGeometry) -> 
     slot_centres = [slot.center_angle_rad for slot in geom.slots]
     bottom_breakpoints: list[float] = []
     gap_breakpoints: list[float] = []
+    shoe = bool(config.stator.tooth_shoe_enabled)
+    # A shoe sits at the air-gap face (the stator OD): its shoulder is
+    # tooth_shoe_height_mm in from it, and its tip widens the tooth body by the
+    # overhang on each side, as an inner stator's shoe does at the bore.
+    shoulder_r = max(gap_r - config.stator.tooth_shoe_height_mm, bottom_r + 1e-6) if shoe else gap_r
+    shoulder_fraction = (gap_r - shoulder_r) / max(1e-9, gap_r - bottom_r)
+    half_pitch = math.pi / config.stator.slot_count
+    # Per tooth (tooth idx sits between slot idx and slot idx + 1): the angles of its
+    # tip at the gap, its shoulder and its bottom; slots reuse them so the walls match.
+    teeth: list[tuple[float, float, float, float, float, float]] = []
+    for idx, slot in enumerate(geom.slots):
+        next_slot = geom.slots[(idx + 1) % len(geom.slots)]
+        bottom_start = slot.edge_angles_at_radius(bottom_r)[1]
+        bottom_end = next_slot.edge_angles_at_radius(bottom_r)[0]
+        gap_start = slot.edge_angles_at_radius(gap_r)[1]
+        gap_end = next_slot.edge_angles_at_radius(gap_r)[0]
+        while bottom_end <= bottom_start:
+            bottom_end += 2 * math.pi
+        while gap_end <= gap_start:
+            gap_end += 2 * math.pi
+        if not shoe:
+            teeth.append((gap_start, gap_end, gap_start, gap_end, bottom_start, bottom_end))
+            continue
+        centre = 0.5 * (gap_start + gap_end)
+        gap_half = 0.5 * (gap_end - gap_start)
+        shoulder_half = gap_half + shoulder_fraction * (0.5 * (bottom_end - bottom_start) - gap_half)
+        tip_half = min(gap_half + config.stator.tooth_shoe_overhang_mm / gap_r, max(shoulder_half, half_pitch - 1e-9))
+        teeth.append((centre - tip_half, centre + tip_half, centre - shoulder_half, centre + shoulder_half,
+                      bottom_start, bottom_end))
     for slot in geom.slots:
         bottom_breakpoints.extend(slot.edge_angles_at_radius(bottom_r))
-        gap_breakpoints.extend(slot.edge_angles_at_radius(gap_r))
+        if not shoe:
+            gap_breakpoints.extend(slot.edge_angles_at_radius(gap_r))
+    if shoe:
+        gap_breakpoints.extend(angle for tooth in teeth for angle in tooth[:2])
     if layer_split == "tangential":
         bottom_breakpoints.extend(slot_centres)
         gap_breakpoints.extend(slot_centres)
@@ -212,30 +242,58 @@ def _build_outer_rotor_geometry_ir(config: MotorConfig, geom: MotorGeometry) -> 
         area_mm2=math.pi * max(0.0, bottom_r**2 - hub_r**2),
         motion_group="stationary",
     ))
-    for idx, slot in enumerate(geom.slots):
-        next_slot = geom.slots[(idx + 1) % len(geom.slots)]
-        bottom_start = slot.edge_angles_at_radius(bottom_r)[1]
-        bottom_end = next_slot.edge_angles_at_radius(bottom_r)[0]
-        gap_start = slot.edge_angles_at_radius(gap_r)[1]
-        gap_end = next_slot.edge_angles_at_radius(gap_r)[0]
-        while bottom_end <= bottom_start:
-            bottom_end += 2 * math.pi
-        while gap_end <= gap_start:
-            gap_end += 2 * math.pi
+    for idx, (tip_start, tip_end, shoulder_start, shoulder_end, bottom_start, bottom_end) in enumerate(teeth):
+        if shoe:
+            tooth_loop = _shoed_annular_loop(f"stator_tooth_{idx}_boundary", gap_r, shoulder_r, bottom_r,
+                                             tip_start, tip_end, shoulder_start, shoulder_end, bottom_start, bottom_end)
+            tooth_area = _loop_area_mm2(tooth_loop)
+        else:
+            tooth_loop = _tapered_annular_loop(f"stator_tooth_{idx}_boundary", bottom_r, gap_r,
+                                               bottom_start, bottom_end, tip_start, tip_end)
+            tooth_area = _tapered_annular_sector_area(bottom_r, gap_r, bottom_start, bottom_end, tip_start, tip_end)
         regions.append(GeometryIRRegion(
             region_id=f"stator_tooth_{idx}",
             kind="StatorTooth",
             material_key=stator_material,
-            loops=(_tapered_annular_loop(f"stator_tooth_{idx}_boundary", bottom_r, gap_r,
-                                         bottom_start, bottom_end, gap_start, gap_end),),
-            area_mm2=_tapered_annular_sector_area(bottom_r, gap_r, bottom_start, bottom_end, gap_start, gap_end),
+            loops=(tooth_loop,),
+            area_mm2=tooth_area,
             motion_group="stationary",
         ))
 
     conductor_material = f"conductor:{config.materials.conductor}"
-    for slot in geom.slots:
+    for slot_idx, slot in enumerate(geom.slots):
         inner_left, inner_right = slot.edge_angles_at_radius(slot.inner_radius_mm)
         outer_left, outer_right = slot.edge_angles_at_radius(slot.outer_radius_mm)
+        if shoe:
+            # The slot is the space between its two teeth, shoe neck included, as for inner stators.
+            left, right = teeth[slot_idx - 1], teeth[slot_idx]
+            walls = (left[1], right[0], left[3], right[2], left[5], right[4])
+            if layer_split == "tangential":
+                for assignment in slot_layer_assignments(config, slot.slot_index):
+                    prefix = f"slot_winding_{slot.slot_index}_layer{assignment.layer}"
+                    layer_loop = _shoed_tangential_layer_loop(f"{prefix}_boundary", assignment.layer, slot.center_angle_rad,
+                                                              gap_r, shoulder_r, bottom_r, *walls)
+                    regions.append(GeometryIRRegion(
+                        region_id=prefix,
+                        kind="SlotWinding",
+                        material_key=conductor_material,
+                        loops=(layer_loop,),
+                        area_mm2=_loop_area_mm2(layer_loop),
+                        motion_group="stationary",
+                        source_group=f"winding:{assignment.phase}:{assignment.direction}:slot{slot.slot_index}:layer{assignment.layer}",
+                    ))
+                continue
+            winding_loop = _shoed_annular_loop(f"slot_winding_{slot.slot_index}_boundary", gap_r, shoulder_r, bottom_r, *walls)
+            regions.append(GeometryIRRegion(
+                region_id=f"slot_winding_{slot.slot_index}",
+                kind="SlotWinding",
+                material_key=conductor_material,
+                loops=(winding_loop,),
+                area_mm2=_loop_area_mm2(winding_loop),
+                motion_group="stationary",
+                source_group=f"winding:{slot.phase}:{slot.direction}:slot{slot.slot_index}",
+            ))
+            continue
         if layer_split == "tangential":
             centre = slot.center_angle_rad
             for assignment in slot_layer_assignments(config, slot.slot_index):
@@ -305,7 +363,8 @@ def _build_outer_rotor_geometry_ir(config: MotorConfig, geom: MotorGeometry) -> 
         "outer_radius_mm": float(geom.rotor_OD_r),
         "airgap_stator_side_radius_mm": float(gap_r),
         "airgap_rotor_side_radius_mm": float(magnet_face_r),
-        "tooth_sample_radius_mm": 0.5 * (bottom_r + gap_r),
+        # The tooth body's middle: below the shoe when there is one.
+        "tooth_sample_radius_mm": 0.5 * (bottom_r + shoulder_r),
         "yoke_sample_radius_mm": 0.5 * (hub_r + bottom_r),
     }
     return GeometryIR(GEOMETRY_IR_VERSION, "SPM", None, config.rotor.pole_count, config.stator.slot_count,

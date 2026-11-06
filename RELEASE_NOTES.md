@@ -13,11 +13,16 @@
   outrunner runs through the normal pipeline as a pinned reference, next to the
   Prius. Its examples stay hidden until the source data's redistribution rights
   are confirmed.
+- **Tooth shoes on outer stators.** An outrunner's teeth can carry shoes at the
+  stator OD, set the same way as an inner rotor's: shoe height, and overhang per
+  side of the tooth body. Most real outrunners have them. The Benchmarks menu
+  adds one: a published 36-slot / 40-pole robot-joint outrunner, with its
+  measured back-EMF and torque in its description.
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.
-- **Limits.** Outer rotors are SPM only; parametric outer stators have no tooth
-  shoes yet and two-layer windings must be tooth coils. Elmer, the fixed-mesh
+- **Limits.** Outer rotors are SPM only, and two-layer windings must be tooth
+  coils. Elmer, the fixed-mesh
   lane, the dimension overlay and the solved view's air-gap ring are not
   available for outer rotors. A design saved with an outer rotor opens as an
   inner rotor in coilEM 0.5.1 and earlier.
