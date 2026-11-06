@@ -715,8 +715,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 10863,
-      "sha256": "8ea9358f3a208ec69c418db8ef01c200314f8cccfe97c6c1eab5f81756ddff78"
+      "bytes": 11409,
+      "sha256": "99ad2d365597ee448a6b64241d8308facc3bdf87b32b9b31482649fdd1fb0407"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -12237,6 +12237,31 @@
       "path": "tests/test_cogging_pipeline.py",
       "bytes": 9168,
       "sha256": "d8cc8e172b2ac9016dacde3216b32b0a75a6fedc6d21fcaaece03e74f09d5125"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/README.md",
+      "bytes": 5285,
+      "sha256": "83171c68e5c330886f6f63e1f0e600e3e46019a11bd68b28738cebb44a699bd0"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/provenance.json",
+      "bytes": 90421,
+      "sha256": "0a5ffe30d3b43affb424a3db5ecf3dff1843a36bcd8e443c08a79dbe77f062a2"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/results.json",
+      "bytes": 462700,
+      "sha256": "905f04974ec2013ead45892248ee179765264bff7fe5dda46c91dc6e4de702cf"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/sha256.json",
+      "bytes": 349,
+      "sha256": "6032aad8afb35d063ab7647302de0b50a06858e11bee93334f5ec942b4dcfa81"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/waveforms.json",
+      "bytes": 1183714,
+      "sha256": "81dc739f75e79fa77d6505d6ea3959fab98249e725b5bdbe730bb5d528d488a3"
     }
   ],
   "public_patches": [
