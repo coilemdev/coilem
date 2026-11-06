@@ -134,11 +134,22 @@ export function scopeWindowElecDeg(rpm: number, poleCount: number, windowS = PHA
   return 360 * electricalFrequencyHz(rpm, poleCount) * windowS;
 }
 
-/** "2.1 Hz", "0.30 Hz", "12 Hz". */
+/** "2.1 Hz", "0.30 Hz", "12 Hz"; a slow preview keeps two figures: "0.012 Hz". */
 export function formatHz(hz: number): string {
   if (hz >= 10) return `${hz.toFixed(0)} Hz`;
   if (hz >= 1) return `${hz.toFixed(1)} Hz`;
-  return `${hz.toFixed(2)} Hz`;
+  return `${formatSmallRate(hz)} Hz`;
+}
+
+/** Shaft speed in rev/s for the scope caption: "0.30", "0.0017" at 0.1 RPM. */
+export function formatRevPerSecond(rpm: number): string {
+  return formatSmallRate(rpm / 60);
+}
+
+// Two decimals from 0.1 up; below that, two significant figures, so 0.1 RPM
+// does not read as 0.00.
+function formatSmallRate(value: number): string {
+  return value >= 0.1 || value <= 0 ? value.toFixed(2) : value.toPrecision(2);
 }
 
 /**

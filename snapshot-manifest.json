@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13917,
-      "sha256": "597e65e5d1fb6c0ff7f6ae75bc7809c367d65307fcf368668963e351920b17c6"
+      "bytes": 14151,
+      "sha256": "03d9092f3d665121b7731a3032cfca6a612bc738e36f7169530b64fd707e9b95"
     },
     {
       "path": "SECURITY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2960,
-      "sha256": "492c9325390c9b662459ba8daf28c8b903b6ed5e856eccaeeb30ecf0908d67fd"
+      "bytes": 2995,
+      "sha256": "b7e191fac21028e5dd88e3cad055777a463a71822673a17cddf49fff0489408b"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6560,8 +6560,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 12550,
-      "sha256": "daf00e88d0af8e4d745b61f5e043f2accc70a065053293c23a93ea6a16e75e87"
+      "bytes": 13013,
+      "sha256": "50aef7a03616a8c66409faa4da5e8f13dbfab0e09565fa9322b193311bc5b14f"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163252,
-      "sha256": "be0b1f5d388edf70b7e50f3d68e0094cf9e1098f465dcabd99944fe2a88acfa2"
+      "bytes": 163382,
+      "sha256": "2121aeb65a3b1c4dc5a1465d3c56839ec70b2d35c15cb2645dfef545e71e193c"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 241889,
-      "sha256": "d5a3774b7adb482e98bfceee720b3d10dcce13b4c5fb0e903731a1f4b3e92f7c"
+      "bytes": 241914,
+      "sha256": "88ea07c0ac189180931e0eddcca6ec4d3a36f5319e82d15c15522750217ed832"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7045,8 +7045,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 62297,
-      "sha256": "9fed1d143f181e9dafce9dcec16c672e236c7146932f57fc9887552107135a90"
+      "bytes": 62321,
+      "sha256": "4da15534d775915f104bdc667fa6e09462416e07fb33c573b21af2d42f88b34d"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7095,8 +7095,8 @@
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
-      "bytes": 2663,
-      "sha256": "d3f7d1ba52373c604cc30050c151175648af28c73b87749ff70433d1da45c1ec"
+      "bytes": 3034,
+      "sha256": "c20f53c0d8a66526ad077204185b9ea0365bec820686b3cd51cf85774bffa73c"
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
@@ -7455,8 +7455,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 9584,
-      "sha256": "3e05eb1ec9e544349702ee6a734b6a1ef8ee446d40059c9534ec6320f6d90bb7"
+      "bytes": 10048,
+      "sha256": "9713ec90ab410f4989063e829e6e7697b755e94a7b5216d6b70816771378117b"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -13029,6 +13029,11 @@
       "sha256": "fcf5bc4ac3d7cfc36aa6f488bbd3e3196bb2905443f91267f8b27b2435d89a98"
     },
     {
+      "path": "frontend/scripts/test-rpm-steps.mjs",
+      "bytes": 2574,
+      "sha256": "fe0caa7215390f866d7a6fd6fa41bd9b2f5afd43ca0b66360a3526a169bac3d4"
+    },
+    {
       "path": "frontend/scripts/test-sector-framing.mjs",
       "bytes": 3688,
       "sha256": "2262465fc92e562f1790c63bfe302f47902a66136335176540d3c3339f1cfd9d"
@@ -13067,6 +13072,11 @@
       "path": "frontend/src/public/publishedReferences.ts",
       "bytes": 4367,
       "sha256": "2586b62d144b8fc5d90171ea1a0c8fc0575eb750a264a5a82ca1d99661ca0159"
+    },
+    {
+      "path": "frontend/src/public/rpmSteps.ts",
+      "bytes": 1743,
+      "sha256": "ea84851580e9409515ec41329910c0415d7edd95b6dbe0ae3fd5e3cb914795f1"
     },
     {
       "path": "frontend/src/public/sectorFraming.ts",
