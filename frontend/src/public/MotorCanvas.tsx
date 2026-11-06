@@ -40,6 +40,7 @@ import {
 } from './phaseDrive';
 import { pointInContours, previewContours, type Contour } from './previewContours';
 import { publishedReference } from './publishedReferences';
+import { outerRotorRing, ringKey, sectorView } from './sectorFraming';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -1356,7 +1357,22 @@ export function MotorCanvas({
   const navigationFrame = useCallback((width: number, height: number) => (
     phaseFrameEnabled ? phaseDriveFrame(width, height)?.motor ?? null : null
   ), [phaseFrameEnabled]);
-  const navigation = useViewportNavigation(undefined, navigationFrame);
+  const ring = outerRotorRing(config);
+  const ringInnerMm = ring?.innerMm;
+  const ringOuterMm = ring?.outerMm;
+  // fitTransform pads the motor by 7.5% of the frame's smaller side, then fits its diameter.
+  const sectorForSize = useCallback((width: number, height: number, angleDeg: number) => {
+    const box = navigationFrame(width, height) ?? { width, height };
+    const padding = Math.min(box.width, box.height) * 0.075;
+    return sectorView(
+      ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
+      box.width,
+      box.height,
+      Math.min(box.width - 2 * padding, box.height - 2 * padding) / 2,
+      angleDeg,
+    );
+  }, [navigationFrame, ringInnerMm, ringOuterMm]);
+  const navigation = useViewportNavigation(undefined, navigationFrame, sectorForSize, ringKey(ring));
   const annotations = useMemo(
     () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
     [config, geometry, layer],
@@ -1583,6 +1599,9 @@ export function MotorCanvas({
             onZoomIn={navigation.zoomIn}
             onZoomOut={navigation.zoomOut}
             onReset={navigation.reset}
+            onSector={navigation.sector}
+            onSectorStep={navigation.sectorStep}
+            sectorActive={navigation.sectorActive}
           />
         );
         return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;

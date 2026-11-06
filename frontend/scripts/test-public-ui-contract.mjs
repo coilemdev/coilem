@@ -962,7 +962,7 @@ assert.match(styleSource, /\.public-solved-field-viewer \{ grid-template-columns
 assert.match(workspaceSource, /aria-label="Field solution" aria-pressed=\{solveView === 'field'\}[^\n]*?><span className="public-solve-tab-long">Field solution<\/span><span className="public-solve-tab-short" aria-hidden="true">Field<\/span><\/button>/);
 assert.match(styleSource, /@container \(max-width: 460px\) \{\s*\.public-motor-viewport \.public-dock-strip \.public-primary-view-modes button,\s*\.public-dock-strip \.public-solve-view-switch button \{ padding: 0 7px; \}\s*\.public-dock-strip \.public-solve-tab-long \{ display: none; \}/);
 assert.match(styleSource, /@container \(max-width: 380px\) \{\s*\.public-field-dock \.public-field-physics-info \{ display: none; \}/);
-assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\) \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\):not\(\.is-sector\):not\(\.is-sector-step\) \{ display: none; \}/);
 // The flux legend never covers the motor: the field view's canvas box narrows
 // so the motor moves left (and shrinks only if it must), checked against each
 // legend label at its height; a legend below the plot (Results) moves nothing.
@@ -1151,7 +1151,7 @@ assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
 assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport'\}/);
-assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
+assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
@@ -1376,7 +1376,7 @@ assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
 assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
-assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame\)/);
+assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);
