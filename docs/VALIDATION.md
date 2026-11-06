@@ -660,6 +660,28 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   tolerances (magnet and slot variation, eccentricity), and the load-dependent
   part of torque ripple: cogging is the zero-current torque only.
 
+## Outer-rotor motors
+
+Outer-rotor (outrunner) SPM motors are new in 0.5.5
+([OUTRUNNER.md](OUTRUNNER.md)). **They are experimental everywhere: no
+registered benchmark fixture is an outer rotor.**
+
+- **What has been checked.** The LRK 12-slot / 14-pole reference against its
+  published solution: 9 of 11 torque points pass, the source point is −0.36%
+  and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
+  agrees with 1.5·p·λ·I within 0.3%, and the mesh study moves it less than
+  0.05%. [OUTRUNNER.md](OUTRUNNER.md#validation) has the detail.
+- **The reason the app prints:** "Outer-rotor SPM: no benchmark fixture
+  measures an outer rotor yet." (`backend/qualification.py`).
+- **What would qualify it.** Phase F, the outer-rotor benchmark proposed as
+  [protocol 1.8.0](../benchmarks/abcd-v1.8/README.md). It has 10 outer-rotor SPM
+  cases over five motors, from an 18 mm micro drone motor to a 100 mm
+  hub-motor class, graded with Phase A's gates against FEMM 4.2. The harness
+  can grade it, and the [FEMM request](OUTRUNNER_FEMM_REQUEST.md) is written.
+  No reference exists yet, and Phase F is not registered.
+- **Not modelled.** IPM outer rotors, and end effects such as an outrunner's
+  bell and magnet overhang.
+
 ## Benchmark report v1.1
 
 The completed v1.1 report measures public Coilem commit

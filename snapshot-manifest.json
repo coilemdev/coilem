@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 12945,
-      "sha256": "c98bd7cd5fb11742332a2a258e2816a2b4a002e313973ce0d20d2878dc131618"
+      "bytes": 13381,
+      "sha256": "9c2e92e9d7f6cb9008eef6ebf4705d70b26db51cff0570fb6a0cf870645db0a6"
     },
     {
       "path": "SECURITY.md",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 51443,
-      "sha256": "fc0f1eb2ad03fe18880aa52d6b918b74793c221cc0418461a3a0086ea3f29f84"
+      "bytes": 52699,
+      "sha256": "fb8a608c962d550869ac0af040c25288a3eea56133cfbc9f858d09e2de048893"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -13015,8 +13015,13 @@
     },
     {
       "path": "docs/OUTRUNNER.md",
-      "bytes": 4500,
-      "sha256": "60bc5c37d61a0746449a920801cae7b4b4dc1f7f4ebf538422fce99ce2d03c0a"
+      "bytes": 5260,
+      "sha256": "e003c6cc6f679bd7ee8ab65d28386fa93dcaa5a4d73ea95ed6a593e7647c57c3"
+    },
+    {
+      "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
+      "bytes": 15559,
+      "sha256": "73dcd2203f5abc5cf1141580f3399e2caa61e4d02a88acf88201098bcc46968a"
     },
     {
       "path": "frontend/scripts/test-field-stroke-width.mjs",
