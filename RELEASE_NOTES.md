@@ -20,8 +20,8 @@
   measured back-EMF and torque in its description.
 - **A second published outrunner.** The Benchmarks menu adds Model B of the
   36-slot / 40-pole drone outrunners in Koo & Shin, *Energies* 19(16):3845 (2026).
-  Its measured back-EMF and torque are in the design's description; coilEM lands
-  within about 4% of both, as close as the authors' own 2D FEM.
+  Its measured back-EMF and torque are in the design's description: coilEM's
+  back-EMF lands as close as the authors' own 2D FEM, and its torque about 4% low.
 - **Examples by rotor layout.** The Examples menu lists inrunners and outrunners
   side by side in each group.
 - **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
