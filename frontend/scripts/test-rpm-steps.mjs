@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-// The preview speed field reaches 0.1 RPM so the phases and poles can be watched
-// slowly: tenths below 1 RPM, whole RPM from 1 up. The field playback keeps a
-// minimum of 1 RPM and so stays a whole-RPM field.
+// The Design preview and the solved-field playback reach 0.1 RPM so the phases,
+// poles and field can be watched slowly: tenths below 1 RPM, whole RPM from 1 up.
+// A field whose minimum is 1 RPM stays a whole-RPM field.
 const { clampRpm, formatRpm, nativeRpmStep, shiftSteppedRpm, snapRpm, steppedRpm } = await importTypeScriptModule(
   new URL('../src/public/rpmSteps.ts', import.meta.url),
 );
@@ -27,7 +27,7 @@ assert.equal(preview(100, 99.9), 99);
 assert.equal(preview(18, 25), 25, 'a typed speed is taken as typed');
 assert.equal(preview(18, 0.25), 0.3, 'a typed tenth is snapped');
 assert.equal(preview(18, 2.5), 3);
-// The field playback (minimum 1, native step 1) is unchanged.
+// A field with a minimum of 1 (native step 1) keeps whole RPM.
 assert.deepEqual([steppedRpm(18, 19, 1, 100), steppedRpm(18, 17, 1, 100), steppedRpm(1, 0.5, 1, 100)], [19, 17, 1]);
 
 // Shift+arrow: ten at a time, stopping at 1 before the tenths on the way down.

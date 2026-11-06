@@ -1,7 +1,7 @@
 /**
- * Speed steps for the RPM fields: tenths below 1 RPM, whole RPM from 1 up. A
- * field whose minimum is 1 or more never reaches the tenths, so it behaves as
- * a whole-RPM field.
+ * Speed steps for the RPM fields (the Design preview and the solved-field
+ * playback): tenths below 1 RPM, whole RPM from 1 up. A field whose minimum is
+ * 1 or more never reaches the tenths, so it behaves as a whole-RPM field.
  */
 
 /** The nearest speed on the steps: 0.34 → 0.3, 17.6 → 18. */
