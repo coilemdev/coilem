@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 16950,
-      "sha256": "547c742c3a61e9451361dbd14e275c173ea11c987ccb50197cc100ac1456a8d9"
+      "bytes": 17149,
+      "sha256": "23038736d42d57f6d0710dc1b7dd2b35dd288fc93e23f9f1ccf0d5b47ff4b150"
     },
     {
       "path": "SECURITY.md",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 166493,
-      "sha256": "5f77d6a17295159ca9f944f37e5bb8c5177ddc16cad3304e2ee94cdcbf6a01f2"
+      "bytes": 166842,
+      "sha256": "e518d7d84656746872ccd8815994f07e3821fe56b596cb5e65e2e26a84174488"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 85159,
-      "sha256": "3aaddf24ab72eb1676bdb1070cb2a99d287445a242dff466dd7b929c802bfa75"
+      "bytes": 90398,
+      "sha256": "32723f78620f6d1fe1e48aa2438de4315938d31efac640d40639b17e03789fea"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
