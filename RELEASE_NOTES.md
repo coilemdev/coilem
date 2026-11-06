@@ -22,11 +22,11 @@
   36-slot / 40-pole drone outrunners in Koo & Shin, *Energies* 19(16):3845 (2026).
   Its measured back-EMF and torque are in the design's description: coilEM's
   back-EMF lands as close as the authors' own 2D FEM, and its torque about 4% low.
-- **Back EMF as rms, peak and peak-to-peak.** The Results card adds a small table
-  of the phase and line-to-line back-EMF as rms, peak and pk-pk, since papers,
-  datasheets and scopes each quote a different one; peak and pk-pk come from the
-  solved waveform, harmonics included. The Back EMF chart gains an RMS / Peak /
-  Pk-pk switch that shows each trace's value in its legend.
+- **Back EMF as rms and peak.** The Results card adds a small table of the phase
+  and line-to-line back-EMF as rms and peak, since papers and datasheets often
+  quote a peak; the peak comes from the solved waveform, harmonics included, and
+  peak-to-peak is twice it. The Back EMF chart gains an RMS / Peak switch that
+  shows each trace's value in its legend.
 - **Examples by rotor layout.** The Examples menu lists inrunners and outrunners
   side by side in each group.
 - **Sector view for thin-ring motors.** An outrunner whose active ring is a thin

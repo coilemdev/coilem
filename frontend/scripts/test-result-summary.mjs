@@ -36,7 +36,7 @@ assert.deepEqual(electromagneticPower(0.5, 1000), { text: '52.4', unit: 'W' });
 assert.deepEqual(electromagneticPower(-10.59, 2400), { text: '−2.66', unit: 'kW' }, 'generating keeps its sign');
 assert.equal(electromagneticPower(Number.NaN, 2400), null);
 
-// Back EMF readings: rms is the fundamental's, peak and pk-pk come from the solved
+// Back EMF readings: rms is the fundamental's, the peak comes from the solved
 // waveform. A phase of 10 sin θ − sin 3θ reaches 11 V, not the fundamental's 10 V,
 // so its peak is not √2 × rms; a − b cancels the third harmonic and peaks at √3·10 V.
 const cycle = Array.from({ length: 48 }, (_, index) => index * 7.5);
@@ -48,7 +48,6 @@ const emf = { electrical_angle_deg: cycle, phase_a_V: phase(0), phase_b_V: phase
 const close = (actual, expected, label) => assert.ok(Math.abs(actual - expected) < 1e-9, `${label}: ${actual} vs ${expected}`);
 close(waveformMeasure(cycle, emf.phase_a_V, 'rms'), 10 / Math.SQRT2, 'fundamental rms ignores the third harmonic');
 close(waveformMeasure(cycle, emf.phase_a_V, 'peak'), 11, 'peak includes it: 10 sin θ − sin 3θ peaks at 11 V on θ = 90°');
-close(waveformMeasure(cycle, emf.phase_a_V, 'pk-pk'), 22, 'pk-pk');
 assert.equal(waveformMeasure(cycle.slice(0, 7), emf.phase_a_V.slice(0, 7), 'peak'), null, 'a Preview window is not a whole cycle');
 assert.equal(waveformMeasure(cycle, emf.phase_a_V.slice(1), 'rms'), null, 'mismatched lengths');
 const readings = backEmfReadings(emf, 10 / Math.SQRT2);
@@ -56,7 +55,7 @@ assert.deepEqual(readings.map((row) => row.label), ['Phase', 'Line (wye)']);
 close(readings[0].peakV, 11, 'phase peak');
 close(readings[1].rmsV, Math.sqrt(3) * 10 / Math.SQRT2, 'line rms is √3 × phase');
 close(readings[1].peakV, 10 * Math.sqrt(3), 'line a − b: the third harmonic cancels');
-close(readings[1].peakToPeakV, 20 * Math.sqrt(3), 'line pk-pk');
+assert.deepEqual(Object.keys(readings[0]).sort(), ['label', 'peakV', 'rmsV'], 'no peak-to-peak: it is twice the peak');
 assert.equal(backEmfReadings({ ...emf, line_ab_V: emf.phase_a_V.map((value) => 2 * value) }, 1)[1].peakV, 22, 'a solver line waveform is used as given');
 assert.equal(backEmfReadings(emf, null), null);
 assert.deepEqual(backEmfReadings({ ...emf, electrical_angle_deg: cycle.map((angle) => angle / 8) }, 5).map((row) => row.peakV), [null, null]);

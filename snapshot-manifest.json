@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13159,
-      "sha256": "866aa58396c8659beb8900cff81f70f162b062b32b4d577842f581d0b157974a"
+      "bytes": 13139,
+      "sha256": "0394bac7d6b20efeb0f7adb5b83b016651f7a7636d0630e0c005d907e73178fc"
     },
     {
       "path": "SECURITY.md",
@@ -6595,13 +6595,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 164729,
-      "sha256": "ca7dbe0ece0f7ac5bf530d886d9b943c53aafe1b4121c758f2538301af228ece"
+      "bytes": 164752,
+      "sha256": "3aa3450f74b3a743b864f5a9fc7639283dbbf8aa11eb17b06b2e86aaa5df371a"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 8372,
-      "sha256": "5dc9644f824fee6a28d660099e5ed3cd5b520f5bd8d9129e42663d75dc00cd8b"
+      "bytes": 8354,
+      "sha256": "1cde33725132fc589937ce0516815cc3cbe977dbc2dfc49508d06481bf38a346"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 244706,
-      "sha256": "2a7c1351fd97cad7cec78dafba7031bb84cac18dfd748ae65948ae51ba30044b"
+      "bytes": 244640,
+      "sha256": "71f0efd6ccc538fb2eb44ad0e75299fda1a3e58ecd79aa1a4f53eaae63371dd3"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 11990,
-      "sha256": "98dbf04684ead9548de0e8bbd9b49480df749eb32f56659deffe0834cde78d7f"
+      "bytes": 11952,
+      "sha256": "856cc534c53d9aca9e082d7b35307c7737986c5f9ab78936991792e4c27c074d"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7490,8 +7490,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 11367,
-      "sha256": "176d408fca727838f307c8ccf1a554da6280bfa4c864d3c704065802646ab530"
+      "bytes": 10938,
+      "sha256": "bd4969cd513711d66dcf983348799e05390d3e4ad1068ad001844ca230e2d473"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -7505,8 +7505,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 292597,
-      "sha256": "cd233876e6daf91cbe426c0e4846e4071e71a82b2ca0936fb4e22fa223c83c57"
+      "bytes": 292583,
+      "sha256": "a018853098f2762d819a35d81fc739335855ce75e96f3de3a270a7f8be48d420"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
