@@ -21,6 +21,8 @@ interface LoadedRun {
 interface PublicRunComparisonProps {
   currentResult?: SolveResult | null;
   manageRuns?: boolean;
+  /** Opens a completed run's stored result in Solve and Results. */
+  onOpenRun?: (run: PublicRunListRecord) => void;
 }
 
 const METRICS: Array<{
@@ -156,7 +158,7 @@ function excitationProvenance(result: ComparisonResult): string {
   return `Ideal six-step (120°) · ${advance} · ${metadata.phase_connection || 'wye'} · ${metadata.current_amplitude_convention || 'plateau'}`;
 }
 
-export function PublicRunComparison({ currentResult, manageRuns = false }: PublicRunComparisonProps) {
+export function PublicRunComparison({ currentResult, manageRuns = false, onOpenRun }: PublicRunComparisonProps) {
   const currentSaved = currentResult?.saved_run;
   const [allRecords, setAllRecords] = useState<PublicRunListRecord[]>([]);
   const [records, setRecords] = useState<PublicRunListRecord[]>([]);
@@ -414,6 +416,9 @@ export function PublicRunComparison({ currentResult, manageRuns = false }: Publi
                     <span className={`public-run-storage-status is-${record.status}`}>{storedRunStatus(record)}</span>
                     <span className="public-run-storage-size">{formatBytes(record.size_bytes)}</span>
                     <div className="public-run-storage-actions">
+                      {onOpenRun && record.status === 'complete' && !confirming && (
+                        <button type="button" disabled={deletingKey !== null} onClick={() => onOpenRun(record)}>Open results</button>
+                      )}
                       {confirming ? (
                         <>
                           <button type="button" className="danger" disabled={deleting} onClick={() => void deleteRun(record)}>{deleting ? 'Deleting…' : 'Delete permanently'}</button>

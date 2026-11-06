@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13976,
-      "sha256": "e17d0b48000934aec47558aefaeb1279ddda6c31bcb401370d1d65eee25d1142"
+      "bytes": 14320,
+      "sha256": "a3fbc81c48d9c9e2416fa305e53ee6655099c3ed67ee2b95e08b517a6fff1d8e"
     },
     {
       "path": "SECURITY.md",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 28067,
-      "sha256": "71dc998a60567142723ad64041de6048d5074bc5e85b00452b4528ab53f6b51d"
+      "bytes": 29189,
+      "sha256": "a63ccb82747a646e191954df8a125d7ea899fb8c60438fd2428af1abffff5bf9"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 54385,
-      "sha256": "e69e802876db32fc3c0a2b9bca8df2867b900e4f93279f648e37fe3ba00028b7"
+      "bytes": 55919,
+      "sha256": "74ba5cc9e8d3b27f5864c0f4af7b38f6009880f6d016cc97cdbe9cc45bf6b969"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 56628,
-      "sha256": "f3e15a97729090a4379d843ea804d222a73e9cd17a66c330db647dbf0f90c008"
+      "bytes": 58850,
+      "sha256": "b7acc3b31fd1267bc4731a669699e0371f0c58825c1d7ceff9509bb8554204e8"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -5970,8 +5970,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16500,
-      "sha256": "d30a0d6d23d9ebf8752826b66c4421d24587cdf0230179b0d4635d21c559ef45"
+      "bytes": 16611,
+      "sha256": "d551e0be6bde8c5fbcc2b241e4dfae5c717ad018cf752c42ec9a352ce8be007c"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 6280,
-      "sha256": "52dd42d808d67ef6864bae8de88b49c199f7b6f5a3c20f0b6262853e9bd46fc3"
+      "bytes": 7203,
+      "sha256": "cb49a7989a9f77b1db9ef1ead5af6a018b70a37f4193469bf1d6c5010c7d344b"
     },
     {
       "path": "frontend/package-lock.json",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 165087,
-      "sha256": "dd21be64589a26bed477eb395b583a36ba7e17329626d38732950383f9b1e7d8"
+      "bytes": 165476,
+      "sha256": "cb2d52e483a5dd077338dd6022884a356f8dd7f1b06218e935ab3fc660f5958c"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7005,8 +7005,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 74726,
-      "sha256": "23bfc5eae3f531ae508a3c4f85db0b7c243aa0b8f104444de94cd4562637da7c"
+      "bytes": 76232,
+      "sha256": "b7e22e85dab0531fbf4c3db8e8773c25a0e03d9ce68ef9a8295018b8232d1ce4"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 244640,
-      "sha256": "71f0efd6ccc538fb2eb44ad0e75299fda1a3e58ecd79aa1a4f53eaae63371dd3"
+      "bytes": 245372,
+      "sha256": "832daa73e1bc28fbae23292b01c07f8b5ad1d4dad87ab47a1b4e217e9eaf0a94"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7090,8 +7090,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 25348,
-      "sha256": "b6d26075c891df36665a1dd3a851428a072f6c137a1234d75a2a57811c666a9e"
+      "bytes": 25722,
+      "sha256": "ecd1660eb5ba5f294c2507da874fec6b76b33500e88186f2c0d81c04ca46f0a1"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -12429,9 +12429,14 @@
       "sha256": "1d3d54c63a1b75829fdef64ed0474b40861be6ff425f698a7f22f71102288310"
     },
     {
+      "path": "backend/run_field_playback.py",
+      "bytes": 5435,
+      "sha256": "f6d24daee376b063d6c75c8578d63e9886f40a065d28c34ae73838e91adf1c2d"
+    },
+    {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 14347,
-      "sha256": "45fb52056b651fb79be6268dfd232d10f9db9b5ad2fc85d56d2009e57b5afaae"
+      "bytes": 18762,
+      "sha256": "89294068a0fe6c1190347a1d782ee29161f98ba6036f29aa52b0a1294fa22459"
     }
   ],
   "public_patches": [

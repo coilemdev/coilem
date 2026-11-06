@@ -42,6 +42,7 @@ from backend.public_report import (
 from backend.qualification import classify_qualification, dq_flux_linkage_status, magnet_temperature_status
 from backend.resources import application_commit as _application_commit
 from backend.resources import build_identity
+from backend.run_field_playback import RUN_PLAYBACK_PREFIX, run_playback_dir, run_playback_relative
 
 RUN_MANIFEST_SCHEMA = "coilem.solve_run.v2"
 RUN_REQUEST_SCHEMA = "coilem.solve_request.v1"
@@ -335,6 +336,12 @@ def _encode_run_artifact_id(project_slug: str, run_id: str, relative_path: str) 
     return f"{RUN_ARTIFACT_PREFIX}{token}"
 
 
+def run_artifact_location(artifact_id: str) -> tuple[str, str, str]:
+    """The project slug, run ID and run-relative path a ``run.`` artifact ID names."""
+
+    return _decode_run_artifact_id(artifact_id)
+
+
 def _decode_run_artifact_id(artifact_id: str) -> tuple[str, str, str]:
     if not artifact_id.startswith(RUN_ARTIFACT_PREFIX):
         raise SolveWorkspaceError("invalid run artifact id")
@@ -538,6 +545,8 @@ class SolveRunWriter:
                 "policy": "manual_or_keep_latest_per_project",
                 "default_keep_latest": DEFAULT_RETENTION_RUNS_PER_PROJECT,
                 "field_playback_keep_latest": field_playback_keep_runs(),
+                # Playback images are drawn from the stored field frames when needed.
+                "field_playback_images": "drawn_from_field_frames",
                 "solve_cache_is_disposable": True,
             },
             "result_current": False,
@@ -548,6 +557,22 @@ class SolveRunWriter:
         if failure:
             manifest["failure"] = dict(failure)
         return manifest
+
+    def _share_playback_image(self, source: Path, relative: str) -> None:
+        """Link a solve's playback image into this run's playback cache folder."""
+
+        target = run_playback_dir(self.project_slug, self.run_id) / relative.removeprefix(RUN_PLAYBACK_PREFIX)
+        if target.is_file():
+            return
+        target.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.link(source, target)
+        except FileExistsError:
+            return
+        except OSError:
+            staging = target.with_name(f".{target.name}.copying")
+            shutil.copy2(source, staging)
+            os.replace(staging, target)
 
     def _retain_artifacts(self, result: dict[str, Any]) -> None:
         copied: dict[str, tuple[str, str, int]] = {}
@@ -560,7 +585,19 @@ class SolveRunWriter:
                         source = resolve_solve_cache_artifact_id(artifact_id)
                     except ValueError:
                         source = None
-                    if source is not None and source.is_file():
+                    playback_relative = (
+                        run_playback_relative(source.parent.name, source.name)
+                        if source is not None and source.is_file() and _artifact_kind(value, source) == ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE
+                        else None
+                    )
+                    if playback_relative is not None:
+                        # Playback images are drawn from the run's frames, so the run
+                        # does not keep them; they wait in the solve cache
+                        # (backend/run_field_playback.py).
+                        self._share_playback_image(source, playback_relative)
+                        value["artifact_id"] = _encode_run_artifact_id(self.project_slug, self.run_id, playback_relative)
+                        value["relative_path"] = playback_relative
+                    elif source is not None and source.is_file():
                         # A field frame's compact copy is a quarter to a third of its JSON.
                         # The ref keeps the media type it is served as (JSON; the
                         # playback contract pins it); readers tell the stored form
@@ -856,6 +893,8 @@ class SolveWorkspace:
             except FileNotFoundError:
                 continue
             freed += size
+        # Its playback images can no longer be drawn again; drop the cached ones too.
+        shutil.rmtree(run_playback_dir(run.parent.name, run.name), ignore_errors=True)
         return freed
 
     def prune_field_playback(self, project_slug: str, *, keep_latest: int | None = None) -> int:
@@ -1337,6 +1376,7 @@ class SolveWorkspace:
                 "an active solve run cannot be deleted; cancel it before deleting its incomplete data"
             )
         shutil.rmtree(run)
+        shutil.rmtree(run_playback_dir(project_slug, run_id), ignore_errors=True)
 
     def open_run_folder(self, project_slug: str, run_id: str) -> Path:
         run = self.resolve_run(project_slug, run_id)

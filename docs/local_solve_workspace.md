@@ -117,3 +117,18 @@ instead: real-valued arrays as float32 (about seven significant digits),
 integers, strings and scalars exact, xz-compressed. That is a quarter to a
 third of the gzipped JSON. Runs saved by earlier releases keep their `.json.gz` frames,
 and both forms read back the same way.
+
+A run does not keep the playback images drawn from its frames. They live in a
+disposable solve-cache folder, `solve_cache/magneto2d-playback-<project>-<run-id>/`,
+which the solve fills by linking its own images and which the cache's rolling
+cleanup removes like any other. When the viewer asks for an image that is no
+longer there, coilEM draws that run's images again from its stored frames,
+starting with the one asked for: about a second per position, spread over up
+to eight processes. A run whose frames retention removed has no playback left
+to draw. Runs saved by earlier releases keep their images in `artifacts/` and
+are served from there.
+
+**Previous runs** offers **Open results** for each completed run. It restores
+the run's project and stored result, field playback included, into Solve and
+Results. Like every stored result it is evidence for those inputs, not a
+current result; start a new solve for that.
