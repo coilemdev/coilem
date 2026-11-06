@@ -2592,10 +2592,16 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-project-examples-menu small { color: var(--text-muted); font: 9.5px var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
 .public-project-examples-menu .public-example-experimental-tag { display: inline-block; margin-left: 8px; padding: 1px 6px; border: 1px solid rgba(245,158,11,.45); border-radius: 999px; background: rgba(245,158,11,.16); color: #fbbf24; font: 700 8px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; }
 .public-project-examples-menu .public-project-example-group-label { padding: 6px 10px 3px; color: var(--text-muted); font: 700 8px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+/* Inrunners and outrunners side by side in each group; each column takes its label and detail stacked. */
+.public-project-examples-menu .public-project-example-layouts { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px 8px; }
+.public-project-examples-menu .public-project-example-layout { display: grid; align-content: start; gap: 2px; min-width: 0; }
+.public-project-examples-menu .public-project-example-layout-label { margin: 0 4px 2px; padding: 3px 6px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); font: 600 9px var(--font-mono); letter-spacing: .06em; }
+.public-project-menu .public-project-examples-menu .public-project-example-layout button { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 
 @media (max-width: 1200px) {
   .public-project-examples-menu { top: calc(100% + 2px); left: 0; }
   .public-project-menu .public-project-examples-menu button { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .public-project-examples-menu .public-project-example-layouts { grid-auto-flow: row; }
 }
 
 .public-blank-design {

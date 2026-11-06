@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 12347,
-      "sha256": "677969025291c578535d162a256ff6f037147ff0b580afd0a6802696016b17eb"
+      "bytes": 12762,
+      "sha256": "28b907e712750b2c14ebabbb5e327bacae7df4d477923ef5f034e24ae3152a86"
     },
     {
       "path": "SECURITY.md",
@@ -6430,8 +6430,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 2995,
-      "sha256": "6eb38eba8d9ee0706aa35bd88a6dbc4c68f7870f4a2dab7455691a7a858d4422"
+      "bytes": 3036,
+      "sha256": "84c5d1bfde023d120636a8fb37d82b4af4338c3ee8b68d67baed30d1353818d1"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163386,
-      "sha256": "a2efb391f5e825249f69b884881ab05baa2f0b5bd9a819cd99ee1003eab59cfb"
+      "bytes": 163892,
+      "sha256": "a3fd314e8d0f4a9f0d989e8bcb49b0faa1f99129dcd8cc72d6d6aca2b34b9ab4"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 241914,
-      "sha256": "88ea07c0ac189180931e0eddcca6ec4d3a36f5319e82d15c15522750217ed832"
+      "bytes": 243174,
+      "sha256": "0c1e7af5aaed9e8bb3f996947d488c0e9e6354c96679af1d6b83197680d9fd0b"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7205,8 +7205,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 5788,
-      "sha256": "72e00c4a1b7555284468f58d33142bcd17194f22f3f11aaa06c1a5574cce21dd"
+      "bytes": 7104,
+      "sha256": "32d2ea350d7ecfb3e24860fd069f67a714a4df12d513638a1823b458b605c7b7"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -7505,8 +7505,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 290501,
-      "sha256": "3418f10c5028b815aab9ddd23007f1a309b46099469d423feca67b75e7c3f203"
+      "bytes": 291359,
+      "sha256": "adabe311d0ab93dbb0f917fdd6fd24bf6de8d8d6fc68d87921f4f8a5b0743a0a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -12295,8 +12295,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 11630,
-      "sha256": "662d5757930612c01f478120daa28c526e9c1782ebf820f822c3df317cedb50b"
+      "bytes": 13291,
+      "sha256": "0683e9757f7a597a35db3b469852537d895faebcf97ea55627e99b17ee39ee53"
     },
     {
       "path": "tools/export_lrk_reference.py",
@@ -12412,6 +12412,16 @@
       "path": "frontend/src/public/rpmSteps.ts",
       "bytes": 1794,
       "sha256": "9a6ac0d111381baae886106e94d73c846d624522057233823d24c74bf6c813ca"
+    },
+    {
+      "path": "frontend/scripts/test-example-layouts.mjs",
+      "bytes": 1998,
+      "sha256": "7799fa3e44a2116e2ebb3157e887e82a089d79d059071e6181a7de10fc4b907a"
+    },
+    {
+      "path": "frontend/src/public/examples/drone_outrunner_36s40p_b.coilem",
+      "bytes": 8169,
+      "sha256": "67e536f0d713ed4d8043bf90ab32c0c5aa944b5baf025d69dd0f2da6eed308ec"
     }
   ],
   "public_patches": [

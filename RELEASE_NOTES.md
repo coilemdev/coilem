@@ -18,6 +18,12 @@
   side of the tooth body. Most real outrunners have them. The Benchmarks menu
   adds one: a published 36-slot / 40-pole robot-joint outrunner, with its
   measured back-EMF and torque in its description.
+- **A second published outrunner.** The Benchmarks menu adds Model B of the
+  36-slot / 40-pole drone outrunners in Koo & Shin, *Energies* 19(16):3845 (2026).
+  Its measured back-EMF and torque are in the design's description; coilEM lands
+  within about 4% of both, as close as the authors' own 2D FEM.
+- **Examples by rotor layout.** The Examples menu lists inrunners and outrunners
+  side by side in each group.
 - **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
   band (radial thickness up to half its outer radius) opens zoomed on the top of
   the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
