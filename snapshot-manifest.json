@@ -60,8 +60,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 2869,
-      "sha256": "20231e855e56c12f0280c2dcefe57c71af76452255800ebe37b2fc3f05904b2e"
+      "bytes": 2874,
+      "sha256": "4a4293998b3534a419f190acdfea8ef079305e925445b2867c9bb25f3dd6d665"
     },
     {
       "path": "README.md",
@@ -7950,8 +7950,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 20436,
-      "sha256": "89d749111133f686f0f218959a62cdca612f9988e997566c7c69d5f1298bf04a"
+      "bytes": 20697,
+      "sha256": "7553a118177cbc5c4a7883bd56b83238cab6250344d3b44c3483e2268ac9b8fe"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -12265,8 +12265,8 @@
     },
     {
       "path": "benchmarks/v0.5.1/candidate-plan.json",
-      "bytes": 9961,
-      "sha256": "9f5189e775b0ec47a73fd46f293da293f3f905c5733fd538e7a3465c7b48abb0"
+      "bytes": 9973,
+      "sha256": "2cc26b99656b13a963ba33164ee0fce073ea3c53e2f340a84c54fcd29a72741a"
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/fresh-femm-provenance.json",
@@ -12285,8 +12285,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_1.md",
-      "bytes": 6231,
-      "sha256": "83da474ffcda5722a19054ce0928763eb6fb31117e98f3971e334e83c8c7aa4b"
+      "bytes": 6394,
+      "sha256": "ecc26e8de87601251a49240c88488dd0f106cf9f9b9b023075d706bda3c1511c"
     },
     {
       "path": "benchmarks/qualification-a4f9f4dccf2b/macos-arm64/carry-receipt.json",

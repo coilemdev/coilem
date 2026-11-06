@@ -41,7 +41,7 @@ gate for this approved scope.
 The versioned code candidate `923de5f` passed all 41 active PR checks, including
 four-platform wheel builds and 21 installed-package acceptance checks. The
 qualification publication commit receives its own CI and packaging checks.
-The preparation freeze advances to `freeze/v0.5.1-rc3`; rc1 and rc2 remain
+The preparation freeze advances to `freeze/v0.5.1-rc4`; rc1, rc2 and rc3 remain
 immutable. The final matching `v0.5.1` tag uses the protected publication
 workflow, including its `pypi` environment approval.
 

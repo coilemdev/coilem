@@ -1,6 +1,6 @@
 {
   "schema": "coilem.release_candidate_plan/v1",
-  "candidate_ref": "refs/tags/freeze/v0.5.1-rc3",
+  "candidate_ref": "refs/tags/freeze/v0.5.1-rc4",
   "application_version": "0.5.1",
   "solver_version": "0.4.0",
   "prepared_on": "2026-11-06",
@@ -87,9 +87,9 @@
     "Pass CI and wheel checks on the qualification publication commit",
     "Merge the prepared release PR and run protected v0.5.1 publication workflow"
   ],
-  "previous_candidate_ref": "refs/tags/freeze/v0.5.1-rc2",
-  "previous_candidate_commit": "923de5f00de1f7ecaa4afb5318fc7ac8f37cec1c",
-  "supersedes_reason": "Publish source-matched platform/Prius qualification and the owner's explicit release decisions; numerical source and measured artifacts unchanged.",
+  "previous_candidate_ref": "refs/tags/freeze/v0.5.1-rc3",
+  "previous_candidate_commit": "856f318b246220a19f3a2788f7ec7e5d651d23aa",
+  "supersedes_reason": "Pin the historical cogging guard assertion to preserved v0.5.0 records and verify accepted current-record compatibility. No numerical or measured-data change.",
   "version_metadata_files": {
     "backend/__init__.py": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191",
     "frontend/package.json": "95f77636ad7140bf8dca88a5da202f9c678d62eb62be96732580c7fb81d05b54",

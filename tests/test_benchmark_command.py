@@ -259,8 +259,12 @@ def test_cogging_is_guarded_and_missing_or_changed_hashes_are_not_comparable(mon
     changed = copy.deepcopy(synthetic)
     changed["physics_files"][name] = "0" * 64
     assert record.check_physics(changed)["differs"] == [name]
-    # Do not patch a published record to make a source addition match.
-    assert name in record.check_physics(read(REPO_ROOT / "benchmarks/records/windows-x86_64.json"))["differs"]
+    # The old measured cohort stays incompatible; a later accepted collection
+    # can match without rewriting that historical record's physics hashes.
+    historical = read(REPO_ROOT / "benchmarks/records-historical/v050/windows-x86_64.json")
+    assert name in record.check_physics(historical)["differs"]
+    current = read(REPO_ROOT / "benchmarks/records/windows-x86_64.json")
+    assert record.check_physics(current)["status"] == "MATCH"
 
 
 @pytest.mark.parametrize(
