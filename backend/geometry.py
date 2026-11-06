@@ -353,6 +353,10 @@ def _validate_outer_rotor_geometry(config: MotorConfig) -> list[ErrorResponse]:
     elif slot_body_pitch_mm(config) - stator.tooth_width_mm < 0.3:
         fail(f"Tooth width {stator.tooth_width_mm:g}mm leaves no slot at the slot bottom "
              f"({slot_body_pitch_mm(config):.2f}mm pitch)", "stator.tooth_width_mm", "Reduce tooth_width_mm or the slot count")
+    elif stator.tooth_shoe_enabled and stator.tooth_shoe_height_mm > slot_depth - 0.5:
+        fail(f"The {stator.tooth_shoe_height_mm:g}mm tooth shoe leaves {slot_depth - stator.tooth_shoe_height_mm:.2f}mm "
+             f"of the {slot_depth:.2f}mm slot for the winding", "stator.tooth_shoe_height_mm",
+             f"Use a shoe of at most {max(0.0, slot_depth - 0.5):.2f}mm or deepen the slots")
     # The slot opens at the air gap, the stator OD. A wider opening than the slot
     # pitch there would be clamped by the drawer, so the preview and the solve
     # would show a different motor from the saved input.

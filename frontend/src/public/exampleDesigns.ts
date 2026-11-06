@@ -5,6 +5,7 @@ import ornlPrius2004HoleM50 from './examples/ornl_prius_2004_holem50.coilem?raw'
 import spm24pSmall from './examples/validation_spm_24p_small.openem?raw';
 import rotatingField6p36s from './examples/rotating_field_6p36s.coilem?raw';
 import spmOutrunner14p12s from './examples/spm_outrunner_14p12s.coilem?raw';
+import jointOutrunner36s40p from './examples/joint_outrunner_36s40p.coilem?raw';
 
 import priusTutorial from './examples/prius-2004-tutorial-bemf-v1.coilem?raw';
 import priusLoaded from './examples/prius-2004-loaded-torque-v1.coilem?raw';
@@ -25,6 +26,7 @@ export type PublicExampleId =
   | 'spm-24p-small'
   | 'ornl-prius-2004-holem50'
   | 'honda-accord-2005'
+  | 'joint-outrunner-36s40p'
   | 'lrk-12s14p-six-step'
   | 'lrk-12s14p-fixed-current-v1';
 
@@ -70,6 +72,12 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
     detail: 'ORNL hardware data · tooth coils',
     benchmark: true,
   },
+  {
+    id: 'joint-outrunner-36s40p',
+    label: 'Robot-joint outrunner 40p / 36s',
+    detail: 'Published hardware data · outer rotor · tooth shoes',
+    benchmark: true,
+  },
   { id: 'lrk-12s14p-six-step', label: 'LRK outrunner 14p / 12s', detail: 'Outer rotor · six-step 4 A · software reference', pendingDataRights: true },
   {
     id: 'lrk-12s14p-fixed-current-v1',
@@ -104,6 +112,7 @@ const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, strin
   'spm-24p-small': spm24pSmall,
   'ornl-prius-2004-holem50': ornlPrius2004HoleM50,
   'honda-accord-2005': hondaAccord2005,
+  'joint-outrunner-36s40p': jointOutrunner36s40p,
   'lrk-12s14p-six-step': lrkSixStep,
   'lrk-12s14p-fixed-current-v1': lrkFixedCurrent,
 };
