@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 12777,
-      "sha256": "0a3908d7f2680b13397ea6d8e05eb43dcbabfcf06c619be69596e31551df14da"
+      "bytes": 13159,
+      "sha256": "866aa58396c8659beb8900cff81f70f162b062b32b4d577842f581d0b157974a"
     },
     {
       "path": "SECURITY.md",
@@ -6595,13 +6595,13 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163892,
-      "sha256": "a3fd314e8d0f4a9f0d989e8bcb49b0faa1f99129dcd8cc72d6d6aca2b34b9ab4"
+      "bytes": 164729,
+      "sha256": "ca7dbe0ece0f7ac5bf530d886d9b943c53aafe1b4121c758f2538301af228ece"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
-      "bytes": 6119,
-      "sha256": "3be2fd8ad488bafda2a21f00bff1406d7e03bdde2d4c448c21f40f6ce1a6bad2"
+      "bytes": 8372,
+      "sha256": "5dc9644f824fee6a28d660099e5ed3cd5b520f5bd8d9129e42663d75dc00cd8b"
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 243174,
-      "sha256": "0c1e7af5aaed9e8bb3f996947d488c0e9e6354c96679af1d6b83197680d9fd0b"
+      "bytes": 244706,
+      "sha256": "2a7c1351fd97cad7cec78dafba7031bb84cac18dfd748ae65948ae51ba30044b"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 10597,
-      "sha256": "2bcb1dfcd914cbf24aaf94e7870e2c098ebc22ec8a686f29ab0de3858e5e40d0"
+      "bytes": 11990,
+      "sha256": "98dbf04684ead9548de0e8bbd9b49480df749eb32f56659deffe0834cde78d7f"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7120,8 +7120,8 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 10876,
-      "sha256": "039816809a55e83e3a8ec18f4c974d82ce05144d41299e6f747b751169881fd5"
+      "bytes": 11208,
+      "sha256": "b495caf8f564795b037b667735a48f24a25115738123e284bcd2114b743efdf6"
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
@@ -7490,8 +7490,8 @@
     },
     {
       "path": "frontend/src/public/resultMetrics.ts",
-      "bytes": 7323,
-      "sha256": "1801ba7639820b750d0d7b461ce64912ae6fddda1b0ad09e1b1d787e88e6c452"
+      "bytes": 11367,
+      "sha256": "176d408fca727838f307c8ccf1a554da6280bfa4c864d3c704065802646ab530"
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
@@ -7505,8 +7505,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 291359,
-      "sha256": "adabe311d0ab93dbb0f917fdd6fd24bf6de8d8d6fc68d87921f4f8a5b0743a0a"
+      "bytes": 292597,
+      "sha256": "cd233876e6daf91cbe426c0e4846e4071e71a82b2ca0936fb4e22fa223c83c57"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

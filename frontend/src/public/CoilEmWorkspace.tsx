@@ -47,7 +47,7 @@ import {
 } from './MaterialWorkspace';
 import { PublicMotor3D } from './PublicMotor3D';
 import { SolvedFieldViewer } from './SolvedFieldViewer';
-import { WaveformChart } from './WaveformChart';
+import { WaveformChart, type WaveformSeries } from './WaveformChart';
 import { WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
 import { createFieldPositionLink, type FieldPositionLink } from './fieldPositionLink';
 import {
@@ -103,7 +103,7 @@ import { LessonProgressStepper } from '../components/tutorials/LessonProgressSte
 import { designErrorSection } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
-import { solvedPhaseCurrent, torqueRippleView } from './resultMetrics';
+import { formatVolts, solvedPhaseCurrent, torqueRippleView, waveformMeasure, type WaveformMeasure } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -357,6 +357,12 @@ function resultUsesSixStep(result: SolveResult, config?: MotorConfig): boolean {
   return result.solve_metadata.excitation_mode === 'ideal_six_step_120'
     || config?.solve_params.excitation_mode === 'ideal_six_step_120';
 }
+
+const BACK_EMF_MEASURES: ReadonlyArray<{ measure: WaveformMeasure; label: string; title: string }> = [
+  { measure: 'rms', label: 'RMS', title: "Each trace's fundamental, rms: the Back EMF headline's convention" },
+  { measure: 'peak', label: 'Peak', title: "Each trace's largest magnitude, harmonics included: what papers and datasheets often quote" },
+  { measure: 'pk-pk', label: 'Pk-pk', title: "Each trace's max − min: what a scope reads" },
+];
 
 function lineBackEmf(result: SolveResult): { ab: number[]; bc: number[]; ca: number[] } {
   const waveform = result.back_emf_waveform;
@@ -4200,6 +4206,8 @@ function ReportStage({
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
+  // Which size each Back EMF trace's legend reads: papers quote a peak, scopes a peak-to-peak.
+  const [backEmfMeasure, setBackEmfMeasure] = useState<WaveformMeasure>('rms');
   const [exportState, setExportState] = useState<{
     action: string;
     tone: 'working' | 'success' | 'error';
@@ -4229,6 +4237,10 @@ function ReportStage({
   const reportQualification = readQualification(result.qualification);
   const completeLoadedCycle = result.solve_metadata.loaded_cycle_complete === true;
   const backEmfLine = lineBackEmf(result);
+  const backEmfSeries = (series: WaveformSeries[]): WaveformSeries[] => series.map((item) => {
+    const value = waveformMeasure(result.back_emf_waveform.electrical_angle_deg, item.values, backEmfMeasure);
+    return value === null ? item : { ...item, legendValue: `${formatVolts(value)} V ${backEmfMeasure}` };
+  });
   const resultUsesElmer = result.solve_metadata.solver_name.toLowerCase().startsWith('elmer');
   const reportSolverLabel = resultUsesElmer ? 'Elmer FEM' : 'Magneto2D';
   const reportThdLabel = result.back_emf_harmonic_analysis
@@ -4400,10 +4412,17 @@ function ReportStage({
         ? <><BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg} cycleComplete={completeLoadedCycle} /><IdealSixStepCommand /></>
         : activePlot === 'torque' && <WaveformChart angles={result.torque_waveform.electrical_angle_deg} values={result.torque_waveform.torque_Nm} label="Torque waveform" unit="N·m" />}
       {activePlot === 'back-emf' && <>
-        <div className="public-back-emf-view" role="group" aria-label="Back EMF voltage reference"><button type="button" className={backEmfView === 'phase-neutral' ? 'active' : ''} aria-pressed={backEmfView === 'phase-neutral'} onClick={() => setBackEmfView('phase-neutral')}>Phase-neutral</button><button type="button" className={backEmfView === 'line-line' ? 'active' : ''} aria-pressed={backEmfView === 'line-line'} onClick={() => setBackEmfView('line-line')}>Line-line</button></div>
+        <div className="public-back-emf-controls">
+          <div className="public-back-emf-view" role="group" aria-label="Back EMF voltage reference"><button type="button" className={backEmfView === 'phase-neutral' ? 'active' : ''} aria-pressed={backEmfView === 'phase-neutral'} onClick={() => setBackEmfView('phase-neutral')}>Phase-neutral</button><button type="button" className={backEmfView === 'line-line' ? 'active' : ''} aria-pressed={backEmfView === 'line-line'} onClick={() => setBackEmfView('line-line')}>Line-line</button></div>
+          <div className="public-back-emf-view" role="group" aria-label="Back EMF reading">
+            {BACK_EMF_MEASURES.map(({ measure, label, title }) => (
+              <button type="button" key={measure} className={backEmfMeasure === measure ? 'active' : ''} aria-pressed={backEmfMeasure === measure} title={title} onClick={() => setBackEmfMeasure(measure)}>{label}</button>
+            ))}
+          </div>
+        </div>
         {backEmfView === 'phase-neutral'
-          ? <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Phase A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'Phase B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'Phase C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} label="Back EMF · phase-neutral" unit="V" />
-          : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }]} label="Back EMF · line-line" unit="V" />}
+          ? <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={backEmfSeries([{ label: 'Phase A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'Phase B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'Phase C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }])} label="Back EMF · phase-neutral" unit="V" />
+          : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={backEmfSeries([{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }])} label="Back EMF · line-line" unit="V" />}
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} />}
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}

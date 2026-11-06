@@ -214,7 +214,9 @@ h1, h2, h3, p { margin-top: 0; }
 .public-waveform-data table { width: 100%; min-width: 660px; border-collapse: collapse; font: 9px var(--font-mono); }
 .public-waveform-data th, .public-waveform-data td { padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); text-align: right; white-space: nowrap; }
 .public-waveform-data th:first-child, .public-waveform-data td:first-child, .public-waveform-data th:nth-child(2), .public-waveform-data td:nth-child(2), .public-waveform-data th:nth-child(3), .public-waveform-data td:nth-child(3) { text-align: left; }
-.public-back-emf-view { display: flex; width: max-content; gap: 4px; max-width: 1080px; margin: 14px auto -10px; padding: 4px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--bg-surface-1); }
+/* The voltage reference (phase-neutral or line-line) and the legend's reading (rms, peak or pk-pk), side by side. */
+.public-back-emf-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1080px; margin: 14px auto -10px; }
+.public-back-emf-view { display: flex; width: max-content; gap: 4px; padding: 4px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--bg-surface-1); }
 .public-back-emf-view button { min-height: 30px; padding: 0 12px; border: 0; border-radius: 5px; color: var(--text-muted); background: transparent; font-size: 10px; }
 .public-back-emf-view button.active { color: var(--text-accent); background: rgba(245,158,11,.1); }
 .public-six-step-command { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(0, 1.4fr); gap: 20px; max-width: 1080px; margin: 12px auto 0; padding: 16px; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-surface-1); }
@@ -229,7 +231,7 @@ h1, h2, h3, p { margin-top: 0; }
 @media (max-width: 760px) {
   .public-excitation-selector, .public-six-step-command { grid-template-columns: 1fr; }
   .public-six-step-command ol { grid-template-columns: 1fr; }
-  .public-back-emf-view { margin-left: 0; }
+  .public-back-emf-controls { justify-content: flex-start; }
 }
 
 /* Public shell parity: use the same amber/charcoal visual language as coilEM
@@ -1661,6 +1663,12 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-result-emf svg .phase-a { stroke: #f87171; }
 .public-result-emf svg .phase-b { stroke: #4ade80; }
 .public-result-emf svg .phase-c { stroke: #60a5fa; }
+/* The Back EMF card's readings: phase and line-to-line as rms, peak and pk-pk. */
+.public-result-emf .public-emf-readings { width: 100%; margin-top: 8px; border-collapse: collapse; font: 10.5px var(--font-mono); font-variant-numeric: tabular-nums; }
+.public-result-emf .public-emf-readings th, .public-result-emf .public-emf-readings td { padding: 3px 6px; border-top: 1px solid var(--border-subtle); text-align: right; white-space: nowrap; }
+.public-result-emf .public-emf-readings thead th { border-top: 0; color: var(--text-muted); font-size: 8.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.public-result-emf .public-emf-readings tbody th { padding-left: 0; color: var(--text-muted); font-weight: 600; text-align: left; }
+.public-result-emf .public-emf-readings td { color: var(--text-primary); }
 .public-result-detail { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 /* Losses run full width under the three compact cards. */
 .public-result-detail > .losses-card { grid-column: 1 / -1; }
@@ -1711,6 +1719,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-waveform-legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0 0; color: var(--text-muted); font-size: 10px; }
 .public-waveform-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .public-waveform-legend i { width: 14px; height: 3px; border-radius: 99px; }
+.public-waveform-legend .public-waveform-legend-value { margin-left: 2px; color: var(--text-secondary); font: 600 10px var(--font-mono); font-variant-numeric: tabular-nums; }
 .public-waveform-legend button { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 4px 9px; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-muted); background: transparent; font: inherit; cursor: pointer; transition: border-color .15s ease, color .15s ease, background .15s ease, opacity .15s ease; }
 .public-waveform-legend button:hover:not(:disabled) { border-color: var(--border-strong); color: var(--text-secondary); background: var(--bg-surface-2); }
 .public-waveform-legend button[aria-pressed="true"] { border-color: var(--border-default); color: var(--text-secondary); background: var(--bg-surface-2); }
