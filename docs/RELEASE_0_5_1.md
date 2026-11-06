@@ -7,13 +7,13 @@ the user-visible changes since the published v0.5.0.
 
 ## Candidate identity
 
-The non-publishing annotated tag `freeze/v0.5.1-rc1` pins the clean prepared
+The non-publishing annotated tag `freeze/v0.5.1-rc2` pins the clean prepared
 commit and its tree. Resolve the full identities with:
 
 ```sh
-git rev-parse 'freeze/v0.5.1-rc1^{commit}'
-git rev-parse 'freeze/v0.5.1-rc1^{tree}'
-git show --no-patch freeze/v0.5.1-rc1
+git rev-parse 'freeze/v0.5.1-rc2^{commit}'
+git rev-parse 'freeze/v0.5.1-rc2^{tree}'
+git show --no-patch freeze/v0.5.1-rc2
 ```
 
 The [candidate plan](../benchmarks/v0.5.1/candidate-plan.json) records the
@@ -22,6 +22,12 @@ gates. The freeze receipt belongs in the tag and external release evidence,
 so the source does not attempt to contain its own commit hash. Keep this tag
 immutable. Any later source or version change requires a new candidate ref
 and rechecking the affected release gates.
+
+The original `freeze/v0.5.1-rc1` remains at `dff4e12`. Its four-platform
+wheel rehearsal passed, but runtime CI found a test pinned to 0.5.0 and the
+saved-design export stamp still at 0.5.0. Candidate rc2 aligns that stamp with
+0.5.1 and checks the current application version across metadata and docs.
+Numerical source, requests, gates and measured evidence are unchanged.
 
 The measured development source is
 `a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f`, the #190 integration merge.

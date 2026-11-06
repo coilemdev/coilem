@@ -2,7 +2,7 @@
 
 Updated November 6, 2026: the source candidate is **coilEM 0.5.1 Developer
 Preview**, with **Magneto2D 0.4.0**. The app/frontend versions are bumped
-before the preparation freeze `freeze/v0.5.1-rc1`. **Release qualification
+before the preparation freeze `freeze/v0.5.1-rc2`. **Release qualification
 and publication remain pending.** The [release plan](docs/RELEASE_0_5_1.md)
 and [candidate plan](benchmarks/v0.5.1/candidate-plan.json) track identities
 and remaining gates. Version 0.5.0 was published on November 3, 2026.

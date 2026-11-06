@@ -1,6 +1,6 @@
 {
   "schema": "coilem.release_candidate_plan/v1",
-  "candidate_ref": "refs/tags/freeze/v0.5.1-rc1",
+  "candidate_ref": "refs/tags/freeze/v0.5.1-rc2",
   "application_version": "0.5.1",
   "solver_version": "0.4.0",
   "prepared_on": "2026-11-06",
@@ -90,5 +90,14 @@
     "Complete Phase E registration/default-command coverage without changing gates",
     "Run final release qualification and four-target installed-wheel/browser acceptance",
     "Owner release acceptance before the v0.5.1 publication tag"
-  ]
+  ],
+  "previous_candidate_ref": "refs/tags/freeze/v0.5.1-rc1",
+  "previous_candidate_commit": "dff4e12139171e750b040351e275ed46988615ff",
+  "supersedes_reason": "Align the saved-design application version with 0.5.1 and make version-alignment tests follow the running application version.",
+  "version_metadata_files": {
+    "backend/__init__.py": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191",
+    "frontend/package.json": "95f77636ad7140bf8dca88a5da202f9c678d62eb62be96732580c7fb81d05b54",
+    "frontend/package-lock.json": "e45e57b54166cc438f9d880bc856ba1e0ad6740c048c6c9006f0b8d93068e318",
+    "frontend/src/public/designFile.ts": "bd5c309a65323c3ae19b6c5203334d7a3be3091b0e397e61ab488fc548ca5696"
+  }
 }

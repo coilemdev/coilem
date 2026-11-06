@@ -61,7 +61,7 @@
     {
       "path": "PUBLICATION_STATUS.md",
       "bytes": 3295,
-      "sha256": "65078bc1acf44311c872a5e13b114c11a720de3e45565ebe9735ce0306eb6359"
+      "sha256": "b76b060a968276c29006cbf09b44c6d821fc9711825a1b01578ea7afd14c7079"
     },
     {
       "path": "README.md",
@@ -7181,7 +7181,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 15225,
-      "sha256": "93f7146e03e4be7710e38c01dd05e602f0c508b93db7df9c101b8b00f62312bb"
+      "sha256": "bd5c309a65323c3ae19b6c5203334d7a3be3091b0e397e61ab488fc548ca5696"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -8210,8 +8210,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20410,
-      "sha256": "bf6d19e482656c861f24125f72bbe175c5db121ec719d3c47069df8f0d22a0b4"
+      "bytes": 20440,
+      "sha256": "4529f161f5a6632ad6c8553863c65daf02ff62038489a339fadf2699745221d7"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -12265,8 +12265,8 @@
     },
     {
       "path": "benchmarks/v0.5.1/candidate-plan.json",
-      "bytes": 8900,
-      "sha256": "ff3eb877923fe27cc57797fbce541db501ac48d713a099442ebbe01d2766adaf"
+      "bytes": 9624,
+      "sha256": "045fd4e004449e23d51ecfcca9fd43177dfcebcf2f1fb98bb3ca2fab070ab078"
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/fresh-femm-provenance.json",
@@ -12285,8 +12285,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_1.md",
-      "bytes": 4655,
-      "sha256": "aa7778679e9eef3dd48b2942f732c8d762bc02d1c41b77cb17e4a5fe50991a92"
+      "bytes": 5030,
+      "sha256": "40a3352df118216588cd5b865ad1cef88a49f1f5da19ea739fe66a269cae1956"
     }
   ],
   "public_patches": [
