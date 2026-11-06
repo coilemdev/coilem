@@ -555,8 +555,8 @@ function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.Ca
 }
 
 export function PublicMotor3D(props: PublicMotor3DProps) {
-  // The parametric build draws an inner rotor; references and outer rotors extrude their preview regions.
-  return props.config.geometry_reference || props.config.rotor_layout === 'outer'
+  // The parametric build draws inner and outer rotors; published references extrude their preview regions.
+  return props.config.geometry_reference
     ? <ReferenceMotor3D {...props} /> : <ParametricMotor3D {...props} />;
 }
 
@@ -656,11 +656,30 @@ function ParametricMotor3D({
     let pointerDownPosition: [number, number] = [0, 0];
     let selectionHelper: THREE.BoxHelper | null = null;
 
-    const outerRadius = config.stator.OD_mm / 2;
-    const statorInnerRadius = config.stator.ID_mm / 2;
-    const yokeInnerRadius = Math.max(statorInnerRadius + 2, outerRadius - config.stator.yoke_thickness_mm);
+    // An outer rotor turns the machine inside out: the stator's yoke sits on its
+    // hub with the teeth pointing out to the air gap at its OD, and the rotor is
+    // a ring round it with the magnets on its inner face. Radii are named by role
+    // so one build serves both; an inner rotor's values are the ones it always had.
+    const outerRotor = config.rotor_layout === 'outer';
+    // The machine's overall radius: the stator OD, or an outer rotor's OD.
+    const outerRadius = outerRotor ? config.rotor.OD_mm / 2 : config.stator.OD_mm / 2;
+    // Where the teeth meet the air gap (the bore of an inner-rotor stator).
+    const statorInnerRadius = outerRotor ? config.stator.OD_mm / 2 : config.stator.ID_mm / 2;
+    // Where the teeth meet the yoke.
+    const yokeInnerRadius = outerRotor
+      ? Math.min(statorInnerRadius - 2, config.stator.ID_mm / 2 + config.stator.yoke_thickness_mm)
+      : Math.max(statorInnerRadius + 2, outerRadius - config.stator.yoke_thickness_mm);
+    // The yoke's far face: the stator OD, or an outer-rotor stator's hub bore.
+    const yokeOuterRadius = outerRotor ? config.stator.ID_mm / 2 : outerRadius;
     const rotorRadius = config.rotor.OD_mm / 2;
-    const shaftRadius = Math.max(outerRadius * 0.055, (config.rotor.ID_mm || outerRadius * 0.12) / 2);
+    // An outer rotor's magnets sit on its inner face, the rotor ID.
+    // (An outer rotor always has an ID; the schema requires it.)
+    const magnetSeatRadius = outerRotor ? (config.rotor.ID_mm ?? 0) / 2 : rotorRadius;
+    // An outer rotor's shaft runs through the stator hub. Size it off the machine,
+    // not the hub bore: a drone motor's hub can be most of its stator.
+    const shaftRadius = outerRotor
+      ? Math.min(yokeOuterRadius * 0.42, Math.max(0.6, outerRadius * 0.08))
+      : Math.max(outerRadius * 0.055, (config.rotor.ID_mm || outerRadius * 0.12) / 2);
     const stackDepth = Math.max(8, config.stator.stack_length_mm);
     const coilDepth = stackDepth * 0.82;
     // Housing proportions. Both parts are illustrative, so every number here is
@@ -956,7 +975,10 @@ function ParametricMotor3D({
     const statorGroup = new THREE.Group();
     const teethGroup = new THREE.Group();
     const windingsGroup = new THREE.Group();
-    const yokeGeometry = extrude(ringShape(outerRadius, yokeInnerRadius), stackDepth);
+    const yokeGeometry = extrude(
+      ringShape(Math.max(yokeOuterRadius, yokeInnerRadius), Math.min(yokeOuterRadius, yokeInnerRadius)),
+      stackDepth,
+    );
     geometries.push(yokeGeometry);
     const yoke = new THREE.Mesh(yokeGeometry, materials.stator);
     makeSelectable(yoke, { id: '3d-stator-yoke', kind: 'stator', label: 'Stator yoke', role: 'Stationary magnetic flux path' });
@@ -978,10 +1000,12 @@ function ParametricMotor3D({
     let toothShape: THREE.Shape;
     if (config.stator.tooth_shoe_enabled) {
       const shoeHeight = Math.max(0.5, config.stator.tooth_shoe_height_mm ?? 1.5);
-      const shoulderRadius = Math.min(
-        statorInnerRadius + shoeHeight,
-        yokeInnerRadius - 1e-4,
-      );
+      const shoulderRadius = outerRotor
+        ? Math.max(statorInnerRadius - shoeHeight, yokeInnerRadius + 1e-4)
+        : Math.min(
+          statorInnerRadius + shoeHeight,
+          yokeInnerRadius - 1e-4,
+        );
       const shoeOverhang = Math.max(0, config.stator.tooth_shoe_overhang_mm ?? 0);
       const bodyToothWidthAtBore = Math.max(
         0,
@@ -1026,16 +1050,28 @@ function ParametricMotor3D({
     const toothGeometry = extrude(toothShape, stackDepth);
     geometries.push(toothGeometry);
 
+    // The coil builder winds from the tooth's inner radius out; an outer
+    // stator's tooth runs from the yoke out to the shoe, so its ends swap.
     const concentratedCoil = config.winding.type === 'concentrated'
-      ? buildConcentratedCoil({
-          boreRadius: coilBoreRadius,
-          yokeInnerRadius,
-          toothHalfAngleInnerRad: coilToothHalfInner,
-          toothHalfAngleOuterRad: toothHalfOuter,
-          slotPitchRad: slotPitch,
-          stackLength: stackDepth,
-          turnsPerCoil: config.winding.turns_per_coil,
-        })
+      ? buildConcentratedCoil(outerRotor
+        ? {
+            boreRadius: yokeInnerRadius,
+            yokeInnerRadius: coilBoreRadius,
+            toothHalfAngleInnerRad: toothHalfOuter,
+            toothHalfAngleOuterRad: coilToothHalfInner,
+            slotPitchRad: slotPitch,
+            stackLength: stackDepth,
+            turnsPerCoil: config.winding.turns_per_coil,
+          }
+        : {
+            boreRadius: coilBoreRadius,
+            yokeInnerRadius,
+            toothHalfAngleInnerRad: coilToothHalfInner,
+            toothHalfAngleOuterRad: toothHalfOuter,
+            slotPitchRad: slotPitch,
+            stackLength: stackDepth,
+            turnsPerCoil: config.winding.turns_per_coil,
+          })
       : null;
     let coilModelNote = '';
     if (concentratedCoil) {
@@ -1096,7 +1132,9 @@ function ParametricMotor3D({
       } else {
         const coilHalfSpan = Math.max(0.04, slotPitch * 0.18);
         const coilGeometry = extrude(
-          sectorShape(statorInnerRadius + 1.2, Math.max(statorInnerRadius + 2, yokeInnerRadius - 1), coilHalfSpan),
+          outerRotor
+            ? sectorShape(Math.min(statorInnerRadius - 2, yokeInnerRadius + 1), statorInnerRadius - 1.2, coilHalfSpan)
+            : sectorShape(statorInnerRadius + 1.2, Math.max(statorInnerRadius + 2, yokeInnerRadius - 1), coilHalfSpan),
           coilDepth,
         );
         geometries.push(coilGeometry);
@@ -1124,8 +1162,9 @@ function ParametricMotor3D({
         stackHalf: stackDepth / 2,
         axialOverhang: concentratedCoil.axialOverhang,
         wireRadius: concentratedCoil.wireRadius,
-        yokeInnerRadius,
-        outerRadius,
+        yokeInnerRadius: outerRotor ? yokeOuterRadius : yokeInnerRadius,
+        outerRadius: outerRotor ? yokeInnerRadius : outerRadius,
+        blockScale: outerRotor ? THREE.MathUtils.clamp(statorInnerRadius / 40, 0.25, 1) : 1,
       });
       harnessGroup = new THREE.Group();
       (['A', 'B', 'C'] as const).forEach((phase) => {
@@ -1194,13 +1233,22 @@ function ParametricMotor3D({
     rotorCoreGroup.add(pocketsGroup);
     rotorGroup.add(rotorCoreGroup, magnetsGroup, shaftGroup);
     rotorRef.current = rotorGroup;
-    const coreGeometry = new THREE.CylinderGeometry(rotorRadius, rotorRadius, stackDepth, 96);
-    coreGeometry.rotateX(Math.PI / 2);
-    geometries.push(coreGeometry);
-    // Material array: CylinderGeometry groups are side, top cap, bottom cap.
-    // Only the caps carry the grid so the spin reads on the end faces while
-    // the side keeps the plain (and for IPM, translucent) lamination finish.
-    const core = new THREE.Mesh(coreGeometry, [materials.rotor, materials.rotorFace, materials.rotorFace]);
+    let core: THREE.Mesh;
+    if (outerRotor) {
+      // The back-iron ring round the stator. Extrude groups are the end faces
+      // then the sides, so the grid again sits only on the end faces.
+      const coreGeometry = annulusGeometry(magnetSeatRadius, rotorRadius, stackDepth);
+      geometries.push(coreGeometry);
+      core = new THREE.Mesh(coreGeometry, [materials.rotorFace, materials.rotor]);
+    } else {
+      const coreGeometry = new THREE.CylinderGeometry(rotorRadius, rotorRadius, stackDepth, 96);
+      coreGeometry.rotateX(Math.PI / 2);
+      geometries.push(coreGeometry);
+      // Material array: CylinderGeometry groups are side, top cap, bottom cap.
+      // Only the caps carry the grid so the spin reads on the end faces while
+      // the side keeps the plain (and for IPM, translucent) lamination finish.
+      core = new THREE.Mesh(coreGeometry, [materials.rotor, materials.rotorFace, materials.rotorFace]);
+    }
     makeSelectable(core, { id: '3d-rotor-core', kind: 'rotor', label: 'Rotor core', role: 'Rotating magnetic flux path' });
     addEdges(core);
     rotorCoreGroup.add(core);
@@ -1248,16 +1296,21 @@ function ParametricMotor3D({
 
     const polePitch = (Math.PI * 2) / Math.max(1, config.rotor.pole_count);
     if (config.topology === 'SPM') {
-      const magnetInnerRadius = rotorRadius;
-      const magnetOuterRadius = rotorRadius + config.rotor.magnet_thickness_mm;
+      const magnetInnerRadius = outerRotor ? magnetSeatRadius - config.rotor.magnet_thickness_mm : rotorRadius;
+      const magnetOuterRadius = outerRotor ? magnetSeatRadius : rotorRadius + config.rotor.magnet_thickness_mm;
       const magnetSplitRadius = (magnetInnerRadius + magnetOuterRadius) / 2;
       const magnetHalfSpan = Math.max(0.04, polePitch * Math.min(1, magnetPoleCoverage(config)) / 2);
+      // The air-gap half faces the stator: outside on an inner rotor, inside on an outer one.
       const airgapHalfGeometry = extrude(
-        sectorShape(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan),
+        outerRotor
+          ? sectorShape(magnetInnerRadius, magnetSplitRadius, magnetHalfSpan)
+          : sectorShape(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan),
         stackDepth * 0.91,
       );
       const rotorHalfGeometry = extrude(
-        sectorShape(magnetInnerRadius, magnetSplitRadius, magnetHalfSpan),
+        outerRotor
+          ? sectorShape(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan)
+          : sectorShape(magnetInnerRadius, magnetSplitRadius, magnetHalfSpan),
         stackDepth * 0.91,
       );
       geometries.push(airgapHalfGeometry, rotorHalfGeometry);
@@ -1284,7 +1337,7 @@ function ParametricMotor3D({
         addEdges(rotorHalf, northAtAirgap ? 0x1e3a8a : 0x7f1d1d);
         magnetUnit.add(airgapHalf, rotorHalf);
         magnetsGroup.add(magnetUnit);
-        registerRadialExplosion(magnetUnit, pole * polePitch, rotorRadius * 0.14);
+        registerRadialExplosion(magnetUnit, pole * polePitch, (outerRotor ? -0.1 : 0.14) * rotorRadius);
       }
     } else if (config.rotor.ipm_topology === 'pyleecan_holem50') {
       // Experimental HoleM50 pockets have no parametric 3D model; the 2D
@@ -1442,7 +1495,9 @@ function ParametricMotor3D({
       const end = isDriveEnd ? 'drive' : 'non-drive';
 
       const bearing = buildBearing(
-        { boreRadius: shaftRadius, outerRadius: capBoreRadius, width: bearingWidth },
+        outerRotor
+          ? { boreRadius: shaftRadius, outerRadius: Math.min(yokeOuterRadius * 0.98, shaftRadius * 2.4), width: bearingWidth }
+          : { boreRadius: shaftRadius, outerRadius: capBoreRadius, width: bearingWidth },
         {
           race: materials.bearingRace,
           ball: materials.bearingBall,
@@ -1453,18 +1508,28 @@ function ParametricMotor3D({
       geometries.push(...bearing.geometries);
       bearingRigs.push(bearing);
       // Seated in the cap bore, inboard of the cap's outer face — the bearing
-      // never hangs off the shaft outside the casting.
-      bearing.group.position.z = zSign * capCenterZ;
+      // never hangs off the shaft outside the casting. An outer rotor's shaft
+      // runs through the stator hub, so its bearings sit in the hub bore.
+      bearing.group.position.z = zSign * (outerRotor ? stackDepth / 2 - bearingWidth * 0.7 : capCenterZ);
       makeSelectable(bearing.group, {
         id: `3d-bearing-${end}`,
         kind: 'bearing',
         label: `Bearing · ${end} end`,
-        role: 'Outer race fixed to end cap · inner race follows shaft · balls roll in a slower cage · illustrative',
+        role: outerRotor
+          ? 'Outer race fixed in the stator hub · inner race follows shaft · balls roll in a slower cage · illustrative'
+          : 'Outer race fixed to end cap · inner race follows shaft · balls roll in a slower cage · illustrative',
       });
       (isDriveEnd ? driveBearingGroup : rearBearingGroup).add(bearing.group);
 
       const cap = buildEndCap(
-        { boreRadius: capBoreRadius, outerRadius, thickness: capThickness, hubDepth: stackDepth * 0.1 },
+        outerRotor
+          ? {
+              boreRadius: shaftRadius * (isDriveEnd ? 1.05 : 1.3),
+              outerRadius: isDriveEnd ? outerRadius : yokeInnerRadius,
+              thickness: capThickness,
+              hubDepth: stackDepth * 0.1,
+            }
+          : { boreRadius: capBoreRadius, outerRadius, thickness: capThickness, hubDepth: stackDepth * 0.1 },
         isDriveEnd ? materials.endcap : materials.endcapRear,
       );
       geometries.push(...cap.geometries);
@@ -1474,8 +1539,12 @@ function ParametricMotor3D({
       makeSelectable(cap.group, {
         id: `3d-endcap-${end}`,
         kind: 'endcap',
-        label: `End cap · ${end} end`,
-        role: 'Bolted end housing carrying the bearing · illustrative · not part of the EM model',
+        label: outerRotor ? (isDriveEnd ? 'Rotor bell · drive end' : 'Stator mount · non-drive end') : `End cap · ${end} end`,
+        role: outerRotor
+          ? (isDriveEnd
+            ? 'Closes the outer rotor and carries it on the shaft · illustrative · not part of the EM model'
+            : 'Holds the stator hub to the frame · illustrative · not part of the EM model')
+          : 'Bolted end housing carrying the bearing · illustrative · not part of the EM model',
       });
       (isDriveEnd ? driveEndcapGroup : rearEndcapGroup).add(cap.group);
     });
@@ -1484,13 +1553,17 @@ function ParametricMotor3D({
 
     // The air gap is a volume between two coaxial cylindrical surfaces, not a
     // single circular wire. Draw the complete annular sleeve across the stack.
-    const airgapInnerRadius = rotorRadius
-      + (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0);
-    const airgapGeometry = annulusGeometry(
-      airgapInnerRadius,
-      statorInnerRadius,
-      stackDepth * 0.96,
-    );
+    const airgapGeometry = outerRotor
+      ? annulusGeometry(
+        statorInnerRadius,
+        magnetSeatRadius - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0),
+        stackDepth * 0.96,
+      )
+      : annulusGeometry(
+        rotorRadius + (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0),
+        statorInnerRadius,
+        stackDepth * 0.96,
+      );
     geometries.push(airgapGeometry);
     const airgapMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x5ee7f7,
