@@ -1,0 +1,181 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.8.0",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "cases": [
+    {
+      "id": "spm_outer_14p12s_drone__baseline",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json",
+          "fixture_sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd",
+          "input_sha256": "98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__high_current",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json",
+          "fixture_sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a",
+          "input_sha256": "da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__tight_airgap",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json",
+          "fixture_sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c",
+          "input_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__angle30",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json",
+          "fixture_sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6",
+          "input_sha256": "1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone_noload__baseline",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json",
+          "fixture_sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b",
+          "input_sha256": "527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_12p9s_micro__baseline",
+      "phase": "F",
+      "design": "12p9s_micro",
+      "slots": 9,
+      "poles": 12,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json",
+          "fixture_sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60",
+          "input_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_12p9s_micro_noload__baseline",
+      "phase": "F",
+      "design": "12p9s_micro",
+      "slots": 9,
+      "poles": 12,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json",
+          "fixture_sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166",
+          "input_sha256": "33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_10p12s_single_layer__baseline",
+      "phase": "F",
+      "design": "10p12s_single_layer",
+      "slots": 12,
+      "poles": 10,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json",
+          "fixture_sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5",
+          "input_sha256": "0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_28p24s_multirotor__baseline",
+      "phase": "F",
+      "design": "28p24s_multirotor",
+      "slots": 24,
+      "poles": 28,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json",
+          "fixture_sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021",
+          "input_sha256": "dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_30p27s_hub__baseline",
+      "phase": "F",
+      "design": "30p27s_hub",
+      "slots": 27,
+      "poles": 30,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json",
+          "fixture_sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5",
+          "input_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5"
+        }
+      ]
+    }
+  ],
+  "phase_f": {
+    "status": "PROPOSED_NOT_REGISTERED",
+    "base_suite": "benchmarks/abcd-v1.6/benchmark_spec.json",
+    "base_suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+    "derivation": "the Phase A request spm_8p12s_concentrated__baseline with an outer-rotor SPM motor and the case's current",
+    "gates": "Phase A's (benchmark_suite/abc_metrics.py): mean torque 8%/15% (0.01/0.02 N m when the reference is under 0.01 N m), back-EMF fundamental and peak 10%/15%, WST, native mesh, matching angle grids",
+    "reference_bundle": null
+  }
+}
