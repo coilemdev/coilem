@@ -43,6 +43,26 @@
       "numerical_values_unchanged": true,
       "gate_verdicts_unchanged": true,
       "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "684cfdbd5b2018bfd48179a995bb2c7d297cca5e4152d04184b5bff7ac491bf3",
+      "published_sha256": "684cfdbd5b2018bfd48179a995bb2c7d297cca5e4152d04184b5bff7ac491bf3",
+      "purpose": "Index the exact public projection bytes; original index remains in the source artifact.",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "a7fa8961f37cf6ec24d7ceb288a0cb579acee2d869f2583c7988dc02bd81fd97",
+      "published_sha256": "1c0a49125869093a21fb9aecdeafb16e37063a2b23370b6dad863e809bb72e62",
+      "purpose": "Index the exact public projection bytes; original index remains in the source artifact.",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
     }
   ]
 }
