@@ -31,10 +31,12 @@
   side by side in each group.
 - **Outrunners in 3D.** An outer-rotor design's 3D view is built like an inner
   rotor's instead of extruding its cross-section: the stator's teeth point out
-  from its hub with a wound coil on each, the rotor is a ring round them with its
-  magnets on the inner face, and the shaft runs through the hub on its bearings.
-  The explode, part toggles and phase links work as before. Published reference
-  motors still extrude their cross-section.
+  from its hub with a wound coil on each, and the rotor is a can round them with
+  its magnets on the inner face. A spoked end bell closes the can and is clamped
+  to the shaft, so the shaft turns with the rotor; the shaft runs in two bearings
+  held by a fixed tube in the stator hub, and the stator mount behind (under End
+  caps) bolts the stator to the frame. The explode, part toggles and phase links
+  work as before. Published reference motors still extrude their cross-section.
 - **Phase wiring as it is wound.** In both layouts the 3D view now draws each
   phase as one continuous wire: every coil has its own start and finish lead, and
   each finish crosses behind the stack to the next coil's start, a short hop
