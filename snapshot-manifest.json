@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 538,
-      "sha256": "0484342a3d688352e63934267361b5427074e1d932dd16fcafc1ee01817a495a"
+      "bytes": 645,
+      "sha256": "bd91d90ca4330a759bc203850b558c6b4ea0bcb4c76f944feaec920e7999d9ea"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -12954,6 +12954,66 @@
       "sha256": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27"
     },
     {
+      "path": "benchmarks/abcd-v1.8/README.md",
+      "bytes": 6169,
+      "sha256": "9c14aa209f8809e256c1792378e84453b5f89c7ba8713c9db7bf944427d676d9"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/benchmark_spec.json",
+      "bytes": 6310,
+      "sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json",
+      "bytes": 2533,
+      "sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json",
+      "bytes": 2529,
+      "sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json",
+      "bytes": 2529,
+      "sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json",
+      "bytes": 2534,
+      "sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json",
+      "bytes": 2533,
+      "sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json",
+      "bytes": 2533,
+      "sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json",
+      "bytes": 2533,
+      "sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json",
+      "bytes": 2532,
+      "sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json",
+      "bytes": 2533,
+      "sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021"
+    },
+    {
+      "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json",
+      "bytes": 2536,
+      "sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5"
+    },
+    {
       "path": "docs/OUTRUNNER.md",
       "bytes": 4500,
       "sha256": "60bc5c37d61a0746449a920801cae7b4b4dc1f7f4ebf538422fce99ce2d03c0a"
@@ -13004,6 +13064,11 @@
       "sha256": "355f5157b929017b3a1e180e25a2cc71f44dbec69153e39aff231492410737ec"
     },
     {
+      "path": "tests/test_outrunner_phase_f.py",
+      "bytes": 6316,
+      "sha256": "0fff28e5982abb3ff29d6e4b664bca48ef582a90d023e69c0df5f2c2111a34bc"
+    },
+    {
       "path": "tests/test_rotor_layout.py",
       "bytes": 13449,
       "sha256": "42712ea46ebeaea6819f8990142cf7d140ea3359d39a026e328dcf09c7a94ef0"
@@ -13012,6 +13077,11 @@
       "path": "tools/export_lrk_reference.py",
       "bytes": 3634,
       "sha256": "176670074258fc60fc569ab836f184024d498bf6e805a635d68390ef1fcfcf7d"
+    },
+    {
+      "path": "tools/make_outrunner_phase_f.py",
+      "bytes": 8404,
+      "sha256": "c9a0a33e2b4fb07abf41a43717e51d73de8c4b84fc50960920aebebd36f00f8f"
     }
   ],
   "public_patches": [
