@@ -27,6 +27,7 @@ import {
   STRIP_LABEL,
   electricalFrequencyHz,
   formatHz,
+  formatRevPerSecond,
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
@@ -991,7 +992,7 @@ function drawPhaseDrive(
   context.fillStyle = 'rgba(148, 163, 184, 0.6)';
   context.font = '600 9px ui-monospace, monospace';
   context.textBaseline = 'top';
-  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${formatRevPerSecond(previewRpm)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];

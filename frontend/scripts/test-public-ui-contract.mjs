@@ -644,7 +644,7 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 // The rotor preview uses the field playback's transport, and the winding
 // legend sits in the canvas corner like the field view's legends.
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
-assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
+assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
 // Phases only means something while the rotor turns, so it is a toggle beside the
 // preview speed (2D only), not one of the static overlays; it is the winding overlay
 // shaded by phase current, so Winding stays pressed under it.
@@ -1333,8 +1333,10 @@ assert.match(styleSource, /\.public-field-playback \{[^}]*grid-template-columns:
 assert.match(styleSource, /\.public-rpm-field \{[^}]*display: inline-flex;[^}]*min-height: 36px;/);
 assert.match(styleSource, /\.public-rpm-field input \{[^}]*width: 54px;[^}]*font-variant-numeric: tabular-nums;/);
 assert.match(rpmFieldSource, /type="number"/);
-assert.match(rpmFieldSource, /inputMode="numeric"/);
-assert.match(rpmFieldSource, /const clamp = \(rpm: number\) => Math\.min\(max, Math\.max\(min, Math\.round\(rpm\)\)\);/);
+assert.match(rpmFieldSource, /inputMode=\{min < 1 \? 'decimal' : 'numeric'\}/);
+assert.match(rpmFieldSource, /step=\{nativeRpmStep\(min\)\}/);
+assert.match(rpmFieldSource, /onChange\(clampRpm\(parsed, min, max\)\)/);
+assert.match(rpmFieldSource, /const next = steppedRpm\(value, parsed, min, max\);/);
 assert.match(rpmFieldSource, /event\.shiftKey/);
 assert.match(rpmFieldSource, /commit\(event\.currentTarget\.value\);/);
 assert.match(rpmFieldSource, /cancelledRef\.current = true;\s+onChange\(valueBeforeEditRef\.current\);/);

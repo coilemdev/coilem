@@ -25,6 +25,9 @@
   animation, so every sector reads the same way up with its labels level. A dial
   shows where on the ring you are and turns there when clicked; **Sector** and
   **Fit** switch between the ring and the whole motor.
+- **Slower rotor preview.** The Design preview's speed goes down to 0.1 RPM, in
+  tenths below 1 RPM, so the phases and the tooth poles can be followed slowly.
+  The phase scope's frequency and rev/s keep two figures at these speeds.
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.

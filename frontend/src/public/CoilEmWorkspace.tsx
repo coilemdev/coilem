@@ -2359,11 +2359,11 @@ function ViewportChrome({
               <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
               <RpmField
                 value={animationRpm}
-                min={1}
+                min={0.1}
                 max={100}
                 label="Speed"
                 ariaLabel="Preview speed (RPM)"
-                title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+                title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
               {/* Phases only means something while the rotor turns: it shades the
