@@ -350,11 +350,12 @@ assert.doesNotMatch(workspaceSource, /<div className="public-report-provenance">
 assert.match(workspaceSource, /\{ label: 'Requested linear solver', value: requestedLinearSolver \}/);
 assert.doesNotMatch(resultSummarySource, /rotor positions`,\s*`\$\{solverLabel\}/);
 assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
-// The Back EMF card also reads phase and line-to-line as rms, peak and pk-pk.
+// The Back EMF card also reads phase and line-to-line as rms and peak.
 assert.match(resultSummarySource, /backEmfReadings\(result\.back_emf_waveform, summary\.back_emf_fundamental_V\)/);
 assert.match(resultSummarySource, /<table\s+className="public-emf-readings"/);
-assert.match(resultSummarySource, /<th scope="col">rms<\/th><th scope="col">peak<\/th><th scope="col">pk-pk<\/th>/);
-// The Back EMF chart's legend reads each trace as the chosen rms, peak or pk-pk.
+assert.match(resultSummarySource, /<th scope="col">rms<\/th><th scope="col">peak<\/th><\/tr>/);
+// The Back EMF chart's legend reads each trace as the chosen rms or peak.
+assert.doesNotMatch(workspaceSource, /measure: 'pk-pk'/);
 assert.match(workspaceSource, /aria-label="Back EMF reading"/);
 assert.match(workspaceSource, /waveformMeasure\(result\.back_emf_waveform\.electrical_angle_deg, item\.values, backEmfMeasure\)/);
 assert.match(workspaceSource, /series=\{backEmfSeries\(\[\{ label: 'Phase A'/);

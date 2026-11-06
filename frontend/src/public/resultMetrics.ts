@@ -46,8 +46,6 @@ export interface BackEmfReading {
   rmsV: number;
   /** The solved waveform's largest magnitude; null without a whole electrical cycle. */
   peakV: number | null;
-  /** The solved waveform's max − min; null without a whole electrical cycle. */
-  peakToPeakV: number | null;
 }
 
 // A Preview run solves only part of a cycle, which can miss the peak.
@@ -58,20 +56,18 @@ function coversElectricalCycle(anglesDeg: readonly number[]): boolean {
   return angles[angles.length - 1] - angles[0] + steps[Math.floor(steps.length / 2)] >= 359.5;
 }
 
-function waveformExtremes(samples: readonly number[]): { peak: number; peakToPeak: number } | null {
+function waveformPeak(samples: readonly number[]): number | null {
   const finite = samples.filter(Number.isFinite);
-  if (finite.length < 3) return null;
-  const max = Math.max(...finite);
-  const min = Math.min(...finite);
-  return { peak: Math.max(max, -min), peakToPeak: max - min };
+  return finite.length < 3 ? null : Math.max(...finite.map(Math.abs));
 }
 
 /**
  * The Back EMF card's readings: phase (line-to-neutral) and line-to-line, each as
- * the fundamental's rms and the solved waveform's peak and peak-to-peak. Papers and
- * datasheets often quote a peak and a scope reads peak-to-peak, and with harmonics
- * the peak is not √2 × rms. The line voltage is phase A − B, the terminal voltage of
- * a wye connection; its fundamental is √3 times the phase's.
+ * the fundamental's rms and the solved waveform's peak. Papers and datasheets often
+ * quote a peak, and with harmonics the peak is not √2 × rms. Peak-to-peak is not
+ * shown: back-EMF is half-wave symmetric, so it is always twice the peak. The line
+ * voltage is phase A − B, the terminal voltage of a wye connection; its fundamental
+ * is √3 times the phase's.
  */
 export function backEmfReadings(
   waveform: SolveResult['back_emf_waveform'],
@@ -86,18 +82,17 @@ export function backEmfReadings(
     label,
     rmsV,
     peakV: waveformMeasure(angles, samples, 'peak'),
-    peakToPeakV: waveformMeasure(angles, samples, 'pk-pk'),
   });
   return [row('Phase', phaseFundamentalRmsV, waveform.phase_a_V), row('Line (wye)', Math.sqrt(3) * phaseFundamentalRmsV, line)];
 }
 
-/** How a waveform's size is read: the fundamental's rms, the peak, or the peak-to-peak swing. */
-export type WaveformMeasure = 'rms' | 'peak' | 'pk-pk';
+/** How a waveform's size is read: the fundamental's rms or the peak. */
+export type WaveformMeasure = 'rms' | 'peak';
 
 /**
- * A solved waveform's fundamental rms, peak or peak-to-peak, or null without a whole
- * electrical cycle of samples (a Preview window). The rms is the fundamental's, the
- * convention of the Back EMF headline; peak and peak-to-peak include the harmonics.
+ * A solved waveform's fundamental rms or peak, or null without a whole electrical
+ * cycle of samples (a Preview window). The rms is the fundamental's, the convention
+ * of the Back EMF headline; the peak includes the harmonics.
  */
 export function waveformMeasure(anglesDeg: readonly number[], values: readonly number[], measure: WaveformMeasure): number | null {
   if (values.length !== anglesDeg.length || !coversElectricalCycle(anglesDeg)) return null;
@@ -114,8 +109,7 @@ export function waveformMeasure(anglesDeg: readonly number[], values: readonly n
     });
     return count < 3 ? null : ((2 / count) * Math.hypot(cosine, sine)) / Math.SQRT2;
   }
-  const extremes = waveformExtremes(values);
-  return extremes === null ? null : measure === 'peak' ? extremes.peak : extremes.peakToPeak;
+  return waveformPeak(values);
 }
 
 /** Volts to three figures: "6.36", "17.4", "231". */

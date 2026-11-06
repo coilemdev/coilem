@@ -360,8 +360,7 @@ function resultUsesSixStep(result: SolveResult, config?: MotorConfig): boolean {
 
 const BACK_EMF_MEASURES: ReadonlyArray<{ measure: WaveformMeasure; label: string; title: string }> = [
   { measure: 'rms', label: 'RMS', title: "Each trace's fundamental, rms: the Back EMF headline's convention" },
-  { measure: 'peak', label: 'Peak', title: "Each trace's largest magnitude, harmonics included: what papers and datasheets often quote" },
-  { measure: 'pk-pk', label: 'Pk-pk', title: "Each trace's max − min: what a scope reads" },
+  { measure: 'peak', label: 'Peak', title: "Each trace's largest magnitude, harmonics included: what papers and datasheets often quote. Peak-to-peak is twice it." },
 ];
 
 function lineBackEmf(result: SolveResult): { ab: number[]; bc: number[]; ca: number[] } {
@@ -4206,7 +4205,7 @@ function ReportStage({
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
-  // Which size each Back EMF trace's legend reads: papers quote a peak, scopes a peak-to-peak.
+  // Which size each Back EMF trace's legend reads: the headline's rms, or the peak papers quote.
   const [backEmfMeasure, setBackEmfMeasure] = useState<WaveformMeasure>('rms');
   const [exportState, setExportState] = useState<{
     action: string;

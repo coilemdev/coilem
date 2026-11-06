@@ -90,7 +90,7 @@ export function ResultSummary({
     SPARKLINE_WIDTH,
     EMF_SPARKLINE_HEIGHT,
   );
-  // Phase and line-to-line, as rms, peak and peak-to-peak: papers, datasheets and scopes each quote a different one.
+  // Phase and line-to-line, as rms and peak: the headline's convention and the one papers and datasheets often quote.
   const emfReadings = hasBackEmf ? backEmfReadings(result.back_emf_waveform, summary.back_emf_fundamental_V) : null;
   const power = electromagneticPower(summary.avg_torque_Nm, rpm);
   const scaleMaxT = loadingScaleMaxT([summary.peak_flux_density_teeth_T, summary.peak_flux_density_yoke_T]);
@@ -176,10 +176,10 @@ export function ResultSummary({
             <table
               className="public-emf-readings"
               aria-label={`Back EMF in volts at ${rpm.toLocaleString()} rpm`}
-              title="rms is the fundamental's, as in the headline. Peak and pk-pk are read from the solved waveform, harmonics included. Line is phase A − B, the terminals of a wye connection; a delta's terminals show the phase voltage without its third harmonic."
+              title="rms is the fundamental's, as in the headline. Peak is read from the solved waveform, harmonics included; peak-to-peak is twice it, as back-EMF is half-wave symmetric. Line is phase A − B, the terminals of a wye connection; a delta's terminals show the phase voltage without its third harmonic."
             >
               <thead>
-                <tr><th scope="col"><span className="public-visually-hidden">Voltage</span></th><th scope="col">rms</th><th scope="col">peak</th><th scope="col">pk-pk</th></tr>
+                <tr><th scope="col"><span className="public-visually-hidden">Voltage</span></th><th scope="col">rms</th><th scope="col">peak</th></tr>
               </thead>
               <tbody>
                 {emfReadings.map((reading) => (
@@ -187,7 +187,6 @@ export function ResultSummary({
                     <th scope="row">{reading.label}</th>
                     <td>{formatVolts(reading.rmsV)}</td>
                     <td>{formatVolts(reading.peakV)}</td>
-                    <td>{formatVolts(reading.peakToPeakV)}</td>
                   </tr>
                 ))}
               </tbody>

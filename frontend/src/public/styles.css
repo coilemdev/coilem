@@ -214,7 +214,7 @@ h1, h2, h3, p { margin-top: 0; }
 .public-waveform-data table { width: 100%; min-width: 660px; border-collapse: collapse; font: 9px var(--font-mono); }
 .public-waveform-data th, .public-waveform-data td { padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); text-align: right; white-space: nowrap; }
 .public-waveform-data th:first-child, .public-waveform-data td:first-child, .public-waveform-data th:nth-child(2), .public-waveform-data td:nth-child(2), .public-waveform-data th:nth-child(3), .public-waveform-data td:nth-child(3) { text-align: left; }
-/* The voltage reference (phase-neutral or line-line) and the legend's reading (rms, peak or pk-pk), side by side. */
+/* The voltage reference (phase-neutral or line-line) and the legend's reading (rms or peak), side by side. */
 .public-back-emf-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1080px; margin: 14px auto -10px; }
 .public-back-emf-view { display: flex; width: max-content; gap: 4px; padding: 4px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--bg-surface-1); }
 .public-back-emf-view button { min-height: 30px; padding: 0 12px; border: 0; border-radius: 5px; color: var(--text-muted); background: transparent; font-size: 10px; }
@@ -1663,7 +1663,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-result-emf svg .phase-a { stroke: #f87171; }
 .public-result-emf svg .phase-b { stroke: #4ade80; }
 .public-result-emf svg .phase-c { stroke: #60a5fa; }
-/* The Back EMF card's readings: phase and line-to-line as rms, peak and pk-pk. */
+/* The Back EMF card's readings: phase and line-to-line as rms and peak. */
 .public-result-emf .public-emf-readings { width: 100%; margin-top: 8px; border-collapse: collapse; font: 10.5px var(--font-mono); font-variant-numeric: tabular-nums; }
 .public-result-emf .public-emf-readings th, .public-result-emf .public-emf-readings td { padding: 3px 6px; border-top: 1px solid var(--border-subtle); text-align: right; white-space: nowrap; }
 .public-result-emf .public-emf-readings thead th { border-top: 0; color: var(--text-muted); font-size: 8.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
