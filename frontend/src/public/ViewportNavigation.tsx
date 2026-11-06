@@ -27,6 +27,8 @@ const MIN_SCALE = 0.5;
 const DEFAULT_SCALE = 1;
 const MAX_SCALE = 8;
 const PAN_UNLOCK_SCALE = 1.02;
+/** How long a sector turn takes; prefers-reduced-motion makes it instant. */
+const SECTOR_TURN_MS = 260;
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
@@ -36,7 +38,7 @@ export function useViewportNavigation(
   maxScale = MAX_SCALE,
   frameForSize?: (width: number, height: number) => ViewportFrame | null,
   /** A thin-ring motor's sector view for a viewport of this size (sectorFraming.ts). */
-  sectorForSize?: (width: number, height: number, angleDeg: number) => SectorView | null,
+  sectorForSize?: (width: number, height: number) => SectorView | null,
   /** Changes when the motor's ring does; the view opens on its sector, or on the whole motor when null. */
   sectorKey: string | null = null,
 ) {
@@ -48,8 +50,16 @@ export function useViewportNavigation(
   const [isDragging, setIsDragging] = useState(false);
   const [sectorActive, setSectorActive] = useState(false);
   const sectorActiveRef = useRef(false);
-  // Where on the ring the sector view looks: 0 at the top, clockwise on screen.
+  // The turntable: the sector view keeps its camera on the top of the ring and turns
+  // the motor under it, so every sector reads the same way up. sectorAngle is the
+  // ring angle shown at the top (clockwise on screen, unwrapped so a turn takes the
+  // short way); the view's rotation is its negative.
   const sectorAngleRef = useRef(0);
+  const [sectorAngleDeg, setSectorAngleDeg] = useState(0);
+  const [sectorSpanDeg, setSectorSpanDeg] = useState(0);
+  const [rotationDeg, setRotationDeg] = useState(0);
+  const rotationRef = useRef(0);
+  const rotationFrameRef = useRef<number | null>(null);
   const panEnabled = scale >= PAN_UNLOCK_SCALE;
   const sectorAvailable = sectorKey !== null && Boolean(sectorForSize);
 
@@ -57,6 +67,42 @@ export function useViewportNavigation(
     sectorActiveRef.current = false;
     setSectorActive(false);
   }, []);
+
+  const stopRotation = useCallback(() => {
+    if (rotationFrameRef.current !== null) window.cancelAnimationFrame(rotationFrameRef.current);
+    rotationFrameRef.current = null;
+  }, []);
+
+  /** Ease the view's rotation to ``targetDeg`` from wherever it is now, mid-turn included. */
+  const turnTo = useCallback((targetDeg: number) => {
+    stopRotation();
+    const from = rotationRef.current;
+    const delta = targetDeg - from;
+    const instant = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (Math.abs(delta) < 1e-6 || instant) {
+      rotationRef.current = targetDeg;
+      setRotationDeg(targetDeg);
+      return;
+    }
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / SECTOR_TURN_MS);
+      const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
+      rotationRef.current = from + delta * eased;
+      setRotationDeg(rotationRef.current);
+      rotationFrameRef.current = t < 1 ? window.requestAnimationFrame(tick) : null;
+    };
+    rotationFrameRef.current = window.requestAnimationFrame(tick);
+  }, [stopRotation]);
+  useEffect(() => stopRotation, [stopRotation]);
+
+  const resetTurntable = useCallback(() => {
+    stopRotation();
+    rotationRef.current = 0;
+    setRotationDeg(0);
+    sectorAngleRef.current = 0;
+    setSectorAngleDeg(0);
+  }, [stopRotation]);
 
   const clampPan = useCallback((candidate: Point, candidateScale: number): Point => {
     const rect = viewportRef.current?.getBoundingClientRect();
@@ -88,33 +134,50 @@ export function useViewportNavigation(
     didDragRef.current = false;
     setIsDragging(false);
     leaveSector();
+    resetTurntable();
     setScale(DEFAULT_SCALE);
     setPan({ x: 0, y: 0 });
-  }, [leaveSector]);
+  }, [leaveSector, resetTurntable]);
 
-  const applySector = useCallback((angleDeg = sectorAngleRef.current) => {
+  const sectorTarget = useCallback(() => {
     const rect = viewportRef.current?.getBoundingClientRect();
-    const target = rect && sectorForSize ? sectorForSize(rect.width, rect.height, angleDeg) : null;
+    return rect && sectorForSize ? sectorForSize(rect.width, rect.height) : null;
+  }, [sectorForSize]);
+
+  /** Frame the top of the ring; the turntable keeps its angle. */
+  const applySector = useCallback(() => {
+    const target = sectorTarget();
     if (!target) return false;
-    sectorAngleRef.current = angleDeg;
     const nextScale = clamp(target.scale, MIN_SCALE, maxScale);
     sectorActiveRef.current = true;
     setSectorActive(true);
+    setSectorSpanDeg(target.stepDeg / 0.75);
     setScale(nextScale);
     setPan(clampPan(target.pan, nextScale));
     return true;
-  }, [clampPan, maxScale, sectorForSize]);
+  }, [clampPan, maxScale, sectorTarget]);
   const applySectorRef = useRef(applySector);
   applySectorRef.current = applySector;
 
-  /** Turn the sector view one step round the ring; ``direction`` +1 is clockwise on screen. */
+  /** Turn the turntable so the ring at ``angleDeg`` (unwrapped) comes to the top. */
+  const turnSectorTo = useCallback((angleDeg: number) => {
+    if (!sectorActiveRef.current && !applySector()) return;
+    sectorAngleRef.current = angleDeg;
+    setSectorAngleDeg(angleDeg);
+    turnTo(-angleDeg);
+  }, [applySector, turnTo]);
+
+  /** Turn one step round the ring; ``direction`` +1 brings the ring clockwise of the view to the top. */
   const stepSector = useCallback((direction: 1 | -1) => {
-    const rect = viewportRef.current?.getBoundingClientRect();
-    const here = rect && sectorForSize ? sectorForSize(rect.width, rect.height, sectorAngleRef.current) : null;
-    if (!here) return;
-    const start = sectorActiveRef.current ? sectorAngleRef.current : 0;
-    applySector((((start + direction * here.stepDeg) % 360) + 360) % 360);
-  }, [applySector, sectorForSize]);
+    const here = sectorTarget();
+    if (here) turnSectorTo(sectorAngleRef.current + direction * here.stepDeg);
+  }, [sectorTarget, turnSectorTo]);
+
+  /** Turn the short way to the ring at ``angleDeg`` (0 at the top, clockwise), as the position dial asks. */
+  const goToSector = useCallback((angleDeg: number) => {
+    const current = sectorAngleRef.current;
+    turnSectorTo(current + ((((angleDeg - current) % 360) + 540) % 360) - 180);
+  }, [turnSectorTo]);
   const stepSectorRef = useRef(stepSector);
   stepSectorRef.current = stepSector;
 
@@ -148,14 +211,15 @@ export function useViewportNavigation(
   // A thin-ring motor opens on its sector, and a new ring re-frames; without one the view stays fitted.
   useEffect(() => {
     if (sectorKey === null) {
-      if (sectorActiveRef.current) reset();
+      if (sectorActiveRef.current || rotationRef.current !== 0) reset();
       return undefined;
     }
+    resetTurntable();
     const frame = window.requestAnimationFrame(() => {
-      applySectorRef.current(0);
+      applySectorRef.current();
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [reset, sectorKey]);
+  }, [reset, resetTurntable, sectorKey]);
 
   const zoomIn = useCallback(() => setScaleAt(scale * 1.25), [scale, setScaleAt]);
   const zoomOut = useCallback(() => setScaleAt(scale / 1.25), [scale, setScaleAt]);
@@ -235,7 +299,7 @@ export function useViewportNavigation(
   }, [clampPan, scale]);
 
   const contentStyle = {
-    transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})`,
+    transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${scale})${rotationDeg ? ` rotate(${rotationDeg}deg)` : ''}`,
   } as CSSProperties;
 
   return {
@@ -253,7 +317,14 @@ export function useViewportNavigation(
     sector: sectorAvailable ? () => applySector() : null,
     /** Step the sector view round the ring (+1 clockwise on screen); the arrow keys do the same. */
     sectorStep: sectorAvailable ? stepSector : null,
+    /** Turn to a ring angle (the position dial). */
+    sectorGoTo: sectorAvailable ? goToSector : null,
     sectorActive,
+    /** The view's rotation about the motor centre, clockwise on screen: draw everything turned by it. */
+    rotationDeg,
+    /** The ring angle at the top of the sector view, 0–360 clockwise, and the arc the view spans. */
+    sectorAngleDeg: ((sectorAngleDeg % 360) + 360) % 360,
+    sectorSpanDeg,
     bind: {
       onWheel,
       onPointerDown,
@@ -273,7 +344,10 @@ export function ViewportNavigationControls({
   fitSubject = 'motor',
   onSector = null,
   onSectorStep = null,
+  onSectorGoTo = null,
   sectorActive = false,
+  sectorAngleDeg = 0,
+  sectorSpanDeg = 0,
 }: {
   scale: number;
   onZoomIn: () => void;
@@ -284,6 +358,10 @@ export function ViewportNavigationControls({
   onSector?: (() => void) | null;
   /** Step the sector round the ring; no buttons when null. */
   onSectorStep?: ((direction: 1 | -1) => void) | null;
+  /** Turn to a ring angle from the position dial; no dial when null. */
+  onSectorGoTo?: ((angleDeg: number) => void) | null;
+  sectorAngleDeg?: number;
+  sectorSpanDeg?: number;
   sectorActive?: boolean;
 }) {
   const formattedScale = scale.toFixed(1).replace(/\.0$/, '');
@@ -296,10 +374,45 @@ export function ViewportNavigationControls({
       <button type="button" aria-label="Zoom out" title="Zoom out" disabled={scale <= MIN_SCALE + 1e-3} onClick={onZoomOut}>-</button>
       <span aria-live="polite">{formattedScale}x</span>
       <button type="button" aria-label="Zoom in" title="Zoom in" disabled={scale >= MAX_SCALE - 1e-3} onClick={onZoomIn}>+</button>
+      {onSectorGoTo && sectorActive && <SectorDial angleDeg={sectorAngleDeg} spanDeg={sectorSpanDeg} onGoTo={onSectorGoTo} />}
       {onSectorStep && <button type="button" className="is-sector-step" aria-label="Previous sector" title="Turn the view anticlockwise round the ring (←)" onClick={() => onSectorStep(-1)}>‹</button>}
       {onSector && <button type="button" className="is-sector" aria-label="Zoom to a sector of the ring" title="Zoom to a sector of the ring" aria-pressed={sectorActive} disabled={sectorActive} onClick={onSector}>Sector</button>}
       {onSectorStep && <button type="button" className="is-sector-step" aria-label="Next sector" title="Turn the view clockwise round the ring (→)" onClick={() => onSectorStep(1)}>›</button>}
       <button type="button" className="is-fit" aria-label={`Fit ${fitSubject} to view`} title={`Fit ${fitSubject} to view`} disabled={Math.abs(scale - DEFAULT_SCALE) <= 1e-3} onClick={onReset}>Fit</button>
     </div>
+  );
+}
+
+/**
+ * Where the sector view is on the ring: the motor as a circle, the visible arc
+ * lit, 0 at the top. Clicking a point on it turns the ring there.
+ */
+function SectorDial({ angleDeg, spanDeg, onGoTo }: { angleDeg: number; spanDeg: number; onGoTo: (angleDeg: number) => void }) {
+  const radius = 10;
+  const point = (deg: number) => {
+    const angle = (deg * Math.PI) / 180;
+    return `${(radius * Math.sin(angle)).toFixed(2)} ${(-radius * Math.cos(angle)).toFixed(2)}`;
+  };
+  const half = Math.min(179, Math.max(4, spanDeg / 2));
+  const arc = `M ${point(angleDeg - half)} A ${radius} ${radius} 0 ${half * 2 > 180 ? 1 : 0} 1 ${point(angleDeg + half)}`;
+  const label = `Position on the ring: ${Math.round(angleDeg)}° clockwise from the top. Click the dial to turn there.`;
+  return (
+    <svg
+      className="public-sector-dial"
+      viewBox="-14 -14 28 28"
+      role="img"
+      aria-label={label}
+      onClick={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const x = event.clientX - rect.left - rect.width / 2;
+        const y = event.clientY - rect.top - rect.height / 2;
+        if (Math.hypot(x, y) < 2) return;
+        onGoTo(((Math.atan2(x, -y) * 180) / Math.PI + 360) % 360);
+      }}
+    >
+      <title>{label}</title>
+      <circle r={radius} />
+      <path d={arc} />
+    </svg>
   );
 }

@@ -21,8 +21,10 @@
 - **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
   band (radial thickness up to half its outer radius) opens zoomed on the top of
   the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
-  the arrow keys over the view, step round the ring; **Sector** and **Fit**
-  switch between the ring and the whole motor.
+  the arrow keys over the view, turn the motor under the view with a short
+  animation, so every sector reads the same way up with its labels level. A dial
+  shows where on the ring you are and turns there when clicked; **Sector** and
+  **Fit** switch between the ring and the whole motor.
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.

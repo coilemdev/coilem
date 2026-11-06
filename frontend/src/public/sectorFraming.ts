@@ -41,27 +41,26 @@ export function isThinRing(ring: RingMm | null): ring is RingMm {
 }
 
 /**
- * Zoom and pan that put the ring at ``angleDeg`` (0 at the top, clockwise on
- * screen) in the middle of a view of this size, its thickness filling most of the
- * height. ``fittedOuterRadiusPx`` is the ring's outer radius in px at the view's
- * full-motor fit.
+ * Zoom and pan that put the top of the ring in the middle of a view of this size,
+ * its thickness filling most of the height. The view turns the motor under this
+ * camera to show other sectors (useViewportNavigation's turntable), so every
+ * sector reads the same way up. ``fittedOuterRadiusPx`` is the ring's outer radius
+ * in px at the view's full-motor fit.
  */
 export function sectorView(
   ring: RingMm | null,
   viewWidthPx: number,
   viewHeightPx: number,
   fittedOuterRadiusPx: number,
-  angleDeg = 0,
 ): SectorView | null {
   if (!isThinRing(ring) || !(viewWidthPx > 0) || !(viewHeightPx > 0) || !(fittedOuterRadiusPx > 0)) return null;
   const pxPerMm = fittedOuterRadiusPx / ring.outerMm;
   const thicknessPx = (ring.outerMm - ring.innerMm) * pxPerMm;
   const midRadiusPx = 0.5 * (ring.outerMm + ring.innerMm) * pxPerMm;
   const scale = Math.min(MAX_SECTOR_SCALE, Math.max(MIN_SECTOR_SCALE, (RING_VIEW_FRACTION * viewHeightPx) / thicknessPx));
-  // The ring point at this angle sits midRadiusPx from the origin; scaled about the
-  // origin it moves scale times further out, and this pan brings it to the middle.
-  const angle = (angleDeg * Math.PI) / 180;
-  const pan = { x: -scale * midRadiusPx * Math.sin(angle), y: scale * midRadiusPx * Math.cos(angle) };
+  // The ring's top sits midRadiusPx above the origin; scaled about the origin it
+  // moves scale times further up, and this pan brings it back to the middle.
+  const pan = { x: 0, y: scale * midRadiusPx };
   const visibleArcRad = viewWidthPx / scale / midRadiusPx;
   const stepDeg = Math.min(90, Math.max(5, (0.75 * visibleArcRad * 180) / Math.PI));
   return { scale, pan, stepDeg };
