@@ -17,6 +17,25 @@ All 52 supported full-grid native jobs completed: **46 PASS and one planned unsu
 
 An optional additional fresh A–D reference repeat was stopped at the owner's request: 17 cases completed, six active attempts were interrupted, and 23 cases were not started. Completed and partial artifacts were preserved. This extra repeat supplies none of the reference values in the 46-PASS comparison.
 
+## Overnight A–D: 46 fresh FEMM references
+
+The separately authorized overnight run completed on **6 November at 1:37 AM
+America/New_York (06:37 UTC)**. All 46 FEMM reference cases completed from a
+new output directory. Comparing them with the same `a4f9f4d` 52-job Magneto2D
+collection gives **46 PASS, one planned unsupported legacy ORNL Prius and
+336/336 gates PASS**: A 19, B 20, C 4 plus one unsupported, D 3.
+
+All 46 fresh numerical waveforms exactly match the published reviewed
+references. One FEMM readiness failure was retried successfully; its original
+failed attempt and hashes are retained. This is a separate complete run, and
+does not replace the stopped optional run described above. Native fields
+were reused from the already complete same-commit collection. The fresh
+bundle remains REVIEW_REQUIRED and is not registered as a new default.
+
+- [Fresh comparison and all numerical gates](fresh-femm-results.json)
+- [Fresh reference waveforms](fresh-femm-waveforms.json)
+- [Per-case identities, materials, hashes and retry history](fresh-femm-provenance.json)
+
 ## Cogging: fresh FEMM 4.2 and retained mesh controls
 
 All 12 original normal-mesh native requests and 17 FEMM sweeps completed: 12 baseline sweeps, the shoed/FSCW mesh controls, and three distributed mesh controls. Each FEMM sweep solves 25 independent no-current positions, including the closing endpoint: **425 retained fields**.
@@ -54,7 +73,7 @@ The original local evidence and raw solver files remain unchanged. This public p
 ## Remaining v0.5.1 release work
 
 - Review the Phase E reference evidence and original failed self-checks; this bundle remains REVIEW_REQUIRED.
-- Resolve the two YELLOW cases under the fixed gates, or explicitly review supported coverage before a new freeze. No passing claim is inferred for the original normal-mesh requests from separate refined-native studies.
+- Resolve the two YELLOW cases under the fixed gates, or explicitly review supported coverage before release acceptance. No passing claim is inferred for the original normal-mesh requests from separate refined-native studies.
 - Complete the required source-matched macOS and Prius collections. This run contains no new Prius software qualification and no macOS measurements.
 - Publish accepted platform/qualification records, complete Phase E registration/default-command coverage and pass the release qualification gate before tagging. None of those records or gates is changed here.
 

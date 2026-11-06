@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 5468,
-      "sha256": "005e347d6e27ea11ec9ebe733870224642df12abaef672bb0b6f01dedd40285d"
+      "bytes": 3295,
+      "sha256": "65078bc1acf44311c872a5e13b114c11a720de3e45565ebe9735ce0306eb6359"
     },
     {
       "path": "README.md",
-      "bytes": 14580,
-      "sha256": "572eb93861ce734b3ea3d3489936296f2738e39a45382b15dd54ec27a5351423"
+      "bytes": 14592,
+      "sha256": "543b25d9cd6115b16c9e84200f3ad13e3cfa4c4724f432007f36dd00d5e3d328"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 9110,
-      "sha256": "2e033db76f11dc266691041e30fcdc9a766971ecb6f69c2f65e6f65f57b7778c"
+      "bytes": 10474,
+      "sha256": "06bdfa2e9eef521445f2e5e1073605c6e35ddd8a63c335ee857d24b0e9f434c5"
     },
     {
       "path": "SECURITY.md",
@@ -96,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "239d3f96af0a4e04da7dfd0746d77412184d968f78fef116c43951d76db30b1a"
+      "sha256": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -715,8 +715,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 11409,
-      "sha256": "99ad2d365597ee448a6b64241d8308facc3bdf87b32b9b31482649fdd1fb0407"
+      "bytes": 11582,
+      "sha256": "f5196e5cc305d8f8973ba4ce71c0b1e58fbf64615f63bc2c23384d8894a4644b"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -6416,12 +6416,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "faae05ff692a80a1964a2c5c63c76699e9a28913a8c0f5dc668f463cbf263a51"
+      "sha256": "e45e57b54166cc438f9d880bc856ba1e0ad6740c048c6c9006f0b8d93068e318"
     },
     {
       "path": "frontend/package.json",
       "bytes": 2876,
-      "sha256": "57268451c729cda2d56b330883bcf316efac8722caaba46a3c01a3782d6bb6dc"
+      "sha256": "95f77636ad7140bf8dca88a5da202f9c678d62eb62be96732580c7fb81d05b54"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -12240,8 +12240,8 @@
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/README.md",
-      "bytes": 5285,
-      "sha256": "83171c68e5c330886f6f63e1f0e600e3e46019a11bd68b28738cebb44a699bd0"
+      "bytes": 6368,
+      "sha256": "9b3cc3a4ea4eed14ecb65bef1ab400489ee320f3fec7d5700e6f4807294e76bc"
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/provenance.json",
@@ -12255,13 +12255,38 @@
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/sha256.json",
-      "bytes": 349,
-      "sha256": "6032aad8afb35d063ab7647302de0b50a06858e11bee93334f5ec942b4dcfa81"
+      "bytes": 645,
+      "sha256": "dab0edfb8fa79f1511d8ff04b770e6965de0b8480fcabce99ceacdfdecb776b8"
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/waveforms.json",
       "bytes": 1183714,
       "sha256": "81dc739f75e79fa77d6505d6ea3959fab98249e725b5bdbe730bb5d528d488a3"
+    },
+    {
+      "path": "benchmarks/v0.5.1/candidate-plan.json",
+      "bytes": 8900,
+      "sha256": "ff3eb877923fe27cc57797fbce541db501ac48d713a099442ebbe01d2766adaf"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/fresh-femm-provenance.json",
+      "bytes": 77036,
+      "sha256": "69570e36b09289c4de608a9a3a74165876a2d070b6a06515105c716e1307e991"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/fresh-femm-results.json",
+      "bytes": 175882,
+      "sha256": "265449b9bab51b8e16c67d6b045462a942e5adfdc8daaa641df3f4110b1b37df"
+    },
+    {
+      "path": "benchmarks/windows-v051-20261105-a4f9f4d/fresh-femm-waveforms.json",
+      "bytes": 502475,
+      "sha256": "0fcfe6b3e5eafef67331e2bcdda4de40a9ceb5d117960183005670be221e2902"
+    },
+    {
+      "path": "docs/RELEASE_0_5_1.md",
+      "bytes": 4655,
+      "sha256": "aa7778679e9eef3dd48b2942f732c8d762bc02d1c41b77cb17e4a5fe50991a92"
     }
   ],
   "public_patches": [

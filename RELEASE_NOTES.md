@@ -1,4 +1,24 @@
-# coilEM 0.5.1 — unreleased fixes
+# coilEM 0.5.1 Developer Preview — candidate
+
+Prepared November 6, 2026. Release qualification and publication are pending.
+The [release plan](docs/RELEASE_0_5_1.md) records the preparation freeze,
+evidence and remaining acceptance work. The application version is 0.5.1;
+the bundled Magneto2D solver remains 0.4.0.
+
+- Solve gains guided Analysis choices and standalone no-current analyses;
+  torque–speed maps are opt-in, and partial map results survive cancellation.
+- The app header shows the running software version. Results and exports
+  report recorded solver convergence. Performance PDFs use three decimal places.
+- Cogging diagnostics bind source identity and validate waveform summaries.
+  Proposed Phase E references remain under review; the unchanged native
+  requests retain two YELLOW cases. No expanded qualification is claimed.
+- Windows A–D evidence at `a4f9f4d` records 46 PASS and 336/336 gates, with
+  one planned unsupported legacy ORNL Prius. An independent overnight run
+  completed all 46 fresh FEMM references; every waveform exactly matches the
+  reviewed reference. The [evidence packet](benchmarks/windows-v051-20261105-a4f9f4d/README.md)
+  preserves outcomes, waveforms, source identities, retry history and hashes.
+- Qualification automation binds collections to immutable candidate refs and
+  retains failed attempts while allowing verified collection recovery.
 
 - Correct the performance CSV header to `section,field,unit,value,sample_index`.
   coilEM 0.5.0 accidentally labelled its third and fourth columns `value,unit`,

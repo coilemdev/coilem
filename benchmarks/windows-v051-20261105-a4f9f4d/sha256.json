@@ -1,6 +1,9 @@
 {
+  "fresh-femm-provenance.json": "69570e36b09289c4de608a9a3a74165876a2d070b6a06515105c716e1307e991",
+  "fresh-femm-results.json": "265449b9bab51b8e16c67d6b045462a942e5adfdc8daaa641df3f4110b1b37df",
+  "fresh-femm-waveforms.json": "0fcfe6b3e5eafef67331e2bcdda4de40a9ceb5d117960183005670be221e2902",
   "provenance.json": "0a5ffe30d3b43affb424a3db5ecf3dff1843a36bcd8e443c08a79dbe77f062a2",
-  "README.md": "83171c68e5c330886f6f63e1f0e600e3e46019a11bd68b28738cebb44a699bd0",
+  "README.md": "9b3cc3a4ea4eed14ecb65bef1ab400489ee320f3fec7d5700e6f4807294e76bc",
   "results.json": "905f04974ec2013ead45892248ee179765264bff7fe5dda46c91dc6e4de702cf",
   "waveforms.json": "81dc739f75e79fa77d6505d6ea3959fab98249e725b5bdbe730bb5d528d488a3"
 }

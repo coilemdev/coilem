@@ -1,6 +1,6 @@
 # Benchmark reports and protocols
 
-The [Windows v0.5.1 integration-merge evidence](windows-v051-20261105-a4f9f4d/README.md) measures `a4f9f4d`: **46 A–D PASS plus the planned unsupported Prius**, and **10 cogging PASS / 2 YELLOW** against the selected fresh FEMM references. All 425 cogging fields, original reference self-check failures and five mesh controls are retained. The optional extra A–D reference repeat was stopped; its artifacts remain preserved. This is Windows development evidence; reference review, macOS/Prius qualification and release gates remain pending.
+The [Windows v0.5.1 integration-merge evidence](windows-v051-20261105-a4f9f4d/README.md) measures `a4f9f4d`: **46 A–D PASS plus the planned unsupported Prius**, and **10 cogging PASS / 2 YELLOW** against the selected fresh FEMM references. All 425 cogging fields, original reference self-check failures and five mesh controls are retained. The optional extra A–D reference repeat was stopped; its artifacts remain preserved. A separately authorized overnight run then completed all 46 fresh FEMM cases: **46 PASS, 336/336 gates PASS and all 46 waveforms exactly matching the reviewed references**. This is Windows development evidence; reference review, macOS/Prius qualification and release gates remain pending.
 
 The [v0.5.0 evidence index](v0.5.0/README.md) now includes the
 [physical Windows protocol 1.6 collection](windows-v050-20261102-88aae101/README.md)
