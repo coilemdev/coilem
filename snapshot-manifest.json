@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 14641,
-      "sha256": "4554771ed446dbc181b71cc7077840a2ef9d62fa6222139365e11ac47ec23f1e"
+      "bytes": 14656,
+      "sha256": "86fc81edc0c937d5b2fe2763040c8b00a1712aceefe541c4cad0dd3f11934382"
     },
     {
       "path": "SECURITY.md",
@@ -13050,8 +13050,8 @@
     },
     {
       "path": "frontend/src/public/examples/drone_outrunner_36s40p_b.coilem",
-      "bytes": 8169,
-      "sha256": "67e536f0d713ed4d8043bf90ab32c0c5aa944b5baf025d69dd0f2da6eed308ec"
+      "bytes": 8356,
+      "sha256": "fb7b7e1137bbb1168c8263636abd1c8891fa0cd49504658e1b481fa0d2abcc8a"
     },
     {
       "path": "frontend/src/public/examples/joint_outrunner_36s40p.coilem",
