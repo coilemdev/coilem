@@ -1,0 +1,316 @@
+{
+  "openem_schema_version": 4,
+  "openem_version": "0.5.0",
+  "name": "Drone outrunner B 40p/36s (Energies 2026)",
+  "description": "Model B of the 36-slot / 40-pole drone outrunners in Koo & Shin, Energies 19(16):3845 (2026), CC BY 4.0. Table 1: 83.2 mm stator, 54 mm hub bore, 92 mm rotor, 0.4 mm air gap, 2.2 mm magnets at Br 1.23 T (catalog N35 matches), 17 mm stack, 5 turns per tooth coil (10 conductors per slot here, since two tooth coils share each slot). Read from the paper's to-scale FEM drawing: 2.75 mm parallel teeth, 1.4 mm shoes leaving a 1.55 mm mouth, and magnets at a 0.76 pole arc. The 20PN1500 stator and S18C rotor B-H curves are digitised from its Fig. 3b. The motor is delta-connected, so the voltage measured at its terminals is the phase back-EMF; coilEM reports line voltage as if wye-connected, so compare the phase value. Measured: 8.86 V peak at 1000 rpm, and 1.56 N\u00b7m at 11.6 A peak phase current with id = 0. coilEM gives about 8.7 V peak phase back-EMF (8.9 V without its third harmonic, which a delta's terminals do not show) and about 1.50 N\u00b7m: within 4%, as close as the authors' own 2D FEM (8.89 V, 1.57 N\u00b7m). Published hardware data, not a coilEM benchmark: there is no pass/fail.",
+  "schema_version": "1.0",
+  "geometry_reference": null,
+  "reference_case": null,
+  "topology": "SPM",
+  "rotor_layout": "outer",
+  "stator": {
+    "OD_mm": 83.2,
+    "ID_mm": 54.0,
+    "slot_count": 36,
+    "stack_length_mm": 17.0,
+    "slot_opening_mm": 4.5106,
+    "tooth_width_mm": 2.75,
+    "yoke_thickness_mm": 3.0,
+    "tooth_shoe_enabled": true,
+    "tooth_shoe_height_mm": 1.4,
+    "tooth_shoe_overhang_mm": 1.4784
+  },
+  "rotor": {
+    "OD_mm": 92.0,
+    "ID_mm": 88.4,
+    "magnet_thickness_mm": 2.2,
+    "magnet_width_mm": 5.1603,
+    "pole_count": 40,
+    "magnet_embrace": 0.7622,
+    "bridge_thickness_mm": 1.0,
+    "ipm_topology": "flat_buried",
+    "flat_buried_magnet_shape": "straight",
+    "side_bridge_thickness_mm": 1.0,
+    "pocket_clearance_mm": 0.2,
+    "magnet_angle_deg": 0.0,
+    "v_angle_deg": 60.0,
+    "v_depth_mm": 6.0,
+    "inner_web_thickness_mm": 2.0,
+    "outer_bridge_thickness_mm": 1.0,
+    "holem50_w0_mm": 42.0,
+    "holem50_w1_mm": 0.0,
+    "holem50_w2_mm": 0.0,
+    "holem50_w3_mm": 14.0,
+    "holem50_w4_mm": 18.9,
+    "holem50_h0_mm": 10.96,
+    "holem50_h1_mm": 1.5,
+    "holem50_h2_mm": 1.0,
+    "holem50_h3_mm": 6.5,
+    "holem50_h4_mm": 0.0,
+    "flux_barrier_count": null,
+    "barrier_widths_mm": null
+  },
+  "winding": {
+    "type": "concentrated",
+    "turns_per_coil": 10,
+    "layers": 2,
+    "parallel_paths": 1,
+    "coil_span": null,
+    "wire": null
+  },
+  "materials": {
+    "stator_steel": "custom:2cde551757b6f511213c35b2c6b750a92db423ec4753ea9b0d9d2453219f23a3",
+    "rotor_steel": "custom:7cc2d0b90d7bf9efb00925f29d0ddb18856aa203cf0655f2c469f6b0c1e6b429",
+    "magnet_grade": "N35",
+    "conductor": "copper",
+    "custom_steels": {
+      "custom:2cde551757b6f511213c35b2c6b750a92db423ec4753ea9b0d9d2453219f23a3": {
+        "id": "custom:2cde551757b6f511213c35b2c6b750a92db423ec4753ea9b0d9d2453219f23a3",
+        "name": "20PN1500 (Koo & Shin 2026, Fig. 3b)",
+        "source": "Koo & Shin, Energies 19(16):3845 (2026), CC BY 4.0, Fig. 3b; digitised, H axis read as x1e4 A/m",
+        "lamination_thickness_mm": 0.2,
+        "bh_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.3,
+            41.0
+          ],
+          [
+            0.5,
+            51.0
+          ],
+          [
+            0.7,
+            81.0
+          ],
+          [
+            0.9,
+            132.0
+          ],
+          [
+            1.0,
+            172.0
+          ],
+          [
+            1.1,
+            223.0
+          ],
+          [
+            1.2,
+            303.0
+          ],
+          [
+            1.3,
+            475.0
+          ],
+          [
+            1.35,
+            600.0
+          ],
+          [
+            1.394,
+            788.0
+          ],
+          [
+            1.43,
+            1000.0
+          ],
+          [
+            1.462,
+            1272.0
+          ],
+          [
+            1.508,
+            1816.0
+          ],
+          [
+            1.556,
+            2543.0
+          ],
+          [
+            1.608,
+            3512.0
+          ],
+          [
+            1.65,
+            4480.0
+          ],
+          [
+            1.704,
+            5933.0
+          ],
+          [
+            1.749,
+            7386.0
+          ],
+          [
+            1.798,
+            9082.0
+          ],
+          [
+            1.846,
+            11019.0
+          ],
+          [
+            1.887,
+            12957.0
+          ],
+          [
+            1.905,
+            13925.0
+          ],
+          [
+            2.0,
+            20000.0
+          ]
+        ],
+        "curve_sha256": "00e54dc8d62249ff7eac127dd859d87d76b66965a19fc433173665cc453d471c"
+      },
+      "custom:7cc2d0b90d7bf9efb00925f29d0ddb18856aa203cf0655f2c469f6b0c1e6b429": {
+        "id": "custom:7cc2d0b90d7bf9efb00925f29d0ddb18856aa203cf0655f2c469f6b0c1e6b429",
+        "name": "S18C (Koo & Shin 2026, Fig. 3b)",
+        "source": "Koo & Shin, Energies 19(16):3845 (2026), CC BY 4.0, Fig. 3b; digitised, H axis read as x1e4 A/m",
+        "lamination_thickness_mm": null,
+        "bh_curve": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.5,
+            122.0
+          ],
+          [
+            0.96,
+            142.0
+          ],
+          [
+            1.2,
+            182.0
+          ],
+          [
+            1.3,
+            243.0
+          ],
+          [
+            1.376,
+            344.0
+          ],
+          [
+            1.43,
+            505.0
+          ],
+          [
+            1.448,
+            586.0
+          ],
+          [
+            1.526,
+            1211.0
+          ],
+          [
+            1.579,
+            2180.0
+          ],
+          [
+            1.629,
+            3148.0
+          ],
+          [
+            1.683,
+            4601.0
+          ],
+          [
+            1.734,
+            6054.0
+          ],
+          [
+            1.786,
+            7992.0
+          ],
+          [
+            1.83,
+            9929.0
+          ],
+          [
+            1.872,
+            12351.0
+          ],
+          [
+            1.904,
+            14773.0
+          ],
+          [
+            1.934,
+            17679.0
+          ],
+          [
+            1.958,
+            20101.0
+          ],
+          [
+            1.979,
+            23491.0
+          ],
+          [
+            1.994,
+            26398.0
+          ],
+          [
+            2.006,
+            29788.0
+          ],
+          [
+            2.03,
+            40000.0
+          ]
+        ],
+        "curve_sha256": "19d3e8dfc6d991c02f9cfb81f9f5601433539ce193b983ce05518b7956979982"
+      }
+    }
+  },
+  "solve_params": {
+    "solve_quality": "custom",
+    "rotor_sweep_range_deg": 360.0,
+    "rotor_step_deg": 7.5,
+    "mesh_density": "normal",
+    "mesh_source": "native",
+    "mesher": "gmsh",
+    "corner_refinement": false,
+    "mesh_build": "precise",
+    "slot_sidewall_refinement": false,
+    "current_amplitude_A": 11.6,
+    "current_amplitude_convention": "peak",
+    "current_angle_deg": 0.0,
+    "excitation_mode": "sinusoidal",
+    "commutation_advance_deg": 0.0,
+    "phase_connection": "wye",
+    "rated_speed_rpm": 1000,
+    "magnet_temperature_C": null,
+    "winding_temperature_C": null,
+    "mechanical_loss_W": null,
+    "motor_input_dc_bus_V": null,
+    "max_nonlinear_iterations": null,
+    "nonlinear_solver": "picard",
+    "linear_solver_preconditioner": "direct",
+    "linear_steel_mu_rel": null,
+    "magneto2d_workers": null,
+    "stream_noload_field_lines": null,
+    "field_composition_source": "resultant",
+    "rotor_rotation_model": "remesh_per_step",
+    "torque_method": "weighted_stress"
+  },
+  "solve_options": {
+    "torque_sweep": true,
+    "back_emf": true,
+    "flux_density": true,
+    "cogging_torque": false,
+    "losses_efficiency": false,
+    "torque_speed_envelope": false,
+    "thd_analysis": false
+  },
+  "torque_speed_analysis": null
+}

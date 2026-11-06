@@ -204,6 +204,26 @@ def test_the_bundled_robot_joint_example_is_that_motor():
     assert build_geometry_ir(config, rotor_angle_deg=0.0).validation_report().issues == ()
 
 
+def test_the_bundled_drone_example_is_koo_and_shin_model_b():
+    # Model B of the 36-slot / 40-pole drone outrunners in Koo & Shin, Energies 19(16):3845 (2026).
+    # Table 1 radii (mm): rotor 46, magnet back 44.2, magnet face 42, stator 41.6, shoe shoulder 40.2,
+    # slot bottom 30, hub 27; 5 turns per tooth coil, 17 mm stack. Fig. 2 (to scale) gives the 2.75 mm
+    # parallel teeth and the 1.55 mm mouth.
+    example = json.loads(Path("frontend/src/public/examples/drone_outrunner_36s40p_b.coilem").read_text(encoding="utf-8"))
+    config, _, solver = parse_public_solve_request(example)
+    stator, rotor = config.stator, config.rotor
+    assert (solver, config.rotor_layout, config.winding.layers, config.winding.turns_per_coil) == ("magneto2d", "outer", 2, 10)
+    assert (stator.OD_mm, stator.ID_mm, stator.slot_count, stator.stack_length_mm) == (83.2, 54.0, 36, 17.0)
+    assert (rotor.OD_mm, rotor.ID_mm, rotor.magnet_thickness_mm, rotor.pole_count) == (92.0, 88.4, 2.2, 40)
+    assert rotor.ID_mm / 2 - rotor.magnet_thickness_mm - stator.OD_mm / 2 == pytest.approx(0.4)
+    assert stator.OD_mm / 2 - ((stator.OD_mm - stator.ID_mm) / 2 - stator.yoke_thickness_mm) == pytest.approx(30.0)
+    assert stator.OD_mm / 2 - stator.tooth_shoe_height_mm == pytest.approx(40.2)
+    assert narrowest_tooth_width_mm(config) == pytest.approx(2.75, abs=0.02)
+    assert 2 * math.pi * 41.6 / 36 - bore_tooth_width_mm(config) == pytest.approx(1.55, abs=0.01)
+    assert {config.materials.stator_steel, config.materials.rotor_steel} <= set(config.materials.custom_steels)
+    assert build_geometry_ir(config, rotor_angle_deg=0.0).validation_report().issues == ()
+
+
 def test_an_outer_rotor_shoe_must_leave_room_for_the_winding():
     config = MotorConfig.model_validate(_joint_motor(tooth_shoe_height_mm=7.0))
     errors = validate_geometry(config)

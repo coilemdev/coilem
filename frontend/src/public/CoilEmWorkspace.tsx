@@ -72,7 +72,7 @@ import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
 import { AnalysisOptions } from './AnalysisSelector';
 import { analysisSummary, analysisPositions, selectedAnalyses, hasTorqueResult, hasBackEmfResult, defaultResultPlot, type AnalysisKey } from './analysisOptions';
-import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
+import { examplesByLayout, publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
   PUBLIC_AIRGAP_LAUNCH_MIN_MM,
@@ -647,34 +647,49 @@ export function CoilEmTopBar({
                 {examplesMenuOpen && (
                   <div className="public-project-examples-menu" role="menu" aria-label="Example designs">
                     <span className="public-project-example-group-label" role="presentation">Motor examples</span>
-                    {publicExampleOptions(experimentalRotors, 'motor').map((example) => (
-                      <button
-                        type="button"
-                        role="menuitem"
-                        key={example.id}
-                        onClick={closeMenuThen(() => onLoadExample?.(example.id))}
-                      >
-                        <strong>{example.label}</strong>
-                        <small>{example.detail}</small>
-                      </button>
-                    ))}
+                    {/* Each group lists inrunners and outrunners side by side. */}
+                    <div className="public-project-example-layouts">
+                      {examplesByLayout(publicExampleOptions(experimentalRotors, 'motor')).map((group) => (
+                        <div className="public-project-example-layout" role="group" aria-label={`${group.label} motor examples`} key={group.layout}>
+                          <span className="public-project-example-layout-label" role="presentation">{group.label}</span>
+                          {group.options.map((example) => (
+                            <button
+                              type="button"
+                              role="menuitem"
+                              key={example.id}
+                              onClick={closeMenuThen(() => onLoadExample?.(example.id))}
+                            >
+                              <strong>{example.label}</strong>
+                              <small>{example.detail}</small>
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                     {publicExampleOptions(experimentalRotors, 'benchmark').length > 0 && (
                       <>
                         <span className="menu-divider" role="presentation" />
                         <span className="public-project-example-group-label" role="presentation">Benchmarks</span>
-                        {/* Benchmarks are experimental for now: each carries a yellow tag. */}
-                        {publicExampleOptions(experimentalRotors, 'benchmark').map((example) => (
-                          <button
-                            type="button"
-                            role="menuitem"
-                            key={example.id}
-                            title="Experimental for now: benchmark designs and their reference comparisons are still being qualified."
-                            onClick={closeMenuThen(() => onLoadExample?.(example.id))}
-                          >
-                            <strong>{example.label}<span className="public-example-experimental-tag">Experimental</span></strong>
-                            <small>{example.detail}</small>
-                          </button>
-                        ))}
+                        <div className="public-project-example-layouts">
+                          {examplesByLayout(publicExampleOptions(experimentalRotors, 'benchmark')).map((group) => (
+                            <div className="public-project-example-layout" role="group" aria-label={`${group.label} benchmarks`} key={group.layout}>
+                              <span className="public-project-example-layout-label" role="presentation">{group.label}</span>
+                              {/* Benchmarks are experimental for now: each carries a yellow tag. */}
+                              {group.options.map((example) => (
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  key={example.id}
+                                  title="Experimental for now: benchmark designs and their reference comparisons are still being qualified."
+                                  onClick={closeMenuThen(() => onLoadExample?.(example.id))}
+                                >
+                                  <strong>{example.label}<span className="public-example-experimental-tag">Experimental</span></strong>
+                                  <small>{example.detail}</small>
+                                </button>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
                       </>
                     )}
                     {onOpenHalbach && (
