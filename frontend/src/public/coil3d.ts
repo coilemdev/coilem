@@ -278,8 +278,11 @@ export interface WindingHarnessSpec {
   stackHalf: number;
   axialOverhang: number;
   wireRadius: number;
+  /** The terminal block lands midway between these two radii, on the yoke. */
   yokeInnerRadius: number;
   outerRadius: number;
+  /** Size of the star junction and terminal block, and their set-back; 1 for a full-size machine. */
+  blockScale?: number;
 }
 
 export interface WindingHarnessModel {
@@ -300,7 +303,8 @@ export interface WindingHarnessModel {
  */
 export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessModel {
   const radius = spec.bundleCenterRadius;
-  const leadRadius = Math.max(spec.wireRadius * 1.05, 0.8);
+  const blockScale = spec.blockScale ?? 1;
+  const leadRadius = Math.max(spec.wireRadius * 1.05, 0.8 * blockScale);
   const zStubTop = -(spec.stackHalf + spec.axialOverhang * 0.55);
   const zBase = -(spec.stackHalf + spec.axialOverhang + 2.2);
   const zStep = leadRadius * 2.7;
@@ -317,7 +321,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
 
   const terminalRadius = (spec.yokeInnerRadius + spec.outerRadius) / 2;
   const terminalAngle = circularMean(orderedPhases.map((phase) => toothAngle(slotsByPhase[phase][0])));
-  const zTerminal = -(spec.stackHalf + 4.2);
+  const zTerminal = -(spec.stackHalf + 4.2 * blockScale);
 
   const phaseGeometries: Record<HarnessPhase, THREE.BufferGeometry | null> = { A: null, B: null, C: null };
   const tailPoints: Partial<Record<HarnessPhase, THREE.Vector3>> = {};
@@ -370,7 +374,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
       const link = new THREE.QuadraticBezierCurve3(tail, control, star);
       parts.push(tubeAlong(link, link.getLength(), leadRadius * 0.9));
     });
-    const junction = new THREE.BoxGeometry(7, 4.6, 4.6);
+    const junction = new THREE.BoxGeometry(7 * blockScale, 4.6 * blockScale, 4.6 * blockScale);
     junction.rotateZ(starAngle);
     junction.translate(star.x, star.y, star.z);
     parts.push(junction);
@@ -378,9 +382,9 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     parts.forEach((part) => part.dispose());
   }
 
-  const terminalGeometry = new THREE.BoxGeometry(13, 7, 5.2);
+  const terminalGeometry = new THREE.BoxGeometry(13 * blockScale, 7 * blockScale, 5.2 * blockScale);
   terminalGeometry.rotateZ(terminalAngle + Math.PI / 2);
-  const terminalCenter = polar(terminalRadius, terminalAngle, zTerminal - 0.4);
+  const terminalCenter = polar(terminalRadius, terminalAngle, zTerminal - 0.4 * blockScale);
   terminalGeometry.translate(terminalCenter.x, terminalCenter.y, terminalCenter.z);
 
   return { phaseGeometries, neutralGeometry, terminalGeometry, leadRadius };

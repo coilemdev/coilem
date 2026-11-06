@@ -639,7 +639,12 @@ assert.match(motorThreeSource, /placement\.effectiveLengthMm \+ pocketClearance 
 assert.match(motorThreeSource, /magnetDepth \+ pocketClearance \* 2/);
 assert.match(motorThreeSource, /pocketsGroup\.add\(pocket\)/);
 assert.match(motorThreeSource, /Lamination cavity and insertion clearance around the buried magnet/);
-assert.match(motorThreeSource, /const airgapGeometry = annulusGeometry\(/);
+assert.match(motorThreeSource, /const airgapGeometry = outerRotor\s+\? annulusGeometry\([\s\S]*?: annulusGeometry\(/);
+// Outer rotors get the parametric build too (stator teeth pointing out, wound
+// coils, rotor ring and magnets on its inner face); only published references
+// extrude their preview regions.
+assert.match(motorThreeSource, /return props\.config\.geometry_reference\s+\? <ReferenceMotor3D \{\.\.\.props\} \/> : <ParametricMotor3D \{\.\.\.props\} \/>;/);
+assert.match(motorThreeSource, /const magnetSeatRadius = outerRotor \?/);
 assert.doesNotMatch(motorThreeSource, /new THREE\.TorusGeometry/);
 assert.match(motorThreeSource, /statorGroup\.position\.z = -4\.25 \* station/);
 assert.match(motorThreeSource, /windingsGroup\.position\.z = -2\.75 \* station/);

@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 14320,
-      "sha256": "a3fbc81c48d9c9e2416fa305e53ee6655099c3ed67ee2b95e08b517a6fff1d8e"
+      "bytes": 14765,
+      "sha256": "8a7ef7cf185eb09cf8d9a8cd41cb5793cd90b35c07b0181d7b9f81191e0467be"
     },
     {
       "path": "SECURITY.md",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 165476,
-      "sha256": "cb2d52e483a5dd077338dd6022884a356f8dd7f1b06218e935ab3fc660f5958c"
+      "bytes": 165946,
+      "sha256": "9d6135055aa29df3f844d448c68ca2c648bb5f7d0c97e6e75d89d48d41bf9b10"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7085,8 +7085,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80525,
-      "sha256": "dad3bd026886b0c72cb5c4acf1ab98113c67e13b6545a6b591c6d9a2f92d2958"
+      "bytes": 85001,
+      "sha256": "e00c19c4d9b635d1da364f686a6dc547dea569857ccd1216e1c94e4e9221e23a"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7170,8 +7170,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 16694,
-      "sha256": "a3b43d36585905c43d9915eded59e94120c9f3a32ef6d919ac0d7ca26d41be86"
+      "bytes": 17058,
+      "sha256": "1cf0728f14824e04e8ecc278d748bd30d24d1709e5bc5f246431d444fc40f5c9"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -7195,8 +7195,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 15278,
-      "sha256": "bfeac8326f0f58441c9d90d6d7aa973bc9a147651d95d3586b18d07fa0d61802"
+      "bytes": 15641,
+      "sha256": "2b2645927911c1cea1579ef28df980932de770f1747f7d1734a86e434707a626"
     },
     {
       "path": "frontend/src/public/dqView.ts",

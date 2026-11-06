@@ -29,6 +29,12 @@
   shows each trace's value in its legend.
 - **Examples by rotor layout.** The Examples menu lists inrunners and outrunners
   side by side in each group.
+- **Outrunners in 3D.** An outer-rotor design's 3D view is built like an inner
+  rotor's instead of extruding its cross-section: the stator's teeth point out
+  from its hub with a wound coil on each, the rotor is a ring round them with its
+  magnets on the inner face, and the shaft runs through the hub on its bearings.
+  The explode, part toggles and phase links work as before. Published reference
+  motors still extrude their cross-section.
 - **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
   band (radial thickness up to half its outer radius) opens zoomed on the top of
   the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
