@@ -5,6 +5,9 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 // The 2D Phases preview: the terminal currents it shows are the ones a public
 // solve drives, checked against vectors the backend tests pin to the solver.
 const {
+  COIL_SIDE_CURRENT_FLOOR,
+  coilSideOutOfPage,
+  windingSymbolSide,
   PHASE_DRIVE_MIN_WIDTH,
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -209,3 +212,23 @@ const inwardPoles = toothPoles([1, -1, 0, 0, 0, 0]);
 const outwardPoles = toothPoles([1, -1, 0, 0, 0, 0], 'outward');
 assert.deepEqual(outwardPoles, inwardPoles.map((value) => -value + 0));
 console.log('outer-rotor tooth pole checks passed');
+
+// Phases shows each coil side's current as it flows now: an "in" side is ⊙ (out of
+// the page) at positive current and ⊗ at negative; an "out" side the reverse; a
+// switched-off phase shows no direction.
+assert.equal(coilSideOutOfPage('in', 1), true);
+assert.equal(coilSideOutOfPage('in', -0.5), false);
+assert.equal(coilSideOutOfPage('out', 0.5), false);
+assert.equal(coilSideOutOfPage('out', -1), true);
+assert.equal(coilSideOutOfPage('in', 0), null);
+assert.equal(coilSideOutOfPage('out', COIL_SIDE_CURRENT_FLOOR / 2), null);
+assert.equal(coilSideOutOfPage('in', Number.NaN), null);
+assert.deepEqual(windingSymbolSide('A+ (in)'), { phase: 'A', direction: 'in' });
+assert.deepEqual(windingSymbolSide('C− (out)'), { phase: 'C', direction: 'out' });
+assert.equal(windingSymbolSide('stator_slot_3'), null);
+assert.equal(windingSymbolSide(undefined), null);
+// The same rule as the slot currents tooth poles use, so marks and poles agree.
+const sides = [{ slot_index: 0, phase: 'A', direction: 'in' }, { slot_index: 1, phase: 'A', direction: 'out' }];
+const slotNet = slotCurrents(sides, 2, [-0.8, 0, 0.8]);
+assert.deepEqual(sides.map((side) => coilSideOutOfPage(side.direction, -0.8)), slotNet.map((value) => value > 0));
+console.log('live coil-side mark checks passed');
