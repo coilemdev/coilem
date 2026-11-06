@@ -24,20 +24,15 @@ assert.equal(outerRotorRing({ stator: { ID_mm: 60 }, rotor: { OD_mm: 54 } }), nu
 
 // A 400 px square view fitting the 42 mm ring radius at 190 px: the 12.75 mm
 // thickness is 57.7 px, so 70% of the height needs about 4.85x, and the pan brings
-// the ring's top (35.6 mm, 161 px above the origin) to the middle.
+// the ring's top (35.6 mm, 161 px above the origin) to the middle. The camera stays
+// there: other sectors come to it by turning the motor (the turntable).
 const midPx = 35.625 * 190 / 42;
 const view = sectorView(joint, 400, 400, 190);
 assert.ok(Math.abs(view.scale - (0.7 * 400) / (12.75 * 190 / 42)) < 1e-9);
 assert.ok(Math.abs(view.pan.x) < 1e-9);
 assert.ok(Math.abs(view.pan.y - view.scale * midPx) < 1e-9);
-// Each step turns about three quarters of the visible arc, so neighbouring views overlap.
+// Each turn is about three quarters of the visible arc, so neighbouring sectors overlap.
 assert.ok(Math.abs(view.stepDeg - (0.75 * (400 / view.scale / midPx) * 180) / Math.PI) < 1e-9);
-// A quarter turn clockwise looks at the ring's right-hand side: the content pans left.
-const right = sectorView(joint, 400, 400, 190, 90);
-assert.equal(right.scale, view.scale);
-assert.ok(Math.abs(right.pan.x + view.scale * midPx) < 1e-9 && Math.abs(right.pan.y) < 1e-9);
-const bottom = sectorView(joint, 400, 400, 190, 180);
-assert.ok(Math.abs(bottom.pan.y + view.scale * midPx) < 1e-9);
 // The zoom stays between 1.5x and 6x, and a step between 5 and 90 degrees.
 assert.equal(sectorView(joint, 400, 4000, 190).scale, 6);
 assert.equal(sectorView({ innerMm: 21, outerMm: 42 }, 100, 100, 190).scale, 1.5);
@@ -47,5 +42,17 @@ assert.equal(sectorView(joint, 1, 4000, 190).stepDeg, 5);
 assert.equal(sectorView(outerRotorRing(outer(10, 35)), 400, 400, 190), null);
 assert.equal(sectorView(joint, 400, 0, 190), null);
 assert.equal(sectorView(null, 400, 400, 190), null);
+
+// A turned view still finds the field it shows: the element under the middle of a
+// view turned a quarter turn is in its range, and one far outside it is not.
+const { fieldRangeForViewport } = await importTypeScriptModule(new URL('../src/public/fieldViewportRange.ts', import.meta.url));
+const tri = (cx, cy, value) => ({ points: [[cx - 0.5, cy - 0.5], [cx + 0.5, cy - 0.5], [cx, cy + 0.5]], value });
+// World (10, 0) drawn at scale 10 with this translate lands on canvas (300, 200); turned 90 degrees about (200, 200)
+// it moves to (200, 300). The view is 400 x 400, so an element at world (0, 30) (canvas y -100) stays out.
+const turnedRange = fieldRangeForViewport([tri(10, 0, 1.2), tri(0, 30, 1.9)], {
+  scale: 10, translateX: 200, translateY: 200, canvasWidth: 400, canvasHeight: 400, rotationRad: Math.PI / 2, pivotX: 200, pivotY: 200,
+});
+assert.equal(turnedRange.elementCount, 1);
+assert.equal(turnedRange.maxB, 1.2);
 
 console.log('sector framing tests passed');

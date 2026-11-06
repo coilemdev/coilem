@@ -659,7 +659,7 @@ assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'pha
 // Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
 assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
-assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
+assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor, rotationRad\)/);
 assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
@@ -1251,7 +1251,7 @@ assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
 // The lead label's \"?\" explains why 90° elec is not a right angle on screen.
-assert.match(fieldResultSource, /<g className=\"public-field-axis-help\">\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
+assert.match(fieldResultSource, /<g className=\"public-field-axis-help\" transform=\{upright\(arcLabelX, arcLabelY\)\}>\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
 assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
 assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
 assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);

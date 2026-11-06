@@ -4909,3 +4909,9 @@ button.performance-tag { cursor: help; }
 .performance-settings-summary div { display: flex; gap: 6px; }
 .performance-settings-summary dt { color: var(--text-muted); }
 .performance-settings-summary dd { margin: 0; }
+
+/* The sector view's position on the ring (ViewportNavigation SectorDial). */
+.public-sector-dial { width: 24px; height: 24px; margin: 0 2px; cursor: pointer; flex: none; }
+.public-sector-dial circle { fill: none; stroke: var(--border-default); stroke-width: 2; }
+.public-sector-dial path { fill: none; stroke: var(--text-accent); stroke-width: 3.5; stroke-linecap: round; }
+.public-sector-dial:hover circle { stroke: var(--text-secondary); }

@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 13750,
-      "sha256": "fd2078e5d5eb503a2f07ff285fae2a8d013b6656b5c4c77bdd77a93a2ea115b2"
+      "bytes": 13917,
+      "sha256": "597e65e5d1fb6c0ff7f6ae75bc7809c367d65307fcf368668963e351920b17c6"
     },
     {
       "path": "SECURITY.md",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 163193,
-      "sha256": "861e14608c0613901167d147b7a2474676c249e4558a754baaf8b050d33e700b"
+      "bytes": 163252,
+      "sha256": "be0b1f5d388edf70b7e50f3d68e0094cf9e1098f465dcabd99944fe2a88acfa2"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6605,8 +6605,8 @@
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
-      "bytes": 1565,
-      "sha256": "c81995eb6c0599cd4d3054a1d1493511e33840ceceddff659492bf056ffb6b90"
+      "bytes": 2566,
+      "sha256": "00438ce61f26d5eaff9d67eed5b915df18ec581e4b93296478340b2e72c78ec4"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 59264,
-      "sha256": "53448e49cbf6e746fbd4c815c309dbe80b77d9114e420c511ca10a242c67d086"
+      "bytes": 61182,
+      "sha256": "bf6c096256476b9198007ecfe0e6a3d0b02a0047f8754df53e30c58ab2fd0ea2"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7045,8 +7045,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 61787,
-      "sha256": "efc89ac980567a2d66ccdcf745758b32bb68b425ae9aa93f915e149e4901844c"
+      "bytes": 62297,
+      "sha256": "9fed1d143f181e9dafce9dcec16c672e236c7146932f57fc9887552107135a90"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 11999,
-      "sha256": "a697295acfefdf50dfd7eb92f7a597f1501d880ef553c5b40ac190ab9b2383c2"
+      "bytes": 16825,
+      "sha256": "c53384988bc96652f35966e2bb79db000636fe53873e0adff569ed8430dd9df7"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -7285,8 +7285,8 @@
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
-      "bytes": 1973,
-      "sha256": "c89d39a926f8ef2e2c9daeed16e9f723bc71456be54456d14f56bd97c2962848"
+      "bytes": 2901,
+      "sha256": "592bc6b95ae184a976a14ac1fb01f386c61462f3723aa63e2403ffe7eba91cbb"
     },
     {
       "path": "frontend/src/public/flatIpmBurialHealth.ts",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 290057,
-      "sha256": "c6a629ccb515610ec311d70b36b4037c2e1757dabcd89767b5f7101e6ecde539"
+      "bytes": 290501,
+      "sha256": "3418f10c5028b815aab9ddd23007f1a309b46099469d423feca67b75e7c3f203"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7520,8 +7520,8 @@
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
-      "bytes": 2177,
-      "sha256": "f9c62cb7a0387e646974b3655842e21d127f0e11ef40131363931135daea6290"
+      "bytes": 2517,
+      "sha256": "3f38eeb560678e3bca9bde3a4b701dd171c7fdec66b090be0a6ab0de74c2d83c"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
@@ -13030,8 +13030,8 @@
     },
     {
       "path": "frontend/scripts/test-sector-framing.mjs",
-      "bytes": 3058,
-      "sha256": "c2c288c6b72d97766b79c978ec17bc764d4734aa20d6a0f1857a116f2acfa46f"
+      "bytes": 3688,
+      "sha256": "2262465fc92e562f1790c63bfe302f47902a66136335176540d3c3339f1cfd9d"
     },
     {
       "path": "frontend/src/public/RotorArrangement.tsx",
@@ -13070,8 +13070,8 @@
     },
     {
       "path": "frontend/src/public/sectorFraming.ts",
-      "bytes": 3286,
-      "sha256": "5a7a4bdeda854e03b789afbe7c343e9a69309ef58e6216086f4542b1335388b5"
+      "bytes": 3265,
+      "sha256": "58dd90355ef2a8ab4e4772db1ba86c7e590cb8423e4ece33c0106495a52c56d7"
     },
     {
       "path": "tests/test_lrk_reference.py",

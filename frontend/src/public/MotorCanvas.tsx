@@ -513,6 +513,8 @@ function drawGeometry(
   highlightComponentKind: PublicMotorComponentKind | null,
   viewportScale: number,
   pan: [number, number],
+  /** The sector turntable's rotation about the motor centre, clockwise on screen. */
+  rotationRad: number,
   annotations: DimensionAnnotation[],
   activeDimension: DimensionId | null,
   hoveredDimension: DimensionId | null,
@@ -540,7 +542,7 @@ function drawGeometry(
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
   const magnetPoleLabels: MagnetPoleLabel[] = [];
-  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor);
+  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor, rotationRad);
   const slotCount = Number(data.metadata.slot_count || 0);
   // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
   // holds one coil side, a two-layer one arrives as two side-by-side regions,
@@ -1150,6 +1152,8 @@ function drawMesh(
   rotorAngleDeg: number,
   viewportScale: number,
   pan: [number, number],
+  /** The sector turntable's rotation about the motor centre, clockwise on screen. */
+  rotationRad: number,
   displayMode: PublicMeshDisplayMode,
   showEdges: boolean,
   qualities: number[],
@@ -1158,7 +1162,7 @@ function drawMesh(
   meshHits: MeshTriangleHit[],
 ): void {
   if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
-  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan);
+  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
   const fillPaths = new Map<string, Path2D>();
   const qualityColors: Record<PublicMeshQualityBand, string> = {
     good: '#2a9d8f',
@@ -1361,7 +1365,7 @@ export function MotorCanvas({
   const ringInnerMm = ring?.innerMm;
   const ringOuterMm = ring?.outerMm;
   // fitTransform pads the motor by 7.5% of the frame's smaller side, then fits its diameter.
-  const sectorForSize = useCallback((width: number, height: number, angleDeg: number) => {
+  const sectorForSize = useCallback((width: number, height: number) => {
     const box = navigationFrame(width, height) ?? { width, height };
     const padding = Math.min(box.width, box.height) * 0.075;
     return sectorView(
@@ -1369,7 +1373,6 @@ export function MotorCanvas({
       box.width,
       box.height,
       Math.min(box.width - 2 * padding, box.height - 2 * padding) / 2,
-      angleDeg,
     );
   }, [navigationFrame, ringInnerMm, ringOuterMm]);
   const navigation = useViewportNavigation(undefined, navigationFrame, sectorForSize, ringKey(ring));
@@ -1439,6 +1442,7 @@ export function MotorCanvas({
           highlightComponentKind,
           navigation.scale,
           [navigation.pan.x, navigation.pan.y],
+          (navigation.rotationDeg * Math.PI) / 180,
           annotations,
           activeDimension,
           hoveredDimension,
@@ -1457,6 +1461,7 @@ export function MotorCanvas({
           rotorAngleDeg,
           navigation.scale,
           [navigation.pan.x, navigation.pan.y],
+          (navigation.rotationDeg * Math.PI) / 180,
           meshDisplayMode,
           showMeshEdges,
           meshQualities,
@@ -1491,6 +1496,7 @@ export function MotorCanvas({
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
+    navigation.rotationDeg,
     rotorAngleDeg,
     selectedComponent,
     showMeshEdges,
@@ -1601,7 +1607,10 @@ export function MotorCanvas({
             onReset={navigation.reset}
             onSector={navigation.sector}
             onSectorStep={navigation.sectorStep}
+            onSectorGoTo={navigation.sectorGoTo}
             sectorActive={navigation.sectorActive}
+            sectorAngleDeg={navigation.sectorAngleDeg}
+            sectorSpanDeg={navigation.sectorSpanDeg}
           />
         );
         return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;

@@ -21,6 +21,8 @@ export function fitTransform(
   pan: [number, number] = [0, 0],
   /** Part of the canvas to fit into; the whole canvas by default. */
   frame?: ViewportFrame,
+  /** The view's rotation about the frame centre, clockwise on screen (the sector turntable). */
+  rotationRad = 0,
 ): { map: (point: [number, number]) => [number, number]; scale: number } {
   const box = frame ?? { x: 0, y: 0, width, height };
   const xs = points.map(([x]) => x);
@@ -36,14 +38,18 @@ export function fitTransform(
   const offsetX = box.x + (box.width - spanX * scale) / 2 - minX * scale;
   const offsetY = box.y + (box.height - spanY * scale) / 2 + maxY * scale;
   const { x: centerX, y: centerY } = viewportTransformOrigin(width, height, frame);
+  const cos = Math.cos(rotationRad);
+  const sin = Math.sin(rotationRad);
   return {
     scale: scale * viewportScale,
     map: ([x, y]) => {
-      const fittedX = offsetX + x * scale;
-      const fittedY = offsetY - y * scale;
+      const fittedX = offsetX + x * scale - centerX;
+      const fittedY = offsetY - y * scale - centerY;
+      const turnedX = rotationRad ? fittedX * cos - fittedY * sin : fittedX;
+      const turnedY = rotationRad ? fittedX * sin + fittedY * cos : fittedY;
       return [
-        centerX + (fittedX - centerX) * viewportScale + pan[0],
-        centerY + (fittedY - centerY) * viewportScale + pan[1],
+        centerX + turnedX * viewportScale + pan[0],
+        centerY + turnedY * viewportScale + pan[1],
       ];
     },
   };

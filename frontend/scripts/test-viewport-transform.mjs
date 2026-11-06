@@ -23,4 +23,20 @@ for (const [width, height] of [[1000, 700], [760, 600], [400, 500]]) {
     }
   }
 }
+// The sector turntable turns the motor about its centre before zoom and pan: the
+// centre stays put, distances from it are kept, and a quarter turn takes the top
+// of the motor to its right-hand side (clockwise on screen).
+{
+  const motor = [[-40, -40], [40, -40], [40, 40], [-40, 40]];
+  const still = fitTransform(motor, 600, 400, 2, [30, -20]);
+  const turned = fitTransform(motor, 600, 400, 2, [30, -20], undefined, Math.PI / 2);
+  const centre = still.map([0, 0]);
+  assert.deepEqual(turned.map([0, 0]).map((v) => Math.round(v * 1e9) / 1e9), centre.map((v) => Math.round(v * 1e9) / 1e9));
+  const top = still.map([0, 30]);
+  const topTurned = turned.map([0, 30]);
+  const radius = Math.hypot(top[0] - centre[0], top[1] - centre[1]);
+  assert.ok(Math.abs(Math.hypot(topTurned[0] - centre[0], topTurned[1] - centre[1]) - radius) < 1e-9);
+  assert.ok(Math.abs(topTurned[0] - (centre[0] + radius)) < 1e-9 && Math.abs(topTurned[1] - centre[1]) < 1e-9);
+  assert.equal(turned.scale, still.scale);
+}
 console.log('shifted and full viewport zoom checks passed');
