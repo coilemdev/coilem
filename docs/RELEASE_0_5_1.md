@@ -1,19 +1,19 @@
 # coilEM v0.5.1 release preparation
 
-Prepared November 6, 2026. **The candidate is frozen for qualification; the
-release is not qualified or published.** The app and frontend identify as
+Prepared November 6, 2026. **The registered A-D/Prius release qualification gate
+passes. Packaging and protected publication follow below.** The app and frontend identify as
 0.5.1; Magneto2D remains 0.4.0. The [release notes](../RELEASE_NOTES.md) describe
 the user-visible changes since the published v0.5.0.
 
 ## Candidate identity
 
-The non-publishing annotated tag `freeze/v0.5.1-rc2` pins the clean prepared
+The non-publishing annotated tag `freeze/v0.5.1-rc3` pins the clean prepared
 commit and its tree. Resolve the full identities with:
 
 ```sh
-git rev-parse 'freeze/v0.5.1-rc2^{commit}'
-git rev-parse 'freeze/v0.5.1-rc2^{tree}'
-git show --no-patch freeze/v0.5.1-rc2
+git rev-parse 'freeze/v0.5.1-rc3^{commit}'
+git rev-parse 'freeze/v0.5.1-rc3^{tree}'
+git show --no-patch freeze/v0.5.1-rc3
 ```
 
 The [candidate plan](../benchmarks/v0.5.1/candidate-plan.json) records the
@@ -23,10 +23,11 @@ so the source does not attempt to contain its own commit hash. Keep this tag
 immutable. Any later source or version change requires a new candidate ref
 and rechecking the affected release gates.
 
-The original `freeze/v0.5.1-rc1` remains at `dff4e12`. Its four-platform
-wheel rehearsal passed, but runtime CI found a test pinned to 0.5.0 and the
-saved-design export stamp still at 0.5.0. Candidate rc2 aligns that stamp with
+The original `freeze/v0.5.1-rc1` remains at `dff4e12`; rc2 remains at `923de5f`.
+The rc1 wheel rehearsal passed, but runtime CI found a test pinned to 0.5.0 and the
+saved-design export stamp still at 0.5.0. The rc2 code aligns that stamp with
 0.5.1 and checks the current application version across metadata and docs.
+Rc3 adds the accepted source-matched qualification records and owner decisions.
 Numerical source, requests, gates and measured evidence are unchanged.
 
 The measured development source is
@@ -51,35 +52,53 @@ retains both complete runs and the separate stopped optional repeat:
 | Overnight fresh FEMM A–D | All 46 fresh cases complete; comparison 46 PASS; 336/336 gates PASS; all 46 waveforms exactly match reviewed references | Existing same-commit native fields reused; one readiness failure successfully retried |
 | Proposed cogging Phase E | 12 native cases, 17 fresh FEMM sweeps / 425 fields; baseline 9 PASS / 3 FAIL; selected refined references 10 PASS / 2 YELLOW | Original reference self-check failures retained; all five finer-reference controls pass their self-checks |
 
-The fresh bundles remain REVIEW_REQUIRED. No gate, fixture, numerical floor,
-reference default, registered platform record or qualified output claim is
-changed by this preparation.
+The fresh bundles remain REVIEW_REQUIRED. No gate, fixture, numerical floor
+or reference default changes. The owner's separate manual review registers
+the source-matched A-D/Prius platform evidence under the scope below.
+
+## Accepted qualification and scope
+
+The [owner decisions](../benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json)
+record the explicit approvals on November 6. Both platform records and both
+complete Prius collections retain measured commit `a4f9f4d`. The unchanged
+64-file physics identity permits metadata publication without relabeling
+those fields as newly measured on the versioned code commit.
+
+The reviewed source difference from the old reference anchor adds optional
+analysis settings in `backend/models/config.py`; registered configurations,
+suite, FEMM bundle and all 46 fresh repeated reference waveforms are unchanged.
+The owner accepted continued reference reuse. The owner also accepted the
+single near-zero macOS Prius 180-degree torque observation change from
+0.0265393021 to 0.0301813299 Nm. Automatic limits and old approved baselines
+remain unchanged; this is an explicit manual review of that observation.
+
+Both platforms have 46 A-D PASS, 336 passing gates and the planned unsupported
+legacy ORNL Prius. Each complete Prius collection has 17 jobs / 568 fields
+and all ten software checks passing. The
+[release qualification assessment](../benchmarks/v0.5.1/release-qualification.json)
+passes. The [reuse-only verification](https://github.com/coilemdev/coilem/actions/runs/42270527427)
+passed on Windows and macOS without new field solves.
+
+Cogging stays experimental by owner decision. Proposed Phase E is unregistered,
+its reference bundle remains REVIEW_REQUIRED and both normal-mesh YELLOW
+cases stay disclosed. Full Phase E review and registration are deferred from
+this release scope. No new hardware/performance qualification is claimed.
 
 ## Acceptance before publication
 
-- [x] Bump backend, frontend and frontend lock metadata to 0.5.1 before freezing.
-- [x] Publish the complete overnight FEMM supplement beside the native results,
-  with numerical gates, waveforms, provenance, retry history and checksums.
-- [x] Record the preparation freeze and unchanged guarded physics hashes.
-- [ ] Review Phase E references, including the original failed self-checks.
-- [ ] Resolve the 8p/24s and 12p/36s distributed cogging YELLOW cases under the
-  existing gates, or explicitly accept a narrower supported scope. Separate
-  refined-native studies do not make the current normal-mesh requests PASS.
-- [ ] Finish Phase E registration/default-command coverage after owner review.
-- [ ] Complete and publish the required matching Windows/macOS A–D and Prius
-  qualification with frozen inputs, raw archives and preserved failed attempts.
-  Review candidate identity and permitted evidence carry-forward explicitly.
-- [ ] Pass `python -m tools.release.qualification` for the accepted candidate.
-  The historical v0.5.0 assessment is not a v0.5.1 release assessment.
-- [ ] Pass development CI, dependency audits, snapshot/publication checks,
-  installed-package/browser walkthroughs, and all four release wheel targets
-  with `publish=none` at the frozen candidate. Retain exact workflow run links.
-- [ ] Obtain owner release acceptance, then create the matching `v0.5.1` tag
-  and use the protected publication workflow.
+- [x] Bump all app/frontend/saved-design version metadata to 0.5.1.
+- [x] Publish the overnight FEMM supplement beside the native results.
+- [x] Preserve both earlier preparation freezes and the original field identity.
+- [x] Record explicit owner reference-reuse, Prius-observation and cogging-scope approvals.
+- [x] Publish source-matched Windows/macOS A-D and complete Prius records.
+- [x] Pass `python -m tools.release.qualification` with the accepted field candidate.
+- [x] Pass code-candidate CI, browser workflows and all four wheel targets with
+  21 installed-package acceptance checks at `923de5f`.
+- [ ] Pass CI and packaging checks on the qualification publication commit.
+- [ ] Merge the prepared release PR, tag the accepted publication commit as
+  `v0.5.1` and run the protected publication workflow.
 
-The existing [release benchmark workflow](../.github/workflows/release-benchmarks.yml)
-accepts a full immutable candidate SHA. The
-[wheel workflow](../.github/workflows/release-wheels.yml) supports a
-non-publishing `publish=none` rehearsal. Successful builds alone do not pass
-the numerical qualification gate. Additional field solves are scheduled
-explicitly after reviewing the existing evidence and remaining scope.
+The protected `pypi` environment controls package publication. Keep exact
+workflow URLs, immutable field/source identities and original failed attempts.
+
+Public reports redact machine-local diagnostic paths. The [projection receipt](../benchmarks/qualification-a4f9f4dccf2b/publication-projection.json) preserves original artifact hashes and verifies that numerical values and measured identities are unchanged.

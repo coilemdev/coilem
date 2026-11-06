@@ -1,0 +1,12 @@
+{
+  "schema": "coilem.release_qualification_assessment/v1",
+  "status": "PASS",
+  "candidate": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "prepared_code_candidate": "923de5f00de1f7ecaa4afb5318fc7ac8f37cec1c",
+  "command": "python -m tools.release.qualification",
+  "exact_field_candidate_command": "python -m tools.release.qualification --candidate a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "scope": "Source-matched Windows/macOS A-D records and complete Prius software checks, with the owner's explicit reference-reuse and single observation approvals. Metadata advances separately from the immutable field commit. Cogging remains experimental and Phase E unregistered.",
+  "owner_decisions": "benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json",
+  "owner_decisions_sha256": "d3a204c84463e2ade8a6281fe584c65a702361680e908a2f1232c3fecedfe5c6",
+  "errors": []
+}

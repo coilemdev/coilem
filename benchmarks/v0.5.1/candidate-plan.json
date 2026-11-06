@@ -1,11 +1,11 @@
 {
   "schema": "coilem.release_candidate_plan/v1",
-  "candidate_ref": "refs/tags/freeze/v0.5.1-rc2",
+  "candidate_ref": "refs/tags/freeze/v0.5.1-rc3",
   "application_version": "0.5.1",
   "solver_version": "0.4.0",
   "prepared_on": "2026-11-06",
-  "status": "FROZEN_PENDING_QUALIFICATION",
-  "release_qualified": false,
+  "status": "NUMERICAL_QUALIFICATION_ACCEPTED",
+  "release_qualified": true,
   "measured_development_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
   "measurement_policy": "Existing reports retain their measured commit. Matching physics hashes establish unchanged physics, not completion of final-candidate qualification.",
   "freeze_receipt": "The annotated freeze tag records the exact prepared commit and tree outside its own source tree. Do not move this tag; changes require a new candidate.",
@@ -84,20 +84,27 @@
     "benchmarks/reference-baselines/protocol16-reviewed-20261103/manifest.json": "f3e1e525ea622285778becb126f4e909e72f3830a14292a23a26e0a081fc8c2e"
   },
   "pending": [
-    "Review Phase E FEMM references and original self-check failures",
-    "Resolve or explicitly accept supported coverage for the two cogging YELLOW cases",
-    "Complete required matching Windows/macOS and Prius qualification and reviewed registration",
-    "Complete Phase E registration/default-command coverage without changing gates",
-    "Run final release qualification and four-target installed-wheel/browser acceptance",
-    "Owner release acceptance before the v0.5.1 publication tag"
+    "Pass CI and wheel checks on the qualification publication commit",
+    "Merge the prepared release PR and run protected v0.5.1 publication workflow"
   ],
-  "previous_candidate_ref": "refs/tags/freeze/v0.5.1-rc1",
-  "previous_candidate_commit": "dff4e12139171e750b040351e275ed46988615ff",
-  "supersedes_reason": "Align the saved-design application version with 0.5.1 and make version-alignment tests follow the running application version.",
+  "previous_candidate_ref": "refs/tags/freeze/v0.5.1-rc2",
+  "previous_candidate_commit": "923de5f00de1f7ecaa4afb5318fc7ac8f37cec1c",
+  "supersedes_reason": "Publish source-matched platform/Prius qualification and the owner's explicit release decisions; numerical source and measured artifacts unchanged.",
   "version_metadata_files": {
     "backend/__init__.py": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191",
     "frontend/package.json": "95f77636ad7140bf8dca88a5da202f9c678d62eb62be96732580c7fb81d05b54",
     "frontend/package-lock.json": "e45e57b54166cc438f9d880bc856ba1e0ad6740c048c6c9006f0b8d93068e318",
     "frontend/src/public/designFile.ts": "bd5c309a65323c3ae19b6c5203334d7a3be3091b0e397e61ab488fc548ca5696"
-  }
+  },
+  "measured_qualification_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "prepared_code_candidate": "923de5f00de1f7ecaa4afb5318fc7ac8f37cec1c",
+  "owner_decisions": {
+    "file": "benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json",
+    "sha256": "d3a204c84463e2ade8a6281fe584c65a702361680e908a2f1232c3fecedfe5c6"
+  },
+  "qualification_scope": "Registered protocol 1.6 A-D parity and Prius software checks. No new hardware qualification; cogging remains experimental and Phase E unregistered.",
+  "deferred_by_owner": [
+    "Phase E reference acceptance and registration",
+    "Expanded cogging qualification; retain both YELLOW cases"
+  ]
 }

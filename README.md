@@ -8,15 +8,18 @@ Everything runs on your computer.
 Website: [coilem.com](https://coilem.com)
 
 The source identifies as **coilEM 0.5.1 Developer Preview**, with
-**Magneto2D 0.4.0**. Version 0.5.1 is a frozen preparation candidate with
-qualification still pending; coilEM 0.5.0 is the published release.
+**Magneto2D 0.4.0**. Version 0.5.1 passes the registered A-D release qualification gate
+with source-matched Windows/macOS and Prius software evidence. See
+[release status](PUBLICATION_STATUS.md) for packaging and publication.
 The [release notes](RELEASE_NOTES.md) and [0.5.1 release plan](docs/RELEASE_0_5_1.md)
 track its scope and remaining gates. The [Windows evidence](benchmarks/windows-v051-20261105-a4f9f4d/README.md)
 records 46 A–D PASS and 336/336 gates on the integration merge, including a
 complete overnight fresh FEMM repeat. Proposed cogging coverage records
 10 PASS / 2 YELLOW against the selected references and remains under review.
-Existing reports retain their measured commit; the candidate freeze does not
-claim new macOS/Prius measurements or complete release qualification.
+The [accepted qualification records](benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json)
+retain measured commit `a4f9f4d`; all 64 guarded physics hashes match the
+versioned release code. The owner accepted reference reuse, one near-zero
+Prius observation difference, and the experimental cogging scope.
 
 The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the historical
 Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,

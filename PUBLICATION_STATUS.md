@@ -1,58 +1,51 @@
 # Release status
 
-Updated November 6, 2026: the source candidate is **coilEM 0.5.1 Developer
-Preview**, with **Magneto2D 0.4.0**. The app/frontend versions are bumped
-before the preparation freeze `freeze/v0.5.1-rc2`. **Release qualification
-and publication remain pending.** The [release plan](docs/RELEASE_0_5_1.md)
-and [candidate plan](benchmarks/v0.5.1/candidate-plan.json) track identities
-and remaining gates. Version 0.5.0 was published on November 3, 2026.
+Prepared November 6, 2026: **coilEM 0.5.1 Developer Preview**, with
+**Magneto2D 0.4.0**, passes the [release qualification gate](benchmarks/v0.5.1/release-qualification.json)
+for registered A-D parity and Prius software checks. The
+[release plan](docs/RELEASE_0_5_1.md) tracks packaging and protected publication;
+the [GitHub releases](https://github.com/coilemdev/coilem/releases) record the
+published packages.
 
-## Current evidence
+## Accepted scope
 
-The [combined Windows native/FEMM evidence](benchmarks/windows-v051-20261105-a4f9f4d/README.md)
-measures the clean #190 integration merge `a4f9f4d`:
+The [owner's explicit decisions](benchmarks/qualification-a4f9f4dccf2b/owner-decisions.json)
+accept reuse of the unchanged reviewed protocol 1.6 FEMM references, the single
+near-zero macOS Prius observation difference, and an experimental cogging
+scope. Automatic tolerances, original approved baselines, measured values and
+reference bundle bytes are unchanged.
 
-- Native A–D: 52 supported jobs, 46 PASS, one planned unsupported legacy ORNL
-  Prius, and 336/336 gates PASS against the unchanged reviewed references.
-- Overnight FEMM: all 46 fresh reference cases complete, comparison 46 PASS
-  and 336/336 gates PASS. All 46 waveforms exactly match the reviewed
-  references. One failed readiness attempt was successfully retried and is
-  retained with its hashes. Native fields came from the same-commit run above.
-- Proposed cogging: 12 native cases and 17 fresh FEMM sweeps / 425 fields.
-  Original baseline results remain 9 PASS / 3 FAIL; selected refined
-  references give 10 PASS / 2 YELLOW. All five finer-reference controls pass
-  their reference self-checks. Fresh references remain REVIEW_REQUIRED.
+Both Windows and macOS retain 46 A-D PASS, one planned unsupported legacy
+ORNL Prius and 336/336 gates PASS. Each Prius collection has all 17 jobs,
+568 field reports and ten passing software checks. The original fields were
+measured at `a4f9f4d`; all 64 guarded physics hashes match the versioned release
+code. The [reuse-only workflow](https://github.com/coilemdev/coilem/actions/runs/42270527427)
+successfully reverified both platforms without new field solves. Publication
+metadata does not relabel the measured commit.
 
-The separate optional A–D repeat stopped at the owner's request is retained
-as history. It is not the complete overnight run and supplies no reference
-values to the earlier native-vs-reviewed comparison.
+The macOS Prius `curve-180-16.mean_torque_Nm` observation moved from
+0.0265393021 to 0.0301813299 Nm, exceeding its 0.001 Nm automatic carry limit.
+The owner accepted this recorded experimental difference. All software checks
+pass; no hardware or expanded performance qualification is claimed.
 
-## Gates before the v0.5.1 publication tag
+Cogging remains experimental. Proposed Phase E stays unregistered, its fresh
+reference bundle stays REVIEW_REQUIRED and the two normal-mesh YELLOW cases
+remain disclosed. The original baseline 9 PASS / 3 FAIL and selected-reference
+10 PASS / 2 YELLOW comparisons, all 425 FEMM fields and five mesh controls are
+retained in the [Windows packet](benchmarks/windows-v051-20261105-a4f9f4d/README.md).
+Phase E acceptance/registration is deferred by the owner and is not a release
+gate for this approved scope.
 
-- Review Phase E references and their original self-check failures; resolve
-  or explicitly accept supported coverage for the two YELLOW cases.
-- Finish Phase E registration/default-command coverage after review.
-- Complete the required matching Windows/macOS and Prius qualification and
-  publish accepted platform records with frozen source/input identities.
-- Pass the actual release qualification gate, development CI, dependency
-  audits, all four non-publishing wheel targets and installed-package/browser
-  acceptance. Preserve exact tested commits and workflow links.
-- Obtain owner release acceptance before the `v0.5.1` tag and protected
-  publication workflow.
+## Packaging and publication
 
-The preparation tag does not trigger publication. Existing reports keep
-their measured commit. Unchanged guarded physics hashes support provenance
-review; they do not create new platform measurements or complete candidate
-qualification. Linux/Python 3.15 smoke coverage does not establish full
-numerical parity. Output qualification statuses and fixed gates are unchanged.
+The versioned code candidate `923de5f` passed all 41 active PR checks, including
+four-platform wheel builds and 21 installed-package acceptance checks. The
+qualification publication commit receives its own CI and packaging checks.
+The preparation freeze advances to `freeze/v0.5.1-rc3`; rc1 and rc2 remain
+immutable. The final matching `v0.5.1` tag uses the protected publication
+workflow, including its `pypi` environment approval.
 
-## Historical qualification
-
-The [v0.5.0 evidence index](benchmarks/v0.5.0/README.md) and its
-[passing release assessment](benchmarks/v0.5.0/release-qualification.json)
-remain bound to candidate `88aae101`. Windows and macOS each record 46 PASS
-and 336/336 gates; the complete exact-candidate Prius audit passes all ten
-software checks. The [v0.4.0 history](benchmarks/v0.4.0/README.md) and original
-platform identities are preserved. These historical assessments do not
-qualify v0.5.1. New hardware correlation #69/#82 remains deferred; CREATOR
-#90 and named presets #127 are outside this release preparation.
+The [v0.5.0 assessment](benchmarks/v0.5.0/release-qualification.json) and all
+earlier evidence remain preserved with their original measured identities.
+New hardware correlation #69/#82 remains deferred; CREATOR #90 and named
+presets #127 are outside this release.

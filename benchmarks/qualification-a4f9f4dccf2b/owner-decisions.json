@@ -1,0 +1,44 @@
+{
+  "schema": "coilem.release_owner_decisions/v1",
+  "date": "2026-11-06",
+  "approval_source": "Explicit user responses to the three release-review questions in Codex chat",
+  "review": "https://github.com/coilemdev/coilem/pull/209#issuecomment-6692274640",
+  "prepared_candidate": "923de5f00de1f7ecaa4afb5318fc7ac8f37cec1c",
+  "measured_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "source_workflow_run": 42081140200,
+  "reuse_verification_run": 42270527427,
+  "decisions": [
+    {
+      "id": "protocol16_reference_reuse",
+      "answer": "Approve reviewed reference reuse",
+      "scope": "Unchanged reviewed protocol 1.6 FEMM references; unchanged registered configurations. Only optional analysis configuration settings changed in the reference-sensitive source registry.",
+      "changed_source": "backend/models/config.py",
+      "fresh_femm_cases_exact": 46
+    },
+    {
+      "id": "macos_prius_180_observation",
+      "answer": "Accept this recorded difference",
+      "scope": "Only the named experimental observation; no hardware or performance claim added.",
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "old": 0.026539302148737773,
+      "new": 0.03018132993388819,
+      "tolerance": 0.001
+    },
+    {
+      "id": "cogging_scope",
+      "answer": "Keep cogging experimental (Recommended)",
+      "scope": "Phase E remains unregistered, the fresh bundle remains REVIEW_REQUIRED, and both normal-mesh YELLOW cases remain disclosed.",
+      "yellow_cases": [
+        "spm_8p24s_distributed_femm_validation__cogging",
+        "spm_12p36s_distributed_femm_validation__cogging"
+      ]
+    }
+  ],
+  "automatic_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "automatic_tolerances_changed": false,
+  "measurements_mutated": false,
+  "reference_bundle_mutated": false,
+  "note": "Manual owner review of the exact reported exceptions. Automatic carry-forward still fails closed for unreviewed source or value changes."
+}
