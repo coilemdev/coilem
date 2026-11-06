@@ -1496,7 +1496,7 @@ export function App() {
 
   const restoreSavedRun = async (
     savedRun: PublicSavedRun,
-    destination: 'design' | 'solve',
+    destination: 'design' | 'solve' | 'results',
   ) => {
     try {
       const payload = await loadPublicRun(savedRun.project_slug, savedRun.run_id);
@@ -1531,6 +1531,29 @@ export function App() {
       invalidateGeometryPreview();
       resetComputedState();
       setShowLanding(false);
+      if (destination === 'results') {
+        // The stored result as the solve returned it; its field playback is
+        // drawn again from the run's frames when the cache no longer has it.
+        const storedResult = payload.result;
+        if (!storedResult || typeof storedResult !== 'object') {
+          throw new Error('The saved run does not contain a stored result.');
+        }
+        const provenance = (payload.manifest as PublicJson | undefined)?.provenance as PublicJson | undefined;
+        setResult({
+          ...(storedResult as PublicJson),
+          saved_run: payload.saved_run,
+          qualification: provenance?.qualification ?? null,
+        } as unknown as SolveResult);
+        setView('solve');
+        const completedAt = typeof savedRun.completed_at === 'string' ? new Date(savedRun.completed_at).toLocaleString() : null;
+        const playback = payload.field_playback as { available?: unknown } | undefined;
+        setNotice([
+          `Showing the saved result${completedAt ? ` from ${completedAt}` : ''}. It is stored evidence for these inputs; solve again for a current result.`,
+          playback?.available === false ? 'Its field playback was removed to save disk space.' : null,
+          parsed.solverSettingsNotice,
+        ].filter(Boolean).join(' '));
+        return;
+      }
       setView(destination);
       const restoredNotice = destination === 'solve'
         ? replaySolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)
@@ -1785,6 +1808,7 @@ export function App() {
           onNewDesign={startNewDesign}
           experimentalRotors={experimentalRotors.enabled}
           workflowDisabled
+          onOpenRunResults={(savedRun) => void restoreSavedRun(savedRun, 'results')}
         />
         <PublicLanding
           onStartGuided={() => openWorkspace(true)}
@@ -1868,6 +1892,7 @@ export function App() {
       onDownloadRunExport={downloadSavedRunExport}
       onOpenRunProject={(savedRun) => void restoreSavedRun(savedRun, 'design')}
       onRerun={(savedRun) => void restoreSavedRun(savedRun, 'solve')}
+      onOpenRunResults={(savedRun) => void restoreSavedRun(savedRun, 'results')}
       onUndoDesignEdit={undoLastDesignEdit}
       onDismissDesignEdit={() => setEditFeedback(null)}
     />

@@ -376,7 +376,11 @@ assert.match(workspaceSource, /PublicRunComparison/);
 assert.match(workspaceSource, /elmerCapability\.feature_enabled && <ParameterSectionBlock id="solver" label="Solver"/);
 assert.match(workspaceSource, /aria-label="Previous runs"/);
 assert.match(workspaceSource, /Review or compare completed analyses without starting another solve/);
-assert.match(workspaceSource, /<PublicRunComparison manageRuns/);
+assert.match(workspaceSource, /<PublicRunComparison\s+manageRuns/);
+// An earlier run's stored result opens from Previous runs, its playback drawn from its frames.
+assert.match(runComparisonSource, /record\.status === 'complete' && !confirming[\s\S]*?Open results/);
+assert.match(workspaceSource, /onOpenRunResults=\{props\.onOpenRunResults\}/);
+assert.match(appSource, /onOpenRunResults=\{\(savedRun\) => void restoreSavedRun\(savedRun, 'results'\)\}/);
 assert.match(workspaceSource, /Manage previous runs/);
 assert.match(workspaceSource, /needsRunStorageRecovery\(props\.error\)/);
 assert.match(runComparisonSource, /aria-label="Local run storage"/);

@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 import gzip
+import hashlib
 import json
 import os
+import shutil
 from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
 import pytest
 
-from backend import field_frame_codec
+from backend import field_frame_codec, public_field_playback
 from backend.field_artifacts import (
     AIRGAP_RECORD_ARTIFACT_SCHEMA,
     FIELD_LINE_FRAME_ARTIFACT_SCHEMA,
@@ -22,6 +24,7 @@ from backend.field_artifacts import (
     solve_cache_root,
     write_field_line_frame_artifact,
 )
+from backend.run_field_playback import run_playback_dir
 from backend.solve_workspace import (
     FIELD_PLAYBACK_REMOVED_REASON,
     SolveWorkspace,
@@ -178,7 +181,12 @@ def test_saved_run_keeps_the_compact_frame_and_links_cache_files(data_root: Path
     compact = compact_field_frame_path(sources["frame-a"])
     assert os.stat(stored).st_ino == os.stat(compact).st_ino
     _close(read_field_line_frame_artifact(stored), read_field_line_frame_artifact(sources["frame-a"]))
-    assert set(_records(location.path)) == {"field_frame", "field_playback_image", "other"}
+    # Playback images stay out of the run: they wait in its playback cache folder.
+    assert set(_records(location.path)) == {"field_frame", "other"}
+    image_ref = loaded["result"]["field_playback"]["frames"][0]["compositions"]["resultant"]["flux"]
+    assert image_ref["relative_path"] == "playback/resultant/frame_0000_resultant_flux.webp"
+    cached = run_playback_dir(location.project_slug, location.run_id) / "resultant" / "frame_0000_resultant_flux.webp"
+    assert os.stat(cached).st_ino == os.stat(sources["image-a"]).st_ino
 
 
 def test_older_runs_give_up_field_playback_but_keep_results_and_other_artifacts(
@@ -191,9 +199,11 @@ def test_older_runs_give_up_field_playback_but_keep_results_and_other_artifacts(
     oldest, *newest = locations
 
     records = _records(oldest.path)
-    assert records["field_frame"]["removed_at"] and records["field_playback_image"]["removed_at"]
+    assert records["field_frame"]["removed_at"]
     assert not (oldest.path / records["field_frame"]["relative_path"]).exists()
-    assert not (oldest.path / records["field_playback_image"]["relative_path"]).exists()
+    # Without frames its images cannot be drawn again, so their cache folder goes too.
+    assert not run_playback_dir(oldest.project_slug, oldest.run_id).exists()
+    assert all(run_playback_dir(location.project_slug, location.run_id).is_dir() for location in newest)
     # The air-gap record is not playback and stays, as do the results and report.
     assert "removed_at" not in records["other"]
     assert (oldest.path / records["other"]["relative_path"]).is_file()
@@ -231,6 +241,12 @@ def test_runs_saved_before_artifact_kinds_are_classified_from_their_files(data_r
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     for record in manifest["artifacts"]:
         record.pop("kind")
+    # Older apps also kept playback images in the run.
+    legacy_image = old.path / "artifacts" / "0099-0123456789ab.webp"
+    legacy_image.write_bytes(b"RIFF legacy layer")
+    manifest["artifacts"].append(
+        {"relative_path": "artifacts/0099-0123456789ab.webp", "sha256": hashlib.sha256(b"RIFF legacy layer").hexdigest(), "size_bytes": 17}
+    )
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     _save(workspace, _cached_run_result("b", sources))
 
@@ -283,3 +299,70 @@ def test_the_field_frame_route_serves_a_saved_runs_compact_frame(data_root: Path
     assert frame["triangles"] == _frame()["triangles"]
     assert frame["noload_plot"]["regions"] == _frame()["regions"]
     _close(frame["element_bx_t"], _frame()["element_bx_t"])
+
+
+def _drawable_plot(scale: float) -> dict[str, object]:
+    return {
+        "nodes_mm": [[-1.0, -1.0], [1.0, -1.0], [1.0, 1.0], [-1.0, 1.0]],
+        "triangles": [[0, 1, 2], [0, 2, 3]],
+        "regions": ["steel", "steel"],
+        "element_b_mag_t": [0.5 * scale, 1.25 * scale],
+        "contour_levels": [
+            {
+                "level": 0.125,
+                "segments_mm": [[-0.75, 0.0, 0.75, 0.0], [0.0, -0.75, 0.0, 0.75]],
+                "segment_b_mag_t": [0.5 * scale, 0.75 * scale],
+                "segment_bx_t": [0.5 * scale, 0.0],
+                "segment_by_t": [0.0, 0.75 * scale],
+            }
+        ],
+        "az_min": -0.125,
+        "az_max": 0.125,
+        "n_pole_pitches": 2,
+        "total_span_deg": 360.0,
+    }
+
+
+def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from fastapi.testclient import TestClient
+    from PIL import Image
+
+    from backend.public_main import app
+
+    monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
+    cache = solve_cache_root() / "magneto2d-drawable"
+    frames = []
+    for index, angle in enumerate((0.0, 15.0)):
+        frame = {**_drawable_plot(1.0), "noload_plot": _drawable_plot(0.75)}
+        ref = write_field_line_frame_artifact(frame, cache, pos_idx=index, elec_angle_deg=angle)
+        frames.append({"angle_deg": angle, "field_frame_artifact": ref, "full_field_frame_artifact": ref})
+    playback, _ = public_field_playback.build_public_field_playback(frames, mode="resultant_pm")
+    assert playback is not None
+    workspace = SolveWorkspace(data_root)
+    result = {"summary": {"avg_torque_Nm": 1.0}, "solve_metadata": {"solver_name": "test"}, "field_line_frames": frames, "field_playback": playback}
+    location = _save(workspace, result)
+    stored = workspace.load_run(location.project_slug, location.run_id)["result"]["field_playback"]
+    layer = stored["frames"][1]["compositions"]["pm"]["layers"]["field_lines"]
+    assert layer["relative_path"] == "playback/resultant_pm/frame_0001_pm_lines.webp"
+    original = cache / "field_playback" / "resultant_pm" / "frame_0001_pm_lines.webp"
+    original_pixels = np.asarray(Image.open(original))
+    client = TestClient(app, base_url="http://127.0.0.1")
+
+    served = client.get(f"/solve/playback-frame/{layer['artifact_id']}")
+    assert served.status_code == 200 and served.headers["content-type"] == "image/webp"
+    assert served.content == original.read_bytes()
+
+    # Cache pruning removed every copy: the image is drawn again from the run's frames.
+    shutil.rmtree(cache / "field_playback")
+    shutil.rmtree(run_playback_dir(location.project_slug, location.run_id))
+    redrawn = client.get(f"/solve/playback-frame/{layer['artifact_id']}")
+    assert redrawn.status_code == 200, redrawn.text
+    from io import BytesIO
+
+    assert np.array_equal(np.asarray(Image.open(BytesIO(redrawn.content))), original_pixels)
+    # The rest of the run's playback is drawn in the same pass.
+    assert len(list(run_playback_dir(location.project_slug, location.run_id).rglob("*.webp"))) == 12
+
+    # Once retention has removed its frames, nothing is left to draw from.
+    _save(workspace, {"summary": {"avg_torque_Nm": 2.0}, "solve_metadata": {"solver_name": "test"}})
+    assert client.get(f"/solve/playback-frame/{layer['artifact_id']}").status_code == 404

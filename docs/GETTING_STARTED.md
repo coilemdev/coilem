@@ -267,7 +267,8 @@ Select **Manage previous runs** after completing a second Magneto2D solve. Selec
 as the baseline and another as the candidate to compare their stored design,
 operating-point, mesh, and headline result values. Comparison is descriptive:
 it does not rerun either solver, establish cross-solver parity, or certify a
-design.
+design. **Open results** on a stored run brings back its whole result, field
+playback included, without solving again.
 
 The same dialog shows workspace usage and each run's size and status. Deleting
 a run requires **Delete run** followed by **Delete permanently** for that exact
