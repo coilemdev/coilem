@@ -13,6 +13,7 @@ from typing import Any, Callable
 # Imported lazily, so the ordinary solve path never loads reference assets.
 _MODULES = {
     "pyleecan_prius_2004": "backend.reference_models.prius",
+    "lrk_12s14p": "backend.reference_models.lrk",
 }
 
 
@@ -41,6 +42,10 @@ class ReferenceModel:
     solver_overrides: Callable[..., dict[str, str]] | None = None
     # Rewrites a native report in place: (report, config, artifact).
     postprocess_report: Callable[..., None] | None = None
+    # True when postprocess_report replaces the solver's flux linkage from the
+    # reference's own winding regions. Otherwise the solver bins slot regions
+    # by the generic winding map, which the reference's map must then equal.
+    owns_flux_linkage: bool = False
     # Published slot/phase/direction rows for the preview winding view.
     published_winding: Callable[[], list[dict[str, Any]]] | None = None
     published_winding_label: str | None = None

@@ -50,6 +50,8 @@ PACKAGE_DATA_FILES = (
     "backend/mesh_profiles/gmsh_profiles.json",
     "backend/reference_models/pyleecan_prius_2004.json",
     "backend/reference_models/pyleecan_prius_2004_config.json",
+    "backend/reference_models/lrk_12s14p_source.json",
+    "backend/reference_models/lrk_12s14p_config.json",
 )
 # ``coilem benchmark`` (#71) reads the registered suite, everything it
 # registers, the frozen reference bundle and the published per-platform
