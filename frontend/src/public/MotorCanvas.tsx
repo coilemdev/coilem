@@ -27,6 +27,7 @@ import {
   STRIP_LABEL,
   electricalFrequencyHz,
   formatHz,
+  formatRevPerSecond,
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
@@ -40,6 +41,7 @@ import {
 } from './phaseDrive';
 import { pointInContours, previewContours, type Contour } from './previewContours';
 import { publishedReference } from './publishedReferences';
+import { outerRotorRing, ringKey, sectorView } from './sectorFraming';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -512,6 +514,8 @@ function drawGeometry(
   highlightComponentKind: PublicMotorComponentKind | null,
   viewportScale: number,
   pan: [number, number],
+  /** The sector turntable's rotation about the motor centre, clockwise on screen. */
+  rotationRad: number,
   annotations: DimensionAnnotation[],
   activeDimension: DimensionId | null,
   hoveredDimension: DimensionId | null,
@@ -539,7 +543,7 @@ function drawGeometry(
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
   const magnetPoleLabels: MagnetPoleLabel[] = [];
-  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor);
+  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor, rotationRad);
   const slotCount = Number(data.metadata.slot_count || 0);
   // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
   // holds one coil side, a two-layer one arrives as two side-by-side regions,
@@ -988,7 +992,7 @@ function drawPhaseDrive(
   context.fillStyle = 'rgba(148, 163, 184, 0.6)';
   context.font = '600 9px ui-monospace, monospace';
   context.textBaseline = 'top';
-  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${formatRevPerSecond(previewRpm)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];
@@ -1149,6 +1153,8 @@ function drawMesh(
   rotorAngleDeg: number,
   viewportScale: number,
   pan: [number, number],
+  /** The sector turntable's rotation about the motor centre, clockwise on screen. */
+  rotationRad: number,
   displayMode: PublicMeshDisplayMode,
   showEdges: boolean,
   qualities: number[],
@@ -1157,7 +1163,7 @@ function drawMesh(
   meshHits: MeshTriangleHit[],
 ): void {
   if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
-  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan);
+  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
   const fillPaths = new Map<string, Path2D>();
   const qualityColors: Record<PublicMeshQualityBand, string> = {
     good: '#2a9d8f',
@@ -1356,7 +1362,21 @@ export function MotorCanvas({
   const navigationFrame = useCallback((width: number, height: number) => (
     phaseFrameEnabled ? phaseDriveFrame(width, height)?.motor ?? null : null
   ), [phaseFrameEnabled]);
-  const navigation = useViewportNavigation(undefined, navigationFrame);
+  const ring = outerRotorRing(config);
+  const ringInnerMm = ring?.innerMm;
+  const ringOuterMm = ring?.outerMm;
+  // fitTransform pads the motor by 7.5% of the frame's smaller side, then fits its diameter.
+  const sectorForSize = useCallback((width: number, height: number) => {
+    const box = navigationFrame(width, height) ?? { width, height };
+    const padding = Math.min(box.width, box.height) * 0.075;
+    return sectorView(
+      ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
+      box.width,
+      box.height,
+      Math.min(box.width - 2 * padding, box.height - 2 * padding) / 2,
+    );
+  }, [navigationFrame, ringInnerMm, ringOuterMm]);
+  const navigation = useViewportNavigation(undefined, navigationFrame, sectorForSize, ringKey(ring));
   const annotations = useMemo(
     () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
     [config, geometry, layer],
@@ -1423,6 +1443,7 @@ export function MotorCanvas({
           highlightComponentKind,
           navigation.scale,
           [navigation.pan.x, navigation.pan.y],
+          (navigation.rotationDeg * Math.PI) / 180,
           annotations,
           activeDimension,
           hoveredDimension,
@@ -1441,6 +1462,7 @@ export function MotorCanvas({
           rotorAngleDeg,
           navigation.scale,
           [navigation.pan.x, navigation.pan.y],
+          (navigation.rotationDeg * Math.PI) / 180,
           meshDisplayMode,
           showMeshEdges,
           meshQualities,
@@ -1475,6 +1497,7 @@ export function MotorCanvas({
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
+    navigation.rotationDeg,
     rotorAngleDeg,
     selectedComponent,
     showMeshEdges,
@@ -1583,6 +1606,12 @@ export function MotorCanvas({
             onZoomIn={navigation.zoomIn}
             onZoomOut={navigation.zoomOut}
             onReset={navigation.reset}
+            onSector={navigation.sector}
+            onSectorStep={navigation.sectorStep}
+            onSectorGoTo={navigation.sectorGoTo}
+            sectorActive={navigation.sectorActive}
+            sectorAngleDeg={navigation.sectorAngleDeg}
+            sectorSpanDeg={navigation.sectorSpanDeg}
           />
         );
         return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;

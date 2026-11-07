@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { outerRotorRing } from './sectorFraming';
 
 import { getPublicFieldFrame } from './api';
 import {
@@ -1141,6 +1142,7 @@ export function SolvedFieldViewer({
         {(activeDetailRaster || visibleRaster || visiblePlot) && (
           <>
             <FieldResultPlot
+              ring={outerRotorRing(config)}
               plot={visiblePlot}
               raster={activeDetailRaster ?? visibleRaster}
               highResolutionPlot={exactVectorPlot}
@@ -1276,7 +1278,7 @@ export function SolvedFieldViewer({
             max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
             label="Speed"
             ariaLabel="Playback speed (RPM)"
-            title="Visual playback speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+            title="Visual playback speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
             onChange={setPlaybackRpm}
           />
         </div>

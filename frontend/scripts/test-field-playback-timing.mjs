@@ -18,7 +18,7 @@ const solvedFramesPerSecond = (rpm, polePairs) => (rpm * 6 * polePairs) / 7.5;
 // Each stride divides the frame count, and its loop either fits the decoded
 // cache or needs no more new frames per second than the loader sustains.
 for (const polePairs of [1, 4, 7, 12]) {
-  for (const rpm of [1, 5, 8, 18, 30, 60, 100]) {
+  for (const rpm of [0.1, 0.5, 1, 5, 8, 18, 30, 60, 100]) {
     const stride = playbackFrameStride(frames.length, 360, rpm, polePairs);
     assert.equal(frames.length % stride, 0, `stride ${stride} divides 48 (${rpm} rpm, ${polePairs} pole pairs)`);
     const loopFrames = frames.length / stride;
@@ -45,6 +45,11 @@ assert.equal(playbackFrameStride(48, 360, 18, 4), 2);
 assert.equal(playbackFrameStride(48, 360, 30, 4), 3);
 assert.equal(playbackFrameStride(48, 360, 30, 7), 3);
 assert.equal(playbackFrameStride(16, 360, 100, 12), 1, 'a 16-frame loop always fits the cache');
+// Playback runs down to 0.1 RPM: the 40-pole joint motor then turns 12 elec deg a second,
+// and a slower request is held at 0.1.
+assert.equal(playbackFrameStride(48, 360, 0.1, 20), 1);
+assert.ok(Math.abs(advancePlaybackElectricalAngle(0, 1000, 0.1, 20) - 12) < 1e-9);
+assert.ok(Math.abs(advancePlaybackElectricalAngle(0, 1000, 0.01, 20) - 12) < 1e-9);
 
 // Every frame the playback clock shows was preloaded, in order, whatever the
 // display refresh rate. When the display is at least as fast as the stride

@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
+import { clampRpm, formatRpm, nativeRpmStep, shiftSteppedRpm, snapRpm, steppedRpm } from './rpmSteps';
 
 /**
  * A small speed field: type the RPM, or use the arrow keys or the field's
- * up/down buttons (Shift+arrow steps by 10). A typed value outside the range
- * is clamped when it is committed (Enter or leaving the field); Escape puts
- * back the speed from before the edit.
+ * up/down buttons (Shift+arrow steps by 10). Below 1 RPM it steps in tenths
+ * (rpmSteps). A typed value outside the range is clamped when it is committed
+ * (Enter or leaving the field); Escape puts back the speed from before the edit.
  */
 export function RpmField({
   value,
@@ -27,10 +28,9 @@ export function RpmField({
   const [draft, setDraft] = useState<string | null>(null);
   const valueBeforeEditRef = useRef(value);
   const cancelledRef = useRef(false);
-  const clamp = (rpm: number) => Math.min(max, Math.max(min, Math.round(rpm)));
   const commit = (text: string) => {
     const parsed = Number(text);
-    if (text.trim() !== '' && Number.isFinite(parsed)) onChange(clamp(parsed));
+    if (text.trim() !== '' && Number.isFinite(parsed)) onChange(clampRpm(parsed, min, max));
     setDraft(null);
   };
   return (
@@ -38,11 +38,11 @@ export function RpmField({
       <span>{label}</span>
       <input
         type="number"
-        inputMode="numeric"
+        inputMode={min < 1 ? 'decimal' : 'numeric'}
         min={min}
         max={max}
-        step={1}
-        value={draft ?? String(Math.round(value))}
+        step={nativeRpmStep(min)}
+        value={draft ?? formatRpm(value)}
         aria-label={ariaLabel}
         onChange={(event) => {
           const text = event.target.value;
@@ -50,7 +50,11 @@ export function RpmField({
           const parsed = Number(text);
           // Arrow keys and the up/down buttons give in-range numbers: apply them at once.
           if (text.trim() !== '' && Number.isFinite(parsed) && parsed >= min && parsed <= max) {
-            onChange(Math.round(parsed));
+            const next = steppedRpm(value, parsed, min, max);
+            onChange(next);
+            // A step carried on to the next whole RPM (18.1 → 19) shows where it
+            // landed, so the following step starts from there.
+            if (next !== snapRpm(parsed)) setDraft(null);
           }
         }}
         onFocus={() => {
@@ -74,7 +78,7 @@ export function RpmField({
             event.currentTarget.blur();
           } else if ((event.key === 'ArrowUp' || event.key === 'ArrowDown') && event.shiftKey) {
             event.preventDefault();
-            onChange(clamp(value + (event.key === 'ArrowUp' ? 10 : -10)));
+            onChange(shiftSteppedRpm(value, event.key === 'ArrowUp', min, max));
             setDraft(null);
           }
         }}
