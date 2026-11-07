@@ -7950,8 +7950,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 20697,
-      "sha256": "7553a118177cbc5c4a7883bd56b83238cab6250344d3b44c3483e2268ac9b8fe"
+      "bytes": 20905,
+      "sha256": "9144292cceac2795dda238330d739305db1b4ccba5c87ce8a131f778fc53b869"
     },
     {
       "path": "tests/test_benchmark_runtime.py",

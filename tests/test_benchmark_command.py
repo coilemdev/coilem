@@ -264,7 +264,10 @@ def test_cogging_is_guarded_and_missing_or_changed_hashes_are_not_comparable(mon
     historical = read(REPO_ROOT / "benchmarks/records-historical/v050/windows-x86_64.json")
     assert name in record.check_physics(historical)["differs"]
     current = read(REPO_ROOT / "benchmarks/records/windows-x86_64.json")
-    assert record.check_physics(current)["status"] == "MATCH"
+    # Only this source: whether the whole live tree still matches the record is
+    # the PR gate's question (tools.physics_impact), and a branch that changes
+    # other physics must fail there, not here.
+    assert name not in record.check_physics(current)["differs"]
 
 
 @pytest.mark.parametrize(
