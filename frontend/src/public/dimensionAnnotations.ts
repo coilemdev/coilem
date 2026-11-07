@@ -234,11 +234,16 @@ export function deriveStatorSectionWidths(
   geometry: GeometryPreview | null = null,
 ): StatorSectionWidths {
   const slots = Math.max(1, config.stator.slot_count);
-  const boreRadiusMm = config.stator.ID_mm / 2;
-  const yokeRadiusMm = Math.max(
-    boreRadiusMm,
-    config.stator.OD_mm / 2 - config.stator.yoke_thickness_mm,
-  );
+  // "Bore" is the stator's air-gap face: its OD on an outer rotor, where the
+  // teeth point outward and the yoke sits on the hub (backend geometry_drawer).
+  const outerRotor = config.rotor_layout === 'outer';
+  const boreRadiusMm = outerRotor ? config.stator.OD_mm / 2 : config.stator.ID_mm / 2;
+  const yokeRadiusMm = outerRotor
+    ? Math.min(boreRadiusMm, config.stator.ID_mm / 2 + config.stator.yoke_thickness_mm)
+    : Math.max(
+      boreRadiusMm,
+      config.stator.OD_mm / 2 - config.stator.yoke_thickness_mm,
+    );
   const borePitchMm = (2 * Math.PI * boreRadiusMm) / slots;
   const yokePitchMm = (2 * Math.PI * yokeRadiusMm) / slots;
   const boreOpeningMm = Math.max(

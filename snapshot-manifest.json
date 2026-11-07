@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 16199,
-      "sha256": "ef95ca4b25c56ae8eea6cd5eb17fb448dc17b2583c15987f0e460e1a8887770b"
+      "bytes": 17149,
+      "sha256": "23038736d42d57f6d0710dc1b7dd2b35dd288fc93e23f9f1ccf0d5b47ff4b150"
     },
     {
       "path": "SECURITY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3036,
-      "sha256": "ce23540fbd488856f8c1db9c2f09949255be87e76026d2e096bf2942be2777cd"
+      "bytes": 3114,
+      "sha256": "cb59a16a6817b7fd8b7633f77b423b694c33a4c07dbf1dba0be7c15e3026a79d"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 166023,
-      "sha256": "58a04472f60b0da85185eafcce00cd68384f25c3d90aa5b8fde60501d1890764"
+      "bytes": 166842,
+      "sha256": "e518d7d84656746872ccd8815994f07e3821fe56b596cb5e65e2e26a84174488"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 80525,
-      "sha256": "dad3bd026886b0c72cb5c4acf1ab98113c67e13b6545a6b591c6d9a2f92d2958"
+      "bytes": 89704,
+      "sha256": "32e619f424e1b9d10297468a3990a59986269a1d168ef97b057effdc05ec67d1"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7160,8 +7160,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 16694,
-      "sha256": "a3b43d36585905c43d9915eded59e94120c9f3a32ef6d919ac0d7ca26d41be86"
+      "bytes": 19113,
+      "sha256": "0ea1a04793de36befab217687ae0f5ff3af3378ccd46b5895dee7159f1e25489"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -7185,8 +7185,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 15278,
-      "sha256": "bfeac8326f0f58441c9d90d6d7aa973bc9a147651d95d3586b18d07fa0d61802"
+      "bytes": 15641,
+      "sha256": "2b2645927911c1cea1579ef28df980932de770f1747f7d1734a86e434707a626"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -13034,6 +13034,11 @@
       "sha256": "73dcd2203f5abc5cf1141580f3399e2caa61e4d02a88acf88201098bcc46968a"
     },
     {
+      "path": "frontend/scripts/test-coil-wiring.mjs",
+      "bytes": 4075,
+      "sha256": "580d7349a3406d4f44f8137e2011d8620e75e4a960c1c453fa1adc85c13a1919"
+    },
+    {
       "path": "frontend/scripts/test-example-layouts.mjs",
       "bytes": 1998,
       "sha256": "7799fa3e44a2116e2ebb3157e887e82a089d79d059071e6181a7de10fc4b907a"
@@ -13052,6 +13057,11 @@
       "path": "frontend/scripts/test-sector-framing.mjs",
       "bytes": 3688,
       "sha256": "2262465fc92e562f1790c63bfe302f47902a66136335176540d3c3339f1cfd9d"
+    },
+    {
+      "path": "frontend/scripts/test-stator-3d-radii.mjs",
+      "bytes": 2607,
+      "sha256": "5c5efc318d3f04b6159deff93a6a87fce669ccdf133d65963731adddf4f487b4"
     },
     {
       "path": "frontend/src/public/RotorArrangement.tsx",
@@ -13102,6 +13112,11 @@
       "path": "frontend/src/public/sectorFraming.ts",
       "bytes": 3265,
       "sha256": "58dd90355ef2a8ab4e4772db1ba86c7e590cb8423e4ece33c0106495a52c56d7"
+    },
+    {
+      "path": "frontend/src/public/stator3dRadii.ts",
+      "bytes": 3221,
+      "sha256": "8b2fe386c4bdc01b38684a3d66eab7371b0e2630e45bb4785bd7b8db3dc738f6"
     },
     {
       "path": "tests/test_compact_run_storage.py",
