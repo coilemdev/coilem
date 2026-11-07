@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 165476,
-      "sha256": "cb2d52e483a5dd077338dd6022884a356f8dd7f1b06218e935ab3fc660f5958c"
+      "bytes": 166023,
+      "sha256": "58a04472f60b0da85185eafcce00cd68384f25c3d90aa5b8fde60501d1890764"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76232,
-      "sha256": "b7e22e85dab0531fbf4c3db8e8773c25a0e03d9ce68ef9a8295018b8232d1ce4"
+      "bytes": 76675,
+      "sha256": "39665833e3982ce8ec94f244874fccc273937f816dc2fd4e968526534d117bdf"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",

@@ -381,6 +381,11 @@ assert.match(workspaceSource, /<PublicRunComparison\s+manageRuns/);
 assert.match(runComparisonSource, /record\.status === 'complete' && !confirming[\s\S]*?Open results/);
 assert.match(workspaceSource, /onOpenRunResults=\{props\.onOpenRunResults\}/);
 assert.match(appSource, /onOpenRunResults=\{\(savedRun\) => void restoreSavedRun\(savedRun, 'results'\)\}/);
+// Opening saved results queues setResult(null) and the stored result in one
+// React batch, so the clearing effect never runs: the reset itself must drop
+// the previous run's stator-only field (review on #215).
+assert.match(appSource, /const resetComputedState = useCallback\(\(\) => \{[\s\S]*?setResult\(null\);\s*clearArmatureField\(\);[\s\S]*?\}, \[clearArmatureField\]\);/);
+assert.match(appSource, /const clearArmatureField = useCallback\(\(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?setArmatureField\(null\);/);
 assert.match(workspaceSource, /Manage previous runs/);
 assert.match(workspaceSource, /needsRunStorageRecovery\(props\.error\)/);
 assert.match(runComparisonSource, /aria-label="Local run storage"/);

@@ -614,16 +614,24 @@ export function App() {
     return snapshot.value !== null;
   }, []);
 
-  useEffect(() => {
-    if (result) return;
+  // A stator-only field belongs to the result it was drawn for, so it goes when
+  // that result does: below when the result clears, and from resetComputedState,
+  // whose setResult(null) React batches with the next result when a saved run is
+  // opened, so the effect never sees the null.
+  const clearArmatureField = useCallback(() => {
     armatureFieldRequestId.current += 1;
     armatureFieldController.current?.abort();
     armatureFieldController.current = null;
     setArmatureField(null);
     setArmatureFieldError(null);
-    setProgress(null);
     setBusy((current) => current === 'field' ? null : current);
-  }, [result]);
+  }, []);
+
+  useEffect(() => {
+    if (result) return;
+    clearArmatureField();
+    setProgress(null);
+  }, [result, clearArmatureField]);
 
   const resetComputedState = useCallback(() => {
     validationRequestId.current += 1;
@@ -632,12 +640,13 @@ export function App() {
     setValidationChecking(false);
     setValidationError(null);
     setResult(null);
+    clearArmatureField();
     setProgress(null);
     setLiveSamples([]);
     setError(null);
     setNotice(null);
     setView('design');
-  }, []);
+  }, [clearArmatureField]);
 
   const invalidateGeometryPreview = useCallback(() => {
     // Invalidate immediately, not when the debounced replacement request starts.
