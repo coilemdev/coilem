@@ -38,6 +38,10 @@ class ReferenceModel:
     excitation_sample: Callable[..., Any] | None = None
     # Sets explicit per-region current densities on a built mesh artifact.
     exact_currents: Callable[..., Any] | None = None
+    # (config) -> the A/B/C currents exact_currents holds, or None when the
+    # config's own excitation applies. Losses and the operating point read the
+    # current from here, not from the solve settings the case ignores.
+    fixed_phase_currents_a: Callable[[Any], tuple[float, float, float] | None] | None = None
     # Native solver environment overrides: (config, armature_only_field) -> dict.
     solver_overrides: Callable[..., dict[str, str]] | None = None
     # Rewrites a native report in place: (report, config, artifact).

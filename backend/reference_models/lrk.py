@@ -380,6 +380,23 @@ def build(config, geom, rotor_angle_deg=None):
     }, rotor_layout="outer")
 
 
+def fixed_phase_currents_a(config):
+    """The registered case's A/B/C currents, or None for the ordinary excitation."""
+
+    case = CASES.get(getattr(config, "reference_case", None))
+    return tuple(case["phase_current_A"]) if case else None
+
+
+def equivalent_phase_current_peak_a(currents):
+    """Peak of the balanced three-phase set an instant of which is these currents.
+
+    0/-4/+4 A is the instant of a 4.62 A peak set where phase A crosses zero; the
+    set's sum of squares, 1.5 * peak**2, is held at every instant.
+    """
+
+    return math.sqrt(sum(i * i for i in currents) / 1.5)
+
+
 def exact_currents(artifact, config, rotor_angle_deg):
     """Hold the registered case's fixed phase currents on each meshed winding region."""
 
@@ -418,8 +435,11 @@ def postprocess_report(report, config, artifact):
     if case is None:
         return
     report.setdefault("results", {})["phase_current_a"] = list(case["phase_current_A"])
+    # Kt, the cogging comparison and the run metadata read the resolved peak; the
+    # native report resolved it from the solve settings this case does not apply.
     report["operating_point"] = {**report.get("operating_point", {}), "case_id": config.reference_case,
                                  "phase_current_A": list(case["phase_current_A"]),
+                                 "resolved_phase_current_peak_a": equivalent_phase_current_peak_a(case["phase_current_A"]),
                                  "resolution_rule": "Registered fixed phase currents on each actual meshed winding region"}
 
 
@@ -447,6 +467,7 @@ def model():
                               "hardware identity and release qualification remain separate."),
         magnet_temperatures_C=(20,),
         exact_currents=exact_currents,
+        fixed_phase_currents_a=fixed_phase_currents_a,
         postprocess_report=postprocess_report,
         # The source's AWG22 magnet wire: 0.644 mm bare, one strand.
         wire=WireSpec(wire_bare_diameter_mm=0.644, strands_in_hand=1),

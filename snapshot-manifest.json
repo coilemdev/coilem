@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/loss_breakdown.py",
-      "bytes": 5699,
-      "sha256": "10bd3fe20c07307762eba4e1dd2d7c0d457b42efd9f50ffd84a593e35316162a"
+      "bytes": 6136,
+      "sha256": "07836ed07dff4eb03ea665581411e3b33681579e2e86c226356016c7a130766a"
     },
     {
       "path": "backend/machine_constants.py",
@@ -610,8 +610,8 @@
     },
     {
       "path": "backend/reference_models/__init__.py",
-      "bytes": 3426,
-      "sha256": "42c243d3463bdc76a3bb27d4e2bd52b67b13d2fffd5ffd065e8246ac18c0c734"
+      "bytes": 3745,
+      "sha256": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d"
     },
     {
       "path": "backend/reference_models/prius.py",
@@ -12935,8 +12935,8 @@
     },
     {
       "path": "backend/reference_models/lrk.py",
-      "bytes": 22218,
-      "sha256": "9d5f38a6d1a56554e0d28df23fb54caf224307258d1e9241ecd745f8064a26f6"
+      "bytes": 23155,
+      "sha256": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43"
     },
     {
       "path": "backend/reference_models/lrk_12s14p_config.json",
@@ -12970,8 +12970,8 @@
     },
     {
       "path": "tests/test_lrk_reference.py",
-      "bytes": 4115,
-      "sha256": "359c2faecc78b56988130fd6fc00c5c9617a57c71fff750942c1cd0a13d509c0"
+      "bytes": 5561,
+      "sha256": "05d321a30a51889b694ac4d366ba0d19caf21633c7b8c398ca5e2a348c2b394e"
     },
     {
       "path": "tests/test_rotor_layout.py",

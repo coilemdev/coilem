@@ -96,3 +96,28 @@ def test_export_tool_reproduces_the_pinned_config():
     from tools.export_lrk_reference import reference_config
 
     assert reference_config() == CONFIG
+
+
+def test_fixed_current_case_losses_use_the_held_currents():
+    # Review on #201: copper loss read the sinusoidal settings the case ignores,
+    # 24R for the bundled 4 A peak settings instead of (0² + 4² + 4²)R = 32R.
+    from backend.loss_breakdown import operating_point_losses, phase_current_rms_a
+
+    cfg = config(lrk.FIXED_CURRENT_CASE)
+    # The bundled fixed-current file's settings: 4 A peak sinusoidal.
+    cfg.solve_params.excitation_mode = "sinusoidal"
+    cfg.solve_params.current_amplitude_convention = "peak"
+    cfg.solve_params.current_amplitude_A = 4.0
+    winding, losses = operating_point_losses(cfg, 0.05, None)
+    assert losses.copper_loss_W == pytest.approx(32.0 * winding.phase_resistance_ohm)
+    louder = cfg.model_copy(deep=True)
+    louder.solve_params.current_amplitude_A = 8.0
+    assert phase_current_rms_a(louder) == pytest.approx(phase_current_rms_a(cfg))
+    # Without the case, the solve settings apply again.
+    generic = cfg.model_copy(update={"reference_case": None})
+    assert phase_current_rms_a(generic) == pytest.approx(4.0 / math.sqrt(2.0))
+
+    report = {"operating_point": {"resolved_phase_current_peak_a": cfg.solve_params.current_amplitude_A}}
+    lrk.postprocess_report(report, cfg, None)
+    # 0/-4/+4 A is the instant of a balanced set where phase A crosses zero.
+    assert report["operating_point"]["resolved_phase_current_peak_a"] == pytest.approx(4.0 / math.sin(math.radians(60.0)))
