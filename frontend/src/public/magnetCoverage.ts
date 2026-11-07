@@ -10,10 +10,13 @@ import type { MotorConfig } from './model';
  * stored coverage.
  */
 export function magnetPoleCoverage(
-  config: Pick<MotorConfig, 'topology' | 'rotor'>,
+  config: Pick<MotorConfig, 'topology' | 'rotor' | 'rotor_layout'>,
 ): number {
   if (config.topology !== 'SPM') return config.rotor.magnet_embrace;
-  const centreRadiusMm = config.rotor.OD_mm / 2 + config.rotor.magnet_thickness_mm / 2;
+  // An outer rotor's magnets sit inside its seat (rotor ID), not outside its OD.
+  const centreRadiusMm = config.rotor_layout === 'outer'
+    ? (config.rotor.ID_mm ?? 0) / 2 - config.rotor.magnet_thickness_mm / 2
+    : config.rotor.OD_mm / 2 + config.rotor.magnet_thickness_mm / 2;
   const polePitchMm = config.rotor.pole_count > 0
     ? (2 * Math.PI * centreRadiusMm) / config.rotor.pole_count
     : 0;
@@ -21,6 +24,6 @@ export function magnetPoleCoverage(
 }
 
 /** Whole-percent coverage for labels. */
-export function magnetPoleCoveragePct(config: Pick<MotorConfig, 'topology' | 'rotor'>): number {
+export function magnetPoleCoveragePct(config: Pick<MotorConfig, 'topology' | 'rotor' | 'rotor_layout'>): number {
   return Math.round(magnetPoleCoverage(config) * 100);
 }

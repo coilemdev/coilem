@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from backend.models import MotorConfig
+from backend.rotor_layout import is_outer_rotor
 from backend.winding_utils import winding_phase_axis_offset_elec_deg
 
 ExcitationMode = Literal["sinusoidal", "ideal_six_step_120"]
@@ -113,13 +114,19 @@ def phase_axis_offset_deg(config: MotorConfig) -> float:
     solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
     """
 
-    return winding_phase_axis_offset_elec_deg(
+    offset = winding_phase_axis_offset_elec_deg(
         config.winding.type,
         config.stator.slot_count,
         config.rotor.pole_count,
         config.winding.layers,
         getattr(config.winding, "coil_span", None),
     )
+    if is_outer_rotor(config):
+        # A gap-facing north pole drives flux inward through an outer rotor's
+        # stator, the reverse of an inner rotor: phase A's flux axis sits half a
+        # cycle on. Mirrors solvers/magneto2d/src/sources.rs phase_axis_offset_deg.
+        return offset + 180.0
+    return offset
 def _resolve_native_six_step(
     current_a: float,
     rotor_electrical_angle_deg: float,

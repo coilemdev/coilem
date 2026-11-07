@@ -60,6 +60,19 @@ pub struct MeshInfo {
     pub stator_slot_outer_radius_mm: f64,
     /// Radial location of the stator outer diameter in mm.
     pub stator_outer_radius_mm: f64,
+    /// Present only for an outer rotor (outrunner), whose radii run the other
+    /// way: the stator is inside, so the stator radii above no longer order
+    /// bore < slots < yoke, and the mesh carries its exact Dirichlet nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub outer_rotor: Option<OuterRotorMeshInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OuterRotorMeshInfo {
+    /// Radius inside the stator teeth where tooth flux density is sampled.
+    pub tooth_sample_radius_mm: f64,
+    /// Radius inside the stator yoke where yoke flux density is sampled.
+    pub yoke_sample_radius_mm: f64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -86,6 +99,10 @@ impl AirgapBand {
 }
 
 impl MeshInfo {
+    pub fn is_outer_rotor(&self) -> bool {
+        self.outer_rotor.is_some()
+    }
+
     pub fn airgap_band(&self) -> Option<AirgapBand> {
         let mesh_inner = self
             .airgap_inner_radius_mm

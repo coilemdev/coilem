@@ -16,6 +16,7 @@ import {
 import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
 import { publishedReference } from './publishedReferences';
+import { RotorArrangement } from './RotorArrangement';
 
 import {
   MotorCanvas,
@@ -90,6 +91,7 @@ import type {
   PublicQualification,
   PublicSavedRun,
   PublicSolverId,
+  RotorLayout,
   SolveResult,
   SolveValidation,
 } from './model';
@@ -173,6 +175,7 @@ interface CoilEmWorkspaceProps {
   onHome: () => void;
   onStepChange: (step: PublicWorkflowStep) => void;
   onTopologyChange: (topology: MotorConfig['topology']) => void;
+  onRotorLayoutChange: (layout: RotorLayout) => void;
   onSectionChange: (
     section: PublicEditableSection,
     field: string,
@@ -901,7 +904,7 @@ function componentFacts(
   config: MotorConfig,
   geometry: GeometryPreview | null,
 ): Array<[string, string]> {
-  const airgap = Math.max(0, (config.stator.ID_mm - config.rotor.OD_mm) / 2 - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0));
+  const airgap = magneticAirgapMm(config);
   switch (selection.kind) {
     case 'stator': {
       // A tooth is picked as a stator part; the 2D canvas names it in region_type,
@@ -1072,8 +1075,8 @@ function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onRotorLayoutChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onRotorLayoutChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
@@ -1099,6 +1102,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   });
   const disabled = busy !== null || Boolean(config.geometry_reference);
   const reference = publishedReference(config);
+  const outer = config.rotor_layout === 'outer';
   const set = (
     section: PublicEditableSection,
     field: string,
@@ -1184,7 +1188,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     );
     set('stator', 'slot_opening_mm', 'advanced')(boreSlotOpeningMm);
   };
-  const airgap = Math.max(0, (config.stator.ID_mm - config.rotor.OD_mm) / 2 - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0));
+  const airgap = magneticAirgapMm(config);
   const coverage = magnetPoleCoveragePct(config);
   const steelChoices = (current: string) => [
     ...(!materials.steels.includes(current)
@@ -1273,6 +1277,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             />
           </label>
         </div>
+        {matchesSearch('topology') && <RotorArrangement value={outer ? 'outer' : 'inner'} disabled={disabled} onChange={onRotorLayoutChange} />}
         {matchesSearch('topology') && <div className="param-section param-primary-section" data-guide="topology-selector">
           <div className="param-section-label">Topology</div>
           <div className="topology-cards">
@@ -1281,7 +1286,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                 type="button"
                 className={`topo-card${config.topology === topology ? ' active' : ''}`}
                 aria-pressed={config.topology === topology}
-                disabled={disabled}
+                disabled={disabled || (outer && topology === 'IPM')}
+                title={outer && topology === 'IPM' ? 'Outer rotors use surface magnets' : undefined}
                 onClick={() => onTopologyChange(topology)}
                 key={topology}
               >
@@ -1337,16 +1343,17 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>}
 
       {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
-        <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" min={30} step={1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
-        <NumberRow label="Inner Diameter" value={config.stator.ID_mm} unit="mm" min={20} step={1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
+        <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" hint={outer ? 'Tooth-tip diameter facing the rotor magnets across the air gap.' : undefined} min={outer ? 10 : 30} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
+        <NumberRow label={outer ? 'Hub Bore' : 'Inner Diameter'} value={config.stator.ID_mm} unit="mm" hint={outer ? 'Stator centre hole, inside the yoke.' : undefined} min={outer ? 2 : 20} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Slot Count" value={config.stator.slot_count} min={6} step={1} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
-        <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
-        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · bore pitch {(Math.PI * config.stator.ID_mm / config.stator.slot_count).toFixed(1)} mm</span></div>
+        <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={outer ? 2 : 10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
+        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · {outer ? 'tip' : 'bore'} pitch {(Math.PI * (outer ? config.stator.OD_mm : config.stator.ID_mm) / config.stator.slot_count).toFixed(1)} mm</span></div>
       </ParameterSectionBlock>}
 
       {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
-        <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" min={15} step={1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
+        <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" hint={outer ? 'Outside of the rotor back-iron ring.' : undefined} min={outer ? 10 : 15} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
+        {outer && <NumberRow label="Magnet Seat" value={config.rotor.ID_mm ?? 0} unit="mm" hint="Rotor ID: the back-iron face the magnets sit on." min={4} step={0.1} disabled={disabled} onChange={set('rotor', 'ID_mm', 'rotor')} />}
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50' ? (
           HOLEM50_FIELDS.map((field) => (
@@ -1357,7 +1364,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           ))
         ) : (
           <>
-            <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={2} step={0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
+            <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={outer ? 0.5 : 2} step={outer ? 0.1 : 0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
             <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
           </>
         )}
@@ -1382,17 +1389,19 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       </ParameterSectionBlock>}
 
       {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
-        <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />
-        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
-        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
-        <ToggleRow
+        {outer
+          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint="Slot mouth at the stator OD, facing the rotor." min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
+          : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
+        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
+        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
+        {!outer && <ToggleRow
           label="Tooth Shoe"
           checked={Boolean(config.stator.tooth_shoe_enabled)}
           hint="Adds a widened tooth tip at the bore, leaving a narrower physical slot mouth ahead of the winding pocket."
           disabled={disabled}
           onChange={set('stator', 'tooth_shoe_enabled', 'advanced')}
-        />
-        {config.stator.tooth_shoe_enabled && <>
+        />}
+        {!outer && config.stator.tooth_shoe_enabled && <>
           <NumberRow
             label="Shoe Height"
             value={config.stator.tooth_shoe_height_mm ?? 1.5}
@@ -2559,7 +2568,7 @@ function HealthPanel({
     );
   }
   const airgap = magneticAirgapMm(config);
-  const airgapHealth = publicAirgapHealth(airgap);
+  const airgapHealth = publicAirgapHealth(airgap, config.rotor_layout);
   const coverage = magnetPoleCoveragePct(config);
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
@@ -2625,7 +2634,7 @@ function HealthPanel({
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
         <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>
-        <div className="design-health-metric"><span>Q</span><strong>{config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)} </strong></div>
+        <div className="design-health-metric"><span>Q</span><strong>{Number((config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)).toFixed(3))} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
       <div className="design-health-issue-list">
@@ -4472,6 +4481,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   guidedDesignSection={props.guidedDesignSection}
                   selectedComponent={selectedComponent}
                   onTopologyChange={(topology) => { setSelectedComponent(null); props.onTopologyChange(topology); }}
+                  onRotorLayoutChange={(layout) => { setSelectedComponent(null); props.onRotorLayoutChange(layout); }}
                   onSectionChange={props.onSectionChange}
                   onDesignSectionVisit={props.onDesignSectionVisit}
                   onConvertProjectSteelToM350={props.onConvertProjectSteelToM350}

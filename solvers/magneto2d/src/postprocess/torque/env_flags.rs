@@ -33,11 +33,24 @@ pub(super) fn weighted_stress_domain(region: Region, include_slots: bool) -> boo
     region == Region::Airgap || (include_slots && region == Region::SlotWinding)
 }
 
-pub(super) fn weighted_stress_inner_boundary_region(region: Region) -> bool {
+// The weighting is 1 on the body inside the air gap, so every field-integral
+// torque here acts on that body: the rotor of an inner rotor, the stator of an
+// outer rotor. The backend reports an outer rotor's torque as its negative.
+pub(super) fn weighted_stress_inner_boundary_region(region: Region, outer_rotor: bool) -> bool {
+    if outer_rotor {
+        return matches!(region, Region::StatorTooth | Region::StatorYoke | Region::SlotWinding);
+    }
     matches!(region, Region::RotorCore | Region::Magnet)
 }
 
-pub(super) fn weighted_stress_outer_boundary_region(region: Region, include_slots: bool) -> bool {
+pub(super) fn weighted_stress_outer_boundary_region(
+    region: Region,
+    include_slots: bool,
+    outer_rotor: bool,
+) -> bool {
+    if outer_rotor {
+        return matches!(region, Region::RotorCore | Region::Magnet);
+    }
     matches!(region, Region::StatorTooth | Region::StatorYoke)
         || (!include_slots && region == Region::SlotWinding)
 }
@@ -99,10 +112,11 @@ pub(super) fn weighted_stress_excluded_boundary_side(
     physical_bounds: Option<(f64, f64, f64)>,
 ) -> Option<f64> {
     let region = mesh.regions[tri_idx];
-    if weighted_stress_inner_boundary_region(region) {
+    let outer_rotor = mesh.info.is_outer_rotor();
+    if weighted_stress_inner_boundary_region(region, outer_rotor) {
         return Some(1.0);
     }
-    if weighted_stress_outer_boundary_region(region, include_slots) {
+    if weighted_stress_outer_boundary_region(region, include_slots, outer_rotor) {
         return Some(0.0);
     }
     let Some((magnet_outer, bore, _slot_outer)) = physical_bounds else {
@@ -388,4 +402,26 @@ pub(super) fn weighted_stress_localization_enabled() -> bool {
         }
     }
     false
+}
+
+#[cfg(test)]
+mod body_tests {
+    use super::{weighted_stress_inner_boundary_region, weighted_stress_outer_boundary_region};
+    use crate::mesh::Region;
+
+    #[test]
+    fn the_weighted_body_is_whichever_sits_inside_the_gap() {
+        // Inner rotor: the rotor is weighted; the stator (and slots, airgap-only) is not.
+        assert!(weighted_stress_inner_boundary_region(Region::Magnet, false));
+        assert!(weighted_stress_outer_boundary_region(Region::SlotWinding, false, false));
+        // Outer rotor: the stator and its slots are inside, the rotor outside.
+        for region in [Region::StatorTooth, Region::StatorYoke, Region::SlotWinding] {
+            assert!(weighted_stress_inner_boundary_region(region, true));
+            assert!(!weighted_stress_outer_boundary_region(region, false, true));
+        }
+        for region in [Region::RotorCore, Region::Magnet] {
+            assert!(!weighted_stress_inner_boundary_region(region, true));
+            assert!(weighted_stress_outer_boundary_region(region, false, true));
+        }
+    }
 }

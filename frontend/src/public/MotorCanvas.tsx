@@ -535,7 +535,7 @@ function drawGeometry(
   // slot currents either side of it.
   const statorSlotCount = Number(data.metadata.slot_count || 0);
   const poleByTooth = showToothPoles && currents && data.winding_layout?.length && statorSlotCount > 0
-    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
+    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents), data.metadata.rotor_layout === 'outer' ? 'outward' : 'inward')
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
   const magnetPoleLabels: MagnetPoleLabel[] = [];

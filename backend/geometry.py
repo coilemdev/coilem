@@ -334,132 +334,49 @@ MIN_OUTER_AIRGAP_MM = 0.1
 
 
 def _validate_outer_rotor_geometry(config: MotorConfig) -> list[ErrorResponse]:
-    """The radial checks that hold for an outer rotor; MotorConfig already orders its radii."""
+    """The checks that hold for an outer rotor; MotorConfig already orders its radii."""
 
-    airgap = outer_rotor_airgap_mm(config)
-    if airgap >= MIN_OUTER_AIRGAP_MM:
-        return []
-    return [ErrorResponse(
-        error_code="INVALID_GEOMETRY",
-        message=f"Airgap {airgap:.2f}mm is less than minimum {MIN_OUTER_AIRGAP_MM}mm",
-        field="rotor.ID_mm",
-        suggestion=f"Increase rotor ID_mm by at least {2 * (MIN_OUTER_AIRGAP_MM - airgap):.2f}mm or decrease stator OD_mm",
-    )]
-
-
-def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
-    """Validate motor geometry against physical constraints.
-
-    This function checks for common design issues such as:
-    - Rotor too large for stator (violates airgap)
-    - Invalid magnet dimensions
-    - Incompatible pole-slot combinations
-    - Slot geometry constraints
-
-    Args:
-        config: Motor configuration to validate
-
-    Returns:
-        List of ErrorResponse objects for any validation failures.
-        Empty list means configuration is geometrically valid.
-    """
-    if is_outer_rotor(config):
-        return _validate_outer_rotor_geometry(config)
+    stator, rotor = config.stator, config.rotor
     errors = []
 
-    # Extract convenience references
-    stator = config.stator
-    rotor = config.rotor
-    winding = config.winding
+    def fail(message: str, field: str, suggestion: str) -> None:
+        errors.append(ErrorResponse(error_code="INVALID_GEOMETRY", message=message, field=field, suggestion=suggestion))
 
-    # Minimum airgap is 0.3mm
-    MIN_AIRGAP_MM = 0.3
-    airgap = (stator.ID_mm - rotor.OD_mm) / 2
+    airgap = outer_rotor_airgap_mm(config)
+    if airgap < MIN_OUTER_AIRGAP_MM:
+        fail(f"Airgap {airgap:.2f}mm is less than minimum {MIN_OUTER_AIRGAP_MM}mm", "rotor.ID_mm",
+             f"Increase rotor ID_mm by at least {2 * (MIN_OUTER_AIRGAP_MM - airgap):.2f}mm or decrease stator OD_mm")
+    slot_depth = (stator.OD_mm - stator.ID_mm) / 2 - stator.yoke_thickness_mm
+    if slot_depth < 0.5:
+        fail(f"The {stator.yoke_thickness_mm:g}mm yoke leaves {slot_depth:.2f}mm for the slots", "stator.yoke_thickness_mm",
+             "Reduce yoke_thickness_mm or the hub bore (stator ID_mm)")
+    elif slot_body_pitch_mm(config) - stator.tooth_width_mm < 0.3:
+        fail(f"Tooth width {stator.tooth_width_mm:g}mm leaves no slot at the slot bottom "
+             f"({slot_body_pitch_mm(config):.2f}mm pitch)", "stator.tooth_width_mm", "Reduce tooth_width_mm or the slot count")
+    # The slot opens at the air gap, the stator OD. A wider opening than the slot
+    # pitch there would be clamped by the drawer, so the preview and the solve
+    # would show a different motor from the saved input.
+    tip_pitch_mm = math.pi * stator.OD_mm / stator.slot_count
+    if stator.slot_opening_mm > tip_pitch_mm:
+        fail(f"Slot opening {stator.slot_opening_mm:g}mm exceeds the {tip_pitch_mm:.2f}mm slot pitch at the stator OD",
+             "stator.slot_opening_mm", f"Reduce slot opening to <= {math.floor(tip_pitch_mm * 100.0) / 100.0:g}mm")
+    if config.topology == "SPM":
+        magnet_mid_r = magnet_radial_center_mm(config)
+        pole_pitch_mm = 2 * math.pi * magnet_mid_r / rotor.pole_count
+        if rotor.magnet_width_mm >= pole_pitch_mm:
+            fail(f"Magnet width {rotor.magnet_width_mm:g}mm exceeds the {pole_pitch_mm:.2f}mm pole pitch at the magnet centre",
+                 "rotor.magnet_width_mm", f"Use magnets narrower than {pole_pitch_mm:.2f}mm")
+    # Slot/pole balance, coil span and parallel paths do not depend on which side
+    # the rotor is on.
+    errors.extend(_winding_errors(config))
+    return errors
 
-    if airgap < MIN_AIRGAP_MM:
-        errors.append(
-            ErrorResponse(
-                error_code="INVALID_GEOMETRY",
-                message=f"Airgap {airgap:.2f}mm is less than minimum {MIN_AIRGAP_MM}mm",
-                field="rotor.OD_mm",
-                suggestion=f"Decrease rotor OD_mm by at least {MIN_AIRGAP_MM*2 - (stator.ID_mm - rotor.OD_mm):.2f}mm or increase stator ID_mm",
-            )
-        )
 
-    # Magnet thickness should not exceed quarter of rotor OD
-    max_magnet_thickness = rotor.OD_mm / 4
-    if rotor.magnet_thickness_mm > max_magnet_thickness:
-        errors.append(
-            ErrorResponse(
-                error_code="INVALID_GEOMETRY",
-                message=f"Magnet thickness {rotor.magnet_thickness_mm}mm exceeds max {max_magnet_thickness:.2f}mm (OD/4)",
-                field="rotor.magnet_thickness_mm",
-                suggestion=f"Reduce magnet thickness to <= {max_magnet_thickness:.2f}mm",
-            )
-        )
+def _winding_errors(config: MotorConfig) -> list[ErrorResponse]:
+    """Winding checks that hold for either rotor layout."""
 
-    # Neighbouring magnets must not overlap. This has to be measured where the
-    # builder converts magnet_width_mm into an angle, which is the magnet's radial
-    # centre, not the rotor core radius: an SPM magnet rides *outside* the core, so
-    # the core pitch is a smaller number and rejected designs that do not overlap
-    # (4 poles, OD 25, 3mm thick: limit read 19.63mm when the magnets fit to
-    # 21.99mm). Only SPM is checked here — flat-buried IPM has its own limit below
-    # that also accounts for side bridges and pocket clearance, and V-shape treats
-    # magnet_width_mm as a slab length with its own containment checks.
-    if config.topology != "IPM" and rotor.pole_count > 0:
-        magnet_center_r_mm = magnet_radial_center_mm(config)
-        if magnet_center_r_mm > 0:
-            max_magnet_width_mm = magnet_center_r_mm * (2 * math.pi / rotor.pole_count)
-            # Explicit tolerance so a width sitting exactly on the pitch — magnets
-            # just touching — is not rejected by floating-point noise.
-            if rotor.magnet_width_mm > max_magnet_width_mm + GEOMETRY_FIT_TOLERANCE_MM:
-                errors.append(
-                    ErrorResponse(
-                        error_code="INVALID_GEOMETRY",
-                        message=(
-                            f"Magnet width {rotor.magnet_width_mm}mm exceeds the pole pitch "
-                            f"{max_magnet_width_mm:.2f}mm at the magnet radius "
-                            f"{magnet_center_r_mm:.2f}mm, so neighbouring magnets overlap"
-                        ),
-                        field="rotor.magnet_width_mm",
-                        suggestion=f"Reduce magnet width to <= {max_magnet_width_mm:.2f}mm",
-                    )
-                )
-
-    # Slot opening should not exceed tooth pitch
-    tooth_pitch_mm = (3.14159 * stator.ID_mm) / stator.slot_count
-    if stator.slot_opening_mm > tooth_pitch_mm:
-        errors.append(
-            ErrorResponse(
-                error_code="INVALID_GEOMETRY",
-                message=f"Slot opening {stator.slot_opening_mm}mm exceeds tooth pitch {tooth_pitch_mm:.2f}mm",
-                field="stator.slot_opening_mm",
-                suggestion=f"Reduce slot opening to <= {tooth_pitch_mm:.2f}mm",
-            )
-        )
-
-    # The tooth has to leave a slot behind it. tooth_width_mm is subtracted from
-    # the slot-body pitch and floored at MIN_SLOT_BODY_WIDTH_MM, so once it reaches
-    # that arc the drawer quietly emits a 0.5mm slot instead of the geometry the
-    # fields describe (a 49mm tooth on a 42.94mm pitch used to validate clean).
-    body_pitch_mm = slot_body_pitch_mm(config)
-    max_tooth_width_mm = body_pitch_mm - MIN_SLOT_BODY_WIDTH_MM
-    if stator.tooth_width_mm > max_tooth_width_mm + GEOMETRY_FIT_TOLERANCE_MM:
-        errors.append(
-            ErrorResponse(
-                error_code="INVALID_GEOMETRY",
-                message=(
-                    f"Tooth width {stator.tooth_width_mm}mm leaves no slot: the pitch at the "
-                    f"slot body is {body_pitch_mm:.2f}mm across {stator.slot_count} slots"
-                ),
-                field="stator.tooth_width_mm",
-                suggestion=(
-                    # Floored so the printed value is one that actually validates.
-                    f"Reduce tooth width to <= {math.floor(max_tooth_width_mm * 100.0) / 100.0:g}mm, "
-                    "or add slots/stator depth"
-                ),
-            )
-        )
+    stator, rotor, winding = config.stator, config.rotor, config.winding
+    errors: list[ErrorResponse] = []
 
     # A concentrated winding has to reach all three phases. Some slot/pole
     # combinations never do: 16 slots with 8 poles steps 90 electrical degrees per
@@ -672,6 +589,123 @@ def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
                 suggestion="Remove winding.coil_span or switch winding.type to 'distributed'.",
             )
         )
+    return errors
+
+
+def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
+    """Validate motor geometry against physical constraints.
+
+    This function checks for common design issues such as:
+    - Rotor too large for stator (violates airgap)
+    - Invalid magnet dimensions
+    - Incompatible pole-slot combinations
+    - Slot geometry constraints
+
+    Args:
+        config: Motor configuration to validate
+
+    Returns:
+        List of ErrorResponse objects for any validation failures.
+        Empty list means configuration is geometrically valid.
+    """
+    if is_outer_rotor(config):
+        return _validate_outer_rotor_geometry(config)
+    errors = []
+
+    # Extract convenience references
+    stator = config.stator
+    rotor = config.rotor
+
+    # Minimum airgap is 0.3mm
+    MIN_AIRGAP_MM = 0.3
+    airgap = (stator.ID_mm - rotor.OD_mm) / 2
+
+    if airgap < MIN_AIRGAP_MM:
+        errors.append(
+            ErrorResponse(
+                error_code="INVALID_GEOMETRY",
+                message=f"Airgap {airgap:.2f}mm is less than minimum {MIN_AIRGAP_MM}mm",
+                field="rotor.OD_mm",
+                suggestion=f"Decrease rotor OD_mm by at least {MIN_AIRGAP_MM*2 - (stator.ID_mm - rotor.OD_mm):.2f}mm or increase stator ID_mm",
+            )
+        )
+
+    # Magnet thickness should not exceed quarter of rotor OD
+    max_magnet_thickness = rotor.OD_mm / 4
+    if rotor.magnet_thickness_mm > max_magnet_thickness:
+        errors.append(
+            ErrorResponse(
+                error_code="INVALID_GEOMETRY",
+                message=f"Magnet thickness {rotor.magnet_thickness_mm}mm exceeds max {max_magnet_thickness:.2f}mm (OD/4)",
+                field="rotor.magnet_thickness_mm",
+                suggestion=f"Reduce magnet thickness to <= {max_magnet_thickness:.2f}mm",
+            )
+        )
+
+    # Neighbouring magnets must not overlap. This has to be measured where the
+    # builder converts magnet_width_mm into an angle, which is the magnet's radial
+    # centre, not the rotor core radius: an SPM magnet rides *outside* the core, so
+    # the core pitch is a smaller number and rejected designs that do not overlap
+    # (4 poles, OD 25, 3mm thick: limit read 19.63mm when the magnets fit to
+    # 21.99mm). Only SPM is checked here — flat-buried IPM has its own limit below
+    # that also accounts for side bridges and pocket clearance, and V-shape treats
+    # magnet_width_mm as a slab length with its own containment checks.
+    if config.topology != "IPM" and rotor.pole_count > 0:
+        magnet_center_r_mm = magnet_radial_center_mm(config)
+        if magnet_center_r_mm > 0:
+            max_magnet_width_mm = magnet_center_r_mm * (2 * math.pi / rotor.pole_count)
+            # Explicit tolerance so a width sitting exactly on the pitch — magnets
+            # just touching — is not rejected by floating-point noise.
+            if rotor.magnet_width_mm > max_magnet_width_mm + GEOMETRY_FIT_TOLERANCE_MM:
+                errors.append(
+                    ErrorResponse(
+                        error_code="INVALID_GEOMETRY",
+                        message=(
+                            f"Magnet width {rotor.magnet_width_mm}mm exceeds the pole pitch "
+                            f"{max_magnet_width_mm:.2f}mm at the magnet radius "
+                            f"{magnet_center_r_mm:.2f}mm, so neighbouring magnets overlap"
+                        ),
+                        field="rotor.magnet_width_mm",
+                        suggestion=f"Reduce magnet width to <= {max_magnet_width_mm:.2f}mm",
+                    )
+                )
+
+    # Slot opening should not exceed tooth pitch
+    tooth_pitch_mm = (3.14159 * stator.ID_mm) / stator.slot_count
+    if stator.slot_opening_mm > tooth_pitch_mm:
+        errors.append(
+            ErrorResponse(
+                error_code="INVALID_GEOMETRY",
+                message=f"Slot opening {stator.slot_opening_mm}mm exceeds tooth pitch {tooth_pitch_mm:.2f}mm",
+                field="stator.slot_opening_mm",
+                suggestion=f"Reduce slot opening to <= {tooth_pitch_mm:.2f}mm",
+            )
+        )
+
+    # The tooth has to leave a slot behind it. tooth_width_mm is subtracted from
+    # the slot-body pitch and floored at MIN_SLOT_BODY_WIDTH_MM, so once it reaches
+    # that arc the drawer quietly emits a 0.5mm slot instead of the geometry the
+    # fields describe (a 49mm tooth on a 42.94mm pitch used to validate clean).
+    body_pitch_mm = slot_body_pitch_mm(config)
+    max_tooth_width_mm = body_pitch_mm - MIN_SLOT_BODY_WIDTH_MM
+    if stator.tooth_width_mm > max_tooth_width_mm + GEOMETRY_FIT_TOLERANCE_MM:
+        errors.append(
+            ErrorResponse(
+                error_code="INVALID_GEOMETRY",
+                message=(
+                    f"Tooth width {stator.tooth_width_mm}mm leaves no slot: the pitch at the "
+                    f"slot body is {body_pitch_mm:.2f}mm across {stator.slot_count} slots"
+                ),
+                field="stator.tooth_width_mm",
+                suggestion=(
+                    # Floored so the printed value is one that actually validates.
+                    f"Reduce tooth width to <= {math.floor(max_tooth_width_mm * 100.0) / 100.0:g}mm, "
+                    "or add slots/stator depth"
+                ),
+            )
+        )
+
+    errors.extend(_winding_errors(config))
 
     # Bridge thickness should be positive for IPM (negative for SPM)
     if config.topology == "IPM" and rotor.bridge_thickness_mm <= 0:

@@ -1149,14 +1149,15 @@ export function SolvedFieldViewer({
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
               showAirgap={showAirgap}
-              airgapInnerRadiusMm={rotorAirgapBoundaryRadiusMm(config)}
+              // The air-gap ring, field axes and stator pole labels assume an inner rotor.
+              airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
               showMagnetPolarityLabels={showPoleLabels}
               magnetReference={source === 'armature' && !overlayActive}
               showStatorPolarity={source === 'armature' && showPoleLabels}
               showPolarityLegend={source === 'armature' && showPoleLabels}
               statorPolarityProfile={descriptor?.airgap_brbt ?? exactVectorPlot?.airgap_brbt}
               statorPolarityRotationDeg={statorPolarityRotationDeg}
-              statorInnerRadiusMm={config.stator.ID_mm / 2}
+              statorInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : config.stator.ID_mm / 2}
               poles={config.rotor.pole_count}
               showHeatmap={showHeatmap && !overlayActive}
               showMesh={showMesh}

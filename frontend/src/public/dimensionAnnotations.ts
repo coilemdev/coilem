@@ -312,6 +312,8 @@ export function buildDimensionAnnotations(
   config: MotorConfig,
   geometry: GeometryPreview | null,
 ): DimensionAnnotation[] {
+  // These callouts measure an inner rotor inside a stator bore.
+  if (config.rotor_layout === 'outer') return [];
   const metadata = (geometry?.metadata ?? {}) as Record<string, unknown>;
   const statorOuterMm = config.stator.OD_mm / 2;
   const boreMm = config.stator.ID_mm / 2;

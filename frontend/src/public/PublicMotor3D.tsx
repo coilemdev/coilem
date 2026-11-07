@@ -555,7 +555,9 @@ function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.Ca
 }
 
 export function PublicMotor3D(props: PublicMotor3DProps) {
-  return props.config.geometry_reference ? <ReferenceMotor3D {...props} /> : <ParametricMotor3D {...props} />;
+  // The parametric build draws an inner rotor; references and outer rotors extrude their preview regions.
+  return props.config.geometry_reference || props.config.rotor_layout === 'outer'
+    ? <ReferenceMotor3D {...props} /> : <ParametricMotor3D {...props} />;
 }
 
 function ParametricMotor3D({

@@ -275,12 +275,9 @@ def public_config_support_error(
             field="solve_params",
         )
 
-    if is_outer_rotor(config):
-        if solver_id == "elmer":
-            return PublicConfigError("Outer-rotor designs use the built-in Magneto2D solver.", field="solver")
-        if require_solve_params:
-            # Lifted once the field boundary, magnet re-tag and torque body are layout-aware.
-            return PublicConfigError("Solving outer-rotor designs is not available yet.", field="rotor_layout")
+    if is_outer_rotor(config) and solver_id == "elmer":
+        # Elmer builds its own air-gap layering around an inner rotor.
+        return PublicConfigError("Outer-rotor designs use the built-in Magneto2D solver.", field="solver")
 
     if solver_id == "elmer" and config.solve_options is not None and config.solve_options.cogging_torque:
         return PublicConfigError(

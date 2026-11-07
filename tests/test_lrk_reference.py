@@ -80,7 +80,8 @@ def test_preview_is_clean_and_describes_an_outer_rotor():
     assert preview.metadata["airgap_mm"] == pytest.approx(0.2)
     assert preview.metadata["radial_layout"] == "outer_rotor"
     assert preview.metadata["outer_radius_mm"] == 15.39
-    assert preview.metadata["phase_axis_offset_elec_deg"] == 15.0
+    # The 12s/14p tooth-coil axis (15) plus half a cycle for the outer rotor.
+    assert preview.metadata["phase_axis_offset_elec_deg"] == 195.0
 
 
 def test_native_mesh_keeps_every_region():
@@ -121,3 +122,16 @@ def test_fixed_current_case_losses_use_the_held_currents():
     lrk.postprocess_report(report, cfg, None)
     # 0/-4/+4 A is the instant of a balanced set where phase A crosses zero.
     assert report["operating_point"]["resolved_phase_current_peak_a"] == pytest.approx(4.0 / math.sin(math.radians(60.0)))
+
+
+def test_outer_mesh_pins_exactly_the_rotor_od_and_hub_bore():
+    from backend.gmsh_solver import run_gmsh_mesh_preview
+
+    artifact = run_gmsh_mesh_preview(config(), rotor_angle_deg=15.0)["solve_mesh_artifact"]
+    mesh = artifact["mesh"]
+    radii = {round(math.hypot(*mesh["nodes"][i]), 4) for i in mesh["boundary_nodes"]}
+    assert radii == {6.5, 15.39}
+    assert mesh["boundary_nodes"] == sorted(set(mesh["boundary_nodes"]))
+    info = mesh["info"]
+    assert (info["airgap_inner_radius_mm"], info["airgap_outer_radius_mm"]) == (12.8, 13.0)
+    assert info["outer_rotor"]["yoke_sample_radius_mm"] < 8.25 < info["outer_rotor"]["tooth_sample_radius_mm"] < 12.8

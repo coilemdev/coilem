@@ -207,7 +207,8 @@ assert.match(workspaceSource, /const burialHealth = publicFlatIpmBurialHealth\(c
 assert.match(workspaceSource, /\.\.\.\(burialHealth \? \[burialHealth\] : \[\]\)/);
 assert.match(workspaceSource, /burialHealth\?\.blocking !== true/);
 assert.match(workspaceSource, /NumberRow label="Bore Tooth Width".*min=\{minimumBoreToothWidthMm\}.*max=\{maximumBoreToothWidthMm\}/);
-assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width".*min=\{2\}/);
+// Inner rotors keep the 2 mm floor; outer rotors (drone stators) go to 0.5 mm.
+assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width".*min=\{outer \? 0\.5 : 2\}/);
 assert.match(workspaceSource, /label="Outer Bridge"/);
 assert.match(workspaceSource, /value=\{config\.rotor\.bridge_thickness_mm\}/);
 assert.match(workspaceSource, /onChange=\{set\('rotor', 'bridge_thickness_mm', 'rotor'\)\}/);
@@ -663,7 +664,7 @@ assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, pha
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 // ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
-assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\)\)/);
+assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\), data\.metadata\.rotor_layout === 'outer' \? 'outward' : 'inward'\)/);
 // Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
 assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
 assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
@@ -1129,7 +1130,7 @@ assert.match(solvedFieldSource, /aria-pressed=\{displayedDensity === stop\}\s*di
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
 assert.doesNotMatch(solvedFieldSource, /<select[^>]*Field-line density/);
 assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
-assert.match(solvedFieldSource, /airgapInnerRadiusMm=\{rotorAirgapBoundaryRadiusMm\(config\)\}/);
+assert.match(solvedFieldSource, /airgapInnerRadiusMm=\{config\.rotor_layout === 'outer' \? undefined : rotorAirgapBoundaryRadiusMm\(config\)\}/);
 assert.match(solvedFieldSource, /showMagnetPolarityLabels=\{showPoleLabels\}/);
 assert.match(solvedFieldSource, /colorRangeMode=\{colorRangeMode\}/);
 // One flux-density scale everywhere (0–2.0 T, magenta above, the stator steel's

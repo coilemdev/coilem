@@ -31,3 +31,11 @@ assert.equal(magnetPoleCoverage({ topology: 'IPM', rotor: spm({}).rotor }), 0.7)
 assert.equal(magnetPoleCoverage(spm({ pole_count: 0 })), 0);
 
 console.log('magnet coverage checks passed');
+
+// An outer rotor's magnets sit inside the seat (rotor ID): 5.78 mm at a 15.15 mm centre radius over 14 poles.
+const outerCoverage = magnetPoleCoverage({
+  topology: 'SPM', rotor_layout: 'outer',
+  rotor: { OD_mm: 35, ID_mm: 31.8, magnet_thickness_mm: 1.5, magnet_width_mm: 5.78, pole_count: 14, magnet_embrace: 0.85 },
+});
+assert.ok(Math.abs(outerCoverage - 0.85) < 0.005, `outer coverage ${outerCoverage}`);
+console.log('outer-rotor magnet coverage checks passed');

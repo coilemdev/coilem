@@ -8,6 +8,7 @@ import math
 import time
 from typing import Literal
 
+from backend.excitation import phase_axis_offset_deg
 from backend.geometry import (
     geometry_warnings,
     tooth_width_advisory,
@@ -49,7 +50,6 @@ from backend.winding_utils import (
     distributed_pitch_factor,
     distributed_slot_layer_assignments,
     tooth_coil_assignments,
-    winding_phase_axis_offset_elec_deg,
 )
 
 OUTER_ROTOR_PREVIEW_KEYS = (
@@ -156,9 +156,7 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
         # The 2D Phases preview needs it to light the phases the solver drives at
         # each rotor position; the drive settings it combines with stay in the
         # frontend, so changing them does not wait for a new preview.
-        winding_metadata["phase_axis_offset_elec_deg"] = winding_phase_axis_offset_elec_deg(
-            winding.type, stator.slot_count, rotor.pole_count, winding.layers, winding.coil_span
-        )
+        winding_metadata["phase_axis_offset_elec_deg"] = phase_axis_offset_deg(config)
         winding_metadata["phase_current_convention"] = (
             reference.phase_current_convention if reference is not None else "q_axis"
         )

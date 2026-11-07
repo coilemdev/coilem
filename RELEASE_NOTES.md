@@ -1,3 +1,26 @@
+# coilEM 0.5.5 — outer-rotor motors (unreleased)
+
+- **Outrunners in the normal workflow.** Design has an **Inrunner / Outrunner**
+  switch. Outer-rotor surface-magnet motors are edited, meshed, solved and
+  reported like inner rotors: outward-opening slots, magnets on the rotor's inner
+  face, a hub bore, and drone-size limits. A starter 14-pole / 12-slot outrunner
+  ships as an example. Conventions, field meanings and limits are in
+  [docs/OUTRUNNER.md](docs/OUTRUNNER.md).
+- **Same conventions for both layouts.** Torque is the rotor's, positive
+  clockwise; pole 0's north faces the air gap, so current angle and six-step
+  commutation mean the same for an outrunner.
+- **LRK 12-slot / 14-pole reference.** The published sliding-band benchmark
+  outrunner runs through the normal pipeline as a pinned reference, next to the
+  Prius. Its examples stay hidden until the source data's redistribution rights
+  are confirmed.
+- **Limits.** Outer rotors are SPM only; parametric outer stators have no tooth
+  shoes yet and two-layer windings must be tooth coils. Elmer, the fixed-mesh
+  lane, the dimension overlay and the solved view's air-gap ring are not
+  available for outer rotors. A design saved with an outer rotor opens as an
+  inner rotor in coilEM 0.5.1 and earlier.
+- Inner-rotor results are unchanged: a benchmark subset is bit-identical to
+  0.5.1. Qualification still needs the full two-platform remeasure.
+
 # coilEM 0.5.1 Developer Preview
 
 Prepared November 6, 2026. The [release qualification gate](benchmarks/v0.5.1/release-qualification.json)
