@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from backend.benchmark_suite.physics import physics_sources
 from backend.geometry_ir import build_geometry_ir
 from backend.magneto2d_adapter import build_magneto2d_payload, get_magneto2d_support_error
 from backend.models import MotorConfig
@@ -80,3 +81,11 @@ def test_paths_that_assume_an_inner_rotor_refuse_outer_rotors():
     assert public_config_support_error(config, require_solve_params=True).field == "rotor_layout"
     fixed_mesh = config.model_copy(update={"solve_params": config.solve_params.model_copy(update={"rotor_rotation_model": "fixed_mesh"})})
     assert "remesh_per_step" in get_magneto2d_support_error(fixed_mesh)
+
+
+def test_layout_and_reference_registry_are_hashed_physics() -> None:
+    # Both decide what is solved: the layout helper sets excitation, boundaries and
+    # the torque sign, and the registry chooses reference implementations. A change
+    # to either must lose a qualified label (review on #200).
+    sources = set(physics_sources(Path(".")))
+    assert {"backend/rotor_layout.py", "backend/reference_models/__init__.py"} <= sources

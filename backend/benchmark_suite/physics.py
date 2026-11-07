@@ -37,7 +37,11 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/models/config.py",
     "backend/public_material_catalog.py",
     "backend/public_policy.py",
+    # The registry picks a reference implementation, and the layout helper sets
+    # excitation, mesh boundaries and the torque sign for outer rotors.
+    "backend/reference_models/__init__.py",
     "backend/reference_models/prius.py",
+    "backend/rotor_layout.py",
     "backend/solver/__init__.py",
     "backend/solver/_helpers.py",
     "backend/solver_contract.py",

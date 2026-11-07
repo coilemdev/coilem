@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 3298,
-      "sha256": "694a863aa9a69e3a3038629c5b4c68884b292431d0938abaf12af9b2dd4496cc"
+      "bytes": 3525,
+      "sha256": "b4acc714d8eb55d36980b55e2e8d41dc190720a588f71c4b6c05ff35ef12d675"
     },
     {
       "path": "backend/benchmark_suite/record.py",
@@ -12945,8 +12945,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 3554,
-      "sha256": "e0fc97a8d617bd8b275841d1d1d5234fe95c28da27520dcfe450eb9559fd7a41"
+      "bytes": 4051,
+      "sha256": "7959c5415e6398332806cc4da3d167a0527978296ff07dd534c9ab232e486544"
     }
   ],
   "public_patches": [
