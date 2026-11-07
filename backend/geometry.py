@@ -31,6 +31,7 @@ from backend.models.config import (
     MIN_STATOR_SLOT_OPENING_MM,
     MIN_STATOR_TOOTH_WIDTH_MM,
 )
+from backend.rotor_layout import is_outer_rotor, outer_rotor_airgap_mm
 from backend.winding_utils import (
     concentrated_uses_tooth_coils,
     distributed_full_pitch_slots,
@@ -206,6 +207,9 @@ def tooth_width_advisory(config: MotorConfig) -> ToothWidthAdvisory | None:
     than 5% is a pre-solve warning. This remains geometric only: actual saturation
     severity comes from the solved tooth flux density and the selected steel curve.
     """
+    if is_outer_rotor(config):
+        # The bore-side widths below describe an inner rotor's stator.
+        return None
 
     stator = config.stator
 
@@ -326,6 +330,23 @@ def geometry_warnings(config: MotorConfig) -> list[str]:
     return [advisory.message]
 
 
+MIN_OUTER_AIRGAP_MM = 0.1
+
+
+def _validate_outer_rotor_geometry(config: MotorConfig) -> list[ErrorResponse]:
+    """The radial checks that hold for an outer rotor; MotorConfig already orders its radii."""
+
+    airgap = outer_rotor_airgap_mm(config)
+    if airgap >= MIN_OUTER_AIRGAP_MM:
+        return []
+    return [ErrorResponse(
+        error_code="INVALID_GEOMETRY",
+        message=f"Airgap {airgap:.2f}mm is less than minimum {MIN_OUTER_AIRGAP_MM}mm",
+        field="rotor.ID_mm",
+        suggestion=f"Increase rotor ID_mm by at least {2 * (MIN_OUTER_AIRGAP_MM - airgap):.2f}mm or decrease stator OD_mm",
+    )]
+
+
 def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
     """Validate motor geometry against physical constraints.
 
@@ -342,6 +363,8 @@ def validate_geometry(config: MotorConfig) -> list[ErrorResponse]:
         List of ErrorResponse objects for any validation failures.
         Empty list means configuration is geometrically valid.
     """
+    if is_outer_rotor(config):
+        return _validate_outer_rotor_geometry(config)
     errors = []
 
     # Extract convenience references

@@ -450,7 +450,7 @@ def _run_gmsh_ir_mesh_preview(
 ) -> dict[str, Any]:
     """Generate an IR-driven Gmsh mesh for SPM/IPM topologies."""
 
-    ir = build_geometry_ir(config, geom=geom)
+    ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=rotor_angle_deg)
     ir_report = ir.validation_report()
     if ir_report.issues:
         joined = "; ".join(ir_report.issues)
@@ -753,6 +753,7 @@ _QA_MAGNET_GRADES = {
     "Ferrite_Y30",
     "Prius_2004_NdFeB",
     "ORNL_Prius_2004_NdFeB",
+    "LRK_NdFeB_40MGOe",
 }
 
 

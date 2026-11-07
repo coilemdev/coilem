@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 1267,
-      "sha256": "3ac5f86b137825c1a9253353a49e37f45ba4e47608a88ac4d222a3932046b5db"
+      "bytes": 1415,
+      "sha256": "30f2c604d63c11c80500dde21fb92ea7839432b811e1111e62c54bcef5d83a98"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -160,8 +160,8 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 3525,
-      "sha256": "b4acc714d8eb55d36980b55e2e8d41dc190720a588f71c4b6c05ff35ef12d675"
+      "bytes": 3674,
+      "sha256": "a3cc4854945c10900cb948e4c7f763f73da69ba86618cbe1c126bb8e17cb74b4"
     },
     {
       "path": "backend/benchmark_suite/record.py",
@@ -295,8 +295,8 @@
     },
     {
       "path": "backend/geometry.py",
-      "bytes": 58332,
-      "sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673"
+      "bytes": 59229,
+      "sha256": "faf9989380171dabb09595a3f696ef4aa3e8c361e40fde5acfe8bb53c6896592"
     },
     {
       "path": "backend/geometry_drawer.py",
@@ -305,8 +305,8 @@
     },
     {
       "path": "backend/geometry_ir.py",
-      "bytes": 66412,
-      "sha256": "3d58a18452cadbb587494f957d3809cdb068f7b941629e9f62ff5f201f0221a1"
+      "bytes": 67642,
+      "sha256": "0a1d951c2955251b4cfcf538d5127db2f9b212304b880309687c3ac956e0941f"
     },
     {
       "path": "backend/geometry_ir_tessellation.py",
@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 76597,
-      "sha256": "7fda02226a6ccd8d35d196d2d747d8632beb7af18c07ebd3d2f5e3828b473038"
+      "bytes": 76654,
+      "sha256": "c7cb69e18d68e1dcaeff4f4e9b5d66047dc53659ae24619284f955acea1f521c"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -415,8 +415,8 @@
     },
     {
       "path": "backend/loss_breakdown.py",
-      "bytes": 5699,
-      "sha256": "10bd3fe20c07307762eba4e1dd2d7c0d457b42efd9f50ffd84a593e35316162a"
+      "bytes": 6136,
+      "sha256": "07836ed07dff4eb03ea665581411e3b33681579e2e86c226356016c7a130766a"
     },
     {
       "path": "backend/machine_constants.py",
@@ -445,8 +445,8 @@
     },
     {
       "path": "backend/material_catalog.py",
-      "bytes": 4613,
-      "sha256": "4227dfbbddd82167b780f2284de59bcc0db69840a865de145612a9dda99fa198"
+      "bytes": 5010,
+      "sha256": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262"
     },
     {
       "path": "backend/material_contract.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 33998,
-      "sha256": "d7f66f787d825f3b36b45d0af6c3050b680c0f4ef2f5c0f6308e71f12c879565"
+      "bytes": 34063,
+      "sha256": "e220e632bdacb49730e2f3fdbc380e5f0e4447648eeed066862ee0493f1ae53a"
     },
     {
       "path": "backend/models/errors.py",
@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 40726,
-      "sha256": "c8f08a7ef1149d80da22b0160c77acc5f73a467b32efece4a385dff35b0bec16"
+      "bytes": 41560,
+      "sha256": "49a5c9a093bb21c8029d3b3938b6816dd2e347b2a3f0f3c09d6174852e25119e"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -545,8 +545,8 @@
     },
     {
       "path": "backend/public_material_catalog.py",
-      "bytes": 10217,
-      "sha256": "1d9f1469c3ca6c26f6b8fea23fd29b1c607fac69c9febff1f65ff473a2d99680"
+      "bytes": 10383,
+      "sha256": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3"
     },
     {
       "path": "backend/public_policy.py",
@@ -610,13 +610,13 @@
     },
     {
       "path": "backend/reference_models/__init__.py",
-      "bytes": 3106,
-      "sha256": "5627aac780d6ccfc4163597e371e32178e2aef280e9c8760b538f62dd14eb7aa"
+      "bytes": 3745,
+      "sha256": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d"
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 20138,
-      "sha256": "450b46e0a6ac7cd046d55cd159bef61604079da66e5a21b3ce9b82593c2c65ef"
+      "bytes": 20260,
+      "sha256": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 8911,
-      "sha256": "e7bb679bb7f0f32c7d07514dc5c950992b2dc50e4d1a58a768f38d9e6ab1c613"
+      "bytes": 9021,
+      "sha256": "4f3863da726116daf57092b5347def42cf202519ed43eeb51705ae70d32b6d04"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -7180,8 +7180,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 15716,
-      "sha256": "b6f380d7ffe3b81d5e751a087a7086829aab313e74e6853e948bf2abc2d3c4c3"
+      "bytes": 15806,
+      "sha256": "e748ea2bd297aa236eefad79b417e5d47602f917649349d09cd11a68178e1696"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7195,8 +7195,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 4016,
-      "sha256": "ddf4fbcb0edfa38a1a1b3fea6d119e946b5001f891392b3a6f914cb518314313"
+      "bytes": 5180,
+      "sha256": "aca38b87073895085761d4ba327f65980a446e4597ddf0c773ec9c1f3cf1b3e4"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 23875,
-      "sha256": "09b8053edb748b8833f25f620a583645ab0b5eecfe67e6228cd7993312f94324"
+      "bytes": 23929,
+      "sha256": "e15e673966198640cfdb269ea29e9b2a486747050d09bace4cc61a53ef84d37b"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7705,8 +7705,8 @@
     },
     {
       "path": "solvers/magneto2d/src/materials.rs",
-      "bytes": 32017,
-      "sha256": "42c6fcda5430f904a240c7fabb7e35d6ad209a2f98247c332846be5b3e7b5b77"
+      "bytes": 32184,
+      "sha256": "61b5ee66e17f581b5d930d29eb923ef189a80f8698d0f5f915bb9ded9edb40a1"
     },
     {
       "path": "solvers/magneto2d/src/mesh.rs",
@@ -8245,8 +8245,8 @@
     },
     {
       "path": "tests/test_public_validation_errors.py",
-      "bytes": 3715,
-      "sha256": "e3780b463fae51e5e01dc30803c851b54044371c7f5f316e995a3e60927a423a"
+      "bytes": 3735,
+      "sha256": "25608e2b2458c830219db1c19793425048b2b6b79a036b71af3ff63e9d459a17"
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -12145,8 +12145,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 15145,
-      "sha256": "c2650bbaa95656b554290b26cb62107101a0effa0f2527bbe0c5ef986aa9747d"
+      "bytes": 15290,
+      "sha256": "b638cffd3b46f9ab7e6c259055545373e9a9b11198279d66364ff39329745aff"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -12934,19 +12934,54 @@
       "sha256": "3692919037466120f03a3f54468ee7a238c303cf4d053c7ee6e195fc5ea6a4a6"
     },
     {
+      "path": "backend/reference_models/lrk.py",
+      "bytes": 23155,
+      "sha256": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43"
+    },
+    {
+      "path": "backend/reference_models/lrk_12s14p_config.json",
+      "bytes": 4815,
+      "sha256": "46add87f28066dd32cbc96d91b1f7cfc9d025fea753b59495d6ba696423307bf"
+    },
+    {
+      "path": "backend/reference_models/lrk_12s14p_source.json",
+      "bytes": 55634,
+      "sha256": "474c5ce06d530a9c6281da165f83e28eeba40ba3458617001b18d11b5e17d608"
+    },
+    {
       "path": "backend/rotor_layout.py",
-      "bytes": 804,
-      "sha256": "330fc75f5c337772deda5eb10ccd92a232c3a2278b539f4d8aaeee4bd868a6de"
+      "bytes": 1031,
+      "sha256": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27"
+    },
+    {
+      "path": "frontend/src/public/examples/lrk-12s14p-fixed-current-v1.coilem",
+      "bytes": 6572,
+      "sha256": "2f7df870864ea97f54f076c2f4780efcbc4261e96b997f1d24ccab0bfcea3af3"
+    },
+    {
+      "path": "frontend/src/public/examples/lrk-12s14p-six-step.coilem",
+      "bytes": 6540,
+      "sha256": "82ba74acdad67c9a778f2ffd048aee2ff7bec34fbce6a299b524914448e46f02"
     },
     {
       "path": "frontend/src/public/publishedReferences.ts",
-      "bytes": 2395,
-      "sha256": "5c9fa3784201ae46789a45f531ef44f6d97e848e7140aea2fa74f051d9c0bb11"
+      "bytes": 4367,
+      "sha256": "2586b62d144b8fc5d90171ea1a0c8fc0575eb750a264a5a82ca1d99661ca0159"
+    },
+    {
+      "path": "tests/test_lrk_reference.py",
+      "bytes": 5561,
+      "sha256": "05d321a30a51889b694ac4d366ba0d19caf21633c7b8c398ca5e2a348c2b394e"
     },
     {
       "path": "tests/test_rotor_layout.py",
       "bytes": 4051,
       "sha256": "7959c5415e6398332806cc4da3d167a0527978296ff07dd534c9ab232e486544"
+    },
+    {
+      "path": "tools/export_lrk_reference.py",
+      "bytes": 3634,
+      "sha256": "176670074258fc60fc569ab836f184024d498bf6e805a635d68390ef1fcfcf7d"
     }
   ],
   "public_patches": [
