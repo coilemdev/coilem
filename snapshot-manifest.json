@@ -6560,8 +6560,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 13013,
-      "sha256": "50aef7a03616a8c66409faa4da5e8f13dbfab0e09565fa9322b193311bc5b14f"
+      "bytes": 14363,
+      "sha256": "26e4efc20cb89cbf8f9e09cee3d608ce637a9cc6a773b8e8d8f3886283e61b9c"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -7045,8 +7045,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 62321,
-      "sha256": "4da15534d775915f104bdc667fa6e09462416e07fb33c573b21af2d42f88b34d"
+      "bytes": 64547,
+      "sha256": "d50bc4dfebf133382b60b08e62c77711166816dcea1cf517f7b3879cdf03bc9c"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7455,8 +7455,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 10048,
-      "sha256": "9713ec90ab410f4989063e829e6e7697b755e94a7b5216d6b70816771378117b"
+      "bytes": 11135,
+      "sha256": "fc162c344a73b14d5c52d3f594e5baf06a918a244ac05a16cc45904c9dc4c818"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
