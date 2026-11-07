@@ -10,6 +10,7 @@ import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
 import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
+import { shoeShoulderFraction, stator3dRadii } from './stator3dRadii';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
@@ -699,18 +700,15 @@ function ParametricMotor3D({
     // An outer rotor turns the machine inside out: the stator's yoke sits on its
     // hub with the teeth pointing out to the air gap at its OD, and the rotor is
     // a ring round it with the magnets on its inner face. Radii are named by role
-    // so one build serves both; an inner rotor's values are the ones it always had.
-    const outerRotor = config.rotor_layout === 'outer';
-    // The machine's overall radius: the stator OD, or an outer rotor's OD.
-    const outerRadius = outerRotor ? config.rotor.OD_mm / 2 : config.stator.OD_mm / 2;
-    // Where the teeth meet the air gap (the bore of an inner-rotor stator).
-    const statorInnerRadius = outerRotor ? config.stator.OD_mm / 2 : config.stator.ID_mm / 2;
-    // Where the teeth meet the yoke.
-    const yokeInnerRadius = outerRotor
-      ? Math.min(statorInnerRadius - 2, config.stator.ID_mm / 2 + config.stator.yoke_thickness_mm)
-      : Math.max(statorInnerRadius + 2, outerRadius - config.stator.yoke_thickness_mm);
-    // The yoke's far face: the stator OD, or an outer-rotor stator's hub bore.
-    const yokeOuterRadius = outerRotor ? config.stator.ID_mm / 2 : outerRadius;
+    // so one build serves both (stator3dRadii.ts).
+    const {
+      outerRotor,
+      outerRadius,
+      statorInnerRadius,
+      yokeInnerRadius,
+      yokeOuterRadius,
+      coilRootRadius,
+    } = stator3dRadii(config);
     const rotorRadius = config.rotor.OD_mm / 2;
     // An outer rotor's magnets sit on its inner face, the rotor ID.
     // (An outer rotor always has an ID; the schema requires it.)
@@ -1055,12 +1053,7 @@ function ParametricMotor3D({
         slotPitch * 0.499,
         bodyToothWidthAtBore / Math.max(statorInnerRadius, 1) / 2,
       );
-      const shoulderFraction = THREE.MathUtils.clamp(
-        (shoulderRadius - statorInnerRadius)
-          / Math.max(1e-6, yokeInnerRadius - statorInnerRadius),
-        0,
-        1,
-      );
+      const shoulderFraction = shoeShoulderFraction(statorInnerRadius, shoulderRadius, yokeInnerRadius);
       const shoulderHalf = THREE.MathUtils.lerp(
         bodyHalfInner,
         toothHalfOuter,
@@ -1095,7 +1088,7 @@ function ParametricMotor3D({
     const concentratedCoil = config.winding.type === 'concentrated'
       ? buildConcentratedCoil(outerRotor
         ? {
-            boreRadius: yokeInnerRadius,
+            boreRadius: coilRootRadius,
             yokeInnerRadius: coilBoreRadius,
             toothHalfAngleInnerRad: toothHalfOuter,
             toothHalfAngleOuterRad: coilToothHalfInner,
