@@ -145,7 +145,7 @@ class RotorConfig(BaseModel):
             "surface arc length for SPM, or slab length for V-shape IPM"
         ),
     )
-    pole_count: int = Field(..., ge=2, le=32, description="Number of poles")
+    pole_count: int = Field(..., ge=2, le=64, description="Number of poles")
     magnet_embrace: float = Field(
         default=0.8, ge=0, le=1, description="Magnet coverage fraction (0-1)"
     )

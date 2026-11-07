@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 12415,
-      "sha256": "8c121959828eb792cb1a4e27a57a726af13920e8588174828fbe4178a5e214a9"
+      "bytes": 12630,
+      "sha256": "8ac4bc77d53dcc01bd2c7cddc43c2249a8df96ae99ffb0f096aacef02141051c"
     },
     {
       "path": "SECURITY.md",
@@ -471,7 +471,7 @@
     {
       "path": "backend/models/config.py",
       "bytes": 34063,
-      "sha256": "e220e632bdacb49730e2f3fdbc380e5f0e4447648eeed066862ee0493f1ae53a"
+      "sha256": "01a3dba95bfda8e164098aa6c5a56da0b7a45d44eb3e9e8bdff890f41a01c805"
     },
     {
       "path": "backend/models/errors.py",
@@ -7011,7 +7011,7 @@
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
       "bytes": 241590,
-      "sha256": "33dccde5d6327407000b61538c4d3a6ee78f0dd0ba57e95fd3e7b8835766774e"
+      "sha256": "9f3be279d01fa481961eff16716e6cb5a17547fee34a946d7a337825300680a0"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -8245,8 +8245,8 @@
     },
     {
       "path": "tests/test_public_validation_errors.py",
-      "bytes": 3735,
-      "sha256": "25608e2b2458c830219db1c19793425048b2b6b79a036b71af3ff63e9d459a17"
+      "bytes": 3928,
+      "sha256": "df65db3c54535f6358195dda0bf6aa3414a581983cd47d804876e9b295e7215f"
     },
     {
       "path": "tests/test_public_validation_fixtures.py",
@@ -13000,8 +13000,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 9170,
-      "sha256": "f9388cf9cc324a1ebe0f0ba642e5a69ec282f4073b4341424fd6e9c24da49c54"
+      "bytes": 10221,
+      "sha256": "785f0fd3707dbef1080885ef61b567e286803a676fa95abc172680cbcddaec27"
     },
     {
       "path": "tools/export_lrk_reference.py",
