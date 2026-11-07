@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 17149,
-      "sha256": "23038736d42d57f6d0710dc1b7dd2b35dd288fc93e23f9f1ccf0d5b47ff4b150"
+      "bytes": 17640,
+      "sha256": "3bb102fc6217985cc4a65edb652ac35a85537eb3989c18f5ba6e2fd98c1470f4"
     },
     {
       "path": "SECURITY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3114,
-      "sha256": "cb59a16a6817b7fd8b7633f77b423b694c33a4c07dbf1dba0be7c15e3026a79d"
+      "bytes": 3196,
+      "sha256": "9773b77b037515b14c22162fd9869c3a787c3732cd2e6ca6beb34773521e74d5"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7000,8 +7000,8 @@
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
-      "bytes": 11750,
-      "sha256": "004b91fbcb617265355f6d6c43196bd3e3b81e552a9dabc8bc8c8f3b240239c9"
+      "bytes": 11778,
+      "sha256": "388b0c2273bcd1d2c7fb1e17d4c3f0a51628ea711ce0997a52bae21841467519"
     },
     {
       "path": "frontend/src/public/CoggingCard.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 245372,
-      "sha256": "832daa73e1bc28fbae23292b01c07f8b5ad1d4dad87ab47a1b4e217e9eaf0a94"
+      "bytes": 245364,
+      "sha256": "bd3ce40a1a0df80f207506d343218a85f3f08036c7119fec7a3b1832375a33c5"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 11208,
-      "sha256": "b495caf8f564795b037b667735a48f24a25115738123e284bcd2114b743efdf6"
+      "bytes": 11593,
+      "sha256": "73b6f2cdd967cb347c1e3bdf9249a67191501bd9ca957ee34417fcd5491b435a"
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
@@ -7145,13 +7145,13 @@
     },
     {
       "path": "frontend/src/public/chartAxis.ts",
-      "bytes": 1124,
-      "sha256": "ade180d736a567e8b044e35d052739edd9e6d271a4474ce7fca89b9a0972d9ba"
+      "bytes": 3815,
+      "sha256": "7dad3d9652d9055ddec26b2987034cc5d50dde0d80ab4862fd658710f0daf34b"
     },
     {
       "path": "frontend/src/public/chartReadout.ts",
-      "bytes": 4315,
-      "sha256": "b64be454f36cd11cd6d1cc8508ae239ff0c2cd621908ac21fa99eef25cdf998e"
+      "bytes": 4424,
+      "sha256": "b712fb576baf345039d67562f7fd737f8630baab7d61b0dc8d839ae78fe51337"
     },
     {
       "path": "frontend/src/public/coggingView.ts",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 292583,
-      "sha256": "a018853098f2762d819a35d81fc739335855ce75e96f3de3a270a7f8be48d420"
+      "bytes": 294214,
+      "sha256": "8b721e8ecc7ea314799b53c139d20eb05cf524de925598b992f9c3282a31b654"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 55379,
-      "sha256": "9983d7a39995f79cc8a877eac45c8b9d5eaa22b67808d4d6e35d634e1fc6bcfe"
+      "bytes": 56428,
+      "sha256": "05b441bcc4e0eeba4a05d79094b9f07aa7087a7082f9494f5af1e7c1e88f5dd2"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -12065,8 +12065,8 @@
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
-      "bytes": 3944,
-      "sha256": "8fae14435a4190dc1ed99935d55fdd189242f3f5d54ead595da49639ee24f418"
+      "bytes": 6062,
+      "sha256": "0caa30830e7c053cdf69a0a85d3ae29a5e4682112c7280acdfee264d98b96353"
     },
     {
       "path": "tests/test_convergence_reporting.py",
@@ -13147,6 +13147,21 @@
       "path": "tools/make_outrunner_phase_f.py",
       "bytes": 8404,
       "sha256": "c9a0a33e2b4fb07abf41a43717e51d73de8c4b84fc50960920aebebd36f00f8f"
+    },
+    {
+      "path": "frontend/scripts/test-convergence-overview.mjs",
+      "bytes": 4366,
+      "sha256": "7094ef1306d291c9cca8864dca6de8eecbb4e3ceed9838913bc2627fef7ddfd4"
+    },
+    {
+      "path": "frontend/scripts/test-value-axis.mjs",
+      "bytes": 2294,
+      "sha256": "8a4c22cb41d422c4f759ae8fbaff36731cc0389d084d5f312ecbd9a197ece0ae"
+    },
+    {
+      "path": "frontend/src/public/convergenceOverview.ts",
+      "bytes": 6094,
+      "sha256": "ba575daf3aee8faab1c7265b57449dc119b1e5d5d1661d0dd4756b3761e42624"
     }
   ],
   "public_patches": [

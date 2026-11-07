@@ -1609,8 +1609,24 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-result-summary { display: grid; gap: 12px; max-width: 1080px; margin: 0 auto; }
 .public-solver-convergence { max-width: 1080px; margin: 18px auto; padding: 18px; border: 1px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface-1); }
 .public-solver-convergence > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
-.public-solver-convergence h2 { margin: 0; font-size: 15px; }
-.public-solver-convergence h3 { margin: 14px 0 8px; font-size: 12px; color: var(--text-secondary); }
+.public-diagnostics { max-width: 1080px; margin: 32px auto 18px; padding-top: 18px; border-top: 1px solid var(--border-subtle); }
+.public-diagnostics > h2 { margin: 0; font-size: 16px; }
+.public-diagnostics-intro { margin: 6px 0 0; max-width: 72ch; color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+.public-diagnostics .public-solver-convergence { margin: 14px 0 0; }
+.public-solver-convergence > header h3 { margin: 0; font-size: 15px; color: var(--text-primary); }
+.public-solver-convergence h4 { margin: 14px 0 8px; font-size: 12px; color: var(--text-secondary); }
+.public-convergence-verdict { margin: 12px 0 0; max-width: 80ch; font-size: 13px; line-height: 1.6; color: var(--text-primary); }
+.public-convergence-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 20px; margin: 16px 0 0; }
+.public-convergence-facts > div { min-width: 0; }
+.public-convergence-facts dt { font-size: 11px; color: var(--text-muted); }
+.public-convergence-facts dd { margin: 5px 0 0; font: 600 14px var(--font-mono); overflow-wrap: anywhere; }
+.public-convergence-facts p { margin: 4px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-muted); }
+.public-convergence-guide { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+.public-convergence-guide > summary { cursor: pointer; color: var(--text-secondary); }
+.public-convergence-guide > summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
+.public-convergence-guide p { margin: 10px 0 0; max-width: 80ch; }
+.public-convergence-guide ul { margin: 8px 0 0; padding-left: 18px; max-width: 80ch; }
+.public-convergence-guide strong { color: var(--text-primary); }
 .public-convergence-status { padding: 4px 9px; border: 1px solid var(--border-subtle); border-radius: 20px; font-size: 11px; color: var(--text-muted); }
 .public-convergence-status.is-ok { color: var(--success); }
 .public-convergence-status.is-warning, .public-convergence-warnings, .public-convergence-table-scroll .is-warning { color: var(--warning); }

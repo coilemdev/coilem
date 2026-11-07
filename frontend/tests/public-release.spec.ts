@@ -177,12 +177,24 @@ print(json.dumps(r))
   await expect(run).toBeEnabled({ timeout: 120_000 });
   await run.click();
   await page.getByRole('button', { name: 'Full results →', exact: true }).click();
-  const card = page.getByRole('region', { name: 'Solver convergence', exact: true });
-  await expect(card.getByText('Review convergence', { exact: true })).toBeVisible();
+  // Diagnostics close the Results page, after the plots.
+  const diagnostics = page.getByRole('region', { name: 'Diagnostics', exact: true });
+  const card = diagnostics.getByRole('region', { name: 'Solver convergence', exact: true });
+  expect(await page.locator('.public-report-plot-tabs').evaluate((tabs) => {
+    const section = document.querySelector('.public-diagnostics');
+    return Boolean(section && tabs.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
+  // A plain verdict and facts first; the report's own rows under Technical details.
+  await expect(card.getByText('Needs review', { exact: true })).toBeVisible();
+  await expect(card.getByText(/^1 of 8 rotor positions need a look: 1 used 80% or more of the iteration limit\./)).toBeVisible();
+  await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^8 of 8 · 1 reused$/ })).toBeVisible();
+  await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^24 of 100 allowed$/ })).toBeVisible();
+  await card.getByText('What this checks and what to look for', { exact: true }).click();
+  await expect(card.getByText(/Convergence is not mesh accuracy\./)).toBeVisible();
+  await card.getByText('Technical details: limits and every position', { exact: true }).click();
   await expect(card.getByText('24 / 8', { exact: true })).toBeVisible();
   await expect(card.locator('dd').filter({ hasText: /^0\.02$/ })).toBeVisible();
   await expect(card.locator('dd').filter({ hasText: /^0\.003$/ })).toBeVisible();
-  await card.getByText('Thresholds and per-position records', { exact: true }).click();
   await expect(card.getByRole('table', { name: 'Per-position solver convergence' })).toBeVisible();
   await expect(card.getByText('Reused · Review', { exact: true })).toBeVisible();
   await expect(card.getByText('0.05', { exact: true })).toBeVisible();

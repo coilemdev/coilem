@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { convergenceOverview } from './convergenceOverview';
 import type { ConvergenceRow, SolverConvergenceReport } from './model';
 
 function Rows({ rows }: { rows: ConvergenceRow[] }) {
@@ -11,30 +12,52 @@ function number(value: number | null): string {
   return value !== null && Number.isFinite(value) ? Number(value.toPrecision(4)).toString() : 'Not recorded';
 }
 
-/** Display the same backend report used by the stored PDF and CSV. */
+/**
+ * Solver convergence: a plain verdict and four facts first, a short guide to
+ * reading them, then the backend report the PDF and CSV carry, unchanged, as
+ * technical details.
+ */
 export function SolverConvergenceCard({ report }: { report?: SolverConvergenceReport | null }) {
   const headingId = useId();
-  const review = report?.status === 'review' || report?.status === 'partial';
+  const overview = convergenceOverview(report);
   return (
     <section className="public-solver-convergence" aria-labelledby={headingId}>
       <header>
-        <h2 id={headingId}>Solver convergence</h2>
-        <span className={`public-convergence-status${review ? ' is-warning' : report?.status === 'ok' ? ' is-ok' : ''}`}>
-          {report?.status_label ?? 'Not recorded'}
+        <h3 id={headingId}>Solver convergence</h3>
+        <span className={`public-convergence-status${overview.tone === 'review' ? ' is-warning' : overview.tone === 'ok' ? ' is-ok' : ''}`}>
+          {overview.label}
         </span>
       </header>
-      {!report || report.status === 'not_recorded'
-        ? <p className="public-convergence-note">Convergence evidence was not recorded for this run. Missing residuals and limits cannot be recovered from iteration counts or current settings.</p>
-        : null}
-      {report && <>
-        <Rows rows={report.summary} />
-        <div className="public-convergence-methods">{report.methods.map(method => (
-          <div key={method.method}><h3>{method.label}</h3><Rows rows={method.summary} /></div>
-        ))}</div>
-        {report.warnings.length > 0 && <ul className="public-convergence-warnings">{report.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>}
+      <p className="public-convergence-verdict">{overview.verdict}</p>
+      {overview.facts.length > 0 && (
+        <dl className="public-convergence-facts">{overview.facts.map(fact => (
+          <div key={fact.key}><dt>{fact.label}</dt><dd>{fact.value}</dd><p>{fact.hint}</p></div>
+        ))}</dl>
+      )}
+      <details className="public-convergence-guide">
+        <summary>What this checks and what to look for</summary>
+        <p>
+          Steel saturates, so how easily it carries flux depends on the field in it. At each rotor position the
+          solver repeats a loop: solve the field, update every steel element from its new flux density, and solve
+          again, until the steel stops changing. This card records how close each position got when its loop stopped.
+        </p>
+        <ul>
+          <li><strong>Converged:</strong> every position finished under the allowed error. Nothing to do.</li>
+          <li><strong>Worst remaining error above 100%:</strong> a position stopped before reaching the allowed error, so its torque and Back EMF are less certain. Look for a spike at that angle in the waveforms.</li>
+          <li><strong>Iterations at 80% or more of the limit:</strong> those positions converged slowly. They passed, but they were close to stopping early.</li>
+          <li><strong>Small results,</strong> such as cogging torque, are the most sensitive to error left in the field.</li>
+          <li><strong>Convergence is not mesh accuracy.</strong> It shows the equations were solved on this mesh, not that the mesh is fine enough; the accuracy plan sets that.</li>
+        </ul>
+      </details>
+      {report && report.status !== 'not_recorded' && (
         <details className="public-convergence-details">
-          <summary>Thresholds and per-position records</summary>
-          {report.methods.map(method => <div key={method.method}><h3>{method.label} thresholds</h3><Rows rows={method.details} /></div>)}
+          <summary>Technical details: limits and every position</summary>
+          <Rows rows={report.summary} />
+          <div className="public-convergence-methods">{report.methods.map(method => (
+            <div key={method.method}><h4>{method.label}</h4><Rows rows={method.summary} /></div>
+          ))}</div>
+          {report.warnings.length > 0 && <ul className="public-convergence-warnings">{report.warnings.map(warning => <li key={warning}>{warning}</li>)}</ul>}
+          {report.methods.map(method => <div key={method.method}><h4>{method.label} thresholds</h4><Rows rows={method.details} /></div>)}
           {report.notes.map(note => <p className="public-convergence-note" key={note}>{note}</p>)}
           {report.positions.length > 0 && <div className="public-convergence-table-scroll">
             <table aria-label="Per-position solver convergence">
@@ -54,7 +77,19 @@ export function SolverConvergenceCard({ report }: { report?: SolverConvergenceRe
             </table>
           </div>}
         </details>
-      </>}
+      )}
+    </section>
+  );
+}
+
+/** The end of Results: checks on how the numbers were computed. */
+export function ResultDiagnostics({ report }: { report?: SolverConvergenceReport | null }) {
+  const headingId = useId();
+  return (
+    <section className="public-diagnostics" aria-labelledby={headingId}>
+      <h2 id={headingId}>Diagnostics</h2>
+      <p className="public-diagnostics-intro">Checks on how the results above were computed. They don't change the results; they show how far to trust them.</p>
+      <SolverConvergenceCard report={report} />
     </section>
   );
 }
