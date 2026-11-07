@@ -11,11 +11,13 @@ from pydantic import ValidationError
 
 from backend import qualification as qualification_module
 from backend.benchmark_suite.physics import physics_sources
+from backend.geometry import validate_geometry
+from backend.geometry_drawer import bore_tooth_width_mm, narrowest_tooth_width_mm
 from backend.geometry_ir import build_geometry_ir
+from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.magneto2d_adapter import build_magneto2d_payload, get_magneto2d_support_error
 from backend.models import MotorConfig
-from backend.public_policy import public_config_support_error
-from backend.rotor_layout import OuterRotorUnsupportedError
+from backend.public_policy import parse_public_solve_request, public_config_support_error
 
 INNER = json.loads(Path("benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json").read_text(encoding="utf-8"))
 
@@ -77,10 +79,6 @@ def test_outer_rotor_is_spm_only():
 
 def test_paths_that_assume_an_inner_rotor_refuse_outer_rotors():
     config = MotorConfig.model_validate(outer_config())
-    shoed = MotorConfig.model_validate({**outer_config(), "stator": {**outer_config()["stator"], "tooth_shoe_enabled": True,
-                                                                       "tooth_shoe_overhang_mm": 0.5}})
-    with pytest.raises(OuterRotorUnsupportedError, match="Tooth shoes"):
-        build_geometry_ir(shoed)
     assert public_config_support_error(config, solver_id="elmer").field == "solver"
     assert public_config_support_error(config, require_solve_params=True) is None
     fixed_mesh = config.model_copy(update={"solve_params": config.solve_params.model_copy(update={"rotor_rotation_model": "fixed_mesh"})})
@@ -160,9 +158,60 @@ def test_a_36_slot_40_pole_outrunner_builds_and_64_poles_is_the_cap():
         MotorConfig.model_validate({**raw, "rotor": {**raw["rotor"], "pole_count": 66}})
 
 
-def test_outer_rotor_geometry_checks():
-    from backend.geometry import validate_geometry
+def _joint_motor(**stator) -> dict:
+    """The 36-slot / 40-pole robot-joint outrunner (MDPI Electronics 12(2):397, Table 1) with its tooth shoes:
+    parallel 2 mm teeth (a 4.67 mm body opening at the stator OD) and shoes leaving a 2.5 mm mouth."""
+    raw = outer_config()
+    raw["stator"].update(OD_mm=76.4, ID_mm=58.5, slot_count=36, stack_length_mm=7.0, slot_opening_mm=4.67, tooth_width_mm=2.0,
+                         yoke_thickness_mm=1.5, tooth_shoe_enabled=True, tooth_shoe_height_mm=0.7, tooth_shoe_overhang_mm=1.085)
+    raw["stator"].update(stator)
+    raw["rotor"].update(ID_mm=81.0, OD_mm=84.0, magnet_thickness_mm=1.8, magnet_width_mm=5.53, pole_count=40)
+    raw["winding"].update(type="concentrated", layers=2)
+    return raw
 
+
+def test_outer_rotor_tooth_shoes_widen_the_tips_at_the_stator_od():
+    config = MotorConfig.model_validate(_joint_motor())
+    ir = build_geometry_ir(config, rotor_angle_deg=0.0)
+    assert ir.validation_report().issues == ()
+    assert sum(region.area_mm2 for region in ir.regions) == pytest.approx(math.pi * (42.0**2 - 29.25**2), rel=1e-9)
+    assert sum(region.kind == "SlotWinding" for region in ir.regions) == 72
+    # Each tip is the body's 2 mm plus two 1.085 mm overhangs, leaving the 2.5 mm mouth.
+    tip_mm = bore_tooth_width_mm(config)
+    assert tip_mm == pytest.approx(2 * math.pi * 38.2 / 36 - 4.67 + 2 * 1.085)
+    assert 2 * math.pi * 38.2 / 36 - tip_mm == pytest.approx(2.5, abs=1e-6)
+    tooth = next(region for region in ir.regions if region.region_id == "stator_tooth_0")
+    tip_arc = tooth.loops[0].segments[0]
+    assert tip_arc.kind == "arc" and tip_arc.radius_mm == pytest.approx(38.2)
+    assert math.radians(tip_arc.sweep_deg) * 38.2 == pytest.approx(tip_mm, rel=1e-9)
+    # The body below the shoe keeps the parallel 2 mm teeth; the tooth sample sits in it.
+    assert narrowest_tooth_width_mm(config) == pytest.approx(2.0, abs=0.02)
+    assert ir.metadata["tooth_sample_radius_mm"] == pytest.approx(0.5 * (30.75 + 37.5))
+    mesh = run_gmsh_mesh_preview(config, rotor_angle_deg=0.0)
+    assert mesh["mesh_info"]["num_triangles"] > 0
+
+
+def test_the_bundled_robot_joint_example_is_that_motor():
+    example = json.loads(Path("frontend/src/public/examples/joint_outrunner_36s40p.coilem").read_text(encoding="utf-8"))
+    config, _, solver = parse_public_solve_request(example)
+    joint = MotorConfig.model_validate(_joint_motor())
+    assert (solver, config.rotor_layout, config.winding.layers, config.winding.turns_per_coil) == ("magneto2d", "outer", 2, 26)
+    for section, fields in (("stator", ("OD_mm", "ID_mm", "slot_count", "stack_length_mm", "slot_opening_mm", "tooth_width_mm",
+                                        "yoke_thickness_mm", "tooth_shoe_enabled", "tooth_shoe_height_mm", "tooth_shoe_overhang_mm")),
+                            ("rotor", ("ID_mm", "OD_mm", "magnet_thickness_mm", "magnet_width_mm", "pole_count"))):
+        for field in fields:
+            assert getattr(getattr(config, section), field) == getattr(getattr(joint, section), field), (section, field)
+    assert build_geometry_ir(config, rotor_angle_deg=0.0).validation_report().issues == ()
+
+
+def test_an_outer_rotor_shoe_must_leave_room_for_the_winding():
+    config = MotorConfig.model_validate(_joint_motor(tooth_shoe_height_mm=7.0))
+    errors = validate_geometry(config)
+    assert [error.field for error in errors] == ["stator.tooth_shoe_height_mm"]
+    assert "leaves" in errors[0].message
+
+
+def test_outer_rotor_geometry_checks():
     assert validate_geometry(MotorConfig.model_validate(outer_config())) == []
     tight = MotorConfig.model_validate(outer_config(ID_mm=27.7))
     assert any("Airgap" in error.message for error in validate_geometry(tight))
