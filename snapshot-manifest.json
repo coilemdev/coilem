@@ -295,8 +295,8 @@
     },
     {
       "path": "backend/geometry.py",
-      "bytes": 60394,
-      "sha256": "846ce027deca0016b3348e4a428394ed731d31f6dffb3f5ab21964cef5894198"
+      "bytes": 61375,
+      "sha256": "5fe7054b95ff0b6632ac7c8d80b1796ee009ab10b8f01d70f686f4cd8fc8587a"
     },
     {
       "path": "backend/geometry_drawer.py",
@@ -13000,8 +13000,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 7848,
-      "sha256": "54f4ffaad86fd4607acb2f2976f00e1706e21b49cce69b9c734d13e123b3f3c2"
+      "bytes": 9170,
+      "sha256": "f9388cf9cc324a1ebe0f0ba642e5a69ec282f4073b4341424fd6e9c24da49c54"
     },
     {
       "path": "tools/export_lrk_reference.py",

@@ -152,3 +152,27 @@ def test_outer_rotor_geometry_checks():
     assert any("Airgap" in error.message for error in validate_geometry(tight))
     wide = MotorConfig.model_validate(outer_config(magnet_width_mm=6.5))
     assert any(error.field == "rotor.magnet_width_mm" for error in validate_geometry(wide))
+
+
+def test_outer_rotor_keeps_the_shared_winding_and_slot_opening_checks():
+    # Review on #202: outer designs skipped the winding checks, and accepted slot
+    # openings that the geometry builder then quietly clamped to the slot pitch.
+    from backend.geometry import validate_geometry
+
+    starter = json.loads(Path("frontend/src/public/examples/spm_outrunner_14p12s.coilem").read_text(encoding="utf-8"))
+    assert validate_geometry(MotorConfig.model_validate(starter)) == []
+
+    paths = copy.deepcopy(starter)
+    paths["winding"]["parallel_paths"] = 3  # four coils per phase do not split three ways
+    assert [error.field for error in validate_geometry(MotorConfig.model_validate(paths))] == ["winding.parallel_paths"]
+
+    unbalanced = copy.deepcopy(starter)
+    unbalanced["stator"]["slot_count"] = 16
+    assert "stator.slot_count" in [error.field for error in validate_geometry(MotorConfig.model_validate(unbalanced))]
+
+    opening = copy.deepcopy(starter)
+    opening["stator"]["slot_opening_mm"] = 20.0
+    errors = validate_geometry(MotorConfig.model_validate(opening))
+    assert [error.field for error in errors] == ["stator.slot_opening_mm"]
+    pitch = math.pi * starter["stator"]["OD_mm"] / starter["stator"]["slot_count"]
+    assert f"{pitch:.2f}mm slot pitch at the stator OD" in errors[0].message
