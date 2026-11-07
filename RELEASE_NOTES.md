@@ -21,6 +21,12 @@
 - **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
   36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
   can be modelled. Slots were already allowed up to 96.
+- **Experimental until benchmarked.** No registered benchmark fixture is an
+  outer rotor, so every outer-rotor design reports experimental. Phase F,
+  proposed as [protocol 1.8.0](benchmarks/abcd-v1.8/README.md), adds 10
+  outer-rotor cases, from an 18 mm micro drone motor to a 100 mm hub-motor
+  class. They are graded with Phase A's gates against a FEMM 4.2 collection
+  still to be run ([request](docs/OUTRUNNER_FEMM_REQUEST.md)).
 - **Limits.** Outer rotors are SPM only, and two-layer windings must be tooth
   coils. Elmer, the fixed-mesh
   lane, the dimension overlay and the solved view's air-gap ring are not
