@@ -350,6 +350,16 @@ assert.doesNotMatch(workspaceSource, /<div className="public-report-provenance">
 assert.match(workspaceSource, /\{ label: 'Requested linear solver', value: requestedLinearSolver \}/);
 assert.doesNotMatch(resultSummarySource, /rotor positions`,\s*`\$\{solverLabel\}/);
 assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
+// The Back EMF card also reads phase and line-to-line as rms and peak.
+assert.match(resultSummarySource, /backEmfReadings\(result\.back_emf_waveform, summary\.back_emf_fundamental_V\)/);
+assert.match(resultSummarySource, /<table\s+className="public-emf-readings"/);
+assert.match(resultSummarySource, /<th scope="col">rms<\/th><th scope="col">peak<\/th><\/tr>/);
+// The Back EMF chart's legend reads each trace as the chosen rms or peak.
+assert.doesNotMatch(workspaceSource, /measure: 'pk-pk'/);
+assert.match(workspaceSource, /aria-label="Back EMF reading"/);
+assert.match(workspaceSource, /waveformMeasure\(result\.back_emf_waveform\.electrical_angle_deg, item\.values, backEmfMeasure\)/);
+assert.match(workspaceSource, /series=\{backEmfSeries\(\[\{ label: 'Phase A'/);
+assert.match(workspaceSource, /series=\{backEmfSeries\(\[\{ label: 'Vab · line-line'/);
 assert.match(resultSummarySource, /Torque × speed, before losses/);
 assert.match(resultSummarySource, /<MotorConstants summary=\{summary\} variant="report" \/>/);
 // Kt and Ke show once each in datasheet units, with the stored SI value as a hover hint.
@@ -378,12 +388,16 @@ assert.match(apiSource, /export function deletePublicRun/);
 assert.match(apiSource, /confirm_run_id: runId/);
 assert.match(styleSource, /\.public-run-storage-meter/);
 assert.match(workspaceSource, /aria-label="Example designs"/);
-assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'motor'\)\.map/);
+assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'motor'\)\)\.map/);
+// Each group lists inrunners and outrunners side by side (test-example-layouts checks the declarations).
+assert.match(exampleDesignsSource, /export function examplesByLayout/);
+assert.match(workspaceSource, /className="public-project-example-layout-label" role="presentation">\{group\.label\}/);
+assert.match(styleSource, /\.public-project-examples-menu \.public-project-example-layouts \{[^}]*grid-auto-flow: column;/);
 // Hardware-validated motors get their own group, shown only when one is available to this launch.
 assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.length > 0/);
 assert.match(workspaceSource, />Benchmarks</);
 // Benchmarks are experimental for now: every entry carries a yellow Experimental tag.
-assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
+assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'benchmark'\)\)\.map\(\(group\) => \([\s\S]*?group\.options\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
 assert.match(styleSource, /\.public-project-examples-menu \.public-example-experimental-tag \{[^}]*color: #fbbf24;/);
 assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
 assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
