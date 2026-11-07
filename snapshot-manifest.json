@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 15018,
-      "sha256": "c12f0d3487f09fd600f0b76953c48993099270d33e5f473f43ad5787402425f4"
+      "bytes": 16199,
+      "sha256": "ef95ca4b25c56ae8eea6cd5eb17fb448dc17b2583c15987f0e460e1a8887770b"
     },
     {
       "path": "SECURITY.md",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 17336,
-      "sha256": "57ec4bd523b76bbb5c75813ecd8c37e933bc48344350e43cdb21f96ce1f5d6e3"
+      "bytes": 18390,
+      "sha256": "b8390e78c773b8210494b3826d63e351e7da53783bdf3350fbc8b2193ed26808"
     },
     {
       "path": "backend/field_composition.py",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 28067,
-      "sha256": "71dc998a60567142723ad64041de6048d5074bc5e85b00452b4528ab53f6b51d"
+      "bytes": 29189,
+      "sha256": "a63ccb82747a646e191954df8a125d7ea899fb8c60438fd2428af1abffff5bf9"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 92289,
-      "sha256": "59c639926d0b7cf525e495d810f7140bf3b73c7a29280f494c8077ac021dff0f"
+      "bytes": 92296,
+      "sha256": "e0b570fe210c2420acf580227a457192bdcb632577038acbb470eb0817087b47"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 54282,
-      "sha256": "0cd5395ba39c80d9f9dbaaaf18cfda0eac63f5e7f4297dc4409213a00a7d9387"
+      "bytes": 55919,
+      "sha256": "74ba5cc9e8d3b27f5864c0f4af7b38f6009880f6d016cc97cdbe9cc45bf6b969"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 46626,
-      "sha256": "2c877064d6fea1a53467afcdb2a024ee625bd1b32a64f53b39626be3bd5b2a6d"
+      "bytes": 58850,
+      "sha256": "b7acc3b31fd1267bc4731a669699e0371f0c58825c1d7ceff9509bb8554204e8"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16168,
-      "sha256": "afa5304bef56bc74da5ce0bccef04e988dcae4ee3d491a9f279be941a0f63478"
+      "bytes": 16611,
+      "sha256": "d551e0be6bde8c5fbcc2b241e4dfae5c717ad018cf752c42ec9a352ce8be007c"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6410,8 +6410,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 5022,
-      "sha256": "459ec9b52236f335abf97d2d5add0e05f4537fed5bfa7dd8b78840521bb00857"
+      "bytes": 7203,
+      "sha256": "cb49a7989a9f77b1db9ef1ead5af6a018b70a37f4193469bf1d6c5010c7d344b"
     },
     {
       "path": "frontend/package-lock.json",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 164752,
-      "sha256": "3aa3450f74b3a743b864f5a9fc7639283dbbf8aa11eb17b06b2e86aaa5df371a"
+      "bytes": 166023,
+      "sha256": "58a04472f60b0da85185eafcce00cd68384f25c3d90aa5b8fde60501d1890764"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 74726,
-      "sha256": "23bfc5eae3f531ae508a3c4f85db0b7c243aa0b8f104444de94cd4562637da7c"
+      "bytes": 76675,
+      "sha256": "39665833e3982ce8ec94f244874fccc273937f816dc2fd4e968526534d117bdf"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 244640,
-      "sha256": "71f0efd6ccc538fb2eb44ad0e75299fda1a3e58ecd79aa1a4f53eaae63371dd3"
+      "bytes": 245372,
+      "sha256": "832daa73e1bc28fbae23292b01c07f8b5ad1d4dad87ab47a1b4e217e9eaf0a94"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7080,8 +7080,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 24919,
-      "sha256": "72ad3eace275fb12786a28aa2d14909e8d57a9804d3310ade03ac149edb420e2"
+      "bytes": 25722,
+      "sha256": "ecd1660eb5ba5f294c2507da874fec6b76b33500e88186f2c0d81c04ca46f0a1"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7125,8 +7125,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 13775,
-      "sha256": "59ed4057eaf491bfec34953306457d0de426a5696f92e2a92f9af817a6cebaa8"
+      "bytes": 13917,
+      "sha256": "46c54390d8315810acacf8c0ff1d20441f5c3864ee4d008643f58281e1b65524"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -12934,6 +12934,11 @@
       "sha256": "3692919037466120f03a3f54468ee7a238c303cf4d053c7ee6e195fc5ea6a4a6"
     },
     {
+      "path": "backend/field_frame_codec.py",
+      "bytes": 6884,
+      "sha256": "1d3d54c63a1b75829fdef64ed0474b40861be6ff425f698a7f22f71102288310"
+    },
+    {
       "path": "backend/reference_models/lrk.py",
       "bytes": 23155,
       "sha256": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43"
@@ -12952,6 +12957,11 @@
       "path": "backend/rotor_layout.py",
       "bytes": 1031,
       "sha256": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27"
+    },
+    {
+      "path": "backend/run_field_playback.py",
+      "bytes": 5435,
+      "sha256": "f6d24daee376b063d6c75c8578d63e9886f40a065d28c34ae73838e91adf1c2d"
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
@@ -13092,6 +13102,11 @@
       "path": "frontend/src/public/sectorFraming.ts",
       "bytes": 3265,
       "sha256": "58dd90355ef2a8ab4e4772db1ba86c7e590cb8423e4ece33c0106495a52c56d7"
+    },
+    {
+      "path": "tests/test_compact_run_storage.py",
+      "bytes": 18762,
+      "sha256": "89294068a0fe6c1190347a1d782ee29161f98ba6036f29aa52b0a1294fa22459"
     },
     {
       "path": "tests/test_lrk_reference.py",

@@ -214,6 +214,8 @@ interface CoilEmWorkspaceProps {
   ) => Promise<void>;
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
+  /** Opens a saved run's stored result, field playback included, from Previous runs. */
+  onOpenRunResults: (savedRun: PublicSavedRun) => void;
   onUndoDesignEdit?: () => void;
   onDismissDesignEdit?: () => void;
 }
@@ -516,6 +518,7 @@ export function CoilEmTopBar({
   onTutorialCatalog,
   runHistoryOpen: controlledRunHistoryOpen,
   onRunHistoryOpenChange,
+  onOpenRunResults,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'appVersion' | 'onHome' | 'onStepChange'> & {
   solveAvailable: boolean;
   resultReady: boolean;
@@ -534,6 +537,7 @@ export function CoilEmTopBar({
   onTutorialCatalog?: () => void;
   runHistoryOpen?: boolean;
   onRunHistoryOpenChange?: (open: boolean) => void;
+  onOpenRunResults?: (savedRun: PublicSavedRun) => void;
 }) {
   const [designMenuOpen, setDesignMenuOpen] = useState(false);
   const [examplesMenuOpen, setExamplesMenuOpen] = useState(false);
@@ -804,7 +808,19 @@ export function CoilEmTopBar({
               <button type="button" onClick={() => setRunHistoryOpen(false)} aria-label="Close previous runs">×</button>
             </header>
             <div className="public-run-history-content">
-              <PublicRunComparison manageRuns />
+              <PublicRunComparison
+                manageRuns
+                onOpenRun={onOpenRunResults ? (run) => {
+                  setRunHistoryOpen(false);
+                  onOpenRunResults({
+                    schema_version: 'coilem.solve_run.v2',
+                    project_slug: run.project_slug,
+                    run_id: run.run_id,
+                    path: run.path,
+                    completed_at: run.completed_at,
+                  });
+                } : undefined}
+              />
             </div>
           </section>
         </div>
@@ -4494,6 +4510,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         experimentalRotors={props.experimentalRotors?.enabled ?? false}
         runHistoryOpen={runHistoryOpen}
         onRunHistoryOpenChange={setRunHistoryOpen}
+        onOpenRunResults={props.onOpenRunResults}
       />
       <main className="workflow-stage-shell">
         <div className="workflow-stage-content">

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import base64
 import csv
+import gzip
 import hashlib
 import json
 import os
@@ -24,9 +25,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
-from backend import __version__
+from backend import __version__, field_frame_codec
 from backend.custom_materials import CustomSteel
-from backend.field_artifacts import resolve_solve_cache_artifact_id
+from backend.field_artifacts import (
+    FIELD_LINE_FRAME_ARTIFACT_SCHEMA,
+    compact_field_frame_path,
+    resolve_solve_cache_artifact_id,
+)
 from backend.material_contract import electrical_steel_preflight_records
 from backend.models import MotorConfig
 from backend.public_report import (
@@ -37,6 +42,7 @@ from backend.public_report import (
 from backend.qualification import classify_qualification, dq_flux_linkage_status, magnet_temperature_status
 from backend.resources import application_commit as _application_commit
 from backend.resources import build_identity
+from backend.run_field_playback import RUN_PLAYBACK_PREFIX, run_playback_dir, run_playback_relative
 
 RUN_MANIFEST_SCHEMA = "coilem.solve_run.v2"
 RUN_REQUEST_SCHEMA = "coilem.solve_request.v1"
@@ -45,6 +51,16 @@ PROJECT_FILE_NAME = "project.coilem"
 RUN_ARTIFACT_PREFIX = "run."
 DEFAULT_RETENTION_RUNS_PER_PROJECT = 25
 DEFAULT_WORKSPACE_MAX_BYTES = 10 * 1024 * 1024 * 1024
+# Field playback (frames and images) is most of a run: about 0.2 GB for a
+# 40-pole motor. Older runs keep their results, report and design without it.
+DEFAULT_FIELD_PLAYBACK_KEEP_RUNS = 5
+ARTIFACT_KIND_FIELD_FRAME = "field_frame"
+ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE = "field_playback_image"
+ARTIFACT_KIND_OTHER = "other"
+_FIELD_PLAYBACK_KINDS = frozenset({ARTIFACT_KIND_FIELD_FRAME, ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE})
+FIELD_PLAYBACK_REMOVED_REASON = (
+    "Field playback was removed to save disk space. The results and report are kept; solve the design again to see the field."
+)
 
 _SAFE_SEGMENT_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 _ACTIVE_RUNS_LOCK = threading.Lock()
@@ -113,6 +129,65 @@ def _copy_file_sha256(source: Path, target: Path) -> str:
             writer.write(chunk)
     shutil.copystat(source, target)
     return digest.hexdigest()
+
+
+def _link_or_copy_file_sha256(source: Path, target: Path) -> str:
+    """Hard-link ``source`` to ``target``, or copy it across volumes; return the SHA-256.
+
+    Solve-cache artifacts are written once, through a rename or into a new
+    folder, and only ever deleted, so a run can share their bytes. Pruning
+    the cache then removes only its own name for them.
+    """
+
+    try:
+        os.link(source, target)
+    except OSError:
+        return _copy_file_sha256(source, target)
+    return _sha256_file(target)
+
+
+def field_playback_keep_runs() -> int:
+    """How many of a project's newest complete runs keep their field playback."""
+
+    configured = os.environ.get("COILEM_FIELD_PLAYBACK_KEEP_RUNS")
+    try:
+        parsed = int(configured) if configured else DEFAULT_FIELD_PLAYBACK_KEEP_RUNS
+    except ValueError:
+        return DEFAULT_FIELD_PLAYBACK_KEEP_RUNS
+    return parsed if parsed > 0 else DEFAULT_FIELD_PLAYBACK_KEEP_RUNS
+
+
+def _artifact_kind(ref: Mapping[str, Any], source: Path) -> str:
+    """Whether a retained artifact is field playback, which older runs give up."""
+
+    if ref.get("schema_version") == FIELD_LINE_FRAME_ARTIFACT_SCHEMA or source.parent.name == "field_line_frames":
+        return ARTIFACT_KIND_FIELD_FRAME
+    if "field_playback" in source.parts and str(ref.get("media_type", "")).startswith("image/"):
+        return ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE
+    return ARTIFACT_KIND_OTHER
+
+
+def _stored_artifact_kind(path: Path) -> str:
+    """``_artifact_kind`` for runs stored before records carried it, from the file itself."""
+
+    name = path.name
+    if name.endswith(field_frame_codec.SUFFIX):
+        return ARTIFACT_KIND_FIELD_FRAME
+    if name.endswith(".webp"):
+        return ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE
+    if name.endswith(".json.gz"):
+        try:
+            with gzip.open(path, "rb") as handle:
+                head = handle.read(256)
+        except (OSError, EOFError):
+            return ARTIFACT_KIND_OTHER
+        if FIELD_LINE_FRAME_ARTIFACT_SCHEMA.encode("utf-8") in head:
+            return ARTIFACT_KIND_FIELD_FRAME
+    return ARTIFACT_KIND_OTHER
+
+
+def _run_sort_key(manifest: Mapping[str, Any], run: Path) -> tuple[str, str]:
+    return (str(manifest.get("completed_at") or manifest.get("started_at") or ""), run.name)
 
 
 def _directory_size_bytes(path: Path) -> int:
@@ -259,6 +334,12 @@ def _encode_run_artifact_id(project_slug: str, run_id: str, relative_path: str) 
     ).encode("utf-8")
     token = base64.urlsafe_b64encode(payload).decode("ascii").rstrip("=")
     return f"{RUN_ARTIFACT_PREFIX}{token}"
+
+
+def run_artifact_location(artifact_id: str) -> tuple[str, str, str]:
+    """The project slug, run ID and run-relative path a ``run.`` artifact ID names."""
+
+    return _decode_run_artifact_id(artifact_id)
 
 
 def _decode_run_artifact_id(artifact_id: str) -> tuple[str, str, str]:
@@ -463,6 +544,9 @@ class SolveRunWriter:
             "retention": {
                 "policy": "manual_or_keep_latest_per_project",
                 "default_keep_latest": DEFAULT_RETENTION_RUNS_PER_PROJECT,
+                "field_playback_keep_latest": field_playback_keep_runs(),
+                # Playback images are drawn from the stored field frames when needed.
+                "field_playback_images": "drawn_from_field_frames",
                 "solve_cache_is_disposable": True,
             },
             "result_current": False,
@@ -474,8 +558,24 @@ class SolveRunWriter:
             manifest["failure"] = dict(failure)
         return manifest
 
+    def _share_playback_image(self, source: Path, relative: str) -> None:
+        """Link a solve's playback image into this run's playback cache folder."""
+
+        target = run_playback_dir(self.project_slug, self.run_id) / relative.removeprefix(RUN_PLAYBACK_PREFIX)
+        if target.is_file():
+            return
+        target.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            os.link(source, target)
+        except FileExistsError:
+            return
+        except OSError:
+            staging = target.with_name(f".{target.name}.copying")
+            shutil.copy2(source, staging)
+            os.replace(staging, target)
+
     def _retain_artifacts(self, result: dict[str, Any]) -> None:
-        copied: dict[str, tuple[str, str]] = {}
+        copied: dict[str, tuple[str, str, int]] = {}
 
         def visit(value: Any) -> None:
             if isinstance(value, dict):
@@ -485,18 +585,37 @@ class SolveRunWriter:
                         source = resolve_solve_cache_artifact_id(artifact_id)
                     except ValueError:
                         source = None
-                    if source is not None and source.is_file():
+                    playback_relative = (
+                        run_playback_relative(source.parent.name, source.name)
+                        if source is not None and source.is_file() and _artifact_kind(value, source) == ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE
+                        else None
+                    )
+                    if playback_relative is not None:
+                        # Playback images are drawn from the run's frames, so the run
+                        # does not keep them; they wait in the solve cache
+                        # (backend/run_field_playback.py).
+                        self._share_playback_image(source, playback_relative)
+                        value["artifact_id"] = _encode_run_artifact_id(self.project_slug, self.run_id, playback_relative)
+                        value["relative_path"] = playback_relative
+                    elif source is not None and source.is_file():
+                        # A field frame's compact copy is a quarter to a third of its JSON.
+                        # The ref keeps the media type it is served as (JSON; the
+                        # playback contract pins it); readers tell the stored form
+                        # from the file itself.
+                        compact = compact_field_frame_path(source)
+                        if source.name.endswith(".json.gz") and compact.is_file():
+                            source = compact
                         source_key = str(source.resolve())
                         retained = copied.get(source_key)
                         if retained is None:
                             suffixes = "".join(source.suffixes[-2:]) or ".bin"
-                            # The name carries the content hash, so copy under a
+                            # The name carries the content hash, so store under a
                             # temporary name and rename once the hash is known.
                             artifacts_dir = self.partial_path / "artifacts"
                             artifacts_dir.mkdir(parents=True, exist_ok=True)
                             copying = artifacts_dir / f".{len(copied) + 1:04d}.copying"
                             try:
-                                source_hash = _copy_file_sha256(source, copying)
+                                source_hash = _link_or_copy_file_sha256(source, copying)
                             except BaseException:
                                 copying.unlink(missing_ok=True)
                                 raise
@@ -508,17 +627,20 @@ class SolveRunWriter:
                                 self.run_id,
                                 relative,
                             )
-                            retained = (relative, retained_id)
+                            retained = (relative, retained_id, target.stat().st_size)
                             copied[source_key] = retained
                             self._artifact_records.append(
                                 {
                                     "relative_path": relative,
                                     "sha256": source_hash,
-                                    "size_bytes": target.stat().st_size,
+                                    "size_bytes": retained[2],
+                                    "kind": _artifact_kind(value, source),
                                 }
                             )
                         value["artifact_id"] = retained[1]
                         value["relative_path"] = retained[0]
+                        if "byte_count" in value:
+                            value["byte_count"] = retained[2]
                 for child in value.values():
                     visit(child)
             elif isinstance(value, list):
@@ -597,6 +719,8 @@ class SolveRunWriter:
         }
         _atomic_write_json(self.partial_path / "manifest.json", manifest)
         if self.workspace.usage_bytes() > self.workspace.max_bytes:
+            self.workspace.free_space_from_field_playback()
+        if self.workspace.usage_bytes() > self.workspace.max_bytes:
             for generated in (
                 self.partial_path / "artifacts",
                 self.partial_path / "report",
@@ -623,6 +747,10 @@ class SolveRunWriter:
             )
         os.replace(self.partial_path, self.final_path)
         self._mark_closed()
+        try:
+            self.workspace.prune_field_playback(self.project_slug)
+        except (OSError, SolveWorkspaceError):
+            pass  # the run is saved; older playback stays until the next run
         return RunLocation(
             project_slug=self.project_slug,
             run_id=self.run_id,
@@ -695,7 +823,120 @@ class SolveWorkspace:
             "accepting_new_runs": used < self.max_bytes,
             "automatic_durable_run_deletion": False,
             "recommended_keep_latest_per_project": (DEFAULT_RETENTION_RUNS_PER_PROJECT),
+            "automatic_field_playback_removal": True,
+            "field_playback_keep_latest_per_project": field_playback_keep_runs(),
         }
+
+    def _complete_runs(self, project_root: Path) -> list[tuple[Path, dict[str, Any]]]:
+        """A project's complete runs and their manifests, newest first."""
+
+        runs: list[tuple[Path, dict[str, Any]]] = []
+        if not project_root.is_dir() or not _inside(self.solves_root, project_root):
+            return runs
+        for run in project_root.iterdir():
+            if run.name.startswith(".") or not run.is_dir() or not _SAFE_SEGMENT_RE.fullmatch(run.name):
+                continue
+            manifest_path = run / "manifest.json"
+            try:
+                self._require_safe_path(manifest_path)
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError, SolveWorkspaceError):
+                continue
+            if isinstance(manifest, dict) and manifest.get("status") == "complete":
+                runs.append((run, manifest))
+        return sorted(runs, key=lambda item: _run_sort_key(item[1], item[0]), reverse=True)
+
+    def _remove_field_playback(self, run: Path, manifest: dict[str, Any]) -> int:
+        """Delete one run's field frames and playback images; return the bytes freed.
+
+        The manifest keeps each removed artifact's path and hash, marked with
+        ``removed_at``, and is rewritten before the files go, so it never lists
+        a missing file as present. Results, report and design are untouched.
+        """
+
+        records = manifest.get("artifacts")
+        if not isinstance(records, list):
+            return 0
+        removed_at = _utc_text()
+        doomed: list[Path] = []
+        newly_removed = False
+        for record in records:
+            relative = record.get("relative_path") if isinstance(record, dict) else None
+            if not isinstance(relative, str):
+                continue
+            path = run / relative
+            self._require_safe_path(path)
+            if not _inside(run, path.resolve()):
+                continue
+            if record.get("removed_at"):
+                if path.is_file():
+                    doomed.append(path)  # left behind by an interrupted removal
+                continue
+            kind = record.get("kind") or (_stored_artifact_kind(path) if path.is_file() else ARTIFACT_KIND_OTHER)
+            if kind not in _FIELD_PLAYBACK_KINDS:
+                continue
+            record["kind"] = kind
+            record["removed_at"] = removed_at
+            doomed.append(path)
+            newly_removed = True
+        if newly_removed:
+            retention = manifest.get("retention")
+            if not isinstance(retention, dict):
+                retention = manifest["retention"] = {}
+            retention.setdefault("field_playback_removed_at", removed_at)
+            _atomic_write_json(run / "manifest.json", manifest)
+        freed = 0
+        for path in doomed:
+            try:
+                size = path.stat().st_size
+                path.unlink()
+            except FileNotFoundError:
+                continue
+            freed += size
+        # Its playback images can no longer be drawn again; drop the cached ones too.
+        shutil.rmtree(run_playback_dir(run.parent.name, run.name), ignore_errors=True)
+        return freed
+
+    def prune_field_playback(self, project_slug: str, *, keep_latest: int | None = None) -> int:
+        """Remove field playback from all but a project's newest complete runs; return the bytes freed."""
+
+        project_root = self.solves_root / _validate_segment(project_slug, label="project")
+        self._require_safe_path(project_root)
+        keep = field_playback_keep_runs() if keep_latest is None else max(1, int(keep_latest))
+        freed = 0
+        for run, manifest in self._complete_runs(project_root)[keep:]:
+            try:
+                freed += self._remove_field_playback(run, manifest)
+            except (OSError, SolveWorkspaceError):
+                continue
+        return freed
+
+    def free_space_from_field_playback(self) -> int:
+        """Remove field playback, oldest runs first, until usage is under the size limit.
+
+        Each project's newest run keeps its playback. Returns the bytes freed.
+        """
+
+        self._require_safe_path(self.solves_root)
+        if not self.solves_root.is_dir():
+            return 0
+        candidates: list[tuple[Path, dict[str, Any]]] = []
+        for project_root in self.solves_root.iterdir():
+            if project_root.is_dir() and _SAFE_SEGMENT_RE.fullmatch(project_root.name):
+                candidates.extend(self._complete_runs(project_root)[1:])
+        candidates.sort(key=lambda item: _run_sort_key(item[1], item[0]))
+        usage = self.usage_bytes()
+        freed = 0
+        for run, manifest in candidates:
+            if usage < self.max_bytes:
+                break
+            try:
+                removed = self._remove_field_playback(run, manifest)
+            except (OSError, SolveWorkspaceError):
+                continue
+            usage -= removed
+            freed += removed
+        return freed
 
     def begin_run(
         self,
@@ -706,6 +947,8 @@ class SolveWorkspace:
     ) -> SolveRunWriter:
         self._require_safe_path(self.solves_root)
         self.solves_root.mkdir(parents=True, exist_ok=True)
+        if self.usage_bytes() >= self.max_bytes:
+            self.free_space_from_field_playback()
         if self.usage_bytes() >= self.max_bytes:
             raise SolveWorkspaceCapacityError(
                 "durable solve workspace size limit reached; delete an older run before solving"
@@ -823,6 +1066,8 @@ class SolveWorkspace:
                 if not isinstance(relative, str) or not isinstance(expected_hash, str):
                     artifact_mismatches.append("invalid artifact record")
                     continue
+                if artifact.get("removed_at"):
+                    continue  # field playback removed by retention; its hash stays as a record
                 try:
                     artifact_path = self.resolve_artifact(
                         project_slug,
@@ -858,6 +1103,9 @@ class SolveWorkspace:
                 if observed_hash != expected_hash:
                     export_mismatches.append(export_name)
 
+        retention = manifest.get("retention")
+        playback_removed_at = retention.get("field_playback_removed_at") if isinstance(retention, Mapping) else None
+
         input_changes: list[str] = []
         if application_commit != _application_commit():
             input_changes.append("application_commit")
@@ -891,6 +1139,11 @@ class SolveWorkspace:
                 "result_current": False,
                 "changed_bound_inputs": input_changes,
                 "requires_explicit_solve": True,
+            },
+            "field_playback": {
+                "available": not playback_removed_at,
+                "removed_at": playback_removed_at,
+                "message": FIELD_PLAYBACK_REMOVED_REASON if playback_removed_at else None,
             },
         }
 
@@ -1096,6 +1349,9 @@ class SolveWorkspace:
                 }
                 if isinstance(solver_name, str) and solver_name:
                     record["solver_name"] = solver_name
+                retention = manifest.get("retention")
+                if isinstance(retention, Mapping) and retention.get("field_playback_removed_at"):
+                    record["field_playback_removed_at"] = retention["field_playback_removed_at"]
                 records.append(record)
         return sorted(
             records,
@@ -1120,6 +1376,7 @@ class SolveWorkspace:
                 "an active solve run cannot be deleted; cancel it before deleting its incomplete data"
             )
         shutil.rmtree(run)
+        shutil.rmtree(run_playback_dir(project_slug, run_id), ignore_errors=True)
 
     def open_run_folder(self, project_slug: str, run_id: str) -> Path:
         run = self.resolve_run(project_slug, run_id)
