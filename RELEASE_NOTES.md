@@ -71,12 +71,15 @@
   newest 5 runs (`COILEM_FIELD_PLAYBACK_KEEP_RUNS`); older runs keep their
   results, report and design, and **Manage previous runs** marks them. A full
   workspace removes the oldest runs' playback before it refuses a solve.
-- **Experimental until benchmarked.** No registered benchmark fixture is an
-  outer rotor, so every outer-rotor design reports experimental. Phase F,
-  proposed as [protocol 1.8.0](benchmarks/abcd-v1.8/README.md), adds 10
-  outer-rotor cases, from an 18 mm micro drone motor to a 100 mm hub-motor
-  class. They are graded with Phase A's gates against a FEMM 4.2 collection
-  still to be run ([request](docs/OUTRUNNER_FEMM_REQUEST.md)).
+- **Experimental, with first FEMM agreement.** Every outer-rotor design still
+  reports experimental. Phase F, proposed as
+  [protocol 1.8.0](benchmarks/abcd-v1.8/README.md), adds 10 outer-rotor
+  cases, from an 18 mm micro drone motor to a 100 mm hub-motor class, graded
+  with Phase A's gates. Against a FEMM 4.2 collection run on Windows
+  ([request](docs/OUTRUNNER_FEMM_REQUEST.md)), all 10 cases pass (60/60
+  gates): the worst mean-torque error is 0.86% and the worst Back-EMF
+  fundamental and peak errors are 0.31% and 0.36%. Qualifying outer rotors
+  needs the same comparison on macOS as well.
 - **Small readings plot to scale.** Result charts no longer squeeze a
   waveform smaller than one unit into the top of the plot. Small readings show
   in mN·m or mV, axis labels use round steps, and nothing reads −0.00.
@@ -90,8 +93,13 @@
   lane, the dimension overlay and the solved view's air-gap ring are not
   available for outer rotors. A design saved with an outer rotor opens as an
   inner rotor in coilEM 0.5.1 and earlier.
-- Inner-rotor results are unchanged: a benchmark subset is bit-identical to
-  0.5.1. Qualification still needs the full two-platform remeasure.
+- **Inner-rotor results are unchanged.** The full two-platform remeasurement
+  (A–D and the Prius collection) matches 0.5.1: macOS values are identical
+  and Windows values agree within 3×10⁻⁸ relative, with every supported case
+  passing 336/336 gates on each platform. The reviewed protocol 1.6 FEMM
+  references are reused after owner review, supported by a fresh FEMM
+  collection of all 46 cases
+  ([decisions](benchmarks/qualification-34de0f4ca160/owner-decisions.json)).
 
 # coilEM 0.5.1 Developer Preview
 
