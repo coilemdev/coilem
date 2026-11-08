@@ -10,6 +10,7 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
+import backend.iron_loss as iron_loss_module
 from backend.iron_loss import (
     LOSS_GRADES,
     M350_50A_LOSS,
@@ -222,6 +223,71 @@ def test_rotated_copy_positions_are_located_in_their_own_mesh():
     assert history.distinct_meshes == 2
     # The field sits on fixed cells in space, so every reference element reads its own cell's value.
     np.testing.assert_allclose(history.bx_t[1], history.bx_t[0])
+
+
+def _locate_one_point_at_a_time(points: np.ndarray, corners: np.ndarray) -> np.ndarray:
+    """The original per-point loop, kept as the reference for the batched lookup."""
+
+    low, high = corners.min(axis=1), corners.max(axis=1)
+    origin = low.min(axis=0)
+    cell = max(float(np.median(high - low)) * 2.0, 1e-6)
+    first = np.floor((low - origin) / cell).astype(int)
+    last = np.floor((high - origin) / cell).astype(int)
+    buckets: dict[tuple[int, int], list[int]] = {}
+    for triangle, (x0, y0), (x1, y1) in zip(range(len(corners)), first, last):
+        for gx in range(x0, x1 + 1):
+            for gy in range(y0, y1 + 1):
+                buckets.setdefault((gx, gy), []).append(triangle)
+    a, b, c = corners[:, 0], corners[:, 1], corners[:, 2]
+    det = (b[:, 0] - a[:, 0]) * (c[:, 1] - a[:, 1]) - (c[:, 0] - a[:, 0]) * (b[:, 1] - a[:, 1])
+    tolerance = iron_loss_module._LOCATE_TOLERANCE
+    found = np.full(len(points), -1, dtype=int)
+    cells = np.floor((points - origin) / cell).astype(int)
+    for point_index, (point, (gx, gy)) in enumerate(zip(points, cells)):
+        candidates = buckets.get((gx, gy))
+        if not candidates:
+            continue
+        cand = np.asarray(candidates)
+        dx, dy = point[0] - a[cand, 0], point[1] - a[cand, 1]
+        u = ((c[cand, 1] - a[cand, 1]) * dx - (c[cand, 0] - a[cand, 0]) * dy) / det[cand]
+        v = ((b[cand, 0] - a[cand, 0]) * dy - (b[cand, 1] - a[cand, 1]) * dx) / det[cand]
+        inside = np.nonzero((u >= -tolerance) & (v >= -tolerance) & (u + v <= 1 + tolerance))[0]
+        if inside.size:
+            found[point_index] = cand[inside[0]]
+    return found
+
+
+@pytest.mark.parametrize("seed", range(6))
+def test_batched_point_lookup_matches_the_one_point_at_a_time_loop(seed, monkeypatch):
+    rng = np.random.default_rng(seed)
+    nodes, triangles, _ = _grid_mesh(cells=12 + seed)
+    # Jitter interior nodes and rotate, so cells, boxes and diagonals vary.
+    interior = (np.abs(nodes) < 0.999).all(axis=1)
+    nodes = nodes + interior[:, None] * rng.uniform(-0.02, 0.02, nodes.shape)
+    angle = rng.uniform(0.0, 2.0 * np.pi)
+    rotation = np.array([[np.cos(angle), -np.sin(angle)], [np.sin(angle), np.cos(angle)]])
+    corners = (nodes @ rotation.T)[triangles]
+    # Centroids, shared vertices and edge midpoints (ties between triangles),
+    # points just outside the patch and far outside the grid.
+    points = np.concatenate([
+        corners.mean(axis=1),
+        corners[:, 0],
+        0.5 * (corners[:, 0] + corners[:, 1]),
+        rng.uniform(-1.6, 1.6, (400, 2)),
+        np.array([[50.0, 50.0], [-50.0, 0.0]]),
+    ])
+    expected = _locate_one_point_at_a_time(points, corners)
+    assert (expected >= 0).any() and (expected < 0).any()
+    assert np.array_equal(iron_loss_module._locate(points, corners), expected)
+    # The same answer when the points span several batches.
+    monkeypatch.setattr(iron_loss_module, "_LOCATE_CHUNK_POINTS", 37)
+    assert np.array_equal(iron_loss_module._locate(points, corners), expected)
+
+
+def test_batched_point_lookup_handles_no_points_or_triangles():
+    nodes, triangles, _ = _grid_mesh()
+    assert iron_loss_module._locate(np.empty((0, 2)), nodes[triangles]).shape == (0,)
+    assert np.array_equal(iron_loss_module._locate(np.zeros((3, 2)), np.empty((0, 3, 2))), [-1, -1, -1])
 
 
 def test_reference_elements_outside_a_rotated_mesh_are_an_error():
