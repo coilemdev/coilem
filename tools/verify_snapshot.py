@@ -54,6 +54,9 @@ FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
     "benchmarks/candidate-qualification-20261103/windows/report/benchmark_results.csv",
     "benchmarks/candidate-qualification-20261103/macos/report/benchmark_results.csv",
+    # v0.5.1 evidence, kept after the platform records moved to v0.5.5.
+    "benchmarks/qualification-a4f9f4dccf2b/windows-x86_64/report/benchmark_results.csv",
+    "benchmarks/qualification-a4f9f4dccf2b/macos-arm64/report/benchmark_results.csv",
     "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",
     "benchmarks/windows-prius-requal-20261018/benchmark_results.csv",
     "materials/electrical-steel/M350-50A.csv",

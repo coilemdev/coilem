@@ -62,7 +62,7 @@ import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
 import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
-import { SolverConvergenceCard } from './SolverConvergenceCard';
+import { ResultDiagnostics } from './SolverConvergenceCard';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
@@ -4414,7 +4414,6 @@ function ReportStage({
           </>
         )}
       />
-      <SolverConvergenceCard report={result.solver_convergence} />
       <div className="public-report-plot-tabs" role="tablist" aria-label="Result plots">
         {hasTorqueResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>}
         {hasBackEmfResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>}
@@ -4442,6 +4441,7 @@ function ReportStage({
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
       {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
+      <ResultDiagnostics report={result.solver_convergence} />
       </>}
     </div>
   );
