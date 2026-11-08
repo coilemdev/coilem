@@ -100,7 +100,8 @@ must retain the license file shipped with Pillow.
 orjson's wheel carries its `LICENSE-MPL-2.0`, `LICENSE-APACHE` and `LICENSE-MIT`
 files and an SBOM of the Rust crates compiled into it; binary distributors must
 retain those files. coilEM uses orjson unmodified, as a separate package; its
-MPL-2.0 source is available from the orjson project.
+MPL-2.0 source is available from the orjson project. It is installed on Python
+3.11 to 3.14 only; on Python 3.15 coilEM uses Python's json module instead.
 
 ## Rust direct dependencies
 

@@ -85,8 +85,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 29498,
-      "sha256": "d178873a3556bb50af452f27a28bd7824c86796adf7b94392a05d456b930a0a1"
+      "bytes": 29600,
+      "sha256": "bb65134c20e5620c089f460a3e8100986a6ae69afd061b0a71318e947047f8d1"
     },
     {
       "path": "TRADEMARKS.md",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "requirements.lock",
-      "bytes": 1343,
-      "sha256": "f036141921996cddf11a8830f21290278117849ba8172393a6f4861fad98ed52"
+      "bytes": 1528,
+      "sha256": "cf7a29fd0d1d43a0a4f93ba6bca96f98f33fbe4e1cc8c5258dd3351e7d23b6a9"
     },
     {
       "path": "schemas/v1/examples/field_current_square.json",
@@ -8300,8 +8300,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 30265,
-      "sha256": "cd290b78012f57c567950ac9a499440df22445f6b3be004e4dca66218d9e3433"
+      "bytes": 31701,
+      "sha256": "81cd2d625004f168740fc17767bc6ae3040a339a93c845660a8dd621d3d11305"
     },
     {
       "path": "tests/test_shoed_benchmark_case.py",
@@ -8540,8 +8540,8 @@
     },
     {
       "path": "tools/release/policy.py",
-      "bytes": 11897,
-      "sha256": "5b38a5f885bf83091823514f317aeafa54cd0570e94377a9dd4934e29df62e2a"
+      "bytes": 12413,
+      "sha256": "9fafd89b4ac0d4c2ed41689858909fa3458a33c900badbe5af69c13f9be668b9"
     },
     {
       "path": "tools/release/qualification.py",
