@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { currentStepSegments } from './bldcChartPaths';
 import { WaveformReadoutBar, WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
-import { electricalAngleTicks, formatElectricalAngleTick } from './chartAxis';
+import { electricalAngleTicks, formatElectricalAngleTick, formatValueTick, valueAxis } from './chartAxis';
 import { waveformReadoutAngles, waveformReadoutValues, type WaveformReadoutSeries } from './chartReadout';
 
 interface BldcTorqueCurrentChartProps {
@@ -89,9 +89,11 @@ export function BldcTorqueCurrentChart({
   const plotHeight = height - margin.top - margin.bottom;
   const minTorque = Math.min(...torqueNm);
   const maxTorque = Math.max(...torqueNm);
-  const torquePad = Math.max((maxTorque - minTorque) * 0.12, Math.abs(maxTorque) * 0.04, 0.01);
-  const torqueLow = minTorque - torquePad;
-  const torqueHigh = maxTorque + torquePad;
+  // Round-number torque ticks; a small motor's ripple reads 0.190 | 0.195 | …,
+  // not 0.19 | 0.19 | 0.20.
+  const torqueAxis = valueAxis(minTorque, maxTorque, 4);
+  const torqueLow = torqueAxis.min;
+  const torqueHigh = torqueAxis.max;
   const maxCurrent = Math.max(1, ...phaseA.map(Math.abs), ...phaseB.map(Math.abs), ...phaseC.map(Math.abs));
   const x = (angle: number) => margin.left + wrap360(angle) / 360 * plotWidth;
   const torqueY = (value: number) => margin.top + (torqueHigh - value) / Math.max(torqueHigh - torqueLow, 1e-9) * plotHeight;
@@ -101,7 +103,7 @@ export function BldcTorqueCurrentChart({
     angles, values, x, currentY, cycleComplete ? width - margin.right : undefined,
   );
   const segments = sectorSegments(commutationAdvanceDeg);
-  const torqueTicks = [0, 0.5, 1];
+  const torqueTicks = torqueAxis.ticks;
   const currentTicks = [-maxCurrent, 0, maxCurrent];
   // Not x(): wrap360 would put 360° back at the left edge.
   const angleTicks = electricalAngleTicks(0, 360).map((tick) => ({ tick, x: margin.left + tick / 360 * plotWidth }));
@@ -173,9 +175,8 @@ export function BldcTorqueCurrentChart({
             </g>
           ))}
           {showTorque && torqueTicks.map((tick) => {
-            const y = margin.top + tick * plotHeight;
-            const value = torqueHigh - tick * (torqueHigh - torqueLow);
-            return <g key={tick}><line x1={margin.left} x2={width - margin.right} y1={y} y2={y} className="chart-grid" /><text x={margin.left - 9} y={y + 4} textAnchor="end" className="chart-label">{value.toFixed(2)}</text></g>;
+            const y = torqueY(tick);
+            return <g key={tick}><line x1={margin.left} x2={width - margin.right} y1={y} y2={y} className="chart-grid" /><text x={margin.left - 9} y={y + 4} textAnchor="end" className="chart-label">{formatValueTick(tick, torqueAxis.decimals)}</text></g>;
           })}
           {showPhaseCurrents && currentTicks.map((value) => <g key={value}>{!showTorque && <line x1={margin.left} x2={width - margin.right} y1={currentY(value)} y2={currentY(value)} className="chart-grid" />}<text x={width - margin.right + 9} y={currentY(value) + 4} className="chart-label">{value.toFixed(0)}</text></g>)}
           {angleTicks.map(({ tick, x: tickX }) => <line key={tick} x1={tickX} x2={tickX} y1={margin.top} y2={height - margin.bottom} className="chart-grid" />)}

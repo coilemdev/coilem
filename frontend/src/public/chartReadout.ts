@@ -117,7 +117,9 @@ export function formatWaveformReadoutAngle(angleDeg: number): string {
 
 /** The result cards' two-decimal format, for example `12.23 N·m`. */
 export function formatWaveformReadoutValue(value: number, unit: string): string {
-  return `${value.toFixed(2)} ${unit}`;
+  const text = value.toFixed(2);
+  // A reading that rounds to zero reads 0.00, not -0.00.
+  return `${Number(text) === 0 ? '0.00' : text} ${unit}`;
 }
 
 /** A signed difference in the Compare cards' format, for example `+0.12 N·m`. */

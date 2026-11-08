@@ -77,6 +77,14 @@
   outer-rotor cases, from an 18 mm micro drone motor to a 100 mm hub-motor
   class. They are graded with Phase A's gates against a FEMM 4.2 collection
   still to be run ([request](docs/OUTRUNNER_FEMM_REQUEST.md)).
+- **Small readings plot to scale.** Result charts no longer squeeze a
+  waveform smaller than one unit into the top of the plot. Small readings show
+  in mN·m or mV, axis labels use round steps, and nothing reads −0.00.
+- **Diagnostics.** Solver convergence moves to a Diagnostics section at the end
+  of Results. It leads with a plain verdict and four facts, charts the share
+  of the iteration limit each rotor position used, and lists only the angles
+  that need a look, with both sweeps side by side. Solver settings stay under
+  Technical details; every position's record stays in the CSV.
 - **Limits.** Outer rotors are SPM only, and two-layer windings must be tooth
   coils. Elmer, the fixed-mesh
   lane, the dimension overlay and the solved view's air-gap ring are not
