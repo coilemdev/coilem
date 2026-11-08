@@ -189,7 +189,15 @@ print(json.dumps(r))
   await expect(card.getByText(/^1 of 8 rotor positions need a look: 1 used 80% or more of the iteration limit\. Check the waveforms at those angles\.$/)).toBeVisible();
   await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^8 of 8$/ })).toHaveCount(2);
   await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^24 of 100$/ })).toBeVisible();
-  await expect(card.getByRole('list', { name: 'How each position is solved' })).toContainText('Repeat until the change is under the allowed error');
+  // The info button beside the title sketches how the solver converges, on hover or focus.
+  const help = card.getByRole('button', { name: 'How the solver converges', exact: true });
+  await help.hover();
+  const helpPanel = page.getByRole('tooltip').filter({ hasText: 'Why it repeats.' });
+  await expect(helpPanel).toBeVisible();
+  await expect(helpPanel.getByRole('img', { name: /^Loop: solve the field, read B in the steel, update the steel, repeat; stop once the change is under the allowed error\.$/ })).toBeVisible();
+  await expect(helpPanel).toContainText('This run: up to 100 iterations per position.');
+  await page.mouse.move(0, 0);
+  await expect(helpPanel).toBeHidden();
   await expect(card.getByRole('img', { name: /^Share of the iteration limit used at each rotor position, at most 99%\./ })).toBeVisible();
   await expect(card.getByRole('list', { name: 'Position status' })).toContainText('Not checked here: mesh accuracy');
   // Only the flagged angle is listed until the user asks for every angle.

@@ -7065,8 +7065,8 @@
     },
     {
       "path": "frontend/src/public/Popover.tsx",
-      "bytes": 4670,
-      "sha256": "c132cd81574ae0136808eb0fdc2af81340f06a0bbc6c3770223b5270dc1b135b"
+      "bytes": 4845,
+      "sha256": "e51745a153390efb65c797fc3e210ea2bfd8ca35d687a659d5b7139eaa1add0a"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",
@@ -7495,8 +7495,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 296484,
-      "sha256": "fea5638ff0afbee1c17659d63c3eeb5810b1f8139488ebf23b7cda6a1024cbe5"
+      "bytes": 297288,
+      "sha256": "1afa9014733dadca7fa59446300731a7c331e8c03181f84017f2ef3a280f1d47"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7555,8 +7555,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 57192,
-      "sha256": "44bf16d4957fe117985348e730f6fb0559fb86acf518c00fe82a72e5a34c2cdf"
+      "bytes": 57729,
+      "sha256": "cc9207f0688f32269357434526b8b6f486b85830aaf7bb81375df23701ea84fb"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -12065,8 +12065,8 @@
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
-      "bytes": 10730,
-      "sha256": "ac518d6bdd9ea2e7f1f64ca5978db14f3bcdda92b3398d2642f1d6d3a6c0f901"
+      "bytes": 10818,
+      "sha256": "2c95f31a9a3f51a633eef26eb79fe321c5465b13598017bfe825da30ca8ea693"
     },
     {
       "path": "tests/test_convergence_reporting.py",
@@ -13150,8 +13150,8 @@
     },
     {
       "path": "frontend/scripts/test-convergence-overview.mjs",
-      "bytes": 6956,
-      "sha256": "58fb0ef57082d7ed4b09e66bcef78375de0d1098bea1281c4aeb0f727b682970"
+      "bytes": 7304,
+      "sha256": "afe99c6f923f0a277f404b093036148e85683d4104676dd184762126d52f5150"
     },
     {
       "path": "frontend/scripts/test-value-axis.mjs",
@@ -13160,8 +13160,13 @@
     },
     {
       "path": "frontend/src/public/convergenceOverview.ts",
-      "bytes": 11757,
-      "sha256": "8cc698ee0d2e8aaa3960c9762ff9cae5fb6f213045c3da5270db5d01aa442f48"
+      "bytes": 12231,
+      "sha256": "d7b285ea007f628628b57fe5822b5f7b3e84d35231f216ddad2bbd5b3b7141cb"
+    },
+    {
+      "path": "frontend/src/public/ConvergenceHelp.tsx",
+      "bytes": 6048,
+      "sha256": "b3af9bf50d40e38e80a93a2ed104cb7e03cfb72e09b341c6365b697c669ef66f"
     }
   ],
   "public_patches": [

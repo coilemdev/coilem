@@ -23,6 +23,10 @@ export interface ConvergenceOverview {
   facts: ConvergenceFact[];
   /** How the loop's stopping test reads, e.g. "the steel changes by less than 1%". */
   stoppingRule: string;
+  /** The allowed change as a percentage, when every position used one Picard tolerance. */
+  allowedError: string | null;
+  /** The largest total iteration limit recorded. */
+  iterationLimit: number | null;
 }
 
 export type PositionStatusKind = 'converged' | 'slow' | 'stopped_early' | 'no_error' | 'linear' | 'not_recorded';
@@ -156,14 +160,12 @@ export function convergenceChart(report?: SolverConvergenceReport | null): Conve
   return { axis, series };
 }
 
-function stoppingRule(nonlinear: Position[]): string {
+function allowedChange(nonlinear: Position[]): string | null {
   const methods = new Set(nonlinear.map((position) => position.record!.method));
   const tolerances = new Set(nonlinear.map((position) => position.record!.tolerance));
-  if (methods.size === 1 && tolerances.size === 1) {
-    const [tolerance] = tolerances;
-    if (methods.has('picard')) return `the steel changes by less than ${Number((tolerance * 100).toPrecision(3))}%`;
-  }
-  return 'the change is under the allowed error';
+  if (methods.size !== 1 || !methods.has('picard') || tolerances.size !== 1) return null;
+  const [tolerance] = tolerances;
+  return `${Number((tolerance * 100).toPrecision(3))}%`;
 }
 
 export function convergenceOverview(report?: SolverConvergenceReport | null): ConvergenceOverview {
@@ -174,6 +176,8 @@ export function convergenceOverview(report?: SolverConvergenceReport | null): Co
       verdict: "This run didn't record solver convergence, so it can't be checked. It cannot be recovered from iteration counts or current settings.",
       facts: [],
       stoppingRule: 'the change is under the allowed error',
+      allowedError: null,
+      iterationLimit: null,
     };
   }
   const recorded = report.positions.filter((position) => position.record);
@@ -190,7 +194,8 @@ export function convergenceOverview(report?: SolverConvergenceReport | null): Co
     (worst, position) => (!worst || position.record!.iterations > worst.record!.iterations ? position : worst),
     null,
   );
-  const rule = stoppingRule(nonlinear);
+  const allowedError = allowedChange(nonlinear);
+  const limits = nonlinear.map((position) => position.record!.max_iterations);
 
   const plan = rowValue(report, 'accuracy_plan');
   const density = rowValue(report, 'mesh_density');
@@ -228,7 +233,12 @@ export function convergenceOverview(report?: SolverConvergenceReport | null): Co
     });
   }
 
-  const base = { facts, stoppingRule: rule };
+  const base = {
+    facts,
+    stoppingRule: allowedError ? `the steel changes by less than ${allowedError}` : 'the change is under the allowed error',
+    allowedError,
+    iterationLimit: limits.length ? Math.max(...limits) : null,
+  };
   if (report.status === 'review') {
     const reasons = [
       aboveLimit ? `${aboveLimit} stopped above the allowed error` : null,

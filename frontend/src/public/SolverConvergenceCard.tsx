@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { electricalAngleTicks, formatElectricalAngleTick } from './chartAxis';
+import { ConvergenceHelp } from './ConvergenceHelp';
 import {
   SWEEP_LABELS,
   convergenceAngleTable,
@@ -142,8 +143,9 @@ function PositionTable({ report }: { report: SolverConvergenceReport }) {
 }
 
 /**
- * Solver convergence: a verdict and four facts, the loop in one line, the
- * share of the iteration limit each position used, and the positions to check.
+ * Solver convergence: a verdict and four facts, the share of the iteration
+ * limit each position used, and the positions to check. The info button beside
+ * the title sketches how the solver converges.
  * The backend report's own rows (shared with the PDF) sit under technical
  * details; every position's record is in the CSV.
  */
@@ -155,7 +157,10 @@ export function SolverConvergenceCard({ report }: { report?: SolverConvergenceRe
   return (
     <section className="public-solver-convergence" aria-labelledby={headingId}>
       <header>
-        <h3 id={headingId}>Solver convergence</h3>
+        <div className="public-convergence-title">
+          <h3 id={headingId}>Solver convergence</h3>
+          {recorded && <ConvergenceHelp stoppingRule={overview.stoppingRule} allowedError={overview.allowedError} iterationLimit={overview.iterationLimit} />}
+        </div>
         <span className={`public-convergence-status${overview.tone === 'review' ? ' is-warning' : overview.tone === 'ok' ? ' is-ok' : ''}`}>
           {overview.label}
         </span>
@@ -168,11 +173,6 @@ export function SolverConvergenceCard({ report }: { report?: SolverConvergenceRe
       )}
       {recorded && chart.series.length > 0 && (
         <>
-          <ol className="public-convergence-loop" aria-label="How each position is solved">
-            <li>Solve the field</li>
-            <li>Update the steel</li>
-            <li>Repeat until {overview.stoppingRule}</li>
-          </ol>
           <IterationChart chart={chart} />
           <ul className="public-convergence-key" aria-label="Position status">
             <li><span className="public-convergence-mark is-ok" aria-hidden="true">✓</span><strong>Converged</strong> under the allowed error</li>

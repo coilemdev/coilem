@@ -32,6 +32,7 @@ assert.equal(ok.label, 'Converged');
 assert.equal(ok.tone, 'ok');
 assert.equal(ok.verdict, 'All 96 rotor positions converged, using at most 102 of 200 iterations.');
 assert.equal(ok.stoppingRule, 'the steel changes by less than 1%');
+assert.deepEqual([ok.allowedError, ok.iterationLimit], ['1%', 200]);
 assert.deepEqual(ok.facts.map((fact) => [fact.label, fact.value, fact.hint]), [
   ['Rotor positions', '96 of 96', undefined],
   ['Under the allowed error', '96 of 96', undefined],
@@ -76,6 +77,9 @@ assert.equal(review.label, 'Needs review');
 assert.equal(review.tone, 'review');
 assert.match(review.verdict, /^2 of 4 rotor positions need a look: 1 stopped above the allowed error; 1 used 80% or more of the iteration limit\./);
 assert.match(review.verdict, /Check the waveforms at those angles\.$/);
+// Mixed methods or tolerances have no single allowed change to quote.
+const mixed = convergenceOverview(report('ok', [position(0), position(1, { method: 'newton' })]));
+assert.deepEqual([mixed.stoppingRule, mixed.allowedError], ['the change is under the allowed error', null]);
 assert.deepEqual(review.facts.find((fact) => fact.key === 'under_error'), { key: 'under_error', label: 'Under the allowed error', value: '3 of 4', hint: '1 stopped early' });
 assert.deepEqual(convergenceAngleTable(report('review', [position(0), position(1, { ratio: 1.3 })])).rows.map((row) => row.flagged), [false, true]);
 

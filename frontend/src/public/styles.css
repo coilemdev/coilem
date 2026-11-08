@@ -1621,10 +1621,22 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-convergence-facts dt { font-size: 11px; color: var(--text-muted); }
 .public-convergence-facts dd { margin: 5px 0 0; font: 600 14px var(--font-mono); overflow-wrap: anywhere; }
 .public-convergence-facts p { margin: 4px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-muted); }
-.public-convergence-loop { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 26px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--text-secondary); }
-.public-convergence-loop li { position: relative; padding: 4px 10px; border: 1px solid var(--border-subtle); border-radius: 20px; }
-.public-convergence-loop li:not(:last-child)::after { content: "→"; position: absolute; right: -19px; color: var(--text-muted); }
-.public-convergence-chart { margin: 12px 0 0; }
+.public-convergence-title { display: flex; align-items: center; gap: 8px; }
+.convergence-help .popover-panel { width: min(400px, calc(100vw - 24px)); max-width: none; max-height: calc(100vh - 24px); overflow-y: auto; gap: 6px; }
+.convergence-help .popover-panel svg { display: block; width: 100%; height: auto; margin: 2px 0 6px; overflow: visible; }
+.convergence-help-axis, .convergence-help-loop { fill: none; stroke: var(--text-muted); stroke-width: 1; }
+.convergence-help-arrow { fill: var(--text-muted); }
+.convergence-help-curve { fill: none; stroke: #7dd3fc; stroke-width: 2; stroke-linecap: round; }
+.convergence-help-saturated { fill: rgba(250, 204, 21, .07); }
+.convergence-help-box { fill: rgba(255, 255, 255, .03); stroke: var(--border-default); }
+.convergence-help-review { stroke: var(--warning); stroke-width: 1; stroke-dasharray: 3 3; }
+.convergence-help-allowed { stroke: var(--success); stroke-width: 1; stroke-dasharray: 4 3; }
+.convergence-help-stop { fill: var(--success); }
+.convergence-help-text { fill: var(--text-muted); font: 400 10px var(--font-ui); }
+.convergence-help-text.is-strong { fill: var(--text-secondary); }
+.convergence-help-text.is-ok { fill: var(--success); }
+.convergence-help-text.is-warning { fill: var(--warning); }
+.public-convergence-chart { margin: 16px 0 0; }
 .public-convergence-chart figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font-size: 11px; color: var(--text-muted); }
 .public-convergence-chart-legend { display: inline-flex; flex-wrap: wrap; gap: 14px; }
 .public-convergence-chart-legend > span { display: inline-flex; align-items: center; gap: 6px; }
