@@ -7795,8 +7795,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 29042,
-      "sha256": "98c38d3b41c25734ef707e2791e2eb0c7ab47c1332b8b20788b0263b72a09aae"
+      "bytes": 30298,
+      "sha256": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
