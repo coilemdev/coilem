@@ -1,0 +1,20 @@
+{
+  "schema": "coilem.qualification_carry/v1",
+  "status": "READY",
+  "candidate": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+  "moved_values": [
+    {
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.026539302148737773,
+      "new": 0.03018132993388819,
+      "tolerance": 0.001
+    }
+  ],
+  "reference_review": [],
+  "accepted_moved_values": true,
+  "approved_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "measurements_mutated": false
+}

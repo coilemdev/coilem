@@ -1,0 +1,78 @@
+{
+  "schema": "coilem.release_owner_decisions/v1",
+  "date": "2026-11-08",
+  "approval_source": "Explicit owner response in the Claude Code session that prepared this publication: \"Approve both\" (the two decisions below)",
+  "review": "https://github.com/coilemdev/coilem/pull/218",
+  "measured_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+  "source_workflow_run": 42400556194,
+  "decisions": [
+    {
+      "id": "protocol16_reference_reuse",
+      "answer": "Approve reviewed reference reuse",
+      "scope": "Unchanged reviewed protocol 1.6 FEMM references, suite and registered requests; the reference-sensitive sources changed for the outer-rotor layout, the reference-model interface and validation, behind switches that leave the registered inner-rotor cases' inputs unchanged.",
+      "changed_sources": {
+        "backend/geometry.py": {
+          "before_sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
+          "after_sha256": "75d36dd236b3b276b2fde1a058e8896af2f2508709a0cb1de9e8c77c94f84610"
+        },
+        "backend/geometry_drawer.py": {
+          "before_sha256": "7f5a148f3e4da67577a58f5d9c573a630f9849aaa891c378b492c84b6927863b",
+          "after_sha256": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e"
+        },
+        "backend/geometry_ir.py": {
+          "before_sha256": "6c5404b069e325d990587a78047cdbffc3a0f0a69dabf06ae3cd4aff32d7dfd7",
+          "after_sha256": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6"
+        },
+        "backend/material_catalog.py": {
+          "before_sha256": "4227dfbbddd82167b780f2284de59bcc0db69840a865de145612a9dda99fa198",
+          "after_sha256": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262"
+        },
+        "backend/public_material_catalog.py": {
+          "before_sha256": "1d9f1469c3ca6c26f6b8fea23fd29b1c607fac69c9febff1f65ff473a2d99680",
+          "after_sha256": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3"
+        },
+        "backend/excitation.py": {
+          "before_sha256": "58419d436989bb1ac588e2404c82348c63695dbbe66c6977fae131f0210d9a28",
+          "after_sha256": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab"
+        },
+        "backend/reference_models/prius.py": {
+          "before_sha256": "f90ef88e3558edf867b766d651f815f68c95b93e03b910235e7272ef0581d645",
+          "after_sha256": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f"
+        },
+        "backend/reference_models/lrk.py": {
+          "before_sha256": null,
+          "after_sha256": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43"
+        },
+        "backend/reference_models/lrk_12s14p_source.json": {
+          "before_sha256": null,
+          "after_sha256": "474c5ce06d530a9c6281da165f83e28eeba40ba3458617001b18d11b5e17d608"
+        },
+        "backend/reference_models/lrk_12s14p_config.json": {
+          "before_sha256": null,
+          "after_sha256": "46add87f28066dd32cbc96d91b1f7cfc9d025fea753b59495d6ba696423307bf"
+        },
+        "backend/models/config.py": {
+          "before_sha256": "a952b7de1d095d93f1ec460c14d4360aab19cd23df49857fbb3e28c90e14590c",
+          "after_sha256": "01a3dba95bfda8e164098aa6c5a56da0b7a45d44eb3e9e8bdff890f41a01c805"
+        }
+      },
+      "supporting_evidence": "Fresh Windows FEMM collection of all 46 registered cases at 34de0f4 (PR #218 comment, 2026-11-08T16:08:34Z): 46/46 complete; native versus fresh FEMM 46 PASS, 336/336 gates; reference d/q self-checks 12/12. CI native values matched the v0.5.1 records (macOS identical, Windows within 2.8e-8 relative)."
+    },
+    {
+      "id": "macos_prius_180_observation",
+      "answer": "Accept this recorded difference",
+      "scope": "Only the named experimental observation, the same value accepted for v0.5.1; no hardware or performance claim added.",
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "approved_baseline": 0.026539302148737773,
+      "new": 0.03018132993388819,
+      "tolerance": 0.001
+    }
+  ],
+  "registry_note": "The physics registry gained backend/reference_models/__init__.py, backend/reference_models/lrk.py, backend/rotor_layout.py and the two LRK data files in the reviewed v0.5.5 stack (#200/#201); the measurement hashed them. The trusted-base publisher refuses registry changes, so this owner-reviewed publication uses the candidate's tooling.",
+  "automatic_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "automatic_tolerances_changed": false,
+  "measurements_mutated": false,
+  "reference_bundle_mutated": false
+}
