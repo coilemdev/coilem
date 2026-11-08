@@ -411,6 +411,9 @@ assert.match(workspaceSource, />Benchmarks</);
 // Benchmarks are experimental for now: every entry carries a yellow Experimental tag.
 assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'benchmark'\)\)\.map\(\(group\) => \([\s\S]*?group\.options\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
 assert.match(styleSource, /\.public-project-examples-menu \.public-example-experimental-tag \{[^}]*color: #fbbf24;/);
+// A motor example whose design is experimental carries the same tag (tests/test_example_qualification_tags.py checks which).
+assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'motor'\)\)\.map\(\(group\) => \([\s\S]*?group\.options\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}\{example\.experimentalDesign && <span className="public-example-experimental-tag">Experimental<\/span>\}<\/strong>/);
+assert.match(exampleDesignsSource, /id: 'spm-outrunner-14p12s',[^}]*experimentalDesign: true/);
 assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
 assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);

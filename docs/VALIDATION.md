@@ -671,14 +671,19 @@ registered benchmark fixture is an outer rotor.**
   and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
   agrees with 1.5·p·λ·I within 0.3%, and the mesh study moves it less than
   0.05%. [OUTRUNNER.md](OUTRUNNER.md#validation) has the detail.
-- **The reason the app prints:** "Outer-rotor SPM: no benchmark fixture
-  measures an outer rotor yet." (`backend/qualification.py`).
+- **The reason the app prints:** "Outer-rotor SPM: no registered benchmark
+  fixture is an outer rotor yet." (`backend/qualification.py`). The Examples
+  menu tags the SPM outrunner 14p/12s example Experimental, as it does the
+  IPM 10p V-shape and SPM 24p examples, whose designs are experimental too.
 - **What would qualify it.** Phase F, the outer-rotor benchmark proposed as
   [protocol 1.8.0](../benchmarks/abcd-v1.8/README.md). It has 10 outer-rotor SPM
   cases over five motors, from an 18 mm micro drone motor to a 100 mm
-  hub-motor class, graded with Phase A's gates against FEMM 4.2. The harness
-  can grade it, and the [FEMM request](OUTRUNNER_FEMM_REQUEST.md) is written.
-  No reference exists yet, and Phase F is not registered.
+  hub-motor class, graded with Phase A's gates against FEMM 4.2
+  ([request](OUTRUNNER_FEMM_REQUEST.md)). A first collection on Windows passes
+  all 10 cases (60/60 gates; see the 0.5.5 release notes). Phase F is
+  registered once the same comparison passes on macOS. The SPM outrunner
+  14p/12s example shares its frame with Phase F's 2806-class drone motor, but
+  has no tooth shoes and runs ideal six-step, which Phase F does not measure.
 - **Not modelled.** IPM outer rotors, and end effects such as an outrunner's
   bell and magnet overhang.
 

@@ -666,9 +666,11 @@ export function CoilEmTopBar({
                               type="button"
                               role="menuitem"
                               key={example.id}
+                              title={example.experimentalDesign ? 'Experimental: the benchmark does not qualify this design yet. Design Health says why.' : undefined}
                               onClick={closeMenuThen(() => onLoadExample?.(example.id))}
                             >
-                              <strong>{example.label}</strong>
+                              {/* A design Design Health rates experimental carries the same yellow tag as the benchmarks. */}
+                              <strong>{example.label}{example.experimentalDesign && <span className="public-example-experimental-tag">Experimental</span>}</strong>
                               <small>{example.detail}</small>
                             </button>
                           ))}
