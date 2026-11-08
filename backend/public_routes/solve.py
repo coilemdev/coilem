@@ -234,9 +234,13 @@ def _public_result_payload(
 
 
 def _package_public_result(result: Any) -> dict[str, Any]:
+    # The playback manifest is complete, but its images are drawn after the
+    # run is saved (_store_public_result), so results show without waiting
+    # for them; the viewer uses the numerical frames until they are ready.
     field_playback, retained_ids = build_public_field_playback(
         getattr(result, "field_line_frames", None),
         mode="resultant_pm",
+        draw_images=False,
     )
     return _public_result_payload(
         result,
@@ -292,6 +296,10 @@ def _store_public_result(
     # output left in its cache folder is not read again.
     if not keep_raw_solver_outputs():
         prune_raw_solver_outputs(solve_cache_folders(public_result))
+    if isinstance(public_result.get("field_playback"), dict):
+        # Draw the playback images in the background, frame 0 first; a viewer
+        # request for a frame not drawn yet waits for that frame only.
+        run_field_playback.start_drawing(workspace, location.project_slug, location.run_id)
     stored = workspace.load_run(location.project_slug, location.run_id)
     result = stored["result"]
     result["saved_run"] = stored["saved_run"]

@@ -2,10 +2,12 @@
 
 A saved run keeps one compact field frame per rotor position but not the six
 1536 px playback layers drawn from each, which were more than half of a run.
-Those live in a disposable solve-cache folder per run: the solve links its own
-images there, and once cache pruning has removed them they are drawn again
-from the run's frames when the viewer asks for one, starting with that frame.
-A run whose frames retention removed has no playback to draw.
+Those live in a disposable solve-cache folder per run. A solve saves its run
+before any image is drawn and then starts drawing them there in the
+background (start_drawing); whenever an image is missing (not drawn yet, or
+removed by cache pruning) it is drawn from the run's frames when the viewer
+asks for it, starting with that frame. A run whose frames retention removed
+has no playback to draw.
 """
 
 from __future__ import annotations
@@ -122,3 +124,20 @@ def playback_image(workspace: SolveWorkspace, project_slug: str, run_id: str, re
     if not target.is_file():
         raise FileNotFoundError("playback frame not found")
     return target
+
+
+def start_drawing(workspace: SolveWorkspace, project_slug: str, run_id: str, mode: str = "resultant_pm") -> None:
+    """Start drawing a just-saved run's playback images in the background, frame 0 first.
+
+    A solve's result no longer waits for these images (about 30 s on a
+    72-position outrunner). A viewer request for a frame that is not drawn
+    yet waits for that frame's job (playback_image). Never raises: if this
+    fails, the images are drawn when the viewer asks for them.
+    """
+
+    if mode not in PLAYBACK_MODES:
+        return
+    try:
+        _render_job(workspace, project_slug, run_id, mode, run_playback_dir(project_slug, run_id) / mode, 0)
+    except Exception:  # noqa: BLE001 - drawing on demand still works
+        return

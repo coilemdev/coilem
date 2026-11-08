@@ -420,6 +420,29 @@ def _flux_color(value: float) -> tuple[int, int, int, int]:
     return _HEAT_COLORS[min(len(_HEAT_COLORS) - 1, bucket)]
 
 
+def _heat_range(plot: dict[str, Any]) -> tuple[float, float]:
+    """The flux-density data range a heat layer's legend reports."""
+
+    finite_values = [
+        number
+        for value in plot.get("element_b_mag_t") or []
+        if (number := _finite_number(value)) is not None
+    ]
+    # The data range is still reported (the legend's min and max, and the peak
+    # readout); the colours use the fixed scale.
+    return min(finite_values, default=0.0), max(finite_values, default=0.0)
+
+
+def _deferred_image_ref(path: Path) -> dict[str, Any]:
+    """A playback image that will be drawn later, under this name: its size is not known yet."""
+
+    return {
+        "artifact_id": encode_solve_cache_artifact_id(path),
+        "media_type": "image/webp",
+        "byte_count": None,
+    }
+
+
 def _render_heat(
     image_module: Any,
     image_draw_module: Any,
@@ -430,15 +453,7 @@ def _render_heat(
     size_px: int = PLAYBACK_SIZE_PX,
 ) -> tuple[Any, float, float]:
     values = plot.get("element_b_mag_t") or []
-    finite_values = [
-        number
-        for value in values
-        if (number := _finite_number(value)) is not None
-    ]
-    # The data range is still reported (the legend's min and max, and the peak
-    # readout); the colours use the fixed scale.
-    min_b = min(finite_values, default=0.0)
-    max_b = max(finite_values, default=0.0)
+    min_b, max_b = _heat_range(plot)
     image = image_module.new(
         "RGBA",
         (size_px, size_px),
@@ -513,16 +528,10 @@ def _render_composition(
     base_ref: dict[str, Any],
     mesh_ref: dict[str, Any],
     geometry: _DrawableGeometry | None = None,
+    draw: bool = True,
 ) -> dict[str, Any]:
     # The caller passes the geometry it already built for the same plot.
     view_box, point, triangles = geometry if geometry is not None else _drawable_geometry(plot)
-    heat, min_b, max_b = _render_heat(
-        image_module,
-        image_draw_module,
-        plot,
-        triangles,
-        point,
-    )
     contour_levels = _contour_levels(
         plot,
         level_stride=PLAYBACK_CONTOUR_LEVEL_STRIDE,
@@ -531,22 +540,31 @@ def _render_composition(
         plot,
         level_stride=PLAYBACK_CONTOUR_LEVEL_STRIDE,
     )
-    lines = _render_lines(
-        image_module,
-        image_draw_module,
-        image_filter_module,
-        segments,
-        point,
-    )
-    heat_ref = _save_lossless_webp(
-        heat,
-        output_dir / f"frame_{frame_index:04d}_{composition}_flux.webp",
-    )
-    lines_ref = _save_webp(
-        lines,
-        output_dir / f"frame_{frame_index:04d}_{composition}_lines.webp",
-        quality=90,
-    )
+    heat_path = output_dir / f"frame_{frame_index:04d}_{composition}_flux.webp"
+    lines_path = output_dir / f"frame_{frame_index:04d}_{composition}_lines.webp"
+    if draw:
+        heat, min_b, max_b = _render_heat(
+            image_module,
+            image_draw_module,
+            plot,
+            triangles,
+            point,
+        )
+        lines = _render_lines(
+            image_module,
+            image_draw_module,
+            image_filter_module,
+            segments,
+            point,
+        )
+        heat_ref = _save_lossless_webp(heat, heat_path)
+        lines_ref = _save_webp(lines, lines_path, quality=90)
+    else:
+        # Everything but the pixels: the images are drawn later from the
+        # same field frame, under these names (backend/run_field_playback.py).
+        min_b, max_b = _heat_range(plot)
+        heat_ref = _deferred_image_ref(heat_path)
+        lines_ref = _deferred_image_ref(lines_path)
     return {
         "layers": {
             "geometry": base_ref,
@@ -672,14 +690,15 @@ def _package_playback_frame(
     output_dir_text: str,
     mode: PlaybackMode,
     angle_deg: float,
+    draw: bool = True,
 ) -> tuple[str, dict[str, Any]]:
-    """Render and save one frame's layers; module-level so a process pool can run it."""
+    """Render and save one frame's layers (or only describe them); module-level so a process pool can run it."""
 
     output_dir = Path(output_dir_text)
     source_path, outer = _load_frame(artifact_id)
     if source_path.parent.parent != Path(cache_dir_text):
         raise ValueError("field playback frames span multiple solve caches")
-    return str(source_path), _render_playback_layers(outer, output_dir, frame_index, mode, angle_deg)
+    return str(source_path), _render_playback_layers(outer, output_dir, frame_index, mode, angle_deg, draw=draw)
 
 
 def render_stored_playback_frame(frame_index: int, frame_path_text: str, output_dir_text: str, mode: PlaybackMode) -> int:
@@ -706,21 +725,24 @@ def _render_playback_layers(
     frame_index: int,
     mode: PlaybackMode,
     angle_deg: float,
+    *,
+    draw: bool = True,
 ) -> dict[str, Any]:
-    from PIL import Image, ImageDraw, ImageFilter  # type: ignore
+    """One frame's playback entry; with ``draw`` False, its images are named but not drawn."""
 
     geometry = _drawable_geometry(outer)
     _, point, triangles = geometry
-    base = _render_base(Image, ImageDraw, triangles, point)
-    base_ref = _save_lossless_webp(
-        base,
-        output_dir / f"frame_{frame_index:04d}_base.webp",
-    )
-    mesh = _render_mesh(Image, ImageDraw, triangles, point)
-    mesh_ref = _save_lossless_webp(
-        mesh,
-        output_dir / f"frame_{frame_index:04d}_mesh.webp",
-    )
+    base_path = output_dir / f"frame_{frame_index:04d}_base.webp"
+    mesh_path = output_dir / f"frame_{frame_index:04d}_mesh.webp"
+    if draw:
+        from PIL import Image, ImageDraw, ImageFilter  # type: ignore
+
+        base_ref = _save_lossless_webp(_render_base(Image, ImageDraw, triangles, point), base_path)
+        mesh_ref = _save_lossless_webp(_render_mesh(Image, ImageDraw, triangles, point), mesh_path)
+    else:
+        Image = ImageDraw = ImageFilter = None
+        base_ref = _deferred_image_ref(base_path)
+        mesh_ref = _deferred_image_ref(mesh_path)
     compositions: dict[str, Any] = {
         "armature" if mode == "armature" else "resultant": _render_composition(
             Image,
@@ -733,6 +755,7 @@ def _render_playback_layers(
             base_ref=base_ref,
             mesh_ref=mesh_ref,
             geometry=geometry,
+            draw=draw,
         )
     }
     if mode == "resultant_pm":
@@ -748,6 +771,7 @@ def _render_playback_layers(
                 composition="pm",
                 base_ref=base_ref,
                 mesh_ref=mesh_ref,
+                draw=draw,
             )
     return {
         "index": frame_index,
@@ -780,11 +804,16 @@ def build_public_field_playback(
     frames: Any,
     *,
     mode: PlaybackMode,
+    draw_images: bool = True,
 ) -> tuple[dict[str, Any] | None, set[str]]:
     """Build hybrid raster playback and return its manifest and numerical JSON ids.
 
-    If any source or render step fails, ``None`` is returned so callers can
-    continue through the numerical-frame fallback.
+    With ``draw_images`` False the manifest is complete but its images are not
+    drawn yet (their ``byte_count`` is None): a saved run draws them from its
+    field frames afterwards, in the background or when the viewer asks
+    (backend/run_field_playback.py). If any source or render step fails,
+    ``None`` is returned so callers can continue through the numerical-frame
+    fallback.
     """
 
     frame_values = list(frames) if isinstance(frames, (list, tuple)) else []
@@ -814,6 +843,7 @@ def build_public_field_playback(
                 str(output_dir),
                 mode,
                 float(_payload(frame_values[frame_index]).get("angle_deg", 0.0)),
+                draw_images,
             )
             for frame_index, artifact_id in enumerate(source_ids)
         ]

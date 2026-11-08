@@ -587,14 +587,17 @@ class SolveRunWriter:
                         source = None
                     playback_relative = (
                         run_playback_relative(source.parent.name, source.name)
-                        if source is not None and source.is_file() and _artifact_kind(value, source) == ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE
+                        if source is not None and _artifact_kind(value, source) == ARTIFACT_KIND_FIELD_PLAYBACK_IMAGE
                         else None
                     )
                     if playback_relative is not None:
                         # Playback images are drawn from the run's frames, so the run
                         # does not keep them; they wait in the solve cache
-                        # (backend/run_field_playback.py).
-                        self._share_playback_image(source, playback_relative)
+                        # (backend/run_field_playback.py). A solve's images are
+                        # usually drawn after its run is saved, so most are not
+                        # there yet; the reference still names the run's image.
+                        if source.is_file():
+                            self._share_playback_image(source, playback_relative)
                         value["artifact_id"] = _encode_run_artifact_id(self.project_slug, self.run_id, playback_relative)
                         value["relative_path"] = playback_relative
                     elif source is not None and source.is_file():

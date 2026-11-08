@@ -530,13 +530,13 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 29189,
-      "sha256": "a63ccb82747a646e191954df8a125d7ea899fb8c60438fd2428af1abffff5bf9"
+      "bytes": 30793,
+      "sha256": "7c8eac9e46d63d684be71293e569557183cca28811508ab0ab824696d8d7a1d0"
     },
     {
       "path": "backend/public_field_playback_contract.py",
-      "bytes": 16879,
-      "sha256": "71f783078b67b2eba53e473f0813b1322510953ff64d9fdc0bb736d6d23354f8"
+      "bytes": 17061,
+      "sha256": "c1f4c2e30b560f11c8e0f14504389aaffa1cd7dc5ad6e3376b7217feaf80f105"
     },
     {
       "path": "backend/public_main.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 55919,
-      "sha256": "74ba5cc9e8d3b27f5864c0f4af7b38f6009880f6d016cc97cdbe9cc45bf6b969"
+      "bytes": 56475,
+      "sha256": "66349fb3f10832df55037b27712c13e2ddc38ed1af30add5a7b524e8ec98530d"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 58850,
-      "sha256": "b7acc3b31fd1267bc4731a669699e0371f0c58825c1d7ceff9509bb8554204e8"
+      "bytes": 59059,
+      "sha256": "478f884ba0d5b9cb23ba209af898babd201d98654576673b436b42fd1e759ed4"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 23929,
-      "sha256": "e15e673966198640cfdb269ea29e9b2a486747050d09bace4cc61a53ef84d37b"
+      "bytes": 24030,
+      "sha256": "9bf3d1b717d545dfc785e8dc6c5767a45a6bc4cd565e94e6e6030a839ba8cad3"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -12960,8 +12960,8 @@
     },
     {
       "path": "backend/run_field_playback.py",
-      "bytes": 5435,
-      "sha256": "f6d24daee376b063d6c75c8578d63e9886f40a065d28c34ae73838e91adf1c2d"
+      "bytes": 6292,
+      "sha256": "8e1634daf94a717b8802d24d3855ae2214bdae11bc3d466dad2aaa113d7bce65"
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
@@ -13120,8 +13120,8 @@
     },
     {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 18762,
-      "sha256": "89294068a0fe6c1190347a1d782ee29161f98ba6036f29aa52b0a1294fa22459"
+      "bytes": 23074,
+      "sha256": "f759b6043a8ce183c6cef6674bb6d2593fb23c205bec1ab7433c220bc88204e1"
     },
     {
       "path": "tests/test_lrk_reference.py",
