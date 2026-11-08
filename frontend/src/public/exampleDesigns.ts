@@ -45,6 +45,11 @@ export interface PublicExampleOption {
   benchmark?: boolean;
   /** Held back until the owner clears redistribution of its source data. */
   pendingDataRights?: boolean;
+  /**
+   * A motor example whose design Design Health rates experimental (backend/qualification.py): the menu tags it as it tags
+   * every benchmark. tests/test_example_qualification_tags.py keeps these flags in line with that rating.
+   */
+  experimentalDesign?: boolean;
   /** Where the rotor sits, as in the design's rotor_layout: the menu lists inrunners and outrunners apart. */
   layout: 'inner' | 'outer';
 }
@@ -59,10 +64,10 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
   { id: 'prius-2004-loaded-torque-v1', label: 'Pyleecan Prius 8p48s · Loaded torque', detail: '2000 rpm · 60°C · 250 A peak · software reference', benchmark: true, layout: 'inner' },
   { id: 'spm-8p12s', label: 'SPM 8p/12s', detail: 'Starter motor', layout: 'inner' },
   { id: 'rotating-field-6p36s', label: 'SPM 6p/36s', detail: 'Three pole pairs · distributed winding', layout: 'inner' },
-  { id: 'spm-outrunner-14p12s', label: 'SPM outrunner 14p/12s', detail: 'Outer rotor · drone class · tooth coils', layout: 'outer' },
-  { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium', layout: 'inner' },
+  { id: 'spm-outrunner-14p12s', label: 'SPM outrunner 14p/12s', detail: 'Outer rotor · drone class · tooth coils', experimentalDesign: true, layout: 'outer' },
+  { id: 'ipm-10p-v-shape-medium', label: 'IPM 10p V-shape', detail: 'Medium', experimentalDesign: true, layout: 'inner' },
   { id: 'ipm-14p-flat-buried-large', label: 'IPM 14p flat buried', detail: 'Large', layout: 'inner' },
-  { id: 'spm-24p-small', label: 'SPM 24p', detail: 'Small', layout: 'inner' },
+  { id: 'spm-24p-small', label: 'SPM 24p', detail: 'Small', experimentalDesign: true, layout: 'inner' },
   {
     id: 'ornl-prius-2004-holem50',
     label: 'ORNL 2004 Prius',
@@ -92,7 +97,7 @@ export const PUBLIC_EXAMPLE_OPTIONS: readonly PublicExampleOption[] = [
     benchmark: true,
     layout: 'outer',
   },
-  { id: 'lrk-12s14p-six-step', label: 'LRK outrunner 14p / 12s', detail: 'Outer rotor · six-step 4 A · software reference', pendingDataRights: true, layout: 'outer' },
+  { id: 'lrk-12s14p-six-step', label: 'LRK outrunner 14p / 12s', detail: 'Outer rotor · six-step 4 A · software reference', pendingDataRights: true, experimentalDesign: true, layout: 'outer' },
   {
     id: 'lrk-12s14p-fixed-current-v1',
     label: 'LRK 14p / 12s · Fixed current',

@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 11017,
-      "sha256": "30af09aef728d3441dff31a4066f747a9596f0d96c92ba26c62ddf143cd870ad"
+      "bytes": 11107,
+      "sha256": "9e5bad73baf898b699f26b025049cf95221a504da23277e70c3688b57bbbd610"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 52699,
-      "sha256": "fb8a608c962d550869ac0af040c25288a3eea56133cfbc9f858d09e2de048893"
+      "bytes": 53097,
+      "sha256": "d0843d6583ba9324dff4389d58175078d56ccac0915e5055425472a8661f4ce4"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 166842,
-      "sha256": "e518d7d84656746872ccd8815994f07e3821fe56b596cb5e65e2e26a84174488"
+      "bytes": 167387,
+      "sha256": "b625f69994420f562d0e25de9d1ee2f3b29ea0ce8673a7362f6716dfd6697ba6"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 245364,
-      "sha256": "bd3ce40a1a0df80f207506d343218a85f3f08036c7119fec7a3b1832375a33c5"
+      "bytes": 245759,
+      "sha256": "3991ad6fee43e7ca32f48d6feacc82585d81d22657e70d02e7c7c630ba6c57be"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7195,8 +7195,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 7104,
-      "sha256": "32d2ea350d7ecfb3e24860fd069f67a714a4df12d513638a1823b458b605c7b7"
+      "bytes": 7482,
+      "sha256": "66179d0d2b9b4743f85148305d89fb82d04f54a57ca03bbfc7f983ad3a14373d"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -13135,8 +13135,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 15110,
-      "sha256": "ba9286382d14b17c107ff9ec4b1eac667f3f853a434640cf9b3d7d6359feae40"
+      "bytes": 15115,
+      "sha256": "84aa9f07d90ba18d532e7bc516d9850606b8bd2be44a7e91bfafb30efcc1abb1"
     },
     {
       "path": "tools/export_lrk_reference.py",
@@ -13802,6 +13802,11 @@
       "path": "benchmarks/qualification-34de0f4ca160/windows-x86_64/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
       "bytes": 2504,
       "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "tests/test_example_qualification_tags.py",
+      "bytes": 3263,
+      "sha256": "9dd0c969d5eef140281fecdd05a3239474a78fafb462d75d2282555c68c0529e"
     }
   ],
   "public_patches": [

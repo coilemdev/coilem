@@ -114,7 +114,8 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
         return ("experimental", reference.qualification_reason)
     if is_outer_rotor(config):
         # Every registered fixture is an inner rotor, so no inner-rotor combination's evidence carries over.
-        return "experimental", "Outer-rotor SPM: no benchmark fixture measures an outer rotor yet."
+        # Phase F's outer-rotor cases (protocol 1.8.0) are proposed, not registered.
+        return "experimental", "Outer-rotor SPM: no registered benchmark fixture is an outer rotor yet."
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"
