@@ -3,7 +3,9 @@
 Prepared November 8, 2026. The [release qualification gate](benchmarks/v0.5.5/release-qualification.json)
 passes for registered A-D parity and the Prius software checks, measured at
 `34de0f4` on Windows and macOS. Outer-rotor motors are new and experimental.
-The application version is 0.5.5; the bundled Magneto2D solver remains 0.4.0.
+The application version is 0.5.5. The bundled Magneto2D solver keeps version
+0.4.0 although it gains outer-rotor support; inner-rotor results are unchanged,
+and its version advances with the next requalification.
 
 - **Outrunners in the normal workflow.** Design has an **Inrunner / Outrunner**
   switch. Outer-rotor surface-magnet motors are edited, meshed, solved and
