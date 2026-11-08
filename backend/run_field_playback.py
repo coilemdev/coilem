@@ -16,6 +16,7 @@ import json
 import re
 import threading
 from concurrent.futures import Future
+from contextlib import ExitStack
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -83,6 +84,7 @@ def _render_job(workspace: SolveWorkspace, project_slug: str, run_id: str, mode:
     """The render of ``index``: an unfinished one already queued, or a new job for all frames."""
 
     from backend.public_field_playback import _playback_executor, render_stored_playback_frame
+    from backend.solver._process_pool import tracked_process_pool
 
     with _JOBS_LOCK:
         futures = _JOBS.get(output_dir)
@@ -93,13 +95,26 @@ def _render_job(workspace: SolveWorkspace, project_slug: str, run_id: str, mode:
             raise FileNotFoundError("playback frame not found")
         output_dir.mkdir(parents=True, exist_ok=True)
         executor = _playback_executor(len(frames))
-        # The requested frame first, then onwards, as playback will ask for them.
-        order = sorted(range(len(frames)), key=lambda position: (position - index) % len(frames))
-        futures = {
-            position: executor.submit(render_stored_playback_frame, position, str(frames[position]), str(output_dir), mode)
-            for position in order
-        }
-        executor.shutdown(wait=False)  # queued frames still render; the workers exit after
+        lifetime = ExitStack()
+        try:
+            lifetime.enter_context(tracked_process_pool(executor))
+            lifetime.enter_context(executor)
+            # The requested frame first, then onwards, as playback will ask for them.
+            order = sorted(range(len(frames)), key=lambda position: (position - index) % len(frames))
+            futures = {
+                position: executor.submit(render_stored_playback_frame, position, str(frames[position]), str(output_dir), mode)
+                for position in order
+            }
+            # Keep registration and the executor's process handles until its
+            # workers have joined. shutdown(wait=False) drops those handles,
+            # leaving application exit unable to stop background renders.
+            threading.Thread(target=lifetime.close, name="coilem-playback-shutdown", daemon=True).start()
+        except BaseException:
+            try:
+                executor.shutdown(wait=True, cancel_futures=True)
+            finally:
+                lifetime.close()
+            raise
         _JOBS[output_dir] = futures
         return futures[index]
 
