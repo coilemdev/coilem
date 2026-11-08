@@ -1,4 +1,9 @@
-# coilEM 0.5.5 — outer-rotor motors (unreleased)
+# coilEM 0.5.5 Developer Preview — outer-rotor motors
+
+Prepared November 8, 2026. The [release qualification gate](benchmarks/v0.5.5/release-qualification.json)
+passes for registered A-D parity and the Prius software checks, measured at
+`34de0f4` on Windows and macOS. Outer-rotor motors are new and experimental.
+The application version is 0.5.5; the bundled Magneto2D solver remains 0.4.0.
 
 - **Outrunners in the normal workflow.** Design has an **Inrunner / Outrunner**
   switch. Outer-rotor surface-magnet motors are edited, meshed, solved and

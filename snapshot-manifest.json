@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 2874,
-      "sha256": "4a4293998b3534a419f190acdfea8ef079305e925445b2867c9bb25f3dd6d665"
+      "bytes": 3197,
+      "sha256": "c20470ec97c2abbdae35d7f1030e65a2acafa04db3dff312663687e3a9c29000"
     },
     {
       "path": "README.md",
-      "bytes": 14840,
-      "sha256": "90f1664f87230162dcea5203339d9eed3ab967bdb204efabd532e8829822224d"
+      "bytes": 14956,
+      "sha256": "bfdb45708d4e1327c145bc54a4101b4a93fc2e3feb0165f3546ab2d0f8a378da"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 18256,
-      "sha256": "a08cc4a70ba95a6ff03a18a87cdaa508576caea21156a546a655ad28961537be"
+      "bytes": 18599,
+      "sha256": "d9f5c710dfa01ea197858f89d1ee8e535a681b3ed546d2a0bfa91360e834c8d8"
     },
     {
       "path": "SECURITY.md",
@@ -96,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191"
+      "sha256": "5e92ec1da0ede4b0945e0892a694329c36cbe6782a45626840edbe66c17784d8"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -6416,12 +6416,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "e45e57b54166cc438f9d880bc856ba1e0ad6740c048c6c9006f0b8d93068e318"
+      "sha256": "081787b54e9c7e91c148040903ee65ca3542f2125b3f56484abe3a3eebf1a1c6"
     },
     {
       "path": "frontend/package.json",
       "bytes": 3196,
-      "sha256": "9773b77b037515b14c22162fd9869c3a787c3732cd2e6ca6beb34773521e74d5"
+      "sha256": "e355bbc0f4306c60bc76a22d58ada19ed7bfcf8a62df50ea593d0af16ca36ec2"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7181,7 +7181,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 15806,
-      "sha256": "e748ea2bd297aa236eefad79b417e5d47602f917649349d09cd11a68178e1696"
+      "sha256": "2cf9ce20f4fd9c758164fa91ab28ee9a99a880ba7aa8b97f232265f921a2cd96"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -13807,6 +13807,11 @@
       "path": "tests/test_example_qualification_tags.py",
       "bytes": 3263,
       "sha256": "9dd0c969d5eef140281fecdd05a3239474a78fafb462d75d2282555c68c0529e"
+    },
+    {
+      "path": "benchmarks/v0.5.5/release-qualification.json",
+      "bytes": 942,
+      "sha256": "4b9e1b4782c1d2acf11fe1dbc47e077edfe8f92295b3a76a1eca9f1d01c6b805"
     }
   ],
   "public_patches": [
