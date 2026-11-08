@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 156410,
-      "sha256": "71812e7553c98a690d4076b452eba263da103040bb47b848c301bdf6c67599db"
+      "bytes": 161670,
+      "sha256": "854042c818109ba97a309107a227c665769b3b290355e00d68e937059f74ef6f"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -8365,8 +8365,8 @@
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
-      "bytes": 5157,
-      "sha256": "3396b5c304626b27a5ed6f509d46c53cba36e0f73c06135928c9788ee6873444"
+      "bytes": 7423,
+      "sha256": "f43a55edbd59996f853b4395ad7dd9de64ecca9433c49190e445f737b1a009e4"
     },
     {
       "path": "tests/test_windows_playback_pool.py",

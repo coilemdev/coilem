@@ -805,6 +805,89 @@ def _zero_current_solve_mesh_artifact(solve_mesh_artifact: dict[str, Any]) -> di
     return artifact
 
 
+def _solve_mesh_evidence_pair(
+    solve_mesh_artifact: dict[str, Any],
+    *,
+    loaded: bool,
+    noload: bool,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    """Evidence for the loaded and the zero-current no-load solve of one mesh.
+
+    Zeroing currents leaves the mesh, region ids and rotor angle the same
+    objects, so both lanes share their serialized text and the loaded
+    geometry hash. The pipeline's main thread and its mesh worker processes
+    both call this, so a mesh's evidence is the same wherever it is built.
+    """
+
+    canonical_cache: dict[int, tuple[Any, str]] = {}
+    loaded_evidence: dict[str, Any] | None = None
+    if loaded:
+        loaded_evidence = build_solve_mesh_evidence(
+            solve_mesh_artifact,
+            canonical_cache=canonical_cache,
+        )
+    noload_evidence: dict[str, Any] | None = None
+    if noload:
+        noload_evidence = build_solve_mesh_evidence(
+            _zero_current_solve_mesh_artifact(solve_mesh_artifact),
+            geometry_sha256=(
+                loaded_evidence["geometry_sha256"] if loaded_evidence is not None else None
+            ),
+            canonical_cache=canonical_cache,
+        )
+    return loaded_evidence, noload_evidence
+
+
+def _prepare_gmsh_mesh_group_in_subprocess(
+    config_payload: dict[str, Any],
+    rotor_angle_mech_deg: float,
+    lanes: tuple[bool, bool],
+    derived: list[tuple[float, bool, bool]],
+    cached_artifact: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build (or re-bake) one base mesh and its congruent meshes in a worker process.
+
+    ``lanes`` and each ``derived`` entry say which of the loaded and no-load
+    solves the mesh feeds; ``derived`` also gives each congruent mesh's rotor
+    angle. The worker computes every mesh's solve evidence too, so the
+    pipeline's main thread only hands ready meshes to the solve threads: on
+    the 72-position outrunner example rotation and evidence held that thread
+    for about half a second per position, while the solves waited. These are
+    the same steps, in the same order and with the same functions, as the
+    main-thread path, so the meshes and their evidence are the same.
+    """
+
+    check_mesh_worker_cancelled()
+    config = MotorConfig.model_validate(config_payload)
+    started = time.perf_counter()
+    if cached_artifact is None:
+        artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
+    else:
+        artifact = _rebake_gmsh_artifact_for_config(cached_artifact, config)
+        generation_time_ms = int((time.perf_counter() - started) * 1000.0)
+    check_mesh_worker_cancelled()
+    evidence = _solve_mesh_evidence_pair(artifact, loaded=lanes[0], noload=lanes[1])
+    derived_meshes: list[tuple[dict[str, Any], int, tuple[dict[str, Any] | None, dict[str, Any] | None]]] = []
+    for target_rotor_angle_mech_deg, loaded, noload in derived:
+        check_mesh_worker_cancelled()
+        rotation_started = time.perf_counter()
+        derived_artifact = _rotate_gmsh_artifact_for_config(
+            artifact,
+            config,
+            float(target_rotor_angle_mech_deg),
+        )
+        rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
+        derived_meshes.append(
+            (derived_artifact, rotation_ms, _solve_mesh_evidence_pair(derived_artifact, loaded=loaded, noload=noload))
+        )
+    return {
+        "artifact": artifact,
+        "generation_time_ms": generation_time_ms,
+        "evidence": evidence,
+        "derived": derived_meshes,
+    }
+
+
 def _config_with_magneto2d_workers(config: MotorConfig, workers: int) -> MotorConfig:
     cloned = config.model_copy(deep=True)
     if cloned.solve_params is not None:
@@ -1142,27 +1225,19 @@ def _solve_with_per_angle_producer_meshes(
         *,
         loaded: bool,
         noload: bool,
+        evidence: tuple[dict[str, Any] | None, dict[str, Any] | None] | None = None,
     ) -> None:
         angle_key = _per_angle_grid_key(angle_elec_deg)
-        # Zeroing currents leaves the mesh, region ids and rotor angle the same
-        # objects, so both lanes share their serialized text and the loaded
-        # geometry hash.
-        canonical_cache: dict[int, tuple[Any, str]] = {}
-        loaded_evidence: dict[str, Any] | None = None
+        # A mesh worker passes the evidence it built for these same lanes.
+        loaded_evidence, noload_evidence = (
+            evidence
+            if evidence is not None
+            else _solve_mesh_evidence_pair(solve_mesh_artifact, loaded=loaded, noload=noload)
+        )
         if loaded:
-            loaded_evidence = build_solve_mesh_evidence(
-                solve_mesh_artifact,
-                canonical_cache=canonical_cache,
-            )
             loaded_mesh_evidence_by_key[angle_key] = loaded_evidence
         if noload:
-            noload_mesh_evidence_by_key[angle_key] = build_solve_mesh_evidence(
-                _zero_current_solve_mesh_artifact(solve_mesh_artifact),
-                geometry_sha256=(
-                    loaded_evidence["geometry_sha256"] if loaded_evidence is not None else None
-                ),
-                canonical_cache=canonical_cache,
-            )
+            noload_mesh_evidence_by_key[angle_key] = noload_evidence
 
     def attach_solve_mesh_evidence(sweep_report: dict[str, Any]) -> None:
         sweep_report["comparison_mesh_evidence"] = {
@@ -1360,6 +1435,13 @@ def _solve_with_per_angle_producer_meshes(
             )
             return lane, job, report, (time.perf_counter() - solve_started) * 1000.0
 
+        def solve_lanes(job: dict[str, Any]) -> tuple[bool, bool]:
+            """Whether a mesh feeds a loaded solve and a no-load solve."""
+            return (
+                bool(job["run_loaded"]),
+                bool(job["run_no_load"]) and noload_solve_config is not None,
+            )
+
         def handle_mesh_ready(
             solve_pool: ThreadPoolExecutor,
             job: dict[str, Any],
@@ -1368,17 +1450,17 @@ def _solve_with_per_angle_producer_meshes(
             *,
             submit_loaded: bool = True,
             submit_no_load: bool = True,
+            evidence: tuple[dict[str, Any] | None, dict[str, Any] | None] | None = None,
         ) -> None:
             nonlocal mesh_generation_time_ms
             mesh_generation_time_ms += int(generation_time_ms)
+            loaded_lane, noload_lane = solve_lanes(job)
             record_solve_meshes(
                 float(job["angle_elec_deg"]),
                 solve_mesh_artifact,
-                loaded=bool(job["run_loaded"]),
-                noload=(
-                    bool(job["run_no_load"])
-                    and noload_solve_config is not None
-                ),
+                loaded=loaded_lane,
+                noload=noload_lane,
+                evidence=evidence,
             )
             if submit_loaded and bool(job["run_loaded"]):
                 loaded_solve_future = solve_pool.submit(
@@ -1528,24 +1610,39 @@ def _solve_with_per_angle_producer_meshes(
             job: dict[str, Any],
             solve_mesh_artifact: dict[str, Any],
             generation_time_ms: int,
+            prepared: dict[str, Any] | None = None,
         ) -> None:
+            # ``prepared`` is a mesh worker's result for this group: its
+            # congruent meshes and every mesh's evidence, built off this
+            # thread with the same steps as below.
             # Populate the per-angle cache BEFORE the artifact is
             # handed to solve threads (store deep-copies internally).
             if cache_scope is not None:
                 _angle_mesh_cache_store(
                     cache_scope, int(job["angle_key"]), solve_mesh_artifact
                 )
-            handle_mesh_ready(solve_pool, job, solve_mesh_artifact, generation_time_ms)
+            handle_mesh_ready(
+                solve_pool,
+                job,
+                solve_mesh_artifact,
+                generation_time_ms,
+                evidence=prepared["evidence"] if prepared is not None else None,
+            )
             emit_mesh_ready_tick(float(job["angle_elec_deg"]))
-            for derived_job, n_slots in derived_jobs_by_base_key.get(
-                int(job["angle_key"]), []
+            for derived_index, (derived_job, n_slots) in enumerate(
+                derived_jobs_by_base_key.get(int(job["angle_key"]), [])
             ):
-                rotation_started = time.perf_counter()
-                derived_artifact = _rotate_gmsh_artifact_for_config(
-                    solve_mesh_artifact,
-                    excitation_config,
-                    float(derived_job["rotor_angle_mech_deg"]),
-                )
+                derived_evidence = None
+                if prepared is not None:
+                    derived_artifact, rotation_ms, derived_evidence = prepared["derived"][derived_index]
+                else:
+                    rotation_started = time.perf_counter()
+                    derived_artifact = _rotate_gmsh_artifact_for_config(
+                        solve_mesh_artifact,
+                        excitation_config,
+                        float(derived_job["rotor_angle_mech_deg"]),
+                    )
+                    rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
                 if cache_scope is not None:
                     _angle_mesh_cache_store(
                         cache_scope, int(derived_job["angle_key"]), derived_artifact
@@ -1585,11 +1682,57 @@ def _solve_with_per_angle_producer_meshes(
                     solve_pool,
                     derived_job,
                     derived_artifact,
-                    int((time.perf_counter() - rotation_started) * 1000.0),
+                    rotation_ms,
                     submit_loaded=not reuse_loaded,
                     submit_no_load=not reuse_no_load,
+                    evidence=derived_evidence,
                 )
                 emit_mesh_ready_tick(float(derived_job["angle_elec_deg"]))
+
+        def prepare_mesh_group(
+            mesh_pool: Any,
+            job: dict[str, Any],
+            cached_artifact: dict[str, Any] | None = None,
+        ) -> Future[dict[str, Any]]:
+            """Send one mesh group (base mesh plus congruent meshes) to a worker."""
+            return mesh_pool.submit(
+                _prepare_gmsh_mesh_group_in_subprocess,
+                config_payload,
+                float(job["rotor_angle_mech_deg"]),
+                solve_lanes(job),
+                [
+                    (float(derived_job["rotor_angle_mech_deg"]), *solve_lanes(derived_job))
+                    for derived_job, _n_slots in derived_jobs_by_base_key.get(int(job["angle_key"]), [])
+                ],
+                cached_artifact,
+            )
+
+        def run_mesh_groups(
+            solve_pool: ThreadPoolExecutor,
+            cached: dict[int, dict[str, Any]] | None,
+        ) -> None:
+            """Prepare every mesh group in worker processes; dispatch each as it lands."""
+            with gmsh_mesh_process_pool(producer_workers) as mesh_pool:
+                mesh_futures: dict[Future[dict[str, Any]], dict[str, Any]] = {}
+                # Progress is emitted on mesh COMPLETION (see
+                # emit_mesh_ready_tick); submission-time ticks all fire
+                # in the same instant with identical counts and read as
+                # a frozen bar in the UI.
+                for job in producer_jobs:
+                    if check_cancelled is not None:
+                        check_cancelled()
+                    cached_artifact = cached[int(job["angle_key"])] if cached is not None else None
+                    mesh_futures[prepare_mesh_group(mesh_pool, job, cached_artifact)] = job
+                for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
+                    job = mesh_futures[mesh_future]
+                    prepared = mesh_future.result()
+                    handle_group_mesh_ready(
+                        solve_pool,
+                        job,
+                        prepared["artifact"],
+                        prepared["generation_time_ms"],
+                        prepared=prepared,
+                    )
 
         with ThreadPoolExecutor(max_workers=solve_workers) as solve_pool:
             if cached_base_artifacts is not None:
@@ -1601,46 +1744,23 @@ def _solve_with_per_angle_producer_meshes(
                     file=sys.stderr,
                     flush=True,
                 )
-                for job in producer_jobs:
-                    rebake_started = time.perf_counter()
-                    solve_mesh_artifact = _rebake_gmsh_artifact_for_config(
-                        cached_base_artifacts[int(job["angle_key"])],
-                        excitation_config,
-                    )
-                    handle_group_mesh_ready(
-                        solve_pool,
-                        job,
-                        solve_mesh_artifact,
-                        int((time.perf_counter() - rebake_started) * 1000.0),
-                    )
-            elif producer_workers > 1:
-                with gmsh_mesh_process_pool(producer_workers) as mesh_pool:
-                    mesh_futures: dict[
-                        Future[tuple[dict[str, Any], int, float]],
-                        dict[str, Any],
-                    ] = {}
-                    # Progress is emitted on mesh COMPLETION (see
-                    # emit_mesh_ready_tick); submission-time ticks all fire
-                    # in the same instant with identical counts and read as
-                    # a frozen bar in the UI.
+                if producer_workers > 1:
+                    run_mesh_groups(solve_pool, cached_base_artifacts)
+                else:
                     for job in producer_jobs:
-                        if check_cancelled is not None:
-                            check_cancelled()
-                        mesh_future = mesh_pool.submit(
-                            _build_gmsh_mesh_in_subprocess,
-                            config_payload,
-                            float(job["rotor_angle_mech_deg"]),
+                        rebake_started = time.perf_counter()
+                        solve_mesh_artifact = _rebake_gmsh_artifact_for_config(
+                            cached_base_artifacts[int(job["angle_key"])],
+                            excitation_config,
                         )
-                        mesh_futures[mesh_future] = job
-                    for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
-                        job = mesh_futures[mesh_future]
-                        solve_mesh_artifact, generation_time_ms, _mesh_wall_ms = mesh_future.result()
                         handle_group_mesh_ready(
                             solve_pool,
                             job,
                             solve_mesh_artifact,
-                            generation_time_ms,
+                            int((time.perf_counter() - rebake_started) * 1000.0),
                         )
+            elif producer_workers > 1:
+                run_mesh_groups(solve_pool, None)
             else:
                 for job in producer_jobs:
                     mesh_started = time.perf_counter()
