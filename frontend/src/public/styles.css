@@ -1621,12 +1621,33 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-convergence-facts dt { font-size: 11px; color: var(--text-muted); }
 .public-convergence-facts dd { margin: 5px 0 0; font: 600 14px var(--font-mono); overflow-wrap: anywhere; }
 .public-convergence-facts p { margin: 4px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-muted); }
-.public-convergence-guide { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
-.public-convergence-guide > summary { cursor: pointer; color: var(--text-secondary); }
-.public-convergence-guide > summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
-.public-convergence-guide p { margin: 10px 0 0; max-width: 80ch; }
-.public-convergence-guide ul { margin: 8px 0 0; padding-left: 18px; max-width: 80ch; }
-.public-convergence-guide strong { color: var(--text-primary); }
+.public-convergence-loop { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 26px; margin: 16px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--text-secondary); }
+.public-convergence-loop li { position: relative; padding: 4px 10px; border: 1px solid var(--border-subtle); border-radius: 20px; }
+.public-convergence-loop li:not(:last-child)::after { content: "→"; position: absolute; right: -19px; color: var(--text-muted); }
+.public-convergence-chart { margin: 12px 0 0; }
+.public-convergence-chart figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font-size: 11px; color: var(--text-muted); }
+.public-convergence-chart-legend { display: inline-flex; flex-wrap: wrap; gap: 14px; }
+.public-convergence-chart-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.public-convergence-chart > svg { display: block; width: 100%; height: auto; margin-top: 6px; }
+.public-convergence-chart .chart-label { font-size: 13px; }
+.public-convergence-limit { stroke: var(--text-muted); stroke-width: 1; }
+.public-convergence-review-line { stroke: var(--warning); stroke-width: 1; stroke-dasharray: 4 4; opacity: .8; }
+.public-convergence-review-label { fill: var(--warning); }
+.public-convergence-flag { fill: var(--warning); stroke: var(--bg-surface-1); stroke-width: 1.5; }
+.public-convergence-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 11px; color: var(--text-muted); }
+.public-convergence-key strong { margin-right: 4px; font-weight: 500; color: var(--text-secondary); }
+.public-convergence-key-note { margin-left: auto; }
+.public-convergence-mark { display: inline-block; width: 1.2em; font-weight: 600; text-align: center; }
+.public-convergence-mark.is-ok { color: var(--success); }
+.public-convergence-mark.is-warning { color: var(--warning); }
+.public-convergence-positions { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+.public-convergence-positions-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.public-convergence-positions-head p { margin: 0; font-size: 13px; color: var(--text-primary); }
+.public-convergence-positions-head p.is-ok > .public-convergence-mark { color: var(--success); }
+.public-convergence-positions-head p.is-warning > .public-convergence-mark { color: var(--warning); }
+.public-convergence-toggle { padding: 5px 10px; border: 1px solid var(--border-subtle); border-radius: 6px; background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; }
+.public-convergence-toggle:hover { color: var(--text-primary); border-color: var(--text-muted); }
+.public-convergence-toggle:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .public-convergence-status { padding: 4px 9px; border: 1px solid var(--border-subtle); border-radius: 20px; font-size: 11px; color: var(--text-muted); }
 .public-convergence-status.is-ok { color: var(--success); }
 .public-convergence-status.is-warning, .public-convergence-warnings, .public-convergence-table-scroll .is-warning { color: var(--warning); }
@@ -1642,7 +1663,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-convergence-details > summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
 .public-convergence-note { color: var(--text-muted); font-size: 11px; line-height: 1.6; }
 .public-convergence-table-scroll { overflow: auto; max-height: 380px; margin-top: 14px; }
-.public-convergence-table-scroll table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 11px; }
+.public-convergence-table-scroll table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
 .public-convergence-table-scroll th, .public-convergence-table-scroll td { padding: 8px; border-bottom: 1px solid var(--border-subtle); text-align: left; font-weight: 400; }
 .public-convergence-table-scroll thead th { position: sticky; top: 0; background: var(--bg-surface-1); color: var(--text-muted); }
 .public-operating-point { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }

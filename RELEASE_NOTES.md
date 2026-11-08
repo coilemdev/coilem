@@ -81,9 +81,10 @@
   waveform smaller than one unit into the top of the plot. Small readings show
   in mN·m or mV, axis labels use round steps, and nothing reads −0.00.
 - **Diagnostics.** Solver convergence moves to a Diagnostics section at the end
-  of Results. It leads with a plain verdict, the worst remaining error, the
-  iterations used and the mesh, explains what to look for, and keeps the full
-  report under Technical details.
+  of Results. It leads with a plain verdict and four facts, charts the share
+  of the iteration limit each rotor position used, and lists only the angles
+  that need a look, with both sweeps side by side. Solver settings stay under
+  Technical details; every position's record stays in the CSV.
 - **Limits.** Outer rotors are SPM only, and two-layer windings must be tooth
   coils. Elmer, the fixed-mesh
   lane, the dimension overlay and the solved view's air-gap ring are not

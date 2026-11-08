@@ -184,20 +184,27 @@ print(json.dumps(r))
     const section = document.querySelector('.public-diagnostics');
     return Boolean(section && tabs.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING);
   })).toBe(true);
-  // A plain verdict and facts first; the report's own rows under Technical details.
+  // A plain verdict and facts, the loop, a chart, the positions to check, then technical details.
   await expect(card.getByText('Needs review', { exact: true })).toBeVisible();
-  await expect(card.getByText(/^1 of 8 rotor positions need a look: 1 used 80% or more of the iteration limit\./)).toBeVisible();
-  await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^8 of 8 · 1 reused$/ })).toBeVisible();
-  await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^24 of 100 allowed$/ })).toBeVisible();
-  await card.getByText('What this checks and what to look for', { exact: true }).click();
-  await expect(card.getByText(/Convergence is not mesh accuracy\./)).toBeVisible();
-  await card.getByText('Technical details: limits and every position', { exact: true }).click();
+  await expect(card.getByText(/^1 of 8 rotor positions need a look: 1 used 80% or more of the iteration limit\. Check the waveforms at those angles\.$/)).toBeVisible();
+  await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^8 of 8$/ })).toHaveCount(2);
+  await expect(card.locator('.public-convergence-facts dd').filter({ hasText: /^24 of 100$/ })).toBeVisible();
+  await expect(card.getByRole('list', { name: 'How each position is solved' })).toContainText('Repeat until the change is under the allowed error');
+  await expect(card.getByRole('img', { name: /^Share of the iteration limit used at each rotor position, at most 99%\./ })).toBeVisible();
+  await expect(card.getByRole('list', { name: 'Position status' })).toContainText('Not checked here: mesh accuracy');
+  // Only the flagged angle is listed until the user asks for every angle.
+  await expect(card.getByText('1 angle needs a look', { exact: true })).toBeVisible();
+  const positions = card.getByRole('table', { name: 'Iterations at each rotor position' });
+  await expect(positions.locator('tbody tr')).toHaveCount(1);
+  await expect(positions.locator('tbody tr').first()).toContainText('60°');
+  await expect(positions.getByRole('cell', { name: '99 · reused · Slow' })).toBeVisible();
+  await card.getByRole('button', { name: 'Show all 4 angles', exact: true }).click();
+  await expect(positions.locator('tbody tr')).toHaveCount(4);
+  await card.getByText('Technical details: solver settings and limits', { exact: true }).click();
   await expect(card.getByText('24 / 8', { exact: true })).toBeVisible();
   await expect(card.locator('dd').filter({ hasText: /^0\.02$/ })).toBeVisible();
   await expect(card.locator('dd').filter({ hasText: /^0\.003$/ })).toBeVisible();
-  await expect(card.getByRole('table', { name: 'Per-position solver convergence' })).toBeVisible();
-  await expect(card.getByText('Reused · Review', { exact: true })).toBeVisible();
-  await expect(card.getByText('0.05', { exact: true })).toBeVisible();
+  await expect(card.getByText("Every position's full record is in the CSV export.", { exact: true })).toBeVisible();
   const screenshot = info.outputPath('solver-convergence.png');
   await card.screenshot({ path: screenshot });
   await info.attach('solver-convergence', { path: screenshot, contentType: 'image/png' });
