@@ -60,6 +60,10 @@ PACKAGE_DATA_FILES = (
 BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.6/benchmark_spec.json"
 BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol16-reviewed-20261103"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
+PHASE_F_SUITE_FILE = "benchmarks/abcd-v1.8/benchmark_spec.json"
+PHASE_F_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/phase-f-reviewed-20261108"
+PHASE_F_RECORD_FILE = "benchmarks/records/phase-f/windows-x86_64.json"
+BENCHMARK_COLLECTION_FILE = "benchmarks/public-benchmark-collection.json"
 
 
 def package_resource(*parts: str) -> Traversable:
@@ -115,6 +119,123 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
     files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle["records"].values())
     files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle.get("review_artifacts", []))
     files.update(path.relative_to(root).as_posix() for path in (root / BENCHMARK_RECORDS_DIR).glob("*.json"))
+    files.update(phase_f_data_files(root))
+    files.update(collection_data_files(root))
+    return tuple(sorted(files))
+
+
+def collection_data_files(root: Path) -> tuple[str, ...]:
+    """All data needed by the composed public command, including experimental E."""
+    root = root.resolve()
+    if not (root / BENCHMARK_COLLECTION_FILE).is_file():
+        return ()
+    files, scanned = {BENCHMARK_COLLECTION_FILE}, set()
+
+    def contained(relative):
+        if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
+            raise ValueError("Collection data paths must be repository-relative")
+        path = (root / relative).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError("Collection data path escapes its root")
+        return path
+
+    def load(relative):
+        path = contained(relative)
+        files.add(path.relative_to(root).as_posix())
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def collect_evidence(value, base):
+        if isinstance(value, dict):
+            if isinstance(value.get("file"), str) and isinstance(value.get("sha256"), str):
+                name = value["file"]
+                relative = name if name.startswith("benchmarks/") else base + "/" + name
+                path = contained(relative)
+                raw = path.read_bytes()
+                if hashlib.sha256(raw).hexdigest() != value["sha256"]:
+                    raise ValueError("Collection packaged evidence changed: " + relative)
+                files.add(path.relative_to(root).as_posix())
+                if path.suffix == ".json" and path not in scanned:
+                    scanned.add(path)
+                    collect_evidence(json.loads(raw), path.parent.relative_to(root).as_posix())
+            for child in value.values():
+                collect_evidence(child, base)
+        elif isinstance(value, list):
+            for child in value:
+                collect_evidence(child, base)
+
+    descriptor = load(BENCHMARK_COLLECTION_FILE)
+    for component in descriptor["components"]:
+        suite_path = component["suite"]["file"]
+        spec = load(suite_path)
+        files.add(spec["golden"])
+        for case in spec["cases"]:
+            files.update(job["fixture"] for job in case["jobs"])
+            if case.get("protocol"):
+                files.add(case["protocol"])
+        directory = component["reference_bundle"]["directory"]
+        collect_evidence(load(directory + "/manifest.json"), directory)
+        for entry in component["records"].values():
+            record = load(entry["file"])
+            source = contained(record["source"])
+            if not source.is_dir():
+                raise FileNotFoundError("Collection platform-record report is missing")
+            files.update(path.relative_to(root).as_posix() for path in source.rglob("*.json") if path.is_file())
+    for relative in files:
+        if not contained(relative).is_file():
+            raise FileNotFoundError("Collection runtime data is missing: " + relative)
+    return tuple(sorted(files))
+
+
+def phase_f_data_files(root: Path) -> tuple[str, ...]:
+    """Ship the separate Windows F basis without replacing the A-D defaults."""
+    root = root.resolve()
+    if not (root / PHASE_F_RECORD_FILE).is_file():
+        return ()
+
+    def contained(relative):
+        if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
+            raise ValueError("Phase F data paths must be repository-relative")
+        path = (root / relative).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError("Phase F data path escapes the data root")
+        return path
+
+    def load(relative):
+        return json.loads(contained(relative).read_text(encoding="utf-8"))
+
+    record = load(PHASE_F_RECORD_FILE)
+    spec = load(PHASE_F_SUITE_FILE)
+    bundle = load(PHASE_F_REFERENCE_BUNDLE_DIR + "/manifest.json")
+    files = {PHASE_F_RECORD_FILE, PHASE_F_SUITE_FILE, PHASE_F_REFERENCE_BUNDLE_DIR + "/manifest.json", spec["golden"]}
+    files.update(job["fixture"] for case in spec["cases"] for job in case["jobs"])
+    files.update(PHASE_F_REFERENCE_BUNDLE_DIR + "/" + entry["file"] for entry in bundle["records"].values())
+    files.add(PHASE_F_REFERENCE_BUNDLE_DIR + "/" + bundle["review"]["file"])
+    files.update(PHASE_F_REFERENCE_BUNDLE_DIR + "/" + entry["file"] for entry in bundle.get("review_artifacts", []))
+
+    def evidence_files(value):
+        if isinstance(value, dict):
+            if isinstance(value.get("file"), str) and isinstance(value.get("sha256"), str):
+                prefix = PHASE_F_REFERENCE_BUNDLE_DIR + "/"
+                path = contained(prefix + value["file"])
+                if not path.is_relative_to(contained(PHASE_F_REFERENCE_BUNDLE_DIR)):
+                    raise ValueError("Phase F evidence path escapes its bundle")
+                files.add(path.relative_to(root).as_posix())
+            for child in value.values():
+                evidence_files(child)
+        elif isinstance(value, list):
+            for child in value:
+                evidence_files(child)
+
+    evidence_files(bundle)
+    evidence_files(load(PHASE_F_REFERENCE_BUNDLE_DIR + "/" + bundle["review"]["file"]))
+    source = contained(record["source"])
+    packet = [path for path in source.rglob("*.json") if path.is_file()]
+    if not source.is_dir() or not packet:
+        raise FileNotFoundError("The Phase F measured-results packet is missing")
+    files.update(path.relative_to(root).as_posix() for path in packet)
+    for relative in files:
+        if not contained(relative).is_file():
+            raise FileNotFoundError("Required Phase F runtime data is missing: " + relative)
     return tuple(sorted(files))
 
 

@@ -1,0 +1,2729 @@
+{
+  "schema": "coilem.benchmark_share/v1",
+  "coilem": {
+    "version": "0.5.1",
+    "installation": "source",
+    "commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+    "modified": false
+  },
+  "platform": {
+    "key": "windows-x86_64",
+    "system": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.13.9",
+    "dependencies": {
+      "gmsh": "4.15.2",
+      "meshio": "5.3.5",
+      "numpy": "2.4.6",
+      "pydantic": "2.13.4"
+    }
+  },
+  "run": {
+    "status": "COMPLETE",
+    "outcome": "PASS_WITH_UNSUPPORTED",
+    "counts": {
+      "PASS": 46,
+      "UNSUPPORTED": 1
+    },
+    "selection": {
+      "phases": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "quick": false
+    },
+    "started_at": "2026-11-07T22:53:12.504724+00:00",
+    "completed_at": "2026-11-08T00:43:51.567787+00:00",
+    "elapsed_s": 6639.063063,
+    "harness_version": "1.10.0",
+    "protocol_version": "1.6.0",
+    "suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+    "reference_bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
+    "source_sha256": "3145e11c95cabfa674cad57602a6cdee2135234c8def732c602ff83fe2b91ec4",
+    "binary_sha256": "e7699fa202f886892ffa67eefdf2b820ff499577578c947ae3fefd8371029876"
+  },
+  "record_match": {
+    "status": "MATCH",
+    "platform": "windows-x86_64",
+    "record": {
+      "platform": "windows-x86_64",
+      "source": "benchmarks/windows-v055-abcd-20261108/report",
+      "measured_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "environment": {
+        "platform": "Windows-11-10.0.26200-SP0",
+        "machine": "AMD64",
+        "python": "3.13.9",
+        "dependencies": {
+          "gmsh": "4.15.2",
+          "meshio": "5.3.5",
+          "numpy": "2.4.6",
+          "pydantic": "2.13.4"
+        }
+      }
+    },
+    "cross_platform": false,
+    "physics": {
+      "status": "MATCH",
+      "files": 69,
+      "differs": [],
+      "unverified": []
+    },
+    "matched": 47,
+    "compared": 47
+  },
+  "match_policy": "verdicts and gate statuses identical; mean torque within 0.5% (at least 0.001 N·m), back-EMF fundamental within 0.05% (at least 0.001 V), back-EMF peak within 1.5% (at least 0.001 V), cogging peak-to-peak within 0.5% (at least 0.0001 N·m), cogging first harmonic within 0.5% (at least 0.0001 N·m)",
+  "cases": [
+    {
+      "id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.4774745769412223,
+        "back_emf_fundamental_V": 4.986622752106025,
+        "back_emf_peak_V": 6.678821421709572
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.4774745769412223,
+        "reference": 0.47707813670238686,
+        "signed_delta": 0.0003964402388354493,
+        "abs_delta": 0.0003964402388354493,
+        "relative_delta_pct": 0.0830975490882238,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.986622752106025,
+            "record": 4.986622752106025,
+            "tolerance": 0.0024933113760530127,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.678821421709572,
+            "record": 6.678821421709572,
+            "tolerance": 0.10018232132564359,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.4774745769412223,
+            "record": 0.4774745769412223,
+            "tolerance": 0.0023873728847061118,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.7160472005403289,
+        "back_emf_fundamental_V": 4.986622752106025,
+        "back_emf_peak_V": 6.678821421709572
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.7160472005403289,
+        "reference": 0.7160095503741394,
+        "signed_delta": 3.7650166189506784e-05,
+        "abs_delta": 3.7650166189506784e-05,
+        "relative_delta_pct": 0.005258332960759154,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.986622752106025,
+            "record": 4.986622752106025,
+            "tolerance": 0.0024933113760530127,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.678821421709572,
+            "record": 6.678821421709572,
+            "tolerance": 0.10018232132564359,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.7160472005403289,
+            "record": 0.7160472005403289,
+            "tolerance": 0.0035802360027016446,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.5817731168900918,
+        "back_emf_fundamental_V": 6.0794581828577146,
+        "back_emf_peak_V": 8.687547338679403
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.5817731168900918,
+        "reference": 0.5850121670208285,
+        "signed_delta": -0.003239050130736665,
+        "abs_delta": 0.003239050130736665,
+        "relative_delta_pct": 0.5536722675754782,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 6.0794581828577146,
+            "record": 6.0794581828577146,
+            "tolerance": 0.0030397290914288572,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 8.687547338679403,
+            "record": 8.687547338679403,
+            "tolerance": 0.13031321008019103,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.5817731168900918,
+            "record": 0.5817731168900918,
+            "tolerance": 0.002908865584450459,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 9.843871784426006e-06,
+        "back_emf_fundamental_V": 4.986622752106025,
+        "back_emf_peak_V": 6.678821421709572
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 9.843871784426006e-06,
+        "reference": -0.0006416471211330068,
+        "signed_delta": 0.0006514909929174329,
+        "abs_delta": 0.0006514909929174329,
+        "relative_delta_pct": null,
+        "observed_variation_abs": null,
+        "relative_meaningful": false,
+        "reference_near_zero": true,
+        "opposite_signs": true,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.986622752106025,
+            "record": 4.986622752106025,
+            "tolerance": 0.0024933113760530127,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.678821421709572,
+            "record": 6.678821421709572,
+            "tolerance": 0.10018232132564359,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 9.843871784426006e-06,
+            "record": 9.843871784426006e-06,
+            "tolerance": 0.001,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.23877171774923556,
+        "back_emf_fundamental_V": 4.986622752106025,
+        "back_emf_peak_V": 6.678821421709572
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.23877171774923556,
+        "reference": 0.23802840224855903,
+        "signed_delta": 0.0007433155006765224,
+        "abs_delta": 0.0007433155006765224,
+        "relative_delta_pct": 0.31228017062447944,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 4.986622752106025,
+            "record": 4.986622752106025,
+            "tolerance": 0.0024933113760530127,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 6.678821421709572,
+            "record": 6.678821421709572,
+            "tolerance": 0.10018232132564359,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.23877171774923556,
+            "record": 0.23877171774923556,
+            "tolerance": 0.0011938585887461778,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": -0.00023532000380391922,
+        "back_emf_fundamental_V": 6.0794581828577146,
+        "back_emf_peak_V": 8.687547338679403
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": -0.00023532000380391922,
+        "reference": 0.0017798704484237194,
+        "signed_delta": -0.0020151904522276386,
+        "abs_delta": 0.0020151904522276386,
+        "relative_delta_pct": null,
+        "observed_variation_abs": null,
+        "relative_meaningful": false,
+        "reference_near_zero": true,
+        "opposite_signs": true,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 6.0794581828577146,
+            "record": 6.0794581828577146,
+            "tolerance": 0.0030397290914288572,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 8.687547338679403,
+            "record": 8.687547338679403,
+            "tolerance": 0.13031321008019103,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": -0.00023532000380391922,
+            "record": -0.00023532000380391922,
+            "tolerance": 0.001,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.208500629166024,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.208500629166024,
+        "reference": 2.213722975816425,
+        "signed_delta": -0.005222346650401111,
+        "abs_delta": 0.005222346650401111,
+        "relative_delta_pct": 0.23590786685832266,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.208500629166024,
+            "record": 2.208500629166024,
+            "tolerance": 0.011042503145830121,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 3.3048242253049267,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 3.3048242253049267,
+        "reference": 3.3149907494133513,
+        "signed_delta": -0.010166524108424557,
+        "abs_delta": 0.010166524108424557,
+        "relative_delta_pct": 0.30668333268271447,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 3.3048242253049267,
+            "record": 3.3048242253049267,
+            "tolerance": 0.016524121126524634,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.342153530731049,
+        "back_emf_fundamental_V": 17.350044022966323,
+        "back_emf_peak_V": 25.20189807182737
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.342153530731049,
+        "reference": 2.357065017182515,
+        "signed_delta": -0.014911486451465894,
+        "abs_delta": 0.014911486451465894,
+        "relative_delta_pct": 0.6326294074522447,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 17.350044022966323,
+            "record": 17.350044022966323,
+            "tolerance": 0.008675022011483161,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 25.20189807182737,
+            "record": 25.20189807182737,
+            "tolerance": 0.3780284710774105,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.342153530731049,
+            "record": 2.342153530731049,
+            "tolerance": 0.011710767653655245,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 16.588842291643378,
+        "back_emf_fundamental_V": 39.91718920960732,
+        "back_emf_peak_V": 63.08307241817651
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 16.588842291643378,
+        "reference": 16.67111177934336,
+        "signed_delta": -0.08226948769998188,
+        "abs_delta": 0.08226948769998188,
+        "relative_delta_pct": 0.49348531033136833,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 39.91718920960732,
+            "record": 39.91718920960732,
+            "tolerance": 0.01995859460480366,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 63.08307241817651,
+            "record": 63.08307241817651,
+            "tolerance": 0.9462460862726476,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 16.588842291643378,
+            "record": 16.588842291643378,
+            "tolerance": 0.08294421145821688,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_example_shoed",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 11.183532372035264,
+        "back_emf_fundamental_V": 31.093564085632874,
+        "back_emf_peak_V": 45.90347743154477
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 11.183532372035264,
+        "reference": 11.140423976492054,
+        "signed_delta": 0.043108395543210776,
+        "abs_delta": 0.043108395543210776,
+        "relative_delta_pct": 0.38695471226387684,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 31.093564085632874,
+            "record": 31.093564085632874,
+            "tolerance": 0.015546782042816436,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 45.90347743154477,
+            "record": 45.90347743154477,
+            "tolerance": 0.6885521614731716,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 11.183532372035264,
+            "record": 11.183532372035264,
+            "tolerance": 0.055917661860176326,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__magnet_60C",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.111915058380246,
+        "back_emf_fundamental_V": 15.5609140416964,
+        "back_emf_peak_V": 22.633766074808626
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.111915058380246,
+        "reference": 2.116335272348215,
+        "signed_delta": -0.004420213967968767,
+        "abs_delta": 0.004420213967968767,
+        "relative_delta_pct": 0.20886170663612502,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 15.5609140416964,
+            "record": 15.5609140416964,
+            "tolerance": 0.0077804570208482,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 22.633766074808626,
+            "record": 22.633766074808626,
+            "tolerance": 0.3395064911221294,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.111915058380246,
+            "record": 2.111915058380246,
+            "tolerance": 0.01055957529190123,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__magnet_100C",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.0117603743242447,
+        "back_emf_fundamental_V": 14.815642897700169,
+        "back_emf_peak_V": 21.55972706352459
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.0117603743242447,
+        "reference": 2.015312224000164,
+        "signed_delta": -0.003551849675919261,
+        "abs_delta": 0.003551849675919261,
+        "relative_delta_pct": 0.17624314652690617,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 14.815642897700169,
+            "record": 14.815642897700169,
+            "tolerance": 0.007407821448850085,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 21.55972706352459,
+            "record": 21.55972706352459,
+            "tolerance": 0.3233959059528688,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.0117603743242447,
+            "record": 2.0117603743242447,
+            "tolerance": 0.010058801871621224,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g0",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.208500629166024,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.208500629166024,
+        "reference": 2.204925809101148,
+        "signed_delta": 0.003574820064875972,
+        "abs_delta": 0.003574820064875972,
+        "relative_delta_pct": 0.16212881404537008,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.208500629166024,
+            "record": 2.208500629166024,
+            "tolerance": 0.011042503145830121,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g30",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 1.9208084752943593,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 1.9208084752943593,
+        "reference": 1.9161773921605623,
+        "signed_delta": 0.004631083133797009,
+        "abs_delta": 0.004631083133797009,
+        "relative_delta_pct": 0.24168342413096153,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 1.9208084752943593,
+            "record": 1.9208084752943593,
+            "tolerance": 0.009604042376471797,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g60",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 1.112607382486669,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 1.112607382486669,
+        "reference": 1.107344113303869,
+        "signed_delta": 0.005263269182799846,
+        "abs_delta": 0.005263269182799846,
+        "relative_delta_pct": 0.47530565427366284,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 1.112607382486669,
+            "record": 1.112607382486669,
+            "tolerance": 0.0055630369124333445,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g0",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 4.393631592150807,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 4.393631592150807,
+        "reference": 4.391400725123465,
+        "signed_delta": 0.002230867027341432,
+        "abs_delta": 0.002230867027341432,
+        "relative_delta_pct": 0.05080080746397178,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 4.393631592150807,
+            "record": 4.393631592150807,
+            "tolerance": 0.021968157960754034,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g30",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 3.8326544353271355,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 3.8326544353271355,
+        "reference": 3.8278108332970775,
+        "signed_delta": 0.0048436020300579585,
+        "abs_delta": 0.0048436020300579585,
+        "relative_delta_pct": 0.12653713156159108,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 3.8326544353271355,
+            "record": 3.8326544353271355,
+            "tolerance": 0.019163272176635677,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g60",
+      "phase": "A",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.2154387563666567,
+        "back_emf_fundamental_V": 16.280180118992227,
+        "back_emf_peak_V": 23.652471201617185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.2154387563666567,
+        "reference": 2.2096259839523515,
+        "signed_delta": 0.005812772414305112,
+        "abs_delta": 0.005812772414305112,
+        "relative_delta_pct": 0.26306589696722443,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 16.280180118992227,
+            "record": 16.280180118992227,
+            "tolerance": 0.008140090059496114,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 23.652471201617185,
+            "record": 23.652471201617185,
+            "tolerance": 0.35478706802425775,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.2154387563666567,
+            "record": 2.2154387563666567,
+            "tolerance": 0.011077193781833283,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 4.807063512797066,
+        "back_emf_fundamental_V": 23.60314504814901,
+        "back_emf_peak_V": 38.74287487788408
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 4.807063512797066,
+        "reference": 4.802681722828231,
+        "signed_delta": 0.0043817899688347595,
+        "abs_delta": 0.0043817899688347595,
+        "relative_delta_pct": 0.09123631799307297,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 23.60314504814901,
+            "record": 23.60314504814901,
+            "tolerance": 0.011801572524074506,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 38.74287487788408,
+            "record": 38.74287487788408,
+            "tolerance": 0.5811431231682611,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 4.807063512797066,
+            "record": 4.807063512797066,
+            "tolerance": 0.024035317563985328,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 19.39733626709846,
+        "back_emf_fundamental_V": 28.885581248359955,
+        "back_emf_peak_V": 42.19594876271312
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 19.39733626709846,
+        "reference": 19.525404740094906,
+        "signed_delta": -0.1280684729964463,
+        "abs_delta": 0.1280684729964463,
+        "relative_delta_pct": 0.6559068797865227,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 28.885581248359955,
+            "record": 28.885581248359955,
+            "tolerance": 0.014442790624179977,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 42.19594876271312,
+            "record": 42.19594876271312,
+            "tolerance": 0.6329392314406969,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 19.39733626709846,
+            "record": 19.39733626709846,
+            "tolerance": 0.0969866813354923,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.021415527613176336,
+        "back_emf_fundamental_V": 0.45007886745153386,
+        "back_emf_peak_V": 0.635080659953603
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.021415527613176336,
+        "reference": 0.021545078265510827,
+        "signed_delta": -0.0001295506523344911,
+        "abs_delta": 0.0001295506523344911,
+        "relative_delta_pct": 0.6013004489376799,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 0.45007886745153386,
+            "record": 0.45007886745153386,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 0.635080659953603,
+            "record": 0.635080659953603,
+            "tolerance": 0.009526209899304043,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.021415527613176336,
+            "record": 0.021415527613176336,
+            "tolerance": 0.001,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.155195354141338,
+        "back_emf_fundamental_V": 7.030945669195054,
+        "back_emf_peak_V": 10.488233363667941
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.155195354141338,
+        "reference": 2.154819961289557,
+        "signed_delta": 0.000375392851780898,
+        "abs_delta": 0.000375392851780898,
+        "relative_delta_pct": 0.0174210773301099,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.030945669195054,
+            "record": 7.030945669195054,
+            "tolerance": 0.003515472834597527,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 10.488233363667941,
+            "record": 10.488233363667941,
+            "tolerance": 0.1573235004550191,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.155195354141338,
+            "record": 2.155195354141338,
+            "tolerance": 0.01077597677070669,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.5674302906005693,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.5674302906005693,
+        "reference": 2.575709705414214,
+        "signed_delta": -0.008279414813644692,
+        "abs_delta": 0.008279414813644692,
+        "relative_delta_pct": 0.32144207851688916,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.5674302906005693,
+            "record": 2.5674302906005693,
+            "tolerance": 0.012837151453002847,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 3.170678186632334,
+        "back_emf_fundamental_V": 9.55069432130816,
+        "back_emf_peak_V": 14.103525972816392
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 3.170678186632334,
+        "reference": 3.1765066338102406,
+        "signed_delta": -0.005828447177906426,
+        "abs_delta": 0.005828447177906426,
+        "relative_delta_pct": 0.18348606975566634,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 9.55069432130816,
+            "record": 9.55069432130816,
+            "tolerance": 0.00477534716065408,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 14.103525972816392,
+            "record": 14.103525972816392,
+            "tolerance": 0.21155288959224589,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 3.170678186632334,
+            "record": 3.170678186632334,
+            "tolerance": 0.01585339093316167,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.8969422740363934,
+        "back_emf_fundamental_V": 2.354645596231227,
+        "back_emf_peak_V": 3.570012904702707
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.8969422740363934,
+        "reference": 0.838088155810624,
+        "signed_delta": 0.05885411822576936,
+        "abs_delta": 0.05885411822576936,
+        "relative_delta_pct": 7.02242572189126,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.354645596231227,
+            "record": 2.354645596231227,
+            "tolerance": 0.0011773227981156137,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 3.570012904702707,
+            "record": 3.570012904702707,
+            "tolerance": 0.053550193570540604,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.8969422740363934,
+            "record": 0.8969422740363934,
+            "tolerance": 0.004484711370181967,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.6571472115443525,
+        "back_emf_fundamental_V": 1.5588307515242763,
+        "back_emf_peak_V": 2.2303752596346156
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.6571472115443525,
+        "reference": 0.6253589921930292,
+        "signed_delta": 0.031788219351323366,
+        "abs_delta": 0.031788219351323366,
+        "relative_delta_pct": 5.083195372284871,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 1.5588307515242763,
+            "record": 1.5588307515242763,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 2.2303752596346156,
+            "record": 2.2303752596346156,
+            "tolerance": 0.03345562889451923,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.6571472115443525,
+            "record": 0.6571472115443525,
+            "tolerance": 0.0032857360577217627,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.8930743514442151,
+        "back_emf_fundamental_V": 2.283919494783282,
+        "back_emf_peak_V": 3.764882170175371
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.8930743514442151,
+        "reference": 0.8554171664861668,
+        "signed_delta": 0.03765718495804826,
+        "abs_delta": 0.03765718495804826,
+        "relative_delta_pct": 4.402201222210008,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.283919494783282,
+            "record": 2.283919494783282,
+            "tolerance": 0.001141959747391641,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 3.764882170175371,
+            "record": 3.764882170175371,
+            "tolerance": 0.056473232552630565,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.8930743514442151,
+            "record": 0.8930743514442151,
+            "tolerance": 0.004465371757221076,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 1.1113829514356401,
+        "back_emf_fundamental_V": 2.350591665806868,
+        "back_emf_peak_V": 3.5894794688026694
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 1.1113829514356401,
+        "reference": 1.0576308555332692,
+        "signed_delta": 0.053752095902370955,
+        "abs_delta": 0.053752095902370955,
+        "relative_delta_pct": 5.082311623299658,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.350591665806868,
+            "record": 2.350591665806868,
+            "tolerance": 0.001175295832903434,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 3.5894794688026694,
+            "record": 3.5894794688026694,
+            "tolerance": 0.05384219203204004,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 1.1113829514356401,
+            "record": 1.1113829514356401,
+            "tolerance": 0.005556914757178201,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.6861872526633546,
+        "back_emf_fundamental_V": 7.440944583440702,
+        "back_emf_peak_V": 12.137787714993486
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.6861872526633546,
+        "reference": 2.6186325941350015,
+        "signed_delta": 0.06755465852835307,
+        "abs_delta": 0.06755465852835307,
+        "relative_delta_pct": 2.579768489846818,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.440944583440702,
+            "record": 7.440944583440702,
+            "tolerance": 0.0037204722917203513,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 12.137787714993486,
+            "record": 12.137787714993486,
+            "tolerance": 0.1820668157249023,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.6861872526633546,
+            "record": 2.6861872526633546,
+            "tolerance": 0.013430936263316774,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.7859892185821379,
+        "back_emf_fundamental_V": 2.046636274161942,
+        "back_emf_peak_V": 2.9894563654270185
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 0.7859892185821379,
+        "reference": 0.7373670063749093,
+        "signed_delta": 0.04862221220722862,
+        "abs_delta": 0.04862221220722862,
+        "relative_delta_pct": 6.594031437108672,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 2.046636274161942,
+            "record": 2.046636274161942,
+            "tolerance": 0.001023318137080971,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 2.9894563654270185,
+            "record": 2.9894563654270185,
+            "tolerance": 0.044841845481405275,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 0.7859892185821379,
+            "record": 0.7859892185821379,
+            "tolerance": 0.00392994609291069,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.3942156097046716,
+        "back_emf_fundamental_V": 7.135038601562108,
+        "back_emf_peak_V": 10.445225241206893
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.3942156097046716,
+        "reference": 2.402127173264972,
+        "signed_delta": -0.007911563560300205,
+        "abs_delta": 0.007911563560300205,
+        "relative_delta_pct": 0.3293565656453903,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.135038601562108,
+            "record": 7.135038601562108,
+            "tolerance": 0.003567519300781054,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 10.445225241206893,
+            "record": 10.445225241206893,
+            "tolerance": 0.15667837861810338,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.3942156097046716,
+            "record": 2.3942156097046716,
+            "tolerance": 0.011971078048523359,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.221746431042538,
+        "back_emf_fundamental_V": 6.615193985693765,
+        "back_emf_peak_V": 9.684900266322664
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.221746431042538,
+        "reference": 2.229244042258824,
+        "signed_delta": -0.007497611216285893,
+        "abs_delta": 0.007497611216285893,
+        "relative_delta_pct": 0.33632976355019417,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 6.615193985693765,
+            "record": 6.615193985693765,
+            "tolerance": 0.0033075969928468827,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 9.684900266322664,
+            "record": 9.684900266322664,
+            "tolerance": 0.14527350399483996,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.221746431042538,
+            "record": 2.221746431042538,
+            "tolerance": 0.011108732155212691,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.5674302906005693,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.5674302906005693,
+        "reference": 2.570788442248538,
+        "signed_delta": -0.003358151647968821,
+        "abs_delta": 0.003358151647968821,
+        "relative_delta_pct": 0.13062730455687038,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.5674302906005693,
+            "record": 2.5674302906005693,
+            "tolerance": 0.012837151453002847,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.276310151458617,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.276310151458617,
+        "reference": 2.2786373285443675,
+        "signed_delta": -0.002327177085750698,
+        "abs_delta": 0.002327177085750698,
+        "relative_delta_pct": 0.10213020986702338,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.276310151458617,
+            "record": 2.276310151458617,
+            "tolerance": 0.011381550757293085,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 1.3346758382729431,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 1.3346758382729431,
+        "reference": 1.3353219190534529,
+        "signed_delta": -0.0006460807805097613,
+        "abs_delta": 0.0006460807805097613,
+        "relative_delta_pct": 0.048383896893397636,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 1.3346758382729431,
+            "record": 1.3346758382729431,
+            "tolerance": 0.006673379191364716,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 5.161495991384185,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 5.161495991384185,
+        "reference": 5.1688312873871585,
+        "signed_delta": -0.007335296002973557,
+        "abs_delta": 0.007335296002973557,
+        "relative_delta_pct": 0.14191401489294003,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 5.161495991384185,
+            "record": 5.161495991384185,
+            "tolerance": 0.025807479956920926,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 4.6736752017755725,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 4.6736752017755725,
+        "reference": 4.678414580650623,
+        "signed_delta": -0.004739378875050271,
+        "abs_delta": 0.004739378875050271,
+        "relative_delta_pct": 0.10130309730676262,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 4.6736752017755725,
+            "record": 4.6736752017755725,
+            "tolerance": 0.023368376008877863,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+      "phase": "B",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS",
+        "lambda_d": "PASS",
+        "lambda_q": "PASS",
+        "reference_dq_torque": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 2.791177462334562,
+        "back_emf_fundamental_V": 7.658139593821787,
+        "back_emf_peak_V": 11.210011500983112
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 2.791177462334562,
+        "reference": 2.792860936749003,
+        "signed_delta": -0.0016834744144409441,
+        "abs_delta": 0.0016834744144409441,
+        "relative_delta_pct": 0.06027777438860142,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 7.658139593821787,
+            "record": 7.658139593821787,
+            "tolerance": 0.0038290697969108932,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 11.210011500983112,
+            "record": 11.210011500983112,
+            "tolerance": 0.16815017251474668,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 2.791177462334562,
+            "record": 2.791177462334562,
+            "tolerance": 0.013955887311672811,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "status": "UNSUPPORTED",
+      "gates": {},
+      "values": {},
+      "reason": "The public launch supports flat-buried and V-shape IPM only.",
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {}
+      }
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 4.945766287178629,
+        "back_emf_fundamental_V": 120.0926609952915,
+        "back_emf_peak_V": 166.45509945792037
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 4.945766287178629,
+        "reference": 5.214834188473855,
+        "signed_delta": -0.26906790129522573,
+        "abs_delta": 0.26906790129522573,
+        "relative_delta_pct": 5.159663597549008,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 120.0926609952915,
+            "record": 120.0926609952915,
+            "tolerance": 0.060046330497645746,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 166.45509945792037,
+            "record": 166.45509945792037,
+            "tolerance": 2.4968264918688052,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 4.945766287178629,
+            "record": 4.945766287178629,
+            "tolerance": 0.024728831435893148,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 5.488932167062564,
+        "back_emf_fundamental_V": 120.77583204612735,
+        "back_emf_peak_V": 167.3633768859765
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 5.488932167062564,
+        "reference": 5.662010743893206,
+        "signed_delta": -0.1730785768306422,
+        "abs_delta": 0.1730785768306422,
+        "relative_delta_pct": 3.0568394278890603,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 120.77583204612735,
+            "record": 120.77583204612735,
+            "tolerance": 0.060387916023063676,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 167.3633768859765,
+            "record": 167.3633768859765,
+            "tolerance": 2.5104506532896473,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 5.488932167062564,
+            "record": 5.488932167062564,
+            "tolerance": 0.02744466083531282,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 5.895311030365539,
+        "back_emf_fundamental_V": 112.03081188233499,
+        "back_emf_peak_V": 163.12020755737245
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 5.895311030365539,
+        "reference": 5.993778544282531,
+        "signed_delta": -0.09846751391699193,
+        "abs_delta": 0.09846751391699193,
+        "relative_delta_pct": 1.6428286962807488,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 112.03081188233499,
+            "record": 112.03081188233499,
+            "tolerance": 0.056015405941167495,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 163.12020755737245,
+            "record": 163.12020755737245,
+            "tolerance": 2.4468031133605868,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 5.895311030365539,
+            "record": 5.895311030365539,
+            "tolerance": 0.029476555151827694,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 6.205143763466015,
+        "back_emf_fundamental_V": 115.98285834987114,
+        "back_emf_peak_V": 164.8747584326018
+      },
+      "numerical_resolution": {
+        "unit": "N m",
+        "candidate": 6.205143763466015,
+        "reference": 6.303735218583883,
+        "signed_delta": -0.09859145511786771,
+        "abs_delta": 0.09859145511786771,
+        "relative_delta_pct": 1.564016439447087,
+        "observed_variation_abs": null,
+        "relative_meaningful": true,
+        "reference_near_zero": false,
+        "opposite_signs": false,
+        "noise_sensitivity": "NO_CONTROL_EVIDENCE",
+        "uncertainty_status": "INSUFFICIENT_EVIDENCE",
+        "evidence_sides": []
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "back_emf_fundamental_V": {
+            "value": 115.98285834987114,
+            "record": 115.98285834987114,
+            "tolerance": 0.05799142917493557,
+            "within": true
+          },
+          "back_emf_peak_V": {
+            "value": 164.8747584326018,
+            "record": 164.8747584326018,
+            "tolerance": 2.473121376489027,
+            "within": true
+          },
+          "mean_torque_Nm": {
+            "value": 6.205143763466015,
+            "record": 6.205143763466015,
+            "tolerance": 0.031025718817330076,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "status": "PASS",
+      "gates": {
+        "mean_torque_delta_pct": "PASS",
+        "torque_waveform_nrmse_pct": "PASS",
+        "commutation_transition_delta_samples": "PASS",
+        "power_torque_delta_pct": "PASS",
+        "native_standard_to_fine_mean_torque_delta_pct": "PASS",
+        "native_standard_to_fine_ripple_delta_percentage_points": "PASS",
+        "native_standard_current_properties": "PASS",
+        "native_fine_current_properties": "PASS",
+        "femm_standard_current_properties": "PASS",
+        "analytical_low_current_current_properties": "PASS",
+        "native-standard_golden_current_sequence": "PASS",
+        "native-fine_golden_current_sequence": "PASS",
+        "analytical_golden_current_sequence": "PASS",
+        "femm-standard_golden_current_sequence": "PASS"
+      },
+      "values": {
+        "analytical.mean_torque_Nm": 0.3353221688110956,
+        "native-fine.mean_torque_Nm": 3.3500567468989986,
+        "native-standard.mean_torque_Nm": 3.348750592936017
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "analytical.mean_torque_Nm": {
+            "value": 0.3353221688110956,
+            "record": 0.3353221688110956,
+            "tolerance": 0.001676610844055478,
+            "within": true
+          },
+          "native-fine.mean_torque_Nm": {
+            "value": 3.3500567468989986,
+            "record": 3.3500567468989986,
+            "tolerance": 0.016750283734494994,
+            "within": true
+          },
+          "native-standard.mean_torque_Nm": {
+            "value": 3.348750592936017,
+            "record": 3.348750592936017,
+            "tolerance": 0.016743752964680086,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_4p12s_small",
+      "phase": "D",
+      "status": "PASS",
+      "gates": {
+        "mean_torque_delta_pct": "PASS",
+        "torque_waveform_nrmse_pct": "PASS",
+        "commutation_transition_delta_samples": "PASS",
+        "power_torque_delta_pct": "PASS",
+        "native_standard_to_fine_mean_torque_delta_pct": "PASS",
+        "native_standard_to_fine_ripple_delta_percentage_points": "PASS",
+        "native_standard_current_properties": "PASS",
+        "native_fine_current_properties": "PASS",
+        "femm_standard_current_properties": "PASS",
+        "analytical_low_current_current_properties": "PASS",
+        "native-standard_golden_current_sequence": "PASS",
+        "native-fine_golden_current_sequence": "PASS",
+        "analytical_golden_current_sequence": "PASS",
+        "femm-standard_golden_current_sequence": "PASS"
+      },
+      "values": {
+        "analytical.mean_torque_Nm": 0.05748659740628511,
+        "native-fine.mean_torque_Nm": 0.5744619979308184,
+        "native-standard.mean_torque_Nm": 0.5733808425174238
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "analytical.mean_torque_Nm": {
+            "value": 0.05748659740628511,
+            "record": 0.05748659740628511,
+            "tolerance": 0.001,
+            "within": true
+          },
+          "native-fine.mean_torque_Nm": {
+            "value": 0.5744619979308184,
+            "record": 0.5744619979308184,
+            "tolerance": 0.002872309989654092,
+            "within": true
+          },
+          "native-standard.mean_torque_Nm": {
+            "value": 0.5733808425174238,
+            "record": 0.5733808425174238,
+            "tolerance": 0.0028669042125871193,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "phase": "D",
+      "status": "PASS",
+      "gates": {
+        "mean_torque_delta_pct": "PASS",
+        "torque_waveform_nrmse_pct": "PASS",
+        "commutation_transition_delta_samples": "PASS",
+        "power_torque_delta_pct": "PASS",
+        "native_standard_to_fine_mean_torque_delta_pct": "PASS",
+        "native_standard_to_fine_ripple_delta_percentage_points": "PASS",
+        "native_standard_current_properties": "PASS",
+        "native_fine_current_properties": "PASS",
+        "femm_standard_current_properties": "PASS",
+        "analytical_low_current_current_properties": "PASS",
+        "native-standard_golden_current_sequence": "PASS",
+        "native-fine_golden_current_sequence": "PASS",
+        "analytical_golden_current_sequence": "PASS",
+        "femm-standard_golden_current_sequence": "PASS"
+      },
+      "values": {
+        "analytical.mean_torque_Nm": 1.4572384374585852,
+        "native-fine.mean_torque_Nm": 14.54591430475749,
+        "native-standard.mean_torque_Nm": 14.54711295453471
+      },
+      "record": {
+        "match": true,
+        "differences": [],
+        "values": {
+          "analytical.mean_torque_Nm": {
+            "value": 1.4572384374585852,
+            "record": 1.4572384374585852,
+            "tolerance": 0.007286192187292926,
+            "within": true
+          },
+          "native-fine.mean_torque_Nm": {
+            "value": 14.54591430475749,
+            "record": 14.54591430475749,
+            "tolerance": 0.07272957152378745,
+            "within": true
+          },
+          "native-standard.mean_torque_Nm": {
+            "value": 14.54711295453471,
+            "record": 14.54711295453471,
+            "tolerance": 0.07273556477267355,
+            "within": true
+          }
+        }
+      }
+    }
+  ]
+}

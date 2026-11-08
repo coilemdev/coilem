@@ -1,0 +1,119 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v2",
+  "protocol_version": "1.8.0",
+  "reference_id": "sha256:c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a",
+  "reference_identity_kind": "DATASET_SHA256",
+  "reference_review_scope": "WINDOWS_ONLY_ENGINEERING_PARITY",
+  "validation_status": "REVIEWED_FOR_WINDOWS_ENGINEERING_PARITY",
+  "suite_sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "public_candidate_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+  "source_cohorts": {
+    "original": {
+      "evidence_sha256": "917d96cf5fe606124a23d8ee0c3ed251548a3787d090cd1749cf2be7d2dee670",
+      "description": "Nine normal cases and both air-gap refinement controls share this sealed source cohort."
+    },
+    "hub_bulk_mesh_variant": {
+      "evidence_sha256": "838bf87a94d56c3662329fe182318a36e2a160953266a2082b50b2783f6bd0e1",
+      "base_cohort": "original",
+      "bulk_mesh_mm": 0.5,
+      "description": "The hub retains its separately sealed bulk-mesh variant identity."
+    }
+  },
+  "records": {
+    "spm_outer_14p12s_drone__baseline": {
+      "file": "spm_outer_14p12s_drone__baseline.json",
+      "sha256": "bda25cad5e638c556d222901185df17deacadda3965495b461b8afad7abeb2a4",
+      "input_sha256": "98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796",
+      "source_cohort": "original"
+    },
+    "spm_outer_14p12s_drone__high_current": {
+      "file": "spm_outer_14p12s_drone__high_current.json",
+      "sha256": "65aa3fc4781eb7746224bbc68432a89560c3977e6edb2bbbe5d20df7d326305a",
+      "input_sha256": "da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e",
+      "source_cohort": "original"
+    },
+    "spm_outer_14p12s_drone__tight_airgap": {
+      "file": "spm_outer_14p12s_drone__tight_airgap.json",
+      "sha256": "03bead46a4efff3e55416493b00afe0ae225a7684cf95dd29d02b8cae381c4d1",
+      "input_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0",
+      "source_cohort": "original"
+    },
+    "spm_outer_14p12s_drone__angle30": {
+      "file": "spm_outer_14p12s_drone__angle30.json",
+      "sha256": "ea2ee99860bf744830fc1e701825a351c21fa87f2d6dcb9c81aacab36ef090e8",
+      "input_sha256": "1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f",
+      "source_cohort": "original"
+    },
+    "spm_outer_14p12s_drone_noload__baseline": {
+      "file": "spm_outer_14p12s_drone_noload__baseline.json",
+      "sha256": "74dcafab20be67c97a7122da626f028856c8eab8e52cd9d9e77e61d356d9d06a",
+      "input_sha256": "527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e",
+      "source_cohort": "original"
+    },
+    "spm_outer_12p9s_micro__baseline": {
+      "file": "spm_outer_12p9s_micro__baseline.json",
+      "sha256": "cb17a4dffd589017c2e9d3c235624650bf80377e37e883a7dbfcf046215601f0",
+      "input_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e",
+      "source_cohort": "original"
+    },
+    "spm_outer_12p9s_micro_noload__baseline": {
+      "file": "spm_outer_12p9s_micro_noload__baseline.json",
+      "sha256": "34fa84149a08a19d8f85557ac2dad76738504e16dc1d981d8da68415fb0ad59e",
+      "input_sha256": "33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25",
+      "source_cohort": "original"
+    },
+    "spm_outer_10p12s_single_layer__baseline": {
+      "file": "spm_outer_10p12s_single_layer__baseline.json",
+      "sha256": "1e40acdda142d895364545c6c2a86dad82c8c4db4d1162b29f1d93402bcc5802",
+      "input_sha256": "0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13",
+      "source_cohort": "original"
+    },
+    "spm_outer_28p24s_multirotor__baseline": {
+      "file": "spm_outer_28p24s_multirotor__baseline.json",
+      "sha256": "8a347c71a5a8a47bb85e9666617229058063133ae111583bff1a34b28cc50f7f",
+      "input_sha256": "dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633",
+      "source_cohort": "original"
+    },
+    "spm_outer_30p27s_hub__baseline": {
+      "file": "spm_outer_30p27s_hub__baseline.json",
+      "sha256": "ac2aacdc3c68aca4131f0c2fa791e8cbca61bf9d4ba66f0e2497f1f26c2ad6fb",
+      "input_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5",
+      "source_cohort": "hub_bulk_mesh_variant"
+    }
+  },
+  "mesh_controls": {
+    "spm_outer_14p12s_drone__tight_airgap": {
+      "file": "mesh-controls/spm_outer_14p12s_drone__tight_airgap.json",
+      "sha256": "ba807130f06833b55ac24cdcc1cc7831f9bb3b5089ce1b21262ecdd7b9606838",
+      "input_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0",
+      "source_cohort": "original"
+    },
+    "spm_outer_12p9s_micro__baseline": {
+      "file": "mesh-controls/spm_outer_12p9s_micro__baseline.json",
+      "sha256": "bb131a161bd3f2d04c70abe749cbc8a804a8083ce6924d1cf9fcaaa484ae7197",
+      "input_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e",
+      "source_cohort": "original"
+    }
+  },
+  "single_producer_contract_satisfied": false,
+  "review": {
+    "file": "review.json",
+    "sha256": "045198248e75880b7b64c4574cfe6b3e9251eebcda96aed958dc5e3dd46f58ea"
+  }
+}

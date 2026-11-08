@@ -1,0 +1,705 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Coilem Phase F benchmark</title><style>body{font:15px Arial;max-width:1150px;margin:35px auto;padding:0 24px;color:#182636}table{border-collapse:collapse;width:100%}td,th{padding:10px;border-bottom:1px solid #dce3ed;text-align:left}th{background:#e4eaf2}.PASS{background:#effcf3;color:#16713d}.FAIL,.ERROR{background:#fff0f0;color:#aa2020}.DEFERRED{background:#f0f2f5;color:#526071}.YELLOW,.INCOMPLETE,.UNSUPPORTED,.NOT_COMPARED,.NOT_EVALUATED,.PASS_WITH_UNSUPPORTED{background:#fff8e6;color:#835900}svg{width:49%;min-width:360px}pre{white-space:pre-wrap;overflow-wrap:anywhere}.case{break-before:page}@media print{svg{min-width:0}a{color:inherit}}</style><body><h1>Coilem Phase F benchmark</h1><p class="PASS">Outcome: PASS</p><p>Harness 1.10.0; protocol 1.8.0; Coilem commit 34de0f4ca1604311f15edf6fb49b5a2a1bf27909. Report presentation 1.11.0.</p><p>Orange solid = Coilem. Blue dashed = saved FEMM reference, drawn last so overlaps remain visible. Residual plots show small differences. Reference data is already in public clockwise coordinates.</p><p>Reference mode: FROZEN_REFERENCE; Reference dataset: sha256:c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a (SHA-256 identity, not a Git commit). Review scope: WINDOWS_ONLY_ENGINEERING_PARITY. No FEMM solves were executed in this run.</p><table><tr><th>Phase</th><th>Recorded outcomes</th></tr><tr class="PASS"><td>F – Outrunner</td><td>10 PASS</td></tr></table><p>Phase summary colors: green when all active fixtures pass; yellow for mixed outcomes or incomplete active coverage; red when more than 50% of active fixtures fail. Deferred hardware coverage is grey and outside the active release scope. Raw verdicts, counts and the overall numerical status still include every registered fixture. The legacy ORNL Prius row is distinct from the completed Pyleecan Prius software benchmark.</p><h2>Phase F – Outrunner results</h2><table><tr><th>Fixture</th><th>Outcome</th></tr><tr class="PASS"><td><a href="fixtures/spm_outer_14p12s_drone__baseline__native.json">spm_outer_14p12s_drone__baseline</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_14p12s_drone__high_current__native.json">spm_outer_14p12s_drone__high_current</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_14p12s_drone__tight_airgap__native.json">spm_outer_14p12s_drone__tight_airgap</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_14p12s_drone__angle30__native.json">spm_outer_14p12s_drone__angle30</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_14p12s_drone_noload__baseline__native.json">spm_outer_14p12s_drone_noload__baseline</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_12p9s_micro__baseline__native.json">spm_outer_12p9s_micro__baseline</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_12p9s_micro_noload__baseline__native.json">spm_outer_12p9s_micro_noload__baseline</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_10p12s_single_layer__baseline__native.json">spm_outer_10p12s_single_layer__baseline</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_28p24s_multirotor__baseline__native.json">spm_outer_28p24s_multirotor__baseline</a></td><td>PASS</td></tr><tr class="PASS"><td><a href="fixtures/spm_outer_30p27s_hub__baseline__native.json">spm_outer_30p27s_hub__baseline</a></td><td>PASS</td></tr></table><section class="case"><h3>F – spm_outer_14p12s_drone__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_14p12s_drone__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.001</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.000529</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">5.49e-05</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00042</text><polyline points="45.00,90.78 55.21,85.91 65.43,61.18 75.64,73.30 85.85,77.28 96.06,48.75 106.28,92.72 116.49,135.10 126.70,114.05 136.91,114.93 147.13,131.01 157.34,125.93 167.55,124.05 177.77,113.78 187.98,109.32 198.19,156.25 208.40,151.92 218.62,127.45 228.83,119.96 239.04,111.81 249.26,75.88 259.47,53.70 269.68,106.66 279.89,107.17 290.11,90.51 300.32,85.77 310.53,61.69 320.74,73.58 330.96,77.43 341.17,48.89 351.38,91.75 361.60,134.52 371.81,113.50 382.02,114.55 392.23,122.39 402.45,125.66 412.66,123.96 422.87,113.81 433.09,109.17 443.30,150.45 453.51,151.28 463.72,127.29 473.94,120.21 484.15,111.94 494.36,76.67 504.57,54.37 514.79,106.74 525.00,107.73" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0596</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0553</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.051</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">0.0466</text><polyline points="45.00,112.62 55.21,146.97 65.43,89.13 75.64,56.18 85.85,113.66 96.06,146.51 106.28,82.95 116.49,52.64 126.70,112.64 136.91,147.00 147.13,89.16 157.34,56.23 167.55,113.71 177.77,146.54 187.98,82.97 198.19,52.66 208.40,112.66 218.62,147.01 228.83,89.16 239.04,56.21 249.26,113.74 259.47,146.56 269.68,82.95 279.89,52.61 290.11,112.60 300.32,146.97 310.53,89.17 320.74,56.23 330.96,113.70 341.17,146.52 351.38,82.92 361.60,52.59 371.81,112.57 382.02,146.96 392.23,89.16 402.45,56.24 412.66,113.72 422.87,146.55 433.09,82.95 443.30,52.64 453.51,112.63 463.72,146.99 473.94,89.18 484.15,56.26 494.36,113.74 504.57,146.56 514.79,82.94 525.00,52.62" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,116.83 55.21,151.71 65.43,96.59 75.64,62.31 85.85,119.35 96.06,155.34 106.28,86.94 116.49,51.97 126.70,114.28 136.91,148.54 147.13,88.94 157.34,56.57 167.55,114.25 177.77,148.22 187.98,85.13 198.19,49.66 208.40,110.14 218.62,147.18 228.83,90.15 239.04,58.10 249.26,119.59 259.47,154.85 269.68,85.41 279.89,55.01 290.11,116.83 300.32,151.72 310.53,96.58 320.74,62.33 330.96,119.38 341.17,155.34 351.38,87.01 361.60,51.98 371.81,114.28 382.02,148.54 392.23,89.89 402.45,56.60 412.66,114.27 422.87,148.22 433.09,85.13 443.30,50.28 453.51,110.17 463.72,147.18 473.94,90.15 484.15,58.13 494.36,119.50 504.57,154.78 514.79,85.39 525.00,54.95" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0127</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00577</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00112</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00801</text><polyline points="45.00,48.75 55.21,156.25 65.43,113.73 75.64,115.69 85.85,115.65 96.06,116.12 106.28,120.42 116.49,122.51 126.70,122.20 136.91,119.12 147.13,115.01 157.34,120.97 167.55,119.65 177.77,117.09 187.98,122.76 198.19,119.89 208.40,123.73 218.62,110.04 228.83,99.15 239.04,106.27 249.26,100.17 259.47,98.78 269.68,107.55 279.89,106.76 290.11,109.79 300.32,119.41 310.53,120.47 320.74,118.19 330.96,118.41 341.17,118.13 351.38,113.47 361.60,111.27 371.81,111.64 382.02,114.61 392.23,118.78 402.45,113.12 412.66,114.52 422.87,116.96 433.09,111.46 443.30,114.44 453.51,110.32 463.72,123.96 473.94,134.85 484.15,127.68 494.36,133.84 504.57,135.30 514.79,126.42 525.00,127.25" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">1.27</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.424</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.424</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-1.27</text><polyline points="45.00,150.73 55.21,149.70 65.43,146.15 75.64,138.85 85.85,132.03 96.06,127.27 106.28,120.87 116.49,111.69 126.70,102.50 136.91,93.31 147.13,84.13 157.34,77.74 167.55,72.98 177.77,66.14 187.98,58.84 198.19,55.31 208.40,54.27 218.62,52.36 228.83,50.17 239.04,48.97 249.26,48.75 259.47,48.97 269.68,50.16 279.89,52.37 290.11,54.27 300.32,55.30 310.53,58.85 320.74,66.15 330.96,72.97 341.17,77.73 351.38,84.13 361.60,93.30 371.81,102.50 382.02,111.69 392.23,120.87 402.45,127.26 412.66,132.02 422.87,138.86 433.09,146.16 443.30,149.69 453.51,150.73 463.72,152.64 473.94,154.83 484.15,156.03 494.36,156.25 504.57,156.03 514.79,154.84 525.00,152.63" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,151.28 55.21,149.38 65.43,146.18 75.64,138.86 85.85,132.04 96.06,127.27 106.28,120.84 116.49,111.65 126.70,102.45 136.91,93.29 147.13,84.14 157.34,77.70 167.55,72.96 177.77,66.14 187.98,58.80 198.19,55.28 208.40,54.22 218.62,52.42 228.83,50.31 239.04,49.05 249.26,48.89 259.47,49.12 269.68,50.24 279.89,52.45 290.11,54.33 300.32,55.28 310.53,58.82 320.74,66.14 330.96,72.96 341.17,77.72 351.38,84.16 361.60,93.35 371.81,102.55 382.02,111.71 392.23,120.86 402.45,127.30 412.66,132.04 422.87,138.86 433.09,146.20 443.30,149.71 453.51,150.78 463.72,152.58 473.94,154.69 484.15,155.95 494.36,156.11 504.57,155.88 514.79,154.76 525.00,152.55" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.273025 mNm; relative difference 0.514379%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.053351684619950164,
+  &quot;reference_average_Nm&quot;: 0.05307865934386258,
+  &quot;average_delta_pct&quot;: 0.5143786212059933,
+  &quot;average_absolute_delta_Nm&quot;: 0.0002730252760875865,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.053351684619950164,
+    &quot;reference&quot;: 0.05307865934386258,
+    &quot;signed_delta&quot;: 0.0002730252760875865,
+    &quot;abs_delta&quot;: 0.0002730252760875865,
+    &quot;relative_delta_pct&quot;: 0.5143786212059933,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.07048197011110278,
+  &quot;bemf_peak_delta_pct&quot;: 0.2551247333598121,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.7736668131933571,
+    &quot;correlation&quot;: 0.9965822259555427
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.2817607056875304,
+    &quot;correlation&quot;: 0.9999962608841113
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 103402,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 10.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 498.246
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_14p12s_drone__high_current</h3><p>Frozen inputs: <a href="fixtures/spm_outer_14p12s_drone__high_current__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.00102</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00055</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">8.27e-05</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.000384</text><polyline points="45.00,88.32 55.21,85.67 65.43,61.77 75.64,73.15 85.85,76.85 96.06,48.75 106.28,94.07 116.49,136.45 126.70,113.72 136.91,116.41 147.13,132.88 157.34,126.13 167.55,124.56 177.77,114.43 187.98,110.73 198.19,156.25 208.40,152.15 218.62,128.12 228.83,121.24 239.04,110.01 249.26,74.16 259.47,52.37 269.68,107.88 279.89,106.23 290.11,88.05 300.32,85.64 310.53,62.32 320.74,73.42 330.96,77.01 341.17,48.82 351.38,93.03 361.60,135.85 371.81,113.16 382.02,116.08 392.23,124.21 402.45,125.87 412.66,124.47 422.87,114.40 433.09,110.54 443.30,150.35 453.51,151.49 463.72,128.02 473.94,121.54 484.15,110.17 494.36,74.99 504.57,53.07 514.79,107.97 525.00,106.82" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0863</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0819</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.0775</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">0.0731</text><polyline points="45.00,118.58 55.21,145.57 65.43,87.55 75.64,62.64 85.85,119.48 96.06,141.44 106.28,74.92 116.49,57.14 126.70,118.60 136.91,145.60 147.13,87.59 157.34,62.69 167.55,119.53 177.77,141.48 187.98,74.94 198.19,57.16 208.40,118.63 218.62,145.61 228.83,87.58 239.04,62.67 249.26,119.56 259.47,141.49 269.68,74.92 279.89,57.11 290.11,118.56 300.32,145.58 310.53,87.60 320.74,62.69 330.96,119.53 341.17,141.44 351.38,74.88 361.60,57.09 371.81,118.54 382.02,145.57 392.23,87.59 402.45,62.70 412.66,119.55 422.87,141.47 433.09,74.92 443.30,57.13 453.51,118.59 463.72,145.60 473.94,87.61 484.15,62.71 494.36,119.57 504.57,141.49 514.79,74.91 525.00,57.11" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,123.18 55.21,150.45 65.43,94.97 75.64,68.85 85.85,125.29 96.06,150.24 106.28,78.91 116.49,56.63 126.70,120.50 136.91,147.22 147.13,87.45 157.34,63.27 167.55,120.28 177.77,143.30 187.98,77.16 198.19,54.54 208.40,116.45 218.62,145.99 228.83,88.68 239.04,64.96 249.26,125.66 259.47,149.90 269.68,77.44 279.89,59.80 290.11,123.18 300.32,150.46 310.53,94.95 320.74,68.87 330.96,125.32 341.17,150.23 351.38,78.98 361.60,56.64 371.81,120.50 382.02,147.22 392.23,88.38 402.45,63.31 412.66,120.30 422.87,143.30 433.09,77.15 443.30,55.15 453.51,116.48 463.72,145.98 473.94,88.68 484.15,64.99 494.36,125.58 504.57,149.82 514.79,77.42 525.00,59.74" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0127</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00577</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00112</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00801</text><polyline points="45.00,48.75 55.21,156.25 65.43,113.73 75.64,115.69 85.85,115.65 96.06,116.12 106.28,120.42 116.49,122.51 126.70,122.20 136.91,119.12 147.13,115.01 157.34,120.97 167.55,119.65 177.77,117.09 187.98,122.76 198.19,119.89 208.40,123.73 218.62,110.04 228.83,99.15 239.04,106.27 249.26,100.17 259.47,98.78 269.68,107.55 279.89,106.76 290.11,109.79 300.32,119.41 310.53,120.47 320.74,118.19 330.96,118.41 341.17,118.13 351.38,113.47 361.60,111.27 371.81,111.64 382.02,114.61 392.23,118.78 402.45,113.12 412.66,114.52 422.87,116.96 433.09,111.46 443.30,114.44 453.51,110.32 463.72,123.96 473.94,134.85 484.15,127.68 494.36,133.84 504.57,135.30 514.79,126.42 525.00,127.25" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">1.27</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.424</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.424</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-1.27</text><polyline points="45.00,150.73 55.21,149.70 65.43,146.15 75.64,138.85 85.85,132.03 96.06,127.27 106.28,120.87 116.49,111.69 126.70,102.50 136.91,93.31 147.13,84.13 157.34,77.74 167.55,72.98 177.77,66.14 187.98,58.84 198.19,55.31 208.40,54.27 218.62,52.36 228.83,50.17 239.04,48.97 249.26,48.75 259.47,48.97 269.68,50.16 279.89,52.37 290.11,54.27 300.32,55.30 310.53,58.85 320.74,66.15 330.96,72.97 341.17,77.73 351.38,84.13 361.60,93.30 371.81,102.50 382.02,111.69 392.23,120.87 402.45,127.26 412.66,132.02 422.87,138.86 433.09,146.16 443.30,149.69 453.51,150.73 463.72,152.64 473.94,154.83 484.15,156.03 494.36,156.25 504.57,156.03 514.79,154.84 525.00,152.63" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,151.28 55.21,149.38 65.43,146.18 75.64,138.86 85.85,132.04 96.06,127.27 106.28,120.84 116.49,111.65 126.70,102.45 136.91,93.29 147.13,84.14 157.34,77.70 167.55,72.96 177.77,66.14 187.98,58.80 198.19,55.28 208.40,54.22 218.62,52.42 228.83,50.31 239.04,49.05 249.26,48.89 259.47,49.12 269.68,50.24 279.89,52.45 290.11,54.33 300.32,55.28 310.53,58.82 320.74,66.14 330.96,72.96 341.17,77.72 351.38,84.16 361.60,93.35 371.81,102.55 382.02,111.71 392.23,120.86 402.45,127.30 412.66,132.04 422.87,138.86 433.09,146.20 443.30,149.71 453.51,150.78 463.72,152.58 473.94,154.69 484.15,155.95 494.36,156.11 504.57,155.88 514.79,154.76 525.00,152.55" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.295976 mNm; relative difference 0.371825%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.0798967692264166,
+  &quot;reference_average_Nm&quot;: 0.07960079325460036,
+  &quot;average_delta_pct&quot;: 0.3718254048921016,
+  &quot;average_absolute_delta_Nm&quot;: 0.00029597597181624247,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.0798967692264166,
+    &quot;reference&quot;: 0.07960079325460036,
+    &quot;signed_delta&quot;: 0.00029597597181624247,
+    &quot;abs_delta&quot;: 0.00029597597181624247,
+    &quot;relative_delta_pct&quot;: 0.3718254048921016,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.07048197011110278,
+  &quot;bemf_peak_delta_pct&quot;: 0.2551247333598121,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.5360867990497853,
+    &quot;correlation&quot;: 0.9963532718382824
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.2817607056875304,
+    &quot;correlation&quot;: 0.9999962608841113
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 103402,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 15.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 332.132
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_14p12s_drone__tight_airgap</h3><p>Frozen inputs: <a href="fixtures/spm_outer_14p12s_drone__tight_airgap__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.00081</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00021</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00039</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00099</text><polyline points="45.00,56.08 55.21,48.79 65.43,64.06 75.64,108.37 85.85,105.94 96.06,56.58 106.28,88.67 116.49,105.88 126.70,131.74 136.91,71.19 147.13,124.26 157.34,156.12 167.55,126.22 177.77,103.94 187.98,101.92 198.19,95.15 208.40,116.54 218.62,69.05 228.83,75.28 239.04,108.39 249.26,107.28 259.47,58.74 269.68,97.52 279.89,83.30 290.11,55.98 300.32,48.75 310.53,64.13 320.74,108.55 330.96,106.01 341.17,56.75 351.38,88.65 361.60,105.33 371.81,131.04 382.02,71.34 392.23,124.02 402.45,156.25 412.66,126.40 422.87,104.08 433.09,102.12 443.30,91.53 453.51,116.31 463.72,69.02 473.94,75.27 484.15,108.67 494.36,107.20 504.57,58.99 514.79,97.49 525.00,83.18" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0614</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0579</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.0545</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">0.051</text><polyline points="45.00,104.78 55.21,143.81 65.43,95.13 75.64,63.40 85.85,110.20 96.06,142.13 106.28,86.12 116.49,54.81 126.70,104.81 136.91,143.82 147.13,95.08 157.34,63.42 167.55,110.18 177.77,142.13 187.98,86.13 198.19,54.81 208.40,104.78 218.62,143.80 228.83,95.14 239.04,63.42 249.26,110.22 259.47,142.14 269.68,86.11 279.89,54.79 290.11,104.78 300.32,143.81 310.53,95.13 320.74,63.44 330.96,110.23 341.17,142.16 351.38,86.11 361.60,54.76 371.81,104.76 382.02,143.79 392.23,95.13 402.45,63.45 412.66,110.27 422.87,142.16 433.09,86.06 443.30,54.79 453.51,104.73 463.72,143.78 473.94,95.14 484.15,63.45 494.36,110.23 504.57,142.14 514.79,86.12 525.00,54.79" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,111.72 55.21,152.01 65.43,100.68 75.64,61.25 85.85,108.48 96.06,148.98 106.28,87.39 116.49,53.10 126.70,98.61 136.91,148.13 147.13,90.18 157.34,52.98 167.55,104.93 177.77,140.76 187.98,85.10 198.19,54.96 208.40,101.22 218.62,148.48 228.83,98.74 239.04,61.27 249.26,108.26 259.47,148.61 269.68,85.85 279.89,57.00 290.11,111.74 300.32,152.02 310.53,100.67 320.74,61.26 330.96,108.50 341.17,148.98 351.38,87.39 361.60,53.14 371.81,98.67 382.02,148.08 392.23,90.27 402.45,52.99 412.66,104.99 422.87,140.76 433.09,85.00 443.30,55.56 453.51,101.21 463.72,148.47 473.94,98.75 484.15,61.25 494.36,108.29 504.57,148.57 514.79,85.86 525.00,57.02" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0409</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0149</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.011</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.037</text><polyline points="45.00,48.75 55.21,156.25 65.43,100.28 75.64,105.26 85.85,105.88 96.06,102.93 106.28,103.28 116.49,105.78 126.70,106.05 136.91,105.38 147.13,106.26 157.34,107.74 167.55,106.09 177.77,106.41 187.98,106.93 198.19,110.38 208.40,107.89 218.62,103.05 228.83,104.67 239.04,105.21 249.26,105.28 259.47,102.75 269.68,102.41 279.89,104.88 290.11,104.91 300.32,107.18 310.53,111.33 320.74,106.25 330.96,105.71 341.17,108.62 351.38,108.09 361.60,105.67 371.81,105.46 382.02,106.12 392.23,105.20 402.45,103.72 412.66,105.52 422.87,105.16 433.09,104.56 443.30,101.19 453.51,103.67 463.72,108.44 473.94,106.86 484.15,106.30 494.36,106.20 504.57,108.80 514.79,109.08 525.00,106.57" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">1.4</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.467</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.467</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-1.4</text><polyline points="45.00,149.37 55.21,146.26 65.43,141.82 75.64,135.49 85.85,129.23 96.06,123.94 106.28,117.69 116.49,110.01 126.70,102.50 136.91,94.99 147.13,87.30 157.34,81.06 167.55,75.77 177.77,69.51 187.98,63.18 198.19,58.74 208.40,55.63 218.62,52.78 228.83,50.53 239.04,49.19 249.26,48.75 259.47,49.19 269.68,50.53 279.89,52.77 290.11,55.63 300.32,58.74 310.53,63.18 320.74,69.51 330.96,75.77 341.17,81.06 351.38,87.30 361.60,94.99 371.81,102.50 382.02,110.01 392.23,117.69 402.45,123.94 412.66,129.23 422.87,135.49 433.09,141.82 443.30,146.26 453.51,149.37 463.72,152.22 473.94,154.47 484.15,155.81 494.36,156.25 504.57,155.81 514.79,154.47 525.00,152.22" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,150.95 55.21,144.86 65.43,141.97 75.64,135.50 85.85,129.23 96.06,124.02 106.28,117.76 116.49,110.01 126.70,102.49 136.91,95.00 147.13,87.29 157.34,81.00 167.55,75.76 177.77,69.50 187.98,63.15 198.19,58.61 208.40,55.57 218.62,52.85 228.83,50.56 239.04,49.20 249.26,48.76 259.47,49.27 269.68,50.62 279.89,52.80 290.11,55.65 300.32,58.70 310.53,63.03 320.74,69.50 330.96,75.77 341.17,80.98 351.38,87.24 361.60,94.99 371.81,102.51 382.02,110.00 392.23,117.71 402.45,124.00 412.66,129.24 422.87,135.50 433.09,141.85 443.30,146.39 453.51,149.43 463.72,152.15 473.94,154.44 484.15,155.80 494.36,156.24 504.57,155.73 514.79,154.38 525.00,152.20" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.0263899 mNm; relative difference 0.0468104%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.05640251221681048,
+  &quot;reference_average_Nm&quot;: 0.05637612234033428,
+  &quot;average_delta_pct&quot;: 0.04681037889922097,
+  &quot;average_absolute_delta_Nm&quot;: 2.6389876476198837e-05,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.05640251221681048,
+    &quot;reference&quot;: 0.05637612234033428,
+    &quot;signed_delta&quot;: 2.6389876476198837e-05,
+    &quot;abs_delta&quot;: 2.6389876476198837e-05,
+    &quot;relative_delta_pct&quot;: 0.04681037889922097,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.029264687118554126,
+  &quot;bemf_peak_delta_pct&quot;: 0.023328814335968028,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.6677160780184319,
+    &quot;correlation&quot;: 0.9921522982346811
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.8099218157364387,
+    &quot;correlation&quot;: 0.9999672476946171
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 93856,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 10.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 328.819
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_14p12s_drone__angle30</h3><p>Frozen inputs: <a href="fixtures/spm_outer_14p12s_drone__angle30__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.00101</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.000525</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">4.32e-05</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.000439</text><polyline points="45.00,90.95 55.21,84.26 65.43,64.62 75.64,76.53 85.85,77.72 96.06,48.75 106.28,95.79 116.49,135.47 126.70,114.29 136.91,112.45 147.13,128.25 157.34,126.87 167.55,123.43 177.77,112.50 187.98,109.26 198.19,156.25 208.40,149.65 218.62,124.28 228.83,120.88 239.04,113.15 249.26,77.12 259.47,55.34 269.68,106.97 279.89,109.18 290.11,90.73 300.32,84.18 310.53,65.06 320.74,76.78 330.96,77.84 341.17,48.88 351.38,94.88 361.60,134.94 371.81,113.80 382.02,112.10 392.23,119.66 402.45,126.54 412.66,123.28 422.87,112.51 433.09,109.14 443.30,150.61 453.51,149.07 463.72,124.16 473.94,121.11 484.15,113.17 494.36,77.87 504.57,56.02 514.79,107.05 525.00,109.77" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0527</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0484</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.0442</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">0.0399</text><polyline points="45.00,112.32 55.21,147.78 65.43,81.80 75.64,49.37 85.85,110.18 96.06,147.36 106.28,82.46 116.49,51.92 126.70,112.34 136.91,147.81 147.13,81.83 157.34,49.42 167.55,110.24 177.77,147.39 187.98,82.48 198.19,51.94 208.40,112.36 218.62,147.83 228.83,81.83 239.04,49.40 249.26,110.26 259.47,147.41 269.68,82.47 279.89,51.90 290.11,112.30 300.32,147.79 310.53,81.84 320.74,49.42 330.96,110.22 341.17,147.36 351.38,82.43 361.60,51.87 371.81,112.27 382.02,147.77 392.23,81.83 402.45,49.42 412.66,110.24 422.87,147.39 433.09,82.47 443.30,51.93 453.51,112.33 463.72,147.81 473.94,81.85 484.15,49.44 494.36,110.27 504.57,147.41 514.79,82.47 525.00,51.90" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,116.47 55.21,152.68 65.43,88.91 75.64,55.14 85.85,115.82 96.06,156.25 106.28,86.07 116.49,51.07 126.70,113.86 136.91,149.54 147.13,81.79 157.34,49.53 167.55,110.73 177.77,149.12 187.98,84.57 198.19,48.75 208.40,109.91 218.62,148.23 228.83,82.61 239.04,51.05 249.26,115.97 259.47,155.56 269.68,84.82 279.89,54.00 290.11,116.47 300.32,152.70 310.53,88.90 320.74,55.16 330.96,115.85 341.17,156.24 351.38,86.14 361.60,51.08 371.81,113.85 382.02,149.55 392.23,82.75 402.45,49.57 412.66,110.76 422.87,149.12 433.09,84.57 443.30,49.37 453.51,109.95 463.72,148.23 473.94,82.61 484.15,51.09 494.36,115.89 504.57,155.48 514.79,84.80 525.00,53.93" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0127</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00577</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00112</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00801</text><polyline points="45.00,48.75 55.21,156.25 65.43,113.73 75.64,115.69 85.85,115.65 96.06,116.12 106.28,120.42 116.49,122.51 126.70,122.20 136.91,119.12 147.13,115.01 157.34,120.97 167.55,119.65 177.77,117.09 187.98,122.76 198.19,119.89 208.40,123.73 218.62,110.04 228.83,99.15 239.04,106.27 249.26,100.17 259.47,98.78 269.68,107.55 279.89,106.76 290.11,109.79 300.32,119.41 310.53,120.47 320.74,118.19 330.96,118.41 341.17,118.13 351.38,113.47 361.60,111.27 371.81,111.64 382.02,114.61 392.23,118.78 402.45,113.12 412.66,114.52 422.87,116.96 433.09,111.46 443.30,114.44 453.51,110.32 463.72,123.96 473.94,134.85 484.15,127.68 494.36,133.84 504.57,135.30 514.79,126.42 525.00,127.25" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">1.27</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.424</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.424</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-1.27</text><polyline points="45.00,150.73 55.21,149.70 65.43,146.15 75.64,138.85 85.85,132.03 96.06,127.27 106.28,120.87 116.49,111.69 126.70,102.50 136.91,93.31 147.13,84.13 157.34,77.74 167.55,72.98 177.77,66.14 187.98,58.84 198.19,55.31 208.40,54.27 218.62,52.36 228.83,50.17 239.04,48.97 249.26,48.75 259.47,48.97 269.68,50.16 279.89,52.37 290.11,54.27 300.32,55.30 310.53,58.85 320.74,66.15 330.96,72.97 341.17,77.73 351.38,84.13 361.60,93.30 371.81,102.50 382.02,111.69 392.23,120.87 402.45,127.26 412.66,132.02 422.87,138.86 433.09,146.16 443.30,149.69 453.51,150.73 463.72,152.64 473.94,154.83 484.15,156.03 494.36,156.25 504.57,156.03 514.79,154.84 525.00,152.63" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,151.28 55.21,149.38 65.43,146.18 75.64,138.86 85.85,132.04 96.06,127.27 106.28,120.84 116.49,111.65 126.70,102.45 136.91,93.29 147.13,84.14 157.34,77.70 167.55,72.96 177.77,66.14 187.98,58.80 198.19,55.28 208.40,54.22 218.62,52.42 228.83,50.31 239.04,49.05 249.26,48.89 259.47,49.12 269.68,50.24 279.89,52.45 290.11,54.33 300.32,55.28 310.53,58.82 320.74,66.14 330.96,72.96 341.17,77.72 351.38,84.16 361.60,93.35 371.81,102.55 382.02,111.71 392.23,120.86 402.45,127.30 412.66,132.04 422.87,138.86 433.09,146.20 443.30,149.71 453.51,150.78 463.72,152.58 473.94,154.69 484.15,155.95 494.36,156.11 504.57,155.88 514.79,154.76 525.00,152.55" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.262469 mNm; relative difference 0.564588%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.0467510564939454,
+  &quot;reference_average_Nm&quot;: 0.04648858772266067,
+  &quot;average_delta_pct&quot;: 0.5645875345806345,
+  &quot;average_absolute_delta_Nm&quot;: 0.0002624687712847254,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.0467510564939454,
+    &quot;reference&quot;: 0.04648858772266067,
+    &quot;signed_delta&quot;: 0.0002624687712847254,
+    &quot;abs_delta&quot;: 0.0002624687712847254,
+    &quot;relative_delta_pct&quot;: 0.5645875345806345,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.07048197011110278,
+  &quot;bemf_peak_delta_pct&quot;: 0.2551247333598121,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.8600159246750984,
+    &quot;correlation&quot;: 0.9970361471475562
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.2817607056875304,
+    &quot;correlation&quot;: 0.9999962608841113
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 103402,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 10.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 339.228
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_14p12s_drone_noload__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_14p12s_drone_noload__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.000959</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00048</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">2e-06</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.000476</text><polyline points="45.00,95.63 55.21,86.40 65.43,59.34 75.64,72.57 85.85,77.86 96.06,48.75 106.28,89.55 116.49,132.13 126.70,115.19 136.91,112.30 147.13,126.91 157.34,125.14 167.55,123.39 177.77,113.54 187.98,106.47 198.19,156.25 208.40,152.86 218.62,126.17 228.83,116.73 239.04,114.19 249.26,78.49 259.47,56.07 269.68,104.37 279.89,107.91 290.11,95.31 300.32,86.07 310.53,59.78 320.74,72.89 330.96,78.01 341.17,49.02 351.38,88.70 361.60,131.59 371.81,114.61 382.02,111.85 392.23,118.19 402.45,124.85 412.66,123.27 422.87,113.65 433.09,106.44 443.30,150.54 453.51,152.20 463.72,125.93 473.94,116.87 484.15,114.24 494.36,79.22 504.57,56.71 514.79,104.44 525.00,108.41" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.00641</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00198</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00246</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00689</text><polyline points="45.00,100.21 55.21,148.13 65.43,100.15 75.64,52.14 85.85,100.16 96.06,148.11 106.28,100.17 116.49,52.19 126.70,100.22 136.91,148.16 147.13,100.18 157.34,52.20 167.55,100.21 177.77,148.15 187.98,100.19 198.19,52.21 208.40,100.24 218.62,148.17 228.83,100.18 239.04,52.17 249.26,100.24 259.47,148.17 269.68,100.19 279.89,52.17 290.11,100.18 300.32,148.12 310.53,100.18 320.74,52.19 330.96,100.21 341.17,148.13 351.38,100.15 361.60,52.14 371.81,100.16 382.02,148.11 392.23,100.17 402.45,52.19 412.66,100.22 422.87,148.16 433.09,100.18 443.30,52.20 453.51,100.21 463.72,148.15 473.94,100.19 484.15,52.21 494.36,100.24 504.57,148.17 514.79,100.18 525.00,52.17" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,103.29 55.21,152.21 65.43,107.15 75.64,57.71 85.85,105.15 96.06,156.25 106.28,103.91 116.49,51.33 126.70,101.19 136.91,149.44 147.13,99.89 157.34,52.09 167.55,100.30 177.77,149.30 187.98,102.10 198.19,48.75 208.40,97.15 218.62,147.96 228.83,100.99 239.04,53.25 249.26,105.17 259.47,155.52 269.68,102.32 279.89,53.92 290.11,103.29 300.32,152.24 310.53,107.13 320.74,57.73 330.96,105.19 341.17,156.24 351.38,103.98 361.60,51.34 371.81,101.19 382.02,149.44 392.23,100.82 402.45,52.12 412.66,100.32 422.87,149.30 433.09,102.10 443.30,49.35 453.51,97.19 463.72,147.96 473.94,100.98 484.15,53.28 494.36,105.09 504.57,155.45 514.79,102.31 525.00,53.87" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0127</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00577</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00112</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00801</text><polyline points="45.00,48.75 55.21,156.25 65.43,113.73 75.64,115.69 85.85,115.65 96.06,116.12 106.28,120.42 116.49,122.51 126.70,122.20 136.91,119.12 147.13,115.01 157.34,120.97 167.55,119.65 177.77,117.09 187.98,122.76 198.19,119.89 208.40,123.73 218.62,110.04 228.83,99.15 239.04,106.27 249.26,100.17 259.47,98.78 269.68,107.55 279.89,106.76 290.11,109.79 300.32,119.41 310.53,120.47 320.74,118.19 330.96,118.41 341.17,118.13 351.38,113.47 361.60,111.27 371.81,111.64 382.02,114.61 392.23,118.78 402.45,113.12 412.66,114.52 422.87,116.96 433.09,111.46 443.30,114.44 453.51,110.32 463.72,123.96 473.94,134.85 484.15,127.68 494.36,133.84 504.57,135.30 514.79,126.42 525.00,127.25" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">1.27</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.424</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.424</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-1.27</text><polyline points="45.00,150.73 55.21,149.70 65.43,146.15 75.64,138.85 85.85,132.03 96.06,127.27 106.28,120.87 116.49,111.69 126.70,102.50 136.91,93.31 147.13,84.13 157.34,77.74 167.55,72.98 177.77,66.14 187.98,58.84 198.19,55.31 208.40,54.27 218.62,52.36 228.83,50.17 239.04,48.97 249.26,48.75 259.47,48.97 269.68,50.16 279.89,52.37 290.11,54.27 300.32,55.30 310.53,58.85 320.74,66.15 330.96,72.97 341.17,77.73 351.38,84.13 361.60,93.30 371.81,102.50 382.02,111.69 392.23,120.87 402.45,127.26 412.66,132.02 422.87,138.86 433.09,146.16 443.30,149.69 453.51,150.73 463.72,152.64 473.94,154.83 484.15,156.03 494.36,156.25 504.57,156.03 514.79,154.84 525.00,152.63" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,151.28 55.21,149.38 65.43,146.18 75.64,138.86 85.85,132.04 96.06,127.27 106.28,120.84 116.49,111.65 126.70,102.45 136.91,93.29 147.13,84.14 157.34,77.70 167.55,72.96 177.77,66.14 187.98,58.80 198.19,55.28 208.40,54.22 218.62,52.42 228.83,50.31 239.04,49.05 249.26,48.89 259.47,49.12 269.68,50.24 279.89,52.45 290.11,54.33 300.32,55.28 310.53,58.82 320.74,66.14 330.96,72.96 341.17,77.72 351.38,84.16 361.60,93.35 371.81,102.55 382.02,111.71 392.23,120.86 402.45,127.30 412.66,132.04 422.87,138.86 433.09,146.20 443.30,149.71 453.51,150.78 463.72,152.58 473.94,154.69 484.15,155.95 494.36,156.11 504.57,155.88 514.79,154.76 525.00,152.55" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.227009 mNm; relative difference suppressed near zero. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 1.8088844001015905e-07,
+  &quot;reference_average_Nm&quot;: -0.00022682852609321098,
+  &quot;average_delta_pct&quot;: 100.07974677750005,
+  &quot;average_absolute_delta_Nm&quot;: 0.00022700941453322114,
+  &quot;near_zero_reference&quot;: true,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 1.8088844001015905e-07,
+    &quot;reference&quot;: -0.00022682852609321098,
+    &quot;signed_delta&quot;: 0.00022700941453322114,
+    &quot;abs_delta&quot;: 0.00022700941453322114,
+    &quot;relative_delta_pct&quot;: null,
+    &quot;relative_meaningful&quot;: false,
+    &quot;reference_near_zero&quot;: true,
+    &quot;relative_suppression_reasons&quot;: [
+      &quot;REFERENCE_AT_OR_BELOW_RELATIVE_FLOOR&quot;
+    ],
+    &quot;opposite_signs&quot;: true,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.07048197011110278,
+  &quot;bemf_peak_delta_pct&quot;: 0.2551247333598121,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 10.483622435438303,
+    &quot;correlation&quot;: 0.9968801534893562
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.2817607056875304,
+    &quot;correlation&quot;: 0.9999962608841113
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 103402,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 0.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 547.508
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_12p9s_micro__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_12p9s_micro__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.000787</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.000197</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.000394</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.000984</text><polyline points="45.00,84.02 55.21,65.85 65.43,48.75 75.64,49.90 85.85,62.75 96.06,98.65 106.28,84.60 116.49,92.15 126.70,69.17 136.91,51.73 147.13,60.67 157.34,63.65 167.55,90.42 177.77,110.63 187.98,130.13 198.19,95.30 208.40,82.98 218.62,56.67 228.83,58.10 239.04,100.34 249.26,111.20 259.47,119.79 269.68,152.99 279.89,112.06 290.11,85.73 300.32,65.14 310.53,49.00 320.74,48.76 330.96,62.25 341.17,101.31 351.38,87.36 361.60,91.79 371.81,65.23 382.02,51.67 392.23,59.37 402.45,63.58 412.66,90.53 422.87,110.05 433.09,132.55 443.30,98.27 453.51,82.71 463.72,54.94 473.94,60.65 484.15,100.57 494.36,114.61 504.57,119.09 514.79,156.25 525.00,113.14" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0378</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0228</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.00784</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00714</text><polyline points="45.00,102.48 55.21,64.17 65.43,48.75 75.64,63.67 85.85,103.22 96.06,140.91 106.28,155.83 116.49,141.12 126.70,102.48 136.91,64.17 147.13,48.75 157.34,63.67 167.55,103.22 177.77,140.91 187.98,155.83 198.19,141.12 208.40,102.48 218.62,64.17 228.83,48.75 239.04,63.67 249.26,103.22 259.47,140.91 269.68,155.83 279.89,141.12 290.11,102.51 300.32,64.17 310.53,48.75 320.74,63.67 330.96,103.22 341.17,140.91 351.38,155.83 361.60,141.12 371.81,102.48 382.02,64.17 392.23,48.75 402.45,63.67 412.66,103.22 422.87,140.91 433.09,155.83 443.30,141.12 453.51,102.48 463.72,64.17 473.94,48.75 484.15,63.67 494.36,103.22 504.57,140.91 514.79,155.83 525.00,141.12" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,102.93 55.21,65.33 65.43,50.59 75.64,65.46 85.85,104.50 96.06,140.78 106.28,156.25 116.49,141.25 126.70,103.51 136.91,65.89 147.13,50.12 157.34,64.92 167.55,103.41 177.77,140.30 187.98,154.45 198.19,141.12 208.40,102.97 218.62,65.69 228.83,50.22 239.04,63.47 249.26,102.59 259.47,139.94 269.68,153.55 279.89,140.46 290.11,102.88 300.32,65.36 310.53,50.58 320.74,65.50 330.96,104.52 341.17,140.67 351.38,156.14 361.60,141.26 371.81,103.67 382.02,65.89 392.23,50.17 402.45,64.92 412.66,103.41 422.87,140.33 433.09,154.36 443.30,141.01 453.51,102.98 463.72,65.76 473.94,50.12 484.15,63.46 494.36,102.46 504.57,139.97 514.79,153.43 525.00,140.42" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0254</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">-0.00134</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.0281</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.0548</text><polyline points="45.00,48.75 55.21,156.25 65.43,88.63 75.64,80.40 85.85,80.95 96.06,75.80 106.28,69.42 116.49,73.29 126.70,78.97 136.91,86.20 147.13,90.78 157.34,89.09 167.55,81.74 177.77,70.60 187.98,68.12 198.19,71.61 208.40,70.33 218.62,76.22 228.83,82.66 239.04,82.23 249.26,80.98 259.47,82.62 269.68,79.04 279.89,72.28 290.11,75.48 300.32,71.15 310.53,69.13 320.74,77.35 330.96,76.70 341.17,81.83 351.38,88.26 361.60,84.33 371.81,78.71 382.02,71.55 392.23,66.99 402.45,68.68 412.66,75.96 422.87,87.02 433.09,89.49 443.30,86.07 453.51,87.35 463.72,81.49 473.94,75.02 484.15,75.39 494.36,76.69 504.57,75.17 514.79,78.76 525.00,85.43" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.766</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.255</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.255</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.766</text><polyline points="45.00,149.10 55.21,143.94 65.43,137.54 75.64,132.43 85.85,129.88 96.06,127.96 106.28,122.17 116.49,112.18 126.70,102.51 136.91,92.84 147.13,82.84 157.34,77.04 167.55,75.11 177.77,72.57 187.98,67.47 198.19,61.07 208.40,55.90 218.62,52.23 228.83,49.52 239.04,48.94 249.26,49.34 259.47,48.95 269.68,49.53 279.89,52.23 290.11,55.90 300.32,61.06 310.53,67.47 320.74,72.58 330.96,75.12 341.17,77.05 351.38,82.83 361.60,92.83 371.81,102.50 382.02,112.17 392.23,122.16 402.45,127.97 412.66,129.90 422.87,132.43 433.09,137.53 443.30,143.93 453.51,149.10 463.72,152.77 473.94,155.48 484.15,156.06 494.36,155.66 504.57,156.06 514.79,155.48 525.00,152.77" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,150.68 55.21,139.89 65.43,137.03 75.64,132.35 85.85,129.77 96.06,128.12 106.28,122.66 116.49,112.47 126.70,102.50 136.91,92.45 147.13,82.22 157.34,76.50 167.55,74.96 177.77,73.00 187.98,68.04 198.19,61.45 208.40,56.35 218.62,52.37 228.83,49.32 239.04,48.77 249.26,49.23 259.47,48.75 269.68,49.52 279.89,52.58 290.11,56.07 300.32,61.47 310.53,67.97 320.74,72.66 330.96,75.23 341.17,76.89 351.38,82.34 361.60,92.54 371.81,102.51 382.02,112.55 392.23,122.78 402.45,128.50 412.66,130.05 422.87,132.01 433.09,136.97 443.30,143.55 453.51,148.66 463.72,152.63 473.94,155.68 484.15,156.24 494.36,155.78 504.57,156.25 514.79,155.48 525.00,152.43" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.131025 mNm; relative difference 0.86234%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.015325140164484483,
+  &quot;reference_average_Nm&quot;: 0.015194115169786882,
+  &quot;average_delta_pct&quot;: 0.8623404076740229,
+  &quot;average_absolute_delta_Nm&quot;: 0.00013102499469760075,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.015325140164484483,
+    &quot;reference&quot;: 0.015194115169786882,
+    &quot;signed_delta&quot;: 0.00013102499469760075,
+    &quot;abs_delta&quot;: 0.00013102499469760075,
+    &quot;relative_delta_pct&quot;: 0.8623404076740229,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.3120068295460395,
+  &quot;bemf_peak_delta_pct&quot;: 0.35872204354797216,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 2.016650111522999,
+    &quot;correlation&quot;: 0.9998435227963878
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 1.8632194048340873,
+    &quot;correlation&quot;: 0.9998301844429546
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 124060,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 5.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 540.624
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_12p9s_micro_noload__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_12p9s_micro_noload__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.000833</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.000212</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00041</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00103</text><polyline points="45.00,91.67 55.21,73.33 65.43,54.17 75.64,49.83 85.85,62.29 96.06,97.97 106.28,87.83 116.49,97.76 126.70,77.62 136.91,60.20 147.13,64.87 157.34,63.97 167.55,88.88 177.77,109.80 187.98,131.52 198.19,101.55 208.40,92.16 218.62,65.51 228.83,62.16 239.04,99.50 249.26,108.73 259.47,118.30 269.68,153.02 279.89,118.49 290.11,93.31 300.32,72.72 310.53,54.36 320.74,48.75 330.96,61.81 341.17,100.43 351.38,90.58 361.60,97.34 371.81,73.81 382.02,60.16 392.23,63.71 402.45,63.87 412.66,89.00 422.87,109.21 433.09,133.83 443.30,104.34 453.51,91.92 463.72,63.96 473.94,64.58 484.15,99.74 494.36,111.92 504.57,117.56 514.79,156.25 525.00,119.59" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0224</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.00743</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.00753</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.0225</text><polyline points="45.00,102.35 55.21,63.84 65.43,48.75 75.64,63.56 85.85,102.33 96.06,141.11 106.28,155.93 116.49,140.90 126.70,102.35 136.91,63.84 147.13,48.75 157.34,63.56 167.55,102.33 177.77,141.11 187.98,155.92 198.19,140.90 208.40,102.35 218.62,63.84 228.83,48.75 239.04,63.56 249.26,102.33 259.47,141.11 269.68,155.92 279.89,140.90 290.11,102.37 300.32,63.84 310.53,48.75 320.74,63.56 330.96,102.34 341.17,141.11 351.38,155.93 361.60,140.90 371.81,102.35 382.02,63.84 392.23,48.75 402.45,63.56 412.66,102.33 422.87,141.11 433.09,155.93 443.30,140.90 453.51,102.35 463.72,63.84 473.94,48.75 484.15,63.56 494.36,102.33 504.57,141.11 514.79,155.92 525.00,140.90" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,102.52 55.21,64.77 65.43,50.47 75.64,65.46 85.85,103.72 96.06,141.01 106.28,156.25 116.49,140.81 126.70,103.10 136.91,65.31 147.13,50.03 157.34,64.87 167.55,102.61 177.77,140.52 187.98,154.43 198.19,140.65 208.40,102.50 218.62,65.09 228.83,50.14 239.04,63.40 249.26,101.79 259.47,140.17 269.68,153.54 279.89,139.95 290.11,102.47 300.32,64.79 310.53,50.46 320.74,65.51 330.96,103.74 341.17,140.91 351.38,156.14 361.60,140.83 371.81,103.26 382.02,65.31 392.23,50.08 402.45,64.88 412.66,102.61 422.87,140.54 433.09,154.34 443.30,140.54 453.51,102.50 463.72,65.16 473.94,50.04 484.15,63.39 494.36,101.66 504.57,140.20 514.79,153.41 525.00,139.90" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0254</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">-0.00134</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.0281</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.0548</text><polyline points="45.00,48.75 55.21,156.25 65.43,88.63 75.64,80.40 85.85,80.95 96.06,75.80 106.28,69.42 116.49,73.29 126.70,78.97 136.91,86.20 147.13,90.78 157.34,89.09 167.55,81.74 177.77,70.60 187.98,68.12 198.19,71.61 208.40,70.33 218.62,76.22 228.83,82.66 239.04,82.23 249.26,80.98 259.47,82.62 269.68,79.04 279.89,72.28 290.11,75.48 300.32,71.15 310.53,69.13 320.74,77.35 330.96,76.70 341.17,81.83 351.38,88.26 361.60,84.33 371.81,78.71 382.02,71.55 392.23,66.99 402.45,68.68 412.66,75.96 422.87,87.02 433.09,89.49 443.30,86.07 453.51,87.35 463.72,81.49 473.94,75.02 484.15,75.39 494.36,76.69 504.57,75.17 514.79,78.76 525.00,85.43" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.766</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.255</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.255</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.766</text><polyline points="45.00,149.10 55.21,143.94 65.43,137.54 75.64,132.43 85.85,129.88 96.06,127.96 106.28,122.17 116.49,112.18 126.70,102.51 136.91,92.84 147.13,82.84 157.34,77.04 167.55,75.11 177.77,72.57 187.98,67.47 198.19,61.07 208.40,55.90 218.62,52.23 228.83,49.52 239.04,48.94 249.26,49.34 259.47,48.95 269.68,49.53 279.89,52.23 290.11,55.90 300.32,61.06 310.53,67.47 320.74,72.58 330.96,75.12 341.17,77.05 351.38,82.83 361.60,92.83 371.81,102.50 382.02,112.17 392.23,122.16 402.45,127.97 412.66,129.90 422.87,132.43 433.09,137.53 443.30,143.93 453.51,149.10 463.72,152.77 473.94,155.48 484.15,156.06 494.36,155.66 504.57,156.06 514.79,155.48 525.00,152.77" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,150.68 55.21,139.89 65.43,137.03 75.64,132.35 85.85,129.77 96.06,128.12 106.28,122.66 116.49,112.47 126.70,102.50 136.91,92.45 147.13,82.22 157.34,76.50 167.55,74.96 177.77,73.00 187.98,68.04 198.19,61.45 208.40,56.35 218.62,52.37 228.83,49.32 239.04,48.77 249.26,49.23 259.47,48.75 269.68,49.52 279.89,52.58 290.11,56.07 300.32,61.47 310.53,67.97 320.74,72.66 330.96,75.23 341.17,76.89 351.38,82.34 361.60,92.54 371.81,102.51 382.02,112.55 392.23,122.78 402.45,128.50 412.66,130.05 422.87,132.01 433.09,136.97 443.30,143.55 453.51,148.66 463.72,152.63 473.94,155.68 484.15,156.24 494.36,155.78 504.57,156.25 514.79,155.48 525.00,152.43" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.0953225 mNm; relative difference suppressed near zero. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 1.4439059324224517e-06,
+  &quot;reference_average_Nm&quot;: -9.387862926818769e-05,
+  &quot;average_delta_pct&quot;: 101.53805604499995,
+  &quot;average_absolute_delta_Nm&quot;: 9.532253520061014e-05,
+  &quot;near_zero_reference&quot;: true,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 1.4439059324224517e-06,
+    &quot;reference&quot;: -9.387862926818769e-05,
+    &quot;signed_delta&quot;: 9.532253520061014e-05,
+    &quot;abs_delta&quot;: 9.532253520061014e-05,
+    &quot;relative_delta_pct&quot;: null,
+    &quot;relative_meaningful&quot;: false,
+    &quot;reference_near_zero&quot;: true,
+    &quot;relative_suppression_reasons&quot;: [
+      &quot;REFERENCE_AT_OR_BELOW_RELATIVE_FLOOR&quot;
+    ],
+    &quot;opposite_signs&quot;: true,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.3120068295460395,
+  &quot;bemf_peak_delta_pct&quot;: 0.35872204354797216,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 3.013937198111244,
+    &quot;correlation&quot;: 0.9998515658858069
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 1.8632194048340873,
+    &quot;correlation&quot;: 0.9998301844429546
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 124060,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 0.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 1910.519
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_10p12s_single_layer__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_10p12s_single_layer__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.000634</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">-0.000333</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.0013</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00227</text><polyline points="45.00,82.45 55.21,48.75 65.43,102.54 75.64,133.53 85.85,74.80 96.06,120.92 106.28,110.72 116.49,147.39 126.70,86.06 136.91,82.44 147.13,85.29 157.34,92.26 167.55,83.49 177.77,138.82 187.98,106.81 198.19,127.34 208.40,116.20 218.62,101.34 228.83,82.83 239.04,73.38 249.26,97.61 259.47,87.97 269.68,93.39 279.89,101.98 290.11,93.26 300.32,75.96 310.53,125.01 320.74,156.25 330.96,65.60 341.17,101.60 351.38,89.95 361.60,127.58 371.81,100.32 382.02,105.77 392.23,107.03 402.45,111.77 412.66,94.20 422.87,138.76 433.09,87.95 443.30,111.33 453.51,102.41 463.72,81.56 473.94,72.37 484.15,67.89 494.36,102.01 504.57,106.20 514.79,117.55 525.00,122.25" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.598</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.579</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.56</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">0.541</text><polyline points="45.00,107.03 55.21,71.31 65.43,103.68 75.64,139.61 85.85,104.03 96.06,67.89 106.28,103.28 116.49,140.37 126.70,106.94 136.91,71.28 147.13,103.66 157.34,139.65 167.55,104.11 177.77,67.92 187.98,103.23 198.19,140.26 208.40,108.07 218.62,72.31 228.83,104.20 239.04,139.88 249.26,103.69 259.47,66.97 269.68,102.26 279.89,139.33 290.11,107.58 300.32,72.45 310.53,104.81 320.74,140.76 330.96,103.58 341.17,66.93 351.38,102.23 361.60,139.37 371.81,107.65 382.02,72.45 392.23,104.75 402.45,140.64 412.66,104.64 422.87,67.89 433.09,102.74 443.30,139.45 453.51,107.03 463.72,71.31 473.94,103.68 484.15,139.61 494.36,104.03 504.57,67.89 514.79,103.28 525.00,140.37" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,106.21 55.21,72.19 65.43,101.85 75.64,136.23 85.85,103.60 96.06,65.14 106.28,101.04 116.49,136.29 126.70,105.94 136.91,70.46 147.13,102.70 157.34,138.34 167.55,103.24 177.77,64.27 187.98,101.18 198.19,137.19 208.40,105.56 218.62,70.54 228.83,103.37 239.04,139.52 249.26,102.10 259.47,65.88 269.68,100.89 279.89,137.53 290.11,106.21 300.32,71.95 310.53,101.85 320.74,136.23 330.96,103.61 341.17,65.15 351.38,101.04 361.60,136.28 371.81,105.94 382.02,70.46 392.23,102.69 402.45,138.34 412.66,103.24 422.87,64.24 433.09,101.65 443.30,137.18 453.51,105.21 463.72,70.54 473.94,103.37 484.15,139.53 494.36,102.23 504.57,65.88 514.79,100.70 525.00,137.55" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.386</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.113</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.16</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.433</text><polyline points="45.00,48.75 55.21,156.25 65.43,95.72 75.64,95.87 85.85,97.22 96.06,98.29 106.28,98.76 116.49,97.38 126.70,98.80 136.91,101.86 147.13,102.79 157.34,101.91 167.55,100.49 177.77,101.24 187.98,101.80 198.19,100.57 208.40,99.49 218.62,99.86 228.83,100.02 239.04,99.74 249.26,99.59 259.47,100.03 269.68,100.94 279.89,101.15 290.11,101.21 300.32,101.93 310.53,103.24 320.74,101.93 330.96,99.27 341.17,98.83 351.38,98.49 361.60,98.42 371.81,97.73 382.02,95.67 392.23,94.65 402.45,95.91 412.66,97.25 422.87,96.51 433.09,96.34 443.30,97.14 453.51,97.88 463.72,98.52 473.94,98.09 484.15,97.74 494.36,97.61 504.57,96.70 514.79,95.69 525.00,96.54" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">8.97</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">2.99</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-2.99</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-8.97</text><polyline points="45.00,145.35 55.21,140.38 65.43,134.42 75.64,127.25 85.85,118.92 96.06,110.41 106.28,102.50 116.49,94.51 126.70,86.02 136.91,77.78 147.13,70.62 157.34,64.66 167.55,59.68 177.77,55.86 187.98,53.01 198.19,50.82 208.40,49.46 218.62,48.93 228.83,48.81 239.04,48.91 249.26,49.46 259.47,50.79 269.68,52.97 279.89,55.85 290.11,59.71 300.32,64.68 310.53,70.64 320.74,77.77 330.96,86.04 341.17,94.57 351.38,102.49 361.60,110.41 371.81,118.94 382.02,127.23 392.23,134.37 402.45,140.35 412.66,145.33 422.87,149.15 433.09,152.02 443.30,154.19 453.51,155.54 463.72,156.11 473.94,156.22 484.15,156.08 494.36,155.53 504.57,154.17 514.79,151.99 525.00,149.16" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,147.64 55.21,137.75 65.43,134.56 75.64,127.38 85.85,118.99 96.06,110.44 106.28,102.50 116.49,94.58 126.70,86.02 136.91,77.64 147.13,70.44 157.34,64.52 167.55,59.60 177.77,55.75 187.98,52.87 198.19,50.74 208.40,49.42 218.62,48.88 228.83,48.75 239.04,48.87 249.26,49.42 259.47,50.74 269.68,52.87 279.89,55.74 290.11,59.60 300.32,64.54 310.53,70.44 320.74,77.62 330.96,86.02 341.17,94.57 351.38,102.50 361.60,110.43 371.81,118.98 382.02,127.37 392.23,134.56 402.45,140.48 412.66,145.40 422.87,149.26 433.09,152.13 443.30,154.26 453.51,155.58 463.72,156.13 473.94,156.25 484.15,156.13 494.36,155.58 504.57,154.27 514.79,152.13 525.00,149.26" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.780083 mNm; relative difference 0.137065%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.5683538447821048,
+  &quot;reference_average_Nm&quot;: 0.5691339279870605,
+  &quot;average_delta_pct&quot;: 0.13706496249744604,
+  &quot;average_absolute_delta_Nm&quot;: 0.000780083204955706,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.5683538447821048,
+    &quot;reference&quot;: 0.5691339279870605,
+    &quot;signed_delta&quot;: -0.000780083204955706,
+    &quot;abs_delta&quot;: 0.000780083204955706,
+    &quot;relative_delta_pct&quot;: 0.13706496249744604,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.18245099259988595,
+  &quot;bemf_peak_delta_pct&quot;: 0.061434565540045706,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.16277903186151024,
+    &quot;correlation&quot;: 0.999026232759478
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 1.262369473538698,
+    &quot;correlation&quot;: 0.9999220639039794
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 91250,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 15.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 272.184
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_28p24s_multirotor__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_28p24s_multirotor__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.00178</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.000394</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.000991</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.00238</text><polyline points="45.00,108.34 55.21,64.04 65.43,96.60 75.64,130.30 85.85,69.05 96.06,122.47 106.28,111.24 116.49,113.71 126.70,96.85 136.91,140.88 147.13,58.15 157.34,68.45 167.55,48.75 177.77,95.01 187.98,87.99 198.19,82.08 208.40,96.85 218.62,120.87 228.83,156.25 239.04,103.04 249.26,130.08 259.47,66.28 269.68,98.04 279.89,99.20 290.11,113.18 300.32,60.65 310.53,81.31 320.74,121.96 330.96,49.42 341.17,117.65 351.38,105.58 361.60,113.95 371.81,110.45 382.02,150.65 392.23,76.87 402.45,76.99 412.66,57.81 422.87,92.10 433.09,75.03 443.30,72.32 453.51,72.39 463.72,114.31 473.94,150.88 484.15,102.44 494.36,129.93 504.57,66.34 514.79,98.07 525.00,98.57" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.353</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.334</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">0.315</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">0.296</text><polyline points="45.00,105.15 55.21,149.08 65.43,100.63 75.64,58.69 85.85,106.63 96.06,147.72 106.28,97.78 116.49,55.28 126.70,105.59 136.91,148.78 147.13,99.61 157.34,58.10 167.55,105.01 177.77,147.33 187.98,97.45 198.19,55.41 208.40,106.76 218.62,149.52 228.83,101.00 239.04,58.87 249.26,106.80 259.47,147.74 269.68,97.81 279.89,55.47 290.11,105.49 300.32,148.83 310.53,99.50 320.74,58.09 330.96,105.19 341.17,147.37 351.38,97.48 361.60,55.29 371.81,106.60 382.02,149.49 392.23,100.98 402.45,58.73 412.66,105.67 422.87,147.11 433.09,96.49 443.30,54.77 453.51,104.97 463.72,149.04 473.94,100.61 484.15,58.82 494.36,106.79 504.57,147.74 514.79,97.81 525.00,55.42" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,104.04 55.21,151.23 65.43,100.39 75.64,55.97 85.85,108.41 96.06,145.57 106.28,96.46 116.49,53.78 126.70,105.32 136.91,145.28 147.13,102.19 157.34,59.92 167.55,108.27 177.77,147.20 187.98,97.84 198.19,56.23 208.40,106.49 218.62,147.49 228.83,96.38 239.04,58.15 249.26,104.09 259.47,149.72 269.68,97.46 279.89,55.03 290.11,104.03 300.32,151.22 310.53,100.38 320.74,55.98 330.96,108.40 341.17,145.58 351.38,96.57 361.60,53.77 371.81,105.33 382.02,145.28 392.23,102.18 402.45,59.93 412.66,108.27 422.87,147.20 433.09,97.83 443.30,56.30 453.51,106.50 463.72,147.49 473.94,96.38 484.15,58.14 494.36,104.10 504.57,149.72 514.79,97.45 525.00,55.03" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0407</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">-0.0134</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.0674</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.121</text><polyline points="45.00,49.49 55.21,156.25 65.43,69.76 75.64,73.71 85.85,72.75 96.06,72.03 106.28,70.07 116.49,77.77 126.70,76.74 136.91,65.52 147.13,53.70 157.34,71.41 167.55,75.65 177.77,59.07 187.98,58.22 198.19,80.59 208.40,84.07 218.62,65.94 228.83,72.81 239.04,91.95 249.26,86.23 259.47,69.10 269.68,79.07 279.89,82.03 290.11,73.87 300.32,68.56 310.53,70.75 320.74,67.04 330.96,67.50 341.17,68.15 351.38,70.90 361.60,63.34 371.81,63.97 382.02,75.27 392.23,87.08 402.45,69.51 412.66,65.49 422.87,81.58 433.09,82.49 443.30,60.27 453.51,56.32 463.72,74.82 473.94,68.13 484.15,48.75 494.36,54.54 504.57,71.57 514.79,61.62 525.00,58.83" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">7.35</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">2.45</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-2.45</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-7.35</text><polyline points="45.00,153.87 55.21,152.80 65.43,149.50 75.64,144.10 85.85,137.89 96.06,131.34 106.28,123.72 116.49,114.04 126.70,102.49 136.91,90.95 147.13,81.28 157.34,73.65 167.55,67.10 177.77,60.89 187.98,55.49 198.19,52.20 208.40,51.12 218.62,50.74 228.83,49.96 239.04,49.21 249.26,48.92 259.47,49.21 269.68,49.96 279.89,50.75 290.11,51.13 300.32,52.20 310.53,55.49 320.74,60.90 330.96,67.10 341.17,73.65 351.38,81.29 361.60,90.96 371.81,102.51 382.02,114.05 392.23,123.72 402.45,131.35 412.66,137.91 422.87,144.11 433.09,149.51 443.30,152.80 453.51,153.87 463.72,154.26 473.94,155.04 484.15,155.79 494.36,156.08 504.57,155.79 514.79,155.04 525.00,154.25" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,154.10 55.21,151.85 65.43,149.51 75.64,144.06 85.85,137.86 96.06,131.33 106.28,123.72 116.49,113.96 126.70,102.42 136.91,91.00 147.13,81.47 157.34,73.64 167.55,67.04 177.77,61.01 187.98,55.63 198.19,52.09 208.40,50.97 218.62,50.79 228.83,49.93 239.04,48.97 249.26,48.75 259.47,49.22 269.68,49.87 279.89,50.62 290.11,51.10 300.32,52.22 310.53,55.49 320.74,60.94 330.96,67.14 341.17,73.67 351.38,81.28 361.60,91.04 371.81,102.58 382.02,114.00 392.23,123.53 402.45,131.36 412.66,137.96 422.87,143.99 433.09,149.37 443.30,152.91 453.51,154.03 463.72,154.21 473.94,155.07 484.15,156.03 494.36,156.25 504.57,155.78 514.79,155.13 525.00,154.38" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 0.133096 mNm; relative difference 0.0409867%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 0.32459559159837664,
+  &quot;reference_average_Nm&quot;: 0.32472868720905196,
+  &quot;average_delta_pct&quot;: 0.040986711651265995,
+  &quot;average_absolute_delta_Nm&quot;: 0.0001330956106753156,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 0.32459559159837664,
+    &quot;reference&quot;: 0.32472868720905196,
+    &quot;signed_delta&quot;: -0.0001330956106753156,
+    &quot;abs_delta&quot;: 0.0001330956106753156,
+    &quot;relative_delta_pct&quot;: 0.040986711651265995,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.04190531446626905,
+  &quot;bemf_peak_delta_pct&quot;: 0.32461304849073214,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.27142275754176864,
+    &quot;correlation&quot;: 0.998121244722861
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.40775554266878916,
+    &quot;correlation&quot;: 0.999991782257634
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 70468,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 10.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 251.005
+  }
+}</pre></details></section><section class="case"><h3>F – spm_outer_30p27s_hub__baseline</h3><p>Frozen inputs: <a href="fixtures/spm_outer_30p27s_hub__baseline__native.json">native</a></p><p>PASS</p><svg role="img" aria-label="Torque (N m) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Torque (N m) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Torque (N m) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.0402</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0061</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.028</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.0622</text><polyline points="45.00,69.55 55.21,86.46 65.43,56.28 75.64,97.98 85.85,57.36 96.06,64.74 106.28,139.70 116.49,93.82 126.70,113.95 136.91,155.71 147.13,81.19 157.34,123.75 167.55,100.60 177.77,80.39 187.98,143.28 198.19,51.15 208.40,89.02 218.62,118.46 228.83,49.33 239.04,104.83 249.26,72.84 259.47,73.82 269.68,104.91 279.89,56.57 290.11,65.01 300.32,87.64 310.53,56.34 320.74,99.09 330.96,59.53 341.17,64.01 351.38,138.66 361.60,93.68 371.81,114.40 382.02,156.25 392.23,83.41 402.45,122.30 412.66,101.27 422.87,80.00 433.09,144.44 443.30,52.67 453.51,89.90 463.72,119.76 473.94,48.75 484.15,106.53 494.36,73.44 504.57,73.85 514.79,108.06 525.00,55.89" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Torque (N m)" viewBox="0 0 540 230"><title>Torque (N m)</title><text x="45" y="18" font-size="12">Torque (N m)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">4.61</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">4.49</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">4.37</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">4.25</text><polyline points="45.00,127.81 55.21,127.98 65.43,85.17 75.64,103.32 85.85,72.27 96.06,73.35 106.28,122.49 116.49,96.21 126.70,130.91 136.91,134.63 147.13,85.77 157.34,105.24 167.55,73.94 177.77,71.43 187.98,120.16 198.19,87.91 208.40,124.62 218.62,126.18 228.83,84.06 239.04,104.23 249.26,76.11 259.47,74.37 269.68,121.28 279.89,94.84 290.11,127.80 300.32,128.02 310.53,85.16 320.74,103.34 330.96,72.33 341.17,73.42 351.38,122.43 361.60,96.28 371.81,130.92 382.02,134.64 392.23,85.81 402.45,105.23 412.66,73.94 422.87,71.39 433.09,120.17 443.30,87.94 453.51,124.65 463.72,126.26 473.94,84.13 484.15,104.23 494.36,76.15 504.57,74.37 514.79,121.28 525.00,94.84" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,133.25 55.21,128.61 65.43,94.39 75.64,100.67 85.85,81.19 96.06,80.16 106.28,107.97 116.49,94.75 126.70,123.73 136.91,115.57 147.13,87.90 157.34,95.26 167.55,70.55 177.77,73.79 187.98,104.63 198.19,98.59 208.40,124.52 218.62,117.70 228.83,95.25 239.04,99.64 249.26,80.62 259.47,78.60 269.68,116.66 279.89,103.98 290.11,134.54 300.32,128.32 310.53,94.36 320.74,100.38 330.96,80.63 341.17,80.44 351.38,108.21 361.60,94.86 371.81,123.60 382.02,115.42 392.23,87.31 402.45,95.67 412.66,70.36 422.87,73.87 433.09,104.31 443.30,98.19 453.51,124.31 463.72,117.42 473.94,95.50 484.15,99.16 494.36,80.49 504.57,78.59 514.79,115.77 525.00,104.17" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><svg role="img" aria-label="Phase A Back-EMF (V) residual: Coilem − FEMM" viewBox="0 0 540 230"><title>Phase A Back-EMF (V) residual: Coilem − FEMM</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V) residual: Coilem − FEMM</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">0.528</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">0.0297</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-0.469</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-0.967</text><polyline points="45.00,48.75 55.21,156.25 65.43,75.85 75.64,80.28 85.85,80.59 96.06,79.87 106.28,82.25 116.49,82.50 126.70,83.12 136.91,81.53 147.13,79.72 157.34,82.86 167.55,81.16 177.77,86.92 187.98,92.94 198.19,82.43 208.40,90.48 218.62,97.00 228.83,91.87 239.04,92.59 249.26,94.97 259.47,94.20 269.68,95.39 279.89,97.61 290.11,93.26 300.32,90.55 310.53,91.24 320.74,86.85 330.96,86.53 341.17,87.30 351.38,84.91 361.60,84.47 371.81,83.94 382.02,85.67 392.23,87.42 402.45,84.24 412.66,85.93 422.87,80.20 433.09,74.19 443.30,84.66 453.51,76.68 463.72,70.16 473.94,75.23 484.15,74.50 494.36,72.12 504.57,72.90 514.79,71.76 525.00,69.74" fill="none" stroke="#7653a2" stroke-width="2"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#7653a2" font-size="11">Residual solid</text></svg><svg role="img" aria-label="Phase A Back-EMF (V)" viewBox="0 0 540 230"><title>Phase A Back-EMF (V)</title><text x="45" y="18" font-size="12">Phase A Back-EMF (V)</text><path d="M45 38H525" stroke="#dce3ed"/><text x="2" y="42" font-size="10">49.6</text><path d="M45 81H525" stroke="#dce3ed"/><text x="2" y="85" font-size="10">16.5</text><path d="M45 124H525" stroke="#dce3ed"/><text x="2" y="128" font-size="10">-16.5</text><path d="M45 167H525" stroke="#dce3ed"/><text x="2" y="171" font-size="10">-49.6</text><polyline points="45.00,153.91 55.21,152.36 65.43,149.34 75.64,145.63 85.85,140.44 96.06,132.85 106.28,124.00 116.49,114.04 126.70,102.50 136.91,90.97 147.13,81.00 157.34,72.16 167.55,64.56 177.77,59.36 187.98,55.66 198.19,52.64 208.40,51.09 218.62,50.10 228.83,49.18 239.04,48.91 249.26,48.92 259.47,48.92 269.68,49.18 279.89,50.10 290.11,51.09 300.32,52.64 310.53,55.66 320.74,59.37 330.96,64.56 341.17,72.15 351.38,81.00 361.60,90.96 371.81,102.50 382.02,114.03 392.23,124.00 402.45,132.84 412.66,140.44 422.87,145.64 433.09,149.34 443.30,152.36 453.51,153.91 463.72,154.90 473.94,155.82 484.15,156.09 494.36,156.08 504.57,156.08 514.79,155.82 525.00,154.90" fill="none" stroke="#d66a00" stroke-width="2"/><polyline points="45.00,154.43 55.21,151.27 65.43,149.46 75.64,145.68 85.85,140.49 96.06,132.90 106.28,124.02 116.49,114.06 126.70,102.51 136.91,91.00 147.13,81.06 157.34,72.17 167.55,64.60 177.77,59.31 187.98,55.52 198.19,52.65 208.40,50.99 218.62,49.90 228.83,49.06 239.04,48.78 249.26,48.75 259.47,48.76 269.68,49.01 279.89,49.89 290.11,50.95 300.32,52.53 310.53,55.54 320.74,59.32 330.96,64.51 341.17,72.10 351.38,80.98 361.60,90.94 371.81,102.49 382.02,114.00 392.23,123.94 402.45,132.83 412.66,140.40 422.87,145.69 433.09,149.48 443.30,152.35 453.51,154.01 463.72,155.10 473.94,155.94 484.15,156.22 494.36,156.25 504.57,156.24 514.79,155.99 525.00,155.11" fill="none" stroke="#245dcc" stroke-width="2" stroke-dasharray="6 4"/><text x="45" y="185">0°</text><text x="490" y="185">352.5°</text><text x="15" y="204" fill="#d66a00" font-size="11">Coilem solid</text><text x="185" y="204" fill="#245dcc" font-size="11">Frozen FEMM dashed</text></svg><table><tr><th>Gate</th><th>Outcome</th><th>Value</th><th>Limit</th></tr><tr class="PASS"><td>mean_torque</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_fundamental</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>bemf_peak</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>torque_method</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>native_mesh</td><td>PASS</td><td></td><td></td></tr><tr class="PASS"><td>angle_grids</td><td>PASS</td><td></td><td></td></tr></table><p>Mean torque numerical resolution (diagnostic only): absolute difference 2.04516 mNm; relative difference 0.046139%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged.</p><details><summary>Metrics and diagnostics</summary><pre>{
+  &quot;status&quot;: &quot;PASS&quot;,
+  &quot;gates&quot;: {
+    &quot;mean_torque&quot;: &quot;PASS&quot;,
+    &quot;bemf_fundamental&quot;: &quot;PASS&quot;,
+    &quot;bemf_peak&quot;: &quot;PASS&quot;,
+    &quot;torque_method&quot;: &quot;PASS&quot;,
+    &quot;native_mesh&quot;: &quot;PASS&quot;,
+    &quot;angle_grids&quot;: &quot;PASS&quot;
+  },
+  &quot;candidate_average_Nm&quot;: 4.430568300184269,
+  &quot;reference_average_Nm&quot;: 4.4326134645343,
+  &quot;average_delta_pct&quot;: 0.04613901858113144,
+  &quot;average_absolute_delta_Nm&quot;: 0.0020451643500312144,
+  &quot;near_zero_reference&quot;: false,
+  &quot;numerical_resolution&quot;: {
+    &quot;unit&quot;: &quot;N m&quot;,
+    &quot;candidate&quot;: 4.430568300184269,
+    &quot;reference&quot;: 4.4326134645343,
+    &quot;signed_delta&quot;: -0.0020451643500312144,
+    &quot;abs_delta&quot;: 0.0020451643500312144,
+    &quot;relative_delta_pct&quot;: 0.04613901858113144,
+    &quot;relative_meaningful&quot;: true,
+    &quot;reference_near_zero&quot;: false,
+    &quot;relative_suppression_reasons&quot;: [],
+    &quot;opposite_signs&quot;: false,
+    &quot;noise_sensitivity&quot;: &quot;NO_CONTROL_EVIDENCE&quot;,
+    &quot;uncertainty_status&quot;: &quot;INSUFFICIENT_EVIDENCE&quot;,
+    &quot;evidence_sides&quot;: [],
+    &quot;observed_variation_abs&quot;: null,
+    &quot;observed_variation_by_side&quot;: {
+      &quot;candidate&quot;: null,
+      &quot;reference&quot;: null
+    },
+    &quot;observed_studies&quot;: []
+  },
+  &quot;bemf_fundamental_delta_pct&quot;: 0.18894918664118768,
+  &quot;bemf_peak_delta_pct&quot;: 0.30622749811119465,
+  &quot;torque_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.5341207569438754,
+    &quot;correlation&quot;: 0.9306865395537803
+  },
+  &quot;bemf_waveform&quot;: {
+    &quot;grid_match&quot;: true,
+    &quot;candidate_positions&quot;: 48,
+    &quot;reference_positions&quot;: 48,
+    &quot;nrmse_pct&quot;: 0.4802051178597784,
+    &quot;correlation&quot;: 0.9999900711735165
+  },
+  &quot;diagnostic_findings&quot;: [],
+  &quot;actual_torque_method&quot;: &quot;weighted_stress&quot;,
+  &quot;actual_mesh_source&quot;: &quot;native&quot;,
+  &quot;environment&quot;: null,
+  &quot;solve_metadata&quot;: {
+    &quot;solver_name&quot;: &quot;magneto2d-rust-0.4.0&quot;,
+    &quot;mesh_source&quot;: &quot;native&quot;,
+    &quot;torque_method&quot;: &quot;weighted_stress&quot;,
+    &quot;mesh_element_count&quot;: 53224,
+    &quot;rotor_positions&quot;: 48,
+    &quot;rated_speed_rpm&quot;: 3000,
+    &quot;current_amplitude_A&quot;: 20.0,
+    &quot;mesh_density&quot;: &quot;normal&quot;,
+    &quot;rotor_rotation_model&quot;: &quot;remesh_per_step&quot;,
+    &quot;nonlinear_tolerance&quot;: 0.001,
+    &quot;nonlinear_tolerance_method&quot;: &quot;picard&quot;,
+    &quot;solve_time_s&quot;: 94.672
+  }
+}</pre></details></section><p>Thermal analysis is outside this benchmark protocol. Smoke results never establish numerical parity.</p></body></html>

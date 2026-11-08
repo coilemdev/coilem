@@ -83,7 +83,8 @@ def coverage_plan(row):
 
 def display_outcome(row):
     plan = coverage_plan(row)
-    return plan["label"] if plan else row["status"]
+    outcome = plan["label"] if plan else row["status"]
+    return outcome + " (experimental)" if row.get("experimental") or row.get("phase") == "E" else outcome
 
 
 def presentation_status(row):
@@ -279,8 +280,32 @@ def charts(row):
     return "".join(out)
 
 
+def report_title(rows):
+    phases = {row["phase"] for row in rows}
+    if phases == {"F"}:
+        return "Coilem Phase F benchmark"
+    if phases == {"E"}:
+        return "Coilem Phase E benchmark (experimental)"
+    return "Coilem A–F benchmark" if phases.intersection({"E", "F"}) else "Coilem A/B/C/D benchmark"
+
+
+def reference_identity_text(manifest, *, markdown=False):
+    if manifest.get("collection_components"):
+        return "Reference datasets and review scopes are bound separately for each component; no single reference commit is assigned."
+    dataset = manifest.get("reference_id")
+    if dataset:
+        value = f"`{dataset}`" if markdown else dataset
+        return (f"Reference dataset: {value} (SHA-256 identity, not a Git commit). "
+                f"Review scope: {manifest.get('reference_review_scope', 'unreviewed')}.")
+    value = manifest.get("reference_commit") or "none"
+    return f"Reference commit: `{value}`." if markdown else f"Reference commit: {value}."
+
+
 def build(output, manifest, rows, *, pdf=False):
     rows = sorted(rows, key=lambda row: list(PHASE_LABELS).index(row["phase"]))
+    for row in rows:
+        if row["phase"] == "E":
+            row["experimental"] = True
     report = output / "report"
     report.mkdir(exist_ok=True)
     for row in rows:
@@ -335,7 +360,7 @@ def build(output, manifest, rows, *, pdf=False):
         "svg{width:49%;min-width:360px}pre{white-space:pre-wrap;overflow-wrap:anywhere}.case{break-before:page}"
         "@media print{svg{min-width:0}a{color:inherit}}"
     )
-    title = "Coilem A/B/C/D benchmark"
+    title = report_title(rows)
     parts = [
         f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{title}</title><style>{styles}</style><body><h1>{title}</h1>',
         f'<p class="{overall}">Outcome: {display_overall(overall, rows)}</p><p>Harness {manifest["identity"]["harness_version"]}; '
@@ -344,7 +369,7 @@ def build(output, manifest, rows, *, pdf=False):
         f"<p>{html.escape(evaluation_note(manifest))}</p>" if evaluation_note(manifest) else "",
         "<p>Orange solid = Coilem. Blue dashed = saved FEMM reference, drawn last so overlaps remain visible. "
         "Residual plots show small differences. Reference data is already in public clockwise coordinates.</p>",
-        f"<p>Reference mode: {manifest['reference_mode']}; reference commit: {manifest.get('reference_commit') or 'none'}. "
+        f"<p>Reference mode: {manifest['reference_mode']}; {html.escape(reference_identity_text(manifest))} "
         "No FEMM solves were executed in this run.</p><table><tr><th>Phase</th><th>Recorded outcomes</th></tr>",
     ]
     markdown = [
@@ -355,7 +380,7 @@ def build(output, manifest, rows, *, pdf=False):
         f"Harness {manifest['identity']['harness_version']}; protocol {manifest['identity']['protocol_version']}.",
         f"Report presentation: {HARNESS_VERSION}.",
         f"Candidate commit: `{manifest['identity']['commit']}`. Reference mode: `{manifest['reference_mode']}`.",
-        f"Reference commit: `{manifest.get('reference_commit') or 'none'}`. No reference solves executed.",
+        f"{reference_identity_text(manifest, markdown=True)} No reference solves executed.",
         evaluation_note(manifest),
         "",
         "| Phase | Outcomes |",
@@ -395,6 +420,9 @@ def build(output, manifest, rows, *, pdf=False):
                 markdown.extend(["", f"{plan['reason']} {plan['next_step']} Numerical status remains UNSUPPORTED; no comparison was performed."])
             if row.get("experimental_rotor"):
                 markdown.extend(["", EXPERIMENTAL_ROTOR_NOTE])
+            resolution = numerical_resolution_text(row["evaluation"])
+            if resolution:
+                markdown.extend(["", resolution])
             markdown.extend(hardware_markdown(row))
         parts.append("</table>")
         for row in selected:
@@ -414,12 +442,13 @@ def build(output, manifest, rows, *, pdf=False):
                     f"<p>{html.escape(EXPERIMENTAL_ROTOR_NOTE)}</p>" if row.get("experimental_rotor") else "",
                     charts(row),
                     gate_table(row["evaluation"]),
+                    numerical_resolution_html(row["evaluation"]),
                     hardware_html(row),
                     "<details><summary>Metrics and diagnostics</summary><pre>"
                     f"{html.escape(json.dumps(row['evaluation'], indent=2, allow_nan=False))}</pre></details></section>",
                 ]
             )
-    parts.append("<p>Thermal analysis is outside this A/B/C/D protocol. Smoke results never establish numerical parity.</p></body></html>")
+    parts.append("<p>Thermal analysis is outside this benchmark protocol. Smoke results never establish numerical parity.</p></body></html>")
     (report / "coilem_benchmark_report.html").write_text("".join(parts), encoding="utf-8", newline="\n")
     (report / "benchmark_report.md").write_text("\n".join(markdown) + "\n", encoding="utf-8", newline="\n")
     with (report / "benchmark_results.csv").open("w", encoding="utf-8", newline="") as stream:
@@ -460,6 +489,69 @@ def energy_balance_text(row):
     return f". Energy balance, torque / (3·E·I·cos γ / ω): {', '.join(shown)}" if shown else ""
 
 
+def numerical_resolution_projection(evaluation):
+    """Portable scalar diagnostics; exclude study identities and source evidence."""
+    raw = evaluation.get("numerical_resolution")
+    if not isinstance(raw, dict) or raw.get("unit") not in ("N m", "N·m", "Nm", "mNm", "V"):
+        return None
+    numeric = ("candidate", "reference", "signed_delta", "abs_delta", "relative_delta_pct", "observed_variation_abs")
+    projected = {"unit": raw["unit"]}
+    for key in numeric:
+        value = raw.get(key)
+        if value is None or (type(value) in (int, float) and math.isfinite(value)):
+            projected[key] = value
+    if projected.get("abs_delta") is None:
+        return None
+    for key in ("relative_meaningful", "reference_near_zero", "opposite_signs"):
+        if type(raw.get(key)) is bool:
+            projected[key] = raw[key]
+    sensitivity = raw.get("noise_sensitivity")
+    if sensitivity in ("NO_CONTROL_EVIDENCE", "DIFFERENCE_WITHIN_OBSERVED_VARIATION", "DIFFERENCE_EXCEEDS_OBSERVED_VARIATION"):
+        projected["noise_sensitivity"] = sensitivity
+    if raw.get("uncertainty_status") == "INSUFFICIENT_EVIDENCE":
+        projected["uncertainty_status"] = "INSUFFICIENT_EVIDENCE"
+    evidence_sides = raw.get("evidence_sides")
+    projected["evidence_sides"] = [side for side in ("candidate", "reference") if isinstance(evidence_sides, list) and side in evidence_sides]
+    return projected
+
+
+def numerical_resolution_text(evaluation):
+    """Explain the diagnostic without changing a recorded gate or verdict."""
+    resolution = numerical_resolution_projection(evaluation)
+    if resolution is None:
+        return ""
+    unit = resolution["unit"]
+    scale, display_unit = (1000, "mNm") if unit in ("N m", "N·m", "Nm") else (1, unit)
+
+    def quantity(value):
+        return f"{value * scale:.6g} {display_unit}"
+
+    label = "Voltage" if unit == "V" else "Mean torque"
+    parts = [f"{label} numerical resolution (diagnostic only): absolute difference {quantity(resolution['abs_delta'])}"]
+    relative = resolution.get("relative_delta_pct")
+    if resolution.get("relative_meaningful") and relative is not None:
+        parts.append(f"relative difference {relative:.6g}%")
+    else:
+        parts.append("relative difference suppressed near zero" if resolution.get("reference_near_zero") else "relative difference not informative")
+    text = "; ".join(parts) + "."
+    sensitivity = resolution.get("noise_sensitivity")
+    if sensitivity:
+        text += f" Noise sensitivity: {sensitivity.lower().replace('_', ' ')}."
+    variation = resolution.get("observed_variation_abs")
+    sides = resolution.get("evidence_sides", [])
+    if variation is not None and sides:
+        text += f" Observed variation {quantity(variation)} ({' and '.join(sides)} controls)."
+        text += " Observed variation is not an uncertainty bound or proof of noise."
+    text += " Uncertainty: insufficient evidence. Recorded verdict and gates unchanged."
+    return text
+
+
+def numerical_resolution_html(evaluation):
+    text = numerical_resolution_text(evaluation)
+    return f"<p>{html.escape(text)}</p>" if text else ""
+
+
+
 def gate_table(evaluation):
     gates = evaluation.get("gates", [])
     if isinstance(gates, dict):
@@ -489,7 +581,7 @@ def export_pdf(report, summary):
 
     styles = getSampleStyleSheet()
     story = [
-        Paragraph("Coilem A/B/C/D benchmark", styles["Title"]),
+        Paragraph(report_title(summary["rows"]), styles["Title"]),
         Paragraph(display_overall(summary["status"], summary["rows"]), styles["Heading2"]),
     ]
     run = summary["run"]
@@ -499,7 +591,7 @@ def export_pdf(report, summary):
         f"Harness {run['identity']['harness_version']}; protocol {run['identity']['protocol_version']}.",
         f"Report presentation: {HARNESS_VERSION}.",
         f"Candidate commit: {run['identity']['commit']}",
-        f"Reference: {run['reference_mode']}; commit {run.get('reference_commit') or 'none'}.",
+        f"Reference mode: {run['reference_mode']}; {reference_identity_text(run)}",
         "Orange solid: Coilem; blue dashed: saved FEMM. No reference solves executed.",
     ):
         story.extend([Paragraph(html.escape(text), styles["BodyText"]), Spacer(1, 8)])
@@ -602,6 +694,9 @@ def export_pdf(report, summary):
             story.append(table([["Gate", "Outcome"], *[[g["id"], g["status"]] for g in gates]], [g["status"] for g in gates]))
         else:
             story.append(Paragraph(html.escape(row["evaluation"].get("reason", row["status"])), styles["BodyText"]))
+        resolution = numerical_resolution_text(row["evaluation"])
+        if resolution:
+            story.append(Paragraph(html.escape(resolution), styles["BodyText"]))
         if row.get("experimental_rotor"):
             story.append(Paragraph(html.escape(EXPERIMENTAL_ROTOR_NOTE), styles["BodyText"]))
         hardware = hardware_table(row)
@@ -614,7 +709,7 @@ def export_pdf(report, summary):
             story.append(Table(cells, repeatRows=1, hAlign="LEFT"))
     SimpleDocTemplate(
         str(report / "coilem_benchmark_report.pdf"),
-        title="Coilem A/B/C/D benchmark",
+        title=report_title(summary["rows"]),
         author="Coilem",
         rightMargin=60,
         leftMargin=60,

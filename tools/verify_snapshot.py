@@ -52,6 +52,9 @@ FORBIDDEN_PARTS = {
 }
 FORBIDDEN_SUFFIXES = {".ans", ".fem", ".log", ".pem", ".key"}
 ALLOWED_DATA_FILES = {
+    "benchmarks/qualification-a4f9f4dccf2b/windows-x86_64/report/benchmark_results.csv",
+    "benchmarks/windows-v055-abcd-20261108/report/benchmark_results.csv",
+    "benchmarks/windows-v055-phase-f-20261108/report/benchmark_results.csv",
     "benchmarks/candidate-qualification-20261103/windows/report/benchmark_results.csv",
     "benchmarks/candidate-qualification-20261103/macos/report/benchmark_results.csv",
     "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",

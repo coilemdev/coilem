@@ -1,0 +1,376 @@
+{
+  "schema": "coilem.benchmark_record/v1",
+  "platform": "windows-x86_64",
+  "source": "benchmarks/windows-v055-phase-f-20261108/report",
+  "measured_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "python": "3.13.9",
+    "dependencies": {
+      "gmsh": "4.15.2",
+      "meshio": "5.3.5",
+      "numpy": "2.4.6",
+      "pydantic": "2.13.4"
+    }
+  },
+  "suite_sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475",
+  "reference_bundle_sha256": "9bba90b13f17ed45a53dd5ce03c44c2764bce83646dff10ebcde723b259afc4f",
+  "evaluation": "Post-hoc Windows Phase F comparison of unchanged full-grid measurements; project-owner engineering review preserves original LRK failures and explicitly accepts the mixed-source cohort. No new field solves.",
+  "physics_files": {
+    "backend/airgap_sampling.py": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
+    "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+    "backend/cogging.py": "523cab95d8260a557794c4e965afa979168f0a7008559e37c88e302c6bb0e7ff",
+    "backend/dq_flux_linkage.py": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8",
+    "backend/excitation.py": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab",
+    "backend/geometry.py": "75d36dd236b3b276b2fde1a058e8896af2f2508709a0cb1de9e8c77c94f84610",
+    "backend/geometry_drawer.py": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+    "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+    "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+    "backend/gmsh_mesh_rotation.py": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+    "backend/gmsh_solver.py": "720b9024b95c17c29219522f71417c76fc0c228677c65df06018772df2f5b5b3",
+    "backend/magneto2d_adapter/__init__.py": "124440adcd98fa37eed045a6e21f64561ed87133a4028544462a838738f4151a",
+    "backend/magneto2d_adapter/_state.py": "71cba96ae3c9685381a77c76fcd736728d10da0d842a4e436c729d2b320c87f5",
+    "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
+    "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+    "backend/magnet_temperature.py": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e",
+    "backend/models/config.py": "01a3dba95bfda8e164098aa6c5a56da0b7a45d44eb3e9e8bdff890f41a01c805",
+    "backend/public_material_catalog.py": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
+    "backend/public_policy.py": "8092e218243fc0935b0b706a4709656ba55e2a8875fdfcee2d6e3456b5be81f4",
+    "backend/reference_models/__init__.py": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d",
+    "backend/reference_models/prius.py": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
+    "backend/reference_models/lrk.py": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43",
+    "backend/rotor_layout.py": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27",
+    "backend/solver/__init__.py": "71812e7553c98a690d4076b452eba263da103040bb47b848c301bdf6c67599db",
+    "backend/solver/_helpers.py": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
+    "backend/solver_contract.py": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
+    "backend/solver_environment.py": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
+    "backend/steel_flux_metrics.py": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+    "backend/sweep_planning.py": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c",
+    "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+    "backend/topology_provenance.py": "0ef8f7e6643f23a4529ae3ec7d9af3fd5ebc49e3dd954a6747850970aa77a372",
+    "backend/winding_resistance.py": "8d999cb72a3cb8caaf67b0a5c52188c49c12c52f7580e617836da4c219445440",
+    "backend/loss_breakdown.py": "07836ed07dff4eb03ea665581411e3b33681579e2e86c226356016c7a130766a",
+    "backend/winding_utils.py": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+    "materials/electrical-steel/M350-50A.csv": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "backend/reference_models/pyleecan_prius_2004.json": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e",
+    "backend/reference_models/pyleecan_prius_2004_config.json": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a",
+    "backend/reference_models/lrk_12s14p_source.json": "474c5ce06d530a9c6281da165f83e28eeba40ba3458617001b18d11b5e17d608",
+    "backend/reference_models/lrk_12s14p_config.json": "46add87f28066dd32cbc96d91b1f7cfc9d025fea753b59495d6ba696423307bf",
+    "solvers/magneto2d/Cargo.lock": "ac28ac7063638b450017691f128610bcb635cf5f8108192ad595b02c25ea7df8",
+    "solvers/magneto2d/src/assembly.rs": "f2fe403b64eb8d3f6b9bf6f612861b2bbb60f6091ab844092f198bc7e79be465",
+    "solvers/magneto2d/src/field.rs": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786",
+    "solvers/magneto2d/src/lib.rs": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04",
+    "solvers/magneto2d/src/magnet_fraction.rs": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
+    "solvers/magneto2d/src/main.rs": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
+    "solvers/magneto2d/src/materials.rs": "61b5ee66e17f581b5d930d29eb923ef189a80f8698d0f5f915bb9ded9edb40a1",
+    "solvers/magneto2d/src/mesh.rs": "c646a27dc8f77e676391e8ae8f2fab82dc2072b1b3784880ee57e274ac890855",
+    "solvers/magneto2d/src/motor.rs": "1b8cccbe7c4603100ced441f0f4fa59efe84178a81d21a732d287eb53d4587b8",
+    "solvers/magneto2d/src/postprocess.rs": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838",
+    "solvers/magneto2d/src/postprocess/summary.rs": "054d746cc0f4f729ea382ddee40ffae438a4460d229054203781bd5e32865c26",
+    "solvers/magneto2d/src/postprocess/torque/env_flags.rs": "e919144439a8af36c8fbaf884fe439bb0f83c650a7b7f00b1756ff511b835f19",
+    "solvers/magneto2d/src/postprocess/torque/localization.rs": "fc850cee925b0158be741b3d3e2a616144218ff563d00e180fbc09fe0fb4d5c8",
+    "solvers/magneto2d/src/postprocess/torque/mod.rs": "c83c346820bc4dfd9a8ba18fe20f1e103e16f0f659c3c6cca37bcb1f74fa263b",
+    "solvers/magneto2d/src/run_config.rs": "7a588d6e47cacbfbf2ecf046f0b8fb0d028cd5b5bc85d39c3fa08fc528c66e54",
+    "solvers/magneto2d/src/schema.rs": "81a2b611c15736cb7851af8dd33f0260c48a3e2e1103bf21b6a17e8640cf83cd",
+    "solvers/magneto2d/src/solve/context.rs": "48e777b8678dec6cc59b63af46bbe5ef320c6bf5aac84a8dddcfb923723dd9f4",
+    "solvers/magneto2d/src/solve/mesh_metadata.rs": "37aa0a53aaa11688617e89f92c3c2826f39128d53a2b513f5247ccca6caa25df",
+    "solvers/magneto2d/src/solve/metrics.rs": "cde1d765e21376773d93f8f7541954a82e8e6fffc08dcfb94cd74f683139be60",
+    "solvers/magneto2d/src/solve/mod.rs": "c0c581e8d5e27529d7b981dc9f5fd97d4753d772c7d0c757d843ca249c801be6",
+    "solvers/magneto2d/src/solve/model/ipm.rs": "4c48ee72bf5964fd89de9ac5db8af4bd973f6e3ebfa46310edb84b30e398a6e0",
+    "solvers/magneto2d/src/solve/model/mod.rs": "714736b57d6ef1d2ec77f2e07846b10bb7fe29957e195a4e9f5e2af1576cad91",
+    "solvers/magneto2d/src/solve/model/spm.rs": "7f7d1009a5b84672e155475e99ae3e07c7956d9e0b9d976ad9e474019589ffd3",
+    "solvers/magneto2d/src/solve/newton.rs": "98c38d3b41c25734ef707e2791e2eb0c7ab47c1332b8b20788b0263b72a09aae",
+    "solvers/magneto2d/src/solve/nonlinear.rs": "6f1da85708f5974ec96a8f16a058ffd3c68f4dc18835672b45e409266c6ef5ee",
+    "solvers/magneto2d/src/solve/picard.rs": "a117d2f9d19a98ba43c3e6f4c318ec2e3c2b060e959e551746290feb9f2069ca",
+    "solvers/magneto2d/src/solve/problem.rs": "ea94c3e616ccfbeb8237da97a166265d8692b38223a45977e98aa90d2d5e345c",
+    "solvers/magneto2d/src/solve/types.rs": "697aa65a80474b91740081284e5744bde86ad26684972842ac27c8f85b7c1eba",
+    "solvers/magneto2d/src/sources.rs": "8469ed2f3d322a6cd7a4585f48d163871d23a88f444ccbb0af933ffea8fd343f",
+    "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
+  },
+  "case_runtime_s": {
+    "spm_outer_14p12s_drone__baseline": 502.5,
+    "spm_outer_14p12s_drone__high_current": 336.4,
+    "spm_outer_14p12s_drone__tight_airgap": 332.6,
+    "spm_outer_14p12s_drone__angle30": 343.3,
+    "spm_outer_14p12s_drone_noload__baseline": 552.2,
+    "spm_outer_12p9s_micro__baseline": 544.9,
+    "spm_outer_12p9s_micro_noload__baseline": 1915.4,
+    "spm_outer_10p12s_single_layer__baseline": 276.9,
+    "spm_outer_28p24s_multirotor__baseline": 254.7,
+    "spm_outer_30p27s_hub__baseline": 97.5
+  },
+  "cases": {
+    "spm_outer_10p12s_single_layer__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.5683538447821048,
+        "back_emf_fundamental_V": 5.617957263337451,
+        "back_emf_peak_V": 7.468464258185655
+      }
+    },
+    "spm_outer_12p9s_micro__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.015325140164484483,
+        "back_emf_fundamental_V": 0.452657360831847,
+        "back_emf_peak_V": 0.6363029145193008
+      }
+    },
+    "spm_outer_12p9s_micro_noload__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 1.4439059324224517e-06,
+        "back_emf_fundamental_V": 0.452657360831847,
+        "back_emf_peak_V": 0.6363029145193008
+      }
+    },
+    "spm_outer_14p12s_drone__angle30": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.0467510564939454,
+        "back_emf_fundamental_V": 0.7888468090711723,
+        "back_emf_peak_V": 1.0605972262131844
+      }
+    },
+    "spm_outer_14p12s_drone__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.053351684619950164,
+        "back_emf_fundamental_V": 0.7888468090711723,
+        "back_emf_peak_V": 1.0605972262131844
+      }
+    },
+    "spm_outer_14p12s_drone__high_current": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.0798967692264166,
+        "back_emf_fundamental_V": 0.7888468090711723,
+        "back_emf_peak_V": 1.0605972262131844
+      }
+    },
+    "spm_outer_14p12s_drone__tight_airgap": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.05640251221681048,
+        "back_emf_fundamental_V": 0.8339939390626293,
+        "back_emf_peak_V": 1.168405460805322
+      }
+    },
+    "spm_outer_14p12s_drone_noload__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 1.8088844001015905e-07,
+        "back_emf_fundamental_V": 0.7888468090711723,
+        "back_emf_peak_V": 1.0605972262131844
+      }
+    },
+    "spm_outer_28p24s_multirotor__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 0.32459559159837664,
+        "back_emf_fundamental_V": 4.793936345867791,
+        "back_emf_peak_V": 6.1065434813446595
+      }
+    },
+    "spm_outer_30p27s_hub__baseline": {
+      "phase": "F",
+      "status": "PASS",
+      "gates": {
+        "mean_torque": "PASS",
+        "bemf_fundamental": "PASS",
+        "bemf_peak": "PASS",
+        "torque_method": "PASS",
+        "native_mesh": "PASS",
+        "angle_grids": "PASS"
+      },
+      "values": {
+        "mean_torque_Nm": 4.430568300184269,
+        "back_emf_fundamental_V": 32.73114754074021,
+        "back_emf_peak_V": 41.23277642909099
+      }
+    }
+  },
+  "reference_id": "sha256:c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a",
+  "reference_manifest_sha256": "a58002f32f4233742a4a47e7306c38313cc410e7f94a22640a676c1061519ffe",
+  "reference_review": {
+    "file": "benchmarks/reference-baselines/phase-f-reviewed-20261108/review.json",
+    "sha256": "045198248e75880b7b64c4574cfe6b3e9251eebcda96aed958dc5e3dd46f58ea"
+  },
+  "qualification_scope": {
+    "platform": "windows-x86_64",
+    "phase": "F",
+    "outputs": [
+      "mean_torque",
+      "back_emf"
+    ],
+    "families": [
+      {
+        "slots": 12,
+        "poles": 14,
+        "layers": 2,
+        "turns_per_coil": 12,
+        "current_peak_A_min": 0,
+        "current_peak_A_max": 15
+      },
+      {
+        "slots": 9,
+        "poles": 12,
+        "layers": 2,
+        "turns_per_coil": 14,
+        "current_peak_A_min": 0,
+        "current_peak_A_max": 5
+      },
+      {
+        "slots": 12,
+        "poles": 10,
+        "layers": 1,
+        "turns_per_coil": 20,
+        "current_peak_A_min": 0,
+        "current_peak_A_max": 15
+      },
+      {
+        "slots": 24,
+        "poles": 28,
+        "layers": 2,
+        "turns_per_coil": 10,
+        "current_peak_A_min": 0,
+        "current_peak_A_max": 10
+      },
+      {
+        "slots": 27,
+        "poles": 30,
+        "layers": 2,
+        "turns_per_coil": 12,
+        "current_peak_A_min": 0,
+        "current_peak_A_max": 20
+      }
+    ],
+    "winding_type": "concentrated",
+    "phase_connection": "wye",
+    "parallel_paths": 1,
+    "current_amplitude_convention": "peak",
+    "excitation_mode": "sinusoidal",
+    "current_angle_deg": {
+      "min": 0,
+      "max": 30
+    },
+    "stator_OD_mm": {
+      "min": 18,
+      "max": 100
+    },
+    "airgap_mm": {
+      "min": 0.25,
+      "max": 0.5
+    },
+    "stator_types": [
+      "plain",
+      "shoed"
+    ],
+    "materials": {
+      "stator_steel": "M350-50A",
+      "rotor_steel": "M350-50A",
+      "magnet_grade": "N42",
+      "conductor": "copper"
+    },
+    "magnet_temperature_C": 20,
+    "winding_temperature_C": 20,
+    "rated_speed_rpm": 3000,
+    "mesh_density": "normal",
+    "mesh_build": "precise",
+    "grid_electrical_deg": {
+      "range": 360,
+      "step": 7.5
+    },
+    "excluded_outputs": [
+      "cogging_torque",
+      "dq_flux_linkage",
+      "magnet_temperature_derating",
+      "inductance",
+      "losses",
+      "efficiency"
+    ],
+    "macos_qualified": false
+  }
+}

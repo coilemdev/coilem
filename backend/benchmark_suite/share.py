@@ -18,6 +18,7 @@ from backend import __version__
 from backend.benchmark_suite import COMMAND_PHASES, PHASE_LABELS
 from backend.benchmark_suite.contract import CHECKOUT, ROOT
 from backend.benchmark_suite.record import TOLERANCES, VALUE_LABELS, gate_statuses, gated_values
+from backend.benchmark_suite.report import numerical_resolution_projection, numerical_resolution_text, reference_identity_text
 from backend.local_paths import contains_local_path, redact_local_paths
 from backend.resources import build_identity
 
@@ -48,9 +49,14 @@ def _case(row, comparison):
         "gates": gate_statuses(row["evaluation"]),
         "values": gated_values(row),
     }
+    if row.get("experimental") or row["phase"] == "E":
+        case["experimental"] = True
     for key in ("reason", "errors"):
         if row["evaluation"].get(key):
             case[key] = row["evaluation"][key]
+    resolution = numerical_resolution_projection(row["evaluation"])
+    if resolution is not None:
+        case["numerical_resolution"] = resolution
     if row["id"] in comparison.get("cases", {}):
         case["record"] = comparison["cases"][row["id"]]
     return case
@@ -72,6 +78,7 @@ def share_payload(summary, comparison, *, selection):
             "dependencies": identity["dependencies"],
         },
         "run": {
+            **{key: run[key] for key in ("reference_id", "reference_identity_kind", "reference_review_scope") if key in run},
             "status": run["status"],
             "outcome": summary["status"],
             "counts": summary["counts"],
@@ -136,6 +143,8 @@ def markdown(payload):
             + (f"; not checkable in this installation: {len(physics['unverified'])}" if physics["unverified"] else "")
             + "."
         )
+    if run.get("reference_id"):
+        lines += ["", reference_identity_text(run, markdown=True)]
     lines += [f"Match policy: {payload['match_policy']}.", "", "## Cases", ""]
     lines += ["| Phase | Case | Verdict | Record | Notes |", "| --- | --- | --- | --- | --- |"]
     for case in payload["cases"]:
@@ -144,7 +153,18 @@ def markdown(payload):
         notes = "; ".join(record["differences"]) if record and record["differences"] else case.get("reason") or ""
         if case.get("errors"):
             notes = "; ".join(str(error) for error in case["errors"] if error)
+        if case.get("experimental"):
+            notes = "; ".join(part for part in ("Experimental scope; no qualification claim", notes) if part)
+        resolution = numerical_resolution_text({"numerical_resolution": case.get("numerical_resolution")})
+        if resolution:
+            notes = "; ".join(part for part in (notes, resolution) if part)
         lines.append(f"| {case['phase']} | `{case['id']}` | {case['status']} | {verdict} | {notes.replace('|', '/')} |")
+    if set(selection["phases"]) == {"F"}:
+        reproduce = ("python -m tools.run_benchmarks --suite benchmarks/abcd-v1.8/benchmark_spec.json "
+                     "--reference-bundle benchmarks/reference-baselines/phase-f-reviewed-20261108 --phases F")
+    else:
+        reproduce = ("coilem benchmark" + (" --quick" if selection.get("quick") else "")
+                     + "".join(f" --phase {phase}" for phase in selection["phases"] if len(selection["phases"]) < len(COMMAND_PHASES)))
     lines += [
         "",
         "## Run",
@@ -154,9 +174,7 @@ def markdown(payload):
         f"- Source SHA-256 `{run['source_sha256'][:12]}`, Magneto2D binary `{run['binary_sha256'][:12]}`.",
         f"- Dependencies: {', '.join(f'{name} {version}' for name, version in sorted(platform['dependencies'].items()))}.",
         "",
-        "Reproduce with `coilem benchmark" + (" --quick" if selection.get("quick") else "")
-        + "".join(f" --phase {phase}" for phase in selection["phases"] if len(selection["phases"]) < len(COMMAND_PHASES))
-        + "`. The full JSON is beside this file.",
+        f"Reproduce with `{reproduce}`. The full JSON is beside this file.",
     ]
     return "\n".join(lines) + "\n"
 

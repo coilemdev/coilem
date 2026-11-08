@@ -1,4 +1,4 @@
-"""Qualification status under the reviewed protocol 1.6 parity report.
+"""Qualification status under the reviewed parity reports.
 
 docs/VALIDATION.md#qualification-status is the source: a combination of
 rotor, winding and excitation is qualified when every registered fixture for
@@ -7,6 +7,10 @@ current winding, current-angle, slot-layer and Precise mesh models at 88aae101.
 Combinations the benchmark did not measure, or measured with failures, are
 experimental. The result travels with previews, solve validation and saved
 runs, so the app and its exports say what the docs say.
+
+Generic outer-rotor SPM designs use a separate, Windows-only Phase F record
+and its limited mean-torque and Back-EMF scope. It does not extend the
+protocol 1.6 d/q or magnet-temperature qualifications to outer rotors.
 """
 
 from __future__ import annotations
@@ -113,8 +117,10 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
     if reference is not None:
         return ("experimental", reference.qualification_reason)
     if is_outer_rotor(config):
-        # Every registered fixture is an inner rotor, so no inner-rotor combination's evidence carries over.
-        return "experimental", "Outer-rotor SPM: no benchmark fixture measures an outer rotor yet."
+        from backend.phase_f_qualification import classify_phase_f_qualification
+
+        qualification = classify_phase_f_qualification(config)
+        return qualification["status"], qualification["reason"]
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"
@@ -171,6 +177,10 @@ def _caveats(config: MotorConfig) -> list[str]:
 def classify_qualification(config: MotorConfig) -> Qualification:
     """Return the status, a one-sentence reason and any caveats for ``config``."""
 
+    if is_outer_rotor(config) and reference_model(config) is None:
+        from backend.phase_f_qualification import classify_phase_f_qualification
+
+        return classify_phase_f_qualification(config)
     status, reason = _combination(config)
     if status == "qualified" and config.winding.type == "concentrated" and config.winding.layers != 1:
         status, reason = "experimental", "Two-layer concentrated windings (a coil on every tooth) were not measured by the benchmark."
@@ -200,7 +210,8 @@ def dq_flux_linkage_status(config: MotorConfig) -> tuple[OutputStatus, str]:
     solve_params = config.solve_params
     low, high = _DQ_CURRENT_ANGLE_RANGE_DEG
     if (
-        classify_qualification(config)["status"] == "qualified"
+        not is_outer_rotor(config)
+        and classify_qualification(config)["status"] == "qualified"
         and config.winding.type == "concentrated"
         and config.winding.layers == 1
         and (solve_params is None or solve_params.excitation_mode == "sinusoidal")
@@ -215,6 +226,7 @@ def magnet_temperature_status(config: MotorConfig) -> tuple[OutputStatus, str]:
 
     temperature = config.solve_params.magnet_temperature_C if config.solve_params is not None else None
     low, high = _MAGNET_TEMPERATURE_RANGE_C
-    if classify_qualification(config)["status"] == "qualified" and temperature is not None and low <= temperature <= high:
+    if (not is_outer_rotor(config) and classify_qualification(config)["status"] == "qualified"
+            and temperature is not None and low <= temperature <= high):
         return "qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON
     return "experimental", MAGNET_TEMPERATURE_STATUS_REASON

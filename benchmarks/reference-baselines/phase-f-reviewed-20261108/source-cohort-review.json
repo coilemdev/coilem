@@ -1,0 +1,48 @@
+{
+  "schema": "coilem.phase_f_source_review/v1",
+  "decision": "ACCEPTED_FOR_THIS_WINDOWS_COHORT",
+  "platform": "windows-x86_64",
+  "scope": "WINDOWS_ONLY_ENGINEERING_PARITY",
+  "reference_id": "sha256:c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a",
+  "single_producer_contract_satisfied": false,
+  "source_cohorts": {
+    "original": {
+      "evidence_sha256": "917d96cf5fe606124a23d8ee0c3ed251548a3787d090cd1749cf2be7d2dee670",
+      "description": "Nine normal cases and both air-gap refinement controls share this sealed source cohort."
+    },
+    "hub_bulk_mesh_variant": {
+      "evidence_sha256": "838bf87a94d56c3662329fe182318a36e2a160953266a2082b50b2783f6bd0e1",
+      "base_cohort": "original",
+      "bulk_mesh_mm": 0.5,
+      "description": "The hub retains its separately sealed bulk-mesh variant identity."
+    }
+  },
+  "case_ids": [
+    "spm_outer_30p27s_hub__baseline"
+  ],
+  "hub_bulk_mesh_mm": 0.5,
+  "original_bulk_mesh_mm": 0.25,
+  "hub_airgap_mesh_mm": 0.125,
+  "hub_magnet_mesh_mm": 0.15,
+  "hub_max_arc_segment_deg": 0.1418212364185206,
+  "spot_controls": [
+    {
+      "electrical_angle_deg": 0,
+      "torque_relative_delta_pct": 0.685802573836181,
+      "phase_flux_vector_relative_delta_pct": 0.12500268632907982,
+      "fine_mesh_elements": 333798,
+      "coarse_mesh_elements": 233832
+    },
+    {
+      "electrical_angle_deg": 15,
+      "torque_relative_delta_pct": 0.5118209058140728,
+      "phase_flux_vector_relative_delta_pct": 0.12972931203121277,
+      "fine_mesh_elements": 333464,
+      "coarse_mesh_elements": 234094
+    }
+  ],
+  "spot_controls_do_not_establish_full_sweep_mesh_convergence": true,
+  "original_single_producer_requirement_not_claimed_satisfied": true,
+  "versioned_cohort_review_policy": "This v2 review binds both actual source cohorts and the hub exception instead of assigning a fictitious common Git identity.",
+  "owner_decision_sha256": "6233114f182e3127f388f25d8dd2ae8d8a795393fcc09a8214b392c1ca2a79e0"
+}

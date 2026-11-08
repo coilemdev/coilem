@@ -1,15 +1,22 @@
 # Benchmark protocol 1.7.0: Phase E, cogging torque (proposed)
 
-**Status: proposed, not registered.** Phase E's requests and gates are fixed
-here before any comparison solve, as
-[public issue 185](https://github.com/coilemdev/coilem/issues/185) asks. It
-has no FEMM reference bundle yet, so it qualifies nothing. Harness **1.9.0**
-can run and grade it, and protocol **1.6.0** stays the default suite;
-`coilem benchmark` runs phases A–D only.
+**Status: experimental, not registered for qualification.** Phase E's
+requests and gates remain fixed as
+[public issue 185](https://github.com/coilemdev/coilem/issues/185) asks. The
+[experimental FEMM dataset](../reference-baselines/phase-e-experimental-20261108/README.md)
+now supplies all twelve selected reference waveforms to the normal composed
+benchmark report. Phase E is explicitly marked experimental even when its
+numerical gates pass. It adds no cogging qualification on any platform.
 
-Phase E is its own suite, `benchmark_spec.json` in this folder, because a
-reference bundle carries one reference commit: its FEMM cogging records come
-from a new collection, not from the reviewed protocol 1.6.0 bundle.
+The retained native comparison at `a4f9f4d` remains **10 PASS / 2 YELLOW**;
+it is not a new v0.5.5 native run. A normal benchmark invocation measures the
+current source before grading it. The reviewed A–D basis under protocol
+**1.6.0** and the separate Windows Phase F scope remain independent.
+
+Phase E is its own suite, `benchmark_spec.json` in this folder. Its v2
+experimental bundle uses a hash-bound dataset identity and retains the mixed
+baseline/half-gap selection. It does not assign a fictitious shared Git
+identity or reuse the reviewed protocol 1.6.0 bundle.
 
 ## Cases
 
@@ -76,16 +83,17 @@ and *c* coilEM's, both from `backend/cogging.py`:
 
 ## Run it
 
-Native only, until a reference bundle exists:
+To measure Phase E without a comparison:
 
 ```sh
 python -m tools.run_benchmarks --suite benchmarks/abcd-v1.7/benchmark_spec.json \
   --no-reference --out-dir ../benchmark-output/v1.7-phase-e
 ```
 
-With a bundle, pass `--reference-bundle <bundle>` instead of
-`--no-reference`. The [FEMM request](../../docs/COGGING_FEMM_REQUEST.md)
-says what the bundle must hold.
+For the experimental comparison, pass
+`--reference-bundle benchmarks/reference-baselines/phase-e-experimental-20261108`
+instead of `--no-reference`. The original
+[FEMM request](../../docs/COGGING_FEMM_REQUEST.md) remains the collection brief.
 
 ## What is left before it qualifies anything
 

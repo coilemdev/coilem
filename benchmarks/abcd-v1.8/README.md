@@ -1,14 +1,29 @@
-# Benchmark protocol 1.8.0: Phase F, outer-rotor motors (proposed)
+# Benchmark protocol 1.8.0: Phase F, outer-rotor motors
 
-**Status: proposed, not registered.** Phase F's requests and gates are fixed
-here before any comparison solve. It has no FEMM reference bundle yet, so it
-qualifies nothing. Until it does, the app reports every outer-rotor design as
-experimental. Harness **1.10.0** can run and grade it, and protocol **1.6.0**
-stays the default suite; `coilem benchmark` runs phases A–D only.
+**Status: reviewed for Windows x86-64 engineering parity.** The unchanged ten
+requests pass all **60 comparison gates** against the
+[reviewed Windows FEMM bundle](../reference-baselines/phase-f-reviewed-20261108/README.md).
+Both air-gap mesh controls and all 30 reference self-checks pass. The measured
+native candidate remains `34de0f4ca1604311f15edf6fb49b5a2a1bf27909`; the
+[public packet](../windows-v055-phase-f-20261108/README.md) retains its actual
+physics hashes and measured environment.
 
-Phase F is its own suite, `benchmark_spec.json` in this folder, because a
-reference bundle carries one reference commit: its FEMM records come from a new
-collection, not from the reviewed protocol 1.6.0 bundle.
+Harness **1.11.0** adds the explicit v2 dataset/cohort review. The original
+single-producer-commit requirement is not claimed satisfied: the review binds
+the original and hub bulk-mesh cohorts separately, and retains the two LRK
+FAIL observations under unchanged limits. Their numerical sensitivity is
+accepted for this Windows engineering scope without asserting a noise bound.
+
+Windows runtime qualification is limited to the five measured families and
+the material, winding, current, speed, temperature and mesh ranges in the
+record's `qualification_scope`. macOS and Linux remain experimental. Cogging,
+loaded d/q, inductance, temperature derating, losses and efficiency retain
+their own experimental status. The normal composed benchmark report includes
+A–F, with Phase E explicitly experimental. Protocol **1.6.0** remains the
+independent reviewed A–D qualification basis.
+
+Phase F remains its own suite and reference bundle. Its `reference_id` is a
+SHA-256 dataset identifier, not a Git commit or a relabeled producer identity.
 
 ## Cases
 
@@ -96,10 +111,20 @@ With a bundle, pass `--reference-bundle <bundle>` instead of `--no-reference`.
 The [FEMM request](../../docs/OUTRUNNER_FEMM_REQUEST.md) says what the bundle
 must hold.
 
-## What is left before it qualifies anything
+## Platform scope and remaining work
 
-1. The FEMM 4.2 bundle for the 10 cases, collected at one adapter commit and
-   reviewed.
-2. Native runs on Windows and macOS at the freeze candidate, graded against it.
-3. Outer-rotor qualification in `backend/qualification.py` for the
-   combinations whose gates pass.
+The Windows review accepts this two-cohort dataset through the explicit v2
+policy and binds all ten passing cases, both controls and the retained LRK
+diagnostics. Its runtime qualification requires matching measured physics
+and stays inside the record's supported envelope.
+
+macOS and Linux require their own matching native collections and platform
+records before those platforms can acquire Phase F qualification. This Windows
+addition does not establish full A–F release qualification or change Phase E's
+experimental status.
+
+Recompute the saved public comparison without any field solves:
+
+```sh
+python -m tools.verify_phase_f_windows_packet
+```

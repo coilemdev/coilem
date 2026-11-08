@@ -238,16 +238,21 @@ Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 
 ## Reproducibility and contributing
 
-Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) on
-your own computer with `coilem benchmark`, or `coilem benchmark --quick` for one
-case per phase in about 5 minutes. It solves each case with the installed
-Magneto2D and grades it against the frozen FEMM reference that ships with
-coilEM. It then checks that the result matches the [published record](benchmarks/records/README.md)
-for your platform, and writes a shareable report with no local paths. It needs
-no Git, Rust, Node.js or FEMM. From a checkout, `python -m tools.run_benchmarks
---out-dir ../benchmark-output/my-run --pdf` runs the same suite with the
-developer options. See the [benchmark commands, reference compatibility and
-version policy](benchmarks/abcd-v1.3/README.md).
+Run all six phases with `coilem benchmark`, or use `coilem benchmark --quick`
+for one registered case per phase. The command combines A-D, experimental
+Phase E cogging, and Phase F outrunners while keeping their three protocols
+and FEMM datasets separate. Phase E's raw grades remain visible; they do not
+establish application qualification. Phase F retains its reviewed Windows
+engineering scope. Execution errors in any phase remain errors.
+
+The command uses the installed Magneto2D, checks recorded components against
+the [published platform records](benchmarks/records/README.md), and writes a
+shareable report without local paths. It needs no Git, Rust, Node.js or FEMM.
+From a checkout, use `python -m tools.run_benchmark_collection --out
+../benchmark-output/my-run` for the same workflow. The lower-level
+`python -m tools.run_benchmarks` still targets one explicit versioned suite.
+See the [collection scope and resume behavior](docs/BENCHMARK_COLLECTION.md)
+and [command examples](benchmarks/README.md#running-the-benchmark).
 
 The [motor benchmark collection](benchmarks/models-v1/README.md) also includes
 Pyleecan Prius 8p48s and the exploratory Honda Accord 2005 comparison. From a

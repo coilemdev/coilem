@@ -219,6 +219,8 @@ def compare(args):
                 raise ValueError("Completed job disagrees with its measurement status")
             evidence_hashes[job["result"]] = sha(result_path)
     reference_manifest, references, bundle_sha = load_bundle(bundle, spec)
+    if "reference_commit" not in reference_manifest:
+        raise ValueError("This legacy comparison requires a v1 producer commit; use tools.qualify_benchmark_candidate for reviewed datasets")
     if reference_manifest["reference_commit"] != args.expected_commit:
         raise ValueError("Reference must use the same measured source pin; v1/v2 cannot substitute for v3")
     needed = {case["id"] for case in selected if not all(

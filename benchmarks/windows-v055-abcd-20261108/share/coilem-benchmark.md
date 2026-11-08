@@ -1,0 +1,70 @@
+# coilEM benchmark: PASS_WITH_UNSUPPORTED
+
+coilEM 0.5.1 (source, commit `34de0f4ca160`) on **windows-x86_64** (Windows-11-10.0.26200-SP0, Python 3.13.9).
+Ran 47 cases, full suite, phases A (SPM), B (IPM), C (Distributed Winding), D (BLDC), in 1 h 50 min.
+
+## Record match: MATCH
+
+Matches the published windows-x86_64 record (measured at 34de0f4): 47 of 47 cases match.
+Physics sources: **MATCH**, 69 files compared.
+Match policy: verdicts and gate statuses identical; mean torque within 0.5% (at least 0.001 N·m), back-EMF fundamental within 0.05% (at least 0.001 V), back-EMF peak within 1.5% (at least 0.001 V), cogging peak-to-peak within 0.5% (at least 0.0001 N·m), cogging first harmonic within 0.5% (at least 0.0001 N·m).
+
+## Cases
+
+| Phase | Case | Verdict | Record | Notes |
+| --- | --- | --- | --- | --- |
+| A | `spm_4p12s_simple__baseline` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.39644 mNm; relative difference 0.0830975%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_4p12s_simple__high_current` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.0376502 mNm; relative difference 0.00525833%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_4p12s_simple__tight_airgap` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 3.23905 mNm; relative difference 0.553672%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_4p12s_simple_noload__baseline` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.651491 mNm; relative difference suppressed near zero. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_4p12s_simple_noload__high_current` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.743316 mNm; relative difference 0.31228%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_4p12s_simple_noload__tight_airgap` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 2.01519 mNm; relative difference suppressed near zero. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__baseline` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 5.22235 mNm; relative difference 0.235908%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__high_current` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 10.1665 mNm; relative difference 0.306683%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__tight_airgap` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 14.9115 mNm; relative difference 0.632629%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_reference_angle30__baseline` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 82.2695 mNm; relative difference 0.493485%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_example_shoed` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 43.1084 mNm; relative difference 0.386955%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__magnet_60C` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 4.42021 mNm; relative difference 0.208862%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__magnet_100C` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 3.55185 mNm; relative difference 0.176243%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__dq_I20_g0` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 3.57482 mNm; relative difference 0.162129%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__dq_I20_g30` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 4.63108 mNm; relative difference 0.241683%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__dq_I20_g60` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 5.26327 mNm; relative difference 0.475306%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__dq_I40_g0` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 2.23087 mNm; relative difference 0.0508008%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__dq_I40_g30` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 4.8436 mNm; relative difference 0.126537%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| A | `spm_8p12s_concentrated__dq_I40_g60` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 5.81277 mNm; relative difference 0.263066%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_12s10p_fscw_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 4.38179 mNm; relative difference 0.0912363%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_24s16p_industrial_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 128.068 mNm; relative difference 0.655907%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_4p12s_micro_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.129551 mNm; relative difference 0.6013%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_angled_pocket_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.375393 mNm; relative difference 0.0174211%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 8.27941 mNm; relative difference 0.321442%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_thin_bridge_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 5.82845 mNm; relative difference 0.183486%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_vshape_8p12s_baseline_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 58.8541 mNm; relative difference 7.02243%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_vshape_8p12s_deep_apex_high_output_v1` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 31.7882 mNm; relative difference 5.0832%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_vshape_8p12s_narrow_angle_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 37.6572 mNm; relative difference 4.4022%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_vshape_8p12s_pocket_offset_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 53.7521 mNm; relative difference 5.08231%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_vshape_8p12s_thin_bridge_contract` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 67.5547 mNm; relative difference 2.57977%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_vshape_8p12s_wide_angle_high_output_v1` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 48.6222 mNm; relative difference 6.59403%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__magnet_60C` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 7.91156 mNm; relative difference 0.329357%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__magnet_100C` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 7.49761 mNm; relative difference 0.33633%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__dq_I50_g0` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 3.35815 mNm; relative difference 0.130627%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__dq_I50_g30` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 2.32718 mNm; relative difference 0.10213%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__dq_I50_g60` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 0.646081 mNm; relative difference 0.0483839%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__dq_I100_g0` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 7.3353 mNm; relative difference 0.141914%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__dq_I100_g30` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 4.73938 mNm; relative difference 0.101303%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| B | `ipm_flat_8p12s_fsae_contract__dq_I100_g60` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 1.68347 mNm; relative difference 0.0602778%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| C | `ornl_prius_2004_ipm` | UNSUPPORTED | match | The public launch supports flat-buried and V-shape IPM only. |
+| C | `spm_12p36s_distributed_femm_validation` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 269.068 mNm; relative difference 5.15966%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| C | `spm_8p24s_distributed_femm_validation` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 173.079 mNm; relative difference 3.05684%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| C | `spm_8p48s_chorded_5_6` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 98.4675 mNm; relative difference 1.64283%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| C | `spm_8p48s_distributed_femm_validation` | PASS | match | Mean torque numerical resolution (diagnostic only): absolute difference 98.5915 mNm; relative difference 1.56402%. Noise sensitivity: no control evidence. Uncertainty: insufficient evidence. Recorded verdict and gates unchanged. |
+| D | `spm_14p12s_high_pole` | PASS | match |  |
+| D | `spm_4p12s_small` | PASS | match |  |
+| D | `spm_8p12s_reference` | PASS | match |  |
+
+## Run
+
+- Harness 1.10.0, protocol 1.6.0; suite SHA-256 `60fb1c5353c8`, reference bundle `756ddf1e2341`.
+- Source SHA-256 `3145e11c95ca`, Magneto2D binary `e7699fa202f8`.
+- Dependencies: gmsh 4.15.2, meshio 5.3.5, numpy 2.4.6, pydantic 2.13.4.
+
+Reproduce with `coilem benchmark --phase A --phase B --phase C --phase D`. The full JSON is beside this file.

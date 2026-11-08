@@ -34,7 +34,8 @@ def join_suite(shards, *, suite, bundle, output):
         if manifest["identity"] != original["identity"] or common != selection:
             raise ValueError("Mixed candidate, binary, environment or reference identities")
         if (manifest["reference_mode"] != original["reference_mode"]
-                or manifest.get("reference_commit") != original.get("reference_commit")):
+                or any(manifest.get(key) != original.get(key) for key in (
+                    "reference_commit", "reference_id", "reference_identity_kind", "reference_review_scope"))):
             raise ValueError("Mixed reference modes")
         selected = set(manifest["selection"]["case_ids"])
         if len(selected) != len(manifest["selection"]["case_ids"]):

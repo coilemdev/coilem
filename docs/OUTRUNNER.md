@@ -91,8 +91,29 @@ redistribution rights of the source model's B-H curves are confirmed.
   18 mm design, the mean torque agrees with 1.5·p·λ·I within 0.3%, and the
   phases balance. The 9/12 design's mean torque moves less than 0.05% from the
   normal to the very fine mesh.
-- **Benchmark.** Outer rotors are experimental in the app: no registered
-  benchmark fixture is an outer rotor. Phase F, proposed as
-  [protocol 1.8.0](../benchmarks/abcd-v1.8/README.md), adds 10 outer-rotor cases
-  graded with Phase A's gates against FEMM 4.2. The
-  [FEMM request](OUTRUNNER_FEMM_REQUEST.md) describes the reference run.
+- **Windows Phase F benchmark.** The complete
+  [protocol 1.8.0 packet](../benchmarks/windows-v055-phase-f-20261108/README.md)
+  has ten passing cases, all 60 comparison gates, two passing air-gap mesh
+  controls and 30 passing reference self-checks against FEMM 4.2. Windows
+  x86-64 engineering qualification covers mean torque and back-EMF within
+  five measured slot/pole/winding families, with matching runtime physics and
+  the explicit material, winding, current, speed, temperature and normal/Precise
+  mesh envelope in the record. Other configurations and macOS/Linux remain
+  experimental.
+- **Reviewed diagnostics.** The FEMM reference reconstruction retains its two
+  LRK FAIL observations under unchanged tolerances. The project owner accepts
+  the documented numerical sensitivity for this Windows evidence, with no
+  statistical uncertainty bound asserted. A v2 review binds the original
+  source cohort and the hub's separate bulk-mesh cohort; it does not claim
+  the original single-producer-commit requirement was met. The historical
+  [FEMM request](OUTRUNNER_FEMM_REQUEST.md) and the reviewed bundle retain that
+  distinction.
+- **Output boundaries.** Phase F does not qualify cogging, loaded d/q,
+  inductance, temperature derating, losses or efficiency. Those outputs retain
+  their own experimental status even for a design whose mean torque and
+  back-EMF qualify on Windows.
+- **Normal benchmark report.** `coilem benchmark` composes A–F and retains the
+  separate protocol/reference identities. `--phase F` selects the outer-rotor
+  component alone. Phase E remains explicitly experimental; numerical PASS
+  does not add cogging qualification. The low-level A–D protocol and its
+  qualification basis remain separate.

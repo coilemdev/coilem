@@ -2,6 +2,8 @@
 
 import math
 
+from backend.benchmark_suite.numerical_resolution import scalar_resolution
+
 
 def band(value, green, yellow):
     if value is None or not math.isfinite(value):
@@ -89,6 +91,11 @@ def compare(data, reference):
         "average_delta_pct": mean_pct,
         "average_absolute_delta_Nm": mean_abs,
         "near_zero_reference": nearzero,
+        "numerical_resolution": (
+            scalar_resolution(ca, ra, unit="N m", relative_floor_abs=0.01)
+            if all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) for value in (ca, ra))
+            else None
+        ),
         "bemf_fundamental_delta_pct": fdelta,
         "bemf_peak_delta_pct": pdelta,
         "torque_waveform": torque_wave,

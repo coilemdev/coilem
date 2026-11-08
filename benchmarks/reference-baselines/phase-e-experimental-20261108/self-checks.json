@@ -1,0 +1,128 @@
+{
+  "schema": "coilem.phase_e_reference_self_checks/v1",
+  "status": "EXPERIMENTAL_REFERENCE",
+  "original_gates_or_tolerances_changed": false,
+  "selection_policy": "RETAINED_CORRECTED_HALF_MESH_SELECTION",
+  "cases": {
+    "spm_4p12s_simple__baseline__cogging": {
+      "input_sha256": "8839611fad28d21d9b088c0450e8272e9841fb2349f239cba2656f20bd7aa293",
+      "record_sha256": "2838c64f7ef2832c9422982e75258d7adca8802c078b15c8afdc007bf6d63265",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.001659324234584998,
+      "mean_Nm": 2.78533684363794e-06,
+      "registered_floor_Nm": 0.002385,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_4p12s_simple__tight_airgap__cogging": {
+      "input_sha256": "3c1b57c0bb3b063419cc0944252d0d2c19efba99b24e2f0175c0139f63318a29",
+      "record_sha256": "5f9df32cc8b075040d46d4034eecd5b6b0122b4ed8db341dcff2e1e966a2e41c",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.0022709779672424844,
+      "mean_Nm": 0.0006994429256504415,
+      "registered_floor_Nm": 0.002925,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_8p12s_concentrated__baseline__cogging": {
+      "input_sha256": "345b5167e28a6be168cb1064089aa00b6055f27a040307bbf54bfca853f42691",
+      "record_sha256": "b331706b0450ac478abfa0250a49e67c8dc440a723d517b78488601ccc29705e",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.004298279699502994,
+      "mean_Nm": -0.001499396509787063,
+      "registered_floor_Nm": 0.011069,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_8p12s_concentrated__tight_airgap__cogging": {
+      "input_sha256": "6327927a94e5d3381b69d2975019161a9eebe7944b6f0514bb29cc5c751fb7c4",
+      "record_sha256": "a588b8618f0254b6a0e0d852d315b7bc1abc4ed189c5cff21eea639f8ac4e291",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.00028002598783530416,
+      "mean_Nm": 0.00014743189002344392,
+      "registered_floor_Nm": 0.011785,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_8p12s_example_shoed__cogging": {
+      "input_sha256": "9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d",
+      "record_sha256": "ad568a23d3271ed0addf8793183bd7e76bb7ae36a3c97fbed1628525e0ff6af0",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.003860408533260449,
+      "mean_Nm": 0.002650468513139851,
+      "registered_floor_Nm": 0.055702,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "ipm_flat_8p12s_fsae_contract__cogging": {
+      "input_sha256": "bc4148dc2f8a60bf0fab4033d050883a4bc5718662ad1fb93ef3bd567c5efac4",
+      "record_sha256": "c9409b361cafb3397c9081ff3b5ef9c90034efb2ef2be8dce1014e4f831f30e7",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.0007849915069499297,
+      "mean_Nm": 4.336435202295058e-05,
+      "registered_floor_Nm": 0.012879,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": {
+      "input_sha256": "4f4686dcf06b28586ff750d384bf6f64d8d5cca83e8d110b4366f5198f188d96",
+      "record_sha256": "8e86816b953d03affb1b0aa6feb6e80364c50571d1cb02745cd62ca2161f524d",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.0007555664643154548,
+      "mean_Nm": 8.909532622480519e-05,
+      "registered_floor_Nm": 0.010774,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "ipm_flat_12s10p_fscw_contract__cogging": {
+      "input_sha256": "727e2f8a47115811f9a96a63ddd3fea44439af4ed134d4588c28657b0f6c5ebb",
+      "record_sha256": "20e8c248cebff4636c9ca82aa60a9b9268f15ad2140ff27e7f9a1a8b345c9f0b",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.00025313262197892115,
+      "mean_Nm": 0.010185503635434589,
+      "registered_floor_Nm": 0.024013,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "ipm_flat_24s16p_industrial_contract__cogging": {
+      "input_sha256": "683373683bee02043cd55a62b3d95da0af3e31625f8cd5cddc3d84f39eefa4d8",
+      "record_sha256": "91fb9c2a84ad43d9964fe7a343238376992d0a6221f758c7ccccc0494873697e",
+      "reference_selection": "baseline",
+      "endpoint_mismatch_Nm": 0.004259327363711882,
+      "mean_Nm": 0.0013958925523734663,
+      "registered_floor_Nm": 0.097627,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_8p24s_distributed_femm_validation__cogging": {
+      "input_sha256": "691e3d6dac30f855614acf981bb81e59b4832ca24872716fe2f8e671bb09ef87",
+      "record_sha256": "9b103431abdd802cc6a853e7e2e76fcb9a37f18790ce99f5f2ac130eaad9de7a",
+      "reference_selection": "half_airgap_mesh",
+      "endpoint_mismatch_Nm": 0.0034119529801030016,
+      "mean_Nm": -0.0075418073173867325,
+      "registered_floor_Nm": 0.02831,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_8p48s_distributed_femm_validation__cogging": {
+      "input_sha256": "0e3e1ac40c748c83d1c996daf90ab6ae0ea4fdedb832331faeb1d35f5aa72f23",
+      "record_sha256": "ea272b69bb744c322dc513bb37a10330d165241c2264ca3647e7dd41b5e7eca3",
+      "reference_selection": "half_airgap_mesh",
+      "endpoint_mismatch_Nm": 0.003499109908876733,
+      "mean_Nm": 0.0060340061897624225,
+      "registered_floor_Nm": 0.031519,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    },
+    "spm_12p36s_distributed_femm_validation__cogging": {
+      "input_sha256": "a2c3bfb257ac11398802ae8e347846e7f816ab78284411066784a7540c89a9e7",
+      "record_sha256": "4d89ff6bd833deff0b2c491c6ccba66a25f738ac669c5ac0794de8c5c8b92273",
+      "reference_selection": "half_airgap_mesh",
+      "endpoint_mismatch_Nm": 0.01535947757751098,
+      "mean_Nm": 0.0043947644945336985,
+      "registered_floor_Nm": 0.026074,
+      "reference_cogging_period": "PASS",
+      "reference_cogging_mean": "PASS"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "coilem.phase_e_retained_source_evidence/v1",
+  "status": "EXPERIMENTAL_REFERENCE",
+  "original_gates_or_tolerances_changed": false,
+  "selection_counts": {
+    "baseline": 9,
+    "half_airgap_mesh": 3
+  },
+  "source_files": [
+    {
+      "file": "benchmarks/windows-v051-20261105-a4f9f4d/waveforms.json",
+      "sha256": "81dc739f75e79fa77d6505d6ea3959fab98249e725b5bdbe730bb5d528d488a3"
+    },
+    {
+      "file": "benchmarks/windows-v051-20261105-a4f9f4d/results.json",
+      "sha256": "905f04974ec2013ead45892248ee179765264bff7fe5dda46c91dc6e4de702cf"
+    },
+    {
+      "file": "benchmarks/windows-v051-20261105-a4f9f4d/provenance.json",
+      "sha256": "0a5ffe30d3b43affb424a3db5ecf3dff1843a36bcd8e443c08a79dbe77f062a2"
+    }
+  ],
+  "description": "Retained public FEMM cogging waveforms, including the previously selected corrected half-gap records; no accepted reference review or new native collection is implied."
+}

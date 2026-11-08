@@ -349,7 +349,7 @@ def test_shareable_report_removes_local_paths(graded, tmp_path: Path) -> None:
     assert str(output) not in markdown and str(output) not in text and str(Path.home()) not in markdown
     assert payload["cases"][0]["errors"][0] == f"Disk full writing {LOCAL_PATH_PLACEHOLDER}/jobs/x/native-runtime/solve_cache"
     assert "## Record match: DIFFERS" in markdown and "3 of 4 cases match" in markdown
-    assert "coilem benchmark --quick`" in markdown
+    assert "coilem benchmark --quick --phase A --phase B --phase C --phase D`" in markdown
     assert payload["record_match"]["record"]["measured_commit"].startswith("738d951")
 
 

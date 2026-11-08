@@ -380,6 +380,11 @@ def test_orchestrator_resume_and_report_only_preserve_completed_jobs(tmp_path, m
     from backend import magneto2d_adapter
     from backend.benchmark_suite import cli
 
+    # Workers below replay saved results and allocate no field runtime. Keep
+    # this orchestration test independent of the host's available disk space;
+    # the separate disk-floor test exercises the guard itself.
+    usage = cli.shutil.disk_usage(tmp_path)
+    monkeypatch.setattr(cli.shutil, "disk_usage", lambda _: usage._replace(free=10 * 10**9))
     case = next(c for c in SPECIFICATION["cases"] if c["phase"] == phase)
     recorded = historical(case)
     runtime = {"commit": "test-candidate", "dirty": False, "harness_version": "1.0.0", "protocol_version": "1.0.0"}
@@ -540,7 +545,8 @@ def test_release_suite_replaces_only_two_requests_and_preserves_archives():
         assert config == original
         source = read(ROOT / "benchmarks/ipm-high-output-20261011-af56962/rows" / (case["id"] + ".json"))
         evaluation = evaluate_abc(source["candidate"], reference, config)
-        assert_same_metrics(evaluation, source["comparison"])
+        assert evaluation["numerical_resolution"]["uncertainty_status"] == "INSUFFICIENT_EVIDENCE"
+        assert_same_metrics({key: value for key, value in evaluation.items() if key != "numerical_resolution"}, source["comparison"])
         assert evaluation["status"] == "PASS"
         assert source["native_runtime_before"] == source["native_runtime_after"]
         assert source["reference_runtime_before"] == source["reference_runtime_after"]

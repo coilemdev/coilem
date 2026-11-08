@@ -1,0 +1,49 @@
+{
+  "schema": "coilem.lrk_sensitivity_review/v1",
+  "decision": "ACCEPTED_AS_NUMERICAL_SENSITIVITY",
+  "platform": "windows-x86_64",
+  "scope": "WINDOWS_ONLY_ENGINEERING_PARITY",
+  "original_check_counts": {
+    "PASS": 9,
+    "FAIL": 2
+  },
+  "preserved_fail_indices": [
+    5,
+    10
+  ],
+  "original_verdicts_retained": true,
+  "limits_changed": false,
+  "controls_not_a_statistical_error_bound": true,
+  "rows": [
+    {
+      "index": 5,
+      "reference_mNm": 3.3944,
+      "rebuilt_mNm": 3.5925984483587508,
+      "allowed_error_mNm": 0.067888,
+      "absolute_error_mNm": 0.19819844835875067,
+      "original_status": "FAIL",
+      "reference_original_replay_mNm": 3.394435485918389,
+      "reference_rigid_rotation_mNm": 3.728080141319754,
+      "reference_orientation_variation_mNm": 0.3336446554013648,
+      "candidate_coarse_mNm": 3.523543112111617,
+      "candidate_mesh_variation_mNm": 0.06905533624713378,
+      "uncertainty_status": "INSUFFICIENT_EVIDENCE"
+    },
+    {
+      "index": 10,
+      "reference_mNm": 0.0649,
+      "rebuilt_mNm": 0.01330316676225945,
+      "allowed_error_mNm": 0.05,
+      "absolute_error_mNm": 0.05159683323774055,
+      "original_status": "FAIL",
+      "reference_original_replay_mNm": 0.06488397342043012,
+      "reference_rigid_rotation_mNm": -0.1306208677359521,
+      "reference_orientation_variation_mNm": 0.19550484115638223,
+      "candidate_coarse_mNm": 0.0361407478270631,
+      "candidate_mesh_variation_mNm": 0.02283758106480365,
+      "uncertainty_status": "INSUFFICIENT_EVIDENCE"
+    }
+  ],
+  "review_basis": "Observed reference-orientation and mesh sensitivity accepted for this Windows engineering evidence; no noise confidence interval is asserted.",
+  "owner_decision_sha256": "6233114f182e3127f388f25d8dd2ae8d8a795393fcc09a8214b392c1ca2a79e0"
+}

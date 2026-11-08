@@ -93,12 +93,12 @@ def test_layout_and_reference_registry_are_hashed_physics() -> None:
     assert {"backend/rotor_layout.py", "backend/reference_models/__init__.py"} <= sources
 
 
-def test_outer_rotor_is_experimental_where_the_inner_combination_is_qualified(monkeypatch):
-    # Single-layer concentrated SPM under sinusoidal current on M350-50A is qualified for inner rotors only.
+def test_unmeasured_outer_family_does_not_inherit_inner_qualification(monkeypatch):
+    # The inner combination's evidence cannot qualify an unmeasured outer family.
     monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
     assert qualification_module.classify_qualification(MotorConfig.model_validate(INNER))["status"] == "qualified"
     outer = qualification_module.classify_qualification(MotorConfig.model_validate(outer_config()))
-    assert (outer["status"], outer["reason"]) == ("experimental", "Outer-rotor SPM: no benchmark fixture measures an outer rotor yet.")
+    assert outer["status"] == "experimental"
 
 
 def test_rotor_torque_sign_rules():

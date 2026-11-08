@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 1415,
-      "sha256": "30f2c604d63c11c80500dde21fb92ea7839432b811e1111e62c54bcef5d83a98"
+      "bytes": 2119,
+      "sha256": "48d482a1cde398a9927fbf8592f3e53c848cdce3aba5b13fd124111d84191045"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 14840,
-      "sha256": "90f1664f87230162dcea5203339d9eed3ab967bdb204efabd532e8829822224d"
+      "bytes": 15112,
+      "sha256": "de30fbfc248533507c83f1c44174f342110b0e2cebdacff0a9ae7c13a6a20353"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -110,13 +110,13 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 645,
-      "sha256": "bd91d90ca4330a759bc203850b558c6b4ea0bcb4c76f944feaec920e7999d9ea"
+      "bytes": 650,
+      "sha256": "c7480e9caecee242530c96901f599657ba48d061dc0a3b0f4497de4b3d27097b"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
-      "bytes": 4433,
-      "sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8"
+      "bytes": 4782,
+      "sha256": "a5b9761828e7b7c30401b98dd404daab602b2ce10b6037752c00dea045696c62"
     },
     {
       "path": "backend/benchmark_suite/bldc_metrics.py",
@@ -125,8 +125,8 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 22578,
-      "sha256": "a990898368922b95030f76a47681dbdad273a4886e439c0c4117968fe5e8cb80"
+      "bytes": 22580,
+      "sha256": "9ebfee409ab3ea481a79bafa6000a58297703fb3493b6230b3a9682740464621"
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
@@ -135,8 +135,8 @@
     },
     {
       "path": "backend/benchmark_suite/command.py",
-      "bytes": 7710,
-      "sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c"
+      "bytes": 8400,
+      "sha256": "21aa952c5db4cf9e95602377240b1ba1a819ebf76e34b753d265102f10cf81e2"
     },
     {
       "path": "backend/benchmark_suite/contract.py",
@@ -165,18 +165,18 @@
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 11258,
-      "sha256": "6ee344236e0f87d30e0b32e371e92d314c5c0b7bdd8f792fccbc9ddc5e38669b"
+      "bytes": 11453,
+      "sha256": "84785aa84321f78e5d89b428bb9cff3e10207b23e309fc695f570a2d282283ec"
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 7998,
-      "sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155"
+      "bytes": 45888,
+      "sha256": "34cf74c1cef66e0f12bb20bbe48585f0fd4a07537c18af54f86ce5980a3c3d51"
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 30826,
-      "sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d"
+      "bytes": 35500,
+      "sha256": "95ff3141f05f676d1f908fcb2f20e56993bd7445298215d26404b197dc6d38cd"
     },
     {
       "path": "backend/benchmark_suite/resistance_metrics.py",
@@ -185,8 +185,8 @@
     },
     {
       "path": "backend/benchmark_suite/share.py",
-      "bytes": 9015,
-      "sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e"
+      "bytes": 10264,
+      "sha256": "ce519cb323c58b11d1afc0ff79c031c2ed0330883ee4e4d0444f6e9d04326429"
     },
     {
       "path": "backend/benchmark_suite/worker.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 11017,
-      "sha256": "30af09aef728d3441dff31a4066f747a9596f0d96c92ba26c62ddf143cd870ad"
+      "bytes": 11511,
+      "sha256": "44d5ebcdb05ace23780fb7b7dc9e9f12b24ab1a6fceb3f78cedff3ad8f032e5d"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 9021,
-      "sha256": "4f3863da726116daf57092b5347def42cf202519ed43eeb51705ae70d32b6d04"
+      "bytes": 15031,
+      "sha256": "88e74dea052ddb5e65f2b80d7d30019365c48eba1e1dac8d7c513eaa619eee4b"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -715,8 +715,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 12159,
-      "sha256": "f2159d3acb125659de678b1d9789e6d802e54ca59f91ae740e2f976a3ec05da4"
+      "bytes": 14837,
+      "sha256": "9daffc42dba50a42eec92f1c873ebb8b8e8c30eb3ebeb3b95e8ea973e3eb332e"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -945,8 +945,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.7/README.md",
-      "bytes": 5252,
-      "sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715"
+      "bytes": 5793,
+      "sha256": "949e88eee3270029966fbf16fd30741f1d056463ab45c8904d0ba3d788e04650"
     },
     {
       "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
@@ -3500,8 +3500,8 @@
     },
     {
       "path": "benchmarks/records/README.md",
-      "bytes": 5163,
-      "sha256": "ea2443f4d566b5c0e3b03f19ed90761a4d93886aa6c19cd4812cd0c523b17a49"
+      "bytes": 5491,
+      "sha256": "0b6635b213925838a88ce5a5599176a141e00abc4e21c7f2504ba24f0a2f2059"
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
@@ -3510,8 +3510,8 @@
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
-      "bytes": 35779,
-      "sha256": "a6ff0a9b4f1a9bd79d9f059820f12b477c0bb58a3bde516307636e0a43c6757b"
+      "bytes": 36991,
+      "sha256": "b881f0b186fc1f4e5ba334c35eea57b022f2095f56c049d3f632c48eb353ab68"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 52699,
-      "sha256": "fb8a608c962d550869ac0af040c25288a3eea56133cfbc9f858d09e2de048893"
+      "bytes": 56293,
+      "sha256": "609f7567f69564258957f7e3a4d3ae5408a4d2fea00d95c4a67b9514583ad95b"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7945,13 +7945,13 @@
     },
     {
       "path": "tests/test_benchmark_cap_registration.py",
-      "bytes": 7064,
-      "sha256": "2f334b3563e48ee387e434f6a4038fa8fcb31e3f1234d2e103bde534bd30d7e4"
+      "bytes": 7521,
+      "sha256": "dabb5edd5807687c85129566abc29611b4ef042f48ed6ce1f39484a4ef0b8b5d"
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 20905,
-      "sha256": "9144292cceac2795dda238330d739305db1b4ccba5c87ce8a131f778fc53b869"
+      "bytes": 20945,
+      "sha256": "c4ac83c5db4e3aaadf6aad3811173cb7259cf7773b6c88f89405144c87abbbd2"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -7960,8 +7960,8 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 31281,
-      "sha256": "9da2dbebe22cfd052abaab50143a39131b31f623a54117a5afa787ff223cba10"
+      "bytes": 31807,
+      "sha256": "43dfc1ea2335f0aa9203eef486c0dd590110f110cb5f5be56ecfa801f5b9d567"
     },
     {
       "path": "tests/test_benchmark_v16_registration.py",
@@ -8575,8 +8575,8 @@
     },
     {
       "path": "tools/report_benchmark_against_reference.py",
-      "bytes": 20151,
-      "sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc"
+      "bytes": 20346,
+      "sha256": "c46df2be4cfde68e02b87688de250982f1d142f005e7f46763946727e7620881"
     },
     {
       "path": "tools/report_prius_benchmark.py",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 24083,
-      "sha256": "0151bd392f6a6d3221f45158b64a57e464cc25172b6c132462a08c0bdc63364f"
+      "bytes": 24323,
+      "sha256": "1981fc36d39f51604b16a87b315d34d828b56a5235f49ea14759c4a85dd58135"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -10710,8 +10710,8 @@
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
-      "bytes": 6326,
-      "sha256": "54da9cfad3d4733478179db325b3766207a307a712089c75aa16ae8cf367a861"
+      "bytes": 6461,
+      "sha256": "a1e552cb9890a2cffc6a2fa9a3560f6d7c119e72f9c0a304e57da556f067c20d"
     },
     {
       "path": "tools/review_protocol16_references.py",
@@ -12115,8 +12115,8 @@
     },
     {
       "path": "tools/join_benchmark_runs.py",
-      "bytes": 9064,
-      "sha256": "23fb056ec0c6a8bb7fb4c79bb47e0294ed8bcf865f5d924b3bc3eb418e3159f0"
+      "bytes": 9161,
+      "sha256": "d6dd43eb2edd9723ca732b86286ab7d0c6be6b5dfd4938cbf1fdf9246e582f5d"
     },
     {
       "path": "tools/physics_impact.py",
@@ -12145,8 +12145,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 15290,
-      "sha256": "b638cffd3b46f9ab7e6c259055545373e9a9b11198279d66364ff39329745aff"
+      "bytes": 15296,
+      "sha256": "65dc72f6cb24ef16759ecbee969de362b308872fa2e660a2d061c284ea7a1d9d"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -12965,8 +12965,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
-      "bytes": 6169,
-      "sha256": "9c14aa209f8809e256c1792378e84453b5f89c7ba8713c9db7bf944427d676d9"
+      "bytes": 7478,
+      "sha256": "6d862b6c15f322275a11093fd7117db7d9e1e54cb6d02100fb620824c12a3d55"
     },
     {
       "path": "benchmarks/abcd-v1.8/benchmark_spec.json",
@@ -13025,13 +13025,13 @@
     },
     {
       "path": "docs/OUTRUNNER.md",
-      "bytes": 5260,
-      "sha256": "e003c6cc6f679bd7ee8ab65d28386fa93dcaa5a4d73ea95ed6a593e7647c57c3"
+      "bytes": 6669,
+      "sha256": "a0e62006e8293ca2f7946ace402c862b1a284246d31bed15a5ec41e83ae2fb20"
     },
     {
       "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
-      "bytes": 15559,
-      "sha256": "73dcd2203f5abc5cf1141580f3399e2caa61e4d02a88acf88201098bcc46968a"
+      "bytes": 16339,
+      "sha256": "0df241bf74134ddfd7bdd059a9a27db471fcfb21785e3305df012755ec448412"
     },
     {
       "path": "frontend/scripts/test-coil-wiring.mjs",
@@ -13130,13 +13130,13 @@
     },
     {
       "path": "tests/test_outrunner_phase_f.py",
-      "bytes": 6316,
-      "sha256": "0fff28e5982abb3ff29d6e4b664bca48ef582a90d023e69c0df5f2c2111a34bc"
+      "bytes": 6140,
+      "sha256": "c7dab4ba90068a238f5e91334f00a51b63f51279ec4e04f90813d1b79cac948a"
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 15110,
-      "sha256": "ba9286382d14b17c107ff9ec4b1eac667f3f853a434640cf9b3d7d6359feae40"
+      "bytes": 14984,
+      "sha256": "7692fcefb21e2047ebac5226629cd7f1f1f23582cedc3673f56d1f87d2d03737"
     },
     {
       "path": "tools/export_lrk_reference.py",
@@ -13147,6 +13147,846 @@
       "path": "tools/make_outrunner_phase_f.py",
       "bytes": 8404,
       "sha256": "c9a0a33e2b4fb07abf41a43717e51d73de8c4b84fc50960920aebebd36f00f8f"
+    },
+    {
+      "path": "backend/benchmark_suite/collection.py",
+      "bytes": 15840,
+      "sha256": "60d6f946a90ca6a90a1ef2fc33d180dd36e6c8ee38bfd09f3aad723dea538adb"
+    },
+    {
+      "path": "backend/benchmark_suite/collection_report.py",
+      "bytes": 10715,
+      "sha256": "1f67bc9394781f2a802fd716d0cf17ecdac4f85826c43014b7a84f8d07509fa1"
+    },
+    {
+      "path": "backend/benchmark_suite/numerical_resolution.py",
+      "bytes": 8761,
+      "sha256": "1a5272a7df41c82020f1e57755c065c5778f695336f3df0cef813c6f176b4834"
+    },
+    {
+      "path": "backend/phase_f_qualification.py",
+      "bytes": 9530,
+      "sha256": "c0014be2f6d78d58f08755c131f5d9c391ae80564eb5292ee1176a5a5efa6044"
+    },
+    {
+      "path": "benchmarks/public-benchmark-collection.json",
+      "bytes": 2944,
+      "sha256": "e039af79d79b7053e0c903cf5ac9e1f75cff5f8e74ac10493dca909662b4780a"
+    },
+    {
+      "path": "benchmarks/records/phase-f/windows-x86_64.json",
+      "bytes": 16600,
+      "sha256": "9ef239d60943b991fa9fc392dee20a673afba76b232353d5ac2569bb819d45b0"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/README.md",
+      "bytes": 1598,
+      "sha256": "b6e3af0ca6773f08bbe1be90e203d72d727ad41a1046159a24c81c224c594769"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "bytes": 5293,
+      "sha256": "20e8c248cebff4636c9ca82aa60a9b9268f15ad2140ff27e7f9a1a8b345c9f0b"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "bytes": 5355,
+      "sha256": "91fb9c2a84ad43d9964fe7a343238376992d0a6221f758c7ccccc0494873697e"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "bytes": 5366,
+      "sha256": "8e86816b953d03affb1b0aa6feb6e80364c50571d1cb02745cd62ca2161f524d"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "bytes": 5363,
+      "sha256": "c9409b361cafb3397c9081ff3b5ef9c90034efb2ef2be8dce1014e4f831f30e7"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/manifest.json",
+      "bytes": 5758,
+      "sha256": "88b37ba3db4c55d86e9acb53a2359e342a6815d2aa2d5e17e02b0fcccc45b1d2"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/selected-waveforms.json",
+      "bytes": 18187,
+      "sha256": "74519b52191c8d711704b9db1044cf130050637d940d56382f5eba0769c76227"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/self-checks.json",
+      "bytes": 6168,
+      "sha256": "7865839f560e0ba79c6aa737bd0621986be688cbbf2c135388e02b6910c1fd27"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/source-evidence.json",
+      "bytes": 940,
+      "sha256": "eceb9e30b56272897f3ea17cc5223d90e3a5e0abb16f6622d44f2df425c96108"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 5314,
+      "sha256": "4d89ff6bd833deff0b2c491c6ccba66a25f738ac669c5ac0794de8c5c8b92273"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_4p12s_simple__baseline__cogging.json",
+      "bytes": 5315,
+      "sha256": "2838c64f7ef2832c9422982e75258d7adca8802c078b15c8afdc007bf6d63265"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_4p12s_simple__tight_airgap__cogging.json",
+      "bytes": 5311,
+      "sha256": "5f9df32cc8b075040d46d4034eecd5b6b0122b4ed8db341dcff2e1e966a2e41c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_8p12s_concentrated__baseline__cogging.json",
+      "bytes": 5314,
+      "sha256": "b331706b0450ac478abfa0250a49e67c8dc440a723d517b78488601ccc29705e"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "bytes": 5364,
+      "sha256": "a588b8618f0254b6a0e0d852d315b7bc1abc4ed189c5cff21eea639f8ac4e291"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_8p12s_example_shoed__cogging.json",
+      "bytes": 5278,
+      "sha256": "ad568a23d3271ed0addf8793183bd7e76bb7ae36a3c97fbed1628525e0ff6af0"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 5318,
+      "sha256": "9b103431abdd802cc6a853e7e2e76fcb9a37f18790ce99f5f2ac130eaad9de7a"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-e-experimental-20261108/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 5318,
+      "sha256": "ea272b69bb744c322dc513bb37a10330d165241c2264ca3647e7dd41b5e7eca3"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/README.md",
+      "bytes": 1995,
+      "sha256": "f6fef372153c4089d37726ce69f7116273def470e6d28d14be046e4857c7e67c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/lrk-sensitivity-review.json",
+      "bytes": 1858,
+      "sha256": "4efc3021b475d060822095b17102b89752495c8fc3dabe1b57b8eb7d0e8eca3c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/manifest.json",
+      "bytes": 5599,
+      "sha256": "a58002f32f4233742a4a47e7306c38313cc410e7f94a22640a676c1061519ffe"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/mesh-controls/spm_outer_12p9s_micro__baseline.json",
+      "bytes": 16026,
+      "sha256": "bb131a161bd3f2d04c70abe749cbc8a804a8083ce6924d1cf9fcaaa484ae7197"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/mesh-controls/spm_outer_14p12s_drone__tight_airgap.json",
+      "bytes": 15970,
+      "sha256": "ba807130f06833b55ac24cdcc1cc7831f9bb3b5089ce1b21262ecdd7b9606838"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/review.json",
+      "bytes": 4711,
+      "sha256": "045198248e75880b7b64c4574cfe6b3e9251eebcda96aed958dc5e3dd46f58ea"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/self-checks.json",
+      "bytes": 9511,
+      "sha256": "dc09306a7621c11b7a7051d2508436ebaadcd150fd4fcb0a1eb8dd2a6eaf2d2c"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/source-cohort-review.json",
+      "bytes": 2035,
+      "sha256": "758ad8d756507d526128c7cfb922b0fb5a3da6ce3204090edd8d4bc284331835"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_10p12s_single_layer__baseline.json",
+      "bytes": 15684,
+      "sha256": "1e40acdda142d895364545c6c2a86dad82c8c4db4d1162b29f1d93402bcc5802"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_12p9s_micro__baseline.json",
+      "bytes": 15933,
+      "sha256": "cb17a4dffd589017c2e9d3c235624650bf80377e37e883a7dbfcf046215601f0"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_12p9s_micro_noload__baseline.json",
+      "bytes": 15970,
+      "sha256": "34fa84149a08a19d8f85557ac2dad76738504e16dc1d981d8da68415fb0ad59e"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_14p12s_drone__angle30.json",
+      "bytes": 15868,
+      "sha256": "ea2ee99860bf744830fc1e701825a351c21fa87f2d6dcb9c81aacab36ef090e8"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_14p12s_drone__baseline.json",
+      "bytes": 15872,
+      "sha256": "bda25cad5e638c556d222901185df17deacadda3965495b461b8afad7abeb2a4"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_14p12s_drone__high_current.json",
+      "bytes": 15875,
+      "sha256": "65aa3fc4781eb7746224bbc68432a89560c3977e6edb2bbbe5d20df7d326305a"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_14p12s_drone__tight_airgap.json",
+      "bytes": 15968,
+      "sha256": "03bead46a4efff3e55416493b00afe0ae225a7684cf95dd29d02b8cae381c4d1"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_14p12s_drone_noload__baseline.json",
+      "bytes": 15991,
+      "sha256": "74dcafab20be67c97a7122da626f028856c8eab8e52cd9d9e77e61d356d9d06a"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_28p24s_multirotor__baseline.json",
+      "bytes": 15716,
+      "sha256": "8a347c71a5a8a47bb85e9666617229058063133ae111583bff1a34b28cc50f7f"
+    },
+    {
+      "path": "benchmarks/reference-baselines/phase-f-reviewed-20261108/spm_outer_30p27s_hub__baseline.json",
+      "bytes": 15600,
+      "sha256": "ac2aacdc3c68aca4131f0c2fa791e8cbca61bf9d4ba66f0e2497f1f26c2ad6fb"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/README.md",
+      "bytes": 1728,
+      "sha256": "c3b0e7d37cb84577bbef93c4c2652b3d4981d60dd652cb0fe9b1614ac3491d8e"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/comparison.html",
+      "bytes": 2320,
+      "sha256": "c6e427d8f73350ed25bcdade97a4dd9f0f0082e5e9d709b4be75489ffe4f3f87"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/comparison.json",
+      "bytes": 82316,
+      "sha256": "963a021d63dad26247e9ce55eca521159fedcc99cd4005b4b3bac9fa6fe82447"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/comparison.md",
+      "bytes": 1823,
+      "sha256": "758d4807a3be25745240211d99cb3eb02a2e9f37db9dc3ec0fbf7a15e9006cae"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "bytes": 4226,
+      "sha256": "cc8551e94fa3fb2c29651a7fce052b545e0e0b76bf434f58f420e3431384f2e1"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "bytes": 4222,
+      "sha256": "03b631f9f0094e3388e8239cfa968edb68e5b221d0b42db0d2017a2e8a8ad997"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "bytes": 4248,
+      "sha256": "9471d34b2bb03b9c4abb17f15fc1f7e23c28c4187bbfbba6b890e234be01c6e5"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "bytes": 4235,
+      "sha256": "43626b5ce9ce2d551e44c2ec73998b7c5f01d09e30ccb938f50b8b062e445587"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 4178,
+      "sha256": "4564a2cd341e2f96db134f68168afe309069c7cca856b286fb9d2e2bcfdd5a1c"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_4p12s_simple__baseline__cogging.json",
+      "bytes": 4234,
+      "sha256": "3ca72db81085f68cc2630f56de81a0f446b4c092b66c472fb2ccda99bd6d47b3"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_4p12s_simple__tight_airgap__cogging.json",
+      "bytes": 4216,
+      "sha256": "271a4fcddcd95f743e4179b62dcb5760ff90893b1bd7c394597770111d391a2f"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_8p12s_concentrated__baseline__cogging.json",
+      "bytes": 4249,
+      "sha256": "06ba8cd58b459e1c97898d857135fefde054a58669e119af2a5d3ca3ce19905d"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "bytes": 4239,
+      "sha256": "2a22853c196a24006e429c21901427fed7af23d6ac0b288c61d7516be02ee854"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_8p12s_example_shoed__cogging.json",
+      "bytes": 4214,
+      "sha256": "dc701f764b77e4252bf8e1aea430e14cde2ef2572845e613765c59e42a106be8"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 4177,
+      "sha256": "9de1c4b37ea1c6ad8d6afb6b55d5268d044133b415aff10daa316b94d012254c"
+    },
+    {
+      "path": "benchmarks/windows-phase-e-retained-20261108/native/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 4173,
+      "sha256": "5cc1a04a0ccb893d21357224d8485ec2c907567ef035247f32f28f8fcd2b8d7e"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/README.md",
+      "bytes": 2046,
+      "sha256": "6341d926d51bf935be5d1035d8d19f40b7110de9f5639efa3579204b2c074b4a"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/provenance.json",
+      "bytes": 7254,
+      "sha256": "5c1767b1c873b47231682434928224acfa3a43ad2e7ccd0870a502636f5c0bcf"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/artifact_manifest.json",
+      "bytes": 7229,
+      "sha256": "46eccb1204049a3d179d5d0580e8c14415606e33fcc5745677961965c3c579e6"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/benchmark_report.md",
+      "bytes": 19549,
+      "sha256": "8e2f4cbb18c53ff26fe31ee8093e19f112eca791a4ec7814e273c107698edc8a"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/benchmark_results.csv",
+      "bytes": 27288,
+      "sha256": "59ee4cf9e76fe1d80c73bde6069c30004f4bec0fe4c98d4ccb1efdb3fa66dd4d"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/benchmark_summary.json",
+      "bytes": 3088470,
+      "sha256": "5b6dca4a9e24537015493c33b55bd83933260bbae7a9f5ada440ab383b7d22ea"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/coilem_benchmark_report.html",
+      "bytes": 746334,
+      "sha256": "7b73d9921bee86428ff1b2dd602454264c38b7d60c4e95615db1ab484c145705"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "c7eaaaf1081d62fc92fdbcf85bd4a741437dbf2f447bfacafa3d29f571f38045"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "d50980ab4aac15eb065fb09632a0f56988cda12a01d4c5a225cf13f02377f12c"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3eb405359dbf6503ea6d29eaf41d595681ae5a7b4a70883aa202df1fd3df6388"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "4abe680cade07c37f540e1a30969f414f31688fbbce99d1809b1d58a655b055e"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "79ce0fe611aa702da1135b9c44b6d60b78be61e254084a01f0c66b7fb962c5a4"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "15aea8db2348b3e2005917913d31a33b98d686e29a7cda22869f337b0ec7d2bf"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "3eecedd2bb1f124caa23e176c52901ec22242ecce0ef5be770a4d4d030164cc2"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "0cdb53cf38da843f7230474d4a360382096a35834dfbea5b0f60a285166d436c"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "4f9316309c27142577d1e92f2a6ad73722a189f4f2aba595a40c13b4f7ea2ba0"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "da8e001617723fbf8bc27ed803b695e6739e49efb6e191057826aff8316e6166"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "0cfcd598575534929f95f5e468efee92531b158d98e8db34aea82c548ef1efdc"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "cc111eda6bc19623de00e8a1da66ba396db3d6440126947715b06511c9510357"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2506,
+      "sha256": "6ac02f92e487babf438331c79c44da56bc3059ac63fa2981f582843aa45adc4a"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2507,
+      "sha256": "040ea7d2cf367ab0fa9e8fdba9a83df22dd88e548597a15c939358c709cecd38"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2507,
+      "sha256": "22bfd644feb317039dadbf6e1736f6c0c28f8641689c9571dcea3a9aba62e027"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2506,
+      "sha256": "fec0ce01476183e4e5b237a0fb3bc66676f7ac2582ca83f7c4c50bd96fb3ebd6"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2507,
+      "sha256": "7de6f4d389d823ea026d1843f778add1f3c28a50d3652a200952286818b4e270"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2507,
+      "sha256": "816252bbfc56ca2b917e576a892a21a10ca7a25c2044f2e51af08270661b1287"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "1970a6405d24f36774a6f06e423b4b2c00ba388d2914f107a5be0ec2f83fda85"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2507,
+      "sha256": "77732c1868c7743a8d8711aea09457d103e45301019b74e3a1495f6c36598d78"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2506,
+      "sha256": "5633ed8c7644bf4e71c557b03afce86193313bc1e20566bb61d503018669a263"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "f00c8a8141ca054ca94317b3706ab5f16d7c17dae075d4391ef8d9e087be649e"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2506,
+      "sha256": "dbe538187d5280d171c224b12dc25612fb25c35c9014b201564126715dc4b6c4"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "d25b5768678f37eca4aa1291dbd479f86cd19b0d4649a21d177ac86eab43e561"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "14a40c1b8b65602bf051c3c71807f39efd516c734a151d3b209d8158aac7f178"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "624b5b2faa387e4965da68cc337c9912da6137e1fc8712934b3f19d49cc7e457"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "81e16f2243663a37c2fc051c3cf9f9554edb6c92b0b3ee308429727fae75bc4c"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/share/artifact_manifest.json",
+      "bytes": 191,
+      "sha256": "5b0c8db5c1359dbe34fa0a38b814035fe8581ba7af40ef9bdd3b2b8aefc4e357"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/share/coilem-benchmark.json",
+      "bytes": 85577,
+      "sha256": "4130b846467e9239a2301b543c9a08b2e4f8b24815378224dc3d0950fec8f11f"
+    },
+    {
+      "path": "benchmarks/windows-v055-abcd-20261108/share/coilem-benchmark.md",
+      "bytes": 14059,
+      "sha256": "b1a43e3b0523bbd97d141b5e8db5241fd28a5a041513ffe3b31751e61715a9d8"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/README.md",
+      "bytes": 5412,
+      "sha256": "8fe18c15ca08455fdbab691b959869402a7797becef2ec5a15cb090a71b12149"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_10p12s_single_layer__baseline.json",
+      "bytes": 8343,
+      "sha256": "eb5c14b96f37a3e0529ed57824bf3ba1986210d196c3f7fcab10b9105b8ae3d3"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_12p9s_micro__baseline.json",
+      "bytes": 8588,
+      "sha256": "ee38570147621f8bc71ffec7f2f2422904a1be31ecb666f5d7a367ed2f802239"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_12p9s_micro_noload__baseline.json",
+      "bytes": 8619,
+      "sha256": "f416882bc0b2a8afb2cdd54d61c4df638bad3d623db664f040dc68c0bc7675b9"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_14p12s_drone__angle30.json",
+      "bytes": 8519,
+      "sha256": "1bb04e23ea74f9b076f1d9c54f11e74063a8d43f1b74ee12f6929a663e12a7b2"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_14p12s_drone__baseline.json",
+      "bytes": 8518,
+      "sha256": "c57e829f14d98ed7988d9998b501c20fd03d1f3f77baea40dc98c9dda48510c2"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_14p12s_drone__high_current.json",
+      "bytes": 8508,
+      "sha256": "9ef8479858bbe368e0fb252d174b45c938dc6af180d6d2c9c04d02c76a432615"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_14p12s_drone__tight_airgap.json",
+      "bytes": 8522,
+      "sha256": "9ee4f28588a664fd8bf642f92584c6a0f9db647528b8a31f05f6fa6e9a4d3be9"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_14p12s_drone_noload__baseline.json",
+      "bytes": 8631,
+      "sha256": "9c3bc6e17b913de7c7d7af6515c3947586ef178febb7d6872cb764b4a7c201f5"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_28p24s_multirotor__baseline.json",
+      "bytes": 8368,
+      "sha256": "607258b86580cde5125f1e6542c3247c2e03c2aa541c37fd90b048763b00e054"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/native/spm_outer_30p27s_hub__baseline.json",
+      "bytes": 8310,
+      "sha256": "be63b6a565ba07b55cb5a1607adc381b4fc84fdd4b7084e4c3b41d6400f3745a"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/provenance.json",
+      "bytes": 2563,
+      "sha256": "ee005c3e53b962bb15fe618d742b706051b12c9ff84d23e4e31e4f9046fab6c0"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/artifact_manifest.json",
+      "bytes": 1698,
+      "sha256": "9faa617ecbc14432cbca481e76c847e75c5897c76d6c35d3f321c8d4c60277f2"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/benchmark_report.md",
+      "bytes": 4193,
+      "sha256": "05151ce41068058326580f1db9bf94ec6cae2ad7cf35d3255ffced01d08f8cb0"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/benchmark_results.csv",
+      "bytes": 4733,
+      "sha256": "3e45d0636d0bad6ccf774f85a9388e5600549cf0acd73b9d249cdf74652012e8"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/benchmark_summary.json",
+      "bytes": 344732,
+      "sha256": "3b7b46b4413de5463c7fd6a42435a37627d5e0250902a9a49a714e6d9cf6527a"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/coilem_benchmark_report.html",
+      "bytes": 115812,
+      "sha256": "d97a818716ba3fac3a389b86900f8f326f6e7f60e096203f78a2f2897e35807c"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+      "bytes": 2534,
+      "sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+      "bytes": 2533,
+      "sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+      "bytes": 2533,
+      "sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+      "bytes": 2532,
+      "sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021"
+    },
+    {
+      "path": "benchmarks/windows-v055-phase-f-20261108/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+      "bytes": 2536,
+      "sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5"
+    },
+    {
+      "path": "docs/BENCHMARK_COLLECTION.md",
+      "bytes": 3411,
+      "sha256": "9d142de81935c2d873c5d6c66762544629ac2dfe47a2da8575bb13b7fe8fd9f3"
+    },
+    {
+      "path": "docs/BENCHMARK_NUMERICAL_RESOLUTION.md",
+      "bytes": 4524,
+      "sha256": "c69cd97b5afeb7ff6bacab16806db1982ea108a8288802e557ad2cce92420f2f"
+    },
+    {
+      "path": "tests/test_benchmark_collection.py",
+      "bytes": 20355,
+      "sha256": "4218ff4eee98792ee67569cb4c329b6d5b7c8bf55ce4073df6386b6df54e2c72"
+    },
+    {
+      "path": "tests/test_benchmark_collection_packaging.py",
+      "bytes": 2020,
+      "sha256": "ad07d2c0c1d587f38448a22489eafedbc44d3fa3d28269cd927f424db941116e"
+    },
+    {
+      "path": "tests/test_benchmark_collection_report.py",
+      "bytes": 5312,
+      "sha256": "bc8c624e13dc1eb9a69e8718782266c9322598d4133123256fc8ca75c76796bc"
+    },
+    {
+      "path": "tests/test_current_windows_abcd_packet.py",
+      "bytes": 1439,
+      "sha256": "08db25815df12d18ecd3458a1ba4ae6d7f2e16a52d58e2c6066a602a0f9c5994"
+    },
+    {
+      "path": "tests/test_numerical_reporting.py",
+      "bytes": 6292,
+      "sha256": "3aa62369ec8be5ef087255d9f2ed8b457041420ab77253855b2ad4125b575768"
+    },
+    {
+      "path": "tests/test_numerical_resolution.py",
+      "bytes": 8797,
+      "sha256": "a91d742614361cbbbb4fbdb162054ac3f3b6f1fddb20f2b7d1ab1c98aa3e22fb"
+    },
+    {
+      "path": "tests/test_numerical_resolution_review.py",
+      "bytes": 4789,
+      "sha256": "5fc72dd7e50ef3ffbc7fbc5f45f5aa9f1d9f2515edbce133753883aded0db241"
+    },
+    {
+      "path": "tests/test_phase_e_experimental_packet.py",
+      "bytes": 2930,
+      "sha256": "3df3cb2d4087028b43f8d793c0871c8d2d9a5e9651ca6043fa3118b688d99f00"
+    },
+    {
+      "path": "tests/test_phase_e_reference_bundle.py",
+      "bytes": 9351,
+      "sha256": "b5414994067ee58b16e2c462ed9ee136900d7aac87d812f8d4ca507df6963a95"
+    },
+    {
+      "path": "tests/test_phase_f_packaging.py",
+      "bytes": 2669,
+      "sha256": "57d90d7cb58be107c71693e8888cb536123d6279ccdeae62de0c06f0869e8a5a"
+    },
+    {
+      "path": "tests/test_phase_f_qualification.py",
+      "bytes": 12512,
+      "sha256": "12a3f68cf4f063e4605445066cb265651f387de8bd3e2c4e4cc4a9509ca9a5af"
+    },
+    {
+      "path": "tests/test_phase_f_reference_review.py",
+      "bytes": 11714,
+      "sha256": "d89f929514093bf893c9402ca7cd04eb7c04596f6182f104dd5e4b68843e0447"
+    },
+    {
+      "path": "tests/test_phase_f_windows_packet.py",
+      "bytes": 2496,
+      "sha256": "ed4f56a64c63446807e4716b956536b86a882f36e9d285f18c6d89118adc1d80"
+    },
+    {
+      "path": "tools/build_benchmark_collection.py",
+      "bytes": 1964,
+      "sha256": "8acf000ae5ecfe80568bfd9f04feab9f6ed423c6729c6158054298b09428cba7"
+    },
+    {
+      "path": "tools/build_phase_e_experimental_packet.py",
+      "bytes": 16340,
+      "sha256": "c2051e681a2f5398f1e26b5ffbe98da5a236b65c246c14e6080e0a5bfbda7267"
+    },
+    {
+      "path": "tools/review_numerical_resolution.py",
+      "bytes": 5563,
+      "sha256": "bf5b05f50d80fff785a0f9d602b16dc0f34f0129f53261a199ac23dd0b6f8254"
+    },
+    {
+      "path": "tools/run_benchmark_collection.py",
+      "bytes": 182,
+      "sha256": "0e063fc9c869e974d8ec4b58e854b21d79eb4034a696d5b7d47d225295adef6d"
+    },
+    {
+      "path": "tools/verify_phase_f_windows_packet.py",
+      "bytes": 6495,
+      "sha256": "7f374d89518edbb24f80d30d231c3cd6b42e601f75e2f345e7bb9342efdd6ef5"
+    },
+    {
+      "path": "tools/verify_windows_abcd_packet.py",
+      "bytes": 5626,
+      "sha256": "cdc418d8890dd2df554422a12bb9decaad8e285677049d377001a4a7c8e86ea1"
     }
   ],
   "public_patches": [
@@ -34173,6 +35013,186 @@
       "path": "benchmarks/records/windows-x86_64.json",
       "source_sha256": "5631fe3068de56b00a1ef4b8861964c1b09aa93b5a9afb7fd5449410e5278b0d",
       "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": ".gitattributes",
+      "source_sha256": "30f2c604d63c11c80500dde21fb92ea7839432b811e1111e62c54bcef5d83a98",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "README.md",
+      "source_sha256": "90f1664f87230162dcea5203339d9eed3ab967bdb204efabd532e8829822224d",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/__init__.py",
+      "source_sha256": "bd91d90ca4330a759bc203850b558c6b4ea0bcb4c76f944feaec920e7999d9ea",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/abc_metrics.py",
+      "source_sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/cli.py",
+      "source_sha256": "a990898368922b95030f76a47681dbdad273a4886e439c0c4117968fe5e8cb80",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/command.py",
+      "source_sha256": "a38377d817eacf2977d4e4ee89788a3905c0be0017e215a9e25469432a232e7c",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/record.py",
+      "source_sha256": "6ee344236e0f87d30e0b32e371e92d314c5c0b7bdd8f792fccbc9ddc5e38669b",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/references.py",
+      "source_sha256": "4ef724b633076777561790ab1d004bd19bc4465f9dcb0015053e8a54579c1155",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/report.py",
+      "source_sha256": "7a21402f3633fdc6b6ec90855736c2434c00496b97c2b0d1b985ed049b38420d",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/benchmark_suite/share.py",
+      "source_sha256": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/qualification.py",
+      "source_sha256": "30af09aef728d3441dff31a4066f747a9596f0d96c92ba26c62ddf143cd870ad",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "backend/resources.py",
+      "source_sha256": "4f3863da726116daf57092b5347def42cf202519ed43eeb51705ae70d32b6d04",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "benchmarks/README.md",
+      "source_sha256": "f2159d3acb125659de678b1d9789e6d802e54ca59f91ae740e2f976a3ec05da4",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "benchmarks/abcd-v1.7/README.md",
+      "source_sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "benchmarks/abcd-v1.8/README.md",
+      "source_sha256": "9c14aa209f8809e256c1792378e84453b5f89c7ba8713c9db7bf944427d676d9",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "benchmarks/records/README.md",
+      "source_sha256": "ea2443f4d566b5c0e3b03f19ed90761a4d93886aa6c19cd4812cd0c523b17a49",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "benchmarks/records/windows-x86_64.json",
+      "source_sha256": "a6ff0a9b4f1a9bd79d9f059820f12b477c0bb58a3bde516307636e0a43c6757b",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "docs/OUTRUNNER.md",
+      "source_sha256": "e003c6cc6f679bd7ee8ab65d28386fa93dcaa5a4d73ea95ed6a593e7647c57c3",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
+      "source_sha256": "73dcd2203f5abc5cf1141580f3399e2caa61e4d02a88acf88201098bcc46968a",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "docs/VALIDATION.md",
+      "source_sha256": "fb8a608c962d550869ac0af040c25288a3eea56133cfbc9f858d09e2de048893",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tests/test_benchmark_cap_registration.py",
+      "source_sha256": "2f334b3563e48ee387e434f6a4038fa8fcb31e3f1234d2e103bde534bd30d7e4",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tests/test_benchmark_command.py",
+      "source_sha256": "9144292cceac2795dda238330d739305db1b4ccba5c87ce8a131f778fc53b869",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tests/test_benchmark_suite.py",
+      "source_sha256": "9da2dbebe22cfd052abaab50143a39131b31f623a54117a5afa787ff223cba10",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tests/test_outrunner_phase_f.py",
+      "source_sha256": "0fff28e5982abb3ff29d6e4b664bca48ef582a90d023e69c0df5f2c2111a34bc",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tests/test_rotor_layout.py",
+      "source_sha256": "ba9286382d14b17c107ff9ec4b1eac667f3f853a434640cf9b3d7d6359feae40",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "23fb056ec0c6a8bb7fb4c79bb47e0294ed8bcf865f5d924b3bc3eb418e3159f0",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "b638cffd3b46f9ab7e6c259055545373e9a9b11198279d66364ff39329745aff",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tools/qualify_benchmark_candidate.py",
+      "source_sha256": "54da9cfad3d4733478179db325b3766207a307a712089c75aa16ae8cf367a861",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tools/report_benchmark_against_reference.py",
+      "source_sha256": "22532d9a02cd2825b4a5f65636631b55571e81f6cc1cd77ebcef6885682086cc",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
+    },
+    {
+      "base_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "0151bd392f6a6d3221f45158b64a57e464cc25172b6c132462a08c0bdc63364f",
+      "reason": "Include phases A-F with experimental cogging, reviewed Windows outrunner engineering parity and numerical-resolution reporting."
     }
   ]
 }

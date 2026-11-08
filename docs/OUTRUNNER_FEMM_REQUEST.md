@@ -112,6 +112,18 @@ Check the currents at position 0 against coilEM's, in the public convention:
 The axis column includes the outer rotor's 180°. The two no-load cases carry no current. The values come from
 `backend.excitation.resolve_phase_current_sample(config, 0.0, clockwise_positive=True)` at this commit.
 
+**Reviewed execution note (2026-11-08).** The table above preserves the
+original brief's direct-helper convention. The completed Windows collection
+uses the unchanged v0.5.5 production solver convention, as the owner approved:
+`backend.solver._clockwise_excitation_config` reflects the excitation angle
+as `180° − γ`, and the native rotor position is `−θ`. For the drone baseline
+at position zero this gives `(−8.660254, +8.660254, 0)` A. The angle-30° and
+single-layer cases require the same production mapping; simply negating
+every table entry is not a general conversion. The
+[reviewed Windows packet](../benchmarks/windows-v055-phase-f-20261108/README.md)
+records the production drive choice. No fixture or registered gate was
+changed to make the comparison pass.
+
 The back-EMF is the no-load phase voltage from dλ/dt at the fixture's
 3000 rpm, with coilEM's winding signs, as for Phase A.
 

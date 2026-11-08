@@ -30,7 +30,7 @@ from backend.benchmark_suite.contract import (
 from backend.benchmark_suite.dq_metrics import with_dq_gates
 from backend.benchmark_suite.hardware import no_load_back_emf_line_to_line
 from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, evaluate_bldc, validate_abc
-from backend.benchmark_suite.references import load_bundle, load_suite, verify_materials
+from backend.benchmark_suite.references import load_bundle, load_suite, reference_provenance, verify_materials
 from backend.benchmark_suite.report import build
 from backend.benchmark_suite.worker import compact
 
@@ -293,7 +293,7 @@ def execute(args):
                 "identity": runtime,
                 "selection": selection,
                 "reference_mode": "NONE_SMOKE" if args.smoke else "NATIVE_ONLY" if args.no_reference else "FROZEN_REFERENCE",
-                "reference_commit": reference_manifest.get("reference_commit"),
+                **reference_provenance(reference_manifest),
                 "smoke": args.smoke,
                 "jobs": jobs,
                 "status": "RUNNING",

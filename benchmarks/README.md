@@ -1,5 +1,56 @@
 # Benchmark reports and protocols
 
+## Running the benchmark
+
+`coilem benchmark` includes all six phases: A-D registered parity, E
+experimental cogging, and F outrunners with a reviewed Windows engineering
+scope. The [collection descriptor](public-benchmark-collection.json) binds
+the three suites, their reference datasets and available platform records
+independently. The full selection contains 69 cases; `--quick` selects one
+registered case per phase.
+
+```sh
+coilem benchmark --list
+coilem benchmark --quick --out ../benchmark-output/quick
+coilem benchmark --out ../benchmark-output/all
+coilem benchmark --phase E --phase F --out ../benchmark-output/e-f
+coilem benchmark --resume --out ../benchmark-output/all
+coilem benchmark --report-only --out ../benchmark-output/all
+```
+
+Each component keeps its own protocol, reference identity, measured runtime
+identity and child report under `suites/`. Input, dataset and record hashes
+are saved before the first solve. Resume retains the original selection and
+reuses completed children; report-only verifies saved measurements without
+new field solves. Keep generated output outside a source checkout.
+
+Phase E always carries an experimental badge. Its original numerical grades,
+including FAIL or YELLOW, are reported unchanged and do not become
+qualification gates. An E execution error or incomplete result still makes
+the collection incomplete. A-D and F must match their selected platform
+records for the recorded comparison to pass. Including F does not imply
+macOS or global release qualification.
+
+From a checkout, `python -m tools.run_benchmark_collection` provides the same
+command. `python -m tools.run_benchmarks` remains the lower-level runner for a
+single versioned suite, with its original input and reference contracts.
+The [collection guide](../docs/BENCHMARK_COLLECTION.md) explains exit codes,
+installed data, saved-run integrity and qualification boundaries.
+
+## Current Windows evidence
+
+The [current A-D packet](windows-v055-abcd-20261108/README.md) retains native
+measurements at `34de0f4c`: 52 completed jobs, 46 PASS plus the planned
+unsupported Prius, and 336/336 gates PASS. Its Windows record matches all 69
+current guarded physics sources. The [retained experimental E packet](windows-phase-e-retained-20261108/README.md)
+keeps the earlier `a4f9f4d` measurements and their 10 PASS / 2 YELLOW outcomes;
+it does not claim a fresh v0.5.5 native collection or accepted qualification.
+The [Phase F packet](windows-v055-phase-f-20261108/README.md) supplies the
+separate reviewed Windows engineering basis. These component records do not
+replace their distinct historical identities with one collection commit.
+
+## Retained reports
+
 The [v0.5.1 release qualification](v0.5.1/release-qualification.json) now passes with source-matched Windows/macOS A-D and complete Prius software evidence. The [owner decisions](qualification-a4f9f4dccf2b/owner-decisions.json) accept unchanged reviewed references, one recorded near-zero macOS Prius observation difference and an experimental cogging scope. Measured fields retain `a4f9f4d`; all 64 guarded physics hashes match the versioned release code. Phase E remains unregistered and both YELLOW cases remain disclosed.
 
 The [Windows v0.5.1 integration-merge evidence](windows-v051-20261105-a4f9f4d/README.md) measures `a4f9f4d`: **46 A–D PASS plus the planned unsupported Prius**, and **10 cogging PASS / 2 YELLOW** against the selected fresh FEMM references. All 425 cogging fields, original reference self-check failures and five mesh controls are retained. The optional extra A–D reference repeat was stopped; its artifacts remain preserved. A separately authorized overnight run then completed all 46 fresh FEMM cases: **46 PASS, 336/336 gates PASS and all 46 waveforms exactly matching the reviewed references**. This packet retains its original Windows development identity; accepted cross-platform/Prius qualification and subsequent owner review are recorded separately above.
@@ -94,7 +145,7 @@ reference solves were executed. The generated PDF is included in each evidence p
 | [Snapshot report v1.1](main-20261009-bad71d9/README.md) | Archived fresh-reference run and 0.2.0 preview qualification record | `bad71d9`; original two FAILs retained |
 | [Protocol 1.0.0](abcd-v1/README.md) | Explicitly selectable historical suite | Original low-output IPM fixtures and saved references |
 
-V1.2 defines the **default benchmark selection**. V1.3 and V1.4 rerun that same
+Historically, report V1.2 defined the A-D benchmark selection. V1.3 and V1.4 rerun that same
 selection at clean candidates on Windows, preserving the inputs, references and
 gates. V1.5 reruns it on macOS at the pinned 0.3.0 release candidate, with every
 verdict and gate status unchanged. V1.7 reruns it on the same Mac at the frozen 0.3.0
@@ -107,7 +158,7 @@ Concurrent workloads during v1.3 limit direct performance comparisons; see its
 
 ## Why the archive folders remain
 
-The default protocol still reads unchanged input fixtures, BLDC protocols and
+The A-D component still reads unchanged input fixtures, BLDC protocols and
 golden vectors from `main-20261009-bad71d9`. The compiled v1.2 report links
 unchanged measured rows and fixtures in `main-20261010-45e0a5c-rerun`. Tests
 also replay the original failed cases. These folders are dependencies and

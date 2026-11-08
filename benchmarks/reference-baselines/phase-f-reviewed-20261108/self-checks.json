@@ -1,0 +1,338 @@
+{
+  "schema": "coilem.phase_f_reference_self_checks/v1",
+  "checks": [
+    {
+      "id": "spm_outer_14p12s_drone__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.041574849454765556,
+        0.039117012074045325
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_14p12s_drone__baseline:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.05307865934386258
+    },
+    {
+      "id": "spm_outer_14p12s_drone__baseline:energy_balance",
+      "status": "PASS",
+      "ratio": 0.9971876222662879,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "spm_outer_14p12s_drone__high_current:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.041574849454765556,
+        0.039117012074045325
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_14p12s_drone__high_current:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.07960079325460036
+    },
+    {
+      "id": "spm_outer_14p12s_drone__tight_airgap:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.023987172093923585,
+        0.0036638746924754608
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_14p12s_drone__tight_airgap:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.05637612234033428
+    },
+    {
+      "id": "spm_outer_14p12s_drone__tight_airgap:energy_balance",
+      "status": "PASS",
+      "ratio": 1.000803484454828,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "spm_outer_14p12s_drone__angle30:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.041574849454765556,
+        0.039117012074045325
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_14p12s_drone__angle30:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.04648858772266067
+    },
+    {
+      "id": "spm_outer_14p12s_drone__angle30:energy_balance",
+      "status": "PASS",
+      "ratio": 1.0084924596727352,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "spm_outer_14p12s_drone_noload__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.041574849454765556,
+        0.039117012074045325
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_12p9s_micro__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.050514119551643775,
+        0.231937707421179
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_12p9s_micro__baseline:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.015194115169786882
+    },
+    {
+      "id": "spm_outer_12p9s_micro__baseline:energy_balance",
+      "status": "PASS",
+      "ratio": 0.9973150146105958,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "spm_outer_12p9s_micro_noload__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.050514119551643775,
+        0.231937707421179
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_10p12s_single_layer__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.014212146545101396,
+        0.0331481003496572
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_10p12s_single_layer__baseline:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.5691339279870605
+    },
+    {
+      "id": "spm_outer_10p12s_single_layer__baseline:energy_balance",
+      "status": "PASS",
+      "ratio": 0.9983786919265146,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "spm_outer_28p24s_multirotor__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.06335583507107544,
+        0.08139221117990338
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_28p24s_multirotor__baseline:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 0.32472868720905196
+    },
+    {
+      "id": "spm_outer_28p24s_multirotor__baseline:energy_balance",
+      "status": "PASS",
+      "ratio": 1.0027437848539211,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "spm_outer_30p27s_hub__baseline:phase_balance",
+      "status": "PASS",
+      "B_C_amplitude_delta_pct": [
+        0.07300254895458057,
+        0.11964214078959527
+      ],
+      "maximum_pct": 1
+    },
+    {
+      "id": "spm_outer_30p27s_hub__baseline:loaded_sign",
+      "status": "PASS",
+      "mean_rotor_cw_Nm": 4.4326134645343
+    },
+    {
+      "id": "spm_outer_30p27s_hub__baseline:energy_balance",
+      "status": "PASS",
+      "ratio": 1.000900434067671,
+      "allowed_baseline_error_fraction": 0.05
+    },
+    {
+      "id": "drone_angle30_over_baseline",
+      "status": "PASS",
+      "ratio": 0.8758432917736475,
+      "minimum": 0.8,
+      "maximum": 0.9
+    },
+    {
+      "id": "spm_outer_14p12s_drone_noload__baseline:noload_mean",
+      "status": "PASS",
+      "noload_mean_Nm": -0.00022682852609321098,
+      "loaded_mean_Nm": 0.05307865934386258,
+      "ratio_pct": 0.42734411324094396,
+      "maximum_exclusive_pct": 1
+    },
+    {
+      "id": "spm_outer_12p9s_micro_noload__baseline:noload_mean",
+      "status": "PASS",
+      "noload_mean_Nm": -9.387862926818769e-05,
+      "loaded_mean_Nm": 0.015194115169786882,
+      "ratio_pct": 0.6178617722660349,
+      "maximum_exclusive_pct": 1
+    },
+    {
+      "id": "spm_outer_14p12s_drone__tight_airgap:half_airgap_mesh",
+      "status": "PASS",
+      "delta_pct": {
+        "avg_torque_Nm": 0.03620973401267402,
+        "back_emf_fundamental_V": 0.011208844418328359
+      },
+      "maximum_exclusive_pct": 2
+    },
+    {
+      "id": "spm_outer_12p9s_micro__baseline:half_airgap_mesh",
+      "status": "PASS",
+      "delta_pct": {
+        "avg_torque_Nm": 0.7073571772847043,
+        "back_emf_fundamental_V": 0.1554965109403121
+      },
+      "maximum_exclusive_pct": 2
+    }
+  ],
+  "phase_spacing": {
+    "spm_outer_14p12s_drone__baseline": {
+      "B_C_relative_to_A_deg": [
+        119.97455485274563,
+        240.0246414298648
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.025445147254373524,
+        0.024641429864800557
+      ]
+    },
+    "spm_outer_14p12s_drone__high_current": {
+      "B_C_relative_to_A_deg": [
+        119.97455485274563,
+        240.0246414298648
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.025445147254373524,
+        0.024641429864800557
+      ]
+    },
+    "spm_outer_14p12s_drone__tight_airgap": {
+      "B_C_relative_to_A_deg": [
+        119.98866592590383,
+        240.01787754851802
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.011334074096168933,
+        0.017877548518015374
+      ]
+    },
+    "spm_outer_14p12s_drone__angle30": {
+      "B_C_relative_to_A_deg": [
+        119.97455485274563,
+        240.0246414298648
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.025445147254373524,
+        0.024641429864800557
+      ]
+    },
+    "spm_outer_14p12s_drone_noload__baseline": {
+      "B_C_relative_to_A_deg": [
+        119.97455485274563,
+        240.0246414298648
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.025445147254373524,
+        0.024641429864800557
+      ]
+    },
+    "spm_outer_12p9s_micro__baseline": {
+      "B_C_relative_to_A_deg": [
+        119.84314523261888,
+        239.9567131266782
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.1568547673811196,
+        0.043286873321790154
+      ]
+    },
+    "spm_outer_12p9s_micro_noload__baseline": {
+      "B_C_relative_to_A_deg": [
+        119.84314523261888,
+        239.9567131266782
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.1568547673811196,
+        0.043286873321790154
+      ]
+    },
+    "spm_outer_10p12s_single_layer__baseline": {
+      "B_C_relative_to_A_deg": [
+        119.97295457983485,
+        239.95420824216103
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.027045420165151768,
+        0.045791757838969716
+      ]
+    },
+    "spm_outer_28p24s_multirotor__baseline": {
+      "B_C_relative_to_A_deg": [
+        120.0098912701621,
+        239.93013015000247
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.00989127016210034,
+        0.06986984999753076
+      ]
+    },
+    "spm_outer_30p27s_hub__baseline": {
+      "B_C_relative_to_A_deg": [
+        120.00253886118936,
+        239.98476993341842
+      ],
+      "distance_to_expected_120_or_240_deg": [
+        0.0025388611893646384,
+        0.015230066581580104
+      ]
+    }
+  },
+  "historical_review_flags": [
+    {
+      "id": "inherited_lrk_index_5",
+      "status": "FAIL",
+      "review_decision": "ACCEPTED_AS_NUMERICAL_SENSITIVITY"
+    },
+    {
+      "id": "inherited_lrk_index_10",
+      "status": "FAIL",
+      "review_decision": "ACCEPTED_AS_NUMERICAL_SENSITIVITY"
+    },
+    {
+      "id": "SOURCE_IDENTITY_VARIANT_REQUIRES_OWNER_REVIEW",
+      "status": "REVIEW_REQUIRED",
+      "review_decision": "ACCEPTED_FOR_THIS_WINDOWS_COHORT"
+    }
+  ],
+  "original_gates_or_tolerances_changed": false
+}

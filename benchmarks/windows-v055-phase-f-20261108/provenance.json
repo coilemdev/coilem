@@ -1,0 +1,36 @@
+{
+  "schema": "coilem.phase_f_windows_projection/v1",
+  "measured_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+  "reference_id": "sha256:c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a",
+  "reference_bundle_sha256": "9bba90b13f17ed45a53dd5ce03c44c2764bce83646dff10ebcde723b259afc4f",
+  "private_dataset_sha256": "c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a",
+  "owner_decision_sha256": "6233114f182e3127f388f25d8dd2ae8d8a795393fcc09a8214b392c1ca2a79e0",
+  "native_only_manifest_sha256": "5c216c13182eb500e7bcc188875e7ddd9acbb87c44e3a537cd6030d7afa3bd72",
+  "native_artifact_sha256": {
+    "spm_outer_14p12s_drone__baseline": "0e6af38ab9b4537d0cfcc5b15ee636ef68ad0655629527a4bcb604330ae033cc",
+    "spm_outer_14p12s_drone__high_current": "c7e820190ee18e1388b3948d7dc0bc51357c0a8d2a88f3639ea9f2f47f62fb58",
+    "spm_outer_14p12s_drone__tight_airgap": "965d90483d027bd1b410d63542888bc3a71113e93a39c9fdecf935739812eae3",
+    "spm_outer_14p12s_drone__angle30": "834fd4aace028bf16736043a51659496759f92e8c3a0bb26073aff550d4b5dee",
+    "spm_outer_14p12s_drone_noload__baseline": "d6ba537ac6da8f35d0845e0ab1bf46ad344556ead50c7f15fbf60d3569e86f65",
+    "spm_outer_12p9s_micro__baseline": "f93408a9d6204b5d2200a297970a850ee03b39291b9a161b034f0735e0404203",
+    "spm_outer_12p9s_micro_noload__baseline": "62d66f0463058307401d3d7351a8523f13dcedfb921d3c91ef9d4e4109a52363",
+    "spm_outer_10p12s_single_layer__baseline": "b8437b01c069a12a5c807fb620e7cbba030373a0199fb234c05f5720e543aacd",
+    "spm_outer_28p24s_multirotor__baseline": "5b730733d785bffd70b0571382b601eee22df93540c729ef86d18daa3ebb161b",
+    "spm_outer_30p27s_hub__baseline": "141b0f86b3cb8851cf5ce589de531e37eebedab795d6ac122e6a8539858f318b"
+  },
+  "physics_guard_count": 69,
+  "numeric_projection_verified_against_sealed_report": true,
+  "field_solves_executed": 0,
+  "original_measurements_modified": false,
+  "reference_archive_mode": "METADATA_AND_HASH_LEDGERS_RAW_FIELDS_RETAINED_PRIVATELY",
+  "native_timing_access_before_full_reference_seal_disclosed": true,
+  "timing_access_disclosure": "A user-requested timing lookup opened the native hub artifact before the full reference seal. The field generator and inputs were already frozen; no measurement-dependent changes were made. The final comparison helper sealed references before its own native reads.",
+  "qualified_platforms": [
+    "windows-x86_64"
+  ],
+  "unqualified_platforms": [
+    "macos-arm64",
+    "linux-x86_64"
+  ],
+  "cogging_remains_experimental": true
+}

@@ -1,5 +1,16 @@
 # Developer-preview validation
 
+The [Windows Phase F addition](../benchmarks/windows-v055-phase-f-20261108/README.md)
+measures the v0.5.5 candidate `34de0f4ca1604311f15edf6fb49b5a2a1bf27909`:
+ten outer-rotor cases and all 60 comparison gates pass against the reviewed
+FEMM dataset. This is Windows x86-64 engineering parity for mean torque and
+back-EMF inside the explicit recorded envelope, with matching runtime physics.
+The review preserves the LRK FAIL observations and explicitly accepts the
+separate hub source cohort. macOS/Linux Phase F, cogging (Phase E) and other
+unmeasured outputs remain experimental. The reviewed A–D qualification basis
+and historical release records below remain independent. The normal public
+benchmark composes A–F; Phase E is explicitly experimental in that report.
+
 The source candidate is coilEM 0.5.0 with Magneto2D 0.4.0. The
 [reviewed Windows comparison](../benchmarks/candidate-qualification-20261103/README.md)
 at `88aae101` supplies the current registered field-parity basis under protocol
@@ -183,21 +194,27 @@ final-candidate run.
 
 ## Run the benchmark yourself
 
-An installed coilEM carries the A/B/C/D suite, its frozen FEMM v3 reference
-and the [published records](../benchmarks/records/README.md), so anyone can
-check their own installation:
+An installed coilEM carries the independent A–D, experimental E and Windows
+F suites and references, plus the
+[published records](../benchmarks/records/README.md). The normal command
+composes all six phases while retaining each component's protocol and scope:
 
 ```sh
-coilem benchmark --quick    # one case per phase, about 5 minutes
-coilem benchmark            # all 30 cases, about 50 minutes
+coilem benchmark --quick    # one registered case per phase (six cases)
+coilem benchmark            # all 69 cases across A–F
 coilem benchmark --list     # the cases and the record's times
 ```
 
 `--phase B` runs one phase (repeatable), and `--out` names the output folder.
-The command solves each case with the installed Magneto2D and grades it
-against the frozen reference with the gates above. It then matches the outcome
-against the record for the platform. A match needs the same verdicts and gate
-statuses, and mean torque, back-EMF fundamental and back-EMF peak within
+The command solves each selected case with the installed Magneto2D and grades
+it against its component's reference. A–D and F have separate platform-record
+comparisons where available. Phase E has no accepted record and remains
+experimental even when its numerical gates pass; its YELLOW/FAIL results are
+retained in the overall numerical outcome. Runtime depends on the selected
+components; no E timing estimate is inferred from an accepted record.
+
+A record match needs the same verdicts and gate statuses, and mean torque,
+back-EMF fundamental and back-EMF peak within
 0.5%, 0.05% and 1.5% of the record. Those tolerances come from the measured
 difference between macOS and Windows. The physics sources are checked by hash
 first, so a release with unchanged physics is matched against a record
@@ -211,12 +228,17 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The registered basis is the [reviewed Windows comparison](../benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json)
-at clean measured commit `88aae101`, using Magneto2D 0.4.0, Precise meshes,
-protocol 1.6.0 and the [reviewed FEMM bundle](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md).
-All 52 supported native jobs completed: 46 PASS, one planned unsupported case
-and 336/336 gates PASS. The subsequent report-only join executes zero field
-solves and preserves the original native and reference measurements.
+The A–D reference basis remains protocol 1.6.0 and the
+[reviewed FEMM bundle](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md).
+The [current Windows record](../benchmarks/windows-v055-abcd-20261108/README.md)
+measures clean candidate `34de0f4ca1604311f15edf6fb49b5a2a1bf27909`, with all
+69 measured physics hashes retained: 52 supported native jobs, 46 PASS, one
+planned unsupported case and 336/336 gates PASS. Its sanitized report-only
+publication changes no waveforms or gated values and executes no field solves.
+The older macOS record keeps its actual source pin; it is not relabeled as a
+new current-candidate collection. The
+[earlier Windows reference review](../benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json)
+and historical release evidence remain archived separately.
 
 The reviewer is Codex assistant, which also prepared the earlier evidence;
 no independent human or laboratory sign-off is claimed. The hash-bound review
@@ -616,7 +638,8 @@ efficiency leaves these losses out, so none is a measured efficiency.
 
 Cogging torque is on `main` for 0.5.1
 ([public issue 185](https://github.com/coilemdev/coilem/issues/185)). **It is
-experimental everywhere: no benchmark protocol has a cogging gate yet.**
+experimental everywhere.** Protocol 1.7.0 now supplies experimental reference
+comparisons, but it has no accepted cogging qualification record.
 
 - **What is solved.** With **Cogging torque** on, the backend solves one
   cogging period, 180·gcd(S, P)/S electrical degrees (360/LCM(S, P)
@@ -648,14 +671,23 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   has no reference cogging waveform. The sweep uses per-position meshes
   with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging
   values." `frontend/src/public/outputStatus.ts` mirrors it and
-  `tests/test_output_status.py` checks the two match.
-- **What would qualify it.** Phase E, the cogging benchmark proposed as
+  `tests/test_output_status.py` checks the two match. This retained protocol
+  1.6.0 message predates the experimental Phase E dataset; the dataset adds
+  numerical comparisons, without an accepted cogging qualification.
+- **Experimental evidence.** Phase E, the cogging benchmark under
   [protocol 1.7.0](../benchmarks/abcd-v1.7/README.md): 12 SPM, flat-buried IPM
   and distributed-winding motors against FEMM 4.2 waveforms. It is gated on
   peak-to-peak and the first cogging harmonic, with an absolute floor
-  ([proposal](COGGING_BENCHMARK_PROPOSAL.md)). The harness can grade it, and
-  the [FEMM request](COGGING_FEMM_REQUEST.md) is written. No reference exists
-  yet, and Phase E is not registered.
+  ([proposal](COGGING_BENCHMARK_PROPOSAL.md)). The
+  [experimental dataset](../benchmarks/reference-baselines/phase-e-experimental-20261108/README.md)
+  retains nine baseline and three selected half-airgap-mesh references. The
+  older native comparison remains **10 PASS / 2 YELLOW** under unchanged
+  gates and floors; its three original baseline reference failures remain
+  recorded. This is not a new v0.5.5 native collection. The normal benchmark
+  grades its actual native measurements against these references and marks
+  Phase E experimental. Qualification would require matching native evidence
+  and explicit acceptance of a defined cogging scope; no such acceptance is
+  registered.
 - **Not modelled.** Skew, end effects and other 3D effects, manufacturing
   tolerances (magnet and slot variation, eccentricity), and the load-dependent
   part of torque ripple: cogging is the zero-current torque only.
@@ -663,22 +695,42 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
 ## Outer-rotor motors
 
 Outer-rotor (outrunner) SPM motors are new in 0.5.5
-([OUTRUNNER.md](OUTRUNNER.md)). **They are experimental everywhere: no
-registered benchmark fixture is an outer rotor.**
+([OUTRUNNER.md](OUTRUNNER.md)). **Mean torque and back-EMF have Windows x86-64
+engineering qualification inside the reviewed Phase F envelope.**
 
 - **What has been checked.** The LRK 12-slot / 14-pole reference against its
   published solution: 9 of 11 torque points pass, the source point is −0.36%
   and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
   agrees with 1.5·p·λ·I within 0.3%, and the mesh study moves it less than
   0.05%. [OUTRUNNER.md](OUTRUNNER.md#validation) has the detail.
-- **The reason the app prints:** "Outer-rotor SPM: no benchmark fixture
-  measures an outer rotor yet." (`backend/qualification.py`).
-- **What would qualify it.** Phase F, the outer-rotor benchmark proposed as
-  [protocol 1.8.0](../benchmarks/abcd-v1.8/README.md). It has 10 outer-rotor SPM
-  cases over five motors, from an 18 mm micro drone motor to a 100 mm
-  hub-motor class, graded with Phase A's gates against FEMM 4.2. The harness
-  can grade it, and the [FEMM request](OUTRUNNER_FEMM_REQUEST.md) is written.
-  No reference exists yet, and Phase F is not registered.
+- **Phase F evidence.** The
+  [Windows packet](../benchmarks/windows-v055-phase-f-20261108/README.md) has
+  10 PASS, all 60 gates PASS, both air-gap mesh controls PASS and all 30
+  reference self-checks PASS. Its 69 source hashes bind the actual measured
+  native candidate. Runtime qualification fails closed if the source or
+  supported configuration envelope differs.
+- **Review scope.** The v2 dataset/cohort review explicitly accepts the hub's
+  separate bulk-mesh source cohort. The original one-producer-commit contract
+  is not claimed satisfied. The two FEMM reconstruction LRK misses remain
+  FAIL under their original limits; observed sensitivity is accepted for
+  this Windows engineering review without claiming a statistical noise bound.
+- **Envelope.** The five measured families use concentrated wye windings with
+  one parallel path, their measured turns, sinusoidal peak current in the
+  family-specific range, 0–30° current angle, 18–100 mm stator OD,
+  0.25–0.5 mm air gaps, M350-50A/N42/copper at 20 °C, 3000 rpm and normal/Precise
+  native Gmsh mesh. Runtime qualification also requires the measured custom
+  full-cycle plan: 360° electrical at 7.5° steps, with its signoff nonlinear
+  tolerance. Ordinary Standard remains experimental: even when Back-EMF
+  promotes it to the same 48 angles, Standard uses a different nonlinear
+  tolerance. The compact record lists the supported combinations, and
+  `backend/phase_f_qualification.py` enforces the full solve-setting boundary.
+- **Other platforms and outputs.** macOS/Linux outer rotors remain
+  experimental. Phase F does not qualify cogging, loaded d/q, inductance,
+  temperature derating, losses or efficiency. Independent analytical
+  qualifications, including specified-wire resistance and its copper-loss
+  calculation, retain their own scope. The low-level protocol 1.6
+  suite and A–D qualification basis remain independent. The normal public
+  benchmark report composes A–F, with Phase E explicitly experimental.
 - **Not modelled.** IPM outer rotors, and end effects such as an outrunner's
   bell and magnet overhang.
 

@@ -126,6 +126,8 @@ def case_runtimes(manifest):
 def build_record(summary, *, source, physics_files, runtimes=None, evaluation_note=None):
     """The compact record of a complete, non-smoke run evaluated against the frozen reference."""
 
+    if summary.get("schema") == "coilem.benchmark_collection_summary/v1":
+        raise ValueError("Publish a separate per-suite platform record; a collection has multiple reference identities")
     run = summary["run"]
     identity = run["identity"]
     if run.get("smoke") or run["status"] not in ("COMPLETE", "COMPLETE_WITH_ERRORS"):

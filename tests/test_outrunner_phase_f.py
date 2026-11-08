@@ -10,7 +10,6 @@ from backend.benchmark_suite.cli import evaluate
 from backend.benchmark_suite.contract import canonical, sha
 from backend.benchmark_suite.references import load_suite
 from backend.public_policy import parse_public_solve_request
-from backend.qualification import classify_qualification
 from backend.rotor_layout import outer_rotor_airgap_mm
 from tools import make_outrunner_phase_f
 
@@ -23,10 +22,10 @@ def _fixture(case) -> dict:
     return json.loads((ROOT / case["jobs"][0]["fixture"]).read_text(encoding="utf-8"))
 
 
-def test_phase_f_is_its_own_suite_and_1_6_stays_the_default() -> None:
+def test_phase_f_has_its_own_suite_and_is_in_the_public_collection() -> None:
     spec = load_suite(SPEC)
     assert PHASE_LABELS["F"] == "Outrunner"
-    assert "F" not in COMMAND_PHASES
+    assert tuple(COMMAND_PHASES) == tuple("ABCDEF")
     assert spec["protocol_version"] == "1.8.0" in SUPPORTED_PROTOCOL_VERSIONS
     assert PROTOCOL_VERSION == "1.6.0"
     assert {case["phase"] for case in spec["cases"]} == {"F"}
@@ -69,8 +68,6 @@ def test_every_request_is_a_valid_public_outer_rotor_solve() -> None:
         config, _, solver = parse_public_solve_request(_fixture(case))
         assert solver == "magneto2d" and config.rotor_layout == "outer"
         assert outer_rotor_airgap_mm(config) >= 0.25 - 1e-9
-        # No outer rotor is benchmarked yet, so none is qualified.
-        assert classify_qualification(config)["status"] == "experimental"
 
 
 def test_variants_change_one_thing_from_their_baseline() -> None:

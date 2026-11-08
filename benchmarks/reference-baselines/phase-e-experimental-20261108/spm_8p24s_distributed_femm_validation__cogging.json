@@ -1,0 +1,215 @@
+{
+  "schema": "coilem.femm_reference/v2",
+  "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+  "phase": "E",
+  "input_sha256": "691e3d6dac30f855614acf981bb81e59b4832ca24872716fe2f8e671bb09ef87",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "reference_id": "sha256:74519b52191c8d711704b9db1044cf130050637d940d56382f5eba0769c76227",
+  "source_cohort": "selected_cogging_reference",
+  "public_candidate_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "validation_status": "EXPERIMENTAL_REFERENCE",
+  "result": {
+    "cogging_torque_waveform": {
+      "electrical_angle_deg": [
+        0.0,
+        2.5,
+        5.0,
+        7.5,
+        10.0,
+        12.5,
+        15.0,
+        17.5,
+        20.0,
+        22.5,
+        25.0,
+        27.5,
+        30.0,
+        32.5,
+        35.0,
+        37.5,
+        40.0,
+        42.5,
+        45.0,
+        47.5,
+        50.0,
+        52.5,
+        55.0,
+        57.5,
+        60.0
+      ],
+      "torque_Nm": [
+        0.01921417892331983,
+        -7.534221539218972,
+        -11.91595009391867,
+        -9.471774198542327,
+        -5.514109049192197,
+        -3.095269711060869,
+        -1.76905726537752,
+        -1.006062033411123,
+        -0.590003617884671,
+        -0.3041124455469252,
+        -0.1478754932340856,
+        -0.08768692472015846,
+        -0.003082786487392051,
+        0.05300036546140703,
+        0.1247417445903105,
+        0.3090719118561339,
+        0.5746733205005816,
+        0.9799367922817586,
+        1.752202192890623,
+        3.078435999072859,
+        5.472543232322511,
+        9.461333582360007,
+        11.87560733712945,
+        7.557441125588668,
+        0.02262613190342283
+      ]
+    },
+    "summary": {
+      "cogging": {
+        "method": "reference",
+        "positions_per_period": 24,
+        "period_elec_deg": 60.0,
+        "period_mech_deg": 15.0,
+        "fundamental_order": 24,
+        "peak_to_peak_Nm": 23.79155743104812,
+        "peak_Nm": 11.91595009391867,
+        "first_harmonic_Nm": 4.310177562531791,
+        "mean_Nm": -0.0075418073173867325,
+        "endpoint_mismatch_Nm": 0.0034119529801030016,
+        "harmonics": [
+          {
+            "order": 24,
+            "multiple": 1,
+            "amplitude_Nm": 4.310177562531791
+          },
+          {
+            "order": 48,
+            "multiple": 2,
+            "amplitude_Nm": 4.730281081730309
+          },
+          {
+            "order": 72,
+            "multiple": 3,
+            "amplitude_Nm": 3.2804548511235954
+          },
+          {
+            "order": 96,
+            "multiple": 4,
+            "amplitude_Nm": 1.7652680881349478
+          },
+          {
+            "order": 120,
+            "multiple": 5,
+            "amplitude_Nm": 0.6695078827650812
+          },
+          {
+            "order": 144,
+            "multiple": 6,
+            "amplitude_Nm": 0.06830952669253475
+          },
+          {
+            "order": 168,
+            "multiple": 7,
+            "amplitude_Nm": 0.16884368190936447
+          },
+          {
+            "order": 192,
+            "multiple": 8,
+            "amplitude_Nm": 0.21182938769386828
+          },
+          {
+            "order": 216,
+            "multiple": 9,
+            "amplitude_Nm": 0.1433739215042142
+          },
+          {
+            "order": 240,
+            "multiple": 10,
+            "amplitude_Nm": 0.0820681890517992
+          },
+          {
+            "order": 264,
+            "multiple": 11,
+            "amplitude_Nm": 0.036213714638214135
+          },
+          {
+            "order": 288,
+            "multiple": 12,
+            "amplitude_Nm": 0.0025495509940916352
+          }
+        ],
+        "loaded_mean_torque_Nm": null,
+        "loaded_comparison_reason": "No loaded torque (0 A run).",
+        "peak_to_peak_of_loaded_pct": null,
+        "status": "experimental",
+        "status_reason": "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
+      }
+    },
+    "solve_metadata": {
+      "femm_version": "4.2",
+      "torque_method": "weighted_stress",
+      "torque_body": "rotor",
+      "reference_selection": "half_airgap_mesh",
+      "independent_endpoints": true,
+      "precision": 1e-08,
+      "min_angle_deg": 30,
+      "airgap_mesh_size_mm": 0.125,
+      "mesh_element_count": [
+        282976,
+        281560,
+        283862,
+        284664,
+        284234,
+        285310,
+        284524,
+        283116,
+        283088,
+        284352,
+        282794,
+        283916,
+        282510,
+        284720,
+        283626,
+        282342,
+        284406,
+        284848,
+        282366,
+        283224,
+        284052,
+        281264,
+        281798,
+        285364,
+        283082
+      ],
+      "mesh_element_counts_per_position": [
+        282976,
+        281560,
+        283862,
+        284664,
+        284234,
+        285310,
+        284524,
+        283116,
+        283088,
+        284352,
+        282794,
+        283916,
+        282510,
+        284720,
+        283626,
+        282342,
+        284406,
+        284848,
+        282366,
+        283224,
+        284052,
+        281264,
+        281798,
+        285364,
+        283082
+      ]
+    }
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v2",
+  "protocol_version": "1.7.0",
+  "validation_status": "EXPERIMENTAL_REFERENCE",
+  "reference_id": "sha256:74519b52191c8d711704b9db1044cf130050637d940d56382f5eba0769c76227",
+  "reference_identity_kind": "DATASET_SHA256",
+  "suite_sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "public_candidate_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "source_cohorts": {
+    "selected_cogging_reference": {
+      "evidence_sha256": "eceb9e30b56272897f3ea17cc5223d90e3a5e0abb16f6622d44f2df425c96108",
+      "description": "Mixed retained selection: nine baseline and three distributed half-airgap-mesh reference records. This is an experimental dataset identity."
+    }
+  },
+  "records": {
+    "spm_4p12s_simple__baseline__cogging": {
+      "file": "spm_4p12s_simple__baseline__cogging.json",
+      "sha256": "2838c64f7ef2832c9422982e75258d7adca8802c078b15c8afdc007bf6d63265",
+      "input_sha256": "8839611fad28d21d9b088c0450e8272e9841fb2349f239cba2656f20bd7aa293",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_4p12s_simple__tight_airgap__cogging": {
+      "file": "spm_4p12s_simple__tight_airgap__cogging.json",
+      "sha256": "5f9df32cc8b075040d46d4034eecd5b6b0122b4ed8db341dcff2e1e966a2e41c",
+      "input_sha256": "3c1b57c0bb3b063419cc0944252d0d2c19efba99b24e2f0175c0139f63318a29",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_8p12s_concentrated__baseline__cogging": {
+      "file": "spm_8p12s_concentrated__baseline__cogging.json",
+      "sha256": "b331706b0450ac478abfa0250a49e67c8dc440a723d517b78488601ccc29705e",
+      "input_sha256": "345b5167e28a6be168cb1064089aa00b6055f27a040307bbf54bfca853f42691",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_8p12s_concentrated__tight_airgap__cogging": {
+      "file": "spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "sha256": "a588b8618f0254b6a0e0d852d315b7bc1abc4ed189c5cff21eea639f8ac4e291",
+      "input_sha256": "6327927a94e5d3381b69d2975019161a9eebe7944b6f0514bb29cc5c751fb7c4",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_8p12s_example_shoed__cogging": {
+      "file": "spm_8p12s_example_shoed__cogging.json",
+      "sha256": "ad568a23d3271ed0addf8793183bd7e76bb7ae36a3c97fbed1628525e0ff6af0",
+      "input_sha256": "9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "ipm_flat_8p12s_fsae_contract__cogging": {
+      "file": "ipm_flat_8p12s_fsae_contract__cogging.json",
+      "sha256": "c9409b361cafb3397c9081ff3b5ef9c90034efb2ef2be8dce1014e4f831f30e7",
+      "input_sha256": "bc4148dc2f8a60bf0fab4033d050883a4bc5718662ad1fb93ef3bd567c5efac4",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": {
+      "file": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "sha256": "8e86816b953d03affb1b0aa6feb6e80364c50571d1cb02745cd62ca2161f524d",
+      "input_sha256": "4f4686dcf06b28586ff750d384bf6f64d8d5cca83e8d110b4366f5198f188d96",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "ipm_flat_12s10p_fscw_contract__cogging": {
+      "file": "ipm_flat_12s10p_fscw_contract__cogging.json",
+      "sha256": "20e8c248cebff4636c9ca82aa60a9b9268f15ad2140ff27e7f9a1a8b345c9f0b",
+      "input_sha256": "727e2f8a47115811f9a96a63ddd3fea44439af4ed134d4588c28657b0f6c5ebb",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "ipm_flat_24s16p_industrial_contract__cogging": {
+      "file": "ipm_flat_24s16p_industrial_contract__cogging.json",
+      "sha256": "91fb9c2a84ad43d9964fe7a343238376992d0a6221f758c7ccccc0494873697e",
+      "input_sha256": "683373683bee02043cd55a62b3d95da0af3e31625f8cd5cddc3d84f39eefa4d8",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_8p24s_distributed_femm_validation__cogging": {
+      "file": "spm_8p24s_distributed_femm_validation__cogging.json",
+      "sha256": "9b103431abdd802cc6a853e7e2e76fcb9a37f18790ce99f5f2ac130eaad9de7a",
+      "input_sha256": "691e3d6dac30f855614acf981bb81e59b4832ca24872716fe2f8e671bb09ef87",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_8p48s_distributed_femm_validation__cogging": {
+      "file": "spm_8p48s_distributed_femm_validation__cogging.json",
+      "sha256": "ea272b69bb744c322dc513bb37a10330d165241c2264ca3647e7dd41b5e7eca3",
+      "input_sha256": "0e3e1ac40c748c83d1c996daf90ab6ae0ea4fdedb832331faeb1d35f5aa72f23",
+      "source_cohort": "selected_cogging_reference"
+    },
+    "spm_12p36s_distributed_femm_validation__cogging": {
+      "file": "spm_12p36s_distributed_femm_validation__cogging.json",
+      "sha256": "4d89ff6bd833deff0b2c491c6ccba66a25f738ac669c5ac0794de8c5c8b92273",
+      "input_sha256": "a2c3bfb257ac11398802ae8e347846e7f816ab78284411066784a7540c89a9e7",
+      "source_cohort": "selected_cogging_reference"
+    }
+  },
+  "dataset": {
+    "file": "selected-waveforms.json",
+    "sha256": "74519b52191c8d711704b9db1044cf130050637d940d56382f5eba0769c76227"
+  },
+  "source_evidence": {
+    "file": "source-evidence.json",
+    "sha256": "eceb9e30b56272897f3ea17cc5223d90e3a5e0abb16f6622d44f2df425c96108"
+  },
+  "self_checks": {
+    "file": "self-checks.json",
+    "sha256": "7865839f560e0ba79c6aa737bd0621986be688cbbf2c135388e02b6910c1fd27"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "schema": "coilem.benchmark_collection/v1",
+  "phases": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F"
+  ],
+  "components": [
+    {
+      "id": "abcd",
+      "phases": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "experimental": false,
+      "suite": {
+        "file": "benchmarks/abcd-v1.6/benchmark_spec.json",
+        "sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37"
+      },
+      "reference_bundle": {
+        "directory": "benchmarks/reference-baselines/protocol16-reviewed-20261103",
+        "manifest_sha256": "f3e1e525ea622285778becb126f4e909e72f3830a14292a23a26e0a081fc8c2e",
+        "identity_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8"
+      },
+      "quick_cases": {
+        "A": "spm_4p12s_simple__tight_airgap",
+        "B": "ipm_vshape_8p12s_thin_bridge_contract",
+        "C": "spm_8p24s_distributed_femm_validation",
+        "D": "spm_4p12s_small"
+      },
+      "records": {
+        "windows-x86_64": {
+          "file": "benchmarks/records/windows-x86_64.json",
+          "sha256": "b881f0b186fc1f4e5ba334c35eea57b022f2095f56c049d3f632c48eb353ab68"
+        },
+        "macos-arm64": {
+          "file": "benchmarks/records/macos-arm64.json",
+          "sha256": "2cf6928bc72f6937a6c777aa40fc823b3a43fdbe148b4e39319f2c9273845815"
+        }
+      }
+    },
+    {
+      "id": "phase-e",
+      "phases": [
+        "E"
+      ],
+      "experimental": true,
+      "suite": {
+        "file": "benchmarks/abcd-v1.7/benchmark_spec.json",
+        "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843"
+      },
+      "reference_bundle": {
+        "directory": "benchmarks/reference-baselines/phase-e-experimental-20261108",
+        "manifest_sha256": "88b37ba3db4c55d86e9acb53a2359e342a6815d2aa2d5e17e02b0fcccc45b1d2",
+        "identity_sha256": "0db7299873811eaae27a910a4a56b7922324d748056f9630e5dea5f7d5384ddc"
+      },
+      "quick_cases": {
+        "E": "spm_4p12s_simple__baseline__cogging"
+      },
+      "records": {}
+    },
+    {
+      "id": "phase-f",
+      "phases": [
+        "F"
+      ],
+      "experimental": false,
+      "suite": {
+        "file": "benchmarks/abcd-v1.8/benchmark_spec.json",
+        "sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475"
+      },
+      "reference_bundle": {
+        "directory": "benchmarks/reference-baselines/phase-f-reviewed-20261108",
+        "manifest_sha256": "a58002f32f4233742a4a47e7306c38313cc410e7f94a22640a676c1061519ffe",
+        "identity_sha256": "9bba90b13f17ed45a53dd5ce03c44c2764bce83646dff10ebcde723b259afc4f"
+      },
+      "quick_cases": {
+        "F": "spm_outer_14p12s_drone__baseline"
+      },
+      "records": {
+        "windows-x86_64": {
+          "file": "benchmarks/records/phase-f/windows-x86_64.json",
+          "sha256": "9ef239d60943b991fa9fc392dee20a673afba76b232353d5ac2569bb819d45b0"
+        }
+      }
+    }
+  ]
+}

@@ -14,7 +14,7 @@ from backend.benchmark_suite import cli
 from backend.benchmark_suite.contract import canonical, read, sha, write
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import build_record
-from backend.benchmark_suite.references import load_bundle, load_suite, require_reviewed_bundle
+from backend.benchmark_suite.references import load_bundle, load_suite, reference_provenance, require_reviewed_bundle
 from backend.benchmark_suite.report import build
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,7 +52,8 @@ def derive(native, *, suite, bundle, output, source, reuse_reviewed_reference=Fa
     if manifest["public_candidate_commit"] != identity["commit"] and not reuse_reviewed_reference:
         raise ValueError("Reference request registration names a different candidate")
     derived = copy.deepcopy(original)
-    derived.update(reference_mode="FROZEN_REFERENCE", reference_commit=manifest["reference_commit"])
+    derived.pop("reference_commit", None)
+    derived.update(reference_mode="FROZEN_REFERENCE", **reference_provenance(manifest))
     derived["selection"].update(no_reference=False, bundle_sha256=digest)
     reuse = None
     if manifest["public_candidate_commit"] != identity["commit"]:
@@ -69,7 +70,8 @@ def derive(native, *, suite, bundle, output, source, reuse_reviewed_reference=Fa
         "schema": "coilem.reviewed_candidate_reference_join/v1", "native_manifest_sha256": sha(native/"run_manifest.json"),
         "native_artifact_sha256": hashes, "reference_manifest_sha256": sha(bundle/"manifest.json"),
         "reference_review_sha256": manifest["review"]["sha256"], "reference_review_decision": review["decision"],
-        "measured_candidate": identity["commit"], "reference_adapter_commit": manifest["reference_commit"],
+        "measured_candidate": identity["commit"],
+        **({"reference_adapter_commit": manifest["reference_commit"]} if "reference_commit" in manifest else reference_provenance(manifest)),
         "field_solves_executed": 0, "native_manifest_mutated": False,
         "reference_reuse": reuse,
     }

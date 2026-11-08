@@ -1,0 +1,153 @@
+{
+  "schema": "coilem.native_measurement_projection/v1",
+  "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+  "phase": "E",
+  "measured_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+  "input_sha256": "0e3e1ac40c748c83d1c996daf90ab6ae0ea4fdedb832331faeb1d35f5aa72f23",
+  "source_artifact_sha256": "705ac1f33b9f2086854d92ed7e9ff135abd06a273f6609e5ee7b17a196922f88",
+  "result": {
+    "cogging_torque_waveform": {
+      "electrical_angle_deg": [
+        0.0,
+        1.25,
+        2.5,
+        3.75,
+        5.0,
+        6.25,
+        7.5,
+        8.75,
+        10.0,
+        11.25,
+        12.5,
+        13.75,
+        15.0,
+        16.25,
+        17.5,
+        18.75,
+        20.0,
+        21.25,
+        22.5,
+        23.75,
+        25.0,
+        26.25,
+        27.5,
+        28.75,
+        30.0
+      ],
+      "torque_Nm": [
+        -0.032102522807675386,
+        -2.717150782828996,
+        -5.658339977917737,
+        -8.105562673530835,
+        -8.93792281933665,
+        -7.948359769717303,
+        -6.099704175855489,
+        -4.523121709765954,
+        -3.309693770878789,
+        -2.2807231607734204,
+        -1.3798796900845445,
+        -0.627997776812418,
+        0.07088340468593102,
+        0.633212668768264,
+        1.375980330550695,
+        2.2169735879488712,
+        3.183456739687514,
+        4.443250855950941,
+        6.101079481174723,
+        7.937589605366889,
+        8.889558373345878,
+        7.9859826825723825,
+        5.583284063020064,
+        2.6699945399311353,
+        -0.032102522807675386
+      ]
+    },
+    "summary": {
+      "cogging": {
+        "method": "weighted_stress",
+        "positions_per_period": 24,
+        "period_elec_deg": 30.0,
+        "period_mech_deg": 7.5,
+        "fundamental_order": 48,
+        "peak_to_peak_Nm": 17.827481192682527,
+        "peak_Nm": 8.93792281933665,
+        "first_harmonic_Nm": 6.71225558236502,
+        "mean_Nm": -0.02205468738777172,
+        "endpoint_mismatch_Nm": null,
+        "harmonics": [
+          {
+            "order": 48,
+            "multiple": 1,
+            "amplitude_Nm": 6.71225558236502
+          },
+          {
+            "order": 96,
+            "multiple": 2,
+            "amplitude_Nm": 2.8567955592300365
+          },
+          {
+            "order": 144,
+            "multiple": 3,
+            "amplitude_Nm": 0.2908959721371162
+          },
+          {
+            "order": 192,
+            "multiple": 4,
+            "amplitude_Nm": 0.4078783944898183
+          },
+          {
+            "order": 240,
+            "multiple": 5,
+            "amplitude_Nm": 0.2973850301818139
+          },
+          {
+            "order": 288,
+            "multiple": 6,
+            "amplitude_Nm": 0.04595176738296675
+          },
+          {
+            "order": 336,
+            "multiple": 7,
+            "amplitude_Nm": 0.015370340794537222
+          },
+          {
+            "order": 384,
+            "multiple": 8,
+            "amplitude_Nm": 0.005744667574914952
+          },
+          {
+            "order": 432,
+            "multiple": 9,
+            "amplitude_Nm": 0.01447871213124608
+          },
+          {
+            "order": 480,
+            "multiple": 10,
+            "amplitude_Nm": 0.005379564604355518
+          },
+          {
+            "order": 528,
+            "multiple": 11,
+            "amplitude_Nm": 0.004859027354841833
+          },
+          {
+            "order": 576,
+            "multiple": 12,
+            "amplitude_Nm": 0.004271307019765154
+          }
+        ],
+        "loaded_mean_torque_Nm": 6.352041869639373,
+        "loaded_comparison_reason": null,
+        "peak_to_peak_of_loaded_pct": 280.65748870283585,
+        "status": "experimental",
+        "status_reason": "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
+      }
+    },
+    "solve_metadata": {
+      "solver_name": "magneto2d-retained-public-projection",
+      "mesh_source": "native",
+      "torque_method": "weighted_stress",
+      "independent_endpoints": false
+    }
+  }
+}

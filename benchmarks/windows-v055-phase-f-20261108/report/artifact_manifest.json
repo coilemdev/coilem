@@ -1,0 +1,16 @@
+{
+  "benchmark_report.md": "05151ce41068058326580f1db9bf94ec6cae2ad7cf35d3255ffced01d08f8cb0",
+  "benchmark_results.csv": "3e45d0636d0bad6ccf774f85a9388e5600549cf0acd73b9d249cdf74652012e8",
+  "benchmark_summary.json": "3b7b46b4413de5463c7fd6a42435a37627d5e0250902a9a49a714e6d9cf6527a",
+  "coilem_benchmark_report.html": "d97a818716ba3fac3a389b86900f8f326f6e7f60e096203f78a2f2897e35807c",
+  "fixtures/spm_outer_10p12s_single_layer__baseline__native.json": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5",
+  "fixtures/spm_outer_12p9s_micro__baseline__native.json": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60",
+  "fixtures/spm_outer_12p9s_micro_noload__baseline__native.json": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166",
+  "fixtures/spm_outer_14p12s_drone__angle30__native.json": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6",
+  "fixtures/spm_outer_14p12s_drone__baseline__native.json": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd",
+  "fixtures/spm_outer_14p12s_drone__high_current__native.json": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a",
+  "fixtures/spm_outer_14p12s_drone__tight_airgap__native.json": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c",
+  "fixtures/spm_outer_14p12s_drone_noload__baseline__native.json": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b",
+  "fixtures/spm_outer_28p24s_multirotor__baseline__native.json": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021",
+  "fixtures/spm_outer_30p27s_hub__baseline__native.json": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5"
+}

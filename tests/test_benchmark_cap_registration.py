@@ -93,7 +93,17 @@ def test_historical_replay_retains_cap_100_validation_identity():
     assert graded["run"]["selection"]["spec_sha256"] == sha(ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json")
     assert [r["status"] for r in graded["rows"]] == [r["status"] for r in summary["rows"]]
     assert graded["run"]["identity"] == summary["run"]["identity"]
-    _assert_same_rows(graded["rows"], summary["rows"])
+    # Reporter 1.11 adds a separate explanation; historical numerical metrics,
+    # verdicts, gates and measured identities still reproduce unchanged.
+    legacy_rows = copy.deepcopy(graded["rows"])
+    notes = []
+    for row in legacy_rows:
+        note = row["evaluation"].pop("numerical_resolution", None)
+        if note is not None:
+            notes.append(note)
+            assert note["uncertainty_status"] == "INSUFFICIENT_EVIDENCE"
+    assert notes
+    _assert_same_rows(legacy_rows, summary["rows"])
 
 
 @pytest.mark.parametrize("kind", ["old_requests_as_new", "changed_old_cap"])

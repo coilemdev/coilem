@@ -15,7 +15,7 @@ from pathlib import Path
 from backend.benchmark_suite.contract import canonical, checked_path, read, sha, write
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import TOLERANCES, build_record, gate_statuses, gated_values
-from backend.benchmark_suite.references import load_bundle, load_suite, require_reviewed_bundle
+from backend.benchmark_suite.references import load_bundle, load_suite, reference_provenance, require_reviewed_bundle
 from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SUITE_FILE
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +64,7 @@ def reference_compatibility(summary, anchor, suite, bundle):
             raise ValueError(f'Reference model or metric interpretation needs review: {path}')
     return {'schema': 'coilem.reference_reuse/v1', 'candidate': run['identity']['commit'],
             'suite_sha256': sha(suite), 'bundle_sha256': digest,
-            'reference_commit': manifest['reference_commit'], 'reference_fields_mutated': False,
+            **reference_provenance(manifest), 'reference_fields_mutated': False,
             'reference_sensitive_sources': {p: run['identity']['source_files'].get(p) for p in REFERENCE_SOURCES},
             'registered_requests_sha256': canonical({r['id']: r['configurations'] for r in summary['rows']})}
 

@@ -1,6 +1,9 @@
 # Published benchmark records
 
-`coilem benchmark` matches a run against these records. Each JSON file is
+`coilem benchmark` runs A–F through the [public collection](../../docs/BENCHMARK_COLLECTION.md).
+The top-level records here cover A–D; [phase-f/windows-x86_64.json](phase-f/windows-x86_64.json)
+is the separate Windows F record. E is experimental and has no accepted
+platform record. Each top-level JSON file is
 the compact outcome of one complete A/B/C/D run on one platform, as the
 current evaluator grades it against [protocol 1.6.0](../abcd-v1.6/README.md)
 and the reviewed [`protocol16-reviewed-20261103`](../reference-baselines/protocol16-reviewed-20261103/manifest.json)
@@ -18,12 +21,13 @@ for its estimates.
 | Record | Measured at | Evidence | Outcome |
 | --- | --- | --- | --- |
 | [`macos-arm64.json`](macos-arm64.json) | `88aae101` | [Exact-candidate macOS comparison](../candidate-qualification-20261103/macos/report/benchmark_report.md) | 46 PASS, 1 unsupported |
-| [`windows-x86_64.json`](windows-x86_64.json) | `88aae101` | [Exact-candidate Windows comparison](../candidate-qualification-20261103/windows/report/benchmark_report.md) | 46 PASS, 1 unsupported |
+| [`windows-x86_64.json`](windows-x86_64.json) | `34de0f4` | [v0.5.5 Windows A–D comparison](../windows-v055-abcd-20261108/report/benchmark_report.md) | 46 PASS, 1 unsupported |
+| [`phase-f/windows-x86_64.json`](phase-f/windows-x86_64.json) | `34de0f4` | [v0.5.5 Windows F comparison](../windows-v055-phase-f-20261108/README.md) | 10 PASS, 60/60 gates |
 
-Both records were built from their platform's native fields graded against the
-reviewed references with zero field solves, and both measure the current 63
-guarded physics sources. They match each other within 0.36 of the registered
-tolerances in every case. The v0.4.0 records are kept byte-for-byte in
+Each record retains its measured physics-source hashes. The current Windows
+A–D and F records guard 69 sources; the macOS A–D record retains its earlier
+candidate and 63-source guard. A source mismatch is reported explicitly.
+The v0.4.0 records are kept byte-for-byte in
 [`records-historical/v040`](../records-historical/v040/). Fast mesh remains
 experimental.
 
@@ -88,11 +92,11 @@ solves. It refuses a run that:
 - measured uncommitted code;
 - lacks a physics-source hash.
 
-The two records above were graded this way. The Windows grading reproduces
-the published requalification exactly. The macOS run was native-only (no FEMM
-comparison), so this is its first grading against the frozen reference.
-`tests/test_benchmark_command.py` rebuilds both records and requires them to
-be byte-identical.
+The current Windows packets have dedicated verification tools:
+`python -m tools.verify_windows_abcd_packet` and
+`python -m tools.verify_phase_f_windows_packet`. They verify saved evidence
+without field solves. Historical record reconstruction remains covered by
+the benchmark command tests.
 
 A platform whose physics sources change needs a new complete run before its
 record can match that source. Commit its evidence beside the others and
@@ -105,8 +109,8 @@ Each release's notes carry this block, with the version filled in:
 
 ```sh
 uv tool install coilem==X.Y.Z
-coilem benchmark --quick    # one case per phase, about 5 minutes
-coilem benchmark            # all 30 cases, about 50 minutes
+coilem benchmark --quick    # six cases, one per phase
+coilem benchmark            # all 69 cases; E experimental
 ```
 
 The output folder holds the full report, plus a shareable Markdown and JSON
