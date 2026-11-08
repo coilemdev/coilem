@@ -73,6 +73,51 @@ def test_persisted_report_appends_the_environment_to_the_solver_text(monkeypatch
     assert json.loads(next(tmp_path.glob("*_mesh.json")).read_text()) == _artifact()
 
 
+def test_kept_solver_files_are_written_once_with_the_same_bytes(monkeypatch, tmp_path):
+    # Non-ASCII text and trailing whitespace check the in-place append's byte offsets.
+    solver_text = json.dumps({"solve_info": {"label": "é-ø"}, "results": {"torque": [-0.0, 1.5]}}, ensure_ascii=False, indent=1) + "\n \n"
+    seen: dict[str, Path] = {}
+
+    def runner(command, **kwargs):
+        seen["input"] = Path(command[1])
+        seen["mesh"] = Path(command[command.index("--mesh-input") + 1]) if "--mesh-input" in command else None
+        Path(command[command.index("-o") + 1]).write_bytes(solver_text.encode("utf-8"))
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    monkeypatch.setattr(adapter, "ensure_magneto2d_binary", lambda: Path("unused"))
+    report = adapter.run_magneto2d_report(
+        _config(), sweep=False, solve_mesh_artifact=_artifact(), runner=runner, persist_artifacts_dir=tmp_path,
+    )
+
+    # The solver read its input and mesh from the cache folder itself; nothing staged is left.
+    assert seen["input"].parent == tmp_path
+    assert sorted(path.name for path in tmp_path.iterdir() if path.name.startswith(".")) == []
+    kept_report = next(tmp_path.glob("*_report.json")).read_bytes()
+    environment = json.dumps(report["solver_environment"])
+    expected = solver_text.encode("utf-8").rstrip()[:-1] + (',"solver_environment":' + environment + "}").encode("utf-8")
+    assert kept_report == expected
+    assert json.loads(kept_report) == report
+    assert next(tmp_path.glob("*_mesh.json")).read_text(encoding="utf-8") == json.dumps(_artifact())
+    payload = adapter.build_magneto2d_payload(_config())
+    assert next(tmp_path.glob("*_input.json")).read_text(encoding="utf-8") == json.dumps(payload, indent=2)
+
+
+def test_a_failed_solve_keeps_no_solver_files(monkeypatch, tmp_path):
+    def runner(command, **kwargs):
+        return subprocess.CompletedProcess(command, 3, "", "boom")
+
+    monkeypatch.setattr(adapter, "ensure_magneto2d_binary", lambda: Path("unused"))
+    try:
+        adapter.run_magneto2d_report(
+            _config(), sweep=False, solve_mesh_artifact=_artifact(), runner=runner, persist_artifacts_dir=tmp_path,
+        )
+    except adapter.Magneto2DExecutionError:
+        pass
+    else:
+        raise AssertionError("a failed solve must raise")
+    assert [path.name for path in tmp_path.iterdir() if not path.name.endswith("nonlinear_diagnostics.json")] == []
+
+
 def test_zero_current_copy_shares_the_mesh_and_leaves_its_input_alone() -> None:
     artifact = _artifact()
     before = copy.deepcopy(artifact)

@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 74441,
-      "sha256": "124440adcd98fa37eed045a6e21f64561ed87133a4028544462a838738f4151a"
+      "bytes": 76527,
+      "sha256": "4276626c0f76bc4e435365a4a9e12fd817a0de33cf56813dbe27fbd0f06e88d0"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -7735,8 +7735,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
-      "bytes": 13882,
-      "sha256": "e919144439a8af36c8fbaf884fe439bb0f83c650a7b7f00b1756ff511b835f19"
+      "bytes": 14501,
+      "sha256": "5f838a51b6deb4e61f9ea34161d3cbde24bc062cfbdd11aab1dd5c4c0843549a"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/localization.rs",
@@ -7745,8 +7745,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/mod.rs",
-      "bytes": 113517,
-      "sha256": "c83c346820bc4dfd9a8ba18fe20f1e103e16f0f659c3c6cca37bcb1f74fa263b"
+      "bytes": 115107,
+      "sha256": "795c7f4f476bdca43c315a176d3bfb79dfb70fea6a2839cb586347a1bd6f4502"
     },
     {
       "path": "solvers/magneto2d/src/run_config.rs",
@@ -8330,8 +8330,8 @@
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
-      "bytes": 5255,
-      "sha256": "732bba417b0c4a959fff227c5466ce84287f886f8db5dbcd59ff4530fbc79131"
+      "bytes": 7692,
+      "sha256": "c1abf924e89cb68a94c163e64a4ff0ee34858d4e84cb1a12b1ce3d305a151b5d"
     },
     {
       "path": "tests/test_solve_workspace.py",
