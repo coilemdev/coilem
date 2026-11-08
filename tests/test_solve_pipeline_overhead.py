@@ -97,7 +97,9 @@ def test_kept_solver_files_are_written_once_with_the_same_bytes(monkeypatch, tmp
     expected = solver_text.encode("utf-8").rstrip()[:-1] + (',"solver_environment":' + environment + "}").encode("utf-8")
     assert kept_report == expected
     assert json.loads(kept_report) == report
-    assert next(tmp_path.glob("*_mesh.json")).read_text(encoding="utf-8") == json.dumps(_artifact())
+    # The kept mesh holds exactly the artifact's values, -0.0 signs included.
+    kept_mesh = json.loads(next(tmp_path.glob("*_mesh.json")).read_bytes())
+    assert json.dumps(kept_mesh, sort_keys=True) == json.dumps(_artifact(), sort_keys=True)
     payload = adapter.build_magneto2d_payload(_config())
     assert next(tmp_path.glob("*_input.json")).read_text(encoding="utf-8") == json.dumps(payload, indent=2)
 

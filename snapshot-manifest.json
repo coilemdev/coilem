@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 76527,
-      "sha256": "4276626c0f76bc4e435365a4a9e12fd817a0de33cf56813dbe27fbd0f06e88d0"
+      "bytes": 76498,
+      "sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -8330,8 +8330,8 @@
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
-      "bytes": 7692,
-      "sha256": "c1abf924e89cb68a94c163e64a4ff0ee34858d4e84cb1a12b1ce3d305a151b5d"
+      "bytes": 7837,
+      "sha256": "e93b1954f3a1693cfb3daed3b1beb4485393fe192c8703f1ca2852e2f10cf2fd"
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -13147,6 +13147,16 @@
       "path": "tools/make_outrunner_phase_f.py",
       "bytes": 8404,
       "sha256": "c9a0a33e2b4fb07abf41a43717e51d73de8c4b84fc50960920aebebd36f00f8f"
+    },
+    {
+      "path": "backend/fast_json.py",
+      "bytes": 1930,
+      "sha256": "200b36a4f0e654265847823d4ac22c5f4d5297161ae8a787023b01b2b9bcd404"
+    },
+    {
+      "path": "tests/test_fast_json.py",
+      "bytes": 2663,
+      "sha256": "a6a752e9fc0aa286323a8f01f3d490cb9d02cf3842cbd4677af087a82ee71372"
     }
   ],
   "public_patches": [

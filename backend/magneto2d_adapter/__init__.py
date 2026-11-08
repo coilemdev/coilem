@@ -18,6 +18,7 @@ from math import ceil, gcd, isfinite
 from pathlib import Path
 from typing import Any
 
+from backend import fast_json
 from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.logging_utils import log_event
 from backend.material_contract import electrical_steel_preflight_records
@@ -1295,12 +1296,9 @@ def _run_magneto2d_report_files(
 
     input_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     if solve_mesh_artifact is not None:
-        # Compact JSON: indent forces the pure-Python encoder, ~4x slower
-        # on an 8 MB mesh, and the solver reads the same values either way.
-        solve_mesh_path.write_text(
-            json.dumps(solve_mesh_artifact),
-            encoding="utf-8",
-        )
+        # Compact JSON (an indent forces the pure-Python encoder); fast_json
+        # writes the same values, and the solver reads them either way.
+        solve_mesh_path.write_bytes(fast_json.dumps_bytes(solve_mesh_artifact))
 
     executable = ensure_magneto2d_binary() if runner is subprocess.run else MAGNETO2D_BINARY
     command = build_magneto2d_command(
@@ -1330,10 +1328,9 @@ def _run_magneto2d_report_files(
         raise Magneto2DExecutionError("magneto2d CLI did not produce a report JSON")
 
     report_bytes = output_path.read_bytes()
-    report_text = report_bytes.decode("utf-8")
     try:
-        report = json.loads(report_text)
-    except json.JSONDecodeError as exc:
+        report = fast_json.loads(report_bytes)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
         raise Magneto2DExecutionError("magneto2d returned invalid JSON") from exc
 
     solver_environment = solver_environment_provenance(env_overrides)
@@ -1341,7 +1338,7 @@ def _run_magneto2d_report_files(
         isinstance(report, dict)
         and bool(report)
         and "solver_environment" not in report
-        and report_text.rstrip().endswith("}")
+        and report_bytes.rstrip().endswith(b"}")
     )
     report["solver_environment"] = solver_environment
     reference = reference_model(config)
