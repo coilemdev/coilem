@@ -74,6 +74,7 @@ parameters. The relevant upstream source is distributed under this notice:
 | meshio | 5.3.5 | MIT |
 | numpy (Python 3.11 to 3.14) | 2.4.6 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
 | numpy (Python 3.15) | 2.5.4 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 |
+| orjson | 3.13.0 | MPL-2.0 AND (Apache-2.0 OR MIT) |
 | pillow | 13.0.0 | MIT-CMU |
 | pydantic (Python 3.11 to 3.14) | 2.13.4 | MIT |
 | pydantic (Python 3.15) | 2.14.1 | MIT |
@@ -96,6 +97,10 @@ NumPy's wheel contains additional component notices; a binary distributor must
 retain NumPy's bundled `LICENSE.txt` in addition to this summary.
 Pillow's wheel is distributed under its MIT-CMU license; binary distributors
 must retain the license file shipped with Pillow.
+orjson's wheel carries its `LICENSE-MPL-2.0`, `LICENSE-APACHE` and `LICENSE-MIT`
+files and an SBOM of the Rust crates compiled into it; binary distributors must
+retain those files. coilEM uses orjson unmodified, as a separate package; its
+MPL-2.0 source is available from the orjson project.
 
 ## Rust direct dependencies
 

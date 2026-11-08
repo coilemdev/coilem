@@ -85,8 +85,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 29152,
-      "sha256": "84787e5d7ce0039892f2033e0f2e69f63bfba717037114ceb8d9c3dd01cb67cc"
+      "bytes": 29498,
+      "sha256": "d178873a3556bb50af452f27a28bd7824c86796adf7b94392a05d456b930a0a1"
     },
     {
       "path": "TRADEMARKS.md",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "requirements.lock",
-      "bytes": 1328,
-      "sha256": "84b109e9ef2ba89e3acd8c39304d42d5cda48d5d6247f48051012dd295d82a99"
+      "bytes": 1343,
+      "sha256": "f036141921996cddf11a8830f21290278117849ba8172393a6f4861fad98ed52"
     },
     {
       "path": "schemas/v1/examples/field_current_square.json",
@@ -8210,8 +8210,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20440,
-      "sha256": "4529f161f5a6632ad6c8553863c65daf02ff62038489a339fadf2699745221d7"
+      "bytes": 20531,
+      "sha256": "294cce0fae0a2812cd598dea9fe1c8b2273a17bdaea0039d816aa16db30d0172"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 24083,
-      "sha256": "0151bd392f6a6d3221f45158b64a57e464cc25172b6c132462a08c0bdc63364f"
+      "bytes": 24174,
+      "sha256": "3f166fd1962b84c224676d80084ff8b9fab283491e2a8ca6a90762b9ac2c1c94"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
