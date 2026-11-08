@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from backend.models import MotorConfig
+from backend.rotor_layout import is_outer_rotor
 from backend.winding_utils import winding_phase_axis_offset_elec_deg
 
 ExcitationMode = Literal["sinusoidal", "ideal_six_step_120"]
@@ -113,13 +114,19 @@ def phase_axis_offset_deg(config: MotorConfig) -> float:
     solvers/magneto2d/src/sources.rs winding_phase_axis_offset_elec_deg.
     """
 
-    return winding_phase_axis_offset_elec_deg(
+    offset = winding_phase_axis_offset_elec_deg(
         config.winding.type,
         config.stator.slot_count,
         config.rotor.pole_count,
         config.winding.layers,
         getattr(config.winding, "coil_span", None),
     )
+    if is_outer_rotor(config):
+        # A gap-facing north pole drives flux inward through an outer rotor's
+        # stator, the reverse of an inner rotor: phase A's flux axis sits half a
+        # cycle on. Mirrors solvers/magneto2d/src/sources.rs phase_axis_offset_deg.
+        return offset + 180.0
+    return offset
 def _resolve_native_six_step(
     current_a: float,
     rotor_electrical_angle_deg: float,
@@ -180,13 +187,11 @@ def resolve_phase_current_sample(
             sector_index=None,
         )
 
-    if config.geometry_reference == "pyleecan_prius_2004":
-        # The published Phi0 is measured from its d-axis. Geometry is reflected
-        # into the public clockwise frame; the phase labels and Jz are retained.
-        angle = (rotor_electrical_angle_deg if clockwise_positive else -rotor_electrical_angle_deg) + sp.current_angle_deg
-        peak = _sine_peak_current_a(config)
-        currents = tuple(peak * math.cos(math.radians(angle + offset)) for offset in (0, -120, 120))
-        return PhaseCurrentSample(SINUSOIDAL, currents, wrap_360(rotor_electrical_angle_deg), angle + 90, None)
+    from backend.reference_models import reference_model
+
+    reference = reference_model(config)
+    if reference is not None and reference.excitation_sample is not None:
+        return reference.excitation_sample(config, rotor_electrical_angle_deg, clockwise_positive)
 
     if sp.excitation_mode == IDEAL_SIX_STEP_120:
         if sp.current_amplitude_convention != "plateau":

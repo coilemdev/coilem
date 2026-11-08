@@ -5,12 +5,16 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 // The 2D Phases preview: the terminal currents it shows are the ones a public
 // solve drives, checked against vectors the backend tests pin to the solver.
 const {
+  COIL_SIDE_CURRENT_FLOOR,
+  coilSideOutOfPage,
+  windingSymbolSide,
   PHASE_DRIVE_MIN_WIDTH,
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
   TRACE_AMPLITUDE,
   electricalFrequencyHz,
   formatHz,
+  formatRevPerSecond,
   scopeWindowElecDeg,
   phaseCurrents,
   phaseDriveFrame,
@@ -95,6 +99,10 @@ assert.ok(Math.abs(electricalFrequencyHz(18, 8) - 1.2) < 1e-12);
 assert.ok(Math.abs(electricalFrequencyHz(2400, 14) - 280) < 1e-9, 'rated speed: 280 Hz');
 assert.ok(Math.abs(scopeWindowElecDeg(18, 14) - 756) < 1e-9);
 assert.deepEqual([formatHz(2.1), formatHz(0.3), formatHz(11.67)], ['2.1 Hz', '0.30 Hz', '12 Hz']);
+// A slow preview keeps two figures: 0.1 rpm on the 40-pole joint motor is 0.033 Hz,
+// and its 0.0017 rev/s must not read as 0.00.
+assert.deepEqual([formatHz(electricalFrequencyHz(0.1, 40)), formatHz(electricalFrequencyHz(0.1, 2)), formatHz(0)], ['0.033 Hz', '0.0017 Hz', '0.00 Hz']);
+assert.deepEqual([formatRevPerSecond(18), formatRevPerSecond(6), formatRevPerSecond(0.1), formatRevPerSecond(0.5)], ['0.30', '0.10', '0.0017', '0.0083']);
 const scopeStrip = { x: 0, y: 0, width: 330, height: 90 };
 const crossings = (rpm, poles, mode = 'sinusoidal') => {
   const values = waveformTrace(drive({ mode, poleCount: poles }), 0, 123, scopeStrip, scopeWindowElecDeg(rpm, poles))
@@ -198,3 +206,29 @@ for (const mode of ['sinusoidal', 'ideal_six_step_120']) {
   }
 }
 console.log('Prius convention and zero-current checks passed');
+
+// An outer rotor's stator faces outward: every tooth pole flips.
+const inwardPoles = toothPoles([1, -1, 0, 0, 0, 0]);
+const outwardPoles = toothPoles([1, -1, 0, 0, 0, 0], 'outward');
+assert.deepEqual(outwardPoles, inwardPoles.map((value) => -value + 0));
+console.log('outer-rotor tooth pole checks passed');
+
+// Phases shows each coil side's current as it flows now: an "in" side is ⊙ (out of
+// the page) at positive current and ⊗ at negative; an "out" side the reverse; a
+// switched-off phase shows no direction.
+assert.equal(coilSideOutOfPage('in', 1), true);
+assert.equal(coilSideOutOfPage('in', -0.5), false);
+assert.equal(coilSideOutOfPage('out', 0.5), false);
+assert.equal(coilSideOutOfPage('out', -1), true);
+assert.equal(coilSideOutOfPage('in', 0), null);
+assert.equal(coilSideOutOfPage('out', COIL_SIDE_CURRENT_FLOOR / 2), null);
+assert.equal(coilSideOutOfPage('in', Number.NaN), null);
+assert.deepEqual(windingSymbolSide('A+ (in)'), { phase: 'A', direction: 'in' });
+assert.deepEqual(windingSymbolSide('C− (out)'), { phase: 'C', direction: 'out' });
+assert.equal(windingSymbolSide('stator_slot_3'), null);
+assert.equal(windingSymbolSide(undefined), null);
+// The same rule as the slot currents tooth poles use, so marks and poles agree.
+const sides = [{ slot_index: 0, phase: 'A', direction: 'in' }, { slot_index: 1, phase: 'A', direction: 'out' }];
+const slotNet = slotCurrents(sides, 2, [-0.8, 0, 0.8]);
+assert.deepEqual(sides.map((side) => coilSideOutOfPage(side.direction, -0.8)), slotNet.map((value) => value > 0));
+console.log('live coil-side mark checks passed');

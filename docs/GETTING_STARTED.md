@@ -267,12 +267,16 @@ Select **Manage previous runs** after completing a second Magneto2D solve. Selec
 as the baseline and another as the candidate to compare their stored design,
 operating-point, mesh, and headline result values. Comparison is descriptive:
 it does not rerun either solver, establish cross-solver parity, or certify a
-design.
+design. **Open results** on a stored run brings back its whole result, field
+playback included, without solving again.
 
 The same dialog shows workspace usage and each run's size and status. Deleting
 a run requires **Delete run** followed by **Delete permanently** for that exact
-row. Completed runs are never pruned automatically, and a running solve cannot
-be deleted there.
+row. Completed runs are never deleted automatically, and a running solve cannot
+be deleted there. Only field playback, most of a run's size, is removed on its
+own: each design keeps it for its newest 5 runs. A full workspace also gives up
+the oldest runs' playback first. Those runs keep their results and reports, and
+the dialog marks them "field playback removed".
 
 ## 11. Export and preserve the report
 
@@ -384,7 +388,8 @@ valid.
 ### The run cannot be published
 
 coilEM refuses to publish incomplete evidence or exceed the configured solve
-workspace limit. Select **Manage previous runs** from the error action, review the storage
+workspace limit, after first removing older runs' field playback to make room.
+Select **Manage previous runs** from the error action, review the storage
 meter, and explicitly delete an older completed run or retained incomplete
 diagnostic that you no longer need. The meter and list refresh immediately;
 then retry the analysis. coilEM never silently deletes a completed run.

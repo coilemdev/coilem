@@ -214,7 +214,9 @@ h1, h2, h3, p { margin-top: 0; }
 .public-waveform-data table { width: 100%; min-width: 660px; border-collapse: collapse; font: 9px var(--font-mono); }
 .public-waveform-data th, .public-waveform-data td { padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); text-align: right; white-space: nowrap; }
 .public-waveform-data th:first-child, .public-waveform-data td:first-child, .public-waveform-data th:nth-child(2), .public-waveform-data td:nth-child(2), .public-waveform-data th:nth-child(3), .public-waveform-data td:nth-child(3) { text-align: left; }
-.public-back-emf-view { display: flex; width: max-content; gap: 4px; max-width: 1080px; margin: 14px auto -10px; padding: 4px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--bg-surface-1); }
+/* The voltage reference (phase-neutral or line-line) and the legend's reading (rms or peak), side by side. */
+.public-back-emf-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1080px; margin: 14px auto -10px; }
+.public-back-emf-view { display: flex; width: max-content; gap: 4px; padding: 4px; border: 1px solid var(--border-subtle); border-radius: 8px; background: var(--bg-surface-1); }
 .public-back-emf-view button { min-height: 30px; padding: 0 12px; border: 0; border-radius: 5px; color: var(--text-muted); background: transparent; font-size: 10px; }
 .public-back-emf-view button.active { color: var(--text-accent); background: rgba(245,158,11,.1); }
 .public-six-step-command { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(0, 1.4fr); gap: 20px; max-width: 1080px; margin: 12px auto 0; padding: 16px; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-surface-1); }
@@ -229,7 +231,7 @@ h1, h2, h3, p { margin-top: 0; }
 @media (max-width: 760px) {
   .public-excitation-selector, .public-six-step-command { grid-template-columns: 1fr; }
   .public-six-step-command ol { grid-template-columns: 1fr; }
-  .public-back-emf-view { margin-left: 0; }
+  .public-back-emf-controls { justify-content: flex-start; }
 }
 
 /* Public shell parity: use the same amber/charcoal visual language as coilEM
@@ -989,7 +991,9 @@ body {
 .public-viewport-nav-controls button { display: grid; min-width: 27px; height: 27px; padding: 0 7px; place-items: center; border: 0; border-radius: 6px; color: var(--text-secondary); background: transparent; font: 700 11px var(--font-mono); cursor: pointer; }
 .public-viewport-nav-controls button:hover:not(:disabled) { color: var(--text-accent); background: rgba(245, 158, 11, .12); }
 .public-viewport-nav-controls button:disabled { color: var(--text-disabled); cursor: not-allowed; }
-.public-viewport-nav-controls button.is-fit { min-width: 34px; font-size: 9px; }
+.public-viewport-nav-controls button.is-fit,
+.public-viewport-nav-controls button.is-sector { min-width: 34px; font-size: 9px; }
+.public-viewport-nav-controls button.is-sector-step { min-width: 22px; padding: 0 5px; font-size: 14px; }
 .public-viewport-nav-controls > span { min-width: 34px; color: var(--text-muted); font: 9px var(--font-mono); text-align: center; }
 .public-viewport-expand { position: absolute; z-index: 15; top: 14px; right: 14px; display: grid; width: 37px; height: 37px; padding: 0; place-items: center; border: 1px solid var(--border-default); border-radius: 9px; color: var(--text-secondary); background: rgba(10, 12, 17, .9); box-shadow: var(--shadow-md); cursor: pointer; }
 .public-viewport-expand svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
@@ -1605,8 +1609,57 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-result-summary { display: grid; gap: 12px; max-width: 1080px; margin: 0 auto; }
 .public-solver-convergence { max-width: 1080px; margin: 18px auto; padding: 18px; border: 1px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface-1); }
 .public-solver-convergence > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
-.public-solver-convergence h2 { margin: 0; font-size: 15px; }
-.public-solver-convergence h3 { margin: 14px 0 8px; font-size: 12px; color: var(--text-secondary); }
+.public-diagnostics { max-width: 1080px; margin: 32px auto 18px; padding-top: 18px; border-top: 1px solid var(--border-subtle); }
+.public-diagnostics > h2 { margin: 0; font-size: 16px; }
+.public-diagnostics-intro { margin: 6px 0 0; max-width: 72ch; color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+.public-diagnostics .public-solver-convergence { margin: 14px 0 0; }
+.public-solver-convergence > header h3 { margin: 0; font-size: 15px; color: var(--text-primary); }
+.public-solver-convergence h4 { margin: 14px 0 8px; font-size: 12px; color: var(--text-secondary); }
+.public-convergence-verdict { margin: 12px 0 0; max-width: 80ch; font-size: 13px; line-height: 1.6; color: var(--text-primary); }
+.public-convergence-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 20px; margin: 16px 0 0; }
+.public-convergence-facts > div { min-width: 0; }
+.public-convergence-facts dt { font-size: 11px; color: var(--text-muted); }
+.public-convergence-facts dd { margin: 5px 0 0; font: 600 14px var(--font-mono); overflow-wrap: anywhere; }
+.public-convergence-facts p { margin: 4px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-muted); }
+.public-convergence-title { display: flex; align-items: center; gap: 8px; }
+.convergence-help .popover-panel { width: min(400px, calc(100vw - 24px)); max-width: none; max-height: calc(100vh - 24px); overflow-y: auto; gap: 6px; }
+.convergence-help .popover-panel svg { display: block; width: 100%; height: auto; margin: 2px 0 6px; overflow: visible; }
+.convergence-help-axis, .convergence-help-loop { fill: none; stroke: var(--text-muted); stroke-width: 1; }
+.convergence-help-arrow { fill: var(--text-muted); }
+.convergence-help-curve { fill: none; stroke: #7dd3fc; stroke-width: 2; stroke-linecap: round; }
+.convergence-help-saturated { fill: rgba(250, 204, 21, .07); }
+.convergence-help-box { fill: rgba(255, 255, 255, .03); stroke: var(--border-default); }
+.convergence-help-review { stroke: var(--warning); stroke-width: 1; stroke-dasharray: 3 3; }
+.convergence-help-allowed { stroke: var(--success); stroke-width: 1; stroke-dasharray: 4 3; }
+.convergence-help-stop { fill: var(--success); }
+.convergence-help-text { fill: var(--text-muted); font: 400 10px var(--font-ui); }
+.convergence-help-text.is-strong { fill: var(--text-secondary); }
+.convergence-help-text.is-ok { fill: var(--success); }
+.convergence-help-text.is-warning { fill: var(--warning); }
+.public-convergence-chart { margin: 16px 0 0; }
+.public-convergence-chart figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font-size: 11px; color: var(--text-muted); }
+.public-convergence-chart-legend { display: inline-flex; flex-wrap: wrap; gap: 14px; }
+.public-convergence-chart-legend > span { display: inline-flex; align-items: center; gap: 6px; }
+.public-convergence-chart > svg { display: block; width: 100%; height: auto; margin-top: 6px; }
+.public-convergence-chart .chart-label { font-size: 13px; }
+.public-convergence-limit { stroke: var(--text-muted); stroke-width: 1; }
+.public-convergence-review-line { stroke: var(--warning); stroke-width: 1; stroke-dasharray: 4 4; opacity: .8; }
+.public-convergence-review-label { fill: var(--warning); }
+.public-convergence-flag { fill: var(--warning); stroke: var(--bg-surface-1); stroke-width: 1.5; }
+.public-convergence-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 11px; color: var(--text-muted); }
+.public-convergence-key strong { margin-right: 4px; font-weight: 500; color: var(--text-secondary); }
+.public-convergence-key-note { margin-left: auto; }
+.public-convergence-mark { display: inline-block; width: 1.2em; font-weight: 600; text-align: center; }
+.public-convergence-mark.is-ok { color: var(--success); }
+.public-convergence-mark.is-warning { color: var(--warning); }
+.public-convergence-positions { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+.public-convergence-positions-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.public-convergence-positions-head p { margin: 0; font-size: 13px; color: var(--text-primary); }
+.public-convergence-positions-head p.is-ok > .public-convergence-mark { color: var(--success); }
+.public-convergence-positions-head p.is-warning > .public-convergence-mark { color: var(--warning); }
+.public-convergence-toggle { padding: 5px 10px; border: 1px solid var(--border-subtle); border-radius: 6px; background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; }
+.public-convergence-toggle:hover { color: var(--text-primary); border-color: var(--text-muted); }
+.public-convergence-toggle:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .public-convergence-status { padding: 4px 9px; border: 1px solid var(--border-subtle); border-radius: 20px; font-size: 11px; color: var(--text-muted); }
 .public-convergence-status.is-ok { color: var(--success); }
 .public-convergence-status.is-warning, .public-convergence-warnings, .public-convergence-table-scroll .is-warning { color: var(--warning); }
@@ -1622,7 +1675,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-convergence-details > summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
 .public-convergence-note { color: var(--text-muted); font-size: 11px; line-height: 1.6; }
 .public-convergence-table-scroll { overflow: auto; max-height: 380px; margin-top: 14px; }
-.public-convergence-table-scroll table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 11px; }
+.public-convergence-table-scroll table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
 .public-convergence-table-scroll th, .public-convergence-table-scroll td { padding: 8px; border-bottom: 1px solid var(--border-subtle); text-align: left; font-weight: 400; }
 .public-convergence-table-scroll thead th { position: sticky; top: 0; background: var(--bg-surface-1); color: var(--text-muted); }
 .public-operating-point { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
@@ -1659,6 +1712,12 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-result-emf svg .phase-a { stroke: #f87171; }
 .public-result-emf svg .phase-b { stroke: #4ade80; }
 .public-result-emf svg .phase-c { stroke: #60a5fa; }
+/* The Back EMF card's readings: phase and line-to-line as rms and peak. */
+.public-result-emf .public-emf-readings { width: 100%; margin-top: 8px; border-collapse: collapse; font: 10.5px var(--font-mono); font-variant-numeric: tabular-nums; }
+.public-result-emf .public-emf-readings th, .public-result-emf .public-emf-readings td { padding: 3px 6px; border-top: 1px solid var(--border-subtle); text-align: right; white-space: nowrap; }
+.public-result-emf .public-emf-readings thead th { border-top: 0; color: var(--text-muted); font-size: 8.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.public-result-emf .public-emf-readings tbody th { padding-left: 0; color: var(--text-muted); font-weight: 600; text-align: left; }
+.public-result-emf .public-emf-readings td { color: var(--text-primary); }
 .public-result-detail { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
 /* Losses run full width under the three compact cards. */
 .public-result-detail > .losses-card { grid-column: 1 / -1; }
@@ -1709,6 +1768,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-waveform-legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 4px 0 0; color: var(--text-muted); font-size: 10px; }
 .public-waveform-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .public-waveform-legend i { width: 14px; height: 3px; border-radius: 99px; }
+.public-waveform-legend .public-waveform-legend-value { margin-left: 2px; color: var(--text-secondary); font: 600 10px var(--font-mono); font-variant-numeric: tabular-nums; }
 .public-waveform-legend button { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 4px 9px; border: 1px solid var(--border-subtle); border-radius: 999px; color: var(--text-muted); background: transparent; font: inherit; cursor: pointer; transition: border-color .15s ease, color .15s ease, background .15s ease, opacity .15s ease; }
 .public-waveform-legend button:hover:not(:disabled) { border-color: var(--border-strong); color: var(--text-secondary); background: var(--bg-surface-2); }
 .public-waveform-legend button[aria-pressed="true"] { border-color: var(--border-default); color: var(--text-secondary); background: var(--bg-surface-2); }
@@ -2590,10 +2650,16 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-project-examples-menu small { color: var(--text-muted); font: 9.5px var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
 .public-project-examples-menu .public-example-experimental-tag { display: inline-block; margin-left: 8px; padding: 1px 6px; border: 1px solid rgba(245,158,11,.45); border-radius: 999px; background: rgba(245,158,11,.16); color: #fbbf24; font: 700 8px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; vertical-align: middle; }
 .public-project-examples-menu .public-project-example-group-label { padding: 6px 10px 3px; color: var(--text-muted); font: 700 8px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+/* Inrunners and outrunners side by side in each group; each column takes its label and detail stacked. */
+.public-project-examples-menu .public-project-example-layouts { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 2px 8px; }
+.public-project-examples-menu .public-project-example-layout { display: grid; align-content: start; gap: 2px; min-width: 0; }
+.public-project-examples-menu .public-project-example-layout-label { margin: 0 4px 2px; padding: 3px 6px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); font: 600 9px var(--font-mono); letter-spacing: .06em; }
+.public-project-menu .public-project-examples-menu .public-project-example-layout button { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 
 @media (max-width: 1200px) {
   .public-project-examples-menu { top: calc(100% + 2px); left: 0; }
   .public-project-menu .public-project-examples-menu button { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .public-project-examples-menu .public-project-example-layouts { grid-auto-flow: row; }
 }
 
 .public-blank-design {
@@ -4751,7 +4817,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   .public-field-dock .public-field-physics-info { display: none; }
 }
 @container (max-width: 340px) {
-  .public-dock-strip-end .public-viewport-nav-controls button:not(.is-fit) { display: none; }
+  .public-dock-strip-end .public-viewport-nav-controls button:not(.is-fit):not(.is-sector):not(.is-sector-step) { display: none; }
 }
 /* Completed results open on four key numbers; one toggle shows the rest. */
 .public-result-list-toggle { display: flex; width: 100%; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; padding: 7px 10px; border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-muted); background: transparent; font: 600 12px var(--font-mono); cursor: pointer; }
@@ -4907,3 +4973,9 @@ button.performance-tag { cursor: help; }
 .performance-settings-summary div { display: flex; gap: 6px; }
 .performance-settings-summary dt { color: var(--text-muted); }
 .performance-settings-summary dd { margin: 0; }
+
+/* The sector view's position on the ring (ViewportNavigation SectorDial). */
+.public-sector-dial { width: 24px; height: 24px; margin: 0 2px; cursor: pointer; flex: none; }
+.public-sector-dial circle { fill: none; stroke: var(--border-default); stroke-width: 2; }
+.public-sector-dial path { fill: none; stroke: var(--text-accent); stroke-width: 3.5; stroke-linecap: round; }
+.public-sector-dial:hover circle { stroke: var(--text-secondary); }

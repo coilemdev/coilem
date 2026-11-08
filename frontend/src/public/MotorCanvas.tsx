@@ -25,8 +25,10 @@ import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
   STRIP_LABEL,
+  coilSideOutOfPage,
   electricalFrequencyHz,
   formatHz,
+  formatRevPerSecond,
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
@@ -35,10 +37,13 @@ import {
   toothIndexAt,
   toothPoles,
   waveformTrace,
+  windingSymbolSide,
   type PhaseDrive,
   type Rect,
 } from './phaseDrive';
 import { pointInContours, previewContours, type Contour } from './previewContours';
+import { publishedReference } from './publishedReferences';
+import { outerRotorRing, ringKey, sectorView } from './sectorFraming';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -511,6 +516,8 @@ function drawGeometry(
   highlightComponentKind: PublicMotorComponentKind | null,
   viewportScale: number,
   pan: [number, number],
+  /** The sector turntable's rotation about the motor centre, clockwise on screen. */
+  rotationRad: number,
   annotations: DimensionAnnotation[],
   activeDimension: DimensionId | null,
   hoveredDimension: DimensionId | null,
@@ -534,11 +541,11 @@ function drawGeometry(
   // slot currents either side of it.
   const statorSlotCount = Number(data.metadata.slot_count || 0);
   const poleByTooth = showToothPoles && currents && data.winding_layout?.length && statorSlotCount > 0
-    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents))
+    ? toothPoles(slotCurrents(data.winding_layout, statorSlotCount, currents), data.metadata.rotor_layout === 'outer' ? 'outward' : 'inward')
     : null;
   const toothPoleLabels: Array<{ x: number; y: number; north: boolean; strength: number; size: number }> = [];
   const magnetPoleLabels: MagnetPoleLabel[] = [];
-  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor);
+  const { map, scale } = fitTransform(points, width, height, viewportScale, pan, driveFrame?.motor, rotationRad);
   const slotCount = Number(data.metadata.slot_count || 0);
   // Slots draw as the backend lays them out (#91): a single-layer tooth-coil slot
   // holds one coil side, a two-layer one arrives as two side-by-side regions,
@@ -591,8 +598,47 @@ function drawGeometry(
   context.fill();
 
   context.lineJoin = 'round';
+  // Coil-side marks: ⊙ for current out of the page, ⊗ into it, drawn as rings at
+  // the preview glyphs' places and sizes (its two-bar ⊗ became two squares on
+  // small motors; one ring per side here). With Phases each mark shows the way its
+  // current flows now, so a phase driven negative turns all its marks round and a
+  // switched-off phase shows none; otherwise it shows the winding's own sense.
+  let lastCross: { phase: string; x: number; y: number; marker: number | null } | null = null;
+  const coilSideMark = (region: (typeof data.regions)[number]): boolean => {
+    if (region.region_type !== 'winding_symbol' || layer === 'materials') return false;
+    const side = windingSymbolSide(region.label);
+    if (!side) return false;
+    const corners = region.points.slice(0, -1);
+    const [cx, cy] = corners.reduce<[number, number]>(
+      (sum, [x, y]) => [sum[0] + x / corners.length, sum[1] + y / corners.length],
+      [0, 0],
+    );
+    const radiusMm = Math.max(...corners.map(([x, y]) => Math.hypot(x - cx, y - cy)));
+    if (side.direction === 'out' && lastCross?.phase === side.phase && Math.hypot(cx - lastCross.x, cy - lastCross.y) < radiusMm) {
+      // The ⊗'s second bar: centre the mark between the two.
+      if (lastCross.marker !== null) {
+        const [x, y] = map([(cx + lastCross.x) / 2, (cy + lastCross.y) / 2]);
+        Object.assign(pendingMarkers[lastCross.marker], { x, y });
+      }
+      lastCross = null;
+      return true;
+    }
+    const live = layer === 'phases' && currents !== null;
+    const outOfPage = live
+      ? coilSideOutOfPage(side.direction, currents[{ A: 0, B: 1, C: 2 }[side.phase]])
+      : side.direction === 'in';
+    let marker: number | null = null;
+    if (outOfPage !== null) {
+      const [x, y] = map([cx, cy]);
+      const ring = layer === 'phases' || layer === 'windings' ? PHASE_COLORS[side.phase] : 'rgba(226, 232, 240, 0.8)';
+      marker = pendingMarkers.push({ x, y, radius: Math.max(3, radiusMm * scale * 1.1), outOfPage, ring }) - 1;
+    }
+    lastCross = side.direction === 'out' ? { phase: side.phase, x: cx, y: cy, marker } : null;
+    return true;
+  };
   data.regions.forEach((region, regionIndex) => {
     if (region.points.length < 2) return;
+    if (coilSideMark(region)) return;
     const slotNumber = slotNumberFromRegion(region.region_type);
     const [innerRadiusMm, outerRadiusMm] = radialExtentMm(region.points);
     if (/^airgap$/i.test(region.region_type)) {
@@ -987,7 +1033,7 @@ function drawPhaseDrive(
   context.fillStyle = 'rgba(148, 163, 184, 0.6)';
   context.font = '600 9px ui-monospace, monospace';
   context.textBaseline = 'top';
-  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${(previewRpm / 60).toFixed(2)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${formatRevPerSecond(previewRpm)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];
@@ -1148,6 +1194,8 @@ function drawMesh(
   rotorAngleDeg: number,
   viewportScale: number,
   pan: [number, number],
+  /** The sector turntable's rotation about the motor centre, clockwise on screen. */
+  rotationRad: number,
   displayMode: PublicMeshDisplayMode,
   showEdges: boolean,
   qualities: number[],
@@ -1156,7 +1204,7 @@ function drawMesh(
   meshHits: MeshTriangleHit[],
 ): void {
   if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
-  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan);
+  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
   const fillPaths = new Map<string, Path2D>();
   const qualityColors: Record<PublicMeshQualityBand, string> = {
     good: '#2a9d8f',
@@ -1330,7 +1378,7 @@ export function MotorCanvas({
       mode: solveParams.excitation_mode,
       currentAngleDeg: solveParams.current_angle_deg,
       currentAngleReference: geometry?.metadata.phase_current_convention === 'pyleecan_d_axis'
-        || config?.geometry_reference === 'pyleecan_prius_2004' ? 'pyleecan_d_axis' : 'q_axis',
+        || publishedReference(config)?.phaseCurrentConvention === 'pyleecan_d_axis' ? 'pyleecan_d_axis' : 'q_axis',
       currentAmplitudeA: solveParams.current_amplitude_A,
       commutationAdvanceDeg: solveParams.commutation_advance_deg,
       axisOffsetDeg: Number.isFinite(metadataAxis) ? metadataAxis : 0,
@@ -1355,7 +1403,21 @@ export function MotorCanvas({
   const navigationFrame = useCallback((width: number, height: number) => (
     phaseFrameEnabled ? phaseDriveFrame(width, height)?.motor ?? null : null
   ), [phaseFrameEnabled]);
-  const navigation = useViewportNavigation(undefined, navigationFrame);
+  const ring = outerRotorRing(config);
+  const ringInnerMm = ring?.innerMm;
+  const ringOuterMm = ring?.outerMm;
+  // fitTransform pads the motor by 7.5% of the frame's smaller side, then fits its diameter.
+  const sectorForSize = useCallback((width: number, height: number) => {
+    const box = navigationFrame(width, height) ?? { width, height };
+    const padding = Math.min(box.width, box.height) * 0.075;
+    return sectorView(
+      ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
+      box.width,
+      box.height,
+      Math.min(box.width - 2 * padding, box.height - 2 * padding) / 2,
+    );
+  }, [navigationFrame, ringInnerMm, ringOuterMm]);
+  const navigation = useViewportNavigation(undefined, navigationFrame, sectorForSize, ringKey(ring));
   const annotations = useMemo(
     () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
     [config, geometry, layer],
@@ -1422,6 +1484,7 @@ export function MotorCanvas({
           highlightComponentKind,
           navigation.scale,
           [navigation.pan.x, navigation.pan.y],
+          (navigation.rotationDeg * Math.PI) / 180,
           annotations,
           activeDimension,
           hoveredDimension,
@@ -1440,6 +1503,7 @@ export function MotorCanvas({
           rotorAngleDeg,
           navigation.scale,
           [navigation.pan.x, navigation.pan.y],
+          (navigation.rotationDeg * Math.PI) / 180,
           meshDisplayMode,
           showMeshEdges,
           meshQualities,
@@ -1474,6 +1538,7 @@ export function MotorCanvas({
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
+    navigation.rotationDeg,
     rotorAngleDeg,
     selectedComponent,
     showMeshEdges,
@@ -1582,6 +1647,12 @@ export function MotorCanvas({
             onZoomIn={navigation.zoomIn}
             onZoomOut={navigation.zoomOut}
             onReset={navigation.reset}
+            onSector={navigation.sector}
+            onSectorStep={navigation.sectorStep}
+            onSectorGoTo={navigation.sectorGoTo}
+            sectorActive={navigation.sectorActive}
+            sectorAngleDeg={navigation.sectorAngleDeg}
+            sectorSpanDeg={navigation.sectorSpanDeg}
           />
         );
         return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;

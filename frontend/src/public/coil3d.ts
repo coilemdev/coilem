@@ -50,6 +50,14 @@ export interface ConcentratedCoilModel {
   bundleCenterRadius: number;
   /** Thin slot-liner insulation between tooth steel and the bundle. Caller owns disposal. */
   linerGeometry: THREE.BufferGeometry;
+  /**
+   * Where the wire enters and leaves, in the tooth local frame: on the rear end
+   * turn of the first strand (innermost layer, nearest the bore-side end of the
+   * builder's radial range) and of the last (outermost layer, far end). Each
+   * sits on its own side of the tooth, so a coil has two distinct leads.
+   */
+  startLead: THREE.Vector3;
+  finishLead: THREE.Vector3;
 }
 
 interface RacetrackSegment {
@@ -173,6 +181,12 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
   const strandGeometries: THREE.BufferGeometry[] = [];
   let strandCount = 0;
   let axialOverhang = 0;
+  // A point on a strand's rear end turn, on the given side of the tooth.
+  const rearEndTurnPoint = (x: number, halfWidth: number, halfStraight: number, cornerRadius: number, side: 1 | -1) => (
+    new THREE.Vector3(x, side * Math.max(0, halfWidth - cornerRadius) * 0.6, -(halfStraight + cornerRadius))
+  );
+  let startLead = new THREE.Vector3();
+  let finishLead = new THREE.Vector3();
   for (let row = 0; row < turnsPerLayer && strandCount < strandTarget; row += 1) {
     const x = firstRowX + row * rowSpacing;
     for (let layer = 0; layer < wireLayers && strandCount < strandTarget; layer += 1) {
@@ -185,6 +199,8 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
       const halfStraight = stackHalf + Math.max(0, endReach - cornerRadius);
       axialOverhang = Math.max(axialOverhang, halfStraight + cornerRadius + wireRadius - stackHalf);
       const curve = new RacetrackCurve(x, halfWidth, halfStraight, cornerRadius);
+      if (strandCount === 0) startLead = rearEndTurnPoint(x, halfWidth, halfStraight, cornerRadius, -1);
+      finishLead = rearEndTurnPoint(x, halfWidth, halfStraight, cornerRadius, 1);
       const tubularSegments = Math.round(THREE.MathUtils.clamp(curve.perimeter / 2.6, 40, 128));
       strandGeometries.push(new THREE.TubeGeometry(curve, tubularSegments, wireRadius, 8, true));
       strandCount += 1;
@@ -226,23 +242,9 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
     axialOverhang,
     bundleCenterRadius: firstRowX + blockExtent / 2,
     linerGeometry,
+    startLead,
+    finishLead,
   };
-}
-
-class HarnessArcCurve extends THREE.Curve<THREE.Vector3> {
-  constructor(
-    private readonly radius: number,
-    private readonly startAngle: number,
-    private readonly endAngle: number,
-    private readonly z: number,
-  ) {
-    super();
-  }
-
-  override getPoint(t: number, optionalTarget = new THREE.Vector3()): THREE.Vector3 {
-    const angle = this.startAngle + (this.endAngle - this.startAngle) * t;
-    return optionalTarget.set(Math.cos(angle) * this.radius, Math.sin(angle) * this.radius, this.z);
-  }
 }
 
 function polar(radius: number, angle: number, z: number): THREE.Vector3 {
@@ -273,13 +275,18 @@ export interface WindingHarnessSpec {
   toothAngleOffsetRad?: number;
   /** The phase of the coil on this tooth, or null for a tooth without a coil. */
   phaseOfSlot: (slot: number) => HarnessPhase | null;
-  /** Radial position of the rear jumper ring, in millimetres. */
+  /** Radius the crossovers run at behind the stack, in millimetres. */
   bundleCenterRadius: number;
+  /** Where each coil's wire enters and leaves, in the tooth local frame (``ConcentratedCoilModel``). */
+  coilLeads: { start: THREE.Vector3; finish: THREE.Vector3 };
   stackHalf: number;
   axialOverhang: number;
   wireRadius: number;
+  /** The terminal block lands midway between these two radii, on the yoke. */
   yokeInnerRadius: number;
   outerRadius: number;
+  /** Size of the star junction and terminal block, and their set-back; 1 for a full-size machine. */
+  blockScale?: number;
 }
 
 export interface WindingHarnessModel {
@@ -291,20 +298,28 @@ export interface WindingHarnessModel {
   leadRadius: number;
 }
 
+const Z_AXIS = new THREE.Vector3(0, 0, 1);
+
 /**
- * Rear-side winding interconnects for a concentrated three-phase winding:
- * a drop stub from every coil, series jumper arcs joining the coils of each
- * phase, one lead per phase routed to a terminal block on the yoke, and a
- * wye star point tying the three phase tails together inside the motor.
- * Geometries are in world frame; caller owns disposal.
+ * Rear-side wiring of a concentrated three-phase winding, as it is wound: one
+ * continuous wire per phase. Its drive lead enters the first coil at its start;
+ * each coil's finish crosses to the next coil's start, a short hop just behind
+ * the end turns between neighbouring teeth and a longer run in the phase's own
+ * plane further back; the last coil's finish runs to the wye star point. The
+ * terminal block on the yoke takes the three leads. Geometries are in world
+ * frame; caller owns disposal.
  */
 export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessModel {
   const radius = spec.bundleCenterRadius;
-  const leadRadius = Math.max(spec.wireRadius * 1.05, 0.8);
-  const zStubTop = -(spec.stackHalf + spec.axialOverhang * 0.55);
-  const zBase = -(spec.stackHalf + spec.axialOverhang + 2.2);
+  const blockScale = spec.blockScale ?? 1;
+  const leadRadius = Math.max(spec.wireRadius * 1.05, 0.8 * blockScale);
+  const endTurnZ = -(spec.stackHalf + spec.axialOverhang);
+  const zHop = endTurnZ - leadRadius * 1.8;
+  const zBase = endTurnZ - 2.2 * blockScale;
   const zStep = leadRadius * 2.7;
   const toothAngle = (tooth: number) => (spec.toothAngleOffsetRad ?? 0) + tooth * spec.slotPitchRad;
+  const leadAt = (local: THREE.Vector3, tooth: number) => local.clone().applyAxisAngle(Z_AXIS, toothAngle(tooth));
+  const atZ = (point: THREE.Vector3, z: number) => new THREE.Vector3(point.x, point.y, z);
 
   const slotsByPhase: Record<HarnessPhase, number[]> = { A: [], B: [], C: [] };
   for (let slot = 0; slot < spec.slotCount; slot += 1) {
@@ -317,7 +332,22 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
 
   const terminalRadius = (spec.yokeInnerRadius + spec.outerRadius) / 2;
   const terminalAngle = circularMean(orderedPhases.map((phase) => toothAngle(slotsByPhase[phase][0])));
-  const zTerminal = -(spec.stackHalf + 4.2);
+  const zTerminal = -(spec.stackHalf + 4.2 * blockScale);
+
+  // A wire from one coil's finish to the next coil's start: back off the end
+  // turn, round the machine at the crossover radius, and forward onto the start.
+  const crossover = (finish: THREE.Vector3, start: THREE.Vector3, z: number): THREE.TubeGeometry => {
+    const from = Math.atan2(finish.y, finish.x);
+    let to = Math.atan2(start.y, start.x);
+    while (to < from) to += Math.PI * 2;
+    const sweep = to - from;
+    const arcSteps = Math.max(2, Math.ceil(sweep / (Math.PI / 18)));
+    const points = [finish, atZ(finish, z)];
+    for (let step = 1; step < arcSteps; step += 1) points.push(polar(radius, from + (sweep * step) / arcSteps, z));
+    points.push(atZ(start, z), start);
+    const curve = new THREE.CatmullRomCurve3(points, false, 'centripetal');
+    return tubeAlong(curve, curve.getLength(), leadRadius);
+  };
 
   const phaseGeometries: Record<HarnessPhase, THREE.BufferGeometry | null> = { A: null, B: null, C: null };
   const tailPoints: Partial<Record<HarnessPhase, THREE.Vector3>> = {};
@@ -326,30 +356,30 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     const slots = slotsByPhase[phase];
     const zPlane = zBase - phaseIndex * zStep;
     const parts: THREE.BufferGeometry[] = [];
-    slots.forEach((slot) => {
-      const angle = toothAngle(slot);
-      parts.push(tubeAlong(
-        new THREE.LineCurve3(polar(radius, angle, zStubTop), polar(radius, angle, zPlane)),
-        Math.abs(zPlane - zStubTop),
-        leadRadius,
-      ));
-    });
     for (let index = 0; index < slots.length - 1; index += 1) {
-      const from = toothAngle(slots[index]);
-      const to = toothAngle(slots[index + 1]);
-      parts.push(tubeAlong(new HarnessArcCurve(radius, from, to, zPlane), Math.abs(to - from) * radius, leadRadius));
+      const neighbours = slots[index + 1] - slots[index] === 1;
+      parts.push(crossover(
+        leadAt(spec.coilLeads.finish, slots[index]),
+        leadAt(spec.coilLeads.start, slots[index + 1]),
+        neighbours ? zHop : zPlane,
+      ));
     }
-    const leadAngle = toothAngle(slots[0]);
+    // The drive lead enters the first coil at its start.
+    const firstStart = leadAt(spec.coilLeads.start, slots[0]);
     const landAngle = terminalAngle + (phaseIndex - (orderedPhases.length - 1) / 2) * 0.1;
-    const lead = new THREE.QuadraticBezierCurve3(
-      polar(radius, leadAngle, zPlane),
-      polar((radius + terminalRadius) / 2, (leadAngle + landAngle) / 2, zPlane),
+    const lead = new THREE.CatmullRomCurve3([
+      firstStart,
+      atZ(firstStart, zPlane),
+      polar((radius + terminalRadius) / 2, (Math.atan2(firstStart.y, firstStart.x) + landAngle) / 2, zPlane),
       polar(terminalRadius, landAngle, zTerminal),
-    );
+    ], false, 'centripetal');
     parts.push(tubeAlong(lead, lead.getLength(), leadRadius));
+    // The last coil's finish leaves for the star point.
+    const lastFinish = leadAt(spec.coilLeads.finish, slots[slots.length - 1]);
+    parts.push(tubeAlong(new THREE.LineCurve3(lastFinish, atZ(lastFinish, zPlane)), Math.abs(lastFinish.z - zPlane), leadRadius));
     phaseGeometries[phase] = mergeGeometries(parts, false) ?? null;
     parts.forEach((part) => part.dispose());
-    tailPoints[phase] = polar(radius, toothAngle(slots[slots.length - 1]), zPlane);
+    tailPoints[phase] = atZ(lastFinish, zPlane);
   });
 
   let neutralGeometry: THREE.BufferGeometry | null = null;
@@ -365,12 +395,12 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
       const control = new THREE.Vector3(
         (tail.x + star.x) / 2,
         (tail.y + star.y) / 2,
-        (tail.z + star.z) / 2 - 1.2,
+        (tail.z + star.z) / 2 - 1.2 * blockScale,
       );
       const link = new THREE.QuadraticBezierCurve3(tail, control, star);
       parts.push(tubeAlong(link, link.getLength(), leadRadius * 0.9));
     });
-    const junction = new THREE.BoxGeometry(7, 4.6, 4.6);
+    const junction = new THREE.BoxGeometry(7 * blockScale, 4.6 * blockScale, 4.6 * blockScale);
     junction.rotateZ(starAngle);
     junction.translate(star.x, star.y, star.z);
     parts.push(junction);
@@ -378,9 +408,9 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     parts.forEach((part) => part.dispose());
   }
 
-  const terminalGeometry = new THREE.BoxGeometry(13, 7, 5.2);
+  const terminalGeometry = new THREE.BoxGeometry(13 * blockScale, 7 * blockScale, 5.2 * blockScale);
   terminalGeometry.rotateZ(terminalAngle + Math.PI / 2);
-  const terminalCenter = polar(terminalRadius, terminalAngle, zTerminal - 0.4);
+  const terminalCenter = polar(terminalRadius, terminalAngle, zTerminal - 0.4 * blockScale);
   terminalGeometry.translate(terminalCenter.x, terminalCenter.y, terminalCenter.z);
 
   return { phaseGeometries, neutralGeometry, terminalGeometry, leadRadius };

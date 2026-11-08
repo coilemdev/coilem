@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const {
+  backEmfReadings,
   electricalFrequencyHz,
+  formatVolts,
+  waveformMeasure,
   electromagneticPower,
   formatFrequencyHz,
   loadingScaleMaxT,
@@ -32,6 +35,31 @@ assert.deepEqual(electromagneticPower(10.59, 2400), { text: '2.66', unit: 'kW' }
 assert.deepEqual(electromagneticPower(0.5, 1000), { text: '52.4', unit: 'W' });
 assert.deepEqual(electromagneticPower(-10.59, 2400), { text: '−2.66', unit: 'kW' }, 'generating keeps its sign');
 assert.equal(electromagneticPower(Number.NaN, 2400), null);
+
+// Back EMF readings: rms is the fundamental's, the peak comes from the solved
+// waveform. A phase of 10 sin θ − sin 3θ reaches 11 V, not the fundamental's 10 V,
+// so its peak is not √2 × rms; a − b cancels the third harmonic and peaks at √3·10 V.
+const cycle = Array.from({ length: 48 }, (_, index) => index * 7.5);
+const phase = (shiftDeg) => cycle.map((angle) => {
+  const theta = ((angle - shiftDeg) * Math.PI) / 180;
+  return 10 * Math.sin(theta) - Math.sin(3 * theta);
+});
+const emf = { electrical_angle_deg: cycle, phase_a_V: phase(0), phase_b_V: phase(120), phase_c_V: phase(240) };
+const close = (actual, expected, label) => assert.ok(Math.abs(actual - expected) < 1e-9, `${label}: ${actual} vs ${expected}`);
+close(waveformMeasure(cycle, emf.phase_a_V, 'rms'), 10 / Math.SQRT2, 'fundamental rms ignores the third harmonic');
+close(waveformMeasure(cycle, emf.phase_a_V, 'peak'), 11, 'peak includes it: 10 sin θ − sin 3θ peaks at 11 V on θ = 90°');
+assert.equal(waveformMeasure(cycle.slice(0, 7), emf.phase_a_V.slice(0, 7), 'peak'), null, 'a Preview window is not a whole cycle');
+assert.equal(waveformMeasure(cycle, emf.phase_a_V.slice(1), 'rms'), null, 'mismatched lengths');
+const readings = backEmfReadings(emf, 10 / Math.SQRT2);
+assert.deepEqual(readings.map((row) => row.label), ['Phase', 'Line (wye)']);
+close(readings[0].peakV, 11, 'phase peak');
+close(readings[1].rmsV, Math.sqrt(3) * 10 / Math.SQRT2, 'line rms is √3 × phase');
+close(readings[1].peakV, 10 * Math.sqrt(3), 'line a − b: the third harmonic cancels');
+assert.deepEqual(Object.keys(readings[0]).sort(), ['label', 'peakV', 'rmsV'], 'no peak-to-peak: it is twice the peak');
+assert.equal(backEmfReadings({ ...emf, line_ab_V: emf.phase_a_V.map((value) => 2 * value) }, 1)[1].peakV, 22, 'a solver line waveform is used as given');
+assert.equal(backEmfReadings(emf, null), null);
+assert.deepEqual(backEmfReadings({ ...emf, electrical_angle_deg: cycle.map((angle) => angle / 8) }, 5).map((row) => row.peakV), [null, null]);
+assert.deepEqual([formatVolts(6.358), formatVolts(17.4), formatVolts(31.62), formatVolts(230.6), formatVolts(null)], ['6.36', '17.4', '31.6', '231', '—']);
 
 // The torque range ignores non-finite samples and needs two.
 assert.deepEqual(torqueRange([11.2, 9.8, Number.NaN, 11.6]), { min: 9.8, max: 11.6 });

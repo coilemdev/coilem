@@ -12,6 +12,7 @@ from backend.excitation import (
     terminal_to_slot_current_scale,
 )
 from backend.models import MotorConfig
+from backend.rotor_layout import is_outer_rotor, outer_rotor_airgap_mm
 from backend.winding_utils import (
     concentrated_slot_layer_assignments,
     distributed_layer_tag,
@@ -153,6 +154,8 @@ class MotorGeometry:
     pole_count: int = 8
     slot_count: int = 48
     topology: str = "IPM"
+    # An outer rotor's magnet seat (back-iron inner face); None for an inner rotor.
+    rotor_ID_r: float | None = None
 
 
 def compute_geometry(config: MotorConfig) -> MotorGeometry:
@@ -175,6 +178,12 @@ def compute_geometry(config: MotorConfig) -> MotorGeometry:
     rotor_OD_r = rotor.OD_mm / 2
     shaft_r = rotor.ID_mm / 2 if rotor.ID_mm is not None else rotor_OD_r * 0.2
     airgap_mm = stator_ID_r - rotor_OD_r
+    rotor_ID_r = None
+    if is_outer_rotor(config):
+        # The stator is inside; no shaft is drawn and the hub bore is the stator ID.
+        rotor_ID_r = rotor.ID_mm / 2
+        shaft_r = 0.0
+        airgap_mm = outer_rotor_airgap_mm(config)
     slotless_stator = False
 
     # ── Magnet placements ────────────────────────────────────────────────
@@ -202,6 +211,7 @@ def compute_geometry(config: MotorConfig) -> MotorGeometry:
         pole_count=rotor.pole_count,
         slot_count=stator.slot_count,
         topology=config.topology,
+        rotor_ID_r=rotor_ID_r,
     )
 
 
@@ -240,6 +250,9 @@ def magnet_radial_center_mm(config: MotorConfig) -> float:
             - (getattr(rotor, "pocket_clearance_mm", 0.0) or 0.0)
             - rotor.magnet_thickness_mm / 2
         )
+    if is_outer_rotor(config):
+        # Surface magnets on an outer rotor's inner face, inward of the magnet seat.
+        return rotor.ID_mm / 2 - rotor.magnet_thickness_mm / 2
     return rotor.OD_mm / 2 + rotor.magnet_thickness_mm / 2
 
 
@@ -276,6 +289,10 @@ def _compute_magnet_placements(config: MotorConfig) -> list[MagnetPlacement]:
             # IPM: rectangular pockets inside rotor
             inner_r = radial_center - magnet_thickness / 2
             outer_r = radial_center + magnet_thickness / 2
+        elif is_outer_rotor(config):
+            # SPM on an outer rotor: arc segments on its inner face
+            inner_r = rotor.ID_mm / 2 - magnet_thickness
+            outer_r = rotor.ID_mm / 2
         else:
             # SPM: arc segments on rotor surface
             inner_r = rotor.OD_mm / 2
@@ -286,7 +303,8 @@ def _compute_magnet_placements(config: MotorConfig) -> list[MagnetPlacement]:
         # Magnetization angle: radially outward for N, radially inward for S
         # FEMM convention: 0 deg = +x, 90 deg = +y
         mag_angle_deg = math.degrees(angle_rad)
-        if polarity == "S":
+        # A north pole faces the air gap: inward on an outer rotor.
+        if (polarity == "S") != is_outer_rotor(config):
             mag_angle_deg = (mag_angle_deg + 180) % 360
 
         magnets.append(MagnetPlacement(
@@ -987,13 +1005,21 @@ def _compute_slot_placements(config: MotorConfig) -> list[SlotPlacement]:
     slot_angular_pitch = 2 * math.pi / slot_count
     slot_depth_mm = _slot_radial_depth_mm(config)
 
-    inner_r = stator.ID_mm / 2
-    outer_r = inner_r + slot_depth_mm
     slot_body_width_mm = _slot_body_width_mm(config)
     slot_mouth_width_mm = _slot_mouth_width_mm(config)
     max_half_w = 0.499 * slot_angular_pitch
-    inner_half_w = min(max_half_w, (slot_mouth_width_mm / 2) / inner_r)
-    outer_half_w = min(max_half_w, (slot_body_width_mm / 2) / outer_r)
+    if is_outer_rotor(config):
+        # Outer-rotor slots open outward: the body sits at the yoke inside, the
+        # mouth at the stator OD facing the air gap.
+        outer_r = stator.OD_mm / 2
+        inner_r = outer_r - slot_depth_mm
+        inner_half_w = min(max_half_w, (slot_body_width_mm / 2) / inner_r)
+        outer_half_w = min(max_half_w, (slot_mouth_width_mm / 2) / outer_r)
+    else:
+        inner_r = stator.ID_mm / 2
+        outer_r = inner_r + slot_depth_mm
+        inner_half_w = min(max_half_w, (slot_mouth_width_mm / 2) / inner_r)
+        outer_half_w = min(max_half_w, (slot_body_width_mm / 2) / outer_r)
     mean_r = 0.5 * (inner_r + outer_r)
     mean_half_w = (
         inner_half_w + 0.5 * (outer_half_w - inner_half_w)
@@ -1118,7 +1144,9 @@ def _slot_body_width_mm(config: MotorConfig) -> float:
 def _slot_mouth_width_mm(config: MotorConfig) -> float:
     """Configured slot mouth width at the stator bore."""
     stator = config.stator
-    tooth_pitch_mm = math.pi * stator.ID_mm / stator.slot_count
+    # Measured at the air-gap face: the bore, or an outer rotor's stator OD.
+    gap_face_mm = stator.OD_mm if is_outer_rotor(config) else stator.ID_mm
+    tooth_pitch_mm = math.pi * gap_face_mm / stator.slot_count
     return max(0.5, min(stator.slot_opening_mm, tooth_pitch_mm * 0.998))
 
 
@@ -1134,7 +1162,10 @@ def slot_body_pitch_mm(config: MotorConfig) -> float:
     ``tooth_width_mm`` is subtracted. Shared with validation so the limit on the
     field is the same arc the drawer divides up."""
     stator = config.stator
-    body_radius_mm = stator.ID_mm / 2 + _slot_radial_depth_mm(config)
+    if is_outer_rotor(config):
+        body_radius_mm = stator.OD_mm / 2 - _slot_radial_depth_mm(config)
+    else:
+        body_radius_mm = stator.ID_mm / 2 + _slot_radial_depth_mm(config)
     return 2 * math.pi * body_radius_mm / stator.slot_count
 
 
@@ -1147,7 +1178,8 @@ def bore_tooth_width_mm(config: MotorConfig) -> float:
     """
 
     stator = config.stator
-    bore_pitch_mm = math.pi * stator.ID_mm / stator.slot_count
+    gap_face_mm = stator.OD_mm if is_outer_rotor(config) else stator.ID_mm
+    bore_pitch_mm = math.pi * gap_face_mm / stator.slot_count
     width_mm = bore_pitch_mm - _slot_mouth_width_mm(config)
     if stator.tooth_shoe_enabled:
         width_mm += 2.0 * stator.tooth_shoe_overhang_mm
@@ -1179,6 +1211,20 @@ def narrowest_tooth_width_mm(config: MotorConfig) -> float:
     yoke_width_mm = tooth_width_at_yoke_mm(config)
     if not stator.tooth_shoe_enabled:
         return min(bore_width_mm, yoke_width_mm)
+
+    if is_outer_rotor(config):
+        # The shoe is at the stator OD and the body runs in to the slot bottom; the
+        # shoulder samples the body taper there, as backend.geometry_ir draws it.
+        gap_r = stator.OD_mm / 2.0
+        bottom_r = gap_r - _slot_radial_depth_mm(config)
+        if bottom_r >= gap_r - 1e-9:
+            return min(bore_width_mm, yoke_width_mm)
+        gap_body_half_rad = max(0.0, math.pi / stator.slot_count - (_slot_mouth_width_mm(config) / 2.0) / gap_r)
+        bottom_half_rad = yoke_width_mm / (2.0 * bottom_r)
+        shoulder_r = max(gap_r - stator.tooth_shoe_height_mm, bottom_r + 1e-6)
+        fraction = (gap_r - shoulder_r) / (gap_r - bottom_r)
+        shoulder_width_mm = 2.0 * shoulder_r * (gap_body_half_rad + fraction * (bottom_half_rad - gap_body_half_rad))
+        return max(0.0, min(bore_width_mm, shoulder_width_mm, yoke_width_mm))
 
     bore_r = stator.ID_mm / 2.0
     slot_outer_r = bore_r + _slot_radial_depth_mm(config)
@@ -1218,7 +1264,9 @@ def tooth_width_geometry_limit_mm(config: MotorConfig) -> float:
     """
 
     stator = config.stator
-    bore_r = stator.ID_mm / 2.0
+    # The air-gap face: an outer rotor's slots open at the stator OD. Its tooth-width
+    # advisory is off (backend.geometry), so only the unshoed bore width matters there.
+    bore_r = (stator.OD_mm if is_outer_rotor(config) else stator.ID_mm) / 2.0
     slot_outer_r = bore_r + _slot_radial_depth_mm(config)
     slot_pitch_rad = 2.0 * math.pi / stator.slot_count
     mouth_half_rad = min(

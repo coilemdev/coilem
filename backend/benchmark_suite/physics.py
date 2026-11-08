@@ -37,7 +37,12 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/models/config.py",
     "backend/public_material_catalog.py",
     "backend/public_policy.py",
+    # The registry picks a reference implementation, and the layout helper sets
+    # excitation, mesh boundaries and the torque sign for outer rotors.
+    "backend/reference_models/__init__.py",
     "backend/reference_models/prius.py",
+    "backend/reference_models/lrk.py",
+    "backend/rotor_layout.py",
     "backend/solver/__init__.py",
     "backend/solver/_helpers.py",
     "backend/solver_contract.py",
@@ -54,6 +59,8 @@ PHYSICS_DATA_SOURCES = (
     "materials/electrical-steel/M350-50A.csv",
     "backend/reference_models/pyleecan_prius_2004.json",
     "backend/reference_models/pyleecan_prius_2004_config.json",
+    "backend/reference_models/lrk_12s14p_source.json",
+    "backend/reference_models/lrk_12s14p_config.json",
 )
 SOLVER_LOCK_FILE = "solvers/magneto2d/Cargo.lock"
 SOLVER_SOURCE_DIR = "solvers/magneto2d/src"

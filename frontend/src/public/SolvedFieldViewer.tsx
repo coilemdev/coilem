@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { outerRotorRing } from './sectorFraming';
 
 import { getPublicFieldFrame } from './api';
 import {
@@ -1141,6 +1142,7 @@ export function SolvedFieldViewer({
         {(activeDetailRaster || visibleRaster || visiblePlot) && (
           <>
             <FieldResultPlot
+              ring={outerRotorRing(config)}
               plot={visiblePlot}
               raster={activeDetailRaster ?? visibleRaster}
               highResolutionPlot={exactVectorPlot}
@@ -1149,14 +1151,15 @@ export function SolvedFieldViewer({
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
               showAirgap={showAirgap}
-              airgapInnerRadiusMm={rotorAirgapBoundaryRadiusMm(config)}
+              // The air-gap ring, field axes and stator pole labels assume an inner rotor.
+              airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
               showMagnetPolarityLabels={showPoleLabels}
               magnetReference={source === 'armature' && !overlayActive}
               showStatorPolarity={source === 'armature' && showPoleLabels}
               showPolarityLegend={source === 'armature' && showPoleLabels}
               statorPolarityProfile={descriptor?.airgap_brbt ?? exactVectorPlot?.airgap_brbt}
               statorPolarityRotationDeg={statorPolarityRotationDeg}
-              statorInnerRadiusMm={config.stator.ID_mm / 2}
+              statorInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : config.stator.ID_mm / 2}
               poles={config.rotor.pole_count}
               showHeatmap={showHeatmap && !overlayActive}
               showMesh={showMesh}
@@ -1275,7 +1278,7 @@ export function SolvedFieldViewer({
             max={PUBLIC_FIELD_PLAYBACK_MAX_RPM}
             label="Speed"
             ariaLabel="Playback speed (RPM)"
-            title="Visual playback speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+            title="Visual playback speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
             onChange={setPlaybackRpm}
           />
         </div>

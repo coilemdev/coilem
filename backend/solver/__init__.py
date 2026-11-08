@@ -70,6 +70,8 @@ from backend.models import (
     SolveSummary,
     TorqueWaveform,
 )
+from backend.reference_models import reference_model
+from backend.rotor_layout import is_outer_rotor
 from backend.solver._mesh_pool import (
     check_mesh_worker_cancelled,
     completed_mesh_futures,
@@ -451,7 +453,8 @@ def _clockwise_excitation_config(config: MotorConfig) -> MotorConfig:
     mirrored = config.model_copy(deep=True)
     if mirrored.solve_params is None:
         raise ValueError("magneto2d solve requires solve_params")
-    if config.geometry_reference == "pyleecan_prius_2004":
+    reference = reference_model(config)
+    if reference is not None and reference.excitation_sample is not None:
         return mirrored
     if mirrored.solve_params.excitation_mode == "ideal_six_step_120":
         # Six-step source synthesis is rotor-position based; gamma is not an
@@ -474,6 +477,20 @@ _NATIVE_DIRECTION_TORQUE_METRICS = {
     "arkkio",
     "coenergy_fd",
     "energy_fd",
+    "field_fd",
+    "pm_source_work_fd",
+    "current_source_work_fd",
+    "mst",
+    "selected",
+    "weighted_stress",
+    "weighted_stress_centered",
+}
+# Field integrals across the air gap give the torque on the body inside it: the
+# rotor of an inner rotor, the stator of an outer rotor. Energy derivatives
+# with respect to rotor angle are rotor torque for either layout.
+_INNER_BODY_TORQUE_METRICS = {
+    "contour",
+    "arkkio",
     "mst",
     "selected",
     "weighted_stress",
@@ -516,6 +533,7 @@ def _torque_in_ui_direction(
     *,
     clockwise_positive: bool,
     metric: str = "contour",
+    outer_rotor: bool = False,
 ) -> None: ...
 
 
@@ -525,6 +543,7 @@ def _torque_in_ui_direction(
     *,
     clockwise_positive: bool,
     metric: str = "contour",
+    outer_rotor: bool = False,
 ) -> float: ...
 
 
@@ -533,16 +552,20 @@ def _torque_in_ui_direction(
     *,
     clockwise_positive: bool,
     metric: str = "contour",
+    outer_rotor: bool = False,
 ) -> float | None:
-    """Map native CCW-positive stress torque to the launch UI convention."""
+    """Map native CCW-positive torque to the rotor's torque in the launch UI convention."""
 
-    if (
-        value is not None
-        and clockwise_positive
-        and metric in _NATIVE_DIRECTION_TORQUE_METRICS
-    ):
+    if value is not None and _ui_torque_flips(metric, clockwise_positive=clockwise_positive, outer_rotor=outer_rotor):
         return -float(value)
     return value
+
+
+def _ui_torque_flips(metric: str, *, clockwise_positive: bool, outer_rotor: bool) -> bool:
+    flip = clockwise_positive and metric in _NATIVE_DIRECTION_TORQUE_METRICS
+    if outer_rotor and metric in _INNER_BODY_TORQUE_METRICS:
+        flip = not flip
+    return flip
 
 
 def _build_gmsh_mesh_in_subprocess(
@@ -604,9 +627,9 @@ def _rebake_gmsh_artifact_for_config(
             float(rotor_angle_mech_deg) * max(1, int(config.rotor.pole_count) // 2)
         ),
     )
-    if config.geometry_reference == "pyleecan_prius_2004":
-        from backend.reference_models.prius import exact_currents
-        exact_currents(rebaked, config, float(rebaked["rotor_angle_mech_deg"]))
+    reference = reference_model(config)
+    if reference is not None and reference.exact_currents is not None:
+        reference.exact_currents(rebaked, config, float(rebaked["rotor_angle_mech_deg"]))
     return rebaked
 
 
@@ -1673,6 +1696,7 @@ def _solve_with_per_angle_producer_meshes(
                     torque = _torque_in_ui_direction(
                         torque,
                         clockwise_positive=clockwise_positive,
+                        outer_rotor=is_outer_rotor(config),
                     )
                     completed_steps += 1
                     on_progress(
@@ -2279,6 +2303,7 @@ def _solve_with_per_angle_producer_meshes(
                     torque = _torque_in_ui_direction(
                         torque,
                         clockwise_positive=clockwise_positive,
+                        outer_rotor=is_outer_rotor(config),
                     )
                     field_line_frame = None
                     if not compact_qa_report:
@@ -2556,6 +2581,7 @@ def _solve_with_per_angle_producer_meshes(
             torque = _torque_in_ui_direction(
                 torque,
                 clockwise_positive=clockwise_positive,
+                outer_rotor=is_outer_rotor(config),
             )
             field_line_frame = None
             if not compact_qa_report:
@@ -2745,7 +2771,7 @@ class Magneto2DSolver(Solver):
             sweep,
             torque_method,
         )
-        if launch_surface and torque_metric in _NATIVE_DIRECTION_TORQUE_METRICS:
+        if _ui_torque_flips(torque_metric, clockwise_positive=launch_surface, outer_rotor=is_outer_rotor(config)):
             torque_waveform_nm = [
                 -float(value)
                 for value in torque_waveform_nm
@@ -2799,7 +2825,7 @@ class Magneto2DSolver(Solver):
             sweep,
             str(sweep.get("cogging_torque_method") or torque_method),
         )
-        if launch_surface and cogging_torque_metric in _NATIVE_DIRECTION_TORQUE_METRICS:
+        if _ui_torque_flips(cogging_torque_metric, clockwise_positive=launch_surface, outer_rotor=is_outer_rotor(config)):
             cogging_torque_waveform_nm = [
                 -float(value)
                 for value in cogging_torque_waveform_nm
@@ -3049,14 +3075,17 @@ class Magneto2DSolver(Solver):
                 avg_torque_field_fd_Nm=_torque_in_ui_direction(
                     _finite_number(sweep.get("avg_torque_field_fd_nm")),
                     clockwise_positive=launch_surface,
+                    metric="field_fd",
                 ),
                 avg_torque_pm_source_work_fd_Nm=_torque_in_ui_direction(
                     _finite_number(sweep.get("avg_torque_pm_source_work_fd_nm")),
                     clockwise_positive=launch_surface,
+                    metric="pm_source_work_fd",
                 ),
                 avg_torque_current_source_work_fd_Nm=_torque_in_ui_direction(
                     _finite_number(sweep.get("avg_torque_current_source_work_fd_nm")),
                     clockwise_positive=launch_surface,
+                    metric="current_source_work_fd",
                 ),
                 torque_q_axis_Nm=torque_q_axis_nm if torque_requested else None,
                 torque_ripple_pct=torque_ripple_pct if torque_requested else None,
@@ -3135,7 +3164,7 @@ class Magneto2DSolver(Solver):
                     {"geometry_reference": config.geometry_reference, "case_id": config.reference_case,
                      "geometry_asset_sha256": build_topology_geometry_provenance(config)["geometry_asset_sha256"],
                      "magnet_temperature_C": solve_params.magnet_temperature_C,
-                     "current_angle_convention": "Pyleecan d-axis Phi0", "qualified": False}
+                     "current_angle_convention": reference_model(config).current_angle_convention, "qualified": False}
                     if config.geometry_reference else None
                 ),
                 back_emf_computed=back_emf_requested,
@@ -3415,6 +3444,7 @@ class Magneto2DSolver(Solver):
                     progress_avg_torque,
                     clockwise_positive=self._launch_surface,
                     metric=progress_torque_metric,
+                    outer_rotor=is_outer_rotor(config),
                 )
                 if on_progress is not None:
                     on_progress(

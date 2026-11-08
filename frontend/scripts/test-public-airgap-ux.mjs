@@ -68,6 +68,17 @@ try {
   assert.equal(airgap.publicAirgapHealth(1).severity, 'positive');
   assert.equal(airgap.publicAirgapHealth(1.75).title, 'Airgap is larger than typical');
   assert.equal(airgap.publicAirgapHealth(5).title, 'Airgap is substantially oversized');
+
+  // An outer rotor's magnets face the stator OD from the rotor's inner face.
+  const outer = {
+    ...spm,
+    rotor_layout: 'outer',
+    stator: { ...spm.stator, OD_mm: 25.6, ID_mm: 13 },
+    rotor: { ...spm.rotor, OD_mm: 30.78, ID_mm: 28, magnet_thickness_mm: 1 },
+  };
+  assert.ok(Math.abs(airgap.magneticAirgapMm(outer) - 0.2) < 1e-9);
+  assert.equal(airgap.publicAirgapHealth(0.2, 'outer').severity, 'positive');
+  assert.equal(airgap.publicAirgapHealth(0.05, 'outer').title, 'Airgap is below the launch minimum');
 } finally {
   await rm(tempDir, { recursive: true, force: true });
 }

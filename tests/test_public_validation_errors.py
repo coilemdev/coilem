@@ -52,6 +52,11 @@ def test_section_validator_reason_is_reported_with_its_section(route: str) -> No
             "stator.tooth_shoe_height_mm: Input should be less than or equal to 10",
         ),
         (
+            lambda config: config["rotor"].update(pole_count=66),
+            "rotor.pole_count",
+            "rotor.pole_count: Input should be less than or equal to 64",
+        ),
+        (
             lambda config: config["winding"].pop("turns_per_coil"),
             "winding.turns_per_coil",
             "winding.turns_per_coil: Field required",
@@ -60,7 +65,7 @@ def test_section_validator_reason_is_reported_with_its_section(route: str) -> No
             lambda config: config["materials"].update(magnet_grade="N99"),
             "materials.magnet_grade",
             "materials.magnet_grade: Input should be 'N35', 'N42', 'N48', 'N52', 'N48SH', "
-            "'Ferrite_Y30', 'Prius_2004_NdFeB' or 'ORNL_Prius_2004_NdFeB'",
+            "'Ferrite_Y30', 'Prius_2004_NdFeB', 'ORNL_Prius_2004_NdFeB' or 'LRK_NdFeB_40MGOe'",
         ),
     ],
 )

@@ -675,12 +675,40 @@ def _package_playback_frame(
 ) -> tuple[str, dict[str, Any]]:
     """Render and save one frame's layers; module-level so a process pool can run it."""
 
-    from PIL import Image, ImageDraw, ImageFilter  # type: ignore
-
     output_dir = Path(output_dir_text)
     source_path, outer = _load_frame(artifact_id)
     if source_path.parent.parent != Path(cache_dir_text):
         raise ValueError("field playback frames span multiple solve caches")
+    return str(source_path), _render_playback_layers(outer, output_dir, frame_index, mode, angle_deg)
+
+
+def render_stored_playback_frame(frame_index: int, frame_path_text: str, output_dir_text: str, mode: PlaybackMode) -> int:
+    """Draw a saved run's playback layers for one position again from its stored field frame.
+
+    Saved runs keep their field frames but not these images; this makes the
+    same files, under the same names, once the solve cache has dropped them.
+    Module-level so a process pool can run it.
+    """
+
+    artifact = read_field_line_frame_artifact(Path(frame_path_text))
+    outer = artifact.get("field_line_frame")
+    if not isinstance(outer, dict):
+        raise ValueError("stored field frame has no field")
+    output_dir = Path(output_dir_text)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    _render_playback_layers(outer, output_dir, frame_index, mode, float(artifact.get("electrical_angle_deg") or 0.0))
+    return frame_index
+
+
+def _render_playback_layers(
+    outer: dict[str, Any],
+    output_dir: Path,
+    frame_index: int,
+    mode: PlaybackMode,
+    angle_deg: float,
+) -> dict[str, Any]:
+    from PIL import Image, ImageDraw, ImageFilter  # type: ignore
+
     geometry = _drawable_geometry(outer)
     _, point, triangles = geometry
     base = _render_base(Image, ImageDraw, triangles, point)
@@ -721,7 +749,7 @@ def _package_playback_frame(
                 base_ref=base_ref,
                 mesh_ref=mesh_ref,
             )
-    return str(source_path), {
+    return {
         "index": frame_index,
         "coordinate": angle_deg,
         "compositions": compositions,

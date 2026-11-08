@@ -48,7 +48,10 @@ export function Popover({ trigger, children, align = 'start', className }: {
       const left = Math.max(GUTTER, Math.min(preferred, window.innerWidth - width - GUTTER));
       const below = anchor.bottom + OFFSET;
       const above = anchor.top - OFFSET - height;
-      const top = below + height > window.innerHeight - GUTTER && above > GUTTER ? above : below;
+      // Below if it fits, else above; a panel taller than either side slides up to stay on screen.
+      const top = below + height <= window.innerHeight - GUTTER ? below
+        : above > GUTTER ? above
+          : Math.max(GUTTER, window.innerHeight - height - GUTTER);
       setPosition({ left, top });
     };
     place();

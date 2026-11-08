@@ -74,6 +74,7 @@ import {
   type PublicExperimentalRotorCapability,
   type PublicSavedRun,
   type PublicSolverId,
+  type RotorLayout,
   type SolveResult,
   type SolveValidation,
 } from './model';
@@ -613,16 +614,24 @@ export function App() {
     return snapshot.value !== null;
   }, []);
 
-  useEffect(() => {
-    if (result) return;
+  // A stator-only field belongs to the result it was drawn for, so it goes when
+  // that result does: below when the result clears, and from resetComputedState,
+  // whose setResult(null) React batches with the next result when a saved run is
+  // opened, so the effect never sees the null.
+  const clearArmatureField = useCallback(() => {
     armatureFieldRequestId.current += 1;
     armatureFieldController.current?.abort();
     armatureFieldController.current = null;
     setArmatureField(null);
     setArmatureFieldError(null);
-    setProgress(null);
     setBusy((current) => current === 'field' ? null : current);
-  }, [result]);
+  }, []);
+
+  useEffect(() => {
+    if (result) return;
+    clearArmatureField();
+    setProgress(null);
+  }, [result, clearArmatureField]);
 
   const resetComputedState = useCallback(() => {
     validationRequestId.current += 1;
@@ -631,12 +640,13 @@ export function App() {
     setValidationChecking(false);
     setValidationError(null);
     setResult(null);
+    clearArmatureField();
     setProgress(null);
     setLiveSamples([]);
     setError(null);
     setNotice(null);
     setView('design');
-  }, []);
+  }, [clearArmatureField]);
 
   const invalidateGeometryPreview = useCallback(() => {
     // Invalidate immediately, not when the debounced replacement request starts.
@@ -1420,8 +1430,22 @@ export function App() {
     }
   };
 
-  const loadExampleDesign = (exampleId: PublicExampleId) => {
-    const example = createPublicExampleDesign(exampleId);
+  // The arrangement switch swaps designs rather than reinterpreting inrunner
+  // dimensions as an outer rotor's; the last inrunner comes back on return.
+  const lastInrunnerRef = useRef<{ name: string | null; config: MotorConfig } | null>(null);
+  const updateRotorLayout = (layout: RotorLayout) => {
+    if (layout === (config.rotor_layout ?? 'inner')) return;
+    if (layout === 'outer') {
+      lastInrunnerRef.current = { name: designName, config };
+      loadExampleDesign('spm-outrunner-14p12s');
+      return;
+    }
+    const previous = lastInrunnerRef.current;
+    loadExampleDesign('spm-8p12s', previous ?? undefined);
+  };
+
+  const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string | null; config: MotorConfig }) => {
+    const example = restored ?? createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
     setConfig(example.config);
     if (example.config.geometry_reference) setSelectedSolver("magneto2d");
@@ -1437,7 +1461,7 @@ export function App() {
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
-    setNotice(`Loaded ${example.name}.`);
+    setNotice(`Loaded ${example.name ?? 'the previous inrunner'}.`);
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }
@@ -1481,7 +1505,7 @@ export function App() {
 
   const restoreSavedRun = async (
     savedRun: PublicSavedRun,
-    destination: 'design' | 'solve',
+    destination: 'design' | 'solve' | 'results',
   ) => {
     try {
       const payload = await loadPublicRun(savedRun.project_slug, savedRun.run_id);
@@ -1516,6 +1540,29 @@ export function App() {
       invalidateGeometryPreview();
       resetComputedState();
       setShowLanding(false);
+      if (destination === 'results') {
+        // The stored result as the solve returned it; its field playback is
+        // drawn again from the run's frames when the cache no longer has it.
+        const storedResult = payload.result;
+        if (!storedResult || typeof storedResult !== 'object') {
+          throw new Error('The saved run does not contain a stored result.');
+        }
+        const provenance = (payload.manifest as PublicJson | undefined)?.provenance as PublicJson | undefined;
+        setResult({
+          ...(storedResult as PublicJson),
+          saved_run: payload.saved_run,
+          qualification: provenance?.qualification ?? null,
+        } as unknown as SolveResult);
+        setView('solve');
+        const completedAt = typeof savedRun.completed_at === 'string' ? new Date(savedRun.completed_at).toLocaleString() : null;
+        const playback = payload.field_playback as { available?: unknown } | undefined;
+        setNotice([
+          `Showing the saved result${completedAt ? ` from ${completedAt}` : ''}. It is stored evidence for these inputs; solve again for a current result.`,
+          playback?.available === false ? 'Its field playback was removed to save disk space.' : null,
+          parsed.solverSettingsNotice,
+        ].filter(Boolean).join(' '));
+        return;
+      }
       setView(destination);
       const restoredNotice = destination === 'solve'
         ? replaySolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)
@@ -1770,6 +1817,7 @@ export function App() {
           onNewDesign={startNewDesign}
           experimentalRotors={experimentalRotors.enabled}
           workflowDisabled
+          onOpenRunResults={(savedRun) => void restoreSavedRun(savedRun, 'results')}
         />
         <PublicLanding
           onStartGuided={() => openWorkspace(true)}
@@ -1830,6 +1878,7 @@ export function App() {
       }}
       onStepChange={changeWorkflowStep}
       onTopologyChange={updateTopology}
+      onRotorLayoutChange={updateRotorLayout}
       onSectionChange={updateSection}
       onDesignSectionVisit={visitGuidedDesignSection}
       onConvertProjectSteelToM350={convertProjectSteelToM350}
@@ -1852,6 +1901,7 @@ export function App() {
       onDownloadRunExport={downloadSavedRunExport}
       onOpenRunProject={(savedRun) => void restoreSavedRun(savedRun, 'design')}
       onRerun={(savedRun) => void restoreSavedRun(savedRun, 'solve')}
+      onOpenRunResults={(savedRun) => void restoreSavedRun(savedRun, 'results')}
       onUndoDesignEdit={undoLastDesignEdit}
       onDismissDesignEdit={() => setEditFeedback(null)}
     />

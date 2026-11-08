@@ -4,6 +4,7 @@ import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, Performan
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
+export type RotorLayout = 'inner' | 'outer';
 export type IpMTopology = 'flat_buried' | 'v_shape' | 'pyleecan_holem50';
 // Experimental rotor families: accepted only when the local app was started with
 // COILEM_EXPERIMENTAL_ROTORS=1. Not public support and no qualification claim.
@@ -72,9 +73,11 @@ export interface PublicMotorComponentSelection {
 
 export interface MotorConfig {
   schema_version: '1.0';
-  geometry_reference?: 'pyleecan_prius_2004';
-  reference_case?: 'prius-2004-tutorial-bemf-v1' | 'prius-2004-loaded-torque-v1';
+  geometry_reference?: 'pyleecan_prius_2004' | 'lrk_12s14p';
+  reference_case?: 'prius-2004-tutorial-bemf-v1' | 'prius-2004-loaded-torque-v1' | 'lrk-12s14p-fixed-current-v1' | null;
   topology: Topology;
+  /** Absent means an inner rotor; the backend omits it for inner rotors too. */
+  rotor_layout?: RotorLayout;
   stator: {
     OD_mm: number;
     ID_mm: number;

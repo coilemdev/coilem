@@ -207,7 +207,8 @@ assert.match(workspaceSource, /const burialHealth = publicFlatIpmBurialHealth\(c
 assert.match(workspaceSource, /\.\.\.\(burialHealth \? \[burialHealth\] : \[\]\)/);
 assert.match(workspaceSource, /burialHealth\?\.blocking !== true/);
 assert.match(workspaceSource, /NumberRow label="Bore Tooth Width".*min=\{minimumBoreToothWidthMm\}.*max=\{maximumBoreToothWidthMm\}/);
-assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width".*min=\{2\}/);
+// Inner rotors keep the 2 mm floor; outer rotors (drone stators) go to 0.5 mm.
+assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width".*min=\{outer \? 0\.5 : 2\}/);
 assert.match(workspaceSource, /label="Outer Bridge"/);
 assert.match(workspaceSource, /value=\{config\.rotor\.bridge_thickness_mm\}/);
 assert.match(workspaceSource, /onChange=\{set\('rotor', 'bridge_thickness_mm', 'rotor'\)\}/);
@@ -349,6 +350,16 @@ assert.doesNotMatch(workspaceSource, /<div className="public-report-provenance">
 assert.match(workspaceSource, /\{ label: 'Requested linear solver', value: requestedLinearSolver \}/);
 assert.doesNotMatch(resultSummarySource, /rotor positions`,\s*`\$\{solverLabel\}/);
 assert.match(resultSummarySource, /Fundamental, rms line-to-neutral at/);
+// The Back EMF card also reads phase and line-to-line as rms and peak.
+assert.match(resultSummarySource, /backEmfReadings\(result\.back_emf_waveform, summary\.back_emf_fundamental_V\)/);
+assert.match(resultSummarySource, /<table\s+className="public-emf-readings"/);
+assert.match(resultSummarySource, /<th scope="col">rms<\/th><th scope="col">peak<\/th><\/tr>/);
+// The Back EMF chart's legend reads each trace as the chosen rms or peak.
+assert.doesNotMatch(workspaceSource, /measure: 'pk-pk'/);
+assert.match(workspaceSource, /aria-label="Back EMF reading"/);
+assert.match(workspaceSource, /waveformMeasure\(result\.back_emf_waveform\.electrical_angle_deg, item\.values, backEmfMeasure\)/);
+assert.match(workspaceSource, /series=\{backEmfSeries\(\[\{ label: 'Phase A'/);
+assert.match(workspaceSource, /series=\{backEmfSeries\(\[\{ label: 'Vab · line-line'/);
 assert.match(resultSummarySource, /Torque × speed, before losses/);
 assert.match(resultSummarySource, /<MotorConstants summary=\{summary\} variant="report" \/>/);
 // Kt and Ke show once each in datasheet units, with the stored SI value as a hover hint.
@@ -365,11 +376,23 @@ assert.match(workspaceSource, /PublicRunComparison/);
 assert.match(workspaceSource, /elmerCapability\.feature_enabled && <ParameterSectionBlock id="solver" label="Solver"/);
 assert.match(workspaceSource, /aria-label="Previous runs"/);
 assert.match(workspaceSource, /Review or compare completed analyses without starting another solve/);
-assert.match(workspaceSource, /<PublicRunComparison manageRuns/);
+assert.match(workspaceSource, /<PublicRunComparison\s+manageRuns/);
+// An earlier run's stored result opens from Previous runs, its playback drawn from its frames.
+assert.match(runComparisonSource, /record\.status === 'complete' && !confirming[\s\S]*?Open results/);
+assert.match(workspaceSource, /onOpenRunResults=\{props\.onOpenRunResults\}/);
+assert.match(appSource, /onOpenRunResults=\{\(savedRun\) => void restoreSavedRun\(savedRun, 'results'\)\}/);
+// Opening saved results queues setResult(null) and the stored result in one
+// React batch, so the clearing effect never runs: the reset itself must drop
+// the previous run's stator-only field (review on #215).
+assert.match(appSource, /const resetComputedState = useCallback\(\(\) => \{[\s\S]*?setResult\(null\);\s*clearArmatureField\(\);[\s\S]*?\}, \[clearArmatureField\]\);/);
+assert.match(appSource, /const clearArmatureField = useCallback\(\(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?setArmatureField\(null\);/);
 assert.match(workspaceSource, /Manage previous runs/);
 assert.match(workspaceSource, /needsRunStorageRecovery\(props\.error\)/);
 assert.match(runComparisonSource, /aria-label="Local run storage"/);
 assert.match(runComparisonSource, /Saved results stay on this computer and are never removed automatically/);
+// Field playback is the one part older runs give up (#212); the dialog says so and marks them.
+assert.match(runComparisonSource, /is kept for each design's newest \$\{storage\.field_playback_keep_latest_per_project\} runs/);
+assert.match(runComparisonSource, /record\.field_playback_removed_at \? ' · field playback removed' : ''/);
 assert.match(runComparisonSource, /Delete an older saved or incomplete run below/);
 assert.match(runComparisonSource, /Delete permanently/);
 assert.match(runComparisonSource, /record\.status === 'running'/);
@@ -377,13 +400,20 @@ assert.match(apiSource, /export function deletePublicRun/);
 assert.match(apiSource, /confirm_run_id: runId/);
 assert.match(styleSource, /\.public-run-storage-meter/);
 assert.match(workspaceSource, /aria-label="Example designs"/);
-assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'motor'\)\.map/);
+assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'motor'\)\)\.map/);
+// Each group lists inrunners and outrunners side by side (test-example-layouts checks the declarations).
+assert.match(exampleDesignsSource, /export function examplesByLayout/);
+assert.match(workspaceSource, /className="public-project-example-layout-label" role="presentation">\{group\.label\}/);
+assert.match(styleSource, /\.public-project-examples-menu \.public-project-example-layouts \{[^}]*grid-auto-flow: column;/);
 // Hardware-validated motors get their own group, shown only when one is available to this launch.
 assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.length > 0/);
 assert.match(workspaceSource, />Benchmarks</);
 // Benchmarks are experimental for now: every entry carries a yellow Experimental tag.
-assert.match(workspaceSource, /publicExampleOptions\(experimentalRotors, 'benchmark'\)\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
+assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'benchmark'\)\)\.map\(\(group\) => \([\s\S]*?group\.options\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}<span className=\"public-example-experimental-tag\">Experimental<\/span><\/strong>/);
 assert.match(styleSource, /\.public-project-examples-menu \.public-example-experimental-tag \{[^}]*color: #fbbf24;/);
+// A motor example whose design is experimental carries the same tag (tests/test_example_qualification_tags.py checks which).
+assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'motor'\)\)\.map\(\(group\) => \([\s\S]*?group\.options\.map\(\(example\) => \([\s\S]*?<strong>\{example\.label\}\{example\.experimentalDesign && <span className="public-example-experimental-tag">Experimental<\/span>\}<\/strong>/);
+assert.match(exampleDesignsSource, /id: 'spm-outrunner-14p12s',[^}]*experimentalDesign: true/);
 assert.match(exampleDesignsSource, /Boolean\(option\.benchmark\) === \(group === 'benchmark'\)/);
 assert.match(exampleDesignsSource, /id: 'ornl-prius-2004-holem50',[\s\S]*?experimental: true,[\s\S]*?benchmark: true/);
 assert.match(workspaceSource, /public-project-submenu-trigger/);
@@ -617,7 +647,17 @@ assert.match(motorThreeSource, /placement\.effectiveLengthMm \+ pocketClearance 
 assert.match(motorThreeSource, /magnetDepth \+ pocketClearance \* 2/);
 assert.match(motorThreeSource, /pocketsGroup\.add\(pocket\)/);
 assert.match(motorThreeSource, /Lamination cavity and insertion clearance around the buried magnet/);
-assert.match(motorThreeSource, /const airgapGeometry = annulusGeometry\(/);
+assert.match(motorThreeSource, /const airgapGeometry = outerRotor\s+\? annulusGeometry\([\s\S]*?: annulusGeometry\(/);
+// Outer rotors get the parametric build too (stator teeth pointing out, wound
+// coils, rotor ring and magnets on its inner face); only published references
+// extrude their preview regions.
+assert.match(motorThreeSource, /return props\.config\.geometry_reference\s+\? <ReferenceMotor3D \{\.\.\.props\} \/> : <ParametricMotor3D \{\.\.\.props\} \/>;/);
+assert.match(motorThreeSource, /const magnetSeatRadius = outerRotor \?/);
+// An outer rotor's can is closed by a spoked bell on the rotor core, so it turns
+// the shaft; a fixed tube in the stator hub holds the bearings.
+assert.match(motorThreeSource, /function buildRotorBell\(/);
+assert.match(motorThreeSource, /rotorCoreGroup\.add\(bell\.group\)/);
+assert.match(motorThreeSource, /label: 'Stator hub · bearing tube'/);
 assert.doesNotMatch(motorThreeSource, /new THREE\.TorusGeometry/);
 assert.match(motorThreeSource, /statorGroup\.position\.z = -4\.25 \* station/);
 assert.match(motorThreeSource, /windingsGroup\.position\.z = -2\.75 \* station/);
@@ -643,7 +683,7 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 // The rotor preview uses the field playback's transport, and the winding
 // legend sits in the canvas corner like the field view's legends.
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
-assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
+assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
 // Phases only means something while the rotor turns, so it is a toggle beside the
 // preview speed (2D only), not one of the static overlays; it is the winding overlay
 // shaded by phase current, so Winding stays pressed under it.
@@ -658,12 +698,12 @@ assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'pha
 // Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
 assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
-assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor\)/);
+assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor, rotationRad\)/);
 assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 // ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
-assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\)\)/);
+assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents && data\.winding_layout\?\.length && statorSlotCount > 0\s*\? toothPoles\(slotCurrents\(data\.winding_layout, statorSlotCount, currents\), data\.metadata\.rotor_layout === 'outer' \? 'outward' : 'inward'\)/);
 // Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
 assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
 assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
@@ -961,7 +1001,7 @@ assert.match(styleSource, /\.public-solved-field-viewer \{ grid-template-columns
 assert.match(workspaceSource, /aria-label="Field solution" aria-pressed=\{solveView === 'field'\}[^\n]*?><span className="public-solve-tab-long">Field solution<\/span><span className="public-solve-tab-short" aria-hidden="true">Field<\/span><\/button>/);
 assert.match(styleSource, /@container \(max-width: 460px\) \{\s*\.public-motor-viewport \.public-dock-strip \.public-primary-view-modes button,\s*\.public-dock-strip \.public-solve-view-switch button \{ padding: 0 7px; \}\s*\.public-dock-strip \.public-solve-tab-long \{ display: none; \}/);
 assert.match(styleSource, /@container \(max-width: 380px\) \{\s*\.public-field-dock \.public-field-physics-info \{ display: none; \}/);
-assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\) \{ display: none; \}/);
+assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-strip-end \.public-viewport-nav-controls button:not\(\.is-fit\):not\(\.is-sector\):not\(\.is-sector-step\) \{ display: none; \}/);
 // The flux legend never covers the motor: the field view's canvas box narrows
 // so the motor moves left (and shrinks only if it must), checked against each
 // legend label at its height; a legend below the plot (Results) moves nothing.
@@ -1129,7 +1169,7 @@ assert.match(solvedFieldSource, /aria-pressed=\{displayedDensity === stop\}\s*di
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
 assert.doesNotMatch(solvedFieldSource, /<select[^>]*Field-line density/);
 assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
-assert.match(solvedFieldSource, /airgapInnerRadiusMm=\{rotorAirgapBoundaryRadiusMm\(config\)\}/);
+assert.match(solvedFieldSource, /airgapInnerRadiusMm=\{config\.rotor_layout === 'outer' \? undefined : rotorAirgapBoundaryRadiusMm\(config\)\}/);
 assert.match(solvedFieldSource, /showMagnetPolarityLabels=\{showPoleLabels\}/);
 assert.match(solvedFieldSource, /colorRangeMode=\{colorRangeMode\}/);
 // One flux-density scale everywhere (0–2.0 T, magenta above, the stator steel's
@@ -1150,7 +1190,7 @@ assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
 assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport'\}/);
-assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
+assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
@@ -1250,7 +1290,7 @@ assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
 // The lead label's \"?\" explains why 90° elec is not a right angle on screen.
-assert.match(fieldResultSource, /<g className=\"public-field-axis-help\">\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
+assert.match(fieldResultSource, /<g className=\"public-field-axis-help\" transform=\{upright\(arcLabelX, arcLabelY\)\}>\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
 assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
 assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
 assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
@@ -1317,7 +1357,7 @@ assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh
 assert.match(solvedFieldSource, /<RpmField\s+value=\{playbackRpm\}\s+min=\{PUBLIC_FIELD_PLAYBACK_MIN_RPM\}\s+max=\{PUBLIC_FIELD_PLAYBACK_MAX_RPM\}\s+label="Speed"\s+ariaLabel="Playback speed \(RPM\)"/);
 assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
-assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 1/);
+assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 0\.1;/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30/);
@@ -1332,8 +1372,10 @@ assert.match(styleSource, /\.public-field-playback \{[^}]*grid-template-columns:
 assert.match(styleSource, /\.public-rpm-field \{[^}]*display: inline-flex;[^}]*min-height: 36px;/);
 assert.match(styleSource, /\.public-rpm-field input \{[^}]*width: 54px;[^}]*font-variant-numeric: tabular-nums;/);
 assert.match(rpmFieldSource, /type="number"/);
-assert.match(rpmFieldSource, /inputMode="numeric"/);
-assert.match(rpmFieldSource, /const clamp = \(rpm: number\) => Math\.min\(max, Math\.max\(min, Math\.round\(rpm\)\)\);/);
+assert.match(rpmFieldSource, /inputMode=\{min < 1 \? 'decimal' : 'numeric'\}/);
+assert.match(rpmFieldSource, /step=\{nativeRpmStep\(min\)\}/);
+assert.match(rpmFieldSource, /onChange\(clampRpm\(parsed, min, max\)\)/);
+assert.match(rpmFieldSource, /const next = steppedRpm\(value, parsed, min, max\);/);
 assert.match(rpmFieldSource, /event\.shiftKey/);
 assert.match(rpmFieldSource, /commit\(event\.currentTarget\.value\);/);
 assert.match(rpmFieldSource, /cancelledRef\.current = true;\s+onChange\(valueBeforeEditRef\.current\);/);
@@ -1375,7 +1417,7 @@ assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
 assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
-assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame\)/);
+assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);

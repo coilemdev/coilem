@@ -104,6 +104,11 @@ export function repairGuidedSection(
   if (config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50') {
     return { config, adjustments: [] };
   }
+  // The repairs below fit a rotor inside a stator bore; an outer rotor is
+  // checked by the backend's outer-rotor geometry rules instead.
+  if (config.rotor_layout === 'outer') {
+    return { config, adjustments: [] };
+  }
   const next = structuredClone(config);
   const adjustments: GuidedConfigAdjustment[] = [];
 

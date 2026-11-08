@@ -15,7 +15,9 @@ import {
 } from 'react';
 import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
-import { PYLEECAN_REFERENCE_NOTICE } from './pyleecanReferenceNotice';
+import { publishedReference } from './publishedReferences';
+import { RotorArrangement } from './RotorArrangement';
+import { outerRotorRing } from './sectorFraming';
 
 import {
   MotorCanvas,
@@ -45,7 +47,7 @@ import {
 } from './MaterialWorkspace';
 import { PublicMotor3D } from './PublicMotor3D';
 import { SolvedFieldViewer } from './SolvedFieldViewer';
-import { WaveformChart } from './WaveformChart';
+import { WaveformChart, type WaveformSeries } from './WaveformChart';
 import { WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
 import { createFieldPositionLink, type FieldPositionLink } from './fieldPositionLink';
 import {
@@ -60,7 +62,7 @@ import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
 import { MotorConstants } from './MotorConstants';
 import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
-import { SolverConvergenceCard } from './SolverConvergenceCard';
+import { ResultDiagnostics } from './SolverConvergenceCard';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
@@ -70,7 +72,7 @@ import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
 import { AnalysisOptions } from './AnalysisSelector';
 import { analysisSummary, analysisPositions, selectedAnalyses, hasTorqueResult, hasBackEmfResult, defaultResultPlot, type AnalysisKey } from './analysisOptions';
-import { publicExampleOptions, type PublicExampleId } from './exampleDesigns';
+import { examplesByLayout, publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
   PUBLIC_AIRGAP_LAUNCH_MIN_MM,
@@ -90,6 +92,7 @@ import type {
   PublicQualification,
   PublicSavedRun,
   PublicSolverId,
+  RotorLayout,
   SolveResult,
   SolveValidation,
 } from './model';
@@ -100,7 +103,7 @@ import { LessonProgressStepper } from '../components/tutorials/LessonProgressSte
 import { designErrorSection } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
-import { solvedPhaseCurrent, torqueRippleView } from './resultMetrics';
+import { formatVolts, solvedPhaseCurrent, torqueRippleView, waveformMeasure, type WaveformMeasure } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
 import {
   publicMeshQualityBand,
@@ -173,6 +176,7 @@ interface CoilEmWorkspaceProps {
   onHome: () => void;
   onStepChange: (step: PublicWorkflowStep) => void;
   onTopologyChange: (topology: MotorConfig['topology']) => void;
+  onRotorLayoutChange: (layout: RotorLayout) => void;
   onSectionChange: (
     section: PublicEditableSection,
     field: string,
@@ -210,6 +214,8 @@ interface CoilEmWorkspaceProps {
   ) => Promise<void>;
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
+  /** Opens a saved run's stored result, field playback included, from Previous runs. */
+  onOpenRunResults: (savedRun: PublicSavedRun) => void;
   onUndoDesignEdit?: () => void;
   onDismissDesignEdit?: () => void;
 }
@@ -353,6 +359,11 @@ function resultUsesSixStep(result: SolveResult, config?: MotorConfig): boolean {
   return result.solve_metadata.excitation_mode === 'ideal_six_step_120'
     || config?.solve_params.excitation_mode === 'ideal_six_step_120';
 }
+
+const BACK_EMF_MEASURES: ReadonlyArray<{ measure: WaveformMeasure; label: string; title: string }> = [
+  { measure: 'rms', label: 'RMS', title: "Each trace's fundamental, rms: the Back EMF headline's convention" },
+  { measure: 'peak', label: 'Peak', title: "Each trace's largest magnitude, harmonics included: what papers and datasheets often quote. Peak-to-peak is twice it." },
+];
 
 function lineBackEmf(result: SolveResult): { ab: number[]; bc: number[]; ca: number[] } {
   const waveform = result.back_emf_waveform;
@@ -507,6 +518,7 @@ export function CoilEmTopBar({
   onTutorialCatalog,
   runHistoryOpen: controlledRunHistoryOpen,
   onRunHistoryOpenChange,
+  onOpenRunResults,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'activeStep' | 'connectionStatus' | 'appVersion' | 'onHome' | 'onStepChange'> & {
   solveAvailable: boolean;
   resultReady: boolean;
@@ -525,6 +537,7 @@ export function CoilEmTopBar({
   onTutorialCatalog?: () => void;
   runHistoryOpen?: boolean;
   onRunHistoryOpenChange?: (open: boolean) => void;
+  onOpenRunResults?: (savedRun: PublicSavedRun) => void;
 }) {
   const [designMenuOpen, setDesignMenuOpen] = useState(false);
   const [examplesMenuOpen, setExamplesMenuOpen] = useState(false);
@@ -643,34 +656,51 @@ export function CoilEmTopBar({
                 {examplesMenuOpen && (
                   <div className="public-project-examples-menu" role="menu" aria-label="Example designs">
                     <span className="public-project-example-group-label" role="presentation">Motor examples</span>
-                    {publicExampleOptions(experimentalRotors, 'motor').map((example) => (
-                      <button
-                        type="button"
-                        role="menuitem"
-                        key={example.id}
-                        onClick={closeMenuThen(() => onLoadExample?.(example.id))}
-                      >
-                        <strong>{example.label}</strong>
-                        <small>{example.detail}</small>
-                      </button>
-                    ))}
+                    {/* Each group lists inrunners and outrunners side by side. */}
+                    <div className="public-project-example-layouts">
+                      {examplesByLayout(publicExampleOptions(experimentalRotors, 'motor')).map((group) => (
+                        <div className="public-project-example-layout" role="group" aria-label={`${group.label} motor examples`} key={group.layout}>
+                          <span className="public-project-example-layout-label" role="presentation">{group.label}</span>
+                          {group.options.map((example) => (
+                            <button
+                              type="button"
+                              role="menuitem"
+                              key={example.id}
+                              title={example.experimentalDesign ? 'Experimental: the benchmark does not qualify this design yet. Design Health says why.' : undefined}
+                              onClick={closeMenuThen(() => onLoadExample?.(example.id))}
+                            >
+                              {/* A design Design Health rates experimental carries the same yellow tag as the benchmarks. */}
+                              <strong>{example.label}{example.experimentalDesign && <span className="public-example-experimental-tag">Experimental</span>}</strong>
+                              <small>{example.detail}</small>
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                     {publicExampleOptions(experimentalRotors, 'benchmark').length > 0 && (
                       <>
                         <span className="menu-divider" role="presentation" />
                         <span className="public-project-example-group-label" role="presentation">Benchmarks</span>
-                        {/* Benchmarks are experimental for now: each carries a yellow tag. */}
-                        {publicExampleOptions(experimentalRotors, 'benchmark').map((example) => (
-                          <button
-                            type="button"
-                            role="menuitem"
-                            key={example.id}
-                            title="Experimental for now: benchmark designs and their reference comparisons are still being qualified."
-                            onClick={closeMenuThen(() => onLoadExample?.(example.id))}
-                          >
-                            <strong>{example.label}<span className="public-example-experimental-tag">Experimental</span></strong>
-                            <small>{example.detail}</small>
-                          </button>
-                        ))}
+                        <div className="public-project-example-layouts">
+                          {examplesByLayout(publicExampleOptions(experimentalRotors, 'benchmark')).map((group) => (
+                            <div className="public-project-example-layout" role="group" aria-label={`${group.label} benchmarks`} key={group.layout}>
+                              <span className="public-project-example-layout-label" role="presentation">{group.label}</span>
+                              {/* Benchmarks are experimental for now: each carries a yellow tag. */}
+                              {group.options.map((example) => (
+                                <button
+                                  type="button"
+                                  role="menuitem"
+                                  key={example.id}
+                                  title="Experimental for now: benchmark designs and their reference comparisons are still being qualified."
+                                  onClick={closeMenuThen(() => onLoadExample?.(example.id))}
+                                >
+                                  <strong>{example.label}<span className="public-example-experimental-tag">Experimental</span></strong>
+                                  <small>{example.detail}</small>
+                                </button>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
                       </>
                     )}
                     {onOpenHalbach && (
@@ -780,7 +810,19 @@ export function CoilEmTopBar({
               <button type="button" onClick={() => setRunHistoryOpen(false)} aria-label="Close previous runs">×</button>
             </header>
             <div className="public-run-history-content">
-              <PublicRunComparison manageRuns />
+              <PublicRunComparison
+                manageRuns
+                onOpenRun={onOpenRunResults ? (run) => {
+                  setRunHistoryOpen(false);
+                  onOpenRunResults({
+                    schema_version: 'coilem.solve_run.v2',
+                    project_slug: run.project_slug,
+                    run_id: run.run_id,
+                    path: run.path,
+                    completed_at: run.completed_at,
+                  });
+                } : undefined}
+              />
             </div>
           </section>
         </div>
@@ -901,7 +943,7 @@ function componentFacts(
   config: MotorConfig,
   geometry: GeometryPreview | null,
 ): Array<[string, string]> {
-  const airgap = Math.max(0, (config.stator.ID_mm - config.rotor.OD_mm) / 2 - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0));
+  const airgap = magneticAirgapMm(config);
   switch (selection.kind) {
     case 'stator': {
       // A tooth is picked as a stator part; the 2D canvas names it in region_type,
@@ -1072,8 +1114,8 @@ function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onRotorLayoutChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onRotorLayoutChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
 > & {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
@@ -1098,6 +1140,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     return next;
   });
   const disabled = busy !== null || Boolean(config.geometry_reference);
+  const reference = publishedReference(config);
+  const outer = config.rotor_layout === 'outer';
   const set = (
     section: PublicEditableSection,
     field: string,
@@ -1183,7 +1227,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     );
     set('stator', 'slot_opening_mm', 'advanced')(boreSlotOpeningMm);
   };
-  const airgap = Math.max(0, (config.stator.ID_mm - config.rotor.OD_mm) / 2 - (config.topology === 'SPM' ? config.rotor.magnet_thickness_mm : 0));
+  const airgap = magneticAirgapMm(config);
   const coverage = magnetPoleCoveragePct(config);
   const steelChoices = (current: string) => [
     ...(!materials.steels.includes(current)
@@ -1257,8 +1301,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />
       )}
       <div className="panel-left-scroll">
-        {config.geometry_reference && <div className="public-design-notice">Published Pyleecan geometry, winding and materials are fixed. Change operating conditions and accuracy in Solve.</div>}
-        {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
+        {reference && <div className="public-design-notice">{reference.designNotice}</div>}
+        {reference?.affiliationNotice && <p className="public-design-notice">{reference.affiliationNotice}</p>}
         <div className="param-search-section" role="search">
           <label className="param-search-input-wrap">
             <span className="param-search-icon" aria-hidden="true">⌕</span>
@@ -1272,6 +1316,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             />
           </label>
         </div>
+        {matchesSearch('topology') && <RotorArrangement value={outer ? 'outer' : 'inner'} disabled={disabled} onChange={onRotorLayoutChange} />}
         {matchesSearch('topology') && <div className="param-section param-primary-section" data-guide="topology-selector">
           <div className="param-section-label">Topology</div>
           <div className="topology-cards">
@@ -1280,7 +1325,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                 type="button"
                 className={`topo-card${config.topology === topology ? ' active' : ''}`}
                 aria-pressed={config.topology === topology}
-                disabled={disabled}
+                disabled={disabled || (outer && topology === 'IPM')}
+                title={outer && topology === 'IPM' ? 'Outer rotors use surface magnets' : undefined}
                 onClick={() => onTopologyChange(topology)}
                 key={topology}
               >
@@ -1336,16 +1382,17 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>}
 
       {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
-        <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" min={30} step={1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
-        <NumberRow label="Inner Diameter" value={config.stator.ID_mm} unit="mm" min={20} step={1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
+        <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" hint={outer ? 'Tooth-tip diameter facing the rotor magnets across the air gap.' : undefined} min={outer ? 10 : 30} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
+        <NumberRow label={outer ? 'Hub Bore' : 'Inner Diameter'} value={config.stator.ID_mm} unit="mm" hint={outer ? 'Stator centre hole, inside the yoke.' : undefined} min={outer ? 2 : 20} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Slot Count" value={config.stator.slot_count} min={6} step={1} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
-        <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
-        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · bore pitch {(Math.PI * config.stator.ID_mm / config.stator.slot_count).toFixed(1)} mm</span></div>
+        <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={outer ? 2 : 10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
+        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · {outer ? 'tip' : 'bore'} pitch {(Math.PI * (outer ? config.stator.OD_mm : config.stator.ID_mm) / config.stator.slot_count).toFixed(1)} mm</span></div>
       </ParameterSectionBlock>}
 
       {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
-        <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={32} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
-        <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" min={15} step={1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
+        <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={64} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
+        <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" hint={outer ? 'Outside of the rotor back-iron ring.' : undefined} min={outer ? 10 : 15} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
+        {outer && <NumberRow label="Magnet Seat" value={config.rotor.ID_mm ?? 0} unit="mm" hint="Rotor ID: the back-iron face the magnets sit on." min={4} step={0.1} disabled={disabled} onChange={set('rotor', 'ID_mm', 'rotor')} />}
         <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50' ? (
           HOLEM50_FIELDS.map((field) => (
@@ -1356,7 +1403,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           ))
         ) : (
           <>
-            <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={2} step={0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
+            <NumberRow label="Magnet Thick." value={config.rotor.magnet_thickness_mm} unit="mm" min={outer ? 0.5 : 2} step={outer ? 0.1 : 0.5} disabled={disabled} onChange={set('rotor', 'magnet_thickness_mm', 'rotor')} />
             <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
           </>
         )}
@@ -1381,13 +1428,15 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       </ParameterSectionBlock>}
 
       {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
-        <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />
-        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
-        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
+        {outer
+          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
+          : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
+        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
+        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
         <ToggleRow
           label="Tooth Shoe"
           checked={Boolean(config.stator.tooth_shoe_enabled)}
-          hint="Adds a widened tooth tip at the bore, leaving a narrower physical slot mouth ahead of the winding pocket."
+          hint={`Adds a widened tooth tip at the ${outer ? 'stator OD' : 'bore'}, leaving a narrower physical slot mouth ahead of the winding pocket.`}
           disabled={disabled}
           onChange={set('stator', 'tooth_shoe_enabled', 'advanced')}
         />
@@ -1396,7 +1445,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             label="Shoe Height"
             value={config.stator.tooth_shoe_height_mm ?? 1.5}
             unit="mm"
-            hint="Radial distance from the bore to the tooth-body shoulder."
+            hint={outer ? 'Radial distance in from the stator OD to the tooth-body shoulder.' : 'Radial distance from the bore to the tooth-body shoulder.'}
             min={0.5}
             max={10}
             step={0.1}
@@ -2348,11 +2397,11 @@ function ViewportChrome({
               <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
               <RpmField
                 value={animationRpm}
-                min={1}
+                min={0.1}
                 max={100}
                 label="Speed"
                 ariaLabel="Preview speed (RPM)"
-                title="Preview speed — not the solve operating point. Type a number or use the arrows; Shift+arrow steps by 10."
+                title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
               {/* Phases only means something while the rotor turns: it shades the
@@ -2508,6 +2557,7 @@ function HealthPanel({
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
 }) {
+  const reference = publishedReference(config);
   const collapseButton = onCollapsedChange ? (
     <button
       type="button"
@@ -2557,7 +2607,7 @@ function HealthPanel({
     );
   }
   const airgap = magneticAirgapMm(config);
-  const airgapHealth = publicAirgapHealth(airgap);
+  const airgapHealth = publicAirgapHealth(airgap, config.rotor_layout);
   const coverage = magnetPoleCoveragePct(config);
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
@@ -2573,7 +2623,7 @@ function HealthPanel({
     ...(burialHealth ? [burialHealth] : []),
     { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
       title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
-      copy: config.geometry_reference ? 'Analytic SlotW11 and HoleM50 curves; geometry is fixed for this software reference.' : `${coverage}% pole coverage for the current rotor.` },
+      copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` },
     { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
     { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
@@ -2622,8 +2672,8 @@ function HealthPanel({
       </div>
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{config.geometry_reference ? 'Pyleecan' : `${coverage}%`}</strong></div>
-        <div className="design-health-metric"><span>Q</span><strong>{config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)} </strong></div>
+        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>
+        <div className="design-health-metric"><span>Q</span><strong>{Number((config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)).toFixed(3))} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
       <div className="design-health-issue-list">
@@ -3232,6 +3282,7 @@ export type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | '
 function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
   'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
+  const reference = publishedReference(config);
   // The setup sections open one at a time, as Design's do. The accuracy plan
   // starts open for ordinary runs. The guide opens the section for its stop.
   const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>(guidedSolveSection ?? 'plan');
@@ -3734,8 +3785,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
         </ParameterSectionBlock>}
         <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
-          {config.geometry_reference && <p className="public-design-notice">Pyleecan software reference · {config.solve_params.magnet_temperature_C}°C magnets · sinusoidal phase current. Φ₀ uses the published d-axis convention. This case does not validate ORNL hardware.</p>}
-          {config.geometry_reference && <p className="public-design-notice">{PYLEECAN_REFERENCE_NOTICE.affiliation_notice}</p>}
+          {reference && <p className="public-design-notice">{reference.solveNotice(config)}</p>}
+          {reference?.affiliationNotice && <p className="public-design-notice">{reference.affiliationNotice}</p>}
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
             <button
               type="button"
@@ -3907,7 +3958,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                 <p className="public-solver-help">Picard is the default. Try Newton if a run fails to converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
-              {!sixStepSelected && <NumberRow label={config.geometry_reference ? "Pyleecan Φ₀ (d-axis)" : "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
+              {!sixStepSelected && <NumberRow label={reference?.currentAngleLabel ?? "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
             </section>
             <section className="public-advanced-section public-advanced-output-section" aria-labelledby="public-generated-outputs-heading">
               <span className="public-section-kicker" id="public-generated-outputs-heading">Generated outputs</span>
@@ -4167,10 +4218,13 @@ function ReportStage({
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
+  const reference = publishedReference(config);
   const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
+  // Which size each Back EMF trace's legend reads: the headline's rms, or the peak papers quote.
+  const [backEmfMeasure, setBackEmfMeasure] = useState<WaveformMeasure>('rms');
   const [exportState, setExportState] = useState<{
     action: string;
     tone: 'working' | 'success' | 'error';
@@ -4200,6 +4254,10 @@ function ReportStage({
   const reportQualification = readQualification(result.qualification);
   const completeLoadedCycle = result.solve_metadata.loaded_cycle_complete === true;
   const backEmfLine = lineBackEmf(result);
+  const backEmfSeries = (series: WaveformSeries[]): WaveformSeries[] => series.map((item) => {
+    const value = waveformMeasure(result.back_emf_waveform.electrical_angle_deg, item.values, backEmfMeasure);
+    return value === null ? item : { ...item, legendValue: `${formatVolts(value)} V ${backEmfMeasure}` };
+  });
   const resultUsesElmer = result.solve_metadata.solver_name.toLowerCase().startsWith('elmer');
   const reportSolverLabel = resultUsesElmer ? 'Elmer FEM' : 'Magneto2D';
   const reportThdLabel = result.back_emf_harmonic_analysis
@@ -4233,10 +4291,11 @@ function ReportStage({
   const reportSettings: Array<{ label: string; value: string }> = [
     { label: 'Project', value: projectName },
     { label: 'Material', value: materialName },
-    ...(config.geometry_reference ? [
+    ...(reference ? [
       { label: 'Reference case', value: config.reference_case ?? 'Not recorded' },
-      { label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` },
-      { label: 'Pyleecan Φ₀ (d-axis)', value: `${config.solve_params.current_angle_deg}° electrical` },
+      ...(config.solve_params.magnet_temperature_C != null
+        ? [{ label: 'Magnet temperature', value: `${config.solve_params.magnet_temperature_C}°C` }] : []),
+      { label: reference.currentAngleLabel, value: `${config.solve_params.current_angle_deg}° electrical` },
     ] : []),
     {
       label: sixStep ? 'Conducting phase current' : 'Phase current',
@@ -4357,7 +4416,6 @@ function ReportStage({
           </>
         )}
       />
-      <SolverConvergenceCard report={result.solver_convergence} />
       <div className="public-report-plot-tabs" role="tablist" aria-label="Result plots">
         {hasTorqueResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'torque'} className={activePlot === 'torque' ? 'active' : ''} onClick={() => setActivePlot('torque')}>Torque</button>}
         {hasBackEmfResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>}
@@ -4370,14 +4428,22 @@ function ReportStage({
         ? <><BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg} cycleComplete={completeLoadedCycle} /><IdealSixStepCommand /></>
         : activePlot === 'torque' && <WaveformChart angles={result.torque_waveform.electrical_angle_deg} values={result.torque_waveform.torque_Nm} label="Torque waveform" unit="N·m" />}
       {activePlot === 'back-emf' && <>
-        <div className="public-back-emf-view" role="group" aria-label="Back EMF voltage reference"><button type="button" className={backEmfView === 'phase-neutral' ? 'active' : ''} aria-pressed={backEmfView === 'phase-neutral'} onClick={() => setBackEmfView('phase-neutral')}>Phase-neutral</button><button type="button" className={backEmfView === 'line-line' ? 'active' : ''} aria-pressed={backEmfView === 'line-line'} onClick={() => setBackEmfView('line-line')}>Line-line</button></div>
+        <div className="public-back-emf-controls">
+          <div className="public-back-emf-view" role="group" aria-label="Back EMF voltage reference"><button type="button" className={backEmfView === 'phase-neutral' ? 'active' : ''} aria-pressed={backEmfView === 'phase-neutral'} onClick={() => setBackEmfView('phase-neutral')}>Phase-neutral</button><button type="button" className={backEmfView === 'line-line' ? 'active' : ''} aria-pressed={backEmfView === 'line-line'} onClick={() => setBackEmfView('line-line')}>Line-line</button></div>
+          <div className="public-back-emf-view" role="group" aria-label="Back EMF reading">
+            {BACK_EMF_MEASURES.map(({ measure, label, title }) => (
+              <button type="button" key={measure} className={backEmfMeasure === measure ? 'active' : ''} aria-pressed={backEmfMeasure === measure} title={title} onClick={() => setBackEmfMeasure(measure)}>{label}</button>
+            ))}
+          </div>
+        </div>
         {backEmfView === 'phase-neutral'
-          ? <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Phase A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'Phase B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'Phase C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }]} label="Back EMF · phase-neutral" unit="V" />
-          : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={[{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }]} label="Back EMF · line-line" unit="V" />}
+          ? <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={backEmfSeries([{ label: 'Phase A', values: result.back_emf_waveform.phase_a_V, color: '#f87171' }, { label: 'Phase B', values: result.back_emf_waveform.phase_b_V, color: '#4ade80' }, { label: 'Phase C', values: result.back_emf_waveform.phase_c_V, color: '#60a5fa' }])} label="Back EMF · phase-neutral" unit="V" />
+          : <WaveformChart angles={result.back_emf_waveform.electrical_angle_deg} series={backEmfSeries([{ label: 'Vab · line-line', values: backEmfLine.ab, color: '#f87171' }, { label: 'Vbc · line-line', values: backEmfLine.bc, color: '#4ade80' }, { label: 'Vca · line-line', values: backEmfLine.ca, color: '#60a5fa' }])} label="Back EMF · line-line" unit="V" />}
         {result.back_emf_harmonic_analysis && <BackEMFHarmonicSpectrum analysis={result.back_emf_harmonic_analysis} />}
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
-      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
+      {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
+      <ResultDiagnostics report={result.solver_convergence} />
       </>}
     </div>
   );
@@ -4446,6 +4512,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         experimentalRotors={props.experimentalRotors?.enabled ?? false}
         runHistoryOpen={runHistoryOpen}
         onRunHistoryOpenChange={setRunHistoryOpen}
+        onOpenRunResults={props.onOpenRunResults}
       />
       <main className="workflow-stage-shell">
         <div className="workflow-stage-content">
@@ -4467,6 +4534,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   guidedDesignSection={props.guidedDesignSection}
                   selectedComponent={selectedComponent}
                   onTopologyChange={(topology) => { setSelectedComponent(null); props.onTopologyChange(topology); }}
+                  onRotorLayoutChange={(layout) => { setSelectedComponent(null); props.onRotorLayoutChange(layout); }}
                   onSectionChange={props.onSectionChange}
                   onDesignSectionVisit={props.onDesignSectionVisit}
                   onConvertProjectSteelToM350={props.onConvertProjectSteelToM350}

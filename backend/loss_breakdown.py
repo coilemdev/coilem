@@ -17,6 +17,7 @@ from __future__ import annotations
 import math
 
 from backend.models import IronLoss, LossBreakdown, MotorConfig, WindingResistance
+from backend.reference_models import reference_model
 from backend.winding_resistance import winding_resistance
 
 
@@ -26,6 +27,12 @@ def phase_current_rms_a(config: MotorConfig) -> float:
     solve_params = config.solve_params
     if solve_params is None:
         return 0.0
+    model = reference_model(config)
+    fixed = model.fixed_phase_currents_a(config) if model and model.fixed_phase_currents_a else None
+    if fixed is not None:
+        # A reference case that holds fixed phase currents ignores the settings
+        # below. Its copper loss is R * sum(i**2): report the RMS with that power.
+        return math.sqrt(sum(i * i for i in fixed) / 3.0)
     amplitude = float(solve_params.current_amplitude_A)
     convention = solve_params.current_amplitude_convention
     if convention == "rms":

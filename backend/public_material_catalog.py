@@ -97,6 +97,8 @@ MAGNET_SOLVER_INPUTS: dict[
     # vendor page as evidence for ferrite or the Prius-specific approximation.
     "Ferrite_Y30": ("Ferrite Y30", 0.40, 1.05, None),
     "Prius_2004_NdFeB": ("Prius 2004 NdFeB preset", 1.24, 1.05, None),
+    # The LRK reference's linear magnet; its source is the reference asset.
+    "LRK_NdFeB_40MGOe": ("LRK reference NdFeB 40 MGOe", 1.2905298196199053, 1.049, None),
     # Br 1.23-1.24 T and Hc 875 kA/m read from the figure; mu_r = Br / (mu0 Hc).
     "ORNL_Prius_2004_NdFeB": ("ORNL 2004 Prius NdFeB", 1.235, 1.12, ORNL_PRIUS_MAGNET_SOURCE),
 }

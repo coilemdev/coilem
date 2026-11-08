@@ -134,11 +134,22 @@ export function scopeWindowElecDeg(rpm: number, poleCount: number, windowS = PHA
   return 360 * electricalFrequencyHz(rpm, poleCount) * windowS;
 }
 
-/** "2.1 Hz", "0.30 Hz", "12 Hz". */
+/** "2.1 Hz", "0.30 Hz", "12 Hz"; a slow preview keeps two figures: "0.012 Hz". */
 export function formatHz(hz: number): string {
   if (hz >= 10) return `${hz.toFixed(0)} Hz`;
   if (hz >= 1) return `${hz.toFixed(1)} Hz`;
-  return `${hz.toFixed(2)} Hz`;
+  return `${formatSmallRate(hz)} Hz`;
+}
+
+/** Shaft speed in rev/s for the scope caption: "0.30", "0.0017" at 0.1 RPM. */
+export function formatRevPerSecond(rpm: number): string {
+  return formatSmallRate(rpm / 60);
+}
+
+// Two decimals from 0.1 up; below that, two significant figures, so 0.1 RPM
+// does not read as 0.00.
+function formatSmallRate(value: number): string {
+  return value >= 0.1 || value <= 0 ? value.toFixed(2) : value.toPrecision(2);
 }
 
 /**
@@ -174,6 +185,25 @@ export interface WindingSide {
   direction: 'in' | 'out';
 }
 
+/** Below this share of full current a phase counts as switched off: its coil sides show no direction. */
+export const COIL_SIDE_CURRENT_FLOOR = 0.02;
+
+/**
+ * Which way current flows in a coil side right now: true out of the page (⊙),
+ * false into it (⊗), null while its phase carries next to none. An "in" side
+ * carries +J out of the page, so a negative phase current turns every mark round.
+ */
+export function coilSideOutOfPage(direction: WindingSide['direction'], phaseCurrent: number): boolean | null {
+  if (!Number.isFinite(phaseCurrent) || Math.abs(phaseCurrent) < COIL_SIDE_CURRENT_FLOOR) return null;
+  return (direction === 'in') === (phaseCurrent > 0);
+}
+
+/** The phase and direction of a preview's coil-side glyph, from its label ("A+ (in)", "B− (out)"). */
+export function windingSymbolSide(label: string | null | undefined): Pick<WindingSide, 'phase' | 'direction'> | null {
+  const match = /^([ABC])[+−-] \((in|out)\)$/.exec(label ?? '');
+  return match ? { phase: match[1] as WindingSide['phase'], direction: match[2] as WindingSide['direction'] } : null;
+}
+
 /**
  * Net current out of the page in each slot, as a share of a full slot's
  * conductors. An "in" side carries +J, out of the page (the solver's source sign,
@@ -198,11 +228,13 @@ export function slotCurrents(sides: WindingSide[], slotCount: number, currents: 
  * down by each slot's out-of-page current, so the flux a tooth sends into the
  * airgap — an N pole — follows the running sum of slot currents, about its mean.
  */
-export function toothPoles(currentsBySlot: number[]): number[] {
+export function toothPoles(currentsBySlot: number[], statorFaces: 'inward' | 'outward' = 'inward'): number[] {
   let running = 0;
   const sums = currentsBySlot.map((current) => (running += current));
   const mean = sums.reduce((total, value) => total + value, 0) / Math.max(1, sums.length);
-  const poles = sums.map((value) => value - mean);
+  // An outer rotor's stator faces outward, so rotor-to-stator runs inward and every pole flips.
+  const sign = statorFaces === 'outward' ? -1 : 1;
+  const poles = sums.map((value) => sign * (value - mean));
   const peak = Math.max(0, ...poles.map(Math.abs));
   return peak > 1e-9 ? poles.map((value) => value / peak) : poles.map(() => 0);
 }

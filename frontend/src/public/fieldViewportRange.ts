@@ -13,6 +13,10 @@ export interface FieldViewportTransform {
   translateY: number;
   canvasWidth: number;
   canvasHeight: number;
+  /** The view turned by this angle about (pivotX, pivotY) on the canvas (the sector turntable). */
+  rotationRad?: number;
+  pivotX?: number;
+  pivotY?: number;
 }
 
 export interface FieldViewportRange {
@@ -43,11 +47,22 @@ export function fieldRangeForViewport(
     || canvasHeight <= 0
   ) return null;
 
+  // A turned view covers a turned rectangle; bound the canvas corners turned back,
+  // which keeps every visible element and a few at the corners.
+  const turn = -(transform.rotationRad ?? 0);
+  const pivotX = transform.pivotX ?? canvasWidth / 2;
+  const pivotY = transform.pivotY ?? canvasHeight / 2;
+  const corners = ([[0, 0], [canvasWidth, 0], [0, canvasHeight], [canvasWidth, canvasHeight]] as const).map(([x, y]) => {
+    if (!turn) return [x, y];
+    const dx = x - pivotX;
+    const dy = y - pivotY;
+    return [pivotX + dx * Math.cos(turn) - dy * Math.sin(turn), pivotY + dx * Math.sin(turn) + dy * Math.cos(turn)];
+  });
   const viewport = {
-    minX: -translateX / scale,
-    maxX: (canvasWidth - translateX) / scale,
-    minY: -translateY / scale,
-    maxY: (canvasHeight - translateY) / scale,
+    minX: (Math.min(...corners.map(([x]) => x)) - translateX) / scale,
+    maxX: (Math.max(...corners.map(([x]) => x)) - translateX) / scale,
+    minY: (Math.min(...corners.map(([, y]) => y)) - translateY) / scale,
+    maxY: (Math.max(...corners.map(([, y]) => y)) - translateY) / scale,
   };
   let minB = Number.POSITIVE_INFINITY;
   let maxB = Number.NEGATIVE_INFINITY;

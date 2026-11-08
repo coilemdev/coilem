@@ -24,6 +24,8 @@ from backend.models.performance import (
     OutputStatus,
 )
 from backend.public_policy import EXPERIMENTAL_IPM_TOPOLOGIES, experimental_rotors_enabled
+from backend.reference_models import reference_model
+from backend.rotor_layout import is_outer_rotor
 from backend.winding_utils import concentrated_uses_tooth_coils
 
 QualificationStatus = Literal["qualified", "experimental", "unsupported"]
@@ -107,9 +109,13 @@ def _distributed_pitch(config: MotorConfig) -> str | None:
 
 
 def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
-    if config.geometry_reference == "pyleecan_prius_2004":
-        return ("experimental", "Pyleecan Prius software reference: pinned geometry and materials; "
-                "measured hardware identity and release qualification remain separate.")
+    reference = reference_model(config)
+    if reference is not None:
+        return ("experimental", reference.qualification_reason)
+    if is_outer_rotor(config):
+        # Every registered fixture is an inner rotor, so no inner-rotor combination's evidence carries over.
+        # Phase F's outer-rotor cases (protocol 1.8.0) are proposed, not registered.
+        return "experimental", "Outer-rotor SPM: no registered benchmark fixture is an outer rotor yet."
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"

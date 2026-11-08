@@ -26,6 +26,51 @@ def magnet_br_factor(config):
     return 1 - 0.001 * (config.solve_params.magnet_temperature_C - 20)
 
 
+def excitation_sample(config, rotor_electrical_angle_deg, clockwise_positive):
+    """The published Phi0 is measured from its d-axis.
+
+    Geometry is reflected into the public clockwise frame; the phase labels
+    and Jz are retained.
+    """
+    from backend.excitation import SINUSOIDAL, PhaseCurrentSample, _sine_peak_current_a, wrap_360
+
+    angle = (rotor_electrical_angle_deg if clockwise_positive else -rotor_electrical_angle_deg) + config.solve_params.current_angle_deg
+    peak = _sine_peak_current_a(config)
+    currents = tuple(peak * math.cos(math.radians(angle + offset)) for offset in (0, -120, 120))
+    return PhaseCurrentSample(SINUSOIDAL, currents, wrap_360(rotor_electrical_angle_deg), angle + 90, None)
+
+
+def solver_overrides(config, armature_only_field):
+    return {
+        "COILEM_MAGNET_BR_SCALE": "0" if armature_only_field else str(magnet_br_factor(config)),
+        "MAGNETO2D_NONLINEAR_TOL": "1e-8",
+        "MAGNETO2D_NEWTON_TOL": "1e-9",
+        "MAGNETO2D_NONLINEAR_MAX_ITER": str(config.solve_params.max_nonlinear_iterations or 200),
+    }
+
+
+def postprocess_report(report, config, artifact):
+    report_reference_sources(report, config, artifact)
+    extract_winding_report(report, config, artifact)
+
+
+def published_winding():
+    return [{"slot_index": surface["winding"]["slot"], "phase": surface["winding"]["phase"],
+             "direction": surface["winding"]["direction"], "layer": 1}
+            for surface in source()["surfaces"] if "winding" in surface]
+
+
+def report_settings(config, solve_params):
+    from backend.public_report import _pdf_text, _plain
+
+    return [
+        ("Case ID", _plain(config.get("reference_case"))),
+        ("Geometry reference", REFERENCE),
+        ("Current angle convention", "Pyleecan d-axis Phi0"),
+        ("Magnet temperature", f"{_pdf_text(solve_params.get('magnet_temperature_C'))} C"),
+    ]
+
+
 def report_reference_sources(report, config, artifact):
     """Describe the explicit meshed currents rather than the CLI's unused sine formula."""
     if artifact is None:
@@ -266,7 +311,8 @@ def exact_currents(artifact, config, rotor_angle_deg):
     return artifact
 
 
-def build(config, geom):
+def build(config, geom, rotor_angle_deg=None):
+    # The rotor angle is read back from the turned magnets in geom.
     from backend.geometry_drawer import compute_geometry
 
     baseline = compute_geometry(config)
@@ -335,3 +381,32 @@ def build(config, geom):
         "pocket_clearance_mm": 0., "winding_layers": 1, "winding_type": "distributed",
         "coordinate_policy": "Exact clockwise-frame reflection; axial magnetization M'=-R M, Jz unchanged",
     })
+
+
+def model():
+    from backend.models.config import WireSpec
+    from backend.reference_models import ReferenceModel
+
+    return ReferenceModel(
+        reference_id=REFERENCE,
+        label="Prius",
+        build_ir=build,
+        check_config=check_config,
+        geometry_asset_sha256=geometry_asset_sha256,
+        qualification_reason=("Pyleecan Prius software reference: pinned geometry and materials; "
+                              "measured hardware identity and release qualification remain separate."),
+        magnet_temperatures_C=(20, 60),
+        current_angle_convention="Pyleecan d-axis Phi0",
+        current_angle_label="Pyleecan d-axis Phi0",
+        phase_current_convention="pyleecan_d_axis",
+        excitation_sample=excitation_sample,
+        exact_currents=exact_currents,
+        solver_overrides=solver_overrides,
+        postprocess_report=postprocess_report,
+        owns_flux_linkage=True,
+        published_winding=published_winding,
+        published_winding_label="published Pyleecan phase/sign matrix",
+        wire=WireSpec(wire_bare_diameter_mm=0.912, strands_in_hand=13, end_turn_extension_mm=19.366),
+        report_settings=report_settings,
+    )
+

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { WaveformReadoutBar, WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
-import { electricalAngleTicks, formatElectricalAngleTick } from './chartAxis';
+import { displayUnitScale, electricalAngleTicks, formatElectricalAngleTick, formatValueTick, valueAxis } from './chartAxis';
 import {
   waveformReadoutAngles,
   waveformReadoutDifferenceValue,
@@ -18,6 +18,8 @@ export interface WaveformSeries {
   values: number[];
   color: string;
   dashArray?: string;
+  /** A reading shown after the legend label, for example "6.36 V rms". */
+  legendValue?: string;
 }
 
 interface WaveformChartProps {
@@ -46,16 +48,21 @@ function periodicAxisEnd(angles: number[]) {
     : finalAngle;
 }
 
-export function WaveformChart({ angles, values, series, label, unit, samplingLabel, toggleableSeries = false, hiddenSeriesKeys: controlledHiddenSeriesKeys, onHiddenSeriesKeysChange, readoutDifference }: WaveformChartProps) {
+export function WaveformChart({ angles, values, series, label, unit: dataUnit, samplingLabel, toggleableSeries = false, hiddenSeriesKeys: controlledHiddenSeriesKeys, onHiddenSeriesKeysChange, readoutDifference }: WaveformChartProps) {
   const [internalHiddenSeriesKeys, setInternalHiddenSeriesKeys] = useState<string[]>([]);
   const hiddenSeriesKeys = controlledHiddenSeriesKeys || internalHiddenSeriesKeys;
   const eligibleSeries = (series || (values ? [{ label, values, color: '#de7948' }] : []))
     .map((item) => ({ ...item, angles: item.angles || angles }))
     .filter((item) => item.angles.length >= 2 && item.values.length === item.angles.length);
   const seriesKey = (item: WaveformSeries, index: number) => item.id || `${index}:${item.label}`;
-  const plottedSeries = toggleableSeries
+  // Small readings plot and read out in milli-units (a few mN·m of cogging,
+  // not 0.00 N·m); every value below is in the displayed unit.
+  const dataMaxAbs = Math.max(0, ...eligibleSeries.flatMap((item) => item.values.map(Math.abs)));
+  const { unit, factor } = displayUnitScale(dataUnit, dataMaxAbs);
+  const plottedSeries = (toggleableSeries
     ? eligibleSeries.filter((item, index) => !hiddenSeriesKeys.includes(seriesKey(item, index)))
-    : eligibleSeries;
+    : eligibleSeries
+  ).map((item) => (factor === 1 ? item : { ...item, values: item.values.map((value) => value * factor) }));
   const width = 760;
   const height = 250;
   const margin = { top: 22, right: 24, bottom: 38, left: 56 };
@@ -92,17 +99,16 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
   };
 
   const allValues = plottedSeries.flatMap((item) => item.values);
-  const rawMinY = Math.min(...allValues);
-  const rawMaxY = Math.max(...allValues);
-  const yPadding = Math.max((rawMaxY - rawMinY) * 0.15, Math.abs(rawMaxY) * 0.05, 0.01);
-  const minY = rawMinY - yPadding;
-  const maxY = rawMaxY + yPadding;
+  // Round-number ticks spanning the data. The span is never floored at one
+  // unit: a waveform of a few mN·m used to be squeezed into the top of the plot.
+  const yAxis = valueAxis(Math.min(...allValues), Math.max(...allValues));
+  const minY = yAxis.min;
+  const maxY = yAxis.max;
   const x = (value: number) => margin.left + ((value - minX) / Math.max(axisMaxX - minX, 1)) * plotWidth;
-  const y = (value: number) => margin.top + ((maxY - value) / Math.max(maxY - minY, 1)) * (height - margin.top - margin.bottom);
+  const y = (value: number) => margin.top + ((maxY - value) / (maxY - minY)) * (height - margin.top - margin.bottom);
   const pathFor = (seriesAngles: number[], seriesValues: number[]) => seriesValues
     .map((value, index) => `${index === 0 ? 'M' : 'L'} ${x(seriesAngles[index]).toFixed(2)} ${y(value).toFixed(2)}`)
     .join(' ');
-  const ticks = [0, 0.25, 0.5, 0.75, 1];
   const angleTicks = electricalAngleTicks(minX, axisMaxX);
   const readoutValues = readout.shownAngle === null ? [] : waveformReadoutValues(readoutSeries, readout.shownAngle);
   const readoutDifferenceValue = readoutDifference ? waveformReadoutDifferenceValue(readoutValues, readoutDifference) : null;
@@ -139,8 +145,8 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
           disabled={visible && plottedSeries.length === 1}
           title={`${visible ? 'Hide' : 'Show'} ${item.label}`}
           onClick={() => toggleSeries(item, index)}
-        ><i style={swatchStyle} />{text}</button>
-      : <span key={key} aria-label={item.label}><i style={swatchStyle} />{text}</span>;
+        ><i style={swatchStyle} />{text}{item.legendValue && <b className="public-waveform-legend-value">{item.legendValue}</b>}</button>
+      : <span key={key} aria-label={item.legendValue ? `${item.label} ${item.legendValue}` : item.label}><i style={swatchStyle} />{text}{item.legendValue && <b className="public-waveform-legend-value">{item.legendValue}</b>}</span>;
   };
 
   return (
@@ -176,13 +182,12 @@ export function WaveformChart({ angles, values, series, label, unit, samplingLab
               <stop offset="1" stopColor={plottedSeries[0].color} stopOpacity="0" />
             </linearGradient>
           </defs>
-          {ticks.map((tick) => {
-            const tickY = margin.top + tick * (height - margin.top - margin.bottom);
-            const value = maxY - tick * (maxY - minY);
+          {yAxis.ticks.map((tick) => {
+            const tickY = y(tick);
             return (
               <g key={tick}>
                 <line x1={margin.left} x2={width - margin.right} y1={tickY} y2={tickY} className="chart-grid" />
-                <text x={margin.left - 10} y={tickY + 4} textAnchor="end" className="chart-label">{value.toFixed(2)}</text>
+                <text x={margin.left - 10} y={tickY + 4} textAnchor="end" className="chart-label">{formatValueTick(tick, yAxis.decimals)}</text>
               </g>
             );
           })}

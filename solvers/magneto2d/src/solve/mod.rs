@@ -370,15 +370,10 @@ fn applied_current_angle_deg(rotor_electrical_angle_deg: f64, gamma_deg: f64, ax
     rotor_electrical_angle_deg - 90.0 + gamma_deg - axis_offset_deg
 }
 
-/// Phase-A axis angle of the drawn winding (0.0 except for tooth coils, #91).
+/// Phase-A axis angle of the drawn winding (0.0 except for tooth coils, #91),
+/// half a cycle on for an outer rotor (see `sources::phase_axis_offset_deg`).
 fn winding_axis_offset_deg(config: &MotorConfig) -> f64 {
-    crate::sources::winding_phase_axis_offset_elec_deg(
-        &config.winding.winding_type,
-        config.stator.slot_count,
-        config.rotor.pole_count,
-        config.winding.layers,
-        config.winding.coil_span,
-    )
+    crate::sources::phase_axis_offset_deg(config)
 }
 
 fn rotor_electrical_angle_deg(rotor_angle_rad: f64, pole_pairs: usize) -> f64 {
@@ -448,6 +443,9 @@ fn rotated_rotor_regions(
     config: &MotorConfig,
     rotor_angle_rad: f64,
 ) -> Result<Vec<Region>, String> {
+    if config.is_outer_rotor() {
+        return Err("outer-rotor meshes carry their rotor position; re-tagging assumes an inner rotor".to_string());
+    }
     MachineModel::from_config(config)
         .rotated_rotor_regions(mesh, centroids, rotor_angle_rad)
         .map_err(|err| err.to_string())
@@ -817,6 +815,11 @@ fn model_constraint_terms(
 }
 
 fn outer_dirichlet_boundary_nodes(mesh: &crate::mesh::TriMesh) -> Vec<usize> {
+    // An outer-rotor mesh names its exact A=0 nodes (rotor OD and hub bore);
+    // the stator-OD radius below would pin the air gap and rotor instead.
+    if mesh.info.is_outer_rotor() {
+        return mesh.boundary_nodes.clone();
+    }
     let outer_radius_m = mesh.info.stator_outer_radius_mm * 1e-3;
     let tolerance_m = (outer_radius_m.abs() * 1e-8).max(2.0e-9);
     let outer_nodes: Vec<usize> = mesh

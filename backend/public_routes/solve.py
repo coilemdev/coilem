@@ -14,6 +14,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse, StreamingResponse
 
+from backend import field_frame_codec, run_field_playback
 from backend.convergence_reporting import convergence_report
 from backend.elmer.capabilities import ElmerCapabilities, discover_elmer
 from backend.elmer.errors import (
@@ -54,6 +55,7 @@ from backend.solve_workspace import (
     SolveWorkspaceCapacityError,
     SolveWorkspaceError,
     resolve_run_artifact_id,
+    run_artifact_location,
 )
 from backend.solver import Magneto2DSolver
 from backend.solver_contract import SolveCancelledError, Solver
@@ -690,6 +692,18 @@ def _create_public_solver(
     return Magneto2DSolver(launch_surface=True)
 
 
+def _saved_run_playback_location(artifact_id: str) -> tuple[str, str, str] | None:
+    """(project, run, path) when ``artifact_id`` names a saved run's playback image."""
+
+    if not artifact_id.startswith(RUN_ARTIFACT_PREFIX):
+        return None
+    try:
+        location = run_artifact_location(artifact_id)
+    except SolveWorkspaceError:
+        return None
+    return location if run_field_playback.is_run_playback_path(location[2]) else None
+
+
 def _resolve_public_artifact_id(artifact_id: str):
     if artifact_id.startswith(RUN_ARTIFACT_PREFIX):
         try:
@@ -719,12 +733,12 @@ def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
             not artifact_id.startswith(RUN_ARTIFACT_PREFIX)
             and path.parent.name != "field_line_frames"
         )
-        or not path.name.endswith(".json.gz")
+        or not path.name.endswith((".json.gz", field_frame_codec.SUFFIX))
     ):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="field frame not found")
     try:
         artifact_payload = read_field_line_frame_artifact(path)
-    except (OSError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError) as exc:  # a JSON or compact frame that does not parse
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="field frame could not be read",
@@ -742,6 +756,24 @@ def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
 async def get_public_playback_frame(artifact_id: str) -> FileResponse:
     """Return one pre-rasterized PNG or WebP layer by opaque local-cache id."""
 
+    playback = _saved_run_playback_location(artifact_id)
+    if playback is not None:
+        # A saved run's image comes from its playback cache folder, drawn again
+        # from the run's field frames when the cache has dropped it.
+        try:
+            path = await asyncio.to_thread(run_field_playback.playback_image, SolveWorkspace(), *playback)
+        except (FileNotFoundError, SolveWorkspaceError, TimeoutError) as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="playback frame not found") from exc
+        except Exception as exc:  # noqa: BLE001 - a failed redraw, reported without its internals
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="playback frame could not be drawn",
+            ) from exc
+        return FileResponse(
+            path,
+            media_type="image/webp",
+            headers={"Cache-Control": "private, max-age=3600, immutable", "X-Content-Type-Options": "nosniff"},
+        )
     try:
         path = _resolve_public_artifact_id(artifact_id)
     except ValueError as exc:

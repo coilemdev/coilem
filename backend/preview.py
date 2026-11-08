@@ -8,6 +8,7 @@ import math
 import time
 from typing import Literal
 
+from backend.excitation import phase_axis_offset_deg
 from backend.geometry import (
     geometry_warnings,
     tooth_width_advisory,
@@ -37,6 +38,8 @@ from backend.preview_from_ir import (
     preview_regions_from_geometry_ir,
 )
 from backend.qualification import classify_qualification
+from backend.reference_models import reference_model
+from backend.rotor_layout import is_outer_rotor, outer_rotor_airgap_mm
 from backend.winding_resistance import winding_resistance
 from backend.winding_utils import (
     concentrated_slot_layer_assignments,
@@ -47,7 +50,10 @@ from backend.winding_utils import (
     distributed_pitch_factor,
     distributed_slot_layer_assignments,
     tooth_coil_assignments,
-    winding_phase_axis_offset_elec_deg,
+)
+
+OUTER_ROTOR_PREVIEW_KEYS = (
+    "radial_layout", "outer_radius_mm", "airgap_stator_side_radius_mm", "airgap_rotor_side_radius_mm",
 )
 
 
@@ -108,7 +114,7 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
     stator_od_r = stator.OD_mm / 2
     rotor_core_outer_r = rotor.OD_mm / 2
     rotor_outer_r = rotor_core_outer_r + (rotor.magnet_thickness_mm if topology == "SPM" else 0.0)
-    airgap_mm = bore_r - rotor_outer_r
+    airgap_mm = outer_rotor_airgap_mm(config) if is_outer_rotor(config) else bore_r - rotor_outer_r
     slot_bottom_r = stator_od_r - stator.yoke_thickness_mm
     tooth_pitch_rad = (2 * math.pi) / stator.slot_count
     # Sizes the in/out winding symbols, so it has to be the same slot the drawer
@@ -133,15 +139,10 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
             stator.slot_count, rotor.pole_count, winding.type, winding.turns_per_coil,
             stator.ID_mm, winding.layers, winding.parallel_paths, winding.coil_span
         )
-        if config.geometry_reference == "pyleecan_prius_2004":
-            from backend.reference_models.prius import source
-
-            winding_layout = [
-                WindingSlot(slot_index=surface["winding"]["slot"], phase=surface["winding"]["phase"],
-                            direction=surface["winding"]["direction"], layer=1)
-                for surface in source()["surfaces"] if "winding" in surface
-            ]
-            winding_metadata["winding_source"] = "published Pyleecan phase/sign matrix"
+        reference = reference_model(config)
+        if reference is not None and reference.published_winding is not None:
+            winding_layout = [WindingSlot(**row) for row in reference.published_winding()]
+            winding_metadata["winding_source"] = reference.published_winding_label
         winding_coils = _derive_winding_coils(
             winding_layout,
             stator.slot_count,
@@ -155,11 +156,9 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
         # The 2D Phases preview needs it to light the phases the solver drives at
         # each rotor position; the drive settings it combines with stay in the
         # frontend, so changing them does not wait for a new preview.
-        winding_metadata["phase_axis_offset_elec_deg"] = winding_phase_axis_offset_elec_deg(
-            winding.type, stator.slot_count, rotor.pole_count, winding.layers, winding.coil_span
-        )
+        winding_metadata["phase_axis_offset_elec_deg"] = phase_axis_offset_deg(config)
         winding_metadata["phase_current_convention"] = (
-            "pyleecan_d_axis" if config.geometry_reference == "pyleecan_prius_2004" else "q_axis"
+            reference.phase_current_convention if reference is not None else "q_axis"
         )
 
     if geometry_ir is not None:
@@ -171,11 +170,15 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
         )
 
     if not slotless_diagnostic:
+        # An outer-rotor slot runs outward from the yoke to the air-gap face.
+        slot_inner_r, slot_outer_r = (
+            (stator.ID_mm / 2 + stator.yoke_thickness_mm, stator_od_r) if is_outer_rotor(config) else (bore_r, slot_bottom_r)
+        )
         append_winding_symbols(
             regions,
             winding_layout,
-            bore_r=bore_r,
-            slot_bottom_r=slot_bottom_r,
+            bore_r=slot_inner_r,
+            slot_bottom_r=slot_outer_r,
             slot_body_width=slot_body_width,
             slot_pitch_rad=tooth_pitch_rad,
             origin_x=origin_x,
@@ -212,6 +215,11 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
         "narrowest_tooth_width_mm": narrowest_tooth_width_mm(config),
         **winding_metadata,  # Add winding factor, fill_factor, etc.
     }
+    if is_outer_rotor(config):
+        metadata["rotor_layout"] = "outer"
+        if geometry_ir is not None:
+            # The viewers frame and orient an outer rotor from these.
+            metadata.update({key: geometry_ir.metadata[key] for key in OUTER_ROTOR_PREVIEW_KEYS if key in geometry_ir.metadata})
 
     # Non-blocking: geometry that draws and solves but no longer matches what the
     # fields say. Kept out of validation_errors on purpose so it cannot stop a solve.

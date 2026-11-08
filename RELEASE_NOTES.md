@@ -1,3 +1,113 @@
+# coilEM 0.5.5 Developer Preview — outer-rotor motors
+
+Prepared November 8, 2026. The [release qualification gate](benchmarks/v0.5.5/release-qualification.json)
+passes for registered A-D parity and the Prius software checks, measured at
+`34de0f4` on Windows and macOS. Outer-rotor motors are new and experimental.
+The application version is 0.5.5. The bundled Magneto2D solver keeps version
+0.4.0 although it gains outer-rotor support; inner-rotor results are unchanged,
+and its version advances with the next requalification.
+
+- **Outrunners in the normal workflow.** Design has an **Inrunner / Outrunner**
+  switch. Outer-rotor surface-magnet motors are edited, meshed, solved and
+  reported like inner rotors: outward-opening slots, magnets on the rotor's inner
+  face, a hub bore, and drone-size limits. A starter 14-pole / 12-slot outrunner
+  ships as an example. Conventions, field meanings and limits are in
+  [docs/OUTRUNNER.md](docs/OUTRUNNER.md).
+- **Same conventions for both layouts.** Torque is the rotor's, positive
+  clockwise; pole 0's north faces the air gap, so current angle and six-step
+  commutation mean the same for an outrunner.
+- **LRK 12-slot / 14-pole reference.** The published sliding-band benchmark
+  outrunner runs through the normal pipeline as a pinned reference, next to the
+  Prius. Its examples stay hidden until the source data's redistribution rights
+  are confirmed.
+- **Tooth shoes on outer stators.** An outrunner's teeth can carry shoes at the
+  stator OD, set the same way as an inner rotor's: shoe height, and overhang per
+  side of the tooth body. Most real outrunners have them. The Benchmarks menu
+  adds one: a published 36-slot / 40-pole robot-joint outrunner, with its
+  measured back-EMF and torque in its description.
+- **A second published outrunner.** The Benchmarks menu adds Model B of the
+  36-slot / 40-pole drone outrunners in Koo & Shin, *Energies* 19(16):3845 (2026).
+  Its measured back-EMF and torque are in the design's description: coilEM's
+  back-EMF lands as close as the authors' own 2D FEM, and its torque about 4% low.
+- **Back EMF as rms and peak.** The Results card adds a small table of the phase
+  and line-to-line back-EMF as rms and peak, since papers and datasheets often
+  quote a peak; the peak comes from the solved waveform, harmonics included, and
+  peak-to-peak is twice it. The Back EMF chart gains an RMS / Peak switch that
+  shows each trace's value in its legend.
+- **Examples by rotor layout.** The Examples menu lists inrunners and outrunners
+  side by side in each group.
+- **Outrunners in 3D.** An outer-rotor design's 3D view is built like an inner
+  rotor's instead of extruding its cross-section: the stator's teeth point out
+  from its hub with a wound coil on each, and the rotor is a can round them with
+  its magnets on the inner face. A spoked end bell closes the can and is clamped
+  to the shaft, so the shaft turns with the rotor; the shaft runs in two bearings
+  held by a fixed tube in the stator hub, and the stator mount behind (under End
+  caps) bolts the stator to the frame. The explode, part toggles and phase links
+  work as before. Published reference motors still extrude their cross-section.
+- **Phase wiring as it is wound.** In both layouts the 3D view now draws each
+  phase as one continuous wire: every coil has its own start and finish lead, and
+  each finish crosses behind the stack to the next coil's start, a short hop
+  between neighbouring teeth, from the drive lead to the star point.
+- **Sector view for thin-ring motors.** An outrunner whose active ring is a thin
+  band (radial thickness up to half its outer radius) opens zoomed on the top of
+  the ring in Design and in the solved field, not on the empty hub. **‹ ›**, or
+  the arrow keys over the view, turn the motor under the view with a short
+  animation, so every sector reads the same way up with its labels level. A dial
+  shows where on the ring you are and turns there when clicked; **Sector** and
+  **Fit** switch between the ring and the whole motor.
+- **Slower preview and field playback.** The Design preview's speed and the
+  solved-field playback in Solve and Results go down to 0.1 RPM, in tenths below
+  1 RPM, so the phases, the tooth poles and the field can be followed slowly. The
+  phase scope's frequency and rev/s keep two figures at these speeds.
+- **Up to 64 poles.** The pole limit rises from 32 to 64 for both layouts, so
+  36-slot / 40-pole robot-joint and drone outrunners and 46–48-pole hub motors
+  can be modelled. Slots were already allowed up to 96.
+- **Smaller saved runs.** A saved run keeps each field frame as float32 arrays
+  in an xz stream (`.f32.xz`), a quarter to a third of the gzipped JSON, linked
+  from the solve cache instead of copied. Its playback images stay out of the
+  run: they wait in the solve cache and are drawn again from the run's frames
+  when the cache has dropped them. A run of the 8-pole / 12-slot example drops
+  from about 242 MB to about 61 MB, its frames and result
+  ([public issue 212](https://github.com/coilemdev/coilem/issues/212)).
+  The solve still reads its physics from the cache's full-precision JSON, so
+  results are unchanged, and runs saved earlier still open.
+- **Open an earlier run's results.** **Previous runs** has **Open results** for
+  each completed run: its stored result opens in Solve and Results, field
+  playback included, as stored evidence for those inputs.
+- **Older runs give up field playback.** Each design keeps field playback for its
+  newest 5 runs (`COILEM_FIELD_PLAYBACK_KEEP_RUNS`); older runs keep their
+  results, report and design, and **Manage previous runs** marks them. A full
+  workspace removes the oldest runs' playback before it refuses a solve.
+- **Experimental, with first FEMM agreement.** Every outer-rotor design still
+  reports experimental. Phase F, proposed as
+  [protocol 1.8.0](benchmarks/abcd-v1.8/README.md), adds 10 outer-rotor
+  cases, from an 18 mm micro drone motor to a 100 mm hub-motor class, graded
+  with Phase A's gates. Against a FEMM 4.2 collection run on Windows
+  ([request](docs/OUTRUNNER_FEMM_REQUEST.md)), all 10 cases pass (60/60
+  gates): the worst mean-torque error is 0.86% and the worst Back-EMF
+  fundamental and peak errors are 0.31% and 0.36%. Qualifying outer rotors
+  needs the same comparison on macOS as well.
+- **Small readings plot to scale.** Result charts no longer squeeze a
+  waveform smaller than one unit into the top of the plot. Small readings show
+  in mN·m or mV, axis labels use round steps, and nothing reads −0.00.
+- **Diagnostics.** Solver convergence moves to a Diagnostics section at the end
+  of Results. It leads with a plain verdict and four facts, charts the share
+  of the iteration limit each rotor position used, and lists only the angles
+  that need a look, with both sweeps side by side. Solver settings stay under
+  Technical details; every position's record stays in the CSV.
+- **Limits.** Outer rotors are SPM only, and two-layer windings must be tooth
+  coils. Elmer, the fixed-mesh
+  lane, the dimension overlay and the solved view's air-gap ring are not
+  available for outer rotors. A design saved with an outer rotor opens as an
+  inner rotor in coilEM 0.5.1 and earlier.
+- **Inner-rotor results are unchanged.** The full two-platform remeasurement
+  (A–D and the Prius collection) matches 0.5.1: macOS values are identical
+  and Windows values agree within 3×10⁻⁸ relative, with every supported case
+  passing 336/336 gates on each platform. The reviewed protocol 1.6 FEMM
+  references are reused after owner review, supported by a fresh FEMM
+  collection of all 46 cases
+  ([decisions](benchmarks/qualification-34de0f4ca160/owner-decisions.json)).
+
 # coilEM 0.5.1 Developer Preview
 
 Prepared November 6, 2026. The [release qualification gate](benchmarks/v0.5.1/release-qualification.json)

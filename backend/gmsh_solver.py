@@ -21,7 +21,9 @@ from backend.geometry_drawer import (
 from backend.geometry_ir import GeometryIR, GeometryIRLoop, GeometryIRRegion, build_geometry_ir
 from backend.gmsh_mesh_rotation import coil_side_current_density_a_per_m2, meshed_region_areas_mm2
 from backend.models import MotorConfig
+from backend.reference_models import reference_model
 from backend.resources import package_resource
+from backend.rotor_layout import is_outer_rotor
 from backend.solver_environment import ISOLATED_RUNTIME
 from backend.topology_provenance import build_topology_provenance
 
@@ -125,6 +127,9 @@ class _GmshGeometryBuilder:
     arcs: dict[tuple[int, int, int], int] = field(default_factory=dict)
     curves_by_feature: dict[str, set[int]] = field(default_factory=dict)
     surfaces_by_region: dict[str, list[int]] = field(default_factory=dict)
+    # Curves an IR segment tags A=0. Only outer-rotor IR tags them; inner
+    # rotors keep the stator-OD radius rule.
+    dirichlet_curves: set[int] = field(default_factory=set)
 
     def __post_init__(self) -> None:
         self.center_tag = gmsh.model.geo.addPoint(0.0, 0.0, 0.0, self.base_lc_mm)
@@ -449,7 +454,7 @@ def _run_gmsh_ir_mesh_preview(
 ) -> dict[str, Any]:
     """Generate an IR-driven Gmsh mesh for SPM/IPM topologies."""
 
-    ir = build_geometry_ir(config, geom=geom)
+    ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=rotor_angle_deg)
     ir_report = ir.validation_report()
     if ir_report.issues:
         joined = "; ".join(ir_report.issues)
@@ -469,7 +474,15 @@ def _run_gmsh_ir_mesh_preview(
         region_by_surface = _build_ir_gmsh_surfaces(builder, ir)
         builder.apply_point_sizes()
         gmsh.model.geo.synchronize()
-        _apply_gmsh_physics_mesh_fields(builder, geom, config)
+        _apply_gmsh_physics_mesh_fields(
+            builder,
+            geom,
+            config,
+            airgap_width_mm=(
+                float(ir.metadata["airgap_rotor_side_radius_mm"]) - float(ir.metadata["airgap_stator_side_radius_mm"])
+                if is_outer_rotor(config) else None
+            ),
+        )
         for region in ir.regions:
             surfaces = builder.surfaces_by_region.get(region.region_id, [])
             if surfaces:
@@ -482,6 +495,7 @@ def _run_gmsh_ir_mesh_preview(
         nodes_mm, triangles, element_region_ids = _extract_gmsh_triangles_by_surface(
             region_by_surface
         )
+        dirichlet_nodes = _tagged_dirichlet_nodes(builder, nodes_mm) if builder.dirichlet_curves else None
     finally:
         gmsh.finalize()
 
@@ -495,6 +509,7 @@ def _run_gmsh_ir_mesh_preview(
         density=density,
         rotor_angle_deg=rotor_angle_deg,
         builder=builder,
+        dirichlet_nodes=dirichlet_nodes,
     )
     mesh_qa = _validate_gmsh_ir_solve_mesh_artifact(solve_mesh_artifact, ir)
     generation_time_ms = int((time.monotonic() - start_time) * 1000)
@@ -692,6 +707,8 @@ def _curve_loop_from_ir_loop(
                     curves.append(builder.circle_arc(start, center_tag, end, curve_feature))
         else:
             curves.append(builder.line(start, end, curve_feature))
+        if segment.boundary_tag == "dirichlet_az_zero":
+            builder.dirichlet_curves.add(abs(curves[-1]))
 
     if reverse:
         curves = [-curve for curve in reversed(curves)]
@@ -752,6 +769,7 @@ _QA_MAGNET_GRADES = {
     "Ferrite_Y30",
     "Prius_2004_NdFeB",
     "ORNL_Prius_2004_NdFeB",
+    "LRK_NdFeB_40MGOe",
 }
 
 
@@ -808,6 +826,26 @@ def _extract_gmsh_triangles_by_surface(
     return compact_nodes, compact_triangles, element_region_ids
 
 
+def _tagged_dirichlet_nodes(builder: _GmshGeometryBuilder, nodes_mm: list[list[float]]) -> list[int]:
+    """Indices, in the compacted mesh, of every node on an A=0 tagged curve.
+
+    Matched by position: the triangle extraction compacts Gmsh's node list.
+    """
+
+    index = {(round(x * 1.0e9), round(y * 1.0e9)): i for i, (x, y) in enumerate(nodes_mm)}
+    result: set[int] = set()
+    for curve in builder.dirichlet_curves:
+        _, coords, _ = gmsh.model.mesh.getNodes(1, curve, includeBoundary=True)
+        for k in range(0, len(coords), 3):
+            key = (round(float(coords[k]) * 1.0e9), round(float(coords[k + 1]) * 1.0e9))
+            if key not in index:
+                raise GmshMeshQAError("An A=0 boundary node is missing from the meshed triangles")
+            result.add(index[key])
+    if not result:
+        raise GmshMeshQAError("The A=0 boundary curves carry no mesh nodes")
+    return sorted(result)
+
+
 def _compact_mesh_nodes(
     nodes: list[list[float]],
     triangles: list[list[int]],
@@ -830,6 +868,7 @@ def _build_ir_solve_mesh_artifact(
     density: str,
     rotor_angle_deg: float,
     builder: _GmshGeometryBuilder,
+    dirichlet_nodes: list[int] | None = None,
 ) -> dict[str, Any]:
     region_by_id = {region.region_id: region for region in ir.regions}
     solve_regions = [
@@ -870,7 +909,22 @@ def _build_ir_solve_mesh_artifact(
     else:
         airgap_inner_radius_mm = config.rotor.OD_mm / 2.0
     stator_inner_radius_mm = config.stator.ID_mm / 2.0
+    airgap_outer_radius_mm = stator_inner_radius_mm
+    magnet_outer_radius_mm = airgap_inner_radius_mm
     slot_outer_radius_mm = _slot_outer_radius_mm(geom)
+    outer_rotor_info = None
+    if is_outer_rotor(config):
+        # The stator sits inside: the gap band and steel sampling radii come from
+        # the IR, and A=0 holds exactly on its tagged rotor-OD and hub-bore curves.
+        if dirichlet_nodes is None:
+            raise GmshMeshQAError("An outer-rotor geometry must tag its A=0 boundary curves")
+        airgap_inner_radius_mm = float(ir.metadata["airgap_stator_side_radius_mm"])
+        airgap_outer_radius_mm = float(ir.metadata["airgap_rotor_side_radius_mm"])
+        magnet_outer_radius_mm = airgap_outer_radius_mm
+        outer_rotor_info = {
+            "tooth_sample_radius_mm": float(ir.metadata["tooth_sample_radius_mm"]),
+            "yoke_sample_radius_mm": float(ir.metadata["yoke_sample_radius_mm"]),
+        }
     region_contracts = []
     for region in ir.regions:
         entry: dict[str, Any] = {
@@ -918,10 +972,10 @@ def _build_ir_solve_mesh_artifact(
         ),
         "geometry_ir_version": ir.version,
         "airgap_inner_radius_mm": airgap_inner_radius_mm,
-        "airgap_outer_radius_mm": stator_inner_radius_mm,
+        "airgap_outer_radius_mm": airgap_outer_radius_mm,
         "mesh_source": "gmsh",
         "mesh_source_detail": "geometry_ir",
-        "magnet_outer_radius_mm": airgap_inner_radius_mm,
+        "magnet_outer_radius_mm": magnet_outer_radius_mm,
         "magnet_embrace": config.rotor.magnet_embrace,
         "stator_inner_radius_mm": stator_inner_radius_mm,
         "stator_slot_outer_radius_mm": slot_outer_radius_mm,
@@ -931,13 +985,19 @@ def _build_ir_solve_mesh_artifact(
             region.region_id: _gmsh_physical_name(region) for region in ir.regions
         },
     }
+    if outer_rotor_info is not None:
+        mesh_info["rotor_layout"] = "outer"
+        mesh_info["outer_rotor"] = outer_rotor_info
     artifact = {
         "mesh": {
             "nodes": nodes_mm,
             "length_units": "mm",
             "triangles": triangles,
             "regions": solve_regions,
-            "boundary_nodes": _outer_boundary_nodes(nodes_mm, stator_outer_radius_mm),
+            "boundary_nodes": (
+                dirichlet_nodes if outer_rotor_info is not None
+                else _outer_boundary_nodes(nodes_mm, stator_outer_radius_mm)
+            ),
             "sector_edge_pairs": [],
             "info": mesh_info,
         },
@@ -990,9 +1050,9 @@ def _build_ir_solve_mesh_artifact(
             },
         },
     }
-    if config.geometry_reference == "pyleecan_prius_2004":
-        from backend.reference_models.prius import exact_currents
-        exact_currents(artifact, config, rotor_angle_deg)
+    reference = reference_model(config)
+    if reference is not None and reference.exact_currents is not None:
+        reference.exact_currents(artifact, config, rotor_angle_deg)
     return artifact
 
 
@@ -1580,7 +1640,13 @@ def _apply_gmsh_physics_mesh_fields(
     builder: _GmshGeometryBuilder,
     geom: MotorGeometry,
     config: MotorConfig,
+    airgap_width_mm: float | None = None,
 ) -> None:
+    """Local size fields at the air gap and physics features.
+
+    ``airgap_width_mm`` overrides the inner-rotor gap read from ``geom``; an
+    outer rotor passes its gap from the geometry IR.
+    """
     fields: list[int] = []
     base_lc = builder.base_lc_mm
     refined_corner_profile = _gmsh_corner_refinement_enabled(config)
@@ -1603,7 +1669,7 @@ def _apply_gmsh_physics_mesh_fields(
         if str(config.topology).upper() == "SPM"
         else geom.rotor_OD_r
     )
-    airgap_width = max(0.05, geom.stator_ID_r - airgap_inner_radius)
+    airgap_width = max(0.05, geom.stator_ID_r - airgap_inner_radius if airgap_width_mm is None else airgap_width_mm)
 
     airgap_curves = sorted(builder.curves_by_feature.get("airgap_band", set()))
     if airgap_curves:
@@ -1900,6 +1966,10 @@ def _base_lc_mm(config: MotorConfig, density: str) -> float:
         "very_fine": 0.3,
     }.get(density, 1.0)
     floor_mm = 0.9 if density in {"normal", "fine"} else 0.15
+    if is_outer_rotor(config) and density in {"normal", "fine"}:
+        # Outrunners are mostly small: the absolute floor, calibrated on inner
+        # rotors of 30 mm and up, would leave a tooth tip one element thick.
+        floor_mm = config.stator.OD_mm * 0.015 * (1.0 if density == "normal" else 0.75)
     return max(floor_mm, config.stator.OD_mm * 0.015 * density_scale)
 
 

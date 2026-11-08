@@ -1408,15 +1408,18 @@ fn compute_point_sampled_peak_b(
         return (0.0, 0.0);
     }
 
-    let stator_inner_r = mesh.info.stator_inner_radius_mm * 1e-3;
-    let slot_outer_r = mesh.info.stator_slot_outer_radius_mm * 1e-3;
-    let stator_outer_r = mesh.info.stator_outer_radius_mm * 1e-3;
-    if stator_inner_r <= 0.0 || slot_outer_r <= stator_inner_r || stator_outer_r <= slot_outer_r {
-        return (0.0, 0.0);
-    }
-
-    let tooth_r = 0.5 * (stator_inner_r + slot_outer_r);
-    let yoke_r = 0.5 * (slot_outer_r + stator_outer_r);
+    let (tooth_r, yoke_r) = if let Some(outer) = mesh.info.outer_rotor.as_ref() {
+        // An outer rotor's teeth lie outward of its yoke.
+        (outer.tooth_sample_radius_mm * 1e-3, outer.yoke_sample_radius_mm * 1e-3)
+    } else {
+        let stator_inner_r = mesh.info.stator_inner_radius_mm * 1e-3;
+        let slot_outer_r = mesh.info.stator_slot_outer_radius_mm * 1e-3;
+        let stator_outer_r = mesh.info.stator_outer_radius_mm * 1e-3;
+        if stator_inner_r <= 0.0 || slot_outer_r <= stator_inner_r || stator_outer_r <= slot_outer_r {
+            return (0.0, 0.0);
+        }
+        (0.5 * (stator_inner_r + slot_outer_r), 0.5 * (slot_outer_r + stator_outer_r))
+    };
     let total_span_rad = mesh.info.total_span_deg.to_radians();
     let slot_pitch_rad = 2.0 * PI / slot_count as f64;
 
@@ -1559,6 +1562,7 @@ mod tests {
                 stator_inner_radius_mm: 30.0,
                 stator_slot_outer_radius_mm: 42.0,
                 stator_outer_radius_mm: 50.0,
+                outer_rotor: None,
             },
         };
 

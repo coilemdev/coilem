@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -27,6 +28,8 @@ import {
 } from './ViewportNavigation';
 import { currentAngleNote, fieldAxisArrowPaths, leadAngleExplanation, qAxisOffsetDeg, rotorNorthAxisDeg, statorLeadElecDeg } from './fieldAxes';
 import { motorFitWidthBesideLegend } from './fieldLegendFit';
+import { ringKey, sectorView, type RingMm } from './sectorFraming';
+import { fieldStrokeScale } from './fieldStrokeWidth';
 import {
   fieldRangeForViewport,
   type FieldViewportRange,
@@ -121,6 +124,8 @@ interface PreparedFieldPlot {
   }>;
   contourPaths: Path2D[];
   viewBox: string;
+  /** Stroke-width factor for this view's size (fieldStrokeWidth). */
+  strokeScale: number;
   minB: number;
   maxB: number;
   triangleCount: number;
@@ -323,6 +328,7 @@ function prepareFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
     triangleRecords,
     contourPaths,
     viewBox: `${minX - padding} ${-maxY - padding} ${width + padding * 2} ${height + padding * 2}`,
+    strokeScale: fieldStrokeScale(width + padding * 2, height + padding * 2),
     minB,
     maxB,
     triangleCount,
@@ -393,7 +399,7 @@ function drawMeshEdges(
 ): void {
   context.save();
   context.strokeStyle = 'rgba(203,213,225,.42)';
-  context.lineWidth = 0.11 / Math.max(viewportScale, Number.EPSILON);
+  context.lineWidth = (0.11 * prepared.strokeScale) / Math.max(viewportScale, Number.EPSILON);
   context.lineJoin = 'round';
   context.stroke(prepared.basePath);
   context.restore();
@@ -406,7 +412,7 @@ function drawFieldLines(
   overlay = false,
 ): void {
   context.strokeStyle = overlay ? OVERLAY_LINE_COLOR : '#ffd166';
-  context.lineWidth = 0.28;
+  context.lineWidth = 0.28 * prepared.strokeScale;
   context.lineCap = 'round';
   context.shadowColor = overlay ? OVERLAY_HALO_COLOR : 'rgba(255,145,0,.9)';
   context.shadowBlur = overlay ? 2 : 0.45;
@@ -537,6 +543,7 @@ export function FieldResultPlot({
   fieldAxes = null,
   pmLines = false,
   navigationSlot = null,
+  ring = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -576,8 +583,24 @@ export function FieldResultPlot({
   fieldAxes?: FieldAxesOptions | null;
   /** Render the zoom controls here instead of over the plot (the solved-field viewer's control dock). */
   navigationSlot?: HTMLElement | null;
+  /** An outrunner's active ring: a thin one opens on its sector (sectorFraming.ts). */
+  ring?: RingMm | null;
 }) {
-  const navigation = useViewportNavigation();
+  const ringInnerMm = ring?.innerMm;
+  const ringOuterMm = ring?.outerMm;
+  // The plot fits the motor's extents plus 2.5% padding per side into the smaller side of the view.
+  const sectorForSize = useCallback((width: number, height: number) => sectorView(
+    ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
+    width,
+    height,
+    Math.min(width, height) / (2 * 1.05),
+  ), [ringInnerMm, ringOuterMm]);
+  const navigation = useViewportNavigation(
+    undefined,
+    undefined,
+    sectorForSize,
+    ringKey(ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null),
+  );
   const sourcePlot = highResolutionPlot ?? plot;
   const prepared = useMemo(() => {
     if (!sourcePlot) return null;
@@ -697,10 +720,24 @@ export function FieldResultPlot({
       }
       const context = canvas.getContext('2d');
       if (!context) return;
+      context.setTransform(1, 0, 0, 1, 0, 0);
       context.clearRect(0, 0, pixelWidth, pixelHeight);
       const size = Math.min(pixelWidth, pixelHeight);
       const panX = navigation.pan.x * pixelRatio;
       const panY = navigation.pan.y * pixelRatio;
+      // The sector turntable turns the whole picture about the motor centre, which the
+      // pan carries from the canvas centre; every layer below is drawn through it.
+      const rotationRad = (navigation.rotationDeg * Math.PI) / 180;
+      const pivotX = pixelWidth / 2 + panX;
+      const pivotY = pixelHeight / 2 + panY;
+      const viewMatrix = new DOMMatrix()
+        .translateSelf(pivotX, pivotY)
+        .rotateSelf(navigation.rotationDeg)
+        .translateSelf(-pivotX, -pivotY);
+      const setWorldTransform = (a: number, b: number, c: number, d: number, e: number, f: number) => {
+        context.setTransform(viewMatrix.multiply(new DOMMatrix([a, b, c, d, e, f])));
+      };
+      context.setTransform(viewMatrix);
       const useVectorDetail = Boolean(
         prepared
         && (
@@ -734,11 +771,14 @@ export function FieldResultPlot({
             translateY,
             canvasWidth: pixelWidth,
             canvasHeight: pixelHeight,
+            rotationRad,
+            pivotX,
+            pivotY,
           })
           : null;
         publishViewportRange(visibleRange);
         context.save();
-        context.setTransform(
+        setWorldTransform(
           scale,
           0,
           0,
@@ -784,7 +824,7 @@ export function FieldResultPlot({
           const centerX = pixelWidth / 2;
           const centerY = pixelHeight / 2;
           context.save();
-          context.setTransform(
+          setWorldTransform(
             baseScale * navigation.scale,
             0,
             0,
@@ -807,7 +847,7 @@ export function FieldResultPlot({
           const centerX = pixelWidth / 2;
           const centerY = pixelHeight / 2;
           context.save();
-          context.setTransform(
+          setWorldTransform(
             baseScale * navigation.scale,
             0,
             0,
@@ -835,7 +875,7 @@ export function FieldResultPlot({
         if (overlay && primarySquare) {
           const worldScale = drawSize / primarySquare.size;
           context.save();
-          context.setTransform(
+          setWorldTransform(
             worldScale,
             0,
             0,
@@ -859,6 +899,7 @@ export function FieldResultPlot({
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
+    navigation.rotationDeg,
     overlay,
     overlayPrepared,
     pmLines,
@@ -954,6 +995,8 @@ export function FieldResultPlot({
   const overlayOffsetY = hasValidOverlayViewBox
     ? (FIELD_RASTER_SIZE - viewHeight * overlayScale) / 2 - viewY * overlayScale
     : 0;
+  // Text in the turned overlay is turned back about its own anchor, so it reads level.
+  const upright = (x: number, y: number) => (navigation.rotationDeg ? `rotate(${-navigation.rotationDeg} ${x} ${y})` : undefined);
   const overlayTransform = [
     overlayScale,
     0,
@@ -1050,8 +1093,16 @@ export function FieldResultPlot({
     const drawSize = size * navigation.scale;
     const drawX = (rect.width - drawSize) / 2 + navigation.pan.x;
     const drawY = (rect.height - drawSize) / 2 + navigation.pan.y;
-    const rasterX = ((event.clientX - rect.left - drawX) / drawSize) * FIELD_RASTER_SIZE;
-    const rasterY = ((event.clientY - rect.top - drawY) / drawSize) * FIELD_RASTER_SIZE;
+    // Undo the sector turntable's rotation about the motor centre before reading the field.
+    const pivotX = rect.width / 2 + navigation.pan.x;
+    const pivotY = rect.height / 2 + navigation.pan.y;
+    const turn = (-navigation.rotationDeg * Math.PI) / 180;
+    const offsetX = event.clientX - rect.left - pivotX;
+    const offsetY = event.clientY - rect.top - pivotY;
+    const pointerX = pivotX + offsetX * Math.cos(turn) - offsetY * Math.sin(turn);
+    const pointerY = pivotY + offsetX * Math.sin(turn) + offsetY * Math.cos(turn);
+    const rasterX = ((pointerX - drawX) / drawSize) * FIELD_RASTER_SIZE;
+    const rasterY = ((pointerY - drawY) / drawSize) * FIELD_RASTER_SIZE;
     if (
       rasterX < 0
       || rasterY < 0
@@ -1165,15 +1216,15 @@ export function FieldResultPlot({
               {showMagnets && (
                 <g className={`public-field-result-pm-overlay${magnetReference ? ' is-reference' : ''}`}>
                   {magnetOverlay.map((magnet, index) => <path d={magnet.path} className={`public-field-result-magnet is-${magnet.polarity}`} key={`magnet-${index}`} />)}
-                  {showMagnetPolarityLabels && magnetOverlay.map((magnet, index) => <text x={magnet.center[0]} y={-magnet.center[1]} className="public-field-result-magnet-label" key={`magnet-label-${index}`}>{magnet.polarity === 'north' ? 'N' : 'S'}</text>)}
+                  {showMagnetPolarityLabels && magnetOverlay.map((magnet, index) => <text x={magnet.center[0]} y={-magnet.center[1]} transform={upright(magnet.center[0], -magnet.center[1])} className="public-field-result-magnet-label" key={`magnet-label-${index}`}>{magnet.polarity === 'north' ? 'N' : 'S'}</text>)}
                 </g>
               )}
               {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
                 <g className="public-field-axes">
                   <path className="public-field-axis-ray is-pm" d={`M 0 0 L ${rayRotorX} ${rayRotorY}`} />
                   <path className="public-field-axis-q" d={`M 0 0 L ${qEndX} ${qEndY}`} />
-                  <text className="public-field-axis-label is-dq" x={qLabelX} y={qLabelY} style={{ fontSize: axisFontSize }}>q</text>
-                  <text className="public-field-axis-label is-dq is-d" x={dLabelX} y={dLabelY} style={{ fontSize: axisFontSize }}>d</text>
+                  <text className="public-field-axis-label is-dq" x={qLabelX} y={qLabelY} transform={upright(qLabelX, qLabelY)} style={{ fontSize: axisFontSize }}>q</text>
+                  <text className="public-field-axis-label is-dq is-d" x={dLabelX} y={dLabelY} transform={upright(dLabelX, dLabelY)} style={{ fontSize: axisFontSize }}>d</text>
                   <path className="public-field-axis-ray is-stator" d={`M 0 0 L ${rayStatorX} ${rayStatorY}`} />
                   {axisAngles(rotorAxisDeg).map((angle) => {
                     const arrow = fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle);
@@ -1197,7 +1248,7 @@ export function FieldResultPlot({
                     className="public-field-axis-arc"
                     d={`M ${arcX1} ${arcY1} A ${arcRadius} ${arcRadius} 0 0 ${arcSpanDeg > 0 ? 0 : 1} ${arcX2} ${arcY2}`}
                   />
-                  <g className="public-field-axis-help">
+                  <g className="public-field-axis-help" transform={upright(arcLabelX, arcLabelY)}>
                     <title>{leadAngleExplanation(leadElecDeg ?? 0, axisPolePairs)}</title>
                     <text className="public-field-axis-label" x={arcLabelX} y={arcLabelY} style={{ fontSize: axisFontSize }}>
                       {leadLabel}
@@ -1219,7 +1270,7 @@ export function FieldResultPlot({
                 const x = statorPoleLabelRadius * Math.cos(angleRad);
                 const y = -statorPoleLabelRadius * Math.sin(angleRad);
                 return (
-                  <g className={`public-field-result-stator-pole is-${cue.label === 'N' ? 'north' : 'south'}`} key={`stator-pole-${index}`}>
+                  <g className={`public-field-result-stator-pole is-${cue.label === 'N' ? 'north' : 'south'}`} transform={upright(x, y)} key={`stator-pole-${index}`}>
                     <rect x={x - 2.2} y={y - 1.45} width="4.4" height="2.9" rx="1.1" />
                     <text x={x} y={y}>{cue.label}ₛ</text>
                   </g>
@@ -1235,6 +1286,12 @@ export function FieldResultPlot({
               onZoomIn={navigation.zoomIn}
               onZoomOut={navigation.zoomOut}
               onReset={navigation.reset}
+              onSector={navigation.sector}
+              onSectorStep={navigation.sectorStep}
+              onSectorGoTo={navigation.sectorGoTo}
+              sectorActive={navigation.sectorActive}
+              sectorAngleDeg={navigation.sectorAngleDeg}
+              sectorSpanDeg={navigation.sectorSpanDeg}
             />
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
