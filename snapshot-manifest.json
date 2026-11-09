@@ -160,13 +160,13 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 3674,
-      "sha256": "a3cc4854945c10900cb948e4c7f763f73da69ba86618cbe1c126bb8e17cb74b4"
+      "bytes": 4753,
+      "sha256": "721632548a4e98486fddf95f08d3d8834b1b24be8d491876ae5036bd00e74739"
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 11258,
-      "sha256": "6ee344236e0f87d30e0b32e371e92d314c5c0b7bdd8f792fccbc9ddc5e38669b"
+      "bytes": 12180,
+      "sha256": "4a2a21e8fbe8b03f446ee47b51a66a8dd2e4b64f02199a68e0293ad997073739"
     },
     {
       "path": "backend/benchmark_suite/references.py",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 53208,
-      "sha256": "30bf0844def3046c67397d9911bf8b9c7ac8d74a759a168d569cde7ddd2e213b"
+      "bytes": 53526,
+      "sha256": "636887e0f3f18ee155b56f24f512f8cdf47d3cf2b1dce4b70be9ffd05d712dec"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7950,8 +7950,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 20905,
-      "sha256": "9144292cceac2795dda238330d739305db1b4ccba5c87ce8a131f778fc53b869"
+      "bytes": 22884,
+      "sha256": "18e63f3c3486fc1367732f1f5953b1941f5ea8e74b3f2a54cd85af3b6396e971"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -8295,8 +8295,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 12614,
-      "sha256": "b316c62f4c00a06fdb767d49948162e8b25c8b3d58522d389f5ef98d487c5da7"
+      "bytes": 13670,
+      "sha256": "88c25e21514f196792760acebd29b2de17a1e969d2b0454294565fa5906427c5"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 13136,
-      "sha256": "6cb737ab636b3f9650d48c1b29931f3ac1e0411a1936c798d1f5dc3b3003829a"
+      "bytes": 13558,
+      "sha256": "01acd150d0e2a2132730302b407d4561353eb6f073c48d4d1e796971586fb686"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -10706,7 +10706,7 @@
     {
       "path": "tests/test_candidate_reference_review.py",
       "bytes": 9282,
-      "sha256": "9b5f2769cb5bd71bf83fd3c951e917c0fbb6f97697453a11a1373c624358caa4"
+      "sha256": "c8a0140f3cd7e6468946277b75d78a7b009938e54fb58d7ad6098891195e14d1"
     },
     {
       "path": "tools/qualify_benchmark_candidate.py",
@@ -12095,8 +12095,8 @@
     },
     {
       "path": "tests/test_physics_impact.py",
-      "bytes": 5129,
-      "sha256": "57b86729a9c31e4377c7a5a3c9116c4f737c71b49c83ba5fac5c08b4f4bbb7b5"
+      "bytes": 6788,
+      "sha256": "b47aea143f66d15bd403ce005b59f66722082075e273085ce098cb92682f8db1"
     },
     {
       "path": "tools/benchmark_archive.py",
@@ -12120,8 +12120,8 @@
     },
     {
       "path": "tools/physics_impact.py",
-      "bytes": 7730,
-      "sha256": "715d62291133295c4af754acdccb874be895bf9138518db7dbcb9227be665a8e"
+      "bytes": 8711,
+      "sha256": "8bb1e851b91543b354e66d74f0d75a40e56c079eed336948773a15f745c0d28e"
     },
     {
       "path": ".github/workflows/qualification-weekly.yml",
@@ -14707,6 +14707,11 @@
       "path": "benchmarks/qualification-e9eb89e818ed/publication-transform.json",
       "bytes": 6477,
       "sha256": "b568a8850caf34e511e74abbd9a45e86b89eb777256b27c4fd9086fec9f531be"
+    },
+    {
+      "path": "tests/test_policy_is_not_physics.py",
+      "bytes": 2726,
+      "sha256": "ff763a6138bd6f92ab159a456db0d5f8adf013c8d0f99fbe7c3ac194c9874049"
     }
   ],
   "public_patches": [

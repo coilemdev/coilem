@@ -251,7 +251,8 @@ def test_cogging_is_guarded_and_missing_or_changed_hashes_are_not_comparable(mon
     name = "backend/cogging.py"
     assert name in physics_sources(REPO_ROOT)
     assert hashes[name] == hashlib.sha256((REPO_ROOT / name).read_bytes()).hexdigest()
-    synthetic = {"physics_files": {**hashes, **solver}}
+    synthetic = {"physics_files": {**hashes, **solver},
+                 "environment": {"dependencies": record.installed_physics_dependencies()}}
     assert record.check_physics(synthetic)["status"] == "MATCH"
     missing = copy.deepcopy(synthetic)
     del missing["physics_files"][name]
@@ -363,3 +364,33 @@ def test_publication_check_and_shareable_report_use_one_set_of_path_rules() -> N
     assert redact_local_paths(f"see {MAC_HOME}/coilem-out/report.md now") == f"see {LOCAL_PATH_PLACEHOLDER} now"
     assert redact_local_paths(WINDOWS_HOME + "\\out\\a.json failed") == f"{LOCAL_PATH_PLACEHOLDER} failed"
     assert redact_local_paths("D:\\runs\\x\\a.json", known=["D:\\runs\\x"]) == f"{LOCAL_PATH_PLACEHOLDER}\\a.json"
+
+
+def test_physics_check_names_a_changed_or_unrecorded_mesher_version(monkeypatch) -> None:
+    published = read(RECORDS / "windows-x86_64.json")
+    measured = published["environment"]["dependencies"]
+    monkeypatch.setattr(record, "installed_physics_dependencies", lambda: {"gmsh": measured["gmsh"], "meshio": measured["meshio"]})
+    baseline = record.check_physics(published)
+    assert not any("record measured" in item or item.endswith(" version") for item in baseline["differs"] + baseline["unverified"])
+
+    monkeypatch.setattr(record, "installed_physics_dependencies", lambda: {"gmsh": "9.9.9", "meshio": measured["meshio"]})
+    bumped = record.check_physics(published)
+    assert f"gmsh 9.9.9 (record measured {measured['gmsh']})" in bumped["differs"] and bumped["status"] == "DIFFERS"
+
+    monkeypatch.setattr(record, "installed_physics_dependencies", lambda: {"gmsh": None, "meshio": measured["meshio"]})
+    assert "gmsh version" in record.check_physics(published)["unverified"]
+
+    undated = copy.deepcopy(published)
+    del undated["environment"]["dependencies"]["meshio"]
+    monkeypatch.setattr(record, "installed_physics_dependencies", lambda: dict(measured, gmsh=measured["gmsh"]))
+    assert "meshio version" in record.check_physics(undated)["unverified"]
+
+
+def test_the_lock_pins_are_read_per_physics_dependency() -> None:
+    from backend.benchmark_suite.physics import PHYSICS_DEPENDENCIES, pinned_dependencies
+
+    assert PHYSICS_DEPENDENCIES == ("gmsh", "meshio")
+    text = "# comment\nGmsh==4.15.2  # mesher\nmeshio==5.3.5; python_version < '3.15'\nmeshio==5.4.0; python_version >= '3.15'\nnumpy==2.4.6\n"
+    assert pinned_dependencies(text) == {"gmsh": ("4.15.2",), "meshio": ("5.3.5", "5.4.0")}
+    lock = pinned_dependencies((REPO_ROOT / "requirements.lock").read_text(encoding="utf-8"))
+    assert all(len(versions) == 1 for versions in lock.values())
