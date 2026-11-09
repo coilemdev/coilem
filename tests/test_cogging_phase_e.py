@@ -18,7 +18,7 @@ from backend.cogging import cogging_period, cogging_record
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "benchmarks/abcd-v1.7/benchmark_spec.json"
-BASE_SPEC = ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+BASE_SPEC = ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"  # the default suite: Newton requests since v0.5.6
 
 
 def test_phase_e_is_its_own_suite_and_1_9_is_the_default() -> None:
@@ -293,3 +293,11 @@ def test_retained_windows_waveforms_reproduce_the_original_outcomes_without_rewr
         outcomes[evaluation["status"]] += 1
     assert outcomes == report["normal_selected_reference_counts"] == {"PASS": 10, "YELLOW": 2}
     assert (report_path.read_bytes(), waves_path.read_bytes()) == original
+
+
+def test_phase_e_and_f_requests_use_newton_like_the_default_suite() -> None:
+    # v0.5.6 made Newton the default; E and F derive from protocol 1.9.0, so no request keeps Picard.
+    for suite in (SPEC, ROOT / "benchmarks/abcd-v1.8/benchmark_spec.json"):
+        for case in load_suite(suite)["cases"]:
+            fixture = json.loads((ROOT / case["jobs"][0]["fixture"]).read_text(encoding="utf-8"))
+            assert fixture["solve_params"]["nonlinear_solver"] == "newton", case["id"]

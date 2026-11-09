@@ -25,22 +25,24 @@ the model is set up. Expect them to take longer than the other nine together.
 ## Cases
 
 The requests are the 10 fixtures in `benchmarks/abcd-v1.8/fixtures/`. Each is
-the registered Phase A request `spm_8p12s_concentrated__baseline` with an
-outer-rotor SPM motor and the case's current; the
+the registered Phase A request `spm_8p12s_concentrated__baseline` of protocol
+1.9.0 with an outer-rotor SPM motor and the case's current; the
 [suite README](../benchmarks/abcd-v1.8/README.md#cases) lists the motors.
+
+**Newton since v0.5.6.** These requests now use Newton, coilEM's default nonlinear method. All ten were regenerated from protocol 1.9.0's Phase A template on 2026-11-09, so only `solve_params.nonlinear_solver` changed, from `picard` to `newton`, and with it the hashes below. FEMM never reads that field. A FEMM record collected against the earlier Picard request hash is still valid for the Newton request, and is registered through a hash-bound solve-option bridge (`reference_compatibility.solve_option_change`, as protocol 1.9.0 does) rather than collected again.
 
 | Case | Fixture SHA-256 | Request `input_sha256` |
 | --- | --- | --- |
-| `spm_outer_14p12s_drone__baseline` | `d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd` | `98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796` |
-| `spm_outer_14p12s_drone__high_current` | `e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a` | `da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e` |
-| `spm_outer_14p12s_drone__tight_airgap` | `45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c` | `573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0` |
-| `spm_outer_14p12s_drone__angle30` | `8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6` | `1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f` |
-| `spm_outer_14p12s_drone_noload__baseline` | `bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b` | `527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e` |
-| `spm_outer_12p9s_micro__baseline` | `16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60` | `1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e` |
-| `spm_outer_12p9s_micro_noload__baseline` | `1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166` | `33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25` |
-| `spm_outer_10p12s_single_layer__baseline` | `37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5` | `0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13` |
-| `spm_outer_28p24s_multirotor__baseline` | `fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021` | `dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633` |
-| `spm_outer_30p27s_hub__baseline` | `a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5` | `fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5` |
+| `spm_outer_14p12s_drone__baseline` | `33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b` | `42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d` |
+| `spm_outer_14p12s_drone__high_current` | `34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435` | `eef1807fdc9e3ada58587a88a4275c1fdeb31c9f06bec67030bad564fe8bff8b` |
+| `spm_outer_14p12s_drone__tight_airgap` | `86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d` | `fde301b1d42714255f674e643027ff331fc7084a7db1f1a7a703a5907bc2888e` |
+| `spm_outer_14p12s_drone__angle30` | `db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e` | `b03bf9f6e5cf23b0611eeb55cde6862e343006a63b926875129423241e4abd96` |
+| `spm_outer_14p12s_drone_noload__baseline` | `207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed` | `547ebf9bcb3ea42953e617a4534eae707cc998873397d666751ffb3886d505e3` |
+| `spm_outer_12p9s_micro__baseline` | `eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46` | `e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25` |
+| `spm_outer_12p9s_micro_noload__baseline` | `baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147` | `a357dd0c03e7b5689c2c76122e2e9e0b8c60c4d8f5c6ebf4b4456e325098f5e5` |
+| `spm_outer_10p12s_single_layer__baseline` | `a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07` | `ac93f5d6954d818321f20e3781a0dc3165e7d2c977938c18feab530bf707d9db` |
+| `spm_outer_28p24s_multirotor__baseline` | `b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70` | `aa309ebcee4b48306c085fc794add7d04b9be06e80b39904e3f7e2de0dd18200` |
+| `spm_outer_30p27s_hub__baseline` | `0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983` | `30a730682f9d6f5791174c1a63334728cd6e1a49f08111cbb49af39782d7d457` |
 
 Each record's `input_sha256` binds it to its request: the SHA-256 of the
 fixture as canonical JSON (`backend.benchmark_suite.contract.canonical`).

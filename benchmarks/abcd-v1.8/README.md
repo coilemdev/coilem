@@ -3,8 +3,8 @@
 **Status: proposed, not registered.** Phase F's requests and gates are fixed
 here before any comparison solve. It has no FEMM reference bundle yet, so it
 qualifies nothing. Until it does, the app reports every outer-rotor design as
-experimental. Harness **1.10.0** can run and grade it, and protocol **1.6.0**
-stays the default suite; `coilem benchmark` runs phases A–D only.
+experimental. Harness **1.10.0** can run and grade it, and protocol **1.9.0**
+is the default suite; `coilem benchmark` runs phases A–D only.
 
 Phase F is its own suite, `benchmark_spec.json` in this folder, because a
 reference bundle carries one reference commit: its FEMM records come from a new
@@ -13,7 +13,8 @@ collection, not from the reviewed protocol 1.6.0 bundle.
 ## Cases
 
 Ten requests over five outer-rotor SPM motors. Each request is the registered
-Phase A request `spm_8p12s_concentrated__baseline` with two changes: its motor is
+Phase A request `spm_8p12s_concentrated__baseline` of protocol 1.9.0 (Newton since
+v0.5.6) with two changes: its motor is
 replaced by an outer-rotor design, and its current is set per case. The solve
 settings, materials (M350-50A, N42), 3000 rpm and the 7.5° electrical grid over
 a full electrical cycle stay Phase A's. `tools/make_outrunner_phase_f.py` writes

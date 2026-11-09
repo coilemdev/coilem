@@ -945,13 +945,13 @@
     },
     {
       "path": "benchmarks/abcd-v1.7/README.md",
-      "bytes": 5252,
-      "sha256": "b6e872024b14d2319ce1050ac97b6b217e8eb8375f33fa1568696b8f38008715"
+      "bytes": 5271,
+      "sha256": "7878ff86573a003538c442d51c8bf9cbad24af2c6cf4a743b3c1be5ca4474648"
     },
     {
       "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
       "bytes": 12333,
-      "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843"
+      "sha256": "a0601a6f8e362a60c71f548daaca953003ea694ee4a9310fa2be79bdaf5e57fe"
     },
     {
       "path": "benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
@@ -981,27 +981,27 @@
     {
       "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
       "bytes": 2501,
-      "sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1"
+      "sha256": "9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a"
     },
     {
       "path": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
       "bytes": 2501,
-      "sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045"
+      "sha256": "5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374"
     },
     {
       "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
       "bytes": 2504,
-      "sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61"
+      "sha256": "e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7"
     },
     {
       "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
       "bytes": 2504,
-      "sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701"
+      "sha256": "94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273"
     },
     {
       "path": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
       "bytes": 2504,
-      "sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c"
+      "sha256": "a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0"
     },
     {
       "path": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
@@ -5925,8 +5925,8 @@
     },
     {
       "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
-      "bytes": 8339,
-      "sha256": "c2e75d9ddc8ec9f010485f169c7ce954df1b8476d280d4323bc2b44887e3f0b3"
+      "bytes": 8396,
+      "sha256": "20db83b996bcc7c4fa5e20afa6d026d7ccfd73b08f37f8442c417cd3b1ce61a7"
     },
     {
       "path": "docs/COGGING_CONVERGENCE.json",
@@ -5940,8 +5940,8 @@
     },
     {
       "path": "docs/COGGING_FEMM_REQUEST.md",
-      "bytes": 9920,
-      "sha256": "248919ee5865f404fa2fa176edd6c525171cbcdc41576d7fdfb333dc85165fc7"
+      "bytes": 10500,
+      "sha256": "9a7310eb8a639f663c929a79efafeaebef7c90d41a40f93b45b0d37d694950f3"
     },
     {
       "path": "docs/ELMER.md",
@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_cogging_phase_e.py",
-      "bytes": 16052,
-      "sha256": "172f289e501f1ab37a9491b4b56b95167b346ee64a2febc511bf4752f602e924"
+      "bytes": 16593,
+      "sha256": "e7594f3284150ccf93365c63619f1326223f48b1fd0e782d9d283ed76e62d67f"
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
@@ -12965,63 +12965,63 @@
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
-      "bytes": 6169,
-      "sha256": "9c14aa209f8809e256c1792378e84453b5f89c7ba8713c9db7bf944427d676d9"
+      "bytes": 6206,
+      "sha256": "cc1b4a8e4d0d91b342ba6fb2086d5eff302e972789a5ad9ab633d2314a7b30aa"
     },
     {
       "path": "benchmarks/abcd-v1.8/benchmark_spec.json",
       "bytes": 6310,
-      "sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475"
+      "sha256": "d04c9588e07715d67e8f960014ef5b4fe921db8d55aa9b9a44fb1ba2b79195bc"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json",
       "bytes": 2533,
-      "sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5"
+      "sha256": "a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json",
       "bytes": 2529,
-      "sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60"
+      "sha256": "eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json",
       "bytes": 2529,
-      "sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166"
+      "sha256": "baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json",
       "bytes": 2534,
-      "sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6"
+      "sha256": "db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json",
       "bytes": 2533,
-      "sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd"
+      "sha256": "33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json",
       "bytes": 2533,
-      "sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a"
+      "sha256": "34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json",
       "bytes": 2533,
-      "sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c"
+      "sha256": "86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json",
       "bytes": 2532,
-      "sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b"
+      "sha256": "207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json",
       "bytes": 2533,
-      "sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021"
+      "sha256": "b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70"
     },
     {
       "path": "benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json",
       "bytes": 2536,
-      "sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5"
+      "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
     },
     {
       "path": "docs/OUTRUNNER.md",
@@ -13030,8 +13030,8 @@
     },
     {
       "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
-      "bytes": 15559,
-      "sha256": "73dcd2203f5abc5cf1141580f3399e2caa61e4d02a88acf88201098bcc46968a"
+      "bytes": 16146,
+      "sha256": "0b0d31b79861b6e97001aaef0959d3762c2f3c85e8938413f495f705a5b002fa"
     },
     {
       "path": "frontend/scripts/test-coil-wiring.mjs",
@@ -13130,8 +13130,8 @@
     },
     {
       "path": "tests/test_outrunner_phase_f.py",
-      "bytes": 6313,
-      "sha256": "9dc017b61a06f86bc1580bb8a6b90a093c73ae256b813a5dcdfbc1a6393a668b"
+      "bytes": 6364,
+      "sha256": "ac5362d9c2b7a915367c9f76d410bd4002317330a8eac1eb78d22225a040f5c4"
     },
     {
       "path": "tests/test_rotor_layout.py",
@@ -13145,8 +13145,8 @@
     },
     {
       "path": "tools/make_outrunner_phase_f.py",
-      "bytes": 8404,
-      "sha256": "c9a0a33e2b4fb07abf41a43717e51d73de8c4b84fc50960920aebebd36f00f8f"
+      "bytes": 8466,
+      "sha256": "88f4a8a1cca521e7421873ef2cc56ae6e16600c0041824e061924899bf43d898"
     },
     {
       "path": "frontend/scripts/test-convergence-overview.mjs",

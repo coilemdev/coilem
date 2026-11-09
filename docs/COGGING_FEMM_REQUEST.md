@@ -22,7 +22,7 @@ There are two checkpoints where you stop and wait for the owner:
 ## Cases
 
 The requests are the 12 fixtures in `benchmarks/abcd-v1.7/fixtures/`. Each is
-a registered protocol 1.6.0 request with `solve_options.cogging_torque` and
+a registered protocol 1.9.0 request with `solve_options.cogging_torque` and
 `solve_params.corner_refinement` set to `true`. The second only refines
 coilEM's own mesh; the geometry to model is the fixture's. Cogging has no
 current, so model every winding region with zero current.
@@ -49,13 +49,15 @@ fixture as canonical JSON (`backend.benchmark_suite.contract.canonical`).
 `benchmark_spec.json` holds the same numbers; check each fixture file's
 SHA-256 first, and if either differs, stop and report.
 
+**Newton since v0.5.6.** These requests now use Newton, coilEM's default nonlinear method. The five requests derived from Phase A were re-derived from protocol 1.9.0 on 2026-11-09, so only `solve_params.nonlinear_solver` changed, from `picard` to `newton`, and with it the hashes below. FEMM never reads that field. A FEMM record collected against the earlier Picard request hash is still valid for the Newton request, and is registered through a hash-bound solve-option bridge (`reference_compatibility.solve_option_change`, as protocol 1.9.0 does) rather than collected again.
+
 | Case | Fixture SHA-256 | Request `input_sha256` |
 | --- | --- | --- |
-| `spm_4p12s_simple__baseline__cogging` | `0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1` | `8839611fad28d21d9b088c0450e8272e9841fb2349f239cba2656f20bd7aa293` |
-| `spm_4p12s_simple__tight_airgap__cogging` | `7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045` | `3c1b57c0bb3b063419cc0944252d0d2c19efba99b24e2f0175c0139f63318a29` |
-| `spm_8p12s_concentrated__baseline__cogging` | `228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61` | `345b5167e28a6be168cb1064089aa00b6055f27a040307bbf54bfca853f42691` |
-| `spm_8p12s_concentrated__tight_airgap__cogging` | `4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701` | `6327927a94e5d3381b69d2975019161a9eebe7944b6f0514bb29cc5c751fb7c4` |
-| `spm_8p12s_example_shoed__cogging` | `183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c` | `9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d` |
+| `spm_4p12s_simple__baseline__cogging` | `9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a` | `cad8715172ea72b745d7f1fe1eda5d9f02b587d05d1c5336f7506240784a4da6` |
+| `spm_4p12s_simple__tight_airgap__cogging` | `5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374` | `73ba9bc146c0f6309c23343f492dbd5d583a030709a851b0e76701289e113720` |
+| `spm_8p12s_concentrated__baseline__cogging` | `e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7` | `aea630d691e746e2ed4b1c7b02742075473bf6704541130690462e466745eacd` |
+| `spm_8p12s_concentrated__tight_airgap__cogging` | `94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273` | `5fc00dcd11405da8d264dd8a1042e43ced646e585e7f924500c534235b25ed2f` |
+| `spm_8p12s_example_shoed__cogging` | `a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0` | `326b77014731664da3c2716344e94c34278062cadee414220b44e1155e6427fb` |
 | `ipm_flat_8p12s_fsae_contract__cogging` | `ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a` | `bc4148dc2f8a60bf0fab4033d050883a4bc5718662ad1fb93ef3bd567c5efac4` |
 | `ipm_flat_8p12s_fsae_angled_pocket_contract__cogging` | `9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c` | `4f4686dcf06b28586ff750d384bf6f64d8d5cca83e8d110b4366f5198f188d96` |
 | `ipm_flat_12s10p_fscw_contract__cogging` | `b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda` | `727e2f8a47115811f9a96a63ddd3fea44439af4ed134d4588c28657b0f6c5ebb` |
