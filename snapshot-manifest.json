@@ -315,8 +315,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 30370,
-      "sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167"
+      "bytes": 37312,
+      "sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -14017,6 +14017,11 @@
       "path": "docs/benchmarks/parallel-fallback-windows-20261108.json",
       "bytes": 31742,
       "sha256": "a763cbb9d8178e2af7b26e7113f64d650080792bf41863482495843e03792b86"
+    },
+    {
+      "path": "tests/test_two_layer_solution_reuse.py",
+      "bytes": 13716,
+      "sha256": "d0ab73da5ca5f777743a052a78bcd7182fedffda1e1c148852f6aa4b7711f663"
     }
   ],
   "public_patches": [
@@ -35138,6 +35143,18 @@
       "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
       "source_sha256": "054d746cc0f4f729ea382ddee40ffae438a4460d229054203781bd5e32865c26",
+      "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
+    },
+    {
+      "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+      "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
+    },
+    {
+      "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+      "path": "tests/test_two_layer_solution_reuse.py",
+      "source_sha256": null,
       "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
     }
   ]
