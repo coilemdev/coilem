@@ -7705,8 +7705,8 @@
     },
     {
       "path": "solvers/magneto2d/src/materials.rs",
-      "bytes": 32184,
-      "sha256": "61b5ee66e17f581b5d930d29eb923ef189a80f8698d0f5f915bb9ded9edb40a1"
+      "bytes": 33005,
+      "sha256": "bd0ea38b6bd405657ace25496711b59cd447e3e5e4fed47b9e0014b0ce0a0699"
     },
     {
       "path": "solvers/magneto2d/src/mesh.rs",
@@ -7810,8 +7810,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
-      "bytes": 12698,
-      "sha256": "ea94c3e616ccfbeb8237da97a166265d8692b38223a45977e98aa90d2d5e345c"
+      "bytes": 14506,
+      "sha256": "e2b82d01dbe57a3d4b45f2df3912648ffe42d400e8683ec7941cd16d3dab7460"
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
