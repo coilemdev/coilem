@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 3197,
-      "sha256": "c20470ec97c2abbdae35d7f1030e65a2acafa04db3dff312663687e3a9c29000"
+      "bytes": 4876,
+      "sha256": "1341722e70aa18a353809c5483787f2b0f50c21ab64115af48e9a0fe056f1488"
     },
     {
       "path": "README.md",
-      "bytes": 15072,
-      "sha256": "128209f5db0bed79cee8bac228d2a1785bc8bd46df2f36a7b1626c716cd8ef27"
+      "bytes": 15113,
+      "sha256": "a8863667a27c4fdae5cae48efcb38048cf3daf1828b5f43ad51b32a32a6a4441"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 18734,
-      "sha256": "64ac873570b8bee38eff0ccdac6aef72478a3e09e5ca55588d3ce86cf500d784"
+      "bytes": 20692,
+      "sha256": "6f49daa42f821864a6bbac7185968dc425ac3b7cf3a678f83abd2ae947e56eff"
     },
     {
       "path": "SECURITY.md",
@@ -96,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "5e92ec1da0ede4b0945e0892a694329c36cbe6782a45626840edbe66c17784d8"
+      "sha256": "2dd601c2aad66d6ed16101e912cd7a8ae7521e94da81d1196a5617fddf26f403"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -6416,12 +6416,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "081787b54e9c7e91c148040903ee65ca3542f2125b3f56484abe3a3eebf1a1c6"
+      "sha256": "3d96dff7c24516fe809ee30d8051df2b94ce32f553b16d4352c89be85fdfe889"
     },
     {
       "path": "frontend/package.json",
       "bytes": 3196,
-      "sha256": "e355bbc0f4306c60bc76a22d58ada19ed7bfcf8a62df50ea593d0af16ca36ec2"
+      "sha256": "cddedb500ce6553ac40c241f6afffa80dabe1596931e1b772b4bc7a321c15c27"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7181,7 +7181,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 15806,
-      "sha256": "2cf9ce20f4fd9c758164fa91ab28ee9a99a880ba7aa8b97f232265f921a2cd96"
+      "sha256": "34d5d58a159ade2728b546500a209c84db3ec849ed7b04cfffc8a9a13f3afd2e"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -35188,6 +35188,48 @@
       "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.json",
       "source_sha256": null,
       "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "c20470ec97c2abbdae35d7f1030e65a2acafa04db3dff312663687e3a9c29000",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "README.md",
+      "source_sha256": "128209f5db0bed79cee8bac228d2a1785bc8bd46df2f36a7b1626c716cd8ef27",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "64ac873570b8bee38eff0ccdac6aef72478a3e09e5ca55588d3ce86cf500d784",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "backend/__init__.py",
+      "source_sha256": "5e92ec1da0ede4b0945e0892a694329c36cbe6782a45626840edbe66c17784d8",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "081787b54e9c7e91c148040903ee65ca3542f2125b3f56484abe3a3eebf1a1c6",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "frontend/package.json",
+      "source_sha256": "e355bbc0f4306c60bc76a22d58ada19ed7bfcf8a62df50ea593d0af16ca36ec2",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
+    },
+    {
+      "base_commit": "083a1adc3ed3db018bce5e7d580a7f8ba3991926",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "2cf9ce20f4fd9c758164fa91ab28ee9a99a880ba7aa8b97f232265f921a2cd96",
+      "reason": "Prepare application0.5.6 before the final post-two-layer qualification run; retain Magneto2D0.5.0 and mark qualification/publication pending."
     }
   ]
 }

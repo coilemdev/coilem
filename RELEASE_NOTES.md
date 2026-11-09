@@ -1,3 +1,35 @@
+# coilEM 0.5.6 Developer Preview — release candidate
+
+Prepared November 9, 2026. This candidate identifies as coilEM 0.5.6 with
+Magneto2D 0.5.0. Final Windows/macOS A-D and Prius qualification is being
+collected from the frozen post-version-bump release candidate. Qualification,
+release tagging and package publication are pending; see
+[release status](PUBLICATION_STATUS.md) and [the release PR](https://github.com/coilemdev/coilem/pull/232).
+
+- **Newton by default.** The app and the registered A-D requests use Newton.
+  Proposed E/F requests explicitly use Newton as well. Frozen FEMM inputs,
+  comparison gates and existing review requirements are retained.
+- **Less solve overhead.** Mesh work and field processing stay in the workers;
+  field processing overlaps native angle solves, native I/O is leaner, and
+  solution-reuse fallback solves remain parallel.
+- **Two-layer solution reuse.** Eligible conformal two-layer slot-pitch
+  rotations reuse physical-layer contributions. Ambiguous or incompatible
+  cases continue through real native solves under the existing excitation gate.
+- **Playback readiness.** Automatic field playback waits for saved-run images
+  to be drawn; image generation stays deferred during solving.
+- **Simpler design toolbar.** The regions and build-time readouts are removed.
+
+The [Windows FEMM/Native report](docs/benchmarks/windows-femm-release-v056-20261109.md)
+retains the earlier `8b6b394`/`11aa06b` baseline results, including exact
+reproduction of all 58 fresh FEMM case/control results. It predates the
+two-layer integration and this application version bump. The final candidate
+gets its own native measurements and qualification record; historical field
+commits are not relabeled.
+
+Outer rotors and cogging remain experimental. Their proposed suites do not
+extend the registered A-D/Prius release scope; inherited review findings remain
+visible. No hardware or broader performance qualification is claimed.
+
 # coilEM 0.5.5 Developer Preview — outer-rotor motors
 
 Prepared November 8, 2026. The [release qualification gate](benchmarks/v0.5.5/release-qualification.json)

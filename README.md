@@ -7,17 +7,18 @@ Everything runs on your computer.
 
 Website: [coilem.com](https://coilem.com)
 
-The source identifies as **coilEM 0.5.5 Developer Preview**, with
-**Magneto2D 0.5.0**, the solver for the coming 0.5.6 release; it has not been
-qualified or released yet. Version 0.5.5, released with Magneto2D 0.4.0, adds
+The source identifies as a **coilEM 0.5.6 Developer Preview** candidate, with
+**Magneto2D 0.5.0**. Final qualification of the post-version-bump candidate is
+pending; this version has not been released. Version 0.5.5, released with
+Magneto2D 0.4.0, introduced
 outer-rotor (outrunner) SPM motors,
-which are experimental, and passes the registered A-D release qualification
+which are experimental, and passed the registered A-D release qualification
 gate with source-matched Windows/macOS and Prius software evidence. See
 [release status](PUBLICATION_STATUS.md) for packaging and publication and the
 [release notes](RELEASE_NOTES.md) for its scope.
-The [accepted qualification records](benchmarks/qualification-34de0f4ca160/owner-decisions.json)
+The [v0.5.5 accepted qualification records](benchmarks/qualification-34de0f4ca160/owner-decisions.json)
 retain measured commit `34de0f4`; all 69 guarded physics hashes match the
-versioned release code. Both platforms record 46 A–D PASS and 336/336 gates.
+v0.5.5 release code. Both platforms record 46 A–D PASS and 336/336 gates.
 The owner accepted reuse of the reviewed protocol 1.6 FEMM references, backed
 by a fresh Windows FEMM collection of all 46 cases, and the same near-zero
 macOS Prius observation difference accepted for 0.5.1. A first Windows run of
@@ -236,7 +237,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The source application is **coilEM 0.5.5** and the solver is **Magneto2D 0.5.0**.
+The source application is **coilEM 0.5.6** and the solver is **Magneto2D 0.5.0**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

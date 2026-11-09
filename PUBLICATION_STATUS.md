@@ -1,5 +1,36 @@
 # Release status
 
+Prepared November 9, 2026: **coilEM 0.5.6 Developer Preview candidate**, with
+**Magneto2D 0.5.0**. PR #229's two-layer solution reuse is integrated into
+`release/v0.5.6`. The application version is bumped before the final run so
+its measurements identify the actual versioned release candidate.
+
+## 0.5.6 qualification in progress
+
+Final registered A-D (protocol 1.9.0) and complete Prius software qualification
+must measure the frozen candidate on Windows and macOS. A separate Windows
+Phase F diagnostic measures all ten Newton outer-rotor cases against the sealed
+fresh FEMM references. The earlier [Windows report](docs/benchmarks/windows-femm-release-v056-20261109.md)
+retains its actual pre-two-layer `8b6b394`/`11aa06b` identities and timing scope.
+
+The existing platform records and accepted owner decisions below belong to
+previous releases. New records require complete fields, matching source and
+request hashes, unchanged gates and any required reference/numerical review.
+The final 0.5.6 qualification assessment will be added after these checks pass.
+
+Outer rotors and cogging remain experimental. Phase F and Phase E are proposed
+suites, and inherited LRK and cogging findings remain retained. Their diagnostics
+do not expand the registered A-D/Prius acceptance scope.
+
+## 0.5.6 publication pending
+
+[PR #232](https://github.com/coilemdev/coilem/pull/232) integrates the release
+branch into `main` after qualification and review. Wheel acceptance and TestPyPI
+rehearsal precede the version tag and protected PyPI publishing approval. No
+0.5.6 release tag or package publication has been performed by this preparation.
+
+## Historical v0.5.5 status
+
 Prepared November 8, 2026: **coilEM 0.5.5 Developer Preview**, with
 **Magneto2D 0.4.0**, passes the [release qualification gate](benchmarks/v0.5.5/release-qualification.json)
 for registered A-D parity and Prius software checks. The
@@ -8,7 +39,7 @@ experimental outer-rotor motors; the
 [GitHub releases](https://github.com/coilemdev/coilem/releases) record the
 published packages.
 
-## Accepted scope
+### v0.5.5 accepted scope
 
 The [owner's explicit decisions](benchmarks/qualification-34de0f4ca160/owner-decisions.json)
 accept reuse of the unchanged reviewed protocol 1.6 FEMM references and the
@@ -46,7 +77,7 @@ remain disclosed in the 0.5.1 [Windows packet](benchmarks/windows-v051-20261105-
 Phase E acceptance/registration is deferred by the owner and is not a release
 gate for this approved scope.
 
-## Packaging and publication
+### v0.5.5 packaging and publication
 
 The versioned code candidate receives its own CI on the release pull request
 (#218), including four-platform wheel builds and installed-package acceptance
