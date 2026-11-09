@@ -180,6 +180,8 @@ def classify_qualification(config: MotorConfig) -> Qualification:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."
     if status == "qualified" and config.solve_params is not None and config.solve_params.mesh_build == "fast":
         status, reason = "experimental", "Fast mesh build: the benchmark measured meshes built with Precise node placement."
+    if status == "qualified" and config.solve_params is not None and config.solve_params.symmetry != "full":
+        status, reason = "experimental", "Sector solve: the benchmark measured full-circle solves."
     if status == "qualified" and not evidence_matches_runtime():
         status, reason = "experimental", (
             "This build's physics do not match the measured benchmark basis. "

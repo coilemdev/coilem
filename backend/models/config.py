@@ -421,6 +421,15 @@ class SolveParams(BaseModel):
             "element counts within 1%, moving results at mesh-noise level."
         ),
     )
+    symmetry: Literal["auto", "full"] = Field(
+        default="full",
+        description=(
+            "How much of the motor is meshed and solved. 'auto' solves one "
+            "repeating sector when the geometry and winding repeat around the "
+            "circle, and the full circle otherwise; 'full' always solves the "
+            "full circle."
+        ),
+    )
     slot_sidewall_refinement: bool = Field(
         default=False,
         description=(

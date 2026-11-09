@@ -38,6 +38,7 @@ fn simple_mesh(region: Region) -> TriMesh {
             stator_slot_outer_radius_mm: 0.0,
             stator_outer_radius_mm: 0.0,
             outer_rotor: None,
+            sector: None,
         },
     }
 }
@@ -167,6 +168,7 @@ fn annulus_airgap_mesh(
             stator_slot_outer_radius_mm: outer_radius_m * 1e3,
             stator_outer_radius_mm: outer_radius_m * 1e3,
             outer_rotor: None,
+            sector: None,
         },
     }
 }
@@ -285,6 +287,7 @@ fn filtered_nodal_b_preserves_material_boundary_discontinuity() {
             stator_slot_outer_radius_mm: 0.0,
             stator_outer_radius_mm: 0.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     let fields = vec![

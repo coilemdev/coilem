@@ -231,6 +231,49 @@ def _slot_table_from_contract(
     return table
 
 
+_FLIPPED_DIRECTION = {"in": "out", "out": "in"}
+
+
+def _sector_fold_slot(
+    slot: int,
+    modeled_slots: list[int],
+    slot_count: int,
+) -> tuple[int, int] | None:
+    """The modelled slot a whole number of sectors from ``slot``, and how many sectors away."""
+
+    per_sector = len(modeled_slots)
+    if per_sector == 0 or slot_count % per_sector:
+        return None
+    for modeled in modeled_slots:
+        offset = (slot - modeled) % slot_count
+        if offset % per_sector == 0:
+            return modeled, offset // per_sector
+    return None
+
+
+def _sector_slot_label(
+    slot_table: dict[tuple[int, int | None], tuple[str, str]],
+    modeled_slots: list[int],
+    slot: int,
+    layer: int | None,
+    slot_count: int,
+    sector_info: dict[str, Any],
+) -> tuple[str, str] | None:
+    """Phase and direction of a slot outside a sector mesh, from the slot it repeats."""
+
+    folded = _sector_fold_slot(slot, modeled_slots, slot_count)
+    if folded is None:
+        return None
+    modeled, sectors_away = folded
+    label = slot_table.get((modeled, layer)) or slot_table.get((modeled, None))
+    if label is None:
+        return None
+    phase, direction = label
+    if bool(sector_info.get("anti_periodic")) and sectors_away % 2:
+        direction = _FLIPPED_DIRECTION.get(direction, direction)
+    return phase, direction
+
+
 def _slot_index_angular_direction(
     artifact: dict[str, Any],
     slot_indices: list[int],
@@ -336,6 +379,9 @@ def rotate_solve_mesh_artifact(
         else 1
     )
     index_shift = direction_sign * n_slots
+    sector_info = (rotated["mesh"].get("info") or {}).get("sector")
+    if not isinstance(sector_info, dict):
+        sector_info = None
 
     elec_deg = current_angle_elec_deg_for_mech(target_rotor_angle_mech_deg)
     ampere_turns = phase_ampere_turns(elec_deg)
@@ -356,6 +402,12 @@ def rotate_solve_mesh_artifact(
             mapped = slot_table.get((mapped_idx, region_layer)) or slot_table.get(
                 (mapped_idx, None)
             )
+            if mapped is None and sector_info is not None:
+                # A sector mesh names only its own slots; the slot it turns
+                # onto is one of them a whole number of sectors away.
+                mapped = _sector_slot_label(
+                    slot_table, slot_indices, mapped_idx, region_layer, slot_count, sector_info
+                )
             if mapped is None:
                 raise ValueError(
                     "slot congruence remap missing winding metadata for "
@@ -402,6 +454,10 @@ def rotate_solve_mesh_artifact(
     mesh_info = rotated["mesh"].get("info")
     if isinstance(mesh_info, dict) and "rotor_angle_mech_deg" in mesh_info:
         mesh_info["rotor_angle_mech_deg"] = float(target_rotor_angle_mech_deg)
+    if sector_info is not None:
+        # The whole wedge turned: both of its cuts moved with it.
+        sector_info["stator_start_deg"] = float(sector_info["stator_start_deg"]) + delta_deg
+        sector_info["rotor_start_deg"] = float(sector_info["rotor_start_deg"]) + delta_deg
 
     provenance = physics_contract.get("provenance")
     if isinstance(provenance, dict):
@@ -550,7 +606,9 @@ def _contributions_by_global_slot(
     slot_count: int,
     *,
     what: str,
+    sector: bool = False,
 ) -> dict[int, dict[str, Any]]:
+    """``sector`` accepts the slots of one sector instead of every slot."""
     by_slot: dict[int, dict[str, Any]] = {}
     for entry in contributions:
         idx = int(entry["slot_index_global"])
@@ -560,7 +618,7 @@ def _contributions_by_global_slot(
                 f"slot {idx} appears more than once (sector model?)"
             )
         by_slot[idx] = entry
-    if sorted(by_slot) != list(range(slot_count)):
+    if sorted(by_slot) != list(range(slot_count)) and not sector:
         raise ValueError(
             f"solution reuse requires {what} contributions covering all "
             f"{slot_count} slots; got slots {sorted(by_slot)}"
@@ -579,17 +637,18 @@ def _phase_currents_from_angle(amplitude_a: float, angle_deg: float) -> list[flo
 
 
 def _flux_contributions_by_side(
-    contributions: list[dict[str, Any]], slot_count: int,
+    contributions: list[dict[str, Any]], slot_count: int, *, sector: bool = False,
 ) -> tuple[dict[tuple[int, int], dict[str, Any]], tuple[int, ...]]:
     """Index legacy slots or explicitly identified conformal winding layers.
 
     Old reports have one flux row per slot. Multiple rows require native
     physical-layer evidence; list order and winding labels are not identities.
+    ``sector`` accepts the slots of one sector instead of every slot.
     """
-    if len(contributions) == slot_count and all(
+    if (len(contributions) == slot_count or sector) and all(
         isinstance(entry, dict) and "slot_layer" not in entry and "turn_fraction" not in entry for entry in contributions
     ):
-        slots = _contributions_by_global_slot(contributions, slot_count, what="flux-linkage")
+        slots = _contributions_by_global_slot(contributions, slot_count, what="flux-linkage", sector=sector)
         return {(slot, 0): entry for slot, entry in slots.items()}, (0,)
 
     by_side: dict[tuple[int, int], dict[str, Any]] = {}
@@ -618,10 +677,11 @@ def _flux_contributions_by_side(
         if entry["slot_area_m2"] <= 0:
             raise ValueError("multi-side solution reuse requires positive physical-layer areas")
         by_side[key] = entry
-    expected = {(slot, layer) for slot in range(slot_count) for layer in (1, 2)}
+    covered_slots = sorted({slot for slot, _ in by_side}) if sector else list(range(slot_count))
+    expected = {(slot, layer) for slot in covered_slots for layer in (1, 2)}
     if by_side.keys() != expected:
         raise ValueError("multi-side solution reuse requires complete two-layer coverage of every slot")
-    for slot in range(slot_count):
+    for slot in covered_slots:
         if not math.isclose(sum(by_side[slot, layer]["turn_fraction"] for layer in (1, 2)), 1.0, rel_tol=1e-12):
             raise ValueError("multi-side solution reuse requires a complete turn fraction in every slot")
     return by_side, (1, 2)
@@ -675,7 +735,42 @@ def derive_congruent_solve_report(
         raise ValueError(
             "solution reuse requires slot_flux_linkage_contributions in the base report"
         )
-    flux_by_side, layers = _flux_contributions_by_side(flux_contributions, slot_count)
+    sector_info = (report.get("mesh_info") or {}).get("sector")
+    if not isinstance(sector_info, dict):
+        sector_info = None
+    flux_by_side, layers = _flux_contributions_by_side(
+        flux_contributions, slot_count, sector=sector_info is not None
+    )
+    modeled_slots = sorted({slot for slot, _ in flux_by_side})
+    if sector_info is not None and _sector_fold_slot(modeled_slots[0], modeled_slots, slot_count) is None:
+        raise ValueError("solution reuse requires a whole number of sector slots")
+
+    def relabelled(by_key: dict, target: int, key_of) -> tuple[dict[str, Any], bool]:
+        """The label row for slot ``target`` and whether its direction flips.
+
+        A sector report labels only its own slots; a slot the rotor's turn
+        brings in takes the label of the slot it repeats, with the direction
+        flipped when an anti-periodic sector is an odd number of sectors away.
+        """
+        row = by_key.get(key_of(target))
+        if row is not None or sector_info is None:
+            if row is None:
+                raise ValueError(f"solution reuse has no winding label for slot {target}")
+            return row, False
+        folded = _sector_fold_slot(target, modeled_slots, slot_count)
+        if folded is None or key_of(folded[0]) not in by_key:
+            raise ValueError(f"solution reuse has no winding label for slot {target}")
+        return by_key[key_of(folded[0])], bool(sector_info.get("anti_periodic")) and folded[1] % 2 == 1
+
+    def with_label(label: dict[str, Any], target: int, flipped: bool) -> dict[str, Any]:
+        entry = dict(label)
+        if sector_info is not None:
+            entry["slot_index_global"] = target
+            if "center_angle_mech_deg" in entry:
+                entry["center_angle_mech_deg"] = target * 360.0 / slot_count
+            if flipped:
+                entry["direction"] = _FLIPPED_DIRECTION[str(entry["direction"])]
+        return entry
     if layers != (0,):
         # Complete slot/layer rows only establish a full-machine permutation.
         # Retain fallback for incompatible coefficients or excitation metadata.
@@ -702,7 +797,7 @@ def derive_congruent_solve_report(
             raise ValueError("multi-side solution reuse requires the reported sinusoidal phase excitation")
         source_flux = [0.0, 0.0, 0.0]
         terminal_scale = None
-        for slot in range(slot_count):
+        for slot in modeled_slots:
             for layer in layers:
                 row = flux_by_side[slot, layer]
                 effective = row["az_effective_wb_per_m"]
@@ -727,14 +822,16 @@ def derive_congruent_solve_report(
                 raise ValueError("multi-side solution reuse requires complete phase-flux contributions")
     new_flux_contributions: list[dict[str, Any]] = []
     phase_flux = [0.0, 0.0, 0.0]
-    for target in range(slot_count):
+    # A full circle keeps its slots; a sector's slots move with the wedge.
+    targets = [(slot + shift) % slot_count for slot in modeled_slots] if sector_info is not None else modeled_slots
+    for target in targets:
         for layer in layers:
-            label = flux_by_side[target, layer]
+            label, flipped = relabelled(flux_by_side, target, lambda slot, layer=layer: (slot, layer))
             source = flux_by_side[(target - shift) % slot_count, layer]
             if layer and (label["turns_per_coil"] != source["turns_per_coil"] or label["turn_fraction"] != source["turn_fraction"]):
                 raise ValueError("multi-side solution reuse requires matching source/target winding coefficients")
-            sign = _direction_sign(label["direction"]) * _direction_sign(source["direction"])
-            entry = dict(label)
+            entry = with_label(label, target, flipped)
+            sign = _direction_sign(entry["direction"]) * _direction_sign(source["direction"])
             entry["az_reference_wb_per_m"] = source["az_reference_wb_per_m"]
             entry["az_avg_wb_per_m"] = source["az_avg_wb_per_m"]
             entry["az_effective_wb_per_m"] = source["az_effective_wb_per_m"]
@@ -755,13 +852,15 @@ def derive_congruent_solve_report(
     excitation_contributions = results.get("slot_excitation_contributions")
     if isinstance(excitation_contributions, list) and excitation_contributions:
         excitation_by_slot = _contributions_by_global_slot(
-            excitation_contributions, slot_count, what="excitation"
+            excitation_contributions, slot_count, what="excitation", sector=sector_info is not None
         )
+        if sector_info is not None and sorted(excitation_by_slot) != modeled_slots:
+            raise ValueError("solution reuse requires excitation and flux contributions for the same slots")
         new_excitation_contributions: list[dict[str, Any]] = []
-        for target in range(slot_count):
-            label = excitation_by_slot[target]
+        for target in targets:
+            label, flipped = relabelled(excitation_by_slot, target, lambda slot: slot)
             source = excitation_by_slot[(target - shift) % slot_count]
-            entry = dict(label)
+            entry = with_label(label, target, flipped)
             entry["slot_area_m2"] = source["slot_area_m2"]
             entry["effective_current_density_a_per_m2"] = source[
                 "effective_current_density_a_per_m2"
@@ -785,6 +884,11 @@ def derive_congruent_solve_report(
             [x * cos_d - y * sin_d, x * sin_d + y * cos_d]
             for x, y in field_plot["nodes_mm"]
         ]
+
+    if sector_info is not None:
+        # The whole wedge turned with the rotor.
+        sector_info["stator_start_deg"] = float(sector_info["stator_start_deg"]) + float(rotation_delta_deg)
+        sector_info["rotor_start_deg"] = float(sector_info["rotor_start_deg"]) + float(rotation_delta_deg)
 
     # ── Bookkeeping: no solver work happened for this report ─────────────
     solve_info = report.get("solve_info")

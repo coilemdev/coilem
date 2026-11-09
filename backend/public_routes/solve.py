@@ -664,6 +664,8 @@ def _validated_solve_request(
                 "stream_noload_field_lines": False,
                 # Elmer always runs its frozen Picard profile; Newton is a Magneto2D option.
                 "nonlinear_solver": "picard",
+                # The Elmer route writes and reads back a full-circle mesh.
+                "symmetry": "full",
             }
         )
     else:
