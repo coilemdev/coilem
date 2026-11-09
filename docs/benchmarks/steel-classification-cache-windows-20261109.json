@@ -1,0 +1,537 @@
+{
+  "schema": "coilem.steel_classification_cache_windows/v1",
+  "branch": "perf/steel-region-classification",
+  "base_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+  "code_commit": "2e0db1714bbfdd6d926ea1ec0b74a30a10f633f5",
+  "machine": {
+    "cpu": "AMD Ryzen 7 7700",
+    "physical_cores": 8,
+    "logical_processors": 16,
+    "ram_approx_GiB": 64
+  },
+  "microbenchmark": {
+    "schema": "coilem.steel_classification_microbenchmark/v1",
+    "baseline_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+    "module_sha256": [
+      "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+      "5194008b02d9ee294c9ecba58d3eecfeb52c490eb4391b37d53ecbaebe920b58"
+    ],
+    "repeats_per_variant": 7,
+    "method": "Real frames decoded before timing; one warmup per variant then seven alternating-order RMS updates. New accumulator and finalization outside timer; GC before each sample. Exact raw/final outputs required.",
+    "scope": "Isolated update_steel_flux_density_rms_accumulator timings, not whole-solve speedup.",
+    "cases": [
+      {
+        "case": "spm_outer_14p12s_drone__baseline",
+        "lane": "loaded",
+        "triangles": 103402,
+        "nodes": 51871,
+        "distinct_region_strings": 7,
+        "region_labels": [
+          "airgap",
+          "magnet",
+          "magnet_pocket_air",
+          "rotor_core",
+          "slot_winding",
+          "stator_tooth",
+          "stator_yoke"
+        ],
+        "source_frame_name": "pos000_0p000deg_field_frame.json.gz",
+        "decoded_source_sha256": "8591218374502e8294085513262b3e5834e38c22022b24af6575fc874edf8dcb",
+        "baseline_seconds": [
+          0.2403665000001638,
+          0.2391005999998015,
+          0.2388397000004261,
+          0.23788510000031238,
+          0.23907840000083525,
+          0.23972109999976965,
+          0.2378803000001426
+        ],
+        "candidate_seconds": [
+          0.05067180000060034,
+          0.05008989999987534,
+          0.05032940000000963,
+          0.04951260000052571,
+          0.04987859999982902,
+          0.049601600000642065,
+          0.04950360000020737
+        ],
+        "mean_seconds": [
+          0.23898167142877874,
+          0.04994107142881278
+        ],
+        "median_seconds": [
+          0.23907840000083525,
+          0.04987859999982902
+        ],
+        "function_time_reduction_pct": 79.10255161819127,
+        "speedup": 4.785273214841396,
+        "accumulators_exact": true,
+        "rms_exact": true,
+        "accumulator": {
+          "teeth": {
+            "area_mm2": 194.64855011108392,
+            "weighted_b2_t2_mm2": 366.341544779405
+          },
+          "yoke": {
+            "area_mm2": 75.47162102226225,
+            "weighted_b2_t2_mm2": 43.754378287769896
+          }
+        },
+        "rms": {
+          "teeth": 1.3718843430633143,
+          "yoke": 0.7614106017764153
+        }
+      },
+      {
+        "case": "spm_outer_12p9s_micro__baseline",
+        "lane": "loaded",
+        "triangles": 124060,
+        "nodes": 62204,
+        "distinct_region_strings": 7,
+        "region_labels": [
+          "airgap",
+          "magnet",
+          "magnet_pocket_air",
+          "rotor_core",
+          "slot_winding",
+          "stator_tooth",
+          "stator_yoke"
+        ],
+        "source_frame_name": "pos000_0p000deg_field_frame.json.gz",
+        "decoded_source_sha256": "86c77c72eccbe83c5d4fe0c38c6aec886c61d120e5e7444ac7703044416412c6",
+        "baseline_seconds": [
+          0.2859420999993745,
+          0.3096173000003546,
+          0.29381869999997434,
+          0.2875812999991467,
+          0.2877630000002682,
+          0.28898130000015954,
+          0.2880337000005966
+        ],
+        "candidate_seconds": [
+          0.05927429999974265,
+          0.05945620000056806,
+          0.059245999999802734,
+          0.06214659999932337,
+          0.05841659999987314,
+          0.06177520000073855,
+          0.058879300000626245
+        ],
+        "mean_seconds": [
+          0.29167677142855347,
+          0.05988488571438211
+        ],
+        "median_seconds": [
+          0.2880337000005966,
+          0.05927429999974265
+        ],
+        "function_time_reduction_pct": 79.46875048668352,
+        "speedup": 4.870624164162071,
+        "accumulators_exact": true,
+        "rms_exact": true,
+        "accumulator": {
+          "teeth": {
+            "area_mm2": 87.73671732054943,
+            "weighted_b2_t2_mm2": 136.22834867253556
+          },
+          "yoke": {
+            "area_mm2": 35.37167604064877,
+            "weighted_b2_t2_mm2": 21.33548632928772
+          }
+        },
+        "rms": {
+          "teeth": 1.246071765460321,
+          "yoke": 0.7766466155017301
+        }
+      }
+    ]
+  },
+  "whole_job": {
+    "case": "spm_outer_12p9s_micro__baseline",
+    "pairs": [
+      {
+        "labels": [
+          "micro-baseline",
+          "micro-candidate"
+        ],
+        "started_at_utc": [
+          "2026-11-09T06:05:26.238659+00:00",
+          "2026-11-09T06:06:59.677889+00:00"
+        ],
+        "worker_wall_s": [
+          78.7257768999998,
+          80.55798349999986
+        ],
+        "process_wall_s": [
+          82.48007180000059,
+          84.56129669999973
+        ],
+        "config_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25",
+        "fallback_counts": [
+          32,
+          32
+        ],
+        "memory": [
+          {
+            "sampling_interval_s": 0.5,
+            "counters": {
+              "peak_tree_private_bytes": 17058140160,
+              "peak_tree_working_set_bytes": 9360519168,
+              "peak_python_worker_private_bytes": 1039052800,
+              "peak_python_worker_working_set_bytes": 229621760,
+              "peak_python_workers": 8,
+              "peak_native_solvers": 8,
+              "samples": 131
+            }
+          },
+          {
+            "sampling_interval_s": 0.5,
+            "counters": {
+              "peak_tree_private_bytes": 17107660800,
+              "peak_tree_working_set_bytes": 9408811008,
+              "peak_python_worker_private_bytes": 1043873792,
+              "peak_python_worker_working_set_bytes": 230117376,
+              "peak_python_workers": 8,
+              "peak_native_solvers": 8,
+              "samples": 134
+            }
+          }
+        ],
+        "source_identifiers": [
+          {
+            "source_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+            "steel_flux_metrics_sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+            "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+            "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+            "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+            "rust_sources_sha256": "418a63d624349287813a2b35dc51a0b51ade71c2d6f180da6d0a3cdfe9eec160",
+            "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+          },
+          {
+            "source_commit": "2e0db1714bbfdd6d926ea1ec0b74a30a10f633f5",
+            "steel_flux_metrics_sha256": "5194008b02d9ee294c9ecba58d3eecfeb52c490eb4391b37d53ecbaebe920b58",
+            "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+            "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+            "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+            "rust_sources_sha256": "418a63d624349287813a2b35dc51a0b51ade71c2d6f180da6d0a3cdfe9eec160",
+            "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+          }
+        ],
+        "parity": {
+          "result": {
+            "numeric_values_compared": 548,
+            "max_absolute_difference": 0.0,
+            "mismatch_count": 0,
+            "mismatch_examples": [],
+            "excluded_fields": [
+              {
+                "path": "solve_metadata.postprocess_source_cache_dir",
+                "reason": "run-specific cache path",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.postprocess_time_s",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.solve_cache_dir",
+                "reason": "fresh per-run cache path",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.solve_time_s",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.solver_cpu_time_s",
+                "reason": "measured runtime depends on scheduling",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.timestamp",
+                "reason": "run-specific timestamp",
+                "count": 1
+              },
+              {
+                "path": "summary.solve_time_s",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              }
+            ]
+          },
+          "cached_numerical_aggregates": {
+            "numeric_values_compared": 123978,
+            "max_absolute_difference": 0.0,
+            "mismatch_count": 0,
+            "mismatch_examples": [],
+            "excluded_fields": [
+              {
+                "path": "sweep.total_time_ms",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              }
+            ]
+          },
+          "cached_aggregate_keys": [
+            "sweep",
+            "slot_excitation_frames",
+            "steel_flux_density_rms",
+            "iron_loss",
+            "iron_loss_density"
+          ],
+          "mesh_files_compared": 96,
+          "mesh_byte_differences": [],
+          "native_reports_compared": 96,
+          "native_report_differences": [],
+          "native_report_exclusions": [
+            {
+              "path": "openem_provenance.fixture_path",
+              "reason": "fresh per-run native input path; fixture hash and size remain compared",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "openem_provenance.generated_at_unix_sec",
+              "reason": "run-specific generation timestamp",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "openem_provenance.generated_at_utc",
+              "reason": "run-specific generation timestamp",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "solve_info.assembly_time_ms",
+              "reason": "elapsed-time bookkeeping",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "solve_info.solve_time_ms",
+              "reason": "elapsed-time bookkeeping",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "solve_info.total_time_ms",
+              "reason": "elapsed-time bookkeeping",
+              "count_across_both_runs": 192
+            }
+          ],
+          "native_az_values_compared": 5971066,
+          "native_az_difference_files": [],
+          "full_field_frames_compared": 48,
+          "decoded_frame_differences": []
+        }
+      },
+      {
+        "labels": [
+          "micro-baseline-2",
+          "micro-candidate-2"
+        ],
+        "started_at_utc": [
+          "2026-11-09T06:11:18.955990+00:00",
+          "2026-11-09T06:09:13.982553+00:00"
+        ],
+        "worker_wall_s": [
+          79.88164280000001,
+          79.35017999999945
+        ],
+        "process_wall_s": [
+          83.71714049999991,
+          83.1947326999998
+        ],
+        "config_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25",
+        "fallback_counts": [
+          32,
+          32
+        ],
+        "memory": [
+          {
+            "sampling_interval_s": 0.5,
+            "counters": {
+              "peak_tree_private_bytes": 17106255872,
+              "peak_tree_working_set_bytes": 9408348160,
+              "peak_python_worker_private_bytes": 1049190400,
+              "peak_python_worker_working_set_bytes": 230412288,
+              "peak_python_workers": 8,
+              "peak_native_solvers": 8,
+              "samples": 135
+            }
+          },
+          {
+            "sampling_interval_s": 0.5,
+            "counters": {
+              "peak_tree_private_bytes": 16964743168,
+              "peak_tree_working_set_bytes": 9356873728,
+              "peak_python_worker_private_bytes": 1040756736,
+              "peak_python_worker_working_set_bytes": 229756928,
+              "peak_python_workers": 8,
+              "peak_native_solvers": 8,
+              "samples": 134
+            }
+          }
+        ],
+        "source_identifiers": [
+          {
+            "source_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+            "steel_flux_metrics_sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+            "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+            "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+            "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+            "rust_sources_sha256": "418a63d624349287813a2b35dc51a0b51ade71c2d6f180da6d0a3cdfe9eec160",
+            "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+          },
+          {
+            "source_commit": "2e0db1714bbfdd6d926ea1ec0b74a30a10f633f5",
+            "steel_flux_metrics_sha256": "5194008b02d9ee294c9ecba58d3eecfeb52c490eb4391b37d53ecbaebe920b58",
+            "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+            "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+            "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+            "rust_sources_sha256": "418a63d624349287813a2b35dc51a0b51ade71c2d6f180da6d0a3cdfe9eec160",
+            "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+          }
+        ],
+        "parity": {
+          "result": {
+            "numeric_values_compared": 548,
+            "max_absolute_difference": 0.0,
+            "mismatch_count": 0,
+            "mismatch_examples": [],
+            "excluded_fields": [
+              {
+                "path": "solve_metadata.postprocess_source_cache_dir",
+                "reason": "run-specific cache path",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.postprocess_time_s",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.solve_cache_dir",
+                "reason": "fresh per-run cache path",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.solve_time_s",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.solver_cpu_time_s",
+                "reason": "measured runtime depends on scheduling",
+                "count": 1
+              },
+              {
+                "path": "solve_metadata.timestamp",
+                "reason": "run-specific timestamp",
+                "count": 1
+              },
+              {
+                "path": "summary.solve_time_s",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              }
+            ]
+          },
+          "cached_numerical_aggregates": {
+            "numeric_values_compared": 123978,
+            "max_absolute_difference": 0.0,
+            "mismatch_count": 0,
+            "mismatch_examples": [],
+            "excluded_fields": [
+              {
+                "path": "sweep.total_time_ms",
+                "reason": "elapsed-time bookkeeping",
+                "count": 1
+              }
+            ]
+          },
+          "cached_aggregate_keys": [
+            "sweep",
+            "slot_excitation_frames",
+            "steel_flux_density_rms",
+            "iron_loss",
+            "iron_loss_density"
+          ],
+          "mesh_files_compared": 96,
+          "mesh_byte_differences": [],
+          "native_reports_compared": 96,
+          "native_report_differences": [],
+          "native_report_exclusions": [
+            {
+              "path": "openem_provenance.fixture_path",
+              "reason": "fresh per-run native input path; fixture hash and size remain compared",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "openem_provenance.generated_at_unix_sec",
+              "reason": "run-specific generation timestamp",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "openem_provenance.generated_at_utc",
+              "reason": "run-specific generation timestamp",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "solve_info.assembly_time_ms",
+              "reason": "elapsed-time bookkeeping",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "solve_info.solve_time_ms",
+              "reason": "elapsed-time bookkeeping",
+              "count_across_both_runs": 192
+            },
+            {
+              "path": "solve_info.total_time_ms",
+              "reason": "elapsed-time bookkeeping",
+              "count_across_both_runs": 192
+            }
+          ],
+          "native_az_values_compared": 5971066,
+          "native_az_difference_files": [],
+          "full_field_frames_compared": 48,
+          "decoded_frame_differences": []
+        }
+      }
+    ],
+    "baseline_mean_s": 79.3037098499999,
+    "candidate_mean_s": 79.95408174999966,
+    "candidate_time_change_pct": 0.8201027432763353,
+    "baseline_range_s": [
+      78.7257768999998,
+      79.88164280000001
+    ],
+    "candidate_range_s": [
+      79.35017999999945,
+      80.55798349999986
+    ],
+    "conclusion": "No clear whole-job improvement established by these two reversed-order pairs."
+  },
+  "parity_totals": {
+    "result_values": 1096,
+    "aggregate_values": 247956,
+    "mesh_pairs": 192,
+    "native_report_pairs": 192,
+    "native_az_values": 11942132,
+    "full_frame_pairs": 96
+  },
+  "validation": {
+    "new_tests_passed": 14,
+    "related_tests_passed": 54,
+    "ruff": "PASS",
+    "snapshot_publication": "PASS",
+    "scope": "Focused classification, postsolve, iron-loss and real spawned field-worker regressions; full Python suite not rerun on this branch."
+  },
+  "limits": [
+    "Isolated RMS timing is not solver or whole-field-processing speedup.",
+    "Only one complete Newton worker case and two observations per variant; no confidence interval.",
+    "Windows only; no new complete A-D/F/E collection, FEMM grading or two-platform qualification.",
+    "Native solver, geometry, meshes, worker budgets and reduction order retained.",
+    "Shared iron-loss classification callers and area calculation are unchanged.",
+    "Native worker timing excludes public-run saving, HTTP/browser and playback drawing."
+  ]
+}

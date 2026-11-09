@@ -14022,6 +14022,16 @@
       "path": "tests/test_steel_region_cache.py",
       "bytes": 10995,
       "sha256": "4b115518c8d83bf1ab6232b8360c8038506ed25fdcb6dd562e58a3d394b740af"
+    },
+    {
+      "path": "docs/benchmarks/steel-classification-cache-windows-20261109.md",
+      "bytes": 4275,
+      "sha256": "609d1869d10295bc4ab1c1e3603fc1986b902cf41e1eaaad4ec9a540b6170a23"
+    },
+    {
+      "path": "docs/benchmarks/steel-classification-cache-windows-20261109.json",
+      "bytes": 19552,
+      "sha256": "cdc2f735b2e131419e39ff1a9b138c0f652c4d7d81909f3c2da31b20731dfda8"
     }
   ],
   "public_patches": [
@@ -35148,6 +35158,18 @@
     {
       "base_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
       "path": "tests/test_steel_region_cache.py",
+      "source_sha256": null,
+      "reason": "Cache exact string region classifications within a bounded per-frame dictionary; retain original malformed-input handling and floating-point calculation order."
+    },
+    {
+      "base_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+      "path": "docs/benchmarks/steel-classification-cache-windows-20261109.md",
+      "source_sha256": null,
+      "reason": "Cache exact string region classifications within a bounded per-frame dictionary; retain original malformed-input handling and floating-point calculation order."
+    },
+    {
+      "base_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+      "path": "docs/benchmarks/steel-classification-cache-windows-20261109.json",
       "source_sha256": null,
       "reason": "Cache exact string region classifications within a bounded per-frame dictionary; retain original malformed-input handling and floating-point calculation order."
     }
