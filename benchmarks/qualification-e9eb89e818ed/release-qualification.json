@@ -1,0 +1,42 @@
+{
+  "schema": "coilem.release_qualification_assessment/v1",
+  "status": "PASS",
+  "date": "2026-11-09",
+  "candidate": "e9eb89e818edf9a579c20e900a9ea93a0731ad28",
+  "application_version": "0.5.6",
+  "solver_version": "0.5.0",
+  "registered_protocol": "1.9.0",
+  "source_workflow_run": 42674975329,
+  "platforms": {
+    "windows-x86_64": {
+      "A_D_PASS": 46,
+      "A_D_gates_PASS": 336,
+      "planned_UNSUPPORTED": 1,
+      "Prius_jobs": 17,
+      "Prius_field_positions": 568,
+      "Prius_software_checks_PASS": 10,
+      "report": "benchmarks/qualification-e9eb89e818ed/windows-x86_64/report/benchmark_summary.json",
+      "prius": "benchmarks/qualification-e9eb89e818ed/windows-x86_64/prius/app-results.json"
+    },
+    "macos-arm64": {
+      "A_D_PASS": 46,
+      "A_D_gates_PASS": 336,
+      "planned_UNSUPPORTED": 1,
+      "Prius_jobs": 17,
+      "Prius_field_positions": 568,
+      "Prius_software_checks_PASS": 10,
+      "report": "benchmarks/qualification-e9eb89e818ed/macos-arm64/report/benchmark_summary.json",
+      "prius": "benchmarks/qualification-e9eb89e818ed/macos-arm64/prius/app-results.json"
+    }
+  },
+  "owner_decisions": "benchmarks/qualification-e9eb89e818ed/owner-decisions.json",
+  "owner_decisions_sha256": "4e2747e99dfe5a1b330892f399883414e18cac149ca1f0ed1067ec5fb2bd8c53",
+  "approved_anchors_changed": false,
+  "automatic_tolerances_changed": false,
+  "reference_fields_mutated": false,
+  "experimental_E_F_promoted": false,
+  "publication_scope": "Candidate qualification only; no tag, package publication, or main merge",
+  "command": "python -m tools.release.qualification",
+  "exact_field_candidate_command": "python -m tools.release.qualification --candidate e9eb89e818edf9a579c20e900a9ea93a0731ad28",
+  "errors": []
+}

@@ -29,8 +29,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json",
-          "fixture_sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd",
-          "input_sha256": "98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796"
+          "fixture_sha256": "33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b",
+          "input_sha256": "42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d"
         }
       ]
     },
@@ -44,8 +44,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json",
-          "fixture_sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a",
-          "input_sha256": "da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e"
+          "fixture_sha256": "34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435",
+          "input_sha256": "eef1807fdc9e3ada58587a88a4275c1fdeb31c9f06bec67030bad564fe8bff8b"
         }
       ]
     },
@@ -59,8 +59,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json",
-          "fixture_sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c",
-          "input_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0"
+          "fixture_sha256": "86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d",
+          "input_sha256": "fde301b1d42714255f674e643027ff331fc7084a7db1f1a7a703a5907bc2888e"
         }
       ]
     },
@@ -74,8 +74,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json",
-          "fixture_sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6",
-          "input_sha256": "1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f"
+          "fixture_sha256": "db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e",
+          "input_sha256": "b03bf9f6e5cf23b0611eeb55cde6862e343006a63b926875129423241e4abd96"
         }
       ]
     },
@@ -89,8 +89,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json",
-          "fixture_sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b",
-          "input_sha256": "527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e"
+          "fixture_sha256": "207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed",
+          "input_sha256": "547ebf9bcb3ea42953e617a4534eae707cc998873397d666751ffb3886d505e3"
         }
       ]
     },
@@ -104,8 +104,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json",
-          "fixture_sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60",
-          "input_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e"
+          "fixture_sha256": "eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46",
+          "input_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25"
         }
       ]
     },
@@ -119,8 +119,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json",
-          "fixture_sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166",
-          "input_sha256": "33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25"
+          "fixture_sha256": "baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147",
+          "input_sha256": "a357dd0c03e7b5689c2c76122e2e9e0b8c60c4d8f5c6ebf4b4456e325098f5e5"
         }
       ]
     },
@@ -134,8 +134,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json",
-          "fixture_sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5",
-          "input_sha256": "0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13"
+          "fixture_sha256": "a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07",
+          "input_sha256": "ac93f5d6954d818321f20e3781a0dc3165e7d2c977938c18feab530bf707d9db"
         }
       ]
     },
@@ -149,8 +149,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json",
-          "fixture_sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021",
-          "input_sha256": "dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633"
+          "fixture_sha256": "b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70",
+          "input_sha256": "aa309ebcee4b48306c085fc794add7d04b9be06e80b39904e3f7e2de0dd18200"
         }
       ]
     },
@@ -164,16 +164,16 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json",
-          "fixture_sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5",
-          "input_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5"
+          "fixture_sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983",
+          "input_sha256": "30a730682f9d6f5791174c1a63334728cd6e1a49f08111cbb49af39782d7d457"
         }
       ]
     }
   ],
   "phase_f": {
     "status": "PROPOSED_NOT_REGISTERED",
-    "base_suite": "benchmarks/abcd-v1.6/benchmark_spec.json",
-    "base_suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+    "base_suite": "benchmarks/abcd-v1.9/benchmark_spec.json",
+    "base_suite_sha256": "e7ccab31ad7b4f078a1f1a09f8e60984bbcbca22507739c108c6a9842aa3aa8d",
     "derivation": "the Phase A request spm_8p12s_concentrated__baseline with an outer-rotor SPM motor and the case's current",
     "gates": "Phase A's (benchmark_suite/abc_metrics.py): mean torque 8%/15% (0.01/0.02 N m when the reference is under 0.01 N m), back-EMF fundamental and peak 10%/15%, WST, native mesh, matching angle grids",
     "reference_bundle": null

@@ -241,7 +241,8 @@ def validate_field_playback_v2(manifest_value: Any) -> dict[str, Any]:
                         f"frames[{frame_position}].layers.{layer_id}.media_type "
                         "must match its layer definition"
                     )
-                if _finite(
+                # None: the image is drawn after the result is saved, so its size is not known.
+                if artifact.get("byte_count") is not None and _finite(
                     artifact.get("byte_count"),
                     f"frames[{frame_position}].layers.{layer_id}.byte_count",
                 ) < 0:
@@ -280,7 +281,7 @@ def validate_field_playback_v2(manifest_value: Any) -> dict[str, Any]:
                             "detail playback layer media_type must match its "
                             "layer definition"
                         )
-                    if _finite(
+                    if artifact.get("byte_count") is not None and _finite(
                         artifact.get("byte_count"),
                         (
                             f"frames[{frame_position}].detail_layers."

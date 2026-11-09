@@ -19,7 +19,7 @@ def _measured(root):
            'QUALIFICATION_BASIS = "measured at aaaaaaa"\n')
     _write(root, "backend/resources.py", 'BENCHMARK_SUITE_FILE = "suite.json"\nBENCHMARK_REFERENCE_BUNDLE_DIR = "references"\n')
     _write(root, "backend/benchmark_suite/physics.py", 'def physics_sources(root):\n    return ("backend/motor.py",)\n')
-    suite = _write(root, "suite.json", {"protocol_version": "1.6.0", "cases": [{"id": "motor"}]})
+    suite = _write(root, "suite.json", {"protocol_version": "1.9.0", "cases": [{"id": "motor"}]})
     record_sha = _write(root, "references/motor.json", {"result": {}})
     review_sha = _write(root, "references/review.json", {
         "schema": "coilem.protocol16_reference_review/v1", "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
@@ -36,7 +36,7 @@ def _measured(root):
     }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
     _write(root, "platform/windows-x86_64/benchmark_summary.json", {
         "run": {"status": "COMPLETE", "reference_mode": "FROZEN_REFERENCE",
-                "identity": {"dirty": False, "commit": "a" * 40, "protocol_version": "1.6.0", "source_files": {"backend/motor.py": digest}},
+                "identity": {"dirty": False, "commit": "a" * 40, "protocol_version": "1.9.0", "source_files": {"backend/motor.py": digest}},
                 "selection": {"spec_sha256": suite, "bundle_sha256": bundle}},
         "rows": [{"id": "motor", "status": "PASS"}],
     })
@@ -77,6 +77,42 @@ def test_release_gate_rejects_a_different_candidate_or_protocol(tmp_path):
     _measured(tmp_path)
     assert "qualification report did not measure the frozen candidate" in check(tmp_path, candidate="b" * 40)
     assert "registered suite and measured report must both use protocol 1.5.0" in check(tmp_path, protocol="1.5.0")
+
+
+def _bridged(root):
+    """The registered suite reuses a review of the suite it was measured for (protocol 1.9.0)."""
+    _measured(root)
+    measured = (root / "suite.json").read_bytes()
+    (root / "measured-suite.json").write_bytes(measured)
+    change = {"measured_suite": "measured-suite.json", "measured_suite_sha256": hashlib.sha256(measured).hexdigest()}
+    suite = _write(root, "suite.json", {"protocol_version": "1.9.0", "cases": [{"id": "motor"}],
+                                        "reference_compatibility": {"solve_option_change": change}})
+    for name in ["platform/windows-x86_64/benchmark_summary.json", "platform/macos-arm64/benchmark_summary.json"]:
+        report = json.loads((root / name).read_text())
+        report["run"]["selection"]["spec_sha256"] = suite
+        _write(root, name, report)
+    for key in ["windows-x86_64", "macos-arm64"]:
+        record = json.loads((root / f"benchmarks/records/{key}.json").read_text())
+        record["suite_sha256"] = suite
+        _write(root, f"benchmarks/records/{key}.json", record)
+    return change
+
+
+def test_release_gate_accepts_a_review_of_the_suite_a_solve_option_bridge_reuses(tmp_path):
+    _bridged(tmp_path)
+    assert check(tmp_path, candidate="a" * 40) == []
+
+
+def test_release_gate_rejects_a_bridge_to_a_changed_or_different_suite(tmp_path):
+    _bridged(tmp_path)
+    (tmp_path / "measured-suite.json").write_text(json.dumps({"protocol_version": "1.6.0", "cases": [{"id": "motor"}]}) + " ")
+    assert "solve-option bridge names a changed measured suite" in check(tmp_path, candidate="a" * 40)
+    change = _bridged(tmp_path)
+    other = _write(tmp_path, "measured-suite.json", {"protocol_version": "1.6.0", "cases": [{"id": "other"}]})
+    spec = json.loads((tmp_path / "suite.json").read_text())
+    spec["reference_compatibility"]["solve_option_change"] = {**change, "measured_suite_sha256": other}
+    _write(tmp_path, "suite.json", spec)
+    assert "solve-option bridge measured suite has different cases" in check(tmp_path, candidate="a" * 40)
 
 
 def test_release_gate_requires_the_loader_bundle_digest_not_the_manifest_digest(tmp_path):

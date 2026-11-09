@@ -234,9 +234,13 @@ def _public_result_payload(
 
 
 def _package_public_result(result: Any) -> dict[str, Any]:
+    # The playback manifest is complete, but its images are drawn after the
+    # run is saved (_store_public_result), so results show without waiting
+    # for them; the viewer uses the numerical frames until they are ready.
     field_playback, retained_ids = build_public_field_playback(
         getattr(result, "field_line_frames", None),
         mode="resultant_pm",
+        draw_images=False,
     )
     return _public_result_payload(
         result,
@@ -292,6 +296,10 @@ def _store_public_result(
     # output left in its cache folder is not read again.
     if not keep_raw_solver_outputs():
         prune_raw_solver_outputs(solve_cache_folders(public_result))
+    if isinstance(public_result.get("field_playback"), dict):
+        # Draw the playback images in the background, frame 0 first; a viewer
+        # request for a frame not drawn yet waits for that frame only.
+        run_field_playback.start_drawing(workspace, location.project_slug, location.run_id)
     stored = workspace.load_run(location.project_slug, location.run_id)
     result = stored["result"]
     result["saved_run"] = stored["saved_run"]
@@ -654,6 +662,8 @@ def _validated_solve_request(
                 "mesher": "gmsh",
                 "rotor_rotation_model": "remesh_per_step",
                 "stream_noload_field_lines": False,
+                # Elmer always runs its frozen Picard profile; Newton is a Magneto2D option.
+                "nonlinear_solver": "picard",
             }
         )
     else:
@@ -750,6 +760,27 @@ def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
         "schema_version": "coilem.public_field_frame.v1",
         "field_line_frame": field_frame,
     }
+
+
+@router.get("/solve/playback-status/{artifact_id}", tags=["solve"])
+def get_public_playback_status(artifact_id: str, composition: str = "resultant") -> dict[str, Any]:
+    """How far a saved run's playback images are drawn, so the viewer can hold Play until they are.
+
+    ``artifact_id`` is any of the run's playback images for the mode being
+    viewed. Images that are not a saved run's were drawn with their result,
+    so they are always ready. Sync, so FastAPI runs it in its threadpool.
+    """
+
+    playback = _saved_run_playback_location(artifact_id)
+    if playback is None:
+        return {"frames_total": None, "frames_drawn": None, "drawing": False, "ready": True}
+    project_slug, run_id, relative = playback
+    mode = run_field_playback.playback_mode(relative)
+    try:
+        progress = run_field_playback.drawing_progress(SolveWorkspace(), project_slug, run_id, mode or "", composition)
+    except (FileNotFoundError, SolveWorkspaceError) as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="playback not found") from exc
+    return dict(progress)
 
 
 @router.get("/solve/playback-frame/{artifact_id}", tags=["solve"])

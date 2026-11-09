@@ -213,7 +213,7 @@ def test_release_versions_align() -> None:
     magneto2d = (REPO_ROOT / "solvers" / "magneto2d" / "Cargo.toml").read_text(
         encoding="utf-8"
     )
-    assert 'version = "0.4.0"' in magneto2d
+    assert 'version = "0.5.0"' in magneto2d
 
 
 def test_public_docs_match_reduced_release_contract() -> None:
@@ -239,7 +239,7 @@ def test_public_docs_match_reduced_release_contract() -> None:
     combined = "\n".join(documents.values())
 
     assert f"coilEM {app.version}" in documents["README.md"]
-    assert "Magneto2D 0.4.0" in documents["README.md"]
+    assert "Magneto2D 0.5.0" in documents["README.md"]
     assert "COILEM_ENABLE_ELMER=1" in documents["docs/ELMER.md"]
     assert "hidden, and not probed" in combined
     assert "H1-H12" in documents["docs/GETTING_STARTED.md"]
@@ -364,6 +364,7 @@ def test_audited_dependency_notices_are_present() -> None:
         "meshio==5.3.5",
         "numpy==2.4.6",
         "numpy==2.5.4",
+        "orjson==3.13.0",
         "pillow==13.0.0",
         "rich==15.0.0",
         "uvicorn==0.51.0",
@@ -379,6 +380,7 @@ def test_audited_dependency_notices_are_present() -> None:
         "Copyright (c) 1998-2025, Modelica Association and contributors",
         "Pillow's wheel is distributed under its MIT-CMU license",
         "| meshio | 5.3.5 | MIT |",
+        "| orjson | 3.13.0 | MPL-2.0 AND (Apache-2.0 OR MIT) |",
         "| rich | 15.0.0 | MIT |",
         "Elmer FEM 26.2 (optional external program)",
         "ElmerGrid, ElmerGUI, and most physical solver modules as GPL",

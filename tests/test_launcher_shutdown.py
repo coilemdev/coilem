@@ -21,7 +21,9 @@ import subprocess
 import sys
 import threading
 import time
+from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures.process import BrokenProcessPool
+from multiprocessing import get_context
 from pathlib import Path
 
 import pytest
@@ -29,7 +31,7 @@ import uvicorn
 
 import backend.magneto2d_adapter as magneto2d_adapter
 import backend.solve_workspace as solve_workspace
-from backend import launcher
+from backend import launcher, public_field_playback, run_field_playback
 from backend.models import MotorConfig
 from backend.public_main import create_app
 from backend.public_routes import solve as routes
@@ -400,6 +402,127 @@ def test_terminating_process_pools_ends_their_running_tasks(monkeypatch):
         if not unwound.is_set():
             _process_pool._stop_pool_workers(pools[0])
         solver.join(timeout=10)
+
+
+def _held_playback_frame(frame_index: int, frame_path: str, output_dir: str, mode: str) -> int:
+    folder = Path(output_dir)
+    (folder / f"started-{frame_index}").touch()
+    deadline = time.monotonic() + 60
+    while not (folder / "release").exists() and time.monotonic() < deadline:
+        time.sleep(0.01)
+    return frame_index
+
+
+@pytest.fixture
+def playback_pool(monkeypatch, tmp_path):
+    pool = ProcessPoolExecutor(2, mp_context=get_context("spawn"))
+    folder = tmp_path / "playback"
+    folder.mkdir()
+    monkeypatch.setattr(public_field_playback, "_playback_executor", lambda count: pool)
+    monkeypatch.setattr(public_field_playback, "render_stored_playback_frame", _held_playback_frame)
+    monkeypatch.setattr(run_field_playback, "_stored_frames", lambda *args: [tmp_path / "frame"] * 8)
+    monkeypatch.setattr(run_field_playback, "_JOBS", {})
+    try:
+        yield pool, folder
+    finally:
+        (folder / "release").touch()
+        for futures in run_field_playback._JOBS.values():
+            _playback_futures_done(futures.values(), timeout=10)
+        pool.shutdown(wait=True, cancel_futures=True)
+        deadline = time.monotonic() + 5
+        while pool in _process_pool._LIVE_POOLS and time.monotonic() < deadline:
+            time.sleep(0.01)
+
+
+def _playback_futures_done(futures, timeout=5):
+    # ProcessPoolExecutor.cancel_futures leaves cancelled futures in the
+    # CANCELLED state, which concurrent.futures.wait does not count as done.
+    deadline = time.monotonic() + timeout
+    while not all(future.done() for future in futures) and time.monotonic() < deadline:
+        time.sleep(0.01)
+    return all(future.done() for future in futures)
+
+
+def _worker_exited(worker, timeout: float) -> bool:
+    """True once a pool's worker process has exited, polled rather than asked once.
+
+    The pool's manager thread reaps a killed worker at the same moment as
+    this thread. When it wins, this thread's waitpid() fails with ECHILD and
+    multiprocessing reports that one call as "still running", although the
+    process is gone (exit code -SIGKILL on the next call). A single
+    join()/is_alive() therefore failed about once in 20 runs on Linux and
+    macOS, with the worker already stopped.
+    """
+    deadline = time.monotonic() + timeout
+    while True:
+        worker.join(timeout=0.1)
+        if not worker.is_alive():
+            return True
+        if time.monotonic() >= deadline:
+            return False
+
+
+def test_background_playback_workers_stop_during_application_exit(playback_pool):
+    pool, folder = playback_pool
+    run_field_playback._render_job(None, "project", "run", "resultant_pm", folder, 0)
+    deadline = time.monotonic() + 15
+    while len(list(folder.glob("started-*"))) < 2 and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert len(list(folder.glob("started-*"))) == 2
+    assert pool in _process_pool._LIVE_POOLS
+    workers = list(pool._processes.values())
+
+    _process_pool.terminate_process_pools()
+
+    for worker in workers:
+        assert _worker_exited(worker, timeout=10), f"background playback escaped application shutdown: {worker!r}"
+    assert _playback_futures_done(run_field_playback._JOBS[folder].values())
+    deadline = time.monotonic() + 5
+    while pool in _process_pool._LIVE_POOLS and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert pool not in _process_pool._LIVE_POOLS
+
+
+def test_completed_background_playback_unregisters_its_workers(playback_pool):
+    pool, folder = playback_pool
+    (folder / "release").touch()
+    future = run_field_playback._render_job(None, "project", "run", "resultant_pm", folder, 3)
+    assert future.result(timeout=15) == 3
+    assert _playback_futures_done(run_field_playback._JOBS[folder].values())
+    deadline = time.monotonic() + 5
+    while pool in _process_pool._LIVE_POOLS and time.monotonic() < deadline:
+        time.sleep(0.01)
+    assert pool not in _process_pool._LIVE_POOLS
+
+
+def test_background_playback_refuses_workers_after_exit_begins(playback_pool):
+    pool, folder = playback_pool
+    _process_pool._EXITING.set()
+    with pytest.raises(SolveCancelledError):
+        run_field_playback._render_job(None, "project", "run", "resultant_pm", folder, 0)
+    assert not list(folder.glob("started-*"))
+    assert folder not in run_field_playback._JOBS
+
+
+def test_background_playback_submission_failure_closes_its_pool(playback_pool, monkeypatch):
+    pool, folder = playback_pool
+    original_submit = pool.submit
+    submitted = 0
+
+    def submit(*args, **kwargs):
+        nonlocal submitted
+        submitted += 1
+        if submitted == 2:
+            (folder / "release").touch()
+            raise RuntimeError("synthetic submission failure")
+        return original_submit(*args, **kwargs)
+
+    monkeypatch.setattr(pool, "submit", submit)
+    with pytest.raises(RuntimeError, match="synthetic submission failure"):
+        run_field_playback._render_job(None, "project", "run", "resultant_pm", folder, 0)
+    assert pool not in _process_pool._LIVE_POOLS
+    assert pool._processes is None
+    assert folder not in run_field_playback._JOBS
 
 
 def _hold_worker_cancellation_lock(marker: str, release: str) -> None:

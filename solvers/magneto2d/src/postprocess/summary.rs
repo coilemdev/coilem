@@ -277,6 +277,11 @@ fn select_contour_torque_path(
 pub struct SlotFluxLinkageContribution {
     pub slot_index_modeled: usize,
     pub slot_index_global: usize,
+    /// Physical layer identity, available only when both mesh layers are integrated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub slot_layer: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub turn_fraction: Option<f64>,
     pub phase: String,
     pub direction: String,
     pub center_angle_mech_deg: f64,
@@ -654,6 +659,8 @@ pub fn compute_flux_linkage(
                 slot_contributions.push(SlotFluxLinkageContribution {
                     slot_index_modeled: s,
                     slot_index_global: slot_global,
+                    slot_layer: per_layer.then_some((side_idx + 1) as u8),
+                    turn_fraction: per_layer.then_some(turn_fraction),
                     phase: ["A", "B", "C"][phase].to_string(),
                     direction: if direction {
                         "in".to_string()
@@ -695,6 +702,8 @@ pub fn compute_flux_linkage(
         slot_contributions.push(SlotFluxLinkageContribution {
             slot_index_modeled: s,
             slot_index_global: slot_global,
+            slot_layer: None,
+            turn_fraction: None,
             phase: ["A", "B", "C"][phase].to_string(),
             direction: if slot_direction[s] > 0.0 {
                 "in".to_string()
@@ -1750,7 +1759,6 @@ mod tests {
                 &mesh, &az, &centroids, stack_mm, "concentrated", slot_count as u32, pole_count, turns, 2,
                 None, 1.0, false, layers,
             )
-            .0
         };
         // Equal-area halves, so the whole-slot average is the mean of the two.
         let mut own_layer = [0.0_f64; 3];
@@ -1765,13 +1773,59 @@ mod tests {
                 slot_average[phase] += weight * mean;
             }
         }
-        let per_layer = link(Some(&layers));
-        let whole_slot = link(None);
+        let (per_layer, contributions) = link(Some(&layers));
+        let (whole_slot, unlayered_contributions) = link(None);
         for phase in 0..3 {
             assert!((per_layer[phase] - own_layer[phase]).abs() < 1e-15, "phase {phase}: {} vs {}", per_layer[phase], own_layer[phase]);
             assert!((whole_slot[phase] - slot_average[phase]).abs() < 1e-15);
         }
         assert!((per_layer[0] - whole_slot[0]).abs() > 1e-6, "the halves must matter in this field");
+
+        // A conformal split emits one stable physical identity per slot/layer.
+        assert_eq!(contributions.len(), 2 * slot_count);
+        for (index, contribution) in contributions.iter().enumerate() {
+            let slot = index / 2;
+            let layer = (index % 2 + 1) as u8;
+            assert_eq!(contribution.slot_index_global, slot);
+            assert_eq!(contribution.slot_layer, Some(layer));
+            assert_eq!(contribution.turn_fraction, Some(0.5));
+            assert!((contribution.az_avg_wb_per_m - half_az[index]).abs() < 1e-15);
+            let serialized = serde_json::to_value(contribution).unwrap();
+            assert_eq!(serialized["slot_layer"].as_u64(), Some(u64::from(layer)));
+            assert_eq!(serialized["turn_fraction"].as_f64(), Some(0.5));
+        }
+
+        // Multiple logical sides sharing a whole-slot average carry no claim
+        // of physical layer identity, even when the winding has two layers.
+        assert_eq!(unlayered_contributions.len(), 2 * slot_count);
+        let one_layer_only = vec![1; layers.len()];
+        let (_, incomplete_contributions) = link(Some(&one_layer_only));
+        for contribution in unlayered_contributions.iter().chain(&incomplete_contributions) {
+            assert_eq!(contribution.slot_layer, None);
+            assert_eq!(contribution.turn_fraction, None);
+            let serialized = serde_json::to_value(contribution).unwrap();
+            assert!(serialized.get("slot_layer").is_none());
+            assert!(serialized.get("turn_fraction").is_none());
+        }
+    }
+
+    #[test]
+    fn legacy_single_side_flux_rows_omit_layer_identity_metadata() {
+        let (mesh, centroids) = synthetic_slot_flux_mesh(12, 8);
+        let az = vec![1.0e-3; mesh.nodes.len()];
+        let (_, contributions) = compute_flux_linkage(
+            &mesh, &az, &centroids, 100.0, "concentrated", 12, 8, 10, 1, None, 1.0,
+            false, None,
+        );
+
+        assert_eq!(contributions.len(), 12);
+        for contribution in contributions {
+            assert_eq!(contribution.slot_layer, None);
+            assert_eq!(contribution.turn_fraction, None);
+            let serialized = serde_json::to_value(contribution).unwrap();
+            assert!(serialized.get("slot_layer").is_none());
+            assert!(serialized.get("turn_fraction").is_none());
+        }
     }
 
     fn contour_debug(status: &str, scaled_torque_nm: f64) -> ContourTorqueDebug {

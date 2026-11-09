@@ -18,6 +18,7 @@ from math import ceil, gcd, isfinite
 from pathlib import Path
 from typing import Any
 
+from backend import fast_json
 from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.logging_utils import log_event
 from backend.material_contract import electrical_steel_preflight_records
@@ -1227,91 +1228,146 @@ def run_magneto2d_report(
     # Windows unless `C:\tmp` happens to exist.
     with tempfile.TemporaryDirectory(prefix="openem_magneto2d_") as tmp_dir:
         tmp_path = Path(tmp_dir)
-        input_path = tmp_path / "input.json"
-        output_path = tmp_path / "report.json"
-        solve_mesh_path = tmp_path / "solve_mesh.json"
         prefix = artifact_prefix or ("sweep" if sweep else "single")
         if persist_artifacts_dir is not None:
             persist_artifacts_dir.mkdir(parents=True, exist_ok=True)
             run_env["MAGNETO2D_NONLINEAR_DIAGNOSTICS_PATH"] = str(
                 persist_artifacts_dir / f"{prefix}_nonlinear_diagnostics.json"
             )
-        input_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        if solve_mesh_artifact is not None:
-            # Compact JSON: indent forces the pure-Python encoder, ~4x slower
-            # on an 8 MB mesh, and the solver reads the same values either way.
-            solve_mesh_path.write_text(
-                json.dumps(solve_mesh_artifact),
-                encoding="utf-8",
-            )
-
-        executable = ensure_magneto2d_binary() if runner is subprocess.run else MAGNETO2D_BINARY
-        command = build_magneto2d_command(
-            input_path,
-            output_path,
-            sweep_positions=sweep_positions,
-            sweep_span_deg=cli_sweep_span_deg,
-            rotor_angle_deg=None if sweep else rotor_angle_deg,
-            solve_mesh_path=solve_mesh_path if solve_mesh_artifact is not None else None,
-            executable=executable,
-            mesher=mesher_choice,
-        )
-        if progress_callback is not None and runner is subprocess.run:
-            completed = _run_with_progress(command, progress_callback, cwd=tmp_path, env=run_env)
+            # The solve's input, mesh and report are kept in the cache, so
+            # they are written there once, under hidden names that become the
+            # kept names only when the solve succeeds (no copy afterwards).
+            staged_paths = [
+                persist_artifacts_dir / f".{prefix}_{name}.partial"
+                for name in ("input.json", "mesh.json", "report.json")
+            ]
         else:
-            completed = _run_magneto2d_command(runner, command, cwd=tmp_path, env=run_env)
-        if completed.returncode != 0:
-            raise Magneto2DExecutionError(
-                "magneto2d CLI failed: "
-                + _summarize_process_failure(
-                    getattr(completed, "stderr", None),
-                    getattr(completed, "stdout", None),
-                    completed.returncode,
-                )
-            )
-        if not output_path.exists():
-            raise Magneto2DExecutionError("magneto2d CLI did not produce a report JSON")
-
-        report_text = output_path.read_text(encoding="utf-8")
+            staged_paths = [tmp_path / "input.json", tmp_path / "solve_mesh.json", tmp_path / "report.json"]
+        input_path, solve_mesh_path, output_path = staged_paths
         try:
-            report = json.loads(report_text)
-        except json.JSONDecodeError as exc:
-            raise Magneto2DExecutionError("magneto2d returned invalid JSON") from exc
+            return _run_magneto2d_report_files(
+                config,
+                payload=payload,
+                solve_mesh_artifact=solve_mesh_artifact,
+                input_path=input_path,
+                solve_mesh_path=solve_mesh_path,
+                output_path=output_path,
+                persist_artifacts_dir=persist_artifacts_dir,
+                prefix=prefix,
+                sweep=sweep,
+                sweep_positions=sweep_positions,
+                cli_sweep_span_deg=cli_sweep_span_deg,
+                rotor_angle_deg=rotor_angle_deg,
+                mesher_choice=mesher_choice,
+                env_overrides=env_overrides,
+                run_env=run_env,
+                cwd=tmp_path,
+                progress_callback=progress_callback,
+                runner=runner,
+            )
+        finally:
+            if persist_artifacts_dir is not None:
+                for staged in staged_paths:
+                    staged.unlink(missing_ok=True)
 
-        solver_environment = solver_environment_provenance(env_overrides)
-        appendable = (
-            isinstance(report, dict)
-            and bool(report)
-            and "solver_environment" not in report
-            and report_text.rstrip().endswith("}")
+
+def _run_magneto2d_report_files(
+    config: MotorConfig,
+    *,
+    payload: dict[str, Any],
+    solve_mesh_artifact: dict[str, Any] | None,
+    input_path: Path,
+    solve_mesh_path: Path,
+    output_path: Path,
+    persist_artifacts_dir: Path | None,
+    prefix: str,
+    sweep: bool,
+    sweep_positions: int | None,
+    cli_sweep_span_deg: float | None,
+    rotor_angle_deg: float | None,
+    mesher_choice: Any,
+    env_overrides: dict[str, str],
+    run_env: dict[str, str],
+    cwd: Path,
+    progress_callback: Any | None,
+    runner: Any,
+) -> dict[str, Any]:
+    """Write the solver's files, run it, and keep its files when ``persist_artifacts_dir`` is set."""
+
+    input_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    if solve_mesh_artifact is not None:
+        # Compact JSON (an indent forces the pure-Python encoder); fast_json
+        # writes the same values, and the solver reads them either way.
+        solve_mesh_path.write_bytes(fast_json.dumps_bytes(solve_mesh_artifact))
+
+    executable = ensure_magneto2d_binary() if runner is subprocess.run else MAGNETO2D_BINARY
+    command = build_magneto2d_command(
+        input_path,
+        output_path,
+        sweep_positions=sweep_positions,
+        sweep_span_deg=cli_sweep_span_deg,
+        rotor_angle_deg=None if sweep else rotor_angle_deg,
+        solve_mesh_path=solve_mesh_path if solve_mesh_artifact is not None else None,
+        executable=executable,
+        mesher=mesher_choice,
+    )
+    if progress_callback is not None and runner is subprocess.run:
+        completed = _run_with_progress(command, progress_callback, cwd=cwd, env=run_env)
+    else:
+        completed = _run_magneto2d_command(runner, command, cwd=cwd, env=run_env)
+    if completed.returncode != 0:
+        raise Magneto2DExecutionError(
+            "magneto2d CLI failed: "
+            + _summarize_process_failure(
+                getattr(completed, "stderr", None),
+                getattr(completed, "stdout", None),
+                completed.returncode,
+            )
         )
-        report["solver_environment"] = solver_environment
-        reference = reference_model(config)
-        if reference is not None and reference.postprocess_report is not None:
-            reference.postprocess_report(report, config, solve_mesh_artifact)
-            appendable = False
-        if persist_artifacts_dir is not None:
-            shutil.copy2(input_path, persist_artifacts_dir / f"{prefix}_input.json")
+    if not output_path.exists():
+        raise Magneto2DExecutionError("magneto2d CLI did not produce a report JSON")
+
+    report_bytes = output_path.read_bytes()
+    try:
+        report = fast_json.loads(report_bytes)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        raise Magneto2DExecutionError("magneto2d returned invalid JSON") from exc
+
+    solver_environment = solver_environment_provenance(env_overrides)
+    appendable = (
+        isinstance(report, dict)
+        and bool(report)
+        and "solver_environment" not in report
+        and report_bytes.rstrip().endswith(b"}")
+    )
+    report["solver_environment"] = solver_environment
+    reference = reference_model(config)
+    if reference is not None and reference.postprocess_report is not None:
+        reference.postprocess_report(report, config, solve_mesh_artifact)
+        appendable = False
+    if persist_artifacts_dir is not None:
+        input_path.replace(persist_artifacts_dir / f"{prefix}_input.json")
+        report_kept = persist_artifacts_dir / f"{prefix}_report.json"
+        if appendable:
             # The solver never writes solver_environment, so appending it to
             # the solver's own text gives the same JSON values, in the same key
-            # order, as re-serializing the whole ~6 MB report.
-            persisted_report = (
-                report_text.rstrip()[:-1]
-                + ',"solver_environment":'
-                + json.dumps(solver_environment)
-                + "}"
-                if appendable
-                else json.dumps(report)
-            )
-            (persist_artifacts_dir / f"{prefix}_report.json").write_text(
-                persisted_report,
-                encoding="utf-8",
-            )
-            if solve_mesh_artifact is not None:
-                shutil.copy2(solve_mesh_path, persist_artifacts_dir / f"{prefix}_mesh.json")
-                write_provenance_sidecar(persist_artifacts_dir, prefix, solve_mesh_artifact)
+            # order, as re-serializing the whole report; doing it in place
+            # writes only the new tail.
+            closing_brace = len(report_bytes.rstrip()) - 1
+            with output_path.open("r+b") as handle:
+                handle.seek(closing_brace)
+                handle.truncate()
+                handle.write(
+                    (',"solver_environment":' + json.dumps(solver_environment) + "}").encode("utf-8")
+                )
+            output_path.replace(report_kept)
+        else:
+            report_kept.write_text(json.dumps(report), encoding="utf-8")
+        if solve_mesh_artifact is not None:
+            solve_mesh_path.replace(persist_artifacts_dir / f"{prefix}_mesh.json")
+            write_provenance_sidecar(persist_artifacts_dir, prefix, solve_mesh_artifact)
 
-        return report
+    return report
 
 
 def run_magneto2d_batch_reports(

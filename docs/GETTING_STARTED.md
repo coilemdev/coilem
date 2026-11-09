@@ -6,8 +6,9 @@ report export. If you installed coilEM with `uv tool install coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 
-The source application in this guide is coilEM 0.5.0 and the bundled solver is
-Magneto2D 0.4.0. Version 0.5.0 has not been frozen or released.
+The source application in this guide is coilEM 0.5.5 and the bundled solver is
+Magneto2D 0.5.0, the solver for the coming 0.5.6 release, which has not been
+qualified or released.
 coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
 guidance, not a broad operating-system support guarantee. Record the exact
@@ -187,7 +188,7 @@ For the first run, keep **Accuracy plan → Standard**:
 - corner refinement enabled;
 - **Precise** mesh build;
 - weighted-stress torque;
-- Picard nonlinear iteration; and
+- damped Newton nonlinear iteration, with Picard as the per-position fallback; and
 - direct Cholesky linear solve.
 
 **Mesh build → Fast** places the mesh's boundary nodes less exactly, which
@@ -396,9 +397,11 @@ then retry the analysis. coilEM never silently deletes a completed run.
 
 ## Model assumptions
 
-The public motor UI uses WST torque and Direct Cholesky. Picard is the default
-nonlinear solver; Newton is available in Advanced options as experimental
-recovery when a run fails to converge. Importing a design with other torque or
+The public motor UI uses WST torque and Direct Cholesky. Damped Newton is the
+default nonlinear solver from v0.5.6. It needs far fewer iterations than Picard
+and falls back to Picard at any rotor position where it doesn't converge.
+Picard stays available in Advanced options, and a design saved with Picard keeps
+it. Importing a design with other torque or
 linear-solver choices applies the public defaults and displays a notice.
 
 The launch report is an electromagnetic 2D result. It does not include

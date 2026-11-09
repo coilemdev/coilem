@@ -27,6 +27,22 @@ pub(super) fn weighted_stress_airgap_only() -> bool {
     false
 }
 
+/// Write the area torque's per-element contributions into the report
+/// (diagnostics only; read once per process).
+pub(super) fn torque_debug_elements() -> bool {
+    static ENABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    *ENABLED.get_or_init(|| {
+        std::env::var("MAGNETO2D_TORQUE_DEBUG_ELEMENTS").is_ok_and(|raw| {
+            let normalized = raw.trim().to_ascii_lowercase();
+            !normalized.is_empty()
+                && normalized != "0"
+                && normalized != "false"
+                && normalized != "no"
+                && normalized != "off"
+        })
+    })
+}
+
 pub(super) fn weighted_stress_domain(region: Region, include_slots: bool) -> bool {
     // FluxBarrier and MagnetPocketAir are air material, but they are buried
     // rotor pockets, not the physical rotor/stator airgap integration band.

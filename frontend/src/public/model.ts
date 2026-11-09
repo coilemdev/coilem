@@ -307,7 +307,8 @@ export type PublicFieldPlaybackMediaType = 'image/png' | 'image/webp';
 export interface PublicFieldPlaybackArtifact {
   artifact_id: string;
   media_type: PublicFieldPlaybackMediaType;
-  byte_count: number;
+  /** Null until the image is drawn: a solve's images are drawn after its result is saved. */
+  byte_count: number | null;
 }
 
 export interface PublicFieldNumericalArtifact {
@@ -732,7 +733,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     mesh_build: 'precise',
     rotor_rotation_model: 'remesh_per_step',
     torque_method: 'weighted_stress',
-    nonlinear_solver: 'picard',
+    nonlinear_solver: 'newton',
     linear_solver_preconditioner: 'direct',
     current_amplitude_A: 30,
     current_amplitude_convention: 'rms',

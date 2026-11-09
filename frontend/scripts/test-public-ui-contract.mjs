@@ -851,8 +851,9 @@ assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);
 assert.match(workspaceSource, /<dt>Torque method<\/dt><dd>WST<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('nonlinear_solver'/);
-assert.match(workspaceSource, /Picard \(recommended\)/);
-assert.match(workspaceSource, /Newton \(experimental\)/);
+assert.match(workspaceSource, /Newton \(recommended\)/);
+assert.match(workspaceSource, /\{ value: 'picard', label: 'Picard' \}/);
+assert.doesNotMatch(workspaceSource, /Newton \(experimental\)/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Linear solver"/);
 assert.match(workspaceSource, /<dt>Linear solver<\/dt><dd>Direct Cholesky<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('current_amplitude_convention'/);
@@ -882,7 +883,7 @@ assert.match(modelSource, /corner_refinement: true/);
 assert.match(modelSource, /solve_quality: 'standard'/);
 assert.match(modelSource, /mesh_density: 'normal'/);
 assert.match(modelSource, /torque_method: 'weighted_stress'/);
-assert.match(modelSource, /nonlinear_solver: 'picard'/);
+assert.match(modelSource, /nonlinear_solver: 'newton'/);
 assert.match(modelSource, /linear_solver_preconditioner: 'direct'/);
 assert.match(modelSource, /cogging_torque_waveform\?/);
 assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
@@ -960,16 +961,17 @@ assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHei
 assert.doesNotMatch(workspaceSource, /\{solveView !== 'field' && solveViewportSwitch\}/);
 assert.match(workspaceSource, /dockStrip=\{solveViewportSwitch\}\s*isExpanded=\{solveViewportExpanded\}/);
 assert.match(workspaceSource, /const titleBar = dockStrip \?\? primaryViewModes;/);
-assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*\{cadStatus\}\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
+assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
 assert.match(workspaceSource, /\{onExpandToggle && <ViewportExpandButton expanded=\{isExpanded\} inline onToggle=\{onExpandToggle\} \/>\}/);
-assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
+// The design viewer's title bar gives its space to sector navigation, zoom and fit: no regions/build-time readout.
+assert.doesNotMatch(workspaceSource, /cadStatus/);
+assert.doesNotMatch(workspaceSource, /\} regions · \{/);
 // Solve's Geometry tab is the 2D section that gets solved: no second row of view tabs.
 assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
 assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
-// The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
-assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
+// The Mesh tab's element count and quality are in the run plan, not the title bar.
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
 assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
@@ -1027,6 +1029,13 @@ assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
 assert.doesNotMatch(solvedFieldSource, /type="range"|Solved rotor position|public-field-position-control|playbackSliderRef/);
 assert.match(solvedFieldSource, /aria-label="Stop and go to the first position"/);
 assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);\s*\};/);
+// Play waits until a saved run's playback images are drawn (they are drawn after the result is saved).
+assert.match(solvedFieldSource, /getPublicPlaybackStatus\(check\.artifactId, check\.composition\)/);
+assert.match(solvedFieldSource, /ref\.byte_count === null/);
+assert.match(solvedFieldSource, /const ready = statuses\.every\(\(status\) => status\.ready \|\| !status\.drawing\);/);
+assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
+assert.match(solvedFieldSource, /\{playbackPreparing && \(\s*<span className="public-field-playback-preparing" role="status" aria-live="polite">\{playbackPreparingLabel\}<\/span>/);
+assert.match(apiSource, /\/solve\/playback-status\/\$\{encodeURIComponent\(artifactId\)\}\?\$\{query\}/);
 assert.match(solvedFieldSource, /const stopPlayback = \(\) => \{[\s\S]*?setFrameIndex\(0\);\s*\};/);
 assert.match(solvedFieldSource, /positionLink\?\.subscribeRequests\(\(angleDeg\) => scrubToAngleRef\.current\(angleDeg\)\)/);
 assert.match(solvedFieldSource, /positionLink\?\.setPlayhead\(angleFrames\.length > 0 \? electricalAngleDeg : null\)/);
@@ -1189,7 +1198,8 @@ assert.match(fieldResultSource, /: raster\.colorScale \?\? \{ minB, maxB, overAb
 assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.overAboveT\.toFixed\(1\)\} T/);
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
-assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport'\}/);
+// A Fit-view colour range still disables Play (as does playback that is still being drawn, checked above).
+assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
 assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);

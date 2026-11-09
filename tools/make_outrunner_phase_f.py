@@ -1,8 +1,9 @@
 """Write Phase F, the outer-rotor benchmark (protocol 1.8.0): its requests and suite.
 
 Every request is the registered Phase A request `spm_8p12s_concentrated__baseline`
-with its motor replaced by an outer-rotor SPM design and its current set per case.
-Solve settings, materials, speed and the angle grid stay Phase A's, so Phase F
+of the default suite (protocol 1.9.0, so Newton since v0.5.6) with its motor
+replaced by an outer-rotor SPM design and its current set per case. Solve
+settings, materials, speed and the angle grid stay Phase A's, so Phase F
 grades against FEMM with Phase A's gates.
 
     python -m tools.make_outrunner_phase_f          # rewrite benchmarks/abcd-v1.8
@@ -18,7 +19,7 @@ from backend.benchmark_suite.contract import canonical, read, sha, write
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = "benchmarks/abcd-v1.8"
-BASE_SUITE = "benchmarks/abcd-v1.6/benchmark_spec.json"
+BASE_SUITE = "benchmarks/abcd-v1.9/benchmark_spec.json"
 TEMPLATE_CASE = "spm_8p12s_concentrated__baseline"
 MAGNET_COVERAGE = 0.85
 

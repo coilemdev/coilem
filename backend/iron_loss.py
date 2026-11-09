@@ -498,33 +498,68 @@ def _map_reference_elements(ref_keys: list[bytes], centroids: np.ndarray, corner
     return local
 
 
-def _locate(points: np.ndarray, corners: np.ndarray) -> np.ndarray:
-    """Index of the triangle containing each point, using a uniform bucket grid."""
+_LOCATE_CHUNK_POINTS = 20_000
 
+
+def _locate(points: np.ndarray, corners: np.ndarray) -> np.ndarray:
+    """Index of the triangle containing each point, using a uniform bucket grid.
+
+    Each point is tested against the triangles that overlap its grid cell, in
+    ascending triangle order, and takes the first that contains it. The tests
+    run for many points at once with the same arithmetic per (point, triangle)
+    pair as testing one point at a time, so the answer is the same; the
+    one-point-at-a-time loop spent ~20 s per outrunner solve in numpy calls.
+    """
+
+    found = np.full(len(points), -1, dtype=int)
+    if len(points) == 0 or len(corners) == 0:
+        return found
     low, high = corners.min(axis=1), corners.max(axis=1)
     origin = low.min(axis=0)
     cell = max(float(np.median(high - low)) * 2.0, 1e-6)
     first = np.floor((low - origin) / cell).astype(int)
     last = np.floor((high - origin) / cell).astype(int)
-    buckets: dict[tuple[int, int], list[int]] = {}
-    for triangle, (x0, y0), (x1, y1) in zip(range(len(corners)), first, last):
-        for gx in range(x0, x1 + 1):
-            for gy in range(y0, y1 + 1):
-                buckets.setdefault((gx, gy), []).append(triangle)
+
+    # One (cell, triangle) pair for every cell a triangle's box overlaps,
+    # grouped by cell with triangles in ascending order inside each cell.
+    span = last - first + 1
+    pair_counts = span[:, 0] * span[:, 1]
+    pair_triangle = np.repeat(np.arange(len(corners)), pair_counts)
+    pair_offset = np.arange(int(pair_counts.sum())) - np.repeat(np.cumsum(pair_counts) - pair_counts, pair_counts)
+    pair_span_y = np.repeat(span[:, 1], pair_counts)
+    pair_gx = np.repeat(first[:, 0], pair_counts) + pair_offset // pair_span_y
+    pair_gy = np.repeat(first[:, 1], pair_counts) + pair_offset % pair_span_y
+    gx_min, gx_max = int(pair_gx.min()), int(pair_gx.max())
+    gy_min, gy_max = int(pair_gy.min()), int(pair_gy.max())
+    width = gy_max - gy_min + 1
+    pair_key = (pair_gx - gx_min) * width + (pair_gy - gy_min)
+    order = np.argsort(pair_key, kind="stable")
+    cell_keys = pair_key[order]
+    cell_triangles = pair_triangle[order]
 
     a, b, c = corners[:, 0], corners[:, 1], corners[:, 2]
     det = (b[:, 0] - a[:, 0]) * (c[:, 1] - a[:, 1]) - (c[:, 0] - a[:, 0]) * (b[:, 1] - a[:, 1])
-    found = np.full(len(points), -1, dtype=int)
     cells = np.floor((points - origin) / cell).astype(int)
-    for point_index, (point, (gx, gy)) in enumerate(zip(points, cells)):
-        candidates = buckets.get((gx, gy))
-        if not candidates:
+    in_grid = (cells[:, 0] >= gx_min) & (cells[:, 0] <= gx_max) & (cells[:, 1] >= gy_min) & (cells[:, 1] <= gy_max)
+    point_keys = (cells[:, 0] - gx_min) * width + (cells[:, 1] - gy_min)
+    start = np.searchsorted(cell_keys, point_keys, side="left")
+    stop = np.where(in_grid, np.searchsorted(cell_keys, point_keys, side="right"), start)
+
+    for begin in range(0, len(points), _LOCATE_CHUNK_POINTS):
+        chunk = np.arange(begin, min(begin + _LOCATE_CHUNK_POINTS, len(points)))
+        counts = stop[chunk] - start[chunk]
+        if not counts.any():
             continue
-        cand = np.asarray(candidates)
-        dx, dy = point[0] - a[cand, 0], point[1] - a[cand, 1]
+        # (point, candidate) pairs: each point's candidates in its cell's order.
+        point_of = np.repeat(chunk, counts)
+        offset = np.arange(int(counts.sum())) - np.repeat(np.cumsum(counts) - counts, counts)
+        cand = cell_triangles[np.repeat(start[chunk], counts) + offset]
+        dx, dy = points[point_of, 0] - a[cand, 0], points[point_of, 1] - a[cand, 1]
         u = ((c[cand, 1] - a[cand, 1]) * dx - (c[cand, 0] - a[cand, 0]) * dy) / det[cand]
         v = ((b[cand, 0] - a[cand, 0]) * dy - (b[cand, 1] - a[cand, 1]) * dx) / det[cand]
-        inside = np.nonzero((u >= -_LOCATE_TOLERANCE) & (v >= -_LOCATE_TOLERANCE) & (u + v <= 1 + _LOCATE_TOLERANCE))[0]
-        if inside.size:
-            found[point_index] = cand[inside[0]]
+        hits = np.nonzero((u >= -_LOCATE_TOLERANCE) & (v >= -_LOCATE_TOLERANCE) & (u + v <= 1 + _LOCATE_TOLERANCE))[0]
+        if hits.size:
+            # The first hit per point is its first containing candidate.
+            hit_points, first_hit = np.unique(point_of[hits], return_index=True)
+            found[hit_points] = cand[hits[first_hit]]
     return found

@@ -116,10 +116,12 @@ def check_process_worker_cancelled() -> None:
 
 
 @contextmanager
-def cancellable_process_pool(workers: int) -> Iterator[ProcessPoolExecutor]:
+def cancellable_process_pool(workers: int, *, start_method: str | None = None) -> Iterator[ProcessPoolExecutor]:
     # Windows workers start from the backend's executor thread using spawn.
     # Keep the existing process-start default on other platforms.
-    context = get_context("spawn" if os.name == "nt" else None)
+    # Overlapped field work explicitly uses spawn: it starts while native
+    # launch threads are active, so POSIX workers must not inherit their locks.
+    context = get_context(start_method if start_method is not None else ("spawn" if os.name == "nt" else None))
     cancelled = context.Event()
     pool = ProcessPoolExecutor(
         max_workers=workers,

@@ -35,8 +35,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
-          "fixture_sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
-          "input_sha256": "8839611fad28d21d9b088c0450e8272e9841fb2349f239cba2656f20bd7aa293"
+          "fixture_sha256": "9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a",
+          "input_sha256": "cad8715172ea72b745d7f1fe1eda5d9f02b587d05d1c5336f7506240784a4da6"
         }
       ]
     },
@@ -56,8 +56,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
-          "fixture_sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
-          "input_sha256": "3c1b57c0bb3b063419cc0944252d0d2c19efba99b24e2f0175c0139f63318a29"
+          "fixture_sha256": "5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374",
+          "input_sha256": "73ba9bc146c0f6309c23343f492dbd5d583a030709a851b0e76701289e113720"
         }
       ]
     },
@@ -77,8 +77,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
-          "fixture_sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
-          "input_sha256": "345b5167e28a6be168cb1064089aa00b6055f27a040307bbf54bfca853f42691"
+          "fixture_sha256": "e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7",
+          "input_sha256": "aea630d691e746e2ed4b1c7b02742075473bf6704541130690462e466745eacd"
         }
       ]
     },
@@ -98,8 +98,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
-          "fixture_sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
-          "input_sha256": "6327927a94e5d3381b69d2975019161a9eebe7944b6f0514bb29cc5c751fb7c4"
+          "fixture_sha256": "94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273",
+          "input_sha256": "5fc00dcd11405da8d264dd8a1042e43ced646e585e7f924500c534235b25ed2f"
         }
       ]
     },
@@ -119,8 +119,8 @@
         {
           "stage": "native",
           "fixture": "benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
-          "fixture_sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
-          "input_sha256": "9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d"
+          "fixture_sha256": "a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0",
+          "input_sha256": "326b77014731664da3c2716344e94c34278062cadee414220b44e1155e6427fb"
         }
       ]
     },
@@ -275,8 +275,8 @@
   "phase_e": {
     "status": "PROPOSED_NOT_REGISTERED",
     "issue": "https://github.com/coilemdev/coilem/issues/185",
-    "base_suite": "benchmarks/abcd-v1.6/benchmark_spec.json",
-    "base_suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+    "base_suite": "benchmarks/abcd-v1.9/benchmark_spec.json",
+    "base_suite_sha256": "e7ccab31ad7b4f078a1f1a09f8e60984bbcbca22507739c108c6a9842aa3aa8d",
     "derivation": "base fixture with solve_options.cogging_torque and solve_params.corner_refinement set to true",
     "gates": {
       "cogging_peak_to_peak": "PASS <= max(10% of the reference, floor); YELLOW <= max(20%, 2 x floor)",

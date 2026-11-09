@@ -4,7 +4,7 @@
 here before any comparison solve, as
 [public issue 185](https://github.com/coilemdev/coilem/issues/185) asks. It
 has no FEMM reference bundle yet, so it qualifies nothing. Harness **1.9.0**
-can run and grade it, and protocol **1.6.0** stays the default suite;
+can run and grade it, and protocol **1.9.0** is the default suite;
 `coilem benchmark` runs phases A–D only.
 
 Phase E is its own suite, `benchmark_spec.json` in this folder, because a
@@ -13,8 +13,8 @@ from a new collection, not from the reviewed protocol 1.6.0 bundle.
 
 ## Cases
 
-Twelve requests, one per motor geometry. Each is a registered protocol 1.6.0
-request with two changes, `solve_options.cogging_torque` and
+Twelve requests, one per motor geometry. Each is a registered protocol 1.9.0
+request (Newton since v0.5.6) with two changes, `solve_options.cogging_torque` and
 `solve_params.corner_refinement` set to `true`. Cogging carries no current,
 so the winding, phase current and current angle do not enter it; each case is
 a different stator, rotor or magnet arrangement. Corner refinement only

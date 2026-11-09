@@ -1,0 +1,29 @@
+{
+  "schema": "coilem.qualification_carry/v1",
+  "status": "REFERENCE_REVIEW_REQUIRED",
+  "candidate": "e9eb89e818edf9a579c20e900a9ea93a0731ad28",
+  "moved_values": [
+    {
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.026539302148737773,
+      "new": 0.030181329933354963,
+      "tolerance": 0.001
+    }
+  ],
+  "reference_review": [
+    {
+      "platform": "windows-x86_64",
+      "reason": "Reference reuse requires the same registered suite"
+    },
+    {
+      "platform": "macos-arm64",
+      "reason": "Reference reuse requires the same registered suite"
+    }
+  ],
+  "accepted_moved_values": false,
+  "approved_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "measurements_mutated": false
+}

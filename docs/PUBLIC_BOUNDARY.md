@@ -75,6 +75,7 @@ The coilEM launch service is local-only and exposes exactly these paths:
 - `POST /solve/field-composition/armature/stream`
 - `GET /solve/field-frame/{artifact_id}`
 - `GET /solve/playback-frame/{artifact_id}`
+- `GET /solve/playback-status/{artifact_id}`
 - `POST /solve/stream`
 - `POST /solve/validate`
 - `POST /solver/mesh-preview`

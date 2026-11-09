@@ -84,9 +84,24 @@ redistribution rights of the source model's B-H curves are confirmed.
 ## Validation
 
 - **LRK against its published solution.** Through the normal pipeline on the
-  fine mesh, 9 of the 11 published torque points pass the pointwise rule,
-  |error| ≤ max(2%, 0.05 mN·m). The source point is −0.36%, and the two misses
-  are near-zero torques. The back-EMF fundamental is −0.62%.
+  fine mesh, all 11 published torque points pass Phase A's mean-torque rule:
+  within 8% of the published torque, or within 0.01 N·m where the published
+  torque is under 0.01 N·m (owner decision, November 9, 2026). The source
+  point is −0.39%, and the back-EMF fundamental is −0.62%.
+  - **The stricter rule.** Until then the check used max(2%, 0.05 mN·m), and
+    9 of 11 passed. The two near-zero points miss it:
+    - the 40° point: 3.538 mN·m against 3.3944, 0.14 mN·m high;
+    - the zero-current point: 0.008 mN·m against 0.0649, 0.06 mN·m low.
+  - **Why they miss.** Both points sit where the torque changes by 1.2 to
+    1.9 mN·m per electrical degree, so their errors amount to 0.02° of rotor
+    position or less. At zero current, FEMM's own sliding-band model gives
+    0.0075 mN·m, close to coilEM's value.
+  - **How loose the new floor is.** Phase A's floor was set for larger motors.
+    On this 55 mN·m motor, 0.01 N·m is loose, so these strict errors stay
+    reported.
+  - **Solver.** With Newton (the default since v0.5.6), every fine-mesh
+    position converges. Picard stalls at one position within its
+    200-iteration cap.
 - **Self-consistency on hobby designs.** On the 12/14 starter and a 9/12
   18 mm design, the mean torque agrees with 1.5·p·λ·I within 0.3%, and the
   phases balance. The 9/12 design's mean torque moves less than 0.05% from the

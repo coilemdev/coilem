@@ -1,9 +1,9 @@
 # Magneto2D
 
-Magneto2D 0.4.0 is coilEM's native Rust 2D magnetostatic finite-element solver
-and postprocessor. It is bundled by the coilEM 0.5.0 source application; the solver
-and application have separate version numbers. Version 0.5.0 has not been
-frozen or released. The public application uses
+Magneto2D 0.5.0 is coilEM's native Rust 2D magnetostatic finite-element solver
+and postprocessor. It is bundled by the coilEM source application; the solver
+and application have separate version numbers. Magneto2D 0.5.0, the solver for
+the coming coilEM 0.5.6, has not been qualified or released. The public application uses
 Python and Gmsh to build tagged solve meshes, then invokes Magneto2D for field
 solving and electromagnetic postprocessing.
 
@@ -434,8 +434,9 @@ with flux density:
 ```
 
 This circular dependency makes the FEM problem nonlinear. Magneto2D resolves
-it with either Picard fixed-point iteration, which is the default, or a
-requested damped Newton method.
+it with either a damped Newton method, which the app requests by default from
+v0.5.6, or Picard fixed-point iteration. A motor request that names no method
+gets Picard, and Newton falls back to Picard at any angle where it fails.
 
 ### 5. Picard iteration
 

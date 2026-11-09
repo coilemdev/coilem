@@ -294,7 +294,7 @@
     "mechanical_loss_W": null,
     "motor_input_dc_bus_V": null,
     "max_nonlinear_iterations": null,
-    "nonlinear_solver": "picard",
+    "nonlinear_solver": "newton",
     "linear_solver_preconditioner": "direct",
     "linear_steel_mu_rel": null,
     "magneto2d_workers": null,

@@ -1,0 +1,58 @@
+{
+  "schema": "coilem.reference_reuse/v1",
+  "candidate": "e9eb89e818edf9a579c20e900a9ea93a0731ad28",
+  "decision": "ACCEPTED_BY_OWNER_AFTER_SOURCE_REVIEW",
+  "owner_decisions": "benchmarks/qualification-e9eb89e818ed/owner-decisions.json",
+  "owner_decisions_sha256": "4e2747e99dfe5a1b330892f399883414e18cac149ca1f0ed1067ec5fb2bd8c53",
+  "suite_sha256": "e7ccab31ad7b4f078a1f1a09f8e60984bbcbca22507739c108c6a9842aa3aa8d",
+  "bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
+  "reference_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+  "reference_fields_mutated": false,
+  "reference_sensitive_sources": {
+    "backend/geometry.py": "75d36dd236b3b276b2fde1a058e8896af2f2508709a0cb1de9e8c77c94f84610",
+    "backend/geometry_drawer.py": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+    "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+    "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+    "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+    "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
+    "backend/public_material_catalog.py": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
+    "backend/winding_utils.py": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+    "backend/excitation.py": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab",
+    "backend/reference_models/prius.py": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
+    "backend/reference_models/pyleecan_prius_2004.json": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e",
+    "backend/reference_models/pyleecan_prius_2004_config.json": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a",
+    "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+    "backend/reference_models/lrk.py": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43",
+    "backend/reference_models/lrk_12s14p_source.json": "474c5ce06d530a9c6281da165f83e28eeba40ba3458617001b18d11b5e17d608",
+    "backend/reference_models/lrk_12s14p_config.json": "46add87f28066dd32cbc96d91b1f7cfc9d025fea753b59495d6ba696423307bf",
+    "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+    "backend/dq_flux_linkage.py": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8",
+    "backend/models/config.py": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c",
+    "materials/electrical-steel/M350-50A.csv": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
+  },
+  "registered_requests_sha256": "80cce3a530493d7a245b663eb51880f0a1ccd5b6bc47ea3a793f0f8ffe624b81",
+  "registered_bridge": {
+    "schema": "coilem.reference_validation_bridge/v1",
+    "measured_protocol_version": "1.6.0",
+    "reference_commit": "faced858937e93740ddf7f6f3583a3ad5ec35646",
+    "manifest_sha256": "f3e1e525ea622285778becb126f4e909e72f3830a14292a23a26e0a081fc8c2e",
+    "six_step_protocol_sha256": {
+      "spm_14p12s_high_pole": "d47aca42dc38c7d921ed88bf355163ab5a894920780058875f6b0d139cc1982b",
+      "spm_4p12s_small": "30c164bfb9fac53ffce1eef07f6c68147f1935f8ab59d2f74c004edd79a0bef4",
+      "spm_8p12s_reference": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
+    },
+    "reason": "Only coilEM's nonlinear method changes, from Picard to Newton, in the Phase A and D requests. FEMM solves its own nonlinear problem and never reads this field, so the frozen protocol 1.6.0 FEMM records remain valid for the changed requests. Motors, materials, currents, grids, iteration caps and gates are unchanged. A same-commit comparison (PR #221, e12918d) found Newton within 6e-5 of Picard on every changed request, with identical FEMM gate verdicts.",
+    "solve_option_change": {
+      "schema": "coilem.solve_option_bridge/v1",
+      "measured_suite": "benchmarks/abcd-v1.6/benchmark_spec.json",
+      "measured_suite_sha256": "60fb1c5353c8678ef210c997cf39ddcf20ce4bf81ebd8e419c962fc6d5c6fb37",
+      "solve_params": {
+        "nonlinear_solver": {
+          "from": "picard",
+          "to": "newton"
+        }
+      },
+      "reason": "Only coilEM's nonlinear method changes, from Picard to Newton, in the Phase A and D requests. FEMM solves its own nonlinear problem and never reads this field, so the frozen protocol 1.6.0 FEMM records remain valid for the changed requests. Motors, materials, currents, grids, iteration caps and gates are unchanged. A same-commit comparison (PR #221, e12918d) found Newton within 6e-5 of Picard on every changed request, with identical FEMM gate verdicts."
+    }
+  }
+}

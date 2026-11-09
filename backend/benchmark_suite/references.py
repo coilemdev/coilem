@@ -59,6 +59,75 @@ def _cap_compatible_inputs(spec, bridge):
     return compatible
 
 
+# coilEM solve options that a reference solver never reads, with the one change a bridge may register for
+# each. FEMM solves its own nonlinear problem, so changing coilEM's nonlinear method leaves a frozen FEMM
+# record valid for the changed request (protocol 1.9.0). Anything else needs a new reference bundle.
+REFERENCE_INDEPENDENT_SOLVE_OPTIONS = {"nonlinear_solver": ("picard", "newton")}
+
+
+def _solve_option_compatible_inputs(spec, bridge):
+    """Reuse frozen records for requests that differ from the measured suite only in reference-independent options."""
+    change = (bridge or {}).get("solve_option_change")
+    if change is None:
+        return {}
+    options = change.get("solve_params")
+    if (
+        change.get("schema") != "coilem.solve_option_bridge/v1"
+        or not isinstance(options, dict)
+        or not options
+        or any(
+            not isinstance(rule, dict) or REFERENCE_INDEPENDENT_SOLVE_OPTIONS.get(name) != (rule.get("from"), rule.get("to"))
+            for name, rule in options.items()
+        )
+    ):
+        raise ValueError("Unsupported reference solve-option bridge")
+    measured = checked_json(DATA_ROOT, change["measured_suite"], change["measured_suite_sha256"])
+    if measured["protocol_version"] != bridge["measured_protocol_version"] or len(measured["cases"]) != len(spec["cases"]):
+        raise ValueError("Reference solve-option bridge requires the complete measured suite")
+    if any(measured[key] != spec[key] for key in ("material_contract", "convention", "golden", "golden_sha256")):
+        raise ValueError("Reference solve-option bridge changed the material or golden contract")
+    compatible = {}
+    for old_case, case in zip(measured["cases"], spec["cases"], strict=True):
+        old_frame = {k: v for k, v in old_case.items() if k != "jobs"}
+        frame = {k: v for k, v in case.items() if k != "jobs"}
+        if old_frame != frame or len(old_case["jobs"]) != len(case["jobs"]):
+            raise ValueError("Reference solve-option bridge changed cases, grids or gates")
+        for old_job, job in zip(old_case["jobs"], case["jobs"], strict=True):
+            if old_job == job:
+                continue
+            if old_job["stage"] != job["stage"] or old_job.keys() != job.keys():
+                raise ValueError("Reference solve-option bridge changed job stages")
+            old = checked_json(DATA_ROOT, old_job["fixture"], old_job["fixture_sha256"])
+            current = checked_json(DATA_ROOT, job["fixture"], job["fixture_sha256"])
+            expected = copy.deepcopy(old)
+            for name, rule in options.items():
+                if old["solve_params"].get(name) == rule["from"]:
+                    expected["solve_params"][name] = rule["to"]
+            if (current == old or current != expected or canonical(old) != old_job["input_sha256"]
+                    or canonical(current) != job["input_sha256"]):
+                raise ValueError("Reference solve-option bridge permits only its registered solve-option changes")
+            compatible[case["id"]] = old_case["jobs"][0]["input_sha256"]
+    if not compatible:
+        raise ValueError("Reference solve-option bridge has no changed requests")
+    return compatible
+
+
+def _compatible_inputs(spec, bridge):
+    if bridge and "iteration_cap_change" in bridge and "solve_option_change" in bridge:
+        raise ValueError("A reference bridge registers one kind of request change")
+    return {**_cap_compatible_inputs(spec, bridge), **_solve_option_compatible_inputs(spec, bridge)}
+
+
+def _reviewed_suite(spec):
+    """The suite a reviewed bundle was accepted for: this one, or the measured suite a solve-option bridge reuses."""
+    bridge = spec.get("reference_compatibility") or {}
+    change = bridge.get("solve_option_change")
+    if change is None:
+        return spec
+    _solve_option_compatible_inputs(spec, bridge)  # raises unless only registered options changed
+    return checked_json(DATA_ROOT, change["measured_suite"], change["measured_suite_sha256"])
+
+
 def load_bundle(directory, spec):
     manifest = read(directory / "manifest.json")
     # A new validation frame can reuse unchanged physical fields only through
@@ -81,7 +150,7 @@ def load_bundle(directory, spec):
         or manifest["material_contract"] != spec["material_contract"]
     ):
         raise ValueError("Reference material, protocol or coordinate contract mismatch; register a new bundle")
-    compatible_inputs = _cap_compatible_inputs(spec, bridge)
+    compatible_inputs = _compatible_inputs(spec, bridge)
     records = {}
     for case in spec["cases"]:
         entry = manifest["records"].get(case["id"])
@@ -113,12 +182,14 @@ def require_reviewed_bundle(directory, manifest, spec):
         raise ValueError("Reference bundle still requires review")
     entry = manifest.get("review") or {}
     review = checked_json(directory, entry["file"], entry["sha256"])
-    required = {case["id"] for case in spec["cases"]} - {"ornl_prius_2004_ipm"}
+    # A solve-option bridge (protocol 1.9.0) reuses the review of the suite it was measured for.
+    reviewed = _reviewed_suite(spec)
+    required = {case["id"] for case in reviewed["cases"]} - {"ornl_prius_2004_ipm"}
     registered = DATA_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
     if (review.get("schema") != "coilem.protocol16_reference_review/v1"
             or review.get("decision") != "ACCEPTED_FOR_REGISTERED_PARITY"
             or review.get("suite_sha256") != manifest.get("suite_sha256")
-            or sha(registered) != review.get("suite_sha256") or read(registered) != spec
+            or sha(registered) != review.get("suite_sha256") or read(registered) != reviewed
             or review.get("reference_commit") != manifest["reference_commit"]
             or review.get("parent_manifest_sha256") != manifest.get("parent_manifest_sha256")
             or review.get("parent_bundle_sha256") != manifest.get("parent_bundle_sha256")
