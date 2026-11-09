@@ -134,6 +134,7 @@ fn metadata_test_artifact(
                 stator_slot_outer_radius_mm: 89.0,
                 stator_outer_radius_mm: 100.0,
                 outer_rotor: None,
+                sector: None,
             },
         },
         rotor_angle_mech_deg: None,
@@ -192,6 +193,7 @@ fn full_slot_winding_import_artifact(slot_count: u32, pole_count: u32) -> SolveM
                 stator_slot_outer_radius_mm: 89.0,
                 stator_outer_radius_mm: 100.0,
                 outer_rotor: None,
+                sector: None,
             },
         },
         rotor_angle_mech_deg: None,
@@ -1431,6 +1433,7 @@ fn outer_dirichlet_boundary_nodes_excludes_rotor_inner_bore() {
             stator_slot_outer_radius_mm: 96.0,
             stator_outer_radius_mm: 108.0,
             outer_rotor: None,
+            sector: None,
         },
     };
 
@@ -1470,6 +1473,7 @@ fn motor_boundary_set_deduplicates_legacy_multi_pitch_nodes_in_input_order() {
             stator_slot_outer_radius_mm: 96.0,
             stator_outer_radius_mm: 108.0,
             outer_rotor: None,
+            sector: None,
         },
     };
 
@@ -1478,6 +1482,85 @@ fn motor_boundary_set_deduplicates_legacy_multi_pitch_nodes_in_input_order() {
     assert_eq!(boundaries.dirichlet_az_zero_nodes, vec![3, 2]);
     assert_eq!(boundaries.paired_nodes.len(), 1);
     assert_eq!(boundaries.paired_nodes[0].nodes, [0, 1]);
+}
+
+fn sector_boundary_test_mesh(anti_periodic: bool, n_pole_pitches: u32) -> TriMesh {
+    TriMesh {
+        nodes: vec![
+            [0.0, 0.0],
+            [0.058, 0.0],
+            [0.0, 0.058],
+            [0.108, 0.0],
+            [0.0, 0.108],
+        ],
+        triangles: vec![[0, 1, 2], [1, 3, 4], [1, 4, 2]],
+        regions: vec![Region::RotorCore, Region::StatorYoke, Region::StatorYoke],
+        boundary_nodes: vec![3, 4],
+        // The motor axis paired with itself, an interior pair, and a pair on the A=0 boundary.
+        sector_edge_pairs: vec![(0, 0), (1, 2), (3, 4)],
+        info: MeshInfo {
+            num_nodes: 5,
+            num_triangles: 3,
+            pole_pitch_deg: 90.0,
+            n_pole_pitches,
+            total_span_deg: 90.0,
+            angular_divisions: 0,
+            radial_rings: 0,
+            mesh_density: "test".to_string(),
+            radial_layers: vec!["geometry_ir".to_string()],
+            airgap_inner_radius_mm: None,
+            airgap_outer_radius_mm: None,
+            mesh_source: None,
+            magnet_outer_radius_mm: 63.0,
+            magnet_embrace: 0.85,
+            stator_inner_radius_mm: 64.0,
+            stator_slot_outer_radius_mm: 96.0,
+            stator_outer_radius_mm: 108.0,
+            outer_rotor: None,
+            sector: Some(crate::mesh::SectorMeshInfo {
+                repeats: 4,
+                anti_periodic,
+                stator_start_deg: 0.0,
+                rotor_start_deg: 0.0,
+                mid_gap_radius_mm: 63.5,
+            }),
+        },
+    }
+}
+
+#[test]
+fn a_described_one_pole_sector_is_tied_anti_periodically_not_pinned_to_zero() {
+    // Without the description, one pole pitch pins both cut edges to A=0.
+    let mut legacy = sector_boundary_test_mesh(true, 1);
+    legacy.info.sector = None;
+    let pinned = motor_boundary_set(&legacy, 1);
+    assert!(pinned.paired_nodes.is_empty());
+    assert!(pinned.dirichlet_az_zero_nodes.contains(&1) && pinned.dirichlet_az_zero_nodes.contains(&2));
+
+    let boundaries = motor_boundary_set(&sector_boundary_test_mesh(true, 1), 1);
+    assert!(boundaries.exact_pairs);
+    assert_eq!(boundaries.paired_nodes.len(), 1);
+    assert_eq!(boundaries.paired_nodes[0].nodes, [1, 2]);
+    assert_eq!(boundaries.paired_nodes[0].kind, crate::field::PairedBoundaryKind::AntiPeriodic);
+    // A = -A on the axis leaves zero; the pair on the outer boundary is already zero.
+    let mut dirichlet = boundaries.dirichlet_az_zero_nodes.clone();
+    dirichlet.sort_unstable();
+    assert_eq!(dirichlet, vec![0, 3, 4]);
+}
+
+#[test]
+fn a_described_sector_takes_its_tie_from_the_description_not_the_pole_count() {
+    // Two pole pitches would be periodic by parity; an anti-periodic description wins.
+    let anti = motor_boundary_set(&sector_boundary_test_mesh(true, 2), 2);
+    assert_eq!(anti.paired_nodes[0].kind, crate::field::PairedBoundaryKind::AntiPeriodic);
+
+    let periodic = motor_boundary_set(&sector_boundary_test_mesh(false, 2), 2);
+    assert_eq!(periodic.paired_nodes.len(), 1);
+    assert_eq!(periodic.paired_nodes[0].kind, crate::field::PairedBoundaryKind::Periodic);
+    // A periodic sector leaves the axis free: it is one node, not a constraint.
+    let mut dirichlet = periodic.dirichlet_az_zero_nodes.clone();
+    dirichlet.sort_unstable();
+    assert_eq!(dirichlet, vec![3, 4]);
 }
 
 fn cogging_policy_env_lock() -> &'static Mutex<()> {
@@ -1770,6 +1853,7 @@ fn airgap_brbt_profile_bins_radial_and_tangential_fields() {
             stator_slot_outer_radius_mm: 21.0,
             stator_outer_radius_mm: 25.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     let fields = vec![
@@ -1895,6 +1979,7 @@ fn pm_source_work_scale_adjusts_exported_energy_components() {
             stator_slot_outer_radius_mm: 3.0,
             stator_outer_radius_mm: 4.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     let materials = vec![MaterialProps {
@@ -1978,6 +2063,7 @@ fn pm_sidewall_quadrature_diagnostic_scales_pm_corner_terms_only_when_enabled() 
             stator_slot_outer_radius_mm: 3.0,
             stator_outer_radius_mm: 4.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     let materials = vec![MaterialProps {
@@ -2058,6 +2144,7 @@ fn pm_sidewall_quadrature_diagnostic_can_scale_local_coenergy() {
             stator_slot_outer_radius_mm: 3.0,
             stator_outer_radius_mm: 4.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     let materials = vec![MaterialProps {
@@ -2369,6 +2456,7 @@ fn rotor_region_labels_rotate_with_requested_angle() {
             stator_slot_outer_radius_mm: 20.0,
             stator_outer_radius_mm: 25.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     let centroids = vec![

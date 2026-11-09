@@ -49,6 +49,7 @@ const FLAT_BURIED_MAGNET_SHAPES = new Set(['straight', 'legacy_arc']);
 const SOLVE_QUALITIES = new Set(['quick', 'standard', 'fine', 'custom']);
 const MESH_DENSITIES = new Set(['coarse', 'normal', 'fine', 'very_fine']);
 const NONLINEAR_SOLVERS = new Set(['picard', 'newton']);
+const SOLVE_SYMMETRIES = new Set(['auto', 'full']);
 const CURRENT_CONVENTIONS = new Set(['rms', 'peak', 'plateau']);
 const EXCITATION_MODES = new Set(['sinusoidal', 'ideal_six_step_120']);
 
@@ -205,6 +206,7 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     || solve.linear_solver_preconditioner !== PUBLIC_MAGNETO2D_SETTINGS.linear_solver_preconditioner;
   Object.assign(solve, PUBLIC_MAGNETO2D_SETTINGS);
   if (!NONLINEAR_SOLVERS.has(solve.nonlinear_solver)) solve.nonlinear_solver = defaults.solve_params.nonlinear_solver;
+  if (!SOLVE_SYMMETRIES.has(solve.symmetry)) solve.symmetry = defaults.solve_params.symmetry;
   if (!CURRENT_CONVENTIONS.has(solve.current_amplitude_convention)) {
     solve.current_amplitude_convention = defaults.solve_params.current_amplitude_convention;
   }

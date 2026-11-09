@@ -216,8 +216,8 @@ interface CoilEmWorkspaceProps {
   onConvertProjectSteelToM350: () => void;
   onImportSteel: (material: CustomSteel, target: SteelTarget) => void;
   onMeshSettingChange: (
-    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
-    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => void;
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
@@ -3828,6 +3828,11 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
     { value: 'precise', label: 'Precise', title: 'Places mesh nodes as the benchmark report measured.' },
     { value: 'fast', label: 'Fast', title: 'About 4x faster meshing. Results move at mesh-noise level and are experimental.' },
   ];
+  const symmetry = config.solve_params.symmetry ?? 'full';
+  const symmetryChoices: Array<{ value: MotorConfig['solve_params']['symmetry']; label: string; title: string }> = [
+    { value: 'full', label: 'Full motor', title: 'Meshes and solves the whole cross-section, as the benchmark report measured.' },
+    { value: 'auto', label: 'One sector', title: 'Solves one repeating sector when the motor has one, and the full motor otherwise. Faster; results are experimental.' },
+  ];
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
@@ -4432,7 +4437,13 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
                 <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
               {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
+              <div className="public-mesh-build" role="group" aria-labelledby="public-solve-symmetry-label">
+                <span id="public-solve-symmetry-label">Solved region</span>
+                <div className="mesh-segmented-control">{symmetryChoices.map((choice) => <button type="button" className={symmetry === choice.value ? 'active' : ''} aria-pressed={symmetry === choice.value} title={choice.title} disabled={busy !== null || selectedSolver === 'elmer'} onClick={() => onMeshSettingChange('symmetry', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              </div>
+              {symmetry === 'auto' && <p className="public-mesh-build-note">Solves one repeating sector and shows the full motor. A motor that does not repeat is solved in full. Results match the full motor to mesh-noise level and are marked experimental.</p>}
               <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Meshing…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
+
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
               <span className="public-section-kicker" id="public-electromagnetic-controls-heading">Electromagnetic controls</span>

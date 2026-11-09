@@ -166,6 +166,11 @@ def build_mesh_policy_provenance(
     mesh_build = _value(solve_params, "mesh_build", "precise")
     if mesh_build != "precise":
         policy["mesh_build"] = mesh_build
+    # The full circle is what every earlier mesh covered, so it adds no key
+    # either; a sector request gets its own signature and cache entries.
+    symmetry = _value(solve_params, "symmetry", "full")
+    if symmetry != "full":
+        policy["symmetry"] = symmetry
     return policy
 
 

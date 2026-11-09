@@ -504,7 +504,14 @@ fn is_full_circle(mesh: &TriMesh) -> bool {
 fn contour_sample_count(mesh: &TriMesh) -> usize {
     let total_span_rad = mesh.info.total_span_deg.to_radians();
     let span_fraction = (total_span_rad / (2.0 * PI)).abs();
-    let default_count = ((720.0 * span_fraction).round() as usize).max(180);
+    let default_count = if mesh.info.sector.is_some() {
+        // Keep the full circle's half-degree spacing: the A_z contour
+        // differentiates over that spacing, so a sector has to use the same
+        // one to give the same torque from the same field.
+        ((720.0 * span_fraction).round() as usize).max(16)
+    } else {
+        ((720.0 * span_fraction).round() as usize).max(180)
+    };
     for name in [
         "COILEM_MAGNETO2D_CONTOUR_SAMPLES",
         "MAGNETO2D_CONTOUR_SAMPLES",
@@ -1167,16 +1174,29 @@ pub fn compute_torque_weighted_stress_debug_with_az(
         vec!["Airgap".to_string()]
     };
 
+    // The weight is a plain scalar, so it repeats from sector to sector with
+    // no sign change: each sector-edge node shares its partner's unknown.
+    let mut weight_alias: Vec<usize> = (0..mesh.nodes.len()).collect();
+    if mesh.info.sector.is_some() {
+        for &(master, slave) in &mesh.sector_edge_pairs {
+            if master != slave && master < weight_alias.len() && slave < weight_alias.len() {
+                weight_alias[slave] = master;
+            }
+        }
+    }
+
     for (tri_idx, tri) in mesh.triangles.iter().enumerate() {
         if !weighted_stress_triangle_in_domain(mesh, tri_idx, include_slots, physical_bounds) {
             continue;
         }
         airgap_triangles.push(tri_idx);
         for &node_idx in tri {
-            if global_to_local[node_idx].is_none() {
-                global_to_local[node_idx] = Some(local_to_global.len());
-                local_to_global.push(node_idx);
+            let root = weight_alias[node_idx];
+            if global_to_local[root].is_none() {
+                global_to_local[root] = Some(local_to_global.len());
+                local_to_global.push(root);
             }
+            global_to_local[node_idx] = global_to_local[root];
         }
     }
 
@@ -2009,7 +2029,7 @@ fn robust_az_case(
         let theta = total_span_rad * (sample_index as f64 + offset_fraction) / sample_count as f64;
         let point_xy_m = [radius_m * theta.cos(), radius_m * theta.sin()];
         let Some((triangle_index, b_r, b_t)) =
-            sample_contour_field_from_az(&records, az, point_xy_m, dtheta, radial_step_m)
+            sample_contour_field_from_az(&mesh.info, &records, az, point_xy_m, dtheta, radial_step_m)
         else {
             return robust_error_case(
                 "az",
@@ -2348,9 +2368,13 @@ pub fn compute_torque_midgap_contour_debug_with_samples(
     );
 
     for sample_index in 0..sample_count {
-        let theta = total_span_rad * (sample_index as f64 + sample_offset) / sample_count as f64;
-        let x = radius_m * theta.cos();
-        let y = radius_m * theta.sin();
+        let theta = mesh.info.sector_grid_shift_rad(dtheta)
+            + total_span_rad * (sample_index as f64 + sample_offset) / sample_count as f64;
+        // B_r and B_t keep their product under the sector's rotation and sign,
+        // so the equivalent point inside a sector mesh gives the same stress.
+        let ([x, y], _) = mesh
+            .info
+            .fold_point([radius_m * theta.cos(), radius_m * theta.sin()]);
 
         let mut matched: Option<(usize, [f64; 3], [usize; 3])> = None;
         for &(triangle_index, tri_xy, bbox) in &airgap_triangles {
@@ -2687,9 +2711,13 @@ fn compute_torque_midgap_contour_debug_with_radius(
     let nodal_b = compute_nodal_b_field(mesh, fields);
 
     for sample_index in 0..sample_count {
-        let theta = total_span_rad * (sample_index as f64 + sample_offset) / sample_count as f64;
-        let x = radius_m * theta.cos();
-        let y = radius_m * theta.sin();
+        let theta = mesh.info.sector_grid_shift_rad(dtheta)
+            + total_span_rad * (sample_index as f64 + sample_offset) / sample_count as f64;
+        // B_r and B_t keep their product under the sector's rotation and sign,
+        // so the equivalent point inside a sector mesh gives the same stress.
+        let ([x, y], _) = mesh
+            .info
+            .fold_point([radius_m * theta.cos(), radius_m * theta.sin()]);
 
         let mut matched: Option<(usize, [f64; 3], [usize; 3])> = None;
         for &(triangle_index, tri_xy, bbox) in &airgap_triangles {
@@ -2777,11 +2805,13 @@ fn compute_torque_midgap_contour_debug_with_radius_from_az(
     let scale_factor = pole_count as f64 / mesh.info.n_pole_pitches.max(1) as f64;
     let full_circle = (mesh.info.total_span_deg - 360.0).abs() < 1e-6;
 
-    if !full_circle {
+    // A sector mesh says how its edges repeat, so points beyond them can be sampled.
+    if !full_circle && mesh.info.sector.is_none() {
         return ContourTorqueDebug {
             status: "error".to_string(),
             error: Some(
-                "A_z-derived contour torque currently requires a full 360° model".to_string(),
+                "A_z-derived contour torque requires a full 360° model or a described sector"
+                    .to_string(),
             ),
             radius_mm: radius_m * 1e3,
             sample_count: 0,
@@ -2857,11 +2887,17 @@ fn compute_torque_midgap_contour_debug_with_radius_from_az(
     );
 
     for sample_index in 0..sample_count {
-        let theta = total_span_rad * (sample_index as f64 + sample_offset) / sample_count as f64;
+        let theta = mesh.info.sector_grid_shift_rad(dtheta)
+            + total_span_rad * (sample_index as f64 + sample_offset) / sample_count as f64;
         let point_xy_m = [radius_m * theta.cos(), radius_m * theta.sin()];
-        let Some((triangle_index, b_r, b_t)) =
-            sample_contour_field_from_az(&airgap_triangles, az, point_xy_m, dtheta, radial_step_m)
-        else {
+        let Some((triangle_index, b_r, b_t)) = sample_contour_field_from_az(
+            &mesh.info,
+            &airgap_triangles,
+            az,
+            point_xy_m,
+            dtheta,
+            radial_step_m,
+        ) else {
             return ContourTorqueDebug {
                 status: "error".to_string(),
                 error: Some(format!(
@@ -2907,8 +2943,10 @@ fn compute_torque_midgap_contour_debug_with_radius_from_az(
 
     // Always emit per-quadrant stats here — this path already gated on
     // `full_circle` above, so `full_circle` is true whenever we reach this
-    // point.
-    let per_quadrant = {
+    // point. A sector has no quadrants to compare.
+    let per_quadrant = if !full_circle {
+        None
+    } else {
         let mut first_rads: Vec<f64> = Vec::with_capacity(4);
         for q in 0..4 {
             if let Some(a) = q_first_theta_mod90[q] {
