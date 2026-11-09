@@ -11,6 +11,8 @@ from tools import qualification_carry as carry
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / 'benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json'
+# The approved v0.5.0 reports measured protocol 1.6.0; these scenarios replay that registered suite.
+V050_SUITE = 'benchmarks/abcd-v1.6/benchmark_spec.json'
 
 
 def test_identical_records_are_eligible_for_automatic_acceptance():
@@ -55,14 +57,21 @@ def test_cogging_uses_its_own_metrics_in_records_and_comparisons():
 def test_reference_reuse_preserves_registration_and_rejects_changed_geometry():
     original = read(REPORT)
     before = sha(ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR / 'manifest.json')
-    receipt = carry.reference_compatibility(original, original, ROOT / BENCHMARK_SUITE_FILE,
+    receipt = carry.reference_compatibility(original, original, ROOT / V050_SUITE,
                                             ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR)
     assert not receipt['reference_fields_mutated']
     assert sha(ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR / 'manifest.json') == before
     changed = copy.deepcopy(original)
     changed['run']['identity']['source_files']['backend/geometry_ir.py'] = 'changed'
     with pytest.raises(ValueError, match='interpretation needs review'):
-        carry.reference_compatibility(changed, original, ROOT / BENCHMARK_SUITE_FILE, ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR)
+        carry.reference_compatibility(changed, original, ROOT / V050_SUITE, ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR)
+
+
+def test_protocol_1_6_evidence_cannot_carry_into_the_newton_default_suite():
+    # Protocol 1.9.0 changes 28 requests to Newton, so v0.5.6 needs fresh measurements.
+    original = read(REPORT)
+    with pytest.raises(ValueError, match='same registered suite'):
+        carry.reference_compatibility(original, original, ROOT / BENCHMARK_SUITE_FILE, ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR)
 
 
 @pytest.fixture
@@ -80,6 +89,7 @@ def platform_inputs(tmp_path, monkeypatch):
         return original_read(previous_records.get(Path(path).resolve(), path))
 
     monkeypatch.setattr(carry, 'read', historical_read)
+    monkeypatch.setattr(carry, 'BENCHMARK_SUITE_FILE', V050_SUITE)
     root = tmp_path / 'candidate'
     field = root / 'backend/test_field.py'
     field.parent.mkdir(parents=True)

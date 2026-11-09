@@ -55,6 +55,18 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
     if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
         return ["registered reference review artifact hash mismatch"]
     review = _data(root / bundle_path, entry["file"])
+    # A solve-option bridge (protocol 1.9.0) reuses the review of the suite it was
+    # measured for; the harness's load_bundle() checks that only registered
+    # reference-independent options changed. Here: the review names that suite.
+    change = (suite.get("reference_compatibility") or {}).get("solve_option_change")
+    if change is not None:
+        measured_path = _file(root, change["measured_suite"])
+        if hashlib.sha256(measured_path.read_bytes()).hexdigest() != change["measured_suite_sha256"]:
+            return ["solve-option bridge names a changed measured suite"]
+        measured = _data(root, change["measured_suite"])
+        if [case["id"] for case in measured["cases"]] != [case["id"] for case in suite["cases"]]:
+            return ["solve-option bridge measured suite has different cases"]
+        suite, suite_sha = measured, change["measured_suite_sha256"]
     required = {case["id"] for case in suite["cases"]} - {"ornl_prius_2004_ipm"}
     if (review.get("schema") != "coilem.protocol16_reference_review/v1"
             or review.get("decision") != "ACCEPTED_FOR_REGISTERED_PARITY"
@@ -67,7 +79,7 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
     return []
 
 
-def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None = None) -> list[str]:
+def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None = None) -> list[str]:
     errors: list[str] = []
     try:
         primary = _data(root, "benchmarks/records/windows-x86_64.json")
@@ -187,7 +199,7 @@ def check(root: Path = ROOT, *, protocol: str = "1.6.0", candidate: str | None =
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", help="exact commit measured before evidence publication")
-    parser.add_argument("--protocol", default="1.6.0")
+    parser.add_argument("--protocol", default="1.9.0")
     args = parser.parse_args(argv)
     errors = check(protocol=args.protocol, candidate=args.candidate)
     print(json.dumps({"status": "BLOCKED" if errors else "PASS", "errors": errors}, indent=2))

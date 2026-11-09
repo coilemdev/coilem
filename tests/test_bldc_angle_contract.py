@@ -19,7 +19,7 @@ AXES = {"spm_14p12s_high_pole":15.0, "spm_4p12s_small":0.0, "spm_8p12s_reference
 
 
 def test_default_retains_reconciled_contract_in_the_reviewed_protocol16_bundle():
-    assert SPEC == ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+    assert SPEC == ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"
     assert DEFAULT_BUNDLE == ROOT / "benchmarks/reference-baselines/protocol16-reviewed-20261103"
     current, previous = load_suite(SPEC), load_suite(NEW)
     _, current_protocols, _ = inputs(current, current["cases"])
