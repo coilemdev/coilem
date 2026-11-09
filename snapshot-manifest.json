@@ -7725,8 +7725,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
-      "bytes": 78771,
-      "sha256": "054d746cc0f4f729ea382ddee40ffae438a4460d229054203781bd5e32865c26"
+      "bytes": 81626,
+      "sha256": "b054ade49a4cc1dea904064438af29e974f09023188dfe76f2aa64de897c6f9c"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
@@ -35133,6 +35133,12 @@
       "path": "docs/benchmarks/parallel-fallback-windows-20261108.json",
       "source_sha256": null,
       "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
+    },
+    {
+      "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+      "path": "solvers/magneto2d/src/postprocess/summary.rs",
+      "source_sha256": "054d746cc0f4f729ea382ddee40ffae438a4460d229054203781bd5e32865c26",
+      "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
     }
   ]
 }
