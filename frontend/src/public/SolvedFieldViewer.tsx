@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { outerRotorRing } from './sectorFraming';
 
-import { getPublicFieldFrame } from './api';
+import { getPublicFieldFrame, getPublicPlaybackStatus } from './api';
 import {
   FieldResultPlot,
   warmFieldResultPlot,
@@ -70,6 +70,8 @@ const CLOCKWISE_FIELD_AXES = { rotation: 'clockwise' } as const;
 const IDLE_BUFFER_FRAMES = 4;
 const DETAIL_VIEWPORT_SCALE = 1.08;
 const MAX_PLAYBACK_CATCHUP_MS = 250;
+// How often to ask whether a saved run's playback images are all drawn.
+const PLAYBACK_STATUS_POLL_MS = 1000;
 // While the position slider moves, each position shows its fast playback
 // raster. The exact ~11 MB solver frame loads only once the slider rests.
 const EXACT_FRAME_SETTLE_MS = 200;
@@ -337,6 +339,67 @@ export function SolvedFieldViewer({
     ?? angleFrames[boundedIndex]?.angle_deg
     ?? 0;
   const sourceFrames = source === 'armature' ? armatureFrames : resultantFrames;
+  // A solve's playback images are drawn after its result is saved. Hold Play
+  // until every position it shows is drawn, so playback never stalls on drawing:
+  // one status check per composition played (the PM overlay too).
+  const playbackStatusChecks = useMemo(() => {
+    const checks: { artifactId: string; composition: string }[] = [];
+    const addIfPending = (frames: PublicFieldFrameDescriptor[], composition: string) => {
+      const layers = frames.map((frame) => frame.playback_frame?.compositions[composition]).filter((layer) => layer !== undefined);
+      const pending = layers.some((layer) => (
+        [layer.base, layer.flux_density, layer.field_lines].some((ref) => ref.byte_count === null)
+      ));
+      if (pending && layers[0]) checks.push({ artifactId: layers[0].base.artifact_id, composition });
+    };
+    addIfPending(sourceFrames, source);
+    if (overlayActive) addIfPending(resultantFrames, 'pm');
+    return checks;
+  }, [overlayActive, resultantFrames, source, sourceFrames]);
+  const playbackStatusKey = playbackStatusChecks.map((check) => `${check.composition}:${check.artifactId}`).join('|');
+  const playbackStatusChecksRef = useRef(playbackStatusChecks);
+  playbackStatusChecksRef.current = playbackStatusChecks;
+  const [playbackReadiness, setPlaybackReadiness] = useState<{
+    key: string;
+    drawn: number;
+    total: number;
+    ready: boolean;
+  } | null>(null);
+  useEffect(() => {
+    if (!playbackStatusKey) return undefined;
+    let cancelled = false;
+    let timer = 0;
+    const poll = async () => {
+      try {
+        const statuses = await Promise.all(playbackStatusChecksRef.current.map(
+          (check) => getPublicPlaybackStatus(check.artifactId, check.composition),
+        ));
+        if (cancelled) return;
+        // A drawing job that has stopped with positions missing no longer holds
+        // Play: those frames are drawn on request, as before.
+        const ready = statuses.every((status) => status.ready || !status.drawing);
+        setPlaybackReadiness({
+          key: playbackStatusKey,
+          drawn: statuses.reduce((sum, status) => sum + (status.frames_drawn ?? 0), 0),
+          total: statuses.reduce((sum, status) => sum + (status.frames_total ?? 0), 0),
+          ready,
+        });
+        if (!ready) timer = window.setTimeout(() => { void poll(); }, PLAYBACK_STATUS_POLL_MS);
+      } catch {
+        // Without a status, Play falls back to drawing frames on request.
+        if (!cancelled) setPlaybackReadiness({ key: playbackStatusKey, drawn: 0, total: 0, ready: true });
+      }
+    };
+    void poll();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [playbackStatusKey]);
+  const playbackPreparing = playbackStatusKey !== ''
+    && !(playbackReadiness?.key === playbackStatusKey && playbackReadiness.ready);
+  const playbackPreparingLabel = playbackReadiness?.key === playbackStatusKey && playbackReadiness.total > 0
+    ? `Preparing playback ${playbackReadiness.drawn}/${playbackReadiness.total}`
+    : 'Preparing playback…';
   const descriptor = streamingArmatureFrame ?? nearestFrame(sourceFrames, electricalAngleDeg);
   const artifactId = descriptor?.field_frame_artifact.artifact_id ?? null;
   const exactFrameSettled = artifactId !== null && settledArtifactId === artifactId;
@@ -1014,6 +1077,13 @@ export function SolvedFieldViewer({
     selectSource(nextPm && nextStator ? 'stator_pm' : nextPm ? 'pm' : nextStator ? 'armature' : 'resultant');
   };
 
+  // Switching to a view whose playback is still being drawn stops playback.
+  useEffect(() => {
+    if (!playbackPreparing) return;
+    setPlaying(false);
+    setPlaybackWaiting(false);
+  }, [playbackPreparing]);
+
   // Play and pause from the shown position; stop goes back to the first, as
   // in the Geometry preview.
   const togglePlayback = () => {
@@ -1254,10 +1324,12 @@ export function SolvedFieldViewer({
             className="public-field-transport-play"
             type="button"
             aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
-            title={colorRangeMode === 'viewport'
-              ? 'Switch the flux-density range to Fixed to animate.'
-              : 'Clockwise — follows the public solve angle convention'}
-            disabled={angleFrames.length < 2 || colorRangeMode === 'viewport'}
+            title={playbackPreparing
+              ? `${playbackPreparingLabel}: Play starts once every position is drawn.`
+              : colorRangeMode === 'viewport'
+                ? 'Switch the flux-density range to Fixed to animate.'
+                : 'Clockwise — follows the public solve angle convention'}
+            disabled={angleFrames.length < 2 || colorRangeMode === 'viewport' || playbackPreparing}
             onClick={togglePlayback}
           >
             {playing ? 'Ⅱ' : '▶'}
@@ -1281,6 +1353,9 @@ export function SolvedFieldViewer({
             title="Visual playback speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
             onChange={setPlaybackRpm}
           />
+          {playbackPreparing && (
+            <span className="public-field-playback-preparing" role="status" aria-live="polite">{playbackPreparingLabel}</span>
+          )}
         </div>
       </div>
     </section>

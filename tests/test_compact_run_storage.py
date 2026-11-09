@@ -450,3 +450,88 @@ def test_starting_to_draw_a_run_without_playback_does_nothing(data_root: Path) -
     run_field_playback.start_drawing(workspace, location.project_slug, location.run_id)
     run_field_playback.start_drawing(workspace, location.project_slug, location.run_id, mode="not-a-mode")
     assert not run_playback_dir(location.project_slug, location.run_id).exists()
+
+
+def _deferred_run(workspace: SolveWorkspace, tag: str):
+    """A saved run whose two positions' playback images are named but not drawn yet."""
+
+    frames = _drawable_frames(solve_cache_root() / f"magneto2d-{tag}")
+    deferred, _ = public_field_playback.build_public_field_playback(frames, mode="resultant_pm", draw_images=False)
+    result = {"summary": {"avg_torque_Nm": 1.0}, "solve_metadata": {"solver_name": "test"}, "field_line_frames": frames, "field_playback": deferred}
+    location = _save(workspace, result)
+    stored = workspace.load_run(location.project_slug, location.run_id)["result"]["field_playback"]
+    return location, stored["frames"][0]["compositions"]["resultant"]["layers"]["geometry"]["artifact_id"]
+
+
+def test_playback_status_holds_play_until_every_position_is_drawn(data_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from concurrent.futures import Future
+
+    from fastapi.testclient import TestClient
+
+    from backend import run_field_playback
+    from backend.public_main import app
+
+    monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
+    location, base_id = _deferred_run(SolveWorkspace(data_root), "status")
+    output = run_playback_dir(location.project_slug, location.run_id) / "resultant_pm"
+    pending: Future = Future()
+    started: list[int] = []
+
+    def fake_render_job(workspace, project_slug, run_id, mode, output_dir, index):
+        started.append(index)
+        run_field_playback._JOBS[output_dir] = {0: pending, 1: pending}
+        return pending
+
+    monkeypatch.setattr(run_field_playback, "_render_job", fake_render_job)
+    monkeypatch.setitem(run_field_playback._JOBS, output, None)
+    del run_field_playback._JOBS[output]
+    client = TestClient(app, base_url="http://127.0.0.1")
+
+    def status(composition: str = "resultant"):
+        return client.get(f"/solve/playback-status/{base_id}", params={"composition": composition})
+
+    # Nothing drawn and nothing drawing: the status starts drawing, once.
+    first = status()
+    assert first.status_code == 200, first.text
+    assert first.json() == {"frames_total": 2, "frames_drawn": 0, "drawing": True, "ready": False}
+    assert status().json()["drawing"] is True and started == [0]
+
+    # A position counts once its base, flux and field-line layers for the viewed composition exist.
+    output.mkdir(parents=True, exist_ok=True)
+    for layer in ("base", "resultant_flux", "resultant_lines"):
+        (output / f"frame_0000_{layer}.webp").write_bytes(b"RIFF")
+    assert status().json()["frames_drawn"] == 1
+    assert status("pm").json()["frames_drawn"] == 0
+
+    # A finished job with positions still missing stops the wait: those draw on request.
+    pending.set_result(0)
+    assert status().json() == {"frames_total": 2, "frames_drawn": 1, "drawing": False, "ready": False}
+    for layer in ("base", "resultant_flux", "resultant_lines"):
+        (output / f"frame_0001_{layer}.webp").write_bytes(b"RIFF")
+    assert status().json() == {"frames_total": 2, "frames_drawn": 2, "drawing": False, "ready": True}
+    assert started == [0]
+
+    # A composition the mode does not draw, an image that is not a run's, and a run without frames.
+    assert status("armature").status_code == 404
+    unsaved = client.get("/solve/playback-status/not-a-run-image")
+    assert unsaved.status_code == 200 and unsaved.json()["ready"] is True
+    _save(SolveWorkspace(data_root), {"summary": {"avg_torque_Nm": 2.0}, "solve_metadata": {"solver_name": "test"}})
+    assert status().status_code == 404
+
+
+def test_playback_status_reports_ready_once_background_drawing_finishes(data_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from fastapi.testclient import TestClient
+
+    from backend import run_field_playback
+    from backend.public_main import app
+
+    monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
+    workspace = SolveWorkspace(data_root)
+    location, base_id = _deferred_run(workspace, "status-real")
+    run_field_playback.start_drawing(workspace, location.project_slug, location.run_id)
+    for future in run_field_playback._JOBS[run_playback_dir(location.project_slug, location.run_id) / "resultant_pm"].values():
+        future.result(timeout=60)
+    client = TestClient(app, base_url="http://127.0.0.1")
+    for composition in ("resultant", "pm"):
+        response = client.get(f"/solve/playback-status/{base_id}", params={"composition": composition})
+        assert response.json() == {"frames_total": 2, "frames_drawn": 2, "drawing": False, "ready": True}

@@ -762,6 +762,27 @@ def get_public_field_frame(artifact_id: str) -> dict[str, Any]:
     }
 
 
+@router.get("/solve/playback-status/{artifact_id}", tags=["solve"])
+def get_public_playback_status(artifact_id: str, composition: str = "resultant") -> dict[str, Any]:
+    """How far a saved run's playback images are drawn, so the viewer can hold Play until they are.
+
+    ``artifact_id`` is any of the run's playback images for the mode being
+    viewed. Images that are not a saved run's were drawn with their result,
+    so they are always ready. Sync, so FastAPI runs it in its threadpool.
+    """
+
+    playback = _saved_run_playback_location(artifact_id)
+    if playback is None:
+        return {"frames_total": None, "frames_drawn": None, "drawing": False, "ready": True}
+    project_slug, run_id, relative = playback
+    mode = run_field_playback.playback_mode(relative)
+    try:
+        progress = run_field_playback.drawing_progress(SolveWorkspace(), project_slug, run_id, mode or "", composition)
+    except (FileNotFoundError, SolveWorkspaceError) as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="playback not found") from exc
+    return dict(progress)
+
+
 @router.get("/solve/playback-frame/{artifact_id}", tags=["solve"])
 async def get_public_playback_frame(artifact_id: str) -> FileResponse:
     """Return one pre-rasterized PNG or WebP layer by opaque local-cache id."""
