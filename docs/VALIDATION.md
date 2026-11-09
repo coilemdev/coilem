@@ -201,7 +201,11 @@ statuses, and mean torque, back-EMF fundamental and back-EMF peak within
 0.5%, 0.05% and 1.5% of the record. Those tolerances come from the measured
 difference between macOS and Windows. The physics sources are checked by hash
 first, so a release with unchanged physics is matched against a record
-measured at an earlier commit.
+measured at an earlier commit. The installed Gmsh and meshio versions must
+also be the ones the record measured, since a mesher upgrade can change a mesh
+with every source unchanged. The request policy (`backend/public_policy.py`)
+is not a physics source: it only accepts or rejects a request, and a test
+holds it to that for every registered case.
 
 Each case's solver files are deleted when it finishes. The run stops before a
 case if the output drive has less than 3 GB free; `--resume --out <folder>`

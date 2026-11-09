@@ -152,7 +152,7 @@ def test_reviewed_candidate_join_reproduces_complete_evidence_without_fields(tmp
 
 
 @pytest.mark.parametrize("source", [
-    "backend/public_policy.py", "backend/solver/__init__.py", "backend/solver/_helpers.py",
+    "backend/models/config.py", "backend/solver/__init__.py", "backend/solver/_helpers.py",
     "backend/sweep_planning.py", "materials/electrical-steel/M350-50A.csv",
     "solvers/magneto2d/Cargo.lock",
 ])
