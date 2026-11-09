@@ -12,6 +12,7 @@ from backend import field_artifacts
 
 SteelRegionBucket = Literal["teeth", "yoke"]
 SteelFluxDensityAccumulator = dict[SteelRegionBucket, dict[str, float]]
+_REGION_CLASSIFICATION_CACHE_LIMIT = 128
 
 
 def new_steel_flux_density_rms_accumulator() -> SteelFluxDensityAccumulator:
@@ -48,8 +49,21 @@ def update_steel_flux_density_rms_accumulator(
     if not has_mag and not has_xy:
         return
 
+    # Frames repeat a small set of labels. Cache their classification without
+    # retaining geometry or changing the order of floating-point operations.
+    region_cache: dict[str, SteelRegionBucket | None] = {}
     for index, triangle in enumerate(triangles):
-        bucket = _steel_region_bucket(regions[index])
+        region = regions[index]
+        if type(region) is str:
+            try:
+                bucket = region_cache[region]
+            except KeyError:
+                bucket = _steel_region_bucket(region)
+                if len(region_cache) < _REGION_CLASSIFICATION_CACHE_LIMIT:
+                    region_cache[region] = bucket
+        else:
+            # Preserve arbitrary objects' existing truthiness/string behavior.
+            bucket = _steel_region_bucket(region)
         if bucket is None:
             continue
         area_mm2 = _triangle_area_mm2(nodes, triangle)

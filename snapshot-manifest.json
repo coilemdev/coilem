@@ -680,8 +680,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 7570,
-      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69"
+      "bytes": 8249,
+      "sha256": "5194008b02d9ee294c9ecba58d3eecfeb52c490eb4391b37d53ecbaebe920b58"
     },
     {
       "path": "backend/sweep_planning.py",
@@ -14017,6 +14017,11 @@
       "path": "docs/benchmarks/parallel-fallback-windows-20261108.json",
       "bytes": 31742,
       "sha256": "a763cbb9d8178e2af7b26e7113f64d650080792bf41863482495843e03792b86"
+    },
+    {
+      "path": "tests/test_steel_region_cache.py",
+      "bytes": 10995,
+      "sha256": "4b115518c8d83bf1ab6232b8360c8038506ed25fdcb6dd562e58a3d394b740af"
     }
   ],
   "public_patches": [
@@ -35133,6 +35138,18 @@
       "path": "docs/benchmarks/parallel-fallback-windows-20261108.json",
       "source_sha256": null,
       "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
+    },
+    {
+      "base_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+      "path": "backend/steel_flux_metrics.py",
+      "source_sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+      "reason": "Cache exact string region classifications within a bounded per-frame dictionary; retain original malformed-input handling and floating-point calculation order."
+    },
+    {
+      "base_commit": "5e140b90a97dfd6fc3caf43c1a25fbfd8695e2cd",
+      "path": "tests/test_steel_region_cache.py",
+      "source_sha256": null,
+      "reason": "Cache exact string region classifications within a bounded per-frame dictionary; retain original malformed-input handling and floating-point calculation order."
     }
   ]
 }
