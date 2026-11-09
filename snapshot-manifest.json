@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 167467,
-      "sha256": "cb38b92ea680006344f234c695301a08847ccb7f43834b126d4db44cf837c61a"
+      "bytes": 167523,
+      "sha256": "30ea3157c48c7e369507c33af8de52bbe0ce8b674cf4d9d28b5255a810e3a973"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 245788,
-      "sha256": "fd51f139e35c75adbcd10a306c69877df606f8b33e2ced6a570d5f28736b17e4"
+      "bytes": 245474,
+      "sha256": "d03fe13160a493dc4dcaf16f837fef93bc50392ad36386c4fd161bc87471593f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",

@@ -1975,13 +1975,8 @@ function ViewportChrome({
   }, [focusedMeshElementIndex, mesh, meshQualitySummary, mode]);
   const activeMeshElement = hoveredMeshElement ?? focusedMeshElement;
 
-  // The geometry views' title bar ends with the regions readout. The Mesh tab
-  // has none: its element count and quality are in the run plan beside it.
-  const cadStatus = mode === 'mesh' ? null : (
-    <div className="viewport-cad-status">
-      {geometry?.regions.length ?? 0} regions · {geometry ? formatNumber(geometry.generation_time_ms, 0) : '—'} ms
-    </div>
-  );
+  // The title bar has no regions/build-time readout: its space goes to the
+  // sector navigation, zoom and fit controls.
   const primaryViewModes = mode === 'geometry' ? (
     <span className="vc-group public-primary-view-modes" role="group" aria-label="Motor view mode">
       {(['2d', '3d', 'materials', 'layout'] as const).map((viewMode) => {
@@ -2227,7 +2222,6 @@ function ViewportChrome({
           <div className="public-dock-strip">
             {titleBar}
             <div className="public-dock-strip-end">
-              {cadStatus}
               <span className="public-dock-nav-slot" ref={setNavigationSlot} />
               {viewportMode === '3d' && (
                 <button type="button" className="public-dock-reset-view" onClick={() => setThreeResetSignal((value) => value + 1)}>Reset view</button>
@@ -2432,7 +2426,6 @@ function ViewportChrome({
             </span>
           )}
         </div>
-        {!titleBar && cadStatus}
       </div>
     </section>
   );

@@ -961,16 +961,17 @@ assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHei
 assert.doesNotMatch(workspaceSource, /\{solveView !== 'field' && solveViewportSwitch\}/);
 assert.match(workspaceSource, /dockStrip=\{solveViewportSwitch\}\s*isExpanded=\{solveViewportExpanded\}/);
 assert.match(workspaceSource, /const titleBar = dockStrip \?\? primaryViewModes;/);
-assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*\{cadStatus\}\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
+assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
 assert.match(workspaceSource, /\{onExpandToggle && <ViewportExpandButton expanded=\{isExpanded\} inline onToggle=\{onExpandToggle\} \/>\}/);
-assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
+// The design viewer's title bar gives its space to sector navigation, zoom and fit: no regions/build-time readout.
+assert.doesNotMatch(workspaceSource, /cadStatus/);
+assert.doesNotMatch(workspaceSource, /\} regions · \{/);
 // Solve's Geometry tab is the 2D section that gets solved: no second row of view tabs.
 assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
 assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
-// The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
-assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
+// The Mesh tab's element count and quality are in the run plan, not the title bar.
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
 assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
