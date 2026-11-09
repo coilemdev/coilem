@@ -8080,8 +8080,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "bytes": 35514,
-      "sha256": "79fb3f7ba49d0ba20f39b5d9ccb37a850984239b9294652bbf0173d98be21343"
+      "bytes": 36283,
+      "sha256": "8e552dc20646c0065f2bce13dcbaf2edf1177087f798360f3ebd2ce946904f57"
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",

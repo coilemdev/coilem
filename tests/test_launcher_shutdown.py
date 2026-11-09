@@ -443,6 +443,25 @@ def _playback_futures_done(futures, timeout=5):
     return all(future.done() for future in futures)
 
 
+def _worker_exited(worker, timeout: float) -> bool:
+    """True once a pool's worker process has exited, polled rather than asked once.
+
+    The pool's manager thread reaps a killed worker at the same moment as
+    this thread. When it wins, this thread's waitpid() fails with ECHILD and
+    multiprocessing reports that one call as "still running", although the
+    process is gone (exit code -SIGKILL on the next call). A single
+    join()/is_alive() therefore failed about once in 20 runs on Linux and
+    macOS, with the worker already stopped.
+    """
+    deadline = time.monotonic() + timeout
+    while True:
+        worker.join(timeout=0.1)
+        if not worker.is_alive():
+            return True
+        if time.monotonic() >= deadline:
+            return False
+
+
 def test_background_playback_workers_stop_during_application_exit(playback_pool):
     pool, folder = playback_pool
     run_field_playback._render_job(None, "project", "run", "resultant_pm", folder, 0)
@@ -456,8 +475,7 @@ def test_background_playback_workers_stop_during_application_exit(playback_pool)
     _process_pool.terminate_process_pools()
 
     for worker in workers:
-        worker.join(timeout=5)
-        assert not worker.is_alive(), "background playback escaped application shutdown"
+        assert _worker_exited(worker, timeout=10), f"background playback escaped application shutdown: {worker!r}"
     assert _playback_futures_done(run_field_playback._JOBS[folder].values())
     deadline = time.monotonic() + 5
     while pool in _process_pool._LIVE_POOLS and time.monotonic() < deadline:
