@@ -96,5 +96,8 @@
   "public_html_sha256": "a71ed5aed8d498097af51b5eea650cc676808065cca27ad855f55dd8d23cb068",
   "run_identity_requests_result_hashes_unchanged": true,
   "all_numerical_values_configs_gates_and_verdicts_unchanged": true,
-  "raw_fields_mutated": false
+  "raw_fields_mutated": false,
+  "original_artifact_manifest_sha256": "37b092d77bf48ba54b8cdda5c3d2e834450e14a734292b71e6445cf8f4e74c59",
+  "public_artifact_manifest_sha256": "c19aff803e2a1972f2ce2d347a36c656f57d1857d008bcab22512b235ae12885",
+  "artifact_manifest_updated_for_derived_public_report": true
 }
