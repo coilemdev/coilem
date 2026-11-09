@@ -37,7 +37,9 @@ def _diff(a, b, path=()):
 def test_the_suite_is_the_14_matrix_plus_the_reference_gate_cases():
     spec, previous = load_suite(SUITE), load_suite(PREVIOUS)
     assert spec["protocol_version"] == "1.6.0" and "1.6.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.6.0" and SPEC == SUITE
+    # Protocol 1.9.0, the default from v0.5.6, is this suite with Newton for its Picard requests.
+    bridge = read(SPEC)["reference_compatibility"]["solve_option_change"]
+    assert PROTOCOL_VERSION == "1.9.0" and bridge["measured_suite"] == "benchmarks/abcd-v1.6/benchmark_spec.json"
     assert spec["cases"][: len(previous["cases"])] == previous["cases"]
     added = spec["cases"][len(previous["cases"]) :]
     assert [case["id"] for case in added] == spec["extension"]["added_cases"] and len(added) == 17

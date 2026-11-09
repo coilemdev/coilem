@@ -733,7 +733,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     mesh_build: 'precise',
     rotor_rotation_model: 'remesh_per_step',
     torque_method: 'weighted_stress',
-    nonlinear_solver: 'picard',
+    nonlinear_solver: 'newton',
     linear_solver_preconditioner: 'direct',
     current_amplitude_A: 30,
     current_amplitude_convention: 'rms',

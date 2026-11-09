@@ -21,11 +21,11 @@ SPEC = ROOT / "benchmarks/abcd-v1.7/benchmark_spec.json"
 BASE_SPEC = ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
 
 
-def test_phase_e_is_its_own_suite_and_1_6_stays_the_default() -> None:
+def test_phase_e_is_its_own_suite_and_1_9_is_the_default() -> None:
     spec = load_suite(SPEC)
     assert PHASE_LABELS["E"] == "Cogging"
     assert spec["protocol_version"] == "1.7.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.6.0"
+    assert PROTOCOL_VERSION == "1.9.0"
     assert {case["phase"] for case in spec["cases"]} == {"E"}
     assert len(spec["cases"]) == 12
     assert spec["phase_e"]["status"] == "PROPOSED_NOT_REGISTERED"

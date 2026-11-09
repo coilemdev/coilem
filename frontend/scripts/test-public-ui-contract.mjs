@@ -851,8 +851,9 @@ assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);
 assert.match(workspaceSource, /<dt>Torque method<\/dt><dd>WST<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('nonlinear_solver'/);
-assert.match(workspaceSource, /Picard \(recommended\)/);
-assert.match(workspaceSource, /Newton \(experimental\)/);
+assert.match(workspaceSource, /Newton \(recommended\)/);
+assert.match(workspaceSource, /\{ value: 'picard', label: 'Picard' \}/);
+assert.doesNotMatch(workspaceSource, /Newton \(experimental\)/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Linear solver"/);
 assert.match(workspaceSource, /<dt>Linear solver<\/dt><dd>Direct Cholesky<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('current_amplitude_convention'/);
@@ -882,7 +883,7 @@ assert.match(modelSource, /corner_refinement: true/);
 assert.match(modelSource, /solve_quality: 'standard'/);
 assert.match(modelSource, /mesh_density: 'normal'/);
 assert.match(modelSource, /torque_method: 'weighted_stress'/);
-assert.match(modelSource, /nonlinear_solver: 'picard'/);
+assert.match(modelSource, /nonlinear_solver: 'newton'/);
 assert.match(modelSource, /linear_solver_preconditioner: 'direct'/);
 assert.match(modelSource, /cogging_torque_waveform\?/);
 assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
@@ -960,16 +961,17 @@ assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHei
 assert.doesNotMatch(workspaceSource, /\{solveView !== 'field' && solveViewportSwitch\}/);
 assert.match(workspaceSource, /dockStrip=\{solveViewportSwitch\}\s*isExpanded=\{solveViewportExpanded\}/);
 assert.match(workspaceSource, /const titleBar = dockStrip \?\? primaryViewModes;/);
-assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*\{cadStatus\}\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
+assert.match(workspaceSource, /<div className="public-dock-strip">\s*\{titleBar\}\s*<div className="public-dock-strip-end">\s*<span className="public-dock-nav-slot" ref=\{setNavigationSlot\} \/>/);
 assert.match(workspaceSource, /\{onExpandToggle && <ViewportExpandButton expanded=\{isExpanded\} inline onToggle=\{onExpandToggle\} \/>\}/);
-assert.match(workspaceSource, /\{!titleBar && cadStatus\}/);
+// The design viewer's title bar gives its space to sector navigation, zoom and fit: no regions/build-time readout.
+assert.doesNotMatch(workspaceSource, /cadStatus/);
+assert.doesNotMatch(workspaceSource, /\} regions · \{/);
 // Solve's Geometry tab is the 2D section that gets solved: no second row of view tabs.
 assert.doesNotMatch(workspaceSource, /\{dockStrip && primaryViewModes\}/);
 assert.doesNotMatch(workspaceSource, /is-expandable/);
 assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
-// The Mesh tab's title bar has no readout: its element count and quality are in the run plan.
-assert.match(workspaceSource, /const cadStatus = mode === 'mesh' \? null : \(/);
+// The Mesh tab's element count and quality are in the run plan, not the title bar.
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
 assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
