@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 161670,
-      "sha256": "854042c818109ba97a309107a227c665769b3b290355e00d68e937059f74ef6f"
+      "bytes": 168943,
+      "sha256": "33b923d60547287b57680b63ac15d3106c63ffb7fb3504b6ce5e704872214a25"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -660,8 +660,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 6202,
-      "sha256": "30ce3ecfe5b819c226596ca222456b3fdff1d4b0e2b53f62628aa33875ed0a0f"
+      "bytes": 6440,
+      "sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7"
     },
     {
       "path": "backend/solver/convergence.py",
@@ -13822,6 +13822,26 @@
       "path": "tests/test_fast_json.py",
       "bytes": 2663,
       "sha256": "a6a752e9fc0aa286323a8f01f3d490cb9d02cf3842cbd4677af087a82ee71372"
+    },
+    {
+      "path": "tests/test_field_frame_locality.py",
+      "bytes": 8936,
+      "sha256": "a04f7cd616f5fa34d5269d7752b8cead3e375e0057b0a41778c9058f4c9a0bf6"
+    },
+    {
+      "path": "tests/test_field_frame_pipeline.py",
+      "bytes": 13353,
+      "sha256": "91216104103f5a9e0e4643fc03d2d8a191830f9b20dbed68ed977b2e7b6412ab"
+    },
+    {
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.md",
+      "bytes": 5729,
+      "sha256": "588adcfec49c33c09a15124b0e38850522dc0e492d6980115a02127ac4502c32"
+    },
+    {
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.json",
+      "bytes": 7758,
+      "sha256": "6cfd781cf091150ccbd65a477976c65b10f8a38db304f02806bc78e93011c84b"
     },
     {
       "path": "benchmarks/abcd-v1.9/README.md",
@@ -35038,6 +35058,42 @@
       "path": "tests/test_compact_run_storage.py",
       "source_sha256": "f759b6043a8ce183c6cef6674bb6d2593fb23c205bec1ab7433c220bc88204e1",
       "reason": "#221 playback CI: wait for background image futures before pruning or asserting the complete redraw; preserve all pixel and retention assertions."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "854042c818109ba97a309107a227c665769b3b290355e00d68e937059f74ef6f",
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "30ce3ecfe5b819c226596ca222456b3fdff1d4b0e2b53f62628aa33875ed0a0f",
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "tests/test_field_frame_locality.py",
+      "source_sha256": null,
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "tests/test_field_frame_pipeline.py",
+      "source_sha256": null,
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.md",
+      "source_sha256": null,
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.json",
+      "source_sha256": null,
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
     }
   ]
 }
