@@ -1,0 +1,688 @@
+{
+  "schema": "coilem.windows_femm_release_results/v1",
+  "report_date": "2026-11-09",
+  "status": "DRAFT_PARTIAL",
+  "scope": "Fresh Windows A-D FEMM reference reproduction and historical context; current native grading and F pending",
+  "measurement_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+  "publication_base_commit": "11aa06b1aa45ceac7d3d1b7cd75fa96463b0c894",
+  "measurement_covers_publication_base": false,
+  "F_request_solver_at_measurement_pin": "Picard",
+  "later_F_Newton_amendment_measured": false,
+  "reference_validation_status": "REVIEW_REQUIRED",
+  "reference_approval_or_promotion": false,
+  "qualification_promoted": false,
+  "physics_gates_or_registered_references_changed": false,
+  "fresh_ad_reference_reproduction": {
+    "case_count": 46,
+    "phase_case_counts": {
+      "A": 19,
+      "B": 20,
+      "C": 4,
+      "D": 3
+    },
+    "numeric_leaves": 26633,
+    "changed_numeric_leaves": 0,
+    "max_absolute_delta": 0.0,
+    "max_relative_delta_nonzero_baseline": 0.0,
+    "exact_numeric_cases": 46,
+    "exact_result_cases_after_explicit_exclusions": 46,
+    "explicit_timing_or_location_exclusions": [
+      "solve_metadata.postprocess_source_cache_dir",
+      "solve_metadata.postprocess_time_s",
+      "solve_metadata.solve_cache_dir",
+      "solve_metadata.solve_time_s",
+      "solve_metadata.solver_cpu_time_s",
+      "solve_metadata.timestamp",
+      "solve_time_s",
+      "summary.solve_time_s"
+    ],
+    "status": "COMPLETE_REFERENCE_ONLY",
+    "cases": [
+      {
+        "case_id": "spm_4p12s_simple__baseline",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_4p12s_simple__high_current",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__baseline",
+        "phase": "A",
+        "numeric_leaves": 451,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__high_current",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__tight_airgap",
+        "phase": "A",
+        "numeric_leaves": 451,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__baseline",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__high_current",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__tight_airgap",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_reference_angle30__baseline",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_12s10p_fscw_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_24s16p_industrial_contract",
+        "phase": "B",
+        "numeric_leaves": 490,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_4p12s_micro_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_baseline_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+        "phase": "B",
+        "numeric_leaves": 382,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_12p36s_distributed_femm_validation",
+        "phase": "C",
+        "numeric_leaves": 922,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p24s_distributed_femm_validation",
+        "phase": "C",
+        "numeric_leaves": 706,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p48s_chorded_5_6",
+        "phase": "C",
+        "numeric_leaves": 1138,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p48s_distributed_femm_validation",
+        "phase": "C",
+        "numeric_leaves": 1138,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "phase": "D",
+        "numeric_leaves": 577,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "phase": "D",
+        "numeric_leaves": 289,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "phase": "D",
+        "numeric_leaves": 289,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_example_shoed",
+        "phase": "A",
+        "numeric_leaves": 452,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__magnet_60C",
+        "phase": "A",
+        "numeric_leaves": 454,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__magnet_100C",
+        "phase": "A",
+        "numeric_leaves": 454,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I20_g0",
+        "phase": "A",
+        "numeric_leaves": 1028,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I20_g30",
+        "phase": "A",
+        "numeric_leaves": 1028,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I20_g60",
+        "phase": "A",
+        "numeric_leaves": 1028,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I40_g0",
+        "phase": "A",
+        "numeric_leaves": 1028,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I40_g30",
+        "phase": "A",
+        "numeric_leaves": 1028,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I40_g60",
+        "phase": "A",
+        "numeric_leaves": 1028,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+        "phase": "B",
+        "numeric_leaves": 384,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+        "phase": "B",
+        "numeric_leaves": 384,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+        "phase": "B",
+        "numeric_leaves": 678,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+        "phase": "B",
+        "numeric_leaves": 678,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+        "phase": "B",
+        "numeric_leaves": 678,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+        "phase": "B",
+        "numeric_leaves": 678,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+        "phase": "B",
+        "numeric_leaves": 678,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+        "phase": "B",
+        "numeric_leaves": 678,
+        "changed_numeric_leaves": 0,
+        "max_absolute_delta": 0.0,
+        "max_relative_delta_nonzero_baseline": 0.0,
+        "exact_numeric": true,
+        "exact_result_after_explicit_exclusions": true
+      }
+    ]
+  },
+  "pending": {
+    "current_native_vs_femm_AD": "PENDING_FULL_REFERENCE_SEAL_AND_GRADING",
+    "fresh_F_reference_reproduction": "PENDING_COLLECTION_AND_VERIFICATION",
+    "current_native_vs_femm_F": "PENDING_FULL_REFERENCE_SEAL_AND_GRADING",
+    "full_dataset_seal": "PENDING"
+  },
+  "historical_baselines": {
+    "v0.5.1": {
+      "application_tag": "v0.5.1",
+      "tag_commit": "5a3e80a0a91c715ad6268cfb7caedde3e8ffa427",
+      "actual_measured_native_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+      "protocol_version": "1.6.0",
+      "tag_bridge": {
+        "guarded_files": 64,
+        "hash_mismatches": 0,
+        "no_new_fields_solved_at_tag": true,
+        "scope": "Guarded physics files only; not every repository file"
+      }
+    },
+    "v0.5.5": {
+      "application_tag": "v0.5.5",
+      "tag_commit": "63c7f2b0911871954c6aac9522ab6ad8e7dee9f3",
+      "actual_measured_native_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+      "protocol_version": "1.6.0 for A-D;1.8.0 for historical F",
+      "tag_bridge": {
+        "guarded_files": 69,
+        "hash_mismatches": 0,
+        "no_new_fields_solved_at_tag": true,
+        "scope": "Guarded physics files only; not every repository file"
+      }
+    }
+  },
+  "historical_AD": {
+    "same_registered_protocol": "1.6.0",
+    "supported_measurement_job_stages": 52,
+    "supported_case_comparisons": 46,
+    "case_counts_each": {
+      "PASS": 46,
+      "UNSUPPORTED": 1
+    },
+    "phase_counts_each": {
+      "A": {
+        "PASS": 19
+      },
+      "B": {
+        "PASS": 20
+      },
+      "C": {
+        "PASS": 4,
+        "UNSUPPORTED": 1
+      },
+      "D": {
+        "PASS": 3
+      }
+    },
+    "gate_counts_each": {
+      "PASS": 336
+    },
+    "unsupported_case": "ornl_prius_2004_ipm",
+    "independent_recheck": {
+      "historical_native_waveform_stages_compared": 52,
+      "historical_native_waveform_field_mismatches": 0,
+      "v051_fresh_FEMM_vs_v055_retained_reference_cases_compared": 46,
+      "reference_waveform_field_mismatches": 0,
+      "processing": "Exact published values; no fitting, rounding, filtering, interpolation, sign changes or angle alignment"
+    },
+    "worst_non_nearzero_mean_torque": {
+      "case_id": "ipm_vshape_8p12s_baseline_contract",
+      "error_pct": 7.02242572189126,
+      "absolute_error_Nm": 0.05885411822576936,
+      "status": "PASS"
+    },
+    "worst_nearzero_mean_torque": {
+      "case_id": "spm_4p12s_simple_noload__tight_airgap",
+      "absolute_error_Nm": 0.0020151904522276386,
+      "registered_PASS_floor_Nm": 0.01,
+      "status": "PASS",
+      "interpretation": "Relative percentage is ill-conditioned near zero; unchanged absolute gate applies"
+    },
+    "worst_back_emf_fundamental": {
+      "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "error_pct": 8.606234202935251,
+      "status": "PASS"
+    },
+    "worst_back_emf_peak": {
+      "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "error_pct": 9.806929874448405,
+      "status": "PASS"
+    },
+    "reference_lineage": "The v0.5.1 overnight run solved 46 fresh FEMM cases. PR218/v0.5.5 reused the unchanged published reviewed reference bundle; it was not a second fresh run."
+  },
+  "historical_F": {
+    "measured_native_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+    "protocol_version": "1.8.0",
+    "case_counts": {
+      "PASS": 10
+    },
+    "gate_counts": {
+      "PASS": 60
+    },
+    "validation_status": "REVIEW_REQUIRED",
+    "status": "COMPLETE_WITH_FLAGS",
+    "standard_single_producer_contract_satisfied": false,
+    "source_cohorts": {
+      "normal_reference_commit": "7d9445c7f328fabb8aff13141b105769f1c1f644",
+      "hub_variant_reference_commit": "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+      "hub_bulk_mesh_mm": 0.5
+    },
+    "worst_loaded_torque_error_pct": 0.8623404076740229,
+    "worst_loaded_torque_case": "spm_outer_12p9s_micro__baseline",
+    "worst_back_emf_fundamental_error_pct": 0.3120068295460395,
+    "worst_back_emf_peak_error_pct": 0.35872204354797216,
+    "mesh_controls": {
+      "drone_tight_airgap": {
+        "torque_delta_pct": 0.03620973401267402,
+        "fundamental_delta_pct": 0.011208844418328359
+      },
+      "micro_baseline": {
+        "torque_delta_pct": 0.7073571772847043,
+        "fundamental_delta_pct": 0.1554965109403121
+      },
+      "limit_pct_strictly_below": 2.0,
+      "both_pass": true
+    },
+    "inherited_LRK": {
+      "original": {
+        "PASS": 9,
+        "FAIL": 2
+      },
+      "refined": {
+        "PASS": 9,
+        "FAIL": 2
+      },
+      "remaining_fail_indices": [
+        5,
+        10
+      ],
+      "waived_or_reclassified": false
+    },
+    "no_matched_v051_F_cohort_found": true
+  },
+  "historical_cogging_context": {
+    "application_measurement_commit": "a4f9f4dccf2ba3aad530e7bd1604ece8eeaca86f",
+    "protocol_version": "1.7.0",
+    "original_reference_counts": {
+      "PASS": 9,
+      "FAIL": 3
+    },
+    "selected_refined_reference_counts": {
+      "PASS": 10,
+      "YELLOW": 2
+    },
+    "retained_YELLOW_cases": {
+      "spm_8p24s_distributed_femm_validation__cogging": {
+        "peak_to_peak_error_pct": 10.73,
+        "H1_error_pct": 10.17
+      },
+      "spm_12p36s_distributed_femm_validation__cogging": {
+        "peak_to_peak_error_pct": 11.2,
+        "H1_error_pct": 9.24
+      }
+    },
+    "scope": "Experimental; original normal-reference self-check failures retained; not part of current fresh A-D/F collection"
+  },
+  "source_report_sha256": {
+    "completed_AD_reference_only_comparison": "03e5ea3908bba1e7f10843890a09abda87b0538b20253f87199b89e05ff7779b",
+    "audited_v051_v055_comparison": "5c083c43a9df5443d185da6c252b95272d6d20c7b2893d334ff414317bdfa86b"
+  },
+  "historical_evidence_sha256": {
+    "retained_version_comparison": "77b0bb34d5f9dec2ffb348df1f4825e45e0433d3a00a71cb4a21368687f9f764",
+    "v055_candidate_graded_AD": "9b967f5ad24727fd7515f5d6d3f5bd7f3fdd9e7dfc8b66bfd8fb21636c26b9e5",
+    "v051_published_evidence": "905f04974ec2013ead45892248ee179765264bff7fe5dda46c91dc6e4de702cf",
+    "v051_fresh_reference_comparison": "265449b9bab51b8e16c67d6b045462a942e5adfdc8daaa641df3f4110b1b37df",
+    "v051_fresh_reference_waveforms": "0fcfe6b3e5eafef67331e2bcdda4de40a9ceb5d117960183005670be221e2902",
+    "v051_guard_plan": "2cc26b99656b13a963ba33164ee0fce073ea3c53e2f340a84c54fcd29a72741a",
+    "v055_guard_record": "56391e8f46feb771528f28b71adc91eec8f30716a42d3bdf4bce10762f7bf304",
+    "v055_release_qualification": "4b9e1b4782c1d2acf11fe1dbc47e077edfe8f92295b3a76a1eca9f1d01c6b805",
+    "v055_publication_receipt": "204e6deae181cb3b12de8023c2d8bc7d5dbdcb03c2c158f6955447e249525d5b"
+  },
+  "audit_boundary": {
+    "fresh_native_measurements_read": 0,
+    "live_F_metadata_read": 0,
+    "full_dataset_seal_asserted": false,
+    "controlled_version_speedup_claimed": false
+  }
+}
