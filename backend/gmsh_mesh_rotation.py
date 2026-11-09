@@ -578,6 +578,55 @@ def _phase_currents_from_angle(amplitude_a: float, angle_deg: float) -> list[flo
     ]
 
 
+def _flux_contributions_by_side(
+    contributions: list[dict[str, Any]], slot_count: int,
+) -> tuple[dict[tuple[int, int], dict[str, Any]], tuple[int, ...]]:
+    """Index legacy slots or explicitly identified conformal winding layers.
+
+    Old reports have one flux row per slot. Multiple rows require native
+    physical-layer evidence; list order and winding labels are not identities.
+    """
+    if len(contributions) == slot_count and all(
+        isinstance(entry, dict) and "slot_layer" not in entry and "turn_fraction" not in entry for entry in contributions
+    ):
+        slots = _contributions_by_global_slot(contributions, slot_count, what="flux-linkage")
+        return {(slot, 0): entry for slot, entry in slots.items()}, (0,)
+
+    by_side: dict[tuple[int, int], dict[str, Any]] = {}
+    for entry in contributions:
+        if not isinstance(entry, dict):
+            raise ValueError("multi-side solution reuse requires contribution objects")
+        slot = entry.get("slot_index_global")
+        layer = entry.get("slot_layer")
+        if type(slot) is not int or not 0 <= slot < slot_count or type(layer) is not int or layer not in (1, 2):
+            raise ValueError("multi-side solution reuse requires explicit global-slot and physical-layer identities")
+        key = (slot, layer)
+        if key in by_side:
+            raise ValueError(f"solution reuse has duplicate slot/layer identity {key}")
+        if entry.get("phase") not in _PHASE_INDEX or entry.get("direction") not in ("in", "out"):
+            raise ValueError("multi-side solution reuse requires known phase and direction labels")
+        turns = entry.get("turns_per_coil")
+        fraction = entry.get("turn_fraction")
+        if type(turns) is not int or turns <= 0:
+            raise ValueError("multi-side solution reuse requires a positive turns-per-coil coefficient")
+        if isinstance(fraction, bool) or not isinstance(fraction, (int, float)) or not math.isfinite(fraction) or not 0 < fraction <= 1:
+            raise ValueError("multi-side solution reuse requires a finite positive turn fraction")
+        for name in ("az_reference_wb_per_m", "az_avg_wb_per_m", "az_effective_wb_per_m", "slot_area_m2", "contribution_wb"):
+            value = entry.get(name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                raise ValueError(f"multi-side solution reuse requires a finite {name}")
+        if entry["slot_area_m2"] <= 0:
+            raise ValueError("multi-side solution reuse requires positive physical-layer areas")
+        by_side[key] = entry
+    expected = {(slot, layer) for slot in range(slot_count) for layer in (1, 2)}
+    if by_side.keys() != expected:
+        raise ValueError("multi-side solution reuse requires complete two-layer coverage of every slot")
+    for slot in range(slot_count):
+        if not math.isclose(sum(by_side[slot, layer]["turn_fraction"] for layer in (1, 2)), 1.0, rel_tol=1e-12):
+            raise ValueError("multi-side solution reuse requires a complete turn fraction in every slot")
+    return by_side, (1, 2)
+
+
 def derive_congruent_solve_report(
     base_report: dict[str, Any],
     *,
@@ -626,26 +675,77 @@ def derive_congruent_solve_report(
         raise ValueError(
             "solution reuse requires slot_flux_linkage_contributions in the base report"
         )
-    flux_by_slot = _contributions_by_global_slot(
-        flux_contributions, slot_count, what="flux-linkage"
-    )
+    flux_by_side, layers = _flux_contributions_by_side(flux_contributions, slot_count)
+    if layers != (0,):
+        # Complete slot/layer rows only establish a full-machine permutation.
+        # Retain fallback for incompatible coefficients or excitation metadata.
+        if not all(math.isfinite(value) for value in (base_source_angle, rotation_delta_deg, elec_delta_deg, *base_phase_currents)):
+            raise ValueError("multi-side solution reuse requires finite excitation and rotation metadata")
+        if type(n_slot_pitches) is not int or not math.isclose(
+            rotation_delta_deg, n_slot_pitches * 360.0 / slot_count, rel_tol=0.0, abs_tol=_ANGLE_TOL_DEG,
+        ):
+            raise ValueError("multi-side solution reuse requires a whole-slot mechanical rotation")
+        config_summary = report.get("config_summary", {})
+        if not isinstance(config_summary, dict):
+            raise ValueError("multi-side solution reuse requires valid configuration metadata")
+        poles = config_summary.get("poles")
+        if poles is not None and (
+            type(poles) is not int or poles <= 0 or not math.isclose(
+                elec_delta_deg, rotation_delta_deg * poles / 2, rel_tol=0.0, abs_tol=_ANGLE_TOL_DEG,
+            )
+        ):
+            raise ValueError("multi-side solution reuse requires a matching electrical rotation")
+        expected_currents = _phase_currents_from_angle(amplitude, base_source_angle)
+        if len(base_phase_currents) != 3 or any(
+            not math.isclose(a, b, rel_tol=1e-9, abs_tol=1e-12) for a, b in zip(base_phase_currents, expected_currents)
+        ):
+            raise ValueError("multi-side solution reuse requires the reported sinusoidal phase excitation")
+        source_flux = [0.0, 0.0, 0.0]
+        terminal_scale = None
+        for slot in range(slot_count):
+            for layer in layers:
+                row = flux_by_side[slot, layer]
+                effective = row["az_effective_wb_per_m"]
+                if not math.isclose(effective, row["az_avg_wb_per_m"] - row["az_reference_wb_per_m"], rel_tol=1e-10, abs_tol=1e-15):
+                    raise ValueError("multi-side solution reuse requires a consistent scalar-potential reference")
+                contribution = row["contribution_wb"]
+                if effective != 0.0:
+                    scale = contribution / effective / row["turn_fraction"] / row["turns_per_coil"] / _direction_sign(row["direction"])
+                    if not math.isfinite(scale) or scale <= 0 or (
+                        terminal_scale is not None and not math.isclose(scale, terminal_scale, rel_tol=1e-9, abs_tol=1e-15)
+                    ):
+                        raise ValueError("multi-side solution reuse requires consistent terminal scaling")
+                    terminal_scale = scale
+                elif contribution != 0.0:
+                    raise ValueError("multi-side solution reuse requires consistent zero-field contributions")
+                source_flux[_PHASE_INDEX[row["phase"]]] += contribution
+        for phase, name in enumerate(("flux_linkage_a_wb", "flux_linkage_b_wb", "flux_linkage_c_wb")):
+            value = results.get(name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or not math.isclose(
+                value, source_flux[phase], rel_tol=1e-10, abs_tol=1e-12,
+            ):
+                raise ValueError("multi-side solution reuse requires complete phase-flux contributions")
     new_flux_contributions: list[dict[str, Any]] = []
     phase_flux = [0.0, 0.0, 0.0]
     for target in range(slot_count):
-        label = flux_by_slot[target]
-        source = flux_by_slot[(target - shift) % slot_count]
-        sign = _direction_sign(label["direction"]) * _direction_sign(source["direction"])
-        entry = dict(label)
-        entry["az_reference_wb_per_m"] = source["az_reference_wb_per_m"]
-        entry["az_avg_wb_per_m"] = source["az_avg_wb_per_m"]
-        entry["az_effective_wb_per_m"] = source["az_effective_wb_per_m"]
-        entry["slot_area_m2"] = source["slot_area_m2"]
-        entry["contribution_wb"] = float(source["contribution_wb"]) * sign
-        new_flux_contributions.append(entry)
-        phase_idx = _PHASE_INDEX.get(str(label["phase"]))
-        if phase_idx is None:
-            raise ValueError(f"unknown winding phase {label['phase']!r}")
-        phase_flux[phase_idx] += entry["contribution_wb"]
+        for layer in layers:
+            label = flux_by_side[target, layer]
+            source = flux_by_side[(target - shift) % slot_count, layer]
+            if layer and (label["turns_per_coil"] != source["turns_per_coil"] or label["turn_fraction"] != source["turn_fraction"]):
+                raise ValueError("multi-side solution reuse requires matching source/target winding coefficients")
+            sign = _direction_sign(label["direction"]) * _direction_sign(source["direction"])
+            entry = dict(label)
+            entry["az_reference_wb_per_m"] = source["az_reference_wb_per_m"]
+            entry["az_avg_wb_per_m"] = source["az_avg_wb_per_m"]
+            entry["az_effective_wb_per_m"] = source["az_effective_wb_per_m"]
+            entry["slot_area_m2"] = source["slot_area_m2"]
+            # The source already includes its turn fraction and terminal scale.
+            entry["contribution_wb"] = float(source["contribution_wb"]) * sign
+            new_flux_contributions.append(entry)
+            phase_idx = _PHASE_INDEX.get(str(label["phase"]))
+            if phase_idx is None:
+                raise ValueError(f"unknown winding phase {label['phase']!r}")
+            phase_flux[phase_idx] += entry["contribution_wb"]
     results["slot_flux_linkage_contributions"] = new_flux_contributions
     results["flux_linkage_a_wb"] = phase_flux[0]
     results["flux_linkage_b_wb"] = phase_flux[1]
