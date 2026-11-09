@@ -159,7 +159,15 @@ def _finite_float(value: Any) -> float | None:
 
 
 def _normalize_region_tag(value: Any) -> str:
-    text = str(value or "").strip()
+    # A frame names a handful of regions over tens of thousands of elements.
+    if isinstance(value, str):
+        return _normalize_region_text(value)
+    return _normalize_region_text(str(value or ""))
+
+
+@lru_cache(maxsize=256)
+def _normalize_region_text(value: str) -> str:
+    text = value.strip()
     if not text:
         return ""
     text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", text)
