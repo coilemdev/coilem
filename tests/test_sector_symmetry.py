@@ -13,7 +13,7 @@ from backend import sector_geometry as sg
 from backend.elmer.adapter import ElmerUnsupportedError
 from backend.geometry_drawer import compute_geometry
 from backend.geometry_ir import build_geometry_ir
-from backend.gmsh_mesh_rotation import derive_congruent_solve_report, rotate_solve_mesh_artifact
+from backend.gmsh_mesh_rotation import derive_congruent_solve_report
 from backend.gmsh_solver import _outer_boundary_nodes, _rotate_magnets_in_place, run_gmsh_mesh_preview
 from backend.magneto2d_adapter import build_magneto2d_mesh_signature, run_magneto2d_report
 from backend.models import MotorConfig
