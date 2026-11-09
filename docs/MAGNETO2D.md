@@ -409,9 +409,9 @@ Finally, Magneto2D applies the model constraints:
 
 - $A_z=0$ on the outer boundary (an outer-rotor mesh names its own Dirichlet
   nodes); and
-- no sector coupling for public motor meshes, which are full machines. The
-  motor solver keeps anti-periodic pole-pitch coupling for sector artifacts,
-  and field mode accepts periodic or anti-periodic paired boundaries.
+- periodic or anti-periodic coupling on sector edges when a sector model is
+  used (see [Sector models](#sector-models)).
+
 
 These constraints remove the arbitrary constant in $A_z$, close the linear
 system, and preserve the symmetric matrix structure needed by the linear
@@ -689,6 +689,57 @@ It then derives the requested outputs, including:
 A sweep repeats the per-angle process, normally reusing mesh structure and
 nearby nonlinear states where the rotation model permits it, then aggregates
 the angle results into torque, flux-linkage, and Back-EMF waveforms.
+
+### Sector models
+
+A motor with $Q$ slots and $2p$ poles repeats around the circle. With
+`solve_params.symmetry = "auto"` the backend meshes one repeating sector and
+Magneto2D solves it; `"full"`, the default, always solves the full circle.
+
+**Choosing the sector.** A sector that holds a whole number of slots and of
+poles repeats the iron and the magnets; an odd number of poles makes the next
+sector its negative (anti-periodic). The backend tries the smallest such sector
+first and keeps it only if the winding table and the region layout both repeat
+over it. A single-layer winding on alternate teeth, for example, needs twice
+the sector its slot and pole counts suggest. If nothing repeats, or the
+geometry cannot be cut cleanly, the full circle is meshed and `mesh.info`
+records why in `sector_fallback_reason`. Published reference models are always
+solved in full.
+
+**Cutting it.** The stator is cut through the middle of a tooth, so every slot
+stays whole. The rotor is cut between two poles, along a line that turns with
+it, so no magnet or pocket is ever cut whatever the rotor angle. The two wedges
+therefore start at different angles and meet on a circle in the middle of the
+air gap. Where they do not overlap, the stator-only arc of that circle and the
+rotor-only arc are exactly one sector apart. Gmsh gives every cut edge, and
+those two arcs, matching nodes one sector apart; the artifact lists them in
+`sector_edge_pairs` and describes the wedges in `mesh.info.sector`.
+
+**Tying the edges.** For a described sector each pair is tied exactly: the
+second node takes the first node's unknown, negated for an anti-periodic
+sector. Every matrix entry and source term of the second node moves onto the
+first, and the second keeps one equation that holds it to its partner, scaled
+by its own diagonal so the matrix stays symmetric positive definite and well
+conditioned. A node on the motor axis lies on both cut edges; an anti-periodic
+sector holds it at zero. Older artifacts without `mesh.info.sector` keep the
+penalty coupling.
+
+**Post-processing.** Torque, flux linkage and energies are scaled by the number
+of sectors. Anything sampled along a circle (the mid-gap torque contour, tooth
+and yoke flux-density points) uses the full circle's own sample points, folded
+into the sector with the sector's sign, so a sector integrates exactly what a
+full-circle solve of the same mesh would. Slots keep their true global index
+wherever the wedge lies, which keeps their winding direction right when a
+slot-pitch rotation of the mesh is reused for another rotor position.
+
+A sector solve reproduces the full-circle solve of its own mesh, copied around
+the circle, to round-off; `tests/test_sector_symmetry.py` checks this on inner
+and outer rotors, periodic and anti-periodic. Against an independently meshed
+full circle it agrees to mesh noise.
+
+**Results and storage.** Field frames are drawn and post-processed as the full
+motor. A stored frame keeps one sector and is rebuilt as the full motor when it
+is read, so saved runs shrink with the sector.
 
 ### Teaching-mode exception
 
