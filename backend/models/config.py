@@ -633,6 +633,16 @@ class SolveParams(BaseModel):
         ),
     )
 
+    @model_serializer(mode="wrap")
+    def omit_full_circle_symmetry(self, handler):
+        # The full circle is what every earlier request solved. Leaving it out
+        # keeps every existing config dump, cache key, request hash and run
+        # record byte-identical.
+        data = handler(self)
+        if data.get("symmetry") == "full":
+            del data["symmetry"]
+        return data
+
     def effective_step_deg(self) -> float:
         """Return the rotor step in electrical degrees based on solve_quality preset.
 

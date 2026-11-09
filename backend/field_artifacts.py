@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from backend import field_frame_codec
+from backend.sector_tiling import fold_sector_frame, unfold_sector_frame
 
 AIRGAP_RECORD_ARTIFACT_SCHEMA = "openem.airgap_field_records.v1"
 FIELD_LINE_FRAME_ARTIFACT_SCHEMA = "openem.field_line_frame.v1"
@@ -198,7 +199,7 @@ def read_field_line_frame_artifact(path: Path) -> dict[str, Any]:
         with gzip.open(path, "rt", encoding="utf-8") as fh:
             payload = json.load(fh)
     if isinstance(payload, dict) and isinstance(payload.get("field_line_frame"), dict):
-        payload["field_line_frame"] = restore_noload_mesh(payload["field_line_frame"])
+        payload["field_line_frame"] = unfold_sector_frame(restore_noload_mesh(payload["field_line_frame"]))
     return payload
 
 
@@ -476,7 +477,8 @@ def write_field_line_frame_artifact(
     if frame is None or cache_dir is None:
         return None
     try:
-        frame_payload = _share_noload_mesh(dict(frame))
+        # A sector solve's frame is stored as its one sector and rebuilt on read.
+        frame_payload = _share_noload_mesh(fold_sector_frame(dict(frame)))
         frame_payload.pop("field_frame_artifact", None)
         artifact_dir = cache_dir / "field_line_frames"
         artifact_dir.mkdir(parents=True, exist_ok=True)
