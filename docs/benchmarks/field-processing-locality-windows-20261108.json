@@ -1,0 +1,181 @@
+{
+  "schema": "coilem.field_processing_locality_experiment/v1",
+  "date_local": "2026-11-08",
+  "branch": "perf/field-processing-locality",
+  "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+  "code_commit": "0230ceed24904c194553d88057e4ae3a10fe7df9",
+  "machine": {
+    "cpu": "AMD Ryzen 7 7700",
+    "physical_cores": 8,
+    "logical_processors": 16,
+    "ram_approx_GiB": 64,
+    "windows_build": 26200
+  },
+  "runtime": {
+    "python": "3.13.9",
+    "orjson": "3.13.0",
+    "numpy": "2.4.6",
+    "gmsh": "4.15.2",
+    "pillow": "12.3.0"
+  },
+  "transport": "Actual solve_stream handler; direct callback/timer event loop; excludes browser and HTTP transfer; callback polling at most10ms.",
+  "cases": [
+    {
+      "case": "SPM outrunner 14p/12s",
+      "baseline_label": "baseline-2",
+      "candidate_label": "overlap-2",
+      "request_sha256": "047ae8af64c0b008991617d39a02cf14cc2ffcf27adf262a1d7a74c77639f779",
+      "baseline": {
+        "result_ready_s": 116.7326140999794,
+        "first_image_ready_s": 117.56088750006165,
+        "all_playback_ready_s": 141.7783929000143,
+        "timings_s": {
+          "gmsh_mesh": 36.067317,
+          "loaded_field_solve": 22.147289,
+          "iron_loss": 3.3151129999999998,
+          "field_frame_extract": 36.530263,
+          "sweep_aggregation": 0.001671,
+          "result_packaging": 0.866989
+        },
+        "memory": {
+          "peak_tree_private_bytes": 17117155328,
+          "peak_tree_working_set_bytes": 10549874688,
+          "peak_python_worker_private_bytes": 1042030592,
+          "peak_python_worker_working_set_bytes": 319254528,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 256
+        }
+      },
+      "candidate": {
+        "result_ready_s": 105.56157409993466,
+        "first_image_ready_s": 106.41184189997148,
+        "all_playback_ready_s": 131.25936659995932,
+        "timings_s": {
+          "gmsh_mesh": 34.920843,
+          "loaded_field_solve": 32.020528999999996,
+          "iron_loss": 4.1798530000000005,
+          "field_frame_extract": 18.880379,
+          "sweep_aggregation": 0.0016020000000000001,
+          "result_packaging": 0.179185
+        },
+        "memory": {
+          "peak_tree_private_bytes": 17669369856,
+          "peak_tree_working_set_bytes": 11052498944,
+          "peak_python_worker_private_bytes": 1031147520,
+          "peak_python_worker_working_set_bytes": 308248576,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 233
+        }
+      },
+      "result_time_reduction_pct": 9.569767700461963,
+      "all_playback_time_reduction_pct": 7.419343727131434,
+      "numeric_values_compared": 1260,
+      "max_absolute_numeric_difference": 0.0,
+      "equal_decoded_full_field_frames": 72,
+      "byte_identical_playback_images": 432,
+      "raw_native_artifacts_compared": false,
+      "source_identifiers": [
+        {
+          "source_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+          "solver_python_sha256": "854042c818109ba97a309107a227c665769b3b290355e00d68e937059f74ef6f",
+          "process_pool_sha256": "30ce3ecfe5b819c226596ca222456b3fdff1d4b0e2b53f62628aa33875ed0a0f",
+          "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+        },
+        {
+          "source_commit": "0230ceed24904c194553d88057e4ae3a10fe7df9",
+          "solver_python_sha256": "33b923d60547287b57680b63ac15d3106c63ffb7fb3504b6ce5e704872214a25",
+          "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+          "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+        }
+      ]
+    },
+    {
+      "case": "Pyleecan Prius loaded torque",
+      "baseline_label": "prius-baseline",
+      "candidate_label": "prius-overlap",
+      "request_sha256": "a9e3b8520a210de8a1f461c31e296b859df3c4d5260167c323170c78b43bf3a0",
+      "baseline": {
+        "result_ready_s": 65.65018380002584,
+        "first_image_ready_s": 66.3723755000392,
+        "all_playback_ready_s": 75.5595865000505,
+        "timings_s": {
+          "gmsh_mesh": 15.702622,
+          "loaded_field_solve": 24.601740000000003,
+          "iron_loss": 0.063432,
+          "field_frame_extract": 12.956854,
+          "sweep_aggregation": 0.000675,
+          "result_packaging": 0.834876
+        },
+        "memory": {
+          "peak_tree_private_bytes": 11639640064,
+          "peak_tree_working_set_bytes": 5126340608,
+          "peak_python_worker_private_bytes": 1000165376,
+          "peak_python_worker_working_set_bytes": 277295104,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 138
+        }
+      },
+      "candidate": {
+        "result_ready_s": 58.16731459996663,
+        "first_image_ready_s": 58.84378979995381,
+        "all_playback_ready_s": 67.70383400004357,
+        "timings_s": {
+          "gmsh_mesh": 16.160909,
+          "loaded_field_solve": 28.793149,
+          "iron_loss": 0.063749,
+          "field_frame_extract": 2.603599,
+          "sweep_aggregation": 0.000662,
+          "result_packaging": 0.15847999999999998
+        },
+        "memory": {
+          "peak_tree_private_bytes": 12998971392,
+          "peak_tree_working_set_bytes": 5289058304,
+          "peak_python_worker_private_bytes": 997523456,
+          "peak_python_worker_working_set_bytes": 273047552,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 121
+        }
+      },
+      "result_time_reduction_pct": 11.398093298340871,
+      "all_playback_time_reduction_pct": 10.396764810249037,
+      "numeric_values_compared": 758,
+      "max_absolute_numeric_difference": 0.0,
+      "equal_decoded_full_field_frames": 32,
+      "byte_identical_playback_images": 192,
+      "raw_native_artifacts_compared": false,
+      "source_identifiers": [
+        {
+          "source_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+          "solver_python_sha256": "854042c818109ba97a309107a227c665769b3b290355e00d68e937059f74ef6f",
+          "process_pool_sha256": "30ce3ecfe5b819c226596ca222456b3fdff1d4b0e2b53f62628aa33875ed0a0f",
+          "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+        },
+        {
+          "source_commit": "0230ceed24904c194553d88057e4ae3a10fe7df9",
+          "solver_python_sha256": "33b923d60547287b57680b63ac15d3106c63ffb7fb3504b6ce5e704872214a25",
+          "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+          "binary_sha256": "7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7"
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "python_tests_passed": 1900,
+    "python_tests_skipped": 3,
+    "new_regression_tests": 22,
+    "ruff": "PASS",
+    "snapshot_publication": "PASS",
+    "test_environment_note": "The full run used an external frozen native executable. Git/Node PATH failures and two tests intentionally rejecting external-binary source provenance were retried with their required environment; all passed without application-code changes."
+  },
+  "limits": [
+    "Windows measurements only; other platform performance unmeasured.",
+    "Original full A-D/F/E benchmark collection was not rerun on this branch.",
+    "Baseline parity is not new independent FEMM or two-platform release qualification.",
+    "Public saved-run cleanup removes raw native mesh/report JSON; comparisons cover retained numerical outputs, decoded frames and rendered images."
+  ],
+  "timing_note": "After overlap, field_frame_extract is the remaining post-native extraction tail including iron loss. It is not total field CPU; do not sum nested/overlapped counters."
+}

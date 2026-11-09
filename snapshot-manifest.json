@@ -13832,6 +13832,16 @@
       "path": "tests/test_field_frame_pipeline.py",
       "bytes": 13353,
       "sha256": "91216104103f5a9e0e4643fc03d2d8a191830f9b20dbed68ed977b2e7b6412ab"
+    },
+    {
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.md",
+      "bytes": 5729,
+      "sha256": "588adcfec49c33c09a15124b0e38850522dc0e492d6980115a02127ac4502c32"
+    },
+    {
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.json",
+      "bytes": 7758,
+      "sha256": "6cfd781cf091150ccbd65a477976c65b10f8a38db304f02806bc78e93011c84b"
     }
   ],
   "public_patches": [
@@ -34910,6 +34920,18 @@
     {
       "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
       "path": "tests/test_field_frame_pipeline.py",
+      "source_sha256": null,
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.md",
+      "source_sha256": null,
+      "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "a2dd22f2089fc1c3a8170008afba8f3106943222",
+      "path": "docs/benchmarks/field-processing-locality-windows-20261108.json",
       "source_sha256": null,
       "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
     }
