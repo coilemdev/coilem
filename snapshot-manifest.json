@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 168943,
-      "sha256": "33b923d60547287b57680b63ac15d3106c63ffb7fb3504b6ce5e704872214a25"
+      "bytes": 169429,
+      "sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -13842,6 +13842,11 @@
       "path": "docs/benchmarks/field-processing-locality-windows-20261108.json",
       "bytes": 7758,
       "sha256": "6cfd781cf091150ccbd65a477976c65b10f8a38db304f02806bc78e93011c84b"
+    },
+    {
+      "path": "tests/test_parallel_fallback_solves.py",
+      "bytes": 14589,
+      "sha256": "1efd9c7fd102c36eb555ac0622764c7f3cde90f2e5a1b4c39c2ada319472e9fa"
     }
   ],
   "public_patches": [
@@ -34934,6 +34939,18 @@
       "path": "docs/benchmarks/field-processing-locality-windows-20261108.json",
       "source_sha256": null,
       "reason": "Field-processing locality experiment: file-backed worker inputs, paired eager dispatch, spawn-safe cancellation and ordered numerical reductions; retain original solve settings."
+    },
+    {
+      "base_commit": "121f144fa0c64471a30212e0ed4be125f849ba32",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "33b923d60547287b57680b63ac15d3106c63ffb7fb3504b6ce5e704872214a25",
+      "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
+    },
+    {
+      "base_commit": "121f144fa0c64471a30212e0ed4be125f849ba32",
+      "path": "tests/test_parallel_fallback_solves.py",
+      "source_sha256": null,
+      "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
     }
   ]
 }

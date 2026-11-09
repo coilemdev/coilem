@@ -1892,6 +1892,9 @@ def _solve_with_per_angle_producer_meshes(
                 next_live_frame += 1
 
         with ThreadPoolExecutor(max_workers=solve_workers) as solve_pool, ExitStack() as frame_stack:
+            # Runs without a field pool (including compact benchmark reports)
+            # must also cancel queued native work before the solve pool joins.
+            frame_stack.callback(cancel_pending_native_solves)
             if cached_base_artifacts is not None:
                 print(
                     "magneto2d: per-angle Gmsh mesh cache — reusing "
@@ -2039,14 +2042,16 @@ def _solve_with_per_angle_producer_meshes(
             ) -> None:
                 """Synthesize reports for derived angles congruent to a base solve.
 
-                A synthesis failure (unexpected report shape) falls back to a
-                real solve of the retained derived artifact, so reuse can only
-                speed things up, never change whether a result is produced.
+                A synthesis failure queues a real solve of the retained derived
+                artifact on the same native pool. Keep the coordinator free to
+                receive other reports, field frames, errors and cancellation.
                 """
                 entries = solution_reuse_by_base_key.pop(
                     (lane, int(base_job["angle_key"])), []
                 )
                 for entry in entries:
+                    if check_cancelled is not None:
+                        check_cancelled()
                     derived_job = entry["job"]
                     derived_source = None
                     try:
@@ -2077,9 +2082,12 @@ def _solve_with_per_angle_producer_meshes(
                             if lane == "loaded"
                             else _zero_current_solve_mesh_artifact(entry["artifact"])
                         )
-                        _lane, _job, derived_report, _elapsed = run_pipeline_solve(
-                            lane, derived_job, artifact
+                        fallback_future = solve_pool.submit(
+                            run_pipeline_solve, lane, derived_job, artifact,
                         )
+                        solve_futures[fallback_future] = (lane, derived_job)
+                        pending_solves.add(fallback_future)
+                        continue
                     if lane == "loaded":
                         handle_loaded_report(derived_job, derived_report, derived_source)
                     else:
