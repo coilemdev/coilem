@@ -930,8 +930,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, [editFeedback, invalidateGeometryPreview, resetComputedState]);
 
   const updateMeshSetting = useCallback((
-    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
-    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => {
     validationRequestId.current += 1;
     setConfig((current) => ({

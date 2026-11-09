@@ -79,6 +79,11 @@ pub struct BoundarySet {
     pub paired_nodes: Vec<PairedBoundary>,
     #[serde(default = "default_periodic_penalty")]
     pub periodic_penalty: f64,
+    /// Tie paired nodes exactly instead of by `periodic_penalty`: the second
+    /// node of each pair takes the first node's unknown (negated for an
+    /// anti-periodic pair), so the pairing holds to round-off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub exact_pairs: bool,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -425,9 +430,65 @@ impl DiagnosticsSink for NoDiagnostics {
 pub struct PreparedFieldSystem {
     csr_assembly_pattern: ElementCsrAssemblyPattern,
     boundary_slots: Vec<(usize, f64)>,
+    exact_pairs: Option<ExactPairTies>,
     dirichlet_nodes: Vec<usize>,
     direct_cholesky: DirectCholeskyCache,
     formulation_version: u32,
+}
+
+/// Exact node-pair ties, prepared once per mesh.
+///
+/// With `A_slave = sign * A_master`, every matrix entry in a slave's row or
+/// column moves onto its master's, and the slave's source moves onto its
+/// master's. The slave then keeps one equation, `c (A_slave - sign A_master)
+/// = 0`, added symmetrically so the matrix stays symmetric positive definite.
+/// That equation is zero at the solution, so it does not disturb the master's
+/// equation, and `c` is the slave's own diagonal, so it does not hurt the
+/// conditioning the way a large penalty does.
+struct ExactPairTies {
+    /// (master, slave, sign).
+    pairs: Vec<(usize, usize, f64)>,
+    /// (source slot, destination slot, factor) for every entry in a slave row or column.
+    moves: Vec<(usize, usize, f64)>,
+    /// Per pair: slots of (master, master), (slave, slave), (master, slave), (slave, master).
+    tie_slots: Vec<[usize; 4]>,
+}
+
+impl ExactPairTies {
+    fn apply_to_matrix(&self, matrix: &mut CsrMatrix) {
+        let scales: Vec<f64> = self
+            .tie_slots
+            .iter()
+            .map(|slots| {
+                let diagonal = matrix.values[slots[1]].abs();
+                if diagonal > 0.0 && diagonal.is_finite() {
+                    diagonal
+                } else {
+                    1.0
+                }
+            })
+            .collect();
+        for &(source, destination, factor) in &self.moves {
+            let value = matrix.values[source];
+            if value != 0.0 {
+                matrix.values[destination] += factor * value;
+                matrix.values[source] = 0.0;
+            }
+        }
+        for ((slots, &(_, _, sign)), scale) in self.tie_slots.iter().zip(&self.pairs).zip(scales) {
+            matrix.values[slots[0]] += scale;
+            matrix.values[slots[1]] += scale;
+            matrix.values[slots[2]] -= sign * scale;
+            matrix.values[slots[3]] -= sign * scale;
+        }
+    }
+
+    fn apply_to_rhs(&self, rhs: &mut [f64]) {
+        for &(master, slave, sign) in &self.pairs {
+            rhs[master] += sign * rhs[slave];
+            rhs[slave] = 0.0;
+        }
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -1098,9 +1159,18 @@ impl PreparedFieldSystem {
         let dirichlet: std::collections::HashSet<usize> =
             boundaries.dirichlet_az_zero_nodes.iter().copied().collect();
         let mut terms = Vec::new();
+        let mut ties: Vec<(usize, usize, f64)> = Vec::new();
         for pair in &boundaries.paired_nodes {
             let [left, right] = pair.nodes;
             if dirichlet.contains(&left) || dirichlet.contains(&right) {
+                continue;
+            }
+            if boundaries.exact_pairs {
+                let sign = match pair.kind {
+                    PairedBoundaryKind::Periodic => 1.0,
+                    PairedBoundaryKind::AntiPeriodic => -1.0,
+                };
+                ties.push((left, right, sign));
                 continue;
             }
             let sign = match pair.kind {
@@ -1115,8 +1185,28 @@ impl PreparedFieldSystem {
                 (right, right, penalty),
             ]);
         }
-        let extra_entries: Vec<(usize, usize)> =
+        let mut extra_entries: Vec<(usize, usize)> =
             terms.iter().map(|(row, col, _)| (*row, *col)).collect();
+        // Where each node's unknown lives: a slave's is its master's, with a sign.
+        let mut alias: Vec<(usize, f64)> = (0..mesh.nodes_m.len()).map(|node| (node, 1.0)).collect();
+        for &(master, slave, sign) in &ties {
+            alias[slave] = (master, sign);
+        }
+        if !ties.is_empty() {
+            for tri in &mesh.triangles {
+                for &row in tri {
+                    for &col in tri {
+                        if alias[row].0 != row || alias[col].0 != col {
+                            extra_entries.push((alias[row].0, alias[col].0));
+                        }
+                    }
+                }
+            }
+            for &(master, slave, _) in &ties {
+                extra_entries.push((master, slave));
+                extra_entries.push((slave, master));
+            }
+        }
         let csr_assembly_pattern = ElementCsrAssemblyPattern::from_triangles(
             mesh.nodes_m.len(),
             &mesh.triangles,
@@ -1131,9 +1221,54 @@ impl PreparedFieldSystem {
                     .ok_or_else(|| format!("failed to prepare boundary matrix slot ({row}, {col})"))
             })
             .collect::<Result<Vec<_>, _>>()?;
+        let exact_pairs = if ties.is_empty() {
+            None
+        } else {
+            let slot = |row: usize, col: usize| {
+                csr_assembly_pattern
+                    .slot(row, col)
+                    .ok_or_else(|| format!("failed to prepare pair-tie matrix slot ({row}, {col})"))
+            };
+            let mut moves = Vec::new();
+            let mut seen = std::collections::HashSet::new();
+            for tri in &mesh.triangles {
+                for &row in tri {
+                    for &col in tri {
+                        if alias[row].0 == row && alias[col].0 == col {
+                            continue;
+                        }
+                        if !seen.insert((row, col)) {
+                            continue;
+                        }
+                        moves.push((
+                            slot(row, col)?,
+                            slot(alias[row].0, alias[col].0)?,
+                            alias[row].1 * alias[col].1,
+                        ));
+                    }
+                }
+            }
+            let tie_slots = ties
+                .iter()
+                .map(|&(master, slave, _)| {
+                    Ok([
+                        slot(master, master)?,
+                        slot(slave, slave)?,
+                        slot(master, slave)?,
+                        slot(slave, master)?,
+                    ])
+                })
+                .collect::<Result<Vec<_>, String>>()?;
+            Some(ExactPairTies {
+                pairs: ties,
+                moves,
+                tie_slots,
+            })
+        };
         Ok(Self {
             csr_assembly_pattern,
             boundary_slots,
+            exact_pairs,
             dirichlet_nodes: boundaries.dirichlet_az_zero_nodes.clone(),
             direct_cholesky: DirectCholeskyCache::new(),
             formulation_version: FORMULATION_VERSION,
@@ -1217,6 +1352,17 @@ impl PreparedFieldSystem {
         for &(slot, value) in &self.boundary_slots {
             matrix.values[slot] += value;
         }
+        if let Some(ties) = &self.exact_pairs {
+            ties.apply_to_matrix(matrix);
+        }
+    }
+
+    /// Move each exactly tied slave's source onto its master. A no-op for
+    /// penalty pairs, and for a right-hand side that is already tied.
+    pub(crate) fn tie_rhs(&self, rhs: &mut [f64]) {
+        if let Some(ties) = &self.exact_pairs {
+            ties.apply_to_rhs(rhs);
+        }
     }
 
     pub(crate) fn apply_dirichlet(&self, matrix: &mut CsrMatrix, rhs: &mut [f64]) {
@@ -1225,6 +1371,7 @@ impl PreparedFieldSystem {
 
     fn apply_boundaries(&self, matrix: &mut CsrMatrix, rhs: &mut [f64]) {
         self.add_boundary_terms(matrix);
+        self.tie_rhs(rhs);
         self.apply_dirichlet(matrix, rhs);
     }
 
@@ -1825,6 +1972,7 @@ mod tests {
                 dirichlet_az_zero_nodes: vec![0, 1, 2],
                 paired_nodes: Vec::new(),
                 periodic_penalty: 1.0e10,
+                exact_pairs: false,
             },
             options: SolveOptions::default(),
             warm_start: None,
@@ -1859,6 +2007,7 @@ mod tests {
                 dirichlet_az_zero_nodes: vec![0, 1, 2, 3],
                 paired_nodes: Vec::new(),
                 periodic_penalty: 1.0e10,
+                exact_pairs: false,
             },
             options: SolveOptions::default(),
             warm_start: None,
@@ -1923,9 +2072,91 @@ mod tests {
                     })
                     .unwrap_or_default(),
                 periodic_penalty: 1.0e10,
+                exact_pairs: false,
             },
             options: SolveOptions::default(),
             warm_start: None,
+        }
+    }
+
+    /// A source that is neither symmetric nor antisymmetric across the strip,
+    /// so the tie carries flux and its accuracy shows in the solution.
+    fn lopsided_paired_strip_problem(kind: PairedBoundaryKind, exact_pairs: bool) -> MagnetostaticProblem {
+        let mut problem = paired_strip_problem(Some(kind), false);
+        problem.elements[0].current_density_z_a_per_m2 = 3.0e6;
+        problem.elements[5].current_density_z_a_per_m2 = -2.0e6;
+        problem.boundaries.exact_pairs = exact_pairs;
+        problem
+    }
+
+    #[test]
+    fn exact_pairs_tie_nodes_to_round_off_where_the_penalty_leaves_a_gap() {
+        for (kind, sign) in [
+            (PairedBoundaryKind::Periodic, 1.0),
+            (PairedBoundaryKind::AntiPeriodic, -1.0),
+        ] {
+            let exact = solve(&lopsided_paired_strip_problem(kind, true)).unwrap();
+            let penalty = solve(&lopsided_paired_strip_problem(kind, false)).unwrap();
+            let scale = exact
+                .az_nodal
+                .iter()
+                .fold(0.0_f64, |acc, value| acc.max(value.abs()));
+            assert!(scale > 0.0);
+            let exact_gap = (exact.az_nodal[5] - sign * exact.az_nodal[3]).abs();
+            let penalty_gap = (penalty.az_nodal[5] - sign * penalty.az_nodal[3]).abs();
+            assert!(exact_gap <= 1.0e-13 * scale, "{kind:?}: exact gap {exact_gap:e}");
+            assert!(penalty_gap > 10.0 * exact_gap.max(1.0e-16 * scale), "{kind:?}: penalty gap {penalty_gap:e}");
+            // Both solve the same tied problem; the penalty only approximates it.
+            for (a, b) in exact.az_nodal.iter().zip(&penalty.az_nodal) {
+                assert!((a - b).abs() <= 1.0e-3 * scale, "{kind:?}: {a:e} vs {b:e}");
+            }
+        }
+    }
+
+    #[test]
+    fn exact_pairs_match_the_condensed_system_solved_by_hand() {
+        // Tie node 5 to node 3 with sign s and eliminate it by hand: every
+        // triangle that touches node 5 then acts on node 3 instead. The only
+        // free unknowns are nodes 3 and 4, so the 2x2 system is solved directly.
+        for (kind, sign) in [
+            (PairedBoundaryKind::Periodic, 1.0),
+            (PairedBoundaryKind::AntiPeriodic, -1.0),
+        ] {
+            let problem = lopsided_paired_strip_problem(kind, true);
+            let nu = 1.0 / MU_0;
+            let mut k = [[0.0_f64; 2]; 2];
+            let mut f = [0.0_f64; 2];
+            let unknown = |node: usize| -> Option<(usize, f64)> {
+                match node {
+                    3 => Some((0, 1.0)),
+                    4 => Some((1, 1.0)),
+                    5 => Some((0, sign)),
+                    _ => None,
+                }
+            };
+            for (element, tri) in problem.mesh.triangles.iter().enumerate() {
+                let (area, grad) = triangle_gradients(&problem.mesh.nodes_m, tri[0], tri[1], tri[2]);
+                for a in 0..3 {
+                    let Some((row, row_sign)) = unknown(tri[a]) else {
+                        continue;
+                    };
+                    f[row] += row_sign * problem.elements[element].current_density_z_a_per_m2 * area / 3.0;
+                    for b in 0..3 {
+                        if let Some((col, col_sign)) = unknown(tri[b]) {
+                            let dot = grad[a][0] * grad[b][0] + grad[a][1] * grad[b][1];
+                            k[row][col] += row_sign * col_sign * nu * dot * area;
+                        }
+                    }
+                }
+            }
+            let det = k[0][0] * k[1][1] - k[0][1] * k[1][0];
+            let a3 = (f[0] * k[1][1] - f[1] * k[0][1]) / det;
+            let a4 = (k[0][0] * f[1] - k[1][0] * f[0]) / det;
+            let solution = solve(&problem).unwrap();
+            let scale = a3.abs().max(a4.abs());
+            assert!((solution.az_nodal[3] - a3).abs() <= 1.0e-12 * scale, "{kind:?}");
+            assert!((solution.az_nodal[4] - a4).abs() <= 1.0e-12 * scale, "{kind:?}");
+            assert!((solution.az_nodal[5] - sign * a3).abs() <= 1.0e-12 * scale, "{kind:?}");
         }
     }
 

@@ -19,6 +19,7 @@ from typing import Any
 import numpy as np
 
 from backend.models import FieldLineContourLevel, FieldLinePlot, MeshConfigSummary, MeshPlotInfo
+from backend.sector_tiling import tile_sector_field_plot
 
 # Below this magnitude, integers convert to float64 exactly and the
 # difference of two values is exact, so int inputs give the same results
@@ -775,6 +776,21 @@ def build_field_line_plot(raw_report: dict[str, Any]) -> FieldLinePlot | None:
         return None
 
     mesh_info = raw_report.get("mesh_info") or {}
+    sector = mesh_info.get("sector")
+    if isinstance(sector, dict) and float(raw_plot.get("total_span_deg", 360.0)) < 360.0:
+        # A sector solve is drawn, and post-processed, as the full motor.
+        raw_plot = tile_sector_field_plot(raw_plot, sector)
+        nodes_mm = raw_plot["nodes_mm"]
+        triangles = raw_plot["triangles"]
+        regions = raw_plot["regions"]
+        az_nodal = raw_plot["az_nodal"]
+        mesh_info = {
+            **mesh_info,
+            "num_nodes": len(nodes_mm),
+            "num_triangles": len(triangles),
+            "n_pole_pitches": int(mesh_info["n_pole_pitches"]) * int(sector["repeats"]),
+            "total_span_deg": 360.0,
+        }
     config_summary = raw_report.get("config_summary") or {}
     element_b_mag_t, element_bx_t, element_by_t, contours = _field_line_plot_fields(
         nodes_mm,
