@@ -17,7 +17,7 @@ The pool limit, native executable, equations, meshes, nonlinear settings and req
 | Phase F 14p/12s drone | 92.39 s (88.65-96.13) | 65.88 s (61.87-69.89) | 28.69% | 1.40x |
 | Phase F 12p/9s micro | 173.10 s (172.45-173.75) | 79.56 s (79.40-79.71) | 54.04% | 2.18x |
 
-Each variant ran twice per case in a fresh process and data root. First pairs used baselineâ†’candidate for drone and candidateâ†’baseline for micro; repeats reversed those orders. These are eight observations, not confidence intervals. The requests are unchanged Newton copies retained from the earlier Phase F experiment.
+Each variant ran twice per case in a fresh process and data root. First pairs used baseline→candidate for drone and candidate→baseline for micro; repeats reversed those orders. These are eight observations, not confidence intervals. The requests are unchanged Newton copies retained from the earlier Phase F experiment.
 
 The primary timer is the unchanged `backend.benchmark_suite.worker.measure` runtime, including numerical postprocessing and field extraction. HTTP transfer, browser rendering, durable public-run saving and playback drawing are excluded. Process-wall timings, which also include harness/startup/monitor overhead, are recorded separately in the JSON.
 
