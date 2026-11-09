@@ -1,6 +1,8 @@
 # Benchmark reports and protocols
 
-[Protocol 1.9.0](abcd-v1.9/README.md) is the default A–D suite from v0.5.6. It is protocol 1.6.0 with Newton, the new default nonlinear method, for the 28 Phase A and D requests that used Picard. Nothing else changes. It reuses the reviewed protocol 1.6.0 FEMM bundle through a hash-bound solve-option bridge, because FEMM never reads coilEM's nonlinear method. v0.5.6 needs a two-platform requalification with this suite.
+[Protocol 1.10.0](abcd-v1.10/README.md) is the default A–D suite from v0.5.7. It is protocol 1.9.0 without `ornl_prius_2004_ipm`, the unsupported ORNL Prius placeholder that never solved and never had a FEMM record. The other 46 cases, their requests, gates and reviewed FEMM records are unchanged. Earlier protocols and their records keep the placeholder and its UNSUPPORTED outcome. v0.5.7 needs a two-platform requalification with the new suite.
+
+[Protocol 1.9.0](abcd-v1.9/README.md) was the default A–D suite for v0.5.6. It is protocol 1.6.0 with Newton, the new default nonlinear method, for the 28 Phase A and D requests that used Picard. Nothing else changes. It reuses the reviewed protocol 1.6.0 FEMM bundle through a hash-bound solve-option bridge, because FEMM never reads coilEM's nonlinear method. v0.5.6 needs a two-platform requalification with this suite.
 
 The [v0.5.1 release qualification](v0.5.1/release-qualification.json) now passes with source-matched Windows/macOS A-D and complete Prius software evidence. The [owner decisions](qualification-a4f9f4dccf2b/owner-decisions.json) accept unchanged reviewed references, one recorded near-zero macOS Prius observation difference and an experimental cogging scope. Measured fields retain `a4f9f4d`; all 64 guarded physics hashes match the versioned release code. Phase E remains unregistered and both YELLOW cases remain disclosed.
 

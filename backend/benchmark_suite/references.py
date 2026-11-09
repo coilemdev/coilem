@@ -65,6 +65,20 @@ def _cap_compatible_inputs(spec, bridge):
 REFERENCE_INDEPENDENT_SOLVE_OPTIONS = {"nonlinear_solver": ("picard", "newton")}
 
 
+def _retired_cases(bridge, measured):
+    """Cases of the measured suite that a bridge leaves out of the scored suite (protocol 1.10.0).
+
+    ``load_bundle`` also refuses to retire a case the bundle holds a record for,
+    so this can only drop a case that never had a reference.
+    """
+    retired = (bridge or {}).get("retired_cases", [])
+    known = {case["id"] for case in measured["cases"]}
+    if (not isinstance(retired, list) or any(not isinstance(case_id, str) for case_id in retired)
+            or len(set(retired)) != len(retired) or not set(retired) <= known):
+        raise ValueError("Reference bridge retires a case the measured suite does not have")
+    return set(retired)
+
+
 def _solve_option_compatible_inputs(spec, bridge):
     """Reuse frozen records for requests that differ from the measured suite only in reference-independent options."""
     change = (bridge or {}).get("solve_option_change")
@@ -82,12 +96,14 @@ def _solve_option_compatible_inputs(spec, bridge):
     ):
         raise ValueError("Unsupported reference solve-option bridge")
     measured = checked_json(DATA_ROOT, change["measured_suite"], change["measured_suite_sha256"])
-    if measured["protocol_version"] != bridge["measured_protocol_version"] or len(measured["cases"]) != len(spec["cases"]):
+    retired = _retired_cases(bridge, measured)
+    measured_cases = [case for case in measured["cases"] if case["id"] not in retired]
+    if measured["protocol_version"] != bridge["measured_protocol_version"] or len(measured_cases) != len(spec["cases"]):
         raise ValueError("Reference solve-option bridge requires the complete measured suite")
     if any(measured[key] != spec[key] for key in ("material_contract", "convention", "golden", "golden_sha256")):
         raise ValueError("Reference solve-option bridge changed the material or golden contract")
     compatible = {}
-    for old_case, case in zip(measured["cases"], spec["cases"], strict=True):
+    for old_case, case in zip(measured_cases, spec["cases"], strict=True):
         old_frame = {k: v for k, v in old_case.items() if k != "jobs"}
         frame = {k: v for k, v in case.items() if k != "jobs"}
         if old_frame != frame or len(old_case["jobs"]) != len(case["jobs"]):
@@ -151,6 +167,8 @@ def load_bundle(directory, spec):
     ):
         raise ValueError("Reference material, protocol or coordinate contract mismatch; register a new bundle")
     compatible_inputs = _compatible_inputs(spec, bridge)
+    if set((bridge or {}).get("retired_cases", [])) & set(manifest["records"]):
+        raise ValueError("A case with a reference record cannot be retired through a bridge; register a new bundle")
     records = {}
     for case in spec["cases"]:
         entry = manifest["records"].get(case["id"])

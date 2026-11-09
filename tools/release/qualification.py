@@ -64,7 +64,11 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
         if hashlib.sha256(measured_path.read_bytes()).hexdigest() != change["measured_suite_sha256"]:
             return ["solve-option bridge names a changed measured suite"]
         measured = _data(root, change["measured_suite"])
-        if [case["id"] for case in measured["cases"]] != [case["id"] for case in suite["cases"]]:
+        # Protocol 1.10.0 retires a case that never had a reference record.
+        retired = set((suite.get("reference_compatibility") or {}).get("retired_cases", []))
+        if retired & set(reference.get("records", {})):
+            return ["solve-option bridge retires a case that has a reference record"]
+        if [case["id"] for case in measured["cases"] if case["id"] not in retired] != [case["id"] for case in suite["cases"]]:
             return ["solve-option bridge measured suite has different cases"]
         suite, suite_sha = measured, change["measured_suite_sha256"]
     required = {case["id"] for case in suite["cases"]} - {"ornl_prius_2004_ipm"}
@@ -79,7 +83,7 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
     return []
 
 
-def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None = None) -> list[str]:
+def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None = None) -> list[str]:
     errors: list[str] = []
     try:
         primary = _data(root, "benchmarks/records/windows-x86_64.json")
@@ -126,7 +130,8 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
         }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
         if run["reference_mode"] != "FROZEN_REFERENCE" or run["selection"]["bundle_sha256"] != bundle_sha:
             errors.append("qualification report does not use the registered frozen reference bundle")
-        planned_unsupported = {"ornl_prius_2004_ipm"}
+        # Protocol 1.10.0 retired the ORNL placeholder: no registered case is planned as unsupported.
+        planned_unsupported = {"ornl_prius_2004_ipm"} & {case["id"] for case in suite["cases"]}
         unsupported = {row["id"] for row in report["rows"] if row["status"] == "UNSUPPORTED"}
         if not unsupported <= planned_unsupported:
             errors.append("qualification report unexpectedly marks supported cases as unsupported")
@@ -199,7 +204,7 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", help="exact commit measured before evidence publication")
-    parser.add_argument("--protocol", default="1.9.0")
+    parser.add_argument("--protocol", default="1.10.0")
     args = parser.parse_args(argv)
     errors = check(protocol=args.protocol, candidate=args.candidate)
     print(json.dumps({"status": "BLOCKED" if errors else "PASS", "errors": errors}, indent=2))

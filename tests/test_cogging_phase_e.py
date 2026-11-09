@@ -21,11 +21,11 @@ SPEC = ROOT / "benchmarks/abcd-v1.7/benchmark_spec.json"
 BASE_SPEC = ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"  # the default suite: Newton requests since v0.5.6
 
 
-def test_phase_e_is_its_own_suite_and_1_9_is_the_default() -> None:
+def test_phase_e_is_its_own_suite_derived_from_protocol_1_9() -> None:
     spec = load_suite(SPEC)
     assert PHASE_LABELS["E"] == "Cogging"
     assert spec["protocol_version"] == "1.7.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.9.0"
+    assert PROTOCOL_VERSION == "1.10.0"  # the default keeps protocol 1.9.0's requests
     assert {case["phase"] for case in spec["cases"]} == {"E"}
     assert len(spec["cases"]) == 12
     assert spec["phase_e"]["status"] == "PROPOSED_NOT_REGISTERED"

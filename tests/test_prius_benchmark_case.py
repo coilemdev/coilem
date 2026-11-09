@@ -70,14 +70,17 @@ def test_suite_1_2_changes_only_the_prius_request():
     assert MAGNET_SOLVER_INPUTS["ORNL_Prius_2004_NdFeB"][1:3] == (magnets["ORNL_Prius_2004_NdFeB"]["Br_T"], magnets["ORNL_Prius_2004_NdFeB"]["mu_r"])
 
 
-def test_default_angle_revision_does_not_enable_experimental_prius():
+def test_the_placeholder_stays_in_frozen_protocols_and_is_retired_from_the_default():
     from backend.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
 
-    assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.9/benchmark_spec.json"
-    assert PROTOCOL_VERSION == "1.9.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
+    assert SPEC.relative_to(ROOT).as_posix() == "benchmarks/abcd-v1.10/benchmark_spec.json"
+    assert PROTOCOL_VERSION == "1.10.0" and "1.2.0" in SUPPORTED_PROTOCOL_VERSIONS
     old_prius = next(c for c in load_suite(HISTORICAL_SUITE)["cases"] if c["id"] == CASE_ID)
-    default_prius = next(c for c in load_suite(SPEC)["cases"] if c["id"] == CASE_ID)
-    assert default_prius == old_prius
+    frozen_prius = next(c for c in load_suite(ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json")["cases"] if c["id"] == CASE_ID)
+    assert frozen_prius == old_prius
+    default = load_suite(SPEC)
+    assert CASE_ID not in {case["id"] for case in default["cases"]}
+    assert [entry["case_id"] for entry in default["case_change"]["retired"]] == [CASE_ID]
 
 
 def test_corrected_fixture_uses_the_ornl_mappings():

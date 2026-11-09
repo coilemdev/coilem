@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 767,
-      "sha256": "bff15edcfae89ea52336ce18c328c92fe99f0186183446d06e4f3b8af111fde3"
+      "bytes": 860,
+      "sha256": "f9b8e5e993d1f02ac68cb9015e84918e27f7e2030a05317f0eaaafedc307802e"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -170,8 +170,8 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 12155,
-      "sha256": "2bea2e4efc271ae514aa895045c8d7e2d43ec48be7ba3f9e4416c77f1a2d2fe8"
+      "bytes": 13174,
+      "sha256": "bad03fb57e08e21d2b62753103ea29d1c0555702326d215e66d24ab12ffea27e"
     },
     {
       "path": "backend/benchmark_suite/report.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 9240,
-      "sha256": "263ab3322b9920cfb20745601aa0cd8b3595d2ddcb829958b9d758d4f3fc8845"
+      "bytes": 9241,
+      "sha256": "6f0ef164321c25e260ec07d2519774b15c0f8e6c2cd41194a6c25a03d4c04e88"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -715,8 +715,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 12585,
-      "sha256": "e0fbcc50986efe57924dea08faa33eb1d771a03876c1cb5177e13ac9dc23c0f5"
+      "bytes": 13037,
+      "sha256": "fbd5a4e6883162eae63a5de6f2f35e985051aeb354f6090cc1b98718a839e5b9"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 53208,
-      "sha256": "30bf0844def3046c67397d9911bf8b9c7ac8d74a759a168d569cde7ddd2e213b"
+      "bytes": 53418,
+      "sha256": "9ae809db9ba07923c7698e5549756c16f5ecdf92876568e2c7c343ff264a448a"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7960,18 +7960,18 @@
     },
     {
       "path": "tests/test_benchmark_suite.py",
-      "bytes": 31281,
-      "sha256": "ac616de8a231f8c4f1c3434def0a7464d746eebf52004ca8dea0be7b1c8ce572"
+      "bytes": 31282,
+      "sha256": "001205dc248b38f73760d5b0cbfe928ca04f45c87063bdb002ec72494ccbd641"
     },
     {
       "path": "tests/test_benchmark_v16_registration.py",
-      "bytes": 8551,
-      "sha256": "21be0fa5ca59291c9ab6be6ca5c11e55b6adee62dc68b5349f4eda04d1cb1aac"
+      "bytes": 8569,
+      "sha256": "478551cc082d9be232fbcbf3de9373aba0cea1ff88ae85b9361ca6582449c51a"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
-      "bytes": 7241,
-      "sha256": "87595713b996cf46ecf39972a351c424199aa6601c07f581bbeb3293bc4e1157"
+      "bytes": 7242,
+      "sha256": "3e5a8fb233045cd537c600f474850954556c88d47a55fe0d988d8f380f8249d1"
     },
     {
       "path": "tests/test_cogging.py",
@@ -7980,8 +7980,8 @@
     },
     {
       "path": "tests/test_cogging_phase_e.py",
-      "bytes": 16593,
-      "sha256": "e7594f3284150ccf93365c63619f1326223f48b1fd0e782d9d283ed76e62d67f"
+      "bytes": 16644,
+      "sha256": "17dea877681e89bcd04e8534394882efdb85a33f770e7c9b3610ba23e5d1c4b8"
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
@@ -8190,8 +8190,8 @@
     },
     {
       "path": "tests/test_prius_benchmark_case.py",
-      "bytes": 11200,
-      "sha256": "e9c94b87f2f491d20a8f2d368417bd5b979dea99d4eebff4f805c25fbb7e6a30"
+      "bytes": 11450,
+      "sha256": "44f6c9f925d4c78a87174de22053a3f946f688bdd1fc59d40f40e95b723250bc"
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
@@ -8280,8 +8280,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 19474,
-      "sha256": "58dce166742be28ae85e3abfb38d1f6cd9e935ca4f1bee38edbad10b99246311"
+      "bytes": 19856,
+      "sha256": "562b41796174962cdd4ea74b798364da89a754de95b652ac533fd52c480f094e"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -8295,8 +8295,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 12614,
-      "sha256": "b316c62f4c00a06fdb767d49948162e8b25c8b3d58522d389f5ef98d487c5da7"
+      "bytes": 12617,
+      "sha256": "38792cd087f9082c16d5e645001e0efba91f39b28b0441ab9dfa49cb9eee79cb"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8305,8 +8305,8 @@
     },
     {
       "path": "tests/test_shoed_benchmark_case.py",
-      "bytes": 3006,
-      "sha256": "43dd96c96e505587b477a4052b30dc8dc3b63eab71d836ac8247d51516504dce"
+      "bytes": 3034,
+      "sha256": "c97fdfdb72b98e9a636ca3110ea9b25b59b5c7b2dae3363204c50163dcf0b57d"
     },
     {
       "path": "tests/test_slot_current_density.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 13136,
-      "sha256": "6cb737ab636b3f9650d48c1b29931f3ac1e0411a1936c798d1f5dc3b3003829a"
+      "bytes": 13622,
+      "sha256": "a01fbdbc9a7c982c304ecbb70db53a367bc8d2aaa32a26cb79a745af85e1c726"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -12120,8 +12120,8 @@
     },
     {
       "path": "tools/physics_impact.py",
-      "bytes": 7730,
-      "sha256": "715d62291133295c4af754acdccb874be895bf9138518db7dbcb9227be665a8e"
+      "bytes": 7809,
+      "sha256": "788d9d1ec7fcdbf6ca1228a14edc4ea4ac242a972cf526cddebb91e8fcc16064"
     },
     {
       "path": ".github/workflows/qualification-weekly.yml",
@@ -13130,8 +13130,8 @@
     },
     {
       "path": "tests/test_outrunner_phase_f.py",
-      "bytes": 6364,
-      "sha256": "ac5362d9c2b7a915367c9f76d410bd4002317330a8eac1eb78d22225a040f5c4"
+      "bytes": 6415,
+      "sha256": "dace2ed9ca87be9a8e44b5948c070c35d72df581019f44587a2ff1223a14bb03"
     },
     {
       "path": "tests/test_rotor_layout.py",
@@ -13995,8 +13995,8 @@
     },
     {
       "path": "tests/test_benchmark_newton_registration.py",
-      "bytes": 6866,
-      "sha256": "7318e629869e683926b3471df9f7458eb180618f2124cee238c2398d06ed7cfb"
+      "bytes": 7022,
+      "sha256": "d0df5c18b3cf8faba56d9ce1313c222b809fbbb6359d503a31515e426bd91d99"
     },
     {
       "path": "tools/make_newton_protocol.py",
@@ -14707,6 +14707,26 @@
       "path": "benchmarks/qualification-e9eb89e818ed/publication-transform.json",
       "bytes": 6477,
       "sha256": "b568a8850caf34e511e74abbd9a45e86b89eb777256b27c4fd9086fec9f531be"
+    },
+    {
+      "path": "benchmarks/abcd-v1.10/README.md",
+      "bytes": 3137,
+      "sha256": "d0b990679116b449b7000fc124c9ad8abe5a27ac3099b13ff4124dd6a3f867a3"
+    },
+    {
+      "path": "benchmarks/abcd-v1.10/benchmark_spec.json",
+      "bytes": 30045,
+      "sha256": "0a48a01479991ba342ec8d9f0be3c345bdb72ddaa76a02607af66ae60827d7aa"
+    },
+    {
+      "path": "tests/test_benchmark_protocol_1_10.py",
+      "bytes": 5058,
+      "sha256": "dcc0f3bff11dedb08f2b04571c1c0f4671f3fc9a6efed2e4751230cecfef260c"
+    },
+    {
+      "path": "tools/make_protocol_1_10.py",
+      "bytes": 2368,
+      "sha256": "4c42cebf43af059182fec903d6190c0f82c964dbdd8faceb1f6c5efac30ceed1"
     }
   ],
   "public_patches": [
