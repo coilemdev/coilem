@@ -20,11 +20,23 @@ def git(root, *args):
     return subprocess.check_output(['git', '-C', str(root), *args])
 
 
-def registry_sources(root):
+def registry(root):
     spec = importlib.util.spec_from_file_location('_qualification_physics', root / REGISTRY)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    return set(module.physics_sources(root))
+    return module
+
+
+def registry_sources(root):
+    return set(registry(root).physics_sources(root))
+
+
+def dependency_pins(root, lock_text):
+    """Pinned physics-dependency versions, by the registry at ``root``; empty for a registry without any."""
+    module = registry(root)
+    if lock_text is None or not getattr(module, 'PHYSICS_DEPENDENCIES', ()):
+        return {}
+    return module.pinned_dependencies(lock_text)
 
 
 def changed_physics(root, base):
@@ -38,7 +50,14 @@ def changed_physics(root, base):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(git(root, 'show', f'{base}:{name}'))
         guarded = registry_sources(before) | registry_sources(root) | set(PRIUS_EXTRA_PHYSICS) | {REGISTRY}
-    changed = []
+        # A Gmsh or meshio bump changes meshes without touching a guarded file.
+        # Each side's pins are read by the head registry, so a bump still counts
+        # in the PR that first names the dependencies.
+        lock = getattr(registry(root), 'DEPENDENCY_LOCK_FILE', 'requirements.lock')
+        old_lock = git(root, 'show', f'{base}:{lock}').decode() if lock in base_names else None
+        new_lock = (root / lock).read_text(encoding='utf-8') if (root / lock).is_file() else None
+        pins_changed = dependency_pins(root, old_lock) != dependency_pins(root, new_lock)
+    changed = [lock] if pins_changed else []
     for name in sorted(guarded):
         old = git(root, 'show', f'{base}:{name}') if name in base_names else None
         new = (root / name).read_bytes() if (root / name).is_file() else None

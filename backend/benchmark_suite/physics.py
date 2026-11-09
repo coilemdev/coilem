@@ -36,7 +36,9 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/magnet_temperature.py",
     "backend/models/config.py",
     "backend/public_material_catalog.py",
-    "backend/public_policy.py",
+    # backend/public_policy.py is not listed: it accepts or rejects a request and
+    # never changes the config that is solved. tests/test_policy_is_not_physics.py
+    # holds it to that for every registered case (#194).
     # The registry picks a reference implementation, and the layout helper sets
     # excitation, mesh boundaries and the torque sign for outer rotors.
     "backend/reference_models/__init__.py",
@@ -62,10 +64,27 @@ PHYSICS_DATA_SOURCES = (
     "backend/reference_models/lrk_12s14p_source.json",
     "backend/reference_models/lrk_12s14p_config.json",
 )
+# Packages whose version can change a mesh, and so a result, with no source
+# change (#194). numpy is left out for now: the lock pins a different numpy for
+# Python 3.15, so one record cannot match every supported Python.
+PHYSICS_DEPENDENCIES = ("gmsh", "meshio")
+DEPENDENCY_LOCK_FILE = "requirements.lock"
 SOLVER_LOCK_FILE = "solvers/magneto2d/Cargo.lock"
 SOLVER_SOURCE_DIR = "solvers/magneto2d/src"
 # Build-identity key holding the solver sources an installed binary was built from.
 BUILD_INFO_KEY = "magneto2d_physics_sources"
+
+
+def pinned_dependencies(lock_text: str) -> dict[str, tuple[str, ...]]:
+    """The versions a requirements lock pins for each physics dependency."""
+
+    pins: dict[str, list[str]] = {name: [] for name in PHYSICS_DEPENDENCIES}
+    for line in lock_text.splitlines():
+        requirement = line.split("#", 1)[0].split(";", 1)[0]
+        name, pinned, version = requirement.partition("==")
+        if pinned and name.strip().lower() in pins:
+            pins[name.strip().lower()].append(version.strip())
+    return {name: tuple(sorted(versions)) for name, versions in pins.items()}
 
 
 def _sha256(path: Path) -> str:

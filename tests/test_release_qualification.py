@@ -171,8 +171,8 @@ def test_prius_evidence_publication_can_change_metadata_but_not_field_physics(tm
     prius["source_sha256"]["backend/qualification.py"] = "original measured qualification metadata"
     _write(tmp_path, path, prius)
     assert check(tmp_path) == []
-    _write(tmp_path, "backend/public_policy.py", "value = 2\n")
-    assert "Prius measured-source mismatch: backend/public_policy.py" in check(tmp_path)
+    _write(tmp_path, "backend/solver_environment.py", "value = 2\n")
+    assert "Prius measured-source mismatch: backend/solver_environment.py" in check(tmp_path)
 
 
 def test_prius_grader_must_match_the_before_field_snapshot(tmp_path):
@@ -194,8 +194,8 @@ def test_release_gate_finds_legacy_prius_report_without_importing_candidate_code
         'PRIUS_QUALIFICATION_REPORT = record.get("prius_report", LEGACY_PRIUS_QUALIFICATION_REPORT)\n'
         'raise AssertionError("Candidate code must not execute")\n'))
     assert check(tmp_path) == []
-    _write(tmp_path, "backend/public_policy.py", "value = 2\n")
-    assert "Prius measured-source mismatch: backend/public_policy.py" in check(tmp_path)
+    _write(tmp_path, "backend/solver_environment.py", "value = 2\n")
+    assert "Prius measured-source mismatch: backend/solver_environment.py" in check(tmp_path)
 
 
 def test_registered_prius_report_takes_precedence_over_legacy_default(tmp_path):
@@ -266,3 +266,28 @@ def test_current_development_evidence_cannot_be_promoted_by_passing_unit_tests()
     if not evidence_matches_runtime():
         errors = check(Path(__file__).resolve().parents[1])
         assert errors, "An experimental development build must not pass the release publication gate"
+
+
+def test_the_measured_mesher_must_be_the_one_the_release_pins(tmp_path):
+    _measured(tmp_path)
+    _write(tmp_path, "backend/benchmark_suite/physics.py", (
+        'PHYSICS_DEPENDENCIES = ("gmsh",)\nDEPENDENCY_LOCK_FILE = "requirements.lock"\n'
+        'def physics_sources(root):\n    return ("backend/motor.py",)\n'
+        'def pinned_dependencies(text):\n    return {"gmsh": tuple(line[6:] for line in text.splitlines() if line.startswith("gmsh=="))}\n'))
+    _write(tmp_path, "requirements.lock", "gmsh==4.15.2\n")
+    assert "windows-x86_64 qualification dependency mismatch: gmsh" in check(tmp_path)
+    for key in ["windows-x86_64", "macos-arm64"]:
+        path = f"platform/{key}/benchmark_summary.json"
+        report = json.loads((tmp_path / path).read_text())
+        report["run"]["identity"]["dependencies"] = {"gmsh": "4.15.2"}
+        _write(tmp_path, path, report)
+        path = f"benchmarks/records/{key}.json"
+        record = json.loads((tmp_path / path).read_text())
+        record["environment"] = {"dependencies": {"gmsh": "4.15.2"}}
+        _write(tmp_path, path, record)
+    assert check(tmp_path) == []
+    record["environment"]["dependencies"]["gmsh"] = "4.16.0"
+    _write(tmp_path, path, record)
+    assert check(tmp_path) == ["macos-arm64 qualification dependency mismatch: gmsh"]
+    _write(tmp_path, "requirements.lock", "gmsh==4.16.0\n")
+    assert "windows-x86_64 qualification dependency mismatch: gmsh" in check(tmp_path)

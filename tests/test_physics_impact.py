@@ -113,3 +113,44 @@ def test_skipped_measurement_job_cannot_mask_an_older_real_collection(repo, monk
         return {'jobs': [{'name': 'qualification-measure', 'conclusion': 'skipped'}]}
     monkeypatch.setattr(physics_impact, 'github', api)
     assert not physics_impact.reusable_collection(root, physics_impact.measurement_key(root), 'owner/repo', 'branch', '999')['reuse_run_id']
+
+
+REGISTRY_WITH_DEPENDENCIES = (
+    'PHYSICS_DEPENDENCIES = ("gmsh",)\nDEPENDENCY_LOCK_FILE = "requirements.lock"\n'
+    'def physics_sources(root):\n    return ("backend/field.py",)\n'
+    'def pinned_dependencies(text):\n'
+    '    return {"gmsh": tuple(sorted(line.split("==")[1] for line in text.splitlines() if line.startswith("gmsh==")))}\n'
+)
+
+
+@pytest.fixture
+def repo_with_lock(repo):
+    root, _ = repo
+    put(root, physics_impact.REGISTRY, REGISTRY_WITH_DEPENDENCIES)
+    put(root, 'requirements.lock', 'fastapi==1.0\ngmsh==4.15.2\n')
+    git(root, 'add', '.')
+    git(root, 'commit', '-m', 'name the physics dependencies')
+    return root, git(root, 'rev-parse', 'HEAD')
+
+
+def test_a_mesher_version_bump_is_a_physics_change(repo_with_lock):
+    root, base = repo_with_lock
+    put(root, 'requirements.lock', 'fastapi==1.0\ngmsh==4.16.0\n')
+    assert physics_impact.changed_physics(root, base) == ['requirements.lock']
+
+
+def test_another_package_bump_is_not_a_physics_change(repo_with_lock):
+    root, base = repo_with_lock
+    put(root, 'requirements.lock', 'fastapi==2.0\ngmsh==4.15.2\n')
+    assert physics_impact.changed_physics(root, base) == []
+
+
+def test_a_bump_counts_in_the_pr_that_first_names_the_dependencies(repo):
+    root, base = repo
+    put(root, 'requirements.lock', 'gmsh==4.15.2\n')
+    git(root, 'add', '.')
+    git(root, 'commit', '-m', 'lock')
+    base = git(root, 'rev-parse', 'HEAD')
+    put(root, physics_impact.REGISTRY, REGISTRY_WITH_DEPENDENCIES)
+    put(root, 'requirements.lock', 'gmsh==4.16.0\n')
+    assert physics_impact.changed_physics(root, base) == ['backend/benchmark_suite/physics.py', 'requirements.lock']

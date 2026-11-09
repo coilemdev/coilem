@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PRIUS_EXTRA_PHYSICS = (
-    "backend/models/config.py", "backend/public_policy.py",
+    "backend/models/config.py",
     "backend/solver_environment.py", "backend/topology_provenance.py",
 )
 
@@ -164,6 +164,10 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
         for name, digest in actual.items():
             if identity["source_files"].get(name) != digest:
                 errors.append(f"qualification physics mismatch: {name}")
+        # The measured Gmsh and meshio must be the ones this release pins.
+        pins = {}
+        if getattr(module, "PHYSICS_DEPENDENCIES", ()):
+            pins = module.pinned_dependencies((root / module.DEPENDENCY_LOCK_FILE).read_text(encoding="utf-8"))
         bundle_path = _constant(root / "backend/resources.py", "BENCHMARK_REFERENCE_BUNDLE_DIR")
         bundle = root / bundle_path / "manifest.json"
         reference = _data(root, bundle_path + "/manifest.json")
@@ -207,6 +211,11 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
             measured = _data(root, record["source"] + "/benchmark_summary.json")
             measured_run = measured["run"]
             measured_platforms[key] = record, measured_run["identity"]
+            for name, versions in pins.items():
+                if (measured_run["identity"].get("dependencies", {}).get(name) not in versions
+                        or (record.get("environment") or {}).get("dependencies", {}).get(name)
+                        != measured_run["identity"].get("dependencies", {}).get(name)):
+                    errors.append(f"{key} qualification dependency mismatch: {name}")
             if (measured_run["status"] != "COMPLETE" or measured_run.get("smoke")
                     or measured_run["identity"].get("dirty") is not False
                     or measured_run["identity"]["commit"] != record["measured_commit"]
