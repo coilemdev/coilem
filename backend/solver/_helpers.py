@@ -17,9 +17,9 @@ from backend.back_emf_harmonics import (
     harmonic_limit_for_quality,
 )
 from backend.field_lines import build_field_line_plot
-from backend.sector_tiling import sector_tiling_info
 from backend.logging_utils import log_event, tagged_log
 from backend.models import FieldLineFrame, MotorConfig, SlotExcitationFrame
+from backend.sector_tiling import sector_tiling_info
 from backend.solver_environment import solver_setting
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

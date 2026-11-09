@@ -220,8 +220,8 @@
     },
     {
       "path": "backend/elmer/adapter.py",
-      "bytes": 42132,
-      "sha256": "b60621e64cdf768d72a3f47f2d5d3944845ad120bdac4aad39e38a69542b628a"
+      "bytes": 42371,
+      "sha256": "d5e64956fb0ccace905f4ff2bee2e0c792dee678f09ff7464689f5c53842394b"
     },
     {
       "path": "backend/elmer/capabilities.py",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 18390,
-      "sha256": "b8390e78c773b8210494b3826d63e351e7da53783bdf3350fbc8b2193ed26808"
+      "bytes": 18585,
+      "sha256": "7fcf3eb15ebfd097613436b55bef4256515ac72c89f25aa3f3811f443666a8c3"
     },
     {
       "path": "backend/field_composition.py",
@@ -285,8 +285,8 @@
     },
     {
       "path": "backend/field_lines.py",
-      "bytes": 31236,
-      "sha256": "3fbf0def71ecc1402b883b3692a07aac5083f30aeaac026747452ec257196a26"
+      "bytes": 31982,
+      "sha256": "10dd79b810788aaf3ec4d9e447aebac7cf110b2f5c6aac0f73405e37d4febbc0"
     },
     {
       "path": "backend/flux_linkage_map.py",
@@ -315,13 +315,13 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 37312,
-      "sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0"
+      "bytes": 42454,
+      "sha256": "11f1bc0cbc09cb39266f636cb84b3c2492f0a06b5afd42d428fc70d2fdb40299"
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 80104,
-      "sha256": "720b9024b95c17c29219522f71417c76fc0c228677c65df06018772df2f5b5b3"
+      "bytes": 89001,
+      "sha256": "da2ed7dbf0bbecd993d01da55f416ff2b4e4090811b5c374bfbaa5b34847d272"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 34181,
-      "sha256": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c"
+      "bytes": 34953,
+      "sha256": "a2c26f125bf821e2704f21bbfafcc3d8101f540971f69fc21b5dbac82fc461e8"
     },
     {
       "path": "backend/models/errors.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 92296,
-      "sha256": "e0b570fe210c2420acf580227a457192bdcb632577038acbb470eb0817087b47"
+      "bytes": 92345,
+      "sha256": "ea0e4cd4118ca56d1f49453304d64a96db50ca98651db51703111f5a71170f99"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 57714,
-      "sha256": "d2795ee778f0e1e0ece88f6e2a65a80229e1a514263d8965444ca9178857e341"
+      "bytes": 57826,
+      "sha256": "3986035cea5c9c9f2e59a2f10ad036268f773d5bc3ba942fc095430dacb4b9da"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 11107,
-      "sha256": "9e5bad73baf898b699f26b025049cf95221a504da23277e70c3688b57bbbd610"
+      "bytes": 11316,
+      "sha256": "0441b279dd5570a0695a276bb0a8b95061a7a48e2c1c1899c936c9ce1196b083"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 63728,
-      "sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1"
+      "bytes": 64118,
+      "sha256": "3239a5ed9cae9aeae0598e2faac6ef7c9d6d2454e753deba55d2a0c616f076bf"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -680,8 +680,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 7570,
-      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69"
+      "bytes": 7869,
+      "sha256": "ddf7e0e0568162317ee0be817254957d19d8a1c49505bf0fbbd9ec7a79351aee"
     },
     {
       "path": "backend/sweep_planning.py",
@@ -690,8 +690,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 9411,
-      "sha256": "0ef8f7e6643f23a4529ae3ec7d9af3fd5ebc49e3dd954a6747850970aa77a372"
+      "bytes": 9681,
+      "sha256": "769e8e6019cacf5fed7d01a0c527462dc7f832cd278cc028437c7445b00a0966"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16821,
-      "sha256": "1168f4ee3be7c998d1b828d92029f0067574fd5aa869c7ce01fd692047c643fe"
+      "bytes": 17531,
+      "sha256": "dc777059b3b8c8eca1f2ee51e81f7e9ca461b6d6b10c133a566b77baf6dfb673"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 47758,
-      "sha256": "0acab079dd24fb5da72fdadaab0a420e640f3cbfbe9580134bcb9a95ca00d831"
+      "bytes": 50859,
+      "sha256": "48ac8b0f7396d854544a9c71885fbb24178311f93389a1d4acfaaf3079e2b28a"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -6480,8 +6480,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 9791,
-      "sha256": "6a176bba9fffebbe719ebec5814afaed2e1f3784589fc331af02fdef5ffaffbb"
+      "bytes": 10799,
+      "sha256": "1753b8c9966fdec6fa8130b54f969222d86f89f0031eebbfa5f4b719ae529dcc"
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76675,
-      "sha256": "39665833e3982ce8ec94f244874fccc273937f816dc2fd4e968526534d117bdf"
+      "bytes": 76730,
+      "sha256": "07e98aae6df3e0c8e8d21c35518ef87793a76ef35f6f57b688a2b5c23ec4c8a6"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 245474,
-      "sha256": "d03fe13160a493dc4dcaf16f837fef93bc50392ad36386c4fd161bc87471593f"
+      "bytes": 246873,
+      "sha256": "2c5b3fd7a44151fe722925b6c50dd47f8dc3b7c56491921b25a0334bbf553666"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7180,8 +7180,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 15806,
-      "sha256": "34d5d58a159ade2728b546500a209c84db3ec849ed7b04cfffc8a9a13f3afd2e"
+      "bytes": 15952,
+      "sha256": "d8694c0be70ef8b2844dd984f1672a8f995194f0351c4d286c9b096242725f53"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24030,
-      "sha256": "483af069100ffa5d07274d1a4dd46432695dd58349b23e5cb3e494dadedb04b0"
+      "bytes": 24242,
+      "sha256": "99bf163f5bfde66ce154859d9900c51299b98ab14cb10835ba29eb7d5808458f"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7680,13 +7680,13 @@
     },
     {
       "path": "solvers/magneto2d/src/assembly.rs",
-      "bytes": 62089,
-      "sha256": "f2fe403b64eb8d3f6b9bf6f612861b2bbb60f6091ab844092f198bc7e79be465"
+      "bytes": 62209,
+      "sha256": "6023b61a0e4c9ac160ce495b03b69ec40989709e0ce006a979b89b2cafe3c938"
     },
     {
       "path": "solvers/magneto2d/src/field.rs",
-      "bytes": 78994,
-      "sha256": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786"
+      "bytes": 88924,
+      "sha256": "b17f20a984d78adeeb2989e4a0b3ef6fa7280aa05da4e00cbe508eceee8188a0"
     },
     {
       "path": "solvers/magneto2d/src/lib.rs",
@@ -7710,8 +7710,8 @@
     },
     {
       "path": "solvers/magneto2d/src/mesh.rs",
-      "bytes": 5638,
-      "sha256": "c646a27dc8f77e676391e8ae8f2fab82dc2072b1b3784880ee57e274ac890855"
+      "bytes": 17359,
+      "sha256": "f2665ebec31b802d7cfb60caa7a28347a3afb2f01bc674ae8463191d59c0ad3d"
     },
     {
       "path": "solvers/magneto2d/src/motor.rs",
@@ -7720,18 +7720,18 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess.rs",
-      "bytes": 21541,
-      "sha256": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838"
+      "bytes": 23424,
+      "sha256": "58e0efdb7a2aecf59a408990e151a52822220cdb18c2918417eab4195918bc7f"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
-      "bytes": 81626,
-      "sha256": "b054ade49a4cc1dea904064438af29e974f09023188dfe76f2aa64de897c6f9c"
+      "bytes": 82991,
+      "sha256": "75a567d6b26579aec566fba256311876d339587332fde97f4d8ee862e73546b0"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
-      "bytes": 45894,
-      "sha256": "5aaf206eb015c22ba66de41808b413d69625e6b84b7393608b087f2c82ed43d9"
+      "bytes": 45972,
+      "sha256": "60e0c43a8d8a13b32fdbe3ea4a68ffa7a0caa0589003aecacecd533e6f2052a9"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
@@ -7745,8 +7745,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/mod.rs",
-      "bytes": 115107,
-      "sha256": "795c7f4f476bdca43c315a176d3bfb79dfb70fea6a2839cb586347a1bd6f4502"
+      "bytes": 116905,
+      "sha256": "abb5cae14a4f61744c7a083527ad5c45f374b9e07851ee481846038d8baa14c5"
     },
     {
       "path": "solvers/magneto2d/src/run_config.rs",
@@ -7765,8 +7765,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
-      "bytes": 22102,
-      "sha256": "37aa0a53aaa11688617e89f92c3c2826f39128d53a2b513f5247ccca6caa25df"
+      "bytes": 22142,
+      "sha256": "46431789284d60d68689980f93cd59b6e6231466a9d78d87769e87eaab41e73b"
     },
     {
       "path": "solvers/magneto2d/src/solve/metrics.rs",
@@ -7775,8 +7775,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 155078,
-      "sha256": "c0c581e8d5e27529d7b981dc9f5fd97d4753d772c7d0c757d843ca249c801be6"
+      "bytes": 156269,
+      "sha256": "e649b64b439c7830389db094042974d7bbef473cef279cb0ca020a9f016e02f3"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -7795,8 +7795,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 30298,
-      "sha256": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b"
+      "bytes": 30428,
+      "sha256": "23c8c67676624abc0b488093683b1ca4e072b24da639401c25d6daa756501245"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
@@ -7815,8 +7815,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 102653,
-      "sha256": "044cdb25f7423e647f81420c088a79d47bc3f814f3bc72f6c1095de06e0bce2f"
+      "bytes": 106237,
+      "sha256": "94832c6eff623d5ef23fdd753f67edaefdff62d754745bcf0a73ea81f971c45f"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -7825,8 +7825,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
-      "bytes": 65085,
-      "sha256": "8469ed2f3d322a6cd7a4585f48d163871d23a88f444ccbb0af933ffea8fd343f"
+      "bytes": 65452,
+      "sha256": "f18aeecb5cd04e686681345914a8b54149f2e25eb714d5f0d5c412cbcc1eec8e"
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
@@ -7835,8 +7835,8 @@
     },
     {
       "path": "solvers/magneto2d/src/teaching.rs",
-      "bytes": 126993,
-      "sha256": "9f241ac967a758f3fbbcf2736ddd20691a8af6f6dd65f22e9f2e21ea2ca67086"
+      "bytes": 127055,
+      "sha256": "069e4bb52eb87f8f17662ee303dc90ada9fa1d1c4a21066fddd8a73ebd3dc32e"
     },
     {
       "path": "solvers/magneto2d/src/thermal/assembly.rs",
@@ -7880,8 +7880,8 @@
     },
     {
       "path": "solvers/magneto2d/src/thermal/tests.rs",
-      "bytes": 49434,
-      "sha256": "c4df156288e20b0443739e349bac146575795b785941ab73387878b2710b8fdd"
+      "bytes": 49456,
+      "sha256": "4366d1f53400910b7bde26d20c69a3989750e11f6b64e565ff8bfe94064b31b7"
     },
     {
       "path": "solvers/magneto2d/src/thermal/types.rs",
@@ -14707,6 +14707,21 @@
       "path": "benchmarks/qualification-e9eb89e818ed/publication-transform.json",
       "bytes": 6477,
       "sha256": "b568a8850caf34e511e74abbd9a45e86b89eb777256b27c4fd9086fec9f531be"
+    },
+    {
+      "path": "backend/sector_geometry.py",
+      "bytes": 46344,
+      "sha256": "450291984f464b2dbcea51d8f74e914f20317575d48b2e24b55840ef12e3218b"
+    },
+    {
+      "path": "backend/sector_tiling.py",
+      "bytes": 14515,
+      "sha256": "177d462130cb7203d805f047a1f42ddba0d8d1ecd00b32386fe4e39107160df7"
+    },
+    {
+      "path": "tests/test_sector_symmetry.py",
+      "bytes": 24326,
+      "sha256": "3441cd144188d542716fd3c1b720f3b6cbb8441f852ef52709ca8aaa3ba4aaaa"
     }
   ],
   "public_patches": [
@@ -16238,7 +16253,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -16268,13 +16283,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -16292,7 +16307,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -18206,25 +18221,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
