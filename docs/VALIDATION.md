@@ -157,7 +157,10 @@ stable case IDs. It preserves the complete thirteen-angle upstream comparison,
 including discrepancies, independently checked explicit winding extraction,
 and mesh/angular controls. Software reproduction does not establish identity
 with the original Yang paper or measured ORNL hardware. The legacy registered
-ORNL A/B/C/D row below is unchanged and remains unsupported.
+ORNL A/B/C/D row below is unchanged and remains unsupported in protocols up to
+1.9.0. [Protocol 1.10.0](../benchmarks/abcd-v1.10/README.md), the default from
+v0.5.7, retires that row from the scored suite; the Pyleecan Prius benchmark
+above is unaffected.
 
 ### ORNL Prius coverage deferred to v0.5.0
 
@@ -189,7 +192,7 @@ check their own installation:
 
 ```sh
 coilem benchmark --quick    # one case per phase, about 5 minutes
-coilem benchmark            # all 30 cases, about 50 minutes
+coilem benchmark            # all 46 cases; --list shows the record's times
 coilem benchmark --list     # the cases and the record's times
 ```
 

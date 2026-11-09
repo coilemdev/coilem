@@ -22,9 +22,9 @@ def _case():
 def test_the_historical_extension_adds_one_shoed_case_retained_in_the_default():
     spec, previous = load_suite(SUITE), load_suite(PREVIOUS)
     assert spec["protocol_version"] == "1.5.0" and "1.5.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.9.0" and SPEC == ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"
+    assert PROTOCOL_VERSION == "1.10.0" and SPEC == ROOT / "benchmarks/abcd-v1.10/benchmark_spec.json"
     assert _case() in load_suite(ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json")["cases"]
-    # Protocol 1.9.0 keeps the case and solves it with Newton.
+    # The default suite keeps the case and solves it with Newton (since protocol 1.9.0).
     assert CASE_ID in {case["id"] for case in load_suite(SPEC)["cases"]}
     assert spec["cases"][:-1] == previous["cases"] and spec["cases"][-1]["id"] == CASE_ID
     assert spec["extension"]["archived_suite_sha256"] == sha(PREVIOUS)

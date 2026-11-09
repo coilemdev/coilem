@@ -16,10 +16,12 @@ SUITE = ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"
 MEASURED = ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
 
 
-def test_protocol_1_9_is_the_default_suite():
+def test_protocol_1_9_stays_registered_under_the_default_suite():
     spec = load_suite(SUITE)
-    assert spec["protocol_version"] == PROTOCOL_VERSION == "1.9.0" and "1.9.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert SPEC == SUITE and resources.BENCHMARK_SUITE_FILE == "benchmarks/abcd-v1.9/benchmark_spec.json"
+    assert spec["protocol_version"] == "1.9.0" and "1.9.0" in SUPPORTED_PROTOCOL_VERSIONS
+    # Protocol 1.10.0, the default from v0.5.7, is this suite without its unsupported placeholder (#233).
+    assert PROTOCOL_VERSION == "1.10.0" and SPEC == ROOT / resources.BENCHMARK_SUITE_FILE
+    assert read(SPEC)["case_change"]["prior_protocol"] == "1.9.0"
 
 
 def test_the_generator_reproduces_the_registered_requests_and_suite():

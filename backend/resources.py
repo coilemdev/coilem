@@ -57,7 +57,7 @@ PACKAGE_DATA_FILES = (
 # registers, the frozen reference bundle and the published per-platform
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
-BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.9/benchmark_spec.json"
+BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.10/benchmark_spec.json"
 BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol16-reviewed-20261103"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
 

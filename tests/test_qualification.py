@@ -100,7 +100,13 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["selection"]["spec_sha256"] == sha(measured_spec)
     # The current record measures the registered protocol; frozen FEMM data
     # retains its original protocol through the validated reference bridge.
-    assert run["identity"]["protocol_version"] == spec["protocol_version"]
+    # Between a protocol change and its re-measurement the records lag the
+    # suite. Freshness belongs to the release gate, which must then refuse.
+    if run["identity"]["protocol_version"] != spec["protocol_version"]:
+        from tools.release.qualification import check
+
+        expected = f"registered suite and measured report must both use protocol {spec['protocol_version']}"
+        assert expected in check(Path(__file__).resolve().parents[1])
 
 
 def test_report_preserves_its_registered_measured_physics_sources() -> None:
