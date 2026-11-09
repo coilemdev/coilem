@@ -27,6 +27,9 @@ if TYPE_CHECKING:
 
 RUN_PLAYBACK_PREFIX = "playback/"
 PLAYBACK_MODES = frozenset({"resultant_pm", "resultant", "armature"})
+# The compositions each mode draws; one frame's composition plays from these layers.
+MODE_COMPOSITIONS = {"resultant_pm": ("resultant", "pm"), "resultant": ("resultant",), "armature": ("armature",)}
+_PLAYED_LAYERS = ("base", "{composition}_flux", "{composition}_lines")
 # The viewer waits for its frame; a 48-position run redraws in a few seconds.
 RENDER_TIMEOUT_S = 300.0
 _IMAGE_NAME = re.compile(r"^frame_(\d{4})_[a-z_]+\.webp$")
@@ -61,6 +64,13 @@ def _parse(relative: str) -> tuple[str, str, int] | None:
 
 def is_run_playback_path(relative: str) -> bool:
     return _parse(relative) is not None
+
+
+def playback_mode(relative: str) -> str | None:
+    """The playback mode a run-relative image path belongs to, or None if it is not one."""
+
+    parsed = _parse(relative)
+    return parsed[0] if parsed is not None else None
 
 
 def _stored_frames(workspace: SolveWorkspace, project_slug: str, run_id: str) -> list[Path]:
@@ -156,3 +166,39 @@ def start_drawing(workspace: SolveWorkspace, project_slug: str, run_id: str, mod
         _render_job(workspace, project_slug, run_id, mode, run_playback_dir(project_slug, run_id) / mode, 0)
     except Exception:  # noqa: BLE001 - drawing on demand still works
         return
+
+
+def drawing_progress(
+    workspace: SolveWorkspace, project_slug: str, run_id: str, mode: str, composition: str,
+) -> dict[str, int | bool]:
+    """How many of a saved run's positions have ``composition``'s playback layers drawn.
+
+    The viewer enables Play once every position is drawn, so playback never
+    waits on drawing. When positions are missing and this process has never
+    started drawing ``mode`` for the run (the app restarted, or cache pruning
+    removed the images), drawing starts here. A job that has finished leaves
+    ``drawing`` False even with positions missing, so the viewer stops waiting
+    and those frames are drawn on request as before.
+
+    Raises FileNotFoundError for an unknown mode or composition, or a run
+    with no field frames to draw from.
+    """
+
+    if composition not in MODE_COMPOSITIONS.get(mode, ()):
+        raise FileNotFoundError("not a playback composition")
+    total = len(_stored_frames(workspace, project_slug, run_id))
+    output_dir = run_playback_dir(project_slug, run_id) / mode
+    names = {path.name for path in output_dir.iterdir()} if output_dir.is_dir() else set()
+    layers = [layer.format(composition=composition) for layer in _PLAYED_LAYERS]
+    missing = [
+        index for index in range(total)
+        if any(f"frame_{index:04d}_{layer}.webp" not in names for layer in layers)
+    ]
+    with _JOBS_LOCK:
+        futures = _JOBS.get(output_dir)
+    if missing and futures is None:
+        _render_job(workspace, project_slug, run_id, mode, output_dir, missing[0])
+        with _JOBS_LOCK:
+            futures = _JOBS.get(output_dir)
+    drawing = bool(missing) and futures is not None and not all(future.done() for future in futures.values())
+    return {"frames_total": total, "frames_drawn": total - len(missing), "drawing": drawing, "ready": not missing}

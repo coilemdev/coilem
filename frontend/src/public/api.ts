@@ -241,6 +241,19 @@ export function getPublicFieldFrame(artifactId: string): Promise<PublicJson> {
   return requestJson(`/solve/field-frame/${encodeURIComponent(artifactId)}`);
 }
 
+/** How far a saved run's playback images are drawn; totals are null for images drawn with their result. */
+export interface PublicPlaybackStatus {
+  frames_total: number | null;
+  frames_drawn: number | null;
+  drawing: boolean;
+  ready: boolean;
+}
+
+export async function getPublicPlaybackStatus(artifactId: string, composition: string): Promise<PublicPlaybackStatus> {
+  const query = new URLSearchParams({ composition });
+  return await requestJson(`/solve/playback-status/${encodeURIComponent(artifactId)}?${query}`) as unknown as PublicPlaybackStatus;
+}
+
 export function runPublicArmatureField(request: PublicSolveRequest): Promise<PublicJson> {
   return postConfig('/solve/field-composition/armature', request as PublicMotorConfig);
 }

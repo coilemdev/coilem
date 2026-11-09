@@ -1029,6 +1029,13 @@ assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
 assert.doesNotMatch(solvedFieldSource, /type="range"|Solved rotor position|public-field-position-control|playbackSliderRef/);
 assert.match(solvedFieldSource, /aria-label="Stop and go to the first position"/);
 assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);\s*\};/);
+// Play waits until a saved run's playback images are drawn (they are drawn after the result is saved).
+assert.match(solvedFieldSource, /getPublicPlaybackStatus\(check\.artifactId, check\.composition\)/);
+assert.match(solvedFieldSource, /ref\.byte_count === null/);
+assert.match(solvedFieldSource, /const ready = statuses\.every\(\(status\) => status\.ready \|\| !status\.drawing\);/);
+assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
+assert.match(solvedFieldSource, /\{playbackPreparing && \(\s*<span className="public-field-playback-preparing" role="status" aria-live="polite">\{playbackPreparingLabel\}<\/span>/);
+assert.match(apiSource, /\/solve\/playback-status\/\$\{encodeURIComponent\(artifactId\)\}\?\$\{query\}/);
 assert.match(solvedFieldSource, /const stopPlayback = \(\) => \{[\s\S]*?setFrameIndex\(0\);\s*\};/);
 assert.match(solvedFieldSource, /positionLink\?\.subscribeRequests\(\(angleDeg\) => scrubToAngleRef\.current\(angleDeg\)\)/);
 assert.match(solvedFieldSource, /positionLink\?\.setPlayhead\(angleFrames\.length > 0 \? electricalAngleDeg : null\)/);
@@ -1191,7 +1198,8 @@ assert.match(fieldResultSource, /: raster\.colorScale \?\? \{ minB, maxB, overAb
 assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.overAboveT\.toFixed\(1\)\} T/);
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
-assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport'\}/);
+// A Fit-view colour range still disables Play (as does playback that is still being drawn, checked above).
+assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
 assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);

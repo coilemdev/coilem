@@ -82,6 +82,7 @@ PUBLIC_API_PATHS = frozenset(
         "/solve/field-composition/armature/stream",
         "/solve/field-frame/{artifact_id}",
         "/solve/playback-frame/{artifact_id}",
+        "/solve/playback-status/{artifact_id}",
         "/solve/stream",
         "/solve/validate",
         "/solver/mesh-preview",

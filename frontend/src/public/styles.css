@@ -4716,6 +4716,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-dock > .public-field-playback { display: flex; align-items: center; gap: 8px; padding: 0 16px 8px; }
 .public-field-dock .public-dock-strip-end .viewport-cad-status { font-variant-numeric: tabular-nums; }
 .public-field-playback-buffering { margin-right: auto; color: var(--text-accent); font: 11px var(--font-mono); white-space: nowrap; }
+.public-field-playback-preparing { color: var(--text-muted); font: 11px var(--font-mono); white-space: nowrap; }
 .public-field-dock .public-field-transport-play { width: 36px; height: 36px; font-size: 12px; }
 .public-field-dock .public-field-physics-info > summary { width: 32px; height: 32px; font-size: 13px; }
 .public-field-dock .public-field-dock-controls { gap: 8px 12px; padding: 8px 16px; border-top: 0; }
