@@ -17,7 +17,7 @@ The pool limit, native executable, equations, meshes, nonlinear settings and req
 | Phase F 14p/12s drone | 92.39 s (88.65-96.13) | 65.88 s (61.87-69.89) | 28.69% | 1.40x |
 | Phase F 12p/9s micro | 173.10 s (172.45-173.75) | 79.56 s (79.40-79.71) | 54.04% | 2.18x |
 
-Each variant ran twice per case in a fresh process and data root. First pairs used baseline→candidate for drone and candidate→baseline for micro; repeats reversed those orders. These are eight observations, not confidence intervals. The requests are unchanged Newton copies retained from the earlier Phase F experiment.
+Each variant ran twice per case in a fresh process and data root. First pairs used baselineâ†’candidate for drone and candidateâ†’baseline for micro; repeats reversed those orders. These are eight observations, not confidence intervals. The requests are unchanged Newton copies retained from the earlier Phase F experiment.
 
 The primary timer is the unchanged `backend.benchmark_suite.worker.measure` runtime, including numerical postprocessing and field extraction. HTTP transfer, browser rendering, durable public-run saving and playback drawing are excluded. Process-wall timings, which also include harness/startup/monitor overhead, are recorded separately in the JSON.
 
@@ -62,3 +62,9 @@ Peak sampled private commit and summed working sets are in the JSON. Private com
 Native executable SHA-256: `7eecdf0e301fb386a6a135331eb6bb13a214553590ff59beed4fc38d73a1beb7`.
 
 The [machine-readable report](parallel-fallback-windows-20261108.json) includes every run, source/config hashes, paired timings, sampled memory and parity counts. Full logs and retained artifacts remain local.
+
+## Parent-stack integration
+
+The measurements compare historical base `121f144f` with measured code `1b4f7c33`; parent `4691c48c` was subsequently merged in `5584a769`. Integration checks confirmed unchanged measured solver/process-pool/native-adapter sources and identical resolved configurations for all eight explicit-Newton requests. Timings were not rerun after integration.
+
+The integrated tree passed 1,926 Python tests with 3 skipped (1,924 in the full run and two source-provenance checks in their required environment). Ruff and the final snapshot publication check passed.

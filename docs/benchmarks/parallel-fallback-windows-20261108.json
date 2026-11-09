@@ -767,5 +767,31 @@
     "No additional FEMM grading. Baseline/candidate output parity is not independent physical validation.",
     "Actual layer-aware solution reuse remains unsupported; fallback/native solve counts are retained.",
     "The six-step UI outrunner used in the prior locality study disables solution reuse; these gains do not establish a speedup for that workflow."
-  ]
+  ],
+  "integration_after_measurement": {
+    "source_commit": "5584a769c14021282d8f8883fe63d2207ddafe9d",
+    "parent_commit": "4691c48c6ca3ee283254ece441eb2d2de5526e29",
+    "measured_solver_sources_unchanged": {
+      "backend/solver/__init__.py": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+      "backend/solver/_process_pool.py": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+      "backend/magneto2d_adapter/__init__.py": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa"
+    },
+    "resolved_configs_identical": [
+      "drone-baseline",
+      "drone-candidate",
+      "micro-baseline",
+      "micro-candidate",
+      "drone-baseline-2",
+      "drone-candidate-2",
+      "micro-baseline-2",
+      "micro-candidate-2"
+    ],
+    "scope": "Parent adds Newton defaults/benchmark registration and UI changes. Timings remain historical at 121f144f versus1b4f7c33; no timing rerun after integration.",
+    "tests_passed": 1926,
+    "tests_skipped": 3,
+    "full_suite_tests_passed": 1924,
+    "separate_source_provenance_tests_passed": 2,
+    "ruff": "PASS",
+    "snapshot_publication": "PASS"
+  }
 }
