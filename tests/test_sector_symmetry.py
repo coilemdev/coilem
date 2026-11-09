@@ -407,3 +407,76 @@ def test_tiling_merges_shared_nodes_and_signs_alternate_copies() -> None:
         if uses == 1:
             assert math.hypot(*tiling.nodes_mm[u]) == pytest.approx(outer_radius, rel=1e-6)
             assert math.hypot(*tiling.nodes_mm[v]) == pytest.approx(outer_radius, rel=1e-6)
+
+
+@pytest.mark.parametrize("fixture", [SPM_4P12S, SPM_8P12S, OUTER_14P12S])
+def test_a_sector_frame_is_stored_as_one_sector_and_read_back_as_the_full_motor(fixture, tmp_path, monkeypatch) -> None:
+    import numpy as np
+
+    from backend import field_artifacts
+    from backend.sector_tiling import SECTOR_FOLD_KEY, fold_sector_frame, unfold_sector_frame
+    from backend.solver._helpers import _field_line_frame_from_report
+
+    config, sector = _mesh(fixture, "auto")
+    report = run_magneto2d_report(config, sweep=False, rotor_angle_deg=3.7, solve_mesh_artifact=sector)
+    noload_config = config.model_copy(update={"solve_params": config.solve_params.model_copy(update={"current_amplitude_A": 0.0})})
+    noload_report = run_magneto2d_report(noload_config, sweep=False, rotor_angle_deg=3.7, solve_mesh_artifact=sector)
+    frame = _field_line_frame_from_report(report, 14.8, noload_report)
+    repeats = sector["mesh"]["info"]["sector"]["repeats"]
+    assert frame["total_span_deg"] == 360.0
+    assert len(frame["triangles"]) == repeats * len(sector["mesh"]["triangles"])
+
+    folded = fold_sector_frame(frame)
+    assert len(folded["triangles"]) == len(sector["mesh"]["triangles"])
+    assert len(folded["nodes_mm"]) == len(sector["mesh"]["nodes"])
+    assert len(folded["noload_plot"]["triangles"]) == len(sector["mesh"]["triangles"])
+    assert SECTOR_FOLD_KEY in folded and SECTOR_FOLD_KEY in folded["noload_plot"]
+
+    def assert_same_plot(restored: dict, original: dict) -> None:
+        assert restored["triangles"] == original["triangles"]
+        assert restored["regions"] == original["regions"]
+        np.testing.assert_allclose(restored["nodes_mm"], original["nodes_mm"], atol=1e-9)
+        scale = max(original["element_b_mag_t"])
+        for key in ("element_b_mag_t", "element_bx_t", "element_by_t"):
+            np.testing.assert_allclose(restored[key], original[key], atol=1e-9 * scale)
+        assert [level["level"] for level in restored["contour_levels"]] == [
+            level["level"] for level in original["contour_levels"]
+        ]
+        for restored_level, level in zip(restored["contour_levels"], original["contour_levels"]):
+            # The same line segments, in another order.
+            assert len(restored_level["segments_mm"]) == len(level["segments_mm"])
+            assert len(restored_level["segment_bx_t"]) == len(level["segment_bx_t"])
+            key = lambda segment: tuple(round(value, 6) for value in segment)  # noqa: E731
+            assert sorted(map(key, restored_level["segments_mm"])) == sorted(map(key, level["segments_mm"]))
+
+    unfolded = unfold_sector_frame(folded)
+    assert SECTOR_FOLD_KEY not in unfolded and SECTOR_FOLD_KEY not in unfolded["noload_plot"]
+    assert_same_plot(unfolded, frame)
+    assert_same_plot(unfolded["noload_plot"], frame["noload_plot"])
+
+    # Through the stored artifact: the file holds one sector, the reader returns the motor.
+    monkeypatch.setattr(field_artifacts, "solve_cache_root", lambda: tmp_path)
+    ref = field_artifacts.write_field_line_frame_artifact(frame, tmp_path / "run", pos_idx=0, elec_angle_deg=14.8)
+    assert ref is not None
+    stored = next((tmp_path / "run" / "field_line_frames").glob("*.json.gz"))
+    import gzip
+
+    raw = json.loads(gzip.open(stored, "rt", encoding="utf-8").read())["field_line_frame"]
+    assert len(raw["triangles"]) == len(sector["mesh"]["triangles"])
+    for path in (stored, field_artifacts.compact_field_frame_path(stored)):
+        read_back = field_artifacts.read_field_line_frame_artifact(path)["field_line_frame"]
+        assert len(read_back["triangles"]) == len(frame["triangles"])
+        np.testing.assert_allclose(read_back["element_bx_t"], frame["element_bx_t"], atol=2e-6 * max(frame["element_b_mag_t"]))
+        assert len(read_back["noload_plot"]["triangles"]) == len(frame["triangles"])
+
+
+def test_a_full_circle_frame_is_stored_as_it_is() -> None:
+    from backend.sector_tiling import fold_sector_frame, unfold_sector_frame
+    from backend.solver._helpers import _field_line_frame_from_report
+
+    config, full = _mesh(SPM_8P12S, "full")
+    report = run_magneto2d_report(config, sweep=False, rotor_angle_deg=3.7, solve_mesh_artifact=full)
+    frame = _field_line_frame_from_report(report, 14.8)
+    assert fold_sector_frame(frame) is frame
+    assert unfold_sector_frame(frame) is frame
+    assert "sector_tiling" not in frame["mesh_info"]
