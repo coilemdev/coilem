@@ -57,7 +57,7 @@ PACKAGE_DATA_FILES = (
 # registers, the frozen reference bundle and the published per-platform
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
-BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.6/benchmark_spec.json"
+BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.9/benchmark_spec.json"
 BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol16-reviewed-20261103"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
 
@@ -97,9 +97,13 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
 
     spec = json.loads((root / BENCHMARK_SUITE_FILE).read_text(encoding="utf-8"))
     files = {BENCHMARK_SUITE_FILE, spec["golden"]}
-    cap_change = spec.get("reference_compatibility", {}).get("iteration_cap_change")
-    if cap_change:
-        measured_suite = cap_change["measured_suite"]
+    # A reference bridge checks each changed request against the suite it was
+    # measured for, so that suite and its requests ship too.
+    bridge = spec.get("reference_compatibility", {})
+    for change in (bridge.get("iteration_cap_change"), bridge.get("solve_option_change")):
+        if not change:
+            continue
+        measured_suite = change["measured_suite"]
         files.add(measured_suite)
         measured = json.loads((root / measured_suite).read_text(encoding="utf-8"))
         for case in measured["cases"]:

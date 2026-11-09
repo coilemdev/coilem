@@ -434,8 +434,9 @@ with flux density:
 ```
 
 This circular dependency makes the FEM problem nonlinear. Magneto2D resolves
-it with either Picard fixed-point iteration, which is the default, or a
-requested damped Newton method.
+it with either a damped Newton method, which the app requests by default from
+v0.5.6, or Picard fixed-point iteration. A motor request that names no method
+gets Picard, and Newton falls back to Picard at any angle where it fails.
 
 ### 5. Picard iteration
 

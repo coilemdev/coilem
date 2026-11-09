@@ -3417,7 +3417,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const reviewDesignForConvergence = config.solve_params.nonlinear_solver === 'newton'
     && ['fine', 'very_fine'].includes(config.solve_params.mesh_density);
   const convergenceTip = config.solve_params.nonlinear_solver === 'picard'
-    ? 'In Advanced options, change Nonlinear solver to Newton (experimental), then run the analysis again.'
+    ? 'In Advanced options, change Nonlinear solver to Newton, then run the analysis again.'
     : reviewDesignForConvergence
       ? 'Newton and a fine mesh are already selected. Review the geometry and steel B–H curve, especially near saturation, before retrying.'
       : 'Try a finer mesh: in Advanced options, choose Fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
@@ -3954,8 +3954,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   <div><dt>Torque method</dt><dd>WST</dd></div>
                   <div><dt>Linear solver</dt><dd>Direct Cholesky</dd></div>
                 </dl>
-                <SelectRow selectRef={nonlinearSolverRef} label="Nonlinear solver" value={config.solve_params.nonlinear_solver} disabled={busy !== null} choices={[{ value: 'picard', label: 'Picard (recommended)' }, { value: 'newton', label: 'Newton (experimental)' }]} onChange={(value) => onSolveSettingChange('nonlinear_solver', value as MotorConfig['solve_params']['nonlinear_solver'])} />
-                <p className="public-solver-help">Picard is the default. Try Newton if a run fails to converge.</p>
+                <SelectRow selectRef={nonlinearSolverRef} label="Nonlinear solver" value={config.solve_params.nonlinear_solver} disabled={busy !== null} choices={[{ value: 'newton', label: 'Newton (recommended)' }, { value: 'picard', label: 'Picard' }]} onChange={(value) => onSolveSettingChange('nonlinear_solver', value as MotorConfig['solve_params']['nonlinear_solver'])} />
+                <p className="public-solver-help">Newton is the default and needs far fewer iterations. It falls back to Picard at any position where it doesn't converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
               {!sixStepSelected && <NumberRow label={reference?.currentAngleLabel ?? "Current angle"} value={config.solve_params.current_angle_deg} unit="deg" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('current_angle_deg', value)} />}
