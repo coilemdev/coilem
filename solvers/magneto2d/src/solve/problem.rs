@@ -110,7 +110,13 @@ impl SolveProblem {
             }
         }
         let (nonlinear_curve_ids_by_element, nonlinear_curves, nonlinear_material_labels) =
-            resolved_nonlinear_materials(&mesh.regions, &stator_steel, &rotor_steel, &custom_curves);
+            resolved_nonlinear_materials(
+                &mesh.regions,
+                &stator_steel,
+                &rotor_steel,
+                &custom_curves,
+                crate::materials::linear_steel_mu_override().is_some(),
+            );
         for (index, curve_id) in nonlinear_curve_ids_by_element.iter().enumerate() {
             if let Some(id) = curve_id {
                 if custom_curves.contains_key(&nonlinear_material_labels[*id]) {
@@ -241,7 +247,15 @@ fn resolved_nonlinear_materials(
     stator_steel: &str,
     rotor_steel: &str,
     custom_curves: &HashMap<String, crate::field::BhCurve>,
+    linear_steel: bool,
 ) -> (Vec<Option<usize>>, Vec<crate::field::BhCurve>, Vec<String>) {
+    // A linear-steel override applies to every steel. Custom curves are looked
+    // up here, not through `resolved_field_bh_curve`, so they need the same
+    // check; `MaterialProps::steel` has already given their elements the
+    // override value.
+    if linear_steel {
+        return (vec![None; regions.len()], Vec::new(), Vec::new());
+    }
     let mut curves = Vec::new();
     let mut labels = Vec::new();
     let mut curve_by_label = HashMap::<String, Option<usize>>::new();
@@ -318,4 +332,40 @@ pub(super) fn resolved_contract_steel_keys(
         }
     }
     (stator_steel, rotor_steel)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn curve() -> crate::field::BhCurve {
+        crate::field::BhCurve {
+            points: vec![
+                crate::field::BhPoint { b_t: 0.0, h_a_per_m: 0.0 },
+                crate::field::BhPoint { b_t: 1.0, h_a_per_m: 200.0 },
+                crate::field::BhPoint { b_t: 2.0, h_a_per_m: 20_000.0 },
+            ],
+            mu_r_min: 1.0,
+            mu_r_max: 1.0e5,
+        }
+    }
+
+    #[test]
+    fn custom_steel_curves_iterate_unless_steel_is_linear() {
+        let regions = [Region::StatorYoke, Region::RotorCore, Region::Airgap];
+        let custom = HashMap::from([("custom:abc".to_string(), curve())]);
+
+        let (ids, curves, labels) =
+            resolved_nonlinear_materials(&regions, "custom:abc", "custom:abc", &custom, false);
+        assert_eq!(ids, vec![Some(0), Some(0), None]);
+        assert_eq!(curves.len(), 1);
+        assert_eq!(labels, vec!["custom:abc".to_string()]);
+
+        // #210: the override used to reach bundled grades only.
+        let (ids, curves, labels) =
+            resolved_nonlinear_materials(&regions, "custom:abc", "custom:abc", &custom, true);
+        assert_eq!(ids, vec![None, None, None]);
+        assert!(curves.is_empty());
+        assert!(labels.is_empty());
+    }
 }
