@@ -90,6 +90,29 @@ jobs:
           --case spm_4p12s_small --smoke
           --out-dir "${{ runner.temp }}/coilem-abcd-smoke" --pdf
 
+  windows-cancellation:
+    if: ${{ !inputs.performance_acceptance_only }}
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          # Match the original invalid-handle failure (#234).
+          python-version: '3.12.10'
+      - name: Install the documented backend environment
+        run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+      - name: Exercise late spawn, overlapping pools and cancellation
+        env:
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-cancellation-ci
+        run: >-
+          python -m pytest -q tests/test_process_pool_cancellation.py
+          tests/test_windows_field_frame_pool.py tests/test_windows_mesh_pool.py
+          tests/test_field_frame_locality.py tests/test_field_frame_pipeline.py
+          tests/test_parallel_fallback_solves.py tests/test_launcher_shutdown.py
+
   frontend:
     if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
