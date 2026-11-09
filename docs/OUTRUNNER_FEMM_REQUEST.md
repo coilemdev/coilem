@@ -195,11 +195,16 @@ result, so the Phase F run stays blind.
 | 0° | 0 / 6 / −6 | 0 / −6 / 6 | −83.0470 | +83.0470 |
 | 0° | 0 / 0 / 0 | 0 / 0 / 0 | −0.0649 | +0.0649 |
 
-Pass each point within max(2%, 0.05 mN·m), the rule coilEM's own LRK
-acceptance used. A miss on any point above 20 mN·m points to the adapter's
-outer-rotor model (boundary, moving body, current mapping or torque body), so
-fix it before the pilot. The 40° and zero-current points are under 4 mN·m,
-where mesh noise alone can exceed 0.05 mN·m: report them either way.
+Pass each point with Phase A's mean-torque rule, the rule coilEM's own LRK
+acceptance uses: within 8% of the expected torque, or within 0.01 N·m where
+the expected torque is under 0.01 N·m. It replaced max(2%, 0.05 mN·m) on
+November 9, 2026, by the owner's decision. Report each point's error against
+both rules.
+
+A miss on any point above 20 mN·m points to the adapter's outer-rotor model
+(boundary, moving body, current mapping or torque body), so fix it before the
+pilot. The 40° and zero-current points are under 4 mN·m, where mesh noise
+alone can exceed 0.05 mN·m.
 
 ## Record
 

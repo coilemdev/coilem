@@ -667,8 +667,9 @@ Outer-rotor (outrunner) SPM motors are new in 0.5.5
 registered benchmark fixture is an outer rotor.**
 
 - **What has been checked.** The LRK 12-slot / 14-pole reference against its
-  published solution: 9 of 11 torque points pass, the source point is −0.36%
-  and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
+  published solution: all 11 torque points pass Phase A's mean-torque rule
+  (9 of 11 under the stricter max(2%, 0.05 mN·m) rule used before November 9,
+  2026), the source point is −0.39% and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
   agrees with 1.5·p·λ·I within 0.3%, and the mesh study moves it less than
   0.05%. [OUTRUNNER.md](OUTRUNNER.md#validation) has the detail.
 - **The reason the app prints:** "Outer-rotor SPM: no registered benchmark

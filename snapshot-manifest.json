@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 53097,
-      "sha256": "d0843d6583ba9324dff4389d58175078d56ccac0915e5055425472a8661f4ce4"
+      "bytes": 53208,
+      "sha256": "30bf0844def3046c67397d9911bf8b9c7ac8d74a759a168d569cde7ddd2e213b"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -13025,13 +13025,13 @@
     },
     {
       "path": "docs/OUTRUNNER.md",
-      "bytes": 5260,
-      "sha256": "e003c6cc6f679bd7ee8ab65d28386fa93dcaa5a4d73ea95ed6a593e7647c57c3"
+      "bytes": 6204,
+      "sha256": "39706c01d7db376b67c87839403d029b4dcd240c630004fd5c62d13854bd7ffa"
     },
     {
       "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
-      "bytes": 16146,
-      "sha256": "0b0d31b79861b6e97001aaef0959d3762c2f3c85e8938413f495f705a5b002fa"
+      "bytes": 16352,
+      "sha256": "fc1d97a8c47ad2aebc48ad9564b664d8cf43eef3c25f51cf8224056825114d82"
     },
     {
       "path": "frontend/scripts/test-coil-wiring.mjs",
