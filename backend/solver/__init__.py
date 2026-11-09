@@ -3436,7 +3436,7 @@ class Magneto2DSolver(Solver):
             slot_excitation_frames=slot_excitation_frames,
             iron_loss_density=iron_loss_density,
             solve_metadata=SolveMetadata(
-                solver_name="magneto2d-rust-0.4.0",
+                solver_name="magneto2d-rust-0.5.0",
                 reference_model=(
                     {"geometry_reference": config.geometry_reference, "case_id": config.reference_case,
                      "geometry_asset_sha256": build_topology_geometry_provenance(config)["geometry_asset_sha256"],

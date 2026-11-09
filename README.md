@@ -8,7 +8,9 @@ Everything runs on your computer.
 Website: [coilem.com](https://coilem.com)
 
 The source identifies as **coilEM 0.5.5 Developer Preview**, with
-**Magneto2D 0.4.0**. Version 0.5.5 adds outer-rotor (outrunner) SPM motors,
+**Magneto2D 0.5.0**, the solver for the coming 0.5.6 release; it has not been
+qualified or released yet. Version 0.5.5, released with Magneto2D 0.4.0, adds
+outer-rotor (outrunner) SPM motors,
 which are experimental, and passes the registered A-D release qualification
 gate with source-matched Windows/macOS and Prius software evidence. See
 [release status](PUBLICATION_STATUS.md) for packaging and publication and the
@@ -234,7 +236,7 @@ Six-step excitation models ideal commanded currents, without PWM, switching,
 ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
 [Materials](MATERIALS.md).
 
-The source application is **coilEM 0.5.5** and the solver is **Magneto2D 0.4.0**.
+The source application is **coilEM 0.5.5** and the solver is **Magneto2D 0.5.0**.
 There are no accounts, hosted services or telemetry in this distribution.
 Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
 

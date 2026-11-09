@@ -213,7 +213,7 @@ def test_release_versions_align() -> None:
     magneto2d = (REPO_ROOT / "solvers" / "magneto2d" / "Cargo.toml").read_text(
         encoding="utf-8"
     )
-    assert 'version = "0.4.0"' in magneto2d
+    assert 'version = "0.5.0"' in magneto2d
 
 
 def test_public_docs_match_reduced_release_contract() -> None:
@@ -239,7 +239,7 @@ def test_public_docs_match_reduced_release_contract() -> None:
     combined = "\n".join(documents.values())
 
     assert f"coilEM {app.version}" in documents["README.md"]
-    assert "Magneto2D 0.4.0" in documents["README.md"]
+    assert "Magneto2D 0.5.0" in documents["README.md"]
     assert "COILEM_ENABLE_ELMER=1" in documents["docs/ELMER.md"]
     assert "hidden, and not probed" in combined
     assert "H1-H12" in documents["docs/GETTING_STARTED.md"]

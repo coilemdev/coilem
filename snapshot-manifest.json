@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 14956,
-      "sha256": "bfdb45708d4e1327c145bc54a4101b4a93fc2e3feb0165f3546ab2d0f8a378da"
+      "bytes": 15072,
+      "sha256": "128209f5db0bed79cee8bac228d2a1785bc8bd46df2f36a7b1626c716cd8ef27"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -646,7 +646,7 @@
     {
       "path": "backend/solver/__init__.py",
       "bytes": 169429,
-      "sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7"
+      "sha256": "d6358ab8fdb2006ce22aea96aa3af6698afe1b117c65b75bc2117f68f4a7990d"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16785,
-      "sha256": "592b1c2652befa72b46dddcb63ebf4c29c1c2f1e3efa41a93f1d5e5b604763a6"
+      "bytes": 16821,
+      "sha256": "1168f4ee3be7c998d1b828d92029f0067574fd5aa869c7ce01fd692047c643fe"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 47718,
-      "sha256": "454655d3213f8e2b6fe746ff07b91288cbe3f1e054beceb6a4027a40e83b4aa7"
+      "bytes": 47758,
+      "sha256": "0acab079dd24fb5da72fdadaab0a420e640f3cbfbe9580134bcb9a95ca00d831"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -7666,12 +7666,12 @@
     {
       "path": "solvers/magneto2d/Cargo.lock",
       "bytes": 28550,
-      "sha256": "ac28ac7063638b450017691f128610bcb635cf5f8108192ad595b02c25ea7df8"
+      "sha256": "28660551e81970d446c41d64119245eadd68685dab3b8c46a65e65bb5eaa61dc"
     },
     {
       "path": "solvers/magneto2d/Cargo.toml",
       "bytes": 522,
-      "sha256": "4ba1b55f7e7e9887dacf5c91100d4e7c9266943abf73a2d4c484ca68bf81fc24"
+      "sha256": "967b6113c53a1722b4cce5d69510208f2ce8ac5ca002973d339a72a3018d8503"
     },
     {
       "path": "solvers/magneto2d/build.rs",
@@ -8211,7 +8211,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20531,
-      "sha256": "294cce0fae0a2812cd598dea9fe1c8b2273a17bdaea0039d816aa16db30d0172"
+      "sha256": "f28a006414c3d8513b08337d2528fbceb4e096a62aa0e9109bc98f4c25ce10d3"
     },
     {
       "path": "tests/test_public_field_playback.py",
