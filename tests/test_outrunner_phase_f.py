@@ -16,7 +16,7 @@ from tools import make_outrunner_phase_f
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "benchmarks/abcd-v1.8/benchmark_spec.json"
-BASE_SPEC = ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
+BASE_SPEC = ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"  # the default suite: Newton requests since v0.5.6
 
 
 def _fixture(case) -> dict:

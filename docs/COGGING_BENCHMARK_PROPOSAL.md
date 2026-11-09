@@ -139,7 +139,7 @@ for review; none decides a status.
 
 In place, on this branch:
 
-- `benchmarks/abcd-v1.7/`: the 12 requests, each a registered protocol 1.6.0
+- `benchmarks/abcd-v1.7/`: the 12 requests, each a registered protocol 1.6.0 (re-derived from protocol 1.9.0, with Newton, in v0.5.6)
   request with the two changes above, and `benchmark_spec.json` with their
   hashes and floors. Protocol 1.6.0 stays the default, and `coilem benchmark`
   runs phases A–D only.
