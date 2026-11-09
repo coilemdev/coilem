@@ -1,0 +1,81 @@
+{
+  "candidate": "e9eb89e818edf9a579c20e900a9ea93a0731ad28",
+  "workflow": 42674975329,
+  "platforms": {
+    "windows-x86_64": {
+      "AD_cases": {
+        "PASS": 46,
+        "UNSUPPORTED": 1
+      },
+      "AD_gates": {
+        "PASS": 336
+      },
+      "AD_moved": [],
+      "AD_compared_values": 267,
+      "Prius_jobs": 17,
+      "Prius_fields": 568,
+      "Prius_checks_PASS": 10,
+      "Prius_moved": [],
+      "Prius_curve180_previous": 0.026539302148737773,
+      "Prius_curve180_current": 0.02653930214918832,
+      "Prius_curve180_delta_vs_previous": 4.505458506276483e-13,
+      "all_registered_physics_source_hashes_match": 69,
+      "frozen_grader_snapshot_verified": true,
+      "request_bridges": {
+        "picard_to_newton_only": 28,
+        "identical": 25
+      },
+      "job_wall_s": 4706.438056,
+      "reduction_pct": 64.46391377889982,
+      "summary_sha256": "0350bebd3132900ae3b2103b4690fc2e61fe78922598c33780c02696a9dc64f5",
+      "prius_sha256": "6a3df2842bab9cfeaba6de45f8bb7996f3aa43d8c61dc07f52cff757299df68a"
+    },
+    "macos-arm64": {
+      "AD_cases": {
+        "PASS": 46,
+        "UNSUPPORTED": 1
+      },
+      "AD_gates": {
+        "PASS": 336
+      },
+      "AD_moved": [],
+      "AD_compared_values": 267,
+      "Prius_jobs": 17,
+      "Prius_fields": 568,
+      "Prius_checks_PASS": 10,
+      "Prius_moved": [
+        {
+          "metric": "curve-180-16.mean_torque_Nm",
+          "baseline": "approved",
+          "old": 0.026539302148737773,
+          "new": 0.030181329933354963,
+          "tolerance": 0.001
+        }
+      ],
+      "Prius_curve180_previous": 0.03018132993388819,
+      "Prius_curve180_current": 0.030181329933354963,
+      "Prius_curve180_delta_vs_previous": -5.332262409396549e-13,
+      "all_registered_physics_source_hashes_match": 69,
+      "frozen_grader_snapshot_verified": true,
+      "request_bridges": {
+        "picard_to_newton_only": 28,
+        "identical": 25
+      },
+      "job_wall_s": 8537.389689,
+      "reduction_pct": 46.11045068949132,
+      "summary_sha256": "68c3ec766f0d89be078ae70d11294de96fd1c0817d0b8a82739f77f7fc39b6db",
+      "prius_sha256": "a8bba2532f6234a561d58776f54c84ec5b6c36c9260d340610db72a750849844"
+    }
+  },
+  "registered_protocol19_bridge_validated": true,
+  "reference_bundle_hash": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
+  "reviewed_FEMM_cases": 46,
+  "approved_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "owner_decisions_needed": [
+    "Protocol1.9 unchanged FEMM reference reuse",
+    "MacPrius curve180 near-zero observation vs immutable approved anchor"
+  ],
+  "solver_runs_needed": false,
+  "measurements_mutated": false,
+  "review_phase": "Preflight before owner reference approval; subsequent decisions are recorded in owner-decisions.json"
+}

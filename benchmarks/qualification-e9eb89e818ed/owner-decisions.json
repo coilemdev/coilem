@@ -1,0 +1,39 @@
+{
+  "schema": "coilem.release_owner_decisions/v1",
+  "date": "2026-11-09",
+  "measured_commit": "e9eb89e818edf9a579c20e900a9ea93a0731ad28",
+  "source_workflow_run": 42674975329,
+  "review": "https://github.com/coilemdev/coilem/pull/232",
+  "approval_source": "Explicit owner response to the completed reference review in this conversation: \"yes I approve that reference reuse\".",
+  "decisions": [
+    {
+      "id": "protocol19_reference_reuse",
+      "answer": "Approve reviewed reference reuse",
+      "scope": "Unchanged reviewed FEMM references through the registered protocol 1.9 Newton-only solve-option bridge. All 47 case definitions, physical inputs, metric interpretation and strict gates are retained; 25 stage configurations are identical and 28 change only native nonlinear_solver from picard to newton.",
+      "reference_bundle_sha256": "756ddf1e23417e502c6720e11010199bbf25692bc348b019b1b78c620ec1d4d8",
+      "suite_sha256": "e7ccab31ad7b4f078a1f1a09f8e60984bbcbca22507739c108c6a9842aa3aa8d",
+      "reference_sensitive_change_since_accepted_v055": "backend/models/config.py: native nonlinear solver default picard to newton and its description only"
+    },
+    {
+      "id": "macos_prius_180_observation",
+      "decision": "RETAIN_PREVIOUS_SCOPED_OWNER_ACCEPTANCE",
+      "approval_source": "benchmarks/qualification-34de0f4ca160/owner-decisions.json",
+      "approval_source_sha256": "d81c794f6943c169806512e5ee5e39f6dc38c8a83ea08c3e75f2524a895fc428",
+      "scope": "Only the named experimental observation, the same value accepted for v0.5.1; no hardware or performance claim added.",
+      "platform": "macos-arm64",
+      "case": "Prius",
+      "metric": "curve-180-16.mean_torque_Nm",
+      "approved_baseline": 0.026539302148737773,
+      "new": 0.030181329933354963,
+      "previous_owner_accepted": 0.03018132993388819,
+      "change_since_previous": -5.332262409396549e-13,
+      "existing_absolute_replay_tolerance": 0.001,
+      "reason": "The same named experimental observation is unchanged from the previously accepted value within 5.34e-13 Nm. Its prior scoped acceptance is retained; the current owner response approves reference reuse, not a new numerical waiver."
+    }
+  ],
+  "automatic_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b",
+  "automatic_tolerances_changed": false,
+  "approved_anchors_changed": false,
+  "measurements_mutated": false,
+  "reference_bundle_mutated": false
+}

@@ -8,8 +8,9 @@ Everything runs on your computer.
 Website: [coilem.com](https://coilem.com)
 
 The source identifies as a **coilEM 0.5.6 Developer Preview** candidate, with
-**Magneto2D 0.5.0**. Final qualification of the post-version-bump candidate is
-pending; this version has not been released. Version 0.5.5, released with
+**Magneto2D 0.5.0**. The frozen post-version-bump candidate passes
+[Windows/macOS A-D and Prius qualification](benchmarks/qualification-e9eb89e818ed/README.md);
+this version has not been released. Version 0.5.5, released with
 Magneto2D 0.4.0, introduced
 outer-rotor (outrunner) SPM motors,
 which are experimental, and passed the registered A-D release qualification

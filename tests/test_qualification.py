@@ -98,9 +98,9 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["selection"]["bundle_sha256"] == bundle_sha
     measured_spec = Path(f"benchmarks/abcd-v{run['identity']['protocol_version'].rsplit('.', 1)[0]}/benchmark_spec.json")
     assert run["selection"]["spec_sha256"] == sha(measured_spec)
-    # This run measured the winding-axis protocol directly; the frozen reference
-    # still names its own earlier measured commit and registered validation bridge.
-    assert run["identity"]["protocol_version"] == "1.6.0"
+    # The current record measures the registered protocol; frozen FEMM data
+    # retains its original protocol through the validated reference bridge.
+    assert run["identity"]["protocol_version"] == spec["protocol_version"]
 
 
 def test_report_preserves_its_registered_measured_physics_sources() -> None:

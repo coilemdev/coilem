@@ -1,9 +1,9 @@
 # coilEM 0.5.6 Developer Preview — release candidate
 
 Prepared November 9, 2026. This candidate identifies as coilEM 0.5.6 with
-Magneto2D 0.5.0. Final Windows/macOS A-D and Prius qualification is being
-collected from the frozen post-version-bump release candidate. Qualification,
-release tagging and package publication are pending; see
+Magneto2D 0.5.0. The frozen post-version-bump candidate passes
+[Windows/macOS A-D and Prius qualification](benchmarks/qualification-e9eb89e818ed/README.md).
+Main integration, release tagging and package publication are pending; see
 [release status](PUBLICATION_STATUS.md) and [the release PR](https://github.com/coilemdev/coilem/pull/232).
 
 - **Newton by default.** The app and the registered A-D requests use Newton.
@@ -22,9 +22,9 @@ release tagging and package publication are pending; see
 The [Windows FEMM/Native report](docs/benchmarks/windows-femm-release-v056-20261109.md)
 retains the earlier `8b6b394`/`11aa06b` baseline results, including exact
 reproduction of all 58 fresh FEMM case/control results. It predates the
-two-layer integration and this application version bump. The final candidate
-gets its own native measurements and qualification record; historical field
-commits are not relabeled.
+two-layer integration and this application version bump. The final candidate's
+own measurements and qualification record retain field commit `e9eb89e`;
+historical field commits are not relabeled.
 
 Outer rotors and cogging remain experimental. Their proposed suites do not
 extend the registered A-D/Prius release scope; inherited review findings remain

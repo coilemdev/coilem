@@ -5,18 +5,24 @@ Prepared November 9, 2026: **coilEM 0.5.6 Developer Preview candidate**, with
 `release/v0.5.6`. The application version is bumped before the final run so
 its measurements identify the actual versioned release candidate.
 
-## 0.5.6 qualification in progress
+## 0.5.6 candidate qualification passed
 
-Final registered A-D (protocol 1.9.0) and complete Prius software qualification
-must measure the frozen candidate on Windows and macOS. A separate Windows
-Phase F diagnostic measures all ten Newton outer-rotor cases against the sealed
-fresh FEMM references. The earlier [Windows report](docs/benchmarks/windows-femm-release-v056-20261109.md)
-retains its actual pre-two-layer `8b6b394`/`11aa06b` identities and timing scope.
+The frozen versioned candidate `e9eb89e818edf9a579c20e900a9ea93a0731ad28`
+passes registered A-D (protocol 1.9.0) and complete Prius software qualification
+on Windows and macOS. Each platform has 46 supported cases and 336/336 gates
+passing, plus 17 Prius jobs / 568 field positions with all ten software checks
+passing. All 69 guarded physics hashes and before-field grader snapshots verify.
+The [qualification assessment](benchmarks/qualification-e9eb89e818ed/release-qualification.json)
+retains the actual field commit separately from this evidence publication.
 
-The existing platform records and accepted owner decisions below belong to
-previous releases. New records require complete fields, matching source and
-request hashes, unchanged gates and any required reference/numerical review.
-The final 0.5.6 qualification assessment will be added after these checks pass.
+The [scoped owner decisions](benchmarks/qualification-e9eb89e818ed/owner-decisions.json)
+approve unchanged FEMM reference reuse through the registered Newton bridge and
+retain the previously accepted near-zero macOS Prius observation, unchanged
+within 5.34e-13 Nm. Approved anchors, gates and tolerances are unchanged.
+A separate Windows Phase F diagnostic passes all ten Newton outer-rotor cases
+against sealed fresh FEMM references. The earlier
+[Windows report](docs/benchmarks/windows-femm-release-v056-20261109.md) retains
+its pre-two-layer `8b6b394`/`11aa06b` identities and timing scope.
 
 Outer rotors and cogging remain experimental. Phase F and Phase E are proposed
 suites, and inherited LRK and cogging findings remain retained. Their diagnostics

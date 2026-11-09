@@ -18,5 +18,6 @@ benchmarks/candidate-qualification-20261103/** -text -eol whitespace=cr-at-eol
 benchmarks/records-historical/v040/** -text -eol whitespace=cr-at-eol
 benchmarks/qualification-a4f9f4dccf2b/** -text -eol whitespace=cr-at-eol
 benchmarks/qualification-34de0f4ca160/** -text -eol whitespace=cr-at-eol
+benchmarks/qualification-e9eb89e818ed/** -text -eol whitespace=cr-at-eol
 # The LRK reference source drawing is bound to its audited SHA-256.
 backend/reference_models/lrk_12s14p_source.json -text -eol whitespace=cr-at-eol

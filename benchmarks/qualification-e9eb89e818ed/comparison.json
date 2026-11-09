@@ -1,0 +1,5342 @@
+[
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "0.4774745780381546",
+    "new": "0.47747469280634647",
+    "approved": "0.4774745769412223",
+    "FEMM": "0.47707813670238686",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.98662276332713",
+    "new": "4.986623833280828",
+    "approved": "4.986622752106025",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "6.678821421709572",
+    "new": "6.6788247315202325",
+    "approved": "6.678821421709572",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.011253940729988964",
+    "new": "0.011253942779169912",
+    "approved": "0.011253940705409202",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "0.0006766984589900144",
+    "new": "0.0006767001973921545",
+    "approved": "0.0006766984591050678",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01125664979500661",
+    "new": "0.011256652214537874",
+    "approved": "0.011256649769677987",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "mean_torque_Nm",
+    "old": "0.7160472005403289",
+    "new": "0.7160473774681356",
+    "approved": "0.7160472005403289",
+    "FEMM": "0.7160095503741394",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986622752106025",
+    "new": "4.986623833280828",
+    "approved": "4.986622752106025",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "back_emf_peak_V",
+    "old": "6.678821421709572",
+    "new": "6.6788247315202325",
+    "approved": "6.678821421709572",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "lambda_d_Wb",
+    "old": "0.011251398608925855",
+    "new": "0.011251400698922909",
+    "approved": "0.011251398608925855",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "lambda_q_Wb",
+    "old": "0.0010146051409932017",
+    "new": "0.001014607529060213",
+    "approved": "0.0010146051409932017",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256649769677987",
+    "new": "0.011256652214537874",
+    "approved": "0.011256649769677987",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "mean_torque_Nm",
+    "old": "0.5817731168900918",
+    "new": "0.5817737636269458",
+    "approved": "0.5817731168900918",
+    "FEMM": "0.5850121670208285",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "back_emf_fundamental_V",
+    "old": "6.0794581828577146",
+    "new": "6.07946002717847",
+    "approved": "6.0794581828577146",
+    "FEMM": "6.100531510669175",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "back_emf_peak_V",
+    "old": "8.687547338679403",
+    "new": "8.687573545278202",
+    "approved": "8.687547338679403",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "lambda_d_Wb",
+    "old": "0.013713200131505917",
+    "new": "0.013713201660413331",
+    "approved": "0.013713200131505917",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "lambda_q_Wb",
+    "old": "0.000723933282416282",
+    "new": "0.0007239351057850126",
+    "approved": "0.000723933282416282",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01372802990169781",
+    "new": "0.013728034239153248",
+    "approved": "0.01372802990169781",
+    "FEMM": "0.013731020140715042",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "9.843871784426006e-06",
+    "new": "9.844321269564921e-06",
+    "approved": "9.843871784426006e-06",
+    "FEMM": "-0.0006416471211330068",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986622752106025",
+    "new": "4.986623833280828",
+    "approved": "4.986622752106025",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "6.678821421709572",
+    "new": "6.6788247315202325",
+    "approved": "6.678821421709572",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.01125596168113887",
+    "new": "0.01125596412160064",
+    "approved": "0.01125596168113887",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "9.41929448319803e-10",
+    "new": "9.445698502052909e-10",
+    "approved": "9.41929448319803e-10",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256649769677987",
+    "new": "0.011256652214537874",
+    "approved": "0.011256649769677987",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "mean_torque_Nm",
+    "old": "0.23877171774923556",
+    "new": "0.23877177522353152",
+    "approved": "0.23877171774923556",
+    "FEMM": "0.23802840224855903",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986622752106025",
+    "new": "4.986623833280828",
+    "approved": "4.986622752106025",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "back_emf_peak_V",
+    "old": "6.678821421709572",
+    "new": "6.6788247315202325",
+    "approved": "6.678821421709572",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "lambda_d_Wb",
+    "old": "0.011255453417996998",
+    "new": "0.011255455503620435",
+    "approved": "0.011255453417996998",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "lambda_q_Wb",
+    "old": "0.00033843526320228207",
+    "new": "0.0003384362003419152",
+    "approved": "0.00033843526320228207",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256649769677987",
+    "new": "0.011256652214537874",
+    "approved": "0.011256649769677987",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "mean_torque_Nm",
+    "old": "-0.00023532000380391922",
+    "new": "-0.00023520099729762436",
+    "approved": "-0.00023532000380391922",
+    "FEMM": "0.0017798704484237194",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "back_emf_fundamental_V",
+    "old": "6.0794581828577146",
+    "new": "6.07946002717847",
+    "approved": "6.0794581828577146",
+    "FEMM": "6.100531510669175",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "back_emf_peak_V",
+    "old": "8.687547338679403",
+    "new": "8.687573545278202",
+    "approved": "8.687547338679403",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "lambda_d_Wb",
+    "old": "0.013722744179801958",
+    "new": "0.013722748342860747",
+    "approved": "0.013722744179801958",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "lambda_q_Wb",
+    "old": "3.2350951298167267e-09",
+    "new": "3.256957473625036e-09",
+    "approved": "3.2350951298167267e-09",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01372802990169781",
+    "new": "0.013728034239153248",
+    "approved": "0.01372802990169781",
+    "FEMM": "0.013731020140715042",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "2.2085006291659917",
+    "new": "2.2085025022122906",
+    "approved": "2.208500629166024",
+    "FEMM": "2.213722975816425",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.2801801189922",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.28295203252614",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617782",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.01835151040627039",
+    "new": "0.018351514270317573",
+    "approved": "0.018351510406270383",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "0.002815529187928601",
+    "new": "0.002815539824742847",
+    "approved": "0.0028155291879286195",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01837429443664292",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.0183247592376085",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "mean_torque_Nm",
+    "old": "3.3048242253049267",
+    "new": "3.304827194113798",
+    "approved": "3.3048242253049267",
+    "FEMM": "3.3149907494133513",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180118992227",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.28295203252614",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617185",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "lambda_d_Wb",
+    "old": "0.018321442169885713",
+    "new": "0.018321446568618536",
+    "approved": "0.018321442169885713",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "lambda_q_Wb",
+    "old": "0.004210785759975793",
+    "new": "0.0042108003250698935",
+    "approved": "0.004210785759975793",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374294436642954",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.0183247592376085",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "mean_torque_Nm",
+    "old": "2.342153530731049",
+    "new": "2.3421562925223953",
+    "approved": "2.342153530731049",
+    "FEMM": "2.357065017182515",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "back_emf_fundamental_V",
+    "old": "17.350044022966323",
+    "new": "17.350049860388523",
+    "approved": "17.350044022966323",
+    "FEMM": "17.36084721007382",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "back_emf_peak_V",
+    "old": "25.20189807182737",
+    "new": "25.201888758478393",
+    "approved": "25.20189807182737",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "lambda_d_Wb",
+    "old": "0.01954548731589614",
+    "new": "0.019545491502762358",
+    "approved": "0.01954548731589614",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028708177076731396",
+    "new": "0.0028708257668882855",
+    "approved": "0.0028708177076731396",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01958172783536782",
+    "new": "0.019581734033962732",
+    "approved": "0.01958172783536782",
+    "FEMM": "0.019537817506925046",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "16.588842291643378",
+    "new": "16.588862557542175",
+    "approved": "16.588842291643378",
+    "FEMM": "16.67111177934336",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "39.91718920960732",
+    "new": "39.917210048071766",
+    "approved": "39.91718920960732",
+    "FEMM": "39.95782669245096",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "63.08307241817651",
+    "new": "63.08311995883498",
+    "approved": "63.08307241817651",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.04163550172942694",
+    "new": "0.041635518069118055",
+    "approved": "0.04163550172942694",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "0.006096782245759667",
+    "new": "0.006096793481561898",
+    "approved": "0.006096782245759667",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.045058170624310924",
+    "new": "0.045058193959773805",
+    "approved": "0.045058170624310924",
+    "FEMM": "0.044968354161739416",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "mean_torque_Nm",
+    "old": "11.18353237203533",
+    "new": "11.183532115302803",
+    "approved": "11.183532372035264",
+    "FEMM": "11.140423976492054",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "back_emf_fundamental_V",
+    "old": "31.093564085632927",
+    "new": "31.09356718080357",
+    "approved": "31.093564085632874",
+    "FEMM": "31.12584023259653",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "back_emf_peak_V",
+    "old": "45.903477431544914",
+    "new": "45.90346946816314",
+    "approved": "45.90347743154477",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "lambda_d_Wb",
+    "old": "0.04383989693373139",
+    "new": "0.04383989887230199",
+    "approved": "0.0438398969337313",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "lambda_q_Wb",
+    "old": "0.0058564059966577445",
+    "new": "0.0058564025090748805",
+    "approved": "0.005856405996657731",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "lambda_pm_Wb",
+    "old": "0.04386783345835135",
+    "new": "0.043867837855656046",
+    "approved": "0.04386783345835129",
+    "FEMM": "0.04378609658672805",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "mean_torque_Nm",
+    "old": "2.111915058380246",
+    "new": "2.1119161728382747",
+    "approved": "2.111915058380246",
+    "FEMM": "2.116335272348215",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "back_emf_fundamental_V",
+    "old": "15.5609140416964",
+    "new": "15.560918802217591",
+    "approved": "15.5609140416964",
+    "FEMM": "15.561311878054186",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "back_emf_peak_V",
+    "old": "22.633766074808626",
+    "new": "22.633770111796803",
+    "approved": "22.633766074808626",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "lambda_d_Wb",
+    "old": "0.017545523746064096",
+    "new": "0.01754552734878345",
+    "approved": "0.017545523746064096",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028440618256091402",
+    "new": "0.0028440716401540393",
+    "approved": "0.0028440618256091402",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01756256242457726",
+    "new": "0.017562567804484456",
+    "approved": "0.01756256242457726",
+    "FEMM": "0.017512628730776955",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "mean_torque_Nm",
+    "old": "2.0117603743242243",
+    "new": "2.0117611703034557",
+    "approved": "2.0117603743242447",
+    "FEMM": "2.015312224000164",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "back_emf_fundamental_V",
+    "old": "14.815642897700174",
+    "new": "14.815648898450393",
+    "approved": "14.815642897700169",
+    "FEMM": "14.81524272931387",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "back_emf_peak_V",
+    "old": "21.559727063524818",
+    "new": "21.55974085619896",
+    "approved": "21.55972706352459",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "lambda_d_Wb",
+    "old": "0.01670902364342128",
+    "new": "0.01670902718576305",
+    "approved": "0.016709023643421285",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028676106442070155",
+    "new": "0.002867618924190808",
+    "approved": "0.002867610644207002",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.016721460180104033",
+    "new": "0.016721466933561573",
+    "approved": "0.016721460180104036",
+    "FEMM": "0.016673005946286516",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "mean_torque_Nm",
+    "old": "2.208500629166024",
+    "new": "2.2085025022122906",
+    "approved": "2.208500629166024",
+    "FEMM": "2.204925809101148",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180118992227",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617185",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.018351510406270383",
+    "new": "0.018351514270317573",
+    "approved": "0.018351510406270383",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028155291879286195",
+    "new": "0.002815539824742847",
+    "approved": "0.0028155291879286195",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374294436642954",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "mean_torque_Nm",
+    "old": "1.9208084752943593",
+    "new": "1.920809847187643",
+    "approved": "1.9208084752943593",
+    "FEMM": "1.9161773921605623",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180118992227",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617185",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.01700292993005324",
+    "new": "0.017002931006570878",
+    "approved": "0.01700292993005324",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.0024552753325509545",
+    "new": "0.0024552845969624142",
+    "approved": "0.0024552753325509545",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374294436642954",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "mean_torque_Nm",
+    "old": "1.112607382486669",
+    "new": "1.1126081713765354",
+    "approved": "1.112607382486669",
+    "FEMM": "1.107344113303869",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180118992227",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617185",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.015975251798232035",
+    "new": "0.0159752510547413",
+    "approved": "0.015975251798232035",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.0014228970906444173",
+    "new": "0.001422902113401026",
+    "approved": "0.0014228970906444173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374294436642954",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "mean_torque_Nm",
+    "old": "4.393631592150787",
+    "new": "4.393635765042276",
+    "approved": "4.393631592150807",
+    "FEMM": "4.391400725123465",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.2801801189922",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617782",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.01827556093497745",
+    "new": "0.018275565007045986",
+    "approved": "0.018275560934977435",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.005589993232677042",
+    "new": "0.005590008360813397",
+    "approved": "0.005589993232677046",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01837429443664292",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "mean_torque_Nm",
+    "old": "3.8326544353271355",
+    "new": "3.8326578767971955",
+    "approved": "3.8326544353271355",
+    "FEMM": "3.8278108332970775",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180118992227",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617185",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.015567927493218413",
+    "new": "0.015567928189035971",
+    "approved": "0.015567927493218413",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.004910981103859718",
+    "new": "0.004910994663887189",
+    "approved": "0.004910981103859718",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374294436642954",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "mean_torque_Nm",
+    "old": "2.215438756366632",
+    "new": "2.215440465334028",
+    "approved": "2.2154387563666567",
+    "FEMM": "2.2096259839523515",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.2801801189922",
+    "new": "16.280185255286508",
+    "approved": "16.280180118992227",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "back_emf_peak_V",
+    "old": "23.652471201617782",
+    "new": "23.652471783501294",
+    "approved": "23.652471201617185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.013464314108646536",
+    "new": "0.013464311633183129",
+    "approved": "0.013464314108646546",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028529442643690367",
+    "new": "0.002852951869880145",
+    "approved": "0.0028529442643690697",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01837429443664292",
+    "new": "0.01837430022518466",
+    "approved": "0.018374294436642954",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "mean_torque_Nm",
+    "old": "4.807063512797066",
+    "new": "4.8070635127973",
+    "approved": "4.807063512797066",
+    "FEMM": "4.802681722828231",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "23.60314504814901",
+    "new": "23.603145048668004",
+    "approved": "23.60314504814901",
+    "FEMM": "23.469819923549004",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "back_emf_peak_V",
+    "old": "38.74287487788408",
+    "new": "38.74287487793338",
+    "approved": "38.74287487788408",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.021351690750218796",
+    "new": "0.021351690749599216",
+    "approved": "0.021351690750218796",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.011768736160907147",
+    "new": "0.011768736162030592",
+    "approved": "0.011768736160907147",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.02131073775595584",
+    "new": "0.021310737757091098",
+    "approved": "0.02131073775595584",
+    "FEMM": "0.021130261814440294",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "mean_torque_Nm",
+    "old": "19.39733626709846",
+    "new": "19.39733626709841",
+    "approved": "19.39733626709846",
+    "FEMM": "19.525404740094906",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "28.885581248359955",
+    "new": "28.88558124831744",
+    "approved": "28.885581248359955",
+    "FEMM": "28.927184551537966",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "back_emf_peak_V",
+    "old": "42.19594876271312",
+    "new": "42.19594876062735",
+    "approved": "42.19594876271312",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.016343200877762306",
+    "new": "0.016343200877723837",
+    "approved": "0.016343200877762306",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.017487476414925995",
+    "new": "0.017487476414962056",
+    "approved": "0.017487476414925995",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.016300163099053393",
+    "new": "0.016300163099025728",
+    "approved": "0.016300163099053393",
+    "FEMM": "0.01627726014514838",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "mean_torque_Nm",
+    "old": "0.021415527613176336",
+    "new": "0.021415527613176503",
+    "approved": "0.021415527613176336",
+    "FEMM": "0.021545078265510827",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "0.45007886745153386",
+    "new": "0.4500788674515585",
+    "approved": "0.45007886745153386",
+    "FEMM": "0.45172130700683105",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "back_emf_peak_V",
+    "old": "0.635080659953603",
+    "new": "0.6350806599527798",
+    "approved": "0.635080659953603",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.0010162183627552492",
+    "new": "0.0010162183627551937",
+    "approved": "0.0010162183627552492",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.00033704612134108483",
+    "new": "0.00033704612134125906",
+    "approved": "0.00033704612134108483",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0010159693483756914",
+    "new": "0.0010159693483757476",
+    "approved": "0.0010159693483756914",
+    "FEMM": "0.0010167301576351582",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "mean_torque_Nm",
+    "old": "2.155195354141345",
+    "new": "2.1551953541413074",
+    "approved": "2.155195354141338",
+    "FEMM": "2.154819961289557",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.0309456691978225",
+    "new": "7.030945669196376",
+    "approved": "7.030945669195054",
+    "FEMM": "7.049082949157114",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "back_emf_peak_V",
+    "old": "10.488233363660907",
+    "new": "10.488233363630055",
+    "approved": "10.488233363667941",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.006137210642304934",
+    "new": "0.006137210642304048",
+    "approved": "0.006137210642305999",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.0034634995475383637",
+    "new": "0.0034634995475399063",
+    "approved": "0.00346349954753646",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.007935488700821858",
+    "new": "0.007935488700821629",
+    "approved": "0.007935488700820567",
+    "FEMM": "0.007933005491338753",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "mean_torque_Nm",
+    "old": "2.5674302906005693",
+    "new": "2.5674302906005457",
+    "approved": "2.5674302906005693",
+    "FEMM": "2.575709705414214",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.677819979606976",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.008649807359653103",
+    "new": "0.008649807359623313",
+    "approved": "0.008649807359653103",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.0039268254029031745",
+    "new": "0.003926825402968825",
+    "approved": "0.0039268254029031745",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008640583250196475",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "mean_torque_Nm",
+    "old": "3.170678186632334",
+    "new": "3.1706781866322915",
+    "approved": "3.170678186632334",
+    "FEMM": "3.1765066338102406",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "9.55069432130816",
+    "new": "9.550694321326334",
+    "approved": "9.55069432130816",
+    "FEMM": "9.572618578956156",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "back_emf_peak_V",
+    "old": "14.103525972816392",
+    "new": "14.103525972289033",
+    "approved": "14.103525972816392",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.01078544259346694",
+    "new": "0.010785442593386103",
+    "approved": "0.01078544259346694",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.003940144709675904",
+    "new": "0.003940144709897081",
+    "approved": "0.003940144709675904",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.010779293971307181",
+    "new": "0.01077929397127604",
+    "approved": "0.010779293971307181",
+    "FEMM": "0.010772980868728597",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "mean_torque_Nm",
+    "old": "0.8969422740363934",
+    "new": "0.8969422740364267",
+    "approved": "0.8969422740363934",
+    "FEMM": "0.838088155810624",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.354645596231227",
+    "new": "2.3546455962273183",
+    "approved": "2.354645596231227",
+    "FEMM": "2.174460279758134",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "back_emf_peak_V",
+    "old": "3.570012904702707",
+    "new": "3.57001290538377",
+    "approved": "3.570012904702707",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.0030336380764813655",
+    "new": "0.003033638076404938",
+    "approved": "0.0030336380764813655",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.015025738887394002",
+    "new": "0.015025738887409794",
+    "approved": "0.015025738887394002",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0026587580579110278",
+    "new": "0.0026587580578778824",
+    "approved": "0.0026587580579110278",
+    "FEMM": "0.0024471275858772416",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "mean_torque_Nm",
+    "old": "0.6571472115443525",
+    "new": "0.6571472115443744",
+    "approved": "0.6571472115443525",
+    "FEMM": "0.6253589921930292",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "back_emf_fundamental_V",
+    "old": "1.5588307515242763",
+    "new": "1.5588307515425592",
+    "approved": "1.5588307515242763",
+    "FEMM": "1.440750775162847",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "back_emf_peak_V",
+    "old": "2.2303752596346156",
+    "new": "2.2303752597182234",
+    "approved": "2.2303752596346156",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "lambda_d_Wb",
+    "old": "0.002265975495733311",
+    "new": "0.0022659754956541817",
+    "approved": "0.002265975495733311",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "lambda_q_Wb",
+    "old": "0.01490322070233957",
+    "new": "0.014903220702351758",
+    "approved": "0.01490322070233957",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0017593414022434896",
+    "new": "0.0017593414022550196",
+    "approved": "0.0017593414022434896",
+    "FEMM": "0.0016214142879938868",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "mean_torque_Nm",
+    "old": "0.8930743514442151",
+    "new": "0.8930743514442674",
+    "approved": "0.8930743514442151",
+    "FEMM": "0.8554171664861668",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.283919494783282",
+    "new": "2.2839194949191914",
+    "approved": "2.283919494783282",
+    "FEMM": "2.1811936566781",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "back_emf_peak_V",
+    "old": "3.764882170175371",
+    "new": "3.7648821567932473",
+    "approved": "3.764882170175371",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.002944243806629823",
+    "new": "0.002944243807476913",
+    "approved": "0.002944243806629823",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.01513271238368271",
+    "new": "0.015132712383517847",
+    "approved": "0.01513271238368271",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.002579962723008702",
+    "new": "0.002579962722911309",
+    "approved": "0.002579962723008702",
+    "FEMM": "0.0024547052972570932",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "mean_torque_Nm",
+    "old": "1.1113829514356401",
+    "new": "1.1113829514356433",
+    "approved": "1.1113829514356401",
+    "FEMM": "1.0576308555332692",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.350591665806868",
+    "new": "2.3505916643058384",
+    "approved": "2.350591665806868",
+    "FEMM": "2.1741767661547295",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "back_emf_peak_V",
+    "old": "3.5894794688026694",
+    "new": "3.589479437818949",
+    "approved": "3.5894794688026694",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "lambda_d_Wb",
+    "old": "-0.0011964519498938063",
+    "new": "-0.0011964519508954202",
+    "approved": "-0.0011964519498938063",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.013889914096793306",
+    "new": "0.013889914096707128",
+    "approved": "0.013889914096793306",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.00265414163132994",
+    "new": "0.002654141630211834",
+    "approved": "0.00265414163132994",
+    "FEMM": "0.0024468085209734948",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "mean_torque_Nm",
+    "old": "2.6861872526633546",
+    "new": "2.6861872526633395",
+    "approved": "2.6861872526633546",
+    "FEMM": "2.6186325941350015",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.440944583440702",
+    "new": "7.440944583438661",
+    "approved": "7.440944583440702",
+    "FEMM": "7.359592765688399",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "back_emf_peak_V",
+    "old": "12.137787714993486",
+    "new": "12.137787714975321",
+    "approved": "12.137787714993486",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.008670188309669223",
+    "new": "0.008670188309670143",
+    "approved": "0.008670188309669223",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.014725083932644266",
+    "new": "0.014725083932643669",
+    "approved": "0.014725083932644266",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008406387548307944",
+    "new": "0.00840638754830746",
+    "approved": "0.008406387548307944",
+    "FEMM": "0.008282451809026335",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "mean_torque_Nm",
+    "old": "0.7859892185821379",
+    "new": "0.7859892185821585",
+    "approved": "0.7859892185821379",
+    "FEMM": "0.7373670063749093",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.046636274161942",
+    "new": "2.0466362741658797",
+    "approved": "2.046636274161942",
+    "FEMM": "1.8844556108424837",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "back_emf_peak_V",
+    "old": "2.9894563654270185",
+    "new": "2.9894563654821384",
+    "approved": "2.9894563654270185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "lambda_d_Wb",
+    "old": "0.0027227124124714276",
+    "new": "0.002722712412473192",
+    "approved": "0.0027227124124714276",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "lambda_q_Wb",
+    "old": "0.014925457004289119",
+    "new": "0.014925457004288538",
+    "approved": "0.014925457004289119",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0023099650841561454",
+    "new": "0.002309965084155073",
+    "approved": "0.0023099650841561454",
+    "FEMM": "0.0021207576668941176",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "mean_torque_Nm",
+    "old": "2.3942156097046716",
+    "new": "2.3942156097048115",
+    "approved": "2.3942156097046716",
+    "FEMM": "2.402127173264972",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.135038601562108",
+    "new": "7.135038602001888",
+    "approved": "7.135038601562108",
+    "FEMM": "7.153956242244688",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "back_emf_peak_V",
+    "old": "10.445225241206893",
+    "new": "10.445225241099054",
+    "approved": "10.445225241206893",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "lambda_d_Wb",
+    "old": "0.00805947389270874",
+    "new": "0.008059473892394031",
+    "approved": "0.00805947389270874",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "lambda_q_Wb",
+    "old": "0.003936054833090106",
+    "new": "0.0039360548337343615",
+    "approved": "0.003936054833090106",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008052828553273139",
+    "new": "0.008052828553520451",
+    "approved": "0.008052828553273139",
+    "FEMM": "0.00805102941245859",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "mean_torque_Nm",
+    "old": "2.221746431042538",
+    "new": "2.221746431042607",
+    "approved": "2.221746431042538",
+    "FEMM": "2.229244042258824",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "back_emf_fundamental_V",
+    "old": "6.615193985693765",
+    "new": "6.61519398569362",
+    "approved": "6.615193985693765",
+    "FEMM": "6.633214883560768",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "back_emf_peak_V",
+    "old": "9.684900266322664",
+    "new": "9.684900285646831",
+    "approved": "9.684900266322664",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "lambda_d_Wb",
+    "old": "0.007472821786709897",
+    "new": "0.007472821786792103",
+    "approved": "0.007472821786709897",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "lambda_q_Wb",
+    "old": "0.003945247295779045",
+    "new": "0.003945247295623385",
+    "approved": "0.003945247295779045",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.007466116032639302",
+    "new": "0.00746611603265817",
+    "approved": "0.007466116032639302",
+    "FEMM": "0.007464989485307398",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "mean_torque_Nm",
+    "old": "2.5674302906005693",
+    "new": "2.5674302906005457",
+    "approved": "2.5674302906005693",
+    "FEMM": "2.570788442248538",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.008649807359653103",
+    "new": "0.008649807359623313",
+    "approved": "0.008649807359653103",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.0039268254029031745",
+    "new": "0.003926825402968825",
+    "approved": "0.0039268254029031745",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "mean_torque_Nm",
+    "old": "2.276310151458617",
+    "new": "2.2763101514586546",
+    "approved": "2.276310151458617",
+    "FEMM": "2.2786373285443675",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.006863063552767968",
+    "new": "0.006863063552742155",
+    "approved": "0.006863063552767968",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.0033945325084012",
+    "new": "0.0033945325084532504",
+    "approved": "0.0033945325084012",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "mean_torque_Nm",
+    "old": "1.3346758382729431",
+    "new": "1.3346758382730934",
+    "approved": "1.3346758382729431",
+    "FEMM": "1.3353219190534529",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.00555582185412583",
+    "new": "0.005555821854111008",
+    "approved": "0.00555582185412583",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.001951733338347431",
+    "new": "0.0019517333383896086",
+    "approved": "0.001951733338347431",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "mean_torque_Nm",
+    "old": "5.161495991384185",
+    "new": "5.1614959913839344",
+    "approved": "5.161495991384185",
+    "FEMM": "5.1688312873871585",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.008663818266878929",
+    "new": "0.008663818266819261",
+    "approved": "0.008663818266878929",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.007864651299223566",
+    "new": "0.007864651299289304",
+    "approved": "0.007864651299223566",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "mean_torque_Nm",
+    "old": "4.6736752017755725",
+    "new": "4.673675201776141",
+    "approved": "4.6736752017755725",
+    "FEMM": "4.678414580650623",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.005092400514978384",
+    "new": "0.005092400514926936",
+    "approved": "0.005092400514978384",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.0067939845859924415",
+    "new": "0.006793984586030936",
+    "approved": "0.0067939845859924415",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "mean_torque_Nm",
+    "old": "2.791177462334562",
+    "new": "2.791177462335163",
+    "approved": "2.791177462334562",
+    "FEMM": "2.792860936749003",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658139593821787",
+    "new": "7.658139593780596",
+    "approved": "7.658139593821787",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "back_emf_peak_V",
+    "old": "11.210011500983112",
+    "new": "11.210011500104212",
+    "approved": "11.210011500983112",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.002483091582120394",
+    "new": "0.002483091582090547",
+    "approved": "0.002483091582120394",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.003909106051656759",
+    "new": "0.003909106051676015",
+    "approved": "0.003909106051656759",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643215862982567",
+    "new": "0.008643215862993655",
+    "approved": "0.008643215862982567",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "mean_torque_Nm",
+    "old": "4.945766287178629",
+    "new": "4.945766287178937",
+    "approved": "4.945766287178629",
+    "FEMM": "5.214834188473855",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "back_emf_fundamental_V",
+    "old": "120.0926609952915",
+    "new": "120.09266099529232",
+    "approved": "120.0926609952915",
+    "FEMM": "120.46092633451428",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "back_emf_peak_V",
+    "old": "166.45509945792037",
+    "new": "166.4550994579412",
+    "approved": "166.45509945792037",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "lambda_d_Wb",
+    "old": "0.09038749164647614",
+    "new": "0.09038749164647625",
+    "approved": "0.09038749164647614",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "lambda_q_Wb",
+    "old": "0.0011981430124018756",
+    "new": "0.0011981430124017602",
+    "approved": "0.0011981430124018756",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "lambda_pm_Wb",
+    "old": "0.09039208412313705",
+    "new": "0.09039208412313769",
+    "approved": "0.09039208412313705",
+    "FEMM": "0.09037744786530204",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "mean_torque_Nm",
+    "old": "5.488932167062564",
+    "new": "5.4889321670619475",
+    "approved": "5.488932167062564",
+    "FEMM": "5.662010743893206",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "back_emf_fundamental_V",
+    "old": "120.77583204612735",
+    "new": "120.77583204612736",
+    "approved": "120.77583204612735",
+    "FEMM": "121.04526231767595",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "back_emf_peak_V",
+    "old": "167.3633768859765",
+    "new": "167.36337688600852",
+    "approved": "167.3633768859765",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "lambda_d_Wb",
+    "old": "0.1363790365184819",
+    "new": "0.13637903651848257",
+    "approved": "0.1363790365184819",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "lambda_q_Wb",
+    "old": "0.0016662019318554376",
+    "new": "0.0016662019318554515",
+    "approved": "0.0016662019318554376",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "lambda_pm_Wb",
+    "old": "0.1363649361205867",
+    "new": "0.13636493612058673",
+    "approved": "0.1363649361205867",
+    "FEMM": "0.13622378082265074",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "mean_torque_Nm",
+    "old": "5.895311030365188",
+    "new": "5.895311030365923",
+    "approved": "5.895311030365539",
+    "FEMM": "5.993778544282531",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "back_emf_fundamental_V",
+    "old": "112.03081188233513",
+    "new": "112.03081188233202",
+    "approved": "112.03081188233499",
+    "FEMM": "112.28518744435364",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "back_emf_peak_V",
+    "old": "163.12020755737032",
+    "new": "163.12020755735364",
+    "approved": "163.12020755737245",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "lambda_d_Wb",
+    "old": "0.12654058298790674",
+    "new": "0.12654058298790608",
+    "approved": "0.12654058298790638",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "lambda_q_Wb",
+    "old": "0.001930480950936348",
+    "new": "0.0019304809509372552",
+    "approved": "0.0019304809509367604",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "lambda_pm_Wb",
+    "old": "0.12644204199085013",
+    "new": "0.12644204199084655",
+    "approved": "0.12644204199084996",
+    "FEMM": "0.12636523289863827",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "mean_torque_Nm",
+    "old": "6.2051437634666975",
+    "new": "6.205143763466219",
+    "approved": "6.205143763466015",
+    "FEMM": "6.303735218583883",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "back_emf_fundamental_V",
+    "old": "115.98285834987152",
+    "new": "115.98285834986811",
+    "approved": "115.98285834987114",
+    "FEMM": "116.1916620088623",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "back_emf_peak_V",
+    "old": "164.8747584325952",
+    "new": "164.87475843256382",
+    "approved": "164.8747584326018",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "lambda_d_Wb",
+    "old": "0.13080580774605707",
+    "new": "0.13080580774605702",
+    "approved": "0.13080580774605666",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "lambda_q_Wb",
+    "old": "0.002176456001563022",
+    "new": "0.0021764560015635143",
+    "approved": "0.0021764560015629414",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "lambda_pm_Wb",
+    "old": "0.1309095869299107",
+    "new": "0.13090958692990687",
+    "approved": "0.13090958692991034",
+    "FEMM": "0.13076156138498812",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_14p12s_high_pole",
+    "metric": "analytical.mean_torque_Nm",
+    "old": "0.3353221688110956",
+    "new": "0.3353222639687648",
+    "approved": "0.3353221688110956",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_14p12s_high_pole",
+    "metric": "native-fine.mean_torque_Nm",
+    "old": "3.3500567468989986",
+    "new": "3.3500576087479463",
+    "approved": "3.3500567468989986",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_14p12s_high_pole",
+    "metric": "native-standard.mean_torque_Nm",
+    "old": "3.348750592936017",
+    "new": "3.3487514888273044",
+    "approved": "3.348750592936017",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_small",
+    "metric": "analytical.mean_torque_Nm",
+    "old": "0.05748659670471528",
+    "new": "0.05748660070158557",
+    "approved": "0.05748659740628511",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_small",
+    "metric": "native-fine.mean_torque_Nm",
+    "old": "0.5744619977243758",
+    "new": "0.5744620889097148",
+    "approved": "0.5744619979308184",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_4p12s_small",
+    "metric": "native-standard.mean_torque_Nm",
+    "old": "0.5733808423849763",
+    "new": "0.5733809395668074",
+    "approved": "0.5733808425174238",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference",
+    "metric": "analytical.mean_torque_Nm",
+    "old": "1.4572384374585852",
+    "new": "1.4572399652277064",
+    "approved": "1.4572384374585852",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference",
+    "metric": "native-fine.mean_torque_Nm",
+    "old": "14.54591430475749",
+    "new": "14.54592823623892",
+    "approved": "14.54591430475749",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "windows-x86_64",
+    "case": "spm_8p12s_reference",
+    "metric": "native-standard.mean_torque_Nm",
+    "old": "14.54711295453471",
+    "new": "14.547126865712725",
+    "approved": "14.54711295453471",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "0.4774631010877044",
+    "new": "0.47746321521109675",
+    "approved": "0.4774631010877044",
+    "FEMM": "0.47707813670238686",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986589475460005",
+    "new": "4.986590939524895",
+    "approved": "4.986589475460005",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "6.6788478981542845",
+    "new": "6.678850584788016",
+    "approved": "6.6788478981542845",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.01125386262777045",
+    "new": "0.011253864696853971",
+    "approved": "0.01125386262777045",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "0.0006766952800222568",
+    "new": "0.0006766971026154092",
+    "approved": "0.0006766952800222568",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256574795312203",
+    "new": "0.011256578105099864",
+    "approved": "0.011256574795312203",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "mean_torque_Nm",
+    "old": "0.7160346060906025",
+    "new": "0.7160347811676583",
+    "approved": "0.7160346060906025",
+    "FEMM": "0.7160095503741394",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986589475460005",
+    "new": "4.986590939524895",
+    "approved": "4.986589475460005",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "back_emf_peak_V",
+    "old": "6.6788478981542845",
+    "new": "6.678850584788016",
+    "approved": "6.6788478981542845",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "lambda_d_Wb",
+    "old": "0.011251318739800764",
+    "new": "0.011251320822307393",
+    "approved": "0.011251318739800764",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "lambda_q_Wb",
+    "old": "0.0010146002097102837",
+    "new": "0.001014602682242604",
+    "approved": "0.0010146002097102837",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__high_current",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256574795312203",
+    "new": "0.011256578105099864",
+    "approved": "0.011256574795312203",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "mean_torque_Nm",
+    "old": "0.5818520591459225",
+    "new": "0.5818527373115178",
+    "approved": "0.5818520591459225",
+    "FEMM": "0.5850121670208285",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "back_emf_fundamental_V",
+    "old": "6.079123200802524",
+    "new": "6.079125131996941",
+    "approved": "6.079123200802524",
+    "FEMM": "6.100531510669175",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "back_emf_peak_V",
+    "old": "8.687346578995376",
+    "new": "8.687375230604134",
+    "approved": "8.687346578995376",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "lambda_d_Wb",
+    "old": "0.013712484994978803",
+    "new": "0.013712486577489039",
+    "approved": "0.013712484994978803",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "lambda_q_Wb",
+    "old": "0.0007239703450883333",
+    "new": "0.0007239724740198657",
+    "approved": "0.0007239703450883333",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple__tight_airgap",
+    "metric": "lambda_pm_Wb",
+    "old": "0.013727273418595426",
+    "new": "0.013727277950291184",
+    "approved": "0.013727273418595426",
+    "FEMM": "0.013731020140715042",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "8.498731338370461e-07",
+    "new": "8.767330415514251e-07",
+    "approved": "8.498731338370461e-07",
+    "FEMM": "-0.0006416471211330068",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986589475460005",
+    "new": "4.986590939524895",
+    "approved": "4.986589475460005",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "6.6788478981542845",
+    "new": "6.678850584788016",
+    "approved": "6.6788478981542845",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.011255886568047081",
+    "new": "0.011255889872780388",
+    "approved": "0.011255886568047081",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "1.0009971207310506e-09",
+    "new": "1.0143079570611023e-09",
+    "approved": "1.0009971207310506e-09",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256574795312203",
+    "new": "0.011256578105099864",
+    "approved": "0.011256574795312203",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "mean_torque_Nm",
+    "old": "0.23876146503532703",
+    "new": "0.23876152079109134",
+    "approved": "0.23876146503532703",
+    "FEMM": "0.23802840224855903",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "back_emf_fundamental_V",
+    "old": "4.986589475460005",
+    "new": "4.986590939524895",
+    "approved": "4.986589475460005",
+    "FEMM": "4.987861316206636",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "back_emf_peak_V",
+    "old": "6.6788478981542845",
+    "new": "6.678850584788016",
+    "approved": "6.6788478981542845",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "lambda_d_Wb",
+    "old": "0.011255376854345365",
+    "new": "0.011255378937928816",
+    "approved": "0.011255376854345365",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "lambda_q_Wb",
+    "old": "0.00033843382157153164",
+    "new": "0.00033843484330449766",
+    "approved": "0.00033843382157153164",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__high_current",
+    "metric": "lambda_pm_Wb",
+    "old": "0.011256574795312203",
+    "new": "0.011256578105099864",
+    "approved": "0.011256574795312203",
+    "FEMM": "0.011226632314274232",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "mean_torque_Nm",
+    "old": "-0.00017063247238919548",
+    "new": "-0.00017068649287398365",
+    "approved": "-0.00017063247238919548",
+    "FEMM": "0.0017798704484237194",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "back_emf_fundamental_V",
+    "old": "6.079123200802524",
+    "new": "6.079125131996941",
+    "approved": "6.079123200802524",
+    "FEMM": "6.100531510669175",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "back_emf_peak_V",
+    "old": "8.687346578995376",
+    "new": "8.687375230604134",
+    "approved": "8.687346578995376",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "lambda_d_Wb",
+    "old": "0.013721988047771708",
+    "new": "0.013721992406924455",
+    "approved": "0.013721988047771708",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "lambda_q_Wb",
+    "old": "7.565639103496538e-09",
+    "new": "7.592619034128812e-09",
+    "approved": "7.565639103496538e-09",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_simple_noload__tight_airgap",
+    "metric": "lambda_pm_Wb",
+    "old": "0.013727273418595426",
+    "new": "0.013727277950291184",
+    "approved": "0.013727273418595426",
+    "FEMM": "0.013731020140715042",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "2.2085047656954266",
+    "new": "2.2085066362641257",
+    "approved": "2.2085047656954266",
+    "FEMM": "2.213722975816425",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.28295203252614",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.01835151383468528",
+    "new": "0.018351517697046123",
+    "approved": "0.01835151383468528",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "0.002815529304555531",
+    "new": "0.002815539947702512",
+    "approved": "0.002815529304555531",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.0183247592376085",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "mean_torque_Nm",
+    "old": "3.3048303142058426",
+    "new": "3.3048333285955658",
+    "approved": "3.3048303142058426",
+    "FEMM": "3.3149907494133513",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.28295203252614",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "lambda_d_Wb",
+    "old": "0.01832144726374073",
+    "new": "0.01832145167959743",
+    "approved": "0.01832144726374073",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "lambda_q_Wb",
+    "old": "0.004210786815609157",
+    "new": "0.004210801481856433",
+    "approved": "0.004210786815609157",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__high_current",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.0183247592376085",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "mean_torque_Nm",
+    "old": "2.3421447220089764",
+    "new": "2.3421474824355766",
+    "approved": "2.3421447220089764",
+    "FEMM": "2.357065017182515",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "back_emf_fundamental_V",
+    "old": "17.350039362182212",
+    "new": "17.35004493570641",
+    "approved": "17.350039362182212",
+    "FEMM": "17.36084721007382",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "back_emf_peak_V",
+    "old": "25.202061137697488",
+    "new": "25.202052059832656",
+    "approved": "25.202061137697488",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "lambda_d_Wb",
+    "old": "0.019545498865795305",
+    "new": "0.019545503014526535",
+    "approved": "0.019545498865795305",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "lambda_q_Wb",
+    "old": "0.002870818336257717",
+    "new": "0.002870826639611268",
+    "approved": "0.002870818336257717",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__tight_airgap",
+    "metric": "lambda_pm_Wb",
+    "old": "0.019581730115648382",
+    "new": "0.019581736273111557",
+    "approved": "0.019581730115648382",
+    "FEMM": "0.019537817506925046",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "mean_torque_Nm",
+    "old": "16.588841638702544",
+    "new": "16.588861903196307",
+    "approved": "16.588841638702544",
+    "FEMM": "16.67111177934336",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "back_emf_fundamental_V",
+    "old": "39.91718400045081",
+    "new": "39.91720484007561",
+    "approved": "39.91718400045081",
+    "FEMM": "39.95782669245096",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "back_emf_peak_V",
+    "old": "63.08323201436563",
+    "new": "63.08328350730283",
+    "approved": "63.08323201436563",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "lambda_d_Wb",
+    "old": "0.04163549817310526",
+    "new": "0.041635514512999384",
+    "approved": "0.04163549817310526",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "lambda_q_Wb",
+    "old": "0.006096780262799791",
+    "new": "0.006096791497292457",
+    "approved": "0.006096780262799791",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference_angle30__baseline",
+    "metric": "lambda_pm_Wb",
+    "old": "0.04505816544531709",
+    "new": "0.045058188782037406",
+    "approved": "0.04505816544531709",
+    "FEMM": "0.044968354161739416",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "mean_torque_Nm",
+    "old": "11.183348033609947",
+    "new": "11.183347693232653",
+    "approved": "11.183348033609947",
+    "FEMM": "11.140423976492054",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "back_emf_fundamental_V",
+    "old": "31.093239676014022",
+    "new": "31.0932426728157",
+    "approved": "31.093239676014022",
+    "FEMM": "31.12584023259653",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "back_emf_peak_V",
+    "old": "45.903453495765056",
+    "new": "45.90344549728644",
+    "approved": "45.903453495765056",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "lambda_d_Wb",
+    "old": "0.043839491843087185",
+    "new": "0.04383949356047855",
+    "approved": "0.043839491843087185",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "lambda_q_Wb",
+    "old": "0.005855526970680205",
+    "new": "0.005855523859180326",
+    "approved": "0.005855526970680205",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_example_shoed",
+    "metric": "lambda_pm_Wb",
+    "old": "0.04386767854992537",
+    "new": "0.043867682914749045",
+    "approved": "0.04386767854992537",
+    "FEMM": "0.04378609658672805",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "mean_torque_Nm",
+    "old": "2.1119174730304917",
+    "new": "2.111918585512648",
+    "approved": "2.1119174730304917",
+    "FEMM": "2.116335272348215",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "back_emf_fundamental_V",
+    "old": "15.560913982122774",
+    "new": "15.560918745380233",
+    "approved": "15.560913982122774",
+    "FEMM": "15.561311878054186",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "back_emf_peak_V",
+    "old": "22.633795270286925",
+    "new": "22.633799307748735",
+    "approved": "22.633795270286925",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "lambda_d_Wb",
+    "old": "0.017545526973092113",
+    "new": "0.017545530572282916",
+    "approved": "0.017545526973092113",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028440605738011934",
+    "new": "0.002844070394185019",
+    "approved": "0.0028440605738011934",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_60C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01756256405473668",
+    "new": "0.017562569433188586",
+    "approved": "0.01756256405473668",
+    "FEMM": "0.017512628730776955",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "mean_torque_Nm",
+    "old": "2.0117615269934856",
+    "new": "2.0117623214388565",
+    "approved": "2.0117615269934856",
+    "FEMM": "2.015312224000164",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "back_emf_fundamental_V",
+    "old": "14.81564220873272",
+    "new": "14.815648211105952",
+    "approved": "14.81564220873272",
+    "FEMM": "14.81524272931387",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "back_emf_peak_V",
+    "old": "21.559754452822233",
+    "new": "21.55976824488052",
+    "approved": "21.559754452822233",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "lambda_d_Wb",
+    "old": "0.016709026721857517",
+    "new": "0.016709030260216366",
+    "approved": "0.016709026721857517",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "lambda_q_Wb",
+    "old": "0.002867609173056937",
+    "new": "0.0028676174591872826",
+    "approved": "0.002867609173056937",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__magnet_100C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.016721461573642397",
+    "new": "0.01672146832576688",
+    "approved": "0.016721461573642397",
+    "FEMM": "0.016673005946286516",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "mean_torque_Nm",
+    "old": "2.2085047656954266",
+    "new": "2.2085066362641257",
+    "approved": "2.2085047656954266",
+    "FEMM": "2.204925809101148",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.01835151383468528",
+    "new": "0.018351517697046123",
+    "approved": "0.01835151383468528",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.002815529304555531",
+    "new": "0.002815539947702512",
+    "approved": "0.002815529304555531",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "mean_torque_Nm",
+    "old": "1.9208119798060574",
+    "new": "1.9208133496979938",
+    "approved": "1.9208119798060574",
+    "FEMM": "1.9161773921605623",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.017002932665603866",
+    "new": "0.017002933737808375",
+    "approved": "0.017002932665603866",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.002455275161094109",
+    "new": "0.0024552844311420074",
+    "approved": "0.002455275161094109",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "mean_torque_Nm",
+    "old": "1.1126099814929762",
+    "new": "1.1126107900316002",
+    "approved": "1.1126099814929762",
+    "FEMM": "1.107344113303869",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.01597525337055692",
+    "new": "0.015975252618445474",
+    "approved": "0.01597525337055692",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.001422897117128743",
+    "new": "0.0014229021619682567",
+    "approved": "0.001422897117128743",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I20_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "mean_torque_Nm",
+    "old": "4.3936405081387955",
+    "new": "4.393644679907728",
+    "approved": "4.3936405081387955",
+    "FEMM": "4.391400725123465",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.018275568106992383",
+    "new": "0.01827557217605318",
+    "approved": "0.018275568106992383",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.005589997523811566",
+    "new": "0.005590012664291286",
+    "approved": "0.005589997523811566",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "mean_torque_Nm",
+    "old": "3.832662355965556",
+    "new": "3.832665796705282",
+    "approved": "3.832662355965556",
+    "FEMM": "3.8278108332970775",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.015567932300935448",
+    "new": "0.015567932991350857",
+    "approved": "0.015567932300935448",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.004910982023286835",
+    "new": "0.004910995593904851",
+    "approved": "0.004910982023286835",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "mean_torque_Nm",
+    "old": "2.2154437011376227",
+    "new": "2.215445406380237",
+    "approved": "2.2154437011376227",
+    "FEMM": "2.2096259839523515",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "16.280180975322864",
+    "new": "16.280186107315647",
+    "approved": "16.280180975322864",
+    "FEMM": "16.273738707066734",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "back_emf_peak_V",
+    "old": "23.65250151013847",
+    "new": "23.65250209189159",
+    "approved": "23.65250151013847",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.013464315506141647",
+    "new": "0.013464313025763676",
+    "approved": "0.013464315506141647",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.0028529430486451215",
+    "new": "0.0028529506749140495",
+    "approved": "0.0028529430486451215",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_concentrated__dq_I40_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.018374296186105987",
+    "new": "0.01837430197060192",
+    "approved": "0.018374296186105987",
+    "FEMM": "0.018314390603562034",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "mean_torque_Nm",
+    "old": "4.807107162666622",
+    "new": "4.807107162666216",
+    "approved": "4.807107162666622",
+    "FEMM": "4.802681722828231",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "23.603063597351",
+    "new": "23.603063597346086",
+    "approved": "23.603063597351",
+    "FEMM": "23.469819923549004",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "back_emf_peak_V",
+    "old": "38.74288434241624",
+    "new": "38.74288434256393",
+    "approved": "38.74288434241624",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.02135166937618418",
+    "new": "0.021351669376184716",
+    "approved": "0.02135166937618418",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.011768529325680956",
+    "new": "0.01176852932568025",
+    "approved": "0.011768529325680956",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_12s10p_fscw_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.021310742815733336",
+    "new": "0.021310742815928332",
+    "approved": "0.021310742815733336",
+    "FEMM": "0.021130261814440294",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "mean_torque_Nm",
+    "old": "19.39736986686341",
+    "new": "19.397369866862512",
+    "approved": "19.39736986686341",
+    "FEMM": "19.525404740094906",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "28.88561048628384",
+    "new": "28.88561048645484",
+    "approved": "28.88561048628384",
+    "FEMM": "28.927184551537966",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "back_emf_peak_V",
+    "old": "42.196072865613935",
+    "new": "42.19607286460807",
+    "approved": "42.196072865613935",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.01634322073379936",
+    "new": "0.016343220733803312",
+    "approved": "0.01634322073379936",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.01748748895846048",
+    "new": "0.017487488958456712",
+    "approved": "0.01748748895846048",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_24s16p_industrial_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.01630017453656644",
+    "new": "0.01630017453661391",
+    "approved": "0.01630017453656644",
+    "FEMM": "0.01627726014514838",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "mean_torque_Nm",
+    "old": "0.02141540396996676",
+    "new": "0.02141540396996676",
+    "approved": "0.02141540396996676",
+    "FEMM": "0.021545078265510827",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "0.4500765717931826",
+    "new": "0.4500765717931696",
+    "approved": "0.4500765717931826",
+    "FEMM": "0.45172130700683105",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "back_emf_peak_V",
+    "old": "0.6350220943066288",
+    "new": "0.6350220943073305",
+    "approved": "0.6350220943066288",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.0010162114717234614",
+    "new": "0.001016211471723439",
+    "approved": "0.0010162114717234614",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.00033704604567066145",
+    "new": "0.000337046045670731",
+    "approved": "0.00033704604567066145",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_4p12s_micro_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0010159641799072053",
+    "new": "0.0010159641799071765",
+    "approved": "0.0010159641799072053",
+    "FEMM": "0.0010167301576351582",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "mean_torque_Nm",
+    "old": "2.1551995887509174",
+    "new": "2.155199588751125",
+    "approved": "2.1551995887509174",
+    "FEMM": "2.154819961289557",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.030953997363156",
+    "new": "7.0309539974109665",
+    "approved": "7.030953997363156",
+    "FEMM": "7.049082949157114",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "back_emf_peak_V",
+    "old": "10.488334913647211",
+    "new": "10.48833491343362",
+    "approved": "10.488334913647211",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.006137216316520205",
+    "new": "0.0061372163165143885",
+    "approved": "0.006137216316520205",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.0034634971644421086",
+    "new": "0.003463497164452469",
+    "approved": "0.0034634971644421086",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0079355019807343",
+    "new": "0.007935501980720351",
+    "approved": "0.0079355019807343",
+    "FEMM": "0.007933005491338753",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "mean_torque_Nm",
+    "old": "2.5674280214770566",
+    "new": "2.56742802147716",
+    "approved": "2.56742802147706",
+    "FEMM": "2.575709705414214",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.677819979606976",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.008649812806084402",
+    "new": "0.008649812806087518",
+    "approved": "0.00864981280608432",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.003926825359597159",
+    "new": "0.003926825359590129",
+    "approved": "0.003926825359597346",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008640583250196475",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "mean_torque_Nm",
+    "old": "3.170676017352523",
+    "new": "3.170676017352643",
+    "approved": "3.170676017352533",
+    "FEMM": "3.1765066338102406",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "9.55069865073972",
+    "new": "9.550698650619994",
+    "approved": "9.550698650739596",
+    "FEMM": "9.572618578956156",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "back_emf_peak_V",
+    "old": "14.103449037647009",
+    "new": "14.103449037826476",
+    "approved": "14.103449037647009",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.010785448091201773",
+    "new": "0.010785448091139745",
+    "approved": "0.010785448091201704",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.003940147515958745",
+    "new": "0.003940147516128492",
+    "approved": "0.003940147515958969",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.010779298343957805",
+    "new": "0.010779298343865616",
+    "approved": "0.010779298343957825",
+    "FEMM": "0.010772980868728597",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "mean_torque_Nm",
+    "old": "0.8971387882082845",
+    "new": "0.897138788208279",
+    "approved": "0.8971387882082845",
+    "FEMM": "0.838088155810624",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.3546859333505625",
+    "new": "2.3546859338884967",
+    "approved": "2.3546859333505625",
+    "FEMM": "2.174460279758134",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "back_emf_peak_V",
+    "old": "3.57012596574217",
+    "new": "3.57012596580451",
+    "approved": "3.57012596574217",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.0030338208026183464",
+    "new": "0.003033820802436458",
+    "approved": "0.0030338208026183464",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.015025745255078375",
+    "new": "0.015025745255114945",
+    "approved": "0.015025745255078375",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_baseline_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0026588010851359024",
+    "new": "0.002658801085727035",
+    "approved": "0.0026588010851359024",
+    "FEMM": "0.0024471275858772416",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "mean_torque_Nm",
+    "old": "0.6571482777618531",
+    "new": "0.6571482777618414",
+    "approved": "0.6571482777618531",
+    "FEMM": "0.6253589921930292",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "back_emf_fundamental_V",
+    "old": "1.5588433829552244",
+    "new": "1.5588433829722843",
+    "approved": "1.5588433829552244",
+    "FEMM": "1.440750775162847",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "back_emf_peak_V",
+    "old": "2.2307641629063024",
+    "new": "2.230764167846236",
+    "approved": "2.2307641629063024",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "lambda_d_Wb",
+    "old": "0.002265995925056758",
+    "new": "0.002265995925351829",
+    "approved": "0.002265995925056758",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "lambda_q_Wb",
+    "old": "0.014903214650616467",
+    "new": "0.014903214650571836",
+    "approved": "0.014903214650616467",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0017593498683470246",
+    "new": "0.0017593498682662815",
+    "approved": "0.0017593498683470246",
+    "FEMM": "0.0016214142879938868",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "mean_torque_Nm",
+    "old": "0.8930802870572406",
+    "new": "0.8930802870572679",
+    "approved": "0.8930802870572406",
+    "FEMM": "0.8554171664861668",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.2839190248675245",
+    "new": "2.283919023822514",
+    "approved": "2.2839190248675245",
+    "FEMM": "2.1811936566781",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "back_emf_peak_V",
+    "old": "3.764971777339119",
+    "new": "3.7649717871342205",
+    "approved": "3.764971777339119",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.002944266859033486",
+    "new": "0.0029442668614517564",
+    "approved": "0.002944266859033486",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.015132710410946585",
+    "new": "0.015132710410475713",
+    "approved": "0.015132710410946585",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_narrow_angle_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.0025799650504307443",
+    "new": "0.0025799650497687963",
+    "approved": "0.0025799650504307443",
+    "FEMM": "0.0024547052972570932",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "mean_torque_Nm",
+    "old": "1.111301487922339",
+    "new": "1.1113014879223728",
+    "approved": "1.111301487922339",
+    "FEMM": "1.0576308555332692",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.3506149789486774",
+    "new": "2.3506149788432418",
+    "approved": "2.3506149789486774",
+    "FEMM": "2.1741767661547295",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "back_emf_peak_V",
+    "old": "3.5895574398352226",
+    "new": "3.5895574389923808",
+    "approved": "3.5895574398352226",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "lambda_d_Wb",
+    "old": "-0.0011966856028909644",
+    "new": "-0.001196685603571981",
+    "approved": "-0.0011966856028909644",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.013889806181420482",
+    "new": "0.013889806181361755",
+    "approved": "0.013889806181420482",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_pocket_offset_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.00265417096143892",
+    "new": "0.0026541709611923436",
+    "approved": "0.00265417096143892",
+    "FEMM": "0.0024468085209734948",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "mean_torque_Nm",
+    "old": "2.6861917936785957",
+    "new": "2.6861917936785926",
+    "approved": "2.6861917936785957",
+    "FEMM": "2.6186325941350015",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.440947177307732",
+    "new": "7.4409471772895275",
+    "approved": "7.440947177307732",
+    "FEMM": "7.359592765688399",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "back_emf_peak_V",
+    "old": "12.137839948000833",
+    "new": "12.137839947937993",
+    "approved": "12.137839948000833",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "lambda_d_Wb",
+    "old": "0.008670186284237697",
+    "new": "0.008670186284237961",
+    "approved": "0.008670186284237697",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "lambda_q_Wb",
+    "old": "0.014725075680251375",
+    "new": "0.014725075680251016",
+    "approved": "0.014725075680251375",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_thin_bridge_contract",
+    "metric": "lambda_pm_Wb",
+    "old": "0.00840638527591193",
+    "new": "0.008406385275910849",
+    "approved": "0.00840638527591193",
+    "FEMM": "0.008282451809026335",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "mean_torque_Nm",
+    "old": "0.7860204154860768",
+    "new": "0.7860204154861063",
+    "approved": "0.7860204154860768",
+    "FEMM": "0.7373670063749093",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "back_emf_fundamental_V",
+    "old": "2.0466570875886987",
+    "new": "2.046657087579349",
+    "approved": "2.0466570875886987",
+    "FEMM": "1.8844556108424837",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "back_emf_peak_V",
+    "old": "2.9891031450270265",
+    "new": "2.9891031450265566",
+    "approved": "2.9891031450270265",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "lambda_d_Wb",
+    "old": "0.002722666096005912",
+    "new": "0.002722666095990659",
+    "approved": "0.002722666096005912",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "lambda_q_Wb",
+    "old": "0.014925442603043546",
+    "new": "0.01492544260304655",
+    "approved": "0.014925442603043546",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+    "metric": "lambda_pm_Wb",
+    "old": "0.002309968344669036",
+    "new": "0.0023099683446657034",
+    "approved": "0.002309968344669036",
+    "FEMM": "0.0021207576668941176",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "mean_torque_Nm",
+    "old": "2.394213751851658",
+    "new": "2.394213751851772",
+    "approved": "2.394213751851663",
+    "FEMM": "2.402127173264972",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.135043040343115",
+    "new": "7.135043040354565",
+    "approved": "7.135043040342892",
+    "FEMM": "7.153956242244688",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "back_emf_peak_V",
+    "old": "10.445408107803631",
+    "new": "10.445408108062958",
+    "approved": "10.445408107451291",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "lambda_d_Wb",
+    "old": "0.008059478403770592",
+    "new": "0.008059478403788291",
+    "approved": "0.008059478403769105",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "lambda_q_Wb",
+    "old": "0.003936056135511472",
+    "new": "0.003936056135475269",
+    "approved": "0.003936056135514513",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.00805283178436602",
+    "new": "0.008052831784371916",
+    "approved": "0.00805283178436563",
+    "FEMM": "0.00805102941245859",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "mean_torque_Nm",
+    "old": "2.221744994053733",
+    "new": "2.2217449940537946",
+    "approved": "2.2217449940537333",
+    "FEMM": "2.229244042258824",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "back_emf_fundamental_V",
+    "old": "6.615197347326536",
+    "new": "6.615197347335603",
+    "approved": "6.6151973473218835",
+    "FEMM": "6.633214883560768",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "back_emf_peak_V",
+    "old": "9.685014419312072",
+    "new": "9.685014419361408",
+    "approved": "9.68501441929898",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "lambda_d_Wb",
+    "old": "0.007472825322995149",
+    "new": "0.007472825322963458",
+    "approved": "0.007472825322995918",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "lambda_q_Wb",
+    "old": "0.003945249862757052",
+    "new": "0.0039452498628170666",
+    "approved": "0.003945249862755593",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "metric": "lambda_pm_Wb",
+    "old": "0.007466118385222557",
+    "new": "0.007466118385237283",
+    "approved": "0.007466118385221574",
+    "FEMM": "0.007464989485307398",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "mean_torque_Nm",
+    "old": "2.5674280214770566",
+    "new": "2.56742802147716",
+    "approved": "2.56742802147706",
+    "FEMM": "2.570788442248538",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.008649812806084402",
+    "new": "0.008649812806087518",
+    "approved": "0.00864981280608432",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.003926825359597159",
+    "new": "0.003926825359590129",
+    "approved": "0.003926825359597346",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "mean_torque_Nm",
+    "old": "2.2763073992279415",
+    "new": "2.2763073992279517",
+    "approved": "2.2763073992279574",
+    "FEMM": "2.2786373285443675",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.006863067651295536",
+    "new": "0.0068630676512982875",
+    "approved": "0.006863067651295449",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.003394530288415897",
+    "new": "0.003394530288410236",
+    "approved": "0.0033945302884160725",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "mean_torque_Nm",
+    "old": "1.3346722117512977",
+    "new": "1.3346722117512635",
+    "approved": "1.3346722117512937",
+    "FEMM": "1.3353219190534529",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.00555582571409958",
+    "new": "0.005555825714101121",
+    "approved": "0.005555825714099538",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.0019517275851784128",
+    "new": "0.001951727585173814",
+    "approved": "0.0019517275851785377",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "mean_torque_Nm",
+    "old": "5.161495716142779",
+    "new": "5.1614957161424675",
+    "approved": "5.161495716142782",
+    "FEMM": "5.1688312873871585",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "lambda_d_Wb",
+    "old": "0.008663820764556723",
+    "new": "0.008663820764563117",
+    "approved": "0.008663820764556563",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "lambda_q_Wb",
+    "old": "0.007864658638675633",
+    "new": "0.007864658638668538",
+    "approved": "0.007864658638675833",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "mean_torque_Nm",
+    "old": "4.673674421041991",
+    "new": "4.673674421042121",
+    "approved": "4.673674421042003",
+    "FEMM": "4.678414580650623",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "lambda_d_Wb",
+    "old": "0.005092400264155862",
+    "new": "0.00509240026416138",
+    "approved": "0.005092400264155699",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "lambda_q_Wb",
+    "old": "0.006793987798866358",
+    "new": "0.006793987798862273",
+    "approved": "0.006793987798866487",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "mean_torque_Nm",
+    "old": "2.791174808123565",
+    "new": "2.7911748081234853",
+    "approved": "2.7911748081235785",
+    "FEMM": "2.792860936749003",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "back_emf_fundamental_V",
+    "old": "7.658144182483134",
+    "new": "7.658144182482689",
+    "approved": "7.658144182482818",
+    "FEMM": "7.67641387256939",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "back_emf_peak_V",
+    "old": "11.210167803922952",
+    "new": "11.210167803918967",
+    "approved": "11.210167803920173",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "lambda_d_Wb",
+    "old": "0.002483090726369178",
+    "new": "0.0024830907263722534",
+    "approved": "0.002483090726369088",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "lambda_q_Wb",
+    "old": "0.003909102058365644",
+    "new": "0.003909102058363557",
+    "approved": "0.003909102058365705",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "metric": "lambda_pm_Wb",
+    "old": "0.008643218788565733",
+    "new": "0.008643218788567856",
+    "approved": "0.008643218788565535",
+    "FEMM": "0.008639000823811223",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "mean_torque_Nm",
+    "old": "4.943464746543001",
+    "new": "4.943464746542444",
+    "approved": "4.943464746543001",
+    "FEMM": "5.214834188473855",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "back_emf_fundamental_V",
+    "old": "120.09296158751917",
+    "new": "120.09296158751994",
+    "approved": "120.09296158751917",
+    "FEMM": "120.46092633451428",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "back_emf_peak_V",
+    "old": "166.454803427116",
+    "new": "166.45480342712972",
+    "approved": "166.454803427116",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "lambda_d_Wb",
+    "old": "0.09038774681768147",
+    "new": "0.09038774681768152",
+    "approved": "0.09038774681768147",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "lambda_q_Wb",
+    "old": "0.0011981802347450267",
+    "new": "0.0011981802347448196",
+    "approved": "0.0011981802347450267",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_12p36s_distributed_femm_validation",
+    "metric": "lambda_pm_Wb",
+    "old": "0.09039230779656544",
+    "new": "0.090392307796566",
+    "approved": "0.09039230779656544",
+    "FEMM": "0.09037744786530204",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "mean_torque_Nm",
+    "old": "5.489244440966967",
+    "new": "5.4892444409671795",
+    "approved": "5.489244440966967",
+    "FEMM": "5.662010743893206",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "back_emf_fundamental_V",
+    "old": "120.77571364276564",
+    "new": "120.77571364276533",
+    "approved": "120.77571364276564",
+    "FEMM": "121.04526231767595",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "back_emf_peak_V",
+    "old": "167.36342536456064",
+    "new": "167.36342536461487",
+    "approved": "167.36342536456064",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "lambda_d_Wb",
+    "old": "0.13637890469331457",
+    "new": "0.13637890469331457",
+    "approved": "0.13637890469331457",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "lambda_q_Wb",
+    "old": "0.0016662112317858825",
+    "new": "0.0016662112317862266",
+    "approved": "0.0016662112317858825",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p24s_distributed_femm_validation",
+    "metric": "lambda_pm_Wb",
+    "old": "0.13636480196906617",
+    "new": "0.13636480196906586",
+    "approved": "0.13636480196906617",
+    "FEMM": "0.13622378082265074",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "mean_torque_Nm",
+    "old": "5.894888561163735",
+    "new": "5.894888561163815",
+    "approved": "5.894888561163735",
+    "FEMM": "5.993778544282531",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "back_emf_fundamental_V",
+    "old": "112.03017761208429",
+    "new": "112.03017761208662",
+    "approved": "112.03017761208429",
+    "FEMM": "112.28518744435364",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "back_emf_peak_V",
+    "old": "163.12042552108454",
+    "new": "163.12042552108286",
+    "approved": "163.12042552108454",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "lambda_d_Wb",
+    "old": "0.12653988538322802",
+    "new": "0.12653988538322794",
+    "approved": "0.12653988538322802",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "lambda_q_Wb",
+    "old": "0.0019304870837294117",
+    "new": "0.001930487083728507",
+    "approved": "0.0019304870837294117",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_chorded_5_6",
+    "metric": "lambda_pm_Wb",
+    "old": "0.12644132633713032",
+    "new": "0.12644132633713265",
+    "approved": "0.12644132633713032",
+    "FEMM": "0.12636523289863827",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "mean_torque_Nm",
+    "old": "6.204721602039498",
+    "new": "6.204721602038778",
+    "approved": "6.204721602039498",
+    "FEMM": "6.303735218583883",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "back_emf_fundamental_V",
+    "old": "115.98219750319964",
+    "new": "115.98219750320116",
+    "approved": "115.98219750319964",
+    "FEMM": "116.1916620088623",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "back_emf_peak_V",
+    "old": "164.87454802320838",
+    "new": "164.8745480232138",
+    "approved": "164.87454802320838",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "lambda_d_Wb",
+    "old": "0.1308051506052973",
+    "new": "0.1308051506052973",
+    "approved": "0.1308051506052973",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "lambda_q_Wb",
+    "old": "0.0021763957253263634",
+    "new": "0.0021763957253260126",
+    "approved": "0.0021763957253263634",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p48s_distributed_femm_validation",
+    "metric": "lambda_pm_Wb",
+    "old": "0.1309088415233667",
+    "new": "0.13090884152336837",
+    "approved": "0.1309088415233667",
+    "FEMM": "0.13076156138498812",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_14p12s_high_pole",
+    "metric": "analytical.mean_torque_Nm",
+    "old": "0.33532379262142814",
+    "new": "0.33532388709961664",
+    "approved": "0.33532379262142814",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_14p12s_high_pole",
+    "metric": "native-fine.mean_torque_Nm",
+    "old": "3.3499408798023693",
+    "new": "3.349941738775795",
+    "approved": "3.3499408798023693",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_14p12s_high_pole",
+    "metric": "native-standard.mean_torque_Nm",
+    "old": "3.348751740600296",
+    "new": "3.348752635203231",
+    "approved": "3.348751740600296",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_small",
+    "metric": "analytical.mean_torque_Nm",
+    "old": "0.05748483363284215",
+    "new": "0.057484836916277406",
+    "approved": "0.05748483363284215",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_small",
+    "metric": "native-fine.mean_torque_Nm",
+    "old": "0.5744568684054964",
+    "new": "0.5744569593486423",
+    "approved": "0.5744568684054964",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_4p12s_small",
+    "metric": "native-standard.mean_torque_Nm",
+    "old": "0.573387906333372",
+    "new": "0.5733880033999949",
+    "approved": "0.573387906333372",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference",
+    "metric": "analytical.mean_torque_Nm",
+    "old": "1.4598368996135234",
+    "new": "1.4598384199622094",
+    "approved": "1.4598368996135234",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference",
+    "metric": "native-fine.mean_torque_Nm",
+    "old": "14.548342158370767",
+    "new": "14.548356048633558",
+    "approved": "14.548342158370767",
+    "FEMM": "",
+    "gate_result": "PASS"
+  },
+  {
+    "platform": "macos-arm64",
+    "case": "spm_8p12s_reference",
+    "metric": "native-standard.mean_torque_Nm",
+    "old": "14.55008540668738",
+    "new": "14.550099300942058",
+    "approved": "14.55008540668738",
+    "FEMM": "",
+    "gate_result": "PASS"
+  }
+]
