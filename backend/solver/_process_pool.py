@@ -8,24 +8,43 @@ from collections.abc import Callable, Iterator
 from concurrent.futures import FIRST_COMPLETED, Executor, Future, ProcessPoolExecutor, wait
 from contextlib import contextmanager
 from multiprocessing import get_context
-from multiprocessing.synchronize import Event
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 from backend.solver_contract import SolveCancelledError
 
-_worker_cancelled: Event | None = None
 
-# Live solver process pools and their cooperative-cancellation events. A user's
+class _CancellationFlag:
+    """A monotonic marker whose directory lives until the pool has shut down.
+
+    Workers receive only its path. In particular, cancellation checks need
+    no multiprocessing condition or inherited Windows semaphore handles (#234).
+    """
+
+    def __init__(self, path: str) -> None:
+        self.path = Path(path)
+
+    def set(self) -> None:
+        self.path.touch(exist_ok=True)
+
+    def is_set(self) -> bool:
+        return self.path.is_file()
+
+
+_worker_cancelled: _CancellationFlag | None = None
+
+# Live solver process pools and their cooperative-cancellation flags. A user's
 # cancellation lets running tasks finish; application exit stops their workers,
 # because the interpreter otherwise waits for those tasks before it exits (#55).
-_LIVE_POOLS: dict[ProcessPoolExecutor, Event | None] = {}
+_LIVE_POOLS: dict[ProcessPoolExecutor, _CancellationFlag | None] = {}
 _LIVE_POOLS_LOCK = threading.Lock()
 # Set, under the lock, once application exit has begun: later pools are refused.
 _EXITING = threading.Event()
 
 
 @contextmanager
-def tracked_process_pool(pool: Executor, cancelled: Event | None = None) -> Iterator[Executor]:
+def tracked_process_pool(pool: Executor, cancelled: _CancellationFlag | None = None) -> Iterator[Executor]:
     """Register a process pool so application exit can stop its workers.
 
     Once exit has begun the pool is refused instead, like a native solve, so a
@@ -60,8 +79,7 @@ def terminate_process_pools() -> None:
     with _LIVE_POOLS_LOCK:
         _EXITING.set()
         pools = list(_LIVE_POOLS)
-    # Force-stopped workers can own Event's multiprocessing condition. Neither
-    # this path nor the context's unwinding may acquire it after exit begins.
+    # Forced exit does not wait for workers to finish their current task.
     for pool in pools:
         _stop_pool_workers(pool)
 
@@ -105,9 +123,9 @@ def _stop_pool_workers(pool: ProcessPoolExecutor) -> None:
             pass
 
 
-def _initialize_worker(cancelled: Event) -> None:
+def _initialize_worker(cancelled_path: str) -> None:
     global _worker_cancelled
-    _worker_cancelled = cancelled
+    _worker_cancelled = _CancellationFlag(cancelled_path)
 
 
 def check_process_worker_cancelled() -> None:
@@ -122,29 +140,34 @@ def cancellable_process_pool(workers: int, *, start_method: str | None = None) -
     # Overlapped field work explicitly uses spawn: it starts while native
     # launch threads are active, so POSIX workers must not inherit their locks.
     context = get_context(start_method if start_method is not None else ("spawn" if os.name == "nt" else None))
-    cancelled = context.Event()
-    pool = ProcessPoolExecutor(
-        max_workers=workers,
-        mp_context=context,
-        initializer=_initialize_worker,
-        initargs=(cancelled,),
-    )
-    # Registered until shutdown returns: application exit usually finds the
-    # solver already waiting there for running tasks after its cancellation.
-    with tracked_process_pool(pool, cancelled):
-        try:
-            yield pool
-        except BaseException:
-            # User cancellation lets running tasks finish and skips queued work.
-            # Serialize that signal with exit's latch: a worker killed between
-            # checking the latch and Event.set() can leave its lock held forever.
-            with _LIVE_POOLS_LOCK:
-                if not _EXITING.is_set():
-                    cancelled.set()
-            pool.shutdown(wait=True, cancel_futures=True)
-            raise
-        else:
-            pool.shutdown(wait=True)
+    # A fresh private directory isolates overlapping pools and later solves.
+    # Keep it through shutdown, including when cancellation or submission fails:
+    # workers starting late must still see the same cancellation state.
+    with TemporaryDirectory(prefix="coilem-pool-") as directory:
+        cancelled = _CancellationFlag(str(Path(directory) / "cancelled"))
+        pool = ProcessPoolExecutor(
+            max_workers=workers,
+            mp_context=context,
+            initializer=_initialize_worker,
+            initargs=(str(cancelled.path),),
+        )
+        # Registered until shutdown returns: application exit usually finds the
+        # solver already waiting there for running tasks after its cancellation.
+        with tracked_process_pool(pool, cancelled):
+            try:
+                yield pool
+            except BaseException:
+                # Serialize publication with exit's latch; forced exit kills
+                # workers instead. Join even if publishing the marker fails.
+                try:
+                    with _LIVE_POOLS_LOCK:
+                        if not _EXITING.is_set():
+                            cancelled.set()
+                finally:
+                    pool.shutdown(wait=True, cancel_futures=True)
+                raise
+            else:
+                pool.shutdown(wait=True)
 
 
 def completed_process_futures(

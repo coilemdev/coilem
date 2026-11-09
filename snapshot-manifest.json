@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 17755,
-      "sha256": "0a6b363284ee70e017566c3712ea4d8248124490c6a9f32f67aecc06c8f6b17f"
+      "bytes": 18825,
+      "sha256": "bf8617ae2b5afe4437eb7043d437dacdc3465a882428f076b432cb5cb1c1eff7"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -660,8 +660,8 @@
     },
     {
       "path": "backend/solver/_process_pool.py",
-      "bytes": 6440,
-      "sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7"
+      "bytes": 7313,
+      "sha256": "7da4cbe64f1451056644825628f6cf9945447c852efc00718247d34f5c8f708e"
     },
     {
       "path": "backend/solver/convergence.py",
@@ -8080,8 +8080,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "bytes": 36283,
-      "sha256": "8e552dc20646c0065f2bce13dcbaf2edf1177087f798360f3ebd2ce946904f57"
+      "bytes": 36183,
+      "sha256": "a358dc686db4793f9163e1d1ab98f6bc7773f98cf6da13fb0fce0231480b3bdc"
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -14732,6 +14732,11 @@
       "path": "tests/test_policy_is_not_physics.py",
       "bytes": 2558,
       "sha256": "497be3ef92d8b0804be57b36d146ed88456779f45e5da155443d98e0d8a6aba1"
+    },
+    {
+      "path": "tests/test_process_pool_cancellation.py",
+      "bytes": 6507,
+      "sha256": "2c9594685c836b819f9b47239658bb5c5f9dbdb8501322fd37b6f5321ac490cb"
     }
   ],
   "public_patches": [
@@ -35944,6 +35949,24 @@
       "path": ".gitattributes",
       "source_sha256": "2e913c7b7952d77c09841104f0d02364d40272999437a77161288f6e67996d07",
       "reason": "Preserve newly published qualification report bytes and recorded hashes across platforms."
+    },
+    {
+      "base_commit": "72cfc8496bff3c9bcb5be66a6521d126914ce0b8",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "0a6b363284ee70e017566c3712ea4d8248124490c6a9f32f67aecc06c8f6b17f",
+      "reason": "Remove inherited cancellation-event handles and cover late spawned workers, overlapping pools and shutdown on Windows (#234)."
+    },
+    {
+      "base_commit": "72cfc8496bff3c9bcb5be66a6521d126914ce0b8",
+      "path": "backend/solver/_process_pool.py",
+      "source_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+      "reason": "Remove inherited cancellation-event handles and cover late spawned workers, overlapping pools and shutdown on Windows (#234)."
+    },
+    {
+      "base_commit": "72cfc8496bff3c9bcb5be66a6521d126914ce0b8",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "8e552dc20646c0065f2bce13dcbaf2edf1177087f798360f3ebd2ce946904f57",
+      "reason": "Remove inherited cancellation-event handles and cover late spawned workers, overlapping pools and shutdown on Windows (#234)."
     }
   ]
 }
