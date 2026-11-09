@@ -187,7 +187,7 @@ For the first run, keep **Accuracy plan → Standard**:
 - corner refinement enabled;
 - **Precise** mesh build;
 - weighted-stress torque;
-- Picard nonlinear iteration; and
+- damped Newton nonlinear iteration, with Picard as the per-position fallback; and
 - direct Cholesky linear solve.
 
 **Mesh build → Fast** places the mesh's boundary nodes less exactly, which
@@ -396,9 +396,11 @@ then retry the analysis. coilEM never silently deletes a completed run.
 
 ## Model assumptions
 
-The public motor UI uses WST torque and Direct Cholesky. Picard is the default
-nonlinear solver; Newton is available in Advanced options as experimental
-recovery when a run fails to converge. Importing a design with other torque or
+The public motor UI uses WST torque and Direct Cholesky. Damped Newton is the
+default nonlinear solver from v0.5.6. It needs far fewer iterations than Picard
+and falls back to Picard at any rotor position where it doesn't converge.
+Picard stays available in Advanced options, and a design saved with Picard keeps
+it. Importing a design with other torque or
 linear-solver choices applies the public defaults and displays a notice.
 
 The launch report is an electromagnetic 2D result. It does not include

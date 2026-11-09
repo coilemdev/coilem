@@ -530,11 +530,13 @@ class SolveParams(BaseModel):
         description="Optional native FEM nonlinear iteration cap override",
     )
     nonlinear_solver: Literal["picard", "newton"] = Field(
-        default="picard",
+        default="newton",
         description=(
-            "Native FEM nonlinear solve method. 'picard' is the production "
-            "fallback/default. 'newton' enables the experimental damped "
-            "Newton branch for hard imported-mesh saturation diagnostics."
+            "Native FEM nonlinear solve method. 'newton' (default) is the "
+            "damped Newton method: it converges in far fewer iterations and "
+            "falls back to Picard at any rotor position where it fails. "
+            "'picard' is the fixed-point method, kept for comparison and "
+            "for designs saved with it."
         ),
     )
     linear_solver_preconditioner: Literal["direct", "ic0", "jacobi"] = Field(
