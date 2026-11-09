@@ -8,7 +8,8 @@ per target the wheel platform tag, the macOS deployment target or manylinux
 glibc version for the Magneto2D build, and which pins set the floor. It fails
 when a pin has no wheel for a supported platform and Python version, or when
 the lock's environment markers leave a package with no pin, or more than one,
-for a supported platform and Python version.
+for a supported platform and Python version. An optional accelerator
+(OPTIONAL_PACKAGES) may have no pin on some Python versions.
 
     python -m tools.release.policy [--json] [--github-output FILE]
     python -m tools.release.policy --audit-pins DIR
@@ -34,6 +35,11 @@ from packaging.utils import canonicalize_name, parse_wheel_filename
 
 ROOT = Path(__file__).resolve().parents[2]
 SUPPORTED_PYTHONS = ("3.11", "3.12", "3.13", "3.14", "3.15")
+# Packages coilEM uses only when installed, each with a tested fallback, so a
+# pin may skip a Python whose wheels would raise the platform floor. orjson's
+# only Python 3.15 Linux wheels need glibc 2.39; backend/fast_json.py falls
+# back to the json module there.
+OPTIONAL_PACKAGES = frozenset({"orjson"})
 # Minimums of Rust's standard library for the release toolchain.
 RUST_MINIMUMS = {"macos-arm64": (11, 0), "macos-x86_64": (10, 12), "linux-x86_64": (2, 17)}
 # Newest manylinux build image first; the binary is built in the newest one
@@ -107,7 +113,8 @@ def applies(requirement: Requirement, target: Target, python: str) -> bool:
 def check_markers(requirements: list[Requirement], pythons: Iterable[str] = SUPPORTED_PYTHONS) -> None:
     """Require one pin per package on every supported Python of each target
     where the package is installed, so a pin split by Python version cannot
-    leave a version without it or install two."""
+    leave a version without it or install two. An optional package may have
+    no pin on some Python versions, never two."""
 
     pythons = tuple(pythons)
     for target in TARGETS:
@@ -119,7 +126,7 @@ def check_markers(requirements: list[Requirement], pythons: Iterable[str] = SUPP
         for name, by_python in pins.items():
             for python in pythons:
                 found = by_python.get(python, [])
-                if len(found) != 1:
+                if len(found) > 1 or (not found and name not in OPTIONAL_PACKAGES):
                     raise PolicyError(f"{name} has {len(found)} pins for {target.key} on Python {python}: {found}")
 
 

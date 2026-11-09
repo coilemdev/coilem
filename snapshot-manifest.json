@@ -85,8 +85,8 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 29152,
-      "sha256": "84787e5d7ce0039892f2033e0f2e69f63bfba717037114ceb8d9c3dd01cb67cc"
+      "bytes": 29600,
+      "sha256": "bb65134c20e5620c089f460a3e8100986a6ae69afd061b0a71318e947047f8d1"
     },
     {
       "path": "TRADEMARKS.md",
@@ -390,8 +390,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 22299,
-      "sha256": "121f28213e7309148244520233847729f2720f39fdb855ea6b904fd04b7eea62"
+      "bytes": 24310,
+      "sha256": "070fe8a53400c1a760b5c919a13a4604fe63727eaf7461b9995ee1d3efbc0fe7"
     },
     {
       "path": "backend/launcher.py",
@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 74441,
-      "sha256": "124440adcd98fa37eed045a6e21f64561ed87133a4028544462a838738f4151a"
+      "bytes": 76498,
+      "sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -530,13 +530,13 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 29189,
-      "sha256": "a63ccb82747a646e191954df8a125d7ea899fb8c60438fd2428af1abffff5bf9"
+      "bytes": 30793,
+      "sha256": "7c8eac9e46d63d684be71293e569557183cca28811508ab0ab824696d8d7a1d0"
     },
     {
       "path": "backend/public_field_playback_contract.py",
-      "bytes": 16879,
-      "sha256": "71f783078b67b2eba53e473f0813b1322510953ff64d9fdc0bb736d6d23354f8"
+      "bytes": 17061,
+      "sha256": "c1f4c2e30b560f11c8e0f14504389aaffa1cd7dc5ad6e3376b7217feaf80f105"
     },
     {
       "path": "backend/public_main.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 55919,
-      "sha256": "74ba5cc9e8d3b27f5864c0f4af7b38f6009880f6d016cc97cdbe9cc45bf6b969"
+      "bytes": 56475,
+      "sha256": "66349fb3f10832df55037b27712c13e2ddc38ed1af30add5a7b524e8ec98530d"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -640,13 +640,13 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 58850,
-      "sha256": "b7acc3b31fd1267bc4731a669699e0371f0c58825c1d7ceff9509bb8554204e8"
+      "bytes": 59059,
+      "sha256": "478f884ba0d5b9cb23ba209af898babd201d98654576673b436b42fd1e759ed4"
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 156410,
-      "sha256": "71812e7553c98a690d4076b452eba263da103040bb47b848c301bdf6c67599db"
+      "bytes": 161670,
+      "sha256": "854042c818109ba97a309107a227c665769b3b290355e00d68e937059f74ef6f"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 23929,
-      "sha256": "e15e673966198640cfdb269ea29e9b2a486747050d09bace4cc61a53ef84d37b"
+      "bytes": 24030,
+      "sha256": "9bf3d1b717d545dfc785e8dc6c5767a45a6bc4cd565e94e6e6030a839ba8cad3"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "requirements.lock",
-      "bytes": 1328,
-      "sha256": "84b109e9ef2ba89e3acd8c39304d42d5cda48d5d6247f48051012dd295d82a99"
+      "bytes": 1528,
+      "sha256": "cf7a29fd0d1d43a0a4f93ba6bca96f98f33fbe4e1cc8c5258dd3351e7d23b6a9"
     },
     {
       "path": "schemas/v1/examples/field_current_square.json",
@@ -7735,8 +7735,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
-      "bytes": 13882,
-      "sha256": "e919144439a8af36c8fbaf884fe439bb0f83c650a7b7f00b1756ff511b835f19"
+      "bytes": 14501,
+      "sha256": "5f838a51b6deb4e61f9ea34161d3cbde24bc062cfbdd11aab1dd5c4c0843549a"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/localization.rs",
@@ -7745,8 +7745,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/mod.rs",
-      "bytes": 113517,
-      "sha256": "c83c346820bc4dfd9a8ba18fe20f1e103e16f0f659c3c6cca37bcb1f74fa263b"
+      "bytes": 115107,
+      "sha256": "795c7f4f476bdca43c315a176d3bfb79dfb70fea6a2839cb586347a1bd6f4502"
     },
     {
       "path": "solvers/magneto2d/src/run_config.rs",
@@ -7795,8 +7795,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 29042,
-      "sha256": "98c38d3b41c25734ef707e2791e2eb0c7ab47c1332b8b20788b0263b72a09aae"
+      "bytes": 30298,
+      "sha256": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
@@ -8065,8 +8065,8 @@
     },
     {
       "path": "tests/test_iron_loss.py",
-      "bytes": 15233,
-      "sha256": "7c7c7f5ee2c24abb7b0137f0f255d019b09d19b0e3a28766214e2de050abecd2"
+      "bytes": 18603,
+      "sha256": "89fd6cecbf905be4848088d93c0bfcd20715ea849148366ece343683d239b6c2"
     },
     {
       "path": "tests/test_late_reference_comparison.py",
@@ -8080,8 +8080,8 @@
     },
     {
       "path": "tests/test_launcher_shutdown.py",
-      "bytes": 31027,
-      "sha256": "89bd672d4a18c961091170d785d93dd72e71c42bbcb73f101b838665a55b6542"
+      "bytes": 35514,
+      "sha256": "79fb3f7ba49d0ba20f39b5d9ccb37a850984239b9294652bbf0173d98be21343"
     },
     {
       "path": "tests/test_linear_halbach_analytical.py",
@@ -8210,8 +8210,8 @@
     },
     {
       "path": "tests/test_public_candidate.py",
-      "bytes": 20440,
-      "sha256": "4529f161f5a6632ad6c8553863c65daf02ff62038489a339fadf2699745221d7"
+      "bytes": 20531,
+      "sha256": "294cce0fae0a2812cd598dea9fe1c8b2273a17bdaea0039d816aa16db30d0172"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -8300,8 +8300,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 30265,
-      "sha256": "cd290b78012f57c567950ac9a499440df22445f6b3be004e4dca66218d9e3433"
+      "bytes": 31701,
+      "sha256": "81cd2d625004f168740fc17767bc6ae3040a339a93c845660a8dd621d3d11305"
     },
     {
       "path": "tests/test_shoed_benchmark_case.py",
@@ -8330,8 +8330,8 @@
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
-      "bytes": 5255,
-      "sha256": "732bba417b0c4a959fff227c5466ce84287f886f8db5dbcd59ff4530fbc79131"
+      "bytes": 7837,
+      "sha256": "e93b1954f3a1693cfb3daed3b1beb4485393fe192c8703f1ca2852e2f10cf2fd"
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -8365,8 +8365,8 @@
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
-      "bytes": 5157,
-      "sha256": "3396b5c304626b27a5ed6f509d46c53cba36e0f73c06135928c9788ee6873444"
+      "bytes": 7423,
+      "sha256": "f43a55edbd59996f853b4395ad7dd9de64ecca9433c49190e445f737b1a009e4"
     },
     {
       "path": "tests/test_windows_playback_pool.py",
@@ -8540,8 +8540,8 @@
     },
     {
       "path": "tools/release/policy.py",
-      "bytes": 11897,
-      "sha256": "5b38a5f885bf83091823514f317aeafa54cd0570e94377a9dd4934e29df62e2a"
+      "bytes": 12413,
+      "sha256": "9fafd89b4ac0d4c2ed41689858909fa3458a33c900badbe5af69c13f9be668b9"
     },
     {
       "path": "tools/release/qualification.py",
@@ -8610,8 +8610,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 24330,
-      "sha256": "fe4bb58883de180798bd69c97de6ae8e931c19ebaab7348032a84e7e9a08229c"
+      "bytes": 24421,
+      "sha256": "4b946dc13b4e922956662dd67507ba433f48f64c3e10af91073ff2a383a257e3"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -12960,8 +12960,8 @@
     },
     {
       "path": "backend/run_field_playback.py",
-      "bytes": 5435,
-      "sha256": "f6d24daee376b063d6c75c8578d63e9886f40a065d28c34ae73838e91adf1c2d"
+      "bytes": 6998,
+      "sha256": "bb6ca9650340eb2fcd6c353f0d71a6323cb1cb2b38b084630175547915906808"
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
@@ -13120,8 +13120,8 @@
     },
     {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 18762,
-      "sha256": "89294068a0fe6c1190347a1d782ee29161f98ba6036f29aa52b0a1294fa22459"
+      "bytes": 23439,
+      "sha256": "479ceb25fb1bb52a4a7dd5baf31d7adc591ac49849e2a831fe11437b9be82a8c"
     },
     {
       "path": "tests/test_lrk_reference.py",
@@ -13812,6 +13812,16 @@
       "path": "benchmarks/v0.5.5/release-qualification.json",
       "bytes": 942,
       "sha256": "4b9e1b4782c1d2acf11fe1dbc47e077edfe8f92295b3a76a1eca9f1d01c6b805"
+    },
+    {
+      "path": "backend/fast_json.py",
+      "bytes": 1930,
+      "sha256": "200b36a4f0e654265847823d4ac22c5f4d5297161ae8a787023b01b2b9bcd404"
+    },
+    {
+      "path": "tests/test_fast_json.py",
+      "bytes": 2663,
+      "sha256": "a6a752e9fc0aa286323a8f01f3d490cb9d02cf3842cbd4677af087a82ee71372"
     }
   ],
   "public_patches": [
@@ -15343,7 +15353,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -15373,13 +15383,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -15397,7 +15407,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -17311,25 +17321,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
@@ -34850,6 +34860,24 @@
       "path": "benchmarks/records/windows-x86_64.json",
       "source_sha256": "a6ff0a9b4f1a9bd79d9f059820f12b477c0bb58a3bde516307636e0a43c6757b",
       "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "385fa57db1c565188db2dc35e03699a3618f9ae9",
+      "path": "tests/test_launcher_shutdown.py",
+      "source_sha256": "89bd672d4a18c961091170d785d93dd72e71c42bbcb73f101b838665a55b6542",
+      "reason": "#221 Windows review: track automatic playback pools through worker shutdown; cover exit, completed rendering, refused startup and failed submission."
+    },
+    {
+      "base_commit": "385fa57db1c565188db2dc35e03699a3618f9ae9",
+      "path": "backend/run_field_playback.py",
+      "source_sha256": "8e1634daf94a717b8802d24d3855ae2214bdae11bc3d466dad2aaa113d7bce65",
+      "reason": "#221 Windows review: track automatic playback pools through worker shutdown; cover exit, completed rendering, refused startup and failed submission."
+    },
+    {
+      "base_commit": "e12918d5a219ce41d0319d59e04d5f177773b5a5",
+      "path": "tests/test_compact_run_storage.py",
+      "source_sha256": "f759b6043a8ce183c6cef6674bb6d2593fb23c205bec1ab7433c220bc88204e1",
+      "reason": "#221 playback CI: wait for background image futures before pruning or asserting the complete redraw; preserve all pixel and retention assertions."
     }
   ]
 }

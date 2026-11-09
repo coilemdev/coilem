@@ -307,7 +307,8 @@ export type PublicFieldPlaybackMediaType = 'image/png' | 'image/webp';
 export interface PublicFieldPlaybackArtifact {
   artifact_id: string;
   media_type: PublicFieldPlaybackMediaType;
-  byte_count: number;
+  /** Null until the image is drawn: a solve's images are drawn after its result is saved. */
+  byte_count: number | null;
 }
 
 export interface PublicFieldNumericalArtifact {

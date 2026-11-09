@@ -126,6 +126,28 @@ def test_split_pins_must_cover_every_python_once() -> None:
     policy.check_markers([policy.Requirement('colorama==0.4.6; platform_system == "Windows"')])
 
 
+def test_an_optional_package_may_skip_a_python_but_never_pin_twice() -> None:
+    # orjson's only Python 3.15 Linux wheels need glibc 2.39; the app falls back to json there.
+    assert "orjson" in policy.OPTIONAL_PACKAGES
+    skipped = policy.Requirement('orjson==3.13.0; python_version < "3.15"')
+    policy.check_markers([skipped])
+    assert "orjson==3.13.0" in policy.audit_pins([skipped], "3.14")
+    assert policy.audit_pins([skipped], "3.15") == []
+    with pytest.raises(policy.PolicyError, match="orjson has 2 pins for macos-arm64 on Python 3.14"):
+        policy.check_markers([skipped, policy.Requirement('orjson==3.12.0; python_version >= "3.14"')])
+    # Its Python 3.15 wheel no longer sets the Linux floor.
+    orjson = [
+        f"orjson-3.13.0-cp3{minor}-cp3{minor}-{platform}.whl"
+        for minor in range(11, 15)
+        for platform in ("manylinux_2_17_x86_64.manylinux2014_x86_64", "macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2", "win_amd64")
+    ] + ["orjson-3.13.0-cp315-cp315-manylinux_2_39_x86_64.whl"]
+    result = policy.compute_policy([skipped], fake_index({"orjson": orjson}))
+    assert result["linux-x86_64"]["platform_tag"] == "manylinux_2_17_x86_64"
+    # A required package still needs a pin on every supported Python.
+    with pytest.raises(policy.PolicyError, match="numpy has 0 pins"):
+        policy.check_markers([policy.Requirement('numpy==2.4.6; python_version < "3.15"')])
+
+
 def test_audit_pins_list_each_pythons_exact_pins(tmp_path: Path) -> None:
     lock = policy.read_lock(REPO_ROOT / "requirements.lock")
     oldest, newest = policy.audit_pins(lock, "3.11"), policy.audit_pins(lock, "3.15")

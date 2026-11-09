@@ -327,7 +327,13 @@ def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, m
     from fastapi.testclient import TestClient
     from PIL import Image
 
+    from backend import run_field_playback
     from backend.public_main import app
+
+    def finish_background_images() -> None:
+        output = run_playback_dir(location.project_slug, location.run_id) / "resultant_pm"
+        for future in run_field_playback._JOBS.get(output, {}).values():
+            future.result(timeout=60)
 
     monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
     cache = solve_cache_root() / "magneto2d-drawable"
@@ -351,6 +357,7 @@ def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, m
     served = client.get(f"/solve/playback-frame/{layer['artifact_id']}")
     assert served.status_code == 200 and served.headers["content-type"] == "image/webp"
     assert served.content == original.read_bytes()
+    finish_background_images()
 
     # Cache pruning removed every copy: the image is drawn again from the run's frames.
     shutil.rmtree(cache / "field_playback")
@@ -360,9 +367,86 @@ def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, m
     from io import BytesIO
 
     assert np.array_equal(np.asarray(Image.open(BytesIO(redrawn.content))), original_pixels)
-    # The rest of the run's playback is drawn in the same pass.
+    # The requested frame is ready first; the rest finish in the background.
+    finish_background_images()
     assert len(list(run_playback_dir(location.project_slug, location.run_id).rglob("*.webp"))) == 12
 
     # Once retention has removed its frames, nothing is left to draw from.
     _save(workspace, {"summary": {"avg_torque_Nm": 2.0}, "solve_metadata": {"solver_name": "test"}})
     assert client.get(f"/solve/playback-frame/{layer['artifact_id']}").status_code == 404
+
+
+def _without_image_identity(value: object) -> object:
+    """A playback manifest minus what names or sizes its images and itself."""
+
+    if isinstance(value, dict):
+        return {
+            key: _without_image_identity(item)
+            for key, item in value.items()
+            if key not in {"artifact_id", "byte_count", "manifest_artifact_id"}
+        }
+    if isinstance(value, list):
+        return [_without_image_identity(item) for item in value]
+    return value
+
+
+def _drawable_frames(cache: Path) -> list[dict]:
+    frames = []
+    for index, angle in enumerate((0.0, 15.0)):
+        frame = {**_drawable_plot(1.0), "noload_plot": _drawable_plot(0.75)}
+        ref = write_field_line_frame_artifact(frame, cache, pos_idx=index, elec_angle_deg=angle)
+        frames.append({"angle_deg": angle, "field_frame_artifact": ref, "full_field_frame_artifact": ref})
+    return frames
+
+
+def test_a_solves_playback_images_are_drawn_after_its_run_is_saved(data_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from io import BytesIO
+
+    from fastapi.testclient import TestClient
+    from PIL import Image
+
+    from backend import run_field_playback
+    from backend.public_main import app
+
+    monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
+    eager_cache = solve_cache_root() / "magneto2d-eager"
+    eager, _ = public_field_playback.build_public_field_playback(_drawable_frames(eager_cache), mode="resultant_pm")
+    deferred_cache = solve_cache_root() / "magneto2d-deferred"
+    frames = _drawable_frames(deferred_cache)
+    deferred, retained = public_field_playback.build_public_field_playback(frames, mode="resultant_pm", draw_images=False)
+
+    # Everything but the images' names and sizes is what drawing them would give, and no image is drawn yet.
+    assert eager is not None and deferred is not None and retained
+    assert _without_image_identity(deferred) == _without_image_identity(eager)
+    assert not list((deferred_cache / "field_playback").rglob("*.webp"))
+    layers = [ref for frame in deferred["frames"] for composition in frame["compositions"].values() for ref in composition["layers"].values()]
+    assert layers and all(ref["byte_count"] is None for ref in layers)
+
+    # Saving names the run's images; drawing then fills them in, with the eager images' pixels.
+    workspace = SolveWorkspace(data_root)
+    result = {"summary": {"avg_torque_Nm": 1.0}, "solve_metadata": {"solver_name": "test"}, "field_line_frames": frames, "field_playback": deferred}
+    location = _save(workspace, result)
+    stored = workspace.load_run(location.project_slug, location.run_id)["result"]["field_playback"]
+    layer = stored["frames"][1]["compositions"]["pm"]["layers"]["field_lines"]
+    assert layer["relative_path"] == "playback/resultant_pm/frame_0001_pm_lines.webp"
+    assert layer["byte_count"] is None
+    run_field_playback.start_drawing(workspace, location.project_slug, location.run_id)
+    served = TestClient(app, base_url="http://127.0.0.1").get(f"/solve/playback-frame/{layer['artifact_id']}")
+    assert served.status_code == 200 and served.headers["content-type"] == "image/webp"
+    eager_image = eager_cache / "field_playback" / "resultant_pm" / "frame_0001_pm_lines.webp"
+    assert np.array_equal(np.asarray(Image.open(BytesIO(served.content))), np.asarray(Image.open(eager_image)))
+    for future in run_field_playback._JOBS[run_playback_dir(location.project_slug, location.run_id) / "resultant_pm"].values():
+        future.result(timeout=60)
+    drawn = sorted(path.name for path in run_playback_dir(location.project_slug, location.run_id).rglob("*.webp"))
+    assert drawn == sorted(path.name for path in (eager_cache / "field_playback").rglob("*.webp"))
+    assert len(drawn) == 12
+
+
+def test_starting_to_draw_a_run_without_playback_does_nothing(data_root: Path) -> None:
+    from backend import run_field_playback
+
+    workspace = SolveWorkspace(data_root)
+    location = _save(workspace, {"summary": {"avg_torque_Nm": 1.0}, "solve_metadata": {"solver_name": "test"}})
+    run_field_playback.start_drawing(workspace, location.project_slug, location.run_id)
+    run_field_playback.start_drawing(workspace, location.project_slug, location.run_id, mode="not-a-mode")
+    assert not run_playback_dir(location.project_slug, location.run_id).exists()

@@ -2,10 +2,12 @@
 
 A saved run keeps one compact field frame per rotor position but not the six
 1536 px playback layers drawn from each, which were more than half of a run.
-Those live in a disposable solve-cache folder per run: the solve links its own
-images there, and once cache pruning has removed them they are drawn again
-from the run's frames when the viewer asks for one, starting with that frame.
-A run whose frames retention removed has no playback to draw.
+Those live in a disposable solve-cache folder per run. A solve saves its run
+before any image is drawn and then starts drawing them there in the
+background (start_drawing); whenever an image is missing (not drawn yet, or
+removed by cache pruning) it is drawn from the run's frames when the viewer
+asks for it, starting with that frame. A run whose frames retention removed
+has no playback to draw.
 """
 
 from __future__ import annotations
@@ -14,6 +16,7 @@ import json
 import re
 import threading
 from concurrent.futures import Future
+from contextlib import ExitStack
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -81,6 +84,7 @@ def _render_job(workspace: SolveWorkspace, project_slug: str, run_id: str, mode:
     """The render of ``index``: an unfinished one already queued, or a new job for all frames."""
 
     from backend.public_field_playback import _playback_executor, render_stored_playback_frame
+    from backend.solver._process_pool import tracked_process_pool
 
     with _JOBS_LOCK:
         futures = _JOBS.get(output_dir)
@@ -91,13 +95,26 @@ def _render_job(workspace: SolveWorkspace, project_slug: str, run_id: str, mode:
             raise FileNotFoundError("playback frame not found")
         output_dir.mkdir(parents=True, exist_ok=True)
         executor = _playback_executor(len(frames))
-        # The requested frame first, then onwards, as playback will ask for them.
-        order = sorted(range(len(frames)), key=lambda position: (position - index) % len(frames))
-        futures = {
-            position: executor.submit(render_stored_playback_frame, position, str(frames[position]), str(output_dir), mode)
-            for position in order
-        }
-        executor.shutdown(wait=False)  # queued frames still render; the workers exit after
+        lifetime = ExitStack()
+        try:
+            lifetime.enter_context(tracked_process_pool(executor))
+            lifetime.enter_context(executor)
+            # The requested frame first, then onwards, as playback will ask for them.
+            order = sorted(range(len(frames)), key=lambda position: (position - index) % len(frames))
+            futures = {
+                position: executor.submit(render_stored_playback_frame, position, str(frames[position]), str(output_dir), mode)
+                for position in order
+            }
+            # Keep registration and the executor's process handles until its
+            # workers have joined. shutdown(wait=False) drops those handles,
+            # leaving application exit unable to stop background renders.
+            threading.Thread(target=lifetime.close, name="coilem-playback-shutdown", daemon=True).start()
+        except BaseException:
+            try:
+                executor.shutdown(wait=True, cancel_futures=True)
+            finally:
+                lifetime.close()
+            raise
         _JOBS[output_dir] = futures
         return futures[index]
 
@@ -122,3 +139,20 @@ def playback_image(workspace: SolveWorkspace, project_slug: str, run_id: str, re
     if not target.is_file():
         raise FileNotFoundError("playback frame not found")
     return target
+
+
+def start_drawing(workspace: SolveWorkspace, project_slug: str, run_id: str, mode: str = "resultant_pm") -> None:
+    """Start drawing a just-saved run's playback images in the background, frame 0 first.
+
+    A solve's result no longer waits for these images (about 30 s on a
+    72-position outrunner). A viewer request for a frame that is not drawn
+    yet waits for that frame's job (playback_image). Never raises: if this
+    fails, the images are drawn when the viewer asks for them.
+    """
+
+    if mode not in PLAYBACK_MODES:
+        return
+    try:
+        _render_job(workspace, project_slug, run_id, mode, run_playback_dir(project_slug, run_id) / mode, 0)
+    except Exception:  # noqa: BLE001 - drawing on demand still works
+        return

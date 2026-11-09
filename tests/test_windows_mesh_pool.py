@@ -77,6 +77,49 @@ def test_spawned_gmsh_artifact_matches_in_process():
     assert actual["physics_contract"]
 
 
+def _exact_text(value) -> str:
+    # Dict equality treats -0.0 and 0.0 as equal; the solver input text does not.
+    return json.dumps(value, sort_keys=True)
+
+
+def test_mesh_group_worker_builds_what_the_main_thread_would():
+    """A worker's congruent meshes and evidence equal the main-thread steps, -0.0 signs included."""
+    pytest.importorskip("gmsh")
+    config = MotorConfig.model_validate_json(
+        (Path(__file__).parent / "fixtures/spm_4p12s_simple.json").read_text(encoding="utf-8"),
+    )
+    config.solve_params.mesh_density = "coarse"
+    payload = config.model_dump(mode="json")
+    base_angle, derived_angles = 7.5, (37.5, 67.5)
+    derived = [(derived_angles[0], True, True), (derived_angles[1], True, False)]
+
+    base, _ = solver._GmshMeshProducer.build(config, base_angle)
+    expected_derived = [solver._rotate_gmsh_artifact_for_config(base, config, angle) for angle in derived_angles]
+    expected_evidence = [
+        solver._solve_mesh_evidence_pair(base, loaded=True, noload=False),
+        solver._solve_mesh_evidence_pair(expected_derived[0], loaded=True, noload=True),
+        solver._solve_mesh_evidence_pair(expected_derived[1], loaded=True, noload=False),
+    ]
+    rebaked = solver._rebake_gmsh_artifact_for_config(base, config)
+    expected_rebaked_evidence = solver._solve_mesh_evidence_pair(rebaked, loaded=True, noload=False)
+
+    with gmsh_mesh_process_pool(2) as pool:
+        fresh = pool.submit(
+            solver._prepare_gmsh_mesh_group_in_subprocess, payload, base_angle, (True, False), derived,
+        ).result(timeout=60)
+        cached = pool.submit(
+            solver._prepare_gmsh_mesh_group_in_subprocess, payload, base_angle, (True, False), [], base,
+        ).result(timeout=60)
+
+    assert _exact_text(fresh["artifact"]) == _exact_text(base)
+    assert [_exact_text(artifact) for artifact, _, _ in fresh["derived"]] == [_exact_text(a) for a in expected_derived]
+    assert [fresh["evidence"], *(evidence for _, _, evidence in fresh["derived"])] == expected_evidence
+    assert fresh["evidence"][1] is None and fresh["derived"][1][2][1] is None
+    assert _exact_text(cached["artifact"]) == _exact_text(rebaked)
+    assert cached["evidence"] == expected_rebaked_evidence
+    assert cached["derived"] == []
+
+
 def test_cancelled_pool_skips_queued_meshes_and_joins_workers(tmp_path):
     started = tmp_path / "started"
     clock_start = time.perf_counter()

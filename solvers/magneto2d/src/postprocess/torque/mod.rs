@@ -40,7 +40,15 @@ pub struct TorqueDebug {
     pub modeled_torque_nm: f64,
     pub scale_factor: f64,
     pub scaled_torque_nm: f64,
+    /// One entry per air-gap element: about half of a report's JSON on a
+    /// ~100k-element mesh, and nothing downstream reads it, so it is written
+    /// only when MAGNETO2D_TORQUE_DEBUG_ELEMENTS is set.
+    #[serde(skip_serializing_if = "omit_torque_debug_elements")]
     pub airgap_elements: Vec<TorqueElementContribution>,
+}
+
+fn omit_torque_debug_elements(_elements: &[TorqueElementContribution]) -> bool {
+    !env_flags::torque_debug_elements()
 }
 
 /// Per-sample contribution used by the mid-gap contour torque estimate.
@@ -3048,4 +3056,39 @@ pub(super) fn compute_torque_at_multiple_radii_from_az(
     };
 
     (mid_gap_torque, inner_torque, outer_torque, diagnostics)
+}
+
+#[cfg(test)]
+mod report_size_tests {
+    use super::{TorqueDebug, TorqueElementContribution};
+
+    #[test]
+    fn torque_debug_report_leaves_out_per_element_contributions_by_default() {
+        if std::env::var_os("MAGNETO2D_TORQUE_DEBUG_ELEMENTS").is_some() {
+            return; // the opt-in switch is set for this test run
+        }
+        let element = TorqueElementContribution {
+            triangle_index: 3,
+            centroid_x_mm: 1.0,
+            centroid_y_mm: 2.0,
+            radius_mm: 2.2,
+            theta_mech_deg: 63.0,
+            area_mm2: 0.01,
+            b_r_t: 0.5,
+            b_t_t: -0.1,
+            modeled_contribution_nm: 1e-6,
+            scaled_contribution_nm: 2e-6,
+        };
+        let debug = TorqueDebug {
+            airgap_element_count: 1,
+            modeled_torque_nm: 1e-6,
+            scale_factor: 2.0,
+            scaled_torque_nm: 2e-6,
+            airgap_elements: vec![element],
+        };
+        let value = serde_json::to_value(&debug).expect("serializes");
+        assert!(value.get("airgap_elements").is_none());
+        assert_eq!(value["airgap_element_count"], 1);
+        assert_eq!(value["scaled_torque_nm"], 2e-6);
+    }
 }

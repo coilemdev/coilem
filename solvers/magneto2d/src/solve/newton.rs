@@ -339,6 +339,33 @@ fn solve_newton_correction(
 
     let asm_ms = asm_start.elapsed().as_millis() as u64;
     let solve_start = Instant::now();
+
+    // Direct path, as in solve_linear_system: the tangent is refilled into the
+    // same CSR pattern as the stiffness, so the cached symbolic Cholesky
+    // applies and each Newton step costs one numeric refactor + two
+    // triangular solves. A failed factorization (e.g. a non-SPD tangent)
+    // returns Ok(None) and falls through to the PCG path below.
+    if linear_policy.direct {
+        if let Some(matrix_pattern) = matrix_pattern {
+            match matrix_pattern.direct_solve(&tangent, &tangent_rhs) {
+                Ok(Some(delta)) => {
+                    let solve_ms = solve_start.elapsed().as_millis() as u64;
+                    if let Some(profile) = profile.as_deref_mut() {
+                        profile.direct_cholesky_solves += 1;
+                        profile.direct_cholesky_solve_ms += solve_ms;
+                    }
+                    return Ok((delta, residual_norm, asm_ms, solve_ms));
+                }
+                Ok(None) => {}
+                Err(crate::sparse::DirectCholeskyError::PatternMismatch) => {
+                    return Err(
+                        "prepared Newton tangent CSR pattern changed during refill".to_string(),
+                    );
+                }
+            }
+        }
+    }
+
     let delta = if let Some(profile) = profile.as_deref_mut() {
         let (delta, pcg_profile) = pcg_solve_with_guess_options_profiled(
             &tangent,
