@@ -13847,6 +13847,16 @@
       "path": "tests/test_parallel_fallback_solves.py",
       "bytes": 14589,
       "sha256": "1efd9c7fd102c36eb555ac0622764c7f3cde90f2e5a1b4c39c2ada319472e9fa"
+    },
+    {
+      "path": "docs/benchmarks/parallel-fallback-windows-20261108.md",
+      "bytes": 6298,
+      "sha256": "2ef9a3b785378285411154e1fd8f57fa8714a2d6c87e53ad97d05c34e971fe98"
+    },
+    {
+      "path": "docs/benchmarks/parallel-fallback-windows-20261108.json",
+      "bytes": 30583,
+      "sha256": "0eae5bea2f749e727d1e4273dfccf1330b7d380661ab9cc0c07f7d1272db9dc6"
     }
   ],
   "public_patches": [
@@ -34949,6 +34959,18 @@
     {
       "base_commit": "121f144fa0c64471a30212e0ed4be125f849ba32",
       "path": "tests/test_parallel_fallback_solves.py",
+      "source_sha256": null,
+      "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
+    },
+    {
+      "base_commit": "121f144fa0c64471a30212e0ed4be125f849ba32",
+      "path": "docs/benchmarks/parallel-fallback-windows-20261108.md",
+      "source_sha256": null,
+      "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
+    },
+    {
+      "base_commit": "121f144fa0c64471a30212e0ed4be125f849ba32",
+      "path": "docs/benchmarks/parallel-fallback-windows-20261108.json",
       "source_sha256": null,
       "reason": "Queue real congruence-fallback solves on the existing native pool; track dynamic futures, cancellation and ordered report delivery without changing meshes, equations or solve settings."
     }
