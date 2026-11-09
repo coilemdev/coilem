@@ -13120,8 +13120,8 @@
     },
     {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 23074,
-      "sha256": "f759b6043a8ce183c6cef6674bb6d2593fb23c205bec1ab7433c220bc88204e1"
+      "bytes": 23439,
+      "sha256": "479ceb25fb1bb52a4a7dd5baf31d7adc591ac49849e2a831fe11437b9be82a8c"
     },
     {
       "path": "tests/test_lrk_reference.py",
@@ -34872,6 +34872,12 @@
       "path": "backend/run_field_playback.py",
       "source_sha256": "8e1634daf94a717b8802d24d3855ae2214bdae11bc3d466dad2aaa113d7bce65",
       "reason": "#221 Windows review: track automatic playback pools through worker shutdown; cover exit, completed rendering, refused startup and failed submission."
+    },
+    {
+      "base_commit": "e12918d5a219ce41d0319d59e04d5f177773b5a5",
+      "path": "tests/test_compact_run_storage.py",
+      "source_sha256": "f759b6043a8ce183c6cef6674bb6d2593fb23c205bec1ab7433c220bc88204e1",
+      "reason": "#221 playback CI: wait for background image futures before pruning or asserting the complete redraw; preserve all pixel and retention assertions."
     }
   ]
 }

@@ -327,7 +327,13 @@ def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, m
     from fastapi.testclient import TestClient
     from PIL import Image
 
+    from backend import run_field_playback
     from backend.public_main import app
+
+    def finish_background_images() -> None:
+        output = run_playback_dir(location.project_slug, location.run_id) / "resultant_pm"
+        for future in run_field_playback._JOBS.get(output, {}).values():
+            future.result(timeout=60)
 
     monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
     cache = solve_cache_root() / "magneto2d-drawable"
@@ -351,6 +357,7 @@ def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, m
     served = client.get(f"/solve/playback-frame/{layer['artifact_id']}")
     assert served.status_code == 200 and served.headers["content-type"] == "image/webp"
     assert served.content == original.read_bytes()
+    finish_background_images()
 
     # Cache pruning removed every copy: the image is drawn again from the run's frames.
     shutil.rmtree(cache / "field_playback")
@@ -360,7 +367,8 @@ def test_a_saved_runs_playback_is_drawn_again_from_its_frames(data_root: Path, m
     from io import BytesIO
 
     assert np.array_equal(np.asarray(Image.open(BytesIO(redrawn.content))), original_pixels)
-    # The rest of the run's playback is drawn in the same pass.
+    # The requested frame is ready first; the rest finish in the background.
+    finish_background_images()
     assert len(list(run_playback_dir(location.project_slug, location.run_id).rglob("*.webp"))) == 12
 
     # Once retention has removed its frames, nothing is left to draw from.
