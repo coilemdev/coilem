@@ -1,0 +1,3084 @@
+{
+  "schema": "coilem.two_layer_solution_reuse_windows/v1",
+  "release_base": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+  "measured_implementation": "68c3167fcbdc394affcf1e04583c6e88d51f9a54",
+  "metadata_only_baseline": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+  "host": {
+    "os": "Windows",
+    "cpu": "AMD Ryzen 7 7700",
+    "physical_cores": 8,
+    "logical_processors": 16,
+    "memory_gib": 64
+  },
+  "method": {
+    "primary_timer": "Unchanged backend.benchmark_suite.worker.measure runtime_s",
+    "requests": "Unchanged retained Phase F explicit-Newton requests; config hashes included per run",
+    "native": "Same frozen metadata-only native executable and Rust sources for both variants",
+    "concurrency": "Existing eight-worker native pool unchanged; jobs sequential in fresh processes/data roots",
+    "timing_scope": "Numerical solve/postprocessing and field extraction; excludes HTTP, durable UI saving and playback drawing",
+    "sample_limit": "Two observations per variant/case; ranges are not confidence intervals",
+    "recorded_solver_work": "solver_cpu_time_s is the existing compatibility name for summed native report elapsed timings, not an OS CPU counter",
+    "excluded_timing": {
+      "drone-baseline": "Exploratory physics run overlapped a snapshot verifier early; retained for physics only"
+    },
+    "quiet_measurements": "No competing task builds, tests, archives or comparers during the primary timing cohort"
+  },
+  "performance": {
+    "micro": {
+      "baseline_labels": [
+        "micro-baseline",
+        "micro-baseline-2"
+      ],
+      "candidate_labels": [
+        "micro-candidate",
+        "micro-candidate-2"
+      ],
+      "baseline_s": [
+        81.01344410000092,
+        79.75454949999948
+      ],
+      "candidate_s": [
+        66.57510039999943,
+        64.37915220000104
+      ],
+      "means_s": [
+        80.3839968000002,
+        65.47712630000024
+      ],
+      "ranges_s": [
+        [
+          79.75454949999948,
+          81.01344410000092
+        ],
+        [
+          64.37915220000104,
+          66.57510039999943
+        ]
+      ],
+      "less_wall_time_pct": 18.544574907228213,
+      "speedup": 1.227665313711239
+    },
+    "drone": {
+      "baseline_labels": [
+        "drone-baseline-quiet1",
+        "drone-baseline-quiet2"
+      ],
+      "candidate_labels": [
+        "drone-candidate",
+        "drone-candidate-2"
+      ],
+      "baseline_s": [
+        64.23735149999993,
+        63.461339900000894
+      ],
+      "candidate_s": [
+        62.65394610000112,
+        62.73083030000089
+      ],
+      "means_s": [
+        63.84934570000041,
+        62.692388200001005
+      ],
+      "ranges_s": [
+        [
+          63.461339900000894,
+          64.23735149999993
+        ],
+        [
+          62.65394610000112,
+          62.73083030000089
+        ]
+      ],
+      "less_wall_time_pct": 1.8120115207373222,
+      "speedup": 1.0184545131110412
+    }
+  },
+  "runs": [
+    {
+      "label": "micro-baseline",
+      "case": "spm_outer_12p9s_micro__baseline",
+      "variant": "baseline",
+      "worker_wall_s": 81.01344410000092,
+      "process_wall_s": 85.48037659999864,
+      "source": {
+        "source_commit": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "53f6be8d34f9db495867d83d04fb74f5988290d54d0315359bf2a4691bd6b304",
+      "original_config_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 32,
+      "native_report_files": 96,
+      "native_mesh_files": 96,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 17199345664,
+          "peak_tree_working_set_bytes": 9511833600,
+          "peak_python_worker_private_bytes": 1047961600,
+          "peak_python_worker_working_set_bytes": 231141376,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 137
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 540.685,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 124060,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "micro-candidate",
+      "case": "spm_outer_12p9s_micro__baseline",
+      "variant": "candidate",
+      "worker_wall_s": 66.57510039999943,
+      "process_wall_s": 70.41557540000031,
+      "source": {
+        "source_commit": "68c3167fcbdc394affcf1e04583c6e88d51f9a54",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "20dd90ef14dba8410c7d8e1e03ec44ea6f9b66bf84db811c5a84807088e9159d",
+      "original_config_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 0,
+      "native_report_files": 64,
+      "native_mesh_files": 64,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 17558675456,
+          "peak_tree_working_set_bytes": 9843879936,
+          "peak_python_worker_private_bytes": 1047617536,
+          "peak_python_worker_working_set_bytes": 234004480,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 94
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 395.213,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 124060,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "drone-baseline",
+      "case": "spm_outer_14p12s_drone__baseline",
+      "variant": "baseline",
+      "worker_wall_s": 66.68476600000031,
+      "process_wall_s": 70.06414740000037,
+      "source": {
+        "source_commit": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "2bd92ba0ab07885975d342eb2659b368f88d39ef366041d6ffd1f8981491fc58",
+      "original_config_sha256": "42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 20,
+      "native_report_files": 96,
+      "native_mesh_files": 96,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 15871889408,
+          "peak_tree_working_set_bytes": 8320012288,
+          "peak_python_worker_private_bytes": 1011314688,
+          "peak_python_worker_working_set_bytes": 208572416,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 118
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 455.512,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 103402,
+        "rotor_positions": 48
+      },
+      "primary_timing": false
+    },
+    {
+      "label": "drone-candidate",
+      "case": "spm_outer_14p12s_drone__baseline",
+      "variant": "candidate",
+      "worker_wall_s": 62.65394610000112,
+      "process_wall_s": 66.00600130000021,
+      "source": {
+        "source_commit": "68c3167fcbdc394affcf1e04583c6e88d51f9a54",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "6018e5c0e6e0192db28679233f1d4ddaa2c86b39a38c13a1364654ac4190a8d2",
+      "original_config_sha256": "42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 0,
+      "native_report_files": 76,
+      "native_mesh_files": 76,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 15854604288,
+          "peak_tree_working_set_bytes": 8146186240,
+          "peak_python_worker_private_bytes": 1004982272,
+          "peak_python_worker_working_set_bytes": 208101376,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 96
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 396.41,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 103402,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "drone-baseline-quiet1",
+      "case": "spm_outer_14p12s_drone__baseline",
+      "variant": "baseline",
+      "worker_wall_s": 64.23735149999993,
+      "process_wall_s": 67.55975569999828,
+      "source": {
+        "source_commit": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "2bd92ba0ab07885975d342eb2659b368f88d39ef366041d6ffd1f8981491fc58",
+      "original_config_sha256": "42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 20,
+      "native_report_files": 96,
+      "native_mesh_files": 96,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 16031326208,
+          "peak_tree_working_set_bytes": 8318824448,
+          "peak_python_worker_private_bytes": 994377728,
+          "peak_python_worker_working_set_bytes": 208490496,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 116
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 441.229,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 103402,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "micro-candidate-2",
+      "case": "spm_outer_12p9s_micro__baseline",
+      "variant": "candidate",
+      "worker_wall_s": 64.37915220000104,
+      "process_wall_s": 68.27317519999997,
+      "source": {
+        "source_commit": "68c3167fcbdc394affcf1e04583c6e88d51f9a54",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "20dd90ef14dba8410c7d8e1e03ec44ea6f9b66bf84db811c5a84807088e9159d",
+      "original_config_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 0,
+      "native_report_files": 64,
+      "native_mesh_files": 64,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 17483808768,
+          "peak_tree_working_set_bytes": 9779822592,
+          "peak_python_worker_private_bytes": 1054990336,
+          "peak_python_worker_working_set_bytes": 234946560,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 91
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 396.256,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 124060,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "micro-baseline-2",
+      "case": "spm_outer_12p9s_micro__baseline",
+      "variant": "baseline",
+      "worker_wall_s": 79.75454949999948,
+      "process_wall_s": 83.64028880000114,
+      "source": {
+        "source_commit": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "53f6be8d34f9db495867d83d04fb74f5988290d54d0315359bf2a4691bd6b304",
+      "original_config_sha256": "e3462f15aada4dfaf7d7320e97cd3f831d047e9176dbc10890b2e9370b28ea25",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 32,
+      "native_report_files": 96,
+      "native_mesh_files": 96,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 17170382848,
+          "peak_tree_working_set_bytes": 9614090240,
+          "peak_python_worker_private_bytes": 1043406848,
+          "peak_python_worker_working_set_bytes": 231043072,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 135
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 542.888,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 124060,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "drone-baseline-quiet2",
+      "case": "spm_outer_14p12s_drone__baseline",
+      "variant": "baseline",
+      "worker_wall_s": 63.461339900000894,
+      "process_wall_s": 66.76860139999917,
+      "source": {
+        "source_commit": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "2bd92ba0ab07885975d342eb2659b368f88d39ef366041d6ffd1f8981491fc58",
+      "original_config_sha256": "42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 20,
+      "native_report_files": 96,
+      "native_mesh_files": 96,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 15973326848,
+          "peak_tree_working_set_bytes": 8260694016,
+          "peak_python_worker_private_bytes": 1009541120,
+          "peak_python_worker_working_set_bytes": 208293888,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 112
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 435.118,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 103402,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "drone-candidate-2",
+      "case": "spm_outer_14p12s_drone__baseline",
+      "variant": "candidate",
+      "worker_wall_s": 62.73083030000089,
+      "process_wall_s": 66.0286071999999,
+      "source": {
+        "source_commit": "68c3167fcbdc394affcf1e04583c6e88d51f9a54",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "6018e5c0e6e0192db28679233f1d4ddaa2c86b39a38c13a1364654ac4190a8d2",
+      "original_config_sha256": "42899371bf886b6c298d36c73a50cd1099fd8e93e3b46e3703db1657ca9ae66d",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 0,
+      "native_report_files": 76,
+      "native_mesh_files": 76,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 15756570624,
+          "peak_tree_working_set_bytes": 8043216896,
+          "peak_python_worker_private_bytes": 1013960704,
+          "peak_python_worker_working_set_bytes": 208384000,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 97
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 392.199,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 103402,
+        "rotor_positions": 48
+      },
+      "primary_timing": true
+    },
+    {
+      "label": "control-baseline",
+      "case": "spm_outer_10p12s_single_layer__baseline",
+      "variant": "baseline",
+      "worker_wall_s": 48.800111200000174,
+      "process_wall_s": 51.77753289999964,
+      "source": {
+        "source_commit": "5c23bb8c0339dd4a37502eb01c80853e0c3ef1d2",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "5567bf5b4c36ac94f5b84b7aa1d056792343c11b99eeb6b35faed0a590130167",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "b5ce3e019bbf8ec0ca5d21bf641c213a7a4891916c316d741f6df3a0dade58be",
+      "original_config_sha256": "ac93f5d6954d818321f20e3781a0dc3165e7d2c977938c18feab530bf707d9db",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 0,
+      "native_report_files": 60,
+      "native_mesh_files": 60,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 15131303936,
+          "peak_tree_working_set_bytes": 7482900480,
+          "peak_python_worker_private_bytes": 990425088,
+          "peak_python_worker_working_set_bytes": 195772416,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 71
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 266.719,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 91250,
+        "rotor_positions": 48
+      },
+      "primary_timing": false
+    },
+    {
+      "label": "control-candidate",
+      "case": "spm_outer_10p12s_single_layer__baseline",
+      "variant": "candidate",
+      "worker_wall_s": 50.27990320000026,
+      "process_wall_s": 53.205939900000885,
+      "source": {
+        "source_commit": "68c3167fcbdc394affcf1e04583c6e88d51f9a54",
+        "branch": "perf/two-layer-solution-reuse",
+        "git_status_porcelain": "",
+        "solver_python_sha256": "d6fc648b18c6b167294802512442f92aaa6a14ae59ca7b8304fb0b3d7c7effa7",
+        "mesh_rotation_sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
+        "process_pool_sha256": "1c9d631d24e2f59eb17515a6e8447433e4c1c768b0da624a5efd84d0e290d9f7",
+        "native_adapter_sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+        "rust_sources_sha256": "972a9014f8bab4b20ecc75b43304e953d74df5207be352b4687ba4389176e4be",
+        "binary_sha256": "95088c7b08b60a1630957a1639af8dcd6b49e24223e7832f13f81417d992c498"
+      },
+      "request_sha256": "2c4c80bb80fe604c97506d965168cec54b5f580ae96fa8a927bcb9a7ec6fc451",
+      "original_config_sha256": "ac93f5d6954d818321f20e3781a0dc3165e7d2c977938c18feab530bf707d9db",
+      "orjson_version": "3.13.0",
+      "fallback_warning_count": 0,
+      "native_report_files": 60,
+      "native_mesh_files": 60,
+      "full_field_frame_files": 48,
+      "memory": {
+        "sampling_interval_s": 0.5,
+        "counters": {
+          "peak_tree_private_bytes": 15207768064,
+          "peak_tree_working_set_bytes": 7483662336,
+          "peak_python_worker_private_bytes": 990650368,
+          "peak_python_worker_working_set_bytes": 195645440,
+          "peak_python_workers": 8,
+          "peak_native_solvers": 8,
+          "samples": 74
+        }
+      },
+      "source_unchanged": true,
+      "recorded_solver_work": {
+        "solver_cpu_time_s": 268.944,
+        "nonlinear_tolerance": 1e-05,
+        "nonlinear_tolerance_method": "newton",
+        "mesh_element_count": 91250,
+        "rotor_positions": 48
+      },
+      "primary_timing": false
+    }
+  ],
+  "physics": {
+    "schema": "coilem.public_physics_projection/v1",
+    "purpose": "Retained-artifact physics equivalence evidence for the two-layer solution-reuse change; independent of the timing cohort and repeat timing measurements.",
+    "validator": {
+      "filename": "validate_physics.py",
+      "sha256": "06eea71752eaba8856bced1305b0e52a8d1d71b5d71a25258d54e951d08d4358"
+    },
+    "oracle": "Actual baseline native solutions on the derived target meshes are the numerical oracle. Replaying the candidate synthesis helper is the implementation under test, not the oracle; its synthesized phase flux and selected torque are also checked against the actual candidate aggregate consumed by the run.",
+    "interpretation": "Pass establishes a strict regression comparison for these retained discretizations and requests; it does not extend the physical qualification envelope or claim absolute motor-model accuracy.",
+    "numeric_policy": {
+      "output_elementwise_rule": "abs(candidate-baseline) <= absolute_floor(path) + 1e-9 * abs(baseline)",
+      "relative_tolerance": 1e-09,
+      "absolute_floor_rules_in_precedence_order": [
+        {
+          "path_contains_any": [
+            "area_m2"
+          ],
+          "absolute_floor": 1e-16
+        },
+        {
+          "path_contains_any": [
+            "az_"
+          ],
+          "absolute_floor": 1e-12
+        },
+        {
+          "path_contains_any": [
+            "flux_linkage",
+            "lambda_",
+            "contribution_wb"
+          ],
+          "absolute_floor": 1e-12
+        },
+        {
+          "path_contains_any": [
+            "torque"
+          ],
+          "absolute_floor": 1e-10
+        },
+        {
+          "path_contains_any": [
+            "energy",
+            "work_j"
+          ],
+          "absolute_floor": 1e-12
+        },
+        {
+          "path_contains_any": [
+            "angle",
+            "nodes",
+            "radius",
+            "radii"
+          ],
+          "absolute_floor": 1e-10
+        },
+        {
+          "path_contains_any": [
+            "current_density"
+          ],
+          "absolute_floor": 1e-08
+        },
+        {
+          "default_absolute_floor": 1e-10
+        }
+      ],
+      "floor_units": "Units are those of the numeric observable at each path. Ordered substring rules are reproduced exactly, including their precedence for nested d/q paths; selected metrics carry their actual floor below.",
+      "rhs_exception": "Existing slot_current_pattern_matches eligibility gate is asserted separately for every synthesized pair. Preserve array length and missing-value mask, let Jscale=max(abs(base_J),abs(target_J)) over all present elements, and require max_abs_delta_J <= 1e-9*Jscale. An all-zero RHS has zero allowed and observed error; its relative ratio is undefined, not a claimed nonzero tolerance.",
+      "finite_values_and_shapes": "Nonfinite numbers, array shape/length mismatches and missing structural keys fail the comparison.",
+      "bounds_not_inferred_from_solver_residual": "The requested Newton residual tolerance is not used as an output error guarantee. Output bounds were fixed before the native-pair/full-field comparisons; only the supplementary RHS observer was corrected from a pointwise scalar floor to the existing global-norm eligibility criterion, without changing any output bounds."
+    },
+    "exact_structure_checks": [
+      "Identical request physics config and resolved config; both statuses COMPLETE.",
+      "Identical binary, Rust-source and solver-Python hashes between the compared pair; intentional mesh-rotation helper change is not claimed identical.",
+      "Candidate native report names are a subset of baseline names; direct same-angle native mesh bytes are identical.",
+      "For synthesized targets: complete unique (global slot, physical layer) coverage; slot/layer identities, phase, direction, turns-per-coil and turn fractions equal the independently solved target.",
+      "For synthesized targets: unchanged triangle connectivity, element material-region assignment, region kind/material mapping, boundary nodes and sector-edge pairing.",
+      "Independent rigid node rotation and magnetization rotation checked numerically; per-element current eligibility and missing-value masks checked explicitly.",
+      "Full decoded playback frame name inventory, position indices, electrical angles, record counts, connectivity and regions match; all decoded numeric fields compared."
+    ],
+    "excluded_from_physical_parity": [
+      {
+        "category": "Work and runtime accounting",
+        "items": [
+          "timing/CPU work counts",
+          "returned solve_metadata object",
+          "returned summary.solve_time_s",
+          "aggregate sweep.total_time_ms",
+          "aggregate sweep.loaded_nonlinear_convergence",
+          "aggregate sweep.no_load_nonlinear_convergence",
+          "aggregate sweep.loaded_nonlinear_iterations",
+          "aggregate sweep.no_load_nonlinear_iterations"
+        ],
+        "treatment": "Not asserted numerically equal. Native report/frame counts are reported as work counters, not physics measurements."
+      },
+      {
+        "category": "Run provenance locations",
+        "items": [
+          "source/cache paths",
+          "timestamps and descriptive runtime identities inside solve_metadata"
+        ],
+        "treatment": "Not published or treated as physical observables; request config and selected source/binary equivalence checks are independent."
+      },
+      {
+        "category": "Raw source-angle native diagnostics",
+        "items": [
+          "torque_contour_debug.samples",
+          "torque_contour_debug.per_quadrant",
+          "torque_arkkio_debug.per_quadrant",
+          "other raw native result diagnostics outside the selected physical invariant subset, including diagnostic explanation strings"
+        ],
+        "treatment": "Every raw native results leaf was observed in a separate diagnostic section. These fields are not all claimed equal after rotation; all paths exceeding the same generic numeric gate and all changed diagnostic strings are enumerated per case below. Selected physical torque, phase flux, energies, A_z and full playback B retain their strict primary gates."
+      }
+    ],
+    "diagnostic_caveat": "Synthesis copies the source solve\u2019s fixed-global-angle contour samples and quadrant allocations. Their coordinates/triangle selections and local samples need not equal a fresh target-angle sampling, even when the selected torque and rotated physical field agree. Treat them as source-solve diagnostics; transform or mark them before using them as target-angle diagnostics.",
+    "cases": {
+      "micro": {
+        "source_validation_filename": "micro-physics-validation.json",
+        "source_validation_sha256": "a3a9877602dfc124ef70e7026c87033c1a7de3eaa8defb174be3d95c4922720d",
+        "primary_pass": true,
+        "structural_failure_count": 0,
+        "primary_numeric_path_count": 459,
+        "primary_numeric_path_failures": 0,
+        "primary_changed_text_path_count": 0,
+        "work_counters": {
+          "baseline_native_reports": 96,
+          "candidate_native_reports": 64,
+          "synthesized_pairs": 32,
+          "full_frames": 48,
+          "full_field_element_records": 5954362
+        },
+        "synthesized_lane_counts": {
+          "loaded": 16,
+          "no_load": 16
+        },
+        "physical_winding_sides_compared": 576,
+        "selected_physics_observations": {
+          "returned_torque_waveform": {
+            "units": "Nm",
+            "scope": "All 48 returned loaded torque samples",
+            "maximum_observed_delta": {
+              "observable_path": "result.torque_waveform.torque_Nm",
+              "count": 48,
+              "changed_values": 16,
+              "max_abs": 4.8498531579621584e-15,
+              "rms_abs": 1.1879205246640897e-15,
+              "max_abs_over_global_peak": 1.4240703892430172e-13,
+              "max_baseline_magnitude": 0.03405627414625312,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "result.torque_waveform.torque_Nm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "returned_energy_fd_torque": {
+            "units": "Nm",
+            "scope": "Returned finite-difference energy/coenergy torque waveforms",
+            "maximum_observed_delta": {
+              "observable_path": "result.torque_waveform.torque_coenergy_fd_Nm",
+              "count": 48,
+              "changed_values": 18,
+              "max_abs": 3.816738591844171e-14,
+              "rms_abs": 1.010133928305463e-14,
+              "max_abs_over_global_peak": 1.582138218313205e-12,
+              "max_baseline_magnitude": 0.024123926390662524,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "result.torque_waveform.torque_coenergy_fd_Nm",
+              "result.torque_waveform.torque_energy_fd_Nm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_selected_torque": {
+            "units": "Nm",
+            "scope": "Selected weighted-stress torque of independently solved targets versus helper synthesis",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.torque_weighted_stress_nm",
+              "count": 32,
+              "changed_values": 32,
+              "max_abs": 6.800116025829084e-15,
+              "rms_abs": 2.5933389331274527e-15,
+              "max_abs_over_global_peak": 1.9967292947626316e-13,
+              "max_baseline_magnitude": 0.03405627414625312,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "pair.results.torque_weighted_stress_nm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "aggregate_loaded_energy_and_source_work": {
+            "units": "J",
+            "scope": "Loaded aggregate field/coenergy/potential/PM/current source-work arrays",
+            "maximum_observed_delta": {
+              "observable_path": "sweep.energy_pm_source_work_j",
+              "count": 48,
+              "changed_values": 15,
+              "max_abs": 3.164135620181696e-15,
+              "rms_abs": 7.435524792297868e-16,
+              "max_abs_over_global_peak": 8.685204785544705e-15,
+              "max_baseline_magnitude": 0.36431330041266874,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "sweep.energy_coenergy_j",
+              "sweep.energy_current_source_work_j",
+              "sweep.energy_field_j",
+              "sweep.energy_pm_self_j",
+              "sweep.energy_pm_source_work_j",
+              "sweep.energy_potential_j",
+              "sweep.energy_potential_with_pm_self_j"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_energy_and_source_work": {
+            "units": "J",
+            "scope": "Native target energies and region/magnet detail versus helper synthesis",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.energy_functional.pm_source_work_j",
+              "count": 32,
+              "changed_values": 31,
+              "max_abs": 3.164135620181696e-15,
+              "rms_abs": 1.3025174424976872e-15,
+              "max_abs_over_global_peak": 8.683285349112499e-15,
+              "max_baseline_magnitude": 0.36439383170853595,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.results.energy_functional.coenergy_by_region_j.airgap_j",
+              "pair.results.energy_functional.coenergy_by_region_j.magnet_j",
+              "pair.results.energy_functional.coenergy_by_region_j.rotor_core_j",
+              "pair.results.energy_functional.coenergy_by_region_j.slot_winding_j",
+              "pair.results.energy_functional.coenergy_by_region_j.stator_tooth_j",
+              "pair.results.energy_functional.coenergy_by_region_j.stator_yoke_j",
+              "pair.results.energy_functional.coenergy_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.angular_edge_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.angular_interior_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.radial_inner_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.radial_middle_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.radial_outer_j",
+              "pair.results.energy_functional.current_source_work_j",
+              "pair.results.energy_functional.field_energy_by_region_j.airgap_j",
+              "pair.results.energy_functional.field_energy_by_region_j.magnet_j",
+              "pair.results.energy_functional.field_energy_by_region_j.rotor_core_j",
+              "pair.results.energy_functional.field_energy_by_region_j.slot_winding_j",
+              "pair.results.energy_functional.field_energy_by_region_j.stator_tooth_j",
+              "pair.results.energy_functional.field_energy_by_region_j.stator_yoke_j",
+              "pair.results.energy_functional.field_energy_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.angular_edge_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.angular_interior_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.radial_inner_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.radial_middle_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.radial_outer_j",
+              "pair.results.energy_functional.pm_self_energy_j",
+              "pair.results.energy_functional.pm_source_work_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.angular_edge_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.angular_interior_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.radial_inner_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.radial_middle_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.radial_outer_j",
+              "pair.results.energy_functional.potential_energy_j",
+              "pair.results.energy_functional.potential_energy_with_pm_self_j"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "loaded_phase_flux": {
+            "units": "Wb",
+            "scope": "Three complete loaded phase-flux arrays",
+            "maximum_observed_delta": {
+              "observable_path": "sweep.loaded_flux_linkage_b_wb",
+              "count": 48,
+              "changed_values": 16,
+              "max_abs": 9.75781955236954e-18,
+              "rms_abs": 2.4057533591509017e-18,
+              "max_abs_over_global_peak": 2.8119344817137258e-14,
+              "max_baseline_magnitude": 0.0003470144704944428,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "sweep.loaded_flux_linkage_a_wb",
+              "sweep.loaded_flux_linkage_b_wb",
+              "sweep.loaded_flux_linkage_c_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "no_load_phase_flux": {
+            "units": "Wb",
+            "scope": "Three complete no-load phase-flux arrays",
+            "maximum_observed_delta": {
+              "observable_path": "sweep.no_load_flux_linkage_a_wb",
+              "count": 48,
+              "changed_values": 16,
+              "max_abs": 1.2468324983583301e-17,
+              "rms_abs": 3.648630446468162e-18,
+              "max_abs_over_global_peak": 3.592790589564614e-14,
+              "max_baseline_magnitude": 0.00034703734249911443,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "sweep.no_load_flux_linkage_a_wb",
+              "sweep.no_load_flux_linkage_b_wb",
+              "sweep.no_load_flux_linkage_c_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_phase_flux": {
+            "units": "Wb",
+            "scope": "All three phase fluxes at each synthesized target",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.flux_linkage_a_wb",
+              "count": 32,
+              "changed_values": 32,
+              "max_abs": 1.2468324983583301e-17,
+              "rms_abs": 5.396946182594683e-18,
+              "max_abs_over_global_peak": 3.592790589564614e-14,
+              "max_baseline_magnitude": 0.00034703734249911443,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.results.flux_linkage_a_wb",
+              "pair.results.flux_linkage_b_wb",
+              "pair.results.flux_linkage_c_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_winding_side_flux": {
+            "units": "Wb",
+            "scope": "Per physical winding-side contributions keyed by explicit slot/layer",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.slot_flux_linkage_contributions[].contribution_wb",
+              "count": 576,
+              "changed_values": 573,
+              "max_abs": 1.893288043702812e-17,
+              "rms_abs": 6.5270175874833285e-18,
+              "max_abs_over_global_peak": 2.8377617506388525e-13,
+              "max_baseline_magnitude": 6.671765320949106e-05,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.results.slot_flux_linkage_contributions[].contribution_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "returned_phase_back_emf": {
+            "units": "V",
+            "scope": "All returned phase back-EMF arrays",
+            "maximum_observed_delta": {
+              "observable_path": "result.back_emf_waveform.phase_c_V",
+              "count": 48,
+              "changed_values": 18,
+              "max_abs": 1.2151391004522338e-13,
+              "rms_abs": 3.150735577458001e-14,
+              "max_abs_over_global_peak": 1.9096873606602477e-13,
+              "max_baseline_magnitude": 0.6363026354387749,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "result.back_emf_waveform.phase_a_V",
+              "result.back_emf_waveform.phase_b_V",
+              "result.back_emf_waveform.phase_c_V"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_nodal_Az": {
+            "units": "Wb/m",
+            "scope": "All nodal A_z values on independently solved target meshes",
+            "maximum_observed_delta": {
+              "observable_path": "pair.field_plot.az_nodal",
+              "count": 1990394,
+              "changed_values": 1978140,
+              "max_abs": 5.544338859547748e-16,
+              "rms_abs": 1.4789807912937366e-16,
+              "max_abs_over_global_peak": 2.308771963190846e-13,
+              "max_baseline_magnitude": 0.0024014233315122107,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.field_plot.az_nodal"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "full_playback_B": {
+            "units": "T",
+            "scope": "Decoded loaded full playback |B|, Bx and By arrays for all 48 frames",
+            "maximum_observed_delta": {
+              "observable_path": "full_frame.field_line_frame.element_b_mag_t",
+              "count": 5954362,
+              "changed_values": 1980601,
+              "max_abs": 5.259126467649367e-13,
+              "rms_abs": 2.2969197960208762e-14,
+              "max_abs_over_global_peak": 2.0625887108191865e-13,
+              "max_baseline_magnitude": 2.5497698305352547,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "full_frame.field_line_frame.element_b_mag_t",
+              "full_frame.field_line_frame.element_bx_t",
+              "full_frame.field_line_frame.element_by_t"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "full_playback_nodes": {
+            "units": "mm",
+            "scope": "Decoded full playback node coordinates",
+            "maximum_observed_delta": {
+              "observable_path": "full_frame.field_line_frame.nodes_mm",
+              "count": 5971066,
+              "changed_values": 702907,
+              "max_abs": 7.105427357601002e-15,
+              "rms_abs": 4.490565332508934e-16,
+              "max_abs_over_global_peak": 5.996141230043039e-16,
+              "max_baseline_magnitude": 11.85,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "full_frame.field_line_frame.nodes_mm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "magnetization_rotation_error": {
+            "units": "deg",
+            "scope": "Wrapped error of independent magnetization rotation",
+            "maximum_observed_delta": {
+              "observable_path": "pair.mesh.magnetization_rotation_error_deg",
+              "count": 1178080,
+              "changed_values": 49108,
+              "max_abs": 2.842170943040401e-14,
+              "rms_abs": 5.802817700769912e-15,
+              "max_abs_over_global_peak": null,
+              "max_baseline_magnitude": 0.0,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "pair.mesh.magnetization_rotation_error_deg"
+            ],
+            "all_paths_within_fixed_gates": true
+          }
+        },
+        "dq_summary_observations": {
+          "apparent_L_q_H": {
+            "observable_path": "result.summary.dq_flux_linkage.apparent_L_q_H",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 2.371692252312041e-20,
+            "rms_abs": 2.371692252312041e-20,
+            "max_abs_over_global_peak": 5.526430535448026e-15,
+            "max_baseline_magnitude": 4.291544491691994e-06,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "current_angle_deg": {
+            "observable_path": "result.summary.dq_flux_linkage.current_angle_deg",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 1.1927308099513034e-15,
+            "rms_abs": 1.1927308099513034e-15,
+            "max_abs_over_global_peak": 1.2296324067180003e-12,
+            "max_baseline_magnitude": 0.000969989733057548,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "i_d_A": {
+            "observable_path": "result.summary.dq_flux_linkage.i_d_A",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 1.0408340855860843e-16,
+            "rms_abs": 1.0408340855860843e-16,
+            "max_abs_over_global_peak": 1.2296088968346119e-12,
+            "max_baseline_magnitude": 8.46475727579321e-05,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "i_q_A": {
+            "observable_path": "result.summary.dq_flux_linkage.i_q_A",
+            "count": 1,
+            "changed_values": 0,
+            "max_abs": 0.0,
+            "rms_abs": 0.0,
+            "max_abs_over_global_peak": 0.0,
+            "max_baseline_magnitude": 4.9999999992834825,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "lambda_d_Wb": {
+            "observable_path": "result.summary.dq_flux_linkage.lambda_d_Wb",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 8.131516293641283e-19,
+            "rms_abs": 8.131516293641283e-19,
+            "max_abs_over_global_peak": 2.3878271911779252e-15,
+            "max_baseline_magnitude": 0.00034054040106771595,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "lambda_pm_Wb": {
+            "observable_path": "result.summary.dq_flux_linkage.lambda_pm_Wb",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 1.0842021724855044e-18,
+            "rms_abs": 1.0842021724855044e-18,
+            "max_abs_over_global_peak": 3.1833529562578732e-15,
+            "max_baseline_magnitude": 0.00034058497043319274,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "lambda_q_Wb": {
+            "observable_path": "result.summary.dq_flux_linkage.lambda_q_Wb",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 1.1519648082658485e-19,
+            "rms_abs": 1.1519648082658485e-19,
+            "max_abs_over_global_peak": 5.368532520918839e-15,
+            "max_baseline_magnitude": 2.1457722455385004e-05,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "positions": {
+            "observable_path": "result.summary.dq_flux_linkage.positions",
+            "count": 1,
+            "changed_values": 0,
+            "max_abs": 0.0,
+            "rms_abs": 0.0,
+            "max_abs_over_global_peak": 0.0,
+            "max_baseline_magnitude": 48.0,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "torque_agreement_pct": {
+            "observable_path": "result.summary.dq_flux_linkage.torque_agreement_pct",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 9.805489753489383e-13,
+            "rms_abs": 9.805489753489383e-13,
+            "max_abs_over_global_peak": 9.804968297102176e-15,
+            "max_baseline_magnitude": 100.00531828733563,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "torque_dq_Nm": {
+            "observable_path": "result.summary.dq_flux_linkage.torque_dq_Nm",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 3.8163916471489756e-17,
+            "rms_abs": 3.8163916471489756e-17,
+            "max_abs_over_global_peak": 2.490412666082999e-15,
+            "max_baseline_magnitude": 0.015324334392948296,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          }
+        },
+        "rhs_eligibility": {
+          "all_production_eligibility_gates_pass": true,
+          "nonzero_rhs_pairs": 16,
+          "zero_rhs_pairs": 16,
+          "maximum_observed_abs_delta_A_per_m2": 1.210719347000122e-08,
+          "maximum_error_over_global_scale": 2.051660301315902e-15,
+          "maximum_fraction_of_allowed_gate": 2.051660301315902e-06,
+          "nonzero_allowed_abs_bound_range_A_per_m2": [
+            0.005290843077206341,
+            0.0061093393497303
+          ],
+          "all_zero_rhs_pairs_observed_exact_zero": true
+        },
+        "raw_native_diagnostic_observations_not_parity": {
+          "numeric_paths_exceeding_generic_gate": {
+            "torque_arkkio_debug.per_quadrant.area_m2_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.area_m2_per_quadrant",
+              "count": 128,
+              "changed_values": 128,
+              "max_abs": 1.805230955025038e-08,
+              "rms_abs": 9.482062154139393e-09,
+              "max_abs_over_global_peak": 0.006965573700481496,
+              "max_baseline_magnitude": 2.59164719612435e-06,
+              "outside_roundoff_gate": 128,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-16,
+              "maximum_absolute_floor": 1e-16
+            },
+            "torque_arkkio_debug.per_quadrant.max_abs_diff_count": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.max_abs_diff_count",
+              "count": 32,
+              "changed_values": 30,
+              "max_abs": 24.0,
+              "rms_abs": 13.428049001995785,
+              "max_abs_over_global_peak": 0.5454545454545454,
+              "max_baseline_magnitude": 44.0,
+              "outside_roundoff_gate": 30,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_area": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.max_rel_diff_area",
+              "count": 32,
+              "changed_values": 32,
+              "max_abs": 0.0037302628680867304,
+              "rms_abs": 0.001731461186051527,
+              "max_abs_over_global_peak": 0.5127963441263952,
+              "max_baseline_magnitude": 0.0072743554255279294,
+              "outside_roundoff_gate": 32,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_partial_integrand": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.max_rel_diff_partial_integrand",
+              "count": 32,
+              "changed_values": 32,
+              "max_abs": 1783.606913390474,
+              "rms_abs": 490.37007557500874,
+              "max_abs_over_global_peak": 0.21561962541116816,
+              "max_baseline_magnitude": 8272.006363007487,
+              "outside_roundoff_gate": 32,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.partial_integrand_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.partial_integrand_per_quadrant",
+              "count": 128,
+              "changed_values": 128,
+              "max_abs": 3.531030190532323e-10,
+              "rms_abs": 1.6287933765801407e-10,
+              "max_abs_over_global_peak": 0.721216510142788,
+              "max_baseline_magnitude": 4.895936436387517e-10,
+              "outside_roundoff_gate": 70,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.triangle_count_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.triangle_count_per_quadrant",
+              "count": 128,
+              "changed_values": 126,
+              "max_abs": 44.0,
+              "rms_abs": 17.505356323137214,
+              "max_abs_over_global_peak": 0.015867291741795887,
+              "max_baseline_magnitude": 2773.0,
+              "outside_roundoff_gate": 126,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.per_quadrant.max_rel_diff_partial_torque": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.per_quadrant.max_rel_diff_partial_torque",
+              "count": 32,
+              "changed_values": 32,
+              "max_abs": 2438.674880361994,
+              "rms_abs": 572.460676238071,
+              "max_abs_over_global_peak": 0.391589086439371,
+              "max_baseline_magnitude": 6227.63750271056,
+              "outside_roundoff_gate": 32,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.per_quadrant.partial_torque_nm_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.per_quadrant.partial_torque_nm_per_quadrant",
+              "count": 128,
+              "changed_values": 128,
+              "max_abs": 0.009308062663549593,
+              "rms_abs": 0.004117971185165573,
+              "max_abs_over_global_peak": 0.7027021126008111,
+              "max_baseline_magnitude": 0.013246100298601621,
+              "outside_roundoff_gate": 128,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].b_r_t": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].b_r_t",
+              "count": 23040,
+              "changed_values": 23040,
+              "max_abs": 1.9888060881694543,
+              "rms_abs": 1.2863535933424715,
+              "max_abs_over_global_peak": 1.923961414847339,
+              "max_baseline_magnitude": 1.0337037285788087,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].b_t_t": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].b_t_t",
+              "count": 23040,
+              "changed_values": 23040,
+              "max_abs": 1.0452131576244081,
+              "rms_abs": 0.34806134971948455,
+              "max_abs_over_global_peak": 1.4597419767041044,
+              "max_baseline_magnitude": 0.7160259650711388,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].modeled_contribution_nm": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].modeled_contribution_nm",
+              "count": 23040,
+              "changed_values": 23040,
+              "max_abs": 0.0017789934784394393,
+              "rms_abs": 0.0005458988436426717,
+              "max_abs_over_global_peak": 1.091973085816746,
+              "max_baseline_magnitude": 0.0016291550602722349,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].scaled_contribution_nm": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].scaled_contribution_nm",
+              "count": 23040,
+              "changed_values": 23040,
+              "max_abs": 0.0017789934784394393,
+              "rms_abs": 0.0005458988436426717,
+              "max_abs_over_global_peak": 1.091973085816746,
+              "max_baseline_magnitude": 0.0016291550602722349,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].triangle_index": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].triangle_index",
+              "count": 23040,
+              "changed_values": 23040,
+              "max_abs": 20973.0,
+              "rms_abs": 9995.47304978053,
+              "max_abs_over_global_peak": 0.29052902796825003,
+              "max_baseline_magnitude": 72189.0,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            }
+          },
+          "changed_diagnostic_strings": {},
+          "diagnostic_structural_failure_count": 0,
+          "numeric_top_level_categories_outside_primary_invariant_subset": [
+            "slot_excitation_contributions[]",
+            "slot_flux_linkage_contributions[]",
+            "source_current_angle_deg",
+            "torque_area_mst_nm",
+            "torque_arkkio_debug",
+            "torque_arkkio_nm",
+            "torque_contour_az_nm",
+            "torque_contour_az_nodal_b_split_rel",
+            "torque_contour_debug",
+            "torque_contour_inner_nm",
+            "torque_contour_nm",
+            "torque_contour_nodal_b_nm",
+            "torque_contour_outer_nm",
+            "torque_debug",
+            "torque_nm",
+            "torque_weighted_stress_debug"
+          ],
+          "all_changed_numeric_paths_outside_primary_invariant_subset": {
+            "slot_excitation_contributions[].effective_current_density_a_per_m2": {
+              "max_abs": 1.3504177331924438e-08,
+              "rms_abs": 2.7241132969097503e-09,
+              "count": 288,
+              "changed_values": 136,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-08,
+              "relative_tolerance": 1e-09
+            },
+            "slot_excitation_contributions[].integrated_amp_turns_a": {
+              "max_abs": 1.6342482922482304e-13,
+              "rms_abs": 3.237373238394979e-14,
+              "count": 288,
+              "changed_values": 143,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "slot_excitation_contributions[].phase_current_a": {
+              "max_abs": 6.661338147750939e-15,
+              "rms_abs": 1.2127524483025046e-15,
+              "count": 288,
+              "changed_values": 102,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "slot_excitation_contributions[].slot_area_m2": {
+              "max_abs": 6.776263578034403e-21,
+              "rms_abs": 4.374059331206521e-21,
+              "count": 288,
+              "changed_values": 288,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09
+            },
+            "slot_excitation_contributions[].slot_current_a": {
+              "max_abs": 1.1546319456101628e-14,
+              "rms_abs": 2.3195435450809616e-15,
+              "count": 288,
+              "changed_values": 139,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].az_avg_wb_per_m": {
+              "max_abs": 4.508112633194727e-16,
+              "rms_abs": 1.5539953445364335e-16,
+              "count": 576,
+              "changed_values": 573,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].az_effective_wb_per_m": {
+              "max_abs": 4.508112633194727e-16,
+              "rms_abs": 1.5539953445364335e-16,
+              "count": 576,
+              "changed_values": 573,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].contribution_wb": {
+              "max_abs": 1.893288043702812e-17,
+              "rms_abs": 6.5270175874833285e-18,
+              "count": 576,
+              "changed_values": 573,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].slot_area_m2": {
+              "max_abs": 7.623296525288703e-21,
+              "rms_abs": 3.3047554873679966e-21,
+              "count": 576,
+              "changed_values": 576,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09
+            },
+            "source_current_angle_deg": {
+              "max_abs": 5.684341886080802e-14,
+              "rms_abs": 1.4210854715202004e-14,
+              "count": 32,
+              "changed_values": 2,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_area_mst_nm": {
+              "max_abs": 2.522938455373769e-16,
+              "rms_abs": 9.884776351070082e-17,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.modeled_torque_nm": {
+              "max_abs": 6.9735883734267645e-15,
+              "rms_abs": 2.658881617413484e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.area_m2_per_quadrant": {
+              "max_abs": 1.805230955025038e-08,
+              "rms_abs": 9.482062154139393e-09,
+              "count": 128,
+              "changed_values": 128,
+              "outside_roundoff_gate": 128,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.max_abs_diff_count": {
+              "max_abs": 24.0,
+              "rms_abs": 13.428049001995785,
+              "count": 32,
+              "changed_values": 30,
+              "outside_roundoff_gate": 30,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_area": {
+              "max_abs": 0.0037302628680867304,
+              "rms_abs": 0.001731461186051527,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 32,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_partial_integrand": {
+              "max_abs": 1783.606913390474,
+              "rms_abs": 490.37007557500874,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 32,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.partial_integrand_per_quadrant": {
+              "max_abs": 3.531030190532323e-10,
+              "rms_abs": 1.6287933765801407e-10,
+              "count": 128,
+              "changed_values": 128,
+              "outside_roundoff_gate": 70,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.triangle_count_per_quadrant": {
+              "max_abs": 44.0,
+              "rms_abs": 17.505356323137214,
+              "count": 128,
+              "changed_values": 126,
+              "outside_roundoff_gate": 126,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.scaled_torque_nm": {
+              "max_abs": 6.9735883734267645e-15,
+              "rms_abs": 2.658881617413484e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_nm": {
+              "max_abs": 6.9735883734267645e-15,
+              "rms_abs": 2.658881617413484e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_az_nm": {
+              "max_abs": 6.7845035145452925e-15,
+              "rms_abs": 2.618654447794357e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_az_nodal_b_split_rel": {
+              "max_abs": 1.0218466697797801e-12,
+              "rms_abs": 2.0118681907164493e-13,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.modeled_torque_nm": {
+              "max_abs": 6.7845035145452925e-15,
+              "rms_abs": 2.618654447794357e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.per_quadrant.max_rel_diff_partial_torque": {
+              "max_abs": 2438.674880361994,
+              "rms_abs": 572.460676238071,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 32,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.per_quadrant.partial_torque_nm_per_quadrant": {
+              "max_abs": 0.009308062663549593,
+              "rms_abs": 0.004117971185165573,
+              "count": 128,
+              "changed_values": 128,
+              "outside_roundoff_gate": 128,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].b_r_t": {
+              "max_abs": 1.9888060881694543,
+              "rms_abs": 1.2863535933424715,
+              "count": 23040,
+              "changed_values": 23040,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].b_t_t": {
+              "max_abs": 1.0452131576244081,
+              "rms_abs": 0.34806134971948455,
+              "count": 23040,
+              "changed_values": 23040,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].modeled_contribution_nm": {
+              "max_abs": 0.0017789934784394393,
+              "rms_abs": 0.0005458988436426717,
+              "count": 23040,
+              "changed_values": 23040,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].scaled_contribution_nm": {
+              "max_abs": 0.0017789934784394393,
+              "rms_abs": 0.0005458988436426717,
+              "count": 23040,
+              "changed_values": 23040,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].triangle_index": {
+              "max_abs": 20973.0,
+              "rms_abs": 9995.47304978053,
+              "count": 23040,
+              "changed_values": 23040,
+              "outside_roundoff_gate": 23040,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.scaled_torque_nm": {
+              "max_abs": 6.7845035145452925e-15,
+              "rms_abs": 2.618654447794357e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_inner_nm": {
+              "max_abs": 5.571064443099516e-15,
+              "rms_abs": 2.2594939476580105e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_nm": {
+              "max_abs": 6.7845035145452925e-15,
+              "rms_abs": 2.618654447794357e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_nodal_b_nm": {
+              "max_abs": 7.181755190543981e-15,
+              "rms_abs": 2.59542560003408e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_outer_nm": {
+              "max_abs": 7.868705687030797e-15,
+              "rms_abs": 3.2284190265280523e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_debug.modeled_torque_nm": {
+              "max_abs": 2.522938455373769e-16,
+              "rms_abs": 9.884776351070082e-17,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_debug.scaled_torque_nm": {
+              "max_abs": 2.522938455373769e-16,
+              "rms_abs": 9.884776351070082e-17,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_nm": {
+              "max_abs": 6.7845035145452925e-15,
+              "rms_abs": 2.618654447794357e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.airgap_contribution_nm": {
+              "max_abs": 6.800116025829084e-15,
+              "rms_abs": 2.5933389331274527e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.airgap_r_outer_mm": {
+              "max_abs": 3.552713678800501e-15,
+              "rms_abs": 1.1749496091904413e-15,
+              "count": 32,
+              "changed_values": 8,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.modeled_torque_nm": {
+              "max_abs": 6.800116025829084e-15,
+              "rms_abs": 2.5933389331274527e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.scaled_torque_nm": {
+              "max_abs": 6.800116025829084e-15,
+              "rms_abs": 2.5933389331274527e-15,
+              "count": 32,
+              "changed_values": 32,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.weight_max": {
+              "max_abs": 4.440892098500626e-16,
+              "rms_abs": 1.8619006149354548e-16,
+              "count": 32,
+              "changed_values": 14,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            }
+          },
+          "interpretation": "This is the complete changed-numeric path inventory outside the primary invariant subset, including differences below the generic roundoff gate. The exceeding-gate inventory above identifies the material source-angle sampling/allocation differences; neither list is a blanket equality claim."
+        },
+        "scope_note": "Includes 16 loaded and 16 no-load synthesized targets."
+      },
+      "drone": {
+        "source_validation_filename": "drone-physics-validation.json",
+        "source_validation_sha256": "4bd97a2de3108ef972af96a9f381bca4d174d6523f072aab89f14d3cfa610ef6",
+        "primary_pass": true,
+        "structural_failure_count": 0,
+        "primary_numeric_path_count": 455,
+        "primary_numeric_path_failures": 0,
+        "primary_changed_text_path_count": 0,
+        "work_counters": {
+          "baseline_native_reports": 96,
+          "candidate_native_reports": 76,
+          "synthesized_pairs": 20,
+          "full_frames": 48,
+          "full_field_element_records": 4962902
+        },
+        "synthesized_lane_counts": {
+          "loaded": 0,
+          "no_load": 20
+        },
+        "physical_winding_sides_compared": 480,
+        "selected_physics_observations": {
+          "returned_torque_waveform": {
+            "units": "Nm",
+            "scope": "All 48 returned loaded torque samples",
+            "maximum_observed_delta": {
+              "observable_path": "result.torque_waveform.torque_Nm",
+              "count": 48,
+              "changed_values": 0,
+              "max_abs": 0.0,
+              "rms_abs": 0.0,
+              "max_abs_over_global_peak": 0.0,
+              "max_baseline_magnitude": 0.058111537830214874,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "result.torque_waveform.torque_Nm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "returned_energy_fd_torque": {
+            "units": "Nm",
+            "scope": "Returned finite-difference energy/coenergy torque waveforms",
+            "maximum_observed_delta": {
+              "observable_path": "result.torque_waveform.torque_coenergy_fd_Nm",
+              "count": 48,
+              "changed_values": 0,
+              "max_abs": 0.0,
+              "rms_abs": 0.0,
+              "max_abs_over_global_peak": 0.0,
+              "max_baseline_magnitude": 0.0021608913509157594,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "result.torque_waveform.torque_coenergy_fd_Nm",
+              "result.torque_waveform.torque_energy_fd_Nm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_selected_torque": {
+            "units": "Nm",
+            "scope": "Selected weighted-stress torque of independently solved targets versus helper synthesis",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.torque_weighted_stress_nm",
+              "count": 20,
+              "changed_values": 20,
+              "max_abs": 8.979796073393942e-15,
+              "rms_abs": 4.220953973118089e-15,
+              "max_abs_over_global_peak": 1.813039330573598e-12,
+              "max_baseline_magnitude": 0.004952896455121561,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "pair.results.torque_weighted_stress_nm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "aggregate_loaded_energy_and_source_work": {
+            "units": "J",
+            "scope": "Loaded aggregate field/coenergy/potential/PM/current source-work arrays",
+            "maximum_observed_delta": {
+              "observable_path": "sweep.energy_coenergy_j",
+              "count": 48,
+              "changed_values": 0,
+              "max_abs": 0.0,
+              "rms_abs": 0.0,
+              "max_abs_over_global_peak": 0.0,
+              "max_baseline_magnitude": 0.3411452591673544,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "sweep.energy_coenergy_j",
+              "sweep.energy_current_source_work_j",
+              "sweep.energy_field_j",
+              "sweep.energy_pm_self_j",
+              "sweep.energy_pm_source_work_j",
+              "sweep.energy_potential_j",
+              "sweep.energy_potential_with_pm_self_j"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_energy_and_source_work": {
+            "units": "J",
+            "scope": "Native target energies and region/magnet detail versus helper synthesis",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.energy_functional.pm_source_work_j",
+              "count": 20,
+              "changed_values": 19,
+              "max_abs": 4.218847493575595e-15,
+              "rms_abs": 1.62658092955789e-15,
+              "max_abs_over_global_peak": 6.186874110754348e-15,
+              "max_baseline_magnitude": 0.6819029154386985,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.results.energy_functional.coenergy_by_region_j.airgap_j",
+              "pair.results.energy_functional.coenergy_by_region_j.magnet_j",
+              "pair.results.energy_functional.coenergy_by_region_j.rotor_core_j",
+              "pair.results.energy_functional.coenergy_by_region_j.slot_winding_j",
+              "pair.results.energy_functional.coenergy_by_region_j.stator_tooth_j",
+              "pair.results.energy_functional.coenergy_by_region_j.stator_yoke_j",
+              "pair.results.energy_functional.coenergy_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.angular_edge_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.angular_interior_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.radial_inner_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.radial_middle_j",
+              "pair.results.energy_functional.coenergy_magnet_detail_j.radial_outer_j",
+              "pair.results.energy_functional.current_source_work_j",
+              "pair.results.energy_functional.field_energy_by_region_j.airgap_j",
+              "pair.results.energy_functional.field_energy_by_region_j.magnet_j",
+              "pair.results.energy_functional.field_energy_by_region_j.rotor_core_j",
+              "pair.results.energy_functional.field_energy_by_region_j.slot_winding_j",
+              "pair.results.energy_functional.field_energy_by_region_j.stator_tooth_j",
+              "pair.results.energy_functional.field_energy_by_region_j.stator_yoke_j",
+              "pair.results.energy_functional.field_energy_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.angular_edge_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.angular_interior_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.radial_inner_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.radial_middle_j",
+              "pair.results.energy_functional.field_energy_magnet_detail_j.radial_outer_j",
+              "pair.results.energy_functional.pm_self_energy_j",
+              "pair.results.energy_functional.pm_source_work_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.angular_edge_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.angular_interior_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.radial_inner_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.radial_middle_j",
+              "pair.results.energy_functional.pm_source_work_magnet_detail_j.radial_outer_j",
+              "pair.results.energy_functional.potential_energy_j",
+              "pair.results.energy_functional.potential_energy_with_pm_self_j"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "loaded_phase_flux": {
+            "units": "Wb",
+            "scope": "Three complete loaded phase-flux arrays",
+            "maximum_observed_delta": {
+              "observable_path": "sweep.loaded_flux_linkage_a_wb",
+              "count": 48,
+              "changed_values": 0,
+              "max_abs": 0.0,
+              "rms_abs": 0.0,
+              "max_abs_over_global_peak": 0.0,
+              "max_baseline_magnitude": 0.0005193848023879741,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "sweep.loaded_flux_linkage_a_wb",
+              "sweep.loaded_flux_linkage_b_wb",
+              "sweep.loaded_flux_linkage_c_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "no_load_phase_flux": {
+            "units": "Wb",
+            "scope": "Three complete no-load phase-flux arrays",
+            "maximum_observed_delta": {
+              "observable_path": "sweep.no_load_flux_linkage_a_wb",
+              "count": 48,
+              "changed_values": 20,
+              "max_abs": 8.456776945386935e-18,
+              "rms_abs": 2.9400583961496066e-18,
+              "max_abs_over_global_peak": 1.6276830248828367e-14,
+              "max_baseline_magnitude": 0.0005195592026276533,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "sweep.no_load_flux_linkage_a_wb",
+              "sweep.no_load_flux_linkage_b_wb",
+              "sweep.no_load_flux_linkage_c_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_phase_flux": {
+            "units": "Wb",
+            "scope": "All three phase fluxes at each synthesized target",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.flux_linkage_a_wb",
+              "count": 20,
+              "changed_values": 20,
+              "max_abs": 8.456776945386935e-18,
+              "rms_abs": 4.5547188820658864e-18,
+              "max_abs_over_global_peak": 1.627684452765191e-14,
+              "max_baseline_magnitude": 0.0005195587468455659,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.results.flux_linkage_a_wb",
+              "pair.results.flux_linkage_b_wb",
+              "pair.results.flux_linkage_c_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_winding_side_flux": {
+            "units": "Wb",
+            "scope": "Per physical winding-side contributions keyed by explicit slot/layer",
+            "maximum_observed_delta": {
+              "observable_path": "pair.results.slot_flux_linkage_contributions[].contribution_wb",
+              "count": 480,
+              "changed_values": 480,
+              "max_abs": 1.3101905628129518e-17,
+              "rms_abs": 4.99909244203249e-18,
+              "max_abs_over_global_peak": 1.8582282830245733e-13,
+              "max_baseline_magnitude": 7.050751378514164e-05,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.results.slot_flux_linkage_contributions[].contribution_wb"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "returned_phase_back_emf": {
+            "units": "V",
+            "scope": "All returned phase back-EMF arrays",
+            "maximum_observed_delta": {
+              "observable_path": "result.back_emf_waveform.phase_a_V",
+              "count": 48,
+              "changed_values": 22,
+              "max_abs": 1.297850715786808e-13,
+              "rms_abs": 3.8665802560537636e-14,
+              "max_abs_over_global_peak": 1.2236923722514259e-13,
+              "max_baseline_magnitude": 1.0606021130939478,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "result.back_emf_waveform.phase_a_V",
+              "result.back_emf_waveform.phase_b_V",
+              "result.back_emf_waveform.phase_c_V"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "independent_target_nodal_Az": {
+            "units": "Wb/m",
+            "scope": "All nodal A_z values on independently solved target meshes",
+            "maximum_observed_delta": {
+              "observable_path": "pair.field_plot.az_nodal",
+              "count": 1037334,
+              "changed_values": 1029933,
+              "max_abs": 3.643786661289283e-15,
+              "rms_abs": 1.3310157237720468e-16,
+              "max_abs_over_global_peak": 1.2180900121538305e-12,
+              "max_baseline_magnitude": 0.0029913935956558156,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-12,
+              "maximum_absolute_floor": 1e-12
+            },
+            "covered_paths": [
+              "pair.field_plot.az_nodal"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "full_playback_B": {
+            "units": "T",
+            "scope": "Decoded loaded full playback |B|, Bx and By arrays for all 48 frames",
+            "maximum_observed_delta": {
+              "observable_path": "full_frame.field_line_frame.element_b_mag_t",
+              "count": 4962902,
+              "changed_values": 0,
+              "max_abs": 0.0,
+              "rms_abs": 0.0,
+              "max_abs_over_global_peak": 0.0,
+              "max_baseline_magnitude": 2.408148740636224,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "full_frame.field_line_frame.element_b_mag_t",
+              "full_frame.field_line_frame.element_bx_t",
+              "full_frame.field_line_frame.element_by_t"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "full_playback_nodes": {
+            "units": "mm",
+            "scope": "Decoded full playback node coordinates",
+            "maximum_observed_delta": {
+              "observable_path": "full_frame.field_line_frame.nodes_mm",
+              "count": 4979222,
+              "changed_values": 0,
+              "max_abs": 0.0,
+              "rms_abs": 0.0,
+              "max_abs_over_global_peak": 0.0,
+              "max_baseline_magnitude": 17.5,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "full_frame.field_line_frame.nodes_mm"
+            ],
+            "all_paths_within_fixed_gates": true
+          },
+          "magnetization_rotation_error": {
+            "units": "deg",
+            "scope": "Wrapped error of independent magnetization rotation",
+            "maximum_observed_delta": {
+              "observable_path": "pair.mesh.magnetization_rotation_error_deg",
+              "count": 583972,
+              "changed_values": 27122,
+              "max_abs": 2.842170943040401e-14,
+              "rms_abs": 6.1251261663681034e-15,
+              "max_abs_over_global_peak": null,
+              "max_baseline_magnitude": 0.0,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "covered_paths": [
+              "pair.mesh.magnetization_rotation_error_deg"
+            ],
+            "all_paths_within_fixed_gates": true
+          }
+        },
+        "dq_summary_observations": {
+          "apparent_L_q_H": {
+            "observable_path": "result.summary.dq_flux_linkage.apparent_L_q_H",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 4.573977915173222e-20,
+            "rms_abs": 4.573977915173222e-20,
+            "max_abs_over_global_peak": 1.0971574841469373e-14,
+            "max_baseline_magnitude": 4.168934707426787e-06,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "current_angle_deg": {
+            "observable_path": "result.summary.dq_flux_linkage.current_angle_deg",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 5.160444554314081e-14,
+            "rms_abs": 5.160444554314081e-14,
+            "max_abs_over_global_peak": 1.0813081368861707e-10,
+            "max_baseline_magnitude": 0.0004772408879835629,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "i_d_A": {
+            "observable_path": "result.summary.dq_flux_linkage.i_d_A",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 9.006684287271582e-15,
+            "rms_abs": 9.006684287271582e-15,
+            "max_abs_over_global_peak": 1.0813092718308677e-10,
+            "max_baseline_magnitude": 8.329424820358294e-05,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "i_q_A": {
+            "observable_path": "result.summary.dq_flux_linkage.i_q_A",
+            "count": 1,
+            "changed_values": 0,
+            "max_abs": 0.0,
+            "rms_abs": 0.0,
+            "max_abs_over_global_peak": 0.0,
+            "max_baseline_magnitude": 9.999999999653097,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "lambda_d_Wb": {
+            "observable_path": "result.summary.dq_flux_linkage.lambda_d_Wb",
+            "count": 1,
+            "changed_values": 0,
+            "max_abs": 0.0,
+            "rms_abs": 0.0,
+            "max_abs_over_global_peak": 0.0,
+            "max_baseline_magnitude": 0.0005080749881459736,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "lambda_pm_Wb": {
+            "observable_path": "result.summary.dq_flux_linkage.lambda_pm_Wb",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 5.421010862427522e-19,
+            "rms_abs": 5.421010862427522e-19,
+            "max_abs_over_global_peak": 1.0655627479807494e-15,
+            "max_baseline_magnitude": 0.0005087462819716985,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "lambda_q_Wb": {
+            "observable_path": "result.summary.dq_flux_linkage.lambda_q_Wb",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 4.607859233063394e-19,
+            "rms_abs": 4.607859233063394e-19,
+            "max_abs_over_global_peak": 1.1052845766604427e-14,
+            "max_baseline_magnitude": 4.168934707282165e-05,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "positions": {
+            "observable_path": "result.summary.dq_flux_linkage.positions",
+            "count": 1,
+            "changed_values": 0,
+            "max_abs": 0.0,
+            "rms_abs": 0.0,
+            "max_abs_over_global_peak": 0.0,
+            "max_baseline_magnitude": 48.0,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "torque_agreement_pct": {
+            "observable_path": "result.summary.dq_flux_linkage.torque_agreement_pct",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 1.4210854715202004e-14,
+            "rms_abs": 1.4210854715202004e-14,
+            "max_abs_over_global_peak": 1.4209820546664355e-16,
+            "max_baseline_magnitude": 100.00727784375779,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          },
+          "torque_dq_Nm": {
+            "observable_path": "result.summary.dq_flux_linkage.torque_dq_Nm",
+            "count": 1,
+            "changed_values": 1,
+            "max_abs": 6.938893903907228e-18,
+            "rms_abs": 6.938893903907228e-18,
+            "max_abs_over_global_peak": 1.3006871077051528e-16,
+            "max_baseline_magnitude": 0.05334791021454621,
+            "outside_roundoff_gate": 0,
+            "absolute_floor": 1e-12,
+            "relative_tolerance": 1e-09,
+            "minimum_absolute_floor": 1e-12,
+            "maximum_absolute_floor": 1e-12
+          }
+        },
+        "rhs_eligibility": {
+          "all_production_eligibility_gates_pass": true,
+          "nonzero_rhs_pairs": 0,
+          "zero_rhs_pairs": 20,
+          "maximum_observed_abs_delta_A_per_m2": 0.0,
+          "maximum_error_over_global_scale": null,
+          "maximum_fraction_of_allowed_gate": null,
+          "nonzero_allowed_abs_bound_range_A_per_m2": null,
+          "all_zero_rhs_pairs_observed_exact_zero": true
+        },
+        "raw_native_diagnostic_observations_not_parity": {
+          "numeric_paths_exceeding_generic_gate": {
+            "torque_arkkio_debug.per_quadrant.area_m2_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.area_m2_per_quadrant",
+              "count": 80,
+              "changed_values": 80,
+              "max_abs": 2.5864114159586185e-08,
+              "rms_abs": 1.1815578635711617e-08,
+              "max_abs_over_global_peak": 0.0055477475448499226,
+              "max_baseline_magnitude": 4.6620928494838096e-06,
+              "outside_roundoff_gate": 72,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-16,
+              "maximum_absolute_floor": 1e-16
+            },
+            "torque_arkkio_debug.per_quadrant.max_abs_diff_count": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.max_abs_diff_count",
+              "count": 20,
+              "changed_values": 13,
+              "max_abs": 18.0,
+              "rms_abs": 10.16857905510893,
+              "max_abs_over_global_peak": 0.9473684210526315,
+              "max_baseline_magnitude": 19.0,
+              "outside_roundoff_gate": 13,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_area": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.max_rel_diff_area",
+              "count": 20,
+              "changed_values": 20,
+              "max_abs": 0.0065737865730157875,
+              "rms_abs": 0.004137109145024094,
+              "max_abs_over_global_peak": 0.7820146304609844,
+              "max_baseline_magnitude": 0.00840621941962985,
+              "outside_roundoff_gate": 20,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_partial_integrand": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.max_rel_diff_partial_integrand",
+              "count": 20,
+              "changed_values": 20,
+              "max_abs": 82694.7241283011,
+              "rms_abs": 19569.613856454067,
+              "max_abs_over_global_peak": 3.886172512441257,
+              "max_baseline_magnitude": 21279.22110085459,
+              "outside_roundoff_gate": 20,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.partial_integrand_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.partial_integrand_per_quadrant",
+              "count": 80,
+              "changed_values": 80,
+              "max_abs": 3.1018579232079263e-10,
+              "rms_abs": 2.1588555865783048e-10,
+              "max_abs_over_global_peak": 0.8385819349352238,
+              "max_baseline_magnitude": 3.698932440570079e-10,
+              "outside_roundoff_gate": 60,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_arkkio_debug.per_quadrant.triangle_count_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_arkkio_debug.per_quadrant.triangle_count_per_quadrant",
+              "count": 80,
+              "changed_values": 56,
+              "max_abs": 10.0,
+              "rms_abs": 5.854485459884583,
+              "max_abs_over_global_peak": 0.00501002004008016,
+              "max_baseline_magnitude": 1996.0,
+              "outside_roundoff_gate": 56,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.per_quadrant.max_rel_diff_partial_torque": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.per_quadrant.max_rel_diff_partial_torque",
+              "count": 20,
+              "changed_values": 20,
+              "max_abs": 41625.19026164218,
+              "rms_abs": 11759.109431564264,
+              "max_abs_over_global_peak": 2.2242255630830763,
+              "max_baseline_magnitude": 18714.464464631033,
+              "outside_roundoff_gate": 20,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.per_quadrant.partial_torque_nm_per_quadrant": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.per_quadrant.partial_torque_nm_per_quadrant",
+              "count": 80,
+              "changed_values": 80,
+              "max_abs": 0.007072316765434858,
+              "rms_abs": 0.004478416313923545,
+              "max_abs_over_global_peak": 0.8818555931677771,
+              "max_baseline_magnitude": 0.008019812790470466,
+              "outside_roundoff_gate": 80,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].b_r_t": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].b_r_t",
+              "count": 14400,
+              "changed_values": 14400,
+              "max_abs": 2.0273310075586766,
+              "rms_abs": 1.4500852026867972,
+              "max_abs_over_global_peak": 1.965606533298985,
+              "max_baseline_magnitude": 1.0314022533065639,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].b_t_t": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].b_t_t",
+              "count": 14400,
+              "changed_values": 14400,
+              "max_abs": 1.1588840616899783,
+              "rms_abs": 0.4146770056426449,
+              "max_abs_over_global_peak": 1.5778527019415378,
+              "max_baseline_magnitude": 0.7344691049196029,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].modeled_contribution_nm": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].modeled_contribution_nm",
+              "count": 14400,
+              "changed_values": 14400,
+              "max_abs": 0.005260935971091469,
+              "rms_abs": 0.0011241352558353946,
+              "max_abs_over_global_peak": 1.2847814874862775,
+              "max_baseline_magnitude": 0.004094809913072988,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].scaled_contribution_nm": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].scaled_contribution_nm",
+              "count": 14400,
+              "changed_values": 14400,
+              "max_abs": 0.005260935971091469,
+              "rms_abs": 0.0011241352558353946,
+              "max_abs_over_global_peak": 1.2847814874862775,
+              "max_baseline_magnitude": 0.004094809913072988,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            },
+            "torque_contour_debug.samples[].triangle_index": {
+              "observable_path": "pair.all_native_results.torque_contour_debug.samples[].triangle_index",
+              "count": 14400,
+              "changed_values": 14400,
+              "max_abs": 14033.0,
+              "rms_abs": 5586.803266851268,
+              "max_abs_over_global_peak": 0.22674465575465752,
+              "max_baseline_magnitude": 61889.0,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09,
+              "minimum_absolute_floor": 1e-10,
+              "maximum_absolute_floor": 1e-10
+            }
+          },
+          "changed_diagnostic_strings": {
+            "pair.all_native_results.torque_contour_selection_reason": 1
+          },
+          "diagnostic_structural_failure_count": 0,
+          "numeric_top_level_categories_outside_primary_invariant_subset": [
+            "slot_excitation_contributions[]",
+            "slot_flux_linkage_contributions[]",
+            "source_current_angle_deg",
+            "torque_area_mst_nm",
+            "torque_arkkio_debug",
+            "torque_arkkio_nm",
+            "torque_contour_az_nm",
+            "torque_contour_az_nodal_b_split_rel",
+            "torque_contour_debug",
+            "torque_contour_inner_nm",
+            "torque_contour_nm",
+            "torque_contour_nodal_b_nm",
+            "torque_contour_outer_nm",
+            "torque_debug",
+            "torque_nm",
+            "torque_weighted_stress_debug"
+          ],
+          "all_changed_numeric_paths_outside_primary_invariant_subset": {
+            "slot_excitation_contributions[].slot_area_m2": {
+              "max_abs": 4.404571325722362e-20,
+              "rms_abs": 1.858460549303361e-20,
+              "count": 240,
+              "changed_values": 197,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].az_avg_wb_per_m": {
+              "max_abs": 3.6396666930338384e-16,
+              "rms_abs": 1.3886338810577204e-16,
+              "count": 480,
+              "changed_values": 480,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].az_effective_wb_per_m": {
+              "max_abs": 3.6396666930338384e-16,
+              "rms_abs": 1.3886338810577204e-16,
+              "count": 480,
+              "changed_values": 480,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].contribution_wb": {
+              "max_abs": 1.3101905628129518e-17,
+              "rms_abs": 4.99909244203249e-18,
+              "count": 480,
+              "changed_values": 480,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "slot_flux_linkage_contributions[].slot_area_m2": {
+              "max_abs": 2.371692252312041e-20,
+              "rms_abs": 9.085390845755176e-21,
+              "count": 480,
+              "changed_values": 451,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09
+            },
+            "source_current_angle_deg": {
+              "max_abs": 2.842170943040401e-14,
+              "rms_abs": 1.556721137788958e-14,
+              "count": 20,
+              "changed_values": 6,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_area_mst_nm": {
+              "max_abs": 2.536762033072959e-16,
+              "rms_abs": 1.1852287782003833e-16,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.modeled_torque_nm": {
+              "max_abs": 9.465518646667448e-15,
+              "rms_abs": 4.475744386580904e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.area_m2_per_quadrant": {
+              "max_abs": 2.5864114159586185e-08,
+              "rms_abs": 1.1815578635711617e-08,
+              "count": 80,
+              "changed_values": 80,
+              "outside_roundoff_gate": 72,
+              "absolute_floor": 1e-16,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.max_abs_diff_count": {
+              "max_abs": 18.0,
+              "rms_abs": 10.16857905510893,
+              "count": 20,
+              "changed_values": 13,
+              "outside_roundoff_gate": 13,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_area": {
+              "max_abs": 0.0065737865730157875,
+              "rms_abs": 0.004137109145024094,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 20,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.max_rel_diff_partial_integrand": {
+              "max_abs": 82694.7241283011,
+              "rms_abs": 19569.613856454067,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 20,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.partial_integrand_per_quadrant": {
+              "max_abs": 3.1018579232079263e-10,
+              "rms_abs": 2.1588555865783048e-10,
+              "count": 80,
+              "changed_values": 80,
+              "outside_roundoff_gate": 60,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.per_quadrant.triangle_count_per_quadrant": {
+              "max_abs": 10.0,
+              "rms_abs": 5.854485459884583,
+              "count": 80,
+              "changed_values": 56,
+              "outside_roundoff_gate": 56,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_debug.scaled_torque_nm": {
+              "max_abs": 9.465518646667448e-15,
+              "rms_abs": 4.475744386580904e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_arkkio_nm": {
+              "max_abs": 9.465518646667448e-15,
+              "rms_abs": 4.475744386580904e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_az_nm": {
+              "max_abs": 9.396129707628376e-15,
+              "rms_abs": 4.189987491641306e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_az_nodal_b_split_rel": {
+              "max_abs": 1.7588740793689217e-12,
+              "rms_abs": 5.700690295579741e-13,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-12,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.modeled_torque_nm": {
+              "max_abs": 9.396129707628376e-15,
+              "rms_abs": 4.189987491641306e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.per_quadrant.max_rel_diff_partial_torque": {
+              "max_abs": 41625.19026164218,
+              "rms_abs": 11759.109431564264,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 20,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.per_quadrant.partial_torque_nm_per_quadrant": {
+              "max_abs": 0.007072316765434858,
+              "rms_abs": 0.004478416313923545,
+              "count": 80,
+              "changed_values": 80,
+              "outside_roundoff_gate": 80,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].b_r_t": {
+              "max_abs": 2.0273310075586766,
+              "rms_abs": 1.4500852026867972,
+              "count": 14400,
+              "changed_values": 14400,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].b_t_t": {
+              "max_abs": 1.1588840616899783,
+              "rms_abs": 0.4146770056426449,
+              "count": 14400,
+              "changed_values": 14400,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].modeled_contribution_nm": {
+              "max_abs": 0.005260935971091469,
+              "rms_abs": 0.0011241352558353946,
+              "count": 14400,
+              "changed_values": 14400,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].scaled_contribution_nm": {
+              "max_abs": 0.005260935971091469,
+              "rms_abs": 0.0011241352558353946,
+              "count": 14400,
+              "changed_values": 14400,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.samples[].triangle_index": {
+              "max_abs": 14033.0,
+              "rms_abs": 5586.803266851268,
+              "count": 14400,
+              "changed_values": 14400,
+              "outside_roundoff_gate": 14400,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_debug.scaled_torque_nm": {
+              "max_abs": 9.396129707628376e-15,
+              "rms_abs": 4.189987491641306e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_inner_nm": {
+              "max_abs": 7.318798345146149e-15,
+              "rms_abs": 3.684692313257868e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_nm": {
+              "max_abs": 9.396129707628376e-15,
+              "rms_abs": 4.189987491641306e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_nodal_b_nm": {
+              "max_abs": 9.824606406194647e-15,
+              "rms_abs": 4.35387028167228e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_contour_outer_nm": {
+              "max_abs": 1.2932851404384715e-14,
+              "rms_abs": 6.671759285964886e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_debug.modeled_torque_nm": {
+              "max_abs": 2.536762033072959e-16,
+              "rms_abs": 1.1852287782003833e-16,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_debug.scaled_torque_nm": {
+              "max_abs": 2.536762033072959e-16,
+              "rms_abs": 1.1852287782003833e-16,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_nm": {
+              "max_abs": 9.396129707628376e-15,
+              "rms_abs": 4.189987491641306e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.airgap_contribution_nm": {
+              "max_abs": 8.979796073393942e-15,
+              "rms_abs": 4.220953973118089e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.airgap_r_outer_mm": {
+              "max_abs": 3.552713678800501e-15,
+              "rms_abs": 1.538370149106851e-15,
+              "count": 20,
+              "changed_values": 9,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.modeled_torque_nm": {
+              "max_abs": 8.979796073393942e-15,
+              "rms_abs": 4.220953973118089e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.scaled_torque_nm": {
+              "max_abs": 8.979796073393942e-15,
+              "rms_abs": 4.220953973118089e-15,
+              "count": 20,
+              "changed_values": 20,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            },
+            "torque_weighted_stress_debug.weight_max": {
+              "max_abs": 4.440892098500626e-16,
+              "rms_abs": 1.6467268631127714e-16,
+              "count": 20,
+              "changed_values": 8,
+              "outside_roundoff_gate": 0,
+              "absolute_floor": 1e-10,
+              "relative_tolerance": 1e-09
+            }
+          },
+          "interpretation": "This is the complete changed-numeric path inventory outside the primary invariant subset, including differences below the generic roundoff gate. The exceeding-gate inventory above identifies the material source-angle sampling/allocation differences; neither list is a blanket equality claim."
+        },
+        "scope_note": "Drone reuses no-load targets only; loaded torque and playback B equality does not demonstrate loaded drone reuse."
+      }
+    },
+    "totals": {
+      "baseline_native_reports": 192,
+      "candidate_native_reports": 140,
+      "synthesized_pairs": 52,
+      "full_frames": 96,
+      "full_field_element_records": 10917264,
+      "physical_winding_sides_compared": 1056
+    }
+  },
+  "single_layer_control": {
+    "status": "PASS",
+    "exact_equality_required": true,
+    "result": {
+      "numeric_values_compared": 575,
+      "max_absolute_difference": 0.0,
+      "mismatch_count": 0,
+      "mismatch_examples": [],
+      "excluded_fields": [
+        {
+          "path": "solve_metadata.postprocess_source_cache_dir",
+          "reason": "run-specific cache path",
+          "count": 1
+        },
+        {
+          "path": "solve_metadata.postprocess_time_s",
+          "reason": "elapsed-time bookkeeping",
+          "count": 1
+        },
+        {
+          "path": "solve_metadata.solve_cache_dir",
+          "reason": "fresh per-run cache path",
+          "count": 1
+        },
+        {
+          "path": "solve_metadata.solve_time_s",
+          "reason": "elapsed-time bookkeeping",
+          "count": 1
+        },
+        {
+          "path": "solve_metadata.solver_cpu_time_s",
+          "reason": "measured runtime depends on scheduling",
+          "count": 1
+        },
+        {
+          "path": "solve_metadata.timestamp",
+          "reason": "run-specific timestamp",
+          "count": 1
+        },
+        {
+          "path": "summary.solve_time_s",
+          "reason": "elapsed-time bookkeeping",
+          "count": 1
+        }
+      ]
+    },
+    "cached_numerical_aggregates": {
+      "numeric_values_compared": 146122,
+      "max_absolute_difference": 0.0,
+      "mismatch_count": 0,
+      "mismatch_examples": [],
+      "excluded_fields": [
+        {
+          "path": "sweep.total_time_ms",
+          "reason": "elapsed-time bookkeeping",
+          "count": 1
+        }
+      ]
+    },
+    "mesh_files_compared": 60,
+    "mesh_byte_differences": [],
+    "full_field_frames_compared": 48,
+    "decoded_frame_differences": [],
+    "native_reports_compared": 60,
+    "native_report_differences": [],
+    "native_report_exclusions": [
+      {
+        "path": "openem_provenance.fixture_path",
+        "reason": "fresh per-run native input path; fixture hash and size remain compared",
+        "count_across_both_runs": 120
+      },
+      {
+        "path": "openem_provenance.generated_at_unix_sec",
+        "reason": "run-specific generation timestamp",
+        "count_across_both_runs": 120
+      },
+      {
+        "path": "openem_provenance.generated_at_utc",
+        "reason": "run-specific generation timestamp",
+        "count_across_both_runs": 120
+      },
+      {
+        "path": "solve_info.assembly_time_ms",
+        "reason": "elapsed-time bookkeeping",
+        "count_across_both_runs": 120
+      },
+      {
+        "path": "solve_info.solve_time_ms",
+        "reason": "elapsed-time bookkeeping",
+        "count_across_both_runs": 120
+      },
+      {
+        "path": "solve_info.total_time_ms",
+        "reason": "elapsed-time bookkeeping",
+        "count_across_both_runs": 120
+      }
+    ],
+    "native_az_values_compared": 2746854,
+    "native_az_difference_files": [],
+    "wall_s": [
+      48.800111200000174,
+      50.27990320000026
+    ],
+    "timing_interpretation": "One run each; functional control, not an improvement claim"
+  },
+  "validation": {
+    "python_passed": 2013,
+    "python_skipped": 3,
+    "new_python_cases": 85,
+    "rust_passed": 269,
+    "source_provenance_tests": "Two passed separately without the external-binary override",
+    "implementation_snapshot_publication": "PASS, 2804 files; final report snapshot checked separately",
+    "ruff": "PASS"
+  },
+  "harness_sha256": {
+    "bench.py": "efa18970dbe9a87fdce0b25bc0b6a19cdc64cec261a4e53c6d4433ea16840ef7",
+    "run_remaining.py": "26d0d282eee7facfdcdba05d385e26db26724d6a4c4b6bc56e78388933fe0a14",
+    "validate_physics.py": "06eea71752eaba8856bced1305b0e52a8d1d71b5d71a25258d54e951d08d4358",
+    "compare_control.py": "79fd096e37d002dbf4e5e93ecf143506799725d3ecd66563b214842c6027733c"
+  },
+  "limits": [
+    "Full A-D/F/E independent-reference and two-platform qualification not performed by this feature experiment",
+    "Ideal six-step reuse remains disabled; unsupported/ambiguous coefficients or current patterns retain native fallback",
+    "Raw fixed-angle contour/quadrant diagnostics in reused reports retain the source frame; selected torque and consumed physical fields are independently checked",
+    "The experimental steel classification cache is not included"
+  ]
+}

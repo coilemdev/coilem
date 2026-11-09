@@ -14022,6 +14022,16 @@
       "path": "tests/test_two_layer_solution_reuse.py",
       "bytes": 13716,
       "sha256": "d0ab73da5ca5f777743a052a78bcd7182fedffda1e1c148852f6aa4b7711f663"
+    },
+    {
+      "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.md",
+      "bytes": 5261,
+      "sha256": "129b1f7eeaa19f969fb0aa8a38af137091f6abd23b5392a2f5d24627be40927b"
+    },
+    {
+      "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.json",
+      "bytes": 134875,
+      "sha256": "56a840554cc5418e98091f799ccebbd28e65d919283fa82bc74e987d4a52ccaf"
     }
   ],
   "public_patches": [
@@ -35154,6 +35164,18 @@
     {
       "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
       "path": "tests/test_two_layer_solution_reuse.py",
+      "source_sha256": null,
+      "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
+    },
+    {
+      "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+      "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.md",
+      "source_sha256": null,
+      "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
+    },
+    {
+      "base_commit": "8b6b394f8a5b3408d07c1ff00c7c32f012fd0373",
+      "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.json",
       "source_sha256": null,
       "reason": "Add explicit native physical-layer/turn-fraction evidence and validate layer-aware congruent report relabeling; retain the existing per-element excitation eligibility gate and real-solve fallback."
     }
