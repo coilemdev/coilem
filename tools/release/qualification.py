@@ -50,6 +50,20 @@ def _data(root, name):
 def _review_errors(root, bundle_path, reference, suite, suite_sha):
     if reference.get("validation_status") != "REVIEWED_FOR_REGISTERED_PARITY":
         return ["registered reference bundle still requires review"]
+    if reference.get("schema") == "coilem.combined_reference_bundle/v1":
+        # Use this tool's reviewed loader against data at root; never import
+        # executable Python from the candidate being checked.
+        from backend.benchmark_suite import references
+
+        original_root = references.DATA_ROOT
+        try:
+            references.DATA_ROOT = root
+            references.load_bundle(root / bundle_path, suite)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            return [f"combined reference review is invalid: {exc}"]
+        finally:
+            references.DATA_ROOT = original_root
+        return []
     entry = reference.get("review") or {}
     path = _file(root / bundle_path, entry["file"])
     if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
@@ -79,7 +93,7 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
     return []
 
 
-def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None = None) -> list[str]:
+def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None = None) -> list[str]:
     errors: list[str] = []
     try:
         primary = _data(root, "benchmarks/records/windows-x86_64.json")
@@ -120,10 +134,13 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
         reference = json.loads(bundle.read_text())
         # Match load_bundle() and build_record(): this identifies both the
         # manifest bytes and its record index, rather than the manifest alone.
-        bundle_sha = hashlib.sha256(json.dumps({
+        binding = {
             "manifest": hashlib.sha256(bundle.read_bytes()).hexdigest(),
             "records": reference["records"],
-        }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+        }
+        if reference.get("schema") == "coilem.combined_reference_bundle/v1":
+            binding["components"] = {entry["id"]: entry["reference_bundle_sha256"] for entry in reference["components"]}
+        bundle_sha = hashlib.sha256(json.dumps(binding, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
         if run["reference_mode"] != "FROZEN_REFERENCE" or run["selection"]["bundle_sha256"] != bundle_sha:
             errors.append("qualification report does not use the registered frozen reference bundle")
         planned_unsupported = {"ornl_prius_2004_ipm"}
@@ -138,7 +155,11 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
             errors.append("registered frozen bundle is missing supported reference records")
         for cid in required & set(reference["records"]):
             entry = reference["records"][cid]
-            if hashlib.sha256(_file(root / bundle_path, entry["file"]).read_bytes()).hexdigest() != entry["sha256"]:
+            record_bundle = bundle_path
+            if reference.get("schema") == "coilem.combined_reference_bundle/v1":
+                record_bundle = next(component["reference_bundle"] for component in reference["components"]
+                                     if component["id"] == entry["component"])
+            if hashlib.sha256(_file(root / record_bundle, entry["file"]).read_bytes()).hexdigest() != entry["sha256"]:
                 errors.append(f"registered reference record hash mismatch: {cid}")
         for key in ("windows-x86_64", "macos-arm64"):
             record = json.loads((root / "benchmarks/records" / f"{key}.json").read_text())
@@ -199,7 +220,7 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", help="exact commit measured before evidence publication")
-    parser.add_argument("--protocol", default="1.9.0")
+    parser.add_argument("--protocol", default="1.10.0")
     args = parser.parse_args(argv)
     errors = check(protocol=args.protocol, candidate=args.candidate)
     print(json.dumps({"status": "BLOCKED" if errors else "PASS", "errors": errors}, indent=2))

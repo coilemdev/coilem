@@ -85,13 +85,17 @@ def regrade(summary, *, suite=SPEC, bundle=DEFAULT_BUNDLE):
 def historical_basis(record, *, suite=None, bundle=None):
     """Find the exact registered bytes the historical record names; never repin it."""
     if suite is None:
-        suite = next((path for path in sorted((DATA_ROOT / "benchmarks").glob("abcd-v*/benchmark_spec.json"))
+        suite = next((path for path in sorted((DATA_ROOT / "benchmarks").glob("*-v*/benchmark_spec.json"))
                       if sha(path) == record["suite_sha256"]), None)
     if suite is None or sha(suite) != record["suite_sha256"]:
         raise ValueError("The historical record's registered suite is unavailable or changed")
     if bundle is None:
         for path in sorted((DATA_ROOT / "benchmarks").rglob("manifest.json")):
             manifest = read(path)
+            if manifest.get("schema") == "coilem.combined_reference_bundle/v1" and manifest.get("suite_sha256") == sha(suite):
+                if load_bundle(path.parent, load_suite(suite))[2] == record["reference_bundle_sha256"]:
+                    bundle = path.parent
+                    break
             if (manifest.get("schema") == "coilem.frozen_reference_bundle/v1"
                     and canonical({"manifest": sha(path), "records": manifest["records"]}) == record["reference_bundle_sha256"]):
                 bundle = path.parent

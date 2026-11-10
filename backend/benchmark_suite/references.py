@@ -13,6 +13,10 @@ def load_suite(path):
         raise ValueError("Unsupported suite protocol")
     if spec["convention"] != CONVENTION:
         raise ValueError("Suite coordinate convention mismatch")
+    if spec["protocol_version"] == "1.10.0":
+        from backend.benchmark_suite.composition import components
+
+        components(spec, DATA_ROOT)
     for case in spec["cases"]:
         # A Phase E case is graded against its own registered absolute floor (protocol 1.7.0).
         floor = case.get("cogging_floor_Nm")
@@ -165,6 +169,10 @@ def _reviewed_suite(spec):
 
 def load_bundle(directory, spec):
     manifest = read(directory / "manifest.json")
+    if manifest.get("schema") == "coilem.combined_reference_bundle/v1":
+        from backend.benchmark_suite.composition import load
+
+        return load(directory, spec, DATA_ROOT, load_bundle, require_reviewed_bundle)
     # A new validation frame can reuse unchanged physical fields only through
     # an explicit, hash-bound bridge. This never rewrites a measured record.
     bridge = None
@@ -215,12 +223,21 @@ def require_reviewed_bundle(directory, manifest, spec):
     """An accepted reference status must bind the actual scoped review receipt."""
     if manifest.get("validation_status") != "REVIEWED_FOR_REGISTERED_PARITY":
         raise ValueError("Reference bundle still requires review")
+    if manifest.get("schema") == "coilem.combined_reference_bundle/v1":
+        from backend.benchmark_suite.composition import load
+
+        load(directory, spec, DATA_ROOT, load_bundle, require_reviewed_bundle)
+        return checked_json(directory, manifest["review"]["file"], manifest["review"]["sha256"])
     entry = manifest.get("review") or {}
     review = checked_json(directory, entry["file"], entry["sha256"])
     # A solve-option bridge (protocol 1.9.0) reuses the review of the suite it was measured for.
     reviewed = _reviewed_suite(spec)
     if review.get("schema") == "coilem.cogging_reference_review/v1":
         return _require_cogging_review(directory, manifest, reviewed, review)
+    if review.get("schema") == "coilem.ef_component_reference_review/v1":
+        from backend.benchmark_suite.ef_review import verify
+
+        return verify(directory, manifest, reviewed, review, DATA_ROOT)
     required = {case["id"] for case in reviewed["cases"]} - {"ornl_prius_2004_ipm"}
     registered = DATA_ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
     if (review.get("schema") != "coilem.protocol16_reference_review/v1"

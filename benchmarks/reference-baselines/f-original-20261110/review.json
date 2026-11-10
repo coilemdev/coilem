@@ -1,0 +1,165 @@
+{
+  "schema": "coilem.ef_component_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "suite": "benchmarks/af-v1.10/components/f-original.json",
+  "suite_sha256": "03e7a4cd332badac6573598eba6331310ca63e09c67ad5526cb328bb0b02d36b",
+  "reference_commit": "7d9445c7f328fabb8aff13141b105769f1c1f644",
+  "field_ledger": "benchmarks/femm-ef-20261110/field-hashes.json",
+  "evidence_files": {
+    "benchmarks/femm-ef-20261110/femm-results.json": "c56e909e588d4a00b04b5412c0326ce310d1d96f834906aff18149c66b2080f2",
+    "benchmarks/femm-ef-20261110/field-hashes.json": "3fb15a2153ae4d116bd0a6464aa908582591cc1a534b2dcadec86c127df908d0",
+    "benchmarks/femm-ef-20261110/assembly-comparison.json": "d98f1b60e44f40e70ba29c9b7bc1a74174e6ff48159fc2405ed3bbfa32a862b7"
+  },
+  "cases": {
+    "spm_outer_14p12s_drone__baseline": {
+      "record_sha256": "edf8fe142fa34fd0db054bf6fe7428ce76725d6fc8cb639f6d7df44828b6a683",
+      "alias": "f00",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.041574849454765556,
+          0.039117012074045325
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.05307865934386258,
+        "back_emf_fundamental_V": 0.7882912058990421
+      }
+    },
+    "spm_outer_14p12s_drone__high_current": {
+      "record_sha256": "0356c0d1c9de572e1683b441fcda279fb202d28fae339a8da37abe49fb772d50",
+      "alias": "f01",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.041574849454765556,
+          0.039117012074045325
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.07960079325460036,
+        "back_emf_fundamental_V": 0.7882912058990421
+      }
+    },
+    "spm_outer_14p12s_drone__tight_airgap": {
+      "record_sha256": "786260429d3e41be7b1c76810a6b8a539c9283161054b8550c7ed1b24e491760",
+      "alias": "f02",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.023987172093923585,
+          0.0036638746924621524
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.05637612234033428,
+        "back_emf_fundamental_V": 0.8342380762254605
+      }
+    },
+    "spm_outer_14p12s_drone__angle30": {
+      "record_sha256": "d14b43fcef4c881a70004e552ad2dfe1a2484d55603595a9b5ad34117195b469",
+      "alias": "f03",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.041574849454765556,
+          0.039117012074045325
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.04648858772266067,
+        "back_emf_fundamental_V": 0.7882912058990421
+      }
+    },
+    "spm_outer_14p12s_drone_noload__baseline": {
+      "record_sha256": "9db176b3bef72f21bbf16126c6478c572e02df8fafdd3dbc524dc7a86b9e7590",
+      "alias": "f04",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.041574849454765556,
+          0.039117012074045325
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "NOT_APPLICABLE_NOLOAD_CASE",
+        "mean_torque_Nm": -0.00022682852609321098,
+        "back_emf_fundamental_V": 0.7882912058990421
+      }
+    },
+    "spm_outer_12p9s_micro__baseline": {
+      "record_sha256": "433849dbc71a71b7e5224f2172a5426c8ba0c6918e95b00ed6424dfeb1efca86",
+      "alias": "f05",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.05051411955164378,
+          0.23193770742120362
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.015194115169786882,
+        "back_emf_fundamental_V": 0.45124943178638577
+      }
+    },
+    "spm_outer_12p9s_micro_noload__baseline": {
+      "record_sha256": "d0ad5fc3d415e85afd1a4cd31acd6949a09528048f8792ac6d9a4b1eb1b87a95",
+      "alias": "f06",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.05051411955164378,
+          0.23193770742120362
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "NOT_APPLICABLE_NOLOAD_CASE",
+        "mean_torque_Nm": -9.387862926818769e-05,
+        "back_emf_fundamental_V": 0.45124943178638577
+      }
+    },
+    "spm_outer_10p12s_single_layer__baseline": {
+      "record_sha256": "77511d257a9f94f53dd42fddced23caed5fde8133d6b156a01bb2bb9562a4167",
+      "alias": "f07",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.014212146545069837,
+          0.03314810034964142
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.5691339279870605,
+        "back_emf_fundamental_V": 5.628226017572277
+      }
+    },
+    "spm_outer_28p24s_multirotor__baseline": {
+      "record_sha256": "a4533a5a85c7e2d08db0a807b60925f0c9834c666c5722fc1ef4d56abd3b7a8d",
+      "alias": "f08",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.06335583507109396,
+          0.08139221117997746
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 0.32472868720905196,
+        "back_emf_fundamental_V": 4.795946102163535
+      }
+    }
+  },
+  "scope": "Frozen reference fields for registered software parity only; native platform qualification is separate",
+  "source_cohort": "original",
+  "source_policy": {
+    "file": "benchmarks/af-v1.10/phase-f-source-policy.json",
+    "sha256": "b21ec354056e98e53eeeb3faa611f824c05f4d9390892e0e405c8e88aa80044b"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "coilem.combined_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "suite_sha256": "14f80962ecb09ef4c5df569d0e5c89158dc7b2516cc9a8e47df34a57f501bcc4",
+  "components": {
+    "abcd": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "7e362e9cf2d031de149781f9b6e9066ed8bbc4cee19872d72e8418880d802661"
+    },
+    "e-normal": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "247f9bbbd0706a589054aa191b4f005e63e7e62914cf673cd17ed42f4a8c3d10"
+    },
+    "e-refined": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "3d1f23f5bccc0fa50a8ece7d8316393e9525dae32b3a9c3b979fb5e6d382316e"
+    },
+    "f-original": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "0a44fb474d76d31db6b36e6975c8840d0b5b9ea56a5ad8048f1ef960f4f37021"
+    },
+    "f-hub": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "f759b3985cb4b4e1ae7feb643adc5e25a7e6d96c0f79fc2138d4b87bb09de84d"
+    }
+  },
+  "scope": "Reference acceptance only; complete candidate/platform records require new measured runs"
+}

@@ -294,6 +294,7 @@ def execute(args):
                 "selection": selection,
                 "reference_mode": "NONE_SMOKE" if args.smoke else "NATIVE_ONLY" if args.no_reference else "FROZEN_REFERENCE",
                 "reference_commit": reference_manifest.get("reference_commit"),
+                "reference_commits": reference_manifest.get("reference_commits", []),
                 "smoke": args.smoke,
                 "jobs": jobs,
                 "status": "RUNNING",
@@ -391,7 +392,7 @@ def main():
     parser.add_argument("--case", action="append", help="Select a registered case id; repeat for multiple cases")
     parser.add_argument(
         "--suite", type=Path, default=SPEC,
-        help="Select a registered suite; default is A/B/C/D 1.4 with cap-200 BLDC requests",
+        help="Select a registered suite; default is the combined A-F protocol 1.10.0",
     )
     parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--out-dir", type=Path)

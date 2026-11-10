@@ -1,5 +1,10 @@
 # Benchmark protocol 1.7.0: Phase E, cogging torque (proposed)
 
+This is the historical normal-mesh proposal. The default is now the
+[combined A-F protocol 1.10.0](../af-v1.10/README.md), which registers nine of
+these requests and the three reviewed very-fine distributed requests. The
+proposal and original failures below remain available for historical replay.
+
 **Status: proposed, not registered.** Phase E's requests and gates are fixed
 here before any comparison solve, as
 [public issue 185](https://github.com/coilemdev/coilem/issues/185) asks. It

@@ -1,0 +1,80 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v1",
+  "protocol_version": "1.8.0",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "reference_commit": "7d9445c7f328fabb8aff13141b105769f1c1f644",
+  "suite_sha256": "03e7a4cd332badac6573598eba6331310ca63e09c67ad5526cb328bb0b02d36b",
+  "validation_status": "REVIEWED_FOR_REGISTERED_PARITY",
+  "records": {
+    "spm_outer_14p12s_drone__baseline": {
+      "file": "spm_outer_14p12s_drone__baseline.json",
+      "sha256": "edf8fe142fa34fd0db054bf6fe7428ce76725d6fc8cb639f6d7df44828b6a683",
+      "input_sha256": "98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796"
+    },
+    "spm_outer_14p12s_drone__high_current": {
+      "file": "spm_outer_14p12s_drone__high_current.json",
+      "sha256": "0356c0d1c9de572e1683b441fcda279fb202d28fae339a8da37abe49fb772d50",
+      "input_sha256": "da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e"
+    },
+    "spm_outer_14p12s_drone__tight_airgap": {
+      "file": "spm_outer_14p12s_drone__tight_airgap.json",
+      "sha256": "786260429d3e41be7b1c76810a6b8a539c9283161054b8550c7ed1b24e491760",
+      "input_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0"
+    },
+    "spm_outer_14p12s_drone__angle30": {
+      "file": "spm_outer_14p12s_drone__angle30.json",
+      "sha256": "d14b43fcef4c881a70004e552ad2dfe1a2484d55603595a9b5ad34117195b469",
+      "input_sha256": "1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f"
+    },
+    "spm_outer_14p12s_drone_noload__baseline": {
+      "file": "spm_outer_14p12s_drone_noload__baseline.json",
+      "sha256": "9db176b3bef72f21bbf16126c6478c572e02df8fafdd3dbc524dc7a86b9e7590",
+      "input_sha256": "527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e"
+    },
+    "spm_outer_12p9s_micro__baseline": {
+      "file": "spm_outer_12p9s_micro__baseline.json",
+      "sha256": "433849dbc71a71b7e5224f2172a5426c8ba0c6918e95b00ed6424dfeb1efca86",
+      "input_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e"
+    },
+    "spm_outer_12p9s_micro_noload__baseline": {
+      "file": "spm_outer_12p9s_micro_noload__baseline.json",
+      "sha256": "d0ad5fc3d415e85afd1a4cd31acd6949a09528048f8792ac6d9a4b1eb1b87a95",
+      "input_sha256": "33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25"
+    },
+    "spm_outer_10p12s_single_layer__baseline": {
+      "file": "spm_outer_10p12s_single_layer__baseline.json",
+      "sha256": "77511d257a9f94f53dd42fddced23caed5fde8133d6b156a01bb2bb9562a4167",
+      "input_sha256": "0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13"
+    },
+    "spm_outer_28p24s_multirotor__baseline": {
+      "file": "spm_outer_28p24s_multirotor__baseline.json",
+      "sha256": "a4533a5a85c7e2d08db0a807b60925f0c9834c666c5722fc1ef4d56abd3b7a8d",
+      "input_sha256": "dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633"
+    }
+  },
+  "review": {
+    "file": "review.json",
+    "sha256": "0a44fb474d76d31db6b36e6975c8840d0b5b9ea56a5ad8048f1ef960f4f37021"
+  },
+  "review_artifacts": [
+    {
+      "file": "review.json",
+      "sha256": "0a44fb474d76d31db6b36e6975c8840d0b5b9ea56a5ad8048f1ef960f4f37021"
+    }
+  ]
+}

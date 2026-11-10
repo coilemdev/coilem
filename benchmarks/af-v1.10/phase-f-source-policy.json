@@ -1,0 +1,39 @@
+{
+  "schema": "coilem.phase_f_source_policy/v1",
+  "version": "1.0.0",
+  "decision": "ACCEPTED_FOR_REGISTERED_SOFTWARE_PARITY",
+  "cohorts": {
+    "original": {
+      "reference_commit": "7d9445c7f328fabb8aff13141b105769f1c1f644",
+      "cases": 9,
+      "producer_sha256": "db7ff3f953fd61c0c89e9979370ef042d6087ef5fe0de1eae894774138ca513b"
+    },
+    "hub_variant": {
+      "reference_commit": "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+      "cases": 1,
+      "producer_sha256": "bdba3c217d8a57e21852c0e3d2b735d955cceaa6ff28d0f3cfb1f11d17d1b10b",
+      "base_field_source_commit": "7d9445c7f328fabb8aff13141b105769f1c1f644",
+      "bulk_mesh_mm": 0.5,
+      "magnet_and_pocket_mesh_mm": 0.15,
+      "airgap_mesh_mm": 0.125
+    }
+  },
+  "single_producer_contract_satisfied": false,
+  "historical_lrk_failures_preserved": 2,
+  "uncertainty_bound_established": false,
+  "gates_or_tolerances_changed": false,
+  "owner_review": {
+    "recorded_at": "2026-11-08T20:34:39.366586+00:00",
+    "decision": "AUTHORIZE_SCOPED_WINDOWS_OUTRUNNER_QUALIFICATION",
+    "receipt_sha256": "6233114f182e3127f388f25d8dd2ae8d8a795393fcc09a8214b392c1ca2a79e0",
+    "source_archive_sha256": "c915a4a23c23393d5a0f38b72517bd8c87d241f5399c2002142a7f4bf26add0a",
+    "LRK_engineering_review": "ACCEPTED_AS_NUMERICAL_SENSITIVITY_WITH_HISTORICAL_FAILURES_PRESERVED",
+    "hub_mesh_source_review": "ACCEPTED_FOR_THIS_WINDOWS_COHORT_WITH_EXPLICIT_SOURCE_COHORTS"
+  },
+  "scope": "Two immutable source cohorts; registered mean rotor torque and phase back-EMF outputs only. Source recipe review does not establish native qualification on an unmeasured platform.",
+  "historical_findings": "The two LRK FAIL flags remain in the inherited investigation. Mesh-orientation sensitivity is not a measured uncertainty bound. The hub recipe is its explicit reviewed cohort; source identities are never relabeled.",
+  "evidence": {
+    "inherited_lrk": "tools/femm_reference/data/inherited_lrk.json",
+    "inherited_lrk_sha256": "09c34b4b131093b3bf0183c6edf153f134a237b5e9e23b0fbc06a039f47e2b46"
+  }
+}

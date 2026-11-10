@@ -47,7 +47,7 @@ def changed_physics(root, base):
     # Changing benchmark contracts also requires fresh, reviewed evidence.
     changes = git(root, 'diff', '--name-only', base, '--', 'benchmarks', 'backend/resources.py').decode().splitlines()
     changed.extend(name for name in changes if name == 'backend/resources.py' or name.startswith((
-        'benchmarks/abcd-v', 'benchmarks/reference-baselines/')))
+        'benchmarks/abcd-v', 'benchmarks/af-v', 'benchmarks/cogging-refined-v1/', 'benchmarks/reference-baselines/')))
     return sorted(set(changed))
 
 
@@ -57,7 +57,8 @@ def measurement_key(root, ref=None):
         'solvers/magneto2d/Cargo.toml', '.github/workflows/release-benchmarks.yml', 'backend/resources.py',
         'tools/benchmark_prius.py', 'tools/prius_benchmark_contract.py', 'tools/report_prius_benchmark.py'}
     current = git(root, 'ls-tree', '-r', '--name-only', 'HEAD').decode().splitlines()
-    names.update(n for n in current if n.startswith(('benchmarks/abcd-v1.6/', 'benchmarks/abcd-v1.9/', 'benchmarks/reference-baselines/',
+    names.update(n for n in current if n.startswith(('benchmarks/abcd-v1.6/', 'benchmarks/abcd-v1.9/', 'benchmarks/af-v1.10/',
+                                                     'benchmarks/cogging-refined-v1/', 'benchmarks/reference-baselines/',
                                                      'backend/benchmark_suite/', 'docs/benchmarks/pyleecan-prius-v1/')))
     present = set(git(root, 'ls-tree', '-r', '--name-only', ref or 'HEAD').decode().splitlines())
     values = {}

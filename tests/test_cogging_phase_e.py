@@ -25,7 +25,7 @@ def test_phase_e_is_its_own_suite_and_1_9_is_the_default() -> None:
     spec = load_suite(SPEC)
     assert PHASE_LABELS["E"] == "Cogging"
     assert spec["protocol_version"] == "1.7.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.9.0"
+    assert PROTOCOL_VERSION == "1.10.0"
     assert {case["phase"] for case in spec["cases"]} == {"E"}
     assert len(spec["cases"]) == 12
     assert spec["phase_e"]["status"] == "PROPOSED_NOT_REGISTERED"

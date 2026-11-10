@@ -1,6 +1,8 @@
 # Benchmark reports and protocols
 
-[Protocol 1.9.0](abcd-v1.9/README.md) is the default A–D suite from v0.5.6. It is protocol 1.6.0 with Newton, the new default nonlinear method, for the 28 Phase A and D requests that used Picard. Nothing else changes. It reuses the reviewed protocol 1.6.0 FEMM bundle through a hash-bound solve-option bridge, because FEMM never reads coilEM's nonlinear method. v0.5.6 needs a two-platform requalification with this suite.
+[Protocol 1.10.0](af-v1.10/README.md) is the default combined A-F suite: 69 cases, 75 jobs and 68 reference records, with the existing planned unsupported Prius row. It retains the protocol 1.9.0 A-D requests and adds all 12 E and 10 F requests, using the registered very-fine native cohort for the three distributed cogging cases. Its registry preserves each reviewed reference source, the separate hub recipe and all original gates. Full candidate/platform qualification requires matching Windows/macOS measurements; older A-D records do not cover the new selection.
+
+[Protocol 1.9.0](abcd-v1.9/README.md) remains available for historical A-D replay. It changes only Picard to Newton in the 28 relevant protocol 1.6.0 requests, reusing the reviewed frozen references through its existing hash-bound bridge.
 
 The [v0.5.1 release qualification](v0.5.1/release-qualification.json) now passes with source-matched Windows/macOS A-D and complete Prius software evidence. The [owner decisions](qualification-a4f9f4dccf2b/owner-decisions.json) accept unchanged reviewed references, one recorded near-zero macOS Prius observation difference and an experimental cogging scope. Measured fields retain `a4f9f4d`; all 64 guarded physics hashes match the versioned release code. Phase E remains unregistered and both YELLOW cases remain disclosed.
 

@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from backend.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS
-from backend.benchmark_suite.contract import SPEC, canonical, read, sha
+from backend.benchmark_suite.contract import canonical, read, sha
 from backend.benchmark_suite.dq_metrics import DQ_FLUX_LINKAGE_PCT, dq_gates, reference_dq, with_dq_gates
 from backend.benchmark_suite.references import load_suite
 from backend.magnet_temperature import br_scale, grade_temperature_range_C
@@ -38,8 +38,8 @@ def test_the_suite_is_the_14_matrix_plus_the_reference_gate_cases():
     spec, previous = load_suite(SUITE), load_suite(PREVIOUS)
     assert spec["protocol_version"] == "1.6.0" and "1.6.0" in SUPPORTED_PROTOCOL_VERSIONS
     # Protocol 1.9.0, the default from v0.5.6, is this suite with Newton for its Picard requests.
-    bridge = read(SPEC)["reference_compatibility"]["solve_option_change"]
-    assert PROTOCOL_VERSION == "1.9.0" and bridge["measured_suite"] == "benchmarks/abcd-v1.6/benchmark_spec.json"
+    bridge = read(ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json")["reference_compatibility"]["solve_option_change"]
+    assert PROTOCOL_VERSION == "1.10.0" and bridge["measured_suite"] == "benchmarks/abcd-v1.6/benchmark_spec.json"
     assert spec["cases"][: len(previous["cases"])] == previous["cases"]
     added = spec["cases"][len(previous["cases"]) :]
     assert [case["id"] for case in added] == spec["extension"]["added_cases"] and len(added) == 17

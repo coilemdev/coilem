@@ -16,12 +16,14 @@ DECISIONS = ROOT / "benchmarks/v0.5.0/owner-decisions.json"
 def test_owner_accepted_the_registered_reference_bundle():
     decisions = {item["id"]: item for item in json.loads(DECISIONS.read_text(encoding="utf-8"))["decisions"]}
     accepted = decisions["protocol16_references"]["reviewed_bundle"]
-    bundle = ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR
+    registered = load_suite(ROOT / resources.BENCHMARK_SUITE_FILE)
+    component = next(c for c in registered["components"] if c["id"] == "abcd")
+    bundle = ROOT / component["reference_bundle"]
     # A changed bundle needs the owner's acceptance again.
-    assert accepted["path"] == resources.BENCHMARK_REFERENCE_BUNDLE_DIR
+    assert accepted["path"] == component["reference_bundle"]
     assert accepted["manifest_sha256"] == sha(bundle / "manifest.json")
     assert accepted["review_sha256"] == sha(bundle / "review.json")
-    _, _, identity = load_bundle(bundle, load_suite(ROOT / resources.BENCHMARK_SUITE_FILE))
+    _, _, identity = load_bundle(bundle, load_suite(ROOT / component["suite"]))
     assert accepted["bundle_sha256"] == identity
 
 

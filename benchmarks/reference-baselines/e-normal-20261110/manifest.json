@@ -1,0 +1,80 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v1",
+  "protocol_version": "1.7.0",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "reference_commit": "341cd09342d58323689491ca060a913a34474ed1",
+  "suite_sha256": "a74bb915d52f8802b2d00384ca014adfe67c3823a0c3c762cbfa888fd3e0cf2d",
+  "validation_status": "REVIEWED_FOR_REGISTERED_PARITY",
+  "records": {
+    "spm_4p12s_simple__baseline__cogging": {
+      "file": "spm_4p12s_simple__baseline__cogging.json",
+      "sha256": "4a006d26f3f714df02d5b27c7a04d239dc38c5cc0ff5211c0f0f9ea0d3f3eaec",
+      "input_sha256": "8839611fad28d21d9b088c0450e8272e9841fb2349f239cba2656f20bd7aa293"
+    },
+    "spm_4p12s_simple__tight_airgap__cogging": {
+      "file": "spm_4p12s_simple__tight_airgap__cogging.json",
+      "sha256": "a6bf83e955078990ba8d689724761e0bdb4b564ab3c9fd77692cef0d361fec8c",
+      "input_sha256": "3c1b57c0bb3b063419cc0944252d0d2c19efba99b24e2f0175c0139f63318a29"
+    },
+    "spm_8p12s_concentrated__baseline__cogging": {
+      "file": "spm_8p12s_concentrated__baseline__cogging.json",
+      "sha256": "ee1235bd5a501aeb821c3a897e351af1a71e3d5d88149359e0af9002592a5606",
+      "input_sha256": "345b5167e28a6be168cb1064089aa00b6055f27a040307bbf54bfca853f42691"
+    },
+    "spm_8p12s_concentrated__tight_airgap__cogging": {
+      "file": "spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "sha256": "9df4385375b18b9c612bd4c78d49f0a96a261ece9b0c3955dc5dda5e7cfd9b5f",
+      "input_sha256": "6327927a94e5d3381b69d2975019161a9eebe7944b6f0514bb29cc5c751fb7c4"
+    },
+    "spm_8p12s_example_shoed__cogging": {
+      "file": "spm_8p12s_example_shoed__cogging.json",
+      "sha256": "ae16086cbef693fe640d2cbd83dfdc5cac1200b704660c5614a6275e09fbe381",
+      "input_sha256": "9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d"
+    },
+    "ipm_flat_8p12s_fsae_contract__cogging": {
+      "file": "ipm_flat_8p12s_fsae_contract__cogging.json",
+      "sha256": "fadb7bcf96dd45e621199748a8551cf3c0a82e9bbcb9c542c2b8939d72696edb",
+      "input_sha256": "bc4148dc2f8a60bf0fab4033d050883a4bc5718662ad1fb93ef3bd567c5efac4"
+    },
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": {
+      "file": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "sha256": "07f819a7240d699dc1d4f2fc16d87cba09ce1cbde014e9c0e2decad582717e48",
+      "input_sha256": "4f4686dcf06b28586ff750d384bf6f64d8d5cca83e8d110b4366f5198f188d96"
+    },
+    "ipm_flat_12s10p_fscw_contract__cogging": {
+      "file": "ipm_flat_12s10p_fscw_contract__cogging.json",
+      "sha256": "0a59e92467c1a52f8e0168c0fb9840edbf512530a4234399ebbd7d84ed7374b1",
+      "input_sha256": "727e2f8a47115811f9a96a63ddd3fea44439af4ed134d4588c28657b0f6c5ebb"
+    },
+    "ipm_flat_24s16p_industrial_contract__cogging": {
+      "file": "ipm_flat_24s16p_industrial_contract__cogging.json",
+      "sha256": "6b2e62a3a23ef0860f1c1e9f76646a72d93757d340ad1e60387316903bfd801c",
+      "input_sha256": "683373683bee02043cd55a62b3d95da0af3e31625f8cd5cddc3d84f39eefa4d8"
+    }
+  },
+  "review": {
+    "file": "review.json",
+    "sha256": "247f9bbbd0706a589054aa191b4f005e63e7e62914cf673cd17ed42f4a8c3d10"
+  },
+  "review_artifacts": [
+    {
+      "file": "review.json",
+      "sha256": "247f9bbbd0706a589054aa191b4f005e63e7e62914cf673cd17ed42f4a8c3d10"
+    }
+  ]
+}

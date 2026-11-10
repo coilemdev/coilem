@@ -1,0 +1,212 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.7.0",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "cases": [
+    {
+      "id": "spm_4p12s_simple__baseline__cogging",
+      "phase": "E",
+      "base_case": "spm_4p12s_simple__baseline",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 12,
+      "cogging_floor_Nm": 0.002385,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_4p12s_simple__baseline.json",
+        "avg_torque_Nm": 0.47707813670238686
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/spm_4p12s_simple__baseline__cogging.json",
+          "fixture_sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
+          "input_sha256": "8839611fad28d21d9b088c0450e8272e9841fb2349f239cba2656f20bd7aa293"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap__cogging",
+      "phase": "E",
+      "base_case": "spm_4p12s_simple__tight_airgap",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 12,
+      "cogging_floor_Nm": 0.002925,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_4p12s_simple__tight_airgap.json",
+        "avg_torque_Nm": 0.5850121670208285
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+          "fixture_sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
+          "input_sha256": "3c1b57c0bb3b063419cc0944252d0d2c19efba99b24e2f0175c0139f63318a29"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline__cogging",
+      "phase": "E",
+      "base_case": "spm_8p12s_concentrated__baseline",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.011069,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p12s_concentrated__baseline.json",
+        "avg_torque_Nm": 2.213722975816425
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+          "fixture_sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
+          "input_sha256": "345b5167e28a6be168cb1064089aa00b6055f27a040307bbf54bfca853f42691"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap__cogging",
+      "phase": "E",
+      "base_case": "spm_8p12s_concentrated__tight_airgap",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.011785,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p12s_concentrated__tight_airgap.json",
+        "avg_torque_Nm": 2.357065017182515
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+          "fixture_sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
+          "input_sha256": "6327927a94e5d3381b69d2975019161a9eebe7944b6f0514bb29cc5c751fb7c4"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_example_shoed__cogging",
+      "phase": "E",
+      "base_case": "spm_8p12s_example_shoed",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.055702,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p12s_example_shoed.json",
+        "avg_torque_Nm": 11.140423976492054
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/spm_8p12s_example_shoed__cogging.json",
+          "fixture_sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
+          "input_sha256": "9d468051d18b1ca9936d11057924e365b81aedadf14892c21aaed9a203bc619d"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_8p12s_fsae_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.012879,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_8p12s_fsae_contract.json",
+        "avg_torque_Nm": 2.575709705414214
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+          "fixture_sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a",
+          "input_sha256": "bc4148dc2f8a60bf0fab4033d050883a4bc5718662ad1fb93ef3bd567c5efac4"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.010774,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+        "avg_torque_Nm": 2.154819961289557
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+          "fixture_sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c",
+          "input_sha256": "4f4686dcf06b28586ff750d384bf6f64d8d5cca83e8d110b4366f5198f188d96"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_12s10p_fscw_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 60,
+      "cogging_floor_Nm": 0.024013,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_12s10p_fscw_contract.json",
+        "avg_torque_Nm": 4.802681722828231
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+          "fixture_sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda",
+          "input_sha256": "727e2f8a47115811f9a96a63ddd3fea44439af4ed134d4588c28657b0f6c5ebb"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_24s16p_industrial_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 48,
+      "cogging_floor_Nm": 0.097627,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_24s16p_industrial_contract.json",
+        "avg_torque_Nm": 19.525404740094906
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+          "fixture_sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f",
+          "input_sha256": "683373683bee02043cd55a62b3d95da0af3e31625f8cd5cddc3d84f39eefa4d8"
+        }
+      ]
+    }
+  ]
+}
