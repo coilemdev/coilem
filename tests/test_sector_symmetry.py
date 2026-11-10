@@ -30,8 +30,21 @@ OUTER_14P12S = "abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json"
 OUTER_12P9S = "abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json"
 
 
+EXAMPLES = Path("frontend/src/public/examples")
+V_SHAPE_IPM = "examples:validation_ipm_10p_v_shape_medium.openem"
+ACCORD_TWO_LAYER = "examples:honda_accord_2005.coilem"
+PRIUS_HOLEM50 = "examples:ornl_prius_2004_holem50.coilem"
+ROTATING_FIELD = "examples:rotating_field_6p36s.coilem"
+_DESIGN_FILE_KEYS = ("openem_schema_version", "openem_version", "name", "description", "schema_version")
+
+
 def _raw(fixture: str, **solve_params) -> dict:
-    raw = json.loads((FIXTURES / fixture).read_text(encoding="utf-8"))
+    if fixture.startswith("examples:"):
+        raw = json.loads((EXAMPLES / fixture.removeprefix("examples:")).read_text(encoding="utf-8"))
+        for key in _DESIGN_FILE_KEYS:
+            raw.pop(key, None)
+    else:
+        raw = json.loads((FIXTURES / fixture).read_text(encoding="utf-8"))
     raw["solve_params"].update(solve_params)
     return raw
 
@@ -80,6 +93,10 @@ def test_candidates_come_from_slot_and_pole_counts_smallest_sector_first() -> No
         (IPM_24S16P, 4, False, 4),
         (OUTER_14P12S, 2, True, 7),
         (OUTER_12P9S, 3, False, 4),
+        (V_SHAPE_IPM, 2, True, 5),
+        (ACCORD_TWO_LAYER, 8, False, 2),
+        (PRIUS_HOLEM50, 8, True, 1),
+        (ROTATING_FIELD, 6, True, 1),
     ],
 )
 def test_the_sector_is_the_smallest_one_geometry_and_winding_both_repeat_over(
@@ -303,6 +320,10 @@ _COMPARED = (
         SPM_8P48S,  # eighth, anti-periodic, distributed winding
         OUTER_14P12S,  # half, anti-periodic, outer rotor
         OUTER_12P9S,  # third, periodic, outer rotor
+        V_SHAPE_IPM,  # half, anti-periodic, two magnets and pockets per pole
+        ACCORD_TWO_LAYER,  # eighth, periodic, two radial coil sides per slot
+        PRIUS_HOLEM50,  # eighth, anti-periodic, three pockets per pole
+        ROTATING_FIELD,  # sixth, anti-periodic, chorded distributed winding
     ],
 )
 def test_a_sector_solve_equals_the_full_circle_solve_of_the_same_mesh(fixture) -> None:
