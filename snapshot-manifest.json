@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 173972,
-      "sha256": "47258e74ba26ab64be97f6701efac9023db71f46b42ea30a0f934e4fbd432396"
+      "bytes": 174076,
+      "sha256": "6f62891f2e76038ea4cee45191a4966d229e43a5a83181369183c18f2fe5ba9d"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6750,13 +6750,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
-      "bytes": 119622,
-      "sha256": "7ee4854838fdcd2248d3375cde322b0bc57d134c76000efad200420ca3c24d2f"
+      "bytes": 116571,
+      "sha256": "427b18c89c11e82f98ed18e88a196ece8c61188293df0257d405bef0d16b0a73"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFourIronSaturation.tsx",
-      "bytes": 68085,
-      "sha256": "b63b90cec9173c80d7419824c7664dd933e8a03ff0ce18e844e6d15590bbf20b"
+      "bytes": 65087,
+      "sha256": "68f0d2558566c88efdb890503e94534063c0c9f2256f8691267af8ca624bf8e5"
     },
     {
       "path": "frontend/src/components/tutorials/LessonGlyph.tsx",
@@ -6790,13 +6790,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeCurrentField.tsx",
-      "bytes": 31998,
-      "sha256": "439ee27e2d7204e999494dc36feb3a523ed6474c511f39c45c74fb698867ad01"
+      "bytes": 32495,
+      "sha256": "1b4e8a1f9b0a70f383a33b1a6254ab25cd54a0d9177a0f0e5f6be0fd5164e481"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoAirgapTax.tsx",
-      "bytes": 34791,
-      "sha256": "f5f00260a5bf504e553dab17c74b7dda9a79ce2cd02734ac27f5d3ef1bba46a5"
+      "bytes": 34824,
+      "sha256": "2322c9d7ff361505697acc206ba5bce0a30a097cee72650041e647af6ff9a512"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoMagneticCircuit.tsx",
@@ -6820,8 +6820,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MotorTooth3D.tsx",
-      "bytes": 11827,
-      "sha256": "0d5953d1dc59683a96865bf6ed1d594c30cba0dade9062f9972882981e4a1ae4"
+      "bytes": 11837,
+      "sha256": "2113ebad09226cd99e3f5c17d17ef8e183e899b5ad4c3232c2268bb68306c6df"
     },
     {
       "path": "frontend/src/components/tutorials/ReluctanceBudget.tsx",
@@ -6865,13 +6865,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/current-field.css",
-      "bytes": 28492,
-      "sha256": "b435a1dfa5a3f31f7f354d266a353906efd15d38f82e894d6ae9ad26cb77dd74"
+      "bytes": 29836,
+      "sha256": "015773864f5fbf5708caeb3943405d3e0fb4429321e839995fedbb701cfe3c73"
     },
     {
       "path": "frontend/src/components/tutorials/field-force.css",
-      "bytes": 64008,
-      "sha256": "9cc0bd502c3cd18157bed86e1dd5ec8fb9363797537aad05710005a871df4a3b"
+      "bytes": 66752,
+      "sha256": "d6de0b0ee0928c102b20295dde0024cc0e8e53699c1ddc84e19ebd3dce4b73d4"
     },
     {
       "path": "frontend/src/components/tutorials/fieldLineStitching.ts",
@@ -6900,13 +6900,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/lab/lesson-lab.css",
-      "bytes": 13076,
-      "sha256": "79f47d072bd09c758b69d45c15f498d475b8b19fb7a70e14632ca5bc75ff5687"
+      "bytes": 13892,
+      "sha256": "f6a169e6fa5c5d1f78ffa72cde813e40c8a3d6dc13fc63e0b2171847e55ebe18"
     },
     {
       "path": "frontend/src/components/tutorials/lab/LessonLab.tsx",
-      "bytes": 9713,
-      "sha256": "48bd1bffb02f11b0e72fd52173002ec3cd64f745cf50ac0aef8b4e37db6665b0"
+      "bytes": 10183,
+      "sha256": "889661bbab2c178608a6208c339cd8e3f84d1a921c66f0faacb903c1c96c3a2a"
     },
     {
       "path": "frontend/src/components/tutorials/index.ts",
@@ -6915,8 +6915,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/iron-saturation.css",
-      "bytes": 25675,
-      "sha256": "9cfa95964a551f55f42948172c351382e5ef7514dabd24eb476669dbd1f9aa36"
+      "bytes": 28400,
+      "sha256": "069844d8911a4cb521c4e6e345f45421f8ab523129715c2d4627b570c898e7e0"
     },
     {
       "path": "frontend/src/components/tutorials/learning.css",

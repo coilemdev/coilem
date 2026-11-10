@@ -499,3 +499,11 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 }
+
+/* The viewer's scale bar and its flux-density legend both sit at the bottom
+   left. With the zoom buttons gone from the canvas, the scale bar moves to the
+   bottom right so the two no longer overlap. */
+.lesson-lab .mesh-viewer-scale-bar {
+  right: 16px;
+  left: auto;
+}

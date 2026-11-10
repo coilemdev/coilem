@@ -1017,3 +1017,106 @@
   .iron-saturation-control-panel,
   .iron-saturation-context { bottom: 120px; }
 }
+
+/* ── Lesson 4 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. */
+
+/* The cards above were spaced for the old drawers; the panel body spaces them now. */
+.iron-saturation-lab .lesson-lab-panel-body > * {
+  margin: 0;
+}
+
+/* Canvas above, dock below (the old viewer had a header row on top instead). */
+.iron-saturation-lab .iron-saturation-viewer {
+  display: grid;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 0;
+}
+
+/* The 3D models draw their legend where the shell puts the name chip. */
+.iron-saturation-lab .iron-tooth-three-legend,
+.iron-saturation-lab .current-conductor-three-legend {
+  top: 52px;
+}
+
+/* The drawing of what will be solved, with its caption, before a solve. */
+.iron-saturation-lab .iron-saturation-stage-visual {
+  display: grid;
+  width: min(760px, 100%);
+  min-height: 0;
+  justify-items: center;
+  gap: 10px;
+}
+
+.iron-saturation-lab .iron-saturation-stage-visual svg {
+  width: 100%;
+  max-height: 46vh;
+}
+
+.iron-saturation-lab .iron-saturation-stage-copy h2 {
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.iron-saturation-lab .iron-saturation-stage-copy p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* The Inspect card is narrower than the old drawer: give the plot the width. */
+.iron-saturation-lab .iron-saturation-results,
+.iron-saturation-lab .iron-tooth-results,
+.iron-saturation-lab .iron-saturation-status-empty {
+  padding: 12px;
+}
+
+.iron-saturation-lab .iron-saturation-plot-wrap {
+  padding: 6px 2px 4px;
+}
+
+.iron-saturation-lab .iron-saturation-plot-legend {
+  justify-content: flex-start;
+}
+
+/* Long measurement names wrap instead of pushing the value off the card. */
+.iron-saturation-lab .iron-saturation-readout strong {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.iron-saturation-lab .iron-saturation-rail-hint {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.iron-saturation-lab .iron-saturation-inspector-details {
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.iron-saturation-lab .iron-saturation-inspector-details > summary {
+  padding: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.iron-saturation-lab .iron-saturation-inspector-details > div {
+  padding: 0 12px 12px;
+}
+
+.iron-saturation-lab .iron-saturation-inspector-details .iron-saturation-equation-card {
+  margin: 0;
+}
+
+.iron-saturation-lab .iron-saturation-inspector-material {
+  margin: 10px 2px 0;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}

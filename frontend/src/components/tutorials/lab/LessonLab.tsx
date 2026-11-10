@@ -33,15 +33,25 @@ interface LessonLabPanelProps extends Children {
   /** Briefly ring the card to draw the eye to it. */
   flash?: boolean;
   titleId?: string;
+  /**
+   * Scroll the card back to its top whenever this value changes, e.g. the
+   * number of solved runs, so new measurements are not left out of sight
+   * above a student who had scrolled down to the terms.
+   */
+  scrollTopKey?: string | number;
 }
 
 export const LessonLabPanel = React.forwardRef<HTMLElement, LessonLabPanelProps>(function LessonLabPanel(
-  { side, kicker, title, summary, label, footer, flash = false, titleId, children },
+  { side, kicker, title, summary, label, footer, flash = false, titleId, scrollTopKey, children },
   ref,
 ) {
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  React.useEffect(() => {
+    if (scrollTopKey !== undefined) scrollRef.current?.scrollTo({ top: 0 });
+  }, [scrollTopKey]);
   return (
     <aside ref={ref} className={`lesson-lab-panel is-${side}${flash ? ' is-flash' : ''}`} aria-label={label}>
-      <div className="lesson-lab-panel-scroll">
+      <div ref={scrollRef} className="lesson-lab-panel-scroll">
         <header className="lesson-lab-panel-header">
           <p className="lesson-lab-kicker">{kicker}</p>
           <h2 id={titleId}>{title}</h2>

@@ -596,6 +596,7 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
         : 'Same magnet. Same steel. One shorter air path.'}
       label="Lesson evidence and solved results"
       flash={inspectorFlash}
+      scrollTopKey={runs.length}
     >
       {lessonStage === 'design' ? (
         <LessonOutline

@@ -1162,3 +1162,82 @@
   .field-force-predict-experience { width: calc(100% - 24px); padding-top: 20px; }
   .field-force-predict-heading h1 { font-size: 34px; }
 }
+
+/* ── Lesson 5 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. */
+.field-force-lab .lesson-lab-panel-body > * { margin: 0; }
+
+/* Canvas above, dock below (the old viewer had its header bar on top). */
+.field-force-lab .field-force-viewer {
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+/* The chip naming the picture stays above the pressure overlay and the 3D
+   scene; the lesson's own keys and legends start below it. */
+.field-force-lab .lesson-lab-viewport-heading { z-index: 9; }
+
+.field-force-lab .field-force-vector-key,
+.field-force-lab .field-force-wire-strength-key,
+.field-force-lab .field-force-magnet-path-key,
+.field-force-lab .field-force-pressure-explainer,
+.field-force-lab .field-force-three-legend { top: 52px; }
+
+.field-force-lab .motor-effect-diagram { padding-top: 48px; box-sizing: border-box; }
+
+/* There is no viewer toolbar under the canvas any more. */
+.field-force-lab .field-force-angle-reference-note { bottom: 14px; }
+
+/* Predict picture and the pre-solve setup preview, centred in the canvas. */
+.field-force-lab .field-force-predict-visual {
+  display: grid;
+  width: min(820px, 100%);
+  height: auto;
+  min-height: 0;
+  place-items: center;
+}
+
+.field-force-lab .field-force-predict-visual .field-force-prediction {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+}
+
+.field-force-lab .field-force-empty-stage {
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+}
+
+.field-force-lab .field-force-empty-stage .field-force-prediction { max-height: 44vh; }
+.field-force-lab .field-force-empty-stage h2 { font-size: 20px; }
+.field-force-lab .field-force-empty-stage p { font-size: 13px; }
+
+.field-force-lab .field-force-predict-prompt {
+  color: var(--text-primary);
+  font: 600 13px/1.45 var(--font-ui);
+}
+
+/* Plots are drawn at the width of the Inspect card. */
+.field-force-lab .field-force-plot,
+.field-force-lab .field-force-angle-plot { min-height: 0; }
+
+.field-force-lab .field-force-plot-legend {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 4px 12px;
+  padding: 0 2px 4px;
+}
+
+.field-force-lab .field-force-plot-comparison,
+.field-force-lab .field-force-angle-plot-readout { margin: 4px 2px 2px; }
+
+/* Three boxes in a row do not fit the card: stack the torque recipe. */
+.field-force-lab .motor-effect-equation-flow { grid-template-columns: minmax(0, 1fr); }
+.field-force-lab .motor-effect-equation-flow > b { justify-self: center; }
+
+.field-force-lab .motor-torque-plot-card > p { font-size: 11px; }
+
+/* The dock note under the loop drawing. */
+.field-force-lab .lesson-lab-dock .lesson-lab-note { max-width: 62ch; }

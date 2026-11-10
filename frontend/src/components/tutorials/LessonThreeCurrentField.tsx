@@ -10,6 +10,23 @@ import type {
   LearningLessonStage,
 } from './lessonStage';
 import { KnowledgeCheck } from './KnowledgeCheck';
+import {
+  LessonChoices,
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonSegmented,
+  LessonTerms,
+} from './lab/LessonLab';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import './learning.css';
 import './current-field.css';
@@ -24,6 +41,8 @@ interface LearningLessonThreeCurrentFieldProps {
 
 type Prediction = 'ccw' | 'cw' | 'none';
 type FieldDisplayMode = 'lines' | 'density';
+/** The solved 2D field, or an illustrative 3D picture of the same wire. */
+type CanvasView = '2d' | '3d';
 type LessonThreeProgressStepId = 'predict' | 'direction' | 'scale' | 'check';
 
 const LESSON_THREE_GOALS: Record<LessonThreeProgressStepId, { title: string; detail: string }> = {
@@ -89,6 +108,8 @@ const formatSignedMilliT = (valueT: number) => {
   return `${valueMilliT > 0 ? '+' : ''}${valueMilliT.toFixed(3)} mT`;
 };
 
+const formatSignedAmps = (currentA: number) => `${currentA > 0 ? '+' : ''}${currentA.toFixed(0)} A`;
+
 const directionForCurrent = (currentA: number) => {
   if (currentA > 0) return 'Counterclockwise';
   if (currentA < 0) return 'Clockwise';
@@ -146,7 +167,7 @@ const CurrentFieldPlot: React.FC<CurrentPlotProps> = ({ runs, activeCurrentA, on
   return (
     <div className="current-field-plot-wrap">
       <div className="current-field-plot-legend">
-        <span className="is-fem">2D FEM probe</span>
+        <span className="is-fem">Solved (2D FEM)</span>
         <span className="is-model">Straight-wire equation</span>
       </div>
       <svg className="current-field-plot" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Signed magnetic field versus conductor current">
@@ -162,7 +183,7 @@ const CurrentFieldPlot: React.FC<CurrentPlotProps> = ({ runs, activeCurrentA, on
           {yTicks.map((tick) => <text key={`yt-${tick}`} x={margin.left - 12} y={yFor(tick) + 4} textAnchor="end">{tick.toFixed(2)}</text>)}
           {xTicks.map((tick) => <text key={`xt-${tick}`} x={xFor(tick)} y={height - margin.bottom + 22} textAnchor="middle">{tick}</text>)}
         </g>
-        <text className="current-field-axis-title" x={14} y={margin.top + plotHeight / 2} transform={`rotate(-90 14 ${margin.top + plotHeight / 2})`} textAnchor="middle">Signed Bθ at 15 mm (mT)</text>
+        <text className="current-field-axis-title" x={14} y={margin.top + plotHeight / 2} transform={`rotate(-90 14 ${margin.top + plotHeight / 2})`} textAnchor="middle">Bθ at 15 mm (mT)</text>
         <text className="current-field-axis-title" x={margin.left + plotWidth / 2} y={height - 10} textAnchor="middle">Current I (A)</text>
         <polyline className="current-field-model-line" points={modelPoints} />
         {sortedRuns.length > 1 ? <polyline className="current-field-fem-line" points={femPoints} /> : null}
@@ -193,10 +214,10 @@ const CurrentFieldPlot: React.FC<CurrentPlotProps> = ({ runs, activeCurrentA, on
       </svg>
       {activeRun && activeModelBT !== null ? (
         <div className="current-field-plot-comparison">
-          <span>Selected I = {activeRun.currentA > 0 ? '+' : ''}{activeRun.currentA.toFixed(0)} A</span>
-          <strong>FEM {formatSignedMilliT(activeRun.probeBT)}</strong>
+          <span>Selected I = {formatSignedAmps(activeRun.currentA)}</span>
+          <strong>Solved {formatSignedMilliT(activeRun.probeBT)}</strong>
           <strong>Equation {formatSignedMilliT(activeModelBT)}</strong>
-          <em>{differencePct > 0 ? '+' : ''}{differencePct.toFixed(2)}%</em>
+          <em>Solved vs equation: {differencePct > 0 ? '+' : ''}{differencePct.toFixed(2)}%</em>
         </div>
       ) : null}
     </div>
@@ -210,7 +231,6 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   onStageChange,
   onHeaderProgressChange,
 }) => {
-  const solveInspectorRef = React.useRef<HTMLElement>(null);
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
   const [prediction, setPrediction] = React.useState<Prediction | null>(null);
   const [currentA, setCurrentA] = React.useState(DEFAULT_CURRENT_A);
@@ -221,9 +241,13 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   const [quizPassed, setQuizPassed] = React.useState(false);
   const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
   const [showMesh, setShowMesh] = React.useState(false);
-  const [showThreeD, setShowThreeD] = React.useState(false);
-  const [labControlsOpen, setLabControlsOpen] = React.useState(false);
-  const [solveInspectorOpen, setSolveInspectorOpen] = React.useState(false);
+  const [canvasView, setCanvasView] = React.useState<CanvasView>('2d');
+  // Both panels stay docked beside the canvas, as in the motor workspace.
+  const inspectorRef = React.useRef<HTMLElement | null>(null);
+  const [inspectorFlash, setInspectorFlash] = React.useState(false);
+  const inspectorFlashTimerRef = React.useRef<number | null>(null);
+  // The viewer draws its zoom buttons into the dock's title bar.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const [comparisonReviewed, setComparisonReviewed] = React.useState(false);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
@@ -249,8 +273,6 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
 
   const selectProgressStep = React.useCallback((stepId: string) => {
     const next = stepId as LessonThreeProgressStepId;
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     if (next === 'predict') {
       setQuizOpen(false);
       onStageChange?.('design');
@@ -282,7 +304,6 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
     onStepSelect: selectProgressStep,
   }), [activeProgressStepId, lessonProgressSteps, selectProgressStep]);
   const currentGoal = LESSON_THREE_GOALS[activeProgressStepId];
-  const completedStepCount = lessonProgressSteps.filter((item) => item.complete).length;
 
   React.useEffect(() => {
     onHeaderProgressChange?.(headerProgress);
@@ -296,14 +317,13 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
     if (stage === 'mesh') onStageChange?.('solve');
   }, [stage, onStageChange]);
 
-  React.useEffect(() => {
-    if (solveInspectorOpen) solveInspectorRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [runs, solveInspectorOpen]);
+  // Do not leave the flash timer running after the lesson is closed.
+  React.useEffect(() => () => {
+    if (inspectorFlashTimerRef.current !== null) window.clearTimeout(inspectorFlashTimerRef.current);
+  }, []);
 
   const setStage = (next: 'design' | 'solve') => {
     setQuizOpen(false);
-    setLabControlsOpen(next === 'solve');
-    setSolveInspectorOpen(false);
     onStageChange?.(next);
   };
 
@@ -317,9 +337,8 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
       const run: CurrentRun = { currentA: requestedCurrentA, probeBT, data };
       setCurrentA(requestedCurrentA);
       setRuns((previous) => [run, ...previous.filter((item) => Math.abs(item.currentA - requestedCurrentA) >= 0.01)]);
+      // A new frame changes the comparison, so it has to be looked at again.
       setComparisonReviewed(false);
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(true);
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The current-field solve failed.');
     } finally {
@@ -327,10 +346,16 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
     }
   };
 
+  // The guided path is +8 A, then −8 A, then +16 A.
   const nextGuidedCurrent = () => {
     if (!hasPositive) return DEFAULT_CURRENT_A;
     if (!hasNegative) return -DEFAULT_CURRENT_A;
-    if (!hasScaleComparison) return DEFAULT_CURRENT_A * 2;
+    if (!hasScaleComparison) {
+      // A student who went straight to 16 A still needs a current of about
+      // half that size; recommending 16 A again would solve nothing new.
+      const doubled = DEFAULT_CURRENT_A * 2;
+      return runs.some((run) => Math.abs(run.currentA - doubled) < 0.01) ? DEFAULT_CURRENT_A : doubled;
+    }
     return currentA;
   };
 
@@ -339,25 +364,38 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   const currentDensityAmm2 = currentA / (Math.PI * WIRE_RADIUS_MM ** 2);
   const guidedCurrentA = nextGuidedCurrent();
 
-  const continueExperiment = () => {
-    const nextCurrentA = nextGuidedCurrent();
-    setCurrentA(nextCurrentA);
-    setSolveInspectorOpen(false);
-    setLabControlsOpen(true);
-  };
-
-  const continueToCheck = () => {
-    setComparisonReviewed(true);
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
+  const handleLabPrimary = () => {
+    if (!currentRun) {
+      // The slider is on a current that has not been solved yet.
+      void solveCurrent();
+      return;
+    }
+    if (!comparisonReady) {
+      void solveCurrent(guidedCurrentA);
+      return;
+    }
+    if (!comparisonReviewed) {
+      // The comparison is already on screen in the Inspect panel: draw the eye
+      // to it, then let the next click move on to the check.
+      setComparisonReviewed(true);
+      inspectorRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      setInspectorFlash(true);
+      if (inspectorFlashTimerRef.current !== null) window.clearTimeout(inspectorFlashTimerRef.current);
+      inspectorFlashTimerRef.current = window.setTimeout(() => setInspectorFlash(false), 1_600);
+      return;
+    }
     setQuizOpen(true);
   };
 
-  const panelSolveLabel = busy
+  const labPrimaryLabel = busy
     ? 'Meshing + solving…'
-    : currentRun
-      ? `${currentA > 0 ? '+' : ''}${currentA.toFixed(0)} A solved`
-      : `Solve ${currentA > 0 ? '+' : ''}${currentA.toFixed(0)} A`;
+    : !currentRun
+      ? `Solve ${formatSignedAmps(currentA)}`
+      : !comparisonReady
+        ? `Solve recommended ${formatSignedAmps(guidedCurrentA)}`
+        : !comparisonReviewed
+          ? 'Review comparison'
+          : 'Continue to Check';
 
   const labInsight = !runs.length
     ? 'Current creates a circular field. Start with +8 A.'
@@ -369,226 +407,300 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
           ? 'Three frames reveal the rule. Review the evidence before the check.'
           : 'You reviewed the evidence. Now explain direction and scale.';
 
-  return (
-    <main
-      className={`learning-shell learning-lesson-shell current-field-shell is-${lessonStage}-stage${quizOpen ? ' is-quiz-open' : ''}`}
-    >
-      {lessonStage === 'solve' && !quizOpen && labControlsOpen ? (
-        <aside className="learning-control-panel current-field-control-panel" aria-label="Current experiment controls">
-          <button type="button" className="current-field-drawer-close" onClick={() => setLabControlsOpen(false)} aria-label="Close current controls">×</button>
-          <section className="learning-control-section">
-            <p className="current-field-panel-kicker">Lab setup · {lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label}</p>
-            <h2>Current lab</h2>
-            <section className="current-field-lab-goal" aria-label="Current lesson goal">
-              <span>{completedStepCount}/{lessonProgressSteps.length}</span>
-              <div>
-                <p>Current goal</p>
-                <strong>{currentGoal.title}</strong>
-                <small>{currentGoal.detail}</small>
-              </div>
-            </section>
-            <section className="current-field-control-card">
-              <label htmlFor="current-field-slider"><span>Conductor current</span><strong>{currentA > 0 ? '+' : ''}{currentA.toFixed(0)} A</strong></label>
-              <input id="current-field-slider" type="range" min="-16" max="16" step="2" value={currentA} disabled={busy} aria-label={`Conductor current ${currentA} amperes`} onChange={(event) => setCurrentA(Number(event.currentTarget.value))} />
-              <div className="current-field-scale"><span>−16 A</span><span>0</span><span>+16 A</span></div>
-              <div className={`current-field-selection-state${currentRun ? ' is-solved' : ' is-pending'}`} aria-live="polite">
-                <span>{currentRun ? 'Solved' : 'Pending'}</span>
-                <p>{currentRun ? 'This current is already in the comparison.' : 'Solve this current to update the field view.'}</p>
-              </div>
-              {!comparisonReady && currentRun ? (
-                <button type="button" className="current-field-guide-button" disabled={busy} onClick={() => void solveCurrent(guidedCurrentA)}>
-                  {busy
-                    ? `Solving ${guidedCurrentA > 0 ? '+' : ''}${guidedCurrentA.toFixed(0)} A…`
-                    : `Solve recommended ${guidedCurrentA > 0 ? '+' : ''}${guidedCurrentA.toFixed(0)} A`}
-                </button>
-              ) : (
-                <button type="button" className="current-field-panel-solve" disabled={busy || Boolean(currentRun)} onClick={() => void solveCurrent()}>
-                  {panelSolveLabel}
-                </button>
-              )}
-              {error ? <p className="current-field-error">{error}</p> : null}
-            </section>
-            <p className="current-field-rail-hint">
-              {comparisonReady
-                ? 'Optional: add another current after reviewing the three guided frames.'
-                : !hasNegative
-                  ? 'Reverse the current to reveal the direction change.'
-                  : 'Double the positive current to test proportional scaling.'}
-            </p>
-          </section>
-        </aside>
-      ) : null}
+  // The canvas controls, in the same dock as the motor workspace. Before the
+  // first solve it is shown greyed out, so the canvas keeps its size. The
+  // field and mesh layers belong to the 2D solve, so they are greyed out while
+  // the 3D picture is shown.
+  const renderViewDock = (unsolved: boolean) => {
+    const threeD = !unsolved && canvasView === '3d';
+    const layersOff = unsolved || threeD;
+    const layerTitle = (title: string) => (threeD ? 'Switch to the 2D view to change this' : title);
+    return (
+      <LessonDock
+        tabs={[
+          { id: '2d', label: '2D' },
+          { id: '3d', label: '3D', disabled: unsolved, title: unsolved ? 'Solve the field first' : 'The same wire and field drawn in 3D' },
+        ]}
+        tab={threeD ? '3d' : '2d'}
+        onTab={setCanvasView}
+        end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
+      >
+        <LessonDockGroup label="Field">
+          <LessonSegmented
+            label="Field drawing"
+            value={fieldDisplayMode}
+            onChange={setFieldDisplayMode}
+            options={[
+              { id: 'lines', label: 'Field lines', disabled: layersOff, title: layerTitle('Lines that follow the direction of the field') },
+              { id: 'density', label: 'Flux density', disabled: layersOff, title: layerTitle('Colour by field strength, |B|') },
+            ]}
+          />
+        </LessonDockGroup>
+        <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showMesh}
+            onChange={setShowMesh}
+            disabled={layersOff}
+            title={layerTitle('The triangles the solver divides the space into')}
+          >
+            Mesh
+          </LessonDockToggle>
+        </LessonDockGroup>
+      </LessonDock>
+    );
+  };
 
-      <section className="learning-main-stage current-field-main">
-        {quizOpen ? (
-          <section className="current-field-quiz-stage">
-            <p className="learning-kicker">Final check</p>
-            <h2>Can you connect current to field?</h2>
-            <p>Use the solved direction and scaling—not a memorized motor diagram.</p>
-            <details className="learning-quiz-reference current-field-inline-quiz-reference">
-              <summary>Review solved currents</summary>
-              <div><strong>{runs.length} current frames captured</strong><p>Open this only when you need to recall the comparison.</p></div>
-            </details>
-            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="current-field-predict-experience" aria-label="Current field direction prediction">
-            <div className="current-field-predict-heading">
-              <p className="learning-kicker">Lesson 3 · Predict</p>
-              <h1>Which way does the field turn?</h1>
-              <p>Current points toward you. Predict its circulation before the solver reveals it.</p>
-            </div>
-            <div className="current-field-predict-visual"><CurrentPredictionDiagram /></div>
-            <div className="current-field-predict-question">
-              <strong>Follow your curled fingers. Which direction do they point?</strong>
-              <div className="current-field-predictions" role="radiogroup" aria-label="Current field direction prediction">
-                {([
-                  ['ccw', 'Counterclockwise', 'Right thumb out; fingers curl this way.'],
-                  ['cw', 'Clockwise', 'The opposite circulation direction.'],
-                  ['none', 'No magnetic field', 'Current would leave the surrounding space unchanged.'],
-                ] as Array<[Prediction, string, string]>).map(([value, label, detail], index) => (
-                  <button
-                    key={value}
-                    type="button"
-                    role="radio"
-                    aria-checked={prediction === value}
-                    className={`${prediction === value ? 'is-selected' : ''}${prediction === value && value === 'ccw' ? ' is-correct' : ''}`}
-                    onClick={() => setPrediction(value)}
-                  >
-                    <span>{index + 1}</span><div><strong>{label}</strong><small>{detail}</small></div>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="current-field-predict-response" aria-live="polite">
-              {prediction ? (
-                <p className={`current-field-feedback${predictionCorrect ? ' is-correct' : ''}`}>
-                  {predictionCorrect
-                    ? 'Exactly. Thumb toward you; curled fingers move counterclockwise.'
-                    : 'Point your right thumb toward you, then follow the curl of your fingers.'}
-                </p>
-              ) : <p>Make a prediction before seeing the solved field.</p>}
-            </div>
-            <button type="button" className="learning-primary-button current-field-predict-primary" disabled={!predictionCorrect} onClick={() => setStage('solve')}>
-              Reveal the current field →
-            </button>
-            <div className="current-field-predict-footer">
-              <div><button type="button" onClick={onBackToCatalog}>← All lessons</button><button type="button" onClick={onBackHome}>Design start</button></div>
-              <span>1 of 4 · Predict</span>
-            </div>
-          </section>
-        ) : shownRun ? (
-          <div className="current-field-viewer">
-            <div className="mesh-viewer-header current-field-visual-header">
-              <div className="mesh-viewer-title"><h3>Straight conductor in air</h3></div>
-              <div className={`current-field-viewer-current${currentRun ? ' is-current' : ' is-pending'}`} aria-live="polite">
-                <span>{currentRun ? 'Solved current' : 'Last solved'}</span>
-                <strong>{shownCurrentA > 0 ? '+' : ''}{shownCurrentA.toFixed(0)} A</strong>
-                {!currentRun ? <em>Pending {currentA > 0 ? '+' : ''}{currentA.toFixed(0)} A</em> : null}
-              </div>
-              <div className="current-field-view-toggle" role="group" aria-label="Field visualization">
-                <button type="button" className={!showThreeD && fieldDisplayMode === 'lines' ? 'is-active' : ''} onClick={() => { setFieldDisplayMode('lines'); setShowThreeD(false); }} aria-pressed={!showThreeD && fieldDisplayMode === 'lines'}><span /> Flux lines</button>
-                <button type="button" className={!showThreeD && fieldDisplayMode === 'density' ? 'is-active' : ''} onClick={() => { setFieldDisplayMode('density'); setShowThreeD(false); }} aria-pressed={!showThreeD && fieldDisplayMode === 'density'}><span className="is-density" /> |B| map</button>
-                <button type="button" className={!showThreeD && showMesh ? 'is-active' : ''} onClick={() => { setShowMesh((visible) => showThreeD ? true : !visible); setShowThreeD(false); }} aria-pressed={!showThreeD && showMesh}><span className="is-mesh" /> Mesh</button>
-                <button type="button" className={showThreeD ? 'is-active' : ''} onClick={() => setShowThreeD(true)} aria-pressed={showThreeD}><span className="is-three" /> 3D</button>
-              </div>
-            </div>
-            {showThreeD ? (
-              <CurrentConductor3D currentA={shownCurrentA} />
-            ) : (
-              <MeshViewer
-                meshData={shownRun.data}
-                embedded
-                compactEmbedded
-                toolbarMode="zoom-only"
-                toolbarLabel={fieldDisplayMode === 'lines' ? 'Current field' : 'Flux density |B|'}
-                showMeshEdges={showMesh}
-                showFieldIntensity={fieldDisplayMode === 'density'}
-                smoothFieldIntensity
-                fieldLinesVisible={fieldDisplayMode === 'lines'}
-                animateFieldArrows={fieldDisplayMode === 'lines'}
-                viewportPanEnabled={false}
-                pointLabels={[
-                  { xMm: 0, yMm: 0, label: shownCurrentA >= 0 ? `⊙ +${shownCurrentA.toFixed(0)} A` : `⊗ ${shownCurrentA.toFixed(0)} A`, tone: 'neutral' },
-                  { xMm: PROBE_RADIUS_MM, yMm: 0, label: 'probe 15 mm', tone: 'neutral' },
-                ]}
-              />
-            )}
-          </div>
+  const renderSolvedViewer = (run: CurrentRun) => (
+    <LessonLabCanvas className="current-field-viewer">
+      <LessonLabViewport
+        label={`Straight conductor in air · ${formatSignedAmps(run.currentA)} solved`}
+        hint={currentRun ? undefined : `Slider is at ${formatSignedAmps(currentA)}, not solved yet`}
+      >
+        {canvasView === '3d' ? (
+          <CurrentConductor3D currentA={run.currentA} />
         ) : (
-          <section className="current-field-empty-stage">
-            <CurrentPredictionDiagram />
-            <div><p className="learning-kicker">Direction lab</p><h2>Start with +8 A.</h2><p>One solve reveals the circular field. Reversing current will test the rule.</p></div>
-          </section>
+          <MeshViewer
+            meshData={run.data}
+            embedded
+            compactEmbedded
+            toolbarMode="zoom-only"
+            zoomControlsSlot={zoomSlot}
+            showMeshEdges={showMesh}
+            showFieldIntensity={fieldDisplayMode === 'density'}
+            smoothFieldIntensity
+            fieldLinesVisible={fieldDisplayMode === 'lines'}
+            animateFieldArrows={fieldDisplayMode === 'lines'}
+            viewportPanEnabled={false}
+            pointLabels={[
+              { xMm: 0, yMm: 0, label: run.currentA >= 0 ? `⊙ +${run.currentA.toFixed(0)} A` : `⊗ ${run.currentA.toFixed(0)} A`, tone: 'neutral' },
+              { xMm: PROBE_RADIUS_MM, yMm: 0, label: 'probe 15 mm', tone: 'neutral' },
+            ]}
+          />
         )}
+      </LessonLabViewport>
+      {renderViewDock(false)}
+    </LessonLabCanvas>
+  );
 
-        {lessonStage === 'solve' && !quizOpen ? (
-          <div className="current-field-lesson-dock" aria-label="Current experiment controls">
-            <div className="current-field-dock-insight"><span>{activeProgressStepId}</span><strong>{labInsight}</strong></div>
-            <div className="current-field-dock-actions">
-              <button type="button" className="current-field-dock-button" aria-expanded={labControlsOpen} onClick={() => { setLabControlsOpen((open) => !open); setSolveInspectorOpen(false); }}>{labControlsOpen ? 'Done' : 'Adjust current'}</button>
-              <button type="button" className="current-field-dock-button" aria-expanded={solveInspectorOpen} onClick={() => { setSolveInspectorOpen((open) => !open); setLabControlsOpen(false); }}>Inspect results</button>
-            </div>
-          </div>
-        ) : quizOpen && !quizPassed && !lessonComplete ? (
-          <div className="current-field-lesson-dock current-field-quiz-dock" aria-label="Knowledge check controls">
-            <div className="current-field-dock-insight"><span>Check</span><strong>Answer all three questions to complete Lesson 3.</strong></div>
-            <div className="current-field-dock-actions">
-              <button type="button" className="current-field-dock-button" onClick={() => setQuizOpen(false)}>Review experiment</button>
-              <button type="button" className="current-field-dock-button" onClick={onBackToCatalog}>Lessons</button>
-            </div>
-          </div>
-        ) : null}
-      </section>
+  const currentStepNumber = Math.max(1, lessonProgressSteps.findIndex((item) => item.id === activeProgressStepId) + 1);
+  const goalCard = (
+    <LessonGoal step={currentStepNumber} total={lessonProgressSteps.length} title={currentGoal.title} detail={currentGoal.detail} />
+  );
+  // The lesson's terms sit beside whatever is being read or measured.
+  const termsBox = (
+    <LessonTerms
+      terms={[
+        { term: 'Current, I', definition: 'The flow of electric charge along the wire, in amperes (A). ⊙ and a + sign mean it flows toward you, out of the screen; ⊗ and a − sign mean it flows away from you.' },
+        { term: 'Right-hand rule', definition: 'Point your right thumb along the current. Your curled fingers show which way the field circles the wire.' },
+        { term: 'Flux density, |B|', definition: 'How strong the magnetic field is at one spot, in tesla (T). The fields here are small, so they are shown in millitesla: 1 mT = 0.001 T.' },
+        { term: <>B<sub>θ</sub></>, definition: 'The part of the field that points around the wire, along the circle. Positive means counterclockwise, negative means clockwise.' },
+        { term: 'Probe', definition: 'The fixed point where the field is read: 15 mm from the centre of the wire.' },
+        { term: <>μ<sub>0</sub></>, definition: <>The permeability of free space, 4π × 10<sup>−7</sup> T·m/A. It sets how much field a given current makes in air.</> },
+        { term: 'Current density, J', definition: 'Current divided by the cross-section area of the wire, in A/mm². The wire here has a 5 mm radius.' },
+        { term: 'FEM', definition: 'Finite element method. The solver divides the space into small triangles (the mesh) and works out the field in each one.' },
+      ]}
+    />
+  );
 
-      {lessonStage === 'solve' && !quizOpen && solveInspectorOpen ? (
-        <aside ref={solveInspectorRef} className="learning-context-panel current-field-context" aria-label="Lesson evidence and solved results">
-          <button type="button" className="current-field-drawer-close" onClick={() => setSolveInspectorOpen(false)} aria-label="Close solved results">×</button>
-          <header className="current-field-status-header">
-            <p className="learning-kicker">Evidence · Lesson 3</p>
-            <h1>Current comparison</h1>
-            <p>Sign flips direction. Magnitude sets strength.</p>
-            <div className="learning-progress" aria-label="Lesson completion"><span style={{ width: `${(completedStepCount / lessonProgressSteps.length) * 100}%` }} /></div>
-          </header>
-          {runs.length ? (
-            <section className="current-field-results" aria-label="Solved current comparison">
-              <header><div><p className="learning-kicker">Solved current sweep</p><h2>{comparisonReady ? 'The field follows the current.' : 'Build the three-frame comparison.'}</h2></div><span>{runs.length} run{runs.length === 1 ? '' : 's'}</span></header>
-              <CurrentFieldPlot runs={runs} activeCurrentA={currentRun?.currentA ?? null} onSelect={setCurrentA} />
-              {currentRun?.data.metrics ? (
-                <section className="current-field-readout">
-                  <div><span>FEM Bθ at 15 mm</span><strong>{formatSignedMilliT(currentRun.probeBT)}</strong></div>
-                  <div><span>Field circulation</span><strong>{directionForCurrent(currentRun.currentA)}</strong></div>
-                  <div><span>Peak |B| near wire</span><strong>{(currentRun.data.metrics.peak_b_t * 1e3).toFixed(3)} mT</strong></div>
-                </section>
-              ) : null}
+  const inspectPanel = (
+    <LessonLabPanel
+      ref={inspectorRef}
+      side="inspect"
+      kicker="Inspect"
+      title={lessonStage === 'design' ? 'Nothing solved yet' : 'Current comparison'}
+      summary={lessonStage === 'design'
+        ? 'Make your prediction first. The solver’s answer and its measurements appear here in the next step.'
+        : 'Sign flips direction. Magnitude sets strength.'}
+      label="Lesson evidence and solved results"
+      flash={inspectorFlash}
+      scrollTopKey={runs.length}
+    >
+      {lessonStage === 'design' ? (
+        <LessonOutline
+          steps={lessonProgressSteps.map((item) => ({
+            id: item.id,
+            label: item.label,
+            detail: LESSON_THREE_GOALS[item.id as LessonThreeProgressStepId].detail,
+          }))}
+          currentId={activeProgressStepId}
+        />
+      ) : runs.length ? (
+        <section className="current-field-results" aria-label="Solved current comparison">
+          <header><div><p className="learning-kicker">Solved current sweep</p><h2>{comparisonReady ? 'The field follows the current.' : 'Build the three-frame comparison.'}</h2></div><span>{runs.length} run{runs.length === 1 ? '' : 's'}</span></header>
+          <CurrentFieldPlot runs={runs} activeCurrentA={currentRun?.currentA ?? null} onSelect={setCurrentA} />
+          {currentRun?.data.metrics ? (
+            <section className="current-field-readout">
+              <div><span>Solved Bθ at 15 mm</span><strong>{formatSignedMilliT(currentRun.probeBT)}</strong></div>
+              <div><span>Field circulation</span><strong>{directionForCurrent(currentRun.currentA)}</strong></div>
+              <div><span>Peak |B| near wire</span><strong>{(currentRun.data.metrics.peak_b_t * 1e3).toFixed(3)} mT</strong></div>
             </section>
-          ) : (
-            <section className="current-field-status-empty">
-              <p className="learning-kicker">Solved currents</p><h2>Awaiting the +8 A frame</h2><p>Solve three deliberate currents to reveal direction and scale.</p>
-              <ol><li><span>1</span> Solve +8 A</li><li><span>2</span> Reverse to −8 A</li><li><span>3</span> Double to +16 A</li></ol>
-            </section>
-          )}
-          <section className="current-field-inspector-next" aria-label="Continue after reviewing the current plot">
-            <span>{comparisonReady ? 'Evidence reviewed?' : 'Plot reviewed?'}</span>
-            {comparisonReady ? (
-              <button type="button" onClick={continueToCheck}>Continue to Check →</button>
-            ) : (
-              <button type="button" disabled={busy} onClick={continueExperiment}>
-                Adjust next: {guidedCurrentA > 0 ? '+' : ''}{guidedCurrentA.toFixed(0)} A →
-              </button>
-            )}
+          ) : null}
+        </section>
+      ) : (
+        <section className="current-field-status-empty">
+          <p className="learning-kicker">Solved currents</p><h2>Awaiting the +8 A frame</h2><p>Solve three deliberate currents to reveal direction and scale.</p>
+          <ol><li><span>1</span> Solve +8 A</li><li><span>2</span> Reverse to −8 A</li><li><span>3</span> Double to +16 A</li></ol>
+        </section>
+      )}
+
+      {termsBox}
+
+      {lessonStage === 'solve' ? (
+        <details className="current-field-inspector-details">
+          <summary>Details · straight-wire equation</summary>
+          <section className="current-field-equation-card">
+            <header><span>STRAIGHT-WIRE CHECK</span><strong>probe r = 15 mm</strong></header>
+            <div className="current-field-equation"><span>B</span><b>=</b><span className="current-field-fraction"><i>μ<sub>0</sub>I</i><i>2πr</i></span></div>
+            <dl>
+              <div><dt>Current density J at {formatSignedAmps(currentA)}</dt><dd>{currentDensityAmm2 > 0 ? '+' : ''}{currentDensityAmm2.toFixed(3)} A/mm²</dd></div>
+              <div><dt>Equation Bθ at 15 mm</dt><dd>{formatSignedMilliT(analyticProbeBT(currentA))}</dd></div>
+            </dl>
+            <p>Positive Bθ is counterclockwise. Negative Bθ is clockwise.</p>
           </section>
-          <details className="current-field-inspector-details">
-            <summary>Details · straight-wire equation</summary>
-            <section className="current-field-equation-card">
-              <header><span>STRAIGHT-WIRE CHECK</span><strong>probe r = 15 mm</strong></header>
-              <div className="current-field-equation"><span>B</span><b>=</b><span className="current-field-fraction"><i>μ<sub>0</sub>I</i><i>2πr</i></span></div>
-              <dl><div><dt>Current density J</dt><dd>{currentDensityAmm2 > 0 ? '+' : ''}{currentDensityAmm2.toFixed(3)} A/mm²</dd></div><div><dt>Predicted Bθ</dt><dd>{formatSignedMilliT(analyticProbeBT(currentA))}</dd></div></dl>
-              <p>Positive Bθ is counterclockwise. Negative Bθ is clockwise.</p>
-            </section>
-          </details>
-        </aside>
+        </details>
       ) : null}
-    </main>
+    </LessonLabPanel>
+  );
+
+  if (quizOpen) {
+    return (
+      <LessonLab className="current-field-lab">
+        {inspectPanel}
+        <LessonLabStage className="is-tall">
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
+            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Can you connect current to field?"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep hint={quizPassed ? 'Lesson complete. Continue when you are ready.' : 'Answer all three questions to complete Lesson 3.'}>
+              {quizPassed || lessonComplete ? (
+                <a className="learning-primary-button" href="/tutorials/lesson-4">Next lesson</a>
+              ) : null}
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => setQuizOpen(false)}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Use the solved direction and scaling, shown on the right, not a memorized motor diagram.</p>
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  if (lessonStage === 'design') {
+    return (
+      <LessonLab className="current-field-lab">
+        {inspectPanel}
+        <LessonLabStage>
+          <LessonLabViewport label="Straight conductor in air · not solved yet" className="is-centered">
+            <CurrentPredictionDiagram />
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Predict"
+          title="Which way does the field turn?"
+          summary="Current points toward you. Predict its circulation before the solver reveals it."
+          label="Current field direction prediction"
+          footer={(
+            <LessonNextStep
+              tone={prediction ? (predictionCorrect ? 'good' : 'warn') : undefined}
+              hint={prediction
+                ? predictionCorrect
+                  ? 'Exactly. Thumb toward you; curled fingers move counterclockwise.'
+                  : 'Point your right thumb toward you, then follow the curl of your fingers.'
+                : 'Make a prediction before seeing the solved field.'}
+            >
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={!predictionCorrect}
+                onClick={() => setStage('solve')}
+              >
+                Reveal the current field →
+              </button>
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                <LessonLink onClick={onBackHome}>Design start</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note"><strong>Follow your curled fingers. Which direction do they point?</strong></p>
+          <LessonChoices
+            label="Current field direction prediction"
+            value={prediction}
+            onChange={setPrediction}
+            correctId="ccw"
+            options={[
+              { id: 'ccw', label: 'Counterclockwise', detail: 'Right thumb out; fingers curl this way.' },
+              { id: 'cw', label: 'Clockwise', detail: 'The opposite circulation direction.' },
+              { id: 'none', label: 'No magnetic field', detail: 'Current would leave the surrounding space unchanged.' },
+            ]}
+          />
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  return (
+    <LessonLab className="current-field-lab">
+      {inspectPanel}
+      <LessonLabStage>
+        {shownRun ? (
+          renderSolvedViewer(shownRun)
+        ) : (
+          <LessonLabCanvas>
+            <LessonLabViewport label="Straight conductor in air" hint="Not solved yet" className="is-centered">
+              <CurrentPredictionDiagram />
+            </LessonLabViewport>
+            {renderViewDock(true)}
+          </LessonLabCanvas>
+        )}
+      </LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={`Experiment · ${lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label ?? ''}`}
+        title="Current lab"
+        label="Current experiment"
+        footer={(
+          <LessonNextStep hint={labInsight}>
+            <button type="button" className="learning-primary-button" disabled={busy} onClick={handleLabPrimary}>
+              {labPrimaryLabel}
+            </button>
+          </LessonNextStep>
+        )}
+      >
+        {goalCard}
+        <section className="current-field-control-card">
+          <label htmlFor="current-field-slider"><span>Conductor current</span><strong>{formatSignedAmps(currentA)}</strong></label>
+          <input id="current-field-slider" type="range" min="-16" max="16" step="2" value={currentA} disabled={busy} aria-label={`Conductor current ${currentA} amperes`} onChange={(event) => setCurrentA(Number(event.currentTarget.value))} />
+          <div className="current-field-scale"><span>−16 A</span><span>0</span><span>+16 A</span></div>
+          <div className={`current-field-selection-state${currentRun ? ' is-solved' : ' is-pending'}`} aria-live="polite">
+            <span>{currentRun ? 'Solved' : 'Pending'}</span>
+            <p>{currentRun ? 'This current is already in the comparison.' : 'Solve this current to update the field view.'}</p>
+          </div>
+        </section>
+        <p className="lesson-lab-note">
+          {!runs.length
+            ? 'One solve reveals the circular field. Reversing current will test the rule.'
+            : comparisonReady
+              ? 'Optional: add another current after reviewing the three guided frames.'
+              : !hasNegative
+                ? 'Reverse the current to reveal the direction change.'
+                : 'Double the positive current to test proportional scaling.'}
+        </p>
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };
