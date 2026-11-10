@@ -317,3 +317,34 @@ def unfold_sector_frame(frame: dict) -> dict:
     if isinstance(noload, dict) and isinstance(noload.get(SECTOR_FOLD_KEY), dict):
         unfolded["noload_plot"] = _unfold_plot(noload, noload[SECTOR_FOLD_KEY])
     return unfolded
+
+
+def tile_sector_mesh_preview(preview: dict) -> dict:
+    """A sector mesh preview drawn as the whole motor; any other preview unchanged.
+
+    The solve still uses the one sector: ``mesh_info`` keeps its element count
+    and its ``sector`` record, which says how many copies the picture holds.
+    """
+
+    mesh_info = preview.get("mesh_info")
+    sector = mesh_info.get("sector") if isinstance(mesh_info, dict) else None
+    if not isinstance(sector, dict) or not preview.get("triangles"):
+        return preview
+    tiling = tile_sector_mesh(
+        preview["nodes_mm"],
+        preview["triangles"],
+        repeats=int(sector["repeats"]),
+        anti_periodic=bool(sector["anti_periodic"]),
+    )
+    source = tiling.element_source.tolist()
+    tiled = dict(preview)
+    tiled["nodes_mm"] = tiling.nodes_mm.tolist()
+    tiled["triangles"] = tiling.triangles.tolist()
+    for key in ("regions", "element_region_ids"):
+        values = preview.get(key)
+        if isinstance(values, list) and len(values) == len(preview["triangles"]):
+            tiled[key] = [values[index] for index in source]
+    tiled["total_span_deg"] = 360.0
+    if isinstance(preview.get("n_pole_pitches"), int):
+        tiled["n_pole_pitches"] = preview["n_pole_pitches"] * tiling.repeats
+    return tiled

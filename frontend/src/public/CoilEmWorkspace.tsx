@@ -2624,7 +2624,7 @@ function HealthPanel({
       title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
-    ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
+    ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${Number(mesh.mesh_info.num_triangles ?? mesh.triangles.length).toLocaleString()} generated triangles.` }] : []),
     ...(toothWidthAdvisory ? [{
       severity: toothWidthAdvisory.severity,
       title: toothWidthAdvisory.kind === 'tooth_shoe_shoulder'
@@ -3344,6 +3344,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     { value: 'full', label: 'Full motor', title: 'Meshes and solves the whole cross-section, as the benchmark report measured.' },
     { value: 'auto', label: 'One sector', title: 'Solves one repeating sector when the motor has one, and the full motor otherwise. Faster; results are experimental.' },
   ];
+  const meshSector = mesh?.mesh_info.sector as { repeats: number; anti_periodic: boolean } | undefined;
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
@@ -3941,6 +3942,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                 <span id="public-solve-symmetry-label">Solved region</span>
                 <div className="mesh-segmented-control">{symmetryChoices.map((choice) => <button type="button" className={symmetry === choice.value ? 'active' : ''} aria-pressed={symmetry === choice.value} title={choice.title} disabled={busy !== null || selectedSolver === 'elmer'} onClick={() => onMeshSettingChange('symmetry', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
+              {meshSector && <p className="public-mesh-build-note">This motor repeats {meshSector.repeats} times: one sector of {Number(mesh?.mesh_info.num_triangles ?? 0).toLocaleString()} triangles is solved, and the mesh is shown copied around the motor.</p>}
+              {symmetry === 'auto' && !meshSector && mesh && <p className="public-mesh-build-note">This motor is solved in full{typeof mesh.mesh_info.sector_fallback_reason === 'string' ? `: ${mesh.mesh_info.sector_fallback_reason}` : ''}.</p>}
               {symmetry === 'auto' && <p className="public-mesh-build-note">Solves one repeating sector and shows the full motor. A motor that does not repeat is solved in full. Results match the full motor to mesh-noise level and are marked experimental.</p>}
               <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Preparing mesh…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
