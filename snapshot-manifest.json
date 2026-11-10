@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 169429,
-      "sha256": "d6358ab8fdb2006ce22aea96aa3af6698afe1b117c65b75bc2117f68f4a7990d"
+      "bytes": 169701,
+      "sha256": "b95630c6508972226508aa431a47be1f5aefb70a59569940943f68324ce748e1"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -680,8 +680,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 7869,
-      "sha256": "ddf7e0e0568162317ee0be817254957d19d8a1c49505bf0fbbd9ec7a79351aee"
+      "bytes": 8355,
+      "sha256": "5c38e55ca624663152e598db026e000c27f444ffb8000cf1c604062c187f8c4c"
     },
     {
       "path": "backend/sweep_planning.py",
@@ -12935,8 +12935,8 @@
     },
     {
       "path": "backend/field_frame_codec.py",
-      "bytes": 6884,
-      "sha256": "1d3d54c63a1b75829fdef64ed0474b40861be6ff425f698a7f22f71102288310"
+      "bytes": 7570,
+      "sha256": "03a71e9b1ede3811b491fdfcd73d4f6942693875f9a0d262cd24260517fbc31b"
     },
     {
       "path": "backend/reference_models/lrk.py",

@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import lzma
 import struct
+from itertools import chain
 from pathlib import Path
 from typing import Any
 
@@ -42,8 +43,29 @@ def _is_number(value: Any) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
+_PLAIN_NUMBERS = frozenset({int, float})
+
+
+def _all_numbers(values: list[Any]) -> bool:
+    """``all(_is_number(value) for value in values)``, without a Python call per value.
+
+    Frame arrays hold plain ints and floats, which the set of their types
+    settles at once; anything else (bools, number subclasses) takes the slow path.
+    """
+    return set(map(type, values)) <= _PLAIN_NUMBERS or all(_is_number(value) for value in values)
+
+
+def _all_ints(values: list[Any]) -> bool:
+    kinds = set(map(type, values))
+    if kinds <= {int}:
+        return True
+    if kinds <= _PLAIN_NUMBERS:
+        return False
+    return all(isinstance(value, int) for value in values)
+
+
 def _numeric_dtype(values: list[Any]) -> str:
-    if all(isinstance(value, int) for value in values):
+    if _all_ints(values):
         if values and _INT32.min <= min(values) and max(values) <= _INT32.max:
             return "<i4"
         return "<i8"
@@ -85,20 +107,19 @@ class _Encoder:
         return [self.encode(value) for value in values]
 
     def _encode_array(self, values: list[Any]) -> dict[str, Any] | None:
-        if all(_is_number(value) for value in values):
+        if _all_numbers(values):
             return {_ARRAY_KEY: self._add(np.asarray(values, dtype=_numeric_dtype(values)))}
-        if all(isinstance(value, str) for value in values):
+        if set(map(type, values)) == {str} or all(isinstance(value, str) for value in values):
             table = sorted(set(values))
             index = {text: position for position, text in enumerate(table)}
             dtype = "<u1" if len(table) <= 0xFF else "<u2" if len(table) <= 0xFFFF else "<u4"
             indexes = np.asarray([index[text] for text in values], dtype=dtype)
             return {_ARRAY_KEY: self._add(indexes), _STRINGS_KEY: table}
         width = len(values[0]) if isinstance(values[0], (list, tuple)) else 0
-        if width and all(
-            isinstance(row, (list, tuple)) and len(row) == width and all(_is_number(item) for item in row)
-            for row in values
-        ):
-            flat = [item for row in values for item in row]
+        if width and all(isinstance(row, (list, tuple)) for row in values) and set(map(len, values)) == {width}:
+            flat = list(chain.from_iterable(values))
+            if not _all_numbers(flat):
+                return None
             array = np.asarray(flat, dtype=_numeric_dtype(flat)).reshape(len(values), width)
             return {_ARRAY_KEY: self._add(array)}
         return None
