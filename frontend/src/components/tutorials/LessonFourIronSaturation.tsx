@@ -144,7 +144,7 @@ const LESSON_FOUR_TERMS: readonly LessonTerm[] = [
 const QUIZ: KnowledgeCheckQuestion[] = [
   {
     id: 'saturation-meaning',
-    prompt: 'What changes most dramatically after M350-50A passes its B–H knee?',
+    prompt: 'What changes most dramatically after the electrical steel passes its B–H knee?',
     options: ['Its effective permeability collapses', 'The current disappears', 'The iron becomes an airgap'],
     correctIndex: 0,
     explanation: 'H can keep rising, but each additional ampere produces much less B because the incremental permeability has fallen.',
@@ -158,32 +158,32 @@ const QUIZ: KnowledgeCheckQuestion[] = [
   },
   {
     id: 'saturation-local',
-    prompt: 'Why does the |B| map show saturation locally instead of labeling the whole part saturated?',
-    options: ['B varies from element to element', 'Only the mesh can saturate', 'M350-50A has no B–H curve'],
+    prompt: 'Why does the Flux density view show saturation locally instead of labeling the whole part saturated?',
+    options: ['B varies from element to element', 'Only the mesh can saturate', 'Electrical steel has no B–H curve'],
     correctIndex: 0,
-    explanation: 'Geometry concentrates flux. Each FEM element samples its own B and therefore its own point on the M350-50A curve.',
+    explanation: 'Geometry concentrates flux. Each FEM element samples its own B and therefore its own point on the steel’s B–H curve.',
   },
   {
     id: 'saturation-motor',
     prompt: 'Why is a saturated tooth costly in a motor?',
     options: [
-      'Copper loss keeps rising roughly with I² while useful airgap flux gains diminish',
+      'Copper loss keeps rising roughly with I² while airgap flux gains diminish',
       'The permanent magnets instantly demagnetize',
       'The airgap becomes electrically conductive',
     ],
     correctIndex: 0,
-    explanation: 'Torque potential follows useful airgap flux, but winding heating grows rapidly with current. A saturated tooth therefore buys less torque per added ampere.',
+    explanation: 'Torque potential follows airgap flux, but winding heating grows rapidly with current. A saturated tooth therefore buys less torque per added ampere.',
   },
   {
     id: 'saturation-spm',
     prompt: 'Why does the SPM tooth fixture carry airgap flux even at 0 A?',
     options: [
-      'The N42 magnet supplies flux before the winding adds magnetomotive force',
-      'The M350-50A steel creates permanent flux by itself',
+      'The N42 magnet supplies flux before the winding adds MMF',
+      'The electrical steel creates permanent flux by itself',
       'The mesh stores current from the previous solve',
     ],
     correctIndex: 0,
-    explanation: 'The surface magnet establishes a baseline field. Reinforcing winding current can raise useful flux further, but the same M350-50A tooth still becomes the bottleneck near saturation.',
+    explanation: 'The surface magnet establishes a baseline field. Reinforcing winding current can raise useful flux further, but the same steel tooth still becomes the bottleneck near saturation.',
   },
 ];
 
