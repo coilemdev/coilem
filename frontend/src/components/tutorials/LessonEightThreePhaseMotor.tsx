@@ -393,7 +393,6 @@ const WyeConnectionCard: React.FC = () => (
 );
 
 type CanvasView = '2d' | '3d';
-type FieldDisplayMode = 'lines' | 'density';
 type ThreePhaseStepId = 'connect' | 'spin' | 'stress' | 'check';
 type FieldSource = 'stator' | 'rotor' | 'combined';
 
@@ -454,7 +453,8 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   const [reversedSequence, setReversedSequence] = React.useState(false);
   const [busyMode, setBusyMode] = React.useState<ThreePhaseMotorFieldComponent | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
   const [canvasView, setCanvasView] = React.useState<CanvasView>('2d');
   const [rotorMotionAllowed, setRotorMotionAllowed] = React.useState(true);
@@ -844,18 +844,23 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
         onTab={setCanvasView}
         end={<>{unsolved ? 'Solve to see the field' : null}<span ref={setZoomSlot} /></>}
       >
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={fieldDisplayMode}
-            onChange={setFieldDisplayMode}
-            options={[
-              { id: 'lines', label: 'Field lines', disabled: unsolved || threeD, title: twoDOnlyTitle('Lines that follow the direction of the field') },
-              { id: 'density', label: 'Flux density', disabled: unsolved, title: 'Colour by field strength, |B|' },
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines}
+            onChange={setShowFieldLines}
+            disabled={unsolved || threeD}
+            title={twoDOnlyTitle('Lines that follow the direction of the field')}
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity}
+            onChange={setShowFluxDensity}
+            disabled={unsolved}
+            title="Colour by field strength, |B|"
+          >
+            Flux density
+          </LessonDockToggle>
           <LessonDockToggle
             pressed={showMesh}
             onChange={setShowMesh}
@@ -897,7 +902,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
               <ThreePhaseMotor3D
                 frameData={displayFrame}
                 fieldMode={fieldMode}
-                showFieldIntensity={fieldDisplayMode === 'density'}
+                showFieldIntensity={showFluxDensity}
                 fieldIntensityRange={intensityRange}
                 playing={playing}
               />
@@ -912,11 +917,11 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
               // Before the solve there is no field to draw, so the mesh is
               // what shows the geometry.
               showMeshEdges={showMesh || !solved}
-              showFieldIntensity={solved && fieldDisplayMode === 'density'}
+              showFieldIntensity={solved && showFluxDensity}
               fieldIntensityRange={intensityRange}
               smoothFieldIntensity
-              fieldLinesVisible={solved && fieldDisplayMode === 'lines'}
-              animateFieldArrows={solved && playing && fieldDisplayMode === 'lines'}
+              fieldLinesVisible={solved && showFieldLines}
+              animateFieldArrows={solved && playing && showFieldLines}
               viewportPanEnabled={false}
               pointLabels={pointLabels}
               directionVectors={solved ? directionVectors : []}

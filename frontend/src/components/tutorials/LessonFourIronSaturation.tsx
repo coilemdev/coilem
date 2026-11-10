@@ -31,7 +31,6 @@ import {
   LessonLink,
   LessonNextStep,
   LessonOutline,
-  LessonSegmented,
   LessonTerms,
 } from './lab/LessonLab';
 import type { LessonTerm } from './lab/LessonLab';
@@ -47,7 +46,6 @@ interface LearningLessonFourIronSaturationProps {
 }
 
 type Prediction = 'linear' | 'knee' | 'fall';
-type FieldDisplayMode = 'lines' | 'density';
 type LessonFourProgressStepId =
   | 'predict'
   | 'low'
@@ -423,7 +421,8 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
   // Saturation is read off the flux-density colours, so that is the default drawing.
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('density');
+  const [showFieldLines, setShowFieldLines] = React.useState(false);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(true);
   const [showMesh, setShowMesh] = React.useState(false);
   // The ring and the tooth each have their own 3D model, so each remembers its own view.
   const [showTooth3D, setShowTooth3D] = React.useState(false);
@@ -728,18 +727,23 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
         onTab={(tab) => setShow3D(tab === '3d')}
         end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
       >
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={fieldDisplayMode}
-            onChange={setFieldDisplayMode}
-            options={[
-              { id: 'lines', label: 'Field lines', disabled: layersDisabled, title: 'Lines that follow the direction of the field' },
-              { id: 'density', label: 'Flux density', disabled: layersDisabled, title: 'Colour by field strength, |B|' },
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines}
+            onChange={setShowFieldLines}
+            disabled={layersDisabled}
+            title="Lines that follow the direction of the field"
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity}
+            onChange={setShowFluxDensity}
+            disabled={layersDisabled}
+            title="Colour by field strength, |B|"
+          >
+            Flux density
+          </LessonDockToggle>
           <LessonDockToggle
             pressed={showMesh}
             onChange={setShowMesh}
@@ -760,10 +764,10 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
     toolbarMode: 'zoom-only',
     zoomControlsSlot: zoomSlot,
     showMeshEdges: showMesh,
-    showFieldIntensity: fieldDisplayMode === 'density',
+    showFieldIntensity: showFluxDensity,
     smoothFieldIntensity: true,
-    fieldLinesVisible: fieldDisplayMode === 'lines',
-    animateFieldArrows: fieldDisplayMode === 'lines',
+    fieldLinesVisible: showFieldLines,
+    animateFieldArrows: showFieldLines,
     viewportPanEnabled: false,
   } as const;
 

@@ -38,7 +38,6 @@ interface ChapterOneLinearMotorCapstoneProps {
 
 type CapstonePhase = 'build' | 'move' | 'strengthen' | 'reveal' | 'complete';
 type ViewMode = '2d' | '3d';
-type FieldDisplayMode = 'lines' | 'density';
 type GoalPhase = Exclude<CapstonePhase, 'complete'>;
 
 const MAGNET_X = [190, 370, 550, 730] as const;
@@ -236,7 +235,8 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const [phase, setPhase] = React.useState<CapstonePhase>('build');
   const [viewMode, setViewMode] = React.useState<ViewMode>('2d');
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
   const [magnetOrientations, setMagnetOrientations] = React.useState<number[]>([1, 1, 1, 1]);
   const [currentSign, setCurrentSign] = React.useState<1 | -1>(1);
@@ -514,18 +514,23 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
       onTab={setViewMode}
       end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
     >
-      <LessonDockGroup label="Field">
-        <LessonSegmented
-          label="Field drawing"
-          value={fieldDisplayMode}
-          onChange={setFieldDisplayMode}
-          options={[
-            { id: 'lines', label: 'Field lines', disabled: unsolved, title: 'Lines that follow the direction of the field' },
-            { id: 'density', label: 'Flux density', disabled: unsolved, title: 'Colour by field strength, |B|' },
-          ]}
-        />
-      </LessonDockGroup>
       <LessonDockGroup label="Show">
+        <LessonDockToggle
+          pressed={showFieldLines}
+          onChange={setShowFieldLines}
+          disabled={unsolved}
+          title="Lines that follow the direction of the field"
+        >
+          Field lines
+        </LessonDockToggle>
+        <LessonDockToggle
+          pressed={showFluxDensity}
+          onChange={setShowFluxDensity}
+          disabled={unsolved}
+          title="Colour by field strength, |B|"
+        >
+          Flux density
+        </LessonDockToggle>
         <LessonDockToggle
           pressed={showMesh}
           onChange={setShowMesh}
@@ -600,8 +605,8 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
                 windingSpacingMm={windingSpacingMm}
                 magnetOrientations={magnetOrientations}
                 running={running}
-                showFluxLines={fieldDisplayMode === 'lines'}
-                showBMap={fieldDisplayMode === 'density'}
+                showFluxLines={showFieldLines}
+                showBMap={showFluxDensity}
                 fieldData={fieldData}
               />
             ) : fieldData ? (
@@ -613,10 +618,10 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
                   toolbarMode="zoom-only"
                   zoomControlsSlot={zoomSlot}
                   showMeshEdges={showMesh}
-                  showFieldIntensity={fieldDisplayMode === 'density'}
+                  showFieldIntensity={showFluxDensity}
                   smoothFieldIntensity
-                  fieldLinesVisible={fieldDisplayMode === 'lines'}
-                  animateFieldArrows={fieldDisplayMode === 'lines'}
+                  fieldLinesVisible={showFieldLines}
+                  animateFieldArrows={showFieldLines}
                   viewportPanEnabled={false}
                   pointLabels={conductorLabels}
                 />

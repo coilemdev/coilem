@@ -1219,15 +1219,22 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
     if (source === 'magnet' && shownRun) void loadMagnetField(shownRun.poleGapMm);
   };
 
-  // One way of drawing the field at a time, as in the other lessons.
-  type FieldView = 'lines' | 'density' | 'pressure';
-  const fieldView: FieldView = fieldDisplayMode === 'pressure'
-    ? 'pressure'
-    : showFieldIntensity && !showFluxLines ? 'density' : 'lines';
-  const selectFieldView = (view: FieldView) => {
-    setFieldDisplayMode(view === 'pressure' ? 'pressure' : 'field');
-    setShowFluxLines(view !== 'density');
-    setShowFieldIntensity(view === 'density');
+  // Field lines and flux density can be drawn together. The pressure view
+  // replaces both, so switching it on turns them off, and the reverse.
+  const toggleFluxLines = (pressed: boolean) => {
+    setShowFluxLines(pressed);
+    if (pressed) setFieldDisplayMode('field');
+  };
+  const toggleFieldIntensity = (pressed: boolean) => {
+    setShowFieldIntensity(pressed);
+    if (pressed) setFieldDisplayMode('field');
+  };
+  const togglePressure = (pressed: boolean) => {
+    setFieldDisplayMode(pressed ? 'pressure' : 'field');
+    if (pressed) {
+      setShowFluxLines(false);
+      setShowFieldIntensity(false);
+    }
   };
 
   const selectSolvedCurrent = (nextCurrentA: number) => {
@@ -1658,26 +1665,33 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
             />
           </LessonDockGroup>
         ) : null}
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={layersOff ? null : kind === 'angle' && fieldView === 'pressure' ? 'lines' : fieldView}
-            onChange={selectFieldView}
-            options={[
-              { id: 'lines' as FieldView, label: 'Field lines', disabled: layersOff || sourceLoading, title: 'Lines that follow the direction of the field' },
-              { id: 'density' as FieldView, label: 'Flux density', disabled: layersOff || sourceLoading, title: 'Colour by field strength, |B|' },
-              ...(kind === 'baseline'
-                ? [{
-                  id: 'pressure' as FieldView,
-                  label: 'Pressure',
-                  disabled: layersOff || fieldSourceMode !== 'combined',
-                  title: 'Where the field pushes harder on the wire. Needs the combined field.',
-                }]
-                : []),
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={!layersOff && fieldDisplayMode === 'field' && showFluxLines}
+            onChange={toggleFluxLines}
+            disabled={layersOff || sourceLoading}
+            title="Lines that follow the direction of the field"
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={!layersOff && fieldDisplayMode === 'field' && showFieldIntensity}
+            onChange={toggleFieldIntensity}
+            disabled={layersOff || sourceLoading}
+            title="Colour by field strength, |B|"
+          >
+            Flux density
+          </LessonDockToggle>
+          {kind === 'baseline' ? (
+            <LessonDockToggle
+              pressed={!layersOff && fieldDisplayMode === 'pressure'}
+              onChange={togglePressure}
+              disabled={layersOff || fieldSourceMode !== 'combined'}
+              title="Where the field pushes harder on the wire. Needs the combined field."
+            >
+              Pressure
+            </LessonDockToggle>
+          ) : null}
           <LessonDockToggle
             pressed={showMesh}
             onChange={setShowMesh}
@@ -2052,7 +2066,7 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
         </section>
       )}
 
-      {lessonStage === 'solve' && labMode === 'baseline' && shownRun && fieldView === 'pressure' && !showField3D ? (
+      {lessonStage === 'solve' && labMode === 'baseline' && shownRun && fieldDisplayMode === 'pressure' && !showField3D ? (
         <section className="lesson-lab-card" aria-label="How to read the pressure view">
           <h3>Reading the pressure view</h3>
           <p className="lesson-lab-note">

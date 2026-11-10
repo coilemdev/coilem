@@ -57,7 +57,6 @@ type MotorViewMode = 'fem' | 'three';
 type RotationDirection = 1 | -1;
 type DesignDiagramMode = 'slice' | 'physical';
 type LabPart = 'field' | 'motor';
-type FieldDisplayMode = 'lines' | 'density';
 type LessonSevenStepId = 'predict' | 'field' | 'motor' | 'check';
 
 const PEAK_CURRENT_A = 8;
@@ -350,7 +349,8 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const [busyMotor, setBusyMotor] = React.useState(false);
   const [busyMotorFieldMode, setBusyMotorFieldMode] = React.useState<MotorFieldMode | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [phaseFieldMode, setPhaseFieldMode] = React.useState<PhaseFieldMode>('combined');
   const [motorFieldMode, setMotorFieldMode] = React.useState<MotorFieldMode>('combined');
   const [motorViewMode, setMotorViewMode] = React.useState<MotorViewMode>('fem');
@@ -994,18 +994,23 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
           </>
         )}
       >
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={layersOff ? null : fieldDisplayMode}
-            onChange={setFieldDisplayMode}
-            options={[
-              { id: 'lines', label: 'Field lines', disabled: layersOff, title: layerTitle('Lines that follow the direction of the field') },
-              { id: 'density', label: 'Flux density', disabled: layersOff, title: layerTitle('Colour by field strength, |B|') },
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines && !layersOff}
+            onChange={setShowFieldLines}
+            disabled={layersOff}
+            title={layerTitle('Lines that follow the direction of the field')}
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity && !layersOff}
+            onChange={setShowFluxDensity}
+            disabled={layersOff}
+            title={layerTitle('Colour by field strength, |B|')}
+          >
+            Flux density
+          </LessonDockToggle>
           {motor ? (
             <>
               <LessonDockToggle pressed={showElectromagnets} onChange={setShowElectromagnets} disabled={!motorDisplayFrame} title="The four wound poles and their coils">
@@ -1340,11 +1345,11 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
                     // Until the field is solved there is nothing but the
                     // geometry to look at, so its mesh is always drawn.
                     showMeshEdges={showMesh || !motorFrame}
-                    showFieldIntensity={fieldDisplayMode === 'density' && Boolean(motorFrame)}
+                    showFieldIntensity={showFluxDensity && Boolean(motorFrame)}
                     fieldIntensityRange={intensityRange}
                     smoothFieldIntensity
-                    fieldLinesVisible={fieldDisplayMode === 'lines' && Boolean(motorFrame)}
-                    animateFieldArrows={playing && fieldDisplayMode === 'lines'}
+                    fieldLinesVisible={showFieldLines && Boolean(motorFrame)}
+                    animateFieldArrows={playing && showFieldLines}
                     preserveViewportOnMeshChange
                     viewportPanEnabled={false}
                     pointLabels={motorPointLabels}
@@ -1448,11 +1453,11 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
                 toolbarMode="zoom-only"
                 zoomControlsSlot={zoomSlot}
                 showMeshEdges={showMesh}
-                showFieldIntensity={fieldDisplayMode === 'density'}
+                showFieldIntensity={showFluxDensity}
                 fieldIntensityRange={intensityRange}
                 smoothFieldIntensity
-                fieldLinesVisible={fieldDisplayMode === 'lines'}
-                animateFieldArrows={playing && fieldDisplayMode === 'lines'}
+                fieldLinesVisible={showFieldLines}
+                animateFieldArrows={playing && showFieldLines}
                 preserveViewportOnMeshChange
                 viewportPanEnabled={false}
                 pointLabels={fieldPointLabels}

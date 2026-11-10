@@ -65,7 +65,6 @@ interface LearningMotorMagneticCircuitProps {
 
 type LessonNineStage = Exclude<MagneticCircuitStage, 'mesh'>;
 type LessonNineFieldSource = 'stator' | 'rotor' | 'combined';
-type FieldDisplayMode = 'lines' | 'density';
 type SolveStatus = 'idle' | 'running' | 'complete' | 'error';
 
 /**
@@ -391,7 +390,8 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
   const [internalStage, setInternalStage] = React.useState<MagneticCircuitStage>('design');
   const [designSettings, setDesignSettings] = React.useState<MagneticCircuitDesignSettings>(MAGNETIC_CIRCUIT_DEFAULT_DESIGN);
   const [currentMagnitude, setCurrentMagnitude] = React.useState(MAGNETIC_CIRCUIT_PHASE_CURRENT.default);
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMeshOverlay, setShowMeshOverlay] = React.useState(false);
   const [showThreeD, setShowThreeD] = React.useState(false);
   // The mesh viewer draws its zoom buttons into this element in the dock.
@@ -1036,9 +1036,9 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
             toolbarMode="zoom-only"
             zoomControlsSlot={zoomSlot}
             showMeshEdges={showMeshOverlay}
-            showFieldIntensity={fieldDisplayMode === 'density'}
+            showFieldIntensity={showFluxDensity}
             smoothFieldIntensity
-            fieldLinesVisible={fieldDisplayMode === 'lines'}
+            fieldLinesVisible={showFieldLines}
           />
         ) : null;
       case 'frame-loading':
@@ -1109,18 +1109,23 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
           ? <span ref={setZoomSlot} />
           : solveStatus !== 'complete' ? 'Solve to see the field' : undefined}
       >
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={fieldDisplayMode}
-            onChange={setFieldDisplayMode}
-            options={[
-              { id: 'lines', label: 'Field lines', disabled: !fieldShown, title: layerTitle('Lines that follow the direction of the field') },
-              { id: 'density', label: 'Flux density', disabled: !fieldShown, title: layerTitle('Colour by field strength, |B|') },
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines}
+            onChange={setShowFieldLines}
+            disabled={!fieldShown}
+            title={layerTitle('Lines that follow the direction of the field')}
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity}
+            onChange={setShowFluxDensity}
+            disabled={!fieldShown}
+            title={layerTitle('Colour by field strength, |B|')}
+          >
+            Flux density
+          </LessonDockToggle>
           <LessonDockToggle
             pressed={showMeshOverlay}
             onChange={setShowMeshOverlay}

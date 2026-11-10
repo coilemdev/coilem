@@ -43,7 +43,6 @@ interface LearningLessonOneFollowFluxProps {
 
 type Prediction = 'closed-loop' | 'stops' | 'straight';
 type SolveView = 'air' | 'steel' | 'pair';
-type FieldDisplayMode = 'lines' | 'density';
 type SteelShape = 'bar' | 'plate' | 'puck';
 type SteelInsightAnswer = 'lower-reluctance' | 'stronger-magnet' | 'larger-area';
 
@@ -1247,7 +1246,8 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
   const [pairAttractSolve, setPairAttractSolve] = React.useState<FollowFluxFieldData | null>(null);
   const [pairRepelSolve, setPairRepelSolve] = React.useState<FollowFluxFieldData | null>(null);
   const [solveView, setSolveView] = React.useState<SolveView>('air');
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [meshEdgesVisible, setMeshEdgesVisible] = React.useState(false);
   const [showPhysicalDepth, setShowPhysicalDepth] = React.useState(false);
   const [depth3DUnavailable, setDepth3DUnavailable] = React.useState(false);
@@ -1971,18 +1971,23 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
       onTab={(tab) => setShowPhysicalDepth(tab === 'depth')}
       end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
     >
-      <LessonDockGroup label="Field">
-        <LessonSegmented
-          label="Field drawing"
-          value={fieldDisplayMode}
-          onChange={setFieldDisplayMode}
-          options={[
-            { id: 'lines', label: 'Field lines', disabled: unsolved || showPhysicalDepth, title: 'Lines that follow the direction of the field' },
-            { id: 'density', label: 'Flux density', disabled: unsolved || showPhysicalDepth, title: 'Colour by field strength, |B|' },
-          ]}
-        />
-      </LessonDockGroup>
       <LessonDockGroup label="Show">
+        <LessonDockToggle
+          pressed={showFieldLines}
+          onChange={setShowFieldLines}
+          disabled={unsolved || showPhysicalDepth}
+          title="Lines that follow the direction of the field"
+        >
+          Field lines
+        </LessonDockToggle>
+        <LessonDockToggle
+          pressed={showFluxDensity}
+          onChange={setShowFluxDensity}
+          disabled={unsolved || showPhysicalDepth}
+          title="Colour by field strength, |B|"
+        >
+          Flux density
+        </LessonDockToggle>
         <LessonDockToggle
           pressed={meshEdgesVisible}
           onChange={setMeshEdgesVisible}
@@ -2069,10 +2074,10 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
           toolbarMode="zoom-only"
           zoomControlsSlot={zoomSlot}
           showMeshEdges={meshEdgesVisible}
-          showFieldIntensity={fieldDisplayMode === 'density'}
+          showFieldIntensity={showFluxDensity}
           smoothFieldIntensity
-          fieldLinesVisible={fieldDisplayMode === 'lines'}
-          animateFieldArrows={fieldDisplayMode === 'lines'}
+          fieldLinesVisible={showFieldLines}
+          animateFieldArrows={showFieldLines}
           viewportPanEnabled={false}
           draggableRegionGroups={{
             magnet_n: 'magnet',

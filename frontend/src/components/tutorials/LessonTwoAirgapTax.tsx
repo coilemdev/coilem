@@ -23,7 +23,6 @@ import {
   LessonLink,
   LessonNextStep,
   LessonOutline,
-  LessonSegmented,
   LessonTerms,
 } from './lab/LessonLab';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
@@ -39,7 +38,6 @@ interface LearningLessonTwoAirgapTaxProps {
 }
 
 type Prediction = 'airgap' | 'steel' | 'magnet';
-type FieldDisplayMode = 'lines' | 'density';
 type LessonTwoProgressStepId = 'predict' | 'solve' | 'check';
 
 const LESSON_TWO_GOALS: Record<LessonTwoProgressStepId, { title: string; detail: string }> = {
@@ -334,7 +332,8 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   const [error, setError] = React.useState<string | null>(null);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
   // Both panels stay docked beside the canvas, as in the motor workspace.
   const inspectorRef = React.useRef<HTMLElement | null>(null);
@@ -505,18 +504,23 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
       onTab={() => undefined}
       end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
     >
-      <LessonDockGroup label="Field">
-        <LessonSegmented
-          label="Field drawing"
-          value={fieldDisplayMode}
-          onChange={setFieldDisplayMode}
-          options={[
-            { id: 'lines', label: 'Field lines', disabled: unsolved, title: 'Lines that follow the direction of the field' },
-            { id: 'density', label: 'Flux density', disabled: unsolved, title: 'Colour by field strength, |B|' },
-          ]}
-        />
-      </LessonDockGroup>
       <LessonDockGroup label="Show">
+        <LessonDockToggle
+          pressed={showFieldLines}
+          onChange={setShowFieldLines}
+          disabled={unsolved}
+          title="Lines that follow the direction of the field"
+        >
+          Field lines
+        </LessonDockToggle>
+        <LessonDockToggle
+          pressed={showFluxDensity}
+          onChange={setShowFluxDensity}
+          disabled={unsolved}
+          title="Colour by field strength, |B|"
+        >
+          Flux density
+        </LessonDockToggle>
         <LessonDockToggle
           pressed={showMesh}
           onChange={setShowMesh}
@@ -539,10 +543,10 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
           toolbarMode="zoom-only"
           zoomControlsSlot={zoomSlot}
           showMeshEdges={showMesh}
-          showFieldIntensity={fieldDisplayMode === 'density'}
+          showFieldIntensity={showFluxDensity}
           smoothFieldIntensity
-          fieldLinesVisible={fieldDisplayMode === 'lines'}
-          animateFieldArrows={fieldDisplayMode === 'lines'}
+          fieldLinesVisible={showFieldLines}
+          animateFieldArrows={showFieldLines}
           viewportPanEnabled={false}
           pointLabels={[
             { xMm: -9, yMm: 0, label: 'S', tone: 'south' },

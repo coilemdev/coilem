@@ -24,7 +24,6 @@ import {
   LessonLink,
   LessonNextStep,
   LessonOutline,
-  LessonSegmented,
   LessonTerms,
 } from './lab/LessonLab';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
@@ -40,7 +39,6 @@ interface LearningLessonThreeCurrentFieldProps {
 }
 
 type Prediction = 'ccw' | 'cw' | 'none';
-type FieldDisplayMode = 'lines' | 'density';
 /** The solved 2D field, or an illustrative 3D picture of the same wire. */
 type CanvasView = '2d' | '3d';
 type LessonThreeProgressStepId = 'predict' | 'direction' | 'scale' | 'check';
@@ -239,7 +237,8 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   const [error, setError] = React.useState<string | null>(null);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
   const [canvasView, setCanvasView] = React.useState<CanvasView>('2d');
   // Both panels stay docked beside the canvas, as in the motor workspace.
@@ -425,18 +424,23 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
         onTab={setCanvasView}
         end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
       >
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={fieldDisplayMode}
-            onChange={setFieldDisplayMode}
-            options={[
-              { id: 'lines', label: 'Field lines', disabled: layersOff, title: layerTitle('Lines that follow the direction of the field') },
-              { id: 'density', label: 'Flux density', disabled: layersOff, title: layerTitle('Colour by field strength, |B|') },
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines}
+            onChange={setShowFieldLines}
+            disabled={layersOff}
+            title={layerTitle('Lines that follow the direction of the field')}
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity}
+            onChange={setShowFluxDensity}
+            disabled={layersOff}
+            title={layerTitle('Colour by field strength, |B|')}
+          >
+            Flux density
+          </LessonDockToggle>
           <LessonDockToggle
             pressed={showMesh}
             onChange={setShowMesh}
@@ -466,10 +470,10 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
             toolbarMode="zoom-only"
             zoomControlsSlot={zoomSlot}
             showMeshEdges={showMesh}
-            showFieldIntensity={fieldDisplayMode === 'density'}
+            showFieldIntensity={showFluxDensity}
             smoothFieldIntensity
-            fieldLinesVisible={fieldDisplayMode === 'lines'}
-            animateFieldArrows={fieldDisplayMode === 'lines'}
+            fieldLinesVisible={showFieldLines}
+            animateFieldArrows={showFieldLines}
             viewportPanEnabled={false}
             pointLabels={[
               { xMm: 0, yMm: 0, label: run.currentA >= 0 ? `⊙ +${run.currentA.toFixed(0)} A` : `⊗ ${run.currentA.toFixed(0)} A`, tone: 'neutral' },

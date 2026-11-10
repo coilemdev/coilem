@@ -48,7 +48,6 @@ interface LearningLessonSixRotorChaseProps {
 
 type Prediction = 'align-once' | 'spin-forever' | 'unaffected';
 type LabPart = 'release' | 'chase' | 'dc' | 'ac';
-type FieldView = 'lines' | 'density';
 type LessonSixProgressStepId = 'predict' | 'release' | 'chase' | 'dc' | 'ac' | 'check';
 
 const LESSON_SIX_GOALS: Record<
@@ -1022,7 +1021,8 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   const [releasing, setReleasing] = React.useState(false);
   const [alignedOnce, setAlignedOnce] = React.useState(false);
   const [secondAlignmentComplete, setSecondAlignmentComplete] = React.useState(false);
-  const [fieldView, setFieldView] = React.useState<FieldView>('lines');
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
   const [showThreeD, setShowThreeD] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
@@ -1537,11 +1537,11 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   }, [onStageChange]);
 
   const solveFrameSet = async (source: RotorChaseFieldSource) => {
-    const entries: Array<[number, RotorChaseFieldData]> = [];
-    for (const angleDeg of FEM_CHECKPOINT_ANGLES) {
+    // The checkpoints are independent solves, so ask for them together.
+    const entries = await Promise.all(FEM_CHECKPOINT_ANGLES.map(async (angleDeg) => {
       const frame = await solveClient.fetchRotorChaseSolve(source, angleDeg, SOURCE_POLE_GAP_MM);
-      entries.push([angleDeg, frame]);
-    }
+      return [angleDeg, frame] as const;
+    }));
     return Object.fromEntries(entries) as Record<number, RotorChaseFieldData>;
   };
 
@@ -1642,12 +1642,10 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     setBusy(true);
     setError(null);
     try {
-      const combined = await solveFrameSet('combined');
-      const statorReference = await solveClient.fetchRotorChaseSolve(
-        'stator',
-        0,
-        SOURCE_POLE_GAP_MM,
-      );
+      const [combined, statorReference] = await Promise.all([
+        solveFrameSet('combined'),
+        solveClient.fetchRotorChaseSolve('stator', 0, SOURCE_POLE_GAP_MM),
+      ]);
       setFieldFrames({ combined });
       setStatorReferenceFrame(statorReference);
       setFieldSource('combined');
@@ -2040,18 +2038,23 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
             }))}
           />
         </LessonDockGroup>
-        <LessonDockGroup label="Field">
-          <LessonSegmented
-            label="Field drawing"
-            value={layersOff ? null : fieldView}
-            onChange={setFieldView}
-            options={[
-              { id: 'lines' as FieldView, label: 'Field lines', disabled: layersOff, title: 'Lines that follow the direction of the field' },
-              { id: 'density' as FieldView, label: 'Flux density', disabled: layersOff, title: 'Colour by field strength, |B|' },
-            ]}
-          />
-        </LessonDockGroup>
         <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines && !layersOff}
+            onChange={setShowFieldLines}
+            disabled={layersOff}
+            title="Lines that follow the direction of the field"
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity && !layersOff}
+            onChange={setShowFluxDensity}
+            disabled={layersOff}
+            title="Colour by field strength, |B|"
+          >
+            Flux density
+          </LessonDockToggle>
           <LessonDockToggle
             pressed={showMesh && !layersOff}
             onChange={setShowMesh}
@@ -2083,11 +2086,11 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
             toolbarMode="zoom-only"
             zoomControlsSlot={zoomSlot}
             showMeshEdges={showMesh}
-            showFieldIntensity={fieldView === 'density'}
+            showFieldIntensity={showFluxDensity}
             fieldIntensityRange={intensityRange}
             smoothFieldIntensity
-            fieldLinesVisible={fieldView === 'lines'}
-            animateFieldArrows={(releasing || playingAc) && fieldView === 'lines'}
+            fieldLinesVisible={showFieldLines}
+            animateFieldArrows={(releasing || playingAc) && showFieldLines}
             viewportPanEnabled={false}
             splitForceMagnetPolarity={!electromagnetActive}
             forceMagnetPolarityAxisDeg={electromagnetActive ? undefined : sourceAngleDeg}

@@ -6,11 +6,15 @@ import json
 import math
 import subprocess
 import tempfile
+import threading
 import time
+from collections import OrderedDict
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Literal
 
+from backend import fast_json
 from backend.field_lines import generate_contour_levels, generate_contour_segments
 from backend.gmsh_solver import (
     _GMSH_API_LOCK,
@@ -72,6 +76,72 @@ _ROTATING_FIELD_ANGLES_DEG = tuple(
     index * _ROTATING_FIELD_STEP_DEG
     for index in range(round(360.0 / _ROTATING_FIELD_STEP_DEG))
 )
+
+
+# Ten Gmsh smoothing passes over the background size field took five times
+# longer than the rest of the mesh, and Lessons 6 to 8 mesh or solve many frames
+# in a row. One pass keeps the triangle count; solved values move by about 0.2%.
+_TEACHING_SMOOTHING_PASSES = 1
+_TEACHING_MESH_CACHE_LIMIT = 6
+_TEACHING_MESH_CACHE: OrderedDict[tuple[Any, ...], dict[str, Any]] = OrderedDict()
+_TEACHING_MESH_CACHE_LOCK = threading.Lock()
+# Per-frame keys that repeat the mesh; a sweep response carries them once.
+_SWEEP_SHARED_FRAME_KEYS = ("nodes_mm", "triangles", "regions")
+_SWEEP_FRAME_LIST_KEYS = ("frames", "phase_a_frames", "phase_b_frames")
+
+
+def _cached_teaching_mesh(build: Callable[..., dict[str, Any]]) -> Callable[..., dict[str, Any]]:
+    """Reuse a lesson mesh built with the same arguments; callers must not edit it."""
+
+    def cached(**kwargs: Any) -> dict[str, Any]:
+        key = (build.__name__, *sorted(kwargs.items()))
+        try:
+            hash(key)
+        except TypeError:
+            return build(**kwargs)
+        with _TEACHING_MESH_CACHE_LOCK:
+            mesh = _TEACHING_MESH_CACHE.get(key)
+            if mesh is not None:
+                _TEACHING_MESH_CACHE.move_to_end(key)
+                return mesh
+        mesh = build(**kwargs)
+        with _TEACHING_MESH_CACHE_LOCK:
+            _TEACHING_MESH_CACHE[key] = mesh
+            while len(_TEACHING_MESH_CACHE) > _TEACHING_MESH_CACHE_LIMIT:
+                _TEACHING_MESH_CACHE.popitem(last=False)
+        return mesh
+
+    cached.__name__ = build.__name__
+    cached.__doc__ = build.__doc__
+    return cached
+
+
+def encode_sweep_response(sweep: dict[str, Any]) -> bytes:
+    """Encode a lesson sweep as JSON with the mesh every frame shares sent once.
+
+    Each solved frame repeats the mesh it was solved on, which made a 32-frame
+    sweep about 200 MB. Keys equal in every frame move to ``shared_frame_data``;
+    the lesson client puts them back on each frame.
+    """
+
+    frame_lists = [sweep[key] for key in _SWEEP_FRAME_LIST_KEYS if sweep.get(key)]
+    frames = [frame for frame_list in frame_lists for frame in frame_list]
+    shared: dict[str, Any] = {}
+    if frames:
+        first = frames[0]
+        for key in _SWEEP_SHARED_FRAME_KEYS:
+            value = first.get(key)
+            if value is not None and all(frame.get(key) == value for frame in frames[1:]):
+                shared[key] = value
+    compact = dict(sweep)
+    for key in _SWEEP_FRAME_LIST_KEYS:
+        if sweep.get(key):
+            compact[key] = [
+                {name: value for name, value in frame.items() if name not in shared}
+                for frame in sweep[key]
+            ]
+    compact["shared_frame_data"] = shared
+    return fast_json.dumps_bytes(compact)
 
 
 def _run_teaching_solver(runner: Any, command: list[str], *, cwd: Path, timeout: float | None = None) -> Any:
@@ -194,6 +264,7 @@ def _rotated_rectangle_corners(
     ]
 
 
+@_cached_teaching_mesh
 def _build_follow_flux_gmsh_mesh(
     *,
     steel_return: bool,
@@ -241,7 +312,7 @@ def _build_follow_flux_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_follow_flux_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -434,6 +505,7 @@ def _build_follow_flux_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_current_wire_gmsh_mesh(
     *,
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
@@ -452,7 +524,7 @@ def _build_current_wire_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_current_wire_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -515,6 +587,7 @@ def _build_current_wire_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_current_force_gmsh_mesh(
     *,
     pole_gap_mm: float = 8.0,
@@ -540,7 +613,7 @@ def _build_current_force_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_current_force_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -625,6 +698,7 @@ def _build_current_force_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_linear_motor_capstone_gmsh_mesh(
     *,
     airgap_mm: float = 8.0,
@@ -658,7 +732,7 @@ def _build_linear_motor_capstone_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_linear_motor_capstone")
 
             domain = gmsh.model.occ.addRectangle(
@@ -757,6 +831,7 @@ def _build_linear_motor_capstone_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_rotor_chase_gmsh_mesh(
     *,
     rotor_angle_deg: float,
@@ -788,7 +863,7 @@ def _build_rotor_chase_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_rotor_chase_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -902,6 +977,7 @@ def _build_rotor_chase_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_rotating_field_gmsh_mesh(
     *,
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
@@ -925,7 +1001,7 @@ def _build_rotating_field_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_rotating_field_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -1008,6 +1084,7 @@ def _build_rotating_field_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_rotating_field_motor_gmsh_mesh(
     *,
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
@@ -1065,7 +1142,7 @@ def _build_rotating_field_motor_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_rotating_field_motor_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -1170,6 +1247,7 @@ def _build_rotating_field_motor_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_three_phase_motor_gmsh_mesh(
     *,
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
@@ -1207,7 +1285,7 @@ def _build_three_phase_motor_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_three_phase_motor_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -1328,6 +1406,7 @@ def _build_three_phase_motor_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_iron_saturation_gmsh_mesh(
     *,
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
@@ -1348,7 +1427,7 @@ def _build_iron_saturation_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 10)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_iron_saturation_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -1411,6 +1490,7 @@ def _build_iron_saturation_gmsh_mesh(
     }
 
 
+@_cached_teaching_mesh
 def _build_iron_saturation_tooth_gmsh_mesh(
     *,
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
@@ -1431,7 +1511,7 @@ def _build_iron_saturation_tooth_gmsh_mesh(
             gmsh.option.setNumber("Mesh.Algorithm", 6)
             gmsh.option.setNumber("Mesh.ElementOrder", 1)
             gmsh.option.setNumber("Mesh.RecombineAll", 0)
-            gmsh.option.setNumber("Mesh.Smoothing", 12)
+            gmsh.option.setNumber("Mesh.Smoothing", _TEACHING_SMOOTHING_PASSES)
             gmsh.model.add("openem_iron_saturation_tooth_teaching")
 
             domain = gmsh.model.occ.addRectangle(
@@ -1804,7 +1884,7 @@ def run_follow_flux_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         command = [
             str(executable or "magneto2d"),
             str(input_path),
@@ -1824,7 +1904,7 @@ def run_follow_flux_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Follow-the-flux fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Follow-the-flux fixture returned invalid JSON") from exc
 
@@ -1891,7 +1971,7 @@ def run_airgap_tax_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -1910,7 +1990,7 @@ def run_airgap_tax_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Airgap-tax fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Airgap-tax fixture returned invalid JSON") from exc
 
@@ -1965,7 +2045,7 @@ def run_current_field_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -1984,7 +2064,7 @@ def run_current_field_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Current-field fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Current-field fixture returned invalid JSON") from exc
 
@@ -2039,7 +2119,7 @@ def run_iron_saturation_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -2058,7 +2138,7 @@ def run_iron_saturation_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Iron-saturation fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Iron-saturation fixture returned invalid JSON") from exc
 
@@ -2130,7 +2210,7 @@ def _run_iron_saturation_tooth_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -2149,7 +2229,7 @@ def _run_iron_saturation_tooth_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError(f"{fixture_name} fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError(
                 f"{fixture_name} fixture returned invalid JSON"
@@ -2251,7 +2331,7 @@ def run_field_force_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -2270,7 +2350,7 @@ def run_field_force_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Field-force fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Field-force fixture returned invalid JSON") from exc
 
@@ -2361,7 +2441,7 @@ def run_linear_motor_capstone_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         command = [
             str(executable or "magneto2d"),
             str(input_path),
@@ -2392,7 +2472,7 @@ def run_linear_motor_capstone_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Linear-capstone fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Linear-capstone fixture returned invalid JSON") from exc
 
@@ -2555,7 +2635,7 @@ def run_rotor_chase_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -2574,7 +2654,7 @@ def run_rotor_chase_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Rotor-chase fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Rotor-chase fixture returned invalid JSON") from exc
 
@@ -2662,7 +2742,7 @@ def run_rotating_field_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -2681,7 +2761,7 @@ def run_rotating_field_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Rotating-field fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError("Rotating-field fixture returned invalid JSON") from exc
 
@@ -2719,36 +2799,29 @@ def run_rotating_field_sweep(
     if not 0.0 < peak_current_a <= 20.0:
         raise ValueError("peak_current_a must be greater than 0 and at most 20 A")
     imported_mesh = _build_rotating_field_gmsh_mesh(mesh_density=mesh_density)
-    frames = [
-        run_rotating_field_fixture(
-            electrical_angle_deg=float(angle_deg),
+    components = ("combined", "phase_a", "phase_b")
+    jobs = [
+        (component, float(angle_deg))
+        for component in components
+        for angle_deg in _ROTATING_FIELD_ANGLES_DEG
+    ]
+
+    def solve_job(job: tuple[str, float]) -> dict[str, Any]:
+        component, angle_deg = job
+        return run_rotating_field_fixture(
+            electrical_angle_deg=angle_deg,
             peak_current_a=peak_current_a,
-            field_component="combined",
+            field_component=component,  # type: ignore[arg-type]
             mesh_density=mesh_density,
             imported_mesh=imported_mesh,
         )
-        for angle_deg in _ROTATING_FIELD_ANGLES_DEG
-    ]
-    phase_a_frames = [
-        run_rotating_field_fixture(
-            electrical_angle_deg=float(angle_deg),
-            peak_current_a=peak_current_a,
-            field_component="phase_a",
-            mesh_density=mesh_density,
-            imported_mesh=imported_mesh,
-        )
-        for angle_deg in _ROTATING_FIELD_ANGLES_DEG
-    ]
-    phase_b_frames = [
-        run_rotating_field_fixture(
-            electrical_angle_deg=float(angle_deg),
-            peak_current_a=peak_current_a,
-            field_component="phase_b",
-            mesh_density=mesh_density,
-            imported_mesh=imported_mesh,
-        )
-        for angle_deg in _ROTATING_FIELD_ANGLES_DEG
-    ]
+
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        solved = list(executor.map(solve_job, jobs))
+    frame_count = len(_ROTATING_FIELD_ANGLES_DEG)
+    frames = solved[:frame_count]
+    phase_a_frames = solved[frame_count:2 * frame_count]
+    phase_b_frames = solved[2 * frame_count:]
     return {
         "schema_version": "openem.rotating_field_sweep.v2",
         "fixture": "rotating_field",
@@ -2818,7 +2891,7 @@ def run_rotating_field_motor_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -2839,7 +2912,7 @@ def run_rotating_field_motor_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Rotating-field motor fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError(
                 "Rotating-field motor fixture returned invalid JSON"
@@ -3007,7 +3080,7 @@ def run_three_phase_motor_fixture(
         tmp_path = Path(tmp_dir)
         input_path = tmp_path / "request.json"
         output_path = tmp_path / "report.json"
-        input_path.write_text(json.dumps(request), encoding="utf-8")
+        input_path.write_bytes(fast_json.dumps_bytes(request))
         completed = _run_teaching_solver(
             runner,
             [
@@ -3028,7 +3101,7 @@ def run_three_phase_motor_fixture(
         if not output_path.exists():
             raise Magneto2DExecutionError("Three-phase motor fixture produced no report")
         try:
-            payload: dict[str, Any] = json.loads(output_path.read_text(encoding="utf-8"))
+            payload: dict[str, Any] = fast_json.loads(output_path.read_bytes())
         except json.JSONDecodeError as exc:
             raise Magneto2DExecutionError(
                 "Three-phase motor fixture returned invalid JSON"

@@ -889,8 +889,6 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
     setTransform((current) => ({ ...current, scale: Math.max(minScale, current.scale / 1.3) }));
   }, [minScale]);
 
-  const regionGroups: Record<string, string[]> = {};
-  const triangleRegions: string[] = new Array(meshData.triangles.length);
   const forceMagnetBounds = useMemo(() => {
     const bounds: Record<string, { minX: number; maxX: number; minY: number; maxY: number }> = {};
     meshData.triangles.forEach((triangle, index) => {
@@ -940,48 +938,71 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
       'stator',
     );
   }, [meshData, showMagnetizationLabels, statorPoleLabelsFromField]);
-  for (let index = 0; index < meshData.triangles.length; index += 1) {
-    const [a, b, c] = meshData.triangles[index];
-    const sourceRegion = meshData.regions[index];
-    let region = sourceRegion;
-    if (sourceRegion === 'magnet' && showMagnetizationLabels && !neutralMagnets) {
-      region = magnetArcAssignments?.get(index) ?? alternatingMagnetRegion(
-        meshData.nodes_mm,
-        meshData.triangles[index],
-        meshData.config_summary.poles,
-      );
-    } else if (sourceRegion === 'slot_winding' && splitConcentratedSlotWindings) {
-      const centroidX = (meshData.nodes_mm[a][0] + meshData.nodes_mm[b][0] + meshData.nodes_mm[c][0]) / 3;
-      const centroidY = (meshData.nodes_mm[a][1] + meshData.nodes_mm[b][1] + meshData.nodes_mm[c][1]) / 3;
-      const slotCount = Math.max(3, Math.round(meshData.config_summary.slots));
-      const slotPitchDeg = 360 / slotCount;
-      const angleDeg = ((Math.atan2(centroidY, centroidX) * 180) / Math.PI + 360) % 360;
-      const slotIndex = Math.round(angleDeg / slotPitchDeg) % slotCount;
-      const slotCenterDeg = slotIndex * slotPitchDeg;
-      const signedOffsetDeg = ((angleDeg - slotCenterDeg + 540) % 360) - 180;
-      const toothIndex = signedOffsetDeg < 0
-        ? (slotIndex + slotCount - 1) % slotCount
-        : slotIndex;
-      const phase = (['a', 'c', 'b'] as const)[toothIndex % 3];
-      region = `slot_winding_${phase}`;
-    } else if (sourceRegion === 'slot_winding' && colorCodeWindings) {
-      const centroidX = (meshData.nodes_mm[a][0] + meshData.nodes_mm[b][0] + meshData.nodes_mm[c][0]) / 3;
-      const centroidY = (meshData.nodes_mm[a][1] + meshData.nodes_mm[b][1] + meshData.nodes_mm[c][1]) / 3;
-      const slotCount = Math.max(3, Math.round(meshData.config_summary.slots));
-      const slotPitchDeg = 360 / slotCount;
-      const angleDeg = ((Math.atan2(centroidY, centroidX) * 180) / Math.PI + 360) % 360;
-      const slotIndex = Math.round(angleDeg / slotPitchDeg) % slotCount;
-      const phase = (['a', 'c', 'b'] as const)[slotIndex % 3];
-      region = `slot_winding_${phase}`;
-    }
-    if (!regionGroups[region]) regionGroups[region] = [];
-    triangleRegions[index] = region;
+  // Built once per mesh: playback re-renders this viewer many times a second,
+  // and frames of one sweep share their mesh arrays.
+  const { regionGroups, triangleRegions, regionPaths } = useMemo(() => {
+    const regionGroups: Record<string, string[]> = {};
+    const triangleRegions: string[] = new Array(meshData.triangles.length);
+    for (let index = 0; index < meshData.triangles.length; index += 1) {
+      const [a, b, c] = meshData.triangles[index];
+      const sourceRegion = meshData.regions[index];
+      let region = sourceRegion;
+      if (sourceRegion === 'magnet' && showMagnetizationLabels && !neutralMagnets) {
+        region = magnetArcAssignments?.get(index) ?? alternatingMagnetRegion(
+          meshData.nodes_mm,
+          meshData.triangles[index],
+          meshData.config_summary.poles,
+        );
+      } else if (sourceRegion === 'slot_winding' && splitConcentratedSlotWindings) {
+        const centroidX = (meshData.nodes_mm[a][0] + meshData.nodes_mm[b][0] + meshData.nodes_mm[c][0]) / 3;
+        const centroidY = (meshData.nodes_mm[a][1] + meshData.nodes_mm[b][1] + meshData.nodes_mm[c][1]) / 3;
+        const slotCount = Math.max(3, Math.round(meshData.config_summary.slots));
+        const slotPitchDeg = 360 / slotCount;
+        const angleDeg = ((Math.atan2(centroidY, centroidX) * 180) / Math.PI + 360) % 360;
+        const slotIndex = Math.round(angleDeg / slotPitchDeg) % slotCount;
+        const slotCenterDeg = slotIndex * slotPitchDeg;
+        const signedOffsetDeg = ((angleDeg - slotCenterDeg + 540) % 360) - 180;
+        const toothIndex = signedOffsetDeg < 0
+          ? (slotIndex + slotCount - 1) % slotCount
+          : slotIndex;
+        const phase = (['a', 'c', 'b'] as const)[toothIndex % 3];
+        region = `slot_winding_${phase}`;
+      } else if (sourceRegion === 'slot_winding' && colorCodeWindings) {
+        const centroidX = (meshData.nodes_mm[a][0] + meshData.nodes_mm[b][0] + meshData.nodes_mm[c][0]) / 3;
+        const centroidY = (meshData.nodes_mm[a][1] + meshData.nodes_mm[b][1] + meshData.nodes_mm[c][1]) / 3;
+        const slotCount = Math.max(3, Math.round(meshData.config_summary.slots));
+        const slotPitchDeg = 360 / slotCount;
+        const angleDeg = ((Math.atan2(centroidY, centroidX) * 180) / Math.PI + 360) % 360;
+        const slotIndex = Math.round(angleDeg / slotPitchDeg) % slotCount;
+        const phase = (['a', 'c', 'b'] as const)[slotIndex % 3];
+        region = `slot_winding_${phase}`;
+      }
+      if (!regionGroups[region]) regionGroups[region] = [];
+      triangleRegions[index] = region;
 
-    const na = meshData.nodes_mm[a];
-    const nb = meshData.nodes_mm[b];
-    const nc = meshData.nodes_mm[c];
-    regionGroups[region].push(`M${na[0]},${solverYSign * na[1]}L${nb[0]},${solverYSign * nb[1]}L${nc[0]},${solverYSign * nc[1]}Z`);
-  }
+      const na = meshData.nodes_mm[a];
+      const nb = meshData.nodes_mm[b];
+      const nc = meshData.nodes_mm[c];
+      regionGroups[region].push(`M${na[0]},${solverYSign * na[1]}L${nb[0]},${solverYSign * nb[1]}L${nc[0]},${solverYSign * nc[1]}Z`);
+    }
+    const regionPaths: Record<string, string> = {};
+    Object.keys(regionGroups).forEach((region) => {
+      regionPaths[region] = regionGroups[region].join('');
+    });
+    return { regionGroups, triangleRegions, regionPaths };
+  }, [
+    meshData.nodes_mm,
+    meshData.triangles,
+    meshData.regions,
+    meshData.config_summary.poles,
+    meshData.config_summary.slots,
+    magnetArcAssignments,
+    showMagnetizationLabels,
+    neutralMagnets,
+    splitConcentratedSlotWindings,
+    colorCodeWindings,
+    solverYSign,
+  ]);
 
   const uniqueRegions = Object.keys(regionGroups);
   const rotorRegions = uniqueRegions.filter((region) => ROTOR_REGIONS.has(region));
@@ -989,55 +1010,71 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
   // |B| intensity layer: quantile-scaled heat buckets merged into one path per
   // level, split rotor/stationary so each follows the same transform as the
   // region fills underneath it.
-  let fieldIntensity: {
-    high: number;
-    low: number;
-    rotorBuckets: string[][];
-    stationaryBuckets: string[][];
-  } | null = null;
-  if (showFieldIntensity && hasFieldLines(meshData)) {
-    const bValues = meshData.element_b_mag_t;
-    if (bValues && bValues.length === meshData.triangles.length) {
-      const sorted = bValues.filter((value) => Number.isFinite(value)).sort((a, b) => a - b);
-      if (sorted.length > 0) {
-        const quantile = (fraction: number) => {
-          const index = (sorted.length - 1) * fraction;
-          const lower = Math.floor(index);
-          const upper = Math.ceil(index);
-          if (lower === upper) return sorted[lower];
-          return sorted[lower] * (upper - index) + sorted[upper] * (index - lower);
-        };
-        const hasFixedRange = fieldIntensityRange
-          && Number.isFinite(fieldIntensityRange.low)
-          && Number.isFinite(fieldIntensityRange.high)
-          && fieldIntensityRange.high > fieldIntensityRange.low;
-        const low = hasFixedRange ? fieldIntensityRange.low : quantile(0.04);
-        const high = hasFixedRange ? fieldIntensityRange.high : quantile(0.96);
-        const span = high - low > 1e-9 ? high - low : 1;
-        const bucketCount = fieldIntensityColors.length;
-        const rotorBuckets: string[][] = Array.from({ length: bucketCount }, () => []);
-        const stationaryBuckets: string[][] = Array.from({ length: bucketCount }, () => []);
-        for (let index = 0; index < meshData.triangles.length; index += 1) {
-          const region = triangleRegions[index];
-          // Keep the A/B/C phase fills readable: windings carry negligible |B|
-          // anyway, so the heat layer skips them instead of washing them out.
-          if (region.startsWith('slot_winding')) continue;
-          const bMag = bValues[index];
-          if (!Number.isFinite(bMag)) continue;
-          const t = Math.max(0, Math.min(1, (bMag - low) / span));
-          const bucket = Math.min(bucketCount - 1, Math.floor(t * bucketCount));
-          const [a, bIdx, c] = meshData.triangles[index];
-          const na = meshData.nodes_mm[a];
-          const nb = meshData.nodes_mm[bIdx];
-          const nc = meshData.nodes_mm[c];
-          (ROTOR_REGIONS.has(region) ? rotorBuckets : stationaryBuckets)[bucket].push(
-            `M${na[0]},${solverYSign * na[1]}L${nb[0]},${solverYSign * nb[1]}L${nc[0]},${solverYSign * nc[1]}Z`,
-          );
+  const fieldIntensity = useMemo(() => {
+    let result: {
+      high: number;
+      low: number;
+      rotorBuckets: string[];
+      stationaryBuckets: string[];
+    } | null = null;
+    if (showFieldIntensity && hasFieldLines(meshData)) {
+      const bValues = meshData.element_b_mag_t;
+      if (bValues && bValues.length === meshData.triangles.length) {
+        const sorted = bValues.filter((value) => Number.isFinite(value)).sort((a, b) => a - b);
+        if (sorted.length > 0) {
+          const quantile = (fraction: number) => {
+            const index = (sorted.length - 1) * fraction;
+            const lower = Math.floor(index);
+            const upper = Math.ceil(index);
+            if (lower === upper) return sorted[lower];
+            return sorted[lower] * (upper - index) + sorted[upper] * (index - lower);
+          };
+          const hasFixedRange = fieldIntensityRange
+            && Number.isFinite(fieldIntensityRange.low)
+            && Number.isFinite(fieldIntensityRange.high)
+            && fieldIntensityRange.high > fieldIntensityRange.low;
+          const low = hasFixedRange ? fieldIntensityRange.low : quantile(0.04);
+          const high = hasFixedRange ? fieldIntensityRange.high : quantile(0.96);
+          const span = high - low > 1e-9 ? high - low : 1;
+          const bucketCount = fieldIntensityColors.length;
+          const rotorBuckets: string[][] = Array.from({ length: bucketCount }, () => []);
+          const stationaryBuckets: string[][] = Array.from({ length: bucketCount }, () => []);
+          for (let index = 0; index < meshData.triangles.length; index += 1) {
+            const region = triangleRegions[index];
+            // Keep the A/B/C phase fills readable: windings carry negligible |B|
+            // anyway, so the heat layer skips them instead of washing them out.
+            if (region.startsWith('slot_winding')) continue;
+            const bMag = bValues[index];
+            if (!Number.isFinite(bMag)) continue;
+            const t = Math.max(0, Math.min(1, (bMag - low) / span));
+            const bucket = Math.min(bucketCount - 1, Math.floor(t * bucketCount));
+            const [a, bIdx, c] = meshData.triangles[index];
+            const na = meshData.nodes_mm[a];
+            const nb = meshData.nodes_mm[bIdx];
+            const nc = meshData.nodes_mm[c];
+            (ROTOR_REGIONS.has(region) ? rotorBuckets : stationaryBuckets)[bucket].push(
+              `M${na[0]},${solverYSign * na[1]}L${nb[0]},${solverYSign * nb[1]}L${nc[0]},${solverYSign * nc[1]}Z`,
+            );
+          }
+          result = {
+            high,
+            low,
+            rotorBuckets: rotorBuckets.map((paths) => paths.join('')),
+            stationaryBuckets: stationaryBuckets.map((paths) => paths.join('')),
+          };
         }
-        fieldIntensity = { high, low, rotorBuckets, stationaryBuckets };
       }
     }
-  }
+    return result;
+  }, [
+    showFieldIntensity,
+    meshData,
+    triangleRegions,
+    fieldIntensityRange?.low,
+    fieldIntensityRange?.high,
+    fieldIntensityColors,
+    solverYSign,
+  ]);
   const fieldIntensityLegendScale = fieldIntensity && fieldIntensity.high < 0.01
     ? { multiplier: 1_000, unit: 'mT' }
     : { multiplier: 1, unit: 'T' };
@@ -1427,7 +1464,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
     return (
     <path
       key={region}
-      d={regionGroups[region].join('')}
+      d={regionPaths[region]}
       className={dragKey ? 'mesh-viewer-draggable-region' : undefined}
       transform={dragIsActive
         ? `translate(${activeRegionDrag?.deltaXMm ?? 0} ${solverYSign * (activeRegionDrag?.deltaYMm ?? 0)})`
@@ -1612,7 +1649,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
                   paths.length > 0 ? (
                     <path
                       key={`intensity-s-${bucket}`}
-                      d={paths.join('')}
+                      d={paths}
                       fill={fieldIntensityColors[bucket]}
                       stroke="none"
                     />
@@ -1623,7 +1660,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
 
             {showMeshEdges && fieldIntensity ? (
               <path
-                d={stationaryRegions.flatMap((region) => regionGroups[region]).join('')}
+                d={stationaryRegions.map((region) => regionPaths[region]).join('')}
                 fill="none"
                 stroke="rgba(2, 6, 23, 0.48)"
                 strokeWidth={0.055 / effectiveScale}
@@ -1645,7 +1682,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
                       paths.length > 0 ? (
                         <path
                           key={`intensity-r-${bucket}`}
-                          d={paths.join('')}
+                          d={paths}
                           fill={fieldIntensityColors[bucket]}
                           stroke="none"
                         />
@@ -1655,7 +1692,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
                 )}
                 {showMeshEdges && fieldIntensity ? (
                   <path
-                    d={rotorRegions.flatMap((region) => regionGroups[region]).join('')}
+                    d={rotorRegions.map((region) => regionPaths[region]).join('')}
                     fill="none"
                     stroke="rgba(2, 6, 23, 0.48)"
                     strokeWidth={0.055 / effectiveScale}
