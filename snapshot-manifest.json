@@ -17720,8 +17720,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 25487,
-      "sha256": "718ab3cbea7d93f1ace82c87d9057abccbbd17c9dd367aaacd77dc37c3d1c3ad"
+      "bytes": 26557,
+      "sha256": "3110d8969d0af6d17cc6b1f8129bd3de2b737d578e5c9886cac8831b72046456"
     }
   ],
   "public_patches": [
