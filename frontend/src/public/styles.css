@@ -4997,3 +4997,25 @@ button.performance-tag { cursor: help; }
 .public-sector-dial circle { fill: none; stroke: var(--border-default); stroke-width: 2; }
 .public-sector-dial path { fill: none; stroke: var(--text-accent); stroke-width: 3.5; stroke-linecap: round; }
 .public-sector-dial:hover circle { stroke: var(--text-secondary); }
+/* The canvas toolbars (the Design dock and the Solve field dock) were styled
+   apart from the side panels and had drifted to monospace throughout. They now
+   follow the rule the rest of the app uses: words in controls are set in the
+   UI font; numbers, readouts and the small uppercase group labels stay mono. */
+.public-motor-viewport .public-dock-strip .public-primary-view-modes button,
+.public-dock-strip .public-solve-view-switch button,
+.public-motor-viewport .viewport-bottom-bar .public-dock-segmented button,
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle,
+.public-motor-viewport .viewport-bottom-bar .viewport-controls button,
+.public-motor-viewport .viewport-bottom-bar .public-polarity-view button,
+.public-field-dock .public-field-dock-controls .public-field-source-controls button,
+.public-field-dock .public-field-layer-controls button,
+.public-field-dock .public-field-layer-menu > summary,
+.public-dock-reset-view,
+.public-3d-part-toggle,
+.public-viewport-nav-controls button.is-fit,
+.public-viewport-nav-controls button.is-sector,
+.public-field-playback-buffering,
+.public-field-playback-preparing,
+.public-motor-viewport .public-canvas-legend { font-family: var(--font-ui); letter-spacing: 0; }
+.public-dock-reset-view { font-weight: 600; font-size: 12px; }
+.public-3d-part-toggle { font-size: 11px; font-weight: 500; }
