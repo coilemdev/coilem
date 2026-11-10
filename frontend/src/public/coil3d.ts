@@ -29,6 +29,18 @@ export interface ConcentratedCoilSpec {
   stackLength: number;
   /** Electrical turns per coil; rendering may bundle these into fewer strands. */
   turnsPerCoil: number;
+  /**
+   * Optional hand-wound look for close-up hero renders. Leave unset for the
+   * default schematic bundle, which is unchanged by these options.
+   */
+  handWound?: {
+    /** Wire loops to draw, independent of the electrical turn count. */
+    strands: number;
+    /** 0 keeps the tight schematic corners; 1 makes each end turn a full half-circle. */
+    endTurnRoundness: number;
+    /** Strand placement scatter, as a fraction of the wire radius. */
+    irregularity: number;
+  };
 }
 
 export interface ConcentratedCoilModel {
@@ -152,7 +164,15 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
   const sizingAvail = Math.max(0.5, slotHalfAt(sizingStart) - slotGap - flankHalfWidthAt(sizingStart) - flankGap);
 
   const turns = Math.max(1, Math.round(spec.turnsPerCoil) || 1);
-  const strandTarget = Math.min(turns, MAX_RENDERED_STRANDS);
+  const handWound = spec.handWound;
+  const strandTarget = handWound
+    ? Math.max(1, Math.round(handWound.strands))
+    : Math.min(turns, MAX_RENDERED_STRANDS);
+  // Deterministic scatter, so every tooth shares one geometry and renders match.
+  const scatter = (row: number, layer: number, salt: number) => {
+    const value = Math.sin(row * 12.9898 + layer * 78.233 + salt * 37.719) * 43758.5453;
+    return (value - Math.floor(value)) * 2 - 1;
+  };
   let wireLayers = 1;
   let turnsPerLayer = strandTarget;
   let bestDiameter = 0;
@@ -188,21 +208,39 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
   let startLead = new THREE.Vector3();
   let finishLead = new THREE.Vector3();
   for (let row = 0; row < turnsPerLayer && strandCount < strandTarget; row += 1) {
-    const x = firstRowX + row * rowSpacing;
+    const rowX = firstRowX + row * rowSpacing;
     for (let layer = 0; layer < wireLayers && strandCount < strandTarget; layer += 1) {
-      const idealHalfWidth = flankHalfWidthAt(x) + flankGap + wireRadius + layer * wireRadius * 2.08;
+      // Hand-wound: each layer settles into the grooves of the one below, and
+      // no two turns sit exactly where a machine would put them.
+      const x = handWound
+        ? rowX + (layer % 2 === 0 ? -0.25 : 0.25) * rowSpacing
+          + scatter(row, layer, 1) * handWound.irregularity * wireRadius
+        : rowX;
+      const layerPitch = handWound ? 1.82 : 2.08;
+      const idealHalfWidth = flankHalfWidthAt(x) + flankGap + wireRadius + layer * wireRadius * layerPitch
+        + (handWound ? scatter(row, layer, 2) * handWound.irregularity * wireRadius * 0.5 : 0);
       const maxHalfWidth = slotHalfAt(x) - slotGap - wireRadius;
       const halfWidth = Math.max(flankHalfWidthAt(x) + 0.2, Math.min(idealHalfWidth, maxHalfWidth));
       // Outer layers arc over inner ones so end turns nest without touching.
       const endReach = wireRadius * 2.2 + layer * wireRadius * 2.1;
-      const cornerRadius = Math.min(endReach, Math.max(wireRadius * 1.2, halfWidth * 0.86));
-      const halfStraight = stackHalf + Math.max(0, endReach - cornerRadius);
+      let cornerRadius = Math.min(endReach, Math.max(wireRadius * 1.2, halfWidth * 0.86));
+      let halfStraight = stackHalf + Math.max(0, endReach - cornerRadius);
+      if (handWound) {
+        // Wire bends in a sweep, not a crease: round the end turn towards a
+        // half-circle and let outer layers reach further past the stack.
+        cornerRadius = Math.max(
+          cornerRadius,
+          halfWidth * THREE.MathUtils.clamp(handWound.endTurnRoundness, 0, 0.98),
+        );
+        halfStraight = stackHalf + wireRadius * 1.2 + layer * wireRadius * 1.9
+          + Math.abs(scatter(row, layer, 3)) * handWound.irregularity * wireRadius;
+      }
       axialOverhang = Math.max(axialOverhang, halfStraight + cornerRadius + wireRadius - stackHalf);
       const curve = new RacetrackCurve(x, halfWidth, halfStraight, cornerRadius);
       if (strandCount === 0) startLead = rearEndTurnPoint(x, halfWidth, halfStraight, cornerRadius, -1);
       finishLead = rearEndTurnPoint(x, halfWidth, halfStraight, cornerRadius, 1);
-      const tubularSegments = Math.round(THREE.MathUtils.clamp(curve.perimeter / 2.6, 40, 128));
-      strandGeometries.push(new THREE.TubeGeometry(curve, tubularSegments, wireRadius, 8, true));
+      const tubularSegments = Math.round(THREE.MathUtils.clamp(curve.perimeter / 2.6, 40, handWound ? 72 : 128));
+      strandGeometries.push(new THREE.TubeGeometry(curve, tubularSegments, wireRadius, handWound ? 6 : 8, true));
       strandCount += 1;
     }
   }

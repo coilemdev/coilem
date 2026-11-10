@@ -1824,6 +1824,7 @@ export function App() {
           onUseExample={() => openWorkspace(false)}
           onOpenTutorials={() => navigateTutorials('catalog')}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
+          onLoadExample={loadExampleDesign}
         />
       </div>
     );

@@ -6390,8 +6390,8 @@
     },
     {
       "path": "docs/images/coilem-landing-page.png",
-      "bytes": 573781,
-      "sha256": "08fde6e6600d37f8ac2fdda79a2cbfb52a6a8ad651b49477e3c42d7ca36a1eba"
+      "bytes": 428063,
+      "sha256": "dd36908f63cbb8a9b01f5037938c316f7c2a5fdcfe8dfa5d79364f4b9f638827"
     },
     {
       "path": "docs/images/magneto2d-follow-flux-fields.png",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 168459,
-      "sha256": "b49bd6419ca34dcd1a55d4e09f97222af90ef2608dd290ae38759641f7f645a0"
+      "bytes": 170963,
+      "sha256": "7b2278e41599ff5238469ab3b42576f993f44bd7775d3006036538d85d2c4418"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6635,13 +6635,13 @@
     },
     {
       "path": "frontend/src/components/LandingWorkflowHero.tsx",
-      "bytes": 4630,
-      "sha256": "aa3961c206fedef4591c5e7c41d34fb7012a52f1272ccf299e1325df98ccf8eb"
+      "bytes": 4646,
+      "sha256": "209ce793cb680cc565a9045b0cb73c807c31652024ef17c87ea83eb8aaffcbc1"
     },
     {
       "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
-      "bytes": 64107,
-      "sha256": "fcebb1ffc029a128a07913b5bb48e1acb2bbbd3a92565cd86ce32b8b637e5adf"
+      "bytes": 68755,
+      "sha256": "b9027fd752b576307ca4937ed6f76560b9b0c4f95e83ac448f313879420b25fd"
     },
     {
       "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76675,
-      "sha256": "39665833e3982ce8ec94f244874fccc273937f816dc2fd4e968526534d117bdf"
+      "bytes": 76719,
+      "sha256": "e6d9d24827d3a0e2d4a0e558fe21745893410e58e2da76a8bd040c471a3930f5"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7069,14 +7069,19 @@
       "sha256": "e51745a153390efb65c797fc3e210ea2bfd8ca35d687a659d5b7139eaa1add0a"
     },
     {
+      "path": "frontend/src/public/LandingMotorTypes.tsx",
+      "bytes": 7400,
+      "sha256": "60e90f5576182323077c5cea7c7fb2d3f8f722383f303ed78b7eaecaccdfabb8"
+    },
+    {
       "path": "frontend/src/public/PublicLanding.tsx",
-      "bytes": 933,
-      "sha256": "f5b43aa04183486a4d508563945ddf782f54422952ab0b032b822dbdea8abfd4"
+      "bytes": 1244,
+      "sha256": "d65c675f9909f04f5dcde18f2c00d2746e27565f4faa599faa101253ea521cb1"
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 89704,
-      "sha256": "32e619f424e1b9d10297468a3990a59986269a1d168ef97b057effdc05ec67d1"
+      "bytes": 89764,
+      "sha256": "3422f73e494c25e1cf60448a8265259835c3cb25dc7abfafd902d92b35b1f9c7"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7160,8 +7165,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 19113,
-      "sha256": "0ea1a04793de36befab217687ae0f5ff3af3378ccd46b5895dee7159f1e25489"
+      "bytes": 20994,
+      "sha256": "e36bfe69357fed2fbcb896796384d961114c43845edc9637bd10c7c1d2a88e5d"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -7495,8 +7500,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 297401,
-      "sha256": "2930cadb2ab68c9db93b9fd5df130666ba87bfc56bb4e6f712ef517ea2413370"
+      "bytes": 299328,
+      "sha256": "f53a603a11f1f9e7ec858da2cd938077ee44fd0d742c128f2a73d099cf8c2c35"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

@@ -120,9 +120,10 @@ const MOTOR_PORTRAIT_DISTANCE_SCALE = 1.3;
 const ANALYSIS_LAYER_EXPLODED_OFFSET_Z = 180;
 const EXPLODED_SCENE_OFFSET_Z = -45;
 
-type LandingPartId = 'stator' | 'windings' | 'airgap' | 'magnets' | 'rotor' | 'bearings' | 'shaft';
+type LandingPartId = 'housing' | 'stator' | 'windings' | 'airgap' | 'magnets' | 'rotor' | 'bearings' | 'shaft';
 
 const LANDING_PARTS: ReadonlyArray<{ id: LandingPartId; label: string }> = [
+  { id: 'housing', label: 'Housing' },
   { id: 'stator', label: 'Stator' },
   { id: 'windings', label: 'Windings' },
   { id: 'airgap', label: 'Air gap' },
@@ -134,11 +135,13 @@ const LANDING_PARTS: ReadonlyArray<{ id: LandingPartId; label: string }> = [
 
 const MODE_HIDDEN_PARTS: Record<LandingPreviewMode, readonly LandingPartId[]> = {
   geometry: [],
-  mesh: ['windings', 'bearings', 'shaft'],
-  field: ['windings', 'rotor', 'bearings', 'shaft'],
+  mesh: ['housing', 'windings', 'bearings', 'shaft'],
+  field: ['housing', 'windings', 'rotor', 'bearings', 'shaft'],
 };
 
 const EXPLODE_PHASES: Record<LandingPartId, readonly [number, number]> = {
+  // The rear end cap comes off as the stator does, to the far end of the stack.
+  housing: [0, 0.18],
   stator: [0, 0.18],
   windings: [0.18, 0.36],
   airgap: [0.36, 0.54],
@@ -149,6 +152,7 @@ const EXPLODE_PHASES: Record<LandingPartId, readonly [number, number]> = {
 };
 
 const createDefaultPartVisibility = (): Record<LandingPartId, boolean> => ({
+  housing: true,
   stator: true,
   windings: true,
   airgap: true,
@@ -341,15 +345,16 @@ export const Landing3DPreview: React.FC = () => {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.02;
+      renderer.toneMappingExposure = 1.0;
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFShadowMap;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
       const scene = new THREE.Scene();
       const pmrem = new THREE.PMREMGenerator(renderer);
       const environmentTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
       scene.environment = environmentTarget.texture;
-      scene.environmentIntensity = 0.62;
+      // Bare metal reads as metal only with something to reflect.
+      scene.environmentIntensity = 0.8;
 
       const cameraFitScale = MOTOR_VIEW_DISTANCE_SCALE
         * (stage.clientHeight > stage.clientWidth ? MOTOR_PORTRAIT_DISTANCE_SCALE : 1);
@@ -371,26 +376,32 @@ export const Landing3DPreview: React.FC = () => {
       controls.autoRotate = renderContinuously;
       controls.autoRotateSpeed = IDLE_ORBIT_SPEED;
 
-      scene.add(new THREE.AmbientLight(0xffe4c4, 0.30));
-      scene.add(new THREE.HemisphereLight(0xffe2bd, 0x171310, 0.52));
-      const key = new THREE.DirectionalLight(0xffdcae, 1.62);
+      // Studio lighting: a near-white key with soft shadows, a cool fill, and
+      // two faint coloured rims that keep the part edges off the dark page.
+      scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+      scene.add(new THREE.HemisphereLight(0xe8eef7, 0x15171c, 0.35));
+      const key = new THREE.DirectionalLight(0xfff1de, 1.75);
       key.position.set(STATOR_OD_R * 2, STATOR_OD_R * 2.4, STATOR_OD_R * 2.6);
       key.castShadow = true;
-      key.shadow.mapSize.set(1_024, 1_024);
+      key.shadow.mapSize.set(2_048, 2_048);
       key.shadow.camera.left = -STATOR_OD_R * 2.4;
       key.shadow.camera.right = STATOR_OD_R * 2.4;
       key.shadow.camera.top = STATOR_OD_R * 2.4;
       key.shadow.camera.bottom = -STATOR_OD_R * 2.4;
       key.shadow.camera.near = 1;
       key.shadow.camera.far = STATOR_OD_R * 8;
+      key.shadow.bias = -0.0004;
+      key.shadow.normalBias = 0.6;
+      key.shadow.radius = 4;
+      key.shadow.intensity = 0.6;
       scene.add(key);
-      const fill = new THREE.DirectionalLight(0xbcd4f0, 0.56);
+      const fill = new THREE.DirectionalLight(0xc7d7ee, 0.45);
       fill.position.set(-STATOR_OD_R * 2.2, STATOR_OD_R * 0.8, STATOR_OD_R * 1.4);
       scene.add(fill);
-      const rim = new THREE.DirectionalLight(0x67e8f9, 0.58);
+      const rim = new THREE.DirectionalLight(0x8fdcf0, 0.4);
       rim.position.set(-STATOR_OD_R * 2, -STATOR_OD_R, STATOR_OD_R * 1.2);
       scene.add(rim);
-      const warmRim = new THREE.DirectionalLight(0xffb347, 0.42);
+      const warmRim = new THREE.DirectionalLight(0xffb866, 0.3);
       warmRim.position.set(STATOR_OD_R * 0.8, -STATOR_OD_R * 2.1, -STATOR_OD_R);
       scene.add(warmRim);
 
@@ -411,14 +422,29 @@ export const Landing3DPreview: React.FC = () => {
       const fluxGroup = new THREE.Group();
       femGroup.add(rotorFemGroup);
 
-      const extrude = (shape: THREE.Shape, depth = STACK) => {
-        const geometry = new THREE.ExtrudeGeometry(shape, {
-          depth,
-          bevelEnabled: false,
-          curveSegments: 72,
-        });
-        geometry.translate(0, 0, -depth / 2);
+      // `bevel` breaks the two end-face edges so they catch a highlight, as a
+      // machined or stamped part does. The outline and overall length are
+      // unchanged; pass 0 for the sharp outline that wireframes are built from.
+      const extrude = (shape: THREE.Shape, depth = STACK, bevel = 0) => {
+        const geometry = new THREE.ExtrudeGeometry(shape, bevel > 0
+          ? {
+            depth: depth - bevel * 2,
+            bevelEnabled: true,
+            bevelThickness: bevel,
+            bevelSize: bevel,
+            bevelOffset: -bevel,
+            bevelSegments: 2,
+            curveSegments: 72,
+          }
+          : { depth, bevelEnabled: false, curveSegments: 72 });
+        geometry.translate(0, 0, -depth / 2 + bevel);
         return geometry;
+      };
+      const EDGE_BEVEL = 0.22;
+      const edgesOf = (sharpGeometry: THREE.BufferGeometry) => {
+        const edges = new THREE.EdgesGeometry(sharpGeometry, 18);
+        sharpGeometry.dispose();
+        return edges;
       };
 
       const ringShape = (outerRadius: number, innerRadius: number) => {
@@ -430,7 +456,7 @@ export const Landing3DPreview: React.FC = () => {
         return shape;
       };
 
-      const toothGeometry = () => {
+      const toothGeometry = (bevel = 0) => {
         const shape = new THREE.Shape();
         const polarPoint = (radius: number, angleRad: number) => new THREE.Vector2(
           Math.cos(angleRad) * radius,
@@ -446,16 +472,16 @@ export const Landing3DPreview: React.FC = () => {
         shape.lineTo(...polarPoint(TOOTH_SHOULDER_R, -TOOTH_SHOULDER_HALF_ANGLE).toArray());
         shape.lineTo(...polarPoint(TOOTH_SHOULDER_R, -TOOTH_TIP_HALF_ANGLE).toArray());
         shape.closePath();
-        return extrude(shape);
+        return extrude(shape, STACK, bevel);
       };
 
-      const magnetGeometry = (innerRadius: number, outerRadius: number, halfSpanDeg: number) => {
+      const magnetGeometry = (innerRadius: number, outerRadius: number, halfSpanDeg: number, bevel = 0) => {
         const halfSpan = THREE.MathUtils.degToRad(halfSpanDeg);
         const shape = new THREE.Shape();
         shape.absarc(0, 0, outerRadius, Math.PI / 2 - halfSpan, Math.PI / 2 + halfSpan, false);
         shape.absarc(0, 0, innerRadius, Math.PI / 2 + halfSpan, Math.PI / 2 - halfSpan, true);
         shape.closePath();
-        return extrude(shape);
+        return extrude(shape, STACK, bevel);
       };
 
       const physical = (options: THREE.MeshPhysicalMaterialParameters, fieldOpacityScale = 1) => {
@@ -473,28 +499,6 @@ export const Landing3DPreview: React.FC = () => {
         return material;
       };
 
-      const makeGridTexture = () => {
-        const textureCanvas = document.createElement('canvas');
-        textureCanvas.width = textureCanvas.height = 96;
-        const context = textureCanvas.getContext('2d');
-        if (context) {
-          context.fillStyle = '#303844';
-          context.fillRect(0, 0, 96, 96);
-          context.strokeStyle = 'rgba(194, 205, 220, 0.12)';
-          context.lineWidth = 1;
-          for (let offset = -96; offset < 192; offset += 12) {
-            context.beginPath(); context.moveTo(offset, 0); context.lineTo(offset + 96, 96); context.stroke();
-            context.beginPath(); context.moveTo(offset + 96, 0); context.lineTo(offset, 96); context.stroke();
-          }
-        }
-        const texture = new THREE.CanvasTexture(textureCanvas);
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(2.2, 2.2);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        textures.push(texture);
-        return texture;
-      };
-
       const makeLaminationTexture = () => {
         const textureCanvas = document.createElement('canvas');
         textureCanvas.width = 12;
@@ -502,15 +506,16 @@ export const Landing3DPreview: React.FC = () => {
         const context = textureCanvas.getContext('2d');
         if (context) {
           context.clearRect(0, 0, 12, 96);
-          context.strokeStyle = 'rgba(215, 225, 238, 0.5)';
+          // Dark hairlines: the joints between stacked laminations.
+          context.strokeStyle = 'rgba(8, 11, 16, 0.6)';
           context.lineWidth = 1;
-          for (let y = 2; y < 96; y += 6) {
+          for (let y = 1; y < 96; y += 3) {
             context.beginPath(); context.moveTo(0, y); context.lineTo(12, y); context.stroke();
           }
         }
         const texture = new THREE.CanvasTexture(textureCanvas);
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(8, 1);
+        texture.repeat.set(8, 2);
         textures.push(texture);
         return texture;
       };
@@ -521,11 +526,11 @@ export const Landing3DPreview: React.FC = () => {
         const context = labelCanvas.getContext('2d');
         if (context) {
           context.clearRect(0, 0, 128, 128);
-          context.fillStyle = 'rgba(8, 12, 18, 0.64)';
+          context.fillStyle = 'rgba(8, 12, 18, 0.72)';
           context.beginPath(); context.arc(64, 64, 42, 0, Math.PI * 2); context.fill();
-          context.strokeStyle = color; context.lineWidth = 6; context.stroke();
-          context.fillStyle = '#ffffff';
-          context.font = '700 58px Inter, sans-serif';
+          context.strokeStyle = color; context.lineWidth = 3; context.stroke();
+          context.fillStyle = 'rgba(255, 255, 255, 0.92)';
+          context.font = '600 54px Inter, sans-serif';
           context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(text, 64, 67);
         }
         const texture = new THREE.CanvasTexture(labelCanvas);
@@ -541,28 +546,32 @@ export const Landing3DPreview: React.FC = () => {
         material.userData.landingPart = 'magnets';
         labelMats.push(material);
         const sprite = new THREE.Sprite(material);
-        sprite.scale.setScalar(5.2);
+        sprite.scale.setScalar(3.7);
         sprite.renderOrder = 1;
         return sprite;
       };
 
+      // Enamelled magnet wire: copper under a glossy coat, tinted just enough to
+      // tell the three phases apart.
       const enamelledCopper = (phaseColor: string) => physical({
-        color: new THREE.Color(renderTargetColor(phaseColor)).lerp(new THREE.Color(0xc9722e), 0.1),
-        metalness: 0.45,
-        roughness: 0.3,
-        clearcoat: 0.4,
-        clearcoatRoughness: 0.28,
+        color: new THREE.Color(renderTargetColor(phaseColor)).lerp(new THREE.Color(0xa85a22), 0.38),
+        metalness: 0.68,
+        roughness: 0.36,
+        clearcoat: 0.6,
+        clearcoatRoughness: 0.22,
       }, 0.4);
       const materials = {
-        stator: physical({ color: renderTargetColor('#8fa3b8'), metalness: 0.62, roughness: 0.47, clearcoat: 0.06, clearcoatRoughness: 0.45, envMapIntensity: 0.55 }, 0.38),
-        tooth: physical({ color: renderTargetColor('#a3b5c8'), metalness: 0.56, roughness: 0.48, clearcoat: 0.05, clearcoatRoughness: 0.45, envMapIntensity: 0.55 }, 0.38),
+        // Electrical-steel laminations.
+        stator: physical({ color: 0x6d7682, metalness: 0.85, roughness: 0.46 }, 0.38),
+        tooth: physical({ color: 0x78818e, metalness: 0.85, roughness: 0.44 }, 0.38),
         phaseA: enamelledCopper(BACK_EMF_PHASE_COLORS.A),
         phaseB: enamelledCopper(BACK_EMF_PHASE_COLORS.B),
         phaseC: enamelledCopper(BACK_EMF_PHASE_COLORS.C),
-        liner: physical({ color: 0xf1ead8, metalness: 0.02, roughness: 0.72, clearcoat: 0.06, clearcoatRoughness: 0.5 }, 0.26),
-        rotor: physical({ color: 0xffffff, map: makeGridTexture(), metalness: 0.68, roughness: 0.46, clearcoat: 0.05, clearcoatRoughness: 0.5, envMapIntensity: 0.55 }, 0.7),
-        shaft: physical({ color: 0xaeb8c6, roughness: 0.5, clearcoat: 0.08 }, 0.62),
-        shaftKey: physical({ color: 0x667383, metalness: 0.62, roughness: 0.36, clearcoat: 0.08 }, 0.62),
+        liner: physical({ color: 0xd8cdb0, metalness: 0.02, roughness: 0.8 }, 0.26),
+        rotor: physical({ color: 0x8c939d, metalness: 0.9, roughness: 0.36 }, 0.7),
+        // Ground steel shaft and bearing races.
+        shaft: physical({ color: 0xc9d0d9, metalness: 0.95, roughness: 0.2 }, 0.62),
+        shaftKey: physical({ color: 0x4b5563, metalness: 0.85, roughness: 0.35 }, 0.62),
         sleeve: physical({
           color: 0xd7dde5,
           metalness: 0.9,
@@ -571,14 +580,21 @@ export const Landing3DPreview: React.FC = () => {
           side: THREE.DoubleSide,
           depthWrite: false,
         }, 0.5),
-        magN: physical({ color: renderTargetColor('#ef4444'), emissive: 0x3d090c, metalness: 0.2, roughness: 0.28, clearcoat: 0.26, clearcoatRoughness: 0.3 }, 0.88),
-        magS: physical({ color: renderTargetColor('#3b82f6'), emissive: 0x071d42, metalness: 0.2, roughness: 0.28, clearcoat: 0.26, clearcoatRoughness: 0.3 }, 0.88),
-        oppositeN: physical({ color: renderTargetColor('#ef4444'), emissive: 0x5b0c12, metalness: 0.12, roughness: 0.24, clearcoat: 0.18 }, 0.88),
-        oppositeS: physical({ color: renderTargetColor('#3b82f6'), emissive: 0x0a2d63, metalness: 0.12, roughness: 0.24, clearcoat: 0.18 }, 0.88),
-        bearingRace: physical({ color: 0xa8b4c4, metalness: 0.82, roughness: 0.3, clearcoat: 0.12, clearcoatRoughness: 0.3, envMapIntensity: 0.5 }, 0.58),
-        bearingBall: physical({ color: 0xccd5e1, metalness: 0.88, roughness: 0.22, clearcoat: 0.14, clearcoatRoughness: 0.28, envMapIntensity: 0.5 }, 0.58),
-        bearingCage: physical({ color: 0xd0a557, metalness: 0.7, roughness: 0.36, clearcoat: 0.2 }, 0.58),
+        // Coated magnets, each coloured by the pole it presents to the stator:
+        // red north, blue south, as in the Design view.
+        magN: physical({ color: renderTargetColor('#ef4444'), emissive: 0x120304, metalness: 0.62, roughness: 0.3, clearcoat: 0.5, clearcoatRoughness: 0.25 }, 0.88),
+        magS: physical({ color: renderTargetColor('#3b82f6'), emissive: 0x030a18, metalness: 0.62, roughness: 0.3, clearcoat: 0.5, clearcoatRoughness: 0.25 }, 0.88),
+        bearingRace: physical({ color: 0xbfc7d2, metalness: 0.95, roughness: 0.18 }, 0.58),
+        bearingSeal: physical({ color: 0x1b1f27, metalness: 0.08, roughness: 0.58, clearcoat: 0.22, clearcoatRoughness: 0.42, envMapIntensity: 0.35 }, 0.58),
+        bearingSealLip: physical({ color: 0x0f1218, metalness: 0.05, roughness: 0.7 }, 0.58),
+        // Satin cast-aluminium end cap.
+        housing: physical({ color: 0x5b626d, metalness: 0.8, roughness: 0.46 }),
       };
+      // Mute the pole colours towards the steel around them, so the magnets
+      // read as coated metal and do not outshout the copper.
+      [materials.magN, materials.magS].forEach((material) => {
+        material.color.lerp(new THREE.Color(0x8d939c), 0.22);
+      });
       const tagMaterials = (partId: LandingPartId, taggedMaterials: THREE.Material[]) => {
         taggedMaterials.forEach((material) => {
           material.userData.landingPart = partId;
@@ -590,12 +606,11 @@ export const Landing3DPreview: React.FC = () => {
         materials.sleeve,
         materials.magN,
         materials.magS,
-        materials.oppositeN,
-        materials.oppositeS,
       ]);
       tagMaterials('rotor', [materials.rotor]);
-      tagMaterials('bearings', [materials.bearingRace, materials.bearingBall, materials.bearingCage]);
+      tagMaterials('bearings', [materials.bearingRace, materials.bearingSeal, materials.bearingSealLip]);
       tagMaterials('shaft', [materials.shaft, materials.shaftKey]);
+      tagMaterials('housing', [materials.housing]);
 
       const motorGroup = new THREE.Group();
       const rotorGroup = new THREE.Group();
@@ -608,15 +623,24 @@ export const Landing3DPreview: React.FC = () => {
         wireColor: THREE.ColorRepresentation,
         parent: THREE.Group,
         wireParent: THREE.Group,
+        edgeGeometry: THREE.BufferGeometry = new THREE.EdgesGeometry(geometry, 18),
       ) => {
         parent.add(new THREE.Mesh(geometry, material));
         const edgeMaterial = wire(wireColor);
         edgeMaterial.userData.landingPart = material.userData.landingPart;
-        wireParent.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 18), edgeMaterial));
+        wireParent.add(new THREE.LineSegments(edgeGeometry, edgeMaterial));
       };
 
-      addPart(extrude(ringShape(STATOR_OD_R, STATOR_YOKE_ID_R)), materials.stator, 0x7dd3fc, motorGroup, wireGroup);
-      const toothGeo = toothGeometry();
+      addPart(
+        extrude(ringShape(STATOR_OD_R, STATOR_YOKE_ID_R), STACK, EDGE_BEVEL),
+        materials.stator,
+        0x7dd3fc,
+        motorGroup,
+        wireGroup,
+        edgesOf(extrude(ringShape(STATOR_OD_R, STATOR_YOKE_ID_R))),
+      );
+      const toothGeo = toothGeometry(EDGE_BEVEL);
+      const toothEdgeGeo = edgesOf(toothGeometry());
       const concentratedCoil = buildConcentratedCoil({
         boreRadius: TOOTH_SHOULDER_R / VISUAL_SCALE,
         yokeInnerRadius: TOOTH_YOKE_R / VISUAL_SCALE,
@@ -625,13 +649,15 @@ export const Landing3DPreview: React.FC = () => {
         slotPitchRad: SLOT_PITCH_RAD,
         stackLength: STACK / VISUAL_SCALE,
         turnsPerCoil: 15,
+        // The hero is a close-up: draw the coils as tightly wound magnet wire.
+        handWound: { strands: 42, endTurnRoundness: 0.5, irregularity: 0.14 },
       });
       for (let slot = 0; slot < SLOTS; slot += 1) {
         const angleDeg = (slot * 360) / SLOTS;
         const tooth = new THREE.Mesh(toothGeo, materials.tooth);
         tooth.rotation.z = THREE.MathUtils.degToRad(angleDeg);
         motorGroup.add(tooth);
-        const toothWire = new THREE.LineSegments(new THREE.EdgesGeometry(toothGeo, 18), wire(0x7dd3fc));
+        const toothWire = new THREE.LineSegments(toothEdgeGeo, wire(0x7dd3fc));
         (toothWire.material as THREE.Material).userData.landingPart = 'stator';
         toothWire.rotation.z = tooth.rotation.z;
         wireGroup.add(toothWire);
@@ -677,31 +703,21 @@ export const Landing3DPreview: React.FC = () => {
       rotorGroup.add(new THREE.Mesh(shaftKeyGeo, materials.shaftKey));
 
       const magnetHalfSpanDeg = THREE.MathUtils.radToDeg(15.7 / (MAGNET_IN_R + MAGNET_OUT_R));
-      const magnetSplitRadius = (MAGNET_IN_R + MAGNET_OUT_R) / 2;
-      const magnetAirgapGeo = magnetGeometry(magnetSplitRadius, MAGNET_OUT_R, magnetHalfSpanDeg);
-      const magnetRotorGeo = magnetGeometry(MAGNET_IN_R, magnetSplitRadius, magnetHalfSpanDeg);
+      const magnetGeo = magnetGeometry(MAGNET_IN_R, MAGNET_OUT_R, magnetHalfSpanDeg, EDGE_BEVEL * 0.6);
+      const magnetEdgeGeo = edgesOf(magnetGeometry(MAGNET_IN_R, MAGNET_OUT_R, magnetHalfSpanDeg));
       for (let pole = 0; pole < POLES; pole += 1) {
         const isNorth = pole % 2 === 0;
         const magnetUnit = new THREE.Group();
-        magnetUnit.add(
-          new THREE.Mesh(magnetAirgapGeo, isNorth ? materials.magN : materials.magS),
-          new THREE.Mesh(magnetRotorGeo, isNorth ? materials.oppositeS : materials.oppositeN),
-        );
+        magnetUnit.add(new THREE.Mesh(magnetGeo, isNorth ? materials.magN : materials.magS));
         magnetUnit.rotation.z = (pole * Math.PI * 2) / POLES;
         rotorGroup.add(magnetUnit);
-        const magnetAirgapEdges = new THREE.LineSegments(
-          new THREE.EdgesGeometry(magnetAirgapGeo, 18),
+        const magnetEdges = new THREE.LineSegments(
+          magnetEdgeGeo,
           wire(isNorth ? DESIGN_MAGNET_N_FILL : DESIGN_MAGNET_S_FILL),
         );
-        const magnetRotorEdges = new THREE.LineSegments(
-          new THREE.EdgesGeometry(magnetRotorGeo, 18),
-          wire(isNorth ? DESIGN_MAGNET_S_FILL : DESIGN_MAGNET_N_FILL),
-        );
-        (magnetAirgapEdges.material as THREE.Material).userData.landingPart = 'magnets';
-        (magnetRotorEdges.material as THREE.Material).userData.landingPart = 'magnets';
-        magnetAirgapEdges.rotation.z = magnetUnit.rotation.z;
-        magnetRotorEdges.rotation.z = magnetUnit.rotation.z;
-        wireRotorGroup.add(magnetAirgapEdges, magnetRotorEdges);
+        (magnetEdges.material as THREE.Material).userData.landingPart = 'magnets';
+        magnetEdges.rotation.z = magnetUnit.rotation.z;
+        wireRotorGroup.add(magnetEdges);
 
         const labelAngle = magnetUnit.rotation.z + Math.PI / 2;
         const labelRadius = (MAGNET_IN_R + MAGNET_OUT_R) / 2;
@@ -721,46 +737,89 @@ export const Landing3DPreview: React.FC = () => {
       sleeveGeo.rotateX(Math.PI / 2);
       rotorGroup.add(new THREE.Mesh(sleeveGeo, materials.sleeve));
 
-      // Keep the bearings from the current product viewer, but omit the end
-      // caps so the landing hero still exposes the electromagnetic assembly.
+      // Sealed (2RS-style) bearings, as fitted to most motors. Only the inner
+      // race turns with the shaft; the outer race and its rubber seals stay
+      // put in the end bell.
       const buildLandingBearing = (z: number) => {
-        const group = new THREE.Group();
+        const inner = new THREE.Group();
+        const outer = new THREE.Group();
         const boreRadius = SHAFT_R;
         const outerRadius = HUB_R;
         const width = bearingWidth;
         const radialBuild = outerRadius - boreRadius;
         const innerRaceOuter = boreRadius + radialBuild * 0.34;
         const outerRaceInner = boreRadius + radialBuild * 0.76;
-        const ballPitch = (innerRaceOuter + outerRaceInner) / 2;
-        const ballRadius = Math.max(0.2, (outerRaceInner - innerRaceOuter) * 0.62);
+        const sealRecess = width * 0.07;
+        const sealGap = radialBuild * 0.025;
+        const lipWidth = radialBuild * 0.07;
 
-        group.add(
-          new THREE.Mesh(extrude(ringShape(innerRaceOuter, boreRadius), width), materials.bearingRace),
-          new THREE.Mesh(extrude(ringShape(outerRadius, outerRaceInner), width), materials.bearingRace),
+        inner.add(
+          new THREE.Mesh(extrude(ringShape(innerRaceOuter, boreRadius), width, width * 0.07), materials.bearingRace),
+        );
+        outer.add(
+          new THREE.Mesh(extrude(ringShape(outerRadius, outerRaceInner), width, width * 0.07), materials.bearingRace),
+          // The seal sits just inside each face and hides the balls and cage.
           new THREE.Mesh(
-            extrude(ringShape(ballPitch + ballRadius * 0.42, ballPitch - ballRadius * 0.42), width * 0.42),
-            materials.bearingCage,
+            extrude(ringShape(outerRaceInner - sealGap, innerRaceOuter + sealGap), width - sealRecess * 2),
+            materials.bearingSeal,
+          ),
+          // Its inner lip, which rides on the inner race.
+          new THREE.Mesh(
+            extrude(ringShape(innerRaceOuter + sealGap + lipWidth, innerRaceOuter), width - sealRecess * 3.2),
+            materials.bearingSealLip,
           ),
         );
-        const ballGeometry = new THREE.SphereGeometry(ballRadius, 20, 14);
-        for (let index = 0; index < 9; index += 1) {
-          const angle = (index / 9) * Math.PI * 2;
-          const ball = new THREE.Mesh(ballGeometry, materials.bearingBall);
-          ball.position.set(ballPitch * Math.cos(angle), ballPitch * Math.sin(angle), 0);
-          group.add(ball);
-        }
-        group.position.z = z;
+        inner.position.z = z;
+        outer.position.z = z;
+        return { inner, outer };
+      };
+      const frontBearing = buildLandingBearing(bearingZ);
+      const rearBearing = buildLandingBearing(-bearingZ);
+      rotorGroup.add(frontBearing.inner, rearBearing.inner);
+      motorGroup.add(frontBearing.outer, rearBearing.outer);
+
+      // A closed rear end cap: a cup on the back of the stator whose hub seats
+      // the rear bearing. The front is left open, as a motor looks with its
+      // front cover off, so the windings and rotor stay in full view.
+      const endCapThickness = 3.2;
+      const endCapWall = 2.6;
+      const endCapStandoff = bearingZ - endCapThickness / 2 - STACK / 2;
+      const buildRearEndCap = () => {
+        const group = new THREE.Group();
+        const skirt = new THREE.Mesh(
+          extrude(ringShape(STATOR_OD_R, STATOR_OD_R - endCapWall), endCapStandoff),
+          materials.housing,
+        );
+        skirt.position.z = endCapThickness / 2 + endCapStandoff / 2;
+        group.add(
+          new THREE.Mesh(extrude(ringShape(STATOR_OD_R, HUB_R), endCapThickness, 0.3), materials.housing),
+          new THREE.Mesh(extrude(ringShape(HUB_R + 3.2, HUB_R), bearingWidth + 1.2, 0.3), materials.housing),
+          skirt,
+        );
+        group.position.z = -bearingZ;
         return group;
       };
-      rotorGroup.add(buildLandingBearing(bearingZ), buildLandingBearing(-bearingZ));
+      motorGroup.add(buildRearEndCap());
+
+      // Shaft shoulders: the larger journal each bearing's inner race seats
+      // against, so the bearings are located on the shaft instead of floating
+      // off the rotor face.
+      const shoulderRadius = SHAFT_R + (HUB_R - SHAFT_R) * 0.26;
+      const shoulderLength = bearingZ - bearingWidth / 2 - STACK / 2;
+      [1, -1].forEach((side) => {
+        const shoulderGeo = new THREE.CylinderGeometry(shoulderRadius, shoulderRadius, shoulderLength, 48);
+        shoulderGeo.rotateX(Math.PI / 2);
+        shoulderGeo.translate(0, 0, side * (STACK / 2 + shoulderLength / 2));
+        rotorGroup.add(new THREE.Mesh(shoulderGeo, materials.shaft));
+      });
 
       const laminationMaterial = new THREE.MeshBasicMaterial({
         map: makeLaminationTexture(),
         transparent: true,
-        opacity: 0.14,
+        opacity: 0.3,
         depthWrite: false,
       });
-      laminationMaterial.userData.baseOpacity = 0.14;
+      laminationMaterial.userData.baseOpacity = 0.3;
       laminationMaterial.userData.fieldOpacityScale = 0.38;
       laminationMaterial.userData.landingPart = 'stator';
       solidMats.push(laminationMaterial);
@@ -1077,7 +1136,58 @@ export const Landing3DPreview: React.FC = () => {
       if (activeStepRef.current === 1) void ensureMeshAssets();
       if (activeStepRef.current === 2) void ensureFieldAssets();
 
-      scene.add(motorGroup, wireGroup, femGroup);
+      // Opaque solids shade each other; see-through layers (the sleeve, the air
+      // gap) and parts faded or switched off must not leave a shadow behind.
+      const shadowCasters: Array<{ mesh: THREE.Mesh; material: THREE.Material }> = [];
+      motorGroup.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+        const material = object.material as THREE.Material;
+        if (!(material instanceof THREE.MeshPhysicalMaterial)) return;
+        if ((material.userData.baseOpacity ?? 1) < 0.9) return;
+        object.receiveShadow = true;
+        shadowCasters.push({ mesh: object, material });
+      });
+      const updateShadowCasters = () => {
+        shadowCasters.forEach(({ mesh, material }) => {
+          mesh.castShadow = material.visible && material.opacity > 0.6;
+        });
+      };
+
+      // A soft contact shadow under the stator, so the motor sits on something.
+      const makeContactShadowTexture = () => {
+        const textureCanvas = document.createElement('canvas');
+        textureCanvas.width = textureCanvas.height = 128;
+        const context = textureCanvas.getContext('2d');
+        if (context) {
+          const gradient = context.createRadialGradient(64, 64, 4, 64, 64, 64);
+          gradient.addColorStop(0, 'rgba(0, 0, 0, 0.9)');
+          gradient.addColorStop(0.45, 'rgba(0, 0, 0, 0.42)');
+          gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          context.fillStyle = gradient;
+          context.fillRect(0, 0, 128, 128);
+        }
+        const texture = new THREE.CanvasTexture(textureCanvas);
+        textures.push(texture);
+        return texture;
+      };
+      const contactShadowMaterial = new THREE.MeshBasicMaterial({
+        map: makeContactShadowTexture(),
+        transparent: true,
+        opacity: 0.55,
+        depthWrite: false,
+      });
+      contactShadowMaterial.userData.baseOpacity = 0.55;
+      contactShadowMaterial.userData.fieldOpacityScale = 0.3;
+      solidMats.push(contactShadowMaterial);
+      const contactShadow = new THREE.Mesh(
+        new THREE.PlaneGeometry(STATOR_OD_R * 3.1, STACK * 2.6),
+        contactShadowMaterial,
+      );
+      contactShadow.rotation.x = -Math.PI / 2;
+      contactShadow.position.y = -STATOR_OD_R * 1.03;
+      contactShadow.renderOrder = -1;
+
+      scene.add(contactShadow, motorGroup, wireGroup, femGroup);
       sceneStateRef.current = { rotorGroup, wireRotorGroup };
       const explodeTargets: Array<{
         object: THREE.Object3D;
@@ -1104,6 +1214,8 @@ export const Landing3DPreview: React.FC = () => {
           if (partId === 'magnets') targetOffsetZ = 50;
           if (partId === 'rotor') targetOffsetZ = -5;
           if (partId === 'shaft') targetOffsetZ = -101.5;
+          // The rear end cap ends up behind the shaft.
+          if (partId === 'housing') targetOffsetZ = -120;
           if (partId === 'bearings') {
             let ancestor: THREE.Object3D | null = object.parent;
             while (ancestor && Math.abs(ancestor.position.z) < 0.01) ancestor = ancestor.parent;
@@ -1205,6 +1317,7 @@ export const Landing3DPreview: React.FC = () => {
           const visibilityScale = applyMaterialVisibility(material);
           material.opacity = lerp(material.opacity, target.labels * visibilityScale, 0.1);
         });
+        updateShadowCasters();
         wireGroup.visible = wireMats.some((material) => material.visible && material.opacity > 0.02);
         femGroup.visible = (meshMats[0]?.opacity ?? 0) > 0.02;
 
@@ -1233,7 +1346,7 @@ export const Landing3DPreview: React.FC = () => {
           );
           object.position.z = lerp(object.position.z, baseZ + phaseProgress * targetOffsetZ, 0.14);
         });
-        const explodedAssemblyScale = 1 - explodeProgress * 0.58;
+        const explodedAssemblyScale = 1 - explodeProgress * 0.61;
         const assemblyScale = lerp(motorGroup.scale.x, explodedAssemblyScale, 0.14);
         motorGroup.scale.setScalar(assemblyScale);
         wireGroup.scale.setScalar(assemblyScale);
