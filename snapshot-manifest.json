@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 1561,
-      "sha256": "209d3a3dc99946e2bec02357de366fccb9dcba89f9281eca41f325fc15a791b5"
+      "bytes": 1698,
+      "sha256": "f86130e23177beb90a5f27569a2a03ba02eabd361293c577b1343704519c4e3e"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -715,8 +715,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 12585,
-      "sha256": "e0fbcc50986efe57924dea08faa33eb1d771a03876c1cb5177e13ac9dc23c0f5"
+      "bytes": 12997,
+      "sha256": "31f28d55824b84708e49ae343d762ec1d52a0c9cf8aac8a3ec1a6d49c69ab0e1"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -5920,8 +5920,8 @@
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
-      "bytes": 14128,
-      "sha256": "33c7875e199d7e07165dc9b46a99033662ec753dbae9892a6e01db3c4865f387"
+      "bytes": 14349,
+      "sha256": "13dbedb8dbd600f50aa9c51d5a5d2c567ca011c0c805502c32039c46f2940536"
     },
     {
       "path": "docs/COGGING_BENCHMARK_PROPOSAL.md",
@@ -7590,8 +7590,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1769,
-      "sha256": "fe251c3ac4ce9dcd2e725126f93eeb284feb945dd4ada6ac83dafe623e8d3674"
+      "bytes": 1848,
+      "sha256": "720f4373cd8a05bd7872c254d71729366281395f00c29af0d79fe9b02cbfc26b"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -8405,8 +8405,8 @@
     },
     {
       "path": "tools/benchmark_suite/external_contract.py",
-      "bytes": 2188,
-      "sha256": "3d89f253a4da164b69e11c9cbadb58ef0d0a7fdc7afda920a1a6d88177d81012"
+      "bytes": 2891,
+      "sha256": "88ef5b1d290750612b31fa2d2926f7bc297eb29e8c403aa466222cdd84caac5d"
     },
     {
       "path": "tools/benchmark_suite/payload_reuse.py",
@@ -8625,8 +8625,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 24666,
-      "sha256": "c0c9e2de6c066a99e08ce7460c690f0f02fb309c7e3b87119d6b0cd4debac5c6"
+      "bytes": 26689,
+      "sha256": "41d629664c375a26796dfae5934154afdfdf58772d89588d73e8cae0b05e3057"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -14722,6 +14722,661 @@
       "path": "benchmarks/qualification-e9eb89e818ed/publication-transform.json",
       "bytes": 6477,
       "sha256": "b568a8850caf34e511e74abbd9a45e86b89eb777256b27c4fd9086fec9f531be"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/README.md",
+      "bytes": 4694,
+      "sha256": "73507d0a86ecbe70903bd1c56a07d98b1a48b52331fda626bf23d7cd5e4af966"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/assembly-comparison.json",
+      "bytes": 14204,
+      "sha256": "d98f1b60e44f40e70ba29c9b7bc1a74174e6ff48159fc2405ed3bbfa32a862b7"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/consolidation-validation.json",
+      "bytes": 8432,
+      "sha256": "8a35b8781fb44861ca99bf85d699b272223116bf154597b867d518bda67eb8f8"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/femm-results.json",
+      "bytes": 308016,
+      "sha256": "c56e909e588d4a00b04b5412c0326ce310d1d96f834906aff18149c66b2080f2"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/field-hashes.json",
+      "bytes": 664416,
+      "sha256": "3fb15a2153ae4d116bd0a6464aa908582591cc1a534b2dcadec86c127df908d0"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/native-comparison.json",
+      "bytes": 29211,
+      "sha256": "5965920855ac33c399a3646be61492cade2f9c71f46354fb1b644f6c5c6a1f4d"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/timing-and-data-summary.json",
+      "bytes": 7966,
+      "sha256": "ae655e75c7bb314a34867690081cdcfc06660790d5cfa25a5169b6f19196dcf9"
+    },
+    {
+      "path": "tests/fixtures/femm_reference_preflight.json",
+      "bytes": 2207,
+      "sha256": "29d6ee25ab06f599142e8b890a5b20ffcb4eee5d02ca898f541fb90155ca5a50"
+    },
+    {
+      "path": "tests/test_femm_reference_adapter.py",
+      "bytes": 5723,
+      "sha256": "85c1ea8c35f051268c821359ccc53744bcf52427305b7373315bd19d0b11ff92"
+    },
+    {
+      "path": "tests/test_femm_reference_publication.py",
+      "bytes": 1874,
+      "sha256": "e20496d60c0afb74eda1c3e1f874a8b9fc1291e1f46d1d20f16f87f9aa5a7e43"
+    },
+    {
+      "path": "tests/test_reference_positions.py",
+      "bytes": 8445,
+      "sha256": "9952c21db750ca4ba8bed14c6722027fb75aa21e91632f66374ff562d07ce36d"
+    },
+    {
+      "path": "tools/benchmark_suite/positions.py",
+      "bytes": 23012,
+      "sha256": "d9a0c8351f5de97a46646494c40a4f51f44181f68a4107507c5b23cf06721253"
+    },
+    {
+      "path": "tools/femm_reference/README.md",
+      "bytes": 5924,
+      "sha256": "92ab8598610c4663951d6f1d3010df3efe991ff65dab0347b0ed82284b51eb34"
+    },
+    {
+      "path": "tools/femm_reference/__init__.py",
+      "bytes": 76,
+      "sha256": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087"
+    },
+    {
+      "path": "tools/femm_reference/__main__.py",
+      "bytes": 3873,
+      "sha256": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/__init__.py",
+      "bytes": 53,
+      "sha256": "303edf330c12da756ea2724620a24ab9c759c5d1bbefde9d06a23c17b625d92a"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/airgap_sampling.py",
+      "bytes": 6771,
+      "sha256": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/back_emf_harmonics.py",
+      "bytes": 5901,
+      "sha256": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/excitation.py",
+      "bytes": 8522,
+      "sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/feature_flags.py",
+      "bytes": 698,
+      "sha256": "dcc8486e01f00476e6fdd831c8dc03d718222ac6cda8eff7ef948e320f703546"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_extraction.py",
+      "bytes": 56158,
+      "sha256": "7db1f6d0761010548b99d450d01dac4275b6cc33600652facee0ac1d52446062"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_geometry.py",
+      "bytes": 32395,
+      "sha256": "1c73842146501f26e3835b5f619379d20309f929af71bd1f74208836d0b8e7af"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_parallel.py",
+      "bytes": 43474,
+      "sha256": "323395f4831ad5bcce6497429681491d17550e245faf037cbcbd30dbf86d5611"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_postprocess.py",
+      "bytes": 76259,
+      "sha256": "7de76febe40e8b8ae03392bec20e97ff06335d55863dc0ee7d72e71d0453a60d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_solver/__init__.py",
+      "bytes": 163165,
+      "sha256": "10f10504ee971091382da967aba5fa58202f3326f59274f3afa5b9fbb8af7983"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_solver/streaming.py",
+      "bytes": 23550,
+      "sha256": "3f5b411f028d0f82dc40f38b4cf00a6a118ec428438e980d7d7ec84c4275891c"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/femm_utils.py",
+      "bytes": 17352,
+      "sha256": "c1ea71f6ef2e04c972f910d95d3382dcf84b498c88f2e36f6cba534a0ae7d075"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/field_artifacts.py",
+      "bytes": 10851,
+      "sha256": "5ce907bd5ab6d8dbc8fa4022c237cca7cbf86b83d2ba8b385250ef02c42e5e80"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/field_lines.py",
+      "bytes": 15672,
+      "sha256": "446bf8187168693fadf848db3ef8809b54d60b6b52a3f2457e6c1ac82af5d1f1"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/geometry.py",
+      "bytes": 58332,
+      "sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/geometry_drawer.py",
+      "bytes": 53035,
+      "sha256": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/geometry_ir.py",
+      "bytes": 65987,
+      "sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/geometry_ir_tessellation.py",
+      "bytes": 3942,
+      "sha256": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/logging_utils.py",
+      "bytes": 13038,
+      "sha256": "bc2560b59a01e6b14a2e4d79cfbac3acddf6a117c0864fa7a7f24500685ececf"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/machine_constants.py",
+      "bytes": 4614,
+      "sha256": "c5bc059993b475228cf9d60a5fc51bee4f8814bc8b0412202aa39ff34a3f1437"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/material_catalog.py",
+      "bytes": 4026,
+      "sha256": "7af93ae3ec8f29a1e3a8bc219be5ecec91c092eb2d5d675d6e58c52b26bd979d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/material_contract.py",
+      "bytes": 8287,
+      "sha256": "eb33c7d60407ce520bd223392118131278d6fc3ba241c1e51d27f29e0e6f830d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/__init__.py",
+      "bytes": 3558,
+      "sha256": "af6331406459c204bc7e0a7bad5baff5febd475d931f8859790d3152701392f4"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/config.py",
+      "bytes": 34091,
+      "sha256": "06cf7a174b67cdfaef303069db8eb45f72fa91facefec745dcffbb5e9a3c8f4d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/diagnostics.py",
+      "bytes": 19970,
+      "sha256": "76ac6ae7e92340822b895a9ecd6386635f7385157dde55bed309c34980a8613f"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/errors.py",
+      "bytes": 817,
+      "sha256": "9e116cd8e1bbf8c7acbbe6636d9915f6d412e0f7d6fc01700772b786c9cf84f3"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/field.py",
+      "bytes": 14949,
+      "sha256": "a24f31984b2b2649cd0ab0e1858d87e3b3a9a2e00455ac9a11de7cbbee2d1ad7"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/geometry.py",
+      "bytes": 3366,
+      "sha256": "2fbb3575972d1d9ec2daba5bef9fd85838e761d8a1d45bf6f6f3533002c3a2fb"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/mesh.py",
+      "bytes": 3086,
+      "sha256": "510bbdd7fb6d648e696fd719fdd52d34f5b56d8848e36c92d9fe5659a1497e51"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/result.py",
+      "bytes": 17595,
+      "sha256": "404c6c774cd13becf2519b3fdffd6c73cdd4956622715626f2359966a3ddf738"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/models/waveforms.py",
+      "bytes": 5913,
+      "sha256": "4f7df8765b03547edc0bd75e0a1d4841b6d461f67876636794cc40efba738bb0"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/platform_info.py",
+      "bytes": 1133,
+      "sha256": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/preview.py",
+      "bytes": 40112,
+      "sha256": "6683802ec4a111c6651f72fd963a86b76ef27aeb8a466e26accc2cb43bead691"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/preview_from_ir.py",
+      "bytes": 8588,
+      "sha256": "7a0821b726191891af18b9fa38035b0db60274a52e6076f81a1dd3deafff364a"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/solver_contract.py",
+      "bytes": 844,
+      "sha256": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/solver_environment.py",
+      "bytes": 2745,
+      "sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/steel_flux_metrics.py",
+      "bytes": 7570,
+      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/sweep_planning.py",
+      "bytes": 4514,
+      "sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/thermal/__init__.py",
+      "bytes": 2801,
+      "sha256": "7fb121c4a5714b7c2aca455631b8298078d387a1b7f0476b441d7ad1bb6881e6"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/thermal/hybrid_network.py",
+      "bytes": 19227,
+      "sha256": "6108a429962a877ad274cb51a501f9c3bc5e6c1935ccef7e06a028ee8f70f431"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/thermal/interfaces.py",
+      "bytes": 5058,
+      "sha256": "4c25cd714dad87a6c3747fe45fff755e8e8e74339e3129e19a3a52051579637e"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/thermal/magnet_temperature.py",
+      "bytes": 6345,
+      "sha256": "75859c893d4f02f95a4a002867a59628f3e35f7602e8834d46a714935de384c9"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/thermal/material_ranges.py",
+      "bytes": 21698,
+      "sha256": "499d0074b1e6e0cd1a72a3e807bf9994196201f91ce81f12a2513d7bbc8fa209"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/torque_metrics.py",
+      "bytes": 1684,
+      "sha256": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/backend/winding_utils.py",
+      "bytes": 24974,
+      "sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/materials/electrical-steel/M350-50A.csv",
+      "bytes": 6672,
+      "sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/path_compat.py",
+      "bytes": 3537,
+      "sha256": "dba13fe953c0efdfebcaa3d0da2532af985728631953f8d0c31747cc2710aa9c"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/e/v3_adapter.py",
+      "bytes": 11675,
+      "sha256": "319d667cc1806ea336c6d2d78e355d04adc7f8061ec6c57dfc2bf6eca70fd879"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/__init__.py",
+      "bytes": 53,
+      "sha256": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/_data/materials/electrical-steel/M350-50A.csv",
+      "bytes": 6672,
+      "sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/benchmark_suite/__init__.py",
+      "bytes": 645,
+      "sha256": "bd91d90ca4330a759bc203850b558c6b4ea0bcb4c76f944feaec920e7999d9ea"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/benchmark_suite/abc_metrics.py",
+      "bytes": 4433,
+      "sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/benchmark_suite/bldc_metrics.py",
+      "bytes": 16680,
+      "sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/benchmark_suite/metrics.py",
+      "bytes": 6466,
+      "sha256": "1c54eee6f036c360da2cb42a41261f6360fade9908defcc2862562503ec1052a"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/custom_materials.py",
+      "bytes": 6306,
+      "sha256": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/excitation.py",
+      "bytes": 9166,
+      "sha256": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/geometry_drawer.py",
+      "bytes": 55926,
+      "sha256": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/geometry_ir.py",
+      "bytes": 78695,
+      "sha256": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/magnet_temperature.py",
+      "bytes": 6396,
+      "sha256": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/material_catalog.py",
+      "bytes": 5010,
+      "sha256": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/material_contract.py",
+      "bytes": 8599,
+      "sha256": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/__init__.py",
+      "bytes": 2571,
+      "sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/config.py",
+      "bytes": 34063,
+      "sha256": "01a3dba95bfda8e164098aa6c5a56da0b7a45d44eb3e9e8bdff890f41a01c805"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/errors.py",
+      "bytes": 740,
+      "sha256": "a31f9c3683f9eee4a2c9490f6d7f468590815903a00c4330b2f6c5cfbc5f18b9"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/field.py",
+      "bytes": 14614,
+      "sha256": "d5a16aa60ee1cfdf3802dc90d10b404a35cff7c81d9f1fc4b6bad292cc31e7a4"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/geometry.py",
+      "bytes": 3375,
+      "sha256": "25528b3a8c32730d8860ba2f4f3792496597a87f7e25e78808d8886449b74f2e"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/mesh.py",
+      "bytes": 2349,
+      "sha256": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/performance.py",
+      "bytes": 26271,
+      "sha256": "001932b621bd27b154a45b57f91cf294d7c34a27138f64f625bc26d18e4eb92b"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/result.py",
+      "bytes": 9047,
+      "sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/models/waveforms.py",
+      "bytes": 6384,
+      "sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/public_material_catalog.py",
+      "bytes": 10383,
+      "sha256": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/reference_models/__init__.py",
+      "bytes": 3745,
+      "sha256": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/resources.py",
+      "bytes": 9021,
+      "sha256": "4f3863da726116daf57092b5347def42cf202519ed43eeb51705ae70d32b6d04"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/rotor_layout.py",
+      "bytes": 1031,
+      "sha256": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/solver_environment.py",
+      "bytes": 2745,
+      "sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/f/backend/winding_utils.py",
+      "bytes": 24974,
+      "sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954"
+    },
+    {
+      "path": "tools/femm_reference/_vendor/reference_conventions.py",
+      "bytes": 1914,
+      "sha256": "0898a42d232ca2120b70fa2d23b287e60808e4ab7271187e158811b2ec21f6b4"
+    },
+    {
+      "path": "tools/femm_reference/automation.py",
+      "bytes": 4074,
+      "sha256": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 2503,
+      "sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json",
+      "bytes": 2501,
+      "sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json",
+      "bytes": 2501,
+      "sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json",
+      "bytes": 2504,
+      "sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json",
+      "bytes": 2504,
+      "sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json",
+      "bytes": 2504,
+      "sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 2504,
+      "sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 2502,
+      "sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json",
+      "bytes": 2533,
+      "sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json",
+      "bytes": 2529,
+      "sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json",
+      "bytes": 2529,
+      "sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json",
+      "bytes": 2534,
+      "sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json",
+      "bytes": 2533,
+      "sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json",
+      "bytes": 2533,
+      "sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json",
+      "bytes": 2533,
+      "sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json",
+      "bytes": 2532,
+      "sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json",
+      "bytes": 2533,
+      "sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021"
+    },
+    {
+      "path": "tools/femm_reference/data/benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json",
+      "bytes": 2536,
+      "sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5"
+    },
+    {
+      "path": "tools/femm_reference/data/femm-binaries.json",
+      "bytes": 252,
+      "sha256": "429f2afd8f61b46b6a11cf434400da7ee14d640859561c8bdc4ee896e95aac75"
+    },
+    {
+      "path": "tools/femm_reference/data/inherited_lrk.json",
+      "bytes": 4903,
+      "sha256": "09c34b4b131093b3bf0183c6edf153f134a237b5e9e23b0fbc06a039f47e2b46"
+    },
+    {
+      "path": "tools/femm_reference/data/jobs.json",
+      "bytes": 10323,
+      "sha256": "8b775f73f953ead867e7ecdf56c940fed92656786b00c6076d80060a9f204b6a"
+    },
+    {
+      "path": "tools/femm_reference/data/spec_e.json",
+      "bytes": 12333,
+      "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843"
+    },
+    {
+      "path": "tools/femm_reference/data/spec_f.json",
+      "bytes": 6310,
+      "sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475"
+    },
+    {
+      "path": "tools/femm_reference/data/standard-selection.json",
+      "bytes": 27833,
+      "sha256": "98b863a964a753a2d810d7fd5a24884ff3f3d9e01bdc5ea0a48a4adbe0be1a6e"
+    },
+    {
+      "path": "tools/femm_reference/e_producer.py",
+      "bytes": 9834,
+      "sha256": "f50daaf538f067db15b66b35713e5cf9627a5d54071a2635b1fb84606a96001f"
+    },
+    {
+      "path": "tools/femm_reference/f_producer.py",
+      "bytes": 6257,
+      "sha256": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21"
+    },
+    {
+      "path": "tools/femm_reference/hub.py",
+      "bytes": 4349,
+      "sha256": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8"
+    },
+    {
+      "path": "tools/femm_reference/ir_helpers.py",
+      "bytes": 6670,
+      "sha256": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b"
+    },
+    {
+      "path": "tools/femm_reference/phase_e.py",
+      "bytes": 2049,
+      "sha256": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377"
+    },
+    {
+      "path": "tools/femm_reference/phase_f.py",
+      "bytes": 27769,
+      "sha256": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65"
+    },
+    {
+      "path": "tools/femm_reference/requirements.txt",
+      "bytes": 227,
+      "sha256": "fd8d09b466b427420333101c012d4b5d5aa758c14a1025ca987f37eeed8e6800"
+    },
+    {
+      "path": "tools/femm_reference/runtime.py",
+      "bytes": 3946,
+      "sha256": "8ac51aafaf3ea952e1e6d23d909c96bc8cd2f03134054acdde6ddc8ec15c05ee"
+    },
+    {
+      "path": "tools/femm_reference/source-manifest.json",
+      "bytes": 45797,
+      "sha256": "d261368f20f75bc68d50a53d501665ea7fbe0e7a972cc3486bf57df1601e9cd3"
+    },
+    {
+      "path": "tools/run_reference_positions.py",
+      "bytes": 180,
+      "sha256": "b7f86b231aad877a16a5e1e214bf2134d2214bfb48323225cbceec3237104356"
     }
   ],
   "public_patches": [
@@ -16253,7 +16908,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -16283,13 +16938,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -16307,7 +16962,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -18221,25 +18876,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",

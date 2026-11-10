@@ -3,8 +3,8 @@ def get_wine_compatible_path(filename: str = "openem_solve.fem") -> str:
 
     On macOS/Linux with Wine, FEMM runs inside Wine and sees the filesystem
     through drive mappings. The Z: drive maps to the Unix root (/), so
-    a file at /Users/mac/wine_femm_tmp/solve.fem is accessible in Wine as
-    Z:\\Users\\mac\\wine_femm_tmp\\solve.fem.
+    a file at /reference/wine_femm_tmp/solve.fem is accessible in Wine as
+    through the Wine Z: drive at the same relative path.
 
     However, pyFEMM's mi_saveas() handles this translation internally on
     newer versions. The key fix is to use a path under the Wine prefix's

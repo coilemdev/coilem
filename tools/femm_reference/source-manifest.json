@@ -442,10 +442,10 @@
       "transformation": "byte-for-byte copy"
     },
     "_vendor/e/path_compat.py": {
-      "sha256": "f4a9e96039b15de81d4750d47720bb92f61086753a508968719ef7835ac39425",
+      "sha256": "dba13fe953c0efdfebcaa3d0da2532af985728631953f8d0c31747cc2710aa9c",
       "origin": "Windows FEMM v3 PR100 adapter/path_compat.py",
       "original_sha256": "f4a9e96039b15de81d4750d47720bb92f61086753a508968719ef7835ac39425",
-      "transformation": "byte-for-byte copy"
+      "transformation": "Documentation-only removal of an example user-directory path; executable statements unchanged"
     },
     "_vendor/e/materials/electrical-steel/M350-50A.csv": {
       "sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
