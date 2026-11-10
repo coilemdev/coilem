@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 171651,
-      "sha256": "0689a72abe5417187f5db2b3fe661acd72f82472f50e037a4afa06ee7ee65b99"
+      "bytes": 172326,
+      "sha256": "68c7b0a7b0ba63a3673b98eeb1f3fe7fb948a3926b7bf9994a1663844a49f8ed"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76728,
-      "sha256": "a0daa1fc2cb6afd310ab0fb8fe9bbe361b8de69d0ce4efb1cd830dc6bccaf7b2"
+      "bytes": 76400,
+      "sha256": "3c12f114ada9f023fe34cb41cab5ec5cf6824deb121cbd1eef41cb003bc7a0ae"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 245124,
-      "sha256": "e5d614e3b440a6e537b8755bf28120c242a3d0d6553ad0ea4a83500e76af3059"
+      "bytes": 246081,
+      "sha256": "0d02cb6dd4d2507c98aab56aaa5459bde8d800e99158bea6d3be9865909d6b21"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7187,6 +7187,11 @@
       "path": "frontend/src/public/designFile.ts",
       "bytes": 15806,
       "sha256": "34d5d58a159ade2728b546500a209c84db3ec849ed7b04cfffc8a9a13f3afd2e"
+    },
+    {
+      "path": "frontend/src/public/designViewMemory.ts",
+      "bytes": 638,
+      "sha256": "8e98368f7000737cf7d9db12f1c3135d62747be678404c3d361d39a7fd404706"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",

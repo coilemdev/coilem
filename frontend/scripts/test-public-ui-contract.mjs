@@ -590,7 +590,14 @@ assert.match(motorCanvasSource, /magnetPolarityView === 'split'/);
 assert.doesNotMatch(workspaceSource, /Magnet polarity display|'Split view'|setMagnetPolarityView/);
 assert.match(workspaceSource, /public-winding-key/);
 assert.match(workspaceSource, /⊙ out · ⊗ in/);
-assert.match(workspaceSource, /useState<PublicCanvasLayer>\('none'\)/);
+// The Design canvas plays its 3D-to-2D intro when a motor is opened, and
+// resumes the view that was left when coming back from Solve or Results.
+assert.match(workspaceSource, /const \[resumeDesignView\] = useState\(\(\) => designIntroEnabled && designViewMemory\.introPlayed\)/);
+assert.match(workspaceSource, /resumeDesignView \? designViewMemory\.view as PublicViewportMode : '3d'/);
+assert.match(workspaceSource, /resumeDesignView \? designViewMemory\.layer as PublicCanvasLayer : 'none'/);
+assert.equal((appSource.match(/^    resetDesignViewMemory\(\);$/gm) ?? []).length, 4);
+// Preparing a mesh no longer raises a notice; the mesh view itself shows it.
+assert.doesNotMatch(appSource, /mesh prepared\. Inspect it here|plan ready with a/);
 assert.doesNotMatch(workspaceSource, /setCanvasLayer\('dimensions'\)/);
 assert.match(workspaceSource, /config\.topology === 'SPM'/);
 assert.match(motorCanvasSource, /computeSpmMagnetPolarityHalves/);

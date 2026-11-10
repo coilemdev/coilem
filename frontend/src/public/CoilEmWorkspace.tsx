@@ -1,3 +1,4 @@
+import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
@@ -1736,11 +1737,17 @@ function ViewportChrome({
   onFocusedMeshElementChange?: (elementIndex: number | null) => void;
 }) {
   const designIntroEnabled = enableDesignIntro && mode === 'geometry';
-  const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => (
-    designIntroEnabled ? '3d' : '2d'
+  // The intro plays when a motor is first opened. Coming back to Design from
+  // Solve or Results resumes the view that was left (designViewMemory).
+  const [resumeDesignView] = useState(() => designIntroEnabled && designViewMemory.introPlayed);
+  const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => {
+    if (!designIntroEnabled) return '2d';
+    return resumeDesignView ? designViewMemory.view as PublicViewportMode : '3d';
+  });
+  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled && !resumeDesignView ? 0 : 1));
+  const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>(() => (
+    resumeDesignView ? designViewMemory.layer as PublicCanvasLayer : 'none'
   ));
-  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled ? 0 : 1));
-  const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>('none');
   // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
@@ -1849,7 +1856,7 @@ function ViewportChrome({
   }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
-  const introCompleteRef = useRef(!designIntroEnabled);
+  const introCompleteRef = useRef(!designIntroEnabled || resumeDesignView);
   const previousFrameRef = useRef<number | null>(null);
 
   const finishDesignIntro = useCallback((finalMode: PublicViewportMode) => {
@@ -1880,6 +1887,16 @@ function ViewportChrome({
     const timer = window.setTimeout(() => setShowMeshNavigationHint(false), 4_200);
     return () => window.clearTimeout(timer);
   }, [mode]);
+
+  // Remember the Design view once its intro is over. No dependency list: a
+  // motor loaded while this canvas stays mounted resets the memory, and the
+  // next render records again that the intro has already been seen here.
+  useEffect(() => {
+    if (!designIntroEnabled || !introCompleteRef.current) return;
+    designViewMemory.introPlayed = true;
+    designViewMemory.view = viewportMode;
+    designViewMemory.layer = canvasLayer;
+  });
 
   useEffect(() => {
     if (!designIntroEnabled || introCompleteRef.current) return undefined;
