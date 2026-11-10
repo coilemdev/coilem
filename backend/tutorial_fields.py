@@ -82,9 +82,11 @@ _ROTATING_FIELD_ANGLES_DEG = tuple(
 # longer than the rest of the mesh, and Lessons 6 to 8 mesh or solve many frames
 # in a row. One pass keeps the triangle count; solved values move by about 0.2%.
 _TEACHING_SMOOTHING_PASSES = 1
-_TEACHING_MESH_CACHE_LIMIT = 6
+# Lesson 6 solves the rotor at seven angles per source, then replays them.
+_TEACHING_MESH_CACHE_LIMIT = 16
 _TEACHING_MESH_CACHE: OrderedDict[tuple[Any, ...], dict[str, Any]] = OrderedDict()
 _TEACHING_MESH_CACHE_LOCK = threading.Lock()
+_TEACHING_MESH_BUILDS: dict[tuple[Any, ...], threading.Lock] = {}
 # Per-frame keys that repeat the mesh; a sweep response carries them once.
 _SWEEP_SHARED_FRAME_KEYS = ("nodes_mm", "triangles", "regions")
 _SWEEP_FRAME_LIST_KEYS = ("frames", "phase_a_frames", "phase_b_frames")
@@ -104,11 +106,19 @@ def _cached_teaching_mesh(build: Callable[..., dict[str, Any]]) -> Callable[...,
             if mesh is not None:
                 _TEACHING_MESH_CACHE.move_to_end(key)
                 return mesh
-        mesh = build(**kwargs)
+            # Requests for the same mesh that arrive together wait for one build.
+            building = _TEACHING_MESH_BUILDS.setdefault(key, threading.Lock())
+        with building:
+            with _TEACHING_MESH_CACHE_LOCK:
+                mesh = _TEACHING_MESH_CACHE.get(key)
+            if mesh is None:
+                mesh = build(**kwargs)
+                with _TEACHING_MESH_CACHE_LOCK:
+                    _TEACHING_MESH_CACHE[key] = mesh
+                    while len(_TEACHING_MESH_CACHE) > _TEACHING_MESH_CACHE_LIMIT:
+                        _TEACHING_MESH_CACHE.popitem(last=False)
         with _TEACHING_MESH_CACHE_LOCK:
-            _TEACHING_MESH_CACHE[key] = mesh
-            while len(_TEACHING_MESH_CACHE) > _TEACHING_MESH_CACHE_LIMIT:
-                _TEACHING_MESH_CACHE.popitem(last=False)
+            _TEACHING_MESH_BUILDS.pop(key, None)
         return mesh
 
     cached.__name__ = build.__name__
@@ -2579,6 +2589,33 @@ def run_field_force_motor_fixture(
     return payload
 
 
+def _mirror_mesh_left_right(mesh: dict[str, Any]) -> dict[str, Any]:
+    """Return ``mesh`` reflected in the vertical axis, triangles still anticlockwise."""
+
+    return {
+        **mesh,
+        "nodes_mm": [[-x_mm, y_mm, *rest] for x_mm, y_mm, *rest in mesh["nodes_mm"]],
+        "triangles": [[a, c, b] for a, b, c in mesh["triangles"]],
+    }
+
+
+def _rotor_chase_mesh(*, rotor_angle_deg: float, **mesh_options: Any) -> dict[str, Any]:
+    """Return the Lesson 6 mesh for a rotor angle, meshing only 0 to 90 degrees.
+
+    The bar rotor outlines the same shape every half turn, and the fixture is
+    symmetric left to right, so the mesh at an angle past 90 degrees is the
+    mirror image of the mesh at 180 degrees minus that angle. Which half of
+    the bar is north is the solver's business, not the mesh's.
+    """
+
+    half_turn_deg = round(rotor_angle_deg % 180.0, 6)
+    if half_turn_deg <= 90.0:
+        return _build_rotor_chase_gmsh_mesh(rotor_angle_deg=half_turn_deg, **mesh_options)
+    return _mirror_mesh_left_right(
+        _build_rotor_chase_gmsh_mesh(rotor_angle_deg=round(180.0 - half_turn_deg, 6), **mesh_options)
+    )
+
+
 def run_rotor_chase_fixture(
     *,
     field_source: Literal["stator", "rotor", "combined"] = "combined",
@@ -2624,7 +2661,7 @@ def run_rotor_chase_fixture(
         "solve": True,
     }
     if runner is subprocess.run:
-        request["imported_mesh"] = _build_rotor_chase_gmsh_mesh(
+        request["imported_mesh"] = _rotor_chase_mesh(
             rotor_angle_deg=normalized_angle_deg,
             pole_gap_mm=pole_gap_mm,
             source_kind=source_kind,

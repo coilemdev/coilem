@@ -23,6 +23,42 @@ const writeIdSet = (key: string, ids: Set<string>) => {
   }
 };
 
+/** Somewhere longer-lived than this browser's storage, supplied by the host app. */
+export interface LearningProgressStore {
+  load: () => Promise<string[]>;
+  save: (lessonIds: string[]) => Promise<void>;
+}
+
+let progressStore: LearningProgressStore | null = null;
+
+const saveToStore = (ids: Set<string>) => {
+  // Best effort: the browser copy still holds the progress if this fails.
+  void progressStore?.save([...ids].sort()).catch(() => undefined);
+};
+
+/**
+ * Keep lesson progress in the host's store as well as in the browser. Browser
+ * storage belongs to one origin, port included, so the app opened on another
+ * port or in another browser would otherwise show no finished lessons.
+ * Lessons finished in either place are kept.
+ */
+export async function connectLearningProgressStore(store: LearningProgressStore): Promise<void> {
+  progressStore = store;
+  let stored: string[];
+  try {
+    stored = await store.load();
+  } catch {
+    return;
+  }
+  const local = readIdSet(PRIMER_KEY);
+  const merged = new Set([...local, ...stored]);
+  if (merged.size !== local.size) {
+    writeIdSet(PRIMER_KEY, merged);
+    window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: { key: PRIMER_KEY } }));
+  }
+  if (merged.size !== stored.length) saveToStore(merged);
+}
+
 const setMembership = (
   key: string,
   setState: Dispatch<SetStateAction<Set<string>>>,
@@ -33,6 +69,7 @@ const setMembership = (
   if (complete) next.add(id);
   else next.delete(id);
   writeIdSet(key, next);
+  saveToStore(next);
   setState(next);
   window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: { key } }));
 };

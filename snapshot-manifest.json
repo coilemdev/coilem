@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10066,
-      "sha256": "3e0aef226a647c08b602a34e0310382faaa4a32920e6e1ec42e715c5ad4ca668"
+      "bytes": 10097,
+      "sha256": "59085291c63f46b28e1e9060d7539bb293699448d0023ae40bc4603e55f5e704"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -590,8 +590,8 @@
     },
     {
       "path": "backend/public_routes/tutorials.py",
-      "bytes": 36028,
-      "sha256": "eb439e208d4e4605fd848c616e4976fd0009dc5ebbb5ed4df92a9ba39b6c705d"
+      "bytes": 36844,
+      "sha256": "9050d3c7ff34f28397e978bc7f67ba3883aa11f9e78cb0d1ff82e7ce7338bf10"
     },
     {
       "path": "backend/public_security.py",
@@ -700,8 +700,8 @@
     },
     {
       "path": "backend/tutorial_fields.py",
-      "bytes": 136520,
-      "sha256": "99e67f296934b5821990e24862462bc3abcdbb14283b63808c5ef0eb1dacfe2e"
+      "bytes": 138233,
+      "sha256": "d3bfa42f5e75b44360033453e3ae1ccc94c124813ffaec24dcaf7730700f84f8"
     },
     {
       "path": "backend/winding_resistance.py",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 12896,
-      "sha256": "c5d72a024891bb18b0bc4b3bab01e96037cdf70368d5aea470e4621dc098eaff"
+      "bytes": 12953,
+      "sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6735,8 +6735,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
-      "bytes": 15494,
-      "sha256": "58899ef93fa5258f477449c9ecb30a076bd039475964cde46654f2ece98e595f"
+      "bytes": 12883,
+      "sha256": "e219293e2bb2eef0e48901b26ba9046024ef3908d2180c08daaf576d3178be05"
     },
     {
       "path": "frontend/src/components/tutorials/LessonCompleteButton.tsx",
@@ -6920,8 +6920,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/learning.css",
-      "bytes": 74530,
-      "sha256": "039eb7247c1625fa9cb9a7be09e0e53ebc9821b92bae080fd3ac80fe08b13810"
+      "bytes": 13583,
+      "sha256": "cb5f3e537ee8f78f44d794b38742e9fbe6a06baae305c0cce15fb78fc9921936"
+    },
+    {
+      "path": "frontend/src/components/tutorials/lesson-catalog.css",
+      "bytes": 7733,
+      "sha256": "764b9efaafa2fbfc8575c1d95502fbfb5722d114ac09e4715b407595cd47bcf2"
     },
     {
       "path": "frontend/src/components/tutorials/lesson-three-bemf.css",
@@ -7000,8 +7005,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/useLearningProgress.ts",
-      "bytes": 2224,
-      "sha256": "5e182551ce1f4006df139a61895d8fc2b772552817b062532d0a0f0070ec5071"
+      "bytes": 3519,
+      "sha256": "53a1eebd00fc64da31b7b9b7b39c88d5384f77f9fef6ed269be0453e01d53b79"
     },
     {
       "path": "frontend/src/public/App.tsx",
@@ -7530,13 +7535,18 @@
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
-      "bytes": 9207,
-      "sha256": "aa2f863b7be9ccdde58572cf76e58644df24a6ad854de33b6ed85c9dcc9f06f7"
+      "bytes": 8879,
+      "sha256": "6bcb7e48343f4327c472e9e653c1df45a296152672fa266023d7b5414bedbafc"
     },
     {
       "path": "frontend/src/public/tutorials/lessonRoutes.ts",
       "bytes": 2902,
       "sha256": "951722da105ab160b2b67862da176d7dcc6bc201d0213e2717736faf762e4e40"
+    },
+    {
+      "path": "frontend/src/public/tutorials/publicLearningProgress.ts",
+      "bytes": 1094,
+      "sha256": "fb9099ee49e5247b640f7d866a5d9a19785da57c8b75401a36109d9052a1c4bb"
     },
     {
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
@@ -13844,6 +13854,11 @@
       "sha256": "200b36a4f0e654265847823d4ac22c5f4d5297161ae8a787023b01b2b9bcd404"
     },
     {
+      "path": "backend/learning_progress.py",
+      "bytes": 1606,
+      "sha256": "26a7aacb3a4e3f70f7c69a687cad123f5f8aa66046e704b661e3833b63e9fda5"
+    },
+    {
       "path": "tests/test_fast_json.py",
       "bytes": 2663,
       "sha256": "a6a752e9fc0aa286323a8f01f3d490cb9d02cf3842cbd4677af087a82ee71372"
@@ -15487,6 +15502,11 @@
       "path": "tests/test_cogging_qualification_collection.py",
       "bytes": 5040,
       "sha256": "1ec9794583940e54637238dabae7b1e4039f651f0a2e703bb225433df0064783"
+    },
+    {
+      "path": "tests/test_learning_progress.py",
+      "bytes": 1239,
+      "sha256": "f7c81b0130594029571a6b9d2d4e8d1be3efbc3a44142f1efec01c165a63a270"
     },
     {
       "path": "tests/test_refined_cogging_registration.py",

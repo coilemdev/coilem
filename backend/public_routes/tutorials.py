@@ -19,11 +19,12 @@ import math
 import time
 from typing import Any, Literal
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Body, HTTPException, Query
 from fastapi.responses import Response, StreamingResponse
 
 from backend.field_composition import solve_armature_field_sweep, solve_pm_field_sweep
 from backend.gmsh_solver import GmshUnavailableError
+from backend.learning_progress import read_completed_lessons, write_completed_lessons
 from backend.magneto2d_adapter import (
     Magneto2DExecutionError,
     Magneto2DUnsupportedError,
@@ -61,6 +62,25 @@ from backend.tutorial_fields import (
 )
 
 router = APIRouter()
+
+
+@router.get("/tutorials/progress", tags=["tutorials"])
+async def tutorial_progress() -> dict[str, list[str]]:
+    """Return the lessons marked complete on this computer."""
+
+    return {"completed": await asyncio.to_thread(read_completed_lessons)}
+
+
+@router.post("/tutorials/progress", tags=["tutorials"])
+async def save_tutorial_progress(
+    completed: list[str] = Body(..., embed=True, max_length=64),
+) -> dict[str, list[str]]:
+    """Replace the lessons marked complete on this computer."""
+
+    try:
+        return {"completed": await asyncio.to_thread(write_completed_lessons, completed)}
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail="Lesson progress could not be saved") from exc
 
 
 def _encoded_sweep(run_sweep: Any, **kwargs: Any) -> Response:

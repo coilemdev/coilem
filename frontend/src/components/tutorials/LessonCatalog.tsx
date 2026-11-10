@@ -2,6 +2,7 @@ import React from 'react';
 import { LessonGlyph } from './LessonGlyph';
 import { useLearningProgress } from './useLearningProgress';
 import './learning.css';
+import './lesson-catalog.css';
 
 export type LearningLessonId =
   | 'follow-the-flux'
@@ -32,6 +33,7 @@ interface LearningCatalogProps {
 const TIER_ONE_LESSONS = [
   {
     id: 'follow-the-flux',
+    brief: 'See how steel reshapes a magnet’s field.',
     number: 1,
     title: 'Follow the Flux',
     summary: 'Solve one magnet in open air, then move different steel shapes nearby and watch the field redistribute.',
@@ -40,6 +42,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'airgap-tax',
+    brief: 'Find out what an airgap costs in flux.',
     number: 2,
     title: 'Close the Loop: The Airgap Tax',
     summary: 'Close one magnet with steel, change two airgaps, and watch the solved flux pay the price.',
@@ -48,6 +51,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'current-field',
+    brief: 'Make a magnetic field with a wire.',
     number: 3,
     title: 'Make a Field with Current',
     summary: 'Drive one straight conductor, reverse the current, and compare the solved field with the right-hand rule and the straight-wire equation.',
@@ -56,14 +60,16 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'iron-saturation',
+    brief: 'Push steel until it stops helping.',
     number: 4,
     title: 'When Iron Saturates',
-    summary: 'Drive an M350-50A ring through its B–H knee and watch effective permeability collapse in a nonlinear FEM solve.',
+    summary: 'Drive an electrical-steel ring through its B–H knee and watch effective permeability collapse in a nonlinear solve.',
     status: 'available',
     estimate: '8 min',
   },
   {
     id: 'field-force',
+    brief: 'Turn field and current into force.',
     number: 5,
     title: 'Turn Field into Force',
     summary: 'Put a current-carrying conductor between magnet poles, reverse current, and compare FEM force with F = BIL.',
@@ -72,6 +78,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'rotor-chase',
+    brief: 'Let a magnet rotor follow a field.',
     number: 6,
     title: 'Give the Rotor Something to Chase',
     summary: 'Release a permanent-magnet rotor into a fixed field, then move the field target and watch alignment torque pull the rotor after it.',
@@ -80,6 +87,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'rotating-field',
+    brief: 'Spin a field with two phased currents.',
     number: 7,
     title: 'Make the Field Rotate',
     summary: 'Drive two perpendicular conductor pairs 90° apart and animate the solver-backed field through one electrical cycle.',
@@ -88,6 +96,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'three-phase-motor',
+    brief: 'Drive a rotor with three phases.',
     number: 8,
     title: 'Three Wires, One Rotating Field',
     summary: 'Drive six wound teeth with three balanced currents, release a PM rotor, then open one phase and reverse the phase sequence.',
@@ -96,6 +105,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'motor-magnetic-circuit',
+    brief: 'Assemble a complete slotted motor.',
     number: 9,
     title: 'Build the 2p/6s Three-Phase Motor',
     summary: 'Turn the six-electromagnet teaching fixture into the first complete slotted SPM motor and inspect its magnetic circuit.',
@@ -104,6 +114,7 @@ const TIER_ONE_LESSONS = [
   },
   {
     id: 'back-emf-voltage-headroom',
+    brief: 'See why speed runs out of voltage.',
     number: 10,
     title: 'BEMF & Voltage Headroom',
     summary: 'Spin the SPM motor, watch three-phase BEMF grow with speed, and compare it with inverter voltage.',
@@ -174,190 +185,137 @@ export const LearningCatalog: React.FC<LearningCatalogProps> = ({
   onStartGuidedTour,
   backHomeLabel = 'Back to design start',
 }) => {
-  const { completedLessons, isLessonComplete } = useLearningProgress();
-  const primerCompleteCount = TIER_ONE_LESSONS.filter((lesson) => completedLessons.has(lesson.id)).length;
-  const primerTotal = TIER_ONE_LESSONS.length;
-  const primerPercent = Math.round((primerCompleteCount / primerTotal) * 100);
-  // Resume at the first lesson not yet finished; once every lesson is done there is
-  // nothing to resume, so the callout drops away instead of pointing back at lesson 1.
+  const { completedLessons } = useLearningProgress();
+  const total = TIER_ONE_LESSONS.length;
+  const done = TIER_ONE_LESSONS.filter((lesson) => completedLessons.has(lesson.id)).length;
+  // Resume at the first lesson not yet finished.
   const nextLesson = TIER_ONE_LESSONS.find((lesson) => !completedLessons.has(lesson.id)) ?? null;
-  const featuredLesson = nextLesson ?? TIER_ONE_LESSONS[TIER_ONE_LESSONS.length - 1];
-  const courseComplete = nextLesson === null;
+  const resumeLabel = nextLesson === null
+    ? 'All ten lessons complete'
+    : `${done === 0 ? 'Start' : 'Continue'} · Lesson ${nextLesson.number}`;
 
   return (
-    <main className="learning-shell learning-catalog-shell">
-      <section className="learning-path-hero" aria-labelledby="learning-path-title">
-        <div className="learning-path-intro">
-          <p className="learning-kicker">Electric motor primer</p>
-          <h1 id="learning-path-title">Learn how a motor works</h1>
-          <p>Ten short, interactive experiments take you from a single magnetic field to a complete rotating machine.</p>
+    <main className="learning-shell lesson-catalog">
+      <header className="lesson-catalog-head">
+        <div className="lesson-catalog-intro">
+          <p className="lesson-catalog-kicker">Electric motor primer</p>
+          <h1>Learn how a motor works</h1>
+          <p>Ten short experiments, from a single magnetic field to a complete rotating machine.</p>
         </div>
-
-        <button
-          type="button"
-          className={`learning-continue-card${courseComplete ? ' is-complete' : ''}`}
-          onClick={() => onSelectLesson(featuredLesson.id as LearningLessonId)}
-        >
-          <span className="learning-continue-number" aria-hidden="true">
-            {courseComplete ? '✓' : String(featuredLesson.number).padStart(2, '0')}
-          </span>
-          <LessonGlyph lessonId={featuredLesson.id} className="learning-continue-glyph" />
-          <span className="learning-continue-copy">
-            <span className="learning-continue-kicker">
-              {courseComplete ? 'Course complete' : primerCompleteCount === 0 ? 'Begin here' : 'Continue learning'}
-            </span>
-            <strong>{featuredLesson.title}</strong>
-            <span>{featuredLesson.summary}</span>
-          </span>
-          <span className="learning-continue-action">
-            <span>{featuredLesson.estimate}</span>
-            <strong>{courseComplete ? 'Review lesson' : primerCompleteCount === 0 ? 'Start lesson' : 'Continue'} →</strong>
-          </span>
-        </button>
-
-        <div className="learning-path-progress">
-          <div
-            className="learning-path-progress-track"
-            role="progressbar"
-            aria-label="Primer progress"
-            aria-valuemin={0}
-            aria-valuemax={primerTotal}
-            aria-valuenow={primerCompleteCount}
-            aria-valuetext={`${primerCompleteCount} of ${primerTotal} lessons complete`}
-          >
-            <span style={{ width: `${primerPercent}%` }} />
-          </div>
-          <span>{primerCompleteCount} of {primerTotal} complete</span>
-        </div>
-
-        <div className="learning-path-roadmap" aria-label="Course chapters">
-          {LESSON_SECTIONS.map((section, index) => {
-            const completed = section.lessonIds.filter((id) => completedLessons.has(id)).length;
-            const active = section.lessonIds.some((id) => id === featuredLesson.id);
-            return (
-              <div key={section.id} className={`learning-roadmap-chapter${active ? ' is-active' : ''}${completed === section.lessonIds.length ? ' is-complete' : ''}`}>
-                <span className="learning-roadmap-index">{completed === section.lessonIds.length ? '✓' : index + 1}</span>
-                <span>
-                  <small>Chapter {index + 1} · lessons {section.review.covers}</small>
-                  <strong>{section.title}</strong>
-                </span>
-                <em>{completed}/{section.lessonIds.length}</em>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {LESSON_SECTIONS.map((section, sectionIndex) => {
-        const sectionLessons = section.lessonIds
-          .map((id) => TIER_ONE_LESSONS.find((lesson) => lesson.id === id))
-          .filter((lesson): lesson is (typeof TIER_ONE_LESSONS)[number] => Boolean(lesson));
-        const sectionComplete = sectionLessons.filter((lesson) => completedLessons.has(lesson.id)).length;
-        const reviewComplete = completedLessons.has(section.review.id);
-        // Capstones are always explorable from the course map. Completion still
-        // communicates progression, but it should never hide a useful project.
-        const reviewUnlocked = section.review.available;
-        return (
-          <section
-            key={section.id}
-            className="learning-path-chapter"
-            aria-label={`${section.kicker}: ${section.title}`}
-          >
-            <header className="learning-path-chapter-header">
-              <span className="learning-path-chapter-number">{String(sectionIndex + 1).padStart(2, '0')}</span>
-              <div>
-                <p className="learning-kicker">Chapter {sectionIndex + 1} · lessons {section.review.covers}</p>
-                <h2>{section.title}</h2>
-                <p>{section.blurb}</p>
-              </div>
-              <span className="learning-path-chapter-progress">
-                {sectionComplete}/{sectionLessons.length} complete
-              </span>
-            </header>
-            <ol
-              className="learning-path-lessons"
-              start={sectionIndex === 0 ? 1 : sectionLessons[0]?.number ?? 1}
+        <div className="lesson-catalog-resume">
+          <div className="lesson-catalog-progress">
+            <span>{done} of {total} complete</span>
+            <div
+              className="lesson-catalog-progress-track"
+              role="progressbar"
+              aria-label="Lessons complete"
+              aria-valuemin={0}
+              aria-valuemax={total}
+              aria-valuenow={done}
+              aria-valuetext={`${done} of ${total} lessons complete`}
             >
-              {sectionLessons.map((lesson) => {
-                const available = lesson.status === 'available';
-                const complete = isLessonComplete(lesson.id);
-                const isNext = nextLesson?.id === lesson.id;
-                return (
-                  <li key={lesson.id}>
-                    <button
-                      type="button"
-                      className={`learning-path-lesson${available ? ' is-available' : ' is-planned'}${complete ? ' is-complete' : ''}${isNext ? ' is-next' : ''}`}
-                      onClick={() => {
-                        if (available) onSelectLesson(lesson.id as LearningLessonId);
-                      }}
-                      disabled={!available}
-                      aria-current={isNext ? 'step' : undefined}
-                    >
-                      <span className="learning-path-lesson-number">
-                        {complete ? '\u2713' : String(lesson.number).padStart(2, '0')}
-                      </span>
-                      <LessonGlyph lessonId={lesson.id} className="learning-path-lesson-glyph" />
-                      <span className="learning-path-lesson-copy">
-                        <strong>{lesson.title}</strong>
-                        <span>{lesson.summary}</span>
-                      </span>
-                      <span className={`learning-path-lesson-state${complete ? ' is-complete' : ''}${isNext ? ' is-next' : ''}`}>
-                        <small>{lesson.estimate}</small>
-                        <strong>{complete ? 'Complete' : isNext ? primerCompleteCount === 0 ? 'Start here' : 'Continue' : available ? 'Available' : 'Planned'}</strong>
-                      </span>
-                      <span className="learning-path-lesson-arrow" aria-hidden="true">→</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-            <button
-              type="button"
-              className={`learning-path-coming-next${reviewUnlocked ? ' is-available' : ''}${reviewComplete ? ' is-complete' : ''}`}
-              aria-label={`${section.review.title}${reviewUnlocked ? ', available' : ', locked'}`}
-              disabled={!reviewUnlocked}
-              onClick={() => {
-                if (reviewUnlocked) onSelectLesson(section.review.id as LearningLessonId);
-              }}
-            >
-              <LessonGlyph lessonId="section-review" className="learning-path-review-glyph" />
-              <span>
-                <small>{reviewComplete ? 'Chapter complete' : reviewUnlocked ? 'Ready · chapter capstone' : 'Coming next · chapter review'}</small>
-                <strong>{section.review.title}</strong>
-              </span>
-              <p>{section.review.summary}</p>
-              {reviewUnlocked ? <em>{reviewComplete ? 'Review again →' : 'Start capstone →'}</em> : null}
-            </button>
-          </section>
-        );
-      })}
-
-      {onStartGuidedTour && (
-        <section className="learning-path-secondary" aria-label="Other ways in">
-          <header>
-            <p className="learning-kicker">Other ways in</p>
-            <h2>Prefer to start in the real app?</h2>
-          </header>
-          <div className="learning-alt-paths">
-            <button type="button" className="learning-alt-card" onClick={onStartGuidedTour}>
-              <LessonGlyph lessonId="guided-first-solve" className="learning-lesson-glyph" />
-              <span className="learning-alt-copy">
-                <span className="learning-lesson-status">Ready now</span>
-                <span className="learning-lesson-title">Guided first solve</span>
-                <span className="learning-lesson-summary">
-                  Design the example motor, mesh it, run a solve, and read the report -
-                  with coach marks on the real workspace.
-                </span>
-                <span className="learning-lesson-meta">~5 min - runs in the live workspace</span>
-              </span>
-            </button>
+              <span style={{ width: `${(done / total) * 100}%` }} />
+            </div>
           </div>
-        </section>
-      )}
+          <button
+            type="button"
+            className="learning-primary-button lesson-catalog-resume-button"
+            disabled={nextLesson === null}
+            onClick={() => {
+              if (nextLesson) onSelectLesson(nextLesson.id as LearningLessonId);
+            }}
+          >
+            {resumeLabel}{nextLesson ? ' →' : ''}
+          </button>
+        </div>
+      </header>
 
-      <footer className="learning-path-footer">
+      <div className="lesson-catalog-chapters">
+        {LESSON_SECTIONS.map((section, sectionIndex) => {
+          const lessons = section.lessonIds
+            .map((id) => TIER_ONE_LESSONS.find((lesson) => lesson.id === id))
+            .filter((lesson): lesson is (typeof TIER_ONE_LESSONS)[number] => Boolean(lesson));
+          const chapterDone = lessons.filter((lesson) => completedLessons.has(lesson.id)).length;
+          const chapterComplete = chapterDone === lessons.length;
+          const review = section.review;
+          const reviewComplete = completedLessons.has(review.id);
+          return (
+            <section
+              key={section.id}
+              className={`lesson-catalog-chapter${chapterComplete ? ' is-complete' : ''}`}
+              aria-label={`Chapter ${sectionIndex + 1}: ${section.title}`}
+            >
+              <header className="lesson-catalog-chapter-head">
+                <span className="lesson-catalog-chapter-index" aria-hidden="true">
+                  {chapterComplete ? '\u2713' : sectionIndex + 1}
+                </span>
+                <div>
+                  <p className="lesson-catalog-kicker">Chapter {sectionIndex + 1} · Lessons {review.covers.replace('-', '–')}</p>
+                  <h2>{section.title}</h2>
+                </div>
+                <span className="lesson-catalog-chapter-count">{chapterDone}/{lessons.length}</span>
+              </header>
+              <ol className="lesson-catalog-lessons" start={lessons[0]?.number ?? 1}>
+                {lessons.map((lesson) => {
+                  const complete = completedLessons.has(lesson.id);
+                  const isNext = nextLesson?.id === lesson.id;
+                  return (
+                    <li key={lesson.id}>
+                      <button
+                        type="button"
+                        className={`lesson-catalog-lesson${complete ? ' is-complete' : ''}${isNext ? ' is-next' : ''}`}
+                        title={lesson.summary}
+                        aria-current={isNext ? 'step' : undefined}
+                        onClick={() => onSelectLesson(lesson.id as LearningLessonId)}
+                      >
+                        <span className="lesson-catalog-lesson-number">
+                          {complete ? '\u2713' : lesson.number}
+                        </span>
+                        <LessonGlyph lessonId={lesson.id} className="lesson-catalog-lesson-glyph" />
+                        <span className="lesson-catalog-lesson-copy">
+                          <strong>{lesson.title}</strong>
+                          <span>{lesson.brief}</span>
+                        </span>
+                        <span className="lesson-catalog-lesson-state">
+                          {complete ? 'Done' : isNext ? (done === 0 ? 'Start here' : 'Up next') : lesson.estimate}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+                <li>
+                  <button
+                    type="button"
+                    className={`lesson-catalog-lesson is-capstone${reviewComplete ? ' is-complete' : ''}`}
+                    title={review.summary}
+                    disabled={!review.available}
+                    onClick={() => {
+                      if (review.available) onSelectLesson(review.id as LearningLessonId);
+                    }}
+                  >
+                    <span className="lesson-catalog-lesson-number">{reviewComplete ? '\u2713' : '\u2605'}</span>
+                    <LessonGlyph lessonId="section-review" className="lesson-catalog-lesson-glyph" />
+                    <span className="lesson-catalog-lesson-copy">
+                      <strong>{review.available ? `Capstone: ${review.title}` : 'Chapter 2 capstone'}</strong>
+                      <span>{review.available ? 'Build a linear motor from Lessons 1–5.' : 'A project that ties Lessons 6–10 together.'}</span>
+                    </span>
+                    <span className="lesson-catalog-lesson-state">
+                      {reviewComplete ? 'Done' : review.available ? 'Project' : 'Coming soon'}
+                    </span>
+                  </button>
+                </li>
+              </ol>
+            </section>
+          );
+        })}
+      </div>
+
+      <footer className="lesson-catalog-foot">
         <button type="button" onClick={onBackHome}>← {backHomeLabel}</button>
-        <span>Your lesson progress is saved on this computer.</span>
+        {onStartGuidedTour ? (
+          <button type="button" onClick={onStartGuidedTour}>Guided first solve in the workspace →</button>
+        ) : null}
+        <span>Progress is saved on this computer.</span>
       </footer>
     </main>
   );
