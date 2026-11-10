@@ -35,6 +35,8 @@ V_SHAPE_IPM = "examples:validation_ipm_10p_v_shape_medium.openem"
 ACCORD_TWO_LAYER = "examples:honda_accord_2005.coilem"
 PRIUS_HOLEM50 = "examples:ornl_prius_2004_holem50.coilem"
 ROTATING_FIELD = "examples:rotating_field_6p36s.coilem"
+PRIUS_PINNED = "examples:prius-2004-loaded-torque-v1.coilem"
+LRK_PINNED = "examples:lrk-12s14p-fixed-current-v1.coilem"
 _DESIGN_FILE_KEYS = ("openem_schema_version", "openem_version", "name", "description", "schema_version")
 
 
@@ -97,6 +99,8 @@ def test_candidates_come_from_slot_and_pole_counts_smallest_sector_first() -> No
         (ACCORD_TWO_LAYER, 8, False, 2),
         (PRIUS_HOLEM50, 8, True, 1),
         (ROTATING_FIELD, 6, True, 1),
+        (PRIUS_PINNED, 8, True, 1),
+        (LRK_PINNED, 2, True, 7),
     ],
 )
 def test_the_sector_is_the_smallest_one_geometry_and_winding_both_repeat_over(
@@ -188,7 +192,9 @@ def test_a_sector_solve_is_experimental_and_elmer_refuses_it(monkeypatch) -> Non
 
 
 def _mesh(fixture: str, symmetry: str, rotor_angle_deg: float = 3.7, **solve_params) -> tuple[MotorConfig, dict]:
-    config = _config(fixture, symmetry=symmetry, mesh_density="coarse", nonlinear_solver="newton", **solve_params)
+    # A pinned reference case keeps its registered mesh and solver settings.
+    quick = {} if fixture in (PRIUS_PINNED, LRK_PINNED) else {"mesh_density": "coarse", "nonlinear_solver": "newton"}
+    config = _config(fixture, symmetry=symmetry, **quick, **solve_params)
     return config, run_gmsh_mesh_preview(config, rotor_angle_deg=rotor_angle_deg)["solve_mesh_artifact"]
 
 
@@ -278,6 +284,17 @@ def _tiled_full_circle_artifact(artifact: dict, config: MotorConfig) -> dict:
                 entry["magnetization_angle_deg"] = magnetization(entry["magnetization_angle_deg"], copy_index)
             if "current_density_a_per_m2" in entry:
                 entry["current_density_a_per_m2"] = current(entry["current_density_a_per_m2"], copy_index)
+            winding = entry.get("winding")
+            if isinstance(winding, dict):
+                # A reference model reads its winding sense and slot from here.
+                if winding.get("current_density_a_per_m2") is not None:
+                    winding["current_density_a_per_m2"] = current(winding["current_density_a_per_m2"], copy_index)
+                if anti and copy_index % 2 and winding.get("direction") in ("in", "out"):
+                    winding["direction"] = "out" if winding["direction"] == "in" else "in"
+                if isinstance(winding.get("slot_index"), int):
+                    winding["slot_index"] = (
+                        winding["slot_index"] + copy_index * config.stator.slot_count // repeats
+                    ) % config.stator.slot_count
             regions.append(entry)
     contract = out["physics_contract"]
     contract["regions"] = regions
@@ -324,6 +341,8 @@ _COMPARED = (
         ACCORD_TWO_LAYER,  # eighth, periodic, two radial coil sides per slot
         PRIUS_HOLEM50,  # eighth, anti-periodic, three pockets per pole
         ROTATING_FIELD,  # sixth, anti-periodic, chorded distributed winding
+        PRIUS_PINNED,  # eighth: published geometry, its own currents and flux linkage
+        LRK_PINNED,  # half, outer rotor: published geometry and fixed currents
     ],
 )
 def test_a_sector_solve_equals_the_full_circle_solve_of_the_same_mesh(fixture) -> None:
@@ -348,6 +367,8 @@ def test_a_sector_solve_equals_the_full_circle_solve_of_the_same_mesh(fixture) -
         if a[key] is None or b[key] is None:
             assert a[key] is None and b[key] is None, key
             continue
+        if a[key] == b[key]:
+            continue  # includes a published lamination with no tooth regions to sample: both zero
         tolerance = 1e-6 * (scale if key.startswith("flux") else max(abs(b["torque_nm"]), abs(b[key]), 1e-9))
         assert a[key] == pytest.approx(b[key], abs=tolerance), key
     assert a["energy_functional"]["coenergy_j"] == pytest.approx(b["energy_functional"]["coenergy_j"], rel=1e-8)

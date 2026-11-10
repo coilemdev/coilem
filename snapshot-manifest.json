@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 91509,
-      "sha256": "6255a6ff97fb2822ccf4505aca047b2121f69bb19b1f5954df9dc6ade799da81"
+      "bytes": 91276,
+      "sha256": "7e4c2c9cb95db0d39695a6c8411c52be817d0fc511bcfff41ae3bba39b7a01cb"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -615,8 +615,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 20260,
-      "sha256": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f"
+      "bytes": 20727,
+      "sha256": "6a97e17ec07c8c70f9b2c9aa1786a22d4b41a062cbc56debb44a948409b75036"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -5965,8 +5965,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 17531,
-      "sha256": "dc777059b3b8c8eca1f2ee51e81f7e9ca461b6d6b10c133a566b77baf6dfb673"
+      "bytes": 17561,
+      "sha256": "5457949407bc8b2e1edcdccded7ee28b9ea574e27ee8d70d6b138ac7a3b93206"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5980,8 +5980,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 52920,
-      "sha256": "7511efbb430405c6c296b4fdc8cfc168d4cfddeb21c792e1e2a65e1c5f572dcb"
+      "bytes": 53232,
+      "sha256": "56b576d2036948269046f5607926bd7087ef92e593b82f7d9cfebed2388304ab"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -17710,8 +17710,8 @@
     },
     {
       "path": "backend/sector_geometry.py",
-      "bytes": 46344,
-      "sha256": "450291984f464b2dbcea51d8f74e914f20317575d48b2e24b55840ef12e3218b"
+      "bytes": 47776,
+      "sha256": "c759764e13f9d7d64fde7c422d87264bf3f7fff0b6ac864bb726063d1d8c882e"
     },
     {
       "path": "backend/sector_tiling.py",
@@ -17720,8 +17720,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 26557,
-      "sha256": "3110d8969d0af6d17cc6b1f8129bd3de2b737d578e5c9886cac8831b72046456"
+      "bytes": 27984,
+      "sha256": "c49b2f092149fe7bbc97ba3672c21e43d150b088a06419f0be4120dc83900c34"
     }
   ],
   "public_patches": [
