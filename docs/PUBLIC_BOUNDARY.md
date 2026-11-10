@@ -146,22 +146,26 @@ The release request policy accepts Magneto2D with native Gmsh meshes. With
 `COILEM_ENABLE_ELMER` unset, it skips Elmer discovery, hides Elmer in the UI,
 and rejects direct Elmer requests. Setting `COILEM_ENABLE_ELMER=1` before
 startup enables development/testing discovery of a separately installed Elmer
-26.2 runtime; it does not expand the 0.3.1 release claim. Likewise, setting
+26.2 runtime; it does not expand the release claim. Likewise, setting
 `COILEM_EXPERIMENTAL_ROTORS=1` before startup lets the local app preview and
 solve experimental rotor families (HoleM50, for the ORNL 2004 Prius); the UI
 labels them experimental and they carry no qualification claim. The policy never
 substitutes solvers automatically. It rejects FEMM selection, non-native mesh
 sources, thermal requests, and internal debug diagnostics. The service binds to
 `127.0.0.1`; the TypeScript client accepts only loopback API hosts. Completed
-solves package actual solved positions into
+solves describe their solved positions in
 a generic `coilem.field_playback.v2` layered-raster manifest while retaining one
-exact numerical snapshot per solved position. The v2 timeline supports angle, time, phase, and
+exact numerical snapshot per solved position, stored compactly in the run. The v2 timeline supports angle, time, phase, and
 instructional-step sequences at the contract level; the shipped motor producer
 and viewer use angle timelines. The current encoding is `layered-raster-v1`
-with 1536 px PNG geometry/flux/mesh layers and WebP field lines. Catalogs use
+with 1536 px lossless WebP geometry/flux/mesh layers and lossy WebP field lines.
+The image layers are not part of a saved run: they are drawn from its field
+frames into a disposable cache after the run is saved, and drawn again when
+the viewer asks for one that is missing. The playback-status route reports
+how far that drawing has got. Catalogs use
 content-defined composition and layer IDs with semantic roles. Existing v1 manifests remain readable through
 the frontend compatibility adapter. See `docs/FIELD_PLAYBACK_V2.md`. The image
-route serves only those local PNG/WebP layers; the numerical
+route serves only those local image layers; the numerical
 field-frame route remains the format fallback and inspection path. The
 composition route computes an exact Br=0 stator-current sweep for Magneto2D
 results; PM-only frames come from the normal Magneto2D solve's exact

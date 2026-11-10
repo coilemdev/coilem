@@ -2,8 +2,9 @@
 
 Magneto2D 0.5.0 is coilEM's native Rust 2D magnetostatic finite-element solver
 and postprocessor. It is bundled by the coilEM source application; the solver
-and application have separate version numbers. Magneto2D 0.5.0, the solver for
-the coming coilEM 0.5.6, has not been qualified or released. The public application uses
+and application have separate version numbers. Magneto2D 0.5.0 is the solver in
+coilEM 0.5.6, whose candidate passed the registered A-D and Prius qualification
+on Windows and macOS; see [release status](../PUBLICATION_STATUS.md). The public application uses
 Python and Gmsh to build tagged solve meshes, then invokes Magneto2D for field
 solving and electromagnetic postprocessing.
 
@@ -22,16 +23,17 @@ limitations.
 | Area | Developer-preview boundary |
 | --- | --- |
 | Physics | 2D magnetostatic FEM with nonlinear electrical steel |
-| Qualified motor paths | Per the [Magneto2D versus FEMM v3 report](../benchmarks/windows-v3-20261015-738d951/README.md): SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
-| Experimental motor paths | V-shape IPM (one of six v3 fixtures is YELLOW), and accepted combinations the benchmark did not measure, such as six-step with distributed windings or IPM with distributed windings |
+| Rotor layout | Inner rotor, or outer rotor (outrunner) for SPM only; see [Outrunner](OUTRUNNER.md) |
+| Qualified motor paths | Per [Validation](VALIDATION.md#qualification-status), for inner-rotor machines with the bundled M350-50A steel: SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings (full pitch or 5/6 short pitch) under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
+| Experimental motor paths | V-shape IPM (all six fixtures pass, but its fundamental Back-EMF error against FEMM has grown), outer-rotor SPM, single-layer distributed and two-layer concentrated windings, imported steels, the Fast mesh build, and accepted combinations the benchmark did not measure, such as six-step with distributed windings or IPM with distributed windings |
 | Mesh producer | Native Gmsh only |
 | Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). The Design panel calls this **Wound teeth**: Alternate or All. Other concentrated layouts wind one phase per slot in one layer |
 | Distributed windings | Balanced one- or two-layer star-of-slots layouts with `q >= 1`; explicit short pitch is limited to supported integer-`q` layouts. The Design panel calls the layer count **Coil sides / slot** |
 | Electrical steel | Bundled M350-50A nonlinear reference model or project-local imported B-H curves (Magneto2D only) |
-| Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance; cogging torque over one cogging period (experimental) |
+| Preview result surface | Loaded torque, torque ripple, flux linkage, Back-EMF, field values/plots, and solver/mesh provenance; cogging torque over one cogging period (experimental); loaded d/q flux linkage; phase resistance, copper and iron loss, and efficiency; magnet-temperature derating; and an optional flux-linkage map with torque–speed and efficiency maps. [Validation](VALIDATION.md) gives each one's status |
 | Harmonic tiers | Preview: waveform only; Standard: THD and H1-H12; High accuracy (`fine`): THD and H1-H24 |
 | Saved-run comparison | Descriptive comparison of two Magneto2D runs; no parity or certification claim |
-| Outside launch scope | FEMM, thermal analysis, supplier-specific loss prediction, demagnetization safety, and internal debug workflows |
+| Outside launch scope | FEMM, solved temperatures, supplier-specific loss prediction, demagnetization safety, and internal debug workflows |
 
 This table describes the coilEM motor workflow, not every problem that the
 generic field interface can represent. The backend is the authoritative motor
@@ -191,7 +193,8 @@ workflow, the Gmsh `SolveMeshArtifact` supplies:
 - node coordinates in millimeters;
 - triangles as three node indices;
 - a region assignment for every triangle;
-- boundary nodes and, for sector models, paired sector-edge nodes;
+- boundary nodes (public motor meshes are full machines, so they carry no
+  paired sector-edge nodes);
 - airgap and mesh metadata; and
 - a physics contract that maps regions to materials, magnetization, motion,
   and winding sources.
@@ -404,9 +407,11 @@ numerical values.
 
 Finally, Magneto2D applies the model constraints:
 
-- $A_z=0$ on the outer boundary; and
-- periodic or anti-periodic coupling on sector edges when a sector model is
-  used.
+- $A_z=0$ on the outer boundary (an outer-rotor mesh names its own Dirichlet
+  nodes); and
+- no sector coupling for public motor meshes, which are full machines. The
+  motor solver keeps anti-periodic pole-pitch coupling for sector artifacts,
+  and field mode accepts periodic or anti-periodic paired boundaries.
 
 These constraints remove the arbitrary constant in $A_z$, close the linear
 system, and preserve the symmetric matrix structure needed by the linear
@@ -510,17 +515,13 @@ r_{\mathrm{raw}}^{(k)}
 }{
 \mu_{r,e}^{(k)}
 }
-\right|,
-\\[6pt]
-r_{\mathrm{conv}}^{(k)}
-&=
-\omega_{\mathrm{initial}}\,
-r_{\mathrm{raw}}^{(k)}.
+\right|.
 \end{aligned}
 ```
 
-The convergence residual is compared with a default threshold of `0.075` for
-quick/standard quality or `0.05` for fine quality, with a default limit of 100
+This unrelaxed residual is the one tested for convergence. Its default
+threshold is `0.05` for quick quality, `0.01` for standard and `0.001` for
+fine (also used when no preset is given), with a default limit of 200
 nonlinear iterations. A failure to reach the threshold is reported as an
 error rather than silently treating an unconverged material state as final.
 
@@ -577,8 +578,10 @@ stage as the next stage's initial state. This makes difficult saturated
 operating points easier to reach.
 
 The initial field solve for a Newton stage uses the normal linear-solver
-selection. The current Newton tangent-correction implementation uses PCG with
-a relative tolerance of `1e-8`. If Newton or its line search fails,
+selection. Newton tangent corrections use the same direct Cholesky path,
+reusing the cached symbolic analysis with a new numeric factorization; PCG
+with a relative tolerance of `1e-8` is the fallback. Newton stops when its
+scaled residual reaches 1% of the Picard threshold. If Newton or its line search fails,
 Magneto2D restores the base material state and retries the angle with Picard.
 
 ### 7. Sparse Direct Cholesky
@@ -616,7 +619,7 @@ default for the ordinary stiffness solve. It divides the work into:
   matrix coefficients.
 
 The symbolic work depends only on mesh connectivity, so Magneto2D caches it
-for the mesh. During Picard iteration, changing steel permeability changes the
+for the mesh. During Picard or Newton iteration, changing steel permeability changes the
 matrix values but not its sparsity pattern. Each iteration therefore reuses
 the symbolic analysis, performs a new numeric factorization, and executes the
 two triangular solves.
@@ -656,7 +659,7 @@ Incomplete Cholesky and Direct Cholesky are not the same operation:
 | Factorization | Includes required sparse fill-in | Keeps only the original lower-triangle pattern |
 | Iterations | None | Repeats until the residual tolerance or iteration limit |
 | Warm start | Not used | Reuses a previous $A_z$ effectively |
-| Magneto2D use | Default ordinary stiffness solve | Forced mode, automatic fallback, and Newton tangent corrections |
+| Magneto2D use | Default stiffness and Newton tangent solves | Forced mode and automatic fallback |
 
 ### 9. Recover fields and calculate results
 
@@ -713,11 +716,13 @@ that demonstrates nonlinear permeability.
 | Mesh validation and SI conversion | `solvers/magneto2d/src/solve/context.rs` |
 | Per-angle materials and winding sources | `solvers/magneto2d/src/solve/problem.rs` |
 | P1 stiffness and source assembly | `solvers/magneto2d/src/assembly.rs` |
+| Winding current density, six-step timing, and the phase-A axis | `solvers/magneto2d/src/sources.rs` |
+| Nonlinear defaults, tolerances, Newton policy, and continuation | `solvers/magneto2d/src/solve/nonlinear.rs` |
 | Picard iteration and relaxed material updates | `solvers/magneto2d/src/solve/picard.rs` |
 | Newton tangent, correction, and line search | `solvers/magneto2d/src/solve/newton.rs` |
 | Linear-solver selection | `solvers/magneto2d/src/solve/mod.rs` |
 | Direct Cholesky, PCG, and preconditioners | `solvers/magneto2d/src/sparse.rs` |
-| Field recovery and electromagnetic postprocessing | `solvers/magneto2d/src/postprocess.rs` |
+| Field recovery and electromagnetic postprocessing | `solvers/magneto2d/src/postprocess.rs`, with torque in `postprocess/torque/` and the summary in `postprocess/summary.rs` |
 | Teaching-fixture solve path | `solvers/magneto2d/src/teaching.rs` |
 
 ## Build and inspect the CLI
@@ -729,8 +734,10 @@ cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
 cargo run --release --locked --manifest-path solvers/magneto2d/Cargo.toml -- --help
 ```
 
-The backend performs the same release build automatically if the binary is
-missing or older than its Rust sources.
+The backend finds the binary in this order: the `COILEM_MAGNETO2D_BINARY`
+environment variable, the binary packaged with an installed coilEM, then a
+source-checkout build. In a checkout it runs a release build automatically
+when the binary is missing or older than its Rust sources.
 
 ## Discover valid options
 
@@ -861,6 +868,14 @@ switches; see [Runtime settings](RUNTIME_SETTINGS.md).
 Worker selection precedence is `--workers`, then
 `COILEM_MAGNETO2D_WORKERS`, then `--serial`, then the Rayon default.
 
+A direct CLI run also reads numerical switches that the application never
+passes through: `MAGNETO2D_NONLINEAR_SOLVER`, `MAGNETO2D_NONLINEAR_TOL` and
+`MAGNETO2D_NONLINEAR_MAX_ITER` for the nonlinear solve, `MAGNETO2D_NEWTON_TOL`
+for Newton, `MAGNETO2D_LINEAR_SOLVER` and `MAGNETO2D_PCG_PRECONDITIONER` for the
+linear solve, and `MAGNETO2D_COGGING_TORQUE_METHOD`. The tolerance and
+iteration-limit variables override the request; the nonlinear method variable
+applies only when the request names no method.
+
 Nonlinear method, linear solver/preconditioner, torque method, current
 convention, mesh density, and requested outputs are normally selected through
 the motor configuration so that they are preserved in result provenance. The
@@ -880,8 +895,8 @@ from its environment rather than those motor-config fields.
   three-phase waveform.
 
 Ideal six-step excitation uses `plateau`: the supplied value is the commanded
-current in each conducting phase. The guided public path is inner-rotor SPM,
-wye-connected, with `excitation_mode = ideal_six_step_120`.
+current in each conducting phase. The guided public path is SPM, with an inner
+or outer rotor, wye-connected, with `excitation_mode = ideal_six_step_120`.
 
 ### Current angle
 
@@ -897,7 +912,8 @@ the source angle subtracts. A one-slot phase belt has its axis on its slot, at 0
 put it at the belt centre (15 degrees electrical for q = 2, 20 for q = 3), and
 fractional-slot tooth coils on a tooth (30 degrees for q = 1/2). Before #91 the
 axis was taken as 0 for every layout, so q >= 2 distributed windings peaked
-near 15 degrees. Ideal six-step commutation is timed from the same axis.
+near 15 degrees. For an outer rotor, phase A's flux axis is a further 180
+degrees electrical on. Ideal six-step commutation is timed from the same axis.
 
 ### Rotor angles
 
@@ -1221,8 +1237,10 @@ Magneto2D Rust CLI.
   affect numerical results.
 - M350-50A is a bundled open reference model, not a supplier certification for
   a manufactured lamination.
-- The launch report is electromagnetic. Supplier-specific losses, temperature
-  prediction, and demagnetization safety are not included.
+- The launch report includes copper loss, an experimental iron-loss and
+  efficiency estimate, and derating from the magnet and winding temperatures
+  you enter. Supplier-specific loss data, solved temperatures, and
+  demagnetization safety are not included.
 
 See [Materials](../MATERIALS.md) for model provenance and interpretation
 limits.

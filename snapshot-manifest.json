@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 47758,
-      "sha256": "0acab079dd24fb5da72fdadaab0a420e640f3cbfbe9580134bcb9a95ca00d831"
+      "bytes": 49956,
+      "sha256": "9824c66020cb5144d90797fc2413802f4232b39fcebcdfdba6ebf55562f36530"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 12605,
-      "sha256": "61f12d4d8ed16a06b6fa83ef1dd2f0d26b8fa2beb664a494039d835928bf313b"
+      "bytes": 12896,
+      "sha256": "c5d72a024891bb18b0bc4b3bab01e96037cdf70368d5aea470e4621dc098eaff"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
