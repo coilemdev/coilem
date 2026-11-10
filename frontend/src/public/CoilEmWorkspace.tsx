@@ -22,7 +22,6 @@ import { outerRotorRing } from './sectorFraming';
 import {
   MotorCanvas,
   type PublicCanvasLayer,
-  type PublicMagnetPolarityView,
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
 } from './MotorCanvas';
@@ -1748,11 +1747,10 @@ function ViewportChrome({
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
-  const [magnetPolarityView, setMagnetPolarityView] = useState<PublicMagnetPolarityView>('dominant');
   const [activeDimension, setActiveDimension] = useState<DimensionId | null>(null);
   const [hoveredDimension, setHoveredDimension] = useState<DimensionId | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [animationRpm, setAnimationRpm] = useState(18);
+  const [animationRpm, setAnimationRpm] = useState(20);
   const [rotorAngleDeg, setRotorAngleDeg] = useState(0);
   const [explodedAmount, setExplodedAmount] = useState(0);
   const [threeResetSignal, setThreeResetSignal] = useState(0);
@@ -2017,7 +2015,7 @@ function ViewportChrome({
   return (
     <section
       ref={viewportRef}
-      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
+      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showDimensionReadout && dimensionAnnotations.length > 0 ? ' has-dimension-readout' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
       style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
     >
       {showConfigurationLabel && (
@@ -2083,7 +2081,6 @@ function ViewportChrome({
               activeDimension={showDimensionReadout ? activeDimension : null}
               hoveredDimension={showDimensionReadout ? hoveredDimension : null}
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
-              magnetPolarityView={magnetPolarityView}
               showToothPoles={viewportMode === '2d' && showToothPoles}
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
@@ -2343,31 +2340,6 @@ function ViewportChrome({
                     </button>
                   );
                 })}
-              </span>
-            </span>
-          )}
-          {viewportMode === '2d'
-            && mode === 'geometry'
-            && (config.topology === 'SPM'
-              || (config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape')) && (
-            <span className="vc-group public-polarity-view" role="group" aria-label="Magnet polarity display">
-              <span className="public-dock-group-label" aria-hidden="true">Magnets</span>
-              <span className="public-dock-segmented">
-                {([
-                  ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
-                  ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
-                ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
-                  <button
-                    type="button"
-                    aria-pressed={magnetPolarityView === value}
-                    aria-label={ariaLabel}
-                    title={title}
-                    onClick={() => setMagnetPolarityView(value)}
-                    key={value}
-                  >
-                    {label}
-                  </button>
-                ))}
               </span>
             </span>
           )}

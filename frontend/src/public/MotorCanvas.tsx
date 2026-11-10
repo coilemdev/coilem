@@ -872,18 +872,51 @@ function drawGeometry(
   if (layer === 'slots' || layer === 'windings') {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    for (const region of data.regions) {
-      const slotMatch = region.region_type.match(/slot_(\d+)/i);
-      if (!slotMatch || region.points.length === 0) continue;
+    // The badges sit on the yoke just behind each slot, clear of the ⊙ / ⊗
+    // marks drawn inside it. The yoke is outside the slots on an inner-rotor
+    // machine and inside them on an outer-rotor one.
+    const badgeRadius = layer === 'slots' ? 10 : 12;
+    const yokeInside = data.metadata.rotor_layout === 'outer';
+    const [originX, originY] = map([0, 0]);
+    const [unitX, unitY] = map([1, 0]);
+    const pixelsPerMm = Math.max(1e-6, Math.hypot(unitX - originX, unitY - originY));
+    const slotRegions = data.regions.filter((region) => /slot_(\d+)/i.test(region.region_type) && region.points.length > 0);
+    const slotRadii = slotRegions.flatMap((region) => region.points.map(([px, py]) => Math.hypot(px, py)));
+    const slotBackMm = slotRadii.length ? (yokeInside ? Math.min(...slotRadii) : Math.max(...slotRadii)) : 0;
+    const badgeStepMm = (badgeRadius + 4) / pixelsPerMm;
+    const placed: Array<[number, number]> = [];
+    // Slots numbers each slot once, however many coil sides it holds; Winding
+    // labels every coil side.
+    const badges = new Map<string, { sumX: number; sumY: number; slot: string; region: (typeof slotRegions)[number] }>();
+    slotRegions.forEach((region, index) => {
+      const slot = region.region_type.match(/slot_(\d+)/i)?.[1];
+      if (!slot) return;
       const center = region.points.reduce<[number, number]>(
         (current, point) => [current[0] + point[0], current[1] + point[1]],
         [0, 0],
       ).map((value) => value / region.points.length) as [number, number];
-      const [x, y] = map(center);
+      const key = layer === 'slots' ? slot : `${slot}:${index}`;
+      const badge = badges.get(key) ?? { sumX: 0, sumY: 0, slot, region };
+      badge.sumX += center[0];
+      badge.sumY += center[1];
+      badges.set(key, badge);
+    });
+    for (const { sumX, sumY, slot, region } of badges.values()) {
+      const slotMatch = [slot, slot];
+      const angle = Math.atan2(sumY, sumX);
+      // Two coil sides stacked in one slot share an angle: the second badge
+      // steps further back rather than landing on the first.
+      let radiusMm = slotBackMm + (yokeInside ? -badgeStepMm : badgeStepMm);
+      let [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
+      for (let attempt = 0; attempt < 3 && placed.some(([px, py]) => Math.hypot(px - x, py - y) < badgeRadius * 2); attempt += 1) {
+        radiusMm += (yokeInside ? -1 : 1) * (badgeRadius * 2 + 2) / pixelsPerMm;
+        [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
+      }
+      placed.push([x, y]);
       const winding = windingToken(region.region_type);
       const label = layer === 'slots' ? slotMatch[1] : winding ? `${winding.phase}${winding.direction}` : slotMatch[1];
       context.beginPath();
-      context.arc(x, y, layer === 'slots' ? 10 : 12, 0, Math.PI * 2);
+      context.arc(x, y, badgeRadius, 0, Math.PI * 2);
       context.fillStyle = 'rgba(8, 10, 14, 0.78)';
       context.fill();
       context.strokeStyle = winding ? PHASE_COLORS[winding.phase] : 'rgba(255,255,255,.34)';
@@ -1358,7 +1391,7 @@ export function MotorCanvas({
   onDimensionSelect,
   magnetPolarityView = 'dominant',
   showToothPoles = false,
-  previewRpm = 18,
+  previewRpm = 20,
   meshDisplayMode = 'geometry',
   showMeshEdges = true,
   meshQualities = EMPTY_MESH_QUALITIES,

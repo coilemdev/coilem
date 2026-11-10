@@ -5032,3 +5032,10 @@ button.performance-tag { cursor: help; }
    gap; the controls after it give that gap back. */
 .public-motor-viewport .viewport-bottom-bar .public-dock-row-break { flex: 0 0 100%; height: 0; }
 .public-motor-viewport .viewport-bottom-bar .public-dock-row-break ~ * { margin-top: -8px; }
+/* With Dims on, the 2D canvas gives the list a column of its own and the
+   motor refits beside it, instead of the list lying over the motor. A narrow
+   panel has no room for that, so there the list stays over the canvas. */
+.public-motor-viewport.has-dimension-readout .public-viewport-stage-2d { left: 262px; }
+@container (max-width: 720px) {
+  .public-motor-viewport.has-dimension-readout .public-viewport-stage-2d { left: 0; }
+}

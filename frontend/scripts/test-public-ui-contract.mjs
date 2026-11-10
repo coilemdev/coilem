@@ -585,15 +585,13 @@ assert.match(motorThreeSource, /fullExplosionAutoFitApplied = true/);
 assert.match(motorCanvasSource, /inter_pole_air\|ipm_pocket/);
 assert.match(motorCanvasSource, /export type PublicMagnetPolarityView = 'dominant' \| 'split'/);
 assert.match(motorCanvasSource, /magnetPolarityView === 'split'/);
-assert.match(workspaceSource, /aria-label="Magnet polarity display"/);
+// The 2D canvas always colours a magnet by the pole facing the airgap; the
+// Pole / Split choice is gone from the dock.
+assert.doesNotMatch(workspaceSource, /Magnet polarity display|'Split view'|setMagnetPolarityView/);
 assert.match(workspaceSource, /public-winding-key/);
 assert.match(workspaceSource, /⊙ out · ⊗ in/);
 assert.match(workspaceSource, /useState<PublicCanvasLayer>\('none'\)/);
 assert.doesNotMatch(workspaceSource, /setCanvasLayer\('dimensions'\)/);
-assert.match(workspaceSource, /'Dominant pole'/);
-assert.match(workspaceSource, /'Split view'/);
-assert.match(workspaceSource, /useState<PublicMagnetPolarityView>\('dominant'\)/);
-assert.match(workspaceSource, /The FEM magnet remains one region/);
 assert.match(workspaceSource, /config\.topology === 'SPM'/);
 assert.match(motorCanvasSource, /computeSpmMagnetPolarityHalves/);
 assert.match(motorCanvasSource, /isSpmMagnet \|\| isVShapeMagnet/);
@@ -894,7 +892,6 @@ assert.match(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
 // 2D overlays are one choice at a time, with None for the bare cross-section.
 assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);
-assert.match(workspaceSource, />Magnets<\/span>/);
 assert.match(styleSource, /\.public-dock-segmented \{ display: inline-flex;[^}]*border: 1px solid rgba\(148,163,184,\.16\); border-radius: 10px;/);
 assert.match(styleSource, /\.public-dock-segmented button\[aria-pressed="true"\] \{ color: var\(--text-accent\); background: rgba\(245,158,11,\.14\);/);
 assert.match(styleSource, /button\.public-dock-toggle\[aria-pressed="true"\]::before \{ border-color: var\(--text-accent\); background: var\(--text-accent\);/);
@@ -1192,7 +1189,8 @@ assert.match(fieldResultSource, /export type FieldColorRangeMode = 'fixed' \| 'v
 assert.match(fieldResultSource, /colorRangeMode = 'fixed',/);
 assert.match(solvedFieldSource, /useState<FieldColorRangeMode>\('fixed'\)/);
 assert.match(fieldResultSource, />\s*Fixed\s*<\/button>/);
-assert.match(fieldResultSource, />\s*Fit view\s*<\/button>/);
+// The field legend shows the fixed scale only: the viewer no longer offers Fixed / Fit view.
+assert.doesNotMatch(solvedFieldSource, /^\s*showRangeControl\s*$/m);
 assert.match(fieldResultSource, /fieldRangeForViewport\(prepared\.triangleRecords/);
 assert.match(fieldResultSource, /drawHeat\(context, prepared, visibleRange \? fittedFluxScale\(visibleRange\.minB, visibleRange\.maxB\) : FIXED_FLUX_SCALE\)/);
 assert.match(fieldResultSource, /\|\| \(colorRangeMode === 'viewport' && highResolutionPlot\)/);
@@ -1371,7 +1369,12 @@ assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 0\.1;/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100/);
-assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18/);
+assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 5/);
+assert.match(workspaceSource, /const \[animationRpm, setAnimationRpm\] = useState\(20\)/);
+// Slot and phase badges sit on the yoke behind the slot, clear of the current marks.
+assert.match(motorCanvasSource, /const yokeInside = data\.metadata\.rotor_layout === 'outer'/);
+assert.match(styleSource, /\.has-dimension-readout \.public-viewport-stage-2d \{ left: 262px; \}/);
+assert.doesNotMatch(appSource, /Analysis complete\. Inspect the solved field/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30/);
 assert.match(solvedFieldSource, /playbackStrideFrameIndex\(/);
 assert.match(solvedFieldSource, /evictRasters\(nextCache, rasterCacheLimitRef\.current, keptRasterKeys\(key\), retireRaster\)/);

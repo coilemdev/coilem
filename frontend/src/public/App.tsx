@@ -1223,7 +1223,8 @@ export function App() {
             workflow_elapsed_s: (performance.now() - workflowStartedAt) / 1000,
           } as unknown as SolveResult);
           setView('solve');
-          setNotice('Analysis complete. Inspect the solved field here or open the full report.');
+          // The solved field replacing the progress view says the run is done.
+          setNotice(null);
           setBusy(null);
           solveController.current = null;
         },

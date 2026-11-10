@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 171246,
-      "sha256": "bcf0add5bbadc08bb119f3902566c415997887e4126f2e1e00063016d54a526a"
+      "bytes": 171651,
+      "sha256": "0689a72abe5417187f5db2b3fe661acd72f82472f50e037a4afa06ee7ee65b99"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6995,8 +6995,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76719,
-      "sha256": "e6d9d24827d3a0e2d4a0e558fe21745893410e58e2da76a8bd040c471a3930f5"
+      "bytes": 76728,
+      "sha256": "a0daa1fc2cb6afd310ab0fb8fe9bbe361b8de69d0ce4efb1cd830dc6bccaf7b2"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 246508,
-      "sha256": "0035a5f05e0bbee5b3db5637cd013f6b33229f3b3609a9f27d4d8dd69c299f9a"
+      "bytes": 245124,
+      "sha256": "e5d614e3b440a6e537b8755bf28120c242a3d0d6553ad0ea4a83500e76af3059"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7045,8 +7045,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 64547,
-      "sha256": "d50bc4dfebf133382b60b08e62c77711166816dcea1cf517f7b3879cdf03bc9c"
+      "bytes": 66656,
+      "sha256": "288d046ef3979d07cdafa955fc44a9756bba9d2665aded732250039b0cac8ac3"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 59252,
-      "sha256": "69ccab7c62b54f0028dc943cc45d385d024b30e9532feed44706f5e99746dfcd"
+      "bytes": 59221,
+      "sha256": "eb4616e77238dde63c4ece6f7f6a942cd5695a45957ec50f1589243e8104e746"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7270,8 +7270,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 12828,
-      "sha256": "30aacc1c55a9bb95ffe8ec86ffe6a13f9d21995532a6321da5261c7618502a66"
+      "bytes": 12827,
+      "sha256": "89ffcc5fe14e211f60b9ede3bce0523db751deccd039ee042cf40609f0540c11"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
@@ -7500,8 +7500,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 301752,
-      "sha256": "d0e84a60190a5844286f1029a34b951c045ff2c5a8fec2137c7c0bf2629d9c0e"
+      "bytes": 302187,
+      "sha256": "1bac1bb946d826fe336b2f1bc7d98e23f1ca6d46a4671c6a418881a8fae0d962"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

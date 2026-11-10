@@ -1237,7 +1237,6 @@ export function SolvedFieldViewer({
               fieldLineDensity={exactVectorPlot ? fieldLineDensity : 'medium'}
               colorRangeMode={colorRangeMode}
               saturationTicks={saturationTicks}
-              showRangeControl
               onColorRangeModeChange={setRangeMode}
               showControls={false}
               showHeading={false}
