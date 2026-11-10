@@ -3834,6 +3834,14 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
     { value: 'auto', label: 'One sector', title: 'Solves one repeating sector when the motor has one, and the full motor otherwise. Faster; results are experimental.' },
   ];
   const meshSector = mesh?.mesh_info.sector as { repeats: number; anti_periodic: boolean } | undefined;
+  // What is actually solved: a prepared mesh says so; before that, the request does.
+  const solvedRegionLabel = meshSector
+    ? `1/${meshSector.repeats} sector, shown as the full motor`
+    : symmetry === 'auto' && !mesh
+      ? 'One sector if the motor repeats'
+      : symmetry === 'auto'
+        ? 'Full motor (does not repeat)'
+        : 'Full motor';
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
@@ -3892,7 +3900,7 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
   const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
-  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''} · ${symmetry === 'auto' ? 'One sector' : 'Full motor'}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -4639,6 +4647,7 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
               <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : 'Preparing…'}</dd></div>
+              <div><dt>Solved region</dt><dd>{solvedRegionLabel}</dd></div>
               <div className="public-minimum-quality-row">
                 <dt>Minimum quality</dt>
                 <dd>
