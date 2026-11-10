@@ -57,6 +57,14 @@ The follow-up [three-fixture investigation](cogging-investigation.md) rechecks
 the normal/refined FEMM evidence and native mesh-convergence study. It identifies
 mesh sensitivity while preserving the original baseline and failed checks.
 
+The subsequent [registered very-fine cohort](../cogging-refined-v1/README.md)
+contains reviewed half-gap FEMM references and matched current-candidate Windows
+and macOS qualification for those three geometries: **36/36 gates PASS**,
+**8 min 10 s / 13 min 8 s** native collection wall time. This separate cohort
+does not change the timed standard FEMM selection above. See the
+[formal E/F integration plan](formal-qualification.md) for remaining full-suite
+reference review, candidate coverage and default benchmark integration.
+
 ## Consolidated source validation
 
 The full timed collection used the original batched external wrappers. The

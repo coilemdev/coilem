@@ -945,8 +945,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.7/README.md",
-      "bytes": 5271,
-      "sha256": "7878ff86573a003538c442d51c8bf9cbad24af2c6cf4a743b3c1be5ca4474648"
+      "bytes": 5608,
+      "sha256": "5d08090791730b2891093e7327cef87ac76f69ea44ca2ba349b56560868f0c8d"
     },
     {
       "path": "benchmarks/abcd-v1.7/benchmark_spec.json",
@@ -12980,8 +12980,8 @@
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
-      "bytes": 6206,
-      "sha256": "cc1b4a8e4d0d91b342ba6fb2086d5eff302e972789a5ad9ab633d2314a7b30aa"
+      "bytes": 6495,
+      "sha256": "ab58f3f87c3ee8db1e96f07866186d9574e1651b2c1e084f3b46828283a8ce7b"
     },
     {
       "path": "benchmarks/abcd-v1.8/benchmark_spec.json",
@@ -14725,8 +14725,8 @@
     },
     {
       "path": "benchmarks/femm-ef-20261110/README.md",
-      "bytes": 4931,
-      "sha256": "0f72c116fcc14b982c9e6b135b1e701575c858a0226377904136aa3354ab80a8"
+      "bytes": 5460,
+      "sha256": "453f5e3bdd1dfab9835784864a50101147b8ed35612ab3fd1f1d21309e07c386"
     },
     {
       "path": "benchmarks/femm-ef-20261110/assembly-comparison.json",
@@ -14765,8 +14765,8 @@
     },
     {
       "path": "tests/test_femm_reference_adapter.py",
-      "bytes": 6000,
-      "sha256": "d1e5457c79a7774e90304a15adc10711c7344776030f2fd4f0b307e7a7bf61c9"
+      "bytes": 6598,
+      "sha256": "312d4501151c133945f478268c1a4efcfb6a04b69f662a54243be81dfcf7290d"
     },
     {
       "path": "tests/test_femm_reference_publication.py",
@@ -15365,8 +15365,8 @@
     },
     {
       "path": "tools/femm_reference/runtime.py",
-      "bytes": 4927,
-      "sha256": "0ce970921066876ee497d8c2bbbc3ba29f3253cce318ec0e02bfcd9fbb44f681"
+      "bytes": 5117,
+      "sha256": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
     },
     {
       "path": "tools/femm_reference/source-manifest.json",
@@ -15410,8 +15410,8 @@
     },
     {
       "path": "benchmarks/cogging-refined-v1/README.md",
-      "bytes": 2045,
-      "sha256": "bf8102ddacbf75d3ace0c0882efbe46e2a849f42909f8d575dbf3d1263421feb"
+      "bytes": 4192,
+      "sha256": "ff6b7ae0cb1275c3a9e5942b336a3bcb18201d95125ffb9af5e57e8effa78793"
     },
     {
       "path": "benchmarks/cogging-refined-v1/benchmark_spec.json",
@@ -15475,8 +15475,8 @@
     },
     {
       "path": "tests/test_cogging_qualification_collection.py",
-      "bytes": 3838,
-      "sha256": "6687d06232d7c343233e9c9d8718741f16bc0a2459eb1f000156a08457bc98a1"
+      "bytes": 5040,
+      "sha256": "1ec9794583940e54637238dabae7b1e4039f651f0a2e703bb225433df0064783"
     },
     {
       "path": "tests/test_refined_cogging_registration.py",
@@ -15487,6 +15487,31 @@
       "path": "tools/cogging_qualification.py",
       "bytes": 6620,
       "sha256": "abf5374bedf0b4e79bf53f595cae5005153f8e6e50efadd74ac79834f933f648"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/qualification-20261110/macos-arm64.json",
+      "bytes": 32768,
+      "sha256": "c49528b36b6fd67e2669f72e663f87bdfc6d3f8424640b1e01f25e1f89987cc0"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/qualification-20261110/qualification.json",
+      "bytes": 9182,
+      "sha256": "3b6c9daa0881118d67a883316919169bcaec1d57d77217076f39004862d3dfac"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/qualification-20261110/windows-x86_64.json",
+      "bytes": 33610,
+      "sha256": "ca282d675bfe6b29d183487f5ff165493487778095044915dc42720a98d7ed46"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/formal-qualification.md",
+      "bytes": 3296,
+      "sha256": "5b2dfac05a66c9dd6c5f2af73294c7cbf2d1a47c45fe887245fe96183d6b9fa6"
+    },
+    {
+      "path": "tools/publish_cogging_qualification.py",
+      "bytes": 5195,
+      "sha256": "32c062c2e666977858a48c9ef5a9504245bf9088c2203515d330bc0bd62b41bd"
     }
   ],
   "public_patches": [

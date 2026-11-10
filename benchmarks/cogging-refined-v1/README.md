@@ -32,6 +32,45 @@ uploads immutable measurements plus a compact qualification report. The report
 is independently regraded and binds candidate physics, source and result hashes,
 the reviewed bundle, actual native mesh metadata and all 18 gates.
 
-Reference registration does not itself confer native or hardware qualification.
-Native qualification requires both platform runs to pass at the same candidate.
-The normal application default and the original matrix remain unchanged.
+## Windows and macOS qualification, November 10
+
+Both independent builds and full collections passed at candidate
+`3ae3458ee45a6b2564f230103bd6c1ed33b91290`:
+[workflow 42893314080](https://github.com/coilemdev/coilem/actions/runs/42893314080).
+All **18 gates on each platform, 36 total**, pass after independent regrading of
+the downloaded request/result artifacts. The
+[qualification record](qualification-20261110/qualification.json) binds the
+candidate, suite, reviewed reference bundle, physics files and both original
+platform reports. The reports retain all native cogging waveforms and result
+hashes; the workflow artifacts retain the complete request/result envelopes.
+
+| Fixture | Windows peak-to-peak / H1 error | macOS peak-to-peak / H1 error |
+| --- | ---: | ---: |
+| 8p24s distributed | 3.0806% / 2.0917% | 3.0177% / 2.1114% |
+| 8p48s distributed | 3.2697% / 2.5120% | 3.1618% / 2.4531% |
+| 12p36s distributed | 4.0721% / 3.1245% | 4.1034% / 3.1267% |
+
+Windows x86-64 collection took **489.902 s (8 min 10 s)**; macOS arm64 took
+**788.186 s (13 min 8 s)**. These are complete collection wall times including
+execution and report generation, excluding dependency installation and native
+build. Actual native runtimes by case are 130.659/177.862/157.618 s on Windows
+and 253.730/270.820/223.502 s on macOS.
+
+Both platforms used the registered `very_fine` native mesh settings. Their
+representative element counts were 105690/126630/118970 on Windows and
+105682/126572/118684 on macOS. The largest pointwise cross-platform torque
+difference was 0.021078 N·m; waveform values are not claimed to be bit identical.
+The native periodic endpoint is reused, so it is not an independent native
+closure measurement. The FEMM reference closure checks use independent fields.
+
+This establishes software parity for these three registered requests. The
+normal application default and original matrix remain unchanged. Application
+qualification policy and full E/F inclusion are tracked in the
+[integration plan](../femm-ef-20261110/formal-qualification.md); hardware
+validation is outside this record.
+
+To publish a new matched two-platform collection after downloading its artifacts:
+
+```powershell
+python -m tools.publish_cogging_qualification --windows <windows-artifact> --macos <macos-artifact> --candidate <measured-sha> --workflow <run-url> --out <new-record-directory>
+```

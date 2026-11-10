@@ -47,6 +47,18 @@ def test_definition_fingerprint_ignores_empty_optional_ast_fields():
     assert runtime.ast_fingerprint(complete) == runtime.ast_fingerprint(sparse)
 
 
+@pytest.mark.parametrize("source", ["import numpy as np", "from numpy import array"])
+def test_definition_fingerprint_normalizes_ordinary_imports_across_python_versions(source):
+    legacy = ast.parse(source).body[0]
+    legacy._fields = tuple(name for name in legacy._fields if name != "is_lazy")
+    current = ast.parse(source).body[0]
+    current._fields = legacy._fields + ("is_lazy",)
+    current.is_lazy = 0
+    assert runtime.ast_fingerprint(legacy) == runtime.ast_fingerprint(current)
+    current.is_lazy = 1
+    assert runtime.ast_fingerprint(legacy) != runtime.ast_fingerprint(current)
+
+
 def test_standard_selection_preserves_all_grids_and_controls():
     selection = runtime.read(runtime.DATA / "standard-selection.json")
     catalog = {**e_producer.cases(), **f_producer.cases()}

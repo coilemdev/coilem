@@ -6,6 +6,11 @@ qualifies nothing. Until it does, the app reports every outer-rotor design as
 experimental. Harness **1.10.0** can run and grade it, and protocol **1.9.0**
 is the default suite; `coilem benchmark` runs phases A–D only.
 
+The [E/F collection results](../femm-ef-20261110/README.md) include exact FEMM
+replay and the recorded ten-case Windows native comparison. The remaining
+reference review and platform registration work is tracked in the
+[E/F integration plan](../femm-ef-20261110/formal-qualification.md).
+
 Phase F is its own suite, `benchmark_spec.json` in this folder, because a
 reference bundle carries one reference commit: its FEMM records come from a new
 collection, not from the reviewed protocol 1.6.0 bundle.

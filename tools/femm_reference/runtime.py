@@ -28,12 +28,14 @@ def ast_fingerprint(node):
 
     Python 3.13 changed ast.dump's treatment of empty fields. Structural JSON
     omits those optional fields explicitly, including empty new type parameters.
+    Python 3.15 adds is_lazy=0 to ordinary imports; retain nonzero lazy modes.
     """
     def encode(value):
         if isinstance(value, ast.AST):
             return {"node": type(value).__name__, "fields": {
                 name: encode(child) for name, child in ast.iter_fields(value)
                 if child is not None and not (isinstance(child, list) and not child)
+                and not (isinstance(value, (ast.Import, ast.ImportFrom)) and name == "is_lazy" and child == 0)
             }}
         if isinstance(value, list):
             return [encode(child) for child in value]

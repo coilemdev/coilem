@@ -1,6 +1,7 @@
 """Exercise complete candidate grading with synthetic, hash-bound field data."""
 import copy
 import json
+import shutil
 
 import pytest
 
@@ -9,6 +10,7 @@ from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.cogging import cogging_record
 from tools import cogging_qualification as qualification
+from tools import publish_cogging_qualification as publication
 
 CANDIDATE = "a" * 40
 
@@ -73,3 +75,27 @@ def test_candidate_qualification_checks_actual_field_mesh(measured):
     write(measured / "run_manifest.json", manifest)
     with pytest.raises(ValueError, match="very-fine native mesh"):
         qualification.assess(measured, CANDIDATE)
+
+
+def test_publication_independently_checks_reported_values(measured):
+    result = qualification.assess(measured, CANDIDATE)
+    artifact = measured.with_name(measured.name + "-artifact")
+    artifact.mkdir()
+    shutil.copytree(measured, artifact / "out")
+    write(artifact / "qualification.json", result)
+    assert publication.verify_platform(artifact, CANDIDATE)["status"] == "PASS"
+    result["rows"][0]["cogging"]["peak_to_peak_error_pct"] = 9.0
+    write(artifact / "qualification.json", result)
+    with pytest.raises(ValueError, match="numerical values differ"):
+        publication.verify_platform(artifact, CANDIDATE)
+
+
+def test_publication_rejects_timing_that_differs_from_collection(measured):
+    result = qualification.assess(measured, CANDIDATE)
+    artifact = measured.with_name(measured.name + "-artifact")
+    artifact.mkdir()
+    shutil.copytree(measured, artifact / "out")
+    result["collection_wall_s"] = 1
+    write(artifact / "qualification.json", result)
+    with pytest.raises(ValueError, match="independently verified candidate fields"):
+        publication.verify_platform(artifact, CANDIDATE)
