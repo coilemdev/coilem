@@ -480,3 +480,23 @@ def test_a_full_circle_frame_is_stored_as_it_is() -> None:
     assert fold_sector_frame(frame) is frame
     assert unfold_sector_frame(frame) is frame
     assert "sector_tiling" not in frame["mesh_info"]
+
+
+def test_the_mesh_preview_draws_a_sector_as_the_whole_motor_and_keeps_the_solved_count() -> None:
+    from backend.magneto2d_adapter import run_magneto2d_mesh_preview
+
+    sector_config = _config(SPM_4P12S, symmetry="auto", mesh_density="coarse")
+    preview = run_magneto2d_mesh_preview(sector_config, rotor_angle_deg=0.0)
+    solved = preview["mesh_info"]["num_triangles"]
+    assert preview["mesh_info"]["sector"]["repeats"] == 4
+    assert len(preview["triangles"]) == 4 * solved
+    assert len(preview["regions"]) == len(preview["element_region_ids"]) == len(preview["triangles"])
+    assert preview["total_span_deg"] == 360.0
+    # The drawn mesh goes all the way round.
+    angles = sorted(math.degrees(math.atan2(y, x)) % 360.0 for x, y in preview["nodes_mm"] if math.hypot(x, y) > 1.0)
+    assert max(b - a for a, b in zip(angles, angles[1:])) < 5.0
+    assert preview["solve_mesh_key"]
+
+    full = run_magneto2d_mesh_preview(_config(SPM_4P12S, mesh_density="coarse"), rotor_angle_deg=0.0)
+    assert len(full["triangles"]) == full["mesh_info"]["num_triangles"]
+    assert len(preview["triangles"]) == pytest.approx(len(full["triangles"]), rel=0.12)

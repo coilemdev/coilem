@@ -26,6 +26,7 @@ from backend.models import MotorConfig, SolveOptionsConfig
 from backend.reference_models import reference_model
 from backend.resources import PACKAGED_BIN_DIR, packaged_file_path
 from backend.rotor_layout import is_outer_rotor
+from backend.sector_tiling import tile_sector_mesh_preview
 from backend.solver_environment import solver_environment_provenance, solver_process_environment, solver_setting
 from backend.sweep_planning import loaded_angle_grid, loaded_sweep_plan
 from backend.topology_provenance import (
@@ -1829,7 +1830,7 @@ def run_magneto2d_mesh_preview(
                 config,
                 solve_mesh_artifact,
             )
-        return report
+        return tile_sector_mesh_preview(report)
     log_event(
         "MAGNETO2D",
         f"mesh-preview start mesher={mesher_choice or 'gmsh'} topology={config.topology}",
