@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 173039,
-      "sha256": "de1b68aefbd9749612504a0d13b1754e1f65908ebc0ea8614dea15082261b2ef"
+      "bytes": 173972,
+      "sha256": "47258e74ba26ab64be97f6701efac9023db71f46b42ea30a0f934e4fbd432396"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6730,8 +6730,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LearningLessonOneFollowFlux.tsx",
-      "bytes": 113997,
-      "sha256": "60edadb8e7bd24b0f830c18e4f5c8635eab373b7c0f920f6ea7881520fc77dd4"
+      "bytes": 109291,
+      "sha256": "9d9a04030cc86cfc71c74dd7e9defbe50870f53a762bb1cc535f3c38ac8e79fe"
     },
     {
       "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
@@ -6795,8 +6795,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoAirgapTax.tsx",
-      "bytes": 36902,
-      "sha256": "4dc5456b9eaaab2dd93f9ad04321180ba3fa336ce051d897b2e205e7ab096afd"
+      "bytes": 34791,
+      "sha256": "f5f00260a5bf504e553dab17c74b7dda9a79ce2cd02734ac27f5d3ef1bba46a5"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoMagneticCircuit.tsx",
@@ -6855,8 +6855,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/airgap-tax.css",
-      "bytes": 27841,
-      "sha256": "cd604278adbbff45de13b10448265a5d2d017ab64addded108cb0a5de3bf1533"
+      "bytes": 28719,
+      "sha256": "b98b66cfc4fb9cee143f6fb76e335910be190f4ebb0d2f49e5f0c074bbfd0c9b"
     },
     {
       "path": "frontend/src/components/tutorials/current-conductor-three.css",
@@ -6895,8 +6895,18 @@
     },
     {
       "path": "frontend/src/components/tutorials/follow-the-flux.css",
-      "bytes": 68818,
-      "sha256": "ef2588568f9289df699c2a7af75d898fb6810fdbf84c2a02fd35c16a78e8655b"
+      "bytes": 52910,
+      "sha256": "7c84bca971d54e351c2efd6758090679eda679a5b3d78e30423ce6e1d9ebd2be"
+    },
+    {
+      "path": "frontend/src/components/tutorials/lab/lesson-lab.css",
+      "bytes": 13076,
+      "sha256": "79f47d072bd09c758b69d45c15f498d475b8b19fb7a70e14632ca5bc75ff5687"
+    },
+    {
+      "path": "frontend/src/components/tutorials/lab/LessonLab.tsx",
+      "bytes": 9713,
+      "sha256": "48bd1bffb02f11b0e72fd52173002ec3cd64f745cf50ac0aef8b4e37db6665b0"
     },
     {
       "path": "frontend/src/components/tutorials/index.ts",

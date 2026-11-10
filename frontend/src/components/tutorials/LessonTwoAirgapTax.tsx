@@ -9,6 +9,23 @@ import type {
   LearningLessonStage,
 } from './lessonStage';
 import { KnowledgeCheck } from './KnowledgeCheck';
+import {
+  LessonChoices,
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonSegmented,
+  LessonTerms,
+} from './lab/LessonLab';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import './learning.css';
 import './airgap-tax.css';
@@ -319,8 +336,11 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   const [quizPassed, setQuizPassed] = React.useState(false);
   const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
   const [showMesh, setShowMesh] = React.useState(false);
-  const [labControlsOpen, setLabControlsOpen] = React.useState(false);
-  const [solveInspectorOpen, setSolveInspectorOpen] = React.useState(false);
+  // Both panels stay docked beside the canvas, as in the motor workspace.
+  const inspectorRef = React.useRef<HTMLElement | null>(null);
+  const [inspectorFlash, setInspectorFlash] = React.useState(false);
+  // The viewer draws its zoom buttons into the dock's title bar.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const [comparisonReviewed, setComparisonReviewed] = React.useState(false);
   const previousRunCountRef = React.useRef(0);
   const comparisonWasReadyRef = React.useRef(false);
@@ -343,8 +363,6 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
 
   const selectProgressStep = React.useCallback((stepId: string) => {
     const next = stepId as LessonTwoProgressStepId;
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     if (next === 'predict') {
       setQuizOpen(false);
       onStageChange?.('design');
@@ -372,7 +390,6 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
     onStepSelect: selectProgressStep,
   }), [activeProgressStepId, lessonProgressSteps, selectProgressStep]);
   const currentGoal = LESSON_TWO_GOALS[activeProgressStepId];
-  const completedStepCount = lessonProgressSteps.filter((item) => item.complete).length;
 
   React.useEffect(() => {
     onHeaderProgressChange?.(headerProgress);
@@ -389,8 +406,6 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   React.useEffect(() => {
     const previousRunCount = previousRunCountRef.current;
     if (lessonStage === 'solve' && previousRunCount === 0 && runs.length === 1) {
-      setSolveInspectorOpen(false);
-      setLabControlsOpen(true);
     }
     previousRunCountRef.current = runs.length;
   }, [lessonStage, runs.length]);
@@ -398,16 +413,12 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   React.useEffect(() => {
     if (comparisonReady && !comparisonWasReadyRef.current) {
       setComparisonReviewed(false);
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(true);
     }
     comparisonWasReadyRef.current = comparisonReady;
   }, [comparisonReady]);
 
   const setStage = (next: 'design' | 'solve') => {
     setQuizOpen(false);
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     onStageChange?.(next);
   };
 
@@ -442,24 +453,24 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
       return;
     }
     if (!comparisonReady) {
-      if (currentRun) {
-        setSolveInspectorOpen(false);
-        setLabControlsOpen(true);
-      }
+      // The solved gap needs a second, smaller one to compare with.
+      if (currentRun) setGapMm(suggestedHalfGapMm);
       else void solveGap();
       return;
     }
     if (!comparisonReviewed) {
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(true);
+      // The comparison is already on screen in the Inspect panel: draw the eye
+      // to it, then let the next click move on to the check.
+      setComparisonReviewed(true);
+      inspectorRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      setInspectorFlash(true);
+      window.setTimeout(() => setInspectorFlash(false), 1_600);
       return;
     }
     if (!currentRun) {
       void solveGap();
       return;
     }
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     setQuizOpen(true);
   };
 
@@ -469,7 +480,7 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
       ? 'Solve wide-gap baseline'
       : !comparisonReady
         ? currentRun
-          ? 'Adjust the airgap'
+          ? `Halve the gap to ${suggestedHalfGapMm.toFixed(1)} mm`
           : `Solve ${gapMm.toFixed(1)} mm gap`
         : !comparisonReviewed
           ? 'Review comparison'
@@ -485,350 +496,153 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
         ? 'The smaller gap carries more flux. Review the comparison before the check.'
         : 'You reviewed the evidence. Now explain why the smaller gap carries more flux.';
 
-  const continueToCheck = () => {
-    setComparisonReviewed(true);
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
-    setQuizOpen(true);
-  };
-
-  const renderSolvedViewer = (run: SolveRun) => (
-    <div className="airgap-tax-viewer">
-      <div className="mesh-viewer-header airgap-tax-visual-header">
-        <div className="mesh-viewer-title">
-          <h3>Magnet + steel return path</h3>
-        </div>
-        <div className="airgap-tax-view-toggle" role="group" aria-label="Field visualization">
-          <button
-            type="button"
-            className={fieldDisplayMode === 'lines' ? 'is-active' : ''}
-            onClick={() => setFieldDisplayMode('lines')}
-            aria-pressed={fieldDisplayMode === 'lines'}
-          >
-            <span className="is-line" aria-hidden="true" /> Flux lines
-          </button>
-          <button
-            type="button"
-            className={fieldDisplayMode === 'density' ? 'is-active' : ''}
-            onClick={() => setFieldDisplayMode('density')}
-            aria-pressed={fieldDisplayMode === 'density'}
-          >
-            <span className="is-density" aria-hidden="true" /> |B| map
-          </button>
-          <button
-            type="button"
-            className={showMesh ? 'is-active' : ''}
-            onClick={() => setShowMesh((visible) => !visible)}
-            aria-pressed={showMesh}
-          >
-            <span className="is-mesh" aria-hidden="true" /> Mesh
-          </button>
-        </div>
-      </div>
-      <MeshViewer
-        meshData={run.data}
-        embedded
-        compactEmbedded
-        toolbarMode="zoom-only"
-        toolbarLabel={fieldDisplayMode === 'lines' ? 'Flux lines' : 'Flux density |B|'}
-        showMeshEdges={showMesh}
-        showFieldIntensity={fieldDisplayMode === 'density'}
-        smoothFieldIntensity
-        fieldLinesVisible={fieldDisplayMode === 'lines'}
-        animateFieldArrows={fieldDisplayMode === 'lines'}
-        viewportPanEnabled={false}
-        pointLabels={[
-          { xMm: -9, yMm: 0, label: 'S', tone: 'south' },
-          { xMm: 9, yMm: 0, label: 'N', tone: 'north' },
-        ]}
-        measurementGates={[
-          {
-            x1Mm: 18 + run.gapMm / 2,
-            y1Mm: -5,
-            x2Mm: 18 + run.gapMm / 2,
-            y2Mm: 5,
-            labelXmm: 31 + run.gapMm,
-            labelYmm: 0,
-            label: 'Airgap',
-            detail: `${run.gapMm.toFixed(1)} mm`,
-          },
-        ]}
-      />
-    </div>
+  // The canvas controls, in the same dock as the motor workspace. Before the
+  // first solve it is shown greyed out, so the canvas keeps its size.
+  const renderViewDock = (unsolved: boolean) => (
+    <LessonDock
+      tabs={[{ id: '2d', label: '2D' }]}
+      tab="2d"
+      onTab={() => undefined}
+      end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
+    >
+      <LessonDockGroup label="Field">
+        <LessonSegmented
+          label="Field drawing"
+          value={fieldDisplayMode}
+          onChange={setFieldDisplayMode}
+          options={[
+            { id: 'lines', label: 'Field lines', disabled: unsolved, title: 'Lines that follow the direction of the field' },
+            { id: 'density', label: 'Flux density', disabled: unsolved, title: 'Colour by field strength, |B|' },
+          ]}
+        />
+      </LessonDockGroup>
+      <LessonDockGroup label="Show">
+        <LessonDockToggle
+          pressed={showMesh}
+          onChange={setShowMesh}
+          disabled={unsolved}
+          title="The triangles the solver divides the space into"
+        >
+          Mesh
+        </LessonDockToggle>
+      </LessonDockGroup>
+    </LessonDock>
   );
 
-  return (
-    <main
-      className={`learning-shell learning-lesson-shell airgap-tax-shell is-${lessonStage}-stage${quizOpen ? ' is-quiz-open' : ''}`}
+  const renderSolvedViewer = (run: SolveRun) => (
+    <LessonLabCanvas className="airgap-tax-viewer">
+      <LessonLabViewport label={`Magnet + steel return path · ${run.gapMm.toFixed(1)} mm gaps`}>
+        <MeshViewer
+          meshData={run.data}
+          embedded
+          compactEmbedded
+          toolbarMode="zoom-only"
+          zoomControlsSlot={zoomSlot}
+          showMeshEdges={showMesh}
+          showFieldIntensity={fieldDisplayMode === 'density'}
+          smoothFieldIntensity
+          fieldLinesVisible={fieldDisplayMode === 'lines'}
+          animateFieldArrows={fieldDisplayMode === 'lines'}
+          viewportPanEnabled={false}
+          pointLabels={[
+            { xMm: -9, yMm: 0, label: 'S', tone: 'south' },
+            { xMm: 9, yMm: 0, label: 'N', tone: 'north' },
+          ]}
+          measurementGates={[
+            {
+              x1Mm: 18 + run.gapMm / 2,
+              y1Mm: -5,
+              x2Mm: 18 + run.gapMm / 2,
+              y2Mm: 5,
+              labelXmm: 31 + run.gapMm,
+              labelYmm: 0,
+              label: 'Airgap',
+              detail: `${run.gapMm.toFixed(1)} mm`,
+            },
+          ]}
+        />
+      </LessonLabViewport>
+      {renderViewDock(false)}
+    </LessonLabCanvas>
+  );
+
+  const currentStepNumber = Math.max(1, lessonProgressSteps.findIndex((item) => item.id === activeProgressStepId) + 1);
+  const goalCard = (
+    <LessonGoal step={currentStepNumber} total={lessonProgressSteps.length} title={currentGoal.title} detail={currentGoal.detail} />
+  );
+  // The lesson's terms sit beside whatever is being read or measured.
+  const termsBox = (
+    <LessonTerms
+      terms={[
+        { term: 'Airgap', definition: 'The space between the magnet and the steel that the flux has to cross. Here there are two, one at each end of the magnet.' },
+        { term: 'Permeability', definition: 'How easily a material carries flux. Steel is thousands of times better than air.' },
+        { term: 'Reluctance', definition: 'How hard a path is for flux to follow. It grows with length and shrinks with permeability and area.' },
+        { term: 'MMF', definition: 'Magnetomotive force: the magnet’s "push" that drives flux round the loop. It is spent across the reluctances in the loop.' },
+        { term: <>Flux, &Phi;</>, definition: <>The total field through a surface, in webers (Wb). &Phi; = B &times; area.</> },
+        { term: '|B|', definition: 'Flux density: how strong the field is at one spot, in tesla (T).' },
+        { term: 'Fringing', definition: 'Field that bulges out round the edges of a gap instead of crossing straight over.' },
+      ]}
+    />
+  );
+
+  const inspectPanel = (
+    <LessonLabPanel
+      ref={inspectorRef}
+      side="inspect"
+      kicker="Inspect"
+      title={lessonStage === 'design' ? 'Nothing solved yet' : 'Gap comparison'}
+      summary={lessonStage === 'design'
+        ? 'Make your prediction first. The solver’s answer and its measurements appear here in the next step.'
+        : 'Same magnet. Same steel. One shorter air path.'}
+      label="Lesson evidence and solved results"
+      flash={inspectorFlash}
     >
-      {lessonStage === 'solve' && !quizOpen && labControlsOpen ? (
-      <aside
-        className="learning-control-panel airgap-tax-control-panel"
-      >
-        <button
-          type="button"
-          className="airgap-tax-drawer-close"
-          onClick={() => setLabControlsOpen(false)}
-          aria-label="Close airgap controls"
-        >
-          ×
-        </button>
-
-        <section className="learning-control-section">
-          <p className="airgap-tax-panel-kicker">
-            Lab setup · {lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label}
-          </p>
-          <h2>Airgap lab</h2>
-          <section className="airgap-tax-lab-goal" aria-label="Current lesson goal">
-            <span>{completedStepCount}/{lessonProgressSteps.length}</span>
+      {lessonStage === 'design' ? (
+        <LessonOutline
+          steps={lessonProgressSteps.map((item) => ({
+            id: item.id,
+            label: item.label,
+            detail: LESSON_TWO_GOALS[item.id as LessonTwoProgressStepId].detail,
+          }))}
+          currentId={activeProgressStepId}
+        />
+      ) : runs.length ? (
+        <section className="airgap-tax-results" aria-label="Solved gap comparison">
+          <header>
             <div>
-              <p>Current goal</p>
-              <strong>{currentGoal.title}</strong>
-              <small>{currentGoal.detail}</small>
+              <p className="learning-kicker">Solved frames</p>
+              <h2>{comparisonReady ? 'The smaller gap carries more flux.' : 'Now halve the gap.'}</h2>
             </div>
-          </section>
-
-          {!quizOpen ? (
-            <>
-              <section className="airgap-tax-control-card">
-                <label htmlFor="airgap-tax-slider">
-                  <span>Each airgap</span><strong>{gapMm.toFixed(1)} mm</strong>
-                </label>
-                <input
-                  id="airgap-tax-slider"
-                  type="range"
-                  min="0.5"
-                  max="8"
-                  step="0.5"
-                  value={gapMm}
-                  disabled={busy}
-                  aria-label={`Each airgap ${gapMm.toFixed(1)} millimeters`}
-                  onChange={(event) => setGapMm(Number(event.currentTarget.value))}
-                />
-                <div className="airgap-tax-gap-scale"><span>0.5</span><span>8 mm</span></div>
-                <p className="airgap-tax-control-summary">
-                  {currentRun
-                    ? `${gapMm.toFixed(1)} mm is already solved.`
-                    : `${gapMm.toFixed(1)} mm is ready for a new field solve.`}
-                </p>
-                {runs.length > 0 && !comparisonReady && currentRun ? (
-                  <button
-                    type="button"
-                    className="airgap-tax-half-button"
-                    onClick={() => setGapMm(suggestedHalfGapMm)}
-                  >
-                    Use the recommended {suggestedHalfGapMm.toFixed(1)} mm gap
-                  </button>
-                ) : null}
-                {error ? <p className="airgap-tax-error">{error}</p> : null}
-              </section>
-
-              {lessonStage === 'solve' && comparisonReady ? (
-                <p className="airgap-tax-rail-hint">
-                  Optional: move the slider to any unplotted gap and add another FEM point before the check.
-                </p>
-              ) : lessonStage === 'solve' && runs.length > 0 ? (
-                <p className="airgap-tax-rail-hint">
-                  Set the gap to {suggestedHalfGapMm.toFixed(1)} mm or less, then solve again.
-                </p>
-              ) : null}
-
-            </>
+            <span>{runs.length} run{runs.length === 1 ? '' : 's'}</span>
+          </header>
+          <AirgapFluxPlot
+            runs={runs}
+            activeGapMm={currentRun?.gapMm ?? null}
+            onSelect={setGapMm}
+          />
+          {currentRun?.data.metrics ? (
+            <section className="airgap-tax-readout">
+              <div><span>Mean |B| in gaps</span><strong>{currentRun.gapBT.toFixed(3)} T</strong></div>
+              <div><span>Solved total flux at N face</span><strong>{formatMicroWb(currentRun.data.metrics.north_face_flux_wb ?? 0)}</strong></div>
+              <div><span>Hand-calculation estimate</span><strong>{handModelFluxMicroWb(currentRun.gapMm).toFixed(1)} µWb</strong></div>
+            </section>
           ) : null}
         </section>
+      ) : (
+        <section className="airgap-tax-status-empty">
+          <p className="learning-kicker">Solved frames</p>
+          <h2>Awaiting the wide-gap baseline</h2>
+          <p>Solve the wide gap, then halve it. The comparison will appear here.</p>
+          <ol>
+            <li><span>1</span> Solve the 6.0 mm baseline</li>
+            <li><span>2</span> Halve the gap and solve again</li>
+          </ol>
+        </section>
+      )}
 
-      </aside>
-      ) : null}
+      {termsBox}
 
-      <section className="learning-main-stage airgap-tax-main">
-        {quizOpen ? (
-          <section className="airgap-tax-quiz-stage">
-            <p className="learning-kicker">Final check</p>
-            <h2>Can you explain the airgap tax?</h2>
-            <p>Use what changed between your solved frames—not a memorized slogan.</p>
-            <details className="learning-quiz-reference airgap-tax-inline-quiz-reference">
-              <summary>Review solved frames</summary>
-              <div>
-                <strong>{runs.length} airgap runs captured</strong>
-                <p>Open this only when you need to recall the comparison.</p>
-              </div>
-            </details>
-            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="airgap-tax-predict-experience" aria-label="Airgap reluctance prediction">
-            <div className="airgap-tax-predict-heading">
-              <p className="learning-kicker">Lesson 2 · Predict</p>
-              <h1>Where does the magnetic push get spent?</h1>
-              <p>Trace one closed loop, then choose its bottleneck.</p>
-            </div>
-            <div className="airgap-tax-predict-visual">
-              <AirgapFixtureDiagram gapMm={DEFAULT_GAP_MM} />
-            </div>
-            <div className="airgap-tax-predict-question">
-              <strong>Which part contributes most of the loop&apos;s reluctance?</strong>
-              <div className="airgap-tax-predictions" role="radiogroup" aria-label="Reluctance bottleneck prediction">
-                {([
-                  ['airgap', 'The two airgaps', 'Short, but low permeability.'],
-                  ['steel', 'The steel return path', 'Long, but high permeability.'],
-                  ['magnet', 'The permanent magnet', 'The source that drives the loop.'],
-                ] as Array<[Prediction, string, string]>).map(([value, label, detail], index) => (
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={prediction === value}
-                    key={value}
-                    className={`${prediction === value ? 'is-selected' : ''}${prediction === value && value === 'airgap' ? ' is-correct' : ''}`}
-                    onClick={() => choosePrediction(value)}
-                  >
-                    <span>{index + 1}</span><div><strong>{label}</strong><small>{detail}</small></div>
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="airgap-tax-predict-response" aria-live="polite">
-              {prediction ? (
-                <p className={`airgap-tax-feedback${predictionCorrect ? ' is-correct' : ''}`}>
-                  {predictionCorrect
-                    ? 'Exactly. The flux crosses two low-permeability airgaps in series.'
-                    : 'Look past physical length. Compare the permeability of air and steel.'}
-                </p>
-              ) : <p>Make a prediction before seeing the solved field.</p>}
-            </div>
-            <button
-              type="button"
-              className="learning-primary-button airgap-tax-predict-primary"
-              disabled={!predictionCorrect}
-              onClick={() => setStage('solve')}
-            >
-              Reveal the airgap tax →
-            </button>
-            <div className="airgap-tax-predict-footer">
-              <div><button type="button" onClick={onBackToCatalog}>← All lessons</button><button type="button" onClick={onBackHome}>Design start</button></div>
-              <span>1 of 3 · Predict</span>
-            </div>
-          </section>
-        ) : latestRun ? (
-          renderSolvedViewer(currentRun ?? latestRun)
-        ) : (
-          <section className="airgap-tax-empty-stage">
-            <div className="learning-stage-badge"><span>Solve</span><strong>Wide-gap baseline</strong></div>
-            <AirgapFixtureDiagram gapMm={gapMm} />
-            <div>
-              <h2>Start with the wide gap.</h2>
-              <p>Adjust the airgap, then run the first field solve.</p>
-            </div>
-          </section>
-        )}
-
-        {lessonStage === 'solve' && !quizOpen ? (
-          <div className="airgap-tax-lesson-dock" aria-label="Current airgap experiment controls">
-            <div className="airgap-tax-dock-insight">
-              <span>Airgap lab</span>
-              <strong>{labInsight}</strong>
-            </div>
-            <div className="airgap-tax-dock-actions">
-              <button
-                type="button"
-                className="airgap-tax-dock-button"
-                aria-expanded={labControlsOpen}
-                onClick={() => {
-                  setLabControlsOpen((open) => !open);
-                  setSolveInspectorOpen(false);
-                }}
-              >
-                {labControlsOpen ? 'Done' : 'Adjust airgap'}
-              </button>
-              <button
-                type="button"
-                className="airgap-tax-dock-button"
-                aria-expanded={solveInspectorOpen}
-                onClick={() => {
-                  setSolveInspectorOpen((open) => !open);
-                  setLabControlsOpen(false);
-                }}
-              >
-                Inspect results
-              </button>
-              <button
-                type="button"
-                className="learning-primary-button airgap-tax-dock-primary"
-                disabled={busy}
-                onClick={handleLabPrimary}
-              >
-                {labPrimaryLabel}
-              </button>
-            </div>
-          </div>
-        ) : quizOpen ? (
-          <div className="airgap-tax-lesson-dock airgap-tax-quiz-dock" aria-label="Knowledge check controls">
-            <div className="airgap-tax-dock-insight">
-              <span>Check</span>
-              <strong>{quizPassed ? 'Lesson complete. Continue when you’re ready.' : 'Answer all three questions to complete Lesson 2.'}</strong>
-            </div>
-            <div className="airgap-tax-dock-actions">
-              <button type="button" className="airgap-tax-dock-button" onClick={() => setQuizOpen(false)}>Review experiment</button>
-              <button type="button" className="airgap-tax-dock-button" onClick={onBackToCatalog}>Lessons</button>
-              {quizPassed || lessonComplete ? (
-                <a className="learning-primary-button airgap-tax-dock-primary" href="/tutorials/lesson-3">Next lesson</a>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-      </section>
-      {lessonStage === 'solve' && !quizOpen && solveInspectorOpen ? (
-      <aside className="learning-context-panel airgap-tax-status-panel" aria-label="Lesson evidence and solved results">
-        <button type="button" className="airgap-tax-drawer-close" onClick={() => setSolveInspectorOpen(false)} aria-label="Close solved results">×</button>
-        <header className="airgap-tax-status-header">
-          <p className="learning-kicker">Evidence · Lesson 2</p>
-          <h1>Gap comparison</h1>
-          <p>Same magnet. Same steel. One shorter air path.</p>
-          <div className="learning-progress" aria-label="Lesson completion">
-            <span style={{ width: `${(completedStepCount / lessonProgressSteps.length) * 100}%` }} />
-          </div>
-        </header>
-
-        {runs.length ? (
-          <section className="airgap-tax-results" aria-label="Solved gap comparison">
-            <header>
-              <div>
-                <p className="learning-kicker">Solved frames</p>
-                <h2>{comparisonReady ? 'The smaller gap carries more flux.' : 'Now halve the gap.'}</h2>
-              </div>
-              <span>{runs.length} run{runs.length === 1 ? '' : 's'}</span>
-            </header>
-            <AirgapFluxPlot
-              runs={runs}
-              activeGapMm={currentRun?.gapMm ?? null}
-              onSelect={setGapMm}
-            />
-            {currentRun?.data.metrics ? (
-              <section className="airgap-tax-readout">
-                <div><span>Mean |B| in gaps</span><strong>{currentRun.gapBT.toFixed(3)} T</strong></div>
-                <div><span>FEM total flux at N face</span><strong>{formatMicroWb(currentRun.data.metrics.north_face_flux_wb ?? 0)}</strong></div>
-                <div><span>1D equation prediction</span><strong>{handModelFluxMicroWb(currentRun.gapMm).toFixed(1)} µWb</strong></div>
-              </section>
-            ) : null}
-          </section>
-        ) : (
-          <section className="airgap-tax-status-empty">
-            <p className="learning-kicker">Solved frames</p>
-            <h2>Awaiting the wide-gap baseline</h2>
-            <p>Solve the wide gap, then halve it. The comparison will appear here.</p>
-            <ol>
-              <li><span>1</span> Solve the 6.0 mm baseline</li>
-              <li><span>2</span> Halve the gap and solve again</li>
-            </ol>
-          </section>
-        )}
-
-        {comparisonReady ? (
-          <section className="airgap-tax-inspector-next" aria-label="Continue after reviewing the comparison">
-            <span>Evidence reviewed?</span>
-            <button type="button" onClick={continueToCheck}>Continue to Check →</button>
-          </section>
-        ) : null}
-
+      {lessonStage === 'solve' ? (
         <details className="airgap-tax-inspector-details">
           <summary>Details · reluctance model</summary>
           <div>
@@ -857,11 +671,164 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
             </div>
             <p>Model estimate uses an {IRON_PATH_MM} mm steel path at μ<sub>r</sub> ≈ {IRON_RELATIVE_PERMEABILITY}. The field solve includes leakage and fringing.</p>
           </section>
-          <p className="airgap-tax-inspector-material">Steel: M350-50A, the same material model used by motor projects.</p>
+          <p className="airgap-tax-inspector-material">The steel is M350-50A, a common electrical steel, with the same curve the motor projects use.</p>
           </div>
         </details>
-      </aside>
       ) : null}
-    </main>
+    </LessonLabPanel>
+  );
+
+  if (quizOpen) {
+    return (
+      <LessonLab className="airgap-tax-lab">
+        {inspectPanel}
+        <LessonLabStage className="is-tall">
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
+            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Can you explain the airgap tax?"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep hint={quizPassed ? 'Lesson complete. Continue when you are ready.' : `Answer all ${QUIZ.length} questions to complete Lesson 2.`}>
+              {quizPassed || lessonComplete ? (
+                <a className="learning-primary-button" href="/tutorials/lesson-3">Next lesson</a>
+              ) : null}
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => setQuizOpen(false)}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Use what changed between your solved frames, shown on the right, not a memorized slogan.</p>
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  if (lessonStage === 'design') {
+    return (
+      <LessonLab className="airgap-tax-lab">
+        {inspectPanel}
+        <LessonLabStage>
+          <LessonLabViewport label="Magnet + steel return path · not solved yet" className="is-centered">
+            <div className="airgap-tax-predict-visual">
+              <AirgapFixtureDiagram gapMm={DEFAULT_GAP_MM} />
+            </div>
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Predict"
+          title="Where does the magnetic push get spent?"
+          summary="Trace the one closed loop, then choose the part that contributes most of its reluctance."
+          label="Airgap reluctance prediction"
+          footer={(
+            <LessonNextStep
+              tone={prediction ? (predictionCorrect ? 'good' : 'warn') : undefined}
+              hint={prediction
+                ? predictionCorrect
+                  ? 'Exactly. The flux crosses two low-permeability airgaps in series.'
+                  : 'Look past physical length. Compare the permeability of air and steel.'
+                : 'Make a prediction before seeing the solved field.'}
+            >
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={!predictionCorrect}
+                onClick={() => setStage('solve')}
+              >
+                Reveal the airgap tax →
+              </button>
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                {onBackHome ? <LessonLink onClick={onBackHome}>Design start</LessonLink> : null}
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <LessonChoices
+            label="Reluctance bottleneck prediction"
+            value={prediction}
+            onChange={choosePrediction}
+            correctId="airgap"
+            options={[
+              { id: 'airgap', label: 'The two airgaps', detail: 'Short, but low permeability.' },
+              { id: 'steel', label: 'The steel return path', detail: 'Long, but high permeability.' },
+              { id: 'magnet', label: 'The permanent magnet', detail: 'The source that drives the loop.' },
+            ]}
+          />
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  return (
+    <LessonLab className="airgap-tax-lab">
+      {inspectPanel}
+      <LessonLabStage>
+        {latestRun ? (
+          renderSolvedViewer(currentRun ?? latestRun)
+        ) : (
+          <LessonLabCanvas>
+            <LessonLabViewport label={`Magnet + steel return path · ${gapMm.toFixed(1)} mm gaps`} hint="Not solved yet" className="is-centered">
+              <div className="airgap-tax-predict-visual">
+                <AirgapFixtureDiagram gapMm={gapMm} />
+              </div>
+            </LessonLabViewport>
+            {renderViewDock(true)}
+          </LessonLabCanvas>
+        )}
+      </LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={`Experiment · ${lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label ?? ''}`}
+        title="Airgap lab"
+        label="Airgap experiment"
+        footer={(
+          <LessonNextStep hint={labInsight}>
+            <button type="button" className="learning-primary-button" disabled={busy} onClick={handleLabPrimary}>
+              {labPrimaryLabel}
+            </button>
+          </LessonNextStep>
+        )}
+      >
+        {goalCard}
+        <section className="airgap-tax-control-card">
+          <label htmlFor="airgap-tax-slider">
+            <span>Each airgap</span><strong>{gapMm.toFixed(1)} mm</strong>
+          </label>
+          <input
+            id="airgap-tax-slider"
+            type="range"
+            min="0.5"
+            max="8"
+            step="0.5"
+            value={gapMm}
+            disabled={busy}
+            aria-label={`Each airgap ${gapMm.toFixed(1)} millimeters`}
+            onChange={(event) => setGapMm(Number(event.currentTarget.value))}
+          />
+          <div className="airgap-tax-gap-scale"><span>0.5</span><span>8 mm</span></div>
+          <p className="airgap-tax-control-summary">
+            {currentRun
+              ? `${gapMm.toFixed(1)} mm is already solved.`
+              : `${gapMm.toFixed(1)} mm is ready for a new field solve.`}
+          </p>
+        </section>
+        {comparisonReady ? (
+          <p className="lesson-lab-note">Optional: move the slider to any gap you have not solved and add another point before the check.</p>
+        ) : runs.length > 0 ? (
+          <p className="lesson-lab-note">Set the gap to {suggestedHalfGapMm.toFixed(1)} mm or less, then solve again.</p>
+        ) : null}
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };

@@ -9,6 +9,23 @@ import type {
   LearningLessonStage,
 } from './lessonStage';
 import { KnowledgeCheck } from './KnowledgeCheck';
+import {
+  LessonChoices,
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonSegmented,
+  LessonTerms,
+} from './lab/LessonLab';
 import { FollowFluxDepth3D } from './FollowFluxDepth3D';
 import {
   LESSON_ONE_FIELD_MAGNET,
@@ -1945,63 +1962,37 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
   // controls. Before the first solve it is shown greyed out, so the canvas does
   // not change size when the field appears.
   const renderViewDock = (unsolved: boolean) => (
-      <div className="follow-flux-view-dock" aria-label="Field view controls">
-        <div className="follow-flux-view-dock-strip">
-          <div className="follow-flux-view-tabs" role="group" aria-label="View">
-            <button type="button" aria-pressed={unsolved || !showPhysicalDepth} onClick={() => setShowPhysicalDepth(false)}>2D</button>
-            <button
-              type="button"
-              aria-pressed={!unsolved && showPhysicalDepth}
-              aria-expanded={!unsolved && showPhysicalDepth}
-              disabled={unsolved}
-              title={unsolved ? 'Solve the field first' : undefined}
-              aria-controls="follow-flux-depth-inset"
-              onClick={() => setShowPhysicalDepth(true)}
-            >
-              3D depth
-            </button>
-          </div>
-          {unsolved ? <span className="follow-flux-view-dock-end follow-flux-view-dock-note">Solve to see the field</span> : <span className="follow-flux-view-dock-end" ref={setZoomSlot} />}
-        </div>
-        <div className="follow-flux-view-dock-controls">
-          <span className="follow-flux-view-group" role="group" aria-label="Field drawing">
-            <span className="follow-flux-view-group-label" aria-hidden="true">Field</span>
-            <span className="follow-flux-view-segmented">
-              <button
-                type="button"
-                aria-pressed={fieldDisplayMode === 'lines'}
-                disabled={unsolved || showPhysicalDepth}
-                title="Lines that follow the direction of the field"
-                onClick={() => setFieldDisplayMode('lines')}
-              >
-                Field lines
-              </button>
-              <button
-                type="button"
-                aria-pressed={fieldDisplayMode === 'density'}
-                disabled={unsolved || showPhysicalDepth}
-                title="Colour by field strength, |B|"
-                onClick={() => setFieldDisplayMode('density')}
-              >
-                Flux density
-              </button>
-            </span>
-          </span>
-          <span className="follow-flux-view-group" role="group" aria-label="Layers">
-            <span className="follow-flux-view-group-label" aria-hidden="true">Show</span>
-            <button
-              type="button"
-              className="follow-flux-view-toggle-dot"
-              aria-pressed={meshEdgesVisible}
-              disabled={unsolved || showPhysicalDepth}
-              title="The triangles the solver divides the space into"
-              onClick={() => setMeshEdgesVisible((visible) => !visible)}
-            >
-              Mesh
-            </button>
-          </span>
-        </div>
-      </div>
+    <LessonDock
+      tabs={[
+        { id: '2d', label: '2D' },
+        { id: 'depth', label: '3D depth', disabled: unsolved, title: unsolved ? 'Solve the field first' : undefined },
+      ]}
+      tab={!unsolved && showPhysicalDepth ? 'depth' : '2d'}
+      onTab={(tab) => setShowPhysicalDepth(tab === 'depth')}
+      end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
+    >
+      <LessonDockGroup label="Field">
+        <LessonSegmented
+          label="Field drawing"
+          value={fieldDisplayMode}
+          onChange={setFieldDisplayMode}
+          options={[
+            { id: 'lines', label: 'Field lines', disabled: unsolved || showPhysicalDepth, title: 'Lines that follow the direction of the field' },
+            { id: 'density', label: 'Flux density', disabled: unsolved || showPhysicalDepth, title: 'Colour by field strength, |B|' },
+          ]}
+        />
+      </LessonDockGroup>
+      <LessonDockGroup label="Show">
+        <LessonDockToggle
+          pressed={meshEdgesVisible}
+          onChange={setMeshEdgesVisible}
+          disabled={unsolved || showPhysicalDepth}
+          title="The triangles the solver divides the space into"
+        >
+          Mesh
+        </LessonDockToggle>
+      </LessonDockGroup>
+    </LessonDock>
   );
 
   const renderViewer = (data: FollowFluxFieldData) => {
@@ -2045,7 +2036,8 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
         ? `Magnet + ${STEEL_SHAPES[data.steel_shape].label.toLowerCase()}`
         : 'Magnet in open air';
     return (
-    <div className={`follow-flux-viewer${viewIsStale ? ' is-stale' : ''}`}>
+    <LessonLabCanvas className={`follow-flux-viewer${viewIsStale ? ' is-stale' : ''}`}>
+      <LessonLabViewport label={viewerTitle}>
       {viewIsStale ? (
         <p className={`follow-flux-resolving${viewCanResolve ? '' : ' is-blocked'}`} role="status">
           {!viewCanResolve
@@ -2053,8 +2045,6 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
             : autoSolving ? 'Re-solving the moved geometry…' : 'Geometry moved — re-solving…'}
         </p>
       ) : null}
-      <div className="follow-flux-viewport">
-      <div className="follow-flux-viewport-label">{viewerTitle}</div>
       {showPhysicalDepth && depthAdjustedMetrics?.north_face_flux_wb !== undefined ? (
         depth3DUnavailable ? (
           <PhysicalDepthInset
@@ -2122,126 +2112,109 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
           ] : []}
         />
       )}
-      </div>
+      </LessonLabViewport>
       {renderViewDock(false)}
-    </div>
+    </LessonLabCanvas>
     );
   };
 
   // The lesson's terms sit beside whatever is being read or measured.
   const termsBox = (
-    <section className="follow-flux-glossary" aria-label="Terms used in this lesson">
-      <h2>Terms</h2>
-      <dl>
-        <div><dt>|B|</dt><dd>Flux density: how strong the field is at one spot, in tesla (T).</dd></div>
-        <div><dt>Flux, &Phi;</dt><dd>The total field through a surface, in webers (Wb). &Phi; = B &times; area.</dd></div>
-        <div><dt>Flux surface</dt><dd>The cyan line on the north face. Flux is counted through it. The picture is a flat slice, so the area is that line times an assumed depth of {assumedDepthMm} mm.</dd></div>
-        <div><dt>Return path</dt><dd>The route the field takes from the north pole back to the south pole.</dd></div>
-        <div><dt>Reluctance</dt><dd>How hard a path is for flux to follow. Air is high; steel is far lower.</dd></div>
-        <div><dt>Leakage</dt><dd>Field that spreads far from the magnet instead of staying on a short path.</dd></div>
-      </dl>
-    </section>
+    <LessonTerms
+      terms={[
+        { term: '|B|', definition: 'Flux density: how strong the field is at one spot, in tesla (T).' },
+        { term: <>Flux, &Phi;</>, definition: <>The total field through a surface, in webers (Wb). &Phi; = B &times; area.</> },
+        { term: 'Flux surface', definition: `The cyan line on the north face. Flux is counted through it. The picture is a flat slice, so the area is that line times an assumed depth of ${assumedDepthMm} mm.` },
+        { term: 'Return path', definition: 'The route the field takes from the north pole back to the south pole.' },
+        { term: 'Reluctance', definition: 'How hard a path is for flux to follow. Air is high; steel is far lower.' },
+        { term: 'Leakage', definition: 'Field that spreads far from the magnet instead of staying on a short path.' },
+      ]}
+    />
+  );
+  const goalCard = (
+    <LessonGoal step={currentStepNumber} total={lessonProgressSteps.length} title={currentGoal.title} detail={currentGoal.detail} />
   );
 
   if (lessonPhase === 'design') {
     return (
-      <main className="learning-shell learning-lesson-shell follow-flux-shell is-predict-stage">
-        <aside className="learning-step-rail follow-flux-status-panel" aria-label="What this lesson covers">
-          <div className="learning-step-header follow-flux-inspector-header">
-            <p className="learning-kicker">Inspect</p>
-            <h1>Nothing solved yet</h1>
-            <p>Make your prediction first. The solver's answer and its measurements appear here in the next step.</p>
-          </div>
-          <section className="follow-flux-glossary" aria-label="Steps in this lesson">
-            <h2>In this lesson</h2>
-            <ol className="follow-flux-lesson-outline">
-              {lessonProgressSteps.map((item) => (
-                <li key={item.id} className={item.id === activeProgressStepId ? 'is-current' : ''}>
-                  <strong>{item.label}</strong>
-                  <span>{LESSON_ONE_GOALS[item.id as LessonOneProgressStepId].detail}</span>
-                </li>
-              ))}
-            </ol>
-          </section>
+      <LessonLab className="follow-flux-lab">
+        <LessonLabPanel
+          side="inspect"
+          kicker="Inspect"
+          title="Nothing solved yet"
+          summary="Make your prediction first. The solver's answer and its measurements appear here in the next step."
+          label="What this lesson covers"
+        >
+          <LessonOutline
+            steps={lessonProgressSteps.map((item) => ({
+              id: item.id,
+              label: item.label,
+              detail: LESSON_ONE_GOALS[item.id as LessonOneProgressStepId].detail,
+            }))}
+            currentId={activeProgressStepId}
+          />
           {termsBox}
-        </aside>
+        </LessonLabPanel>
 
-        <section className="learning-main-stage follow-flux-main is-predict-stage">
-          <div className="follow-flux-predict-canvas">
-            <div className="follow-flux-viewport-label">Bar magnet · not solved yet</div>
+        <LessonLabStage>
+          <LessonLabViewport label="Bar magnet · not solved yet" className="is-centered">
             <div className="follow-flux-predict-visual" aria-live="polite">
               <FieldFixtureDiagram prediction={predictionCorrect ? null : prediction} />
             </div>
-          </div>
-        </section>
+          </LessonLabViewport>
+        </LessonLabStage>
 
-        <aside className="learning-control-panel follow-flux-control-panel" aria-label="Prediction">
-          <section className="learning-control-section" aria-labelledby="follow-flux-predict-title">
-            <p className="follow-flux-panel-kicker">Experiment · Predict</p>
-            <h2 id="follow-flux-predict-title">Where does the field go?</h2>
-            <section className="follow-flux-lab-goal" aria-label="Current lesson goal">
-              <span>{currentStepNumber}/{lessonProgressSteps.length}</span>
-              <div>
-                <p>Step {currentStepNumber} of {lessonProgressSteps.length} · Goal</p>
-                <strong>{currentGoal.title}</strong>
-                <small>{currentGoal.detail}</small>
-              </div>
-            </section>
-            <div className="follow-flux-predict-options" role="radiogroup" aria-label="Field path prediction">
-              {PREDICTIONS.map((option, index) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={prediction === option.id}
-                  className={`${prediction === option.id ? 'is-selected' : ''}${prediction === option.id && option.id === 'closed-loop' ? ' is-correct' : ''}`}
-                  onClick={() => setPrediction(option.id)}
-                >
-                  <span>{index + 1}</span>
-                  <strong>{option.label}</strong>
-                </button>
-              ))}
-            </div>
-          </section>
-          <footer className="follow-flux-next-step" aria-label="Next step">
-            <p className={`follow-flux-predict-response${predictionCorrect ? ' is-correct' : ''}`} aria-live="polite">
-              {prediction
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Predict"
+          title="Where does the field go?"
+          titleId="follow-flux-predict-title"
+          label="Prediction"
+          footer={(
+            <LessonNextStep
+              tone={prediction ? (predictionCorrect ? 'good' : 'warn') : undefined}
+              hint={prediction
                 ? predictionCorrect
                   ? 'That is the complete model. Now reveal what the solver sees.'
                   : 'A magnetic field cannot have a loose end. Try a path that returns.'
                 : 'Make a prediction before seeing the solved field.'}
-            </p>
-            <button
-              type="button"
-              className="learning-primary-button follow-flux-dock-primary follow-flux-reveal-button"
-              onClick={() => {
-                handlePrimary();
-              }}
-              disabled={!predictionCorrect}
             >
-              Reveal the field →
-            </button>
-            <button type="button" className="follow-flux-next-step-link" onClick={onBackToCatalog}>← All lessons</button>
-          </footer>
-        </aside>
-      </main>
+              <button
+                type="button"
+                className="learning-primary-button follow-flux-reveal-button"
+                onClick={handlePrimary}
+                disabled={!predictionCorrect}
+              >
+                Reveal the field →
+              </button>
+              <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <LessonChoices
+            label="Field path prediction"
+            options={PREDICTIONS}
+            value={prediction}
+            onChange={setPrediction}
+            correctId="closed-loop"
+          />
+        </LessonLabPanel>
+      </LessonLab>
     );
   }
 
   return (
-    <main className={`learning-shell learning-lesson-shell follow-flux-shell is-${lessonPhase}-stage${placementPreviewVisible ? ' is-placement-preview' : ''}${quizOpen ? ' is-quiz-open' : ''}`}>
-      {(
-      <aside
+    <LessonLab className={`follow-flux-lab is-${lessonPhase}-stage`}>
+      <LessonLabPanel
         ref={inspectorRef}
-        className={`learning-step-rail follow-flux-status-panel${inspectorFlash ? ' is-flash' : ''}`}
-        aria-label="Solve evidence and lesson explanation"
+        side="inspect"
+        kicker="Inspect"
+        title={inspectorTitle}
+        summary={inspectorSummary}
+        label="Solve evidence and lesson explanation"
+        flash={inspectorFlash}
       >
-        <div className="learning-step-header follow-flux-inspector-header">
-          <p className="learning-kicker">Inspect</p>
-          <h1>{inspectorTitle}</h1>
-          <p>{inspectorSummary}</p>
-        </div>
-
         {solveView === 'pair' && pairAttractMetrics && pairRepelMetrics ? (
           <section className="follow-flux-status-comparison is-pair" aria-label="Opposite and like pole field comparison">
             <div className="follow-flux-comparison-metrics">
@@ -2345,18 +2318,16 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
             {activeMetrics ? <FluxGateReadout metrics={activeMetrics} /> : null}
           </div>
         </details>
-      </aside>
-      )}
+      </LessonLabPanel>
 
-      <section className={`learning-main-stage follow-flux-main is-${lessonPhase}-stage${quizOpen ? ' is-quiz-open' : ''}`}>
+      <LessonLabStage className={quizOpen ? 'is-tall' : ''}>
         {quizOpen ? (
-          <div className="follow-flux-quiz-stage">
-            <div className="follow-flux-viewport-label">Knowledge check · {QUIZ.length} questions</div>
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
             <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </div>
+          </LessonLabViewport>
         ) : !airSolve ? (
-          <div className="follow-flux-visual-stack">
-            <div className="follow-flux-geometry-preview">
+          <LessonLabCanvas>
+            <div className="follow-flux-geometry-preview lesson-lab-viewport">
                 <UnmeshedFieldDomain
                   magnet={magnetPlacement}
                   disabled={Boolean(busy)}
@@ -2366,10 +2337,10 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
                 />
             </div>
             {renderViewDock(true)}
-          </div>
+          </LessonLabCanvas>
         ) : solveView === 'pair' && !activePairSolve ? (
-          <div className="follow-flux-visual-stack">
-            <div className="follow-flux-geometry-preview">
+          <LessonLabCanvas>
+            <div className="follow-flux-geometry-preview lesson-lab-viewport">
                 <UnmeshedFieldDomain
                   magnet={magnetPlacement}
                   magnet2={magnet2Placement}
@@ -2380,10 +2351,10 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
                 />
             </div>
             {renderViewDock(true)}
-          </div>
+          </LessonLabCanvas>
         ) : solveView === 'steel' && !steelSolve ? (
-          <div className="follow-flux-visual-stack">
-            <div className="follow-flux-geometry-preview">
+          <LessonLabCanvas>
+            <div className="follow-flux-geometry-preview lesson-lab-viewport">
                 <UnmeshedFieldDomain
                   magnet={magnetPlacement}
                   steel={steelPlacement}
@@ -2394,71 +2365,72 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
                 />
             </div>
             {renderViewDock(true)}
-          </div>
+          </LessonLabCanvas>
         ) : activeData ? (
-          <div className="follow-flux-visual-stack">
-            {renderViewer(activeData)}
-          </div>
+          renderViewer(activeData)
         ) : (
           <div className="follow-flux-empty-stage"><div className="follow-flux-solve-icon" aria-hidden="true">B</div><h2>Ready to solve open air</h2><p>The first solve establishes the baseline. The second changes only the return path.</p></div>
         )}
-
-      </section>
+      </LessonLabStage>
 
       {quizOpen ? (
-      <aside className="learning-control-panel follow-flux-control-panel" aria-label="Knowledge check">
-        <section className="learning-control-section">
-          <p className="follow-flux-panel-kicker">Experiment · Check</p>
-          <h2>Knowledge check</h2>
-          <section className="follow-flux-lab-goal" aria-label="Current lesson goal">
-            <span>{currentStepNumber}/{lessonProgressSteps.length}</span>
-            <div>
-              <p>Step {currentStepNumber} of {lessonProgressSteps.length} · Goal</p>
-              <strong>{currentGoal.title}</strong>
-              <small>{currentGoal.detail}</small>
+      <LessonLabPanel
+        side="do"
+        kicker="Experiment · Check"
+        title="Knowledge check"
+        label="Knowledge check"
+        footer={(
+          <LessonNextStep hint={quizPassed ? 'Lesson complete. Continue when you are ready.' : `Answer all ${QUIZ.length} questions to complete Lesson 1.`}>
+            {quizPassed ? (
+              <a className="learning-primary-button" href="/tutorials/lesson-2">Next: Close the Loop</a>
+            ) : null}
+            <div className="lesson-lab-next-row">
+              <LessonLink onClick={() => { setQuizOpen(false); setSolveView('pair'); }}>← Review experiment</LessonLink>
+              <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
             </div>
-          </section>
-          <p className="follow-flux-quiz-note">Use the solved frames and the measurements on the right, not memorized vocabulary.</p>
-          {quizPassed ? (
-            <div className="follow-flux-completion-card">
-              <strong>Lesson 1 complete</strong>
-              <span>You can now distinguish local B from total flux and explain how return paths and pole orientation control useful air-gap flux.</span>
-            </div>
-          ) : null}
-        </section>
-        <footer className="follow-flux-next-step" aria-label="Next step">
-          <p>{quizPassed ? 'Lesson complete. Continue when you are ready.' : `Answer all ${QUIZ.length} questions to complete Lesson 1.`}</p>
-          {quizPassed ? (
-            <a className="learning-primary-button follow-flux-dock-primary" href="/tutorials/lesson-2">Next: Close the Loop</a>
-          ) : null}
-          <div className="follow-flux-next-step-row">
-            <button
-              type="button"
-              className="follow-flux-next-step-link"
-              onClick={() => {
-                setQuizOpen(false);
-                setSolveView('pair');
-              }}
-            >
-              ← Review experiment
-            </button>
-            <button type="button" className="follow-flux-next-step-link" onClick={onBackToCatalog}>All lessons</button>
+          </LessonNextStep>
+        )}
+      >
+        {goalCard}
+        <p className="lesson-lab-note">Use the solved frames and the measurements on the right, not memorized vocabulary.</p>
+        {quizPassed ? (
+          <div className="follow-flux-completion-card">
+            <strong>Lesson 1 complete</strong>
+            <span>You can now distinguish local B from total flux and explain how return paths and pole orientation control useful air-gap flux.</span>
           </div>
-        </footer>
-      </aside>
+        ) : null}
+      </LessonLabPanel>
       ) : (
-      <aside className="learning-control-panel follow-flux-control-panel" aria-label="Experiment setup">
-        <section className="learning-control-section">
-          <p className="follow-flux-panel-kicker">Experiment · {lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label}</p>
-          <h2>{lessonPhase === 'pair' ? 'Two-magnet lab' : 'Field lab'}</h2>
-          <section className="follow-flux-lab-goal" aria-label="Current lesson goal">
-            <span>{currentStepNumber}/{lessonProgressSteps.length}</span>
-            <div>
-              <p>Step {currentStepNumber} of {lessonProgressSteps.length} · Goal</p>
-              <strong>{currentGoal.title}</strong>
-              <small>{currentGoal.detail}</small>
-            </div>
-          </section>
+      <LessonLabPanel
+        side="do"
+        kicker={`Experiment · ${lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label ?? ''}`}
+        title={lessonPhase === 'pair' ? 'Two-magnet lab' : 'Field lab'}
+        label="Experiment setup"
+        footer={(
+          <LessonNextStep hint={stageInsight}>
+            {!lessonComplete ? (
+              <button
+                type="button"
+                className="learning-primary-button"
+                onClick={() => {
+                  if (dockNeedsControls) {
+                    quickCheckRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    quickCheckRef.current?.focus({ preventScroll: true });
+                  } else {
+                    handlePrimary();
+                  }
+                }}
+                disabled={dockNeedsControls ? false : primaryDisabled}
+              >
+                {primaryLabel}
+              </button>
+            ) : (
+              <a className="learning-primary-button" href="/tutorials/lesson-2">Next lesson</a>
+            )}
+          </LessonNextStep>
+        )}
+      >
+          {goalCard}
           {lessonPhase === 'pair' ? (
             <ol className="follow-flux-pair-sequence" aria-label="Two-magnet comparison steps">
               <li className={pairAttractSolve ? 'is-complete' : 'is-active'}>
@@ -2472,13 +2444,20 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
             </ol>
           ) : null}
           <>
-              <div className="follow-flux-view-toggle" role="group" aria-label="Solved fixture view">
-                <button type="button" className={solveView === 'air' ? 'is-active' : ''} onClick={() => { setSolveView('air'); setSelectedFixtureObject('magnet'); }} disabled={!airSolve}>Open air</button>
-                <button type="button" className={solveView === 'steel' ? 'is-active' : ''} onClick={() => { setSolveView('steel'); setSelectedFixtureObject('steel'); }} disabled={!airSolve}>Steel object</button>
-                {lessonPhase === 'pair' ? (
-                  <button type="button" className={solveView === 'pair' ? 'is-active' : ''} onClick={() => { setSolveView('pair'); setSelectedFixtureObject('magnet2'); }}>Two magnets</button>
-                ) : null}
-              </div>
+              <LessonSegmented
+                stretch
+                label="Solved fixture view"
+                value={solveView}
+                onChange={(view) => {
+                  setSolveView(view);
+                  setSelectedFixtureObject(view === 'air' ? 'magnet' : view === 'steel' ? 'steel' : 'magnet2');
+                }}
+                options={[
+                  { id: 'air' as SolveView, label: 'Open air', disabled: !airSolve },
+                  { id: 'steel' as SolveView, label: 'Steel object', disabled: !airSolve },
+                  ...(lessonPhase === 'pair' ? [{ id: 'pair' as SolveView, label: 'Two magnets' }] : []),
+                ]}
+              />
               {lessonPhase === 'solve' && steelSolve ? (
                 steelInsightCorrect ? (
                   <section className="follow-flux-insight-complete" aria-label="Steel comparison quick check complete">
@@ -2610,32 +2589,9 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
                 </section>
               ) : null}
           </>
-        </section>
-        {error ? <p className="learning-nav-error">{error}</p> : null}
-        <footer className="follow-flux-next-step" aria-label="Next step">
-          <p>{stageInsight}</p>
-          {!lessonComplete ? (
-            <button
-              type="button"
-              className="learning-primary-button follow-flux-dock-primary"
-              onClick={() => {
-                if (dockNeedsControls) {
-                  quickCheckRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-                  quickCheckRef.current?.focus({ preventScroll: true });
-                } else {
-                  handlePrimary();
-                }
-              }}
-              disabled={dockNeedsControls ? false : primaryDisabled}
-            >
-              {primaryLabel}
-            </button>
-          ) : (
-            <a className="learning-primary-button follow-flux-dock-primary" href="/tutorials/lesson-2">Next lesson</a>
-          )}
-        </footer>
-      </aside>
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
       )}
-    </main>
+    </LessonLab>
   );
 };

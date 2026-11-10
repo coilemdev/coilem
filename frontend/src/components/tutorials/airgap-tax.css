@@ -1380,3 +1380,39 @@
     padding: 22px 0 34px;
   }
 }
+
+/* ── Lesson 2 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. */
+.airgap-tax-lab .lesson-lab-panel-body > * {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.airgap-tax-lab .airgap-tax-viewer {
+  display: grid;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 0;
+}
+
+.airgap-tax-lab .airgap-tax-viewer .mesh-viewer-embedded-shell,
+.airgap-tax-lab .airgap-tax-viewer .mesh-viewer-container-embedded {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.airgap-tax-lab .airgap-tax-predict-visual {
+  display: grid;
+  width: min(820px, 100%);
+  min-height: 0;
+  place-items: center;
+}
+
+.airgap-tax-lab .airgap-tax-predict-visual svg {
+  width: 100%;
+  max-height: 60vh;
+}

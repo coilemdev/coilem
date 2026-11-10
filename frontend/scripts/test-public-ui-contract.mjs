@@ -960,6 +960,17 @@ assert.match(workspaceSource, /onDoubleClick=\{\(\) => setDockUserHeight\(null\)
 assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHeight;/);
 // The dock keeps one height across the view tabs: the tallest fit seen at the current width.
 assert.match(workspaceSource, /fits\.heights\[viewportMode\] = clampDockHeight\(/);
+// Tutorial lessons share one shell (components/tutorials/lab): three docked
+// cards and a canvas dock, as in the motor workspace. A migrated lesson has no
+// drawers of its own.
+for (const lessonFile of ['LearningLessonOneFollowFlux.tsx', 'LessonTwoAirgapTax.tsx']) {
+  const lessonSource = await readFile(path.join(frontendRoot, 'src/components/tutorials', lessonFile), 'utf8');
+  assert.match(lessonSource, /from '\.\/lab\/LessonLab'/, `${lessonFile} uses the shared lesson shell`);
+  assert.match(lessonSource, /<LessonLabPanel[\s\S]*?side="inspect"/, `${lessonFile} docks its inspect panel`);
+  assert.match(lessonSource, /<LessonLabPanel[\s\S]*?side="do"/, `${lessonFile} docks its experiment panel`);
+  assert.match(lessonSource, /<LessonDock\b/, `${lessonFile} keeps its canvas controls in the dock`);
+  assert.doesNotMatch(lessonSource, /labControlsOpen|solveInspectorOpen|drawer-close/, `${lessonFile} has no drawers`);
+}
 // Solve resumes its tab and mesh display for the same mesh and result, and the
 // field view starts from the layer choices it was left with.
 assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
