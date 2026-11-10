@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 78294,
-      "sha256": "f156a0f4114cf0c90e49708ce89051262badc951304be34e02d34e2f5ca5f263"
+      "bytes": 78379,
+      "sha256": "9a22080297b26f60cb7e95c3fdce1f8c97945fd2f8b086f63902b60b025f7080"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 293244,
-      "sha256": "e594ce903cac47069db92cb762091b5e0658d5cab92cd995670ac3d508e61fff"
+      "bytes": 293895,
+      "sha256": "2ce466b17d626231cbf5f24f0877ef5ecf2e3b34fba6a03cd19ae57b61649f9c"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -17715,13 +17715,13 @@
     },
     {
       "path": "backend/sector_tiling.py",
-      "bytes": 14515,
-      "sha256": "177d462130cb7203d805f047a1f42ddba0d8d1ecd00b32386fe4e39107160df7"
+      "bytes": 15802,
+      "sha256": "485ecda2311b6fc67d69c1c60d83103a405f61cebe6975ae369c38aafc602e32"
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 24326,
-      "sha256": "3441cd144188d542716fd3c1b720f3b6cbb8441f852ef52709ca8aaa3ba4aaaa"
+      "bytes": 25487,
+      "sha256": "718ab3cbea7d93f1ace82c87d9057abccbbd17c9dd367aaacd77dc37c3d1c3ad"
     }
   ],
   "public_patches": [
