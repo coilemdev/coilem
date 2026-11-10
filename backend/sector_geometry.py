@@ -192,18 +192,20 @@ def _loop_vertices(loop: GeometryIRLoop) -> list[tuple[float, float]]:
 
 
 def _region_signature(region: GeometryIRRegion) -> tuple[float, float, int] | None:
-    """Centroid of the outline's vertices and their count; None for a region centred on the axis."""
+    """Centroid of the outline's vertices and their count; None for a region that surrounds the axis.
+
+    A ring or disc around the axis (yoke, air gap, rotor core, shaft) maps onto
+    itself; its parts that could break the repeat (slots, pockets, magnets) are
+    regions of their own and are checked there.
+    """
 
     if not region.loops:
         return None
     vertices = _loop_vertices(region.loops[0])
-    if not vertices:
+    if len(vertices) < 3 or _point_in_polygon((0.0, 0.0), vertices):
         return None
     cx = sum(x for x, _ in vertices) / len(vertices)
     cy = sum(y for _, y in vertices) / len(vertices)
-    scale = max(math.hypot(x, y) for x, y in vertices)
-    if math.hypot(cx, cy) < 1.0e-3 * max(scale, 1.0e-9):
-        return None
     return cx, cy, len(vertices)
 
 
@@ -623,21 +625,38 @@ def _clip_region_loops(
 # --------------------------------------------------------------------------
 
 
-def _central_radius(loop: GeometryIRLoop) -> float | None:
-    radii: list[float] = []
-    for segment in loop.segments:
-        if (
-            segment.kind != "arc"
-            or segment.center is None
-            or segment.radius_mm is None
-            or abs(segment.center.x_mm) > 1.0e-9
-            or abs(segment.center.y_mm) > 1.0e-9
-        ):
-            return None
-        radii.append(float(segment.radius_mm))
-    if not radii or max(radii) - min(radii) > 1.0e-9:
-        return None
-    return radii[0]
+def _loop_radial_extent(loop: GeometryIRLoop) -> tuple[float, float]:
+    """Smallest and largest distance from the motor axis to a loop."""
+
+    low, high = math.inf, 0.0
+    for raw in loop.segments:
+        segment = _normalized(raw)
+        sx, sy = _xy(segment.start)
+        ex, ey = _xy(segment.end)
+        candidates = [math.hypot(sx, sy), math.hypot(ex, ey)]
+        if segment.kind == "line":
+            dx, dy = ex - sx, ey - sy
+            length_sq = dx * dx + dy * dy
+            if length_sq > 0.0:
+                t = -(sx * dx + sy * dy) / length_sq
+                if 0.0 < t < 1.0:
+                    candidates.append(math.hypot(sx + t * dx, sy + t * dy))
+        else:
+            cx, cy = _xy(segment.center)  # type: ignore[arg-type]
+            radius = float(segment.radius_mm)  # type: ignore[arg-type]
+            offset = math.hypot(cx, cy)
+            if offset > 1.0e-12:
+                # The nearest and farthest points of the full circle lie on the
+                # line through the axis and the arc's centre.
+                sweep = _arc_sweep_rad(segment)
+                start_angle = math.atan2(sy - cy, sx - cx)
+                toward = math.atan2(cy, cx)
+                for angle in (toward, toward + math.pi):
+                    delta = (angle - start_angle) % _TWO_PI if sweep > 0.0 else (start_angle - angle) % _TWO_PI
+                    if delta < abs(sweep):
+                        candidates.append(math.hypot(cx + radius * math.cos(angle), cy + radius * math.sin(angle)))
+        low, high = min(low, *candidates), max(high, *candidates)
+    return low, high
 
 
 def _circle_with_breakpoints(loop_id: str, radius_mm: float, angles: list[float], tag: str) -> GeometryIRLoop:
@@ -715,7 +734,9 @@ def _snap_stator_cut(ir: GeometryIR, guess: float) -> float:
         if best is None or abs(delta) < abs(best):
             best = delta
     if best is None:
-        raise SectorUnsupportedError("no stator teeth to cut through")
+        # A stator drawn as one lamination has no tooth regions; the middle
+        # between two slots, from the slot grid, is the tooth centre.
+        return guess
     if abs(best) > 0.25 * slot_pitch:
         raise SectorUnsupportedError("the stator teeth are not where the slot grid puts them")
     return guess + best
@@ -945,10 +966,12 @@ def build_sector_ir(
     airgap = next((region for region in ir.regions if region.kind == "Airgap"), None)
     if airgap is None or len(airgap.loops) != 2:
         raise SectorUnsupportedError("the air gap is not a plain ring")
-    gap_outer_r = _central_radius(airgap.loops[0])
-    gap_inner_r = _central_radius(airgap.loops[1])
-    if gap_outer_r is None or gap_inner_r is None or gap_outer_r <= gap_inner_r:
-        raise SectorUnsupportedError("the air gap is not bounded by two centred circles")
+    # The air gap's faces need not be circles (slot openings, tooth tips,
+    # magnet faces); the wedges meet on a circle that clears both of them.
+    gap_outer_r = _loop_radial_extent(airgap.loops[0])[0]
+    gap_inner_r = _loop_radial_extent(airgap.loops[1])[1]
+    if gap_outer_r - gap_inner_r <= 1.0e-6:
+        raise SectorUnsupportedError("no circle fits inside the air gap")
     mid_r = 0.5 * (gap_inner_r + gap_outer_r)
 
     stator_start = _snap_stator_cut(ir, _stator_cut_angle(ir))

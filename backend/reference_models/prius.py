@@ -113,6 +113,12 @@ def extract_winding_report(report, config, artifact):
     densities = np.asarray(artifact["element_current_density_a_per_m2"], dtype=float)
     flux = np.zeros(3)
     flux_rows, current_rows = [], []
+    # A sector mesh holds one of `repeats` identical sets of winding regions.
+    # Each set links the same flux (its neighbour's potential and winding sense
+    # both change sign when the sector is anti-periodic), so the phase linkage
+    # is the modelled set's times `repeats`.
+    sector = (artifact["mesh"].get("info") or {}).get("sector")
+    repeats = int(sector["repeats"]) if isinstance(sector, dict) else 1
     for region in artifact["physics_contract"]["regions"]:
         if region["kind"] != "SlotWinding":
             continue
@@ -124,7 +130,7 @@ def extract_winding_report(report, config, artifact):
         average = float(np.dot(element_az[selected], areas[selected]) / area_m2)
         sign = 1 if w["direction"] == "in" else -1
         turns = config.winding.turns_per_coil
-        contribution = sign * turns * config.stator.stack_length_mm * .001 * average
+        contribution = repeats * sign * turns * config.stator.stack_length_mm * .001 * average
         flux["ABC".index(w["phase"])] += contribution
         center = np.average(centroids[selected], weights=areas[selected], axis=0)
         common = {"slot_index_modeled": w["slot_index"], "slot_index_global": w["slot_index"],
@@ -137,8 +143,8 @@ def extract_winding_report(report, config, artifact):
         current_rows.append({**common, "effective_current_density_a_per_m2": ampere_turns / area_m2,
                              "integrated_amp_turns_a": ampere_turns, "slot_current_a": ampere_turns / turns,
                              "phase_current_a": ampere_turns / (sign * turns)})
-    if len(flux_rows) != 48:
-        raise ValueError("Reference linkage extraction requires all 48 published winding regions")
+    if len(flux_rows) * repeats != 48:
+        raise ValueError("Reference linkage extraction requires all 48 published winding regions, or one whole sector of them")
     results = report["results"]
     report["native_generic_winding_extraction"] = {
         key: results.get(key) for key in ("flux_linkage_a_wb", "flux_linkage_b_wb", "flux_linkage_c_wb",
