@@ -6415,8 +6415,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 7203,
-      "sha256": "cb49a7989a9f77b1db9ef1ead5af6a018b70a37f4193469bf1d6c5010c7d344b"
+      "bytes": 7255,
+      "sha256": "373babed3b17cc5f070cf499fd9cbf9ee36f8fedc9d27598bb88aad9488b7e5f"
     },
     {
       "path": "frontend/package-lock.json",
@@ -17720,8 +17720,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 27984,
-      "sha256": "c49b2f092149fe7bbc97ba3672c21e43d150b088a06419f0be4120dc83900c34"
+      "bytes": 27920,
+      "sha256": "00cd07f607d870d9ff5660de832e53fcc51c7aa7ec621514c9d7fe0b80776669"
     }
   ],
   "public_patches": [
