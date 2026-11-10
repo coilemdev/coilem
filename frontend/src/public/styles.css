@@ -5019,3 +5019,16 @@ button.performance-tag { cursor: help; }
 .public-motor-viewport .public-canvas-legend { font-family: var(--font-ui); letter-spacing: 0; }
 .public-dock-reset-view { font-weight: 600; font-size: 12px; }
 .public-3d-part-toggle { font-size: 11px; font-weight: 500; }
+/* Control groups are spaced by the bar's own gap, not a margin on each
+   following group: a margin also indented a group that wrapped to the next
+   line, so its label sat off the label above it. Group labels share one
+   width, so the first control on every line starts at the same place. */
+.public-motor-viewport .viewport-bottom-bar { column-gap: 18px; }
+.public-motor-viewport .viewport-bottom-bar .vc-group + .vc-group,
+.public-motor-viewport .viewport-bottom-bar .vc-group + .public-winding-key,
+.public-motor-viewport .viewport-bottom-bar .public-winding-key + .vc-group { margin-left: 0; }
+.public-motor-viewport .viewport-bottom-bar .vc-group > .public-dock-group-label:first-child { display: inline-block; min-width: 58px; }
+/* The break is a zero-height line of its own, which would add a second row
+   gap; the controls after it give that gap back. */
+.public-motor-viewport .viewport-bottom-bar .public-dock-row-break { flex: 0 0 100%; height: 0; }
+.public-motor-viewport .viewport-bottom-bar .public-dock-row-break ~ * { margin-top: -8px; }

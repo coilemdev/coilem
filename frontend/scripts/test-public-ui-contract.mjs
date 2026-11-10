@@ -954,6 +954,9 @@ assert.match(workspaceSource, /className="viewport-dock-resize"\s*role="separato
 assert.match(workspaceSource, /setDockUserHeight\(clampDockHeight\(drag\.startHeight \+ drag\.startY - event\.clientY\)\)/);
 assert.match(workspaceSource, /onDoubleClick=\{\(\) => setDockUserHeight\(null\)\}/);
 assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHeight;/);
+// The dock keeps one height across the view tabs: the tallest fit seen at the current width.
+assert.match(workspaceSource, /fits\.heights\[viewportMode\] = clampDockHeight\(/);
+assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve
 // page's Geometry / Mesh / Field solution, or Design's motor views. Its right
 // end is the same everywhere: readout, zoom, fullscreen.

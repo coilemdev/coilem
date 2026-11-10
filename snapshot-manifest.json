@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 170963,
-      "sha256": "7b2278e41599ff5238469ab3b42576f993f44bd7775d3006036538d85d2c4418"
+      "bytes": 171246,
+      "sha256": "bcf0add5bbadc08bb119f3902566c415997887e4126f2e1e00063016d54a526a"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 245474,
-      "sha256": "d03fe13160a493dc4dcaf16f837fef93bc50392ad36386c4fd161bc87471593f"
+      "bytes": 246508,
+      "sha256": "0035a5f05e0bbee5b3db5637cd013f6b33229f3b3609a9f27d4d8dd69c299f9a"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7500,8 +7500,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 300694,
-      "sha256": "a2239e73984f374579bab40bf016d2cb39cba4a67d5833bb6ba064ed083c9db4"
+      "bytes": 301752,
+      "sha256": "d0e84a60190a5844286f1029a34b951c045ff2c5a8fec2137c7c0bf2629d9c0e"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

@@ -1765,6 +1765,7 @@ function ViewportChrome({
   // The section fits its controls until it is dragged; double-click returns to fitting.
   const [dockFitHeight, setDockFitHeight] = useState(dockStrip || mode === 'geometry' ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
   const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
+  const dockFitByViewRef = useRef<{ width: number; mode: string; heights: Record<string, number> }>({ width: 0, mode: '', heights: {} });
   const dockHeight = dockUserHeight ?? dockFitHeight;
   const [dockResizing, setDockResizing] = useState(false);
   const dockDragRef = useRef<{ startY: number; startHeight: number } | null>(null);
@@ -1827,7 +1828,20 @@ function ViewportChrome({
         const rect = item.getBoundingClientRect();
         return rect.height > 0 ? Math.max(bottom, rect.bottom - barTop + bar.scrollTop) : bottom;
       }, 0);
-      if (contentBottom > 0) setDockFitHeight(clampDockHeight(contentBottom + parseFloat(style.paddingBottom)));
+      if (contentBottom <= 0) return;
+      // One height for every view tab: the section is as tall as the tallest
+      // set of controls seen at this width, so switching 2D / 3D / Materials /
+      // Layout swaps the controls without moving the canvas edge. A new width
+      // rewraps the controls and Solve has its own tabs, so either starts over.
+      const fits = dockFitByViewRef.current;
+      const width = Math.round(bar.clientWidth);
+      if (fits.width !== width || fits.mode !== mode) {
+        fits.width = width;
+        fits.mode = mode;
+        fits.heights = {};
+      }
+      fits.heights[viewportMode] = clampDockHeight(contentBottom + parseFloat(style.paddingBottom));
+      setDockFitHeight(Math.max(...Object.values(fits.heights)));
     };
     const observer = new ResizeObserver(measure);
     observer.observe(bar);
@@ -2384,9 +2398,12 @@ function ViewportChrome({
           )}
           {/* The rotor preview uses the field playback's transport: the same
               play button and the same speed field. */}
+          {/* Spin always starts its own line, so it sits in the same place on
+              the 2D and 3D tabs and its label lines up under the one above. */}
+          {showPlayback && <span className="public-dock-row-break" aria-hidden="true" />}
           {showPlayback && (
             <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
-              <span className="public-dock-group-label" aria-hidden="true">Preview</span>
+              <span className="public-dock-group-label" aria-hidden="true">Spin</span>
               <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
               <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
               <RpmField
