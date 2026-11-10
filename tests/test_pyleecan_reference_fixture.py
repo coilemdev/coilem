@@ -297,18 +297,30 @@ def test_new_cogging_source_keeps_historical_motor_and_prius_evidence_unqualifie
     from tools.release import qualification as gate
 
     assert "backend/cogging.py" in physics_sources(ROOT)
-    historical = json.loads((ROOT / "benchmarks/records-historical/v050/windows-x86_64.json").read_text())
-    original_data = gate._data
+    original_data, original_constant = gate._data, gate._constant
 
-    def historical_primary(root, name):
-        if name == "benchmarks/records/windows-x86_64.json":
-            return {**historical, "prius_report": "benchmarks/candidate-qualification-20261103/prius/app-results.json"}
+    def historical_data(root, name):
+        if name.startswith("benchmarks/records/"):
+            key = name.rsplit("/", 1)[-1]
+            record = original_data(root, f"benchmarks/records-historical/v050/{key}")
+            if key == "windows-x86_64.json":
+                record["prius_report"] = "benchmarks/candidate-qualification-20261103/prius/app-results.json"
+            return record
         return original_data(root, name)
 
-    # Select the immutable old cohort explicitly. A later accepted live record
-    # must not make this historical-rejection test fail or need restamping.
-    monkeypatch.setattr(gate, "_data", historical_primary)
-    errors = gate.check(ROOT)
+    def historical_registry(path, name):
+        if path.name == "resources.py":
+            if name == "BENCHMARK_SUITE_FILE":
+                return "benchmarks/abcd-v1.6/benchmark_spec.json"
+            if name == "BENCHMARK_REFERENCE_BUNDLE_DIR":
+                return "benchmarks/reference-baselines/protocol16-reviewed-20261103"
+        return original_constant(path, name)
+
+    # Replay the old records under the registry that measured them. Their
+    # missing physics hashes must still fail even after the live suite changes.
+    monkeypatch.setattr(gate, "_data", historical_data)
+    monkeypatch.setattr(gate, "_constant", historical_registry)
+    errors = gate.check(ROOT, protocol="1.6.0")
     assert "qualification physics mismatch: backend/cogging.py" in errors
     assert "Prius measured-source mismatch: backend/cogging.py" in errors
 
