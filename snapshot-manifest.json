@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 15468,
-      "sha256": "3c9fe4ac5cf7ab13d7b0a3fbef0eb5db0950d0b25dade6dbce91866d4253537e"
+      "bytes": 15998,
+      "sha256": "320117cf170b7fe6bd7beb1b6bb00e1985630958fefee034ba451eeb8ac512fc"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -12190,13 +12190,13 @@
     },
     {
       "path": "tests/test_benchmark_repair.py",
-      "bytes": 5361,
-      "sha256": "5681ff1dfaf0a5a2e9e11de5cdba85b0e73a4395faf1c71f58e2b05dfa235389"
+      "bytes": 8319,
+      "sha256": "8ca8233e4463ff4c0b2d19bd4bca44d3f95ab52f8b635a90513e4ac0a4ebe016"
     },
     {
       "path": "tools/repair_benchmark_shard.py",
-      "bytes": 8765,
-      "sha256": "0b5579d1270a5785728897ce31870ef0481c38e0ef8a67f1cb08d6c9642d40d4"
+      "bytes": 12333,
+      "sha256": "0a395a0dacdb2337699d2f7d080ca6a35c7326f1b3f412aa0e188686b5d40fe3"
     },
     {
       "path": "frontend/playwright.performance-harness.config.ts",

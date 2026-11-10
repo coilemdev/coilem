@@ -212,10 +212,19 @@ jobs:
           path: automation
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         if: ${{ inputs.source_run }}
+        id: prior_compact
+        continue-on-error: true
         with:
           run-id: ${{ inputs.source_run }}
           github-token: ${{ github.token }}
           name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
+          path: ${{ runner.temp }}/collection/prior
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: ${{ inputs.source_run && steps.prior_compact.outcome == 'failure' }}
+        with:
+          run-id: ${{ inputs.source_run }}
+          github-token: ${{ github.token }}
+          name: benchmark-raw-${{ matrix.runner }}-${{ matrix.id }}
           path: ${{ runner.temp }}/collection/prior
       - name: Reuse verified completed cases and collect only missing fields
         if: ${{ inputs.source_run }}
@@ -227,21 +236,23 @@ jobs:
           --candidate-root "$GITHUB_WORKSPACE/candidate" --shard "$SHARD"
           --directory "$RUNNER_TEMP/collection"
       - name: Keep compact join inputs separate from raw runtimes
-        if: success()
+        if: always()
         run: |
           python - <<'PYTHON'
           import os, pathlib, shutil
           root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'collection'
-          shutil.copytree(root / 'out', root / 'compact',
-                          ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock'))
+          if (root / 'out').is_dir():
+              shutil.copytree(root / 'out', root / 'compact',
+                              ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock'))
           PYTHON
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: success()
+        if: always()
         with:
           name: benchmark-shard-${{ matrix.runner }}-${{ matrix.id }}
           path: ${{ runner.temp }}/collection/compact
           compression-level: 0
           retention-days: 90
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
         with:
