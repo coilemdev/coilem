@@ -1,0 +1,45 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v1",
+  "protocol_version": "1.7.0",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "reference_commit": "341cd09342d58323689491ca060a913a34474ed1",
+  "public_candidate_commit": "6bc935d0beeaad1390134670a9813a7e04c3b22c",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "validation_status": "REVIEWED_FOR_REGISTERED_PARITY",
+  "suite_sha256": "e2fca772f2ab9310b757fd910b643a6aeed8de5478d20c46004a7b0d54329d60",
+  "records": {
+    "spm_8p24s_distributed_femm_validation__cogging": {
+      "file": "spm_8p24s_distributed_femm_validation__cogging.json",
+      "sha256": "c2a9077257c74be1f4bcf4c7ec8dfa2ab843b7254e92f40fd6e8b1ae00cac54f",
+      "input_sha256": "691e3d6dac30f855614acf981bb81e59b4832ca24872716fe2f8e671bb09ef87"
+    },
+    "spm_8p48s_distributed_femm_validation__cogging": {
+      "file": "spm_8p48s_distributed_femm_validation__cogging.json",
+      "sha256": "753a46e1d8a9d8d0211a9181560dd4d3d3be12d2220753f11689b4a8818b268d",
+      "input_sha256": "0e3e1ac40c748c83d1c996daf90ab6ae0ea4fdedb832331faeb1d35f5aa72f23"
+    },
+    "spm_12p36s_distributed_femm_validation__cogging": {
+      "file": "spm_12p36s_distributed_femm_validation__cogging.json",
+      "sha256": "6839b99eaf43963edf019cd11112f3488b54e2ddac87bffd5faf1e442711b30e",
+      "input_sha256": "a2c3bfb257ac11398802ae8e347846e7f816ab78284411066784a7540c89a9e7"
+    }
+  },
+  "review": {
+    "file": "review.json",
+    "sha256": "3d1f23f5bccc0fa50a8ece7d8316393e9525dae32b3a9c3b979fb5e6d382316e"
+  }
+}

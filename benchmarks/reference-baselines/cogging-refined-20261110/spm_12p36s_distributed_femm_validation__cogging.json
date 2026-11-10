@@ -1,0 +1,328 @@
+{
+  "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+  "phase": "E",
+  "input_sha256": "a2c3bfb257ac11398802ae8e347846e7f816ab78284411066784a7540c89a9e7",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "reference_commit": "341cd09342d58323689491ca060a913a34474ed1",
+  "public_candidate_commit": "6bc935d0beeaad1390134670a9813a7e04c3b22c",
+  "result": {
+    "summary": {
+      "cogging_torque_Nm": 24.28997440238068
+    },
+    "cogging_torque_waveform": {
+      "electrical_angle_deg": [
+        0.0,
+        2.5,
+        5.0,
+        7.5,
+        10.0,
+        12.5,
+        15.0,
+        17.5,
+        20.0,
+        22.5,
+        25.0,
+        27.5,
+        30.0,
+        32.5,
+        35.0,
+        37.5,
+        40.0,
+        42.5,
+        45.0,
+        47.5,
+        50.0,
+        52.5,
+        55.0,
+        57.5,
+        60.0
+      ],
+      "mechanical_angle_deg": [
+        0.0,
+        0.4166666666666667,
+        0.8333333333333334,
+        1.25,
+        1.6666666666666667,
+        2.0833333333333335,
+        2.5,
+        2.9166666666666665,
+        3.3333333333333335,
+        3.75,
+        4.166666666666667,
+        4.583333333333333,
+        5.0,
+        5.416666666666667,
+        5.833333333333333,
+        6.25,
+        6.666666666666667,
+        7.083333333333333,
+        7.5,
+        7.916666666666667,
+        8.333333333333334,
+        8.75,
+        9.166666666666666,
+        9.583333333333334,
+        10.0
+      ],
+      "torque_Nm": [
+        -0.01131463666624363,
+        -7.932413653797192,
+        -12.15545120104661,
+        -11.32399845464559,
+        -8.042744430317068,
+        -5.322773317888214,
+        -3.482954604246106,
+        -2.298315316809714,
+        -1.514730431146778,
+        -0.9519068036998807,
+        -0.56980897201875,
+        -0.2550772641511419,
+        -0.025128695139281,
+        0.2979213269118445,
+        0.5898739474353021,
+        0.970087046769272,
+        1.509625191557593,
+        2.325121551172016,
+        3.492140731893108,
+        5.345730439158099,
+        8.128234469909899,
+        11.28681536528833,
+        12.13452320133407,
+        7.912018858011846,
+        -0.02667411424375461
+      ]
+    },
+    "solve_metadata": {
+      "femm_version": "4.2",
+      "torque_method": "weighted_stress_tensor",
+      "precision": 1e-08,
+      "min_angle_deg": 30,
+      "airgap_mesh_size_mm": 0.125,
+      "mesh_element_count": [
+        310828,
+        308468,
+        307430,
+        307226,
+        307992,
+        310850,
+        309242,
+        308898,
+        308098,
+        308536,
+        307428,
+        309744,
+        307572,
+        310022,
+        309908,
+        309304,
+        310312,
+        307820,
+        307174,
+        309360,
+        311590,
+        307044,
+        307022,
+        309692,
+        310090
+      ],
+      "normalization": "theta_FEMM=-theta_public; torque_public=-torque_FEMM"
+    }
+  },
+  "collection_result_sha256": "442a74fd6b28b916f798a6f6fe748637c606aabb5a3ba32be1704060c75a8576",
+  "collection_identity_sha256": "4287408f941a6cf9bb90793170e1c5a00fbd196320594b7915103e31c60a8752",
+  "self_checks": {
+    "reference_cogging_period": "PASS",
+    "reference_cogging_mean": "PASS"
+  },
+  "metrics": {
+    "peak_to_peak_Nm": 24.28997440238068,
+    "peak_Nm": 12.15545120104661,
+    "first_harmonic_Nm": 6.057147939921222,
+    "mean_Nm": 0.00439476449453428,
+    "endpoint_mismatch_Nm": 0.01535947757751098
+  },
+  "raw_positions": [
+    {
+      "index": 0,
+      "electrical_angle_deg": 0.0,
+      "model_sha256": "59d4bf6b55affb5ee00cc3c7493eb00b94a07b5e1e6fe78118befc9342e8417a",
+      "answer_sha256": "4981f5740d784e379cc59ea65a353cbebb601f5b65135df98491cabf6322d92e",
+      "point_sha256": "d076910649d0904f53e0cc771991cd712960af768917c166f3900ae8a8ef95cc"
+    },
+    {
+      "index": 1,
+      "electrical_angle_deg": 2.5,
+      "model_sha256": "8b00b0db85bf9ad435c9b548d640a2b457dac1c59ae5c5c35e3bb06e7e9bfc9e",
+      "answer_sha256": "2f88ab85605e33316c19d1585ea7c01090ebcf2974f8dc5a9dc3c0754edda853",
+      "point_sha256": "6fa462ec526dfa9a37da666d4727627660e2fcd4685c6b0b10831f1195882c65"
+    },
+    {
+      "index": 2,
+      "electrical_angle_deg": 5.0,
+      "model_sha256": "47e79bc9f155f8966f89c3bf640479e0d7690f2794457b0a890e77604565f96a",
+      "answer_sha256": "0a61756bc108b3ef58848fb0308040e87773f06174d02f1028ddcd567dcd459f",
+      "point_sha256": "9b83d4578471d9ee6b0c1e30035e1ca0803427ad32c95f5726c44322bce9e84a"
+    },
+    {
+      "index": 3,
+      "electrical_angle_deg": 7.5,
+      "model_sha256": "99196977ebf02f2fcf2382852da6e23ffca20e816f07209cfd788e7e82ec9eb0",
+      "answer_sha256": "ed5d55ef95fd3d48ad231a9c3da5f26f5c85fee6f091641401ed9e7959cadbee",
+      "point_sha256": "a214b71715d5714b46f0e22682e48d743fb649a9f9f116a91feaffd6757a8d77"
+    },
+    {
+      "index": 4,
+      "electrical_angle_deg": 10.0,
+      "model_sha256": "fe0862ff32f9dd91d0806bc90700cabeb02914c2fe16ce90ae909c98e9c8232c",
+      "answer_sha256": "154eb4fdc30d2ec1ffa898e2fcd46f641cd8c5bfce1f3690f51305952790bd97",
+      "point_sha256": "032f6c69596dd96e31bfb57f8d6245ccd2fe4bc608d0df4971dfbb2bfd8e0a8c"
+    },
+    {
+      "index": 5,
+      "electrical_angle_deg": 12.5,
+      "model_sha256": "5fd9fef660933e293a2377c27ff79d943760f55ea489d351369b191a6ee11e91",
+      "answer_sha256": "ca9b1cd3c4b1f899a4d1dfd4896b5bc4dfccda48b16f31510a8c97857c36fb0f",
+      "point_sha256": "2a0847449f56c7614ceaa7edaa995a7c531fce707e4fbb36dc08969897004705"
+    },
+    {
+      "index": 6,
+      "electrical_angle_deg": 15.0,
+      "model_sha256": "b71964f2471dc95ec284ef671cd431b24d0aee25793b7f562cf24bfde99559b3",
+      "answer_sha256": "fc3dd8e653f159766bb9a14b983791596af6d118f48ae7472f1502ec72c26b68",
+      "point_sha256": "03ee578cce2b110392adc6101897b904bb5f71816d7671787e33dc0042016cca"
+    },
+    {
+      "index": 7,
+      "electrical_angle_deg": 17.5,
+      "model_sha256": "9186bb7e08c6132ed7b6138a80a578730e2cadba54948d9a4775cca44d725dc9",
+      "answer_sha256": "fe1e1af5a48c5936b98c616151b0057d038aafec03f523cd70dbc53593be9174",
+      "point_sha256": "514f76936edd5f5f9455f2e0bd77015b137b09f34c3f4e780b864626a84b8506"
+    },
+    {
+      "index": 8,
+      "electrical_angle_deg": 20.0,
+      "model_sha256": "12e2875be2ae11aa7e23aae961006f215422b98284d9e9efda12d4ec802d19c5",
+      "answer_sha256": "ddbc41f97829badaf57ced8cff652e81eb0c9e39d694af9dc103f1e591c7f5f6",
+      "point_sha256": "bdcb814159126627eee28d339458deceafbfc8ead80eba2329768abfe1bd66f7"
+    },
+    {
+      "index": 9,
+      "electrical_angle_deg": 22.5,
+      "model_sha256": "19b487f3d772dab2f7b99645c208b926c4b3a09855d4a27473c0fdb89db15526",
+      "answer_sha256": "83ec264c5cb025c60caf7c3a6e7940f6e632d303aa2e936fdaa4f9d8fb2c2650",
+      "point_sha256": "93ad23d32ce4a51899d6412f316760ac1d4a8e721eab9e1e4e2aab478597b778"
+    },
+    {
+      "index": 10,
+      "electrical_angle_deg": 25.0,
+      "model_sha256": "eea555219886d1c95911e6151c35e3f9b5444c2dab30aaf91ffe60a9b801f292",
+      "answer_sha256": "903e0e1ccb51483410e20e5ab9037e0326dc871c5041588bf8769c2a81b33213",
+      "point_sha256": "97c8239037fce4433c7bff20d69c6fc545b6f4b71025569b16028fcf0fe8df2b"
+    },
+    {
+      "index": 11,
+      "electrical_angle_deg": 27.5,
+      "model_sha256": "9d0985a9383e443c91dc3b066f6476e802eedc99d0eb946c1755218dc7e82985",
+      "answer_sha256": "36a09019b46c02d97c0ea23b151d042b9f70c4af9c9b446f3321375ddc2aabba",
+      "point_sha256": "dc67661bb8a42a3b93f0b552b8d531519ba5b2bbfe27df74a2e3af6a5aa544bf"
+    },
+    {
+      "index": 12,
+      "electrical_angle_deg": 30.0,
+      "model_sha256": "1a241fc665372eb563244f6dc6e483c85424f38c84321435dd904d9953fb3c5c",
+      "answer_sha256": "c71e34cf30c5f458fa67340c1f56188e06dd50275dd999baa383e601e31e2a25",
+      "point_sha256": "3801222a1ea90e2a0b77a1c3d1adc0491f1e5f1ef8978356d0049050f74f4047"
+    },
+    {
+      "index": 13,
+      "electrical_angle_deg": 32.5,
+      "model_sha256": "3e77111a7d513a3fc31952f0648e75d301bef14e32e04840240d5fd70a7e2ea6",
+      "answer_sha256": "5f119ab1df02c6b7a3108230d8e8c379ee4007e78d54270590481fee1672276e",
+      "point_sha256": "cad1a0598417e91143022a4305df16d6ab8f7a17bbdd437da3125ff541e7e704"
+    },
+    {
+      "index": 14,
+      "electrical_angle_deg": 35.0,
+      "model_sha256": "584d82ca35d42e7f529584f7ce0ad541aa9f23fec37f7abe3acc51304166be3c",
+      "answer_sha256": "662aec676d8c2e0d85863923631dba7e80f0c889ed17dad240a8cebc8419d0eb",
+      "point_sha256": "67dac50bb009e4ff4c0775487ef14ec512e3e3d76608b72edd7eb6f09f30ca98"
+    },
+    {
+      "index": 15,
+      "electrical_angle_deg": 37.5,
+      "model_sha256": "1c26fb97ae931ef2869646f4fd832251626974a3b40983aa4e7d0b06a081c79c",
+      "answer_sha256": "81fd77856601d82da7c4d6115f12b07d3ffc5230b8f11aa16f8a7de2c4f0a1ef",
+      "point_sha256": "7085c7b9f758218314251df257154cc3ddb6155acccf03cc405f6cc336fe3849"
+    },
+    {
+      "index": 16,
+      "electrical_angle_deg": 40.0,
+      "model_sha256": "2a3a1b29f233c09496eeb0662fe8eea4682ecb306c286f923be1bb94b507b8a5",
+      "answer_sha256": "4778ae42bd726d8aa9ea407d2b76b4c1f4c29e7774c64cb96074f669f47ae5fa",
+      "point_sha256": "369e85b6bdb6d18c9e94148fc6740b0a54ebc5d7f01efd163bbc21a1bdd339f7"
+    },
+    {
+      "index": 17,
+      "electrical_angle_deg": 42.5,
+      "model_sha256": "7a6d0620c5f610f903c8e9ed5ff1f1a4ffd7f417ede5af5849ac6bb0ffbb3a1d",
+      "answer_sha256": "c8119cc1742267701393dafec60f2510128ad12f567760c491f850cbf13014ea",
+      "point_sha256": "cdcf2402196bc766793f55fa188b7e27e62a8615e81576c98df28155a355f09d"
+    },
+    {
+      "index": 18,
+      "electrical_angle_deg": 45.0,
+      "model_sha256": "f592e7141996679c024bae8b6c4eee406c7c8744d95aa49d8a9ac727ac6a480e",
+      "answer_sha256": "e02e9864ffdf7070ce1acc25a2af32be34f0d02cad05e66f6ab5f84f245d5a5d",
+      "point_sha256": "4b886cc7587faa9929a7c31364e9afabac513de59ea0db46f0a82acb71a245b3"
+    },
+    {
+      "index": 19,
+      "electrical_angle_deg": 47.5,
+      "model_sha256": "c7e1a20eb28377ebbf37c0aa83c338f9f318b0a2fa12f6930adf2ba897b27fae",
+      "answer_sha256": "db91a42bbdeb60993116732c511a7bd08980d495399cb43ad6f2cc8850693776",
+      "point_sha256": "bd226e7e4d0d6de81b15823a3cf987de5e4ad8ada363093cd6e78a4820f898e7"
+    },
+    {
+      "index": 20,
+      "electrical_angle_deg": 50.0,
+      "model_sha256": "30c859e765dc187d511d46e7899111b8ac9346b828b32c3135a38205c29b06ba",
+      "answer_sha256": "50ca6b169738c9da2a5dc543457c9548fec1002cce9f08fc78505bdeafabecfb",
+      "point_sha256": "d0ae502e5f17ce0ec9166daa75662fc3572e65b81dd3e182c4d74c0995a39d9d"
+    },
+    {
+      "index": 21,
+      "electrical_angle_deg": 52.5,
+      "model_sha256": "521807e6f4865f7d4950cfbb589509e911bb92d82c94214ed41e70566220e374",
+      "answer_sha256": "e820ac955fbc0b6fb9ca797040b7fae8027a77b2503a1eec5043f690f39334d9",
+      "point_sha256": "473a8225b027defff595932c50f02aa10b4dff066a3c1419f477bc8078749060"
+    },
+    {
+      "index": 22,
+      "electrical_angle_deg": 55.0,
+      "model_sha256": "8e448520c18d94ce17164364d80d9664f2b061dc2f0c26e88c498788a33b8bdc",
+      "answer_sha256": "d9f7091c2170073e5bd25ecb154e02ae898536902d458a36041d59c50bb02883",
+      "point_sha256": "4188688b5a677145d4a4ecb4293d6dfee78aa69489c87747f67be6a4a8ddee1c"
+    },
+    {
+      "index": 23,
+      "electrical_angle_deg": 57.5,
+      "model_sha256": "ad25bc41fbfe93f08320ba542419f9d1804856c423b0fe10ccb45c36354ba693",
+      "answer_sha256": "01b811dc465cebb77431f2eb84c0ad34e22581bbdeea386c8740e725f7c1c233",
+      "point_sha256": "bf3927cbe834fa9e5dc75971c2d6578926fbc80aa257e6fb072f745b0aa9350d"
+    },
+    {
+      "index": 24,
+      "electrical_angle_deg": 60.0,
+      "model_sha256": "db4eb7ff9848f4f5073f659d1dc519277c7ccc3e8ff0b05817eac23829f2c63f",
+      "answer_sha256": "e31a493341d7fc43b2610da11c1ffe9fccb06051409976e9a14e4d684873a3bb",
+      "point_sha256": "440c042142bbcdfddaf68f974c9249575c242dad02e3d971f1510e555beb2298"
+    }
+  ],
+  "measurement_methods": {
+    "torque": "Independent static FEMM rotor-body weighted stress tensor",
+    "mesh": "Normal reference density with half airgap target; fixed independently of native mesh density",
+    "grid": "25 samples of one cogging period, both endpoints independently solved",
+    "normalization": "theta_FEMM=-theta_public; torque_public=-torque_FEMM"
+  }
+}

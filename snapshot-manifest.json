@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 1698,
-      "sha256": "f86130e23177beb90a5f27569a2a03ba02eabd361293c577b1343704519c4e3e"
+      "bytes": 1930,
+      "sha256": "959e5cff32029054330e15d58074bc2ab5a3171c296a65e45010563ca68d5507"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 12862,
-      "sha256": "7b9d22573d4a0a30b99412fc5d6bc75a2b4a4afd6a7b5f8d16356a4a961ce5b6"
+      "bytes": 15473,
+      "sha256": "d82f6ea7e518ff48d32510b0d1dcdc1e6de13c3b5a2d9c7d04c486fc200280d9"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 767,
-      "sha256": "bff15edcfae89ea52336ce18c328c92fe99f0186183446d06e4f3b8af111fde3"
+      "bytes": 776,
+      "sha256": "56a36fbff8866ebacd60a2f666eca1f0759796975f9e5e1838d110112c4a52f9"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -170,8 +170,8 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 12155,
-      "sha256": "2bea2e4efc271ae514aa895045c8d7e2d43ec48be7ba3f9e4416c77f1a2d2fe8"
+      "bytes": 17483,
+      "sha256": "eb4583944189adba7e5bb99fabc70d8fe6a329f37c1f731bb812c4304aeaa2b7"
     },
     {
       "path": "backend/benchmark_suite/report.py",
@@ -15407,6 +15407,86 @@
       "path": "tools/review_cogging_fixtures.py",
       "bytes": 4863,
       "sha256": "94d2f4f183f70ddbb8a61b91bb07a28ddef5c4bafc2e98e17014917e2d40a400"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/README.md",
+      "bytes": 2045,
+      "sha256": "bf8102ddacbf75d3ace0c0882efbe46e2a849f42909f8d575dbf3d1263421feb"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/benchmark_spec.json",
+      "bytes": 5096,
+      "sha256": "8abfba49ea96f2d69b335299602260cabaf7d114bf016c1997e7ffff91c8cfa1"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 2506,
+      "sha256": "9e002b53a883c0545606b6cdf9036cfc3ce8775d94d7628f18296b2af163db3d"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 2507,
+      "sha256": "7fe2ec151213f159144c5f6cd39eab12f88f34d24b32774b03de83e9a28aafc5"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 2505,
+      "sha256": "4a1c1d6c843d9aa169d0f2d15c6a12773a781eb9e49d4b944e88472e9617fa97"
+    },
+    {
+      "path": "benchmarks/cogging-refined-v1/measured-suite.json",
+      "bytes": 4337,
+      "sha256": "e2fca772f2ab9310b757fd910b643a6aeed8de5478d20c46004a7b0d54329d60"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/README.md",
+      "bytes": 892,
+      "sha256": "e8f5e56cac806ee783a81a5acdfd53772808d6bc7c20e7fd36387eb3d7eba95e"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/geometry-review.json",
+      "bytes": 953,
+      "sha256": "6f6aad2a27f4244bc01b15455e33362a22e27d2a61153c31793d5836acc9b674"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/manifest.json",
+      "bytes": 1795,
+      "sha256": "2e24737f72e1e367a241ec315a63d5b5c44545da976d1b4ffa5b6bc44a44399b"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/review.json",
+      "bytes": 3195,
+      "sha256": "3d1f23f5bccc0fa50a8ece7d8316393e9525dae32b3a9c3b979fb5e6d382316e"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/spm_12p36s_distributed_femm_validation__cogging.json",
+      "bytes": 12280,
+      "sha256": "6839b99eaf43963edf019cd11112f3488b54e2ddac87bffd5faf1e442711b30e"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/spm_8p24s_distributed_femm_validation__cogging.json",
+      "bytes": 12094,
+      "sha256": "c2a9077257c74be1f4bcf4c7ec8dfa2ab843b7254e92f40fd6e8b1ae00cac54f"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/spm_8p48s_distributed_femm_validation__cogging.json",
+      "bytes": 12107,
+      "sha256": "753a46e1d8a9d8d0211a9181560dd4d3d3be12d2220753f11689b4a8818b268d"
+    },
+    {
+      "path": "tests/test_cogging_qualification_collection.py",
+      "bytes": 3838,
+      "sha256": "6687d06232d7c343233e9c9d8718741f16bc0a2459eb1f000156a08457bc98a1"
+    },
+    {
+      "path": "tests/test_refined_cogging_registration.py",
+      "bytes": 3709,
+      "sha256": "cd04ceb463616919dcbd1108a3abf05289ef6768ecd4106179e58ebb31797182"
+    },
+    {
+      "path": "tools/cogging_qualification.py",
+      "bytes": 6620,
+      "sha256": "abf5374bedf0b4e79bf53f595cae5005153f8e6e50efadd74ac79834f933f648"
     }
   ],
   "public_patches": [

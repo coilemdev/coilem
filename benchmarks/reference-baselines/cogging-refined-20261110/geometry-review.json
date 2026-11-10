@@ -1,0 +1,25 @@
+{
+  "schema": "coilem.cogging_geometry_review/v1",
+  "absolute_geometry_tolerance_mm": 1e-10,
+  "relative_tolerance": 1e-12,
+  "measured_graph_sha256": "488364c58ed6fa2f309801a3706c042bdf290a35d023a479108203fd7d903fc8",
+  "current_sources": {
+    "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+    "backend/geometry_drawer.py": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+    "backend/models/config.py": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c"
+  },
+  "cases": {
+    "spm_8p24s_distributed_femm_validation__cogging": {
+      "old_graph_projection_differences": 0,
+      "examples": []
+    },
+    "spm_8p48s_distributed_femm_validation__cogging": {
+      "old_graph_projection_differences": 0,
+      "examples": []
+    },
+    "spm_12p36s_distributed_femm_validation__cogging": {
+      "old_graph_projection_differences": 0,
+      "examples": []
+    }
+  }
+}

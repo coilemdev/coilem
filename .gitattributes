@@ -23,3 +23,6 @@ benchmarks/qualification-e9eb89e818ed/** -text -eol whitespace=cr-at-eol
 backend/reference_models/lrk_12s14p_source.json -text -eol whitespace=cr-at-eol
 # The reference adapter verifies imported request and review-receipt bytes.
 tools/femm_reference/data/** -text -eol whitespace=cr-at-eol
+benchmarks/cogging-refined-v1/**/*.json -text -eol whitespace=cr-at-eol
+benchmarks/cogging-refined-v1/*.json -text -eol whitespace=cr-at-eol
+benchmarks/reference-baselines/cogging-refined-20261110/** -text -eol whitespace=cr-at-eol

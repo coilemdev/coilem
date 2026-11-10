@@ -1,0 +1,116 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.7.1",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "cases": [
+    {
+      "id": "spm_8p24s_distributed_femm_validation__cogging",
+      "phase": "E",
+      "base_case": "spm_8p24s_distributed_femm_validation",
+      "base_phase": "C",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.02831,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p24s_distributed_femm_validation.json",
+        "avg_torque_Nm": 5.662010743893206
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/cogging-refined-v1/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+          "fixture_sha256": "7fe2ec151213f159144c5f6cd39eab12f88f34d24b32774b03de83e9a28aafc5",
+          "input_sha256": "691828671f3da5af3d003cd8edccf0288cef8bed2c800b7793e662f9f16eaffc"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation__cogging",
+      "phase": "E",
+      "base_case": "spm_8p48s_distributed_femm_validation",
+      "base_phase": "C",
+      "cogging_cycles_per_revolution": 48,
+      "cogging_floor_Nm": 0.031519,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p48s_distributed_femm_validation.json",
+        "avg_torque_Nm": 6.303735218583883
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/cogging-refined-v1/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+          "fixture_sha256": "4a1c1d6c843d9aa169d0f2d15c6a12773a781eb9e49d4b944e88472e9617fa97",
+          "input_sha256": "e42aaf09a6893c896d4f679f99fd9b602cac5c573b9ed08eb0b33896f4ee49fe"
+        }
+      ]
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation__cogging",
+      "phase": "E",
+      "base_case": "spm_12p36s_distributed_femm_validation",
+      "base_phase": "C",
+      "cogging_cycles_per_revolution": 36,
+      "cogging_floor_Nm": 0.026074,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_12p36s_distributed_femm_validation.json",
+        "avg_torque_Nm": 5.214834188473855
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/cogging-refined-v1/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+          "fixture_sha256": "9e002b53a883c0545606b6cdf9036cfc3ce8775d94d7628f18296b2af163db3d",
+          "input_sha256": "30ab45a980ca456f5d418bc5e8ddef2a2be0aa9fc6bad59ea600bebf440aba66"
+        }
+      ]
+    }
+  ],
+  "phase_e": {
+    "status": "PROPOSED_NOT_REGISTERED",
+    "issue": "https://github.com/coilemdev/coilem/issues/185",
+    "base_suite": "benchmarks/abcd-v1.9/benchmark_spec.json",
+    "base_suite_sha256": "e7ccab31ad7b4f078a1f1a09f8e60984bbcbca22507739c108c6a9842aa3aa8d",
+    "derivation": "base fixture with solve_options.cogging_torque and solve_params.corner_refinement set to true",
+    "gates": {
+      "cogging_peak_to_peak": "PASS <= max(10% of the reference, floor); YELLOW <= max(20%, 2 x floor)",
+      "cogging_first_harmonic": "PASS <= max(10% of the reference, floor); YELLOW <= max(20%, 2 x floor)",
+      "reference_cogging_period": "PASS when |T(period) - T(0)| of the reference <= floor",
+      "reference_cogging_mean": "PASS when |mean| of the reference over the period <= floor",
+      "cogging_method": "PASS when the candidate used WST",
+      "cogging_angle_grid": "PASS when both waveforms have the same rotor positions"
+    },
+    "reference_bundle": null
+  },
+  "reference_compatibility": {
+    "schema": "coilem.reference_validation_bridge/v1",
+    "measured_protocol_version": "1.7.0",
+    "reference_commit": "341cd09342d58323689491ca060a913a34474ed1",
+    "manifest_sha256": "2e24737f72e1e367a241ec315a63d5b5c44545da976d1b4ffa5b6bc44a44399b",
+    "cogging_native_mesh_change": {
+      "schema": "coilem.cogging_native_mesh_bridge/v1",
+      "measured_suite": "benchmarks/cogging-refined-v1/measured-suite.json",
+      "measured_suite_sha256": "e2fca772f2ab9310b757fd910b643a6aeed8de5478d20c46004a7b0d54329d60",
+      "from": "normal",
+      "to": "very_fine",
+      "reason": "The native mesh changes alone; FEMM uses its separately reviewed, fixed half-gap reference recipe."
+    }
+  }
+}
