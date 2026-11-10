@@ -361,6 +361,14 @@ body {
 .public-landing .selector-hero { grid-template-columns: minmax(0, 1.05fr) minmax(420px, 1fr); gap: 44px; }
 .public-landing .selector-preview-card { border: 0; background: transparent; box-shadow: none; }
 .public-landing .selector-github-link { text-decoration: none; }
+/* The hero and the Motor Types row share one screen: on the two-column layout
+   the 3D stage gives up height on a short window instead of pushing the row
+   below the fold. 250px is everything else in the column: the top bar, the
+   page padding, the gap and the row itself. */
+@media (min-width: 1101px) {
+  .public-landing .template-selector-container { gap: 18px; padding-top: 22px; padding-bottom: 22px; }
+  .public-landing .selector-hero:not(.selector-hero-onboarding) .card-visual { height: clamp(360px, calc(100vh - 250px), 620px); }
+}
 .landing-motor-types { display: grid; gap: 12px; min-width: 0; }
 .landing-motor-types h2 { margin: 0; color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 .landing-motor-types ul { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
