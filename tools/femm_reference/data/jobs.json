@@ -1,0 +1,302 @@
+{
+  "e_jobs": [
+    {
+      "alias": "e00",
+      "case_id": "spm_8p12s_example_shoed__cogging",
+      "kind": "normal",
+      "estimated_s": 35.846980283999
+    },
+    {
+      "alias": "e01",
+      "case_id": "spm_8p12s_example_shoed__cogging",
+      "kind": "half_gap_control",
+      "estimated_s": 162.7296589640004
+    },
+    {
+      "alias": "e02",
+      "case_id": "ipm_flat_24s16p_industrial_contract__cogging",
+      "kind": "normal",
+      "estimated_s": 155.20062238400044
+    },
+    {
+      "alias": "e03",
+      "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+      "kind": "normal",
+      "estimated_s": 63.45564782400034
+    },
+    {
+      "alias": "e04",
+      "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+      "kind": "normal",
+      "estimated_s": 101.5091746919998
+    },
+    {
+      "alias": "e05",
+      "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+      "kind": "normal",
+      "estimated_s": 62.65301296799967
+    },
+    {
+      "alias": "e06",
+      "case_id": "ipm_flat_12s10p_fscw_contract__cogging",
+      "kind": "normal",
+      "estimated_s": 32.1373386919999
+    },
+    {
+      "alias": "e07",
+      "case_id": "ipm_flat_8p12s_fsae_contract__cogging",
+      "kind": "normal",
+      "estimated_s": 69.9337909599999
+    },
+    {
+      "alias": "e08",
+      "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+      "kind": "normal",
+      "estimated_s": 69.2142484719999
+    },
+    {
+      "alias": "e09",
+      "case_id": "spm_8p12s_concentrated__baseline__cogging",
+      "kind": "normal",
+      "estimated_s": 26.06671284399985
+    },
+    {
+      "alias": "e10",
+      "case_id": "spm_8p12s_concentrated__tight_airgap__cogging",
+      "kind": "normal",
+      "estimated_s": 77.77211941999965
+    },
+    {
+      "alias": "e11",
+      "case_id": "spm_4p12s_simple__baseline__cogging",
+      "kind": "normal",
+      "estimated_s": 9.700242028000066
+    },
+    {
+      "alias": "e12",
+      "case_id": "spm_4p12s_simple__tight_airgap__cogging",
+      "kind": "normal",
+      "estimated_s": 10.802129963999613
+    },
+    {
+      "alias": "e13",
+      "case_id": "ipm_flat_12s10p_fscw_contract__cogging",
+      "kind": "half_gap_control",
+      "estimated_s": 98.38537338399969
+    },
+    {
+      "alias": "e14",
+      "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+      "kind": "distributed_refinement",
+      "estimated_s": 281.43106338799987
+    },
+    {
+      "alias": "e15",
+      "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+      "kind": "distributed_refinement",
+      "estimated_s": 308.6323253680003
+    },
+    {
+      "alias": "e16",
+      "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+      "kind": "distributed_refinement",
+      "estimated_s": 286.51419081600034
+    }
+  ],
+  "f_jobs": {
+    "f00": {
+      "case_id": "spm_outer_14p12s_drone__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796",
+          "measured_femm_config_sha256": "98f97b633efdb1c608eb29e1073dfa37a3243289c9b28a89ebe3cb40ea57a796",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 6.902126949997182
+    },
+    "f01": {
+      "case_id": "spm_outer_14p12s_drone__high_current",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e",
+          "measured_femm_config_sha256": "da3ae311455cca6f9afff1b5655387ebb8227c08b7c1c99abbf35dce919fac3e",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 6.837263899999016
+    },
+    "f02": {
+      "case_id": "spm_outer_14p12s_drone__tight_airgap",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0",
+          "measured_femm_config_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 20.502701149998757
+    },
+    "f03": {
+      "case_id": "spm_outer_14p12s_drone__angle30",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f",
+          "measured_femm_config_sha256": "1b951c9fec95551201d8d7a953a7c547cfba9a37ec83963fdf28388c174aba1f",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 6.765030499998829
+    },
+    "f04": {
+      "case_id": "spm_outer_14p12s_drone_noload__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e",
+          "measured_femm_config_sha256": "527dad6d6004ef7142c5f59229383d000e0fcda6f13e7b2d92a3ad153d4a417e",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 6.754899649999061
+    },
+    "f05": {
+      "case_id": "spm_outer_12p9s_micro__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e",
+          "measured_femm_config_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 3.4788960499990935
+    },
+    "f06": {
+      "case_id": "spm_outer_12p9s_micro_noload__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25",
+          "measured_femm_config_sha256": "33a2b4107a19a39472caf05aa4317d6db3a167d2e6ffa937086801101dd96b25",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 3.4926110500000505
+    },
+    "f07": {
+      "case_id": "spm_outer_10p12s_single_layer__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13",
+          "measured_femm_config_sha256": "0bf442ea05afbe40b2596646d9c35396f4da44d2b5d3e8c7fb6cb0b6a67b1e13",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 19.960678800000096
+    },
+    "f08": {
+      "case_id": "spm_outer_28p24s_multirotor__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633",
+          "measured_femm_config_sha256": "dc7bf197240fe1348fba0f3a5a00e85d7b180ee68fb86358ef0e0626fd133633",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": null,
+      "estimated_s": 54.917509700000664
+    },
+    "f09": {
+      "case_id": "spm_outer_30p27s_hub__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5",
+          "measured_femm_config_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 1.0,
+      "bulk_mesh_mm": 0.5,
+      "estimated_s": 106.09546449999834
+    },
+    "f10": {
+      "case_id": "spm_outer_14p12s_drone__tight_airgap",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0",
+          "measured_femm_config_sha256": "573525d1deca8d243b5f13b934d0fd5d7c590b27169d715fbe6ebf6e1df0a4c0",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json"
+        }
+      ],
+      "airgap_mesh_scale": 0.5,
+      "bulk_mesh_mm": null,
+      "control": true,
+      "estimated_s": 105.8725785999959
+    },
+    "f11": {
+      "case_id": "spm_outer_12p9s_micro__baseline",
+      "phase": "F",
+      "requests": [
+        {
+          "stage": "native",
+          "requested_native_config_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e",
+          "measured_femm_config_sha256": "1f2914b021a10e086ff935e099bfbe465a5f41b20ca2caf194ca307d15ee9b6e",
+          "changes": {},
+          "native_fixture": "benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json"
+        }
+      ],
+      "airgap_mesh_scale": 0.5,
+      "bulk_mesh_mm": null,
+      "control": true,
+      "estimated_s": 14.079457900001216
+    }
+  }
+}

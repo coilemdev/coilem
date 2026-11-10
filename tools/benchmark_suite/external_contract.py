@@ -9,6 +9,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import time
+import uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,9 +40,27 @@ def json_bytes(value):
 def write(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_bytes(json_bytes(value))
-    temporary.replace(path)
+    temporary = path.with_name(path.name + "." + uuid.uuid4().hex + ".tmp")
+    try:
+        temporary.write_bytes(json_bytes(value))
+        replace_with_retry(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def replace_with_retry(source, destination, *, timeout_s=3.0):
+    """Retry only transient Windows access/sharing violations, with a deadline."""
+    deadline = time.monotonic() + timeout_s
+    delay = 0.02
+    while True:
+        try:
+            Path(source).replace(destination)
+            return
+        except PermissionError as exc:
+            if getattr(exc, "winerror", None) not in (5, 32, 33) or time.monotonic() >= deadline:
+                raise
+            time.sleep(min(delay, max(0, deadline - time.monotonic())))
+            delay = min(delay * 2, 0.2)
 
 
 @contextmanager

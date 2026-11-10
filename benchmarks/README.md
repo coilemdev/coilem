@@ -61,6 +61,12 @@ remain. This repeat preserves the registered reference and qualification policy.
 
 For saved-run timing analysis and bounded external reference collection, see
 [benchmark execution performance](../docs/BENCHMARK_PERFORMANCE.md).
+The [repository-owned FEMM E/F adapter](../tools/femm_reference/README.md) contains
+the cogging/outrunner producers, pinned model helpers, registered inputs and
+commands for batching and per-position resume on Windows.
+The [November 10 E/F validation](femm-ef-20261110/README.md) records the complete
+1,502-field run in 3 h 16 min, exact data reproduction and the three unchanged
+cogging reference-review cases.
 The [#112 full FEMM performance run](performance-112/full-suite.md) collected all
 29 cases in **1h52m02s**, versus the archived same-host serial span of **9h08m46s**
 (**79.58% less time**), with exact physical outputs and extraction audits. This is

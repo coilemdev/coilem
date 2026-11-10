@@ -1,0 +1,756 @@
+{
+  "schema": "coilem.femm_ef_saved_native_comparison/v1",
+  "scope": "Recorded native fields against the unchanged FEMM reference data; not a new matched E/F native timing run",
+  "E": {
+    "native_commit": "6bc935d0beeaad1390134670a9813a7e04c3b22c",
+    "comparison_as_of": "2026-11-04T00:01:49.116798+00:00",
+    "source_artifact_sha256": "037135b0a91da7c81ac9c2b4f83edb8276f668b64214be4df33db269e616e678",
+    "counts": {
+      "PASS": 9,
+      "REFERENCE_REVIEW_REQUIRED": 3
+    },
+    "rows": [
+      {
+        "case_id": "spm_4p12s_simple__baseline__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 0.14604470480342974,
+        "femm_peak_to_peak_Nm": 0.14591081844612125,
+        "peak_to_peak_error_pct": 0.09175903386350115,
+        "magneto2d_first_harmonic_Nm": 0.06926278089448563,
+        "femm_first_harmonic_Nm": 0.06911061703904135,
+        "first_harmonic_error_pct": 0.22017435520554335,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 1.7537074094966183,
+          "correlation": 0.9998481573569961
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.002385,
+        "native_result_sha256": "8517c0c9ede34a8a06afc68d923b98c72337b1446575c639622dee48e1a0fafc",
+        "reference_measurement_sha256": "0b5475bcd44fd3ef9d32b0a02b624f4df2bbf83762c154da33358982754207c3"
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 0.4849244199787361,
+        "femm_peak_to_peak_Nm": 0.48077960120196483,
+        "peak_to_peak_error_pct": 0.8621037095602786,
+        "magneto2d_first_harmonic_Nm": 0.18418994134923308,
+        "femm_first_harmonic_Nm": 0.18222378968617514,
+        "first_harmonic_error_pct": 1.078976387465126,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 1.567900936119778,
+          "correlation": 0.9999500039854112
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.002925,
+        "native_result_sha256": "7e429269ba792802b3adc7b7c25b3019f06346c4eeae865276c228d89847c084",
+        "reference_measurement_sha256": "c4e4ed1a1954b64019e549f0f69330c02e445fa585dc991db96adfa7ceab439e"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__baseline__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 0.8985312110384636,
+        "femm_peak_to_peak_Nm": 0.8491640493969199,
+        "peak_to_peak_error_pct": 5.813618896914492,
+        "magneto2d_first_harmonic_Nm": 0.12861031147935925,
+        "femm_first_harmonic_Nm": 0.12416471033435533,
+        "first_harmonic_error_pct": 3.580406327234719,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 5.771842917102268,
+          "correlation": 0.9998104703989367
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.011069,
+        "native_result_sha256": "0e6be29d559e38bba31e052b48a68af9fc4066a3151c4f6a8356547d43c0d707",
+        "reference_measurement_sha256": "6a4ab9c771ed98076aa2d1a62a4b9af523fc03c7273899b32e46d05f51a12afd"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__tight_airgap__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 1.4638855446972547,
+        "femm_peak_to_peak_Nm": 1.3916395399005865,
+        "peak_to_peak_error_pct": 5.191430878848785,
+        "magneto2d_first_harmonic_Nm": 0.2796501843061196,
+        "femm_first_harmonic_Nm": 0.2760169351965693,
+        "first_harmonic_error_pct": 1.3163138366719598,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 4.458346960741523,
+          "correlation": 0.9996693513293482
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.011785,
+        "native_result_sha256": "39e343dd6557a31d0f6f248a780d46c7efa30b9b7aaee867dd51a0d885c2677a",
+        "reference_measurement_sha256": "5ab28e00154d24f642aaf07331de878e5f8507f9961acfbd0dbe88bf847036ed"
+      },
+      {
+        "case_id": "spm_8p12s_example_shoed__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 1.3324759387793281,
+        "femm_peak_to_peak_Nm": 1.3008324054097438,
+        "peak_to_peak_error_pct": 2.432560354276929,
+        "magneto2d_first_harmonic_Nm": 0.3365040281441615,
+        "femm_first_harmonic_Nm": 0.34116915084133576,
+        "first_harmonic_error_pct": 1.367392885807484,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 8.08962129202615,
+          "correlation": 0.9971176786374836
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.055702,
+        "native_result_sha256": "64f30b52dbb2d18e01457169fc28d184958020ee6c68783b8071dfba559a90a8",
+        "reference_measurement_sha256": "7264a59cc3fca671467e8b70fe632eadab82a8b4e35019608be3cb0ceaa0abf1"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 0.26771760034636916,
+        "femm_peak_to_peak_Nm": 0.266087057710117,
+        "peak_to_peak_error_pct": 0.6127853982392993,
+        "magneto2d_first_harmonic_Nm": 0.13228856616609455,
+        "femm_first_harmonic_Nm": 0.13325788446814807,
+        "first_harmonic_error_pct": 0.7274003380154282,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 4.009164682686801,
+          "correlation": 0.9992163743191643
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.012879,
+        "native_result_sha256": "982cc2f18a5a254e2af00b1fd08da345c0496ed658d2a51d616e384ad8d76b2b",
+        "reference_measurement_sha256": "98161c644acfc2a6496e9e6013ebe21f799da109164b99ddd21b89e0414ef118"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 0.5600431927495824,
+        "femm_peak_to_peak_Nm": 0.5649766098198353,
+        "peak_to_peak_error_pct": 0.8732073123923089,
+        "magneto2d_first_harmonic_Nm": 0.28347260551580206,
+        "femm_first_harmonic_Nm": 0.2817249975320943,
+        "first_harmonic_error_pct": 0.6203240745467316,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 1.3917020524233825,
+          "correlation": 0.9999236987246419
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.010774,
+        "native_result_sha256": "71b7a2503aafddad693a7067e40d86101c93e9ba51b7c465773049def7efd462",
+        "reference_measurement_sha256": "587ceb9b36fc5d0017e4372349f1ee00168220ae842bfe4a08960f170ebac116"
+      },
+      {
+        "case_id": "ipm_flat_12s10p_fscw_contract__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 1.0758695343590658,
+        "femm_peak_to_peak_Nm": 1.0161225031157661,
+        "peak_to_peak_error_pct": 5.879904348156413,
+        "magneto2d_first_harmonic_Nm": 0.532355693828988,
+        "femm_first_harmonic_Nm": 0.5020426521195037,
+        "first_harmonic_error_pct": 6.037941513835496,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 7.279686815272829,
+          "correlation": 0.9998658516457852
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.024013,
+        "native_result_sha256": "34c01abc7245668768bd6a86b24ed96868c1dbba7d1a0373dfb75bafbd911cc9",
+        "reference_measurement_sha256": "1c3094095632a05adf5ca7cbc5985903acfb883d1c75228d93070e2b290e04e6"
+      },
+      {
+        "case_id": "ipm_flat_24s16p_industrial_contract__cogging",
+        "status": "PASS",
+        "magneto2d_peak_to_peak_Nm": 1.6350753873064376,
+        "femm_peak_to_peak_Nm": 1.6756792651669634,
+        "peak_to_peak_error_pct": 2.423129455891431,
+        "magneto2d_first_harmonic_Nm": 0.8442983695901485,
+        "femm_first_harmonic_Nm": 0.8370105799093247,
+        "first_harmonic_error_pct": 0.870692659776568,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 4.462673597049868,
+          "correlation": 0.9990634940032885
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        },
+        "floor_Nm": 0.097627,
+        "native_result_sha256": "e94bbc8d760d911631eb875cba93155a7eb2dfbb8a9a7e042b62545a390a9047",
+        "reference_measurement_sha256": "8fc4178c478c43e9ab8676c4fdff6f87a2f0f4e2d6200b173dd82fbe59730cf2"
+      },
+      {
+        "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+        "status": "REFERENCE_REVIEW_REQUIRED",
+        "magneto2d_peak_to_peak_Nm": 26.344040497738135,
+        "femm_peak_to_peak_Nm": 24.035079801603402,
+        "peak_to_peak_error_pct": 9.606627958775075,
+        "magneto2d_first_harmonic_Nm": 4.748706968241546,
+        "femm_first_harmonic_Nm": 4.3478452083158095,
+        "first_harmonic_error_pct": 9.21977993050528,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 9.363271306593063,
+          "correlation": 0.9998382671852611
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "FAIL",
+          "reference_cogging_mean": "FAIL"
+        },
+        "floor_Nm": 0.02831,
+        "native_result_sha256": "0ce5901e5831a34f613b7586b30eee23625860e16f5aa62755621497c585c56a",
+        "reference_measurement_sha256": "2fa6562d8f5a99e1d486d0be1dca1fdcc930d032e3bf00dab23a14b8175c3971"
+      },
+      {
+        "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+        "status": "REFERENCE_REVIEW_REQUIRED",
+        "magneto2d_peak_to_peak_Nm": 17.827481192682527,
+        "femm_peak_to_peak_Nm": 16.487339911816534,
+        "peak_to_peak_error_pct": 8.128305039101601,
+        "magneto2d_first_harmonic_Nm": 6.71225558236502,
+        "femm_first_harmonic_Nm": 6.305038078298065,
+        "first_harmonic_error_pct": 6.4586049919127015,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 7.067431282947859,
+          "correlation": 0.9998807827773922
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "FAIL"
+        },
+        "floor_Nm": 0.031519,
+        "native_result_sha256": "371d8f4ab00447813fb86d766e378718602fe6fe397131fbd355733f483d062e",
+        "reference_measurement_sha256": "d481ffcc6c0ad5724266f17a031872eb3262fee1bb455918b19b8bf162110a43"
+      },
+      {
+        "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+        "status": "REFERENCE_REVIEW_REQUIRED",
+        "magneto2d_peak_to_peak_Nm": 27.009622803834468,
+        "femm_peak_to_peak_Nm": 24.56823827730847,
+        "peak_to_peak_error_pct": 9.937157475311896,
+        "magneto2d_first_harmonic_Nm": 6.616953854496661,
+        "femm_first_harmonic_Nm": 6.112730411656716,
+        "first_harmonic_error_pct": 8.248743341901882,
+        "waveform": {
+          "grid_match": true,
+          "candidate_positions": 25,
+          "reference_positions": 25,
+          "nrmse_pct": 9.648083051696341,
+          "correlation": 0.9998736969884916
+        },
+        "gates": {
+          "cogging_method": "PASS",
+          "cogging_angle_grid": "PASS",
+          "cogging_peak_to_peak": "PASS",
+          "cogging_first_harmonic": "PASS",
+          "reference_cogging_period": "FAIL",
+          "reference_cogging_mean": "FAIL"
+        },
+        "floor_Nm": 0.026074,
+        "native_result_sha256": "0457a63b1e3de9d8200381c616f3c73cc5b093d52e5c5d1a48cb87564b0641a4",
+        "reference_measurement_sha256": "00479c2ea254a3acbcb9fdf9b40be43f8d23cd1756ad359cad3c9d29a7ee5dd0"
+      }
+    ]
+  },
+  "F": {
+    "native_commit": "82fb31f08621aa25893cfcd5f64814be686ac6a5",
+    "measurement_date": "2026-11-09",
+    "solver": "magneto2d-rust-0.5.0",
+    "native_collection_wall_s": 590.553027,
+    "source_artifact_sha256": "b32350146c73a742fc39b12d2d041969b2656cf627dd04fc7e6022e9ae01bc58",
+    "counts": {
+      "PASS": 10
+    },
+    "gate_counts": {
+      "PASS": 60
+    },
+    "rows": [
+      {
+        "case_id": "spm_outer_14p12s_drone__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.05335179279209967,
+          "reference_average_Nm": 0.05307865934386258,
+          "average_delta_pct": 0.514582417139888,
+          "average_absolute_delta_Nm": 0.00027313344823709507,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.07053089232530974,
+          "bemf_peak_delta_pct": 0.2555866757742346,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.7738106228831327,
+            "correlation": 0.996582151581661
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.2817623045308285,
+            "correlation": 0.9999962611409006
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__high_current",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.07989693378068813,
+          "reference_average_Nm": 0.07960079325460036,
+          "average_delta_pct": 0.37203212930375673,
+          "average_absolute_delta_Nm": 0.00029614052608777086,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.07053089232530974,
+          "bemf_peak_delta_pct": 0.2555866757742346,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.5362525409068729,
+            "correlation": 0.9963530977396431
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.2817623045308285,
+            "correlation": 0.9999962611409006
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__tight_airgap",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.05640252515461184,
+          "reference_average_Nm": 0.05637612234033428,
+          "average_delta_pct": 0.04683332797911675,
+          "average_absolute_delta_Nm": 2.6402814277556863e-05,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.029264216206239438,
+          "bemf_peak_delta_pct": 0.0234610757321659,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.667717540836526,
+            "correlation": 0.9921525630056929
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.8099501429419832,
+            "correlation": 0.999967245394819
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__angle30",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.0467511732640856,
+          "reference_average_Nm": 0.04648858772266067,
+          "average_delta_pct": 0.5648387148077035,
+          "average_absolute_delta_Nm": 0.0002625855414249284,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.07053089232530974,
+          "bemf_peak_delta_pct": 0.2555866757742346,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.8601867954073592,
+            "correlation": 0.9970360527293677
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.2817623045308285,
+            "correlation": 0.9999962611409006
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone_noload__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 1.343861970078273e-07,
+          "reference_average_Nm": -0.00022682852609321098,
+          "average_delta_pct": 100.05924572156881,
+          "average_absolute_delta_Nm": 0.0002269629122902188,
+          "near_zero_reference": true,
+          "bemf_fundamental_delta_pct": 0.07053089232530974,
+          "bemf_peak_delta_pct": 0.2555866757742346,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 10.48389626827386,
+            "correlation": 0.9968801702233585
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.2817623045308285,
+            "correlation": 0.9999962611409006
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_12p9s_micro__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.015325149385083697,
+          "reference_average_Nm": 0.015194115169786882,
+          "average_delta_pct": 0.8624010930058876,
+          "average_absolute_delta_Nm": 0.00013103421529681546,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.3120224415822469,
+          "bemf_peak_delta_pct": 0.35876574590774346,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 2.0166902300358296,
+            "correlation": 0.9998435245607952
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 1.863345616536632,
+            "correlation": 0.9998301610778071
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_12p9s_micro_noload__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 1.445310754600572e-06,
+          "reference_average_Nm": -9.387862926818769e-05,
+          "average_delta_pct": 101.53955246882833,
+          "average_absolute_delta_Nm": 9.532394002278826e-05,
+          "near_zero_reference": true,
+          "bemf_fundamental_delta_pct": 0.3120224415822469,
+          "bemf_peak_delta_pct": 0.35876574590774346,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 3.0146353912185533,
+            "correlation": 0.999851568660734
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 1.863345616536632,
+            "correlation": 0.9998301610778071
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_10p12s_single_layer__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.5683539675591128,
+          "reference_average_Nm": 0.5691339279870605,
+          "average_delta_pct": 0.13704338989353554,
+          "average_absolute_delta_Nm": 0.0007799604279477013,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.18234190086354962,
+          "bemf_peak_delta_pct": 0.06137246977612884,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.16275948493108136,
+            "correlation": 0.9990262995655258
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 1.2623480959878097,
+            "correlation": 0.9999220646205363
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_28p24s_multirotor__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 0.3245961983689309,
+          "reference_average_Nm": 0.32472868720905196,
+          "average_delta_pct": 0.04079985703134909,
+          "average_absolute_delta_Nm": 0.00013248884012106998,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.041837116135842865,
+          "bemf_peak_delta_pct": 0.324505675686706,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.27139516150057685,
+            "correlation": 0.998121239136246
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.40776446258274873,
+            "correlation": 0.9999917817342401
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      },
+      {
+        "case_id": "spm_outer_30p27s_hub__baseline",
+        "status": "PASS",
+        "evaluation": {
+          "status": "PASS",
+          "gates": {
+            "mean_torque": "PASS",
+            "bemf_fundamental": "PASS",
+            "bemf_peak": "PASS",
+            "torque_method": "PASS",
+            "native_mesh": "PASS",
+            "angle_grids": "PASS"
+          },
+          "candidate_average_Nm": 4.430569624527497,
+          "reference_average_Nm": 4.4326134645343,
+          "average_delta_pct": 0.04610914132613127,
+          "average_absolute_delta_Nm": 0.0020438400068032436,
+          "near_zero_reference": false,
+          "bemf_fundamental_delta_pct": 0.1888637959433354,
+          "bemf_peak_delta_pct": 0.3061083090730587,
+          "torque_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.5341109151462101,
+            "correlation": 0.9306866183128929
+          },
+          "bemf_waveform": {
+            "grid_match": true,
+            "candidate_positions": 48,
+            "reference_positions": 48,
+            "nrmse_pct": 0.4802168306811146,
+            "correlation": 0.999990068988519
+          },
+          "diagnostic_findings": [],
+          "actual_torque_method": "weighted_stress",
+          "actual_mesh_source": "native"
+        }
+      }
+    ]
+  }
+}

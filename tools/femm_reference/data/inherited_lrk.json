@@ -1,0 +1,142 @@
+{
+  "status": "INVESTIGATION_COMPLETE_OWNER_REVIEW_REQUIRED",
+  "candidate_commit": "34de0f4ca1604311f15edf6fb49b5a2a1bf27909",
+  "public_application_modified": false,
+  "limits_changed": false,
+  "pilot_started": false,
+  "findings": [
+    "The original and IR model have identical physical interfaces, magnetization and winding amp-turns.",
+    "The effective material conversion has no measurable effect in the two disputed cases.",
+    "Including rotor-pocket air in weighted-stress torque selection was incorrect relative to the original model; the private adapter was corrected.",
+    "An otherwise equivalent rigid rotation changes low torques more than the allowed error, demonstrating mesh-orientation sensitivity.",
+    "The sliding-band no-load torque is 0.007491 mNm versus the fixed remeshed reference of 0.064900 mNm."
+  ],
+  "geometry_audit": {
+    "status": "VERIFIED",
+    "physical_line_interfaces_identical": true,
+    "physical_arc_coverage_identical": true,
+    "max_arc_coverage_error_deg": 5.684341886080802e-14,
+    "max_magnet_direction_error_deg": 0.0,
+    "max_winding_amp_turn_error_A": 0.0,
+    "additional_same_material_IR_interfaces": 26,
+    "additional_interface_radii_mm": [
+      8.25,
+      13.0
+    ],
+    "conclusion": "Physical interfaces, winding sources and magnetization match the original. Additional IR curves only split identical materials and constrain meshing."
+  },
+  "factor_audit": {
+    "status": "VERIFIED",
+    "rigid_rotation_deg": 15,
+    "max_node_error_mm": 1.831026719408895e-15,
+    "max_label_error_mm": 8.881784197001252e-16,
+    "max_magnet_angle_error_deg": 0.0,
+    "material_circuit_boundary_blocks_identical": {
+      "Block": true,
+      "Circuit": true,
+      "Bdry": true
+    },
+    "connectivity_and_arc_parameters_identical": {
+      "NumSegments": true,
+      "NumArcSegments": true
+    },
+    "material_conversion_effect_mNm": {
+      "5": 2.085887018665744e-12,
+      "10": 1.973768370966411e-12
+    },
+    "rigid_rotation_effect_mNm": {
+      "5": 0.3336446554013648,
+      "10": -0.19550484115638223
+    }
+  },
+  "corrected_counts": {
+    "lrk-full-01": {
+      "PASS": 9,
+      "FAIL": 2
+    },
+    "lrk-refined-01": {
+      "PASS": 9,
+      "FAIL": 2
+    }
+  },
+  "corrected_remaining_refined_checks": [
+    {
+      "collection": "lrk-refined-01",
+      "index": 5,
+      "expected_rotor_cw_mNm": 3.3944,
+      "all_rotor_including_pocket_air_mNm": 3.5781198105305463,
+      "rotor_iron_and_magnets_only_mNm": 3.5925984483587508,
+      "stator_reaction_mNm": 3.5925984483588618,
+      "answer_sha256": "2fa5e51e128ca9c750ddc7c4be814d60abd8c5006783f81f041d9cd6a0586d9e",
+      "runtime_s": 3.402407600020524,
+      "unchanged_tolerance_mNm": 0.067888,
+      "corrected_selection_status": "FAIL"
+    },
+    {
+      "collection": "lrk-refined-01",
+      "index": 10,
+      "expected_rotor_cw_mNm": 0.0649,
+      "all_rotor_including_pocket_air_mNm": -0.006019869092308716,
+      "rotor_iron_and_magnets_only_mNm": 0.01330316676225945,
+      "stator_reaction_mNm": 0.01330316676214078,
+      "answer_sha256": "043d7f9fb93314295e25e8dd3781ee4f670e52e4073b76a29290e21f7b3939b9",
+      "runtime_s": 2.4995664000161923,
+      "unchanged_tolerance_mNm": 0.05,
+      "corrected_selection_status": "FAIL"
+    }
+  ],
+  "sliding_band_controls": [
+    {
+      "theta_deg": 0,
+      "source_phase_current_A": [
+        0,
+        4,
+        -4
+      ],
+      "gap_rotor_cw_mNm": 55.4301864846747,
+      "rotor_wst_cw_mNm": 55.4058786814183,
+      "mesh_elements": 104292,
+      "model_sha256": "62dc72be4e4de0161dc1538bd35f921480a5169647238f8b4057ec88762105ee",
+      "runtime_s": 12.652626099996269
+    },
+    {
+      "theta_deg": 5,
+      "source_phase_current_A": [
+        0,
+        4,
+        -4
+      ],
+      "gap_rotor_cw_mNm": 36.83907397239487,
+      "rotor_wst_cw_mNm": 37.244960463768265,
+      "mesh_elements": 104292,
+      "model_sha256": "a9dd7378003e49d4a96482300a034eaf0273f7118d60e6504d92bbe6a47d3a1a",
+      "runtime_s": 13.287759299972095
+    },
+    {
+      "theta_deg": 40,
+      "source_phase_current_A": [
+        0,
+        4,
+        -4
+      ],
+      "gap_rotor_cw_mNm": 3.474130236131135,
+      "rotor_wst_cw_mNm": 3.439710247236786,
+      "mesh_elements": 104292,
+      "model_sha256": "993c6965433903308c2683ecd92711dbad8ebec92d9b2ea681a17c3f45827056",
+      "runtime_s": 12.1557561000227
+    },
+    {
+      "theta_deg": 0,
+      "source_phase_current_A": [
+        0,
+        0,
+        0
+      ],
+      "gap_rotor_cw_mNm": 0.007490966178643186,
+      "rotor_wst_cw_mNm": -0.015483449437008148,
+      "mesh_elements": 104292,
+      "model_sha256": "9d73bc3b31117be016b774d985773618c8fa440eccc97b3b4d47a5128b7735cd",
+      "runtime_s": 12.230795300041791
+    }
+  ]
+}

@@ -1,0 +1,308 @@
+{
+  "schema": "coilem.femm_adapter_consolidation_validation/v1",
+  "status": "PASS",
+  "scope": "19 fresh independent positions, plus all 26 standard preparation records; source consolidation validation, not a new full timing run",
+  "baseline": "output\\femm-batch-pilot-20261110\\standard-full-20261110",
+  "pilot": "output\\femm-integration-20261110\\pilot",
+  "pilot_contract_sha256": "b97d0a285d70bf0b6323cd999eacc1b3d0afb0fb1e77560508c79a9ae5da3c00",
+  "pilot_completed_at": "2026-11-10T19:16:55.041324+00:00",
+  "prepared_cases": [
+    {
+      "case": "e00",
+      "exact": true,
+      "sha256": "fb615df29410b7acd714b13219c2ae8e11d73e3f575a628b3d5705af84bdb2f8"
+    },
+    {
+      "case": "e01",
+      "exact": true,
+      "sha256": "52abfa8e39ae47143ec0fbbe93a07e920a052e7234a6dabf4f0b739283b6995e"
+    },
+    {
+      "case": "e02",
+      "exact": true,
+      "sha256": "0b50d373f46756972b8b2ee61c007fbd0e2041f038154dc6eeaa1b9873711101"
+    },
+    {
+      "case": "e03",
+      "exact": true,
+      "sha256": "b0de54bafb40a54bfe984ffce9bba07005508c2835591ac8667eed6f93f82d1d"
+    },
+    {
+      "case": "e04",
+      "exact": true,
+      "sha256": "c8808d7e085ed3bfe20bf91693249fbf3b746cf07d66ba85d6cfc4b1a3650b66"
+    },
+    {
+      "case": "e05",
+      "exact": true,
+      "sha256": "f94f7666a31fbf235f78dde0e88dc18d37a49ea9711bfe8191b9b21214af35b1"
+    },
+    {
+      "case": "e06",
+      "exact": true,
+      "sha256": "dd6780cc1d50b3d7c46ed5a83561b9ff884638296d18d2f5aa0f40ddb9e832d3"
+    },
+    {
+      "case": "e07",
+      "exact": true,
+      "sha256": "eabd93390712242be53b0bcebfc6e37b3aa8c334921fca7e0e74e66f4fd9f3df"
+    },
+    {
+      "case": "e08",
+      "exact": true,
+      "sha256": "de6cf9e1c42b7c2f9c5991af82b1b18a8e53167e8d0571cf6e65b8519a30529c"
+    },
+    {
+      "case": "e09",
+      "exact": true,
+      "sha256": "a23cbd0306bb6f4e66d99a18a3348469bb061449db0c823a2dcf656bde1160e5"
+    },
+    {
+      "case": "e10",
+      "exact": true,
+      "sha256": "064894e387aeee0eaed920f9d5f8d4994ff0fe509a3988391c874e978b05f58a"
+    },
+    {
+      "case": "e11",
+      "exact": true,
+      "sha256": "9f3c4bfbeccbda7bd912c101d54f0df82c718d041e76715dcb474e98e574b7e3"
+    },
+    {
+      "case": "e12",
+      "exact": true,
+      "sha256": "acbf6eaefe9080f055237fa5ed14d13c086d114c689b2a3fff20080fbfba618b"
+    },
+    {
+      "case": "e13",
+      "exact": true,
+      "sha256": "390bfe9be36f0b8928d86f591057df3dac8e42faf2731cc52d7f62ba65ba4d4e"
+    },
+    {
+      "case": "f00",
+      "exact": true,
+      "sha256": "ec0039b7fae3e77a0657d49c24cca23e4856be837da83379d4f0e0001610ba2d"
+    },
+    {
+      "case": "f01",
+      "exact": true,
+      "sha256": "cbbacf9b681b13fb08a7982716d7adad2932607bf62efeb3b82d54199db0e159"
+    },
+    {
+      "case": "f02",
+      "exact": true,
+      "sha256": "bcf5fae3a720371b1cc296b4837f2885826fadaa7d413843c8576b681cd28296"
+    },
+    {
+      "case": "f03",
+      "exact": true,
+      "sha256": "fb07dbb873e19974b3773f5c57881fee3d22c9f45381d6c38877322e3fa5b069"
+    },
+    {
+      "case": "f04",
+      "exact": true,
+      "sha256": "e0066ecf5d06ab414b1d99f0241534a2b1c58de53278b4d33eadc095d673de29"
+    },
+    {
+      "case": "f05",
+      "exact": true,
+      "sha256": "4ee437f753aec86eec3fd820260ffddbba45c6f3d64bf3a701822eec91d72d3d"
+    },
+    {
+      "case": "f06",
+      "exact": true,
+      "sha256": "800c756d0e4e682b49b54f4235eec993cdb0645b9199a6f260c918b2333e569d"
+    },
+    {
+      "case": "f07",
+      "exact": true,
+      "sha256": "91f56dd3fa3bb8d6225dd9f9086e67b18af6aee05ff6b3cd6846a85abb87198f"
+    },
+    {
+      "case": "f08",
+      "exact": true,
+      "sha256": "d7fd83d9de38d6a4da2fc122a3068457fd3223e83f923cb8acbe7ba854fd26e7"
+    },
+    {
+      "case": "f09",
+      "exact": true,
+      "sha256": "30dd80850b8ab39df32dfbe595ce137f0706c9b858f17202e91264d12aa7dd0e"
+    },
+    {
+      "case": "f10",
+      "exact": true,
+      "sha256": "9f814af6603d7fa2f2b5f2019e31a195e893af7a007e63849523c31920aee77b"
+    },
+    {
+      "case": "f11",
+      "exact": true,
+      "sha256": "630969c6e12c9ccb16c8d0bccee91ee353a05c05798fbba54b2bf52f1932cb69"
+    }
+  ],
+  "positions": [
+    {
+      "case": "e00",
+      "position": "cogging-00",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e00",
+      "position": "cogging-12",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e00",
+      "position": "cogging-24",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e01",
+      "position": "cogging-12",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e03",
+      "position": "cogging-06",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e06",
+      "position": "cogging-07",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e08",
+      "position": "cogging-04",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e09",
+      "position": "cogging-09",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "e11",
+      "position": "cogging-05",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f00",
+      "position": "loaded-00",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f00",
+      "position": "noload-17",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f02",
+      "position": "loaded-03",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f05",
+      "position": "loaded-05",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f05",
+      "position": "noload-00",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f07",
+      "position": "loaded-11",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f08",
+      "position": "noload-23",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f09",
+      "position": "loaded-04",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f10",
+      "position": "noload-09",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    },
+    {
+      "case": "f11",
+      "position": "loaded-15",
+      "model_sha256_exact": true,
+      "answer_sha256_exact": true,
+      "physical_payload_exact": true,
+      "differences": []
+    }
+  ],
+  "ignored_point_fields": [
+    "field_and_mesh_s",
+    "owned_session",
+    "runtime_s",
+    "wall_s"
+  ],
+  "existing_findings": "REVIEW_REQUIRED; E self-check failures and inherited LRK findings preserved",
+  "source_artifact_sha256": "de7b0b13108c187e306941a6d1bc72198a2d16507be65f76f3fcc6a007d25abd",
+  "source_manifest_sha256": "77a6b5d9d501030e7c07625172e186b23cf4e9efbe20dd950d833e3113045aaf",
+  "tests": {
+    "command": "python -m pytest tests/test_femm_reference_adapter.py tests/test_reference_positions.py -q",
+    "passed": 15
+  }
+}
