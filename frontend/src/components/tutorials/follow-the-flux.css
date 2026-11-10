@@ -2458,3 +2458,703 @@
   }
 
 }
+
+/* ── Docked lab layout ────────────────────────────────────────────────────
+   The lab reads like the motor workspace: the experiment on the left, the
+   canvas in the middle, the measurements on the right, all three visible at
+   once as cards on the app canvas. This replaces the floating drawers and the
+   coach bar, whose buttons only opened and closed them. */
+.follow-flux-shell,
+.follow-flux-shell.is-solve-stage {
+  display: grid;
+  grid-template-areas: "lab stage status";
+  grid-template-columns: minmax(272px, 320px) minmax(0, 1fr) minmax(272px, 320px);
+  gap: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 48% at 50% 40%, rgba(245, 158, 11, 0.045), transparent 70%),
+    var(--bg-canvas);
+}
+
+.follow-flux-shell.is-quiz-open {
+  grid-template-areas: "stage";
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.follow-flux-shell .follow-flux-main,
+.follow-flux-shell .follow-flux-control-panel,
+.follow-flux-shell .follow-flux-status-panel {
+  position: relative;
+  inset: auto;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  z-index: auto;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  background: rgba(18, 20, 27, 0.82);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  backdrop-filter: none;
+}
+
+.follow-flux-shell .follow-flux-main {
+  grid-area: stage;
+  padding-bottom: 0;
+  overflow: hidden;
+  background: #090c13;
+}
+
+.follow-flux-shell .follow-flux-control-panel {
+  grid-area: lab;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.follow-flux-shell .follow-flux-control-panel > .learning-control-section {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.follow-flux-shell .follow-flux-status-panel {
+  grid-area: status;
+  overflow-y: auto;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.follow-flux-shell .follow-flux-status-panel.is-flash {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18), 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.follow-flux-shell .follow-flux-status-panel .learning-step-header,
+.follow-flux-shell .follow-flux-control-panel .learning-control-section {
+  padding-right: 18px;
+}
+
+/* Panel headings follow the workspace panels: a small uppercase label over a
+   plain title. */
+.follow-flux-shell .follow-flux-panel-kicker,
+.follow-flux-shell .follow-flux-inspector-header .learning-kicker {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.follow-flux-shell .follow-flux-control-panel h2,
+.follow-flux-shell .follow-flux-inspector-header h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font: 700 16px/1.25 var(--font-ui);
+  letter-spacing: 0;
+}
+
+.follow-flux-shell .follow-flux-inspector-header p:not(.learning-kicker) {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* The next step sits at the foot of the experiment panel, where the motor
+   workspace keeps "Continue to Solve". */
+.follow-flux-next-step {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px 14px;
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(10, 12, 17, 0.55);
+}
+
+.follow-flux-next-step > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.follow-flux-next-step .follow-flux-dock-primary {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 10px;
+  font: 700 14px var(--font-ui);
+}
+
+.follow-flux-shell .follow-flux-main.is-quiz-open {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* A narrow window stacks the three cards and lets the page scroll. */
+@media (max-width: 1100px) {
+  .tutorial-lesson-page > .follow-flux-shell,
+  .follow-flux-shell,
+  .follow-flux-shell.is-solve-stage {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .follow-flux-shell .follow-flux-main {
+    flex: 0 0 auto;
+    order: 1;
+    height: min(68vh, 640px);
+    padding-bottom: 0;
+  }
+
+  .follow-flux-shell .follow-flux-control-panel { order: 2; }
+  .follow-flux-shell .follow-flux-status-panel { order: 3; }
+
+  .follow-flux-shell .follow-flux-main.is-quiz-open {
+    height: auto;
+  }
+
+  .follow-flux-shell .follow-flux-control-panel,
+  .follow-flux-shell .follow-flux-status-panel {
+    display: block;
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .follow-flux-shell .follow-flux-control-panel > .learning-control-section {
+    overflow: visible;
+  }
+
+  .follow-flux-next-step {
+    border-radius: 0 0 16px 16px;
+  }
+}
+
+/* Panel contents in the workspace's own surfaces: neutral cards with the amber
+   accent for interface state. Cyan stays for the physics drawn on the canvas
+   (handles and the flux surface). */
+.follow-flux-shell .follow-flux-lab-goal {
+  margin: 14px 0 16px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.follow-flux-shell .follow-flux-lab-goal > span {
+  border-color: rgba(245, 158, 11, 0.45);
+  color: var(--text-accent);
+}
+
+.follow-flux-shell .follow-flux-lab-goal p {
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.follow-flux-shell .follow-flux-lab-goal strong { font-size: 13px; }
+.follow-flux-shell .follow-flux-lab-goal small { font-size: 12px; line-height: 1.45; }
+
+/* The frame picker is a segmented control, one row however many frames exist. */
+.follow-flux-shell .follow-flux-view-toggle {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 3px;
+  overflow: visible;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 10px;
+  background: rgba(10, 12, 17, 0.62);
+}
+
+.follow-flux-shell .follow-flux-view-toggle button {
+  min-height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-muted);
+  font: 600 12px var(--font-ui);
+  white-space: nowrap;
+}
+
+.follow-flux-shell .follow-flux-view-toggle button:hover:not(:disabled) {
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.follow-flux-shell .follow-flux-view-toggle button.is-active {
+  color: var(--text-accent);
+  background: rgba(245, 158, 11, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.32);
+}
+
+.follow-flux-shell .follow-flux-view-toggle button:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* ── Canvas dock ──────────────────────────────────────────────────────────
+   Laid out like the motor workspace's dock: a title bar with the view tabs on
+   the left and zoom on the right, then one row of labelled layer controls.
+   The name of the experiment is a chip over the canvas. */
+.follow-flux-shell .follow-flux-viewer {
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.follow-flux-viewport {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.follow-flux-viewport-label {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  left: 16px;
+  padding: 7px 11px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: rgba(15, 17, 23, 0.78);
+  font: 11px var(--font-mono);
+  pointer-events: none;
+}
+
+.follow-flux-view-dock {
+  position: relative;
+  z-index: 5;
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(17, 20, 27, 0.98);
+}
+
+.follow-flux-view-dock-strip {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.follow-flux-view-tabs {
+  display: flex;
+  align-self: stretch;
+  gap: 2px;
+}
+
+.follow-flux-view-tabs button {
+  position: relative;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+  font: 600 13px var(--font-ui);
+  cursor: pointer;
+}
+
+.follow-flux-view-tabs button:hover { color: var(--text-secondary); }
+
+.follow-flux-view-tabs button[aria-pressed="true"] {
+  color: var(--text-accent);
+  background: linear-gradient(to top, rgba(245, 158, 11, 0.12), transparent);
+}
+
+.follow-flux-view-tabs button[aria-pressed="true"]::after {
+  position: absolute;
+  right: 8px;
+  bottom: -1px;
+  left: 8px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent-primary);
+  content: '';
+}
+
+.follow-flux-view-dock-end {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.mesh-viewer-dock-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 9px;
+  background: rgba(10, 12, 17, 0.62);
+}
+
+.mesh-viewer-dock-zoom button {
+  display: grid;
+  min-width: 27px;
+  height: 27px;
+  padding: 0 7px;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  background: transparent;
+  font: 700 11px var(--font-mono);
+  cursor: pointer;
+}
+
+.mesh-viewer-dock-zoom button.is-fit {
+  min-width: 34px;
+  font: 600 11px var(--font-ui);
+}
+
+.mesh-viewer-dock-zoom button:hover {
+  color: var(--text-accent);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.mesh-viewer-dock-zoom > span {
+  min-width: 34px;
+  color: var(--text-muted);
+  font: 9px var(--font-mono);
+  text-align: center;
+}
+
+.follow-flux-view-dock-controls {
+  display: flex;
+  min-height: 52px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 8px 16px;
+}
+
+.follow-flux-view-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.follow-flux-view-group-label {
+  min-width: 40px;
+  color: rgba(148, 163, 184, 0.58);
+  font: 600 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.follow-flux-view-segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 10px;
+  background: rgba(10, 12, 17, 0.62);
+}
+
+.follow-flux-view-segmented button {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--text-muted);
+  background: transparent;
+  font: 600 13px var(--font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.follow-flux-view-segmented button:hover:not(:disabled) {
+  color: var(--text-secondary);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.follow-flux-view-segmented button[aria-pressed="true"] {
+  color: var(--text-accent);
+  background: rgba(245, 158, 11, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.32);
+}
+
+.follow-flux-view-toggle-dot {
+  display: inline-flex;
+  height: 36px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: rgba(10, 12, 17, 0.62);
+  font: 600 13px var(--font-ui);
+  cursor: pointer;
+}
+
+.follow-flux-view-toggle-dot::before {
+  width: 8px;
+  height: 8px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  content: '';
+  opacity: 0.7;
+}
+
+.follow-flux-view-toggle-dot[aria-pressed="true"] {
+  border-color: rgba(148, 163, 184, 0.26);
+  color: var(--text-secondary);
+}
+
+.follow-flux-view-toggle-dot[aria-pressed="true"]::before {
+  border-color: var(--text-accent);
+  background: var(--text-accent);
+  opacity: 1;
+}
+
+.follow-flux-view-dock button:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* The lesson's terms, kept beside the measurements that use them. */
+.follow-flux-glossary {
+  margin: 14px 12px 0;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.follow-flux-glossary h2 {
+  margin: 0 0 8px;
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.follow-flux-glossary dl { display: grid; gap: 8px; margin: 0; }
+.follow-flux-glossary dt { color: var(--text-primary); font: 600 12px var(--font-ui); }
+.follow-flux-glossary dd { margin: 2px 0 0; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+
+.follow-flux-comparison-change small {
+  display: block;
+  margin-top: 1px;
+  color: var(--text-muted);
+  font: 8px var(--font-mono);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+/* Before the first solve the same dock is shown greyed out under the layout
+   preview, and the preview's own heading becomes the chip and a hint line. */
+.follow-flux-shell .follow-flux-visual-stack:has(> .follow-flux-view-dock) {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.follow-flux-view-dock-note {
+  color: var(--text-muted);
+  font: 11px var(--font-ui);
+}
+
+.follow-flux-shell .follow-flux-geometry-card { position: relative; }
+
+.follow-flux-shell .follow-flux-geometry-card header {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  right: 16px;
+  left: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.follow-flux-shell .follow-flux-geometry-card h3 {
+  padding: 7px 11px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: rgba(15, 17, 23, 0.78);
+  font: 11px var(--font-mono);
+}
+
+.follow-flux-shell .follow-flux-geometry-card header span {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* The change badge is sized by its own text and stays inside the card. */
+.follow-flux-shell .follow-flux-comparison-metric {
+  grid-template-columns: minmax(70px, 1fr) minmax(112px, 1.3fr) max-content;
+  gap: 6px;
+}
+
+.follow-flux-shell .follow-flux-comparison-change {
+  justify-self: end;
+  padding: 3px 6px;
+  border-radius: 8px;
+  line-height: 1.25;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ── Predict and Check on the same three cards ────────────────────────────
+   The first and last steps use the lab's layout too: what you do on the left,
+   the picture or the questions in the middle, reference on the right. */
+.follow-flux-shell.is-quiz-open {
+  grid-template-areas: "lab stage status";
+  grid-template-columns: minmax(272px, 320px) minmax(0, 1fr) minmax(272px, 320px);
+}
+
+.follow-flux-shell .follow-flux-main.is-quiz-open,
+.follow-flux-shell .follow-flux-main.is-predict-stage {
+  display: block;
+  border-color: rgba(255, 255, 255, 0.07);
+  background: #090c13;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.follow-flux-predict-canvas {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  padding: 56px 24px 24px;
+  box-sizing: border-box;
+}
+
+.follow-flux-shell .follow-flux-predict-visual {
+  width: min(760px, 100%);
+  min-height: 0;
+}
+
+.follow-flux-shell .follow-flux-predict-visual .follow-flux-concept-svg {
+  max-height: 56vh;
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options {
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options button {
+  min-height: 0;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options button:hover {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+  transform: none;
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options button > span {
+  width: 26px;
+  height: 26px;
+  font-size: 10px;
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options button strong {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options button.is-selected {
+  border-color: var(--border-accent);
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-predict-options button.is-correct {
+  border-color: rgba(34, 197, 94, 0.62);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.follow-flux-next-step > p.follow-flux-predict-response {
+  min-height: 0;
+  color: var(--text-accent);
+  text-align: left;
+}
+
+.follow-flux-next-step > p.follow-flux-predict-response.is-correct { color: #86efac; }
+
+.follow-flux-next-step-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.follow-flux-next-step-link {
+  justify-self: start;
+  padding: 2px 0;
+  border: 0;
+  color: var(--text-muted);
+  background: transparent;
+  font: 500 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.follow-flux-next-step-link:hover { color: var(--text-accent); }
+
+.follow-flux-lesson-outline {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.follow-flux-lesson-outline li strong { display: block; color: var(--text-secondary); font: 600 12px var(--font-ui); }
+.follow-flux-lesson-outline li span { display: block; margin-top: 1px; line-height: 1.4; }
+.follow-flux-lesson-outline li.is-current strong { color: var(--text-accent); }
+
+.follow-flux-quiz-note {
+  margin: 0 0 14px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.follow-flux-shell .follow-flux-quiz-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 58px max(24px, calc((100% - 720px) / 2)) 32px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.follow-flux-shell .follow-flux-control-panel .follow-flux-completion-card {
+  margin: 0;
+}

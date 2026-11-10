@@ -6730,8 +6730,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LearningLessonOneFollowFlux.tsx",
-      "bytes": 111713,
-      "sha256": "ccde6e1fd21ddf3ad623b55c18d4a28ab3fd87b1c9ab58795504dd12846a44e9"
+      "bytes": 113997,
+      "sha256": "60edadb8e7bd24b0f830c18e4f5c8635eab373b7c0f920f6ea7881520fc77dd4"
     },
     {
       "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
@@ -6810,8 +6810,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MeshViewer.tsx",
-      "bytes": 108747,
-      "sha256": "e75dad92e38872d1cd5eaaba084d98c3af16c1d8675af8f5ce30dec27e2c22c5"
+      "bytes": 109615,
+      "sha256": "117862cd569a67c73d02fcb770235e00ecf30f828eccc27d8d610c06fd7aea5d"
     },
     {
       "path": "frontend/src/components/tutorials/MotorEffectLoop3D.tsx",
@@ -6895,8 +6895,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/follow-the-flux.css",
-      "bytes": 50908,
-      "sha256": "d695b0b556ee71a0f12dcc2c6ad108b422cedc3c3449059415d0236b53106b40"
+      "bytes": 68818,
+      "sha256": "ef2588568f9289df699c2a7af75d898fb6810fdbf84c2a02fd35c16a78e8655b"
     },
     {
       "path": "frontend/src/components/tutorials/index.ts",

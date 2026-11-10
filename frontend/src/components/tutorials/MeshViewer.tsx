@@ -1,4 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import type { FieldLinePlotData, MeshPreviewData } from './lessonSolveTypes';
 import { BACK_EMF_PHASE_COLORS } from './phaseColors';
 import { deriveMagneticPolarityCues } from './fieldPolarityCues';
@@ -296,6 +297,11 @@ interface MeshViewerProps {
   toolbarMode?: 'full' | 'zoom-only';
   /** Optional visualization label shown beside the zoom-only controls. */
   toolbarLabel?: string;
+  /**
+   * Draw the zoom controls into this element instead of over the canvas, so a
+   * lesson can keep them in its own dock, as the motor workspace does.
+   */
+  zoomControlsSlot?: HTMLElement | null;
   /** Show triangle boundaries on top of the material regions. */
   showMeshEdges?: boolean;
   /** Geometry-anchored badges that follow the mesh through zoom and pan. */
@@ -548,6 +554,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
   fixedView = false,
   toolbarMode = 'full',
   toolbarLabel,
+  zoomControlsSlot,
   showMeshEdges = true,
   pointLabels = [],
   measurementGates = [],
@@ -2428,7 +2435,16 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
         )}
       </div>
 
-      {!fixedView && <div className={`mesh-viewer-toolbar${toolbarMode === 'zoom-only' ? ' is-zoom-only' : ''}`}>
+      {!fixedView && zoomControlsSlot ? createPortal(
+        <span className="mesh-viewer-dock-zoom" role="group" aria-label="Zoom">
+          <button onClick={zoomOut} title="Zoom out" aria-label="Zoom out" type="button">−</button>
+          <span aria-hidden="true">{Math.round(transform.scale * 100) / 100}x</span>
+          <button onClick={zoomIn} title="Zoom in" aria-label="Zoom in" type="button">+</button>
+          <button className="is-fit" onClick={fitToView} title="Fit to view" type="button">Fit</button>
+        </span>,
+        zoomControlsSlot,
+      ) : null}
+      {!fixedView && !zoomControlsSlot && <div className={`mesh-viewer-toolbar${toolbarMode === 'zoom-only' ? ' is-zoom-only' : ''}`}>
         <div className="mesh-viewer-controls">
           <button onClick={zoomIn} title="Zoom in" type="button">+</button>
           <button onClick={zoomOut} title="Zoom out" type="button">−</button>
