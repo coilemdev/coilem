@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/LandingMotorTypes.tsx",
-      "bytes": 7400,
-      "sha256": "60e90f5576182323077c5cea7c7fb2d3f8f722383f303ed78b7eaecaccdfabb8"
+      "bytes": 7498,
+      "sha256": "2334dd1ecd307fa9d55a2c7161bdd1bb7d9e0f695fca237888f81c35ad50f250"
     },
     {
       "path": "frontend/src/public/PublicLanding.tsx",

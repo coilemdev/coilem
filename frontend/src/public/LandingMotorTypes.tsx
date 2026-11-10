@@ -108,8 +108,9 @@ function MotorTypeArtwork({ art }: { art: MotorTypeArt }) {
           ? <Bar key={index} radius={27} angle={angle} tilt={0} length={17} index={index} />
           : (
             <g key={index}>
-              <Bar radius={25} angle={angle - 0.26} tilt={-0.62} length={12.5} index={index} />
-              <Bar radius={25} angle={angle + 0.26} tilt={0.62} length={12.5} index={index} />
+              {/* One pole is a V of two like magnets: apex towards the shaft, open to the air gap. */}
+              <Bar radius={24} angle={angle - 0.21} tilt={1.0} length={12} index={index} />
+              <Bar radius={24} angle={angle + 0.21} tilt={-1.0} length={12} index={index} />
             </g>
           )))}
         <circle cx={C} cy={C} r={7} fill={BORE} />
