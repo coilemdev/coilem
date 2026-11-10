@@ -1,3 +1,4 @@
+import { solveViewMemory } from './solveViewMemory';
 import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
@@ -2733,7 +2734,7 @@ function formatRunTimeRange(validation: SolveValidation): string {
 }
 
 function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyAction): string {
-  if (busy === 'mesh') return 'Preparing mesh';
+  if (busy === 'mesh') return 'Meshing';
   const stage = progress?.stage;
   if (!stage) return 'Starting analysis';
   const labels: Record<string, string> = {
@@ -3296,10 +3297,26 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
-  const [solveView, setSolveView] = useState<'geometry' | 'mesh' | 'field'>(mesh ? 'mesh' : 'geometry');
+  // Coming back to Solve with the same mesh and result resumes the tab and
+  // mesh display that were left (solveViewMemory); anything new opens on its default.
+  const [resumeSolveView] = useState(() => (
+    Boolean(mesh || result) && solveViewMemory.stage.mesh === mesh && solveViewMemory.stage.result === result
+  ));
+  const [solveView, setSolveView] = useState<'geometry' | 'mesh' | 'field'>(() => (
+    resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
+  ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
-  const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>('geometry');
-  const [showMeshEdges, setShowMeshEdges] = useState(true);
+  const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
+    resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
+  ));
+  const [showMeshEdges, setShowMeshEdges] = useState(() => (resumeSolveView ? solveViewMemory.stage.showMeshEdges : true));
+  // The mesh and result these view choices were made for: the effects below
+  // reset the view only when one of them is replaced, not on a resumed mount.
+  const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
+  const viewedResultRef = useRef<unknown>(resumeSolveView ? result : undefined);
+  useEffect(() => {
+    solveViewMemory.stage = { result, mesh, solveView, meshDisplayMode, showMeshEdges };
+  });
   const [focusedMeshElementIndex, setFocusedMeshElementIndex] = useState<number | null>(null);
   const [transientNotice, setTransientNotice] = useState<string | null>(null);
   const [analysisDetailsOpen, setAnalysisDetailsOpen] = useState(() => !result);
@@ -3437,7 +3454,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       ? ['Finalizing', 'Finalizing results']
       : ['Running', 'Analysis in progress']
     : busy === 'mesh'
-      ? ['Preparing mesh', 'Preparing mesh']
+      ? ['Meshing', 'Meshing…']
       : validationChecking
         ? ['Checking', 'Checking setup']
         : runReady
@@ -3527,17 +3544,18 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   }, [config.solve_params.solve_quality]);
 
   useEffect(() => {
-    setFocusedMeshElementIndex(null);
-    setMeshDisplayMode('geometry');
-  }, [mesh]);
-
-  useEffect(() => {
+    if (viewedMeshRef.current === mesh && viewedResultRef.current === result) return;
+    const meshChanged = viewedMeshRef.current !== mesh;
+    const resultChanged = viewedResultRef.current !== result;
+    viewedMeshRef.current = mesh;
+    viewedResultRef.current = result;
+    if (meshChanged) {
+      setFocusedMeshElementIndex(null);
+      setMeshDisplayMode('geometry');
+    }
     if (!result && mesh) setSolveView('mesh');
+    if (resultChanged && result) setSolveView('field');
   }, [mesh, result]);
-
-  useEffect(() => {
-    if (result) setSolveView('field');
-  }, [result]);
 
   useEffect(() => {
     const resultAvailable = Boolean(result);
@@ -3938,7 +3956,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                 <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
               {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
-              <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Preparing mesh…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
+              <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Meshing…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
               <span className="public-section-kicker" id="public-electromagnetic-controls-heading">Electromagnetic controls</span>
@@ -3981,7 +3999,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={runDisabled} onClick={handleStartSolve}>Run again</button>
             </>
           ) : (
-            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Preparing mesh…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
+            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>

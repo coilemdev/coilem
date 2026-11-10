@@ -960,6 +960,13 @@ assert.match(workspaceSource, /onDoubleClick=\{\(\) => setDockUserHeight\(null\)
 assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHeight;/);
 // The dock keeps one height across the view tabs: the tallest fit seen at the current width.
 assert.match(workspaceSource, /fits\.heights\[viewportMode\] = clampDockHeight\(/);
+// Solve resumes its tab and mesh display for the same mesh and result, and the
+// field view starts from the layer choices it was left with.
+assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
+assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
+assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
+assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
 assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve
 // page's Geometry / Mesh / Field solution, or Design's motor views. Its right

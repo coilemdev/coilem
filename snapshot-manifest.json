@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 172326,
-      "sha256": "68c7b0a7b0ba63a3673b98eeb1f3fe7fb948a3926b7bf9994a1663844a49f8ed"
+      "bytes": 173039,
+      "sha256": "de1b68aefbd9749612504a0d13b1754e1f65908ebc0ea8614dea15082261b2ef"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 246027,
-      "sha256": "85e9d2cbbae940032f189462399c6824771ee525f25b80aff1f05ce6bfeaa47e"
+      "bytes": 247319,
+      "sha256": "185303d291fc0c9a694389420472ad1d7dc60490f34459cc57c91b956fcd8716"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 59221,
-      "sha256": "eb4616e77238dde63c4ece6f7f6a942cd5695a45957ec50f1589243e8104e746"
+      "bytes": 59889,
+      "sha256": "654c12a244b400cd9cea50846f711dc17765f33ffc2d52021f029b06871a1aa7"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7192,6 +7192,11 @@
       "path": "frontend/src/public/designViewMemory.ts",
       "bytes": 638,
       "sha256": "8e98368f7000737cf7d9db12f1c3135d62747be678404c3d361d39a7fd404706"
+    },
+    {
+      "path": "frontend/src/public/solveViewMemory.ts",
+      "bytes": 897,
+      "sha256": "37dbdaa7a6e32ba0a58eabcded944254b9a46463362cc4a17924a1a51c9d3df0"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7505,8 +7510,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 302187,
-      "sha256": "1bac1bb946d826fe336b2f1bc7d98e23f1ca6d46a4671c6a418881a8fae0d962"
+      "bytes": 302670,
+      "sha256": "b1c0f46b1a64ccea5fc5ceb37b5f20d2677decc993f1105d51f1c5534f721b7f"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
