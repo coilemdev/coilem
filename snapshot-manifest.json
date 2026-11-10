@@ -5915,8 +5915,8 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 11304,
-      "sha256": "54ec6b85b36f1e1beec6083c672b06b7d6b7d8b3af4acecdbbe548ef8e432c02"
+      "bytes": 16115,
+      "sha256": "c5f998fd0281d714f2aa2d42e8140448cd1513554d7eaedc1fee17eed830a859"
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
