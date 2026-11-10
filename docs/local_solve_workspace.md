@@ -111,11 +111,12 @@ so pruning the cache removes only its own name for them.
 Field playback intentionally retains one numerical snapshot and one 1536px
 layered raster set per solved position. This makes stopped-frame zoom, probing,
 and density controls truthful at every angle, but it also makes field playback
-the dominant per-run storage cost. The solve reads its physics from the cache's
-gzipped-JSON frames. A saved run keeps each frame's compact copy (`.f32.xz`)
-instead: real-valued arrays as float32 (about seven significant digits),
+the dominant per-run storage cost. The solve takes its physics from each
+frame while it is in memory, and writes the frame once, in a compact form
+(`.f32.xz`): real-valued arrays as float32 (about seven significant digits),
 integers, strings and scalars exact, xz-compressed. That is a quarter to a
-third of the gzipped JSON. Runs saved by earlier releases keep their `.json.gz` frames,
+third of gzipped JSON. The cache and the saved run share that one file.
+Caches and runs written by earlier releases keep their `.json.gz` frames,
 and both forms read back the same way.
 
 A run does not keep the playback images drawn from its frames. They live in a

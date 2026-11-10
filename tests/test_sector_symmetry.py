@@ -455,7 +455,7 @@ def test_tiling_merges_shared_nodes_and_signs_alternate_copies() -> None:
 def test_a_sector_frame_is_stored_as_one_sector_and_read_back_as_the_full_motor(fixture, tmp_path, monkeypatch) -> None:
     import numpy as np
 
-    from backend import field_artifacts
+    from backend import field_artifacts, field_frame_codec
     from backend.sector_tiling import SECTOR_FOLD_KEY, fold_sector_frame, unfold_sector_frame
     from backend.solver._helpers import _field_line_frame_from_report
 
@@ -500,16 +500,13 @@ def test_a_sector_frame_is_stored_as_one_sector_and_read_back_as_the_full_motor(
     monkeypatch.setattr(field_artifacts, "solve_cache_root", lambda: tmp_path)
     ref = field_artifacts.write_field_line_frame_artifact(frame, tmp_path / "run", pos_idx=0, elec_angle_deg=14.8)
     assert ref is not None
-    stored = next((tmp_path / "run" / "field_line_frames").glob("*.json.gz"))
-    import gzip
-
-    raw = json.loads(gzip.open(stored, "rt", encoding="utf-8").read())["field_line_frame"]
+    stored = next((tmp_path / "run" / "field_line_frames").glob(f"*{field_frame_codec.SUFFIX}"))
+    raw = field_frame_codec.decode_compact_field_frame(stored.read_bytes())["field_line_frame"]
     assert len(raw["triangles"]) == len(sector["mesh"]["triangles"])
-    for path in (stored, field_artifacts.compact_field_frame_path(stored)):
-        read_back = field_artifacts.read_field_line_frame_artifact(path)["field_line_frame"]
-        assert len(read_back["triangles"]) == len(frame["triangles"])
-        np.testing.assert_allclose(read_back["element_bx_t"], frame["element_bx_t"], atol=2e-6 * max(frame["element_b_mag_t"]))
-        assert len(read_back["noload_plot"]["triangles"]) == len(frame["triangles"])
+    read_back = field_artifacts.read_field_line_frame_artifact(stored)["field_line_frame"]
+    assert len(read_back["triangles"]) == len(frame["triangles"])
+    np.testing.assert_allclose(read_back["element_bx_t"], frame["element_bx_t"], atol=2e-6 * max(frame["element_b_mag_t"]))
+    assert len(read_back["noload_plot"]["triangles"]) == len(frame["triangles"])
 
 
 def test_a_full_circle_frame_is_stored_as_it_is() -> None:
