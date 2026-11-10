@@ -36,7 +36,7 @@ on:
       collection:
         description: Compare to registered references or collect native only
         type: choice
-        options: [registered, protocol16-native-only]
+        options: [registered, protocol16-native-only, cogging-refined-very-fine]
         default: registered
   workflow_call:
     inputs:
@@ -84,7 +84,7 @@ env:
 
 jobs:
   plan:
-    if: ${{ !inputs.reuse_run }}
+    if: ${{ !inputs.reuse_run && inputs.collection != 'cogging-refined-very-fine' }}
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.filter.outputs.matrix }}
@@ -252,7 +252,7 @@ jobs:
 
   join:
     needs: [plan, collect]
-    if: ${{ always() && !inputs.source_run && (inputs.reuse_run || needs.collect.result == 'success') }}
+    if: ${{ always() && inputs.collection != 'cogging-refined-very-fine' && !inputs.source_run && (inputs.reuse_run || needs.collect.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:
@@ -304,4 +304,55 @@ jobs:
             ${{ runner.temp }}/qualification/join-receipt.json
             ${{ runner.temp }}/qualification/download-receipt.json
             ${{ runner.temp }}/qualification/platform-record.json
+          retention-days: 90
+
+  cogging-qualification:
+    if: ${{ inputs.collection == 'cogging-refined-very-fine' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(inputs.runner == 'both' && '["windows-2022", "macos-15"]' || format('["{0}"]', inputs.runner)) }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ inputs.candidate || github.sha }}
+          path: candidate
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: ${{ inputs.python || '3.12' }}
+      - run: |
+          python -m pip install -r requirements.lock
+          python -m pip install -e ".[dev]"
+          python -m pip check
+      - name: Verify candidate and build its exact native solver
+        run: |
+          python tools/verify_snapshot.py --publication
+          rustup toolchain install 1.94.0 --profile minimal
+          cargo +1.94.0 build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Qualify all three very-fine fixtures against reviewed refined references
+        env:
+          PINNED_CANDIDATE: ${{ inputs.candidate || github.sha }}
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-cogging-data
+        run: python -m tools.cogging_qualification --candidate "$PINNED_CANDIDATE" --directory "$RUNNER_TEMP/cogging-qualification"
+      - name: Prepare compact immutable collection artifacts
+        if: always()
+        run: |
+          python - <<'PYTHON'
+          import os, pathlib, shutil
+          root = pathlib.Path(os.environ['RUNNER_TEMP']) / 'cogging-qualification'
+          compact = root / 'compact'
+          compact.mkdir(parents=True, exist_ok=True)
+          if (root / 'qualification.json').is_file():
+              shutil.copyfile(root / 'qualification.json', compact / 'qualification.json')
+          if (root / 'out').is_dir():
+              shutil.copytree(root / 'out', compact / 'out', dirs_exist_ok=True,
+                              ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock'))
+          PYTHON
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: cogging-qualification-${{ matrix.runner }}
+          path: ${{ runner.temp }}/cogging-qualification/compact
           retention-days: 90

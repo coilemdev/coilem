@@ -1,0 +1,777 @@
+{
+  "schema": "coilem.femm_source_manifest/v1",
+  "scope": "Phase E/F reference collection only",
+  "policy": "New in-repository execution identity; historical source seals and measurements remain unchanged.",
+  "files": {
+    "_vendor/e/backend/__init__.py": {
+      "sha256": "303edf330c12da756ea2724620a24ab9c759c5d1bbefde9d06a23c17b625d92a",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/__init__.py",
+      "original_sha256": "303edf330c12da756ea2724620a24ab9c759c5d1bbefde9d06a23c17b625d92a",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/airgap_sampling.py": {
+      "sha256": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/airgap_sampling.py",
+      "original_sha256": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/back_emf_harmonics.py": {
+      "sha256": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/back_emf_harmonics.py",
+      "original_sha256": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/excitation.py": {
+      "sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/excitation.py",
+      "original_sha256": "7e2dead86d3db978cd641fcfe203a2e747f5b48076be0483eff841f84bb9aa84",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/feature_flags.py": {
+      "sha256": "dcc8486e01f00476e6fdd831c8dc03d718222ac6cda8eff7ef948e320f703546",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/feature_flags.py",
+      "original_sha256": "dcc8486e01f00476e6fdd831c8dc03d718222ac6cda8eff7ef948e320f703546",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_extraction.py": {
+      "sha256": "7db1f6d0761010548b99d450d01dac4275b6cc33600652facee0ac1d52446062",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_extraction.py",
+      "original_sha256": "7db1f6d0761010548b99d450d01dac4275b6cc33600652facee0ac1d52446062",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_geometry.py": {
+      "sha256": "1c73842146501f26e3835b5f619379d20309f929af71bd1f74208836d0b8e7af",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_geometry.py",
+      "original_sha256": "1c73842146501f26e3835b5f619379d20309f929af71bd1f74208836d0b8e7af",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_parallel.py": {
+      "sha256": "323395f4831ad5bcce6497429681491d17550e245faf037cbcbd30dbf86d5611",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_parallel.py",
+      "original_sha256": "323395f4831ad5bcce6497429681491d17550e245faf037cbcbd30dbf86d5611",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_postprocess.py": {
+      "sha256": "7de76febe40e8b8ae03392bec20e97ff06335d55863dc0ee7d72e71d0453a60d",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_postprocess.py",
+      "original_sha256": "7de76febe40e8b8ae03392bec20e97ff06335d55863dc0ee7d72e71d0453a60d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_solver/__init__.py": {
+      "sha256": "10f10504ee971091382da967aba5fa58202f3326f59274f3afa5b9fbb8af7983",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_solver/__init__.py",
+      "original_sha256": "10f10504ee971091382da967aba5fa58202f3326f59274f3afa5b9fbb8af7983",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_solver/streaming.py": {
+      "sha256": "3f5b411f028d0f82dc40f38b4cf00a6a118ec428438e980d7d7ec84c4275891c",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_solver/streaming.py",
+      "original_sha256": "3f5b411f028d0f82dc40f38b4cf00a6a118ec428438e980d7d7ec84c4275891c",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/femm_utils.py": {
+      "sha256": "c1ea71f6ef2e04c972f910d95d3382dcf84b498c88f2e36f6cba534a0ae7d075",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/femm_utils.py",
+      "original_sha256": "c1ea71f6ef2e04c972f910d95d3382dcf84b498c88f2e36f6cba534a0ae7d075",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/field_artifacts.py": {
+      "sha256": "5ce907bd5ab6d8dbc8fa4022c237cca7cbf86b83d2ba8b385250ef02c42e5e80",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/field_artifacts.py",
+      "original_sha256": "5ce907bd5ab6d8dbc8fa4022c237cca7cbf86b83d2ba8b385250ef02c42e5e80",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/field_lines.py": {
+      "sha256": "446bf8187168693fadf848db3ef8809b54d60b6b52a3f2457e6c1ac82af5d1f1",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/field_lines.py",
+      "original_sha256": "446bf8187168693fadf848db3ef8809b54d60b6b52a3f2457e6c1ac82af5d1f1",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/geometry.py": {
+      "sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/geometry.py",
+      "original_sha256": "88828611cc3019c2d8c602aa717ae722311102bf4f0ef225bb4bf9e27d43f673",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/geometry_drawer.py": {
+      "sha256": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/geometry_drawer.py",
+      "original_sha256": "df695284a5acc9b64ac800fd59fff1530a34f8de0b9f9e8b15b190df8a601584",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/geometry_ir.py": {
+      "sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/geometry_ir.py",
+      "original_sha256": "c854de3f60d054660b9616cdb752a32835b12c445f497adb7ee24eb0ebf4f8bb",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/geometry_ir_tessellation.py": {
+      "sha256": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/geometry_ir_tessellation.py",
+      "original_sha256": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/logging_utils.py": {
+      "sha256": "bc2560b59a01e6b14a2e4d79cfbac3acddf6a117c0864fa7a7f24500685ececf",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/logging_utils.py",
+      "original_sha256": "bc2560b59a01e6b14a2e4d79cfbac3acddf6a117c0864fa7a7f24500685ececf",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/machine_constants.py": {
+      "sha256": "c5bc059993b475228cf9d60a5fc51bee4f8814bc8b0412202aa39ff34a3f1437",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/machine_constants.py",
+      "original_sha256": "c5bc059993b475228cf9d60a5fc51bee4f8814bc8b0412202aa39ff34a3f1437",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/material_catalog.py": {
+      "sha256": "7af93ae3ec8f29a1e3a8bc219be5ecec91c092eb2d5d675d6e58c52b26bd979d",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/material_catalog.py",
+      "original_sha256": "7af93ae3ec8f29a1e3a8bc219be5ecec91c092eb2d5d675d6e58c52b26bd979d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/material_contract.py": {
+      "sha256": "eb33c7d60407ce520bd223392118131278d6fc3ba241c1e51d27f29e0e6f830d",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/material_contract.py",
+      "original_sha256": "eb33c7d60407ce520bd223392118131278d6fc3ba241c1e51d27f29e0e6f830d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/__init__.py": {
+      "sha256": "af6331406459c204bc7e0a7bad5baff5febd475d931f8859790d3152701392f4",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/__init__.py",
+      "original_sha256": "af6331406459c204bc7e0a7bad5baff5febd475d931f8859790d3152701392f4",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/config.py": {
+      "sha256": "06cf7a174b67cdfaef303069db8eb45f72fa91facefec745dcffbb5e9a3c8f4d",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/config.py",
+      "original_sha256": "06cf7a174b67cdfaef303069db8eb45f72fa91facefec745dcffbb5e9a3c8f4d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/diagnostics.py": {
+      "sha256": "76ac6ae7e92340822b895a9ecd6386635f7385157dde55bed309c34980a8613f",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/diagnostics.py",
+      "original_sha256": "76ac6ae7e92340822b895a9ecd6386635f7385157dde55bed309c34980a8613f",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/errors.py": {
+      "sha256": "9e116cd8e1bbf8c7acbbe6636d9915f6d412e0f7d6fc01700772b786c9cf84f3",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/errors.py",
+      "original_sha256": "9e116cd8e1bbf8c7acbbe6636d9915f6d412e0f7d6fc01700772b786c9cf84f3",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/field.py": {
+      "sha256": "a24f31984b2b2649cd0ab0e1858d87e3b3a9a2e00455ac9a11de7cbbee2d1ad7",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/field.py",
+      "original_sha256": "a24f31984b2b2649cd0ab0e1858d87e3b3a9a2e00455ac9a11de7cbbee2d1ad7",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/geometry.py": {
+      "sha256": "2fbb3575972d1d9ec2daba5bef9fd85838e761d8a1d45bf6f6f3533002c3a2fb",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/geometry.py",
+      "original_sha256": "2fbb3575972d1d9ec2daba5bef9fd85838e761d8a1d45bf6f6f3533002c3a2fb",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/mesh.py": {
+      "sha256": "510bbdd7fb6d648e696fd719fdd52d34f5b56d8848e36c92d9fe5659a1497e51",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/mesh.py",
+      "original_sha256": "510bbdd7fb6d648e696fd719fdd52d34f5b56d8848e36c92d9fe5659a1497e51",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/result.py": {
+      "sha256": "404c6c774cd13becf2519b3fdffd6c73cdd4956622715626f2359966a3ddf738",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/result.py",
+      "original_sha256": "404c6c774cd13becf2519b3fdffd6c73cdd4956622715626f2359966a3ddf738",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/models/waveforms.py": {
+      "sha256": "4f7df8765b03547edc0bd75e0a1d4841b6d461f67876636794cc40efba738bb0",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/models/waveforms.py",
+      "original_sha256": "4f7df8765b03547edc0bd75e0a1d4841b6d461f67876636794cc40efba738bb0",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/platform_info.py": {
+      "sha256": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/platform_info.py",
+      "original_sha256": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/preview.py": {
+      "sha256": "6683802ec4a111c6651f72fd963a86b76ef27aeb8a466e26accc2cb43bead691",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/preview.py",
+      "original_sha256": "6683802ec4a111c6651f72fd963a86b76ef27aeb8a466e26accc2cb43bead691",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/preview_from_ir.py": {
+      "sha256": "7a0821b726191891af18b9fa38035b0db60274a52e6076f81a1dd3deafff364a",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/preview_from_ir.py",
+      "original_sha256": "7a0821b726191891af18b9fa38035b0db60274a52e6076f81a1dd3deafff364a",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/solver_contract.py": {
+      "sha256": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/solver_contract.py",
+      "original_sha256": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/solver_environment.py": {
+      "sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/solver_environment.py",
+      "original_sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/steel_flux_metrics.py": {
+      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/steel_flux_metrics.py",
+      "original_sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/sweep_planning.py": {
+      "sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/sweep_planning.py",
+      "original_sha256": "82c016bffb5b708b5c0bac58c504e09b18ed3b171677969f93f1f67cd5315cf9",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/thermal/__init__.py": {
+      "sha256": "7fb121c4a5714b7c2aca455631b8298078d387a1b7f0476b441d7ad1bb6881e6",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/thermal/__init__.py",
+      "original_sha256": "7fb121c4a5714b7c2aca455631b8298078d387a1b7f0476b441d7ad1bb6881e6",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/thermal/hybrid_network.py": {
+      "sha256": "6108a429962a877ad274cb51a501f9c3bc5e6c1935ccef7e06a028ee8f70f431",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/thermal/hybrid_network.py",
+      "original_sha256": "6108a429962a877ad274cb51a501f9c3bc5e6c1935ccef7e06a028ee8f70f431",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/thermal/interfaces.py": {
+      "sha256": "4c25cd714dad87a6c3747fe45fff755e8e8e74339e3129e19a3a52051579637e",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/thermal/interfaces.py",
+      "original_sha256": "4c25cd714dad87a6c3747fe45fff755e8e8e74339e3129e19a3a52051579637e",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/thermal/magnet_temperature.py": {
+      "sha256": "75859c893d4f02f95a4a002867a59628f3e35f7602e8834d46a714935de384c9",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/thermal/magnet_temperature.py",
+      "original_sha256": "75859c893d4f02f95a4a002867a59628f3e35f7602e8834d46a714935de384c9",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/thermal/material_ranges.py": {
+      "sha256": "499d0074b1e6e0cd1a72a3e807bf9994196201f91ce81f12a2513d7bbc8fa209",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/thermal/material_ranges.py",
+      "original_sha256": "499d0074b1e6e0cd1a72a3e807bf9994196201f91ce81f12a2513d7bbc8fa209",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/torque_metrics.py": {
+      "sha256": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/torque_metrics.py",
+      "original_sha256": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/backend/winding_utils.py": {
+      "sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+      "origin": "Windows FEMM v3 PR100 adapter/backend/winding_utils.py",
+      "original_sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/__init__.py": {
+      "sha256": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/__init__.py",
+      "original_sha256": "df55cef37c3dda76e779eaea5ae405296800d2216dded46e447a6a911ba2f191",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/benchmark_suite/__init__.py": {
+      "sha256": "bd91d90ca4330a759bc203850b558c6b4ea0bcb4c76f944feaec920e7999d9ea",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/benchmark_suite/__init__.py",
+      "original_sha256": "bd91d90ca4330a759bc203850b558c6b4ea0bcb4c76f944feaec920e7999d9ea",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/benchmark_suite/abc_metrics.py": {
+      "sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/benchmark_suite/abc_metrics.py",
+      "original_sha256": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/benchmark_suite/bldc_metrics.py": {
+      "sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/benchmark_suite/bldc_metrics.py",
+      "original_sha256": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/benchmark_suite/metrics.py": {
+      "sha256": "1c54eee6f036c360da2cb42a41261f6360fade9908defcc2862562503ec1052a",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/benchmark_suite/metrics.py",
+      "original_sha256": "1c54eee6f036c360da2cb42a41261f6360fade9908defcc2862562503ec1052a",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/custom_materials.py": {
+      "sha256": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/custom_materials.py",
+      "original_sha256": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/excitation.py": {
+      "sha256": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/excitation.py",
+      "original_sha256": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/geometry_drawer.py": {
+      "sha256": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/geometry_drawer.py",
+      "original_sha256": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/geometry_ir.py": {
+      "sha256": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/geometry_ir.py",
+      "original_sha256": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/magnet_temperature.py": {
+      "sha256": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/magnet_temperature.py",
+      "original_sha256": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/material_catalog.py": {
+      "sha256": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/material_catalog.py",
+      "original_sha256": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/material_contract.py": {
+      "sha256": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/material_contract.py",
+      "original_sha256": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/__init__.py": {
+      "sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/__init__.py",
+      "original_sha256": "666c7c95fa74a1774b4df1cf4ffb5e8c91ba8856bafebd1c4af9ee6894197907",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/config.py": {
+      "sha256": "01a3dba95bfda8e164098aa6c5a56da0b7a45d44eb3e9e8bdff890f41a01c805",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/config.py",
+      "original_sha256": "01a3dba95bfda8e164098aa6c5a56da0b7a45d44eb3e9e8bdff890f41a01c805",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/errors.py": {
+      "sha256": "a31f9c3683f9eee4a2c9490f6d7f468590815903a00c4330b2f6c5cfbc5f18b9",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/errors.py",
+      "original_sha256": "a31f9c3683f9eee4a2c9490f6d7f468590815903a00c4330b2f6c5cfbc5f18b9",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/field.py": {
+      "sha256": "d5a16aa60ee1cfdf3802dc90d10b404a35cff7c81d9f1fc4b6bad292cc31e7a4",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/field.py",
+      "original_sha256": "d5a16aa60ee1cfdf3802dc90d10b404a35cff7c81d9f1fc4b6bad292cc31e7a4",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/geometry.py": {
+      "sha256": "25528b3a8c32730d8860ba2f4f3792496597a87f7e25e78808d8886449b74f2e",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/geometry.py",
+      "original_sha256": "25528b3a8c32730d8860ba2f4f3792496597a87f7e25e78808d8886449b74f2e",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/mesh.py": {
+      "sha256": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/mesh.py",
+      "original_sha256": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/performance.py": {
+      "sha256": "001932b621bd27b154a45b57f91cf294d7c34a27138f64f625bc26d18e4eb92b",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/performance.py",
+      "original_sha256": "001932b621bd27b154a45b57f91cf294d7c34a27138f64f625bc26d18e4eb92b",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/result.py": {
+      "sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/result.py",
+      "original_sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/models/waveforms.py": {
+      "sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/models/waveforms.py",
+      "original_sha256": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/public_material_catalog.py": {
+      "sha256": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/public_material_catalog.py",
+      "original_sha256": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/reference_models/__init__.py": {
+      "sha256": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/reference_models/__init__.py",
+      "original_sha256": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/resources.py": {
+      "sha256": "4f3863da726116daf57092b5347def42cf202519ed43eeb51705ae70d32b6d04",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/resources.py",
+      "original_sha256": "4f3863da726116daf57092b5347def42cf202519ed43eeb51705ae70d32b6d04",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/rotor_layout.py": {
+      "sha256": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/rotor_layout.py",
+      "original_sha256": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/solver_environment.py": {
+      "sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/solver_environment.py",
+      "original_sha256": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/winding_utils.py": {
+      "sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+      "origin": "coilEM 34de0f4ca1604311f15edf6fb49b5a2a1bf27909/backend/winding_utils.py",
+      "original_sha256": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/v3_adapter.py": {
+      "sha256": "319d667cc1806ea336c6d2d78e355d04adc7f8061ec6c57dfc2bf6eca70fd879",
+      "origin": "Windows FEMM v3 PR100 adapter/v3_adapter.py",
+      "original_sha256": "319d667cc1806ea336c6d2d78e355d04adc7f8061ec6c57dfc2bf6eca70fd879",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/e/path_compat.py": {
+      "sha256": "dba13fe953c0efdfebcaa3d0da2532af985728631953f8d0c31747cc2710aa9c",
+      "origin": "Windows FEMM v3 PR100 adapter/path_compat.py",
+      "original_sha256": "f4a9e96039b15de81d4750d47720bb92f61086753a508968719ef7835ac39425",
+      "transformation": "Documentation-only removal of an example user-directory path; executable statements unchanged"
+    },
+    "_vendor/e/materials/electrical-steel/M350-50A.csv": {
+      "sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+      "origin": "Windows FEMM v3 material contract",
+      "original_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/f/backend/_data/materials/electrical-steel/M350-50A.csv": {
+      "sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+      "origin": "coilEM 34de0f4 material contract",
+      "original_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+      "transformation": "byte-for-byte copy"
+    },
+    "_vendor/reference_conventions.py": {
+      "sha256": "0898a42d232ca2120b70fa2d23b287e60808e4ab7271187e158811b2ec21f6b4",
+      "origin": "coilEM bad71d9 Phase A clockwise reference normalizer",
+      "original_sha256": "0898a42d232ca2120b70fa2d23b287e60808e4ab7271187e158811b2ec21f6b4",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/spec_e.json": {
+      "sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843",
+      "origin": "coilEM protocol 1.7 E/F registered requests",
+      "original_sha256": "9b14051cef6bf7298456691661d38ad95fd78738d9df6c41165f55ce3a509843",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__baseline__cogging.json": {
+      "sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_4p12s_simple__baseline__cogging",
+      "original_sha256": "0133baad78c3025ad988889004d0bfadd44afa0c184daf2a5a0ed8e0ca7b87c1",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_4p12s_simple__tight_airgap__cogging.json": {
+      "sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_4p12s_simple__tight_airgap__cogging",
+      "original_sha256": "7b8df6177db2310fc8747da7afe5ab1dd568a6bbfe86f6011fb1c15b97f0d045",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__baseline__cogging.json": {
+      "sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_8p12s_concentrated__baseline__cogging",
+      "original_sha256": "228bfe80718719ef811ca8d9e22e78e03f87cd23eabe9c6af8648b25dde6fc61",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_8p12s_concentrated__tight_airgap__cogging.json": {
+      "sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_8p12s_concentrated__tight_airgap__cogging",
+      "original_sha256": "4fea72c749da4156d9eed4e3548759f3420c23d4ad1fe5dce09f0f8d288b0701",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json": {
+      "sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_8p12s_example_shoed__cogging",
+      "original_sha256": "183a686cdbdcfcac623f5a9877fb43c9cb9e273657e947c14b097f8de9d52c9c",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_contract__cogging.json": {
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a",
+      "origin": "coilEM protocol 1.7 registered fixture/ipm_flat_8p12s_fsae_contract__cogging",
+      "original_sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging.json": {
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c",
+      "origin": "coilEM protocol 1.7 registered fixture/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+      "original_sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/ipm_flat_12s10p_fscw_contract__cogging.json": {
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda",
+      "origin": "coilEM protocol 1.7 registered fixture/ipm_flat_12s10p_fscw_contract__cogging",
+      "original_sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json": {
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f",
+      "origin": "coilEM protocol 1.7 registered fixture/ipm_flat_24s16p_industrial_contract__cogging",
+      "original_sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json": {
+      "sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_8p24s_distributed_femm_validation__cogging",
+      "original_sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json": {
+      "sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_8p48s_distributed_femm_validation__cogging",
+      "original_sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json": {
+      "sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
+      "origin": "coilEM protocol 1.7 registered fixture/spm_12p36s_distributed_femm_validation__cogging",
+      "original_sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/spec_f.json": {
+      "sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475",
+      "origin": "coilEM protocol 1.8 E/F registered requests",
+      "original_sha256": "1c558639c72397ccbe52f3ca00b2bb329149aaa6865459e25108d0816ee24475",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__baseline.json": {
+      "sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_14p12s_drone__baseline",
+      "original_sha256": "d28c5ba8c5f9ac8cf0f76118dd23b3a66381b6a94422375e174481d590dbebfd",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__high_current.json": {
+      "sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_14p12s_drone__high_current",
+      "original_sha256": "e6106404b824cfeda9cab9c3b4d3a2ec3949af136a34d0fbe9555a778be8c90a",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__tight_airgap.json": {
+      "sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_14p12s_drone__tight_airgap",
+      "original_sha256": "45bbfeba9932c336fc03e4885e0315b7333edbae9f41fb1974bcba1459e0a55c",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone__angle30.json": {
+      "sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_14p12s_drone__angle30",
+      "original_sha256": "8dd6530c8fca36c7d52254339129fe2659fed94d9a9401808377ac6b7bea54c6",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_14p12s_drone_noload__baseline.json": {
+      "sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_14p12s_drone_noload__baseline",
+      "original_sha256": "bb2f627bb4b994abd920bcb80eca31e2839b6c760b229cb632ba08102b8f7e6b",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro__baseline.json": {
+      "sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_12p9s_micro__baseline",
+      "original_sha256": "16a3f9b8a0c46ef1863b122442c45382ad68574aa4f41a56087c66f261979e60",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_12p9s_micro_noload__baseline.json": {
+      "sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_12p9s_micro_noload__baseline",
+      "original_sha256": "1f89b16e826a94c88bbeccbfc42a4a1f329d51888b8f85eb9f8b608624cfe166",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_10p12s_single_layer__baseline.json": {
+      "sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_10p12s_single_layer__baseline",
+      "original_sha256": "37828c63a82cad9c8ec31d15cd482b43fa59aec806efef62dfcacb88cabd20e5",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_28p24s_multirotor__baseline.json": {
+      "sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_28p24s_multirotor__baseline",
+      "original_sha256": "fea87e2a6e905823d319d4de7875d3e70f16c77bfe12503f5f6f7f03ebfa1021",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/benchmarks/abcd-v1.8/fixtures/spm_outer_30p27s_hub__baseline.json": {
+      "sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5",
+      "origin": "coilEM protocol 1.8 registered fixture/spm_outer_30p27s_hub__baseline",
+      "original_sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/jobs.json": {
+      "sha256": "8b775f73f953ead867e7ecdf56c940fed92656786b00c6076d80060a9f204b6a",
+      "origin": "November 10 E/F standard collection registration",
+      "transformation": "requests and mesh recipes retained; removed host-only fixture paths; scheduling estimates only"
+    },
+    "data/standard-selection.json": {
+      "sha256": "98b863a964a753a2d810d7fd5a24884ff3f3d9e01bdc5ea0a48a4adbe0be1a6e",
+      "origin": "November 10 standard 1502-position selection",
+      "original_sha256": "98b863a964a753a2d810d7fd5a24884ff3f3d9e01bdc5ea0a48a4adbe0be1a6e",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/inherited_lrk.json": {
+      "sha256": "09c34b4b131093b3bf0183c6edf153f134a237b5e9e23b0fbc06a039f47e2b46",
+      "origin": "PR218 inherited LRK investigation receipt; unresolved checks retained",
+      "original_sha256": "09c34b4b131093b3bf0183c6edf153f134a237b5e9e23b0fbc06a039f47e2b46",
+      "transformation": "byte-for-byte copy"
+    },
+    "data/femm-binaries.json": {
+      "sha256": "429f2afd8f61b46b6a11cf434400da7ee14d640859561c8bdc4ee896e95aac75",
+      "origin": "Windows FEMM v3 prepared identity",
+      "transformation": "expected SHA-256 values only; no binaries bundled"
+    },
+    "ir_helpers.py": {
+      "sha256": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+      "origin": [
+        {
+          "source": "PR218 LRK helper",
+          "original_sha256": "8b1099326cd7c3780ff12d44129ac882754c7adc0e886508475501d53f1d35d4",
+          "definitions": [
+            "xy",
+            "polyline",
+            "inside",
+            "label",
+            "edge_midpoint"
+          ]
+        },
+        {
+          "source": "coilEM 34de0f4 geometry rotation",
+          "original_sha256": "720b9024b95c17c29219522f71417c76fc0c228677c65df06018772df2f5b5b3",
+          "definitions": [
+            "_rotate_point",
+            "_rotate_points",
+            "_rotate_magnets_in_place"
+          ]
+        },
+        {
+          "source": "coilEM 34de0f4 clockwise excitation",
+          "original_sha256": "71812e7553c98a690d4076b452eba263da103040bb47b848c301bdf6c67599db",
+          "definitions": [
+            "_clockwise_excitation_config"
+          ]
+        }
+      ],
+      "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
+      "definition_ast_sha256": {
+        "xy": "72872dd955434cd8f7e7d616ecd2338d32596800f3bd254a4849d5c43dd2c15b",
+        "polyline": "a5afa17f3939bc03039ae5dc89e82cb4fd7e2aec6702f4d3d9dd8d44468f3b8b",
+        "inside": "84f3fecbe27b790016cd9413e4c654ed2b297f69e653a2b0a050a45db0662469",
+        "label": "f68eeafd3c5a8caa61901c6fa8bc9b1a5cfc54a9cbf08505b4acb1eabbd03384",
+        "edge_midpoint": "c98aa862559fb3261550bc460e83075d52df2a60d6ce023fbea9fa6d1463547a",
+        "_rotate_point": "41b293df6fd332dc782ddccdf41d0428a1037e8fedb1c06058bf9aaffeca2b5e",
+        "_rotate_points": "e4aedcb24b1f14a028562a40c5562054a2d2587d671e8aba1dd1a5e33ed7976b",
+        "_rotate_magnets_in_place": "4b592b21d709e68e66dc4aaa95c76fd4cde9d219e48416e5ff71c527553ae444",
+        "_clockwise_excitation_config": "43c7e48d6be6de885f6046e16162e76bc8731871ab99bf59e99c7394827377ac"
+      }
+    },
+    "phase_f.py": {
+      "sha256": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+      "origin": [
+        {
+          "source": "PR218 Phase F producer db7ff3f953fd61c0c89e9979370ef042d6087ef5fe0de1eae894774138ca513b",
+          "original_sha256": "db7ff3f953fd61c0c89e9979370ef042d6087ef5fe0de1eae894774138ca513b",
+          "definitions": [
+            "now",
+            "input_contract",
+            "driver_vector",
+            "rotated_ir",
+            "winding_specs",
+            "mesh_settings",
+            "lower_model",
+            "emf_from_public_flux",
+            "phase_harmonic",
+            "verify_original_derivative",
+            "FakeFEMM",
+            "preflight",
+            "actual_session_identity",
+            "extract",
+            "assemble_result"
+          ]
+        }
+      ],
+      "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
+      "definition_ast_sha256": {
+        "now": "79f5b7a96d20f88aec9a28217a057893f33d25a85b8e8e71dddd37053b0dcdfa",
+        "input_contract": "05c7b90e83f59a6e63bacb1398871bc8e28f93e8375edad04a8644aa7c21a236",
+        "driver_vector": "33fbc44dc8fa4869880f00bf2765899b97375ff23966ea0ba032d00b86991f8f",
+        "rotated_ir": "3726053d121598df4cd02278311579085595e29223ad2b6e04e1119ab6bd34b7",
+        "winding_specs": "0976bb2fa4dd18dced3c7be5dd59cb0de8dc1f1ca0b79641ac7284125d4831c4",
+        "mesh_settings": "9cbf05ae7f99bf6a198ecfcbaa3358138d118e454789ee21a86a7061ca4f262b",
+        "lower_model": "a95df7a310f6eb5a836ceadf31a422c2493125562efe885f2db209012faa46ce",
+        "emf_from_public_flux": "73f1fa34745f5f27bbe32b7e607040d69085ec6bb8fdbb8443d5e3d92c696e70",
+        "phase_harmonic": "8b35147aa64ce6e8d32e5cc00891d81b0cc0ec3fe597afc1ed09a9b21fff2c9f",
+        "verify_original_derivative": "1c9bb08bb813402dcb2e48dfd54a6af50c76679b1f1301932414e44df346de53",
+        "FakeFEMM": "b30896b09e578d3e07d5a3151d98f5320d9064b5d34c0e65f4c0540023a263f8",
+        "preflight": "2c8df3885b7550682344c852df21b0b9f26682ab21445b731dfe21b9609f6726",
+        "actual_session_identity": "615b918daf0c42adcfc7ed5f52f5d897b3a278a9ad81c9c2f784251ab74e0c93",
+        "extract": "e252efeb089d4b4b499d6b41f9f32f697ba2d6a6b4e147f6fd80000c945c68ae",
+        "assemble_result": "ea405942017feece9b999d7e7129ad694da306da24634b91ccdb0aeea048fd3a"
+      }
+    },
+    "hub.py": {
+      "sha256": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+      "origin": [
+        {
+          "source": "PR218 reviewed hub bulk-mesh variant",
+          "original_sha256": "bdba3c217d8a57e21852c0e3d2b735d955cceaa6ff28d0f3cfb1f11d17d1b10b",
+          "definitions": [
+            "require",
+            "recipe",
+            "BulkMeshProxy",
+            "lower",
+            "preflight"
+          ]
+        }
+      ],
+      "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
+      "definition_ast_sha256": {
+        "require": "b600c00e0bd3b45b4c3dc8140b224d0982f65c1672d9f162e3a237dbf3e7f3d3",
+        "recipe": "5b594c63a41137fb9727b06f53b166c801232483d51216e195f76b9a5b459778",
+        "BulkMeshProxy": "76d5afbee03b25af76b2493cde668750e457bb3355522be90ce3b4d8242e137e",
+        "lower": "bfdce7fd90399f6a7d6fef2e33e5051d5ef870e80ab9ac4603975f5a13811628",
+        "preflight": "11056a979f8b61effbc7c9ce961885031af0de13a1505de94549e4bb07a2242a"
+      }
+    },
+    "phase_e.py": {
+      "sha256": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+      "origin": [
+        {
+          "source": "Phase E cogging collector 6bc935d0",
+          "original_sha256": "db1932a102defaaf23898ef744f6fedc216cde63eee715bf8cc3d97a847b7f83",
+          "definitions": [
+            "summary"
+          ]
+        }
+      ],
+      "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
+      "definition_ast_sha256": {
+        "summary": "a475127f45253fe10107d8e7c82b2af812a2bef2bd524fa15bf9a5a5f6aad314"
+      }
+    },
+    "automation.py": {
+      "sha256": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+      "origin": [
+        {
+          "source": "Windows FEMM #112 owned DispatchEx/job-object automation",
+          "original_sha256": "4ddb157d36395bb73a7a5fc26287a1f1e177f17ca969e15b7b959c2554784f99",
+          "definitions": [
+            "Automation"
+          ]
+        }
+      ],
+      "transformation": "Owned DispatchEx/job-object Automation copied; local imports, portable binary checks, and cleanup restores hooks even if profile writing fails; formatted without changing the preserved physics definitions"
+    }
+  },
+  "definition_ast_format": "structural-json-v1: node type and fields, omit None/empty optional fields"
+}

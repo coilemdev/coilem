@@ -1,0 +1,277 @@
+{
+  "status": "MATCH",
+  "collection_wall_s": 11735.610543399991,
+  "collection_wall_h": 3.2598918176111087,
+  "post_collection_comparison_s": 38.42676,
+  "approximate_collection_and_comparison_s": 11774.037303399991,
+  "within_four_hours": true,
+  "within_three_hours": false,
+  "workers": 8,
+  "batch_size": 4,
+  "phase_counts": {
+    "E": 350,
+    "F": 1152
+  },
+  "cases_and_controls": 26,
+  "verified_positions": 1502,
+  "exact_model_hashes": 1502,
+  "exact_answer_hashes": 1502,
+  "exact_physical_payloads": 1502,
+  "field_difference_count": 0,
+  "assembly_difference_count": 0,
+  "actual_femm_mi_analyze_calls": 1502,
+  "measured_field_batches": 386,
+  "owned_femm_sessions": 638,
+  "minimum_sampled_available_host_ram_gib": 41.80588150024414,
+  "case_statistics": [
+    {
+      "case_id": "e00",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 1643.0217526999768,
+      "retained_field_worker_s": 896.174507099975
+    },
+    {
+      "case_id": "e01",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 5159.551612700045,
+      "retained_field_worker_s": 4068.2414741000102
+    },
+    {
+      "case_id": "e02",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 4863.602537300045,
+      "retained_field_worker_s": 3878.7096111000137
+    },
+    {
+      "case_id": "e03",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 2832.0222195999377,
+      "retained_field_worker_s": 1585.2917805000034
+    },
+    {
+      "case_id": "e04",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 3889.546848499973,
+      "retained_field_worker_s": 2536.6271891000215
+    },
+    {
+      "case_id": "e05",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 3346.5761800000037,
+      "retained_field_worker_s": 1565.4062371000036
+    },
+    {
+      "case_id": "e06",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 1529.0903677000315,
+      "retained_field_worker_s": 802.2208718000475
+    },
+    {
+      "case_id": "e07",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 2055.946622400006,
+      "retained_field_worker_s": 1747.1197527000331
+    },
+    {
+      "case_id": "e08",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 2298.052916500077,
+      "retained_field_worker_s": 1726.7305599000247
+    },
+    {
+      "case_id": "e09",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 1002.2643766000401,
+      "retained_field_worker_s": 650.5122561000026
+    },
+    {
+      "case_id": "e10",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 2844.3156223000406,
+      "retained_field_worker_s": 1937.8155064000312
+    },
+    {
+      "case_id": "e11",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 231.08608789986465,
+      "retained_field_worker_s": 241.32770050002728
+    },
+    {
+      "case_id": "e12",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 256.7946628999198,
+      "retained_field_worker_s": 268.679552400019
+    },
+    {
+      "case_id": "e13",
+      "phase": "E",
+      "positions": 25,
+      "exact_fields": 25,
+      "fresh_field_worker_s": 4344.82502069998,
+      "retained_field_worker_s": 2458.291932300024
+    },
+    {
+      "case_id": "f00",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 1555.0692802999693,
+      "retained_field_worker_s": 666.5349684999856
+    },
+    {
+      "case_id": "f01",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 1603.2873377000797,
+      "retained_field_worker_s": 658.7377231999963
+    },
+    {
+      "case_id": "f02",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 4127.497995300015,
+      "retained_field_worker_s": 1968.8931983999973
+    },
+    {
+      "case_id": "f03",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 1567.3059508000151,
+      "retained_field_worker_s": 649.8934971000308
+    },
+    {
+      "case_id": "f04",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 1566.227387099847,
+      "retained_field_worker_s": 650.1103786999993
+    },
+    {
+      "case_id": "f05",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 537.0882914000249,
+      "retained_field_worker_s": 335.5780217999709
+    },
+    {
+      "case_id": "f06",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 513.2954935999005,
+      "retained_field_worker_s": 335.9025666000016
+    },
+    {
+      "case_id": "f07",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 3403.77639099973,
+      "retained_field_worker_s": 1917.3438280000155
+    },
+    {
+      "case_id": "f08",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 7911.779310699887,
+      "retained_field_worker_s": 5168.131862499948
+    },
+    {
+      "case_id": "f09",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 15595.219911399952,
+      "retained_field_worker_s": 10495.672525999966
+    },
+    {
+      "case_id": "f10",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 14158.446101599984,
+      "retained_field_worker_s": 10239.479544099988
+    },
+    {
+      "case_id": "f11",
+      "phase": "F",
+      "positions": 96,
+      "exact_fields": 96,
+      "fresh_field_worker_s": 3118.141607399826,
+      "retained_field_worker_s": 1363.7065732000083
+    }
+  ],
+  "unchanged_inherited_reference_failures": [
+    {
+      "case_id": "e03",
+      "check": "reference_cogging_period",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "e03",
+      "check": "reference_cogging_mean",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "e04",
+      "check": "reference_cogging_mean",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "e05",
+      "check": "reference_cogging_period",
+      "status": "FAIL"
+    },
+    {
+      "case_id": "e05",
+      "check": "reference_cogging_mean",
+      "status": "FAIL"
+    }
+  ],
+  "scope": "Standard E/F plus two controls per phase; excludes the three additional E refinement diagnostics",
+  "timing_scope": "Actual driver elapsed time including source checks, preflight, all solves, checkpoint verification and assembly",
+  "comparison_scope": "All fields and assembled results against retained FEMM measurements; new execution provenance is reported separately",
+  "reference_acceptance": "REVIEW_REQUIRED; existing numerical self-check failures are neither waived nor reclassified",
+  "schema": "coilem.femm_ef_timing_and_data/v1",
+  "measurement_date": "2026-11-10",
+  "collection_identity": "Original November 10 batched external wrappers; predates source consolidation",
+  "baseline": "Retained independent FEMM E/F measurements; matching meshes, grids, material and extraction contracts",
+  "source_artifact_sha256": {
+    "timing-and-data-summary.json": "9a3f400474e3af85c762b3266394c7d54ea0e10c024535ab9d3b40194dd00484",
+    "comparison-final.json": "c478d18fffa8591cad359d714f0030f13b4b8253afc4e825c9eeb18a15f39850",
+    "RESULTS.txt": "515e409a5b9d17a50c36c3fb91820acbdffe39d3761c56e20131b1104d675de8"
+  },
+  "raw_artifact_availability": "Retained on the measurement host; raw .fem/.ans files are not shipped in Git"
+}

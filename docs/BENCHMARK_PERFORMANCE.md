@@ -96,10 +96,13 @@ python -m tools.run_reference_benchmark `
   --timings C:\bench\runtime-analysis\runtime-analysis.json
 ```
 
-Use the Python environment required by the external producer. The public
-repository supplies the scheduler; it supplies no reference-solver adapter,
-installation discovery or reference-solver dependencies. The native benchmark
-command and application solve path are unchanged.
+Use the Python environment required by the external producer. The repository
+also contains the optional [FEMM E/F reference adapter](../tools/femm_reference/README.md),
+including its pinned inputs and model helpers. Run it with
+`python -m tools.femm_reference --out-dir output/femm-ef --workers 8 --batch-size 4`.
+FEMM itself is installed separately; adapter dependencies are listed in
+`tools/femm_reference/requirements.txt`. The native benchmark command and
+application solve path are unchanged.
 
 The installed native harness lives in `backend.benchmark_suite`. External
 reference scheduling stays in `tools.benchmark_suite` with standard-library

@@ -1,0 +1,414 @@
+{
+  "schema": "coilem.femm_ef_assembly_comparison/v1",
+  "original_comparison_envelope_sha256": "c478d18fffa8591cad359d714f0030f13b4b8253afc4e825c9eeb18a15f39850",
+  "original_comparison_payload_sha256": "f3c87d47423cb8d5e4fcf7e0b73f2a71e0cbb90a50ad56f041da1828553ca593",
+  "status": "MATCH",
+  "case_results": [
+    {
+      "case_id": "e00",
+      "phase": "E",
+      "fresh_assembly_sha256": "978445355f54d3b29b4f3c8dcdd26167e07cc8967c1ddd2afa7943ef1371fee0",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e01",
+      "phase": "E",
+      "fresh_assembly_sha256": "35447367771e65b2337c6eff61cb66da93f0cde860d009138105ce9a9971ce83",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e02",
+      "phase": "E",
+      "fresh_assembly_sha256": "7aa5e2357968f08c1dc825074034bb551a5e66b1721d7c56241696bf320ec2a8",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e03",
+      "phase": "E",
+      "fresh_assembly_sha256": "166ad16c1e4f4e9bbf6e74cf890527dc63b9453997d05b0dec648a541747492f",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e04",
+      "phase": "E",
+      "fresh_assembly_sha256": "d71534581324d977ea03154f0f06ca9a76876e7813f3be520a125769774693dc",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e05",
+      "phase": "E",
+      "fresh_assembly_sha256": "2b4d5c82beabe07e1708ea83e1af7ba9998148a7b5dcfb84f876d94db4ebb729",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e06",
+      "phase": "E",
+      "fresh_assembly_sha256": "7a8f910b8f3bd666528ac00146ab7501b35301daf98a0451f8d599d9516978e4",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e07",
+      "phase": "E",
+      "fresh_assembly_sha256": "67b2289b962fafaf620e15431a160002bca046aa86cfeb7aa6a8a6d3181c8cef",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e08",
+      "phase": "E",
+      "fresh_assembly_sha256": "19bc4391cdadf912b2a14e333dcded146edfa886777c9b9dfb9d3f22e28b5bb8",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e09",
+      "phase": "E",
+      "fresh_assembly_sha256": "e2b351a1d9f9d0b7bfb1d93cc605813a2057eaa57c048ae07d411e32064cdbbd",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e10",
+      "phase": "E",
+      "fresh_assembly_sha256": "f7ca68d817b28962a0ca8223b01c8cede2218ff38ed3504b70cbf998950d2956",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e11",
+      "phase": "E",
+      "fresh_assembly_sha256": "b2045fc751cf640671755d457aa97bcec94ab285b2e71c93bbef07e50c201376",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e12",
+      "phase": "E",
+      "fresh_assembly_sha256": "0d583613721bb7ac86dc89cc02f3830c90e672007d63ddf95287ea241dd15cdd",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "e13",
+      "phase": "E",
+      "fresh_assembly_sha256": "c5195d1635ccd21255dfdb78081f4cfb2b78cb821e6ec057f2c5c643838ee9e0",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f00",
+      "phase": "F",
+      "fresh_assembly_sha256": "5d939f7cf332f714ad7b8ad63ad7663632ac07d0fc5d5de6f566fe7e65525059",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f01",
+      "phase": "F",
+      "fresh_assembly_sha256": "72dc7981b022f0ac59697718a8a63a65a9bdd38203ba79fdcb5fb75c2b157ae9",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f02",
+      "phase": "F",
+      "fresh_assembly_sha256": "65dbc96f9da968a4d7b4c0b5bb1734a00086b7850c20111f59df98edb086dd9f",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f03",
+      "phase": "F",
+      "fresh_assembly_sha256": "361073dfdfc11595b084b9b1cdaa6f59a9c743218dc839a8ea030e678203d5e1",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f04",
+      "phase": "F",
+      "fresh_assembly_sha256": "03a15b5e0e20d88a158da8d763f4dc2ae4640b15cff4a8f173f8084280f395f3",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f05",
+      "phase": "F",
+      "fresh_assembly_sha256": "9310cbf1e46cac275e727df0de35f38ba2d8ff3c8fa24660c43d318f6b7416ed",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f06",
+      "phase": "F",
+      "fresh_assembly_sha256": "ffcbf2374f12a66375a3cdf9638ffb34762b043724e235ed7ca8630a1b289c55",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f07",
+      "phase": "F",
+      "fresh_assembly_sha256": "211909fe5354bf1c80bb68f8c9bea45502e697220a7afc43cef860c0a30e718b",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f08",
+      "phase": "F",
+      "fresh_assembly_sha256": "114c3cabdc68804dc1aead0ca6b846d2e251699f835ce189e075fb4d934ec644",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f09",
+      "phase": "F",
+      "fresh_assembly_sha256": "97ce31a15df092418724ef294ffb2ccce9f4e9d583bd9b7e5e34b56fa22daaa7",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [
+        {
+          "path": "base_field_source_commit",
+          "fresh": null,
+          "retained": "7d9445c7f328fabb8aff13141b105769f1c1f644"
+        },
+        {
+          "path": "origin_base_producer_sha256",
+          "fresh": null,
+          "retained": "db7ff3f953fd61c0c89e9979370ef042d6087ef5fe0de1eae894774138ca513b"
+        },
+        {
+          "path": "reference_commit",
+          "fresh": null,
+          "retained": "5291451ca8fd307a2216cee219b9c7d2a7b30332"
+        }
+      ],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f11",
+      "phase": "F",
+      "fresh_assembly_sha256": "2a79b365af812938d559b821180084a977847827ea823cceb35163b0026858ef",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    },
+    {
+      "case_id": "f10",
+      "phase": "F",
+      "fresh_assembly_sha256": "21353dd5708a612b249830f47f12110b6c3ed0fc38846538aa150ff42266c2be",
+      "waveforms_summaries_and_physical_metadata_exact": true,
+      "self_checks_exact": true,
+      "physical_differences": [],
+      "self_check_differences": [],
+      "all_metadata_differences": [],
+      "expected_provenance_keys_excluded": [
+        "base_field_source_commit",
+        "origin_base_producer_sha256",
+        "reference_commit"
+      ]
+    }
+  ]
+}

@@ -122,20 +122,43 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def text_hygiene_failures(relative: str, text: str) -> list[str]:
+def text_hygiene_failures(relative: str, text: str, *, preserved_reference: bool = False) -> list[str]:
     """Return locations/categories only: never print a detected credential."""
     failures = [f"{label} pattern: {relative}" for label, pattern in SECRET_PATTERNS.items() if pattern.search(text)]
     if any(pattern.search(text) for pattern in ABSOLUTE_USER_PATH_PATTERNS):
         failures.append(f"absolute user path: {relative}")
-    if re.search(r"OPEN(?:_?EM)_", text):
+    # Audited historical replay sources retain their original environment
+    # vocabulary. Only the two collector entry points also filter those names.
+    replay_entry = relative in {"tools/femm_reference/e_producer.py", "tools/benchmark_suite/positions.py"}
+    if re.search(r"OPEN(?:_?EM)_", text) and not (preserved_reference or replay_entry):
         failures.append(f"legacy environment prefix: {relative}")
-    if INTERNAL_PLANNING_REFERENCE.search(text):
+    if INTERNAL_PLANNING_REFERENCE.search(text) and not preserved_reference:
         failures.append(f"internal planning reference: {relative}")
     # Legal attribution must survive cleanup; this exception is deliberately
     # limited to the two reviewed licensing documents.
     if relative not in {"LICENSE", "THIRD_PARTY_NOTICES.md"} and PERSONAL_EMAIL.search(text):
         failures.append(f"personal contact address: {relative}")
     return failures
+
+
+def preserved_reference_sources(root: Path) -> tuple[set[str], list[str]]:
+    """Permit legacy replay vocabulary only in verified, optional snapshots.
+
+    Credential, personal-path and personal-contact checks still apply to every
+    file. The active backend and installed package retain their existing rules.
+    """
+    adapter = root / "tools/femm_reference"
+    manifest = adapter / "source-manifest.json"
+    if not manifest.is_file():
+        return set(), []
+    sources, failures = set(), []
+    for name, entry in json.loads(manifest.read_text(encoding="utf-8"))["files"].items():
+        path = (adapter / name).resolve()
+        if not path.is_relative_to(adapter.resolve()) or not path.is_file() or sha256(path) != entry["sha256"]:
+            failures.append(f"reference source changed or missing: {name}")
+        elif name.startswith("_vendor/"):
+            sources.add("tools/femm_reference/" + name)
+    return sources, failures
 
 
 def png_hygiene_failures(relative: str, path: Path) -> list[str]:
@@ -248,6 +271,8 @@ def main() -> int:
         and path.name != ".DS_Store"
     }
     failures = []
+    reference_sources, reference_failures = preserved_reference_sources(root)
+    failures.extend(reference_failures)
     if set(actual) != set(expected):
         failures.append(f"manifest mismatch: missing={sorted(set(expected) - set(actual))}, unexpected={sorted(set(actual) - set(expected))}")
     for relative, entry in expected.items():
@@ -258,13 +283,20 @@ def main() -> int:
     for relative, path in actual.items():
         parts = {part.lower() for part in Path(relative).parts}
         forbidden = sorted(parts & FORBIDDEN_PARTS)
-        if forbidden:
+        replay_solver = (relative in reference_sources
+                         and relative.startswith("tools/femm_reference/_vendor/e/backend/femm_solver/")
+                         and forbidden == ["femm_solver"])
+        if forbidden and not replay_solver:
             failures.append(f"forbidden path component {forbidden}: {relative}")
         if any(part.startswith("sprint") for part in parts):
             failures.append(f"forbidden sprint path: {relative}")
         if path.suffix.lower() in FORBIDDEN_SUFFIXES:
             failures.append(f"forbidden file type: {relative}")
-        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES | registered_csv:
+        replay_curve = (relative in reference_sources and relative in {
+            "tools/femm_reference/_vendor/e/materials/electrical-steel/M350-50A.csv",
+            "tools/femm_reference/_vendor/f/backend/_data/materials/electrical-steel/M350-50A.csv",
+        })
+        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES | registered_csv and not replay_curve:
             failures.append(f"unreviewed material or fixture CSV: {relative}")
         allowed_signature = ALLOWED_BINARY_SIGNATURES.get(relative)
         if allowed_signature is not None:
@@ -282,7 +314,7 @@ def main() -> int:
         except UnicodeDecodeError:
             failures.append(f"unexpected binary file: {relative}")
             continue
-        failures.extend(text_hygiene_failures(relative, text))
+        failures.extend(text_hygiene_failures(relative, text, preserved_reference=relative in reference_sources))
         if relative.startswith("backend/") and path.suffix == ".py":
             try:
                 tree = ast.parse(text, filename=relative)

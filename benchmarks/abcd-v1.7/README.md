@@ -7,6 +7,11 @@ has no FEMM reference bundle yet, so it qualifies nothing. Harness **1.9.0**
 can run and grade it, and protocol **1.9.0** is the default suite;
 `coilem benchmark` runs phases A–D only.
 
+The follow-up [protocol 1.7.1 cohort](../cogging-refined-v1/README.md) registers
+reviewed refined FEMM references for the three distributed geometries with
+very-fine native meshes. That separate cohort does not register this entire
+12-case normal-mesh suite. See the [E/F integration plan](../femm-ef-20261110/formal-qualification.md).
+
 Phase E is its own suite, `benchmark_spec.json` in this folder, because a
 reference bundle carries one reference commit: its FEMM cogging records come
 from a new collection, not from the reviewed protocol 1.6.0 bundle.

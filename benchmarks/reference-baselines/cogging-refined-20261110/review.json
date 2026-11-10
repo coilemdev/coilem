@@ -1,0 +1,68 @@
+{
+  "schema": "coilem.cogging_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "reviewer": {
+    "name": "Codex assistant",
+    "method": "Owner-authorized code and raw-data review",
+    "owner_authorization": "Register refined references and qualify these three very-fine requests on Windows/macOS"
+  },
+  "suite_sha256": "e2fca772f2ab9310b757fd910b643a6aeed8de5478d20c46004a7b0d54329d60",
+  "scope": "Three distributed no-current cogging cases, 25 positions each; software parity only",
+  "reference_mesh_policy": {
+    "mesh_density": "normal",
+    "airgap_mesh_scale": 0.5,
+    "precision": 1e-08,
+    "min_angle_deg": 30
+  },
+  "cases": {
+    "spm_8p24s_distributed_femm_validation__cogging": {
+      "record_sha256": "c2a9077257c74be1f4bcf4c7ec8dfa2ab843b7254e92f40fd6e8b1ae00cac54f",
+      "input_sha256": "691e3d6dac30f855614acf981bb81e59b4832ca24872716fe2f8e671bb09ef87",
+      "source_measurement_sha256": "a30e4928ac3b1ac96eb3127791b23fe91473306130a90095d58b7d6b6b55f344",
+      "positions_verified": 25,
+      "self_checks": {
+        "reference_cogging_period": "PASS",
+        "reference_cogging_mean": "PASS"
+      },
+      "max_abs_winding_current_A": 0.0,
+      "max_relative_winding_area_error": 0.00016793986159454544,
+      "material_coercivity_check": "PASS",
+      "model_and_answer_hashes_verified": 25
+    },
+    "spm_8p48s_distributed_femm_validation__cogging": {
+      "record_sha256": "753a46e1d8a9d8d0211a9181560dd4d3d3be12d2220753f11689b4a8818b268d",
+      "input_sha256": "0e3e1ac40c748c83d1c996daf90ab6ae0ea4fdedb832331faeb1d35f5aa72f23",
+      "source_measurement_sha256": "02df2b2344c07c29c94c07f7976b13b0e3d2c95b7fd143894d5d1ea32a323749",
+      "positions_verified": 25,
+      "self_checks": {
+        "reference_cogging_period": "PASS",
+        "reference_cogging_mean": "PASS"
+      },
+      "max_abs_winding_current_A": 0.0,
+      "max_relative_winding_area_error": 0.00012061814345535234,
+      "material_coercivity_check": "PASS",
+      "model_and_answer_hashes_verified": 25
+    },
+    "spm_12p36s_distributed_femm_validation__cogging": {
+      "record_sha256": "6839b99eaf43963edf019cd11112f3488b54e2ddac87bffd5faf1e442711b30e",
+      "input_sha256": "a2c3bfb257ac11398802ae8e347846e7f816ab78284411066784a7540c89a9e7",
+      "source_measurement_sha256": "442a74fd6b28b916f798a6f6fe748637c606aabb5a3ba32be1704060c75a8576",
+      "positions_verified": 25,
+      "self_checks": {
+        "reference_cogging_period": "PASS",
+        "reference_cogging_mean": "PASS"
+      },
+      "max_abs_winding_current_A": 0.0,
+      "max_relative_winding_area_error": 0.0001489013378132486,
+      "material_coercivity_check": "PASS",
+      "model_and_answer_hashes_verified": 25
+    }
+  },
+  "reference_commit": "341cd09342d58323689491ca060a913a34474ed1",
+  "retained_failures": "Original normal-mesh reference failures remain in the original cohort and investigation",
+  "native_evidence": "Not conferred by this reference review; fresh pinned-candidate runs on both platforms are required",
+  "current_geometry_review": {
+    "file": "geometry-review.json",
+    "sha256": "6f6aad2a27f4244bc01b15455e33362a22e27d2a61153c31793d5836acc9b674"
+  }
+}
