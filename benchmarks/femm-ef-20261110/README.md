@@ -53,6 +53,10 @@ Those flags are neither waived nor changed to PASS. The inherited LRK review
 findings also remain. These results do not promote a reference bundle or release
 qualification.
 
+The follow-up [three-fixture investigation](cogging-investigation.md) rechecks
+the normal/refined FEMM evidence and native mesh-convergence study. It identifies
+mesh sensitivity while preserving the original baseline and failed checks.
+
 ## Consolidated source validation
 
 The full timed collection used the original batched external wrappers. The

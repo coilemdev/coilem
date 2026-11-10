@@ -664,15 +664,15 @@
       ],
       "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
       "definition_ast_sha256": {
-        "xy": "67abfbf6b7aad83ba898f0467cedcea3fd96b8d982f01795653c5749b2430e01",
-        "polyline": "2e92def5f7717dff14e6e27f2da80bd50bc107b84592f92c5fdd682bc55bea6b",
-        "inside": "31f209778b68bb5e24edc01b2ef02af50d30e11c171fa8bd5234a39b3787eae6",
-        "label": "d53c88eeba017442c89fc0e6189664c54f523c2b3c6b3bd98a899f02dcec82d9",
-        "edge_midpoint": "46f46021333add61fa61853f96c53f18341316c3647a718003a19518d9b22bb5",
-        "_rotate_point": "5d33f3f84b53c4a98e86c73c1892137433259fb806d4f9c9bee97cafdabb7344",
-        "_rotate_points": "a8679846f8f6ca0d99f8e651bbd1d54ccc5fcd7c2255bc39d6a7488dd96621aa",
-        "_rotate_magnets_in_place": "94ea0704db3bbe225e121bf6fa684b2d8571ee09e7e4f682376cac379a2d7879",
-        "_clockwise_excitation_config": "f26fadbd8638d18d4386e000920e855e837c7790882a38ec5aff279cced5683e"
+        "xy": "72872dd955434cd8f7e7d616ecd2338d32596800f3bd254a4849d5c43dd2c15b",
+        "polyline": "a5afa17f3939bc03039ae5dc89e82cb4fd7e2aec6702f4d3d9dd8d44468f3b8b",
+        "inside": "84f3fecbe27b790016cd9413e4c654ed2b297f69e653a2b0a050a45db0662469",
+        "label": "f68eeafd3c5a8caa61901c6fa8bc9b1a5cfc54a9cbf08505b4acb1eabbd03384",
+        "edge_midpoint": "c98aa862559fb3261550bc460e83075d52df2a60d6ce023fbea9fa6d1463547a",
+        "_rotate_point": "41b293df6fd332dc782ddccdf41d0428a1037e8fedb1c06058bf9aaffeca2b5e",
+        "_rotate_points": "e4aedcb24b1f14a028562a40c5562054a2d2587d671e8aba1dd1a5e33ed7976b",
+        "_rotate_magnets_in_place": "4b592b21d709e68e66dc4aaa95c76fd4cde9d219e48416e5ff71c527553ae444",
+        "_clockwise_excitation_config": "43c7e48d6be6de885f6046e16162e76bc8731871ab99bf59e99c7394827377ac"
       }
     },
     "phase_f.py": {
@@ -702,21 +702,21 @@
       ],
       "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
       "definition_ast_sha256": {
-        "now": "518e3c12f476150a18fce23d3d9257069c7ed7c1d0f514ba0c95ea205bec7877",
-        "input_contract": "83781cb7d26a46a0eedf6321fbdd2b966daefe482838bce46db95248c6a9bcbf",
-        "driver_vector": "4b0bed063ae489c58644b01c331ec31327b5730a49f9179e3d5ba7ba389ec9bd",
-        "rotated_ir": "68cd0f6b7f0d378c8bf4d5aff1e68298b76e8daeb6659aa3ee182fb8b2d18555",
-        "winding_specs": "da5ca86bf8caced39eed5c5e9404d077d88b9f92b8ba31ab1b528c7ae32278a1",
-        "mesh_settings": "f5e4ea725ecd292f5811c81d9bb4de22257052e559e161df0f131bddd56e2947",
-        "lower_model": "e9c2377d0f1bf97e39328b3870a0b8221042f9634ef61be2a440bbd24784ca32",
-        "emf_from_public_flux": "4b23dbd8fc7a6e9e454d4d4e57614160da220e0d58392bd1931d0fbe54409df2",
-        "phase_harmonic": "f3f2bc237b58716b40435385d5718480affd107e9a02ed523cc1cadb69bb2246",
-        "verify_original_derivative": "b21db92e2167c976c6f161268c0a786b9950ae2312dd6f84f85a51a5f78f2b56",
-        "FakeFEMM": "0ca64eacd3db3708bdf088a6ed4e3eec2863d90df0155bb550e47ff8750f859c",
-        "preflight": "b1af4bfb71cb1bf3ac77305cd7f61c255f8e09f327d9321c30ff24359074ef14",
-        "actual_session_identity": "97ce5ae2c5a98101bf0dea6f0d36cf2fc57ba369a3d3b0c36a43f0bb5b95cf7c",
-        "extract": "9511e3ca9c19c2afe6f62f1481e174e7cc9aa61463a7813e5bc04908f4493f50",
-        "assemble_result": "0367a4cb5eab3aea75fafdc7cbb31833f08b1d78de30d702ba17c4c953700d76"
+        "now": "79f5b7a96d20f88aec9a28217a057893f33d25a85b8e8e71dddd37053b0dcdfa",
+        "input_contract": "05c7b90e83f59a6e63bacb1398871bc8e28f93e8375edad04a8644aa7c21a236",
+        "driver_vector": "33fbc44dc8fa4869880f00bf2765899b97375ff23966ea0ba032d00b86991f8f",
+        "rotated_ir": "3726053d121598df4cd02278311579085595e29223ad2b6e04e1119ab6bd34b7",
+        "winding_specs": "0976bb2fa4dd18dced3c7be5dd59cb0de8dc1f1ca0b79641ac7284125d4831c4",
+        "mesh_settings": "9cbf05ae7f99bf6a198ecfcbaa3358138d118e454789ee21a86a7061ca4f262b",
+        "lower_model": "a95df7a310f6eb5a836ceadf31a422c2493125562efe885f2db209012faa46ce",
+        "emf_from_public_flux": "73f1fa34745f5f27bbe32b7e607040d69085ec6bb8fdbb8443d5e3d92c696e70",
+        "phase_harmonic": "8b35147aa64ce6e8d32e5cc00891d81b0cc0ec3fe597afc1ed09a9b21fff2c9f",
+        "verify_original_derivative": "1c9bb08bb813402dcb2e48dfd54a6af50c76679b1f1301932414e44df346de53",
+        "FakeFEMM": "b30896b09e578d3e07d5a3151d98f5320d9064b5d34c0e65f4c0540023a263f8",
+        "preflight": "2c8df3885b7550682344c852df21b0b9f26682ab21445b731dfe21b9609f6726",
+        "actual_session_identity": "615b918daf0c42adcfc7ed5f52f5d897b3a278a9ad81c9c2f784251ab74e0c93",
+        "extract": "e252efeb089d4b4b499d6b41f9f32f697ba2d6a6b4e147f6fd80000c945c68ae",
+        "assemble_result": "ea405942017feece9b999d7e7129ad694da306da24634b91ccdb0aeea048fd3a"
       }
     },
     "hub.py": {
@@ -736,11 +736,11 @@
       ],
       "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
       "definition_ast_sha256": {
-        "require": "3b218d97634fd91fd6595535193a2eb525911ab34ffd45793deaba58332ca99e",
-        "recipe": "7b667060f79f949971fa03cf5e2a7ef7625547b0ba777a691a002681538e71c4",
-        "BulkMeshProxy": "485c669e938ca8cfec044af5eeac9477c8984c4cb1f58b12464ba137befa4489",
-        "lower": "aa607d2ed7b23de7225af724dfc7e3c625a75fba04758c4d4ac64ca074316a05",
-        "preflight": "452d151c80938baf60464842079c9f7b2ba34194c84ef265aaeade7d874da594"
+        "require": "b600c00e0bd3b45b4c3dc8140b224d0982f65c1672d9f162e3a237dbf3e7f3d3",
+        "recipe": "5b594c63a41137fb9727b06f53b166c801232483d51216e195f76b9a5b459778",
+        "BulkMeshProxy": "76d5afbee03b25af76b2493cde668750e457bb3355522be90ce3b4d8242e137e",
+        "lower": "bfdce7fd90399f6a7d6fef2e33e5051d5ef870e80ab9ac4603975f5a13811628",
+        "preflight": "11056a979f8b61effbc7c9ce961885031af0de13a1505de94549e4bb07a2242a"
       }
     },
     "phase_e.py": {
@@ -756,7 +756,7 @@
       ],
       "transformation": "named definitions copied verbatim; repository-local imports and paths in module header; formatted without changing the preserved physics definitions",
       "definition_ast_sha256": {
-        "summary": "5d2cd6d7dd1b8767194f30159fe8657077a3612acfb5c46b83ef94b49fc61e84"
+        "summary": "a475127f45253fe10107d8e7c82b2af812a2bef2bd524fa15bf9a5a5f6aad314"
       }
     },
     "automation.py": {
@@ -772,5 +772,6 @@
       ],
       "transformation": "Owned DispatchEx/job-object Automation copied; local imports, portable binary checks, and cleanup restores hooks even if profile writing fails; formatted without changing the preserved physics definitions"
     }
-  }
+  },
+  "definition_ast_format": "structural-json-v1: node type and fields, omit None/empty optional fields"
 }

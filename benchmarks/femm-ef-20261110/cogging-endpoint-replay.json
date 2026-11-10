@@ -1,0 +1,106 @@
+{
+  "schema": "coilem.cogging_fresh_endpoint_replay/v1",
+  "status": "PASS",
+  "scope": "Six fresh independent refined-mesh endpoints, not three new full sweeps or a new standard timing run",
+  "registered_baseline_modified": false,
+  "contract_sha256": "4fc01ba9b5e00c586226d3d5e02bbcbcfaf7e0aee9dc208b33349f32e98e5c0a",
+  "completed_at": "2026-11-10T19:51:46.097232+00:00",
+  "rows": [
+    {
+      "alias": "e14",
+      "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+      "independent_endpoints": true,
+      "fresh_model_hashes_exact": 2,
+      "fresh_answer_hashes_exact": 2,
+      "fresh_physical_payloads_exact": 2,
+      "endpoint_mismatch_Nm": 0.0034119529801030016,
+      "floor_Nm": 0.02831,
+      "closure_status": "PASS",
+      "retained_full_sweep_self_checks": {
+        "reference_cogging_period": "PASS",
+        "reference_cogging_mean": "PASS"
+      },
+      "retained_measurement_sha256": "a30e4928ac3b1ac96eb3127791b23fe91473306130a90095d58b7d6b6b55f344",
+      "points": [
+        {
+          "index": 0,
+          "electrical_angle_deg": 0.0,
+          "torque_Nm": 0.01921417892331983,
+          "fem_sha256": "aba1d5a75b482e31a6847d3b5baf3bbd8831df90ecdb8647dd87bf50dff2d046",
+          "ans_sha256": "01e11ed3b0b0f5eacbaabf6595e95c9ac322351fd82b6a5fc5d34d74e482408d"
+        },
+        {
+          "index": 24,
+          "electrical_angle_deg": 60.0,
+          "torque_Nm": 0.02262613190342283,
+          "fem_sha256": "28f6a9169c383f40c6c0683b5cb6fe7c2b1b699f5860c4aa146ac45ba4381d92",
+          "ans_sha256": "7962e9a0842b37ae9ed55dd340cf93c4c626dc3b707f4f61d2d45d62279639ea"
+        }
+      ]
+    },
+    {
+      "alias": "e15",
+      "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+      "independent_endpoints": true,
+      "fresh_model_hashes_exact": 2,
+      "fresh_answer_hashes_exact": 2,
+      "fresh_physical_payloads_exact": 2,
+      "endpoint_mismatch_Nm": 0.003499109908876733,
+      "floor_Nm": 0.031519,
+      "closure_status": "PASS",
+      "retained_full_sweep_self_checks": {
+        "reference_cogging_period": "PASS",
+        "reference_cogging_mean": "PASS"
+      },
+      "retained_measurement_sha256": "02df2b2344c07c29c94c07f7976b13b0e3d2c95b7fd143894d5d1ea32a323749",
+      "points": [
+        {
+          "index": 0,
+          "electrical_angle_deg": 0.0,
+          "torque_Nm": 0.01312017148216732,
+          "fem_sha256": "f92529b3e242b409ad5d599d49760f116ef2ccdcbb579cbe8cd539e66f6d18e1",
+          "ans_sha256": "6facf4bb74019d1aaa92d2c75d6a691be5bc11c94e4e3b2ad48f1c5aa63c0846"
+        },
+        {
+          "index": 24,
+          "electrical_angle_deg": 30.0,
+          "torque_Nm": 0.009621061573290587,
+          "fem_sha256": "7d96254b4ed977a367f0ff708b0ab8347368b0db4e4b9f20c539c78db335795a",
+          "ans_sha256": "2b4a835b52a3caaa6563b0101e8aa6aa3640e45c67544c0ca2d6a6423499363d"
+        }
+      ]
+    },
+    {
+      "alias": "e16",
+      "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+      "independent_endpoints": true,
+      "fresh_model_hashes_exact": 2,
+      "fresh_answer_hashes_exact": 2,
+      "fresh_physical_payloads_exact": 2,
+      "endpoint_mismatch_Nm": 0.01535947757751098,
+      "floor_Nm": 0.026074,
+      "closure_status": "PASS",
+      "retained_full_sweep_self_checks": {
+        "reference_cogging_period": "PASS",
+        "reference_cogging_mean": "PASS"
+      },
+      "retained_measurement_sha256": "442a74fd6b28b916f798a6f6fe748637c606aabb5a3ba32be1704060c75a8576",
+      "points": [
+        {
+          "index": 0,
+          "electrical_angle_deg": 0.0,
+          "torque_Nm": -0.01131463666624363,
+          "fem_sha256": "59d4bf6b55affb5ee00cc3c7493eb00b94a07b5e1e6fe78118befc9342e8417a",
+          "ans_sha256": "4981f5740d784e379cc59ea65a353cbebb601f5b65135df98491cabf6322d92e"
+        },
+        {
+          "index": 24,
+          "electrical_angle_deg": 60.0,
+          "torque_Nm": -0.02667411424375461,
+          "fem_sha256": "db4eb7ff9848f4f5073f659d1dc519277c7ccc3e8ff0b05817eac23829f2c63f",
+          "ans_sha256": "e31a493341d7fc43b2610da11c1ffe9fccb06051409976e9a14e4d684873a3bb"
+        }
+      ]
+    }
+  ]
+}

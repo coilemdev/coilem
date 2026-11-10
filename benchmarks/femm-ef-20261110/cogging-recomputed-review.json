@@ -1,0 +1,198 @@
+{
+  "schema": "coilem.distributed_cogging_review/v1",
+  "measured_native_commit": "6bc935d0beeaad1390134670a9813a7e04c3b22c",
+  "processing": "Direct metrics on original samples; no fitting, alignment, offset removal or rescaling",
+  "native_endpoint_caveat": "Reused native endpoints are not independent closure checks; only amplitude gates are used here",
+  "source_sha256": {
+    "results.json": "938845c8316b1fd7421e26ef13801d44f6b5530ad55cc01985e43e003575e737",
+    "waveforms.json": "41710e456e92dec3d6e3da847b8aaca021299c7bb58a95386abd1fc03f205354"
+  },
+  "rows": [
+    {
+      "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+      "floor_Nm": 0.02831,
+      "baseline_femm": {
+        "peak_to_peak_Nm": 24.035079801603402,
+        "first_harmonic_Nm": 4.3478452083158095,
+        "mean_Nm": 0.11260034451816246,
+        "endpoint_mismatch_Nm": 0.0334472953980251,
+        "self_checks": {
+          "reference_cogging_period": "FAIL",
+          "reference_cogging_mean": "FAIL"
+        }
+      },
+      "refined_femm": {
+        "peak_to_peak_Nm": 23.79155743104812,
+        "first_harmonic_Nm": 4.31017756253179,
+        "mean_Nm": -0.0075418073173867325,
+        "endpoint_mismatch_Nm": 0.0034119529801030016,
+        "self_checks": {
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        }
+      },
+      "native_mesh_study": {
+        "normal": {
+          "representative_mesh_elements": 32614,
+          "vs_refined_femm": {
+            "status": "YELLOW",
+            "gates": {
+              "peak_to_peak_Nm": "YELLOW",
+              "first_harmonic_Nm": "YELLOW"
+            },
+            "peak_to_peak_Nm_error_pct": 10.728524494823574,
+            "first_harmonic_Nm_error_pct": 10.174277030298567
+          }
+        },
+        "fine": {
+          "representative_mesh_elements": 34722,
+          "vs_refined_femm": {
+            "status": "PASS",
+            "gates": {
+              "peak_to_peak_Nm": "PASS",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 9.021665227819385,
+            "first_harmonic_Nm_error_pct": 8.253887596312147
+          }
+        },
+        "very_fine": {
+          "representative_mesh_elements": 105682,
+          "vs_refined_femm": {
+            "status": "PASS",
+            "gates": {
+              "peak_to_peak_Nm": "PASS",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 3.080601670658494,
+            "first_harmonic_Nm_error_pct": 2.0924182110096408
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+      "floor_Nm": 0.031519,
+      "baseline_femm": {
+        "peak_to_peak_Nm": 16.487339911816534,
+        "first_harmonic_Nm": 6.305038078298064,
+        "mean_Nm": 0.038607450524982066,
+        "endpoint_mismatch_Nm": 0.015921637167246497,
+        "self_checks": {
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "FAIL"
+        }
+      },
+      "refined_femm": {
+        "peak_to_peak_Nm": 16.34080392704587,
+        "first_harmonic_Nm": 6.255703963867057,
+        "mean_Nm": 0.0060340061897624225,
+        "endpoint_mismatch_Nm": 0.003499109908876733,
+        "self_checks": {
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        }
+      },
+      "native_mesh_study": {
+        "normal": {
+          "representative_mesh_elements": 44718,
+          "vs_refined_femm": {
+            "status": "PASS",
+            "gates": {
+              "peak_to_peak_Nm": "PASS",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 9.097944460223525,
+            "first_harmonic_Nm_error_pct": 7.298165340543688
+          }
+        },
+        "fine": {
+          "representative_mesh_elements": 41662,
+          "vs_refined_femm": {
+            "status": "YELLOW",
+            "gates": {
+              "peak_to_peak_Nm": "YELLOW",
+              "first_harmonic_Nm": "YELLOW"
+            },
+            "peak_to_peak_Nm_error_pct": 12.634294955059572,
+            "first_harmonic_Nm_error_pct": 11.05423664058542
+          }
+        },
+        "very_fine": {
+          "representative_mesh_elements": 126662,
+          "vs_refined_femm": {
+            "status": "PASS",
+            "gates": {
+              "peak_to_peak_Nm": "PASS",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 3.270055577665524,
+            "first_harmonic_Nm_error_pct": 2.5125557825639087
+          }
+        }
+      }
+    },
+    {
+      "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+      "floor_Nm": 0.026074,
+      "baseline_femm": {
+        "peak_to_peak_Nm": 24.56823827730847,
+        "first_harmonic_Nm": 6.112730411656716,
+        "mean_Nm": 0.05720656405756572,
+        "endpoint_mismatch_Nm": 0.04244811103784872,
+        "self_checks": {
+          "reference_cogging_period": "FAIL",
+          "reference_cogging_mean": "FAIL"
+        }
+      },
+      "refined_femm": {
+        "peak_to_peak_Nm": 24.28997440238068,
+        "first_harmonic_Nm": 6.057147939921223,
+        "mean_Nm": 0.0043947644945336985,
+        "endpoint_mismatch_Nm": 0.01535947757751098,
+        "self_checks": {
+          "reference_cogging_period": "PASS",
+          "reference_cogging_mean": "PASS"
+        }
+      },
+      "native_mesh_study": {
+        "normal": {
+          "representative_mesh_elements": 39280,
+          "vs_refined_femm": {
+            "status": "YELLOW",
+            "gates": {
+              "peak_to_peak_Nm": "YELLOW",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 11.19658817420258,
+            "first_harmonic_Nm_error_pct": 9.242071022995638
+          }
+        },
+        "fine": {
+          "representative_mesh_elements": 41988,
+          "vs_refined_femm": {
+            "status": "YELLOW",
+            "gates": {
+              "peak_to_peak_Nm": "YELLOW",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 10.301831245802424,
+            "first_harmonic_Nm_error_pct": 7.45010091479709
+          }
+        },
+        "very_fine": {
+          "representative_mesh_elements": 118966,
+          "vs_refined_femm": {
+            "status": "PASS",
+            "gates": {
+              "peak_to_peak_Nm": "PASS",
+              "first_harmonic_Nm": "PASS"
+            },
+            "peak_to_peak_Nm_error_pct": 4.070798921666398,
+            "first_harmonic_Nm_error_pct": 3.124196455378876
+          }
+        }
+      }
+    }
+  ]
+}

@@ -14725,8 +14725,8 @@
     },
     {
       "path": "benchmarks/femm-ef-20261110/README.md",
-      "bytes": 4694,
-      "sha256": "73507d0a86ecbe70903bd1c56a07d98b1a48b52331fda626bf23d7cd5e4af966"
+      "bytes": 4931,
+      "sha256": "0f72c116fcc14b982c9e6b135b1e701575c858a0226377904136aa3354ab80a8"
     },
     {
       "path": "benchmarks/femm-ef-20261110/assembly-comparison.json",
@@ -14765,8 +14765,8 @@
     },
     {
       "path": "tests/test_femm_reference_adapter.py",
-      "bytes": 5723,
-      "sha256": "85c1ea8c35f051268c821359ccc53744bcf52427305b7373315bd19d0b11ff92"
+      "bytes": 6000,
+      "sha256": "d1e5457c79a7774e90304a15adc10711c7344776030f2fd4f0b307e7a7bf61c9"
     },
     {
       "path": "tests/test_femm_reference_publication.py",
@@ -15365,18 +15365,48 @@
     },
     {
       "path": "tools/femm_reference/runtime.py",
-      "bytes": 3946,
-      "sha256": "8ac51aafaf3ea952e1e6d23d909c96bc8cd2f03134054acdde6ddc8ec15c05ee"
+      "bytes": 4927,
+      "sha256": "0ce970921066876ee497d8c2bbbc3ba29f3253cce318ec0e02bfcd9fbb44f681"
     },
     {
       "path": "tools/femm_reference/source-manifest.json",
-      "bytes": 45797,
-      "sha256": "d261368f20f75bc68d50a53d501665ea7fbe0e7a972cc3486bf57df1601e9cd3"
+      "bytes": 45901,
+      "sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8"
     },
     {
       "path": "tools/run_reference_positions.py",
       "bytes": 180,
       "sha256": "b7f86b231aad877a16a5e1e214bf2134d2214bfb48323225cbceec3237104356"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/cogging-endpoint-replay.json",
+      "bytes": 4161,
+      "sha256": "4271df0bc1763afe22ca7693aa005598336fa3b98ccac67f74e4d73b52448e18"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/cogging-investigation.md",
+      "bytes": 5347,
+      "sha256": "8480e3bf66bcd6f1245adfabe680b8b55eeace557888126457cba093442aed25"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/cogging-recomputed-review.json",
+      "bytes": 6676,
+      "sha256": "3bbd28aea15900c1b05d4eee1ddcbfd5b9e9e000e3dde4ab96706b78f29c0e76"
+    },
+    {
+      "path": "benchmarks/femm-ef-20261110/cogging-retained-evidence.json",
+      "bytes": 69899,
+      "sha256": "8718dab1dafab90272dbd885fa9a4dee61ef63f90176ff41867a807475c0a47d"
+    },
+    {
+      "path": "tests/test_cogging_fixture_review.py",
+      "bytes": 1155,
+      "sha256": "80b78ed4c74a7a433afbb7e495e8e6e0078f99f65338ad29dbdc3b541b7e04a8"
+    },
+    {
+      "path": "tools/review_cogging_fixtures.py",
+      "bytes": 4863,
+      "sha256": "94d2f4f183f70ddbb8a61b91bb07a28ddef5c4bafc2e98e17014917e2d40a400"
     }
   ],
   "public_patches": [

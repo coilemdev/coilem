@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import importlib.metadata
 import json
@@ -20,6 +21,30 @@ DEPENDENCIES = ("numpy", "pydantic", "pyfemm", "pywin32")
 
 def canonical(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+
+
+def ast_fingerprint(node):
+    """Hash parsed definitions consistently across supported Python versions.
+
+    Python 3.13 changed ast.dump's treatment of empty fields. Structural JSON
+    omits those optional fields explicitly, including empty new type parameters.
+    """
+    def encode(value):
+        if isinstance(value, ast.AST):
+            return {"node": type(value).__name__, "fields": {
+                name: encode(child) for name, child in ast.iter_fields(value)
+                if child is not None and not (isinstance(child, list) and not child)
+            }}
+        if isinstance(value, list):
+            return [encode(child) for child in value]
+        if isinstance(value, complex):
+            return {"complex": [value.real, value.imag]}
+        if isinstance(value, bytes):
+            return {"bytes_hex": value.hex()}
+        if value is Ellipsis:
+            return {"ellipsis": True}
+        return value
+    return canonical(encode(node))
 
 
 def verify_sources(package=PACKAGE):

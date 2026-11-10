@@ -26,7 +26,7 @@ def test_imported_sources_and_original_physics_definitions_are_intact():
         tree = ast.parse((runtime.PACKAGE / name).read_text(encoding="utf-8"))
         nodes = {node.name: node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.ClassDef))}
         for definition, expected in definitions.items():
-            actual = hashlib.sha256(ast.dump(nodes[definition], include_attributes=False).encode()).hexdigest()
+            actual = runtime.ast_fingerprint(nodes[definition])
             assert actual == expected, (name, definition)
 
 
@@ -39,6 +39,12 @@ def test_source_verification_rejects_tampering(tmp_path):
     source.write_bytes(b"changed mesh")
     with pytest.raises(ValueError, match="source changed"):
         runtime.verify_sources(tmp_path)
+
+
+def test_definition_fingerprint_ignores_empty_optional_ast_fields():
+    complete = ast.arguments(posonlyargs=[], args=[ast.arg(arg="point")], kwonlyargs=[], kw_defaults=[], defaults=[])
+    sparse = ast.arguments(args=[ast.arg(arg="point")])
+    assert runtime.ast_fingerprint(complete) == runtime.ast_fingerprint(sparse)
 
 
 def test_standard_selection_preserves_all_grids_and_controls():
