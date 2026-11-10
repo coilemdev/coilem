@@ -6750,8 +6750,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
-      "bytes": 116571,
-      "sha256": "427b18c89c11e82f98ed18e88a196ece8c61188293df0257d405bef0d16b0a73"
+      "bytes": 111029,
+      "sha256": "1ce7abc1efcc5380c8ee3abfe93bef9bd8977a2cab3ae748c4d8f45383f14779"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFourIronSaturation.tsx",
@@ -6870,8 +6870,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/field-force.css",
-      "bytes": 66752,
-      "sha256": "d6de0b0ee0928c102b20295dde0024cc0e8e53699c1ddc84e19ebd3dce4b73d4"
+      "bytes": 70481,
+      "sha256": "35f701455b42ddf644d8730cbcc168bc23f0c6c67096410306629a6397e35756"
     },
     {
       "path": "frontend/src/components/tutorials/fieldLineStitching.ts",
@@ -6905,8 +6905,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/lab/LessonLab.tsx",
-      "bytes": 10183,
-      "sha256": "889661bbab2c178608a6208c339cd8e3f84d1a921c66f0faacb903c1c96c3a2a"
+      "bytes": 10313,
+      "sha256": "d76d6ffc9ac029dbf8b23e4ec9b862e5a87848b932eb00ba6d8f0900293005fe"
     },
     {
       "path": "frontend/src/components/tutorials/index.ts",

@@ -221,7 +221,8 @@ export function LessonSegmented<Id extends string>({ options, value, onChange, l
 /**
  * The dock under the canvas, laid out like the motor workspace's: view tabs on
  * the left of the title bar and `end` (zoom, a note) on the right, then one
- * row of labelled controls.
+ * row of labelled controls. A view with no layers to switch passes no children
+ * and gets the title bar alone.
  */
 export function LessonDock<Tab extends string>({ tabs, tab, onTab, end, children }: Children & {
   tabs: ReadonlyArray<{ id: Tab; label: string; disabled?: boolean; title?: string }>;
@@ -248,7 +249,7 @@ export function LessonDock<Tab extends string>({ tabs, tab, onTab, end, children
         </div>
         <span className="lesson-lab-dock-end">{end}</span>
       </div>
-      <div className="lesson-lab-dock-controls">{children}</div>
+      {React.Children.count(children) > 0 ? <div className="lesson-lab-dock-controls">{children}</div> : null}
     </div>
   );
 }

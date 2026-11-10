@@ -900,9 +900,8 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   const [motorSolve, setMotorSolve] = React.useState<FieldForceMotorData | null>(null);
   const [motorSolveBusy, setMotorSolveBusy] = React.useState(false);
   const [motorSolveError, setMotorSolveError] = React.useState<string | null>(null);
-  const [motorSolveCount, setMotorSolveCount] = React.useState(0);
   const [motorSolveNonce, setMotorSolveNonce] = React.useState(0);
-  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('pressure');
+  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('field');
   const [showFluxLines, setShowFluxLines] = React.useState(true);
   const [showFieldIntensity, setShowFieldIntensity] = React.useState(false);
   const [showField3D, setShowField3D] = React.useState(false);
@@ -1147,7 +1146,6 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
       ]).then((result) => {
         if (motorSolveRequestIdRef.current !== requestId) return;
         setMotorSolve(result);
-        setMotorSolveCount((count) => count + 1);
         setMotorTorqueAnglesDeg((previous) => (
           previous.includes(result.loop_angle_deg)
             ? previous
@@ -1221,18 +1219,15 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
     if (source === 'magnet' && shownRun) void loadMagnetField(shownRun.poleGapMm);
   };
 
-  const toggleFieldLayer = (layer: 'lines' | 'density') => {
-    if (fieldDisplayMode === 'pressure') {
-      setFieldDisplayMode('field');
-      setShowFluxLines(layer === 'lines');
-      setShowFieldIntensity(layer === 'density');
-      return;
-    }
-    if (layer === 'lines') {
-      setShowFluxLines((visible) => !visible);
-    } else {
-      setShowFieldIntensity((visible) => !visible);
-    }
+  // One way of drawing the field at a time, as in the other lessons.
+  type FieldView = 'lines' | 'density' | 'pressure';
+  const fieldView: FieldView = fieldDisplayMode === 'pressure'
+    ? 'pressure'
+    : showFieldIntensity && !showFluxLines ? 'density' : 'lines';
+  const selectFieldView = (view: FieldView) => {
+    setFieldDisplayMode(view === 'pressure' ? 'pressure' : 'field');
+    setShowFluxLines(view !== 'density');
+    setShowFieldIntensity(view === 'density');
   };
 
   const selectSolvedCurrent = (nextCurrentA: number) => {
@@ -1638,8 +1633,6 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   const renderFieldDock = (kind: 'baseline' | 'angle', unsolved: boolean) => {
     const in3D = !unsolved && showField3D;
     const layersOff = unsolved || in3D;
-    const linesOn = kind === 'angle' ? forceAngleShowFluxLayer : !layersOff && showFluxLayer;
-    const densityOn = kind === 'angle' ? forceAngleShowDensityLayer : !layersOff && showDensityLayer;
     const sourceLoading = kind === 'baseline' && !sourceFieldReady;
     return (
       <LessonDock
@@ -1659,39 +1652,30 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
               onChange={selectFieldSource}
               options={[
                 { id: 'combined', label: 'Combined', disabled: unsolved, title: 'The magnets and the wire current together' },
-                { id: 'magnet', label: 'Magnets only', disabled: unsolved, title: 'The same setup solved with the wire current switched off' },
-                { id: 'wire', label: 'Wire only', disabled: unsolved, title: 'The same setup solved with the magnets switched off' },
+                { id: 'magnet', label: 'Magnets', disabled: unsolved, title: 'The same setup solved with the wire current switched off' },
+                { id: 'wire', label: 'Wire', disabled: unsolved, title: 'The same setup solved with the magnets switched off' },
               ]}
             />
           </LessonDockGroup>
         ) : null}
         <LessonDockGroup label="Field">
-          {kind === 'baseline' ? (
-            <LessonDockToggle
-              pressed={!layersOff && fieldDisplayMode === 'pressure'}
-              onChange={() => setFieldDisplayMode('pressure')}
-              disabled={layersOff || fieldSourceMode !== 'combined'}
-              title="Where the field pushes harder on the wire. Needs the combined field."
-            >
-              Field pressure
-            </LessonDockToggle>
-          ) : null}
-          <LessonDockToggle
-            pressed={linesOn}
-            onChange={() => toggleFieldLayer('lines')}
-            disabled={layersOff || sourceLoading}
-            title="Lines that follow the direction of the field"
-          >
-            Field lines
-          </LessonDockToggle>
-          <LessonDockToggle
-            pressed={densityOn}
-            onChange={() => toggleFieldLayer('density')}
-            disabled={layersOff || sourceLoading}
-            title="Colour by field strength, |B|"
-          >
-            Flux density
-          </LessonDockToggle>
+          <LessonSegmented
+            label="Field drawing"
+            value={layersOff ? null : kind === 'angle' && fieldView === 'pressure' ? 'lines' : fieldView}
+            onChange={selectFieldView}
+            options={[
+              { id: 'lines' as FieldView, label: 'Field lines', disabled: layersOff || sourceLoading, title: 'Lines that follow the direction of the field' },
+              { id: 'density' as FieldView, label: 'Flux density', disabled: layersOff || sourceLoading, title: 'Colour by field strength, |B|' },
+              ...(kind === 'baseline'
+                ? [{
+                  id: 'pressure' as FieldView,
+                  label: 'Pressure',
+                  disabled: layersOff || fieldSourceMode !== 'combined',
+                  title: 'Where the field pushes harder on the wire. Needs the combined field.',
+                }]
+                : []),
+            ]}
+          />
         </LessonDockGroup>
         <LessonDockGroup label="Show">
           <LessonDockToggle
@@ -1712,10 +1696,10 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
       <LessonLabViewport
         className="field-force-canvas"
         label={`${fieldSourceMode === 'combined'
-          ? 'Field + current → force'
-          : fieldSourceMode === 'magnet' ? 'Permanent-magnet field' : 'Conductor field'} · ${
-          fieldSourceMode === 'magnet' ? 'I = 0 A' : `${signed(run.currentA, 0)} A`
-        } · ${run.poleGapMm.toFixed(1)} mm gap each side`}
+          ? 'Wire between the poles'
+          : fieldSourceMode === 'magnet' ? 'Magnets only' : 'Wire only'} · ${
+          fieldSourceMode === 'magnet' ? '0 A' : `${signed(run.currentA, 0)} A`
+        } · ${run.poleGapMm.toFixed(1)} mm gaps`}
       >
         {showField3D ? (
           <FieldForce3D
@@ -1920,11 +1904,7 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
         tab={showField3D ? '3d' : '2d'}
         onTab={selectCanvasView}
         end={showField3D ? 'Drag to orbit' : 'Seen from above'}
-      >
-        <span className="lesson-lab-note">
-          This is a drawing of the loop, so there are no field layers to switch. The side force in it comes from the solver.
-        </span>
-      </LessonDock>
+      />
     </LessonLabCanvas>
   );
 
@@ -2002,27 +1982,22 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
         <section className="field-force-results motor-effect-results" aria-label="Motor effect force and torque result" aria-busy={motorSolvePending}>
           <header>
             <div>
-              <p className="learning-kicker">Motor effect · live FEM side solve</p>
+              <p className="learning-kicker">One loop of wire</p>
               <h2>Turn the loop through the field.</h2>
             </div>
             <span>{activeMotorSolve ? `τ ${motorTorqueDirection}` : 'FEM…'}</span>
           </header>
-          <div className={`motor-effect-context-solve${motorSolveError ? ' is-error' : motorSolvePending ? ' is-solving' : ''}`}>
-            <span>{motorSolveError ? 'SOLVE FAILED' : motorSolvePending ? 'MESH + SOLVE IN PROGRESS' : `MAGNETO2D FEM #${motorSolveCount}`}</span>
-            <strong>
-              {motorSolveError
-                ? motorSolveError
-                : motorSolvePending
-                  ? `${signed(motorLoopCurrentA, 0)} A · δ ${motorLoopAngleDeg}°`
-                  : `${activeMotorSolve?.generation_time_ms.toFixed(0) ?? 0} ms · θ(I,B) = ${activeMotorSolve?.fem_reference_angle_deg ?? 90}°`}
-            </strong>
-          </div>
+          {motorSolveError || motorSolvePending ? (
+            <p className={motorSolveError ? 'lesson-lab-error' : 'lesson-lab-note'} role="status">
+              {motorSolveError ?? `Solving ${signed(motorLoopCurrentA, 0)} A at loop angle ${motorLoopAngleDeg}°…`}
+            </p>
+          ) : null}
           <section className="motor-effect-equation-flow">
-            <div><small>EACH ACTIVE SIDE · FRESH 2D FEM</small><strong>∫ J × B dV</strong><span>{activeMotorSolve ? `${(motorSideForceN * 1e3).toFixed(1)} mN` : 'awaiting solve'}</span></div>
+            <div><small>Force on each side</small><strong>∫ J × B dV</strong><span>{activeMotorSolve ? `${(motorSideForceN * 1e3).toFixed(1)} mN` : 'awaiting solve'}</span></div>
             <b>×</b>
-            <div><small>PROJECTED LEVER ARM · δ = {motorLoopAngleDeg}°</small><strong>2r sin δ</strong><span>{(24 * Math.sin((motorLoopAngleDeg * Math.PI) / 180)).toFixed(1)} mm</span></div>
+            <div><small>Lever arm at δ = {motorLoopAngleDeg}°</small><strong>2r sin δ</strong><span>{(24 * Math.sin((motorLoopAngleDeg * Math.PI) / 180)).toFixed(1)} mm</span></div>
             <b>=</b>
-            <div className="is-result"><small>SIGNED LOOP TORQUE · F FROM FEM</small><strong>τ = 2rF sin δ</strong><span>{activeMotorSolve ? `${signed(motorTorqueNm * 1e3, 2)} mN·m` : 'awaiting solve'}</span></div>
+            <div className="is-result"><small>Torque on the loop</small><strong>τ = 2rF sin δ</strong><span>{activeMotorSolve ? `${signed(motorTorqueNm * 1e3, 2)} mN·m` : 'awaiting solve'}</span></div>
           </section>
           <section className="motor-effect-force-pair">
             <div>
@@ -2076,6 +2051,17 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
           </ol>
         </section>
       )}
+
+      {lessonStage === 'solve' && labMode === 'baseline' && shownRun && fieldView === 'pressure' && !showField3D ? (
+        <section className="lesson-lab-card" aria-label="How to read the pressure view">
+          <h3>Reading the pressure view</h3>
+          <p className="lesson-lab-note">
+            On one side of the wire its own field adds to the magnets’ field; on the other it subtracts.
+            The side with the stronger field pushes harder, so the wire is pushed toward the weaker side.
+            In air the pressure is B² / 2μ₀.
+          </p>
+        </section>
+      ) : null}
 
       {termsBox}
 
@@ -2232,172 +2218,74 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
       >
         {goalCard}
         {labMode === 'motor' ? (
-          <section className="field-force-control-card motor-effect-control-card">
-            <div className="motor-effect-control-summary">
-              <span>ONE ENERGIZED TURN · LIVE FEM</span>
-              <strong>Horizontal loop · two separated voltage leads</strong>
-            </div>
-            <div className={`motor-effect-solve-status${motorSolveError ? ' is-error' : motorSolvePending ? ' is-solving' : ' is-solved'}`} role="status" aria-live="polite">
-              <span>{motorSolveError ? 'FEM ERROR' : motorSolvePending ? 'MAGNETO2D SOLVING' : `FEM SOLVE #${motorSolveCount}`}</span>
-              <strong>
-                {motorSolveError
-                  ? motorSolveError
-                  : motorSolvePending
-                    ? `${signed(motorLoopCurrentA, 0)} A · δ ${motorLoopAngleDeg}°`
-                    : `${signed(activeMotorSolve?.current_a ?? 0, 0)} A · δ ${activeMotorSolve?.loop_angle_deg ?? 0}° · ${activeMotorSolve?.generation_time_ms.toFixed(0) ?? 0} ms`}
-              </strong>
-              {motorSolveError ? (
-                <button type="button" onClick={() => setMotorSolveNonce((nonce) => nonce + 1)}>Retry FEM solve</button>
-              ) : (
-                <small>
-                  {motorSolvePending
-                    ? 'Meshing the pole gap and integrating J × B in the active conductor…'
-                    : 'Fresh 2D FEM side force · 3D loop-angle lever arm'}
-                </small>
-              )}
-            </div>
+          <section className="field-force-control-card" aria-label="Loop controls">
             <label><span>Loop current</span><strong>{signed(motorLoopCurrentA, 0)} A</strong></label>
-            <div className="motor-effect-current-switch" role="group" aria-label="Motor loop current direction">
-              {[8, -8].map((loopCurrent) => (
-                <button
-                  key={loopCurrent}
-                  type="button"
-                  className={motorLoopCurrentA === loopCurrent ? 'is-active' : ''}
-                  onClick={() => setMotorLoopCurrentA(loopCurrent)}
-                >
-                  {signed(loopCurrent, 0)} A
-                </button>
-              ))}
-            </div>
-            <div className="motor-effect-angle-control">
-              <label htmlFor="motor-effect-angle">
-                <span>Loop angle δ</span>
-                <strong>{motorLoopAngleDeg}°</strong>
-              </label>
-              <input
-                id="motor-effect-angle"
-                type="range"
-                min="0"
-                max="360"
-                step="5"
-                value={motorLoopAngleDeg}
-                aria-label={`Loop angle ${motorLoopAngleDeg} degrees`}
-                onChange={(event) => selectMotorLoopAngle(Number(event.currentTarget.value))}
-              />
-              <div className="motor-effect-angle-scale">
-                <span>0° aligned</span>
-                <span>90° peak</span>
-                <span>180° aligned</span>
-                <span>270° reverse peak</span>
-              </div>
-              <div className="motor-effect-angle-presets" role="group" aria-label="Loop angle presets">
-                {[0, 90, 180, 270].map((angleDeg) => (
-                  <button
-                    key={angleDeg}
-                    type="button"
-                    className={motorLoopAngleDeg === angleDeg ? 'is-active' : ''}
-                    onClick={() => selectMotorLoopAngle(angleDeg)}
-                  >
-                    {angleDeg}°
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="motor-effect-side-readout">
-              <div><span>AB force</span><strong>{activeMotorSolve ? `${motorLoopCurrentA >= 0 ? '⊙ up +Y' : '⊗ down −Y'} · ${(motorSideForceN * 1e3).toFixed(1)} mN` : 'Awaiting FEM'}</strong></div>
-              <div><span>CD force</span><strong>{activeMotorSolve ? `${motorLoopCurrentA >= 0 ? '⊗ down −Y' : '⊙ up +Y'} · ${(motorSideForceN * 1e3).toFixed(1)} mN` : 'Awaiting FEM'}</strong></div>
-            </div>
+            <LessonSegmented
+              stretch
+              label="Motor loop current direction"
+              value={String(motorLoopCurrentA)}
+              onChange={(value) => setMotorLoopCurrentA(Number(value))}
+              options={[8, -8].map((loopCurrent) => ({ id: String(loopCurrent), label: `${signed(loopCurrent, 0)} A` }))}
+            />
+            <label htmlFor="motor-effect-angle"><span>Loop angle δ</span><strong>{motorLoopAngleDeg}°</strong></label>
+            <input
+              id="motor-effect-angle"
+              type="range"
+              min="0"
+              max="360"
+              step="5"
+              value={motorLoopAngleDeg}
+              aria-label={`Loop angle ${motorLoopAngleDeg} degrees`}
+              onChange={(event) => selectMotorLoopAngle(Number(event.currentTarget.value))}
+            />
+            <LessonSegmented
+              stretch
+              label="Loop angle presets"
+              value={[0, 90, 180, 270].includes(motorLoopAngleDeg) ? String(motorLoopAngleDeg) : null}
+              onChange={(value) => selectMotorLoopAngle(Number(value))}
+              options={[0, 90, 180, 270].map((angleDeg) => ({ id: String(angleDeg), label: `${angleDeg}°` }))}
+            />
+            <p className="lesson-lab-note">The loop lies along the field at 0° and 180°; torque peaks a quarter turn away.</p>
           </section>
         ) : labMode === 'angle' ? (
-          <section className="field-force-control-card field-force-theta-card">
-            <div className="motor-effect-control-summary">
-              <span>ANGLE SWEEP · LIVE 2D FEM</span>
-              <strong>Solve wire force versus θ</strong>
-            </div>
-            <div className="motor-effect-angle-control field-force-theta-control">
-              <label htmlFor="field-force-angle-slider">
-                <span>Angle θ between current and field</span>
-                <strong>{forceAngleDeg}°</strong>
-              </label>
-              <input
-                id="field-force-angle-slider"
-                type="range"
-                min="0"
-                max="360"
-                step="5"
-                value={forceAngleDeg}
-                disabled={forceAngleSolveBusy}
-                aria-label={`Angle between current and magnetic field ${forceAngleDeg} degrees`}
-                onChange={(event) => selectForceAngle(Number(event.currentTarget.value))}
-              />
-              <div className="field-force-theta-scale">
-                <span>0° zero</span>
-                <span>180° zero</span>
-                <span>360° full cycle</span>
-              </div>
-              <div className="field-force-theta-presets" role="group" aria-label="Current-to-field angle presets">
-                {FORCE_ANGLE_SWEEP_DEGREES.map((angleDeg) => (
-                  <button
-                    key={angleDeg}
-                    type="button"
-                    disabled={forceAngleSolveBusy}
-                    className={forceAngleDeg === angleDeg ? 'is-active' : ''}
-                    onClick={() => selectForceAngle(angleDeg)}
-                  >
-                    {angleDeg}°
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="field-force-theta-readout">
-              <div><span>sin θ</span><strong>{forceAngleSin.toFixed(3)}</strong></div>
-              <div><span>Current across the field, I<sub>⊥</sub></span><strong>{signed(forceAngleEffectiveCurrentA, 2)} A</strong></div>
-              <div><span>{activeForceAngleRun ? 'Solved force' : 'Preview, scaled from 90°'}</span><strong>{signed(forceAngleFEMN * 1e3)} mN</strong></div>
-              <div><span>BIL estimate</span><strong>{signed(forceAngleBilN * 1e3)} mN</strong></div>
-            </div>
-            <div
-              className={`field-force-angle-solve-status${forceAngleSolveBusy ? ' is-solving' : ''}${forceAngleSolveError ? ' is-error' : ''}${forceAngleSweepComplete ? ' is-complete' : ''}`}
-              role="status"
-              aria-live="polite"
-            >
-              <span>
-                {forceAngleSolveError
-                  ? 'FEM ANGLE SOLVE FAILED'
-                  : forceAngleSolveBusy
-                    ? 'MAGNETO2D ANGLE SWEEP'
-                    : forceAngleSweepComplete
-                      ? 'FEM ANGLE SWEEP COMPLETE'
-                      : 'FEM CHECKPOINTS READY'}
-              </span>
-              <strong>
-                {forceAngleSolveError
-                  ?? (forceAngleSolveBusy
-                    ? `${forceAngleSolveProgress.complete} / ${forceAngleSolveProgress.total} checkpoints`
-                    : `${forceAngleSweepSolvedCount} / ${FORCE_ANGLE_SWEEP_DEGREES.length} solved`)}
-              </strong>
-            </div>
-            <p className="field-force-gap-hint">
-              0–180° produces upward force. From 180–360°, current and force reverse.
+          <section className="field-force-control-card" aria-label="Angle controls">
+            <label htmlFor="field-force-angle-slider"><span>Angle θ between current and field</span><strong>{forceAngleDeg}°</strong></label>
+            <input
+              id="field-force-angle-slider"
+              type="range"
+              min="0"
+              max="360"
+              step="5"
+              value={forceAngleDeg}
+              disabled={forceAngleSolveBusy}
+              aria-label={`Angle between current and magnetic field ${forceAngleDeg} degrees`}
+              onChange={(event) => selectForceAngle(Number(event.currentTarget.value))}
+            />
+            <LessonSegmented
+              stretch
+              label="Current-to-field angle presets"
+              value={[0, 90, 180, 270].includes(forceAngleDeg) ? String(forceAngleDeg) : null}
+              onChange={(value) => selectForceAngle(Number(value))}
+              options={[0, 90, 180, 270].map((angleDeg) => ({ id: String(angleDeg), label: `${angleDeg}°`, disabled: forceAngleSolveBusy }))}
+            />
+            <p className={forceAngleSolveError ? 'lesson-lab-error' : 'lesson-lab-note'} role="status" aria-live="polite">
+              {forceAngleSolveError
+                ?? (forceAngleSolveBusy
+                  ? `Solving the sweep: ${forceAngleSolveProgress.complete} of ${forceAngleSolveProgress.total} angles…`
+                  : `${forceAngleSweepSolvedCount} of ${FORCE_ANGLE_SWEEP_DEGREES.length} angles solved. From 0° to 180° the force is upward; from 180° to 360° it reverses.`)}
             </p>
           </section>
         ) : (
-          <section className="field-force-control-card field-force-baseline-controls">
+          <section className="field-force-control-card" aria-label="Current and gap controls">
             <label><span>Current</span><strong>{signed(currentA, 0)} A</strong></label>
-            <div className="field-force-current-presets" role="group" aria-label="Conductor current">
-              {[-8, 8, 16].map((presetCurrent) => (
-                <button
-                  key={presetCurrent}
-                  type="button"
-                  className={currentA === presetCurrent ? 'is-active' : ''}
-                  disabled={busy}
-                  onClick={() => setCurrentA(presetCurrent)}
-                >
-                  {signed(presetCurrent, 0)} A
-                </button>
-              ))}
-            </div>
-            <div className="field-force-control-divider" />
-            <label htmlFor="field-force-gap-slider"><span>Pole gap · each side</span><strong>{poleGapMm.toFixed(1)} mm</strong></label>
+            <LessonSegmented
+              stretch
+              label="Conductor current"
+              value={[-8, 8, 16].includes(currentA) ? String(currentA) : null}
+              onChange={(value) => setCurrentA(Number(value))}
+              options={[-8, 8, 16].map((presetCurrent) => ({ id: String(presetCurrent), label: `${signed(presetCurrent, 0)} A`, disabled: busy }))}
+            />
+            <label htmlFor="field-force-gap-slider"><span>Pole gap, each side</span><strong>{poleGapMm.toFixed(1)} mm</strong></label>
             <input
               id="field-force-gap-slider"
               type="range"
@@ -2409,29 +2297,22 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
               aria-label={`Magnet-to-wire gap on each side ${poleGapMm.toFixed(1)} millimeters`}
               onChange={(event) => setPoleGapMm(Number(event.currentTarget.value))}
             />
-            <div className="field-force-scale"><span>0.5 mm</span><span>both poles move</span><span>16 mm</span></div>
-            <div className="field-force-gap-presets" role="group" aria-label="Pole gap presets">
-              {[
-                { label: 'Close', value: 2 },
-                { label: 'Baseline', value: 8 },
-                { label: 'Wide', value: 16 },
-              ].map((preset) => (
-                <button
-                  key={preset.label}
-                  type="button"
-                  className={Math.abs(poleGapMm - preset.value) < 0.01 ? 'is-active' : ''}
-                  disabled={busy}
-                  onClick={() => setPoleGapMm(preset.value)}
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-            <div className={`field-force-live-setup-state${requestedRunPending || !shownRun ? ' is-preview' : ' is-solved'}`} role="status" aria-live="polite">
-              <span>{requestedRunPending || !shownRun ? 'LIVE PREVIEW' : 'SOLVED'}</span>
-              <strong>{requestedRunPending || !shownRun ? 'Geometry updates instantly' : 'FEM matches this setup'}</strong>
-              <small>{requestedRunPending || !shownRun ? 'Use the Solve button below when the setup looks right.' : 'Move either control to create another comparison.'}</small>
-            </div>
+            <LessonSegmented
+              stretch
+              label="Pole gap presets"
+              value={[2, 8, 16].find((value) => Math.abs(poleGapMm - value) < 0.01)?.toString() ?? null}
+              onChange={(value) => setPoleGapMm(Number(value))}
+              options={[
+                { id: '2', label: 'Close', disabled: busy },
+                { id: '8', label: 'Baseline', disabled: busy },
+                { id: '16', label: 'Wide', disabled: busy },
+              ]}
+            />
+            <p className="lesson-lab-note" role="status" aria-live="polite">
+              {requestedRunPending || !shownRun
+                ? 'The picture follows these controls. Press Solve when the setup looks right.'
+                : 'This setup is solved. Change either control to make another comparison.'}
+            </p>
           </section>
         )}
         {labMode === 'baseline' && error ? <p className="lesson-lab-error">{error}</p> : null}
