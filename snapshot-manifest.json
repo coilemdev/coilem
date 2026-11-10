@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 173543,
-      "sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5"
+      "bytes": 173797,
+      "sha256": "3e5aec9e737cfb4db27474742c039be8c9b94e34dd559eee48f81c421a142993"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -685,8 +685,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 8377,
-      "sha256": "8f780ad8c214a712dcb556f550a9224e6a8f65cc3622559b95e2f0faf11e5e10"
+      "bytes": 8863,
+      "sha256": "cf77192b3754e26facb8a4a81ae169e280fe46b19673581438f2b0f14e05b5aa"
     },
     {
       "path": "backend/sweep_planning.py",

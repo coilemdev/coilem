@@ -1217,9 +1217,14 @@ def _build_field_line_frame_in_subprocess(
     # for a 48-position IPM run).
     steel_accumulator = new_steel_flux_density_rms_accumulator()
     with solve_profile.span("frame worker: flux statistics and iron-loss sample"):
-        update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
-        # The stator part of the field is what iron loss needs from each position,
-        # taken here for the same reason.
+        sector_tiling = (frame.get("mesh_info") or {}).get("sector_tiling")
+        update_steel_flux_density_rms_accumulator(
+            steel_accumulator,
+            frame_payload,
+            # A sector solve's frame is its sector followed by identical copies.
+            element_count=int(sector_tiling["triangles"]) if isinstance(sector_tiling, dict) else None,
+        )
+        # The stator part of the field is what iron loss needs from each position.
         stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
     solve_profile.mark("frame finished")
     check_process_worker_cancelled()
