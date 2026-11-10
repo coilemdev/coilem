@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 246081,
-      "sha256": "0d02cb6dd4d2507c98aab56aaa5459bde8d800e99158bea6d3be9865909d6b21"
+      "bytes": 246027,
+      "sha256": "85e9d2cbbae940032f189462399c6824771ee525f25b80aff1f05ce6bfeaa47e"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
-      "bytes": 15876,
-      "sha256": "92dd7d1b6263f4ca160838cc3db26d634f0da0e04a7e82a52f431aca746f4e38"
+      "bytes": 15869,
+      "sha256": "6dc6d9f62791d5191803a8b89c0ed9221ec1ab37cac37ef90a32bf4747dfe96b"
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
@@ -7325,8 +7325,8 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "bytes": 56585,
-      "sha256": "92183188b170a4fa252625c0e5f0490b1689d184f2c3d5bcd998e41d56a5a69a"
+      "bytes": 56578,
+      "sha256": "d33b1cfea81d5485cda0b5448243f24a66e997423140fb8393abc91427361d1a"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
@@ -7340,8 +7340,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "bytes": 55893,
-      "sha256": "6280112b6b1b9265302ee5e4b1a07ff008199e5fd82546e3dfe648905818b92a"
+      "bytes": 55886,
+      "sha256": "6400dfaa3115219b80ac82c7818ce742498d18ca512e26e4d63f295775f2e355"
     },
     {
       "path": "frontend/src/public/halbach/api.ts",

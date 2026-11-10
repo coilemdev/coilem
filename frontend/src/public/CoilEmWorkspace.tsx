@@ -2135,7 +2135,7 @@ function ViewportChrome({
       {!geometry && mode === 'geometry' && viewportMode !== '3d' && <div className="public-viewport-message">Start the local backend to load geometry.</div>}
       {!mesh && mode === 'mesh' && viewportMode === '2d' && <div className="public-viewport-message">Generate the mesh to inspect its elements.</div>}
       {mode === 'geometry' && stale && viewportMode !== '3d' && <div className="viewport-preview-note">Updating preview…</div>}
-      {busy === 'mesh' && <div className="public-canvas-progress"><span>Building native Gmsh mesh…</span><i /></div>}
+      {busy === 'mesh' && <div className="public-canvas-progress"><span>Meshing…</span><i /></div>}
       {/* The floating layout card is gone: WindingLayoutView states the same slots,
           poles, type, turns and paths in its own header, and the card sat on top of
           the chips row. Its phase legend moved into that header instead. */}
@@ -3333,8 +3333,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
   const solverCaption = selectedSolver === 'elmer'
-    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · native Gmsh · remesh per position.`
-    : 'Built-in field solver using the prepared native Gmsh mesh.';
+    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · Gmsh · remesh per position.`
+    : 'Built-in field solver using the prepared Gmsh mesh.';
   const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
@@ -3478,7 +3478,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
         ? ['Finalizing', 'Preparing playback and saving results']
         : ['Running', 'Analysis running locally']
       : busy === 'mesh'
-        ? ['Preparing mesh', 'Preparing the native mesh']
+        ? ['Meshing', 'Meshing…']
         : busy === 'field'
           ? ['Stator field', 'Computing the stator-only field']
           : result

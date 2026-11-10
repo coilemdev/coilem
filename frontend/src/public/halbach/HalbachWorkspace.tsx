@@ -861,7 +861,7 @@ function CylindricalHalbachWorkspace({
               <div className="halbach-panel-title">
                 <span className="eyebrow">Analysis setup</span>
                 <h2>Magneto2D</h2>
-                <p>Native Gmsh mesh and linear A_z field solve.</p>
+                <p>Gmsh mesh and linear A_z field solve.</p>
               </div>
               <label className="halbach-field">
                 <span>Accuracy plan</span>

@@ -105,7 +105,7 @@ export const PUBLIC_GUIDED_STOPS: GuidedStop[] = [
     step: 'solve',
     target: 'solve-plan',
     title: 'Pick a solve plan',
-    body: 'A plan sets mesh density and angular sampling: Preview offers a quick check, Standard balances resolution and runtime, and High accuracy uses a finer mesh. Choosing a plan prepares the native mesh automatically. Preset names do not guarantee accuracy.',
+    body: 'A plan sets mesh density and angular sampling: Preview offers a quick check, Standard balances resolution and runtime, and High accuracy uses a finer mesh. Choosing a plan prepares the mesh automatically. Preset names do not guarantee accuracy.',
     advance: 'next',
   },
   {
