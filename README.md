@@ -1,86 +1,30 @@
-# coilEM — local electromagnetic design
+# coilEM
 
-coilEM is an open-source application for exploring electric motors and magnetic
-fields. Edit a motor, inspect its geometry and mesh, run the bundled Magneto2D
-solver, and compare saved results with field playback and PDF/CSV exports.
-Everything runs on your computer.
+coilEM is an open-source app for designing electric motors. Draw a motor, mesh
+it, solve it with the built-in 2D finite-element solver, and read off torque,
+back-EMF and field plots. It runs on your computer, with no account and
+nothing sent anywhere.
 
 Website: [coilem.com](https://coilem.com)
 
-The source identifies as a **coilEM 0.5.6 Developer Preview** candidate, with
-**Magneto2D 0.5.0**. The frozen post-version-bump candidate passes
-[Windows/macOS A-D and Prius qualification](benchmarks/qualification-e9eb89e818ed/README.md);
-this version has not been released. Version 0.5.5, released with
-Magneto2D 0.4.0, introduced
-outer-rotor (outrunner) SPM motors,
-which are experimental, and passed the registered A-D release qualification
-gate with source-matched Windows/macOS and Prius software evidence. See
-[release status](PUBLICATION_STATUS.md) for packaging and publication and the
-[release notes](RELEASE_NOTES.md) for its scope.
-The [v0.5.5 accepted qualification records](benchmarks/qualification-34de0f4ca160/owner-decisions.json)
-retain measured commit `34de0f4`; all 69 guarded physics hashes match the
-v0.5.5 release code. Both platforms record 46 A–D PASS and 336/336 gates.
-The owner accepted reuse of the reviewed protocol 1.6 FEMM references, backed
-by a fresh Windows FEMM collection of all 46 cases, and the same near-zero
-macOS Prius observation difference accepted for 0.5.1. A first Windows run of
-the proposed outer-rotor benchmark (Phase F) passes all 10 cases against FEMM;
-it is not registered yet. Proposed cogging coverage (Phase E) remains under
-review, as recorded in the 0.5.1 [Windows evidence](benchmarks/windows-v051-20261105-a4f9f4d/README.md).
-
-The [v0.4.0 evidence report](benchmarks/v0.4.0/README.md) retains the historical
-Windows A/B/C/D development qualification: 35 supported jobs, 28 PASS,
-1 YELLOW and one planned unsupported legacy Prius row at `5b6cb61`.
-The separate exact Pyleecan Prius collection records 17 jobs and 568 fields
-at `d993d76`, with all 10 original software checks passing. These measured
-commits are the baseline for the final-candidate rerun, not measurements of
-a future tag. The [benchmark index](benchmarks/README.md) preserves the full
-reports, frozen FEMM references and earlier platform records.
-
-The 0.5.0 freeze measures clean candidate `88aae101` under protocol 1.6.0 on
-both platforms ([qualification update](benchmarks/candidate-qualification-20261103/README.md)):
-Windows and macOS each record 46 PASS, the planned unsupported legacy ORNL
-Prius and 336/336 gates against the reviewed FEMM references, and the
-exact-candidate Pyleecan Prius passes all 10 software checks. The
-[release qualification gate](benchmarks/v0.5.0/release-qualification.json)
-passes. Version 0.5.0 was published on November 3, 2026; this historical
-qualification does not qualify later versions.
-
 ![coilEM workspace](docs/images/coilem-landing-page.png)
-
-**Developer preview:** the [Windows requalification report](benchmarks/windows-prius-requal-20261018/README.md)
-provides the development evidence for these tested combinations with the
-current winding model:
-
-- SPM with concentrated windings, under sinusoidal or ideal six-step current;
-- SPM with two-layer distributed windings, under sinusoidal current; and
-- flat-buried IPM with concentrated windings, under sinusoidal current.
-
-V-shape IPM and untested combinations, such as six-step with distributed
-windings, are experimental. Of the 0.5.0 performance outputs, phase
-resistance and copper loss are qualified for a design with a wire, against
-hand calculations. The others (d/q flux linkage, torque–speed and efficiency
-maps, iron loss, efficiency and magnet temperature) are experimental. Each
-says which, with a reason, in the app, PDF and CSV. See [Validation](docs/VALIDATION.md) for the qualified scope and its
-limits.
 
 ## Install
 
-coilEM is published on PyPI as `coilem`. Install it with
-[uv](https://docs.astral.sh/uv/), then start it:
+coilEM is on PyPI as `coilem`. Install it with [uv](https://docs.astral.sh/uv/)
+and start it:
 
 ```sh
 uv tool install coilem
 coilem
 ```
 
-`coilem` starts the app on your computer and opens
-[http://127.0.0.1:2645](http://127.0.0.1:2645) in your browser. Press Ctrl+C in
-its terminal to stop it. To try coilEM once without installing it, run
-`uvx coilem`. uv downloads a compatible Python (3.11 to 3.15) if you do not
-have one, and nothing else is needed: each wheel includes the Magneto2D solver
-and the built UI.
+`coilem` opens [http://127.0.0.1:2645](http://127.0.0.1:2645) in your browser.
+Press Ctrl+C in its terminal to stop it. To try it once without installing,
+run `uvx coilem`. Nothing else is needed: the wheel includes the solver and the
+UI, and uv fetches a compatible Python (3.11 to 3.15) if you do not have one.
 
-If you do not have uv yet, install it first, then open a new terminal:
+If you do not have uv yet, install it and open a new terminal:
 
 ```sh
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -92,41 +36,89 @@ On Windows PowerShell:
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-| Platform | Requirement |
-| --- | --- |
-| macOS on Apple silicon | macOS 12 or newer |
-| macOS on Intel | macOS 10.15 or newer |
-| Linux x86_64 | glibc 2.27 or newer (for example Ubuntu 18.04, Debian 10, RHEL 8) and the OpenGL and X11 libraries Gmsh needs: `sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1` on Debian and Ubuntu |
-| Windows x64 | 64-bit Windows |
+Supported platforms: macOS 12 or newer on Apple silicon, macOS 10.15 or newer
+on Intel, 64-bit Windows, and x86_64 Linux with glibc 2.27 or newer. Linux and
+Windows on ARM are not supported yet. On Debian and Ubuntu, install the
+libraries the mesher needs first:
 
-Linux and Windows on ARM are not supported yet. CI tests the installed wheel
-on macOS 15 (Apple silicon and Intel), Ubuntu 22.04 and Windows Server 2022
-with Python 3.11 to 3.15.
-
-Upgrade with `uv tool upgrade coilem` and remove it with
-`uv tool uninstall coilem`. Saved runs stay in your
-[user-data folder](docs/local_solve_workspace.md) after an uninstall. If
-`coilem` is not found after installing, run `uv tool update-shell` and open a
-new terminal. `pipx install coilem` also works when pipx runs on Python 3.11
-to 3.15. [The `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher)
-describes ports and options.
-
-## Start from source
-
-To work on coilEM itself, build it from a checkout instead.
-You need Python 3.11 to 3.15, Node.js 24 with npm, and stable Rust with Cargo
-(the locked `faer` dependency requires Rust 1.84 or newer). Use a fresh checkout and virtual environment. On Ubuntu/Debian, install the system
-libraries Gmsh needs first: `sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1`.
-
-Windows PowerShell:
-
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.lock
-.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
-cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
-.\.venv\Scripts\python.exe -m uvicorn backend.public_main:app --host 127.0.0.1 --port 8000
+```sh
+sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
 ```
+
+Upgrade with `uv tool upgrade coilem`; remove it with `uv tool uninstall coilem`.
+If `coilem` is not found after installing, run `uv tool update-shell` and open
+a new terminal. [The `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher)
+covers ports and options.
+
+## What you can do
+
+Choose **Use Example Motor**, or one of the motor types on the first screen,
+and follow Design → Solve → Results. The
+[Getting started guide](docs/GETTING_STARTED.md) walks through it.
+
+- **Design** inner-rotor and outer-rotor (outrunner) surface-magnet motors, and
+  flat-buried and V-shape IPM motors, with concentrated or distributed
+  windings. See the motor in 2D and 3D as you edit it.
+- **Drive** it with sinusoidal current, or with ideal six-step (BLDC)
+  commutation for surface-magnet motors.
+- **Solve** for loaded torque, phase and line back-EMF, flux linkage and
+  cogging torque, then play the field back as the rotor turns.
+- **Go further** with d/q flux linkage and inductances, torque–speed and
+  efficiency maps, copper and iron loss, and magnet temperature.
+- **Keep your work**: saved runs, side-by-side comparison, and PDF and CSV
+  exports.
+- **Learn**: ten solver-backed lessons, and workspaces for cylindrical and
+  linear [Halbach arrays](docs/HALBACH_ARRAY.md).
+
+## How far to trust it
+
+coilEM is a developer preview. Every release is compared with FEMM, a
+reference 2D finite-element solver, on a fixed set of benchmark motors: mean
+torque must agree within 8% and back-EMF within 10%.
+
+| Motor | Status |
+| --- | --- |
+| Inner-rotor SPM, concentrated or two-layer distributed winding | Checked against FEMM |
+| Flat-buried IPM, concentrated winding | Checked against FEMM |
+| V-shape IPM | Experimental |
+| Outrunner (outer-rotor SPM) | Experimental |
+
+Of the other outputs, phase resistance and copper loss are checked against hand
+calculations. Cogging torque, d/q quantities, the maps, iron loss, efficiency
+and magnet temperature are experimental, and the app, PDF and CSV label each
+one. Agreement with FEMM is agreement between two solvers, not a hardware
+measurement.
+
+Things the model leaves out:
+
+- It is 2D: end effects and skew are not modelled.
+- Six-step drive is the ideal commanded current, without PWM, switching, ESC dynamics or thermal behavior.
+- There is no thermal solver. Winding and magnet temperatures are inputs.
+- Losses omit magnet and rotor eddy currents, AC copper loss and the inverter.
+- Each rotor position is meshed separately, so check mesh and angle settings
+  before reading meaning into small torque-ripple or cogging differences.
+
+[Validation](docs/VALIDATION.md) has the full scope and limits, and the
+[benchmark index](benchmarks/README.md) has every qualification record.
+
+## Check it yourself
+
+Run the same benchmark suite on your own computer:
+
+```sh
+coilem benchmark --quick
+```
+
+That solves one case per group in about 5 minutes and compares each with the
+FEMM reference that ships with coilEM. Drop `--quick` for the full suite. It
+needs no Git, Rust, Node.js or FEMM. See the
+[benchmark commands](benchmarks/abcd-v1.3/README.md).
+
+## Build from source
+
+To work on coilEM itself you need Python 3.11 to 3.15, Node.js 24 with npm,
+and stable Rust (1.84 or newer). On Debian and Ubuntu, install the Linux
+libraries above first.
 
 macOS or Linux:
 
@@ -138,7 +130,17 @@ cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
 .venv/bin/python -m uvicorn backend.public_main:app --host 127.0.0.1 --port 8000
 ```
 
-In a second terminal:
+Windows PowerShell:
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.lock
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+.\.venv\Scripts\python.exe -m uvicorn backend.public_main:app --host 127.0.0.1 --port 8000
+```
+
+Then, in a second terminal:
 
 ```sh
 cd frontend
@@ -146,138 +148,21 @@ npm ci
 npm run dev
 ```
 
-Open [http://127.0.0.1:5173](http://127.0.0.1:5173), choose **Use Example
-Motor**, and follow Design → Solve → Results. The [Getting started
-guide](docs/GETTING_STARTED.md) explains the example, solve settings and exports.
-The backend must stay bound to loopback.
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the backend bound to
+loopback.
 
-Contributors can also try the packaged launcher from a checkout. Run
-`python -m pip install .` in a separate virtual environment; this builds the UI
-and Magneto2D, so it still needs Node.js and Cargo. Then run `coilem`: it
-serves the UI and API together and opens `http://127.0.0.1:2645`. See
-[the `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher).
+## More
 
-## What you can explore
+- [Release notes](RELEASE_NOTES.md) and [release status](PUBLICATION_STATUS.md).
+  This is coilEM 0.5.6, with the Magneto2D 0.5.0 solver.
+- [Architecture](docs/ARCHITECTURE.md), the [Magneto2D solver](docs/MAGNETO2D.md)
+  and [solver convergence](docs/SOLVER_CONVERGENCE.md).
+- [Materials](MATERIALS.md), [runtime settings](docs/RUNTIME_SETTINGS.md) and
+  [where saved runs live](docs/local_solve_workspace.md).
+- Design files use `.coilem`; older `.openem` files still open.
+- Report bugs through [Support](SUPPORT.md), and vulnerabilities privately
+  through [Security](SECURITY.md).
 
-- Radial-flux SPM and IPM (flat-buried and V-shape) motor geometry, native
-  Gmsh meshes, sinusoidal current, and ideal wye-connected 120-degree six-step
-  excitation for SPM.
-- Loaded torque, phase and line Back-EMF, field plots, and harmonic spectra.
-- [Solver convergence](docs/SOLVER_CONVERGENCE.md) in Results, PDF and CSV,
-  including recorded residuals, iteration limits and warnings.
-- Loaded d/q flux linkage, apparent Ld and Lq, and a torque cross-check from
-  them that includes reluctance torque.
-- An optional Torque–speed map under Solve → Analysis. It solves a flux-linkage map over current and
-  current angle, then draws peak and continuous torque–speed and power–speed
-  curves (MTPA, field weakening and MTPV) for a DC bus and current limit, and
-  an efficiency map.
-- Wire size, strands in hand, end-turn extension and winding temperature in
-  Design, giving phase resistance and slot fill. Copper loss, stator iron loss
-  and efficiency at the solved point, with a map of where the iron loss is.
-  Iron loss is available for M350-50A and for the Pyleecan Prius's M400-50A.
-- A magnet temperature under Solve → Operating point. Br and HcJ are derated
-  from the grade's cited coefficients for N35, N42, N48, N52 and N48SH.
-- Cogging torque, under Solve → Analysis (since 0.5.1). It
-  solves one cogging period with no current; Results, the run PDF and the CSV
-  give the waveform, peak-to-peak and peak, the harmonics per mechanical
-  revolution and the share of the loaded torque. Experimental until it has a
-  FEMM gate.
-- Preview, Standard and High accuracy mesh/solve presets. These names describe
-  resolution and sampling; they do not certify accuracy.
-- Saved runs, comparison, project save/reopen, PDF, CSV and replay downloads.
-  Torque–speed results download as a performance PDF, a performance CSV, an
-  id/iq table CSV and the map points CSV.
-- Solver-backed electromagnetics lessons and cylindrical and linear
-  [Halbach workspaces](docs/HALBACH_ARRAY.md).
-
-The [Pyleecan 2004 Prius software benchmark](docs/benchmarks/pyleecan-prius-v1/README.md)
-adds two fixed examples under **Examples → Benchmarks**: tutorial BEMF at
-1000 rpm / 20°C and loaded torque at 2000 rpm / 60°C / 250 A peak. They preserve
-the pinned analytic model and embedded M400-50A curve through save and reopen.
-These experimental software references remain separate from ORNL hardware validation.
-
-## Limits to understand
-
-Qualification means agreement with FEMM, a reference 2D finite-element solver,
-on the measured benchmark fixtures: mean torque within 8%, Back-EMF fundamental
-and peak within 10%, plus fourteen six-step gates for BLDC. It covers only the
-tested combinations listed above, with M350-50A steel. One of six V-shape IPM
-fixtures is YELLOW against FEMM, so V-shape results are experimental. THD, airgap harmonics, losses and
-thermal behavior are not covered. Cogging torque is reported but not covered:
-it has no FEMM gate yet ([its claim boundary](docs/VALIDATION.md#cogging-torque)).
-It is not a hardware measurement.
-
-Of the 0.5.0 performance outputs, only phase resistance and copper loss pass
-a gate so far:
-
-- Phase resistance passes a gate against independent hand calculations, for a
-  design with a wire. A design without one gets a wire sized to fill the slot,
-  and its resistance stays experimental. The gate checks the calculation, not
-  a measured winding.
-- Loaded λd/λq and magnet temperature have FEMM gates registered for the
-  freeze, so they are experimental until then. Ld and Lq, the maps, iron loss
-  and efficiency have no gate.
-- Losses leave out magnet and rotor eddy-current loss, AC copper loss (skin
-  and proximity effects) and inverter loss. Mechanical loss is a single
-  constant you enter, the same at every speed.
-- Iron loss comes from the steel grade's guaranteed loss limits, not from
-  measured motor data, and other steels show it as unavailable.
-- Magnet temperature derates Br linearly. It does not model demagnetisation,
-  and there is no thermal solver: magnet and winding temperatures are inputs.
-- The torque–speed envelope ignores inverter voltage drops and dead time. Its
-  continuous curve is a current limit, not a thermal rating.
-
-Motor sweeps use per-angle meshes, with symmetry-based reuse where applicable,
-without a sliding-band interface. Mesh changes can introduce numerical noise
-into torque ripple and cogging. Check mesh and angular convergence before
-interpreting small variations. A cogging sweep reports two noise measures, its
-mean over the period and the mismatch between its two ends; on the example
-design both are under 0.5% of its peak-to-peak
-([convergence study](docs/COGGING_CONVERGENCE.md)).
-Six-step excitation models ideal commanded currents, without PWM, switching,
-ESC dynamics or thermal behavior. See [Release notes](RELEASE_NOTES.md) and
-[Materials](MATERIALS.md).
-
-The source application is **coilEM 0.5.6** and the solver is **Magneto2D 0.5.0**.
-There are no accounts, hosted services or telemetry in this distribution.
-Elmer is an optional development-only lane; see [its setup](docs/ELMER.md).
-
-## Reproducibility and contributing
-
-Run the versioned A/B/C/D suite (SPM, IPM, Distributed Winding and BLDC) on
-your own computer with `coilem benchmark`, or `coilem benchmark --quick` for one
-case per phase in about 5 minutes. It solves each case with the installed
-Magneto2D and grades it against the frozen FEMM reference that ships with
-coilEM. It then checks that the result matches the [published record](benchmarks/records/README.md)
-for your platform, and writes a shareable report with no local paths. It needs
-no Git, Rust, Node.js or FEMM. From a checkout, `python -m tools.run_benchmarks
---out-dir ../benchmark-output/my-run --pdf` runs the same suite with the
-developer options. See the [benchmark commands, reference compatibility and
-version policy](benchmarks/abcd-v1.3/README.md).
-
-The [motor benchmark collection](benchmarks/models-v1/README.md) also includes
-Pyleecan Prius 8p48s and the exploratory Honda Accord 2005 comparison. From a
-clean checkout, `python -m tools.run_model_benchmarks --list` lists the named
-selections; `--out ../benchmark-output/all-models` runs all three workflows.
-Prius has software acceptance checks; Honda retains its hardware residuals
-without a pass/fail claim. Deferred legacy ORNL Prius coverage is separate.
-
-The public Magneto2D path ignores inherited numerical solver switches. It derives
-native options from the request and records its environment policy and options
-in new motor results. [Runtime settings](docs/RUNTIME_SETTINGS.md) lists public
-configuration names. New design files use `.coilem`; existing `.openem` files
-remain compatible with the same JSON project format.
-
-Completed runs live outside the checkout in your OS user-data directory and
-retain requests, results and hashes. See [local storage](docs/local_solve_workspace.md).
-The root snapshot manifest records the original source export, listed public
-patches, and current file hashes. It is an
-integrity record, not evidence of numerical accuracy.
-
-See [Architecture](docs/ARCHITECTURE.md), [Magneto2D](docs/MAGNETO2D.md),
-[the public API boundary](docs/PUBLIC_BOUNDARY.md), and
-[Validation](docs/VALIDATION.md) for checks and numerical limitations.
-Report bugs through [Support](SUPPORT.md), and vulnerabilities privately through
-[Security](SECURITY.md). Source is licensed under AGPL-3.0-or-later; see
-[LICENSE](LICENSE), [third-party notices](THIRD_PARTY_NOTICES.md) and
+coilEM is licensed under AGPL-3.0-or-later. See [LICENSE](LICENSE), the
+[third-party notices](THIRD_PARTY_NOTICES.md) and the
 [trademark terms](TRADEMARKS.md).

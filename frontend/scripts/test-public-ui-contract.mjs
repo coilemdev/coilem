@@ -39,6 +39,7 @@ const landingWorkflowHeroSource = await readFile(
   path.join(frontendRoot, 'src/components/LandingWorkflowHero.tsx'),
   'utf8',
 );
+const landingMotorTypesSource = await readFile(path.join(frontendRoot, 'src/public/LandingMotorTypes.tsx'), 'utf8');
 const landingHalbachPreviewSource = await readFile(
   path.join(frontendRoot, 'src/components/landing-3d/LandingHalbachPreview.tsx'),
   'utf8',
@@ -584,15 +585,20 @@ assert.match(motorThreeSource, /fullExplosionAutoFitApplied = true/);
 assert.match(motorCanvasSource, /inter_pole_air\|ipm_pocket/);
 assert.match(motorCanvasSource, /export type PublicMagnetPolarityView = 'dominant' \| 'split'/);
 assert.match(motorCanvasSource, /magnetPolarityView === 'split'/);
-assert.match(workspaceSource, /aria-label="Magnet polarity display"/);
+// The 2D canvas always colours a magnet by the pole facing the airgap; the
+// Pole / Split choice is gone from the dock.
+assert.doesNotMatch(workspaceSource, /Magnet polarity display|'Split view'|setMagnetPolarityView/);
 assert.match(workspaceSource, /public-winding-key/);
 assert.match(workspaceSource, /⊙ out · ⊗ in/);
-assert.match(workspaceSource, /useState<PublicCanvasLayer>\('none'\)/);
+// The Design canvas plays its 3D-to-2D intro when a motor is opened, and
+// resumes the view that was left when coming back from Solve or Results.
+assert.match(workspaceSource, /const \[resumeDesignView\] = useState\(\(\) => designIntroEnabled && designViewMemory\.introPlayed\)/);
+assert.match(workspaceSource, /resumeDesignView \? designViewMemory\.view as PublicViewportMode : '3d'/);
+assert.match(workspaceSource, /resumeDesignView \? designViewMemory\.layer as PublicCanvasLayer : 'none'/);
+assert.equal((appSource.match(/^    resetDesignViewMemory\(\);$/gm) ?? []).length, 4);
+// Preparing a mesh no longer raises a notice; the mesh view itself shows it.
+assert.doesNotMatch(appSource, /mesh prepared\. Inspect it here|plan ready with a/);
 assert.doesNotMatch(workspaceSource, /setCanvasLayer\('dimensions'\)/);
-assert.match(workspaceSource, /'Dominant pole'/);
-assert.match(workspaceSource, /'Split view'/);
-assert.match(workspaceSource, /useState<PublicMagnetPolarityView>\('dominant'\)/);
-assert.match(workspaceSource, /The FEM magnet remains one region/);
 assert.match(workspaceSource, /config\.topology === 'SPM'/);
 assert.match(motorCanvasSource, /computeSpmMagnetPolarityHalves/);
 assert.match(motorCanvasSource, /isSpmMagnet \|\| isVShapeMagnet/);
@@ -630,13 +636,11 @@ assert.match(motorThreeSource, /bearing\.innerRace\.rotation\.z = shaftAngle/);
 assert.match(motorThreeSource, /bearing\.cage\.rotation\.z = shaftAngle \* bearing\.cageRatio/);
 assert.match(motorThreeSource, /ballSpinner\.rotation\.z = -shaftAngle \* bearing\.ballRollRatio/);
 assert.match(motorThreeSource, /syncBearingKinematics\(bearingRigs, rotorGroup\.rotation\.z\)/);
-assert.match(motorThreeSource, /const magnetSplitRadius = \(magnetInnerRadius \+ magnetOuterRadius\) \/ 2/);
-assert.match(motorThreeSource, /sectorShape\(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan\)/);
-assert.match(motorThreeSource, /sectorShape\(magnetInnerRadius, magnetSplitRadius, magnetHalfSpan\)/);
-assert.match(motorThreeSource, /magnetDepth \/ 2/);
-assert.match(motorThreeSource, /airgapHalf\.position\.y = -sideSign \* magnetDepth \/ 4/);
-assert.match(motorThreeSource, /oppositeHalf\.position\.y = sideSign \* magnetDepth \/ 4/);
-assert.match(motorThreeSource, /northAtAirgap \? materials\.oppositeSouth : materials\.oppositeNorth/);
+// Each 3D magnet is one piece in the colour of the pole it presents to the
+// stator; the radial split into two pole halves is gone from this view.
+assert.match(motorThreeSource, /sectorShape\(magnetInnerRadius, magnetOuterRadius, magnetHalfSpan\)/);
+assert.doesNotMatch(motorThreeSource, /magnetSplitRadius|oppositeHalf|oppositeNorth|oppositeSouth/);
+assert.match(motorThreeSource, /lerp\(new THREE\.Color\(0x8d939c\), 0\.22\)/);
 assert.doesNotMatch(motorThreeSource, /new THREE\.PlaneGeometry\(\s*placement\.effectiveLengthMm/);
 assert.match(motorThreeSource, /side: THREE\.BackSide/);
 assert.match(motorThreeSource, /const pocketsGroup = new THREE\.Group\(\)/);
@@ -895,7 +899,6 @@ assert.match(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
 // 2D overlays are one choice at a time, with None for the bare cross-section.
 assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);
-assert.match(workspaceSource, />Magnets<\/span>/);
 assert.match(styleSource, /\.public-dock-segmented \{ display: inline-flex;[^}]*border: 1px solid rgba\(148,163,184,\.16\); border-radius: 10px;/);
 assert.match(styleSource, /\.public-dock-segmented button\[aria-pressed="true"\] \{ color: var\(--text-accent\); background: rgba\(245,158,11,\.14\);/);
 assert.match(styleSource, /button\.public-dock-toggle\[aria-pressed="true"\]::before \{ border-color: var\(--text-accent\); background: var\(--text-accent\);/);
@@ -955,6 +958,16 @@ assert.match(workspaceSource, /className="viewport-dock-resize"\s*role="separato
 assert.match(workspaceSource, /setDockUserHeight\(clampDockHeight\(drag\.startHeight \+ drag\.startY - event\.clientY\)\)/);
 assert.match(workspaceSource, /onDoubleClick=\{\(\) => setDockUserHeight\(null\)\}/);
 assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHeight;/);
+// The dock keeps one height across the view tabs: the tallest fit seen at the current width.
+assert.match(workspaceSource, /fits\.heights\[viewportMode\] = clampDockHeight\(/);
+// Solve resumes its tab and mesh display for the same mesh and result, and the
+// field view starts from the layer choices it was left with.
+assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
+assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
+assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
+assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
+assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve
 // page's Geometry / Mesh / Field solution, or Design's motor views. Its right
 // end is the same everywhere: readout, zoom, fullscreen.
@@ -1190,7 +1203,8 @@ assert.match(fieldResultSource, /export type FieldColorRangeMode = 'fixed' \| 'v
 assert.match(fieldResultSource, /colorRangeMode = 'fixed',/);
 assert.match(solvedFieldSource, /useState<FieldColorRangeMode>\('fixed'\)/);
 assert.match(fieldResultSource, />\s*Fixed\s*<\/button>/);
-assert.match(fieldResultSource, />\s*Fit view\s*<\/button>/);
+// The field legend shows the fixed scale only: the viewer no longer offers Fixed / Fit view.
+assert.doesNotMatch(solvedFieldSource, /^\s*showRangeControl\s*$/m);
 assert.match(fieldResultSource, /fieldRangeForViewport\(prepared\.triangleRecords/);
 assert.match(fieldResultSource, /drawHeat\(context, prepared, visibleRange \? fittedFluxScale\(visibleRange\.minB, visibleRange\.maxB\) : FIXED_FLUX_SCALE\)/);
 assert.match(fieldResultSource, /\|\| \(colorRangeMode === 'viewport' && highResolutionPlot\)/);
@@ -1369,7 +1383,12 @@ assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MIN_RPM = 0\.1;/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_RPM = 100/);
-assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 18/);
+assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 5/);
+assert.match(workspaceSource, /const \[animationRpm, setAnimationRpm\] = useState\(20\)/);
+// Slot and phase badges sit on the yoke behind the slot, clear of the current marks.
+assert.match(motorCanvasSource, /const yokeInside = data\.metadata\.rotor_layout === 'outer'/);
+assert.match(styleSource, /\.has-dimension-readout \.public-viewport-stage-2d \{ left: 262px; \}/);
+assert.doesNotMatch(appSource, /Analysis complete\. Inspect the solved field/);
 assert.match(playbackTimingSource, /PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30/);
 assert.match(solvedFieldSource, /playbackStrideFrameIndex\(/);
 assert.match(solvedFieldSource, /evictRasters\(nextCache, rasterCacheLimitRef\.current, keptRasterKeys\(key\), retireRaster\)/);
@@ -1891,8 +1910,35 @@ assert.doesNotMatch(linearHalbachThreeSource, /\bbz\b|B_z/);
 assert.match(halbachApiSource, /\/halbach\/solve\/stream/);
 assert.match(halbachApiSource, /\/halbach\/export\/\$\{kind\}/);
 assert.match(halbachTypesSource, /axial end effects are not included/);
-assert.match(landingWorkflowHeroSource, /Experimental 2D FEM/);
-assert.match(landingWorkflowHeroSource, /Source-built preview/);
+assert.match(landingWorkflowHeroSource, /Simulate BLDC and PMSM motors, inrunner or outrunner\./);
+assert.match(landingWorkflowHeroSource, /'Runs offline', 'Built-in mesh', '2D FEM solver', 'Developer preview'/);
+// The app installs from PyPI now; the hero no longer calls it a source build.
+assert.doesNotMatch(landingWorkflowHeroSource, /Source-built preview/);
+// The landing lists the motor types with the status Design Health gives each
+// one, and every tile but the unreleased type opens a shipped example.
+assert.match(landingSource, /<LandingMotorTypes onLoadExample=\{onLoadExample\} \/>/);
+assert.match(appSource, /<PublicLanding[\s\S]*?onLoadExample=\{loadExampleDesign\}/);
+assert.match(landingMotorTypesSource, /name: 'SPM'[^\n]*status: 'supported'[^\n]*exampleId: 'spm-8p12s'/);
+assert.match(landingMotorTypesSource, /name: 'Flat IPM'[^\n]*status: 'supported'[^\n]*exampleId: 'ipm-14p-flat-buried-large'/);
+assert.match(landingMotorTypesSource, /name: 'V-shape IPM'[^\n]*status: 'experimental'[^\n]*exampleId: 'ipm-10p-v-shape-medium'/);
+assert.match(landingMotorTypesSource, /name: 'Outrunner'[^\n]*status: 'experimental'[^\n]*exampleId: 'spm-outrunner-14p12s'/);
+assert.match(landingMotorTypesSource, /name: 'Axial Flux'[^\n]*status: 'soon' \}/);
+assert.match(landingMotorTypesSource, /supported: 'Supported'[\s\S]*?experimental: 'Experimental'[\s\S]*?soon: 'Coming soon'/);
+// The hero motor is drawn as hardware: sealed bearings whose outer race stays
+// with the stator, a closed rear end cap, and hand-wound coils.
+assert.match(landingThreeSource, /rotorGroup\.add\(frontBearing\.inner, rearBearing\.inner\)/);
+assert.match(landingThreeSource, /motorGroup\.add\(frontBearing\.outer, rearBearing\.outer\)/);
+assert.match(landingThreeSource, /buildRearEndCap\(\)/);
+assert.match(landingThreeSource, /handWound: \{ strands: 42, endTurnRoundness: 0\.5, irregularity: 0\.14 \}/);
+// The Design tab's 3D view shares that look: sealed bearings whose seals stay
+// with the fixed outer race, soft studio shadows, and coils wound one loop per
+// drawn as tightly wound wire.
+assert.match(motorThreeSource, /outerRace\.add\(\s*new THREE\.Mesh\(outerRaceGeometry, materials\.race\),\s*new THREE\.Mesh\(sealGeometry, materials\.seal\)/);
+assert.match(motorThreeSource, /renderer\.shadowMap\.type = THREE\.PCFSoftShadowMap/);
+// The balls never stand proud of the seal faces, however short the bearing.
+assert.match(motorThreeSource, /Math\.min\(\(outerRaceInner - innerRaceOuter\) \* 0\.62, dims\.width \* 0\.36\)/);
+assert.match(motorThreeSource, /strands: config\.stator\.slot_count > 24 \? 24 : HAND_WOUND_STRANDS/);
+assert.match(motorThreeSource, /turns per coil · drawn as \$\{concentratedCoil\.strandCount\} wire loops/);
 assert.doesNotMatch(landingThreeSource, /landing-3d-steps/);
 assert.doesNotMatch(landingThreeSource, /aria-label="Workflow steps"/);
 assert.doesNotMatch(landingThreeSource, /Preparing native mesh/);

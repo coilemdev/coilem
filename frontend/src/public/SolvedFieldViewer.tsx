@@ -1,3 +1,4 @@
+import { solveViewMemory } from './solveViewMemory';
 import {
   useCallback,
   useEffect,
@@ -241,21 +242,25 @@ export function SolvedFieldViewer({
   const sourceRef = useRef<FieldSource>('resultant');
   sourceRef.current = source;
   const [frameIndex, setFrameIndex] = useState(0);
-  const [showHeatmap, setShowHeatmap] = useState(true);
-  const [showMesh, setShowMesh] = useState(false);
-  const showMeshRef = useRef(false);
+  // The layer choices start from where the field view was last left.
+  const [showHeatmap, setShowHeatmap] = useState(solveViewMemory.field.showHeatmap);
+  const [showMesh, setShowMesh] = useState(solveViewMemory.field.showMesh);
+  const showMeshRef = useRef(solveViewMemory.field.showMesh);
   showMeshRef.current = showMesh;
-  const [showFieldLines, setShowFieldLines] = useState(true);
-  const [showMagnets, setShowMagnets] = useState(true);
-  const [showAirgap, setShowAirgap] = useState(false);
-  const [showPoleLabels, setShowPoleLabels] = useState(false);
-  const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>('medium');
+  const [showFieldLines, setShowFieldLines] = useState(solveViewMemory.field.showFieldLines);
+  const [showMagnets, setShowMagnets] = useState(solveViewMemory.field.showMagnets);
+  const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
+  const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
+  const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
   const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
   const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
   const [playing, setPlaying] = useState(false);
-  const [playbackRpm, setPlaybackRpm] = useState(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
-  const playbackRpmRef = useRef(PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
+  const [playbackRpm, setPlaybackRpm] = useState(solveViewMemory.field.playbackRpm ?? PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
+  const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
+  useEffect(() => {
+    solveViewMemory.field = { showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm };
+  }, [showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm]);
   const playbackElectricalAngleRef = useRef(0);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
@@ -1237,7 +1242,6 @@ export function SolvedFieldViewer({
               fieldLineDensity={exactVectorPlot ? fieldLineDensity : 'medium'}
               colorRangeMode={colorRangeMode}
               saturationTicks={saturationTicks}
-              showRangeControl
               onColorRangeModeChange={setRangeMode}
               showControls={false}
               showHeading={false}

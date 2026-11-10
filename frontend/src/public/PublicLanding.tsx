@@ -1,4 +1,6 @@
 import { LandingWorkflowHero } from '../components/LandingWorkflowHero';
+import type { PublicExampleId } from './exampleDesigns';
+import { LandingMotorTypes } from './LandingMotorTypes';
 
 interface PublicLandingProps {
   onStartGuided: () => void;
@@ -8,9 +10,11 @@ interface PublicLandingProps {
    *  into the ten solver-backed lessons the app actually ships. */
   onOpenTutorials: () => void;
   onOpenHalbach: () => void;
+  /** Opens one of the shipped example motors in the workspace. */
+  onLoadExample: (exampleId: PublicExampleId) => void;
 }
 
-export function PublicLanding({ onStartGuided, onUseExample, onOpenTutorials, onOpenHalbach }: PublicLandingProps) {
+export function PublicLanding({ onStartGuided, onUseExample, onOpenTutorials, onOpenHalbach, onLoadExample }: PublicLandingProps) {
   return (
     <main className="template-selector-overlay public-landing">
       <div className="template-selector-container">
@@ -20,6 +24,7 @@ export function PublicLanding({ onStartGuided, onUseExample, onOpenTutorials, on
           onOpenTutorials={onOpenTutorials}
           onOpenHalbach={onOpenHalbach}
         />
+        <LandingMotorTypes onLoadExample={onLoadExample} />
       </div>
     </main>
   );

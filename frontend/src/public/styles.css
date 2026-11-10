@@ -361,6 +361,31 @@ body {
 .public-landing .selector-hero { grid-template-columns: minmax(0, 1.05fr) minmax(420px, 1fr); gap: 44px; }
 .public-landing .selector-preview-card { border: 0; background: transparent; box-shadow: none; }
 .public-landing .selector-github-link { text-decoration: none; }
+/* The hero and the Motor Types row share one screen: on the two-column layout
+   the 3D stage gives up height on a short window instead of pushing the row
+   below the fold. 250px is everything else in the column: the top bar, the
+   page padding, the gap and the row itself. */
+@media (min-width: 1101px) {
+  .public-landing .template-selector-container { gap: 18px; padding-top: 22px; padding-bottom: 22px; }
+  .public-landing .selector-hero:not(.selector-hero-onboarding) .card-visual { height: clamp(360px, calc(100vh - 250px), 620px); }
+}
+.landing-motor-types { display: grid; gap: 12px; min-width: 0; }
+.landing-motor-types h2 { margin: 0; color: var(--text-muted); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.landing-motor-types ul { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.landing-motor-type { display: flex; align-items: center; gap: 12px; width: 100%; height: 100%; padding: 10px 12px; color: var(--text); font: inherit; text-align: left; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-default); border-radius: 10px; }
+button.landing-motor-type { cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+button.landing-motor-type:hover, button.landing-motor-type:focus-visible { background: var(--accent-soft); border-color: var(--border-accent); outline: none; }
+.landing-motor-type.is-soon { border-style: dashed; }
+.landing-motor-type.is-soon .landing-motor-type-art, .landing-motor-type.is-soon strong { opacity: 0.55; }
+.landing-motor-type-art { flex: 0 0 54px; width: 54px; height: 54px; }
+.landing-motor-type-text { display: grid; gap: 3px; min-width: 0; }
+.landing-motor-type-text strong { font-size: 13px; font-weight: 700; }
+.landing-motor-type-text small { color: var(--text-muted); font-size: 11px; line-height: 1.3; }
+.landing-motor-type-status { justify-self: start; margin-top: 2px; padding: 2px 7px; font-size: 10px; font-style: normal; font-weight: 700; line-height: 1.4; border: 1px solid currentColor; border-radius: 999px; }
+.landing-motor-type-status.is-supported { color: var(--success, #22c55e); }
+.landing-motor-type-status.is-experimental { color: var(--accent-primary, #f59e0b); }
+.landing-motor-type-status.is-soon { color: var(--text-muted); }
+@media (max-width: 1100px) { .landing-motor-types ul { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); } }
 
 .workspace {
   height: calc(100vh - 78px);
@@ -3517,19 +3542,25 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   flex: 1 1 auto;
   height: auto;
 }
+/* A compact pill in the page flow, in the same dark surface and border as
+   the dock controls; green is kept to the tick. */
 .public-solve-banner {
   display: flex;
-  min-height: 22px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  min-height: 30px;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 6px 12px 0;
-  padding: 2px 10px;
-  border: 1px solid rgba(34, 197, 94, 0.28);
-  border-radius: 7px;
+  align-self: center;
+  gap: 9px;
+  margin: 8px 12px 0;
+  padding: 4px 6px 4px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
   color: var(--text-secondary);
-  background: rgba(9, 35, 24, 0.9);
-  font-size: 10px;
+  background: var(--bg-surface-2);
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  line-height: 1.3;
   animation: public-solve-banner-in 160ms ease-out;
 }
 .public-solve-banner > span:not(.public-status-glyph) {
@@ -3538,12 +3569,21 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   white-space: nowrap;
 }
 .public-solve-banner button {
+  display: grid;
   flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  place-items: center;
   border: 0;
+  border-radius: 50%;
   color: var(--text-muted);
   background: transparent;
+  font-size: 14px;
+  line-height: 1;
   cursor: pointer;
 }
+.public-solve-banner button:hover { color: var(--text-primary); background: rgba(148, 163, 184, .14); }
 @keyframes public-solve-banner-in {
   from { opacity: 0; transform: translateY(-3px); }
 }
@@ -4980,3 +5020,45 @@ button.performance-tag { cursor: help; }
 .public-sector-dial circle { fill: none; stroke: var(--border-default); stroke-width: 2; }
 .public-sector-dial path { fill: none; stroke: var(--text-accent); stroke-width: 3.5; stroke-linecap: round; }
 .public-sector-dial:hover circle { stroke: var(--text-secondary); }
+/* The canvas toolbars (the Design dock and the Solve field dock) were styled
+   apart from the side panels and had drifted to monospace throughout. They now
+   follow the rule the rest of the app uses: words in controls are set in the
+   UI font; numbers, readouts and the small uppercase group labels stay mono. */
+.public-motor-viewport .public-dock-strip .public-primary-view-modes button,
+.public-dock-strip .public-solve-view-switch button,
+.public-motor-viewport .viewport-bottom-bar .public-dock-segmented button,
+.public-motor-viewport .viewport-bottom-bar button.public-dock-toggle,
+.public-motor-viewport .viewport-bottom-bar .viewport-controls button,
+.public-motor-viewport .viewport-bottom-bar .public-polarity-view button,
+.public-field-dock .public-field-dock-controls .public-field-source-controls button,
+.public-field-dock .public-field-layer-controls button,
+.public-field-dock .public-field-layer-menu > summary,
+.public-dock-reset-view,
+.public-3d-part-toggle,
+.public-viewport-nav-controls button.is-fit,
+.public-viewport-nav-controls button.is-sector,
+.public-field-playback-buffering,
+.public-field-playback-preparing,
+.public-motor-viewport .public-canvas-legend { font-family: var(--font-ui); letter-spacing: 0; }
+.public-dock-reset-view { font-weight: 600; font-size: 12px; }
+.public-3d-part-toggle { font-size: 11px; font-weight: 500; }
+/* Control groups are spaced by the bar's own gap, not a margin on each
+   following group: a margin also indented a group that wrapped to the next
+   line, so its label sat off the label above it. Group labels share one
+   width, so the first control on every line starts at the same place. */
+.public-motor-viewport .viewport-bottom-bar { column-gap: 18px; }
+.public-motor-viewport .viewport-bottom-bar .vc-group + .vc-group,
+.public-motor-viewport .viewport-bottom-bar .vc-group + .public-winding-key,
+.public-motor-viewport .viewport-bottom-bar .public-winding-key + .vc-group { margin-left: 0; }
+.public-motor-viewport .viewport-bottom-bar .vc-group > .public-dock-group-label:first-child { display: inline-block; min-width: 58px; }
+/* The break is a zero-height line of its own, which would add a second row
+   gap; the controls after it give that gap back. */
+.public-motor-viewport .viewport-bottom-bar .public-dock-row-break { flex: 0 0 100%; height: 0; }
+.public-motor-viewport .viewport-bottom-bar .public-dock-row-break ~ * { margin-top: -8px; }
+/* With Dims on, the 2D canvas gives the list a column of its own and the
+   motor refits beside it, instead of the list lying over the motor. A narrow
+   panel has no room for that, so there the list stays over the canvas. */
+.public-motor-viewport.has-dimension-readout .public-viewport-stage-2d { left: 262px; }
+@container (max-width: 720px) {
+  .public-motor-viewport.has-dimension-readout .public-viewport-stage-2d { left: 0; }
+}

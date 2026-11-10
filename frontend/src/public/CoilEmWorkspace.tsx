@@ -1,3 +1,5 @@
+import { solveViewMemory } from './solveViewMemory';
+import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
@@ -22,7 +24,6 @@ import { outerRotorRing } from './sectorFraming';
 import {
   MotorCanvas,
   type PublicCanvasLayer,
-  type PublicMagnetPolarityView,
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
 } from './MotorCanvas';
@@ -1737,22 +1738,27 @@ function ViewportChrome({
   onFocusedMeshElementChange?: (elementIndex: number | null) => void;
 }) {
   const designIntroEnabled = enableDesignIntro && mode === 'geometry';
-  const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => (
-    designIntroEnabled ? '3d' : '2d'
+  // The intro plays when a motor is first opened. Coming back to Design from
+  // Solve or Results resumes the view that was left (designViewMemory).
+  const [resumeDesignView] = useState(() => designIntroEnabled && designViewMemory.introPlayed);
+  const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => {
+    if (!designIntroEnabled) return '2d';
+    return resumeDesignView ? designViewMemory.view as PublicViewportMode : '3d';
+  });
+  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled && !resumeDesignView ? 0 : 1));
+  const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>(() => (
+    resumeDesignView ? designViewMemory.layer as PublicCanvasLayer : 'none'
   ));
-  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled ? 0 : 1));
-  const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>('none');
   // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
-  const [magnetPolarityView, setMagnetPolarityView] = useState<PublicMagnetPolarityView>('dominant');
   const [activeDimension, setActiveDimension] = useState<DimensionId | null>(null);
   const [hoveredDimension, setHoveredDimension] = useState<DimensionId | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [animationRpm, setAnimationRpm] = useState(18);
+  const [animationRpm, setAnimationRpm] = useState(20);
   const [rotorAngleDeg, setRotorAngleDeg] = useState(0);
   const [explodedAmount, setExplodedAmount] = useState(0);
   const [threeResetSignal, setThreeResetSignal] = useState(0);
@@ -1765,6 +1771,7 @@ function ViewportChrome({
   // The section fits its controls until it is dragged; double-click returns to fitting.
   const [dockFitHeight, setDockFitHeight] = useState(dockStrip || mode === 'geometry' ? VIEWPORT_DOCK_DEFAULT_HEIGHT_WITH_STRIP : VIEWPORT_DOCK_DEFAULT_HEIGHT);
   const [dockUserHeight, setDockUserHeight] = useState<number | null>(null);
+  const dockFitByViewRef = useRef<{ width: number; mode: string; heights: Record<string, number> }>({ width: 0, mode: '', heights: {} });
   const dockHeight = dockUserHeight ?? dockFitHeight;
   const [dockResizing, setDockResizing] = useState(false);
   const dockDragRef = useRef<{ startY: number; startHeight: number } | null>(null);
@@ -1827,7 +1834,20 @@ function ViewportChrome({
         const rect = item.getBoundingClientRect();
         return rect.height > 0 ? Math.max(bottom, rect.bottom - barTop + bar.scrollTop) : bottom;
       }, 0);
-      if (contentBottom > 0) setDockFitHeight(clampDockHeight(contentBottom + parseFloat(style.paddingBottom)));
+      if (contentBottom <= 0) return;
+      // One height for every view tab: the section is as tall as the tallest
+      // set of controls seen at this width, so switching 2D / 3D / Materials /
+      // Layout swaps the controls without moving the canvas edge. A new width
+      // rewraps the controls and Solve has its own tabs, so either starts over.
+      const fits = dockFitByViewRef.current;
+      const width = Math.round(bar.clientWidth);
+      if (fits.width !== width || fits.mode !== mode) {
+        fits.width = width;
+        fits.mode = mode;
+        fits.heights = {};
+      }
+      fits.heights[viewportMode] = clampDockHeight(contentBottom + parseFloat(style.paddingBottom));
+      setDockFitHeight(Math.max(...Object.values(fits.heights)));
     };
     const observer = new ResizeObserver(measure);
     observer.observe(bar);
@@ -1837,7 +1857,7 @@ function ViewportChrome({
   }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
-  const introCompleteRef = useRef(!designIntroEnabled);
+  const introCompleteRef = useRef(!designIntroEnabled || resumeDesignView);
   const previousFrameRef = useRef<number | null>(null);
 
   const finishDesignIntro = useCallback((finalMode: PublicViewportMode) => {
@@ -1868,6 +1888,16 @@ function ViewportChrome({
     const timer = window.setTimeout(() => setShowMeshNavigationHint(false), 4_200);
     return () => window.clearTimeout(timer);
   }, [mode]);
+
+  // Remember the Design view once its intro is over. No dependency list: a
+  // motor loaded while this canvas stays mounted resets the memory, and the
+  // next render records again that the intro has already been seen here.
+  useEffect(() => {
+    if (!designIntroEnabled || !introCompleteRef.current) return;
+    designViewMemory.introPlayed = true;
+    designViewMemory.view = viewportMode;
+    designViewMemory.layer = canvasLayer;
+  });
 
   useEffect(() => {
     if (!designIntroEnabled || introCompleteRef.current) return undefined;
@@ -2003,7 +2033,7 @@ function ViewportChrome({
   return (
     <section
       ref={viewportRef}
-      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
+      className={`viewport viewport-cad viewport-cad-grid public-motor-viewport${viewportMode === 'materials' ? ' is-materials-view' : ''}${showDimensionReadout && dimensionAnnotations.length > 0 ? ' has-dimension-readout' : ''}${showMaterialAssignment ? ' is-material-assignment' : ''}${showMaterialBehavior ? ' is-material-behavior' : ''}${dockResizing ? ' is-dock-resizing' : ''}`}
       style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
     >
       {showConfigurationLabel && (
@@ -2069,7 +2099,6 @@ function ViewportChrome({
               activeDimension={showDimensionReadout ? activeDimension : null}
               hoveredDimension={showDimensionReadout ? hoveredDimension : null}
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
-              magnetPolarityView={magnetPolarityView}
               showToothPoles={viewportMode === '2d' && showToothPoles}
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
@@ -2107,7 +2136,7 @@ function ViewportChrome({
       {!geometry && mode === 'geometry' && viewportMode !== '3d' && <div className="public-viewport-message">Start the local backend to load geometry.</div>}
       {!mesh && mode === 'mesh' && viewportMode === '2d' && <div className="public-viewport-message">Generate the mesh to inspect its elements.</div>}
       {mode === 'geometry' && stale && viewportMode !== '3d' && <div className="viewport-preview-note">Updating preview…</div>}
-      {busy === 'mesh' && <div className="public-canvas-progress"><span>Building native Gmsh mesh…</span><i /></div>}
+      {busy === 'mesh' && <div className="public-canvas-progress"><span>Meshing…</span><i /></div>}
       {/* The floating layout card is gone: WindingLayoutView states the same slots,
           poles, type, turns and paths in its own header, and the card sat on top of
           the chips row. Its phase legend moved into that header instead. */}
@@ -2332,31 +2361,6 @@ function ViewportChrome({
               </span>
             </span>
           )}
-          {viewportMode === '2d'
-            && mode === 'geometry'
-            && (config.topology === 'SPM'
-              || (config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape')) && (
-            <span className="vc-group public-polarity-view" role="group" aria-label="Magnet polarity display">
-              <span className="public-dock-group-label" aria-hidden="true">Magnets</span>
-              <span className="public-dock-segmented">
-                {([
-                  ['dominant', 'Pole', 'Dominant pole', 'Color each magnet by the pole facing the airgap.'],
-                  ['split', 'Split', 'Split view', 'Show both poles for orientation. The FEM magnet remains one region.'],
-                ] as Array<[PublicMagnetPolarityView, string, string, string]>).map(([value, label, ariaLabel, title]) => (
-                  <button
-                    type="button"
-                    aria-pressed={magnetPolarityView === value}
-                    aria-label={ariaLabel}
-                    title={title}
-                    onClick={() => setMagnetPolarityView(value)}
-                    key={value}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </span>
-            </span>
-          )}
           {viewportMode === '3d' && (
             <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
               <span className="public-dock-group-label" aria-hidden="true">Explode</span>
@@ -2384,9 +2388,12 @@ function ViewportChrome({
           )}
           {/* The rotor preview uses the field playback's transport: the same
               play button and the same speed field. */}
+          {/* Spin always starts its own line, so it sits in the same place on
+              the 2D and 3D tabs and its label lines up under the one above. */}
+          {showPlayback && <span className="public-dock-row-break" aria-hidden="true" />}
           {showPlayback && (
             <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
-              <span className="public-dock-group-label" aria-hidden="true">Preview</span>
+              <span className="public-dock-group-label" aria-hidden="true">Spin</span>
               <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
               <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
               <RpmField
@@ -2727,7 +2734,7 @@ function formatRunTimeRange(validation: SolveValidation): string {
 }
 
 function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyAction): string {
-  if (busy === 'mesh') return 'Preparing mesh';
+  if (busy === 'mesh') return 'Meshing';
   const stage = progress?.stage;
   if (!stage) return 'Starting analysis';
   const labels: Record<string, string> = {
@@ -3290,10 +3297,26 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
-  const [solveView, setSolveView] = useState<'geometry' | 'mesh' | 'field'>(mesh ? 'mesh' : 'geometry');
+  // Coming back to Solve with the same mesh and result resumes the tab and
+  // mesh display that were left (solveViewMemory); anything new opens on its default.
+  const [resumeSolveView] = useState(() => (
+    Boolean(mesh || result) && solveViewMemory.stage.mesh === mesh && solveViewMemory.stage.result === result
+  ));
+  const [solveView, setSolveView] = useState<'geometry' | 'mesh' | 'field'>(() => (
+    resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
+  ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
-  const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>('geometry');
-  const [showMeshEdges, setShowMeshEdges] = useState(true);
+  const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
+    resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
+  ));
+  const [showMeshEdges, setShowMeshEdges] = useState(() => (resumeSolveView ? solveViewMemory.stage.showMeshEdges : true));
+  // The mesh and result these view choices were made for: the effects below
+  // reset the view only when one of them is replaced, not on a resumed mount.
+  const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
+  const viewedResultRef = useRef<unknown>(resumeSolveView ? result : undefined);
+  useEffect(() => {
+    solveViewMemory.stage = { result, mesh, solveView, meshDisplayMode, showMeshEdges };
+  });
   const [focusedMeshElementIndex, setFocusedMeshElementIndex] = useState<number | null>(null);
   const [transientNotice, setTransientNotice] = useState<string | null>(null);
   const [analysisDetailsOpen, setAnalysisDetailsOpen] = useState(() => !result);
@@ -3327,8 +3350,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
   const solverCaption = selectedSolver === 'elmer'
-    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · native Gmsh · remesh per position.`
-    : 'Built-in field solver using the prepared native Gmsh mesh.';
+    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · Gmsh · remesh per position.`
+    : 'Built-in field solver using the prepared Gmsh mesh.';
   const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
@@ -3431,7 +3454,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       ? ['Finalizing', 'Finalizing results']
       : ['Running', 'Analysis in progress']
     : busy === 'mesh'
-      ? ['Preparing mesh', 'Preparing mesh']
+      ? ['Meshing', 'Meshing…']
       : validationChecking
         ? ['Checking', 'Checking setup']
         : runReady
@@ -3472,7 +3495,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
         ? ['Finalizing', 'Preparing playback and saving results']
         : ['Running', 'Analysis running locally']
       : busy === 'mesh'
-        ? ['Preparing mesh', 'Preparing the native mesh']
+        ? ['Meshing', 'Meshing…']
         : busy === 'field'
           ? ['Stator field', 'Computing the stator-only field']
           : result
@@ -3521,17 +3544,18 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   }, [config.solve_params.solve_quality]);
 
   useEffect(() => {
-    setFocusedMeshElementIndex(null);
-    setMeshDisplayMode('geometry');
-  }, [mesh]);
-
-  useEffect(() => {
+    if (viewedMeshRef.current === mesh && viewedResultRef.current === result) return;
+    const meshChanged = viewedMeshRef.current !== mesh;
+    const resultChanged = viewedResultRef.current !== result;
+    viewedMeshRef.current = mesh;
+    viewedResultRef.current = result;
+    if (meshChanged) {
+      setFocusedMeshElementIndex(null);
+      setMeshDisplayMode('geometry');
+    }
     if (!result && mesh) setSolveView('mesh');
+    if (resultChanged && result) setSolveView('field');
   }, [mesh, result]);
-
-  useEffect(() => {
-    if (result) setSolveView('field');
-  }, [result]);
 
   useEffect(() => {
     const resultAvailable = Boolean(result);
@@ -3932,7 +3956,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                 <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
               {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
-              <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Preparing mesh…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
+              <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Meshing…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
               <span className="public-section-kicker" id="public-electromagnetic-controls-heading">Electromagnetic controls</span>
@@ -3975,7 +3999,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={runDisabled} onClick={handleStartSolve}>Run again</button>
             </>
           ) : (
-            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Preparing mesh…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
+            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>

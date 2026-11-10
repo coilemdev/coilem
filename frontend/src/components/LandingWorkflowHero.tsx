@@ -60,7 +60,7 @@ export function LandingWorkflowHero({
         {isMotor ? (
           <>
             <h1>Electric Motor<br />Design,<br /><em>Simplified</em></h1>
-            <p id={descriptionId}>Design and solve electric motors in minutes with live 3D feedback.</p>
+            <p id={descriptionId}>Simulate BLDC and PMSM motors, inrunner or outrunner. Get torque, back-EMF and field plots before you build.</p>
           </>
         ) : (
           <>
@@ -101,8 +101,8 @@ export function LandingWorkflowHero({
 
         <div className="selector-proof-points" aria-label={isMotor ? 'Motor design benefits' : 'Halbach design benefits'}>
           {(isMotor
-            ? ['Experimental 2D FEM', 'Runs fully offline', 'Guided motor setup', 'Source-built preview']
-            : ['Cylindrical & linear arrays', '2D Magneto2D solves', 'Runs fully offline', 'Field-data exports']
+            ? ['Runs offline', 'Built-in mesh', '2D FEM solver', 'Developer preview']
+            : ['Cylindrical & linear arrays', '2D Magneto2D solves', 'Runs offline', 'Field-data exports']
           ).map((benefit) => <span key={benefit}>{benefit}</span>)}
         </div>
       </div>

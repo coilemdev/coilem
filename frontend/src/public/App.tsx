@@ -60,6 +60,7 @@ import { designFileBaseName, parseDesignFile, saveDesignFileAs } from './designF
 import { asPublicConfig } from './publicRequest';
 import { setAnalysisOption, type AnalysisKey } from './analysisOptions';
 import { projectMaterialCatalog, type CustomSteel, type SteelTarget } from './customSteel';
+import { resetDesignViewMemory } from './designViewMemory';
 import { createPublicExampleDesign, type PublicExampleId } from './exampleDesigns';
 import {
   cloneDefaultConfig,
@@ -83,7 +84,6 @@ import {
   applyPublicSolvePreset,
   capturePublicPresetSweep,
   PUBLIC_DEFAULT_PRESET_SWEEP,
-  PUBLIC_SOLVE_PLAN_MESH_DENSITY,
   type PublicSolvePreset,
   type PublicSweepSampling,
 } from './solvePlan';
@@ -323,12 +323,6 @@ const LESSON_TEN_HEADER_PLACEHOLDER: LearningLessonHeaderProgress = {
     { id: 'solve', label: 'Voltage Limit', complete: false, available: false },
   ],
 };
-
-const SOLVE_PLAN_LABEL = {
-  quick: 'Preview',
-  standard: 'Standard',
-  fine: 'High accuracy',
-} as const;
 
 const DESIGN_FIELD_LABELS: Record<string, string> = {
   OD_mm: 'Outer diameter',
@@ -661,7 +655,6 @@ export function App() {
 
   const prepareMesh = useCallback(async (
     nextConfig: MotorConfig,
-    successNotice = 'Native Gmsh mesh prepared. Inspect it here or run the analysis.',
   ): Promise<MeshPreview | null> => {
     const requestId = ++meshRequestId.current;
     setBusy('mesh');
@@ -676,7 +669,6 @@ export function App() {
       const preparedMesh = payload as unknown as MeshPreview;
       setMesh(preparedMesh);
       setConnectionStatus('online');
-      setNotice(successNotice);
       return preparedMesh;
     } catch (requestError) {
       if (requestId !== meshRequestId.current) return null;
@@ -971,8 +963,6 @@ export function App() {
       ? presetSweepRef.current
       : capturePublicPresetSweep(config);
     presetSweepRef.current = presetSweep;
-    const planMeshDensity = PUBLIC_SOLVE_PLAN_MESH_DENSITY[solvePlan];
-    const meshLabel = planMeshDensity === 'normal' ? 'medium' : planMeshDensity;
     const nextConfig = applyPublicSolvePreset(config, solvePlan, presetSweep);
     setConfig(nextConfig);
     setMesh(null);
@@ -983,10 +973,7 @@ export function App() {
     setProgress(null);
     setLiveSamples([]);
     setError(null);
-    void prepareMesh(
-      nextConfig,
-      `${SOLVE_PLAN_LABEL[solvePlan]} plan ready with a ${meshLabel} mesh.`,
-    );
+    void prepareMesh(nextConfig);
   }, [config, prepareMesh]);
 
   const updateCustomSweep = useCallback((stepDeg: number) => {
@@ -1223,7 +1210,8 @@ export function App() {
             workflow_elapsed_s: (performance.now() - workflowStartedAt) / 1000,
           } as unknown as SolveResult);
           setView('solve');
-          setNotice('Analysis complete. Inspect the solved field here or open the full report.');
+          // The solved field replacing the progress view says the run is done.
+          setNotice(null);
           setBusy(null);
           solveController.current = null;
         },
@@ -1377,6 +1365,7 @@ export function App() {
   };
 
   const startNewDesign = () => {
+    resetDesignViewMemory();
     solveRequestId.current += 1;
     meshRequestId.current += 1;
     armatureFieldRequestId.current += 1;
@@ -1408,6 +1397,7 @@ export function App() {
   };
 
   const openDesignFile = async (file: File) => {
+    resetDesignViewMemory();
     try {
       const parsed = parseDesignFile(await file.text());
       rememberPresetSweep(parsed.config);
@@ -1445,6 +1435,7 @@ export function App() {
   };
 
   const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string | null; config: MotorConfig }) => {
+    resetDesignViewMemory();
     const example = restored ?? createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
     setConfig(example.config);
@@ -1576,6 +1567,7 @@ export function App() {
   };
 
   const openWorkspace = (guided: boolean) => {
+    resetDesignViewMemory();
     if (blankDesign) {
       const nextConfig = cloneDefaultConfig();
       rememberPresetSweep(nextConfig);
@@ -1824,6 +1816,7 @@ export function App() {
           onUseExample={() => openWorkspace(false)}
           onOpenTutorials={() => navigateTutorials('catalog')}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
+          onLoadExample={loadExampleDesign}
         />
       </div>
     );

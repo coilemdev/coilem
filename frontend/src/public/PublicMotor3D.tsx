@@ -46,9 +46,7 @@ const HIDEABLE_PARTS: Array<{ id: HideablePartId; label: string }> = [
 /**
  * The end caps are off on first view. They are the outermost part, so with them
  * on the opening shot of a new design is two grey discs and a housing — the
- * windings, magnets and rotor that the design actually is stay buried. Both
- * halves of each magnet are physical parts of one dipole, so opposite poles
- * remain visible by default in the engineering view.
+ * windings, magnets and rotor that the design actually is stay buried.
  */
 const DEFAULT_HIDDEN_PARTS: readonly HideablePartId[] = ['endcaps'];
 
@@ -143,6 +141,15 @@ function shoedToothShape(
   return shape;
 }
 
+const HAND_WOUND_STRANDS = 42;
+
+/** Bare-metal colours of the 3D steel parts, shared with the landing page motor. */
+const STEEL_3D = { stator: 0x6d7682, tooth: 0x78818e, rotor: 0x8c939d } as const;
+
+function mutedMagnetColor(hex: string): THREE.Color {
+  return new THREE.Color(renderTargetColor(hex)).lerp(new THREE.Color(0x8d939c), 0.22);
+}
+
 function enamelledCopperMaterial(phaseColor: number, transparent = false): THREE.MeshPhysicalMaterial {
   return new THREE.MeshPhysicalMaterial({
     // The copper tint is kept so the bundles read as enamelled wire rather than
@@ -150,12 +157,13 @@ function enamelledCopperMaterial(phaseColor: number, transparent = false): THREE
     // green and violet phases toward the amber one, so the three phases were
     // harder to tell apart here than in 2D.
     color: new THREE.Color(phaseColor).lerp(new THREE.Color(0xc9722e), 0.1),
-    metalness: 0.45,
-    roughness: 0.3,
-    // Was 0.8, which is a near-mirror coat: it whitened the bundles regardless
-    // of the colour underneath.
-    clearcoat: 0.4,
-    clearcoatRoughness: 0.28,
+    // Enamelled magnet wire: metal under a glossy coat. The studio rig is dimmer
+    // than the warm one this was first tuned for, so the coat can be stronger
+    // without whitening the bundles.
+    metalness: 0.6,
+    roughness: 0.34,
+    clearcoat: 0.55,
+    clearcoatRoughness: 0.24,
     transparent,
   });
 }
@@ -171,19 +179,30 @@ function phaseMaterial(hex: string): THREE.MeshPhysicalMaterial {
   });
 }
 
-function extrude(shape: THREE.Shape, depth: number): THREE.ExtrudeGeometry {
-  const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth,
-    bevelEnabled: false,
-    curveSegments: 64,
-  });
-  geometry.translate(0, 0, -depth / 2);
+/**
+ * `bevel` breaks the two end-face edges so they catch a highlight, as a
+ * machined or stamped part does. The outline and overall length are unchanged.
+ */
+function extrude(shape: THREE.Shape, depth: number, bevel = 0): THREE.ExtrudeGeometry {
+  const edge = Math.min(bevel, depth * 0.2);
+  const geometry = new THREE.ExtrudeGeometry(shape, edge > 0
+    ? {
+      depth: depth - edge * 2,
+      bevelEnabled: true,
+      bevelThickness: edge,
+      bevelSize: edge,
+      bevelOffset: -edge,
+      bevelSegments: 2,
+      curveSegments: 64,
+    }
+    : { depth, bevelEnabled: false, curveSegments: 64 });
+  geometry.translate(0, 0, -depth / 2 + edge);
   return geometry;
 }
 
 /** Flat washer about z = 0 — the housing parts are all stacked annuli. */
-function annulusGeometry(innerRadius: number, outerRadius: number, depth: number): THREE.ExtrudeGeometry {
-  return extrude(ringShape(outerRadius, innerRadius), depth);
+function annulusGeometry(innerRadius: number, outerRadius: number, depth: number, bevel = 0): THREE.ExtrudeGeometry {
+  return extrude(ringShape(outerRadius, innerRadius), depth, bevel);
 }
 
 /**
@@ -204,13 +223,14 @@ function makeRotorFaceTexture(): THREE.CanvasTexture {
   canvas.height = size;
   const context = canvas.getContext('2d');
   if (context) {
-    const base = new THREE.Color(0x36465c);
+    const base = new THREE.Color(STEEL_3D.rotor);
     context.fillStyle = `#${base.getHexString()}`;
     context.fillRect(0, 0, size, size);
 
     const center = size / 2;
     const gridStep = 24;
-    const grid = base.clone().lerp(new THREE.Color(0xb8c5d6), 0.28);
+    // Scribed a shade darker than the steel, so it stays a faint cue.
+    const grid = base.clone().lerp(new THREE.Color(0x2b323c), 0.3);
     context.strokeStyle = `#${grid.getHexString()}`;
     context.lineWidth = 1.15;
 
@@ -343,6 +363,8 @@ function buildBearing(
     ball: THREE.Material;
     cage: THREE.Material;
     motionMark: THREE.Material;
+    seal: THREE.Material;
+    sealLip: THREE.Material;
   },
 ): BearingAnimationRig {
   const group = new THREE.Group();
@@ -358,10 +380,21 @@ function buildBearing(
   const innerRaceOuter = dims.boreRadius + build * 0.34;
   const outerRaceInner = dims.boreRadius + build * 0.76;
   const ballPitch = (innerRaceOuter + outerRaceInner) / 2;
-  const ballRadius = Math.max(0.2, (outerRaceInner - innerRaceOuter) * 0.62);
+  // The balls and cage stay inside the seals. A short, wide bearing (a thin
+  // outrunner stack) would otherwise have balls taller than the bearing is
+  // wide, poking out through both seal faces.
+  const ballRadius = Math.max(0.2, Math.min((outerRaceInner - innerRaceOuter) * 0.62, dims.width * 0.36));
 
-  const innerRaceGeometry = annulusGeometry(dims.boreRadius, innerRaceOuter, dims.width);
-  const outerRaceGeometry = annulusGeometry(outerRaceInner, dims.outerRadius, dims.width);
+  const raceBevel = dims.width * 0.07;
+  const innerRaceGeometry = annulusGeometry(dims.boreRadius, innerRaceOuter, dims.width, raceBevel);
+  const outerRaceGeometry = annulusGeometry(outerRaceInner, dims.outerRadius, dims.width, raceBevel);
+  // Sealed (2RS-style), as fitted to most motors: a rubber seal just inside
+  // each face hides the balls and cage. The seals belong to the outer race,
+  // which stays put in its seat; only the inner race turns with the shaft.
+  const sealRecess = dims.width * 0.07;
+  const sealGap = build * 0.025;
+  const sealGeometry = annulusGeometry(innerRaceOuter + sealGap, outerRaceInner - sealGap, dims.width - sealRecess * 2);
+  const sealLipGeometry = annulusGeometry(innerRaceOuter, innerRaceOuter + sealGap + build * 0.07, dims.width - sealRecess * 3.2);
   const cageGeometry = annulusGeometry(
     ballPitch - ballRadius * 0.42,
     ballPitch + ballRadius * 0.42,
@@ -382,7 +415,11 @@ function buildBearing(
   const ballMotionMarkGeometry = new THREE.SphereGeometry(ballRadius * 0.12, 10, 7);
 
   innerRace.add(new THREE.Mesh(innerRaceGeometry, materials.race));
-  outerRace.add(new THREE.Mesh(outerRaceGeometry, materials.race));
+  outerRace.add(
+    new THREE.Mesh(outerRaceGeometry, materials.race),
+    new THREE.Mesh(sealGeometry, materials.seal),
+    new THREE.Mesh(sealLipGeometry, materials.sealLip),
+  );
   cage.add(new THREE.Mesh(cageGeometry, materials.cage));
 
   const raceMotionMark = new THREE.Mesh(raceMotionMarkGeometry, materials.motionMark);
@@ -420,6 +457,8 @@ function buildBearing(
     geometries: [
       innerRaceGeometry,
       outerRaceGeometry,
+      sealGeometry,
+      sealLipGeometry,
       cageGeometry,
       ballGeometry,
       raceMotionMarkGeometry,
@@ -682,9 +721,9 @@ function ParametricMotor3D({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.02;
+    renderer.toneMappingExposure = 1.0;
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 5_000);
@@ -765,69 +804,56 @@ function ParametricMotor3D({
     const pmrem = new THREE.PMREMGenerator(renderer);
     const environmentTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = environmentTarget.texture;
-    scene.environmentIntensity = 0.62;
+    scene.environmentIntensity = 0.8;
     pmrem.dispose();
 
-    // Warm-biased rig. The ambient was pure white and the hemisphere sky a cool
-    // blue-white, which on a grey stator read as flat daylight; the key was only
-    // faintly warm, so the blue fill and cyan rim set the overall cast. The key is
-    // clearly warm now and the ambient/sky carry a little amber, while the fill stays
-    // slightly cool so the shaded side still separates from the lit side.
-    scene.add(new THREE.AmbientLight(0xffe4c4, 0.30));
-    scene.add(new THREE.HemisphereLight(0xffe2bd, 0x171310, 0.52));
-    const key = new THREE.DirectionalLight(0xffdcae, 1.62);
+    // Studio lighting, shared with the landing page motor: a near-white key
+    // with soft shadows, a cool fill, and two faint coloured rims that keep the
+    // part edges off the dark page.
+    scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+    scene.add(new THREE.HemisphereLight(0xe8eef7, 0x15171c, 0.35));
+    const key = new THREE.DirectionalLight(0xfff1de, 1.75);
     key.position.set(outerRadius * 2, outerRadius * 2.4, outerRadius * 2.6);
     key.castShadow = true;
-    key.shadow.mapSize.set(1_024, 1_024);
+    key.shadow.mapSize.set(2_048, 2_048);
     key.shadow.camera.left = -outerRadius * 2.4;
     key.shadow.camera.right = outerRadius * 2.4;
     key.shadow.camera.top = outerRadius * 2.4;
     key.shadow.camera.bottom = -outerRadius * 2.4;
     key.shadow.camera.near = 1;
     key.shadow.camera.far = outerRadius * 8;
+    key.shadow.bias = -0.0004;
+    key.shadow.normalBias = 0.6;
+    key.shadow.radius = 4;
+    key.shadow.intensity = 0.6;
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xbcd4f0, 0.56);
+    const fill = new THREE.DirectionalLight(0xc7d7ee, 0.45);
     fill.position.set(-outerRadius * 2.2, outerRadius * 0.8, outerRadius * 1.4);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0x67e8f9, 0.58);
+    const rim = new THREE.DirectionalLight(0x8fdcf0, 0.4);
     rim.position.set(-outerRadius * 2, -outerRadius, outerRadius * 1.2);
     scene.add(rim);
-    const warmRim = new THREE.DirectionalLight(0xffb347, 0.42);
+    const warmRim = new THREE.DirectionalLight(0xffb866, 0.3);
     warmRim.position.set(outerRadius * 0.8, -outerRadius * 2.1, -outerRadius);
     scene.add(warmRim);
 
     const materials = {
       stator: new THREE.MeshPhysicalMaterial({
-        color: renderTargetColor(PUBLIC_MOTOR_COLORS.statorSteel),
-        // Dropped from 0.78: at high metalness the environment map, not the base
-        // colour, decides what the steel looks like, which is what pulled the 3D
-        // stator away from the 2D fill however the colour was set.
-        metalness: 0.62,
-        // Roughened and de-coated from 0.34/0.20. The clearcoat laid a second
-        // specular sheet on top of the metal, and on a surface as large as the
-        // housing the two blew out to white wherever the view grazed it.
-        roughness: 0.47,
-        clearcoat: 0.06,
-        clearcoatRoughness: 0.45,
-        // The studio environment is neutral and bright; at full strength it, not
-        // the palette, decided how light the steel looked.
-        envMapIntensity: 0.55,
+        // Electrical-steel laminations, drawn as the neutral grey metal they are
+        // (as on the landing page motor) rather than tinted to the 2D fill.
+        color: STEEL_3D.stator,
+        metalness: 0.85,
+        roughness: 0.46,
       }),
       tooth: new THREE.MeshPhysicalMaterial({
-        color: renderTargetColor(PUBLIC_MOTOR_COLORS.statorTooth),
-        metalness: 0.56,
-        roughness: 0.48,
-        clearcoat: 0.05,
-        clearcoatRoughness: 0.45,
-        envMapIntensity: 0.55,
+        color: STEEL_3D.tooth,
+        metalness: 0.85,
+        roughness: 0.44,
       }),
       rotor: new THREE.MeshPhysicalMaterial({
-        color: 0x36465c,
-        metalness: 0.68,
-        roughness: 0.46,
-        clearcoat: 0.05,
-        clearcoatRoughness: 0.5,
-        envMapIntensity: 0.55,
+        color: STEEL_3D.rotor,
+        metalness: 0.9,
+        roughness: 0.36,
         transparent: config.topology === 'IPM',
         opacity: config.topology === 'IPM' ? 0.68 : 1,
         depthWrite: config.topology !== 'IPM',
@@ -837,11 +863,8 @@ function ParametricMotor3D({
       rotorFace: new THREE.MeshPhysicalMaterial({
         color: 0xffffff,
         map: makeRotorFaceTexture(),
-        metalness: 0.68,
-        roughness: 0.46,
-        clearcoat: 0.05,
-        clearcoatRoughness: 0.5,
-        envMapIntensity: 0.55,
+        metalness: 0.9,
+        roughness: 0.36,
         transparent: config.topology === 'IPM',
         opacity: config.topology === 'IPM' ? 0.68 : 1,
         depthWrite: config.topology !== 'IPM',
@@ -850,47 +873,30 @@ function ParametricMotor3D({
         // Was 0.96 metal at 0.16 roughness with a 0.45 coat — a mirror, which
         // clipped to pure white in the middle of the face-on view. Machined steel,
         // not chrome.
-        color: 0xaeb8c6,
-        metalness: 0.8,
-        roughness: 0.33,
-        clearcoat: 0.12,
-        clearcoatRoughness: 0.32,
-        envMapIntensity: 0.5,
+        color: 0xc9d0d9,
+        metalness: 0.95,
+        roughness: 0.24,
+        envMapIntensity: 0.8,
       }),
+      // Coated magnets, each one piece coloured by the pole it presents to the
+      // stator: red north, blue south. The colours are muted towards the steel
+      // around them, as on the landing page motor, so the magnets read as coated
+      // metal and do not outshout the copper.
       magnetNorth: new THREE.MeshPhysicalMaterial({
-        color: renderTargetColor(PUBLIC_MOTOR_COLORS.magnetNorth),
-        emissive: 0x3d090c,
-        metalness: 0.2,
-        roughness: 0.28,
-        // Halved from 0.52: a strong clearcoat lays a white specular sheet over
-        // the whole face, which is most of why the magnets read pastel.
-        clearcoat: 0.26,
-        clearcoatRoughness: 0.3,
+        color: mutedMagnetColor(PUBLIC_MOTOR_COLORS.magnetNorth),
+        emissive: 0x120304,
+        metalness: 0.62,
+        roughness: 0.3,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.25,
       }),
       magnetSouth: new THREE.MeshPhysicalMaterial({
-        color: renderTargetColor(PUBLIC_MOTOR_COLORS.magnetSouth),
-        emissive: 0x071d42,
-        metalness: 0.2,
-        roughness: 0.28,
-        clearcoat: 0.26,
-        clearcoatRoughness: 0.3,
-      }),
-      // The opposite half has the same magnetic material as the airgap-facing
-      // half. Separate materials keep its polarity explicit while orbiting or
-      // hiding the rotor core.
-      oppositeNorth: new THREE.MeshPhysicalMaterial({
-        color: renderTargetColor(PUBLIC_MOTOR_COLORS.magnetNorth),
-        emissive: 0x5b0c12,
-        metalness: 0.12,
-        roughness: 0.24,
-        clearcoat: 0.18,
-      }),
-      oppositeSouth: new THREE.MeshPhysicalMaterial({
-        color: renderTargetColor(PUBLIC_MOTOR_COLORS.magnetSouth),
-        emissive: 0x0a2d63,
-        metalness: 0.12,
-        roughness: 0.24,
-        clearcoat: 0.18,
+        color: mutedMagnetColor(PUBLIC_MOTOR_COLORS.magnetSouth),
+        emissive: 0x030a18,
+        metalness: 0.62,
+        roughness: 0.3,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.25,
       }),
       // Render only the inward-facing walls of the slightly oversized box.
       // From outside this reads as a hollow lamination pocket rather than a
@@ -924,12 +930,10 @@ function ParametricMotor3D({
       // an aluminium cap apart at a glance. `transparent` is pinned on so
       // applyExplosion can ramp opacity every frame without a shader recompile.
       endcap: new THREE.MeshPhysicalMaterial({
-        color: 0xa9b6c7,
-        metalness: 0.42,
-        roughness: 0.6,
-        clearcoat: 0.05,
-        clearcoatRoughness: 0.55,
-        envMapIntensity: 0.6,
+        color: 0x8b95a3,
+        metalness: 0.7,
+        roughness: 0.52,
+        envMapIntensity: 0.5,
         transparent: true,
         opacity: ENDCAP_ASSEMBLED_OPACITY,
       }),
@@ -937,20 +941,16 @@ function ParametricMotor3D({
       // only job is to close the machine off. Only the drive-end cap — the one
       // between the camera and the end windings — stays a shell.
       endcapRear: new THREE.MeshPhysicalMaterial({
-        color: 0xa9b6c7,
-        metalness: 0.42,
-        roughness: 0.6,
-        clearcoat: 0.05,
-        clearcoatRoughness: 0.55,
-        envMapIntensity: 0.6,
+        color: 0x8b95a3,
+        metalness: 0.7,
+        roughness: 0.52,
+        envMapIntensity: 0.5,
       }),
       bearingRace: new THREE.MeshPhysicalMaterial({
-        color: 0xa8b4c4,
-        metalness: 0.82,
-        roughness: 0.3,
-        clearcoat: 0.12,
-        clearcoatRoughness: 0.3,
-        envMapIntensity: 0.5,
+        color: 0xbfc7d2,
+        metalness: 0.95,
+        roughness: 0.2,
+        envMapIntensity: 0.8,
       }),
       bearingBall: new THREE.MeshPhysicalMaterial({
         // A near-white mirror ball reads as a light bulb at this scale.
@@ -967,6 +967,15 @@ function ParametricMotor3D({
         roughness: 0.36,
         clearcoat: 0.2,
       }),
+      bearingSeal: new THREE.MeshPhysicalMaterial({
+        color: 0x1b1f27,
+        metalness: 0.08,
+        roughness: 0.58,
+        clearcoat: 0.22,
+        clearcoatRoughness: 0.42,
+        envMapIntensity: 0.35,
+      }),
+      bearingSealLip: new THREE.MeshPhysicalMaterial({ color: 0x0f1218, metalness: 0.05, roughness: 0.7 }),
       bearingMotionMark: new THREE.MeshPhysicalMaterial({
         color: 0x263241,
         metalness: 0.58,
@@ -1013,9 +1022,12 @@ function ParametricMotor3D({
     const statorGroup = new THREE.Group();
     const teethGroup = new THREE.Group();
     const windingsGroup = new THREE.Group();
+    // Break the end-face edges of the laminations so they catch the light.
+    const edgeBevel = outerRadius * 0.0045;
     const yokeGeometry = extrude(
       ringShape(Math.max(yokeOuterRadius, yokeInnerRadius), Math.min(yokeOuterRadius, yokeInnerRadius)),
       stackDepth,
+      edgeBevel,
     );
     geometries.push(yokeGeometry);
     const yoke = new THREE.Mesh(yokeGeometry, materials.stator);
@@ -1080,11 +1092,20 @@ function ParametricMotor3D({
         toothHalfOuter,
       );
     }
-    const toothGeometry = extrude(toothShape, stackDepth);
+    const toothGeometry = extrude(toothShape, stackDepth, edgeBevel);
     geometries.push(toothGeometry);
 
     // The coil builder winds from the tooth's inner radius out; an outer
     // stator's tooth runs from the yoke out to the shoe, so its ends swap.
+    // Draw the coil as tightly wound magnet wire, as on the landing page motor.
+    // The loop count is a drawing choice: fine wire reads as a real winding where
+    // one fat loop per turn reads as a diagram. Machines with many teeth get
+    // fewer loops per coil to stay light to render.
+    const handWound = {
+      strands: config.stator.slot_count > 24 ? 24 : HAND_WOUND_STRANDS,
+      endTurnRoundness: 0.5,
+      irregularity: 0.14,
+    };
     const concentratedCoil = config.winding.type === 'concentrated'
       ? buildConcentratedCoil(outerRotor
         ? {
@@ -1095,6 +1116,7 @@ function ParametricMotor3D({
             slotPitchRad: slotPitch,
             stackLength: stackDepth,
             turnsPerCoil: config.winding.turns_per_coil,
+            handWound,
           }
         : {
             boreRadius: coilBoreRadius,
@@ -1104,14 +1126,14 @@ function ParametricMotor3D({
             slotPitchRad: slotPitch,
             stackLength: stackDepth,
             turnsPerCoil: config.winding.turns_per_coil,
+            handWound,
           })
       : null;
     let coilModelNote = '';
     if (concentratedCoil) {
       geometries.push(concentratedCoil.geometry, concentratedCoil.linerGeometry);
-      const turnsNote = concentratedCoil.strandCount >= concentratedCoil.turnsRepresented
-        ? `all ${concentratedCoil.turnsRepresented} turns modeled`
-        : `${concentratedCoil.strandCount} strands representing ${concentratedCoil.turnsRepresented} turns`;
+      // The loops are illustrative; the turn count is the design's.
+      const turnsNote = `${concentratedCoil.turnsRepresented} turns per coil · drawn as ${concentratedCoil.strandCount} wire loops`;
       const bundleNote = concentratedCoil.wireLayers === 1
         ? `single wire layer × ${concentratedCoil.turnsPerLayer}`
         : `${concentratedCoil.wireLayers} wire layers × ${concentratedCoil.turnsPerLayer} per layer`;
@@ -1370,44 +1392,30 @@ function ParametricMotor3D({
     if (config.topology === 'SPM') {
       const magnetInnerRadius = outerRotor ? magnetSeatRadius - config.rotor.magnet_thickness_mm : rotorRadius;
       const magnetOuterRadius = outerRotor ? magnetSeatRadius : rotorRadius + config.rotor.magnet_thickness_mm;
-      const magnetSplitRadius = (magnetInnerRadius + magnetOuterRadius) / 2;
       const magnetHalfSpan = Math.max(0.04, polePitch * Math.min(1, magnetPoleCoverage(config)) / 2);
-      // The air-gap half faces the stator: outside on an inner rotor, inside on an outer one.
-      const airgapHalfGeometry = extrude(
-        outerRotor
-          ? sectorShape(magnetInnerRadius, magnetSplitRadius, magnetHalfSpan)
-          : sectorShape(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan),
+      // One piece per pole, coloured by the pole it presents to the stator.
+      const magnetGeometry = extrude(
+        sectorShape(magnetInnerRadius, magnetOuterRadius, magnetHalfSpan),
         stackDepth * 0.91,
+        Math.min(edgeBevel, config.rotor.magnet_thickness_mm * 0.12),
       );
-      const rotorHalfGeometry = extrude(
-        outerRotor
-          ? sectorShape(magnetSplitRadius, magnetOuterRadius, magnetHalfSpan)
-          : sectorShape(magnetInnerRadius, magnetSplitRadius, magnetHalfSpan),
-        stackDepth * 0.91,
-      );
-      geometries.push(airgapHalfGeometry, rotorHalfGeometry);
+      geometries.push(magnetGeometry);
       for (let pole = 0; pole < config.rotor.pole_count; pole += 1) {
         const northAtAirgap = pole % 2 === 0;
         const magnetUnit = new THREE.Group();
-        const airgapHalf = new THREE.Mesh(
-          airgapHalfGeometry,
+        const magnet = new THREE.Mesh(
+          magnetGeometry,
           northAtAirgap ? materials.magnetNorth : materials.magnetSouth,
-        );
-        const rotorHalf = new THREE.Mesh(
-          rotorHalfGeometry,
-          northAtAirgap ? materials.oppositeSouth : materials.oppositeNorth,
         );
         magnetUnit.rotation.z = pole * polePitch;
         makeSelectable(magnetUnit, {
           id: `3d-magnet-${pole + 1}`,
           kind: 'magnet',
           label: `Magnet ${northAtAirgap ? 'N' : 'S'} · pole ${pole + 1}`,
-          role: 'Complete permanent-magnet dipole with airgap- and rotor-facing poles',
+          role: `Permanent magnet · ${northAtAirgap ? 'north' : 'south'} pole faces the air gap`,
           poleIndex: pole + 1,
         });
-        addEdges(airgapHalf, northAtAirgap ? 0x7f1d1d : 0x1e3a8a);
-        addEdges(rotorHalf, northAtAirgap ? 0x1e3a8a : 0x7f1d1d);
-        magnetUnit.add(airgapHalf, rotorHalf);
+        magnetUnit.add(magnet);
         magnetsGroup.add(magnetUnit);
         registerRadialExplosion(magnetUnit, pole * polePitch, (outerRotor ? -0.1 : 0.14) * rotorRadius);
       }
@@ -1429,25 +1437,19 @@ function ParametricMotor3D({
             magnetDepth + pocketClearance * 2,
             pocketAxialDepth,
           );
-          const magnetHalfGeometry = new THREE.BoxGeometry(
+          const magnetGeometry = new THREE.BoxGeometry(
             placement.effectiveLengthMm,
-            magnetDepth / 2,
+            magnetDepth,
             magnetAxialDepth,
           );
-          geometries.push(pocketGeometry, magnetHalfGeometry);
+          geometries.push(pocketGeometry, magnetGeometry);
           const northAtAirgap = pole % 2 === 0;
           const pocket = new THREE.Mesh(pocketGeometry, materials.pocket);
           const magnetUnit = new THREE.Group();
-          const airgapHalf = new THREE.Mesh(
-            magnetHalfGeometry,
+          const magnet = new THREE.Mesh(
+            magnetGeometry,
             northAtAirgap ? materials.magnetNorth : materials.magnetSouth,
           );
-          const oppositeHalf = new THREE.Mesh(
-            magnetHalfGeometry,
-            northAtAirgap ? materials.oppositeSouth : materials.oppositeNorth,
-          );
-          airgapHalf.position.y = -sideSign * magnetDepth / 4;
-          oppositeHalf.position.y = sideSign * magnetDepth / 4;
           pocket.position.set(placement.centerX, placement.centerY, 0);
           pocket.rotation.z = placement.axisAngleRad;
           pocket.renderOrder = 2;
@@ -1464,14 +1466,13 @@ function ParametricMotor3D({
             id: `3d-magnet-${pole + 1}-${placement.side}`,
             kind: 'magnet',
             label: `V magnet ${placement.side} · ${northAtAirgap ? 'N' : 'S'} · pole ${pole + 1}`,
-            role: 'Complete permanent-magnet dipole with both pole halves',
+            role: `Buried permanent magnet · ${northAtAirgap ? 'north' : 'south'} pole faces the air gap`,
             poleIndex: pole + 1,
           });
           addEdges(pocket, 0x0b1220);
-          addEdges(airgapHalf, northAtAirgap ? 0x7f1d1d : 0x1e3a8a);
-          addEdges(oppositeHalf, northAtAirgap ? 0x1e3a8a : 0x7f1d1d);
+          addEdges(magnet, northAtAirgap ? 0x7f1d1d : 0x1e3a8a);
           pocketsGroup.add(pocket);
-          magnetUnit.add(airgapHalf, oppositeHalf);
+          magnetUnit.add(magnet);
           magnetsGroup.add(magnetUnit);
           registerRadialExplosion(magnetUnit, poleAngle, rotorRadius * 0.16);
         }
@@ -1576,6 +1577,8 @@ function ParametricMotor3D({
           ball: materials.bearingBall,
           cage: materials.bearingCage,
           motionMark: materials.bearingMotionMark,
+          seal: materials.bearingSeal,
+          sealLip: materials.bearingSealLip,
         },
       );
       geometries.push(...bearing.geometries);
