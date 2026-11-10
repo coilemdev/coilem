@@ -670,3 +670,194 @@
   .bemf-shell .learning-metrics dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .bemf-shell .learning-metrics dl > div { margin: 0; }
 }
+
+/* ── Lesson 10 inside the shared lesson shell (lab/lesson-lab.css) ─────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. The rules above that hang off
+   .bemf-shell no longer match anything; the lesson root is .back-emf-lab. */
+.back-emf-lab {
+  --bemf-ok: #4ade80;
+  --bemf-warn: #fbbf24;
+  --bemf-danger: #f87171;
+}
+
+.back-emf-lab .lesson-lab-panel-body > * {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* The questions stay mounted while the experiment is reviewed, so the answers
+   are kept; they are simply not shown. */
+.back-emf-lab .lesson-lab-viewport.is-parked { display: none; }
+
+/* Focus is moved here by script when the check opens; it is not a tab stop. */
+.back-emf-lab .back-emf-check:focus { outline: none; }
+
+/* Canvas: the rotor beside the three phase waveforms, both sized to the card.
+   The picture starts below the chip through the viewport's own top padding. */
+.back-emf-lab .bemf-hero-panel {
+  width: 100%;
+  max-width: 980px;
+  height: 100%;
+  min-height: 0;
+  grid-template-columns: minmax(170px, 0.42fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.back-emf-lab .bemf-motor-action {
+  min-height: 0;
+  grid-template-rows: auto auto;
+  align-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.back-emf-lab .bemf-motor-svg { width: min(100%, 300px); }
+
+.back-emf-lab .bemf-motor-action figcaption {
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.back-emf-lab .bemf-waveform-svg {
+  height: auto;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.back-emf-lab .bemf-chart {
+  width: min(100%, 680px);
+  height: auto;
+  max-height: 100%;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .back-emf-lab .bemf-hero-panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .back-emf-lab .bemf-motor-svg { width: min(100%, 150px); }
+}
+
+/* Left card: one plain card of controls per exercise. */
+.back-emf-lab .back-emf-controls,
+.back-emf-lab .back-emf-field {
+  display: grid;
+  gap: 10px;
+}
+
+.back-emf-lab .back-emf-field { gap: 7px; }
+
+.back-emf-lab .learning-setting-field { margin-top: 0; }
+
+.back-emf-lab .learning-setting-field > span,
+.back-emf-lab .back-emf-field > span {
+  color: var(--text-secondary);
+  font: 600 12px var(--font-ui);
+}
+
+.back-emf-lab .learning-setting-field input:not(.learning-setting-range) {
+  height: 32px;
+  font-size: 13px;
+}
+
+.back-emf-lab .learning-setting-field em { font-size: 12px; }
+
+/* The winding presets carry their value on a second line. */
+.back-emf-lab .back-emf-winding .lesson-lab-segmented button {
+  height: auto;
+  min-height: 30px;
+  padding: 5px 4px;
+  line-height: 1.25;
+}
+
+.back-emf-lab .back-emf-winding .lesson-lab-segmented small {
+  display: block;
+  margin-top: 1px;
+  color: var(--text-muted);
+  font: 500 11px var(--font-mono);
+}
+
+/* The two disclosures: free exploration (left) and the model notes (right). */
+.back-emf-lab .back-emf-details {
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.back-emf-lab .back-emf-details summary {
+  color: var(--text-secondary);
+  font: 600 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.back-emf-lab .back-emf-details summary:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+.back-emf-lab .back-emf-details p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.back-emf-lab .back-emf-details fieldset {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+  margin: 10px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.back-emf-lab .back-emf-details fieldset:disabled { opacity: 0.45; }
+
+/* Right card: one row per measurement, label left and number right. */
+.back-emf-lab .back-emf-readout { margin: 0; }
+
+.back-emf-lab .back-emf-readout > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.back-emf-lab .back-emf-readout > div:first-child { padding-top: 0; border-top: 0; }
+.back-emf-lab .back-emf-readout > div:last-child { padding-bottom: 0; }
+.back-emf-lab .back-emf-readout dt { color: var(--text-secondary); font: 500 12px var(--font-ui); }
+/* The two speed thresholds take the colours of their lines on the plots. */
+.back-emf-lab .back-emf-readout dt.is-reserve { color: #fbbf24; }
+.back-emf-lab .back-emf-readout dt.is-limit { color: #67e8f9; }
+
+.back-emf-lab .back-emf-readout dd {
+  margin: 0;
+  color: var(--text-primary);
+  font: 600 12px var(--font-mono);
+  text-align: right;
+}
+
+.back-emf-lab .back-emf-readout dd.is-ok { color: var(--bemf-ok); }
+.back-emf-lab .back-emf-readout dd.is-warning { color: var(--bemf-warn); }
+.back-emf-lab .back-emf-readout dd.is-danger { color: var(--bemf-danger); }
+
+.back-emf-lab .bemf-phase-values { gap: 6px; margin: 0; }
+.back-emf-lab .bemf-phase-values div { padding: 7px 6px; }
+.back-emf-lab .bemf-phase-values span { font: 600 12px var(--font-ui); }
+.back-emf-lab .bemf-phase-values output { font: 600 12px var(--font-mono); }
+
+.back-emf-lab .bemf-checklist > div { padding: 7px 0; font: 500 12px var(--font-ui); }
+.back-emf-lab .bemf-checklist > div:first-child { padding-top: 0; }
+.back-emf-lab .bemf-checklist p { margin: 8px 0 0; line-height: 1.5; }

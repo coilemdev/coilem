@@ -22,6 +22,23 @@ import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import { RotatingFieldCoils3D } from './RotatingFieldCoils3D';
 import { TwoPhaseMotor3D } from './TwoPhaseMotor3D';
 import { BACK_EMF_PHASE_COLORS } from './phaseColors';
+import {
+  LessonChoices,
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonSegmented,
+  LessonTerms,
+} from './lab/LessonLab';
 import './learning.css';
 import './rotating-field.css';
 
@@ -40,6 +57,8 @@ type MotorViewMode = 'fem' | 'three';
 type RotationDirection = 1 | -1;
 type DesignDiagramMode = 'slice' | 'physical';
 type LabPart = 'field' | 'motor';
+type FieldDisplayMode = 'lines' | 'density';
+type LessonSevenStepId = 'predict' | 'field' | 'motor' | 'check';
 
 const PEAK_CURRENT_A = 8;
 const COIL_OFFSET_MM = 22;
@@ -49,6 +68,39 @@ const FRAME_STEP_DEG = 45 / 4;
 const FRAME_COUNT = Math.round(360 / FRAME_STEP_DEG);
 const QUARTER_FRAME_INDEX = Math.round(90 / FRAME_STEP_DEG);
 const PLAY_INTERVAL_MS = 240;
+// The angles offered as one-click presets beside the slider.
+const LANDMARK_ANGLES_DEG = [0, 90, 180, 270];
+
+const LESSON_SEVEN_GOALS: Record<LessonSevenStepId, { title: string; detail: string }> = {
+  predict: {
+    title: 'Choose the current pattern',
+    detail: 'Two fixed winding axes must make one moving magnetic target.',
+  },
+  field: {
+    title: 'Build one rotating field',
+    detail: 'Inspect θ = 0° and θ = 90°, then play one full field cycle.',
+  },
+  motor: {
+    title: 'Let the PM rotor chase it',
+    detail: 'Play one full cycle and watch the rotor follow the field target.',
+  },
+  check: {
+    title: 'Explain why it keeps turning',
+    detail: 'Use the phase sequence, four solved poles, and PM alignment torque.',
+  },
+};
+
+// The lesson's vocabulary, shown in the Inspect card on every step.
+const LESSON_SEVEN_TERMS = [
+  { term: 'Phase', definition: 'One winding and the current that drives it. This fixture has two, A and B, set at right angles. ⊙ means the current flows toward you, ⊗ away from you.' },
+  { term: <>Electrical angle, θ<sub>e</sub></>, definition: 'Where the currents are in their repeating cycle, in degrees. 360° is one full cycle.' },
+  { term: 'Quadrature', definition: 'Two currents a quarter of a cycle (90°) apart. Here Phase A follows cos θ and Phase B follows sin θ, each with an 8 A peak.' },
+  { term: 'Flux density, |B|', definition: 'How strong the magnetic field is at one spot, in tesla (T). The fields in air here are small, so they are shown in millitesla: 1 mT = 0.001 T.' },
+  { term: 'Resultant field', definition: 'The field from Phase A and the field from Phase B added together as arrows (vectors). It is read at the centre of the fixture.' },
+  { term: 'Phase sequence', definition: 'Which phase reaches its peak first. A leading B turns the field counterclockwise (CCW); B leading A turns it clockwise (CW).' },
+  { term: 'Torque angle, δ', definition: 'How far the permanent-magnet (PM) rotor trails the direction the field is pulling it toward, in degrees. Torque grows with sin δ.' },
+  { term: 'Electrical steel', definition: 'Thin sheet steel made to carry magnetic flux easily. The four wound poles of the motor here are grade M350-50A.' },
+];
 
 const QUIZ: KnowledgeCheckQuestion[] = [
   {
@@ -142,17 +194,17 @@ const RotatingFieldPredictionDiagram: React.FC = () => (
 );
 
 const RotatingFieldMotorGeometryDiagram: React.FC = () => (
-  <svg className="rotating-field-motor-geometry" viewBox="0 0 860 500" role="img" aria-label="Four wound M350-50A poles surrounding a permanent-magnet rotor">
+  <svg className="rotating-field-motor-geometry" viewBox="0 0 860 500" role="img" aria-label="Four wound electrical-steel poles surrounding a permanent-magnet rotor">
     <circle cx="430" cy="250" r="205" className="rotating-field-motor-domain" />
     <g className="rotating-field-motor-cores">
       <rect x="392" y="48" width="76" height="154" />
       <rect x="392" y="298" width="76" height="154" />
       <rect x="178" y="212" width="214" height="76" />
       <rect x="468" y="212" width="214" height="76" />
-      <text x="430" y="118">M350-50A</text>
-      <text x="430" y="390">M350-50A</text>
-      <text x="270" y="255">M350-50A</text>
-      <text x="590" y="255">M350-50A</text>
+      <text x="430" y="118">Steel</text>
+      <text x="430" y="390">Steel</text>
+      <text x="270" y="255">Steel</text>
+      <text x="590" y="255">Steel</text>
     </g>
     <g className="rotating-field-motor-coils is-a">
       <circle cx="282" cy="184" r="24" />
@@ -199,9 +251,11 @@ const PhaseWaveform: React.FC<PhaseWaveformProps> = ({
   phaseBCurrentA,
   onSelectAngle,
 }) => {
-  const width = 720;
-  const height = 210;
-  const margin = { top: 24, right: 24, bottom: 42, left: 54 };
+  // Drawn at about the width of the Inspect card, so the tick labels are
+  // shown close to their real size instead of being scaled down.
+  const width = 260;
+  const height = 168;
+  const margin = { top: 10, right: 16, bottom: 26, left: 28 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const xFor = (angle: number) => margin.left + (angle / 360) * plotWidth;
@@ -235,15 +289,15 @@ const PhaseWaveform: React.FC<PhaseWaveformProps> = ({
         <polyline className="is-a" points={phaseA} />
         <polyline className="is-b" points={phaseB} />
         <line className="rotating-field-waveform-cursor" x1={selectedX} y1={margin.top} x2={selectedX} y2={height - margin.bottom} />
-        <circle className="is-a" cx={selectedX} cy={yFor(phaseACurrentA)} r="6" />
-        <circle className="is-b" cx={selectedX} cy={yFor(phaseBCurrentA)} r="6" />
+        <circle className="is-a" cx={selectedX} cy={yFor(phaseACurrentA)} r="4.5" />
+        <circle className="is-b" cx={selectedX} cy={yFor(phaseBCurrentA)} r="4.5" />
         <g className="rotating-field-waveform-ticks">
           {[0, 90, 180, 270, 360].map((angle) => (
-            <text key={angle} x={xFor(angle)} y={height - 14} textAnchor="middle">{angle}°</text>
+            <text key={angle} x={xFor(angle)} y={height - 8} textAnchor="middle">{angle}°</text>
           ))}
-          <text x={18} y={yFor(PEAK_CURRENT_A) + 4}>+8</text>
-          <text x={28} y={yFor(0) + 4}>0</text>
-          <text x={18} y={yFor(-PEAK_CURRENT_A) + 4}>−8</text>
+          <text x={margin.left - 6} y={yFor(PEAK_CURRENT_A) + 4} textAnchor="end">+8</text>
+          <text x={margin.left - 6} y={yFor(0) + 4} textAnchor="end">0</text>
+          <text x={margin.left - 6} y={yFor(-PEAK_CURRENT_A) + 4} textAnchor="end">−8</text>
         </g>
         {Array.from({ length: FRAME_COUNT + 1 }, (_, index) => index * FRAME_STEP_DEG).map((angle) => (
           <rect
@@ -296,8 +350,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const [busyMotor, setBusyMotor] = React.useState(false);
   const [busyMotorFieldMode, setBusyMotorFieldMode] = React.useState<MotorFieldMode | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [showFluxLines, setShowFluxLines] = React.useState(true);
-  const [showFieldIntensity, setShowFieldIntensity] = React.useState(false);
+  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
   const [phaseFieldMode, setPhaseFieldMode] = React.useState<PhaseFieldMode>('combined');
   const [motorFieldMode, setMotorFieldMode] = React.useState<MotorFieldMode>('combined');
   const [motorViewMode, setMotorViewMode] = React.useState<MotorViewMode>('fem');
@@ -307,10 +360,9 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const [designDiagramMode, setDesignDiagramMode] = React.useState<DesignDiagramMode>('physical');
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
-  const [labControlsOpen, setLabControlsOpen] = React.useState(false);
-  const [solveInspectorOpen, setSolveInspectorOpen] = React.useState(false);
+  // Where the mesh viewer draws its zoom buttons: the right end of the dock.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const motorGeometryRequest = React.useRef<Promise<void> | null>(null);
-  const mainStageRef = React.useRef<HTMLElement | null>(null);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
 
@@ -358,10 +410,6 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   React.useEffect(() => {
     if (quizPassed) setLessonComplete('rotating-field', true);
   }, [quizPassed, setLessonComplete]);
-
-  React.useLayoutEffect(() => {
-    mainStageRef.current?.scrollTo({ top: 0 });
-  }, [labPart, lessonStage, quizOpen]);
 
   React.useEffect(() => {
     if (!playing) return undefined;
@@ -768,15 +816,15 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   })() : [];
 
   const fieldModeLabel = phaseFieldMode === 'phase-a'
-    ? 'PHASE A CONTRIBUTION'
+    ? 'Phase A only'
     : phaseFieldMode === 'phase-b'
-      ? 'PHASE B CONTRIBUTION'
-      : 'A + B RESULTANT';
+      ? 'Phase B only'
+      : 'A + B resultant';
   const motorModeLabel = motorFieldMode === 'stator'
-    ? 'STATOR FIELD ONLY'
+    ? 'stator field only'
     : motorFieldMode === 'rotor'
-      ? 'ROTOR PM FIELD ONLY'
-      : 'ROTATING FIELD → PM ROTOR';
+      ? 'rotor PM field only'
+      : 'combined field';
   const progressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     {
       id: 'predict',
@@ -810,7 +858,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     predictionCorrect,
     quizPassed,
   ]);
-  const currentStepId = quizOpen
+  const currentStepId: LessonSevenStepId = quizOpen
     ? 'check'
     : lessonStage === 'design'
       ? 'predict'
@@ -821,8 +869,6 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     setPlaying(false);
     if (stepId === 'predict') {
       setQuizOpen(false);
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(false);
       onStageChange?.('design');
       return;
     }
@@ -857,524 +903,620 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     onHeaderProgressChange?.(headerProgress);
   }, [headerProgress, onHeaderProgressChange]);
 
-  return (
-    <main className={`learning-shell learning-lesson-shell rotating-field-shell is-${lessonStage}-stage${quizOpen ? ' is-quiz-open' : ''}${labControlsOpen && !quizOpen && lessonStage !== 'design' ? ' has-lab-controls' : ''}${solveInspectorOpen && !quizOpen && lessonStage !== 'design' ? ' has-solve-inspector' : ''}`}>
-      <header className="tutorial-studio-strip rotating-field-studio-strip">
-        <div className="rotating-field-studio-context">
-          <strong>{lessonStage === 'design' ? 'Two-phase field · prediction' : labPart === 'field' ? 'Two-phase field · live FEM' : 'Four-pole PM motor · live FEM'}</strong>
-          <span>{lessonStage === 'design'
-            ? 'Two fixed winding axes · one electrical target'
-            : labPart === 'field'
-              ? `${fieldFrames.length || 32} solved angles · ${direction === 1 ? 'A leads B' : 'B leads A'}`
-              : `${motorFrames.length || 32} rotor checkpoints · ${motorFieldMode} field`}</span>
+
+  const lessonComplete = isLessonComplete('rotating-field');
+  const currentGoal = LESSON_SEVEN_GOALS[currentStepId];
+  const currentStepNumber = Math.max(1, progressSteps.findIndex((item) => item.id === currentStepId) + 1);
+  const goalCard = (
+    <LessonGoal step={currentStepNumber} total={progressSteps.length} title={currentGoal.title} detail={currentGoal.detail} />
+  );
+  const stepKicker = `Experiment · ${progressSteps.find((item) => item.id === currentStepId)?.label ?? ''}`;
+
+  // The primary button of the field step walks the three checklist items in
+  // order, then moves on to the motor.
+  const fieldPrimaryLabel = busyField
+    ? 'Solving…'
+    : !fieldSweep
+      ? 'Run field sweep'
+      : !inspectedZero
+        ? 'Show θ = 0°'
+        : !inspectedQuarter
+          ? 'Show θ = 90°'
+          : !fieldCycleComplete
+            ? playing ? 'Playing…' : 'Play one full cycle'
+            : 'Add PM rotor';
+  const handleFieldPrimary = () => {
+    if (!fieldSweep) {
+      void solveFieldSweep();
+      return;
+    }
+    if (!inspectedZero || !inspectedQuarter) {
+      // A single phase is at zero current at one of these two angles, so show
+      // the combined field: the picture is never empty.
+      setPhaseFieldMode('combined');
+      selectFieldAngle(inspectedZero ? 90 : 0);
+      return;
+    }
+    if (!fieldCycleComplete) {
+      startPlaying();
+      return;
+    }
+    continueToMotor();
+  };
+
+  const motorPrimaryLabel = busyMotor
+    ? 'Solving…'
+    : !motorSweep
+      ? 'Run motor sweep'
+      : !motorLabComplete
+        ? playing ? 'Playing…' : 'Play one full cycle'
+        : 'Continue to check';
+  const handleMotorPrimary = () => {
+    if (!motorSweep) {
+      void solveMotorSweep();
+      return;
+    }
+    if (!motorLabComplete) {
+      startPlaying();
+      return;
+    }
+    setPlaying(false);
+    setQuizOpen(true);
+  };
+
+  // The canvas controls of the two experiment steps, in the same dock as the
+  // motor workspace. Before the first solve the dock is shown greyed out, so
+  // the canvas keeps its size. The field and mesh layers belong to the 2D
+  // solve, so they are greyed out while the 3D motor is shown; the stator and
+  // rotor can be hidden in both views.
+  const renderViewDock = (unsolved: boolean) => {
+    const motor = labPart === 'motor';
+    const threeD = motor && Boolean(motorDisplayFrame) && motorViewMode === 'three';
+    const layersOff = unsolved || threeD;
+    const layerTitle = (title: string) => (threeD ? 'Switch to the 2D view to change this' : title);
+    // The motor's cross-section is drawn (and can be zoomed) while its field
+    // is still being solved.
+    const zoomAvailable = !unsolved || (motor && Boolean(motorDisplayFrame));
+    return (
+      <LessonDock<MotorViewMode>
+        tabs={motor
+          ? [
+            { id: 'fem', label: '2D' },
+            { id: 'three', label: '3D', disabled: !motorDisplayFrame, title: motorDisplayFrame ? 'The same motor drawn in 3D' : 'The motor geometry is still loading' },
+          ]
+          : [{ id: 'fem', label: '2D' }]}
+        tab={threeD ? 'three' : 'fem'}
+        onTab={setMotorViewMode}
+        end={(
+          <>
+            {unsolved ? 'Solve to see the field' : null}
+            {zoomAvailable ? <span ref={setZoomSlot} /> : null}
+          </>
+        )}
+      >
+        <LessonDockGroup label="Field">
+          <LessonSegmented
+            label="Field drawing"
+            value={layersOff ? null : fieldDisplayMode}
+            onChange={setFieldDisplayMode}
+            options={[
+              { id: 'lines', label: 'Field lines', disabled: layersOff, title: layerTitle('Lines that follow the direction of the field') },
+              { id: 'density', label: 'Flux density', disabled: layersOff, title: layerTitle('Colour by field strength, |B|') },
+            ]}
+          />
+        </LessonDockGroup>
+        <LessonDockGroup label="Show">
+          {motor ? (
+            <>
+              <LessonDockToggle pressed={showElectromagnets} onChange={setShowElectromagnets} disabled={!motorDisplayFrame} title="The four wound poles and their coils">
+                Stator
+              </LessonDockToggle>
+              <LessonDockToggle pressed={showPmRotor} onChange={setShowPmRotor} disabled={!motorDisplayFrame} title="The permanent-magnet rotor">
+                PM rotor
+              </LessonDockToggle>
+            </>
+          ) : null}
+          <LessonDockToggle
+            pressed={showMesh}
+            onChange={setShowMesh}
+            disabled={layersOff}
+            title={layerTitle('The triangles the solver divides the space into')}
+          >
+            Mesh
+          </LessonDockToggle>
+        </LessonDockGroup>
+      </LessonDock>
+    );
+  };
+
+  // Angle slider, landmark presets, play and phase sequence: the same four
+  // controls drive the field step and the motor step.
+  const renderPlaybackControls = (options: {
+    sliderId: string;
+    sliderLabel: string;
+    angleText: string;
+    angleDeg: number;
+    max: number;
+    value: number;
+    onSelectAngle: (angleDeg: number) => void;
+  }) => {
+    const landmark = LANDMARK_ANGLES_DEG.find((angleDeg) => (
+      Math.abs(normalizeAngle(options.angleDeg) - angleDeg) < 0.1
+    ));
+    return (
+      <>
+        <label className="rotating-field-control-row" htmlFor={options.sliderId}>
+          <span>Electrical angle</span><strong>{options.angleText}°</strong>
+        </label>
+        <input
+          id={options.sliderId}
+          type="range"
+          min="0"
+          max={options.max}
+          step="1"
+          value={options.value}
+          onChange={(event) => selectActiveFrame(Number(event.currentTarget.value))}
+          aria-label={options.sliderLabel}
+        />
+        <LessonSegmented
+          stretch
+          label="Electrical angle presets"
+          value={landmark === undefined ? null : String(landmark)}
+          onChange={(value) => options.onSelectAngle(Number(value))}
+          options={LANDMARK_ANGLES_DEG.map((angleDeg) => ({ id: String(angleDeg), label: `${angleDeg}°` }))}
+        />
+        <button
+          type="button"
+          className="rotating-field-play"
+          aria-pressed={playing}
+          onClick={() => (playing ? setPlaying(false) : startPlaying())}
+        >
+          {playing ? 'Pause' : 'Play cycle'}
+        </button>
+        <div className="rotating-field-control-row">
+          <span>Phase sequence</span><strong>{direction === 1 ? 'CCW' : 'CW'}</strong>
         </div>
-        {lessonStage !== 'design' && !quizOpen && activeFrame && labPart === 'field' ? (
-          <div className="rotating-field-strip-phase-console">
-            <div className="rotating-field-phase-toggle" role="group" aria-label="Solved phase contribution">
-              <button type="button" className={phaseFieldMode === 'phase-a' ? 'is-active is-a' : ''} onClick={() => selectPhaseContribution('phase-a')} aria-pressed={phaseFieldMode === 'phase-a'}>Phase A only</button>
-              <button type="button" className={phaseFieldMode === 'phase-b' ? 'is-active is-b' : ''} onClick={() => selectPhaseContribution('phase-b')} aria-pressed={phaseFieldMode === 'phase-b'}>Phase B only</button>
-              <button type="button" className={phaseFieldMode === 'combined' ? 'is-active' : ''} onClick={() => selectPhaseContribution('combined')} aria-pressed={phaseFieldMode === 'combined'}>A + B resultant</button>
-            </div>
-            <div className="rotating-field-live-vector">
-              <span>{fieldModeLabel}</span>
-              <strong>θe = {displayAngle(activeElectricalAngle)}°</strong>
-              <em>|B| {fieldMilliTesla(fieldMagnitudeT)}</em>
-            </div>
-          </div>
-        ) : null}
-        {lessonStage !== 'design' && !quizOpen && activeFrame && labPart === 'motor' ? (
-          <div className="rotating-field-strip-motor-console">
-            <div className="rotating-field-strip-control-group">
-              <span>Field</span>
-              <div className="rotating-field-source-buttons" role="group" aria-label="Motor field source">
-                <button type="button" disabled={Boolean(busyMotorFieldMode)} className={motorFieldMode === 'stator' ? 'is-active' : ''} onClick={() => void selectMotorFieldMode('stator')} aria-pressed={motorFieldMode === 'stator'}>Stator</button>
-                <button type="button" disabled={Boolean(busyMotorFieldMode)} className={motorFieldMode === 'rotor' ? 'is-active' : ''} onClick={() => void selectMotorFieldMode('rotor')} aria-pressed={motorFieldMode === 'rotor'}>Rotor</button>
-                <button type="button" disabled={Boolean(busyMotorFieldMode)} className={motorFieldMode === 'combined' ? 'is-active' : ''} onClick={() => void selectMotorFieldMode('combined')} aria-pressed={motorFieldMode === 'combined'}>Combined</button>
-              </div>
-            </div>
-            <div className="rotating-field-strip-control-group">
-              <span>Geometry</span>
-              <div className="rotating-field-geometry-buttons" role="group" aria-label="Motor geometry visibility">
-                <button type="button" className={showElectromagnets ? 'is-active' : ''} onClick={() => setShowElectromagnets((visible) => !visible)} aria-pressed={showElectromagnets}>Stator</button>
-                <button type="button" className={showPmRotor ? 'is-active' : ''} onClick={() => setShowPmRotor((visible) => !visible)} aria-pressed={showPmRotor}>PM rotor</button>
-                <button
-                  type="button"
-                  className={!showElectromagnets && !showPmRotor ? 'is-active is-fields-only' : ''}
-                  onClick={() => {
-                    setShowElectromagnets(false);
-                    setShowPmRotor(false);
-                  }}
-                  aria-pressed={!showElectromagnets && !showPmRotor}
-                >Fields only</button>
-              </div>
-            </div>
-            {busyMotorFieldMode ? <small className="rotating-field-source-loading"><i /> Solving {busyMotorFieldMode}…</small> : null}
-          </div>
-        ) : null}
-        {lessonStage !== 'design' && !quizOpen && activeFrame ? (
-          <div className="rotating-field-view-toggle" role="group" aria-label="Field visualization">
-            {labPart === 'motor' ? (
-              <>
-                <button type="button" className={motorViewMode === 'fem' ? 'is-active' : ''} onClick={() => setMotorViewMode('fem')} aria-pressed={motorViewMode === 'fem'}><span className="is-slice" /> 2D FEM</button>
-                <button type="button" className={motorViewMode === 'three' ? 'is-active' : ''} onClick={() => setMotorViewMode('three')} aria-pressed={motorViewMode === 'three'}><span className="is-three" /> 3D motor</button>
-              </>
-            ) : null}
-            {labPart !== 'motor' || motorViewMode === 'fem' ? (
-              <>
-                <button type="button" disabled={labPart === 'motor' && !motorFrame} className={showFluxLines ? 'is-active' : ''} onClick={() => setShowFluxLines((visible) => !visible)} aria-pressed={showFluxLines}><span /> Flux lines</button>
-                <button type="button" disabled={labPart === 'motor' && !motorFrame} className={showFieldIntensity ? 'is-active' : ''} onClick={() => setShowFieldIntensity((visible) => !visible)} aria-pressed={showFieldIntensity}><span className="is-density" /> |B| map</button>
-                <button type="button" className={showMesh ? 'is-active' : ''} onClick={() => setShowMesh((visible) => !visible)} aria-pressed={showMesh}><span className="is-mesh" /> Mesh</button>
-              </>
-            ) : null}
-          </div>
-        ) : null}
-      </header>
-      <section ref={mainStageRef} className="learning-main-stage rotating-field-main">
-        {quizOpen ? (
-          <section className="rotating-field-quiz-stage">
-            <p className="learning-kicker">Final check</p>
-            <h2>Can you connect rotating B to continuous rotor motion?</h2>
-            <p>Use the phase sequence, four solved poles, and PM alignment torque.</p>
+        <LessonSegmented
+          stretch
+          label="Phase sequence"
+          value={direction === 1 ? 'ccw' : 'cw'}
+          onChange={(value) => setDirection(value === 'ccw' ? 1 : -1)}
+          options={[
+            { id: 'ccw', label: 'A leads B · CCW' },
+            { id: 'cw', label: 'B leads A · CW' },
+          ]}
+        />
+      </>
+    );
+  };
+
+  const fieldEvidence = fieldFrame ? (
+    <>
+      <div className="rotating-field-angle-readout" aria-label="Solved two-phase field at this angle">
+        <p><span>Electrical angle θ<sub>e</sub></span><b>{displayAngle(fieldFrame.electrical_angle_deg)}°</b></p>
+        <p><span>Phase A current · I<sub>pk</sub> cos θ</span><b>{signedCurrent(fieldFrame.phase_a_current_a)}</b></p>
+        <p><span>Phase B current · I<sub>pk</sub> sin θ</span><b>{signedCurrent(fieldFrame.phase_b_current_a)}</b></p>
+        <p><span>|B| at the centre · {fieldModeLabel}</span><b>{fieldMilliTesla(fieldMagnitudeT)}</b></p>
+        <p><span>|B| spread over the cycle (A + B)</span><b>{phaseMagnitudeSpreadPct === null ? '—' : `${phaseMagnitudeSpreadPct.toFixed(2)}%`}</b></p>
+      </div>
+      <PhaseWaveform
+        angleDeg={fieldFrame.electrical_angle_deg}
+        phaseACurrentA={fieldFrame.phase_a_current_a}
+        phaseBCurrentA={fieldFrame.phase_b_current_a}
+        onSelectAngle={selectFieldAngle}
+      />
+      <section className="lesson-lab-card rotating-field-recipe" aria-label="How the two phases add">
+        <h3>Resultant</h3>
+        <div><b>B<sub>x</sub></b><em>∝ I<sub>A</sub> = I<sub>pk</sub> cos θ</em></div>
+        <div><b>B<sub>y</sub></b><em>∝ I<sub>B</sub> = I<sub>pk</sub> sin θ</em></div>
+        <p>The ideal vector keeps its magnitude while its angle advances.</p>
+      </section>
+      <section className="lesson-lab-card" aria-label="Field step checklist">
+        <h3>Checklist</h3>
+        <div className="rotating-field-checklist">
+          <span className={inspectedZero ? 'is-done' : ''}>{inspectedZero ? '✓' : '1'} Inspect θ = 0°</span>
+          <span className={inspectedQuarter ? 'is-done' : ''}>{inspectedQuarter ? '✓' : '2'} Inspect θ = 90°</span>
+          <span className={fieldCycleComplete ? 'is-done' : ''}>{fieldCycleComplete ? '✓' : '3'} Play one full field cycle</span>
+        </div>
+      </section>
+      <section className="lesson-lab-card rotating-field-recipe" aria-label="Next step">
+        <h3>Next · apply the field</h3>
+        <p><strong>Add four wound poles and the PM rotor.</strong> The next FEM fixture replaces the abstract conductor pairs with four electrical-steel pole cores 90° apart.</p>
+      </section>
+    </>
+  ) : null;
+
+  const motorEvidence = motorDisplayFrame ? (
+    <>
+      <div className="rotating-field-angle-readout" aria-label="Field target and rotor at this angle">
+        <p><span>Field target θ<sub>e</sub></span><b>{displayCycleAngle(motorElectricalAngle)}°</b></p>
+        <p><span>PM rotor</span><b>{displayAngle(motorDisplayFrame.rotor_angle_deg)}°</b></p>
+        <p><span>Torque angle δ</span><b>{(motorDisplayFrame.torque_angle_deg ?? 0).toFixed(1)}°</b></p>
+        <p><span>Phase A current</span><b>{signedCurrent(motorDisplayFrame.phase_a_current_a)}</b></p>
+        <p><span>Phase B current</span><b>{signedCurrent(motorDisplayFrame.phase_b_current_a)}</b></p>
+      </div>
+      <PhaseWaveform
+        angleDeg={motorElectricalAngle}
+        phaseACurrentA={motorDisplayFrame.phase_a_current_a}
+        phaseBCurrentA={motorDisplayFrame.phase_b_current_a}
+        onSelectAngle={motorFrame ? selectMotorAngle : () => undefined}
+      />
+      <section className="lesson-lab-card rotating-field-recipe" aria-label="Why the rotor follows">
+        <h3>Synchronous chase</h3>
+        <strong className="rotating-field-torque-equation">τ ∝ sin(δ)</strong>
+        <p>The 15° teaching lag keeps the rotor behind the moving target. Each displayed state is a solved Magneto2D checkpoint, not a transient mechanical solve.</p>
+      </section>
+    </>
+  ) : (
+    <section className="lesson-lab-card rotating-field-recipe" aria-label="Motor geometry">
+      <h3>Four-pole PM motor</h3>
+      <p>The four electrical-steel poles, eight winding sides, and N42 rotor are already in their real positions. The exact mesh replaces this cross-section as soon as Gmsh returns it.</p>
+    </section>
+  );
+
+  // Shown only while the solver is working; a finished solve needs no banner.
+  const solveStatus = busyField
+    ? 'Solving 32 angles × 3 field views on one shared mesh…'
+    : busyMotor
+      ? 'Solving the combined motor FEM frames…'
+      : busyMotorFieldMode
+        ? `Solving ${busyMotorFieldMode}-only frames…`
+        : null;
+  const showingMotorEvidence = lessonStage !== 'design' && labPart === 'motor';
+
+  const inspectPanel = (
+    <LessonLabPanel
+      side="inspect"
+      kicker="Inspect"
+      title={lessonStage === 'design' ? 'Nothing solved yet' : showingMotorEvidence ? 'PM rotor chase' : 'Rotating field'}
+      summary={lessonStage === 'design'
+        ? 'One phase flipped the target. Two spatially separated phases can rotate it.'
+        : showingMotorEvidence
+          ? 'The target advances; the rotor follows.'
+          : 'A and B add into one rotating vector.'}
+      label="Lesson evidence and solved results"
+      scrollTopKey={`${currentStepId}:${fieldSweep ? 1 : 0}:${motorSweep ? 1 : 0}`}
+    >
+      {lessonStage === 'design' ? (
+        <LessonOutline
+          steps={progressSteps.map((item) => ({
+            id: item.id,
+            label: item.label,
+            detail: LESSON_SEVEN_GOALS[item.id as LessonSevenStepId].detail,
+          }))}
+          currentId={currentStepId}
+        />
+      ) : (
+        <>
+          {solveStatus ? (
+            <p className="rotating-field-solving-indicator" role="status"><i /> {solveStatus}</p>
+          ) : null}
+          {showingMotorEvidence ? motorEvidence : fieldEvidence ?? (
+            <section className="lesson-lab-card rotating-field-recipe" aria-label="Waiting for the solve">
+              <h3>Waiting for solve</h3>
+              <p>Solved phase currents, field angle, and rotor lag will appear here.</p>
+            </section>
+          )}
+        </>
+      )}
+      <LessonTerms terms={LESSON_SEVEN_TERMS} />
+    </LessonLabPanel>
+  );
+
+  if (quizOpen) {
+    return (
+      <LessonLab className="rotating-field-lab">
+        {inspectPanel}
+        <LessonLabStage className="is-tall">
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
             <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="rotating-field-predict-stage rotating-field-predict-experience" aria-label="Rotating-field prediction">
-            <header className="rotating-field-predict-heading">
-              <p className="learning-kicker">Lesson 7 · Predict</p>
-              <h1>What makes the field rotate?</h1>
-              <p>Choose the current relationship that turns two fixed winding axes into one moving magnetic target.</p>
-            </header>
-            <div className="rotating-field-predict-visual">
-              <div className="rotating-field-design-toggle" role="group" aria-label="Lesson diagram view">
-                <button type="button" className={designDiagramMode === 'slice' ? 'is-active' : ''} onClick={() => setDesignDiagramMode('slice')} aria-pressed={designDiagramMode === 'slice'}>2D slice</button>
-                <button type="button" className={designDiagramMode === 'physical' ? 'is-active' : ''} onClick={() => setDesignDiagramMode('physical')} aria-pressed={designDiagramMode === 'physical'}>Physical coils</button>
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Can you connect rotating B to continuous rotor motion?"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep hint={quizPassed ? 'Lesson complete. Continue when you are ready.' : `Answer all ${QUIZ.length} questions to complete Lesson 7.`}>
+              {quizPassed || lessonComplete ? (
+                <a className="learning-primary-button" href="/tutorials/lesson-8">Next lesson</a>
+              ) : null}
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => setQuizOpen(false)}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
               </div>
-              {designDiagramMode === 'slice' ? <RotatingFieldPredictionDiagram /> : <RotatingFieldCoils3D />}
-            </div>
-            <div className="rotating-field-predict-question">
-              <div className="rotating-field-predict-options" role="radiogroup" aria-label="Current pattern prediction">
-                {([
-                  ['quadrature', '90°-shifted phases', 'A follows cosine; B follows sine.'],
-                  ['together', 'Identical phases', 'Both axes rise and fall together.'],
-                  ['one-phase', 'One phase only', 'One axis grows, reverses, and shrinks.'],
-                ] as Array<[Prediction, string, string]>).map(([value, label, detail], index) => (
-                  <button
-                    key={value}
-                    type="button"
-                    role="radio"
-                    aria-checked={prediction === value}
-                    className={`${prediction === value ? 'is-selected' : ''}${prediction === value && value === 'quadrature' ? ' is-correct' : ''}`}
-                    onClick={() => setPrediction(value)}
-                  >
-                    <span className="rotating-field-prediction-number">{index + 1}</span>
-                    <span><strong>{label}</strong><small>{detail}</small></span>
-                  </button>
-                ))}
-              </div>
-              {prediction ? (
-                <p className={`rotating-field-feedback${predictionCorrect ? ' is-correct' : ''}`} aria-live="polite">
-                  {predictionCorrect
-                    ? 'Exactly. Perpendicular cosine and sine components trace one smoothly rotating vector.'
-                    : 'That pattern does not keep the direction advancing. Look for two perpendicular components separated by a quarter-cycle.'}
-                </p>
-              ) : null}
-            </div>
-          </section>
-        ) : labPart === 'motor' && !motorDisplayFrame ? (
-          <section className="rotating-field-empty-stage is-motor-loading">
-            <div className="learning-stage-badge"><span>Part 3</span><strong>Four-pole PM motor</strong></div>
-            <RotatingFieldMotorGeometryDiagram />
-            <div>
-              <h2>{busyMotor ? 'Loading the exact Gmsh cross-section.' : 'Build the four-pole motor frames.'}</h2>
-              <p>The four M350-50A poles, eight winding sides, and N42 rotor are already in their real positions. The exact mesh replaces this cross-section as soon as Gmsh returns it.</p>
-              {error ? <p className="rotating-field-error">{error}</p> : null}
-            </div>
-          </section>
-        ) : activeFrame ? (
-          <>
-            <div className={`rotating-field-viewer${labPart === 'motor' ? ' is-motor' : ''}`}>
-              {labPart === 'motor' && motorViewMode === 'fem' ? (
-                <div className="rotating-field-part-badge"><span>PART 3</span><strong>Four wound poles + moving PM rotor</strong></div>
-              ) : null}
-              {labPart === 'motor' && motorViewMode === 'fem' ? (
-                <div className="rotating-field-live-vector">
-                  <span>{motorModeLabel}</span>
-                  <strong>θe = {displayCycleAngle(activeElectricalAngle)}°</strong>
-                  <em>{motorDisplayFrame ? `rotor ${displayAngle(motorDisplayFrame.rotor_angle_deg)}°` : 'rotor loading'}</em>
-                </div>
-              ) : null}
-              {labPart === 'motor' && motorViewMode === 'three' && motorDisplayFrame ? (
-                <TwoPhaseMotor3D
-                  electricalAngleDeg={motorElectricalAngle}
-                  rotorAngleDeg={motorDisplayFrame.rotor_angle_deg}
-                  phaseACurrentA={motorDisplayFrame.phase_a_current_a}
-                  phaseBCurrentA={motorDisplayFrame.phase_b_current_a}
-                  fieldMode={motorFieldMode}
-                  showStator={showElectromagnets}
-                  showRotor={showPmRotor}
-                  playing={playing}
-                />
-              ) : (
-                <MeshViewer
-                  meshData={renderFrame ?? activeFrame}
-                  embedded
-                  compactEmbedded
-                  toolbarMode="zoom-only"
-                  toolbarLabel={labPart === 'motor' && !motorFrame
-                    ? 'actual Gmsh geometry · field solving'
-                    : `${labPart === 'motor' ? `four-pole ${motorFieldMode}` : fieldModeLabel.toLowerCase()}${showFieldIntensity ? ' |B| map' : ''}${showFluxLines ? ' + flux lines' : ''}`}
-                  showMeshEdges={showMesh || (labPart === 'motor' && !motorFrame)}
-                  showFieldIntensity={showFieldIntensity && Boolean(motorFrame || labPart === 'field')}
-                  fieldIntensityRange={intensityRange}
-                  smoothFieldIntensity
-                  fieldLinesVisible={showFluxLines && Boolean(motorFrame || labPart === 'field')}
-                  animateFieldArrows={playing && showFluxLines}
-                  preserveViewportOnMeshChange
-                  viewportPanEnabled={false}
-                  pointLabels={labPart === 'motor' ? motorPointLabels : fieldPointLabels}
-                  directionVectors={directionVectors}
-                  dipoleMarkers={labPart === 'motor' && motorDisplayFrame && showPmRotor ? [{
-                    xMm: 0,
-                    yMm: 0,
-                    angleDeg: motorDisplayFrame.rotor_angle_deg,
-                    lengthMm: motorDisplayFrame.rotor_radius_mm * 1.7,
-                    thicknessMm: motorDisplayFrame.rotor_radius_mm * 0.72,
-                    shape: 'surface-arcs',
-                    rotorRadiusMm: motorDisplayFrame.rotor_radius_mm,
-                    poleArcDeg: 132,
-                    poleThicknessMm: motorDisplayFrame.rotor_radius_mm * 0.19,
-                    animateTorque: playing,
-                    torqueDirection: direction === 1 ? 'ccw' : 'cw',
-                  }] : []}
-                />
-              )}
-            </div>
-          </>
-        ) : (
-          <section className="rotating-field-empty-stage">
-            <div className="learning-stage-badge"><span>Part 2</span><strong>Two-phase field fixture</strong></div>
-            <RotatingFieldPredictionDiagram />
-            <div><h2>Solve one electrical cycle.</h2><p>The right panel starts all FEM work and advances the lab.</p></div>
-          </section>
-        )}
-      </section>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Explain why the PM rotor keeps following the field. Your solved frames stay on the right.</p>
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
 
-      {labControlsOpen && !quizOpen && lessonStage !== 'design' ? <aside className="learning-control-panel rotating-field-control-panel">
-        <button type="button" className="tutorial-studio-panel-close" aria-label="Close lab controls" onClick={() => setLabControlsOpen(false)}>×</button>
-        <section className="tutorial-studio-goal">
-          <span>{currentStepId === 'predict' ? '1' : currentStepId === 'field' ? '2' : currentStepId === 'motor' ? '3' : '4'}/4</span>
-          <div>
-            <p className="learning-kicker">Current goal</p>
-            <h2>{currentStepId === 'predict'
-              ? 'Choose the current pattern'
-              : currentStepId === 'field'
-                ? 'Build one rotating field'
-                : currentStepId === 'motor'
-                  ? 'Let the PM rotor chase it'
-                  : 'Explain why it keeps turning'}</h2>
-          </div>
-        </section>
-        {quizOpen ? (
-          <>
-            <section className="rotating-field-takeaway">
-              <p className="learning-kicker">Takeaway</p>
-              <h2>Two phases keep moving the rotor’s alignment target.</h2>
-              <p>A single phase flips on one axis. Two perpendicular phases in quadrature create a rotating field, so the PM rotor can keep chasing instead of aligning once.</p>
-            </section>
-            <div className="rotating-field-context-footer">
-              <button type="button" className="learning-ghost-button" onClick={() => setQuizOpen(false)}>Back to the motor lab</button>
-            </div>
-          </>
-        ) : labPart === 'field' ? (
-          <>
-            <h2>Rotating-field lab</h2>
-            {!fieldSweep ? (
-              <section className="rotating-field-solve-card">
-                <span>ONE SHARED NORMAL MESH</span>
-                <h3>32 angles × 3 field views</h3>
-                <p>Magneto2D solves Phase A, Phase B, and their combined field on one Gmsh mesh.</p>
-                {error ? <p className="rotating-field-error">{error}</p> : null}
-              </section>
+  if (lessonStage === 'design') {
+    const physical = designDiagramMode === 'physical';
+    return (
+      <LessonLab className="rotating-field-lab">
+        {inspectPanel}
+        <LessonLabStage>
+          <LessonLabCanvas className="rotating-field-canvas">
+            {/* The flat diagram is centred; the 3D scene fills the canvas. */}
+            <LessonLabViewport label="Two-phase coil pairs · not solved yet" className={physical ? '' : 'is-centered'}>
+              {physical ? <RotatingFieldCoils3D /> : <RotatingFieldPredictionDiagram />}
+            </LessonLabViewport>
+            <LessonDock<DesignDiagramMode>
+              tabs={[
+                { id: 'slice', label: '2D', title: 'The cross-section the solver works on' },
+                { id: 'physical', label: '3D', title: 'The two physical coils' },
+              ]}
+              tab={designDiagramMode}
+              onTab={setDesignDiagramMode}
+            />
+          </LessonLabCanvas>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Predict"
+          title="What makes the field rotate?"
+          summary="Choose the current relationship that turns two fixed winding axes into one moving magnetic target."
+          label="Rotating-field prediction"
+          footer={(
+            <LessonNextStep
+              tone={prediction ? (predictionCorrect ? 'good' : 'warn') : undefined}
+              hint={prediction
+                ? predictionCorrect
+                  ? 'Exactly. Perpendicular cosine and sine components trace one smoothly rotating vector.'
+                  : 'That pattern does not keep the direction advancing. Look for two perpendicular components separated by a quarter-cycle.'
+                : 'Choose the current pattern that creates a moving target.'}
+            >
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={!predictionCorrect}
+                onClick={() => {
+                  enterSolveStage();
+                  void solveFieldSweep();
+                }}
+              >
+                Solve rotating field
+              </button>
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                <LessonLink onClick={onBackHome}>Design start</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <LessonChoices
+            label="Current pattern prediction"
+            value={prediction}
+            onChange={setPrediction}
+            correctId="quadrature"
+            options={[
+              { id: 'quadrature', label: '90°-shifted phases', detail: 'A follows cosine; B follows sine.' },
+              { id: 'together', label: 'Identical phases', detail: 'Both axes rise and fall together.' },
+              { id: 'one-phase', label: 'One phase only', detail: 'One axis grows, reverses, and shrinks.' },
+            ]}
+          />
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  if (labPart === 'motor') {
+    const threeD = Boolean(motorDisplayFrame) && motorViewMode === 'three';
+    return (
+      <LessonLab className="rotating-field-lab">
+        {inspectPanel}
+        <LessonLabStage>
+          <LessonLabCanvas className="rotating-field-canvas">
+            {motorDisplayFrame ? (
+              <LessonLabViewport
+                label={`Four-pole PM motor · ${motorModeLabel}`}
+                hint={motorFrame ? <>θ<sub>e</sub> = {displayCycleAngle(activeElectricalAngle)}°</> : 'Geometry only, field not solved yet'}
+              >
+                {threeD ? (
+                  <TwoPhaseMotor3D
+                    electricalAngleDeg={motorElectricalAngle}
+                    rotorAngleDeg={motorDisplayFrame.rotor_angle_deg}
+                    phaseACurrentA={motorDisplayFrame.phase_a_current_a}
+                    phaseBCurrentA={motorDisplayFrame.phase_b_current_a}
+                    fieldMode={motorFieldMode}
+                    showStator={showElectromagnets}
+                    showRotor={showPmRotor}
+                    playing={playing}
+                  />
+                ) : (
+                  <MeshViewer
+                    meshData={renderFrame ?? motorDisplayFrame}
+                    embedded
+                    compactEmbedded
+                    toolbarMode="zoom-only"
+                    zoomControlsSlot={zoomSlot}
+                    // Until the field is solved there is nothing but the
+                    // geometry to look at, so its mesh is always drawn.
+                    showMeshEdges={showMesh || !motorFrame}
+                    showFieldIntensity={fieldDisplayMode === 'density' && Boolean(motorFrame)}
+                    fieldIntensityRange={intensityRange}
+                    smoothFieldIntensity
+                    fieldLinesVisible={fieldDisplayMode === 'lines' && Boolean(motorFrame)}
+                    animateFieldArrows={playing && fieldDisplayMode === 'lines'}
+                    preserveViewportOnMeshChange
+                    viewportPanEnabled={false}
+                    pointLabels={motorPointLabels}
+                    directionVectors={directionVectors}
+                    dipoleMarkers={showPmRotor ? [{
+                      xMm: 0,
+                      yMm: 0,
+                      angleDeg: motorDisplayFrame.rotor_angle_deg,
+                      lengthMm: motorDisplayFrame.rotor_radius_mm * 1.7,
+                      thicknessMm: motorDisplayFrame.rotor_radius_mm * 0.72,
+                      shape: 'surface-arcs',
+                      rotorRadiusMm: motorDisplayFrame.rotor_radius_mm,
+                      poleArcDeg: 132,
+                      poleThicknessMm: motorDisplayFrame.rotor_radius_mm * 0.19,
+                      animateTorque: playing,
+                      torqueDirection: direction === 1 ? 'ccw' : 'cw',
+                    }] : []}
+                  />
+                )}
+              </LessonLabViewport>
             ) : (
-              <>
-                <section className="rotating-field-playback-card">
-                  <header><span>Electrical angle</span><strong>{displayAngle(fieldFrame?.electrical_angle_deg ?? 0)}°</strong></header>
-                  <input
-                    type="range"
-                    min="0"
-                    max={Math.max(0, fieldFrames.length - 1)}
-                    step="1"
-                    value={fieldFrameIndex}
-                    onChange={(event) => selectActiveFrame(Number(event.currentTarget.value))}
-                    aria-label="Solved electrical angle frame"
-                  />
-                  <div className="rotating-field-playback-buttons">
-                    <button type="button" className={`rotating-field-playback-primary${playing ? ' is-active' : ''}`} onClick={() => (playing ? setPlaying(false) : startPlaying())}>{playing ? 'Pause' : 'Play cycle'}</button>
-                  </div>
-                  <button type="button" className="rotating-field-reverse-button" onClick={() => setDirection((previous) => previous === 1 ? -1 : 1)}>
-                    {direction === 1 ? 'A leads B · CCW' : 'B leads A · CW'}
-                  </button>
-                </section>
-                <section className="rotating-field-current-card">
-                  <header><span>QUADRATURE CURRENTS</span><strong>90° apart</strong></header>
-                  <div><span>Phase A · Ipk cos θ</span><b>{signedCurrent(fieldFrame?.phase_a_current_a ?? 0)}</b></div>
-                  <div><span>Phase B · Ipk sin θ</span><b>{signedCurrent(fieldFrame?.phase_b_current_a ?? 0)}</b></div>
-                </section>
-                <section className="rotating-field-checklist is-in-panel">
-                  <span className={inspectedZero ? 'is-done' : ''}>{inspectedZero ? '✓' : '1'} Inspect θ = 0°</span>
-                  <span className={inspectedQuarter ? 'is-done' : ''}>{inspectedQuarter ? '✓' : '2'} Inspect θ = 90°</span>
-                  <span className={fieldCycleComplete ? 'is-done' : ''}>{fieldCycleComplete ? '✓' : '3'} Play one full field cycle</span>
-                </section>
-                <section className="rotating-field-bridge-card">
-                  <span>NEXT · APPLY THE FIELD</span>
-                  <h3>Add four wound poles and the PM rotor.</h3>
-                  <p>The next FEM fixture replaces the abstract conductor pairs with four M350-50A pole cores 90° apart.</p>
-                </section>
-              </>
+              <LessonLabViewport label="Four-pole PM motor" hint="Loading the geometry" className="is-centered">
+                <RotatingFieldMotorGeometryDiagram />
+              </LessonLabViewport>
             )}
-            <section className="rotating-field-concept-card">
-              <span>RESULTANT</span>
-              <div><b>B<sub>x</sub></b><em>∝ I<sub>A</sub> = I<sub>pk</sub> cos θ</em></div>
-              <div><b>B<sub>y</sub></b><em>∝ I<sub>B</sub> = I<sub>pk</sub> sin θ</em></div>
-              <p>The ideal vector keeps its magnitude while its angle advances.</p>
-            </section>
-          </>
-        ) : (
-          <>
-            <h2>Four-pole PM motor lab</h2>
-            {busyMotor || !motorSweep ? (
-              <section className="rotating-field-solve-card">
-                <span>SCREEN LOADED · SOLVER RUNNING</span>
-                <h3>Four wound poles + one PM rotor</h3>
-                <p>Gmsh and Magneto2D are solving the angle-dependent motor frames in the background.</p>
-                {!busyMotor ? <button type="button" onClick={() => void solveMotorSweep()}>Retry motor FEM sweep</button> : <div className="rotating-field-solving-indicator"><i /> Solving the combined motor FEM frames…</div>}
-                {error ? <p className="rotating-field-error">{error}</p> : null}
-              </section>
-            ) : motorFrame ? (
-              <>
-                <section className="rotating-field-motor-view-card">
-                  <span>SOLVED FIELD SOURCE</span>
-                  <div className="rotating-field-source-buttons" role="group" aria-label="Motor field source">
-                    <button type="button" disabled={Boolean(busyMotorFieldMode)} className={motorFieldMode === 'stator' ? 'is-active' : ''} onClick={() => void selectMotorFieldMode('stator')} aria-pressed={motorFieldMode === 'stator'}>Stator only</button>
-                    <button type="button" disabled={Boolean(busyMotorFieldMode)} className={motorFieldMode === 'rotor' ? 'is-active' : ''} onClick={() => void selectMotorFieldMode('rotor')} aria-pressed={motorFieldMode === 'rotor'}>Rotor only</button>
-                    <button type="button" disabled={Boolean(busyMotorFieldMode)} className={motorFieldMode === 'combined' ? 'is-active' : ''} onClick={() => void selectMotorFieldMode('combined')} aria-pressed={motorFieldMode === 'combined'}>Combined</button>
-                  </div>
-                  {busyMotorFieldMode ? <small className="rotating-field-source-loading"><i /> Solving {busyMotorFieldMode}-only frames…</small> : null}
-                  {!busyMotorFieldMode && error ? <p className="rotating-field-error">{error}</p> : null}
-                  <span>VISIBLE GEOMETRY</span>
-                  <div className="rotating-field-geometry-buttons" role="group" aria-label="Motor geometry visibility">
-                    <button type="button" className={showElectromagnets ? 'is-active' : ''} onClick={() => setShowElectromagnets((visible) => !visible)} aria-pressed={showElectromagnets}>Electromagnets</button>
-                    <button type="button" className={showPmRotor ? 'is-active' : ''} onClick={() => setShowPmRotor((visible) => !visible)} aria-pressed={showPmRotor}>PM rotor</button>
-                    <button
-                      type="button"
-                      className={!showElectromagnets && !showPmRotor ? 'is-active is-fields-only' : ''}
-                      onClick={() => {
-                        const showGeometry = !showElectromagnets && !showPmRotor;
-                        setShowElectromagnets(showGeometry);
-                        setShowPmRotor(showGeometry);
-                      }}
-                      aria-pressed={!showElectromagnets && !showPmRotor}
-                    >
-                      {!showElectromagnets && !showPmRotor ? 'Show all' : 'Fields only'}
-                    </button>
-                  </div>
-                </section>
-                <section className="rotating-field-playback-card">
-                  <header><span>Electrical angle</span><strong>{displayCycleAngle(motorElectricalAngle)}°</strong></header>
-                  <input
-                    type="range"
-                    min="0"
-                    max={motorFrames.length}
-                    step="1"
-                    value={motorFrameIndex}
-                    onChange={(event) => selectActiveFrame(Number(event.currentTarget.value))}
-                    aria-label="Solved motor angle frame"
-                  />
-                  <div className="rotating-field-playback-buttons">
-                    <button type="button" className={`rotating-field-playback-primary${playing ? ' is-active' : ''}`} onClick={() => (playing ? setPlaying(false) : startPlaying())}>{playing ? 'Pause cycle' : 'Play cycle'}</button>
-                  </div>
-                  <button type="button" className="rotating-field-reverse-button" onClick={() => setDirection((previous) => previous === 1 ? -1 : 1)}>
-                    {direction === 1 ? 'A leads B · CCW' : 'B leads A · CW'}
-                  </button>
-                </section>
-                <section className="rotating-field-rotor-card">
-                  <span>SYNCHRONOUS CHASE</span>
-                  <div className="rotating-field-angle-readout">
-                    <p><span>Field target</span><b>{displayCycleAngle(motorElectricalAngle)}°</b></p>
-                    <p><span>PM rotor</span><b>{displayAngle(motorFrame.rotor_angle_deg)}°</b></p>
-                    <p><span>Torque angle</span><b>{motorFrame.torque_angle_deg.toFixed(1)}°</b></p>
-                  </div>
-                  <strong className="rotating-field-torque-equation">τ ∝ sin(δ)</strong>
-                  <small>The 15° teaching lag keeps the rotor behind the moving target. Each displayed state is a solved Magneto2D checkpoint, not a transient mechanical solve.</small>
-                </section>
-              </>
-            ) : null}
-          </>
-        )}
-        <footer className="learning-panel-footer">
-          {isLessonComplete('rotating-field') ? (
-            <a className="learning-primary-button learning-next-lesson" href="/tutorials/lesson-8">Next lesson: Three-Phase Motor</a>
-          ) : null}
-          <div className="learning-panel-nav">
-            <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-            <button type="button" className="learning-ghost-button" onClick={onBackHome}>Design start</button>
-          </div>
-        </footer>
-      </aside> : null}
-
-      {solveInspectorOpen && !quizOpen ? <aside className="learning-context-panel rotating-field-results-panel" aria-label="Lesson guidance and solved results">
-        <button type="button" className="tutorial-studio-panel-close" aria-label="Close solved results" onClick={() => setSolveInspectorOpen(false)}>×</button>
-        <p className="learning-kicker">Solved output</p>
-        {quizOpen ? (
-          <section className="rotating-field-takeaway">
-            <h2>Two phases keep moving the rotor’s alignment target.</h2>
-            <p>A single phase flips on one axis. Two perpendicular phases in quadrature create a rotating field, so the PM rotor can keep chasing instead of aligning once.</p>
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="rotating-field-meaning-card">
-            <span>LESSON 6 → LESSON 7</span>
-            <strong>One phase flipped the target. Two spatially separated phases can rotate it.</strong>
-            <p>Make a prediction on the left; the solved angle and phase comparison will appear here.</p>
-          </section>
-        ) : labPart === 'field' && fieldFrame ? (
-          <section className="rotating-field-results">
-            <header>
-              <div><p className="learning-kicker">Conductor field</p><h2>A and B add into one rotating vector.</h2></div>
-              <span>{phaseMagnitudeSpreadPct === null ? '—' : `${phaseMagnitudeSpreadPct.toFixed(2)}%`} |B| spread</span>
-            </header>
-            <PhaseWaveform
-              angleDeg={fieldFrame.electrical_angle_deg}
-              phaseACurrentA={fieldFrame.phase_a_current_a}
-              phaseBCurrentA={fieldFrame.phase_b_current_a}
-              onSelectAngle={selectFieldAngle}
-            />
-            <section className="rotating-field-concept-card">
-              <span>RESULTANT</span>
-              <div><b>B<sub>x</sub></b><em>∝ I<sub>A</sub> = I<sub>pk</sub> cos θ</em></div>
-              <div><b>B<sub>y</sub></b><em>∝ I<sub>B</sub> = I<sub>pk</sub> sin θ</em></div>
-              <p>The ideal vector keeps its magnitude while its angle advances.</p>
-            </section>
-          </section>
-        ) : motorDisplayFrame ? (
-          <section className="rotating-field-motor-results">
-            <header>
-              <div><p className="learning-kicker">PM rotor chase</p><h2>The target advances; the rotor follows.</h2></div>
-              <span>θe = {displayCycleAngle(motorElectricalAngle)}°</span>
-            </header>
-            <div className="rotating-field-angle-readout">
-              <p><span>Field target</span><b>{displayCycleAngle(motorElectricalAngle)}°</b></p>
-              <p><span>PM rotor</span><b>{displayAngle(motorDisplayFrame.rotor_angle_deg)}°</b></p>
-              <p><span>Torque angle</span><b>{(motorDisplayFrame.torque_angle_deg ?? 0).toFixed(1)}°</b></p>
-            </div>
-            <PhaseWaveform
-              angleDeg={motorElectricalAngle}
-              phaseACurrentA={motorDisplayFrame.phase_a_current_a}
-              phaseBCurrentA={motorDisplayFrame.phase_b_current_a}
-              onSelectAngle={motorFrame ? selectMotorAngle : () => undefined}
-            />
-          </section>
-        ) : (
-          <section className="rotating-field-meaning-card">
-            <span>WAITING FOR SOLVE</span>
-            <strong>Solved phase currents, field angle, and rotor lag will appear here.</strong>
-          </section>
-        )}
-      </aside> : null}
-
-      <section className={`tutorial-studio-dock rotating-field-studio-dock${!quizOpen && lessonStage !== 'design' && (fieldSweep || motorSweep) ? ' has-playback' : ''}`} aria-label="Lesson controls">
-        <div className="rotating-field-dock-context">
-          <span>{quizOpen ? 'CHECK' : lessonStage === 'design' ? 'PREDICT' : labPart === 'field' ? 'ROTATE B' : 'SPIN ROTOR'}</span>
-          <strong>{quizOpen
-            ? 'Explain why the PM rotor keeps following the field.'
-            : lessonStage === 'design'
-              ? 'Choose the current pattern that creates a moving target.'
-              : labPart === 'field'
-                ? fieldLabComplete ? 'The field rotates. Put a PM rotor inside it.' : 'Inspect two angles and play one complete electrical cycle.'
-                : motorLabComplete ? 'The rotor completed a full synchronous chase.' : 'Let the rotor follow one full revolution.'}</strong>
-          {!quizOpen && lessonStage !== 'design' && labPart === 'field' && fieldFrame ? (
-            <small>A {signedCurrent(fieldFrame.phase_a_current_a)} · B {signedCurrent(fieldFrame.phase_b_current_a)}</small>
-          ) : !quizOpen && lessonStage !== 'design' && labPart === 'motor' && motorDisplayFrame ? (
-            <small>Field {displayCycleAngle(motorElectricalAngle)}° · rotor {displayAngle(motorDisplayFrame.rotor_angle_deg)}° · δ {(motorDisplayFrame.torque_angle_deg ?? 0).toFixed(1)}°</small>
-          ) : null}
-        </div>
-        {!quizOpen && lessonStage !== 'design' && labPart === 'field' && fieldSweep ? (
-          <div className="rotating-field-dock-playback">
-            <label>
-              <span>Electrical angle</span>
-              <strong>{displayAngle(fieldFrame?.electrical_angle_deg ?? 0)}°</strong>
-              <input
-                type="range"
-                min="0"
-                max={Math.max(0, fieldFrames.length - 1)}
-                step="1"
-                value={fieldFrameIndex}
-                onChange={(event) => selectActiveFrame(Number(event.currentTarget.value))}
-                aria-label="Solved electrical angle frame"
+            {renderViewDock(!motorFrame)}
+          </LessonLabCanvas>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker={stepKicker}
+          title="Four-pole PM motor lab"
+          label="Four-pole PM motor experiment"
+          footer={(
+            <LessonNextStep hint={motorLabComplete ? 'The rotor completed a full synchronous chase.' : 'Let the rotor follow one full revolution.'}>
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={busyMotor || (Boolean(motorSweep) && !motorLabComplete && playing)}
+                onClick={handleMotorPrimary}
+              >
+                {motorPrimaryLabel}
+              </button>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          {motorFrame ? (
+            <section className="rotating-field-controls" aria-label="Motor controls">
+              <div className="rotating-field-control-row">
+                <span>Field source</span><strong>{motorFieldMode === 'combined' ? 'Stator + rotor' : `${motorFieldMode === 'stator' ? 'Stator' : 'Rotor'} only`}</strong>
+              </div>
+              <LessonSegmented<MotorFieldMode>
+                stretch
+                label="Motor field source"
+                value={motorFieldMode}
+                onChange={(mode) => void selectMotorFieldMode(mode)}
+                options={[
+                  { id: 'stator', label: 'Stator', disabled: Boolean(busyMotorFieldMode), title: 'The field of the winding currents alone' },
+                  { id: 'rotor', label: 'Rotor', disabled: Boolean(busyMotorFieldMode), title: 'The field of the permanent magnet alone' },
+                  { id: 'combined', label: 'Combined', disabled: Boolean(busyMotorFieldMode), title: 'Both sources together' },
+                ]}
               />
-            </label>
-            <div className="rotating-field-dock-playback-buttons">
-              <button type="button" className={`rotating-field-dock-play-primary${playing ? ' is-active' : ''}`} onClick={() => (playing ? setPlaying(false) : startPlaying())}>{playing ? 'Pause' : 'Play cycle'}</button>
-              <button type="button" className="rotating-field-dock-sequence" onClick={() => setDirection((previous) => previous === 1 ? -1 : 1)}>{direction === 1 ? 'A leads B · CCW' : 'B leads A · CW'}</button>
-            </div>
-          </div>
-        ) : !quizOpen && lessonStage !== 'design' && labPart === 'motor' && motorSweep ? (
-          <div className="rotating-field-dock-playback">
-            <label>
-              <span>Electrical angle</span>
-              <strong>{displayCycleAngle(motorElectricalAngle)}°</strong>
-              <input
-                type="range"
-                min="0"
-                max={motorFrames.length}
-                step="1"
-                value={motorFrameIndex}
-                onChange={(event) => selectActiveFrame(Number(event.currentTarget.value))}
-                aria-label="Solved motor angle frame"
+              {renderPlaybackControls({
+                sliderId: 'rotating-field-motor-angle',
+                sliderLabel: 'Solved motor angle frame',
+                angleText: displayCycleAngle(motorElectricalAngle),
+                angleDeg: motorElectricalAngle,
+                max: motorFrames.length,
+                value: motorFrameIndex,
+                onSelectAngle: selectMotorAngle,
+              })}
+            </section>
+          ) : (
+            <p className="lesson-lab-note">
+              {busyMotor
+                ? 'Gmsh and Magneto2D are solving the angle-dependent motor frames in the background.'
+                : 'Run the motor sweep to solve four wound poles and one PM rotor.'}
+            </p>
+          )}
+          {error ? <p className="lesson-lab-error">{error}</p> : null}
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  return (
+    <LessonLab className="rotating-field-lab">
+      {inspectPanel}
+      <LessonLabStage>
+        <LessonLabCanvas className="rotating-field-canvas">
+          {phaseViewerFrame ? (
+            <LessonLabViewport
+              label={`Two-phase coil pairs · ${fieldModeLabel}`}
+              hint={<>θ<sub>e</sub> = {displayAngle(activeElectricalAngle)}°</>}
+            >
+              <MeshViewer
+                meshData={phaseViewerFrame}
+                embedded
+                compactEmbedded
+                toolbarMode="zoom-only"
+                zoomControlsSlot={zoomSlot}
+                showMeshEdges={showMesh}
+                showFieldIntensity={fieldDisplayMode === 'density'}
+                fieldIntensityRange={intensityRange}
+                smoothFieldIntensity
+                fieldLinesVisible={fieldDisplayMode === 'lines'}
+                animateFieldArrows={playing && fieldDisplayMode === 'lines'}
+                preserveViewportOnMeshChange
+                viewportPanEnabled={false}
+                pointLabels={fieldPointLabels}
+                directionVectors={directionVectors}
               />
-            </label>
-            <div className="rotating-field-dock-playback-buttons">
-              <button type="button" className={`rotating-field-dock-play-primary${playing ? ' is-active' : ''}`} onClick={() => (playing ? setPlaying(false) : startPlaying())}>{playing ? 'Pause' : 'Play cycle'}</button>
-              <button type="button" className="rotating-field-dock-sequence" onClick={() => setDirection((previous) => previous === 1 ? -1 : 1)}>{direction === 1 ? 'A leads B · CCW' : 'B leads A · CW'}</button>
+            </LessonLabViewport>
+          ) : (
+            <LessonLabViewport label="Two-phase coil pairs" hint="Not solved yet" className="is-centered">
+              <RotatingFieldPredictionDiagram />
+            </LessonLabViewport>
+          )}
+          {renderViewDock(!phaseViewerFrame)}
+        </LessonLabCanvas>
+      </LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={stepKicker}
+        title="Rotating-field lab"
+        label="Rotating-field experiment"
+        footer={(
+          <LessonNextStep hint={fieldLabComplete ? 'The field rotates. Put a PM rotor inside it.' : 'Inspect two angles and play one complete electrical cycle.'}>
+            <button
+              type="button"
+              className="learning-primary-button"
+              disabled={busyField || (Boolean(fieldSweep) && inspectedZero && inspectedQuarter && !fieldCycleComplete && playing)}
+              onClick={handleFieldPrimary}
+            >
+              {fieldPrimaryLabel}
+            </button>
+          </LessonNextStep>
+        )}
+      >
+        {goalCard}
+        {fieldSweep ? (
+          <section className="rotating-field-controls" aria-label="Field controls">
+            <div className="rotating-field-control-row">
+              <span>Field shown</span><strong>{fieldModeLabel}</strong>
             </div>
-          </div>
-        ) : null}
-        <div className="tutorial-studio-dock-actions">
-          {!quizOpen && lessonStage !== 'design' ? <button type="button" className={solveInspectorOpen ? 'is-active' : ''} disabled={!fieldFrame && !motorDisplayFrame} onClick={() => {
-            setSolveInspectorOpen((open) => {
-              const nextOpen = !open;
-              if (nextOpen) setLabControlsOpen(false);
-              return nextOpen;
-            });
-          }}>Inspect results</button> : quizOpen ? <button type="button" onClick={() => setQuizOpen(false)}>Review experiment</button> : null}
-          {quizOpen ? (
-            quizPassed
-              ? <a className="learning-primary-button" href="/tutorials/lesson-8">Next lesson</a>
-              : <button type="button" className="learning-primary-button" disabled>Pass the check</button>
-          ) : lessonStage === 'design' ? (
-            <button type="button" className="learning-primary-button" disabled={!predictionCorrect} onClick={() => {
-              setLabControlsOpen(false);
-              enterSolveStage();
-              void solveFieldSweep();
-            }}>Solve rotating field</button>
-          ) : labPart === 'field' && !fieldSweep ? (
-            <button type="button" className="learning-primary-button" disabled={busyField} onClick={() => void solveFieldSweep()}>{busyField ? 'Solving…' : 'Run field sweep'}</button>
-          ) : labPart === 'field' && fieldLabComplete ? (
-            <button type="button" className="learning-primary-button" onClick={() => {
-              setSolveInspectorOpen(false);
-              continueToMotor();
-            }}>Add PM rotor</button>
-          ) : labPart === 'motor' && !motorSweep ? (
-            <button type="button" className="learning-primary-button" disabled={busyMotor} onClick={() => void solveMotorSweep()}>{busyMotor ? 'Solving…' : 'Run motor sweep'}</button>
-          ) : labPart === 'motor' && motorLabComplete ? (
-            <button type="button" className="learning-primary-button" onClick={() => {
-              setPlaying(false);
-              setLabControlsOpen(false);
-              setSolveInspectorOpen(false);
-              setQuizOpen(true);
-            }}>Continue to check</button>
-          ) : null}
-        </div>
-      </section>
-    </main>
+            <LessonSegmented<PhaseFieldMode>
+              stretch
+              label="Solved phase contribution"
+              value={phaseFieldMode}
+              onChange={selectPhaseContribution}
+              options={[
+                { id: 'phase-a', label: 'Phase A', title: 'The field of Phase A alone' },
+                { id: 'phase-b', label: 'Phase B', title: 'The field of Phase B alone' },
+                { id: 'combined', label: 'A + B', title: 'Both phases together' },
+              ]}
+            />
+            {renderPlaybackControls({
+              sliderId: 'rotating-field-angle',
+              sliderLabel: 'Solved electrical angle frame',
+              angleText: displayAngle(fieldFrame?.electrical_angle_deg ?? 0),
+              angleDeg: fieldFrame?.electrical_angle_deg ?? 0,
+              max: Math.max(0, fieldFrames.length - 1),
+              value: fieldFrameIndex,
+              onSelectAngle: selectFieldAngle,
+            })}
+          </section>
+        ) : (
+          <p className="lesson-lab-note">Magneto2D solves Phase A, Phase B, and their combined field on one Gmsh mesh.</p>
+        )}
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };

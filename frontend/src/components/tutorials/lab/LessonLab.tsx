@@ -96,14 +96,14 @@ export function LessonLabViewport({ label, hint, className = '', children }: Chi
 }
 
 /** "Step 3 of 5" and the goal of the step. */
-export function LessonGoal({ step, total, title, detail }: { step: number; total: number; title: string; detail: string }) {
+export function LessonGoal({ step, total, title, detail }: { step: number; total: number; title: string; detail?: string }) {
   return (
     <section className="lesson-lab-goal" aria-label="Current lesson goal">
       <span>{step}/{total}</span>
       <div>
         <p>Step {step} of {total} · Goal</p>
         <strong>{title}</strong>
-        <small>{detail}</small>
+        {detail ? <small>{detail}</small> : null}
       </div>
     </section>
   );

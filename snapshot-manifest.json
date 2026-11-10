@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 174076,
-      "sha256": "6f62891f2e76038ea4cee45191a4966d229e43a5a83181369183c18f2fe5ba9d"
+      "bytes": 174329,
+      "sha256": "2ce73d2b8d692465a6d8df275702df06a71cf90e43ce89393e87615abfd8ace1"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6700,8 +6700,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
-      "bytes": 30325,
-      "sha256": "341949aadd03aa09b2aa9379a195239d3b0b71a1e31ed1d3b9bd72638b16419b"
+      "bytes": 32046,
+      "sha256": "24c62eb66132eb8d5c93e171003a526342ba7188d85fb12259ebb51d88825777"
     },
     {
       "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
@@ -6745,8 +6745,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonEightThreePhaseMotor.tsx",
-      "bytes": 53434,
-      "sha256": "02ce8d26484c8c958bee291977a4549f142157ea7ae69bf9a4318806b1ea16c5"
+      "bytes": 52109,
+      "sha256": "135c5fc41c8bdae3a4ab704de858756858aa2cbd3c3a1edc2f87dab3115d9e4b"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
@@ -6775,18 +6775,18 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonSevenRotatingField.tsx",
-      "bytes": 70117,
-      "sha256": "2f699dbde2a4e7c3011c3e49c5ac8f1ae6e636a10040e62e27b371ccff72bfe0"
+      "bytes": 64876,
+      "sha256": "76acc63e4e71bd6710d11f502ce1244e4e4aa6635862e68f8bd2181116f84b85"
     },
     {
       "path": "frontend/src/components/tutorials/LessonSixRotorChase.tsx",
-      "bytes": 120923,
-      "sha256": "3c2991bc8f1b00878a4509bc8fb58f3749484adfc78bde69f53091ba46324c64"
+      "bytes": 104972,
+      "sha256": "fe409879a9ae159b0de8361308b969ccbd0f8db7d3c7e1bd17a4d3abc456dbd9"
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeBackEmf.tsx",
-      "bytes": 37256,
-      "sha256": "6a49a6dfba9dc6a12c48094665fc29f7f49706a20460d8d462616e8e6aa43dd4"
+      "bytes": 40560,
+      "sha256": "0dc1ef188d06845198661664687b920d01d7fb94682a1249d155debe133c35d0"
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeCurrentField.tsx",
@@ -6800,8 +6800,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoMagneticCircuit.tsx",
-      "bytes": 58447,
-      "sha256": "f489ce26093a0aaeb3998f23572c1c93354e4782feec14ef66b998ccd1b816a4"
+      "bytes": 59275,
+      "sha256": "87b222c80ef305fae27c1bfc564787ae9e87c719f58753aa07069d320ca6c032"
     },
     {
       "path": "frontend/src/components/tutorials/LinearMotorCapstone3D.tsx",
@@ -6905,8 +6905,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/lab/LessonLab.tsx",
-      "bytes": 10313,
-      "sha256": "d76d6ffc9ac029dbf8b23e4ec9b862e5a87848b932eb00ba6d8f0900293005fe"
+      "bytes": 10332,
+      "sha256": "0ec00fd1360d46e74adb070abc1e5568def9999e90f7941814cd886e15a6a9b6"
     },
     {
       "path": "frontend/src/components/tutorials/index.ts",
@@ -6925,13 +6925,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/lesson-three-bemf.css",
-      "bytes": 13789,
-      "sha256": "5176921e148f8373340f0a816c1410a675a5f2bd54c322ad224b94498e2c26e3"
+      "bytes": 19244,
+      "sha256": "4967e036582079dd0920a6619be5f729cf4e007141371380ec380dc2f6a433de"
     },
     {
       "path": "frontend/src/components/tutorials/lesson-two.css",
-      "bytes": 32491,
-      "sha256": "9451e9f40eece88b37f0b28edc1e59ec5863df98df82a465086df654235ba893"
+      "bytes": 39552,
+      "sha256": "fb6b26a388dabf1780c27d42a4db92d4f541d89d287a90b26f0d0857c4e08122"
     },
     {
       "path": "frontend/src/components/tutorials/lessonOneOpenAirField.ts",
@@ -6960,8 +6960,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/linear-motor-capstone.css",
-      "bytes": 24793,
-      "sha256": "c4bcbb1ccf4934ccc5e3f75326af436f647cc84da99b9298fef2f55114cb2ebc"
+      "bytes": 30391,
+      "sha256": "430b8b3332cd7ee8f9607ccbead102c43395d06819c4546b612da7f50d92f22f"
     },
     {
       "path": "frontend/src/components/tutorials/magnetPoleFills.ts",
@@ -6985,18 +6985,18 @@
     },
     {
       "path": "frontend/src/components/tutorials/rotating-field.css",
-      "bytes": 47496,
-      "sha256": "3f36f769d6162bffb029216e712bd6cf99758d4c9d2d7c1d2b87157dfb507ced"
+      "bytes": 52135,
+      "sha256": "d14b035257d969f008579d5bc937099d4a24379162473aae5e5d181832f58706"
     },
     {
       "path": "frontend/src/components/tutorials/rotor-chase.css",
-      "bytes": 53663,
-      "sha256": "55d39d9abd042c436a6a08d879220b515d40a978948b31b04fe3c62999067f91"
+      "bytes": 63258,
+      "sha256": "6f325e7d273fc7e3100bac5ad02a6377376014beb84d43ee60c4a06891cc28ad"
     },
     {
       "path": "frontend/src/components/tutorials/three-phase-motor.css",
-      "bytes": 26073,
-      "sha256": "fd1380eccb1564586ca521fa77a2c7697591cff36f87b8c5f4698e641fce44a0"
+      "bytes": 35063,
+      "sha256": "a2afcee113757d3b5ac70f41a26972e98d9c05f081f374072f150247674ff4d4"
     },
     {
       "path": "frontend/src/components/tutorials/useLearningProgress.ts",

@@ -19,6 +19,23 @@ import type {
 import { KnowledgeCheck } from './KnowledgeCheck';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import { ThreePhaseMotor3D } from './ThreePhaseMotor3D';
+import {
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonSegmented,
+  LessonTerms,
+  type LessonTerm,
+} from './lab/LessonLab';
 import './learning.css';
 import './rotating-field.css';
 import './three-phase-motor.css';
@@ -132,9 +149,11 @@ const ThreePhaseWaveform: React.FC<ThreePhaseWaveformProps> = ({
   phaseCOpen,
   onSelectAngle,
 }) => {
-  const width = 960;
-  const height = 230;
-  const margin = { top: 30, right: 28, bottom: 42, left: 58 };
+  // Drawn at about the width of the Inspect card, so the axis text is not
+  // scaled down to an unreadable size.
+  const width = 264;
+  const height = 170;
+  const margin = { top: 10, right: 10, bottom: 26, left: 30 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const xFor = (angle: number) => margin.left + angle / 360 * plotWidth;
@@ -169,16 +188,16 @@ const ThreePhaseWaveform: React.FC<ThreePhaseWaveformProps> = ({
         <polyline className="is-b" points={phaseCOpen ? phasePath(180) : phasePath(-120)} />
         {!phaseCOpen ? <polyline className="is-c" points={phasePath(120)} /> : null}
         <line className="three-phase-waveform-cursor" x1={selectedX} y1={margin.top} x2={selectedX} y2={height - margin.bottom} />
-        <circle className="is-a" cx={selectedX} cy={yFor(phaseACurrentA)} r="6" />
-        <circle className="is-b" cx={selectedX} cy={yFor(phaseBCurrentA)} r="6" />
-        {!phaseCOpen ? <circle className="is-c" cx={selectedX} cy={yFor(phaseCCurrentA)} r="6" /> : null}
+        <circle className="is-a" cx={selectedX} cy={yFor(phaseACurrentA)} r="4" />
+        <circle className="is-b" cx={selectedX} cy={yFor(phaseBCurrentA)} r="4" />
+        {!phaseCOpen ? <circle className="is-c" cx={selectedX} cy={yFor(phaseCCurrentA)} r="4" /> : null}
         <g className="three-phase-waveform-ticks">
           {[0, 90, 180, 270, 360].map((angle) => (
-            <text key={angle} x={xFor(angle)} y={height - 14} textAnchor="middle">{angle}°</text>
+            <text key={angle} x={xFor(angle)} y={height - 8} textAnchor="middle">{angle}°</text>
           ))}
-          <text x={18} y={yFor(PEAK_CURRENT_A) + 4}>+8</text>
-          <text x={28} y={yFor(0) + 4}>0</text>
-          <text x={18} y={yFor(-PEAK_CURRENT_A) + 4}>−8</text>
+          <text x={margin.left - 6} y={yFor(PEAK_CURRENT_A) + 4} textAnchor="end">+8</text>
+          <text x={margin.left - 6} y={yFor(0) + 4} textAnchor="end">0</text>
+          <text x={margin.left - 6} y={yFor(-PEAK_CURRENT_A) + 4} textAnchor="end">−8</text>
         </g>
         {Array.from({ length: FRAME_COUNT + 1 }, (_, index) => index * FRAME_STEP_DEG).map((angle) => (
           <rect
@@ -373,6 +392,45 @@ const WyeConnectionCard: React.FC = () => (
   </section>
 );
 
+type CanvasView = '2d' | '3d';
+type FieldDisplayMode = 'lines' | 'density';
+type ThreePhaseStepId = 'connect' | 'spin' | 'stress' | 'check';
+type FieldSource = 'stator' | 'rotor' | 'combined';
+
+const FIELD_SOURCES: Array<{ id: FieldSource; label: string }> = FIELD_MODES.flatMap(({ mode, label }) => (
+  mode === 'stator' || mode === 'rotor' || mode === 'combined' ? [{ id: mode, label }] : []
+));
+
+const STEP_GOALS: Record<ThreePhaseStepId, { title: string; detail: string }> = {
+  connect: {
+    title: 'Connect the three windings',
+    detail: 'Connect three windings around one internal neutral.',
+  },
+  spin: {
+    title: 'Spin the balanced field',
+    detail: 'Run one balanced cycle from 0° to 360°.',
+  },
+  stress: {
+    title: 'Break and reverse the drive',
+    detail: 'Open Phase C, then swap B/C to reverse the sequence.',
+  },
+  check: {
+    title: 'Explain the practical three-phase motor',
+    detail: 'Explain why three wires can create one smooth rotating field.',
+  },
+};
+
+const LESSON_TERMS: LessonTerm[] = [
+  { term: 'Phase', definition: 'One of the three windings, A, B or C. Here each phase is a pair of opposite teeth, and each carries its own alternating current in amperes (A).' },
+  { term: <>Electrical angle, θ<sub>e</sub></>, definition: 'How far the currents are through one cycle, in degrees (°). 360° is one full cycle, and in this motor one cycle turns the field once.' },
+  { term: 'Wye connection', definition: 'One end of each winding is joined at a single point inside the motor, the star point N*. The other three ends are the leads U, V and W.' },
+  { term: 'Balanced currents', definition: 'Three currents of the same size (8 A peak here) spaced 120° apart. At every instant they add up to 0 A, so no fourth wire is needed.' },
+  { term: 'Phase sequence', definition: 'The order in which the phases reach their peak: A–B–C or A–C–B. It sets which way the field turns.' },
+  { term: 'Rotating field', definition: 'The combined magnetic field of the windings. Its strength stays the same while its direction turns.' },
+  { term: 'Flux density, |B|', definition: 'How strong the magnetic field is at one spot, in tesla (T).' },
+  { term: 'Open phase', definition: 'A fault where one lead carries no current. The other two phases then carry equal and opposite currents, and the field pulses instead of turning smoothly.' },
+];
+
 export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThreePhaseMotorProps> = ({
   onBackToCatalog,
   onBackHome,
@@ -389,27 +447,26 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   // then let the learner swap two phases to observe the reversal.
   const [direction, setDirection] = React.useState<RotationDirection>(-1);
   const [playing, setPlaying] = React.useState(false);
-  const [playSteps, setPlaySteps] = React.useState(0);
+  // Steps taken in the current playback run; one full cycle ends it.
+  const [, setPlaySteps] = React.useState(0);
   const [cycleComplete, setCycleComplete] = React.useState(false);
   const [inspectedOpenPhase, setInspectedOpenPhase] = React.useState(false);
   const [reversedSequence, setReversedSequence] = React.useState(false);
   const [busyMode, setBusyMode] = React.useState<ThreePhaseMotorFieldComponent | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [showFluxLines, setShowFluxLines] = React.useState(true);
-  const [showFieldIntensity, setShowFieldIntensity] = React.useState(false);
+  const [fieldDisplayMode, setFieldDisplayMode] = React.useState<FieldDisplayMode>('lines');
   const [showMesh, setShowMesh] = React.useState(false);
-  const [showThreeD, setShowThreeD] = React.useState(false);
-  const [showElectromagnets, setShowElectromagnets] = React.useState(true);
-  const [showPmRotor, setShowPmRotor] = React.useState(true);
+  const [canvasView, setCanvasView] = React.useState<CanvasView>('2d');
   const [rotorMotionAllowed, setRotorMotionAllowed] = React.useState(true);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
-  const [labControlsOpen, setLabControlsOpen] = React.useState(true);
-  const [solveInspectorOpen, setSolveInspectorOpen] = React.useState(false);
+  // The viewer draws its zoom buttons into the dock's title bar.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
+  const rotorMotionInputRef = React.useRef<HTMLInputElement | null>(null);
   const geometryRequest = React.useRef<Promise<void> | null>(null);
-  const mainStageRef = React.useRef<HTMLElement | null>(null);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
+  const lessonComplete = isLessonComplete('three-phase-motor');
 
   const activeSweep = sweeps[fieldMode];
   const frames = activeSweep?.frames ?? [];
@@ -421,10 +478,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     : solvedFrame?.electrical_angle_deg ?? 0;
   const phaseCOpen = fieldMode === 'open_c';
   const labComplete = cycleComplete && inspectedOpenPhase && reversedSequence;
-  const showDockPlayback = !quizOpen
-    && lessonStage === 'solve'
-    && Boolean(sweeps.combined)
-    && !labControlsOpen;
+  const sequenceLabel = direction === 1 ? 'A–B–C' : 'A–C–B';
 
   React.useEffect(() => {
     if (stage === 'mesh') onStageChange?.('solve');
@@ -433,10 +487,6 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   React.useEffect(() => {
     if (quizPassed) setLessonComplete('three-phase-motor', true);
   }, [quizPassed, setLessonComplete]);
-
-  React.useLayoutEffect(() => {
-    mainStageRef.current?.scrollTo({ top: 0 });
-  }, [lessonStage, quizOpen]);
 
   const loadGeometry = React.useCallback(() => {
     if (geometry || geometryRequest.current) return geometryRequest.current;
@@ -488,8 +538,6 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       if (options.autoPlay) {
         setFrameIndex(direction === 1 ? 0 : cached.frames.length);
         setPlaySteps(0);
-        setLabControlsOpen(false);
-        setSolveInspectorOpen(true);
         setPlaying(true);
       }
       return;
@@ -508,8 +556,6 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       if (options.autoPlay) {
         setPlaySteps(0);
         setRotorMotionAllowed(true);
-        setLabControlsOpen(false);
-        setSolveInspectorOpen(true);
         setPlaying(true);
       }
     } catch (solveError) {
@@ -561,14 +607,19 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     setFrameIndex(direction === 1 ? frames.length : 0);
   };
 
+  // The primary button walks the three drive checks in order.
   const advanceDriveChecks = () => {
-    setSolveInspectorOpen(false);
     if (!cycleComplete) {
-      setLabControlsOpen(false);
+      if (!rotorMotionAllowed) {
+        // The cycle cannot play while the rotor is held: point at the switch
+        // that holds it instead of doing nothing.
+        rotorMotionInputRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        rotorMotionInputRef.current?.focus();
+        return;
+      }
       playCycle();
       return;
     }
-    setLabControlsOpen(true);
     if (!inspectedOpenPhase) {
       void loadSweep('open_c');
       return;
@@ -602,15 +653,12 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     };
   }, [frames]);
 
+  // The solver's region names, renamed to the ones the viewer has colours for.
   const renderFrame = React.useMemo(() => {
     if (!displayFrame) return null;
     return {
       ...displayFrame,
       regions: displayFrame.regions.map((region, triangleIndex) => {
-        if (!showElectromagnets && (region === 'three_phase_stator_pole' || region.startsWith('phase_'))) {
-          return 'air';
-        }
-        if (!showPmRotor && region === 'three_phase_rotor_magnet') return 'air';
         if (region === 'three_phase_stator_pole') {
           const triangle = displayFrame.triangles[triangleIndex];
           const nodes = triangle?.map((nodeIndex) => displayFrame.nodes_mm[nodeIndex]).filter(Boolean) ?? [];
@@ -630,10 +678,10 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
         return region;
       }),
     };
-  }, [displayFrame, showElectromagnets, showPmRotor]);
+  }, [displayFrame]);
 
   const pointLabels: MeshViewerPointLabel[] = React.useMemo(() => {
-    if (!displayFrame || !showElectromagnets) return [];
+    if (!displayFrame) return [];
     const currents = {
       A: displayFrame.phase_a_current_a,
       B: displayFrame.phase_b_current_a,
@@ -671,7 +719,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       });
     });
     return labels;
-  }, [displayFrame, showElectromagnets]);
+  }, [displayFrame]);
 
   const directionVectors: MeshViewerDirectionVector[] = React.useMemo(() => {
     if (!displayFrame) return [];
@@ -687,7 +735,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       label: phaseCOpen ? 'unbalanced B' : fieldMode === 'rotor' ? 'PM field' : 'B target',
       tone: phaseCOpen ? 'amber' : 'cyan',
     }];
-    if (fieldMode !== 'rotor' && showPmRotor) {
+    if (fieldMode !== 'rotor') {
       const rotorRadians = displayFrame.rotor_angle_deg * Math.PI / 180;
       vectors.push({
         x1Mm: 0,
@@ -700,7 +748,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       });
     }
     return vectors;
-  }, [displayFrame, fieldMode, phaseCOpen, showPmRotor]);
+  }, [displayFrame, fieldMode, phaseCOpen]);
 
   const progressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     {
@@ -728,7 +776,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       available: labComplete,
     },
   ], [cycleComplete, labComplete, lessonStage, quizPassed]);
-  const currentStepId = quizOpen
+  const currentStepId: ThreePhaseStepId = quizOpen
     ? 'check'
     : lessonStage === 'design'
       ? 'connect'
@@ -768,349 +816,346 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     onHeaderProgressChange?.(headerProgress);
   }, [headerProgress, onHeaderProgressChange]);
 
-  const modeLabel = fieldMode === 'open_c'
-    ? 'OPEN PHASE C · UNBALANCED FIELD'
-    : FIELD_MODES.find((item) => item.mode === fieldMode)?.label.toUpperCase() ?? 'COMBINED';
-  const viewerControls = (
-    <div className="rotating-field-view-toggle" role="group" aria-label="Field visualization">
-      <button
-        type="button"
-        disabled={!solvedFrame}
-        className={!showThreeD && showFluxLines ? 'is-active' : ''}
-        onClick={() => {
-          setShowFluxLines((visible) => showThreeD ? true : !visible);
-          setShowThreeD(false);
-        }}
-        aria-pressed={!showThreeD && showFluxLines}
-      ><span /> Flux lines</button>
-      <button
-        type="button"
-        disabled={!solvedFrame}
-        className={showFieldIntensity ? 'is-active' : ''}
-        onClick={() => setShowFieldIntensity((visible) => !visible)}
-        aria-pressed={showFieldIntensity}
-      ><span className="is-density" /> |B| map</button>
-      <button
-        type="button"
-        className={!showThreeD && showMesh ? 'is-active' : ''}
-        onClick={() => {
-          setShowMesh((visible) => showThreeD ? true : !visible);
-          setShowThreeD(false);
-        }}
-        aria-pressed={!showThreeD && showMesh}
-      ><span className="is-mesh" /> Mesh</button>
-      <button
-        type="button"
-        className={showThreeD ? 'is-active' : ''}
-        onClick={() => setShowThreeD(true)}
-        aria-pressed={showThreeD}
-      ><span className="is-three" /> 3D</button>
-    </div>
+  const currentStepLabel = progressSteps.find((item) => item.id === currentStepId)?.label ?? '';
+  const goalCard = (
+    <LessonGoal
+      step={Math.max(1, progressSteps.findIndex((item) => item.id === currentStepId) + 1)}
+      total={progressSteps.length}
+      title={STEP_GOALS[currentStepId].title}
+      detail={STEP_GOALS[currentStepId].detail}
+    />
   );
 
-  return (
-    <main
-      className={`learning-shell learning-lesson-shell rotating-field-shell three-phase-shell is-${lessonStage}-stage${quizOpen ? ' is-quiz-open' : ''}${lessonStage === 'solve' && labControlsOpen && !quizOpen ? ' has-lab-controls' : ''}${solveInspectorOpen && !quizOpen ? ' has-solve-inspector' : ''}`}
-    >
-      <header className="tutorial-studio-strip three-phase-studio-strip">
-        <div className="three-phase-studio-context">
-          <strong>{lessonStage === 'design' ? 'Three-phase Wye motor · connection' : phaseCOpen ? 'Three-phase motor · open Phase C' : 'Three-phase motor · balanced drive'}</strong>
-          <span>{lessonStage === 'design'
-            ? 'Six wound teeth · three supply conductors · one internal neutral'
-            : `${frames.length || 32} solved angles · ${direction === 1 ? 'A–B–C' : 'A–C–B'} sequence`}</span>
-        </div>
-        {lessonStage === 'solve' && !quizOpen && displayFrame ? (
-          <div className="three-phase-strip-source-console">
-            <div className="three-phase-strip-source-buttons" role="group" aria-label="Motor field source">
-              {FIELD_MODES.filter(({ mode }) => mode === 'stator' || mode === 'rotor' || mode === 'combined').map(({ mode, label }) => (
-                <button
-                  key={mode}
-                  type="button"
-                  disabled={Boolean(busyMode)}
-                  className={fieldMode === mode ? 'is-active' : ''}
-                  onClick={() => void loadSweep(mode)}
-                >{label}</button>
-              ))}
-            </div>
-            <div className="three-phase-strip-readout">
-              <span>{modeLabel}</span>
-              <strong>θe {displayCycleAngle(electricalAngle)}°</strong>
-            </div>
-          </div>
-        ) : null}
-        {lessonStage === 'solve' && !quizOpen && displayFrame ? viewerControls : null}
-      </header>
-      <section ref={mainStageRef} className="learning-main-stage rotating-field-main">
-        {quizOpen ? (
-          <section className="rotating-field-quiz-stage three-phase-quiz-stage">
-            <p className="learning-kicker">Final check</p>
-            <h2>Can you connect the supply, rotating field, and PM rotor?</h2>
-            <p>Use the balanced currents, phase sequence, and open-phase experiment.</p>
-            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="three-phase-connect-experience">
-            <header className="three-phase-connect-heading">
-              <span>LESSON 8 · CONNECT WYE</span>
-              <h1>How do three wires create one rotating field?</h1>
-              <p>Trace each supply line to its winding, then find the connection they share inside the motor.</p>
-            </header>
-            <div className="three-phase-connect-stage">
-              <WyeConnectionCard />
-              <div className="three-phase-connect-motor">
-                {renderFrame ? (
-                  <MeshViewer
-                    meshData={renderFrame}
-                    embedded
-                    compactEmbedded
-                    toolbarMode="zoom-only"
-                    toolbarLabel="six wound teeth · PM rotor"
-                    showMeshEdges
-                    viewportPanEnabled={false}
-                    pointLabels={pointLabels}
-                    dipoleMarkers={showPmRotor && displayFrame ? [{
-                      xMm: 0,
-                      yMm: 0,
-                      angleDeg: displayFrame.rotor_angle_deg,
-                      lengthMm: displayFrame.rotor_radius_mm * 1.7,
-                      thicknessMm: displayFrame.rotor_radius_mm * 0.72,
-                      shape: 'surface-arcs',
-                      rotorRadiusMm: displayFrame.rotor_radius_mm,
-                      poleArcDeg: 132,
-                      poleThicknessMm: displayFrame.rotor_radius_mm * 0.19,
-                    }] : []}
-                  />
-                ) : (
-                  <div className="rotating-field-solving-indicator"><i /> Loading the exact six-tooth geometry…</div>
-                )}
-              </div>
-            </div>
-            <section className="three-phase-connect-pole-order">
-              <span>SIX WOUND TEETH · THREE PHASE PAIRS</span>
-              <strong>A+ · C− · B+ · A− · C+ · B−</strong>
-              <p>The shared star point stays inside the motor. Only L1, L2, and L3 leave the enclosure.</p>
-            </section>
-          </section>
-        ) : renderFrame ? (
-          <>
-            <div className="rotating-field-viewer is-motor three-phase-viewer">
-              {showThreeD ? (
-                <div className="mesh-viewer-container mesh-viewer-container-embedded three-phase-three-shell">
-                  <div className="three-phase-three-viewport">
-                    <ThreePhaseMotor3D
-                      frameData={displayFrame}
-                      fieldMode={fieldMode}
-                      showFieldIntensity={showFieldIntensity && Boolean(solvedFrame)}
-                      fieldIntensityRange={intensityRange}
-                      playing={playing}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <MeshViewer
-                  meshData={renderFrame}
-                  embedded
-                  compactEmbedded
-                  toolbarMode="zoom-only"
-                  toolbarLabel={solvedFrame
-                    ? `${modeLabel.toLowerCase()}${showFieldIntensity ? ' |B| map' : ''}${showFluxLines ? ' + flux lines' : ''}`
-                    : 'actual Gmsh geometry · ready to energize'}
-                  showMeshEdges={showMesh || !solvedFrame}
-                  showFieldIntensity={showFieldIntensity && Boolean(solvedFrame)}
-                  fieldIntensityRange={intensityRange}
-                  smoothFieldIntensity
-                  fieldLinesVisible={showFluxLines && Boolean(solvedFrame)}
-                  animateFieldArrows={playing && showFluxLines}
-                  viewportPanEnabled={false}
-                  pointLabels={pointLabels}
-                  directionVectors={solvedFrame ? directionVectors : []}
-                  dipoleMarkers={showPmRotor && displayFrame ? [{
-                    xMm: 0,
-                    yMm: 0,
-                    angleDeg: displayFrame.rotor_angle_deg,
-                    lengthMm: displayFrame.rotor_radius_mm * 1.7,
-                    thicknessMm: displayFrame.rotor_radius_mm * 0.72,
-                    shape: 'surface-arcs',
-                    rotorRadiusMm: displayFrame.rotor_radius_mm,
-                    poleArcDeg: 132,
-                    poleThicknessMm: displayFrame.rotor_radius_mm * 0.19,
-                    animateTorque: playing,
-                    torqueDirection: direction === 1 ? 'ccw' : 'cw',
-                  }] : []}
-                />
-              )}
-            </div>
-          </>
-        ) : (
-          <section className="rotating-field-empty-stage">
-            <div className="learning-stage-badge"><span>Part 1</span><strong>Three-phase PM motor</strong></div>
-            <div className="rotating-field-solving-indicator"><i /> Loading the exact six-tooth Gmsh geometry…</div>
-            {error ? <p className="rotating-field-error">{error}</p> : null}
-          </section>
-        )}
-      </section>
+  // The canvas controls, in the same dock as the motor workspace. Until the
+  // field is solved (and on the Connect step, which shows the bare geometry)
+  // the dock is greyed out, so the canvas keeps its size. Field lines and the
+  // mesh belong to the 2D solve, so they are greyed out in the 3D view; the 3D
+  // model can still be coloured by flux density.
+  const renderViewDock = (unsolved: boolean) => {
+    const threeD = !unsolved && canvasView === '3d';
+    const twoDOnlyTitle = (title: string) => (threeD ? 'Switch to the 2D view to change this' : title);
+    return (
+      <LessonDock
+        tabs={[
+          { id: '2d', label: '2D' },
+          { id: '3d', label: '3D', disabled: unsolved, title: unsolved ? 'Solve the field first' : 'The same motor and currents drawn in 3D' },
+        ]}
+        tab={threeD ? '3d' : '2d'}
+        onTab={setCanvasView}
+        end={<>{unsolved ? 'Solve to see the field' : null}<span ref={setZoomSlot} /></>}
+      >
+        <LessonDockGroup label="Field">
+          <LessonSegmented
+            label="Field drawing"
+            value={fieldDisplayMode}
+            onChange={setFieldDisplayMode}
+            options={[
+              { id: 'lines', label: 'Field lines', disabled: unsolved || threeD, title: twoDOnlyTitle('Lines that follow the direction of the field') },
+              { id: 'density', label: 'Flux density', disabled: unsolved, title: 'Colour by field strength, |B|' },
+            ]}
+          />
+        </LessonDockGroup>
+        <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showMesh}
+            onChange={setShowMesh}
+            disabled={unsolved || threeD}
+            title={twoDOnlyTitle('The triangles the solver divides the space into')}
+          >
+            Mesh
+          </LessonDockToggle>
+        </LessonDockGroup>
+      </LessonDock>
+    );
+  };
 
-      {lessonStage === 'solve' && labControlsOpen && !quizOpen ? <aside className="learning-control-panel rotating-field-control-panel three-phase-control-panel">
-        <button type="button" className="tutorial-studio-panel-close" aria-label="Close lab controls" onClick={() => setLabControlsOpen(false)}>×</button>
-        <section className="tutorial-studio-goal">
-          <span>{currentStepId === 'connect' ? '1' : currentStepId === 'spin' ? '2' : currentStepId === 'stress' ? '3' : '4'}/4</span>
-          <div>
-            <p className="learning-kicker">Current goal</p>
-            <h2>{currentStepId === 'connect'
-              ? 'Connect the three windings'
-              : currentStepId === 'spin'
-                ? 'Spin the balanced field'
-                : currentStepId === 'stress'
-                  ? 'Break and reverse the drive'
-                  : 'Explain the practical three-phase motor'}</h2>
-          </div>
-        </section>
-        <section className="three-phase-lab-part-card">
-          <span>PART 2</span>
-          <strong>Six wound teeth + freely moving PM rotor</strong>
-        </section>
-        <h2>Three-phase PM motor lab</h2>
-            {!sweeps.combined && busyMode ? (
-              <section className="rotating-field-solve-card">
-                <span>SCREEN LOADED · SOLVER RUNNING</span>
-                <h3>32 angle-dependent FEM checkpoints</h3>
-                <p>The exact Gmsh geometry stays visible while Magneto2D solves one full three-phase cycle.</p>
-                <div className="rotating-field-solving-indicator"><i /> Solving balanced A + B + C frames…</div>
-              </section>
-            ) : !sweeps.combined ? (
-              <section className="rotating-field-solve-card">
-                <span>EXACT GEOMETRY READY</span>
-                <h3>Energize all three phases</h3>
-                <p>Solve one electrical cycle and release the PM rotor by default.</p>
-              </section>
-            ) : (
-              <>
-                <section className="rotating-field-follower-card">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={rotorMotionAllowed}
-                      onChange={(event) => {
-                        const allowed = event.currentTarget.checked;
-                        setRotorMotionAllowed(allowed);
-                        if (!allowed) setPlaying(false);
-                      }}
-                    />
-                    Allow rotor motion
-                  </label>
-                  <p>{rotorMotionAllowed
-                    ? phaseCOpen ? 'On, but the open-phase FEM frames hold the rotor so you can inspect the failed rotating field.' : 'On · the PM rotor follows the rotating two-pole target.'
-                    : 'Off · the solved rotor checkpoint is held for inspection.'}</p>
-                </section>
-                {displayFrame ? (
-                  <section className="three-phase-current-card">
-                    <header><span>{phaseCOpen ? 'OPEN-PHASE CURRENTS' : 'BALANCED CURRENTS'}</span><strong>{phaseCOpen ? 'fault' : '120° apart'}</strong></header>
-                    <div className="is-a"><span>I<sub>A</sub></span><b>{signedCurrent(displayFrame.phase_a_current_a)}</b></div>
-                    <div className="is-b"><span>I<sub>B</sub></span><b>{signedCurrent(displayFrame.phase_b_current_a)}</b></div>
-                    <div className="is-c"><span>I<sub>C</sub></span><b>{phaseCOpen ? 'OPEN' : signedCurrent(displayFrame.phase_c_current_a)}</b></div>
-                    <footer><span>I<sub>A</sub> + I<sub>B</sub> + I<sub>C</sub></span><strong>{signedCurrent(displayFrame.phase_current_sum_a)}</strong></footer>
-                  </section>
-                ) : null}
-                <section className="three-phase-fault-card">
-                  <span>PRACTICAL DRIVE CHECKS</span>
-                  <button type="button" disabled={Boolean(busyMode)} className={phaseCOpen ? 'is-active' : ''} onClick={() => void loadSweep(phaseCOpen ? 'combined' : 'open_c')}>
-                    {phaseCOpen ? 'Restore Phase C' : 'Open Phase C'}
-                  </button>
-                  <p>{phaseCOpen
-                    ? 'C carries no current. A and B become equal and opposite, so the smooth rotating field is gone.'
-                    : 'Open one motor lead to compare the healthy rotating field with a single-phasing fault.'}</p>
-                </section>
-                <section className="rotating-field-checklist is-in-panel">
-                  <span className={cycleComplete ? 'is-done' : ''}>{cycleComplete ? '✓' : '1'} Spin through 0° → 360°</span>
-                  <span className={inspectedOpenPhase ? 'is-done' : ''}>{inspectedOpenPhase ? '✓' : '2'} Inspect open Phase C</span>
-                  <span className={reversedSequence ? 'is-done' : ''}>{reversedSequence ? '✓' : '3'} Swap B/C to reverse</span>
-                </section>
-              </>
-            )}
-        {error ? <p className="rotating-field-error">{error}</p> : null}
-        <footer className="learning-panel-footer">
-          {quizOpen && isLessonComplete('three-phase-motor') ? (
-            <a className="learning-primary-button learning-next-lesson" href="/tutorials/lesson-9">Next lesson: Build the 2p/6s Motor</a>
-          ) : null}
-          <div className="learning-panel-nav">
-            <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-            <button type="button" className="learning-ghost-button" onClick={onBackHome}>Design start</button>
-          </div>
-        </footer>
-      </aside> : null}
-
-      {solveInspectorOpen && !quizOpen ? <aside className="learning-context-panel rotating-field-results-panel three-phase-results-panel" aria-label="Lesson guidance and solved results">
-        <button type="button" className="tutorial-studio-panel-close" aria-label="Close solved results" onClick={() => setSolveInspectorOpen(false)}>×</button>
-        <p className="learning-kicker">Solved output</p>
-        {quizOpen ? (
-          <section className="rotating-field-takeaway">
-            <h2>Three lines create a smooth rotating target.</h2>
-            <p>Balanced phase currents sum to zero at the internal Wye point while their six tooth fields combine into one rotating two-pole field.</p>
-          </section>
-        ) : lessonStage === 'design' ? (
-          <>
-            <WyeConnectionCard />
-            <section className="three-phase-pole-order">
-              <span>SIX TEETH · TWO MAGNETIC POLES</span>
-              <strong>A+ · C− · B+ · A− · C+ · B−</strong>
-              <p>Each phase owns two opposing teeth. The “six” counts electromagnets, not magnetic poles.</p>
-            </section>
-          </>
-        ) : displayFrame ? (
-          <section className="three-phase-results">
-            <header>
-              <div><p className="learning-kicker">Three-phase drive</p><h2>{phaseCOpen ? 'Opening Phase C breaks the smooth rotating field.' : 'Balanced currents stay 120° apart.'}</h2></div>
-              <span>θe = {displayCycleAngle(electricalAngle)}°</span>
-            </header>
-            {!phaseCOpen ? (
-              <DriveComparison
-                angleDeg={electricalAngle}
-                phaseACurrentA={displayFrame.phase_a_current_a}
-                phaseBCurrentA={displayFrame.phase_b_current_a}
-                phaseCCurrentA={displayFrame.phase_c_current_a}
+  // `fieldShown` is false on the Connect step, which shows only the meshed
+  // geometry and its winding labels.
+  const renderCanvas = (fieldShown: boolean) => {
+    const solved = fieldShown && Boolean(solvedFrame);
+    if (!renderFrame || !displayFrame) {
+      return (
+        <LessonLabCanvas className="three-phase-viewer">
+          <LessonLabViewport label="Six wound teeth · PM rotor" hint="Loading" className="is-centered">
+            <div className="rotating-field-solving-indicator"><i /> Loading the exact six-tooth geometry…</div>
+          </LessonLabViewport>
+          {renderViewDock(true)}
+        </LessonLabCanvas>
+      );
+    }
+    const sourceLabel = phaseCOpen
+      ? 'Open Phase C · unbalanced field'
+      : FIELD_MODES.find((item) => item.mode === fieldMode)?.label ?? 'Combined';
+    return (
+      <LessonLabCanvas className="three-phase-viewer">
+        <LessonLabViewport
+          label={solved ? `${sourceLabel} · θe ${displayCycleAngle(electricalAngle)}°` : 'Six wound teeth · PM rotor'}
+          hint={solved ? `${sequenceLabel} sequence` : 'Not solved yet'}
+        >
+          {solved && canvasView === '3d' ? (
+            <div className="three-phase-three-viewport">
+              <ThreePhaseMotor3D
+                frameData={displayFrame}
+                fieldMode={fieldMode}
+                showFieldIntensity={fieldDisplayMode === 'density'}
+                fieldIntensityRange={intensityRange}
+                playing={playing}
               />
-            ) : null}
-            <ThreePhaseWaveform
-              angleDeg={electricalAngle}
-              phaseACurrentA={displayFrame.phase_a_current_a}
-              phaseBCurrentA={displayFrame.phase_b_current_a}
-              phaseCCurrentA={displayFrame.phase_c_current_a}
-              phaseCOpen={phaseCOpen}
-              onSelectAngle={selectAngle}
+            </div>
+          ) : (
+            <MeshViewer
+              meshData={renderFrame}
+              embedded
+              compactEmbedded
+              toolbarMode="zoom-only"
+              zoomControlsSlot={zoomSlot}
+              // Before the solve there is no field to draw, so the mesh is
+              // what shows the geometry.
+              showMeshEdges={showMesh || !solved}
+              showFieldIntensity={solved && fieldDisplayMode === 'density'}
+              fieldIntensityRange={intensityRange}
+              smoothFieldIntensity
+              fieldLinesVisible={solved && fieldDisplayMode === 'lines'}
+              animateFieldArrows={solved && playing && fieldDisplayMode === 'lines'}
+              viewportPanEnabled={false}
+              pointLabels={pointLabels}
+              directionVectors={solved ? directionVectors : []}
+              dipoleMarkers={[{
+                xMm: 0,
+                yMm: 0,
+                angleDeg: displayFrame.rotor_angle_deg,
+                lengthMm: displayFrame.rotor_radius_mm * 1.7,
+                thicknessMm: displayFrame.rotor_radius_mm * 0.72,
+                shape: 'surface-arcs',
+                rotorRadiusMm: displayFrame.rotor_radius_mm,
+                poleArcDeg: 132,
+                poleThicknessMm: displayFrame.rotor_radius_mm * 0.19,
+                animateTorque: solved && playing,
+                torqueDirection: direction === 1 ? 'ccw' : 'cw',
+              }]}
             />
-            <section className="three-phase-current-card">
-              <header><span>{phaseCOpen ? 'OPEN-PHASE CURRENTS' : 'BALANCED CURRENTS'}</span><strong>{phaseCOpen ? 'fault' : '120° apart'}</strong></header>
-              <div className="is-a"><span>I<sub>A</sub></span><b>{signedCurrent(displayFrame.phase_a_current_a)}</b></div>
-              <div className="is-b"><span>I<sub>B</sub></span><b>{signedCurrent(displayFrame.phase_b_current_a)}</b></div>
-              <div className="is-c"><span>I<sub>C</sub></span><b>{phaseCOpen ? 'OPEN' : signedCurrent(displayFrame.phase_c_current_a)}</b></div>
-              <footer><span>I<sub>A</sub> + I<sub>B</sub> + I<sub>C</sub></span><strong>{signedCurrent(displayFrame.phase_current_sum_a)}</strong></footer>
-            </section>
-          </section>
-        ) : (
-          <section className="rotating-field-meaning-card">
-            <span>WAITING FOR SOLVE</span>
-            <strong>The phase waveform, current balance, and fault comparison will appear here.</strong>
-          </section>
-        )}
-      </aside> : null}
+          )}
+        </LessonLabViewport>
+        {renderViewDock(!solved)}
+      </LessonLabCanvas>
+    );
+  };
 
-      <section className={`tutorial-studio-dock rotating-field-studio-dock three-phase-studio-dock${showDockPlayback ? ' has-playback' : ''}`} aria-label="Lesson controls">
-        <div className="rotating-field-dock-context">
-          <span>{quizOpen ? 'CHECK' : lessonStage === 'design' ? 'CONNECT WYE' : cycleComplete ? 'STRESS DRIVE' : 'SPIN FIELD'}</span>
-          <strong>{quizOpen
-            ? 'Explain why three wires can create one smooth rotating field.'
-            : lessonStage === 'design'
-              ? 'Connect three windings around one internal neutral.'
-              : labComplete
-                ? 'You spun, faulted, and reversed the practical drive.'
-                : 'Run one balanced cycle, open a phase, then reverse the sequence.'}</strong>
-        </div>
-        {showDockPlayback ? (
-          <div className="rotating-field-dock-playback">
-            <label>
-              <span>Electrical angle</span>
-              <strong>{displayCycleAngle(electricalAngle)}°</strong>
+  const termsBox = <LessonTerms terms={LESSON_TERMS} />;
+
+  const inspectPanel = lessonStage === 'design' && !quizOpen ? (
+    <LessonLabPanel
+      side="inspect"
+      kicker="Inspect"
+      title="Nothing solved yet"
+      summary="Trace the three supply lines on the diagram first. The solved field and its measurements appear here in the next step."
+      label="Wye connection and lesson steps"
+    >
+      <WyeConnectionCard />
+      <section className="lesson-lab-card three-phase-pole-order-card" aria-label="Tooth order">
+        <h3>Six wound teeth · three phase pairs</h3>
+        <strong>A+ · C− · B+ · A− · C+ · B−</strong>
+        <p>Each phase owns two opposing teeth. The “six” counts electromagnets, not magnetic poles.</p>
+      </section>
+      <LessonOutline
+        steps={progressSteps.map((item) => ({
+          id: item.id,
+          label: item.label,
+          detail: STEP_GOALS[item.id as ThreePhaseStepId].detail,
+        }))}
+        currentId={currentStepId}
+      />
+      {termsBox}
+    </LessonLabPanel>
+  ) : (
+    <LessonLabPanel
+      side="inspect"
+      kicker="Inspect · Three-phase drive"
+      title={!solvedFrame
+        ? 'Nothing solved yet'
+        : phaseCOpen
+          ? 'Opening Phase C breaks the smooth rotating field.'
+          : 'Balanced currents stay 120° apart.'}
+      label="Lesson evidence and solved results"
+      // A new set of frames, or a different field source, is new evidence.
+      scrollTopKey={`${fieldMode}:${Object.keys(sweeps).length}`}
+    >
+      {busyMode ? (
+        <section className="lesson-lab-card three-phase-solve-status" aria-live="polite">
+          <h3>32 angle-dependent FEM checkpoints</h3>
+          <p>The exact Gmsh geometry stays visible while Magneto2D solves one full three-phase cycle.</p>
+          <div className="rotating-field-solving-indicator">
+            <i /> {busyMode === 'combined' ? 'Solving balanced A + B + C frames…' : 'Solving…'}
+          </div>
+        </section>
+      ) : null}
+      {solvedFrame ? (
+        <section className="three-phase-results">
+          {!phaseCOpen ? (
+            <DriveComparison
+              angleDeg={electricalAngle}
+              phaseACurrentA={solvedFrame.phase_a_current_a}
+              phaseBCurrentA={solvedFrame.phase_b_current_a}
+              phaseCCurrentA={solvedFrame.phase_c_current_a}
+            />
+          ) : null}
+          <ThreePhaseWaveform
+            angleDeg={electricalAngle}
+            phaseACurrentA={solvedFrame.phase_a_current_a}
+            phaseBCurrentA={solvedFrame.phase_b_current_a}
+            phaseCCurrentA={solvedFrame.phase_c_current_a}
+            phaseCOpen={phaseCOpen}
+            onSelectAngle={selectAngle}
+          />
+          <section className="three-phase-current-card">
+            <header><span>{phaseCOpen ? 'OPEN-PHASE CURRENTS' : 'BALANCED CURRENTS'}</span><strong>{phaseCOpen ? 'fault' : '120° apart'}</strong></header>
+            <div className="is-a"><span>I<sub>A</sub></span><b>{signedCurrent(solvedFrame.phase_a_current_a)}</b></div>
+            <div className="is-b"><span>I<sub>B</sub></span><b>{signedCurrent(solvedFrame.phase_b_current_a)}</b></div>
+            <div className="is-c"><span>I<sub>C</sub></span><b>{phaseCOpen ? 'OPEN' : signedCurrent(solvedFrame.phase_c_current_a)}</b></div>
+            <footer><span>I<sub>A</sub> + I<sub>B</sub> + I<sub>C</sub></span><strong>{signedCurrent(solvedFrame.phase_current_sum_a)}</strong></footer>
+          </section>
+        </section>
+      ) : !busyMode ? (
+        <section className="lesson-lab-card">
+          <h3>Waiting for solve</h3>
+          <p className="lesson-lab-note">The phase waveform, current balance, and fault comparison will appear here.</p>
+        </section>
+      ) : null}
+      {sweeps.combined ? (
+        <section className="lesson-lab-card three-phase-drive-checks" aria-label="Practical drive checks">
+          <h3>Practical drive checks</h3>
+          <p className="lesson-lab-note">{phaseCOpen
+            ? 'C carries no current. A and B become equal and opposite, so the smooth rotating field is gone.'
+            : 'Open one motor lead to compare the healthy rotating field with a single-phasing fault.'}</p>
+          <div className="rotating-field-checklist">
+            <span className={cycleComplete ? 'is-done' : ''}>{cycleComplete ? '✓' : '1'} Spin through 0° → 360°</span>
+            <span className={inspectedOpenPhase ? 'is-done' : ''}>{inspectedOpenPhase ? '✓' : '2'} Inspect open Phase C</span>
+            <span className={reversedSequence ? 'is-done' : ''}>{reversedSequence ? '✓' : '3'} Swap B/C to reverse</span>
+          </div>
+        </section>
+      ) : null}
+      {termsBox}
+    </LessonLabPanel>
+  );
+
+  if (quizOpen) {
+    return (
+      <LessonLab className="three-phase-motor-lab">
+        {inspectPanel}
+        <LessonLabStage className="is-tall">
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
+            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Can you connect the supply, rotating field, and PM rotor?"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep hint={quizPassed ? 'Lesson complete. Continue when you are ready.' : 'Answer all four questions to complete Lesson 8.'}>
+              {quizPassed || lessonComplete ? (
+                <a className="learning-primary-button" href="/tutorials/lesson-9">Next lesson: Build the 2p/6s Motor</a>
+              ) : null}
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => setQuizOpen(false)}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Use the balanced currents, phase sequence, and open-phase experiment.</p>
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  if (lessonStage === 'design') {
+    return (
+      <LessonLab className="three-phase-motor-lab">
+        {inspectPanel}
+        <LessonLabStage>{renderCanvas(false)}</LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Connect Wye"
+          title="How do three wires create one rotating field?"
+          summary="Trace each supply line to its winding, then find the connection they share inside the motor."
+          label="Wye connection"
+          footer={(
+            <LessonNextStep hint="The shared star point stays inside the motor. Only L1, L2, and L3 leave the enclosure.">
+              <button type="button" className="learning-primary-button" disabled={Boolean(busyMode)} onClick={enterLab}>
+                {busyMode ? 'Solving…' : 'Energize motor'}
+              </button>
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                <LessonLink onClick={onBackHome}>Design start</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          {error ? <p className="lesson-lab-error">{error}</p> : null}
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  const solveHint = !sweeps.combined
+    ? 'Solve one electrical cycle and release the PM rotor by default.'
+    : !cycleComplete && !rotorMotionAllowed
+      ? 'Turn on “Allow rotor motion” to play the full cycle.'
+      : labComplete
+        ? 'You spun, faulted, and reversed the practical drive.'
+        : 'Run one balanced cycle, open a phase, then reverse the sequence.';
+
+  return (
+    <LessonLab className="three-phase-motor-lab">
+      {inspectPanel}
+      <LessonLabStage>{renderCanvas(true)}</LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={`Experiment · ${currentStepLabel}`}
+        title="Three-phase PM motor lab"
+        summary="Six wound teeth + freely moving PM rotor"
+        label="Three-phase motor experiment"
+        footer={(
+          <LessonNextStep hint={solveHint}>
+            {!sweeps.combined ? (
+              <button type="button" className="learning-primary-button" disabled={Boolean(busyMode)} onClick={() => void loadSweep('combined', { autoPlay: true })}>
+                {busyMode ? 'Solving…' : 'Solve + spin rotor'}
+              </button>
+            ) : labComplete ? (
+              <button
+                type="button"
+                className="learning-primary-button"
+                onClick={() => {
+                  setPlaying(false);
+                  setQuizOpen(true);
+                }}
+              >
+                Continue to check
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={Boolean(busyMode) || (playing && !cycleComplete)}
+                onClick={advanceDriveChecks}
+              >
+                {busyMode ? 'Solving…' : driveCheckActionLabel}
+              </button>
+            )}
+          </LessonNextStep>
+        )}
+      >
+        {goalCard}
+        {sweeps.combined ? (
+          <>
+            <section className="three-phase-control-card">
+              <label htmlFor="three-phase-angle-slider"><span>Electrical angle</span><strong>{displayCycleAngle(electricalAngle)}°</strong></label>
               <input
+                id="three-phase-angle-slider"
                 type="range"
                 min="0"
                 max={frames.length}
@@ -1119,54 +1164,67 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
                 onChange={(event) => selectFrame(Number(event.currentTarget.value))}
                 aria-label="Solved three-phase electrical angle frame"
               />
-            </label>
-            <div className="rotating-field-dock-playback-buttons">
               <button
                 type="button"
+                className="three-phase-control-button"
                 disabled={!rotorMotionAllowed || phaseCOpen}
-                className={`rotating-field-dock-play-primary${playing ? ' is-active' : ''}`}
+                aria-pressed={playing}
                 onClick={() => (playing ? setPlaying(false) : playCycle())}
               >
                 {playing ? 'Pause cycle' : 'Play cycle'}
               </button>
-              <button type="button" className="rotating-field-dock-sequence" onClick={swapTwoPhases}>
-                {direction === 1 ? 'A–B–C · CCW' : 'A–C–B · CW'}
+              <label className="three-phase-control-check">
+                <input
+                  ref={rotorMotionInputRef}
+                  type="checkbox"
+                  checked={rotorMotionAllowed}
+                  onChange={(event) => {
+                    const allowed = event.currentTarget.checked;
+                    setRotorMotionAllowed(allowed);
+                    if (!allowed) setPlaying(false);
+                  }}
+                />
+                Allow rotor motion
+              </label>
+            </section>
+            <p className="lesson-lab-note">{rotorMotionAllowed
+              ? phaseCOpen ? 'On, but the open-phase FEM frames hold the rotor so you can inspect the failed rotating field.' : 'On · the PM rotor follows the rotating two-pole target.'
+              : 'Off · the solved rotor checkpoint is held for inspection.'}</p>
+            <section className="three-phase-control-card">
+              <span className="three-phase-control-label">Phase sequence</span>
+              <LessonSegmented
+                stretch
+                label="Phase sequence"
+                value={direction === 1 ? 'abc' : 'acb'}
+                // Either button swaps two phases; pressing the current one does nothing.
+                onChange={(id) => { if ((id === 'abc') !== (direction === 1)) swapTwoPhases(); }}
+                options={[
+                  { id: 'acb', label: 'A–C–B · CW' },
+                  { id: 'abc', label: 'A–B–C · CCW' },
+                ]}
+              />
+              <span className="three-phase-control-label">Field source</span>
+              <LessonSegmented
+                stretch
+                label="Motor field source"
+                value={FIELD_SOURCES.find((item) => item.id === fieldMode)?.id ?? null}
+                onChange={(id) => void loadSweep(id)}
+                options={FIELD_SOURCES.map((item) => ({ ...item, disabled: Boolean(busyMode) }))}
+              />
+              <button
+                type="button"
+                className="three-phase-control-button"
+                disabled={Boolean(busyMode)}
+                aria-pressed={phaseCOpen}
+                onClick={() => void loadSweep(phaseCOpen ? 'combined' : 'open_c')}
+              >
+                {phaseCOpen ? 'Restore Phase C' : 'Open Phase C'}
               </button>
-            </div>
-          </div>
+            </section>
+          </>
         ) : null}
-        <div className="tutorial-studio-dock-actions">
-          {!quizOpen && lessonStage === 'solve' && !sweeps.combined ? <button type="button" className={labControlsOpen ? 'is-active' : ''} onClick={() => setLabControlsOpen((open) => !open)}>{labControlsOpen ? 'Done' : 'Adjust experiment'}</button> : null}
-          {!quizOpen && lessonStage === 'solve' ? <button type="button" className={solveInspectorOpen ? 'is-active' : ''} disabled={!displayFrame} onClick={() => setSolveInspectorOpen((open) => !open)}>Inspect results</button> : null}
-          {quizOpen ? <button type="button" onClick={() => setQuizOpen(false)}>Review experiment</button> : null}
-          {quizOpen ? (
-            quizPassed
-              ? <a className="learning-primary-button" href="/tutorials/lesson-9">Next lesson</a>
-              : <button type="button" className="learning-primary-button" disabled>Pass the check</button>
-          ) : lessonStage === 'design' ? (
-            <button type="button" className="learning-primary-button" disabled={Boolean(busyMode)} onClick={() => {
-              setLabControlsOpen(false);
-              enterLab();
-            }}>{busyMode ? 'Solving…' : 'Energize motor'}</button>
-          ) : !sweeps.combined ? (
-            <button type="button" className="learning-primary-button" disabled={Boolean(busyMode)} onClick={() => void loadSweep('combined', { autoPlay: true })}>{busyMode ? 'Solving…' : 'Solve + spin rotor'}</button>
-          ) : labComplete ? (
-            <button type="button" className="learning-primary-button" onClick={() => {
-              setPlaying(false);
-              setLabControlsOpen(false);
-              setSolveInspectorOpen(false);
-              setQuizOpen(true);
-            }}>Continue to check</button>
-          ) : (
-            <button
-              type="button"
-              className="learning-primary-button"
-              disabled={Boolean(busyMode) || (playing && !cycleComplete)}
-              onClick={advanceDriveChecks}
-            >{busyMode ? 'Solving…' : driveCheckActionLabel}</button>
-          )}
-        </div>
-      </section>
-    </main>
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };

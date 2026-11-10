@@ -1178,3 +1178,270 @@
   .three-phase-shell .three-phase-control-panel,
   .three-phase-shell .three-phase-results-panel { bottom: 166px; }
 }
+
+/* ── Lesson 8 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. Everything is scoped to
+   .three-phase-motor-lab; the older rules above are kept but no longer match
+   the lesson's root element. */
+.three-phase-motor-lab {
+  --phase-a: #22d3ee;
+  --phase-b: #f59e0b;
+  --phase-c: #a78bfa;
+}
+
+.three-phase-motor-lab .lesson-lab-panel-body > * {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* Canvas above, dock below. */
+.three-phase-motor-lab .three-phase-viewer {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 0;
+}
+
+.three-phase-motor-lab .three-phase-viewer .mesh-viewer-embedded-shell,
+.three-phase-motor-lab .three-phase-viewer .mesh-viewer-container-embedded {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* The 3D picture fills the canvas; its legend starts below the name chip. */
+.three-phase-motor-lab .three-phase-three-viewport {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+}
+
+.three-phase-motor-lab .three-phase-three-legend { top: 52px; }
+
+.three-phase-motor-lab .lesson-lab-viewport .rotating-field-solving-indicator { margin-top: 0; }
+
+/* Left card: plain control cards, label and value on a line, then the control. */
+.three-phase-motor-lab .three-phase-control-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.three-phase-motor-lab .three-phase-control-card > label:not(.three-phase-control-check) {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.three-phase-motor-lab .three-phase-control-card > label span,
+.three-phase-motor-lab .three-phase-control-label { color: var(--text-secondary); font: 600 12px var(--font-ui); }
+.three-phase-motor-lab .three-phase-control-card > label strong { color: var(--text-primary); font: 700 12px var(--font-mono); }
+.three-phase-motor-lab .three-phase-control-card input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent-primary); }
+.three-phase-motor-lab .three-phase-control-card .lesson-lab-segmented + .three-phase-control-label { margin-top: 4px; }
+
+.three-phase-motor-lab .three-phase-control-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font: 600 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.three-phase-motor-lab .three-phase-control-check input { margin: 0; accent-color: var(--accent-primary); }
+
+.three-phase-motor-lab .three-phase-control-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: rgba(10, 12, 17, 0.62);
+  font: 600 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.three-phase-motor-lab .three-phase-control-button:hover:not(:disabled) { border-color: var(--border-accent); color: var(--text-accent); }
+
+.three-phase-motor-lab .three-phase-control-button[aria-pressed="true"] {
+  border-color: rgba(245, 158, 11, 0.42);
+  color: var(--text-accent);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.three-phase-motor-lab .three-phase-control-button:disabled { color: var(--text-disabled); cursor: not-allowed; }
+
+/* Right card. The evidence was laid out for a wide drawer; here it stacks in
+   one column at the width of the card, with text at the app's reading sizes
+   (labels 12px, numbers 12px mono, small uppercase kickers 10px). */
+.three-phase-motor-lab .three-phase-results {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  background: none;
+}
+
+.three-phase-motor-lab .three-phase-solve-status p,
+.three-phase-motor-lab .three-phase-pole-order-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.three-phase-motor-lab .three-phase-pole-order-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font: 700 12px/1.55 var(--font-mono);
+}
+
+.three-phase-motor-lab .three-phase-drive-checks .rotating-field-checklist { margin: 10px 0 0; }
+.three-phase-motor-lab .three-phase-drive-checks .rotating-field-checklist span { font-size: 12px; }
+
+/* Wye connection card. */
+.three-phase-motor-lab .three-phase-wye-card,
+.three-phase-motor-lab .three-phase-current-card {
+  margin-top: 0;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.three-phase-motor-lab .three-phase-wye-card header strong { font-size: 14px; }
+.three-phase-motor-lab .three-phase-wye-diagram { margin: 10px 0; }
+.three-phase-motor-lab .three-phase-wye-labels text { font-size: 13px; }
+.three-phase-motor-lab .three-phase-wye-node-label { font-size: 14px; }
+
+.three-phase-motor-lab .three-phase-wye-card p,
+.three-phase-motor-lab .three-phase-wye-card small {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.three-phase-motor-lab .three-phase-wye-card code { font-size: 12px; }
+
+/* Two-phase against three-phase: no frame of its own, so its drawings get the
+   full width of the card. */
+.three-phase-motor-lab .three-phase-drive-comparison {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.three-phase-motor-lab .three-phase-drive-comparison > header { display: grid; gap: 8px; }
+.three-phase-motor-lab .three-phase-drive-comparison > header span { font-size: 10px; letter-spacing: 0.1em; }
+.three-phase-motor-lab .three-phase-drive-comparison > header h3 { font: 700 14px/1.3 var(--font-ui); }
+
+.three-phase-motor-lab .three-phase-drive-comparison > header > strong {
+  justify-self: start;
+  font-size: 11px;
+  white-space: normal;
+}
+
+.three-phase-motor-lab .three-phase-drive-comparison > p {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.three-phase-motor-lab .three-phase-comparison-tabs button {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+  padding: 8px;
+}
+
+.three-phase-motor-lab .three-phase-comparison-tabs button span { font: 700 12px var(--font-ui); }
+
+.three-phase-motor-lab .three-phase-comparison-tabs button strong,
+.three-phase-motor-lab .three-phase-comparison-tabs button small {
+  grid-column: 1;
+  grid-row: auto;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.three-phase-motor-lab .three-phase-comparison-tabs button small { text-transform: none; }
+
+.three-phase-motor-lab .three-phase-comparison-topology { grid-template-columns: minmax(0, 1fr); }
+.three-phase-motor-lab .three-phase-comparison-topology > svg { height: auto; min-height: 0; }
+
+/* The drawings are scaled down to about 0.85 of their own units in the card,
+   so their text is set larger than it should read. */
+.three-phase-motor-lab .three-phase-comparison-path text { font-size: 14px; }
+.three-phase-motor-lab .three-phase-comparison-star-label { font-size: 14px; }
+.three-phase-motor-lab .three-phase-comparison-note { font-size: 13px; }
+
+.three-phase-motor-lab .three-phase-comparison-facts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: none;
+}
+
+.three-phase-motor-lab .three-phase-comparison-facts article {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  padding: 8px;
+}
+
+.three-phase-motor-lab .three-phase-comparison-facts article > span { font-size: 10px; }
+
+.three-phase-motor-lab .three-phase-comparison-facts article > strong {
+  grid-column: 1;
+  grid-row: auto;
+  font-size: 22px;
+}
+
+.three-phase-motor-lab .three-phase-comparison-facts article > small {
+  overflow: visible;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.three-phase-motor-lab .three-phase-comparison-field > header {
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  font-size: 10px;
+}
+
+.three-phase-motor-lab .three-phase-comparison-field svg { height: auto; }
+.three-phase-motor-lab .three-phase-comparison-field text { font-size: 18px; }
+/* The larger "360°" would run past the edge: end it where it used to start. */
+.three-phase-motor-lab .three-phase-comparison-field text:last-of-type { text-anchor: end; transform: translateX(22px); }
+.three-phase-motor-lab .three-phase-comparison-field > div { margin-top: 2px; font-size: 11px; }
+
+.three-phase-motor-lab .three-phase-drive-comparison > footer {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Phase-current plot: the legend sits above the plot, not over it. */
+.three-phase-motor-lab .three-phase-waveform-wrap {
+  padding: 10px 8px 2px;
+  border-radius: 10px;
+}
+
+.three-phase-motor-lab .three-phase-waveform-legend {
+  position: static;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.three-phase-motor-lab .three-phase-waveform polyline { stroke-width: 2; }
+.three-phase-motor-lab .three-phase-waveform-grid line { stroke-dasharray: 3 4; }
+.three-phase-motor-lab .three-phase-waveform-ticks text { font-size: 12px; }
+
+.three-phase-motor-lab .three-phase-current-card > div b,
+.three-phase-motor-lab .three-phase-current-card footer strong { font-size: 12px; }

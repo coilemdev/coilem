@@ -2018,3 +2018,120 @@
     max-height: calc(100% - 240px);
   }
 }
+
+/* ── Lesson 7 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. Every rule is scoped under
+   .rotating-field-lab because Lesson 8 loads this stylesheet too. */
+.rotating-field-lab .lesson-lab-panel-body > * {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* The mesh viewer and the 3D scenes fill the canvas above the dock. */
+.rotating-field-lab .rotating-field-canvas .mesh-viewer-embedded-shell,
+.rotating-field-lab .rotating-field-canvas .mesh-viewer-container-embedded,
+.rotating-field-lab .rotating-field-canvas .rotating-field-coils-three,
+.rotating-field-lab .rotating-field-canvas .two-phase-motor-three {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* The legends of the 3D scenes start below the chip that names the picture. */
+.rotating-field-lab .rotating-field-coils-three-legend,
+.rotating-field-lab .two-phase-motor-three-legend { top: 52px; }
+
+/* The flat diagrams, centred in the canvas. */
+.rotating-field-lab .rotating-field-prediction,
+.rotating-field-lab .rotating-field-motor-geometry {
+  display: block;
+  width: min(820px, 100%);
+  height: auto;
+  max-height: 56vh;
+}
+
+/* Controls: one plain card, label and value on a line, then the control. */
+.rotating-field-lab .rotating-field-controls {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.rotating-field-lab .rotating-field-control-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rotating-field-lab .rotating-field-control-row:not(:first-child) { margin-top: 6px; }
+.rotating-field-lab .rotating-field-control-row span { color: var(--text-secondary); font: 600 12px var(--font-ui); }
+.rotating-field-lab .rotating-field-control-row strong { color: var(--text-primary); font: 700 12px var(--font-mono); }
+.rotating-field-lab .rotating-field-controls input[type="range"] { width: 100%; margin: 0; accent-color: var(--accent-primary); }
+
+.rotating-field-lab .rotating-field-play {
+  height: 34px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  font: 600 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.rotating-field-lab .rotating-field-play:hover:not(:disabled) { border-color: var(--border-accent); }
+.rotating-field-lab .rotating-field-play[aria-pressed="true"] { border-color: var(--border-accent); color: var(--text-accent); }
+
+/* Readable sizes in the evidence: 12px labels, 12px mono numbers. */
+.rotating-field-lab .rotating-field-angle-readout { gap: 6px; margin: 0; }
+.rotating-field-lab .rotating-field-angle-readout p { align-items: baseline; }
+.rotating-field-lab .rotating-field-angle-readout span { color: var(--text-secondary); font: 12px/1.4 var(--font-ui); }
+.rotating-field-lab .rotating-field-angle-readout b { font: 700 12px var(--font-mono); white-space: nowrap; }
+
+/* The current plot is drawn at the width of the Inspect card, with its legend
+   on a line of its own above it. */
+.rotating-field-lab .rotating-field-waveform-wrap { padding: 8px 6px 2px; border-radius: 10px; }
+
+.rotating-field-lab .rotating-field-waveform-legend {
+  position: static;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding: 0 4px 4px;
+  font: 600 11px var(--font-ui);
+}
+
+.rotating-field-lab .rotating-field-waveform polyline { stroke-width: 2; }
+.rotating-field-lab .rotating-field-waveform-ticks text { font: 600 11px var(--font-mono); }
+
+.rotating-field-lab .rotating-field-recipe > div {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.rotating-field-lab .rotating-field-recipe b { color: #67e8f9; font: 700 12px var(--font-mono); }
+.rotating-field-lab .rotating-field-recipe em { color: var(--text-primary); font: 12px var(--font-mono); }
+.rotating-field-lab .rotating-field-recipe p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
+.rotating-field-lab .rotating-field-recipe p strong { color: var(--text-primary); }
+
+.rotating-field-lab .rotating-field-torque-equation {
+  margin: 0 0 8px;
+  font: 700 16px var(--font-mono);
+  text-align: left;
+}
+
+.rotating-field-lab .rotating-field-checklist { margin: 0; }
+.rotating-field-lab .rotating-field-checklist span { font: 12px/1.4 var(--font-ui); }
+
+.rotating-field-lab .rotating-field-solving-indicator {
+  margin: 0;
+  color: var(--text-secondary);
+  font: 600 12px var(--font-ui);
+}

@@ -1,6 +1,21 @@
 import React from 'react';
 import { KnowledgeCheck } from './KnowledgeCheck';
-import { LessonCompleteButton } from './LessonCompleteButton';
+import {
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonSegmented,
+  LessonTerms,
+} from './lab/LessonLab';
+import type { LessonTerm } from './lab/LessonLab';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import { useLearningProgress } from './useLearningProgress';
 import {
@@ -60,6 +75,33 @@ const WINDING_PRESETS: WindingPreset[] = [
 ];
 
 const BUS_VOLTAGES = [24, 48, 96, 400] as const;
+
+/** The two pictures of the model the canvas can show. */
+type CanvasView = 'wave' | 'speed';
+
+const CANVAS_VIEWS: ReadonlyArray<{ id: CanvasView; label: string }> = [
+  { id: 'wave', label: 'Waveforms' },
+  { id: 'speed', label: 'BEMF vs. RPM' },
+];
+
+const BEMF_GOAL_TITLES: Record<BackEmfStage | 'check', string> = {
+  design: 'Inspect the rotor angle',
+  mesh: 'Find the reserved speed',
+  solve: 'Restore voltage headroom',
+  check: 'Check your understanding',
+};
+
+// The lesson's vocabulary, shown beside the measurements on every step.
+const BEMF_TERMS: readonly LessonTerm[] = [
+  { term: 'BEMF (back-EMF)', definition: 'The voltage a spinning motor generates in its own windings, in volts (V). It pushes back against the voltage that drives current in.' },
+  { term: 'Winding constant, Ke', definition: 'How many volts of BEMF the winding makes for every 1,000 rpm (V/krpm). BEMF = Ke × speed.' },
+  { term: 'DC bus', definition: 'The battery or supply voltage that feeds the inverter, in volts (V).' },
+  { term: 'Inverter voltage', definition: 'The most AC voltage the inverter can make from the DC bus. In this model it is the DC bus ÷ √2, as line-line RMS volts.' },
+  { term: 'Line-line RMS', definition: 'The effective AC voltage measured between two of the three motor wires, in volts (V). BEMF and both limits are compared in this unit.' },
+  { term: 'Phase voltage', definition: 'The voltage of one winding at one instant, in volts (V). The waveforms show it swinging between plus and minus its peak.' },
+  { term: 'Electrical angle', definition: 'Where the rotor is within one cycle of the waveform, from 0° to 360°. In this two-pole motor one cycle is one full turn.' },
+  { term: 'Reserved headroom', definition: 'The voltage still spare, in volts (V): the inverter voltage, less the reserve kept back for voltage drops in the winding, less the BEMF. At zero the reserve is used up.' },
+];
 
 const BEMF_KNOWLEDGE_CHECK: KnowledgeCheckQuestion[] = [
   {
@@ -168,14 +210,10 @@ function BEMFActionMotor({
   rotorAngleDeg,
   rpm,
   phasePeakV,
-  isAnimating,
-  onTogglePlayback,
 }: {
   rotorAngleDeg: number;
   rpm: number;
   phasePeakV: number;
-  isAnimating: boolean;
-  onTogglePlayback: () => void;
 }) {
   const center = 180;
   const coils = [
@@ -190,13 +228,6 @@ function BEMFActionMotor({
 
   return (
     <figure className="bemf-motor-action">
-      <div className="bemf-playback-controls" role="group" aria-label="Rotor playback">
-        <span>Rotor playback</span>
-        <button type="button" className="learning-ghost-button" aria-pressed={isAnimating}
-          disabled={rpm <= 0 && !isAnimating} onClick={onTogglePlayback}>
-          {isAnimating ? 'Pause Rotor' : 'Spin Rotor'}
-        </button>
-      </div>
       <svg className="bemf-motor-svg" viewBox="0 0 360 360" role="img" aria-label="Surface permanent magnet motor generating back EMF">
         <defs>
           <filter id="bemfMotorGlow" x="-20%" y="-20%" width="140%" height="140%">
@@ -407,10 +438,13 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
   const [isRotorAnimating, setIsRotorAnimating] = React.useState(false);
   const [knowledgePassed, setKnowledgePassed] = React.useState(false);
   const [quizOpen, setQuizOpen] = React.useState(false);
+  const [canvasView, setCanvasView] = React.useState<CanvasView>('wave');
   const [labProgress, dispatchLab] = React.useReducer(backEmfLabReducer, undefined, createBackEmfLabProgress);
   const { setLessonComplete } = useLearningProgress();
   const anglesInspected = backEmfAnglesInspected(labProgress);
   const labComplete = backEmfLabComplete(labProgress);
+  // The check is only ever shown once all three exercises are done.
+  const checkOpen = quizOpen && labComplete;
   // Existing route stage names remain compatible, but cannot bypass the lab.
   const requestedStage = stage ?? internalStage;
   const lessonStage = !anglesInspected ? 'design'
@@ -433,7 +467,7 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
     : model.status === 'headroom-ok' ? 'is-ok' : 'is-warning';
   const animationFrameRef = React.useRef<number | null>(null);
   const lastFrameMsRef = React.useRef<number | null>(null);
-  const knowledgeHeadingRef = React.useRef<HTMLHeadingElement | null>(null);
+  const checkRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     // Route-driven stage changes get the same fixed starting point as the Next buttons.
@@ -443,14 +477,15 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
     setCustomKeVPerKrpm(BEMF_LAB_BASELINE.keVPerKrpm);
     setReservePct(BEMF_LAB_BASELINE.reservePct);
     setRpm(lessonStage === 'solve' ? BEMF_RECOVERY_RPM : BEMF_LAB_BASELINE.rpm);
+    // Each exercise opens on the picture it is about: the angle exercise reads
+    // the waveforms, the two speed exercises read the BEMF line against RPM.
+    setCanvasView(lessonStage === 'design' ? 'wave' : 'speed');
   }, [lessonStage]);
 
   React.useEffect(() => {
-    if (quizOpen && labComplete) {
-      knowledgeHeadingRef.current?.focus({ preventScroll: true });
-      knowledgeHeadingRef.current?.scrollIntoView({ block: 'nearest' });
-    }
-  }, [quizOpen, labComplete]);
+    // Keyboard and screen-reader users land on the questions when they open.
+    if (checkOpen) checkRef.current?.focus({ preventScroll: true });
+  }, [checkOpen]);
 
   React.useEffect(() => {
     if (labComplete && knowledgePassed) setLessonComplete('back-emf-voltage-headroom', true);
@@ -512,6 +547,11 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
     setRotorAngleDeg(0);
     setLessonStage('design');
   };
+  const selectCanvasView = (nextView: CanvasView) => {
+    // The rotor is only drawn with the waveforms; do not leave it spinning out of sight.
+    if (nextView !== 'wave') setIsRotorAnimating(false);
+    setCanvasView(nextView);
+  };
   const taskComplete = lessonStage === 'design' ? anglesInspected
     : lessonStage === 'mesh' ? labProgress.reserveCrossed : labProgress.recovered;
   const primaryActionLabel = lessonStage === 'design' ? 'Next: Speed Limit'
@@ -551,173 +591,268 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
       : labProgress.recovered ? 'Recovery complete. You restored positive headroom at the same speed and reserve.'
         : 'Keep 6,000 RPM and 15% reserve. Increase the DC bus or choose a lower Ke to restore positive headroom.';
   const busControl = (label: string) => (
-    <div className="learning-overlay-selector bemf-rail-control">
+    <div className="back-emf-field">
       <span>DC bus</span>
-      <div className="learning-segmented-control bemf-segmented-four" role="group" aria-label={label}>
-        {BUS_VOLTAGES.map((voltage) => <button key={voltage} type="button" aria-pressed={dcBusV === voltage}
-          className={dcBusV === voltage ? 'is-active' : ''} onClick={() => handleBusChange(voltage)}>{voltage} V</button>)}
-      </div>
+      <LessonSegmented
+        stretch
+        label={label}
+        value={String(dcBusV)}
+        onChange={(voltage) => handleBusChange(Number(voltage))}
+        options={BUS_VOLTAGES.map((voltage) => ({ id: String(voltage), label: `${voltage} V` }))}
+      />
     </div>
   );
   const windingControl = (label: string) => (
-    <div className="learning-overlay-selector bemf-rail-control">
-      <span>Winding constant</span>
-      <div className="learning-segmented-control" role="group" aria-label={label}>
-        {WINDING_PRESETS.map((preset) => <button key={preset.id} type="button" aria-pressed={windingId === preset.id}
-          className={windingId === preset.id ? 'is-active' : ''} onClick={() => handleKeChange(preset.keVPerKrpm, preset.id)}>
-          {preset.label}<small>{preset.keVPerKrpm.toFixed(1)} V/krpm</small>
-        </button>)}
-      </div>
+    <div className="back-emf-field back-emf-winding">
+      <span>Winding constant Ke</span>
+      <LessonSegmented
+        stretch
+        label={label}
+        value={windingId}
+        onChange={(presetId) => {
+          const preset = WINDING_PRESETS.find((item) => item.id === presetId);
+          if (preset) handleKeChange(preset.keVPerKrpm, preset.id);
+        }}
+        options={WINDING_PRESETS.map((preset) => ({
+          id: preset.id,
+          label: <>{preset.label}<small>{preset.keVPerKrpm.toFixed(1)} V/krpm</small></>,
+          title: preset.summary,
+        }))}
+      />
     </div>
   );
 
-  return (
-    <main className={`learning-shell learning-lesson-shell bemf-shell is-${lessonStage}-stage`}>
-      <section className={`learning-main-stage is-${lessonStage}-stage bemf-main-stage`}>
-        <div className="learning-motor-viewport">
-          <div className="learning-stage-badge"><span>{quizOpen ? 'Knowledge Check' : activeStageItem.title}</span>
-            <strong className={`bemf-status ${statusClass}`}>{status}</strong></div>
-          <div className="bemf-hero-panel">
-            <BEMFActionMotor rotorAngleDeg={electricalAngleDeg} rpm={rpm} phasePeakV={phasePeakV}
-              isAnimating={isRotorAnimating} onTogglePlayback={() => setIsRotorAnimating((current) => !current)} />
-            <div className="bemf-waveform-panel">
-              <div className="bemf-waveform-head"><div><span>Generated BEMF</span>
-                <strong>{formatVolts(bemfV)} line-line RMS</strong></div></div>
-              <div className="bemf-phase-values" aria-label="Instantaneous phase voltages">
-                {PHASES.map((phase) => <div key={phase.id}><span style={{ color: phase.color }}>{phase.label}</span>
-                  <output aria-live="off">{formatVolts(phaseVoltageAt(electricalAngleDeg, phase.shiftDeg, phasePeakV))}</output></div>)}
-              </div>
-              <BEMFWaveformChart electricalAngleDeg={electricalAngleDeg} phasePeakV={phasePeakV}
-                reservedPhasePeakV={reservedPhasePeakV} voltagePhasePeakV={voltagePhasePeakV} />
-            </div>
-            <div className="bemf-action-readouts" aria-label="BEMF live readouts">
-              <div><span>Equation</span><strong>{winding.keVPerKrpm.toFixed(1)} V/krpm × {(rpm / 1000).toFixed(1)} krpm</strong></div>
-              <div><span>Inverter voltage</span><strong>{formatVolts(inverterLineLineRmsV)} line-line RMS</strong></div>
-              <div><span>Reserved headroom</span><strong className={statusClass}>{formatVolts(headroomV)}</strong></div>
-            </div>
-          </div>
-        </div>
-        <section className="learning-plot-row">
-          <div className="learning-plot-panel">
-            <div className="learning-panel-heading"><h2>BEMF vs. RPM</h2><span className="learning-provenance">analytic model</span></div>
-            <BEMFChart rpm={rpm} maxRpm={maxPlotRpm} keVPerKrpm={winding.keVPerKrpm}
-              voltageLimit={inverterLineLineRmsV} reservedLimit={reservedLineLineRmsV} bemfV={bemfV} />
-            <dl className="bemf-thresholds">
-              <div><dt>Reserve exhausted</dt><dd>{formatRpm(baseSpeedRpm)}</dd></div>
-              <div><dt>Inverter voltage limit</dt><dd>{formatRpm(inverterLimitRpm)}</dd></div>
-            </dl>
-            <p className="bemf-model-note">Ideal sinusoidal BEMF and linear SVPWM. The reserve allows for winding voltage drops; this model does not calculate loaded torque.</p>
-          </div>
-          <div className="learning-knowledge-panel">
-            <h2 ref={knowledgeHeadingRef} tabIndex={-1}>{quizOpen && labComplete ? 'Knowledge Check' : 'Lab Checklist'}</h2>
-            {/* Preserve answers during navigation; Reset Lab unmounts the quiz. */}
-            {labComplete ? (
-              <div hidden={!quizOpen}>
-                <KnowledgeCheck questions={BEMF_KNOWLEDGE_CHECK} onPassedChange={setKnowledgePassed} />
-              </div>
-            ) : null}
-            {!quizOpen || !labComplete ? (
-              <div className="bemf-checklist">
-                {progressSteps.slice(0, 3).map((item) => <div key={item.id} className={item.complete ? 'is-complete' : ''}>
-                  <span aria-hidden="true">{item.complete ? '✓' : '○'}</span><span>{item.label}</span>
-                  <strong>{item.complete ? 'Complete' : 'Pending'}</strong>
-                </div>)}
-                <p>{labComplete ? 'All exercises complete. Continue to the quiz.' : 'Complete all three exercises to unlock the quiz.'}</p>
-              </div>
-            ) : null}
-          </div>
-        </section>
+  const roundedAngleDeg = Math.round(electricalAngleDeg);
+  const stepNumber = checkOpen ? progressSteps.length : currentStageOrder + 1;
+  const goalCard = (
+    <LessonGoal
+      step={stepNumber}
+      total={progressSteps.length}
+      title={BEMF_GOAL_TITLES[checkOpen ? 'check' : lessonStage]}
+      detail={checkOpen ? 'All three lab exercises are complete.' : activeStageItem.summary}
+    />
+  );
+
+  // The right card: the live numbers once, then the vocabulary and the model's fine print.
+  const inspectPanel = (
+    <LessonLabPanel
+      side="inspect"
+      kicker="Inspect"
+      title="Current state"
+      summary="Live values from the analytic model. Voltages are line-line RMS unless marked."
+      label="Lesson measurements and terms"
+      scrollTopKey={checkOpen ? 'check' : lessonStage}
+    >
+      <section className="lesson-lab-card" aria-label="BEMF live readouts">
+        <h3>Measurements</h3>
+        <dl className="back-emf-readout">
+          <div><dt>Status</dt><dd className={statusClass}>{status}</dd></div>
+          <div><dt>DC bus</dt><dd>{formatVolts(dcBusV)}</dd></div>
+          <div><dt>Motor speed</dt><dd>{formatRpm(rpm)}</dd></div>
+          <div><dt>Winding constant Ke</dt><dd>{winding.keVPerKrpm.toFixed(1)} V/krpm</dd></div>
+          <div><dt>Reserve</dt><dd>{formatPercent(reservePct)}</dd></div>
+          <div><dt>Equation</dt><dd>{winding.keVPerKrpm.toFixed(1)} V/krpm × {(rpm / 1000).toFixed(1)} krpm</dd></div>
+          <div><dt>BEMF</dt><dd>{formatVolts(bemfV)}</dd></div>
+          <div><dt>Inverter voltage</dt><dd>{formatVolts(inverterLineLineRmsV)}</dd></div>
+          <div><dt>Reserved headroom</dt><dd className={statusClass}>{formatVolts(headroomV)}</dd></div>
+          <div><dt className="is-reserve">Reserve exhausted</dt><dd>{formatRpm(baseSpeedRpm)}</dd></div>
+          <div><dt className="is-limit">Inverter voltage limit</dt><dd>{formatRpm(inverterLimitRpm)}</dd></div>
+        </dl>
       </section>
-      <aside className="learning-control-panel">
-        <section className="tutorial-studio-goal">
-          <span>{quizOpen ? '4/4' : `${currentStageOrder + 1}/3`}</span>
-          <div><p className="learning-kicker">Current goal</p><h2>{quizOpen ? 'Check your understanding'
-            : lessonStage === 'design' ? 'Inspect the rotor angle'
-              : lessonStage === 'mesh' ? 'Find the reserved speed' : 'Restore voltage headroom'}</h2></div>
-        </section>
-        {!quizOpen ? <section className="learning-control-section bemf-exercise" aria-label="Current exercise">
-          <p>{activeStageItem.summary}</p>
-          {lessonStage === 'design' ? <>
-            <div className="bemf-angle-checkpoints" role="group" aria-label="Angle checkpoints">
-              {BEMF_ANGLE_CHECKPOINTS.map((angle) => <button key={angle} type="button" onClick={() => handleAngleChange(angle)}
-                aria-label={`Inspect ${angle} degrees`} className={labProgress.inspectedAngles.includes(angle) ? 'is-complete' : ''}>
-                {angle}° {labProgress.inspectedAngles.includes(angle) ? '✓' : ''}
-              </button>)}
+      <section className="lesson-lab-card" aria-label="Instantaneous phase voltages">
+        <h3>Phase voltages at {formatAngle(electricalAngleDeg)}</h3>
+        <div className="bemf-phase-values">
+          {PHASES.map((phase) => <div key={phase.id}><span style={{ color: phase.color }}>{phase.label}</span>
+            <output aria-live="off">{formatVolts(phaseVoltageAt(electricalAngleDeg, phase.shiftDeg, phasePeakV))}</output></div>)}
+        </div>
+      </section>
+      <section className="lesson-lab-card" aria-label="Lab checklist">
+        <h3>Lab Checklist</h3>
+        <div className="bemf-checklist">
+          {progressSteps.slice(0, 3).map((item) => <div key={item.id} className={item.complete ? 'is-complete' : ''}>
+            <span aria-hidden="true">{item.complete ? '✓' : '○'}</span><span>{item.label}</span>
+            <strong>{item.complete ? 'Complete' : 'Pending'}</strong>
+          </div>)}
+          <p>{labComplete ? 'All exercises complete. Continue to the quiz.' : 'Complete all three exercises to unlock the quiz.'}</p>
+        </div>
+      </section>
+      <LessonTerms terms={BEMF_TERMS} />
+      <details className="back-emf-details">
+        <summary>Explain this model</summary>
+        <p>Electrical angle shifts the instantaneous phase values. RPM and Ke set the voltage amplitude.</p>
+        <p>Yellow marks the design limit with reserve. Cyan marks the ideal inverter voltage limit. Exhausting reserve does not yet mean the inverter limit has been exceeded.</p>
+        <p>The designer voltage is the DC bus. Compare BEMF and the limits in line-line RMS volts; the waveforms show instantaneous phase volts.</p>
+        <p>Ideal sinusoidal BEMF and linear SVPWM. The reserve allows for winding voltage drops; this model does not calculate loaded torque.</p>
+      </details>
+    </LessonLabPanel>
+  );
+
+  // The middle card: two pictures of the same model, switched by the dock tabs.
+  const canvas = (
+    <LessonLabCanvas>
+      {canvasView === 'wave' ? (
+        <LessonLabViewport label="Rotor and phase voltages · analytic model" className="is-centered">
+          <div className="bemf-hero-panel">
+            <BEMFActionMotor rotorAngleDeg={electricalAngleDeg} rpm={rpm} phasePeakV={phasePeakV} />
+            <BEMFWaveformChart electricalAngleDeg={electricalAngleDeg} phasePeakV={phasePeakV}
+              reservedPhasePeakV={reservedPhasePeakV} voltagePhasePeakV={voltagePhasePeakV} />
+          </div>
+        </LessonLabViewport>
+      ) : (
+        <LessonLabViewport label="BEMF vs. RPM · analytic model" className="is-centered">
+          <BEMFChart rpm={rpm} maxRpm={maxPlotRpm} keVPerKrpm={winding.keVPerKrpm}
+            voltageLimit={inverterLineLineRmsV} reservedLimit={reservedLineLineRmsV} bemfV={bemfV} />
+        </LessonLabViewport>
+      )}
+      <LessonDock tabs={CANVAS_VIEWS} tab={canvasView} onTab={selectCanvasView}>
+        {canvasView === 'wave' ? (
+          <LessonDockGroup label="Rotor">
+            <LessonDockToggle
+              pressed={isRotorAnimating}
+              onChange={setIsRotorAnimating}
+              disabled={rpm <= 0 && !isRotorAnimating}
+              title="Slow-motion playback. It does not count as inspecting an angle."
+            >
+              {isRotorAnimating ? 'Pause Rotor' : 'Spin Rotor'}
+            </LessonDockToggle>
+          </LessonDockGroup>
+        ) : null}
+      </LessonDock>
+    </LessonLabCanvas>
+  );
+
+  const exerciseControls = lessonStage === 'design' ? (
+    <>
+      <section className="lesson-lab-card back-emf-controls" aria-label="Rotor angle controls">
+        <label className="learning-setting-field"><span>Electrical angle</span><div>
+          <input type="number" min={0} max={360} step={1} value={roundedAngleDeg}
+            onChange={(event) => handleAngleChange(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 360))} /><em>deg</em>
+        </div><input className="learning-setting-range" type="range" min={0} max={360} step={1}
+          value={roundedAngleDeg} aria-label="Electrical angle slider"
+          onChange={(event) => handleAngleChange(Number(event.currentTarget.value))} /></label>
+        <LessonSegmented
+          stretch
+          label="Angle checkpoints"
+          value={String(roundedAngleDeg)}
+          onChange={(angle) => handleAngleChange(Number(angle))}
+          options={BEMF_ANGLE_CHECKPOINTS.map((angle) => ({
+            id: String(angle),
+            label: `${angle}°${labProgress.inspectedAngles.includes(angle) ? ' ✓' : ''}`,
+            title: `Inspect ${angle} degrees`,
+          }))}
+        />
+      </section>
+      <p className="lesson-lab-note">Playback is shown in slow motion. Pause and select each angle to inspect it. The angle exercise uses 4,200 RPM.</p>
+    </>
+  ) : lessonStage === 'mesh' ? (
+    <>
+      <section className="lesson-lab-card back-emf-controls" aria-label="Motor speed controls">
+        <label className="learning-setting-field"><span>Motor speed</span><div>
+          <input type="number" min={0} max={9000} step={100} value={rpm}
+            onChange={(event) => handleRpmChange(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 9000))} /><em>rpm</em>
+        </div><input className="learning-setting-range" type="range" min={0} max={9000} step={100} value={rpm}
+          aria-label="Motor speed slider" onChange={(event) => handleRpmChange(Number(event.currentTarget.value))} /></label>
+      </section>
+      <p className="lesson-lab-note">Held at 48 V DC bus · Mid Ke 5.6 · 15% reserve. Watch headroom reach zero as you cross the yellow line.</p>
+    </>
+  ) : (
+    <>
+      <section className="lesson-lab-card back-emf-controls" aria-label="Motor and inverter match controls">
+        {busControl('Recovery DC bus')}{windingControl('Recovery winding constant')}
+      </section>
+      <p className="lesson-lab-note">{labComplete ? 'Recovery target' : 'Held'} at 6,000 RPM · 15% reserve</p>
+    </>
+  );
+
+  return (
+    <LessonLab className="back-emf-lab">
+      {inspectPanel}
+      <LessonLabStage className={checkOpen ? 'is-tall' : ''}>
+        {/* The questions stay mounted (parked out of sight) while the student
+            reviews the experiment, so their answers are kept. Reset Lab clears
+            the lab progress and with it unmounts the quiz. */}
+        {labComplete ? (
+          <LessonLabViewport
+            label={`Knowledge check · ${BEMF_KNOWLEDGE_CHECK.length} questions`}
+            className={`is-scroll${checkOpen ? '' : ' is-parked'}`}
+          >
+            <div ref={checkRef} tabIndex={-1} className="back-emf-check">
+              <KnowledgeCheck questions={BEMF_KNOWLEDGE_CHECK} onPassedChange={setKnowledgePassed} />
             </div>
-            <label className="learning-setting-field"><span>Electrical angle</span><div>
-              <input type="number" min={0} max={360} step={1} value={Math.round(electricalAngleDeg)}
-                onChange={(event) => handleAngleChange(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 360))} /><em>deg</em>
-            </div><input className="learning-setting-range" type="range" min={0} max={360} step={1}
-              value={Math.round(electricalAngleDeg)} aria-label="Electrical angle slider"
-              onChange={(event) => handleAngleChange(Number(event.currentTarget.value))} /></label>
-            <p className="bemf-model-note">Playback is shown in slow motion. Pause and select each angle to inspect it. The angle exercise uses 4,200 RPM.</p>
-          </> : lessonStage === 'mesh' ? <>
-            <p className="bemf-fixed-inputs">48 V DC bus · Mid Ke 5.6 · 15% reserve</p>
-            <label className="learning-setting-field"><span>Motor speed</span><div>
-              <input type="number" min={0} max={9000} step={100} value={rpm}
-                onChange={(event) => handleRpmChange(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 9000))} /><em>rpm</em>
-            </div><input className="learning-setting-range" type="range" min={0} max={9000} step={100} value={rpm}
-              aria-label="Motor speed slider" onChange={(event) => handleRpmChange(Number(event.currentTarget.value))} /></label>
-            <p>Reserved speed: <strong>{formatRpm(baseSpeedRpm)}</strong>. Watch headroom reach zero as you cross the yellow line.</p>
-          </> : <>
-            <p className="bemf-fixed-inputs">{labComplete ? 'Recovery target' : 'Held'} at 6,000 RPM · 15% reserve</p>
-            {busControl('Recovery DC bus')}{windingControl('Recovery winding constant')}
-            <p className={`bemf-live-status ${statusClass}`}>{status} · {formatVolts(headroomV)} reserved headroom</p>
-          </>}
-          <p className={`bemf-task-feedback${taskComplete ? ' is-complete' : ''}`} role="status">{feedback}</p>
-          <div className="learning-panel-actions is-single">
-            <button type="button" className="learning-primary-button" disabled={!taskComplete} onClick={handlePrimaryAdvance}>{primaryActionLabel}</button>
-          </div>
-          <div className="bemf-exercise-nav">
-            {lessonStage !== 'design' ? <button type="button" className="learning-ghost-button"
-              onClick={() => setLessonStage(lessonStage === 'solve' ? 'mesh' : 'design')}>Back: {lessonStage === 'solve' ? 'Speed Limit' : 'Rotor Angle'}</button> : null}
-            <button type="button" className="learning-ghost-button" onClick={resetLab}>Reset Lab</button>
-          </div>
-        </section> : <section className="learning-control-section bemf-exercise">
-          <p>All three lab exercises are complete. Answer the questions on the right to finish this lesson.</p>
-          <button type="button" className="learning-ghost-button" onClick={() => setQuizOpen(false)}>Back to lab</button>
-          <button type="button" className="learning-ghost-button" onClick={resetLab}>Reset Lab</button>
-        </section>}
-        <section className="learning-metrics">
-          <h2>Current State</h2><dl>
-            <div><dt>DC bus</dt><dd>{formatVolts(dcBusV)}</dd></div>
-            <div><dt>Speed</dt><dd>{formatRpm(rpm)}</dd></div>
-            <div><dt>Winding Ke</dt><dd>{winding.keVPerKrpm.toFixed(1)} V/krpm</dd></div>
-            <div><dt>Reserve</dt><dd>{formatPercent(reservePct)}</dd></div>
-            <div><dt>BEMF · LL RMS</dt><dd>{formatVolts(bemfV)}</dd></div>
-            <div><dt>Reserved headroom</dt><dd className={statusClass}>{formatVolts(headroomV)}</dd></div>
-          </dl>
-        </section>
-        <details className="bemf-explore learning-control-section">
-          <summary>More lesson inputs</summary>
-          <p>{labComplete ? 'Try other motor–inverter combinations. Your completed exercises stay checked.' : 'Finish the three exercises to unlock free exploration.'}</p>
-          <fieldset disabled={!labComplete}>
-            {busControl('Explore DC bus')}{windingControl('Explore winding constant')}
-            <label className="learning-setting-field"><span>Custom DC bus</span><div><input type="number" min={12} max={800} value={dcBusV}
-              onChange={(event) => handleBusChange(clampNumber(event.currentTarget.valueAsNumber || 48, 12, 800))} /><em>V</em></div></label>
-            <label className="learning-setting-field"><span>Custom Ke</span><div><input type="number" min={1} max={80} step={0.1} value={winding.keVPerKrpm}
-              onChange={(event) => handleKeChange(clampNumber(event.currentTarget.valueAsNumber || winding.keVPerKrpm, 1, 80))} /><em>V/krpm</em></div></label>
-            <label className="learning-setting-field"><span>Explore RPM</span><div><input type="number" min={0} max={24000} step={100} value={rpm}
-              onChange={(event) => handleRpmChange(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 24000))} /><em>rpm</em></div></label>
-            <label className="learning-setting-field"><span>Explore reserve</span><div><input type="number" min={0} max={35} step={1} value={reservePct}
-              onChange={(event) => setReservePct(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 35))} /><em>%</em></div></label>
-          </fieldset>
-        </details>
-        <details className="bemf-explore learning-control-section">
-          <summary>Explain this model</summary>
-          <p>Electrical angle shifts the instantaneous phase values. RPM and Ke set the voltage amplitude.</p>
-          <p>Yellow marks the design limit with reserve. Cyan marks the ideal inverter voltage limit. Exhausting reserve does not yet mean the inverter limit has been exceeded.</p>
-          <p>The designer voltage is the DC bus. Compare BEMF and the limits in line-line RMS volts; the waveforms show instantaneous phase volts.</p>
-        </details>
-        <footer className="learning-panel-footer">
-          <LessonCompleteButton lessonId="back-emf-voltage-headroom" canComplete={labComplete && knowledgePassed}
-            requirementsLabel="Complete the lab and pass the knowledge check" />
-          <div className="learning-panel-nav">
-            <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-            <button type="button" className="learning-ghost-button" onClick={onBackHome}>Design start</button>
-          </div>
-        </footer>
-      </aside>
-    </main>
+          </LessonLabViewport>
+        ) : null}
+        {checkOpen ? null : canvas}
+      </LessonLabStage>
+      {checkOpen ? (
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Knowledge Check"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep
+              tone={knowledgePassed ? 'good' : undefined}
+              hint={knowledgePassed
+                ? 'Lesson complete. This was the last lesson.'
+                : `Answer all ${BEMF_KNOWLEDGE_CHECK.length} questions to complete Lesson 10.`}
+            >
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => setQuizOpen(false)}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Answer the questions in the middle to finish this lesson.</p>
+        </LessonLabPanel>
+      ) : (
+        <LessonLabPanel
+          side="do"
+          kicker={`Experiment · ${activeStageItem.title}`}
+          title="Back-EMF lab"
+          label="Current exercise"
+          footer={(
+            <LessonNextStep hint={feedback} tone={taskComplete ? 'good' : undefined}>
+              <button type="button" className="learning-primary-button" disabled={!taskComplete} onClick={handlePrimaryAdvance}>
+                {primaryActionLabel}
+              </button>
+              <div className="lesson-lab-next-row">
+                {lessonStage === 'design' ? (
+                  <>
+                    <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                    <LessonLink onClick={onBackHome}>Design start</LessonLink>
+                  </>
+                ) : (
+                  <LessonLink onClick={() => setLessonStage(lessonStage === 'solve' ? 'mesh' : 'design')}>
+                    Back: {lessonStage === 'solve' ? 'Speed Limit' : 'Rotor Angle'}
+                  </LessonLink>
+                )}
+                <LessonLink onClick={resetLab}>Reset Lab</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          {exerciseControls}
+          <details className="back-emf-details">
+            <summary>More lesson inputs</summary>
+            <p>{labComplete ? 'Try other motor–inverter combinations. Your completed exercises stay checked.' : 'Finish the three exercises to unlock free exploration.'}</p>
+            <fieldset disabled={!labComplete}>
+              {/* The Recover exercise already shows these two presets above. */}
+              {lessonStage !== 'solve' ? <>{busControl('Explore DC bus')}{windingControl('Explore winding constant')}</> : null}
+              <label className="learning-setting-field"><span>Custom DC bus</span><div><input type="number" min={12} max={800} value={dcBusV}
+                onChange={(event) => handleBusChange(clampNumber(event.currentTarget.valueAsNumber || 48, 12, 800))} /><em>V</em></div></label>
+              <label className="learning-setting-field"><span>Custom Ke</span><div><input type="number" min={1} max={80} step={0.1} value={winding.keVPerKrpm}
+                onChange={(event) => handleKeChange(clampNumber(event.currentTarget.valueAsNumber || winding.keVPerKrpm, 1, 80))} /><em>V/krpm</em></div></label>
+              <label className="learning-setting-field"><span>Explore RPM</span><div><input type="number" min={0} max={24000} step={100} value={rpm}
+                onChange={(event) => handleRpmChange(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 24000))} /><em>rpm</em></div></label>
+              <label className="learning-setting-field"><span>Explore reserve</span><div><input type="number" min={0} max={35} step={1} value={reservePct}
+                onChange={(event) => setReservePct(clampNumber(event.currentTarget.valueAsNumber || 0, 0, 35))} /><em>%</em></div></label>
+            </fieldset>
+          </details>
+        </LessonLabPanel>
+      )}
+    </LessonLab>
   );
 };

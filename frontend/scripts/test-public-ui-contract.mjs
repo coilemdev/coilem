@@ -962,13 +962,19 @@ assert.match(workspaceSource, /const dockHeight = dockUserHeight \?\? dockFitHei
 assert.match(workspaceSource, /fits\.heights\[viewportMode\] = clampDockHeight\(/);
 // Tutorial lessons share one shell (components/tutorials/lab): three docked
 // cards and a canvas dock, as in the motor workspace. A migrated lesson has no
-// drawers of its own.
+// drawers of its own. All ten lessons and the chapter capstone have moved.
 for (const lessonFile of [
   'LearningLessonOneFollowFlux.tsx',
   'LessonTwoAirgapTax.tsx',
   'LessonThreeCurrentField.tsx',
   'LessonFourIronSaturation.tsx',
   'LessonFiveFieldForce.tsx',
+  'ChapterOneLinearMotorCapstone.tsx',
+  'LessonSixRotorChase.tsx',
+  'LessonSevenRotatingField.tsx',
+  'LessonEightThreePhaseMotor.tsx',
+  'LessonTwoMagneticCircuit.tsx',
+  'LessonThreeBackEmf.tsx',
 ]) {
   const lessonSource = await readFile(path.join(frontendRoot, 'src/components/tutorials', lessonFile), 'utf8');
   assert.match(lessonSource, /from '\.\/lab\/LessonLab'/, `${lessonFile} uses the shared lesson shell`);

@@ -1562,3 +1562,172 @@
     grid-template-columns: minmax(0, 1fr) minmax(120px, 0.35fr);
   }
 }
+
+/* ── Lesson 9 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. */
+.magnetic-circuit-lab .lesson-lab-panel-body > * {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* The canvas: the mesh viewer and the 3D machine fill it; the motor drawing
+   and the waiting messages sit in the middle. */
+.magnetic-circuit-lab .magnetic-circuit-picture {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  place-items: center;
+  overflow: hidden;
+}
+
+.magnetic-circuit-lab .magnetic-circuit-picture > .mesh-viewer-embedded-shell,
+.magnetic-circuit-lab .magnetic-circuit-picture > .public-motor-3d-stage {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.magnetic-circuit-lab .magnetic-circuit-picture .mesh-viewer-container-embedded {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* The motor drawing leaves room for the chip that names the canvas. */
+.magnetic-circuit-lab .magnetic-circuit-picture > .learning-motor-svg {
+  width: min(100% - 32px, 680px);
+  height: auto;
+  max-height: calc(100% - 104px);
+}
+
+/* The 3D view's part switches start below the chip. */
+.magnetic-circuit-lab .magnetic-circuit-picture .public-3d-part-toggles { top: 52px; }
+.magnetic-circuit-lab .magnetic-circuit-picture .public-3d-hint { top: auto; right: 14px; bottom: 14px; }
+
+/* "Solving…" and error messages: a short column of text, not a square. */
+.magnetic-circuit-lab .learning-mesh-placeholder {
+  width: min(100% - 48px, 420px);
+  aspect-ratio: auto;
+  align-content: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.magnetic-circuit-lab .learning-mesh-placeholder strong { color: var(--text-primary); font-size: 15px; }
+.magnetic-circuit-lab .learning-mesh-placeholder.is-error strong { color: #fca5a5; }
+
+/* Controls in the left card: label and value on a line, then the control. */
+.magnetic-circuit-lab .magnetic-circuit-controls { display: grid; gap: 14px; }
+.magnetic-circuit-lab .magnetic-circuit-controls h3 { margin: 0; }
+
+.magnetic-circuit-lab .learning-slider,
+.magnetic-circuit-lab .learning-setting-field { margin: 0; }
+
+.magnetic-circuit-lab .learning-slider span,
+.magnetic-circuit-lab .learning-setting-field > span,
+.magnetic-circuit-lab .magnetic-circuit-control > span {
+  color: var(--text-secondary);
+  font: 600 12px var(--font-ui);
+}
+
+.magnetic-circuit-lab .learning-slider strong { font-weight: 600; }
+.magnetic-circuit-lab .learning-slider em { color: var(--text-primary); font: 700 12px var(--font-mono); }
+.magnetic-circuit-lab .learning-slider input { margin: 0; }
+.magnetic-circuit-lab .learning-setting-field input:not(.learning-setting-range) { height: 32px; font-size: 13px; }
+.magnetic-circuit-lab .learning-setting-field em { font-size: 12px; }
+.magnetic-circuit-lab .magnetic-circuit-control { display: grid; gap: 8px; }
+
+/* Play is a helper beside the angle slider; the card's one strong button is
+   the next step at its foot. */
+.magnetic-circuit-lab .magnetic-circuit-play {
+  height: 34px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  font: 600 12px var(--font-ui);
+  cursor: pointer;
+}
+
+.magnetic-circuit-lab .magnetic-circuit-play:hover:not(:disabled) { border-color: var(--border-strong); color: var(--text-primary); }
+.magnetic-circuit-lab .magnetic-circuit-play[aria-pressed="true"] { border-color: var(--border-accent); color: var(--text-accent); }
+.magnetic-circuit-lab .magnetic-circuit-play:disabled { color: var(--text-disabled); cursor: not-allowed; }
+
+.magnetic-circuit-lab .tutorial-stale-note { margin: 0; }
+
+/* Solve progress, shown in the Inspect card only while a solve runs. */
+.magnetic-circuit-lab .magnetic-circuit-progress p {
+  margin: 0 0 10px;
+  color: var(--text-primary);
+  font: 600 12px var(--font-ui);
+}
+
+/* Results are drawn at the width of the Inspect card. Inherited sizes were
+   set for a wider drawer and went down to 9px; nothing here is below 11px
+   apart from the 10px uppercase kickers. */
+.magnetic-circuit-lab .lesson-nine-results-stack { display: grid; gap: 16px; }
+.magnetic-circuit-lab .lesson-nine-torque-panel { gap: 10px; }
+.magnetic-circuit-lab .lesson-nine-cycle-panel { gap: 10px; padding-top: 14px; }
+.magnetic-circuit-lab .lesson-nine-torque-heading { align-items: center; }
+.magnetic-circuit-lab .lesson-nine-torque-heading span { letter-spacing: 0.1em; }
+.magnetic-circuit-lab .lesson-nine-torque-heading h2 { margin-top: 4px; font: 700 14px/1.3 var(--font-ui); }
+.magnetic-circuit-lab .lesson-nine-torque-heading em { font-size: 10px; }
+
+.magnetic-circuit-lab .lesson-nine-torque-chart text,
+.magnetic-circuit-lab .lesson-nine-cycle-chart text { font-size: 11px; }
+
+.magnetic-circuit-lab .lesson-nine-torque-line { stroke-width: 2.5; }
+.magnetic-circuit-lab .lesson-nine-current-line { stroke-width: 2; }
+
+.magnetic-circuit-lab .lesson-nine-torque-readout div,
+.magnetic-circuit-lab .lesson-nine-current-readout > div { padding: 8px 9px; }
+
+.magnetic-circuit-lab .lesson-nine-torque-readout span { font: 12px var(--font-ui); }
+.magnetic-circuit-lab .lesson-nine-torque-readout strong,
+.magnetic-circuit-lab .lesson-nine-current-readout strong { font: 700 12px var(--font-mono); }
+.magnetic-circuit-lab .lesson-nine-current-readout span { font-size: 12px; }
+
+.magnetic-circuit-lab .lesson-nine-torque-note,
+.magnetic-circuit-lab .lesson-nine-cycle-note { color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
+
+/* The winding card, in the shell's card colours. */
+.magnetic-circuit-lab .lesson-nine-phase-card {
+  padding: 12px;
+  border-color: var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.magnetic-circuit-lab .lesson-nine-phase-card > div strong { font-size: 13px; }
+.magnetic-circuit-lab .lesson-nine-phase-card b { font-size: 12px; }
+.magnetic-circuit-lab .lesson-nine-phase-card em { font: 12px var(--font-ui); }
+.magnetic-circuit-lab .lesson-nine-phase-card p { font-size: 12px; }
+
+/* "Details" at the foot of the Inspect card. */
+.magnetic-circuit-lab .magnetic-circuit-details {
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.magnetic-circuit-lab .magnetic-circuit-details > summary {
+  padding: 12px;
+  color: var(--text-muted);
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.magnetic-circuit-lab .magnetic-circuit-details > div { display: grid; gap: 12px; padding: 0 12px 12px; }
+.magnetic-circuit-lab .magnetic-circuit-details .learning-settings-list { margin: 0; }
+.magnetic-circuit-lab .magnetic-circuit-details .learning-settings-list dt { font: 600 12px var(--font-ui); }
+.magnetic-circuit-lab .magnetic-circuit-details .learning-settings-list dd { font: 700 12px var(--font-mono); }
