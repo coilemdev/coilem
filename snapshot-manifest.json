@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 30859,
-      "sha256": "223a08ca60b792ee5072bfef7f4cf59cb67888fbd8a63aff0d4df4f3b53ec64f"
+      "bytes": 32876,
+      "sha256": "22af292449a60d041db5565e0b70cdd86fd9a1450fd5e585e0dc9912561898bb"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 59346,
-      "sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f"
+      "bytes": 60421,
+      "sha256": "58f7623ed4a72dedda87b2f9a603b12fa98b45f65aab59698053e6cf6a40dce2"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -8325,8 +8325,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 16427,
-      "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
+      "bytes": 17596,
+      "sha256": "ca2acd3cf5c6387005fce386a63fd772a7e1c327b2c9ca92f9a61523e7294371"
     },
     {
       "path": "tests/test_public_phase_drive.py",

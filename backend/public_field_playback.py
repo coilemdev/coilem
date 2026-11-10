@@ -27,6 +27,8 @@ from multiprocessing import get_context
 from pathlib import Path
 from typing import Any, Literal
 
+import numpy as np
+
 from backend import field_frame_codec
 from backend.field_artifacts import (
     encode_solve_cache_artifact_id,
@@ -53,7 +55,7 @@ PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-fixed-flux-scale-v3"
 _PLAYBACK_PROCESS_MIN_FRAMES = 8
 _PLAYBACK_MAX_PROCESSES = 8
 # View box, pixel mapper and (triangle index, pixel-space corners) pairs.
-_DrawableGeometry = tuple[tuple[float, float, float, float], Any, list[tuple[int, list[tuple[float, float]]]]]
+_DrawableGeometry = tuple[tuple[float, float, float, float], Any, "list[tuple[int, list[tuple[float, float]]]] | range"]
 _HEAT_COLORS = (
     (20, 42, 97, 255),
     (24, 85, 167, 255),
@@ -188,11 +190,30 @@ def _triangles(
     return valid
 
 
-def _drawable_geometry(plot: dict[str, Any]) -> _DrawableGeometry:
-    """Return a plot's view box, pixel mapper and drawable triangles."""
+def _drawable_triangle_count(plot: dict[str, Any], nodes: list[list[float]]) -> int:
+    """``len(_triangles(plot, nodes))`` without building the triangles."""
+
+    drawable = [len(node) == 2 for node in nodes]
+    count = 0
+    for triangle in plot.get("triangles") or []:
+        if not isinstance(triangle, list) or len(triangle) != 3:
+            continue
+        try:
+            count += drawable[int(triangle[0])] and drawable[int(triangle[1])] and drawable[int(triangle[2])]
+        except (IndexError, TypeError, ValueError):
+            continue
+    return count
+
+
+def _drawable_geometry(plot: dict[str, Any], *, draw: bool = True) -> _DrawableGeometry:
+    """Return a plot's view box, pixel mapper and drawable triangles.
+
+    With ``draw`` False only their number is wanted (a frame described now and
+    drawn later), so the triangles are a ``range`` of that length.
+    """
 
     nodes, view_box = _view_geometry(plot)
-    triangles = _triangles(plot, nodes)
+    triangles = _triangles(plot, nodes) if draw else range(_drawable_triangle_count(plot, nodes))
     if not triangles:
         raise ValueError("field playback source has no drawable triangles")
     return view_box, _pixel_mapper(view_box), triangles
@@ -532,7 +553,7 @@ def _render_composition(
     draw: bool = True,
 ) -> dict[str, Any]:
     # The caller passes the geometry it already built for the same plot.
-    view_box, point, triangles = geometry if geometry is not None else _drawable_geometry(plot)
+    view_box, point, triangles = geometry if geometry is not None else _drawable_geometry(plot, draw=draw)
     contour_levels = _contour_levels(
         plot,
         level_stride=PLAYBACK_CONTOUR_LEVEL_STRIDE,
@@ -731,7 +752,7 @@ def _render_playback_layers(
 ) -> dict[str, Any]:
     """One frame's playback entry; with ``draw`` False, its images are named but not drawn."""
 
-    geometry = _drawable_geometry(outer)
+    geometry = _drawable_geometry(outer, draw=draw)
     _, point, triangles = geometry
     base_path = output_dir / f"frame_{frame_index:04d}_base.webp"
     mesh_path = output_dir / f"frame_{frame_index:04d}_mesh.webp"
@@ -772,6 +793,9 @@ def _render_playback_layers(
                 composition="pm",
                 base_ref=base_ref,
                 mesh_ref=mesh_ref,
+                # The PM-only plot is nearly always solved on the frame's own
+                # mesh; converting it a second time was a quarter of a frame.
+                geometry=geometry if _same_mesh(pm_plot, outer) else None,
                 draw=draw,
             )
     return {
@@ -779,6 +803,28 @@ def _render_playback_layers(
         "coordinate": angle_deg,
         "compositions": compositions,
     }
+
+
+# Far below a pixel at any zoom: the PM-only solve can place a node a few
+# 1e-15 mm from the loaded frame's.
+_SAME_MESH_TOLERANCE_MM = 1e-9
+
+
+def _same_mesh(plot: dict[str, Any], other: dict[str, Any]) -> bool:
+    """Whether two plots can share drawable geometry: equal triangles, nodes within rounding."""
+
+    triangles, nodes, other_nodes = plot.get("triangles"), plot.get("nodes_mm"), other.get("nodes_mm")
+    if triangles is None or nodes is None or other_nodes is None:
+        return False
+    if not (triangles is other.get("triangles") or triangles == other.get("triangles")):
+        return False
+    if nodes is other_nodes:
+        return True
+    try:
+        first, second = np.asarray(nodes, dtype=float), np.asarray(other_nodes, dtype=float)
+    except (TypeError, ValueError):
+        return False
+    return first.shape == second.shape and bool(np.all(np.abs(first - second) <= _SAME_MESH_TOLERANCE_MM))
 
 
 def _playback_executor(frame_count: int) -> Executor:
