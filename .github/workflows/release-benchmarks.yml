@@ -314,8 +314,6 @@ jobs:
         runner: ${{ fromJSON(inputs.runner == 'both' && '["windows-2022", "macos-15"]' || format('["{0}"]', inputs.runner)) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
-    env:
-      COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-cogging-data
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
@@ -336,6 +334,7 @@ jobs:
       - name: Qualify all three very-fine fixtures against reviewed refined references
         env:
           PINNED_CANDIDATE: ${{ inputs.candidate || github.sha }}
+          COILEM_USER_DATA_ROOT: ${{ runner.temp }}/coilem-cogging-data
         run: python -m tools.cogging_qualification --candidate "$PINNED_CANDIDATE" --directory "$RUNNER_TEMP/cogging-qualification"
       - name: Prepare compact immutable collection artifacts
         if: always()

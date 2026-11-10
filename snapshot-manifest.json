@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 15473,
-      "sha256": "d82f6ea7e518ff48d32510b0d1dcdc1e6de13c3b5a2d9c7d04c486fc200280d9"
+      "bytes": 15468,
+      "sha256": "3c9fe4ac5cf7ab13d7b0a3fbef0eb5db0950d0b25dade6dbce91866d4253537e"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
