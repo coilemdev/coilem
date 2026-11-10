@@ -1503,6 +1503,10 @@ function drawMesh(
     marginal: '#f59e0b',
     failing: '#ef4444',
   };
+  // A sector solve's preview holds the solved sector first, then its copies
+  // around the motor. The copies are drawn dimmed so the solved part stands out.
+  const solvedTriangles = solvedSectorTriangleCount(data);
+  const COPY_DIM = 0.3;
   const rotorAngleRad = -rotorAngleDeg * Math.PI / 180;
   const rotorCosine = Math.cos(rotorAngleRad);
   const rotorSine = Math.sin(rotorAngleRad);
@@ -1522,7 +1526,9 @@ function drawMesh(
     }
     // A coil side takes its phase colour, so the winding reads in the mesh too.
     const phase = coilPhases?.[index] ?? null;
-    const fillKey = phase ? `${region}${MESH_FILL_KEY_SEPARATOR}${phase}` : region;
+    const copy = index >= solvedTriangles;
+    const regionKey = phase ? `${region}${MESH_FILL_KEY_SEPARATOR}${phase}` : region;
+    const fillKey = copy ? `${regionKey}${COPY_PATH_SUFFIX}` : regionKey;
     const path = fillPaths.get(fillKey) || new Path2D();
     const a = mapMeshNode(triangle[0], rotateRotor);
     const b = mapMeshNode(triangle[1], rotateRotor);
@@ -1561,15 +1567,17 @@ function drawMesh(
     context.fillStyle = displayMode === 'problems' && !weak
       ? '#202733'
       : qualityColors[band];
-    context.globalAlpha = displayMode === 'problems' && !weak ? 0.13 : 0.82;
+    context.globalAlpha = (displayMode === 'problems' && !weak ? 0.13 : 0.82) * (copy ? COPY_DIM : 1);
     context.fill();
   });
 
   if (displayMode === 'geometry') {
     for (const [fillKey, path] of fillPaths) {
-      const [region, phase] = fillKey.split(MESH_FILL_KEY_SEPARATOR);
+      const copy = fillKey.endsWith(COPY_PATH_SUFFIX);
+      const regionKey = copy ? fillKey.slice(0, -COPY_PATH_SUFFIX.length) : fillKey;
+      const [region, phase] = regionKey.split(MESH_FILL_KEY_SEPARATOR);
       context.fillStyle = phase ? PHASE_COLORS[phase as keyof typeof PHASE_COLORS] : regionColor(region, '#697386');
-      context.globalAlpha = phase ? 0.78 : /air/i.test(region) ? 0.25 : 0.68;
+      context.globalAlpha = (phase ? 0.78 : /air/i.test(region) ? 0.25 : 0.68) * (copy ? COPY_DIM : 1);
       context.fill(path);
     }
   }
@@ -1577,10 +1585,12 @@ function drawMesh(
 
   if (showEdges) {
     const uniqueEdges = new Set<string>();
+    const copyEdges = new Path2D();
     context.beginPath();
     data.triangles.forEach((triangle, triangleIndex) => {
       if (skipped?.[triangleIndex]) return;
       const rotateRotor = isRotorRegion(data.regions[triangleIndex] || 'mesh');
+      const copy = triangleIndex >= solvedTriangles;
       const triangleEdges: Array<[number, number]> = [
         [triangle[0], triangle[1]],
         [triangle[1], triangle[2]],
@@ -1594,6 +1604,11 @@ function drawMesh(
         uniqueEdges.add(edgeKey);
         const start = mapMeshNode(startIndex, rotateRotor);
         const end = mapMeshNode(endIndex, rotateRotor);
+        if (copy) {
+          copyEdges.moveTo(start[0], start[1]);
+          copyEdges.lineTo(end[0], end[1]);
+          return;
+        }
         context.moveTo(start[0], start[1]);
         context.lineTo(end[0], end[1]);
       });
@@ -1603,6 +1618,9 @@ function drawMesh(
       : 'rgba(226, 232, 240, 0.28)');
     context.lineWidth = (edgeColor ? 0.5 : 0.4) * (options.edgeWidthScale ?? 1);
     context.stroke();
+    context.globalAlpha = COPY_DIM;
+    context.stroke(copyEdges);
+    context.globalAlpha = 1;
   }
 
   if (displayMode === 'problems') {
@@ -1652,6 +1670,22 @@ function drawMesh(
   const origin = map([0, 0]);
   const [edgeX, edgeY] = map([meshOuterRadiusMm(data), 0]);
   return { origin, radiusPx: Math.hypot(edgeX - origin[0], edgeY - origin[1]), scale };
+}
+
+const COPY_PATH_SUFFIX = '\u0000copy';
+
+/**
+ * How many of a mesh preview's triangles are actually solved. A sector solve
+ * lists its solved sector first and then the copies that complete the motor;
+ * any other mesh is solved whole.
+ */
+export function solvedSectorTriangleCount(data: { triangles: unknown[]; mesh_info?: Record<string, unknown> }): number {
+  const sector = data.mesh_info?.sector as { repeats?: number } | undefined;
+  const solved = Number(data.mesh_info?.num_triangles);
+  if (!sector || !Number.isInteger(solved) || solved <= 0 || solved >= data.triangles.length) {
+    return data.triangles.length;
+  }
+  return solved * Number(sector.repeats ?? 0) === data.triangles.length ? solved : data.triangles.length;
 }
 
 export function MotorCanvas({

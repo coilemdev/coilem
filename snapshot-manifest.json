@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 294386,
-      "sha256": "c50ab27933464d35fa9d35e06640884223a81fc1da45a6ebd900ac55e76fc7ad"
+      "bytes": 294428,
+      "sha256": "9230d056cc3aaddb222d833f17ee9b60b6fda29dcb521027ae04a06e2dfcf541"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 94662,
-      "sha256": "d0b616950a21ed4e6e6be7c91adfed13cf1bc9f762406b1afb8d5fb935bcfb57"
+      "bytes": 96278,
+      "sha256": "cbba138c658174b3b505f71462d66c746cefec78a35b066830e189698b9a371a"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
