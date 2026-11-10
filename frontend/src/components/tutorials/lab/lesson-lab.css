@@ -481,3 +481,21 @@
 
 /* A viewport that is the whole middle card (no dock under it). */
 .lesson-lab-stage > .lesson-lab-viewport { height: 100%; }
+
+/* The lesson stylesheets loaded after this one still style .learning-main-stage
+   as a two-row grid, which left a scrolling page of questions shorter than its
+   card and cut off. The shell's own layout wins inside a lesson lab. */
+.lesson-lab .lesson-lab-stage {
+  display: block;
+  grid-template-rows: none;
+}
+
+.lesson-lab .lesson-lab-stage > .lesson-lab-viewport,
+.lesson-lab .lesson-lab-stage > .lesson-lab-canvas {
+  height: 100%;
+}
+
+.lesson-lab .lesson-lab-viewport.is-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
