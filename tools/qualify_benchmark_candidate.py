@@ -16,6 +16,7 @@ from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import build_record
 from backend.benchmark_suite.references import load_bundle, load_suite, require_reviewed_bundle
 from backend.benchmark_suite.report import build
+from backend.local_paths import redact_local_paths
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -49,13 +50,22 @@ def derive(native, *, suite, bundle, output, source, reuse_reviewed_reference=Fa
             raise ValueError("A supported candidate job did not complete")
     manifest, references, digest = load_bundle(bundle, spec)
     review = require_reviewed_bundle(bundle, manifest, spec)
-    if manifest["public_candidate_commit"] != identity["commit"] and not reuse_reviewed_reference:
+    combined = manifest.get("schema") == "coilem.combined_reference_bundle/v1"
+    if (combined or manifest["public_candidate_commit"] != identity["commit"]) and not reuse_reviewed_reference:
         raise ValueError("Reference request registration names a different candidate")
     derived = copy.deepcopy(original)
     derived.update(reference_mode="FROZEN_REFERENCE", reference_commit=manifest["reference_commit"])
+    if combined:
+        derived["reference_commits"] = manifest["reference_commits"]
     derived["selection"].update(no_reference=False, bundle_sha256=digest)
     reuse = None
-    if manifest["public_candidate_commit"] != identity["commit"]:
+    if combined:
+        reuse = {"schema": "coilem.combined_reference_reuse/v1", "candidate": identity["commit"],
+                 "suite_sha256": sha(suite), "bundle_sha256": digest,
+                 "reference_commits": manifest["reference_commits"], "reference_fields_mutated": False,
+                 "component_reviews_verified": len(manifest["components"]),
+                 "registered_request_coverage": len(spec["cases"])}
+    elif manifest["public_candidate_commit"] != identity["commit"]:
         from backend.benchmark_suite.record import identity_platform_key
         from tools.qualification_carry import POLICY, policy_report, reference_compatibility
 
@@ -70,12 +80,20 @@ def derive(native, *, suite, bundle, output, source, reuse_reviewed_reference=Fa
         "native_artifact_sha256": hashes, "reference_manifest_sha256": sha(bundle/"manifest.json"),
         "reference_review_sha256": manifest["review"]["sha256"], "reference_review_decision": review["decision"],
         "measured_candidate": identity["commit"], "reference_adapter_commit": manifest["reference_commit"],
+        "reference_adapter_commits": manifest.get("reference_commits", [manifest["reference_commit"]]),
         "field_solves_executed": 0, "native_manifest_mutated": False,
         "reference_reuse": reuse,
     }
     rows = cli.evaluate(native, derived, spec["cases"], configs, protocols, golden, references, cli.hardware_targets(spec["cases"]))
     if any(row["status"] in {"ERROR", "INCOMPLETE", "NOT_COMPARED"} for row in rows):
         raise ValueError("Candidate comparison is incomplete; preserve and inspect the original collection")
+    # The raw field envelopes stay byte-for-byte intact. Make cache paths
+    # portable only in the derived report that will be published.
+    for row in rows:
+        for item in [row['evaluation'], *row['measurements'].values()]:
+            metadata = item.get('solve_metadata') or {}
+            if isinstance(metadata.get('solve_cache_dir'), str):
+                metadata['solve_cache_dir'] = redact_local_paths(metadata['solve_cache_dir'])
     output.mkdir(parents=True, exist_ok=False)
     write(output/"comparison_manifest.json", derived)
     outcome = build(output, derived, rows, pdf=False)

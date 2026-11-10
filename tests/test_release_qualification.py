@@ -211,6 +211,41 @@ def test_registered_prius_report_takes_precedence_over_legacy_default(tmp_path):
     assert check(tmp_path) == []
 
 
+def test_combined_release_checks_each_prius_collection_against_its_suite(tmp_path, monkeypatch):
+    _measured(tmp_path)
+    # Reference content is exercised by the composition tests; this case
+    # drives the release gate with two different measured binaries.
+    monkeypatch.setattr("tools.release.qualification._review_errors", lambda *_: [])
+    ref = json.loads((tmp_path / "references/manifest.json").read_text())
+    ref["schema"] = "coilem.combined_reference_bundle/v1"
+    ref["components"] = [{"id": "abcd", "reference_bundle_sha256": "component", "reference_bundle": "references"}]
+    ref["records"]["motor"]["component"] = "abcd"
+    manifest = _write(tmp_path, "references/manifest.json", ref)
+    bundle = hashlib.sha256(json.dumps({"manifest": manifest, "records": ref["records"], "components": {"abcd": "component"}},
+                                      sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    legacy = tmp_path / "docs/benchmarks/pyleecan-prius-v1"
+    for key, platform, machine in [("windows-x86_64", "Windows-test", "AMD64"), ("macos-arm64", "macOS-test", "arm64")]:
+        report_path = f"platform/{key}/benchmark_summary.json"
+        report = json.loads((tmp_path / report_path).read_text())
+        report["run"]["selection"]["bundle_sha256"] = bundle
+        binary = hashlib.sha256(key.encode()).hexdigest()
+        report["run"]["identity"].update(platform=platform, machine=machine, binary_sha256=binary)
+        _write(tmp_path, report_path, report)
+        prius = json.loads((legacy / "app-results.json").read_text())
+        prius.update(platform=platform, binary_sha256=binary)
+        path = f"platform/{key}/prius/app-results.json"
+        _write(tmp_path, path, prius)
+        (tmp_path / path).with_name("source-snapshot.json").write_bytes((legacy / "source-snapshot.json").read_bytes())
+        record_path = f"benchmarks/records/{key}.json"
+        record = json.loads((tmp_path / record_path).read_text())
+        record.update(reference_bundle_sha256=bundle, prius_report=path)
+        _write(tmp_path, record_path, record)
+    assert check(tmp_path) == []
+    prius["binary_sha256"] = "different-binary"
+    _write(tmp_path, path, prius)
+    assert check(tmp_path) == ["macos-arm64: Prius report does not match the suite platform and binary"]
+
+
 def test_missing_evidence_fails_closed(tmp_path):
     assert check(tmp_path)
 

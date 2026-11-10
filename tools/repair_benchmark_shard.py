@@ -39,7 +39,57 @@ def copy_job(source, target, *, omit_runtime=False):
             shutil.copyfile(src, dst)
         return dst
     shutil.copytree(source, target, copy_function=link_or_copy,
-                    ignore=shutil.ignore_patterns('native-runtime', '*.tmp', 'run.lock') if omit_runtime else None)
+                    ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock') if omit_runtime else None)
+
+
+def prepare_native_repair(prior, output, configs, identity, native, cli, source_run, execution_overrides=None):
+    """Stage a resume copy, retaining verified successes and archiving failed attempts."""
+    path = prior / 'run_manifest.json'
+    parent_sha = digest(path)
+    manifest = read(path)
+    pairs = [(job['case_id'], job['stage']) for job in manifest['jobs']]
+    if (manifest['identity'] != identity or manifest['smoke']
+            or set(pairs) != set(configs) or len(pairs) != len(configs)
+            or set(manifest['selection']['case_ids']) != {case for case, _ in configs}):
+        raise ValueError('Native repair does not match the frozen candidate and shard selection')
+    reused = []
+    for job, key in zip(manifest['jobs'], pairs, strict=True):
+        request_path = native.checked_path(prior, job['request'])
+        request = read(request_path)
+        if (digest(request_path) != job['request_sha256'] or request['identity'] != identity
+                or request['config'] != configs[key]):
+            raise ValueError('Native repair request changed')
+        result_path = native.checked_path(prior, job['result'])
+        if job['status'] == 'COMPLETE' or result_path.is_file():
+            data = cli.verify_artifact(prior, job, identity)
+            if job['status'] == 'COMPLETE':
+                if data['status'] != 'COMPLETE' or job.get('exit_code') != 0:
+                    raise ValueError('Cannot reuse incomplete native fields')
+                reused.append({'case_id': key[0], 'stage': key[1], 'result_sha256': job['result_sha256']})
+    copy_job(prior, output, omit_runtime=True)
+    retried = []
+    for job in manifest['jobs']:
+        if job['status'] != 'ERROR':
+            continue
+        result_path = native.checked_path(output, job['result'])
+        failed = output / 'repair-receipts' / parent_sha[:12] / result_path.parent.relative_to(output)
+        failed.mkdir(parents=True)
+        write(failed / 'job.json', job)
+        for name in (result_path.name, 'worker.log', 'native-runtime.tar.gz.json'):
+            artifact = result_path.parent / name
+            if artifact.is_file():
+                artifact.replace(failed / name)
+        retried.append({'case_id': job['case_id'], 'stage': job['stage']})
+        for key in ('result_sha256', 'error', 'exit_code', 'pid', 'started_at', 'completed_at'):
+            job.pop(key, None)
+        job['status'] = 'READY'
+    write(output / 'run_manifest.json', manifest)
+    write(output / 'repair-receipt.json', {'parent_manifest_sha256': parent_sha,
+        'source_run_id': source_run, 'requests_mutated': False,
+        'reused_complete_jobs': reused, 'retried_failed_jobs': retried,
+        'execution_overrides': execution_overrides or {},
+        'original_raw_fields_retained_in_source_run': True})
+    return manifest, parent_sha
 
 
 def repair_prius(prior, output, selected, registry, expected, contract, collect):
@@ -154,19 +204,29 @@ def main():
                      lambda name, path: run('tools.benchmark_prius', '--out', path,
                                              '--curve', '--refinement', '--only', name))
     else:
-        parent_sha = digest(prior / 'run_manifest.json')
-        copy_job(prior, output, omit_runtime=True)
-        write(output / 'repair-receipt.json', {'parent_manifest_sha256': parent_sha,
-            'source_run_id': os.environ.get('SOURCE_RUN'), 'requests_mutated': False,
-            'original_raw_fields_retained_in_source_run': True})
-        manifest = read(output / 'run_manifest.json')
+        from backend.benchmark_suite import cli
+        from backend.benchmark_suite.references import load_suite
+
+        spec = load_suite(root / receipt['plan']['suite'])
+        selected = [case for case in spec['cases'] if case['id'] in shard['cases']]
+        configs, _, _ = cli.inputs(spec, selected)
+        # Use bounded execution on a repaired Windows worker. These controls
+        # change scheduling only; registered mesh and solver inputs stay exact.
+        overrides = {'COILEM_MAGNETO2D_GMSH_PRODUCER_WORKERS': '2', 'COILEM_MAGNETO2D_GMSH_SOLVE_WORKERS': '2',
+                     'COILEM_MAGNETO2D_FIELD_PREVIEW_WORKERS': '1'} if os.name == 'nt' else {}
+        env.update(overrides)
+        manifest, parent_sha = prepare_native_repair(prior, output, configs, receipt['identity'], native, cli,
+                                                     os.environ.get('SOURCE_RUN'), overrides)
+        phases = sorted({case['phase'] for case in selected})
         options = ['tools.run_benchmarks', '--resume', '--suite', receipt['plan']['suite'],
-                   '--phases', 'A', 'B', 'C', 'D', '--out-dir', output, '--archive-runtime']
+                   '--phases', *phases, '--out-dir', output, '--archive-runtime']
         if manifest['reference_mode'] == 'NATIVE_ONLY':
             options.append('--no-reference')
         for name in shard['cases']:
             options.extend(['--case', name])
         run(*options)
+        if digest(prior / 'run_manifest.json') != parent_sha:
+            raise ValueError('Original native run manifest changed during repair')
     write(output / 'workflow-receipt.json', {'candidate': receipt['identity']['commit'],
         'plan_sha256': receipt['plan']['plan_sha256'], 'shard': shard,
         'run_url': os.environ.get('COILEM_WORKFLOW_RUN_URL'), 'binary_sha256': digest(binary),

@@ -91,6 +91,7 @@ def platform_inputs(tmp_path, monkeypatch):
         return original_read(previous_records.get(Path(path).resolve(), path))
 
     monkeypatch.setattr(carry, 'read', historical_read)
+    monkeypatch.setattr(carry, 'POLICY', 'benchmarks/qualification-policy-history/protocol19-20261110.json')
     monkeypatch.setattr(carry, 'BENCHMARK_SUITE_FILE', V050_SUITE)
     monkeypatch.setattr(carry, 'BENCHMARK_REFERENCE_BUNDLE_DIR', BENCHMARK_REFERENCE_BUNDLE_DIR)
     root = tmp_path / 'candidate'

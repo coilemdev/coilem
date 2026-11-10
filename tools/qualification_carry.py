@@ -65,6 +65,7 @@ def reference_compatibility(summary, anchor, suite, bundle):
     return {'schema': 'coilem.reference_reuse/v1', 'candidate': run['identity']['commit'],
             'suite_sha256': sha(suite), 'bundle_sha256': digest,
             'reference_commit': manifest['reference_commit'], 'reference_fields_mutated': False,
+            'reference_commits': manifest.get('reference_commits', [manifest['reference_commit']]),
             'reference_sensitive_sources': {p: run['identity']['source_files'].get(p) for p in REFERENCE_SOURCES},
             'registered_requests_sha256': canonical({r['id']: r['configurations'] for r in summary['rows']})}
 
@@ -116,6 +117,8 @@ def compare_summary(summary, previous, approved, tolerances):
         for name, value in values.items():
             reference = row.get('reference') or {}
             reference_value = reference.get('summary', {}).get(name)
+            if row['phase'] == 'E':
+                reference_value = (row['evaluation']['cogging'].get('reference') or {}).get(name.removeprefix('cogging_'))
             if name.endswith('mean_torque_Nm'):
                 reference_value = row['evaluation'].get('reference_average_Nm')
             if name == 'back_emf_fundamental_V':
@@ -172,7 +175,7 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
         # feature qualification is inferred from record equality.
         for row in summary['rows']:
             if row['status'] not in ('PASS', 'UNSUPPORTED'):
-                raise ValueError('The registered A–D qualification requires passing supported cases')
+                raise ValueError('Registered qualification requires passing supported cases')
         prius = read(folder / 'prius-report/app-results.json')
         if (prius['field_source_commit'] != candidate or prius['field_source_dirty'] is not False
                 or not prius['all_software_checks_pass'] or not all(prius['checks'].values())
@@ -181,9 +184,11 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
                 or sum(len(a['field_reports']) for a in prius.get('audits', {}).values()) != 568
                 or any(prius['source_sha256'].get(p) != digest for p, digest in physical.items())):
             raise ValueError('Prius candidate evidence is incomplete or stale')
-        previous_prius_path = previous_record.get('prius_report', policy['approved_prius']['file'])
+        prius_anchors = policy.get('approved_prius_reports')
+        prius_anchor = policy['approved_prius'] if prius_anchors is None else prius_anchors[platform]
+        previous_prius_path = previous_record.get('prius_report', prius_anchor['file'])
         previous_prius = read(checked_path(baseline, previous_prius_path))
-        approved_prius = policy_report(baseline, policy['approved_prius'])
+        approved_prius = policy_report(baseline, prius_anchor)
         prius_tolerances = {**tolerances, 'line_ab_sampled_rms_V': TOLERANCES['back_emf_fundamental_V'],
                             'phase_neutral_fundamental_rms_V': TOLERANCES['back_emf_fundamental_V'],
                             'line_ab_sampled_peak_V': TOLERANCES['back_emf_peak_V']}

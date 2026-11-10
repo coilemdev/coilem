@@ -8,8 +8,8 @@ in the release collection and is not replaced by that unsupported row.
 | Phase | Coverage | Cases |
 | --- | --- | ---: |
 | A | SPM | 19 |
-| B | IPM, including the planned unsupported row | 20 |
-| C | Distributed winding | 5 |
+| B | IPM | 20 |
+| C | Distributed winding, including the planned unsupported Prius row | 5 |
 | D | BLDC | 3 |
 | E | Cogging | 12 |
 | F | Outrunner | 10 |
@@ -82,3 +82,11 @@ native candidate. Full platform measurements and their reviewed records remain
 the basis for that claim. Application capability qualifications retain their
 existing scope; this protocol change does not automatically promote arbitrary
 outer-rotor or cogging requests.
+
+## Initial measured qualification
+
+[Windows and macOS qualification](../qualification-70c5e3404c19/README.md)
+passed at candidate `70c5e34`: 68 supported cases and all 468 gates on
+each platform, plus the planned unsupported Prius row. The separate Prius
+collection passes all ten software checks on both platforms. The current
+[platform records](../records/README.md) now cover the complete selection.
