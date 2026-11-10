@@ -200,8 +200,8 @@ meshes, so a Fast run is experimental.
 motor instead of the whole cross-section: a quarter of a 12-slot, 4-pole motor,
 an eighth of a 48-slot, 8-pole one. coilEM finds the sector from the slot and
 pole counts and checks that the geometry and the winding really repeat over it;
-a motor that does not repeat, and a published reference model, is solved in
-full. Torque, flux linkage, Back-EMF and losses are those of the whole motor,
+a motor that does not repeat is solved in full. The pinned Prius and LRK
+reference models solve as sectors too. Torque, flux linkage, Back-EMF and losses are those of the whole motor,
 and the field view shows the whole motor. Results match a full solve to
 mesh-noise level. The benchmark measured full-motor solves, so a sector run is
 experimental. **Full motor** is the default and always solves the whole

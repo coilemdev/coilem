@@ -700,8 +700,12 @@ first and keeps it only if the winding table and the region layout both repeat
 over it. A single-layer winding on alternate teeth, for example, needs twice
 the sector its slot and pole counts suggest. If nothing repeats, or the
 geometry cannot be cut cleanly, the full circle is meshed and `mesh.info`
-records why in `sector_fallback_reason`. Published reference models are always
-solved in full.
+records why in `sector_fallback_reason`. Published reference models are cut the
+same way: their air-gap faces follow the slot openings and tooth tips, so the
+wedges meet on the circle midway between the innermost stator point and the
+outermost rotor point of the gap. A reference that extracts its own flux
+linkage (the Prius) sums the winding regions of the sector and multiplies by
+the number of sectors.
 
 **Cutting it.** The stator is cut through the middle of a tooth, so every slot
 stays whole. The rotor is cut between two poles, along a line that turns with

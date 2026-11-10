@@ -573,15 +573,11 @@ def _sector_ir_for_solve(
 ) -> tuple[SectorIR | None, str | None]:
     """The sector to mesh, or None with the reason the full circle is meshed.
 
-    ``solve_params.symmetry = "full"`` always meshes the full circle. A
-    published reference model keeps the full circle: its currents and flux
-    linkage are written for it.
+    ``solve_params.symmetry = "full"`` always meshes the full circle.
     """
 
     if getattr(config.solve_params, "symmetry", "full") != "auto":
         return None, None
-    if reference_model(config) is not None:
-        return None, "a published reference model is solved on the full circle"
     symmetry = detect_sector_symmetry(ir)
     if symmetry is None:
         return None, "the geometry and winding do not repeat around the circle"
