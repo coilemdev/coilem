@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 5307,
-      "sha256": "b18fe919f60aebe31ba18700bcd0b73d2c6767e1d7a80d35d12a4e5bb6f0e832"
+      "bytes": 6789,
+      "sha256": "baa69a775111edfaff9e06b43dc328bcacd9556e8eb011cc21c2dffedf46831e"
     },
     {
       "path": "README.md",
       "bytes": 6526,
-      "sha256": "998f77bc2ca005a5e1033dfaaa19e5f96c6ac694a1588f9ef96059b3110ffa1a"
+      "sha256": "66768708dc60e4345757c0fc99f676dd7b9f6b7fe5ac3854e8b17a323b2858a9"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 20731,
-      "sha256": "2c5307994a1064a4001631dc1dac7e67c81e012e309d54dad2488d33cb5e28f5"
+      "bytes": 24727,
+      "sha256": "6ab95b89d1c7d794a1890414c0f45c11a82e897a07526fae874037acbe871d73"
     },
     {
       "path": "SECURITY.md",
@@ -96,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "2dd601c2aad66d6ed16101e912cd7a8ae7521e94da81d1196a5617fddf26f403"
+      "sha256": "ecf5d090d4b0093cbba271858d870a8af6ca484974ce7e8ad5262b147dcda5d2"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -6416,12 +6416,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "3d96dff7c24516fe809ee30d8051df2b94ce32f553b16d4352c89be85fdfe889"
+      "sha256": "737418dcd484f1ed358562f819c14e2f6f9f0bf8dfbc32b58eef5582aab8989a"
     },
     {
       "path": "frontend/package.json",
       "bytes": 3196,
-      "sha256": "cddedb500ce6553ac40c241f6afffa80dabe1596931e1b772b4bc7a321c15c27"
+      "sha256": "f23c15299b09b22f2bcddf792b2d1c01ac53d6ec159fcde32c64d63985308389"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7206,7 +7206,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 15806,
-      "sha256": "34d5d58a159ade2728b546500a209c84db3ec849ed7b04cfffc8a9a13f3afd2e"
+      "sha256": "3c630e1bdffe386741a330a5d2ff138dee77235139d7c8fa099284953feb0496"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
