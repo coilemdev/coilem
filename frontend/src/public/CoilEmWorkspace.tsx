@@ -1,4 +1,5 @@
 import { solveViewMemory } from './solveViewMemory';
+import { useEasedRotorAngle } from './useEasedRotorAngle';
 import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
@@ -120,6 +121,8 @@ import {
 import {
   isPublicSolveFinalizing,
   projectedPublicSolveElapsedSeconds,
+  nextPublicSolveRotorTurn,
+  type PublicSolveRotorTurn,
 } from './solveProgress';
 import { formatTorqueNm } from './numberFormat';
 
@@ -1732,7 +1735,12 @@ function ViewportChrome({
   onShowMeshEdgesChange,
   onFocusedMeshElementChange,
   dockStrip,
+  solveRotorAngleDeg = null,
+  solveRotorCaption = null,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  /** While a solve sweeps: the rotor turn to draw in place of the preview's own, and a line saying what it is. */
+  solveRotorAngleDeg?: number | null;
+  solveRotorCaption?: string | null;
   /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
   dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
@@ -2054,6 +2062,9 @@ function ViewportChrome({
       {showConfigurationLabel && (
         <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
       )}
+      {solveRotorCaption && viewportMode !== '3d' && (
+        <div className="viewport-label viewport-label-cad public-solve-rotor-caption" role="status" aria-live="off">{solveRotorCaption}</div>
+      )}
       {showDimensionReadout && (
         <DimensionReadout
           annotations={dimensionAnnotations}
@@ -2105,7 +2116,7 @@ function ViewportChrome({
               mesh={mesh}
               mode={mode}
               layer={displayLayer}
-              rotorAngleDeg={rotorAngleDeg}
+              rotorAngleDeg={solveRotorAngleDeg ?? rotorAngleDeg}
               windingType={config.winding.type}
               selectedComponent={selectedComponent}
               highlightComponentKind={effectiveHighlightKind}
@@ -3321,6 +3332,22 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
+  // While a solve sweeps, the viewport turns the rotor to how far the sweep
+  // has got. It reads progress the solver already reports, so it adds nothing
+  // to the solve; the mesh view redraws less often because it draws more.
+  const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
+  const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
+  const sweepPoleCount = config.rotor.pole_count;
+  useEffect(() => {
+    setSolveRotorTurn((previous) => (busy === 'solve'
+      ? nextPublicSolveRotorTurn(previous, progress, progressPercent, sweepRangeDeg, sweepPoleCount)
+      : null));
+  }, [busy, progress, progressPercent, sweepRangeDeg, sweepPoleCount]);
+  const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
+  const solveRotorAngleDeg = useEasedRotorAngle(shownRotorTurn?.turnDeg ?? null, solveView === 'mesh' ? 4 : 12);
+  const solveRotorCaption = shownRotorTurn && solveRotorAngleDeg !== null
+    ? `${shownRotorTurn.phase === 'meshing' ? 'Meshing' : 'Solving'} rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`
+    : null;
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
@@ -4065,6 +4092,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
+              solveRotorAngleDeg={solveRotorAngleDeg}
+              solveRotorCaption={solveRotorCaption}
               dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}

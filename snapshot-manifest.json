@@ -6600,8 +6600,8 @@
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "bytes": 4537,
-      "sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6"
+      "bytes": 7496,
+      "sha256": "e61326170d2823311edcf9c5bdd55b5546a36a972cd01afdcca3276a605cbaf8"
     },
     {
       "path": "frontend/scripts/test-solve-time.mjs",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 248676,
-      "sha256": "7352f137de50198de5ac97ae7f68f66316e86abc5ab38140def174c97c90cb44"
+      "bytes": 250497,
+      "sha256": "5f251432c9bfd75606a7921b13bd7cbdd9c201c99b984ca6730c4a9bb4b93b57"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7545,13 +7545,13 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 3938,
-      "sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee"
+      "bytes": 5969,
+      "sha256": "72dc028de7f92a43b980e2841bf9453f0dbbb86bfe0a405570d7250d89a87934"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 306749,
-      "sha256": "dc264b00c4b56cf9a701068495fdf905e0384dc8c69d5ebbf51d094166b88547"
+      "bytes": 306977,
+      "sha256": "15b28934dcc73464ca365a7aa58ec5a3f3705a8bb6307c81a2a475bda1f81113"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7577,6 +7577,11 @@
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
       "bytes": 15830,
       "sha256": "b7d13e04ef79dfcd2ff7f836ca4b37a5f18dff5053fbf958cca08c9e5c504cdb"
+    },
+    {
+      "path": "frontend/src/public/useEasedRotorAngle.ts",
+      "bytes": 1796,
+      "sha256": "2bfc97e9b213a3b1836cb6c0df4fd91ca77d704c5788b6bd8bef4ff701e7f04b"
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",

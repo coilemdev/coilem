@@ -78,6 +78,48 @@ export function nextPublicSolveProgressBar(
   return { ...previous, percent: Math.max(previous.percent, percent) };
 }
 
+/** Where the viewport shows the rotor while a solve works through its positions. */
+export interface PublicSolveRotorTurn {
+  /** Mechanical degrees from the first position of the sweep. */
+  turnDeg: number;
+  phase: 'meshing' | 'solving';
+  /** The sweep is over and the result is being put together: the rotor is shown as designed again. */
+  finished: boolean;
+}
+
+/**
+ * The rotor turn to show after an event, or null when no sweep is under way.
+ *
+ * It follows the live-solve bar, so it turns once through the sweep and never
+ * backwards: meshing takes the rotor through the first part of the turn and
+ * the field solves through the rest. It is drawn from progress the solver
+ * already reports, so showing it costs the solve nothing; it is a picture of
+ * how far the sweep has got, not of any one mesh.
+ */
+export function nextPublicSolveRotorTurn(
+  previous: PublicSolveRotorTurn | null,
+  progress: PublicSolveProgress | null,
+  progressPercent: number,
+  sweepRangeElectricalDeg: number,
+  poleCount: number,
+): PublicSolveRotorTurn | null {
+  if (!progress || progress.stage === 'Validating') return null;
+  // Late timing events follow the end of a sweep; they must not start the turn again.
+  if (previous?.finished) return previous;
+  if (isPublicSolveFinalizing(progress)) {
+    return previous ? { ...previous, finished: true } : null;
+  }
+  // A torque-speed map and other analyses that report one fraction do not sweep the rotor once.
+  if (finiteNumber(progress.solver_detail?.analysis_fraction) !== null) return null;
+  const polePairs = poleCount / 2;
+  if (!(polePairs > 0) || !(sweepRangeElectricalDeg > 0) || !(progressPercent > 0)) return null;
+  const turnDeg = (sweepRangeElectricalDeg / polePairs) * clampUnit(progressPercent / 100);
+  const phase = publicSolveMeshFraction(progress) !== null
+    ? 'meshing'
+    : publicSolvePositionFraction(progress) !== null ? 'solving' : previous?.phase ?? 'meshing';
+  return { turnDeg: Math.max(previous?.turnDeg ?? 0, turnDeg), phase, finished: false };
+}
+
 export function projectedPublicSolveElapsedSeconds(
   reportedSeconds: number | undefined,
   observedAtMs: number,
