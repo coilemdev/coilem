@@ -2,17 +2,13 @@
   "schema": "coilem.qualification_policy/v1",
   "approved_reports": {
     "windows-x86_64": {
-      "file": "benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json",
-      "sha256": "07b4957d5d0a7e3f3be26a726b467b6d5ac6a5f80c6c811a91cc3f3ae7eac287"
+      "file": "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_summary.json",
+      "sha256": "871630a5a076456a0095e1fee861c6583b4bfcf52d2c1226d62ad54220ab24a3"
     },
     "macos-arm64": {
-      "file": "benchmarks/candidate-qualification-20261103/macos/report/benchmark_summary.json",
-      "sha256": "8a2b3f750819528dbe9a0f18c438aa583600ee1959fbdefd34184d8596f0fd63"
+      "file": "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_summary.json",
+      "sha256": "25b517795bd27e7314bc345c807e6399444e3d7bc3b28b480f3f858361e51f4a"
     }
-  },
-  "approved_prius": {
-    "file": "benchmarks/candidate-qualification-20261103/prius/app-results.json",
-    "sha256": "8299764f272ed57c778a1416d21c628a795bdfe0f9b4b0d2d2f4363e51678eac"
   },
   "additional_replay_tolerances": {
     "lambda_d_Wb": [
@@ -28,5 +24,23 @@
       1e-06
     ]
   },
-  "note": "Replay tolerances decide automatic acceptance only; FEMM gates and reference review remain unchanged. Approved baselines are immutable and require owner review to replace."
+  "note": "Protocol 1.10.0 baselines for the registered A-F requests. Prior records and policy remain immutable. Replay tolerances and FEMM gates are unchanged. Application qualification remains scoped independently.",
+  "protocol_version": "1.10.0",
+  "registered_scope": {
+    "candidate_commit": "70c5e3404c1962a811a915db292c31c28b92cf1a",
+    "qualification": "benchmarks/qualification-70c5e3404c19/qualification.json",
+    "qualification_sha256": "e97815eba5d7a0c6a1e0c0851f44be9e4b4bca7fde9abaf6b62138a3638581cb",
+    "previous_policy": "benchmarks/qualification-policy-history/protocol19-20261110.json",
+    "previous_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b"
+  },
+  "approved_prius_reports": {
+    "windows-x86_64": {
+      "file": "benchmarks/qualification-70c5e3404c19/windows-x86_64/prius/app-results.json",
+      "sha256": "f197ef317d511a647174d2130bdc5cb4ea26e22dca07646446b262893386cbb7"
+    },
+    "macos-arm64": {
+      "file": "benchmarks/qualification-70c5e3404c19/macos-arm64/prius/app-results.json",
+      "sha256": "4a971148c001ef82f755ebcdb82da96e54f1d5abdbfd64bf3af9bb625d685b81"
+    }
+  }
 }

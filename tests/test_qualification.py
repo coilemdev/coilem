@@ -14,7 +14,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend import qualification as qualification_module
-from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, sha
+from backend.benchmark_suite.contract import sha
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.models import MotorConfig
@@ -27,6 +27,7 @@ from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
 from backend.qualification import QUALIFICATION_BASIS, QUALIFICATION_REPORT, classify_qualification
 from backend.solve_workspace import SolveRunWriter, SolveWorkspace, _qualification
+from tools.build_benchmark_record import historical_basis
 
 FIXTURES = Path("benchmarks/main-20261009-bad71d9/fixtures")
 SPM_CONCENTRATED = json.loads(Path("tests/fixtures/spm_4p12s_simple.json").read_text(encoding="utf-8"))
@@ -89,14 +90,15 @@ def test_qualified_combinations_name_their_evidence(fixture: str, reason: str, m
 
 def test_basis_names_the_measured_commit_and_reference() -> None:
     run = REPORT["run"]
-    spec = load_suite(SPEC)
-    reference, _, bundle_sha = load_bundle(DEFAULT_BUNDLE, spec)
+    registered = json.loads(Path("benchmarks/records/windows-x86_64.json").read_text(encoding="utf-8"))
+    measured_spec, bundle = historical_basis(registered)
+    spec = load_suite(measured_spec)
+    reference, _, bundle_sha = load_bundle(bundle, spec)
     assert run["status"] == "COMPLETE" and run["identity"]["dirty"] is False
     assert run["identity"]["commit"][:7] in QUALIFICATION_BASIS
     assert run["reference_mode"] == "FROZEN_REFERENCE"
     assert run["reference_commit"] == reference["reference_commit"]
     assert run["selection"]["bundle_sha256"] == bundle_sha
-    measured_spec = Path(f"benchmarks/abcd-v{run['identity']['protocol_version'].rsplit('.', 1)[0]}/benchmark_spec.json")
     assert run["selection"]["spec_sha256"] == sha(measured_spec)
     # The current record measures the registered protocol; frozen FEMM data
     # retains its original protocol through the validated reference bridge.
@@ -127,6 +129,10 @@ def test_reasons_match_the_report_outcomes(measured_build) -> None:
     outcomes: dict[tuple[str, str], list[str]] = defaultdict(list)
     gates: dict[tuple[str, str], list[str]] = defaultdict(list)
     for row in REPORT["rows"]:
+        if row["phase"] in {"E", "F"}:
+            # The application combination policy retains its A-D scope; the
+            # registered E/F requests have separate benchmark qualification.
+            continue
         config = MotorConfig.model_validate_json(Path(row["fixture"]).read_text(encoding="utf-8"))
         qualification = classify_qualification(config)
         key = (qualification["status"], qualification["reason"].partition(": ")[2])

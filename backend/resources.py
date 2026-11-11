@@ -57,8 +57,8 @@ PACKAGE_DATA_FILES = (
 # registers, the frozen reference bundle and the published per-platform
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
-BENCHMARK_SUITE_FILE = "benchmarks/abcd-v1.9/benchmark_spec.json"
-BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol16-reviewed-20261103"
+BENCHMARK_SUITE_FILE = "benchmarks/af-v1.10/benchmark_spec.json"
+BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol110-combined-20261110"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
 
 
@@ -95,29 +95,52 @@ def data_file(relative_path: str) -> Traversable:
 def benchmark_data_files(root: Path) -> tuple[str, ...]:
     """The repository files ``coilem benchmark`` reads, relative to ``root``."""
 
-    spec = json.loads((root / BENCHMARK_SUITE_FILE).read_text(encoding="utf-8"))
-    files = {BENCHMARK_SUITE_FILE, spec["golden"]}
-    # A reference bridge checks each changed request against the suite it was
-    # measured for, so that suite and its requests ship too.
-    bridge = spec.get("reference_compatibility", {})
-    for change in (bridge.get("iteration_cap_change"), bridge.get("solve_option_change")):
-        if not change:
-            continue
-        measured_suite = change["measured_suite"]
-        files.add(measured_suite)
-        measured = json.loads((root / measured_suite).read_text(encoding="utf-8"))
-        for case in measured["cases"]:
+    files = set()
+
+    def read(relative):
+        path = (root / relative).resolve()
+        if not path.is_relative_to(root.resolve()):
+            raise ValueError("Benchmark package resource escapes the checkout")
+        files.add(relative)
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def suite(relative):
+        if relative in files:
+            return
+        spec = read(relative)
+        files.add(spec["golden"])
+        for change in spec.get("reference_compatibility", {}).values():
+            if isinstance(change, dict) and change.get("measured_suite"):
+                suite(change["measured_suite"])
+        for case in spec["cases"]:
             files.update(job["fixture"] for job in case["jobs"])
-    for case in spec["cases"]:
-        files.update(job["fixture"] for job in case["jobs"])
-        if case.get("protocol"):
-            files.add(case["protocol"])
-        if case.get("hardware_reference"):
-            files.add(case["hardware_reference"]["file"])
-    bundle = json.loads((root / BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json").read_text(encoding="utf-8"))
-    files.add(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/manifest.json")
-    files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle["records"].values())
-    files.update(f"{BENCHMARK_REFERENCE_BUNDLE_DIR}/{entry['file']}" for entry in bundle.get("review_artifacts", []))
+            if case.get("protocol"):
+                files.add(case["protocol"])
+            if case.get("hardware_reference"):
+                files.add(case["hardware_reference"]["file"])
+        for component in spec.get("components", []):
+            suite(component["suite"])
+            bundle(component["reference_bundle"])
+
+    def bundle(relative):
+        if relative + "/manifest.json" in files:
+            return
+        manifest = read(relative + "/manifest.json")
+        if manifest.get("schema") != "coilem.combined_reference_bundle/v1":
+            files.update(f"{relative}/{entry['file']}" for entry in manifest["records"].values())
+        files.update(f"{relative}/{entry['file']}" for entry in manifest.get("review_artifacts", []))
+        if manifest.get("review"):
+            review = read(relative + "/" + manifest["review"]["file"])
+            files.update(review.get("evidence_files", {}))
+            if review.get("source_policy"):
+                policy = read(review["source_policy"]["file"])
+                files.add(policy["evidence"]["inherited_lrk"])
+            if review.get("current_geometry_review"):
+                geometry = read(relative + "/" + review["current_geometry_review"]["file"])
+                files.update(geometry["current_sources"])
+
+    suite(BENCHMARK_SUITE_FILE)
+    bundle(BENCHMARK_REFERENCE_BUNDLE_DIR)
     files.update(path.relative_to(root).as_posix() for path in (root / BENCHMARK_RECORDS_DIR).glob("*.json"))
     return tuple(sorted(files))
 

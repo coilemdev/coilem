@@ -323,7 +323,7 @@ def build(output, manifest, rows, *, pdf=False):
         "planned_coverage": {row["id"]: {**coverage_plan(row), "numerical_status": row["status"]} for row in rows if coverage_plan(row)},
         "presentation_scope": "Phase colors cover active cases; explicitly deferred hardware rows are grey. "
         "All raw statuses, counts, gates and the overall numerical status include the full registered selection.",
-        "unsupported_capabilities": {"thermal": "No public thermal benchmark in this A/B/C/D protocol"},
+        "unsupported_capabilities": {"thermal": "No public thermal benchmark in this electromagnetic benchmark"},
     }
     write(report / "benchmark_summary.json", summary)
     styles = (
@@ -335,7 +335,7 @@ def build(output, manifest, rows, *, pdf=False):
         "svg{width:49%;min-width:360px}pre{white-space:pre-wrap;overflow-wrap:anywhere}.case{break-before:page}"
         "@media print{svg{min-width:0}a{color:inherit}}"
     )
-    title = "Coilem A/B/C/D benchmark"
+    title = "Coilem numerical benchmark"
     parts = [
         f'<!doctype html><html lang="en"><meta charset="utf-8"><title>{title}</title><style>{styles}</style><body><h1>{title}</h1>',
         f'<p class="{overall}">Outcome: {display_overall(overall, rows)}</p><p>Harness {manifest["identity"]["harness_version"]}; '
@@ -419,7 +419,7 @@ def build(output, manifest, rows, *, pdf=False):
                     f"{html.escape(json.dumps(row['evaluation'], indent=2, allow_nan=False))}</pre></details></section>",
                 ]
             )
-    parts.append("<p>Thermal analysis is outside this A/B/C/D protocol. Smoke results never establish numerical parity.</p></body></html>")
+    parts.append("<p>Thermal analysis is outside this electromagnetic benchmark. Smoke results never establish numerical parity.</p></body></html>")
     (report / "coilem_benchmark_report.html").write_text("".join(parts), encoding="utf-8", newline="\n")
     (report / "benchmark_report.md").write_text("\n".join(markdown) + "\n", encoding="utf-8", newline="\n")
     with (report / "benchmark_results.csv").open("w", encoding="utf-8", newline="") as stream:
@@ -489,7 +489,7 @@ def export_pdf(report, summary):
 
     styles = getSampleStyleSheet()
     story = [
-        Paragraph("Coilem A/B/C/D benchmark", styles["Title"]),
+        Paragraph("Coilem numerical benchmark", styles["Title"]),
         Paragraph(display_overall(summary["status"], summary["rows"]), styles["Heading2"]),
     ]
     run = summary["run"]
@@ -614,7 +614,7 @@ def export_pdf(report, summary):
             story.append(Table(cells, repeatRows=1, hAlign="LEFT"))
     SimpleDocTemplate(
         str(report / "coilem_benchmark_report.pdf"),
-        title="Coilem A/B/C/D benchmark",
+        title="Coilem numerical benchmark",
         author="Coilem",
         rightMargin=60,
         leftMargin=60,

@@ -1,6 +1,8 @@
 # Benchmark execution performance (#112)
 
-The ordinary `python -m tools.run_benchmarks --phases A B C D` command collects
+The ordinary `coilem benchmark` command now collects the combined A-F protocol
+1.10.0. Use `--phase` to select phases or `--quick` for one complete-grid case per
+phase. Developer `python -m tools.run_benchmarks --phases A B C D E F` collects
 native results against saved reference data. Fresh reference generation is a
 separate, operator-maintained workflow. Measure those costs separately.
 

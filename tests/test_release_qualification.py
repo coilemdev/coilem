@@ -19,7 +19,7 @@ def _measured(root):
            'QUALIFICATION_BASIS = "measured at aaaaaaa"\n')
     _write(root, "backend/resources.py", 'BENCHMARK_SUITE_FILE = "suite.json"\nBENCHMARK_REFERENCE_BUNDLE_DIR = "references"\n')
     _write(root, "backend/benchmark_suite/physics.py", 'def physics_sources(root):\n    return ("backend/motor.py",)\n')
-    suite = _write(root, "suite.json", {"protocol_version": "1.9.0", "cases": [{"id": "motor"}]})
+    suite = _write(root, "suite.json", {"protocol_version": "1.10.0", "cases": [{"id": "motor"}]})
     record_sha = _write(root, "references/motor.json", {"result": {}})
     review_sha = _write(root, "references/review.json", {
         "schema": "coilem.protocol16_reference_review/v1", "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
@@ -36,7 +36,7 @@ def _measured(root):
     }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
     _write(root, "platform/windows-x86_64/benchmark_summary.json", {
         "run": {"status": "COMPLETE", "reference_mode": "FROZEN_REFERENCE",
-                "identity": {"dirty": False, "commit": "a" * 40, "protocol_version": "1.9.0", "source_files": {"backend/motor.py": digest}},
+                "identity": {"dirty": False, "commit": "a" * 40, "protocol_version": "1.10.0", "source_files": {"backend/motor.py": digest}},
                 "selection": {"spec_sha256": suite, "bundle_sha256": bundle}},
         "rows": [{"id": "motor", "status": "PASS"}],
     })
@@ -80,12 +80,12 @@ def test_release_gate_rejects_a_different_candidate_or_protocol(tmp_path):
 
 
 def _bridged(root):
-    """The registered suite reuses a review of the suite it was measured for (protocol 1.9.0)."""
+    """The registered suite reuses a review of the suite it was measured for (protocol 1.10.0)."""
     _measured(root)
     measured = (root / "suite.json").read_bytes()
     (root / "measured-suite.json").write_bytes(measured)
     change = {"measured_suite": "measured-suite.json", "measured_suite_sha256": hashlib.sha256(measured).hexdigest()}
-    suite = _write(root, "suite.json", {"protocol_version": "1.9.0", "cases": [{"id": "motor"}],
+    suite = _write(root, "suite.json", {"protocol_version": "1.10.0", "cases": [{"id": "motor"}],
                                         "reference_compatibility": {"solve_option_change": change}})
     for name in ["platform/windows-x86_64/benchmark_summary.json", "platform/macos-arm64/benchmark_summary.json"]:
         report = json.loads((root / name).read_text())
@@ -209,6 +209,41 @@ def test_registered_prius_report_takes_precedence_over_legacy_default(tmp_path):
     (tmp_path / "docs/benchmarks/pyleecan-prius-v1").rename(destination)
     _write(tmp_path, "backend/qualification.py", 'LEGACY_PRIUS_QUALIFICATION_REPORT = "absent/app-results.json"\n')
     assert check(tmp_path) == []
+
+
+def test_combined_release_checks_each_prius_collection_against_its_suite(tmp_path, monkeypatch):
+    _measured(tmp_path)
+    # Reference content is exercised by the composition tests; this case
+    # drives the release gate with two different measured binaries.
+    monkeypatch.setattr("tools.release.qualification._review_errors", lambda *_: [])
+    ref = json.loads((tmp_path / "references/manifest.json").read_text())
+    ref["schema"] = "coilem.combined_reference_bundle/v1"
+    ref["components"] = [{"id": "abcd", "reference_bundle_sha256": "component", "reference_bundle": "references"}]
+    ref["records"]["motor"]["component"] = "abcd"
+    manifest = _write(tmp_path, "references/manifest.json", ref)
+    bundle = hashlib.sha256(json.dumps({"manifest": manifest, "records": ref["records"], "components": {"abcd": "component"}},
+                                      sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    legacy = tmp_path / "docs/benchmarks/pyleecan-prius-v1"
+    for key, platform, machine in [("windows-x86_64", "Windows-test", "AMD64"), ("macos-arm64", "macOS-test", "arm64")]:
+        report_path = f"platform/{key}/benchmark_summary.json"
+        report = json.loads((tmp_path / report_path).read_text())
+        report["run"]["selection"]["bundle_sha256"] = bundle
+        binary = hashlib.sha256(key.encode()).hexdigest()
+        report["run"]["identity"].update(platform=platform, machine=machine, binary_sha256=binary)
+        _write(tmp_path, report_path, report)
+        prius = json.loads((legacy / "app-results.json").read_text())
+        prius.update(platform=platform, binary_sha256=binary)
+        path = f"platform/{key}/prius/app-results.json"
+        _write(tmp_path, path, prius)
+        (tmp_path / path).with_name("source-snapshot.json").write_bytes((legacy / "source-snapshot.json").read_bytes())
+        record_path = f"benchmarks/records/{key}.json"
+        record = json.loads((tmp_path / record_path).read_text())
+        record.update(reference_bundle_sha256=bundle, prius_report=path)
+        _write(tmp_path, record_path, record)
+    assert check(tmp_path) == []
+    prius["binary_sha256"] = "different-binary"
+    _write(tmp_path, path, prius)
+    assert check(tmp_path) == ["macos-arm64: Prius report does not match the suite platform and binary"]
 
 
 def test_missing_evidence_fails_closed(tmp_path):

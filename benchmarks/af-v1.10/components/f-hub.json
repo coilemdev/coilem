@@ -1,0 +1,38 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.8.0",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "cases": [
+    {
+      "id": "spm_outer_30p27s_hub__baseline",
+      "phase": "F",
+      "design": "30p27s_hub",
+      "slots": 27,
+      "poles": 30,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.10/measured-fixtures/spm_outer_30p27s_hub__baseline.json",
+          "fixture_sha256": "a96e7da3ada0179da00f5aa83b8ef120173633e8fef482a8ac5cce435911f1c5",
+          "input_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5"
+        }
+      ]
+    }
+  ]
+}

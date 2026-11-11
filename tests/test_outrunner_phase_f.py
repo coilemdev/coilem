@@ -26,9 +26,9 @@ def _fixture(case) -> dict:
 def test_phase_f_is_its_own_suite_and_1_9_is_the_default() -> None:
     spec = load_suite(SPEC)
     assert PHASE_LABELS["F"] == "Outrunner"
-    assert "F" not in COMMAND_PHASES
+    assert "F" in COMMAND_PHASES
     assert spec["protocol_version"] == "1.8.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.9.0"
+    assert PROTOCOL_VERSION == "1.10.0"
     assert {case["phase"] for case in spec["cases"]} == {"F"}
     assert len(spec["cases"]) == len({case["id"] for case in spec["cases"]}) == 10
     assert spec["phase_f"]["status"] == "PROPOSED_NOT_REGISTERED"

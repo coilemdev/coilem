@@ -50,6 +50,20 @@ def _data(root, name):
 def _review_errors(root, bundle_path, reference, suite, suite_sha):
     if reference.get("validation_status") != "REVIEWED_FOR_REGISTERED_PARITY":
         return ["registered reference bundle still requires review"]
+    if reference.get("schema") == "coilem.combined_reference_bundle/v1":
+        # Use this tool's reviewed loader against data at root; never import
+        # executable Python from the candidate being checked.
+        from backend.benchmark_suite import references
+
+        original_root = references.DATA_ROOT
+        try:
+            references.DATA_ROOT = root
+            references.load_bundle(root / bundle_path, suite)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            return [f"combined reference review is invalid: {exc}"]
+        finally:
+            references.DATA_ROOT = original_root
+        return []
     entry = reference.get("review") or {}
     path = _file(root / bundle_path, entry["file"])
     if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
@@ -79,12 +93,47 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
     return []
 
 
-def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None = None) -> list[str]:
+def _prius_errors(root, prius_path, prius_sources, candidate, suite_identity=None):
+    errors = []
+    prius = _data(root, prius_path)
+    # Bind the actual grader to the snapshot captured before fields. The
+    # original analyzer's legacy policy flag is retained in the report;
+    # the snapshot proves which analysis code was already registered.
+    snapshot_path = _file(root, Path(prius_path).with_name("source-snapshot.json"))
+    snapshot_sha = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    analysis_sources = {entry["path"]: entry["sha256"] for entry in snapshot["files"]}
+    if (snapshot_sha != prius["source_sha256"].get("snapshot-manifest.json")
+            or prius.get("analysis_runner_sha256") != analysis_sources.get("tools/report_prius_benchmark.py")):
+        errors.append("Prius analysis code is not bound to its before-field source snapshot")
+    # Full v2 registrations also hash reporting/packaging sources and the
+    # snapshot itself. Those immutable historical identities are retained,
+    # but an evidence-publication commit cannot reproduce its own future
+    # snapshot hash. Compare every field-affecting source, including Prius
+    # policy/configuration inputs, without excluding changed physics.
+    for name, digest in prius_sources.items():
+        if prius["source_sha256"].get(name) != digest:
+            errors.append(f"Prius measured-source mismatch: {name}")
+    if (prius.get("field_source_dirty") is not False or not prius.get("all_software_checks_pass")
+            or not prius.get("checks") or not all(prius["checks"].values())
+            or not prius.get("grading_provenance", {}).get("frozen_before_fields")
+            or len(prius.get("jobs", [])) != 17
+            or sum(len(a["field_reports"]) for a in prius.get("audits", {}).values()) != 568):
+        errors.append("Prius qualification needs the complete frozen-input candidate collection and passing software checks")
+    if candidate is not None and prius.get("field_source_commit") != candidate:
+        errors.append("Prius report did not measure the frozen candidate")
+    if suite_identity is not None and (prius.get("platform") != suite_identity["platform"]
+                                      or prius.get("binary_sha256") != suite_identity["binary_sha256"]):
+        errors.append("Prius report does not match the suite platform and binary")
+    return errors
+
+
+def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None = None) -> list[str]:
     errors: list[str] = []
     try:
         primary = _data(root, "benchmarks/records/windows-x86_64.json")
         report_path = primary["source"] + "/benchmark_summary.json"
-        report = json.loads((root / report_path).read_text())
+        report = _data(root, report_path)
         run = report["run"]
         identity = run["identity"]
         # Publication commits may add evidence and metadata, but the default
@@ -98,7 +147,7 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
         if candidate is not None and identity["commit"] != candidate:
             errors.append("qualification report did not measure the frozen candidate")
         suite_path = _constant(root / "backend/resources.py", "BENCHMARK_SUITE_FILE")
-        suite = json.loads((root / suite_path).read_text())
+        suite = _data(root, suite_path)
         suite_sha = hashlib.sha256((root / suite_path).read_bytes()).hexdigest()
         if suite["protocol_version"] != protocol or identity["protocol_version"] != protocol:
             errors.append(f"registered suite and measured report must both use protocol {protocol}")
@@ -117,13 +166,17 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
                 errors.append(f"qualification physics mismatch: {name}")
         bundle_path = _constant(root / "backend/resources.py", "BENCHMARK_REFERENCE_BUNDLE_DIR")
         bundle = root / bundle_path / "manifest.json"
-        reference = json.loads(bundle.read_text())
+        reference = _data(root, bundle_path + "/manifest.json")
+        combined = reference.get("schema") == "coilem.combined_reference_bundle/v1"
         # Match load_bundle() and build_record(): this identifies both the
         # manifest bytes and its record index, rather than the manifest alone.
-        bundle_sha = hashlib.sha256(json.dumps({
+        binding = {
             "manifest": hashlib.sha256(bundle.read_bytes()).hexdigest(),
             "records": reference["records"],
-        }, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+        }
+        if combined:
+            binding["components"] = {entry["id"]: entry["reference_bundle_sha256"] for entry in reference["components"]}
+        bundle_sha = hashlib.sha256(json.dumps(binding, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
         if run["reference_mode"] != "FROZEN_REFERENCE" or run["selection"]["bundle_sha256"] != bundle_sha:
             errors.append("qualification report does not use the registered frozen reference bundle")
         planned_unsupported = {"ornl_prius_2004_ipm"}
@@ -138,16 +191,22 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
             errors.append("registered frozen bundle is missing supported reference records")
         for cid in required & set(reference["records"]):
             entry = reference["records"][cid]
-            if hashlib.sha256(_file(root / bundle_path, entry["file"]).read_bytes()).hexdigest() != entry["sha256"]:
+            record_bundle = bundle_path
+            if combined:
+                record_bundle = next(component["reference_bundle"] for component in reference["components"]
+                                     if component["id"] == entry["component"])
+            if hashlib.sha256(_file(root / record_bundle, entry["file"]).read_bytes()).hexdigest() != entry["sha256"]:
                 errors.append(f"registered reference record hash mismatch: {cid}")
+        measured_platforms = {}
         for key in ("windows-x86_64", "macos-arm64"):
-            record = json.loads((root / "benchmarks/records" / f"{key}.json").read_text())
+            record = _data(root, f"benchmarks/records/{key}.json")
             if record["physics_files"] != actual:
                 errors.append(f"{key} platform record does not match current physics")
             if record["suite_sha256"] != suite_sha or record["reference_bundle_sha256"] != bundle_sha:
                 errors.append(f"{key} platform record has a different suite or reference basis")
             measured = _data(root, record["source"] + "/benchmark_summary.json")
             measured_run = measured["run"]
+            measured_platforms[key] = record, measured_run["identity"]
             if (measured_run["status"] != "COMPLETE" or measured_run.get("smoke")
                     or measured_run["identity"].get("dirty") is not False
                     or measured_run["identity"]["commit"] != record["measured_commit"]
@@ -159,38 +218,25 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
                     or any(row["status"] != "PASS" for row in measured["rows"] if row["id"] in required)
                     or any(measured_run["identity"]["source_files"].get(name) != digest for name, digest in actual.items())):
                 errors.append(f"{key} platform record lacks matching complete measured candidate evidence")
-        prius_path = primary.get("prius_report") or _optional_constant(
-            root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT", _optional_constant(
-                root / "backend/qualification.py", "LEGACY_PRIUS_QUALIFICATION_REPORT",
-                "docs/benchmarks/pyleecan-prius-v1/app-results.json"))
-        prius = _data(root, prius_path)
-        # Bind the actual grader to the snapshot captured before fields. The
-        # original analyzer's legacy policy flag is retained in the report;
-        # the snapshot proves which analysis code was already registered.
-        snapshot_path = _file(root, Path(prius_path).with_name("source-snapshot.json"))
-        snapshot_sha = hashlib.sha256(snapshot_path.read_bytes()).hexdigest()
-        snapshot = json.loads(snapshot_path.read_text())
-        analysis_sources = {entry["path"]: entry["sha256"] for entry in snapshot["files"]}
-        if (snapshot_sha != prius["source_sha256"].get("snapshot-manifest.json")
-                or prius.get("analysis_runner_sha256") != analysis_sources.get("tools/report_prius_benchmark.py")):
-            errors.append("Prius analysis code is not bound to its before-field source snapshot")
-        # Full v2 registrations also hash reporting/packaging sources and the
-        # snapshot itself. Those immutable historical identities are retained,
-        # but an evidence-publication commit cannot reproduce its own future
-        # snapshot hash. Compare every field-affecting source, including Prius
-        # policy/configuration inputs, without excluding changed physics.
-        prius_sources = {**actual, **{name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in PRIUS_EXTRA_PHYSICS}}
-        for name, digest in prius_sources.items():
-            if prius["source_sha256"].get(name) != digest:
-                errors.append(f"Prius measured-source mismatch: {name}")
-        if (prius.get("field_source_dirty") is not False or not prius.get("all_software_checks_pass")
-                or not prius.get("checks") or not all(prius["checks"].values())
-                or not prius.get("grading_provenance", {}).get("frozen_before_fields")
-                or len(prius.get("jobs", [])) != 17
-                or sum(len(a["field_reports"]) for a in prius.get("audits", {}).values()) != 568):
-            errors.append("Prius qualification needs the complete frozen-input candidate collection and passing software checks")
-        if candidate is not None and prius.get("field_source_commit") != candidate:
-            errors.append("Prius report did not measure the frozen candidate")
+        prius_sources = {**actual, **{name: hashlib.sha256((root / name).read_bytes()).hexdigest()
+                                       for name in PRIUS_EXTRA_PHYSICS}}
+        if combined:
+            from backend.benchmark_suite.record import identity_platform_key
+
+            for key, (record, measured_identity) in measured_platforms.items():
+                if identity_platform_key(measured_identity) != key:
+                    errors.append(f"{key} platform record has mismatched platform identity")
+                if not record.get("prius_report"):
+                    errors.append(f"{key} platform record has no Prius report")
+                    continue
+                errors.extend(f"{key}: {error}" for error in _prius_errors(
+                    root, record["prius_report"], prius_sources, candidate, measured_identity))
+        else:
+            prius_path = primary.get("prius_report") or _optional_constant(
+                root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT", _optional_constant(
+                    root / "backend/qualification.py", "LEGACY_PRIUS_QUALIFICATION_REPORT",
+                    "docs/benchmarks/pyleecan-prius-v1/app-results.json"))
+            errors.extend(_prius_errors(root, prius_path, prius_sources, candidate))
     except (OSError, ValueError, KeyError, TypeError) as exc:
         errors.append(f"qualification evidence unavailable or invalid: {exc}")
     return errors
@@ -199,7 +245,7 @@ def check(root: Path = ROOT, *, protocol: str = "1.9.0", candidate: str | None =
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", help="exact commit measured before evidence publication")
-    parser.add_argument("--protocol", default="1.9.0")
+    parser.add_argument("--protocol", default="1.10.0")
     args = parser.parse_args(argv)
     errors = check(protocol=args.protocol, candidate=args.candidate)
     print(json.dumps({"status": "BLOCKED" if errors else "PASS", "errors": errors}, indent=2))

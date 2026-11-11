@@ -335,7 +335,8 @@ class Acceptance:
         )
         self.check(
             "the packaged benchmark lists its quick cases with the record's times",
-            listed.returncode == 0 and "spm_4p12s_small" in listed.stdout and "4 cases, about" in listed.stdout,
+            listed.returncode == 0 and "spm_4p12s_small" in listed.stdout and "6 cases" in listed.stdout
+            and "__cogging" in listed.stdout and "spm_outer_" in listed.stdout,
             (listed.stdout + listed.stderr).strip()[-400:],
         )
 

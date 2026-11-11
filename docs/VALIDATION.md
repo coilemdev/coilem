@@ -1,27 +1,16 @@
 # Developer-preview validation
 
-The source candidate is coilEM 0.5.0 with Magneto2D 0.4.0. The
-[reviewed Windows comparison](../benchmarks/candidate-qualification-20261103/README.md)
-at `88aae101` supplies the current registered field-parity basis under protocol
-1.6.0; see [Qualification status](#qualification-status). The
-[v0.4.0 evidence report](../benchmarks/v0.4.0/README.md) retains the historical
-Windows/FEMM and Pyleecan collections with their original measured commits.
-Same-candidate Mac qualification and final installed-wheel acceptance
-remain open in the [release plan](RELEASE_0_5_0.md).
+[Protocol 1.10.0](../benchmarks/af-v1.10/README.md) is the default A–F
+benchmark. The [qualification reports](../benchmarks/qualification-70c5e3404c19/README.md)
+measure the same Magneto2D 0.5.0 candidate on Windows x86-64 and macOS arm64.
+The comparisons use the frozen, reviewed FEMM references. The separately
+collected Prius software evidence accompanies both platform reports.
 
-0.5.0 is in development. It adds performance outputs, each labelled
-experimental until a reference gate passes; see
-[0.5.0 performance outputs](#050-performance-outputs) for their claim
-boundaries and the [0.5.0 release notes](RELEASE_0_5_0.md) for what changes.
-The 0.5.0 freeze uses protocol 1.6.0 on macOS and Windows. Windows collection
-and reference review are complete; the fresh same-candidate Mac run is pending.
-
-Historical reports v1.1 and v1.7/v1.8 measure the 0.3.x winding model and keep
-their original identities. They do not measure the changed 0.4.0 application.
-The macOS record predates the current physics sources and is NOT_COMPARABLE;
-new macOS numerical parity needs a fresh full run. Linux and Python 3.15 full
+The [v0.4.0 evidence report](../benchmarks/v0.4.0/README.md) and
+[protocol 1.6.0 comparison](../benchmarks/candidate-qualification-20261103/README.md)
+preserve their original candidates and claims. Linux and Python 3.15 full
 numerical parity have not been measured. Passing hosted CI or wheel acceptance
-does not establish that parity or hardware accuracy.
+does not establish numerical parity or hardware accuracy.
 
 See [Numerical evidence](NUMERICAL_EVIDENCE.md) for measured comparisons and
 [Local verification](VERIFICATION.md) for the build, browser and audit record.
@@ -183,22 +172,24 @@ final-candidate run.
 
 ## Run the benchmark yourself
 
-An installed coilEM carries the A/B/C/D suite, its frozen FEMM v3 reference
-and the [published records](../benchmarks/records/README.md), so anyone can
-check their own installation:
+An installed coilEM carries the [combined A-F protocol 1.10.0](../benchmarks/af-v1.10/README.md),
+its reviewed frozen reference components and the
+[published records](../benchmarks/records/README.md), so anyone can check
+their own installation:
 
 ```sh
-coilem benchmark --quick    # one case per phase, about 5 minutes
-coilem benchmark            # all 30 cases, about 50 minutes
-coilem benchmark --list     # the cases and the record's times
+coilem benchmark --quick    # one complete-grid case in each of six phases
+coilem benchmark            # all 69 registered cases
+coilem benchmark --list     # case selection and recorded times when available
 ```
 
 `--phase B` runs one phase (repeatable), and `--out` names the output folder.
 The command solves each case with the installed Magneto2D and grades it
-against the frozen reference with the gates above. It then matches the outcome
+against the frozen reference with the registered gates. It then matches the outcome
 against the record for the platform. A match needs the same verdicts and gate
 statuses, and mean torque, back-EMF fundamental and back-EMF peak within
-0.5%, 0.05% and 1.5% of the record. Those tolerances come from the measured
+0.5%, 0.05% and 1.5% of the record. Phase E matches its peak-to-peak and first
+harmonic values within 0.5% or the registered absolute replay floor. Those tolerances come from the measured
 difference between macOS and Windows. The physics sources are checked by hash
 first, so a release with unchanged physics is matched against a record
 measured at an earlier commit.
@@ -211,28 +202,23 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The registered basis is the [reviewed Windows comparison](../benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json)
-at clean measured commit `88aae101`, using Magneto2D 0.4.0, Precise meshes,
-protocol 1.6.0 and the [reviewed FEMM bundle](../benchmarks/reference-baselines/protocol16-reviewed-20261103/README.md).
-All 52 supported native jobs completed: 46 PASS, one planned unsupported case
-and 336/336 gates PASS. The subsequent report-only join executes zero field
-solves and preserves the original native and reference measurements.
+The current [registered parity reports](../benchmarks/qualification-70c5e3404c19/README.md)
+cover 68 supported A–F cases and 468 passing gates on each platform, plus one
+planned unsupported Prius fixture. The separate Prius software benchmark
+passes all 10 checks across 17 jobs and 568 field reports on each platform.
+All 47 A–D rows agree with the previous record on their platform within
+the existing replay tolerances.
 
-The reviewer is Codex assistant, which also prepared the earlier evidence;
-no independent human or laboratory sign-off is claimed. The hash-bound review
-accepts the 46 unchanged records for registered parity. It checks current and
-flux conventions, request/result identities, material inputs, 29 exact legacy
-reproductions and all 12 d/q self-checks. Supplementary audits check the actual
-materials in all 4,409 nonempty saved FEMM models and declared currents in
-all 46 cases. Its scope and exclusions remain explicit in the review receipt.
+The [protocol 1.6.0 comparison](../benchmarks/candidate-qualification-20261103/README.md)
+and its review retain the historical 46-record basis. The current combined
+registry retains the reviewed FEMM source identities and scope for each
+component, including the separate refined cogging and hub cohorts.
 
-A combination is qualified when all its registered fixtures pass, the current
-physics hashes match the measured source, and the scope below applies. V-shape
-remains experimental despite passing its gates. Release qualification also
-requires complete Mac candidate evidence and remains pending. The
-[exact-candidate Windows Prius audit](../benchmarks/candidate-qualification-20261103/prius/README.md)
-passes all 10 software checks across 17 jobs and 568 field reports.
-The historical v0.4 reports and platform records retain their original identities.
+The table below defines the application qualification scope. A combination
+must have passing evidence and matching physics hashes, and meet the listed
+conditions. Registered E/F parity does not extend this policy to arbitrary
+cogging and outer-rotor requests. V-shape remains experimental despite passing
+its registered gates.
 
 | Rotor | Winding | Excitation | Registered coverage | Outcome | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -263,13 +249,12 @@ the Solve page and the Results page show it, and each saved run records it in
 its provenance, PDF and CSV. A qualified combination using custom steel is
 experimental, because qualification used the bundled M350-50A curve. A
 Preview run notes that its coarse mesh was not part of qualification. Tests
-check each reason against the reviewed protocol 1.6 report's outcomes, and fail when a winding,
-current-angle, geometry, mesh, material or native-solver source differs from
-the one the report measured; a changed physics source needs a new report
-before it can keep a qualified status.
+check each reason against the registered A–D outcomes. A change to a winding,
+current-angle, geometry, mesh, material or native-solver source needs new
+measured evidence before the application can keep a qualified status.
 
 Qualified means agreement with FEMM within the registered gates for the
-measured fixtures, under these conditions: Magneto2D 0.4.0, native Gmsh meshes
+measured A–D fixtures, under these conditions: native Gmsh meshes
 at the normal density used by the Standard plan, weighted-stress torque, the
 bundled M350-50A curve, the public magnet grades and angular grids matched to
 the reference.
@@ -295,17 +280,11 @@ reference control passes its registered comparisons but is only a sensitivity
 screen, not proof of spatial convergence. V-shape stays experimental. Earlier
 failed fixtures and diagnostic reports remain intact in their historical folders.
 
-The [published Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
-uses the full earlier report at `5b7cad8` and rounded new-case values at
-`f6c9fbb`. It preserves those pins and does not qualify the exact `88aae101`
-Mac build. The complete Windows Prius candidate audit now passes; a complete
-fresh Mac A–D collection is still required by the release gate.
-
-The active physics guard covers 63 files, including d/q, temperature,
-resistance/loss and configuration/policy sources. All 63 current file hashes
-match hashes captured in the native identity before collection. Expanding the
-registry does not change any physical source or measured value. A changed
-field-affecting source requires new measured evidence.
+The [older Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
+preserves its original `5b7cad8` and `f6c9fbb` pins. The new A–F evidence
+measures both platforms at `70c5e34`; the earlier results keep their original
+scope. The guard still requires fresh evidence when the measured physics
+sources change.
 
 ## 0.5.0 performance outputs
 
@@ -644,18 +623,17 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   End mismatch is unavailable when the endpoints share a mesh or solution,
   the closing endpoint is missing, or cached reports do not record endpoint
   independence. A zero copied by reuse cannot measure remesh noise.
-- **The reason the app prints:** "No cogging gate yet: benchmark protocol 1.6.0
+- **The app's experimental status retains its protocol 1.6.0 wording:** "No cogging gate yet: benchmark protocol 1.6.0
   has no reference cogging waveform. The sweep uses per-position meshes
   with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging
   values." `frontend/src/public/outputStatus.ts` mirrors it and
   `tests/test_output_status.py` checks the two match.
-- **What would qualify it.** Phase E, the cogging benchmark proposed as
-  [protocol 1.7.0](../benchmarks/abcd-v1.7/README.md): 12 SPM, flat-buried IPM
-  and distributed-winding motors against FEMM 4.2 waveforms. It is gated on
-  peak-to-peak and the first cogging harmonic, with an absolute floor
-  ([proposal](COGGING_BENCHMARK_PROPOSAL.md)). The harness can grade it, and
-  the [FEMM request](COGGING_FEMM_REQUEST.md) is written. No reference exists
-  yet, and Phase E is not registered.
+- **Benchmark scope.** [Protocol 1.10.0](../benchmarks/af-v1.10/README.md)
+  registers 12 SPM, flat-buried IPM and distributed-winding cases against
+  reviewed FEMM 4.2 waveforms. The gates cover peak-to-peak and the first
+  cogging harmonic with the original case floors. Three distributed cases
+  use the registered very-fine native requests. This software comparison
+  does not promote arbitrary application cogging requests.
 - **Not modelled.** Skew, end effects and other 3D effects, manufacturing
   tolerances (magnet and slot variation, eccentricity), and the load-dependent
   part of torque ripple: cogging is the zero-current torque only.
@@ -663,8 +641,8 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
 ## Outer-rotor motors
 
 Outer-rotor (outrunner) SPM motors are new in 0.5.5
-([OUTRUNNER.md](OUTRUNNER.md)). **They are experimental everywhere: no
-registered benchmark fixture is an outer rotor.**
+([OUTRUNNER.md](OUTRUNNER.md)). **Application requests remain experimental.**
+The registered Phase F benchmark is a separate software parity scope.
 
 - **What has been checked.** The LRK 12-slot / 14-pole reference against its
   published solution: all 11 torque points pass Phase A's mean-torque rule
@@ -672,17 +650,15 @@ registered benchmark fixture is an outer rotor.**
   2026), the source point is −0.39% and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
   agrees with 1.5·p·λ·I within 0.3%, and the mesh study moves it less than
   0.05%. [OUTRUNNER.md](OUTRUNNER.md#validation) has the detail.
-- **The reason the app prints:** "Outer-rotor SPM: no registered benchmark
-  fixture is an outer rotor yet." (`backend/qualification.py`). The Examples
+- **The reason the app prints:** "Outer-rotor SPM: qualification currently
+  covers the registered benchmark requests only." (`backend/qualification.py`). The Examples
   menu tags the SPM outrunner 14p/12s example Experimental, as it does the
   IPM 10p V-shape and SPM 24p examples, whose designs are experimental too.
-- **What would qualify it.** Phase F, the outer-rotor benchmark proposed as
-  [protocol 1.8.0](../benchmarks/abcd-v1.8/README.md). It has 10 outer-rotor SPM
-  cases over five motors, from an 18 mm micro drone motor to a 100 mm
-  hub-motor class, graded with Phase A's gates against FEMM 4.2
-  ([request](OUTRUNNER_FEMM_REQUEST.md)). A first collection on Windows passes
-  all 10 cases (60/60 gates; see the 0.5.5 release notes). Phase F is
-  registered once the same comparison passes on macOS. The SPM outrunner
+- **Benchmark scope.** [Protocol 1.10.0](../benchmarks/af-v1.10/README.md)
+  registers 10 outer-rotor SPM cases over five motors, from an 18 mm micro
+  drone motor to a 100 mm hub-motor class, using Phase A's unchanged gates
+  and explicitly reviewed original and hub FEMM 4.2 source cohorts.
+  The SPM outrunner
   14p/12s example shares its frame with Phase F's 2806-class drone motor, but
   has no tooth shoes and runs ideal six-step, which Phase F does not measure.
 - **Not modelled.** IPM outer rotors, and end effects such as an outrunner's

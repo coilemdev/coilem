@@ -98,7 +98,8 @@ def test_outer_rotor_is_experimental_where_the_inner_combination_is_qualified(mo
     monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
     assert qualification_module.classify_qualification(MotorConfig.model_validate(INNER))["status"] == "qualified"
     outer = qualification_module.classify_qualification(MotorConfig.model_validate(outer_config()))
-    assert (outer["status"], outer["reason"]) == ("experimental", "Outer-rotor SPM: no registered benchmark fixture is an outer rotor yet.")
+    assert (outer["status"], outer["reason"]) == (
+        "experimental", "Outer-rotor SPM: qualification currently covers the registered benchmark requests only.")
 
 
 def test_rotor_torque_sign_rules():

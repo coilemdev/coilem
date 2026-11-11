@@ -1,4 +1,4 @@
-"""``coilem benchmark``: run the registered A/B/C/D suite on this installation (#71).
+"""``coilem benchmark``: run the registered A-F suite on this installation (#71).
 
 It solves every selected case with the installed Magneto2D, grades it against
 the frozen FEMM reference that ships with coilEM, matches the outcome against
@@ -21,13 +21,15 @@ from backend.benchmark_suite.record import check_physics, compare_run, load_reco
 from backend.benchmark_suite.references import load_suite
 from backend.benchmark_suite.share import match_sentence, tolerance_text, write_share_report
 
-# One short case per phase, about 5 minutes in all. Still graded against the
+# One complete-grid case per phase. Still graded against the
 # reference and matched against the record, unlike the developer --smoke grid.
 QUICK_CASES = (
     "spm_4p12s_simple__tight_airgap",
     "ipm_vshape_8p12s_thin_bridge_contract",
     "spm_8p24s_distributed_femm_validation",
     "spm_4p12s_small",
+    "spm_4p12s_simple__baseline__cogging",
+    "spm_outer_14p12s_drone__baseline",
 )
 OPTIONS_FILE = "benchmark-options.json"
 
@@ -35,14 +37,15 @@ OPTIONS_FILE = "benchmark-options.json"
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="coilem benchmark",
-        description="Solve the published A/B/C/D benchmark on this computer, grade it against the frozen FEMM "
+        description="Solve the published A-F benchmark on this computer, grade it against the frozen FEMM "
         "reference, and check it matches the published record for this platform.",
-        epilog="A full run takes about 50 minutes and needs about 3 GB of free disk space; each case's solver files "
+        epilog="Runtime depends on this computer and the selected phases. A full run needs at least 3 GB of free disk space; "
+        "each case's solver files "
         "are deleted when it finishes.",
     )
     parser.add_argument("--phase", action="append", choices=list(COMMAND_PHASES), help="run only this phase (A SPM, B IPM, "
-                        "C distributed winding, D BLDC); repeat for several")
-    parser.add_argument("--quick", action="store_true", help="run one short case per phase, about 5 minutes")
+                        "C distributed winding, D BLDC, E cogging, F outrunner); repeat for several")
+    parser.add_argument("--quick", action="store_true", help="run one complete-grid case per selected phase")
     parser.add_argument("--out", type=Path, help="output folder (default: a new coilem-benchmark-<date>-<time> folder here)")
     parser.add_argument("--resume", action="store_true", help="continue a stopped run in --out with its original options")
     parser.add_argument("--list", action="store_true", help="list the selected cases and expected times, then exit")
@@ -87,6 +90,10 @@ def main(argv=None):
     spec = load_suite(SPEC)
     cases = select_cases(spec, phases, quick)
     record, cross_platform = select_record(load_records())
+    # Historical A-D records remain usable for their covered subsets. They do
+    # not establish a baseline for the newly registered full A-F selection.
+    if record is not None and not {case["id"] for case in cases} <= set(record["cases"]):
+        record, cross_platform = None, False
     expected = estimate(record, cases)
 
     if args.list:

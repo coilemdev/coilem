@@ -1,0 +1,40 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v1",
+  "protocol_version": "1.8.0",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "reference_commit": "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+  "suite_sha256": "9dcf6edb168eb4ca0ce2a221d0e6fb6e071be602f9513de40b0f4818014a8d43",
+  "validation_status": "REVIEWED_FOR_REGISTERED_PARITY",
+  "records": {
+    "spm_outer_30p27s_hub__baseline": {
+      "file": "spm_outer_30p27s_hub__baseline.json",
+      "sha256": "8b480756918ba81a5fa239edebd9168c6ba99b7e5592067494ae5dcdbaec7567",
+      "input_sha256": "fbd133c5d3863f5364c5fb3bc22e860ec3793fd0340cb054de0eb3209e2733b5"
+    }
+  },
+  "review": {
+    "file": "review.json",
+    "sha256": "f759b3985cb4b4e1ae7feb643adc5e25a7e6d96c0f79fc2138d4b87bb09de84d"
+  },
+  "review_artifacts": [
+    {
+      "file": "review.json",
+      "sha256": "f759b3985cb4b4e1ae7feb643adc5e25a7e6d96c0f79fc2138d4b87bb09de84d"
+    }
+  ]
+}

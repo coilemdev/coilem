@@ -1,0 +1,37 @@
+{
+  "schema": "coilem.ef_component_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "suite": "benchmarks/af-v1.10/components/f-hub.json",
+  "suite_sha256": "9dcf6edb168eb4ca0ce2a221d0e6fb6e071be602f9513de40b0f4818014a8d43",
+  "reference_commit": "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+  "field_ledger": "benchmarks/femm-ef-20261110/field-hashes.json",
+  "evidence_files": {
+    "benchmarks/femm-ef-20261110/femm-results.json": "c56e909e588d4a00b04b5412c0326ce310d1d96f834906aff18149c66b2080f2",
+    "benchmarks/femm-ef-20261110/field-hashes.json": "3fb15a2153ae4d116bd0a6464aa908582591cc1a534b2dcadec86c127df908d0",
+    "benchmarks/femm-ef-20261110/assembly-comparison.json": "d98f1b60e44f40e70ba29c9b7bc1a74174e6ff48159fc2405ed3bbfa32a862b7"
+  },
+  "cases": {
+    "spm_outer_30p27s_hub__baseline": {
+      "record_sha256": "8b480756918ba81a5fa239edebd9168c6ba99b7e5592067494ae5dcdbaec7567",
+      "alias": "f09",
+      "audit": {
+        "positions": 96,
+        "phase_balance_pct": [
+          0.07300254895458055,
+          0.1196421407895736
+        ],
+        "voltage_from_flux": "PASS",
+        "harmonic_from_waveform": "PASS",
+        "loaded_sign_and_energy": "PASS",
+        "mean_torque_Nm": 4.4326134645343,
+        "back_emf_fundamental_V": 32.793109855085746
+      }
+    }
+  },
+  "scope": "Frozen reference fields for registered software parity only; native platform qualification is separate",
+  "source_cohort": "hub_variant",
+  "source_policy": {
+    "file": "benchmarks/af-v1.10/phase-f-source-policy.json",
+    "sha256": "b21ec354056e98e53eeeb3faa611f824c05f4d9390892e0e405c8e88aa80044b"
+  }
+}

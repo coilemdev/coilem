@@ -1,8 +1,10 @@
 # Benchmark reports and protocols
 
-[Protocol 1.9.0](abcd-v1.9/README.md) is the default A–D suite from v0.5.6. It is protocol 1.6.0 with Newton, the new default nonlinear method, for the 28 Phase A and D requests that used Picard. Nothing else changes. It reuses the reviewed protocol 1.6.0 FEMM bundle through a hash-bound solve-option bridge, because FEMM never reads coilEM's nonlinear method. v0.5.6 needs a two-platform requalification with this suite.
+[Protocol 1.10.0](af-v1.10/README.md) is the default combined A-F suite: 69 cases, 75 jobs and 68 reference records, with the existing planned unsupported Prius row. It retains the protocol 1.9.0 A-D requests and adds all 12 E and 10 F requests, using the registered very-fine native cohort for the three distributed cogging cases. Its registry preserves each reviewed reference source, the separate hub recipe and all original gates. The [Windows and macOS qualification](qualification-70c5e3404c19/README.md) passed all 68 supported cases and 468 gates on each platform at the same candidate. The [current platform records](records/README.md) cover the full A-F selection.
 
-The [v0.5.1 release qualification](v0.5.1/release-qualification.json) now passes with source-matched Windows/macOS A-D and complete Prius software evidence. The [owner decisions](qualification-a4f9f4dccf2b/owner-decisions.json) accept unchanged reviewed references, one recorded near-zero macOS Prius observation difference and an experimental cogging scope. Measured fields retain `a4f9f4d`; all 64 guarded physics hashes match the versioned release code. Phase E remains unregistered and both YELLOW cases remain disclosed.
+[Protocol 1.9.0](abcd-v1.9/README.md) remains available for historical A-D replay. It changes only Picard to Newton in the 28 relevant protocol 1.6.0 requests, reusing the reviewed frozen references through its existing hash-bound bridge.
+
+The [v0.5.1 release qualification](v0.5.1/release-qualification.json) now passes with source-matched Windows/macOS A-D and complete Prius software evidence. The [owner decisions](qualification-a4f9f4dccf2b/owner-decisions.json) accept unchanged reviewed references, one recorded near-zero macOS Prius observation difference and an experimental cogging scope. Measured fields retain `a4f9f4d`; all 64 guarded physics hashes match the versioned release code. Phase E was outside that release’s registered scope and both YELLOW cases remain disclosed in its evidence.
 
 The [Windows v0.5.1 integration-merge evidence](windows-v051-20261105-a4f9f4d/README.md) measures `a4f9f4d`: **46 A–D PASS plus the planned unsupported Prius**, and **10 cogging PASS / 2 YELLOW** against the selected fresh FEMM references. All 425 cogging fields, original reference self-check failures and five mesh controls are retained. The optional extra A–D reference repeat was stopped; its artifacts remain preserved. A separately authorized overnight run then completed all 46 fresh FEMM cases: **46 PASS, 336/336 gates PASS and all 46 waveforms exactly matching the reviewed references**. This packet retains its original Windows development identity; accepted cross-platform/Prius qualification and subsequent owner review are recorded separately above.
 
@@ -22,7 +24,7 @@ The earlier [Windows validation of the v0.5.0 stack](windows-v050-20261029-bb3d8
 
 The [macOS A/B/C/D at the 0.5.0 stack top](macos-native-20261022-5b7cad8/README.md) is development evidence at `5b7cad8`: 29 PASS and the planned unsupported Prius against the frozen FEMM v3 bundle, compared with the v0.4.0 Windows baseline.
 
-[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. Its reviewed 46-record bundle is now the runtime default; final Mac candidate qualification remains pending.
+[Protocol 1.6.0](abcd-v1.6/README.md) registers the 0.5.0 reference gates. It is the 1.4.0 matrix plus the shoed example, magnet temperature at 60 °C and 100 °C, and loaded λd/λq points for one SPM and one flat IPM. Its reviewed 46-record bundle remains available for historical replay.
 
 [Protocol 1.5.0](abcd-v1.5/README.md) is a separate extension until the 0.5.0
 freeze. It adds the app's shoed 8p12s example to the 1.4.0 matrix, which has
@@ -102,7 +104,7 @@ reference solves were executed. The generated PDF is included in each evidence p
 | [Snapshot report v1.1](main-20261009-bad71d9/README.md) | Archived fresh-reference run and 0.2.0 preview qualification record | `bad71d9`; original two FAILs retained |
 | [Protocol 1.0.0](abcd-v1/README.md) | Explicitly selectable historical suite | Original low-output IPM fixtures and saved references |
 
-V1.2 defines the **default benchmark selection**. V1.3 and V1.4 rerun that same
+V1.2 defined the default selection for those reports. V1.3 and V1.4 rerun that same
 selection at clean candidates on Windows, preserving the inputs, references and
 gates. V1.5 reruns it on macOS at the pinned 0.3.0 release candidate, with every
 verdict and gate status unchanged. V1.7 reruns it on the same Mac at the frozen 0.3.0

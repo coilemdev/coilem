@@ -109,10 +109,11 @@ Run the same benchmark suite on your own computer:
 coilem benchmark --quick
 ```
 
-That solves one case per group in about 5 minutes and compares each with the
-FEMM reference that ships with coilEM. Drop `--quick` for the full suite. It
-needs no Git, Rust, Node.js or FEMM. See the
-[benchmark commands](benchmarks/abcd-v1.3/README.md).
+That solves one complete-grid case in each of the six phases and compares it
+with the frozen reference that ships with coilEM. Drop `--quick` for all 69
+cases, or use `--list` to see the selection and recorded runtime estimates.
+It needs no Git, Rust, Node.js or FEMM. See
+[benchmark protocol 1.10.0](benchmarks/af-v1.10/README.md).
 
 ## Build from source
 

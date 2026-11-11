@@ -19,7 +19,6 @@ from copy import deepcopy
 from pathlib import Path
 
 from backend.benchmark_suite.contract import canonical, read, sha, write
-from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = "benchmarks/abcd-v1.9"
@@ -58,7 +57,7 @@ def suite(changed: dict[str, dict]) -> dict:
     """The protocol 1.9.0 suite for these changed requests."""
 
     base = read(ROOT / BASE_SUITE)
-    bundle_manifest = ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json"
+    bundle_manifest = ROOT / "benchmarks/reference-baselines/protocol16-reviewed-20261103/manifest.json"
     bundle = read(bundle_manifest)
     cases, changed_jobs = [], []
     for case in base["cases"]:

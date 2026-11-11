@@ -5,9 +5,57 @@ import hashlib
 
 import pytest
 
+from backend.benchmark_suite import cli
+from backend.benchmark_suite import contract as native
 from backend.benchmark_suite.contract import read, sha, write
 from tools import prius_benchmark_contract as contract
-from tools.repair_benchmark_shard import repair_prius
+from tools.repair_benchmark_shard import prepare_native_repair, repair_prius
+
+
+@pytest.fixture
+def failed_native(tmp_path):
+    prior = tmp_path / 'prior'
+    identity = {'commit': 'a' * 40, 'dirty': False, 'protocol_version': '1.10.0'}
+    configs = {('e-case', 'native'): {'mesh_density': 'very_fine'}, ('f-case', 'native'): {'mesh_density': 'normal'}}
+    jobs = []
+    for (case, stage), config in configs.items():
+        directory = f'jobs/{case}/{stage}'
+        request, result = directory + '/request.json', directory + '/result.json'
+        write(prior / request, {'config': config, 'identity': identity})
+        request_sha = sha(prior / request)
+        status = 'COMPLETE' if case.startswith('e-') else 'ERROR'
+        write(prior / result, {'status': status, 'request_sha256': request_sha,
+                               'identity_before': identity, 'identity_after': identity})
+        (prior / directory / 'worker.log').write_text(status, encoding='utf-8')
+        (prior / directory / 'native-runtime.tar.gz').write_bytes(b'original retained raw fields')
+        jobs.append({'case_id': case, 'stage': stage, 'status': status, 'request': request, 'result': result,
+                     'request_sha256': request_sha, 'result_sha256': sha(prior / result), 'exit_code': 0 if status == 'COMPLETE' else 2})
+    write(prior / 'run_manifest.json', {'identity': identity, 'smoke': False,
+                                       'selection': {'case_ids': ['e-case', 'f-case']}, 'jobs': jobs})
+    return prior, tmp_path / 'out', configs, identity
+
+
+def test_native_repair_retries_only_error_and_preserves_completed_and_failed_evidence(failed_native):
+    prior, out, configs, identity = failed_native
+    before = {p.relative_to(prior): sha(p) for p in prior.rglob('*') if p.is_file()}
+    manifest, parent_sha = prepare_native_repair(prior, out, configs, identity, native, cli, '123')
+    complete, failed = manifest['jobs']
+    assert complete['status'] == 'COMPLETE' and sha(out / complete['result']) == complete['result_sha256']
+    assert failed['status'] == 'READY' and not (out / failed['result']).exists() and 'result_sha256' not in failed
+    assert sha(out / failed['request']) == failed['request_sha256']
+    attempt = out / 'repair-receipts' / parent_sha[:12] / failed['result']
+    assert sha(attempt) == sha(prior / failed['result'])
+    assert not list(out.rglob('*.tar.gz'))
+    assert {p.relative_to(prior): sha(p) for p in prior.rglob('*') if p.is_file()} == before
+
+
+def test_native_repair_refuses_tampered_completed_result(failed_native):
+    prior, out, configs, identity = failed_native
+    result = prior / read(prior / 'run_manifest.json')['jobs'][0]['result']
+    result.write_bytes(result.read_bytes() + b' ')
+    with pytest.raises(ValueError, match='evidence changed'):
+        prepare_native_repair(prior, out, configs, identity, native, cli, '123')
+    assert not out.exists()
 
 
 def job(root, name, identity):

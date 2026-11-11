@@ -10,6 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from backend.benchmark_suite import COMMAND_PHASES
 from backend.benchmark_suite.contract import identity, read, sha, write
 from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR
 from tools.benchmark_shards import plan
@@ -57,7 +58,7 @@ def main():
         shard = next(s for s in spec['shards'] if s['id'] == args.shard)
         output = directory / 'out'
         if shard['kind'] == 'suite':
-            options = ['tools.run_benchmarks', '--suite', spec['suite'], '--phases', 'A', 'B', 'C', 'D',
+            options = ['tools.run_benchmarks', '--suite', spec['suite'], '--phases', *COMMAND_PHASES,
                        '--out-dir', output, '--archive-runtime']
             if args.collection == 'protocol16-native-only':
                 options.append('--no-reference')

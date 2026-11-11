@@ -52,7 +52,10 @@ def test_wheel_data_covers_everything_the_suite_registers() -> None:
             assert case["protocol"] in files
     bundle = [path for path in files if path.startswith(resources.BENCHMARK_REFERENCE_BUNDLE_DIR)]
     manifest = read(REPO_ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json")
-    assert len(bundle) == 1 + len(manifest["records"]) + len(manifest.get("review_artifacts", []))
+    assert len(bundle) == 1 + len(manifest.get("review_artifacts", []))
+    for component in manifest["components"]:
+        child = read(REPO_ROOT / component["reference_bundle"] / "manifest.json")
+        assert {f"{component['reference_bundle']}/{entry['file']}" for entry in child["records"].values()} <= files
     assert {f"{resources.BENCHMARK_RECORDS_DIR}/{key}.json" for key in EVIDENCE} <= files
     assert all((REPO_ROOT / path).is_file() for path in files)
 
@@ -300,7 +303,7 @@ def test_platform_key_survives_an_environment_without_the_processor_variable(mon
 def test_quick_subset_is_one_passing_case_per_phase() -> None:
     cases = command.select_cases(load_suite(SPEC), list("ABCD"), quick=True)
     assert [case["phase"] for case in cases] == list("ABCD")
-    assert [case["id"] for case in cases] == list(command.QUICK_CASES)
+    assert [case["id"] for case in cases] == list(command.QUICK_CASES[:4])
     for published in record.load_records().values():
         assert all(published["cases"][case["id"]]["status"] == "PASS" for case in cases)
         full_cases = load_suite(SPEC)["cases"]
@@ -349,7 +352,7 @@ def test_shareable_report_removes_local_paths(graded, tmp_path: Path) -> None:
     assert str(output) not in markdown and str(output) not in text and str(Path.home()) not in markdown
     assert payload["cases"][0]["errors"][0] == f"Disk full writing {LOCAL_PATH_PLACEHOLDER}/jobs/x/native-runtime/solve_cache"
     assert "## Record match: DIFFERS" in markdown and "3 of 4 cases match" in markdown
-    assert "coilem benchmark --quick`" in markdown
+    assert "coilem benchmark --quick --phase A --phase B --phase C --phase D`" in markdown
     assert payload["record_match"]["record"]["measured_commit"].startswith("738d951")
 
 

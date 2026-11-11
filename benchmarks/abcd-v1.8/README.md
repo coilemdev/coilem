@@ -1,5 +1,10 @@
 # Benchmark protocol 1.8.0: Phase F, outer-rotor motors (proposed)
 
+This is the historical proposal. The default is now the
+[combined A-F protocol 1.10.0](../af-v1.10/README.md), which registers these ten
+requests against explicitly reviewed original and hub reference cohorts.
+Application qualification policy remains separate from that benchmark scope.
+
 **Status: proposed, not registered.** Phase F's requests and gates are fixed
 here before any comparison solve. It has no FEMM reference bundle yet, so it
 qualifies nothing. Until it does, the app reports every outer-rotor design as

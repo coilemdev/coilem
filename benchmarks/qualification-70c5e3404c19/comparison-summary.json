@@ -1,0 +1,160 @@
+{
+  "schema": "coilem.protocol110_comparison_summary/v1",
+  "candidate_commit": "70c5e3404c1962a811a915db292c31c28b92cf1a",
+  "platforms": {
+    "windows-x86_64": {
+      "old_record_sha256": "be21acfc7ee7dd0f005da145e90e05bef3892dcce48baec189161cae9bbcb1bd",
+      "old_abcd_rows_within_replay_tolerances": 47,
+      "original_abcd_anchor_differences": [],
+      "refined_cogging": {
+        "spm_8p24s_distributed_femm_validation__cogging": {
+          "status": "PASS",
+          "gates": {
+            "cogging_method": "PASS",
+            "cogging_angle_grid": "PASS",
+            "cogging_peak_to_peak": "PASS",
+            "cogging_first_harmonic": "PASS",
+            "reference_cogging_period": "PASS",
+            "reference_cogging_mean": "PASS"
+          },
+          "peak_to_peak_error_pct": 3.080601670454693,
+          "first_harmonic_error_pct": 2.0924182109898584
+        },
+        "spm_8p48s_distributed_femm_validation__cogging": {
+          "status": "PASS",
+          "gates": {
+            "cogging_method": "PASS",
+            "cogging_angle_grid": "PASS",
+            "cogging_peak_to_peak": "PASS",
+            "cogging_first_harmonic": "PASS",
+            "reference_cogging_period": "PASS",
+            "reference_cogging_mean": "PASS"
+          },
+          "peak_to_peak_error_pct": 3.2700555776454565,
+          "first_harmonic_error_pct": 2.5125557825466016
+        },
+        "spm_12p36s_distributed_femm_validation__cogging": {
+          "status": "PASS",
+          "gates": {
+            "cogging_method": "PASS",
+            "cogging_angle_grid": "PASS",
+            "cogging_peak_to_peak": "PASS",
+            "cogging_first_harmonic": "PASS",
+            "reference_cogging_period": "PASS",
+            "reference_cogging_mean": "PASS"
+          },
+          "peak_to_peak_error_pct": 4.0721057981514415,
+          "first_harmonic_error_pct": 3.124488058036637
+        }
+      },
+      "case_counts": {
+        "A": {
+          "PASS": 19
+        },
+        "B": {
+          "PASS": 20
+        },
+        "C": {
+          "UNSUPPORTED": 1,
+          "PASS": 4
+        },
+        "D": {
+          "PASS": 3
+        },
+        "E": {
+          "PASS": 12
+        },
+        "F": {
+          "PASS": 10
+        }
+      },
+      "summed_job_wall_s": 7039.4,
+      "collection_span_s": 2226.294412,
+      "max_e_peak_to_peak_error_pct": 5.879904259224853,
+      "max_e_first_harmonic_error_pct": 6.037934826630735,
+      "max_f_loaded_mean_torque_error_pct": 0.8624010930058876,
+      "max_f_bemf_fundamental_error_pct": 0.3120224415822469,
+      "max_f_bemf_peak_error_pct": 0.35876574590774346
+    },
+    "macos-arm64": {
+      "old_record_sha256": "634602e87391745ccf4ef8be44a4188d8e656044750a4fe420da0d7edc420760",
+      "old_abcd_rows_within_replay_tolerances": 47,
+      "original_abcd_anchor_differences": [],
+      "refined_cogging": {
+        "spm_8p24s_distributed_femm_validation__cogging": {
+          "status": "PASS",
+          "gates": {
+            "cogging_method": "PASS",
+            "cogging_angle_grid": "PASS",
+            "cogging_peak_to_peak": "PASS",
+            "cogging_first_harmonic": "PASS",
+            "reference_cogging_period": "PASS",
+            "reference_cogging_mean": "PASS"
+          },
+          "peak_to_peak_error_pct": 3.017724080036638,
+          "first_harmonic_error_pct": 2.1113815767752606
+        },
+        "spm_8p48s_distributed_femm_validation__cogging": {
+          "status": "PASS",
+          "gates": {
+            "cogging_method": "PASS",
+            "cogging_angle_grid": "PASS",
+            "cogging_peak_to_peak": "PASS",
+            "cogging_first_harmonic": "PASS",
+            "reference_cogging_period": "PASS",
+            "reference_cogging_mean": "PASS"
+          },
+          "peak_to_peak_error_pct": 3.161762966446371,
+          "first_harmonic_error_pct": 2.4530717501791353
+        },
+        "spm_12p36s_distributed_femm_validation__cogging": {
+          "status": "PASS",
+          "gates": {
+            "cogging_method": "PASS",
+            "cogging_angle_grid": "PASS",
+            "cogging_peak_to_peak": "PASS",
+            "cogging_first_harmonic": "PASS",
+            "reference_cogging_period": "PASS",
+            "reference_cogging_mean": "PASS"
+          },
+          "peak_to_peak_error_pct": 4.103389557885816,
+          "first_harmonic_error_pct": 3.1267260017422394
+        }
+      },
+      "case_counts": {
+        "A": {
+          "PASS": 19
+        },
+        "B": {
+          "PASS": 20
+        },
+        "C": {
+          "UNSUPPORTED": 1,
+          "PASS": 4
+        },
+        "D": {
+          "PASS": 3
+        },
+        "E": {
+          "PASS": 12
+        },
+        "F": {
+          "PASS": 10
+        }
+      },
+      "summed_job_wall_s": 12589.2,
+      "collection_span_s": 4852.116117,
+      "max_e_peak_to_peak_error_pct": 5.912612652880213,
+      "max_e_first_harmonic_error_pct": 6.003492029874014,
+      "max_f_loaded_mean_torque_error_pct": 0.8621829552021019,
+      "max_f_bemf_fundamental_error_pct": 0.31219028749025024,
+      "max_f_bemf_peak_error_pct": 0.3589813745753744
+    }
+  },
+  "cross_platform_replay": {
+    "matching_rows": 69,
+    "rows": 69,
+    "differences": [],
+    "direction": "macOS run compared to Windows record"
+  }
+}

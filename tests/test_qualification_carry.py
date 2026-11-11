@@ -6,13 +6,14 @@ import pytest
 
 from backend.benchmark_suite.contract import read, sha, write
 from backend.benchmark_suite.record import TOLERANCES, compare_case
-from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SUITE_FILE
+from backend.resources import BENCHMARK_SUITE_FILE
 from tools import qualification_carry as carry
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / 'benchmarks/candidate-qualification-20261103/windows/report/benchmark_summary.json'
 # The approved v0.5.0 reports measured protocol 1.6.0; these scenarios replay that registered suite.
 V050_SUITE = 'benchmarks/abcd-v1.6/benchmark_spec.json'
+BENCHMARK_REFERENCE_BUNDLE_DIR = 'benchmarks/reference-baselines/protocol16-reviewed-20261103'
 
 
 def test_identical_records_are_eligible_for_automatic_acceptance():
@@ -71,7 +72,8 @@ def test_protocol_1_6_evidence_cannot_carry_into_the_newton_default_suite():
     # Protocol 1.9.0 changes 28 requests to Newton, so v0.5.6 needs fresh measurements.
     original = read(REPORT)
     with pytest.raises(ValueError, match='same registered suite'):
-        carry.reference_compatibility(original, original, ROOT / BENCHMARK_SUITE_FILE, ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR)
+        carry.reference_compatibility(original, original, ROOT / BENCHMARK_SUITE_FILE,
+                                      ROOT / 'benchmarks/reference-baselines/protocol110-combined-20261110')
 
 
 @pytest.fixture
@@ -89,7 +91,9 @@ def platform_inputs(tmp_path, monkeypatch):
         return original_read(previous_records.get(Path(path).resolve(), path))
 
     monkeypatch.setattr(carry, 'read', historical_read)
+    monkeypatch.setattr(carry, 'POLICY', 'benchmarks/qualification-policy-history/protocol19-20261110.json')
     monkeypatch.setattr(carry, 'BENCHMARK_SUITE_FILE', V050_SUITE)
+    monkeypatch.setattr(carry, 'BENCHMARK_REFERENCE_BUNDLE_DIR', BENCHMARK_REFERENCE_BUNDLE_DIR)
     root = tmp_path / 'candidate'
     field = root / 'backend/test_field.py'
     field.parent.mkdir(parents=True)

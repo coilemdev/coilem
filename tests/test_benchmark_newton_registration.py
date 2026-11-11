@@ -8,18 +8,19 @@ import pytest
 from backend import resources
 from backend.benchmark_suite import PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS, references
 from backend.benchmark_suite.cli import inputs
-from backend.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, canonical, read, sha
+from backend.benchmark_suite.contract import ROOT, canonical, read, sha
 from backend.benchmark_suite.references import load_bundle, load_suite, require_reviewed_bundle
 from tools import make_newton_protocol
 
+DEFAULT_BUNDLE = ROOT / "benchmarks/reference-baselines/protocol16-reviewed-20261103"
 SUITE = ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json"
 MEASURED = ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
 
 
-def test_protocol_1_9_is_the_default_suite():
+def test_protocol_1_9_remains_a_supported_historical_suite():
     spec = load_suite(SUITE)
-    assert spec["protocol_version"] == PROTOCOL_VERSION == "1.9.0" and "1.9.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert SPEC == SUITE and resources.BENCHMARK_SUITE_FILE == "benchmarks/abcd-v1.9/benchmark_spec.json"
+    assert spec["protocol_version"] == "1.9.0" and "1.9.0" in SUPPORTED_PROTOCOL_VERSIONS
+    assert PROTOCOL_VERSION == "1.10.0" and resources.BENCHMARK_SUITE_FILE == "benchmarks/af-v1.10/benchmark_spec.json"
 
 
 def test_the_generator_reproduces_the_registered_requests_and_suite():
@@ -80,10 +81,10 @@ def test_packaged_bridge_loads_without_source_checkout(tmp_path, monkeypatch):
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, target)
     monkeypatch.setattr(references, "DATA_ROOT", tmp_path)
-    spec = load_suite(tmp_path / resources.BENCHMARK_SUITE_FILE)
-    manifest, records, _ = load_bundle(tmp_path / resources.BENCHMARK_REFERENCE_BUNDLE_DIR, spec)
+    spec = load_suite(tmp_path / "benchmarks/abcd-v1.9/benchmark_spec.json")
+    manifest, records, _ = load_bundle(tmp_path / "benchmarks/reference-baselines/protocol16-reviewed-20261103", spec)
     assert len(records) == 46
-    require_reviewed_bundle(tmp_path / resources.BENCHMARK_REFERENCE_BUNDLE_DIR, manifest, spec)
+    require_reviewed_bundle(tmp_path / "benchmarks/reference-baselines/protocol16-reviewed-20261103", manifest, spec)
 
 
 @pytest.mark.parametrize(

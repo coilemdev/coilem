@@ -1,0 +1,38 @@
+{
+  "schema": "coilem.protocol110_qualification/v1",
+  "status": "QUALIFIED_FOR_REGISTERED_PARITY",
+  "protocol_version": "1.10.0",
+  "candidate_commit": "70c5e3404c1962a811a915db292c31c28b92cf1a",
+  "suite_sha256": "14f80962ecb09ef4c5df569d0e5c89158dc7b2516cc9a8e47df34a57f501bcc4",
+  "reference_bundle_sha256": "5e3acea9a4e4dbbc53169b73445bb5802d2d39a99e7080b3f6b65e9468e8733c",
+  "source_collection_run": "42910700958",
+  "platforms": {
+    "windows-x86_64": {
+      "report": "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_summary.json",
+      "report_sha256": "871630a5a076456a0095e1fee861c6583b4bfcf52d2c1226d62ad54220ab24a3",
+      "receipt": "benchmarks/qualification-70c5e3404c19/windows-x86_64/verification.json",
+      "receipt_sha256": "cae829cfa5adcf60cc0f16db7d0ba06709b4f7ec94f9ae17278e351e2be914f4",
+      "workflow_run": "https://github.com/coilemdev/coilem/actions/runs/42917477308",
+      "prius_report": "benchmarks/qualification-70c5e3404c19/windows-x86_64/prius/app-results.json",
+      "prius_report_sha256": "f197ef317d511a647174d2130bdc5cb4ea26e22dca07646446b262893386cbb7",
+      "collection_span_s": 2226.294412,
+      "pass": 68,
+      "unsupported": 1,
+      "gates_pass": 468
+    },
+    "macos-arm64": {
+      "report": "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_summary.json",
+      "report_sha256": "25b517795bd27e7314bc345c807e6399444e3d7bc3b28b480f3f858361e51f4a",
+      "receipt": "benchmarks/qualification-70c5e3404c19/macos-arm64/verification.json",
+      "receipt_sha256": "f893a690ef1ed9a2c0eb458269dd68362bfd34d7f3c41fde540b4e381c03012c",
+      "workflow_run": "https://github.com/coilemdev/coilem/actions/runs/42923836479",
+      "prius_report": "benchmarks/qualification-70c5e3404c19/macos-arm64/prius/app-results.json",
+      "prius_report_sha256": "4a971148c001ef82f755ebcdb82da96e54f1d5abdbfd64bf3af9bb625d685b81",
+      "collection_span_s": 4852.116117,
+      "pass": 68,
+      "unsupported": 1,
+      "gates_pass": 468
+    }
+  },
+  "claim_boundary": "Registered software parity only; no general application or hardware promotion"
+}
