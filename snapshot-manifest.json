@@ -7595,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 57729,
-      "sha256": "cc9207f0688f32269357434526b8b6f486b85830aaf7bb81375df23701ea84fb"
+      "bytes": 57736,
+      "sha256": "d742b0f7d7e390265abfdf0a31cc9475664ed699274b87c8699b65a3229ec6f4"
     },
     {
       "path": "frontend/tsconfig.public.json",

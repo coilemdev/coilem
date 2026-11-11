@@ -854,8 +854,8 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics article').filter({
     has: page.getByText(label, { exact: true }),
   });
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['— N·m', '0.20 N·m']);
-  await expect(coggingRow('Cogging fundamental').locator('strong')).toHaveText(['— N·m', '0.10 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['— N·m', '0.200 N·m']);
+  await expect(coggingRow('Cogging fundamental').locator('strong')).toHaveText(['— N·m', '0.100 N·m']);
   await dialog.getByLabel('Run B · candidate').selectOption('regression/emf');
   await expect(coggingRow('Cogging torque p-p')).toHaveCount(0);
   await expect(coggingRow('Cogging fundamental')).toHaveCount(0);
@@ -868,11 +868,11 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Run A 2 positions · Run B not computed', { exact: true })).toBeVisible();
   await dialog.getByLabel('Run A · baseline').selectOption('regression/cogging');
   await dialog.getByLabel('Run B · candidate').selectOption('regression/cogging2');
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.20 N·m', '0.30 N·m']);
-  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.10 N·m+50.0% vs A');
-  await expect(coggingRow('Cogging fundamental').locator('em')).toHaveText('+0.15 N·m+150.0% vs A');
+  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.200 N·m', '0.300 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.100 N·m+50.0% vs A');
+  await expect(coggingRow('Cogging fundamental').locator('em')).toHaveText('+0.150 N·m+150.0% vs A');
   await dialog.getByLabel('Run A · baseline').selectOption('regression/zero');
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.00 N·m', '0.30 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.00 N·m', '0.300 N·m']);
   await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.30 N·m— vs A');
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
