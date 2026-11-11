@@ -4482,7 +4482,7 @@ function ReportStage({
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
       {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
-      <ResultDiagnostics report={result.solver_convergence} />
+      <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown} />
       </>}
     </div>
   );
