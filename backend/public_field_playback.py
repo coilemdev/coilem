@@ -27,6 +27,7 @@ from multiprocessing import get_context
 from pathlib import Path
 from typing import Any, Literal
 
+from backend import field_frame_codec
 from backend.field_artifacts import (
     encode_solve_cache_artifact_id,
     read_field_line_frame_artifact,
@@ -102,7 +103,7 @@ def _load_frame(artifact_id: str) -> tuple[Path, dict[str, Any]]:
     if (
         not path.is_file()
         or path.parent.name != "field_line_frames"
-        or not path.name.endswith(".json.gz")
+        or not path.name.endswith((".json.gz", field_frame_codec.SUFFIX))
     ):
         raise ValueError("field playback source is not a numerical field frame")
     artifact = read_field_line_frame_artifact(path)

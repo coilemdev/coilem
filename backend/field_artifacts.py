@@ -425,19 +425,17 @@ def compact_field_frame_path(path: Path) -> Path:
     return path.with_name(path.name.removesuffix(".json.gz") + field_frame_codec.SUFFIX)
 
 
-def _write_compact_field_frame(path: Path, payload: dict[str, Any]) -> None:
-    """Write the compact copy a saved run keeps instead of the gzipped JSON.
-
-    The solve reads its physics from the JSON copy, so a failure here only
-    leaves the run keeping the JSON, as before.
-    """
+def _write_compact_field_frame(path: Path, payload: dict[str, Any]) -> bool:
+    """Write a frame in the compact form; False if it could not be written."""
 
     staging = path.with_name(f".{path.name}.writing")
     try:
         staging.write_bytes(field_frame_codec.encode_compact_field_frame(payload))
         os.replace(staging, path)
+        return True
     except Exception:
         staging.unlink(missing_ok=True)
+        return False
 
 
 def _field_line_frame_segment_count(frame: dict[str, Any] | None) -> int:
@@ -491,11 +489,21 @@ def write_field_line_frame_artifact(
             "record_count": record_count,
             "field_line_frame": frame_payload,
         }
-        _write_json_gz(path, payload)
-        _write_compact_field_frame(compact_field_frame_path(path), payload)
+        # One copy, in the compact form. Writing the gzipped JSON as well took
+        # about a third of a frame's time; it is now only the fallback for a
+        # frame the compact form cannot hold.
+        compact_path = compact_field_frame_path(path)
+        if _write_compact_field_frame(compact_path, payload):
+            path = compact_path
+            stored_format = field_frame_codec.SUFFIX.lstrip(".")
+        else:
+            _write_json_gz(path, payload)
+            stored_format = "json.gz"
         return {
             "artifact_id": encode_solve_cache_artifact_id(path),
-            "format": "json.gz",
+            # ``format`` is how the frame is stored; ``media_type`` is how the
+            # artifact route serves it, which is JSON either way.
+            "format": stored_format,
             "media_type": "application/json+gzip",
             "schema_version": FIELD_LINE_FRAME_ARTIFACT_SCHEMA,
             "record_count": record_count,

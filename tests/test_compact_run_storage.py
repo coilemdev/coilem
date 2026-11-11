@@ -17,7 +17,6 @@ from backend import field_frame_codec, public_field_playback
 from backend.field_artifacts import (
     AIRGAP_RECORD_ARTIFACT_SCHEMA,
     FIELD_LINE_FRAME_ARTIFACT_SCHEMA,
-    compact_field_frame_path,
     encode_solve_cache_artifact_id,
     read_field_line_frame_artifact,
     resolve_solve_cache_artifact_id,
@@ -102,22 +101,39 @@ def test_compact_frames_round_trip_arrays_as_float32_and_everything_else_exactly
         field_frame_codec.decode_compact_field_frame(b"{}")
 
 
-def test_frame_writer_adds_a_compact_copy_that_reads_back_like_the_json(data_root: Path) -> None:
+def test_frame_writer_stores_one_compact_file(data_root: Path) -> None:
     ref = write_field_line_frame_artifact(_frame(), solve_cache_root() / "magneto2d-test", pos_idx=3, elec_angle_deg=45.0)
 
     assert ref is not None
-    json_path = resolve_solve_cache_artifact_id(ref["artifact_id"])
-    assert json_path.name == "pos003_45p000deg_field_frame.json.gz"
-    compact_path = compact_field_frame_path(json_path)
-    assert compact_path.name == "pos003_45p000deg_field_frame.f32.xz"
-    assert field_frame_codec.is_compact_field_frame(compact_path)
-    assert not list(compact_path.parent.glob(".*"))
-    from_json = read_field_line_frame_artifact(json_path)
-    from_compact = read_field_line_frame_artifact(compact_path)
-    _close(from_compact, from_json)
-    # The PM-only plot's shared mesh is restored from either form.
-    assert from_compact["field_line_frame"]["noload_plot"]["triangles"] == _frame()["triangles"]
-    assert compact_path.stat().st_size < json_path.stat().st_size
+    path = resolve_solve_cache_artifact_id(ref["artifact_id"])
+    assert path.name == "pos003_45p000deg_field_frame.f32.xz"
+    assert field_frame_codec.is_compact_field_frame(path)
+    # One copy: no gzipped JSON beside it, and no staging file left behind.
+    assert [entry.name for entry in path.parent.iterdir()] == [path.name]
+    # The ref says how the frame is stored and how the artifact route serves it.
+    assert (ref["format"], ref["media_type"]) == ("f32.xz", "application/json+gzip")
+    assert ref["byte_count"] == path.stat().st_size
+    stored = read_field_line_frame_artifact(path)
+    assert (stored["position_index"], stored["electrical_angle_deg"]) == (3, 45.0)
+    _close(stored["field_line_frame"], _frame())
+    # The PM-only plot's shared mesh is restored on reading.
+    assert stored["field_line_frame"]["noload_plot"]["triangles"] == _frame()["triangles"]
+
+
+def test_frame_the_compact_form_cannot_hold_is_kept_as_gzipped_json(
+    data_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def refuse(_payload):
+        raise OverflowError("not encodable")
+
+    monkeypatch.setattr(field_frame_codec, "encode_compact_field_frame", refuse)
+    ref = write_field_line_frame_artifact(_frame(), solve_cache_root() / "magneto2d-test", pos_idx=3, elec_angle_deg=45.0)
+
+    assert ref is not None and ref["format"] == "json.gz"
+    path = resolve_solve_cache_artifact_id(ref["artifact_id"])
+    assert path.name == "pos003_45p000deg_field_frame.json.gz"
+    assert [entry.name for entry in path.parent.iterdir()] == [path.name]
+    assert read_field_line_frame_artifact(path)["field_line_frame"] == _frame()
 
 
 @pytest.fixture
@@ -178,8 +194,7 @@ def test_saved_run_keeps_the_compact_frame_and_links_cache_files(data_root: Path
     assert field_frame_codec.is_compact_field_frame(stored)
     assert ref["byte_count"] == stored.stat().st_size
     # The run shares the cache's bytes instead of copying them.
-    compact = compact_field_frame_path(sources["frame-a"])
-    assert os.stat(stored).st_ino == os.stat(compact).st_ino
+    assert os.stat(stored).st_ino == os.stat(sources["frame-a"]).st_ino
     _close(read_field_line_frame_artifact(stored), read_field_line_frame_artifact(sources["frame-a"]))
     # Playback images stay out of the run: they wait in its playback cache folder.
     assert set(_records(location.path)) == {"field_frame", "other"}
@@ -235,7 +250,14 @@ def test_runs_saved_before_artifact_kinds_are_classified_from_their_files(data_r
     workspace = SolveWorkspace(data_root)
     sources: dict[str, Path] = {}
     result = _cached_run_result("a", sources)
-    compact_field_frame_path(sources["frame-a"]).unlink()  # older apps kept the gzipped JSON
+    # Older apps kept the frame as gzipped JSON.
+    compact = sources["frame-a"]
+    legacy = compact.with_name(compact.name.removesuffix(field_frame_codec.SUFFIX) + ".json.gz")
+    with gzip.open(legacy, "wt", encoding="utf-8") as handle:
+        json.dump(read_field_line_frame_artifact(compact), handle)
+    compact.unlink()
+    for key in ("field_frame_artifact", "full_field_frame_artifact"):
+        result["field_line_frames"][0][key]["artifact_id"] = encode_solve_cache_artifact_id(legacy)
     old = _save(workspace, result)
     manifest_path = old.path / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
