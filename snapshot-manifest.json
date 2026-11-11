@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 80104,
-      "sha256": "720b9024b95c17c29219522f71417c76fc0c228677c65df06018772df2f5b5b3"
+      "bytes": 81491,
+      "sha256": "1a0cb3affbff7e561ab49129219cf2c573afb48423a4bdd2fff7cf4326fc6c3c"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -15822,6 +15822,11 @@
       "path": "tests/test_combined_benchmark_protocol.py",
       "bytes": 7792,
       "sha256": "5e040d3aeaeba3483c4e9258357d150ccccc5b01d95d171f5a80d4d0f84b43df"
+    },
+    {
+      "path": "tests/test_gmsh_runtime_owner.py",
+      "bytes": 1687,
+      "sha256": "2f60c076990ff4368c97f9374c27a37a2d087868fe4da6be69a9fb4847c0ef46"
     },
     {
       "path": "tools/make_combined_protocol.py",
