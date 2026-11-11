@@ -14,6 +14,7 @@ import type {
   IronSaturationToothFieldData,
   LessonOneFieldCompositionResult,
   LessonOneFieldCompositionSource,
+  LessonPhaseSequence,
   LinearMotorCapstoneFieldData,
   MeshPreviewData,
   RotatingFieldMotorFrameData,
@@ -102,6 +103,8 @@ export interface LessonSolveClient {
   fetchRotatingFieldMotorSweep(
     peakCurrentA?: number,
     fieldComponent?: 'combined' | 'stator' | 'rotor',
+    /** 'reverse' makes Phase B lead Phase A: the field and rotor turn clockwise. */
+    phaseSequence?: LessonPhaseSequence,
   ): Promise<RotatingFieldMotorSweepData>;
   fetchRotatingFieldMotorGeometry(): Promise<RotatingFieldMotorFrameData>;
 
@@ -109,6 +112,8 @@ export interface LessonSolveClient {
   fetchThreePhaseMotorSweep(
     peakCurrentA?: number,
     fieldComponent?: ThreePhaseMotorFieldComponent,
+    /** 'reverse' swaps the currents of Phases B and C (A-C-B, clockwise). */
+    phaseSequence?: LessonPhaseSequence,
   ): Promise<ThreePhaseMotorSweepData>;
   fetchThreePhaseMotorGeometry(): Promise<ThreePhaseMotorFrameData>;
 }

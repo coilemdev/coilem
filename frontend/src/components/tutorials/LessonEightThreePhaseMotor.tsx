@@ -6,6 +6,7 @@ import type {
 } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { useLessonResume, useLessonSessionState } from './lessonSession';
 import {
   MeshViewer,
   type MeshViewerDirectionVector,
@@ -48,7 +49,13 @@ interface LearningLessonEightThreePhaseMotorProps {
   onHeaderProgressChange?: (progress: LearningLessonHeaderProgress | null) => void;
 }
 
+const LESSON_ID = 'three-phase-motor';
 type RotationDirection = 1 | -1;
+type SweepKey = ThreePhaseMotorFieldComponent | `${ThreePhaseMotorFieldComponent}:reverse`;
+// The open-phase drive (B = −A, C off) is the same in both sequences.
+const sweepKey = (mode: ThreePhaseMotorFieldComponent, direction: RotationDirection): SweepKey => (
+  direction === 1 || mode === 'open_c' ? mode : `${mode}:reverse`
+);
 
 const PEAK_CURRENT_A = 8;
 const FRAME_STEP_DEG = 11.25;
@@ -138,6 +145,8 @@ interface ThreePhaseWaveformProps {
   phaseBCurrentA: number;
   phaseCCurrentA: number;
   phaseCOpen: boolean;
+  /** 1: A-B-C (B lags A by 120°). -1: A-C-B (B and C traded). */
+  direction: RotationDirection;
   onSelectAngle: (angleDeg: number) => void;
 }
 
@@ -147,6 +156,7 @@ const ThreePhaseWaveform: React.FC<ThreePhaseWaveformProps> = ({
   phaseBCurrentA,
   phaseCCurrentA,
   phaseCOpen,
+  direction,
   onSelectAngle,
 }) => {
   // Drawn at about the width of the Inspect card, so the axis text is not
@@ -170,9 +180,11 @@ const ThreePhaseWaveform: React.FC<ThreePhaseWaveformProps> = ({
     <div className="three-phase-waveform-wrap">
       <div className="three-phase-waveform-legend">
         <span style={{ color: PHASE_COLORS.A }}>Phase A · cos θ</span>
-        <span style={{ color: PHASE_COLORS.B }}>Phase B · cos(θ − 120°)</span>
+        <span style={{ color: PHASE_COLORS.B }}>
+          Phase B · {phaseCOpen ? '−cos θ' : direction === 1 ? 'cos(θ − 120°)' : 'cos(θ + 120°)'}
+        </span>
         <span className={phaseCOpen ? 'is-open' : ''} style={{ color: PHASE_COLORS.C }}>
-          Phase C · {phaseCOpen ? 'OPEN' : 'cos(θ + 120°)'}
+          Phase C · {phaseCOpen ? 'OPEN' : direction === 1 ? 'cos(θ + 120°)' : 'cos(θ − 120°)'}
         </span>
       </div>
       <svg className="three-phase-waveform" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Three phase currents separated by 120 electrical degrees">
@@ -185,8 +197,8 @@ const ThreePhaseWaveform: React.FC<ThreePhaseWaveformProps> = ({
           ))}
         </g>
         <polyline className="is-a" points={phasePath(0)} />
-        <polyline className="is-b" points={phaseCOpen ? phasePath(180) : phasePath(-120)} />
-        {!phaseCOpen ? <polyline className="is-c" points={phasePath(120)} /> : null}
+        <polyline className="is-b" points={phaseCOpen ? phasePath(180) : phasePath(-120 * direction)} />
+        {!phaseCOpen ? <polyline className="is-c" points={phasePath(120 * direction)} /> : null}
         <line className="three-phase-waveform-cursor" x1={selectedX} y1={margin.top} x2={selectedX} y2={height - margin.bottom} />
         <circle className="is-a" cx={selectedX} cy={yFor(phaseACurrentA)} r="4" />
         <circle className="is-b" cx={selectedX} cy={yFor(phaseBCurrentA)} r="4" />
@@ -439,18 +451,22 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
 }) => {
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
   const [geometry, setGeometry] = React.useState<ThreePhaseMotorFrameData | null>(null);
-  const [sweeps, setSweeps] = React.useState<Partial<Record<ThreePhaseMotorFieldComponent, ThreePhaseMotorSweepData>>>({});
+  // One solved cycle per field source and phase sequence (see sweepKey).
+  const [sweeps, setSweeps] = React.useState<Partial<Record<SweepKey, ThreePhaseMotorSweepData>>>({});
   const [fieldMode, setFieldMode] = React.useState<ThreePhaseMotorFieldComponent>('combined');
   const [frameIndex, setFrameIndex] = React.useState(0);
-  // Match the public Solve player: start with the clockwise A-C-B sequence,
-  // then let the learner swap two phases to observe the reversal.
-  const [direction, setDirection] = React.useState<RotationDirection>(-1);
+  // 1: A-B-C, the currents the lesson text gives (B = cos(θ − 120°)); the field
+  // turns counterclockwise. -1: B and C traded (A-C-B); it turns clockwise.
+  // The learner swaps two phases to observe the reversal.
+  const [direction, setDirection] = React.useState<RotationDirection>(1);
   const [playing, setPlaying] = React.useState(false);
   // Steps taken in the current playback run; one full cycle ends it.
   const [, setPlaySteps] = React.useState(0);
-  const [cycleComplete, setCycleComplete] = React.useState(false);
-  const [inspectedOpenPhase, setInspectedOpenPhase] = React.useState(false);
-  const [reversedSequence, setReversedSequence] = React.useState(false);
+  // The three drive checks are remembered for the tab, so a reload does not
+  // lock the later steps again; the frames themselves are solved again.
+  const [cycleCompleteNow, setCycleComplete] = useLessonSessionState(LESSON_ID, 'cycleComplete', false);
+  const [inspectedOpenPhaseNow, setInspectedOpenPhase] = useLessonSessionState(LESSON_ID, 'inspectedOpenPhase', false);
+  const [reversedSequenceNow, setReversedSequence] = useLessonSessionState(LESSON_ID, 'reversedSequence', false);
   const [busyMode, setBusyMode] = React.useState<ThreePhaseMotorFieldComponent | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [showFieldLines, setShowFieldLines] = React.useState(true);
@@ -466,9 +482,13 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   const geometryRequest = React.useRef<Promise<void> | null>(null);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
-  const lessonComplete = isLessonComplete('three-phase-motor');
+  const lessonComplete = isLessonComplete(LESSON_ID);
+  // A finished lesson reopens with every step available.
+  const cycleComplete = lessonComplete || cycleCompleteNow;
+  const inspectedOpenPhase = lessonComplete || inspectedOpenPhaseNow;
+  const reversedSequence = lessonComplete || reversedSequenceNow;
 
-  const activeSweep = sweeps[fieldMode];
+  const activeSweep = sweeps[sweepKey(fieldMode, direction)];
   const frames = activeSweep?.frames ?? [];
   const lookupIndex = frames.length ? frameIndex % frames.length : 0;
   const solvedFrame = frames[lookupIndex] ?? null;
@@ -485,7 +505,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   }, [onStageChange, stage]);
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('three-phase-motor', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   const loadGeometry = React.useCallback(() => {
@@ -509,11 +529,9 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   React.useEffect(() => {
     if (!playing || !frames.length || !rotorMotionAllowed) return undefined;
     const timer = window.setInterval(() => {
-      setFrameIndex((previous) => (
-        direction === 1
-          ? previous >= frames.length ? 1 : previous + 1
-          : previous <= 0 ? frames.length - 1 : previous - 1
-      ));
+      // The electrical angle always advances; the phase sequence decides
+      // which way that turns the field.
+      setFrameIndex((previous) => (previous >= frames.length ? 1 : previous + 1));
       setPlaySteps((previous) => {
         const next = previous + 1;
         if (next >= frames.length) {
@@ -524,42 +542,54 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       });
     }, PLAY_INTERVAL_MS);
     return () => window.clearInterval(timer);
-  }, [direction, frames.length, playing, rotorMotionAllowed]);
+  }, [frames.length, playing, rotorMotionAllowed]);
 
   const loadSweep = React.useCallback(async (
     mode: ThreePhaseMotorFieldComponent,
-    options: { autoPlay?: boolean } = {},
+    options: { autoPlay?: boolean; direction?: RotationDirection } = {},
   ) => {
+    // The sequence changes the phase currents, so each sequence has its own
+    // solved frames. The picture switches only once they are there.
+    const nextDirection = options.direction ?? direction;
+    const key = sweepKey(mode, nextDirection);
     setPlaying(false);
     setError(null);
-    const cached = sweeps[mode];
+    const cached = sweeps[key];
     if (cached) {
       setFieldMode(mode);
+      setDirection(nextDirection);
+      if (options.autoPlay || nextDirection !== direction) setFrameIndex(0);
       if (options.autoPlay) {
-        setFrameIndex(direction === 1 ? 0 : cached.frames.length);
         setPlaySteps(0);
         setPlaying(true);
       }
-      return;
+      return true;
     }
-    if (busyMode) return;
+    if (busyMode) return false;
     setBusyMode(mode);
     try {
-      const result = await solveClient.fetchThreePhaseMotorSweep(PEAK_CURRENT_A, mode);
+      const result = await solveClient.fetchThreePhaseMotorSweep(
+        PEAK_CURRENT_A,
+        mode,
+        mode === 'open_c' || nextDirection === 1 ? 'forward' : 'reverse',
+      );
       if (result.frames.length !== FRAME_COUNT || result.field_component !== mode) {
         throw new Error(`The solver did not return the complete ${mode} field cycle.`);
       }
-      setSweeps((previous) => ({ ...previous, [mode]: result }));
+      setSweeps((previous) => ({ ...previous, [key]: result }));
       setFieldMode(mode);
-      setFrameIndex(direction === 1 ? 0 : result.frames.length);
+      setDirection(nextDirection);
+      setFrameIndex(0);
       if (mode === 'open_c') setInspectedOpenPhase(true);
       if (options.autoPlay) {
         setPlaySteps(0);
         setRotorMotionAllowed(true);
         setPlaying(true);
       }
+      return true;
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The three-phase FEM sweep failed.');
+      return false;
     } finally {
       setBusyMode(null);
     }
@@ -571,6 +601,10 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     void loadGeometry();
     void loadSweep('combined', { autoPlay: true });
   }, [loadGeometry, loadSweep, onStageChange]);
+
+  // Reopened after a reload or a trip to the catalog: back into the lab, with
+  // the balanced cycle solved again.
+  useLessonResume(LESSON_ID, lessonStage, enterLab);
 
   const selectFrame = (nextIndex: number) => {
     if (!frames.length) return;
@@ -595,16 +629,17 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
 
   const playCycle = () => {
     if (!frames.length || !rotorMotionAllowed) return;
-    setFrameIndex(direction === 1 ? 0 : frames.length);
+    setFrameIndex(0);
     setPlaySteps(0);
     setPlaying(true);
   };
 
-  const swapTwoPhases = () => {
-    setPlaying(false);
-    setDirection((previous) => previous === 1 ? -1 : 1);
-    setReversedSequence(true);
-    setFrameIndex(direction === 1 ? frames.length : 0);
+  // Trading B and C changes their currents, so the reversed cycle is solved
+  // (once) with the rotor trailing the field on the other side.
+  const swapTwoPhases = async () => {
+    // The open-phase view has no sequence to reverse: go back to the balanced drive.
+    const swapped = await loadSweep(phaseCOpen ? 'combined' : fieldMode, { direction: direction === 1 ? -1 : 1 });
+    if (swapped) setReversedSequence(true);
   };
 
   // The primary button walks the three drive checks in order.
@@ -628,7 +663,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       void loadSweep('combined');
       return;
     }
-    if (!reversedSequence) swapTwoPhases();
+    if (!reversedSequence) void swapTwoPhases();
   };
 
   const driveCheckActionLabel = playing && !cycleComplete
@@ -1010,6 +1045,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
             phaseBCurrentA={solvedFrame.phase_b_current_a}
             phaseCCurrentA={solvedFrame.phase_c_current_a}
             phaseCOpen={phaseCOpen}
+            direction={direction}
             onSelectAngle={selectAngle}
           />
           <section className="three-phase-current-card">
@@ -1202,10 +1238,10 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
                 label="Phase sequence"
                 value={direction === 1 ? 'abc' : 'acb'}
                 // Either button swaps two phases; pressing the current one does nothing.
-                onChange={(id) => { if ((id === 'abc') !== (direction === 1)) swapTwoPhases(); }}
+                onChange={(id) => { if ((id === 'abc') !== (direction === 1)) void swapTwoPhases(); }}
                 options={[
-                  { id: 'acb', label: 'A–C–B · CW' },
-                  { id: 'abc', label: 'A–B–C · CCW' },
+                  { id: 'abc', label: 'A–B–C · CCW', disabled: Boolean(busyMode) },
+                  { id: 'acb', label: 'A–C–B · CW', disabled: Boolean(busyMode) },
                 ]}
               />
               <span className="three-phase-control-label">Field source</span>

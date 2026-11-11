@@ -1108,10 +1108,10 @@ assert.match(styleSource, /\.public-motor-viewport \.viewport-bottom-bar \.viewp
 // Percentages keep their unit apart from the number: its own column in the list.
 assert.match(workspaceSource, /formatNumber\(ripple\.ripplePct\), ripple\.ripplePct === null \? '' : '%', false, ripple\.note \?\? undefined\)/);
 // No current: ripple % is left out and the cogging swing shown (resultMetrics torqueRippleView).
-assert.match(workspaceSource, /\{ripple\.ripplePct === null && resultRow\(ripple\.peakToPeakLabel, formatNumber\(ripple\.peakToPeakNm\), 'N·m'/);
+assert.match(workspaceSource, /\{ripple\.ripplePct === null && resultRow\(ripple\.peakToPeakLabel, formatTorqueNm\(ripple\.peakToPeakNm\), 'N·m'/);
 assert.doesNotMatch(workspaceSource, /result\.summary\.torque_ripple_pct/);
 assert.equal((workspaceSource.match(/\{(?:hasTorque && )?rippleRows\}/g) ?? []).length, 2, 'Key results and Performance share the ripple rows');
-assert.match(resultSummarySource, /ripple\.ripplePct === null\s*\? `\$\{ripple\.peakToPeakLabel\} \$\{fixed\(ripple\.peakToPeakNm\)\} N·m`/);
+assert.match(resultSummarySource, /ripple\.ripplePct === null\s*\? `\$\{ripple\.peakToPeakLabel\} \$\{formatTorqueNm\(ripple\.peakToPeakNm\)\} N·m`/);
 assert.match(workspaceSource, /formatNumber\(result\.summary\.back_emf_thd_pct\), '%'\)/);
 assert.doesNotMatch(workspaceSource, /(?:torque_ripple_pct|back_emf_thd_pct)\)\}%/);
 assert.doesNotMatch(workspaceSource, /Validate on run/i);
@@ -1804,6 +1804,41 @@ assert.match(halbachWorkspaceSource, /Samples CSV/);
 assert.match(halbachWorkspaceSource, /Design SVG/);
 assert.match(halbachWorkspaceSource, /Design PNG/);
 assert.match(halbachWorkspaceSource, /Report PDF/);
+// The linear Results panel offers the same seven exports through the shared
+// export route (#264).
+for (const exportLabel of [
+  'Halbach JSON', 'Problem JSON', 'Field JSON', 'Samples CSV',
+  'Design SVG', 'Design PNG', 'Report PDF',
+]) {
+  assert.match(linearHalbachWorkspaceSource, new RegExp(`'${exportLabel}'`));
+}
+assert.match(linearHalbachWorkspaceSource, /className="halbach-exports" aria-label="Report exports"/);
+assert.match(linearHalbachWorkspaceSource, /downloadHalbachExport\(kind, report\)/);
+assert.match(halbachApiSource, /report: HalbachReport \| LinearHalbachReport,/);
+// A bad radius must never reach canvas arc(), must be reported in Design
+// Health, and must not be able to lock the workspace through the autosave
+// (#256).
+assert.match(halbachTwoSource, /if \(\s*!isDrawableLength\(innerRadius \* scale\)\s*\|\| !isDrawableLength\(outerRadius \* scale\)\s*\|\| outerRadius <= innerRadius\s*\) return;\s*context\.arc\(/);
+assert.match(halbachTwoSource, /if \(!isDrawableLength\(radius \* scale\)\) return;\s*context\.beginPath\(\);\s*context\.arc\(/);
+assert.equal((halbachTwoSource.match(/context\.arc\(/g) ?? []).length, 3);
+assert.match(halbachTwoSource, /halbachViewRadius\(config\)/);
+assert.match(halbachGeometrySource, /if \(!halbachRingIsDrawable\(config\)\) return \[\];/);
+assert.match(linearHalbachTwoSource, /const magnetCount = linearHalbachDrawableMagnetCount\(config\);/);
+assert.match(linearHalbachThreeSource, /const magnetCount = linearHalbachDrawableMagnetCount\(config\);/);
+assert.match(halbachWorkspaceSource, /'Bore diameter must be greater than zero\.'/);
+assert.match(halbachWorkspaceSource, /'Outer diameter must be greater than zero\.'/);
+assert.match(halbachWorkspaceSource, /'Outer diameter must be greater than the bore diameter\.'/);
+assert.match(halbachWorkspaceSource, /'Bore ROI radius must be greater than zero\.'/);
+assert.match(halbachWorkspaceSource, /'Leakage probe radius must be greater than zero\.'/);
+assert.match(halbachWorkspaceSource, /isRestorableHalbachConfig\(parsed\?\.halbach_config\)/);
+assert.match(halbachWorkspaceSource, /isRestorableLinearHalbachConfig\(parsed\?\.halbach_config\)/);
+assert.match(halbachWorkspaceSource, /if \(!isRestorableHalbachConfig\(config\)\) return;\s*window\.localStorage\?\.setItem\(\s*'openem_halbach_autosave'/);
+assert.match(linearHalbachWorkspaceSource, /if \(!isRestorableLinearHalbachConfig\(config\)\) return;/);
+for (const boundarySource of [halbachWorkspaceSource, linearHalbachWorkspaceSource]) {
+  assert.match(boundarySource, /<div className="halbach-viewport-shell">\s*<WorkspaceErrorBoundary/);
+  assert.match(boundarySource, /actionLabel="Reset design"/);
+}
+assert.match(halbachWorkspaceSource, /title="The Halbach workspace could not be shown"/);
 assert.match(halbachWorkspaceSource, /B parallel/);
 assert.match(halbachWorkspaceSource, /B perpendicular/);
 assert.match(halbachGeometrySource, /return 2 \* segmentCenterDeg - fieldDirectionDeg/);

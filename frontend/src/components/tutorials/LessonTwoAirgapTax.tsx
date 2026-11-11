@@ -2,6 +2,7 @@ import React from 'react';
 import type { AirgapTaxFieldData } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonResume, useLessonSessionState } from './lessonSession';
 import { MeshViewer } from './MeshViewer';
 import type {
   LearningLessonHeaderProgress,
@@ -68,6 +69,7 @@ interface AirgapFluxPlotProps {
   onSelect: (gapMm: number) => void;
 }
 
+const LESSON_ID = 'airgap-tax';
 const DEFAULT_GAP_MM = 6;
 const POLE_FACE_AREA_MM2 = 120;
 const IRON_PATH_MM = 80;
@@ -325,8 +327,19 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   onHeaderProgressChange,
 }) => {
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
-  const [gapMm, setGapMm] = React.useState(DEFAULT_GAP_MM);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['airgap', 'steel', 'magnet']),
+  );
+  const [gapMm, setGapMm] = useLessonSessionState(
+    LESSON_ID, 'gapMm', DEFAULT_GAP_MM, (value) => typeof value === 'number' && value >= 0.5 && value <= 8,
+  );
+  // The gaps solved so far (newest first). The fields are not stored; they are
+  // solved again when the lesson is reopened.
+  const [solvedGapsMm, setSolvedGapsMm] = useLessonSessionState<number[]>(
+    LESSON_ID, 'solvedGapsMm', [],
+    (value) => Array.isArray(value) && value.length <= 16
+      && value.every((gap) => typeof gap === 'number' && gap >= 0.5 && gap <= 8),
+  );
   const [runs, setRuns] = React.useState<SolveRun[]>([]);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -345,9 +358,12 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   const comparisonWasReadyRef = React.useRef(false);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
-  const lessonComplete = isLessonComplete('airgap-tax');
+  const lessonComplete = isLessonComplete(LESSON_ID);
 
   const predictionCorrect = prediction === 'airgap';
+  // A finished lesson reopens with every step available.
+  const predictionDone = lessonComplete || predictionCorrect;
+  const comparisonDone = lessonComplete || comparisonReviewed;
   const latestRun = runs[0] ?? null;
   const currentRun = runs.find((run) => Math.abs(run.gapMm - gapMm) < 0.01) ?? null;
   const distinctGaps = new Set(runs.map((run) => run.gapMm.toFixed(2)));
@@ -365,20 +381,20 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
     if (next === 'predict') {
       setQuizOpen(false);
       onStageChange?.('design');
-    } else if (next === 'solve' && predictionCorrect) {
+    } else if (next === 'solve' && predictionDone) {
       setQuizOpen(false);
       onStageChange?.('solve');
-    } else if (next === 'check' && comparisonReviewed) {
+    } else if (next === 'check' && comparisonDone) {
       onStageChange?.('solve');
       setQuizOpen(true);
     }
-  }, [comparisonReviewed, onStageChange, predictionCorrect]);
+  }, [comparisonDone, onStageChange, predictionDone]);
 
   const lessonProgressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
-    { id: 'solve', label: 'Airgap lab', complete: comparisonReviewed, available: predictionCorrect },
-    { id: 'check', label: 'Check', complete: quizPassed, available: comparisonReviewed },
-  ], [comparisonReviewed, predictionCorrect, quizPassed]);
+    { id: 'solve', label: 'Airgap lab', complete: comparisonReviewed, available: predictionDone },
+    { id: 'check', label: 'Check', complete: quizPassed, available: comparisonDone },
+  ], [comparisonDone, comparisonReviewed, predictionDone, quizPassed]);
 
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
     lessonNumber: 2,
@@ -395,7 +411,7 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
   }, [headerProgress, onHeaderProgressChange]);
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('airgap-tax', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -421,26 +437,46 @@ export const LearningLessonTwoAirgapTax: React.FC<LearningLessonTwoAirgapTaxProp
     onStageChange?.(next);
   };
 
-  const solveGap = async () => {
+  const solveGapAt = async (targetGapMm: number) => {
+    const data = await solveClient.fetchAirgapTaxSolve(targetGapMm);
+    const metrics = data.metrics;
+    if (!metrics) throw new Error('The solver returned no magnetic-circuit measurements.');
+    const run: SolveRun = {
+      gapMm: targetGapMm,
+      gapBT: metrics.working_gap_mean_b_t,
+      fluxMicroWb: (metrics.north_face_flux_wb ?? 0) * 1e6,
+      data,
+    };
+    setRuns((previous) => [run, ...previous.filter((item) => Math.abs(item.gapMm - targetGapMm) >= 0.01)]);
+  };
+
+  // Solve one gap, or several in turn (oldest first, so the last one solved
+  // is shown, as it was before the lesson was left).
+  const solveGaps = async (gapsMm: readonly number[]) => {
     setBusy(true);
     setError(null);
     try {
-      const data = await solveClient.fetchAirgapTaxSolve(gapMm);
-      const metrics = data.metrics;
-      if (!metrics) throw new Error('The solver returned no magnetic-circuit measurements.');
-      const run: SolveRun = {
-        gapMm,
-        gapBT: metrics.working_gap_mean_b_t,
-        fluxMicroWb: (metrics.north_face_flux_wb ?? 0) * 1e6,
-        data,
-      };
-      setRuns((previous) => [run, ...previous.filter((item) => Math.abs(item.gapMm - gapMm) >= 0.01)]);
+      for (const targetGapMm of gapsMm) {
+        await solveGapAt(targetGapMm);
+      }
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The magnetic-field solve failed.');
     } finally {
       setBusy(false);
     }
   };
+  const solveGap = () => solveGaps([gapMm]);
+
+  React.useEffect(() => {
+    if (runs.length > 0) setSolvedGapsMm(runs.map((run) => run.gapMm));
+  }, [runs, setSolvedGapsMm]);
+
+  // Reopened after a reload or a trip to the catalog: back into the lab, with
+  // the gaps the student had solved solved again (each takes well under a second).
+  useLessonResume(LESSON_ID, lessonStage, predictionDone ? () => {
+    onStageChange?.('solve');
+    if (solvedGapsMm.length > 0) void solveGaps([...solvedGapsMm].reverse());
+  } : null);
 
   const choosePrediction = (value: Prediction) => {
     setPrediction(value);
