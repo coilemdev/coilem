@@ -481,9 +481,13 @@ def test_public_elmer_rejects_cogging_before_discovery_or_solver_launch(monkeypa
 
 
 @pytest.mark.parametrize('has_cogging', [True, False], ids=['cogging', 'legacy'])
-def test_saved_comparison_preserves_optional_cogging_without_reprocessing(tmp_path, has_cogging):
+def test_saved_comparison_preserves_optional_cogging_without_reprocessing(tmp_path, has_cogging, monkeypatch):
+    from backend import qualification
     from backend.solve_workspace import SolveWorkspace
 
+    # A stored run takes its cogging status from the build; pin an unmeasured
+    # build so the fixture's experimental status is the one that is stored.
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: False)
     result = _stored_result()
     if not has_cogging:
         result['summary'].pop('cogging')

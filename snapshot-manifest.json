@@ -8015,8 +8015,8 @@
     },
     {
       "path": "tests/test_cogging.py",
-      "bytes": 27342,
-      "sha256": "7b4b00a36e043cc721e96c4a0f9031415d6bcba5d61116f673f9d5e4eb1aa42b"
+      "bytes": 27629,
+      "sha256": "a1cb5247e3faaebe056754452fa6c86e7bd076301b71fd183995f2a0e0982aa0"
     },
     {
       "path": "tests/test_cogging_phase_e.py",
@@ -13170,8 +13170,8 @@
     },
     {
       "path": "tests/test_outrunner_phase_f.py",
-      "bytes": 6361,
-      "sha256": "96d93ceac7ebd0c154dcb9b0b0ac6a2909a14a5d771dab718524f419043f0b6d"
+      "bytes": 6744,
+      "sha256": "36e236aa0a69727423139c9bbacf63ed25099cd364c3139adb1627ccdfeb7c8f"
     },
     {
       "path": "tests/test_rotor_layout.py",
