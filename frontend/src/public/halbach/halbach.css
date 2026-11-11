@@ -1294,3 +1294,391 @@
     right: 16px;
   }
 }
+
+/* ── Workspace alignment ────────────────────────────────────────────────────
+   The Halbach workspaces follow the motor Design/Solve workspace: the shared
+   top bar, a left panel with a header, a scrolling body and a pinned footer
+   button, a canvas that fills its card with a dock of controls under it, and
+   the motor panel's type sizes. Values match public/styles.css. */
+.halbach-app.public-coilem-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 0;
+}
+.halbach-app.public-coilem-shell > .public-coilem-topbar { flex: 0 0 var(--public-topbar-height, 46px); }
+.halbach-app .halbach-workspace {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* Left and right panels */
+.halbach-app .halbach-config-panel,
+.halbach-app .halbach-run-panel {
+  padding: 0;
+  background: rgba(18, 20, 27, .82);
+}
+.halbach-app .halbach-config-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.halbach-app .halbach-run-panel { padding: 12px 13px; }
+.halbach-panel-head {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 46px;
+  padding: 9px 13px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+  background: rgba(30, 34, 48, .32);
+}
+.halbach-panel-head > span,
+.halbach-app .halbach-panel-title .eyebrow {
+  color: var(--text-muted, #8792a2);
+  font: 700 11px var(--font-mono, monospace);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.halbach-panel-head > button {
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 6px;
+  color: var(--text-muted, #8792a2);
+  background: transparent;
+  font: 400 11px var(--font-ui, Inter, sans-serif);
+  cursor: pointer;
+}
+.halbach-panel-head > button:hover { color: var(--text-primary, #f3f5f7); border-color: rgba(255, 255, 255, .2); }
+.halbach-panel-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 0 12px;
+}
+.halbach-panel-scroll > .public-parameter-panel { padding: 12px 12px 4px; }
+.halbach-panel-note {
+  margin: 0;
+  padding: 8px 13px 10px;
+  color: var(--text-secondary, #c6cdd8);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.halbach-panel-foot {
+  display: grid;
+  flex: 0 0 auto;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+  background: rgba(13, 15, 20, .96);
+}
+.halbach-panel-foot > p {
+  margin: 0;
+  color: var(--text-secondary, #c6cdd8);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.halbach-app .halbach-panel-foot .halbach-primary-action,
+.halbach-app .halbach-panel-foot .halbach-secondary-action,
+.halbach-app .halbach-panel-foot .halbach-cancel-action {
+  width: 100%;
+  min-height: 42px;
+  margin: 0;
+  border-radius: 8px;
+  font: 800 13px var(--font-ui, Inter, sans-serif);
+}
+.halbach-link-action {
+  justify-self: start;
+  padding: 2px 0;
+  border: 0;
+  color: var(--text-secondary, #c6cdd8);
+  background: none;
+  font: 400 12px var(--font-ui, Inter, sans-serif);
+  cursor: pointer;
+}
+.halbach-link-action:hover { color: var(--text-primary, #f3f5f7); }
+
+/* Parameter sections and rows, as the motor panel draws them */
+.halbach-app .halbach-parameter-group { margin: 0; border: 0; border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, .06)); border-radius: 0; background: transparent; }
+.halbach-app .halbach-parameter-group summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 9px 12px;
+  color: var(--text-primary, #f3f5f7);
+  background: rgba(30, 34, 48, .18);
+  font: 700 13px var(--font-ui, Inter, sans-serif);
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  list-style: none;
+}
+.halbach-app .halbach-parameter-group summary::-webkit-details-marker { display: none; }
+.halbach-app .halbach-parameter-group summary::after { color: var(--text-muted, #8792a2); font-size: 9px; content: '▶'; }
+.halbach-app .halbach-parameter-group[open] summary::after { content: '▼'; }
+.halbach-app .halbach-parameter-body { display: grid; gap: 0; padding: 8px 12px 10px; }
+.halbach-app .halbach-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  margin: 0;
+  padding: 4px 0;
+}
+.halbach-app .halbach-panel-scroll > .halbach-solve-setup { padding: 0 12px; gap: 4px; }
+.halbach-app .halbach-solve-setup > .halbach-panel-note { padding-left: 1px; padding-right: 1px; }
+.halbach-app .halbach-field > span:first-child,
+.halbach-app .halbach-check {
+  color: var(--text-secondary, #c6cdd8);
+  font: 400 12px var(--font-ui, Inter, sans-serif);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.halbach-app .halbach-input-shell { width: 104px; min-height: 30px; height: 30px; border-radius: 6px; }
+.halbach-app .halbach-field input,
+.halbach-app .halbach-field select {
+  min-height: 30px;
+  height: 30px;
+  border-radius: 6px;
+  font: 400 12px var(--font-mono, monospace);
+}
+.halbach-app .halbach-field > select { width: 150px; }
+.halbach-app .halbach-input-shell small { font: 400 10px var(--font-mono, monospace); }
+.halbach-app .halbach-check { min-height: 32px; padding: 2px 0; }
+
+/* Right panel text and tiles */
+.halbach-app .halbach-panel-title { margin-bottom: 10px; }
+.halbach-app .halbach-panel-title h2 { margin: 4px 0 2px; font-size: 16px; }
+.halbach-app .halbach-panel-title p { font-size: 12px; }
+.halbach-app .halbach-health-grid dt,
+.halbach-app .halbach-report-metrics dt,
+.halbach-app .halbach-mesh-summary dt {
+  color: #a4adba;
+  font: 700 10px var(--font-mono, monospace);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.halbach-app .halbach-health-grid dd,
+.halbach-app .halbach-report-metrics dd,
+.halbach-app .halbach-mesh-summary dd { font: 400 13px var(--font-mono, monospace); }
+.halbach-app .halbach-health-grid > div,
+.halbach-app .halbach-report-metrics > div { padding: 9px; border: 0; border-radius: 8px; background: rgba(255, 255, 255, .035); }
+.halbach-app .halbach-report-metrics > div.hero {
+  border: 1px solid rgba(245, 158, 11, .32);
+  background: rgba(245, 158, 11, .1);
+}
+.halbach-app .halbach-report-metrics > div.hero dt { color: var(--text-accent, #fbbf24); }
+.halbach-app .halbach-report-metrics > div.hero dd { color: var(--text-primary, #f3f5f7); font-size: 20px; font-weight: 700; }
+.halbach-app .halbach-issue strong { font: 700 10px var(--font-mono, monospace); letter-spacing: .06em; }
+.halbach-app .halbach-issue span { font-size: 12px; }
+.halbach-app .halbach-exports button { min-height: 32px; border-radius: 8px; font: 600 12px var(--font-ui, Inter, sans-serif); }
+
+/* Canvas: the viewport fills the card, the dock sits under it */
+.halbach-app .halbach-stage-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+.halbach-app .halbach-viewport-shell {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  --halbach-viewport-shell-padding: 0px;
+}
+.halbach-app .halbach-viewport { border: 0; border-radius: 0; }
+.halbach-dock {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+  background: rgba(17, 20, 27, .98);
+}
+.halbach-dock-strip {
+  display: flex;
+  /* When the tabs and the zoom group do not fit on one row, the zoom group
+     drops to a row of its own instead of being clipped by the stage. */
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0 10px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
+}
+.halbach-dock-tabs { display: flex; flex-wrap: wrap; align-self: stretch; gap: 2px; min-width: 0; }
+.halbach-dock-tabs button {
+  position: relative;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  color: var(--text-muted, #8792a2);
+  background: transparent;
+  font: 600 13px var(--font-ui, Inter, sans-serif);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.halbach-dock-tabs button:hover:not(:disabled) { color: var(--text-secondary, #c6cdd8); }
+.halbach-dock-tabs button[aria-selected="true"] {
+  color: var(--text-accent, #fbbf24);
+  background: linear-gradient(to top, rgba(245, 158, 11, .12), transparent);
+}
+.halbach-dock-tabs button[aria-selected="true"]::after {
+  position: absolute;
+  right: 8px;
+  bottom: -1px;
+  left: 8px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--accent-primary, #f59e0b);
+  content: '';
+}
+.halbach-dock-tabs button:disabled { color: var(--text-disabled, #4b5563); cursor: not-allowed; }
+.halbach-dock-end { display: flex; flex: 0 0 auto; align-items: center; gap: 10px; min-height: 44px; margin-left: auto; }
+.halbach-dock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted, #8792a2);
+  font: 400 12px var(--font-mono, monospace);
+  white-space: nowrap;
+}
+.halbach-dock-status button { border: 0; color: inherit; background: none; font-size: 14px; cursor: pointer; }
+.halbach-dock-zoom { display: contents; }
+.halbach-app .halbach-dock-zoom .public-viewport-nav-controls {
+  position: static;
+  padding: 2px;
+  border-color: rgba(148, 163, 184, .14);
+  background: rgba(10, 12, 17, .62);
+  box-shadow: none;
+}
+.halbach-dock-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  /* Room for two rows of controls on every tab, as the motor dock has, so
+     the dock keeps its height from tab to tab. */
+  align-content: center;
+  min-height: 104px;
+  padding: 10px 16px;
+}
+.halbach-dock-group { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.halbach-dock-label {
+  color: rgba(148, 163, 184, .58);
+  font: 600 10px var(--font-mono, monospace);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.halbach-dock-segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 10px;
+  background: rgba(10, 12, 17, .62);
+}
+.halbach-dock-segmented button {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--text-muted, #8792a2);
+  background: transparent;
+  font: 600 13px var(--font-ui, Inter, sans-serif);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.halbach-dock-segmented button:hover { color: var(--text-secondary, #c6cdd8); background: rgba(148, 163, 184, .08); }
+.halbach-dock-segmented button[aria-pressed="true"] {
+  color: var(--text-accent, #fbbf24);
+  background: rgba(245, 158, 11, .14);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, .32);
+}
+button.halbach-dock-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 999px;
+  color: var(--text-muted, #8792a2);
+  background: rgba(10, 12, 17, .62);
+  font: 600 13px var(--font-ui, Inter, sans-serif);
+  white-space: nowrap;
+  cursor: pointer;
+}
+button.halbach-dock-toggle::before {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  content: '';
+  opacity: .7;
+}
+button.halbach-dock-toggle:hover { color: var(--text-secondary, #c6cdd8); background: rgba(148, 163, 184, .08); }
+button.halbach-dock-toggle[aria-pressed="true"] { border-color: rgba(148, 163, 184, .26); color: var(--text-secondary, #c6cdd8); background: rgba(15, 17, 23, .76); }
+button.halbach-dock-toggle[aria-pressed="true"]::before { border-color: var(--text-accent, #fbbf24); background: var(--text-accent, #fbbf24); opacity: 1; }
+.halbach-dock-note { color: var(--text-muted, #8792a2); font: 400 12px var(--font-mono, monospace); }
+/* Legends stay on the canvas, in its top corners, as the motor field view's do. */
+.halbach-app .halbach-pole-legend { top: 14px; left: 14px; font-size: 11px; }
+.halbach-app .halbach-field-legend { top: 14px; right: 14px; }
+@container (max-width: 760px) {
+  .halbach-dock-strip { padding: 0 10px; }
+  .halbach-dock-controls { padding: 10px; }
+  .halbach-dock-status { display: none; }
+  .halbach-dock-tabs button { padding: 0 9px; font-size: 12px; }
+  .halbach-dock-label { display: none; }
+}
+/* Stacked layout: the panels take their content's height and the page
+   scrolls, so the parameter list is not squeezed to nothing between the
+   panel's header and footer. */
+@media (max-width: 880px) {
+  .halbach-app.public-coilem-shell { height: auto; min-height: 100vh; }
+  .halbach-app .halbach-config-panel { overflow: visible; }
+  .halbach-panel-scroll { flex: 0 0 auto; overflow: visible; }
+}
+
+/* Shown in place of a viewer, or of the whole workspace, that failed to draw. */
+.workspace-error-boundary {
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  justify-items: start;
+  max-width: 440px;
+  margin: auto;
+  padding: 22px 24px;
+  border: 1px solid #c84f4f;
+  border-radius: 10px;
+  color: #772c2c;
+  background: #fff0f0;
+  font: 500 13px/1.45 var(--font-ui, system-ui, sans-serif);
+}
+.workspace-error-boundary strong { font-size: 15px; }
+.workspace-error-boundary p { margin: 0; }
+.workspace-error-boundary-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.workspace-error-boundary-actions button {
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid #c84f4f;
+  border-radius: 7px;
+  color: #772c2c;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.workspace-error-boundary-actions button:first-child { color: #fff; background: #a83d3d; }
+.halbach-view-error { align-self: center; justify-self: center; }
+.halbach-workspace-error { margin: 12vh auto 0; }

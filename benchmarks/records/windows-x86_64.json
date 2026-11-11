@@ -1,8 +1,8 @@
 {
   "schema": "coilem.benchmark_record/v1",
   "platform": "windows-x86_64",
-  "source": "benchmarks/qualification-70c5e3404c19/windows-x86_64/report",
-  "measured_commit": "70c5e3404c1962a811a915db292c31c28b92cf1a",
+  "source": "benchmarks/qualification-4b41f837f3d8/windows-x86_64/report",
+  "measured_commit": "4b41f837f3d89d4fbc836be54ecafff4729491c0",
   "environment": {
     "platform": "Windows-2022Server-10.0.20348-SP0",
     "machine": "AMD64",
@@ -16,7 +16,6 @@
   },
   "suite_sha256": "14f80962ecb09ef4c5df569d0e5c89158dc7b2516cc9a8e47df34a57f501bcc4",
   "reference_bundle_sha256": "5e3acea9a4e4dbbc53169b73445bb5802d2d39a99e7080b3f6b65e9468e8733c",
-  "evaluation": "Graded from the recorded measurements (harness 1.12.0, protocol 1.10.0) against suite 1.10.0 and the frozen reference bundle, with zero field solves.",
   "physics_files": {
     "backend/airgap_sampling.py": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
     "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
@@ -28,7 +27,7 @@
     "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
     "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
     "backend/gmsh_mesh_rotation.py": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
-    "backend/gmsh_solver.py": "720b9024b95c17c29219522f71417c76fc0c228677c65df06018772df2f5b5b3",
+    "backend/gmsh_solver.py": "536d7aba129cd3163a165fe675f6aa0f8fb5fc514ecb4a4fc254d4be9ad0aac6",
     "backend/magneto2d_adapter/__init__.py": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
     "backend/magneto2d_adapter/_state.py": "71cba96ae3c9685381a77c76fcd736728d10da0d842a4e436c729d2b320c87f5",
     "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
@@ -36,12 +35,11 @@
     "backend/magnet_temperature.py": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e",
     "backend/models/config.py": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c",
     "backend/public_material_catalog.py": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
-    "backend/public_policy.py": "8092e218243fc0935b0b706a4709656ba55e2a8875fdfcee2d6e3456b5be81f4",
     "backend/reference_models/__init__.py": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d",
     "backend/reference_models/prius.py": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
     "backend/reference_models/lrk.py": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43",
     "backend/rotor_layout.py": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27",
-    "backend/solver/__init__.py": "d6358ab8fdb2006ce22aea96aa3af6698afe1b117c65b75bc2117f68f4a7990d",
+    "backend/solver/__init__.py": "990bfcc6e5236aa561128ac3bb2c86bb09a035dcef70b33973d7a496e79bbc0c",
     "backend/solver/_helpers.py": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
     "backend/solver_contract.py": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
     "backend/solver_environment.py": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
@@ -63,7 +61,7 @@
     "solvers/magneto2d/src/lib.rs": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04",
     "solvers/magneto2d/src/magnet_fraction.rs": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
     "solvers/magneto2d/src/main.rs": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
-    "solvers/magneto2d/src/materials.rs": "61b5ee66e17f581b5d930d29eb923ef189a80f8698d0f5f915bb9ded9edb40a1",
+    "solvers/magneto2d/src/materials.rs": "bd0ea38b6bd405657ace25496711b59cd447e3e5e4fed47b9e0014b0ce0a0699",
     "solvers/magneto2d/src/mesh.rs": "c646a27dc8f77e676391e8ae8f2fab82dc2072b1b3784880ee57e274ac890855",
     "solvers/magneto2d/src/motor.rs": "1b8cccbe7c4603100ced441f0f4fa59efe84178a81d21a732d287eb53d4587b8",
     "solvers/magneto2d/src/postprocess.rs": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838",
@@ -83,80 +81,80 @@
     "solvers/magneto2d/src/solve/newton.rs": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b",
     "solvers/magneto2d/src/solve/nonlinear.rs": "6f1da85708f5974ec96a8f16a058ffd3c68f4dc18835672b45e409266c6ef5ee",
     "solvers/magneto2d/src/solve/picard.rs": "a117d2f9d19a98ba43c3e6f4c318ec2e3c2b060e959e551746290feb9f2069ca",
-    "solvers/magneto2d/src/solve/problem.rs": "ea94c3e616ccfbeb8237da97a166265d8692b38223a45977e98aa90d2d5e345c",
+    "solvers/magneto2d/src/solve/problem.rs": "e2b82d01dbe57a3d4b45f2df3912648ffe42d400e8683ec7941cd16d3dab7460",
     "solvers/magneto2d/src/solve/types.rs": "697aa65a80474b91740081284e5744bde86ad26684972842ac27c8f85b7c1eba",
     "solvers/magneto2d/src/sources.rs": "8469ed2f3d322a6cd7a4585f48d163871d23a88f444ccbb0af933ffea8fd343f",
     "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
   },
   "case_runtime_s": {
-    "spm_4p12s_simple__baseline": 45.6,
-    "spm_4p12s_simple__high_current": 54.4,
-    "spm_4p12s_simple__tight_airgap": 37.9,
-    "spm_4p12s_simple_noload__baseline": 54.7,
-    "spm_4p12s_simple_noload__high_current": 43.1,
-    "spm_4p12s_simple_noload__tight_airgap": 54.4,
-    "spm_8p12s_concentrated__baseline": 124.1,
-    "spm_8p12s_concentrated__high_current": 82.8,
-    "spm_8p12s_concentrated__tight_airgap": 133.0,
-    "spm_8p12s_reference_angle30__baseline": 119.6,
-    "ipm_flat_12s10p_fscw_contract": 58.1,
-    "ipm_flat_24s16p_industrial_contract": 72.8,
-    "ipm_flat_4p12s_micro_contract": 86.0,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract": 77.3,
-    "ipm_flat_8p12s_fsae_contract": 96.5,
-    "ipm_flat_8p12s_fsae_thin_bridge_contract": 116.8,
-    "ipm_vshape_8p12s_baseline_contract": 91.1,
-    "ipm_vshape_8p12s_deep_apex_high_output_v1": 97.0,
-    "ipm_vshape_8p12s_narrow_angle_contract": 89.5,
-    "ipm_vshape_8p12s_pocket_offset_contract": 56.0,
-    "ipm_vshape_8p12s_thin_bridge_contract": 79.1,
-    "ipm_vshape_8p12s_wide_angle_high_output_v1": 60.8,
-    "spm_12p36s_distributed_femm_validation": 34.9,
-    "spm_8p24s_distributed_femm_validation": 34.0,
-    "spm_8p48s_chorded_5_6": 53.9,
-    "spm_8p48s_distributed_femm_validation": 58.0,
-    "spm_14p12s_high_pole": 495.9,
-    "spm_4p12s_small": 119.1,
-    "spm_8p12s_reference": 204.8,
-    "spm_8p12s_example_shoed": 126.1,
-    "spm_8p12s_concentrated__magnet_60C": 90.0,
-    "spm_8p12s_concentrated__magnet_100C": 125.3,
-    "spm_8p12s_concentrated__dq_I20_g0": 86.2,
-    "spm_8p12s_concentrated__dq_I20_g30": 130.8,
-    "spm_8p12s_concentrated__dq_I20_g60": 78.7,
-    "spm_8p12s_concentrated__dq_I40_g0": 133.3,
-    "spm_8p12s_concentrated__dq_I40_g30": 130.3,
-    "spm_8p12s_concentrated__dq_I40_g60": 136.4,
-    "ipm_flat_8p12s_fsae_contract__magnet_60C": 98.8,
-    "ipm_flat_8p12s_fsae_contract__magnet_100C": 118.7,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 129.3,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 117.0,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 75.3,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 84.9,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 77.6,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 82.0,
-    "spm_4p12s_simple__baseline__cogging": 41.7,
-    "spm_4p12s_simple__tight_airgap__cogging": 24.8,
-    "spm_8p12s_concentrated__baseline__cogging": 81.7,
-    "spm_8p12s_concentrated__tight_airgap__cogging": 107.0,
-    "spm_8p12s_example_shoed__cogging": 57.3,
-    "ipm_flat_8p12s_fsae_contract__cogging": 41.4,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": 62.1,
-    "ipm_flat_12s10p_fscw_contract__cogging": 59.8,
-    "ipm_flat_24s16p_industrial_contract__cogging": 39.4,
-    "spm_8p24s_distributed_femm_validation__cogging": 86.2,
-    "spm_8p48s_distributed_femm_validation__cogging": 192.5,
-    "spm_12p36s_distributed_femm_validation__cogging": 174.0,
-    "spm_outer_14p12s_drone__baseline": 165.3,
-    "spm_outer_14p12s_drone__high_current": 128.8,
-    "spm_outer_14p12s_drone__tight_airgap": 184.1,
-    "spm_outer_14p12s_drone__angle30": 141.0,
-    "spm_outer_14p12s_drone_noload__baseline": 168.1,
-    "spm_outer_12p9s_micro__baseline": 149.4,
-    "spm_outer_12p9s_micro_noload__baseline": 215.0,
-    "spm_outer_10p12s_single_layer__baseline": 157.2,
-    "spm_outer_28p24s_multirotor__baseline": 89.7,
-    "spm_outer_30p27s_hub__baseline": 121.0
+    "spm_4p12s_simple__baseline": 61.3,
+    "spm_4p12s_simple__high_current": 55.3,
+    "spm_4p12s_simple__tight_airgap": 42.2,
+    "spm_4p12s_simple_noload__baseline": 82.5,
+    "spm_4p12s_simple_noload__high_current": 57.0,
+    "spm_4p12s_simple_noload__tight_airgap": 53.0,
+    "spm_8p12s_concentrated__baseline": 100.7,
+    "spm_8p12s_concentrated__high_current": 104.5,
+    "spm_8p12s_concentrated__tight_airgap": 106.9,
+    "spm_8p12s_reference_angle30__baseline": 96.5,
+    "ipm_flat_12s10p_fscw_contract": 68.8,
+    "ipm_flat_24s16p_industrial_contract": 89.6,
+    "ipm_flat_4p12s_micro_contract": 100.5,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract": 101.7,
+    "ipm_flat_8p12s_fsae_contract": 94.4,
+    "ipm_flat_8p12s_fsae_thin_bridge_contract": 95.8,
+    "ipm_vshape_8p12s_baseline_contract": 72.6,
+    "ipm_vshape_8p12s_deep_apex_high_output_v1": 77.8,
+    "ipm_vshape_8p12s_narrow_angle_contract": 71.6,
+    "ipm_vshape_8p12s_pocket_offset_contract": 74.1,
+    "ipm_vshape_8p12s_thin_bridge_contract": 66.8,
+    "ipm_vshape_8p12s_wide_angle_high_output_v1": 91.7,
+    "spm_12p36s_distributed_femm_validation": 46.5,
+    "spm_8p24s_distributed_femm_validation": 48.4,
+    "spm_8p48s_chorded_5_6": 43.8,
+    "spm_8p48s_distributed_femm_validation": 43.7,
+    "spm_14p12s_high_pole": 401.3,
+    "spm_4p12s_small": 157.0,
+    "spm_8p12s_reference": 203.1,
+    "spm_8p12s_example_shoed": 103.6,
+    "spm_8p12s_concentrated__magnet_60C": 124.4,
+    "spm_8p12s_concentrated__magnet_100C": 143.1,
+    "spm_8p12s_concentrated__dq_I20_g0": 101.3,
+    "spm_8p12s_concentrated__dq_I20_g30": 102.1,
+    "spm_8p12s_concentrated__dq_I20_g60": 99.7,
+    "spm_8p12s_concentrated__dq_I40_g0": 150.4,
+    "spm_8p12s_concentrated__dq_I40_g30": 112.5,
+    "spm_8p12s_concentrated__dq_I40_g60": 126.8,
+    "ipm_flat_8p12s_fsae_contract__magnet_60C": 92.6,
+    "ipm_flat_8p12s_fsae_contract__magnet_100C": 117.2,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 94.7,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 137.4,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 97.2,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 117.5,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 94.9,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 107.7,
+    "spm_4p12s_simple__baseline__cogging": 46.1,
+    "spm_4p12s_simple__tight_airgap__cogging": 39.4,
+    "spm_8p12s_concentrated__baseline__cogging": 65.6,
+    "spm_8p12s_concentrated__tight_airgap__cogging": 117.2,
+    "spm_8p12s_example_shoed__cogging": 56.7,
+    "ipm_flat_8p12s_fsae_contract__cogging": 49.5,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": 50.1,
+    "ipm_flat_12s10p_fscw_contract__cogging": 48.7,
+    "ipm_flat_24s16p_industrial_contract__cogging": 50.9,
+    "spm_8p24s_distributed_femm_validation__cogging": 114.7,
+    "spm_8p48s_distributed_femm_validation__cogging": 214.9,
+    "spm_12p36s_distributed_femm_validation__cogging": 143.7,
+    "spm_outer_14p12s_drone__baseline": 166.6,
+    "spm_outer_14p12s_drone__high_current": 202.8,
+    "spm_outer_14p12s_drone__tight_airgap": 182.7,
+    "spm_outer_14p12s_drone__angle30": 175.1,
+    "spm_outer_14p12s_drone_noload__baseline": 131.9,
+    "spm_outer_12p9s_micro__baseline": 179.2,
+    "spm_outer_12p9s_micro_noload__baseline": 171.5,
+    "spm_outer_10p12s_single_layer__baseline": 128.5,
+    "spm_outer_28p24s_multirotor__baseline": 151.1,
+    "spm_outer_30p27s_hub__baseline": 96.0
   },
   "cases": {
     "ipm_flat_12s10p_fscw_contract": {
@@ -188,8 +186,8 @@
         "reference_cogging_mean": "PASS"
       },
       "values": {
-        "cogging_peak_to_peak_Nm": 1.0758695334554123,
-        "cogging_first_harmonic_Nm": 0.5323556602563678
+        "cogging_peak_to_peak_Nm": 1.0758696098496239,
+        "cogging_first_harmonic_Nm": 0.5323556416097355
       }
     },
     "ipm_flat_24s16p_industrial_contract": {
@@ -237,9 +235,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.021415527613176503,
-        "back_emf_fundamental_V": 0.4500788674515585,
-        "back_emf_peak_V": 0.6350806599527798
+        "mean_torque_Nm": 0.02141552769303618,
+        "back_emf_fundamental_V": 0.45007886549134346,
+        "back_emf_peak_V": 0.635080622989691
       }
     },
     "ipm_flat_8p12s_fsae_angled_pocket_contract": {
@@ -640,9 +638,9 @@
         "femm-standard_golden_current_sequence": "PASS"
       },
       "values": {
-        "analytical.mean_torque_Nm": 0.3353222734690619,
-        "native-fine.mean_torque_Nm": 3.3500576092800265,
-        "native-standard.mean_torque_Nm": 3.3487514986387548
+        "analytical.mean_torque_Nm": 0.3353222639687648,
+        "native-fine.mean_torque_Nm": 3.3500576087479463,
+        "native-standard.mean_torque_Nm": 3.3487514888273044
       }
     },
     "spm_4p12s_simple__baseline": {
@@ -674,8 +672,8 @@
         "reference_cogging_mean": "PASS"
       },
       "values": {
-        "cogging_peak_to_peak_Nm": 0.1460447140625043,
-        "cogging_first_harmonic_Nm": 0.06926283248235648
+        "cogging_peak_to_peak_Nm": 0.1460449312060761,
+        "cogging_first_harmonic_Nm": 0.06926298572543389
       }
     },
     "spm_4p12s_simple__high_current": {
@@ -740,8 +738,8 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 9.844321269564921e-06,
-        "back_emf_fundamental_V": 4.986623833280828,
+        "mean_torque_Nm": 9.845125265083652e-06,
+        "back_emf_fundamental_V": 4.986623844501904,
         "back_emf_peak_V": 6.6788247315202325
       }
     },
@@ -912,9 +910,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.393635765042276,
-        "back_emf_fundamental_V": 16.280185255286508,
-        "back_emf_peak_V": 23.652471783501294
+        "mean_torque_Nm": 4.393635765042242,
+        "back_emf_fundamental_V": 16.2801852552865,
+        "back_emf_peak_V": 23.65247178350119
       }
     },
     "spm_8p12s_concentrated__dq_I40_g30": {
@@ -932,9 +930,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 3.8326578767971955,
-        "back_emf_fundamental_V": 16.280185255286508,
-        "back_emf_peak_V": 23.652471783501294
+        "mean_torque_Nm": 3.8326578767972053,
+        "back_emf_fundamental_V": 16.2801852552865,
+        "back_emf_peak_V": 23.65247178350119
       }
     },
     "spm_8p12s_concentrated__dq_I40_g60": {
@@ -952,9 +950,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2154404653339728,
-        "back_emf_fundamental_V": 16.2801852552865,
-        "back_emf_peak_V": 23.65247178350119
+        "mean_torque_Nm": 2.215440465334028,
+        "back_emf_fundamental_V": 16.280185255286508,
+        "back_emf_peak_V": 23.652471783501294
       }
     },
     "spm_8p12s_concentrated__high_current": {
@@ -986,9 +984,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.0117611703034557,
-        "back_emf_fundamental_V": 14.815648898450393,
-        "back_emf_peak_V": 21.55974085619896
+        "mean_torque_Nm": 2.0117611703034455,
+        "back_emf_fundamental_V": 14.815648898450371,
+        "back_emf_peak_V": 21.55974085619538
       }
     },
     "spm_8p12s_concentrated__magnet_60C": {
@@ -1178,9 +1176,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 6.20514376346722,
-        "back_emf_fundamental_V": 115.982858349869,
-        "back_emf_peak_V": 164.87475843256266
+        "mean_torque_Nm": 6.205143763466219,
+        "back_emf_fundamental_V": 115.98285834986811,
+        "back_emf_peak_V": 164.87475843256382
       }
     },
     "spm_8p48s_distributed_femm_validation__cogging": {
@@ -1195,8 +1193,8 @@
         "reference_cogging_mean": "PASS"
       },
       "values": {
-        "cogging_peak_to_peak_Nm": 16.87515729729434,
-        "cogging_first_harmonic_Nm": 6.4128820155501955
+        "cogging_peak_to_peak_Nm": 16.875091807822617,
+        "cogging_first_harmonic_Nm": 6.41284640931569
       }
     },
     "spm_outer_10p12s_single_layer__baseline": {
@@ -1262,9 +1260,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.0467511732640856,
-        "back_emf_fundamental_V": 0.7888471947206847,
-        "back_emf_peak_V": 1.060602113093977
+        "mean_torque_Nm": 0.04675108583424938,
+        "back_emf_fundamental_V": 0.7888472261726956,
+        "back_emf_peak_V": 1.0606020420462043
       }
     },
     "spm_outer_14p12s_drone__baseline": {
@@ -1347,7 +1345,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.3245961983689309,
+        "mean_torque_Nm": 0.32459619836893105,
         "back_emf_fundamental_V": 4.793939616622961,
         "back_emf_peak_V": 6.106550059465062
       }
@@ -1370,6 +1368,7 @@
       }
     }
   },
-  "prius_report": "benchmarks/qualification-70c5e3404c19/windows-x86_64/prius/app-results.json",
-  "qualification_receipt": "benchmarks/qualification-70c5e3404c19/windows-x86_64/verification.json"
+  "prius_report": "benchmarks/qualification-4b41f837f3d8/windows-x86_64/prius/app-results.json",
+  "carry_receipt": "benchmarks/qualification-4b41f837f3d8/windows-x86_64/carry-receipt.json",
+  "reference_reuse": "benchmarks/qualification-4b41f837f3d8/windows-x86_64/reference-reuse.json"
 }

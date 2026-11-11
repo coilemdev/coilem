@@ -7,6 +7,7 @@ import type {
 } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonResume, useLessonSessionState } from './lessonSession';
 import {
   MeshViewer,
   type MeshViewerDirectionVector,
@@ -166,6 +167,7 @@ interface ForceAngleRun {
   run: ForceRun;
 }
 
+const LESSON_ID = 'field-force';
 const DEFAULT_CURRENT_A = 8;
 const DEFAULT_POLE_GAP_MM = 8;
 const MIN_POLE_GAP_MM = 0.5;
@@ -877,7 +879,22 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   onHeaderProgressChange,
 }) => {
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['up', 'down', 'none']),
+  );
+  // The wire solves done so far as [current, pole gap] (newest first). The
+  // fields are not stored; they are solved again when the lesson is reopened.
+  const [solvedRunKeys, setSolvedRunKeys] = useLessonSessionState<Array<[number, number]>>(
+    LESSON_ID, 'solvedRuns', [],
+    (value) => Array.isArray(value) && value.length <= 12 && value.every((item) => (
+      Array.isArray(item) && item.length === 2
+      && typeof item[0] === 'number' && Math.abs(item[0]) <= 16
+      && typeof item[1] === 'number' && item[1] >= 2 && item[1] <= 16
+    )),
+  );
+  // How far the student got, so a reload does not lock the later steps again.
+  const [angleReached, setAngleReached] = useLessonSessionState(LESSON_ID, 'angleReached', false);
+  const [motorReached, setMotorReached] = useLessonSessionState(LESSON_ID, 'motorReached', false);
   const [currentA, setCurrentA] = React.useState(DEFAULT_CURRENT_A);
   const [poleGapMm, setPoleGapMm] = React.useState(DEFAULT_POLE_GAP_MM);
   const [runs, setRuns] = React.useState<ForceRun[]>([]);
@@ -885,14 +902,14 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   const [error, setError] = React.useState<string | null>(null);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
-  const [forceAngleOpen, setForceAngleOpen] = React.useState(false);
+  const [forceAngleOpen, setForceAngleOpen] = useLessonSessionState(LESSON_ID, 'forceAngleOpen', false);
   const [forceAngleDeg, setForceAngleDeg] = React.useState(90);
   const [forceAngleReviewed, setForceAngleReviewed] = React.useState(false);
   const [forceAngleRuns, setForceAngleRuns] = React.useState<ForceAngleRun[]>([]);
   const [forceAngleSolveBusy, setForceAngleSolveBusy] = React.useState(false);
   const [forceAngleSolveError, setForceAngleSolveError] = React.useState<string | null>(null);
   const [forceAngleSolveProgress, setForceAngleSolveProgress] = React.useState({ complete: 0, total: 0 });
-  const [motorEffectOpen, setMotorEffectOpen] = React.useState(false);
+  const [motorEffectOpen, setMotorEffectOpen] = useLessonSessionState(LESSON_ID, 'motorEffectOpen', false);
   const [motorLoopCurrentA, setMotorLoopCurrentA] = React.useState(8);
   const [motorLoopAngleDeg, setMotorLoopAngleDeg] = React.useState(90);
   const [motorTorqueAnglesDeg, setMotorTorqueAnglesDeg] = React.useState<number[]>([]);
@@ -921,11 +938,13 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const [angleEvidenceReviewed, setAngleEvidenceReviewed] = React.useState(false);
   const [motorEvidenceReviewed, setMotorEvidenceReviewed] = React.useState(false);
+  // Set below, once the solve function exists; step buttons defined earlier call it.
+  const restoreGuidedRunsRef = React.useRef<() => void>(() => undefined);
   const motorSolveRequestIdRef = React.useRef(0);
   const motorSolveStartedKeyRef = React.useRef<string | null>(null);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
-  const lessonComplete = isLessonComplete('field-force');
+  const lessonComplete = isLessonComplete(LESSON_ID);
 
   // New evidence lands in the Inspect panel while the student is looking at
   // the canvas: ring the panel briefly so the eye finds it.
@@ -1071,7 +1090,7 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   const guidedCurrent = !positiveRun ? 8 : !negativeRun ? -8 : !doubledRun ? 16 : currentA;
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('field-force', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -1271,6 +1290,24 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
     }
   };
 
+  // Solve several wire runs in turn, oldest first, so the last one solved is
+  // the one shown. Each takes about a second or less.
+  const restoreRuns = async (runKeys: ReadonlyArray<readonly [number, number]>) => {
+    for (const [storedCurrentA, storedPoleGapMm] of runKeys) {
+      await solveCurrent(storedCurrentA, storedPoleGapMm);
+    }
+  };
+  restoreGuidedRunsRef.current = () => {
+    if (busy || runs.length > 0) return;
+    void restoreRuns(solvedRunKeys.length > 0
+      ? [...solvedRunKeys].reverse()
+      : [[8, DEFAULT_POLE_GAP_MM], [-8, DEFAULT_POLE_GAP_MM], [16, DEFAULT_POLE_GAP_MM]]);
+  };
+
+  React.useEffect(() => {
+    if (runs.length > 0) setSolvedRunKeys(runs.slice(0, 12).map((run) => [run.currentA, run.poleGapMm]));
+  }, [runs, setSolvedRunKeys]);
+
   const solveForceAngles = async (anglesDeg: number[]) => {
     if (!angleReferenceRun || forceAngleSolveBusy || anglesDeg.length === 0) return;
     setForceAngleSolveBusy(true);
@@ -1328,6 +1365,28 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
   const angleComplete = angleSolved && angleEvidenceReviewed;
   const motorEffectSolved = motorEffectReviewed && Boolean(activeMotorSolve) && !motorSolveBusy;
   const motorEffectComplete = motorEffectSolved && motorEvidenceReviewed;
+  // A finished lesson reopens with every step available, and a reload keeps
+  // the steps the student had reached.
+  const predictionDone = lessonComplete || predictionCorrect;
+  const laterStepsOpen = lessonComplete || angleReached;
+  const positiveDone = laterStepsOpen || positiveComplete;
+  const reverseDone = laterStepsOpen || reverseComplete;
+  const comparisonDone = laterStepsOpen || comparisonReady;
+  const angleDone = lessonComplete || angleReached || angleComplete;
+  const motorDone = lessonComplete || motorReached || motorEffectComplete;
+
+  React.useEffect(() => {
+    if (angleComplete) setAngleReached(true);
+    if (motorEffectComplete) setMotorReached(true);
+  }, [angleComplete, motorEffectComplete, setAngleReached, setMotorReached]);
+
+  // Reopened after a reload or a trip to the catalog: back into the lab, with
+  // the wire runs the student had solved solved again. The angle sweep and the
+  // loop solve are run again from their own buttons.
+  useLessonResume(LESSON_ID, lessonStage, predictionDone ? () => {
+    onStageChange?.('solve');
+    if (solvedRunKeys.length > 0 || forceAngleOpen || motorEffectOpen) restoreGuidedRunsRef.current();
+  } : null);
   const activeProgressStepId: LessonFiveProgressStepId = quizOpen
     ? 'check'
     : motorEffectOpen
@@ -1350,7 +1409,7 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
       setStage('design');
       return;
     }
-    if (nextStep === 'positive' && predictionCorrect) {
+    if (nextStep === 'positive' && predictionDone) {
       setStage('solve');
       setForceAngleOpen(false);
       setMotorEffectOpen(false);
@@ -1358,71 +1417,87 @@ export const LearningLessonFiveFieldForce: React.FC<LearningLessonFiveFieldForce
       if (positiveRunAny) setPoleGapMm(positiveRunAny.poleGapMm);
       return;
     }
-    if (nextStep === 'reverse' && positiveRunAny) {
+    if (nextStep === 'reverse' && positiveDone) {
       setStage('solve');
       setForceAngleOpen(false);
       setMotorEffectOpen(false);
-      setPoleGapMm(positiveRunAny.poleGapMm);
+      if (positiveRunAny) setPoleGapMm(positiveRunAny.poleGapMm);
       setCurrentA(-8);
       return;
     }
-    if (nextStep === 'scale' && reversePairGapKey) {
+    if (nextStep === 'scale' && reverseDone) {
       setStage('solve');
       setForceAngleOpen(false);
       setMotorEffectOpen(false);
-      setPoleGapMm(Number(reversePairGapKey));
+      if (reversePairGapKey) setPoleGapMm(Number(reversePairGapKey));
       setCurrentA(16);
       return;
     }
-    if (nextStep === 'angle' && angleReferenceRun) {
+    if (nextStep === 'angle' && comparisonDone) {
       setQuizOpen(false);
       onStageChange?.('solve');
       setMotorEffectOpen(false);
       setForceAngleOpen(true);
-      setCurrentA(angleReferenceRun.currentA);
-      setPoleGapMm(angleReferenceRun.poleGapMm);
-      setShowField3D(true);
+      if (angleReferenceRun) {
+        setCurrentA(angleReferenceRun.currentA);
+        setPoleGapMm(angleReferenceRun.poleGapMm);
+        setShowField3D(true);
+      } else {
+        // Reopened without its solved runs: the angle experiment builds on the
+        // three guided wire solves, so solve them again first.
+        restoreGuidedRunsRef.current();
+      }
       return;
     }
-    if (nextStep === 'motor' && angleComplete) {
+    if (nextStep === 'motor' && angleDone) {
       setQuizOpen(false);
       onStageChange?.('solve');
       setForceAngleOpen(false);
       setMotorEffectOpen(true);
       setShowField3D(false);
+      if (!positiveRunAny) restoreGuidedRunsRef.current();
       return;
     }
-    if (nextStep === 'check' && motorEffectComplete) {
+    if (nextStep === 'check' && motorDone) {
       onStageChange?.('solve');
       setQuizOpen(true);
     }
   }, [
-    angleComplete,
+    angleDone,
     angleReferenceRun,
-    motorEffectComplete,
+    comparisonDone,
+    motorDone,
     onStageChange,
+    positiveDone,
     positiveRunAny,
-    predictionCorrect,
+    predictionDone,
+    reverseDone,
     reversePairGapKey,
     setStage,
   ]);
 
   const lessonProgressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
-    { id: 'positive', label: '+8 A', complete: positiveComplete, available: predictionCorrect },
-    { id: 'reverse', label: 'Reverse', complete: reverseComplete, available: positiveComplete },
-    { id: 'scale', label: 'Double', complete: comparisonReady, available: reverseComplete },
-    { id: 'angle', label: 'θ angle', complete: angleComplete, available: comparisonReady },
-    { id: 'motor', label: 'Motor effect', complete: motorEffectComplete, available: angleComplete },
-    { id: 'check', label: 'Check', complete: quizPassed, available: motorEffectComplete },
+    { id: 'positive', label: '+8 A', complete: positiveComplete, available: predictionDone },
+    { id: 'reverse', label: 'Reverse', complete: reverseComplete, available: positiveDone },
+    { id: 'scale', label: 'Double', complete: comparisonReady, available: reverseDone },
+    { id: 'angle', label: 'θ angle', complete: angleComplete, available: comparisonDone },
+    { id: 'motor', label: 'Motor effect', complete: motorEffectComplete, available: angleDone },
+    { id: 'check', label: 'Check', complete: quizPassed, available: motorDone },
   ], [
     angleComplete,
+    angleDone,
+    comparisonDone,
     comparisonReady,
+    motorDone,
     motorEffectComplete,
     positiveComplete,
+    positiveDone,
     predictionCorrect,
+    predictionDone,
     quizPassed,
     reverseComplete,
+    reverseDone,
   ]);
 
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({

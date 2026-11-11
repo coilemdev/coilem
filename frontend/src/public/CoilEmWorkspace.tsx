@@ -121,6 +121,7 @@ import {
   isPublicSolveFinalizing,
   projectedPublicSolveElapsedSeconds,
 } from './solveProgress';
+import { formatTorqueNm } from './numberFormat';
 
 export type PublicWorkflowStep = 'design' | 'solve' | 'report';
 export type PublicBusyAction = 'geometry' | 'mesh' | 'solve' | 'field' | null;
@@ -206,6 +207,8 @@ interface CoilEmWorkspaceProps {
   onGenerateMesh: () => void;
   onStartSolve: () => void;
   onCancelSolve: () => void;
+  /** Cancel was pressed and the backend has not released the solve yet. */
+  cancellingSolve?: boolean;
   onRequestArmatureField: () => void;
   onCancelArmatureField: () => void;
   onOpenRunFolder: (savedRun: PublicSavedRun) => Promise<void>;
@@ -1645,6 +1648,18 @@ function DimensionReadout({ annotations, activeDimension, onSelect, onHover }: {
   );
 }
 
+/**
+ * A stator-only field needs a loaded sweep to follow. A cogging-only run has no
+ * stator current, and a zero phase current gives no stator field at all (#267).
+ */
+function statorFieldUnavailableReason(config: MotorConfig): string | null {
+  const options = config.solve_options;
+  const loadedSweep = options.torque_sweep || options.back_emf || options.thd_analysis || options.losses_efficiency;
+  if (options.cogging_torque && !loadedSweep) return 'A cogging-only run has no stator current, so there is no stator-only field';
+  if (!(config.solve_params.current_amplitude_A > 0)) return 'The phase current is zero, so there is no stator-only field';
+  return null;
+}
+
 type PublicViewportMode = '2d' | '3d' | 'materials' | 'layout';
 /**
  * The one-off 3D-to-cross-section reveal when a design first opens. Down from
@@ -3047,7 +3062,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   const rippleRows = (
     <>
       {resultRow(`Torque ripple${preview}`, formatNumber(ripple.ripplePct), ripple.ripplePct === null ? '' : '%', false, ripple.note ?? undefined)}
-      {ripple.ripplePct === null && resultRow(ripple.peakToPeakLabel, formatNumber(ripple.peakToPeakNm), 'N·m', false, ripple.note ?? undefined)}
+      {ripple.ripplePct === null && resultRow(ripple.peakToPeakLabel, formatTorqueNm(ripple.peakToPeakNm), 'N·m', false, ripple.note ?? undefined)}
     </>
   );
 
@@ -3069,10 +3084,10 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
                 {torqueSpeed && resultRow('Torque–speed map', torqueSpeed.status === 'partial'
                   ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
                   : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
-                {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
+                {cogging && resultRow('Cogging torque p-p', formatTorqueNm(cogging.peak_to_peak_Nm), 'N·m')}
                 {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
-                {hasTorque && resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+                {hasTorque && resultRow(`Average torque${preview}`, formatTorqueNm(result.summary.avg_torque_Nm), 'N·m')}
                 {hasTorque && rippleRows}
                 {hasBackEmf && resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V', true)}
                 {hasBackEmf && resultRow(thdLabel, formatNumber(result.summary.back_emf_thd_pct), '%')}
@@ -3093,10 +3108,10 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
                 {torqueSpeed && resultRow('Torque–speed map', torqueSpeed.status === 'partial'
                   ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
                   : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
-                {cogging && resultRow('Cogging torque p-p', formatNumber(cogging.peak_to_peak_Nm), 'N·m')}
+                {cogging && resultRow('Cogging torque p-p', formatTorqueNm(cogging.peak_to_peak_Nm), 'N·m')}
                 {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
-              {hasTorque && resultRow(`Average torque${preview}`, formatNumber(result.summary.avg_torque_Nm), 'N·m')}
+              {hasTorque && resultRow(`Average torque${preview}`, formatTorqueNm(result.summary.avg_torque_Nm), 'N·m')}
               {hasTorque && rippleRows}
               {hasBackEmf && resultRow('Back EMF', formatNumber(result.summary.back_emf_fundamental_V), 'V')}
               {showKt && constants && resultRow('Kt torque constant', constants.kt.text, constants.kt.unit)}
@@ -3279,8 +3294,8 @@ function BackEMFHarmonicSpectrum({
 
 export type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | 'advanced';
 
-function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
-  'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
+function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, cancellingSolve = false, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
+  'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'cancellingSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
   const reference = publishedReference(config);
   // The setup sections open one at a time, as Design's do. The accuracy plan
@@ -3449,7 +3464,9 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);
   // [tag label, popover heading]
-  const [runReadinessTag, runReadinessTitle] = solveInProgress
+  const [runReadinessTag, runReadinessTitle] = cancellingSolve
+    ? ['Stopping', 'Stopping the analysis']
+    : solveInProgress
     ? finalizingResults
       ? ['Finalizing', 'Finalizing results']
       : ['Running', 'Analysis in progress']
@@ -3469,6 +3486,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
         : 'info';
   const runReadinessCopy = validationError
     ? validationError
+    : cancellingSolve
+      ? 'Stopping the solver. This can take a few seconds while a mesh is being built.'
     : solveInProgress
       ? finalizingResults
         ? 'The rotor sweep is complete. The solver is assembling waveforms, metrics, field plots, and the saved run.'
@@ -3490,6 +3509,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     ? convergenceFailed
       ? ['Convergence failed', 'Convergence failed — review solver settings']
       : ['Needs review', 'Review the request details before running']
+    : cancellingSolve
+      ? ['Stopping', 'Stopping the analysis']
     : busy === 'solve'
       ? finalizingResults
         ? ['Finalizing', 'Preparing playback and saving results']
@@ -3999,7 +4020,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={runDisabled} onClick={handleStartSolve}>Run again</button>
             </>
           ) : (
-            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
+            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled || cancellingSolve} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{cancellingSolve ? 'Stopping…' : busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>
@@ -4025,6 +4046,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               armatureBusy={busy === 'field'}
               armatureError={armatureFieldError}
               magnetoCompositionAvailable={selectedSolver === 'magneto2d'}
+              statorFieldUnavailableReason={statorFieldUnavailableReason(config)}
               positionLink={fieldPositionLink}
               onRequestArmature={onRequestArmatureField}
             />
@@ -4603,7 +4625,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
               )}
             </div>
           )}
-          {props.activeStep === 'solve' && <SolveStage config={props.config} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
+          {props.activeStep === 'solve' && <SolveStage config={props.config} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} cancellingSolve={props.cancellingSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
           {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
         </div>
       </main>

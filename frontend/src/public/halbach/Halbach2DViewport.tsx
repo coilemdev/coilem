@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
   useViewportNavigation,
@@ -12,7 +13,12 @@ import type {
   HalbachResultView,
   HalbachViewportMode,
 } from './types';
-import { halbachDisplaySegments } from './geometry';
+import {
+  halbachDisplaySegments,
+  halbachRingIsDrawable,
+  halbachViewRadius,
+  isDrawableLength,
+} from './geometry';
 import {
   HALBACH_POLE_NORTH_FALLBACK,
   HALBACH_POLE_SOUTH_FALLBACK,
@@ -33,6 +39,8 @@ interface Halbach2DViewportProps {
   fieldLineDensity?: 'low' | 'medium' | 'high';
   showMagnetization?: boolean;
   showSamplingOverlays?: boolean;
+  /** Where the zoom controls go when the workspace docks them; in the canvas when omitted. */
+  navigationSlot?: HTMLElement | null;
 }
 
 const HEAT_COLORS = ['#142a61', '#1855a7', '#1b8eb7', '#2ab673', '#a7c83a', '#f1c232', '#f58b24', '#dc3d3d'];
@@ -105,6 +113,13 @@ function pathAnnularWedge(
   const start = -startDeg * Math.PI / 180;
   const end = -endDeg * Math.PI / 180;
   context.beginPath();
+  // Canvas arc() throws on a negative radius. Leave the path empty instead,
+  // so a bad radius draws nothing and never takes the workspace down.
+  if (
+    !isDrawableLength(innerRadius * scale)
+    || !isDrawableLength(outerRadius * scale)
+    || outerRadius <= innerRadius
+  ) return;
   context.arc(centerX, centerY, outerRadius * scale, start, end, true);
   context.arc(centerX, centerY, innerRadius * scale, end, start, false);
   context.closePath();
@@ -169,6 +184,7 @@ export function Halbach2DViewport({
   fieldLineDensity = 'medium',
   showMagnetization = true,
   showSamplingOverlays = true,
+  navigationSlot,
 }: Halbach2DViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fieldLineCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -178,11 +194,10 @@ export function Halbach2DViewport({
     // A solved field includes the far Dirichlet boundary. Keep that numerical
     // domain off-canvas in both mesh and result views so the useful
     // magnet/bore/leakage region fills the viewport, matching the motor view.
-    Math.max(
-      config.geometry.outer_radius * 1.25,
-      config.sample_region.leakage_probe_radius * 1.08,
-    )
+    // Only usable radii take part, so the view scale stays positive.
+    halbachViewRadius(config)
   ), [config]);
+  const ringDrawable = halbachRingIsDrawable(config);
   const showTwoTonePoles = showMagnetization
     && (viewportMode !== 'field' || !showHeatmap);
 
@@ -470,6 +485,7 @@ export function Halbach2DViewport({
       }
 
       const drawCircle = (radius: number, color: string, dash: number[]) => {
+        if (!isDrawableLength(radius * scale)) return;
         context.beginPath();
         context.arc(centerX, centerY, radius * scale, 0, Math.PI * 2);
         context.setLineDash(dash);
@@ -680,19 +696,18 @@ export function Halbach2DViewport({
     };
   }, [config.array.field_direction, report, resultView, showHeatmap, viewportMode]);
 
-  const requestedFieldDirectionDeg = (
-    (config.array.field_direction % 360) + 360
-  ) % 360;
+  const requestedFieldDirectionDeg = Number.isFinite(config.array.field_direction)
+    ? ((config.array.field_direction % 360) + 360) % 360
+    : 0;
   const requestedFieldScreenRotationDeg = -requestedFieldDirectionDeg;
   let requestedLabelRotationDeg = (
     (requestedFieldScreenRotationDeg + 180) % 360 + 360
   ) % 360 - 180;
   if (requestedLabelRotationDeg > 90) requestedLabelRotationDeg -= 180;
   if (requestedLabelRotationDeg < -90) requestedLabelRotationDeg += 180;
-  const requestedArrowLength = Math.max(
-    8.5,
-    Math.min(14, 25 * config.sample_region.radius / maximumRadius),
-  );
+  const requestedArrowLength = isDrawableLength(config.sample_region.radius)
+    ? Math.max(8.5, Math.min(14, 25 * config.sample_region.radius / maximumRadius))
+    : 8.5;
   const requestedDirectionRad = requestedFieldDirectionDeg * Math.PI / 180;
   const requestedLabelX = 50 + Math.cos(requestedDirectionRad) * requestedArrowLength * 0.52;
   const requestedLabelY = 50 - Math.sin(requestedDirectionRad) * requestedArrowLength * 0.52;
@@ -705,7 +720,11 @@ export function Halbach2DViewport({
     const y = height / 2 - (event.clientY - rect.top) * height / rect.height;
     const scale = (Math.min(width, height) * 0.44) / maximumRadius;
     const radius = Math.hypot(x, y) / scale;
-    if (radius < config.geometry.inner_radius || radius > config.geometry.outer_radius) {
+    if (
+      !ringDrawable
+      || radius < config.geometry.inner_radius
+      || radius > config.geometry.outer_radius
+    ) {
       onSelectSegment(null);
       return;
     }
@@ -713,6 +732,16 @@ export function Halbach2DViewport({
     const pitch = 360 / config.geometry.segment_count;
     onSelectSegment(Math.min(config.geometry.segment_count - 1, Math.floor(angle / pitch)));
   };
+
+  const navigationControls = (
+    <ViewportNavigationControls
+      scale={navigation.scale}
+      onZoomIn={navigation.zoomIn}
+      onZoomOut={navigation.zoomOut}
+      onReset={navigation.reset}
+      fitSubject="Halbach array"
+    />
+  );
 
   return (
     <figure
@@ -741,7 +770,7 @@ export function Halbach2DViewport({
           tabIndex={0}
           onClick={handlePointer}
           onKeyDown={(event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' || !ringDrawable) {
               onSelectSegment(null);
             } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
               event.preventDefault();
@@ -823,13 +852,9 @@ export function Halbach2DViewport({
           <span><i className="is-south" aria-hidden="true" />blue = S face</span>
         </div>
       )}
-      <ViewportNavigationControls
-        scale={navigation.scale}
-        onZoomIn={navigation.zoomIn}
-        onZoomOut={navigation.zoomOut}
-        onReset={navigation.reset}
-        fitSubject="Halbach array"
-      />
+      {navigationSlot
+        ? createPortal(navigationControls, navigationSlot)
+        : navigationSlot === undefined ? navigationControls : null}
     </figure>
   );
 }

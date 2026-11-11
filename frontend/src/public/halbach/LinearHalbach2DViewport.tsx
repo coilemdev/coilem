@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
+import { linearHalbachDrawableMagnetCount } from './geometry';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -32,6 +34,8 @@ interface LinearHalbach2DViewportProps {
   fieldLineDensity?: 'low' | 'medium' | 'high';
   showMagnetization?: boolean;
   showProbeOverlays?: boolean;
+  /** Where the zoom controls go when the workspace docks them; in the canvas when omitted. */
+  navigationSlot?: HTMLElement | null;
 }
 
 interface LinearFieldData {
@@ -207,11 +211,14 @@ export function LinearHalbach2DViewport({
   fieldLineDensity = 'medium',
   showMagnetization = true,
   showProbeOverlays = true,
+  navigationSlot,
 }: LinearHalbach2DViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fieldArrowCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const navigation = useViewportNavigation();
-  const magnetCount = 4 * config.geometry.period_count;
+  // Zero when the row cannot be drawn, and capped, so a bad width, height or
+  // period count leaves the magnets out instead of reaching the draw loops.
+  const magnetCount = linearHalbachDrawableMagnetCount(config);
   const pitch = config.geometry.block_width + config.geometry.block_gap;
   const wavelength = 4 * pitch;
   const activeLength = magnetCount * config.geometry.block_width
@@ -765,6 +772,16 @@ export function LinearHalbach2DViewport({
     onSelectMagnet(index);
   };
 
+  const navigationControls = (
+    <ViewportNavigationControls
+      scale={navigation.scale}
+      onZoomIn={navigation.zoomIn}
+      onZoomOut={navigation.zoomOut}
+      onReset={navigation.reset}
+      fitSubject="Linear Halbach array"
+    />
+  );
+
   return (
     <figure
       className={`halbach-viewport halbach-viewport-2d public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
@@ -791,7 +808,7 @@ export function LinearHalbach2DViewport({
           tabIndex={0}
           onClick={handlePointer}
           onKeyDown={(event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' || magnetCount === 0) {
               onSelectMagnet(null);
             } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
               event.preventDefault();
@@ -826,13 +843,9 @@ export function LinearHalbach2DViewport({
           <span><i className="is-south" aria-hidden="true" />blue = S face</span>
         </div>
       )}
-      <ViewportNavigationControls
-        scale={navigation.scale}
-        onZoomIn={navigation.zoomIn}
-        onZoomOut={navigation.zoomOut}
-        onReset={navigation.reset}
-        fitSubject="Linear Halbach array"
-      />
+      {navigationSlot
+        ? createPortal(navigationControls, navigationSlot)
+        : navigationSlot === undefined ? navigationControls : null}
     </figure>
   );
 }

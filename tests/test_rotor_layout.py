@@ -93,13 +93,24 @@ def test_layout_and_reference_registry_are_hashed_physics() -> None:
     assert {"backend/rotor_layout.py", "backend/reference_models/__init__.py"} <= sources
 
 
-def test_outer_rotor_is_experimental_where_the_inner_combination_is_qualified(monkeypatch):
-    # Single-layer concentrated SPM under sinusoidal current on M350-50A is qualified for inner rotors only.
+def test_outer_rotor_is_qualified_inside_what_phase_f_measured(monkeypatch):
+    # Phase F of protocol 1.10.0: concentrated windings, one or two layers, sinusoidal current.
     monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: True)
     assert qualification_module.classify_qualification(MotorConfig.model_validate(INNER))["status"] == "qualified"
     outer = qualification_module.classify_qualification(MotorConfig.model_validate(outer_config()))
     assert (outer["status"], outer["reason"]) == (
-        "experimental", "Outer-rotor SPM: qualification currently covers the registered benchmark requests only.")
+        "qualified", "Outer-rotor SPM, concentrated winding, sinusoidal current: all 10 benchmark cases pass.")
+
+    six_step = outer_config()
+    six_step["solve_params"] = {
+        **(six_step.get("solve_params") or {}),
+        "excitation_mode": "ideal_six_step_120",
+        "current_amplitude_convention": "plateau",
+    }
+    rating = qualification_module.classify_qualification(MotorConfig.model_validate(six_step))
+    assert (rating["status"], rating["reason"]) == (
+        "experimental", "Outer-rotor SPM under ideal six-step excitation was not measured by the benchmark.")
+
 
 
 def test_rotor_torque_sign_rules():

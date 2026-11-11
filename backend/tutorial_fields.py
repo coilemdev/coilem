@@ -3010,18 +3010,57 @@ def run_rotating_field_motor_fixture(
     return payload
 
 
+PhaseSequence = Literal["forward", "reverse"]
+
+
+def _sequence_solver_angles(angle_deg: float, phase_sequence: str) -> tuple[float, float]:
+    """Return the solver's electrical angle and the rotor angle for one frame.
+
+    The solver's currents are fixed functions of its electrical angle
+    (two-phase: cos θ, sin θ; three-phase: cos θ, cos(θ - 120°), cos(θ + 120°)).
+    Solving at -θ gives exactly the reversed sequence at θ: Phase B becomes
+    -sin θ, or Phases B and C trade places. The field target is then at -θ and
+    moves clockwise as θ grows, so the rotor that trails it sits 15° further
+    counterclockwise.
+    """
+
+    if phase_sequence == "reverse":
+        return -angle_deg, -angle_deg + _ROTATING_FIELD_MOTOR_LAG_DEG
+    return angle_deg, angle_deg - _ROTATING_FIELD_MOTOR_LAG_DEG
+
+
+def _label_sequence_frame(
+    frame: dict[str, Any], angle_deg: float, phase_sequence: str
+) -> dict[str, Any]:
+    """Report a frame at the electrical angle the student asked for."""
+
+    frame["phase_sequence"] = phase_sequence
+    if phase_sequence == "reverse":
+        frame["electrical_angle_deg"] = angle_deg % 360.0
+        # Keep "how far the rotor trails the target" positive in both sequences.
+        frame["torque_angle_deg"] = -float(frame["torque_angle_deg"])
+    return frame
+
+
 def run_rotating_field_motor_sweep(
     *,
     peak_current_a: float = 8.0,
     field_component: Literal["combined", "stator", "rotor"] = "combined",
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
+    phase_sequence: PhaseSequence = "forward",
 ) -> dict[str, Any]:
-    """Solve one source view while the PM rotor follows the field by 15 degrees."""
+    """Solve one source view while the PM rotor follows the field by 15 degrees.
+
+    ``phase_sequence="reverse"`` makes Phase B lead Phase A (B = -Ipk sin θ),
+    so the field target turns clockwise and the rotor trails it clockwise.
+    """
 
     if not 0.0 < peak_current_a <= 20.0:
         raise ValueError("peak_current_a must be greater than 0 and at most 20 A")
     if field_component not in {"combined", "stator", "rotor"}:
         raise ValueError("field_component must be combined, stator, or rotor")
+    if phase_sequence not in {"forward", "reverse"}:
+        raise ValueError("phase_sequence must be forward or reverse")
     imported_mesh = _build_rotating_field_motor_gmsh_mesh(mesh_density=mesh_density)
     jobs = [
         float(angle_deg)
@@ -3029,14 +3068,16 @@ def run_rotating_field_motor_sweep(
     ]
 
     def solve_job(angle_deg: float) -> dict[str, Any]:
-        return run_rotating_field_motor_fixture(
-            electrical_angle_deg=angle_deg,
-            rotor_angle_deg=angle_deg - _ROTATING_FIELD_MOTOR_LAG_DEG,
+        solver_angle_deg, rotor_angle_deg = _sequence_solver_angles(angle_deg, phase_sequence)
+        frame = run_rotating_field_motor_fixture(
+            electrical_angle_deg=solver_angle_deg,
+            rotor_angle_deg=rotor_angle_deg,
             peak_current_a=peak_current_a,
             field_component=field_component,
             mesh_density=mesh_density,
             imported_mesh=imported_mesh,
         )
+        return _label_sequence_frame(frame, angle_deg, phase_sequence)
 
     with ThreadPoolExecutor(max_workers=6) as executor:
         frames = list(executor.map(solve_job, jobs))
@@ -3044,6 +3085,7 @@ def run_rotating_field_motor_sweep(
         "schema_version": "openem.rotating_field_motor_sweep.v2",
         "fixture": "rotating_field_motor",
         "field_component": field_component,
+        "phase_sequence": phase_sequence,
         "peak_current_a": peak_current_a,
         "frame_count": len(frames),
         "electrical_angles_deg": list(_ROTATING_FIELD_ANGLES_DEG),
@@ -3244,27 +3286,39 @@ def run_three_phase_motor_sweep(
     peak_current_a: float = 8.0,
     field_component: ThreePhaseFieldComponent = "combined",
     mesh_density: Literal["coarse", "normal", "fine"] = "normal",
+    phase_sequence: PhaseSequence = "forward",
 ) -> dict[str, Any]:
-    """Solve one Lesson 8 source view over a complete electrical revolution."""
+    """Solve one Lesson 8 source view over a complete electrical revolution.
+
+    ``phase_sequence="reverse"`` swaps the currents of Phases B and C
+    (A-C-B), so the field target and the rotor turn clockwise. The open-phase
+    view has no sequence (B = -A, C = 0) and is always solved as "forward".
+    """
 
     if not 0.0 < peak_current_a <= 20.0:
         raise ValueError("peak_current_a must be greater than 0 and at most 20 A")
+    if phase_sequence not in {"forward", "reverse"}:
+        raise ValueError("phase_sequence must be forward or reverse")
+    if field_component == "open_c":
+        phase_sequence = "forward"
     imported_mesh = _build_three_phase_motor_gmsh_mesh(mesh_density=mesh_density)
     angles_deg = [float(angle_deg) for angle_deg in _ROTATING_FIELD_ANGLES_DEG]
 
     def solve_job(angle_deg: float) -> dict[str, Any]:
-        return run_three_phase_motor_fixture(
-            electrical_angle_deg=angle_deg,
+        solver_angle_deg, rotor_angle_deg = _sequence_solver_angles(angle_deg, phase_sequence)
+        frame = run_three_phase_motor_fixture(
+            electrical_angle_deg=solver_angle_deg,
             rotor_angle_deg=(
                 -_ROTATING_FIELD_MOTOR_LAG_DEG
                 if field_component == "open_c"
-                else angle_deg - _ROTATING_FIELD_MOTOR_LAG_DEG
+                else rotor_angle_deg
             ),
             peak_current_a=peak_current_a,
             field_component=field_component,
             mesh_density=mesh_density,
             imported_mesh=imported_mesh,
         )
+        return _label_sequence_frame(frame, angle_deg, phase_sequence)
 
     with ThreadPoolExecutor(max_workers=6) as executor:
         frames = list(executor.map(solve_job, angles_deg))
@@ -3272,6 +3326,7 @@ def run_three_phase_motor_sweep(
         "schema_version": "openem.three_phase_motor_sweep.v1",
         "fixture": "three_phase_motor",
         "field_component": field_component,
+        "phase_sequence": phase_sequence,
         "peak_current_a": peak_current_a,
         "frame_count": len(frames),
         "electrical_angles_deg": angles_deg,

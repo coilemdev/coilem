@@ -525,25 +525,25 @@ def test_background_playback_submission_failure_closes_its_pool(playback_pool, m
     assert folder not in run_field_playback._JOBS
 
 
-def _hold_worker_cancellation_lock(marker: str, release: str) -> None:
-    # A killed process cannot release a multiprocessing condition. Event.set()
-    # must never use it during/after forced shutdown, even while unwinding.
-    with _process_pool._worker_cancelled._cond:
-        Path(marker).write_text("locked", encoding="utf-8")
-        deadline = time.monotonic() + 30
-        while not Path(release).exists() and time.monotonic() < deadline:
-            time.sleep(0.01)
+def _poll_worker_cancellation(marker: str, release: str) -> None:
+    # Exit must stop a worker polling the real cancellation signal, and the
+    # context must unwind without needing any resource owned by that worker.
+    Path(marker).write_text("polling", encoding="utf-8")
+    deadline = time.monotonic() + 30
+    while not Path(release).exists() and time.monotonic() < deadline:
+        _process_pool.check_process_worker_cancelled()
+        time.sleep(0.01)
 
 
-def test_exit_does_not_wait_on_a_worker_cancellation_lock(tmp_path):
-    marker, release = tmp_path / "locked", tmp_path / "release"
+def test_exit_stops_a_worker_polling_cancellation(tmp_path):
+    marker, release = tmp_path / "polling", tmp_path / "release"
     unwound, stopped = threading.Event(), threading.Event()
     outcomes: list[BaseException] = []
 
     def solve() -> None:
         try:
             with _process_pool.cancellable_process_pool(1) as pool:
-                pool.submit(_hold_worker_cancellation_lock, str(marker), str(release)).result(timeout=40)
+                pool.submit(_poll_worker_cancellation, str(marker), str(release)).result(timeout=40)
         except BrokenProcessPool as exc:
             outcomes.append(exc)
         finally:
@@ -560,15 +560,14 @@ def test_exit_does_not_wait_on_a_worker_cancellation_lock(tmp_path):
         deadline = time.monotonic() + 15
         while not marker.exists() and time.monotonic() < deadline:
             time.sleep(0.02)
-        assert marker.exists(), "the worker must own the real multiprocessing lock"
+        assert marker.exists(), "the worker must be polling the real cancellation signal"
         stopper.start()
-        assert stopped.wait(timeout=3), "exit waited for the worker's cancellation lock"
-        assert unwound.wait(timeout=3), "unwinding used the lock after its owner was killed"
+        assert stopped.wait(timeout=3), "exit waited for the running worker"
+        assert unwound.wait(timeout=3), "pool did not unwind after the worker was killed"
         assert len(outcomes) == 1
         assert not _process_pool._LIVE_POOLS
     finally:
-        # The original bug blocks before killing the worker. Release it so a
-        # failing regression cannot strand a worker or the test runner.
+        # Release the worker if shutdown failed, so this test cannot strand it.
         release.write_text("release", encoding="utf-8")
         if stopper.ident is not None:
             stopper.join(timeout=10)
@@ -610,7 +609,7 @@ def test_exit_waits_for_an_in_flight_cooperative_cancellation(monkeypatch):
         request_cancel.set()
         assert setting.wait(timeout=10)
         stopper.start()
-        assert not _process_pool._EXITING.wait(timeout=0.3), "exit can kill workers before Event.set() finishes"
+        assert not _process_pool._EXITING.wait(timeout=0.3), "exit can kill workers before cancellation is published"
         release_set.set()
         assert unwound.wait(timeout=10)
     finally:

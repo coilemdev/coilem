@@ -2,6 +2,7 @@ import React from 'react';
 import type { FollowFluxFieldData, FollowFluxMetrics } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, readLessonSession, useLessonResume, useLessonSessionState } from './lessonSession';
 import { MeshViewer } from './MeshViewer';
 import type {
   LearningLessonHeaderProgress,
@@ -295,6 +296,8 @@ const pairPoleFacing = (magnet: MagnetPlacement, magnet2: MagnetPlacement) => {
  * Where the pair phase puts the two magnets on first entry: end to end with a
  * 4 mm gap, both inside the domain (a 36 mm bar needs |x| <= 30 at 0 deg).
  */
+const LESSON_ID = 'follow-the-flux';
+
 const PAIR_LAYOUT = {
   first: { xMm: -20, yMm: 0, angleDeg: 0 },
   second: { xMm: 20, yMm: 0, angleDeg: 0 },
@@ -1239,10 +1242,25 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
   const lessonPhase: LessonOnePhase = lessonStage === 'design'
     ? 'design'
     : pairPhaseOpen ? 'pair' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['closed-loop', 'stops', 'straight']),
+  );
+  // How far the student got, kept for the tab so a reload does not lock the
+  // later steps again. The solved fields are not kept; they are solved again.
+  const [airReached, setAirReached] = useLessonSessionState(LESSON_ID, 'airReached', false);
+  const [steelReached, setSteelReached] = useLessonSessionState(LESSON_ID, 'steelReached', false);
+  const [pairReached, setPairReached] = useLessonSessionState(LESSON_ID, 'pairReached', false);
+  const [reviewReached, setReviewReached] = useLessonSessionState(LESSON_ID, 'reviewReached', false);
+  // The phase the lesson was left in, read once when it opens.
+  const storedPhaseRef = React.useRef(readLessonSession(LESSON_ID).stage);
+  // Set once the solve functions exist; the step buttons defined above them call it.
+  const restoreLabRef = React.useRef<(openPair: boolean) => void>(() => undefined);
   const [airSolve, setAirSolve] = React.useState<FollowFluxFieldData | null>(null);
   const [steelSolve, setSteelSolve] = React.useState<FollowFluxFieldData | null>(null);
-  const [steelInsightAnswer, setSteelInsightAnswer] = React.useState<SteelInsightAnswer | null>(null);
+  const [steelInsightAnswer, setSteelInsightAnswer] = useLessonSessionState<SteelInsightAnswer | null>(
+    LESSON_ID, 'steelInsightAnswer', null,
+    oneOf<SteelInsightAnswer>(['lower-reluctance', 'stronger-magnet', 'larger-area']),
+  );
   const [pairAttractSolve, setPairAttractSolve] = React.useState<FollowFluxFieldData | null>(null);
   const [pairRepelSolve, setPairRepelSolve] = React.useState<FollowFluxFieldData | null>(null);
   const [solveView, setSolveView] = React.useState<SolveView>('air');
@@ -1281,11 +1299,26 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
   const autoSolveSeq = React.useRef(0);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
-  const lessonComplete = isLessonComplete('follow-the-flux');
+  const lessonComplete = isLessonComplete(LESSON_ID);
 
   const predictionCorrect = prediction === 'closed-loop';
   const steelInsightCorrect = steelInsightAnswer === 'lower-reluctance';
   const bothSolved = Boolean(airSolve && steelSolve);
+  // A finished lesson reopens with every step available.
+  const predictionDone = lessonComplete || predictionCorrect;
+  const airDone = lessonComplete || airReached || Boolean(airSolve);
+  const pairOpenable = lessonComplete || pairReached || (bothSolved && steelInsightCorrect);
+  const checkOpenable = lessonComplete || reviewReached || pairComparisonReviewed;
+
+  React.useEffect(() => {
+    if (airSolve) setAirReached(true);
+    if (steelSolve) setSteelReached(true);
+    if (bothSolved && steelInsightCorrect && pairPhaseOpen) setPairReached(true);
+    if (pairComparisonReviewed) setReviewReached(true);
+  }, [
+    airSolve, bothSolved, pairComparisonReviewed, pairPhaseOpen, setAirReached, setPairReached,
+    setReviewReached, setSteelReached, steelInsightCorrect, steelSolve,
+  ]);
   const steelPlacementValid = steelPlacementIsValid(steelPlacement, magnetPlacement);
   const magnetPlacementValid = magnetPlacementIsValid(magnetPlacement);
   const magnet2PlacementValid = magnet2PlacementIsValid(magnet2Placement, magnetPlacement);
@@ -1364,31 +1397,40 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
       setQuizOpen(false);
       setSolveView('air');
       setLessonPhase('design');
-    } else if (next === 'air' && predictionCorrect) {
+    } else if (next === 'air' && predictionDone) {
       setQuizOpen(false);
       setSolveView('air');
       setLessonPhase('solve');
-    } else if (next === 'steel' && airSolve) {
+    } else if (next === 'steel' && airDone) {
       setQuizOpen(false);
       setSolveView('steel');
       setLessonPhase('solve');
-    } else if (next === 'pair' && bothSolved && steelInsightCorrect) {
+    } else if (next === 'pair' && pairOpenable) {
       setQuizOpen(false);
-      setSolveView('pair');
-      setLessonPhase('pair');
-    } else if (next === 'check' && pairComparisonReviewed) {
+      if (bothSolved) {
+        setSolveView('pair');
+        setLessonPhase('pair');
+      } else {
+        // Reopened without its solved fields: the one-magnet fields are solved
+        // again first, then the two-magnet step opens.
+        restoreLabRef.current(true);
+      }
+    } else if (next === 'check' && checkOpenable) {
       setLessonPhase('pair');
       setQuizOpen(true);
     }
-  }, [airSolve, bothSolved, pairComparisonReviewed, predictionCorrect, setLessonPhase, steelInsightCorrect]);
+  }, [airDone, bothSolved, checkOpenable, pairOpenable, predictionDone, setLessonPhase]);
 
   const lessonProgressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
-    { id: 'air', label: 'Open air', complete: Boolean(airSolve), available: predictionCorrect },
-    { id: 'steel', label: 'Add steel', complete: Boolean(steelSolve) && steelInsightCorrect, available: Boolean(airSolve) },
-    { id: 'pair', label: 'Two magnets', complete: pairComparisonReviewed, available: bothSolved && steelInsightCorrect },
-    { id: 'check', label: 'Check', complete: quizPassed, available: pairComparisonReviewed },
-  ], [airSolve, bothSolved, pairComparisonReviewed, predictionCorrect, quizPassed, steelInsightCorrect, steelSolve]);
+    { id: 'air', label: 'Open air', complete: Boolean(airSolve), available: predictionDone },
+    { id: 'steel', label: 'Add steel', complete: Boolean(steelSolve) && steelInsightCorrect, available: airDone },
+    { id: 'pair', label: 'Two magnets', complete: pairComparisonReviewed || reviewReached, available: pairOpenable },
+    { id: 'check', label: 'Check', complete: quizPassed, available: checkOpenable },
+  ], [
+    airDone, airSolve, checkOpenable, pairComparisonReviewed, pairOpenable, predictionCorrect,
+    predictionDone, quizPassed, reviewReached, steelInsightCorrect, steelSolve,
+  ]);
 
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
     lessonNumber: 1,
@@ -1406,10 +1448,13 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
   }, [headerProgress, onHeaderProgressChange]);
 
   React.useEffect(() => {
-    if (bothSolved && pairExperimentComplete && pairComparisonReviewed && quizPassed) {
-      setLessonComplete('follow-the-flux', true);
+    // reviewReached stands in for the pair lab after a reload: the Check step
+    // is open then, so passing it must record the lesson as complete (#259).
+    const pairLabDone = reviewReached || (bothSolved && pairExperimentComplete && pairComparisonReviewed);
+    if (pairLabDone && quizPassed) {
+      setLessonComplete(LESSON_ID, true);
     }
-  }, [bothSolved, pairComparisonReviewed, pairExperimentComplete, quizPassed, setLessonComplete]);
+  }, [bothSolved, pairComparisonReviewed, pairExperimentComplete, quizPassed, reviewReached, setLessonComplete]);
 
   React.useEffect(() => {
     if (!pairExperimentComplete) return;
@@ -1477,6 +1522,27 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
     setSolveView('pair');
     setStaleView((prev) => ({ ...prev, pair: false }));
   });
+
+  // Back into the lab after a reload, a trip to the catalog, or a jump to a
+  // later step of a finished lesson: solve the one-magnet fields again with
+  // the default layout (each takes about half a second), then open the
+  // two-magnet step if that is where the student was going.
+  restoreLabRef.current = (openPair: boolean) => {
+    setLessonPhase('solve');
+    void (async () => {
+      if (!airSolve) await solveAir();
+      if (!steelSolve && (openPair || steelReached)) await solveSteel();
+      if (openPair) {
+        setSolveView('pair');
+        setLessonPhase('pair');
+      }
+    })();
+  };
+  useLessonResume(LESSON_ID, lessonPhase, predictionDone ? () => {
+    const openPair = storedPhaseRef.current === 'pair' && pairOpenable;
+    if (airReached || openPair) restoreLabRef.current(openPair);
+    else setLessonPhase('solve');
+  } : null);
 
   const flipMagnet2ForComparison = () => {
     autoSolveSeq.current += 1;

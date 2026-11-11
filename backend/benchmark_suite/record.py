@@ -10,6 +10,7 @@ an earlier commit whose physics is unchanged.
 
 from __future__ import annotations
 
+import importlib.metadata
 import math
 import os
 import platform
@@ -19,6 +20,7 @@ from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, ROOT, machine_
 from backend.benchmark_suite.physics import (
     BUILD_INFO_KEY,
     PHYSICS_DATA_SOURCES,
+    PHYSICS_DEPENDENCIES,
     PHYSICS_PYTHON_SOURCES,
     solver_source_hashes,
 )
@@ -195,8 +197,20 @@ def installed_physics_hashes():
     return hashes, solver
 
 
+def installed_physics_dependencies():
+    """``{package: version}`` for the installed physics dependencies; ``None`` where one is missing."""
+
+    versions = {}
+    for name in PHYSICS_DEPENDENCIES:
+        try:
+            versions[name] = importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            versions[name] = None
+    return versions
+
+
 def check_physics(record):
-    """Whether this installation runs the physics sources the record measured."""
+    """Whether this installation runs the physics sources and dependencies the record measured."""
 
     hashes, solver = installed_physics_hashes()
     differs, unverified = [], []
@@ -208,6 +222,14 @@ def check_physics(record):
             differs.append(path)
     # A physics file the build has but the record lacks is a change too.
     differs.extend(sorted((set(hashes) | set(solver)) - set(record["physics_files"])))
+    # A Gmsh or meshio upgrade can change a mesh with every source hash unchanged.
+    measured = (record.get("environment") or {}).get("dependencies") or {}
+    for name, actual in installed_physics_dependencies().items():
+        expected = measured.get(name)
+        if actual is None or expected is None:
+            unverified.append(f"{name} version")
+        elif actual != expected:
+            differs.append(f"{name} {actual} (record measured {expected})")
     status = "DIFFERS" if differs else "UNVERIFIED" if unverified else "MATCH"
     return {"status": status, "files": len(record["physics_files"]), "differs": differs, "unverified": unverified}
 

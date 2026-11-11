@@ -164,3 +164,33 @@ def test_large_lcm_grids_keep_the_preset_resolution(slots, poles, period, order,
     assert record.positions_per_period == positions
     assert record.fundamental_order == order
     assert record.first_harmonic_Nm == pytest.approx(1)
+
+
+def _held_sweep_report(monkeypatch):
+    report = {'sweep': {}, 'comparison_mesh_evidence': {}}
+    monkeypatch.setattr(solver, '_aggregate_per_angle_mesh_sweep', lambda *args, **kwargs: report)
+    monkeypatch.setattr(
+        solver, '_field_line_frames_from_reports',
+        lambda reports, angles, *args, **kwargs: [{'angle_deg': angle} for angle in angles],
+    )
+    return report
+
+
+def test_a_cogging_only_run_stores_its_cogging_positions_as_field_frames(pipeline, monkeypatch):
+    # #241: with one loaded position the run had a single field frame, so the Field view had nothing to play.
+    config, _, _, run = pipeline
+    config.solve_options.torque_sweep = False
+    config.solve_options.losses_efficiency = False
+    monkeypatch.setattr(solver, 'estimate_magneto2d_sweep_angle_grid', lambda _: [0.0])
+    report = _held_sweep_report(monkeypatch)
+    run()
+    assert [frame['angle_deg'] for frame in report['field_line_frames']] == cogging_angle_grid(config)
+    assert len(report['field_line_frames']) >= 2
+
+
+def test_a_run_with_a_loaded_sweep_keeps_its_own_field_frames(pipeline, monkeypatch):
+    config, _, _, run = pipeline
+    config.solve_options.torque_sweep = True
+    report = _held_sweep_report(monkeypatch)
+    run()
+    assert 'field_line_frames' not in report

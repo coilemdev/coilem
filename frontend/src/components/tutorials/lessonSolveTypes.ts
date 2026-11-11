@@ -385,6 +385,13 @@ export interface RotatingFieldSweepData {
   phase_b_frames: RotatingFieldFrameData[];
 }
 
+/**
+ * Which way the phase currents are ordered in a lesson 7 or 8 motor sweep.
+ * 'forward' is A then B (then C): the field turns counterclockwise.
+ * 'reverse' is the opposite order: the field turns clockwise.
+ */
+export type LessonPhaseSequence = 'forward' | 'reverse';
+
 export interface RotatingFieldMotorFrameData extends Omit<FollowFluxFieldData, 'fixture'> {
   fixture: 'rotating_field_motor';
   field_component: 'combined' | 'stator' | 'rotor';
@@ -409,6 +416,7 @@ export interface RotatingFieldMotorSweepData {
   schema_version: string;
   fixture: 'rotating_field_motor';
   field_component: 'combined' | 'stator' | 'rotor';
+  phase_sequence?: LessonPhaseSequence;
   peak_current_a: number;
   frame_count: number;
   electrical_angles_deg: number[];
@@ -453,6 +461,7 @@ export interface ThreePhaseMotorSweepData {
   schema_version: string;
   fixture: 'three_phase_motor';
   field_component: ThreePhaseMotorFieldComponent;
+  phase_sequence?: LessonPhaseSequence;
   peak_current_a: number;
   frame_count: number;
   electrical_angles_deg: number[];

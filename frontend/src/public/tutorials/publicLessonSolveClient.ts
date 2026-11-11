@@ -13,6 +13,7 @@ import type {
   IronSaturationToothFieldData,
   LessonOneFieldCompositionResult,
   LessonOneFieldCompositionSource,
+  LessonPhaseSequence,
   LinearMotorCapstoneFieldData,
   MeshPreviewData,
   RotatingFieldMotorFrameData,
@@ -371,10 +372,12 @@ export const publicLessonSolveClient: LessonSolveClient = {
   fetchRotatingFieldMotorSweep(
     peakCurrentA = 8,
     fieldComponent: 'combined' | 'stator' | 'rotor' = 'combined',
+    phaseSequence: LessonPhaseSequence = 'forward',
   ) {
     const params = new URLSearchParams({
       peak_current_a: String(peakCurrentA),
       field_component: fieldComponent,
+      phase_sequence: phaseSequence,
     });
     return getSweepJson<RotatingFieldMotorSweepData>(
       `${PUBLIC_API_BASE}/tutorials/rotating-field/motor-sweep?${params.toString()}`,
@@ -392,10 +395,12 @@ export const publicLessonSolveClient: LessonSolveClient = {
   fetchThreePhaseMotorSweep(
     peakCurrentA = 8,
     fieldComponent: ThreePhaseMotorFieldComponent = 'combined',
+    phaseSequence: LessonPhaseSequence = 'forward',
   ) {
     const params = new URLSearchParams({
       peak_current_a: String(peakCurrentA),
       field_component: fieldComponent,
+      phase_sequence: phaseSequence,
     });
     return getSweepJson<ThreePhaseMotorSweepData>(
       `${PUBLIC_API_BASE}/tutorials/three-phase-motor/sweep?${params.toString()}`,

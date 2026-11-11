@@ -20,7 +20,13 @@ import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION, designFileBaseName } from '.
 import { Halbach2DViewport } from './Halbach2DViewport';
 import { Halbach3DViewer } from './Halbach3DViewer';
 import { LinearHalbachWorkspace } from './LinearHalbachWorkspace';
-import { halbachMagnetizationAngleDeg } from './geometry';
+import {
+  halbachMagnetizationAngleDeg,
+  hasHalbachConfigShape,
+  isRestorableHalbachConfig,
+  isRestorableLinearHalbachConfig,
+} from './geometry';
+import { WorkspaceErrorBoundary } from '../WorkspaceErrorBoundary';
 import {
   cloneDefaultHalbachConfig,
   HALBACH_AXIAL_NOTICE,
@@ -46,12 +52,14 @@ type HalbachTopology = 'cylindrical' | 'linear';
 
 interface HalbachWorkspaceProps {
   onHome: () => void;
+  appVersion?: string | null;
   initialConfig?: HalbachArrayConfig | LinearHalbachArrayConfig;
   connectionStatus?: 'checking' | 'online' | 'offline';
 }
 
 interface CylindricalHalbachWorkspaceProps {
   onHome: () => void;
+  appVersion?: string | null;
   onTopologyChange: (topology: HalbachTopology) => void;
   initialConfig?: HalbachArrayConfig;
   connectionStatus?: 'checking' | 'online' | 'offline';
@@ -119,23 +127,36 @@ function formatMetric(value: number | null | undefined, unit = '', digits = 4): 
 function collectLocalErrors(config: HalbachArrayConfig): HalbachValidationIssue[] {
   const errors: HalbachValidationIssue[] = [];
   const add = (field: string, message: string) => errors.push({ field, message });
-  if (!(config.geometry.inner_radius > 0)) add('geometry.inner_radius', 'Inner radius must be greater than zero.');
-  if (!(config.geometry.outer_radius > config.geometry.inner_radius)) {
-    add('geometry.outer_radius', 'Outer radius must exceed the inner radius.');
+  if (!(config.geometry.inner_radius > 0)) add('geometry.inner_radius', 'Bore diameter must be greater than zero.');
+  if (!(config.geometry.outer_radius > 0)) {
+    add('geometry.outer_radius', 'Outer diameter must be greater than zero.');
+  } else if (!(config.geometry.outer_radius > config.geometry.inner_radius)) {
+    add('geometry.outer_radius', 'Outer diameter must be greater than the bore diameter.');
   }
   if (!(config.geometry.axial_length > 0)) add('geometry.axial_length', 'Axial length must be greater than zero.');
   if (!Number.isInteger(config.geometry.segment_count) || config.geometry.segment_count < 4 || config.geometry.segment_count > 64) {
     add('geometry.segment_count', 'Segment count must be an integer from 4 through 64.');
   }
   const pitch = 360 / Math.max(1, config.geometry.segment_count);
-  if (config.geometry.segment_gap_angle < 0 || config.geometry.segment_gap_angle >= pitch / 2) {
+  // Written as "not in range" so an empty field (not a number) is reported too.
+  if (!(config.geometry.segment_gap_angle >= 0 && config.geometry.segment_gap_angle < pitch / 2)) {
     add('geometry.segment_gap_angle', 'Segment gap must be non-negative and less than half the pitch.');
   }
-  if (!(config.sample_region.radius > 0 && config.sample_region.radius < 0.95 * config.geometry.inner_radius)) {
+  if (!Number.isFinite(config.geometry.segment_start_angle)) {
+    add('geometry.segment_start_angle', 'Seam rotation must be a number.');
+  }
+  if (!Number.isFinite(config.array.field_direction)) {
+    add('array.field_direction', 'Requested direction must be a number.');
+  }
+  if (!(config.sample_region.radius > 0)) {
+    add('sample_region.radius', 'Bore ROI radius must be greater than zero.');
+  } else if (!(config.sample_region.radius < 0.95 * config.geometry.inner_radius)) {
     add('sample_region.radius', 'ROI radius must be positive and below 95% of the bore radius.');
   }
   const boundary = config.geometry.outer_radius * config.solve.mesh.outer_boundary_radius_factor;
-  if (!(config.sample_region.leakage_probe_radius > config.geometry.outer_radius
+  if (!(config.sample_region.leakage_probe_radius > 0)) {
+    add('sample_region.leakage_probe_radius', 'Leakage probe radius must be greater than zero.');
+  } else if (!(config.sample_region.leakage_probe_radius > config.geometry.outer_radius
     && config.sample_region.leakage_probe_radius < boundary)) {
     add('sample_region.leakage_probe_radius', 'Leakage radius must lie between the magnet OD and outer boundary.');
   }
@@ -162,6 +183,7 @@ function downloadBlob(body: BlobPart, filename: string, type: string): void {
 
 function CylindricalHalbachWorkspace({
   onHome,
+  appVersion = null,
   onTopologyChange,
   initialConfig,
   connectionStatus = 'online',
@@ -173,6 +195,7 @@ function CylindricalHalbachWorkspace({
   const [dimension, setDimension] = useState<ViewDimension>('2d');
   const [resultView, setResultView] = useState<HalbachResultView>('magnitude');
   const [viewportMode, setViewportMode] = useState<HalbachViewportMode>('geometry');
+  const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
   const [preview, setPreview] = useState<HalbachPreview | null>(null);
   const [mesh, setMesh] = useState<HalbachMeshPreview | null>(null);
   const [report, setReport] = useState<HalbachReport | null>(null);
@@ -237,6 +260,9 @@ function CylindricalHalbachWorkspace({
   }, [config, localErrors]);
 
   useEffect(() => {
+    // A design that cannot be restored is not stored, so the last good draft
+    // stays in place while a value is being corrected.
+    if (!isRestorableHalbachConfig(config)) return;
     window.localStorage?.setItem(
       'openem_halbach_autosave',
       JSON.stringify(designFile(config, projectName)),
@@ -344,6 +370,7 @@ function CylindricalHalbachWorkspace({
         migrated.fromFuture
         || payload.project_kind !== 'halbach_array'
         || payload.halbach_config?.kind !== 'halbach_array_config'
+        || !hasHalbachConfigShape(payload.halbach_config)
       ) {
         throw new Error(
           payload.project_kind == null
@@ -369,6 +396,13 @@ function CylindricalHalbachWorkspace({
     }
   };
 
+  const resetDesign = () => {
+    setProjectName('Cylindrical Halbach array');
+    changeConfig(cloneDefaultHalbachConfig());
+    setSelectedSegment(null);
+    setStage('design');
+  };
+
   const magnetSummary = preview?.material ?? null;
   const selectedSegmentAngle = selectedSegment == null
     ? null
@@ -376,12 +410,13 @@ function CylindricalHalbachWorkspace({
 
   return (
     <div className="public-coilem-shell halbach-app" data-testid="halbach-workspace">
-      <header className="topbar public-coilem-topbar halbach-topbar">
+      <header className="topbar public-coilem-topbar">
         <div className="topbar-left">
           <button className="logo public-logo-button" type="button" onClick={onHome} aria-label="Return to coilEM home">
             <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
             <span className="logo-word">coil<span className="logo-em">EM</span><sup className="logo-stage">Beta</sup></span>
           </button>
+          {appVersion && <span className="logo-version" title={`coilEM version ${appVersion}`}>v{appVersion}</span>}
           <div className="public-project-chip-wrap" ref={projectMenuRef}>
             <button
               className="project-chip"
@@ -449,7 +484,7 @@ function CylindricalHalbachWorkspace({
                     onClick={() => setStage(item)}
                   >
                     <span className="stepper-step-num">{done ? '\u2713' : index + 1}</span>
-                    <span>{item[0].toUpperCase() + item.slice(1)}</span>
+                    <span>{item === 'report' ? 'Results' : item[0].toUpperCase() + item.slice(1)}</span>
                     {active && item === 'solve' && busy === 'solve' && (
                       <span className="stepper-step-chip running">Running</span>
                     )}
@@ -462,19 +497,36 @@ function CylindricalHalbachWorkspace({
         </div>
         <div className="topbar-right">
           <div className="topbar-utility-panel">
-            <span className="public-backend-select">Local backend</span>
-            <span className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`} role="status">
+            <span
+              className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`}
+              role="status"
+              title={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+              aria-label={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+            >
               <span className="status-dot" aria-hidden="true" />
-              <span className="status-text">Local: {connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}</span>
+              <span className="status-text">Local{connectionStatus === 'online' ? '' : connectionStatus === 'checking' ? ' · checking' : ' · offline'}</span>
             </span>
           </div>
         </div>
       </header>
 
-      <div className="halbach-model-notice" role="note">{HALBACH_AXIAL_NOTICE}</div>
-
       <main className="halbach-workspace">
         <aside className="halbach-config-panel" aria-label="Halbach design parameters">
+          <div className="halbach-panel-head">
+            <span>{stage === 'design' ? 'Design' : stage === 'solve' ? 'Solve' : 'Results'}</span>
+            {stage === 'design' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setProjectName('Cylindrical Halbach array');
+                  changeConfig(cloneDefaultHalbachConfig());
+                }}
+              >
+                Reset
+              </button>
+            )}
+          </div>
+          <div className="halbach-panel-scroll">
           {stage === 'design' && (
             <>
               <div
@@ -542,12 +594,8 @@ function CylindricalHalbachWorkspace({
                   </div>
                 </div>
               </div>
-              <div className="halbach-panel-title">
-                <span className="eyebrow">Design</span>
-                <h1>Cylindrical Halbach array</h1>
-                <p>Internal-field p = 1 · full 360° planar solve</p>
-              </div>
-          <ParameterGroup title="1. Cylinder geometry">
+              <p className="halbach-panel-note">Internal-field p = 1 · full 360° planar solve</p>
+          <ParameterGroup title="Cylinder geometry">
             <NumberInput
               label="Bore diameter"
               suffix="mm"
@@ -595,7 +643,7 @@ function CylindricalHalbachWorkspace({
             />
           </ParameterGroup>
 
-          <ParameterGroup title="2. Field pattern">
+          <ParameterGroup title="Field pattern">
             <label className="halbach-field">
               <span>Field mode</span>
               <select value="internal" disabled aria-label="Field mode"><option>Internal dipole (p = 1)</option></select>
@@ -620,7 +668,7 @@ function CylindricalHalbachWorkspace({
             </label>
           </ParameterGroup>
 
-          <ParameterGroup title="3. Magnet material">
+          <ParameterGroup title="Magnet material">
             <label className="halbach-field">
               <span>Source</span>
               <select
@@ -778,7 +826,7 @@ function CylindricalHalbachWorkspace({
             )}
           </ParameterGroup>
 
-          <ParameterGroup title="4. Sample region">
+          <ParameterGroup title="Sample region">
             <NumberInput
               label="Bore ROI radius"
               suffix="mm"
@@ -805,7 +853,7 @@ function CylindricalHalbachWorkspace({
             </label>
           </ParameterGroup>
 
-          <ParameterGroup title="5. Advanced geometry" defaultOpen={false}>
+          <ParameterGroup title="Advanced geometry" defaultOpen={false}>
             <p className="halbach-help">
               V1 is fixed to a full 360° internal dipole using annular-wedge magnets.
               Higher multipoles, yokes, coils, and 3D field solves are intentionally unavailable.
@@ -846,23 +894,11 @@ function CylindricalHalbachWorkspace({
             />
           </ParameterGroup>
 
-              <button
-                className="halbach-primary-action"
-                type="button"
-                disabled={localErrors.length > 0}
-                onClick={() => setStage('solve')}
-              >
-                Continue to Solve
-              </button>
             </>
           )}
           {stage === 'solve' && (
             <div className="halbach-solve-setup">
-              <div className="halbach-panel-title">
-                <span className="eyebrow">Analysis setup</span>
-                <h2>Magneto2D</h2>
-                <p>Gmsh mesh and linear A_z field solve.</p>
-              </div>
+              <p className="halbach-panel-note">Gmsh mesh and linear A_z field solve with Magneto2D.</p>
               <label className="halbach-field">
                 <span>Accuracy plan</span>
                 <select
@@ -891,28 +927,11 @@ function CylindricalHalbachWorkspace({
               >
                 {busy === 'mesh' ? 'Generating mesh…' : mesh ? 'Regenerate mesh preview' : 'Generate mesh preview'}
               </button>
-              <button
-                type="button"
-                className="halbach-primary-action"
-                disabled={busy !== null || localErrors.length > 0}
-                onClick={() => void runSolve()}
-              >
-                {busy === 'solve' ? 'Solving…' : 'Run Magneto2D solve'}
-              </button>
-              {busy === 'solve' && (
-                <button type="button" className="halbach-cancel-action" onClick={() => solveAbortRef.current?.abort()}>
-                  Cancel solve
-                </button>
-              )}
             </div>
           )}
           {stage === 'report' && (
             <div className="halbach-solve-setup">
-              <div className="halbach-panel-title">
-                <span className="eyebrow">Report</span>
-                <h2>Results ready</h2>
-                <p>Review outputs on the right or return to the analysis setup.</p>
-              </div>
+              <p className="halbach-panel-note">Review the outputs on the right, or change the axial length to rescale them.</p>
               <NumberInput
                 label="Axial length"
                 suffix="mm"
@@ -920,105 +939,65 @@ function CylindricalHalbachWorkspace({
                 value={config.geometry.axial_length}
                 onChange={(value) => changeGeometry('axial_length', value)}
               />
-              <button type="button" className="halbach-secondary-action" onClick={() => setStage('solve')}>
-                Back to Solve
-              </button>
-              <button type="button" className="halbach-secondary-action" onClick={() => setStage('design')}>
-                Edit Design
-              </button>
             </div>
           )}
+          </div>
+          <div className="halbach-panel-foot">
+            {stage === 'design' && (
+              <>
+                <p>{localErrors.length === 0 ? 'Design is ready to solve.' : `${localErrors.length} issue(s) to fix before solving.`}</p>
+                <button
+                  className="halbach-primary-action"
+                  type="button"
+                  disabled={localErrors.length > 0}
+                  onClick={() => setStage('solve')}
+                >
+                  Continue to Solve
+                </button>
+              </>
+            )}
+            {stage === 'solve' && (
+              <>
+                <p>{busy === 'solve' ? 'Solving the field…' : busy === 'mesh' ? 'Meshing…' : report ? 'Solved. Run again after any change.' : 'Ready to run.'}</p>
+                <button
+                  type="button"
+                  className="halbach-primary-action"
+                  disabled={busy !== null || localErrors.length > 0}
+                  onClick={() => void runSolve()}
+                >
+                  {busy === 'solve' ? 'Solving…' : 'Run Magneto2D solve'}
+                </button>
+                {busy === 'solve' ? (
+                  <button type="button" className="halbach-cancel-action" onClick={() => solveAbortRef.current?.abort()}>
+                    Cancel solve
+                  </button>
+                ) : (
+                  <button type="button" className="halbach-link-action" onClick={() => setStage('design')}>← Edit design</button>
+                )}
+              </>
+            )}
+            {stage === 'report' && (
+              <>
+                <p>Results are for the design as solved.</p>
+                <button type="button" className="halbach-secondary-action" onClick={() => setStage('solve')}>
+                  Back to Solve
+                </button>
+                <button type="button" className="halbach-link-action" onClick={() => setStage('design')}>← Edit design</button>
+              </>
+            )}
+          </div>
         </aside>
 
         <section className="halbach-stage-panel">
           <div className="halbach-viewport-shell">
-            <div
-              className="halbach-viewport-mode-tabs"
-              role="tablist"
-              aria-label="Halbach visualization mode"
+            <WorkspaceErrorBoundary
+              title="This view could not be drawn"
+              message="A design value could not be displayed. Correct it in the Design panel, or reset the design to the example values."
+              actionLabel="Reset design"
+              onAction={resetDesign}
+              retryKey={config}
+              className="halbach-view-error"
             >
-              {([
-                ['geometry', 'Geometry'],
-                ['mesh', 'Mesh'],
-                ['field', 'Field solution'],
-              ] as Array<[HalbachViewportMode, string]>).map(([mode, label]) => {
-                const disabled = (mode === 'mesh' && mesh === null)
-                  || (mode === 'field' && report === null);
-                return (
-                  <button
-                    key={mode}
-                    type="button"
-                    role="tab"
-                    aria-selected={viewportMode === mode}
-                    className={viewportMode === mode ? 'is-active' : ''}
-                    disabled={disabled}
-                    onClick={() => {
-                      setViewportMode(mode);
-                      if (mode !== 'geometry') setDimension('2d');
-                    }}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-            {dimension === '2d' && viewportMode === 'field' && report && (
-              <details className="halbach-field-layer-menu">
-                <summary>Overlays</summary>
-                <div
-                  className="halbach-field-layer-controls"
-                  role="group"
-                  aria-label="Halbach field solution overlays"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={showFieldHeatmap}
-                    onClick={() => setShowFieldHeatmap((value) => !value)}
-                  ><i aria-hidden="true" />Flux density</button>
-                  <button
-                    type="button"
-                    aria-pressed={showFieldMesh}
-                    onClick={() => setShowFieldMesh((value) => !value)}
-                  ><i aria-hidden="true" />Mesh</button>
-                  <button
-                    type="button"
-                    aria-pressed={showFieldLines}
-                    onClick={() => setShowFieldLines((value) => !value)}
-                  ><i aria-hidden="true" />Field lines</button>
-                  <button
-                    type="button"
-                    aria-pressed={showMagnetization}
-                    onClick={() => setShowMagnetization((value) => !value)}
-                  ><i aria-hidden="true" />Magnetization</button>
-                  <button
-                    type="button"
-                    aria-pressed={showSamplingOverlays}
-                    onClick={() => setShowSamplingOverlays((value) => !value)}
-                  ><i aria-hidden="true" />ROI + leakage</button>
-                  {showFieldLines && (
-                    <label className="halbach-field-density-control">
-                      <span>Line density</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="2"
-                        step="1"
-                        value={['low', 'medium', 'high'].indexOf(fieldLineDensity)}
-                        aria-label="Halbach field-line density"
-                        aria-valuetext={fieldLineDensity}
-                        onChange={(event) => {
-                          const next = ['low', 'medium', 'high'][Number(event.currentTarget.value)];
-                          if (next === 'low' || next === 'medium' || next === 'high') {
-                            setFieldLineDensity(next);
-                          }
-                        }}
-                      />
-                      <small aria-hidden="true"><span>Low</span><span>Med</span><span>High</span></small>
-                    </label>
-                  )}
-                </div>
-              </details>
-            )}
             {dimension === '2d' ? (
               <Halbach2DViewport
                 config={config}
@@ -1034,6 +1013,7 @@ function CylindricalHalbachWorkspace({
                 fieldLineDensity={fieldLineDensity}
                 showMagnetization={showMagnetization}
                 showSamplingOverlays={showSamplingOverlays}
+                navigationSlot={zoomSlot}
               />
             ) : (
               <Halbach3DViewer
@@ -1044,85 +1024,134 @@ function CylindricalHalbachWorkspace({
                 onSelectSegment={setSelectedSegment}
               />
             )}
-            <div className="halbach-viewport-bottom-bar">
-              <div className="halbach-bottom-controls" aria-label="Halbach view and overlay controls">
-                <span className="halbach-control-group" role="tablist" aria-label="Viewport dimension">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={dimension === '2d'}
-                    className={dimension === '2d' ? 'is-active' : ''}
-                    onClick={() => setDimension('2d')}
-                  >2D</button>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={dimension === '3d'}
-                    className={dimension === '3d' ? 'is-active' : ''}
-                    onClick={() => {
-                      setDimension('3d');
-                      setViewportMode('geometry');
-                    }}
-                  >3D</button>
-                </span>
-                {report && dimension === '2d' && viewportMode === 'field' && (
-                  <label className="halbach-result-view-control">
-                    <span>Field view</span>
-                    <select
-                      aria-label="2D result view"
-                      value={resultView}
-                      onChange={(event) => setResultView(event.target.value as HalbachResultView)}
-                    >
-                      <option value="magnitude">|B| heatmap</option>
-                      <option value="parallel">B parallel</option>
-                      <option value="perpendicular">B perpendicular</option>
-                      <option value="az">A_z</option>
-                      <option value="vectors">Field vectors</option>
-                    </select>
-                  </label>
-                )}
-                {dimension === '2d' && viewportMode !== 'field' && (
-                  <span className="halbach-control-group" role="group" aria-label="2D overlays">
+            </WorkspaceErrorBoundary>
+          </div>
+          {/* The dock follows the motor workspace: view tabs with zoom on one row,
+              labelled groups of layer controls on the next. */}
+          <div className="halbach-dock">
+            <div className="halbach-dock-strip">
+              <div className="halbach-dock-tabs" role="tablist" aria-label="Halbach view">
+                {([
+                  ['geometry', 'Geometry'],
+                  ['3d', '3D'],
+                  ['mesh', 'Mesh'],
+                  ['field', 'Field solution'],
+                ] as Array<[HalbachViewportMode | '3d', string]>).map(([tab, label]) => {
+                  const selected = tab === '3d'
+                    ? dimension === '3d'
+                    : dimension === '2d' && viewportMode === tab;
+                  const disabled = (tab === 'mesh' && mesh === null)
+                    || (tab === 'field' && report === null);
+                  return (
                     <button
+                      key={tab}
                       type="button"
-                      className={showMagnetization ? 'is-active' : ''}
-                      aria-pressed={showMagnetization}
-                      onClick={() => setShowMagnetization((value) => !value)}
+                      role="tab"
+                      aria-selected={selected}
+                      disabled={disabled}
+                      title={tab === 'mesh' && disabled
+                        ? 'Generate a mesh preview on the Solve step first'
+                        : tab === 'field' && disabled ? 'Run the solve first' : undefined}
+                      onClick={() => {
+                        if (tab === '3d') {
+                          setDimension('3d');
+                          setViewportMode('geometry');
+                        } else {
+                          setDimension('2d');
+                          setViewportMode(tab);
+                        }
+                      }}
                     >
-                      Magnetization
+                      {label}
                     </button>
-                    <button
-                      type="button"
-                      className={showSamplingOverlays ? 'is-active' : ''}
-                      aria-pressed={showSamplingOverlays}
-                      onClick={() => setShowSamplingOverlays((value) => !value)}
-                    >
-                      ROI + leakage
-                    </button>
-                  </span>
-                )}
+                  );
+                })}
               </div>
-              <div className="halbach-viewport-status" aria-live="polite">
+              <div className="halbach-dock-end">
+                <span className="halbach-dock-status" aria-live="polite">
                 {selectedSegment == null ? (
-                  <span>{config.geometry.segment_count} segments</span>
-                ) : (
-                  <>
-                    <span>
-                      Segment {selectedSegment + 1} · theta {formatMetric(selectedSegmentAngle, 'deg')}
-                      {' · '}alpha {formatMetric(
-                        selectedSegmentAngle == null
-                          ? null
-                          : halbachMagnetizationAngleDeg(
-                            selectedSegmentAngle,
-                            config.array.field_direction,
-                          ),
-                        'deg',
-                      )}
-                    </span>
-                    <button type="button" onClick={() => setSelectedSegment(null)} aria-label="Clear segment selection">×</button>
-                  </>
-                )}
+                    <span>{config.geometry.segment_count} segments</span>
+                  ) : (
+                    <>
+                      <span>
+                        Segment {selectedSegment + 1} · theta {formatMetric(selectedSegmentAngle, 'deg')}
+                        {' · '}alpha {formatMetric(
+                          selectedSegmentAngle == null
+                            ? null
+                            : halbachMagnetizationAngleDeg(
+                              selectedSegmentAngle,
+                              config.array.field_direction,
+                            ),
+                          'deg',
+                        )}
+                      </span>
+                      <button type="button" onClick={() => setSelectedSegment(null)} aria-label="Clear segment selection">×</button>
+                    </>
+                  )}
+                </span>
+                <span className="halbach-dock-zoom" ref={setZoomSlot} />
               </div>
+            </div>
+            <div className="halbach-dock-controls" aria-label="Halbach layer controls">
+              {dimension === '2d' && viewportMode === 'field' && report && (
+                <span className="halbach-dock-group">
+                  <span className="halbach-dock-label" aria-hidden="true">Field</span>
+                  <span className="halbach-dock-segmented" role="group" aria-label="2D result view">
+                    {([
+                      ['magnitude', '|B|', 'Field magnitude'],
+                      ['parallel', 'B par', 'B parallel'],
+                      ['perpendicular', 'B perp', 'B perpendicular'],
+                      ['az', 'A_z', 'Vector potential'],
+                      ['vectors', 'Vectors', 'Field vectors'],
+                    ] as Array<[HalbachResultView, string, string]>).map(([view, label, title]) => (
+                      <button
+                        key={view}
+                        type="button"
+                        title={title}
+                        aria-label={title}
+                        aria-pressed={resultView === view}
+                        onClick={() => setResultView(view)}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </span>
+                </span>
+              )}
+              {dimension === '2d' && viewportMode === 'field' && report && showFieldLines && (
+                <span className="halbach-dock-group">
+                  <span className="halbach-dock-label" aria-hidden="true">Line density</span>
+                  <span className="halbach-dock-segmented" role="group" aria-label="Halbach field-line density">
+                    {(['low', 'medium', 'high'] as const).map((density) => (
+                      <button
+                        key={density}
+                        type="button"
+                        aria-pressed={fieldLineDensity === density}
+                        onClick={() => setFieldLineDensity(density)}
+                      >
+                        {density === 'low' ? 'Low' : density === 'medium' ? 'Med' : 'High'}
+                      </button>
+                    ))}
+                  </span>
+                </span>
+              )}
+              {dimension === '2d' && (
+                <span className="halbach-dock-group" role="group" aria-label="Layers shown">
+                  <span className="halbach-dock-label" aria-hidden="true">Show</span>
+                  {viewportMode === 'field' && report && (
+                    <>
+                      <button type="button" className="halbach-dock-toggle" aria-pressed={showFieldHeatmap} onClick={() => setShowFieldHeatmap((value) => !value)}>Flux density</button>
+                      <button type="button" className="halbach-dock-toggle" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}>Field lines</button>
+                      <button type="button" className="halbach-dock-toggle" aria-pressed={showFieldMesh} onClick={() => setShowFieldMesh((value) => !value)}>Mesh</button>
+                    </>
+                  )}
+                  <button type="button" className="halbach-dock-toggle" aria-pressed={showMagnetization} onClick={() => setShowMagnetization((value) => !value)}>Magnetization</button>
+                  <button type="button" className="halbach-dock-toggle" aria-pressed={showSamplingOverlays} onClick={() => setShowSamplingOverlays((value) => !value)}>ROI + leakage</button>
+                </span>
+              )}
+              {dimension === '3d' && (
+                <span className="halbach-dock-note">Drag to orbit · scroll to zoom</span>
+              )}
             </div>
           </div>
         </section>
@@ -1212,7 +1241,7 @@ function CylindricalHalbachWorkspace({
           {stage === 'report' && report && (
             <>
               <div className="halbach-panel-title">
-                <span className="eyebrow">Report</span>
+                <span className="eyebrow">Results</span>
                 <h2>Field solution</h2>
                 <p>Generic Magneto2D result with Halbach metrics</p>
               </div>
@@ -1287,11 +1316,16 @@ function CylindricalHalbachWorkspace({
 function savedCylindricalDraft(
   initialConfig?: HalbachArrayConfig | LinearHalbachArrayConfig,
 ): HalbachArrayConfig | undefined {
-  if (initialConfig?.kind === 'halbach_array_config') return initialConfig;
+  if (initialConfig?.kind === 'halbach_array_config') {
+    return isRestorableHalbachConfig(initialConfig) ? initialConfig : undefined;
+  }
   try {
     const raw = window.localStorage?.getItem('openem_halbach_autosave');
-    const parsed = raw ? JSON.parse(raw) as Partial<HalbachProjectFile> : null;
-    return parsed?.halbach_config?.kind === 'halbach_array_config'
+    const parsed = raw ? JSON.parse(raw) as { halbach_config?: unknown } | null : null;
+    // A draft the workspace cannot draw is dropped and the example design is
+    // used. The next autosave then replaces the stored bad value, so a
+    // workspace that an earlier build left blank recovers by itself.
+    return isRestorableHalbachConfig(parsed?.halbach_config)
       ? parsed.halbach_config
       : undefined;
   } catch {
@@ -1302,13 +1336,13 @@ function savedCylindricalDraft(
 function savedLinearDraft(
   initialConfig?: HalbachArrayConfig | LinearHalbachArrayConfig,
 ): LinearHalbachArrayConfig | undefined {
-  if (initialConfig?.kind === 'linear_halbach_array_config') return initialConfig;
+  if (initialConfig?.kind === 'linear_halbach_array_config') {
+    return isRestorableLinearHalbachConfig(initialConfig) ? initialConfig : undefined;
+  }
   try {
     const raw = window.localStorage?.getItem('openem_linear_halbach_autosave');
-    const parsed = raw
-      ? JSON.parse(raw) as { halbach_config?: LinearHalbachArrayConfig }
-      : null;
-    return parsed?.halbach_config?.kind === 'linear_halbach_array_config'
+    const parsed = raw ? JSON.parse(raw) as { halbach_config?: unknown } | null : null;
+    return isRestorableLinearHalbachConfig(parsed?.halbach_config)
       ? parsed.halbach_config
       : undefined;
   } catch {
@@ -1318,37 +1352,65 @@ function savedLinearDraft(
 
 export function HalbachWorkspace({
   onHome,
+  appVersion = null,
   initialConfig,
   connectionStatus = 'online',
 }: HalbachWorkspaceProps) {
   const [topology, setTopology] = useState<HalbachTopology>(
     initialConfig?.kind === 'linear_halbach_array_config' ? 'linear' : 'cylindrical',
   );
+  // Raised by "Reset design" on the fallback below. It remounts the workspace
+  // on the example design, whatever was stored or passed in.
+  const [recoveryCount, setRecoveryCount] = useState(0);
+  const startConfig = recoveryCount === 0 ? initialConfig : undefined;
   const cylindricalDraft = useMemo(
-    () => savedCylindricalDraft(initialConfig),
-    [initialConfig, topology],
+    () => savedCylindricalDraft(startConfig),
+    [startConfig, topology, recoveryCount],
   );
   const linearDraft = useMemo(
-    () => savedLinearDraft(initialConfig),
-    [initialConfig, topology],
+    () => savedLinearDraft(startConfig),
+    [startConfig, topology, recoveryCount],
   );
 
-  if (topology === 'linear') {
-    return (
-      <LinearHalbachWorkspace
-        onHome={onHome}
-        onTopologyChange={setTopology}
-        initialConfig={linearDraft}
-        connectionStatus={connectionStatus}
-      />
-    );
-  }
+  const recoverWorkspace = () => {
+    try {
+      window.localStorage?.removeItem(
+        topology === 'linear' ? 'openem_linear_halbach_autosave' : 'openem_halbach_autosave',
+      );
+    } catch {
+      // Storage can be unavailable; the remount below still uses the example.
+    }
+    setRecoveryCount((count) => count + 1);
+  };
+
   return (
-    <CylindricalHalbachWorkspace
-      onHome={onHome}
-      onTopologyChange={setTopology}
-      initialConfig={cylindricalDraft}
-      connectionStatus={connectionStatus}
-    />
+    <WorkspaceErrorBoundary
+      key={`${topology}-${recoveryCount}`}
+      title="The Halbach workspace could not be shown"
+      message="The saved design could not be displayed. Reset the design to start again from the example values."
+      actionLabel="Reset design"
+      onAction={recoverWorkspace}
+      secondaryLabel="Back to home"
+      onSecondaryAction={onHome}
+      className="halbach-workspace-error"
+    >
+      {topology === 'linear' ? (
+        <LinearHalbachWorkspace
+          onHome={onHome}
+          appVersion={appVersion}
+          onTopologyChange={setTopology}
+          initialConfig={linearDraft}
+          connectionStatus={connectionStatus}
+        />
+      ) : (
+        <CylindricalHalbachWorkspace
+          onHome={onHome}
+          appVersion={appVersion}
+          onTopologyChange={setTopology}
+          initialConfig={cylindricalDraft}
+          connectionStatus={connectionStatus}
+        />
+      )}
+    </WorkspaceErrorBoundary>
   );
 }

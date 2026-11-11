@@ -39,7 +39,12 @@ from backend.public_report import (
     build_public_run_pdf,
     write_replayable_run_package,
 )
-from backend.qualification import classify_qualification, dq_flux_linkage_status, magnet_temperature_status
+from backend.qualification import (
+    classify_qualification,
+    cogging_torque_status,
+    dq_flux_linkage_status,
+    magnet_temperature_status,
+)
 from backend.resources import application_commit as _application_commit
 from backend.resources import build_identity
 from backend.run_field_playback import RUN_PLAYBACK_PREFIX, run_playback_dir, run_playback_relative
@@ -374,17 +379,18 @@ class RunLocation:
 
 
 def _apply_output_statuses(result: dict[str, Any], config: Mapping[str, Any]) -> None:
-    """Qualify the loaded d/q record and the magnet derating inside their gates (backend/qualification.py).
+    """Qualify the loaded d/q record, cogging torque and the magnet derating inside their gates (backend/qualification.py).
 
-    The solver records both as experimental; only the stored run knows the
+    The solver records them as experimental; only the stored run knows the
     design. Setting them here leaves the measured physics sources unchanged.
     """
 
     summary = result.get("summary")
     dq = summary.get("dq_flux_linkage") if isinstance(summary, dict) else None
+    cogging = summary.get("cogging") if isinstance(summary, dict) else None
     metadata = result.get("solve_metadata")
     derating = isinstance(metadata, dict) and metadata.get("magnet_temperature_status") is not None
-    if not isinstance(dq, dict) and not derating:
+    if not isinstance(dq, dict) and not isinstance(cogging, dict) and not derating:
         return
     try:
         motor = MotorConfig.model_validate(config)
@@ -392,6 +398,8 @@ def _apply_output_statuses(result: dict[str, Any], config: Mapping[str, Any]) ->
         return
     if isinstance(dq, dict):
         dq["status"], dq["status_reason"] = dq_flux_linkage_status(motor)
+    if isinstance(cogging, dict):
+        cogging["status"], cogging["status_reason"] = cogging_torque_status(motor)
     if derating:
         metadata["magnet_temperature_status"], metadata["magnet_temperature_status_reason"] = magnet_temperature_status(motor)
 

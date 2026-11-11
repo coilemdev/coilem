@@ -2,6 +2,7 @@ import React from 'react';
 import type { RotorChaseFieldData, RotorChaseFieldSource } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonResume, useLessonSessionState } from './lessonSession';
 import {
   MeshViewer,
   type MeshViewerDipoleMarker,
@@ -81,6 +82,8 @@ const LESSON_SIX_GOALS: Record<
 };
 
 const SOURCE_POLE_GAP_MM = 8;
+const LESSON_ID = 'rotor-chase';
+const LAB_PARTS: readonly LabPart[] = ['release', 'chase', 'dc', 'ac'];
 const ROTOR_START_ANGLE_DEG = 90;
 const MANUAL_STEP_DEG = 15;
 const FIELD_VECTOR_LENGTH_MM = 17;
@@ -995,7 +998,14 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   // The viewer draws its zoom buttons into the dock's title bar.
   const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['align-once', 'spin-forever', 'unaffected']),
+  );
+  // The part of the lab the student was in. Kept apart from labPart, which
+  // only moves on once the frames that part needs are solved again.
+  const [storedLabPart, setStoredLabPart] = useLessonSessionState<LabPart>(
+    LESSON_ID, 'labPart', 'release', oneOf<LabPart>(LAB_PARTS),
+  );
   const [fieldFrames, setFieldFrames] = React.useState<RotorChaseFrameSet>({});
   const [statorReferenceFrame, setStatorReferenceFrame] = React.useState<RotorChaseFieldData | null>(null);
   const [electromagnetFrames, setElectromagnetFrames] = React.useState<ElectromagnetFrameSet>({});
@@ -1006,11 +1016,13 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   const [plottedForceCurrentsA, setPlottedForceCurrentsA] = React.useState<number[]>([
     ELECTROMAGNET_PEAK_CURRENT_A,
   ]);
-  const [sawPositiveDc, setSawPositiveDc] = React.useState(false);
-  const [sawNegativeDc, setSawNegativeDc] = React.useState(false);
+  // Progress flags are kept for the tab, so a reload does not lock the later
+  // steps again. The solved frames are not kept; they are solved again.
+  const [sawPositiveDc, setSawPositiveDc] = useLessonSessionState(LESSON_ID, 'sawPositiveDc', false);
+  const [sawNegativeDc, setSawNegativeDc] = useLessonSessionState(LESSON_ID, 'sawNegativeDc', false);
   const [acAngleDeg, setAcAngleDeg] = React.useState(0);
   const [playingAc, setPlayingAc] = React.useState(false);
-  const [playedAc, setPlayedAc] = React.useState(false);
+  const [playedAc, setPlayedAc] = useLessonSessionState(LESSON_ID, 'playedAc', false);
   const [allowAcRotorMotion, setAllowAcRotorMotion] = React.useState(false);
   const [acRotorMotionBusy, setAcRotorMotionBusy] = React.useState(false);
   const [fieldSource, setFieldSource] = React.useState<RotorChaseFieldSource>('combined');
@@ -1019,8 +1031,8 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   const [rotorAngleDeg, setRotorAngleDeg] = React.useState(ROTOR_START_ANGLE_DEG);
   const [labPart, setLabPart] = React.useState<LabPart>('release');
   const [releasing, setReleasing] = React.useState(false);
-  const [alignedOnce, setAlignedOnce] = React.useState(false);
-  const [secondAlignmentComplete, setSecondAlignmentComplete] = React.useState(false);
+  const [alignedOnce, setAlignedOnce] = useLessonSessionState(LESSON_ID, 'alignedOnce', false);
+  const [secondAlignmentComplete, setSecondAlignmentComplete] = useLessonSessionState(LESSON_ID, 'secondAlignmentComplete', false);
   const [showFieldLines, setShowFieldLines] = React.useState(true);
   const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
@@ -1030,13 +1042,21 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
-  const lessonComplete = isLessonComplete('rotor-chase');
+  const lessonComplete = isLessonComplete(LESSON_ID);
   const solveClient = useLessonSolveClient();
+  // Set once enterAc exists; the step buttons defined above it call it.
+  const enterAcRef = React.useRef<() => Promise<void>>(async () => undefined);
 
   const predictionCorrect = prediction === 'align-once';
   const misalignmentDeg = shortestAngle(sourceAngleDeg, rotorAngleDeg);
   const movingTargetComplete = secondAlignmentComplete;
   const dcComplete = sawPositiveDc && sawNegativeDc;
+  // A finished lesson reopens with every step available.
+  const predictionDone = lessonComplete || predictionCorrect;
+  const alignedDone = lessonComplete || alignedOnce;
+  const movingTargetDone = lessonComplete || movingTargetComplete;
+  const dcDone = lessonComplete || dcComplete;
+  const acDone = lessonComplete || playedAc;
   const hasSolvedField = Boolean(fieldFrames.combined);
   const hasElectromagnetField = Boolean(
     electromagnetFrames.stator?.positive
@@ -1119,7 +1139,7 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   }, [stage, onStageChange]);
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('rotor-chase', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -1650,9 +1670,8 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
       setStatorReferenceFrame(statorReference);
       setFieldSource('combined');
       setRotorAngleDeg(ROTOR_START_ANGLE_DEG);
-      setAlignedOnce(false);
-      setSecondAlignmentComplete(false);
-      setLabPart('release');
+      // The step and its progress are left as they are: on a first solve they
+      // are still at their start, and a reopened lesson keeps what it restored.
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The permanent-magnet source-field solve failed.');
     } finally {
@@ -1790,6 +1809,31 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     setAllowAcRotorMotion(true);
   };
 
+  enterAcRef.current = enterAc;
+
+  React.useEffect(() => {
+    if (lessonStage === 'solve' && hasSolvedField) setStoredLabPart(labPart);
+  }, [hasSolvedField, labPart, lessonStage, setStoredLabPart]);
+
+  // Reopened after a reload or a trip to the catalog: solve the fixed-field
+  // frames again, then go back to the part of the lab the student was in
+  // (the wound-pole parts solve their own frames on the way).
+  useLessonResume(LESSON_ID, lessonStage, predictionDone ? () => {
+    const part = storedLabPart;
+    setStage('solve');
+    void (async () => {
+      await solveSourceField();
+      if (part === 'chase') {
+        setLabPart('chase');
+        setReleasing(false);
+      } else if (part === 'dc') {
+        await enterDc();
+      } else if (part === 'ac') {
+        await enterAc();
+      }
+    })();
+  } : null);
+
   const playAcCycle = () => {
     setAcAngleDeg(0);
     if (allowAcRotorMotion) setRotorAngleDeg(ROTOR_START_ANGLE_DEG);
@@ -1823,17 +1867,22 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
 
   const lessonProgressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
-    { id: 'release', label: 'Align', complete: alignedOnce, available: predictionCorrect },
-    { id: 'chase', label: 'New start', complete: movingTargetComplete, available: alignedOnce },
-    { id: 'dc', label: 'Reverse DC', complete: dcComplete, available: movingTargetComplete },
-    { id: 'ac', label: 'One-phase AC', complete: playedAc, available: dcComplete },
-    { id: 'check', label: 'Check', complete: quizPassed, available: playedAc },
+    { id: 'release', label: 'Align', complete: alignedOnce, available: predictionDone },
+    { id: 'chase', label: 'New start', complete: movingTargetComplete, available: alignedDone },
+    { id: 'dc', label: 'Reverse DC', complete: dcComplete, available: movingTargetDone },
+    { id: 'ac', label: 'One-phase AC', complete: playedAc, available: dcDone },
+    { id: 'check', label: 'Check', complete: quizPassed, available: acDone },
   ], [
+    acDone,
+    alignedDone,
     alignedOnce,
     dcComplete,
+    dcDone,
     movingTargetComplete,
+    movingTargetDone,
     playedAc,
     predictionCorrect,
+    predictionDone,
     quizPassed,
   ]);
 
@@ -1843,18 +1892,18 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
       setStage('design');
       return;
     }
-    if (nextStep === 'release' && predictionCorrect) {
+    if (nextStep === 'release' && predictionDone) {
       setStage('solve');
       setLabPart('release');
       return;
     }
-    if (nextStep === 'chase' && alignedOnce) {
+    if (nextStep === 'chase' && alignedDone) {
       setStage('solve');
       setLabPart('chase');
       setReleasing(false);
       return;
     }
-    if (nextStep === 'dc' && movingTargetComplete) {
+    if (nextStep === 'dc' && movingTargetDone) {
       setStage('solve');
       setPlayingAc(false);
       setLabPart('dc');
@@ -1864,8 +1913,14 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
       setReleasing(false);
       return;
     }
-    if (nextStep === 'ac' && dcComplete) {
+    if (nextStep === 'ac' && dcDone) {
       setStage('solve');
+      if (!hasElectromagnetField) {
+        // Reopened without its solved frames: the wound poles are solved
+        // first, then the step opens.
+        void enterAcRef.current();
+        return;
+      }
       setLabPart('ac');
       setReleasing(false);
       setPlayingAc(false);
@@ -1873,17 +1928,18 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
       setRotorAngleDeg(ROTOR_START_ANGLE_DEG);
       return;
     }
-    if (nextStep === 'check' && playedAc) {
+    if (nextStep === 'check' && acDone) {
       onStageChange?.('solve');
       setQuizOpen(true);
     }
   }, [
-    alignedOnce,
-    dcComplete,
-    movingTargetComplete,
+    acDone,
+    alignedDone,
+    dcDone,
+    hasElectromagnetField,
+    movingTargetDone,
     onStageChange,
-    playedAc,
-    predictionCorrect,
+    predictionDone,
     setStage,
   ]);
 

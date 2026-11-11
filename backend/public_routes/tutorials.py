@@ -574,6 +574,7 @@ async def rotating_field_sweep(
 async def rotating_field_motor_sweep(
     peak_current_a: float = Query(8.0, gt=0.0, le=20.0),
     field_component: Literal["combined", "stator", "rotor"] = Query("combined"),
+    phase_sequence: Literal["forward", "reverse"] = Query("forward"),
 ) -> Response:
     """Solve one Lesson 7 four-pole source view over an electrical cycle."""
 
@@ -585,6 +586,7 @@ async def rotating_field_motor_sweep(
                 peak_current_a=peak_current_a,
                 field_component=field_component,
                 mesh_density="normal",
+                phase_sequence=phase_sequence,
             ),
             timeout=180.0,
         )
@@ -634,6 +636,7 @@ async def three_phase_motor_sweep(
         "phase_c",
         "open_c",
     ] = Query("combined"),
+    phase_sequence: Literal["forward", "reverse"] = Query("forward"),
 ) -> Response:
     """Solve one Lesson 8 three-phase source view over an electrical cycle."""
 
@@ -645,6 +648,7 @@ async def three_phase_motor_sweep(
                 peak_current_a=peak_current_a,
                 field_component=field_component,
                 mesh_density="normal",
+                phase_sequence=phase_sequence,
             ),
             timeout=180.0,
         )

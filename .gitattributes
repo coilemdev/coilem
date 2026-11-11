@@ -38,3 +38,4 @@ benchmarks/records-historical/protocol19-20261110/** -text -eol whitespace=cr-at
 benchmarks/qualification-70c5e3404c19/** -text -eol whitespace=cr-at-eol
 benchmarks/qualification-70c5e3404c19/*/report/** linguist-generated=true
 benchmarks/qualification-70c5e3404c19/*/prius/source-snapshot.json linguist-generated=true
+benchmarks/qualification-4b41f837f3d8/** -text -eol whitespace=cr-at-eol

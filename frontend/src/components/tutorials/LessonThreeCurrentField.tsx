@@ -2,6 +2,7 @@ import React from 'react';
 import type { CurrentFieldData } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonResume, useLessonSessionState } from './lessonSession';
 import { MeshViewer } from './MeshViewer';
 import { CurrentConductor3D } from './CurrentConductor3D';
 import type {
@@ -68,6 +69,7 @@ interface CurrentRun {
   data: CurrentFieldData;
 }
 
+const LESSON_ID = 'current-field';
 const DEFAULT_CURRENT_A = 8;
 const WIRE_RADIUS_MM = 5;
 const PROBE_RADIUS_MM = 15;
@@ -230,7 +232,16 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   onHeaderProgressChange,
 }) => {
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['ccw', 'cw', 'none']),
+  );
+  // The currents solved so far (newest first). The fields are not stored; they
+  // are solved again when the lesson is reopened.
+  const [solvedCurrentsA, setSolvedCurrentsA] = useLessonSessionState<number[]>(
+    LESSON_ID, 'solvedCurrentsA', [],
+    (value) => Array.isArray(value) && value.length <= 17
+      && value.every((current) => typeof current === 'number' && Math.abs(current) <= 16),
+  );
   const [currentA, setCurrentA] = React.useState(DEFAULT_CURRENT_A);
   const [runs, setRuns] = React.useState<CurrentRun[]>([]);
   const [busy, setBusy] = React.useState(false);
@@ -250,7 +261,7 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   const [comparisonReviewed, setComparisonReviewed] = React.useState(false);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
-  const lessonComplete = isLessonComplete('current-field');
+  const lessonComplete = isLessonComplete(LESSON_ID);
 
   const predictionCorrect = prediction === 'ccw';
   const latestRun = runs[0] ?? null;
@@ -262,6 +273,10 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
     && solvedMagnitudes[solvedMagnitudes.length - 1] >= solvedMagnitudes[0] * 1.9;
   const hasDirectionComparison = hasPositive && hasNegative;
   const comparisonReady = hasDirectionComparison && hasScaleComparison;
+  // A finished lesson reopens with every step available.
+  const predictionDone = lessonComplete || predictionCorrect;
+  const directionDone = lessonComplete || hasDirectionComparison;
+  const comparisonDone = lessonComplete || comparisonReviewed;
   const activeProgressStepId: LessonThreeProgressStepId = quizOpen
     ? 'check'
     : lessonStage === 'design'
@@ -275,24 +290,24 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
     if (next === 'predict') {
       setQuizOpen(false);
       onStageChange?.('design');
-    } else if (next === 'direction' && predictionCorrect) {
+    } else if (next === 'direction' && predictionDone) {
       setQuizOpen(false);
       onStageChange?.('solve');
-    } else if (next === 'scale' && hasDirectionComparison) {
+    } else if (next === 'scale' && directionDone) {
       setQuizOpen(false);
       onStageChange?.('solve');
-    } else if (next === 'check' && comparisonReviewed) {
+    } else if (next === 'check' && comparisonDone) {
       onStageChange?.('solve');
       setQuizOpen(true);
     }
-  }, [comparisonReviewed, hasDirectionComparison, onStageChange, predictionCorrect]);
+  }, [comparisonDone, directionDone, onStageChange, predictionDone]);
 
   const lessonProgressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
-    { id: 'direction', label: 'Direction', complete: hasDirectionComparison, available: predictionCorrect },
-    { id: 'scale', label: 'Scale', complete: comparisonReviewed, available: hasDirectionComparison },
-    { id: 'check', label: 'Check', complete: quizPassed, available: comparisonReviewed },
-  ], [comparisonReviewed, hasDirectionComparison, predictionCorrect, quizPassed]);
+    { id: 'direction', label: 'Direction', complete: hasDirectionComparison, available: predictionDone },
+    { id: 'scale', label: 'Scale', complete: comparisonReviewed, available: directionDone },
+    { id: 'check', label: 'Check', complete: quizPassed, available: comparisonDone },
+  ], [comparisonDone, comparisonReviewed, directionDone, hasDirectionComparison, predictionDone, quizPassed]);
 
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
     lessonNumber: 3,
@@ -309,7 +324,7 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
   }, [headerProgress, onHeaderProgressChange]);
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('current-field', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -344,6 +359,23 @@ export const LearningLessonThreeCurrentField: React.FC<LearningLessonThreeCurren
       setBusy(false);
     }
   };
+
+  React.useEffect(() => {
+    if (runs.length > 0) setSolvedCurrentsA(runs.map((run) => run.currentA));
+  }, [runs, setSolvedCurrentsA]);
+
+  // Reopened after a reload or a trip to the catalog: back into the lab, with
+  // the currents the student had solved solved again, oldest first (each takes
+  // well under a second).
+  useLessonResume(LESSON_ID, lessonStage, predictionDone ? () => {
+    onStageChange?.('solve');
+    const currentsA = [...solvedCurrentsA].reverse();
+    void (async () => {
+      for (const storedCurrentA of currentsA) {
+        await solveCurrent(storedCurrentA);
+      }
+    })();
+  } : null);
 
   // The guided path is +8 A, then −8 A, then +16 A.
   const nextGuidedCurrent = () => {

@@ -54,8 +54,57 @@ def initialize_gmsh() -> None:
     installs a SIGINT handler, which Python allows only on the main thread, and
     meshing runs in FastAPI worker threads.
     """
+    _ensure_gmsh_runtime_owner()
+    _start_gmsh()
+
+
+def _start_gmsh() -> None:
+    """The one place Gmsh is started, so SIGPIPE is always put back afterwards."""
     gmsh.initialize(readConfigFiles=not ISOLATED_RUNTIME, interruptible=False)
     _ignore_sigpipe()
+
+
+_GMSH_RUNTIME_OWNER_LOCK = threading.Lock()
+_GMSH_RUNTIME_OWNER_STARTED = False
+
+
+def _ensure_gmsh_runtime_owner() -> None:
+    """Start Gmsh once on a thread that lives as long as the process.
+
+    libgmsh's OpenMP runtime belongs to the first thread that starts Gmsh. If
+    that thread exits, the next ``gmsh.initialize`` on any other thread
+    segfaults inside the runtime. A solve that meshes on its own short-lived
+    thread (the Halbach solve stream does) would otherwise take the whole
+    server down on the following mesh. Callers hold _GMSH_API_LOCK, so nothing
+    else is using Gmsh while the owner thread starts and stops it.
+    """
+
+    global _GMSH_RUNTIME_OWNER_STARTED
+    with _GMSH_RUNTIME_OWNER_LOCK:
+        if _GMSH_RUNTIME_OWNER_STARTED:
+            return
+        ready = threading.Event()
+        failure: list[BaseException] = []
+
+        def own_runtime() -> None:
+            try:
+                _start_gmsh()
+                gmsh.finalize()
+            except BaseException as exc:  # reported to the thread that asked
+                failure.append(exc)
+                return
+            finally:
+                ready.set()
+            threading.Event().wait()  # park: this thread must outlive every mesh
+
+        threading.Thread(target=own_runtime, name="gmsh-runtime-owner", daemon=True).start()
+        ready.wait()
+        if failure:
+            # The owner thread has exited, so nothing holds the runtime. Leave
+            # the latch clear: the next mesh tries again instead of running
+            # without the guarantee.
+            raise failure[0]
+        _GMSH_RUNTIME_OWNER_STARTED = True
 
 
 def _ignore_sigpipe() -> None:

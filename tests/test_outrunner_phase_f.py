@@ -64,12 +64,18 @@ def test_each_request_is_the_phase_a_request_with_an_outer_rotor_motor() -> None
         assert (case["slots"], case["poles"]) == (request["stator"]["slot_count"], request["rotor"]["pole_count"])
 
 
-def test_every_request_is_a_valid_public_outer_rotor_solve() -> None:
+def test_every_request_is_a_valid_public_outer_rotor_solve(monkeypatch) -> None:
+    from backend import qualification
+
     for case in load_suite(SPEC)["cases"]:
         config, _, solver = parse_public_solve_request(_fixture(case))
         assert solver == "magneto2d" and config.rotor_layout == "outer"
         assert outer_rotor_airgap_mm(config) >= 0.25 - 1e-9
-        # No outer rotor is benchmarked yet, so none is qualified.
+        # Phase F qualifies these requests on a measured build only; pin the
+        # build state so the result does not depend on the checked-out evidence.
+        monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: True)
+        assert classify_qualification(config)["status"] == "qualified"
+        monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: False)
         assert classify_qualification(config)["status"] == "experimental"
 
 

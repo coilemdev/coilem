@@ -1,5 +1,6 @@
 import React from 'react';
 import type {
+  LessonPhaseSequence,
   RotatingFieldFrameData,
   RotatingFieldMotorFrameData,
   RotatingFieldMotorSweepData,
@@ -7,6 +8,7 @@ import type {
 } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonResume, useLessonSessionState } from './lessonSession';
 import {
   MeshViewer,
   type MeshViewerDirectionVector,
@@ -59,6 +61,7 @@ type DesignDiagramMode = 'slice' | 'physical';
 type LabPart = 'field' | 'motor';
 type LessonSevenStepId = 'predict' | 'field' | 'motor' | 'check';
 
+const LESSON_ID = 'rotating-field';
 const PEAK_CURRENT_A = 8;
 const COIL_OFFSET_MM = 22;
 const FIELD_VECTOR_LENGTH_MM = 16;
@@ -159,6 +162,33 @@ const frameAngle = (frame: RotatingFieldFrameData) => normalizeAngle(
   frame.metrics?.center_field_angle_deg ?? frame.electrical_angle_deg,
 );
 
+type MotorSweepStore = Record<
+  LessonPhaseSequence,
+  Partial<Record<MotorFieldMode, RotatingFieldMotorSweepData>>
+>;
+const EMPTY_MOTOR_SWEEPS: MotorSweepStore = { forward: {}, reverse: {} };
+const sequenceOf = (direction: RotationDirection): LessonPhaseSequence => (
+  direction === 1 ? 'forward' : 'reverse'
+);
+
+/**
+ * The coil-pair frames as the chosen phase sequence drives them. Solved frame
+ * k holds A = cos θk, B = sin θk. With B leading A the currents at θ are
+ * A = cos θ, B = −sin θ, which is the solved frame at −θ; its own current and
+ * field-angle readouts are already right, only its electrical angle is relabelled.
+ */
+const framesForSequence = (
+  frames: RotatingFieldFrameData[],
+  direction: RotationDirection,
+): RotatingFieldFrameData[] => {
+  if (direction === 1 || frames.length === 0) return frames;
+  const count = frames.length;
+  return frames.map((frame, index) => ({
+    ...frames[(count - index) % count],
+    electrical_angle_deg: frame.electrical_angle_deg,
+  }));
+};
+
 const RotatingFieldPredictionDiagram: React.FC = () => (
   <svg className="rotating-field-prediction" viewBox="0 0 860 500" role="img" aria-label="Two perpendicular winding axes and their rotating resultant field">
     <defs>
@@ -241,6 +271,8 @@ interface PhaseWaveformProps {
   angleDeg: number;
   phaseACurrentA: number;
   phaseBCurrentA: number;
+  /** 1: Phase B follows sin θ (A leads). -1: Phase B follows −sin θ (B leads). */
+  direction: RotationDirection;
   onSelectAngle: (angleDeg: number) => void;
 }
 
@@ -248,6 +280,7 @@ const PhaseWaveform: React.FC<PhaseWaveformProps> = ({
   angleDeg,
   phaseACurrentA,
   phaseBCurrentA,
+  direction,
   onSelectAngle,
 }) => {
   // Drawn at about the width of the Inspect card, so the tick labels are
@@ -266,7 +299,7 @@ const PhaseWaveform: React.FC<PhaseWaveformProps> = ({
     `${xFor(angle)},${yFor(PEAK_CURRENT_A * Math.cos(angle * Math.PI / 180))}`
   )).join(' ');
   const phaseB = angles.map((angle) => (
-    `${xFor(angle)},${yFor(PEAK_CURRENT_A * Math.sin(angle * Math.PI / 180))}`
+    `${xFor(angle)},${yFor(direction * PEAK_CURRENT_A * Math.sin(angle * Math.PI / 180))}`
   )).join(' ');
   const selectedX = xFor(Math.abs(angleDeg - 360) < 0.1 ? 360 : normalizeAngle(angleDeg));
 
@@ -274,7 +307,7 @@ const PhaseWaveform: React.FC<PhaseWaveformProps> = ({
     <div className="rotating-field-waveform-wrap">
       <div className="rotating-field-waveform-legend">
         <span className="is-a">Phase A · cos θ</span>
-        <span className="is-b">Phase B · sin θ</span>
+        <span className="is-b">Phase B · {direction === 1 ? 'sin θ' : '−sin θ'}</span>
       </div>
       <svg className="rotating-field-waveform" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Quadrature Phase A and Phase B current waveforms">
         <g className="rotating-field-waveform-grid">
@@ -328,22 +361,29 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   onHeaderProgressChange,
 }) => {
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['quadrature', 'together', 'one-phase']),
+  );
   const [fieldSweep, setFieldSweep] = React.useState<RotatingFieldSweepData | null>(null);
   const [motorGeometry, setMotorGeometry] = React.useState<RotatingFieldMotorFrameData | null>(null);
-  const [motorSweep, setMotorSweep] = React.useState<RotatingFieldMotorSweepData | null>(null);
-  const [motorStatorSweep, setMotorStatorSweep] = React.useState<RotatingFieldMotorSweepData | null>(null);
-  const [motorRotorSweep, setMotorRotorSweep] = React.useState<RotatingFieldMotorSweepData | null>(null);
-  const [labPart, setLabPart] = React.useState<LabPart>('field');
+  // The motor sweeps are solved per phase sequence: reversing the sequence
+  // changes the Phase B current and the side on which the rotor trails.
+  const [motorSweeps, setMotorSweeps] = React.useState<MotorSweepStore>(EMPTY_MOTOR_SWEEPS);
+  const [labPart, setLabPart] = useLessonSessionState<LabPart>(LESSON_ID, 'labPart', 'field', oneOf<LabPart>(['field', 'motor']));
   const [fieldFrameIndex, setFieldFrameIndex] = React.useState(0);
   const [motorFrameIndex, setMotorFrameIndex] = React.useState(0);
-  // Match the public Solve player: clockwise is the default teaching sequence.
-  // Reversing the sequence remains an explicit experiment in the lesson.
-  const [direction, setDirection] = React.useState<RotationDirection>(-1);
+  // 1: A leads B (Phase B = +Ipk sin θ), the field turns counterclockwise.
+  // -1: B leads A (Phase B = −Ipk sin θ), the field turns clockwise.
+  // The lesson opens on the sequence its text describes (A cos θ, B sin θ).
+  const [direction, setDirection] = useLessonSessionState<RotationDirection>(
+    LESSON_ID, 'direction', 1, (value) => value === 1 || value === -1,
+  );
   const [playing, setPlaying] = React.useState(false);
   const [playSteps, setPlaySteps] = React.useState(0);
-  const [fieldCycleComplete, setFieldCycleComplete] = React.useState(false);
-  const [motorCycleComplete, setMotorCycleComplete] = React.useState(false);
+  const [fieldCycleComplete, setFieldCycleComplete] = useLessonSessionState(LESSON_ID, 'fieldCycleComplete', false);
+  const [motorCycleComplete, setMotorCycleComplete] = useLessonSessionState(LESSON_ID, 'motorCycleComplete', false);
+  // Kept so a reload does not lock the later steps again; the frames themselves are solved again.
+  const [fieldLabReached, setFieldLabReached] = useLessonSessionState(LESSON_ID, 'fieldLabReached', false);
   const [visitedFieldFrames, setVisitedFieldFrames] = React.useState<Set<number>>(() => new Set());
   const [busyField, setBusyField] = React.useState(false);
   const [busyMotor, setBusyMotor] = React.useState(false);
@@ -367,9 +407,25 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const solveClient = useLessonSolveClient();
 
   const predictionCorrect = prediction === 'quadrature';
-  const fieldFrames = fieldSweep?.frames ?? [];
-  const phaseAFrames = fieldSweep?.phase_a_frames ?? [];
-  const phaseBFrames = fieldSweep?.phase_b_frames ?? [];
+  const phaseSequence = sequenceOf(direction);
+  const motorSweep = motorSweeps[phaseSequence].combined ?? null;
+  const motorStatorSweep = motorSweeps[phaseSequence].stator ?? null;
+  const motorRotorSweep = motorSweeps[phaseSequence].rotor ?? null;
+  // The coil-pair fixture has no rotor, so the field with B leading A at
+  // angle θ is exactly the solved field at −θ (A = cos θ, B = −sin θ). The
+  // reversed sequence reuses the same solved frames in mirrored order.
+  const fieldFrames = React.useMemo(
+    () => framesForSequence(fieldSweep?.frames ?? [], direction),
+    [direction, fieldSweep],
+  );
+  const phaseAFrames = React.useMemo(
+    () => framesForSequence(fieldSweep?.phase_a_frames ?? [], direction),
+    [direction, fieldSweep],
+  );
+  const phaseBFrames = React.useMemo(
+    () => framesForSequence(fieldSweep?.phase_b_frames ?? [], direction),
+    [direction, fieldSweep],
+  );
   const motorFrames = motorSweep?.frames ?? [];
   const motorStatorFrames = motorStatorSweep?.frames ?? [];
   const motorRotorFrames = motorRotorSweep?.frames ?? [];
@@ -393,22 +449,33 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const motorDisplayFrame = motorViewerFrame ?? motorGeometry;
   const motorElectricalAngle = motorFrames.length && motorFrameIndex === motorFrames.length
     ? 360
-    : motorFrame?.field_target_angle_deg ?? motorDisplayFrame?.field_target_angle_deg ?? 0;
+    : motorFrame?.electrical_angle_deg ?? 0;
+  // Where the stator field points in space: θ for A leading B, −θ for B leading A.
+  const motorFieldTargetAngle = motorFrame?.field_target_angle_deg
+    ?? motorDisplayFrame?.field_target_angle_deg
+    ?? 0;
   const activeFrame = labPart === 'motor' ? motorDisplayFrame : phaseViewerFrame;
   const activeFrames = labPart === 'motor'
     ? motorViewerFrames.length > 0 ? motorViewerFrames : motorGeometry ? [motorGeometry] : []
     : phaseViewerFrames;
   const inspectedZero = visitedFieldFrames.has(0);
   const inspectedQuarter = visitedFieldFrames.has(QUARTER_FRAME_INDEX);
-  const fieldLabComplete = inspectedZero && inspectedQuarter && fieldCycleComplete;
-  const motorLabComplete = motorCycleComplete;
+  const lessonComplete = isLessonComplete(LESSON_ID);
+  // A finished lesson reopens with every step available.
+  const fieldLabComplete = lessonComplete || fieldLabReached || (inspectedZero && inspectedQuarter && fieldCycleComplete);
+  const motorLabComplete = lessonComplete || motorCycleComplete;
+  const predictionDone = lessonComplete || predictionCorrect;
+
+  React.useEffect(() => {
+    if (inspectedZero && inspectedQuarter && fieldCycleComplete) setFieldLabReached(true);
+  }, [fieldCycleComplete, inspectedQuarter, inspectedZero, setFieldLabReached]);
 
   React.useEffect(() => {
     if (stage === 'mesh') onStageChange?.('solve');
   }, [stage, onStageChange]);
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('rotating-field', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -417,17 +484,11 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     if (!frameCount) return undefined;
     const timer = window.setInterval(() => {
       if (labPart === 'field') {
-        setFieldFrameIndex((previous) => (
-          direction === 1
-            ? (previous + 1) % frameCount
-            : (previous - 1 + frameCount) % frameCount
-        ));
+        // The electrical angle always advances; the phase sequence decides
+        // which way that turns the field.
+        setFieldFrameIndex((previous) => (previous + 1) % frameCount);
       } else {
-        setMotorFrameIndex((previous) => (
-          direction === 1
-            ? previous >= frameCount ? 1 : previous + 1
-            : previous <= 0 ? frameCount - 1 : previous - 1
-        ));
+        setMotorFrameIndex((previous) => (previous >= frameCount ? 1 : previous + 1));
       }
       setPlaySteps((previous) => {
         const next = previous + 1;
@@ -441,7 +502,6 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     }, PLAY_INTERVAL_MS);
     return () => window.clearInterval(timer);
   }, [
-    direction,
     fieldFrames.length,
     labPart,
     motorFrames.length,
@@ -503,15 +563,26 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     }
   };
 
-  const solveMotorSweep = async () => {
+  const storeMotorSweep = (
+    sequence: LessonPhaseSequence,
+    mode: MotorFieldMode,
+    result: RotatingFieldMotorSweepData,
+  ) => {
+    setMotorSweeps((previous) => ({
+      ...previous,
+      [sequence]: { ...previous[sequence], [mode]: result },
+    }));
+  };
+
+  const solveMotorSweep = async (sequence: LessonPhaseSequence = phaseSequence) => {
     setBusyMotor(true);
     setError(null);
     try {
-      const result = await solveClient.fetchRotatingFieldMotorSweep(PEAK_CURRENT_A, 'combined');
+      const result = await solveClient.fetchRotatingFieldMotorSweep(PEAK_CURRENT_A, 'combined', sequence);
       if (result.frames.length !== FRAME_COUNT) {
         throw new Error('The solver did not return the complete four-pole motor cycle.');
       }
-      setMotorSweep(result);
+      storeMotorSweep(sequence, 'combined', result);
       setMotorFrameIndex(0);
       setPlaySteps(0);
       setPlaying(true);
@@ -536,12 +607,12 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     setBusyMotorFieldMode(mode);
     setError(null);
     try {
-      const result = await solveClient.fetchRotatingFieldMotorSweep(PEAK_CURRENT_A, mode);
+      const sequence = phaseSequence;
+      const result = await solveClient.fetchRotatingFieldMotorSweep(PEAK_CURRENT_A, mode, sequence);
       if (result.frames.length !== FRAME_COUNT || result.field_component !== mode) {
         throw new Error(`The solver did not return the complete ${mode}-only motor cycle.`);
       }
-      if (mode === 'stator') setMotorStatorSweep(result);
-      else setMotorRotorSweep(result);
+      storeMotorSweep(sequence, mode, result);
       setMotorFieldMode(mode);
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : `The ${mode}-only motor sweep failed.`);
@@ -562,6 +633,34 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const startPlaying = () => {
     setPlaySteps(0);
     setPlaying(true);
+  };
+
+  // Reopened after a reload or a trip to the catalog: go back to the step the
+  // student had reached and solve its frames again.
+  useLessonResume(LESSON_ID, lessonStage, predictionDone ? () => {
+    enterSolveStage();
+    if (labPart === 'motor' && fieldLabComplete) continueToMotor();
+    else {
+      setLabPart('field');
+      void solveFieldSweep();
+    }
+  } : null);
+
+  // Changing the sequence changes the currents, so the pictures change too.
+  // The coil-pair field is re-read from the solved frames; the motor with its
+  // rotor is solved once per sequence and then kept.
+  const selectDirection = (next: RotationDirection) => {
+    if (next === direction) return;
+    setPlaying(false);
+    setPlaySteps(0);
+    setDirection(next);
+    if (labPart !== 'motor') return;
+    const sequence = sequenceOf(next);
+    setMotorFrameIndex(0);
+    if (motorFieldMode !== 'combined' && !motorSweeps[sequence][motorFieldMode]) {
+      setMotorFieldMode('combined');
+    }
+    if (!motorSweeps[sequence].combined && !busyMotor) void solveMotorSweep(sequence);
   };
 
   const selectActiveFrame = (index: number) => {
@@ -836,7 +935,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
       id: 'field',
       label: 'Rotate B',
       complete: fieldLabComplete || labPart === 'motor',
-      available: predictionCorrect,
+      available: predictionDone,
     },
     {
       id: 'motor',
@@ -855,7 +954,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     labPart,
     lessonStage,
     motorLabComplete,
-    predictionCorrect,
+    predictionDone,
     quizPassed,
   ]);
   const currentStepId: LessonSevenStepId = quizOpen
@@ -872,7 +971,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
       onStageChange?.('design');
       return;
     }
-    if (stepId === 'field' && predictionCorrect) {
+    if (stepId === 'field' && predictionDone) {
       setQuizOpen(false);
       setLabPart('field');
       enterSolveStage();
@@ -884,11 +983,14 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
     }
     if (stepId === 'check' && motorLabComplete) setQuizOpen(true);
   }, [
+    busyMotor,
     enterSolveStage,
     fieldLabComplete,
     motorLabComplete,
+    motorSweep,
     onStageChange,
-    predictionCorrect,
+    phaseSequence,
+    predictionDone,
   ]);
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
     lessonNumber: 7,
@@ -904,7 +1006,6 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   }, [headerProgress, onHeaderProgressChange]);
 
 
-  const lessonComplete = isLessonComplete('rotating-field');
   const currentGoal = LESSON_SEVEN_GOALS[currentStepId];
   const currentStepNumber = Math.max(1, progressSteps.findIndex((item) => item.id === currentStepId) + 1);
   const goalCard = (
@@ -1079,13 +1180,13 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
           {playing ? 'Pause' : 'Play cycle'}
         </button>
         <div className="rotating-field-control-row">
-          <span>Phase sequence</span><strong>{direction === 1 ? 'CCW' : 'CW'}</strong>
+          <span>Phase sequence</span><strong>{direction === 1 ? 'Field turns CCW' : 'Field turns CW'}</strong>
         </div>
         <LessonSegmented
           stretch
           label="Phase sequence"
           value={direction === 1 ? 'ccw' : 'cw'}
-          onChange={(value) => setDirection(value === 'ccw' ? 1 : -1)}
+          onChange={(value) => selectDirection(value === 'ccw' ? 1 : -1)}
           options={[
             { id: 'ccw', label: 'A leads B · CCW' },
             { id: 'cw', label: 'B leads A · CW' },
@@ -1100,7 +1201,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
       <div className="rotating-field-angle-readout" aria-label="Solved two-phase field at this angle">
         <p><span>Electrical angle θ<sub>e</sub></span><b>{displayAngle(fieldFrame.electrical_angle_deg)}°</b></p>
         <p><span>Phase A current · I<sub>pk</sub> cos θ</span><b>{signedCurrent(fieldFrame.phase_a_current_a)}</b></p>
-        <p><span>Phase B current · I<sub>pk</sub> sin θ</span><b>{signedCurrent(fieldFrame.phase_b_current_a)}</b></p>
+        <p><span>Phase B current · {direction === 1 ? '' : '−'}I<sub>pk</sub> sin θ</span><b>{signedCurrent(fieldFrame.phase_b_current_a)}</b></p>
         <p><span>|B| at the centre · {fieldModeLabel}</span><b>{fieldMilliTesla(fieldMagnitudeT)}</b></p>
         <p><span>|B| spread over the cycle (A + B)</span><b>{phaseMagnitudeSpreadPct === null ? '—' : `${phaseMagnitudeSpreadPct.toFixed(2)}%`}</b></p>
       </div>
@@ -1108,13 +1209,17 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
         angleDeg={fieldFrame.electrical_angle_deg}
         phaseACurrentA={fieldFrame.phase_a_current_a}
         phaseBCurrentA={fieldFrame.phase_b_current_a}
+        direction={direction}
         onSelectAngle={selectFieldAngle}
       />
       <section className="lesson-lab-card rotating-field-recipe" aria-label="How the two phases add">
         <h3>Resultant</h3>
         <div><b>B<sub>x</sub></b><em>∝ I<sub>A</sub> = I<sub>pk</sub> cos θ</em></div>
-        <div><b>B<sub>y</sub></b><em>∝ I<sub>B</sub> = I<sub>pk</sub> sin θ</em></div>
-        <p>The ideal vector keeps its magnitude while its angle advances.</p>
+        <div><b>B<sub>y</sub></b><em>∝ I<sub>B</sub> = {direction === 1 ? '' : '−'}I<sub>pk</sub> sin θ</em></div>
+        <p>
+          The ideal vector keeps its magnitude while its angle advances. With {direction === 1 ? 'A leading B' : 'B leading A'} it
+          turns {direction === 1 ? 'counterclockwise' : 'clockwise'}.
+        </p>
       </section>
       <section className="lesson-lab-card" aria-label="Field step checklist">
         <h3>Checklist</h3>
@@ -1134,9 +1239,10 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
   const motorEvidence = motorDisplayFrame ? (
     <>
       <div className="rotating-field-angle-readout" aria-label="Field target and rotor at this angle">
-        <p><span>Field target θ<sub>e</sub></span><b>{displayCycleAngle(motorElectricalAngle)}°</b></p>
-        <p><span>PM rotor</span><b>{displayAngle(motorDisplayFrame.rotor_angle_deg)}°</b></p>
-        <p><span>Torque angle δ</span><b>{(motorDisplayFrame.torque_angle_deg ?? 0).toFixed(1)}°</b></p>
+        <p><span>Electrical angle θ<sub>e</sub></span><b>{displayCycleAngle(motorElectricalAngle)}°</b></p>
+        <p><span>Field target direction</span><b>{displayAngle(motorFieldTargetAngle)}°</b></p>
+        <p><span>PM rotor direction</span><b>{displayAngle(motorDisplayFrame.rotor_angle_deg)}°</b></p>
+        <p><span>Torque angle δ · rotor behind target</span><b>{Math.abs(motorDisplayFrame.torque_angle_deg ?? 0).toFixed(1)}°</b></p>
         <p><span>Phase A current</span><b>{signedCurrent(motorDisplayFrame.phase_a_current_a)}</b></p>
         <p><span>Phase B current</span><b>{signedCurrent(motorDisplayFrame.phase_b_current_a)}</b></p>
       </div>
@@ -1144,12 +1250,13 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
         angleDeg={motorElectricalAngle}
         phaseACurrentA={motorDisplayFrame.phase_a_current_a}
         phaseBCurrentA={motorDisplayFrame.phase_b_current_a}
+        direction={direction}
         onSelectAngle={motorFrame ? selectMotorAngle : () => undefined}
       />
       <section className="lesson-lab-card rotating-field-recipe" aria-label="Why the rotor follows">
         <h3>Synchronous chase</h3>
         <strong className="rotating-field-torque-equation">τ ∝ sin(δ)</strong>
-        <p>The 15° teaching lag keeps the rotor behind the moving target. Each displayed state is a solved Magneto2D checkpoint, not a transient mechanical solve.</p>
+        <p>The 15° teaching lag keeps the rotor behind the moving target, which turns {direction === 1 ? 'counterclockwise' : 'clockwise'} here. Each displayed state is a solved Magneto2D checkpoint, not a transient mechanical solve.</p>
       </section>
     </>
   ) : (
@@ -1326,7 +1433,7 @@ export const LearningLessonSevenRotatingField: React.FC<LearningLessonSevenRotat
               >
                 {threeD ? (
                   <TwoPhaseMotor3D
-                    electricalAngleDeg={motorElectricalAngle}
+                    electricalAngleDeg={motorFieldTargetAngle}
                     rotorAngleDeg={motorDisplayFrame.rotor_angle_deg}
                     phaseACurrentA={motorDisplayFrame.phase_a_current_a}
                     phaseBCurrentA={motorDisplayFrame.phase_b_current_a}

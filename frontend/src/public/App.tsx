@@ -554,6 +554,7 @@ export function App() {
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
   const [guidedSolveSection, setGuidedSolveSection] = useState<SolveSetupSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
+  const [cancellingSolve, setCancellingSolve] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
@@ -1297,9 +1298,10 @@ export function App() {
         if (requestId !== armatureFieldRequestId.current) return;
         const message = errorMessage(streamError);
         setArmatureField(null);
+        // Shown beside the Stator control only: the completed run is unaffected,
+        // so its status must not change to "Needs review" (#267).
         setArmatureFieldError(message);
         setProgress(null);
-        setError(message);
         if (streamError.error_code === 'LOCAL_API_UNREACHABLE') setConnectionStatus('offline');
         setBusy(null);
         armatureFieldController.current = null;
@@ -1333,6 +1335,10 @@ export function App() {
     solveController.current = null;
     const retainedPreviousResult = restoreSolveResultBeforeRun();
     setError(null);
+    // The request answers once the backend has released the solve, which can
+    // take a few seconds while a mesh is being built. Run stays disabled until
+    // then, so a rerun is never refused as "already running" (#266).
+    setCancellingSolve(true);
     try {
       await cancelPublicSolve();
       setConnectionStatus('online');
@@ -1343,6 +1349,7 @@ export function App() {
       setError(errorMessage(requestError));
       setConnectionStatus(requestError instanceof TypeError ? 'offline' : 'online');
     } finally {
+      setCancellingSolve(false);
       setBusy(null);
       setProgress(null);
     }
@@ -1775,6 +1782,7 @@ export function App() {
   if (showHalbachWorkspace) {
     return (
       <HalbachWorkspace
+        appVersion={appVersion}
         connectionStatus={connectionStatus}
         onHome={() => {
           setShowHalbachWorkspace(false);
@@ -1888,6 +1896,7 @@ export function App() {
       onGenerateMesh={() => void generateMesh()}
       onStartSolve={() => void startSolve()}
       onCancelSolve={() => void cancelSolve()}
+      cancellingSolve={cancellingSolve}
       onRequestArmatureField={() => void loadArmatureField()}
       onCancelArmatureField={() => void cancelArmatureField()}
       onOpenRunFolder={openSavedRunFolder}

@@ -138,6 +138,6 @@
   "loaded_mean_torque_Nm": 11.149711407719815,
   "peak_to_peak_of_loaded_pct": 11.965263205174152,
   "status": "experimental",
-  "status_reason": "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
+  "status_reason": "The cogging gates of benchmark protocol 1.10.0 (Phase E) cover qualified inner-rotor designs only, with very-fine mesh required for distributed windings. The sweep uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
  }
 }

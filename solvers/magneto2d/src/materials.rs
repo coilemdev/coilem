@@ -60,12 +60,18 @@ impl MaterialProps {
     }
 
     pub fn steel(name: &str) -> Self {
-        // The per-problem resolver supplies the actual initial permeability.
+        Self::steel_with_linear_override(name, linear_steel_mu_override())
+    }
+
+    fn steel_with_linear_override(name: &str, linear_mu_rel: Option<f64>) -> Self {
+        if let Some(mu_rel) = linear_mu_rel {
+            return Self::new(mu_rel, 0.0, 0.0);
+        }
+        // The per-problem resolver supplies a custom curve's initial permeability.
         if is_custom_steel_key(name) {
             return Self::new(1.0, 0.0, 0.0);
         }
-        let mu_rel = initial_steel_mu_rel(name);
-        Self::new(mu_rel, 0.0, 0.0)
+        Self::new(initial_steel_mu_rel(name), 0.0, 0.0)
     }
 
     pub fn magnet(grade: &str, angle_rad: f64) -> Self {
@@ -356,12 +362,7 @@ fn nonlinear_steel_mu_bounds() -> (f64, f64) {
 /// the adapter boundary. Environment-controlled permeability bounds are
 /// captured here and become ordinary curve data before iteration starts.
 pub fn resolved_field_bh_curve(name: &str) -> Option<crate::field::BhCurve> {
-    if env::var(LINEAR_STEEL_MU_ENV)
-        .ok()
-        .and_then(|value| value.trim().parse::<f64>().ok())
-        .filter(|value| value.is_finite() && *value >= 1.0)
-        .is_some()
-    {
+    if linear_steel_mu_override().is_some() {
         return None;
     }
     let curve = get_bh_curve(name)?;
@@ -460,11 +461,13 @@ fn warn_unknown_steel_once(name: &str) {
     }
 }
 
-fn linear_steel_mu_override() -> Option<f64> {
+/// The constant relative permeability requested for all steel, if any. When it
+/// is set, no steel region iterates on a B-H curve, bundled or custom (#210).
+pub(crate) fn linear_steel_mu_override() -> Option<f64> {
     env::var(LINEAR_STEEL_MU_ENV)
         .ok()
         .and_then(|value| value.trim().parse::<f64>().ok())
-        .filter(|mu_rel| *mu_rel >= 1.0)
+        .filter(|mu_rel| mu_rel.is_finite() && *mu_rel >= 1.0)
 }
 
 #[cfg(test)]
@@ -728,6 +731,15 @@ mod tests {
     };
     use crate::mesh::Region;
 
+
+    #[test]
+    fn a_linear_steel_override_sets_custom_and_bundled_steel_alike() {
+        // #210: custom steels used to start at mu_r 1 and take their curve regardless.
+        let custom = format!("custom:{}", "a".repeat(64));
+        assert_eq!(MaterialProps::steel_with_linear_override(&custom, Some(5000.0)).mu_rel, 5000.0);
+        assert_eq!(MaterialProps::steel_with_linear_override("M350-50A", Some(5000.0)).mu_rel, 5000.0);
+        assert_eq!(MaterialProps::steel_with_linear_override(&custom, None).mu_rel, 1.0);
+    }
 
     #[test]
     fn bh_database_ignores_hidden_appledouble_csv_files() {

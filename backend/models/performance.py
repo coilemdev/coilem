@@ -41,7 +41,7 @@ OutputStatus = Literal["qualified", "experimental", "unavailable"]
 # the scope covered by its 0.5.0 reference checks (public issue 143) and the
 # limitations that keep a general output experimental. Reports use ASCII.
 DQ_FLUX_LINKAGE_STATUS_REASON = (
-    "Outside the loaded d/q gates of benchmark protocol 1.6.0, which cover qualified SPM and flat-buried IPM designs "
+    "Outside the loaded d/q gates of benchmark protocol 1.6.0, which cover qualified inner-rotor SPM and flat-buried IPM designs "
     "with a single-layer concentrated winding under sinusoidal current, at current angles from 0 to 60 degrees."
 )
 DQ_FLUX_LINKAGE_QUALIFIED_REASON = (
@@ -71,7 +71,7 @@ PHASE_RESISTANCE_UNRECORDED_STATUS_REASON = (
 )
 MAGNET_TEMPERATURE_STATUS_REASON = (
     "Br and HcJ derated linearly with the grade's cited reversible coefficients; the temperature gates of "
-    "benchmark protocol 1.6.0 cover qualified designs from 20 to 100 deg C only."
+    "benchmark protocol 1.6.0 cover qualified inner-rotor designs from 20 to 100 deg C only."
 )
 MAGNET_TEMPERATURE_QUALIFIED_REASON = (
     "Br and HcJ derated linearly with the grade's cited reversible coefficients; passes the temperature gates of "
@@ -79,8 +79,14 @@ MAGNET_TEMPERATURE_QUALIFIED_REASON = (
     "The coefficients are catalogue values, and irreversible demagnetisation is not modelled."
 )
 COGGING_TORQUE_STATUS_REASON = (
-    "No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes "
-    "with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
+    "The cogging gates of benchmark protocol 1.10.0 (Phase E) cover qualified inner-rotor designs only, with very-fine mesh "
+    "required for distributed windings. The sweep uses "
+    "per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values."
+)
+COGGING_TORQUE_QUALIFIED_REASON = (
+    "Passes the cogging gates of benchmark protocol 1.10.0 (Phase E: 12 cogging cases on SPM and flat-buried IPM rotors). "
+    "The sweep uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under "
+    "small cogging values."
 )
 # How a drive picks the current for a torque below the limits: the smallest
 # current (MTPA, then field weakening and MTPV) or the least total loss.

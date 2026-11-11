@@ -82,16 +82,24 @@ def test_interrupted_batch_resumes_only_uncommitted_positions_and_assembles(prod
     receipts = list((output / "positions/motor").glob("*.json"))
     assert 1 <= len(receipts) < 8
     frozen = {p.name: p.read_bytes() for p in receipts}
+    calls_path = tmp_path / "calls.jsonl"
+    before_resume = calls_path.read_text().splitlines()
     options.resume, options.interrupt_after = True, None
     assert positions.execute(options) == 0
     for name, data in frozen.items():
         assert (output / "positions/motor" / name).read_bytes() == data
-    calls = [json.loads(line)["id"] for line in (tmp_path / "calls.jsonl").read_text().splitlines()]
-    assert len(calls) == len(set(calls)) == 8
+    calls = [json.loads(line)["id"] for line in calls_path.read_text().splitlines()]
+    assert len(set(calls)) == 8
+    # A killed worker can have measured/logged its next point before committing
+    # its receipt. Only committed points are reusable; uncommitted attempts can
+    # run again. Check the resumed work against the receipts, not all attempts.
+    resumed_calls = calls[len(before_resume):]
+    assert len(resumed_calls) == len(set(resumed_calls))
+    assert set(resumed_calls) == {f"loaded-{i:02d}" for i in range(8)} - {p.stem for p in receipts}
     assembled = positions.unseal(output / "assembled/motor.json")
     assert assembled["full_registered_grid"] and assembled["result"]["positions"] == 8
     assert positions.execute(options) == 0
-    assert len((tmp_path / "calls.jsonl").read_text().splitlines()) == 8
+    assert [json.loads(line)["id"] for line in calls_path.read_text().splitlines()] == calls
 
 
 def test_partial_pilot_never_assembles_full_reference(producer, tmp_path):
