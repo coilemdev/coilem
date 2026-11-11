@@ -1141,6 +1141,7 @@ def run_magneto2d_report(
     runner: Any = subprocess.run,
 ) -> dict[str, Any]:
     """Run magneto2d and return its raw JSON report."""
+    prepare_started = time.perf_counter()
     require_magneto2d_supported(config)
     mesher_choice = getattr(config.solve_params, "mesher", None)
     mesh_source = str(_solve_param_value(config, "mesh_source", "native") or "native")
@@ -1222,6 +1223,8 @@ def run_magneto2d_report(
         + sweep_span_log
         + cli_sweep_span_log,
     )
+
+    solve_profile.record("solve: prepare the solver's settings", time.perf_counter() - prepare_started)
 
     # `dir=None` → uses tempfile.gettempdir() (portable across Windows / macOS / Linux).
     # Previous code hardcoded `dir="/tmp"` which is a Linux/macOS path and breaks on
@@ -1357,6 +1360,7 @@ def _run_magneto2d_report_files(
     if solve_profile.enabled():
         _record_solver_internal_times(report, process_seconds)
 
+    keep_started = time.perf_counter()
     solver_environment = solver_environment_provenance(env_overrides)
     appendable = (
         isinstance(report, dict)
@@ -1391,6 +1395,7 @@ def _run_magneto2d_report_files(
             solve_mesh_path.replace(persist_artifacts_dir / f"{prefix}_mesh.json")
             write_provenance_sidecar(persist_artifacts_dir, prefix, solve_mesh_artifact)
 
+    solve_profile.record("solve: record settings and keep the solver's files", time.perf_counter() - keep_started)
     return report
 
 

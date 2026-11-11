@@ -1325,3 +1325,72 @@ fn full_coverage_airgap_radii_match_the_brute_force_scan() {
         "the hole removes the radii it leaves uncovered",
     );
 }
+
+#[test]
+fn airgap_grid_lookup_returns_the_triangle_the_full_scan_returns() {
+    // A ring of triangles like an air gap, between r = 10 mm and 10.5 mm.
+    let segments = 360usize;
+    let (inner, outer) = (0.010_f64, 0.0105_f64);
+    let mut records = Vec::new();
+    for k in 0..segments {
+        let a0 = std::f64::consts::TAU * k as f64 / segments as f64;
+        let a1 = std::f64::consts::TAU * (k + 1) as f64 / segments as f64;
+        let p = |r: f64, a: f64| [r * a.cos(), r * a.sin()];
+        for tri_xy in [
+            [p(inner, a0), p(outer, a0), p(outer, a1)],
+            [p(inner, a0), p(outer, a1), p(inner, a1)],
+        ] {
+            let xs = [tri_xy[0][0], tri_xy[1][0], tri_xy[2][0]];
+            let ys = [tri_xy[0][1], tri_xy[1][1], tri_xy[2][1]];
+            records.push(super::AirgapTriangleRecord {
+                triangle_index: records.len(),
+                tri_nodes: [0, 0, 0],
+                tri_xy,
+                bbox: [
+                    xs.iter().copied().fold(f64::INFINITY, f64::min),
+                    xs.iter().copied().fold(f64::NEG_INFINITY, f64::max),
+                    ys.iter().copied().fold(f64::INFINITY, f64::min),
+                    ys.iter().copied().fold(f64::NEG_INFINITY, f64::max),
+                ],
+            });
+        }
+    }
+    let indexed = super::AirgapTriangleRecords::new(records);
+
+    let mut checked = 0;
+    let mut matched = 0;
+    for k in 0..20_000 {
+        // Inside the ring, on its edges and corners, and outside it.
+        let angle = std::f64::consts::TAU * (k as f64 * 0.618_033_988_75).fract();
+        let radius = match k % 5 {
+            0 => inner,
+            1 => outer,
+            2 => inner - 2.0e-4,
+            3 => outer + 2.0e-4,
+            _ => inner + (outer - inner) * (k as f64 * 0.754_877_666).fract(),
+        };
+        let angle = if k % 7 == 0 {
+            // Exactly on a spoke shared by two triangles.
+            std::f64::consts::TAU * (k % segments) as f64 / segments as f64
+        } else {
+            angle
+        };
+        let point = [radius * angle.cos(), radius * angle.sin()];
+        let by_scan = super::find_airgap_triangle_match_by_scan(&indexed, point);
+        let by_grid = super::find_airgap_triangle_match(&indexed, point);
+        assert_eq!(
+            by_scan.map(|(record, weights)| (record.triangle_index, weights)),
+            by_grid.map(|(record, weights)| (record.triangle_index, weights)),
+            "point {point:?}"
+        );
+        checked += 1;
+        matched += usize::from(by_grid.is_some());
+    }
+    assert_eq!(checked, 20_000);
+    assert!(matched > 8_000 && matched < 19_000, "{matched}");
+
+    // No triangles: nothing matches, and nothing panics.
+    let empty = super::AirgapTriangleRecords::new(Vec::new());
+    assert!(empty.is_empty());
+    assert!(super::find_airgap_triangle_match(&empty, [0.01, 0.0]).is_none());
+}

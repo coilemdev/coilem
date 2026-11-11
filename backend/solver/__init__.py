@@ -812,6 +812,7 @@ def _solve_mesh_evidence_pair(
     *,
     loaded: bool,
     noload: bool,
+    canonical_cache: dict[int, tuple[Any, str]] | None = None,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     """Evidence for the loaded and the zero-current no-load solve of one mesh.
 
@@ -819,9 +820,12 @@ def _solve_mesh_evidence_pair(
     objects, so both lanes share their serialized text and the loaded
     geometry hash. The pipeline's main thread and its mesh worker processes
     both call this, so a mesh's evidence is the same wherever it is built.
+    ``canonical_cache`` carries serialized text between calls for meshes that
+    share arrays, such as a mesh and its rotations to congruent positions.
     """
 
-    canonical_cache: dict[int, tuple[Any, str]] = {}
+    if canonical_cache is None:
+        canonical_cache = {}
     loaded_evidence: dict[str, Any] | None = None
     if loaded:
         loaded_evidence = build_solve_mesh_evidence(
@@ -871,8 +875,12 @@ def _prepare_gmsh_mesh_group_in_subprocess(
             artifact = _rebake_gmsh_artifact_for_config(cached_artifact, config)
         generation_time_ms = int((time.perf_counter() - started) * 1000.0)
     check_mesh_worker_cancelled()
+    # One cache for the group: a rotated mesh shares most arrays with its base.
+    canonical_cache: dict[int, tuple[Any, str]] = {}
     with solve_profile.span("mesh worker: evidence hashes"):
-        evidence = _solve_mesh_evidence_pair(artifact, loaded=lanes[0], noload=lanes[1])
+        evidence = _solve_mesh_evidence_pair(
+            artifact, loaded=lanes[0], noload=lanes[1], canonical_cache=canonical_cache
+        )
     derived_meshes: list[tuple[dict[str, Any], int, tuple[dict[str, Any] | None, dict[str, Any] | None]]] = []
     for target_rotor_angle_mech_deg, loaded, noload in derived:
         check_mesh_worker_cancelled()
@@ -885,7 +893,9 @@ def _prepare_gmsh_mesh_group_in_subprocess(
         rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
         solve_profile.record("mesh worker: rotate to a matching position", rotation_ms / 1000.0)
         with solve_profile.span("mesh worker: evidence hashes"):
-            derived_evidence = _solve_mesh_evidence_pair(derived_artifact, loaded=loaded, noload=noload)
+            derived_evidence = _solve_mesh_evidence_pair(
+                derived_artifact, loaded=loaded, noload=noload, canonical_cache=canonical_cache
+            )
         derived_meshes.append((derived_artifact, rotation_ms, derived_evidence))
     solve_profile.record(
         "mesh worker: one group, total", time.perf_counter() - worker_started, derived=len(derived_meshes)
