@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 169429,
-      "sha256": "d6358ab8fdb2006ce22aea96aa3af6698afe1b117c65b75bc2117f68f4a7990d"
+      "bytes": 170286,
+      "sha256": "990bfcc6e5236aa561128ac3bb2c86bb09a035dcef70b33973d7a496e79bbc0c"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -12265,8 +12265,8 @@
     },
     {
       "path": "tests/test_cogging_pipeline.py",
-      "bytes": 9168,
-      "sha256": "d8cc8e172b2ac9016dacde3216b32b0a75a6fedc6d21fcaaece03e74f09d5125"
+      "bytes": 10458,
+      "sha256": "295c5381c9de777751697ca30fdf23de29040b8166f511f7dd246e44034c46b2"
     },
     {
       "path": "benchmarks/windows-v051-20261105-a4f9f4d/README.md",
