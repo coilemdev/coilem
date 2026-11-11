@@ -68,6 +68,8 @@ class NonlinearConvergence(BaseModel):
     scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     initial_rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    # What scaled_residual divides by, when that is not the starting mismatch.
+    reference_rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     absolute_residual_floor: float | None = Field(default=None, gt=0, lt=1, allow_inf_nan=False)
     residual_definition: str
     tolerance: float = Field(ge=0, lt=1, allow_inf_nan=False)

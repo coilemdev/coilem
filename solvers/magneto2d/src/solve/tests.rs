@@ -2918,3 +2918,19 @@ fn newton_accepts_a_tiny_initial_defect_without_demanding_sub_floor_reduction() 
     assert!(!newton_has_converged(f64::NAN, tiny, 1.0e-5));
     assert!(!newton_has_converged(f64::INFINITY, tiny, 1.0e-5));
 }
+
+#[test]
+fn convergence_record_names_a_capped_reference_only_when_there_is_one() {
+    let mut record = super::NonlinearConvergence::linear();
+    record.method = "newton".into();
+    record.initial_rhs_scaled_residual = Some(0.9);
+    let staged = serde_json::to_value(&record).unwrap();
+    assert!(staged.get("reference_rhs_scaled_residual").is_none());
+    let round_trip: super::NonlinearConvergence = serde_json::from_value(staged).unwrap();
+    assert_eq!(round_trip.reference_rhs_scaled_residual, None);
+
+    record.reference_rhs_scaled_residual = Some(0.025);
+    let direct = serde_json::to_value(&record).unwrap();
+    assert_eq!(direct["initial_rhs_scaled_residual"], 0.9);
+    assert_eq!(direct["reference_rhs_scaled_residual"], 0.025);
+}

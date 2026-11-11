@@ -523,6 +523,7 @@ fn convergence_record(
     history: &[f64],
     rhs_residual: f64,
     initial: f64,
+    reference: f64,
     reference_cap: Option<f64>,
     config: NonlinearSolveConfig,
 ) -> NonlinearConvergence {
@@ -542,6 +543,9 @@ fn convergence_record(
         scaled_residual: history.last().copied(),
         rhs_scaled_residual: Some(rhs_residual),
         initial_rhs_scaled_residual: Some(initial),
+        // Present only when a cap is in force; without one the reference is the
+        // starting mismatch above.
+        reference_rhs_scaled_residual: reference_cap.map(|_| reference),
         absolute_residual_floor: Some(NEWTON_RHS_RESIDUAL_FLOOR),
         residual_definition,
         tolerance: config.newton_convergence_threshold,
@@ -580,6 +584,7 @@ fn run_newton_stage(
     let mut diagnostics = Vec::new();
     let convergence_threshold = nonlinear_config.newton_convergence_threshold;
     let mut initial_residual = None;
+    let mut first_residual = None;
 
     eprintln!(
         "  newton_continuation: stage={}/{} current_scale={:.3}",
@@ -644,13 +649,14 @@ fn run_newton_stage(
         )?;
         total_assembly_ms += asm_ms;
         total_solve_ms += solve_ms;
+        let first = *first_residual.get_or_insert(residual);
         let reference = *initial_residual
             .get_or_insert(reference_cap.map_or(residual, |cap| residual.min(cap)));
         let scaled_residual = initial_scaled_residual(residual, reference);
         if newton_has_converged(residual, reference, convergence_threshold) {
             residual_history.push(scaled_residual);
             return Ok(NonlinearLoopOutput {
-                convergence: convergence_record(&residual_history, residual, reference, reference_cap, nonlinear_config),
+                convergence: convergence_record(&residual_history, residual, first, reference, reference_cap, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -732,7 +738,7 @@ fn run_newton_stage(
 
         if newton_has_converged(accepted.residual, reference, convergence_threshold) {
             return Ok(NonlinearLoopOutput {
-                convergence: convergence_record(&residual_history, accepted.residual, reference, reference_cap, nonlinear_config),
+                convergence: convergence_record(&residual_history, accepted.residual, first, reference, reference_cap, nonlinear_config),
                 materials,
                 az,
                 fields,
