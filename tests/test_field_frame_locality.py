@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import gzip
 import json
 from pathlib import Path
 
@@ -10,6 +9,7 @@ import numpy as np
 import pytest
 
 import backend.solver as solver
+from backend.field_artifacts import read_field_line_frame_artifact
 from backend.solver._process_pool import cancellable_process_pool, completed_process_futures
 from backend.solver_contract import SolveCancelledError
 
@@ -47,8 +47,7 @@ def _without_artifact_identity(frame):
 
 
 def _stored_frame(cache: Path):
-    with gzip.open(next((cache / "field_line_frames").glob("*.json.gz")), "rt", encoding="utf-8") as stream:
-        return json.load(stream)
+    return read_field_line_frame_artifact(next((cache / "field_line_frames").glob("*.f32.xz")))
 
 
 def _congruent_report(scale: float) -> dict:

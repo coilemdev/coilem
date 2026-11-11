@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import gzip
-import json
 import math
 import re
+from functools import lru_cache
 from typing import Any, Literal
 
 from backend import field_artifacts
@@ -139,8 +138,7 @@ def _field_frame_from_artifact_ref(frame: Any) -> dict[str, Any] | None:
         return None
     try:
         path = field_artifacts.resolve_solve_cache_artifact_id(artifact_id)
-        with gzip.open(path, "rt", encoding="utf-8") as fh:
-            payload = json.load(fh)
+        payload = field_artifacts.read_field_line_frame_artifact(path)
     except Exception:
         return None
     loaded_frame = payload.get("field_line_frame") if isinstance(payload, dict) else None
@@ -171,6 +169,20 @@ def _normalize_region_tag(value: Any) -> str:
 
 
 def _steel_region_bucket(value: Any) -> SteelRegionBucket | None:
+    # A frame repeats a handful of region tags over tens of thousands of
+    # triangles, and both the flux statistics and the iron-loss sampling ask
+    # about every triangle; normalizing each one took three regex passes.
+    if type(value) is str:
+        return _steel_region_bucket_for_text(value)
+    return _classify_steel_region(value)
+
+
+@lru_cache(maxsize=1024)
+def _steel_region_bucket_for_text(value: str) -> SteelRegionBucket | None:
+    return _classify_steel_region(value)
+
+
+def _classify_steel_region(value: Any) -> SteelRegionBucket | None:
     region = _normalize_region_tag(value)
     if region in {"stator_tooth", "stator_teeth", "tooth", "teeth"}:
         return "teeth"
