@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 18390,
-      "sha256": "b8390e78c773b8210494b3826d63e351e7da53783bdf3350fbc8b2193ed26808"
+      "bytes": 18845,
+      "sha256": "02c655b416c187a260eae5799b4b3243a80e7d5d3dd11e710a8ecbaf85048da7"
     },
     {
       "path": "backend/field_composition.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 9047,
-      "sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34"
+      "bytes": 9223,
+      "sha256": "36ed677cd2a7b9f4f0b64252144929b55f53b7a24779f30ff44d76af1bc51c94"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 30793,
-      "sha256": "7c8eac9e46d63d684be71293e569557183cca28811508ab0ab824696d8d7a1d0"
+      "bytes": 30859,
+      "sha256": "223a08ca60b792ee5072bfef7f4cf59cb67888fbd8a63aff0d4df4f3b53ec64f"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -680,8 +680,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 7570,
-      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69"
+      "bytes": 8110,
+      "sha256": "db0dcb50b94ec15eb6ba5c2d994d5ea7ed04fe1379e438c84cdfcce78c1e9fdd"
     },
     {
       "path": "backend/sweep_planning.py",
@@ -7730,8 +7730,8 @@
     },
     {
       "path": "solvers/magneto2d/src/lib.rs",
-      "bytes": 6785,
-      "sha256": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04"
+      "bytes": 7320,
+      "sha256": "16130a039f710cc6d74b6564af5a066358b2fc5a3895caa37660cc47d484ef84"
     },
     {
       "path": "solvers/magneto2d/src/magnet_fraction.rs",
@@ -7815,8 +7815,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 155078,
-      "sha256": "c0c581e8d5e27529d7b981dc9f5fd97d4753d772c7d0c757d843ca249c801be6"
+      "bytes": 155656,
+      "sha256": "9d55c3400bf5917580abf61cf1e5b7976dfd7e362bbd797a5efcd52405d46c63"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -7835,18 +7835,18 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 30298,
-      "sha256": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b"
+      "bytes": 31124,
+      "sha256": "48a5f95a5846357cf2177c25606f0dad66f01f37dc08576079529d547d3c0d17"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
-      "bytes": 16578,
-      "sha256": "6f1da85708f5974ec96a8f16a058ffd3c68f4dc18835672b45e409266c6ef5ee"
+      "bytes": 19050,
+      "sha256": "4c8f58ea693e4e1fe682967daad045c0d78453c587047e77c53d3d599c32eec4"
     },
     {
       "path": "solvers/magneto2d/src/solve/picard.rs",
-      "bytes": 16346,
-      "sha256": "a117d2f9d19a98ba43c3e6f4c318ec2e3c2b060e959e551746290feb9f2069ca"
+      "bytes": 16395,
+      "sha256": "154d3ec52e191939f5bbe1601a5bbeac2e07b69f0249d5fdfeac29e8c808d4bc"
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
@@ -7855,13 +7855,13 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 102653,
-      "sha256": "044cdb25f7423e647f81420c088a79d47bc3f814f3bc72f6c1095de06e0bce2f"
+      "bytes": 103405,
+      "sha256": "7a795a4544b97289c7dc28bf92a13d2a69e83a05cc647457121be6b23573e814"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
-      "bytes": 16286,
-      "sha256": "697aa65a80474b91740081284e5744bde86ad26684972842ac27c8f85b7c1eba"
+      "bytes": 16532,
+      "sha256": "9317e59676377aa6142d23ad1a0c88651b420c61e25a5b553dadeef230bc0318"
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
@@ -8050,8 +8050,8 @@
     },
     {
       "path": "tests/test_field_frame_storage.py",
-      "bytes": 5305,
-      "sha256": "5e49cda17ce913788dde60bf374cd2769137e69cea827a596fbc9b356f3235c8"
+      "bytes": 5390,
+      "sha256": "6c6ffddd56a6bf855b07ffc193de57a6017d8e72de9ada6c476fd48e928d46d6"
     },
     {
       "path": "tests/test_field_lines_numpy.py",
@@ -8240,8 +8240,8 @@
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
-      "bytes": 3669,
-      "sha256": "a566932ee576a3a039a74512fda6bd2280e66d20c6650b9f45ef149e75763d51"
+      "bytes": 6331,
+      "sha256": "e5fcecacf90dd29f825ca00c62d3b847e2bb90117275b1aca849b01b77ef0a1e"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -8400,8 +8400,8 @@
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
-      "bytes": 5570,
-      "sha256": "aca2c20e80585355cfb454d2662952bb9f1c9ac2567e141da8bb24e5c83f7460"
+      "bytes": 5554,
+      "sha256": "561251996e967d5e1f21503a4f5c6d0220eaf3fc88818548b6d45021017e07b6"
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
@@ -8620,8 +8620,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 26986,
-      "sha256": "ee5277136d93ecd506aeb802af331e3c3871927d1d4064eacdbce7b918efccba"
+      "bytes": 28449,
+      "sha256": "99d23d6b045f14659e8d7c878138667aaeb7d7b150579aebe5a19a3b8240f909"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -12975,8 +12975,8 @@
     },
     {
       "path": "backend/field_frame_codec.py",
-      "bytes": 6884,
-      "sha256": "1d3d54c63a1b75829fdef64ed0474b40861be6ff425f698a7f22f71102288310"
+      "bytes": 8740,
+      "sha256": "f11bcbb3c284c04eb0b32084be38d9acea945a907f4d18ef2b2eced7ef097e3f"
     },
     {
       "path": "backend/reference_models/lrk.py",
@@ -13160,8 +13160,8 @@
     },
     {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 27958,
-      "sha256": "c5ecfebecf4def7cfc8cea6eb9f870496b4e037b6b30d59321c5a6663af4cba9"
+      "bytes": 29127,
+      "sha256": "6d04db6ac4293881874566b54cc8a4112cd751bb32f421000398e85ca440a9f6"
     },
     {
       "path": "tests/test_lrk_reference.py",
@@ -13870,8 +13870,8 @@
     },
     {
       "path": "tests/test_field_frame_locality.py",
-      "bytes": 8936,
-      "sha256": "a04f7cd616f5fa34d5269d7752b8cead3e375e0057b0a41778c9058f4c9a0bf6"
+      "bytes": 8945,
+      "sha256": "97b8140bd0054c39ce80c95dde50a22b83e6854faca72a7b9891bae9d27e05cf"
     },
     {
       "path": "tests/test_field_frame_pipeline.py",

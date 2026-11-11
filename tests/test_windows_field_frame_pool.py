@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-import gzip
-import json
-
 import pytest
 
 import backend.solver as solver
+from backend.field_artifacts import read_field_line_frame_artifact
 from backend.solver._process_pool import cancellable_process_pool, completed_process_futures
 from backend.solver_contract import SolveCancelledError
 
@@ -70,9 +68,8 @@ def test_real_frame_worker_preserves_full_artifact_live_data_and_rms(monkeypatch
 
     for index in (1, 2):
         assert stripped(actual[index]) == stripped(expected[index])
-    left, right = (next((cache / "field_line_frames").glob("*.json.gz")) for cache in (serial, parallel))
-    with gzip.open(left, "rt", encoding="utf-8") as a, gzip.open(right, "rt", encoding="utf-8") as b:
-        full_a, full_b = json.load(a), json.load(b)
+    left, right = (next((cache / "field_line_frames").glob("*.f32.xz")) for cache in (serial, parallel))
+    full_a, full_b = read_field_line_frame_artifact(left), read_field_line_frame_artifact(right)
     assert full_a == full_b
     assert full_a["position_index"] == 3
     assert full_a["field_line_frame"]["nodes_mm"]

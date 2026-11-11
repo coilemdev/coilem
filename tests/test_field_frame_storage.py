@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from backend import field_artifacts, public_field_playback
+from backend import field_artifacts, field_frame_codec, public_field_playback
 from backend.field_artifacts import (
     NOLOAD_MESH_FROM_FRAME,
     read_field_line_frame_artifact,
@@ -35,8 +35,9 @@ def _frame() -> dict[str, object]:
 
 
 def _stored(path: Path) -> dict[str, object]:
-    with gzip.open(path, "rt", encoding="utf-8") as handle:
-        return json.load(handle)
+    """The frame as it is on disk, before the reader restores the PM-only mesh."""
+
+    return field_frame_codec.decode_compact_field_frame(path.read_bytes())
 
 
 @pytest.fixture
