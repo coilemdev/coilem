@@ -19,6 +19,7 @@ from backend import qualification
 from backend.loss_breakdown import operating_point_losses
 from backend.magnet_temperature import magnet_temperature_record
 from backend.models.performance import (
+    COGGING_TORQUE_QUALIFIED_REASON,
     COGGING_TORQUE_STATUS_REASON,
     DQ_FLUX_LINKAGE_QUALIFIED_REASON,
     DQ_FLUX_LINKAGE_STATUS_REASON,
@@ -44,6 +45,7 @@ pypdf = pytest.importorskip("pypdf")
 
 # The reasons the app mirrors, for records stored without a status and for the Solve page before a run.
 MIRRORED = {
+    "COGGING_TORQUE_QUALIFIED_REASON": COGGING_TORQUE_QUALIFIED_REASON,
     "COGGING_TORQUE_STATUS_REASON": COGGING_TORQUE_STATUS_REASON,
     "DQ_FLUX_LINKAGE_STATUS_REASON": DQ_FLUX_LINKAGE_STATUS_REASON,
     "DQ_INDUCTANCE_STATUS_REASON": DQ_INDUCTANCE_STATUS_REASON,
@@ -229,3 +231,23 @@ def test_the_app_mirrors_the_status_reasons() -> None:
         assert match, name
         parts = re.findall(r"'([^']*)'|\"([^\"]*)\"", match.group(1))
         assert "".join(single or double for single, double in parts) == reason, name
+
+
+def test_cogging_is_qualified_for_a_qualified_inner_rotor_design_only(monkeypatch) -> None:
+    from backend import qualification
+    from backend.models import MotorConfig
+    from tests.test_rotor_layout import INNER, outer_config
+
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: True)
+    inner = MotorConfig.model_validate(INNER)
+    outer = MotorConfig.model_validate(outer_config())
+    assert qualification.classify_qualification(outer)["status"] == "qualified"
+
+    assert qualification.cogging_torque_status(inner) == ("qualified", COGGING_TORQUE_QUALIFIED_REASON)
+    # Phase E has no outer-rotor cogging case.
+    assert qualification.cogging_torque_status(outer) == ("experimental", COGGING_TORQUE_STATUS_REASON)
+
+    stored = {"summary": {"cogging": {"status": "experimental", "status_reason": COGGING_TORQUE_STATUS_REASON}}}
+    _apply_output_statuses(stored, INNER)
+    assert stored["summary"]["cogging"]["status"] == "qualified"
+    assert stored["summary"]["cogging"]["status_reason"] == COGGING_TORQUE_QUALIFIED_REASON

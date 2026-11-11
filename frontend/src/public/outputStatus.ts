@@ -28,8 +28,10 @@ export const MAGNET_TEMPERATURE_STATUS_REASON = "Br and HcJ derated linearly wit
 export const MAGNET_TEMPERATURE_QUALIFIED_REASON = "Br and HcJ derated linearly with the grade's cited reversible coefficients; passes the temperature gates of "
   + 'benchmark protocol 1.6.0 (back EMF and torque at the derated Br, N42 at 60 and 100 deg C on two qualified designs). '
   + 'The coefficients are catalogue values, and irreversible demagnetisation is not modelled.';
-export const COGGING_TORQUE_STATUS_REASON = 'No cogging gate yet: benchmark protocol 1.6.0 has no reference cogging waveform. The sweep uses per-position meshes '
-  + 'with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values.';
+export const COGGING_TORQUE_STATUS_REASON = 'The cogging gates of benchmark protocol 1.10.0 (Phase E) cover qualified inner-rotor designs only. The sweep uses per-position '
+  + 'meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values.';
+export const COGGING_TORQUE_QUALIFIED_REASON = 'Passes the cogging gates of benchmark protocol 1.10.0 (Phase E: 12 cogging cases on SPM and flat-buried IPM rotors). The sweep '
+  + 'uses per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging values.';
 
 export const STATUS_LABEL: Record<PerformanceOutputStatus, string> = {
   qualified: 'Qualified',

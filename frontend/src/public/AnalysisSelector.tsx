@@ -4,7 +4,7 @@ import type { AnalysisKey } from './analysisOptions';
 import type { MotorConfig, PublicSolverId } from './model';
 import { InfoTip } from './Popover';
 import { StatusBadge } from './OutputStatusBadge';
-import { COGGING_TORQUE_STATUS_REASON, FLUX_LINKAGE_MAP_STATUS_REASON } from './outputStatus';
+import { FLUX_LINKAGE_MAP_STATUS_REASON } from './outputStatus';
 import { TorqueSpeedSettings } from './TorqueSpeedSettings';
 import type { TorqueSpeedAnalysisSettings } from './performance';
 
@@ -22,8 +22,7 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
   const rows: Array<{ key: AnalysisKey; label: string; hint: string; unavailable?: boolean; experimentalReason?: string }> = [
     { key: 'torque_sweep', label: 'Torque', hint: 'Loaded torque waveform, mean torque and ripple.' },
     { key: 'back_emf', label: 'Back EMF', hint: 'No-current voltage waveform at the rated speed.' },
-    { key: 'cogging_torque', label: 'Cogging torque', hint: 'No-current torque over one cogging period.', unavailable: elmer,
-      experimentalReason: COGGING_TORQUE_STATUS_REASON },
+    { key: 'cogging_torque', label: 'Cogging torque', hint: 'No-current torque over one cogging period.', unavailable: elmer },
     { key: 'losses_efficiency', label: 'Losses & efficiency', hint: 'Estimated copper and iron losses, and efficiency. Includes the loaded fields needed for losses.', unavailable: elmer,
       experimentalReason: 'Includes experimental iron-loss and efficiency estimates. Copper-loss qualification is reported separately in Results.' },
     { key: 'torque_speed_envelope', label: 'Torque–speed map', hint: 'Torque, power and efficiency across speeds and loads.', unavailable: elmer,
@@ -46,7 +45,7 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
                   ? coggingPlanNote(config.stator.slot_count, config.rotor.pole_count, coggingPositions, config.solve_params.corner_refinement)
                   : row.hint}</p>
                 {row.unavailable && <p className="popover-note">Available with Magneto2D.</p>}
-                {row.experimentalReason && (row.key !== 'cogging_torque' || elmer) && <p className="popover-note">{row.experimentalReason}</p>}
+                {row.experimentalReason && <p className="popover-note">{row.experimentalReason}</p>}
               </div>
             </InfoTip>
           </div>

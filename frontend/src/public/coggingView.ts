@@ -87,7 +87,7 @@ export function coggingPlanNote(
   const corners = cornerRefinement ? '' : ' Corner refinement is off, which makes cogging much noisier; turn it on under Advanced options.';
   const preview = positions === 12
     ? ' Preview is for iteration: 12 positions can miss peaks and higher harmonics. Check convergence with Standard or High accuracy.' : '';
-  return `Adds a no-current sweep over one cogging period${span}${sampling}. Experimental: no cogging benchmark gate yet.${preview}${corners}`;
+  return `Adds a no-current sweep over one cogging period${span}${sampling}.${preview}${corners}`;
 }
 
 /** The card's content, or null for a run without a cogging sweep. */

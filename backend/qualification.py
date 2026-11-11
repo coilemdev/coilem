@@ -17,6 +17,8 @@ from typing import Literal, TypedDict
 
 from backend.models import MotorConfig
 from backend.models.performance import (
+    COGGING_TORQUE_QUALIFIED_REASON,
+    COGGING_TORQUE_STATUS_REASON,
     DQ_FLUX_LINKAGE_QUALIFIED_REASON,
     DQ_FLUX_LINKAGE_STATUS_REASON,
     MAGNET_TEMPERATURE_QUALIFIED_REASON,
@@ -112,13 +114,17 @@ def _combination(config: MotorConfig) -> tuple[QualificationStatus, str]:
     reference = reference_model(config)
     if reference is not None:
         return ("experimental", reference.qualification_reason)
-    if is_outer_rotor(config):
-        # The registered F cohort does not extend the application's general
-        # combination policy; it establishes parity for its explicit requests.
-        return "experimental", "Outer-rotor SPM: qualification currently covers the registered benchmark requests only."
     winding = config.winding
     rotor = config.rotor
     six_step = config.solve_params is not None and config.solve_params.excitation_mode == "ideal_six_step_120"
+    if is_outer_rotor(config):
+        # Phase F of protocol 1.10.0: concentrated windings with one or two
+        # layers under sinusoidal current. Nothing else was measured.
+        if winding.type != "concentrated":
+            return "experimental", "Outer-rotor SPM with distributed windings was not measured by the benchmark."
+        if six_step:
+            return "experimental", "Outer-rotor SPM under ideal six-step excitation was not measured by the benchmark."
+        return "qualified", "Outer-rotor SPM, concentrated winding, sinusoidal current: all 10 benchmark cases pass."
     if rotor.flux_barrier_count or rotor.barrier_widths_mm:
         return "unsupported", "Multi-layer IPM rotors are not supported in this preview."
     if winding.type == "concentrated" and winding.layers != 1:
@@ -173,7 +179,8 @@ def classify_qualification(config: MotorConfig) -> Qualification:
     """Return the status, a one-sentence reason and any caveats for ``config``."""
 
     status, reason = _combination(config)
-    if status == "qualified" and config.winding.type == "concentrated" and config.winding.layers != 1:
+    # Two-layer tooth coils were measured on outer rotors (Phase F) only.
+    if status == "qualified" and config.winding.type == "concentrated" and config.winding.layers != 1 and not is_outer_rotor(config):
         status, reason = "experimental", "Two-layer concentrated windings (a coil on every tooth) were not measured by the benchmark."
     steels = {config.materials.stator_steel, config.materials.rotor_steel}
     if status == "qualified" and steels != {_QUALIFIED_STEEL}:
@@ -209,6 +216,14 @@ def dq_flux_linkage_status(config: MotorConfig) -> tuple[OutputStatus, str]:
     ):
         return "qualified", DQ_FLUX_LINKAGE_QUALIFIED_REASON
     return "experimental", DQ_FLUX_LINKAGE_STATUS_REASON
+
+
+def cogging_torque_status(config: MotorConfig) -> tuple[OutputStatus, str]:
+    """Cogging torque: qualified for a qualified inner-rotor design, the scope Phase E measured."""
+
+    if classify_qualification(config)["status"] == "qualified" and not is_outer_rotor(config):
+        return "qualified", COGGING_TORQUE_QUALIFIED_REASON
+    return "experimental", COGGING_TORQUE_STATUS_REASON
 
 
 def magnet_temperature_status(config: MotorConfig) -> tuple[OutputStatus, str]:
