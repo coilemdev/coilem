@@ -203,12 +203,13 @@ _MAGNET_TEMPERATURE_RANGE_C = (20.0, 100.0)
 
 
 def dq_flux_linkage_status(config: MotorConfig) -> tuple[OutputStatus, str]:
-    """Loaded λd and λq: qualified for a qualified single-layer concentrated design under sinusoidal current at γ 0–60°."""
+    """Loaded λd and λq: qualified for a qualified inner-rotor single-layer concentrated design at sinusoidal γ 0–60°."""
 
     solve_params = config.solve_params
     low, high = _DQ_CURRENT_ANGLE_RANGE_DEG
     if (
         classify_qualification(config)["status"] == "qualified"
+        and not is_outer_rotor(config)
         and config.winding.type == "concentrated"
         and config.winding.layers == 1
         and (solve_params is None or solve_params.excitation_mode == "sinusoidal")
@@ -219,18 +220,29 @@ def dq_flux_linkage_status(config: MotorConfig) -> tuple[OutputStatus, str]:
 
 
 def cogging_torque_status(config: MotorConfig) -> tuple[OutputStatus, str]:
-    """Cogging torque: qualified for a qualified inner-rotor design, the scope Phase E measured."""
+    """Phase E's qualified inner-rotor scope requires very-fine mesh for distributed windings."""
 
-    if classify_qualification(config)["status"] == "qualified" and not is_outer_rotor(config):
+    if (
+        classify_qualification(config)["status"] == "qualified"
+        and not is_outer_rotor(config)
+        and (
+            config.winding.type != "distributed"
+            or (config.solve_params is not None and config.solve_params.mesh_density == "very_fine")
+        )
+    ):
         return "qualified", COGGING_TORQUE_QUALIFIED_REASON
     return "experimental", COGGING_TORQUE_STATUS_REASON
 
 
 def magnet_temperature_status(config: MotorConfig) -> tuple[OutputStatus, str]:
-    """Magnet derating: qualified for a qualified design from the catalogue's 20 °C to 100 °C."""
+    """Magnet derating: qualified for a qualified inner-rotor design from the catalogue's 20 °C to 100 °C."""
 
     temperature = config.solve_params.magnet_temperature_C if config.solve_params is not None else None
     low, high = _MAGNET_TEMPERATURE_RANGE_C
-    if classify_qualification(config)["status"] == "qualified" and temperature is not None and low <= temperature <= high:
+    if (
+        classify_qualification(config)["status"] == "qualified"
+        and not is_outer_rotor(config)
+        and temperature is not None and low <= temperature <= high
+    ):
         return "qualified", MAGNET_TEMPERATURE_QUALIFIED_REASON
     return "experimental", MAGNET_TEMPERATURE_STATUS_REASON

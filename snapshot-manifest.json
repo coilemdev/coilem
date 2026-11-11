@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 26601,
-      "sha256": "a12ffe7b129d7300452c36e637ebbe1eeba763b3fb341e7d970f9cb6d9b28e46"
+      "bytes": 26687,
+      "sha256": "552b5b1c1b6847ba30879e7c912ee7e07a93d62621984b93dc4c7ac47c3c2dd6"
     },
     {
       "path": "backend/models/result.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 11936,
-      "sha256": "8cba5fce1b74e7ac7cbcf4d255d36e67a2e76ef1e29472166b326c9776ca0a47"
+      "bytes": 12244,
+      "sha256": "e75094220ce861186d0aa3c01bc73cce6fa38d1053c874ddc6e57c36dcb101ab"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 52136,
-      "sha256": "80f7798e5b6793328716745b1af1bcc1c043a90f23c286b6221f553f23c906fe"
+      "bytes": 52488,
+      "sha256": "06fd1fcaa9e4c45e21e25a7261f7d57578e128657c61aa5ee1160299b56280c8"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 3958,
-      "sha256": "6bcffea746582e563c0f5472b35be0c7b01429fd2fe08d2c94e029ab1dd1b11b"
+      "bytes": 4044,
+      "sha256": "423413ddaef6a09e2bb07c1799121b37dc5474bff81cde124cbaa598061a1b54"
     },
     {
       "path": "frontend/src/public/performance.ts",
@@ -7930,8 +7930,8 @@
     },
     {
       "path": "tests/fixtures/cogging_example_8p12s.json",
-      "bytes": 3255,
-      "sha256": "0332a9f34c5f8a46766809d6ffed0b35782fba427f116f0b9e58a10b93134796"
+      "bytes": 3310,
+      "sha256": "b3c233f5b0e5f7d69aa14003ca33da47fbe1cbfad8862670975145e61ead1224"
     },
     {
       "path": "tests/fixtures/phase_drive_winding_layouts.json",
@@ -8185,8 +8185,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 14298,
-      "sha256": "325d5667087a94a6c59c346b96ee364ab82aac1c635396e51086c3565b5bee5c"
+      "bytes": 17388,
+      "sha256": "41a9129398f158eb96aa677280aa8786a0c30e05303b18ac1dc6b822e18988a9"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -14795,8 +14795,8 @@
     },
     {
       "path": "tests/test_reference_positions.py",
-      "bytes": 8445,
-      "sha256": "9952c21db750ca4ba8bed14c6722027fb75aa21e91632f66374ff562d07ce36d"
+      "bytes": 8977,
+      "sha256": "9cb41e2f8e4960e07bc3937decb111f5770ebad32cadb6cf66900668ddb7f409"
     },
     {
       "path": "tools/benchmark_suite/positions.py",
