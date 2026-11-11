@@ -447,10 +447,37 @@ pub(super) fn resolve_nonlinear_solve_config(
     }
 }
 
+/// The four-step ramp measured its last step against the defect left by a
+/// quarter step in current, about 0.025 of the source norm on the motors
+/// measured. A direct solve caps its reference there so that it stops at the
+/// accuracy the ramp reached instead of at a looser one.
+pub(super) const NEWTON_DIRECT_REFERENCE_CAP: f64 = 0.025;
+
+const NEWTON_CURRENT_RAMP: [f64; 4] = [0.25, 0.5, 0.75, 1.0];
+
+/// How the Newton solve brings the winding current up to its full value.
+#[derive(Debug, Clone, PartialEq)]
+pub(super) struct NewtonCurrentPlan {
+    /// Current scales to converge at, in order; the last is 1.
+    pub(super) scales: Vec<f64>,
+    /// Upper bound on the reference the convergence test scales by.
+    pub(super) reference_cap: Option<f64>,
+    /// Scales to retry with when the first attempt fails.
+    pub(super) fallback_scales: Option<Vec<f64>>,
+}
+
 /// Resolve Newton current-continuation policy once in the motor adapter.
 /// The returned values are ordinary solve data; the Newton loop itself does
 /// not read process-global environment state.
-pub(super) fn resolve_newton_current_scales(current_densities: &[f64]) -> Vec<f64> {
+///
+/// By default a loaded solve goes straight to full current and falls back to
+/// the four-step ramp only if that fails: on the measured motors the ramp
+/// never rescued a solve and cost about as many iterations again.
+/// `MAGNETO2D_NEWTON_CURRENT_CONTINUATION=1` always ramps (the earlier
+/// behaviour), `=0` never does, and `MAGNETO2D_NEWTON_CURRENT_STAGES` names
+/// the scales explicitly.
+pub(super) fn resolve_newton_current_plan(current_densities: &[f64]) -> NewtonCurrentPlan {
+    let fixed = |scales: Vec<f64>| NewtonCurrentPlan { scales, reference_cap: None, fallback_scales: None };
     if let Ok(raw) = std::env::var("MAGNETO2D_NEWTON_CURRENT_STAGES") {
         let mut stages: Vec<f64> = raw
             .split(',')
@@ -463,21 +490,48 @@ pub(super) fn resolve_newton_current_scales(current_densities: &[f64]) -> Vec<f6
             stages.push(1.0);
         }
         if !stages.is_empty() {
-            return stages;
+            return fixed(stages);
         }
     }
 
-    let continuation_disabled = std::env::var("MAGNETO2D_NEWTON_CURRENT_CONTINUATION")
-        .ok()
-        .map(|value| {
-            let normalized = value.trim().to_ascii_lowercase();
-            normalized == "0" || normalized == "false" || normalized == "no" || normalized == "off"
-        })
-        .unwrap_or(false);
     let has_current = current_densities.iter().any(|value| value.abs() > 0.0);
-    if continuation_disabled || !has_current {
-        vec![1.0]
-    } else {
-        vec![0.25, 0.5, 0.75, 1.0]
+    if !has_current {
+        return fixed(vec![1.0]);
+    }
+    let requested = std::env::var("MAGNETO2D_NEWTON_CURRENT_CONTINUATION")
+        .ok()
+        .map(|value| value.trim().to_ascii_lowercase());
+    match requested.as_deref() {
+        Some("0" | "false" | "no" | "off") => fixed(vec![1.0]),
+        Some("1" | "true" | "yes" | "on" | "always") => fixed(NEWTON_CURRENT_RAMP.to_vec()),
+        _ => NewtonCurrentPlan {
+            scales: vec![1.0],
+            reference_cap: Some(NEWTON_DIRECT_REFERENCE_CAP),
+            fallback_scales: Some(NEWTON_CURRENT_RAMP.to_vec()),
+        },
+    }
+}
+
+#[cfg(test)]
+mod newton_current_plan_tests {
+    use super::*;
+
+    #[test]
+    fn a_loaded_solve_goes_direct_and_keeps_the_ramp_in_reserve() {
+        if std::env::var_os("MAGNETO2D_NEWTON_CURRENT_STAGES").is_some()
+            || std::env::var_os("MAGNETO2D_NEWTON_CURRENT_CONTINUATION").is_some()
+        {
+            return;
+        }
+        let loaded = resolve_newton_current_plan(&[0.0, 2.0e6, -2.0e6]);
+        assert_eq!(loaded.scales, vec![1.0]);
+        assert_eq!(loaded.reference_cap, Some(NEWTON_DIRECT_REFERENCE_CAP));
+        assert_eq!(loaded.fallback_scales, Some(vec![0.25, 0.5, 0.75, 1.0]));
+
+        // A no-load solve has no current to ramp and keeps its earlier test.
+        let no_load = resolve_newton_current_plan(&[0.0, 0.0]);
+        assert_eq!(no_load.scales, vec![1.0]);
+        assert_eq!(no_load.reference_cap, None);
+        assert_eq!(no_load.fallback_scales, None);
     }
 }

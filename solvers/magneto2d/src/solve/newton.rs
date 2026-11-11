@@ -523,8 +523,15 @@ fn convergence_record(
     history: &[f64],
     rhs_residual: f64,
     initial: f64,
+    reference_cap: Option<f64>,
     config: NonlinearSolveConfig,
 ) -> NonlinearConvergence {
+    let residual_definition = match reference_cap {
+        Some(cap) => format!(
+            "scaled_residual = L2(f - K(A) A) / min(L2(f - K(A0) A0), {cap} L2(f)); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, at full current"
+        ),
+        None => "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage".to_string(),
+    };
     NonlinearConvergence {
         method: "newton".into(),
         iterations: history.len(),
@@ -536,7 +543,7 @@ fn convergence_record(
         rhs_scaled_residual: Some(rhs_residual),
         initial_rhs_scaled_residual: Some(initial),
         absolute_residual_floor: Some(NEWTON_RHS_RESIDUAL_FLOOR),
-        residual_definition: "scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage".into(),
+        residual_definition,
         tolerance: config.newton_convergence_threshold,
         stopping_test: "scaled_residual <= tolerance OR rhs_scaled_residual <= absolute_residual_floor at every continuation stage".into(),
         solution_reused: false,
@@ -562,6 +569,7 @@ fn run_newton_stage(
     stage_count: usize,
     current_scale: f64,
     iteration_offset: usize,
+    reference_cap: Option<f64>,
     linear_policy: MotorLinearSolvePolicy,
     matrix_pattern: Option<&SolveMatrixPattern>,
     mut profile: Option<&mut SolveProfile>,
@@ -636,12 +644,13 @@ fn run_newton_stage(
         )?;
         total_assembly_ms += asm_ms;
         total_solve_ms += solve_ms;
-        let reference = *initial_residual.get_or_insert(residual);
+        let reference = *initial_residual
+            .get_or_insert(reference_cap.map_or(residual, |cap| residual.min(cap)));
         let scaled_residual = initial_scaled_residual(residual, reference);
         if newton_has_converged(residual, reference, convergence_threshold) {
             residual_history.push(scaled_residual);
             return Ok(NonlinearLoopOutput {
-                convergence: convergence_record(&residual_history, residual, reference, nonlinear_config),
+                convergence: convergence_record(&residual_history, residual, reference, reference_cap, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -723,7 +732,7 @@ fn run_newton_stage(
 
         if newton_has_converged(accepted.residual, reference, convergence_threshold) {
             return Ok(NonlinearLoopOutput {
-                convergence: convergence_record(&residual_history, accepted.residual, reference, nonlinear_config),
+                convergence: convergence_record(&residual_history, accepted.residual, reference, reference_cap, nonlinear_config),
                 materials,
                 az,
                 fields,
@@ -755,6 +764,7 @@ pub(super) fn run_newton_nonlinear_loop(
     nonlinear_material_labels: &[String],
     j_z: &[f64],
     current_scales: &[f64],
+    reference_cap: Option<f64>,
     mut materials: Vec<MaterialProps>,
     magnet_fractions: Option<&[f64]>,
     az_warm_start: Option<&[f64]>,
@@ -795,6 +805,7 @@ pub(super) fn run_newton_nonlinear_loop(
             stage_count,
             current_scale,
             residual_history.len(),
+            reference_cap,
             linear_policy,
             matrix_pattern,
             profile.as_deref_mut(),
