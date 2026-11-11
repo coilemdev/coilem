@@ -53,6 +53,7 @@ _SOURCE_GROUP_RE = re.compile(
     r"^winding:(?P<phase>[A-Za-z0-9]+):(?P<direction>in|out):slot(?P<index>\d+)"
     r"(?::layer(?P<layer>\d+))?$"
 )
+_MAGNET_POLARITY_RE = re.compile(r"^pm:(?P<polarity>[nsNS])(?=:|$)")
 _SLOT_REGION_RE = re.compile(r"^slot_winding_(?P<index>\d+)(?:_layer(?P<layer>\d+))?$")
 
 _ANGLE_TOL_DEG = 1.0e-6
@@ -138,8 +139,64 @@ def gmsh_solve_reuse_enabled() -> bool:
     ) not in {"0", "false", "False"}
 
 
+def gmsh_pole_pitch_mesh_reuse_enabled() -> bool:
+    """Reuse a mesh across pole pitches as well as slot pitches. Off unless asked for.
+
+    A rotor whose poles are alike but for their polarity looks the same after
+    a turn of one pole pitch, so a mesh also serves any rotor angle that
+    differs from its own by whole slot pitches less whole pole pitches: turn
+    the mesh by the slot pitches and, for an odd number of pole pitches,
+    reverse every magnet. That cuts an 8-pole 12-slot sweep from sixteen
+    meshes to eight and a 14-pole 12-slot one from forty-two to six. The
+    positions served this way are solved on a turned mesh instead of a fresh
+    one, so their results differ from today's by mesh noise; it stays opt-in
+    until that has been measured against the benchmark.
+    """
+    return gmsh_mesh_reuse_enabled() and solver_setting(
+        "COILEM_MAGNETO2D_GMSH_POLE_PITCH_MESH_REUSE", "0"
+    ) in {"1", "true", "True"}
+
+
 def slot_pitch_deg(slot_count: int) -> float:
     return 360.0 / max(1, int(slot_count))
+
+
+def pole_pitch_deg(pole_count: int) -> float:
+    return 360.0 / max(1, int(pole_count))
+
+
+def congruence_shift(
+    delta_deg: float,
+    slot_count: int,
+    pole_count: int | None = None,
+    *,
+    tol_deg: float = 1.0e-6,
+) -> tuple[int, int] | None:
+    """How a mesh reaches a rotor angle ``delta_deg`` from its own: ``(slot pitches, pole pitches)``.
+
+    Turning the mesh by ``n`` slot pitches leaves the stator as it was and
+    moves the rotor by ``n`` slot pitches. That is the wanted rotor angle
+    exactly (``j == 0``), or ``j`` pole pitches past it, which looks the same
+    with every magnet reversed when ``j`` is odd:
+    ``delta_deg == n * slot_pitch - j * pole_pitch``. Returns the solution
+    with the fewest pole pitches (none when slot pitches alone suffice), or
+    None when there is no solution. Without ``pole_count`` only ``j == 0``
+    is considered.
+    """
+
+    slot_pitch = slot_pitch_deg(slot_count)
+    shifts = [0]
+    if pole_count:
+        # Past slot_count pole pitches the slot-pitch remainders repeat.
+        for magnitude in range(1, max(1, int(slot_count)) + 1):
+            shifts.extend((magnitude, -magnitude))
+    for pole_shift in shifts:
+        turned = delta_deg + pole_shift * (pole_pitch_deg(pole_count) if pole_shift else 0.0)
+        ratio = turned / slot_pitch
+        n_slots = round(ratio)
+        if abs(ratio - n_slots) * slot_pitch <= tol_deg:
+            return int(n_slots), int(pole_shift)
+    return None
 
 
 def slot_congruence_groups(
@@ -172,6 +229,36 @@ def slot_congruence_groups(
                 placed = True
                 break
         if not placed:
+            groups.append({"base": job, "derived": []})
+    return groups
+
+
+def pole_pitch_congruence_groups(
+    base_jobs: list[dict[str, Any]],
+    slot_count: int,
+    pole_count: int,
+    *,
+    tol_deg: float = _ANGLE_TOL_DEG,
+) -> list[dict[str, Any]]:
+    """Group slot-pitch bases whose rotor angles differ by slot pitches less pole pitches.
+
+    Returns ``{"base": job, "derived": [(job, (n_slot_pitches, n_pole_pitches)), ...]}``
+    entries, like ``slot_congruence_groups``. The ``base`` (smallest rotor
+    angle) is meshed; each ``derived`` job's mesh is the base's turned by the
+    slot pitches, with every magnet reversed for an odd number of pole
+    pitches (``rotate_solve_mesh_artifact`` with a pole count).
+    """
+    groups: list[dict[str, Any]] = []
+    for job in sorted(base_jobs, key=lambda job: float(job["rotor_angle_mech_deg"])):
+        angle = float(job["rotor_angle_mech_deg"])
+        for group in groups:
+            shift = congruence_shift(
+                angle - float(group["base"]["rotor_angle_mech_deg"]), slot_count, pole_count, tol_deg=tol_deg
+            )
+            if shift is not None and shift != (0, 0):
+                group["derived"].append((job, shift))
+                break
+        else:
             groups.append({"base": job, "derived": []})
     return groups
 
@@ -282,6 +369,7 @@ def rotate_solve_mesh_artifact(
     phase_ampere_turns: Callable[[float], dict[str, float]],
     current_angle_elec_deg_for_mech: Callable[[float], float],
     tol_deg: float = _ANGLE_TOL_DEG,
+    pole_count: int | None = None,
 ) -> dict[str, Any]:
     """Derive the solve-mesh artifact for ``target_rotor_angle_mech_deg``
     from a congruent artifact at another angle by rigid rotation.
@@ -291,19 +379,32 @@ def rotate_solve_mesh_artifact(
     ``current_angle_elec_deg_for_mech`` maps a mechanical rotor angle to that
     resolved electrical angle. Both are supplied by the caller so this module
     stays import-light and unit-testable without a MotorConfig.
+
+    With ``pole_count`` the target may also be whole slot pitches less whole
+    pole pitches away (see ``congruence_shift``): the mesh is turned by the
+    slot pitches and, for an odd number of pole pitches, every magnet is
+    reversed. The rotor must then have poles that are alike but for polarity.
     """
     base_angle = float(artifact.get("rotor_angle_mech_deg") or 0.0)
     delta_deg = target_rotor_angle_mech_deg - base_angle
     pitch = slot_pitch_deg(slot_count)
     ratio = delta_deg / pitch
     n_slots = round(ratio)
+    pole_shift = 0
     if abs(ratio - n_slots) * pitch > tol_deg:
-        raise ValueError(
-            "rotate_solve_mesh_artifact requires a whole number of slot "
-            f"pitches: delta={delta_deg:.9f}deg, slot_pitch={pitch:.9f}deg"
-        )
+        shift = congruence_shift(delta_deg, slot_count, pole_count, tol_deg=tol_deg) if pole_count else None
+        if shift is None:
+            raise ValueError(
+                "rotate_solve_mesh_artifact requires a whole number of slot "
+                f"pitches: delta={delta_deg:.9f}deg, slot_pitch={pitch:.9f}deg"
+            )
+        n_slots, pole_shift = shift
+    # The mesh turns by the slot pitches; with no pole pitches that is delta_deg itself.
+    turn_deg = delta_deg + pole_shift * pole_pitch_deg(pole_count) if pole_shift else delta_deg
+    # An odd number of pole pitches puts the opposite pole where each magnet now sits.
+    polarity_turn_deg = 180.0 if pole_shift % 2 else 0.0
 
-    if n_slots == 0 and abs(delta_deg) <= tol_deg:
+    if n_slots == 0 and pole_shift == 0 and abs(delta_deg) <= tol_deg:
         return copy_json_like(artifact)
 
     # Copy only what rotation changes. Triangles, region tags and the
@@ -325,7 +426,7 @@ def rotate_solve_mesh_artifact(
             contract_copy["provenance"] = dict(contract_copy["provenance"])
         rotated["physics_contract"] = contract_copy
 
-    delta_rad = math.radians(delta_deg)
+    delta_rad = math.radians(turn_deg)
     cos_d = math.cos(delta_rad)
     sin_d = math.sin(delta_rad)
 
@@ -338,8 +439,9 @@ def rotate_solve_mesh_artifact(
     # ── Rotor metadata: rotates with the mesh ────────────────────────────
     element_magnetization = rotated.get("element_magnetization")
     if element_magnetization is not None:
+        magnet_turn_deg = turn_deg + polarity_turn_deg if pole_shift else delta_deg
         rotated["element_magnetization"] = [
-            ((value + delta_deg) % 360.0) if value is not None else None
+            ((value + magnet_turn_deg) % 360.0) if value is not None else None
             for value in element_magnetization
         ]
 
@@ -399,8 +501,16 @@ def rotate_solve_mesh_artifact(
             current_density_by_region[entry_id] = density_a_per_m2
         elif "magnetization_angle_deg" in entry:
             entry["magnetization_angle_deg"] = (
-                float(entry["magnetization_angle_deg"]) + delta_deg
+                float(entry["magnetization_angle_deg"]) + (turn_deg + polarity_turn_deg if pole_shift else delta_deg)
             ) % 360.0
+            if polarity_turn_deg:
+                entry_source = str(entry.get("source_group") or "")
+                polarity = _MAGNET_POLARITY_RE.match(entry_source)
+                if polarity is not None:
+                    # Keep the letter's case: generic rotors write n/s, reference models N/S.
+                    letter = polarity.group("polarity")
+                    flipped = {"n": "s", "s": "n", "N": "S", "S": "N"}[letter]
+                    entry["source_group"] = f"pm:{flipped}{entry_source[polarity.end('polarity'):]}"
 
     element_current_density = rotated.get("element_current_density_a_per_m2")
     if element_current_density is not None and current_density_by_region:
@@ -428,6 +538,9 @@ def rotate_solve_mesh_artifact(
             "rotated_from_rotor_angle_mech_deg": base_angle,
             "n_slot_pitches": int(n_slots),
         }
+        if pole_shift:
+            provenance["mesh_reuse"]["kind"] = "slot_and_pole_pitch_congruence_rotation"
+            provenance["mesh_reuse"]["n_pole_pitches"] = int(pole_shift)
 
     return rotated
 

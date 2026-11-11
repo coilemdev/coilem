@@ -315,8 +315,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 38396,
-      "sha256": "96dec0459b558a6b8d14f14f679a1e04afdb9b7aaf9b45b6cad872d8374f8f0f"
+      "bytes": 43896,
+      "sha256": "1fa65d556c9528548ded6bba0df1b6394bb0b08d21f4011b67f9a00c0e3f1e02"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 12244,
-      "sha256": "e75094220ce861186d0aa3c01bc73cce6fa38d1053c874ddc6e57c36dcb101ab"
+      "bytes": 12551,
+      "sha256": "2c12f11b55527a94da2a508e8f5c01a620d734e90aa4e1f8040385c0b805cf8c"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 173543,
-      "sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5"
+      "bytes": 178895,
+      "sha256": "9c12786d416aedc373ee38ef1ca1d3756ce0c6f2671a553d55bb8eb060012f4d"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -695,8 +695,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 9411,
-      "sha256": "0ef8f7e6643f23a4529ae3ec7d9af3fd5ebc49e3dd954a6747850970aa77a372"
+      "bytes": 9720,
+      "sha256": "76023f0ab5b60ce13950bf0cf1ca34c022ff80dcb0bcc0ce19dcafba01e43ea0"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -8249,6 +8249,11 @@
       "sha256": "a8d273bb21baed0f807939d7ee18ec12acc507c10d54b8d43db472494c47e526"
     },
     {
+      "path": "tests/test_pole_pitch_mesh_reuse.py",
+      "bytes": 8768,
+      "sha256": "f8700315e51e730066d089c9a3fe23f9c5869e8219e5f7c310270a9666589ec0"
+    },
+    {
       "path": "tests/test_postsolve_pipeline.py",
       "bytes": 6629,
       "sha256": "048ac4984ae66c17658e3fe0c2e393fda63431b7ea74aea9b6890744f7fbeac7"
@@ -14080,8 +14085,8 @@
     },
     {
       "path": "tests/test_parallel_fallback_solves.py",
-      "bytes": 14589,
-      "sha256": "1efd9c7fd102c36eb555ac0622764c7f3cde90f2e5a1b4c39c2ada319472e9fa"
+      "bytes": 16504,
+      "sha256": "b2f0f9f7d0c96169cb73b8cd90d36b11c585ea839a0d994e14926b6e749c1b65"
     },
     {
       "path": "tests/test_tutorial_phase_sequence.py",

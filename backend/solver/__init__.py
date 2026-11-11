@@ -31,7 +31,9 @@ from backend.gmsh_mesh_rotation import (
     derive_congruent_solve_report,
     full_cycle_congruent_bases,
     gmsh_mesh_reuse_enabled,
+    gmsh_pole_pitch_mesh_reuse_enabled,
     gmsh_solve_reuse_enabled,
+    pole_pitch_congruence_groups,
     rebake_solve_mesh_artifact_currents,
     rotate_solve_mesh_artifact,
     slot_congruence_groups,
@@ -588,6 +590,8 @@ def _rotate_gmsh_artifact_for_config(
     artifact: dict[str, Any],
     config: MotorConfig,
     target_rotor_angle_mech_deg: float,
+    *,
+    across_pole_pitches: bool = False,
 ) -> dict[str, Any]:
     """Derive a congruent Gmsh solve-mesh artifact at a new rotor angle.
 
@@ -606,6 +610,7 @@ def _rotate_gmsh_artifact_for_config(
         current_angle_elec_deg_for_mech=lambda rotor_angle_mech_deg: (
             float(rotor_angle_mech_deg) * max(1, int(config.rotor.pole_count) // 2)
         ),
+        pole_count=int(config.rotor.pole_count) if across_pole_pitches else None,
     )
 
 
@@ -691,6 +696,7 @@ def _angle_mesh_cache_scope_key(
         # A rotated artifact cached with reuse on is not an independently
         # meshed position when a developer later disables reuse.
         "slot_pitch_mesh_reuse": gmsh_mesh_reuse_enabled(),
+        **({"pole_pitch_mesh_reuse": True} if gmsh_pole_pitch_mesh_reuse_enabled() else {}),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, default=str).encode("utf-8")
@@ -850,6 +856,7 @@ def _prepare_gmsh_mesh_group_in_subprocess(
     lanes: tuple[bool, bool],
     derived: list[tuple[float, bool, bool]],
     cached_artifact: dict[str, Any] | None = None,
+    pole_pitch_bases: list[tuple[float, tuple[bool, bool], list[tuple[float, bool, bool]]]] | None = None,
 ) -> dict[str, Any]:
     """Build (or re-bake) one base mesh and its congruent meshes in a worker process.
 
@@ -877,6 +884,56 @@ def _prepare_gmsh_mesh_group_in_subprocess(
     check_mesh_worker_cancelled()
     # One cache for the group: a rotated mesh shares most arrays with its base.
     canonical_cache: dict[int, tuple[Any, str]] = {}
+    evidence, derived_meshes = _prepare_group_evidence_and_rotations(
+        config, artifact, lanes, derived, canonical_cache
+    )
+    # Bases a whole pole pitch away (see gmsh_pole_pitch_mesh_reuse_enabled):
+    # each is this mesh turned and its magnets reversed, then treated as a
+    # base in its own right, with its own slot-pitch rotations.
+    pole_pitch_groups: list[dict[str, Any]] = []
+    for target_rotor_angle_mech_deg, group_lanes, group_derived in pole_pitch_bases or []:
+        check_mesh_worker_cancelled()
+        rotation_started = time.perf_counter()
+        turned = _rotate_gmsh_artifact_for_config(
+            artifact, config, float(target_rotor_angle_mech_deg), across_pole_pitches=True
+        )
+        rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
+        solve_profile.record("mesh worker: rotate to a matching position", rotation_ms / 1000.0)
+        group_evidence, group_derived_meshes = _prepare_group_evidence_and_rotations(
+            config, turned, group_lanes, group_derived, canonical_cache
+        )
+        pole_pitch_groups.append(
+            {
+                "artifact": turned,
+                "generation_time_ms": rotation_ms,
+                "evidence": group_evidence,
+                "derived": group_derived_meshes,
+            }
+        )
+    solve_profile.record(
+        "mesh worker: one group, total", time.perf_counter() - worker_started, derived=len(derived_meshes)
+    )
+    return {
+        "artifact": artifact,
+        "generation_time_ms": generation_time_ms,
+        "evidence": evidence,
+        "derived": derived_meshes,
+        "pole_pitch_groups": pole_pitch_groups,
+    }
+
+
+def _prepare_group_evidence_and_rotations(
+    config: MotorConfig,
+    artifact: dict[str, Any],
+    lanes: tuple[bool, bool],
+    derived: list[tuple[float, bool, bool]],
+    canonical_cache: dict[int, tuple[Any, str]],
+) -> tuple[
+    tuple[dict[str, Any] | None, dict[str, Any] | None],
+    list[tuple[dict[str, Any], int, tuple[dict[str, Any] | None, dict[str, Any] | None]]],
+]:
+    """A base mesh's evidence, and its rotations to slot-pitch-congruent positions with theirs."""
+
     with solve_profile.span("mesh worker: evidence hashes"):
         evidence = _solve_mesh_evidence_pair(
             artifact, loaded=lanes[0], noload=lanes[1], canonical_cache=canonical_cache
@@ -897,15 +954,7 @@ def _prepare_gmsh_mesh_group_in_subprocess(
                 derived_artifact, loaded=loaded, noload=noload, canonical_cache=canonical_cache
             )
         derived_meshes.append((derived_artifact, rotation_ms, derived_evidence))
-    solve_profile.record(
-        "mesh worker: one group, total", time.perf_counter() - worker_started, derived=len(derived_meshes)
-    )
-    return {
-        "artifact": artifact,
-        "generation_time_ms": generation_time_ms,
-        "evidence": evidence,
-        "derived": derived_meshes,
-    }
+    return evidence, derived_meshes
 
 
 def _config_with_magneto2d_workers(config: MotorConfig, workers: int) -> MotorConfig:
@@ -1613,6 +1662,7 @@ def _solve_with_per_angle_producer_meshes(
         # only send group bases to the producer; derived members are
         # synthesized in handle_group_mesh_ready.
         derived_jobs_by_base_key: dict[int, list[tuple[dict[str, Any], int]]] = {}
+        pole_pitch_bases_by_primary_key: dict[int, list[dict[str, Any]]] = {}
         producer_jobs = mesh_jobs
         if producer.source == "gmsh" and not config.geometry_reference and gmsh_mesh_reuse_enabled() and len(mesh_jobs) > 1:
             congruence_groups = slot_congruence_groups(
@@ -1644,6 +1694,29 @@ def _solve_with_per_angle_producer_meshes(
                     file=sys.stderr,
                     flush=True,
                 )
+            # Opt-in: bases a whole pole pitch apart share one mesh too. Each
+            # such base is its primary's mesh turned with its magnets
+            # reversed, and stays a base for solving and for its own
+            # slot-pitch rotations. Cogging runs keep their own meshes: their
+            # end points must be independent remeshes.
+            if gmsh_pole_pitch_mesh_reuse_enabled() and not cogging_angles_elec_deg and len(producer_jobs) > 1:
+                pole_groups = pole_pitch_congruence_groups(
+                    producer_jobs, config.stator.slot_count, config.rotor.pole_count
+                )
+                if any(group["derived"] for group in pole_groups):
+                    pole_pitch_bases_by_primary_key = {
+                        int(group["base"]["angle_key"]): [job for job, _shift in group["derived"]]
+                        for group in pole_groups
+                    }
+                    producer_jobs = [group["base"] for group in pole_groups]
+                    print(
+                        "magneto2d: Gmsh pole-pitch mesh reuse — meshing "
+                        f"{len(producer_jobs)} base angles, turning them to "
+                        f"{sum(len(group['derived']) for group in pole_groups)} more "
+                        "(COILEM_MAGNETO2D_GMSH_POLE_PITCH_MESH_REUSE=0 to disable)",
+                        file=sys.stderr,
+                        flush=True,
+                    )
 
         # ── Per-angle mesh cache lookup (all-or-nothing over the
         # producer jobs) ─────────────────────────────────────────────────
@@ -1810,6 +1883,23 @@ def _solve_with_per_angle_producer_meshes(
                     evidence=derived_evidence,
                 )
                 emit_mesh_ready_tick(float(derived_job["angle_elec_deg"]))
+            for pole_index, pole_job in enumerate(pole_pitch_bases_by_primary_key.get(int(job["angle_key"]), [])):
+                if prepared is not None:
+                    pole_prepared = prepared["pole_pitch_groups"][pole_index]
+                    pole_artifact, pole_rotation_ms = pole_prepared["artifact"], pole_prepared["generation_time_ms"]
+                else:
+                    pole_prepared = None
+                    rotation_started = time.perf_counter()
+                    pole_artifact = _rotate_gmsh_artifact_for_config(
+                        solve_mesh_artifact,
+                        excitation_config,
+                        float(pole_job["rotor_angle_mech_deg"]),
+                        across_pole_pitches=True,
+                    )
+                    pole_rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
+                # A base like any other from here on: solved for real, with its
+                # own slot-pitch rotations and their solution reuse.
+                handle_group_mesh_ready(solve_pool, pole_job, pole_artifact, pole_rotation_ms, prepared=pole_prepared)
 
         def prepare_mesh_group(
             mesh_pool: Any,
@@ -1817,16 +1907,23 @@ def _solve_with_per_angle_producer_meshes(
             cached_artifact: dict[str, Any] | None = None,
         ) -> Future[dict[str, Any]]:
             """Send one mesh group (base mesh plus congruent meshes) to a worker."""
+            def slot_pitch_members(base_job: dict[str, Any]) -> list[tuple[float, bool, bool]]:
+                return [
+                    (float(derived_job["rotor_angle_mech_deg"]), *solve_lanes(derived_job))
+                    for derived_job, _n_slots in derived_jobs_by_base_key.get(int(base_job["angle_key"]), [])
+                ]
+
             return mesh_pool.submit(
                 _prepare_gmsh_mesh_group_in_subprocess,
                 config_payload,
                 float(job["rotor_angle_mech_deg"]),
                 solve_lanes(job),
-                [
-                    (float(derived_job["rotor_angle_mech_deg"]), *solve_lanes(derived_job))
-                    for derived_job, _n_slots in derived_jobs_by_base_key.get(int(job["angle_key"]), [])
-                ],
+                slot_pitch_members(job),
                 cached_artifact,
+                [
+                    (float(pole_job["rotor_angle_mech_deg"]), solve_lanes(pole_job), slot_pitch_members(pole_job))
+                    for pole_job in pole_pitch_bases_by_primary_key.get(int(job["angle_key"]), [])
+                ],
             )
 
         def run_mesh_groups(

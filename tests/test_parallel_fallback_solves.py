@@ -317,3 +317,44 @@ def test_compact_no_frame_path_cancels_queued_fallbacks_before_joining_running_w
     assert next(future for key, future in state.native_futures if key == ("loaded", 180.0)).cancelled()
     assert all(future.done() for _, future in state.native_futures)
     assert not state.frame_calls
+
+
+@pytest.mark.parametrize("pole_pitch_reuse", [False, True])
+def test_pole_pitch_reuse_meshes_one_base_and_still_solves_every_position(
+    fallback_pipeline, monkeypatch, pole_pitch_reuse
+):
+    state = fallback_pipeline
+    # 8 poles on 12 slots: electrical 0, 60, 120 deg are mechanical 0, 15, 30 deg.
+    # 30 deg is a slot pitch from 0; 15 deg is two slot pitches less one pole pitch.
+    state.config.rotor.pole_count = 8
+    turns: list[tuple[float, float, bool]] = []
+
+    def rotate(artifact, config, angle, *, across_pole_pitches=False):
+        turns.append((float(artifact["angle"]), float(angle), across_pole_pitches))
+        return {**artifact, "angle": angle, "turned_from": artifact["angle"]}
+
+    monkeypatch.setattr(solver, "_rotate_gmsh_artifact_for_config", rotate)
+    monkeypatch.setattr(solver, "gmsh_pole_pitch_mesh_reuse_enabled", lambda: pole_pitch_reuse)
+    meshes_seen: dict[float, dict] = {}
+    native = solver.run_magneto2d_report
+
+    def recording_native(config, **kwargs):
+        meshes_seen.setdefault(float(kwargs["rotor_angle_deg"]), kwargs["solve_mesh_artifact"])
+        return native(config, **kwargs)
+
+    monkeypatch.setattr(solver, "run_magneto2d_report", recording_native)
+
+    state.run()
+
+    # Every position is solved for real: the stand-in refuses solution reuse.
+    assert sorted(angle for lane, angle in state.native_started if lane == "loaded") == [0.0, 60.0, 120.0]
+    assert sorted(state.frame_calls) == [0, 1, 2]
+    assert set(meshes_seen) == {0.0, 15.0, 30.0}
+    if pole_pitch_reuse:
+        # One mesh: 15 deg is it turned across a pole pitch, 30 deg turned by a slot pitch.
+        assert sorted(turns) == [(0.0, 15.0, True), (0.0, 30.0, False)]
+        assert meshes_seen[15.0]["turned_from"] == 0.0
+    else:
+        # 15 deg is meshed on its own.
+        assert turns == [(0.0, 30.0, False)]
+        assert "turned_from" not in meshes_seen[15.0]
