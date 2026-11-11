@@ -285,9 +285,51 @@ def test_the_measured_mesher_must_be_the_one_the_release_pins(tmp_path):
         record = json.loads((tmp_path / path).read_text())
         record["environment"] = {"dependencies": {"gmsh": "4.15.2"}}
         _write(tmp_path, path, record)
+    # The Prius collection meshes too, so it must name the pinned mesher.
+    assert check(tmp_path) == ["Prius report dependency mismatch: gmsh"]
+    prius_path = "docs/benchmarks/pyleecan-prius-v1/app-results.json"
+    prius = json.loads((tmp_path / prius_path).read_text())
+    prius["dependencies"] = {"gmsh": "4.15.2"}
+    _write(tmp_path, prius_path, prius)
     assert check(tmp_path) == []
     record["environment"]["dependencies"]["gmsh"] = "4.16.0"
     _write(tmp_path, path, record)
     assert check(tmp_path) == ["macos-arm64 qualification dependency mismatch: gmsh"]
     _write(tmp_path, "requirements.lock", "gmsh==4.16.0\n")
     assert "windows-x86_64 qualification dependency mismatch: gmsh" in check(tmp_path)
+
+
+def test_each_combined_prius_report_must_use_the_pinned_mesher_of_its_suite(tmp_path, monkeypatch):
+    test_combined_release_checks_each_prius_collection_against_its_suite(tmp_path, monkeypatch)
+    _write(tmp_path, "backend/benchmark_suite/physics.py", (
+        'PHYSICS_DEPENDENCIES = ("gmsh",)\nDEPENDENCY_LOCK_FILE = "requirements.lock"\n'
+        'def physics_sources(root):\n    return ("backend/motor.py",)\n'
+        'def pinned_dependencies(text):\n    return {"gmsh": tuple(line[6:] for line in text.splitlines() if line.startswith("gmsh=="))}\n'))
+    _write(tmp_path, "requirements.lock", "gmsh==4.15.2\n")
+    keys = ["windows-x86_64", "macos-arm64"]
+
+    def set_prius(key, version, binary=None):
+        path = f"platform/{key}/prius/app-results.json"
+        prius = json.loads((tmp_path / path).read_text())
+        prius["dependencies"] = {"gmsh": version}
+        if binary is not None:
+            prius["binary_sha256"] = binary
+        _write(tmp_path, path, prius)
+
+    for key in keys:
+        path = f"platform/{key}/benchmark_summary.json"
+        report = json.loads((tmp_path / path).read_text())
+        report["run"]["identity"]["dependencies"] = {"gmsh": "4.15.2"}
+        _write(tmp_path, path, report)
+        path = f"benchmarks/records/{key}.json"
+        record = json.loads((tmp_path / path).read_text())
+        record["environment"] = {"dependencies": {"gmsh": "4.15.2"}}
+        _write(tmp_path, path, record)
+        # The combined test leaves the macOS Prius report on another binary.
+        set_prius(key, "4.15.2", hashlib.sha256(key.encode()).hexdigest())
+    assert check(tmp_path) == []
+    for key in keys:
+        set_prius(key, "4.14.0")
+        assert check(tmp_path) == [f"{key}: Prius report dependency mismatch: gmsh"]
+        set_prius(key, "4.15.2")
+    assert check(tmp_path) == []

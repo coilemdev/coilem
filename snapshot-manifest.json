@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 81491,
-      "sha256": "1a0cb3affbff7e561ab49129219cf2c573afb48423a4bdd2fff7cf4326fc6c3c"
+      "bytes": 81911,
+      "sha256": "536d7aba129cd3163a165fe675f6aa0f8fb5fc514ecb4a4fc254d4be9ad0aac6"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -7370,8 +7370,8 @@
     },
     {
       "path": "frontend/src/public/halbach/halbach.css",
-      "bytes": 50957,
-      "sha256": "8f615f39bd1d4db551343d465e4bf811654332a6332d645aed4ba458e6f04c74"
+      "bytes": 51665,
+      "sha256": "cb3f2624df39937641fb1e0d9994f0373b9e402b68731fa3e6a5a3f1074a7961"
     },
     {
       "path": "frontend/src/public/halbach/poleRendering.ts",
@@ -8325,8 +8325,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 16418,
-      "sha256": "e090c03fefc13126ca69284459a37c6118b9ce5ca5ca7c164b7bf4dd01b64405"
+      "bytes": 18626,
+      "sha256": "ed396d48afa1bd5242665040f017cef3655701c51bda9a6d747cf1115c1fa952"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8575,8 +8575,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 16120,
-      "sha256": "089c849fc44106bb376588711fd72a736b19f67a6ee89db5145f38509e716b49"
+      "bytes": 16681,
+      "sha256": "56031a5f9da8f7f3b2fc3579f57b39878dd68a6a4e2c6990be8ce9ff0b759c86"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -15825,8 +15825,8 @@
     },
     {
       "path": "tests/test_gmsh_runtime_owner.py",
-      "bytes": 1687,
-      "sha256": "2f60c076990ff4368c97f9374c27a37a2d087868fe4da6be69a9fb4847c0ef46"
+      "bytes": 3347,
+      "sha256": "6946674c511cb096f9beee651b5ec4ff472d0be5dc531d893f683967413d737e"
     },
     {
       "path": "tools/make_combined_protocol.py",

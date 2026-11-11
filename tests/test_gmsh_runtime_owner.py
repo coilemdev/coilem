@@ -11,10 +11,12 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import pytest
 
+from backend import gmsh_solver
 from backend.gmsh_solver import GMSH_AVAILABLE
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -55,3 +57,41 @@ def test_meshing_survives_the_first_meshing_thread_exiting() -> None:
 
     assert completed.returncode == 0, completed.stderr[-2000:]
     assert "meshed three times" in completed.stdout
+
+
+def _owner_threads() -> list[threading.Thread]:
+    return [thread for thread in threading.enumerate() if thread.name == "gmsh-runtime-owner" and thread.is_alive()]
+
+
+def test_a_failed_owner_start_is_raised_and_tried_again(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A start that raises must not latch: the owner thread has exited, so a
+    # latched state would let later meshes run without the lifetime guarantee.
+    monkeypatch.setattr(gmsh_solver, "_GMSH_RUNTIME_OWNER_STARTED", False)
+    owners_before = len(_owner_threads())
+    attempts: list[str] = []
+
+    def failing_start() -> None:
+        attempts.append("failed")
+        raise RuntimeError("gmsh could not start")
+
+    monkeypatch.setattr(gmsh_solver, "_start_gmsh", failing_start)
+    with pytest.raises(RuntimeError, match="gmsh could not start"):
+        gmsh_solver._ensure_gmsh_runtime_owner()
+    assert gmsh_solver._GMSH_RUNTIME_OWNER_STARTED is False
+    assert len(_owner_threads()) == owners_before
+
+    class _Finalizable:
+        @staticmethod
+        def finalize() -> None:
+            attempts.append("finalized")
+
+    monkeypatch.setattr(gmsh_solver, "_start_gmsh", lambda: attempts.append("started"))
+    monkeypatch.setattr(gmsh_solver, "gmsh", _Finalizable)
+    gmsh_solver._ensure_gmsh_runtime_owner()
+    assert attempts == ["failed", "started", "finalized"]
+    assert gmsh_solver._GMSH_RUNTIME_OWNER_STARTED is True
+    # The owner is parked, not finished.
+    assert len(_owner_threads()) == owners_before + 1
+
+    gmsh_solver._ensure_gmsh_runtime_owner()
+    assert attempts == ["failed", "started", "finalized"]

@@ -84,17 +84,26 @@ def _ensure_gmsh_runtime_owner() -> None:
         if _GMSH_RUNTIME_OWNER_STARTED:
             return
         ready = threading.Event()
+        failure: list[BaseException] = []
 
         def own_runtime() -> None:
             try:
                 _start_gmsh()
                 gmsh.finalize()
+            except BaseException as exc:  # reported to the thread that asked
+                failure.append(exc)
+                return
             finally:
                 ready.set()
             threading.Event().wait()  # park: this thread must outlive every mesh
 
         threading.Thread(target=own_runtime, name="gmsh-runtime-owner", daemon=True).start()
         ready.wait()
+        if failure:
+            # The owner thread has exited, so nothing holds the runtime. Leave
+            # the latch clear: the next mesh tries again instead of running
+            # without the guarantee.
+            raise failure[0]
         _GMSH_RUNTIME_OWNER_STARTED = True
 
 
