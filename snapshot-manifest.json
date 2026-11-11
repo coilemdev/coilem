@@ -315,8 +315,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 37312,
-      "sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0"
+      "bytes": 38396,
+      "sha256": "96dec0459b558a6b8d14f14f679a1e04afdb9b7aaf9b45b6cad872d8374f8f0f"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 77993,
-      "sha256": "336422be884cc770a4d7f0bb9af6ed89c3ff207cbda61e40697745c19da86e81"
+      "bytes": 78294,
+      "sha256": "f156a0f4114cf0c90e49708ce89051262badc951304be34e02d34e2f5ca5f263"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -455,8 +455,8 @@
     },
     {
       "path": "backend/mesh_evidence.py",
-      "bytes": 7348,
-      "sha256": "456222cc40fc5cf41083cca94ff3b782aaf724cffd0e210235b116c667229e88"
+      "bytes": 8566,
+      "sha256": "5c48878678dc34549af3001710d6b7b9449eb2129e79911bd0e9f0cdca7dc185"
     },
     {
       "path": "backend/mesh_profiles/gmsh_profiles.json",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_profile.py",
-      "bytes": 17539,
-      "sha256": "1741cf1bb08950ee008f47097b0140c12dc0ec15c6be5df651baf95210db1d14"
+      "bytes": 17747,
+      "sha256": "ddae70ca583c023dbc990bf95e4d2c9f9673ae6c9c692fb731718c19b01b0c5e"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 173068,
-      "sha256": "980bdb0822e5c62fa54e210c7ac0910679cfc9629ac0cd4fae8a38f0478eb93e"
+      "bytes": 173543,
+      "sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -7780,8 +7780,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess.rs",
-      "bytes": 21541,
-      "sha256": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838"
+      "bytes": 26870,
+      "sha256": "dd7753c5e7a48bf50df3717f9020e5ac6197ab4ee0876e6a3860cc7d062b7354"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
@@ -7790,8 +7790,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
-      "bytes": 45894,
-      "sha256": "5aaf206eb015c22ba66de41808b413d69625e6b84b7393608b087f2c82ed43d9"
+      "bytes": 48794,
+      "sha256": "2969e44fa4efe3577610f74f12f24d483ae6817e26550b8126ef73229168b5d8"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
@@ -8187,6 +8187,11 @@
       "path": "tests/test_mesh_build.py",
       "bytes": 3873,
       "sha256": "8a358d109a4d6e553b2def6b435c70dbf6e395cba595708c3f7e927498aa96f2"
+    },
+    {
+      "path": "tests/test_mesh_evidence_shared_text.py",
+      "bytes": 5281,
+      "sha256": "6312558d4a8e9494dbd12892055f27c10fce0ffdebe0ed80f5f15cc72b4395a9"
     },
     {
       "path": "tests/test_mesh_signature_tooth_shoe.py",
