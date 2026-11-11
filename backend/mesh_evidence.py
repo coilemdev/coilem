@@ -55,26 +55,53 @@ def _normalized_canonical_json(payload: Any) -> str:
     return encoded
 
 
+# Texts shorter than this are cheaper to write again than to look up.
+_CACHED_TEXT_MIN_CHARS = 2048
+
+
+def _canonical_text(payload: Any, cache: CanonicalTextCache) -> str:
+    """The normalized canonical JSON of ``payload``, built from cached pieces.
+
+    A dict with string keys is the sorted ``"key":value`` texts of its values
+    joined by commas inside braces, which is what ``json.dumps`` writes for
+    the whole dict; each value's text is taken from ``cache`` when that very
+    object was serialized before. A mesh artifact and the meshes derived
+    from it (its no-load copy, its rotations to congruent positions) share
+    most of their arrays as the same objects, so most of a derived mesh's
+    megabytes of text are written once.
+    """
+
+    cached = cache.get(id(payload))
+    if cached is not None and cached[0] is payload:
+        return cached[1]
+    if isinstance(payload, dict) and payload and all(isinstance(key, str) for key in payload):
+        text = "{" + ",".join(
+            json.dumps(key, ensure_ascii=False) + ":" + _canonical_text(payload[key], cache)
+            for key in sorted(payload)
+        ) + "}"
+    else:
+        text = _normalized_canonical_json(payload)
+    if isinstance(payload, (dict, list)) and len(text) >= _CACHED_TEXT_MIN_CHARS:
+        cache[id(payload)] = (payload, text)
+    return text
+
+
 def _sha256_json(payload: Any, cache: CanonicalTextCache | None = None) -> str:
     """Hash the normalized canonical JSON of ``payload``.
 
-    With ``cache``, a dict with string keys is hashed from its values' texts,
-    which are reused for values (by identity) already serialized in this
-    cache. The bytes are those of the whole-payload text: sorted
-    ``"key":value`` pieces joined by commas inside braces.
+    With ``cache``, the text is assembled from pieces already serialized in
+    this cache (see ``_canonical_text``). The bytes hashed are those of the
+    whole-payload text either way.
     """
 
     if cache is None or not isinstance(payload, dict) or not all(isinstance(key, str) for key in payload):
         return hashlib.sha256(_normalized_canonical_json(payload).encode("utf-8")).hexdigest()
+    whole = cache.get(id(payload))
+    if whole is not None and whole[0] is payload:
+        return hashlib.sha256(whole[1].encode("utf-8")).hexdigest()
     digest = hashlib.sha256(b"{")
     for index, key in enumerate(sorted(payload)):
-        value = payload[key]
-        cached = cache.get(id(value))
-        if cached is not None and cached[0] is value:
-            text = cached[1]
-        else:
-            text = _normalized_canonical_json(value)
-            cache[id(value)] = (value, text)
+        text = _canonical_text(payload[key], cache)
         if index:
             digest.update(b",")
         digest.update(json.dumps(key, ensure_ascii=False).encode("utf-8"))
@@ -169,7 +196,7 @@ def build_solve_mesh_evidence(
         "contract_complete": contract_complete,
         "artifact_sha256": _sha256_json(solve_mesh_artifact, canonical_cache),
         "geometry_sha256": geometry_sha256 or _sha256_json(geometry_payload, canonical_cache),
-        "physics_contract_sha256": _sha256_json(physics_contract),
+        "physics_contract_sha256": _sha256_json(physics_contract, canonical_cache),
         "region_inventory_sha256": _sha256_json(region_inventory),
         "source_inventory_sha256": _sha256_json(source_inventory),
         "material_inventory_sha256": _sha256_json(material_inventory),
