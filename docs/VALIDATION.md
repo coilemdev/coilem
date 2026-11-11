@@ -331,7 +331,7 @@ are unchanged. `tests/test_qualification.py` checks each scope boundary.
 
 | Output | Status now | Gate that could qualify it | Gate result |
 | --- | --- | --- | --- |
-| Loaded λd and λq | Qualified in scope: a qualified single-layer concentrated SPM or flat-buried IPM design, sinusoidal current, γ 0°–60°; experimental elsewhere | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows and macOS `88aae101` |
+| Loaded λd and λq | Qualified in scope: a qualified inner-rotor single-layer concentrated SPM or flat-buried IPM design, sinusoidal current, γ 0°–60°; experimental elsewhere | Protocol 1.6.0 `lambda_d`, `lambda_q` and `reference_dq_torque`, 12 points on two fixtures | All 36 added gates PASS on Windows and macOS `88aae101` |
 | Apparent Ld and Lq, saliency, characteristic current | Experimental | None; see below | — |
 | Flux-linkage map | Experimental | None beyond the 12 d/q points | — |
 | Torque–speed envelope | Experimental | None; hardware correlation deferred until after 0.5.0 | Deferred by the owner on October 30, 2026 |
@@ -341,7 +341,7 @@ are unchanged. `tests/test_qualification.py` checks each scope boundary.
 | Copper loss | Same as phase resistance | Follows phase resistance | — |
 | Iron loss, M350-50A and M400-50A | Experimental | None planned for 0.5.0 | — |
 | Efficiency at the operating point | Experimental | None; it uses the iron loss | — |
-| Magnet temperature derating | Qualified in scope: a qualified design from 20 °C to 100 °C; experimental elsewhere | Protocol 1.6.0 temperature cases, four cases on two fixtures | All four cases PASS on Windows and macOS `88aae101` |
+| Magnet temperature derating | Qualified in scope: a qualified inner-rotor design from 20 °C to 100 °C; experimental elsewhere | Protocol 1.6.0 temperature cases, four cases on two fixtures | All four cases PASS on Windows and macOS `88aae101` |
 
 ### Loaded d/q flux linkage, Ld and Lq
 
@@ -352,7 +352,7 @@ current angle independently. A run without a no-load sweep places it from the
 commanded angle instead, and the record says so in `d_axis_source`. Apparent
 Ld = (λd − λpm) / id and Lq = λq / iq are secant values at the solved point.
 
-- **Qualified:** λd and λq for a design that is itself qualified, with a
+- **Qualified:** λd and λq for an inner-rotor design that is itself qualified, with a
   single-layer concentrated winding on an SPM or flat-buried IPM rotor, under
   sinusoidal current at γ from 0° to 60°. Protocol 1.6.0 compares λd and λq with FEMM at
   12 points: the 8p/12s concentrated SPM at 20 and 40 A peak and the FSAE flat
@@ -381,7 +381,7 @@ Ld = (λd − λpm) / id and Lq = λq / iq are secant values at the solved point
   of its magnitude, which can leave the apparent Ld and Lq, and the saliency and
   characteristic current from them, tens of percent uncertain."
 - **Experimental elsewhere because:** "Outside the loaded d/q gates of benchmark
-  protocol 1.6.0, which cover qualified SPM and flat-buried IPM designs with a
+  protocol 1.6.0, which cover qualified inner-rotor SPM and flat-buried IPM designs with a
   single-layer concentrated winding under sinusoidal current, at current angles
   from 0 to 60 degrees."
 - **Consistency check, not a reference:** Torque–λdq agreement compares the
@@ -559,7 +559,7 @@ is derated and recorded, but the solve's straight recoil line does not use it.
 Above a grade's maximum operating temperature the run carries a warning. A
 temperature is refused for magnets without cited coefficients.
 
-- **Qualified:** the derating for a design that is itself qualified, from the
+- **Qualified:** the derating for an inner-rotor design that is itself qualified, from the
   catalogue's 20 °C to 100 °C. Protocol 1.6.0 adds the 8p/12s concentrated SPM
   and the FSAE flat IPM with N42 magnets at 60 °C and 100 °C (Br 1.25188 T and
   1.18876 T). They carry the usual A/B gates: mean torque within 8% (YELLOW
@@ -575,7 +575,7 @@ temperature is refused for magnets without cited coefficients.
   irreversible demagnetisation is not modelled."
 - **Experimental elsewhere because:** "Br and HcJ derated linearly with the
   grade's cited reversible coefficients; the temperature gates of benchmark
-  protocol 1.6.0 cover qualified designs from 20 to 100 deg C only."
+  protocol 1.6.0 cover qualified inner-rotor designs from 20 to 100 deg C only."
 - **Not modelled:** irreversible demagnetisation, temperature dependence beyond
   the linear coefficient, a temperature that varies within a magnet, and magnet
   heating. The steel and winding temperatures are set separately.
@@ -598,8 +598,8 @@ efficiency leaves these losses out, so none is a measured efficiency.
 ## Cogging torque
 
 Cogging torque is on `main` for 0.5.1
-([public issue 185](https://github.com/coilemdev/coilem/issues/185)). **It is
-experimental everywhere: no benchmark protocol has a cogging gate yet.**
+([public issue 185](https://github.com/coilemdev/coilem/issues/185)). From 0.5.7
+it is qualified inside the Phase E scope below and experimental elsewhere.
 
 - **What is solved.** With **Cogging torque** on, the backend solves one
   cogging period, 180·gcd(S, P)/S electrical degrees (360/LCM(S, P)
@@ -628,10 +628,11 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   the closing endpoint is missing, or cached reports do not record endpoint
   independence. A zero copied by reuse cannot measure remesh noise.
 - **Status in the app.** Cogging torque is Qualified for a qualified
-  inner-rotor design, the scope the 12 Phase E cases of protocol 1.10.0
-  measured, and Experimental otherwise (including outer rotors, which Phase E
-  does not cover). Both reasons say that the sweep uses per-position meshes
-  with slot-pitch reuse, without a sliding band, so mesh noise sets a floor
+  inner-rotor design, with very-fine mesh required for distributed windings,
+  matching the scope the 12 Phase E cases of protocol 1.10.0 measured. It is
+  Experimental otherwise, including distributed normal/fine requests and outer
+  rotors, which Phase E does not cover. Both reasons say that the sweep uses
+  per-position meshes with slot-pitch reuse, without a sliding band, so mesh noise sets a floor
   under small cogging values. `backend/qualification.py` decides,
   `frontend/src/public/outputStatus.ts` mirrors the wording and
   `tests/test_output_status.py` checks the two match.
@@ -669,6 +670,9 @@ drive on an outer rotor were not measured and stay Experimental.
   registers 10 outer-rotor SPM cases over five motors, from an 18 mm micro
   drone motor to a 100 mm hub-motor class, using Phase A's unchanged gates
   and explicitly reviewed original and hub FEMM 4.2 source cohorts.
+  These torque and Back-EMF checks do not extend the protocol 1.6.0 d/q
+  flux-linkage or magnet-temperature gates; both outputs remain Experimental
+  for outer rotors.
   The SPM outrunner
   14p/12s example shares its frame with Phase F's 2806-class drone motor, but
   has no tooth shoes and runs ideal six-step, which Phase F does not measure.

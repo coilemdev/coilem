@@ -18,6 +18,7 @@ import pytest
 from backend import qualification
 from backend.loss_breakdown import operating_point_losses
 from backend.magnet_temperature import magnet_temperature_record
+from backend.models import MotorConfig
 from backend.models.performance import (
     COGGING_TORQUE_QUALIFIED_REASON,
     COGGING_TORQUE_STATUS_REASON,
@@ -40,6 +41,7 @@ from backend.solve_workspace import _apply_output_statuses
 from tests.test_drive_performance import LIMITS, _map
 from tests.test_loss_breakdown import RAW, _config, _iron, _stored_result
 from tests.test_magnet_temperature import _config as _magnet_config
+from tests.test_rotor_layout import INNER, outer_config
 
 pypdf = pytest.importorskip("pypdf")
 
@@ -234,10 +236,6 @@ def test_the_app_mirrors_the_status_reasons() -> None:
 
 
 def test_cogging_is_qualified_for_a_qualified_inner_rotor_design_only(monkeypatch) -> None:
-    from backend import qualification
-    from backend.models import MotorConfig
-    from tests.test_rotor_layout import INNER, outer_config
-
     monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: True)
     inner = MotorConfig.model_validate(INNER)
     outer = MotorConfig.model_validate(outer_config())
@@ -251,3 +249,51 @@ def test_cogging_is_qualified_for_a_qualified_inner_rotor_design_only(monkeypatc
     _apply_output_statuses(stored, INNER)
     assert stored["summary"]["cogging"]["status"] == "qualified"
     assert stored["summary"]["cogging"]["status_reason"] == COGGING_TORQUE_QUALIFIED_REASON
+
+
+@pytest.mark.parametrize("fixture", sorted(Path("benchmarks/cogging-refined-v1/fixtures").glob("*.json")), ids=lambda path: path.stem)
+@pytest.mark.parametrize("density", [None, "coarse", "normal", "fine", "very_fine"])
+@pytest.mark.parametrize("measured", [True, False], ids=["measured-physics", "qualification-pending"])
+def test_distributed_cogging_requires_the_registered_mesh_and_matching_evidence(monkeypatch, fixture, density, measured) -> None:
+    # #253: the three Phase E distributed cases passed only in the very-fine cohort.
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: measured)
+    config = MotorConfig.model_validate_json(fixture.read_text(encoding="utf-8"))
+    if density is None:
+        config.solve_params = None
+    else:
+        config.solve_params.mesh_density = density
+    assert qualification.classify_qualification(config)["status"] == ("qualified" if measured else "experimental")
+    expected = (
+        ("qualified", COGGING_TORQUE_QUALIFIED_REASON)
+        if measured and density == "very_fine" else ("experimental", COGGING_TORQUE_STATUS_REASON)
+    )
+    assert qualification.cogging_torque_status(config) == expected
+
+    stored = {"summary": {"cogging": {"status": "qualified", "status_reason": "Old claim"}}}
+    _apply_output_statuses(stored, config.model_dump(mode="json"))
+    assert stored["summary"]["cogging"] == {"status": expected[0], "status_reason": expected[1]}
+
+
+@pytest.mark.parametrize("layers", [1, 2])
+@pytest.mark.parametrize(("angle", "temperature"), [(0.0, 60.0), (30.0, 100.0), (60.0, 20.0)])
+@pytest.mark.parametrize("measured", [True, False], ids=["measured-physics", "qualification-pending"])
+def test_outer_rotor_design_rating_does_not_qualify_dq_or_temperature(monkeypatch, layers, angle, temperature, measured) -> None:
+    # #254: Phase F measured torque and Back-EMF, without extending the protocol 1.6.0 output gates.
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: measured)
+    config = MotorConfig.model_validate(outer_config())
+    config.winding.layers = layers
+    config.solve_params.current_angle_deg = angle
+    config.solve_params.magnet_temperature_C = temperature
+    assert qualification.classify_qualification(config)["status"] == ("qualified" if measured else "experimental")
+    assert qualification.dq_flux_linkage_status(config) == ("experimental", DQ_FLUX_LINKAGE_STATUS_REASON)
+    assert qualification.magnet_temperature_status(config) == ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)
+
+    stored = {
+        "summary": {"dq_flux_linkage": {"status": "qualified", "status_reason": "Old claim"}},
+        "solve_metadata": {"magnet_temperature_status": "qualified", "magnet_temperature_status_reason": "Old claim"},
+    }
+    _apply_output_statuses(stored, config.model_dump(mode="json"))
+    assert stored["summary"]["dq_flux_linkage"] == {"status": "experimental", "status_reason": DQ_FLUX_LINKAGE_STATUS_REASON}
+    assert stored["solve_metadata"] == {
+        "magnet_temperature_status": "experimental", "magnet_temperature_status_reason": MAGNET_TEMPERATURE_STATUS_REASON,
+    }
