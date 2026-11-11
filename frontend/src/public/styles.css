@@ -1640,6 +1640,40 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-diagnostics .public-solver-convergence { margin: 14px 0 0; }
 .public-solver-convergence > header h3 { margin: 0; font-size: 15px; color: var(--text-primary); }
 .public-solver-convergence h4 { margin: 14px 0 8px; font-size: 12px; color: var(--text-secondary); }
+.public-solve-time { max-width: 1080px; margin: 14px 0 0; padding: 18px; border: 1px solid var(--border-subtle); border-radius: 12px; background: var(--bg-surface-1); }
+.public-solve-time > header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px; }
+.public-solve-time > header h3 { margin: 0; font-size: 15px; color: var(--text-primary); }
+.public-solve-time h4 { margin: 16px 0 4px; font-size: 12px; color: var(--text-secondary); }
+.public-solve-time-total { font: 600 14px var(--font-mono); color: var(--text-primary); }
+.public-solve-time-note { margin: 6px 0 0; max-width: 80ch; font-size: 11px; line-height: 1.5; color: var(--text-muted); }
+.public-solve-time-bar { display: flex; gap: 2px; height: 12px; margin: 14px 0 0; border-radius: 6px; overflow: hidden; background: var(--bg-surface-2, rgba(255, 255, 255, .05)); }
+.public-solve-time-bar > span { min-width: 2px; }
+.public-solve-time-bar .is-meshing, .public-solve-time-swatch.is-meshing { background: #f59e0b; }
+.public-solve-time-bar .is-field_solve, .public-solve-time-swatch.is-field_solve { background: #38bdf8; }
+.public-solve-time-bar .is-packaging, .public-solve-time-swatch.is-packaging { background: #a78bfa; }
+.public-solve-time-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 20px; margin: 14px 0 0; }
+.public-solve-time-steps > div { min-width: 0; }
+.public-solve-time-steps dt { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+.public-solve-time-swatch { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.public-solve-time-steps dd { margin: 5px 0 0; font: 600 14px var(--font-mono); }
+.public-solve-time-steps dd small { margin-left: 8px; font: 400 11px var(--font-mono); color: var(--text-muted); }
+.public-solve-time-steps p { margin: 4px 0 0; font-size: 11px; line-height: 1.5; color: var(--text-muted); }
+.public-solve-time-facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 14px 0 0; font-size: 12px; }
+.public-solve-time-facts > div { display: flex; gap: 6px; }
+.public-solve-time-facts dt { color: var(--text-muted); }
+.public-solve-time-facts dd { margin: 0; color: var(--text-primary); }
+.public-solve-time-details { margin: 16px 0 0; }
+.public-solve-time-details > summary { cursor: pointer; font-size: 12px; color: var(--text-secondary); }
+.public-solve-time-scroll { overflow-x: auto; }
+.public-solve-time table { width: 100%; min-width: 520px; margin: 8px 0 0; border-collapse: collapse; font-size: 12px; }
+.public-solve-time thead th { padding: 4px 8px; text-align: right; font-weight: 500; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border-subtle); white-space: nowrap; }
+.public-solve-time thead th:first-child { text-align: left; }
+.public-solve-time tbody th { position: relative; padding: 5px 8px; text-align: left; font-weight: 500; color: var(--text-primary); }
+.public-solve-time tbody th > span:last-child { position: relative; }
+.public-solve-time tbody tr.is-part th { padding-left: 24px; font-weight: 400; color: var(--text-secondary); }
+.public-solve-time-weight { position: absolute; inset: 3px auto 3px 0; border-radius: 3px; background: rgba(148, 163, 184, .14); }
+.public-solve-time tbody td { padding: 5px 8px; text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--text-primary); }
+.public-solve-time tbody tr + tr > * { border-top: 1px solid var(--border-subtle); }
 .public-convergence-verdict { margin: 12px 0 0; max-width: 80ch; font-size: 13px; line-height: 1.6; color: var(--text-primary); }
 .public-convergence-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 20px; margin: 16px 0 0; }
 .public-convergence-facts > div { min-width: 0; }

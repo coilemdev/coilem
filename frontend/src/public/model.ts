@@ -1,6 +1,7 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
 import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
+import type { SolveTimeBreakdown } from './solveTime';
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
@@ -542,6 +543,8 @@ export interface SolveResult {
     solver_name: string;
     mesh_element_count: number;
     rotor_positions: number;
+    /** Where the solve's time went; absent on runs solved before it was recorded. */
+    time_breakdown?: SolveTimeBreakdown | null;
     /** Hot-magnet runs (#137): the temperature and the derated Br and HcJ the solve used. */
     magnet_temperature_C?: number | null;
     magnet_remanence_T?: number | null;

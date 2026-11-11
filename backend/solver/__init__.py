@@ -19,7 +19,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Literal, Protocol, cast, overload
 
-from backend import fast_json, field_artifacts
+from backend import fast_json, field_artifacts, solve_profile
 from backend.cogging import cogging_record
 from backend.dq_flux_linkage import dq_flux_linkage_from_sweep
 from backend.field_lines import build_field_line_plot
@@ -860,15 +860,19 @@ def _prepare_gmsh_mesh_group_in_subprocess(
     """
 
     check_mesh_worker_cancelled()
+    worker_started = time.perf_counter()
     config = MotorConfig.model_validate(config_payload)
     started = time.perf_counter()
     if cached_artifact is None:
-        artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
+        with solve_profile.span("mesh worker: build base mesh"):
+            artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
     else:
-        artifact = _rebake_gmsh_artifact_for_config(cached_artifact, config)
+        with solve_profile.span("mesh worker: re-bake cached mesh"):
+            artifact = _rebake_gmsh_artifact_for_config(cached_artifact, config)
         generation_time_ms = int((time.perf_counter() - started) * 1000.0)
     check_mesh_worker_cancelled()
-    evidence = _solve_mesh_evidence_pair(artifact, loaded=lanes[0], noload=lanes[1])
+    with solve_profile.span("mesh worker: evidence hashes"):
+        evidence = _solve_mesh_evidence_pair(artifact, loaded=lanes[0], noload=lanes[1])
     derived_meshes: list[tuple[dict[str, Any], int, tuple[dict[str, Any] | None, dict[str, Any] | None]]] = []
     for target_rotor_angle_mech_deg, loaded, noload in derived:
         check_mesh_worker_cancelled()
@@ -879,9 +883,13 @@ def _prepare_gmsh_mesh_group_in_subprocess(
             float(target_rotor_angle_mech_deg),
         )
         rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
-        derived_meshes.append(
-            (derived_artifact, rotation_ms, _solve_mesh_evidence_pair(derived_artifact, loaded=loaded, noload=noload))
-        )
+        solve_profile.record("mesh worker: rotate to a matching position", rotation_ms / 1000.0)
+        with solve_profile.span("mesh worker: evidence hashes"):
+            derived_evidence = _solve_mesh_evidence_pair(derived_artifact, loaded=loaded, noload=noload)
+        derived_meshes.append((derived_artifact, rotation_ms, derived_evidence))
+    solve_profile.record(
+        "mesh worker: one group, total", time.perf_counter() - worker_started, derived=len(derived_meshes)
+    )
     return {
         "artifact": artifact,
         "generation_time_ms": generation_time_ms,
@@ -1128,11 +1136,14 @@ def _build_field_line_frame_from_sources_in_subprocess(
     include_live_frame: bool,
     capture_stator_field: bool = False,
 ):
+    with solve_profile.span("frame worker: read solver reports"):
+        loaded_report = _read_field_frame_report(loaded_source)
+        noload_report = _read_field_frame_report(noload_source) if noload_source is not None else None
     return _build_field_line_frame_in_subprocess(
         idx,
-        _read_field_frame_report(loaded_source),
+        loaded_report,
         angle_elec_deg,
-        _read_field_frame_report(noload_source) if noload_source is not None else None,
+        noload_report,
         solve_cache_dir_text,
         include_live_frame,
         capture_stator_field,
@@ -1175,15 +1186,17 @@ def _build_field_line_frame_in_subprocess(
     StatorFieldSample | None,
 ]:
     check_process_worker_cancelled()
-    frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
+    with solve_profile.span("frame worker: build frame from reports"):
+        frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
     if frame is None:
         return idx, None, None, None, None
 
-    attached = _attach_field_frame_artifacts(
-        [frame],
-        solve_cache_dir_text,
-        start_idx=idx,
-    )
+    with solve_profile.span("frame worker: encode and write frame"):
+        attached = _attach_field_frame_artifacts(
+            [frame],
+            solve_cache_dir_text,
+            start_idx=idx,
+        )
     if attached:
         frame_payload = attached[0].model_dump(mode="json")
     else:
@@ -1193,10 +1206,12 @@ def _build_field_line_frame_in_subprocess(
     # it afterwards re-read and re-parsed all ~11 MB frames serially (~6.7 s
     # for a 48-position IPM run).
     steel_accumulator = new_steel_flux_density_rms_accumulator()
-    update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
-    # The stator part of the field is what iron loss needs from each position,
-    # taken here for the same reason.
-    stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
+    with solve_profile.span("frame worker: flux statistics and iron-loss sample"):
+        update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
+        # The stator part of the field is what iron loss needs from each position,
+        # taken here for the same reason.
+        stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
+    solve_profile.mark("frame finished")
     check_process_worker_cancelled()
     return idx, _slim_result_field_frame(frame_payload), live_frame, steel_accumulator, stator_sample
 
@@ -1518,6 +1533,7 @@ def _solve_with_per_angle_producer_meshes(
             if solve_config is None:
                 raise ValueError("No-load solve job was queued without a no-load config")
             solve_started = time.perf_counter()
+            solve_profile.mark("solve started")
             artifact_prefix = pipeline_artifact_prefix(lane, job)
             report = run_magneto2d_report(
                 solve_config.model_copy(deep=True),
@@ -1527,6 +1543,8 @@ def _solve_with_per_angle_producer_meshes(
                 persist_artifacts_dir=raw_artifact_dir,
                 artifact_prefix=artifact_prefix,
             )
+            solve_profile.record(f"solve ({lane}): one position, total", time.perf_counter() - solve_started)
+            solve_profile.mark("solve finished")
             return lane, job, report, (time.perf_counter() - solve_started) * 1000.0
 
         def solve_lanes(job: dict[str, Any]) -> tuple[bool, bool]:
@@ -1812,21 +1830,29 @@ def _solve_with_per_angle_producer_meshes(
                 # emit_mesh_ready_tick); submission-time ticks all fire
                 # in the same instant with identical counts and read as
                 # a frozen bar in the UI.
+                groups_submitted = time.perf_counter()
                 for job in producer_jobs:
                     if check_cancelled is not None:
                         check_cancelled()
                     cached_artifact = cached[int(job["angle_key"])] if cached is not None else None
                     mesh_futures[prepare_mesh_group(mesh_pool, job, cached_artifact)] = job
+                solve_profile.mark(f"mesh groups submitted ({len(mesh_futures)} groups, {producer_workers} workers)")
                 for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
                     job = mesh_futures[mesh_future]
-                    prepared = mesh_future.result()
-                    handle_group_mesh_ready(
-                        solve_pool,
-                        job,
-                        prepared["artifact"],
-                        prepared["generation_time_ms"],
-                        prepared=prepared,
-                    )
+                    with solve_profile.span("main: receive mesh group from worker"):
+                        prepared = mesh_future.result()
+                    # Submission to arrival: waiting for a free worker, the
+                    # worker's start-up, its work and the transfer back.
+                    solve_profile.record("mesh group: submitted to received", time.perf_counter() - groups_submitted)
+                    solve_profile.mark("mesh group ready")
+                    with solve_profile.span("main: hand mesh group to solves"):
+                        handle_group_mesh_ready(
+                            solve_pool,
+                            job,
+                            prepared["artifact"],
+                            prepared["generation_time_ms"],
+                            prepared=prepared,
+                        )
 
         frame_workers = _field_preview_worker_count(len(angles_elec_deg), solve_workers)
         overlap_frames = not compact_qa_report and frame_workers > 1 and len(angles_elec_deg) > 1
@@ -3661,6 +3687,24 @@ class Magneto2DSolver(Solver):
         on_progress=None,
         solve_mesh_key: str | None = None,
     ) -> SolveResult:
+        # The solve records where its time goes (backend/solve_profile.py)
+        # and stores the breakdown with its result.
+        solve_profile.begin()
+        result: SolveResult | None = None
+        try:
+            result = self._solve(config, on_progress, solve_mesh_key)
+        finally:
+            cache_dir = getattr(getattr(result, "solve_metadata", None), "solve_cache_dir", None)
+            profile = solve_profile.finish(Path(cache_dir) if cache_dir else None)
+        result.solve_metadata.time_breakdown = solve_profile.breakdown(profile)
+        return result
+
+    def _solve(
+        self,
+        config: MotorConfig,
+        on_progress=None,
+        solve_mesh_key: str | None = None,
+    ) -> SolveResult:
         solve_started = time.perf_counter()
         self._raise_if_cancelled()
         original_progress = on_progress
@@ -3686,16 +3730,17 @@ class Magneto2DSolver(Solver):
         ) -> SolveResult:
             self._raise_if_cancelled()
             result_start = time.perf_counter()
-            result = self.build_result_from_reports(
-                config,
-                sweep_report,
-                single_report,
-                solve_cache_dir=_magneto2d_summary_cache_dir(solve_cache_dir),
-                pipeline_stage=pipeline_stage,
-                solve_mesh_artifact=solve_mesh_artifact,
-                solve_mesh_key=solve_mesh_key,
-                launch_surface=self._launch_surface,
-            )
+            with solve_profile.span("result: assemble from reports"):
+                result = self.build_result_from_reports(
+                    config,
+                    sweep_report,
+                    single_report,
+                    solve_cache_dir=_magneto2d_summary_cache_dir(solve_cache_dir),
+                    pipeline_stage=pipeline_stage,
+                    solve_mesh_artifact=solve_mesh_artifact,
+                    solve_mesh_key=solve_mesh_key,
+                    launch_surface=self._launch_surface,
+                )
             # The reports' times add up every position's solver process, which
             # run in parallel; a 4-minute run summed to over 20 minutes. Report
             # this call's wall-clock time and keep the sum as solver CPU time.
