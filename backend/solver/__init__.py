@@ -1336,6 +1336,19 @@ def _solve_with_per_angle_producer_meshes(
             noload_mesh_evidence_by_key[_per_angle_grid_key(angle)]
             for angle in cogging_angles_elec_deg
         ]
+        # A cogging-only run has no loaded sweep and no Back-EMF grid, so its
+        # one loaded position was the only field frame and the Field view had
+        # nothing to play (#241). Its cogging solves are PM-only fields at
+        # every position: store those as the run's frames.
+        cogging_only = not (opts.torque_sweep or opts.back_emf or opts.thd_analysis or opts.losses_efficiency)
+        if cogging_only and len(angles_elec_deg) < 2:
+            cogging_frames = _field_line_frames_from_reports(
+                [no_load_reports_by_key[_per_angle_grid_key(angle)] for angle in cogging_angles_elec_deg],
+                cogging_angles_elec_deg,
+                include_noload_plot=False,
+            )
+            if len(cogging_frames) == len(cogging_angles_elec_deg):
+                sweep_report["field_line_frames"] = cogging_frames
 
     loaded_reports: list[dict[str, Any]] = []
     no_load_reports_by_key: dict[int, dict[str, Any]] = {}
