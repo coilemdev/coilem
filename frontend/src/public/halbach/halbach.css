@@ -1504,13 +1504,16 @@
 }
 .halbach-dock-strip {
   display: flex;
+  /* When the tabs and the zoom group do not fit on one row, the zoom group
+     drops to a row of its own instead of being clipped by the stage. */
+  flex-wrap: wrap;
   align-items: stretch;
-  gap: 10px;
+  gap: 0 10px;
   min-height: 44px;
   padding: 0 16px;
   border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, .06));
 }
-.halbach-dock-tabs { display: flex; align-self: stretch; gap: 2px; }
+.halbach-dock-tabs { display: flex; flex-wrap: wrap; align-self: stretch; gap: 2px; min-width: 0; }
 .halbach-dock-tabs button {
   position: relative;
   min-height: 44px;
@@ -1538,7 +1541,7 @@
   content: '';
 }
 .halbach-dock-tabs button:disabled { color: var(--text-disabled, #4b5563); cursor: not-allowed; }
-.halbach-dock-end { display: flex; flex: 0 0 auto; align-items: center; gap: 10px; margin-left: auto; }
+.halbach-dock-end { display: flex; flex: 0 0 auto; align-items: center; gap: 10px; min-height: 44px; margin-left: auto; }
 .halbach-dock-status {
   display: inline-flex;
   align-items: center;
@@ -1632,7 +1635,17 @@ button.halbach-dock-toggle[aria-pressed="true"]::before { border-color: var(--te
 .halbach-app .halbach-pole-legend { top: 14px; left: 14px; font-size: 11px; }
 .halbach-app .halbach-field-legend { top: 14px; right: 14px; }
 @container (max-width: 760px) {
+  .halbach-dock-strip { padding: 0 10px; }
+  .halbach-dock-controls { padding: 10px; }
   .halbach-dock-status { display: none; }
   .halbach-dock-tabs button { padding: 0 9px; font-size: 12px; }
   .halbach-dock-label { display: none; }
+}
+/* Stacked layout: the panels take their content's height and the page
+   scrolls, so the parameter list is not squeezed to nothing between the
+   panel's header and footer. */
+@media (max-width: 880px) {
+  .halbach-app.public-coilem-shell { height: auto; min-height: 100vh; }
+  .halbach-app .halbach-config-panel { overflow: visible; }
+  .halbach-panel-scroll { flex: 0 0 auto; overflow: visible; }
 }

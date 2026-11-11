@@ -93,7 +93,7 @@ def _review_errors(root, bundle_path, reference, suite, suite_sha):
     return []
 
 
-def _prius_errors(root, prius_path, prius_sources, candidate, suite_identity=None):
+def _prius_errors(root, prius_path, prius_sources, candidate, suite_identity=None, pins=None):
     errors = []
     prius = _data(root, prius_path)
     # Bind the actual grader to the snapshot captured before fields. The
@@ -125,6 +125,14 @@ def _prius_errors(root, prius_path, prius_sources, candidate, suite_identity=Non
     if suite_identity is not None and (prius.get("platform") != suite_identity["platform"]
                                       or prius.get("binary_sha256") != suite_identity["binary_sha256"]):
         errors.append("Prius report does not match the suite platform and binary")
+    # Gmsh and meshio can change without the Magneto2D binary changing, so the
+    # Prius collection must name the pinned mesher too, and the same one as
+    # the suite it is registered beside.
+    measured = prius.get("dependencies") or {}
+    for name, versions in (pins or {}).items():
+        if measured.get(name) not in versions or (
+                suite_identity is not None and measured.get(name) != suite_identity.get("dependencies", {}).get(name)):
+            errors.append(f"Prius report dependency mismatch: {name}")
     return errors
 
 
@@ -239,13 +247,13 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
                     errors.append(f"{key} platform record has no Prius report")
                     continue
                 errors.extend(f"{key}: {error}" for error in _prius_errors(
-                    root, record["prius_report"], prius_sources, candidate, measured_identity))
+                    root, record["prius_report"], prius_sources, candidate, measured_identity, pins))
         else:
             prius_path = primary.get("prius_report") or _optional_constant(
                 root / "backend/qualification.py", "PRIUS_QUALIFICATION_REPORT", _optional_constant(
                     root / "backend/qualification.py", "LEGACY_PRIUS_QUALIFICATION_REPORT",
                     "docs/benchmarks/pyleecan-prius-v1/app-results.json"))
-            errors.extend(_prius_errors(root, prius_path, prius_sources, candidate))
+            errors.extend(_prius_errors(root, prius_path, prius_sources, candidate, pins=pins))
     except (OSError, ValueError, KeyError, TypeError) as exc:
         errors.append(f"qualification evidence unavailable or invalid: {exc}")
     return errors
