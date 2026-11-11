@@ -1,3 +1,70 @@
+# coilEM 0.5.7 Developer Preview
+
+Prepared November 11, 2026. coilEM 0.5.7 bundles Magneto2D 0.5.0 and the
+combined [protocol 1.10.0 A–F benchmark](benchmarks/af-v1.10/README.md).
+The current [Windows](benchmarks/records/windows-x86_64.json) and
+[macOS](benchmarks/records/macos-arm64.json) records retain measured candidate
+`4b41f837f3d89d4fbc836be54ecafff4729491c0`: 68 supported cases and all 468
+registered gates pass on each platform, with the planned unsupported Prius
+suite row retained. The separate complete Prius collections pass all ten
+software checks on both platforms. The application version changes without
+changing measured physics; field commits and historical evidence are not relabeled.
+
+- **A–F in the normal benchmark.** `coilem benchmark` includes cogging and
+  outer-rotor cases alongside SPM, IPM, distributed winding and six-step
+  excitation. The 69-case selection runs 75 jobs against 68 frozen reference
+  records; routine native comparisons need no FEMM installation. The
+  repository-owned reference adapter adds batching, per-position resume and
+  more reliable progress reporting for reference collection.
+- **Qualification stays within the measured scope.** Sinusoidal concentrated
+  outer-rotor designs with one or two winding layers can be Qualified;
+  distributed and ideal six-step outer-rotor designs remain Experimental.
+  Cogging qualification covers qualified inner-rotor designs and requires the
+  registered very-fine mesh for distributed windings. Outer-rotor d/q flux
+  linkage and magnet-temperature outputs remain Experimental. Changed or
+  unverifiable physics still invalidate historical qualification labels.
+- **More reliable meshing and cancellation.** Gmsh's runtime owner survives
+  short-lived meshing threads, startup failures propagate and can be retried,
+  and Windows solver workers use per-pool cancellation markers. Benchmark and
+  release checks bind the measured Gmsh and meshio versions, including both
+  separate Prius reports. Custom B–H steels honor the linear permeability override.
+- **Halbach workflows and exports.** Cylindrical and linear arrays use the
+  motor workspace's Design, Solve and Results layout. Narrow screens retain
+  the parameter list and zoom controls, invalid values leave the workspace
+  usable, and linear-array results gain exports.
+- **Cogging playback and result comparisons.** A cogging-only run stores its
+  existing no-current positions as field frames, so the Field view can play
+  the sweep. Compare preserves the precision of small torque values and the
+  correct cogging metrics.
+- **Design views and tutorials.** Refreshed landing, 3D and canvas controls,
+  combinable field layers and a consistent layout across the ten lessons
+  improve the workflow. QA fixes preserve tutorial completion and sequence
+  state across reloads and improve Design and Solve behavior.
+
+These are software parity and workflow checks. Hardware accuracy, 3D end
+effects and the other Experimental performance outputs remain outside the
+qualified scope; see [Validation](docs/VALIDATION.md).
+
+## Reproduce this record
+
+Install coilEM 0.5.7 after publication, then run:
+
+```sh
+coilem benchmark --list
+coilem benchmark --quick --out benchmark-output/057-quick
+coilem benchmark --phase E --phase F --out benchmark-output/057-ef
+coilem benchmark --out benchmark-output/057-af
+coilem benchmark --resume --out benchmark-output/057-af
+```
+
+The complete-grid requests, frozen reference components and numerical gates
+are unchanged. Windows and macOS installations compare their installed
+physics with the records measured at `4b41f837f3d89d4fbc836be54ecafff4729491c0`.
+The [Windows report](benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/benchmark_report.md)
+and [macOS report](benchmarks/qualification-4b41f837f3d8/macos-arm64/report/benchmark_report.md)
+retain the full measurements; the separate Prius evidence is linked by each
+platform record. A Linux replay is not a Linux numerical qualification.
+
 # coilEM 0.5.6 Developer Preview — release candidate
 
 Prepared November 9, 2026. This candidate identifies as coilEM 0.5.6 with

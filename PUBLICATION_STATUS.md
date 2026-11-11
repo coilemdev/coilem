@@ -1,5 +1,32 @@
 # Release status
 
+Prepared November 11, 2026: **coilEM 0.5.7 Developer Preview**, with
+**Magneto2D 0.5.0**. The 0.5.7 release branch is integrated into `main` by
+[PR #250](https://github.com/coilemdev/coilem/pull/250).
+
+## 0.5.7 qualification and publication
+
+The formal release qualification gate passes for the current application
+physics. The [Windows](benchmarks/records/windows-x86_64.json) and
+[macOS](benchmarks/records/macos-arm64.json) records bind measured candidate
+`4b41f837f3d89d4fbc836be54ecafff4729491c0`, protocol 1.10.0's full A–F
+selection, 68 supported cases and all 468 registered gates per platform. The
+planned unsupported Prius suite row is retained; the separate 17-job Prius
+collection passes all ten software checks on each platform.
+
+The version bump and release notes change no measured physics and do not
+relabel the frozen field candidate. Qualification labels retain their mesh,
+rotor-layout and output restrictions; see [Validation](docs/VALIDATION.md).
+
+Main CI and the release-candidate wheel checks passed before this version
+bump. Pushing `v0.5.7` starts fresh four-platform wheel builds and installed
+acceptance checks. PyPI upload is gated by the workflow's `pypi` environment;
+successful PyPI install checks then attach the wheels to a draft GitHub release.
+This preparation does not claim that the package or GitHub release is already
+published. Follow [the release workflow](docs/RELEASING.md#publishing-a-release).
+
+## Historical 0.5.6 preparation record
+
 Prepared November 9, 2026: **coilEM 0.5.6 Developer Preview candidate**, with
 **Magneto2D 0.5.0**. PR #229's two-layer solution reuse is integrated into
 `release/v0.5.6`. The application version is bumped before the final run so
