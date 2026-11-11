@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 174329,
-      "sha256": "2ce73d2b8d692465a6d8df275702df06a71cf90e43ce89393e87615abfd8ace1"
+      "bytes": 174929,
+      "sha256": "0d2bb0b9ef10929b6910ce3e95d33202d3d7fb0d1e827426b1abdb8df17694a8"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7005,8 +7005,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76400,
-      "sha256": "3c12f114ada9f023fe34cb41cab5ec5cf6824deb121cbd1eef41cb003bc7a0ae"
+      "bytes": 76432,
+      "sha256": "adddb0fb249daf4a58df231ec2668ed6c52c7e51019178cc420767c481368561"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7330,8 +7330,8 @@
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
-      "bytes": 31184,
-      "sha256": "042c341fb4ba44811f74db90afd35ed3b20edd21f329b60c805d841303ff0c83"
+      "bytes": 31550,
+      "sha256": "484be9bd83ca8f7e0efbc9f94bc58ebe11a18450d7f94443fe1cd0472186eded"
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
@@ -7340,13 +7340,13 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "bytes": 56578,
-      "sha256": "d33b1cfea81d5485cda0b5448243f24a66e997423140fb8393abc91427361d1a"
+      "bytes": 57276,
+      "sha256": "898a76936c1761b84e8e835018ed775c411616b9247d39d2c912652683c76d85"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
-      "bytes": 32769,
-      "sha256": "50de4fd5dce2342868267288ac80c3b2d8421d72c257de69b5bfa55e78fa29ca"
+      "bytes": 33135,
+      "sha256": "24263cc64e3fc2a63616f4a089f058938e7132653302c0d8ef63a800e894bc2a"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
@@ -7355,8 +7355,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "bytes": 55886,
-      "sha256": "6400dfaa3115219b80ac82c7818ce742498d18ca512e26e4d63f295775f2e355"
+      "bytes": 56719,
+      "sha256": "ef97da4bc641618444066638dd668f9d3f80cc8c2123b1fc3d1f913ef98881f2"
     },
     {
       "path": "frontend/src/public/halbach/api.ts",
@@ -7370,8 +7370,8 @@
     },
     {
       "path": "frontend/src/public/halbach/halbach.css",
-      "bytes": 39035,
-      "sha256": "f475261f372283564b8113ba5107f160af273377b26c9b850a8153fe64ccf3ec"
+      "bytes": 50957,
+      "sha256": "8f615f39bd1d4db551343d465e4bf811654332a6332d645aed4ba458e6f04c74"
     },
     {
       "path": "frontend/src/public/halbach/poleRendering.ts",

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
   useViewportNavigation,
@@ -33,6 +34,8 @@ interface Halbach2DViewportProps {
   fieldLineDensity?: 'low' | 'medium' | 'high';
   showMagnetization?: boolean;
   showSamplingOverlays?: boolean;
+  /** Where the zoom controls go when the workspace docks them; in the canvas when omitted. */
+  navigationSlot?: HTMLElement | null;
 }
 
 const HEAT_COLORS = ['#142a61', '#1855a7', '#1b8eb7', '#2ab673', '#a7c83a', '#f1c232', '#f58b24', '#dc3d3d'];
@@ -169,6 +172,7 @@ export function Halbach2DViewport({
   fieldLineDensity = 'medium',
   showMagnetization = true,
   showSamplingOverlays = true,
+  navigationSlot,
 }: Halbach2DViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fieldLineCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -714,6 +718,16 @@ export function Halbach2DViewport({
     onSelectSegment(Math.min(config.geometry.segment_count - 1, Math.floor(angle / pitch)));
   };
 
+  const navigationControls = (
+    <ViewportNavigationControls
+      scale={navigation.scale}
+      onZoomIn={navigation.zoomIn}
+      onZoomOut={navigation.zoomOut}
+      onReset={navigation.reset}
+      fitSubject="Halbach array"
+    />
+  );
+
   return (
     <figure
       className={`halbach-viewport halbach-viewport-2d public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
@@ -823,13 +837,9 @@ export function Halbach2DViewport({
           <span><i className="is-south" aria-hidden="true" />blue = S face</span>
         </div>
       )}
-      <ViewportNavigationControls
-        scale={navigation.scale}
-        onZoomIn={navigation.zoomIn}
-        onZoomOut={navigation.zoomOut}
-        onReset={navigation.reset}
-        fitSubject="Halbach array"
-      />
+      {navigationSlot
+        ? createPortal(navigationControls, navigationSlot)
+        : navigationSlot === undefined ? navigationControls : null}
     </figure>
   );
 }
