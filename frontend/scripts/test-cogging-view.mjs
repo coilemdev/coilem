@@ -77,8 +77,7 @@ assert.deepEqual(coggingPeriod(48, 8), { elecDeg: 30, mechDeg: 7.5, order: 48 })
 assert.equal(coggingPeriod(0, 8), null);
 assert.equal(
   coggingPlanNote(12, 8, 24),
-  'Adds a no-current sweep over one cogging period (60° electrical, 15° mechanical), at 24 positions plus the repeated end. '
-    + 'Experimental: no cogging benchmark gate yet.',
+  'Adds a no-current sweep over one cogging period (60° electrical, 15° mechanical), at 24 positions plus the repeated end.',
 );
 assert.doesNotMatch(coggingPlanNote(12, 8), /positions/);
 // Without corner refinement the note says to turn it on.

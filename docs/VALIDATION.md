@@ -627,10 +627,13 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
   End mismatch is unavailable when the endpoints share a mesh or solution,
   the closing endpoint is missing, or cached reports do not record endpoint
   independence. A zero copied by reuse cannot measure remesh noise.
-- **The app's experimental status retains its protocol 1.6.0 wording:** "No cogging gate yet: benchmark protocol 1.6.0
-  has no reference cogging waveform. The sweep uses per-position meshes
-  with slot-pitch reuse, without a sliding band, so mesh noise sets a floor under small cogging
-  values." `frontend/src/public/outputStatus.ts` mirrors it and
+- **Status in the app.** Cogging torque is Qualified for a qualified
+  inner-rotor design, the scope the 12 Phase E cases of protocol 1.10.0
+  measured, and Experimental otherwise (including outer rotors, which Phase E
+  does not cover). Both reasons say that the sweep uses per-position meshes
+  with slot-pitch reuse, without a sliding band, so mesh noise sets a floor
+  under small cogging values. `backend/qualification.py` decides,
+  `frontend/src/public/outputStatus.ts` mirrors the wording and
   `tests/test_output_status.py` checks the two match.
 - **Benchmark scope.** [Protocol 1.10.0](../benchmarks/af-v1.10/README.md)
   registers 12 SPM, flat-buried IPM and distributed-winding cases against
@@ -645,8 +648,10 @@ experimental everywhere: no benchmark protocol has a cogging gate yet.**
 ## Outer-rotor motors
 
 Outer-rotor (outrunner) SPM motors are new in 0.5.5
-([OUTRUNNER.md](OUTRUNNER.md)). **Application requests remain experimental.**
-The registered Phase F benchmark is a separate software parity scope.
+([OUTRUNNER.md](OUTRUNNER.md)). From 0.5.7 an outer-rotor SPM design is
+**Qualified inside what Phase F measured**: concentrated windings with one or
+two layers under sinusoidal current. Distributed windings and ideal six-step
+drive on an outer rotor were not measured and stay Experimental.
 
 - **What has been checked.** The LRK 12-slot / 14-pole reference against its
   published solution: all 11 torque points pass Phase A's mean-torque rule
@@ -654,10 +659,12 @@ The registered Phase F benchmark is a separate software parity scope.
   2026), the source point is −0.39% and the back-EMF fundamental −0.62%. On two hobby designs, the mean torque
   agrees with 1.5·p·λ·I within 0.3%, and the mesh study moves it less than
   0.05%. [OUTRUNNER.md](OUTRUNNER.md#validation) has the detail.
-- **The reason the app prints:** "Outer-rotor SPM: qualification currently
-  covers the registered benchmark requests only." (`backend/qualification.py`). The Examples
-  menu tags the SPM outrunner 14p/12s example Experimental, as it does the
-  IPM 10p V-shape and SPM 24p examples, whose designs are experimental too.
+- **The reasons the app prints** (`backend/qualification.py`): "Outer-rotor
+  SPM, concentrated winding, sinusoidal current: all 10 benchmark cases pass.",
+  or that distributed windings or ideal six-step excitation on an outer rotor
+  were not measured by the benchmark. The bundled SPM outrunner 14p/12s
+  example runs ideal six-step, so the Examples menu still tags it
+  Experimental.
 - **Benchmark scope.** [Protocol 1.10.0](../benchmarks/af-v1.10/README.md)
   registers 10 outer-rotor SPM cases over five motors, from an 18 mm micro
   drone motor to a 100 mm hub-motor class, using Phase A's unchanged gates

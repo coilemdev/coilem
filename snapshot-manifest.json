@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6440,
-      "sha256": "55ec2ab5cbd1337c84a6749efe5720a49296324d858cfc01ebc3f5b35a13c4ef"
+      "bytes": 6526,
+      "sha256": "998f77bc2ca005a5e1033dfaaa19e5f96c6ac694a1588f9ef96059b3110ffa1a"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -495,8 +495,8 @@
     },
     {
       "path": "backend/models/performance.py",
-      "bytes": 26271,
-      "sha256": "001932b621bd27b154a45b57f91cf294d7c34a27138f64f625bc26d18e4eb92b"
+      "bytes": 26601,
+      "sha256": "a12ffe7b129d7300452c36e637ebbe1eeba763b3fb341e7d970f9cb6d9b28e46"
     },
     {
       "path": "backend/models/result.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 11084,
-      "sha256": "2961e0c89b4eaa349236593708ed1456b00659709cfaaeda4684fa51299e9d49"
+      "bytes": 11936,
+      "sha256": "8cba5fce1b74e7ac7cbcf4d255d36e67a2e76ef1e29472166b326c9776ca0a47"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 59059,
-      "sha256": "478f884ba0d5b9cb23ba209af898babd201d98654576673b436b42fd1e759ed4"
+      "bytes": 59346,
+      "sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 51773,
-      "sha256": "6ab389ad076582d66d051da62209cbc15d15cd2c5c9eb800c955f5e919ddd112"
+      "bytes": 52136,
+      "sha256": "80f7798e5b6793328716745b1af1bcc1c043a90f23c286b6221f553f23c906fe"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/scripts/test-cogging-view.mjs",
-      "bytes": 5760,
-      "sha256": "34a6129d2ae785e210b41756f9e6f513f72739e5550b544732fdee6c0b2074da"
+      "bytes": 5706,
+      "sha256": "bf44de3bc22c405fcbf12d7c8efe6d1dcae116ad08f9a03610f2a452ab2f1414"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -7170,8 +7170,8 @@
     },
     {
       "path": "frontend/src/public/coggingView.ts",
-      "bytes": 7521,
-      "sha256": "654dd103b86f02d17572c3f006b183ca6ac17e0363c43d7c09319fe57c532b16"
+      "bytes": 7476,
+      "sha256": "9c99f7344b0a4d0906763541bf5f50f6359645f430482814339fe04f1385b310"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
-      "bytes": 3629,
-      "sha256": "8027882f9a5bd34e0bd2bf40f94cf82a5e9d700b001f5543a3e12ab0c2af6899"
+      "bytes": 3958,
+      "sha256": "6bcffea746582e563c0f5472b35be0c7b01429fd2fe08d2c94e029ab1dd1b11b"
     },
     {
       "path": "frontend/src/public/performance.ts",
@@ -7930,8 +7930,8 @@
     },
     {
       "path": "tests/fixtures/cogging_example_8p12s.json",
-      "bytes": 3237,
-      "sha256": "a9512a378158e5f5d0303298542c3c3189b2ad04b894a04be5752d87de37165a"
+      "bytes": 3255,
+      "sha256": "0332a9f34c5f8a46766809d6ffed0b35782fba427f116f0b9e58a10b93134796"
     },
     {
       "path": "tests/fixtures/phase_drive_winding_layouts.json",
@@ -8185,8 +8185,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 13122,
-      "sha256": "1177cbfbd745675bebf94e5d9da21da43c40198cf3584cc73e273133adbbed7c"
+      "bytes": 14298,
+      "sha256": "325d5667087a94a6c59c346b96ee364ab82aac1c635396e51086c3565b5bee5c"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -11625,8 +11625,8 @@
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
-      "bytes": 3635,
-      "sha256": "d3ab31cdf1bd30002f84abed8cd587c409702a300ad5d849ed46be30654bb2d0"
+      "bytes": 3506,
+      "sha256": "b440bfa06e98f4e90f1166a7ef639722d68dff49fa93ea089d9b53087f72bea4"
     },
     {
       "path": "frontend/src/public/analysisOptions.ts",
@@ -13165,8 +13165,8 @@
     },
     {
       "path": "tests/test_rotor_layout.py",
-      "bytes": 15140,
-      "sha256": "09f3478bb81fed107a019549a936e07db77722e71edd9a78753fe81320afd88a"
+      "bytes": 15586,
+      "sha256": "c41b1f7e2d3c2124962703e2053d0960e69929fd56832146fd432ea4e2ff7ce8"
     },
     {
       "path": "tools/export_lrk_reference.py",

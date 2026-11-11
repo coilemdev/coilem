@@ -81,7 +81,7 @@ torque must agree within 8% and back-EMF within 10%.
 | Inner-rotor SPM, concentrated or two-layer distributed winding | Checked against FEMM |
 | Flat-buried IPM, concentrated winding | Checked against FEMM |
 | V-shape IPM | Experimental |
-| Outrunner (outer-rotor SPM) | Experimental |
+| Outrunner (outer-rotor SPM), concentrated winding | Checked against FEMM with sinusoidal current; six-step drive is Experimental |
 
 Of the other outputs, phase resistance and copper loss are checked against hand
 calculations. Cogging torque, d/q quantities, the maps, iron loss, efficiency
