@@ -299,6 +299,7 @@ pub(super) fn run_picard_nonlinear_loop(
             scaled_residual: None,
             rhs_scaled_residual: None,
             initial_rhs_scaled_residual: None,
+            reference_rhs_scaled_residual: None,
             absolute_residual_floor: None,
             residual_definition: "max steel elements |mu_target(B) - mu_used| / mu_used (unrelaxed)".into(),
             tolerance: nonlinear_config.convergence_threshold,

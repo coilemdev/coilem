@@ -33,6 +33,10 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+# Must equal NEWTON_DIRECT_REFERENCE_CAP in solvers/magneto2d/src/solve/nonlinear.rs.
+DIRECT_REFERENCE_CAP = 0.025
+
+
 def audit_newton_residual(info, *, legacy_rhs_history=False):
     """Apply the Prius RHS-normalized limit, retaining the native stopping evidence.
 
@@ -55,25 +59,46 @@ def audit_newton_residual(info, *, legacy_rhs_history=False):
                 "evidence": "legacy-v1 RHS-normalized history; no structured stopping evidence"}
     if not isinstance(record, dict) or record.get("method") != "newton":
         raise ValueError("Missing structured Newton convergence record")
-    definition = ("scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); "
-                  "rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage")
+    staged_definition = ("scaled_residual = L2(f - K(A) A) / L2(f - K(A0) A0); "
+                         "rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, each continuation stage")
+    # A solve that starts at full current measures against the smaller of its
+    # starting mismatch and DIRECT_REFERENCE_CAP of the source norm, which can
+    # only make the relative test stricter. Only that exact cap is accepted.
+    direct_definition = (f"scaled_residual = L2(f - K(A) A) / min(L2(f - K(A0) A0), {DIRECT_REFERENCE_CAP} L2(f)); "
+                         "rhs_scaled_residual = L2(f - K(A) A) / L2(f); after model constraints, at full current")
     stopping = "scaled_residual <= tolerance OR rhs_scaled_residual <= absolute_residual_floor at every continuation stage"
-    if record.get("residual_definition") != definition or record.get("stopping_test") != stopping:
+    direct = record.get("residual_definition") == direct_definition
+    if (not direct and record.get("residual_definition") != staged_definition) or record.get("stopping_test") != stopping:
         raise ValueError("Unknown Newton residual definition or stopping test")
     scaled, rhs, initial, tolerance, floor = [record.get(key) for key in (
         "scaled_residual", "rhs_scaled_residual", "initial_rhs_scaled_residual", "tolerance", "absolute_residual_floor")]
     if not all(map(finite_nonnegative, (scaled, rhs, initial, tolerance, floor))) or tolerance == 0 or floor == 0:
         raise ValueError("Invalid structured Newton residual values")
-    if (scaled != history[-1] or not math.isclose(scaled, rhs / max(initial, 1e-30), rel_tol=1e-12, abs_tol=0.)
+    reference = record.get("reference_rhs_scaled_residual")
+    if direct:
+        # The record must name the reference it used, and that reference must
+        # be the capped starting mismatch and nothing looser.
+        if not finite_nonnegative(reference) or reference != min(initial, DIRECT_REFERENCE_CAP):
+            raise ValueError("Newton reference is not the capped starting mismatch")
+    elif reference is not None:
+        raise ValueError("Unexpected Newton reference for a staged solve")
+    else:
+        reference = initial
+    if (scaled != history[-1] or not math.isclose(scaled, rhs / max(reference, 1e-30), rel_tol=1e-12, abs_tol=0.)
             or tolerance > 1e-9 or floor > 1e-8):
         raise ValueError("Inconsistent or relaxed Newton convergence evidence")
     # The record exposes the final continuation stage, not every stage's RHS
     # residual. Report that scope explicitly rather than inventing stage data.
-    return {"rhs_scaled_residual": rhs, "history_final_residual": history[-1],
-            "history_basis": "L2(f - K(A0) A0)", "native_stopping_test_pass": scaled <= tolerance or rhs <= floor,
-            "evidence": "structured Newton final-stage residual and stopping criterion",
-            "scaled_residual": scaled, "initial_rhs_scaled_residual": initial,
-            "tolerance": tolerance, "absolute_residual_floor": floor}
+    audited = {"rhs_scaled_residual": rhs, "history_final_residual": history[-1],
+               "history_basis": (f"min(L2(f - K(A0) A0), {DIRECT_REFERENCE_CAP} L2(f))" if direct
+                                 else "L2(f - K(A0) A0)"),
+               "native_stopping_test_pass": scaled <= tolerance or rhs <= floor,
+               "evidence": "structured Newton final-stage residual and stopping criterion",
+               "scaled_residual": scaled, "initial_rhs_scaled_residual": initial,
+               "tolerance": tolerance, "absolute_residual_floor": floor}
+    if direct:
+        audited["reference_rhs_scaled_residual"] = reference
+    return audited
 
 
 def audit_job(run, job, asset_sha, *, legacy_rhs_history=False):
