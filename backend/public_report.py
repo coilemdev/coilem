@@ -42,6 +42,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from backend import solve_profile
 from backend.cogging import COGGING_METHOD_LABELS
 from backend.convergence_reporting import convergence_report
 from backend.export_safety import literal_csv_cell
@@ -1919,6 +1920,22 @@ def build_public_run_pdf(
         story.append(_safe_paragraph(f"Review: {warning}", styles["body"]))
     for note in (*convergence["notes"], "Per-position convergence records are included in the CSV."):
         story.append(_safe_paragraph(note, styles["small"]))
+
+    time_summary, time_steps = solve_profile.report_rows(_mapping(result.get("solve_metadata")).get("time_breakdown"))
+    if time_summary:
+        story.extend([
+            KeepTogether([
+                _section("Solve time", styles),
+                _key_value_table(time_summary, styles),
+            ]),
+            _safe_paragraph(
+                "Meshing, field solve and packaging add up to the elapsed time. The stage times below add up every "
+                "occurrence of a stage across the workers that ran in parallel, so they exceed it.",
+                styles["small"],
+            ),
+        ])
+        for label, rows in time_steps:
+            story.extend([KeepTogether([Paragraph(label, styles["group"]), _key_value_table(rows, styles)])])
 
     setting_groups = _design_setting_groups(_mapping(request.get("resolved_config")))
     if setting_groups:

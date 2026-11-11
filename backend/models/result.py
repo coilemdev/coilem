@@ -123,6 +123,13 @@ class SolveMetadata(BaseModel):
         ge=0,
         description="Sum of every rotor position's solver process time; positions run in parallel",
     )
+    time_breakdown: dict | None = Field(
+        default=None,
+        description=(
+            "Where the solve's time went: meshing, field solve and packaging, which add up to the elapsed "
+            "time, and the stages of each with their counts and times across workers"
+        ),
+    )
     mesher: str | None = None
     mesh_density: str | None = None
     mesh_source: str | None = None

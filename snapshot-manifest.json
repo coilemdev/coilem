@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 81911,
-      "sha256": "536d7aba129cd3163a165fe675f6aa0f8fb5fc514ecb4a4fc254d4be9ad0aac6"
+      "bytes": 82612,
+      "sha256": "621e7d369503fd8508fa4eb1894808a3ecbafe6ecf4d28d7802a1811dc20f913"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 76498,
-      "sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa"
+      "bytes": 77993,
+      "sha256": "336422be884cc770a4d7f0bb9af6ed89c3ff207cbda61e40697745c19da86e81"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 9223,
-      "sha256": "36ed677cd2a7b9f4f0b64252144929b55f53b7a24779f30ff44d76af1bc51c94"
+      "bytes": 9519,
+      "sha256": "230491043a812ada40187dfbb42d5fa1e52a40cc690475d18fa3399bcda2f313"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 92296,
-      "sha256": "e0b570fe210c2420acf580227a457192bdcb632577038acbb470eb0817087b47"
+      "bytes": 93096,
+      "sha256": "8069a7b8847999718f4327ef003b22250882c00ca9e2577653f6dd354f622ab7"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -639,14 +639,19 @@
       "sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4"
     },
     {
+      "path": "backend/solve_profile.py",
+      "bytes": 17539,
+      "sha256": "1741cf1bb08950ee008f47097b0140c12dc0ec15c6be5df651baf95210db1d14"
+    },
+    {
       "path": "backend/solve_workspace.py",
       "bytes": 59346,
       "sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f"
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 170286,
-      "sha256": "990bfcc6e5236aa561128ac3bb2c86bb09a035dcef70b33973d7a496e79bbc0c"
+      "bytes": 173068,
+      "sha256": "980bdb0822e5c62fa54e210c7ac0910679cfc9629ac0cd4fae8a38f0478eb93e"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -6420,8 +6425,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3196,
-      "sha256": "cddedb500ce6553ac40c241f6afffa80dabe1596931e1b772b4bc7a321c15c27"
+      "bytes": 3232,
+      "sha256": "22dedbeeb99e0d139da44862fbc00f41ef80435e8b217dc08684709d5a3f1d48"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6597,6 +6602,11 @@
       "path": "frontend/scripts/test-solve-progress.mjs",
       "bytes": 4537,
       "sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6"
+    },
+    {
+      "path": "frontend/scripts/test-solve-time.mjs",
+      "bytes": 4131,
+      "sha256": "94d63b1d791bb11dbc84cd7210eb4b9fa5a27c910bd6b611477514b722c29bd2"
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
@@ -7025,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 248623,
-      "sha256": "60b814342160e4837ba541c93989f716a5aebd15ae9436b3b9f7bd0c3be42c65"
+      "bytes": 248676,
+      "sha256": "7352f137de50198de5ac97ae7f68f66316e86abc5ab38140def174c97c90cb44"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7112,6 +7122,11 @@
       "path": "frontend/src/public/ResultSummary.tsx",
       "bytes": 12261,
       "sha256": "2734fcff7e6a7feb516cd91beddf1e7383027cf1a8ce5d23a1effa01e800a165"
+    },
+    {
+      "path": "frontend/src/public/SolveTimeCard.tsx",
+      "bytes": 3562,
+      "sha256": "97d9e2b533dfc34a9b0303116f61f4c8820c39c1331f8cc709560aeeb38c2b2c"
     },
     {
       "path": "frontend/src/public/WorkspaceErrorBoundary.tsx",
@@ -7212,6 +7227,11 @@
       "path": "frontend/src/public/designViewMemory.ts",
       "bytes": 638,
       "sha256": "8e98368f7000737cf7d9db12f1c3135d62747be678404c3d361d39a7fd404706"
+    },
+    {
+      "path": "frontend/src/public/solveTime.ts",
+      "bytes": 4485,
+      "sha256": "083ea48d534adb54c81160587691a3eeca47696725b64a3e1e658cd776e836a7"
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
@@ -7445,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24030,
-      "sha256": "483af069100ffa5d07274d1a4dd46432695dd58349b23e5cb3e494dadedb04b0"
+      "bytes": 24219,
+      "sha256": "cbd2bc6c56276d8c50516d36be7855637a94d4ebe77f84a3c351702e4e7ad2f0"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7530,8 +7550,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 303215,
-      "sha256": "acca10d9e372ea279dee33246b0f8dc06a9583aaae8142081d05752d9e972d2d"
+      "bytes": 306749,
+      "sha256": "dc264b00c4b56cf9a701068495fdf905e0384dc8c69d5ebbf51d094166b88547"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -8372,6 +8392,11 @@
       "path": "tests/test_solve_pipeline_overhead.py",
       "bytes": 7837,
       "sha256": "e93b1954f3a1693cfb3daed3b1beb4485393fe192c8703f1ca2852e2f10cf2fd"
+    },
+    {
+      "path": "tests/test_solve_profile.py",
+      "bytes": 7982,
+      "sha256": "5695f57f46858483aa9b7bcca6cb2a5f2a422f323b73c82503478d7db313dca7"
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -12105,8 +12130,8 @@
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
-      "bytes": 10818,
-      "sha256": "2c95f31a9a3f51a633eef26eb79fe321c5465b13598017bfe825da30ca8ea693"
+      "bytes": 11066,
+      "sha256": "7394f9fd77f592de90c5e5b4a12917d5d912f16dd2721700aa921153b5ada97b"
     },
     {
       "path": "tests/test_convergence_reporting.py",
