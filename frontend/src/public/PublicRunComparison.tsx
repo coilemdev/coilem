@@ -477,8 +477,13 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
           {METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
             const leftValue = metric.value(left.result);
             const rightValue = metric.value(right.result);
-            const digits = metric.torque ? torqueDecimals(leftValue, rightValue) : metric.digits;
-            return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, digits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, digits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, digits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
+            // Each torque keeps its own three significant figures, so a small
+            // motor still reads 0.0641 beside a large one (#270); the delta
+            // is only as precise as the coarser of the two.
+            const leftDigits = metric.torque ? torqueDecimals(leftValue) : metric.digits;
+            const rightDigits = metric.torque ? torqueDecimals(rightValue) : metric.digits;
+            const deltaDigits = metric.torque ? Math.min(torqueDecimals(leftValue), torqueDecimals(rightValue)) : metric.digits;
+            return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, leftDigits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, rightDigits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, deltaDigits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
           })}
         </div>
         {(torqueAvailable || emfAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">

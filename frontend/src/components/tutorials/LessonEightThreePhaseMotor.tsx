@@ -458,7 +458,11 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   // 1: A-B-C, the currents the lesson text gives (B = cos(θ − 120°)); the field
   // turns counterclockwise. -1: B and C traded (A-C-B); it turns clockwise.
   // The learner swaps two phases to observe the reversal.
-  const [direction, setDirection] = React.useState<RotationDirection>(1);
+  // Kept for the tab, like Lesson 7's: a reload comes back on the sequence the
+  // student had selected, and the resume solve asks for that sequence (#259).
+  const [direction, setDirection] = useLessonSessionState<RotationDirection>(
+    LESSON_ID, 'direction', 1, (value) => value === 1 || value === -1,
+  );
   const [playing, setPlaying] = React.useState(false);
   // Steps taken in the current playback run; one full cycle ends it.
   const [, setPlaySteps] = React.useState(0);
@@ -488,6 +492,9 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
   const inspectedOpenPhase = lessonComplete || inspectedOpenPhaseNow;
   const reversedSequence = lessonComplete || reversedSequenceNow;
 
+  // The lab is ready once either sequence's combined cycle is solved: a resumed
+  // lesson may load the reversed one first (#259).
+  const labReady = Boolean(sweeps.combined || sweeps['combined:reverse']);
   const activeSweep = sweeps[sweepKey(fieldMode, direction)];
   const frames = activeSweep?.frames ?? [];
   const lookupIndex = frames.length ? frameIndex % frames.length : 0;
@@ -827,7 +834,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     }
     if (stepId === 'spin') {
       setQuizOpen(false);
-      if (sweeps.combined) onStageChange?.('solve');
+      if (labReady) onStageChange?.('solve');
       else enterLab();
       return;
     }
@@ -837,7 +844,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
       return;
     }
     if (stepId === 'check' && labComplete) setQuizOpen(true);
-  }, [cycleComplete, enterLab, labComplete, onStageChange, sweeps.combined]);
+  }, [cycleComplete, enterLab, labComplete, onStageChange, labReady]);
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
     lessonNumber: 8,
     lessonCount: 10,
@@ -1062,7 +1069,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
           <p className="lesson-lab-note">The phase waveform, current balance, and fault comparison will appear here.</p>
         </section>
       ) : null}
-      {sweeps.combined ? (
+      {labReady ? (
         <section className="lesson-lab-card three-phase-drive-checks" aria-label="Practical drive checks">
           <h3>Practical drive checks</h3>
           <p className="lesson-lab-note">{phaseCOpen
@@ -1142,7 +1149,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
     );
   }
 
-  const solveHint = !sweeps.combined
+  const solveHint = !labReady
     ? 'Solve one electrical cycle and release the PM rotor by default.'
     : !cycleComplete && !rotorMotionAllowed
       ? 'Turn on “Allow rotor motion” to play the full cycle.'
@@ -1162,7 +1169,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
         label="Three-phase motor experiment"
         footer={(
           <LessonNextStep hint={solveHint}>
-            {!sweeps.combined ? (
+            {!labReady ? (
               <button type="button" className="learning-primary-button" disabled={Boolean(busyMode)} onClick={() => void loadSweep('combined', { autoPlay: true })}>
                 {busyMode ? 'Solving…' : 'Solve + spin rotor'}
               </button>
@@ -1191,7 +1198,7 @@ export const LearningLessonEightThreePhaseMotor: React.FC<LearningLessonEightThr
         )}
       >
         {goalCard}
-        {sweeps.combined ? (
+        {labReady ? (
           <>
             <section className="three-phase-control-card">
               <label htmlFor="three-phase-angle-slider"><span>Electrical angle</span><strong>{displayCycleAngle(electricalAngle)}°</strong></label>

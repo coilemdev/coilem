@@ -6740,8 +6740,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonEightThreePhaseMotor.tsx",
-      "bytes": 54377,
-      "sha256": "fecf76000610e5c22eddc0882f180ffba1be8802e604f9e9233de0ac71fe1bc8"
+      "bytes": 54782,
+      "sha256": "ec28e455b5cf2aa4795cca367fb7bb23ec825beffbcf7766dc6b40be601da2c8"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 25989,
-      "sha256": "f122d9da25d17f8e7d6dbbfbc5342c9abac44e66c19176f7cdc20aa6b768428b"
+      "bytes": 26433,
+      "sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
