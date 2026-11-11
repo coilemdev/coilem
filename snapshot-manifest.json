@@ -14795,8 +14795,8 @@
     },
     {
       "path": "tests/test_reference_positions.py",
-      "bytes": 8445,
-      "sha256": "9952c21db750ca4ba8bed14c6722027fb75aa21e91632f66374ff562d07ce36d"
+      "bytes": 8977,
+      "sha256": "9cb41e2f8e4960e07bc3937decb111f5770ebad32cadb6cf66900668ddb7f409"
     },
     {
       "path": "tools/benchmark_suite/positions.py",
