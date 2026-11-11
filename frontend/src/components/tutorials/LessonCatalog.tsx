@@ -37,7 +37,6 @@ const TIER_ONE_LESSONS = [
     number: 1,
     title: 'Follow the Flux',
     summary: 'Solve one magnet in open air, then move different steel shapes nearby and watch the field redistribute.',
-    status: 'available',
     estimate: '8 min',
   },
   {
@@ -46,7 +45,6 @@ const TIER_ONE_LESSONS = [
     number: 2,
     title: 'Close the Loop: The Airgap Tax',
     summary: 'Close one magnet with steel, change two airgaps, and watch the solved flux pay the price.',
-    status: 'available',
     estimate: '7 min',
   },
   {
@@ -55,7 +53,6 @@ const TIER_ONE_LESSONS = [
     number: 3,
     title: 'Make a Field with Current',
     summary: 'Drive one straight conductor, reverse the current, and compare the solved field with the right-hand rule and the straight-wire equation.',
-    status: 'available',
     estimate: '7 min',
   },
   {
@@ -64,7 +61,6 @@ const TIER_ONE_LESSONS = [
     number: 4,
     title: 'When Iron Saturates',
     summary: 'Drive an electrical-steel ring through its B–H knee and watch effective permeability collapse in a nonlinear solve.',
-    status: 'available',
     estimate: '8 min',
   },
   {
@@ -73,7 +69,6 @@ const TIER_ONE_LESSONS = [
     number: 5,
     title: 'Turn Field into Force',
     summary: 'Put a current-carrying conductor between magnet poles, reverse current, and compare FEM force with F = BIL.',
-    status: 'available',
     estimate: '8 min',
   },
   {
@@ -82,7 +77,6 @@ const TIER_ONE_LESSONS = [
     number: 6,
     title: 'Give the Rotor Something to Chase',
     summary: 'Release a permanent-magnet rotor into a fixed field, then move the field target and watch alignment torque pull the rotor after it.',
-    status: 'available',
     estimate: '8 min',
   },
   {
@@ -91,7 +85,6 @@ const TIER_ONE_LESSONS = [
     number: 7,
     title: 'Make the Field Rotate',
     summary: 'Drive two perpendicular conductor pairs 90° apart and animate the solver-backed field through one electrical cycle.',
-    status: 'available',
     estimate: '8 min',
   },
   {
@@ -100,7 +93,6 @@ const TIER_ONE_LESSONS = [
     number: 8,
     title: 'Three Wires, One Rotating Field',
     summary: 'Drive six wound teeth with three balanced currents, release a PM rotor, then open one phase and reverse the phase sequence.',
-    status: 'available',
     estimate: '9 min',
   },
   {
@@ -109,7 +101,6 @@ const TIER_ONE_LESSONS = [
     number: 9,
     title: 'Build the 2p/6s Three-Phase Motor',
     summary: 'Turn the six-electromagnet teaching fixture into the first complete slotted SPM motor and inspect its magnetic circuit.',
-    status: 'available',
     estimate: '10 min',
   },
   {
@@ -118,7 +109,6 @@ const TIER_ONE_LESSONS = [
     number: 10,
     title: 'BEMF & Voltage Headroom',
     summary: 'Spin the SPM motor, watch three-phase BEMF grow with speed, and compare it with inverter voltage.',
-    status: 'available',
     estimate: '7 min',
   },
 ] as const;
@@ -134,9 +124,7 @@ const TIER_ONE_LESSONS = [
 const LESSON_SECTIONS = [
   {
     id: 'fields',
-    kicker: 'Part 1',
     title: 'Fields before motors',
-    blurb: 'Explore flux, reluctance, current, saturation, and force.',
     lessonIds: [
       'follow-the-flux',
       'airgap-tax',
@@ -155,10 +143,7 @@ const LESSON_SECTIONS = [
   },
   {
     id: 'machine',
-    kicker: 'Part 2',
     title: 'From rotating field to motor',
-    blurb:
-      'Turn those fields into rotation: give a rotor something to chase, synthesize a rotating field from phased currents, assemble the first complete machine, and find the speed where it runs out of voltage.',
     lessonIds: [
       'rotor-chase',
       'rotating-field',

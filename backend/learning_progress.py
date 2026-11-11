@@ -43,10 +43,17 @@ def read_completed_lessons() -> list[str]:
     return clean_lesson_ids(saved.get("completed") if isinstance(saved, dict) else None)
 
 
-def write_completed_lessons(values: object) -> list[str]:
-    """Replace the saved lesson ids and return what was stored."""
+def update_completed_lessons(add: object = None, remove: object = None) -> list[str]:
+    """Mark lessons finished or not finished and return the saved list.
 
-    completed = clean_lesson_ids(values)
+    Changes are applied to what is on disk, so two browsers open at once each
+    keep the lessons the other one finished.
+    """
+
     with _LOCK:
-        _atomic_write_json(_path(), {"schema_version": 1, "completed": completed})
-    return completed
+        completed = set(read_completed_lessons())
+        completed.update(clean_lesson_ids(add))
+        completed.difference_update(clean_lesson_ids(remove))
+        saved = sorted(completed)[:MAX_LESSON_IDS]
+        _atomic_write_json(_path(), {"schema_version": 1, "completed": saved})
+    return saved

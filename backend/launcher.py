@@ -3,8 +3,8 @@
 Port policy. ``--port`` and ``COILEM_LOCAL_API_PORT`` are used exactly and fail
 when occupied. Otherwise the stable default 2645 is used, falling back within
 2645-2654 when another program holds it. The fallback is never remembered:
-browser-saved state (Halbach autosaves, tutorial progress) is scoped to the
-origin, port included, which is also why the launcher always opens
+browser-saved state (Halbach autosaves) is scoped to the origin, port
+included, which is also why the launcher always opens
 ``http://127.0.0.1:<port>`` and never ``localhost``.
 
 One server runs per user-data root, enforced by a lock file there. A second
@@ -471,7 +471,7 @@ def launch(args: argparse.Namespace) -> int:
         if explicit is None and port != DEFAULT_PORT:
             print(
                 f"coilem: port {DEFAULT_PORT} is in use, so coilEM is using port {port}. "
-                "Halbach autosaves and tutorial progress saved in your browser belong to "
+                "Halbach autosaves saved in your browser belong to "
                 f"http://127.0.0.1:{DEFAULT_PORT} and are not available on this port.",
                 file=sys.stderr,
             )

@@ -26,14 +26,15 @@ const writeIdSet = (key: string, ids: Set<string>) => {
 /** Somewhere longer-lived than this browser's storage, supplied by the host app. */
 export interface LearningProgressStore {
   load: () => Promise<string[]>;
-  save: (lessonIds: string[]) => Promise<void>;
+  /** Mark lessons finished (`add`) or not finished (`remove`); never a whole-list replace. */
+  update: (change: { add?: string[]; remove?: string[] }) => Promise<void>;
 }
 
 let progressStore: LearningProgressStore | null = null;
 
-const saveToStore = (ids: Set<string>) => {
+const updateStore = (change: { add?: string[]; remove?: string[] }) => {
   // Best effort: the browser copy still holds the progress if this fails.
-  void progressStore?.save([...ids].sort()).catch(() => undefined);
+  void progressStore?.update(change).catch(() => undefined);
 };
 
 /**
@@ -48,6 +49,7 @@ export async function connectLearningProgressStore(store: LearningProgressStore)
   try {
     stored = await store.load();
   } catch {
+    // Later changes are still sent one lesson at a time, so nothing saved is lost.
     return;
   }
   const local = readIdSet(PRIMER_KEY);
@@ -56,7 +58,9 @@ export async function connectLearningProgressStore(store: LearningProgressStore)
     writeIdSet(PRIMER_KEY, merged);
     window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: { key: PRIMER_KEY } }));
   }
-  if (merged.size !== stored.length) saveToStore(merged);
+  const storedIds = new Set(stored);
+  const onlyHere = [...local].filter((id) => !storedIds.has(id));
+  if (onlyHere.length > 0) updateStore({ add: onlyHere });
 }
 
 const setMembership = (
@@ -69,7 +73,7 @@ const setMembership = (
   if (complete) next.add(id);
   else next.delete(id);
   writeIdSet(key, next);
-  saveToStore(next);
+  updateStore(complete ? { add: [id] } : { remove: [id] });
   setState(next);
   window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: { key } }));
 };

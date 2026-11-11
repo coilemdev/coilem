@@ -14,11 +14,11 @@ export function connectPublicLearningProgress(): void {
         ? body.completed.filter((id): id is string => typeof id === 'string')
         : [];
     },
-    async save(lessonIds) {
+    async update(change) {
       const response = await fetch(PROGRESS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: lessonIds }),
+        body: JSON.stringify({ add: change.add ?? [], remove: change.remove ?? [] }),
       });
       if (!response.ok) throw new Error(`Lesson progress failed to save: ${response.status}`);
     },

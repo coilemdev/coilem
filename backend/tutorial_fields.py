@@ -87,9 +87,28 @@ _TEACHING_MESH_CACHE_LIMIT = 16
 _TEACHING_MESH_CACHE: OrderedDict[tuple[Any, ...], dict[str, Any]] = OrderedDict()
 _TEACHING_MESH_CACHE_LOCK = threading.Lock()
 _TEACHING_MESH_BUILDS: dict[tuple[Any, ...], threading.Lock] = {}
+# The cached meshes are only useful while a lesson is open; let them go after.
+_TEACHING_MESH_IDLE_SECONDS = 300.0
+_TEACHING_MESH_RELEASE: threading.Timer | None = None
 # Per-frame keys that repeat the mesh; a sweep response carries them once.
 _SWEEP_SHARED_FRAME_KEYS = ("nodes_mm", "triangles", "regions")
 _SWEEP_FRAME_LIST_KEYS = ("frames", "phase_a_frames", "phase_b_frames")
+
+
+def _release_teaching_meshes() -> None:
+    with _TEACHING_MESH_CACHE_LOCK:
+        _TEACHING_MESH_CACHE.clear()
+
+
+def _keep_teaching_meshes_while_in_use() -> None:
+    """Restart the idle countdown; call with the cache lock held."""
+
+    global _TEACHING_MESH_RELEASE
+    if _TEACHING_MESH_RELEASE is not None:
+        _TEACHING_MESH_RELEASE.cancel()
+    _TEACHING_MESH_RELEASE = threading.Timer(_TEACHING_MESH_IDLE_SECONDS, _release_teaching_meshes)
+    _TEACHING_MESH_RELEASE.daemon = True
+    _TEACHING_MESH_RELEASE.start()
 
 
 def _cached_teaching_mesh(build: Callable[..., dict[str, Any]]) -> Callable[..., dict[str, Any]]:
@@ -102,6 +121,7 @@ def _cached_teaching_mesh(build: Callable[..., dict[str, Any]]) -> Callable[...,
         except TypeError:
             return build(**kwargs)
         with _TEACHING_MESH_CACHE_LOCK:
+            _keep_teaching_meshes_while_in_use()
             mesh = _TEACHING_MESH_CACHE.get(key)
             if mesh is not None:
                 _TEACHING_MESH_CACHE.move_to_end(key)
