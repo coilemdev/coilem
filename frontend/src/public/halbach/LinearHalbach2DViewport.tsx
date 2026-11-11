@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import {
   useViewportNavigation,
@@ -32,6 +33,8 @@ interface LinearHalbach2DViewportProps {
   fieldLineDensity?: 'low' | 'medium' | 'high';
   showMagnetization?: boolean;
   showProbeOverlays?: boolean;
+  /** Where the zoom controls go when the workspace docks them; in the canvas when omitted. */
+  navigationSlot?: HTMLElement | null;
 }
 
 interface LinearFieldData {
@@ -207,6 +210,7 @@ export function LinearHalbach2DViewport({
   fieldLineDensity = 'medium',
   showMagnetization = true,
   showProbeOverlays = true,
+  navigationSlot,
 }: LinearHalbach2DViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fieldArrowCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -765,6 +769,16 @@ export function LinearHalbach2DViewport({
     onSelectMagnet(index);
   };
 
+  const navigationControls = (
+    <ViewportNavigationControls
+      scale={navigation.scale}
+      onZoomIn={navigation.zoomIn}
+      onZoomOut={navigation.zoomOut}
+      onReset={navigation.reset}
+      fitSubject="Linear Halbach array"
+    />
+  );
+
   return (
     <figure
       className={`halbach-viewport halbach-viewport-2d public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
@@ -826,13 +840,9 @@ export function LinearHalbach2DViewport({
           <span><i className="is-south" aria-hidden="true" />blue = S face</span>
         </div>
       )}
-      <ViewportNavigationControls
-        scale={navigation.scale}
-        onZoomIn={navigation.zoomIn}
-        onZoomOut={navigation.zoomOut}
-        onReset={navigation.reset}
-        fitSubject="Linear Halbach array"
-      />
+      {navigationSlot
+        ? createPortal(navigationControls, navigationSlot)
+        : navigationSlot === undefined ? navigationControls : null}
     </figure>
   );
 }

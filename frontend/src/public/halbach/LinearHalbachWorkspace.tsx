@@ -40,6 +40,7 @@ type ViewDimension = '2d' | '3d';
 
 interface LinearHalbachWorkspaceProps {
   onHome: () => void;
+  appVersion?: string | null;
   onTopologyChange: (topology: HalbachTopology) => void;
   initialConfig?: LinearHalbachArrayConfig;
   connectionStatus?: 'checking' | 'online' | 'offline';
@@ -286,6 +287,7 @@ function TopologyIcon({ topology }: { topology: HalbachTopology }) {
 
 export function LinearHalbachWorkspace({
   onHome,
+  appVersion = null,
   onTopologyChange,
   initialConfig,
   connectionStatus = 'online',
@@ -296,6 +298,7 @@ export function LinearHalbachWorkspace({
   const [stage, setStage] = useState<WorkflowStage>('design');
   const [viewportMode, setViewportMode] = useState<LinearHalbachViewportMode>('geometry');
   const [viewDimension, setViewDimension] = useState<ViewDimension>('2d');
+  const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
   const [resultView, setResultView] = useState<LinearHalbachResultView>('magnitude');
   const [preview, setPreview] = useState<LinearHalbachPreview | null>(null);
   const [mesh, setMesh] = useState<LinearHalbachMeshPreview | null>(null);
@@ -500,12 +503,13 @@ export function LinearHalbachWorkspace({
 
   return (
     <div className="public-coilem-shell halbach-app" data-testid="linear-halbach-workspace">
-      <header className="topbar public-coilem-topbar halbach-topbar">
+      <header className="topbar public-coilem-topbar">
         <div className="topbar-left">
           <button className="logo public-logo-button" type="button" onClick={onHome} aria-label="Return to coilEM home">
             <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
             <span className="logo-word">coil<span className="logo-em">EM</span><sup className="logo-stage">Beta</sup></span>
           </button>
+          {appVersion && <span className="logo-version" title={`coilEM version ${appVersion}`}>v{appVersion}</span>}
           <div className="public-project-chip-wrap" ref={projectMenuRef}>
             <button
               className="project-chip"
@@ -572,7 +576,7 @@ export function LinearHalbachWorkspace({
                     onClick={() => setStage(item)}
                   >
                     <span className="stepper-step-num">{done ? '\u2713' : index + 1}</span>
-                    <span>{item[0].toUpperCase() + item.slice(1)}</span>
+                    <span>{item === 'report' ? 'Results' : item[0].toUpperCase() + item.slice(1)}</span>
                     {active && item === 'solve' && busy === 'solve' && (
                       <span className="stepper-step-chip running">Running</span>
                     )}
@@ -585,15 +589,14 @@ export function LinearHalbachWorkspace({
         </div>
         <div className="topbar-right">
           <div className="topbar-utility-panel">
-            <span className="public-backend-select">Local backend</span>
             <span
               className={`backend-status ${connectionStatus === 'online' ? 'connected' : connectionStatus === 'checking' ? 'checking' : 'disconnected'}`}
               role="status"
+              title={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
+              aria-label={`Local backend: ${connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}`}
             >
               <span className="status-dot" aria-hidden="true" />
-              <span className="status-text">
-                Local: {connectionStatus === 'online' ? 'ready' : connectionStatus === 'checking' ? 'checking' : 'not running'}
-              </span>
+              <span className="status-text">Local{connectionStatus === 'online' ? '' : connectionStatus === 'checking' ? ' · checking' : ' · offline'}</span>
             </span>
           </div>
         </div>
@@ -604,6 +607,21 @@ export function LinearHalbachWorkspace({
           className="halbach-config-panel"
           aria-label="Linear Halbach design parameters"
         >
+          <div className="halbach-panel-head">
+            <span>{stage === 'design' ? 'Design' : stage === 'solve' ? 'Solve' : 'Results'}</span>
+            {stage === 'design' && (
+              <button
+                type="button"
+                onClick={() => {
+                  setProjectName('Linear Halbach array');
+                  changeConfig(cloneDefaultLinearHalbachConfig());
+                }}
+              >
+                Reset
+              </button>
+            )}
+          </div>
+          <div className="halbach-panel-scroll">
           {stage === 'design' && (
             <>
               <div
@@ -655,13 +673,9 @@ export function LinearHalbachWorkspace({
                 </div>
               </div>
 
-              <div className="halbach-panel-title">
-                <span className="eyebrow">Design</span>
-                <h1>Linear Halbach array</h1>
-                <p>Finite array · four magnets per period · one-sided field</p>
-              </div>
+              <p className="halbach-panel-note">Finite array · four magnets per period · one-sided field</p>
 
-              <ParameterGroup title="1. Array geometry">
+              <ParameterGroup title="Array geometry">
                 <NumberInput
                   label="Magnet width"
                   suffix="mm"
@@ -709,7 +723,7 @@ export function LinearHalbachWorkspace({
                 </dl>
               </ParameterGroup>
 
-              <ParameterGroup title="2. Field pattern">
+              <ParameterGroup title="Field pattern">
                 <label className="halbach-field">
                   <span>Enhanced-field side</span>
                   <select
@@ -742,7 +756,7 @@ export function LinearHalbachWorkspace({
                 </label>
               </ParameterGroup>
 
-              <ParameterGroup title="3. Magnet material">
+              <ParameterGroup title="Magnet material">
                 <label className="halbach-field">
                   <span>Source</span>
                   <select
@@ -841,7 +855,7 @@ export function LinearHalbachWorkspace({
                 )}
               </ParameterGroup>
 
-              <ParameterGroup title="4. Evaluation lines">
+              <ParameterGroup title="Evaluation lines">
                 <NumberInput
                   label="Probe offset"
                   suffix="mm"
@@ -894,7 +908,7 @@ export function LinearHalbachWorkspace({
                 </p>
               </ParameterGroup>
 
-              <ParameterGroup title="5. Mesh and solve" defaultOpen={false}>
+              <ParameterGroup title="Mesh and solve" defaultOpen={false}>
                 <label className="halbach-field">
                   <span>Quality preset</span>
                   <select
@@ -947,25 +961,12 @@ export function LinearHalbachWorkspace({
                   Refine magnet corners
                 </label>
               </ParameterGroup>
-
-              <button
-                className="halbach-primary-action"
-                type="button"
-                disabled={localErrors.length > 0}
-                onClick={() => setStage('solve')}
-              >
-                Continue to Solve
-              </button>
             </>
           )}
 
           {stage === 'solve' && (
             <div className="halbach-solve-setup">
-              <div className="halbach-panel-title">
-                <span className="eyebrow">Analysis setup</span>
-                <h2>Magneto2D</h2>
-                <p>Gmsh mesh and linear A_z field solve.</p>
-              </div>
+              <p className="halbach-panel-note">Gmsh mesh and linear A_z field solve with Magneto2D.</p>
               <label className="halbach-field">
                 <span>Accuracy plan</span>
                 <select
@@ -996,131 +997,63 @@ export function LinearHalbachWorkspace({
               >
                 {busy === 'mesh' ? 'Generating mesh…' : mesh ? 'Regenerate mesh preview' : 'Generate mesh preview'}
               </button>
-              <button
-                type="button"
-                className="halbach-primary-action"
-                disabled={busy !== null || localErrors.length > 0}
-                onClick={() => void runSolve()}
-              >
-                {busy === 'solve' ? 'Solving…' : 'Run Magneto2D solve'}
-              </button>
-              {busy === 'solve' && (
-                <button
-                  type="button"
-                  className="halbach-cancel-action"
-                  onClick={() => solveAbortRef.current?.abort()}
-                >
-                  Cancel solve
-                </button>
-              )}
             </div>
           )}
 
           {stage === 'report' && (
             <div className="halbach-solve-setup">
-              <div className="halbach-panel-title">
-                <span className="eyebrow">Report</span>
-                <h2>Results ready</h2>
-                <p>Review the one-sided field metrics and solved field map.</p>
-              </div>
-              <button type="button" className="halbach-secondary-action" onClick={() => setStage('solve')}>
-                Back to Solve
-              </button>
-              <button type="button" className="halbach-secondary-action" onClick={() => setStage('design')}>
-                Edit Design
-              </button>
+              <p className="halbach-panel-note">Review the one-sided field metrics on the right and the solved field map.</p>
             </div>
           )}
+          </div>
+          <div className="halbach-panel-foot">
+            {stage === 'design' && (
+              <>
+                <p>{localErrors.length === 0 ? 'Design is ready to solve.' : `${localErrors.length} issue(s) to fix before solving.`}</p>
+                <button
+                  className="halbach-primary-action"
+                  type="button"
+                  disabled={localErrors.length > 0}
+                  onClick={() => setStage('solve')}
+                >
+                  Continue to Solve
+                </button>
+              </>
+            )}
+            {stage === 'solve' && (
+              <>
+                <p>{busy === 'solve' ? 'Solving the field…' : busy === 'mesh' ? 'Meshing…' : report ? 'Solved. Run again after any change.' : 'Ready to run.'}</p>
+                <button
+                  type="button"
+                  className="halbach-primary-action"
+                  disabled={busy !== null || localErrors.length > 0}
+                  onClick={() => void runSolve()}
+                >
+                  {busy === 'solve' ? 'Solving…' : 'Run Magneto2D solve'}
+                </button>
+                {busy === 'solve' ? (
+                  <button type="button" className="halbach-cancel-action" onClick={() => solveAbortRef.current?.abort()}>
+                    Cancel solve
+                  </button>
+                ) : (
+                  <button type="button" className="halbach-link-action" onClick={() => setStage('design')}>← Edit design</button>
+                )}
+              </>
+            )}
+            {stage === 'report' && (
+              <>
+                <p>Results are for the design as solved.</p>
+                <button type="button" className="halbach-secondary-action" onClick={() => setStage('solve')}>
+                  Back to Solve
+                </button>
+                <button type="button" className="halbach-link-action" onClick={() => setStage('design')}>← Edit design</button>
+              </>
+            )}
+          </div>
         </aside>
 
         <section className="halbach-stage-panel">
           <div className="halbach-viewport-shell">
-            <div
-              className="halbach-viewport-mode-tabs"
-              role="tablist"
-              aria-label="Linear Halbach visualization mode"
-            >
-              {([
-                ['geometry', 'Geometry'],
-                ['mesh', 'Mesh'],
-                ['field', 'Field solution'],
-              ] as Array<[LinearHalbachViewportMode, string]>).map(([mode, label]) => {
-                const disabled = (mode === 'mesh' && mesh === null)
-                  || (mode === 'field' && report === null);
-                return (
-                  <button
-                    key={mode}
-                    type="button"
-                    role="tab"
-                    aria-selected={viewportMode === mode}
-                    className={viewportMode === mode ? 'is-active' : ''}
-                    disabled={disabled}
-                    onClick={() => setViewportMode(mode)}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {viewportMode === 'field' && report && (
-              <details className="halbach-field-layer-menu">
-                <summary>Overlays</summary>
-                <div
-                  className="halbach-field-layer-controls"
-                  role="group"
-                  aria-label="Linear Halbach field solution overlays"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={showFieldHeatmap}
-                    onClick={() => setShowFieldHeatmap((value) => !value)}
-                  ><i aria-hidden="true" />Flux density</button>
-                  <button
-                    type="button"
-                    aria-pressed={showFieldMesh}
-                    onClick={() => setShowFieldMesh((value) => !value)}
-                  ><i aria-hidden="true" />Mesh</button>
-                  <button
-                    type="button"
-                    aria-pressed={showFieldLines}
-                    onClick={() => setShowFieldLines((value) => !value)}
-                  ><i aria-hidden="true" />Field lines</button>
-                  <button
-                    type="button"
-                    aria-pressed={showMagnetization}
-                    onClick={() => setShowMagnetization((value) => !value)}
-                  ><i aria-hidden="true" />Magnetization</button>
-                  <button
-                    type="button"
-                    aria-pressed={showProbeOverlays}
-                    onClick={() => setShowProbeOverlays((value) => !value)}
-                  ><i aria-hidden="true" />Evaluation lines</button>
-                  {showFieldLines && (
-                    <label className="halbach-field-density-control">
-                      <span>Line density</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max="2"
-                        step="1"
-                        value={['low', 'medium', 'high'].indexOf(fieldLineDensity)}
-                        aria-label="Linear Halbach field-line density"
-                        aria-valuetext={fieldLineDensity}
-                        onChange={(event) => {
-                          const next = ['low', 'medium', 'high'][Number(event.currentTarget.value)];
-                          if (next === 'low' || next === 'medium' || next === 'high') {
-                            setFieldLineDensity(next);
-                          }
-                        }}
-                      />
-                      <small aria-hidden="true"><span>Low</span><span>Med</span><span>High</span></small>
-                    </label>
-                  )}
-                </div>
-              </details>
-            )}
-
             {viewDimension === '2d' ? (
               <LinearHalbach2DViewport
                 config={config}
@@ -1136,6 +1069,7 @@ export function LinearHalbachWorkspace({
                 fieldLineDensity={fieldLineDensity}
                 showMagnetization={showMagnetization}
                 showProbeOverlays={showProbeOverlays}
+                navigationSlot={zoomSlot}
               />
             ) : (
               <LinearHalbach3DViewer
@@ -1154,75 +1088,127 @@ export function LinearHalbachWorkspace({
                 showProbeOverlays={showProbeOverlays}
               />
             )}
-
-            <div className="halbach-viewport-bottom-bar">
-              <div className="halbach-bottom-controls" aria-label="Linear Halbach view controls">
-                <span className="halbach-control-group" role="group" aria-label="Viewport dimension">
+          </div>
+          {/* The dock follows the motor workspace: view tabs with zoom on one row,
+              labelled groups of layer controls on the next. */}
+          <div className="halbach-dock">
+            <div className="halbach-dock-strip">
+              <div className="halbach-dock-tabs" role="tablist" aria-label="Linear Halbach view">
+                {([
+                  ['geometry', 'Geometry'],
+                  ['mesh', 'Mesh'],
+                  ['field', 'Field solution'],
+                ] as Array<[LinearHalbachViewportMode, string]>).map(([mode, label]) => {
+                  const disabled = (mode === 'mesh' && mesh === null)
+                    || (mode === 'field' && report === null);
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      role="tab"
+                      aria-selected={viewportMode === mode}
+                      disabled={disabled}
+                      title={mode === 'mesh' && disabled
+                        ? 'Generate a mesh preview on the Solve step first'
+                        : mode === 'field' && disabled ? 'Run the solve first' : undefined}
+                      onClick={() => setViewportMode(mode)}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="halbach-dock-end">
+                <span className="halbach-dock-status" aria-live="polite">
+                {selectedMagnet == null ? (
+                    <span>{magnetCount} magnets · {config.geometry.period_count} periods</span>
+                  ) : (
+                    <>
+                      <span>
+                        Magnet {selectedMagnet + 1} · period {Math.floor(selectedMagnet / 4) + 1}
+                        {' · '}α {formatMetric(selectedAngle, 'deg')}
+                      </span>
+                      <button type="button" onClick={() => setSelectedMagnet(null)} aria-label="Clear magnet selection">×</button>
+                    </>
+                  )}
+                </span>
+                <span className="halbach-dock-zoom" ref={setZoomSlot} />
+              </div>
+            </div>
+            <div className="halbach-dock-controls" aria-label="Linear Halbach layer controls">
+              <span className="halbach-dock-group">
+                <span className="halbach-dock-label" aria-hidden="true">View</span>
+                <span className="halbach-dock-segmented" role="group" aria-label="Viewport dimension">
                   <button
                     type="button"
-                    className={viewDimension === '2d' ? 'is-active' : ''}
                     aria-pressed={viewDimension === '2d'}
                     onClick={() => setViewDimension('2d')}
                   >2D</button>
                   <button
                     type="button"
-                    className={viewDimension === '3d' ? 'is-active' : ''}
                     aria-pressed={viewDimension === '3d'}
                     onClick={() => setViewDimension('3d')}
                   >3D</button>
                 </span>
-                {report && viewportMode === 'field' && (
-                  <label className="halbach-result-view-control">
-                    <span>Field view</span>
-                    <select
-                      aria-label={`Linear Halbach ${viewDimension.toUpperCase()} extruded result view`}
-                      value={resultView}
-                      onChange={(event) => setResultView(
-                        event.target.value as LinearHalbachResultView,
-                      )}
-                    >
-                      <option value="magnitude">|B| heatmap</option>
-                      <option value="bx">B_x · along array</option>
-                      <option value="by">B_y · normal</option>
-                      <option value="az">A_z</option>
-                      <option value="vectors">Field vectors</option>
-                    </select>
-                  </label>
-                )}
-                {viewportMode !== 'field' && (
-                  <span className="halbach-control-group" role="group" aria-label="Linear 2D overlays">
-                    <button
-                      type="button"
-                      className={showMagnetization ? 'is-active' : ''}
-                      aria-pressed={showMagnetization}
-                      onClick={() => setShowMagnetization((value) => !value)}
-                    >
-                      Magnetization
-                    </button>
-                    <button
-                      type="button"
-                      className={showProbeOverlays ? 'is-active' : ''}
-                      aria-pressed={showProbeOverlays}
-                      onClick={() => setShowProbeOverlays((value) => !value)}
-                    >
-                      Evaluation lines
-                    </button>
+              </span>
+              {report && viewportMode === 'field' && (
+                <span className="halbach-dock-group">
+                  <span className="halbach-dock-label" aria-hidden="true">Field</span>
+                  <span
+                    className="halbach-dock-segmented"
+                    role="group"
+                    aria-label={`Linear Halbach ${viewDimension.toUpperCase()} extruded result view`}
+                  >
+                    {([
+                      ['magnitude', '|B|', 'Field magnitude'],
+                      ['bx', 'B_x', 'B_x · along the array'],
+                      ['by', 'B_y', 'B_y · normal to the array'],
+                      ['az', 'A_z', 'Vector potential'],
+                      ['vectors', 'Vectors', 'Field vectors'],
+                    ] as Array<[LinearHalbachResultView, string, string]>).map(([view, label, title]) => (
+                      <button
+                        key={view}
+                        type="button"
+                        title={title}
+                        aria-label={title}
+                        aria-pressed={resultView === view}
+                        onClick={() => setResultView(view)}
+                      >
+                        {label}
+                      </button>
+                    ))}
                   </span>
-                )}
-              </div>
-              <div className="halbach-viewport-status" aria-live="polite">
-                {selectedMagnet == null ? (
-                  <span>{magnetCount} magnets · {config.geometry.period_count} periods</span>
-                ) : (
+                </span>
+              )}
+              {viewportMode === 'field' && report && showFieldLines && (
+                <span className="halbach-dock-group">
+                  <span className="halbach-dock-label" aria-hidden="true">Line density</span>
+                  <span className="halbach-dock-segmented" role="group" aria-label="Linear Halbach field-line density">
+                    {(['low', 'medium', 'high'] as const).map((density) => (
+                      <button
+                        key={density}
+                        type="button"
+                        aria-pressed={fieldLineDensity === density}
+                        onClick={() => setFieldLineDensity(density)}
+                      >
+                        {density === 'low' ? 'Low' : density === 'medium' ? 'Med' : 'High'}
+                      </button>
+                    ))}
+                  </span>
+                </span>
+              )}
+              <span className="halbach-dock-group" role="group" aria-label="Layers shown">
+                <span className="halbach-dock-label" aria-hidden="true">Show</span>
+                {viewportMode === 'field' && report && (
                   <>
-                    <span>
-                      Magnet {selectedMagnet + 1} · period {Math.floor(selectedMagnet / 4) + 1}
-                      {' · '}α {formatMetric(selectedAngle, 'deg')}
-                    </span>
-                    <button type="button" onClick={() => setSelectedMagnet(null)} aria-label="Clear magnet selection">×</button>
+                    <button type="button" className="halbach-dock-toggle" aria-pressed={showFieldHeatmap} onClick={() => setShowFieldHeatmap((value) => !value)}>Flux density</button>
+                    <button type="button" className="halbach-dock-toggle" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)}>Field lines</button>
+                    <button type="button" className="halbach-dock-toggle" aria-pressed={showFieldMesh} onClick={() => setShowFieldMesh((value) => !value)}>Mesh</button>
                   </>
                 )}
-              </div>
+                <button type="button" className="halbach-dock-toggle" aria-pressed={showMagnetization} onClick={() => setShowMagnetization((value) => !value)}>Magnetization</button>
+                <button type="button" className="halbach-dock-toggle" aria-pressed={showProbeOverlays} onClick={() => setShowProbeOverlays((value) => !value)}>Evaluation lines</button>
+              </span>
             </div>
           </div>
         </section>
@@ -1309,7 +1295,7 @@ export function LinearHalbachWorkspace({
           {stage === 'report' && report && (
             <>
               <div className="halbach-panel-title">
-                <span className="eyebrow">Report</span>
+                <span className="eyebrow">Results</span>
                 <h2>One-sided field solution</h2>
                 <p>Finite linear array with centered evaluation lines</p>
               </div>

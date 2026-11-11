@@ -1775,6 +1775,7 @@ export function App() {
   if (showHalbachWorkspace) {
     return (
       <HalbachWorkspace
+        appVersion={appVersion}
         connectionStatus={connectionStatus}
         onHome={() => {
           setShowHalbachWorkspace(false);
