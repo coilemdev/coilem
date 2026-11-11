@@ -21,6 +21,7 @@ export type DimensionId =
   | 'bore-slot-opening'
   | 'slot-width-at-yoke'
   | 'yoke-thickness'
+  | 'rotor-back-iron'
   | 'stack-length';
 
 /** A straight measured span, in model mm. */
@@ -317,8 +318,7 @@ export function buildDimensionAnnotations(
   config: MotorConfig,
   geometry: GeometryPreview | null,
 ): DimensionAnnotation[] {
-  // These callouts measure an inner rotor inside a stator bore.
-  if (config.rotor_layout === 'outer') return [];
+  if (config.rotor_layout === 'outer') return buildOuterRotorDimensionAnnotations(config, geometry);
   const metadata = (geometry?.metadata ?? {}) as Record<string, unknown>;
   const statorOuterMm = config.stator.OD_mm / 2;
   const boreMm = config.stator.ID_mm / 2;
@@ -452,6 +452,159 @@ export function buildDimensionAnnotations(
       deg(200),
     )],
   });
+
+  annotations.push({
+    id: 'stack-length',
+    label: 'Stack length',
+    value: mm(config.stator.stack_length_mm, 0),
+    dash: [],
+    // Axial: there is nothing to point at in a cross-section.
+    shapes: [],
+    note: 'along the axis',
+  });
+
+  return annotations;
+}
+
+/**
+ * The same callouts for an outer rotor (#257). The stator sits inside: its OD
+ * is the air-gap face and its ID the hub bore, with the yoke on the hub and the
+ * teeth pointing outward. The magnets sit on the rotor's inner face (rotor ID).
+ */
+function buildOuterRotorDimensionAnnotations(
+  config: MotorConfig,
+  geometry: GeometryPreview | null,
+): DimensionAnnotation[] {
+  const metadata = (geometry?.metadata ?? {}) as Record<string, unknown>;
+  const gapFaceMm = config.stator.OD_mm / 2;
+  const hubBoreMm = config.stator.ID_mm / 2;
+  const rotorOuterMm = config.rotor.OD_mm / 2;
+  const magnetSeatMm = (config.rotor.ID_mm ?? 0) / 2;
+  const magnetFaceMm = magnetSeatMm - config.rotor.magnet_thickness_mm;
+  const yokeRadiusMm = Math.min(gapFaceMm, hubBoreMm + config.stator.yoke_thickness_mm);
+  const airgapMm = typeof metadata.airgap_mm === 'number'
+    ? metadata.airgap_mm
+    : Math.max(0, magnetFaceMm - gapFaceMm);
+
+  const tooth = firstRegionAngles(geometry, (t) => t.includes('tooth'));
+  const magnet = firstRegionAngles(geometry, (t) => t.startsWith('magnet_'));
+  const statorWidths = deriveStatorSectionWidths(config, geometry);
+
+  const mm = (value: number, digits = 1) => `${value.toFixed(digits)} mm`;
+  const annotations: DimensionAnnotation[] = [
+    {
+      id: 'rotor-od',
+      label: 'Rotor Ø',
+      value: mm(config.rotor.OD_mm),
+      dash: [2, 3],
+      shapes: [diameter(rotorOuterMm, Math.PI / 2)],
+    },
+    {
+      id: 'stator-od',
+      label: 'Stator Ø',
+      value: mm(config.stator.OD_mm),
+      dash: [7, 4],
+      shapes: [diameter(gapFaceMm, 0)],
+    },
+    {
+      id: 'bore',
+      label: 'Hub bore Ø',
+      value: mm(config.stator.ID_mm),
+      dash: [5, 3],
+      shapes: [diameter(hubBoreMm, deg(-45))],
+    },
+    {
+      id: 'airgap',
+      label: 'Airgap',
+      value: mm(airgapMm, 2),
+      dash: [1, 2],
+      shapes: [radialSpan(gapFaceMm, magnetFaceMm, deg(20))],
+    },
+  ];
+
+  if (magnet && magnetSeatMm > 0) {
+    annotations.push({
+      id: 'magnet-thickness',
+      label: 'Magnet t',
+      value: mm(config.rotor.magnet_thickness_mm),
+      dash: [3, 2],
+      shapes: [radialSpan(magnetFaceMm, magnetSeatMm, magnet.centreRad)],
+    });
+    annotations.push({
+      id: 'magnet-width',
+      label: 'Magnet w',
+      value: mm(config.rotor.magnet_width_mm),
+      dash: [6, 3],
+      shapes: [{
+        kind: 'arc',
+        radiusMm: magnetFaceMm,
+        startRad: magnet.centreRad - magnet.halfWidthRad,
+        endRad: magnet.centreRad + magnet.halfWidthRad,
+      }],
+    });
+  }
+
+  if (tooth) {
+    // The tooth region runs outward from the yoke, so its far end is the air gap.
+    const gapTooth = measureToothAtFraction(geometry, 1);
+    const yokeTooth = measureToothAtFraction(geometry, 0);
+    const slotPitchRad = (2 * Math.PI) / Math.max(1, config.stator.slot_count);
+    const slotCentreRad = tooth.centreRad + slotPitchRad / 2;
+    annotations.push({
+      id: 'bore-tooth-width',
+      label: 'Gap tooth',
+      value: mm(gapTooth?.widthMm ?? statorWidths.boreToothWidthMm),
+      dash: [4, 3],
+      shapes: [gapTooth
+        ? {
+          kind: 'segment',
+          from: polar(gapTooth.radiusMm, gapTooth.flanks[0]),
+          to: polar(gapTooth.radiusMm, gapTooth.flanks[1]),
+        }
+        : tangentialSpan(gapFaceMm, tooth.centreRad, statorWidths.boreToothWidthMm)],
+      note: 'the tooth tip at the air gap',
+    });
+    annotations.push({
+      id: 'tooth-width-at-yoke',
+      label: 'Yoke tooth',
+      value: mm(yokeTooth?.widthMm ?? statorWidths.toothWidthAtYokeMm),
+      dash: [7, 3],
+      shapes: [yokeTooth
+        ? {
+          kind: 'segment',
+          from: polar(yokeTooth.radiusMm, yokeTooth.flanks[0]),
+          to: polar(yokeTooth.radiusMm, yokeTooth.flanks[1]),
+        }
+        : tangentialSpan(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
+      note: 'the tooth body where it meets the yoke',
+    });
+    annotations.push({
+      id: 'bore-slot-opening',
+      label: 'Slot opening',
+      value: mm(config.stator.slot_opening_mm),
+      dash: [2, 2],
+      shapes: [tangentialSpan(gapFaceMm, slotCentreRad, config.stator.slot_opening_mm)],
+      note: 'the gap between tooth tips at the air gap',
+    });
+  }
+
+  annotations.push({
+    id: 'yoke-thickness',
+    label: 'Yoke thickness',
+    value: mm(config.stator.yoke_thickness_mm),
+    dash: [5, 4],
+    shapes: [radialSpan(hubBoreMm, yokeRadiusMm, deg(200))],
+  });
+
+  if (magnetSeatMm > 0 && rotorOuterMm > magnetSeatMm) {
+    annotations.push({
+      id: 'rotor-back-iron',
+      label: 'Rotor back iron',
+      value: mm(rotorOuterMm - magnetSeatMm),
+      dash: [3, 4],
+      shapes: [radialSpan(magnetSeatMm, rotorOuterMm, deg(160))],
+    });
+  }
 
   annotations.push({
     id: 'stack-length',

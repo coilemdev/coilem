@@ -158,6 +158,9 @@ def test_disconnected_stream_keeps_lane_until_worker_finishes(
     monkeypatch.setattr(routes, "_ACTIVE_SOLVE", {
         "running": False, "cancelled": False, "solver": None, "run_writer": None,
     })
+    # The worker is held until the test releases it, so the cancel request
+    # must answer without waiting for the lane.
+    monkeypatch.setattr(routes, "_CANCEL_RELEASE_WAIT_S", 0.0)
     monkeypatch.setattr(routes.asyncio, "Queue", TrackingQueue)
     monkeypatch.setattr(routes, "_create_public_solver", lambda *args: solver)
     monkeypatch.setattr(routes, "Magneto2DSolver", lambda **kwargs: solver)
@@ -352,3 +355,50 @@ def test_solve_time_is_the_calls_wall_clock_time(monkeypatch, public_config, iso
     assert 0 <= result.summary.solve_time_s < 30
     assert result.solve_metadata.solve_time_s == result.summary.solve_time_s
     assert result.solve_metadata.solver_cpu_time_s == summed
+
+
+def test_cancel_answers_only_after_the_solve_lane_is_free(monkeypatch):
+    """A rerun straight after Cancel must not meet SOLVE_ALREADY_RUNNING (#266)."""
+
+    class SlowToStop:
+        def __init__(self):
+            self.cancel_requested = threading.Event()
+
+        def cancel_active_solve(self):
+            self.cancel_requested.set()
+
+    solver = SlowToStop()
+    monkeypatch.setattr(routes, "_ACTIVE_SOLVE", {
+        "running": False, "cancelled": False, "solver": None, "run_writer": None,
+    })
+    routes._claim_solve(solver)
+
+    async def scenario():
+        async def worker_stops_later():
+            await asyncio.to_thread(solver.cancel_requested.wait, 5)
+            await asyncio.sleep(0.2)  # still meshing: the lane stays claimed
+            routes._release_solve(solver)
+
+        worker = asyncio.create_task(worker_stops_later())
+        answer = await routes.cancel_solve()
+        assert answer == {"status": "cancelled"}
+        assert not routes._ACTIVE_SOLVE["running"]
+        routes._claim_solve(SlowToStop())  # the rerun is accepted
+        await worker
+
+    asyncio.run(scenario())
+
+
+def test_cancel_stops_waiting_for_a_worker_that_never_returns(monkeypatch):
+    class Stuck:
+        def cancel_active_solve(self):
+            pass
+
+    solver = Stuck()
+    monkeypatch.setattr(routes, "_ACTIVE_SOLVE", {
+        "running": False, "cancelled": False, "solver": None, "run_writer": None,
+    })
+    monkeypatch.setattr(routes, "_CANCEL_RELEASE_WAIT_S", 0.1)
+    routes._claim_solve(solver)
+    assert asyncio.run(routes.cancel_solve()) == {"status": "cancelling"}
+    assert routes._ACTIVE_SOLVE["running"]

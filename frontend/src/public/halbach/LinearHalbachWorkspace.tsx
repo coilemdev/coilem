@@ -8,10 +8,12 @@ import {
 } from 'react';
 
 import {
+  downloadHalbachExport,
   fetchLinearHalbachMesh,
   fetchLinearHalbachPreview,
   streamLinearHalbachSolve,
   validateLinearHalbach,
+  type HalbachExportKind,
 } from './api';
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../../api/projectSchema';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION, designFileBaseName } from '../designFile';
@@ -21,6 +23,8 @@ import {
   type LinearHalbachViewportMode,
 } from './LinearHalbach2DViewport';
 import { LinearHalbach3DViewer } from './LinearHalbach3DViewer';
+import { hasLinearHalbachConfigShape, isRestorableLinearHalbachConfig } from './geometry';
+import { WorkspaceErrorBoundary } from '../WorkspaceErrorBoundary';
 import {
   cloneDefaultLinearHalbachConfig,
   type HalbachSolveProgress,
@@ -217,9 +221,10 @@ function collectLocalErrors(config: LinearHalbachArrayConfig): ValidationIssue[]
       add('magnet.source_note', 'A material source note is required.');
     }
   }
+  // Written as "not in range" so an empty field (not a number) is reported too.
   if (
-    config.solve.mesh.outer_padding_factor < 0.5
-    || config.solve.mesh.outer_padding_factor > 10
+    !(config.solve.mesh.outer_padding_factor >= 0.5
+      && config.solve.mesh.outer_padding_factor <= 10)
   ) {
     add('solve.mesh.outer_padding_factor', 'Outer padding factor must be from 0.5 through 10.');
   }
@@ -365,6 +370,9 @@ export function LinearHalbachWorkspace({
   }, [config, localErrors]);
 
   useEffect(() => {
+    // A design that cannot be restored is not stored, so the last good draft
+    // stays in place while a value is being corrected.
+    if (!isRestorableLinearHalbachConfig(config)) return;
     const project: LinearHalbachProjectFile = {
       openem_schema_version: COILEM_SCHEMA_VERSION,
       project_kind: 'halbach_array',
@@ -470,6 +478,7 @@ export function LinearHalbachWorkspace({
         migrated.fromFuture
         || payload.project_kind !== 'halbach_array'
         || payload.halbach_config?.kind !== 'linear_halbach_array_config'
+        || !hasLinearHalbachConfigShape(payload.halbach_config)
       ) {
         throw new Error('This file is not a supported linear Halbach array project.');
       }
@@ -482,6 +491,21 @@ export function LinearHalbachWorkspace({
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason));
     }
+  };
+
+  const exportResult = async (kind: HalbachExportKind) => {
+    if (!report) return;
+    setError(null);
+    try {
+      await downloadHalbachExport(kind, report);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : String(reason));
+    }
+  };
+
+  const resetDesign = () => {
+    setProjectName('Linear Halbach array');
+    changeConfig(cloneDefaultLinearHalbachConfig());
   };
 
   const updateTopology = (topology: HalbachTopology) => {
@@ -1054,6 +1078,14 @@ export function LinearHalbachWorkspace({
 
         <section className="halbach-stage-panel">
           <div className="halbach-viewport-shell">
+            <WorkspaceErrorBoundary
+              title="This view could not be drawn"
+              message="A design value could not be displayed. Correct it in the Design panel, or reset the design to the example values."
+              actionLabel="Reset design"
+              onAction={resetDesign}
+              retryKey={config}
+              className="halbach-view-error"
+            >
             {viewDimension === '2d' ? (
               <LinearHalbach2DViewport
                 config={config}
@@ -1088,6 +1120,7 @@ export function LinearHalbachWorkspace({
                 showProbeOverlays={showProbeOverlays}
               />
             )}
+            </WorkspaceErrorBoundary>
           </div>
           {/* The dock follows the motor workspace: view tabs with zoom on one row,
               labelled groups of layer controls on the next. */}
@@ -1352,6 +1385,25 @@ export function LinearHalbachWorkspace({
                   ['working_field', 'sample_count'],
                 ))}</strong></div>
               </details>
+              <div className="halbach-exports" aria-label="Report exports">
+                {([
+                  ['report', 'Halbach JSON'],
+                  ['problem', 'Problem JSON'],
+                  ['field', 'Field JSON'],
+                  ['csv', 'Samples CSV'],
+                  ['svg', 'Design SVG'],
+                  ['png', 'Design PNG'],
+                  ['pdf', 'Report PDF'],
+                ] as Array<[HalbachExportKind, string]>).map(([kind, label]) => (
+                  <button
+                    key={kind}
+                    type="button"
+                    onClick={() => void exportResult(kind)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
               <div className="halbach-fidelity-card">{LINEAR_HALBACH_MODEL_NOTICE}</div>
             </>
           )}

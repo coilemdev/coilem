@@ -149,6 +149,8 @@ interface SolvedFieldViewerProps {
   armatureBusy: boolean;
   armatureError: string | null;
   magnetoCompositionAvailable: boolean;
+  /** Why this run has no stator-only field (for example a cogging-only run), or null. */
+  statorFieldUnavailableReason?: string | null;
   onRequestArmature: () => void;
   /** The Solve tab's waveform plots: they set the field's position and show it. */
   positionLink?: FieldPositionLink;
@@ -214,7 +216,8 @@ export function SolvedFieldViewer({
   armature,
   armatureBusy,
   armatureError,
-  magnetoCompositionAvailable,
+  magnetoCompositionAvailable: solverSupportsComposition,
+  statorFieldUnavailableReason = null,
   onRequestArmature,
   positionLink,
 }: SolvedFieldViewerProps) {
@@ -482,6 +485,7 @@ export function SolvedFieldViewer({
     // the frame-zero polarity profile.
     ? -mechanicalAngleDeg
     : 0;
+  const magnetoCompositionAvailable = solverSupportsComposition && !statorFieldUnavailableReason;
   const pmAvailable = resultantFrames.some((frame) => frame.has_pm_only);
   const hasMagnets = Boolean(geometry?.regions.some((region) => /magnet/i.test(region.region_type)));
   const desiredBufferFrames = Math.max(
@@ -1304,7 +1308,7 @@ export function SolvedFieldViewer({
               <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
               <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
                 <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
-                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
+                <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : statorFieldUnavailableReason ?? 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
               </span>
             </div>
           </div>

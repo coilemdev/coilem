@@ -10,6 +10,7 @@ import {
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
 import type { ComparisonResult } from './runComparison';
+import { torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
 
@@ -30,11 +31,13 @@ const METRICS: Array<{
   unit: string;
   deltaUnit?: string;
   digits?: number;
+  /** A torque in N·m: small values keep three significant figures (#270). */
+  torque?: boolean;
   /** Shown only when either run has the value. */
   optional?: boolean;
   value: (result: ComparisonResult) => number | null | undefined;
 }> = [
-  { label: 'Average torque', unit: 'N·m', value: (run) => run.summary.avg_torque_Nm },
+  { label: 'Average torque', unit: 'N·m', torque: true, value: (run) => run.summary.avg_torque_Nm },
   // No percentage where it means nothing (no current, near-zero average).
   { label: 'Torque ripple', unit: '%', deltaUnit: 'pp', value: (run) => torqueRippleView(run).ripplePct },
   { label: 'Back EMF', unit: 'V', value: (run) => run.summary.back_emf_fundamental_V },
@@ -44,8 +47,8 @@ const METRICS: Array<{
   { label: 'Torque constant', unit: 'N·m/A rms', value: (run) => motorConstantsView(run.summary).kt.value },
   { label: 'Back EMF THD (headline)', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.back_emf_thd_pct },
   // The cogging sweep (#185), for runs that solved one.
-  { label: 'Cogging torque p-p', unit: 'N·m', optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
-  { label: 'Cogging fundamental', unit: 'N·m', optional: true, value: (run) => run.summary.cogging?.first_harmonic_Nm },
+  { label: 'Cogging torque p-p', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
+  { label: 'Cogging fundamental', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.first_harmonic_Nm },
   { label: 'Solve time', unit: 's', digits: 1, value: (run) => run.summary.solve_time_s },
 ];
 
@@ -474,7 +477,13 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
           {METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
             const leftValue = metric.value(left.result);
             const rightValue = metric.value(right.result);
-            return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, metric.digits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, metric.digits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, metric.digits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
+            // Each torque keeps its own three significant figures, so a small
+            // motor still reads 0.0641 beside a large one (#270); the delta
+            // is only as precise as the coarser of the two.
+            const leftDigits = metric.torque ? torqueDecimals(leftValue) : metric.digits;
+            const rightDigits = metric.torque ? torqueDecimals(rightValue) : metric.digits;
+            const deltaDigits = metric.torque ? Math.min(torqueDecimals(leftValue), torqueDecimals(rightValue)) : metric.digits;
+            return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, leftDigits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, rightDigits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, deltaDigits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
           })}
         </div>
         {(torqueAvailable || emfAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">

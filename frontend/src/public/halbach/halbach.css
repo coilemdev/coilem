@@ -1649,3 +1649,36 @@ button.halbach-dock-toggle[aria-pressed="true"]::before { border-color: var(--te
   .halbach-app .halbach-config-panel { overflow: visible; }
   .halbach-panel-scroll { flex: 0 0 auto; overflow: visible; }
 }
+
+/* Shown in place of a viewer, or of the whole workspace, that failed to draw. */
+.workspace-error-boundary {
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  justify-items: start;
+  max-width: 440px;
+  margin: auto;
+  padding: 22px 24px;
+  border: 1px solid #c84f4f;
+  border-radius: 10px;
+  color: #772c2c;
+  background: #fff0f0;
+  font: 500 13px/1.45 var(--font-ui, system-ui, sans-serif);
+}
+.workspace-error-boundary strong { font-size: 15px; }
+.workspace-error-boundary p { margin: 0; }
+.workspace-error-boundary-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.workspace-error-boundary-actions button {
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid #c84f4f;
+  border-radius: 7px;
+  color: #772c2c;
+  background: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.workspace-error-boundary-actions button:first-child { color: #fff; background: #a83d3d; }
+.halbach-view-error { align-self: center; justify-self: center; }
+.halbach-workspace-error { margin: 12vh auto 0; }

@@ -18,11 +18,13 @@ import {
 import type { LessonTerm } from './lab/LessonLab';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import { useLearningProgress } from './useLearningProgress';
+import { readLessonSession, useLessonResume, writeLessonSessionValue } from './lessonSession';
 import {
   BEMF_ANGLE_CHECKPOINTS, BEMF_LAB_BASELINE, BEMF_RECOVERY_RPM,
   backEmfAnglesInspected, backEmfLabComplete, backEmfLabReducer,
   backEmfPhaseVoltage as phaseVoltageAt, calculateBackEmfState, createBackEmfLabProgress,
 } from './lessonTenBackEmf';
+import type { BackEmfLabProgress } from './lessonTenBackEmf';
 import type {
   LearningLessonHeaderProgress,
   LearningLessonProgressStep,
@@ -425,6 +427,19 @@ function BEMFChart({
   );
 }
 
+const LESSON_ID = 'back-emf-voltage-headroom';
+
+/** The lab checkpoints as stored for the tab, or null when nothing valid is stored. */
+function storedLabProgress(): BackEmfLabProgress | null {
+  const stored = readLessonSession(LESSON_ID).labProgress as Partial<BackEmfLabProgress> | undefined;
+  if (!stored || typeof stored !== 'object' || !Array.isArray(stored.inspectedAngles)) return null;
+  return {
+    inspectedAngles: BEMF_ANGLE_CHECKPOINTS.filter((angle) => stored.inspectedAngles?.includes(angle)),
+    reserveCrossed: stored.reserveCrossed === true,
+    recovered: stored.recovered === true,
+  };
+}
+
 export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProps> = ({
   onBackToCatalog, onBackHome, stage, onStageChange, onHeaderProgressChange,
 }) => {
@@ -439,8 +454,19 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
   const [knowledgePassed, setKnowledgePassed] = React.useState(false);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [canvasView, setCanvasView] = React.useState<CanvasView>('wave');
-  const [labProgress, dispatchLab] = React.useReducer(backEmfLabReducer, undefined, createBackEmfLabProgress);
-  const { setLessonComplete } = useLearningProgress();
+  const { isLessonComplete, setLessonComplete } = useLearningProgress();
+  // A finished lesson reopens with every exercise available; a lesson in
+  // progress reopens with the checkpoints already earned in this tab.
+  const [labProgress, dispatchLab] = React.useReducer(backEmfLabReducer, undefined, () => (
+    isLessonComplete(LESSON_ID)
+      ? { inspectedAngles: [...BEMF_ANGLE_CHECKPOINTS], reserveCrossed: true, recovered: true }
+      : storedLabProgress() ?? createBackEmfLabProgress()
+  ));
+  React.useEffect(() => {
+    writeLessonSessionValue(LESSON_ID, 'labProgress', labProgress);
+  }, [labProgress]);
+  // The exercise the lesson was left on, read once when it opens.
+  const storedStageRef = React.useRef(readLessonSession(LESSON_ID).stage);
   const anglesInspected = backEmfAnglesInspected(labProgress);
   const labComplete = backEmfLabComplete(labProgress);
   // The check is only ever shown once all three exercises are done.
@@ -488,7 +514,7 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
   }, [checkOpen]);
 
   React.useEffect(() => {
-    if (labComplete && knowledgePassed) setLessonComplete('back-emf-voltage-headroom', true);
+    if (labComplete && knowledgePassed) setLessonComplete(LESSON_ID, true);
   }, [labComplete, knowledgePassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -522,6 +548,13 @@ export const LearningLessonThreeBackEmf: React.FC<LearningLessonThreeBackEmfProp
     setReservePct(BEMF_LAB_BASELINE.reservePct);
     setRpm(nextStage === 'solve' ? BEMF_RECOVERY_RPM : BEMF_LAB_BASELINE.rpm);
   }, [onStageChange]);
+
+  // Reopened after a reload or a trip to the catalog: back to the exercise the
+  // student was on. Nothing is solved here, so there is nothing to wait for.
+  useLessonResume(LESSON_ID, lessonStage, () => {
+    const storedStage = storedStageRef.current;
+    if (storedStage === 'mesh' || storedStage === 'solve') setLessonStage(storedStage);
+  });
 
   const handleAngleChange = (nextAngle: number) => {
     setIsRotorAnimating(false);

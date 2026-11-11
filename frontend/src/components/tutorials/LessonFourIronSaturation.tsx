@@ -7,6 +7,7 @@ import type {
 } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonResume, useLessonSessionState } from './lessonSession';
 import { MeshViewer } from './MeshViewer';
 import { MotorTooth3D } from './MotorTooth3D';
 import { CurrentConductor3D } from './CurrentConductor3D';
@@ -109,6 +110,7 @@ interface SpmToothRun extends Omit<ToothRun, 'data'> {
   data: IronSaturationSpmToothFieldData;
 }
 
+const LESSON_ID = 'iron-saturation';
 const LOW_CURRENT_A = 10;
 const KNEE_CURRENT_A = 100;
 const HIGH_CURRENT_A = 800;
@@ -407,13 +409,15 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   const inspectorRef = React.useRef<HTMLElement | null>(null);
   const inspectorFlashTimer = React.useRef<number | null>(null);
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
-  const [prediction, setPrediction] = React.useState<Prediction | null>(null);
+  const [prediction, setPrediction] = useLessonSessionState<Prediction | null>(
+    LESSON_ID, 'prediction', null, oneOf<Prediction>(['linear', 'knee', 'fall']),
+  );
   const [currentA, setCurrentA] = React.useState(LOW_CURRENT_A);
   const [runs, setRuns] = React.useState<SaturationRun[]>([]);
-  const [toothPhaseOpen, setToothPhaseOpen] = React.useState(false);
+  const [toothPhaseOpen, setToothPhaseOpen] = useLessonSessionState(LESSON_ID, 'toothPhaseOpen', false);
   const [toothCurrentA, setToothCurrentA] = React.useState(TOOTH_LOW_CURRENT_A);
   const [toothRuns, setToothRuns] = React.useState<ToothRun[]>([]);
-  const [spmPhaseOpen, setSpmPhaseOpen] = React.useState(false);
+  const [spmPhaseOpen, setSpmPhaseOpen] = useLessonSessionState(LESSON_ID, 'spmPhaseOpen', false);
   const [spmCurrentA, setSpmCurrentA] = React.useState(SPM_BASELINE_CURRENT_A);
   const [spmRuns, setSpmRuns] = React.useState<SpmToothRun[]>([]);
   const [busy, setBusy] = React.useState(false);
@@ -432,7 +436,13 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
-  const lessonComplete = isLessonComplete('iron-saturation');
+  const lessonComplete = isLessonComplete(LESSON_ID);
+  // How far the student got, kept for the tab so a reload does not lock the
+  // later steps again. The solved fields are not kept: each part is solved
+  // again with its own button.
+  const [ringReached, setRingReached] = useLessonSessionState(LESSON_ID, 'ringReached', false);
+  const [toothReached, setToothReached] = useLessonSessionState(LESSON_ID, 'toothReached', false);
+  const [spmReached, setSpmReached] = useLessonSessionState(LESSON_ID, 'spmReached', false);
 
   const predictionCorrect = prediction === 'knee';
   const lowRun = runs.find((run) => run.currentA <= 20) ?? null;
@@ -445,6 +455,19 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   const spmBaselineRun = spmRuns.find((run) => run.currentA <= 0.1) ?? null;
   const spmHighRun = spmRuns.find((run) => Math.abs(run.currentA - SPM_HIGH_CURRENT_A) < 0.1) ?? null;
   const spmComparisonReady = Boolean(spmBaselineRun && spmHighRun);
+  // A finished lesson reopens with every step available.
+  const predictionDone = lessonComplete || predictionCorrect;
+  const ringDone = lessonComplete || ringReached || comparisonReady;
+  const lowDone = ringDone || Boolean(lowRun);
+  const kneeDone = ringDone || Boolean(kneeRun);
+  const toothDone = lessonComplete || toothReached || toothComparisonReady;
+  const spmDone = lessonComplete || spmReached || spmComparisonReady;
+
+  React.useEffect(() => {
+    if (comparisonReady) setRingReached(true);
+    if (toothComparisonReady) setToothReached(true);
+    if (spmComparisonReady) setSpmReached(true);
+  }, [comparisonReady, setRingReached, setSpmReached, setToothReached, spmComparisonReady, toothComparisonReady]);
   const currentRun = runs.find((run) => Math.abs(run.currentA - currentA) < 0.1) ?? null;
   const shownRun = currentRun ?? runs[0] ?? null;
   const toothCurrentRun = toothRuns.find((run) => Math.abs(run.currentA - toothCurrentA) < 0.1) ?? null;
@@ -482,57 +505,63 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
       setToothPhaseOpen(false);
       setSpmPhaseOpen(false);
       onStageChange?.('design');
-    } else if (next === 'low' && predictionCorrect) {
+    } else if (next === 'low' && predictionDone) {
       setQuizOpen(false);
       setToothPhaseOpen(false);
       setSpmPhaseOpen(false);
       onStageChange?.('solve');
       setCurrentA(LOW_CURRENT_A);
-    } else if (next === 'knee' && lowRun) {
+    } else if (next === 'knee' && lowDone) {
       setQuizOpen(false);
       setToothPhaseOpen(false);
       setSpmPhaseOpen(false);
       onStageChange?.('solve');
       setCurrentA(KNEE_CURRENT_A);
-    } else if (next === 'saturation' && kneeRun) {
+    } else if (next === 'saturation' && kneeDone) {
       setQuizOpen(false);
       setToothPhaseOpen(false);
       setSpmPhaseOpen(false);
       onStageChange?.('solve');
       setCurrentA(HIGH_CURRENT_A);
-    } else if (next === 'tooth' && comparisonReady) {
+    } else if (next === 'tooth' && ringDone) {
       setQuizOpen(false);
       setToothPhaseOpen(true);
       setSpmPhaseOpen(false);
       onStageChange?.('solve');
-    } else if (next === 'spm' && toothComparisonReady) {
+    } else if (next === 'spm' && toothDone) {
       setQuizOpen(false);
       setToothPhaseOpen(false);
       setSpmPhaseOpen(true);
       onStageChange?.('solve');
-    } else if (next === 'check' && spmComparisonReady) {
+    } else if (next === 'check' && spmDone) {
       onStageChange?.('solve');
       setQuizOpen(true);
     }
   }, [
-    comparisonReady,
-    kneeRun,
-    lowRun,
+    kneeDone,
+    lowDone,
     onStageChange,
-    predictionCorrect,
-    spmComparisonReady,
-    toothComparisonReady,
+    predictionDone,
+    ringDone,
+    spmDone,
+    toothDone,
   ]);
 
   const lessonProgressSteps = React.useMemo<LearningLessonProgressStep[]>(() => [
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
-    { id: 'low', label: 'Low field', complete: Boolean(lowRun), available: predictionCorrect },
-    { id: 'knee', label: 'Knee', complete: Boolean(kneeRun), available: Boolean(lowRun) },
-    { id: 'saturation', label: 'Saturation', complete: comparisonReady, available: Boolean(kneeRun) },
-    { id: 'tooth', label: 'Motor tooth', complete: toothComparisonReady, available: comparisonReady },
-    { id: 'spm', label: 'SPM pole', complete: spmComparisonReady, available: toothComparisonReady },
-    { id: 'check', label: 'Check', complete: quizPassed, available: spmComparisonReady },
+    { id: 'low', label: 'Low field', complete: Boolean(lowRun), available: predictionDone },
+    { id: 'knee', label: 'Knee', complete: Boolean(kneeRun), available: lowDone },
+    { id: 'saturation', label: 'Saturation', complete: comparisonReady, available: kneeDone },
+    { id: 'tooth', label: 'Motor tooth', complete: toothComparisonReady, available: ringDone },
+    { id: 'spm', label: 'SPM pole', complete: spmComparisonReady, available: toothDone },
+    { id: 'check', label: 'Check', complete: quizPassed, available: spmDone },
   ], [
+    kneeDone,
+    lowDone,
+    predictionDone,
+    ringDone,
+    spmDone,
+    toothDone,
     comparisonReady,
     kneeRun,
     lowRun,
@@ -557,7 +586,7 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   }, [headerProgress, onHeaderProgressChange]);
 
   React.useEffect(() => {
-    if (quizPassed) setLessonComplete('iron-saturation', true);
+    if (quizPassed) setLessonComplete(LESSON_ID, true);
   }, [quizPassed, setLessonComplete]);
 
   React.useEffect(() => {
@@ -581,6 +610,10 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
     setQuizOpen(false);
     onStageChange?.('solve');
   };
+
+  // Reopened after a reload or a trip to the catalog: back to the part of the
+  // lab the student was in (ring, tooth or SPM pole).
+  useLessonResume(LESSON_ID, lessonStage, predictionDone ? openLab : null);
 
   const guidedCurrent = !lowRun ? LOW_CURRENT_A : !kneeRun ? KNEE_CURRENT_A : !highRun ? HIGH_CURRENT_A : currentA;
 

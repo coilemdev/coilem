@@ -174,7 +174,8 @@ export type HalbachExportKind = 'report' | 'problem' | 'field' | 'csv' | 'svg' |
 
 export async function downloadHalbachExport(
   kind: HalbachExportKind,
-  report: HalbachReport,
+  // One export route serves both topologies; the report names its own kind.
+  report: HalbachReport | LinearHalbachReport,
 ): Promise<void> {
   const response = await fetch(`${PUBLIC_API_BASE}/halbach/export/${kind}`, {
     method: 'POST',

@@ -18,6 +18,7 @@ import {
   torqueRange,
   torqueRippleView,
 } from './resultMetrics';
+import { formatTorqueNm, torqueDecimals } from './numberFormat';
 
 const TIMING_HELP = 'Solver time is the wall-clock time for meshing, solving and building the result. '
   + 'Total elapsed also covers playback images and saving, measured in the browser through receipt of the saved result.';
@@ -82,6 +83,8 @@ export function ResultSummary({
   const rpm = config.solve_params.rated_speed_rpm;
   const preview = sixStep && !completeLoadedCycle ? ' · preview only' : '';
   const range = torqueRange(result.torque_waveform.torque_Nm);
+  // One precision for the average and its range, so the three numbers line up.
+  const torquePlaces = torqueDecimals(summary.avg_torque_Nm, range?.min, range?.max);
   const ripple = torqueRippleView(result);
   const sparkline = sparklinePath(result.torque_waveform.torque_Nm, SPARKLINE_WIDTH, SPARKLINE_HEIGHT);
   // Phases A, B and C on one scale, in the Back EMF chart's colours.
@@ -147,7 +150,7 @@ export function ResultSummary({
         {hasTorque && <article className="public-result-hero">
           <span>Average torque{preview}</span>
           <div>
-            <strong>{fixed(summary.avg_torque_Nm)} <small>N·m</small></strong>
+            <strong>{formatTorqueNm(summary.avg_torque_Nm, torquePlaces)} <small>N·m</small></strong>
             {sparkline && (
               <svg viewBox={`0 0 ${SPARKLINE_WIDTH} ${SPARKLINE_HEIGHT}`} width={SPARKLINE_WIDTH} height={SPARKLINE_HEIGHT} aria-hidden="true">
                 <path d={sparkline} />
@@ -156,9 +159,9 @@ export function ResultSummary({
           </div>
           <p title={ripple.note ?? undefined}>
             {ripple.ripplePct === null
-              ? `${ripple.peakToPeakLabel} ${fixed(ripple.peakToPeakNm)} N·m`
+              ? `${ripple.peakToPeakLabel} ${formatTorqueNm(ripple.peakToPeakNm)} N·m`
               : `Ripple ${fixed(ripple.ripplePct, 1)}%`}{preview}
-            {range ? ` · ${fixed(range.min)} – ${fixed(range.max)} N·m` : ''}
+            {range ? ` · ${formatTorqueNm(range.min, torquePlaces)} – ${formatTorqueNm(range.max, torquePlaces)} N·m` : ''}
           </p>
         </article>}
         {hasBackEmf && <article className="public-result-emf">

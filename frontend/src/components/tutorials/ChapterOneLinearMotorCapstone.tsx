@@ -25,6 +25,7 @@ import type { MeshViewerPointLabel } from './MeshViewer';
 import type { LinearMotorCapstoneFieldData } from './lessonSolveTypes';
 import { useLessonSolveClient } from './lessonSolveClient';
 import { useLearningProgress } from './useLearningProgress';
+import { oneOf, useLessonSessionState } from './lessonSession';
 import './linear-motor-capstone.css';
 
 interface ChapterOneLinearMotorCapstoneProps {
@@ -42,6 +43,7 @@ type GoalPhase = Exclude<CapstonePhase, 'complete'>;
 
 const MAGNET_X = [190, 370, 550, 730] as const;
 const WINDING_SIGNS = [1, -1, 1, -1] as const;
+const LESSON_ID = 'review-fields';
 const FORCE_TARGET_N = 0.25;
 const PITCH_PRESETS = [
   { id: '12', label: 'Tight' },
@@ -233,16 +235,32 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
 }) => {
   const solveClient = useLessonSolveClient();
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
-  const [phase, setPhase] = React.useState<CapstonePhase>('build');
+  // The step and the design choices are kept for the tab, so a reload or a
+  // trip to the catalog comes back to the same machine. The solved field is
+  // not kept: the step's main button solves it again.
+  const [phase, setPhase] = useLessonSessionState<CapstonePhase>(
+    LESSON_ID, 'phase', 'build', oneOf<CapstonePhase>(['build', 'move', 'strengthen', 'reveal', 'complete']),
+  );
   const [viewMode, setViewMode] = React.useState<ViewMode>('2d');
   const [showFieldLines, setShowFieldLines] = React.useState(true);
   const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMesh, setShowMesh] = React.useState(false);
-  const [magnetOrientations, setMagnetOrientations] = React.useState<number[]>([1, 1, 1, 1]);
-  const [currentSign, setCurrentSign] = React.useState<1 | -1>(1);
-  const [currentA, setCurrentA] = React.useState(8);
-  const [gapMm, setGapMm] = React.useState(8);
-  const [windingSpacingMm, setWindingSpacingMm] = React.useState(18);
+  const [magnetOrientations, setMagnetOrientations] = useLessonSessionState<number[]>(
+    LESSON_ID, 'magnetOrientations', [1, 1, 1, 1],
+    (value) => Array.isArray(value) && value.length === 4 && value.every((item) => item === 1 || item === -1),
+  );
+  const [currentSign, setCurrentSign] = useLessonSessionState<1 | -1>(
+    LESSON_ID, 'currentSign', 1, (value) => value === 1 || value === -1,
+  );
+  const [currentA, setCurrentA] = useLessonSessionState(
+    LESSON_ID, 'currentA', 8, (value) => typeof value === 'number' && value >= 4 && value <= 12,
+  );
+  const [gapMm, setGapMm] = useLessonSessionState(
+    LESSON_ID, 'gapMm', 8, (value) => typeof value === 'number' && value >= 2 && value <= 10,
+  );
+  const [windingSpacingMm, setWindingSpacingMm] = useLessonSessionState(
+    LESSON_ID, 'windingSpacingMm', 18, (value) => value === 12 || value === 18 || value === 22,
+  );
   const [trackTested, setTrackTested] = React.useState(false);
   const [energized, setEnergized] = React.useState(false);
   const [runOnce, setRunOnce] = React.useState(false);
@@ -273,7 +291,7 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
   const trackReady = coherence >= 0.74;
   const movesRight = energized && fieldStatus === 'solved' && forceDirection > 0;
   const strengthReady = movesRight && signedForceN >= FORCE_TARGET_N && saturationPercent < 90;
-  const complete = isLessonComplete('review-fields');
+  const complete = isLessonComplete(LESSON_ID);
   const conductorLabels = React.useMemo<MeshViewerPointLabel[]>(() => (
     windingCentersMm(windingSpacingMm).map((xMm, index) => {
       const windingSign = WINDING_SIGNS[index] ?? 1;
@@ -326,10 +344,11 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
 
   const steps = React.useMemo(() => [
     { id: 'build', label: 'Build', complete: phase !== 'build', available: true },
-    { id: 'move', label: 'Make it move', complete: ['strengthen', 'reveal', 'complete'].includes(phase), available: phase !== 'build' },
-    { id: 'strengthen', label: 'Make it stronger', complete: ['reveal', 'complete'].includes(phase), available: ['strengthen', 'reveal', 'complete'].includes(phase) },
-    { id: 'reveal', label: 'See it work', complete: phase === 'complete', available: ['reveal', 'complete'].includes(phase) },
-  ], [phase]);
+    // A finished capstone reopens with every step available.
+    { id: 'move', label: 'Make it move', complete: ['strengthen', 'reveal', 'complete'].includes(phase), available: complete || phase !== 'build' },
+    { id: 'strengthen', label: 'Make it stronger', complete: ['reveal', 'complete'].includes(phase), available: complete || ['strengthen', 'reveal', 'complete'].includes(phase) },
+    { id: 'reveal', label: 'See it work', complete: phase === 'complete', available: complete || ['reveal', 'complete'].includes(phase) },
+  ], [complete, phase]);
 
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
     eyebrow: 'Chapter 1 capstone',
@@ -342,9 +361,28 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
       const target = steps.find((step) => step.id === stepId);
       if (!target?.available) return;
       setPhase(stepId as Exclude<CapstonePhase, 'complete'>);
-      if (stepId === 'reveal') setViewMode('3d');
+      if (stepId === 'reveal') {
+        setViewMode('3d');
+        // Opened without a solved field (a finished capstone, reopened): solve
+        // the machine as it is set, so the result shown is a measured one.
+        if (!fieldData && fieldStatus !== 'solving') {
+          void solveField(currentA * currentSign).then((solved) => {
+            if (solved) setEnergized(true);
+          });
+        }
+      }
     },
-  }), [phase, steps]);
+  }), [currentA, currentSign, fieldData, fieldStatus, phase, solveField, steps]);
+
+  // The last two steps show a solved, energized machine. Reopened after a
+  // reload there is no solved field yet, so come back one step earlier: its
+  // main button solves the machine and moves on again.
+  const resumeChecked = React.useRef(false);
+  React.useEffect(() => {
+    if (resumeChecked.current) return;
+    resumeChecked.current = true;
+    if (phase === 'reveal' || phase === 'complete') setPhase('strengthen');
+  }, [phase, setPhase]);
 
   React.useEffect(() => {
     onHeaderProgressChange?.(headerProgress);
@@ -445,7 +483,7 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
         return;
       }
       setPhase('complete');
-      setLessonComplete('review-fields', true);
+      setLessonComplete(LESSON_ID, true);
       // The chapter result has just appeared in the Inspect card.
       flashInspector();
     }

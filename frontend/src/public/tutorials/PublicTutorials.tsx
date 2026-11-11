@@ -7,6 +7,7 @@ import type {
   LearningLessonStage,
 } from '../../components/tutorials/lessonStage';
 import { useLearningProgress } from '../../components/tutorials/useLearningProgress';
+import { clearLessonSession } from '../../components/tutorials/lessonSession';
 import { connectPublicLearningProgress } from './publicLearningProgress';
 import { publicLessonSolveClient } from './publicLessonSolveClient';
 import {
@@ -141,6 +142,8 @@ export function PublicTutorials({
   const restartLesson = useCallback(() => {
     if (!lessonMeta) return;
     setLessonComplete(lessonMeta.catalogId, false);
+    // Restart means step 1 with nothing chosen: forget where the student was.
+    clearLessonSession(lessonMeta.catalogId);
     onStageChange('design');
     setRestartToken((value) => value + 1);
   }, [lessonMeta, onStageChange, setLessonComplete]);

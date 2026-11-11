@@ -14,6 +14,7 @@ import { MeshViewer } from './MeshViewer';
 import { LessonMotorDiagram } from './LessonMotorDiagram';
 import { KnowledgeCheck } from './KnowledgeCheck';
 import { useLearningProgress } from './useLearningProgress';
+import { useLessonResume, useLessonSessionState } from './lessonSession';
 import {
   LessonDock,
   LessonDockGroup,
@@ -100,9 +101,19 @@ const LESSON_TWO_STAGES: Array<{ id: LessonNineStage; title: string; summary: st
   { id: 'solve', title: 'Solve', summary: 'Mesh the motor, solve the field, and compare torque across rotor angle.' },
 ];
 
+const LESSON_ID = 'motor-magnetic-circuit';
+
+const designSettingsStored = (value: unknown): boolean => (
+  typeof value === 'object' && value !== null
+  && MAGNETIC_CIRCUIT_DESIGN_FIELDS.every((field) => {
+    const item = (value as Record<string, unknown>)[field.key];
+    return typeof item === 'number' && item >= field.min && item <= field.max;
+  })
+);
+
 const LESSON_NINE_GOAL_TITLES: Record<LessonNineStage | 'check', string> = {
   design: 'Assign every winding side',
-  solve: 'Connect field alignment to torque',
+  solve: 'Read the torque over one turn',
   check: 'Explain the torque waveform',
 };
 
@@ -177,11 +188,14 @@ function torquePreview(
   const scale = Math.pow(1 / Math.max(designSettings.airgapMm, 0.4), 0.65)
     * Math.pow(designSettings.magnetThicknessMm / 4, 0.55)
     * Math.sin((designSettings.magnetArcPct / 100) * Math.PI / 2);
-  const electrical_angle_deg = Array.from({ length: 49 }, (_, index) => index * 7.5);
+  // The solve times the currents to the rotor, so the torque keeps one
+  // direction and pulses once per stator slot (six per turn). The preview has
+  // the same shape; its size is only a rough guide until the solve replaces it.
+  const electrical_angle_deg = Array.from({ length: 145 }, (_, index) => index * 2.5);
   return {
     electrical_angle_deg,
     torque_Nm: electrical_angle_deg.map((angle) => (
-      currentMagnitude * 0.32 * scale * Math.sin((angle * Math.PI) / 180)
+      currentMagnitude * 0.24 * scale * 0.5 * (1 - Math.cos((6 * angle * Math.PI) / 180))
     )),
   };
 }
@@ -259,7 +273,7 @@ function TrendChart({
     Math.abs(point.angle - selectedAngleDeg) < Math.abs(nearest.angle - selectedAngleDeg) ? point : nearest
   ), points[0] ?? { angle: selectedAngleDeg, torque: 0 });
   const peak = Math.max(...points.map((point) => point.torque), 0);
-  const minimum = Math.min(...points.map((point) => point.torque), 0);
+  const minimum = points.length ? Math.min(...points.map((point) => point.torque)) : 0;
 
   return (
     <section className="lesson-nine-torque-panel">
@@ -289,11 +303,12 @@ function TrendChart({
       <div className="lesson-nine-torque-readout">
         <div><span>Selected angle</span><strong>{selected.angle.toFixed(1)}°</strong></div>
         <div><span>Torque</span><strong>{selected.torque >= 0 ? '+' : ''}{selected.torque.toFixed(2)} N·m</strong></div>
-        <div><span>Positive peak</span><strong>{peak.toFixed(2)} N·m</strong></div>
-        <div><span>Negative peak</span><strong>{minimum.toFixed(2)} N·m</strong></div>
+        <div><span>Highest torque</span><strong>{peak.toFixed(2)} N·m</strong></div>
+        <div><span>Lowest torque</span><strong>{Math.abs(minimum) < 0.005 ? '0.00' : minimum.toFixed(2)} N·m</strong></div>
       </div>
       <p className="lesson-nine-torque-note">
-        Positive and negative torque are the two rotational directions; zero torque marks field alignment.
+        The phase currents advance with the rotor, so the stator field stays ahead of it and the torque keeps one
+        direction. It rises and falls six times in one turn as the magnets pass the six stator slots.
       </p>
     </section>
   );
@@ -388,8 +403,18 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
   onHeaderProgressChange,
 }) => {
   const [internalStage, setInternalStage] = React.useState<MagneticCircuitStage>('design');
-  const [designSettings, setDesignSettings] = React.useState<MagneticCircuitDesignSettings>(MAGNETIC_CIRCUIT_DEFAULT_DESIGN);
-  const [currentMagnitude, setCurrentMagnitude] = React.useState(MAGNETIC_CIRCUIT_PHASE_CURRENT.default);
+  // The machine settings are kept for the tab, so a reload or a trip to the
+  // catalog comes back to the same motor. The solved frames are not kept.
+  const [designSettings, setDesignSettings] = useLessonSessionState<MagneticCircuitDesignSettings>(
+    LESSON_ID, 'designSettings', MAGNETIC_CIRCUIT_DEFAULT_DESIGN, designSettingsStored,
+  );
+  const [currentMagnitude, setCurrentMagnitude] = useLessonSessionState(
+    LESSON_ID, 'currentMagnitude', MAGNETIC_CIRCUIT_PHASE_CURRENT.default,
+    (value) => typeof value === 'number'
+      && value >= MAGNETIC_CIRCUIT_PHASE_CURRENT.min && value <= MAGNETIC_CIRCUIT_PHASE_CURRENT.max,
+  );
+  // Whether the motor had been solved when the lesson was left.
+  const [solvedBefore, setSolvedBefore] = useLessonSessionState(LESSON_ID, 'solved', false);
   const [showFieldLines, setShowFieldLines] = React.useState(true);
   const [showFluxDensity, setShowFluxDensity] = React.useState(false);
   const [showMeshOverlay, setShowMeshOverlay] = React.useState(false);
@@ -422,7 +447,7 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
   const solveClient = useLessonSolveClient();
 
   React.useEffect(() => {
-    if (knowledgePassed) setLessonComplete('motor-magnetic-circuit', true);
+    if (knowledgePassed) setLessonComplete(LESSON_ID, true);
   }, [knowledgePassed, setLessonComplete]);
 
   const meshRequestIdRef = React.useRef(0);
@@ -650,6 +675,20 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
       setSolveError(error instanceof Error ? error.message : 'Gmsh mesh generation failed.');
     }
   }, [meshComplete, meshData, runMesh, setLessonStage, startSolveStream]);
+
+  React.useEffect(() => {
+    if (solveStatus === 'complete') setSolvedBefore(true);
+    // A setting changed after the solve: that solve no longer stands.
+    else if (solveStatus === 'idle' && hasSolvedOnce) setSolvedBefore(false);
+  }, [hasSolvedOnce, setSolvedBefore, solveStatus]);
+
+  // Reopened on the Solve step after a reload or a trip to the catalog: go
+  // back to it. If the motor had been solved, solve it again with the same
+  // settings (the student can cancel); otherwise wait for "Solve motor".
+  useLessonResume(LESSON_ID, lessonStage, () => {
+    if (solvedBefore) void runSolvePipeline();
+    else setLessonStage('solve');
+  });
 
   const handleCancelSolve = React.useCallback(() => {
     if (solveStatus !== 'running') return;
@@ -1145,7 +1184,7 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
       total={LESSON_TWO_STAGES.length}
       title={LESSON_NINE_GOAL_TITLES[lessonCheckOpen ? 'check' : lessonStage]}
       detail={lessonCheckOpen
-        ? 'Explain how field alignment becomes positive and negative torque.'
+        ? 'Explain why the torque keeps one direction and why it pulses.'
         : activeStageItem.summary}
     />
   );
@@ -1172,7 +1211,7 @@ export const LearningMotorMagneticCircuit: React.FC<LearningMotorMagneticCircuit
       kicker="Inspect"
       title={solved ? 'Solved results' : 'Nothing solved yet'}
       summary={solved
-        ? 'The torque changes sign as the rotor crosses the stator-field alignment target.'
+        ? 'The torque keeps one direction for the whole turn and pulses six times.'
         : 'One solve builds the mesh, traces the field, and computes the torque waveform.'}
       label="Lesson evidence and solved results"
       // A finished solve brings the new charts to the top of the card.

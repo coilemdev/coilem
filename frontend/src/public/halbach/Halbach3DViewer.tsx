@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { ViewportNavigationControls } from '../ViewportNavigation';
 import type { HalbachArrayConfig, HalbachReport } from './types';
-import { halbachDisplaySegments } from './geometry';
+import { halbachDisplaySegments, isDrawableLength } from './geometry';
 import {
   HALBACH_POLE_NORTH_FALLBACK,
   HALBACH_POLE_SOUTH_FALLBACK,
@@ -63,6 +63,15 @@ export function Halbach3DViewer({
   const [explode, setExplode] = useState(0);
   const [fitNonce, setFitNonce] = useState(0);
   const [zoomScale, setZoomScale] = useState(1);
+  // The scene, grid and camera are sized from these. A value that cannot be
+  // drawn falls back to the example size so the view stays usable while the
+  // design is being corrected.
+  const safeOuterRadius = isDrawableLength(config.geometry.outer_radius)
+    ? config.geometry.outer_radius
+    : 50;
+  const safeAxialLength = isDrawableLength(config.geometry.axial_length)
+    ? config.geometry.axial_length
+    : 100;
 
   useEffect(() => {
     const host = hostRef.current;
@@ -116,13 +125,13 @@ export function Halbach3DViewer({
     scene.add(rim);
 
     const ground = new THREE.GridHelper(
-      Math.max(300, config.geometry.outer_radius * 7),
+      Math.max(300, safeOuterRadius * 7),
       18,
       0x3a3f49,
       0x24272e,
     );
     ground.rotation.x = Math.PI / 2;
-    ground.position.z = -config.geometry.axial_length / 2 - 1;
+    ground.position.z = -safeAxialLength / 2 - 1;
     scene.add(ground);
 
     const segmentGroup = new THREE.Group();
@@ -185,7 +194,7 @@ export function Halbach3DViewer({
       });
       handlesRef.current = null;
     };
-  }, [config.geometry.axial_length, config.geometry.outer_radius, config.geometry.segment_count, onSelectSegment]);
+  }, [safeAxialLength, safeOuterRadius, config.geometry.segment_count, onSelectSegment]);
 
   useEffect(() => {
     const handles = handlesRef.current;
@@ -201,6 +210,9 @@ export function Halbach3DViewer({
       }
     }
 
+    // Nothing is built for a ring that cannot be drawn (the segment list is
+    // empty then) or for a length that cannot be extruded.
+    if (!isDrawableLength(config.geometry.axial_length)) return;
     const midRadius = (config.geometry.inner_radius + config.geometry.outer_radius) / 2;
     const arrowLength = Math.max(5, (config.geometry.outer_radius - config.geometry.inner_radius) * 0.38);
     const hostStyle = window.getComputedStyle(host);
@@ -297,7 +309,7 @@ export function Halbach3DViewer({
   useEffect(() => {
     const handles = handlesRef.current;
     if (!handles) return;
-    const radius = Math.max(config.geometry.outer_radius, config.geometry.axial_length / 2);
+    const radius = Math.max(safeOuterRadius, safeAxialLength / 2);
     handles.camera.position.set(radius * 2.15, -radius * 2.15, radius * 1.55);
     fittedDistanceRef.current = handles.camera.position.distanceTo(handles.controls.target);
     handles.controls.minDistance = Math.max(radius * 0.35, 1);
@@ -308,7 +320,7 @@ export function Halbach3DViewer({
     handles.controls.target.set(0, 0, 0);
     handles.controls.update();
     setZoomScale(1);
-  }, [config.geometry.axial_length, config.geometry.outer_radius, fitNonce]);
+  }, [safeAxialLength, safeOuterRadius, fitNonce]);
 
   const zoomBy = (factor: number) => {
     const handles = handlesRef.current;
@@ -340,7 +352,7 @@ export function Halbach3DViewer({
             aria-label="Radial explode distance"
             type="range"
             min={0}
-            max={Math.max(5, config.geometry.outer_radius * 0.6)}
+            max={Math.max(5, safeOuterRadius * 0.6)}
             step={0.5}
             value={explode}
             onChange={(event) => setExplode(Number(event.target.value))}

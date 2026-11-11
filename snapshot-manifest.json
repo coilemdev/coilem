@@ -330,8 +330,8 @@
     },
     {
       "path": "backend/halbach/exports.py",
-      "bytes": 14972,
-      "sha256": "cad215ba9cb9b28d50ce184e4e2db097f3a67b07f3b534165222f4af21ea628b"
+      "bytes": 29963,
+      "sha256": "af1c9a33846eef66b2b773bfe7c1247cae32eb863620a51a6a26a3091f5bad44"
     },
     {
       "path": "backend/halbach/geometry.py",
@@ -565,8 +565,8 @@
     },
     {
       "path": "backend/public_routes/halbach.py",
-      "bytes": 20336,
-      "sha256": "b5af7c81488e4dacd69e266641fb4f29574934fd9a50d933263f5073d886b352"
+      "bytes": 23837,
+      "sha256": "ede0ab04eacd57f6f790d027cfbc2109b8e357bb7a2a15b05dacb535c50b4b81"
     },
     {
       "path": "backend/public_routes/performance.py",
@@ -585,13 +585,13 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 57714,
-      "sha256": "d2795ee778f0e1e0ece88f6e2a65a80229e1a514263d8965444ca9178857e341"
+      "bytes": 58623,
+      "sha256": "b2fb259730cbb0f6deb39a05c9f7545043981a3d929471bf6f6963a84cd21be2"
     },
     {
       "path": "backend/public_routes/tutorials.py",
-      "bytes": 36939,
-      "sha256": "751405c612734c25a427d06c7514fa273642631655d6924ad13b2e302ad8e39f"
+      "bytes": 37173,
+      "sha256": "e6ac7aa50092841bb5c98c22fa6d629f11e73db4cec00edbc3ce28d5d1036181"
     },
     {
       "path": "backend/public_security.py",
@@ -700,8 +700,8 @@
     },
     {
       "path": "backend/tutorial_fields.py",
-      "bytes": 138981,
-      "sha256": "d6dd12aca73e4a98eaec4ef709e64278a977cc06c808b5b874eb66120da52cbe"
+      "bytes": 141475,
+      "sha256": "2b08e9d3f17f9c166395386003d15261e8707fcc1866a98c63cca9be580239c9"
     },
     {
       "path": "backend/winding_resistance.py",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 174929,
-      "sha256": "0d2bb0b9ef10929b6910ce3e95d33202d3d7fb0d1e827426b1abdb8df17694a8"
+      "bytes": 177711,
+      "sha256": "e7c68f489a38d3fe48a87d0b73bac2c6bdab12cf0245c854a8377f374528bb2e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6700,8 +6700,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
-      "bytes": 31988,
-      "sha256": "b9a52a7139a228884eb59ba14dad5416cfe374010b95ae70820915efe09b1909"
+      "bytes": 33938,
+      "sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5"
     },
     {
       "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
@@ -6730,8 +6730,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LearningLessonOneFollowFlux.tsx",
-      "bytes": 109262,
-      "sha256": "ef5c16baba4c2df95e7b6f080b458e503c4136c69c5be6575b0aad99fe639b2f"
+      "bytes": 112570,
+      "sha256": "24edc597e7532f9f74b8152f97723b102bdc23d737aa04761decfde4145d9200"
     },
     {
       "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
@@ -6740,18 +6740,18 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonEightThreePhaseMotor.tsx",
-      "bytes": 52077,
-      "sha256": "d2c457c08ef294c3f46886b27d11613a9a424cd53d15d0aa42bb47b549ca0f15"
+      "bytes": 54782,
+      "sha256": "ec28e455b5cf2aa4795cca367fb7bb23ec825beffbcf7766dc6b40be601da2c8"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
-      "bytes": 111276,
-      "sha256": "79142b85a51a91204c247c67aa2dc2dd8f7b0f599e136984da38a398c04415c2"
+      "bytes": 114934,
+      "sha256": "f72eafcd86c40569aae43de1f33b9fb4c6762ceccf04355c03b2daf8d1271cc1"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFourIronSaturation.tsx",
-      "bytes": 65053,
-      "sha256": "96a313b285d7bf498071e67a5ef1224ba93e862692bebb08e5163febbef2c91d"
+      "bytes": 66700,
+      "sha256": "884f11106052d8b9c58b7d4f3128623c9424d41e965fe15cf5669c592b7b7895"
     },
     {
       "path": "frontend/src/components/tutorials/LessonGlyph.tsx",
@@ -6770,33 +6770,33 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonSevenRotatingField.tsx",
-      "bytes": 64827,
-      "sha256": "7cf24772ad5490719037bae5b93333418302b043f86cf248c6655f0f889b99ac"
+      "bytes": 69832,
+      "sha256": "f7294a944e44d8151009f9e23b6c25cab80bb5eb98073bf92739bd0f6f4b7678"
     },
     {
       "path": "frontend/src/components/tutorials/LessonSixRotorChase.tsx",
-      "bytes": 105039,
-      "sha256": "f7f6d829a992aa734d3a7b2251188260723020912ff2848139b4cbcd90db5fab"
+      "bytes": 107598,
+      "sha256": "ed63c1cc4616b4012b45080128c8440203d721c2580f285fb16289c2ff5eefce"
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeBackEmf.tsx",
-      "bytes": 40560,
-      "sha256": "0dc1ef188d06845198661664687b920d01d7fb94682a1249d155debe133c35d0"
+      "bytes": 42256,
+      "sha256": "1ed8a06e924dd8855e8796c4d004371a8a9c2e39e7ce9770d3f279fba0e7ef12"
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeCurrentField.tsx",
-      "bytes": 32461,
-      "sha256": "b556b885881fe8d66caccbe049a108da670b73c6fb92b5d31e245b7aba5dd4c4"
+      "bytes": 33905,
+      "sha256": "760354cde83cc9a47855decb21e6ffa6d454adb4922f9137b19ec706a7ec83ec"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoAirgapTax.tsx",
-      "bytes": 34776,
-      "sha256": "d8373cd1dcc57dafd5fcb6486493a0e46cbd33682982a6b139b33353f193aaec"
+      "bytes": 36473,
+      "sha256": "432ce581e8b37d06abafe63a8f68a9a69dbc9b44f431938daa88e38840c9a685"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoMagneticCircuit.tsx",
-      "bytes": 59274,
-      "sha256": "10e7950fe893c8d613c0f2621d48068b497d4191ebc6757e116261ee1078b604"
+      "bytes": 61306,
+      "sha256": "d6966ded377489f30f23c29edeabd2a99a5cd1df6d1698eae964fc4230fc2ce9"
     },
     {
       "path": "frontend/src/components/tutorials/LinearMotorCapstone3D.tsx",
@@ -6884,6 +6884,11 @@
       "sha256": "923aa61ae3b0c3f354361c2891023e891afb579bc838ef4a4e52b2a46816f2a1"
     },
     {
+      "path": "frontend/src/components/tutorials/lessonSession.ts",
+      "bytes": 4703,
+      "sha256": "45ecd6492aa140b7ec630ac887708c080ed88d16dc10e0a11aae5d9fea40e0e5"
+    },
+    {
       "path": "frontend/src/components/tutorials/follow-flux-three.css",
       "bytes": 4772,
       "sha256": "02adacea0d32df38a4b5f27a30b1d2d2bda5a2a71cd1d1b9d2794a958f0a271c"
@@ -6940,13 +6945,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/lessonSolveClient.ts",
-      "bytes": 4839,
-      "sha256": "7aa78c3c289bf6bc919ebf411ce7951101f2a5cb9f9f313ea66f15e5e418863a"
+      "bytes": 5107,
+      "sha256": "60de7d6dc1cb6bbc723702b0caa679d92be30658095c2100978b3eb099f86519"
     },
     {
       "path": "frontend/src/components/tutorials/lessonSolveTypes.ts",
-      "bytes": 15985,
-      "sha256": "bade08a56f541eb07cd84f145ddca8d2e1bf0adf16d02a342d3fd4d623e6192e"
+      "bytes": 16339,
+      "sha256": "2a2270a358383b48f0415536ba9f12bfed4aec0df25949735c49fefe27ee25d4"
     },
     {
       "path": "frontend/src/components/tutorials/lessonStage.ts",
@@ -6970,8 +6975,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/magneticCircuit.ts",
-      "bytes": 12067,
-      "sha256": "893586729faaa28e4009fbd7a32ac223a76aaf744f20767f548cd078da9bcfb1"
+      "bytes": 12302,
+      "sha256": "721ef1fbe9e7fcdc3a5dad69e559a2b266fc89d4c6bb1e3cd005dea3d8e84dc5"
     },
     {
       "path": "frontend/src/components/tutorials/meshviewer.css",
@@ -7005,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76432,
-      "sha256": "adddb0fb249daf4a58df231ec2668ed6c52c7e51019178cc420767c481368561"
+      "bytes": 76950,
+      "sha256": "1272c56dba7e94f13693c334230ed8ab659d19be691d94516f8b058525ea43db"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7020,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 247319,
-      "sha256": "185303d291fc0c9a694389420472ad1d7dc60490f34459cc57c91b956fcd8716"
+      "bytes": 248623,
+      "sha256": "60b814342160e4837ba541c93989f716a5aebd15ae9436b3b9f7bd0c3be42c65"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7095,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 25722,
-      "sha256": "ecd1660eb5ba5f294c2507da874fec6b76b33500e88186f2c0d81c04ca46f0a1"
+      "bytes": 26433,
+      "sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7105,8 +7110,13 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 11952,
-      "sha256": "856cc534c53d9aca9e082d7b35307c7737986c5f9ab78936991792e4c27c074d"
+      "bytes": 12261,
+      "sha256": "2734fcff7e6a7feb516cd91beddf1e7383027cf1a8ce5d23a1effa01e800a165"
+    },
+    {
+      "path": "frontend/src/public/WorkspaceErrorBoundary.tsx",
+      "bytes": 2522,
+      "sha256": "365680f07be0787cd43422470e55c5ea2cc8091b15e4d8530174bc5cfdb374a8"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -7115,8 +7125,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 59889,
-      "sha256": "654c12a244b400cd9cea50846f711dc17765f33ffc2d52021f029b06871a1aa7"
+      "bytes": 60223,
+      "sha256": "79fe46e42521646242158fe0fbff49b91fda638c0c94f67a5f48e9c5946c1395"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7210,8 +7220,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 15641,
-      "sha256": "2b2645927911c1cea1579ef28df980932de770f1747f7d1734a86e434707a626"
+      "bytes": 20676,
+      "sha256": "198f35343b2a79693c22e9087cd092a37af7d255f13acf01b1221268e1d3d92a"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -7330,48 +7340,48 @@
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
-      "bytes": 31550,
-      "sha256": "484be9bd83ca8f7e0efbc9f94bc58ebe11a18450d7f94443fe1cd0472186eded"
+      "bytes": 32158,
+      "sha256": "5ce5a7e3db7f464008e32f5046c43e501e608b7577230847dd50fdcdf5c062bb"
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
-      "bytes": 13679,
-      "sha256": "e71ee9adb3f09fb1ed71cc2c832a352436f4c7fb055cb82f58f13dd30ca6f93b"
+      "bytes": 14205,
+      "sha256": "76bf593352f5a1773b214f13bc35a08ed87b80cf15a69ab4bc830c20208b77ec"
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "bytes": 57276,
-      "sha256": "898a76936c1761b84e8e835018ed775c411616b9247d39d2c912652683c76d85"
+      "bytes": 60513,
+      "sha256": "23ed6f72b44dcd8f3f0d0ff5e85349107bd416b1bed964d1d4d9c3488caf0bf7"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
-      "bytes": 33135,
-      "sha256": "24263cc64e3fc2a63616f4a089f058938e7132653302c0d8ef63a800e894bc2a"
+      "bytes": 33382,
+      "sha256": "c73afa6a2e09599dd56c93c2268c408be8b9dad2a60a1cb888cacfba91511209"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
-      "bytes": 31106,
-      "sha256": "677f8bcbc033e09c3edf5c299b51dbe47550aaa9558c22b30f8f9f50c384de0d"
+      "bytes": 31353,
+      "sha256": "49d8300116ea373ea2c38b70c673fb5ce8e67cb7cee374049c7059d72f089875"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "bytes": 56719,
-      "sha256": "ef97da4bc641618444066638dd668f9d3f80cc8c2123b1fc3d1f913ef98881f2"
+      "bytes": 58859,
+      "sha256": "459c4cbbce65c219d089079cbc5cc8b707c022a174b97c7b7aca9f4f3d6377f5"
     },
     {
       "path": "frontend/src/public/halbach/api.ts",
-      "bytes": 6757,
-      "sha256": "f345afebbeac04bbf9d6fd7083a51341064ae6368d8eb13852ac4b24a266cdca"
+      "bytes": 6856,
+      "sha256": "8589699e63df85bd25b87c7d675f620207bee8035f3bff18fd762581813e0d35"
     },
     {
       "path": "frontend/src/public/halbach/geometry.ts",
-      "bytes": 1066,
-      "sha256": "8de94f444926a2e6da2ab4805b4b5eb290bb3ea81c2b28a2d7f4df055ea134ad"
+      "bytes": 6430,
+      "sha256": "58c156fe8d00e177acfa7ae69add38e82ac41d7c0a857ca55005ef7cb231d0f8"
     },
     {
       "path": "frontend/src/public/halbach/halbach.css",
-      "bytes": 51665,
-      "sha256": "cb3f2624df39937641fb1e0d9994f0373b9e402b68731fa3e6a5a3f1074a7961"
+      "bytes": 52699,
+      "sha256": "ca66bb39f75a94689b589e5ba69b9b0ba471f4c36021072118cc25e83f9a556f"
     },
     {
       "path": "frontend/src/public/halbach/poleRendering.ts",
@@ -7460,8 +7470,8 @@
     },
     {
       "path": "frontend/src/public/numberFormat.ts",
-      "bytes": 850,
-      "sha256": "3276beb9b06685ff8d74a6cf9f98bba25e457ea696b1c090110c84ed3e375e21"
+      "bytes": 1850,
+      "sha256": "d5ee524616501841281c81c884df68451e55fc0770dd6337e83f1210bb85ddfe"
     },
     {
       "path": "frontend/src/public/outputStatus.ts",
@@ -7530,8 +7540,8 @@
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
-      "bytes": 8879,
-      "sha256": "6bcb7e48343f4327c472e9e653c1df45a296152672fa266023d7b5414bedbafc"
+      "bytes": 9083,
+      "sha256": "93283605af07641e64e250322b9c3b1512a5497249cd4cd63924f98a5d957a01"
     },
     {
       "path": "frontend/src/public/tutorials/lessonRoutes.ts",
@@ -7545,8 +7555,8 @@
     },
     {
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
-      "bytes": 15629,
-      "sha256": "574ab94435729aa99a33343e7642bc797a37cc9130c59690d2e985c046390c20"
+      "bytes": 15830,
+      "sha256": "b7d13e04ef79dfcd2ff7f836ca4b37a5f18dff5053fbf958cca08c9e5c504cdb"
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
@@ -7585,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 57729,
-      "sha256": "cc9207f0688f32269357434526b8b6f486b85830aaf7bb81375df23701ea84fb"
+      "bytes": 57736,
+      "sha256": "d742b0f7d7e390265abfdf0a31cc9475664ed699274b87c8699b65a3229ec6f4"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8120,8 +8130,8 @@
     },
     {
       "path": "tests/test_linear_halbach_api.py",
-      "bytes": 4844,
-      "sha256": "2f6272b4bceca60b841416b2f34e191b622d173d1434e47518c6024c2449e366"
+      "bytes": 8912,
+      "sha256": "be7277e74480ffba615630435d871cb447eebcb3cb3832bdeb8134f3e8cdc931"
     },
     {
       "path": "tests/test_linear_halbach_contract.py",
@@ -8235,8 +8245,8 @@
     },
     {
       "path": "tests/test_public_cancellation.py",
-      "bytes": 15116,
-      "sha256": "848822429984ae5896b5187a7b943fb5c3685f1073a24dca0548a2e8f4a92507"
+      "bytes": 16947,
+      "sha256": "c8e8a26b76d5a79aa1558cc93d02912a465f1b6bdddb025cf2829ce087a97469"
     },
     {
       "path": "tests/test_public_candidate.py",
@@ -11655,8 +11665,8 @@
     },
     {
       "path": "tests/test_torque_speed_analysis.py",
-      "bytes": 14332,
-      "sha256": "356a89d420b4c85bc290e7faa8c6eeb56dd14e850a8836ebc80e5b94e133283f"
+      "bytes": 14331,
+      "sha256": "7ff6c0b40b822f21d90f0789ed43602f0cb8573d8fcec7e507533fa259fcb976"
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
@@ -14042,6 +14052,11 @@
       "path": "tests/test_parallel_fallback_solves.py",
       "bytes": 14589,
       "sha256": "1efd9c7fd102c36eb555ac0622764c7f3cde90f2e5a1b4c39c2ada319472e9fa"
+    },
+    {
+      "path": "tests/test_tutorial_phase_sequence.py",
+      "bytes": 4843,
+      "sha256": "06cd738410469698c21560f7096d6fa4573295d28408c771cdbb54e570de50f5"
     },
     {
       "path": "docs/benchmarks/parallel-fallback-windows-20261108.md",
