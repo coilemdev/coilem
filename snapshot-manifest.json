@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 2878,
-      "sha256": "e3fcbd0e84da2eeb4cf02e3bd48c6a7dfd74658d7f20b34b0de5d8819ebacae3"
+      "bytes": 2951,
+      "sha256": "5ce5695b7aaaac385ca9a4afc91bf82266667fe605a8b4b2b914f152b957feab"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
