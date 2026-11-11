@@ -49,6 +49,16 @@ where
         return Ok(());
     }
     options.apply_process_flags();
+    // A worker count also bounds the threads a single solve uses inside
+    // itself. The backend runs one solver process per rotor position and
+    // asks each for one worker; left to the default, every process started a
+    // thread per core, and on a 40,000-node motor that cost more than twice
+    // the processor time of the solve and made it slower.
+    if let Some(workers) = options.effective_workers() {
+        let _ = rayon::ThreadPoolBuilder::new()
+            .num_threads(workers)
+            .build_global();
+    }
 
     if options.solve_mode == SolveMode::Field {
         if options.sweep_mode
