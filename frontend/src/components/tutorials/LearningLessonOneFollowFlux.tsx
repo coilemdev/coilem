@@ -1425,11 +1425,11 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
     { id: 'predict', label: 'Predict', complete: predictionCorrect, available: true },
     { id: 'air', label: 'Open air', complete: Boolean(airSolve), available: predictionDone },
     { id: 'steel', label: 'Add steel', complete: Boolean(steelSolve) && steelInsightCorrect, available: airDone },
-    { id: 'pair', label: 'Two magnets', complete: pairComparisonReviewed, available: pairOpenable },
+    { id: 'pair', label: 'Two magnets', complete: pairComparisonReviewed || reviewReached, available: pairOpenable },
     { id: 'check', label: 'Check', complete: quizPassed, available: checkOpenable },
   ], [
     airDone, airSolve, checkOpenable, pairComparisonReviewed, pairOpenable, predictionCorrect,
-    predictionDone, quizPassed, steelInsightCorrect, steelSolve,
+    predictionDone, quizPassed, reviewReached, steelInsightCorrect, steelSolve,
   ]);
 
   const headerProgress = React.useMemo<LearningLessonHeaderProgress>(() => ({
@@ -1448,10 +1448,13 @@ export const LearningLessonOneFollowFlux: React.FC<LearningLessonOneFollowFluxPr
   }, [headerProgress, onHeaderProgressChange]);
 
   React.useEffect(() => {
-    if (bothSolved && pairExperimentComplete && pairComparisonReviewed && quizPassed) {
+    // reviewReached stands in for the pair lab after a reload: the Check step
+    // is open then, so passing it must record the lesson as complete (#259).
+    const pairLabDone = reviewReached || (bothSolved && pairExperimentComplete && pairComparisonReviewed);
+    if (pairLabDone && quizPassed) {
       setLessonComplete(LESSON_ID, true);
     }
-  }, [bothSolved, pairComparisonReviewed, pairExperimentComplete, quizPassed, setLessonComplete]);
+  }, [bothSolved, pairComparisonReviewed, pairExperimentComplete, quizPassed, reviewReached, setLessonComplete]);
 
   React.useEffect(() => {
     if (!pairExperimentComplete) return;

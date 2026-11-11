@@ -6730,8 +6730,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/LearningLessonOneFollowFlux.tsx",
-      "bytes": 112310,
-      "sha256": "7efe78bf64cd959bbcf73ccd5ad190d303b3d2beaacd63dd5127b537e089de7c"
+      "bytes": 112570,
+      "sha256": "24edc597e7532f9f74b8152f97723b102bdc23d737aa04761decfde4145d9200"
     },
     {
       "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
