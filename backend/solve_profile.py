@@ -264,6 +264,7 @@ _STEPS: tuple[tuple[str, str, tuple[str, ...], tuple[tuple[str, str, int], ...]]
         "Field solve",
         ("solve (loaded): one position, total", "solve (noload): one position, total"),
         (
+            ("solve: prepare the solver's settings", "Prepare the solver's settings", 0),
             ("solve: write input and mesh files", "Write the solver's input and mesh files", 0),
             ("solve: find the solver executable", "Find the solver", 0),
             ("solve: solver process, start to exit", "Solver process", 0),
@@ -272,6 +273,7 @@ _STEPS: tuple[tuple[str, str, tuple[str, ...], tuple[tuple[str, str, int], ...]]
             ("solver: linear solves", "Solve the equations", 1),
             ("solver: rest of its timed work (fields, torque)", "Step checks, fields, torque and other outputs", 1),
             ("solve: read and parse the report", "Read the solver's report", 0),
+            ("solve: record settings and keep the solver's files", "Record settings and keep the solver's files", 0),
         ),
     ),
     (
