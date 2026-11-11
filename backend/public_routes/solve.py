@@ -1531,6 +1531,7 @@ def request_active_solve_cancellation() -> bool:
 async def cancel_solve() -> dict[str, str]:
     """Cancel the active public electromagnetic solve, if one exists."""
 
+    solver = _ACTIVE_SOLVE.get("solver")
     try:
         if not request_active_solve_cancellation():
             return {"status": "no_active_solve"}
@@ -1542,4 +1543,24 @@ async def cancel_solve() -> dict[str, str]:
                 "message": "Failed to stop the active electromagnetic solve.",
             },
         ) from exc
+    if await _wait_for_solve_release(solver, timeout=_CANCEL_RELEASE_WAIT_S):
+        return {"status": "cancelled"}
     return {"status": "cancelling"}
+
+
+# A cancel that lands while Gmsh is meshing cannot interrupt it: the worker
+# notices only when the mesh returns, and the solve lane stays claimed until
+# then. Answering the cancel request before that let the next "Run analysis"
+# be refused with SOLVE_ALREADY_RUNNING (#266).
+_CANCEL_RELEASE_WAIT_S = 60.0
+
+
+async def _wait_for_solve_release(solver: Solver | None, *, timeout: float) -> bool:
+    """Wait until the cancelled solve has given the lane back; ``False`` on timeout."""
+
+    deadline = time.monotonic() + timeout
+    while _ACTIVE_SOLVE["running"] and _ACTIVE_SOLVE.get("solver") is solver:
+        if _SERVER_STOPPING.is_set() or time.monotonic() >= deadline:
+            return False
+        await asyncio.sleep(0.05)
+    return True

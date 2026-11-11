@@ -224,7 +224,7 @@ def test_sync_map_can_be_cancelled_and_retried_without_losing_finished_points(mo
         pending = asyncio.create_task(solve_routes.solve(cfg.model_dump(mode="json")))
         try:
             assert await asyncio.to_thread(started.wait, 5)
-            assert await solve_routes.cancel_solve() == {"status": "cancelling"}
+            assert await solve_routes.cancel_solve() == {"status": "cancelled"}
             with pytest.raises(HTTPException) as error:
                 await asyncio.wait_for(pending, 5)
             assert error.value.status_code == 409
