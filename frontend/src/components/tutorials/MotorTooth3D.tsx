@@ -328,7 +328,7 @@ export const MotorTooth3D: React.FC<MotorTooth3DProps> = ({
   return (
     <div className="iron-tooth-three">
       <div className="iron-tooth-three-legend" aria-hidden="true">
-        <span className="is-steel">M350-50A steel</span>
+        <span className="is-steel">Electrical steel</span>
         {rotorMode === 'spm' ? <span className="is-magnet">N42 surface magnet · N faces stator</span> : null}
         <span className="is-copper">Copper winding · ⊙ out / ⊗ in</span>
         <span className="is-flux">Flux path</span>
@@ -342,7 +342,7 @@ export const MotorTooth3D: React.FC<MotorTooth3DProps> = ({
         ref={containerRef}
         className="iron-tooth-three-canvas"
         role="img"
-        aria-label={`Interactive three-dimensional motor segment showing copper turns wrapping around an energized M350-50A stator tooth, the curved yoke, airgap, and ${rotorMode === 'spm' ? 'an N42 surface magnet on curved rotor back iron' : 'curved rotor return'}`}
+        aria-label={`Interactive three-dimensional motor segment showing copper turns wrapping around an energized electrical-steel stator tooth, the curved yoke, airgap, and ${rotorMode === 'spm' ? 'an N42 surface magnet on curved rotor back iron' : 'curved rotor return'}`}
       />
     </div>
   );

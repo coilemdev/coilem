@@ -17,6 +17,24 @@ import type {
 import { KnowledgeCheck } from './KnowledgeCheck';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
 import { RotorChase3D } from './RotorChase3D';
+import {
+  LessonChoices,
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonSegmented,
+  LessonTerms,
+  type LessonTerm,
+} from './lab/LessonLab';
 import './learning.css';
 import './rotor-chase.css';
 
@@ -30,7 +48,6 @@ interface LearningLessonSixRotorChaseProps {
 
 type Prediction = 'align-once' | 'spin-forever' | 'unaffected';
 type LabPart = 'release' | 'chase' | 'dc' | 'ac';
-type ViewerDrawer = 'part' | 'source' | 'electromagnet';
 type LessonSixProgressStepId = 'predict' | 'release' | 'chase' | 'dc' | 'ac' | 'check';
 
 const LESSON_SIX_GOALS: Record<
@@ -114,6 +131,24 @@ interface ForceCurrentSample {
   northForceN: number;
   southForceN: number;
 }
+
+const FIELD_SOURCE_OPTIONS: ReadonlyArray<{ id: RotorChaseFieldSource; label: string; title: string }> = [
+  { id: 'combined', label: 'Combined', title: 'The stator source and the rotor magnet together' },
+  { id: 'stator', label: 'Stator', title: 'The stator source on its own' },
+  { id: 'rotor', label: 'Rotor', title: 'The rotor magnet on its own' },
+];
+
+// The lesson's vocabulary, shown beside whatever is being read or measured.
+const LESSON_SIX_TERMS: readonly LessonTerm[] = [
+  { term: <>Torque, &tau;</>, definition: 'The turning effect of a force about the shaft, in newton-metres (N·m). This small rotor is measured in mN·m, thousandths of a newton-metre.' },
+  { term: <>Torque angle, &delta;</>, definition: 'The angle between the field direction and the rotor’s N–S axis, in degrees. Torque is largest near 90° and zero at 0°.' },
+  { term: 'Alignment target', definition: 'The direction the rotor’s N pole settles toward. Once the rotor points there, the torque is zero.' },
+  { term: 'Force couple', definition: 'Two equal and opposite forces, in newtons (N), acting at the two ends of the rotor. They do not push it sideways; together they turn it.' },
+  { term: '|B|', definition: 'Flux density: how strong the field is at one spot, in tesla (T). Here it is shown in millitesla (mT).' },
+  { term: 'MMF, NI', definition: 'Magnetomotive force: the coil’s "push" on the field. It is the number of turns N times the current I, in ampere-turns (A-turn).' },
+  { term: <>Electrical angle, &theta;</>, definition: 'How far the alternating current is through one cycle, in degrees: 0° to 360° is one full cycle.' },
+  { term: 'FEM', definition: 'Finite element method: the solver splits the space into small triangles (the mesh) and works out the field in each one.' },
+];
 
 const QUIZ: KnowledgeCheckQuestion[] = [
   {
@@ -507,9 +542,10 @@ const TorquePlot: React.FC<TorquePlotProps> = ({
   analyticPeakTorqueNm,
   femSamples,
 }) => {
-  const width = 620;
-  const height = 220;
-  const margin = { top: 38, right: 24, bottom: 44, left: 72 };
+  // Drawn at the width of the Inspect card, so its labels are not scaled down.
+  const width = 288;
+  const height = 200;
+  const margin = { top: 30, right: 26, bottom: 34, left: 40 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const xFor = (angle: number) => margin.left + ((angle + 180) / 360) * plotWidth;
@@ -541,7 +577,7 @@ const TorquePlot: React.FC<TorquePlotProps> = ({
       {yTicks.map((torqueNm) => (
         <g key={torqueNm}>
           <line x1={margin.left} y1={yFor(torqueNm)} x2={width - margin.right} y2={yFor(torqueNm)} />
-          <text className="rotor-chase-y-tick" x={margin.left - 9} y={yFor(torqueNm) + 4}>
+          <text className="rotor-chase-y-tick" x={margin.left - 6} y={yFor(torqueNm) + 4}>
             {(torqueNm * 1e3).toFixed(0)}
           </text>
         </g>
@@ -549,7 +585,7 @@ const TorquePlot: React.FC<TorquePlotProps> = ({
       {[-180, -90, 0, 90, 180].map((angle) => (
         <g key={angle}>
           <line x1={xFor(angle)} y1={margin.top} x2={xFor(angle)} y2={height - margin.bottom} />
-          <text x={xFor(angle)} y={height - 16}>{angle} deg</text>
+          <text x={xFor(angle)} y={height - 14}>{angle} deg</text>
         </g>
       ))}
       <polyline className="is-analytic" points={analyticPoints} />
@@ -569,12 +605,10 @@ const TorquePlot: React.FC<TorquePlotProps> = ({
       {liveFemTorqueNm !== null ? (
         <circle className="is-live-fem" cx={xFor(misalignmentDeg)} cy={yFor(liveFemTorqueNm)} r="5" />
       ) : null}
-      <text className="rotor-chase-axis-label" transform={`translate(18 ${margin.top + plotHeight / 2}) rotate(-90)`}>Torque (mN·m)</text>
-      <text className="rotor-chase-plot-label is-analytic" x={margin.left + 5} y={18}>analytic mB sin δ</text>
-      <text className="rotor-chase-plot-label is-fem" x={margin.left + 142} y={18}>FEM virtual work</text>
-      <text className="rotor-chase-live-value" x={width - margin.right} y={18}>
-        FEM {formatTorqueMnM(liveFemTorqueNm)} · analytic {formatTorqueMnM(liveAnalyticTorqueNm)}
-      </text>
+      <text className="rotor-chase-axis-label" transform={`translate(11 ${margin.top + plotHeight / 2}) rotate(-90)`}>Torque (mN·m)</text>
+      {/* The live torque values are in the readout under the plot. */}
+      <text className="rotor-chase-plot-label is-analytic" x={margin.left} y={16}>analytic mB sin δ</text>
+      <text className="rotor-chase-plot-label is-fem" x={margin.left + 124} y={16}>FEM virtual work</text>
     </svg>
   );
 };
@@ -710,9 +744,10 @@ const ForceCurrentPlot: React.FC<ForceCurrentPlotProps> = ({
   leverArmMm,
   plottedCurrentsA,
 }) => {
-  const width = 620;
-  const height = 260;
-  const margin = { top: 48, right: 28, bottom: 48, left: 72 };
+  // Drawn at the width of its card in the Inspect panel.
+  const width = 262;
+  const height = 236;
+  const margin = { top: 42, right: 14, bottom: 44, left: 52 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const maxForceN = Math.max(peakForceN ?? 0, 0.1);
@@ -772,7 +807,7 @@ const ForceCurrentPlot: React.FC<ForceCurrentPlotProps> = ({
                   x2={width - margin.right}
                   y2={yFor(forceN)}
                 />
-                <text className="is-y-tick" x={margin.left - 10} y={yFor(forceN) + 4}>
+                <text className="is-y-tick" x={margin.left - 7} y={yFor(forceN) + 4}>
                   {Math.abs(forceN) < 1e-8 ? '0' : forceN.toFixed(2)}
                 </text>
               </g>
@@ -845,16 +880,16 @@ const ForceCurrentPlot: React.FC<ForceCurrentPlotProps> = ({
               cy={yFor(liveSouthForceN)}
               r="6"
             />
-            <text className="is-axis-label" transform={`translate(18 ${margin.top + plotHeight / 2}) rotate(-90)`}>
+            <text className="is-axis-label" transform={`translate(11 ${margin.top + plotHeight / 2}) rotate(-90)`}>
               Tangential force Fx (N)
             </text>
             <text className="is-axis-label" x={margin.left + plotWidth / 2} y={height - 4}>
               Winding current I (A)
             </text>
-            <text className="is-legend is-north" x={margin.left + 4} y={22}>
+            <text className="is-legend is-north" x={margin.left} y={15}>
               N pole · rightward +Fx
             </text>
-            <text className="is-legend is-south" x={margin.left + 190} y={22}>
+            <text className="is-legend is-south" x={margin.left} y={30}>
               S pole · leftward −Fx
             </text>
           </svg>
@@ -895,9 +930,10 @@ const OnePhaseWaveform: React.FC<{ angleDeg: number; currentA: number }> = ({
   angleDeg,
   currentA,
 }) => {
-  const width = 680;
-  const height = 220;
-  const margin = { top: 34, right: 28, bottom: 42, left: 58 };
+  // Drawn at the width of the Inspect card.
+  const width = 288;
+  const height = 184;
+  const margin = { top: 30, right: 26, bottom: 32, left: 30 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const xFor = (angle: number) => margin.left + (angle / 360) * plotWidth;
@@ -921,7 +957,7 @@ const OnePhaseWaveform: React.FC<{ angleDeg: number; currentA: number }> = ({
       {[-ELECTROMAGNET_PEAK_CURRENT_A, 0, ELECTROMAGNET_PEAK_CURRENT_A].map((tick) => (
         <g key={tick}>
           <line x1={margin.left} y1={yFor(tick)} x2={width - margin.right} y2={yFor(tick)} />
-          <text x={margin.left - 10} y={yFor(tick) + 4}>{tick > 0 ? `+${tick}` : tick}</text>
+          <text x={margin.left - 14} y={yFor(tick) + 4}>{tick > 0 ? `+${tick}` : tick}</text>
         </g>
       ))}
       {[0, 90, 180, 270, 360].map((tick) => (
@@ -939,8 +975,8 @@ const OnePhaseWaveform: React.FC<{ angleDeg: number; currentA: number }> = ({
         y2={height - margin.bottom}
       />
       <circle className="is-live" cx={xFor(angleDeg)} cy={yFor(currentA)} r="6" />
-      <text className="is-equation" x={margin.left + 4} y={20}>I(t) = Ipk sin(theta)</text>
-      <text className="is-live-value" x={width - margin.right} y={20}>
+      <text className="is-equation" x={margin.left} y={18}>I(t) = Ipk sin(theta)</text>
+      <text className="is-live-value" x={width - margin.right} y={18}>
         {currentA >= 0 ? '+' : ''}{currentA.toFixed(2)} A
       </text>
     </svg>
@@ -954,7 +990,10 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   onStageChange,
   onHeaderProgressChange,
 }) => {
-  const controlPanelRef = React.useRef<HTMLElement>(null);
+  // The current presets, so the primary action can point the student at them.
+  const dcCurrentChoiceRef = React.useRef<HTMLDivElement | null>(null);
+  // The viewer draws its zoom buttons into the dock's title bar.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
   const [prediction, setPrediction] = React.useState<Prediction | null>(null);
   const [fieldFrames, setFieldFrames] = React.useState<RotorChaseFrameSet>({});
@@ -980,30 +1019,24 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   const [rotorAngleDeg, setRotorAngleDeg] = React.useState(ROTOR_START_ANGLE_DEG);
   const [labPart, setLabPart] = React.useState<LabPart>('release');
   const [releasing, setReleasing] = React.useState(false);
-  const [releasedOnce, setReleasedOnce] = React.useState(false);
   const [alignedOnce, setAlignedOnce] = React.useState(false);
   const [secondAlignmentComplete, setSecondAlignmentComplete] = React.useState(false);
-  const [showFluxLines, setShowFluxLines] = React.useState(true);
-  const [showFieldIntensity, setShowFieldIntensity] = React.useState(false);
-  const [showMesh, setShowMesh] = React.useState(true);
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
+  const [showMesh, setShowMesh] = React.useState(false);
   const [showThreeD, setShowThreeD] = React.useState(false);
-  const [viewerDrawerStackOpen, setViewerDrawerStackOpen] = React.useState(false);
-  const [openViewerDrawer, setOpenViewerDrawer] = React.useState<ViewerDrawer | null>(null);
-  const [labControlsOpen, setLabControlsOpen] = React.useState(false);
-  const [solveInspectorOpen, setSolveInspectorOpen] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
+  const lessonComplete = isLessonComplete('rotor-chase');
   const solveClient = useLessonSolveClient();
 
   const predictionCorrect = prediction === 'align-once';
   const misalignmentDeg = shortestAngle(sourceAngleDeg, rotorAngleDeg);
-  const normalizedTorque = Math.sin(misalignmentDeg * Math.PI / 180);
   const movingTargetComplete = secondAlignmentComplete;
   const dcComplete = sawPositiveDc && sawNegativeDc;
-  const labComplete = alignedOnce && secondAlignmentComplete && dcComplete && playedAc;
   const hasSolvedField = Boolean(fieldFrames.combined);
   const hasElectromagnetField = Boolean(
     electromagnetFrames.stator?.positive
@@ -1063,9 +1096,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   const dcPeakPoleForceN = dcPeakTorqueNm === null || dcForceLeverArmMm === null
     ? null
     : dcPeakTorqueNm / (2 * dcForceLeverArmMm * 1e-3);
-  const liveDcNorthForceN = dcPeakPoleForceN === null
-    ? null
-    : dcPeakPoleForceN * dcCurrentA / ELECTROMAGNET_PEAK_CURRENT_A;
   const forceCurrentAlreadyPlotted = plottedForceCurrentsA.some(
     (sampleCurrentA) => Math.abs(sampleCurrentA - dcCurrentA) < 0.01,
   );
@@ -1083,13 +1113,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     );
     return magnetizationApm * rotorVolumeM3 * sourceCenterFieldT;
   }, [fieldFrames.combined, sourceCenterFieldT]);
-  const femTorqueNm = React.useMemo(
-    () => interpolateTorqueNm(femTorqueSamples, misalignmentDeg),
-    [femTorqueSamples, misalignmentDeg],
-  );
-  const analyticTorqueNm = analyticPeakTorqueNm === null
-    ? null
-    : analyticPeakTorqueNm * normalizedTorque;
 
   React.useEffect(() => {
     if (stage === 'mesh') onStageChange?.('solve');
@@ -1098,11 +1121,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   React.useEffect(() => {
     if (quizPassed) setLessonComplete('rotor-chase', true);
   }, [quizPassed, setLessonComplete]);
-
-  React.useEffect(() => {
-    setViewerDrawerStackOpen(false);
-    setOpenViewerDrawer(null);
-  }, [labPart]);
 
   React.useEffect(() => {
     if (!releasing || releaseTargetAngleDeg === null) return undefined;
@@ -1266,32 +1284,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     : electromagnetCurrentA > 0
       ? 'Left N · right S'
       : 'Left S · right N';
-  const viewerPartNumber = labPart === 'release'
-    ? '1'
-    : labPart === 'chase'
-      ? '2'
-      : labPart === 'dc'
-        ? '3'
-        : '4';
-  const viewerPartTitle = labPart === 'release'
-    ? 'Release into a fixed field'
-    : labPart === 'chase'
-      ? 'Turn only the rotor'
-      : labPart === 'dc'
-        ? 'Reverse the wound-pole field'
-        : 'Drive one axis with AC';
-  const viewerPartDescription = labPart === 'release'
-    ? 'Release the 90° PM rotor and watch it settle into the fixed stator field.'
-    : labPart === 'chase'
-      ? 'Move only the rotor, then release it to return to the same fixed target.'
-      : labPart === 'dc'
-        ? 'Reverse current to swap the wound-pole N/S faces and the rotor alignment target.'
-        : 'One AC phase grows, collapses, and reverses along this one fixed axis.';
-  const fieldSourceLabel = fieldSource === 'stator'
-    ? 'Stator only'
-    : fieldSource === 'rotor'
-      ? 'Rotor only'
-      : 'Combined';
   const displayedData = electromagnetActive ? electromagnetData : permanentMagnetData;
   const displayedRotorAngleDeg = electromagnetActive
     ? displayedData?.rotor_angle_deg ?? ROTOR_START_ANGLE_DEG
@@ -1545,11 +1537,11 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
   }, [onStageChange]);
 
   const solveFrameSet = async (source: RotorChaseFieldSource) => {
-    const entries: Array<[number, RotorChaseFieldData]> = [];
-    for (const angleDeg of FEM_CHECKPOINT_ANGLES) {
+    // The checkpoints are independent solves, so ask for them together.
+    const entries = await Promise.all(FEM_CHECKPOINT_ANGLES.map(async (angleDeg) => {
       const frame = await solveClient.fetchRotorChaseSolve(source, angleDeg, SOURCE_POLE_GAP_MM);
-      entries.push([angleDeg, frame]);
-    }
+      return [angleDeg, frame] as const;
+    }));
     return Object.fromEntries(entries) as Record<number, RotorChaseFieldData>;
   };
 
@@ -1650,17 +1642,14 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     setBusy(true);
     setError(null);
     try {
-      const combined = await solveFrameSet('combined');
-      const statorReference = await solveClient.fetchRotorChaseSolve(
-        'stator',
-        0,
-        SOURCE_POLE_GAP_MM,
-      );
+      const [combined, statorReference] = await Promise.all([
+        solveFrameSet('combined'),
+        solveClient.fetchRotorChaseSolve('stator', 0, SOURCE_POLE_GAP_MM),
+      ]);
       setFieldFrames({ combined });
       setStatorReferenceFrame(statorReference);
       setFieldSource('combined');
       setRotorAngleDeg(ROTOR_START_ANGLE_DEG);
-      setReleasedOnce(false);
       setAlignedOnce(false);
       setSecondAlignmentComplete(false);
       setLabPart('release');
@@ -1700,7 +1689,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
       setReleasing(true);
       return;
     }
-    if (labPart === 'release') setReleasedOnce(true);
     setReleasing(true);
   };
 
@@ -1827,10 +1815,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     setRotorOffset(signedRelativeRotorAngleDeg + stepDirection * MANUAL_STEP_DEG);
   };
 
-  const toggleViewerDrawer = (drawer: ViewerDrawer) => {
-    setOpenViewerDrawer((previous) => previous === drawer ? null : drawer);
-  };
-
   const activeProgressStepId: LessonSixProgressStepId = quizOpen
     ? 'check'
     : lessonStage === 'design'
@@ -1855,8 +1839,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
 
   const selectProgressStep = React.useCallback((stepId: string) => {
     const nextStep = stepId as LessonSixProgressStepId;
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     if (nextStep === 'predict') {
       setStage('design');
       return;
@@ -1913,18 +1895,7 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     steps: lessonProgressSteps,
     onStepSelect: selectProgressStep,
   }), [activeProgressStepId, lessonProgressSteps, selectProgressStep]);
-  const completedStepCount = lessonProgressSteps.filter((item) => item.complete).length;
   const currentGoal = LESSON_SIX_GOALS[activeProgressStepId];
-  const studioTitle = electromagnetActive
-    ? labPart === 'dc'
-      ? 'Reversible wound-pole field'
-      : 'One phase · one fixed axis'
-    : labPart === 'chase'
-      ? 'Same field · new rotor start'
-      : 'Fixed source field · free PM rotor';
-  const studioMeta = electromagnetActive
-    ? `${electromagnetCurrentA >= 0 ? '+' : ''}${electromagnetCurrentA.toFixed(2)} A · rotor ${displayAngle(rotorAngleDeg)}`
-    : `source 0° · rotor ${displayAngle(rotorAngleDeg)} · ${hasSolvedField ? 'FEM ready' : 'awaiting FEM'}`;
   const evidenceTitle = labPart === 'release'
     ? 'Fixed-field torque'
     : labPart === 'chase'
@@ -1995,16 +1966,19 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
       } else if (dcComplete) {
         void enterAc();
       } else if (dcRotorAtTarget || dcTargetAngleDeg === null) {
-        setSolveInspectorOpen(false);
-        setLabControlsOpen(true);
+        // Nothing to release yet: point the student at the current presets.
+        // Entering this step counts +8 A as seen, so the polarity still
+        // missing is -8 A, the last preset.
+        const choice = dcCurrentChoiceRef.current;
+        choice?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        const presets = choice?.querySelectorAll('button');
+        presets?.[presets.length - 1]?.focus();
       } else {
         releaseRotor();
       }
       return;
     }
     if (playedAc) {
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(false);
       setQuizOpen(true);
     } else {
       playAcCycle();
@@ -2015,845 +1989,295 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
     onHeaderProgressChange?.(headerProgress);
   }, [headerProgress, onHeaderProgressChange]);
 
-  React.useEffect(() => {
-    controlPanelRef.current?.scrollTo({ top: 0 });
-  }, [activeProgressStepId]);
+  const currentStepNumber = Math.max(1, lessonProgressSteps.findIndex((item) => item.id === activeProgressStepId) + 1);
+  const currentStepLabel = lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label ?? '';
+  const goalCard = (
+    <LessonGoal step={currentStepNumber} total={lessonProgressSteps.length} title={currentGoal.title} detail={currentGoal.detail} />
+  );
+  const signedCurrentLabel = `${electromagnetCurrentA >= 0 ? '+' : ''}${electromagnetCurrentA.toFixed(2)} A`;
 
-  return (
-    <main
-      className={`learning-shell learning-lesson-shell rotor-chase-shell is-${lessonStage}-stage${quizOpen ? ' is-quiz-open' : ''}`}
-    >
-      <section className="learning-main-stage rotor-chase-main">
-        {lessonStage === 'solve' && !quizOpen ? (
-          <header className="rotor-chase-visual-header">
-            <div className="rotor-chase-visual-context">
-              <h2>{studioTitle}</h2>
-              <span>{studioMeta}</span>
-            </div>
-            {displayedData ? (
-              <div className="rotor-chase-studio-tools">
-                <div
-                  className="rotor-chase-field-source-toggle"
-                  role="group"
-                  aria-label="Magnetic field source selection"
-                >
-                  {([
-                    ['combined', 'Combined'],
-                    ['stator', 'Stator'],
-                    ['rotor', 'Rotor'],
-                  ] as Array<[RotorChaseFieldSource, string]>).map(([source, label]) => (
-                    <button
-                      key={source}
-                      type="button"
-                      className={fieldSource === source ? 'is-active' : ''}
-                      disabled={loadingSource !== null}
-                      onClick={() => void selectFieldSource(source)}
-                      aria-pressed={fieldSource === source}
-                    >
-                      {loadingSource === source ? 'Solving…' : label}
-                    </button>
-                  ))}
-                </div>
-                <div className="rotor-chase-view-toggle" role="group" aria-label="Field visualization">
-                  <button type="button" className={!showThreeD && showFluxLines ? 'is-active' : ''} onClick={() => { setShowThreeD(false); setShowFluxLines((visible) => showThreeD ? true : !visible); }} aria-pressed={!showThreeD && showFluxLines}><span /> Flux lines</button>
-                  <button type="button" className={!showThreeD && showFieldIntensity ? 'is-active' : ''} onClick={() => { setShowThreeD(false); setShowFieldIntensity((visible) => showThreeD ? true : !visible); }} aria-pressed={!showThreeD && showFieldIntensity}><span className="is-density" /> |B| map</button>
-                  <button type="button" className={!showThreeD && showMesh ? 'is-active' : ''} onClick={() => { setShowThreeD(false); setShowMesh((visible) => showThreeD ? true : !visible); }} aria-pressed={!showThreeD && showMesh}><span className="is-mesh" /> Mesh</button>
-                  <button type="button" className={showThreeD ? 'is-active' : ''} onClick={() => setShowThreeD(true)} aria-pressed={showThreeD}><span className="is-three" /> 3D</button>
-                </div>
-              </div>
-            ) : null}
-          </header>
-        ) : null}
-        {quizOpen ? (
-          <section className="rotor-chase-quiz-stage">
-            <p className="learning-kicker">Final check</p>
-            <h2>Why does a motor need a moving magnetic target?</h2>
-            <p>Separate the solver-backed magnetic checkpoints from the teaching motion model and identify where the energy comes from.</p>
-            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="rotor-chase-predict-experience" aria-label="Fixed-field rotor prediction">
-            <header className="rotor-chase-predict-heading">
-              <p className="learning-kicker">Lesson 6 · Predict</p>
-              <h1>What does a fixed field actually do?</h1>
-              <p>A permanent-magnet rotor begins 90° away. Decide what happens after release.</p>
-            </header>
-            <div className="rotor-chase-predict-visual">
-              <div className="learning-stage-badge"><span>Predict</span><strong>Permanent magnets · no coils yet</strong></div>
-              <PredictionDiagram />
-            </div>
-            <div className="rotor-chase-predict-question">
-              <p className="learning-kicker">Choose before the field is solved</p>
-              <h2>Once the rotor reaches the field direction, what happens next?</h2>
-              <div className="rotor-chase-predictions" role="radiogroup" aria-label="Fixed field rotor prediction">
-                {([
-                  ['align-once', 'It aligns once', 'Torque disappears when the axes line up.'],
-                  ['spin-forever', 'It spins forever', 'A fixed field would somehow sustain rotation.'],
-                  ['unaffected', 'It is unaffected', 'Permanent magnets would apply no alignment torque.'],
-                ] as Array<[Prediction, string, string]>).map(([value, label, detail], index) => (
-                  <button
-                    key={value}
-                    type="button"
-                    role="radio"
-                    aria-checked={prediction === value}
-                    className={`${prediction === value ? 'is-selected' : ''}${prediction === 'align-once' && value === 'align-once' ? ' is-correct' : ''}`}
-                    onClick={() => setPrediction(value)}
-                  >
-                    <span className="rotor-chase-prediction-number">{index + 1}</span>
-                    <span><strong>{label}</strong><small>{detail}</small></span>
-                  </button>
-                ))}
-              </div>
-              <p className={`rotor-chase-feedback${predictionCorrect ? ' is-correct' : ''}`} aria-live="polite">
-                {prediction
-                  ? predictionCorrect
-                    ? 'Exactly. A fixed field creates one stable destination, not continuous rotation.'
-                    : 'Watch the torque angle: what remains after the two magnetic axes line up?'
-                  : 'Make a prediction. The solver will reveal the torque path next.'}
-              </p>
-              <button
-                type="button"
-                className="learning-primary-button rotor-chase-predict-primary"
-                disabled={!predictionCorrect}
-                onClick={() => {
-                  setStage('solve');
-                  setLabControlsOpen(false);
-                  setSolveInspectorOpen(false);
-                }}
-              >
-                Reveal the fixed field →
-              </button>
-            </div>
-            <footer className="rotor-chase-predict-footer">
-              <div>
-                <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-                <button type="button" className="learning-ghost-button" onClick={onBackHome}>Design start</button>
-              </div>
-              <span>1 of 6 · Predict</span>
-            </footer>
-          </section>
-        ) : electromagnetActive && !displayedData ? (
-          <section className="rotor-chase-electromagnet-loading-stage" aria-live="polite">
-            <header>
-              <div>
-                <h3>DC electromagnet + PM rotor</h3>
-              </div>
-              <span>{electromagnetBusy ? 'SOLVING' : 'NEEDS ATTENTION'}</span>
-            </header>
-            <div className="rotor-chase-electromagnet-loading-body">
-              <i className={electromagnetBusy ? 'is-spinning' : 'has-error'} aria-hidden="true" />
-              <p className="learning-kicker">Part 3 · current sets polarity</p>
-              <h2>
-                {electromagnetBusy
-                  ? 'Building the reversible wound-pole field...'
-                  : 'The wound-pole solve did not finish.'}
-              </h2>
-              <p>
-                {electromagnetBusy
-                  ? 'The lab is already on Part 3. Magneto2D is solving both current polarities and the rotor-angle checkpoints needed for release.'
-                  : 'The permanent-magnet work is preserved. Retry the wound-pole frames from the controls panel.'}
-              </p>
-              <div
-                className="rotor-chase-solve-progress"
-                role="progressbar"
-                aria-label="Wound-pole FEM frame progress"
-                aria-valuemin={0}
-                aria-valuemax={ELECTROMAGNET_INITIAL_SOLVE_COUNT}
-                aria-valuenow={electromagnetSolveProgress}
-              >
-                <b style={{
-                  width: `${(
-                    electromagnetSolveProgress
-                    / ELECTROMAGNET_INITIAL_SOLVE_COUNT
-                  ) * 100}%`,
-                }}
-                />
-              </div>
-              <strong>
-                {electromagnetSolveProgress} / {ELECTROMAGNET_INITIAL_SOLVE_COUNT} FEM frames ready
-              </strong>
-            </div>
-          </section>
-        ) : displayedData ? (
-          <>
-            <div className={`rotor-chase-viewer${electromagnetActive ? ' is-electromagnet' : ''}`}>
-              {viewerDrawerStackOpen ? (
-                <div className="rotor-chase-viewer-drawers" aria-label="Lesson view details">
-                  <div className="rotor-chase-drawer-toolbar">
-                    <span>LESSON DETAILS</span>
-                    <button
-                      type="button"
-                      aria-label="Collapse lesson details"
-                      onClick={() => {
-                        setViewerDrawerStackOpen(false);
-                        setOpenViewerDrawer(null);
-                      }}
-                    >
-                      −
-                    </button>
-                  </div>
-                <section className={`rotor-chase-viewer-drawer rotor-chase-part-badge${openViewerDrawer === 'part' ? ' is-open' : ''}`}>
-                  <button
-                    type="button"
-                    className="rotor-chase-drawer-trigger"
-                    aria-expanded={openViewerDrawer === 'part'}
-                    aria-controls="rotor-chase-part-drawer"
-                    onClick={() => toggleViewerDrawer('part')}
-                  >
-                    <span className="rotor-chase-drawer-label">PART {viewerPartNumber}</span>
-                    <strong>{viewerPartTitle}</strong>
-                    <span className="rotor-chase-drawer-chevron" aria-hidden="true">
-                      {openViewerDrawer === 'part' ? '−' : '+'}
-                    </span>
-                  </button>
-                  <div
-                    id="rotor-chase-part-drawer"
-                    className="rotor-chase-drawer-panel rotor-chase-part-detail"
-                    hidden={openViewerDrawer !== 'part'}
-                  >
-                    <p>{viewerPartDescription}</p>
-                  </div>
-                </section>
+  // The chip on the canvas names what is drawn: the selected source, then the
+  // one number that changes while the student works.
+  const drawnSourceName = electromagnetActive
+    ? fieldSource === 'stator'
+      ? labPart === 'dc' ? 'DC electromagnet' : 'One-phase electromagnet'
+      : fieldSource === 'rotor'
+        ? 'PM rotor'
+        : labPart === 'dc' ? 'DC electromagnet + PM rotor' : 'One-phase field + PM rotor'
+    : fieldSource === 'stator'
+      ? 'PM stator'
+      : fieldSource === 'rotor' ? 'PM rotor' : 'PM stator + rotor';
+  const viewportLabel = `${drawnSourceName} · ${electromagnetActive ? signedCurrentLabel : `rotor ${displayAngle(rotorAngleDeg)}`}`;
 
-                <section className={`rotor-chase-viewer-drawer rotor-chase-source-drawer${openViewerDrawer === 'source' ? ' is-open' : ''}`}>
-                  <button
-                    type="button"
-                    className="rotor-chase-drawer-trigger"
-                    aria-expanded={openViewerDrawer === 'source'}
-                    aria-controls="rotor-chase-source-drawer"
-                    onClick={() => toggleViewerDrawer('source')}
-                  >
-                    <span className="rotor-chase-drawer-label">FIELD SOURCE</span>
-                    <strong>{fieldSourceLabel}</strong>
-                    <span className="rotor-chase-drawer-chevron" aria-hidden="true">
-                      {openViewerDrawer === 'source' ? '−' : '+'}
-                    </span>
-                  </button>
-                  <div
-                    id="rotor-chase-source-drawer"
-                    className="rotor-chase-drawer-panel"
-                    hidden={openViewerDrawer !== 'source'}
-                  >
-                    <div className="rotor-chase-source-toggle" role="group" aria-label="Magnetic field source">
-                      {([
-                        ['stator', 'Stator only'],
-                        ['rotor', 'Rotor only'],
-                        ['combined', 'Combined'],
-                      ] as Array<[RotorChaseFieldSource, string]>).map(([source, label]) => (
-                        <button
-                          key={source}
-                          type="button"
-                          className={fieldSource === source ? 'is-active' : ''}
-                          disabled={loadingSource !== null}
-                          onClick={() => void selectFieldSource(source)}
-                          aria-pressed={fieldSource === source}
-                        >
-                          {loadingSource === source ? 'Solving...' : label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </section>
-
-                {electromagnetActive ? (
-                  <section className={`rotor-chase-viewer-drawer rotor-chase-electromagnet-badge${openViewerDrawer === 'electromagnet' ? ' is-open' : ''}`}>
-                    <button
-                      type="button"
-                      className="rotor-chase-drawer-trigger"
-                      aria-expanded={openViewerDrawer === 'electromagnet'}
-                      aria-controls="rotor-chase-electromagnet-drawer"
-                      onClick={() => toggleViewerDrawer('electromagnet')}
-                    >
-                      <span className="rotor-chase-drawer-label">ELECTROMAGNET CROSS-SECTION</span>
-                      <strong>{electromagnetCurrentA >= 0 ? '+' : ''}{electromagnetCurrentA.toFixed(2)} A</strong>
-                      <span className="rotor-chase-drawer-chevron" aria-hidden="true">
-                        {openViewerDrawer === 'electromagnet' ? '−' : '+'}
-                      </span>
-                    </button>
-                    <div
-                      id="rotor-chase-electromagnet-drawer"
-                      className="rotor-chase-drawer-panel rotor-chase-electromagnet-detail"
-                      hidden={openViewerDrawer !== 'electromagnet'}
-                    >
-                      <div className="rotor-chase-material-key">
-                        <span><i className="is-copper" />Copper winding</span>
-                        <span><i className="is-iron" />M350-50A iron core</span>
-                      </div>
-                      <div className="rotor-chase-current-key">
-                        <span><i>{electromagnetTopCue}</i>Top: {electromagnetTopDirection}</span>
-                        <span><i>{electromagnetBottomCue}</i>Bottom: {electromagnetBottomDirection}</span>
-                      </div>
-                    </div>
-                  </section>
-                ) : null}
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  className="rotor-chase-drawer-launcher"
-                  aria-label="Show lesson details"
-                  aria-expanded="false"
-                  onClick={() => setViewerDrawerStackOpen(true)}
-                >
-                  <span aria-hidden="true">ⓘ</span>
-                  Details
-                </button>
-              )}
-              {showThreeD ? (
-                <RotorChase3D
-                  fieldData={displayedData}
-                  fieldSource={fieldSource}
-                  rotorAngleDeg={displayedRotorAngleDeg}
-                  sourceCurrentA={electromagnetActive ? electromagnetCurrentA : N42_REMANENCE_T}
-                />
-              ) : (
-                <MeshViewer
-                meshData={displayedData}
-                embedded
-                title={electromagnetActive
-                  ? fieldSource === 'stator'
-                    ? labPart === 'dc'
-                      ? 'DC electromagnet'
-                      : 'One-phase electromagnet'
-                    : fieldSource === 'rotor'
-                      ? 'PM rotor'
-                      : labPart === 'dc'
-                        ? 'DC electromagnet + PM rotor'
-                        : 'One-phase field + PM rotor'
-                  : fieldSource === 'stator'
-                    ? 'PM stator'
-                    : fieldSource === 'rotor'
-                      ? 'PM rotor'
-                      : 'PM stator + rotor'}
-                subtitle=""
-                toolbarMode="zoom-only"
-                toolbarLabel={showFluxLines && showFieldIntensity
-                  ? `${fieldSource} |B| map + flux lines`
-                  : showFluxLines
-                    ? `${fieldSource} flux lines`
-                    : showFieldIntensity
-                      ? `${fieldSource} |B| map`
-                      : `${fieldSource} geometry`}
-                showMeshEdges={showMesh}
-                showFieldIntensity={showFieldIntensity}
-                fieldIntensityRange={intensityRange}
-                smoothFieldIntensity
-                fieldLinesVisible={showFluxLines}
-                animateFieldArrows={(releasing || playingAc) && showFluxLines}
-                viewportPanEnabled={false}
-                splitForceMagnetPolarity={!electromagnetActive}
-                forceMagnetPolarityAxisDeg={electromagnetActive ? undefined : sourceAngleDeg}
-                directionVectors={directionVectors}
-                forceVectors={forceVectors}
-                dipoleMarkers={dipoleMarkers}
-                pointLabels={torqueMechanismVisible
-                  ? electromagnetActive
-                    ? electromagnetLabels
-                    : []
-                  : electromagnetActive
-                  ? fieldSource === 'stator'
-                    ? electromagnetLabels
-                    : fieldSource === 'rotor'
-                      ? rotorLabels
-                      : [...electromagnetLabels, ...rotorLabels]
-                  : rotorLabels}
-                />
-              )}
-            </div>
-          </>
-        ) : (
-          <section className="rotor-chase-empty-stage">
-            <div className="learning-stage-badge"><span>Solve</span><strong>Permanent-magnet source fixture</strong></div>
-            <PredictionDiagram />
-            <div><h2>Solve the fixed source field first.</h2><p>Gmsh builds a corner-refined normal mesh. Magneto2D solves the permanent-magnet field that the rotor will try to follow.</p></div>
-          </section>
-        )}
-        {lessonStage === 'solve' && !quizOpen ? (
-          <nav className="rotor-chase-lesson-dock" aria-label="Rotor field lesson controls">
-            <div className="rotor-chase-dock-insight">
-              <span>{lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label}</span>
-              <strong>{labInsight}</strong>
-            </div>
-            <div className="rotor-chase-dock-actions">
-              <button
-                type="button"
-                className="learning-ghost-button"
-                aria-expanded={labControlsOpen}
-                onClick={() => {
-                  setLabControlsOpen((open) => !open);
-                  setSolveInspectorOpen(false);
-                }}
-              >
-                {labControlsOpen
-                  ? 'Done'
-                  : labPart === 'ac'
-                    ? 'Adjust AC'
-                    : labPart === 'dc'
-                      ? 'Adjust current'
-                      : 'Adjust experiment'}
-              </button>
-              <button
-                type="button"
-                className="learning-ghost-button"
-                aria-expanded={solveInspectorOpen}
-                onClick={() => {
-                  setSolveInspectorOpen((open) => !open);
-                  setLabControlsOpen(false);
-                }}
-              >
-                Inspect results
-              </button>
-              <button
-                type="button"
-                className="learning-primary-button rotor-chase-dock-primary"
-                disabled={dockPrimaryDisabled}
-                onClick={runDockPrimaryAction}
-              >
-                {dockPrimaryLabel}
-              </button>
-            </div>
-          </nav>
-        ) : quizOpen ? (
-          <nav className="rotor-chase-lesson-dock is-quiz" aria-label="Knowledge check navigation">
-            <div className="rotor-chase-dock-insight">
-              <span>Check</span>
-              <strong>{quizPassed ? 'Lesson complete. The missing ingredient is a field that keeps advancing.' : 'Explain why one fixed axis cannot sustain rotation.'}</strong>
-            </div>
-            <div className="rotor-chase-dock-actions">
-              <button type="button" className="learning-ghost-button" onClick={() => { setQuizOpen(false); setLabPart('ac'); }}>Review experiment</button>
-              <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-              {quizPassed ? <a className="learning-primary-button rotor-chase-dock-primary" href="/tutorials/lesson-7">Next lesson</a> : null}
-            </div>
-          </nav>
-        ) : null}
-      </section>
-
-      {lessonStage === 'solve' && !quizOpen && labControlsOpen ? (
-      <aside
-        ref={controlPanelRef}
-        className="learning-control-panel rotor-chase-control-panel"
-        aria-label="Lesson lab controls"
+  // The canvas controls, in the same dock as the motor workspace. Until a
+  // field is solved the dock is shown greyed out, so the canvas keeps its size.
+  const renderViewDock = (unsolved: boolean) => {
+    // The 3D view is an illustrative extrusion: it has no field layers or mesh.
+    const layersOff = unsolved || showThreeD;
+    return (
+      <LessonDock
+        tabs={[
+          { id: '2d', label: '2D' },
+          { id: '3d', label: '3D', disabled: unsolved, title: unsolved ? 'Solve the field first' : undefined },
+        ]}
+        tab={showThreeD && !unsolved ? '3d' : '2d'}
+        onTab={(id) => setShowThreeD(id === '3d')}
+        // The 3D scene shows its own orbit hint, so its dock end stays empty.
+        end={unsolved ? 'Solve to see the field' : showThreeD ? null : <span ref={setZoomSlot} />}
       >
-        <button
-          type="button"
-          className="rotor-chase-panel-close"
-          aria-label="Close experiment controls"
-          onClick={() => setLabControlsOpen(false)}
-        >
-          ×
-        </button>
-        <section className="learning-control-section rotor-chase-control-header">
-          <p className="rotor-chase-panel-kicker">
-            Lab setup · {lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label}
-          </p>
-          <h2>Rotor field lab</h2>
-          <section className="rotor-chase-lab-goal" aria-label="Current lesson goal">
-            <span>{completedStepCount}/{lessonProgressSteps.length}</span>
-            <div>
-              <p>Current goal</p>
-              <strong>{currentGoal.title}</strong>
-              <small>{currentGoal.detail}</small>
-            </div>
-          </section>
-        </section>
-        {electromagnetActive ? (
-          <>
-            <h2>{labPart === 'dc' ? 'Reversible electromagnet' : 'One-phase AC lab'}</h2>
-            {labPart === 'dc' && !hasElectromagnetField ? (
-              <section className="rotor-chase-controls-card rotor-chase-solver-status" aria-live="polite">
-                <span>PART 3 · PREPARING WOUND-POLE FRAMES</span>
-                <h3>
-                  {electromagnetBusy
-                    ? 'Magneto2D is solving in the background'
-                    : 'Wound-pole solve interrupted'}
-                </h3>
-                <p>
-                  {electromagnetBusy
-                    ? 'You are now in the Reverse DC lab. Controls will unlock as soon as the positive, zero, and negative-current FEM frames are ready.'
-                    : 'Retry the solve to restore the reversible-electromagnet controls.'}
-                </p>
-                <div
-                  className="rotor-chase-solve-progress"
-                  role="progressbar"
-                  aria-label="Wound-pole solver progress"
-                  aria-valuemin={0}
-                  aria-valuemax={ELECTROMAGNET_INITIAL_SOLVE_COUNT}
-                  aria-valuenow={electromagnetSolveProgress}
-                >
-                  <b style={{
-                    width: `${(
-                      electromagnetSolveProgress
-                      / ELECTROMAGNET_INITIAL_SOLVE_COUNT
-                    ) * 100}%`,
-                  }}
-                  />
-                </div>
-                <p className="rotor-chase-travel">
-                  {electromagnetSolveProgress} / {ELECTROMAGNET_INITIAL_SOLVE_COUNT} frames ready
-                </p>
-                {!electromagnetBusy ? (
-                  <button
-                    type="button"
-                    className="rotor-chase-continue-button"
-                    onClick={() => void solveElectromagnetFrameSet()}
-                  >
-                    Retry wound-pole solve
-                  </button>
-                ) : null}
-                {error ? <p className="rotor-chase-error">{error}</p> : null}
-              </section>
-            ) : labPart === 'dc' ? (
-              <section className="rotor-chase-controls-card">
-                <span>PART 3 · CURRENT SETS THE POLES</span>
-                <p>Changing current resets the PM rotor to 90 deg. Release it to see the solved rotor-angle frames converge on the polarity-dependent target.</p>
-                <div className="rotor-chase-dc-buttons">
-                  <button
-                    type="button"
-                    className={dcCurrentA > 0 ? 'is-primary' : ''}
-                    onClick={() => setDcTarget(ELECTROMAGNET_PEAK_CURRENT_A)}
-                  >
-                    +8 A
-                  </button>
-                  <button
-                    type="button"
-                    className={Math.abs(dcCurrentA) < 0.01 ? 'is-primary' : ''}
-                    onClick={() => setDcTarget(0)}
-                  >
-                    0 A
-                  </button>
-                  <button
-                    type="button"
-                    className={dcCurrentA < 0 ? 'is-primary' : ''}
-                    onClick={() => setDcTarget(-ELECTROMAGNET_PEAK_CURRENT_A)}
-                  >
-                    -8 A
-                  </button>
-                </div>
-                <section className="rotor-chase-force-sweep-controls">
-                  <header>
-                    <span>FORCE SWEEP · ROTOR HELD AT 90°</span>
-                    <strong>{dcCurrentA >= 0 ? '+' : '−'}{Math.abs(dcCurrentA).toFixed(1)} A</strong>
-                  </header>
-                  <p>Set winding current, then add the calculated left/right force pair to the plot.</p>
-                  <input
-                    type="range"
-                    min={-ELECTROMAGNET_PEAK_CURRENT_A}
-                    max={ELECTROMAGNET_PEAK_CURRENT_A}
-                    step={0.5}
-                    value={dcCurrentA}
-                    aria-label="Current for pole force sweep"
-                    onChange={(event) => setDcTarget(Number(event.target.value))}
-                  />
-                  <div className="rotor-chase-force-sweep-scale" aria-hidden="true">
-                    <span>−8 A</span>
-                    <span>0</span>
-                    <span>+8 A</span>
-                  </div>
-                  <div className="rotor-chase-force-sweep-readout">
-                    <article>
-                      <span>N pole · Fx</span>
-                      <b>
-                        {liveDcNorthForceN === null
-                          ? '—'
-                          : `${liveDcNorthForceN >= 0 ? '+' : '−'}${Math.abs(liveDcNorthForceN).toFixed(2)} N`}
-                      </b>
-                    </article>
-                    <article>
-                      <span>S pole · Fx</span>
-                      <b>
-                        {liveDcNorthForceN === null
-                          ? '—'
-                          : `${liveDcNorthForceN <= 0 ? '+' : '−'}${Math.abs(liveDcNorthForceN).toFixed(2)} N`}
-                      </b>
-                    </article>
-                  </div>
-                  <button
-                    type="button"
-                    className="is-primary rotor-chase-plot-force-button"
-                    disabled={dcPeakPoleForceN === null || forceCurrentAlreadyPlotted}
-                    onClick={plotCurrentForcePair}
-                  >
-                    {forceCurrentAlreadyPlotted
-                      ? `Current plotted · ${plottedForceCurrentsA.length} point${plottedForceCurrentsA.length === 1 ? '' : 's'}`
-                      : 'Plot left + right force'}
-                  </button>
-                </section>
-                <div className="rotor-chase-dc-rotor-buttons">
-                  <button type="button" onClick={resetRelease}>Reset rotor 90°</button>
-                  <button
-                    type="button"
-                    className="is-primary"
-                    disabled={releasing || dcTargetAngleDeg === null || dcRotorAtTarget}
-                    onClick={releaseRotor}
-                  >
-                    {releasing ? 'Aligning...' : 'Release rotor'}
-                  </button>
-                </div>
-                <p className="rotor-chase-travel">
-                  Rotor: {displayAngle(rotorAngleDeg)} · Target: {dcTargetAngleDeg === null
-                    ? 'field off'
-                    : displayAngle(dcTargetAngleDeg)}
-                </p>
-                <p className="rotor-chase-travel">
-                  {dcComplete
-                    ? 'Both current polarities inspected'
-                    : 'Inspect +8 A and -8 A to continue'}
-                </p>
-                {dcComplete ? (
-                  <button
-                    type="button"
-                    className="rotor-chase-continue-button"
-                    onClick={() => void enterAc()}
-                  >
-                    Continue: replace DC with one AC phase
-                  </button>
-                ) : null}
-              </section>
-            ) : (
-              <section className="rotor-chase-controls-card">
-                <span>PART 4 · ONE SINUSOIDAL PHASE</span>
-                <p>Step through one electrical cycle. The same fixed axis points right for positive current and left for negative current.</p>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={allowAcRotorMotion}
-                  className={`rotor-chase-motion-toggle${allowAcRotorMotion ? ' is-active' : ''}`}
-                  disabled={acRotorMotionBusy}
-                  onClick={() => void toggleAcRotorMotion()}
-                >
-                  <i aria-hidden="true"><b /></i>
-                  <span>
-                    <strong>
-                      {acRotorMotionBusy
-                        ? 'Preparing solved rotor angles...'
-                        : 'Allow rotor motion'}
-                    </strong>
-                    <small>
-                      {allowAcRotorMotion
-                        ? 'On · PM rotor is free to follow the active pole'
-                        : 'Off · PM rotor stays fixed at 90°'}
-                    </small>
-                  </span>
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  step={AC_STEP_DEG}
-                  value={acAngleDeg}
-                  onChange={(event) => {
-                    setPlayingAc(false);
-                    setAcAngleDeg(Number(event.currentTarget.value));
-                  }}
-                  aria-label="Single-phase AC electrical angle"
-                />
-                <div className="rotor-chase-playback-buttons">
-                  <button type="button" onClick={() => stepAc(-1)}>-11.25 deg</button>
-                  <button type="button" className="is-primary" onClick={playAcCycle}>
-                    {playingAc ? 'Playing...' : 'Play one cycle'}
-                  </button>
-                  <button type="button" onClick={() => stepAc(1)}>+11.25 deg</button>
-                </div>
-                <p className="rotor-chase-travel">
-                  I = {electromagnetCurrentA >= 0 ? '+' : ''}{electromagnetCurrentA.toFixed(2)} A · theta = {acAngleDeg.toFixed(2)} deg
-                </p>
-                {allowAcRotorMotion ? (
-                  <>
-                    <p className="rotor-chase-travel">
-                      Rotor: {displayAngle(rotorAngleDeg)} · Target: {acRotorTargetAngleDeg === null
-                        ? 'field off'
-                        : displayAngle(acRotorTargetAngleDeg)}
-                    </p>
-                    <p className="rotor-chase-motion-note">
-                      Motion follows the nearest solved 15° FEM checkpoint. This is a 180° flip: the rotor reverses direction each half-cycle instead of continuing to spin.
-                    </p>
-                  </>
-                ) : null}
-                <button
-                  type="button"
-                  className="rotor-chase-continue-button"
-                  disabled={!labComplete}
-                  onClick={() => setQuizOpen(true)}
-                >
-                  {labComplete ? 'Finish lab: take the quiz' : 'Play one full AC cycle to continue'}
-                </button>
-              </section>
-            )}
-            {error ? <p className="rotor-chase-error">{error}</p> : null}
-          </>
-        ) : !hasSolvedField ? (
-          <>
-            <h2>Rotor-alignment lab</h2>
-            <section className="rotor-chase-solve-card">
-              <span>EIGHT NORMAL GMSH MESHES</span>
-              <h3>Solve rotor motion checkpoints</h3>
-              <p>Magneto2D solves seven combined rotor-angle checkpoints plus one stator-only reference for the analytic torque estimate.</p>
-              <button type="button" disabled={busy} onClick={solveSourceField}>{busy ? 'Solving 8 FEM field frames...' : 'Solve permanent-magnet checkpoints'}</button>
-              {error ? <p className="rotor-chase-error">{error}</p> : null}
-            </section>
-          </>
+        <LessonDockGroup label="Source">
+          <LessonSegmented
+            label="Magnetic field source selection"
+            value={unsolved ? null : fieldSource}
+            onChange={(source) => void selectFieldSource(source)}
+            options={FIELD_SOURCE_OPTIONS.map((option) => ({
+              id: option.id,
+              label: loadingSource === option.id ? 'Solving…' : option.label,
+              disabled: unsolved || loadingSource !== null,
+              title: option.title,
+            }))}
+          />
+        </LessonDockGroup>
+        <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines && !layersOff}
+            onChange={setShowFieldLines}
+            disabled={layersOff}
+            title="Lines that follow the direction of the field"
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity && !layersOff}
+            onChange={setShowFluxDensity}
+            disabled={layersOff}
+            title="Colour by field strength, |B|"
+          >
+            Flux density
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showMesh && !layersOff}
+            onChange={setShowMesh}
+            disabled={layersOff}
+            title="The triangles the solver divides the space into"
+          >
+            Mesh
+          </LessonDockToggle>
+        </LessonDockGroup>
+      </LessonDock>
+    );
+  };
+
+  const renderSolvedCanvas = (data: RotorChaseFieldData) => (
+    <LessonLabCanvas className="rotor-chase-canvas">
+      <LessonLabViewport label={viewportLabel} hint={loadingSource ? 'Solving the selected source…' : undefined}>
+        {showThreeD ? (
+          <RotorChase3D
+            fieldData={data}
+            fieldSource={fieldSource}
+            rotorAngleDeg={displayedRotorAngleDeg}
+            sourceCurrentA={electromagnetActive ? electromagnetCurrentA : N42_REMANENCE_T}
+          />
         ) : (
-          <>
-            <h2>{labPart === 'release' ? 'Fixed-field alignment' : 'Move only the rotor'}</h2>
-            {labPart === 'release' ? (
-              <section className="rotor-chase-controls-card">
-                <span>PART 1 · SOURCE HELD FIXED</span>
-                <p>Reset to a 90 deg error, release the rotor, and watch its torque indicator disappear at alignment.</p>
-                <div>
-                  <button type="button" onClick={resetRelease}>Reset 90 deg</button>
-                  <button type="button" className="is-primary" disabled={releasing} onClick={releaseRotor}>{releasing ? 'Aligning...' : 'Release rotor'}</button>
-                </div>
-                {alignedOnce ? <button type="button" className="rotor-chase-continue-button" onClick={enterChase}>Continue: try another rotor angle</button> : null}
-              </section>
-            ) : (
-              <section className="rotor-chase-controls-card">
-                <span>PART 2 · YOU TURN ONLY THE ROTOR</span>
-                <p>The stator magnets and source field remain fixed at 0 deg. Set another rotor angle, then release it.</p>
-                <input
-                  type="range"
-                  min="-90"
-                  max="90"
-                  step={MANUAL_STEP_DEG}
-                  value={signedRelativeRotorAngleDeg}
-                  onChange={(event) => {
-                    setRotorOffset(Number(event.currentTarget.value));
-                  }}
-                  aria-label="Central permanent-magnet rotor angle"
-                />
-                <div className="rotor-chase-playback-buttons">
-                  <button type="button" onClick={() => stepRotor(-1)}>-15 deg</button>
-                  <button type="button" className="is-primary" disabled={releasing || Math.abs(signedRelativeRotorAngleDeg) < 0.45} onClick={releaseRotor}>{releasing ? 'Aligning...' : 'Release rotor'}</button>
-                  <button type="button" onClick={() => stepRotor(1)}>+15 deg</button>
-                </div>
-                <p className="rotor-chase-travel">Fixed source: 0 deg · Rotor start: {signedRelativeRotorAngleDeg.toFixed(0)} deg</p>
-                {secondAlignmentComplete ? (
-                  <button
-                    type="button"
-                    className="rotor-chase-continue-button"
-                    disabled={electromagnetBusy}
-                    onClick={() => void enterDc()}
-                  >
-                    {electromagnetBusy ? 'Solving wound poles...' : 'Continue: replace PMs with coils'}
-                  </button>
-                ) : null}
-              </section>
-            )}
-            {error ? <p className="rotor-chase-error">{error}</p> : null}
-          </>
+          <MeshViewer
+            meshData={data}
+            embedded
+            compactEmbedded
+            toolbarMode="zoom-only"
+            zoomControlsSlot={zoomSlot}
+            showMeshEdges={showMesh}
+            showFieldIntensity={showFluxDensity}
+            fieldIntensityRange={intensityRange}
+            smoothFieldIntensity
+            fieldLinesVisible={showFieldLines}
+            animateFieldArrows={(releasing || playingAc) && showFieldLines}
+            viewportPanEnabled={false}
+            splitForceMagnetPolarity={!electromagnetActive}
+            forceMagnetPolarityAxisDeg={electromagnetActive ? undefined : sourceAngleDeg}
+            directionVectors={directionVectors}
+            forceVectors={forceVectors}
+            dipoleMarkers={dipoleMarkers}
+            pointLabels={torqueMechanismVisible
+              ? electromagnetActive
+                ? electromagnetLabels
+                : []
+              : electromagnetActive
+                ? fieldSource === 'stator'
+                  ? electromagnetLabels
+                  : fieldSource === 'rotor'
+                    ? rotorLabels
+                    : [...electromagnetLabels, ...rotorLabels]
+                : rotorLabels}
+          />
         )}
-        <footer className="rotor-chase-context-footer">
-          {isLessonComplete('rotor-chase') ? (
-            <div className="rotor-chase-completion-actions">
-              <span className="rotor-chase-complete">Lesson complete</span>
-              <a className="learning-primary-button rotor-chase-next-lesson" href="/tutorials/lesson-7">
-                Next lesson: Make the Field Rotate
-              </a>
-            </div>
-          ) : null}
-          <div className="rotor-chase-context-navigation">
-            <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-            <button type="button" className="learning-ghost-button" onClick={onBackHome}>Design start</button>
-          </div>
-        </footer>
-      </aside>
-      ) : null}
+      </LessonLabViewport>
+      {renderViewDock(false)}
+    </LessonLabCanvas>
+  );
 
-      {lessonStage === 'solve' && !quizOpen && solveInspectorOpen ? (
-      <aside className="learning-context-panel rotor-chase-context" aria-label="Lesson evidence and solved results">
-        <button
-          type="button"
-          className="rotor-chase-panel-close"
-          aria-label="Close solved results"
-          onClick={() => setSolveInspectorOpen(false)}
-        >
-          ×
-        </button>
-        <header className="rotor-chase-status-header is-compact">
-          <p className="learning-kicker">Lesson 6 · Evidence</p>
-          <h1>{evidenceTitle}</h1>
-          <div className="learning-progress" aria-label="Lesson completion">
-            <span style={{ width: `${(completedStepCount / lessonProgressSteps.length) * 100}%` }} />
+  // Shown in place of the picture while the wound-pole frames are solved (or
+  // after that solve failed). The retry is the primary button on the left.
+  const renderWoundPoleLoading = () => (
+    <LessonLabCanvas className="rotor-chase-canvas">
+      <LessonLabViewport
+        label="DC electromagnet + PM rotor"
+        hint={electromagnetBusy ? 'Solving…' : 'Not solved yet'}
+        className="is-centered"
+      >
+        <div className="rotor-chase-electromagnet-loading-body" aria-live="polite">
+          <i className={electromagnetBusy ? 'is-spinning' : 'has-error'} aria-hidden="true" />
+          <p className="learning-kicker">Part 3 · current sets polarity</p>
+          <h2>
+            {electromagnetBusy
+              ? 'Building the reversible wound-pole field...'
+              : 'The wound-pole solve did not finish.'}
+          </h2>
+          <p>
+            {electromagnetBusy
+              ? 'The lab is already on Part 3. Magneto2D is solving both current polarities and the rotor-angle checkpoints needed for release.'
+              : 'The permanent-magnet work is preserved. Retry the wound-pole frames from the experiment panel.'}
+          </p>
+          <div
+            className="rotor-chase-solve-progress"
+            role="progressbar"
+            aria-label="Wound-pole FEM frame progress"
+            aria-valuemin={0}
+            aria-valuemax={ELECTROMAGNET_INITIAL_SOLVE_COUNT}
+            aria-valuenow={electromagnetSolveProgress}
+          >
+            <b style={{
+              width: `${(
+                electromagnetSolveProgress
+                / ELECTROMAGNET_INITIAL_SOLVE_COUNT
+              ) * 100}%`,
+            }}
+            />
           </div>
-        </header>
+          <strong>
+            {electromagnetSolveProgress} / {ELECTROMAGNET_INITIAL_SOLVE_COUNT} FEM frames ready
+          </strong>
+        </div>
+      </LessonLabViewport>
+      {renderViewDock(true)}
+    </LessonLabCanvas>
+  );
 
-        {!hasSolvedField ? (
-          <section className="rotor-chase-status-empty">
-            <p className="learning-kicker">Solved alignment response</p>
-            <h2>{busy ? 'Building eight FEM checkpoints' : 'Awaiting the source-field solve'}</h2>
-            <p>Torque, angle, and the analytic-versus-FEM comparison will appear here when the fixed-field frames are ready.</p>
-          </section>
-        ) : electromagnetActive && !displayedData ? (
-          <section className="rotor-chase-status-empty" aria-live="polite">
-            <p className="learning-kicker">Wound-pole source</p>
-            <h2>{electromagnetBusy ? 'Solving reversible-field frames' : 'Wound-pole frames need attention'}</h2>
-            <p>{electromagnetSolveProgress} of {ELECTROMAGNET_INITIAL_SOLVE_COUNT} frames are ready. The permanent-magnet alignment results remain preserved.</p>
-          </section>
-        ) : (
-          <section className="rotor-chase-results">
-            {labPart === 'release' || labPart === 'chase' ? (
-              <>
-                <div className="rotor-chase-result-copy">
-                  <p className="learning-kicker">
-                    {labPart === 'release' ? 'Part 1 · fixed target' : 'Part 2 · another starting angle'}
-                  </p>
-                  <h2>
-                    {labPart === 'release'
-                      ? 'The rotor turns only until it aligns.'
-                      : 'Different starts, same fixed destination.'}
-                  </h2>
-                  <p>
-                    {labPart === 'release'
-                      ? 'Torque peaks near a 90° error and falls to zero at alignment.'
-                      : 'Only the PM rotor moved. The stator field stayed fixed, so the destination did not follow the starting angle.'}
-                  </p>
-                </div>
-                <ForceCoupleCard
-                  fieldActive
-                  fieldDirection={fieldDirectionLabel}
-                  southForceDirection={southForceDirectionLabel}
-                  torqueAngleDeg={misalignmentDeg}
-                  torqueDirection={torqueDirectionLabel}
-                />
-                <TorquePlotPanel
-                  misalignmentDeg={misalignmentDeg}
-                  analyticPeakTorqueNm={analyticPeakTorqueNm}
-                  femSamples={femTorqueSamples}
-                />
-                <section className="rotor-chase-readout-card">
-                  <header><span>SOURCE FIELD</span><strong>{displayAngle(sourceAngleDeg)}</strong></header>
-                  <div><span>Rotor N–S axis</span><b>{displayAngle(rotorAngleDeg)}</b></div>
-                  <div><span>Misalignment</span><b>{misalignmentDeg.toFixed(1)}°</b></div>
-                  <div><span>Displayed FEM frame</span><b>{checkpointAngleDeg}°</b></div>
-                  <div><span>FEM torque estimate</span><b>{formatTorqueMnM(femTorqueNm)}</b></div>
-                  <div><span>Analytic dipole torque</span><b>{formatTorqueMnM(analyticTorqueNm)}</b></div>
-                  <div className="rotor-chase-equation">τz = (m × B)z = mB sin(field − rotor)</div>
-                </section>
-                <section className="rotor-chase-concept-card rotor-chase-torque-derivation">
-                  <span>WHY THE CURVE IS A SINE</span>
-                  <h3>Torque is the slope of magnetic energy.</h3>
-                  <div><b>U(δ) = −mB cos δ</b><i>lowest energy at alignment</i></div>
-                  <div><b>τ = −∂U/∂θᵣ = mB sin δ</b><i>turning component of m × B</i></div>
-                  <p>The cyan curve is the ideal dipole law. Amber FEM points include finite magnet size and fringing.</p>
-                </section>
-              </>
-            ) : (
-              <>
-                <div className="rotor-chase-result-copy">
-                  <p className="learning-kicker">
-                    {labPart === 'dc' ? 'Part 3 · current sets polarity' : 'Part 4 · one sinusoidal phase'}
-                  </p>
-                  <h2>
-                    {labPart === 'dc'
-                      ? 'Reverse DC, reverse the magnetic target.'
-                      : 'The rotor flips back and forth; it does not spin.'}
-                  </h2>
-                  <p>
-                    {labPart === 'dc'
-                      ? 'The copper does not move. Reversing current swaps the wound-pole N/S faces and flips the fixed target by 180°.'
-                      : 'Each half-cycle selects the opposite direction on the same fixed axis, so the rotor reverses instead of accumulating rotation.'}
-                  </p>
-                </div>
-                {labPart === 'dc' ? (
+  const renderUnsolvedCanvas = () => (
+    <LessonLabCanvas className="rotor-chase-canvas">
+      <LessonLabViewport
+        label="Permanent-magnet source fixture"
+        hint={busy ? 'Solving…' : 'Not solved yet'}
+        className="is-centered"
+      >
+        <section className="rotor-chase-empty-stage">
+          <PredictionDiagram />
+          <div><h2>Solve the fixed source field first.</h2><p>Gmsh builds a corner-refined normal mesh. Magneto2D solves the permanent-magnet field that the rotor will try to follow.</p></div>
+        </section>
+      </LessonLabViewport>
+      {renderViewDock(true)}
+    </LessonLabCanvas>
+  );
+
+  const inspectPanel = (
+    <LessonLabPanel
+      side="inspect"
+      kicker="Inspect"
+      title={lessonStage === 'design' ? 'Nothing solved yet' : evidenceTitle}
+      summary={lessonStage === 'design'
+        ? 'Make your prediction first. The solved field and its measurements appear here in the next step.'
+        : undefined}
+      label="Lesson evidence and solved results"
+      // New evidence appears at the top of the card: bring it back into view
+      // when the step changes or a solve finishes.
+      scrollTopKey={`${activeProgressStepId}:${hasSolvedField}:${hasElectromagnetField}`}
+    >
+      {lessonStage === 'design' ? (
+        <LessonOutline
+          steps={lessonProgressSteps.map((item) => ({
+            id: item.id,
+            label: item.label,
+            detail: LESSON_SIX_GOALS[item.id as LessonSixProgressStepId].detail,
+          }))}
+          currentId={activeProgressStepId}
+        />
+      ) : !hasSolvedField ? (
+        <section className="rotor-chase-status-empty">
+          <p className="learning-kicker">Solved alignment response</p>
+          <h2>{busy ? 'Building eight FEM checkpoints' : 'Awaiting the source-field solve'}</h2>
+          <p>Torque, angle, and the analytic-versus-FEM comparison will appear here when the fixed-field frames are ready.</p>
+        </section>
+      ) : electromagnetActive && !displayedData ? (
+        <section className="rotor-chase-status-empty" aria-live="polite">
+          <p className="learning-kicker">Wound-pole source</p>
+          <h2>{electromagnetBusy ? 'Solving reversible-field frames' : 'Wound-pole frames need attention'}</h2>
+          <p>{electromagnetSolveProgress} of {ELECTROMAGNET_INITIAL_SOLVE_COUNT} frames are ready. The permanent-magnet alignment results remain preserved.</p>
+        </section>
+      ) : (
+        <section className="rotor-chase-results">
+          {labPart === 'release' || labPart === 'chase' ? (
+            <>
+              <div className="rotor-chase-result-copy">
+                <p className="learning-kicker">
+                  {labPart === 'release' ? 'Part 1 · fixed target' : 'Part 2 · another starting angle'}
+                </p>
+                <h2>
+                  {labPart === 'release'
+                    ? 'The rotor turns only until it aligns.'
+                    : 'Different starts, same fixed destination.'}
+                </h2>
+                <p>
+                  {labPart === 'release'
+                    ? 'Torque peaks near a 90° error and falls to zero at alignment.'
+                    : 'Only the PM rotor moved. The stator field stayed fixed, so the destination did not follow the starting angle.'}
+                </p>
+              </div>
+              <ForceCoupleCard
+                fieldActive
+                fieldDirection={fieldDirectionLabel}
+                southForceDirection={southForceDirectionLabel}
+                torqueAngleDeg={misalignmentDeg}
+                torqueDirection={torqueDirectionLabel}
+              />
+              <TorquePlotPanel
+                misalignmentDeg={misalignmentDeg}
+                analyticPeakTorqueNm={analyticPeakTorqueNm}
+                femSamples={femTorqueSamples}
+              />
+              {/* The torque angle and both torque values are read once, in the
+                  readout under the plot; this card adds what the plot does not show. */}
+              <section className="rotor-chase-readout-card">
+                <header><span>SOURCE FIELD</span><strong>{displayAngle(sourceAngleDeg)}</strong></header>
+                <div><span>Rotor N–S axis</span><b>{displayAngle(rotorAngleDeg)}</b></div>
+                <div><span>Displayed FEM frame</span><b>{checkpointAngleDeg}°</b></div>
+                <div className="rotor-chase-equation">τz = (m × B)z = mB sin(field − rotor)</div>
+              </section>
+              <section className="rotor-chase-concept-card rotor-chase-torque-derivation">
+                <span>WHY THE CURVE IS A SINE</span>
+                <h3>Torque is the slope of magnetic energy.</h3>
+                <div><b>U(δ) = −mB cos δ</b><i>lowest energy at alignment</i></div>
+                <div><b>τ = −∂U/∂θᵣ = mB sin δ</b><i>turning component of m × B</i></div>
+                <p>The cyan curve is the ideal dipole law. Amber FEM points include finite magnet size and fringing.</p>
+              </section>
+            </>
+          ) : (
+            <>
+              <div className="rotor-chase-result-copy">
+                <p className="learning-kicker">
+                  {labPart === 'dc' ? 'Part 3 · current sets polarity' : 'Part 4 · one sinusoidal phase'}
+                </p>
+                <h2>
+                  {labPart === 'dc'
+                    ? 'Reverse DC, reverse the magnetic target.'
+                    : 'The rotor flips back and forth; it does not spin.'}
+                </h2>
+                <p>
+                  {labPart === 'dc'
+                    ? 'The copper does not move. Reversing current swaps the wound-pole N/S faces and flips the fixed target by 180°.'
+                    : 'Each half-cycle selects the opposite direction on the same fixed axis, so the rotor reverses instead of accumulating rotation.'}
+                </p>
+              </div>
+              {labPart === 'dc' ? (
+                <>
                   <ForceCoupleCard
                     fieldActive={dcTargetAngleDeg !== null}
                     fieldDirection={fieldDirectionLabel}
@@ -2862,8 +2286,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
                     torqueDirection={torqueDirectionLabel}
                     reverseDc
                   />
-                ) : null}
-                {labPart === 'dc' ? (
                   <ForceCurrentPlot
                     currentA={dcCurrentA}
                     peakForceN={dcPeakPoleForceN}
@@ -2871,8 +2293,6 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
                     leverArmMm={dcForceLeverArmMm}
                     plottedCurrentsA={plottedForceCurrentsA}
                   />
-                ) : null}
-                {labPart === 'dc' ? (
                   <div className="rotor-chase-dc-comparison">
                     <article className={dcCurrentA > 0 ? 'is-active' : ''}>
                       <span>+8 A</span><strong>Field points right</strong><p>Left pole N · right pole S</p>
@@ -2884,59 +2304,369 @@ export const LearningLessonSixRotorChase: React.FC<LearningLessonSixRotorChasePr
                       <span>−8 A</span><strong>Field points left</strong><p>Left pole S · right pole N</p>
                     </article>
                   </div>
-                ) : (
-                  <OnePhaseWaveform angleDeg={acAngleDeg} currentA={acCurrentA} />
-                )}
-                <section className="rotor-chase-readout-card">
-                  <header>
-                    <span>WOUND-POLE SOURCE</span>
-                    <strong>{electromagnetCurrentA >= 0 ? '+' : ''}{electromagnetCurrentA.toFixed(2)} A</strong>
-                  </header>
-                  <div><span>Coil MMF · NI</span><b>{(ELECTROMAGNET_TURNS * electromagnetCurrentA).toFixed(0)} A-turn</b></div>
-                  <div><span>Inner pole faces</span><b>{electromagnetPoleFaces}</b></div>
-                  <div><span>Field target</span><b>{electromagnetFieldDirection}</b></div>
-                  <div><span>PM rotor N–S axis</span><b>{displayAngle(rotorAngleDeg)}</b></div>
-                  {labPart === 'dc' ? (
-                    <>
-                      <div><span>Alignment target</span><b>{dcTargetAngleDeg === null ? 'Off at 0 A' : displayAngle(dcTargetAngleDeg)}</b></div>
-                      <div><span>Displayed FEM rotor frame</span><b>{displayAngle(displayedRotorAngleDeg)}</b></div>
-                    </>
-                  ) : null}
-                  <div>
-                    <span>Displayed field</span>
-                    <b>{fieldSource === 'combined' ? 'Wound poles + PM rotor' : fieldSource === 'stator' ? 'Wound poles only' : 'PM rotor only'}</b>
-                  </div>
-                  <div><span>Earlier PM source at center |B|</span><b>{sourceCenterFieldT === null ? '—' : `${(sourceCenterFieldT * 1e3).toFixed(2)} mT`}</b></div>
-                  <div><span>Wound source at center |B|</span><b>{woundSourceCenterFieldT === null ? '—' : `${(woundSourceCenterFieldT * 1e3).toFixed(2)} mT`}</b></div>
-                  <div>
-                    <span>Source match</span>
-                    <b>{woundSourceMatchPercent === null ? '—' : `${woundSourceMatchPercent >= 0 ? '+' : ''}${woundSourceMatchPercent.toFixed(1)}%`}</b>
-                  </div>
-                  <div><span>Displayed selection at center |B|</span><b>{(electromagnetCenterFieldT * 1e3).toFixed(2)} mT</b></div>
-                  <div className="rotor-chase-equation">magnetomotive force = N I</div>
-                  <p className="rotor-chase-source-match-note">
-                    This equivalent {ELECTROMAGNET_TURNS.toLocaleString()}-turn teaching winding matches the earlier fixed-PM source near the center. Its large NI reflects the air-path tax, not a copper-loss or temperature design.
-                  </p>
-                </section>
-                <section className="rotor-chase-concept-card">
-                  <span>{labPart === 'dc' ? 'PERMANENT MAGNET → ELECTROMAGNET' : 'WHY ONE PHASE IS NOT ENOUGH'}</span>
-                  <h3>
-                    {labPart === 'dc'
-                      ? 'The field can now be commanded electrically.'
-                      : 'One winding alternates; it does not create a rotating field.'}
-                  </h3>
-                  <p>
-                    {labPart === 'dc'
-                      ? 'The M350-50A cores guide the coil field around the N42 rotor. Reversing current swaps both current directions and the inner pole faces.'
-                      : 'Positive and negative current select opposite directions on the same axis. Lesson 7 adds a second spatially shifted phase so the resultant direction can advance.'}
-                  </p>
-                </section>
-              </>
-            )}
-          </section>
+                </>
+              ) : (
+                <OnePhaseWaveform angleDeg={acAngleDeg} currentA={acCurrentA} />
+              )}
+              <section className="rotor-chase-readout-card">
+                <header>
+                  <span>WOUND-POLE SOURCE</span>
+                  <strong>{signedCurrentLabel}</strong>
+                </header>
+                <div><span>Coil MMF · NI</span><b>{(ELECTROMAGNET_TURNS * electromagnetCurrentA).toFixed(0)} A-turn</b></div>
+                <div><span>Inner pole faces</span><b>{electromagnetPoleFaces}</b></div>
+                <div><span>Field target</span><b>{electromagnetFieldDirection}</b></div>
+                <div><span>PM rotor N–S axis</span><b>{displayAngle(rotorAngleDeg)}</b></div>
+                {labPart === 'dc' ? (
+                  <>
+                    <div><span>Alignment target</span><b>{dcTargetAngleDeg === null ? 'Off at 0 A' : displayAngle(dcTargetAngleDeg)}</b></div>
+                    <div><span>Displayed FEM rotor frame</span><b>{displayAngle(displayedRotorAngleDeg)}</b></div>
+                  </>
+                ) : null}
+                <div>
+                  <span>Displayed field</span>
+                  <b>{fieldSource === 'combined' ? 'Wound poles + PM rotor' : fieldSource === 'stator' ? 'Wound poles only' : 'PM rotor only'}</b>
+                </div>
+                <div><span>Earlier PM source at center |B|</span><b>{sourceCenterFieldT === null ? '—' : `${(sourceCenterFieldT * 1e3).toFixed(2)} mT`}</b></div>
+                <div><span>Wound source at center |B|</span><b>{woundSourceCenterFieldT === null ? '—' : `${(woundSourceCenterFieldT * 1e3).toFixed(2)} mT`}</b></div>
+                <div>
+                  <span>Wound source vs earlier PM source</span>
+                  <b>{woundSourceMatchPercent === null ? '—' : `${woundSourceMatchPercent >= 0 ? '+' : ''}${woundSourceMatchPercent.toFixed(1)}%`}</b>
+                </div>
+                <div><span>Displayed selection at center |B|</span><b>{(electromagnetCenterFieldT * 1e3).toFixed(2)} mT</b></div>
+                <div className="rotor-chase-equation">magnetomotive force = N I</div>
+                <p className="rotor-chase-source-match-note">
+                  This equivalent {ELECTROMAGNET_TURNS.toLocaleString()}-turn teaching winding matches the earlier fixed-PM source near the center. Its large NI reflects the air-path tax, not a copper-loss or temperature design.
+                </p>
+              </section>
+              {/* What the colours and the current marks on the canvas mean. */}
+              <section className="lesson-lab-card rotor-chase-key-card" aria-label="Electromagnet cross-section key">
+                <h3>Electromagnet cross-section</h3>
+                <div className="rotor-chase-material-key">
+                  <span><i className="is-copper" />Copper winding</span>
+                  <span><i className="is-iron" />Electrical steel core</span>
+                </div>
+                <div className="rotor-chase-current-key">
+                  <span><i>{electromagnetTopCue}</i>Top: {electromagnetTopDirection}</span>
+                  <span><i>{electromagnetBottomCue}</i>Bottom: {electromagnetBottomDirection}</span>
+                </div>
+              </section>
+              <section className="rotor-chase-concept-card">
+                <span>{labPart === 'dc' ? 'PERMANENT MAGNET → ELECTROMAGNET' : 'WHY ONE PHASE IS NOT ENOUGH'}</span>
+                <h3>
+                  {labPart === 'dc'
+                    ? 'The field can now be commanded electrically.'
+                    : 'One winding alternates; it does not create a rotating field.'}
+                </h3>
+                <p>
+                  {labPart === 'dc'
+                    ? 'The electrical steel cores (grade M350-50A) guide the coil field around the N42 rotor. Reversing current swaps both current directions and the inner pole faces.'
+                    : 'Positive and negative current select opposite directions on the same axis. Lesson 7 adds a second spatially shifted phase so the resultant direction can advance.'}
+                </p>
+              </section>
+            </>
+          )}
+        </section>
+      )}
+
+      <LessonTerms terms={LESSON_SIX_TERMS} />
+    </LessonLabPanel>
+  );
+
+  if (quizOpen) {
+    return (
+      <LessonLab className="rotor-chase-lab">
+        {inspectPanel}
+        <LessonLabStage className="is-tall">
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
+            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Why does a motor need a moving magnetic target?"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep hint={quizPassed
+              ? 'Lesson complete. The missing ingredient is a field that keeps advancing.'
+              : 'Explain why one fixed axis cannot sustain rotation.'}
+            >
+              {quizPassed || lessonComplete ? (
+                <a className="learning-primary-button" href="/tutorials/lesson-7">Next lesson</a>
+              ) : null}
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => { setQuizOpen(false); setLabPart('ac'); }}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Separate the solver-backed magnetic checkpoints from the teaching motion model and identify where the energy comes from.</p>
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  if (lessonStage === 'design') {
+    return (
+      <LessonLab className="rotor-chase-lab">
+        {inspectPanel}
+        <LessonLabStage>
+          <LessonLabViewport label="Permanent magnets · no coils yet" className="is-centered">
+            <div className="rotor-chase-predict-picture"><PredictionDiagram /></div>
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Predict"
+          title="What does a fixed field actually do?"
+          summary="A permanent-magnet rotor begins 90° away. Decide what happens after release."
+          label="Fixed-field rotor prediction"
+          footer={(
+            <LessonNextStep
+              tone={prediction ? (predictionCorrect ? 'good' : 'warn') : undefined}
+              hint={prediction
+                ? predictionCorrect
+                  ? 'Exactly. A fixed field creates one stable destination, not continuous rotation.'
+                  : 'Watch the torque angle: what remains after the two magnetic axes line up?'
+                : 'Make a prediction. The solver will reveal the torque path next.'}
+            >
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={!predictionCorrect}
+                onClick={() => setStage('solve')}
+              >
+                Reveal the fixed field →
+              </button>
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                <LessonLink onClick={onBackHome}>Design start</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="rotor-chase-predict-prompt">Once the rotor reaches the field direction, what happens next?</p>
+          <LessonChoices
+            label="Fixed field rotor prediction"
+            value={prediction}
+            onChange={setPrediction}
+            correctId="align-once"
+            options={[
+              { id: 'align-once', label: 'It aligns once', detail: 'Torque disappears when the axes line up.' },
+              { id: 'spin-forever', label: 'It spins forever', detail: 'A fixed field would somehow sustain rotation.' },
+              { id: 'unaffected', label: 'It is unaffected', detail: 'Permanent magnets would apply no alignment torque.' },
+            ]}
+          />
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  // The left card holds controls only; what they produce is read on the right.
+  const experimentControls = electromagnetActive ? (
+    labPart === 'dc' && !hasElectromagnetField ? (
+      <p className="lesson-lab-note" role="status" aria-live="polite">
+        {electromagnetBusy
+          ? 'Controls will unlock as soon as the positive, zero, and negative-current FEM frames are ready.'
+          : 'Retry the solve to restore the reversible-electromagnet controls.'}
+      </p>
+    ) : labPart === 'dc' ? (
+      <section className="rotor-chase-control-card" aria-label="Winding current and rotor controls">
+        <label htmlFor="rotor-chase-dc-current">
+          <span>Winding current</span>
+          <strong>{dcCurrentA >= 0 ? '+' : '−'}{Math.abs(dcCurrentA).toFixed(1)} A</strong>
+        </label>
+        <div ref={dcCurrentChoiceRef}>
+          <LessonSegmented
+            stretch
+            label="Winding current presets"
+            value={[8, 0, -8].find((presetA) => Math.abs(dcCurrentA - presetA) < 0.01)?.toString() ?? null}
+            onChange={(value) => setDcTarget(Number(value))}
+            options={[
+              { id: String(ELECTROMAGNET_PEAK_CURRENT_A), label: '+8 A' },
+              { id: '0', label: '0 A' },
+              { id: String(-ELECTROMAGNET_PEAK_CURRENT_A), label: '-8 A' },
+            ]}
+          />
+        </div>
+        <input
+          id="rotor-chase-dc-current"
+          type="range"
+          min={-ELECTROMAGNET_PEAK_CURRENT_A}
+          max={ELECTROMAGNET_PEAK_CURRENT_A}
+          step={0.5}
+          value={dcCurrentA}
+          aria-label="Current for pole force sweep"
+          onChange={(event) => setDcTarget(Number(event.target.value))}
+        />
+        <div className="rotor-chase-control-scale" aria-hidden="true">
+          <span>−8 A</span>
+          <span>0</span>
+          <span>+8 A</span>
+        </div>
+        <button
+          type="button"
+          className="rotor-chase-control-button"
+          disabled={dcPeakPoleForceN === null || forceCurrentAlreadyPlotted}
+          title="Set winding current, then add the calculated left/right force pair to the plot."
+          onClick={plotCurrentForcePair}
+        >
+          {forceCurrentAlreadyPlotted
+            ? `Current plotted · ${plottedForceCurrentsA.length} point${plottedForceCurrentsA.length === 1 ? '' : 's'}`
+            : 'Plot left + right force'}
+        </button>
+        <div className="rotor-chase-control-row">
+          <button type="button" className="rotor-chase-control-button" onClick={resetRelease}>Reset rotor 90°</button>
+          {/* Until both polarities are seen, releasing is the primary button below. */}
+          {dcComplete ? (
+            <button
+              type="button"
+              className="rotor-chase-control-button"
+              disabled={releasing || dcTargetAngleDeg === null || dcRotorAtTarget}
+              onClick={releaseRotor}
+            >
+              {releasing ? 'Aligning...' : 'Release rotor'}
+            </button>
+          ) : null}
+        </div>
+        <p className="lesson-lab-note">Changing current resets the PM rotor to 90 deg. Release it to see the solved rotor-angle frames converge on the polarity-dependent target.</p>
+      </section>
+    ) : (
+      <section className="rotor-chase-control-card" aria-label="One-phase AC controls">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={allowAcRotorMotion}
+          className={`rotor-chase-motion-toggle${allowAcRotorMotion ? ' is-active' : ''}`}
+          disabled={acRotorMotionBusy}
+          onClick={() => void toggleAcRotorMotion()}
+        >
+          <i aria-hidden="true"><b /></i>
+          <span>
+            <strong>
+              {acRotorMotionBusy
+                ? 'Preparing solved rotor angles...'
+                : 'Allow rotor motion'}
+            </strong>
+            <small>
+              {allowAcRotorMotion
+                ? 'On · PM rotor is free to follow the active pole'
+                : 'Off · PM rotor stays fixed at 90°'}
+            </small>
+          </span>
+        </button>
+        <label htmlFor="rotor-chase-ac-angle">
+          <span>Electrical angle θ</span>
+          <strong>{acAngleDeg.toFixed(2)} deg</strong>
+        </label>
+        <input
+          id="rotor-chase-ac-angle"
+          type="range"
+          min="0"
+          max="360"
+          step={AC_STEP_DEG}
+          value={acAngleDeg}
+          onChange={(event) => {
+            setPlayingAc(false);
+            setAcAngleDeg(Number(event.currentTarget.value));
+          }}
+          aria-label="Single-phase AC electrical angle"
+        />
+        <div className="rotor-chase-control-row">
+          <button type="button" className="rotor-chase-control-button" onClick={() => stepAc(-1)}>-11.25 deg</button>
+          {/* Before the first full cycle, playing is the primary button below. */}
+          {playedAc ? (
+            <button type="button" className="rotor-chase-control-button" onClick={playAcCycle}>
+              {playingAc ? 'Playing...' : 'Play one cycle'}
+            </button>
+          ) : null}
+          <button type="button" className="rotor-chase-control-button" onClick={() => stepAc(1)}>+11.25 deg</button>
+        </div>
+        <p className="lesson-lab-note">
+          {allowAcRotorMotion
+            ? 'Motion follows the nearest solved 15° FEM checkpoint. This is a 180° flip: the rotor reverses direction each half-cycle instead of continuing to spin.'
+            : 'Step through one electrical cycle. The same fixed axis points right for positive current and left for negative current.'}
+        </p>
+      </section>
+    )
+  ) : !hasSolvedField ? (
+    <p className="lesson-lab-note">Magneto2D solves seven combined rotor-angle checkpoints plus one stator-only reference for the analytic torque estimate.</p>
+  ) : labPart === 'release' ? (
+    <section className="rotor-chase-control-card" aria-label="Rotor release controls">
+      <div className="rotor-chase-control-row">
+        <button type="button" className="rotor-chase-control-button" onClick={resetRelease}>Reset 90 deg</button>
+        {/* Before the first alignment, releasing is the primary button below. */}
+        {alignedOnce ? (
+          <button type="button" className="rotor-chase-control-button" disabled={releasing} onClick={releaseRotor}>
+            {releasing ? 'Aligning...' : 'Release rotor'}
+          </button>
+        ) : null}
+      </div>
+      <p className="lesson-lab-note">Reset to a 90 deg error, release the rotor, and watch its torque indicator disappear at alignment.</p>
+    </section>
+  ) : (
+    <section className="rotor-chase-control-card" aria-label="Rotor start angle controls">
+      <label htmlFor="rotor-chase-start-angle">
+        <span>Rotor start angle</span>
+        <strong>{signedRelativeRotorAngleDeg.toFixed(0)} deg</strong>
+      </label>
+      <input
+        id="rotor-chase-start-angle"
+        type="range"
+        min="-90"
+        max="90"
+        step={MANUAL_STEP_DEG}
+        value={signedRelativeRotorAngleDeg}
+        onChange={(event) => {
+          setRotorOffset(Number(event.currentTarget.value));
+        }}
+        aria-label="Central permanent-magnet rotor angle"
+      />
+      <div className="rotor-chase-control-row">
+        <button type="button" className="rotor-chase-control-button" onClick={() => stepRotor(-1)}>-15 deg</button>
+        <button type="button" className="rotor-chase-control-button" onClick={() => stepRotor(1)}>+15 deg</button>
+      </div>
+      <p className="lesson-lab-note">The stator magnets and source field remain fixed at 0 deg. Set another rotor angle, then release it.</p>
+    </section>
+  );
+
+  return (
+    <LessonLab className="rotor-chase-lab">
+      {inspectPanel}
+      <LessonLabStage>
+        {electromagnetActive && !displayedData
+          ? renderWoundPoleLoading()
+          : displayedData
+            ? renderSolvedCanvas(displayedData)
+            : renderUnsolvedCanvas()}
+      </LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={`Experiment · ${currentStepLabel}`}
+        title="Rotor field lab"
+        label="Lesson lab controls"
+        scrollTopKey={activeProgressStepId}
+        footer={(
+          <LessonNextStep hint={labInsight}>
+            <button
+              type="button"
+              className="learning-primary-button"
+              disabled={dockPrimaryDisabled}
+              onClick={runDockPrimaryAction}
+            >
+              {dockPrimaryLabel}
+            </button>
+          </LessonNextStep>
         )}
-      </aside>
-      ) : null}
-    </main>
+      >
+        {goalCard}
+        {experimentControls}
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };

@@ -79,6 +79,8 @@ The coilEM launch service is local-only and exposes exactly these paths:
 - `POST /solve/stream`
 - `POST /solve/validate`
 - `POST /solver/mesh-preview`
+- `GET /tutorials/progress`
+- `POST /tutorials/progress`
 - `GET /tutorials/follow-the-flux/solve`
 - `GET /tutorials/airgap-tax/solve`
 - `GET /tutorials/chapter-1-capstone/solve`

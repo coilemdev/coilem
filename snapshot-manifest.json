@@ -395,8 +395,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "bytes": 19883,
-      "sha256": "b2da34a85cd8d80d8c20e954e81f01bb665abd2ecb4376e4851cbcfcb4277408"
+      "bytes": 19842,
+      "sha256": "2cc3c6d237f6772ff6c49bbceb377a97dbb714f9f3dcde06bc464216c0fbbba4"
     },
     {
       "path": "backend/local_file_safety.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10066,
-      "sha256": "3e0aef226a647c08b602a34e0310382faaa4a32920e6e1ec42e715c5ad4ca668"
+      "bytes": 10097,
+      "sha256": "59085291c63f46b28e1e9060d7539bb293699448d0023ae40bc4603e55f5e704"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -590,8 +590,8 @@
     },
     {
       "path": "backend/public_routes/tutorials.py",
-      "bytes": 35530,
-      "sha256": "8643f13081e4b0bd46ea157e06f6cf8db4fb25f8d2354ee48084ce52ea7d47d6"
+      "bytes": 36939,
+      "sha256": "751405c612734c25a427d06c7514fa273642631655d6924ad13b2e302ad8e39f"
     },
     {
       "path": "backend/public_security.py",
@@ -700,8 +700,8 @@
     },
     {
       "path": "backend/tutorial_fields.py",
-      "bytes": 133506,
-      "sha256": "32d109b4e6e53ba078e9b7ee2ad4c7509e31881bf0ddd1cb0f35ec3f9f9b627c"
+      "bytes": 138981,
+      "sha256": "d6dd12aca73e4a98eaec4ef709e64278a977cc06c808b5b874eb66120da52cbe"
     },
     {
       "path": "backend/winding_resistance.py",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 12896,
-      "sha256": "c5d72a024891bb18b0bc4b3bab01e96037cdf70368d5aea470e4621dc098eaff"
+      "bytes": 12953,
+      "sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 173039,
-      "sha256": "de1b68aefbd9749612504a0d13b1754e1f65908ebc0ea8614dea15082261b2ef"
+      "bytes": 174329,
+      "sha256": "2ce73d2b8d692465a6d8df275702df06a71cf90e43ce89393e87615abfd8ace1"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6700,8 +6700,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
-      "bytes": 30325,
-      "sha256": "341949aadd03aa09b2aa9379a195239d3b0b71a1e31ed1d3b9bd72638b16419b"
+      "bytes": 31988,
+      "sha256": "b9a52a7139a228884eb59ba14dad5416cfe374010b95ae70820915efe09b1909"
     },
     {
       "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
@@ -6730,33 +6730,28 @@
     },
     {
       "path": "frontend/src/components/tutorials/LearningLessonOneFollowFlux.tsx",
-      "bytes": 111713,
-      "sha256": "ccde6e1fd21ddf3ad623b55c18d4a28ab3fd87b1c9ab58795504dd12846a44e9"
+      "bytes": 109262,
+      "sha256": "ef5c16baba4c2df95e7b6f080b458e503c4136c69c5be6575b0aad99fe639b2f"
     },
     {
       "path": "frontend/src/components/tutorials/LessonCatalog.tsx",
-      "bytes": 15494,
-      "sha256": "58899ef93fa5258f477449c9ecb30a076bd039475964cde46654f2ece98e595f"
-    },
-    {
-      "path": "frontend/src/components/tutorials/LessonCompleteButton.tsx",
-      "bytes": 1016,
-      "sha256": "65293da81c783516fb0df2054d2aead9a276b3991e41307f71db8f74af86dcfe"
+      "bytes": 12295,
+      "sha256": "ecba35f0ffb6a456af595cf8c8c37910dc640c89506ba62f6c8def53eaea1460"
     },
     {
       "path": "frontend/src/components/tutorials/LessonEightThreePhaseMotor.tsx",
-      "bytes": 53434,
-      "sha256": "02ce8d26484c8c958bee291977a4549f142157ea7ae69bf9a4318806b1ea16c5"
+      "bytes": 52077,
+      "sha256": "d2c457c08ef294c3f46886b27d11613a9a424cd53d15d0aa42bb47b549ca0f15"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFiveFieldForce.tsx",
-      "bytes": 119622,
-      "sha256": "7ee4854838fdcd2248d3375cde322b0bc57d134c76000efad200420ca3c24d2f"
+      "bytes": 111276,
+      "sha256": "79142b85a51a91204c247c67aa2dc2dd8f7b0f599e136984da38a398c04415c2"
     },
     {
       "path": "frontend/src/components/tutorials/LessonFourIronSaturation.tsx",
-      "bytes": 68085,
-      "sha256": "b63b90cec9173c80d7419824c7664dd933e8a03ff0ce18e844e6d15590bbf20b"
+      "bytes": 65053,
+      "sha256": "96a313b285d7bf498071e67a5ef1224ba93e862692bebb08e5163febbef2c91d"
     },
     {
       "path": "frontend/src/components/tutorials/LessonGlyph.tsx",
@@ -6775,33 +6770,33 @@
     },
     {
       "path": "frontend/src/components/tutorials/LessonSevenRotatingField.tsx",
-      "bytes": 70117,
-      "sha256": "2f699dbde2a4e7c3011c3e49c5ac8f1ae6e636a10040e62e27b371ccff72bfe0"
+      "bytes": 64827,
+      "sha256": "7cf24772ad5490719037bae5b93333418302b043f86cf248c6655f0f889b99ac"
     },
     {
       "path": "frontend/src/components/tutorials/LessonSixRotorChase.tsx",
-      "bytes": 120923,
-      "sha256": "3c2991bc8f1b00878a4509bc8fb58f3749484adfc78bde69f53091ba46324c64"
+      "bytes": 105039,
+      "sha256": "f7f6d829a992aa734d3a7b2251188260723020912ff2848139b4cbcd90db5fab"
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeBackEmf.tsx",
-      "bytes": 37256,
-      "sha256": "6a49a6dfba9dc6a12c48094665fc29f7f49706a20460d8d462616e8e6aa43dd4"
+      "bytes": 40560,
+      "sha256": "0dc1ef188d06845198661664687b920d01d7fb94682a1249d155debe133c35d0"
     },
     {
       "path": "frontend/src/components/tutorials/LessonThreeCurrentField.tsx",
-      "bytes": 31998,
-      "sha256": "439ee27e2d7204e999494dc36feb3a523ed6474c511f39c45c74fb698867ad01"
+      "bytes": 32461,
+      "sha256": "b556b885881fe8d66caccbe049a108da670b73c6fb92b5d31e245b7aba5dd4c4"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoAirgapTax.tsx",
-      "bytes": 36902,
-      "sha256": "4dc5456b9eaaab2dd93f9ad04321180ba3fa336ce051d897b2e205e7ab096afd"
+      "bytes": 34776,
+      "sha256": "d8373cd1dcc57dafd5fcb6486493a0e46cbd33682982a6b139b33353f193aaec"
     },
     {
       "path": "frontend/src/components/tutorials/LessonTwoMagneticCircuit.tsx",
-      "bytes": 58447,
-      "sha256": "f489ce26093a0aaeb3998f23572c1c93354e4782feec14ef66b998ccd1b816a4"
+      "bytes": 59274,
+      "sha256": "10e7950fe893c8d613c0f2621d48068b497d4191ebc6757e116261ee1078b604"
     },
     {
       "path": "frontend/src/components/tutorials/LinearMotorCapstone3D.tsx",
@@ -6810,8 +6805,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MeshViewer.tsx",
-      "bytes": 108747,
-      "sha256": "e75dad92e38872d1cd5eaaba084d98c3af16c1d8675af8f5ce30dec27e2c22c5"
+      "bytes": 110869,
+      "sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4"
     },
     {
       "path": "frontend/src/components/tutorials/MotorEffectLoop3D.tsx",
@@ -6820,8 +6815,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MotorTooth3D.tsx",
-      "bytes": 11827,
-      "sha256": "0d5953d1dc59683a96865bf6ed1d594c30cba0dade9062f9972882981e4a1ae4"
+      "bytes": 11837,
+      "sha256": "2113ebad09226cd99e3f5c17d17ef8e183e899b5ad4c3232c2268bb68306c6df"
     },
     {
       "path": "frontend/src/components/tutorials/ReluctanceBudget.tsx",
@@ -6855,8 +6850,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/airgap-tax.css",
-      "bytes": 27841,
-      "sha256": "cd604278adbbff45de13b10448265a5d2d017ab64addded108cb0a5de3bf1533"
+      "bytes": 11322,
+      "sha256": "33b9ad6923b2d634071d93bfaf44f39abd0961d7cfe72303906861059c713a8f"
     },
     {
       "path": "frontend/src/components/tutorials/current-conductor-three.css",
@@ -6865,13 +6860,13 @@
     },
     {
       "path": "frontend/src/components/tutorials/current-field.css",
-      "bytes": 28492,
-      "sha256": "b435a1dfa5a3f31f7f354d266a353906efd15d38f82e894d6ae9ad26cb77dd74"
+      "bytes": 9686,
+      "sha256": "b8243217817abc56e02ff43bd3cd7de64b0bcd29ffb2bb1f00fd8a487aa62062"
     },
     {
       "path": "frontend/src/components/tutorials/field-force.css",
-      "bytes": 64008,
-      "sha256": "9cc0bd502c3cd18157bed86e1dd5ec8fb9363797537aad05710005a871df4a3b"
+      "bytes": 39598,
+      "sha256": "5c8cf911c99cb68b5c7f29ce7d45c4a8779be887eb1d955d27fc30609b4541bb"
     },
     {
       "path": "frontend/src/components/tutorials/fieldLineStitching.ts",
@@ -6895,8 +6890,18 @@
     },
     {
       "path": "frontend/src/components/tutorials/follow-the-flux.css",
-      "bytes": 50908,
-      "sha256": "d695b0b556ee71a0f12dcc2c6ad108b422cedc3c3449059415d0236b53106b40"
+      "bytes": 32579,
+      "sha256": "074936aa4502d16525db385571c8dcaafdf3299f2dfbdfdf3204983dad1d219c"
+    },
+    {
+      "path": "frontend/src/components/tutorials/lab/lesson-lab.css",
+      "bytes": 13892,
+      "sha256": "f6a169e6fa5c5d1f78ffa72cde813e40c8a3d6dc13fc63e0b2171847e55ebe18"
+    },
+    {
+      "path": "frontend/src/components/tutorials/lab/LessonLab.tsx",
+      "bytes": 10332,
+      "sha256": "0ec00fd1360d46e74adb070abc1e5568def9999e90f7941814cd886e15a6a9b6"
     },
     {
       "path": "frontend/src/components/tutorials/index.ts",
@@ -6905,23 +6910,28 @@
     },
     {
       "path": "frontend/src/components/tutorials/iron-saturation.css",
-      "bytes": 25675,
-      "sha256": "9cfa95964a551f55f42948172c351382e5ef7514dabd24eb476669dbd1f9aa36"
+      "bytes": 16723,
+      "sha256": "ba23b628e13b96963fd2a557deac42eaa1e891f7b7f969bdf838466ec167583a"
     },
     {
       "path": "frontend/src/components/tutorials/learning.css",
-      "bytes": 74530,
-      "sha256": "039eb7247c1625fa9cb9a7be09e0e53ebc9821b92bae080fd3ac80fe08b13810"
+      "bytes": 13583,
+      "sha256": "cb5f3e537ee8f78f44d794b38742e9fbe6a06baae305c0cce15fb78fc9921936"
+    },
+    {
+      "path": "frontend/src/components/tutorials/lesson-catalog.css",
+      "bytes": 7733,
+      "sha256": "764b9efaafa2fbfc8575c1d95502fbfb5722d114ac09e4715b407595cd47bcf2"
     },
     {
       "path": "frontend/src/components/tutorials/lesson-three-bemf.css",
-      "bytes": 13789,
-      "sha256": "5176921e148f8373340f0a816c1410a675a5f2bd54c322ad224b94498e2c26e3"
+      "bytes": 11209,
+      "sha256": "7edea2dfc6387a19f3133d1acfa9ba59851bedf94b4abf9e9973ca708c691900"
     },
     {
       "path": "frontend/src/components/tutorials/lesson-two.css",
-      "bytes": 32491,
-      "sha256": "9451e9f40eece88b37f0b28edc1e59ec5863df98df82a465086df654235ba893"
+      "bytes": 22287,
+      "sha256": "1f60ea6ac4efe25215adc26832b7c59b7bda78a7fc468fdd55449739ccccb0a2"
     },
     {
       "path": "frontend/src/components/tutorials/lessonOneOpenAirField.ts",
@@ -6950,8 +6960,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/linear-motor-capstone.css",
-      "bytes": 24793,
-      "sha256": "c4bcbb1ccf4934ccc5e3f75326af436f647cc84da99b9298fef2f55114cb2ebc"
+      "bytes": 17819,
+      "sha256": "8d449c74d762ee9c45a02563bbcec5368386e5276cdcf437ced6f1932591c8a8"
     },
     {
       "path": "frontend/src/components/tutorials/magnetPoleFills.ts",
@@ -6975,23 +6985,23 @@
     },
     {
       "path": "frontend/src/components/tutorials/rotating-field.css",
-      "bytes": 47496,
-      "sha256": "3f36f769d6162bffb029216e712bd6cf99758d4c9d2d7c1d2b87157dfb507ced"
+      "bytes": 14343,
+      "sha256": "5e5a358254346f29df82c55ade8f15971599a8f15b9cf6a6f7c303ef05198c1e"
     },
     {
       "path": "frontend/src/components/tutorials/rotor-chase.css",
-      "bytes": 53663,
-      "sha256": "55d39d9abd042c436a6a08d879220b515d40a978948b31b04fe3c62999067f91"
+      "bytes": 30862,
+      "sha256": "140d2bbda7f78489887a402facf028e5a1a35087492fecf7a965cc8daa1a5f89"
     },
     {
       "path": "frontend/src/components/tutorials/three-phase-motor.css",
-      "bytes": 26073,
-      "sha256": "fd1380eccb1564586ca521fa77a2c7697591cff36f87b8c5f4698e641fce44a0"
+      "bytes": 24187,
+      "sha256": "814888084564d5d44ae7cf71bc1047b1b583098d9234369af040bef43f840f68"
     },
     {
       "path": "frontend/src/components/tutorials/useLearningProgress.ts",
-      "bytes": 2224,
-      "sha256": "5e182551ce1f4006df139a61895d8fc2b772552817b062532d0a0f0070ec5071"
+      "bytes": 3891,
+      "sha256": "7da0e3021b5763b978630167ff62eec50e75fe5b3122dc8e52e151b72ddcaef6"
     },
     {
       "path": "frontend/src/public/App.tsx",
@@ -7520,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/tutorials/PublicTutorials.tsx",
-      "bytes": 9207,
-      "sha256": "aa2f863b7be9ccdde58572cf76e58644df24a6ad854de33b6ed85c9dcc9f06f7"
+      "bytes": 8879,
+      "sha256": "6bcb7e48343f4327c472e9e653c1df45a296152672fa266023d7b5414bedbafc"
     },
     {
       "path": "frontend/src/public/tutorials/lessonRoutes.ts",
@@ -7529,9 +7539,14 @@
       "sha256": "951722da105ab160b2b67862da176d7dcc6bc201d0213e2717736faf762e4e40"
     },
     {
+      "path": "frontend/src/public/tutorials/publicLearningProgress.ts",
+      "bytes": 1123,
+      "sha256": "12e7d33bebb7592ebfcefb793bf757e1709b3a1c4db7f43e77a1a8a3cbd491e2"
+    },
+    {
       "path": "frontend/src/public/tutorials/publicLessonSolveClient.ts",
-      "bytes": 14808,
-      "sha256": "be5df38663db208ee5fd80576c4a9d46916247fe92be6cbeb72cc59212f2d9f3"
+      "bytes": 15629,
+      "sha256": "574ab94435729aa99a33343e7642bc797a37cc9130c59690d2e985c046390c20"
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
@@ -13834,6 +13849,11 @@
       "sha256": "200b36a4f0e654265847823d4ac22c5f4d5297161ae8a787023b01b2b9bcd404"
     },
     {
+      "path": "backend/learning_progress.py",
+      "bytes": 1933,
+      "sha256": "e52b735a7c1bf5ffa15dbe8bf6e98cbb05e11c92b4423587248318e3518f6d6a"
+    },
+    {
       "path": "tests/test_fast_json.py",
       "bytes": 2663,
       "sha256": "a6a752e9fc0aa286323a8f01f3d490cb9d02cf3842cbd4677af087a82ee71372"
@@ -15479,9 +15499,24 @@
       "sha256": "1ec9794583940e54637238dabae7b1e4039f651f0a2e703bb225433df0064783"
     },
     {
+      "path": "tests/test_learning_progress.py",
+      "bytes": 2595,
+      "sha256": "7edb56076ee03ecc99e618eec95bfbc8f6522fdeb1378f23ba23131d9c2443a8"
+    },
+    {
       "path": "tests/test_refined_cogging_registration.py",
       "bytes": 3709,
       "sha256": "cd04ceb463616919dcbd1108a3abf05289ef6768ecd4106179e58ebb31797182"
+    },
+    {
+      "path": "tests/test_rotor_chase_mesh_reuse.py",
+      "bytes": 2742,
+      "sha256": "6eb1e223d69b52ff71900dde59ff395df9af24b2739db5c46eb5d1a72b0ee883"
+    },
+    {
+      "path": "tests/test_tutorial_sweep_encoding.py",
+      "bytes": 1611,
+      "sha256": "8feec51e9927d2dc9fb6df5351c3bcc1afb3c6a371f7856fb6d4ac3fbd9b688e"
     },
     {
       "path": "tools/cogging_qualification.py",

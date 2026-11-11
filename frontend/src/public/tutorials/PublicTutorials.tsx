@@ -7,12 +7,16 @@ import type {
   LearningLessonStage,
 } from '../../components/tutorials/lessonStage';
 import { useLearningProgress } from '../../components/tutorials/useLearningProgress';
+import { connectPublicLearningProgress } from './publicLearningProgress';
 import { publicLessonSolveClient } from './publicLessonSolveClient';
 import {
   LESSON_ID_BY_CATALOG_ID,
   type PublicLessonId,
   type PublicTutorialsView,
 } from './lessonRoutes';
+
+// Lesson progress is also kept by the local app, so it survives a new port or browser.
+connectPublicLearningProgress();
 
 /**
  * The public tutorials area: the shared catalog plus the ten shared lessons.
@@ -163,12 +167,18 @@ export function PublicTutorials({
               return (
                 <div className={`tutorial-lesson-page${replayingCompletedLesson ? ' tutorial-replay-mode' : ''}`}>
                   {replayingCompletedLesson ? (
-                    <section className="tutorial-replay-banner" role="status">
-                      <div>
-                        <strong>Replaying completed lesson</strong>
-                        <span>Your completed checkpoints stay marked until you choose to restart.</span>
-                      </div>
-                    </section>
+                    <nav className="tutorial-replay-banner" aria-label="Completed lesson controls">
+                      <p role="status">
+                        <strong>Lesson complete</strong>
+                        <span>Keep exploring, restart it, or continue.</span>
+                      </p>
+                      <button type="button" className="learning-ghost-button" onClick={restartLesson}>
+                        Restart lesson
+                      </button>
+                      <button type="button" className="learning-primary-button" onClick={continueAfterCompletedLesson}>
+                        Continue: {lessonMeta?.nextLabel} →
+                      </button>
+                    </nav>
                   ) : null}
                   <Lesson
                     key={`${view}-${restartToken}`}
@@ -178,22 +188,6 @@ export function PublicTutorials({
                     onStageChange={onStageChange}
                     onHeaderProgressChange={onHeaderProgressChange}
                   />
-                  {replayingCompletedLesson ? (
-                    <nav className="tutorial-replay-dock" aria-label="Completed lesson controls">
-                      <div className="tutorial-replay-dock-copy">
-                        <span>Lesson complete</span>
-                        <strong>Keep exploring, restart, or continue when you’re ready.</strong>
-                      </div>
-                      <div>
-                        <button type="button" className="learning-ghost-button" onClick={restartLesson}>
-                          Restart lesson
-                        </button>
-                        <button type="button" className="learning-primary-button" onClick={continueAfterCompletedLesson}>
-                          Continue: {lessonMeta?.nextLabel}
-                        </button>
-                      </div>
-                    </nav>
-                  ) : null}
                 </div>
               );
             })()}

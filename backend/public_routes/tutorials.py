@@ -19,11 +19,12 @@ import math
 import time
 from typing import Any, Literal
 
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Body, HTTPException, Query
+from fastapi.responses import Response, StreamingResponse
 
 from backend.field_composition import solve_armature_field_sweep, solve_pm_field_sweep
 from backend.gmsh_solver import GmshUnavailableError
+from backend.learning_progress import read_completed_lessons, update_completed_lessons
 from backend.magneto2d_adapter import (
     Magneto2DExecutionError,
     Magneto2DUnsupportedError,
@@ -42,6 +43,7 @@ from backend.public_routes.solve import (
 from backend.solver import Magneto2DSolver
 from backend.solver_contract import SolveCancelledError
 from backend.tutorial_fields import (
+    encode_sweep_response,
     run_airgap_tax_fixture,
     run_current_field_fixture,
     run_field_force_fixture,
@@ -60,6 +62,36 @@ from backend.tutorial_fields import (
 )
 
 router = APIRouter()
+
+
+@router.get("/tutorials/progress", tags=["tutorials"])
+async def tutorial_progress() -> dict[str, list[str]]:
+    """Return the lessons marked complete on this computer."""
+
+    return {"completed": await asyncio.to_thread(read_completed_lessons)}
+
+
+@router.post("/tutorials/progress", tags=["tutorials"])
+async def save_tutorial_progress(
+    add: list[str] = Body(default_factory=list, max_length=64),
+    remove: list[str] = Body(default_factory=list, max_length=64),
+) -> dict[str, list[str]]:
+    """Mark lessons complete (``add``) or not complete (``remove``) on this computer."""
+
+    try:
+        return {"completed": await asyncio.to_thread(update_completed_lessons, add, remove)}
+    except OSError as exc:
+        raise HTTPException(status_code=500, detail="Lesson progress could not be saved") from exc
+
+
+def _encoded_sweep(run_sweep: Any, **kwargs: Any) -> Response:
+    """Solve a lesson sweep and encode it in the worker thread.
+
+    Returning the dict would send some 200 MB through FastAPI's encoder on the
+    event loop; the compact bytes carry the shared mesh once.
+    """
+
+    return Response(content=encode_sweep_response(run_sweep(**kwargs)), media_type="application/json")
 
 LESSON_ONE_DEFAULT_AIRGAP_MM = 1.0
 LESSON_ONE_DEFAULT_MAGNET_ARC_PCT = 74.0
@@ -519,12 +551,13 @@ async def chapter_one_capstone_solve(
 @router.get("/tutorials/rotating-field/sweep", tags=["tutorials"])
 async def rotating_field_sweep(
     peak_current_a: float = Query(8.0, gt=0.0, le=20.0),
-) -> dict[str, Any]:
+) -> Response:
     """Solve one electrical revolution of the Lesson 6 two-phase field."""
 
     try:
         return await asyncio.wait_for(
             asyncio.to_thread(
+                _encoded_sweep,
                 run_rotating_field_sweep,
                 peak_current_a=peak_current_a,
                 mesh_density="normal",
@@ -541,12 +574,13 @@ async def rotating_field_sweep(
 async def rotating_field_motor_sweep(
     peak_current_a: float = Query(8.0, gt=0.0, le=20.0),
     field_component: Literal["combined", "stator", "rotor"] = Query("combined"),
-) -> dict[str, Any]:
+) -> Response:
     """Solve one Lesson 7 four-pole source view over an electrical cycle."""
 
     try:
         return await asyncio.wait_for(
             asyncio.to_thread(
+                _encoded_sweep,
                 run_rotating_field_motor_sweep,
                 peak_current_a=peak_current_a,
                 field_component=field_component,
@@ -600,12 +634,13 @@ async def three_phase_motor_sweep(
         "phase_c",
         "open_c",
     ] = Query("combined"),
-) -> dict[str, Any]:
+) -> Response:
     """Solve one Lesson 8 three-phase source view over an electrical cycle."""
 
     try:
         return await asyncio.wait_for(
             asyncio.to_thread(
+                _encoded_sweep,
                 run_three_phase_motor_sweep,
                 peak_current_a=peak_current_a,
                 field_component=field_component,

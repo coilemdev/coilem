@@ -3,6 +3,22 @@ import type {
   LearningLessonHeaderProgress,
   LearningLessonStage,
 } from './lessonStage';
+import {
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonSegmented,
+  LessonTerms,
+} from './lab/LessonLab';
+import type { LessonTerm } from './lab/LessonLab';
 import { LinearMotorCapstone3D } from './LinearMotorCapstone3D';
 import { MeshViewer } from './MeshViewer';
 import type { MeshViewerPointLabel } from './MeshViewer';
@@ -14,6 +30,7 @@ import './linear-motor-capstone.css';
 interface ChapterOneLinearMotorCapstoneProps {
   onBackToCatalog: () => void;
   onBackHome: () => void;
+  /** Passed by the host page to every lesson. The capstone reports its stage but does not read it. */
   stage?: LearningLessonStage;
   onStageChange?: (stage: LearningLessonStage) => void;
   onHeaderProgressChange?: (progress: LearningLessonHeaderProgress | null) => void;
@@ -21,10 +38,36 @@ interface ChapterOneLinearMotorCapstoneProps {
 
 type CapstonePhase = 'build' | 'move' | 'strengthen' | 'reveal' | 'complete';
 type ViewMode = '2d' | '3d';
+type GoalPhase = Exclude<CapstonePhase, 'complete'>;
 
 const MAGNET_X = [190, 370, 550, 730] as const;
 const WINDING_SIGNS = [1, -1, 1, -1] as const;
 const FORCE_TARGET_N = 0.25;
+const PITCH_PRESETS = [
+  { id: '12', label: 'Tight' },
+  { id: '18', label: 'Aligned' },
+  { id: '22', label: 'Wide' },
+] as const;
+
+/** One line under each goal saying what to do about it. */
+const GOAL_DETAILS: Record<GoalPhase, string> = {
+  build: 'Flip magnets or change the conductor pitch, then test the track.',
+  move: 'Pick a current direction, then let the solver work out the force.',
+  strengthen: 'Change the coil current and the airgap. The warning zone starts at 90% saturation.',
+  reveal: 'Look at it in 2D and 3D, then run the actuator.',
+};
+
+// The vocabulary of the capstone, kept beside the measurements.
+const TERMS: readonly LessonTerm[] = [
+  { term: 'Back iron', definition: 'The steel plate under the magnets. It carries the flux from one magnet to the next. Here it is electrical steel (grade M350-50A).' },
+  { term: 'Airgap', definition: 'The space between the magnets and the coil, in millimetres (mm). A smaller gap puts a stronger field on the coil.' },
+  { term: 'Flux density, |B|', definition: 'How strong the magnetic field is at one spot, in tesla (T).' },
+  { term: 'Coil current', definition: 'The current in the winding, in amperes (A). A dot means it flows toward you, a cross means away from you. Changing the sign reverses it in every section.' },
+  { term: 'Conductor pitch', definition: 'The distance between neighbouring active sections, in mm. The active sections are the four straight parts of the coil that sit over the magnets.' },
+  { term: 'Useful field', definition: 'How much of the push on the four active sections adds up instead of cancelling. 100% means all four push the same way.' },
+  { term: 'Net force', definition: 'The sum of the forces on all four active sections, in newtons (N). 1 N = 1000 mN.' },
+  { term: 'Saturation', definition: 'How close the back iron is to the most flux it can carry, in percent. Past 90%, extra current buys little extra force.' },
+];
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -176,7 +219,7 @@ function LinearMotor2D({
       ) : null}
 
       <text x="550" y="595" className="linear-capstone-stage-note">
-        Flip magnets or change conductor spacing. Current directions stay fixed by the closed coil path.
+        Flip magnets or change the conductor pitch. Current directions stay fixed by the closed coil path.
       </text>
     </svg>
   );
@@ -185,7 +228,6 @@ function LinearMotor2D({
 export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapstoneProps> = ({
   onBackToCatalog,
   onBackHome,
-  stage = 'design',
   onStageChange,
   onHeaderProgressChange,
 }) => {
@@ -193,8 +235,9 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const [phase, setPhase] = React.useState<CapstonePhase>('build');
   const [viewMode, setViewMode] = React.useState<ViewMode>('2d');
-  const [showFluxLines, setShowFluxLines] = React.useState(true);
-  const [showBMap, setShowBMap] = React.useState(false);
+  const [showFieldLines, setShowFieldLines] = React.useState(true);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(false);
+  const [showMesh, setShowMesh] = React.useState(false);
   const [magnetOrientations, setMagnetOrientations] = React.useState<number[]>([1, 1, 1, 1]);
   const [currentSign, setCurrentSign] = React.useState<1 | -1>(1);
   const [currentA, setCurrentA] = React.useState(8);
@@ -204,8 +247,12 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
   const [energized, setEnergized] = React.useState(false);
   const [runOnce, setRunOnce] = React.useState(false);
   const [running, setRunning] = React.useState(false);
-  const [controlsOpen, setControlsOpen] = React.useState(true);
-  const [inspectorOpen, setInspectorOpen] = React.useState(false);
+  const [inspectorFlash, setInspectorFlash] = React.useState(false);
+  const inspectorFlashTimerRef = React.useRef<number | null>(null);
+  const inspectorRef = React.useRef<HTMLElement | null>(null);
+  const currentDirectionRef = React.useRef<HTMLElement | null>(null);
+  // The mesh viewer draws its zoom buttons into this element in the dock.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const [fieldData, setFieldData] = React.useState<LinearMotorCapstoneFieldData | null>(null);
   const [fieldStatus, setFieldStatus] = React.useState<'idle' | 'solving' | 'solved' | 'error'>('idle');
   const [fieldError, setFieldError] = React.useState<string | null>(null);
@@ -317,6 +364,18 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
     return () => window.clearTimeout(timeout);
   }, [running]);
 
+  React.useEffect(() => () => {
+    if (inspectorFlashTimerRef.current !== null) window.clearTimeout(inspectorFlashTimerRef.current);
+  }, []);
+
+  /** Ring the Inspect card for a moment so the eye goes to the result. */
+  const flashInspector = () => {
+    inspectorRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    setInspectorFlash(true);
+    if (inspectorFlashTimerRef.current !== null) window.clearTimeout(inspectorFlashTimerRef.current);
+    inspectorFlashTimerRef.current = window.setTimeout(() => setInspectorFlash(false), 1_600);
+  };
+
   const flipMagnet = (index: number) => {
     setMagnetOrientations((current) => current.map((orientation, itemIndex) => (
       itemIndex === index ? -orientation : orientation
@@ -357,8 +416,15 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
         setEnergized(true);
         return;
       }
-      if (movesRight) setPhase('strengthen');
-      else setControlsOpen(true);
+      if (movesRight) {
+        setPhase('strengthen');
+        return;
+      }
+      // The carriage went the wrong way. Take the student to the one
+      // electrical choice this step offers: the direction they have not tried.
+      const card = currentDirectionRef.current;
+      card?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      card?.querySelector<HTMLButtonElement>('button[aria-pressed="false"]')?.focus();
       return;
     }
     if (phase === 'strengthen') {
@@ -370,7 +436,6 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
       if (solvedStrengthReady) {
         setPhase('reveal');
         setViewMode('3d');
-        setControlsOpen(false);
       }
       return;
     }
@@ -381,12 +446,13 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
       }
       setPhase('complete');
       setLessonComplete('review-fields', true);
-      setInspectorOpen(true);
+      // The chapter result has just appeared in the Inspect card.
+      flashInspector();
     }
   };
 
   const primaryLabel = fieldStatus === 'solving'
-    ? phase === 'build' ? 'Solving PM field…' : 'Solving PM + winding…'
+    ? phase === 'build' ? 'Solving magnet field…' : 'Solving magnets + winding…'
     : phase === 'build'
     ? 'Test magnetic track'
     : phase === 'move'
@@ -427,223 +493,248 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
           ? 'The cross-section is now a physical machine. Run what you built.'
           : 'Field became force. Force became motion.';
 
-  return (
-    <main className={`learning-shell learning-lesson-shell linear-capstone-shell is-${stage}-stage${controlsOpen ? ' is-controls-open' : ''}${inspectorOpen ? ' is-inspector-open' : ''}`}>
-      <section className="learning-main-stage linear-capstone-main">
-        <header className="mesh-viewer-header linear-capstone-visual-header">
-          <div>
-            <strong>Linear actuator · moving-coil track</strong>
-            <span>{fieldStatus === 'solving'
-              ? 'Magneto2D solving PM + winding sources'
-              : fieldData
-                ? `Magneto2D · ${Math.abs(fieldData.current_a) < 0.01 ? 'PM only' : 'PM + copper winding'} · ${gapMm.toFixed(1)} mm airgap`
-                : phase === 'build' ? 'unpowered configuration · field not solved' : `${currentSign > 0 ? '+' : '−'}${currentA} A · ${gapMm.toFixed(1)} mm airgap · field not solved`}</span>
-          </div>
-          <div className="linear-capstone-display-controls">
-            <div className="linear-capstone-field-toggle" role="group" aria-label="Field visualization">
-              <button type="button" className={showFluxLines ? 'is-active' : ''} onClick={() => setShowFluxLines((visible) => !visible)} aria-pressed={showFluxLines}>
-                <span className="is-line" aria-hidden="true" /> Flux lines
-              </button>
-              <button type="button" className={showBMap ? 'is-active' : ''} onClick={() => setShowBMap((visible) => !visible)} aria-pressed={showBMap}>
-                <span className="is-density" aria-hidden="true" /> |B| map
-              </button>
-            </div>
-            <div className="linear-capstone-view-toggle" role="group" aria-label="Capstone view">
-              <button type="button" className={viewMode === '2d' ? 'is-active' : ''} onClick={() => setViewMode('2d')} aria-pressed={viewMode === '2d'}>▣ 2D build</button>
-              <button type="button" className={viewMode === '3d' ? 'is-active' : ''} onClick={() => setViewMode('3d')} aria-pressed={viewMode === '3d'}>◇ 3D machine</button>
-            </div>
-          </div>
-        </header>
+  const goalPhase: GoalPhase = phase === 'complete' ? 'reveal' : phase;
+  const stepNumber = steps.findIndex((step) => step.id === goalPhase) + 1;
+  const stepLabel = steps[stepNumber - 1]?.label ?? '';
+  const solvedSources = fieldData
+    ? Math.abs(fieldData.current_a) < 0.01 ? 'magnets only' : 'magnets + winding'
+    : null;
 
-        <div className="linear-capstone-canvas">
-          {viewMode === '3d' ? (
-            <LinearMotorCapstone3D
-              currentSign={currentSign}
-              forceDirection={forceDirection}
-              netForceN={measuredForceX}
-              gapMm={gapMm}
-              windingSpacingMm={windingSpacingMm}
-              magnetOrientations={magnetOrientations}
-              running={running}
-              showFluxLines={showFluxLines}
-              showBMap={showBMap}
-              fieldData={fieldData}
-            />
-          ) : fieldData ? (
-            <div className="linear-capstone-solver-view">
-              <MeshViewer
-                meshData={fieldData}
-                embedded
-                compactEmbedded
-                toolbarMode="zoom-only"
-                toolbarLabel={`${Math.abs(fieldData.current_a) < 0.01 ? 'PM-only' : 'PM + winding'} Magneto2D field`}
-                showMeshEdges={false}
-                showFieldIntensity={showBMap}
-                smoothFieldIntensity
-                fieldLinesVisible={showFluxLines}
-                animateFieldArrows={showFluxLines}
-                viewportPanEnabled={false}
-                fixedView
-                pointLabels={conductorLabels}
-              />
-              <div className="linear-capstone-solver-key">
-                <span>Magneto2D</span>
-                <strong>{Math.abs(fieldData.current_a) < 0.01 ? 'Permanent magnets only' : 'Permanent magnets + copper self-field'}</strong>
-              </div>
-              {energized && measuredForceX !== null && forceDirection !== 0 ? (
-                <div className={`linear-capstone-force-result${forceDirection > 0 ? ' is-right' : ' is-left'}`} role="status" aria-live="polite">
-                  <span>Magneto2D net force</span>
-                  <strong><b aria-hidden="true">{forceDirection > 0 ? '⟶' : '⟵'}</b>{formatForce(measuredForceX)}</strong>
-                  <small>∫ winding J × B dV</small>
-                </div>
-              ) : null}
-            </div>
-          ) : (
-            <LinearMotor2D
-              currentSign={currentSign}
-              energized={energized}
-              forceDirection={forceDirection}
-              magnetOrientations={magnetOrientations}
-              windingSpacingMm={windingSpacingMm}
-              onFlipMagnet={flipMagnet}
-              running={running}
-            />
-          )}
-          {fieldStatus === 'solving' ? (
-            <div className="linear-capstone-solving" role="status"><strong>Running Magneto2D…</strong><span>Meshing magnets, M350-50A back iron, and four winding sections.</span></div>
-          ) : null}
-          {fieldError ? (
-            <div className="linear-capstone-solve-error" role="alert"><strong>Field solve unavailable</strong><span>{fieldError}</span></div>
-          ) : null}
-        </div>
+  // The canvas controls, in the same dock as the motor workspace. Before the
+  // first solve they are shown greyed out, so the canvas keeps its size. The
+  // 3D machine draws the solved field too, but has no mesh to show.
+  const unsolved = !fieldData;
+  const viewDock = (
+    <LessonDock
+      tabs={[
+        { id: '2d', label: '2D', title: 'The cross-section the solver works on' },
+        { id: '3d', label: '3D', title: 'The same machine drawn in 3D' },
+      ]}
+      tab={viewMode}
+      onTab={setViewMode}
+      end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
+    >
+      <LessonDockGroup label="Show">
+        <LessonDockToggle
+          pressed={showFieldLines}
+          onChange={setShowFieldLines}
+          disabled={unsolved}
+          title="Lines that follow the direction of the field"
+        >
+          Field lines
+        </LessonDockToggle>
+        <LessonDockToggle
+          pressed={showFluxDensity}
+          onChange={setShowFluxDensity}
+          disabled={unsolved}
+          title="Colour by field strength, |B|"
+        >
+          Flux density
+        </LessonDockToggle>
+        <LessonDockToggle
+          pressed={showMesh}
+          onChange={setShowMesh}
+          disabled={unsolved || viewMode === '3d'}
+          title={viewMode === '3d' ? 'Switch to the 2D view to see the mesh' : 'The triangles the solver divides the space into'}
+        >
+          Mesh
+        </LessonDockToggle>
+      </LessonDockGroup>
+    </LessonDock>
+  );
 
-        <nav className="linear-capstone-dock" aria-label="Capstone controls">
-          <div className="linear-capstone-dock-copy">
-            <span>{phase === 'complete' ? 'Chapter complete' : phase}</span>
-            <strong>{insight}</strong>
-          </div>
-          <div className="linear-capstone-dock-actions">
-            {phase !== 'complete' ? (
-              <>
-                <button type="button" className="linear-capstone-dock-button" aria-expanded={controlsOpen} onClick={() => { setControlsOpen((open) => !open); setInspectorOpen(false); }}>
-                  {controlsOpen ? 'Done' : phase === 'build' ? 'Arrange track' : 'Adjust design'}
-                </button>
-                <button type="button" className="linear-capstone-dock-button" aria-expanded={inspectorOpen} onClick={() => { setInspectorOpen((open) => !open); setControlsOpen(false); }}>
-                  Inspect design
-                </button>
-                <button type="button" className="learning-primary-button linear-capstone-dock-primary" disabled={running || fieldStatus === 'solving'} onClick={() => { void primaryAction(); }}>{primaryLabel}</button>
-              </>
-            ) : (
-              <>
-                <button type="button" className="linear-capstone-dock-button" onClick={onBackToCatalog}>All lessons</button>
-                <a className="learning-primary-button linear-capstone-next" href="/tutorials/lesson-6">Continue: Give the Rotor Something to Chase</a>
-              </>
-            )}
-          </div>
-        </nav>
+  const inspectPanel = (
+    <LessonLabPanel
+      ref={inspectorRef}
+      side="inspect"
+      kicker="Inspect"
+      title={phase === 'complete' ? 'You made a motor move.' : 'What the machine is doing'}
+      summary={phase === 'complete' ? 'Field became force. Force became motion.' : undefined}
+      label="Capstone design evidence"
+      flash={inspectorFlash}
+      scrollTopKey={`${phase}-${fieldStatus}`}
+    >
+      {fieldStatus === 'solving' ? (
+        <p className="lesson-lab-note" role="status">
+          Running Magneto2D… Meshing magnets, electrical steel back iron, and four winding sections.
+        </p>
+      ) : null}
+      <section className="linear-capstone-evidence-card" aria-label="Measurements">
+        <div><span>Carriage motion</span><strong>{directionLabel(forceDirection)}</strong></div>
+        {/* The share stays hidden until the track is tested, so flipping
+            magnets does not give the answer away. */}
+        <div><span>Useful field</span><strong>{trackTested ? `${Math.round(coherence * 100)}%` : 'Not tested'}</strong></div>
+        <div><span>Net force</span><strong>{energized && measuredForceX !== null ? `${forceDirection > 0 ? '→' : forceDirection < 0 ? '←' : ''} ${formatForce(signedForceN)}` : 'Off'}</strong></div>
+        <div className={saturationPercent >= 90 ? 'is-warning' : ''}><span>Saturation</span><strong>{saturationPercent}%</strong></div>
       </section>
+      <div className={`linear-capstone-target-card${strengthReady ? ' is-complete' : ''}`}>
+        <span>{strengthReady ? '✓' : '○'}</span>
+        <div><small>Design target</small><strong>{formatForce(FORCE_TARGET_N)} right · saturation below 90%</strong></div>
+      </div>
+      {phase === 'complete' || complete ? (
+        <section className="linear-capstone-complete-card">
+          <small>Your chapter result</small>
+          <strong>{formatForce(signedForceN)} to the {forceDirection > 0 ? 'right' : forceDirection < 0 ? 'left' : 'stationary'}</strong>
+          <p>You created a magnetic path, drove current through a conductor, managed the airgap, avoided the saturation warning, and turned field into motion.</p>
+        </section>
+      ) : null}
+      <section className="lesson-lab-card" aria-label="About the winding">
+        <h3>The winding</h3>
+        <p className="lesson-lab-note">The four active sections move symmetrically while the winding remains one closed circuit.</p>
+      </section>
+      <LessonTerms terms={TERMS} />
+    </LessonLabPanel>
+  );
 
-      <aside className={`learning-control-panel linear-capstone-control-panel${controlsOpen ? ' is-open' : ''}`} aria-label="Linear motor design controls" aria-hidden={!controlsOpen}>
-        <button type="button" className="linear-capstone-drawer-close" onClick={() => setControlsOpen(false)} aria-label="Close design controls">×</button>
-        <div className="linear-capstone-panel-scroll">
-          <p className="linear-capstone-panel-kicker">Chapter challenge · {phase}</p>
-          <h2>{phase === 'build' ? 'Build the track' : phase === 'move' ? 'Make it move' : phase === 'strengthen' ? 'Make it stronger' : 'Your actuator'}</h2>
-          <section className="linear-capstone-goal">
-            <span>{phase === 'build' ? '1/4' : phase === 'move' ? '2/4' : phase === 'strengthen' ? '3/4' : '4/4'}</span>
-            <div>
-              <small>Current goal</small>
-              <strong>{phase === 'build' ? 'Create a useful field across the carriage' : phase === 'move' ? 'Move the carriage to the right' : phase === 'strengthen' ? `Reach ${formatForce(FORCE_TARGET_N)} without the warning zone` : 'Watch the machine you built'}</strong>
-            </div>
-          </section>
-
-          <section className="linear-capstone-control-card">
-            <header><strong>Magnetic track</strong><span>{trackTested ? `${Math.round(coherence * 100)}% useful` : 'untested'}</span></header>
-            <div className="linear-capstone-magnet-controls" role="group" aria-label="Flip track magnets">
-              {magnetOrientations.map((orientation, index) => (
-                <button type="button" key={index} onClick={() => flipMagnet(index)}>
-                  <span className={orientation > 0 ? 'is-north' : 'is-south'}>{orientation > 0 ? 'N' : 'S'}</span>
-                  <small>Magnet {index + 1}</small>
-                  <em>Flip</em>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="linear-capstone-control-card">
-            <header><strong>Conductor pitch</strong><span>{windingSpacingMm.toFixed(0)} mm</span></header>
-            <div className="linear-capstone-spacing-controls" role="group" aria-label="Conductor spacing">
-              {[
-                { value: 12, label: 'Tight' },
-                { value: 18, label: 'Aligned' },
-                { value: 22, label: 'Wide' },
-              ].map((option) => (
-                <button
-                  type="button"
-                  key={option.value}
-                  className={windingSpacingMm === option.value ? 'is-active' : ''}
-                  onClick={() => selectWindingSpacing(option.value)}
-                >
-                  <strong>{option.value} mm</strong>
-                  <span>{option.label}</span>
-                </button>
-              ))}
-            </div>
-            <p className="linear-capstone-control-hint">The four active sections move symmetrically while the winding remains one closed circuit.</p>
-          </section>
-
-          {phase !== 'build' ? (
-            <section className="linear-capstone-control-card">
-              <header><strong>Coil current</strong><span>{currentSign > 0 ? '+' : '−'}{currentA} A</span></header>
-              <div className="linear-capstone-current-buttons" role="group" aria-label="Coil current direction">
-                <button type="button" className={currentSign > 0 ? 'is-active' : ''} onClick={() => selectCurrentSign(1)}>+{currentA} A</button>
-                <button type="button" className={currentSign < 0 ? 'is-active' : ''} onClick={() => selectCurrentSign(-1)}>−{currentA} A</button>
+  return (
+    <LessonLab className="linear-capstone-lab">
+      {inspectPanel}
+      <LessonLabStage>
+        <LessonLabCanvas className="linear-capstone-viewer">
+          <LessonLabViewport
+            label={solvedSources ? `Linear actuator · ${solvedSources}` : 'Linear actuator · moving-coil track'}
+            hint={solvedSources ? `${gapMm.toFixed(1)} mm airgap` : 'Not solved yet'}
+            className={viewMode === '2d' && !fieldData ? 'is-centered' : ''}
+          >
+            {viewMode === '3d' ? (
+              <LinearMotorCapstone3D
+                currentSign={currentSign}
+                forceDirection={forceDirection}
+                netForceN={measuredForceX}
+                gapMm={gapMm}
+                windingSpacingMm={windingSpacingMm}
+                magnetOrientations={magnetOrientations}
+                running={running}
+                showFluxLines={showFieldLines}
+                showBMap={showFluxDensity}
+                fieldData={fieldData}
+              />
+            ) : fieldData ? (
+              <div className="linear-capstone-solver-view">
+                <MeshViewer
+                  meshData={fieldData}
+                  embedded
+                  compactEmbedded
+                  toolbarMode="zoom-only"
+                  zoomControlsSlot={zoomSlot}
+                  showMeshEdges={showMesh}
+                  showFieldIntensity={showFluxDensity}
+                  smoothFieldIntensity
+                  fieldLinesVisible={showFieldLines}
+                  animateFieldArrows={showFieldLines}
+                  viewportPanEnabled={false}
+                  pointLabels={conductorLabels}
+                />
+                {energized && measuredForceX !== null && forceDirection !== 0 ? (
+                  <div className={`linear-capstone-force-result${forceDirection > 0 ? ' is-right' : ' is-left'}`} role="status" aria-live="polite">
+                    <span>Magneto2D net force</span>
+                    <strong><b aria-hidden="true">{forceDirection > 0 ? '⟶' : '⟵'}</b>{formatForce(measuredForceX)}</strong>
+                    <small>∫ winding J × B dV</small>
+                  </div>
+                ) : null}
               </div>
-            </section>
-          ) : null}
+            ) : (
+              <LinearMotor2D
+                currentSign={currentSign}
+                energized={energized}
+                forceDirection={forceDirection}
+                magnetOrientations={magnetOrientations}
+                windingSpacingMm={windingSpacingMm}
+                onFlipMagnet={flipMagnet}
+                running={running}
+              />
+            )}
+          </LessonLabViewport>
+          {viewDock}
+        </LessonLabCanvas>
+      </LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={`Capstone · ${stepLabel}`}
+        title={phase === 'build' ? 'Build the track' : phase === 'move' ? 'Make it move' : phase === 'strengthen' ? 'Make it stronger' : 'Your actuator'}
+        label="Linear motor design controls"
+        footer={(
+          <LessonNextStep hint={phase === 'complete' ? `${insight} Next: Give the Rotor Something to Chase.` : insight}>
+            {phase !== 'complete' ? (
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={running || fieldStatus === 'solving'}
+                onClick={() => { void primaryAction(); }}
+              >
+                {primaryLabel}
+              </button>
+            ) : (
+              <a className="learning-primary-button" href="/tutorials/lesson-6">Next lesson</a>
+            )}
+            <div className="lesson-lab-next-row">
+              <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+              <LessonLink onClick={onBackHome}>Design start</LessonLink>
+            </div>
+          </LessonNextStep>
+        )}
+      >
+        <LessonGoal
+          step={stepNumber}
+          total={steps.length}
+          title={phase === 'build' ? 'Create a useful field across the carriage' : phase === 'move' ? 'Move the carriage to the right' : phase === 'strengthen' ? `Reach ${formatForce(FORCE_TARGET_N)} without the warning zone` : 'Watch the machine you built'}
+          detail={GOAL_DETAILS[goalPhase]}
+        />
 
-          {phase === 'strengthen' || phase === 'reveal' || phase === 'complete' ? (
-            <section className="linear-capstone-control-card">
-              <label htmlFor="linear-capstone-current"><span>Current</span><strong>{currentA} A</strong></label>
-              <input id="linear-capstone-current" aria-label="Linear motor current" type="range" min="4" max="12" step="2" value={currentA} onChange={(event) => { setCurrentA(Number(event.target.value)); setEnergized(true); setRunOnce(false); invalidateField(); }} />
-              <div className="linear-capstone-scale"><span>4 A</span><span>12 A</span></div>
-              <label htmlFor="linear-capstone-gap"><span>Airgap</span><strong>{gapMm.toFixed(1)} mm</strong></label>
-              <input id="linear-capstone-gap" aria-label="Linear motor airgap" type="range" min="2" max="10" step="0.5" value={gapMm} onChange={(event) => { setGapMm(Number(event.target.value)); setEnergized(true); setRunOnce(false); invalidateField(); }} />
-              <div className="linear-capstone-scale"><span>2 mm</span><span>10 mm</span></div>
-            </section>
-          ) : null}
-
-          <p className="linear-capstone-no-recipe">No configuration is suggested. The field and motion are the feedback.</p>
-        </div>
-        <footer className="linear-capstone-panel-footer">
-          <button type="button" onClick={onBackToCatalog}>Lessons</button>
-          <button type="button" onClick={onBackHome}>Design start</button>
-        </footer>
-      </aside>
-
-      <aside className={`learning-context-panel linear-capstone-context${inspectorOpen ? ' is-open' : ''}`} aria-label="Capstone design evidence" aria-hidden={!inspectorOpen}>
-        <button type="button" className="linear-capstone-drawer-close" onClick={() => setInspectorOpen(false)} aria-label="Close design evidence">×</button>
-        <div className="linear-capstone-panel-scroll">
-          <p className="linear-capstone-panel-kicker">Chapter 1 · evidence</p>
-          <h2>{phase === 'complete' ? 'You made a motor move.' : 'What the machine is doing'}</h2>
-          <p className="linear-capstone-context-lede">{phase === 'complete' ? 'Field became force. Force became motion.' : directionLabel(forceDirection)}</p>
-          <section className="linear-capstone-evidence-card">
-            <div><span>Useful field</span><strong>{Math.round(coherence * 100)}%</strong></div>
-            <div><span>Net force</span><strong>{energized && measuredForceX !== null ? `${forceDirection > 0 ? '→' : forceDirection < 0 ? '←' : ''} ${formatForce(signedForceN)}` : 'Off'}</strong></div>
-            <div className={saturationPercent >= 90 ? 'is-warning' : ''}><span>Saturation</span><strong>{saturationPercent}%</strong></div>
-          </section>
-          <div className={`linear-capstone-target-card${strengthReady ? ' is-complete' : ''}`}>
-            <span>{strengthReady ? '✓' : '○'}</span>
-            <div><small>Design target</small><strong>{formatForce(FORCE_TARGET_N)} right · saturation below 90%</strong></div>
+        <section className="linear-capstone-control-card">
+          <header><strong>Magnetic track</strong></header>
+          <div className="linear-capstone-magnet-controls" role="group" aria-label="Flip track magnets">
+            {magnetOrientations.map((orientation, index) => (
+              <button type="button" key={index} onClick={() => flipMagnet(index)}>
+                <span className={orientation > 0 ? 'is-north' : 'is-south'}>{orientation > 0 ? 'N' : 'S'}</span>
+                <small>Magnet {index + 1}</small>
+                <em>Flip</em>
+              </button>
+            ))}
           </div>
-          {phase === 'complete' || complete ? (
-            <section className="linear-capstone-complete-card">
-              <small>Your chapter result</small>
-              <strong>{formatForce(signedForceN)} to the {forceDirection > 0 ? 'right' : forceDirection < 0 ? 'left' : 'stationary'}</strong>
-              <p>You created a magnetic path, drove current through a conductor, managed the airgap, avoided the saturation warning, and turned field into motion.</p>
-            </section>
-          ) : null}
-        </div>
-      </aside>
-    </main>
+        </section>
+
+        <section className="linear-capstone-control-card">
+          <header><strong>Conductor pitch</strong><span>{windingSpacingMm.toFixed(0)} mm</span></header>
+          <LessonSegmented
+            stretch
+            label="Conductor pitch"
+            value={String(windingSpacingMm)}
+            onChange={(id) => selectWindingSpacing(Number(id))}
+            options={PITCH_PRESETS.map((preset) => ({ id: preset.id as string, label: preset.label, title: `${preset.id} mm` }))}
+          />
+        </section>
+
+        {phase !== 'build' ? (
+          <section ref={currentDirectionRef} className="linear-capstone-control-card">
+            <header><strong>Coil current direction</strong></header>
+            <LessonSegmented
+              stretch
+              label="Coil current direction"
+              value={currentSign > 0 ? 'positive' : 'negative'}
+              onChange={(id) => selectCurrentSign(id === 'positive' ? 1 : -1)}
+              options={[
+                { id: 'positive', label: `+${currentA} A` },
+                { id: 'negative', label: `−${currentA} A` },
+              ]}
+            />
+          </section>
+        ) : null}
+
+        {phase === 'strengthen' || phase === 'reveal' || phase === 'complete' ? (
+          <section className="linear-capstone-control-card">
+            <label htmlFor="linear-capstone-current"><span>Coil current</span><strong>{currentA} A</strong></label>
+            <input id="linear-capstone-current" aria-label="Linear motor current" type="range" min="4" max="12" step="2" value={currentA} onChange={(event) => { setCurrentA(Number(event.target.value)); setEnergized(true); setRunOnce(false); invalidateField(); }} />
+            <div className="linear-capstone-scale"><span>4 A</span><span>12 A</span></div>
+            <label htmlFor="linear-capstone-gap"><span>Airgap</span><strong>{gapMm.toFixed(1)} mm</strong></label>
+            <input id="linear-capstone-gap" aria-label="Linear motor airgap" type="range" min="2" max="10" step="0.5" value={gapMm} onChange={(event) => { setGapMm(Number(event.target.value)); setEnergized(true); setRunOnce(false); invalidateField(); }} />
+            <div className="linear-capstone-scale"><span>2 mm</span><span>10 mm</span></div>
+          </section>
+        ) : null}
+
+        <p className="lesson-lab-note">No configuration is suggested. The field and motion are the feedback.</p>
+        {fieldError ? <p className="lesson-lab-error" role="alert">Field solve unavailable. {fieldError}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };

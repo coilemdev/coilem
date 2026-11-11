@@ -23,6 +23,46 @@ const writeIdSet = (key: string, ids: Set<string>) => {
   }
 };
 
+/** Somewhere longer-lived than this browser's storage, supplied by the host app. */
+export interface LearningProgressStore {
+  load: () => Promise<string[]>;
+  /** Mark lessons finished (`add`) or not finished (`remove`); never a whole-list replace. */
+  update: (change: { add?: string[]; remove?: string[] }) => Promise<void>;
+}
+
+let progressStore: LearningProgressStore | null = null;
+
+const updateStore = (change: { add?: string[]; remove?: string[] }) => {
+  // Best effort: the browser copy still holds the progress if this fails.
+  void progressStore?.update(change).catch(() => undefined);
+};
+
+/**
+ * Keep lesson progress in the host's store as well as in the browser. Browser
+ * storage belongs to one origin, port included, so the app opened on another
+ * port or in another browser would otherwise show no finished lessons.
+ * Lessons finished in either place are kept.
+ */
+export async function connectLearningProgressStore(store: LearningProgressStore): Promise<void> {
+  progressStore = store;
+  let stored: string[];
+  try {
+    stored = await store.load();
+  } catch {
+    // Later changes are still sent one lesson at a time, so nothing saved is lost.
+    return;
+  }
+  const local = readIdSet(PRIMER_KEY);
+  const merged = new Set([...local, ...stored]);
+  if (merged.size !== local.size) {
+    writeIdSet(PRIMER_KEY, merged);
+    window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: { key: PRIMER_KEY } }));
+  }
+  const storedIds = new Set(stored);
+  const onlyHere = [...local].filter((id) => !storedIds.has(id));
+  if (onlyHere.length > 0) updateStore({ add: onlyHere });
+}
+
 const setMembership = (
   key: string,
   setState: Dispatch<SetStateAction<Set<string>>>,
@@ -33,6 +73,7 @@ const setMembership = (
   if (complete) next.add(id);
   else next.delete(id);
   writeIdSet(key, next);
+  updateStore(complete ? { add: [id] } : { remove: [id] });
   setState(next);
   window.dispatchEvent(new CustomEvent(PROGRESS_EVENT, { detail: { key } }));
 };

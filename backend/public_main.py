@@ -101,6 +101,7 @@ PUBLIC_API_PATHS = frozenset(
         "/tutorials/lesson-1/field-composition/pm",
         "/tutorials/lesson-1/mesh-preview",
         "/tutorials/lesson-1/solve/stream",
+        "/tutorials/progress",
         "/tutorials/rotating-field/motor-geometry",
         "/tutorials/rotating-field/motor-sweep",
         "/tutorials/rotating-field/sweep",

@@ -46,6 +46,27 @@ import { PUBLIC_API_BASE } from '../api';
  * scripts/test-public-lesson-api.mjs pins the two sets against each other.
  */
 
+const SWEEP_FRAME_LISTS = ['frames', 'phase_a_frames', 'phase_b_frames'] as const;
+
+/**
+ * A sweep sends the mesh its frames share once, as `shared_frame_data`. Put it
+ * back on every frame: the frames then hold the same arrays, so the viewer can
+ * tell the mesh did not change between them.
+ */
+async function getSweepJson<T>(url: string, what: string): Promise<T> {
+  const sweep = await getJson<Record<string, unknown>>(url, what);
+  const shared = sweep.shared_frame_data;
+  if (shared && typeof shared === 'object') {
+    SWEEP_FRAME_LISTS.forEach((key) => {
+      const frames = sweep[key];
+      if (!Array.isArray(frames)) return;
+      sweep[key] = frames.map((frame) => ({ ...(shared as object), ...(frame as object) }));
+    });
+    delete sweep.shared_frame_data;
+  }
+  return sweep as T;
+}
+
 async function getJson<T>(url: string, what: string): Promise<T> {
   const response = await fetch(url);
   if (!response.ok) {
@@ -341,7 +362,7 @@ export const publicLessonSolveClient: LessonSolveClient = {
 
   fetchRotatingFieldSweep(peakCurrentA = 8) {
     const params = new URLSearchParams({ peak_current_a: String(peakCurrentA) });
-    return getJson<RotatingFieldSweepData>(
+    return getSweepJson<RotatingFieldSweepData>(
       `${PUBLIC_API_BASE}/tutorials/rotating-field/sweep?${params.toString()}`,
       'Rotating-field sweep',
     );
@@ -355,7 +376,7 @@ export const publicLessonSolveClient: LessonSolveClient = {
       peak_current_a: String(peakCurrentA),
       field_component: fieldComponent,
     });
-    return getJson<RotatingFieldMotorSweepData>(
+    return getSweepJson<RotatingFieldMotorSweepData>(
       `${PUBLIC_API_BASE}/tutorials/rotating-field/motor-sweep?${params.toString()}`,
       'Rotating-field motor sweep',
     );
@@ -376,7 +397,7 @@ export const publicLessonSolveClient: LessonSolveClient = {
       peak_current_a: String(peakCurrentA),
       field_component: fieldComponent,
     });
-    return getJson<ThreePhaseMotorSweepData>(
+    return getSweepJson<ThreePhaseMotorSweepData>(
       `${PUBLIC_API_BASE}/tutorials/three-phase-motor/sweep?${params.toString()}`,
       'Three-phase motor sweep',
     );

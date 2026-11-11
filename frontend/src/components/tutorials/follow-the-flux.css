@@ -1,60 +1,3 @@
-.follow-flux-shell {
-  --learning-control-panel-width: 320px;
-  --learning-main-stage-min-width: 560px;
-  grid-template-areas: "lab stage status";
-  grid-template-columns: 320px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
-}
-
-.follow-flux-shell.is-solve-stage {
-  --learning-control-panel-width: 320px;
-  --learning-main-stage-min-width: 560px;
-}
-
-.follow-flux-shell .learning-step-rail {
-  grid-area: status;
-  border-right: 0;
-  border-left: 1px solid var(--border-default);
-}
-
-.follow-flux-shell .learning-control-panel {
-  grid-area: lab;
-  border-left: 0;
-  border-right: 1px solid var(--border-default);
-}
-
-.follow-flux-shell .follow-flux-main {
-  grid-area: stage;
-}
-
-.follow-flux-stage-list .learning-step-item > button:disabled {
-  cursor: not-allowed;
-  opacity: 0.42;
-}
-
-.follow-flux-stage-list .learning-step-item.is-complete > button > span {
-  border-color: rgba(34, 197, 94, 0.48);
-  background: rgba(34, 197, 94, 0.12);
-  color: #86efac;
-}
-
-.follow-flux-complete {
-  grid-column: 1 / -1;
-  padding: 9px 12px;
-  border: 1px solid rgba(132, 204, 22, 0.42);
-  border-radius: 6px;
-  background: rgba(132, 204, 22, 0.08);
-  color: #bef264;
-  font: 800 12px var(--font-mono);
-  text-align: center;
-}
-
-.follow-flux-main {
-  display: block;
-  min-height: 0;
-  overflow: auto;
-}
-
-.follow-flux-concept,
 .follow-flux-empty-stage {
   position: relative;
   min-height: 100%;
@@ -62,52 +5,6 @@
   place-items: center;
   align-content: center;
   padding: 36px;
-}
-
-.follow-flux-stage-badge {
-  position: absolute;
-  top: 24px;
-  left: 24px;
-  display: flex;
-  gap: 10px;
-  padding: 9px 12px;
-  border: 1px solid var(--border-default);
-  border-radius: 6px;
-  background: rgba(10, 15, 26, 0.9);
-  font: 700 12px var(--font-mono);
-}
-
-.follow-flux-stage-badge span {
-  color: var(--text-muted);
-}
-
-.follow-flux-start-hint {
-  position: absolute;
-  top: 24px;
-  right: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border: 1px solid rgba(34, 211, 238, 0.42);
-  border-radius: 6px;
-  background: rgba(8, 47, 73, 0.88);
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.08);
-  color: #cffafe;
-  font: 700 12px var(--font-sans);
-}
-
-.follow-flux-start-hint span {
-  color: #67e8f9;
-  font: 800 10px var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.follow-flux-start-hint b {
-  color: #67e8f9;
-  font-size: 18px;
-  animation: follow-flux-nudge-left 1.2s ease-in-out infinite;
 }
 
 @keyframes follow-flux-nudge-left {
@@ -154,11 +51,6 @@
   animation: follow-flux-field-reveal 320ms ease-out both;
 }
 
-.follow-flux-prediction-field .follow-flux-internal-field {
-  stroke: rgba(207, 250, 254, 0.76);
-  stroke-width: 2;
-}
-
 /* Solved iso-Az field lines. Thinner than the old hand-drawn loops because there
    are 22 of them, and drawn over the magnet body so each line reads as one
    closed loop rather than stopping at the pole face. */
@@ -179,16 +71,6 @@
   paint-order: stroke;
   stroke: rgba(11, 15, 23, 0.55);
   stroke-width: 4;
-}
-
-.follow-flux-prediction-field .follow-flux-flow-chevron {
-  stroke: rgba(103, 232, 249, 0.96);
-  stroke-width: 2.25;
-}
-
-.follow-flux-prediction-field .follow-flux-flow-chevron.is-internal {
-  stroke: rgba(207, 250, 254, 0.9);
-  stroke-width: 2;
 }
 
 .follow-flux-prediction-field.is-stopped {
@@ -217,62 +99,14 @@
   }
 }
 
-.follow-flux-concept-copy {
-  max-width: 660px;
-  margin-top: -26px;
-  text-align: center;
-}
-
-.follow-flux-concept-copy h2,
 .follow-flux-empty-stage h2,
-.follow-flux-quiz-stage h2,
 .follow-flux-status-comparison h2 {
   margin: 0;
 }
 
-.follow-flux-concept-copy > p:last-child,
-.follow-flux-empty-stage p,
-.follow-flux-quiz-stage header > p:last-child {
+.follow-flux-empty-stage p {
   color: var(--text-secondary);
   line-height: 1.5;
-}
-
-.follow-flux-control-panel {
-  width: auto;
-}
-
-.follow-flux-control-panel h2 {
-  margin: 0 0 16px;
-}
-
-.follow-flux-status-panel {
-  background: var(--bg-surface-1);
-}
-
-.follow-flux-status-panel .learning-step-header {
-  padding-bottom: 14px;
-}
-
-.follow-flux-inspector-header {
-  display: grid;
-  gap: 6px;
-}
-
-.follow-flux-inspector-header .learning-kicker,
-.follow-flux-inspector-header h1,
-.follow-flux-inspector-header p {
-  margin: 0;
-}
-
-.follow-flux-inspector-header h1 {
-  font-size: 24px;
-  line-height: 1.1;
-}
-
-.follow-flux-inspector-header > p:last-child {
-  color: var(--text-secondary);
-  font-size: 11px;
-  line-height: 1.4;
 }
 
 .follow-flux-status-results,
@@ -283,57 +117,6 @@
   border: 1px solid var(--border-default);
   border-radius: 8px;
   background: var(--bg-surface-2);
-}
-
-.follow-flux-lab-goal {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  gap: 10px;
-  margin: 0 0 16px;
-  padding: 11px;
-  border: 1px solid rgba(34, 211, 238, 0.28);
-  border-left: 3px solid #22d3ee;
-  border-radius: 7px;
-  background: linear-gradient(135deg, rgba(8, 47, 73, 0.42), rgba(20, 24, 33, 0.94));
-}
-
-.follow-flux-lab-goal > span {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(34, 211, 238, 0.42);
-  border-radius: 50%;
-  color: #67e8f9;
-  font: 800 10px var(--font-mono);
-}
-
-.follow-flux-lab-goal > div {
-  min-width: 0;
-}
-
-.follow-flux-lab-goal p {
-  margin: 0;
-  color: #67e8f9;
-  font: 800 9px var(--font-mono);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.follow-flux-lab-goal strong {
-  display: block;
-  margin-top: 3px;
-  color: var(--text-primary);
-  font-size: 12px;
-  line-height: 1.3;
-}
-
-.follow-flux-lab-goal small {
-  display: block;
-  margin-top: 4px;
-  color: var(--text-secondary);
-  font-size: 10px;
-  line-height: 1.4;
 }
 
 .follow-flux-pair-sequence {
@@ -429,38 +212,6 @@
   color: var(--text-secondary);
 }
 
-.follow-flux-inspector-next {
-  position: sticky;
-  z-index: 3;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 16px -16px 0;
-  padding: 12px 16px;
-  border-top: 1px solid rgba(71, 85, 105, 0.62);
-  background: rgba(15, 18, 25, 0.97);
-}
-
-.follow-flux-inspector-next span {
-  color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.follow-flux-inspector-next button {
-  min-height: 40px;
-  padding: 0 14px;
-  border: 1px solid rgba(245, 158, 11, 0.65);
-  border-radius: 10px;
-  background: linear-gradient(135deg, #fbbf24, #f97316);
-  color: #171006;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .follow-flux-inspector-details summary {
   cursor: pointer;
   color: var(--text-primary);
@@ -483,14 +234,6 @@
 
 .follow-flux-inspector-details .follow-flux-gate-readout {
   margin: 0;
-}
-
-.follow-flux-panel-kicker {
-  margin: 0 0 6px;
-  color: #67e8f9;
-  font: 800 11px var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .follow-flux-predictions {
@@ -625,38 +368,12 @@
   line-height: 1.35;
 }
 
-.follow-flux-instructions {
-  display: grid;
-  gap: 10px;
-}
-
-.follow-flux-step-number,
-.follow-flux-lab-steps li > span {
-  width: 30px;
-  height: 30px;
-  display: inline-grid;
-  place-items: center;
-  border: 1px solid rgba(34, 211, 238, 0.42);
-  border-radius: 999px;
-  color: #67e8f9;
-  font: 800 12px var(--font-mono);
-}
-
-.follow-flux-instructions > p,
-.follow-flux-lab-steps p {
-  margin: 0;
-  color: var(--text-secondary);
-  line-height: 1.45;
-}
-
-.follow-flux-instructions dl,
 .follow-flux-live-metrics {
   display: grid;
   gap: 8px;
   margin: 8px 0 0;
 }
 
-.follow-flux-instructions dl > div,
 .follow-flux-live-metrics > div {
   display: flex;
   justify-content: space-between;
@@ -665,12 +382,10 @@
   border-bottom: 1px solid var(--border-default);
 }
 
-.follow-flux-instructions dt,
 .follow-flux-live-metrics dt {
   color: var(--text-muted);
 }
 
-.follow-flux-instructions dd,
 .follow-flux-live-metrics dd {
   margin: 0;
   color: var(--text-primary);
@@ -686,7 +401,6 @@
   max-width: 520px;
 }
 
-.follow-flux-mesh-icon,
 .follow-flux-solve-icon {
   width: 82px;
   height: 82px;
@@ -698,15 +412,6 @@
   background: rgba(34, 211, 238, 0.08);
   color: #67e8f9;
   font: 800 34px var(--font-mono);
-}
-
-.follow-flux-visual-stack {
-  height: 100%;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr);
-  align-content: stretch;
-  overflow: hidden;
 }
 
 .follow-flux-viewer {
@@ -736,10 +441,6 @@
   padding: 8px 14px;
 }
 
-.follow-flux-visual-header {
-  gap: 12px;
-}
-
 .follow-flux-viewer .mesh-viewer-title {
   min-width: 0;
   display: flex;
@@ -761,84 +462,6 @@
 
 .follow-flux-viewer .mesh-viewer-toolbar {
   min-height: 54px;
-}
-
-.follow-flux-field-mode-toggle {
-  flex: 0 0 auto;
-  display: inline-flex;
-  gap: 3px;
-  padding: 2px;
-  border: 1px solid rgba(71, 85, 105, 0.58);
-  border-radius: 6px;
-  background: rgba(3, 7, 18, 0.62);
-}
-
-.follow-flux-field-mode-toggle button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 30px;
-  padding: 5px 9px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text-secondary);
-  font: 750 12px var(--font-sans);
-  cursor: pointer;
-}
-
-.follow-flux-field-mode-toggle button:hover {
-  color: var(--text-primary);
-  background: rgba(30, 41, 59, 0.72);
-}
-
-.follow-flux-field-mode-toggle button.is-active {
-  border-color: rgba(34, 211, 238, 0.42);
-  background: rgba(34, 211, 238, 0.12);
-  color: #a5f3fc;
-}
-
-.follow-flux-field-mode-toggle button > span {
-  width: 11px;
-  height: 11px;
-  flex: 0 0 auto;
-}
-
-.follow-flux-field-mode-toggle .is-line-swatch {
-  border-radius: 50%;
-  background: #67e8f9;
-  box-shadow: 0 0 7px rgba(34, 211, 238, 0.45);
-}
-
-.follow-flux-field-mode-toggle .is-density-swatch {
-  border-radius: 3px;
-  background: linear-gradient(135deg, #4145ab 5%, #1bcdd4 48%, #f8ca25 72%, #e64c02 100%);
-}
-
-.follow-flux-field-mode-toggle .is-mesh-swatch {
-  border: 1px solid rgba(148, 163, 184, 0.85);
-  border-radius: 2px;
-  background:
-    linear-gradient(30deg, transparent 46%, rgba(148, 163, 184, 0.8) 48% 52%, transparent 54%),
-    linear-gradient(150deg, transparent 46%, rgba(148, 163, 184, 0.8) 48% 52%, transparent 54%);
-}
-
-.follow-flux-field-mode-toggle .is-depth-swatch {
-  position: relative;
-  width: 10px;
-  height: 9px;
-  border: 1px solid #67e8f9;
-  border-radius: 1px;
-  transform: skewY(-18deg);
-}
-
-.follow-flux-field-mode-toggle .is-depth-swatch::after {
-  content: '';
-  position: absolute;
-  inset: -4px -4px 3px 3px;
-  border: 1px solid rgba(103, 232, 249, 0.62);
-  border-left: 0;
-  border-bottom: 0;
 }
 
 .follow-flux-depth-inset {
@@ -1235,70 +858,6 @@
 .follow-flux-dimension-label {
   fill: #cbd5e1;
   font: 700 2.2px var(--font-mono);
-}
-
-.follow-flux-view-toggle {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-bottom: 16px;
-  overflow: hidden;
-  border: 1px solid var(--border-default);
-  border-radius: 6px;
-}
-
-.follow-flux-view-toggle button {
-  min-height: 38px;
-  border: 0;
-  border-right: 1px solid var(--border-default);
-  background: var(--bg-surface-2);
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-weight: 800;
-}
-
-.follow-flux-view-toggle button:last-child {
-  border-right: 0;
-}
-
-.follow-flux-view-toggle button.is-active {
-  background: rgba(245, 158, 11, 0.14);
-  color: #fbbf24;
-}
-
-.follow-flux-view-toggle button:disabled {
-  cursor: not-allowed;
-  opacity: 0.42;
-}
-
-.follow-flux-lab-steps {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.follow-flux-lab-steps li {
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
-  gap: 10px;
-  opacity: 0.52;
-}
-
-.follow-flux-lab-steps li.is-active,
-.follow-flux-lab-steps li.is-done {
-  opacity: 1;
-}
-
-.follow-flux-lab-steps li.is-done > span {
-  border-color: rgba(34, 197, 94, 0.48);
-  background: rgba(34, 197, 94, 0.1);
-  color: #86efac;
-}
-
-.follow-flux-lab-steps strong {
-  display: block;
-  margin-bottom: 3px;
 }
 
 .follow-flux-steel-controls {
@@ -1824,24 +1383,6 @@
   line-height: 1.35;
 }
 
-.follow-flux-quiz-stage {
-  width: min(760px, calc(100% - 48px));
-  height: 100%;
-  margin: 0 auto;
-  padding: 34px 0 48px;
-  box-sizing: border-box;
-  overflow: auto;
-  scrollbar-gutter: stable;
-}
-
-.follow-flux-quiz-stage header {
-  margin-bottom: 20px;
-}
-
-.follow-flux-quiz-stage .follow-flux-inline-quiz-reference {
-  margin: 0 0 20px;
-}
-
 .follow-flux-completion-card {
   display: grid;
   gap: 10px;
@@ -1861,76 +1402,7 @@
   margin-top: 4px;
 }
 
-@media (max-width: 1240px) {
-  .follow-flux-shell,
-  .follow-flux-shell.is-solve-stage {
-    --learning-control-panel-width: 300px;
-    --learning-main-stage-min-width: 460px;
-    grid-template-columns: 300px minmax(var(--learning-main-stage-min-width), 1fr) var(--learning-control-panel-width);
-  }
-
-}
-
-@media (max-width: 1080px) {
-  .follow-flux-shell,
-  .follow-flux-shell.is-solve-stage {
-    grid-template-areas:
-      "lab stage"
-      "status status";
-    grid-template-columns: 300px minmax(0, 1fr);
-  }
-
-  .follow-flux-control-panel {
-    grid-column: auto;
-    display: block;
-    grid-template-columns: none;
-  }
-
-  .follow-flux-status-panel {
-    display: block;
-    border-top: 1px solid var(--border-default);
-    border-left: 0;
-  }
-}
-
-@media (max-width: 760px) {
-  .follow-flux-shell,
-  .follow-flux-shell.is-solve-stage {
-    grid-template-areas:
-      "lab"
-      "stage"
-      "status";
-    grid-template-columns: 1fr;
-  }
-
-  .follow-flux-control-panel {
-    display: block;
-    grid-template-columns: 1fr;
-  }
-
-  .follow-flux-status-panel {
-    display: block;
-  }
-
-  .follow-flux-visual-stack {
-    height: auto;
-    grid-template-rows: 480px;
-    overflow: visible;
-  }
-
-  .follow-flux-field-mode-toggle {
-    gap: 1px;
-  }
-
-  .follow-flux-field-mode-toggle button {
-    gap: 5px;
-    padding-inline: 7px;
-  }
-
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .follow-flux-start-hint b,
   .follow-flux-depth-field-lines .is-depth-field-flow {
     animation: none;
   }
@@ -1939,7 +1411,6 @@
 /* Live re-solve. The previous field stays on screen while a moved body is
    re-solved (~0.5 s) rather than the canvas dropping back to the placement
    view, so the field is dimmed to show it no longer matches the geometry. */
-.follow-flux-viewer.is-stale .mesh-viewer-surface,
 .follow-flux-viewer.is-stale svg {
   opacity: 0.45;
   transition: opacity 140ms ease-out;
@@ -1977,53 +1448,6 @@
    evidence. The field owns the default frame; controls and evidence are drawers.
    -------------------------------------------------------------------------- */
 
-.follow-flux-predict-shell {
-  display: block;
-  overflow: auto;
-  background:
-    radial-gradient(circle at 50% 38%, rgba(34, 211, 238, 0.055), transparent 33%),
-    #090b10;
-}
-
-.follow-flux-predict-experience {
-  width: min(980px, calc(100% - 48px));
-  min-height: 100%;
-  margin: 0 auto;
-  display: grid;
-  grid-template-rows: auto minmax(260px, 1fr) auto auto auto auto;
-  place-items: center;
-  align-content: center;
-  gap: 18px;
-  padding: clamp(32px, 5vh, 64px) 0 24px;
-  box-sizing: border-box;
-}
-
-.follow-flux-predict-heading {
-  max-width: 720px;
-  text-align: center;
-}
-
-.follow-flux-predict-heading .learning-kicker {
-  margin: 0 0 12px;
-  color: #fbbf24;
-}
-
-.follow-flux-predict-heading h1 {
-  margin: 0;
-  color: #f8fafc;
-  font-size: clamp(34px, 4.4vw, 64px);
-  font-weight: 780;
-  letter-spacing: -0.045em;
-  line-height: 0.98;
-}
-
-.follow-flux-predict-heading > p:last-child {
-  margin: 16px 0 0;
-  color: #9ca3af;
-  font-size: clamp(15px, 1.35vw, 19px);
-  line-height: 1.45;
-}
-
 .follow-flux-predict-visual {
   width: min(720px, 100%);
   min-height: 260px;
@@ -2037,84 +1461,6 @@
   filter: drop-shadow(0 22px 44px rgba(0, 0, 0, 0.32));
 }
 
-.follow-flux-predict-options {
-  width: min(900px, 100%);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.follow-flux-predict-options button {
-  min-width: 0;
-  min-height: 84px;
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-  padding: 16px;
-  border: 1px solid rgba(71, 85, 105, 0.52);
-  border-radius: 14px;
-  background: rgba(18, 22, 30, 0.78);
-  color: #d1d5db;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
-}
-
-.follow-flux-predict-options button:hover {
-  border-color: rgba(148, 163, 184, 0.72);
-  background: rgba(26, 31, 41, 0.92);
-  transform: translateY(-1px);
-}
-
-.follow-flux-predict-options button > span {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(100, 116, 139, 0.64);
-  border-radius: 50%;
-  color: #94a3b8;
-  font: 800 11px var(--font-mono);
-}
-
-.follow-flux-predict-options button strong {
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.follow-flux-predict-options button.is-selected {
-  border-color: rgba(245, 158, 11, 0.8);
-  background: rgba(245, 158, 11, 0.09);
-  color: #f8fafc;
-}
-
-.follow-flux-predict-options button.is-selected > span {
-  border-color: rgba(245, 158, 11, 0.82);
-  background: #f59e0b;
-  color: #111827;
-}
-
-.follow-flux-predict-options button.is-correct {
-  border-color: rgba(34, 197, 94, 0.62);
-  background: rgba(34, 197, 94, 0.08);
-}
-
-.follow-flux-predict-response {
-  min-height: 24px;
-  color: #fbbf24;
-  text-align: center;
-}
-
-.follow-flux-predict-response p {
-  margin: 0;
-  font-size: 13px;
-}
-
-.follow-flux-predict-response p.is-correct {
-  color: #86efac;
-}
-
 .follow-flux-reveal-button {
   min-width: 220px;
   min-height: 48px;
@@ -2122,223 +1468,7 @@
   font-size: 14px;
 }
 
-.follow-flux-predict-footer {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 4px;
-  color: #64748b;
-  font: 700 10px var(--font-mono);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.follow-flux-predict-footer button {
-  padding: 8px 0;
-  border: 0;
-  background: transparent;
-  color: #94a3b8;
-  font: inherit;
-  text-transform: inherit;
-  cursor: pointer;
-}
-
-.follow-flux-predict-footer button:hover {
-  color: #f8fafc;
-}
-
-.follow-flux-shell,
-.follow-flux-shell.is-solve-stage {
-  --follow-flux-drawer-top: 60px;
-  position: relative;
-  display: block;
-  grid-template-columns: none;
-  overflow: hidden;
-  background: #090c13;
-}
-
-.follow-flux-shell.is-placement-preview {
-  --follow-flux-drawer-top: 76px;
-}
-
-.follow-flux-shell .follow-flux-main {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  padding-bottom: 108px;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.follow-flux-shell .follow-flux-main.is-quiz-open {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  padding-bottom: 0;
-  overflow: hidden;
-}
-
-.follow-flux-shell .follow-flux-control-panel,
-.follow-flux-shell .follow-flux-status-panel {
-  position: absolute;
-  z-index: 40;
-  top: var(--follow-flux-drawer-top);
-  bottom: 112px;
-  width: min(380px, calc(100% - 32px));
-  border: 1px solid rgba(71, 85, 105, 0.66);
-  border-radius: 18px;
-  background: rgba(15, 18, 25, 0.96);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(20px);
-  overflow: auto;
-}
-
-.follow-flux-shell .follow-flux-control-panel {
-  left: 16px;
-  border-right: 1px solid rgba(71, 85, 105, 0.66);
-}
-
-.follow-flux-shell .follow-flux-status-panel {
-  right: 16px;
-  border-left: 1px solid rgba(71, 85, 105, 0.66);
-}
-
-.follow-flux-drawer-close {
-  position: absolute;
-  z-index: 5;
-  top: 12px;
-  right: 12px;
-  width: 34px;
-  height: 34px;
-  margin: 0;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(71, 85, 105, 0.7);
-  border-radius: 50%;
-  background: rgba(15, 18, 25, 0.92);
-  color: #cbd5e1;
-  font-size: 22px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.follow-flux-drawer-close:hover {
-  border-color: rgba(245, 158, 11, 0.7);
-  color: #f8fafc;
-}
-
-.follow-flux-shell .follow-flux-status-panel .learning-step-header,
-.follow-flux-shell .follow-flux-control-panel .learning-control-section {
-  padding-right: 56px;
-}
-
-.follow-flux-lesson-dock {
-  position: absolute;
-  z-index: 30;
-  left: 50%;
-  bottom: 16px;
-  width: min(1080px, calc(100% - 32px));
-  min-height: 76px;
-  display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto;
-  gap: 20px;
-  align-items: center;
-  padding: 12px 14px 12px 18px;
-  border: 1px solid rgba(71, 85, 105, 0.7);
-  border-radius: 18px;
-  background: rgba(14, 17, 23, 0.94);
-  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.48);
-  backdrop-filter: blur(20px);
-  transform: translateX(-50%);
-  box-sizing: border-box;
-}
-
-.follow-flux-main.is-quiz-open .follow-flux-quiz-dock {
-  position: relative;
-  left: auto;
-  bottom: auto;
-  width: min(1080px, calc(100% - 32px));
-  margin: 12px auto 16px;
-  transform: none;
-}
-
-.follow-flux-dock-insight {
-  min-width: 0;
-  display: grid;
-  gap: 5px;
-}
-
-.follow-flux-dock-insight > span {
-  color: #fbbf24;
-  font: 800 9px var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.follow-flux-dock-insight > strong {
-  max-width: 620px;
-  overflow: hidden;
-  color: #f1f5f9;
-  font-size: 14px;
-  font-weight: 650;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.follow-flux-dock-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.follow-flux-dock-button {
-  min-height: 42px;
-  padding: 0 14px;
-  border: 1px solid rgba(71, 85, 105, 0.68);
-  border-radius: 10px;
-  background: rgba(30, 35, 45, 0.82);
-  color: #cbd5e1;
-  font-size: 12px;
-  font-weight: 720;
-  cursor: pointer;
-}
-
-.follow-flux-dock-button:hover,
-.follow-flux-dock-button[aria-expanded="true"] {
-  border-color: rgba(148, 163, 184, 0.72);
-  color: #f8fafc;
-}
-
-.follow-flux-dock-primary {
-  min-width: 170px;
-  min-height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
 @media (max-height: 800px) and (min-width: 601px) {
-  .follow-flux-predict-experience {
-    grid-template-rows: auto minmax(190px, 1fr) auto auto auto auto;
-    gap: 10px;
-    padding: 22px 0 14px;
-  }
-
-  .follow-flux-predict-heading .learning-kicker {
-    margin-bottom: 7px;
-  }
-
-  .follow-flux-predict-heading h1 {
-    font-size: clamp(36px, 4vw, 50px);
-  }
-
-  .follow-flux-predict-heading > p:last-child {
-    margin-top: 10px;
-  }
 
   .follow-flux-predict-visual {
     min-height: 190px;
@@ -2347,73 +1477,9 @@
   .follow-flux-predict-visual .follow-flux-concept-svg {
     max-height: 28vh;
   }
-
-  .follow-flux-predict-options button {
-    min-height: 70px;
-    padding-block: 12px;
-  }
-
-  .follow-flux-predict-footer {
-    padding-top: 0;
-  }
-}
-
-@media (max-width: 900px) {
-  .follow-flux-predict-experience {
-    width: min(720px, calc(100% - 32px));
-    grid-template-rows: auto minmax(220px, 1fr) auto auto auto auto;
-  }
-
-  .follow-flux-predict-options {
-    grid-template-columns: 1fr;
-  }
-
-  .follow-flux-predict-options button {
-    min-height: 64px;
-  }
-
-  .follow-flux-lesson-dock {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .follow-flux-dock-insight > strong {
-    white-space: normal;
-  }
-
-  .follow-flux-dock-actions {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .follow-flux-dock-primary {
-    min-width: 0;
-  }
-
-  .follow-flux-shell .follow-flux-main {
-    padding-bottom: 146px;
-  }
-
-  .follow-flux-shell .follow-flux-control-panel,
-  .follow-flux-shell .follow-flux-status-panel {
-    top: var(--follow-flux-drawer-top);
-    right: 10px;
-    bottom: 152px;
-    left: 10px;
-    width: auto;
-  }
 }
 
 @media (max-width: 600px) {
-  .follow-flux-predict-experience {
-    width: calc(100% - 24px);
-    gap: 12px;
-    padding-top: 24px;
-  }
-
-  .follow-flux-predict-heading h1 {
-    font-size: 38px;
-  }
 
   .follow-flux-predict-visual {
     min-height: 190px;
@@ -2423,38 +1489,82 @@
     max-height: 26vh;
   }
 
-  .follow-flux-predict-options button {
-    min-height: 56px;
-    padding: 11px 13px;
-  }
+}
 
-  .follow-flux-dock-insight {
-    display: none;
-  }
+/* ── Lesson 1 inside the shared lesson shell (lab/lesson-lab.css) ──────────
+   The layout, panels and dock are shared by every lesson. What is left here
+   fits this lesson's own content into them. */
+.follow-flux-lab .lesson-lab-panel-body > * {
+  margin-right: 0;
+  margin-left: 0;
+}
 
-  .follow-flux-lesson-dock {
-    bottom: 8px;
-    width: calc(100% - 16px);
-    min-height: 0;
-    padding: 8px;
-    border-radius: 14px;
-  }
+.follow-flux-lab .follow-flux-viewer {
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
 
-  .follow-flux-dock-actions {
-    grid-template-columns: 1fr 1fr;
-  }
+/* The pre-solve layout preview names itself with the same chip as the canvas. */
+.follow-flux-lab .follow-flux-geometry-card { position: relative; }
 
-  .follow-flux-dock-primary {
-    grid-column: 1 / -1;
-  }
+.follow-flux-lab .follow-flux-geometry-card header {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  right: 16px;
+  left: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+}
 
-  .follow-flux-shell .follow-flux-main {
-    padding-bottom: 114px;
-  }
+.follow-flux-lab .follow-flux-geometry-card h3 {
+  padding: 7px 11px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: rgba(15, 17, 23, 0.78);
+  font: 11px var(--font-mono);
+}
 
-  .follow-flux-shell .follow-flux-control-panel,
-  .follow-flux-shell .follow-flux-status-panel {
-    bottom: 120px;
-  }
+.follow-flux-lab .follow-flux-geometry-card header span {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 11px;
+}
 
+.follow-flux-lab .follow-flux-predict-visual {
+  width: min(760px, 100%);
+  min-height: 0;
+}
+
+.follow-flux-lab .follow-flux-predict-visual .follow-flux-concept-svg { max-height: 56vh; }
+
+/* The change badge is sized by its own text, says what it compares, and stays
+   inside the card. */
+.follow-flux-lab .follow-flux-comparison-metric {
+  grid-template-columns: minmax(70px, 1fr) minmax(112px, 1.3fr) max-content;
+  gap: 6px;
+}
+
+.follow-flux-lab .follow-flux-comparison-change {
+  justify-self: end;
+  padding: 3px 6px;
+  border-radius: 8px;
+  line-height: 1.25;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.follow-flux-lab .follow-flux-comparison-change small {
+  display: block;
+  margin-top: 1px;
+  color: var(--text-muted);
+  font: 8px var(--font-mono);
+  letter-spacing: 0;
 }

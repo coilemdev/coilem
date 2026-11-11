@@ -17,6 +17,23 @@ import type {
 } from './lessonStage';
 import { KnowledgeCheck } from './KnowledgeCheck';
 import type { KnowledgeCheckQuestion } from './magneticCircuit';
+import {
+  LessonChoices,
+  LessonDock,
+  LessonDockGroup,
+  LessonDockToggle,
+  LessonGoal,
+  LessonLab,
+  LessonLabCanvas,
+  LessonLabPanel,
+  LessonLabStage,
+  LessonLabViewport,
+  LessonLink,
+  LessonNextStep,
+  LessonOutline,
+  LessonTerms,
+} from './lab/LessonLab';
+import type { LessonTerm } from './lab/LessonLab';
 import './learning.css';
 import './iron-saturation.css';
 
@@ -45,11 +62,11 @@ const LESSON_FOUR_GOALS: Record<LessonFourProgressStepId, { title: string; detai
   },
   low: {
     title: 'Establish the low-field response',
-    detail: 'Solve 10 A while M350-50A still has high effective permeability.',
+    detail: 'Solve 10 A while the steel still has high effective permeability.',
   },
   knee: {
     title: 'Find the B–H knee',
-    detail: 'Solve 100 A and watch the material curve begin to bend.',
+    detail: 'Solve 100 A and watch the B–H curve begin to bend.',
   },
   saturation: {
     title: 'Drive the steel into saturation',
@@ -57,11 +74,11 @@ const LESSON_FOUR_GOALS: Record<LessonFourProgressStepId, { title: string; detai
   },
   tooth: {
     title: 'Put the solenoid idea inside a motor',
-    detail: 'Wrap a concentrated winding around one tooth and measure tooth B and useful airgap flux.',
+    detail: 'Wrap a coil around one tooth and measure B in the tooth and the airgap flux.',
   },
   spm: {
     title: 'Add the permanent-magnet source',
-    detail: 'Place an N42 surface pole on curved rotor back iron, then compare magnet-only and energized airgap flux.',
+    detail: 'Place an N42 magnet pole on curved rotor back iron, then compare airgap flux with the coil off and on.',
   },
   check: {
     title: 'Recognize saturation',
@@ -100,11 +117,32 @@ const TOOTH_HIGH_CURRENT_A = 20;
 const SPM_BASELINE_CURRENT_A = 0;
 const SPM_HIGH_CURRENT_A = 20;
 const MU_0 = 4 * Math.PI * 1e-7;
+// Flux density above which this lesson calls the steel saturated. The solver's
+// "saturated fraction" measurements use the same 1.60 T threshold.
+const SATURATION_B_T = 1.6;
+
+const PREDICTION_OPTIONS: ReadonlyArray<{ id: Prediction; label: string; detail: string }> = [
+  { id: 'linear', label: 'B keeps scaling linearly', detail: 'A single constant permeability works at every current.' },
+  { id: 'knee', label: 'B bends toward a plateau', detail: 'Effective permeability falls after the material knee.' },
+  { id: 'fall', label: 'B falls back to zero', detail: 'More H cancels the field in the ring.' },
+];
+
+// Every technical word the lesson leans on, defined before it is used.
+const LESSON_FOUR_TERMS: readonly LessonTerm[] = [
+  { term: 'Field strength, H', definition: 'The magnetising effort that current creates at a point, in amperes per metre (A/m). Around a straight wire, H = I / (2πr).' },
+  { term: 'Flux density, B', definition: 'How strong the resulting magnetic field is at one spot, in tesla (T). |B| means its size, whatever its direction.' },
+  { term: <>Permeability, μ<sub>r</sub></>, definition: 'How much B a material gives for the same H, compared with empty space. It has no unit. Unsaturated steel is in the thousands; air is 1.' },
+  { term: 'B–H curve and knee', definition: 'The graph of B against H for a material. The knee is the bend, near 1.5 T for this steel, where the curve stops climbing steeply.' },
+  { term: 'Saturation', definition: 'Past the knee, the steel is nearly “full”: a lot more H gives only a little more B. This lesson counts steel above 1.60 T as saturated.' },
+  { term: 'MMF', definition: 'Magnetomotive force: what drives flux round a magnetic path. For a coil it is turns × current (N × I), in ampere-turns (A·turn).' },
+  { term: 'Airgap flux', definition: 'The total field crossing the airgap, the thin space between the stator tooth and the rotor, where torque is made. Shown per metre of motor depth, in milliwebers per metre (mWb/m).' },
+  { term: 'SPM pole', definition: 'Surface permanent magnet: a magnet fixed to the rotor surface, facing the tooth. N42 is a common strong grade of neodymium magnet.' },
+];
 
 const QUIZ: KnowledgeCheckQuestion[] = [
   {
     id: 'saturation-meaning',
-    prompt: 'What changes most dramatically after M350-50A passes its B–H knee?',
+    prompt: 'What changes most dramatically after the electrical steel passes its B–H knee?',
     options: ['Its effective permeability collapses', 'The current disappears', 'The iron becomes an airgap'],
     correctIndex: 0,
     explanation: 'H can keep rising, but each additional ampere produces much less B because the incremental permeability has fallen.',
@@ -118,32 +156,32 @@ const QUIZ: KnowledgeCheckQuestion[] = [
   },
   {
     id: 'saturation-local',
-    prompt: 'Why does the |B| map show saturation locally instead of labeling the whole part saturated?',
-    options: ['B varies from element to element', 'Only the mesh can saturate', 'M350-50A has no B–H curve'],
+    prompt: 'Why does the Flux density view show saturation locally instead of labeling the whole part saturated?',
+    options: ['B varies from element to element', 'Only the mesh can saturate', 'Electrical steel has no B–H curve'],
     correctIndex: 0,
-    explanation: 'Geometry concentrates flux. Each FEM element samples its own B and therefore its own point on the M350-50A curve.',
+    explanation: 'Geometry concentrates flux. Each FEM element samples its own B and therefore its own point on the steel’s B–H curve.',
   },
   {
     id: 'saturation-motor',
     prompt: 'Why is a saturated tooth costly in a motor?',
     options: [
-      'Copper loss keeps rising roughly with I² while useful airgap flux gains diminish',
+      'Copper loss keeps rising roughly with I² while airgap flux gains diminish',
       'The permanent magnets instantly demagnetize',
       'The airgap becomes electrically conductive',
     ],
     correctIndex: 0,
-    explanation: 'Torque potential follows useful airgap flux, but winding heating grows rapidly with current. A saturated tooth therefore buys less torque per added ampere.',
+    explanation: 'Torque potential follows airgap flux, but winding heating grows rapidly with current. A saturated tooth therefore buys less torque per added ampere.',
   },
   {
     id: 'saturation-spm',
     prompt: 'Why does the SPM tooth fixture carry airgap flux even at 0 A?',
     options: [
-      'The N42 magnet supplies flux before the winding adds magnetomotive force',
-      'The M350-50A steel creates permanent flux by itself',
+      'The N42 magnet supplies flux before the winding adds MMF',
+      'The electrical steel creates permanent flux by itself',
       'The mesh stores current from the previous solve',
     ],
     correctIndex: 0,
-    explanation: 'The surface magnet establishes a baseline field. Reinforcing winding current can raise useful flux further, but the same M350-50A tooth still becomes the bottleneck near saturation.',
+    explanation: 'The surface magnet establishes a baseline field. Reinforcing winding current can raise useful flux further, but the same steel tooth still becomes the bottleneck near saturation.',
   },
 ];
 
@@ -206,7 +244,7 @@ const spmToothRunFromData = (data: IronSaturationSpmToothFieldData): SpmToothRun
 };
 
 const SaturationPredictionDiagram: React.FC = () => (
-  <svg className="iron-saturation-prediction" viewBox="0 0 760 500" role="img" aria-label="Current conductor passing through an M350-50A steel ring">
+  <svg className="iron-saturation-prediction" viewBox="0 0 760 500" role="img" aria-label="Current conductor passing through an electrical steel ring">
     <defs>
       <marker id="saturationPredictionArrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
         <path d="M0,0 L8,4 L0,8 Z" fill="#67e8f9" />
@@ -218,7 +256,7 @@ const SaturationPredictionDiagram: React.FC = () => (
     <circle cx="380" cy="238" r="48" className="iron-saturation-wire" />
     <text x="380" y="250" className="iron-saturation-current-label">⊙</text>
     <text x="380" y="326" className="iron-saturation-current-direction-label">CURRENT OUT OF SCREEN · CIRCULAR H</text>
-    <text x="380" y="430" className="iron-saturation-material-label">M350-50A STEEL · WHAT HAPPENS AS CURRENT KEEPS RISING?</text>
+    <text x="380" y="430" className="iron-saturation-material-label">ELECTRICAL STEEL RING · WHAT HAPPENS AS CURRENT KEEPS RISING?</text>
   </svg>
 );
 
@@ -264,10 +302,10 @@ const SpmToothDiagram: React.FC = () => (
     <rect x="435" y="190" width="58" height="118" rx="7" className="iron-tooth-coil" />
     <text x="296" y="258" className="iron-tooth-current-glyph">⊙</text>
     <text x="464" y="258" className="iron-tooth-current-glyph">⊗</text>
-    <text x="380" y="135" className="iron-tooth-label">WOUND M350-50A STATOR TOOTH</text>
+    <text x="380" y="135" className="iron-tooth-label">WOUND STEEL STATOR TOOTH</text>
     <text x="380" y="380" className="iron-tooth-gap-label">2 mm AIRGAP</text>
     <text x="380" y="410" className="iron-spm-pole-label">N · N42 SURFACE POLE</text>
-    <text x="380" y="458" className="iron-tooth-label">CURVED M350-50A ROTOR BACK IRON</text>
+    <text x="380" y="458" className="iron-tooth-label">CURVED STEEL ROTOR BACK IRON</text>
     <path d="M380 404 V354 M380 330 V170 M380 170 H532 V360" className="iron-tooth-flux-path" markerEnd="url(#ironSpmFluxArrow)" />
     <path d="M380 170 H228 V360" className="iron-tooth-flux-path" markerEnd="url(#ironSpmFluxArrow)" />
   </svg>
@@ -281,9 +319,10 @@ interface BhPlotProps {
 }
 
 const BhPlot: React.FC<BhPlotProps> = ({ runs, curve, activeCurrentA, onSelect }) => {
-  const width = 370;
-  const height = 260;
-  const margin = { top: 28, right: 18, bottom: 52, left: 56 };
+  // Sized for the Inspect card (about 280 px wide) so the axis text stays readable.
+  const width = 310;
+  const height = 250;
+  const margin = { top: 24, right: 16, bottom: 50, left: 50 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
   const displayedCurve = curve.filter((point) => point.h_a_per_m <= 18_000 && point.b_t <= 1.92);
@@ -303,11 +342,11 @@ const BhPlot: React.FC<BhPlotProps> = ({ runs, curve, activeCurrentA, onSelect }
   return (
     <div className="iron-saturation-plot-wrap">
       <div className="iron-saturation-plot-legend">
-        <span className="is-curve">M350-50A material curve</span>
+        <span className="is-curve">Steel B–H curve</span>
         <span className="is-linear">If μ stayed constant</span>
-        <span className="is-fem">Nonlinear FEM</span>
+        <span className="is-fem">Your solved points</span>
       </div>
-      <svg className="iron-saturation-plot" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="M350-50A flux density B versus magnetic field strength H">
+      <svg className="iron-saturation-plot" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Flux density B of the steel versus field strength H">
         <g className="iron-saturation-plot-grid">
           {xTicks.map((tick) => <line key={`x-${tick}`} x1={xFor(tick * 1000)} y1={margin.top} x2={xFor(tick * 1000)} y2={height - margin.bottom} />)}
           {yTicks.map((tick) => <line key={`y-${tick}`} x1={margin.left} y1={yFor(tick)} x2={width - margin.right} y2={yFor(tick)} />)}
@@ -365,7 +404,8 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   onStageChange,
   onHeaderProgressChange,
 }) => {
-  const solveInspectorRef = React.useRef<HTMLElement>(null);
+  const inspectorRef = React.useRef<HTMLElement | null>(null);
+  const inspectorFlashTimer = React.useRef<number | null>(null);
   const lessonStage: 'design' | 'solve' = stage === 'design' ? 'design' : 'solve';
   const [prediction, setPrediction] = React.useState<Prediction | null>(null);
   const [currentA, setCurrentA] = React.useState(LOW_CURRENT_A);
@@ -380,13 +420,16 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   const [error, setError] = React.useState<string | null>(null);
   const [quizOpen, setQuizOpen] = React.useState(false);
   const [quizPassed, setQuizPassed] = React.useState(false);
-  const [showBMap, setShowBMap] = React.useState(true);
-  const [showFluxLines, setShowFluxLines] = React.useState(false);
+  // Saturation is read off the flux-density colours, so that is the default drawing.
+  const [showFieldLines, setShowFieldLines] = React.useState(false);
+  const [showFluxDensity, setShowFluxDensity] = React.useState(true);
   const [showMesh, setShowMesh] = React.useState(false);
+  // The ring and the tooth each have their own 3D model, so each remembers its own view.
   const [showTooth3D, setShowTooth3D] = React.useState(false);
   const [showRing3D, setShowRing3D] = React.useState(false);
-  const [labControlsOpen, setLabControlsOpen] = React.useState(false);
-  const [solveInspectorOpen, setSolveInspectorOpen] = React.useState(false);
+  const [inspectorFlash, setInspectorFlash] = React.useState(false);
+  // The mesh viewer draws its zoom buttons into this element in the dock.
+  const [zoomSlot, setZoomSlot] = React.useState<HTMLSpanElement | null>(null);
   const { isLessonComplete, setLessonComplete } = useLearningProgress();
   const solveClient = useLessonSolveClient();
   const lessonComplete = isLessonComplete('iron-saturation');
@@ -417,9 +460,6 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   const spmFluxGainPct = spmBaselineRun && spmHighRun
     ? (spmHighRun.airgapFluxPerDepthWbPerM / spmBaselineRun.airgapFluxPerDepthWbPerM - 1) * 100
     : null;
-  const fieldToolbarLabel = showBMap
-    ? showFluxLines ? 'Flux density |B| + flux lines' : 'Flux density |B|'
-    : showFluxLines ? 'Flux lines' : showMesh ? 'Mesh' : 'Geometry';
   const curve = runs.find((run) => run.data.bh_curve?.length)?.data.bh_curve ?? [];
   const activeProgressStepId: LessonFourProgressStepId = quizOpen
     ? 'check'
@@ -437,8 +477,6 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
 
   const selectProgressStep = React.useCallback((stepId: string) => {
     const next = stepId as LessonFourProgressStepId;
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     if (next === 'predict') {
       setQuizOpen(false);
       setToothPhaseOpen(false);
@@ -513,7 +551,6 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
     onStepSelect: selectProgressStep,
   }), [activeProgressStepId, lessonProgressSteps, selectProgressStep]);
   const currentGoal = LESSON_FOUR_GOALS[activeProgressStepId];
-  const completedStepCount = lessonProgressSteps.filter((item) => item.complete).length;
 
   React.useEffect(() => {
     onHeaderProgressChange?.(headerProgress);
@@ -527,19 +564,22 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
     if (stage === 'mesh') onStageChange?.('solve');
   }, [stage, onStageChange]);
 
-  React.useEffect(() => {
-    if (solveInspectorOpen) solveInspectorRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [runs, solveInspectorOpen, spmRuns, toothRuns]);
+  React.useEffect(() => () => {
+    if (inspectorFlashTimer.current !== null) window.clearTimeout(inspectorFlashTimer.current);
+  }, []);
 
-  const setStage = (next: 'design' | 'solve') => {
+  // New measurements land in the Inspect panel, which is already on screen:
+  // ring it briefly so the student looks there after a solve.
+  const flashInspector = () => {
+    inspectorRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    setInspectorFlash(true);
+    if (inspectorFlashTimer.current !== null) window.clearTimeout(inspectorFlashTimer.current);
+    inspectorFlashTimer.current = window.setTimeout(() => setInspectorFlash(false), 1_600);
+  };
+
+  const openLab = () => {
     setQuizOpen(false);
-    setLabControlsOpen(next === 'solve');
-    setSolveInspectorOpen(false);
-    if (next === 'design') {
-      setToothPhaseOpen(false);
-      setSpmPhaseOpen(false);
-    }
-    onStageChange?.(next);
+    onStageChange?.('solve');
   };
 
   const guidedCurrent = !lowRun ? LOW_CURRENT_A : !kneeRun ? KNEE_CURRENT_A : !highRun ? HIGH_CURRENT_A : currentA;
@@ -551,8 +591,7 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
       const run = runFromData(await solveClient.fetchIronSaturationSolve(requestedCurrentA));
       setCurrentA(requestedCurrentA);
       setRuns((previous) => [run, ...previous.filter((item) => Math.abs(item.currentA - requestedCurrentA) >= 0.1)].slice(0, 8));
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(true);
+      flashInspector();
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The nonlinear iron solve failed.');
     } finally {
@@ -570,8 +609,7 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
         run,
         ...previous.filter((item) => Math.abs(item.currentA - requestedCurrentA) >= 0.1),
       ].slice(0, 6));
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(true);
+      flashInspector();
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The nonlinear tooth solve failed.');
     } finally {
@@ -591,8 +629,7 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
         run,
         ...previous.filter((item) => Math.abs(item.currentA - requestedCurrentA) >= 0.1),
       ].slice(0, 6));
-      setLabControlsOpen(false);
-      setSolveInspectorOpen(true);
+      flashInspector();
     } catch (solveError) {
       setError(solveError instanceof Error ? solveError.message : 'The nonlinear SPM tooth solve failed.');
     } finally {
@@ -601,32 +638,63 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
   };
 
   const advanceLab = () => {
-    setLabControlsOpen(false);
-    setSolveInspectorOpen(false);
     if (spmPhaseOpen && spmComparisonReady) {
       setQuizOpen(true);
     } else if (toothPhaseOpen && toothComparisonReady) {
       setToothPhaseOpen(false);
       setSpmPhaseOpen(true);
       setSpmCurrentA(SPM_BASELINE_CURRENT_A);
-      setLabControlsOpen(true);
     } else if (!toothPhaseOpen && !spmPhaseOpen && comparisonReady) {
       setToothPhaseOpen(true);
       setSpmPhaseOpen(false);
       setToothCurrentA(TOOTH_LOW_CURRENT_A);
-      setLabControlsOpen(true);
     }
   };
 
-  const labAdvanceLabel = spmPhaseOpen
-    ? spmComparisonReady ? 'Continue to Check' : null
-    : toothPhaseOpen
-      ? toothComparisonReady ? 'Continue: Add SPM pole' : null
-      : comparisonReady ? 'Continue: Motor tooth' : null;
+  // The one button at the foot of the left card. While a phase still needs its
+  // guided solves it runs the next one; once they are done it moves the lesson on.
+  // Extra points after that are plotted with the button inside the control card.
+  const labPrimary: { label: string; onClick: () => void } = (() => {
+    if (spmPhaseOpen) {
+      if (spmComparisonReady) return { label: 'Continue to Check', onClick: advanceLab };
+      const recommendedA = spmBaselineRun ? SPM_HIGH_CURRENT_A : SPM_BASELINE_CURRENT_A;
+      return {
+        label: busy
+          ? 'Meshing N42 pole + nonlinear tooth…'
+          : spmCurrentRun
+            ? `Solve recommended ${recommendedA} A`
+            : spmCurrentA === 0
+              ? 'Solve magnet-only baseline'
+              : `Solve SPM tooth at ${spmCurrentA.toFixed(0)} A`,
+        onClick: () => void solveSpmCurrent(spmCurrentRun ? recommendedA : spmCurrentA),
+      };
+    }
+    if (toothPhaseOpen) {
+      if (toothComparisonReady) return { label: 'Continue: Add SPM pole', onClick: advanceLab };
+      const recommendedA = toothLowRun ? TOOTH_HIGH_CURRENT_A : TOOTH_LOW_CURRENT_A;
+      return {
+        label: busy
+          ? 'Meshing + nonlinear tooth solve…'
+          : toothCurrentRun
+            ? `Solve recommended ${recommendedA} A`
+            : `Solve tooth at ${toothCurrentA.toFixed(0)} A`,
+        onClick: () => void solveToothCurrent(toothCurrentRun ? recommendedA : toothCurrentA),
+      };
+    }
+    if (comparisonReady) return { label: 'Continue: Motor tooth', onClick: advanceLab };
+    return {
+      label: busy
+        ? 'Meshing + nonlinear solve…'
+        : currentRun
+          ? `Solve recommended ${guidedCurrent} A`
+          : `Solve ${currentA.toFixed(0)} A`,
+      onClick: () => void solveCurrent(currentRun ? guidedCurrent : currentA),
+    };
+  })();
 
   const labInsight = spmPhaseOpen
     ? spmComparisonReady
-      ? 'The magnet sets the baseline; winding current pushes the shared tooth toward saturation.'
+      ? 'The magnet sets the baseline; coil current pushes the shared tooth toward saturation.'
       : 'Compare magnet-only flux with the reinforced 20 A operating point.'
     : toothPhaseOpen
       ? toothComparisonReady
@@ -640,616 +708,650 @@ export const LearningLessonFourIronSaturation: React.FC<LearningLessonFourIronSa
             ? 'Move to the knee and watch effective permeability begin to fall.'
             : 'Drive the ring into saturation and compare extra H with the smaller B gain.';
 
-  return (
-    <main
-      className={`learning-shell learning-lesson-shell iron-saturation-shell is-${lessonStage}-stage${quizOpen ? ' is-quiz-open' : ''}`}
-    >
-      {(lessonStage === 'design' || (lessonStage === 'solve' && !quizOpen && labControlsOpen)) ? (
-      <aside className={`learning-control-panel iron-saturation-control-panel${quizOpen ? ' is-quiz-open' : ''}`} aria-label="Saturation experiment controls">
-        {lessonStage === 'solve' ? <button type="button" className="iron-saturation-drawer-close" onClick={() => setLabControlsOpen(false)} aria-label="Close saturation controls">×</button> : null}
-        {quizOpen ? (
-          <details className="learning-quiz-reference">
-            <summary>Review the solved B–H sweep</summary>
-            <div>
-              <strong>{runs.length} ring · {toothRuns.length} steel-rotor · {spmRuns.length} SPM frames</strong>
-              <p>The right panel keeps the motor consequence visible while you answer.</p>
-            </div>
-          </details>
-        ) : null}
+  const motorPhase = toothPhaseOpen || spmPhaseOpen;
+  const show3D = motorPhase ? showTooth3D : showRing3D;
+  const setShow3D = motorPhase ? setShowTooth3D : setShowRing3D;
 
-        <section className="learning-control-section">
-          <p className="iron-saturation-panel-kicker">Lab setup · {lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label}</p>
-          <h2>{lessonStage === 'design' ? 'Make a prediction' : quizOpen ? 'Knowledge check' : spmPhaseOpen ? 'SPM pole lab' : toothPhaseOpen ? 'Motor-tooth lab' : 'Saturation lab'}</h2>
-          <section className="iron-saturation-lab-goal" aria-label="Current lesson goal">
-            <span>{completedStepCount}/{lessonProgressSteps.length}</span>
-            <div>
-              <p>Current goal</p>
-              <strong>{currentGoal.title}</strong>
-              <small>{currentGoal.detail}</small>
-            </div>
-          </section>
+  // The canvas controls, in the same dock as the motor workspace. Before the
+  // first solve it is shown greyed out, so the canvas keeps its size. The field
+  // and mesh layers belong to the 2D solve, so they are greyed out in 3D.
+  const renderViewDock = (unsolved: boolean) => {
+    const layersDisabled = unsolved || show3D;
+    return (
+      <LessonDock
+        tabs={[
+          { id: '2d', label: '2D' },
+          { id: '3d', label: '3D', disabled: unsolved, title: unsolved ? 'Solve the field first' : 'The same parts drawn with their depth' },
+        ]}
+        tab={!unsolved && show3D ? '3d' : '2d'}
+        onTab={(tab) => setShow3D(tab === '3d')}
+        end={unsolved ? 'Solve to see the field' : <span ref={setZoomSlot} />}
+      >
+        <LessonDockGroup label="Show">
+          <LessonDockToggle
+            pressed={showFieldLines}
+            onChange={setShowFieldLines}
+            disabled={layersDisabled}
+            title="Lines that follow the direction of the field"
+          >
+            Field lines
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showFluxDensity}
+            onChange={setShowFluxDensity}
+            disabled={layersDisabled}
+            title="Colour by field strength, |B|"
+          >
+            Flux density
+          </LessonDockToggle>
+          <LessonDockToggle
+            pressed={showMesh}
+            onChange={setShowMesh}
+            disabled={layersDisabled}
+            title="The triangles the solver divides the space into"
+          >
+            Mesh
+          </LessonDockToggle>
+        </LessonDockGroup>
+      </LessonDock>
+    );
+  };
 
-          {lessonStage === 'design' ? (
-            <>
-              <p className="iron-saturation-control-intro">What happens to B as current keeps increasing?</p>
-              <div className="iron-saturation-predictions">
-                {([
-                  ['linear', 'B keeps scaling linearly', 'A single constant permeability works at every current.'],
-                  ['knee', 'B bends toward a plateau', 'Effective permeability falls after the material knee.'],
-                  ['fall', 'B falls back to zero', 'More H cancels the field in the ring.'],
-                ] as Array<[Prediction, string, string]>).map(([value, label, detail]) => (
-                  <button key={value} type="button" className={`${prediction === value ? 'is-selected' : ''}${prediction === value && value === 'knee' ? ' is-correct' : ''}`} onClick={() => setPrediction(value)}>
-                    <strong>{label}</strong><span>{detail}</span>
-                  </button>
-                ))}
-              </div>
-              {prediction ? <p className={`iron-saturation-feedback${predictionCorrect ? ' is-correct' : ''}`}>{predictionCorrect ? 'Correct. Solve three currents to locate the M350-50A knee.' : 'That assumes permeability never changes. M350-50A has a nonlinear B–H curve.'}</p> : null}
-              <section className="iron-saturation-vocabulary"><strong>B is not H</strong><p><b>H</b> is supplied by current. <b>B</b> is the material response.</p></section>
-            </>
-          ) : !quizOpen ? (
-            spmPhaseOpen ? (
-              <>
-                <section className="iron-saturation-control-card iron-tooth-control-card iron-spm-control-card">
-                  <div className="iron-tooth-winding-summary">
-                    <span>SPM pole + wound stator tooth</span>
-                    <strong>N42 · 400 turns · 2 mm airgap</strong>
-                    <small>The magnet supplies baseline flux; positive current reinforces it.</small>
-                  </div>
-                  <label htmlFor="iron-spm-current-slider"><span>Coil current</span><strong>{spmCurrentA.toFixed(0)} A</strong></label>
-                  <input
-                    id="iron-spm-current-slider"
-                    type="range"
-                    min="0"
-                    max={SPM_HIGH_CURRENT_A}
-                    step="1"
-                    value={spmCurrentA}
-                    disabled={busy}
-                    aria-label={`SPM tooth coil current ${spmCurrentA} amperes`}
-                    onChange={(event) => setSpmCurrentA(Number(event.currentTarget.value))}
-                  />
-                  <div className="iron-saturation-scale"><span>0 A · magnet only</span><span>reinforcing NI</span><span>{SPM_HIGH_CURRENT_A} A</span></div>
-                  {!spmComparisonReady ? (
-                    <button
-                      type="button"
-                      className="iron-saturation-guide-button"
-                      disabled={busy}
-                      onClick={() => void solveSpmCurrent(spmCurrentRun ? (spmBaselineRun ? SPM_HIGH_CURRENT_A : SPM_BASELINE_CURRENT_A) : spmCurrentA)}
-                    >
-                      {busy
-                        ? 'Meshing N42 pole + nonlinear tooth…'
-                        : spmCurrentRun
-                          ? `Solve recommended ${spmBaselineRun ? SPM_HIGH_CURRENT_A : SPM_BASELINE_CURRENT_A} A`
-                          : spmCurrentA === 0
-                            ? 'Solve magnet-only baseline'
-                            : `Solve SPM tooth at ${spmCurrentA.toFixed(0)} A`}
-                    </button>
-                  ) : (
-                    <div className="iron-saturation-explore-actions">
-                      <button
-                        type="button"
-                        className="iron-saturation-plot-button"
-                        disabled={busy || Boolean(spmCurrentRun)}
-                        onClick={() => void solveSpmCurrent()}
-                      >
-                        {spmCurrentRun ? 'Move slider to plot another point' : `Plot ${spmCurrentA.toFixed(0)} A`}
-                      </button>
-                    </div>
-                  )}
-                  {error ? <p className="iron-saturation-error">{error}</p> : null}
-                </section>
-                <p className="iron-saturation-rail-hint">
-                  {!spmBaselineRun
-                    ? 'Start at 0 A: the N42 pole already sends flux across the airgap.'
-                    : !spmHighRun
-                      ? `Now reinforce the magnet with ${SPM_HIGH_CURRENT_A} A and watch the same M350-50A tooth become the limiter.`
-                      : 'The magnet establishes the baseline; winding current shifts the operating point toward tooth saturation.'}
-                </p>
-              </>
-            ) : toothPhaseOpen ? (
-              <>
-                <section className="iron-saturation-control-card iron-tooth-control-card">
-                  <div className="iron-tooth-winding-summary">
-                    <span>Iron-core solenoid → motor tooth</span>
-                    <strong>400 turns · 2 mm airgap</strong>
-                    <small>⊙ current out of screen · ⊗ current into screen</small>
-                  </div>
-                  <label htmlFor="iron-tooth-current-slider"><span>Coil current</span><strong>{toothCurrentA.toFixed(0)} A</strong></label>
-                  <input
-                    id="iron-tooth-current-slider"
-                    type="range"
-                    min="1"
-                    max={TOOTH_HIGH_CURRENT_A}
-                    step="1"
-                    value={toothCurrentA}
-                    disabled={busy}
-                    aria-label={`Motor tooth coil current ${toothCurrentA} amperes`}
-                    onChange={(event) => setToothCurrentA(Number(event.currentTarget.value))}
-                  />
-                  <div className="iron-saturation-scale"><span>1 A</span><span>400–8,000 A·turn</span><span>{TOOTH_HIGH_CURRENT_A} A</span></div>
-                  {!toothComparisonReady ? (
-                    <button
-                      type="button"
-                      className="iron-saturation-guide-button"
-                      disabled={busy}
-                      onClick={() => void solveToothCurrent(toothCurrentRun ? (toothLowRun ? TOOTH_HIGH_CURRENT_A : TOOTH_LOW_CURRENT_A) : toothCurrentA)}
-                    >
-                      {busy
-                        ? 'Meshing + nonlinear tooth solve…'
-                        : toothCurrentRun
-                          ? `Solve recommended ${toothLowRun ? TOOTH_HIGH_CURRENT_A : TOOTH_LOW_CURRENT_A} A`
-                          : `Solve tooth at ${toothCurrentA.toFixed(0)} A`}
-                    </button>
-                  ) : (
-                    <div className="iron-saturation-explore-actions">
-                      <button
-                        type="button"
-                        className="iron-saturation-plot-button"
-                        disabled={busy || Boolean(toothCurrentRun)}
-                        onClick={() => void solveToothCurrent()}
-                      >
-                        {toothCurrentRun ? 'Move slider to plot another point' : `Plot ${toothCurrentA.toFixed(0)} A`}
-                      </button>
-                    </div>
-                  )}
-                  {error ? <p className="iron-saturation-error">{error}</p> : null}
-                </section>
-                <p className="iron-saturation-rail-hint">
-                  {!toothLowRun
-                    ? 'Start at 1 A to see the tooth carry flux efficiently below the knee.'
-                    : !toothHighRun
-                      ? `Now drive ${TOOTH_HIGH_CURRENT_A} A. Compare the large copper-loss increase with the smaller useful airgap-flux gain.`
-                      : 'The same M350-50A curve now acts locally. Next, add a real N42 rotor pole and separate magnet flux from winding flux.'}
-                </p>
-              </>
-            ) : (
-              <>
-                <section className="iron-saturation-control-card">
-                  <label htmlFor="iron-saturation-slider"><span>Conductor current</span><strong>{currentA.toFixed(0)} A</strong></label>
-                  <input id="iron-saturation-slider" type="range" min="10" max="800" step="10" value={currentA} disabled={busy} aria-label={`Coil current ${currentA} amperes`} onChange={(event) => setCurrentA(Number(event.currentTarget.value))} />
-                  <div className="iron-saturation-scale"><span>10 A</span><span>100 A knee</span><span>800 A</span></div>
-                  {!comparisonReady ? (
-                    <button
-                      type="button"
-                      className="iron-saturation-guide-button"
-                      disabled={busy}
-                      onClick={() => void solveCurrent(currentRun ? guidedCurrent : currentA)}
-                    >
-                      {busy
-                        ? 'Meshing + nonlinear solve…'
-                        : currentRun
-                          ? `Solve recommended ${guidedCurrent} A`
-                          : `Solve ${currentA.toFixed(0)} A`}
-                    </button>
-                  ) : (
-                    <div className="iron-saturation-explore-actions">
-                      <button
-                        type="button"
-                        className="iron-saturation-plot-button"
-                        disabled={busy || Boolean(currentRun)}
-                        onClick={() => void solveCurrent()}
-                      >
-                        {busy
-                          ? 'Meshing + nonlinear solve…'
-                          : currentRun
-                            ? 'Move slider to plot another point'
-                            : `Plot ${currentA.toFixed(0)} A`}
-                      </button>
-                    </div>
-                  )}
-                  {error ? <p className="iron-saturation-error">{error}</p> : null}
-                </section>
-                <p className="iron-saturation-rail-hint">
-                  {comparisonReady
-                    ? 'The material rule is established. Next, use it in a real concentrated tooth winding.'
-                    : !lowRun
-                      ? 'Start below the knee at 10 A.'
-                      : !kneeRun
-                        ? 'Now solve 100 A to approach the knee.'
-                        : 'Now solve 800 A to expose saturation.'}
-                </p>
-              </>
-            )
-          ) : null}
-        </section>
+  // Display settings shared by the three solved 2D field pictures.
+  const fieldViewerProps = {
+    embedded: true,
+    compactEmbedded: true,
+    toolbarMode: 'zoom-only',
+    zoomControlsSlot: zoomSlot,
+    showMeshEdges: showMesh,
+    showFieldIntensity: showFluxDensity,
+    smoothFieldIntensity: true,
+    fieldLinesVisible: showFieldLines,
+    animateFieldArrows: showFieldLines,
+    viewportPanEnabled: false,
+  } as const;
 
-        <div className="learning-panel-actions is-single">
-          {lessonStage === 'design' ? <button type="button" className="learning-primary-button" disabled={!predictionCorrect} onClick={() => setStage('solve')}>Next: Saturation lab</button> : null}
+  // Before a phase has a solve, the canvas shows the drawing of what will be solved.
+  const renderUnsolvedCanvas = (label: string, picture: React.ReactNode, heading: string, body: React.ReactNode) => (
+    <LessonLabCanvas className="iron-saturation-viewer">
+      <LessonLabViewport label={label} hint="Not solved yet" className="is-centered">
+        <div className="iron-saturation-stage-visual">
+          {picture}
+          <div className="iron-saturation-stage-copy">
+            <h2>{heading}</h2>
+            <p>{body}</p>
+          </div>
         </div>
+      </LessonLabViewport>
+      {renderViewDock(true)}
+    </LessonLabCanvas>
+  );
 
-        {lessonStage === 'design' ? <footer className="learning-panel-footer">
-          <div className="learning-panel-nav">
-            <button type="button" className="learning-ghost-button" onClick={onBackToCatalog}>Lessons</button>
-            <button type="button" className="learning-ghost-button" onClick={onBackHome}>Design start</button>
-          </div>
-        </footer> : null}
-      </aside>
-      ) : null}
+  const renderSolvedCanvas = (label: string, view2D: React.ReactNode, view3D: React.ReactNode) => (
+    <LessonLabCanvas className="iron-saturation-viewer">
+      <LessonLabViewport label={label}>
+        {show3D ? view3D : view2D}
+      </LessonLabViewport>
+      {renderViewDock(false)}
+    </LessonLabCanvas>
+  );
 
-      <section className="learning-main-stage iron-saturation-main">
-        {quizOpen ? (
-          <section className="iron-saturation-quiz-stage">
-            <p className="learning-kicker">Final check</p>
-            <h2>Can you recognize saturation?</h2>
-            <p>Use the solved B–H curve and element map, not a fixed “2 T” rule.</p>
-            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
-          </section>
-        ) : lessonStage === 'design' ? (
-          <section className="iron-saturation-predict-stage">
-            <div className="learning-stage-badge"><span>Predict</span><strong>One conductor + one steel ring</strong></div>
-            <SaturationPredictionDiagram />
-            <div className="iron-saturation-stage-copy">
-              <p className="learning-kicker">The limit of “iron makes flux easy”</p>
-              <h2>If current keeps rising, does B keep rising at the same rate?</h2>
-              <p>A single conductor threads the ring—this is not a solenoid. Its circular H drives the M350-50A material response.</p>
-            </div>
-          </section>
-        ) : spmPhaseOpen ? (
-          shownSpmRun ? (
-            <div className="iron-saturation-viewer iron-tooth-viewer iron-spm-tooth-viewer">
-              <div className="mesh-viewer-header iron-saturation-visual-header">
-                <div className="mesh-viewer-title"><h3>Wound M350-50A tooth + N42 surface pole</h3></div>
-                <div className="iron-saturation-view-toggle" role="group" aria-label="Field visualization">
-                  <button type="button" className={!showTooth3D && showBMap ? 'is-active' : ''} onClick={() => { setShowBMap((visible) => showTooth3D ? true : !visible); setShowTooth3D(false); }} aria-pressed={!showTooth3D && showBMap}><span className="is-density" /> |B| map</button>
-                  <button type="button" className={!showTooth3D && showFluxLines ? 'is-active' : ''} onClick={() => { setShowFluxLines((visible) => showTooth3D ? true : !visible); setShowTooth3D(false); }} aria-pressed={!showTooth3D && showFluxLines}><span /> Flux lines</button>
-                  <button type="button" className={!showTooth3D && showMesh ? 'is-active' : ''} onClick={() => { setShowMesh((visible) => showTooth3D ? true : !visible); setShowTooth3D(false); }} aria-pressed={!showTooth3D && showMesh}><span className="is-mesh" /> Mesh</button>
-                  <button type="button" className={showTooth3D ? 'is-active' : ''} onClick={() => setShowTooth3D(true)} aria-pressed={showTooth3D}><span className="is-three" /> 3D</button>
-                </div>
-              </div>
-              {showTooth3D ? (
-                <MotorTooth3D
-                  currentA={shownSpmRun.currentA}
-                  rotorMode="spm"
-                  saturated={shownSpmRun.toothMeanBT >= 1.6}
-                />
-              ) : (
-                <MeshViewer
-                  meshData={shownSpmRun.data}
-                  embedded
-                  compactEmbedded
-                  toolbarMode="zoom-only"
-                  toolbarLabel={fieldToolbarLabel}
-                  showMeshEdges={showMesh}
-                  showFieldIntensity={showBMap}
-                  smoothFieldIntensity
-                  fieldLinesVisible={showFluxLines}
-                  animateFieldArrows={showFluxLines}
-                  viewportPanEnabled={false}
-                  pointLabels={[
-                    { xMm: -14.5, yMm: 5.5, label: '•', tone: 'neutral', textScale: 1.7 },
-                    { xMm: 14.5, yMm: 5.5, label: '×', tone: 'neutral', textScale: 1.7 },
-                    { xMm: 0, yMm: 4, label: shownSpmRun.toothMeanBT >= 1.6 ? 'TOOTH · SATURATED' : 'M350-50A TOOTH', tone: shownSpmRun.toothMeanBT >= 1.6 ? 'north' : 'neutral', showBadge: false },
-                    { xMm: 0, yMm: -9, label: '2 mm airgap', tone: 'neutral', showBadge: false },
-                    { xMm: 0, yMm: -12.5, label: 'N42 · N', tone: 'north', showBadge: false },
-                  ]}
-                />
-              )}
-            </div>
-          ) : (
-            <section className="iron-saturation-empty-stage iron-tooth-empty-stage iron-spm-empty-stage">
-              <div className="learning-stage-badge"><span>SPM pole</span><strong>Magnet source + wound tooth</strong></div>
-              <SpmToothDiagram />
-              <div>
-                <h2>The rotor now contributes its own field.</h2>
-                <p>The N42 north face sits on curved rotor back iron and points across the same 2 mm airgap. Solve 0 A, then {SPM_HIGH_CURRENT_A} A, to separate permanent-magnet flux from reinforcing winding flux.</p>
-              </div>
-            </section>
-          )
-        ) : toothPhaseOpen ? (
-          shownToothRun ? (
-            <div className="iron-saturation-viewer iron-tooth-viewer">
-              <div className="mesh-viewer-header iron-saturation-visual-header">
-                <div className="mesh-viewer-title"><h3>Wound M350-50A motor tooth</h3></div>
-                <div className="iron-saturation-view-toggle" role="group" aria-label="Field visualization">
-                  <button type="button" className={!showTooth3D && showBMap ? 'is-active' : ''} onClick={() => { setShowBMap((visible) => showTooth3D ? true : !visible); setShowTooth3D(false); }} aria-pressed={!showTooth3D && showBMap}><span className="is-density" /> |B| map</button>
-                  <button type="button" className={!showTooth3D && showFluxLines ? 'is-active' : ''} onClick={() => { setShowFluxLines((visible) => showTooth3D ? true : !visible); setShowTooth3D(false); }} aria-pressed={!showTooth3D && showFluxLines}><span /> Flux lines</button>
-                  <button type="button" className={!showTooth3D && showMesh ? 'is-active' : ''} onClick={() => { setShowMesh((visible) => showTooth3D ? true : !visible); setShowTooth3D(false); }} aria-pressed={!showTooth3D && showMesh}><span className="is-mesh" /> Mesh</button>
-                  <button type="button" className={showTooth3D ? 'is-active' : ''} onClick={() => setShowTooth3D(true)} aria-pressed={showTooth3D}><span className="is-three" /> 3D</button>
-                </div>
-              </div>
-              {showTooth3D ? (
-                <MotorTooth3D
-                  currentA={shownToothRun.currentA}
-                  saturated={shownToothRun.toothMeanBT >= 1.6}
-                />
-              ) : (
-                <MeshViewer
-                  meshData={shownToothRun.data}
-                  embedded
-                  compactEmbedded
-                  toolbarMode="zoom-only"
-                  toolbarLabel={fieldToolbarLabel}
-                  showMeshEdges={showMesh}
-                  showFieldIntensity={showBMap}
-                  smoothFieldIntensity
-                  fieldLinesVisible={showFluxLines}
-                  animateFieldArrows={showFluxLines}
-                  viewportPanEnabled={false}
-                  pointLabels={[
-                    { xMm: -14.5, yMm: 5.5, label: '•', tone: 'neutral', textScale: 1.7 },
-                    { xMm: 14.5, yMm: 5.5, label: '×', tone: 'neutral', textScale: 1.7 },
-                    { xMm: 0, yMm: 4, label: shownToothRun.toothMeanBT >= 1.6 ? 'TOOTH · SATURATED' : 'M350-50A TOOTH', tone: shownToothRun.toothMeanBT >= 1.6 ? 'north' : 'neutral', showBadge: false },
-                    { xMm: 0, yMm: -9, label: '2 mm airgap', tone: 'neutral', showBadge: false },
-                  ]}
-                />
-              )}
-            </div>
-          ) : (
-            <section className="iron-saturation-empty-stage iron-tooth-empty-stage">
-              <div className="learning-stage-badge"><span>Motor tooth</span><strong>Concentrated winding</strong></div>
-              <MotorToothDiagram />
-              <div>
-                <h2>The solenoid idea becomes a tooth, yoke, airgap, and rotor.</h2>
-                <p>The two slot-current regions are opposite sides of one coil around the center tooth. Solve 1 A, then {TOOTH_HIGH_CURRENT_A} A, to see the tooth become the bottleneck.</p>
-              </div>
-            </section>
-          )
-        ) : shownRun ? (
-          <div className="iron-saturation-viewer">
-            <div className="mesh-viewer-header iron-saturation-visual-header">
-              <div className="mesh-viewer-title"><h3>Current-driven M350-50A ring</h3></div>
-              <div className="iron-saturation-view-toggle" role="group" aria-label="Field visualization">
-                <button type="button" className={!showRing3D && showBMap ? 'is-active' : ''} onClick={() => { setShowBMap((visible) => showRing3D ? true : !visible); setShowRing3D(false); }} aria-pressed={!showRing3D && showBMap}><span className="is-density" /> |B| map</button>
-                <button type="button" className={!showRing3D && showFluxLines ? 'is-active' : ''} onClick={() => { setShowFluxLines((visible) => showRing3D ? true : !visible); setShowRing3D(false); }} aria-pressed={!showRing3D && showFluxLines}><span /> Flux lines</button>
-                <button type="button" className={!showRing3D && showMesh ? 'is-active' : ''} onClick={() => { setShowMesh((visible) => showRing3D ? true : !visible); setShowRing3D(false); }} aria-pressed={!showRing3D && showMesh}><span className="is-mesh" /> Mesh</button>
-                <button type="button" className={showRing3D ? 'is-active' : ''} onClick={() => setShowRing3D(true)} aria-pressed={showRing3D}><span className="is-three" /> 3D</button>
-              </div>
-            </div>
-            {showRing3D ? (
-              <CurrentConductor3D
-                currentA={shownRun.currentA}
-                mode="iron-ring"
-                saturated={shownRun.meanBT >= 1.6}
-              />
-            ) : (
-              <MeshViewer
-                meshData={shownRun.data}
-                embedded
-                compactEmbedded
-                toolbarMode="zoom-only"
-                toolbarLabel={fieldToolbarLabel}
-                showMeshEdges={showMesh}
-                showFieldIntensity={showBMap}
-                smoothFieldIntensity
-                fieldLinesVisible={showFluxLines}
-                animateFieldArrows={showFluxLines}
-                viewportPanEnabled={false}
-                pointLabels={[
-                  { xMm: 0, yMm: 0, label: `⊙ ${shownRun.currentA.toFixed(0)} A`, tone: 'neutral' },
-                  { xMm: 17, yMm: 0, label: shownRun.meanBT >= 1.6 ? 'M350-50A · saturated' : 'M350-50A steel', tone: shownRun.meanBT >= 1.6 ? 'north' : 'neutral' },
-                ]}
-              />
-            )}
-          </div>
-        ) : (
-          <section className="iron-saturation-empty-stage">
-            <div className="learning-stage-badge"><span>Low field</span><strong>Nonlinear material</strong></div>
-            <SaturationPredictionDiagram />
-            <div><h2>Start below the knee at 10 A.</h2><p>The out-of-screen conductor creates circular H; Magneto2D iterates each steel element on the M350-50A B–H curve.</p></div>
-          </section>
-        )}
+  const renderLabStage = () => {
+    if (spmPhaseOpen) {
+      if (!shownSpmRun) {
+        return renderUnsolvedCanvas(
+          'Wound steel tooth + N42 magnet pole',
+          <SpmToothDiagram />,
+          'The rotor now contributes its own field.',
+          <>The N42 north face sits on curved rotor back iron and points across the same 2 mm airgap. Solve 0 A, then {SPM_HIGH_CURRENT_A} A, to separate permanent-magnet flux from the flux the coil adds.</>,
+        );
+      }
+      const saturated = shownSpmRun.toothMeanBT >= SATURATION_B_T;
+      return renderSolvedCanvas(
+        `Wound steel tooth + N42 magnet pole · ${shownSpmRun.currentA.toFixed(0)} A`,
+        <MeshViewer
+          {...fieldViewerProps}
+          meshData={shownSpmRun.data}
+          pointLabels={[
+            { xMm: -14.5, yMm: 5.5, label: '•', tone: 'neutral', textScale: 1.7 },
+            { xMm: 14.5, yMm: 5.5, label: '×', tone: 'neutral', textScale: 1.7 },
+            { xMm: 0, yMm: 4, label: saturated ? 'TOOTH · SATURATED' : 'STEEL TOOTH', tone: saturated ? 'north' : 'neutral', showBadge: false },
+            { xMm: 0, yMm: -9, label: '2 mm airgap', tone: 'neutral', showBadge: false },
+            { xMm: 0, yMm: -12.5, label: 'N42 · N', tone: 'north', showBadge: false },
+          ]}
+        />,
+        <MotorTooth3D currentA={shownSpmRun.currentA} rotorMode="spm" saturated={saturated} />,
+      );
+    }
+    if (toothPhaseOpen) {
+      if (!shownToothRun) {
+        return renderUnsolvedCanvas(
+          'Wound steel motor tooth',
+          <MotorToothDiagram />,
+          'The solenoid idea becomes a tooth, yoke, airgap, and rotor.',
+          <>The two slot-current regions are opposite sides of one coil around the center tooth. Solve 1 A, then {TOOTH_HIGH_CURRENT_A} A, to see the tooth become the bottleneck.</>,
+        );
+      }
+      const saturated = shownToothRun.toothMeanBT >= SATURATION_B_T;
+      return renderSolvedCanvas(
+        `Wound steel motor tooth · ${shownToothRun.currentA.toFixed(0)} A`,
+        <MeshViewer
+          {...fieldViewerProps}
+          meshData={shownToothRun.data}
+          pointLabels={[
+            { xMm: -14.5, yMm: 5.5, label: '•', tone: 'neutral', textScale: 1.7 },
+            { xMm: 14.5, yMm: 5.5, label: '×', tone: 'neutral', textScale: 1.7 },
+            { xMm: 0, yMm: 4, label: saturated ? 'TOOTH · SATURATED' : 'STEEL TOOTH', tone: saturated ? 'north' : 'neutral', showBadge: false },
+            { xMm: 0, yMm: -9, label: '2 mm airgap', tone: 'neutral', showBadge: false },
+          ]}
+        />,
+        <MotorTooth3D currentA={shownToothRun.currentA} saturated={saturated} />,
+      );
+    }
+    if (!shownRun) {
+      return renderUnsolvedCanvas(
+        'Current-carrying wire in a steel ring',
+        <SaturationPredictionDiagram />,
+        'Start below the knee at 10 A.',
+        'The out-of-screen conductor creates circular H; Magneto2D iterates each steel element on the B–H curve.',
+      );
+    }
+    const saturated = shownRun.meanBT >= SATURATION_B_T;
+    return renderSolvedCanvas(
+      `Current-carrying wire in a steel ring · ${shownRun.currentA.toFixed(0)} A`,
+      <MeshViewer
+        {...fieldViewerProps}
+        meshData={shownRun.data}
+        pointLabels={[
+          { xMm: 0, yMm: 0, label: `⊙ ${shownRun.currentA.toFixed(0)} A`, tone: 'neutral' },
+          { xMm: 17, yMm: 0, label: saturated ? 'Steel · saturated' : 'Electrical steel', tone: saturated ? 'north' : 'neutral' },
+        ]}
+      />,
+      <CurrentConductor3D currentA={shownRun.currentA} mode="iron-ring" saturated={saturated} />,
+    );
+  };
 
-        {lessonStage === 'solve' && !quizOpen ? (
-          <div className="iron-saturation-lesson-dock" aria-label="Saturation experiment controls">
-            <div className="iron-saturation-dock-insight"><span>{activeProgressStepId}</span><strong>{labInsight}</strong></div>
-            <div className="iron-saturation-dock-actions">
-              <button type="button" className="iron-saturation-dock-button" aria-expanded={labControlsOpen} onClick={() => { setLabControlsOpen((open) => !open); setSolveInspectorOpen(false); }}>{labControlsOpen ? 'Done' : 'Adjust experiment'}</button>
-              <button type="button" className="iron-saturation-dock-button" aria-expanded={solveInspectorOpen} onClick={() => { setSolveInspectorOpen((open) => !open); setLabControlsOpen(false); }}>Inspect results</button>
-              {labAdvanceLabel ? <button type="button" className="learning-primary-button iron-saturation-dock-primary" onClick={advanceLab}>{labAdvanceLabel}</button> : null}
-            </div>
-          </div>
-        ) : quizOpen && !quizPassed && !lessonComplete ? (
-          <div className="iron-saturation-lesson-dock iron-saturation-quiz-dock" aria-label="Knowledge check controls">
-            <div className="iron-saturation-dock-insight"><span>Check</span><strong>Answer all five questions to complete Lesson 4.</strong></div>
-            <div className="iron-saturation-dock-actions">
-              <button type="button" className="iron-saturation-dock-button" onClick={() => { setQuizOpen(false); setSolveInspectorOpen(true); }}>Review experiment</button>
-              <button type="button" className="iron-saturation-dock-button" onClick={onBackToCatalog}>Lessons</button>
-            </div>
-          </div>
-        ) : null}
-      </section>
+  const currentStepNumber = Math.max(1, lessonProgressSteps.findIndex((item) => item.id === activeProgressStepId) + 1);
+  const currentStepLabel = lessonProgressSteps.find((item) => item.id === activeProgressStepId)?.label ?? '';
+  const goalCard = (
+    <LessonGoal step={currentStepNumber} total={lessonProgressSteps.length} title={currentGoal.title} detail={currentGoal.detail} />
+  );
 
-      {lessonStage === 'solve' && !quizOpen && solveInspectorOpen ? (
-      <aside ref={solveInspectorRef} className="learning-context-panel iron-saturation-context" aria-label="Lesson guidance and solved results">
-        <button type="button" className="iron-saturation-drawer-close" onClick={() => setSolveInspectorOpen(false)} aria-label="Close saturation results">×</button>
-        <header className="iron-saturation-status-header">
-          <p className="learning-kicker">Lesson 4 of 10</p>
-          <h1>When Iron Saturates</h1>
-          <p>Drive M350-50A through its B–H knee and measure why additional current stops buying proportional flux.</p>
-          <div className="learning-progress" aria-label="Lesson completion">
-            <span style={{ width: `${(completedStepCount / lessonProgressSteps.length) * 100}%` }} />
-          </div>
-        </header>
-
-        {spmPhaseOpen ? (
-          spmRuns.length ? (
-            <section className="iron-tooth-results iron-spm-results" aria-label="Solved SPM tooth response">
-              <header>
-                <div>
-                  <p className="learning-kicker">SPM operating point</p>
-                  <h2>The magnet sets the baseline; current moves it.</h2>
-                </div>
-                <span>{spmRuns.length} run{spmRuns.length === 1 ? '' : 's'}</span>
-              </header>
-              {shownSpmRun ? (
-                <>
-                  <section className="iron-saturation-readout iron-tooth-readout">
-                    <div><span>Rotor source</span><strong>N42 · N toward stator</strong></div>
-                    <div><span>Winding magnetomotive force</span><strong>{(shownSpmRun.currentA * shownSpmRun.data.coil_turns).toLocaleString()} A·turn</strong></div>
-                    <div><span>Mean B in energized tooth</span><strong>{shownSpmRun.toothMeanBT.toFixed(3)} T</strong></div>
-                    <div><span>Mean B across airgap</span><strong>{shownSpmRun.airgapMeanBT.toFixed(3)} T</strong></div>
-                    <div><span>Useful airgap flux / depth</span><strong>{(shownSpmRun.airgapFluxPerDepthWbPerM * 1e3).toFixed(2)} mWb/m</strong></div>
-                    <div><span>Tooth area ≥ 1.60 T</span><strong className={shownSpmRun.toothSaturatedFraction > 0.05 ? 'is-hot' : ''}>{(shownSpmRun.toothSaturatedFraction * 100).toFixed(1)}%</strong></div>
-                  </section>
-                  <div className="iron-tooth-run-selector" aria-label="Solved SPM tooth currents">
-                    {spmRuns
-                      .slice()
-                      .sort((left, right) => left.currentA - right.currentA)
-                      .map((run) => (
-                        <button
-                          key={run.currentA}
-                          type="button"
-                          className={Math.abs(run.currentA - shownSpmRun.currentA) < 0.1 ? 'is-active' : ''}
-                          onClick={() => setSpmCurrentA(run.currentA)}
-                        >
-                          <span>{run.currentA.toFixed(0)} A</span>
-                          <strong>{run.airgapMeanBT.toFixed(2)} T gap</strong>
-                        </button>
-                      ))}
-                  </div>
-                </>
-              ) : null}
-              {spmBaselineRun && spmHighRun && spmFluxGainPct !== null ? (
-                <section className="iron-tooth-insight iron-spm-insight">
-                  <p className="learning-kicker">Two sources, one saturated path</p>
-                  <h3>The magnet produces useful flux before copper spends a watt.</h3>
-                  <div>
-                    <span><b>{(spmBaselineRun.airgapFluxPerDepthWbPerM * 1e3).toFixed(2)}</b> mWb/m at 0 A</span>
-                    <span><b>+{spmFluxGainPct.toFixed(0)}%</b> flux at {SPM_HIGH_CURRENT_A} A</span>
-                    <span><b>{(spmHighRun.toothSaturatedFraction * 100).toFixed(0)}%</b> tooth saturated</span>
-                  </div>
-                  <p>The N42 pole supplies the baseline airgap field. Reinforcing ampere-turns add flux until the M350-50A tooth approaches its B–H knee, after which added current buys progressively less torque-producing field.</p>
-                </section>
-              ) : (
-                <section className="iron-tooth-insight is-pending">
-                  <p className="learning-kicker">Separate the two field sources</p>
-                  <h3>Solve 0 A and {SPM_HIGH_CURRENT_A} A.</h3>
-                  <p>The first frame is magnet-only. The second adds reinforcing winding MMF through the same airgap and tooth.</p>
-                </section>
-              )}
-            </section>
-          ) : (
-            <section className="iron-saturation-status-empty">
-              <p className="learning-kicker">SPM operating point</p>
-              <h2>Awaiting the magnet-only frame</h2>
-              <p>The right panel will separate permanent-magnet baseline flux from the extra field supplied by copper.</p>
-              <ol>
-                <li><span>1</span> N42 drives flux at 0 A</li>
-                <li><span>2</span> Reinforcing NI raises the operating point</li>
-                <li><span>3</span> M350-50A tooth saturation limits the gain</li>
-              </ol>
-            </section>
-          )
-        ) : toothPhaseOpen ? (
-          toothRuns.length ? (
-            <section className="iron-tooth-results" aria-label="Solved motor tooth response">
-              <header>
-                <div>
-                  <p className="learning-kicker">Motor consequence</p>
-                  <h2>The tooth becomes the bottleneck.</h2>
-                </div>
-                <span>{toothRuns.length} run{toothRuns.length === 1 ? '' : 's'}</span>
-              </header>
-              {shownToothRun ? (
-                <>
-                  <section className="iron-saturation-readout iron-tooth-readout">
-                    <div><span>Coil magnetomotive force</span><strong>{(shownToothRun.currentA * shownToothRun.data.coil_turns).toLocaleString()} A·turn</strong></div>
-                    <div><span>Mean B in energized tooth</span><strong>{shownToothRun.toothMeanBT.toFixed(3)} T</strong></div>
-                    <div><span>Mean B at tooth tip</span><strong className={shownToothRun.toothTipMeanBT >= 1.6 ? 'is-hot' : ''}>{shownToothRun.toothTipMeanBT.toFixed(3)} T</strong></div>
-                    <div><span>Mean B across airgap</span><strong>{shownToothRun.airgapMeanBT.toFixed(3)} T</strong></div>
-                    <div><span>Useful airgap flux / depth</span><strong>{(shownToothRun.airgapFluxPerDepthWbPerM * 1e3).toFixed(2)} mWb/m</strong></div>
-                    <div><span>Tooth area ≥ 1.60 T</span><strong className={shownToothRun.toothSaturatedFraction > 0.05 ? 'is-hot' : ''}>{(shownToothRun.toothSaturatedFraction * 100).toFixed(1)}%</strong></div>
-                  </section>
-                  <div className="iron-tooth-run-selector" aria-label="Solved motor tooth currents">
-                    {toothRuns
-                      .slice()
-                      .sort((left, right) => left.currentA - right.currentA)
-                      .map((run) => (
-                        <button
-                          key={run.currentA}
-                          type="button"
-                          className={Math.abs(run.currentA - shownToothRun.currentA) < 0.1 ? 'is-active' : ''}
-                          onClick={() => setToothCurrentA(run.currentA)}
-                        >
-                          <span>{run.currentA.toFixed(0)} A</span>
-                          <strong>{run.airgapMeanBT.toFixed(2)} T gap</strong>
-                        </button>
-                      ))}
-                  </div>
-                </>
-              ) : null}
-              {toothCurrentMultiplier && toothFluxMultiplier && toothLowRun && toothHighRun ? (
-                <section className="iron-tooth-insight">
-                  <p className="learning-kicker">Why motors care</p>
-                  <h3>More current stops buying proportional useful flux.</h3>
-                  <div>
-                    <span><b>{toothCurrentMultiplier.toFixed(0)}×</b> current</span>
-                    <span><b>{(toothCurrentMultiplier ** 2).toFixed(0)}×</b> copper-loss trend</span>
-                    <span><b>{toothFluxMultiplier.toFixed(1)}×</b> airgap flux</span>
-                  </div>
-                  <p>The tooth approaches saturation, so extra ampere-turns increasingly become copper heat instead of proportional airgap field. In a motor that means diminishing torque per added ampere.</p>
-                </section>
-              ) : (
-                <section className="iron-tooth-insight is-pending">
-                  <p className="learning-kicker">Compare two operating points</p>
-                  <h3>Solve 1 A and {TOOTH_HIGH_CURRENT_A} A.</h3>
-                  <p>Then compare current, the I² copper-loss trend, local tooth saturation, and useful flux crossing the airgap.</p>
-                </section>
-              )}
-            </section>
-          ) : (
-            <section className="iron-saturation-status-empty">
-              <p className="learning-kicker">Motor consequence</p>
-              <h2>Awaiting the 1 A tooth frame</h2>
-              <p>The right panel will separate what the winding spends from what the motor gets.</p>
-              <ol>
-                <li><span>1</span> Current × turns creates magnetomotive force</li>
-                <li><span>2</span> M350-50A carries flux down the tooth</li>
-                <li><span>3</span> Useful flux crosses the airgap</li>
-              </ol>
-            </section>
-          )
-        ) : runs.length ? (
-          <section className="iron-saturation-results" aria-label="Solved material response">
-            <header><div><p className="learning-kicker">Solved B–H sweep</p><h2>The M350-50A curve bends; constant μ does not survive the knee.</h2></div><span>{runs.length} run{runs.length === 1 ? '' : 's'}</span></header>
-            <BhPlot runs={runs} curve={curve} activeCurrentA={currentRun?.currentA ?? shownRun?.currentA ?? null} onSelect={setCurrentA} />
-            {shownRun ? (
-              <section className="iron-saturation-readout">
-                <div><span>Mean H in M350-50A</span><strong>{(shownRun.meanHApm / 1000).toFixed(2)} kA/m</strong></div>
-                <div><span>Mean B in M350-50A</span><strong>{shownRun.meanBT.toFixed(3)} T</strong></div>
-                <div><span>Effective μ<sub>r</sub></span><strong>{shownRun.effectiveMuRel.toFixed(0)}</strong></div>
-                <div><span>Iron area ≥ 1.60 T</span><strong className={shownRun.saturatedFraction > 0.05 ? 'is-hot' : ''}>{(shownRun.saturatedFraction * 100).toFixed(1)}%</strong></div>
-                <div><span>Nonlinear iterations</span><strong>{shownRun.data.metrics?.nonlinear_iterations ?? '—'}</strong></div>
-              </section>
-            ) : null}
-          </section>
-        ) : (
+  // What the solves measured, for whichever experiment is open.
+  const renderEvidence = () => {
+    if (spmPhaseOpen) {
+      if (!spmRuns.length) {
+        return (
           <section className="iron-saturation-status-empty">
-            <p className="learning-kicker">Solved material response</p>
-            <h2>Awaiting the 10 A frame</h2>
-            <p>The B–H curve, effective permeability, and local saturated fraction will appear here without covering the field view.</p>
+            <p className="learning-kicker">SPM operating point</p>
+            <h2>Awaiting the magnet-only frame</h2>
+            <p>This panel will separate the magnet’s baseline flux from the extra flux supplied by the coil.</p>
             <ol>
-              <li><span>1</span> Establish 10 A</li>
-              <li><span>2</span> Approach the knee at 100 A</li>
-              <li><span>3</span> Drive saturation at 800 A</li>
+              <li><span>1</span> The N42 magnet drives flux at 0 A</li>
+              <li><span>2</span> Coil MMF adds to it and raises the operating point</li>
+              <li><span>3</span> Saturation of the steel tooth limits the gain</li>
             </ol>
           </section>
-        )}
-
-        {lessonStage === 'solve' && !toothPhaseOpen && !spmPhaseOpen ? (
-          <section className="iron-saturation-equation-card">
-            <header><span>AMPÈRE PATH</span><strong>probe r = 17 mm</strong></header>
-            <div className="iron-saturation-equation"><span>H</span><b>≈</b><span className="iron-saturation-fraction"><i>I</i><i>2πr</i></span></div>
-            <p>Current sets H around the ring. M350-50A’s B–H curve—not a constant μ—sets B.</p>
-          </section>
-        ) : null}
-
-        {lessonStage === 'solve' && (toothPhaseOpen || spmPhaseOpen) ? (
-          <section className="iron-saturation-equation-card iron-tooth-equation-card">
-            <header><span>{spmPhaseOpen ? 'SPM MOTOR FIELD PATH' : 'MOTOR FIELD PATH'}</span><strong>N = 400 turns</strong></header>
-            <div className="iron-saturation-equation">
-              <span>ℱ</span><b>=</b><span>{spmPhaseOpen ? 'ℱPM + NI' : 'NI'}</span>
+        );
+      }
+      return (
+        <section className="iron-tooth-results iron-spm-results" aria-label="Solved SPM tooth response">
+          <header>
+            <div>
+              <p className="learning-kicker">SPM operating point</p>
+              <h2>The magnet sets the baseline; current moves it.</h2>
             </div>
-            <p>{spmPhaseOpen
-              ? 'The N42 pole supplies permanent-magnet MMF; reinforcing winding MMF raises the shared tooth and airgap operating point.'
-              : 'The winding supplies magnetomotive force. The tooth and yoke carry flux; the airgap is where that field can act on the rotor.'}</p>
+            <span>{spmRuns.length} run{spmRuns.length === 1 ? '' : 's'}</span>
+          </header>
+          {shownSpmRun ? (
+            <>
+              <section className="iron-saturation-readout iron-tooth-readout">
+                <div><span>Rotor magnet</span><strong>N42 · N toward stator</strong></div>
+                <div><span>Coil MMF</span><strong>{(shownSpmRun.currentA * shownSpmRun.data.coil_turns).toLocaleString()} A·turn</strong></div>
+                <div><span>Mean B in the tooth</span><strong>{shownSpmRun.toothMeanBT.toFixed(3)} T</strong></div>
+                <div><span>Mean B in the airgap</span><strong>{shownSpmRun.airgapMeanBT.toFixed(3)} T</strong></div>
+                <div><span>Airgap flux per metre of depth</span><strong>{(shownSpmRun.airgapFluxPerDepthWbPerM * 1e3).toFixed(2)} mWb/m</strong></div>
+                <div><span>Tooth area above 1.60 T</span><strong className={shownSpmRun.toothSaturatedFraction > 0.05 ? 'is-hot' : ''}>{(shownSpmRun.toothSaturatedFraction * 100).toFixed(1)}%</strong></div>
+              </section>
+              <div className="iron-tooth-run-selector" aria-label="Solved SPM tooth currents">
+                {spmRuns
+                  .slice()
+                  .sort((left, right) => left.currentA - right.currentA)
+                  .map((run) => (
+                    <button
+                      key={run.currentA}
+                      type="button"
+                      className={Math.abs(run.currentA - shownSpmRun.currentA) < 0.1 ? 'is-active' : ''}
+                      onClick={() => setSpmCurrentA(run.currentA)}
+                    >
+                      <span>{run.currentA.toFixed(0)} A</span>
+                      <strong>{run.airgapMeanBT.toFixed(2)} T in airgap</strong>
+                    </button>
+                  ))}
+              </div>
+            </>
+          ) : null}
+          {spmBaselineRun && spmHighRun && spmFluxGainPct !== null ? (
+            <section className="iron-tooth-insight iron-spm-insight">
+              <p className="learning-kicker">Two sources, one saturated path</p>
+              <h3>The magnet produces airgap flux before copper spends a watt.</h3>
+              <div>
+                <span><b>{(spmBaselineRun.airgapFluxPerDepthWbPerM * 1e3).toFixed(2)}</b> mWb/m airgap flux at 0 A</span>
+                <span><b>{spmFluxGainPct >= 0 ? '+' : ''}{spmFluxGainPct.toFixed(0)}%</b> airgap flux, {SPM_HIGH_CURRENT_A} A vs 0 A</span>
+                <span><b>{(spmHighRun.toothSaturatedFraction * 100).toFixed(0)}%</b> of tooth above 1.60 T at {SPM_HIGH_CURRENT_A} A</span>
+              </div>
+              <p>The N42 pole supplies the baseline airgap field. Coil MMF in the same direction adds flux until the steel tooth approaches its B–H knee, after which added current buys progressively less torque-producing field.</p>
+            </section>
+          ) : (
+            <section className="iron-tooth-insight is-pending">
+              <p className="learning-kicker">Separate the two field sources</p>
+              <h3>Solve 0 A and {SPM_HIGH_CURRENT_A} A.</h3>
+              <p>The first frame is magnet-only. The second adds coil MMF through the same airgap and tooth.</p>
+            </section>
+          )}
+        </section>
+      );
+    }
+
+    if (toothPhaseOpen) {
+      if (!toothRuns.length) {
+        return (
+          <section className="iron-saturation-status-empty">
+            <p className="learning-kicker">Motor consequence</p>
+            <h2>Awaiting the 1 A tooth frame</h2>
+            <p>This panel will separate what the coil spends from what the motor gets.</p>
+            <ol>
+              <li><span>1</span> Current × turns creates MMF</li>
+              <li><span>2</span> The steel carries flux down the tooth</li>
+              <li><span>3</span> That flux crosses the airgap</li>
+            </ol>
+          </section>
+        );
+      }
+      return (
+        <section className="iron-tooth-results" aria-label="Solved motor tooth response">
+          <header>
+            <div>
+              <p className="learning-kicker">Motor consequence</p>
+              <h2>The tooth becomes the bottleneck.</h2>
+            </div>
+            <span>{toothRuns.length} run{toothRuns.length === 1 ? '' : 's'}</span>
+          </header>
+          {shownToothRun ? (
+            <>
+              <section className="iron-saturation-readout iron-tooth-readout">
+                <div><span>Coil MMF</span><strong>{(shownToothRun.currentA * shownToothRun.data.coil_turns).toLocaleString()} A·turn</strong></div>
+                <div><span>Mean B in the tooth</span><strong>{shownToothRun.toothMeanBT.toFixed(3)} T</strong></div>
+                <div><span>Mean B at the tooth tip</span><strong className={shownToothRun.toothTipMeanBT >= SATURATION_B_T ? 'is-hot' : ''}>{shownToothRun.toothTipMeanBT.toFixed(3)} T</strong></div>
+                <div><span>Mean B in the airgap</span><strong>{shownToothRun.airgapMeanBT.toFixed(3)} T</strong></div>
+                <div><span>Airgap flux per metre of depth</span><strong>{(shownToothRun.airgapFluxPerDepthWbPerM * 1e3).toFixed(2)} mWb/m</strong></div>
+                <div><span>Tooth area above 1.60 T</span><strong className={shownToothRun.toothSaturatedFraction > 0.05 ? 'is-hot' : ''}>{(shownToothRun.toothSaturatedFraction * 100).toFixed(1)}%</strong></div>
+              </section>
+              <div className="iron-tooth-run-selector" aria-label="Solved motor tooth currents">
+                {toothRuns
+                  .slice()
+                  .sort((left, right) => left.currentA - right.currentA)
+                  .map((run) => (
+                    <button
+                      key={run.currentA}
+                      type="button"
+                      className={Math.abs(run.currentA - shownToothRun.currentA) < 0.1 ? 'is-active' : ''}
+                      onClick={() => setToothCurrentA(run.currentA)}
+                    >
+                      <span>{run.currentA.toFixed(0)} A</span>
+                      <strong>{run.airgapMeanBT.toFixed(2)} T in airgap</strong>
+                    </button>
+                  ))}
+              </div>
+            </>
+          ) : null}
+          {toothCurrentMultiplier && toothFluxMultiplier && toothLowRun && toothHighRun ? (
+            <section className="iron-tooth-insight">
+              <p className="learning-kicker">Why motors care · {toothHighRun.currentA.toFixed(0)} A vs {toothLowRun.currentA.toFixed(0)} A</p>
+              <h3>More current stops buying proportional airgap flux.</h3>
+              <div>
+                <span><b>{toothCurrentMultiplier.toFixed(0)}×</b> the current</span>
+                <span><b>{(toothCurrentMultiplier ** 2).toFixed(0)}×</b> the copper loss (I² trend)</span>
+                <span><b>{toothFluxMultiplier.toFixed(1)}×</b> the airgap flux</span>
+              </div>
+              <p>The tooth approaches saturation, so extra MMF increasingly becomes copper heat instead of proportional airgap field. In a motor that means diminishing torque per added ampere.</p>
+            </section>
+          ) : (
+            <section className="iron-tooth-insight is-pending">
+              <p className="learning-kicker">Compare two operating points</p>
+              <h3>Solve 1 A and {TOOTH_HIGH_CURRENT_A} A.</h3>
+              <p>Then compare current, the I² copper-loss trend, local tooth saturation, and the flux crossing the airgap.</p>
+            </section>
+          )}
+        </section>
+      );
+    }
+
+    if (!runs.length) {
+      return (
+        <section className="iron-saturation-status-empty">
+          <p className="learning-kicker">Solved material response</p>
+          <h2>Awaiting the 10 A frame</h2>
+          <p>The B–H curve, effective permeability, and the share of the steel that is saturated will appear here.</p>
+          <ol>
+            <li><span>1</span> Establish 10 A</li>
+            <li><span>2</span> Approach the knee at 100 A</li>
+            <li><span>3</span> Drive saturation at 800 A</li>
+          </ol>
+        </section>
+      );
+    }
+    return (
+      <section className="iron-saturation-results" aria-label="Solved material response">
+        <header><div><p className="learning-kicker">Solved B–H sweep</p><h2>The steel’s B–H curve bends; constant μ does not survive the knee.</h2></div><span>{runs.length} run{runs.length === 1 ? '' : 's'}</span></header>
+        <BhPlot runs={runs} curve={curve} activeCurrentA={currentRun?.currentA ?? shownRun?.currentA ?? null} onSelect={setCurrentA} />
+        {shownRun ? (
+          <section className="iron-saturation-readout">
+            <div><span>Conductor current</span><strong>{shownRun.currentA.toFixed(0)} A</strong></div>
+            <div><span>Mean H in the steel</span><strong>{(shownRun.meanHApm / 1000).toFixed(2)} kA/m</strong></div>
+            <div><span>Mean B in the steel</span><strong>{shownRun.meanBT.toFixed(3)} T</strong></div>
+            <div><span>Effective permeability μ<sub>r</sub></span><strong>{shownRun.effectiveMuRel.toFixed(0)}</strong></div>
+            <div><span>Steel area above 1.60 T</span><strong className={shownRun.saturatedFraction > 0.05 ? 'is-hot' : ''}>{(shownRun.saturatedFraction * 100).toFixed(1)}%</strong></div>
+            <div><span>Solver iterations</span><strong>{shownRun.data.metrics?.nonlinear_iterations ?? '—'}</strong></div>
           </section>
         ) : null}
+      </section>
+    );
+  };
 
-        {quizOpen ? (
-          <section className="iron-saturation-takeaway"><p className="learning-kicker">Takeaway</p><h2>Motor teeth turn ampere-turns into useful airgap flux—until they saturate.</h2><p>Before the knee, added current efficiently strengthens the airgap field. After the tooth tip saturates, copper loss rises much faster than useful flux and torque potential.</p></section>
-        ) : null}
-      </aside>
+  const inspectPanel = (
+    <LessonLabPanel
+      ref={inspectorRef}
+      side="inspect"
+      kicker="Inspect"
+      title={lessonStage === 'design'
+        ? 'Nothing solved yet'
+        : spmPhaseOpen
+          ? 'Magnet + coil response'
+          : toothPhaseOpen
+            ? 'Motor tooth response'
+            : 'Steel ring response'}
+      summary={lessonStage === 'design'
+        ? 'Make your prediction first. The solver’s answer and its measurements appear here in the next step.'
+        : 'Drive electrical steel (grade M350-50A in every step) through its B–H knee and measure why additional current stops buying proportional flux.'}
+      label="Lesson evidence and solved results"
+      flash={inspectorFlash}
+    >
+      {lessonStage === 'design' ? (
+        <LessonOutline
+          steps={lessonProgressSteps.map((item) => ({
+            id: item.id,
+            label: item.label,
+            detail: LESSON_FOUR_GOALS[item.id as LessonFourProgressStepId].detail,
+          }))}
+          currentId={activeProgressStepId}
+        />
+      ) : renderEvidence()}
+
+      {/* The takeaway answers the check, so it waits until the check is passed. */}
+      {quizOpen && (quizPassed || lessonComplete) ? (
+        <section className="iron-saturation-takeaway"><p className="learning-kicker">Takeaway</p><h2>Motor teeth turn MMF into airgap flux—until they saturate.</h2><p>Before the knee, added current efficiently strengthens the airgap field. After the tooth tip saturates, copper loss rises much faster than airgap flux and torque potential.</p></section>
       ) : null}
-    </main>
+
+      <LessonTerms terms={LESSON_FOUR_TERMS} />
+
+      {lessonStage === 'solve' ? (
+        <details className="iron-saturation-inspector-details">
+          <summary>Details · {motorPhase ? 'MMF around the tooth' : 'H around the wire'}</summary>
+          <div>
+            {motorPhase ? (
+              <section className="iron-saturation-equation-card iron-tooth-equation-card">
+                <header><span>{spmPhaseOpen ? 'SPM MOTOR FIELD PATH' : 'MOTOR FIELD PATH'}</span><strong>N = 400 turns</strong></header>
+                <div className="iron-saturation-equation">
+                  <span>ℱ</span><b>=</b><span>{spmPhaseOpen ? 'ℱPM + NI' : 'NI'}</span>
+                </div>
+                <p>{spmPhaseOpen
+                  ? 'The N42 pole supplies permanent-magnet MMF (ℱPM); coil MMF (NI) in the same direction raises the shared tooth and airgap operating point.'
+                  : 'The coil supplies the MMF (ℱ = NI). The tooth and yoke carry flux; the airgap is where that field can act on the rotor.'}</p>
+              </section>
+            ) : (
+              <section className="iron-saturation-equation-card">
+                <header><span>AMPÈRE PATH</span><strong>probe r = 17 mm</strong></header>
+                <div className="iron-saturation-equation"><span>H</span><b>≈</b><span className="iron-saturation-fraction"><i>I</i><i>2πr</i></span></div>
+                <p>Current sets H around the ring. The steel’s B–H curve—not a constant μ—sets B.</p>
+              </section>
+            )}
+            <p className="iron-saturation-inspector-material">The solver looks up the steel’s B–H curve separately in every mesh triangle, so each one can sit at a different point on the curve.</p>
+          </div>
+        </details>
+      ) : null}
+    </LessonLabPanel>
+  );
+
+  if (quizOpen) {
+    return (
+      <LessonLab className="iron-saturation-lab">
+        {inspectPanel}
+        <LessonLabStage className="is-tall">
+          <LessonLabViewport label={`Knowledge check · ${QUIZ.length} questions`} className="is-scroll">
+            <KnowledgeCheck questions={QUIZ} onPassedChange={setQuizPassed} />
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Check"
+          title="Can you recognize saturation?"
+          label="Knowledge check"
+          footer={(
+            <LessonNextStep hint={quizPassed ? 'Lesson complete. Continue when you are ready.' : `Answer all ${QUIZ.length} questions to complete Lesson 4.`}>
+              {quizPassed || lessonComplete ? (
+                <a className="learning-primary-button" href="/tutorials/lesson-5">Next lesson</a>
+              ) : null}
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={() => setQuizOpen(false)}>← Review experiment</LessonLink>
+                <LessonLink onClick={onBackToCatalog}>All lessons</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <p className="lesson-lab-note">Use your solved B–H curve and flux-density pictures, not a fixed “2 T” rule. Your measurements stay on the right.</p>
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  if (lessonStage === 'design') {
+    return (
+      <LessonLab className="iron-saturation-lab">
+        {inspectPanel}
+        <LessonLabStage>
+          <LessonLabViewport label="Current-carrying wire in a steel ring · not solved yet" className="is-centered">
+            <div className="iron-saturation-stage-visual">
+              <SaturationPredictionDiagram />
+              <div className="iron-saturation-stage-copy">
+                <h2>The limit of “iron makes flux easy”</h2>
+                <p>A single conductor threads the ring—this is not a solenoid. Its circular H drives the steel’s response.</p>
+              </div>
+            </div>
+          </LessonLabViewport>
+        </LessonLabStage>
+        <LessonLabPanel
+          side="do"
+          kicker="Experiment · Predict"
+          title="If current keeps rising, does B keep rising at the same rate?"
+          summary="Current sets the field strength H. Flux density B is how the steel responds."
+          label="Saturation prediction"
+          footer={(
+            <LessonNextStep
+              tone={prediction ? (predictionCorrect ? 'good' : 'warn') : undefined}
+              hint={prediction
+                ? predictionCorrect
+                  ? 'Correct. Solve three currents to locate the steel’s knee.'
+                  : 'That assumes permeability never changes. Electrical steel has a nonlinear B–H curve.'
+                : 'Make a prediction before seeing the solved field.'}
+            >
+              <button
+                type="button"
+                className="learning-primary-button"
+                disabled={!predictionCorrect}
+                onClick={openLab}
+              >
+                Next: Saturation lab →
+              </button>
+              <div className="lesson-lab-next-row">
+                <LessonLink onClick={onBackToCatalog}>← All lessons</LessonLink>
+                <LessonLink onClick={onBackHome}>Design start</LessonLink>
+              </div>
+            </LessonNextStep>
+          )}
+        >
+          {goalCard}
+          <LessonChoices
+            label="What happens to B as current keeps increasing?"
+            value={prediction}
+            onChange={setPrediction}
+            correctId="knee"
+            options={PREDICTION_OPTIONS}
+          />
+        </LessonLabPanel>
+      </LessonLab>
+    );
+  }
+
+  return (
+    <LessonLab className="iron-saturation-lab">
+      {inspectPanel}
+      <LessonLabStage>{renderLabStage()}</LessonLabStage>
+      <LessonLabPanel
+        side="do"
+        kicker={`Experiment · ${currentStepLabel}`}
+        title={spmPhaseOpen ? 'SPM pole lab' : toothPhaseOpen ? 'Motor-tooth lab' : 'Saturation lab'}
+        label="Saturation experiment controls"
+        footer={(
+          <LessonNextStep hint={labInsight}>
+            <button type="button" className="learning-primary-button" disabled={busy} onClick={labPrimary.onClick}>
+              {labPrimary.label}
+            </button>
+          </LessonNextStep>
+        )}
+      >
+        {goalCard}
+        {spmPhaseOpen ? (
+          <>
+            <section className="iron-saturation-control-card iron-tooth-control-card iron-spm-control-card">
+              <div className="iron-tooth-winding-summary">
+                <span>SPM pole + wound stator tooth</span>
+                <strong>N42 · 400 turns · 2 mm airgap</strong>
+                <small>The magnet supplies baseline flux; positive current adds to it.</small>
+              </div>
+              <label htmlFor="iron-spm-current-slider"><span>Coil current</span><strong>{spmCurrentA.toFixed(0)} A</strong></label>
+              <input
+                id="iron-spm-current-slider"
+                type="range"
+                min="0"
+                max={SPM_HIGH_CURRENT_A}
+                step="1"
+                value={spmCurrentA}
+                disabled={busy}
+                aria-label={`SPM tooth coil current ${spmCurrentA} amperes`}
+                onChange={(event) => setSpmCurrentA(Number(event.currentTarget.value))}
+              />
+              <div className="iron-saturation-scale"><span>0 A · magnet only</span><span>0–8,000 A·turn</span><span>{SPM_HIGH_CURRENT_A} A</span></div>
+              {spmComparisonReady ? (
+                <div className="iron-saturation-explore-actions">
+                  <button
+                    type="button"
+                    className="iron-saturation-plot-button"
+                    disabled={busy || Boolean(spmCurrentRun)}
+                    onClick={() => void solveSpmCurrent()}
+                  >
+                    {spmCurrentRun ? 'Move slider to plot another point' : `Plot ${spmCurrentA.toFixed(0)} A`}
+                  </button>
+                </div>
+              ) : null}
+            </section>
+            <p className="iron-saturation-rail-hint">
+              {!spmBaselineRun
+                ? 'Start at 0 A: the N42 pole already sends flux across the airgap.'
+                : !spmHighRun
+                  ? `Now add ${SPM_HIGH_CURRENT_A} A in the direction that helps the magnet and watch the same steel tooth become the limiter.`
+                  : 'The magnet establishes the baseline; coil current shifts the operating point toward tooth saturation.'}
+            </p>
+          </>
+        ) : toothPhaseOpen ? (
+          <>
+            <section className="iron-saturation-control-card iron-tooth-control-card">
+              <div className="iron-tooth-winding-summary">
+                <span>Iron-core solenoid → motor tooth</span>
+                <strong>400 turns · 2 mm airgap</strong>
+                <small>⊙ current out of screen · ⊗ current into screen</small>
+              </div>
+              <label htmlFor="iron-tooth-current-slider"><span>Coil current</span><strong>{toothCurrentA.toFixed(0)} A</strong></label>
+              <input
+                id="iron-tooth-current-slider"
+                type="range"
+                min="1"
+                max={TOOTH_HIGH_CURRENT_A}
+                step="1"
+                value={toothCurrentA}
+                disabled={busy}
+                aria-label={`Motor tooth coil current ${toothCurrentA} amperes`}
+                onChange={(event) => setToothCurrentA(Number(event.currentTarget.value))}
+              />
+              <div className="iron-saturation-scale"><span>1 A</span><span>400–8,000 A·turn</span><span>{TOOTH_HIGH_CURRENT_A} A</span></div>
+              {toothComparisonReady ? (
+                <div className="iron-saturation-explore-actions">
+                  <button
+                    type="button"
+                    className="iron-saturation-plot-button"
+                    disabled={busy || Boolean(toothCurrentRun)}
+                    onClick={() => void solveToothCurrent()}
+                  >
+                    {toothCurrentRun ? 'Move slider to plot another point' : `Plot ${toothCurrentA.toFixed(0)} A`}
+                  </button>
+                </div>
+              ) : null}
+            </section>
+            <p className="iron-saturation-rail-hint">
+              {!toothLowRun
+                ? 'Start at 1 A to see the tooth carry flux efficiently below the knee.'
+                : !toothHighRun
+                  ? `Now drive ${TOOTH_HIGH_CURRENT_A} A. Compare the large copper-loss increase with the smaller airgap-flux gain.`
+                  : 'The same B–H curve now acts locally. Next, add a real N42 rotor pole and separate magnet flux from coil flux.'}
+            </p>
+          </>
+        ) : (
+          <>
+            <section className="iron-saturation-control-card">
+              <label htmlFor="iron-saturation-slider"><span>Conductor current</span><strong>{currentA.toFixed(0)} A</strong></label>
+              <input id="iron-saturation-slider" type="range" min="10" max="800" step="10" value={currentA} disabled={busy} aria-label={`Conductor current ${currentA} amperes`} onChange={(event) => setCurrentA(Number(event.currentTarget.value))} />
+              <div className="iron-saturation-scale"><span>10 A</span><span>100 A knee</span><span>800 A</span></div>
+              {comparisonReady ? (
+                <div className="iron-saturation-explore-actions">
+                  <button
+                    type="button"
+                    className="iron-saturation-plot-button"
+                    disabled={busy || Boolean(currentRun)}
+                    onClick={() => void solveCurrent()}
+                  >
+                    {busy
+                      ? 'Meshing + nonlinear solve…'
+                      : currentRun
+                        ? 'Move slider to plot another point'
+                        : `Plot ${currentA.toFixed(0)} A`}
+                  </button>
+                </div>
+              ) : null}
+            </section>
+            <p className="iron-saturation-rail-hint">
+              {comparisonReady
+                ? 'The material rule is established. Next, use it in a real concentrated tooth winding.'
+                : !lowRun
+                  ? 'Start below the knee at 10 A.'
+                  : !kneeRun
+                    ? 'Now solve 100 A to approach the knee.'
+                    : 'Now solve 800 A to expose saturation.'}
+            </p>
+          </>
+        )}
+        {error ? <p className="lesson-lab-error">{error}</p> : null}
+      </LessonLabPanel>
+    </LessonLab>
   );
 };
