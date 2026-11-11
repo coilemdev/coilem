@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { ViewportNavigationControls } from '../ViewportNavigation';
+import { linearHalbachDrawableMagnetCount } from './geometry';
 import type {
   LinearHalbachResultView,
   LinearHalbachViewportMode,
@@ -270,7 +271,9 @@ export function LinearHalbach3DViewer({
   const [sectioned, setSectioned] = useState(false);
   const [fitNonce, setFitNonce] = useState(0);
   const [zoomScale, setZoomScale] = useState(1);
-  const magnetCount = 4 * config.geometry.period_count;
+  // Zero when the row cannot be drawn, and capped, so a bad width, height or
+  // period count leaves the magnets out instead of reaching the draw loops.
+  const magnetCount = linearHalbachDrawableMagnetCount(config);
   const pitch = config.geometry.block_width + config.geometry.block_gap;
   const wavelength = 4 * pitch;
   const activeLength = magnetCount * config.geometry.block_width
@@ -363,7 +366,7 @@ export function LinearHalbach3DViewer({
     resize();
 
     renderer.domElement.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' || magnetCount === 0) {
         selectMagnetRef.current(null);
       } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
         event.preventDefault();

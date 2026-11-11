@@ -18,6 +18,10 @@ from backend.halbach.exports import (
     design_svg,
     generic_field_report_json,
     halbach_report_json,
+    linear_design_png,
+    linear_design_svg,
+    linear_report_pdf,
+    linear_samples_csv,
     magnetostatic_problem_json,
     report_pdf,
     samples_csv,
@@ -39,7 +43,11 @@ from backend.halbach.linear_gmsh_adapter import (
     generate_linear_halbach_mesh,
 )
 from backend.halbach.linear_models import LinearHalbachArrayConfig
-from backend.halbach.linear_solver import solve_linear_halbach
+from backend.halbach.linear_solver import (
+    LINEAR_HALBACH_REPORT_SCHEMA,
+    LINEAR_HALBACH_SCHEMA_REGISTRY,
+    solve_linear_halbach,
+)
 from backend.halbach.materials import resolve_magnet_material
 from backend.halbach.models import HalbachArrayConfig
 from backend.halbach.postprocess import segmented_analytical_factor
@@ -512,12 +520,100 @@ class HalbachExportRequest(BaseModel):
     report: dict[str, Any]
 
 
+def _export_response(body: bytes, content_type: str, filename: str) -> Response:
+    return Response(
+        content=body,
+        media_type=content_type,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+def _export_linear_report(export_kind: str, report: dict[str, Any]) -> Response:
+    """Export a solved linear-array report through the shared export route."""
+
+    validation_errors = sorted(
+        Draft202012Validator(
+            LINEAR_HALBACH_REPORT_SCHEMA,
+            registry=LINEAR_HALBACH_SCHEMA_REGISTRY,
+        ).iter_errors(report),
+        key=lambda error: [str(part) for part in error.absolute_path],
+    )
+    if validation_errors:
+        first = validation_errors[0]
+        field = ".".join(str(part) for part in first.absolute_path) or "<root>"
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid linear Halbach report at {field}: {first.message}",
+        )
+    model = report.get("model", {})
+    if model.get("out_of_plane_end_effects_modeled") is not False:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Linear Halbach export requires "
+                "out_of_plane_end_effects_modeled=false."
+            ),
+        )
+    if LINEAR_MODEL_NOTICE not in model.get("notice", ""):
+        raise HTTPException(
+            status_code=400,
+            detail="Linear Halbach export is missing the permanent 2D-model notice.",
+        )
+    try:
+        if export_kind == "report":
+            return _export_response(
+                halbach_report_json(report),
+                "application/json",
+                "linear-halbach-solution-report.json",
+            )
+        if export_kind == "problem":
+            return _export_response(
+                magnetostatic_problem_json(report),
+                "application/json",
+                "linear-halbach-magnetostatic-problem.json",
+            )
+        if export_kind == "field":
+            return _export_response(
+                generic_field_report_json(report),
+                "application/json",
+                "linear-halbach-field-solution-report.json",
+            )
+        if export_kind == "csv":
+            return _export_response(
+                linear_samples_csv(report),
+                "text/csv; charset=utf-8",
+                "linear-halbach-field-samples.csv",
+            )
+        if export_kind == "svg":
+            return _export_response(
+                linear_design_svg(report),
+                "image/svg+xml",
+                "linear-halbach-design.svg",
+            )
+        if export_kind == "png":
+            return _export_response(
+                linear_design_png(report),
+                "image/png",
+                "linear-halbach-design.png",
+            )
+        return _export_response(
+            linear_report_pdf(report),
+            "application/pdf",
+            "linear-halbach-report.pdf",
+        )
+    except (KeyError, TypeError, ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @router.post("/export/{export_kind}")
 def export_report(
     export_kind: Literal["report", "problem", "field", "csv", "svg", "png", "pdf"],
     request: HalbachExportRequest,
 ) -> Response:
     report = request.report
+    # One export route serves both topologies; the report names its own kind.
+    if report.get("openem_schema_kind") == "linear_halbach_solution_report":
+        return _export_linear_report(export_kind, report)
     validation_errors = sorted(
         Draft202012Validator(
             HALBACH_REPORT_SCHEMA,

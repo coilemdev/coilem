@@ -20,7 +20,13 @@ import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION, designFileBaseName } from '.
 import { Halbach2DViewport } from './Halbach2DViewport';
 import { Halbach3DViewer } from './Halbach3DViewer';
 import { LinearHalbachWorkspace } from './LinearHalbachWorkspace';
-import { halbachMagnetizationAngleDeg } from './geometry';
+import {
+  halbachMagnetizationAngleDeg,
+  hasHalbachConfigShape,
+  isRestorableHalbachConfig,
+  isRestorableLinearHalbachConfig,
+} from './geometry';
+import { WorkspaceErrorBoundary } from '../WorkspaceErrorBoundary';
 import {
   cloneDefaultHalbachConfig,
   HALBACH_AXIAL_NOTICE,
@@ -121,23 +127,36 @@ function formatMetric(value: number | null | undefined, unit = '', digits = 4): 
 function collectLocalErrors(config: HalbachArrayConfig): HalbachValidationIssue[] {
   const errors: HalbachValidationIssue[] = [];
   const add = (field: string, message: string) => errors.push({ field, message });
-  if (!(config.geometry.inner_radius > 0)) add('geometry.inner_radius', 'Inner radius must be greater than zero.');
-  if (!(config.geometry.outer_radius > config.geometry.inner_radius)) {
-    add('geometry.outer_radius', 'Outer radius must exceed the inner radius.');
+  if (!(config.geometry.inner_radius > 0)) add('geometry.inner_radius', 'Bore diameter must be greater than zero.');
+  if (!(config.geometry.outer_radius > 0)) {
+    add('geometry.outer_radius', 'Outer diameter must be greater than zero.');
+  } else if (!(config.geometry.outer_radius > config.geometry.inner_radius)) {
+    add('geometry.outer_radius', 'Outer diameter must be greater than the bore diameter.');
   }
   if (!(config.geometry.axial_length > 0)) add('geometry.axial_length', 'Axial length must be greater than zero.');
   if (!Number.isInteger(config.geometry.segment_count) || config.geometry.segment_count < 4 || config.geometry.segment_count > 64) {
     add('geometry.segment_count', 'Segment count must be an integer from 4 through 64.');
   }
   const pitch = 360 / Math.max(1, config.geometry.segment_count);
-  if (config.geometry.segment_gap_angle < 0 || config.geometry.segment_gap_angle >= pitch / 2) {
+  // Written as "not in range" so an empty field (not a number) is reported too.
+  if (!(config.geometry.segment_gap_angle >= 0 && config.geometry.segment_gap_angle < pitch / 2)) {
     add('geometry.segment_gap_angle', 'Segment gap must be non-negative and less than half the pitch.');
   }
-  if (!(config.sample_region.radius > 0 && config.sample_region.radius < 0.95 * config.geometry.inner_radius)) {
+  if (!Number.isFinite(config.geometry.segment_start_angle)) {
+    add('geometry.segment_start_angle', 'Seam rotation must be a number.');
+  }
+  if (!Number.isFinite(config.array.field_direction)) {
+    add('array.field_direction', 'Requested direction must be a number.');
+  }
+  if (!(config.sample_region.radius > 0)) {
+    add('sample_region.radius', 'Bore ROI radius must be greater than zero.');
+  } else if (!(config.sample_region.radius < 0.95 * config.geometry.inner_radius)) {
     add('sample_region.radius', 'ROI radius must be positive and below 95% of the bore radius.');
   }
   const boundary = config.geometry.outer_radius * config.solve.mesh.outer_boundary_radius_factor;
-  if (!(config.sample_region.leakage_probe_radius > config.geometry.outer_radius
+  if (!(config.sample_region.leakage_probe_radius > 0)) {
+    add('sample_region.leakage_probe_radius', 'Leakage probe radius must be greater than zero.');
+  } else if (!(config.sample_region.leakage_probe_radius > config.geometry.outer_radius
     && config.sample_region.leakage_probe_radius < boundary)) {
     add('sample_region.leakage_probe_radius', 'Leakage radius must lie between the magnet OD and outer boundary.');
   }
@@ -241,6 +260,9 @@ function CylindricalHalbachWorkspace({
   }, [config, localErrors]);
 
   useEffect(() => {
+    // A design that cannot be restored is not stored, so the last good draft
+    // stays in place while a value is being corrected.
+    if (!isRestorableHalbachConfig(config)) return;
     window.localStorage?.setItem(
       'openem_halbach_autosave',
       JSON.stringify(designFile(config, projectName)),
@@ -348,6 +370,7 @@ function CylindricalHalbachWorkspace({
         migrated.fromFuture
         || payload.project_kind !== 'halbach_array'
         || payload.halbach_config?.kind !== 'halbach_array_config'
+        || !hasHalbachConfigShape(payload.halbach_config)
       ) {
         throw new Error(
           payload.project_kind == null
@@ -371,6 +394,13 @@ function CylindricalHalbachWorkspace({
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason));
     }
+  };
+
+  const resetDesign = () => {
+    setProjectName('Cylindrical Halbach array');
+    changeConfig(cloneDefaultHalbachConfig());
+    setSelectedSegment(null);
+    setStage('design');
   };
 
   const magnetSummary = preview?.material ?? null;
@@ -960,6 +990,14 @@ function CylindricalHalbachWorkspace({
 
         <section className="halbach-stage-panel">
           <div className="halbach-viewport-shell">
+            <WorkspaceErrorBoundary
+              title="This view could not be drawn"
+              message="A design value could not be displayed. Correct it in the Design panel, or reset the design to the example values."
+              actionLabel="Reset design"
+              onAction={resetDesign}
+              retryKey={config}
+              className="halbach-view-error"
+            >
             {dimension === '2d' ? (
               <Halbach2DViewport
                 config={config}
@@ -986,6 +1024,7 @@ function CylindricalHalbachWorkspace({
                 onSelectSegment={setSelectedSegment}
               />
             )}
+            </WorkspaceErrorBoundary>
           </div>
           {/* The dock follows the motor workspace: view tabs with zoom on one row,
               labelled groups of layer controls on the next. */}
@@ -1277,11 +1316,16 @@ function CylindricalHalbachWorkspace({
 function savedCylindricalDraft(
   initialConfig?: HalbachArrayConfig | LinearHalbachArrayConfig,
 ): HalbachArrayConfig | undefined {
-  if (initialConfig?.kind === 'halbach_array_config') return initialConfig;
+  if (initialConfig?.kind === 'halbach_array_config') {
+    return isRestorableHalbachConfig(initialConfig) ? initialConfig : undefined;
+  }
   try {
     const raw = window.localStorage?.getItem('openem_halbach_autosave');
-    const parsed = raw ? JSON.parse(raw) as Partial<HalbachProjectFile> : null;
-    return parsed?.halbach_config?.kind === 'halbach_array_config'
+    const parsed = raw ? JSON.parse(raw) as { halbach_config?: unknown } | null : null;
+    // A draft the workspace cannot draw is dropped and the example design is
+    // used. The next autosave then replaces the stored bad value, so a
+    // workspace that an earlier build left blank recovers by itself.
+    return isRestorableHalbachConfig(parsed?.halbach_config)
       ? parsed.halbach_config
       : undefined;
   } catch {
@@ -1292,13 +1336,13 @@ function savedCylindricalDraft(
 function savedLinearDraft(
   initialConfig?: HalbachArrayConfig | LinearHalbachArrayConfig,
 ): LinearHalbachArrayConfig | undefined {
-  if (initialConfig?.kind === 'linear_halbach_array_config') return initialConfig;
+  if (initialConfig?.kind === 'linear_halbach_array_config') {
+    return isRestorableLinearHalbachConfig(initialConfig) ? initialConfig : undefined;
+  }
   try {
     const raw = window.localStorage?.getItem('openem_linear_halbach_autosave');
-    const parsed = raw
-      ? JSON.parse(raw) as { halbach_config?: LinearHalbachArrayConfig }
-      : null;
-    return parsed?.halbach_config?.kind === 'linear_halbach_array_config'
+    const parsed = raw ? JSON.parse(raw) as { halbach_config?: unknown } | null : null;
+    return isRestorableLinearHalbachConfig(parsed?.halbach_config)
       ? parsed.halbach_config
       : undefined;
   } catch {
@@ -1315,33 +1359,58 @@ export function HalbachWorkspace({
   const [topology, setTopology] = useState<HalbachTopology>(
     initialConfig?.kind === 'linear_halbach_array_config' ? 'linear' : 'cylindrical',
   );
+  // Raised by "Reset design" on the fallback below. It remounts the workspace
+  // on the example design, whatever was stored or passed in.
+  const [recoveryCount, setRecoveryCount] = useState(0);
+  const startConfig = recoveryCount === 0 ? initialConfig : undefined;
   const cylindricalDraft = useMemo(
-    () => savedCylindricalDraft(initialConfig),
-    [initialConfig, topology],
+    () => savedCylindricalDraft(startConfig),
+    [startConfig, topology, recoveryCount],
   );
   const linearDraft = useMemo(
-    () => savedLinearDraft(initialConfig),
-    [initialConfig, topology],
+    () => savedLinearDraft(startConfig),
+    [startConfig, topology, recoveryCount],
   );
 
-  if (topology === 'linear') {
-    return (
-      <LinearHalbachWorkspace
-        onHome={onHome}
-        appVersion={appVersion}
-        onTopologyChange={setTopology}
-        initialConfig={linearDraft}
-        connectionStatus={connectionStatus}
-      />
-    );
-  }
+  const recoverWorkspace = () => {
+    try {
+      window.localStorage?.removeItem(
+        topology === 'linear' ? 'openem_linear_halbach_autosave' : 'openem_halbach_autosave',
+      );
+    } catch {
+      // Storage can be unavailable; the remount below still uses the example.
+    }
+    setRecoveryCount((count) => count + 1);
+  };
+
   return (
-    <CylindricalHalbachWorkspace
-      onHome={onHome}
-      appVersion={appVersion}
-      onTopologyChange={setTopology}
-      initialConfig={cylindricalDraft}
-      connectionStatus={connectionStatus}
-    />
+    <WorkspaceErrorBoundary
+      key={`${topology}-${recoveryCount}`}
+      title="The Halbach workspace could not be shown"
+      message="The saved design could not be displayed. Reset the design to start again from the example values."
+      actionLabel="Reset design"
+      onAction={recoverWorkspace}
+      secondaryLabel="Back to home"
+      onSecondaryAction={onHome}
+      className="halbach-workspace-error"
+    >
+      {topology === 'linear' ? (
+        <LinearHalbachWorkspace
+          onHome={onHome}
+          appVersion={appVersion}
+          onTopologyChange={setTopology}
+          initialConfig={linearDraft}
+          connectionStatus={connectionStatus}
+        />
+      ) : (
+        <CylindricalHalbachWorkspace
+          onHome={onHome}
+          appVersion={appVersion}
+          onTopologyChange={setTopology}
+          initialConfig={cylindricalDraft}
+          connectionStatus={connectionStatus}
+        />
+      )}
+    </WorkspaceErrorBoundary>
   );
 }

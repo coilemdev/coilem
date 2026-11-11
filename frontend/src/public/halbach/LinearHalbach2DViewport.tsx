@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
+import { linearHalbachDrawableMagnetCount } from './geometry';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -215,7 +216,9 @@ export function LinearHalbach2DViewport({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fieldArrowCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const navigation = useViewportNavigation();
-  const magnetCount = 4 * config.geometry.period_count;
+  // Zero when the row cannot be drawn, and capped, so a bad width, height or
+  // period count leaves the magnets out instead of reaching the draw loops.
+  const magnetCount = linearHalbachDrawableMagnetCount(config);
   const pitch = config.geometry.block_width + config.geometry.block_gap;
   const wavelength = 4 * pitch;
   const activeLength = magnetCount * config.geometry.block_width
@@ -805,7 +808,7 @@ export function LinearHalbach2DViewport({
           tabIndex={0}
           onClick={handlePointer}
           onKeyDown={(event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' || magnetCount === 0) {
               onSelectMagnet(null);
             } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
               event.preventDefault();
