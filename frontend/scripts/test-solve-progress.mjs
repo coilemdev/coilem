@@ -7,6 +7,9 @@ const {
   PUBLIC_SOLVE_MESH_SHARE,
   nextPublicSolveProgressBar,
   nextPublicSolveRotorTurn,
+  PUBLIC_SOLVE_PULSE_SECONDS,
+  publicSolvePulseColor,
+  publicSolvePulseLevel,
   publicSolveMeshFraction,
   publicSolvePositionFraction,
 } = await importTypeScriptModule(new URL('../src/public/solveProgress.ts', import.meta.url));
@@ -115,4 +118,17 @@ console.log('solve progress checks passed (monotonic bar across meshing, solving
   assert.equal(turn(quarter, event('torque_speed_map', 3, 10, { analysis_fraction: 0.3 })), null, 'a map does not sweep the rotor once');
   assert.equal(nextPublicSolveRotorTurn(null, meshed(1, 4), 360, 0), null, 'no poles, no turn');
   assert.deepEqual(nextPublicSolveRotorTurn(null, meshed(4, 4), 60, 14), { turnDeg: 60 / 7, phase: 'meshing', finished: false }, 'the span is the electrical range over the pole pairs');
+}
+
+// The field-solve glow: one beat rises and falls, and the edges run along the colour stops with it.
+{
+  assert.equal(publicSolvePulseLevel(0), 0, 'a beat starts at rest');
+  assert.ok(Math.abs(publicSolvePulseLevel(PUBLIC_SOLVE_PULSE_SECONDS / 2) - 1) < 1e-12, 'peaks half way');
+  assert.ok(publicSolvePulseLevel(PUBLIC_SOLVE_PULSE_SECONDS) < 1e-12, 'and is back at rest after one beat');
+  const stops = ['#0000ff', '#00ff00', '#ffff00'];
+  assert.equal(publicSolvePulseColor(0, stops, 0.5), 'rgba(0, 0, 255, 0.5)', 'rest is the first stop');
+  assert.equal(publicSolvePulseColor(0.5, stops, 0.5), 'rgba(0, 255, 0, 0.5)', 'half way is the middle stop');
+  assert.equal(publicSolvePulseColor(1, stops, 0.5), 'rgba(255, 255, 0, 0.5)', 'the peak is the last stop');
+  assert.equal(publicSolvePulseColor(0.25, stops, 1), 'rgba(0, 128, 128, 1)', 'between stops the colours blend');
+  assert.equal(publicSolvePulseColor(7, stops, 1), 'rgba(255, 255, 0, 1)', 'levels are clamped');
 }

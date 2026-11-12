@@ -1,5 +1,5 @@
 import { solveViewMemory } from './solveViewMemory';
-import { useEasedRotorAngle } from './useEasedRotorAngle';
+import { useEasedRotorAngle, useSolvePulseLevel } from './useEasedRotorAngle';
 import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
@@ -39,7 +39,7 @@ import {
   type DimensionId,
 } from './dimensionAnnotations';
 import { FieldResultPlot } from './FieldResultPlot';
-import { statorSteelSaturationTicks } from './fluxColorScale';
+import { HEAT_COLORS, statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
   MaterialBehaviorView,
@@ -122,6 +122,7 @@ import {
   isPublicSolveFinalizing,
   projectedPublicSolveElapsedSeconds,
   nextPublicSolveRotorTurn,
+  publicSolvePulseColor,
   type PublicSolveRotorTurn,
 } from './solveProgress';
 import { formatTorqueNm } from './numberFormat';
@@ -1712,8 +1713,13 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
-/** Element edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
-const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
+/**
+ * Element edges while the field is solved run from blue to yellow along the
+ * flux-density scale, in time with the glow, as a hint of the plot to come.
+ * The scale's darkest blue is left out: it would vanish on the dark canvas.
+ */
+const SOLVING_MESH_EDGE_STOPS = HEAT_COLORS.slice(1, 6);
+const SOLVING_MESH_EDGE_ALPHA = 0.7;
 
 function ViewportChrome({
   config,
@@ -1741,12 +1747,15 @@ function ViewportChrome({
   solveRotorAngleDeg = null,
   solveRotorCaption = null,
   solvePulse = false,
+  solveMeshEdgeColor = null,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
   /** While a solve sweeps: the rotor turn to draw in place of the preview's own, and a line saying what it is. */
   solveRotorAngleDeg?: number | null;
   solveRotorCaption?: string | null;
   /** While the field is being solved: a slow glow on the 2D view. */
   solvePulse?: boolean;
+  /** Element-edge colour for the Mesh view during that glow. */
+  solveMeshEdgeColor?: string | null;
   /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
   dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
@@ -2135,7 +2144,7 @@ function ViewportChrome({
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
-              meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
+              meshEdgeColor={solveMeshEdgeColor}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -3363,6 +3372,11 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
   const [showMeshEdges, setShowMeshEdges] = useState(() => (resumeSolveView ? solveViewMemory.stage.showMeshEdges : true));
+  // Only the Mesh view with its edges shown has lines to colour, so only then is it redrawn for the beat.
+  const solvePulseLevel = useSolvePulseLevel(solvingField && solveView === 'mesh' && showMeshEdges, 4);
+  const solveMeshEdgeColor = solvePulseLevel === null
+    ? null
+    : publicSolvePulseColor(solvePulseLevel, SOLVING_MESH_EDGE_STOPS, SOLVING_MESH_EDGE_ALPHA);
   // The mesh and result these view choices were made for: the effects below
   // reset the view only when one of them is replaced, not on a resumed mount.
   const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
@@ -4106,6 +4120,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               solveRotorAngleDeg={solveRotorAngleDeg}
               solveRotorCaption={solveRotorCaption}
               solvePulse={solvingField}
+              solveMeshEdgeColor={solveMeshEdgeColor}
               dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}

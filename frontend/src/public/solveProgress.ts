@@ -123,6 +123,30 @@ export function nextPublicSolveRotorTurn(
   return previous;
 }
 
+/** Length of one beat of the field-solve glow; the stylesheet's heartbeat animation uses the same. */
+export const PUBLIC_SOLVE_PULSE_SECONDS = 2.4;
+
+/** Where a beat that started `elapsedSeconds` ago stands: 0 at rest, 1 at its peak, and back. */
+export function publicSolvePulseLevel(elapsedSeconds: number): number {
+  return 0.5 - 0.5 * Math.cos((2 * Math.PI * Math.max(0, elapsedSeconds)) / PUBLIC_SOLVE_PULSE_SECONDS);
+}
+
+/**
+ * The colour at `level` (0..1) along a list of '#rrggbb' stops, as rgba().
+ * The Solve page runs the mesh edges along the low end of the flux-density
+ * scale with it, so the pulse hints at the field plot that follows.
+ */
+export function publicSolvePulseColor(level: number, stops: readonly string[], alpha: number): string {
+  if (stops.length === 0) return `rgba(255, 255, 255, ${alpha})`;
+  const position = clampUnit(level) * (stops.length - 1);
+  const lower = Math.min(stops.length - 1, Math.floor(position));
+  const upper = Math.min(stops.length - 1, lower + 1);
+  const share = position - lower;
+  const channel = (stop: string, offset: number) => Number.parseInt(stop.slice(offset, offset + 2), 16);
+  const mix = (offset: number) => Math.round(channel(stops[lower], offset) * (1 - share) + channel(stops[upper], offset) * share);
+  return `rgba(${mix(1)}, ${mix(3)}, ${mix(5)}, ${alpha})`;
+}
+
 export function projectedPublicSolveElapsedSeconds(
   reportedSeconds: number | undefined,
   observedAtMs: number,
