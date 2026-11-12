@@ -50,7 +50,8 @@ export function endTurnOverhangMm(record: WindingResistance): number {
 
 /** A suggested wire is split into strands in hand no thicker than this, so it lays easily. */
 export const SUGGESTED_STRAND_MM = 1.25;
-const MOST_STRANDS_IN_HAND = 60;
+// As many as the Winding section's Strands in Hand accepts.
+const MOST_STRANDS_IN_HAND = 200;
 
 /**
  * The derived wire as something that can be wound: the same copper in the fewest

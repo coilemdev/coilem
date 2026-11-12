@@ -1177,12 +1177,14 @@ function ParametricMotor3D({
 
     // The coil builder winds from the tooth's inner radius out; an outer
     // stator's tooth runs from the yoke out to the shoe, so its ends swap.
-    // Draw the coil as tightly wound magnet wire, as on the landing page motor.
-    // The loop count is a drawing choice: fine wire reads as a real winding where
-    // one fat loop per turn reads as a diagram. Machines with many teeth get
-    // fewer loops per coil to stay light to render.
+    // Draw the coil as wound magnet wire, one loop for each turn: a one-turn coil
+    // is one loop round the tooth. Coils with more turns than the limit draw the
+    // limit, and machines with many teeth get a lower one to stay light to render.
     const handWound = {
-      strands: config.stator.slot_count > 24 ? 24 : HAND_WOUND_STRANDS,
+      strands: Math.min(
+        Math.max(1, Math.round(config.winding.turns_per_coil) || 1),
+        config.stator.slot_count > 24 ? 24 : HAND_WOUND_STRANDS,
+      ),
       endTurnRoundness: 0.5,
       irregularity: 0.14,
     };

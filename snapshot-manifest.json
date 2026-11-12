@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177969,
-      "sha256": "7c7176cd94812f0be716458869f0b39265049d174b84e5361401f787162ea7c2"
+      "bytes": 178143,
+      "sha256": "44ad057ef8582f10ba5befe823b7e315eca7032dccfe605556bd8f8ace292ebd"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 110300,
-      "sha256": "5b1158d41cffd5d22ee1b4c513a5aa5b281c19548dde9e9111b2613fbcb16962"
+      "bytes": 110350,
+      "sha256": "1cb3d4fc22655cec3e68bbe27deb5901d2d3be9561f968bb76050a7f3bf54cd5"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7605,8 +7605,8 @@
     },
     {
       "path": "frontend/src/public/windingBuild.ts",
-      "bytes": 7284,
-      "sha256": "c2735cebf659db44b9c273ba7e6d3c839b63dd0e2141aa8849bee0d8856c7c47"
+      "bytes": 7346,
+      "sha256": "91e2d166e3e2067054847792ec3ec13244208054873341b2656a640f92b869b3"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",

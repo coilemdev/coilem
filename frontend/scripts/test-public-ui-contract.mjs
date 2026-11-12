@@ -2004,7 +2004,8 @@ assert.match(motorThreeSource, /outerRace\.add\(\s*new THREE\.Mesh\(outerRaceGeo
 assert.match(motorThreeSource, /renderer\.shadowMap\.type = THREE\.PCFSoftShadowMap/);
 // The balls never stand proud of the seal faces, however short the bearing.
 assert.match(motorThreeSource, /Math\.min\(\(outerRaceInner - innerRaceOuter\) \* 0\.62, dims\.width \* 0\.36\)/);
-assert.match(motorThreeSource, /strands: config\.stator\.slot_count > 24 \? 24 : HAND_WOUND_STRANDS/);
+// One loop for each turn, up to a limit that drops on machines with many teeth.
+assert.match(motorThreeSource, /strands: Math\.min\(\s*Math\.max\(1, Math\.round\(config\.winding\.turns_per_coil\) \|\| 1\),\s*config\.stator\.slot_count > 24 \? 24 : HAND_WOUND_STRANDS,\s*\)/);
 assert.match(motorThreeSource, /turns per coil · drawn as \$\{concentratedCoil\.strandCount\} wire loops/);
 assert.doesNotMatch(landingThreeSource, /landing-3d-steps/);
 assert.doesNotMatch(landingThreeSource, /aria-label="Workflow steps"/);
