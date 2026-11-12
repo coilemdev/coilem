@@ -188,6 +188,40 @@ test('selected airgap rings are also drawn in the field magnifier', async ({ pag
   await expect.poll(cyanPixels).toBe(0);
 });
 
+test('field element data sits below the magnifier and remains readable outside the drawing', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'docked-field');
+  const readout = page.locator('.public-run-field-data-slot .public-field-probe');
+  await expect(readout).toContainText('Hover over an element');
+  const canvas = page.locator('.public-field-result-canvas > canvas');
+  const box = (await canvas.boundingBox())!;
+  // The fixture has a 21mm square viewBox, including its margin.
+  const scale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+  const hover = async (xMm: number) => page.mouse.move(box.x + box.width / 2 + xMm * scale, box.y + box.height / 2 - (2 / 3) * scale);
+  await hover(8);
+  await expect(readout.locator('header')).toContainText('Rotor steel');
+  await expect(readout.locator('header')).toContainText('Element 1');
+  await expect(readout.locator('strong')).toContainText('1.000 T');
+  await expect(readout.locator('dt').filter({ hasText: /^Bx$/ }).locator('+ dd')).toHaveText('0.600 T');
+  await expect(readout.locator('dt').filter({ hasText: /^By$/ }).locator('+ dd')).toHaveText('0.800 T');
+  await expect(readout.locator('dt').filter({ hasText: /^Material$/ }).locator('+ dd')).not.toBeEmpty();
+  await expect(page.locator('.public-field-result-canvas .public-field-probe')).toHaveCount(0);
+  const magnifier = (await page.locator('.public-run-magnifier-slot .public-field-loupe').boundingBox())!;
+  const bounds = (await readout.boundingBox())!;
+  expect(bounds.y).toBeGreaterThanOrEqual(magnifier.y + magnifier.height);
+  expect(bounds.y - magnifier.y - magnifier.height).toBeLessThanOrEqual(14);
+  // The docked card must not send pointer events back into the drawing through its portal.
+  await page.mouse.move(bounds.x + 40, bounds.y + 30);
+  await expect(readout.locator('strong')).toContainText('1.000 T');
+  await hover(-7);
+  await expect(readout.locator('header')).toContainText('Stator tooth');
+  await expect(readout.locator('header')).toContainText('Element 2');
+  await expect(readout.locator('strong')).toContainText('1.500 T');
+  await page.mouse.move(1500, 900);
+  await expect(readout.locator('strong')).toContainText('1.500 T');
+  await page.screenshot({ path: info.outputPath('docked-field-data.png') });
+});
+
 for (const combined of [false, true]) {
   test(`partial ${combined ? 'combined' : 'map-only'} analysis retains outputs and shows point errors`, async ({ page }, info) => {
     const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `

@@ -550,6 +550,7 @@ export function FieldResultPlot({
   probeEnabled = true,
   magnifier = false,
   magnifierSlot = null,
+  probeSlot = null,
   fitScale = 1,
   rotorMarkDeg = null,
   describeProbe = defaultProbeDescription,
@@ -596,6 +597,8 @@ export function FieldResultPlot({
   /** Show the area under the pointer enlarged in a corner of the view. */
   magnifier?: boolean;
   magnifierSlot?: HTMLElement | null;
+  /** Render the element readout beneath the magnifier in the analysis rail. */
+  probeSlot?: HTMLElement | null;
   /** The share of the usual fit to draw the motor at; below 1 leaves a wider margin. */
   fitScale?: number;
   /** The rotor's mechanical angle: draws the 0° tick and the dot that goes round with the rotor. Null hides them. */
@@ -1356,6 +1359,26 @@ export function FieldResultPlot({
     });
   };
   const probeDescription = probe ? describeProbe(probe) : null;
+  const probeReadout = probe && probeDescription ? (
+    <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">
+      <header>
+        <span>{probeDescription.regionLabel}</span>
+        <small>Element {probe.elementIndex + 1}</small>
+      </header>
+      <strong>{probe.bMagT.toFixed(3)} T <em>|B|</em></strong>
+      <dl>
+        <div><dt>Bx</dt><dd>{probe.bxT === null ? '—' : `${probe.bxT.toFixed(3)} T`}</dd></div>
+        <div><dt>By</dt><dd>{probe.byT === null ? '—' : `${probe.byT.toFixed(3)} T`}</dd></div>
+        <div><dt>Material</dt><dd>{probeDescription.materialLabel}</dd></div>
+      </dl>
+      <p>{probeDescription.saturationLabel}</p>
+    </div>
+  ) : probeSlot && probeEnabled ? (
+    <div className="public-field-probe is-empty" role="status">
+      <strong>Field data</strong>
+      <p>Hover over an element to inspect its field.</p>
+    </div>
+  ) : null;
   const linesLegendNote = [
     'Separate solves: in saturated steel the resultant is not their sum.',
     hasFieldAxes && leadElecDeg !== null
@@ -1393,7 +1416,7 @@ export function FieldResultPlot({
         title="Use the mouse wheel to zoom; drag to pan when zoomed"
         {...navigation.bind}
         onPointerMove={handlePointerMove}
-        onPointerLeave={() => setProbe(null)}
+        onPointerLeave={() => { if (!probeSlot) setProbe(null); }}
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
@@ -1523,22 +1546,9 @@ export function FieldResultPlot({
         {magnifier && (
           <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
         )}
-        {probe && probeDescription && (
-          <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">
-            <header>
-              <span>{probeDescription.regionLabel}</span>
-              <small>Element {probe.elementIndex + 1}</small>
-            </header>
-            <strong>{probe.bMagT.toFixed(3)} T <em>|B|</em></strong>
-            <dl>
-              <div><dt>Bx</dt><dd>{probe.bxT === null ? '—' : `${probe.bxT.toFixed(3)} T`}</dd></div>
-              <div><dt>By</dt><dd>{probe.byT === null ? '—' : `${probe.byT.toFixed(3)} T`}</dd></div>
-              <div><dt>Material</dt><dd>{probeDescription.materialLabel}</dd></div>
-            </dl>
-            <p>{probeDescription.saturationLabel}</p>
-          </div>
-        )}
+        {!probeSlot && probeReadout}
       </div>
+      {probeSlot && createPortal(probeReadout, probeSlot)}
       {overlay ? (
         // One line above the view: the two line colours and the stator lead.
         // The longer notes are its tooltip, not text over the motor.

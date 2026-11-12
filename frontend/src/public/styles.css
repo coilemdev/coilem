@@ -1250,6 +1250,9 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-run-plan-scroll { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; overflow-x: hidden; overflow-y: auto; border-radius: inherit; }
 .public-run-magnifier-slot:empty { display: none; }
 .public-run-magnifier-slot:not(:empty) { flex: none; margin: 12px; }
+.public-run-field-data-slot:empty { display: none; }
+.public-run-field-data-slot:not(:empty) { flex: none; margin: 0 12px 12px; }
+.public-run-field-data-slot .public-field-probe { position: static; width: 100%; min-height: 112px; box-shadow: none; backdrop-filter: none; pointer-events: auto; }
 .public-run-plan-resizer,
 .public-solve-setup-resizer { position: absolute; z-index: 20; top: 12px; bottom: 12px; width: 15px; outline: 0; cursor: col-resize; touch-action: none; }
 .public-run-plan-resizer { left: -8px; }

@@ -141,6 +141,7 @@ function evictRasters(
 
 interface SolvedFieldViewerProps {
   magnifierSlot?: HTMLElement | null;
+  probeSlot?: HTMLElement | null;
   viewControls: ReactNode;
   expandControl?: ReactNode;
   config: MotorConfig;
@@ -211,6 +212,7 @@ function playbackDescriptors(
 
 export function SolvedFieldViewer({
   magnifierSlot = null,
+  probeSlot = null,
   viewControls,
   expandControl,
   config,
@@ -1240,6 +1242,7 @@ export function SolvedFieldViewer({
               showStatistics={false}
               magnifier={magnifier}
               magnifierSlot={magnifierSlot}
+              probeSlot={probeSlot}
               fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
               rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showAirgap={showAirgap}

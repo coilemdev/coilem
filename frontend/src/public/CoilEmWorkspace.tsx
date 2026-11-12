@@ -3523,6 +3523,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
   const [magnifierSlot, setMagnifierSlot] = useState<HTMLDivElement | null>(null);
+  const [fieldDataSlot, setFieldDataSlot] = useState<HTMLDivElement | null>(null);
   // While a solve meshes and solves, the viewport turns the rotor steadily, so
   // the wait reads as work in progress; during the field solve it pulses too. Both
   // read progress the solver already reports, so they add nothing to the
@@ -3601,9 +3602,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const sixStepSelected = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
-  const solverCaption = selectedSolver === 'elmer'
-    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · Gmsh · remesh per position.`
-    : 'Built-in field solver using the prepared Gmsh mesh.';
   const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
@@ -4282,6 +4280,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
             <SolvedFieldViewer
               materials={materials}
               magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
+              probeSlot={solveViewportExpanded ? null : fieldDataSlot}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -4381,6 +4380,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           )}
         </div>
         <div className="public-run-magnifier-slot" ref={setMagnifierSlot} />
+        <div className="public-run-field-data-slot" ref={setFieldDataSlot} />
         <details
           className="public-run-plan-section public-run-analysis"
           open={analysisDetailsOpen}
@@ -4388,8 +4388,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
         >
           <summary className="public-run-copy">
             <span className="eyebrow">Analysis</span>
-            <strong className="public-run-plan-title">{solverLabel}</strong>
-            <small className="public-run-plan-caption">{solverCaption}</small>
           </summary>
           <div className="public-run-analysis-body">
             {error && <div className="error-banner" role="alert">
