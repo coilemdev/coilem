@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177570,
-      "sha256": "75807ce0271c04136d7d9ba72effdb7225c3b896eb67074fababda51c9cb7f57"
+      "bytes": 177707,
+      "sha256": "21e79377dc7e7934c278ebe32ce933416ecea90a816ae630366dbb93473c0068"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 257985,
-      "sha256": "a8cdff0531111cd48521b0b0b4e1bcba024746b67f5c2552edef155cc896b7cb"
+      "bytes": 257945,
+      "sha256": "1d01176f4ac175412e84aa45cf42520fd4fc723a168a7bde9ff48629c774ad4b"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 82844,
-      "sha256": "250ca6b7c1a99982d26da03285dafd1e9b7a2a17f6a170877ec68a4b1a7e2108"
+      "bytes": 87497,
+      "sha256": "50180b98bb95f933ff230df151266ba8eecab1339152fdf9abb7c5e762fcf353"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7225,8 +7225,8 @@
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
-      "bytes": 638,
-      "sha256": "8e98368f7000737cf7d9db12f1c3135d62747be678404c3d361d39a7fd404706"
+      "bytes": 816,
+      "sha256": "2077bddc5f7d0ec69758fb7e02a4b1c6470bb25b318569d98d1b6a9fcaf266ed"
     },
     {
       "path": "frontend/src/public/solveTime.ts",

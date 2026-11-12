@@ -69,6 +69,8 @@ interface MotorCanvasProps {
   mesh: MeshPreview | null;
   mode: 'geometry' | 'mesh';
   layer?: PublicCanvasLayer;
+  /** Labels drawn over the motor, each on or off by itself. Left out, they follow `layer`. */
+  overlays?: PublicCanvasOverlays;
   rotorAngleDeg?: number;
   windingType?: 'concentrated' | 'distributed';
   selectedComponent?: PublicMotorComponentSelection | null;
@@ -105,6 +107,9 @@ interface MotorCanvasProps {
 
 /** 'none' = every overlay off, leaving the bare cross-section. */
 export type PublicCanvasLayer = 'none' | 'dimensions' | 'slots' | 'windings' | 'phases' | 'materials';
+/** The label overlays: dimension lines, slot numbers, tooth numbers and coil-side labels (A+, A-). */
+export interface PublicCanvasOverlays { dimensions: boolean; slots: boolean; teeth: boolean; windings: boolean }
+export const NO_CANVAS_OVERLAYS: PublicCanvasOverlays = { dimensions: false, slots: false, teeth: false, windings: false };
 export type PublicMagnetPolarityView = 'dominant' | 'split';
 
 interface HitRegion {
@@ -603,6 +608,7 @@ function drawGeometry(
   showToothPoles: boolean,
   previewRpm: number,
   plainWinding = false,
+  overlays: PublicCanvasOverlays = NO_CANVAS_OVERLAYS,
 ): void {
   const points = data.regions.flatMap((region) => region.points);
   if (points.length === 0) return;
@@ -944,15 +950,18 @@ function drawGeometry(
     context.restore();
   }
 
-  // Phases is only the phase colours changing as the rotor turns, so it carries
-  // no slot labels; Slots and Winding do.
-  if (layer === 'slots' || layer === 'windings') {
+  // Slots and Winding are labels only, each on or off by itself; the coil
+  // colours have their own toggle. With both on, the slot numbers go down first
+  // and the winding labels step clear of them.
+  const badgeKinds = (['slots', 'windings'] as const).filter((kind) => overlays[kind]);
+  const placed: Array<[number, number]> = [];
+  for (const badgeKind of badgeKinds) {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     // The badges sit on the yoke just behind each slot, clear of the ⊙ / ⊗
     // marks drawn inside it. The yoke is outside the slots on an inner-rotor
     // machine and inside them on an outer-rotor one.
-    const badgeRadius = layer === 'slots' ? 10 : 12;
+    const badgeRadius = badgeKind === 'slots' ? 10 : 12;
     const yokeInside = data.metadata.rotor_layout === 'outer';
     const [originX, originY] = map([0, 0]);
     const [unitX, unitY] = map([1, 0]);
@@ -962,7 +971,6 @@ function drawGeometry(
     const slotBackMm = slotRadii.length ? (yokeInside ? Math.min(...slotRadii) : Math.max(...slotRadii)) : 0;
     const slotFrontMm = slotRadii.length ? (yokeInside ? Math.max(...slotRadii) : Math.min(...slotRadii)) : 0;
     const badgeStepMm = (badgeRadius + 4) / pixelsPerMm;
-    const placed: Array<[number, number]> = [];
     // Slots numbers each slot once, however many coil sides it holds; Winding
     // labels every coil side.
     const badges = new Map<string, { sumX: number; sumY: number; count: number; slot: string; region: (typeof slotRegions)[number] }>();
@@ -973,7 +981,7 @@ function drawGeometry(
         (current, point) => [current[0] + point[0], current[1] + point[1]],
         [0, 0],
       ).map((value) => value / region.points.length) as [number, number];
-      const key = layer === 'slots' ? slot : `${slot}:${index}`;
+      const key = badgeKind === 'slots' ? slot : `${slot}:${index}`;
       const badge = badges.get(key) ?? { sumX: 0, sumY: 0, count: 0, slot, region };
       badge.sumX += center[0];
       badge.sumY += center[1];
@@ -998,7 +1006,11 @@ function drawGeometry(
       const centroidMm = Math.hypot(sumX, sumY) / Math.max(1, count);
       // Two coil sides stacked in one slot share an angle: the second badge
       // steps further back rather than landing on the first.
-      let radiusMm = yokeCrowded ? centroidMm + (slotFrontMm - centroidMm) * 0.55 : yokeRadiusMm;
+      // Inside the slot, with both kinds on, the slot number takes the back of the slot and the winding label the front.
+      const inSlotMm = badgeKind === 'slots' && badgeKinds.length > 1
+        ? centroidMm + (slotBackMm - centroidMm) * 0.6
+        : centroidMm + (slotFrontMm - centroidMm) * 0.55;
+      let radiusMm = yokeCrowded ? inSlotMm : yokeRadiusMm;
       let [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
       for (let attempt = 0; !yokeCrowded && attempt < 3 && placed.some(([px, py]) => Math.hypot(px - x, py - y) < badgeRadius * 2); attempt += 1) {
         radiusMm += (yokeInside ? -1 : 1) * (badgeRadius * 2 + 2) / pixelsPerMm;
@@ -1006,7 +1018,7 @@ function drawGeometry(
       }
       placed.push([x, y]);
       const winding = windingToken(region.region_type);
-      const label = layer === 'slots' ? slotMatch[1] : winding ? `${winding.phase}${winding.direction}` : slotMatch[1];
+      const label = badgeKind === 'slots' ? slotMatch[1] : winding ? `${winding.phase}${winding.direction}` : slotMatch[1];
       context.beginPath();
       context.arc(x, y, badgeRadius, 0, Math.PI * 2);
       context.fillStyle = 'rgba(8, 10, 14, 0.78)';
@@ -1015,9 +1027,68 @@ function drawGeometry(
       context.lineWidth = 1.2;
       context.stroke();
       context.fillStyle = '#f8fafc';
-      context.font = `700 ${layer === 'slots' ? 9 : 10}px ui-monospace, monospace`;
+      context.font = `700 ${badgeKind === 'slots' ? 9 : 10}px ui-monospace, monospace`;
       context.fillText(label, x, y + 0.5);
     }
+  }
+
+  if (overlays.teeth) {
+    // Tooth k stands between slot k and slot k + 1, as the tooth poles count them.
+    // Its number sits toward the yoke, clear of the N / S letter at the tooth's middle.
+    const slotAngles = new Map<number, { x: number; y: number }>();
+    for (const region of data.regions) {
+      const slot = Number(region.region_type.match(/slot_(\d+)/i)?.[1]);
+      if (!slot || region.points.length === 0) continue;
+      const sum = slotAngles.get(slot) ?? { x: 0, y: 0 };
+      for (const [px, py] of region.points) { sum.x += px; sum.y += py; }
+      slotAngles.set(slot, sum);
+    }
+    const slotTotal = Math.max(0, ...slotAngles.keys());
+    const turn = (angle: number) => ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    const yokeInside = data.metadata.rotor_layout === 'outer';
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    for (const region of data.regions) {
+      if (!/stator_tooth/i.test(region.region_type) || region.points.length < 3) continue;
+      const [meanX, meanY] = region.points.reduce<[number, number]>(
+        (sum, [px, py]) => [sum[0] + px / region.points.length, sum[1] + py / region.points.length],
+        [0, 0],
+      );
+      const toothAngle = Math.atan2(meanY, meanX);
+      // The slot just behind the tooth, going the way the slots count up.
+      let number = 0;
+      let nearest = Infinity;
+      for (const [slot, sum] of slotAngles) {
+        const next = slotAngles.get(slot === slotTotal ? 1 : slot + 1);
+        if (!next) continue;
+        const from = Math.atan2(sum.y, sum.x);
+        const span = turn(Math.atan2(next.y, next.x) - from);
+        const forward = span <= Math.PI;
+        const offset = forward ? turn(toothAngle - from) : turn(from - toothAngle);
+        const width = forward ? span : Math.PI * 2 - span;
+        if (offset <= width && offset < nearest) { nearest = offset; number = slot; }
+      }
+      if (!number) continue;
+      const [innerMm, outerMm] = radialExtentMm(region.points);
+      const backMm = yokeInside ? innerMm : outerMm;
+      const centreMm = Math.hypot(meanX, meanY);
+      const radiusMm = centreMm + (backMm - centreMm) * 0.6;
+      const [x, y] = map([Math.cos(toothAngle) * radiusMm, Math.sin(toothAngle) * radiusMm]);
+      const text = `T${number}`;
+      context.font = '700 9px ui-monospace, monospace';
+      const half = Math.max(9, context.measureText(text).width / 2 + 4);
+      context.beginPath();
+      context.roundRect(x - half, y - 8, half * 2, 16, 4);
+      context.fillStyle = 'rgba(8, 10, 14, 0.78)';
+      context.fill();
+      context.strokeStyle = 'rgba(255,255,255,.34)';
+      context.lineWidth = 1.2;
+      context.stroke();
+      context.fillStyle = '#f8fafc';
+      context.fillText(text, x, y + 0.5);
+    }
+    context.restore();
   }
 
   const addComponentPath = (path: Path2D, componentPath: ComponentPath) => {
@@ -1102,7 +1173,7 @@ function drawGeometry(
     14,
   );
 
-  if (layer === 'dimensions') {
+  if (overlays.dimensions) {
     drawDimensionAnnotations(
       context,
       map,
@@ -1547,6 +1618,7 @@ export function MotorCanvas({
   mesh,
   mode,
   layer = 'dimensions',
+  overlays,
   rotorAngleDeg = 0,
   windingType = 'concentrated',
   selectedComponent = null,
@@ -1621,23 +1693,35 @@ export function MotorCanvas({
     );
   }, [navigationFrame, ringInnerMm, ringOuterMm]);
   const navigation = useViewportNavigation(undefined, navigationFrame, sectorForSize, ringKey(ring));
+  // A caller that passes no overlays gets the ones its layer used to stand for.
+  const overlayDimensions = overlays ? overlays.dimensions : layer === 'dimensions';
+  const overlaySlots = overlays ? overlays.slots : layer === 'slots';
+  const overlayTeeth = overlays ? overlays.teeth : false;
+  const overlayWindings = overlays ? overlays.windings : layer === 'windings';
+  const shownOverlays = useMemo<PublicCanvasOverlays>(
+    () => ({ dimensions: overlayDimensions, slots: overlaySlots, teeth: overlayTeeth, windings: overlayWindings }),
+    [overlayDimensions, overlaySlots, overlayTeeth, overlayWindings],
+  );
   const annotations = useMemo(
-    () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
-    [config, geometry, layer],
+    () => (config && overlayDimensions ? buildDimensionAnnotations(config, geometry) : []),
+    [config, geometry, overlayDimensions],
   );
 
   // The mesh view can carry the Slots or Winding overlay: the geometry is drawn
   // with it, and the mesh's edges go over the top.
   // Tooth poles are drawn by the geometry too, so they bring it in on their own.
   const meshOverlay: PublicCanvasLayer | null = mode === 'mesh' && meshDisplayMode === 'geometry' && geometry
-    ? (layer === 'slots' ? 'slots' : layer === 'windings' || layer === 'phases' ? 'windings' : showToothPoles ? 'none' : null)
+    && (overlaySlots || overlayTeeth || overlayWindings || showToothPoles)
+    ? 'none'
     : null;
+  // The mesh carries no dimension lines.
+  const meshOverlays = useMemo<PublicCanvasOverlays>(() => ({ ...shownOverlays, dimensions: false }), [shownOverlays]);
   const drawMeshOverlayGeometry = (target: CanvasRenderingContext2D, width: number, height: number) => {
     if (!meshOverlay || !geometry) return;
     drawGeometry(
       target, geometry, width, height, meshOverlay, rotorAngleDeg, windingType, [], null, null, null,
       navigation.scale, [navigation.pan.x, navigation.pan.y], (navigation.rotationDeg * Math.PI) / 180,
-      [], null, null, [], magnetPolarityView, phaseDrive, showToothPoles, previewRpm, plainWinding,
+      [], null, null, [], magnetPolarityView, phaseDrive, showToothPoles, previewRpm, plainWinding, meshOverlays,
     );
   };
   const meshLayersRef = useRef<{
@@ -1709,7 +1793,7 @@ export function MotorCanvas({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     focusedMeshElementIndex, geometry, loupeShown, loupeX, loupeY, magnetPolarityView, mesh, meshDisplayMode,
-    meshEdgeColor, meshOverlay, meshQualities, meshQualityThreshold, navigation.pan.x, navigation.pan.y,
+    meshEdgeColor, meshOverlay, meshOverlays, meshQualities, meshQualityThreshold, navigation.pan.x, navigation.pan.y,
     navigation.rotationDeg, navigation.scale, phaseDrive, plainWinding, previewRpm, rotorAngleDeg, showMeshEdges, showToothPoles, windingType,
   ]);
 
@@ -1784,6 +1868,7 @@ export function MotorCanvas({
           showToothPoles,
           previewRpm,
           plainWinding,
+          shownOverlays,
         );
       } else if (mode === 'mesh' && mesh) {
         const viewRotationRad = (navigation.rotationDeg * Math.PI) / 180;
@@ -1877,6 +1962,8 @@ export function MotorCanvas({
     mode,
     phaseDrive,
     plainWinding,
+    shownOverlays,
+    meshOverlays,
     showToothPoles,
     previewRpm,
     navigation.pan.x,

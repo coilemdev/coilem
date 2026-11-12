@@ -689,15 +689,14 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
 assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
 // Phases only means something while the rotor turns, so it is a toggle beside the
-// preview speed (2D only), not one of the static overlays; it is the winding overlay
-// shaded by phase current, so Winding stays pressed under it.
-assert.match(workspaceSource, /\['windings', 'Winding'\],\s*\] as Array<\[PublicCanvasLayer, string\]>\)/);
+// preview speed (2D only), not one of the label overlays.
+assert.match(workspaceSource, /\['windings', 'Winding', 'winding labels \(A\+, A-\)'\],\s*\] as Array<\[keyof PublicCanvasOverlays, string, string\]>\)/);
 assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
-assert.match(workspaceSource, /const pressed = canvasLayer === layer \|\| \(layer === 'windings' && canvasLayer === 'phases'\);/);
 assert.match(workspaceSource, /aria-label="2D display toggles">[\s\S]{0,700}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
-assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'windings' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
-// With Phases on, the motor shows only the phase colours changing: no slot labels.
-assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
+assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'none' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
+// Slots and Winding are labels only, each on or off by itself, whatever colours the coils.
+assert.match(motorCanvasSource, /const badgeKinds = \(\['slots', 'windings'\] as const\)\.filter\(\(kind\) => overlays\[kind\]\);/);
+assert.match(motorCanvasSource, /if \(overlays\.teeth\) \{/);
 assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'phases'\) \{\n    context\.textAlign/);
 // Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
@@ -897,8 +896,10 @@ assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hi
 assert.match(workspaceSource, /aria-label="More mesh layers">\s*<button type="button" aria-pressed=\{meshMagnifier\}/);
 assert.doesNotMatch(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
-// 2D overlays are one choice at a time, with None for the bare cross-section.
-assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);
+// 2D overlays are each on or off by themselves; none pressed is the bare cross-section.
+assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['dimensions', 'Dims', 'dimensions'\],\s*\['slots', 'Slots', 'slot numbers'\],\s*\['teeth', 'Tooth', 'tooth numbers'\]/);
+assert.doesNotMatch(workspaceSource, /\['none', 'None'\]/);
+assert.match(workspaceSource, /const \[showCoilColors, setShowCoilColors\] = useState\(false\);/);
 assert.match(styleSource, /\.public-dock-segmented \{ display: inline-flex;[^}]*border: 1px solid rgba\(148,163,184,\.16\); border-radius: 10px;/);
 assert.match(styleSource, /\.public-dock-segmented button\[aria-pressed="true"\] \{ color: var\(--text-accent\); background: rgba\(245,158,11,\.14\);/);
 assert.match(styleSource, /button\.public-dock-toggle\[aria-pressed="true"\]::before \{ border-color: var\(--text-accent\); background: var\(--text-accent\);/);

@@ -26,6 +26,8 @@ import { outerRotorRing } from './sectorFraming';
 import {
   MotorCanvas,
   type PublicCanvasLayer,
+  type PublicCanvasOverlays,
+  NO_CANVAS_OVERLAYS,
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
 } from './MotorCanvas';
@@ -1796,12 +1798,17 @@ function ViewportChrome({
   const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>(() => (
     resumeDesignView ? designViewMemory.layer as PublicCanvasLayer : 'none'
   ));
+  // Dims, Slots, Tooth and Winding are labels over the motor, each on or off by itself.
+  const [overlays, setOverlays] = useState<PublicCanvasOverlays>(() => (
+    resumeDesignView ? designViewMemory.overlays : NO_CANVAS_OVERLAYS
+  ));
+  const toggleOverlay = (overlay: keyof PublicCanvasOverlays) => setOverlays((current) => ({ ...current, [overlay]: !current[overlay] }));
   // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
   const [meshMagnifier, setMeshMagnifier] = useState(false);
-  const [showCoilColours, setShowCoilColours] = useState(true);
-  const meshMoreOn = Number(meshMagnifier) + Number(showToothPoles) + Number(showCoilColours);
+  const [showCoilColors, setShowCoilColors] = useState(false);
+  const meshMoreOn = Number(meshMagnifier) + Number(showToothPoles) + Number(showCoilColors);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -1936,6 +1943,7 @@ function ViewportChrome({
     designViewMemory.introPlayed = true;
     designViewMemory.view = viewportMode;
     designViewMemory.layer = canvasLayer;
+    designViewMemory.overlays = overlays;
   });
 
   useEffect(() => {
@@ -2005,7 +2013,7 @@ function ViewportChrome({
     : viewportMode === 'layout'
       ? 'windings'
       : canvasLayer;
-  const showDimensionReadout = viewportMode === '2d' && displayLayer === 'dimensions';
+  const showDimensionReadout = viewportMode === '2d' && overlays.dimensions;
   // Layout is no longer a recolour of the cross-section: it unrolls the winding,
   // which is the only place slot order, coil spans and parallel paths are legible.
   const showWindingLayout = viewportMode === 'layout' && mode === 'geometry';
@@ -2135,6 +2143,7 @@ function ViewportChrome({
               mesh={mesh}
               mode={mode}
               layer={displayLayer}
+              overlays={viewportMode === '2d' ? overlays : NO_CANVAS_OVERLAYS}
               rotorAngleDeg={solveRotorAngleDeg ?? rotorAngleDeg}
               windingType={config.winding.type}
               selectedComponent={selectedComponent}
@@ -2150,7 +2159,7 @@ function ViewportChrome({
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
               magnifier={mode === 'mesh' && meshMagnifier}
-              plainWinding={!showCoilColours}
+              plainWinding={!showCoilColors}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -2362,20 +2371,19 @@ function ViewportChrome({
               <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
               <span className="public-dock-segmented">
                 {([
-                  ['none', 'None'],
-                  ['slots', 'Slots'],
-                  ['windings', 'Winding'],
-                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
-                  const shown = meshDisplayMode !== 'geometry' ? 'none' : canvasLayer === 'phases' ? 'windings' : canvasLayer === 'dimensions' ? 'none' : canvasLayer;
-                  const pressed = shown === layer;
+                  ['slots', 'Slots', 'slot numbers'],
+                  ['teeth', 'Tooth', 'tooth numbers'],
+                  ['windings', 'Winding', 'winding labels'],
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).map(([overlay, label, what]) => {
+                  const pressed = meshDisplayMode === 'geometry' && overlays[overlay];
                   return (
                     <button
                       type="button"
                       aria-pressed={pressed}
                       disabled={meshDisplayMode !== 'geometry'}
-                      title={meshDisplayMode !== 'geometry' ? 'Overlays show with the Regions colouring' : layer === 'none' ? 'Show the bare mesh' : `Show ${label.toLowerCase()} over the mesh`}
-                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
-                      key={layer}
+                      title={meshDisplayMode !== 'geometry' ? 'Overlays show with the Regions colouring' : `${pressed ? 'Hide' : 'Show'} the ${what} over the mesh`}
+                      onClick={() => toggleOverlay(overlay)}
+                      key={overlay}
                     >
                       {label}
                     </button>
@@ -2401,7 +2409,7 @@ function ViewportChrome({
               <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
                 <button type="button" aria-pressed={meshMagnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
                 <button type="button" aria-pressed={showToothPoles} title="Show each stator tooth's N / S pole as the rotor turns" onClick={() => setShowToothPoles((shown) => !shown)}><i aria-hidden="true" />Tooth poles</button>
-                <button type="button" aria-pressed={showCoilColours} title="Colour each coil by its phase; off draws them all in one plain colour" onClick={() => setShowCoilColours((shown) => !shown)}><i aria-hidden="true" />Coil colours</button>
+                <button type="button" aria-pressed={showCoilColors} title="Color each coil by its phase; off draws them all in one plain color" onClick={() => setShowCoilColors((shown) => !shown)}><i aria-hidden="true" />Coil colors</button>
               </div>
             </details>
           )}
@@ -2430,29 +2438,22 @@ function ViewportChrome({
               <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
               <span className="public-dock-segmented">
                 {([
-                  ['none', 'None'],
-                  ['dimensions', 'Dims'],
-                  ['slots', 'Slots'],
-                  ['windings', 'Winding'],
-                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
-                  // Phases is the winding overlay shaded by phase current, so
-                  // Winding stays pressed under it and turns both off.
-                  const pressed = canvasLayer === layer || (layer === 'windings' && canvasLayer === 'phases');
-                  return (
-                    <button
-                      type="button"
-                      aria-pressed={pressed}
-                      title={layer === 'none' ? 'Show the bare cross-section' : pressed ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                      // One overlay at a time. None, or clicking the active one again,
-                      // leaves the bare cross-section: Dims in particular puts a
-                      // legend and dashed lines over the motor.
-                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
-                      key={layer}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
+                  ['dimensions', 'Dims', 'dimensions'],
+                  ['slots', 'Slots', 'slot numbers'],
+                  ['teeth', 'Tooth', 'tooth numbers'],
+                  ['windings', 'Winding', 'winding labels (A+, A-)'],
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).map(([overlay, label, what]) => (
+                  // Each overlay is on or off by itself; none pressed is the bare cross-section.
+                  <button
+                    type="button"
+                    aria-pressed={overlays[overlay]}
+                    title={`${overlays[overlay] ? 'Hide' : 'Show'} the ${what}`}
+                    onClick={() => toggleOverlay(overlay)}
+                    key={overlay}
+                  >
+                    {label}
+                  </button>
+                ))}
               </span>
             </span>
           )}
@@ -2488,15 +2489,15 @@ function ViewportChrome({
             <span className="vc-group public-view-toggles" role="group" aria-label="2D display toggles">
               <span className="public-dock-group-label" aria-hidden="true">Show</span>
               {/* Phases only means something while the rotor turns: it shades the
-                  winding overlay by each phase's current, so it sits with the
-                  preview rather than among the static overlays. */}
+                  coils by each phase's current, so it sits with the preview
+                  rather than among the label overlays. */}
               {viewportMode === '2d' && (
                 <button
                   type="button"
                   className="public-dock-toggle"
                   aria-pressed={canvasLayer === 'phases'}
                   title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
-                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
+                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'))}
                 >
                   Phases
                 </button>
@@ -2516,11 +2517,11 @@ function ViewportChrome({
                 <button
                   type="button"
                   className="public-dock-toggle"
-                  aria-pressed={showCoilColours}
-                  title={showCoilColours ? 'Draw every coil in one plain colour, to follow the N / S fields' : 'Colour each coil by its phase'}
-                  onClick={() => setShowCoilColours((shown) => !shown)}
+                  aria-pressed={showCoilColors}
+                  title={showCoilColors ? 'Draw every coil in one plain color, to follow the N / S fields' : 'Color each coil by its phase'}
+                  onClick={() => setShowCoilColors((shown) => !shown)}
                 >
-                  Coil colours
+                  Coil colors
                 </button>
               )}
             </span>
