@@ -21,6 +21,7 @@ import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
   config: MotorConfig;
+  designName?: string | null;
   geometry?: GeometryPreview | null;
   resetSignal: number;
   rotorAngleDeg: number;
@@ -613,6 +614,63 @@ function buildRotorBell(
 }
 
 /**
+ * Illustrative carrier and hollow mounting flanges for the Accord IMA.
+ * ORNL/TM-2006/535, Fig. 2.4 and section 3.1.1: the production rotor bolts to
+ * the engine and torque converter, with no separate motor shaft or bearings.
+ * Flange details follow the photographs; the solved EM dimensions stay fixed.
+ */
+function buildImaMount(
+  dims: { rotorBoreRadius: number; motorRadius: number; stackDepth: number },
+  carrierMaterial: THREE.Material,
+  machinedMaterial: THREE.Material,
+): HousingBuild {
+  const group = new THREE.Group();
+  const hubRadius = Math.min(dims.rotorBoreRadius * 0.64, dims.motorRadius * 0.32);
+  const boreRadius = dims.motorRadius * 0.07;
+  const bossRadius = dims.motorRadius * 0.15;
+  const webThickness = dims.stackDepth * 0.14;
+  const flangeDepth = dims.stackDepth * 0.65;
+  const hubGeometry = annulusGeometry(boreRadius, hubRadius, flangeDepth, webThickness * 0.1);
+  group.add(new THREE.Mesh(hubGeometry, carrierMaterial));
+  const rimGeometry = annulusGeometry(dims.rotorBoreRadius * 0.96, dims.rotorBoreRadius * 1.02, webThickness);
+  group.add(new THREE.Mesh(rimGeometry, carrierMaterial));
+  const spokeRoot = hubRadius * 0.9;
+  const spokeTip = dims.rotorBoreRadius * 1.01;
+  const spokeGeometry = new THREE.BoxGeometry(spokeTip - spokeRoot, hubRadius * 0.23, webThickness);
+  for (let index = 0; index < 8; index += 1) {
+    const angle = index * Math.PI / 4;
+    const spoke = new THREE.Mesh(spokeGeometry, carrierMaterial);
+    spoke.position.set((spokeRoot + spokeTip) / 2 * Math.cos(angle), (spokeRoot + spokeTip) / 2 * Math.sin(angle), 0);
+    spoke.rotation.z = angle;
+    group.add(spoke);
+  }
+  const bossDepth = dims.stackDepth * 0.3;
+  const bossGeometry = annulusGeometry(boreRadius, bossRadius, bossDepth, webThickness * 0.1);
+  const boltRadius = hubRadius * 0.068;
+  const boltDepth = webThickness * 0.6;
+  const boltGeometry = new THREE.CylinderGeometry(boltRadius, boltRadius, boltDepth, 6);
+  boltGeometry.rotateX(Math.PI / 2);
+  const washerGeometry = annulusGeometry(boltRadius * 0.65, boltRadius * 1.3, boltDepth * 0.2);
+  for (const side of [-1, 1]) {
+    const boss = new THREE.Mesh(bossGeometry, machinedMaterial);
+    boss.position.z = side * (flangeDepth / 2 + bossDepth / 2);
+    group.add(boss);
+    for (let index = 0; index < 8; index += 1) {
+      const angle = index * Math.PI / 4 + Math.PI / 8;
+      const x = hubRadius * 0.83 * Math.cos(angle);
+      const y = hubRadius * 0.83 * Math.sin(angle);
+      const washer = new THREE.Mesh(washerGeometry, machinedMaterial);
+      washer.position.set(x, y, side * (flangeDepth / 2 + boltDepth * 0.1));
+      const bolt = new THREE.Mesh(boltGeometry, machinedMaterial);
+      bolt.position.set(x, y, side * (flangeDepth / 2 + boltDepth * 0.7));
+      bolt.rotation.z = angle;
+      group.add(washer, bolt);
+    }
+  }
+  return { group, geometries: [hubGeometry, rimGeometry, spokeGeometry, bossGeometry, boltGeometry, washerGeometry] };
+}
+
+/**
  * Floating part label for the exploded view: a rounded chip drawn to a canvas
  * and hung off a sprite, so it stays screen-facing and legible from any orbit
  * angle. The texture comes back alongside the sprite because only the caller
@@ -684,6 +742,7 @@ export function PublicMotor3D(props: PublicMotor3DProps) {
 
 function ParametricMotor3D({
   config,
+  designName = null,
   resetSignal,
   rotorAngleDeg,
   explodedAmount,
@@ -699,6 +758,12 @@ function ParametricMotor3D({
   controlsInDock = false,
   dockSlot = null,
 }: PublicMotor3DProps) {
+  // The named vehicle example supplies the mechanical arrangement; a large
+  // rotor bore alone does not imply either a large shaft or a crank mounting.
+  const hondaIma = /honda.*accord/i.test(designName ?? '')
+    && config.topology === 'IPM' && config.rotor_layout !== 'outer'
+    && config.rotor.pole_count === 16 && config.stator.slot_count === 24
+    && (config.rotor.ID_mm ?? 0) > config.rotor.OD_mm * 0.5;
   // The same phase drive the 2D view shades by: the solve's own terminal currents.
   const solveParams = config.solve_params;
   const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
@@ -776,18 +841,22 @@ function ParametricMotor3D({
   // The parts from the outside in, for the slider that peels the motor: on an
   // outer-rotor machine the rotor and magnets are outside the stator.
   const outerRotor = config.rotor_layout === 'outer';
-  const availableParts = useMemo(() => HIDEABLE_PARTS.filter(({ id }) => outerRotor || id !== 'rotorBell'), [outerRotor]);
+  const availableParts = useMemo(() => HIDEABLE_PARTS
+    .filter(({ id }) => (outerRotor || id !== 'rotorBell') && (!hondaIma || (id !== 'bearings' && id !== 'endcaps')))
+    .map((part) => hondaIma && part.id === 'shaft' ? { ...part, label: 'Mounting hub' } : part), [outerRotor, hondaIma]);
   const shownPartCount = availableParts.filter(({ id }) => !hiddenParts.has(id)).length;
-  const peelOrder = useMemo<HideablePartId[]>(() => (outerRotor
+  const peelOrder = useMemo<HideablePartId[]>(() => (hondaIma
+    ? ['stator', 'windings', 'airgap', 'magnets', 'rotor', 'shaft']
+    : outerRotor
     ? ['endcaps', 'rotorBell', 'rotor', 'magnets', 'airgap', 'windings', 'stator', 'bearings', 'shaft']
-    : ['endcaps', 'stator', 'windings', 'airgap', 'magnets', 'rotor', 'bearings', 'shaft']), [outerRotor]);
+    : ['endcaps', 'stator', 'windings', 'airgap', 'magnets', 'rotor', 'bearings', 'shaft']), [outerRotor, hondaIma]);
   // How many parts are left, counted from the shaft outwards: every part up to the first one still shown is peeled.
   const firstShown = peelOrder.findIndex((part) => !hiddenParts.has(part));
   const partsLeft = firstShown < 0 ? 0 : peelOrder.length - firstShown;
   const peelTo = (left: number) => {
     setHiddenParts(new Set(peelOrder.slice(0, peelOrder.length - left)));
   };
-  const outermostShown = firstShown < 0 ? null : HIDEABLE_PARTS.find(({ id }) => id === peelOrder[firstShown])?.label ?? null;
+  const outermostShown = firstShown < 0 ? null : availableParts.find(({ id }) => id === peelOrder[firstShown])?.label ?? null;
 
   useEffect(() => {
     hiddenPartsRef.current = hiddenParts;
@@ -867,7 +936,7 @@ function ParametricMotor3D({
     const magnetSeatRadius = outerRotor ? (config.rotor.ID_mm ?? 0) / 2 : rotorRadius;
     // An outer rotor's shaft runs through the stator hub. Size it off the machine,
     // not the hub bore: a drone motor's hub can be most of its stator.
-    const shaftRadius = outerRotor
+    const shaftRadius = hondaIma ? outerRadius * 0.07 : outerRotor
       ? Math.min(yokeOuterRadius * 0.42, Math.max(0.6, outerRadius * 0.08))
       : Math.max(outerRadius * 0.055, (config.rotor.ID_mm || outerRadius * 0.12) / 2);
     const stackDepth = Math.max(8, config.stator.stack_length_mm);
@@ -977,9 +1046,9 @@ function ParametricMotor3D({
         color: STEEL_3D.rotor,
         metalness: 0.9,
         roughness: 0.36,
-        transparent: config.topology === 'IPM',
-        opacity: config.topology === 'IPM' ? 0.68 : 1,
-        depthWrite: config.topology !== 'IPM',
+        transparent: config.topology === 'IPM' && !hondaIma,
+        opacity: config.topology === 'IPM' && !hondaIma ? 0.68 : 1,
+        depthWrite: config.topology !== 'IPM' || hondaIma,
       }),
       // End-cap faces of the rotor core: same steel, but the fine square
       // grid makes the spin visible. White base colour so the map carries the tint.
@@ -1001,6 +1070,7 @@ function ParametricMotor3D({
         roughness: 0.24,
         envMapIntensity: 0.8,
       }),
+      imaCarrier: new THREE.MeshPhysicalMaterial({ color: 0x484a4c, metalness: 0.82, roughness: 0.5 }),
       // Coated magnets, each one piece coloured by the pole it presents to the
       // stator: red north, blue south. The colours are muted towards the steel
       // around them, as on the landing page motor, so the magnets read as coated
@@ -1444,7 +1514,11 @@ function ParametricMotor3D({
     rotorGroup.add(rotorCoreGroup, rotorBellGroup, magnetsGroup, shaftGroup);
     rotorRef.current = rotorGroup;
     let core: THREE.Mesh;
-    if (outerRotor) {
+    if (hondaIma) {
+      const coreGeometry = annulusGeometry((config.rotor.ID_mm ?? 0) / 2, rotorRadius, stackDepth);
+      geometries.push(coreGeometry);
+      core = new THREE.Mesh(coreGeometry, materials.rotor);
+    } else if (outerRotor) {
       // The back-iron ring round the stator. Extrude groups are the end faces
       // then the sides, so the grid again sits only on the end faces.
       const coreGeometry = annulusGeometry(magnetSeatRadius, rotorRadius, stackDepth);
@@ -1523,18 +1597,32 @@ function ParametricMotor3D({
       outerRotor ? bellOuterFaceZ - stackDepth / 2 + stackDepth * 0.3 : 0,
     );
     const shaftRearStub = rearCapCenterZ + capThickness / 2 - stackDepth / 2 + stackDepth * 0.06;
-    const shaftGeometry = new THREE.CylinderGeometry(
-      shaftRadius,
-      shaftRadius,
-      stackDepth + shaftFrontOverhang + shaftRearStub,
-      64,
-    );
-    shaftGeometry.rotateX(Math.PI / 2);
-    shaftGeometry.translate(0, 0, (shaftFrontOverhang - shaftRearStub) / 2);
-    geometries.push(shaftGeometry);
-    const shaft = new THREE.Mesh(shaftGeometry, materials.shaft);
-    makeSelectable(shaft, { id: '3d-shaft', kind: 'shaft', label: 'Shaft', role: 'Mechanical rotor support' });
-    shaftGroup.add(shaft);
+    if (hondaIma) {
+      const mount = buildImaMount({
+        rotorBoreRadius: (config.rotor.ID_mm ?? 0) / 2,
+        motorRadius: outerRadius,
+        stackDepth,
+      }, materials.imaCarrier, materials.shaft);
+      geometries.push(...mount.geometries);
+      makeSelectable(mount.group, {
+        id: '3d-ima-mount', kind: 'shaft', label: 'IMA mounting hub',
+        role: 'Engine and torque-converter mounting flanges · no separate motor shaft or bearings · illustrative from ORNL Fig. 2.4',
+      });
+      shaftGroup.add(mount.group);
+    } else {
+      const shaftGeometry = new THREE.CylinderGeometry(
+        shaftRadius,
+        shaftRadius,
+        stackDepth + shaftFrontOverhang + shaftRearStub,
+        64,
+      );
+      shaftGeometry.rotateX(Math.PI / 2);
+      shaftGeometry.translate(0, 0, (shaftFrontOverhang - shaftRearStub) / 2);
+      geometries.push(shaftGeometry);
+      const shaft = new THREE.Mesh(shaftGeometry, materials.shaft);
+      makeSelectable(shaft, { id: '3d-shaft', kind: 'shaft', label: 'Shaft', role: 'Mechanical rotor support' });
+      shaftGroup.add(shaft);
+    }
 
     // The shaft carries no key: the mark on the drive-end bearing's turning race shows the rotation.
 
@@ -1720,7 +1808,7 @@ function ParametricMotor3D({
     const capWallThickness = Math.max(0.6, outerRadius * 0.035);
     const capSkirtInnerRadius = outerRadius + capRadialClearance;
     const fittedCapRadius = capSkirtInnerRadius + capWallThickness;
-    [1, -1].forEach((zSign) => {
+    (hondaIma ? [] : [1, -1]).forEach((zSign) => {
       const isDriveEnd = zSign > 0;
       const end = isDriveEnd ? 'drive' : 'non-drive';
       const endCapCenterZ = isDriveEnd ? driveCapCenterZ : rearCapCenterZ;
@@ -1893,8 +1981,10 @@ function ParametricMotor3D({
     // have to widen with them or the row's chips overlap even though the parts
     // are well separated. The max() is inert until the stack passes ~2× the OD.
     const chipLane = Math.max(outerRadius, chipScale);
-    addPartChip(outerRotor ? 'Stator mount' : 'End cap', rearEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, -rearCapCenterZ));
-    addPartChip('Bearing', rearBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, -(outerRotor ? defaultCapCenterZ : rearCapCenterZ)));
+    if (!hondaIma) {
+      addPartChip(outerRotor ? 'Stator mount' : 'End cap', rearEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, -rearCapCenterZ));
+      addPartChip('Bearing', rearBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, -(outerRotor ? defaultCapCenterZ : rearCapCenterZ)));
+    }
     // Yoke and teeth explode as one part now, so they take one chip between
     // them — two labels on a single station would just stack on each other.
     addPartChip('Stator', statorGroup, new THREE.Vector3(0, chipLane * 1.14, 0));
@@ -1906,9 +1996,11 @@ function ParametricMotor3D({
     addPartChip('Magnets', magnetsGroup, new THREE.Vector3(0, Math.max(rotorRadius * 1.5, chipLane * 0.82), 0));
     addPartChip(outerRotor ? 'Rotor can' : 'Rotor core', rotorCoreGroup, new THREE.Vector3(0, -Math.max(rotorRadius * 1.28, chipLane * 0.7), 0));
     if (outerRotor) addPartChip('Rotor bell', rotorBellGroup, new THREE.Vector3(0, chipLane * 1.2, bellOuterFaceZ));
-    addPartChip('Shaft', shaftGroup, new THREE.Vector3(0, shaftRadius + chipLane * 0.22, 0));
-    addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, driveCapCenterZ));
-    if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, driveCapCenterZ));
+    addPartChip(hondaIma ? 'Mounting hub' : 'Shaft', shaftGroup, new THREE.Vector3(0, shaftRadius + chipLane * 0.22, 0));
+    if (!hondaIma) {
+      addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, driveCapCenterZ));
+      if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, driveCapCenterZ));
+    }
 
     // Slot, tooth and coil-side chips on the stack's end face, for the Overlay toggles.
     const overlayLabels: Array<{ sprite: THREE.Sprite; kind: keyof Motor3DOverlays }> = [];
@@ -2406,7 +2498,7 @@ function ParametricMotor3D({
       environmentTarget.dispose();
       renderer.dispose();
     };
-  }, [config]);
+  }, [config, hondaIma]);
 
   useEffect(() => {
     applyDisplayRef.current?.();
