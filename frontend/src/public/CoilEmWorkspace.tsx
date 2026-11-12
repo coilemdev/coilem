@@ -2111,6 +2111,10 @@ function ViewportChrome({
             geometry={geometry}
             resetSignal={threeResetSignal}
             rotorAngleDeg={rotorAngleDeg}
+            plainWinding={!showCoilColors}
+            showToothPoles={showToothPoles}
+            showPhases={canvasLayer === 'phases'}
+            overlays={overlays}
             explodedAmount={explodedAmount}
             introProgress={introActive ? introCameraProgress : null}
             onInteraction={() => finishDesignIntro('3d')}
@@ -2198,6 +2202,9 @@ function ViewportChrome({
               geometry={geometry}
               resetSignal={threeResetSignal}
               rotorAngleDeg={rotorAngleDeg}
+              plainWinding={!showCoilColors}
+              showToothPoles={showToothPoles}
+              showPhases={canvasLayer === 'phases'}
               explodedAmount={0}
               introProgress={null}
             />
@@ -2433,8 +2440,8 @@ function ViewportChrome({
               </span>
             </span>
           )}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="vc-group public-view-modes" role="group" aria-label="2D display layers">
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && (
+            <span className="vc-group public-view-modes" role="group" aria-label="Display layers">
               <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
               <span className="public-dock-segmented">
                 {([
@@ -2442,7 +2449,10 @@ function ViewportChrome({
                   ['slots', 'Slots', 'slot numbers'],
                   ['teeth', 'Tooth', 'tooth numbers'],
                   ['windings', 'Winding', 'winding labels (A+, A-)'],
-                ] as Array<[keyof PublicCanvasOverlays, string, string]>).map(([overlay, label, what]) => (
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).filter(([overlay]) => (
+                  // The 3D view carries the number chips, not the dimension lines.
+                  viewportMode === '2d' || overlay !== 'dimensions'
+                )).map(([overlay, label, what]) => (
                   // Each overlay is on or off by itself; none pressed is the bare cross-section.
                   <button
                     type="button"
@@ -2457,6 +2467,52 @@ function ViewportChrome({
               </span>
             </span>
           )}
+          {/* Three rows on every tab, so the motor never moves between them:
+              what is drawn, what is shown over it, and the transport. */}
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && <span className="public-dock-row-break" aria-hidden="true" />}
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && (
+            <span className="vc-group public-view-toggles" role="group" aria-label="Display toggles">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
+              {/* Phases only means something while the rotor turns: it shades the
+                  coils by each phase's current, so it sits with the preview
+                  rather than among the label overlays. */}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={canvasLayer === 'phases'}
+                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
+                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'))}
+                >
+                  Phases
+                </button>
+              )}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showToothPoles}
+                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
+                  onClick={() => setShowToothPoles((shown) => !shown)}
+                >
+                  Tooth poles
+                </button>
+              )}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showCoilColors}
+                  title={showCoilColors ? 'Draw every coil in one plain color, to follow the N / S fields' : 'Color each coil by its phase'}
+                  onClick={() => setShowCoilColors((shown) => !shown)}
+                >
+                  Coil colors
+                </button>
+              )}
+            </span>
+          )}
+          {/* 3D only: its own row, between Show and Spin, so the rows above sit where 2D has them. */}
+          {viewportMode === '3d' && <span className="public-dock-row-break" aria-hidden="true" />}
           {viewportMode === '3d' && (
             <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
               <span className="public-dock-group-label" aria-hidden="true">Explode</span>
@@ -2480,50 +2536,6 @@ function ViewportChrome({
                 onChange={(event) => setExplodedAmount(Number(event.target.value) / 100)}
               />
               <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
-            </span>
-          )}
-          {/* Three rows on every tab, so the motor never moves between them:
-              what is drawn, what is shown over it, and the transport. */}
-          {viewportMode === '2d' && mode === 'geometry' && <span className="public-dock-row-break" aria-hidden="true" />}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="vc-group public-view-toggles" role="group" aria-label="2D display toggles">
-              <span className="public-dock-group-label" aria-hidden="true">Show</span>
-              {/* Phases only means something while the rotor turns: it shades the
-                  coils by each phase's current, so it sits with the preview
-                  rather than among the label overlays. */}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={canvasLayer === 'phases'}
-                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
-                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'))}
-                >
-                  Phases
-                </button>
-              )}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={showToothPoles}
-                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
-                  onClick={() => setShowToothPoles((shown) => !shown)}
-                >
-                  Tooth poles
-                </button>
-              )}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={showCoilColors}
-                  title={showCoilColors ? 'Draw every coil in one plain color, to follow the N / S fields' : 'Color each coil by its phase'}
-                  onClick={() => setShowCoilColors((shown) => !shown)}
-                >
-                  Coil colors
-                </button>
-              )}
             </span>
           )}
           {/* The rotor preview uses the field playback's transport: the same

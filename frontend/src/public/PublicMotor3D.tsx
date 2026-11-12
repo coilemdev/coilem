@@ -10,6 +10,8 @@ import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
 import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
+import { phaseCurrents, rotorElectricalDeg, slotCurrents, toothPoles, type PhaseDrive, type WindingSide } from './phaseDrive';
+import { publishedReference } from './publishedReferences';
 import { shoeShoulderFraction, stator3dRadii } from './stator3dRadii';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
@@ -22,7 +24,18 @@ interface PublicMotor3DProps {
   introProgress?: number | null;
   onInteraction?: () => void;
   onComponentSelect?: (component: PublicMotorComponentSelection | null) => void;
+  /** Draw every coil in one plain copper instead of its phase colour, as the 2D view does. */
+  plainWinding?: boolean;
+  /** Tint each stator tooth by its N / S pole as the rotor turns. */
+  showToothPoles?: boolean;
+  /** Shade each phase's coils by the current it carries as the rotor turns. */
+  showPhases?: boolean;
+  /** Number chips over the slots, teeth and coil sides. */
+  overlays?: Motor3DOverlays;
 }
+
+export interface Motor3DOverlays { slots: boolean; teeth: boolean; windings: boolean }
+const NO_3D_OVERLAYS: Motor3DOverlays = { slots: false, teeth: false, windings: false };
 
 /**
  * Parts the viewer can hide. Hiding one or more is how you look inside the
@@ -576,7 +589,7 @@ function buildRotorBell(
  * angle. The texture comes back alongside the sprite because only the caller
  * knows when the scene is torn down.
  */
-function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.CanvasTexture | null } {
+function makeChipSprite(text: string, stroke = 'rgba(103, 232, 249, 0.34)'): { sprite: THREE.Sprite; texture: THREE.CanvasTexture | null } {
   const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
   const fontPx = 44;
   const padX = 26;
@@ -612,7 +625,7 @@ function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.Ca
     context.closePath();
     context.fillStyle = 'rgba(9, 13, 22, 0.86)';
     context.fill();
-    context.strokeStyle = 'rgba(103, 232, 249, 0.34)';
+    context.strokeStyle = stroke;
     context.lineWidth = 2;
     context.stroke();
     context.font = font;
@@ -648,7 +661,43 @@ function ParametricMotor3D({
   introProgress = null,
   onInteraction,
   onComponentSelect,
+  geometry,
+  plainWinding = false,
+  showToothPoles = false,
+  showPhases = false,
+  overlays = NO_3D_OVERLAYS,
 }: PublicMotor3DProps) {
+  // The same phase drive the 2D view shades by: the solve's own terminal currents.
+  const solveParams = config.solve_params;
+  const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
+  const metadataPoles = Number(geometry?.metadata.pole_count);
+  const pyleecanAxis = geometry?.metadata.phase_current_convention === 'pyleecan_d_axis'
+    || publishedReference(config)?.phaseCurrentConvention === 'pyleecan_d_axis';
+  const phaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
+    ? {
+      mode: solveParams.excitation_mode,
+      currentAngleDeg: solveParams.current_angle_deg,
+      currentAngleReference: pyleecanAxis ? 'pyleecan_d_axis' : 'q_axis',
+      currentAmplitudeA: solveParams.current_amplitude_A,
+      commutationAdvanceDeg: solveParams.commutation_advance_deg,
+      axisOffsetDeg: Number.isFinite(metadataAxis) ? metadataAxis : 0,
+      poleCount: Number.isFinite(metadataPoles) && metadataPoles > 0 ? metadataPoles : config.rotor.pole_count,
+    }
+    : null), [
+    solveParams?.excitation_mode,
+    solveParams?.current_angle_deg,
+    solveParams?.current_amplitude_A,
+    solveParams?.commutation_advance_deg,
+    pyleecanAxis,
+    metadataAxis,
+    metadataPoles,
+    config.rotor.pole_count,
+  ]);
+  const windingLayout: WindingSide[] | null = geometry?.winding_layout ?? null;
+  // What the scene shows now. It is built once per design, so the toggles reach it through this.
+  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout });
+  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout };
+  const applyDisplayRef = useRef<(() => void) | null>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rotorRef = useRef<THREE.Group | null>(null);
@@ -1163,12 +1212,16 @@ function ParametricMotor3D({
           .map((coil) => [coil.tooth, coil] as const),
       )
       : null;
+    const toothMaterials: THREE.MeshPhysicalMaterial[] = [];
     for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
       // The backend centres slot k at k slot pitches and tooth k between slots
       // k and k + 1, the frame the 2D view and the tooth-coil rules use.
       const angle = (slot + 0.5) * slotPitch;
       const slotAngle = slot * slotPitch;
-      const tooth = new THREE.Mesh(toothGeometry, materials.tooth);
+      // Its own material, so Tooth poles can tint each tooth by itself.
+      const toothMaterial = materials.tooth.clone();
+      toothMaterials.push(toothMaterial);
+      const tooth = new THREE.Mesh(toothGeometry, toothMaterial);
       tooth.rotation.z = angle;
       makeSelectable(tooth, { id: `3d-stator-tooth-${slot + 1}`, kind: 'stator', label: `Stator tooth ${slot + 1}`, role: 'Stationary magnetic flux path', slotIndex: slot + 1 });
       teethGroup.add(tooth);
@@ -1219,6 +1272,7 @@ function ParametricMotor3D({
 
     let harnessGroup: THREE.Group | null = null;
     const harnessMaterials: THREE.MeshPhysicalMaterial[] = [];
+    const harnessByPhase: Partial<Record<'A' | 'B' | 'C', THREE.MeshPhysicalMaterial>> = {};
     if (concentratedCoil) {
       const harness = buildWindingHarness({
         slotCount: config.stator.slot_count,
@@ -1246,6 +1300,7 @@ function ParametricMotor3D({
           true,
         );
         harnessMaterials.push(material);
+        harnessByPhase[phase] = material;
         const mesh = new THREE.Mesh(geometry, material);
         makeSelectable(mesh, {
           id: `3d-harness-${phase}`,
@@ -1751,6 +1806,97 @@ function ParametricMotor3D({
     addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, capCenterZ));
     if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, capCenterZ));
 
+    // Slot, tooth and coil-side chips on the stack's end face, for the Overlay toggles.
+    const overlayLabels: Array<{ sprite: THREE.Sprite; kind: keyof Motor3DOverlays }> = [];
+    const slotTotal = Math.max(1, config.stator.slot_count);
+    const slotBackRadius = outerRotor ? yokeOuterRadius : yokeInnerRadius;
+    const yokeFarRadius = outerRotor ? yokeInnerRadius : outerRadius;
+    const along = (from: number, to: number, share: number) => from + (to - from) * share;
+    const labelHeight = THREE.MathUtils.clamp(
+      (Math.PI * 2 * along(statorInnerRadius, slotBackRadius, 0.5)) / slotTotal * 0.42,
+      outerRadius * 0.03,
+      outerRadius * 0.07,
+    );
+    const addOverlayLabel = (kind: keyof Motor3DOverlays, text: string, angle: number, radius: number, stroke?: string) => {
+      const { sprite, texture } = makeChipSprite(text, stroke);
+      if (texture) chipTextures.push(texture);
+      sprite.material.opacity = 1;
+      sprite.scale.set(labelHeight * (sprite.userData.aspect as number), labelHeight, 1);
+      sprite.position.set(Math.cos(angle) * radius, Math.sin(angle) * radius, stackDepth / 2);
+      sprite.visible = false;
+      sprite.raycast = () => {};
+      scene.add(sprite);
+      overlayLabels.push({ sprite, kind });
+    };
+    for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
+      addOverlayLabel('slots', String(slot + 1), slot * slotPitch, along(statorInnerRadius, slotBackRadius, 0.5), 'rgba(255, 255, 255, 0.34)');
+      addOverlayLabel('teeth', `T${slot + 1}`, (slot + 0.5) * slotPitch, along(statorInnerRadius, slotBackRadius, 0.8), 'rgba(255, 255, 255, 0.34)');
+    }
+    // Coil sides sit on the yoke behind their slot; a second side in the slot steps further back.
+    // The layout comes with the preview, after the scene is built, so its chips are made when it arrives.
+    let labelledLayout: WindingSide[] | null = null;
+    const syncWindingLabels = (layout: WindingSide[] | null) => {
+      if (layout === labelledLayout) return;
+      labelledLayout = layout;
+      for (let index = overlayLabels.length - 1; index >= 0; index -= 1) {
+        const { sprite, kind } = overlayLabels[index];
+        if (kind !== 'windings') continue;
+        scene.remove(sprite);
+        sprite.material.map?.dispose();
+        sprite.material.dispose();
+        overlayLabels.splice(index, 1);
+      }
+      const sidesPlaced = new Map<number, number>();
+      (layout ?? []).forEach((side) => {
+        const placed = sidesPlaced.get(side.slot_index) ?? 0;
+        sidesPlaced.set(side.slot_index, placed + 1);
+        addOverlayLabel(
+          'windings',
+          `${side.phase}${side.direction === 'in' ? '+' : '\u2212'}`,
+          side.slot_index * slotPitch,
+          along(slotBackRadius, yokeFarRadius, Math.min(0.9, 0.3 + placed * 0.45)),
+          PUBLIC_PHASE_COLORS[side.phase],
+        );
+      });
+    };
+
+    // Coil colours, Phases and Tooth poles recolour materials in place, so no toggle rebuilds the scene.
+    const plainCoil = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.winding));
+    const toothBase = materials.tooth.color.clone();
+    const northPole = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.magnetNorth));
+    const southPole = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.magnetSouth));
+    const phaseTints = (['A', 'B', 'C'] as const).map((phase) => (
+      [materials[`coil${phase}`], materials[`phase${phase}`], harnessByPhase[phase]]
+        .filter((material): material is THREE.MeshPhysicalMaterial => Boolean(material))
+        .map((material) => ({ material, base: material.color.clone() }))
+    ));
+    const applyDisplay = () => {
+      const shown = displayRef.current;
+      syncWindingLabels(shown.windingLayout);
+      const drive = shown.phaseDrive;
+      const currents = (shown.showPhases || shown.showToothPoles) && drive
+        ? phaseCurrents(drive, rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount))
+        : null;
+      phaseTints.forEach((tints, index) => {
+        // Phases lights each phase by the current it carries now, whatever Coil colors says.
+        const lit = shown.showPhases && currents !== null;
+        const strength = lit ? 0.48 + Math.abs(currents[index]) * 0.52 : 1;
+        tints.forEach(({ material, base }) => {
+          material.color.copy(lit || !shown.plainWinding ? base : plainCoil).multiplyScalar(strength);
+        });
+      });
+      const poles = shown.showToothPoles && currents && shown.windingLayout?.length
+        ? toothPoles(slotCurrents(shown.windingLayout, config.stator.slot_count, currents), outerRotor ? 'outward' : 'inward')
+        : null;
+      toothMaterials.forEach((material, tooth) => {
+        const strength = poles?.[tooth] ?? 0;
+        material.color.copy(toothBase);
+        if (Math.abs(strength) > 0.06) material.color.lerp(strength > 0 ? northPole : southPole, 0.25 + 0.6 * Math.abs(strength));
+      });
+    };
+    applyDisplayRef.current = applyDisplay;
+    applyDisplay();
+
     // Show/hide plumbing. Each toggle owns the groups that only read as a part
     // together — hiding the stator without its teeth, or the coils without
     // their rear links, would just leave a fragment floating in the bore.
@@ -1828,6 +1974,10 @@ function ParametricMotor3D({
         // would leave a caption pointing at empty space.
         sprite.visible = chipOpacity > 0.02 && follows.visible;
         sprite.material.opacity = chipOpacity;
+      });
+      // The number chips belong to the assembled stator: they go while it is hidden or taken apart.
+      overlayLabels.forEach(({ sprite, kind }) => {
+        sprite.visible = displayRef.current.overlays[kind] && normalized < 0.05 && statorGroup.visible;
       });
       radialExplodables.forEach(({ object, basePosition, direction, distance }) => {
         object.position.copy(basePosition).addScaledVector(direction, distance * eased);
@@ -1962,6 +2112,7 @@ function ParametricMotor3D({
       rotorRef.current = null;
       bearingRigsRef.current = [];
       applyPartVisibilityRef.current = null;
+      applyDisplayRef.current = null;
       scene.traverse((object) => {
         const material = 'material' in object ? object.material as THREE.Material | THREE.Material[] : null;
         (Array.isArray(material) ? material : material ? [material] : []).forEach((item) => item.dispose());
@@ -1977,6 +2128,11 @@ function ParametricMotor3D({
       renderer.dispose();
     };
   }, [config]);
+
+  useEffect(() => {
+    applyDisplayRef.current?.();
+    requestRenderRef.current?.();
+  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout]);
 
   useEffect(() => {
     if (!rotorRef.current) return;

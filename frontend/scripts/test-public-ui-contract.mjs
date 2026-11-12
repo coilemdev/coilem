@@ -692,7 +692,7 @@ assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}
 // preview speed (2D only), not one of the label overlays.
 assert.match(workspaceSource, /\['windings', 'Winding', 'winding labels \(A\+, A-\)'\],\s*\] as Array<\[keyof PublicCanvasOverlays, string, string\]>\)/);
 assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
-assert.match(workspaceSource, /aria-label="2D display toggles">[\s\S]{0,700}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
+assert.match(workspaceSource, /aria-label="Display toggles">[\s\S]{0,700}?\{mode === 'geometry' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
 assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'none' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
 // Slots and Winding are labels only, each on or off by itself, whatever colours the coils.
 assert.match(motorCanvasSource, /const badgeKinds = \(\['slots', 'windings'\] as const\)\.filter\(\(kind\) => overlays\[kind\]\);/);
@@ -710,7 +710,7 @@ assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents 
 // Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
 assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
 assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
-assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
+assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{mode === 'geometry' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
 assert.match(workspaceSource, /showToothPoles=\{viewportMode === '2d' && showToothPoles\}/);
 assert.match(motorCanvasSource, /strength > 0 \? PUBLIC_MOTOR_COLORS\.magnetNorth : PUBLIC_MOTOR_COLORS\.magnetSouth/);
 // Every magnet is lettered N / S by the pole facing the airgap; in the Split view each

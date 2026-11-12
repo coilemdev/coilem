@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177707,
-      "sha256": "21e79377dc7e7934c278ebe32ce933416ecea90a816ae630366dbb93473c0068"
+      "bytes": 177700,
+      "sha256": "f7487d549c5ca6622d1d8d433a1f79c9f59964a708265759b953f6bc1863255a"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 257945,
-      "sha256": "1d01176f4ac175412e84aa45cf42520fd4fc723a168a7bde9ff48629c774ad4b"
+      "bytes": 258724,
+      "sha256": "c72632d9249b8625ddb25e9326d195fddc794e4c239d254605588ca30d2e49ec"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 91428,
-      "sha256": "fa02c457ed5b49183894ad24339e8cbafc37f0782c4943b1f83d4b53f4a5ceb9"
+      "bytes": 99926,
+      "sha256": "accf245e5aed54d54e73cdba9b5ea27c8dc72d464a19d80d722d1d877ef01210"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
