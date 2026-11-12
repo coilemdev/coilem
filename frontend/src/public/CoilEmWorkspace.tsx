@@ -2,6 +2,7 @@ import { solveViewMemory } from './solveViewMemory';
 import { useTurningRotorAngle } from './useTurningRotorAngle';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
+import { windingBuildChecks } from './windingBuild';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
@@ -2745,6 +2746,14 @@ function HealthPanel({
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
   const qualification = geometryStale ? null : readQualification(geometry?.metadata?.qualification);
+  // Can it be wound: the wire against the slot, the slot mouth and the bends it has to make (windingBuild.ts).
+  const windingRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
+  const windingChecks = windingRecord ? windingBuildChecks({
+    record: windingRecord,
+    slotMouthMm: Math.max(0, config.stator.slot_opening_mm - (config.stator.tooth_shoe_enabled ? 2 * Math.max(0, config.stator.tooth_shoe_overhang_mm ?? 1.5) : 0)),
+    windingType: config.winding.type,
+    toothWidthMm: statorWidths.narrowestToothWidthMm,
+  }) : [];
   const issues: DesignHealthIssue[] = [
     ...(error ? [{
       severity: 'warning' as const,
@@ -2763,6 +2772,7 @@ function HealthPanel({
       title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
+    ...windingChecks,
     ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
     ...(toothWidthAdvisory ? [{
       severity: toothWidthAdvisory.severity,

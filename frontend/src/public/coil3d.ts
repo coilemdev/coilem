@@ -29,6 +29,8 @@ export interface ConcentratedCoilSpec {
   stackLength: number;
   /** Electrical turns per coil; rendering may bundle these into fewer strands. */
   turnsPerCoil: number;
+  /** Outside diameter of one turn's conductor, in millimetres. Left out, the loops are sized to fill the slot. */
+  turnDiameter?: number;
   /**
    * Optional hand-wound look for close-up hero renders. Leave unset for the
    * default schematic bundle, which is unchanged by these options.
@@ -185,7 +187,16 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
       turnsPerLayer = rows;
     }
   }
-  const wireRadius = THREE.MathUtils.clamp(bestDiameter * 0.47, 0.22, 2.6);
+  if (spec.turnDiameter && spec.turnDiameter > 0) {
+    // The real wire, drawn thicker by the same copper where fewer loops are drawn than there are turns.
+    bestDiameter = spec.turnDiameter * Math.sqrt(turns / strandTarget);
+    const rowsThatFit = Math.max(1, Math.floor(sizingSpan / bestDiameter));
+    wireLayers = Math.max(1, Math.ceil(strandTarget / rowsThatFit));
+    turnsPerLayer = Math.ceil(strandTarget / wireLayers);
+  }
+  const wireRadius = spec.turnDiameter && spec.turnDiameter > 0
+    ? Math.max(0.12, bestDiameter * 0.47)
+    : THREE.MathUtils.clamp(bestDiameter * 0.47, 0.22, 2.6);
 
   const usableStart = boreX + Math.max(1.2, wireRadius + 0.5);
   const usableEnd = yokeX - Math.max(1, wireRadius + 0.4);
@@ -477,6 +488,11 @@ export interface DistributedCoilSpec {
   maxStrands: number;
   /** How far an end turn may step towards the yoke before it would stand proud of the stator, in millimetres. */
   yokeRoom: number;
+  /**
+   * Outside diameter of one turn's conductor, in millimetres: the insulated wire,
+   * or the bundle its strands in hand make. Left out, the loops are sized to fill the slot.
+   */
+  turnDiameter?: number;
 }
 
 const DISTRIBUTED_MAX_COLUMNS = 6;
@@ -566,6 +582,15 @@ export function buildDistributedCoil(spec: DistributedCoilSpec): { geometry: THR
     }
   }
   wireRadius = THREE.MathUtils.clamp(wireRadius * 0.96, 0.18, 2.6);
+  if (spec.turnDiameter && spec.turnDiameter > 0) {
+    // The real wire. Where fewer loops are drawn than there are turns, each is drawn
+    // thicker by the same copper, so the slot looks as full as it really is; a wire
+    // too big for the slot then stands out of it.
+    const turns = Math.max(1, Math.round(spec.turns) || 1);
+    wireRadius = Math.max(0.12, (spec.turnDiameter / 2) * Math.sqrt(turns / strandTarget));
+    columns = THREE.MathUtils.clamp(Math.floor(slotWidth / (wireRadius * 2.05)), 1, strandTarget);
+    rows = Math.ceil(strandTarget / columns);
+  }
   const pitch = wireRadius * 2.05;
   const arc = Math.abs(sweep) * middleRadius;
   // End turns held close to the stack, as a formed and laced winding sits: just enough

@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3232,
-      "sha256": "22dedbeeb99e0d139da44862fbc00f41ef80435e8b217dc08684709d5a3f1d48"
+      "bytes": 3271,
+      "sha256": "9c73e9d8300bd5505151210b9c135acffd0cfe7afbf9340d6c95958c9135bea3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6617,6 +6617,11 @@
       "path": "frontend/scripts/test-viewport-transform.mjs",
       "bytes": 2566,
       "sha256": "00438ce61f26d5eaff9d67eed5b915df18ec581e4b93296478340b2e72c78ec4"
+    },
+    {
+      "path": "frontend/scripts/test-winding-build.mjs",
+      "bytes": 3678,
+      "sha256": "8e963d0bdffe69749b7bace5fd4338048ba211143f3e369f6517739a3d3be06f"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -7035,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 259005,
-      "sha256": "31e55d6ba394729d38d7822b27be6ea28d4dbf7449172762153d974bc0ed094d"
+      "bytes": 259658,
+      "sha256": "419f933bcbfdf9a7698e72437b6c1ebc06b2d6bc169ff56c37dc56be1e5c70cd"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7105,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 109256,
-      "sha256": "7e13be438976c4a4dda603b1618425f3c6368cd6478df2d264b2a437d14afcc5"
+      "bytes": 110300,
+      "sha256": "5b1158d41cffd5d22ee1b4c513a5aa5b281c19548dde9e9111b2613fbcb16962"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7200,8 +7205,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 28561,
-      "sha256": "c9acf11ece5520701dcb5e301ffe9c6e5f9bff5045b4d581bbca24e94d948799"
+      "bytes": 30016,
+      "sha256": "6ca645c6791a312a77842741d537748294d961476e413fc516f53d2b3b880bb2"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -7597,6 +7602,11 @@
       "path": "frontend/src/public/viewportTransform.ts",
       "bytes": 2517,
       "sha256": "3f38eeb560678e3bca9bde3a4b701dd171c7fdec66b090be0a6ab0de74c2d83c"
+    },
+    {
+      "path": "frontend/src/public/windingBuild.ts",
+      "bytes": 7284,
+      "sha256": "c2735cebf659db44b9c273ba7e6d3c839b63dd0e2141aa8849bee0d8856c7c47"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",

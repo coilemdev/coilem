@@ -13,6 +13,8 @@ import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './m
 import { STRIP_END, phaseCurrents, phaseDriveFrame, phaseStrips, rotorElectricalDeg, slotCurrents, toothPoles, type PhaseDrive, type WindingSide } from './phaseDrive';
 import { drawPhaseDriveWired } from './phaseDrivePanel';
 import { publishedReference } from './publishedReferences';
+import { insulatedDiameterMm } from './windingBuild';
+import { readWindingResistance } from './windingResistance';
 import { shoeShoulderFraction, stator3dRadii } from './stator3dRadii';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
@@ -699,9 +701,14 @@ function ParametricMotor3D({
   ]);
   const windingLayout: WindingSide[] | null = geometry?.winding_layout ?? null;
   const windingCoils: PublicWindingCoil[] | null = geometry?.winding_coils ?? null;
+  // One turn's conductor as the preview sizes it: the insulated wire, or the bundle its strands in hand make.
+  const wireRecord = readWindingResistance(geometry?.metadata?.winding_resistance);
+  const turnDiameter = wireRecord
+    ? Number((insulatedDiameterMm(wireRecord.strand_diameter_mm) * Math.sqrt(wireRecord.strands_in_hand)).toFixed(3))
+    : null;
   // What the scene shows now. It is built once per design, so the toggles reach it through this.
-  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, previewRpm });
-  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, previewRpm };
+  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, turnDiameter, previewRpm });
+  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, turnDiameter, previewRpm };
   // The Phases waveforms are drawn on a flat canvas: under the 3D one while the
   // drive leads are on the far side of the motor, so the wires pass behind it, and
   // over it once the view is turned to the back and the leads are in sight.
@@ -1179,6 +1186,11 @@ function ParametricMotor3D({
       endTurnRoundness: 0.5,
       irregularity: 0.14,
     };
+    // A wire the designer has set is drawn at its own size; without one the loops fill the slot.
+    const setWire = config.winding.wire;
+    const specifiedTurnDiameter = setWire
+      ? insulatedDiameterMm(setWire.wire_bare_diameter_mm) * Math.sqrt(Math.max(1, setWire.strands_in_hand ?? 1))
+      : undefined;
     const concentratedCoil = config.winding.type === 'concentrated'
       ? buildConcentratedCoil(outerRotor
         ? {
@@ -1189,6 +1201,7 @@ function ParametricMotor3D({
             slotPitchRad: slotPitch,
             stackLength: stackDepth,
             turnsPerCoil: config.winding.turns_per_coil,
+            turnDiameter: specifiedTurnDiameter,
             handWound,
           }
         : {
@@ -1199,6 +1212,7 @@ function ParametricMotor3D({
             slotPitchRad: slotPitch,
             stackLength: stackDepth,
             turnsPerCoil: config.winding.turns_per_coil,
+            turnDiameter: specifiedTurnDiameter,
             handWound,
           })
       : null;
@@ -1880,10 +1894,10 @@ function ParametricMotor3D({
     // The coil list comes with the preview, after the scene is built.
     let builtCoils = '';
     const distributedCoils: THREE.Mesh[] = [];
-    const syncDistributedCoils = (coils: PublicWindingCoil[] | null) => {
+    const syncDistributedCoils = (coils: PublicWindingCoil[] | null, wireDiameter: number | null) => {
       if (concentratedCoil) return;
       const spanning = (coils ?? []).filter((coil) => !coil.tooth_wound && coil.slot_in !== coil.slot_out);
-      const signature = JSON.stringify(spanning);
+      const signature = JSON.stringify([spanning, wireDiameter]);
       if (signature === builtCoils) return;
       builtCoils = signature;
       distributedCoils.splice(0).forEach((mesh) => {
@@ -1915,6 +1929,7 @@ function ParametricMotor3D({
           stackHalf: stackDepth / 2,
           yokeSide: outerRotor ? -1 : 1,
           turns: turnsPerDrawnCoil,
+          turnDiameter: wireDiameter ?? undefined,
           yokeRoom: Math.abs(yokeFarRadius - yokeEnd) - 2,
           // About 800 loops over the whole winding, at most 24 a coil as the tooth coils draw.
           maxStrands: Math.max(6, Math.min(24, Math.floor(800 / spanning.length))),
@@ -1949,7 +1964,7 @@ function ParametricMotor3D({
     const applyDisplay = () => {
       const shown = displayRef.current;
       syncWindingLabels(shown.windingLayout);
-      syncDistributedCoils(shown.windingCoils);
+      syncDistributedCoils(shown.windingCoils, shown.turnDiameter);
       const drive = shown.phaseDrive;
       const currents = (shown.showPhases || shown.showToothPoles) && drive
         ? phaseCurrents(drive, rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount))
@@ -2288,7 +2303,7 @@ function ParametricMotor3D({
   useEffect(() => {
     applyDisplayRef.current?.();
     requestRenderRef.current?.();
-  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout, windingCoils, previewRpm]);
+  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout, windingCoils, turnDiameter, previewRpm]);
 
   useEffect(() => {
     if (!rotorRef.current) return;
