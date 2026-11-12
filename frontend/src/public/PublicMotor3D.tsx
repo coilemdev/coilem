@@ -558,17 +558,19 @@ function buildEndCap(
 /**
  * An outer rotor's end bell: the drive-end plate closing its can, clamped to the
  * shaft so the shaft turns with the rotor. Open between spokes, as on a drone
- * motor, so the windings stay in view. Built with its inner face at z = 0,
- * facing -z, and positioned by the caller.
+ * motor, so the windings stay in view. The spokes slope up from the rim to a
+ * raised hub, leaving room over the end turns. Built with the rim's inner face
+ * at z = 0 and positioned by the caller.
  */
 function buildRotorBell(
-  dims: { shaftRadius: number; rimInnerRadius: number; outerRadius: number; thickness: number },
+  dims: { shaftRadius: number; rimInnerRadius: number; outerRadius: number; thickness: number; rise: number },
   material: THREE.Material,
 ): HousingBuild {
   const group = new THREE.Group();
   const hubOuterRadius = Math.max(dims.shaftRadius * 2.1, dims.shaftRadius + dims.thickness);
 
-  const rimGeometry = annulusGeometry(dims.rimInnerRadius, dims.outerRadius, dims.thickness);
+  const bevel = Math.min(dims.thickness * 0.12, (dims.outerRadius - dims.rimInnerRadius) * 0.12);
+  const rimGeometry = annulusGeometry(dims.rimInnerRadius, dims.outerRadius, dims.thickness, bevel);
   const rim = new THREE.Mesh(rimGeometry, material);
   rim.position.z = dims.thickness / 2;
   group.add(rim);
@@ -576,18 +578,33 @@ function buildRotorBell(
   // The clamp hub stands proud of the plate on both faces, gripping the shaft.
   const hubGeometry = annulusGeometry(dims.shaftRadius, hubOuterRadius, dims.thickness * 1.8);
   const hub = new THREE.Mesh(hubGeometry, material);
-  hub.position.z = dims.thickness / 2;
+  hub.position.z = dims.rise + dims.thickness / 2;
   group.add(hub);
 
   const spokeCount = 5;
-  const spokeLength = Math.max(0.1, dims.rimInnerRadius - hubOuterRadius) + dims.thickness;
   const spokeWidth = Math.max(dims.thickness, ((2 * Math.PI * dims.rimInnerRadius) / spokeCount) * 0.2);
-  const spokeGeometry = new THREE.BoxGeometry(spokeLength, spokeWidth, dims.thickness);
+  const spokeRoot = hubOuterRadius * 0.85;
+  const spokeTip = dims.rimInnerRadius + dims.thickness * 0.4;
+  const spokeShape = new THREE.Shape();
+  spokeShape.moveTo(spokeRoot, -spokeWidth * 0.32);
+  spokeShape.lineTo(spokeTip, -spokeWidth / 2);
+  spokeShape.lineTo(spokeTip, spokeWidth / 2);
+  spokeShape.lineTo(spokeRoot, spokeWidth * 0.32);
+  spokeShape.closePath();
+  const spokeGeometry = extrude(spokeShape, dims.thickness, bevel);
+  spokeGeometry.translate(0, 0, dims.thickness / 2);
+  // Lift the inner end without rotating a thick box into the hub or rim.
+  const positions = spokeGeometry.getAttribute('position');
+  for (let index = 0; index < positions.count; index += 1) {
+    const lift = THREE.MathUtils.clamp(
+      (dims.rimInnerRadius - positions.getX(index)) / (dims.rimInnerRadius - hubOuterRadius), 0, 1,
+    ) * dims.rise;
+    positions.setZ(index, positions.getZ(index) + lift);
+  }
+  spokeGeometry.computeVertexNormals();
   for (let index = 0; index < spokeCount; index += 1) {
     const angle = (index / spokeCount) * Math.PI * 2;
     const spoke = new THREE.Mesh(spokeGeometry, material);
-    const middle = (hubOuterRadius + dims.rimInnerRadius) / 2;
-    spoke.position.set(middle * Math.cos(angle), middle * Math.sin(angle), dims.thickness / 2);
     spoke.rotation.z = angle;
     group.add(spoke);
   }
@@ -1046,6 +1063,15 @@ function ParametricMotor3D({
         roughness: 0.52,
         envMapIntensity: 0.5,
       }),
+      // Black anodized aluminium on the outrunner's open, raised end bell.
+      rotorBell: new THREE.MeshPhysicalMaterial({
+        color: 0x171a1f,
+        metalness: 0.78,
+        roughness: 0.38,
+        clearcoat: 0.16,
+        clearcoatRoughness: 0.4,
+        envMapIntensity: 0.65,
+      }),
       bearingRace: new THREE.MeshPhysicalMaterial({
         color: 0xbfc7d2,
         metalness: 0.95,
@@ -1438,10 +1464,12 @@ function ParametricMotor3D({
     let bellOuterFaceZ = 0;
     if (outerRotor) {
       const bellThickness = Math.max(0.6, capThickness);
+      const bellRise = Math.max(bellThickness * 1.5, rotorRadius * 0.11);
       const bellInnerFaceZ = stackDepth / 2
         + (concentratedCoil?.axialOverhang ?? stackDepth * 0.08)
-        + Math.max(0.5, bellThickness * 0.6);
-      bellOuterFaceZ = bellInnerFaceZ + bellThickness;
+        + Math.max(0.8, rotorRadius * 0.045, bellThickness * 0.9);
+      // Include the raised clamp hub when sizing the visible shaft extension.
+      bellOuterFaceZ = bellInnerFaceZ + bellRise + bellThickness * 1.4;
       const canGeometry = annulusGeometry(magnetSeatRadius, rotorRadius, bellInnerFaceZ - stackDepth / 2);
       geometries.push(canGeometry);
       const can = new THREE.Mesh(canGeometry, [materials.rotorFace, materials.rotor]);
@@ -1450,8 +1478,8 @@ function ParametricMotor3D({
       addEdges(can);
       rotorCoreGroup.add(can);
       const bell = buildRotorBell(
-        { shaftRadius, rimInnerRadius: magnetSeatRadius * 0.86, outerRadius: rotorRadius, thickness: bellThickness },
-        materials.endcapRear,
+        { shaftRadius, rimInnerRadius: magnetSeatRadius * 0.86, outerRadius: rotorRadius, thickness: bellThickness, rise: bellRise },
+        materials.rotorBell,
       );
       geometries.push(...bell.geometries);
       bell.group.position.z = bellInnerFaceZ;
