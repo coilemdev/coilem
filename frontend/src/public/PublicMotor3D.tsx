@@ -1,5 +1,5 @@
 import { ReferenceMotor3D } from './ReferenceMotor3D';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -675,6 +675,20 @@ function ParametricMotor3D({
       return next;
     });
   };
+
+  // The parts from the outside in, for the slider that peels the motor: on an
+  // outer-rotor machine the rotor and magnets are outside the stator.
+  const outerRotor = config.rotor_layout === 'outer';
+  const peelOrder = useMemo<HideablePartId[]>(() => (outerRotor
+    ? ['endcaps', 'rotor', 'magnets', 'airgap', 'windings', 'stator', 'bearings', 'shaft']
+    : ['endcaps', 'stator', 'windings', 'airgap', 'magnets', 'rotor', 'bearings', 'shaft']), [outerRotor]);
+  // How many parts are left, counted from the shaft outwards: every part up to the first one still shown is peeled.
+  const firstShown = peelOrder.findIndex((part) => !hiddenParts.has(part));
+  const partsLeft = firstShown < 0 ? 0 : peelOrder.length - firstShown;
+  const peelTo = (left: number) => {
+    setHiddenParts(new Set(peelOrder.slice(0, peelOrder.length - left)));
+  };
+  const outermostShown = firstShown < 0 ? null : HIDEABLE_PARTS.find(({ id }) => id === peelOrder[firstShown])?.label ?? null;
 
   useEffect(() => {
     hiddenPartsRef.current = hiddenParts;
@@ -2008,6 +2022,22 @@ function ParametricMotor3D({
               );
             })}
         </div>
+      )}
+      {introProgress === null && (
+        <label className="public-3d-peel" title="Slide left to take the motor apart from the outside in; all the way right shows every part">
+          <span>Outside in</span>
+          <input
+            type="range"
+            min={0}
+            max={peelOrder.length}
+            step={1}
+            value={partsLeft}
+            aria-label="Parts shown, from the shaft outwards"
+            aria-valuetext={outermostShown ? `Out to the ${outermostShown.toLowerCase()}` : 'No parts'}
+            onChange={(event) => peelTo(Number(event.target.value))}
+          />
+          <em>{outermostShown ?? 'None'}</em>
+        </label>
       )}
       <div className="public-3d-hint">
         {introProgress !== null

@@ -1793,6 +1793,7 @@ function ViewportChrome({
   // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
+  const [meshMagnifier, setMeshMagnifier] = useState(false);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -1804,7 +1805,6 @@ function ViewportChrome({
   const [explodedAmount, setExplodedAmount] = useState(0);
   const [threeResetSignal, setThreeResetSignal] = useState(0);
   const [hoveredMeshElement, setHoveredMeshElement] = useState<PublicMeshElementSelection | null>(null);
-  const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
   const viewportRef = useRef<HTMLElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   // The 2D canvas puts its zoom controls in the title bar, beside fullscreen.
@@ -1918,16 +1918,6 @@ function ViewportChrome({
   useEffect(() => {
     if (mode !== 'mesh') return;
     setViewportMode((current) => (current === '3d' ? '2d' : current));
-  }, [mode]);
-
-  useEffect(() => {
-    if (mode !== 'mesh') {
-      setShowMeshNavigationHint(false);
-      return undefined;
-    }
-    setShowMeshNavigationHint(true);
-    const timer = window.setTimeout(() => setShowMeshNavigationHint(false), 4_200);
-    return () => window.clearTimeout(timer);
   }, [mode]);
 
   // Remember the Design view once its intro is over. No dependency list: a
@@ -2150,6 +2140,7 @@ function ViewportChrome({
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
+              magnifier={mode === 'mesh' && meshMagnifier}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -2221,12 +2212,6 @@ function ViewportChrome({
                       ? 'Air'
                       : selectedComponent.role}
           </span>
-        </div>
-      )}
-      {mode === 'mesh' && showMeshNavigationHint && (
-        <div className="public-mesh-navigation-hint" role="status">
-          <span>Scroll to zoom · drag once zoomed</span>
-          <button type="button" aria-label="Dismiss mesh navigation hint" onClick={() => setShowMeshNavigationHint(false)}>×</button>
         </div>
       )}
       {mode === 'mesh' && meshQualitySummary && meshDisplayMode !== 'geometry' && (
@@ -2372,6 +2357,42 @@ function ViewportChrome({
               >
                 Element edges
               </button>
+              <button
+                type="button"
+                className="public-dock-toggle"
+                aria-pressed={meshMagnifier}
+                title="Show the area under the pointer enlarged in a corner of the view"
+                onClick={() => setMeshMagnifier((value) => !value)}
+              >
+                Magnifier
+              </button>
+            </span>
+          )}
+          {mode === 'mesh' && (
+            <span className="vc-group public-view-modes" role="group" aria-label="Mesh overlays">
+              <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['none', 'None'],
+                  ['slots', 'Slots'],
+                  ['windings', 'Winding'],
+                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
+                  const shown = meshDisplayMode !== 'geometry' ? 'none' : canvasLayer === 'phases' ? 'windings' : canvasLayer === 'dimensions' ? 'none' : canvasLayer;
+                  const pressed = shown === layer;
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={pressed}
+                      disabled={meshDisplayMode !== 'geometry'}
+                      title={meshDisplayMode !== 'geometry' ? 'Overlays show with the Regions colouring' : layer === 'none' ? 'Show the bare mesh' : `Show ${label.toLowerCase()} over the mesh`}
+                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
+                      key={layer}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </span>
             </span>
           )}
           {viewportMode === 'materials' && mode === 'geometry' && (
@@ -3373,7 +3394,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   // While a solve meshes, the viewport turns the rotor steadily; while it
   // solves the field, the rotor holds still and the view pulses slowly. Both
   // read progress the solver already reports, so they add nothing to the
-  // solve; the mesh view redraws less often because it draws more.
+  // solve; the mesh view turns a picture of the rotor it drew once.
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
   const sweepPoleCount = config.rotor.pole_count;
@@ -3384,7 +3405,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
   const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
   const solvingField = shownRotorTurn?.phase === 'solving';
-  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? !solvingField : null, solveView === 'mesh' ? 4 : 12);
+  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? !solvingField : null, 12);
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));

@@ -90,6 +90,8 @@ interface MotorCanvasProps {
   showMeshEdges?: boolean;
   /** Element-edge colour in place of the usual grey. */
   meshEdgeColor?: string | null;
+  /** Mesh view: show the area under the pointer enlarged in a corner. */
+  magnifier?: boolean;
   meshQualities?: number[];
   meshQualityThreshold?: number;
   focusedMeshElementIndex?: number | null;
@@ -119,6 +121,74 @@ interface DimensionHit {
 interface MeshTriangleHit {
   points: Array<[number, number]>;
   selection: PublicMeshElementSelection;
+}
+
+/** What one pass of drawMesh leaves out or changes. */
+interface MeshDrawOptions {
+  /** Only the elements that turn with the rotor, or only those that do not. */
+  part?: 'all' | 'fixed' | 'rotor';
+  /** False leaves the region fills out, for a mesh drawn over the geometry. */
+  fill?: boolean;
+  /** Each element's phase when it is in a coil side (meshCoilPhases). */
+  coilPhases?: Array<string | null> | null;
+  /** Draw only elements touching this box, in canvas px: left, top, right, bottom. */
+  cull?: [number, number, number, number] | null;
+  edgeWidthScale?: number;
+}
+
+/** Where a drawn mesh sits on the canvas: the motor centre and its outer radius, in px. */
+interface MeshDrawFrame {
+  origin: [number, number];
+  radiusPx: number;
+}
+
+const MESH_FILL_KEY_SEPARATOR = '\u0000';
+/** The magnifier panel: its side in CSS px, and how much larger it draws than the view. */
+const MESH_LOUPE_SIZE_PX = 240;
+const MESH_LOUPE_MAGNIFICATION = 3;
+
+const meshOuterRadiusCache = new WeakMap<MeshPreview, number>();
+function meshOuterRadiusMm(mesh: MeshPreview): number {
+  let radius = meshOuterRadiusCache.get(mesh);
+  if (radius === undefined) {
+    radius = 0;
+    for (const [x, y] of mesh.nodes_mm) radius = Math.max(radius, Math.hypot(x, y));
+    meshOuterRadiusCache.set(mesh, radius);
+  }
+  return radius;
+}
+
+const meshCoilPhaseCache = new WeakMap<MeshPreview, { geometry: GeometryPreview; phases: Array<string | null> }>();
+/**
+ * The phase of each mesh element that lies in a coil side, null elsewhere. The
+ * mesh names its coil regions without a phase, so it is read from the geometry
+ * preview's coil sides: the one that contains the element's centre.
+ */
+function meshCoilPhases(mesh: MeshPreview, geometry: GeometryPreview): Array<string | null> {
+  const cached = meshCoilPhaseCache.get(mesh);
+  if (cached && cached.geometry === geometry) return cached.phases;
+  const coilSides = geometry.regions.flatMap((region) => {
+    const winding = windingToken(region.region_type);
+    if (!winding || region.points.length < 3) return [];
+    const xs = region.points.map(([x]) => x);
+    const ys = region.points.map(([, y]) => y);
+    return [{
+      phase: winding.phase as string,
+      points: region.points,
+      box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)],
+    }];
+  });
+  const phases = mesh.triangles.map((triangle, index) => {
+    if (coilSides.length === 0 || !/slot|winding|coil/i.test(mesh.regions[index] || '')) return null;
+    const x = (mesh.nodes_mm[triangle[0]][0] + mesh.nodes_mm[triangle[1]][0] + mesh.nodes_mm[triangle[2]][0]) / 3;
+    const y = (mesh.nodes_mm[triangle[0]][1] + mesh.nodes_mm[triangle[1]][1] + mesh.nodes_mm[triangle[2]][1]) / 3;
+    const side = coilSides.find(({ box, points }) => (
+      x >= box[0] && x <= box[2] && y >= box[1] && y <= box[3] && pointInPolygon([x, y], points)
+    ));
+    return side?.phase ?? null;
+  });
+  meshCoilPhaseCache.set(mesh, { geometry, phases });
+  return phases;
 }
 
 const REGION_COLORS: Array<[RegExp, string]> = [
@@ -885,11 +955,12 @@ function drawGeometry(
     const slotRegions = data.regions.filter((region) => /slot_(\d+)/i.test(region.region_type) && region.points.length > 0);
     const slotRadii = slotRegions.flatMap((region) => region.points.map(([px, py]) => Math.hypot(px, py)));
     const slotBackMm = slotRadii.length ? (yokeInside ? Math.min(...slotRadii) : Math.max(...slotRadii)) : 0;
+    const slotFrontMm = slotRadii.length ? (yokeInside ? Math.max(...slotRadii) : Math.min(...slotRadii)) : 0;
     const badgeStepMm = (badgeRadius + 4) / pixelsPerMm;
     const placed: Array<[number, number]> = [];
     // Slots numbers each slot once, however many coil sides it holds; Winding
     // labels every coil side.
-    const badges = new Map<string, { sumX: number; sumY: number; slot: string; region: (typeof slotRegions)[number] }>();
+    const badges = new Map<string, { sumX: number; sumY: number; count: number; slot: string; region: (typeof slotRegions)[number] }>();
     slotRegions.forEach((region, index) => {
       const slot = region.region_type.match(/slot_(\d+)/i)?.[1];
       if (!slot) return;
@@ -898,19 +969,33 @@ function drawGeometry(
         [0, 0],
       ).map((value) => value / region.points.length) as [number, number];
       const key = layer === 'slots' ? slot : `${slot}:${index}`;
-      const badge = badges.get(key) ?? { sumX: 0, sumY: 0, slot, region };
+      const badge = badges.get(key) ?? { sumX: 0, sumY: 0, count: 0, slot, region };
       badge.sumX += center[0];
       badge.sumY += center[1];
+      badge.count += 1;
       badges.set(key, badge);
     });
-    for (const { sumX, sumY, slot, region } of badges.values()) {
+    // A small yoke (the inside of an outer-rotor stator) has no room for a ring of
+    // badges: they would pile onto each other. There each badge sits in its own
+    // coil side instead, between the ⊙ / ⊗ mark and the slot opening, where the
+    // slot is widest.
+    const yokeRadiusMm = slotBackMm + (yokeInside ? -badgeStepMm : badgeStepMm);
+    const badgeAngles = [...badges.values()].map(({ sumX, sumY }) => Math.atan2(sumY, sumX)).sort((a, b) => a - b);
+    const closestGapRad = badgeAngles.reduce((closest, angle, index) => {
+      const next = index + 1 < badgeAngles.length ? badgeAngles[index + 1] : badgeAngles[0] + Math.PI * 2;
+      return Math.min(closest, next - angle);
+    }, Math.PI * 2);
+    const yokeCrowded = badgeAngles.length > 1
+      && Math.max(0, yokeRadiusMm) * pixelsPerMm * closestGapRad < badgeRadius * 2 + 2;
+    for (const { sumX, sumY, count, slot, region } of badges.values()) {
       const slotMatch = [slot, slot];
       const angle = Math.atan2(sumY, sumX);
+      const centroidMm = Math.hypot(sumX, sumY) / Math.max(1, count);
       // Two coil sides stacked in one slot share an angle: the second badge
       // steps further back rather than landing on the first.
-      let radiusMm = slotBackMm + (yokeInside ? -badgeStepMm : badgeStepMm);
+      let radiusMm = yokeCrowded ? centroidMm + (slotFrontMm - centroidMm) * 0.55 : yokeRadiusMm;
       let [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
-      for (let attempt = 0; attempt < 3 && placed.some(([px, py]) => Math.hypot(px - x, py - y) < badgeRadius * 2); attempt += 1) {
+      for (let attempt = 0; !yokeCrowded && attempt < 3 && placed.some(([px, py]) => Math.hypot(px - x, py - y) < badgeRadius * 2); attempt += 1) {
         radiusMm += (yokeInside ? -1 : 1) * (badgeRadius * 2 + 2) / pixelsPerMm;
         [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
       }
@@ -1026,6 +1111,50 @@ function drawGeometry(
   if (driveFrame && phaseDrive && currents) {
     drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm);
   }
+  drawRotorZeroMark(context, origin, Math.max(outerRadiusPx, boundingRadiusMm * scale), rotorAngleDeg, rotationRad);
+}
+
+/**
+ * Where the rotor is: a tick fixed at 0° just outside the motor, and a dot that
+ * starts on it and goes round with the rotor.
+ */
+function drawRotorZeroMark(
+  context: CanvasRenderingContext2D,
+  origin: [number, number],
+  motorRadiusPx: number,
+  rotorAngleDeg: number,
+  /** The view's own rotation (the sector turntable), clockwise on screen. */
+  viewRotationRad: number,
+): void {
+  const at = (radius: number, angleRad: number): [number, number] => [
+    origin[0] + radius * Math.cos(angleRad),
+    origin[1] + radius * Math.sin(angleRad),
+  ];
+  const zero = viewRotationRad;
+  // The rotor turns clockwise on screen as its angle grows, as the drawing does.
+  const rotor = viewRotationRad + (rotorAngleDeg * Math.PI) / 180;
+  context.save();
+  const [tickFromX, tickFromY] = at(motorRadiusPx + 5, zero);
+  const [tickToX, tickToY] = at(motorRadiusPx + 19, zero);
+  context.beginPath();
+  context.moveTo(tickFromX, tickFromY);
+  context.lineTo(tickToX, tickToY);
+  context.strokeStyle = 'rgba(148, 163, 184, 0.7)';
+  context.lineWidth = 1.5;
+  context.lineCap = 'round';
+  context.stroke();
+  const [dotX, dotY] = at(motorRadiusPx + 12, rotor);
+  context.beginPath();
+  context.arc(dotX, dotY, 4, 0, Math.PI * 2);
+  context.fillStyle = '#fbbf24';
+  context.shadowColor = 'rgba(251, 191, 36, 0.8)';
+  context.shadowBlur = 6;
+  context.fill();
+  context.shadowBlur = 0;
+  context.strokeStyle = 'rgba(8, 10, 14, 0.9)';
+  context.lineWidth = 1;
+  context.stroke();
+  context.restore();
 }
 
 /**
@@ -1240,9 +1369,16 @@ function drawMesh(
   meshHits: MeshTriangleHit[],
   /** Replaces the usual grey of the element edges (the Solve page's field-solve glow). */
   edgeColor: string | null,
-): void {
-  if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
+  options: MeshDrawOptions = {},
+): MeshDrawFrame | null {
+  if (data.nodes_mm.length === 0 || data.triangles.length === 0) return null;
   const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
+  const part = options.part ?? 'all';
+  const fillRegions = options.fill ?? true;
+  const cull = options.cull ?? null;
+  const coilPhases = options.coilPhases ?? null;
+  // Elements left out of this pass: the other layer's, or those outside the magnifier's window.
+  const skipped = part !== 'all' || cull ? new Uint8Array(data.triangles.length) : null;
   const fillPaths = new Map<string, Path2D>();
   const qualityColors: Record<PublicMeshQualityBand, string> = {
     good: '#2a9d8f',
@@ -1263,16 +1399,31 @@ function drawMesh(
   data.triangles.forEach((triangle, index) => {
     const region = data.regions[index] || 'mesh';
     const rotateRotor = isRotorRegion(region);
-    const path = fillPaths.get(region) || new Path2D();
+    if (skipped && part !== 'all' && rotateRotor !== (part === 'rotor')) {
+      skipped[index] = 1;
+      return;
+    }
+    // A coil side takes its phase colour, so the winding reads in the mesh too.
+    const phase = coilPhases?.[index] ?? null;
+    const fillKey = phase ? `${region}${MESH_FILL_KEY_SEPARATOR}${phase}` : region;
+    const path = fillPaths.get(fillKey) || new Path2D();
     const a = mapMeshNode(triangle[0], rotateRotor);
     const b = mapMeshNode(triangle[1], rotateRotor);
     const c = mapMeshNode(triangle[2], rotateRotor);
+    if (skipped && cull && (
+      Math.max(a[0], b[0], c[0]) < cull[0] || Math.min(a[0], b[0], c[0]) > cull[2]
+      || Math.max(a[1], b[1], c[1]) < cull[1] || Math.min(a[1], b[1], c[1]) > cull[3]
+    )) {
+      skipped[index] = 1;
+      return;
+    }
     const quality = qualities[index] ?? 0;
     const band = publicMeshQualityBand(quality, qualityThreshold);
     meshHits.push({
       points: [a, b, c],
       selection: { index, quality, band, region },
     });
+    if (displayMode === 'geometry' && !fillRegions) return;
     if (displayMode === 'geometry') {
       // An explicit closing edge, not closePath(): Chromium's closePath() cost
       // grows with the path built so far, so per-region paths of thousands of
@@ -1281,7 +1432,7 @@ function drawMesh(
       path.lineTo(b[0], b[1]);
       path.lineTo(c[0], c[1]);
       path.lineTo(a[0], a[1]);
-      fillPaths.set(region, path);
+      fillPaths.set(fillKey, path);
       return;
     }
     const weak = band === 'marginal' || band === 'failing';
@@ -1298,9 +1449,10 @@ function drawMesh(
   });
 
   if (displayMode === 'geometry') {
-    for (const [region, path] of fillPaths) {
-      context.fillStyle = regionColor(region, '#697386');
-      context.globalAlpha = /air/i.test(region) ? 0.25 : 0.68;
+    for (const [fillKey, path] of fillPaths) {
+      const [region, phase] = fillKey.split(MESH_FILL_KEY_SEPARATOR);
+      context.fillStyle = phase ? PHASE_COLORS[phase as keyof typeof PHASE_COLORS] : regionColor(region, '#697386');
+      context.globalAlpha = phase ? 0.78 : /air/i.test(region) ? 0.25 : 0.68;
       context.fill(path);
     }
   }
@@ -1310,6 +1462,7 @@ function drawMesh(
     const uniqueEdges = new Set<string>();
     context.beginPath();
     data.triangles.forEach((triangle, triangleIndex) => {
+      if (skipped?.[triangleIndex]) return;
       const rotateRotor = isRotorRegion(data.regions[triangleIndex] || 'mesh');
       const triangleEdges: Array<[number, number]> = [
         [triangle[0], triangle[1]],
@@ -1331,7 +1484,7 @@ function drawMesh(
     context.strokeStyle = edgeColor ?? (displayMode === 'problems'
       ? 'rgba(226, 232, 240, 0.12)'
       : 'rgba(226, 232, 240, 0.28)');
-    context.lineWidth = edgeColor ? 0.5 : 0.4;
+    context.lineWidth = (edgeColor ? 0.5 : 0.4) * (options.edgeWidthScale ?? 1);
     context.stroke();
   }
 
@@ -1361,6 +1514,7 @@ function drawMesh(
     focusedElementIndex !== null
     && focusedElementIndex >= 0
     && focusedElementIndex < data.triangles.length
+    && !skipped?.[focusedElementIndex]
   ) {
     const triangle = data.triangles[focusedElementIndex];
     const rotateRotor = isRotorRegion(data.regions[focusedElementIndex] || 'mesh');
@@ -1378,6 +1532,9 @@ function drawMesh(
     context.stroke();
     context.restore();
   }
+  const origin = map([0, 0]);
+  const [edgeX, edgeY] = map([meshOuterRadiusMm(data), 0]);
+  return { origin, radiusPx: Math.hypot(edgeX - origin[0], edgeY - origin[1]) };
 }
 
 export function MotorCanvas({
@@ -1403,6 +1560,7 @@ export function MotorCanvas({
   meshQualityThreshold = 0.01,
   focusedMeshElementIndex = null,
   meshEdgeColor = null,
+  magnifier = false,
   onMeshElementHover,
   onMeshElementSelect,
   navigationSlot = null,
@@ -1461,6 +1619,92 @@ export function MotorCanvas({
     () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
     [config, geometry, layer],
   );
+
+  // The mesh view can carry the Slots or Winding overlay: the geometry is drawn
+  // with it, and the mesh's edges go over the top.
+  const meshOverlay: PublicCanvasLayer | null = mode === 'mesh' && meshDisplayMode === 'geometry' && geometry
+    ? (layer === 'slots' ? 'slots' : layer === 'windings' || layer === 'phases' ? 'windings' : null)
+    : null;
+  const drawMeshOverlayGeometry = (target: CanvasRenderingContext2D, width: number, height: number) => {
+    if (!meshOverlay || !geometry) return;
+    drawGeometry(
+      target, geometry, width, height, meshOverlay, rotorAngleDeg, windingType, [], null, null, null,
+      navigation.scale, [navigation.pan.x, navigation.pan.y], (navigation.rotationDeg * Math.PI) / 180,
+      [], null, null, [], magnetPolarityView, null, false, previewRpm,
+    );
+  };
+  const meshLayersRef = useRef<{
+    key: unknown[];
+    fixed: HTMLCanvasElement;
+    rotor: HTMLCanvasElement;
+    frame: MeshDrawFrame | null;
+    hits: MeshTriangleHit[];
+  } | null>(null);
+  // The magnifier: where the pointer is on the canvas (CSS px) and the corner its panel takes.
+  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number; onRight: boolean } | null>(null);
+  const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
+  const loupeShown = magnifier && mode === 'mesh' && Boolean(mesh);
+  useEffect(() => {
+    if (!loupeShown) setLoupePoint(null);
+  }, [loupeShown]);
+  const loupeX = loupePoint?.x ?? null;
+  const loupeY = loupePoint?.y ?? null;
+  useEffect(() => {
+    const loupe = loupeCanvasRef.current;
+    const canvas = canvasRef.current;
+    if (!loupeShown || !mesh || loupeX === null || loupeY === null || !loupe || !canvas) return undefined;
+    const animationFrame = window.requestAnimationFrame(() => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const pixels = Math.round(MESH_LOUPE_SIZE_PX * ratio);
+      if (loupe.width !== pixels || loupe.height !== pixels) {
+        loupe.width = pixels;
+        loupe.height = pixels;
+      }
+      const context = loupe.getContext('2d');
+      if (!context) return;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.fillStyle = '#0b0d12';
+      context.fillRect(0, 0, pixels, pixels);
+      // The view's own drawing, redrawn larger about the pointer, so it stays sharp.
+      const zoom = MESH_LOUPE_MAGNIFICATION;
+      context.setTransform(
+        ratio * zoom, 0, 0, ratio * zoom,
+        ratio * (MESH_LOUPE_SIZE_PX / 2 - zoom * loupeX),
+        ratio * (MESH_LOUPE_SIZE_PX / 2 - zoom * loupeY),
+      );
+      const reach = MESH_LOUPE_SIZE_PX / (2 * zoom);
+      if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
+      drawMesh(
+        context, mesh, rect.width, rect.height, rotorAngleDeg, navigation.scale,
+        [navigation.pan.x, navigation.pan.y], (navigation.rotationDeg * Math.PI) / 180,
+        meshDisplayMode, showMeshEdges, meshQualities, meshQualityThreshold, focusedMeshElementIndex, [], meshEdgeColor,
+        {
+          fill: !meshOverlay,
+          coilPhases: geometry ? meshCoilPhases(mesh, geometry) : null,
+          cull: [loupeX - reach, loupeY - reach, loupeX + reach, loupeY + reach],
+          edgeWidthScale: 0.6,
+        },
+      );
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      context.lineWidth = 1;
+      const centre = MESH_LOUPE_SIZE_PX / 2;
+      context.beginPath();
+      context.moveTo(centre - 7, centre);
+      context.lineTo(centre + 7, centre);
+      context.moveTo(centre, centre - 7);
+      context.lineTo(centre, centre + 7);
+      context.stroke();
+    });
+    return () => window.cancelAnimationFrame(animationFrame);
+    // drawMeshOverlayGeometry reads only values listed here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    focusedMeshElementIndex, geometry, loupeShown, loupeX, loupeY, magnetPolarityView, mesh, meshDisplayMode,
+    meshEdgeColor, meshOverlay, meshQualities, meshQualityThreshold, navigation.pan.x, navigation.pan.y,
+    navigation.rotationDeg, navigation.scale, previewRpm, rotorAngleDeg, showMeshEdges, windingType,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1534,23 +1778,74 @@ export function MotorCanvas({
           previewRpm,
         );
       } else if (mode === 'mesh' && mesh) {
-        drawMesh(
-          context,
+        const viewRotationRad = (navigation.rotationDeg * Math.PI) / 180;
+        const pan: [number, number] = [navigation.pan.x, navigation.pan.y];
+        const coilPhases = geometry ? meshCoilPhases(mesh, geometry) : null;
+        if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
+        const meshPass = (
+          target: CanvasRenderingContext2D,
+          angleDeg: number,
+          hits: MeshTriangleHit[],
+          part: 'all' | 'fixed' | 'rotor',
+        ) => drawMesh(
+          target,
           mesh,
           rect.width,
           rect.height,
-          rotorAngleDeg,
+          angleDeg,
           navigation.scale,
-          [navigation.pan.x, navigation.pan.y],
-          (navigation.rotationDeg * Math.PI) / 180,
+          pan,
+          viewRotationRad,
           meshDisplayMode,
           showMeshEdges,
           meshQualities,
           meshQualityThreshold,
           focusedMeshElementIndex,
-          meshHitsRef.current,
+          hits,
           meshEdgeColor,
+          { part, fill: !meshOverlay, coilPhases },
         );
+        let frame: MeshDrawFrame | null;
+        if (rotorAngleDeg === 0) {
+          frame = meshPass(context, 0, meshHitsRef.current, 'all');
+        } else {
+          // A turning rotor: the still part and the rotor are each drawn once, and the
+          // rotor's picture is turned for every frame, which is what keeps it smooth.
+          const key = [
+            mesh, canvas.width, canvas.height, navigation.scale, pan[0], pan[1], viewRotationRad, meshDisplayMode,
+            showMeshEdges, meshQualities, meshQualityThreshold, focusedMeshElementIndex, meshEdgeColor, meshOverlay, coilPhases,
+          ];
+          let layers = meshLayersRef.current;
+          if (!layers || layers.key.length !== key.length || layers.key.some((value, index) => value !== key[index])) {
+            const hits: MeshTriangleHit[] = [];
+            const layer = (part: 'fixed' | 'rotor') => {
+              const surface = document.createElement('canvas');
+              surface.width = canvas.width;
+              surface.height = canvas.height;
+              const target = surface.getContext('2d');
+              if (!target) return { surface, frame: null };
+              target.setTransform(ratio, 0, 0, ratio, 0, 0);
+              return { surface, frame: meshPass(target, 0, hits, part) };
+            };
+            const still = layer('fixed');
+            const turning = layer('rotor');
+            layers = { key, fixed: still.surface, rotor: turning.surface, frame: still.frame ?? turning.frame, hits };
+            meshLayersRef.current = layers;
+          }
+          frame = layers.frame;
+          meshHitsRef.current = layers.hits;
+          context.drawImage(layers.fixed, 0, 0, rect.width, rect.height);
+          if (frame) {
+            context.save();
+            context.translate(frame.origin[0], frame.origin[1]);
+            context.rotate((rotorAngleDeg * Math.PI) / 180);
+            context.translate(-frame.origin[0], -frame.origin[1]);
+            context.drawImage(layers.rotor, 0, 0, rect.width, rect.height);
+            context.restore();
+          }
+        }
+        // The geometry drawn under an overlay has already marked the rotor's place.
+        if (frame && !(meshOverlay && geometry)) drawRotorZeroMark(context, frame.origin, frame.radiusPx, rotorAngleDeg, viewRotationRad);
       }
     };
 
@@ -1644,6 +1939,14 @@ export function MotorCanvas({
         ref={canvasRef}
         aria-label={`${mode} motor view, ${layer} layer`}
         onPointerMove={(event) => {
+          if (loupeShown) {
+            const bounds = event.currentTarget.getBoundingClientRect();
+            const x = event.clientX - bounds.left;
+            const y = event.clientY - bounds.top;
+            // The panel sits top left, and steps to the top right when the pointer comes under it.
+            const reach = MESH_LOUPE_SIZE_PX + 40;
+            setLoupePoint({ x, y, onRight: x < reach && y < reach });
+          }
           if (navigation.panEnabled) {
             setHoveredComponent(null);
             onMeshElementHover?.(null);
@@ -1657,6 +1960,7 @@ export function MotorCanvas({
           event.currentTarget.style.cursor = overSomething ? 'pointer' : 'default';
         }}
         onPointerLeave={(event) => {
+          setLoupePoint(null);
           setHoveredComponent(null);
           onMeshElementHover?.(null);
           if (!navigation.panEnabled) event.currentTarget.style.cursor = 'default';
@@ -1681,6 +1985,12 @@ export function MotorCanvas({
           onComponentSelect?.(componentAtPointer(event));
         }}
       />
+      {loupeShown && loupePoint && (
+        <div className={`public-field-loupe${loupePoint.onRight ? '' : ' is-left'}`} aria-hidden="true">
+          <canvas ref={loupeCanvasRef} />
+          <span>{MESH_LOUPE_MAGNIFICATION}×</span>
+        </div>
+      )}
       {(() => {
         const zoomControls = (
           <ViewportNavigationControls
