@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 104717,
-      "sha256": "9a0a143c06f7d679e6ef5dead6f04384bd28cb805bc5a1216f8ef91d4920bb6e"
+      "bytes": 105251,
+      "sha256": "60c728dc94a1b108c762327890c2595cf61a33909a0afb49b2dc058c16f3d8d2"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",

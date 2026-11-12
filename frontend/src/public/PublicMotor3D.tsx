@@ -1922,12 +1922,19 @@ function ParametricMotor3D({
       const height = host.clientHeight;
       const frame = shown.showPhases && shown.phaseDrive && introProgressRef.current === null ? phaseDriveFrame(width, height) : null;
       const shift = frame ? Math.round((frame.panel.x + frame.panel.width) / 2) : 0;
-      const size = `${width}x${height}`;
+      // The motor is drawn below the part toggles and the peel slider, a little smaller, so it never runs behind them.
+      const peel = host.querySelector<HTMLElement>('.public-3d-peel');
+      const top = peel && peel.offsetParent !== null && introProgressRef.current === null
+        ? Math.round(peel.getBoundingClientRect().bottom - host.getBoundingClientRect().top + 6)
+        : 0;
+      const size = `${width}x${height}x${top}`;
       if (shift !== viewShift || size !== viewShiftSize) {
         viewShift = shift;
         viewShiftSize = size;
-        if (shift > 0) camera.setViewOffset(width, height, -shift, 0, width, height);
-        else camera.clearViewOffset();
+        if (shift > 0 || top > 0) {
+          const scale = Math.max(0.5, (height - top) / height);
+          camera.setViewOffset(width * scale, height * scale, -(width * (1 - scale)) / 2 - shift, -top, width, height);
+        } else camera.clearViewOffset();
       }
       if (!frame) return null;
       // Below the part toggles and the peel slider at the top left.
