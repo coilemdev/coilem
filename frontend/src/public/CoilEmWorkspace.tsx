@@ -1528,6 +1528,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       </ParameterSectionBlock>}
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
+        {/* Four steps, each what is set and then what follows from it: layout, turns, wire, resistance. */}
+        <p className="public-param-group-label">Layout</p>
         <ChoiceRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
         {wholeSlotNote && <p className="public-winding-note" role="note">{wholeSlotNote}</p>}
         {showLayerRow && <ChoiceRow
@@ -1546,8 +1548,10 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           <span className="param-label">Coils per Phase<small>calc</small></span>
           <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
         </div>
+        <p className="public-param-group-label">Turns</p>
         <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} hint="How many times the conductor goes round each coil. More turns raise back-EMF and inductance; the field depends on turns × current." disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
+        <p className="public-param-group-label">Wire</p>
         {config.geometry_reference && !wire ? (
           // A pinned reference without its own wire uses its published conductor (backend/winding_resistance.py).
           <div className="param-row public-param-row public-derived-row" title={windingResistanceRecord?.notes[0] ?? "The reference's published conductor."}>
@@ -1596,14 +1600,24 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             </strong>
           </div>
         )}
-        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
-        {windingRows.map((row) => (
+        {/* Slot fill and mean turn follow from the wire; the temperature only moves the resistance. */}
+        {windingRows.filter((row) => row.key !== 'resistance').map((row) => (
           <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
             <span className="param-label">{row.label}<small>{row.tag}</small></span>
             <strong>{row.text}</strong>
             {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
           </div>
         ))}
+        <p className="public-param-group-label">Resistance</p>
+        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
+        {windingRows.filter((row) => row.key === 'resistance').map((row) => (
+          <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
+            <span className="param-label">{row.label}<small>{row.tag}</small></span>
+            <strong>{row.text}</strong>
+            {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
+          </div>
+        ))}
+        <p className="public-param-group-label">Drive</p>
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 

@@ -973,6 +973,9 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-param-row .param-number-input,
 .public-param-row .param-select { width: 78px; height: 27px; padding: 0 7px; border: 1px solid var(--border-default); border-radius: 6px; color: var(--text-primary); background: rgba(7, 9, 13, 0.64); font: 10px var(--font-mono); text-align: right; }
 .public-param-row .param-select { width: 112px; text-align: left; }
+/* A thin heading over each step of a long parameter section. */
+.public-param-group-label { margin: 10px 0 2px; padding-top: 8px; border-top: 1px solid rgba(148, 163, 184, 0.12); color: var(--text-tertiary, rgba(148, 163, 184, 0.8)); font: 700 10px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.public-param-group-label:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 /* A few options as side-by-side buttons in a parameter row. */
 .public-param-row.public-choice-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 /* Readouts longer than a number keep to one line. */
