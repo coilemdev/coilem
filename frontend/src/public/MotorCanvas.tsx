@@ -32,6 +32,9 @@ import {
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
+  TRACE_AMPLITUDE,
+  phaseChargeShift,
+  phasePanelTop,
   rotorElectricalDeg,
   slotCurrents,
   toothIndexAt,
@@ -615,6 +618,15 @@ function drawGeometry(
   // Phases: the motor moves right, a little smaller, to make room for the A / B / C
   // waveforms wired into it, and its phases light with the currents they carry.
   const driveFrame = layer === 'phases' && phaseDrive ? phaseDriveFrame(width, height) : null;
+  if (driveFrame) {
+    // The small 3D view sits over the canvas's bottom-left corner: the waveforms move up to clear it.
+    const canvasBox = context.canvas.getBoundingClientRect?.();
+    const insetBox = context.canvas.ownerDocument?.querySelector('.public-viewport-3d-inset')?.getBoundingClientRect();
+    const covered = canvasBox && insetBox && insetBox.right > canvasBox.left + driveFrame.panel.x
+      ? Math.max(0, canvasBox.bottom - insetBox.top)
+      : 0;
+    driveFrame.panel.y = phasePanelTop(driveFrame.panel, height, covered);
+  }
   const rotorElecDeg = phaseDrive ? rotorElectricalDeg(rotorAngleDeg, phaseDrive.poleCount) : 0;
   const currents = (layer === 'phases' || showToothPoles) && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
   const phaseLevels: PhaseLevels | null = layer === 'phases' && currents
@@ -1324,22 +1336,53 @@ function drawPhaseDrive(
     context.fillStyle = colour;
     context.fill();
 
-    // The wire from the waveform into the motor, as live as the current in it.
-    // It leaves from the wave's newest point, so it rises and falls with the current.
+    // The wire is fixed: it leaves from a terminal on the strip's centre line. The
+    // wave's newest point rides a short rail beside it and a stem ties the two, so
+    // the wave still reads as what feeds the wire.
     const { motor, terminal } = leads[index];
-    const reach = Math.max(24, (terminal[0] - nowX) * 0.5);
-    context.globalAlpha = 0.3 + 0.7 * level;
+    const swing = strip.height * TRACE_AMPLITUDE;
+    context.strokeStyle = 'rgba(148, 163, 184, 0.3)';
+    context.lineWidth = 1;
+    context.beginPath();
+    context.moveTo(nowX, mid - swing);
+    context.lineTo(nowX, mid + swing);
+    context.stroke();
     context.strokeStyle = colour;
-    context.lineWidth = 1.2 + 2 * level;
+    context.lineWidth = 2;
     context.lineCap = 'round';
     context.beginPath();
     context.moveTo(nowX, nowY);
-    context.bezierCurveTo(nowX + reach, nowY, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
-    context.lineTo(motor[0], motor[1]);
+    context.lineTo(nowX, mid);
     context.stroke();
+    const reach = Math.max(24, (terminal[0] - nowX) * 0.5);
+    const wire = () => {
+      context.beginPath();
+      context.moveTo(nowX, mid);
+      context.bezierCurveTo(nowX + reach, mid, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
+      context.lineTo(motor[0], motor[1]);
+      context.stroke();
+    };
+    // The conductor itself, always there.
+    context.globalAlpha = 0.34;
+    context.lineWidth = 1.6;
+    wire();
+    // The current in it: marks that run into the motor while the phase current is
+    // positive and back out while it is negative, brighter and heavier the more
+    // current there is. Their position is the charge moved so far this cycle.
+    context.globalAlpha = 0.25 + 0.75 * level;
+    context.lineWidth = 1.6 + 2.2 * level;
+    context.setLineDash([7, 11]);
+    context.lineDashOffset = -phaseChargeShift(drive, index, rotorElecDeg) * 26;
+    wire();
+    context.setLineDash([]);
+    context.lineDashOffset = 0;
+    context.globalAlpha = 1;
+    context.fillStyle = colour;
+    context.beginPath();
+    context.arc(nowX, mid, 2.6, 0, Math.PI * 2);
+    context.fill();
     context.beginPath();
     context.arc(terminal[0], terminal[1], 2.8, 0, Math.PI * 2);
-    context.fillStyle = colour;
     context.fill();
     context.globalAlpha = 1;
   });

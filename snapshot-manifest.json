@@ -6565,8 +6565,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 14363,
-      "sha256": "26e4efc20cb89cbf8f9e09cee3d608ce637a9cc6a773b8e8d8f3886283e61b9c"
+      "bytes": 15277,
+      "sha256": "c5535056100d070e8ec460d2c86e08f012019d0f76db87647877ce1fe950b76a"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -6650,8 +6650,8 @@
     },
     {
       "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
-      "bytes": 68755,
-      "sha256": "b9027fd752b576307ca4937ed6f76560b9b0c4f95e83ac448f313879420b25fd"
+      "bytes": 68612,
+      "sha256": "81ee407ae74dcddc0ad8b5a1ab4842c06f770c612d13f4082157c45bbe1ce60d"
     },
     {
       "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 87497,
-      "sha256": "50180b98bb95f933ff230df151266ba8eecab1339152fdf9abb7c5e762fcf353"
+      "bytes": 89261,
+      "sha256": "bc1f26f859fe5c7d8cf96d376da4e69b1e205b93f6fea3c0c7a591ef7f29a780"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7510,8 +7510,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 11135,
-      "sha256": "fc162c344a73b14d5c52d3f594e5baf06a918a244ac05a16cc45904c9dc4c818"
+      "bytes": 12253,
+      "sha256": "b08736fab8c944e867880583c0e8a8102a011a0337bc630c203fd7e26fc5ee33"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
