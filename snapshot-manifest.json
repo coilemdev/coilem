@@ -6515,8 +6515,8 @@
     },
     {
       "path": "frontend/scripts/test-field-probe-region.mjs",
-      "bytes": 3514,
-      "sha256": "0a01699dfcf1178236caf7dfd204d269d5f763879904da2b43559f5d1f0e9d70"
+      "bytes": 5845,
+      "sha256": "593623b961c4cdb4c5460164b83575aac9f1d5612783599365ffa63bc353c483"
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 72024,
-      "sha256": "4ac28df616c539a62641ed1bc1851421716209615cec9c3ad1de5b8875b054ad"
+      "bytes": 72035,
+      "sha256": "0b0daa3bd6d4e6cdd855f020cb976a669659da904410ff89c83518b83469c8b6"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7145,8 +7145,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 61434,
-      "sha256": "e6ed26c78ca7a5cf4727a12f3ca8a55348db0232f181a537c4ac14d876135d9b"
+      "bytes": 61456,
+      "sha256": "c7d49c30421fe0c6b02b0d65f7ab64cd246c7f75ee9a29f77b176d6987bd25e1"
     },
     {
       "path": "frontend/src/public/ViewportMagnifier.tsx",
@@ -7350,8 +7350,8 @@
     },
     {
       "path": "frontend/src/public/fieldProbeRegion.ts",
-      "bytes": 4770,
-      "sha256": "80021a9faceb977393d2d275f0997d9eabbc089c76984df803456998c266a97d"
+      "bytes": 5159,
+      "sha256": "7d36b0e08f6a3c240e295cce811bbbf3d7a8ee0cab47ca5e1df0444ad5d15ef5"
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
@@ -7365,8 +7365,8 @@
     },
     {
       "path": "frontend/src/public/fluxColorScale.ts",
-      "bytes": 4536,
-      "sha256": "931357e75db566eb4f8c626a4795701fcc4b39c611daedc7ae5e4b8dad9d96cc"
+      "bytes": 4834,
+      "sha256": "a496659a202ff06305889036300334cbf59ce4056891d2576788ffed244d0f4d"
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
@@ -7565,8 +7565,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 320220,
-      "sha256": "17b34e07464c65d8e38885a8e9461b3cda3128116cb7fe79a88effcc4509a280"
+      "bytes": 320429,
+      "sha256": "057eb0e36f1362f13d032673d2058697ca39bae6364a4e8e89dcaea7588a632b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7655,13 +7655,13 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 72722,
-      "sha256": "44a1991b537a7eb272e18594b926ae490ade86dc6de7b90aff49fc68fc0847dc"
+      "bytes": 74295,
+      "sha256": "541b2bd229ffb175b75feba1f695ea879e630c4923b9316b2271fbf3e4f10c78"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
-      "bytes": 5633,
-      "sha256": "2047a76b7aa05f9c075b889a05c803a4d105a34ddc29cc9677f5f5baa7133f00"
+      "bytes": 6355,
+      "sha256": "14087110489f9a524ecdc3e4be8df4a9368d8ba828c1e35bb4ad43f5ee028e2d"
     },
     {
       "path": "frontend/tsconfig.public.json",

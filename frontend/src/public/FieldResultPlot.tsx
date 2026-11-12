@@ -80,7 +80,7 @@ export interface FieldProbeDescription {
   regionLabel: string;
   materialLabel: string;
   saturationLabel: string;
-  saturationTone: 'neutral' | 'good' | 'warning';
+  saturationTone: 'neutral' | 'good' | 'warning' | 'danger';
 }
 
 interface RenderedFieldLayers {

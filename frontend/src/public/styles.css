@@ -2119,6 +2119,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-probe { position: absolute; z-index: 9; bottom: 14px; left: 14px; display: grid; width: 210px; gap: 5px; padding: 9px 10px; transform: none; border: 1px solid var(--border-default); border-left: 2px solid var(--info); border-radius: 9px; color: var(--text-secondary); background: rgba(7,9,14,.9); box-shadow: var(--shadow-md); backdrop-filter: blur(10px); pointer-events: none; }
 .public-field-probe.is-good { border-left-color: var(--success); }
 .public-field-probe.is-warning { border-left-color: var(--warning); }
+.public-field-probe.is-danger { border-left-color: var(--danger); }
 .public-field-probe header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
 .public-field-probe header span { overflow: hidden; color: var(--text-primary); font-size: 10px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
 .public-field-probe header small { flex: 0 0 auto; color: var(--text-faint); font: 7px var(--font-mono); }
@@ -2131,6 +2132,9 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-probe p { margin: 0; padding-top: 5px; border-top: 1px solid rgba(148,163,184,.12); color: var(--text-muted); font-size: 8px; }
 .public-field-probe.is-good p { color: var(--success); }
 .public-field-probe.is-warning p { color: var(--warning); }
+.public-field-probe.is-danger > strong,
+.public-field-probe.is-danger > strong em,
+.public-field-probe.is-danger p { color: var(--danger); }
 .public-field-loading { display: grid; width: 100%; height: 100%; place-content: center; justify-items: center; gap: 9px; padding: 24px; color: var(--text-muted); text-align: center; }
 .public-field-loading strong { color: var(--text-primary); font-size: 13px; }
 .public-field-loading span { max-width: 420px; font-size: 10px; }

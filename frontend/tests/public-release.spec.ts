@@ -12,7 +12,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -230,6 +230,29 @@ test('selected airgap rings are also drawn in the field magnifier', async ({ pag
   await menu.locator('summary').click();
   await airgap.click();
   await expect.poll(cyanPixels).toBe(0);
+});
+
+test('heavy steel saturation uses red readout text and border while the knee remains yellow', async ({ page }, info) => {
+  await openViewportHarness(page, 'saturated-field');
+  const readout = page.locator('.public-run-field-data-slot .public-field-probe');
+  const box = (await page.locator('.public-field-result-canvas > canvas').boundingBox())!;
+  const scale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+  const hover = async (xMm: number) => page.mouse.move(box.x + box.width / 2 + xMm * scale, box.y + box.height / 2 - (2 / 3) * scale);
+  await hover(8);
+  await expect(readout).toHaveClass(/is-danger/);
+  await expect(readout.locator('strong')).toContainText('2.133 T');
+  await expect(readout.locator('p')).toContainText('1.78 T heavy-saturation');
+  await expect(readout).toHaveCSS('border-left-color', 'rgb(239, 68, 68)');
+  await expect(readout.locator('strong')).toHaveCSS('color', 'rgb(239, 68, 68)');
+  await expect(readout.locator('p')).toHaveCSS('color', 'rgb(239, 68, 68)');
+  await readout.screenshot({ path: info.outputPath('heavy-saturation-readout.png') });
+  await hover(-7);
+  await expect(readout).toHaveClass(/is-warning/);
+  await expect(readout.locator('strong')).toContainText('1.650 T');
+  await expect(readout.locator('p')).toContainText('1.47 T reference knee');
+  await expect(readout).toHaveCSS('border-left-color', 'rgb(250, 204, 21)');
+  await expect(readout.locator('p')).toHaveCSS('color', 'rgb(250, 204, 21)');
+  await expect(readout.locator('strong')).not.toHaveCSS('color', 'rgb(239, 68, 68)');
 });
 
 test('field element data sits below the magnifier and remains readable outside the drawing', async ({ page }, info) => {

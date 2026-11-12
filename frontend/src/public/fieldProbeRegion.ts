@@ -1,5 +1,6 @@
 import type { FieldProbe, FieldProbeDescription } from './FieldResultPlot';
-import type { MotorConfig } from './model';
+import type { MaterialCatalog, MotorConfig } from './model';
+import { materialSteelSaturationTicks } from './fluxColorScale';
 
 /**
  * What the field probe calls the element under the cursor. The solver tags each
@@ -75,10 +76,11 @@ export function fieldRegionLabel(kind: FieldRegionKind, region: string, surfaceM
   }
 }
 
-/** The probe card: region, material and, for steel, where |B| sits against the knee. */
+/** The probe card: region, material and its curve-derived steel saturation state. */
 export function describeFieldProbe(
   probe: FieldProbe,
   config: Pick<MotorConfig, 'topology' | 'rotor' | 'materials'>,
+  catalog?: MaterialCatalog | null,
 ): FieldProbeDescription {
   const boreRadiusMm = config.rotor.ID_mm ? config.rotor.ID_mm / 2 : null;
   const kind = fieldRegionKind(probe.region, probe.radiusMm ?? null, boreRadiusMm);
@@ -86,13 +88,16 @@ export function describeFieldProbe(
   const isStatorSteel = kind === 'stator_tooth' || kind === 'stator_yoke' || kind === 'stator_steel';
   if (isStatorSteel || kind === 'rotor_steel') {
     const materialLabel = isStatorSteel ? config.materials.stator_steel : config.materials.rotor_steel;
-    if (probe.bMagT >= 1.6) {
-      return { regionLabel, materialLabel, saturationLabel: 'Above the 1.4–1.6 T reference knee', saturationTone: 'warning' };
+    const ticks = materialSteelSaturationTicks(materialLabel, config, catalog);
+    const knee = ticks.find((tick) => tick.label === 'knee')?.bT ?? 1.5;
+    const heavy = ticks.find((tick) => tick.label === 'saturation')?.bT ?? 1.8;
+    if (probe.bMagT >= heavy) {
+      return { regionLabel, materialLabel, saturationLabel: `Above the ${heavy.toFixed(2)} T heavy-saturation indicator`, saturationTone: 'danger' };
     }
-    if (probe.bMagT >= 1.4) {
-      return { regionLabel, materialLabel, saturationLabel: 'Within the 1.4–1.6 T reference knee', saturationTone: 'warning' };
+    if (probe.bMagT >= knee) {
+      return { regionLabel, materialLabel, saturationLabel: `Above the ${knee.toFixed(2)} T reference knee`, saturationTone: 'warning' };
     }
-    return { regionLabel, materialLabel, saturationLabel: 'Below the 1.4–1.6 T reference knee', saturationTone: 'good' };
+    return { regionLabel, materialLabel, saturationLabel: `Below the ${knee.toFixed(2)} T reference knee`, saturationTone: 'good' };
   }
   if (kind === 'magnet') {
     return { regionLabel, materialLabel: config.materials.magnet_grade, saturationLabel: 'Steel saturation does not apply', saturationTone: 'neutral' };

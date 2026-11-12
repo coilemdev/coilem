@@ -479,8 +479,8 @@ export function SolvedFieldViewer({
     return values.reduce((peak, value) => Math.max(peak, value), 0);
   }, [activeDetailRaster?.maxB, visiblePlot, visibleRaster?.maxB]);
   const describeProbe = useCallback(
-    (probe: FieldProbe) => describeFieldProbe(probe, config),
-    [config],
+    (probe: FieldProbe) => describeFieldProbe(probe, config, materials),
+    [config, materials],
   );
   const polePairs = Math.max(1, config.rotor.pole_count / 2);
   const mechanicalAngleDeg = electricalAngleDeg / polePairs;

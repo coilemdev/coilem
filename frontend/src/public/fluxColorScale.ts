@@ -1,5 +1,5 @@
 import type { MaterialCatalog, MotorConfig } from './model';
-import { projectMaterialCatalog } from './customSteel';
+import { customSteelModel } from './customSteel';
 
 /**
  * One flux-density colour scale for every frame, rotor position and design.
@@ -105,10 +105,19 @@ export function steelSaturationTicks(
   }));
 }
 
+/** The selected steel's ticks, including custom rotor or stator materials. */
+export function materialSteelSaturationTicks(
+  steelId: string,
+  config: Pick<MotorConfig, 'materials'>,
+  catalog: MaterialCatalog | null | undefined,
+): SaturationTick[] {
+  const custom = config.materials.custom_steels?.[steelId];
+  const model = custom ? customSteelModel(custom) : catalog?.models?.[steelId];
+  const name = custom?.name ?? steelId;
+  return steelSaturationTicks(model?.curve?.points ?? null, name);
+}
+
 /** The ticks for a design's stator steel, bundled or custom. */
 export function statorSteelSaturationTicks(config: MotorConfig, catalog: MaterialCatalog | null | undefined): SaturationTick[] {
-  const steelId = config.materials.stator_steel;
-  const model = catalog ? projectMaterialCatalog(catalog, config).models?.[steelId] : undefined;
-  const name = config.materials.custom_steels?.[steelId]?.name ?? steelId;
-  return steelSaturationTicks(model?.curve?.points ?? null, name);
+  return materialSteelSaturationTicks(config.materials.stator_steel, config, catalog);
 }

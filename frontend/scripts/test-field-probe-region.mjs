@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 // What the field probe calls the element under the cursor. The solver's
@@ -40,8 +41,35 @@ assert.equal(magnet.materialLabel, 'N42SH');
 const rotor = describeFieldProbe(probe('rotor_core', 40, 1.5), spm);
 assert.deepEqual([rotor.regionLabel, rotor.materialLabel, rotor.saturationTone], ['Rotor steel', 'M270-35A', 'warning']);
 const tooth = describeFieldProbe(probe('stator_tooth', 70, 1.7), spm);
-assert.deepEqual([tooth.regionLabel, tooth.materialLabel, tooth.saturationLabel], ['Stator tooth', 'M350-50A', 'Above the 1.4–1.6 T reference knee']);
+assert.deepEqual([tooth.regionLabel, tooth.materialLabel, tooth.saturationLabel], ['Stator tooth', 'M350-50A', 'Above the 1.50 T reference knee']);
 assert.equal(describeFieldProbe(probe('stator_yoke', 90, 0.8), spm).saturationTone, 'good');
+
+// Use the same B-H curve as the legend: heavy saturation is distinct from the knee warning.
+const csv = await readFile(new URL('../../materials/electrical-steel/M350-50A.csv', import.meta.url), 'utf8');
+const points = csv.split('\n').filter((line) => line && !line.startsWith('#') && !line.startsWith('B_T'))
+  .map((line) => line.split(',').map(Number)).map(([b, h]) => [h, b]);
+const catalog = { models: { 'M350-50A': { curve: { points } } } };
+const { materialSteelSaturationTicks } = await importTypeScriptModule(new URL('../src/public/fluxColorScale.ts', import.meta.url));
+const [knee, heavy] = materialSteelSaturationTicks('M350-50A', spm, catalog);
+assert.equal(describeFieldProbe(probe('stator_tooth', 70, knee.bT - 1e-6), spm, catalog).saturationTone, 'good');
+assert.equal(describeFieldProbe(probe('stator_tooth', 70, knee.bT), spm, catalog).saturationTone, 'warning');
+assert.equal(describeFieldProbe(probe('stator_tooth', 70, heavy.bT - 1e-6), spm, catalog).saturationTone, 'warning');
+assert.equal(describeFieldProbe(probe('stator_tooth', 70, heavy.bT), spm, catalog).saturationTone, 'danger');
+const saturated = describeFieldProbe(probe('stator_tooth', 70, 2.133), spm, catalog);
+assert.equal(saturated.saturationTone, 'danger');
+assert.match(saturated.saturationLabel, /1\.78 T heavy-saturation/);
+for (const region of ['airgap', 'slot_winding', 'magnet_pocket_air', 'magnet']) {
+  assert.equal(describeFieldProbe(probe(region, 60, 3), spm, catalog).saturationTone, 'neutral');
+}
+
+// The rotor's own custom steel controls its warning, rather than the stator's threshold.
+const custom = { id: 'custom:0123456789abcdef', name: 'High-field sample', source: 'Test curve',
+  lamination_thickness_mm: null, curve_sha256: '0'.repeat(64),
+  bh_curve: [[0, 0], [1.8, 1000], [2.3, 15000], [2.4, 50000]] };
+const differentSteels = { ...spm, materials: { ...spm.materials, rotor_steel: custom.id, custom_steels: { [custom.id]: custom } } };
+assert.equal(describeFieldProbe(probe('stator_tooth', 70, 2), differentSteels, catalog).saturationTone, 'danger');
+assert.equal(describeFieldProbe(probe('rotor_core', 40, 2), differentSteels, catalog).saturationTone, 'warning');
+assert.equal(describeFieldProbe(probe('rotor_core', 40, 2.4), differentSteels, catalog).saturationTone, 'danger');
 
 // The other solver regions read in plain words.
 assert.deepEqual(
