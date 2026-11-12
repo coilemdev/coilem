@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useMagnifierCanvas, ViewportMagnifier } from './ViewportMagnifier';
 
 import {
   airgapHarmonic,
@@ -44,8 +45,7 @@ import {
   type SaturationTick,
 } from './fluxColorScale';
 const FIELD_RASTER_SIZE = 900;
-/** The magnifier panel: its side in CSS px, and how much larger it draws than the view. */
-const LOUPE_SIZE_PX = 240;
+/** Magnification relative to the main view. */
 const LOUPE_MAGNIFICATION = 3;
 /**
  * The fit that draws the motor the size the geometry and mesh canvases draw it,
@@ -549,6 +549,7 @@ export function FieldResultPlot({
   showStatistics = true,
   probeEnabled = true,
   magnifier = false,
+  magnifierSlot = null,
   fitScale = 1,
   rotorMarkDeg = null,
   describeProbe = defaultProbeDescription,
@@ -594,6 +595,7 @@ export function FieldResultPlot({
   probeEnabled?: boolean;
   /** Show the area under the pointer enlarged in a corner of the view. */
   magnifier?: boolean;
+  magnifierSlot?: HTMLElement | null;
   /** The share of the usual fit to draw the motor at; below 1 leaves a wider margin. */
   fitScale?: number;
   /** The rotor's mechanical angle: draws the 0° tick and the dot that goes round with the rotor. Null hides them. */
@@ -667,9 +669,8 @@ export function FieldResultPlot({
   const [internalShowMesh, setInternalShowMesh] = useState(false);
   const [internalShowFieldLines, setInternalShowFieldLines] = useState(true);
   const [probe, setProbe] = useState<FieldProbe | null>(null);
-  // The magnifier: where the pointer is in the view (CSS px), and the corner its panel takes.
-  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number; onLeft: boolean } | null>(null);
-  const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number } | null>(null);
+  const { canvasRef: loupeCanvasRef, width: loupeWidth, height: loupeHeight } = useMagnifierCanvas(magnifier, magnifierSlot);
   const [viewportRange, setViewportRange] = useState<FieldViewportRange | null>(null);
   const viewportRangeRef = useRef<FieldViewportRange | null>(null);
   // Whether the canvas shows exact vectors (drawn here, on the chosen scale) or a
@@ -698,16 +699,17 @@ export function FieldResultPlot({
     if (!magnifier || loupeX === null || loupeY === null || !loupe || !canvas) return undefined;
     const frame = window.requestAnimationFrame(() => {
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      const pixels = Math.round(LOUPE_SIZE_PX * pixelRatio);
-      if (loupe.width !== pixels || loupe.height !== pixels) {
-        loupe.width = pixels;
-        loupe.height = pixels;
+      const pixelWidth = Math.round(loupeWidth * pixelRatio);
+      const pixelHeight = Math.round(loupeHeight * pixelRatio);
+      if (loupe.width !== pixelWidth || loupe.height !== pixelHeight) {
+        loupe.width = pixelWidth;
+        loupe.height = pixelHeight;
       }
       const context = loupe.getContext('2d');
       if (!context) return;
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.fillStyle = '#0b0d12';
-      context.fillRect(0, 0, pixels, pixels);
+      context.fillRect(0, 0, pixelWidth, pixelHeight);
       const width = Math.max(1, canvas.clientWidth);
       const height = Math.max(1, canvas.clientHeight);
       if (prepared) {
@@ -724,7 +726,7 @@ export function FieldResultPlot({
         context.setTransform(
           new DOMMatrix()
             .scaleSelf(pixelRatio)
-            .translateSelf(LOUPE_SIZE_PX / 2, LOUPE_SIZE_PX / 2)
+            .translateSelf(loupeWidth / 2, loupeHeight / 2)
             .scaleSelf(LOUPE_MAGNIFICATION)
             .translateSelf(-loupeX, -loupeY)
             .translateSelf(pivotX, pivotY)
@@ -746,31 +748,33 @@ export function FieldResultPlot({
         }
       } else {
         const sourceScale = canvas.width / width;
-        const span = LOUPE_SIZE_PX / LOUPE_MAGNIFICATION;
+        const spanX = loupeWidth / LOUPE_MAGNIFICATION;
+        const spanY = loupeHeight / LOUPE_MAGNIFICATION;
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = 'high';
         context.drawImage(
           canvas,
-          (loupeX - span / 2) * sourceScale,
-          (loupeY - span / 2) * sourceScale,
-          span * sourceScale,
-          span * sourceScale,
+          (loupeX - spanX / 2) * sourceScale,
+          (loupeY - spanY / 2) * sourceScale,
+          spanX * sourceScale,
+          spanY * sourceScale,
           0,
           0,
-          pixels,
-          pixels,
+          pixelWidth,
+          pixelHeight,
         );
       }
       // A small cross marks the point under the pointer.
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
       context.lineWidth = 1;
-      const centre = LOUPE_SIZE_PX / 2;
+      const centreX = loupeWidth / 2;
+      const centreY = loupeHeight / 2;
       context.beginPath();
-      context.moveTo(centre - 7, centre);
-      context.lineTo(centre + 7, centre);
-      context.moveTo(centre, centre - 7);
-      context.lineTo(centre, centre + 7);
+      context.moveTo(centreX - 7, centreY);
+      context.lineTo(centreX + 7, centreY);
+      context.moveTo(centreX, centreY - 7);
+      context.lineTo(centreX, centreY + 7);
       context.stroke();
     });
     return () => window.cancelAnimationFrame(frame);
@@ -780,6 +784,9 @@ export function FieldResultPlot({
     fitScale,
     loupeX,
     loupeY,
+    loupeWidth,
+    loupeHeight,
+    magnifierSlot,
     magnifier,
     navigation.pan.x,
     navigation.pan.y,
@@ -1266,9 +1273,7 @@ export function FieldResultPlot({
       const bounds = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - bounds.left;
       const y = event.clientY - bounds.top;
-      // The panel sits top right, and steps aside to the top left when the pointer comes under it.
-      const reach = LOUPE_SIZE_PX + 40;
-      setLoupePoint({ x, y, onLeft: x > bounds.width - reach && y < reach });
+      setLoupePoint({ x, y });
     }
     if (
       navigation.isDragging
@@ -1364,7 +1369,7 @@ export function FieldResultPlot({
         title="Use the mouse wheel to zoom; drag to pan when zoomed"
         {...navigation.bind}
         onPointerMove={handlePointerMove}
-        onPointerLeave={() => { setProbe(null); setLoupePoint(null); }}
+        onPointerLeave={() => setProbe(null)}
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
@@ -1491,11 +1496,8 @@ export function FieldResultPlot({
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
         })()}
-        {magnifier && loupePoint && (
-          <div className={`public-field-loupe${loupePoint.onLeft ? ' is-left' : ''}`} aria-hidden="true">
-            <canvas ref={loupeCanvasRef} />
-            <span>{LOUPE_MAGNIFICATION}×</span>
-          </div>
+        {magnifier && (
+          <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
         )}
         {probe && probeDescription && (
           <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">

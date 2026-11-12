@@ -1,6 +1,6 @@
 /** Browser-only fixtures for canvas interaction; never imported by the production entry point. */
 import { createRoot } from 'react-dom/client';
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { MotorCanvas } from '../src/public/MotorCanvas';
 import { SolvedFieldViewer } from '../src/public/SolvedFieldViewer';
 import { DEFAULT_CONFIG, type MeshPreview, type PublicFieldLinePlot, type SolveResult } from '../src/public/model';
@@ -67,6 +67,26 @@ function renderMesh(angle: number, width = 600, height = 600, dense = false) {
   </section>);
 }
 
+function DockedMagnifier({ field }: { field: boolean }) {
+  const [slot, setSlot] = useState<HTMLDivElement | null>(null);
+  const [enabled, setEnabled] = useState(false);
+  return <div style={{ display: 'flex', gap: 12, width: 1120, height: 700 }}>
+    <section className="public-motor-viewport" style={{ width: 740, height: 700 }}>
+      {field ? <SolvedFieldViewer magnifierSlot={slot} viewControls="Field solution" config={DEFAULT_CONFIG} geometry={null} result={result}
+        armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false} onRequestArmature={() => {}} />
+        : <><button type="button" aria-label="Toggle mesh magnifier" onClick={() => setEnabled(value => !value)}>Magnifier</button>
+          <div style={{ height: 600 }}><MotorCanvas geometry={null} mesh={mesh} mode="mesh" layer="none" magnifier={enabled} magnifierSlot={slot} /></div></>}
+    </section>
+    <aside className="public-run-plan" style={{ width: 360, minWidth: 360 }}>
+      <div className="public-run-plan-scroll">
+        <div className="mesh-panel-header">Run plan</div>
+        <div className="public-run-magnifier-slot" ref={setSlot} />
+        <div className="public-run-plan-section">Analysis</div>
+      </div>
+    </aside>
+  </div>;
+}
+
 Object.assign(window, { viewportTest: { renderMesh, state } });
 const mode = new URLSearchParams(location.search).get('view');
 if (mode === 'field') {
@@ -74,5 +94,6 @@ if (mode === 'field') {
     <SolvedFieldViewer viewControls="Field solution" config={DEFAULT_CONFIG} geometry={null} result={result}
       armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false} onRequestArmature={() => {}} />
   </div>);
-} else if (mode === 'mesh-menu') root.render(<MeshMenu />);
+} else if (mode === 'docked-field' || mode === 'docked-mesh') root.render(<DockedMagnifier field={mode === 'docked-field'} />);
+else if (mode === 'mesh-menu') root.render(<MeshMenu />);
 else renderMesh(90);

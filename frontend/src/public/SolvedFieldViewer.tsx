@@ -140,6 +140,7 @@ function evictRasters(
 }
 
 interface SolvedFieldViewerProps {
+  magnifierSlot?: HTMLElement | null;
   viewControls: ReactNode;
   expandControl?: ReactNode;
   config: MotorConfig;
@@ -209,6 +210,7 @@ function playbackDescriptors(
 }
 
 export function SolvedFieldViewer({
+  magnifierSlot = null,
   viewControls,
   expandControl,
   config,
@@ -1178,7 +1180,7 @@ export function SolvedFieldViewer({
   // in view; the reference layers wait in More, which counts how many are on.
   const renderMoreLayerButtons = () => (
     <>
-      <button type="button" aria-pressed={magnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
+      <button type="button" aria-pressed={magnifier} title="Show an enlarged view of the area under the pointer" onClick={() => setMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
@@ -1237,6 +1239,7 @@ export function SolvedFieldViewer({
               showMagnets={showMagnets}
               showStatistics={false}
               magnifier={magnifier}
+              magnifierSlot={magnifierSlot}
               fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
               rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showAirgap={showAirgap}

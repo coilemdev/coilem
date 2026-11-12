@@ -12,7 +12,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -111,6 +111,44 @@ for (const view of ['mesh-menu', 'field'] as const) {
       await page.getByRole('button', { name: 'Field lines', exact: true }).click();
       await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'true');
     }
+  });
+}
+
+for (const source of ['mesh', 'field'] as const) {
+  test(`${source} magnifier stays in the analysis rail and follows its width`, async ({ page }, info) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, `docked-${source}`);
+    const magnifierToggle = source === 'mesh'
+      ? page.getByRole('button', { name: 'Toggle mesh magnifier' })
+      : page.getByRole('button', { name: 'Magnifier', exact: true });
+    if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
+    await magnifierToggle.click();
+    if (source === 'field') await page.mouse.click(20, 20);
+    const panel = page.locator('.public-run-magnifier-slot .public-field-loupe');
+    await expect(panel).toBeVisible();
+    const before = (await panel.boundingBox())!;
+    expect(before.height).toBe(240);
+    expect(before.width).toBeGreaterThan(300);
+    const sourceCanvas = source === 'mesh' ? page.locator('.motor-canvas') : page.locator('.public-field-result-canvas > canvas');
+    const view = (await sourceCanvas.boundingBox())!;
+    await page.mouse.move(view.x + view.width * 0.75, view.y + view.height / 2);
+    await expect(panel.locator('p')).toHaveCount(0);
+    await page.mouse.move(view.x + 20, view.y + 20);
+    expect(await panel.boundingBox()).toEqual(before);
+    // Leaving the source retains the inspected image and its fixed panel.
+    await page.mouse.move(1500, 900);
+    await expect(panel).toBeVisible();
+    expect(await panel.boundingBox()).toEqual(before);
+    await page.locator('.public-run-plan').evaluate(element => {
+      element.style.width = '440px'; element.style.minWidth = '440px'; element.style.transition = 'none';
+    });
+    await expect.poll(async () => (await panel.boundingBox())!.width).toBeGreaterThan(before.width + 70);
+    await expect.poll(() => panel.locator('canvas').evaluate(canvas => Math.abs(canvas.width / canvas.clientWidth - Math.min(devicePixelRatio, 2)))).toBeLessThan(0.01);
+    expect((await panel.boundingBox())!.height).toBe(240);
+    await page.screenshot({ path: info.outputPath(`${source}-docked-magnifier.png`) });
+    if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
+    await magnifierToggle.click();
+    await expect(panel).toHaveCount(0);
   });
 }
 

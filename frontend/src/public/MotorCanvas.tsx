@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
+import { useMagnifierCanvas, ViewportMagnifier } from './ViewportMagnifier';
 
 import {
   buildDimensionAnnotations,
@@ -98,6 +99,7 @@ interface MotorCanvasProps {
   meshEdgeColor?: string | null;
   /** Mesh view: show the area under the pointer enlarged in a corner. */
   magnifier?: boolean;
+  magnifierSlot?: HTMLElement | null;
   /** Draw every coil side in one plain colour instead of its phase colour. */
   plainWinding?: boolean;
   meshQualities?: number[];
@@ -154,8 +156,7 @@ interface MeshDrawFrame {
 }
 
 const MESH_FILL_KEY_SEPARATOR = '\u0000';
-/** The magnifier panel: its side in CSS px, and how much larger it draws than the view. */
-const MESH_LOUPE_SIZE_PX = 240;
+/** Magnification relative to the main view. */
 const MESH_LOUPE_MAGNIFICATION = 3;
 /** Keep a full rotor bitmap within 16 MiB, even at the highest viewport zoom. */
 const MAX_ROTOR_CACHE_SIDE_PX = 2048;
@@ -1595,6 +1596,7 @@ export function MotorCanvas({
   focusedMeshElementIndex = null,
   meshEdgeColor = null,
   magnifier = false,
+  magnifierSlot = null,
   plainWinding = false,
   onMeshElementHover,
   onMeshElementSelect,
@@ -1690,10 +1692,10 @@ export function MotorCanvas({
     hits: MeshTriangleHit[];
   } | null>(null);
   const meshHitRotationRef = useRef<{ origin: [number, number]; angleDeg: number } | null>(null);
-  // The magnifier: where the pointer is on the canvas (CSS px) and the corner its panel takes.
-  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number; onRight: boolean } | null>(null);
-  const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
+  // Hold the last inspected point when the pointer leaves the view.
+  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number } | null>(null);
   const loupeShown = magnifier && mode === 'mesh' && Boolean(mesh);
+  const { canvasRef: loupeCanvasRef, width: loupeWidth, height: loupeHeight } = useMagnifierCanvas(loupeShown, magnifierSlot);
   useEffect(() => {
     if (!loupeShown) setLoupePoint(null);
   }, [loupeShown]);
@@ -1706,24 +1708,26 @@ export function MotorCanvas({
     const animationFrame = window.requestAnimationFrame(() => {
       const rect = canvas.getBoundingClientRect();
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const pixels = Math.round(MESH_LOUPE_SIZE_PX * ratio);
-      if (loupe.width !== pixels || loupe.height !== pixels) {
-        loupe.width = pixels;
-        loupe.height = pixels;
+      const pixelWidth = Math.round(loupeWidth * ratio);
+      const pixelHeight = Math.round(loupeHeight * ratio);
+      if (loupe.width !== pixelWidth || loupe.height !== pixelHeight) {
+        loupe.width = pixelWidth;
+        loupe.height = pixelHeight;
       }
       const context = loupe.getContext('2d');
       if (!context) return;
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.fillStyle = '#0b0d12';
-      context.fillRect(0, 0, pixels, pixels);
+      context.fillRect(0, 0, pixelWidth, pixelHeight);
       // The view's own drawing, redrawn larger about the pointer, so it stays sharp.
       const zoom = MESH_LOUPE_MAGNIFICATION;
       context.setTransform(
         ratio * zoom, 0, 0, ratio * zoom,
-        ratio * (MESH_LOUPE_SIZE_PX / 2 - zoom * loupeX),
-        ratio * (MESH_LOUPE_SIZE_PX / 2 - zoom * loupeY),
+        ratio * (loupeWidth / 2 - zoom * loupeX),
+        ratio * (loupeHeight / 2 - zoom * loupeY),
       );
-      const reach = MESH_LOUPE_SIZE_PX / (2 * zoom);
+      const reachX = loupeWidth / (2 * zoom);
+      const reachY = loupeHeight / (2 * zoom);
       if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
       drawMesh(
         context, mesh, rect.width, rect.height, rotorAngleDeg, navigation.scale,
@@ -1732,26 +1736,27 @@ export function MotorCanvas({
         {
           fill: !meshOverlay,
           coilPhases: geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null,
-          cull: [loupeX - reach, loupeY - reach, loupeX + reach, loupeY + reach],
+          cull: [loupeX - reachX, loupeY - reachY, loupeX + reachX, loupeY + reachY],
           edgeWidthScale: 0.6,
         },
       );
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
       context.lineWidth = 1;
-      const centre = MESH_LOUPE_SIZE_PX / 2;
+      const centreX = loupeWidth / 2;
+      const centreY = loupeHeight / 2;
       context.beginPath();
-      context.moveTo(centre - 7, centre);
-      context.lineTo(centre + 7, centre);
-      context.moveTo(centre, centre - 7);
-      context.lineTo(centre, centre + 7);
+      context.moveTo(centreX - 7, centreY);
+      context.lineTo(centreX + 7, centreY);
+      context.moveTo(centreX, centreY - 7);
+      context.lineTo(centreX, centreY + 7);
       context.stroke();
     });
     return () => window.cancelAnimationFrame(animationFrame);
     // drawMeshOverlayGeometry reads only values listed here.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    focusedMeshElementIndex, geometry, loupeShown, loupeX, loupeY, magnetPolarityView, mesh, meshDisplayMode,
+    focusedMeshElementIndex, geometry, loupeShown, loupeX, loupeY, loupeWidth, loupeHeight, magnifierSlot, magnetPolarityView, mesh, meshDisplayMode,
     meshEdgeColor, meshOverlay, meshOverlays, meshQualities, meshQualityThreshold, navigation.pan.x, navigation.pan.y,
     navigation.rotationDeg, navigation.scale, phaseDrive, plainWinding, previewRpm, rotorAngleDeg, showMeshEdges, showToothPoles, windingType,
   ]);
@@ -2015,9 +2020,7 @@ export function MotorCanvas({
             const bounds = event.currentTarget.getBoundingClientRect();
             const x = event.clientX - bounds.left;
             const y = event.clientY - bounds.top;
-            // The panel sits top left, and steps to the top right when the pointer comes under it.
-            const reach = MESH_LOUPE_SIZE_PX + 40;
-            setLoupePoint({ x, y, onRight: x < reach && y < reach });
+            setLoupePoint({ x, y });
           }
           if (navigation.panEnabled) {
             setHoveredComponent(null);
@@ -2032,7 +2035,6 @@ export function MotorCanvas({
           event.currentTarget.style.cursor = overSomething ? 'pointer' : 'default';
         }}
         onPointerLeave={(event) => {
-          setLoupePoint(null);
           setHoveredComponent(null);
           onMeshElementHover?.(null);
           if (!navigation.panEnabled) event.currentTarget.style.cursor = 'default';
@@ -2057,11 +2059,8 @@ export function MotorCanvas({
           onComponentSelect?.(componentAtPointer(event));
         }}
       />
-      {loupeShown && loupePoint && (
-        <div className={`public-field-loupe${loupePoint.onRight ? '' : ' is-left'}`} aria-hidden="true">
-          <canvas ref={loupeCanvasRef} />
-          <span>{MESH_LOUPE_MAGNIFICATION}×</span>
-        </div>
+      {loupeShown && (
+        <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={MESH_LOUPE_MAGNIFICATION} label="Mesh magnifier" />
       )}
       {(() => {
         const zoomControls = (

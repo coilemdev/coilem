@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 264904,
-      "sha256": "e1817b150397285b4f34c2f125f7239de3b3e53ecc8a2a0f4a77400685dbe0f1"
+      "bytes": 265307,
+      "sha256": "9660425f22abc24908d997f22fe4caa95ddae691c1cfc40c692b944b6242b6d4"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 70359,
-      "sha256": "896c5b732103f99e9179f4c443742171aef2e5311aa457806625206841df9728"
+      "bytes": 70363,
+      "sha256": "f07b3db40df99ed0f27b1fce56f85d712a513cf24ce35a1a468f42efaa73b209"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 87602,
-      "sha256": "3f074a3162be5a52345a20541fcb1a621ff122b2d203df33383eb88770c83251"
+      "bytes": 87610,
+      "sha256": "3a551373924f563379f05a01d8b439dd43c59d68c91fd3ab3df9b0705e582d47"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7145,8 +7145,13 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 61203,
-      "sha256": "ad7f4fb1aee441b59b6beb92462393f7b57fa8524ad3434203381f059cac341a"
+      "bytes": 61296,
+      "sha256": "425557798190aaaab4c408e3ef4a10023c9b581d0e5f2b86be22ebf309599d50"
+    },
+    {
+      "path": "frontend/src/public/ViewportMagnifier.tsx",
+      "bytes": 1529,
+      "sha256": "d768395e9b10f92a5fef0b048f3ea6474ea733483d50d0177b6cc0835a47d777"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7560,8 +7565,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 319478,
-      "sha256": "e12ae1c10ace4179197a3784fe055159658886567d1a672ef35c1ab0fd550e9a"
+      "bytes": 319963,
+      "sha256": "53f894844164851925a45ae50a111118523e4ed5f2a256ac763cba8f496cbaef"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7650,13 +7655,13 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 63744,
-      "sha256": "57979b7cc3a1be35c5f524d3afa551d25a6de90665fa01440ccd2ebe6f292857"
+      "bytes": 66057,
+      "sha256": "ca00f01f5850240a3a5c30b87de65b83230cdc9f1cf3e9111049549081433019"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
-      "bytes": 3771,
-      "sha256": "c10151aa7df39b04c51f4558123dd471df75906138b38fe3246c945de201b692"
+      "bytes": 5176,
+      "sha256": "35496496ef296df9a5baf33e8eabe01f3e27c5fc2a697b53949da71c6e9d7df4"
     },
     {
       "path": "frontend/tsconfig.public.json",

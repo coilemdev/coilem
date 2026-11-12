@@ -1810,6 +1810,7 @@ function ViewportChrome({
   showConfigurationLabel = true,
   enableDesignIntro = true,
   show3dInset = false,
+  magnifierSlot = null,
   isExpanded = false,
   onExpandToggle,
   selectedComponent = null,
@@ -1843,6 +1844,7 @@ function ViewportChrome({
   enableDesignIntro?: boolean;
   /** A small live 3D view in the corner of the 2D view; clicking it opens the 3D view. */
   show3dInset?: boolean;
+  magnifierSlot?: HTMLElement | null;
   isExpanded?: boolean;
   onExpandToggle?: () => void;
   selectedComponent?: PublicMotorComponentSelection | null;
@@ -2242,6 +2244,7 @@ function ViewportChrome({
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
               magnifier={mode === 'mesh' && meshMagnifier}
+              magnifierSlot={magnifierSlot}
               plainWinding={!showCoilColors}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
@@ -2486,7 +2489,7 @@ function ViewportChrome({
             >
               <summary>More{meshMoreOn > 0 && <em>{meshMoreOn} on</em>}</summary>
               <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
-                <button type="button" aria-pressed={meshMagnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
+                <button type="button" aria-pressed={meshMagnifier} title="Show an enlarged view of the area under the pointer" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
                 <button type="button" aria-pressed={showToothPoles} title="Show each stator tooth's N / S pole as the rotor turns" onClick={() => setShowToothPoles((shown) => !shown)}><i aria-hidden="true" />Tooth poles</button>
                 <button type="button" aria-pressed={showCoilColors} title="Color each coil by its phase; off draws them all in one plain color" onClick={() => setShowCoilColors((shown) => !shown)}><i aria-hidden="true" />Coil colors</button>
               </div>
@@ -3519,6 +3522,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
+  const [magnifierSlot, setMagnifierSlot] = useState<HTMLDivElement | null>(null);
   // While a solve meshes and solves, the viewport turns the rotor steadily, so
   // the wait reads as work in progress; during the field solve it pulses too. Both
   // read progress the solver already reports, so they add nothing to the
@@ -4277,6 +4281,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           ? (
             <SolvedFieldViewer
               materials={materials}
+              magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -4311,6 +4316,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
+              magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
               solveRotorAngleDeg={solveRotorAngleDeg}
               solveRotorCaption={solveRotorCaption}
               solvePulse={solvingField || Boolean(shownSolvedField)}
@@ -4374,6 +4380,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
             </div>
           )}
         </div>
+        <div className="public-run-magnifier-slot" ref={setMagnifierSlot} />
         <details
           className="public-run-plan-section public-run-analysis"
           open={analysisDetailsOpen}
