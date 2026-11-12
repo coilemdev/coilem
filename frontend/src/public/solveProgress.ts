@@ -123,6 +123,42 @@ export function nextPublicSolveRotorTurn(
   return previous;
 }
 
+type NamedFieldFrame = {
+  field_frame_artifact?: { artifact_id?: unknown };
+  full_field_frame_artifact?: { artifact_id?: unknown };
+};
+
+function namedFieldFrameId(frame: unknown): string | null {
+  if (!frame || typeof frame !== 'object') return null;
+  const named = frame as NamedFieldFrame;
+  const artifactId = named.full_field_frame_artifact?.artifact_id ?? named.field_frame_artifact?.artifact_id;
+  return typeof artifactId === 'string' && artifactId ? artifactId : null;
+}
+
+/**
+ * The id of the stored field frame a progress event names, or null. The solve
+ * stream names it on the frame it sends; the stator-field stream on a descriptor.
+ */
+export function publicProgressFieldFrameId(progress: PublicSolveProgress | null): string | null {
+  return namedFieldFrameId(progress?.field_frame) ?? namedFieldFrameId(progress?.field_line_frame);
+}
+
+/**
+ * The progress to keep after an event, with the first stored field frame the
+ * solve named carried along as `field_frame`. Events arrive in bursts and only
+ * the latest is kept, so without this the one event that names a frame is
+ * usually replaced before anything can read it.
+ */
+export function withFirstPublicSolveFieldFrame(
+  previous: PublicSolveProgress | null,
+  next: PublicSolveProgress,
+): PublicSolveProgress {
+  if (next.stage === 'Validating') return next;
+  const carriedId = publicProgressFieldFrameId(previous);
+  if (carriedId === null) return next;
+  return { ...next, field_frame: { field_frame_artifact: { artifact_id: carriedId } } };
+}
+
 export function projectedPublicSolveElapsedSeconds(
   reportedSeconds: number | undefined,
   observedAtMs: number,

@@ -1,5 +1,6 @@
 import { solveViewMemory } from './solveViewMemory';
 import { useEasedRotorAngle } from './useEasedRotorAngle';
+import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
@@ -27,7 +28,6 @@ import {
   type PublicCanvasLayer,
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
-  type MeshEdgeGlow,
 } from './MotorCanvas';
 import { WindingLayoutView } from './WindingLayoutView';
 import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingLayerWording } from './toothCoils';
@@ -1713,6 +1713,9 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
+/** Element edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
+const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
+
 function ViewportChrome({
   config,
   materials,
@@ -1739,15 +1742,15 @@ function ViewportChrome({
   solveRotorAngleDeg = null,
   solveRotorCaption = null,
   solvePulse = false,
-  solveMeshEdgeGlow = null,
+  solveFieldPreview = null,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
   /** While a solve sweeps: the rotor turn to draw in place of the preview's own, and a line saying what it is. */
   solveRotorAngleDeg?: number | null;
   solveRotorCaption?: string | null;
   /** While the field is being solved: a slow glow on the 2D view. */
   solvePulse?: boolean;
-  /** Flux-plot colours on the Mesh view's element edges during that glow. */
-  solveMeshEdgeGlow?: MeshEdgeGlow | null;
+  /** A solved field to show in place of the drawing while the rest of the sweep runs. */
+  solveFieldPreview?: ReactNode;
   /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
   dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
@@ -2102,7 +2105,7 @@ function ViewportChrome({
       )}
       {(viewportMode !== '3d' || introActive) && (
         <div
-          className={`public-viewport-stage public-viewport-stage-2d${solvePulse ? ' is-solving-field' : ''}${solveMeshEdgeGlow ? ' has-flux-glow' : ''}`}
+          className={`public-viewport-stage public-viewport-stage-2d${solvePulse ? ' is-solving-field' : ''}`}
           style={{
             opacity: introActive ? introCrossfade : 1,
             pointerEvents: introActive && introCrossfade <= 0.5 ? 'none' : 'auto',
@@ -2117,6 +2120,8 @@ function ViewportChrome({
             />
           ) : showWindingLayout ? (
             <WindingLayoutView config={config} geometry={geometry ?? null} navigationSlot={navigationSlot} />
+          ) : solveFieldPreview ? (
+            solveFieldPreview
           ) : (
             <MotorCanvas
               geometry={geometry}
@@ -2136,7 +2141,7 @@ function ViewportChrome({
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
-              meshEdgeGlow={solveMeshEdgeGlow}
+              meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -3355,21 +3360,21 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
   const solveRotorAngleDeg = useEasedRotorAngle(shownRotorTurn?.turnDeg ?? null, solveView === 'mesh' ? 3 : 12);
   const solvingField = shownRotorTurn?.phase === 'solving';
+  // As soon as the first position is solved its field is shown: a real result
+  // to look at while the rest of the sweep runs. It is read once.
+  const firstSolvedField = useFirstSolvedField(busy === 'solve', progress);
+  const shownSolvedField = solvingField ? firstSolvedField : null;
   const solveRotorCaption = !shownRotorTurn || solveRotorAngleDeg === null
     ? null
-    : solvingField
-      ? 'Solving the field at each rotor position'
-      : `Meshing rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`;
+    : shownSolvedField
+      ? 'A solved rotor position · finishing the rest'
+      : solvingField
+        ? 'Solving the field at each rotor position'
+        : `Meshing rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`;
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
   const [showMeshEdges, setShowMeshEdges] = useState(() => (resumeSolveView ? solveViewMemory.stage.showMeshEdges : true));
-  // The Mesh view's edges take flux-plot colours for the field solve. They are
-  // drawn once; the pulsing is the stylesheet's, so nothing is redrawn per beat.
-  const solveMeshGlowShown = solvingField && solveView === 'mesh' && showMeshEdges;
-  const solveMeshEdgeGlow = useMemo<MeshEdgeGlow | null>(() => (solveMeshGlowShown
-    ? { level: 1, polePairs: sweepPoleCount / 2 }
-    : null), [solveMeshGlowShown, sweepPoleCount]);
   // The mesh and result these view choices were made for: the effects below
   // reset the view only when one of them is replaced, not on a resumed mount.
   const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
@@ -4113,7 +4118,17 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               solveRotorAngleDeg={solveRotorAngleDeg}
               solveRotorCaption={solveRotorCaption}
               solvePulse={solvingField}
-              solveMeshEdgeGlow={solveMeshEdgeGlow}
+              solveFieldPreview={shownSolvedField && (
+                <FieldResultPlot
+                  plot={shownSolvedField}
+                  ring={outerRotorRing(config)}
+                  saturationTicks={statorSteelSaturationTicks(config, materials)}
+                  showMesh={solveView === 'mesh'}
+                  showHeading={false}
+                  showControls={false}
+                  probeEnabled={false}
+                />
+              )}
               dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}

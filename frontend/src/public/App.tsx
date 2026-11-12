@@ -87,7 +87,7 @@ import {
   type PublicSolvePreset,
   type PublicSweepSampling,
 } from './solvePlan';
-import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar } from './solveProgress';
+import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar, withFirstPublicSolveFieldFrame } from './solveProgress';
 
 const FALLBACK_MATERIALS: MaterialCatalog = {
   steels: ['M350-50A'],
@@ -1134,7 +1134,8 @@ export function App() {
   const generateMesh = (): Promise<MeshPreview | null> => prepareMesh(config);
 
   const handleSolveProgress = useCallback((nextProgress: PublicSolveProgress) => {
-    setProgress(nextProgress);
+    // The first solved field a run names stays on the progress for the Solve page to show.
+    setProgress((previous) => withFirstPublicSolveFieldFrame(previous, nextProgress));
     const hasAngle = typeof nextProgress.angle_deg === 'number' && Number.isFinite(nextProgress.angle_deg);
     const hasTorque = typeof nextProgress.torque_Nm === 'number' && Number.isFinite(nextProgress.torque_Nm);
     const hasBackEmf = [nextProgress.phase_a_V, nextProgress.phase_b_V, nextProgress.phase_c_V]

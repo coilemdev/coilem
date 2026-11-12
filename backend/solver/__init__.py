@@ -1917,12 +1917,25 @@ def _solve_with_per_angle_producer_meshes(
             frame_futures[future] = idx
             queued_frame_indices.add(idx)
 
+        first_field_announced = False
+
         def receive_frame(future: Future[Any]) -> None:
-            nonlocal next_live_frame
+            nonlocal next_live_frame, first_field_announced
             expected_idx = frame_futures.pop(future)
             idx, field_line_frame, live_field_frame, steel_accumulator, stator_sample = future.result()
             if idx != expected_idx:
                 raise ValueError("Field worker returned a different rotor position")
+            if not first_field_announced and on_progress is not None and field_line_frame is not None:
+                # Name the first stored field as soon as there is one, whichever
+                # position it is, so the Solve page can show a real field while
+                # the rest are packed. The frame is stored either way; this only
+                # tells the page where it is. Playback frames still follow in order.
+                first_field_announced = True
+                on_progress(
+                    completed_steps, total_progress, None, "magneto2d_sweep",
+                    float(angles_elec_deg[idx]), None, None, None,
+                    field_line_frame, {"first_solved_field": True},
+                )
             field_line_frames_ordered[idx] = field_line_frame
             live_field_frames_ordered[idx] = live_field_frame
             steel_accumulators_ordered[idx] = steel_accumulator
@@ -2151,7 +2164,8 @@ def _solve_with_per_angle_producer_meshes(
                 )
                 for future in ready:
                     if future not in pending_solves:
-                        receive_frame(future)
+                        if future in frame_futures:
+                            receive_frame(future)
                         continue
                     pending_solves.remove(future)
                     lane, job, report, _elapsed_ms = future.result()
@@ -2161,6 +2175,11 @@ def _solve_with_per_angle_producer_meshes(
                     else:
                         handle_noload_report(job, report)
                         handle_reused_solutions("noload", job, report)
+                    if not first_field_announced:
+                        # Many solves are handled in one pass after meshing; look
+                        # for the first finished frame between them, not after.
+                        for finished_frame in [frame for frame in frame_futures if frame.done()]:
+                            receive_frame(finished_frame)
 
             native_solves_done_at = time.perf_counter()
             # Submissions have stopped, so this iterator sees the complete

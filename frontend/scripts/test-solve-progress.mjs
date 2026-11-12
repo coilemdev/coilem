@@ -7,6 +7,8 @@ const {
   PUBLIC_SOLVE_MESH_SHARE,
   nextPublicSolveProgressBar,
   nextPublicSolveRotorTurn,
+  publicProgressFieldFrameId,
+  withFirstPublicSolveFieldFrame,
   publicSolveMeshFraction,
   publicSolvePositionFraction,
 } = await importTypeScriptModule(new URL('../src/public/solveProgress.ts', import.meta.url));
@@ -117,23 +119,28 @@ console.log('solve progress checks passed (monotonic bar across meshing, solving
   assert.deepEqual(nextPublicSolveRotorTurn(null, meshed(4, 4), 60, 14), { turnDeg: 60 / 7, phase: 'meshing', finished: false }, 'the span is the electrical range over the pole pairs');
 }
 
-// The glow's colours across the motor are an illustration with the look of a flux plot.
+// A progress event names the stored field of a solved position; the Solve page shows the first.
 {
-  const { solveGlowBin, solveGlowValue } = await importTypeScriptModule(new URL('../src/public/solveGlowField.ts', import.meta.url));
-  const shape = { gapRadiusMm: 50, outerRadiusMm: 100, polePairs: 4 };
-  const at = (radius, deg) => solveGlowValue(radius * Math.cos(deg * Math.PI / 180), radius * Math.sin(deg * Math.PI / 180), shape);
-  for (const radius of [5, 30, 50, 70, 100]) {
-    for (let deg = 0; deg < 360; deg += 7) {
-      const value = at(radius, deg);
-      assert.ok(value >= 0 && value <= 1, `value in range at r=${radius}, ${deg} deg`);
-      assert.ok(Math.abs(value - at(radius, deg + 45)) < 1e-9, 'the pattern repeats every pole (45 degrees for 8 poles)');
-    }
-  }
-  assert.ok(at(52, 0) > at(52, 22.5), 'at the gap it is strongest facing a pole');
-  assert.ok(at(95, 22.5) > at(95, 0), 'in the back iron it is strongest between poles');
-  assert.ok(at(5, 0) < at(45, 0), 'it fades towards the shaft');
-  assert.equal(solveGlowBin(0, 1, 7), 0, 'no field is the first colour');
-  assert.equal(solveGlowBin(1, 1, 7), 6, 'the strongest field at full level is the last colour');
-  assert.ok(solveGlowBin(1, 0, 7) < 6, 'at a low level the colours sit lower on the scale');
-  assert.ok(solveGlowBin(0.6, 1, 7) > solveGlowBin(0.6, 0, 7), 'a higher level reaches further up the scale');
+  assert.equal(publicProgressFieldFrameId(null), null);
+  assert.equal(publicProgressFieldFrameId(event('magneto2d_sweep', 1, 48)), null, 'most events name no frame');
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_frame: { angle_deg: 0, field_frame_artifact: { artifact_id: 'abc' } } }), 'abc');
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_frame: { field_frame_artifact: { artifact_id: '' } } }), null, 'an empty id is no frame');
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_frame: { field_frame_artifact: {} } }), null);
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_line_frame: { angle_deg: 285, field_frame_artifact: { artifact_id: 'slim' }, full_field_frame_artifact: { artifact_id: 'full' } } }), 'full', 'the solve stream names it on the frame it sends');
+}
+
+// Only the latest event is kept, so the first frame a solve names is carried along with it.
+{
+  const named = (id) => ({ ...event('magneto2d_sweep', 1, 48), field_frame: { angle_deg: 0, field_frame_artifact: { artifact_id: id } } });
+  const plain = event('noload_sweep', 2, 48);
+  assert.equal(withFirstPublicSolveFieldFrame(null, plain), plain, 'nothing to carry at the start');
+  const first = withFirstPublicSolveFieldFrame(plain, named('first'));
+  assert.equal(publicProgressFieldFrameId(first), 'first', 'an event that names a frame keeps it');
+  const later = withFirstPublicSolveFieldFrame(first, plain);
+  assert.equal(publicProgressFieldFrameId(later), 'first', 'later events carry it');
+  assert.equal(later.stage, 'noload_sweep', 'and are otherwise themselves');
+  assert.equal(publicProgressFieldFrameId(withFirstPublicSolveFieldFrame(later, named('second'))), 'first', 'the first frame stays the one shown');
+  assert.equal(publicProgressFieldFrameId(withFirstPublicSolveFieldFrame(later, event('Validating', 0, 0))), null, 'a new solve starts clean');
+  const fromStream = withFirstPublicSolveFieldFrame(plain, { ...plain, field_line_frame: { field_frame_artifact: { artifact_id: 'streamed' } } });
+  assert.equal(publicProgressFieldFrameId(withFirstPublicSolveFieldFrame(fromStream, plain)), 'streamed', 'a frame named by the solve stream is carried too');
 }

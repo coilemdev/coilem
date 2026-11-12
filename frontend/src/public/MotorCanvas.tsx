@@ -42,9 +42,7 @@ import {
   type Rect,
 } from './phaseDrive';
 import { pointInContours, previewContours, type Contour } from './previewContours';
-import { HEAT_COLORS } from './fluxColorScale';
 import { publishedReference } from './publishedReferences';
-import { solveGlowBin, solveGlowValue, type SolveGlowShape } from './solveGlowField';
 import { outerRotorRing, ringKey, sectorView } from './sectorFraming';
 import {
   useViewportNavigation,
@@ -90,8 +88,8 @@ interface MotorCanvasProps {
   previewRpm?: number;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
-  /** Flux-plot colours on the element edges in place of the usual grey. */
-  meshEdgeGlow?: MeshEdgeGlow | null;
+  /** Element-edge colour in place of the usual grey. */
+  meshEdgeColor?: string | null;
   meshQualities?: number[];
   meshQualityThreshold?: number;
   focusedMeshElementIndex?: number | null;
@@ -1223,45 +1221,6 @@ function drawDimensionAnnotations(
   context.restore();
 }
 
-/** The Solve page's field-solve glow on the Mesh view. */
-export interface MeshEdgeGlow {
-  /** How far up the colour scale the pattern reaches: 0 barely, 1 all of it. */
-  level: number;
-  polePairs: number;
-}
-
-/** The flux-density scale without its darkest blue, which would vanish on the dark canvas. */
-const SOLVE_GLOW_COLORS = HEAT_COLORS.slice(1);
-
-const meshGlowShapes = new WeakMap<MeshPreview, { gapRadiusMm: number; outerRadiusMm: number }>();
-
-/** Air-gap and outer radius of a mesh, found once from where its rotor elements end. */
-function meshGlowShape(data: MeshPreview, polePairs: number): SolveGlowShape {
-  let radii = meshGlowShapes.get(data);
-  if (!radii) {
-    let outer = 0;
-    let rotorMin = Infinity;
-    let rotorMax = 0;
-    data.triangles.forEach((triangle, index) => {
-      const rotor = isRotorRegion(data.regions[index] || 'mesh');
-      for (const nodeIndex of triangle) {
-        const [x, y] = data.nodes_mm[nodeIndex];
-        const radius = Math.hypot(x, y);
-        if (radius > outer) outer = radius;
-        if (rotor) {
-          if (radius < rotorMin) rotorMin = radius;
-          if (radius > rotorMax) rotorMax = radius;
-        }
-      }
-    });
-    // An inner rotor ends at the gap; an outer rotor starts there.
-    const gap = rotorMax <= 0 ? outer * 0.6 : rotorMax < outer * 0.98 ? rotorMax : rotorMin;
-    radii = { gapRadiusMm: gap, outerRadiusMm: outer };
-    meshGlowShapes.set(data, radii);
-  }
-  return { ...radii, polePairs };
-}
-
 function drawMesh(
   context: CanvasRenderingContext2D,
   data: MeshPreview,
@@ -1278,8 +1237,8 @@ function drawMesh(
   qualityThreshold: number,
   focusedElementIndex: number | null,
   meshHits: MeshTriangleHit[],
-  /** The Solve page's field-solve glow: edges take flux-plot colours in place of the usual grey. */
-  edgeGlow: MeshEdgeGlow | null,
+  /** Replaces the usual grey of the element edges (the Solve page's field-solve glow). */
+  edgeColor: string | null,
 ): void {
   if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
   const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
@@ -1348,12 +1307,6 @@ function drawMesh(
 
   if (showEdges) {
     const uniqueEdges = new Set<string>();
-    const glowShape = edgeGlow ? meshGlowShape(data, edgeGlow.polePairs) : null;
-    const glowPaths = glowShape ? SOLVE_GLOW_COLORS.map(() => new Path2D()) : null;
-    const rotatedMm = (nodeIndex: number, rotateRotor: boolean): [number, number] => {
-      const [x, y] = data.nodes_mm[nodeIndex];
-      return rotateRotor ? [x * rotorCosine - y * rotorSine, x * rotorSine + y * rotorCosine] : [x, y];
-    };
     context.beginPath();
     data.triangles.forEach((triangle, triangleIndex) => {
       const rotateRotor = isRotorRegion(data.regions[triangleIndex] || 'mesh');
@@ -1370,34 +1323,15 @@ function drawMesh(
         uniqueEdges.add(edgeKey);
         const start = mapMeshNode(startIndex, rotateRotor);
         const end = mapMeshNode(endIndex, rotateRotor);
-        if (glowShape && glowPaths && edgeGlow) {
-          const from = rotatedMm(startIndex, rotateRotor);
-          const to = rotatedMm(endIndex, rotateRotor);
-          const value = solveGlowValue((from[0] + to[0]) / 2, (from[1] + to[1]) / 2, glowShape);
-          const path = glowPaths[solveGlowBin(value, edgeGlow.level, glowPaths.length)];
-          path.moveTo(start[0], start[1]);
-          path.lineTo(end[0], end[1]);
-          return;
-        }
         context.moveTo(start[0], start[1]);
         context.lineTo(end[0], end[1]);
       });
     });
-    if (glowPaths) {
-      context.lineWidth = 0.7;
-      context.globalAlpha = 0.9;
-      glowPaths.forEach((path, bin) => {
-        context.strokeStyle = SOLVE_GLOW_COLORS[bin];
-        context.stroke(path);
-      });
-      context.globalAlpha = 1;
-    } else {
-      context.strokeStyle = displayMode === 'problems'
-        ? 'rgba(226, 232, 240, 0.12)'
-        : 'rgba(226, 232, 240, 0.28)';
-      context.lineWidth = 0.4;
-      context.stroke();
-    }
+    context.strokeStyle = edgeColor ?? (displayMode === 'problems'
+      ? 'rgba(226, 232, 240, 0.12)'
+      : 'rgba(226, 232, 240, 0.28)');
+    context.lineWidth = edgeColor ? 0.5 : 0.4;
+    context.stroke();
   }
 
   if (displayMode === 'problems') {
@@ -1467,14 +1401,11 @@ export function MotorCanvas({
   meshQualities = EMPTY_MESH_QUALITIES,
   meshQualityThreshold = 0.01,
   focusedMeshElementIndex = null,
-  meshEdgeGlow = null,
+  meshEdgeColor = null,
   onMeshElementHover,
   onMeshElementSelect,
   navigationSlot = null,
 }: MotorCanvasProps) {
-  // Plain numbers for the redraw effect below, so a new glow object alone does not redraw.
-  const meshEdgeGlowLevel = meshEdgeGlow?.level ?? null;
-  const meshEdgeGlowPolePairs = meshEdgeGlow?.polePairs ?? null;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Phases: the solve's drive settings with the geometry's phase-A axis and poles.
   const solveParams = config?.solve_params;
@@ -1617,7 +1548,7 @@ export function MotorCanvas({
           meshQualityThreshold,
           focusedMeshElementIndex,
           meshHitsRef.current,
-          meshEdgeGlow,
+          meshEdgeColor,
         );
       }
     };
@@ -1650,8 +1581,7 @@ export function MotorCanvas({
     rotorAngleDeg,
     selectedComponent,
     showMeshEdges,
-    meshEdgeGlowLevel,
-    meshEdgeGlowPolePairs,
+    meshEdgeColor,
     focusedMeshElementIndex,
     windingType,
   ]);
