@@ -11,6 +11,7 @@ import { outerRotorRing } from './sectorFraming';
 
 import { getPublicFieldFrame, getPublicPlaybackStatus } from './api';
 import {
+  FIELD_FIT_LIKE_MOTOR_CANVAS,
   FieldResultPlot,
   warmFieldResultPlot,
   type FieldColorRangeMode,
@@ -252,6 +253,7 @@ export function SolvedFieldViewer({
   showMeshRef.current = showMesh;
   const [showFieldLines, setShowFieldLines] = useState(solveViewMemory.field.showFieldLines);
   const [showMagnets, setShowMagnets] = useState(solveViewMemory.field.showMagnets);
+  const [magnifier, setMagnifier] = useState(false);
   const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
@@ -1229,6 +1231,8 @@ export function SolvedFieldViewer({
               geometry={geometry}
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
+              magnifier={magnifier}
+              fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
               showAirgap={showAirgap}
               // The air-gap ring, field axes and stator pole labels assume an inner rotor.
               airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
@@ -1318,6 +1322,7 @@ export function SolvedFieldViewer({
               <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)} aria-label="Flux density"><i aria-hidden="true" /><span className="public-field-text-long">Flux density</span><span className="public-field-text-short" aria-hidden="true">Flux</span></button>
               <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
               {showFieldLines && renderDensityControl()}
+              <button type="button" aria-pressed={magnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMagnifier((value) => !value)} aria-label="Magnifier"><i aria-hidden="true" /><span className="public-field-text-long">Magnifier</span><span className="public-field-text-short" aria-hidden="true">Mag</span></button>
             </div>
             <details className="public-field-layer-menu">
               <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>

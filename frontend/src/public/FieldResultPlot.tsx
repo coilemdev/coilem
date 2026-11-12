@@ -44,6 +44,15 @@ import {
   type SaturationTick,
 } from './fluxColorScale';
 const FIELD_RASTER_SIZE = 900;
+/** The magnifier panel: its side in CSS px, and how much larger it draws than the view. */
+const LOUPE_SIZE_PX = 240;
+const LOUPE_MAGNIFICATION = 3;
+/**
+ * The fit that draws the motor the size the geometry and mesh canvases draw it,
+ * so it does not jump between the Solve tabs: they give the motor 85% of the
+ * view's smaller side (viewportTransform.ts), this plot 1 / 1.05 of it.
+ */
+export const FIELD_FIT_LIKE_MOTOR_CANVAS = 0.85 * 1.05;
 const FIELD_DIRECTION_CUE_TARGET = 32;
 const DETAIL_RENDER_SCALE = 1.08;
 const VIEWPORT_SCALE_SETTLE_MS = 140;
@@ -537,6 +546,8 @@ export function FieldResultPlot({
   subtitle = 'Completed Magneto2D solution',
   showHeading = true,
   probeEnabled = true,
+  magnifier = false,
+  fitScale = 1,
   describeProbe = defaultProbeDescription,
   onViewportScaleSettled,
   overlay = null,
@@ -575,6 +586,10 @@ export function FieldResultPlot({
   subtitle?: string;
   showHeading?: boolean;
   probeEnabled?: boolean;
+  /** Show the area under the pointer enlarged in a corner of the view. */
+  magnifier?: boolean;
+  /** The share of the usual fit to draw the motor at; below 1 leaves a wider margin. */
+  fitScale?: number;
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
@@ -593,8 +608,8 @@ export function FieldResultPlot({
     ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
     width,
     height,
-    Math.min(width, height) / (2 * 1.05),
-  ), [ringInnerMm, ringOuterMm]);
+    (Math.min(width, height) * fitScale) / (2 * 1.05),
+  ), [fitScale, ringInnerMm, ringOuterMm]);
   const navigation = useViewportNavigation(
     undefined,
     undefined,
@@ -644,6 +659,9 @@ export function FieldResultPlot({
   const [internalShowMesh, setInternalShowMesh] = useState(false);
   const [internalShowFieldLines, setInternalShowFieldLines] = useState(true);
   const [probe, setProbe] = useState<FieldProbe | null>(null);
+  // The magnifier: where the pointer is in the view (CSS px), and the corner its panel takes.
+  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number; onLeft: boolean } | null>(null);
+  const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
   const [viewportRange, setViewportRange] = useState<FieldViewportRange | null>(null);
   const viewportRangeRef = useRef<FieldViewportRange | null>(null);
   // Whether the canvas shows exact vectors (drawn here, on the chosen scale) or a
@@ -657,6 +675,116 @@ export function FieldResultPlot({
   useEffect(() => {
     if (!probeEnabled || !sourcePlot) setProbe(null);
   }, [probeEnabled, sourcePlot]);
+  useEffect(() => {
+    if (!magnifier) setLoupePoint(null);
+  }, [magnifier]);
+
+  // The magnifier panel: the picture around the pointer, redrawn from the solved
+  // elements at a higher zoom when they are loaded, so it is sharp and not a
+  // stretched copy; otherwise an enlarged copy of the view.
+  const loupeX = loupePoint?.x ?? null;
+  const loupeY = loupePoint?.y ?? null;
+  useEffect(() => {
+    const loupe = loupeCanvasRef.current;
+    const canvas = canvasRef.current;
+    if (!magnifier || loupeX === null || loupeY === null || !loupe || !canvas) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const pixels = Math.round(LOUPE_SIZE_PX * pixelRatio);
+      if (loupe.width !== pixels || loupe.height !== pixels) {
+        loupe.width = pixels;
+        loupe.height = pixels;
+      }
+      const context = loupe.getContext('2d');
+      if (!context) return;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.fillStyle = '#0b0d12';
+      context.fillRect(0, 0, pixels, pixels);
+      const width = Math.max(1, canvas.clientWidth);
+      const height = Math.max(1, canvas.clientHeight);
+      if (prepared) {
+        const [viewX, viewY, viewWidth, viewHeight] = prepared.viewBox.split(' ').map(Number);
+        const size = Math.min(width, height) * fitScale;
+        const baseScale = Math.min(size / viewWidth, size / viewHeight);
+        const baseOffsetX = (width - viewWidth * baseScale) / 2;
+        const baseOffsetY = (height - viewHeight * baseScale) / 2;
+        const scale = baseScale * navigation.scale;
+        const translateX = width / 2 + (baseOffsetX - viewX * baseScale - width / 2) * navigation.scale + navigation.pan.x;
+        const translateY = height / 2 + (baseOffsetY - viewY * baseScale - height / 2) * navigation.scale + navigation.pan.y;
+        const pivotX = width / 2 + navigation.pan.x;
+        const pivotY = height / 2 + navigation.pan.y;
+        context.setTransform(
+          new DOMMatrix()
+            .scaleSelf(pixelRatio)
+            .translateSelf(LOUPE_SIZE_PX / 2, LOUPE_SIZE_PX / 2)
+            .scaleSelf(LOUPE_MAGNIFICATION)
+            .translateSelf(-loupeX, -loupeY)
+            .translateSelf(pivotX, pivotY)
+            .rotateSelf(navigation.rotationDeg)
+            .translateSelf(-pivotX, -pivotY)
+            .multiplySelf(new DOMMatrix([scale, 0, 0, scale, translateX, translateY])),
+        );
+        drawBase(context, prepared);
+        if (showHeatmap) {
+          drawHeat(context, prepared, colorRangeMode === 'viewport' && viewportRange
+            ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
+            : FIXED_FLUX_SCALE);
+        }
+        if (showMesh) drawMeshEdges(context, prepared, navigation.scale * LOUPE_MAGNIFICATION);
+        if (showFieldLines) {
+          context.save();
+          drawFieldLines(context, prepared, fieldLineDensity, pmLines);
+          context.restore();
+        }
+      } else {
+        const sourceScale = canvas.width / width;
+        const span = LOUPE_SIZE_PX / LOUPE_MAGNIFICATION;
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        context.drawImage(
+          canvas,
+          (loupeX - span / 2) * sourceScale,
+          (loupeY - span / 2) * sourceScale,
+          span * sourceScale,
+          span * sourceScale,
+          0,
+          0,
+          pixels,
+          pixels,
+        );
+      }
+      // A small cross marks the point under the pointer.
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      context.lineWidth = 1;
+      const centre = LOUPE_SIZE_PX / 2;
+      context.beginPath();
+      context.moveTo(centre - 7, centre);
+      context.lineTo(centre + 7, centre);
+      context.moveTo(centre, centre - 7);
+      context.lineTo(centre, centre + 7);
+      context.stroke();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [
+    colorRangeMode,
+    fieldLineDensity,
+    fitScale,
+    loupeX,
+    loupeY,
+    magnifier,
+    navigation.pan.x,
+    navigation.pan.y,
+    navigation.rotationDeg,
+    navigation.scale,
+    pmLines,
+    prepared,
+    raster,
+    showFieldLines,
+    showHeatmap,
+    showMesh,
+    viewportRange,
+  ]);
 
   useEffect(() => {
     if (!onViewportScaleSettled) return undefined;
@@ -722,7 +850,7 @@ export function FieldResultPlot({
       if (!context) return;
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.clearRect(0, 0, pixelWidth, pixelHeight);
-      const size = Math.min(pixelWidth, pixelHeight);
+      const size = Math.min(pixelWidth, pixelHeight) * fitScale;
       const panX = navigation.pan.x * pixelRatio;
       const panY = navigation.pan.y * pixelRatio;
       // The sector turntable turns the whole picture about the motor centre, which the
@@ -896,6 +1024,7 @@ export function FieldResultPlot({
     colorRangeMode,
     highResolutionPlot,
     fieldLineDensity,
+    fitScale,
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
@@ -1077,6 +1206,14 @@ export function FieldResultPlot({
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     navigation.bind.onPointerMove(event);
+    if (magnifier) {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - bounds.left;
+      const y = event.clientY - bounds.top;
+      // The panel sits top right, and steps aside to the top left when the pointer comes under it.
+      const reach = LOUPE_SIZE_PX + 40;
+      setLoupePoint({ x, y, onLeft: x > bounds.width - reach && y < reach });
+    }
     if (
       navigation.isDragging
       || event.buttons !== 0
@@ -1089,7 +1226,7 @@ export function FieldResultPlot({
       return;
     }
     const rect = event.currentTarget.getBoundingClientRect();
-    const size = Math.min(rect.width, rect.height);
+    const size = Math.min(rect.width, rect.height) * fitScale;
     const drawSize = size * navigation.scale;
     const drawX = (rect.width - drawSize) / 2 + navigation.pan.x;
     const drawY = (rect.height - drawSize) / 2 + navigation.pan.y;
@@ -1171,11 +1308,11 @@ export function FieldResultPlot({
         title="Use the mouse wheel to zoom; drag to pan when zoomed"
         {...navigation.bind}
         onPointerMove={handlePointerMove}
-        onPointerLeave={() => setProbe(null)}
+        onPointerLeave={() => { setProbe(null); setLoupePoint(null); }}
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" aria-hidden="true">
+          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
@@ -1296,6 +1433,12 @@ export function FieldResultPlot({
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
         })()}
+        {magnifier && loupePoint && (
+          <div className={`public-field-loupe${loupePoint.onLeft ? ' is-left' : ''}`} aria-hidden="true">
+            <canvas ref={loupeCanvasRef} />
+            <span>{LOUPE_MAGNIFICATION}×</span>
+          </div>
+        )}
         {probe && probeDescription && (
           <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">
             <header>

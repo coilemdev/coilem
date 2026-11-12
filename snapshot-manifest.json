@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 253612,
-      "sha256": "94ac5d376ce5a7171ea2fd1b99d88f7f05bdc60a82ff5dd6753cd81b0740f1de"
+      "bytes": 254067,
+      "sha256": "64153c3baa38cbfb302e59b3af1b0d8f3e5a7c0c2a906bfbb3d6b2c144fb9041"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7050,8 +7050,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 61182,
-      "sha256": "bf6c096256476b9198007ecfe0e6a3d0b02a0047f8754df53e30c58ab2fd0ea2"
+      "bytes": 67284,
+      "sha256": "7a1f2a0ace2cbfef91e04edb27a0846512e397e470779323ac17ca97542a09da"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7140,13 +7140,13 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 60223,
-      "sha256": "79fe46e42521646242158fe0fbff49b91fda638c0c94f67a5f48e9c5946c1395"
+      "bytes": 60763,
+      "sha256": "4a3f134c2e056805f1d207a4592e0fc3479af7065fb0b0a96bf9ce759f2bacbe"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 16825,
-      "sha256": "c53384988bc96652f35966e2bb79db000636fe53873e0adff569ed8430dd9df7"
+      "bytes": 17897,
+      "sha256": "8735f321a556b0f387916ecc1084d5a7c23bcc3aa8b15ed16a2952c9e6a9f169"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -7550,8 +7550,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 309493,
-      "sha256": "13f6e81e8da79300cd7b81618aad47438161023c918b58b857965d4c32c4669e"
+      "bytes": 311407,
+      "sha256": "9d2d0ff8e7b57cc8295fa459abf12a9046821a16bda3877ad15c25e609de72f6"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

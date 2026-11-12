@@ -1009,6 +1009,14 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-viewport-navigation { position: relative; overflow: hidden; touch-action: none; user-select: none; }
 .public-viewport-navigation.is-pannable { cursor: grab; }
 .public-viewport-navigation.is-dragging { cursor: grabbing; }
+/* Over a solved field the pointer reads values, so it is a precise cross, not a hand. */
+.public-field-result-canvas.public-viewport-navigation, .public-field-result-canvas.public-viewport-navigation.is-pannable { cursor: crosshair; }
+.public-field-result-canvas.public-viewport-navigation.is-dragging { cursor: grabbing; }
+/* The magnifier panel: the area under the pointer, enlarged, in a corner of the field view. */
+.public-field-loupe { position: absolute; z-index: 9; top: 14px; right: 14px; width: 240px; height: 240px; overflow: hidden; border: 1px solid rgba(251, 191, 36, 0.7); border-radius: 12px; background: #0b0d12; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5); pointer-events: none; }
+.public-field-loupe.is-left { right: auto; left: 14px; }
+.public-field-result-canvas .public-field-loupe > canvas { position: static; display: block; width: 100%; height: 100%; }
+.public-field-loupe > span { position: absolute; right: 8px; bottom: 6px; color: rgba(226, 232, 240, 0.8); font: 600 11px var(--font-mono); }
 .public-viewport-navigation-content { position: absolute; inset: 0; display: grid; transform-origin: center center; will-change: transform; }
 .public-motor-navigation { z-index: 1; width: 100%; height: 100%; }
 .public-motor-viewport .motor-canvas { width: 100%; height: 100%; touch-action: none; }
@@ -5128,3 +5136,14 @@ button.performance-tag { cursor: help; }
 @container (max-width: 720px) {
   .public-motor-viewport.has-dimension-readout .public-viewport-stage-2d { left: 0; }
 }
+/* On the Solve page the flux legend lies over the foot of the field view, so the view keeps
+   the full height the geometry and mesh canvases have and the motor stays where it was. */
+.public-solved-field-canvas .public-field-result,
+.public-viewport-stage-2d > .public-field-result { position: relative; }
+.public-solved-field-canvas .public-field-result > .public-field-result-canvas,
+.public-viewport-stage-2d > .public-field-result > .public-field-result-canvas { flex: 1 1 auto !important; }
+.public-solved-field-canvas .public-field-result > .public-field-result-legend,
+.public-viewport-stage-2d > .public-field-result > .public-field-result-legend { position: absolute; right: 0; bottom: 0; left: 0; z-index: 8; background: rgba(8, 10, 15, 0.8); }
+.public-solved-field-canvas .public-field-probe,
+.public-viewport-stage-2d > .public-field-result .public-field-probe { bottom: 46px; }
+

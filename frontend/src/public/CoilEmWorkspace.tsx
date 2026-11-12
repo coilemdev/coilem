@@ -39,7 +39,7 @@ import {
   type DimensionAnnotation,
   type DimensionId,
 } from './dimensionAnnotations';
-import { FieldResultPlot } from './FieldResultPlot';
+import { FIELD_FIT_LIKE_MOTOR_CANVAS, FieldResultPlot } from './FieldResultPlot';
 import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
@@ -1672,6 +1672,8 @@ type PublicViewportMode = '2d' | '3d' | 'materials' | 'layout';
  * interactive behind it.
  */
 const DESIGN_INTRO_DURATION_MS = 2_000;
+/** Whether opening a motor plays the 3D-to-2D intro. Off: the 2D view shows the 3D motor in its corner. */
+const DESIGN_INTRO_PLAYS = false as boolean;
 const DESIGN_INTRO_CROSSFADE_START = 0.68;
 
 function ViewportExpandButton({
@@ -1777,11 +1779,14 @@ function ViewportChrome({
   // The intro plays when a motor is first opened. Coming back to Design from
   // Solve or Results resumes the view that was left (designViewMemory).
   const [resumeDesignView] = useState(() => designIntroEnabled && designViewMemory.introPlayed);
+  // The 2D view carries a small live 3D view, so a motor opens straight on 2D
+  // unless the 3D-to-2D intro is switched back on.
+  const playDesignIntro = DESIGN_INTRO_PLAYS && designIntroEnabled && !resumeDesignView;
   const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => {
-    if (!designIntroEnabled) return '2d';
+    if (!designIntroEnabled || (!playDesignIntro && !resumeDesignView)) return '2d';
     return resumeDesignView ? designViewMemory.view as PublicViewportMode : '3d';
   });
-  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled && !resumeDesignView ? 0 : 1));
+  const [introProgress, setIntroProgress] = useState(() => (playDesignIntro ? 0 : 1));
   const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>(() => (
     resumeDesignView ? designViewMemory.layer as PublicCanvasLayer : 'none'
   ));
@@ -1893,7 +1898,7 @@ function ViewportChrome({
   }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
-  const introCompleteRef = useRef(!designIntroEnabled || resumeDesignView);
+  const introCompleteRef = useRef(!playDesignIntro);
   const previousFrameRef = useRef<number | null>(null);
 
   const finishDesignIntro = useCallback((finalMode: PublicViewportMode) => {
@@ -4156,6 +4161,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   showMesh={solveView === 'mesh'}
                   showHeading={false}
                   showControls={false}
+                  fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
                 />
               )}
               dockStrip={solveViewportSwitch}
