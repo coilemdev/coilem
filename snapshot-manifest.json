@@ -6600,8 +6600,8 @@
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "bytes": 9528,
-      "sha256": "df080b1856983e0ccf337ce55e8f3b14429446bf5fb4eaaf676b7020500fe070"
+      "bytes": 9604,
+      "sha256": "79a539b97571eaf7d46aeed494ef6eabf399c567f1c21f6e70218876ed95f9d0"
     },
     {
       "path": "frontend/scripts/test-solve-time.mjs",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 252493,
-      "sha256": "5c50183fcf3f0be9ac050fd521c145047e9c9aaa1e8bff2c36651e02f370f373"
+      "bytes": 253612,
+      "sha256": "94ac5d376ce5a7171ea2fd1b99d88f7f05bdc60a82ff5dd6753cd81b0740f1de"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7235,8 +7235,8 @@
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 897,
-      "sha256": "37dbdaa7a6e32ba0a58eabcded944254b9a46463362cc4a17924a1a51c9d3df0"
+      "bytes": 898,
+      "sha256": "5a8d1d40376534b55fddcfed278ff02e4685afbdbb922cd5630e21a7a183d69d"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7545,13 +7545,13 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 7545,
-      "sha256": "8dbc200afb45fa35539596e5aea7d72718e616550a1e4cb96f44e2f1168dd140"
+      "bytes": 7664,
+      "sha256": "a570ee1b23a82d6b373c42ac3ce7502a52eefaa763857b7c066bf0fcad0d3265"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 308215,
-      "sha256": "9ad53b913c7419cd5c8e789c5a30254328129db3885b4aef113cb8d36440a393"
+      "bytes": 309493,
+      "sha256": "13f6e81e8da79300cd7b81618aad47438161023c918b58b857965d4c32c4669e"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7579,14 +7579,14 @@
       "sha256": "b7d13e04ef79dfcd2ff7f836ca4b37a5f18dff5053fbf958cca08c9e5c504cdb"
     },
     {
-      "path": "frontend/src/public/useEasedRotorAngle.ts",
-      "bytes": 1796,
-      "sha256": "2bfc97e9b213a3b1836cb6c0df4fd91ca77d704c5788b6bd8bef4ff701e7f04b"
-    },
-    {
       "path": "frontend/src/public/useFirstSolvedField.ts",
       "bytes": 1627,
       "sha256": "0331fc392988e752bbbf9a965cd9943a78bcf23b0f30bd8670f9823ba9dbdc71"
+    },
+    {
+      "path": "frontend/src/public/useTurningRotorAngle.ts",
+      "bytes": 1572,
+      "sha256": "681c67af9180a6395a1cbd51657389761a05a6771b3bdd55d1b9dd9ed875f0cf"
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",

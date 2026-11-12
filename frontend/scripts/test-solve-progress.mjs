@@ -98,7 +98,7 @@ console.log('solve progress checks passed (monotonic bar across meshing, solving
   const turn = (previous, progress) => nextPublicSolveRotorTurn(previous, progress, 360, 8);
   assert.equal(turn(null, null), null, 'no solve, no turn');
   assert.equal(turn(null, event('Validating', 0, 0)), null, 'validating shows the design as it is');
-  assert.equal(turn(null, event('starting', 0, 0)), null, 'nothing turns before progress is reported');
+  assert.deepEqual(turn(null, event('starting', 0, 0)), { turnDeg: 0, phase: 'meshing', finished: false }, 'the solve is meshing from its first report, before any mesh is ready');
   const quarter = turn(null, meshed(12, 48));
   assert.deepEqual(quarter, { turnDeg: 22.5, phase: 'meshing', finished: false }, 'a quarter of the meshes is a quarter of the 90 degree sweep of an 8-pole motor');
   assert.equal(turn(quarter, event('solver_timing', 0, 0)), quarter, 'an event with no counts keeps the rotor and its phase');

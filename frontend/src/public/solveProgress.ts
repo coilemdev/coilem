@@ -120,7 +120,8 @@ export function nextPublicSolveRotorTurn(
   if (publicSolvePositionFraction(progress) !== null) {
     return { turnDeg: previous?.turnDeg ?? 0, phase: 'solving', finished: false };
   }
-  return previous;
+  // Before the first mesh is ready the solve is already meshing.
+  return previous ?? { turnDeg: 0, phase: 'meshing', finished: false };
 }
 
 type NamedFieldFrame = {

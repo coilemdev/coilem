@@ -1,5 +1,5 @@
 import { solveViewMemory } from './solveViewMemory';
-import { useEasedRotorAngle } from './useEasedRotorAngle';
+import { useTurningRotorAngle } from './useTurningRotorAngle';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
 import { CustomSteelImport } from './CustomSteelImport';
@@ -1726,6 +1726,7 @@ function ViewportChrome({
   busy,
   showConfigurationLabel = true,
   enableDesignIntro = true,
+  show3dInset = false,
   isExpanded = false,
   onExpandToggle,
   selectedComponent = null,
@@ -1757,6 +1758,8 @@ function ViewportChrome({
   stale: boolean;
   showConfigurationLabel?: boolean;
   enableDesignIntro?: boolean;
+  /** A small live 3D view in the corner of the 2D view; clicking it opens the 3D view. */
+  show3dInset?: boolean;
   isExpanded?: boolean;
   onExpandToggle?: () => void;
   selectedComponent?: PublicMotorComponentSelection | null;
@@ -2170,6 +2173,23 @@ function ViewportChrome({
           <span style={{ transform: `scaleX(${Math.max(0.04, introProgress)})` }} />
           <strong>{introCrossfade > 0 ? 'Cross-section' : '3D assembly'}</strong>
           <em>{introCrossfade > 0 ? 'Opening the engineering view' : 'Turning to the front plane'}</em>
+        </div>
+      )}
+      {show3dInset && viewportMode === '2d' && mode === 'geometry' && !introActive && geometry && (
+        <div className="public-viewport-3d-inset">
+          <div className="public-viewport-3d-inset-scene" aria-hidden="true">
+            <PublicMotor3D
+              config={config}
+              geometry={geometry}
+              resetSignal={threeResetSignal}
+              rotorAngleDeg={rotorAngleDeg}
+              explodedAmount={0}
+              introProgress={null}
+            />
+          </div>
+          <button type="button" aria-label="Open the 3D view" title="Open the 3D view" onClick={() => selectViewportMode('3d')}>
+            <span>3D</span>
+          </button>
         </div>
       )}
       {!geometry && mode === 'geometry' && viewportMode !== '3d' && <div className="public-viewport-message">Start the local backend to load geometry.</div>}
@@ -3345,10 +3365,10 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
-  // While a solve meshes, the viewport turns the rotor to how far meshing has
-  // got; while it solves the field, the rotor holds still and the view pulses
-  // slowly. Both read progress the solver already reports, so they add nothing
-  // to the solve; the mesh view redraws less often because it draws more.
+  // While a solve meshes, the viewport turns the rotor steadily; while it
+  // solves the field, the rotor holds still and the view pulses slowly. Both
+  // read progress the solver already reports, so they add nothing to the
+  // solve; the mesh view redraws less often because it draws more.
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
   const sweepPoleCount = config.rotor.pole_count;
@@ -3358,8 +3378,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       : null));
   }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
   const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
-  const solveRotorAngleDeg = useEasedRotorAngle(shownRotorTurn?.turnDeg ?? null, solveView === 'mesh' ? 3 : 12);
   const solvingField = shownRotorTurn?.phase === 'solving';
+  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? !solvingField : null, solveView === 'mesh' ? 4 : 12);
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
@@ -3376,13 +3396,15 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   // does not flash back in between.
   const resultNotYetViewed = Boolean(result) && viewedResultRef.current !== result;
   const shownSolvedField = busy === 'solve' || resultNotYetViewed ? firstSolvedField : null;
+  const previewShowedMeshRef = useRef(false);
+  previewShowedMeshRef.current = Boolean(shownSolvedField) && solveView === 'mesh';
   const solveRotorCaption = shownSolvedField
     ? 'A solved rotor position · finishing the rest'
     : !shownRotorTurn || solveRotorAngleDeg === null
       ? null
       : solvingField
         ? 'Solving the field at each rotor position'
-        : `Meshing rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`;
+        : 'Meshing the rotor positions';
   useEffect(() => {
     solveViewMemory.stage = { result, mesh, solveView, meshDisplayMode, showMeshEdges };
   });
@@ -3629,7 +3651,11 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       setMeshDisplayMode('geometry');
     }
     if (!result && mesh) setSolveView('mesh');
-    if (resultChanged && result) setSolveView('field');
+    if (resultChanged && result) {
+      // The finished field opens the way the in-run field was showing: with the mesh if it had it.
+      if (previewShowedMeshRef.current) solveViewMemory.field.showMesh = true;
+      setSolveView('field');
+    }
   }, [mesh, result]);
 
   useEffect(() => {
@@ -4130,7 +4156,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   showMesh={solveView === 'mesh'}
                   showHeading={false}
                   showControls={false}
-                  probeEnabled={false}
                 />
               )}
               dockStrip={solveViewportSwitch}
@@ -4666,6 +4691,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                     geometry={props.geometry}
                     mesh={props.mesh}
                     mode="geometry"
+                    show3dInset
                     stale={props.geometryStale}
                     geometryStale={props.geometryStale}
                     busy={props.busy}
