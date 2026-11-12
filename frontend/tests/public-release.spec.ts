@@ -62,9 +62,9 @@ test('a zoomed rotor retains elements that rotate into view and reuses bounded b
     const pixel = surface.getContext('2d')!.getImageData(228, 732, 1, 1).data;
     return pixel[0];
   })).toBeGreaterThan(35);
-  // Max zoom exercises the resolution cap; subsequent angles must only composite the same surfaces.
+  // At overview zoom the bounded rotor bitmap must be reused across angles.
   const zoomIn = page.getByRole('button', { name: 'Zoom in', exact: true });
-  for (let step = 0; step < 8 && await zoomIn.isEnabled(); step += 1) await zoomIn.click();
+  for (let step = 0; step < 5 && await zoomIn.isEnabled(); step += 1) await zoomIn.click();
   const surfacesBefore = await page.evaluate(() => (window as any).testCanvases.length);
   await page.evaluate(async () => {
     for (const angle of [100, 120, 160, 200, 250]) {
@@ -80,6 +80,50 @@ test('a zoomed rotor retains elements that rotate into view and reuses bounded b
   expect(rotorBitmap.width).toBe(2048);
   expect(rotorBitmap.height).toBe(2048);
 });
+
+for (const view of ['mesh', 'docked-field'] as const) {
+  test(`${view} supports deep inspection zoom with anchored element picking and panning`, async ({ page }) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, view);
+    const canvas = page.locator(view === 'mesh' ? '.motor-canvas' : '.public-field-result-canvas > canvas');
+    await expect(canvas).toBeVisible();
+    const box = (await canvas.boundingBox())!;
+    const dimensions = await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height]);
+    const unitScale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+    // Rotor centroid: rotated 90 degrees in the mesh fixture, unrotated in the field.
+    const anchor = view === 'mesh'
+      ? { x: box.x + 317, y: box.y + 504 }
+      : { x: box.x + box.width / 2 + 8 * unitScale, y: box.y + box.height / 2 - (2 / 3) * unitScale };
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.mouse.wheel(0, -Math.log(128) / 0.0012);
+    const controls = page.locator('.public-viewport-nav-controls');
+    await expect(controls).toContainText('128x');
+    const inspectAt = async (x: number, y: number) => {
+      if (view === 'mesh') {
+        await page.mouse.click(x, y);
+        await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(0);
+      } else {
+        await page.mouse.move(x + 1, y + 1);
+        await expect(page.locator('.public-run-field-data-slot .public-field-probe')).toContainText('1.000 T');
+      }
+    };
+    await inspectAt(anchor.x, anchor.y);
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.mouse.down();
+    await page.mouse.move(anchor.x + 60, anchor.y - 30, { steps: 6 });
+    await page.mouse.up();
+    await inspectAt(anchor.x + 60, anchor.y - 30);
+    const zoomIn = controls.getByRole('button', { name: 'Zoom in', exact: true });
+    await expect(zoomIn).toBeEnabled();
+    for (let step = 0; step < 4; step += 1) await zoomIn.click();
+    await expect(controls).toContainText('256x');
+    await expect(zoomIn).toBeDisabled();
+    expect(await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height])).toEqual(dimensions);
+    await controls.locator('button.is-fit').click();
+    await expect(controls.locator('span[aria-live]')).toHaveText('1x');
+    await expect(zoomIn).toBeEnabled();
+  });
+}
 
 for (const view of ['mesh-menu', 'field'] as const) {
   test(`${view} More menu anchors to its button and dismisses outside`, async ({ page }, info) => {

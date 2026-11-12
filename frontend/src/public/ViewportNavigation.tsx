@@ -18,6 +18,7 @@ interface Point {
 
 interface PointerStart {
   pointerId: number;
+  captureTarget: Element;
   clientX: number;
   clientY: number;
   pan: Point;
@@ -25,7 +26,8 @@ interface PointerStart {
 
 const MIN_SCALE = 0.5;
 const DEFAULT_SCALE = 1;
-const MAX_SCALE = 8;
+// Fine air-gap elements need much more magnification than the whole motor.
+const MAX_SCALE = 256;
 const PAN_UNLOCK_SCALE = 1.02;
 /** How long a sector turn takes; prefers-reduced-motion makes it instant. */
 const SECTOR_TURN_MS = 260;
@@ -266,13 +268,17 @@ export function useViewportNavigation(
     ) return;
     event.preventDefault();
     didDragRef.current = false;
+    // Keep a click without a drag on its original canvas or SVG target, so
+    // element selection still works while the viewport is pannable.
+    const captureTarget = event.target instanceof Element ? event.target : event.currentTarget;
     pointerStartRef.current = {
       pointerId: event.pointerId,
+      captureTarget,
       clientX: event.clientX,
       clientY: event.clientY,
       pan,
     };
-    event.currentTarget.setPointerCapture(event.pointerId);
+    captureTarget.setPointerCapture(event.pointerId);
     setIsDragging(true);
   }, [pan, panEnabled]);
 
@@ -296,8 +302,8 @@ export function useViewportNavigation(
     if (!start || start.pointerId !== event.pointerId) return;
     pointerStartRef.current = null;
     setIsDragging(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    if (start.captureTarget.hasPointerCapture(event.pointerId)) {
+      start.captureTarget.releasePointerCapture(event.pointerId);
     }
   }, []);
 

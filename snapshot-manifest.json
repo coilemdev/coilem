@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 87610,
-      "sha256": "3a551373924f563379f05a01d8b439dd43c59d68c91fd3ab3df9b0705e582d47"
+      "bytes": 87966,
+      "sha256": "2fb821b20ca15fe627fb757346343a35731aecbc77478c6f4ba32b08bd6cd510"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 17897,
-      "sha256": "8735f321a556b0f387916ecc1084d5a7c23bcc3aa8b15ed16a2952c9e6a9f169"
+      "bytes": 18257,
+      "sha256": "9055222ce0e8d53642065070d166e069ccd432538be415eee94a59daaaaa57da"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -7655,8 +7655,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 70405,
-      "sha256": "b9d01aeedf389b2a9c42a9f1d5b5124808e81fcf7224acb08b2977672922b805"
+      "bytes": 72722,
+      "sha256": "44a1991b537a7eb272e18594b926ae490ade86dc6de7b90aff49fc68fc0847dc"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",

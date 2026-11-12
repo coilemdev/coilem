@@ -1838,6 +1838,9 @@ export function MotorCanvas({
       } else if (mode === 'mesh' && mesh) {
         const viewRotationRad = (navigation.rotationDeg * Math.PI) / 180;
         const pan: [number, number] = [navigation.pan.x, navigation.pan.y];
+        // A full-rotor bitmap is intentionally bounded in size. At inspection
+        // zoom, draw the visible triangles directly so their edges stay sharp.
+        const detailZoom = navigation.scale > 8;
         const coilPhases = geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null;
         if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
         const meshPass = (
@@ -1861,11 +1864,12 @@ export function MotorCanvas({
           focusedMeshElementIndex,
           hits,
           meshEdgeColor,
-          { part, fill: !meshOverlay, coilPhases },
+          { part, fill: !meshOverlay, coilPhases, cull: detailZoom && part === 'all' ? [0, 0, rect.width, rect.height] : undefined },
         );
         let frame: MeshDrawFrame | null;
-        if (rotorAngleDeg === 0) {
-          frame = meshPass(context, 0, meshHitsRef.current, 'all');
+        if (rotorAngleDeg === 0 || detailZoom) {
+          meshLayersRef.current = null;
+          frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all');
         } else {
           // A turning rotor: the still part and the rotor are each drawn once, and the
           // rotor's picture is turned for every frame, which is what keeps it smooth.
