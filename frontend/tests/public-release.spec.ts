@@ -96,6 +96,10 @@ for (const view of ['mesh-menu', 'field'] as const) {
       return Math.abs(panelBox.x - buttonBox.x) + Math.abs(panelBox.y + panelBox.height + 8 - buttonBox.y);
     }).toBeLessThan(3);
     await page.screenshot({ path: info.outputPath(`${view}-menu.png`) });
+    if (view === 'field') {
+      await expect(menu.getByRole('button', { name: 'Magnifier', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(menu.getByRole('button', { name: 'Mesh', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    }
     await menu.getByRole('button', { name: 'Magnifier', exact: true }).click();
     await expect(menu).toHaveAttribute('open', '');
     await page.mouse.click(20, 20);
@@ -122,7 +126,8 @@ for (const source of ['mesh', 'field'] as const) {
       ? page.getByRole('button', { name: 'Toggle mesh magnifier' })
       : page.getByRole('button', { name: 'Magnifier', exact: true });
     if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
-    await magnifierToggle.click();
+    if (source === 'mesh') await magnifierToggle.click();
+    else await expect(magnifierToggle).toHaveAttribute('aria-pressed', 'true');
     if (source === 'field') await page.mouse.click(20, 20);
     const panel = page.locator('.public-run-magnifier-slot .public-field-loupe');
     await expect(panel).toBeVisible();
@@ -146,11 +151,42 @@ for (const source of ['mesh', 'field'] as const) {
     await expect.poll(() => panel.locator('canvas').evaluate(canvas => Math.abs(canvas.width / canvas.clientWidth - Math.min(devicePixelRatio, 2)))).toBeLessThan(0.01);
     expect((await panel.boundingBox())!.height).toBe(240);
     await page.screenshot({ path: info.outputPath(`${source}-docked-magnifier.png`) });
+    // The magnifier belongs to the rail's normal scroll flow, above Analysis.
+    const unscrolled = (await panel.boundingBox())!;
+    await page.locator('.public-run-plan-scroll').evaluate(element => { element.scrollTop = 120; });
+    await expect.poll(async () => (await panel.boundingBox())!.y).toBeLessThan(unscrolled.y - 100);
     if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
     await magnifierToggle.click();
     await expect(panel).toHaveCount(0);
   });
 }
+
+test('selected airgap rings are also drawn in the field magnifier', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'docked-field');
+  const menu = page.locator('.public-field-layer-menu');
+  await menu.locator('summary').click();
+  const airgap = menu.getByRole('button', { name: 'Airgap', exact: true });
+  await airgap.click();
+  const ring = page.locator('.public-field-result-airgap-overlay circle:not(.is-halo)').last();
+  const bounds = (await ring.boundingBox())!;
+  await page.keyboard.press('Escape');
+  await page.mouse.move(bounds.x + bounds.width, bounds.y + bounds.height / 2);
+  const magnifier = page.locator('.public-run-magnifier-slot canvas');
+  const cyanPixels = () => magnifier.evaluate((canvas: HTMLCanvasElement) => {
+    const pixels = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
+    let count = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index] < 180 && pixels[index + 1] > 190 && pixels[index + 2] > 210) count += 1;
+    }
+    return count;
+  });
+  await expect.poll(cyanPixels).toBeGreaterThan(10);
+  await page.screenshot({ path: info.outputPath('magnified-airgap.png') });
+  await menu.locator('summary').click();
+  await airgap.click();
+  await expect.poll(cyanPixels).toBe(0);
+});
 
 for (const combined of [false, true]) {
   test(`partial ${combined ? 'combined' : 'map-only'} analysis retains outputs and shows point errors`, async ({ page }, info) => {

@@ -17,7 +17,8 @@ export const solveViewMemory = {
   },
   field: {
     showHeatmap: true,
-    showMesh: false,
+    showMesh: true,
+    magnifier: true,
     showFieldLines: false,
     showMagnets: false,
     showAirgap: false,

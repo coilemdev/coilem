@@ -992,7 +992,7 @@ for (const lessonFile of [
 assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
 assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
 assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
-assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
 assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
 assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve

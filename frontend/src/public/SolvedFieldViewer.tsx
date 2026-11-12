@@ -256,7 +256,7 @@ export function SolvedFieldViewer({
   showMeshRef.current = showMesh;
   const [showFieldLines, setShowFieldLines] = useState(solveViewMemory.field.showFieldLines);
   const [showMagnets, setShowMagnets] = useState(solveViewMemory.field.showMagnets);
-  const [magnifier, setMagnifier] = useState(false);
+  const [magnifier, setMagnifier] = useState(solveViewMemory.field.magnifier);
   const fieldLayerMenu = useLayerMenu();
   const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
@@ -268,8 +268,8 @@ export function SolvedFieldViewer({
   const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
   useEffect(() => {
-    solveViewMemory.field = { showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm };
-  }, [showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm]);
+    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm };
+  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm]);
   const playbackElectricalAngleRef = useRef(0);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});

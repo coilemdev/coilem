@@ -1249,7 +1249,7 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 }
 .public-run-plan-scroll { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; overflow-x: hidden; overflow-y: auto; border-radius: inherit; }
 .public-run-magnifier-slot:empty { display: none; }
-.public-run-magnifier-slot:not(:empty) { position: sticky; top: 0; z-index: 3; flex: none; margin: 12px; }
+.public-run-magnifier-slot:not(:empty) { flex: none; margin: 12px; }
 .public-run-plan-resizer,
 .public-solve-setup-resizer { position: absolute; z-index: 20; top: 12px; bottom: 12px; width: 15px; outline: 0; cursor: col-resize; touch-action: none; }
 .public-run-plan-resizer { left: -8px; }

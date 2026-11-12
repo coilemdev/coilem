@@ -680,6 +680,11 @@ export function FieldResultPlot({
   const showHeatmap = controlledShowHeatmap ?? internalShowHeatmap;
   const showMesh = controlledShowMesh ?? internalShowMesh;
   const showFieldLines = controlledShowFieldLines ?? internalShowFieldLines;
+  // Inner-rotor gap edges, or the explicit stator-OD/magnet edges of an outer rotor.
+  const airgapEdges: readonly [number, number] = airgapRingMm ?? [airgapInnerRadiusMm ?? NaN, statorInnerRadiusMm ?? NaN];
+  const hasAirgapOverlay = showAirgap
+    && Number.isFinite(airgapEdges[0]) && Number.isFinite(airgapEdges[1])
+    && airgapEdges[0] > 0 && airgapEdges[1] > airgapEdges[0];
 
   useEffect(() => {
     if (!probeEnabled || !sourcePlot) setProbe(null);
@@ -712,6 +717,17 @@ export function FieldResultPlot({
       context.fillRect(0, 0, pixelWidth, pixelHeight);
       const width = Math.max(1, canvas.clientWidth);
       const height = Math.max(1, canvas.clientHeight);
+      const pivotX = width / 2 + navigation.pan.x;
+      const pivotY = height / 2 + navigation.pan.y;
+      const intoLoupe = new DOMMatrix()
+        .scaleSelf(pixelRatio)
+        .translateSelf(loupeWidth / 2, loupeHeight / 2)
+        .scaleSelf(LOUPE_MAGNIFICATION)
+        .translateSelf(-loupeX, -loupeY)
+        .translateSelf(pivotX, pivotY)
+        .rotateSelf(navigation.rotationDeg)
+        .translateSelf(-pivotX, -pivotY);
+      let worldTransform: DOMMatrix | null = null;
       if (prepared) {
         const [viewX, viewY, viewWidth, viewHeight] = prepared.viewBox.split(' ').map(Number);
         const size = Math.min(width, height) * fitScale;
@@ -721,19 +737,8 @@ export function FieldResultPlot({
         const scale = baseScale * navigation.scale;
         const translateX = width / 2 + (baseOffsetX - viewX * baseScale - width / 2) * navigation.scale + navigation.pan.x;
         const translateY = height / 2 + (baseOffsetY - viewY * baseScale - height / 2) * navigation.scale + navigation.pan.y;
-        const pivotX = width / 2 + navigation.pan.x;
-        const pivotY = height / 2 + navigation.pan.y;
-        context.setTransform(
-          new DOMMatrix()
-            .scaleSelf(pixelRatio)
-            .translateSelf(loupeWidth / 2, loupeHeight / 2)
-            .scaleSelf(LOUPE_MAGNIFICATION)
-            .translateSelf(-loupeX, -loupeY)
-            .translateSelf(pivotX, pivotY)
-            .rotateSelf(navigation.rotationDeg)
-            .translateSelf(-pivotX, -pivotY)
-            .multiplySelf(new DOMMatrix([scale, 0, 0, scale, translateX, translateY])),
-        );
+        worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, translateX, translateY]));
+        context.setTransform(worldTransform);
         drawBase(context, prepared);
         if (showHeatmap) {
           drawHeat(context, prepared, colorRangeMode === 'viewport' && viewportRange
@@ -763,6 +768,29 @@ export function FieldResultPlot({
           pixelWidth,
           pixelHeight,
         );
+        const square = rasterWorldSquare(raster?.viewBox ?? '');
+        if (square) {
+          const drawSize = Math.min(width, height) * fitScale * navigation.scale;
+          const scale = drawSize / square.size;
+          const x = (width - drawSize) / 2 + navigation.pan.x - square.left * scale;
+          const y = (height - drawSize) / 2 + navigation.pan.y - square.top * scale;
+          worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, x, y]));
+        }
+      }
+      // The main view's airgap rings are an SVG overlay, so neither its canvas
+      // nor a fresh vector redraw contains them. Draw both edges here as well.
+      if (hasAirgapOverlay && worldTransform) {
+        context.setTransform(worldTransform);
+        const strokeScale = pixelRatio * LOUPE_MAGNIFICATION / Math.hypot(worldTransform.a, worldTransform.b);
+        for (const [color, strokeWidth] of [['rgba(8,47,73,.85)', 1.5], ['rgba(103,232,249,.92)', 0.575]] as const) {
+          context.strokeStyle = color;
+          context.lineWidth = strokeWidth * strokeScale;
+          for (const radius of airgapEdges) {
+            context.beginPath();
+            context.arc(0, 0, radius, 0, 2 * Math.PI);
+            context.stroke();
+          }
+        }
       }
       // A small cross marks the point under the pointer.
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -779,9 +807,12 @@ export function FieldResultPlot({
     });
     return () => window.cancelAnimationFrame(frame);
   }, [
+    airgapEdges[0],
+    airgapEdges[1],
     colorRangeMode,
     fieldLineDensity,
     fitScale,
+    hasAirgapOverlay,
     loupeX,
     loupeY,
     loupeWidth,
@@ -1207,13 +1238,6 @@ export function FieldResultPlot({
     ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
     : null;
   const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
-  // The gap's two edges: the rotor surface and the stator bore on an inner rotor; given outright for an outer one.
-  const airgapEdges: readonly [number, number] = airgapRingMm ?? [airgapInnerRadiusMm ?? NaN, statorInnerRadiusMm ?? NaN];
-  const hasAirgapOverlay = showAirgap
-    && Number.isFinite(airgapEdges[0])
-    && Number.isFinite(airgapEdges[1])
-    && airgapEdges[0] > 0
-    && airgapEdges[1] > airgapEdges[0];
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
   const hasFieldAxes = fieldAxes !== null

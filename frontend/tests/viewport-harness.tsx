@@ -31,6 +31,11 @@ const plot: PublicFieldLinePlot = {
   az_min: 0, az_max: 1, n_pole_pitches: 8, total_span_deg: 360,
 };
 const result = { field_line_plot: plot } as SolveResult;
+const smallConfig = {
+  ...DEFAULT_CONFIG,
+  stator: { ...DEFAULT_CONFIG.stator, OD_mm: 20, ID_mm: 12, yoke_thickness_mm: 2 },
+  rotor: { ...DEFAULT_CONFIG.rotor, OD_mm: 10, magnet_thickness_mm: 0.5 },
+};
 const root = createRoot(document.getElementById('root')!);
 const state = { selection: null as unknown };
 
@@ -72,7 +77,7 @@ function DockedMagnifier({ field }: { field: boolean }) {
   const [enabled, setEnabled] = useState(false);
   return <div style={{ display: 'flex', gap: 12, width: 1120, height: 700 }}>
     <section className="public-motor-viewport" style={{ width: 740, height: 700 }}>
-      {field ? <SolvedFieldViewer magnifierSlot={slot} viewControls="Field solution" config={DEFAULT_CONFIG} geometry={null} result={result}
+      {field ? <SolvedFieldViewer magnifierSlot={slot} viewControls="Field solution" config={smallConfig} geometry={null} result={result}
         armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false} onRequestArmature={() => {}} />
         : <><button type="button" aria-label="Toggle mesh magnifier" onClick={() => setEnabled(value => !value)}>Magnifier</button>
           <div style={{ height: 600 }}><MotorCanvas geometry={null} mesh={mesh} mode="mesh" layer="none" magnifier={enabled} magnifierSlot={slot} /></div></>}
@@ -81,7 +86,7 @@ function DockedMagnifier({ field }: { field: boolean }) {
       <div className="public-run-plan-scroll">
         <div className="mesh-panel-header">Run plan</div>
         <div className="public-run-magnifier-slot" ref={setSlot} />
-        <div className="public-run-plan-section">Analysis</div>
+        <div className="public-run-plan-section" style={{ minHeight: 1000 }}>Analysis</div>
       </div>
     </aside>
   </div>;
