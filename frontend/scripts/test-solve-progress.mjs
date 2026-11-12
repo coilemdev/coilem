@@ -90,43 +90,29 @@ assert.equal(mapped.at(-1), 100);
 
 console.log('solve progress checks passed (monotonic bar across meshing, solving and finalizing)');
 
-// The viewport turns the rotor through the sweep, following the bar.
+// The viewport turns the rotor while meshing and holds it while the field is solved.
 {
-  const meshing = event('gmsh_mesh', 0, 48, { mesh_completed: 12, mesh_total: 48 });
-  const turn = (previous, progress, percent) => nextPublicSolveRotorTurn(previous, progress, percent, 360, 8);
-  assert.equal(turn(null, null, 0), null, 'no solve, no turn');
-  assert.equal(turn(null, event('Validating', 0, 0), 0), null, 'validating shows the design as it is');
-  assert.equal(turn(null, event('starting', 0, 0), 0), null, 'nothing turns before progress is reported');
-  const early = turn(null, meshing, 17.5);
-  assert.deepEqual(early, { turnDeg: 90 * 0.175, phase: 'meshing', finished: false }, 'the turn is the bar\'s share of the 90 degree sweep of an 8-pole motor');
-  const held = turn(early, event('solver_timing', 0, 0), 17.5);
-  assert.deepEqual(held, early, 'an event with no counts keeps the rotor and its phase');
-  const solving = turn(early, event('magneto2d_sweep', 24, 48), 85);
-  assert.deepEqual(solving, { turnDeg: 76.5, phase: 'solving', finished: false }, 'solved positions carry it on from where meshing left it');
-  assert.equal(turn(solving, event('magneto2d_sweep', 2, 48), 71).turnDeg, 76.5, 'it never turns backwards within one solve');
-  const finished = turn(solving, event('magneto2d_complete', 48, 48), 100);
-  assert.equal(finished.finished, true, 'finalizing ends the turn');
-  assert.equal(turn(finished, event('solver_timing', 3, 48), 100), finished, 'a late timing event does not start it again');
-  assert.equal(turn(finished, event('Validating', 0, 0), 0), null, 'the next solve starts clean');
-  assert.equal(turn(null, event('magneto2d_complete', 48, 48), 100), null, 'finalizing with no sweep shown stays empty');
-  assert.equal(turn(early, event('torque_speed_map', 3, 10, { analysis_fraction: 0.3 }), 30), null, 'a map does not sweep the rotor once');
-  assert.equal(nextPublicSolveRotorTurn(null, meshing, 50, 360, 0), null, 'no poles, no turn');
-  assert.deepEqual(nextPublicSolveRotorTurn(null, meshing, 100, 60, 14), { turnDeg: 60 / 7, phase: 'meshing', finished: false }, 'the span is the electrical range over the pole pairs');
-
-  // Replayed against the bar itself, a whole solve turns the rotor once, forwards.
-  const stream = [
-    event('starting', 0, 0),
-    ...[1, 2, 3, 4].map((ready) => event('gmsh_mesh', 0, 8, { mesh_completed: ready, mesh_total: 4 })),
-    event('solver_timing', 0, 0),
-    ...[1, 2, 5, 8].map((position) => event('magneto2d_sweep', position, 8)),
-  ];
-  let bar = EMPTY_PUBLIC_SOLVE_PROGRESS_BAR;
-  let rotor = null;
-  const turns = stream.map((progress) => {
-    bar = nextPublicSolveProgressBar(bar, progress);
-    rotor = nextPublicSolveRotorTurn(rotor, progress, bar.percent, 360, 8);
-    return rotor && !rotor.finished ? rotor.turnDeg : 0;
-  });
-  assertMonotonic(turns, 'rotor turn');
-  assert.equal(turns.at(-1), 90, 'the last solved position completes the sweep');
+  const meshed = (ready, total) => event('gmsh_mesh', 0, 48, { mesh_completed: ready, mesh_total: total });
+  const turn = (previous, progress) => nextPublicSolveRotorTurn(previous, progress, 360, 8);
+  assert.equal(turn(null, null), null, 'no solve, no turn');
+  assert.equal(turn(null, event('Validating', 0, 0)), null, 'validating shows the design as it is');
+  assert.equal(turn(null, event('starting', 0, 0)), null, 'nothing turns before progress is reported');
+  const quarter = turn(null, meshed(12, 48));
+  assert.deepEqual(quarter, { turnDeg: 22.5, phase: 'meshing', finished: false }, 'a quarter of the meshes is a quarter of the 90 degree sweep of an 8-pole motor');
+  assert.equal(turn(quarter, event('solver_timing', 0, 0)), quarter, 'an event with no counts keeps the rotor and its phase');
+  assert.equal(turn(quarter, meshed(6, 48)).turnDeg, 22.5, 'it never turns backwards');
+  const whole = turn(quarter, meshed(48, 48));
+  assert.equal(whole.turnDeg, 90, 'the last mesh completes the turn');
+  const solving = turn(whole, event('magneto2d_sweep', 5, 48));
+  assert.deepEqual(solving, { turnDeg: 90, phase: 'solving', finished: false }, 'the field solve holds the rotor where meshing left it');
+  assert.equal(turn(solving, event('noload_sweep', 40, 48)).turnDeg, 90, 'and keeps holding it as positions are solved');
+  assert.deepEqual(turn(null, event('magneto2d_sweep', 5, 48)), { turnDeg: 0, phase: 'solving', finished: false }, 'a solve that reports no meshing leaves the rotor as designed');
+  const finished = turn(solving, event('magneto2d_complete', 48, 48));
+  assert.equal(finished.finished, true, 'finalizing ends it');
+  assert.equal(turn(finished, event('solver_timing', 3, 48)), finished, 'a late timing event does not start it again');
+  assert.equal(turn(finished, event('Validating', 0, 0)), null, 'the next solve starts clean');
+  assert.equal(turn(null, event('magneto2d_complete', 48, 48)), null, 'finalizing with nothing shown stays empty');
+  assert.equal(turn(quarter, event('torque_speed_map', 3, 10, { analysis_fraction: 0.3 })), null, 'a map does not sweep the rotor once');
+  assert.equal(nextPublicSolveRotorTurn(null, meshed(1, 4), 360, 0), null, 'no poles, no turn');
+  assert.deepEqual(nextPublicSolveRotorTurn(null, meshed(4, 4), 60, 14), { turnDeg: 60 / 7, phase: 'meshing', finished: false }, 'the span is the electrical range over the pole pairs');
 }

@@ -1737,10 +1737,13 @@ function ViewportChrome({
   dockStrip,
   solveRotorAngleDeg = null,
   solveRotorCaption = null,
+  solvePulse = false,
 }: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
   /** While a solve sweeps: the rotor turn to draw in place of the preview's own, and a line saying what it is. */
   solveRotorAngleDeg?: number | null;
   solveRotorCaption?: string | null;
+  /** While the field is being solved: a slow glow on the 2D view. */
+  solvePulse?: boolean;
   /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
   dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
@@ -2095,7 +2098,7 @@ function ViewportChrome({
       )}
       {(viewportMode !== '3d' || introActive) && (
         <div
-          className="public-viewport-stage public-viewport-stage-2d"
+          className={`public-viewport-stage public-viewport-stage-2d${solvePulse ? ' is-solving-field' : ''}`}
           style={{
             opacity: introActive ? introCrossfade : 1,
             pointerEvents: introActive && introCrossfade <= 0.5 ? 'none' : 'auto',
@@ -3332,22 +3335,26 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
-  // While a solve sweeps, the viewport turns the rotor to how far the sweep
-  // has got. It reads progress the solver already reports, so it adds nothing
+  // While a solve meshes, the viewport turns the rotor to how far meshing has
+  // got; while it solves the field, the rotor holds still and the view pulses
+  // slowly. Both read progress the solver already reports, so they add nothing
   // to the solve; the mesh view redraws less often because it draws more.
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
   const sweepPoleCount = config.rotor.pole_count;
   useEffect(() => {
     setSolveRotorTurn((previous) => (busy === 'solve'
-      ? nextPublicSolveRotorTurn(previous, progress, progressPercent, sweepRangeDeg, sweepPoleCount)
+      ? nextPublicSolveRotorTurn(previous, progress, sweepRangeDeg, sweepPoleCount)
       : null));
-  }, [busy, progress, progressPercent, sweepRangeDeg, sweepPoleCount]);
+  }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
   const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
   const solveRotorAngleDeg = useEasedRotorAngle(shownRotorTurn?.turnDeg ?? null, solveView === 'mesh' ? 4 : 12);
-  const solveRotorCaption = shownRotorTurn && solveRotorAngleDeg !== null
-    ? `${shownRotorTurn.phase === 'meshing' ? 'Meshing' : 'Solving'} rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`
-    : null;
+  const solvingField = shownRotorTurn?.phase === 'solving';
+  const solveRotorCaption = !shownRotorTurn || solveRotorAngleDeg === null
+    ? null
+    : solvingField
+      ? 'Solving the field at each rotor position'
+      : `Meshing rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`;
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
@@ -4094,6 +4101,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               enableDesignIntro={false}
               solveRotorAngleDeg={solveRotorAngleDeg}
               solveRotorCaption={solveRotorCaption}
+              solvePulse={solvingField}
               dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}

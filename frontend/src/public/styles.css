@@ -1060,6 +1060,16 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-motor-viewport .viewport-label { position: absolute; z-index: 4; top: 16px; left: 17px; padding: 7px 10px; border: 1px solid var(--border-default); border-radius: 999px; color: var(--text-secondary); background: rgba(15, 17, 23, 0.78); font: 9px var(--font-mono); }
 /* While a solve sweeps: sits at the bottom so it clears the view tabs. */
 .public-motor-viewport .viewport-label.public-solve-rotor-caption { top: auto; bottom: 16px; font-variant-numeric: tabular-nums; pointer-events: none; }
+/* While the field is solved the view breathes: a slow glow, one beat every 2.4 s.
+   Only the filter animates, so the canvas itself is not redrawn. */
+.public-viewport-stage-2d.is-solving-field canvas { animation: public-solve-heartbeat 2.4s ease-in-out infinite; will-change: filter; }
+@keyframes public-solve-heartbeat {
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 0 rgba(245, 158, 11, 0)); }
+  50% { filter: brightness(1.22) drop-shadow(0 0 14px rgba(245, 158, 11, 0.35)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-viewport-stage-2d.is-solving-field canvas { animation: none; }
+}
 .public-motor-viewport .viewport-preview-note { position: absolute; z-index: 4; top: 16px; left: 50%; transform: translateX(-50%); padding: 7px 10px; border: 1px solid rgba(245, 158, 11, 0.32); border-radius: 999px; color: var(--text-accent); background: rgba(15, 17, 23, 0.9); font-size: 9px; }
 .public-viewport-message { position: absolute; z-index: 4; inset: 0; display: grid; place-items: center; color: var(--text-muted); }
 .public-motor-viewport .viewport-bottom-bar { position: absolute; z-index: 5; right: 18px; bottom: 0; left: 18px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; pointer-events: none; }
