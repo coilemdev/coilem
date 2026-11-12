@@ -1902,6 +1902,9 @@ function ParametricMotor3D({
       spanning.forEach((coil) => [coil.slot_in, coil.slot_out].forEach((slot) => sidesInSlot.set(slot, (sidesInSlot.get(slot) ?? 0) + 1)));
       const twoLayer = Math.max(...sidesInSlot.values()) > 1;
       const coilMaterials = { A: materials.coilA, B: materials.coilB, C: materials.coilC };
+      // With two coil sides in a slot, each side holds half the slot's turns (backend/gmsh_solver.py
+      // _coil_side_turn_fraction), so each drawn coil carries half of Turns / Coil.
+      const turnsPerDrawnCoil = Math.max(1, Math.round(config.winding.turns_per_coil / (twoLayer ? 2 : 1)));
       spanning.forEach((coil) => {
         const { geometry: coilGeometry, strandCount } = buildDistributedCoil({
           slotInAngle: coil.slot_in * slotPitch,
@@ -1911,7 +1914,7 @@ function ParametricMotor3D({
           slotHalfAngle: Math.max(0.04, slotPitch * 0.18),
           stackHalf: stackDepth / 2,
           yokeSide: outerRotor ? -1 : 1,
-          turns: config.winding.turns_per_coil,
+          turns: turnsPerDrawnCoil,
           yokeRoom: Math.abs(yokeFarRadius - yokeEnd) - 2,
           // About 800 loops over the whole winding, at most 24 a coil as the tooth coils draw.
           maxStrands: Math.max(6, Math.min(24, Math.floor(800 / spanning.length))),
@@ -1926,7 +1929,7 @@ function ParametricMotor3D({
           role: 'Distributed coil: two slot sides joined by an end turn at each end of the stack',
           slotIndex: coil.slot_in + 1,
           phase: coil.phase,
-          windingModel: `${config.winding.turns_per_coil} turns per coil · drawn as ${strandCount} wire loops`,
+          windingModel: `${turnsPerDrawnCoil} turns in this coil${twoLayer ? ' (half the slot)' : ''} · drawn as ${strandCount} wire loops`,
         });
         windingsGroup.add(mesh);
         distributedCoils.push(mesh);
