@@ -1801,6 +1801,7 @@ function ViewportChrome({
   const [showToothPoles, setShowToothPoles] = useState(false);
   const [meshMagnifier, setMeshMagnifier] = useState(false);
   const [showCoilColours, setShowCoilColours] = useState(true);
+  const meshMoreOn = Number(meshMagnifier) + Number(showToothPoles) + Number(showCoilColours);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -2355,20 +2356,7 @@ function ViewportChrome({
               </span>
             </span>
           )}
-          {mode === 'mesh' && (
-            <span className="vc-group public-mesh-layer-controls" role="group" aria-label="Mesh layers">
-              <span className="public-dock-group-label" aria-hidden="true">Show</span>
-              <button
-                type="button"
-                className="public-dock-toggle"
-                aria-pressed={meshMagnifier}
-                title="Show the area under the pointer enlarged in a corner of the view"
-                onClick={() => setMeshMagnifier((value) => !value)}
-              >
-                Magnifier
-              </button>
-            </span>
-          )}
+          {mode === 'mesh' && <span className="public-dock-row-break" aria-hidden="true" />}
           {mode === 'mesh' && (
             <span className="vc-group public-view-modes" role="group" aria-label="Mesh overlays">
               <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
@@ -2395,6 +2383,17 @@ function ViewportChrome({
                 })}
               </span>
             </span>
+          )}
+          {mode === 'mesh' && (
+            // The on/off layers wait in More, as on the Field tab, so the dock keeps to three rows at any width.
+            <details className="public-field-layer-menu public-dock-more">
+              <summary>More{meshMoreOn > 0 && <em>{meshMoreOn} on</em>}</summary>
+              <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
+                <button type="button" aria-pressed={meshMagnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
+                <button type="button" aria-pressed={showToothPoles} title="Show each stator tooth's N / S pole as the rotor turns" onClick={() => setShowToothPoles((shown) => !shown)}><i aria-hidden="true" />Tooth poles</button>
+                <button type="button" aria-pressed={showCoilColours} title="Colour each coil by its phase; off draws them all in one plain colour" onClick={() => setShowCoilColours((shown) => !shown)}><i aria-hidden="true" />Coil colours</button>
+              </div>
+            </details>
           )}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
@@ -2472,25 +2471,12 @@ function ViewportChrome({
               <output aria-live="polite">{Math.round(explodedAmount * 100)}%</output>
             </span>
           )}
-          {/* The rotor preview uses the field playback's transport: the same
-              play button and the same speed field. */}
-          {/* Spin always starts its own line, so it sits in the same place on
-              the 2D and 3D tabs and its label lines up under the one above. */}
-          {showPlayback && <span className="public-dock-row-break" aria-hidden="true" />}
-          {showPlayback && (
-            <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
-              <span className="public-dock-group-label" aria-hidden="true">Spin</span>
-              <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
-              <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
-              <RpmField
-                value={animationRpm}
-                min={0.1}
-                max={100}
-                label="Speed"
-                ariaLabel="Preview speed (RPM)"
-                title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
-                onChange={setAnimationRpm}
-              />
+          {/* Three rows on every tab, so the motor never moves between them:
+              what is drawn, what is shown over it, and the transport. */}
+          {viewportMode === '2d' && mode === 'geometry' && <span className="public-dock-row-break" aria-hidden="true" />}
+          {viewportMode === '2d' && mode === 'geometry' && (
+            <span className="vc-group public-view-toggles" role="group" aria-label="2D display toggles">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
               {/* Phases only means something while the rotor turns: it shades the
                   winding overlay by each phase's current, so it sits with the
                   preview rather than among the static overlays. */}
@@ -2499,8 +2485,6 @@ function ViewportChrome({
                   type="button"
                   className="public-dock-toggle"
                   aria-pressed={canvasLayer === 'phases'}
-                  // The mesh view has no room for the waveforms Phases wires in.
-                  style={mode === 'geometry' ? undefined : { display: 'none' }}
                   title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
                   onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
                 >
@@ -2529,6 +2513,27 @@ function ViewportChrome({
                   Coil colours
                 </button>
               )}
+            </span>
+          )}
+          {/* The rotor preview uses the field playback's transport: the same
+              play button and the same speed field. */}
+          {/* Spin always starts its own line, so it sits in the same place on
+              the 2D and 3D tabs and its label lines up under the one above. */}
+          {showPlayback && <span className="public-dock-row-break" aria-hidden="true" />}
+          {showPlayback && (
+            <span className="vc-group public-preview-transport" role="group" aria-label="Rotor preview">
+              <span className="public-dock-group-label" aria-hidden="true">Spin</span>
+              <button type="button" className="public-field-transport-play" aria-label={isAnimating ? 'Pause preview' : 'Play preview'} onClick={() => setIsAnimating((value) => !value)}>{isAnimating ? 'Ⅱ' : '▶'}</button>
+              <button type="button" className="public-field-transport-play" aria-label="Stop and reset preview" onClick={() => { setIsAnimating(false); setRotorAngleDeg(0); }}>■</button>
+              <RpmField
+                value={animationRpm}
+                min={0.1}
+                max={100}
+                label="Speed"
+                ariaLabel="Preview speed (RPM)"
+                title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
+                onChange={setAnimationRpm}
+              />
             </span>
           )}
         </div>

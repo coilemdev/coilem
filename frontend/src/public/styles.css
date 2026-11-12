@@ -4743,7 +4743,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 /* On Solve, Geometry and Mesh are tabs of one panel beside Field solution.
    Mesh has one row of controls; its dock must not be shorter than the two
    rows its neighbours have, or the motor jumps when the tab changes. */
-.public-live-stage .public-motor-viewport { --solve-dock-height: max(var(--viewport-dock-height), 142px); }
+.public-live-stage .public-motor-viewport { --solve-dock-height: max(var(--viewport-dock-height), 186px); }
 .public-live-stage .public-motor-viewport .public-viewport-stage { bottom: var(--solve-dock-height); }
 .public-live-stage .public-motor-viewport .viewport-bottom-bar { height: var(--solve-dock-height); }
 .public-live-stage .public-motor-viewport .viewport-dock-resize { bottom: calc(var(--solve-dock-height) - 5px); }
@@ -5152,4 +5152,16 @@ button.performance-tag { cursor: help; }
 .public-viewport-stage-2d > .public-field-result > .public-field-result-legend { position: absolute; right: 0; bottom: 0; left: 0; z-index: 8; background: rgba(8, 10, 15, 0.8); }
 .public-solved-field-canvas .public-field-probe,
 .public-viewport-stage-2d > .public-field-result .public-field-probe { bottom: 46px; }
+/* The field dock has the three rows the geometry and mesh docks have: the field shown, its layers, the transport. */
+.public-field-dock .public-field-dock-controls > .public-field-overlay-cluster { flex: 0 0 100%; }
+/* The mesh dock's More menu, styled as the field dock's. */
+.public-dock-more > summary { display: inline-flex; min-height: 36px; align-items: center; gap: 8px; padding: 0 14px; border-radius: 999px; font: 600 13px var(--font-mono); cursor: pointer; list-style: none; }
+.public-dock-more > summary::after { color: var(--text-muted); content: '▾'; font-size: 10px; }
+.public-dock-more > summary em { color: var(--text-accent); font-size: 11px; font-style: normal; }
+/* The dock scrolls its overflow, so the menu opens as one row inside it, over the row above. */
+.public-dock-more > .public-field-layer-controls { right: 0; bottom: calc(100% + 6px); left: auto; display: flex; gap: 6px; min-width: 0; padding: 6px; }
+.public-dock-more > .public-field-layer-controls > button { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 12px; border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 999px; background: rgba(10, 12, 17, 0.62); color: var(--text-muted); font: 600 13px var(--font-sans, inherit); white-space: nowrap; cursor: pointer; }
+.public-dock-more > .public-field-layer-controls > button > i { width: 9px; height: 9px; border: 1px solid currentColor; border-radius: 50%; }
+.public-dock-more > .public-field-layer-controls > button[aria-pressed="true"] { color: var(--text-primary); }
+.public-dock-more > .public-field-layer-controls > button[aria-pressed="true"] > i { border-color: #fbbf24; background: #fbbf24; }
 

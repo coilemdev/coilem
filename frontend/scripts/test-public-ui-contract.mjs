@@ -694,7 +694,7 @@ assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}
 assert.match(workspaceSource, /\['windings', 'Winding'\],\s*\] as Array<\[PublicCanvasLayer, string\]>\)/);
 assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
 assert.match(workspaceSource, /const pressed = canvasLayer === layer \|\| \(layer === 'windings' && canvasLayer === 'phases'\);/);
-assert.match(workspaceSource, /onChange=\{setAnimationRpm\}\s*\/>[\s\S]{0,400}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
+assert.match(workspaceSource, /aria-label="2D display toggles">[\s\S]{0,700}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
 assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'windings' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
 // With Phases on, the motor shows only the phase colours changing: no slot labels.
 assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
@@ -894,7 +894,7 @@ assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
 // The mesh panel separates how elements are coloured (one choice) from its
 // on/off tools. The element edges are always drawn: a mesh without them is not a mesh view.
 assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Color by<\/span>\s*<span className="public-dock-segmented">[\s\S]*?Regions[\s\S]*?Quality[\s\S]*?Weak elements/);
-assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Show<\/span>\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{meshMagnifier\}/);
+assert.match(workspaceSource, /aria-label="More mesh layers">\s*<button type="button" aria-pressed=\{meshMagnifier\}/);
 assert.doesNotMatch(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
 // 2D overlays are one choice at a time, with None for the bare cross-section.
