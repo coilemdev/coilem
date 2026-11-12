@@ -1370,6 +1370,8 @@ export function FieldResultPlot({
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
+                  <circle className="is-halo" cx="0" cy="0" r={airgapEdges[0]} />
+                  <circle className="is-halo" cx="0" cy="0" r={airgapEdges[1]} />
                   <circle cx="0" cy="0" r={airgapEdges[0]} />
                   <circle cx="0" cy="0" r={airgapEdges[1]} />
                 </g>

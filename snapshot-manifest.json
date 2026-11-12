@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 70122,
-      "sha256": "f2dcdeb5a6bd6c54648070b87bd00cf8c52771c625845d80d860ca457aa11243"
+      "bytes": 70286,
+      "sha256": "4e0eea7aae4239dac06fdbf31c30254bc149f6d190c51f6a409609b53ca6ddd6"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7560,8 +7560,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 318686,
-      "sha256": "c0d6479ae284b899c9c79b16d16ff368263e1391a4753064e659e6a2ad0eeda1"
+      "bytes": 318937,
+      "sha256": "ad97cce08ee620ce67019a750a7d02f94e268ab1b0434ec4157e81bdee4b62d3"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

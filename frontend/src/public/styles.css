@@ -1940,8 +1940,10 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   stroke: rgba(103,232,249,.92);
   stroke-width: .575;
   vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 1px rgba(8,47,73,.9));
 }
+/* A dark line under each ring keeps it legible over the colours. It is drawn as a line, not a
+   drop shadow: a filter is rendered at the drawing's own scale and blurs into bands when zoomed in. */
+.public-field-result-airgap-overlay circle.is-halo { stroke: rgba(8,47,73,.85); stroke-width: 1.5; }
 .public-field-result-pm-overlay { transition: opacity 160ms ease; }
 .public-field-result-pm-overlay.is-reference { opacity: .4; }
 .public-field-result-line { fill: none; stroke: #ffd166; stroke-width: .28; stroke-linecap: round; opacity: 1; filter: drop-shadow(0 0 .45px rgba(255,145,0,.9)); vector-effect: non-scaling-stroke; }
