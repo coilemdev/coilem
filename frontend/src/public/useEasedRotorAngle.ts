@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { publicSolvePulseLevel } from './solveProgress';
-
 const SETTLE_SECONDS = 0.45;
 const SNAP_DEG = 0.02;
 
@@ -49,30 +47,4 @@ export function useEasedRotorAngle(targetDeg: number | null, updatesPerSecond: n
   }, [active, updatesPerSecond]);
 
   return active ? shownDeg : null;
-}
-
-/**
- * The level (0..1) of the field-solve beat while `active`, updated at most
- * `updatesPerSecond` times a second; null otherwise. Under reduced-motion
- * settings it holds the middle of the beat.
- */
-export function useSolvePulseLevel(active: boolean, updatesPerSecond: number): number | null {
-  const [level, setLevel] = useState<number | null>(null);
-  useEffect(() => {
-    if (!active) {
-      setLevel(null);
-      return undefined;
-    }
-    if (prefersReducedMotion()) {
-      setLevel(0.5);
-      return undefined;
-    }
-    const startedAt = performance.now();
-    setLevel(0);
-    const id = window.setInterval(() => {
-      setLevel(publicSolvePulseLevel((performance.now() - startedAt) / 1_000));
-    }, 1_000 / Math.max(1, updatesPerSecond));
-    return () => window.clearInterval(id);
-  }, [active, updatesPerSecond]);
-  return active ? level : null;
 }

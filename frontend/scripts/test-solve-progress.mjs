@@ -7,9 +7,6 @@ const {
   PUBLIC_SOLVE_MESH_SHARE,
   nextPublicSolveProgressBar,
   nextPublicSolveRotorTurn,
-  PUBLIC_SOLVE_PULSE_SECONDS,
-  publicSolvePulseColor,
-  publicSolvePulseLevel,
   publicSolveMeshFraction,
   publicSolvePositionFraction,
 } = await importTypeScriptModule(new URL('../src/public/solveProgress.ts', import.meta.url));
@@ -120,15 +117,23 @@ console.log('solve progress checks passed (monotonic bar across meshing, solving
   assert.deepEqual(nextPublicSolveRotorTurn(null, meshed(4, 4), 60, 14), { turnDeg: 60 / 7, phase: 'meshing', finished: false }, 'the span is the electrical range over the pole pairs');
 }
 
-// The field-solve glow: one beat rises and falls, and the edges run along the colour stops with it.
+// The glow's colours across the motor are an illustration with the look of a flux plot.
 {
-  assert.equal(publicSolvePulseLevel(0), 0, 'a beat starts at rest');
-  assert.ok(Math.abs(publicSolvePulseLevel(PUBLIC_SOLVE_PULSE_SECONDS / 2) - 1) < 1e-12, 'peaks half way');
-  assert.ok(publicSolvePulseLevel(PUBLIC_SOLVE_PULSE_SECONDS) < 1e-12, 'and is back at rest after one beat');
-  const stops = ['#0000ff', '#00ff00', '#ffff00'];
-  assert.equal(publicSolvePulseColor(0, stops, 0.5), 'rgba(0, 0, 255, 0.5)', 'rest is the first stop');
-  assert.equal(publicSolvePulseColor(0.5, stops, 0.5), 'rgba(0, 255, 0, 0.5)', 'half way is the middle stop');
-  assert.equal(publicSolvePulseColor(1, stops, 0.5), 'rgba(255, 255, 0, 0.5)', 'the peak is the last stop');
-  assert.equal(publicSolvePulseColor(0.25, stops, 1), 'rgba(0, 128, 128, 1)', 'between stops the colours blend');
-  assert.equal(publicSolvePulseColor(7, stops, 1), 'rgba(255, 255, 0, 1)', 'levels are clamped');
+  const { solveGlowBin, solveGlowValue } = await importTypeScriptModule(new URL('../src/public/solveGlowField.ts', import.meta.url));
+  const shape = { gapRadiusMm: 50, outerRadiusMm: 100, polePairs: 4 };
+  const at = (radius, deg) => solveGlowValue(radius * Math.cos(deg * Math.PI / 180), radius * Math.sin(deg * Math.PI / 180), shape);
+  for (const radius of [5, 30, 50, 70, 100]) {
+    for (let deg = 0; deg < 360; deg += 7) {
+      const value = at(radius, deg);
+      assert.ok(value >= 0 && value <= 1, `value in range at r=${radius}, ${deg} deg`);
+      assert.ok(Math.abs(value - at(radius, deg + 45)) < 1e-9, 'the pattern repeats every pole (45 degrees for 8 poles)');
+    }
+  }
+  assert.ok(at(52, 0) > at(52, 22.5), 'at the gap it is strongest facing a pole');
+  assert.ok(at(95, 22.5) > at(95, 0), 'in the back iron it is strongest between poles');
+  assert.ok(at(5, 0) < at(45, 0), 'it fades towards the shaft');
+  assert.equal(solveGlowBin(0, 1, 7), 0, 'no field is the first colour');
+  assert.equal(solveGlowBin(1, 1, 7), 6, 'the strongest field at full level is the last colour');
+  assert.ok(solveGlowBin(1, 0, 7) < 6, 'at a low level the colours sit lower on the scale');
+  assert.ok(solveGlowBin(0.6, 1, 7) > solveGlowBin(0.6, 0, 7), 'a higher level reaches further up the scale');
 }
