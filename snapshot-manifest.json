@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177749,
-      "sha256": "ef379057358d33cfb0be4275570130c513a8180c7d5c79d5b28a3cae4c7c9710"
+      "bytes": 177969,
+      "sha256": "7c7176cd94812f0be716458869f0b39265049d174b84e5361401f787162ea7c2"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 258967,
-      "sha256": "6900c32e2c7f70deac1526dd7062601493503b363e0ad1fe5e6e961bde02d92a"
+      "bytes": 259005,
+      "sha256": "31e55d6ba394729d38d7822b27be6ea28d4dbf7449172762153d974bc0ed094d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 90334,
-      "sha256": "1cbbed7f0c03c8946cba2425f76efd76da5562ada5df6c119a440ae90eb89ef6"
+      "bytes": 85451,
+      "sha256": "6a07c72f3457722f04c1537656a1d7e2bde1ba910c1b4edb0290abb4312b7731"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 100046,
-      "sha256": "16becfd22f15209965dcaf12dc5f1bfd18b447d0ff06fc6017f68445295efc1d"
+      "bytes": 105076,
+      "sha256": "cefcef73b65b467cc2f777ca1b71d9a0ee77b3736adddcbf093f6a7d4a758764"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7200,8 +7200,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 20994,
-      "sha256": "e36bfe69357fed2fbcb896796384d961114c43845edc9637bd10c7c1d2a88e5d"
+      "bytes": 21282,
+      "sha256": "1c6ea9d7a43786db47af94d17e233a6de912512559050266e7a39ce56f1f5f0e"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -7227,6 +7227,11 @@
       "path": "frontend/src/public/designViewMemory.ts",
       "bytes": 816,
       "sha256": "2077bddc5f7d0ec69758fb7e02a4b1c6470bb25b318569d98d1b6a9fcaf266ed"
+    },
+    {
+      "path": "frontend/src/public/phaseDrivePanel.ts",
+      "bytes": 6097,
+      "sha256": "b0b33081b3d0f5f2a7a0e76b722cd2d0d399d8570df95218b64d000511a1d885"
     },
     {
       "path": "frontend/src/public/solveTime.ts",
@@ -7550,8 +7555,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 314540,
-      "sha256": "c8861e6581f71aeaef0a8b2ef585ac32a5a80d7cf1e95029c9439433b3666ec2"
+      "bytes": 315030,
+      "sha256": "b5706176c48f9fbcf7882a6d263cbaf7f030916d45679c839bc3450dacd15159"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

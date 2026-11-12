@@ -720,9 +720,11 @@ assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
 // The Phases strips are a 1 s scope at the preview speed, frequency shown in the
 // heading and in each strip (test-phase-drive.mjs checks the cycle count).
 assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
-assert.match(motorCanvasSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
-assert.match(motorCanvasSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
-assert.match(motorCanvasSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
+// The waveform drawing is shared by the 2D cross-section and the 3D view (phaseDrivePanel.ts).
+const phaseDrivePanelSource = await readFile(path.join(frontendRoot, 'src/public/phaseDrivePanel.ts'), 'utf8');
+assert.match(phaseDrivePanelSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
+assert.match(phaseDrivePanelSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
+assert.match(phaseDrivePanelSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
 assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);

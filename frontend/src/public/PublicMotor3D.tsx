@@ -10,7 +10,8 @@ import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
 import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
-import { phaseCurrents, rotorElectricalDeg, slotCurrents, toothPoles, type PhaseDrive, type WindingSide } from './phaseDrive';
+import { STRIP_END, phaseCurrents, phaseDriveFrame, phaseStrips, rotorElectricalDeg, slotCurrents, toothPoles, type PhaseDrive, type WindingSide } from './phaseDrive';
+import { drawPhaseDriveWired } from './phaseDrivePanel';
 import { publishedReference } from './publishedReferences';
 import { shoeShoulderFraction, stator3dRadii } from './stator3dRadii';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
@@ -32,6 +33,8 @@ interface PublicMotor3DProps {
   showPhases?: boolean;
   /** Number chips over the slots, teeth and coil sides. */
   overlays?: Motor3DOverlays;
+  /** The preview speed, which sets the frequency the Phases waveforms show. */
+  previewRpm?: number;
 }
 
 export interface Motor3DOverlays { slots: boolean; teeth: boolean; windings: boolean }
@@ -666,6 +669,7 @@ function ParametricMotor3D({
   showToothPoles = false,
   showPhases = false,
   overlays = NO_3D_OVERLAYS,
+  previewRpm = 20,
 }: PublicMotor3DProps) {
   // The same phase drive the 2D view shades by: the solve's own terminal currents.
   const solveParams = config.solve_params;
@@ -695,8 +699,13 @@ function ParametricMotor3D({
   ]);
   const windingLayout: WindingSide[] | null = geometry?.winding_layout ?? null;
   // What the scene shows now. It is built once per design, so the toggles reach it through this.
-  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout });
-  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout };
+  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, previewRpm });
+  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, previewRpm };
+  // The Phases waveforms are drawn on a flat canvas: under the 3D one while the
+  // drive leads are on the far side of the motor, so the wires pass behind it, and
+  // over it once the view is turned to the back and the leads are in sight.
+  const driveUnderRef = useRef<HTMLCanvasElement>(null);
+  const driveOverRef = useRef<HTMLCanvasElement>(null);
   const applyDisplayRef = useRef<(() => void) | null>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1273,6 +1282,7 @@ function ParametricMotor3D({
     let harnessGroup: THREE.Group | null = null;
     const harnessMaterials: THREE.MeshPhysicalMaterial[] = [];
     const harnessByPhase: Partial<Record<'A' | 'B' | 'C', THREE.MeshPhysicalMaterial>> = {};
+    const leadLandings: Partial<Record<'A' | 'B' | 'C', THREE.Vector3>> = {};
     if (concentratedCoil) {
       const harness = buildWindingHarness({
         slotCount: config.stator.slot_count,
@@ -1301,6 +1311,7 @@ function ParametricMotor3D({
         );
         harnessMaterials.push(material);
         harnessByPhase[phase] = material;
+        if (harness.leadLandings[phase]) leadLandings[phase] = harness.leadLandings[phase];
         const mesh = new THREE.Mesh(geometry, material);
         makeSelectable(mesh, {
           id: `3d-harness-${phase}`,
@@ -1898,6 +1909,76 @@ function ParametricMotor3D({
     applyDisplayRef.current = applyDisplay;
     applyDisplay();
 
+    // Phases in 3D: the 2D view's waveforms, wired to where the drive leads come in
+    // at the back of the motor. A machine drawn without its leads takes three points
+    // on the rear face of the yoke instead.
+    const rearYokeRadius = (slotBackRadius + yokeFarRadius) / 2;
+    const leadEntries = (['A', 'B', 'C'] as const).map((phase, index) => leadLandings[phase]
+      ?? new THREE.Vector3(Math.cos(Math.PI + (index - 1) * 0.12) * rearYokeRadius, Math.sin(Math.PI + (index - 1) * 0.12) * rearYokeRadius, -stackDepth / 2));
+    let viewShift = 0;
+    let viewShiftSize = '';
+    /** Moves the motor right to make room for the waveforms; null when they are not shown. */
+    const phaseDrivePanel = () => {
+      const shown = displayRef.current;
+      const width = host.clientWidth;
+      const height = host.clientHeight;
+      const frame = shown.showPhases && shown.phaseDrive && introProgressRef.current === null ? phaseDriveFrame(width, height) : null;
+      const shift = frame ? Math.round((frame.panel.x + frame.panel.width) / 2) : 0;
+      const size = `${width}x${height}`;
+      if (shift !== viewShift || size !== viewShiftSize) {
+        viewShift = shift;
+        viewShiftSize = size;
+        if (shift > 0) camera.setViewOffset(width, height, -shift, 0, width, height);
+        else camera.clearViewOffset();
+      }
+      if (!frame) return null;
+      // Below the part toggles and the peel slider at the top left.
+      const panel = { ...frame.panel };
+      panel.y = Math.max(panel.y, 142);
+      panel.height = Math.max(110, Math.min(panel.height, height - 28 - panel.y));
+      return { panel, width, height };
+    };
+    const drawPhaseDriveOverlay = (layout: ReturnType<typeof phaseDrivePanel>) => {
+      const shown = displayRef.current;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = host.clientWidth;
+      const height = host.clientHeight;
+      const canvases = [driveUnderRef.current, driveOverRef.current];
+      const contexts = canvases.map((overlay) => {
+        if (!overlay) return null;
+        if (overlay.width !== Math.round(width * pixelRatio) || overlay.height !== Math.round(height * pixelRatio)) {
+          overlay.width = Math.round(width * pixelRatio);
+          overlay.height = Math.round(height * pixelRatio);
+        }
+        const context = overlay.getContext('2d');
+        context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        context?.clearRect(0, 0, width, height);
+        return context ?? null;
+      });
+      const drive = shown.phaseDrive;
+      if (!layout || !drive) return;
+      const carrier = harnessGroup ?? statorGroup;
+      const ends = leadEntries.map((entry) => {
+        const point = entry.clone().add(carrier.position).project(camera);
+        return [(point.x + 1) / 2 * width, (1 - point.y) / 2 * height] as [number, number];
+      });
+      // One right-angle turn each, staggered as in 2D so the wires do not cross on the way down or up.
+      const strips = phaseStrips(layout.panel);
+      const stripRight = layout.panel.x + layout.panel.width;
+      const nearest = Math.min(...ends.map(([x]) => x));
+      const lane = Math.max(6, Math.min(16, (nearest - stripRight) / 5));
+      const wiresDrop = strips[1].y + strips[1].height / 2 <= ends[1][1];
+      const leads = ends.map((end, index) => ({
+        terminal: [Math.max(stripRight + STRIP_END + 4, nearest - lane * (wiresDrop ? index + 1 : 3 - index)), end[1]] as [number, number],
+        motor: end,
+      }));
+      const rotorElecDeg = rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount);
+      // Looking at the front, the leads are behind the motor: draw under it.
+      const leadsInSight = camera.position.z < leadEntries[1].z + carrier.position.z;
+      const context = contexts[leadsInSight ? 1 : 0];
+      if (context) drawPhaseDriveWired(context, layout.panel, drive, rotorElecDeg, phaseCurrents(drive, rotorElecDeg), leads, shown.previewRpm);
+    };
+
     // Show/hide plumbing. Each toggle owns the groups that only read as a part
     // together — hiding the stator without its teeth, or the coils without
     // their rear links, would just leave a fragment floating in the bore.
@@ -2087,7 +2168,9 @@ function ParametricMotor3D({
       }
       syncBearingKinematics(bearingRigs, rotorGroup.rotation.z);
       selectionHelper?.update();
+      const driveLayout = phaseDrivePanel();
       renderer.render(scene, camera);
+      drawPhaseDriveOverlay(driveLayout);
     };
     const requestRender = () => {
       if (!animationFrame) animationFrame = window.requestAnimationFrame(render);
@@ -2133,7 +2216,7 @@ function ParametricMotor3D({
   useEffect(() => {
     applyDisplayRef.current?.();
     requestRenderRef.current?.();
-  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout]);
+  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout, previewRpm]);
 
   useEffect(() => {
     if (!rotorRef.current) return;
@@ -2160,7 +2243,9 @@ function ParametricMotor3D({
       ref={hostRef}
       aria-label="Interactive 3D motor view"
     >
+      <canvas className="public-3d-drive is-under" ref={driveUnderRef} aria-hidden="true" />
       <canvas ref={canvasRef} />
+      <canvas className="public-3d-drive is-over" ref={driveOverRef} aria-hidden="true" />
       {introProgress === null && (
         <div className="public-3d-part-toggles" role="group" aria-label="Show or hide motor parts">
           {HIDEABLE_PARTS.map(({ id, label }) => {

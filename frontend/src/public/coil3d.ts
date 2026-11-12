@@ -333,6 +333,8 @@ export interface WindingHarnessModel {
   neutralGeometry: THREE.BufferGeometry | null;
   /** Terminal block on the rear yoke face where the drive leads land. */
   terminalGeometry: THREE.BufferGeometry;
+  /** Where each phase's drive lead lands on the terminal block. */
+  leadLandings: Partial<Record<HarnessPhase, THREE.Vector3>>;
   leadRadius: number;
 }
 
@@ -388,6 +390,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
   };
 
   const phaseGeometries: Record<HarnessPhase, THREE.BufferGeometry | null> = { A: null, B: null, C: null };
+  const leadLandings: Partial<Record<HarnessPhase, THREE.Vector3>> = {};
   const tailPoints: Partial<Record<HarnessPhase, THREE.Vector3>> = {};
 
   orderedPhases.forEach((phase, phaseIndex) => {
@@ -405,6 +408,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     // The drive lead enters the first coil at its start.
     const firstStart = leadAt(spec.coilLeads.start, slots[0]);
     const landAngle = terminalAngle + (phaseIndex - (orderedPhases.length - 1) / 2) * 0.1;
+    leadLandings[phase] = polar(terminalRadius, landAngle, zTerminal);
     const lead = new THREE.CatmullRomCurve3([
       firstStart,
       atZ(firstStart, zPlane),
@@ -451,5 +455,5 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
   const terminalCenter = polar(terminalRadius, terminalAngle, zTerminal - 0.4 * blockScale);
   terminalGeometry.translate(terminalCenter.x, terminalCenter.y, terminalCenter.z);
 
-  return { phaseGeometries, neutralGeometry, terminalGeometry, leadRadius };
+  return { phaseGeometries, neutralGeometry, terminalGeometry, leadLandings, leadRadius };
 }

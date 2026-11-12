@@ -1063,6 +1063,12 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-motor-3d-stage::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 58% 62% at 50% 48%, transparent 44%, rgba(2, 5, 10, 0.34) 100%); }
 .public-motor-3d-stage canvas { display: block; width: 100%; height: 100%; cursor: grab; }
 .public-motor-3d-stage canvas:active { cursor: grabbing; }
+/* Phases in 3D: the waveforms and their wires on flat canvases, one under the motor and one over it. */
+.public-motor-3d-stage > canvas:not(.public-3d-drive) { position: relative; z-index: 1; }
+.public-motor-3d-stage > canvas.public-3d-drive { position: absolute; inset: 0; pointer-events: none; }
+.public-motor-3d-stage > canvas.public-3d-drive.is-under { z-index: 0; }
+.public-motor-3d-stage > canvas.public-3d-drive.is-over { z-index: 2; }
+.public-motor-3d-stage::after { z-index: 2; }
 /* Part show/hide row. Sits below the viewport label chip so the two do not
    overlap, and wraps rather than colliding with the hint on a narrow stage. */
 .public-3d-part-toggles { position: absolute; z-index: 3; top: 54px; left: 12px; display: flex; flex-wrap: nowrap; gap: 5px; max-width: min(700px, calc(100% - 24px)); overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }

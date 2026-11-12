@@ -2115,6 +2115,7 @@ function ViewportChrome({
             showToothPoles={showToothPoles}
             showPhases={canvasLayer === 'phases'}
             overlays={overlays}
+            previewRpm={animationRpm}
             explodedAmount={explodedAmount}
             introProgress={introActive ? introCameraProgress : null}
             onInteraction={() => finishDesignIntro('3d')}
