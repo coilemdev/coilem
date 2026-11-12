@@ -531,6 +531,7 @@ export function FieldResultPlot({
   showMagnets = false,
   showAirgap = false,
   airgapInnerRadiusMm,
+  airgapRingMm,
   showMagnetPolarityLabels = true,
   magnetReference = false,
   showStatorPolarity = false,
@@ -572,6 +573,8 @@ export function FieldResultPlot({
   showMagnets?: boolean;
   showAirgap?: boolean;
   airgapInnerRadiusMm?: number;
+  /** The air gap's two edges, inner then outer, where they are not the rotor surface and the stator bore: an outer rotor. */
+  airgapRingMm?: readonly [number, number];
   showMagnetPolarityLabels?: boolean;
   magnetReference?: boolean;
   showStatorPolarity?: boolean;
@@ -1195,11 +1198,13 @@ export function FieldResultPlot({
     ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
     : null;
   const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
+  // The gap's two edges: the rotor surface and the stator bore on an inner rotor; given outright for an outer one.
+  const airgapEdges: readonly [number, number] = airgapRingMm ?? [airgapInnerRadiusMm ?? NaN, statorInnerRadiusMm ?? NaN];
   const hasAirgapOverlay = showAirgap
-    && Number.isFinite(airgapInnerRadiusMm)
-    && Number.isFinite(statorInnerRadiusMm)
-    && (airgapInnerRadiusMm ?? 0) > 0
-    && (statorInnerRadiusMm ?? 0) > (airgapInnerRadiusMm ?? 0);
+    && Number.isFinite(airgapEdges[0])
+    && Number.isFinite(airgapEdges[1])
+    && airgapEdges[0] > 0
+    && airgapEdges[1] > airgapEdges[0];
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
   const hasFieldAxes = fieldAxes !== null
@@ -1365,8 +1370,8 @@ export function FieldResultPlot({
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
-                  <circle cx="0" cy="0" r={airgapInnerRadiusMm} />
-                  <circle cx="0" cy="0" r={statorInnerRadiusMm} />
+                  <circle cx="0" cy="0" r={airgapEdges[0]} />
+                  <circle cx="0" cy="0" r={airgapEdges[1]} />
                 </g>
               )}
               {hasDirectionCues && directionCues.map((cue, index) => {

@@ -49,7 +49,7 @@ import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
 import { describeFieldProbe } from './fieldProbeRegion';
 import type { FieldPositionLink } from './fieldPositionLink';
-import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
+import { magneticAirgapMm, rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
   MaterialCatalog,
@@ -1237,8 +1237,10 @@ export function SolvedFieldViewer({
               fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
               rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showAirgap={showAirgap}
-              // The air-gap ring, field axes and stator pole labels assume an inner rotor.
+              // The field axes and stator pole labels assume an inner rotor.
               airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
+              // An outer rotor's gap runs from the stator's outside out to the magnets' inner face.
+              airgapRingMm={config.rotor_layout === 'outer' ? [config.stator.OD_mm / 2, config.stator.OD_mm / 2 + magneticAirgapMm(config)] : undefined}
               showMagnetPolarityLabels={showPoleLabels}
               magnetReference={source === 'armature' && !overlayActive}
               showStatorPolarity={source === 'armature' && showPoleLabels}

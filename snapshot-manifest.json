@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 69753,
-      "sha256": "2c4026906bce8499768fe308c06580999f59b9dd54aecd08423299f38967cfc4"
+      "bytes": 70122,
+      "sha256": "f2dcdeb5a6bd6c54648070b87bd00cf8c52771c625845d80d860ca457aa11243"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7145,8 +7145,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 60800,
-      "sha256": "2d7559c9262a68a568ba921ae8023d841a5245dcd48d65af295687f63cca821e"
+      "bytes": 61058,
+      "sha256": "83b1eb1e21b8c6cd23387a6f6e8f70f5859d6179eb2af5696eb619047fbb4df0"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
