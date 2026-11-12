@@ -55,10 +55,11 @@ const NO_3D_OVERLAYS: Motor3DOverlays = { slots: false, teeth: false, windings: 
  * `stator` covers the yoke and its teeth, `windings` takes the rear links with
  * it, since neither reads on its own.
  */
-type HideablePartId = 'stator' | 'windings' | 'rotor' | 'magnets' | 'airgap' | 'endcaps' | 'bearings' | 'shaft';
+type HideablePartId = 'stator' | 'windings' | 'rotor' | 'rotorBell' | 'magnets' | 'airgap' | 'endcaps' | 'bearings' | 'shaft';
 
 const HIDEABLE_PARTS: Array<{ id: HideablePartId; label: string }> = [
   { id: 'endcaps', label: 'End caps' },
+  { id: 'rotorBell', label: 'Rotor bell' },
   { id: 'stator', label: 'Stator' },
   { id: 'windings', label: 'Windings' },
   { id: 'airgap', label: 'Air gap' },
@@ -776,8 +777,10 @@ function ParametricMotor3D({
   // The parts from the outside in, for the slider that peels the motor: on an
   // outer-rotor machine the rotor and magnets are outside the stator.
   const outerRotor = config.rotor_layout === 'outer';
+  const availableParts = useMemo(() => HIDEABLE_PARTS.filter(({ id }) => outerRotor || id !== 'rotorBell'), [outerRotor]);
+  const shownPartCount = availableParts.filter(({ id }) => !hiddenParts.has(id)).length;
   const peelOrder = useMemo<HideablePartId[]>(() => (outerRotor
-    ? ['endcaps', 'rotor', 'magnets', 'airgap', 'windings', 'stator', 'bearings', 'shaft']
+    ? ['endcaps', 'rotorBell', 'rotor', 'magnets', 'airgap', 'windings', 'stator', 'bearings', 'shaft']
     : ['endcaps', 'stator', 'windings', 'airgap', 'magnets', 'rotor', 'bearings', 'shaft']), [outerRotor]);
   // How many parts are left, counted from the shaft outwards: every part up to the first one still shown is peeled.
   const firstShown = peelOrder.findIndex((part) => !hiddenParts.has(part));
@@ -1431,11 +1434,12 @@ function ParametricMotor3D({
 
     const rotorGroup = new THREE.Group();
     const rotorCoreGroup = new THREE.Group();
+    const rotorBellGroup = new THREE.Group();
     const pocketsGroup = new THREE.Group();
     const magnetsGroup = new THREE.Group();
     const shaftGroup = new THREE.Group();
     rotorCoreGroup.add(pocketsGroup);
-    rotorGroup.add(rotorCoreGroup, magnetsGroup, shaftGroup);
+    rotorGroup.add(rotorCoreGroup, rotorBellGroup, magnetsGroup, shaftGroup);
     rotorRef.current = rotorGroup;
     let core: THREE.Mesh;
     if (outerRotor) {
@@ -1459,8 +1463,8 @@ function ParametricMotor3D({
 
     // An outer rotor is a cup: its can runs on past the stack and the coils' end
     // turns to an end bell clamped to the shaft, which is how the shaft turns
-    // with it. The bell rides with the rotor core, so it spins, explodes and
-    // hides with the rotor; open between spokes, it keeps the windings in view.
+    // with it. The bell spins and explodes with the rotor core, with a separate
+    // visibility toggle so the windings can be inspected through the open can.
     let bellOuterFaceZ = 0;
     if (outerRotor) {
       const bellThickness = Math.max(0.6, capThickness);
@@ -1489,7 +1493,7 @@ function ParametricMotor3D({
         label: 'Rotor bell',
         role: 'Closes the outer rotor and is clamped to the shaft, so the shaft turns with it · illustrative · not part of the EM model',
       });
-      rotorCoreGroup.add(bell.group);
+      rotorBellGroup.add(bell.group);
     }
 
     // Drive-end convention: the shaft runs long out the front face toward the
@@ -1864,7 +1868,8 @@ function ParametricMotor3D({
     }
     addPartChip('Air gap', airgap, new THREE.Vector3(0, -chipLane * 0.9, 0));
     addPartChip('Magnets', magnetsGroup, new THREE.Vector3(0, Math.max(rotorRadius * 1.5, chipLane * 0.82), 0));
-    addPartChip(outerRotor ? 'Rotor and bell' : 'Rotor core', rotorCoreGroup, new THREE.Vector3(0, -Math.max(rotorRadius * 1.28, chipLane * 0.7), 0));
+    addPartChip(outerRotor ? 'Rotor can' : 'Rotor core', rotorCoreGroup, new THREE.Vector3(0, -Math.max(rotorRadius * 1.28, chipLane * 0.7), 0));
+    if (outerRotor) addPartChip('Rotor bell', rotorBellGroup, new THREE.Vector3(0, chipLane * 1.2, bellOuterFaceZ));
     addPartChip('Shaft', shaftGroup, new THREE.Vector3(0, shaftRadius + chipLane * 0.22, 0));
     addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, capCenterZ));
     if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, capCenterZ));
@@ -2107,6 +2112,7 @@ function ParametricMotor3D({
       stator: [statorGroup, teethGroup],
       windings: harnessGroup ? [windingsGroup, harnessGroup] : [windingsGroup],
       rotor: [rotorCoreGroup],
+      rotorBell: [rotorBellGroup],
       magnets: [magnetsGroup],
       airgap: [airgap],
       endcaps: [driveEndcapGroup, rearEndcapGroup],
@@ -2148,6 +2154,7 @@ function ParametricMotor3D({
       airgap.position.z = -1.25 * station;
       magnetsGroup.position.z = 1.25 * station;
       rotorCoreGroup.position.z = 2.55 * station;
+      rotorBellGroup.position.z = rotorCoreGroup.position.z;
       shaftGroup.position.z = 4.25 * station;
       // Each end's housing continues past the outermost part on ITS side: the
       // rear pair beyond the stator, the drive pair beyond the shaft. The
@@ -2371,7 +2378,7 @@ function ParametricMotor3D({
       <canvas className="public-3d-drive is-over" ref={driveOverRef} aria-hidden="true" />
       {introProgress === null && !controlsInDock && (
         <div className="public-3d-part-toggles" role="group" aria-label="Show or hide motor parts">
-          {HIDEABLE_PARTS.map(({ id, label }) => {
+          {availableParts.map(({ id, label }) => {
               const shown = !hiddenParts.has(id);
               return (
                 <button
@@ -2437,9 +2444,9 @@ function ParametricMotor3D({
                 }
               }}
             >
-              <summary>Shown<em>{HIDEABLE_PARTS.length - hiddenParts.size} of {HIDEABLE_PARTS.length}</em></summary>
+              <summary>Shown<em>{shownPartCount} of {availableParts.length}</em></summary>
               <div className="public-field-layer-controls" role="group" aria-label="Show or hide motor parts">
-                {HIDEABLE_PARTS.map(({ id, label }) => {
+                {availableParts.map(({ id, label }) => {
                   const shown = !hiddenParts.has(id);
                   return (
                     <button

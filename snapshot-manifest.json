@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178222,
-      "sha256": "d1d71a08a0f1aa107e11fe64dbbe917e06f131f7e4e5420ca585eebe21534d48"
+      "bytes": 178234,
+      "sha256": "ecdf4b0ec291a2ca2a0e7afbea2cd8c513df84b34c9478825a1bd16871530d97"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 115390,
-      "sha256": "bb9b9dd4579269345c6539ff0dc73cbb9b9f7cd420794a5b9fb9a15c19c83969"
+      "bytes": 115919,
+      "sha256": "d086bb5df0e5371d7100d6b58c5bde533a0084a6f7fb230406458a35dcd06f34"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",

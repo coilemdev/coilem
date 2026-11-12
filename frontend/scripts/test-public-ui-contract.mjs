@@ -657,10 +657,10 @@ assert.match(motorThreeSource, /const airgapGeometry = outerRotor\s+\? annulusGe
 // extrude their preview regions.
 assert.match(motorThreeSource, /return props\.config\.geometry_reference\s+\? <ReferenceMotor3D \{\.\.\.props\} \/> : <ParametricMotor3D \{\.\.\.props\} \/>;/);
 assert.match(motorThreeSource, /const magnetSeatRadius = outerRotor \?/);
-// An outer rotor's can is closed by a spoked bell on the rotor core, so it turns
-// the shaft; a fixed tube in the stator hub holds the bearings.
+// An outer rotor's can is closed by a spoked bell that turns the shaft and can
+// be hidden independently; a fixed tube in the stator hub holds the bearings.
 assert.match(motorThreeSource, /function buildRotorBell\(/);
-assert.match(motorThreeSource, /rotorCoreGroup\.add\(bell\.group\)/);
+assert.match(motorThreeSource, /rotorBellGroup\.add\(bell\.group\)/);
 assert.match(motorThreeSource, /label: 'Stator hub · bearing tube'/);
 assert.doesNotMatch(motorThreeSource, /new THREE\.TorusGeometry/);
 assert.match(motorThreeSource, /statorGroup\.position\.z = -4\.25 \* station/);
