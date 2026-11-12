@@ -5174,6 +5174,26 @@ button.performance-tag { cursor: help; }
 /* The field dock has the three rows the geometry and mesh docks have: the field shown, its layers, the transport. */
 .public-field-dock .public-field-dock-controls > .public-field-overlay-cluster { flex: 0 0 100%; }
 /* The mesh dock's More menu, styled as the field dock's. */
+/* 3D: two columns. Overlay, Show and Spin on the left where 2D has them; Explode, the
+   peel slider and the part list on the right, so nothing sits over the motor. */
+.public-motor-viewport .viewport-bottom-bar .viewport-controls-cad.is-3d { display: grid; grid-template-columns: max-content max-content; justify-content: start; align-items: center; column-gap: 40px; row-gap: 3px; }
+.public-motor-viewport .viewport-bottom-bar .viewport-controls-cad.is-3d > .public-dock-row-break { display: none; }
+.public-motor-viewport .viewport-bottom-bar .viewport-controls-cad.is-3d > *,
+.public-motor-viewport .viewport-bottom-bar .viewport-controls-cad.is-3d > .public-dock-3d-slot > * { margin-top: 0; }
+.viewport-controls-cad.is-3d > .public-view-modes { grid-area: 1 / 1; }
+.viewport-controls-cad.is-3d > .public-view-toggles { grid-area: 2 / 1; }
+.viewport-controls-cad.is-3d > .public-preview-transport { grid-area: 3 / 1; }
+.viewport-controls-cad.is-3d > .public-explode-controls { grid-area: 1 / 2; }
+.public-dock-3d-slot { display: contents; }
+/* The part list opens above the dock, so the controls must not clip it while it is open. */
+.public-motor-viewport .viewport-bottom-bar .viewport-controls-cad.is-3d:has(.public-dock-more[open]) { overflow: visible; }
+.viewport-controls-cad.is-3d .public-dock-peel { grid-area: 2 / 2; }
+.viewport-controls-cad.is-3d .public-dock-parts { grid-area: 3 / 2; }
+.public-motor-viewport .viewport-bottom-bar .vc-group.public-dock-peel > .public-dock-group-label:first-child,
+.public-motor-viewport .viewport-bottom-bar .vc-group.public-dock-parts > .public-dock-group-label:first-child,
+.public-motor-viewport .viewport-bottom-bar .viewport-controls-cad.is-3d .public-explode-controls > .public-dock-group-label:first-child { min-width: 84px; }
+.public-dock-peel > input { width: 132px; accent-color: #fbbf24; cursor: pointer; }
+.public-dock-peel > output { min-width: 64px; color: var(--text-primary); font-size: 13px; }
 .public-dock-more > summary { display: inline-flex; min-height: 36px; align-items: center; gap: 8px; padding: 0 14px; border-radius: 999px; font: 600 13px var(--font-mono); cursor: pointer; list-style: none; }
 .public-dock-more > summary::after { color: var(--text-muted); content: '▾'; font-size: 10px; }
 .public-dock-more > summary em { color: var(--text-accent); font-size: 11px; font-style: normal; }

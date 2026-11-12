@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 264177,
-      "sha256": "1fcfd37de28332225d3b3525c804d7b1c8090ee77e8154faa124d95e4612800f"
+      "bytes": 264582,
+      "sha256": "4da68075cb6470a71b41665dad2c78fb5db8f2213d3991f99dc968c514e63fc0"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 111674,
-      "sha256": "01912f23fc26875cae5660aa53130bcdb25775304385415173b72a5b3e5fa856"
+      "bytes": 115051,
+      "sha256": "949a5ce20cc11a17729fc506f9a288c6323b586035695b30f31f71482bbd5914"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7560,8 +7560,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 316724,
-      "sha256": "62b2aaf66b32d78b27b07e531e730802bd6246adbb615a86bd7967c562752b6f"
+      "bytes": 318686,
+      "sha256": "c0d6479ae284b899c9c79b16d16ff368263e1391a4753064e659e6a2ad0eeda1"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

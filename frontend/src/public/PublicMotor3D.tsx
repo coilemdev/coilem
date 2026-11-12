@@ -1,5 +1,6 @@
 import { ReferenceMotor3D } from './ReferenceMotor3D';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -37,6 +38,12 @@ interface PublicMotor3DProps {
   overlays?: Motor3DOverlays;
   /** The preview speed, which sets the frequency the Phases waveforms show. */
   previewRpm?: number;
+  /**
+   * The part toggles and the peel slider go in the viewport dock instead of over
+   * the motor: they are drawn into `dockSlot` once the dock has made it.
+   */
+  controlsInDock?: boolean;
+  dockSlot?: HTMLElement | null;
 }
 
 export interface Motor3DOverlays { slots: boolean; teeth: boolean; windings: boolean }
@@ -672,6 +679,8 @@ function ParametricMotor3D({
   showPhases = false,
   overlays = NO_3D_OVERLAYS,
   previewRpm = 20,
+  controlsInDock = false,
+  dockSlot = null,
 }: PublicMotor3DProps) {
   // The same phase drive the 2D view shades by: the solve's own terminal currents.
   const solveParams = config.solve_params;
@@ -2035,7 +2044,8 @@ function ParametricMotor3D({
       if (!frame) return null;
       // Below the part toggles and the peel slider at the top left.
       const panel = { ...frame.panel };
-      panel.y = Math.max(panel.y, 104);
+      // Below the bars over the motor where there are any; otherwise just below the design's name chip.
+      panel.y = Math.max(panel.y, top > 0 ? 104 : 56);
       panel.height = Math.max(110, Math.min(panel.height, height - 28 - panel.y));
       return { panel, width, height };
     };
@@ -2349,7 +2359,7 @@ function ParametricMotor3D({
       <canvas className="public-3d-drive is-under" ref={driveUnderRef} aria-hidden="true" />
       <canvas ref={canvasRef} />
       <canvas className="public-3d-drive is-over" ref={driveOverRef} aria-hidden="true" />
-      {introProgress === null && (
+      {introProgress === null && !controlsInDock && (
         <div className="public-3d-part-toggles" role="group" aria-label="Show or hide motor parts">
           {HIDEABLE_PARTS.map(({ id, label }) => {
               const shown = !hiddenParts.has(id);
@@ -2368,7 +2378,7 @@ function ParametricMotor3D({
             })}
         </div>
       )}
-      {introProgress === null && (
+      {introProgress === null && !controlsInDock && (
         <label className="public-3d-peel" title="Slide left to take the motor apart from the outside in; all the way right shows every part">
           <span>Outside in</span>
           <input
@@ -2383,6 +2393,61 @@ function ParametricMotor3D({
           />
           <em>{outermostShown ?? 'None'}</em>
         </label>
+      )}
+      {controlsInDock && dockSlot && createPortal(
+        <>
+          <span className="vc-group public-dock-peel" role="group" aria-label="Peel the motor from the outside in" title="Slide left to take the motor apart from the outside in; all the way right shows every part">
+            <span className="public-dock-group-label" aria-hidden="true">Outside in</span>
+            <input
+              type="range"
+              min={0}
+              max={peelOrder.length}
+              step={1}
+              value={partsLeft}
+              aria-label="Parts shown, from the shaft outwards"
+              aria-valuetext={outermostShown ? `Out to the ${outermostShown.toLowerCase()}` : 'No parts'}
+              onChange={(event) => peelTo(Number(event.target.value))}
+            />
+            <output aria-live="polite">{outermostShown ?? 'None'}</output>
+          </span>
+          <span className="vc-group public-dock-parts" role="group" aria-label="Motor parts">
+            <span className="public-dock-group-label" aria-hidden="true">Parts</span>
+            <details
+              className="public-field-layer-menu public-dock-more"
+              // Opens above the dock, lined up with its button, as More does on the Mesh tab.
+              onToggle={(event) => {
+                const menu = event.currentTarget;
+                const dock = menu.closest('.viewport-bottom-bar');
+                const panel = menu.querySelector<HTMLElement>('.public-field-layer-controls');
+                // The list is placed against whatever positions it, so it is measured from there: clear of the whole dock, tab row included.
+                const anchor = panel?.offsetParent?.getBoundingClientRect();
+                if (dock && panel && anchor) {
+                  panel.style.left = `${menu.getBoundingClientRect().left - anchor.left}px`;
+                  panel.style.bottom = `${anchor.bottom - dock.getBoundingClientRect().top + 6}px`;
+                }
+              }}
+            >
+              <summary>Shown<em>{HIDEABLE_PARTS.length - hiddenParts.size} of {HIDEABLE_PARTS.length}</em></summary>
+              <div className="public-field-layer-controls" role="group" aria-label="Show or hide motor parts">
+                {HIDEABLE_PARTS.map(({ id, label }) => {
+                  const shown = !hiddenParts.has(id);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      aria-pressed={shown}
+                      title={shown ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+                      onClick={() => togglePart(id)}
+                    >
+                      <i aria-hidden="true" />{label}
+                    </button>
+                  );
+                })}
+              </div>
+            </details>
+          </span>
+        </>,
+        dockSlot,
       )}
       {introProgress !== null && <div className="public-3d-hint">Assembly view · turning to engineering cross-section</div>}
       {failed && <div className="public-viewport-message">3D preview is unavailable on this graphics device.</div>}

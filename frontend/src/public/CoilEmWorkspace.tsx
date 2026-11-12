@@ -1879,6 +1879,8 @@ function ViewportChrome({
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
   const [meshMagnifier, setMeshMagnifier] = useState(false);
+  // Where the 3D view draws its part controls: the right-hand column of the dock.
+  const [dock3dSlot, setDock3dSlot] = useState<HTMLElement | null>(null);
   const [showCoilColors, setShowCoilColors] = useState(false);
   const meshMoreOn = Number(meshMagnifier) + Number(showToothPoles) + Number(showCoilColors);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
@@ -2188,6 +2190,8 @@ function ViewportChrome({
             showPhases={canvasLayer === 'phases'}
             overlays={overlays}
             previewRpm={animationRpm}
+            controlsInDock
+            dockSlot={dock3dSlot}
             explodedAmount={explodedAmount}
             introProgress={introActive ? introCameraProgress : null}
             onInteraction={() => finishDesignIntro('3d')}
@@ -2407,7 +2411,7 @@ function ViewportChrome({
             </div>
           </div>
         )}
-        <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
+        <div className={`viewport-controls viewport-controls-cad${viewportMode === '3d' && mode === 'geometry' ? ' is-3d' : ''}`} aria-label="Motor view and overlay controls">
           {/* Each group has a small label and one of two shapes: a segmented
               control picks one way to draw the view, a dot toggle switches a
               layer on or off on its own. Tabs in the title bar pick the view. */}
@@ -2588,8 +2592,9 @@ function ViewportChrome({
               )}
             </span>
           )}
-          {/* 3D only: its own row, between Show and Spin, so the rows above sit where 2D has them. */}
-          {viewportMode === '3d' && <span className="public-dock-row-break" aria-hidden="true" />}
+          {/* 3D only, in a right-hand column beside Overlay, Show and Spin: Explode here, then the
+              peel slider and the part list, which the 3D view draws into the slot (PublicMotor3D). */}
+          {viewportMode === '3d' && mode === 'geometry' && <span className="public-dock-3d-slot" ref={setDock3dSlot} />}
           {viewportMode === '3d' && (
             <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
               <span className="public-dock-group-label" aria-hidden="true">Explode</span>
