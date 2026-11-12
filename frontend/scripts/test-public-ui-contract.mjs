@@ -1187,13 +1187,12 @@ assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-con
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button\[aria-pressed="true"\] > i \{[^}]*background: var\(--text-accent\);[^}]*box-shadow: none;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-canvas > canvas \{ position: absolute; inset: 0; \}/);
 assert.match(fieldResultSource, /className="is-mid">\{legendLabel\(\(legendScale\.minB \+ legendScale\.maxB\) \/ 2\)\}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*top: 60px[^}]*right: 0[^}]*bottom: 18px[^}]*width: 10px/s);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend > span \{[^}]*position: absolute[^}]*right: 14px/s);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-min \{ bottom: 0; \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-mid \{ top: 50%; transform: translateY\(-50%\); \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-max \{ top: 0; \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend small \{ display: none; \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend i \{[^}]*position: absolute[^}]*inset: 0[^}]*background-color: #1b8eb7[^}]*linear-gradient\(to top/s);
+// The finished field view carries its colour scale as a strip under the motor,
+// the same one the in-run preview shows, not as a bar down the right-hand side.
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result \{ flex-direction: column; \}/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend,\s*\.public-viewport-stage-2d > \.public-field-result \.public-field-result-legend \{[^}]*flex: none[^}]*justify-content: center/s);
+assert.doesNotMatch(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*width: 10px/s);
+assert.doesNotMatch(styleSource, /\.public-solved-field-canvas \.public-field-result-legend small \{ display: none; \}/);
 assert.match(styleSource, /\.public-field-range-control \{/);
 assert.match(styleSource, /\.public-field-probe \{/);
 assert.match(styleSource, /@container \(max-width: 1040px\)/);
@@ -1239,7 +1238,9 @@ assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)
 assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
 assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);
+// The knee and saturation marks are close: their labels read away from each other.
+assert.match(styleSource, /\.public-field-legend-tick\.is-knee em \{[^}]*right: 100%/);
+assert.match(styleSource, /\.public-field-legend-tick:not\(\.is-knee\) em \{[^}]*left: 100%/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
 assert.match(fieldResultSource, /element_bx_t/);
 assert.match(fieldResultSource, /element_by_t/);

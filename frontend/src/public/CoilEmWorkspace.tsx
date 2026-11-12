@@ -3360,17 +3360,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
   const solveRotorAngleDeg = useEasedRotorAngle(shownRotorTurn?.turnDeg ?? null, solveView === 'mesh' ? 3 : 12);
   const solvingField = shownRotorTurn?.phase === 'solving';
-  // As soon as the first position is solved its field is shown: a real result
-  // to look at while the rest of the sweep runs. It is read once.
-  const firstSolvedField = useFirstSolvedField(busy === 'solve', progress);
-  const shownSolvedField = solvingField ? firstSolvedField : null;
-  const solveRotorCaption = !shownRotorTurn || solveRotorAngleDeg === null
-    ? null
-    : shownSolvedField
-      ? 'A solved rotor position · finishing the rest'
-      : solvingField
-        ? 'Solving the field at each rotor position'
-        : `Meshing rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`;
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
@@ -3379,6 +3368,21 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   // reset the view only when one of them is replaced, not on a resumed mount.
   const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
   const viewedResultRef = useRef<unknown>(resumeSolveView ? result : undefined);
+  // As soon as the first position is solved its field is shown: a real result
+  // to look at while the rest of the sweep runs. It is read once.
+  const firstSolvedField = useFirstSolvedField(busy === 'solve', progress);
+  // It stays up while the result is put together, and for the one render
+  // between the result arriving and the view switching to it, so the mesh
+  // does not flash back in between.
+  const resultNotYetViewed = Boolean(result) && viewedResultRef.current !== result;
+  const shownSolvedField = busy === 'solve' || resultNotYetViewed ? firstSolvedField : null;
+  const solveRotorCaption = shownSolvedField
+    ? 'A solved rotor position · finishing the rest'
+    : !shownRotorTurn || solveRotorAngleDeg === null
+      ? null
+      : solvingField
+        ? 'Solving the field at each rotor position'
+        : `Meshing rotor positions · ${formatNumber(solveRotorAngleDeg, 1)}°`;
   useEffect(() => {
     solveViewMemory.stage = { result, mesh, solveView, meshDisplayMode, showMeshEdges };
   });
@@ -4117,7 +4121,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               enableDesignIntro={false}
               solveRotorAngleDeg={solveRotorAngleDeg}
               solveRotorCaption={solveRotorCaption}
-              solvePulse={solvingField}
+              solvePulse={solvingField || Boolean(shownSolvedField)}
               solveFieldPreview={shownSolvedField && (
                 <FieldResultPlot
                   plot={shownSolvedField}
