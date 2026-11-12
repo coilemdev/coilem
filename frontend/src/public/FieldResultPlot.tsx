@@ -1413,7 +1413,6 @@ export function FieldResultPlot({
         className={`public-field-result-canvas public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
         ref={navigation.viewportRef}
         style={motorFitWidth === null ? undefined : { flex: `0 0 ${motorFitWidth.toFixed(1)}px` }}
-        title="Use the mouse wheel to zoom; drag to pan when zoomed"
         {...navigation.bind}
         onPointerMove={handlePointerMove}
         onPointerLeave={() => { if (!probeSlot) setProbe(null); }}

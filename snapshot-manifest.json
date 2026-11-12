@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 72093,
-      "sha256": "4f268e31f59fcba4b102e4222e125120a371d8cc521ae35f9a3f9b8ad87cd9db"
+      "bytes": 72024,
+      "sha256": "4ac28df616c539a62641ed1bc1851421716209615cec9c3ad1de5b8875b054ad"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7375,8 +7375,8 @@
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
-      "bytes": 32158,
-      "sha256": "5ce5a7e3db7f464008e32f5046c43e501e608b7577230847dd50fdcdf5c062bb"
+      "bytes": 32091,
+      "sha256": "967f07b5436b3b9c8cafad84819a5cbfc6ae9330c0213ed02b32f5fe75fc2356"
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
@@ -7390,8 +7390,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
-      "bytes": 33382,
-      "sha256": "c73afa6a2e09599dd56c93c2268c408be8b9dad2a60a1cb888cacfba91511209"
+      "bytes": 33315,
+      "sha256": "75a0b00a51edc20dfa12630380f86b1177e248f49614555ff465ecbd701416c1"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
