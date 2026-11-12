@@ -1516,7 +1516,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           <span className="param-label">Coils per Phase<small>calc</small></span>
           <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
         </div>
-        <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
+        <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} hint="How many times the conductor goes round each coil. More turns raise back-EMF and inductance; the field depends on turns × current." disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
         {config.geometry_reference && !wire ? (
           // A pinned reference without its own wire uses its published conductor (backend/winding_resistance.py).
@@ -1536,9 +1536,20 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />}
         {wire && <>
           <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
-          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
+          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} hint="Wires wound together as one turn. They share the turn's current and lower the resistance; they do not add turns." disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
           <NumberRow label="End-turn Extension" value={wire.end_turn_extension_mm ?? 0} unit="mm" min={0} max={200} step={1} hint="Straight length each coil side runs out of the stack before its end turn bends." disabled={disabled} onChange={(value) => setWire({ ...wire, end_turn_extension_mm: value > 0 ? value : null })} />
         </>}
+        {windingResistanceRecord && (
+          // Turns and wires are different counts: a turn of several strands in hand is still one turn.
+          <div className="param-row public-param-row public-derived-row" title="Wires passing through each slot: the turns in the slot times the strands wound together as one turn. The field solve uses the turns; the wires set resistance and slot fill.">
+            <span className="param-label">Wires per Slot<small>calc</small></span>
+            <strong>
+              {windingResistanceRecord.wire_source === 'specified'
+                ? `${windingResistanceRecord.conductors_per_slot} turns × ${windingResistanceRecord.strands_in_hand} = ${windingResistanceRecord.conductors_per_slot * windingResistanceRecord.strands_in_hand}`
+                : `${windingResistanceRecord.conductors_per_slot} turns · wire not set`}
+            </strong>
+          </div>
+        )}
         <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
         {windingRows.map((row) => (
           <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>

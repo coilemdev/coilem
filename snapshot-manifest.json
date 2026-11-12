@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 259658,
-      "sha256": "419f933bcbfdf9a7698e72437b6c1ebc06b2d6bc169ff56c37dc56be1e5c70cd"
+      "bytes": 260835,
+      "sha256": "c97684eaca30d8dc7790ad2eadf7fb85e432ee0e4d60b678304307717415b789"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 110350,
-      "sha256": "1cb3d4fc22655cec3e68bbe27deb5901d2d3be9561f968bb76050a7f3bf54cd5"
+      "bytes": 110920,
+      "sha256": "9933ac9418e22c0dfe6d905cfeeefc69befa76765a421a3ef868bd7e3f48887c"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
