@@ -357,9 +357,8 @@ function vShapeMagnetPlacement(
 }
 
 /**
- * Assembled, the end cap is a translucent shell: a closed machine would
- * otherwise hide the end windings that make the assembled view legible. It goes
- * fully solid as soon as the explode pulls it clear of the stack.
+ * The IPM drive-end cap stays translucent in the assembled preview. SPM caps
+ * are fitted, opaque cups; the parts toggle exposes the windings inside them.
  */
 const ENDCAP_ASSEMBLED_OPACITY = 0.42;
 
@@ -878,13 +877,17 @@ function ParametricMotor3D({
     // stands clear of the stack ends and the bearing seats inside its bore.
     const capBoreRadius = Math.max(shaftRadius * 1.95, outerRadius * 0.16);
     const capThickness = stackDepth * 0.115;
-    const capCenterZ = stackDepth / 2 + stackDepth * 0.13 + capThickness / 2;
-    const capOuterFaceZ = capCenterZ + capThickness / 2;
+    const defaultCapCenterZ = stackDepth / 2 + stackDepth * 0.13 + capThickness / 2;
+    const fittedEndcaps = outerRotor || config.topology === 'SPM';
+    const assembledEndcapOpacity = fittedEndcaps ? 1 : ENDCAP_ASSEMBLED_OPACITY;
     // Frame off whichever dimension actually drives the silhouette. Keying the
     // camera off the radius alone puts a long-stack machine half outside the
     // view before the explode even starts, and the max() only ever pulls back,
     // so nothing shorter than a 2.4:1 stack-to-radius machine moves at all.
-    const framingRadius = Math.max(outerRadius, stackDepth * 0.42);
+    // The inrunner's two fitted cups extend beyond both stack faces and its
+    // diameter. Leave room for their rims and the longer drive shaft as well.
+    const housingFrameScale = fittedEndcaps && !outerRotor ? 1.16 : 1;
+    const framingRadius = Math.max(outerRadius, stackDepth * 0.42) * housingFrameScale;
     const assembledCameraPosition = new THREE.Vector3(
       framingRadius * 2.45,
       framingRadius * 1.8,
@@ -1055,11 +1058,10 @@ function ParametricMotor3D({
         roughness: 0.52,
         envMapIntensity: 0.5,
         transparent: true,
-        opacity: ENDCAP_ASSEMBLED_OPACITY,
+        opacity: assembledEndcapOpacity,
       }),
-      // The rear cap is solid: nothing sits behind it to read through, so its
-      // only job is to close the machine off. Only the drive-end cap — the one
-      // between the camera and the end windings — stays a shell.
+      // The rear cap is solid, as are the fitted SPM drive-end cups. The IPM
+      // drive-end cap keeps its translucent assembled preview above.
       endcapRear: new THREE.MeshPhysicalMaterial({
         color: 0x8b95a3,
         metalness: 0.7,
@@ -1496,27 +1498,30 @@ function ParametricMotor3D({
       rotorBellGroup.add(bell.group);
     }
 
+    // Fit each cup behind the actual end turns and crossovers. Rear wiring can
+    // project further than the front windings, so each end has its own depth.
+    const windingBounds = new THREE.Box3().setFromObject(windingsGroup);
+    if (harnessGroup) windingBounds.union(new THREE.Box3().setFromObject(harnessGroup));
+    const capClearance = Math.max(0.6, capThickness * 0.8);
+    const driveCapCenterZ = fittedEndcaps && !outerRotor
+      ? Math.max(stackDepth / 2, windingBounds.max.z) + capClearance + capThickness / 2
+      : defaultCapCenterZ;
+    const rearCapCenterZ = fittedEndcaps
+      ? Math.max(stackDepth / 2, -windingBounds.min.z) + capClearance + capThickness / 2
+      : defaultCapCenterZ;
+
     // Drive-end convention: the shaft runs long out the front face toward the
     // load, with only a short stub behind the rear bearing plane. Both ends are
     // measured off the cap's outer face so the shaft always passes through both
     // castings — a visible drive stub at the front, just enough to read as
     // supported at the rear.
-    const shaftCapClearance = capOuterFaceZ - stackDepth / 2;
+    const shaftCapClearance = driveCapCenterZ + capThickness / 2 - stackDepth / 2;
     const shaftFrontOverhang = Math.max(
       stackDepth * 0.34,
       shaftRadius * 1.6,
       shaftCapClearance + stackDepth * 0.28,
       outerRotor ? bellOuterFaceZ - stackDepth / 2 + stackDepth * 0.3 : 0,
     );
-    // A full-width outrunner rear plate must sit behind the end turns and their
-    // crossovers, rather than cutting through the coils at the old hub-only cap.
-    const rearCapCenterZ = outerRotor
-      ? Math.max(
-          stackDepth / 2,
-          -new THREE.Box3().setFromObject(windingsGroup).min.z,
-          harnessGroup ? -new THREE.Box3().setFromObject(harnessGroup).min.z : 0,
-        ) + Math.max(0.6, capThickness * 0.8) + capThickness / 2
-      : capCenterZ;
     const shaftRearStub = rearCapCenterZ + capThickness / 2 - stackDepth / 2 + stackDepth * 0.06;
     const shaftGeometry = new THREE.CylinderGeometry(
       shaftRadius,
@@ -1709,15 +1714,16 @@ function ParametricMotor3D({
     const bearingRigs: BearingAnimationRig[] = [];
     const bearingWidth = stackDepth * 0.13;
     const hubBearingOuterRadius = Math.min(yokeOuterRadius * 0.98, shaftRadius * 2.4);
-    // The rear cap cups over the end turns and laps the rotating can's rear
-    // edge. Its skirt stays outside the can with a small radial running gap.
-    const rearCapRadialClearance = Math.max(0.3, rotorRadius * 0.018);
-    const rearCapWallThickness = Math.max(0.6, rotorRadius * 0.035);
-    const rearCapSkirtInnerRadius = rotorRadius + rearCapRadialClearance;
-    const rearCapRadius = rearCapSkirtInnerRadius + rearCapWallThickness;
+    // Cups lap the stack's edge: the stator on an inrunner, or the rotating can
+    // on an outrunner. A small radial gap keeps the skirt clear of that body.
+    const capRadialClearance = Math.max(0.3, outerRadius * 0.018);
+    const capWallThickness = Math.max(0.6, outerRadius * 0.035);
+    const capSkirtInnerRadius = outerRadius + capRadialClearance;
+    const fittedCapRadius = capSkirtInnerRadius + capWallThickness;
     [1, -1].forEach((zSign) => {
       const isDriveEnd = zSign > 0;
       const end = isDriveEnd ? 'drive' : 'non-drive';
+      const endCapCenterZ = isDriveEnd ? driveCapCenterZ : rearCapCenterZ;
 
       const bearing = buildBearing(
         outerRotor
@@ -1737,7 +1743,7 @@ function ParametricMotor3D({
       // Seated in the cap bore, inboard of the cap's outer face — the bearing
       // never hangs off the shaft outside the casting. An outer rotor's shaft
       // runs through the stator hub, so its bearings sit in the hub bore.
-      bearing.group.position.z = zSign * (outerRotor ? stackDepth / 2 - bearingWidth * 0.7 : capCenterZ);
+      bearing.group.position.z = zSign * (outerRotor ? stackDepth / 2 - bearingWidth * 0.7 : endCapCenterZ);
       makeSelectable(bearing.group, {
         id: `3d-bearing-${end}`,
         kind: 'bearing',
@@ -1749,33 +1755,36 @@ function ParametricMotor3D({
       (isDriveEnd ? driveBearingGroup : rearBearingGroup).add(bearing.group);
 
       if (outerRotor && isDriveEnd) return;
-      const cap = buildEndCap(
-        outerRotor
-          ? { boreRadius: shaftRadius * 1.3, outerRadius: rearCapRadius, thickness: capThickness, hubDepth: rearCapCenterZ - stackDepth / 2 }
-          : { boreRadius: capBoreRadius, outerRadius, thickness: capThickness, hubDepth: stackDepth * 0.1 },
-        isDriveEnd ? materials.endcap : materials.endcapRear,
-      );
-      if (outerRotor) {
+      const capMaterial = isDriveEnd ? materials.endcap : materials.endcapRear;
+      const cap = buildEndCap({
+        boreRadius: outerRotor ? shaftRadius * 1.3 : capBoreRadius,
+        outerRadius: fittedEndcaps ? fittedCapRadius : outerRadius,
+        thickness: capThickness,
+        hubDepth: outerRotor ? rearCapCenterZ - stackDepth / 2 : stackDepth * 0.1,
+      }, capMaterial);
+      if (fittedEndcaps) {
         const skirtOverlap = Math.min(capThickness * 0.4, stackDepth * 0.04);
-        const skirtDepth = rearCapCenterZ - capThickness / 2 - stackDepth / 2 + skirtOverlap;
+        const skirtDepth = endCapCenterZ - capThickness / 2 - stackDepth / 2 + skirtOverlap;
         const skirtGeometry = annulusGeometry(
-          rearCapSkirtInnerRadius, rearCapRadius, skirtDepth,
-          Math.min(capThickness * 0.1, rearCapWallThickness * 0.2),
+          capSkirtInnerRadius, fittedCapRadius, skirtDepth,
+          Math.min(capThickness * 0.1, capWallThickness * 0.2),
         );
         cap.geometries.push(skirtGeometry);
-        const skirt = new THREE.Mesh(skirtGeometry, materials.endcapRear);
+        const skirt = new THREE.Mesh(skirtGeometry, capMaterial);
         // Local -z is inboard; the rear cap is mirrored below, as is its hub.
         skirt.position.z = -capThickness / 2 - skirtDepth / 2;
         addEdges(skirt);
         cap.group.add(skirt);
+      }
+      if (outerRotor) {
         // Bolt holes through the stator mount, where it fixes to the frame.
-        const holeRadius = Math.max(0.3, rearCapRadius * 0.035);
+        const holeRadius = Math.max(0.3, fittedCapRadius * 0.035);
         const holeGeometry = new THREE.CylinderGeometry(holeRadius, holeRadius, capThickness * 1.04, 20);
         holeGeometry.rotateX(Math.PI / 2);
         cap.geometries.push(holeGeometry);
         // Disposed with the rest when the scene is torn down (scene.traverse).
         const holeMaterial = new THREE.MeshStandardMaterial({ color: 0x0b1220, roughness: 0.9 });
-        const holeRadiusPosition = (hubBearingOuterRadius + rearCapRadius) / 2 + rearCapRadius * 0.12;
+        const holeRadiusPosition = (hubBearingOuterRadius + fittedCapRadius) / 2 + fittedCapRadius * 0.12;
         for (let hole = 0; hole < 4; hole += 1) {
           const angle = Math.PI / 4 + (hole * Math.PI) / 2;
           const mesh = new THREE.Mesh(holeGeometry, holeMaterial);
@@ -1786,7 +1795,7 @@ function ParametricMotor3D({
       geometries.push(...cap.geometries);
       // Mirror the casting so both hubs reach inboard toward the stack.
       cap.group.scale.z = zSign;
-      cap.group.position.z = zSign * (isDriveEnd ? capCenterZ : rearCapCenterZ);
+      cap.group.position.z = zSign * endCapCenterZ;
       makeSelectable(cap.group, {
         id: `3d-endcap-${end}`,
         kind: 'endcap',
@@ -1885,7 +1894,7 @@ function ParametricMotor3D({
     // are well separated. The max() is inert until the stack passes ~2× the OD.
     const chipLane = Math.max(outerRadius, chipScale);
     addPartChip(outerRotor ? 'Stator mount' : 'End cap', rearEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, -rearCapCenterZ));
-    addPartChip('Bearing', rearBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, -capCenterZ));
+    addPartChip('Bearing', rearBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, -(outerRotor ? defaultCapCenterZ : rearCapCenterZ)));
     // Yoke and teeth explode as one part now, so they take one chip between
     // them — two labels on a single station would just stack on each other.
     addPartChip('Stator', statorGroup, new THREE.Vector3(0, chipLane * 1.14, 0));
@@ -1898,8 +1907,8 @@ function ParametricMotor3D({
     addPartChip(outerRotor ? 'Rotor can' : 'Rotor core', rotorCoreGroup, new THREE.Vector3(0, -Math.max(rotorRadius * 1.28, chipLane * 0.7), 0));
     if (outerRotor) addPartChip('Rotor bell', rotorBellGroup, new THREE.Vector3(0, chipLane * 1.2, bellOuterFaceZ));
     addPartChip('Shaft', shaftGroup, new THREE.Vector3(0, shaftRadius + chipLane * 0.22, 0));
-    addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, capCenterZ));
-    if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, capCenterZ));
+    addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, driveCapCenterZ));
+    if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, driveCapCenterZ));
 
     // Slot, tooth and coil-side chips on the stack's end face, for the Overlay toggles.
     const overlayLabels: Array<{ sprite: THREE.Sprite; kind: keyof Motor3DOverlays }> = [];
@@ -2157,6 +2166,7 @@ function ParametricMotor3D({
     applyPartVisibility(hiddenPartsRef.current);
 
     let fullExplosionAutoFitApplied = false;
+    let explodedChipFitScale = 1;
     const applyExplosion = (amount: number) => {
       const normalized = THREE.MathUtils.clamp(amount, 0, 1);
       const eased = normalized * normalized * (3 - 2 * normalized);
@@ -2195,12 +2205,11 @@ function ParametricMotor3D({
       driveBearingGroup.position.z = 5.45 * station;
       driveEndcapGroup.position.z = 6.1 * station;
       airgapMaterial.opacity = 0.14 - eased * 0.035;
-      // Assembled, the drive-end cap is a shell you read the end windings
-      // through; once it clears the stack it turns into a solid casting. Only
-      // opacity moves — `transparent` stays pinned, so this never triggers a
+      // IPM's translucent drive-end preview becomes solid during the explode.
+      // Fitted SPM cups stay opaque; `transparent` stays pinned to avoid a
       // shader recompile. The rear cap is opaque throughout and needs no ramp.
       materials.endcap.opacity = THREE.MathUtils.lerp(
-        ENDCAP_ASSEMBLED_OPACITY,
+        assembledEndcapOpacity,
         1,
         THREE.MathUtils.smoothstep(normalized, 0.05, 0.4),
       );
@@ -2243,8 +2252,37 @@ function ParametricMotor3D({
         // has to track whichever dimension is actually driving the spread. Do
         // this once when the slider enters its fully exploded range: repeating
         // the fit every render frame would undo every user wheel-zoom at 100%.
-        if (cameraOffset.length() < explodedFitDistance) {
-          camera.position.copy(controls.target).add(cameraOffset.setLength(explodedFitDistance));
+        let fitDistance = explodedFitDistance;
+        if (fittedEndcaps && !outerRotor) {
+          // The deeper cups and their bearing seats extend the row. Fit its
+          // actual corners in the current viewing direction, including parts
+          // the user may reveal later, instead of clipping the near end cap.
+          const bounds = new THREE.Box3();
+          Object.values(hideableGroups).flat().forEach((part) => {
+            bounds.union(new THREE.Box3().setFromObject(part));
+          });
+          const back = cameraOffset.clone().normalize();
+          const right = new THREE.Vector3().crossVectors(camera.up, back).normalize();
+          const up = new THREE.Vector3().crossVectors(back, right);
+          const verticalTan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 0.9;
+          for (const x of [bounds.min.x, bounds.max.x]) {
+            for (const y of [bounds.min.y, bounds.max.y]) {
+              for (const z of [bounds.min.z, bounds.max.z]) {
+                const corner = new THREE.Vector3(x, y, z).sub(controls.target);
+                fitDistance = Math.max(fitDistance, corner.dot(back) + Math.max(
+                  Math.abs(corner.dot(right)) / (verticalTan * camera.aspect),
+                  Math.abs(corner.dot(up)) / verticalTan,
+                ));
+              }
+            }
+          }
+          controls.maxDistance = Math.max(controls.maxDistance, fitDistance * 1.1);
+          const chipFitScale = fitDistance / explodedFitDistance;
+          partChips.forEach(({ sprite }) => sprite.scale.multiplyScalar(chipFitScale / explodedChipFitScale));
+          explodedChipFitScale = chipFitScale;
+        }
+        if (cameraOffset.length() < fitDistance) {
+          camera.position.copy(controls.target).add(cameraOffset.setLength(fitDistance));
           controls.update();
         }
         fullExplosionAutoFitApplied = true;
