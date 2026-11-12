@@ -233,8 +233,8 @@ function annulusGeometry(innerRadius: number, outerRadius: number, depth: number
 /**
  * Rotation cue for the rotor end faces. The core is a surface of revolution,
  * so a plain finish renders identically at every angle and the spinning rotor
- * reads as standing still — the same problem the shaft key solves at the
- * drive end. A square grid scribed into a canvas texture gives each end face a
+ * reads as standing still — the same problem the bearing's race mark solves
+ * at the drive end. A square grid scribed into a canvas texture gives each end face a
  * visible angular position while staying the same steel colour as the rest of
  * the core. The fine Cartesian pattern reads as a subtle inspection/scribe grid
  * instead of the heavy radial spokes of a polar plot. It goes on the caps only:
@@ -1490,25 +1490,7 @@ function ParametricMotor3D({
     makeSelectable(shaft, { id: '3d-shaft', kind: 'shaft', label: 'Shaft', role: 'Mechanical rotor support' });
     shaftGroup.add(shaft);
 
-    // Drive key on the exposed stub. The shaft already turns with the rotor —
-    // it is a child of rotorGroup — but a plain cylinder is its own surface of
-    // revolution, so every frame of that rotation renders identically and the
-    // shaft reads as standing still next to the visibly turning magnets. The
-    // key is what a real shaft carries to drive a load, and it gives the
-    // rotation something to show. Parented to the shaft MESH, not the group,
-    // so clicking it still resolves to the shaft's own selection.
-    const shaftEndZ = stackDepth / 2 + shaftFrontOverhang;
-    const keyLength = Math.max(1, (shaftEndZ - capOuterFaceZ) * 0.62);
-    const keyGeometry = new THREE.BoxGeometry(
-      Math.max(0.5, shaftRadius * 0.44),
-      Math.max(0.4, shaftRadius * 0.3),
-      keyLength,
-    );
-    geometries.push(keyGeometry);
-    const shaftKey = new THREE.Mesh(keyGeometry, materials.shaft);
-    // Seated on the shaft surface, standing a little proud of it.
-    shaftKey.position.set(0, shaftRadius * 0.94, (capOuterFaceZ + shaftEndZ) / 2);
-    shaft.add(shaftKey);
+    // The shaft carries no key: the mark on the drive-end bearing's turning race shows the rotation.
 
     const polePitch = (Math.PI * 2) / Math.max(1, config.rotor.pole_count);
     if (config.topology === 'SPM') {
