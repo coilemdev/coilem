@@ -1715,6 +1715,12 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
+/**
+ * Whether the first solved field replaces the turning motor part-way through a
+ * solve. Off: the motor keeps turning until the solve is complete, and the
+ * field is first seen in the finished view.
+ */
+const SHOW_FIRST_SOLVED_FIELD = false as boolean;
 /** The mesh edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
 const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
 
@@ -3411,7 +3417,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       ? nextPublicSolveRotorTurn(previous, progress, sweepRangeDeg, sweepPoleCount)
       : null));
   }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
-  const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
+  // It keeps turning while the result is put together: the turn ends when the solve does.
+  const shownRotorTurn = solveRotorTurn;
   const solvingField = shownRotorTurn?.phase === 'solving';
   const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? true : null, 12);
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
@@ -3424,7 +3431,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const viewedResultRef = useRef<unknown>(resumeSolveView ? result : undefined);
   // As soon as the first position is solved its field is shown: a real result
   // to look at while the rest of the sweep runs. It is read once.
-  const firstSolvedField = useFirstSolvedField(busy === 'solve', progress);
+  const firstSolvedField = useFirstSolvedField(SHOW_FIRST_SOLVED_FIELD && busy === 'solve', progress);
   // It stays up while the result is put together, and for the one render
   // between the result arriving and the view switching to it, so the mesh
   // does not flash back in between.
@@ -3436,7 +3443,9 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     ? 'A solved rotor position · finishing the rest'
     : !shownRotorTurn || solveRotorAngleDeg === null
       ? null
-      : solvingField
+      : shownRotorTurn.finished
+        ? 'Putting the results together'
+        : solvingField
         ? 'Solving the field at each rotor position'
         : 'Meshing the rotor positions';
   useEffect(() => {
