@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10097,
-      "sha256": "59085291c63f46b28e1e9060d7539bb293699448d0023ae40bc4603e55f5e704"
+      "bytes": 10234,
+      "sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -600,8 +600,8 @@
     },
     {
       "path": "backend/public_ui.py",
-      "bytes": 5363,
-      "sha256": "361975044c426c497547f46a0773e7d6f2d28f8ebf1c0fa9c60079fea9252e9a"
+      "bytes": 6549,
+      "sha256": "bf136ae9740e2250490450c0a6c663269442966dc0e2ee1f379d464fd9952de4"
     },
     {
       "path": "backend/qualification.py",
@@ -7020,8 +7020,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 77130,
-      "sha256": "6c0a0975faf6c966ee1c131b80c2f5480cdcfbdefec4b3b45125e8f3d499a059"
+      "bytes": 77793,
+      "sha256": "30693fe13e6660902a88ec80d5687dfafb3429b389d39596eb2932938cb25799"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -8315,8 +8315,8 @@
     },
     {
       "path": "tests/test_public_ui.py",
-      "bytes": 7530,
-      "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc"
+      "bytes": 8334,
+      "sha256": "1e3d4752079a4b290020abf75d130c030390031e2114f2ce1eee4c6c9d9400f9"
     },
     {
       "path": "tests/test_public_validation_errors.py",

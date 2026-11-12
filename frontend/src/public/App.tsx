@@ -554,6 +554,10 @@ export function App() {
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
   const [guidedSolveSection, setGuidedSolveSection] = useState<SolveSetupSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
+  // Development auto reload (COILEM_UI_AUTO_RELOAD=1): the page reloads when the launcher reports a rebuilt UI, but never under a running solve.
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
+  const uiReloadTokenRef = useRef<string | null>(null);
   const [cancellingSolve, setCancellingSolve] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
@@ -1073,6 +1077,14 @@ export function App() {
     const stopBackendMonitor = startPublicBackendMonitor({
       probe: getPublicHealth,
       onOnline: (health) => {
+        const reloadToken = typeof health.ui_reload_token === 'string' ? health.ui_reload_token : null;
+        if (reloadToken !== null) {
+          if (uiReloadTokenRef.current === null) uiReloadTokenRef.current = reloadToken;
+          else if (reloadToken !== uiReloadTokenRef.current && busyRef.current !== 'solve') {
+            window.location.reload();
+            return;
+          }
+        }
         const nextElmerCapability = elmerCapabilityFromHealth(health);
         setConnectionStatus('online');
         setAppVersion(typeof health.version === 'string' && health.version.trim() ? health.version.trim() : null);
