@@ -632,10 +632,9 @@ function drawGeometry(
   }
   const rotorElecDeg = phaseDrive ? rotorElectricalDeg(rotorAngleDeg, phaseDrive.poleCount) : 0;
   const currents = (layer === 'phases' || showToothPoles) && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
-  // With Tooth poles on as well, the coils keep a steady colour: two things pulsing at once is too much to follow.
-  const phaseLevels: PhaseLevels | null = layer === 'phases' && currents && !showToothPoles
-    ? { A: Math.abs(currents[0]), B: Math.abs(currents[1]), C: Math.abs(currents[2]) }
-    : null;
+  // Phases keeps each coil at its full, steady colour: the waveforms, the wires and
+  // the ⊙ / ⊗ marks carry the change, and coils pulsing as well were too much to follow.
+  const phaseLevels: PhaseLevels | null = null;
   // Tooth poles, with or without Phases: each stator tooth turns N or S with the
   // slot currents either side of it.
   const statorSlotCount = Number(data.metadata.slot_count || 0);
