@@ -88,6 +88,8 @@ interface MotorCanvasProps {
   previewRpm?: number;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
+  /** Element-edge colour in place of the usual grey. */
+  meshEdgeColor?: string | null;
   meshQualities?: number[];
   meshQualityThreshold?: number;
   focusedMeshElementIndex?: number | null;
@@ -1235,6 +1237,8 @@ function drawMesh(
   qualityThreshold: number,
   focusedElementIndex: number | null,
   meshHits: MeshTriangleHit[],
+  /** Replaces the usual grey of the element edges (the Solve page's field-solve glow). */
+  edgeColor: string | null,
 ): void {
   if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
   const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
@@ -1323,10 +1327,10 @@ function drawMesh(
         context.lineTo(end[0], end[1]);
       });
     });
-    context.strokeStyle = displayMode === 'problems'
+    context.strokeStyle = edgeColor ?? (displayMode === 'problems'
       ? 'rgba(226, 232, 240, 0.12)'
-      : 'rgba(226, 232, 240, 0.28)';
-    context.lineWidth = 0.4;
+      : 'rgba(226, 232, 240, 0.28)');
+    context.lineWidth = edgeColor ? 0.5 : 0.4;
     context.stroke();
   }
 
@@ -1397,6 +1401,7 @@ export function MotorCanvas({
   meshQualities = EMPTY_MESH_QUALITIES,
   meshQualityThreshold = 0.01,
   focusedMeshElementIndex = null,
+  meshEdgeColor = null,
   onMeshElementHover,
   onMeshElementSelect,
   navigationSlot = null,
@@ -1543,6 +1548,7 @@ export function MotorCanvas({
           meshQualityThreshold,
           focusedMeshElementIndex,
           meshHitsRef.current,
+          meshEdgeColor,
         );
       }
     };
@@ -1575,6 +1581,7 @@ export function MotorCanvas({
     rotorAngleDeg,
     selectedComponent,
     showMeshEdges,
+    meshEdgeColor,
     focusedMeshElementIndex,
     windingType,
   ]);

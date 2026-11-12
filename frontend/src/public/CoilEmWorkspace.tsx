@@ -1712,6 +1712,9 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
+/** Element edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
+const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
+
 function ViewportChrome({
   config,
   materials,
@@ -2132,6 +2135,7 @@ function ViewportChrome({
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
+              meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
