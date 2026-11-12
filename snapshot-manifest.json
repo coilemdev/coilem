@@ -7200,8 +7200,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 27530,
-      "sha256": "d1283c0adfb4a6bf0df117beda9d3e71f7de41b5c69ddf7df3eefd5f13dc5f04"
+      "bytes": 27797,
+      "sha256": "58658afa0195520b4e061aab7dfa38d8b46ca91fd51d7e45924568bbb0bd8ad7"
     },
     {
       "path": "frontend/src/public/customSteel.css",

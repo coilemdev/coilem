@@ -511,7 +511,8 @@ class DistributedCoilCurve extends THREE.Curve<THREE.Vector3> {
     const knuckle = THREE.MathUtils.smoothstep(along, 0.38, 0.62);
     const settle = 1 - THREE.MathUtils.smoothstep(along, 0.82, 1);
     const radius = this.inRadius + (this.outRadius - this.inRadius) * knuckle + this.step * knuckle * settle;
-    const z = end * (this.stackHalf + this.rise * Math.sin(Math.PI * along) ** 0.85);
+    // A flat-topped arch: up off the stack quickly, then level round to the far slot.
+    const z = end * (this.stackHalf + this.rise * Math.sin(Math.PI * along) ** 0.55);
     return target.set(Math.cos(angle) * radius, Math.sin(angle) * radius, z);
   }
 
@@ -550,7 +551,10 @@ export function buildDistributedCoil(spec: DistributedCoilSpec): { geometry: THR
   const rows = THREE.MathUtils.clamp(Math.floor(bandDepth / (wireRadius * 2.05)), 1, DISTRIBUTED_MAX_ROWS);
   const pitch = wireRadius * 2.05;
   const arc = Math.abs(sweep) * middleRadius;
-  const rise = THREE.MathUtils.clamp(arc * 0.34, wireRadius * 6, Math.max(wireRadius * 6, middleRadius * 0.42));
+  // End turns held close to the stack, as a formed and laced winding sits: just enough
+  // height for the bundle to turn and for the coils that cross it to pass.
+  const lowest = wireRadius * 5;
+  const rise = THREE.MathUtils.clamp(arc * 0.15, lowest, Math.max(lowest, middleRadius * 0.2));
   // Sides in different radial halves of their slots (two layers) already change level at the knuckle.
   const sameBand = Math.abs((spec.inBand[0] + spec.inBand[1]) - (spec.outBand[0] + spec.outBand[1])) < bandDepth * 0.5;
   const step = sameBand ? spec.yokeSide * (rows * pitch + wireRadius) : 0;
