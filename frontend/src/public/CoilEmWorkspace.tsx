@@ -950,6 +950,35 @@ function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef 
   );
 }
 
+/** A choice between a few options as side-by-side buttons: one click to switch, where a list takes two. */
+function ChoiceRow({ label, value, choices, hint, disabled, onChange }: {
+  label: string;
+  value: string;
+  choices: Array<{ value: string; label: string; disabled?: boolean }>;
+  hint?: string;
+  disabled?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="param-row public-param-row public-choice-row" role="group" aria-label={label} title={hint}>
+      <span className="param-label">{label}</span>
+      <span className="public-param-choices">
+        {choices.map((choice) => (
+          <button
+            type="button"
+            aria-pressed={choice.value === value}
+            disabled={disabled || choice.disabled}
+            onClick={() => { if (choice.value !== value) onChange(choice.value); }}
+            key={choice.value}
+          >
+            {choice.label}
+          </button>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 function componentFacts(
   selection: PublicMotorComponentSelection,
   config: MotorConfig,
@@ -1499,9 +1528,9 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       </ParameterSectionBlock>}
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
-        <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        <ChoiceRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
         {wholeSlotNote && <p className="public-winding-note" role="note">{wholeSlotNote}</p>}
-        {showLayerRow && <SelectRow
+        {showLayerRow && <ChoiceRow
           label={layerWording.label}
           value={String(config.winding.layers)}
           choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available }) => ({
@@ -1525,10 +1554,10 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             <span className="param-label">Wire<small>published</small></span>
             <strong>{windingResistanceRecord ? `${windingResistanceRecord.strands_in_hand} × ${windingResistanceRecord.strand_diameter_mm} mm` : '—'}</strong>
           </div>
-        ) : <SelectRow
+        ) : <ChoiceRow
           label="Wire"
           value={wire ? 'specified' : 'derived'}
-          choices={[{ value: 'derived', label: 'Derived from slot' }, { value: 'specified', label: 'Specified' }]}
+          choices={[{ value: 'derived', label: 'Derived' }, { value: 'specified', label: 'Specified' }]}
           hint="Derived sizes the wire to fill 45% of the slot with copper. Specify the wire for the real phase resistance."
           disabled={disabled}
           onChange={(value) => setWire(value === 'specified'
@@ -1537,7 +1566,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />}
         {!wire && windingResistanceRecord?.wire_source === 'derived' && (
           // The derived wire, shown so its thickness is seen to change with the turns and the slot.
-          <div className="param-row public-param-row public-derived-row" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Beside it, where that sits among the standard gauges. Choose Specified to set a real one.">
+          <div className="param-row public-param-row public-derived-row is-wide" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Beside it, where that sits among the standard gauges. Choose Specified to set a real one.">
             <span className="param-label">Wire Ø (bare)<small>mm · derived</small></span>
             <strong>{Number(windingResistanceRecord.strand_diameter_mm.toFixed(2))} · {awgNote(windingResistanceRecord.strand_diameter_mm)}</strong>
           </div>
@@ -1560,7 +1589,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
         {windingResistanceRecord && (
           // Turns and wires are different counts: a turn of several strands in hand is still one turn.
-          <div className="param-row public-param-row public-derived-row" title="Wires passing through each slot: turns in the slot × strands in hand. The field solve uses the turns; the wires set resistance and slot fill.">
+          <div className="param-row public-param-row public-derived-row is-wide" title="Wires passing through each slot: turns in the slot × strands in hand. The field solve uses the turns; the wires set resistance and slot fill.">
             <span className="param-label">Wires per Slot<small>calc</small></span>
             <strong>
               {`${windingResistanceRecord.conductors_per_slot} × ${windingResistanceRecord.strands_in_hand} = ${windingResistanceRecord.conductors_per_slot * windingResistanceRecord.strands_in_hand}`}

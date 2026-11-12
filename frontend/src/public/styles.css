@@ -973,6 +973,16 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-param-row .param-number-input,
 .public-param-row .param-select { width: 78px; height: 27px; padding: 0 7px; border: 1px solid var(--border-default); border-radius: 6px; color: var(--text-primary); background: rgba(7, 9, 13, 0.64); font: 10px var(--font-mono); text-align: right; }
 .public-param-row .param-select { width: 112px; text-align: left; }
+/* A few options as side-by-side buttons in a parameter row. */
+.public-param-row.public-choice-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+/* Readouts longer than a number keep to one line. */
+.public-param-row.public-derived-row.is-wide strong { width: auto; white-space: nowrap; }
+.public-param-row .public-param-choices { display: inline-flex; flex-shrink: 0; gap: 2px; padding: 2px; border: 1px solid var(--border-default); border-radius: 7px; background: rgba(7, 9, 13, 0.6); }
+.public-param-row .public-param-choices button { height: 23px; min-height: 0; padding: 0 8px; border: 0; border-radius: 5px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 11px; white-space: nowrap; cursor: pointer; }
+.public-param-row .public-param-choices button:hover:not(:disabled) { color: var(--text-primary); }
+.public-param-row .public-param-choices button[aria-pressed="true"] { background: rgba(251, 191, 36, 0.14); color: #fbbf24; box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.45); }
+.public-param-row .public-param-choices button:disabled { opacity: 0.4; cursor: not-allowed; }
+.public-param-row .public-param-choices button:focus-visible { outline: 2px solid rgba(251, 191, 36, 0.7); outline-offset: 1px; }
 .public-param-row input:focus,
 .public-param-row select:focus { border-color: var(--accent-primary); outline: 0; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1); }
 .public-derived-row strong { width: 78px; color: var(--text-primary); font: 10px var(--font-mono); text-align: right; }
