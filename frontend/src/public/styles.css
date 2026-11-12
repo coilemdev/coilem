@@ -2012,7 +2012,16 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-dock-controls .public-field-layer-controls button[aria-pressed="true"] > i { border-color: var(--text-accent); background: var(--text-accent); box-shadow: none; opacity: 1; }
 .public-field-dock-controls .public-field-control-cluster > span { color: rgba(148,163,184,.58); font-weight: 600; }
 .public-dock-strip .public-viewport-expand.is-inline { border-color: rgba(148,163,184,.16); border-radius: 999px; color: var(--text-muted); background: rgba(10,12,17,.62); box-shadow: none; }
-.public-solved-field-canvas { position: relative; min-height: 0; overflow: hidden; border: 0; background: rgba(7,9,14,.72); }
+/* The same backdrop the Geometry and Mesh views paint on their canvas
+   (MotorCanvas: a 36 px grid over a dark radial gradient), so switching to the
+   field does not change what is behind the motor. */
+.public-solved-field-canvas { position: relative; min-height: 0; overflow: hidden; border: 0; background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 36px 36px, radial-gradient(circle at 50% 45%, #171a22, #0b0d12 70%); }
+/* A solved field shown in the Solve viewport while a run finishes sits on that backdrop too, without its card. */
+.public-viewport-stage-2d > .public-field-result { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 36px 36px, linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px) 0 0 / 36px 36px, radial-gradient(circle at 50% 45%, #171a22, #0b0d12 70%); }
+.public-viewport-stage-2d > .public-field-result .public-field-result-canvas { flex: 1 1 auto; width: 100%; min-height: 0; border: 0; border-radius: 0; background: transparent; }
+.public-viewport-stage-2d > .public-field-result .public-field-result-canvas > canvas { position: absolute; inset: 0; }
+.public-viewport-stage-2d > .public-field-result .public-field-result-canvas canvas,
+.public-viewport-stage-2d > .public-field-result .public-field-result-canvas svg { width: 100%; height: 100%; max-height: none; }
 .public-solved-field-canvas .public-field-result { position: relative; display: flex; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0; border: 0; background: transparent; }
 .public-solved-field-canvas .public-field-result-canvas { flex: 1 1 auto; min-height: 0; border: 0; background: transparent; }
 .public-solved-field-canvas .public-field-result-canvas > canvas { position: absolute; inset: 0; }
