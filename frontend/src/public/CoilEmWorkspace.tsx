@@ -1534,6 +1534,13 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             ? { wire_bare_diameter_mm: Number((windingResistanceRecord?.strand_diameter_mm ?? 1).toFixed(2)), strands_in_hand: 1 }
             : null)}
         />}
+        {!wire && windingResistanceRecord?.wire_source === 'derived' && (
+          // The derived wire, shown so its thickness is seen to change with the turns and the slot.
+          <div className="param-row public-param-row public-derived-row" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Choose Specified to set a real one.">
+            <span className="param-label">Wire Ø (bare)<small>mm · derived</small></span>
+            <strong>{Number(windingResistanceRecord.strand_diameter_mm.toFixed(2))}</strong>
+          </div>
+        )}
         {wire && <>
           <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
           <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} hint="Wires wound together as one turn. They share the turn's current and lower the resistance; they do not add turns." disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
@@ -1541,12 +1548,10 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </>}
         {windingResistanceRecord && (
           // Turns and wires are different counts: a turn of several strands in hand is still one turn.
-          <div className="param-row public-param-row public-derived-row" title="Wires passing through each slot: the turns in the slot times the strands wound together as one turn. The field solve uses the turns; the wires set resistance and slot fill.">
+          <div className="param-row public-param-row public-derived-row" title="Wires passing through each slot: turns in the slot × strands in hand. The field solve uses the turns; the wires set resistance and slot fill.">
             <span className="param-label">Wires per Slot<small>calc</small></span>
             <strong>
-              {windingResistanceRecord.wire_source === 'specified'
-                ? `${windingResistanceRecord.conductors_per_slot} turns × ${windingResistanceRecord.strands_in_hand} = ${windingResistanceRecord.conductors_per_slot * windingResistanceRecord.strands_in_hand}`
-                : `${windingResistanceRecord.conductors_per_slot} turns · wire not set`}
+              {`${windingResistanceRecord.conductors_per_slot} × ${windingResistanceRecord.strands_in_hand} = ${windingResistanceRecord.conductors_per_slot * windingResistanceRecord.strands_in_hand}`}
             </strong>
           </div>
         )}
