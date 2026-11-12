@@ -693,7 +693,7 @@ assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}
 assert.match(workspaceSource, /\['windings', 'Winding', 'winding labels \(A\+, A-\)'\],\s*\] as Array<\[keyof PublicCanvasOverlays, string, string\]>\)/);
 assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
 assert.match(workspaceSource, /aria-label="Display toggles">[\s\S]{0,700}?\{mode === 'geometry' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
-assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'none' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
+assert.match(workspaceSource, /if \(canvasLayer !== 'phases'\) setShowCoilColors\(true\);\s*setCanvasLayer\(\(current\) => \(current === 'phases' \? 'none' : 'phases'\)\);\s*\}\}\s*>\s*Phases\s*<\/button>/);
 // Slots and Winding are labels only, each on or off by itself, whatever colours the coils.
 assert.match(motorCanvasSource, /const badgeKinds = \(\['slots', 'windings'\] as const\)\.filter\(\(kind\) => overlays\[kind\]\);/);
 assert.match(motorCanvasSource, /if \(overlays\.teeth\) \{/);

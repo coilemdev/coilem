@@ -1878,11 +1878,11 @@ function ParametricMotor3D({
         ? phaseCurrents(drive, rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount))
         : null;
       phaseTints.forEach((tints, index) => {
-        // Phases lights each phase by the current it carries now, whatever Coil colors says.
+        // Phases lights each phase by the current it carries now; Coil colors off keeps the coils copper under it.
         const lit = shown.showPhases && currents !== null;
         const strength = lit ? 0.48 + Math.abs(currents[index]) * 0.52 : 1;
         tints.forEach(({ material, base }) => {
-          material.color.copy(lit || !shown.plainWinding ? base : plainCoil).multiplyScalar(strength);
+          material.color.copy(shown.plainWinding ? plainCoil : base).multiplyScalar(strength);
         });
       });
       const poles = shown.showToothPoles && currents && shown.windingLayout?.length

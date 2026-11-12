@@ -2482,7 +2482,11 @@ function ViewportChrome({
                   className="public-dock-toggle"
                   aria-pressed={canvasLayer === 'phases'}
                   title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
-                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'))}
+                  onClick={() => {
+                    // Phases brings the coil colours on with it; Coil colors can then be turned off again for copper coils.
+                    if (canvasLayer !== 'phases') setShowCoilColors(true);
+                    setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'));
+                  }}
                 >
                   Phases
                 </button>

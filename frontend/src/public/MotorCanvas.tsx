@@ -377,18 +377,19 @@ function rotatePoint([x, y]: [number, number], angleDeg: number): [number, numbe
 /** How hard each phase is driven right now, 0..1 (phaseDrive.ts). */
 type PhaseLevels = Record<keyof typeof PHASE_COLORS, number>;
 
-function phaseFill(phase: keyof typeof PHASE_COLORS, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null): string {
+function phaseFill(phase: keyof typeof PHASE_COLORS, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null, plain = false): string {
   if (layer === 'phases' && phaseLevels) {
     // Each phase as bright as the current the solver drives through it at this
     // rotor position, so a phase six-step switches off goes dark.
     const strength = 0.48 + phaseLevels[phase] * 0.52;
-    const color = PHASE_COLORS[phase];
+    // With Coil colors off the coils stay copper, and only their brightness follows the current.
+    const color = plain ? PUBLIC_MOTOR_COLORS.winding : PHASE_COLORS[phase];
     const red = Math.round(Number.parseInt(color.slice(1, 3), 16) * strength);
     const green = Math.round(Number.parseInt(color.slice(3, 5), 16) * strength);
     const blue = Math.round(Number.parseInt(color.slice(5, 7), 16) * strength);
     return `rgb(${red}, ${green}, ${blue})`;
   }
-  return PHASE_COLORS[phase];
+  return plain ? PUBLIC_MOTOR_COLORS.winding : PHASE_COLORS[phase];
 }
 
 function parseColorChannels(color: string): [number, number, number] {
@@ -571,8 +572,9 @@ const ANNULAR_REGIONS = /^(stator_yoke|rotor_core|shaft)$/i;
 
 function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null, plainWinding = false): string {
   const winding = windingToken(regionType);
-  // One colour for every coil side, so the eye stays on the N / S fields; the Winding and Phases overlays still colour them.
-  if (plainWinding && winding && layer !== 'windings' && layer !== 'phases' && layer !== 'materials') return PUBLIC_MOTOR_COLORS.winding;
+  // One colour for every coil side, so the eye stays on the N / S fields. Phases keeps the copper and shades it by current.
+  if (plainWinding && winding && layer === 'phases') return phaseFill(winding.phase, layer, phaseLevels, true);
+  if (plainWinding && winding && layer !== 'windings' && layer !== 'materials') return PUBLIC_MOTOR_COLORS.winding;
   if (layer === 'materials') {
     if (/stator/i.test(regionType)) return PUBLIC_MOTOR_COLORS.statorSteel;
     if (/rotor/i.test(regionType)) return PUBLIC_MOTOR_COLORS.rotorSteel;
@@ -725,7 +727,7 @@ function drawGeometry(
     let marker: number | null = null;
     if (outOfPage !== null) {
       const [x, y] = map([cx, cy]);
-      const ring = layer === 'phases' || layer === 'windings' ? PHASE_COLORS[side.phase] : 'rgba(226, 232, 240, 0.8)';
+      const ring = (layer === 'phases' && !plainWinding) || layer === 'windings' ? PHASE_COLORS[side.phase] : 'rgba(226, 232, 240, 0.8)';
       marker = pendingMarkers.push({ x, y, radius: Math.max(3, radiusMm * scale * 1.1), outOfPage, ring }) - 1;
     }
     lastCross = side.direction === 'out' ? { phase: side.phase, x: cx, y: cy, marker } : null;
@@ -1354,11 +1356,15 @@ function drawPhaseDrive(
     context.moveTo(nowX, nowY);
     context.lineTo(nowX, mid);
     context.stroke();
-    const reach = Math.max(24, (terminal[0] - nowX) * 0.5);
+    // Straight runs with two bends, like a drawn circuit: out of the strip, across, and level into the motor.
+    const run = Math.min(18, Math.max(6, (terminal[0] - nowX) * 0.18));
+    context.lineJoin = 'round';
     const wire = () => {
       context.beginPath();
       context.moveTo(nowX, mid);
-      context.bezierCurveTo(nowX + reach, mid, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
+      context.lineTo(nowX + STRIP_END + run, mid);
+      context.lineTo(terminal[0] - run, terminal[1]);
+      context.lineTo(terminal[0], terminal[1]);
       context.lineTo(motor[0], motor[1]);
       context.stroke();
     };
