@@ -1,5 +1,6 @@
 import { solveViewMemory } from './solveViewMemory';
 import { useTurningRotorAngle } from './useTurningRotorAngle';
+import { useLayerMenu } from './useLayerMenu';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
 import { windingBuildChecks } from './windingBuild';
@@ -1879,6 +1880,7 @@ function ViewportChrome({
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
   const [meshMagnifier, setMeshMagnifier] = useState(false);
+  const meshLayerMenu = useLayerMenu();
   // Where the 3D view draws its part controls: the right-hand column of the dock.
   const [dock3dSlot, setDock3dSlot] = useState<HTMLElement | null>(null);
   const [showCoilColors, setShowCoilColors] = useState(false);
@@ -2480,14 +2482,7 @@ function ViewportChrome({
             // The on/off layers wait in More, as on the Field tab, so the dock keeps to three rows at any width.
             <details
               className="public-field-layer-menu public-dock-more"
-              // The menu opens above the dock, over the foot of the view, so it covers no controls;
-              // it is placed against the dock, so it is lined up with its button here.
-              onToggle={(event) => {
-                const menu = event.currentTarget;
-                const dock = menu.closest('.viewport-bottom-bar');
-                const panel = menu.querySelector<HTMLElement>('.public-field-layer-controls');
-                if (dock && panel) panel.style.left = `${menu.getBoundingClientRect().left - dock.getBoundingClientRect().left}px`;
-              }}
+              {...meshLayerMenu}
             >
               <summary>More{meshMoreOn > 0 && <em>{meshMoreOn} on</em>}</summary>
               <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
@@ -4317,6 +4312,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   saturationTicks={statorSteelSaturationTicks(config, materials)}
                   showMesh={solveView === 'mesh'}
                   showHeading={false}
+                  showStatistics={false}
                   showControls={false}
                   fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
                   rotorMarkDeg={(shownSolvedField.angle_deg ?? 0) / Math.max(1, config.rotor.pole_count / 2)}

@@ -2015,7 +2015,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-solved-field-canvas .public-field-result-legend,
 .public-viewport-stage-2d > .public-field-result .public-field-result-legend { flex: none; justify-content: center; margin: 0; padding: 8px 16px 14px; }
 .public-solved-field-canvas .public-field-result-legend i,
-.public-viewport-stage-2d > .public-field-result .public-field-result-legend i { position: relative; width: min(420px, 40vw); }
+.public-viewport-stage-2d > .public-field-result .public-field-result-legend i { position: relative; flex: 1 1 420px; min-width: 80px; max-width: 640px; }
 .public-solved-field-canvas .public-field-result-legend small,
 .public-viewport-stage-2d > .public-field-result .public-field-result-legend small { margin-left: 12px; }
 .public-solved-field-canvas .public-field-result-legend > strong,
@@ -4982,9 +4982,9 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-result-legend > .is-over { order: 1; }
 .public-field-result-legend > .public-field-range-control,
 .public-field-result-legend > small { order: 2; }
-.public-field-result-legend.is-fixed { padding-bottom: 12px; }
+.public-field-result-legend.is-fixed { padding-top: 18px; padding-bottom: 4px; }
 .public-field-legend-tick { position: absolute; top: -3px; bottom: -3px; left: var(--tick-at); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(241,245,249,.92); box-shadow: 0 0 0 1px rgba(7,9,14,.65); }
-.public-field-legend-tick em { position: absolute; top: calc(100% + 2px); left: 50%; color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; transform: translateX(-50%); }
+.public-field-legend-tick em { position: absolute; bottom: calc(100% + 2px); left: 50%; color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; transform: translateX(-50%); }
 /* The knee and saturation marks sit close together: one label reads to the left of its mark, the other to the right. */
 .public-field-legend-tick.is-knee em { left: auto; right: 100%; padding-right: 3px; transform: none; }
 .public-field-legend-tick:not(.is-knee) em { left: 100%; padding-left: 3px; transform: none; }

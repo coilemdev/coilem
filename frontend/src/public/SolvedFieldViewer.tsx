@@ -1,4 +1,5 @@
 import { solveViewMemory } from './solveViewMemory';
+import { useLayerMenu } from './useLayerMenu';
 import {
   useCallback,
   useEffect,
@@ -254,6 +255,7 @@ export function SolvedFieldViewer({
   const [showFieldLines, setShowFieldLines] = useState(solveViewMemory.field.showFieldLines);
   const [showMagnets, setShowMagnets] = useState(solveViewMemory.field.showMagnets);
   const [magnifier, setMagnifier] = useState(false);
+  const fieldLayerMenu = useLayerMenu();
   const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
@@ -1233,6 +1235,7 @@ export function SolvedFieldViewer({
               geometry={geometry}
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
+              showStatistics={false}
               magnifier={magnifier}
               fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
               rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
@@ -1328,7 +1331,7 @@ export function SolvedFieldViewer({
               <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
               {showFieldLines && renderDensityControl()}
             </div>
-            <details className="public-field-layer-menu">
+            <details className="public-field-layer-menu" {...fieldLayerMenu}>
               <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>
               <div className="public-field-layer-controls" role="group" aria-label="More field layers">
                 {renderMoreLayerButtons()}

@@ -546,6 +546,7 @@ export function FieldResultPlot({
   title = 'Flux-density field map',
   subtitle = 'Completed Magneto2D solution',
   showHeading = true,
+  showStatistics = true,
   probeEnabled = true,
   magnifier = false,
   fitScale = 1,
@@ -589,6 +590,7 @@ export function FieldResultPlot({
   title?: string;
   subtitle?: string;
   showHeading?: boolean;
+  showStatistics?: boolean;
   probeEnabled?: boolean;
   /** Show the area under the pointer enlarged in a corner of the view. */
   magnifier?: boolean;
@@ -1575,7 +1577,7 @@ export function FieldResultPlot({
             </button>
           </div>
         )}
-        <small>{triangleCount.toLocaleString()} solved elements · {contourLevelCount} contour levels</small>
+        {showStatistics && <small>{triangleCount.toLocaleString()} solved elements · {contourLevelCount} contour levels</small>}
       </div>}
     </section>
   );

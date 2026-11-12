@@ -7,9 +7,112 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
 
 const apiUrl = 'http://127.0.0.1:58000';
+const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
+
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu') {
+  await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
+    <!doctype html><div id="root"></div><script type="module">
+    import RefreshRuntime from '/@react-refresh';
+    RefreshRuntime.injectIntoGlobalHook(window);
+    window.$RefreshReg$ = () => {};
+    window.$RefreshSig$ = () => type => type;
+    window.__vite_plugin_react_preamble_installed__ = true;
+    await import('/@fs/${viewportHarness}');
+    </script>` }));
+  await page.goto(`/__viewport_test__?view=${view}`);
+}
+
+test('rotated mesh hit targets follow the rotor and leave stator targets fixed', async ({ page }) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'mesh');
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toBeVisible();
+  const box = (await canvas.boundingBox())!;
+  // 600px fit => 25.5 px/mm. The rotor centroid [8, 2/3] turns to [317, 504].
+  await page.mouse.click(box.x + 317, box.y + 504);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(0);
+  await page.mouse.click(box.x + 504, box.y + 283);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection)).toBeNull();
+  await page.mouse.click(box.x + 121.5, box.y + 283);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(1);
+});
+
+test('a zoomed rotor retains elements that rotate into view and reuses bounded bitmaps', async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.addInitScript(() => {
+    const original = document.createElement.bind(document);
+    (window as any).testCanvases = [];
+    document.createElement = ((...args: Parameters<typeof document.createElement>) => {
+      const element = original(...args);
+      if (args[0] === 'canvas') (window as any).testCanvases.push(element);
+      return element;
+    }) as typeof document.createElement;
+  });
+  await openViewportHarness(page, 'mesh');
+  await page.waitForFunction(() => Boolean((window as any).viewportTest));
+  await page.evaluate(() => (window as any).viewportTest.renderMesh(90, 400, 800, true));
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toHaveJSProperty('height', 800);
+  for (let step = 0; step < 4; step += 1) await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  // At 1.25^4 zoom, this triangle is clipped at 0° but belongs inside the view at 90°.
+  await expect.poll(() => canvas.evaluate((surface: HTMLCanvasElement) => {
+    const pixel = surface.getContext('2d')!.getImageData(228, 732, 1, 1).data;
+    return pixel[0];
+  })).toBeGreaterThan(35);
+  // Max zoom exercises the resolution cap; subsequent angles must only composite the same surfaces.
+  const zoomIn = page.getByRole('button', { name: 'Zoom in', exact: true });
+  for (let step = 0; step < 8 && await zoomIn.isEnabled(); step += 1) await zoomIn.click();
+  const surfacesBefore = await page.evaluate(() => (window as any).testCanvases.length);
+  await page.evaluate(async () => {
+    for (const angle of [100, 120, 160, 200, 250]) {
+      (window as any).viewportTest.renderMesh(angle, 400, 800, true);
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }
+  });
+  expect(await page.evaluate(() => (window as any).testCanvases.length)).toBe(surfacesBefore);
+  const rotorBitmap = await page.evaluate(() => {
+    const surface = (window as any).testCanvases.at(-1) as HTMLCanvasElement;
+    return { width: surface.width, height: surface.height };
+  });
+  expect(rotorBitmap.width).toBe(2048);
+  expect(rotorBitmap.height).toBe(2048);
+});
+
+for (const view of ['mesh-menu', 'field'] as const) {
+  test(`${view} More menu anchors to its button and dismisses outside`, async ({ page }, info) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, view);
+    const menu = page.locator('details.public-field-layer-menu');
+    const summary = menu.locator('summary');
+    await summary.click();
+    const panel = menu.locator('.public-field-layer-controls');
+    await expect(panel).toBeVisible();
+    await expect.poll(async () => {
+      const buttonBox = (await summary.boundingBox())!;
+      const panelBox = (await panel.boundingBox())!;
+      return Math.abs(panelBox.x - buttonBox.x) + Math.abs(panelBox.y + panelBox.height + 8 - buttonBox.y);
+    }).toBeLessThan(3);
+    await page.screenshot({ path: info.outputPath(`${view}-menu.png`) });
+    await menu.getByRole('button', { name: 'Magnifier', exact: true }).click();
+    await expect(menu).toHaveAttribute('open', '');
+    await page.mouse.click(20, 20);
+    await expect(menu).not.toHaveAttribute('open', '');
+    await summary.click();
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    if (view === 'field') {
+      await expect(page.getByRole('button', { name: 'Flux density', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('.public-field-result-legend')).not.toContainText('solved elements');
+      expect(await page.locator('.public-field-result-legend > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
+      await page.getByRole('button', { name: 'Field lines', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    }
+  });
+}
 
 for (const combined of [false, true]) {
   test(`partial ${combined ? 'combined' : 'map-only'} analysis retains outputs and shows point errors`, async ({ page }, info) => {

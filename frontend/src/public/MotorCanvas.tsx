@@ -157,6 +157,23 @@ const MESH_FILL_KEY_SEPARATOR = '\u0000';
 /** The magnifier panel: its side in CSS px, and how much larger it draws than the view. */
 const MESH_LOUPE_SIZE_PX = 240;
 const MESH_LOUPE_MAGNIFICATION = 3;
+/** Keep a full rotor bitmap within 16 MiB, even at the highest viewport zoom. */
+const MAX_ROTOR_CACHE_SIDE_PX = 2048;
+const ROTOR_CACHE_PADDING_PX = 16;
+
+const meshRotorRadiusCache = new WeakMap<MeshPreview, number>();
+function meshRotorRadiusMm(mesh: MeshPreview): number {
+  let radius = meshRotorRadiusCache.get(mesh);
+  if (radius === undefined) {
+    radius = 0;
+    for (let index = 0; index < mesh.triangles.length; index += 1) {
+      if (!isRotorRegion(mesh.regions[index] || 'mesh')) continue;
+      for (const node of mesh.triangles[index]) radius = Math.max(radius, Math.hypot(...mesh.nodes_mm[node]));
+    }
+    meshRotorRadiusCache.set(mesh, radius);
+  }
+  return radius;
+}
 
 const meshOuterRadiusCache = new WeakMap<MeshPreview, number>();
 function meshOuterRadiusMm(mesh: MeshPreview): number {
@@ -1668,9 +1685,11 @@ export function MotorCanvas({
     key: unknown[];
     fixed: HTMLCanvasElement;
     rotor: HTMLCanvasElement;
+    rotorSize: number;
     frame: MeshDrawFrame | null;
     hits: MeshTriangleHit[];
   } | null>(null);
+  const meshHitRotationRef = useRef<{ origin: [number, number]; angleDeg: number } | null>(null);
   // The magnifier: where the pointer is on the canvas (CSS px) and the corner its panel takes.
   const [loupePoint, setLoupePoint] = useState<{ x: number; y: number; onRight: boolean } | null>(null);
   const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -1766,6 +1785,7 @@ export function MotorCanvas({
       hitRegionsRef.current = [];
       dimensionHitsRef.current = [];
       meshHitsRef.current = [];
+      meshHitRotationRef.current = null;
 
       context.strokeStyle = 'rgba(255, 255, 255, 0.035)';
       context.lineWidth = 1;
@@ -1850,30 +1870,41 @@ export function MotorCanvas({
           ];
           let layers = meshLayersRef.current;
           if (!layers || layers.key.length !== key.length || layers.key.some((value, index) => value !== key[index])) {
-            const hits: MeshTriangleHit[] = [];
-            const layer = (part: 'fixed' | 'rotor') => {
-              const surface = document.createElement('canvas');
-              surface.width = canvas.width;
-              surface.height = canvas.height;
-              const target = surface.getContext('2d');
-              if (!target) return { surface, frame: null };
-              target.setTransform(ratio, 0, 0, ratio, 0, 0);
-              return { surface, frame: meshPass(target, 0, hits, part) };
-            };
-            const still = layer('fixed');
-            const turning = layer('rotor');
-            layers = { key, fixed: still.surface, rotor: turning.surface, frame: still.frame ?? turning.frame, hits };
+            const fixedHits: MeshTriangleHit[] = [];
+            const rotorHits: MeshTriangleHit[] = [];
+            const fixed = document.createElement('canvas');
+            fixed.width = canvas.width;
+            fixed.height = canvas.height;
+            const fixedContext = fixed.getContext('2d');
+            fixedContext?.setTransform(ratio, 0, 0, ratio, 0, 0);
+            const fixedFrame = fixedContext ? meshPass(fixedContext, 0, fixedHits, 'fixed') : null;
+            const { map, scale } = fitTransform(mesh.nodes_mm, rect.width, rect.height, navigation.scale, pan, undefined, viewRotationRad);
+            const origin = map([0, 0]);
+            // Centre the entire rotor in its own surface. Viewport-sized layers
+            // discard off-screen elements before rotation can bring them back.
+            const rotorSize = Math.max(1, 2 * (meshRotorRadiusMm(mesh) * scale + ROTOR_CACHE_PADDING_PX));
+            const rotor = document.createElement('canvas');
+            rotor.width = rotor.height = Math.min(MAX_ROTOR_CACHE_SIDE_PX, Math.ceil(rotorSize * ratio));
+            const rotorContext = rotor.getContext('2d');
+            const rotorRatio = rotor.width / rotorSize;
+            rotorContext?.setTransform(
+              rotorRatio, 0, 0, rotorRatio,
+              (rotorSize / 2 - origin[0]) * rotorRatio,
+              (rotorSize / 2 - origin[1]) * rotorRatio,
+            );
+            const rotorFrame = rotorContext ? meshPass(rotorContext, 0, rotorHits, 'rotor') : null;
+            layers = { key, fixed, rotor, rotorSize, frame: fixedFrame ?? rotorFrame, hits: [...fixedHits, ...rotorHits] };
             meshLayersRef.current = layers;
           }
           frame = layers.frame;
           meshHitsRef.current = layers.hits;
           context.drawImage(layers.fixed, 0, 0, rect.width, rect.height);
           if (frame) {
+            meshHitRotationRef.current = { origin: frame.origin, angleDeg: rotorAngleDeg };
             context.save();
             context.translate(frame.origin[0], frame.origin[1]);
             context.rotate((rotorAngleDeg * Math.PI) / 180);
-            context.translate(-frame.origin[0], -frame.origin[1]);
-            context.drawImage(layers.rotor, 0, 0, rect.width, rect.height);
+            context.drawImage(layers.rotor, -layers.rotorSize / 2, -layers.rotorSize / 2, layers.rotorSize, layers.rotorSize);
             context.restore();
           }
         }
@@ -1934,9 +1965,14 @@ export function MotorCanvas({
 
   const meshElementAtPointer = (event: MouseEvent<HTMLCanvasElement>) => {
     const point = pointerPoint(event);
+    const rotation = meshHitRotationRef.current;
+    // Unturn the pointer once; the cached rotor hit polygons stay at 0°.
+    const rotorPoint = rotation ? rotatePoint(
+      [point[0] - rotation.origin[0], point[1] - rotation.origin[1]], -rotation.angleDeg,
+    ).map((value, axis) => value + rotation.origin[axis]) as [number, number] : point;
     for (let index = meshHitsRef.current.length - 1; index >= 0; index -= 1) {
       const hit = meshHitsRef.current[index];
-      if (hit && pointInPolygon(point, hit.points)) return hit.selection;
+      if (hit && pointInPolygon(isRotorRegion(hit.selection.region) ? rotorPoint : point, hit.points)) return hit.selection;
     }
     return null;
   };

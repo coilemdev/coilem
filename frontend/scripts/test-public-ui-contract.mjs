@@ -1251,7 +1251,7 @@ assert.match(solvedFieldSource, /viewControls: ReactNode/);
 assert.match(solvedFieldSource, /\{viewControls\}/);
 // Controls sit in a dock below the field (field source and layers, then
 // playback; zoom and field details are in its title bar), so nothing floats over the field.
-assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>More/);
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu"[^>]*>\s*<summary>More/);
 assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
 assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\}/);
 assert.doesNotMatch(styleSource, /\.public-field-overlay-cluster \{ display: none; \}/);
