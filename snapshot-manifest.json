@@ -650,8 +650,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 174764,
-      "sha256": "67d06f03ba1cda3568963eaac7238113de69533c76684c8b93453975b011a39f"
+      "bytes": 173543,
+      "sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -7645,8 +7645,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 57736,
-      "sha256": "d742b0f7d7e390265abfdf0a31cc9475664ed699274b87c8699b65a3229ec6f4"
+      "bytes": 57957,
+      "sha256": "b57aefa54e091d0595dcf0f081c5770d51cf9cd80db7c39f6fffd55cea8511e2"
     },
     {
       "path": "frontend/tsconfig.public.json",

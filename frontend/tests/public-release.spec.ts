@@ -368,6 +368,9 @@ test('switches to Elmer with cogging enabled without submitting the unsupported 
   await page.getByRole('radio', { name: /Magneto2D/ }).click();
   await openSetupSection(page, 'analysis');
   await expect(cogging).toBeChecked();
+  // The page polls /health every few seconds through the route above. Let a poll
+  // still in flight go when the page closes, so it cannot fail a test that passed.
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
 test.describe('public developer preview release rehearsal', () => {
