@@ -3575,7 +3575,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
   const advancedOptionsRef = useRef<HTMLElement>(null);
-  const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
+  const nonlinearSolverRef = useRef<HTMLButtonElement>(null);
   const fineMeshRef = useRef<HTMLButtonElement>(null);
   const recoveryFocusTargetRef = useRef<HTMLElement | null>(null);
   const [recoveryFocusRequest, setRecoveryFocusRequest] = useState(0);
@@ -4229,7 +4229,16 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   <div><dt>Torque method</dt><dd>WST</dd></div>
                   <div><dt>Linear solver</dt><dd>Direct Cholesky</dd></div>
                 </dl>
-                <SelectRow selectRef={nonlinearSolverRef} label="Nonlinear solver" value={config.solve_params.nonlinear_solver} disabled={busy !== null} choices={[{ value: 'newton', label: 'Newton (recommended)' }, { value: 'picard', label: 'Picard' }]} onChange={(value) => onSolveSettingChange('nonlinear_solver', value as MotorConfig['solve_params']['nonlinear_solver'])} />
+                <div className="param-row public-param-row public-choice-row public-nonlinear-choice" role="group" aria-label="Nonlinear solver">
+                  <span className="param-label">Nonlinear solver</span>
+                  <span className="public-param-choices">
+                    <span className="public-recommended-choice">
+                      <small id="public-newton-recommendation">Recommended</small>
+                      <button type="button" ref={nonlinearSolverRef} aria-describedby="public-newton-recommendation" aria-pressed={config.solve_params.nonlinear_solver === 'newton'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'newton') onSolveSettingChange('nonlinear_solver', 'newton'); }}>Newton</button>
+                    </span>
+                    <button type="button" aria-pressed={config.solve_params.nonlinear_solver === 'picard'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'picard') onSolveSettingChange('nonlinear_solver', 'picard'); }}>Picard</button>
+                  </span>
+                </div>
                 <p className="public-solver-help">Newton is the default and needs far fewer iterations. It falls back to Picard at any position where it doesn't converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}

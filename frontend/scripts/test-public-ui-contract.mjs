@@ -856,8 +856,9 @@ assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);
 assert.match(workspaceSource, /<dt>Torque method<\/dt><dd>WST<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('nonlinear_solver'/);
-assert.match(workspaceSource, /Newton \(recommended\)/);
-assert.match(workspaceSource, /\{ value: 'picard', label: 'Picard' \}/);
+assert.match(workspaceSource, /id="public-newton-recommendation">Recommended<\/small>/);
+assert.match(workspaceSource, />Newton<\/button>/);
+assert.match(workspaceSource, />Picard<\/button>/);
 assert.doesNotMatch(workspaceSource, /Newton \(experimental\)/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Linear solver"/);
 assert.match(workspaceSource, /<dt>Linear solver<\/dt><dd>Direct Cholesky<\/dd>/);

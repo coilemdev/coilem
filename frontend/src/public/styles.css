@@ -986,6 +986,11 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-param-row .public-param-choices button[aria-pressed="true"] { background: rgba(251, 191, 36, 0.14); color: #fbbf24; box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.45); }
 .public-param-row .public-param-choices button:disabled { opacity: 0.4; cursor: not-allowed; }
 .public-param-row .public-param-choices button:focus-visible { outline: 2px solid rgba(251, 191, 36, 0.7); outline-offset: 1px; }
+.public-param-row.public-nonlinear-choice { padding-top: 18px; }
+.public-nonlinear-choice > .param-label { white-space: nowrap; }
+.public-nonlinear-choice .public-param-choices button { height: 27px; font-size: 12px; }
+.public-recommended-choice { position: relative; display: inline-flex; }
+.public-recommended-choice > small { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); color: var(--text-accent); font: 8px var(--font-mono); white-space: nowrap; }
 .public-param-row input:focus,
 .public-param-row select:focus { border-color: var(--accent-primary); outline: 0; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1); }
 .public-derived-row strong { width: 78px; color: var(--text-primary); font: 10px var(--font-mono); text-align: right; }
