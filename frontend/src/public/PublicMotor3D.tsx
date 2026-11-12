@@ -721,6 +721,10 @@ function ParametricMotor3D({
   const rotorRef = useRef<THREE.Group | null>(null);
   const bearingRigsRef = useRef<BearingAnimationRig[]>([]);
   const resetCameraRef = useRef<(() => void) | null>(null);
+  // The view the user left, kept across a scene rebuild: a change to the winding or
+  // the wire redraws the motor where it was, turned and zoomed as before. A change to
+  // the machine's size or layout frames it afresh.
+  const keptViewRef = useRef<{ frame: string; position: THREE.Vector3; target: THREE.Vector3 } | null>(null);
   const requestRenderRef = useRef<(() => void) | null>(null);
   const explodedAmountRef = useRef(explodedAmount);
   const introProgressRef = useRef(introProgress);
@@ -881,6 +885,12 @@ function ParametricMotor3D({
     };
     resetCameraRef.current = resetCamera;
     resetCamera();
+    const viewFrame = `${outerRotor}:${outerRadius}:${stackDepth}`;
+    if (keptViewRef.current?.frame === viewFrame && introProgressRef.current === null) {
+      camera.position.copy(keptViewRef.current.position);
+      controls.target.copy(keptViewRef.current.target);
+      controls.update();
+    }
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     const environmentTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
@@ -2283,6 +2293,7 @@ function ParametricMotor3D({
         selectionHelper.geometry.dispose();
         selectionHelper.material.dispose();
       }
+      keptViewRef.current = { frame: viewFrame, position: camera.position.clone(), target: controls.target.clone() };
       resetCameraRef.current = null;
       rotorRef.current = null;
       bearingRigsRef.current = [];
