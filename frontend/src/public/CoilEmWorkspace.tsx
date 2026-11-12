@@ -3399,8 +3399,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
-  // While a solve meshes, the viewport turns the rotor steadily; while it
-  // solves the field, the rotor holds still and the view pulses slowly. Both
+  // While a solve meshes and solves, the viewport turns the rotor steadily, so
+  // the wait reads as work in progress; during the field solve it pulses too. Both
   // read progress the solver already reports, so they add nothing to the
   // solve; the mesh view turns a picture of the rotor it drew once.
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
@@ -3413,7 +3413,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
   const shownRotorTurn = solveRotorTurn && !solveRotorTurn.finished ? solveRotorTurn : null;
   const solvingField = shownRotorTurn?.phase === 'solving';
-  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? !solvingField : null, 12);
+  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? true : null, 12);
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));

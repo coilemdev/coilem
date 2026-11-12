@@ -7035,8 +7035,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 255832,
-      "sha256": "e94d842770d0dd907eb6e13a12328762612dd2935bd1b3c9d5fab146de1b4b81"
+      "bytes": 255834,
+      "sha256": "fcb0bb96d4457c9d42188d32dcdf3ec7d13c205856275caab446668881a7784e"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
