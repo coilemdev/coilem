@@ -92,6 +92,8 @@ interface MotorCanvasProps {
   meshEdgeColor?: string | null;
   /** Mesh view: show the area under the pointer enlarged in a corner. */
   magnifier?: boolean;
+  /** Draw every coil side in one plain colour instead of its phase colour. */
+  plainWinding?: boolean;
   meshQualities?: number[];
   meshQualityThreshold?: number;
   focusedMeshElementIndex?: number | null;
@@ -559,8 +561,10 @@ function drawSpmMagnetPolarityHalves(
  */
 const ANNULAR_REGIONS = /^(stator_yoke|rotor_core|shaft)$/i;
 
-function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null): string {
+function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null, plainWinding = false): string {
   const winding = windingToken(regionType);
+  // One colour for every coil side, so the eye stays on the N / S fields; the Winding and Phases overlays still colour them.
+  if (plainWinding && winding && layer !== 'windings' && layer !== 'phases' && layer !== 'materials') return PUBLIC_MOTOR_COLORS.winding;
   if (layer === 'materials') {
     if (/stator/i.test(regionType)) return PUBLIC_MOTOR_COLORS.statorSteel;
     if (/rotor/i.test(regionType)) return PUBLIC_MOTOR_COLORS.rotorSteel;
@@ -598,6 +602,7 @@ function drawGeometry(
   phaseDrive: PhaseDrive | null,
   showToothPoles: boolean,
   previewRpm: number,
+  plainWinding = false,
 ): void {
   const points = data.regions.flatMap((region) => region.points);
   if (points.length === 0) return;
@@ -766,7 +771,7 @@ function drawGeometry(
       region.region_type,
       usesSplitPolarity
         ? PUBLIC_MOTOR_COLORS.magnetBody
-        : regionFill(region.region_type, region.fill, layer, phaseLevels),
+        : regionFill(region.region_type, region.fill, layer, phaseLevels, plainWinding),
       origin,
       /shaft/i.test(region.region_type) ? 0 : innerRadiusMm * scale,
       outerRadiusMm * scale,
@@ -1561,6 +1566,7 @@ export function MotorCanvas({
   focusedMeshElementIndex = null,
   meshEdgeColor = null,
   magnifier = false,
+  plainWinding = false,
   onMeshElementHover,
   onMeshElementSelect,
   navigationSlot = null,
@@ -1622,15 +1628,16 @@ export function MotorCanvas({
 
   // The mesh view can carry the Slots or Winding overlay: the geometry is drawn
   // with it, and the mesh's edges go over the top.
+  // Tooth poles are drawn by the geometry too, so they bring it in on their own.
   const meshOverlay: PublicCanvasLayer | null = mode === 'mesh' && meshDisplayMode === 'geometry' && geometry
-    ? (layer === 'slots' ? 'slots' : layer === 'windings' || layer === 'phases' ? 'windings' : null)
+    ? (layer === 'slots' ? 'slots' : layer === 'windings' || layer === 'phases' ? 'windings' : showToothPoles ? 'none' : null)
     : null;
   const drawMeshOverlayGeometry = (target: CanvasRenderingContext2D, width: number, height: number) => {
     if (!meshOverlay || !geometry) return;
     drawGeometry(
       target, geometry, width, height, meshOverlay, rotorAngleDeg, windingType, [], null, null, null,
       navigation.scale, [navigation.pan.x, navigation.pan.y], (navigation.rotationDeg * Math.PI) / 180,
-      [], null, null, [], magnetPolarityView, null, false, previewRpm,
+      [], null, null, [], magnetPolarityView, phaseDrive, showToothPoles, previewRpm, plainWinding,
     );
   };
   const meshLayersRef = useRef<{
@@ -1681,7 +1688,7 @@ export function MotorCanvas({
         meshDisplayMode, showMeshEdges, meshQualities, meshQualityThreshold, focusedMeshElementIndex, [], meshEdgeColor,
         {
           fill: !meshOverlay,
-          coilPhases: geometry ? meshCoilPhases(mesh, geometry) : null,
+          coilPhases: geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null,
           cull: [loupeX - reach, loupeY - reach, loupeX + reach, loupeY + reach],
           edgeWidthScale: 0.6,
         },
@@ -1703,7 +1710,7 @@ export function MotorCanvas({
   }, [
     focusedMeshElementIndex, geometry, loupeShown, loupeX, loupeY, magnetPolarityView, mesh, meshDisplayMode,
     meshEdgeColor, meshOverlay, meshQualities, meshQualityThreshold, navigation.pan.x, navigation.pan.y,
-    navigation.rotationDeg, navigation.scale, previewRpm, rotorAngleDeg, showMeshEdges, windingType,
+    navigation.rotationDeg, navigation.scale, phaseDrive, plainWinding, previewRpm, rotorAngleDeg, showMeshEdges, showToothPoles, windingType,
   ]);
 
   useEffect(() => {
@@ -1776,11 +1783,12 @@ export function MotorCanvas({
           phaseDrive,
           showToothPoles,
           previewRpm,
+          plainWinding,
         );
       } else if (mode === 'mesh' && mesh) {
         const viewRotationRad = (navigation.rotationDeg * Math.PI) / 180;
         const pan: [number, number] = [navigation.pan.x, navigation.pan.y];
-        const coilPhases = geometry ? meshCoilPhases(mesh, geometry) : null;
+        const coilPhases = geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null;
         if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
         const meshPass = (
           target: CanvasRenderingContext2D,
@@ -1868,6 +1876,7 @@ export function MotorCanvas({
     magnetPolarityView,
     mode,
     phaseDrive,
+    plainWinding,
     showToothPoles,
     previewRpm,
     navigation.pan.x,

@@ -548,6 +548,7 @@ export function FieldResultPlot({
   probeEnabled = true,
   magnifier = false,
   fitScale = 1,
+  rotorMarkDeg = null,
   describeProbe = defaultProbeDescription,
   onViewportScaleSettled,
   overlay = null,
@@ -590,6 +591,8 @@ export function FieldResultPlot({
   magnifier?: boolean;
   /** The share of the usual fit to draw the motor at; below 1 leaves a wider margin. */
   fitScale?: number;
+  /** The rotor's mechanical angle: draws the 0° tick and the dot that goes round with the rotor. Null hides them. */
+  rotorMarkDeg?: number | null;
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
@@ -1016,8 +1019,53 @@ export function FieldResultPlot({
         }
       }
     };
-    draw();
-    const observer = new ResizeObserver(draw);
+    // Where the rotor is: a tick fixed at 0° just outside the motor and a dot that
+    // goes round with the rotor, as on the geometry and mesh views.
+    const drawRotorMark = () => {
+      const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
+      const context = canvas.getContext('2d');
+      if (rotorMarkDeg === null || !square || !context) return;
+      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
+      const worldScale = drawSize / square.size;
+      const originX = (canvas.width - drawSize) / 2 + navigation.pan.x * pixelRatio - square.left * worldScale;
+      const originY = (canvas.height - drawSize) / 2 + navigation.pan.y * pixelRatio - square.top * worldScale;
+      // The plot pads the motor by 2.5% of its size on each side.
+      const radius = (square.size / 1.05 / 2) * worldScale;
+      const at = (distance: number, angleDeg: number): [number, number] => {
+        const angle = ((angleDeg + navigation.rotationDeg) * Math.PI) / 180;
+        return [originX + distance * Math.cos(angle), originY + distance * Math.sin(angle)];
+      };
+      context.save();
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      const [tickFromX, tickFromY] = at(radius + 5 * pixelRatio, 0);
+      const [tickToX, tickToY] = at(radius + 19 * pixelRatio, 0);
+      context.beginPath();
+      context.moveTo(tickFromX, tickFromY);
+      context.lineTo(tickToX, tickToY);
+      context.strokeStyle = 'rgba(148, 163, 184, 0.7)';
+      context.lineWidth = 1.5 * pixelRatio;
+      context.lineCap = 'round';
+      context.stroke();
+      const [dotX, dotY] = at(radius + 12 * pixelRatio, rotorMarkDeg);
+      context.beginPath();
+      context.arc(dotX, dotY, 4 * pixelRatio, 0, Math.PI * 2);
+      context.fillStyle = '#fbbf24';
+      context.shadowColor = 'rgba(251, 191, 36, 0.8)';
+      context.shadowBlur = 6 * pixelRatio;
+      context.fill();
+      context.shadowBlur = 0;
+      context.strokeStyle = 'rgba(8, 10, 14, 0.9)';
+      context.lineWidth = pixelRatio;
+      context.stroke();
+      context.restore();
+    };
+    const drawWithRotorMark = () => {
+      draw();
+      drawRotorMark();
+    };
+    drawWithRotorMark();
+    const observer = new ResizeObserver(drawWithRotorMark);
     observer.observe(canvas);
     return () => observer.disconnect();
   }, [
@@ -1034,6 +1082,7 @@ export function FieldResultPlot({
     pmLines,
     prepared,
     raster,
+    rotorMarkDeg,
     showFieldLines,
     showHeatmap,
     showMesh,

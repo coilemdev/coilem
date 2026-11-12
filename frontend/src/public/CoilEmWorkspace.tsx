@@ -1715,7 +1715,7 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
-/** Element edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
+/** The mesh edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
 const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
 
 function ViewportChrome({
@@ -1794,6 +1794,7 @@ function ViewportChrome({
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
   const [meshMagnifier, setMeshMagnifier] = useState(false);
+  const [showCoilColours, setShowCoilColours] = useState(true);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -2002,7 +2003,8 @@ function ViewportChrome({
   // which is the only place slot order, coil spans and parallel paths are legible.
   const showWindingLayout = viewportMode === 'layout' && mode === 'geometry';
   const showPlayback = mode === 'geometry'
-    && (viewportMode === '2d' || viewportMode === '3d');
+    ? (viewportMode === '2d' || viewportMode === '3d')
+    : mode === 'mesh';
   const showMaterialAssignment = viewportMode === 'materials'
     && materialSubview === 'assignment'
     && mode === 'geometry';
@@ -2141,6 +2143,7 @@ function ViewportChrome({
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
               magnifier={mode === 'mesh' && meshMagnifier}
+              plainWinding={!showCoilColours}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -2352,14 +2355,6 @@ function ViewportChrome({
               <button
                 type="button"
                 className="public-dock-toggle"
-                aria-pressed={showMeshEdges}
-                onClick={() => onShowMeshEdgesChange?.(!showMeshEdges)}
-              >
-                Element edges
-              </button>
-              <button
-                type="button"
-                className="public-dock-toggle"
                 aria-pressed={meshMagnifier}
                 title="Show the area under the pointer enlarged in a corner of the view"
                 onClick={() => setMeshMagnifier((value) => !value)}
@@ -2498,6 +2493,8 @@ function ViewportChrome({
                   type="button"
                   className="public-dock-toggle"
                   aria-pressed={canvasLayer === 'phases'}
+                  // The mesh view has no room for the waveforms Phases wires in.
+                  style={mode === 'geometry' ? undefined : { display: 'none' }}
                   title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
                   onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
                 >
@@ -2513,6 +2510,17 @@ function ViewportChrome({
                   onClick={() => setShowToothPoles((shown) => !shown)}
                 >
                   Tooth poles
+                </button>
+              )}
+              {viewportMode === '2d' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showCoilColours}
+                  title={showCoilColours ? 'Draw every coil in one plain colour, to follow the N / S fields' : 'Colour each coil by its phase'}
+                  onClick={() => setShowCoilColours((shown) => !shown)}
+                >
+                  Coil colours
                 </button>
               )}
             </span>
@@ -4183,6 +4191,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   showHeading={false}
                   showControls={false}
                   fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
+                  rotorMarkDeg={(shownSolvedField.angle_deg ?? 0) / Math.max(1, config.rotor.pole_count / 2)}
                 />
               )}
               dockStrip={solveViewportSwitch}

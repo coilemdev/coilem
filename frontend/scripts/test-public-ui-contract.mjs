@@ -891,11 +891,11 @@ assert.match(modelSource, /nonlinear_solver: 'newton'/);
 assert.match(modelSource, /linear_solver_preconditioner: 'direct'/);
 assert.match(modelSource, /cogging_torque_waveform\?/);
 assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
-// The mesh panel separates how elements are coloured (one choice) from the
-// edges layer (on or off on its own), so the two no longer look alike.
+// The mesh panel separates how elements are coloured (one choice) from its
+// on/off tools. The element edges are always drawn: a mesh without them is not a mesh view.
 assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Color by<\/span>\s*<span className="public-dock-segmented">[\s\S]*?Regions[\s\S]*?Quality[\s\S]*?Weak elements/);
-assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Show<\/span>\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showMeshEdges\}/);
-assert.match(workspaceSource, /Element edges/);
+assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Show<\/span>\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{meshMagnifier\}/);
+assert.doesNotMatch(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
 // 2D overlays are one choice at a time, with None for the bare cross-section.
 assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);

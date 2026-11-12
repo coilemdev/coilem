@@ -1233,6 +1233,7 @@ export function SolvedFieldViewer({
               showMagnets={showMagnets}
               magnifier={magnifier}
               fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
+              rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showAirgap={showAirgap}
               // The air-gap ring, field axes and stator pole labels assume an inner rotor.
               airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
