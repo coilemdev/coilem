@@ -10,10 +10,12 @@ export const designViewMemory = {
   introPlayed: false,
   view: '2d',
   layer: 'none',
+  overlays: { dimensions: false, slots: false, teeth: false, windings: false },
 };
 
 export function resetDesignViewMemory(): void {
   designViewMemory.introPlayed = false;
   designViewMemory.view = '2d';
   designViewMemory.layer = 'none';
+  designViewMemory.overlays = { dimensions: false, slots: false, teeth: false, windings: false };
 }

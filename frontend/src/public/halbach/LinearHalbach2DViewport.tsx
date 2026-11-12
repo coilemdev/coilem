@@ -786,7 +786,6 @@ export function LinearHalbach2DViewport({
     <figure
       className={`halbach-viewport halbach-viewport-2d public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
       ref={navigation.viewportRef}
-      title="Use the mouse wheel to zoom; drag to pan when zoomed"
       {...navigation.bind}
     >
       <div

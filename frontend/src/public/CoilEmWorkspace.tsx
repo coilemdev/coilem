@@ -1,5 +1,10 @@
 import { solveViewMemory } from './solveViewMemory';
+import { useTurningRotorAngle } from './useTurningRotorAngle';
+import { useLayerMenu } from './useLayerMenu';
+import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
+import { windingBuildChecks } from './windingBuild';
+import { AWG_SIZES, awgFor, awgNote, awgStoredDiameterMm } from './wireGauge';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
@@ -24,6 +29,8 @@ import { outerRotorRing } from './sectorFraming';
 import {
   MotorCanvas,
   type PublicCanvasLayer,
+  type PublicCanvasOverlays,
+  NO_CANVAS_OVERLAYS,
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
 } from './MotorCanvas';
@@ -37,7 +44,7 @@ import {
   type DimensionAnnotation,
   type DimensionId,
 } from './dimensionAnnotations';
-import { FieldResultPlot } from './FieldResultPlot';
+import { FIELD_FIT_LIKE_MOTOR_CANVAS, FieldResultPlot } from './FieldResultPlot';
 import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
@@ -120,6 +127,8 @@ import {
 import {
   isPublicSolveFinalizing,
   projectedPublicSolveElapsedSeconds,
+  nextPublicSolveRotorTurn,
+  type PublicSolveRotorTurn,
 } from './solveProgress';
 import { formatTorqueNm } from './numberFormat';
 
@@ -942,6 +951,35 @@ function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef 
   );
 }
 
+/** A choice between a few options as side-by-side buttons: one click to switch, where a list takes two. */
+function ChoiceRow({ label, value, choices, hint, disabled, onChange }: {
+  label: string;
+  value: string;
+  choices: Array<{ value: string; label: string; disabled?: boolean }>;
+  hint?: string;
+  disabled?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="param-row public-param-row public-choice-row" role="group" aria-label={label} title={hint}>
+      <span className="param-label">{label}</span>
+      <span className="public-param-choices">
+        {choices.map((choice) => (
+          <button
+            type="button"
+            aria-pressed={choice.value === value}
+            disabled={disabled || choice.disabled}
+            onClick={() => { if (choice.value !== value) onChange(choice.value); }}
+            key={choice.value}
+          >
+            {choice.label}
+          </button>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 function componentFacts(
   selection: PublicMotorComponentSelection,
   config: MotorConfig,
@@ -1491,9 +1529,11 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       </ParameterSectionBlock>}
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
-        <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        {/* Four steps, each what is set and then what follows from it: layout, turns, wire, resistance. */}
+        <p className="public-param-group-label">Layout</p>
+        <ChoiceRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
         {wholeSlotNote && <p className="public-winding-note" role="note">{wholeSlotNote}</p>}
-        {showLayerRow && <SelectRow
+        {showLayerRow && <ChoiceRow
           label={layerWording.label}
           value={String(config.winding.layers)}
           choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available }) => ({
@@ -1509,37 +1549,76 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           <span className="param-label">Coils per Phase<small>calc</small></span>
           <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
         </div>
-        <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
+        <p className="public-param-group-label">Turns</p>
+        <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} hint="How many times the conductor goes round each coil. More turns raise back-EMF and inductance; the field depends on turns × current." disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
+        <p className="public-param-group-label">Wire</p>
         {config.geometry_reference && !wire ? (
           // A pinned reference without its own wire uses its published conductor (backend/winding_resistance.py).
           <div className="param-row public-param-row public-derived-row" title={windingResistanceRecord?.notes[0] ?? "The reference's published conductor."}>
             <span className="param-label">Wire<small>published</small></span>
             <strong>{windingResistanceRecord ? `${windingResistanceRecord.strands_in_hand} × ${windingResistanceRecord.strand_diameter_mm} mm` : '—'}</strong>
           </div>
-        ) : <SelectRow
+        ) : <ChoiceRow
           label="Wire"
           value={wire ? 'specified' : 'derived'}
-          choices={[{ value: 'derived', label: 'Derived from slot' }, { value: 'specified', label: 'Specified' }]}
+          choices={[{ value: 'derived', label: 'Derived' }, { value: 'specified', label: 'Specified' }]}
           hint="Derived sizes the wire to fill 45% of the slot with copper. Specify the wire for the real phase resistance."
           disabled={disabled}
           onChange={(value) => setWire(value === 'specified'
             ? { wire_bare_diameter_mm: Number((windingResistanceRecord?.strand_diameter_mm ?? 1).toFixed(2)), strands_in_hand: 1 }
             : null)}
         />}
+        {!wire && windingResistanceRecord?.wire_source === 'derived' && (
+          // The derived wire, shown so its thickness is seen to change with the turns and the slot.
+          <div className="param-row public-param-row public-derived-row is-wide" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Beside it, where that sits among the standard gauges. Choose Specified to set a real one.">
+            <span className="param-label">Wire Ø (bare)<small>mm · derived</small></span>
+            <strong>{Number(windingResistanceRecord.strand_diameter_mm.toFixed(2))} · {awgNote(windingResistanceRecord.strand_diameter_mm)}</strong>
+          </div>
+        )}
         {wire && <>
+          <SelectRow
+            label="Wire Gauge"
+            value={String(awgFor(wire.wire_bare_diameter_mm) ?? 'custom')}
+            choices={[
+              { value: 'custom', label: 'Custom', disabled: awgFor(wire.wire_bare_diameter_mm) !== null },
+              ...AWG_SIZES.map(({ gauge, diameterMm }) => ({ value: String(gauge), label: `AWG ${gauge} · ${diameterMm} mm` })),
+            ]}
+            hint="Pick a standard gauge to set the diameter, or type any diameter below for a wire that is not a standard size."
+            disabled={disabled}
+            onChange={(value) => { if (value !== 'custom') setWire({ ...wire, wire_bare_diameter_mm: awgStoredDiameterMm(Number(value)) }); }}
+          />
           <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
-          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
+          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} hint="Wires wound together as one turn. They share the turn's current and lower the resistance; they do not add turns." disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
           <NumberRow label="End-turn Extension" value={wire.end_turn_extension_mm ?? 0} unit="mm" min={0} max={200} step={1} hint="Straight length each coil side runs out of the stack before its end turn bends." disabled={disabled} onChange={(value) => setWire({ ...wire, end_turn_extension_mm: value > 0 ? value : null })} />
         </>}
-        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
-        {windingRows.map((row) => (
+        {windingResistanceRecord && (
+          // Turns and wires are different counts: a turn of several strands in hand is still one turn.
+          <div className="param-row public-param-row public-derived-row is-wide" title="Wires passing through each slot: turns in the slot × strands in hand. The field solve uses the turns; the wires set resistance and slot fill.">
+            <span className="param-label">Wires per Slot<small>calc</small></span>
+            <strong>
+              {`${windingResistanceRecord.conductors_per_slot} × ${windingResistanceRecord.strands_in_hand} = ${windingResistanceRecord.conductors_per_slot * windingResistanceRecord.strands_in_hand}`}
+            </strong>
+          </div>
+        )}
+        {/* Slot fill and mean turn follow from the wire; the temperature only moves the resistance. */}
+        {windingRows.filter((row) => row.key !== 'resistance').map((row) => (
           <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
             <span className="param-label">{row.label}<small>{row.tag}</small></span>
             <strong>{row.text}</strong>
             {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
           </div>
         ))}
+        <p className="public-param-group-label">Resistance</p>
+        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
+        {windingRows.filter((row) => row.key === 'resistance').map((row) => (
+          <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
+            <span className="param-label">{row.label}<small>{row.tag}</small></span>
+            <strong>{row.text}</strong>
+            {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
+          </div>
+        ))}
+        <p className="public-param-group-label">Drive</p>
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
@@ -1668,6 +1747,8 @@ type PublicViewportMode = '2d' | '3d' | 'materials' | 'layout';
  * interactive behind it.
  */
 const DESIGN_INTRO_DURATION_MS = 2_000;
+/** Whether opening a motor plays the 3D-to-2D intro. Off: the 2D view shows the 3D motor in its corner. */
+const DESIGN_INTRO_PLAYS = false as boolean;
 const DESIGN_INTRO_CROSSFADE_START = 0.68;
 
 function ViewportExpandButton({
@@ -1709,8 +1790,18 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
+/**
+ * Whether the first solved field replaces the turning motor part-way through a
+ * solve. Off: the motor keeps turning until the solve is complete, and the
+ * field is first seen in the finished view.
+ */
+const SHOW_FIRST_SOLVED_FIELD = false as boolean;
+/** The mesh edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
+const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
+
 function ViewportChrome({
   config,
+  designName = null,
   materials,
   geometry,
   mesh,
@@ -1719,6 +1810,8 @@ function ViewportChrome({
   busy,
   showConfigurationLabel = true,
   enableDesignIntro = true,
+  show3dInset = false,
+  magnifierSlot = null,
   isExpanded = false,
   onExpandToggle,
   selectedComponent = null,
@@ -1732,13 +1825,27 @@ function ViewportChrome({
   onShowMeshEdgesChange,
   onFocusedMeshElementChange,
   dockStrip,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  solveRotorAngleDeg = null,
+  solveRotorCaption = null,
+  solvePulse = false,
+  solveFieldPreview = null,
+}: Pick<CoilEmWorkspaceProps, 'config' | 'designName' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  /** While a solve sweeps: the rotor turn to draw in place of the preview's own, and a line saying what it is. */
+  solveRotorAngleDeg?: number | null;
+  solveRotorCaption?: string | null;
+  /** While the field is being solved: a slow glow on the 2D view. */
+  solvePulse?: boolean;
+  /** A solved field to show in place of the drawing while the rest of the sweep runs. */
+  solveFieldPreview?: ReactNode;
   /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
   dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
   stale: boolean;
   showConfigurationLabel?: boolean;
   enableDesignIntro?: boolean;
+  /** A small live 3D view in the corner of the 2D view; clicking it opens the 3D view. */
+  show3dInset?: boolean;
+  magnifierSlot?: HTMLElement | null;
   isExpanded?: boolean;
   onExpandToggle?: () => void;
   selectedComponent?: PublicMotorComponentSelection | null;
@@ -1756,17 +1863,31 @@ function ViewportChrome({
   // The intro plays when a motor is first opened. Coming back to Design from
   // Solve or Results resumes the view that was left (designViewMemory).
   const [resumeDesignView] = useState(() => designIntroEnabled && designViewMemory.introPlayed);
+  // The 2D view carries a small live 3D view, so a motor opens straight on 2D
+  // unless the 3D-to-2D intro is switched back on.
+  const playDesignIntro = DESIGN_INTRO_PLAYS && designIntroEnabled && !resumeDesignView;
   const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => {
-    if (!designIntroEnabled) return '2d';
+    if (!designIntroEnabled || (!playDesignIntro && !resumeDesignView)) return '2d';
     return resumeDesignView ? designViewMemory.view as PublicViewportMode : '3d';
   });
-  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled && !resumeDesignView ? 0 : 1));
+  const [introProgress, setIntroProgress] = useState(() => (playDesignIntro ? 0 : 1));
   const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>(() => (
     resumeDesignView ? designViewMemory.layer as PublicCanvasLayer : 'none'
   ));
+  // Dims, Slots, Tooth and Winding are labels over the motor, each on or off by itself.
+  const [overlays, setOverlays] = useState<PublicCanvasOverlays>(() => (
+    resumeDesignView ? designViewMemory.overlays : NO_CANVAS_OVERLAYS
+  ));
+  const toggleOverlay = (overlay: keyof PublicCanvasOverlays) => setOverlays((current) => ({ ...current, [overlay]: !current[overlay] }));
   // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
+  const [meshMagnifier, setMeshMagnifier] = useState(false);
+  const meshLayerMenu = useLayerMenu();
+  // Where the 3D view draws its part controls: the right-hand column of the dock.
+  const [dock3dSlot, setDock3dSlot] = useState<HTMLElement | null>(null);
+  const [showCoilColors, setShowCoilColors] = useState(false);
+  const meshMoreOn = Number(meshMagnifier) + Number(showToothPoles) + Number(showCoilColors);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -1778,7 +1899,6 @@ function ViewportChrome({
   const [explodedAmount, setExplodedAmount] = useState(0);
   const [threeResetSignal, setThreeResetSignal] = useState(0);
   const [hoveredMeshElement, setHoveredMeshElement] = useState<PublicMeshElementSelection | null>(null);
-  const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
   const viewportRef = useRef<HTMLElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   // The 2D canvas puts its zoom controls in the title bar, beside fullscreen.
@@ -1872,7 +1992,7 @@ function ViewportChrome({
   }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
-  const introCompleteRef = useRef(!designIntroEnabled || resumeDesignView);
+  const introCompleteRef = useRef(!playDesignIntro);
   const previousFrameRef = useRef<number | null>(null);
 
   const finishDesignIntro = useCallback((finalMode: PublicViewportMode) => {
@@ -1894,16 +2014,6 @@ function ViewportChrome({
     setViewportMode((current) => (current === '3d' ? '2d' : current));
   }, [mode]);
 
-  useEffect(() => {
-    if (mode !== 'mesh') {
-      setShowMeshNavigationHint(false);
-      return undefined;
-    }
-    setShowMeshNavigationHint(true);
-    const timer = window.setTimeout(() => setShowMeshNavigationHint(false), 4_200);
-    return () => window.clearTimeout(timer);
-  }, [mode]);
-
   // Remember the Design view once its intro is over. No dependency list: a
   // motor loaded while this canvas stays mounted resets the memory, and the
   // next render records again that the intro has already been seen here.
@@ -1912,6 +2022,7 @@ function ViewportChrome({
     designViewMemory.introPlayed = true;
     designViewMemory.view = viewportMode;
     designViewMemory.layer = canvasLayer;
+    designViewMemory.overlays = overlays;
   });
 
   useEffect(() => {
@@ -1981,12 +2092,13 @@ function ViewportChrome({
     : viewportMode === 'layout'
       ? 'windings'
       : canvasLayer;
-  const showDimensionReadout = viewportMode === '2d' && displayLayer === 'dimensions';
+  const showDimensionReadout = viewportMode === '2d' && overlays.dimensions;
   // Layout is no longer a recolour of the cross-section: it unrolls the winding,
   // which is the only place slot order, coil spans and parallel paths are legible.
   const showWindingLayout = viewportMode === 'layout' && mode === 'geometry';
   const showPlayback = mode === 'geometry'
-    && (viewportMode === '2d' || viewportMode === '3d');
+    ? (viewportMode === '2d' || viewportMode === '3d')
+    : mode === 'mesh';
   const showMaterialAssignment = viewportMode === 'materials'
     && materialSubview === 'assignment'
     && mode === 'geometry';
@@ -2054,6 +2166,9 @@ function ViewportChrome({
       {showConfigurationLabel && (
         <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
       )}
+      {solveRotorCaption && viewportMode !== '3d' && (
+        <div className="viewport-label viewport-label-cad public-solve-rotor-caption" role="status" aria-live="off">{solveRotorCaption}</div>
+      )}
       {showDimensionReadout && (
         <DimensionReadout
           annotations={dimensionAnnotations}
@@ -2072,9 +2187,17 @@ function ViewportChrome({
         >
           <PublicMotor3D
             config={config}
+            designName={designName}
             geometry={geometry}
             resetSignal={threeResetSignal}
             rotorAngleDeg={rotorAngleDeg}
+            plainWinding={!showCoilColors}
+            showToothPoles={showToothPoles}
+            showPhases={canvasLayer === 'phases'}
+            overlays={overlays}
+            previewRpm={animationRpm}
+            controlsInDock
+            dockSlot={dock3dSlot}
             explodedAmount={explodedAmount}
             introProgress={introActive ? introCameraProgress : null}
             onInteraction={() => finishDesignIntro('3d')}
@@ -2084,7 +2207,7 @@ function ViewportChrome({
       )}
       {(viewportMode !== '3d' || introActive) && (
         <div
-          className="public-viewport-stage public-viewport-stage-2d"
+          className={`public-viewport-stage public-viewport-stage-2d${solvePulse ? ' is-solving-field' : ''}`}
           style={{
             opacity: introActive ? introCrossfade : 1,
             pointerEvents: introActive && introCrossfade <= 0.5 ? 'none' : 'auto',
@@ -2099,13 +2222,16 @@ function ViewportChrome({
             />
           ) : showWindingLayout ? (
             <WindingLayoutView config={config} geometry={geometry ?? null} navigationSlot={navigationSlot} />
+          ) : solveFieldPreview ? (
+            solveFieldPreview
           ) : (
             <MotorCanvas
               geometry={geometry}
               mesh={mesh}
               mode={mode}
               layer={displayLayer}
-              rotorAngleDeg={rotorAngleDeg}
+              overlays={viewportMode === '2d' ? overlays : NO_CANVAS_OVERLAYS}
+              rotorAngleDeg={solveRotorAngleDeg ?? rotorAngleDeg}
               windingType={config.winding.type}
               selectedComponent={selectedComponent}
               highlightComponentKind={effectiveHighlightKind}
@@ -2118,6 +2244,10 @@ function ViewportChrome({
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
+              meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
+              magnifier={mode === 'mesh' && meshMagnifier}
+              magnifierSlot={magnifierSlot}
+              plainWinding={!showCoilColors}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -2148,6 +2278,27 @@ function ViewportChrome({
           <em>{introCrossfade > 0 ? 'Opening the engineering view' : 'Turning to the front plane'}</em>
         </div>
       )}
+      {show3dInset && viewportMode === '2d' && mode === 'geometry' && !introActive && geometry && (
+        <div className="public-viewport-3d-inset">
+          <div className="public-viewport-3d-inset-scene" aria-hidden="true">
+            <PublicMotor3D
+              config={config}
+              designName={designName}
+              geometry={geometry}
+              resetSignal={threeResetSignal}
+              rotorAngleDeg={rotorAngleDeg}
+              plainWinding={!showCoilColors}
+              showToothPoles={showToothPoles}
+              showPhases={canvasLayer === 'phases'}
+              explodedAmount={0}
+              introProgress={null}
+            />
+          </div>
+          <button type="button" aria-label="Open the 3D view" title="Open the 3D view" onClick={() => selectViewportMode('3d')}>
+            <span>3D</span>
+          </button>
+        </div>
+      )}
       {!geometry && mode === 'geometry' && viewportMode !== '3d' && <div className="public-viewport-message">Start the local backend to load geometry.</div>}
       {!mesh && mode === 'mesh' && viewportMode === '2d' && <div className="public-viewport-message">Generate the mesh to inspect its elements.</div>}
       {mode === 'geometry' && stale && viewportMode !== '3d' && <div className="viewport-preview-note">Updating preview…</div>}
@@ -2172,12 +2323,6 @@ function ViewportChrome({
                       ? 'Air'
                       : selectedComponent.role}
           </span>
-        </div>
-      )}
-      {mode === 'mesh' && showMeshNavigationHint && (
-        <div className="public-mesh-navigation-hint" role="status">
-          <span>Scroll to zoom · drag once zoomed</span>
-          <button type="button" aria-label="Dismiss mesh navigation hint" onClick={() => setShowMeshNavigationHint(false)}>×</button>
         </div>
       )}
       {mode === 'mesh' && meshQualitySummary && meshDisplayMode !== 'geometry' && (
@@ -2274,7 +2419,7 @@ function ViewportChrome({
             </div>
           </div>
         )}
-        <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
+        <div className={`viewport-controls viewport-controls-cad${viewportMode === '3d' && mode === 'geometry' ? ' is-3d' : ''}`} aria-label="Motor view and overlay controls">
           {/* Each group has a small label and one of two shapes: a segmented
               control picks one way to draw the view, a dot toggle switches a
               layer on or off on its own. Tabs in the title bar pick the view. */}
@@ -2312,18 +2457,46 @@ function ViewportChrome({
               </span>
             </span>
           )}
+          {mode === 'mesh' && <span className="public-dock-row-break" aria-hidden="true" />}
           {mode === 'mesh' && (
-            <span className="vc-group public-mesh-layer-controls" role="group" aria-label="Mesh layers">
-              <span className="public-dock-group-label" aria-hidden="true">Show</span>
-              <button
-                type="button"
-                className="public-dock-toggle"
-                aria-pressed={showMeshEdges}
-                onClick={() => onShowMeshEdgesChange?.(!showMeshEdges)}
-              >
-                Element edges
-              </button>
+            <span className="vc-group public-view-modes" role="group" aria-label="Mesh overlays">
+              <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['slots', 'Slots', 'slot numbers'],
+                  ['teeth', 'Tooth', 'tooth numbers'],
+                  ['windings', 'Winding', 'winding labels'],
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).map(([overlay, label, what]) => {
+                  const pressed = meshDisplayMode === 'geometry' && overlays[overlay];
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={pressed}
+                      disabled={meshDisplayMode !== 'geometry'}
+                      title={meshDisplayMode !== 'geometry' ? 'Overlays show with the Regions colouring' : `${pressed ? 'Hide' : 'Show'} the ${what} over the mesh`}
+                      onClick={() => toggleOverlay(overlay)}
+                      key={overlay}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </span>
             </span>
+          )}
+          {mode === 'mesh' && (
+            // The on/off layers wait in More, as on the Field tab, so the dock keeps to three rows at any width.
+            <details
+              className="public-field-layer-menu public-dock-more"
+              {...meshLayerMenu}
+            >
+              <summary>More{meshMoreOn > 0 && <em>{meshMoreOn} on</em>}</summary>
+              <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
+                <button type="button" aria-pressed={meshMagnifier} title="Show an enlarged view of the area under the pointer" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
+                <button type="button" aria-pressed={showToothPoles} title="Show each stator tooth's N / S pole as the rotor turns" onClick={() => setShowToothPoles((shown) => !shown)}><i aria-hidden="true" />Tooth poles</button>
+                <button type="button" aria-pressed={showCoilColors} title="Color each coil by its phase; off draws them all in one plain color" onClick={() => setShowCoilColors((shown) => !shown)}><i aria-hidden="true" />Coil colors</button>
+              </div>
+            </details>
           )}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
@@ -2345,37 +2518,84 @@ function ViewportChrome({
               </span>
             </span>
           )}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="vc-group public-view-modes" role="group" aria-label="2D display layers">
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && (
+            <span className="vc-group public-view-modes" role="group" aria-label="Display layers">
               <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
               <span className="public-dock-segmented">
                 {([
-                  ['none', 'None'],
-                  ['dimensions', 'Dims'],
-                  ['slots', 'Slots'],
-                  ['windings', 'Winding'],
-                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
-                  // Phases is the winding overlay shaded by phase current, so
-                  // Winding stays pressed under it and turns both off.
-                  const pressed = canvasLayer === layer || (layer === 'windings' && canvasLayer === 'phases');
-                  return (
-                    <button
-                      type="button"
-                      aria-pressed={pressed}
-                      title={layer === 'none' ? 'Show the bare cross-section' : pressed ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                      // One overlay at a time. None, or clicking the active one again,
-                      // leaves the bare cross-section: Dims in particular puts a
-                      // legend and dashed lines over the motor.
-                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
-                      key={layer}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
+                  ['dimensions', 'Dims', 'dimensions'],
+                  ['slots', 'Slots', 'slot numbers'],
+                  ['teeth', 'Tooth', 'tooth numbers'],
+                  ['windings', 'Winding', 'winding labels (A+, A-)'],
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).filter(([overlay]) => (
+                  // The 3D view carries the number chips, not the dimension lines.
+                  viewportMode === '2d' || overlay !== 'dimensions'
+                )).map(([overlay, label, what]) => (
+                  // Each overlay is on or off by itself; none pressed is the bare cross-section.
+                  <button
+                    type="button"
+                    aria-pressed={overlays[overlay]}
+                    title={`${overlays[overlay] ? 'Hide' : 'Show'} the ${what}`}
+                    onClick={() => toggleOverlay(overlay)}
+                    key={overlay}
+                  >
+                    {label}
+                  </button>
+                ))}
               </span>
             </span>
           )}
+          {/* Three rows on every tab, so the motor never moves between them:
+              what is drawn, what is shown over it, and the transport. */}
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && <span className="public-dock-row-break" aria-hidden="true" />}
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && (
+            <span className="vc-group public-view-toggles" role="group" aria-label="Display toggles">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
+              {/* Phases only means something while the rotor turns: it shades the
+                  coils by each phase's current, so it sits with the preview
+                  rather than among the label overlays. */}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={canvasLayer === 'phases'}
+                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
+                  onClick={() => {
+                    // Phases brings the coil colours on with it; Coil colors can then be turned off again for copper coils.
+                    if (canvasLayer !== 'phases') setShowCoilColors(true);
+                    setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'));
+                  }}
+                >
+                  Phases
+                </button>
+              )}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showToothPoles}
+                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
+                  onClick={() => setShowToothPoles((shown) => !shown)}
+                >
+                  Tooth poles
+                </button>
+              )}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showCoilColors}
+                  title={showCoilColors ? 'Draw every coil in one plain color, to follow the N / S fields' : 'Color each coil by its phase'}
+                  onClick={() => setShowCoilColors((shown) => !shown)}
+                >
+                  Coil colors
+                </button>
+              )}
+            </span>
+          )}
+          {/* 3D only, in a right-hand column beside Overlay, Show and Spin: Explode here, then the
+              peel slider and the part list, which the 3D view draws into the slot (PublicMotor3D). */}
+          {viewportMode === '3d' && mode === 'geometry' && <span className="public-dock-3d-slot" ref={setDock3dSlot} />}
           {viewportMode === '3d' && (
             <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
               <span className="public-dock-group-label" aria-hidden="true">Explode</span>
@@ -2420,31 +2640,6 @@ function ViewportChrome({
                 title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
-              {/* Phases only means something while the rotor turns: it shades the
-                  winding overlay by each phase's current, so it sits with the
-                  preview rather than among the static overlays. */}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={canvasLayer === 'phases'}
-                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
-                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
-                >
-                  Phases
-                </button>
-              )}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={showToothPoles}
-                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
-                  onClick={() => setShowToothPoles((shown) => !shown)}
-                >
-                  Tooth poles
-                </button>
-              )}
             </span>
           )}
         </div>
@@ -2628,6 +2823,14 @@ function HealthPanel({
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
   const qualification = geometryStale ? null : readQualification(geometry?.metadata?.qualification);
+  // Can it be wound: the wire against the slot, the slot mouth and the bends it has to make (windingBuild.ts).
+  const windingRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
+  const windingChecks = windingRecord ? windingBuildChecks({
+    record: windingRecord,
+    slotMouthMm: Math.max(0, config.stator.slot_opening_mm - (config.stator.tooth_shoe_enabled ? 2 * Math.max(0, config.stator.tooth_shoe_overhang_mm ?? 1.5) : 0)),
+    windingType: config.winding.type,
+    toothWidthMm: statorWidths.narrowestToothWidthMm,
+  }) : [];
   const issues: DesignHealthIssue[] = [
     ...(error ? [{
       severity: 'warning' as const,
@@ -2646,6 +2849,7 @@ function HealthPanel({
       title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
+    ...windingChecks,
     ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
     ...(toothWidthAdvisory ? [{
       severity: toothWidthAdvisory.severity,
@@ -3294,8 +3498,8 @@ function BackEMFHarmonicSpectrum({
 
 export type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | 'advanced';
 
-function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, cancellingSolve = false, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
-  'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'cancellingSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
+function SolveStage({ config, designName, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, cancellingSolve = false, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
+  'config' | 'designName' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'cancellingSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
   const reference = publishedReference(config);
   // The setup sections open one at a time, as Design's do. The accuracy plan
@@ -3321,6 +3525,24 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
+  const [magnifierSlot, setMagnifierSlot] = useState<HTMLDivElement | null>(null);
+  const [fieldDataSlot, setFieldDataSlot] = useState<HTMLDivElement | null>(null);
+  // While a solve meshes and solves, the viewport turns the rotor steadily, so
+  // the wait reads as work in progress; during the field solve it pulses too. Both
+  // read progress the solver already reports, so they add nothing to the
+  // solve; the mesh view turns a picture of the rotor it drew once.
+  const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
+  const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
+  const sweepPoleCount = config.rotor.pole_count;
+  useEffect(() => {
+    setSolveRotorTurn((previous) => (busy === 'solve'
+      ? nextPublicSolveRotorTurn(previous, progress, sweepRangeDeg, sweepPoleCount)
+      : null));
+  }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
+  // It keeps turning while the result is put together: the turn ends when the solve does.
+  const shownRotorTurn = solveRotorTurn;
+  const solvingField = shownRotorTurn?.phase === 'solving';
+  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? true : null, 12);
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
@@ -3329,6 +3551,25 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   // reset the view only when one of them is replaced, not on a resumed mount.
   const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
   const viewedResultRef = useRef<unknown>(resumeSolveView ? result : undefined);
+  // As soon as the first position is solved its field is shown: a real result
+  // to look at while the rest of the sweep runs. It is read once.
+  const firstSolvedField = useFirstSolvedField(SHOW_FIRST_SOLVED_FIELD && busy === 'solve', progress);
+  // It stays up while the result is put together, and for the one render
+  // between the result arriving and the view switching to it, so the mesh
+  // does not flash back in between.
+  const resultNotYetViewed = Boolean(result) && viewedResultRef.current !== result;
+  const shownSolvedField = busy === 'solve' || resultNotYetViewed ? firstSolvedField : null;
+  const previewShowedMeshRef = useRef(false);
+  previewShowedMeshRef.current = Boolean(shownSolvedField) && solveView === 'mesh';
+  const solveRotorCaption = shownSolvedField
+    ? 'A solved rotor position · finishing the rest'
+    : !shownRotorTurn || solveRotorAngleDeg === null
+      ? null
+      : shownRotorTurn.finished
+        ? 'Putting the results together'
+        : solvingField
+        ? 'Solving the field at each rotor position'
+        : 'Meshing the rotor positions';
   useEffect(() => {
     solveViewMemory.stage = { result, mesh, solveView, meshDisplayMode, showMeshEdges };
   });
@@ -3342,7 +3583,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
   const advancedOptionsRef = useRef<HTMLElement>(null);
-  const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
+  const nonlinearSolverRef = useRef<HTMLButtonElement>(null);
   const fineMeshRef = useRef<HTMLButtonElement>(null);
   const recoveryFocusTargetRef = useRef<HTMLElement | null>(null);
   const [recoveryFocusRequest, setRecoveryFocusRequest] = useState(0);
@@ -3364,9 +3605,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const sixStepSelected = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
-  const solverCaption = selectedSolver === 'elmer'
-    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · Gmsh · remesh per position.`
-    : 'Built-in field solver using the prepared Gmsh mesh.';
   const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
@@ -3575,7 +3813,11 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       setMeshDisplayMode('geometry');
     }
     if (!result && mesh) setSolveView('mesh');
-    if (resultChanged && result) setSolveView('field');
+    if (resultChanged && result) {
+      // The finished field opens the way the in-run field was showing: with the mesh if it had it.
+      if (previewShowedMeshRef.current) solveViewMemory.field.showMesh = true;
+      setSolveView('field');
+    }
   }, [mesh, result]);
 
   useEffect(() => {
@@ -3992,7 +4234,16 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   <div><dt>Torque method</dt><dd>WST</dd></div>
                   <div><dt>Linear solver</dt><dd>Direct Cholesky</dd></div>
                 </dl>
-                <SelectRow selectRef={nonlinearSolverRef} label="Nonlinear solver" value={config.solve_params.nonlinear_solver} disabled={busy !== null} choices={[{ value: 'newton', label: 'Newton (recommended)' }, { value: 'picard', label: 'Picard' }]} onChange={(value) => onSolveSettingChange('nonlinear_solver', value as MotorConfig['solve_params']['nonlinear_solver'])} />
+                <div className="param-row public-param-row public-choice-row public-nonlinear-choice" role="group" aria-label="Nonlinear solver">
+                  <span className="param-label">Nonlinear solver</span>
+                  <span className="public-param-choices">
+                    <span className="public-recommended-choice">
+                      <small id="public-newton-recommendation">Recommended</small>
+                      <button type="button" ref={nonlinearSolverRef} aria-describedby="public-newton-recommendation" aria-pressed={config.solve_params.nonlinear_solver === 'newton'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'newton') onSolveSettingChange('nonlinear_solver', 'newton'); }}>Newton</button>
+                    </span>
+                    <button type="button" aria-pressed={config.solve_params.nonlinear_solver === 'picard'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'picard') onSolveSettingChange('nonlinear_solver', 'picard'); }}>Picard</button>
+                  </span>
+                </div>
                 <p className="public-solver-help">Newton is the default and needs far fewer iterations. It falls back to Picard at any position where it doesn't converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
@@ -4031,6 +4282,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           ? (
             <SolvedFieldViewer
               materials={materials}
+              magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
+              probeSlot={solveViewportExpanded ? null : fieldDataSlot}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -4054,6 +4307,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           : (
             <ViewportChrome
               config={config}
+              designName={designName}
               materials={materials}
               geometry={geometry}
               mesh={mesh}
@@ -4065,6 +4319,23 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
+              magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
+              solveRotorAngleDeg={solveRotorAngleDeg}
+              solveRotorCaption={solveRotorCaption}
+              solvePulse={solvingField || Boolean(shownSolvedField)}
+              solveFieldPreview={shownSolvedField && (
+                <FieldResultPlot
+                  plot={shownSolvedField}
+                  ring={outerRotorRing(config)}
+                  saturationTicks={statorSteelSaturationTicks(config, materials)}
+                  showMesh={solveView === 'mesh'}
+                  showHeading={false}
+                  showStatistics={false}
+                  showControls={false}
+                  fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
+                  rotorMarkDeg={(shownSolvedField.angle_deg ?? 0) / Math.max(1, config.rotor.pole_count / 2)}
+                />
+              )}
               dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
@@ -4112,6 +4383,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
             </div>
           )}
         </div>
+        <div className="public-run-magnifier-slot" ref={setMagnifierSlot} />
+        <div className="public-run-field-data-slot" ref={setFieldDataSlot} />
         <details
           className="public-run-plan-section public-run-analysis"
           open={analysisDetailsOpen}
@@ -4119,8 +4392,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
         >
           <summary className="public-run-copy">
             <span className="eyebrow">Analysis</span>
-            <strong className="public-run-plan-title">{solverLabel}</strong>
-            <small className="public-run-plan-caption">{solverCaption}</small>
           </summary>
           <div className="public-run-analysis-body">
             {error && <div className="error-banner" role="alert">
@@ -4594,10 +4865,12 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                 ) : (
                   <ViewportChrome
                     config={props.config}
+                    designName={props.designName}
                     materials={props.materials}
                     geometry={props.geometry}
                     mesh={props.mesh}
                     mode="geometry"
+                    show3dInset
                     stale={props.geometryStale}
                     geometryStale={props.geometryStale}
                     busy={props.busy}
@@ -4625,7 +4898,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
               )}
             </div>
           )}
-          {props.activeStep === 'solve' && <SolveStage config={props.config} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} cancellingSolve={props.cancellingSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
+          {props.activeStep === 'solve' && <SolveStage config={props.config} designName={props.designName} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} cancellingSolve={props.cancellingSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
           {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
         </div>
       </main>

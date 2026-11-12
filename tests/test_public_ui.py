@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import socket
 from pathlib import Path
@@ -176,3 +177,18 @@ def test_development_service_stays_api_only() -> None:
 def test_bundle_without_index_is_rejected(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError):
         create_app(bound_port=2645, ui_bundle=tmp_path)
+
+
+def test_a_rebuilt_bundle_is_served_without_a_restart(client: TestClient, bundle: Path) -> None:
+    (bundle / "assets" / "index-AbCd1234.js").unlink()
+    (bundle / "assets" / "index-Zz99Yy88.js").write_text("export {};\n")
+    assert client.get("/assets/index-Zz99Yy88.js").status_code == 200
+    assert client.get("/assets/index-AbCd1234.js").status_code == 404
+
+
+def test_reload_token_is_reported_only_when_switched_on(client: TestClient, bundle: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    assert "ui_reload_token" not in client.get("/health").json()
+    monkeypatch.setenv("COILEM_UI_AUTO_RELOAD", "1")
+    first = client.get("/health").json()["ui_reload_token"]
+    os.utime(bundle / "index.html", ns=(1, 1))
+    assert client.get("/health").json()["ui_reload_token"] != first

@@ -87,7 +87,7 @@ import {
   type PublicSolvePreset,
   type PublicSweepSampling,
 } from './solvePlan';
-import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar } from './solveProgress';
+import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar, withFirstPublicSolveFieldFrame } from './solveProgress';
 
 const FALLBACK_MATERIALS: MaterialCatalog = {
   steels: ['M350-50A'],
@@ -554,6 +554,10 @@ export function App() {
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
   const [guidedSolveSection, setGuidedSolveSection] = useState<SolveSetupSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
+  // Development auto reload (COILEM_UI_AUTO_RELOAD=1): the page reloads when the launcher reports a rebuilt UI, but never under a running solve.
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
+  const uiReloadTokenRef = useRef<string | null>(null);
   const [cancellingSolve, setCancellingSolve] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
@@ -1073,6 +1077,14 @@ export function App() {
     const stopBackendMonitor = startPublicBackendMonitor({
       probe: getPublicHealth,
       onOnline: (health) => {
+        const reloadToken = typeof health.ui_reload_token === 'string' ? health.ui_reload_token : null;
+        if (reloadToken !== null) {
+          if (uiReloadTokenRef.current === null) uiReloadTokenRef.current = reloadToken;
+          else if (reloadToken !== uiReloadTokenRef.current && busyRef.current !== 'solve') {
+            window.location.reload();
+            return;
+          }
+        }
         const nextElmerCapability = elmerCapabilityFromHealth(health);
         setConnectionStatus('online');
         setAppVersion(typeof health.version === 'string' && health.version.trim() ? health.version.trim() : null);
@@ -1134,7 +1146,8 @@ export function App() {
   const generateMesh = (): Promise<MeshPreview | null> => prepareMesh(config);
 
   const handleSolveProgress = useCallback((nextProgress: PublicSolveProgress) => {
-    setProgress(nextProgress);
+    // The first solved field a run names stays on the progress for the Solve page to show.
+    setProgress((previous) => withFirstPublicSolveFieldFrame(previous, nextProgress));
     const hasAngle = typeof nextProgress.angle_deg === 'number' && Number.isFinite(nextProgress.angle_deg);
     const hasTorque = typeof nextProgress.torque_Nm === 'number' && Number.isFinite(nextProgress.torque_Nm);
     const hasBackEmf = [nextProgress.phase_a_V, nextProgress.phase_b_V, nextProgress.phase_c_V]

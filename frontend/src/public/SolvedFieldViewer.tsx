@@ -1,4 +1,5 @@
 import { solveViewMemory } from './solveViewMemory';
+import { useLayerMenu } from './useLayerMenu';
 import {
   useCallback,
   useEffect,
@@ -11,6 +12,7 @@ import { outerRotorRing } from './sectorFraming';
 
 import { getPublicFieldFrame, getPublicPlaybackStatus } from './api';
 import {
+  FIELD_FIT_LIKE_MOTOR_CANVAS,
   FieldResultPlot,
   warmFieldResultPlot,
   type FieldColorRangeMode,
@@ -48,7 +50,7 @@ import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
 import { describeFieldProbe } from './fieldProbeRegion';
 import type { FieldPositionLink } from './fieldPositionLink';
-import { rotorAirgapBoundaryRadiusMm } from './motorAirgap';
+import { magneticAirgapMm, rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
   GeometryPreview,
   MaterialCatalog,
@@ -138,6 +140,8 @@ function evictRasters(
 }
 
 interface SolvedFieldViewerProps {
+  magnifierSlot?: HTMLElement | null;
+  probeSlot?: HTMLElement | null;
   viewControls: ReactNode;
   expandControl?: ReactNode;
   config: MotorConfig;
@@ -207,6 +211,8 @@ function playbackDescriptors(
 }
 
 export function SolvedFieldViewer({
+  magnifierSlot = null,
+  probeSlot = null,
   viewControls,
   expandControl,
   config,
@@ -252,6 +258,8 @@ export function SolvedFieldViewer({
   showMeshRef.current = showMesh;
   const [showFieldLines, setShowFieldLines] = useState(solveViewMemory.field.showFieldLines);
   const [showMagnets, setShowMagnets] = useState(solveViewMemory.field.showMagnets);
+  const [magnifier, setMagnifier] = useState(solveViewMemory.field.magnifier);
+  const fieldLayerMenu = useLayerMenu();
   const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
@@ -262,8 +270,8 @@ export function SolvedFieldViewer({
   const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
   useEffect(() => {
-    solveViewMemory.field = { showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm };
-  }, [showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm]);
+    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm };
+  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm]);
   const playbackElectricalAngleRef = useRef(0);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
@@ -471,8 +479,8 @@ export function SolvedFieldViewer({
     return values.reduce((peak, value) => Math.max(peak, value), 0);
   }, [activeDetailRaster?.maxB, visiblePlot, visibleRaster?.maxB]);
   const describeProbe = useCallback(
-    (probe: FieldProbe) => describeFieldProbe(probe, config),
-    [config],
+    (probe: FieldProbe) => describeFieldProbe(probe, config, materials),
+    [config, materials],
   );
   const polePairs = Math.max(1, config.rotor.pole_count / 2);
   const mechanicalAngleDeg = electricalAngleDeg / polePairs;
@@ -1174,6 +1182,7 @@ export function SolvedFieldViewer({
   // in view; the reference layers wait in More, which counts how many are on.
   const renderMoreLayerButtons = () => (
     <>
+      <button type="button" aria-pressed={magnifier} title="Show an enlarged view of the area under the pointer" onClick={() => setMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
@@ -1181,6 +1190,7 @@ export function SolvedFieldViewer({
     </>
   );
   const moreLayersOn = [
+    magnifier,
     hasMagnets && showMagnets,
     showMesh,
     showAirgap,
@@ -1229,9 +1239,17 @@ export function SolvedFieldViewer({
               geometry={geometry}
               magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showMagnets={showMagnets}
+              showStatistics={false}
+              magnifier={magnifier}
+              magnifierSlot={magnifierSlot}
+              probeSlot={probeSlot}
+              fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
+              rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
               showAirgap={showAirgap}
-              // The air-gap ring, field axes and stator pole labels assume an inner rotor.
+              // The field axes and stator pole labels assume an inner rotor.
               airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
+              // An outer rotor's gap runs from the stator's outside out to the magnets' inner face.
+              airgapRingMm={config.rotor_layout === 'outer' ? [config.stator.OD_mm / 2, config.stator.OD_mm / 2 + magneticAirgapMm(config)] : undefined}
               showMagnetPolarityLabels={showPoleLabels}
               magnetReference={source === 'armature' && !overlayActive}
               showStatorPolarity={source === 'armature' && showPoleLabels}
@@ -1319,7 +1337,7 @@ export function SolvedFieldViewer({
               <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
               {showFieldLines && renderDensityControl()}
             </div>
-            <details className="public-field-layer-menu">
+            <details className="public-field-layer-menu" {...fieldLayerMenu}>
               <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>
               <div className="public-field-layer-controls" role="group" aria-label="More field layers">
                 {renderMoreLayerButtons()}
@@ -1328,6 +1346,7 @@ export function SolvedFieldViewer({
           </div>
         </div>
         <div className="public-field-playback">
+          <span className="public-field-playback-label" aria-hidden="true">Play</span>
           <button
             className="public-field-transport-play"
             type="button"

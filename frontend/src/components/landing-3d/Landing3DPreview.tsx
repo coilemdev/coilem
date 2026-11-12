@@ -9,7 +9,6 @@ import {
 import { resolveLandingSolvedPlayback } from './solvedPlayback';
 import { buildConcentratedCoil } from '../../public/coil3d';
 
-const BACK_EMF_PHASE_COLORS = { A: '#f59e0b', B: '#34d399', C: '#a78bfa' } as const;
 const DESIGN_MAGNET_N_FILL = '#e53e3e';
 const DESIGN_MAGNET_S_FILL = '#3182ce';
 // Match `.public-field-result-line` in the product solve view.
@@ -551,10 +550,10 @@ export const Landing3DPreview: React.FC = () => {
         return sprite;
       };
 
-      // Enamelled magnet wire: copper under a glossy coat, tinted just enough to
-      // tell the three phases apart.
-      const enamelledCopper = (phaseColor: string) => physical({
-        color: new THREE.Color(renderTargetColor(phaseColor)).lerp(new THREE.Color(0xa85a22), 0.38),
+      // Enamelled magnet wire: copper under a glossy coat. Every coil is the same
+      // plain copper, as the app draws them with Coil colors off.
+      const enamelledCopper = () => physical({
+        color: new THREE.Color(renderTargetColor('#c77b30')).lerp(new THREE.Color(0xa85a22), 0.38),
         metalness: 0.68,
         roughness: 0.36,
         clearcoat: 0.6,
@@ -564,9 +563,9 @@ export const Landing3DPreview: React.FC = () => {
         // Electrical-steel laminations.
         stator: physical({ color: 0x6d7682, metalness: 0.85, roughness: 0.46 }, 0.38),
         tooth: physical({ color: 0x78818e, metalness: 0.85, roughness: 0.44 }, 0.38),
-        phaseA: enamelledCopper(BACK_EMF_PHASE_COLORS.A),
-        phaseB: enamelledCopper(BACK_EMF_PHASE_COLORS.B),
-        phaseC: enamelledCopper(BACK_EMF_PHASE_COLORS.C),
+        phaseA: enamelledCopper(),
+        phaseB: enamelledCopper(),
+        phaseC: enamelledCopper(),
         liner: physical({ color: 0xd8cdb0, metalness: 0.02, roughness: 0.8 }, 0.26),
         rotor: physical({ color: 0x8c939d, metalness: 0.9, roughness: 0.36 }, 0.7),
         // Ground steel shaft and bearing races.

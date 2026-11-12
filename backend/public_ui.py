@@ -13,6 +13,7 @@ Page fallback is exact-match only, never prefix based: the UI page
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
@@ -94,6 +95,24 @@ def _file_response(path: Path, cache_control: str) -> FileResponse:
     )
 
 
+# Development switch: with COILEM_UI_AUTO_RELOAD=1, /health reports a token that
+# changes when the UI bundle is rebuilt, and an open page reloads itself.
+UI_AUTO_RELOAD_SWITCH = "COILEM_UI_AUTO_RELOAD"
+_served_index: Path | None = None
+
+
+def ui_reload_token() -> str | None:
+    """The served bundle's build stamp, or None unless auto reload is switched on."""
+
+    if os.environ.get(UI_AUTO_RELOAD_SWITCH) != "1" or _served_index is None:
+        return None
+    try:
+        return str(_served_index.stat().st_mtime_ns)
+    except OSError:
+        # Mid-rebuild: the bundle directory is emptied before the new files land.
+        return None
+
+
 def install_ui_routes(app: FastAPI, bundle: Path, *, canonical_origin: str | None = None) -> None:
     """Register the UI allowlist for ``bundle``, a Vite production build.
 
@@ -105,12 +124,18 @@ def install_ui_routes(app: FastAPI, bundle: Path, *, canonical_origin: str | Non
     index = bundle / "index.html"
     if not index.is_file():
         raise FileNotFoundError(f"UI bundle has no index.html: {bundle}")
+    global _served_index
+    _served_index = index
     asset_directory = bundle / "assets"
-    assets = (
-        {entry.name: entry for entry in asset_directory.iterdir() if entry.is_file()}
-        if asset_directory.is_dir()
-        else {}
-    )
+
+    def list_assets() -> dict[str, Path]:
+        return (
+            {entry.name: entry for entry in asset_directory.iterdir() if entry.is_file()}
+            if asset_directory.is_dir()
+            else {}
+        )
+
+    assets = list_assets()
     canonical_host = canonical_origin.removeprefix("http://") if canonical_origin else None
 
     async def page(request: Request) -> Response:
@@ -122,6 +147,13 @@ def install_ui_routes(app: FastAPI, bundle: Path, *, canonical_origin: str | Non
     async def asset(request: Request) -> Response:
         name = request.path_params["name"]
         path = assets.get(name)
+        if path is None or not path.is_file():
+            # A rebuild under a running launcher renames the hashed files: look
+            # again, so the new page finds its scripts without a restart. Only
+            # files directly in the bundle's assets directory are ever served.
+            assets.clear()
+            assets.update(list_assets())
+            path = assets.get(name)
         if path is None:
             raise HTTPException(status_code=404)
         return _file_response(path, _IMMUTABLE if _HASHED_ASSET_NAME.fullmatch(name) else "no-cache")
