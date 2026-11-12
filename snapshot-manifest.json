@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 90199,
-      "sha256": "ace54324d55b3f2cea4b96025ebe0cd642a12b9ede7c160e7a60d5e948cde2b7"
+      "bytes": 90334,
+      "sha256": "1cbbed7f0c03c8946cba2425f76efd76da5562ada5df6c119a440ae90eb89ef6"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 99940,
-      "sha256": "f5685dc68ebb20a59054cef6d7698c7a250f90a6a321ff13d237d21d986888f8"
+      "bytes": 100046,
+      "sha256": "16becfd22f15209965dcaf12dc5f1bfd18b447d0ff06fc6017f68445295efc1d"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",

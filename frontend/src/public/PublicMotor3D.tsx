@@ -1879,7 +1879,8 @@ function ParametricMotor3D({
         : null;
       phaseTints.forEach((tints, index) => {
         // Phases lights each phase by the current it carries now; Coil colors off keeps the coils copper under it.
-        const lit = shown.showPhases && currents !== null;
+        // With Tooth poles on as well the coils hold a steady colour, as in 2D.
+        const lit = shown.showPhases && currents !== null && !shown.showToothPoles;
         const strength = lit ? 0.48 + Math.abs(currents[index]) * 0.52 : 1;
         tints.forEach(({ material, base }) => {
           material.color.copy(shown.plainWinding ? plainCoil : base).multiplyScalar(strength);
