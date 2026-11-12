@@ -4,11 +4,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
-import { buildConcentratedCoil, buildWindingHarness } from './coil3d';
+import { buildConcentratedCoil, buildDistributedCoil, buildWindingHarness } from './coil3d';
 import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
-import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
+import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection, PublicWindingCoil } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
 import { STRIP_END, phaseCurrents, phaseDriveFrame, phaseStrips, rotorElectricalDeg, slotCurrents, toothPoles, type PhaseDrive, type WindingSide } from './phaseDrive';
 import { drawPhaseDriveWired } from './phaseDrivePanel';
@@ -698,9 +698,10 @@ function ParametricMotor3D({
     config.rotor.pole_count,
   ]);
   const windingLayout: WindingSide[] | null = geometry?.winding_layout ?? null;
+  const windingCoils: PublicWindingCoil[] | null = geometry?.winding_coils ?? null;
   // What the scene shows now. It is built once per design, so the toggles reach it through this.
-  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, previewRpm });
-  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, previewRpm };
+  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, previewRpm });
+  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, previewRpm };
   // The Phases waveforms are drawn on a flat canvas: under the 3D one while the
   // drive leads are on the far side of the motor, so the wires pass behind it, and
   // over it once the view is turned to the back and the leads are in sight.
@@ -1222,6 +1223,8 @@ function ParametricMotor3D({
       )
       : null;
     const toothMaterials: THREE.MeshPhysicalMaterial[] = [];
+    // A distributed winding's plain slot blocks, shown only until the preview brings its coils.
+    const slotBlocks: THREE.Mesh[] = [];
     for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
       // The backend centres slot k at k slot pitches and tooth k between slots
       // k and k + 1, the frame the 2D view and the tooth-coil rules use.
@@ -1271,6 +1274,7 @@ function ParametricMotor3D({
         geometries.push(coilGeometry);
         const phaseMaterial = { A: materials.phaseA, B: materials.phaseB, C: materials.phaseC }[phase];
         const coil = new THREE.Mesh(coilGeometry, phaseMaterial);
+        slotBlocks.push(coil);
         coil.rotation.z = slotAngle;
         makeSelectable(coil, { id: `3d-winding-${slot + 1}`, kind: 'winding', label: `Slot ${slot + 1} · phase ${phase}${direction}`, role: 'Current-carrying stator winding', slotIndex: slot + 1, phase, direction });
         windingsGroup.add(coil);
@@ -1871,6 +1875,60 @@ function ParametricMotor3D({
       });
     };
 
+    // A distributed winding drawn coil by coil, as the backend lays it out: each coil
+    // is a wound loop through its two slots with an end turn over each end of the stack.
+    // The coil list comes with the preview, after the scene is built.
+    let builtCoils = '';
+    const distributedCoils: THREE.Mesh[] = [];
+    const syncDistributedCoils = (coils: PublicWindingCoil[] | null) => {
+      if (concentratedCoil) return;
+      const spanning = (coils ?? []).filter((coil) => !coil.tooth_wound && coil.slot_in !== coil.slot_out);
+      const signature = JSON.stringify(spanning);
+      if (signature === builtCoils) return;
+      builtCoils = signature;
+      distributedCoils.splice(0).forEach((mesh) => {
+        windingsGroup.remove(mesh);
+        mesh.geometry.dispose();
+      });
+      slotBlocks.forEach((block) => { block.visible = spanning.length === 0; });
+      if (spanning.length === 0) return;
+      const boreEnd = outerRotor ? statorInnerRadius - 1.2 : statorInnerRadius + 1.2;
+      const yokeEnd = outerRotor
+        ? Math.min(statorInnerRadius - 2, yokeInnerRadius + 1)
+        : Math.max(statorInnerRadius + 2, yokeInnerRadius - 1);
+      const middle = (boreEnd + yokeEnd) / 2;
+      // Two coil sides share a slot in a two-layer winding: the side going in takes the yoke half, the one coming out the bore half.
+      const sidesInSlot = new Map<number, number>();
+      spanning.forEach((coil) => [coil.slot_in, coil.slot_out].forEach((slot) => sidesInSlot.set(slot, (sidesInSlot.get(slot) ?? 0) + 1)));
+      const twoLayer = Math.max(...sidesInSlot.values()) > 1;
+      const coilMaterials = { A: materials.coilA, B: materials.coilB, C: materials.coilC };
+      spanning.forEach((coil) => {
+        const { geometry: coilGeometry, strandCount } = buildDistributedCoil({
+          slotInAngle: coil.slot_in * slotPitch,
+          slotOutAngle: coil.slot_out * slotPitch,
+          inBand: twoLayer ? [middle, yokeEnd] : [boreEnd, yokeEnd],
+          outBand: twoLayer ? [boreEnd, middle] : [boreEnd, yokeEnd],
+          slotHalfAngle: Math.max(0.04, slotPitch * 0.18),
+          stackHalf: stackDepth / 2,
+          yokeSide: outerRotor ? -1 : 1,
+        });
+        const mesh = new THREE.Mesh(coilGeometry, coilMaterials[coil.phase]);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        makeSelectable(mesh, {
+          id: `3d-winding-coil-${coil.coil_index + 1}`,
+          kind: 'winding',
+          label: `Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${coil.slot_in + 1} to ${coil.slot_out + 1}`,
+          role: 'Distributed coil: two slot sides joined by an end turn at each end of the stack',
+          slotIndex: coil.slot_in + 1,
+          phase: coil.phase,
+          windingModel: `${config.winding.turns_per_coil} turns per coil · drawn as ${strandCount} wire loops`,
+        });
+        windingsGroup.add(mesh);
+        distributedCoils.push(mesh);
+      });
+    };
+
     // Coil colours, Phases and Tooth poles recolour materials in place, so no toggle rebuilds the scene.
     const plainCoil = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.winding));
     const toothBase = materials.tooth.color.clone();
@@ -1884,6 +1942,7 @@ function ParametricMotor3D({
     const applyDisplay = () => {
       const shown = displayRef.current;
       syncWindingLabels(shown.windingLayout);
+      syncDistributedCoils(shown.windingCoils);
       const drive = shown.phaseDrive;
       const currents = (shown.showPhases || shown.showToothPoles) && drive
         ? phaseCurrents(drive, rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount))
@@ -2202,6 +2261,7 @@ function ParametricMotor3D({
       bearingRigsRef.current = [];
       applyPartVisibilityRef.current = null;
       applyDisplayRef.current = null;
+      distributedCoils.forEach((mesh) => mesh.geometry.dispose());
       scene.traverse((object) => {
         const material = 'material' in object ? object.material as THREE.Material | THREE.Material[] : null;
         (Array.isArray(material) ? material : material ? [material] : []).forEach((item) => item.dispose());
@@ -2221,7 +2281,7 @@ function ParametricMotor3D({
   useEffect(() => {
     applyDisplayRef.current?.();
     requestRenderRef.current?.();
-  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout, previewRpm]);
+  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout, windingCoils, previewRpm]);
 
   useEffect(() => {
     if (!rotorRef.current) return;
