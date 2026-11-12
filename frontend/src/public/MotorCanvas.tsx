@@ -1120,15 +1120,16 @@ function drawPhaseDrive(
     context.fill();
 
     // The wire from the waveform into the motor, as live as the current in it.
+    // It leaves from the wave's newest point, so it rises and falls with the current.
     const { motor, terminal } = leads[index];
-    const reach = Math.max(24, (terminal[0] - right) * 0.5);
+    const reach = Math.max(24, (terminal[0] - nowX) * 0.5);
     context.globalAlpha = 0.3 + 0.7 * level;
     context.strokeStyle = colour;
     context.lineWidth = 1.2 + 2 * level;
     context.lineCap = 'round';
     context.beginPath();
-    context.moveTo(right, mid);
-    context.bezierCurveTo(right + reach, mid, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
+    context.moveTo(nowX, nowY);
+    context.bezierCurveTo(nowX + reach, nowY, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
     context.lineTo(motor[0], motor[1]);
     context.stroke();
     context.beginPath();

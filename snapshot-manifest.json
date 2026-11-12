@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 66966,
-      "sha256": "9a78ba8af071072cc16f5fab78418a9a07867ffecbd2bc211b0a06c0bdd0c4a8"
+      "bytes": 67052,
+      "sha256": "c1b60bc94a6e7108c8ae0aec836903a823dbce93b0ae1d4d78467fcbad5e718a"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7550,8 +7550,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 311407,
-      "sha256": "9d2d0ff8e7b57cc8295fa459abf12a9046821a16bda3877ad15c25e609de72f6"
+      "bytes": 311406,
+      "sha256": "01e7fd5df8812fbd89910e7aaeaf088df62d596155402cb90f02ac1ad0012516"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
