@@ -5158,10 +5158,16 @@ button.performance-tag { cursor: help; }
 .public-dock-more > summary { display: inline-flex; min-height: 36px; align-items: center; gap: 8px; padding: 0 14px; border-radius: 999px; font: 600 13px var(--font-mono); cursor: pointer; list-style: none; }
 .public-dock-more > summary::after { color: var(--text-muted); content: '▾'; font-size: 10px; }
 .public-dock-more > summary em { color: var(--text-accent); font-size: 11px; font-style: normal; }
-/* The dock scrolls its overflow, so the menu opens as one row inside it, over the row above. */
-.public-dock-more > .public-field-layer-controls { right: 0; bottom: calc(100% + 6px); left: auto; display: flex; gap: 6px; min-width: 0; padding: 6px; }
+/* The menu opens above the dock, over the foot of the view, not over the row above its button:
+   it is positioned against the dock, which lets it out while it is open. */
+.public-motor-viewport .viewport-bottom-bar:has(.public-dock-more[open]) { overflow: visible; }
+.public-dock-more { position: static; }
+.public-dock-more > .public-field-layer-controls { bottom: calc(100% + 6px); display: grid; gap: 6px; padding: 8px; }
 .public-dock-more > .public-field-layer-controls > button { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 12px; border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 999px; background: rgba(10, 12, 17, 0.62); color: var(--text-muted); font: 600 13px var(--font-sans, inherit); white-space: nowrap; cursor: pointer; }
 .public-dock-more > .public-field-layer-controls > button > i { width: 9px; height: 9px; border: 1px solid currentColor; border-radius: 50%; }
 .public-dock-more > .public-field-layer-controls > button[aria-pressed="true"] { color: var(--text-primary); }
 .public-dock-more > .public-field-layer-controls > button[aria-pressed="true"] > i { border-color: #fbbf24; background: #fbbf24; }
+/* The field dock labels its three rows as the geometry and mesh docks do, at any width. */
+.public-field-dock .public-field-dock-controls .public-field-control-cluster > span,
+.public-field-dock > .public-field-playback > .public-field-playback-label { display: inline-block; flex: none; min-width: 58px; color: rgba(148,163,184,.58); font: 600 10px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 

@@ -1176,6 +1176,7 @@ export function SolvedFieldViewer({
   // in view; the reference layers wait in More, which counts how many are on.
   const renderMoreLayerButtons = () => (
     <>
+      <button type="button" aria-pressed={magnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
@@ -1183,6 +1184,7 @@ export function SolvedFieldViewer({
     </>
   );
   const moreLayersOn = [
+    magnifier,
     hasMagnets && showMagnets,
     showMesh,
     showAirgap,
@@ -1323,7 +1325,6 @@ export function SolvedFieldViewer({
               <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)} aria-label="Flux density"><i aria-hidden="true" /><span className="public-field-text-long">Flux density</span><span className="public-field-text-short" aria-hidden="true">Flux</span></button>
               <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
               {showFieldLines && renderDensityControl()}
-              <button type="button" aria-pressed={magnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMagnifier((value) => !value)} aria-label="Magnifier"><i aria-hidden="true" /><span className="public-field-text-long">Magnifier</span><span className="public-field-text-short" aria-hidden="true">Mag</span></button>
             </div>
             <details className="public-field-layer-menu">
               <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>
@@ -1334,6 +1335,7 @@ export function SolvedFieldViewer({
           </div>
         </div>
         <div className="public-field-playback">
+          <span className="public-field-playback-label" aria-hidden="true">Play</span>
           <button
             className="public-field-transport-play"
             type="button"

@@ -2386,7 +2386,17 @@ function ViewportChrome({
           )}
           {mode === 'mesh' && (
             // The on/off layers wait in More, as on the Field tab, so the dock keeps to three rows at any width.
-            <details className="public-field-layer-menu public-dock-more">
+            <details
+              className="public-field-layer-menu public-dock-more"
+              // The menu opens above the dock, over the foot of the view, so it covers no controls;
+              // it is placed against the dock, so it is lined up with its button here.
+              onToggle={(event) => {
+                const menu = event.currentTarget;
+                const dock = menu.closest('.viewport-bottom-bar');
+                const panel = menu.querySelector<HTMLElement>('.public-field-layer-controls');
+                if (dock && panel) panel.style.left = `${menu.getBoundingClientRect().left - dock.getBoundingClientRect().left}px`;
+              }}
+            >
               <summary>More{meshMoreOn > 0 && <em>{meshMoreOn} on</em>}</summary>
               <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
                 <button type="button" aria-pressed={meshMagnifier} title="Show the area under the pointer enlarged in a corner of the view" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
