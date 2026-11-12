@@ -3,6 +3,7 @@ import { useTurningRotorAngle } from './useTurningRotorAngle';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
 import { windingBuildChecks } from './windingBuild';
+import { AWG_SIZES, awgFor, awgNote, awgStoredDiameterMm } from './wireGauge';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
@@ -1536,12 +1537,23 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />}
         {!wire && windingResistanceRecord?.wire_source === 'derived' && (
           // The derived wire, shown so its thickness is seen to change with the turns and the slot.
-          <div className="param-row public-param-row public-derived-row" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Choose Specified to set a real one.">
+          <div className="param-row public-param-row public-derived-row" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Beside it, where that sits among the standard gauges. Choose Specified to set a real one.">
             <span className="param-label">Wire Ø (bare)<small>mm · derived</small></span>
-            <strong>{Number(windingResistanceRecord.strand_diameter_mm.toFixed(2))}</strong>
+            <strong>{Number(windingResistanceRecord.strand_diameter_mm.toFixed(2))} · {awgNote(windingResistanceRecord.strand_diameter_mm)}</strong>
           </div>
         )}
         {wire && <>
+          <SelectRow
+            label="Wire Gauge"
+            value={String(awgFor(wire.wire_bare_diameter_mm) ?? 'custom')}
+            choices={[
+              { value: 'custom', label: 'Custom', disabled: awgFor(wire.wire_bare_diameter_mm) !== null },
+              ...AWG_SIZES.map(({ gauge, diameterMm }) => ({ value: String(gauge), label: `AWG ${gauge} · ${diameterMm} mm` })),
+            ]}
+            hint="Pick a standard gauge to set the diameter, or type any diameter below for a wire that is not a standard size."
+            disabled={disabled}
+            onChange={(value) => { if (value !== 'custom') setWire({ ...wire, wire_bare_diameter_mm: awgStoredDiameterMm(Number(value)) }); }}
+          />
           <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
           <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} hint="Wires wound together as one turn. They share the turn's current and lower the resistance; they do not add turns." disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
           <NumberRow label="End-turn Extension" value={wire.end_turn_extension_mm ?? 0} unit="mm" min={0} max={200} step={1} hint="Straight length each coil side runs out of the stack before its end turn bends." disabled={disabled} onChange={(value) => setWire({ ...wire, end_turn_extension_mm: value > 0 ? value : null })} />

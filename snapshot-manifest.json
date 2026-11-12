@@ -6620,8 +6620,8 @@
     },
     {
       "path": "frontend/scripts/test-winding-build.mjs",
-      "bytes": 3678,
-      "sha256": "8e963d0bdffe69749b7bace5fd4338048ba211143f3e369f6517739a3d3be06f"
+      "bytes": 4606,
+      "sha256": "99c9e908321222b8bf9b1adba76aed5c6b910e6cb192d884f12bf6a76121138d"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 261252,
-      "sha256": "879ef4677540b64c6b766774c649ba4f9da0261011a26675a389ec98b8bbfb62"
+      "bytes": 262161,
+      "sha256": "1fb1af772a8194151377c0864176d403ee0d84c82344eb6d88d2c2ac75302123"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7605,8 +7605,8 @@
     },
     {
       "path": "frontend/src/public/windingBuild.ts",
-      "bytes": 7346,
-      "sha256": "91e2d166e3e2067054847792ec3ec13244208054873341b2656a640f92b869b3"
+      "bytes": 7641,
+      "sha256": "b578bb92dd13c0b21d21a8102d2ec268d7751582108c32cd9cac835a758a0a12"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
@@ -7622,6 +7622,11 @@
       "path": "frontend/src/public/windingWiring.ts",
       "bytes": 9560,
       "sha256": "c73b4b3b5e7139b2f52eb0e6dfb46f4ea295465b53166c204d7e7149cb76e84e"
+    },
+    {
+      "path": "frontend/src/public/wireGauge.ts",
+      "bytes": 2111,
+      "sha256": "482f4261ddb9f0925061dd416f8b0c9968a7ab68fb689c53b393f8fc8fd02b32"
     },
     {
       "path": "frontend/src/styles/templateselector.css",

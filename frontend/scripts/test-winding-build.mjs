@@ -61,15 +61,31 @@ assert.ok(titles({ record: record({ strand_diameter_mm: 2 }), slotMouthMm: 6 }).
 assert.ok(titles({ record: record(), windingType: 'concentrated', toothWidthMm: 3 }).includes('Wire is stiff to form'));
 // A derived wire is a suggestion: the same copper as strands in hand that pass the slot mouth and lay easily.
 const suggest = (overrides, slotMouthMm) => windingBuildChecks({ record: record({ wire_source: 'derived', copper_fill: 0.45, ...overrides }), slotMouthMm, windingType: 'distributed', toothWidthMm: 10 });
-assert.deepEqual(suggestedStrands(1.2, 3), { strands: 1, strandDiameterMm: 1.2 });
+// 1.2 mm as one wire: AWG 17 (1.15 mm), the thickest gauge within it.
+assert.deepEqual(suggestedStrands(1.2, 3), { strands: 1, strandDiameterMm: 1.15, gauge: 17 });
+// 3.02 mm of copper as AWG 17 strands: 7 of them carry it.
 const split = suggestedStrands(3.02, 3);
-assert.equal(split.strands, 6);
-assert.ok(split.strandDiameterMm <= 1.25 && Math.abs(split.strands * split.strandDiameterMm ** 2 - 3.02 ** 2) < 1e-9, 'same copper');
+assert.deepEqual(split, { strands: 7, strandDiameterMm: 1.15, gauge: 17 });
+// A narrow mouth pushes the suggestion to a thinner gauge that passes it.
+assert.equal(suggestedStrands(3.02, 1.2).gauge, 20);
 assert.equal(suggestedStrands(3, 0.1), null);
 const derived = suggest({ strand_diameter_mm: 3.02 }, 3);
 assert.equal(derived.length, 1);
-assert.match(derived[0].title, /^Suggested wire: 6 × 1\.23 mm$/);
+assert.equal(derived[0].title, 'Suggested wire: 7 × AWG 17 (1.15 mm)');
 assert.equal(derived[0].severity, 'positive');
 assert.equal(suggest({ strand_diameter_mm: 3 }, 0.1)[0].title, 'No wire passes the slot mouth');
+
+// The gauge table: the standard's diameters, and where a typed diameter sits among them.
+const { awgDiameterMm, awgFor, awgNote, thickestAwgWithin, AWG_SIZES } = await importTypeScriptModule(new URL('../src/public/wireGauge.ts', import.meta.url));
+assert.ok(Math.abs(awgDiameterMm(18) - 1.024) < 0.001 && Math.abs(awgDiameterMm(10) - 2.588) < 0.001 && Math.abs(awgDiameterMm(36) - 0.127) < 1e-9);
+assert.equal(AWG_SIZES.length, 29);
+assert.equal(awgFor(1.02), 18);
+assert.equal(awgFor(1.024), 18);
+assert.equal(awgFor(1.1), null);
+assert.equal(thickestAwgWithin(1.25), 17);
+assert.equal(awgNote(1.024), 'AWG 18');
+assert.equal(awgNote(1.42), 'AWG 15–16');
+assert.equal(awgNote(11.7), '> AWG 8');
+assert.equal(awgNote(0.05), '< AWG 36');
 
 console.log('winding build checks passed');

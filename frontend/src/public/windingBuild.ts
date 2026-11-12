@@ -6,6 +6,7 @@
  * and only that one should, never that it will.
  */
 
+import { AWG_SIZES } from './wireGauge';
 import type { WindingResistance } from './windingResistance';
 
 export interface WindingBuildCheck {
@@ -54,17 +55,20 @@ export const SUGGESTED_STRAND_MM = 1.25;
 const MOST_STRANDS_IN_HAND = 200;
 
 /**
- * The derived wire as something that can be wound: the same copper in the fewest
- * strands in hand that each pass the slot mouth and are thin enough to lay. Null
- * when no strand count up to the limit gets through the mouth.
+ * The derived wire as something that can be bought and wound: a standard gauge,
+ * in the fewest strands in hand that carry the same copper, each passing the slot
+ * mouth and thin enough to lay. Null when no gauge gets through the mouth within
+ * the strand limit.
  */
-export function suggestedStrands(turnDiameterMm: number, slotMouthMm: number): { strands: number; strandDiameterMm: number } | null {
-  for (let strands = 1; strands <= MOST_STRANDS_IN_HAND; strands += 1) {
-    const strandDiameterMm = turnDiameterMm / Math.sqrt(strands);
-    const passes = insulatedDiameterMm(strandDiameterMm) + SLOT_MOUTH_CLEARANCE_MM <= slotMouthMm;
-    if (passes && (strandDiameterMm <= SUGGESTED_STRAND_MM || strands === 1 && turnDiameterMm <= STIFF_STRAND_MM)) {
-      return { strands, strandDiameterMm };
-    }
+export function suggestedStrands(turnDiameterMm: number, slotMouthMm: number): { strands: number; strandDiameterMm: number; gauge: number } | null {
+  // One wire where the whole turn is thin enough to form; otherwise strands no thicker than lays easily.
+  const thickest = turnDiameterMm <= STIFF_STRAND_MM ? turnDiameterMm : SUGGESTED_STRAND_MM;
+  for (const { gauge, diameterMm } of AWG_SIZES) {
+    if (diameterMm > thickest + 1e-9) continue;
+    if (insulatedDiameterMm(diameterMm) + SLOT_MOUTH_CLEARANCE_MM > slotMouthMm) continue;
+    const strands = Math.max(1, Math.round((turnDiameterMm / diameterMm) ** 2));
+    if (strands > MOST_STRANDS_IN_HAND) return null;
+    return { strands, strandDiameterMm: diameterMm, gauge };
   }
   return null;
 }
@@ -85,7 +89,7 @@ export function windingBuildChecks({ record, slotMouthMm, windingType, toothWidt
     if (split) {
       checks.push({
         severity: 'positive',
-        title: `Suggested wire: ${split.strands} × ${mm(split.strandDiameterMm)}`,
+        title: `Suggested wire: ${split.strands} × AWG ${split.gauge} (${mm(split.strandDiameterMm)})`,
         copy: `${percent(record.copper_fill)} copper fill for ${record.conductors_per_slot} conductors a slot${split.strands > 1 ? `, as strands in hand that pass the ${mm(slotMouthMm)} slot mouth` : ''}. Set the wire in Winding to check a real one. ${overhang}`,
       });
     } else {
