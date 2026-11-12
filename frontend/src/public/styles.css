@@ -1043,7 +1043,7 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-viewport-3d-inset-scene { position: absolute; inset: 0; pointer-events: none; }
 .public-viewport-3d-inset-scene .public-3d-part-toggles, .public-viewport-3d-inset-scene .public-3d-hint, .public-viewport-3d-inset-scene .public-3d-peel { display: none; }
 /* The 3D view's slider: peel the motor from the outside in. */
-.public-3d-peel { position: absolute; z-index: 3; top: 94px; left: 12px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 999px; background: rgba(10, 13, 19, 0.82); color: var(--text-secondary); font-size: 12px; }
+.public-3d-peel { position: absolute; z-index: 3; top: 56px; left: 12px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 999px; background: rgba(10, 13, 19, 0.82); color: var(--text-secondary); font-size: 12px; }
 .public-3d-peel > span { color: var(--text-tertiary, rgba(148, 163, 184, 0.8)); font: 700 10px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .public-3d-peel > input { width: 180px; accent-color: #fbbf24; }
 .public-3d-peel > em { min-width: 64px; color: var(--text-primary); font-style: normal; }
@@ -1071,7 +1071,7 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-motor-3d-stage::after { z-index: 2; }
 /* Part show/hide row. Sits below the viewport label chip so the two do not
    overlap, and wraps rather than colliding with the hint on a narrow stage. */
-.public-3d-part-toggles { position: absolute; z-index: 3; top: 54px; left: 12px; display: flex; flex-wrap: nowrap; gap: 5px; max-width: min(700px, calc(100% - 24px)); overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.public-3d-part-toggles { position: absolute; z-index: 3; top: 16px; left: 128px; display: flex; flex-wrap: nowrap; gap: 5px; max-width: min(700px, calc(100% - 140px)); overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
 .public-3d-part-toggle { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 5px; padding: 6px 8px; border: 1px solid var(--border-default); border-radius: 999px; color: var(--text-secondary); background: rgba(15, 17, 23, 0.82); box-shadow: var(--shadow-md); font: 10px var(--font-mono); white-space: nowrap; cursor: pointer; transition: color .15s ease, border-color .15s ease, opacity .15s ease; }
 .public-3d-part-toggle::before { content: ''; width: 6px; height: 6px; border: 1px solid var(--text-accent); border-radius: 50%; background: var(--text-accent); }
 .public-3d-part-toggle:hover { border-color: rgba(103, 232, 249, .45); color: var(--text-primary); }

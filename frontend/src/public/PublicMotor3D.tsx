@@ -1932,7 +1932,7 @@ function ParametricMotor3D({
       if (!frame) return null;
       // Below the part toggles and the peel slider at the top left.
       const panel = { ...frame.panel };
-      panel.y = Math.max(panel.y, 142);
+      panel.y = Math.max(panel.y, 104);
       panel.height = Math.max(110, Math.min(panel.height, height - 28 - panel.y));
       return { panel, width, height };
     };
@@ -2279,11 +2279,7 @@ function ParametricMotor3D({
           <em>{outermostShown ?? 'None'}</em>
         </label>
       )}
-      <div className="public-3d-hint">
-        {introProgress !== null
-          ? 'Assembly view · turning to engineering cross-section'
-          : `${explodedAmount > 0.04 ? 'Exploded assembly · ' : ''}Click a part · drag to orbit · wheel to zoom`}
-      </div>
+      {introProgress !== null && <div className="public-3d-hint">Assembly view · turning to engineering cross-section</div>}
       {failed && <div className="public-viewport-message">3D preview is unavailable on this graphics device.</div>}
     </div>
   );
