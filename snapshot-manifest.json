@@ -580,8 +580,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10097,
-      "sha256": "59085291c63f46b28e1e9060d7539bb293699448d0023ae40bc4603e55f5e704"
+      "bytes": 10234,
+      "sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/public_ui.py",
-      "bytes": 5363,
-      "sha256": "361975044c426c497547f46a0773e7d6f2d28f8ebf1c0fa9c60079fea9252e9a"
+      "bytes": 6549,
+      "sha256": "bf136ae9740e2250490450c0a6c663269442966dc0e2ee1f379d464fd9952de4"
     },
     {
       "path": "backend/qualification.py",
@@ -14255,8 +14255,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3232,
-      "sha256": "5f476e8f510417aa9da542133a945f6bf73eb86edaeb38d6a02d249e2f1875b6"
+      "bytes": 3271,
+      "sha256": "e908cc7ede1243d28eb2973d057c12f2932463639b81c36e6da05b2ac2c6e1d3"
     },
     {
       "path": "frontend/playwright.performance-harness.config.ts",
@@ -14375,8 +14375,8 @@
     },
     {
       "path": "frontend/scripts/test-field-probe-region.mjs",
-      "bytes": 3514,
-      "sha256": "0a01699dfcf1178236caf7dfd204d269d5f763879904da2b43559f5d1f0e9d70"
+      "bytes": 5845,
+      "sha256": "593623b961c4cdb4c5460164b83575aac9f1d5612783599365ffa63bc353c483"
     },
     {
       "path": "frontend/scripts/test-field-stroke-width.mjs",
@@ -14435,8 +14435,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 14363,
-      "sha256": "26e4efc20cb89cbf8f9e09cee3d608ce637a9cc6a773b8e8d8f3886283e61b9c"
+      "bytes": 15277,
+      "sha256": "c5535056100d070e8ec460d2c86e08f012019d0f76db87647877ce1fe950b76a"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -14460,8 +14460,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177711,
-      "sha256": "e7c68f489a38d3fe48a87d0b73bac2c6bdab12cf0245c854a8377f374528bb2e"
+      "bytes": 178234,
+      "sha256": "ecdf4b0ec291a2ca2a0e7afbea2cd8c513df84b34c9478825a1bd16871530d97"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -14485,8 +14485,8 @@
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "bytes": 4537,
-      "sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6"
+      "bytes": 9604,
+      "sha256": "79a539b97571eaf7d46aeed494ef6eabf399c567f1c21f6e70218876ed95f9d0"
     },
     {
       "path": "frontend/scripts/test-solve-time.mjs",
@@ -14545,8 +14545,8 @@
     },
     {
       "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
-      "bytes": 68755,
-      "sha256": "b9027fd752b576307ca4937ed6f76560b9b0c4f95e83ac448f313879420b25fd"
+      "bytes": 68612,
+      "sha256": "81ee407ae74dcddc0ad8b5a1ab4842c06f770c612d13f4082157c45bbe1ce60d"
     },
     {
       "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
@@ -14920,8 +14920,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76950,
-      "sha256": "1272c56dba7e94f13693c334230ed8ab659d19be691d94516f8b058525ea43db"
+      "bytes": 77793,
+      "sha256": "30693fe13e6660902a88ec80d5687dfafb3429b389d39596eb2932938cb25799"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -14935,8 +14935,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 248676,
-      "sha256": "7352f137de50198de5ac97ae7f68f66316e86abc5ab38140def174c97c90cb44"
+      "bytes": 265427,
+      "sha256": "19ad6ac40356392fdc677d60713c6b613de097a65c72ed33cb7f0330bb5f974f"
     },
     {
       "path": "frontend/src/public/ConvergenceHelp.tsx",
@@ -14955,8 +14955,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 61182,
-      "sha256": "bf6c096256476b9198007ecfe0e6a3d0b02a0047f8754df53e30c58ab2fd0ea2"
+      "bytes": 72035,
+      "sha256": "0b0daa3bd6d4e6cdd855f020cb976a669659da904410ff89c83518b83469c8b6"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -14980,8 +14980,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 66656,
-      "sha256": "288d046ef3979d07cdafa955fc44a9756bba9d2665aded732250039b0cac8ac3"
+      "bytes": 87966,
+      "sha256": "2fb821b20ca15fe627fb757346343a35731aecbc77478c6f4ba32b08bd6cd510"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -15010,8 +15010,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 89764,
-      "sha256": "3422f73e494c25e1cf60448a8265259835c3cb25dc7abfafd902d92b35b1f9c7"
+      "bytes": 124571,
+      "sha256": "b17412d51a5c1b257be667e7ecbdcca6dcbb827ca0f7b044f5ef7d1725f4b69e"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -15020,8 +15020,8 @@
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
-      "bytes": 10422,
-      "sha256": "dd8f8bdbc35c96028c782d9b0d64addd2e529b6ee0ac01344fe37d21106cd8a5"
+      "bytes": 10306,
+      "sha256": "c308fc4c86fa5233805e61f19b78056796977cc3d6c5e9c08b0bfc485f3d8942"
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
@@ -15045,8 +15045,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 60223,
-      "sha256": "79fe46e42521646242158fe0fbff49b91fda638c0c94f67a5f48e9c5946c1395"
+      "bytes": 61456,
+      "sha256": "c7d49c30421fe0c6b02b0d65f7ab64cd246c7f75ee9a29f77b176d6987bd25e1"
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
@@ -15060,8 +15060,8 @@
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 16825,
-      "sha256": "c53384988bc96652f35966e2bb79db000636fe53873e0adff569ed8430dd9df7"
+      "bytes": 18257,
+      "sha256": "9055222ce0e8d53642065070d166e069ccd432538be415eee94a59daaaaa57da"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -15125,8 +15125,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 20994,
-      "sha256": "e36bfe69357fed2fbcb896796384d961114c43845edc9637bd10c7c1d2a88e5d"
+      "bytes": 30016,
+      "sha256": "6ca645c6791a312a77842741d537748294d961476e413fc516f53d2b3b880bb2"
     },
     {
       "path": "frontend/src/public/convergenceOverview.ts",
@@ -15155,8 +15155,8 @@
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
-      "bytes": 638,
-      "sha256": "8e98368f7000737cf7d9db12f1c3135d62747be678404c3d361d39a7fd404706"
+      "bytes": 816,
+      "sha256": "2077bddc5f7d0ec69758fb7e02a4b1c6470bb25b318569d98d1b6a9fcaf266ed"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -15280,8 +15280,8 @@
     },
     {
       "path": "frontend/src/public/fieldProbeRegion.ts",
-      "bytes": 4770,
-      "sha256": "80021a9faceb977393d2d275f0997d9eabbc089c76984df803456998c266a97d"
+      "bytes": 5159,
+      "sha256": "7d36b0e08f6a3c240e295cce811bbbf3d7a8ee0cab47ca5e1df0444ad5d15ef5"
     },
     {
       "path": "frontend/src/public/fieldStrokeWidth.ts",
@@ -15300,8 +15300,8 @@
     },
     {
       "path": "frontend/src/public/fluxColorScale.ts",
-      "bytes": 4536,
-      "sha256": "931357e75db566eb4f8c626a4795701fcc4b39c611daedc7ae5e4b8dad9d96cc"
+      "bytes": 4834,
+      "sha256": "a496659a202ff06305889036300334cbf59ce4056891d2576788ffed244d0f4d"
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
@@ -15310,8 +15310,8 @@
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
-      "bytes": 32158,
-      "sha256": "5ce5a7e3db7f464008e32f5046c43e501e608b7577230847dd50fdcdf5c062bb"
+      "bytes": 32091,
+      "sha256": "967f07b5436b3b9c8cafad84819a5cbfc6ae9330c0213ed02b32f5fe75fc2356"
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
@@ -15325,8 +15325,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
-      "bytes": 33382,
-      "sha256": "c73afa6a2e09599dd56c93c2268c408be8b9dad2a60a1cb888cacfba91511209"
+      "bytes": 33315,
+      "sha256": "75a0b00a51edc20dfa12630380f86b1177e248f49614555ff465ecbd701416c1"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
@@ -15460,8 +15460,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 11135,
-      "sha256": "fc162c344a73b14d5c52d3f594e5baf06a918a244ac05a16cc45904c9dc4c818"
+      "bytes": 12253,
+      "sha256": "b08736fab8c944e867880583c0e8a8102a011a0337bc630c203fd7e26fc5ee33"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -15515,8 +15515,8 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 3938,
-      "sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee"
+      "bytes": 7664,
+      "sha256": "a570ee1b23a82d6b373c42ac3ce7502a52eefaa763857b7c066bf0fcad0d3265"
     },
     {
       "path": "frontend/src/public/solveTime.ts",
@@ -15525,8 +15525,8 @@
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 897,
-      "sha256": "37dbdaa7a6e32ba0a58eabcded944254b9a46463362cc4a17924a1a51c9d3df0"
+      "bytes": 919,
+      "sha256": "30c709b239785a8a0ea17089cad1a77448bf6d97a2707b6685ffa56d2b2bc61c"
     },
     {
       "path": "frontend/src/public/stator3dRadii.ts",
@@ -15535,8 +15535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 306749,
-      "sha256": "dc264b00c4b56cf9a701068495fdf905e0384dc8c69d5ebbf51d094166b88547"
+      "bytes": 320429,
+      "sha256": "057eb0e36f1362f13d032673d2058697ca39bae6364a4e8e89dcaea7588a632b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -15630,8 +15630,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 57736,
-      "sha256": "d742b0f7d7e390265abfdf0a31cc9475664ed699274b87c8699b65a3229ec6f4"
+      "bytes": 74295,
+      "sha256": "541b2bd229ffb175b75feba1f695ea879e630c4923b9316b2271fbf3e4f10c78"
     },
     {
       "path": "frontend/tsconfig.performance.json",
@@ -16475,8 +16475,8 @@
     },
     {
       "path": "tests/test_public_ui.py",
-      "bytes": 7530,
-      "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc"
+      "bytes": 8334,
+      "sha256": "1e3d4752079a4b290020abf75d130c030390031e2114f2ce1eee4c6c9d9400f9"
     },
     {
       "path": "tests/test_public_validation_errors.py",
@@ -17607,6 +17607,51 @@
       "path": "tests/test_mesh_evidence_shared_text.py",
       "bytes": 5281,
       "sha256": "6312558d4a8e9494dbd12892055f27c10fce0ffdebe0ed80f5f15cc72b4395a9"
+    },
+    {
+      "path": "frontend/scripts/test-winding-build.mjs",
+      "bytes": 4606,
+      "sha256": "99c9e908321222b8bf9b1adba76aed5c6b910e6cb192d884f12bf6a76121138d"
+    },
+    {
+      "path": "frontend/src/public/ViewportMagnifier.tsx",
+      "bytes": 1529,
+      "sha256": "d768395e9b10f92a5fef0b048f3ea6474ea733483d50d0177b6cc0835a47d777"
+    },
+    {
+      "path": "frontend/src/public/phaseDrivePanel.ts",
+      "bytes": 6097,
+      "sha256": "b0b33081b3d0f5f2a7a0e76b722cd2d0d399d8570df95218b64d000511a1d885"
+    },
+    {
+      "path": "frontend/src/public/useFirstSolvedField.ts",
+      "bytes": 1627,
+      "sha256": "0331fc392988e752bbbf9a965cd9943a78bcf23b0f30bd8670f9823ba9dbdc71"
+    },
+    {
+      "path": "frontend/src/public/useLayerMenu.ts",
+      "bytes": 2096,
+      "sha256": "c30ee90074df1a903302972ea1163517a2cec8f7894ca41dcf3b52286af4584c"
+    },
+    {
+      "path": "frontend/src/public/useTurningRotorAngle.ts",
+      "bytes": 1572,
+      "sha256": "681c67af9180a6395a1cbd51657389761a05a6771b3bdd55d1b9dd9ed875f0cf"
+    },
+    {
+      "path": "frontend/src/public/windingBuild.ts",
+      "bytes": 7641,
+      "sha256": "b578bb92dd13c0b21d21a8102d2ec268d7751582108c32cd9cac835a758a0a12"
+    },
+    {
+      "path": "frontend/src/public/wireGauge.ts",
+      "bytes": 2111,
+      "sha256": "482f4261ddb9f0925061dd416f8b0c9968a7ab68fb689c53b393f8fc8fd02b32"
+    },
+    {
+      "path": "frontend/tests/viewport-harness.tsx",
+      "bytes": 6355,
+      "sha256": "14087110489f9a524ecdc3e4be8df4a9368d8ba828c1e35bb4ad43f5ee028e2d"
     }
   ],
   "public_patches": [

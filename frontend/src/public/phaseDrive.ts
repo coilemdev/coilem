@@ -107,6 +107,31 @@ export function phaseDriveFrame(width: number, height: number): { panel: Rect; m
   };
 }
 
+/**
+ * The waveforms' top edge once something covers the foot of the canvas (the 3D
+ * inset): they move up to clear it, with room for their caption, but never off the top.
+ */
+export function phasePanelTop(panel: Rect, height: number, coveredBottomPx: number): number {
+  const lowest = height - coveredBottomPx - panel.height - 26;
+  return Math.max(Math.min(24, panel.y), Math.min(panel.y, lowest));
+}
+
+/**
+ * How far the charge in a phase's wire has moved, in electrical radians of full
+ * current: the running sum of the phase current over the cycle so far. Alternating
+ * current does not stream one way; it runs in while the current is positive and
+ * back out while it is negative, and the wire's flow marks follow this.
+ */
+export function phaseChargeShift(drive: PhaseDrive, phaseIndex: number, rotorElecDeg: number, stepDeg = 5): number {
+  const end = wrap360(rotorElecDeg);
+  let sum = 0;
+  for (let angle = 0; angle < end; angle += stepDeg) {
+    const width = Math.min(stepDeg, end - angle);
+    sum += phaseCurrents(drive, angle + width / 2)[phaseIndex] * width;
+  }
+  return (sum * Math.PI) / 180;
+}
+
 /** One waveform strip per phase, A on top. */
 export function phaseStrips(panel: Rect): Rect[] {
   const pitch = panel.height / 3;

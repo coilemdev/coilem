@@ -29,6 +29,8 @@ export interface ConcentratedCoilSpec {
   stackLength: number;
   /** Electrical turns per coil; rendering may bundle these into fewer strands. */
   turnsPerCoil: number;
+  /** Outside diameter of one turn's conductor, in millimetres. Left out, the loops are sized to fill the slot. */
+  turnDiameter?: number;
   /**
    * Optional hand-wound look for close-up hero renders. Leave unset for the
    * default schematic bundle, which is unchanged by these options.
@@ -185,7 +187,16 @@ export function buildConcentratedCoil(spec: ConcentratedCoilSpec): ConcentratedC
       turnsPerLayer = rows;
     }
   }
-  const wireRadius = THREE.MathUtils.clamp(bestDiameter * 0.47, 0.22, 2.6);
+  if (spec.turnDiameter && spec.turnDiameter > 0) {
+    // The real wire, drawn thicker by the same copper where fewer loops are drawn than there are turns.
+    bestDiameter = spec.turnDiameter * Math.sqrt(turns / strandTarget);
+    const rowsThatFit = Math.max(1, Math.floor(sizingSpan / bestDiameter));
+    wireLayers = Math.max(1, Math.ceil(strandTarget / rowsThatFit));
+    turnsPerLayer = Math.ceil(strandTarget / wireLayers);
+  }
+  const wireRadius = spec.turnDiameter && spec.turnDiameter > 0
+    ? Math.max(0.12, bestDiameter * 0.47)
+    : THREE.MathUtils.clamp(bestDiameter * 0.47, 0.22, 2.6);
 
   const usableStart = boreX + Math.max(1.2, wireRadius + 0.5);
   const usableEnd = yokeX - Math.max(1, wireRadius + 0.4);
@@ -333,6 +344,8 @@ export interface WindingHarnessModel {
   neutralGeometry: THREE.BufferGeometry | null;
   /** Terminal block on the rear yoke face where the drive leads land. */
   terminalGeometry: THREE.BufferGeometry;
+  /** Where each phase's drive lead lands on the terminal block. */
+  leadLandings: Partial<Record<HarnessPhase, THREE.Vector3>>;
   leadRadius: number;
 }
 
@@ -388,6 +401,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
   };
 
   const phaseGeometries: Record<HarnessPhase, THREE.BufferGeometry | null> = { A: null, B: null, C: null };
+  const leadLandings: Partial<Record<HarnessPhase, THREE.Vector3>> = {};
   const tailPoints: Partial<Record<HarnessPhase, THREE.Vector3>> = {};
 
   orderedPhases.forEach((phase, phaseIndex) => {
@@ -405,6 +419,7 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
     // The drive lead enters the first coil at its start.
     const firstStart = leadAt(spec.coilLeads.start, slots[0]);
     const landAngle = terminalAngle + (phaseIndex - (orderedPhases.length - 1) / 2) * 0.1;
+    leadLandings[phase] = polar(terminalRadius, landAngle, zTerminal);
     const lead = new THREE.CatmullRomCurve3([
       firstStart,
       atZ(firstStart, zPlane),
@@ -451,5 +466,162 @@ export function buildWindingHarness(spec: WindingHarnessSpec): WindingHarnessMod
   const terminalCenter = polar(terminalRadius, terminalAngle, zTerminal - 0.4 * blockScale);
   terminalGeometry.translate(terminalCenter.x, terminalCenter.y, terminalCenter.z);
 
-  return { phaseGeometries, neutralGeometry, terminalGeometry, leadRadius };
+  return { phaseGeometries, neutralGeometry, terminalGeometry, leadLandings, leadRadius };
+}
+
+export interface DistributedCoilSpec {
+  /** Centre angles of the two slots the coil's sides sit in, in radians. */
+  slotInAngle: number;
+  slotOutAngle: number;
+  /** Radial band each side fills in its slot, bore side first, in millimetres. */
+  inBand: [number, number];
+  outBand: [number, number];
+  /** Half the angular width the bundle may take in a slot, in radians. */
+  slotHalfAngle: number;
+  /** Half the lamination stack length, in millimetres. */
+  stackHalf: number;
+  /** +1 when the yoke is outside the slots (inner rotor), -1 when it is inside them. */
+  yokeSide: 1 | -1;
+  /** Electrical turns per coil: one wire loop is drawn for each, up to `maxStrands`. */
+  turns: number;
+  /** The most loops to draw for this coil, so a machine with many coils stays light to draw. */
+  maxStrands: number;
+  /** How far an end turn may step towards the yoke before it would stand proud of the stator, in millimetres. */
+  yokeRoom: number;
+  /**
+   * Outside diameter of one turn's conductor, in millimetres: the insulated wire,
+   * or the bundle its strands in hand make. Left out, the loops are sized to fill the slot.
+   */
+  turnDiameter?: number;
+}
+
+const DISTRIBUTED_MAX_COLUMNS = 6;
+
+/**
+ * One wire loop of a distributed coil: straight through one slot, over the end
+ * of the stack to the other slot, back through it, and home over the far end.
+ * The end turn is a diamond: it leaves along the axis, runs round at one radial
+ * level to its knuckle, steps a level towards the yoke there and comes down on
+ * the far side. Coils one slot apart then pass over and under each other, as a
+ * real lap winding's end turns do, where plain arches would cut through.
+ */
+class DistributedCoilCurve extends THREE.Curve<THREE.Vector3> {
+  private readonly sideLength: number;
+  private readonly turnLength: number;
+
+  constructor(
+    private readonly inAngle: number,
+    private readonly outAngle: number,
+    private readonly inRadius: number,
+    private readonly outRadius: number,
+    private readonly stackHalf: number,
+    private readonly rise: number,
+    private readonly step: number,
+  ) {
+    super();
+    const arc = Math.abs(outAngle - inAngle) * (inRadius + outRadius) / 2;
+    this.sideLength = stackHalf * 2;
+    this.turnLength = Math.hypot(arc, rise * 2) + Math.abs(step);
+  }
+
+  private endTurn(t: number, end: 1 | -1, target: THREE.Vector3): THREE.Vector3 {
+    // Front goes in → out, rear comes back out → in; both leave and arrive along the axis.
+    const along = end === 1 ? t : 1 - t;
+    const ease = 0.5 - 0.5 * Math.cos(Math.PI * along);
+    const angle = this.inAngle + (this.outAngle - this.inAngle) * ease;
+    const knuckle = THREE.MathUtils.smoothstep(along, 0.38, 0.62);
+    const settle = 1 - THREE.MathUtils.smoothstep(along, 0.82, 1);
+    const radius = this.inRadius + (this.outRadius - this.inRadius) * knuckle + this.step * knuckle * settle;
+    // A flat-topped arch: up off the stack quickly, then level round to the far slot.
+    const z = end * (this.stackHalf + this.rise * Math.sin(Math.PI * along) ** 0.55);
+    return target.set(Math.cos(angle) * radius, Math.sin(angle) * radius, z);
+  }
+
+  getPoint(t: number, target = new THREE.Vector3()): THREE.Vector3 {
+    const total = (this.sideLength + this.turnLength) * 2;
+    let distance = (((t % 1) + 1) % 1) * total;
+    if (distance < this.sideLength) {
+      return target.set(Math.cos(this.inAngle) * this.inRadius, Math.sin(this.inAngle) * this.inRadius, -this.stackHalf + distance);
+    }
+    distance -= this.sideLength;
+    if (distance < this.turnLength) return this.endTurn(distance / this.turnLength, 1, target);
+    distance -= this.turnLength;
+    if (distance < this.sideLength) {
+      return target.set(Math.cos(this.outAngle) * this.outRadius, Math.sin(this.outAngle) * this.outRadius, this.stackHalf - distance);
+    }
+    distance -= this.sideLength;
+    return this.endTurn(distance / this.turnLength, -1, target);
+  }
+}
+
+/**
+ * Build one distributed coil as a small bundle of wire loops, in the stator's
+ * own frame (no rotation to apply). Caller owns disposal.
+ */
+export function buildDistributedCoil(spec: DistributedCoilSpec): { geometry: THREE.BufferGeometry; strandCount: number; axialOverhang: number } {
+  // The short way round from one slot to the other.
+  let sweep = (spec.slotOutAngle - spec.slotInAngle) % (Math.PI * 2);
+  if (sweep > Math.PI) sweep -= Math.PI * 2;
+  if (sweep <= -Math.PI) sweep += Math.PI * 2;
+  const bandDepth = Math.min(Math.abs(spec.inBand[1] - spec.inBand[0]), Math.abs(spec.outBand[1] - spec.outBand[0]));
+  const middleRadius = (spec.inBand[0] + spec.inBand[1] + spec.outBand[0] + spec.outBand[1]) / 4;
+  const slotWidth = middleRadius * spec.slotHalfAngle * 2;
+  // One loop per turn where the budget allows. The wire is the thickest that packs that
+  // many loops into the slot's cross-section, as a wound slot is filled.
+  const strandTarget = Math.max(1, Math.min(Math.round(spec.turns) || 1, Math.round(spec.maxStrands)));
+  let columns = 1;
+  let rows = strandTarget;
+  let wireRadius = 0;
+  for (let across = 1; across <= Math.min(DISTRIBUTED_MAX_COLUMNS, strandTarget); across += 1) {
+    const deep = Math.ceil(strandTarget / across);
+    const radius = Math.min(slotWidth / (across * 2.05), bandDepth / (deep * 2.05));
+    if (radius > wireRadius) {
+      wireRadius = radius;
+      columns = across;
+      rows = deep;
+    }
+  }
+  wireRadius = THREE.MathUtils.clamp(wireRadius * 0.96, 0.18, 2.6);
+  if (spec.turnDiameter && spec.turnDiameter > 0) {
+    // The real wire. Where fewer loops are drawn than there are turns, each is drawn
+    // thicker by the same copper, so the slot looks as full as it really is; a wire
+    // too big for the slot then stands out of it.
+    const turns = Math.max(1, Math.round(spec.turns) || 1);
+    wireRadius = Math.max(0.12, (spec.turnDiameter / 2) * Math.sqrt(turns / strandTarget));
+    columns = THREE.MathUtils.clamp(Math.floor(slotWidth / (wireRadius * 2.05)), 1, strandTarget);
+    rows = Math.ceil(strandTarget / columns);
+  }
+  const pitch = wireRadius * 2.05;
+  const arc = Math.abs(sweep) * middleRadius;
+  // End turns held close to the stack, as a formed and laced winding sits: just enough
+  // height for the bundle to turn and for the coils that cross it to pass.
+  const lowest = Math.max(wireRadius * 5, columns * pitch + wireRadius * 2);
+  const rise = THREE.MathUtils.clamp(arc * 0.15, lowest, Math.max(lowest, middleRadius * 0.2));
+  // Sides in different radial halves of their slots (two layers) already change level at the knuckle.
+  const sameBand = Math.abs((spec.inBand[0] + spec.inBand[1]) - (spec.outBand[0] + spec.outBand[1])) < bandDepth * 0.5;
+  const step = sameBand ? spec.yokeSide * Math.min(rows * pitch + wireRadius, Math.max(0, spec.yokeRoom)) : 0;
+  const strands: THREE.BufferGeometry[] = [];
+  const bandSign = (band: [number, number]) => Math.sign(band[1] - band[0]) || 1;
+  for (let row = 0; row < rows; row += 1) {
+    const stacked = (row - (rows - 1) / 2) * pitch;
+    const inRadius = (spec.inBand[0] + spec.inBand[1]) / 2 + bandSign(spec.inBand) * stacked;
+    const outRadius = (spec.outBand[0] + spec.outBand[1]) / 2 + bandSign(spec.outBand) * stacked;
+    for (let column = 0; column < columns && strands.length < strandTarget; column += 1) {
+      const offset = ((column - (columns - 1) / 2) * pitch) / middleRadius;
+      const curve = new DistributedCoilCurve(
+        spec.slotInAngle + offset,
+        spec.slotInAngle + sweep + offset,
+        inRadius,
+        outRadius,
+        spec.stackHalf,
+        // Outer rows reach a little further, so the bundle keeps its shape round the end.
+        rise + row * wireRadius * 1.1,
+        step,
+      );
+      strands.push(new THREE.TubeGeometry(curve, 64, wireRadius, 5, true));
+    }
+  }
+  const geometry = mergeGeometries(strands, false) ?? new THREE.BufferGeometry();
+  strands.forEach((strand) => strand.dispose());
+  return { geometry, strandCount: strands.length, axialOverhang: rise + rows * wireRadius * 1.1 + wireRadius };
 }

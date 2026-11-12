@@ -7,9 +7,287 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
 
 const apiUrl = 'http://127.0.0.1:58000';
+const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
+
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field') {
+  await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
+    <!doctype html><div id="root"></div><script type="module">
+    import RefreshRuntime from '/@react-refresh';
+    RefreshRuntime.injectIntoGlobalHook(window);
+    window.$RefreshReg$ = () => {};
+    window.$RefreshSig$ = () => type => type;
+    window.__vite_plugin_react_preamble_installed__ = true;
+    await import('/@fs/${viewportHarness}');
+    </script>` }));
+  await page.goto(`/__viewport_test__?view=${view}`);
+}
+
+test('rotated mesh hit targets follow the rotor and leave stator targets fixed', async ({ page }) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'mesh');
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toBeVisible();
+  const box = (await canvas.boundingBox())!;
+  // 600px fit => 25.5 px/mm. The rotor centroid [8, 2/3] turns to [317, 504].
+  await page.mouse.click(box.x + 317, box.y + 504);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(0);
+  await page.mouse.click(box.x + 504, box.y + 283);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection)).toBeNull();
+  await page.mouse.click(box.x + 121.5, box.y + 283);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(1);
+});
+
+test('a zoomed rotor retains elements that rotate into view and reuses bounded bitmaps', async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.addInitScript(() => {
+    const original = document.createElement.bind(document);
+    (window as any).testCanvases = [];
+    document.createElement = ((...args: Parameters<typeof document.createElement>) => {
+      const element = original(...args);
+      if (args[0] === 'canvas') (window as any).testCanvases.push(element);
+      return element;
+    }) as typeof document.createElement;
+  });
+  await openViewportHarness(page, 'mesh');
+  await page.waitForFunction(() => Boolean((window as any).viewportTest));
+  await page.evaluate(() => (window as any).viewportTest.renderMesh(90, 400, 800, true));
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toHaveJSProperty('height', 800);
+  for (let step = 0; step < 4; step += 1) await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  // At 1.25^4 zoom, this triangle is clipped at 0° but belongs inside the view at 90°.
+  await expect.poll(() => canvas.evaluate((surface: HTMLCanvasElement) => {
+    const pixel = surface.getContext('2d')!.getImageData(228, 732, 1, 1).data;
+    return pixel[0];
+  })).toBeGreaterThan(35);
+  // At overview zoom the bounded rotor bitmap must be reused across angles.
+  const zoomIn = page.getByRole('button', { name: 'Zoom in', exact: true });
+  for (let step = 0; step < 5 && await zoomIn.isEnabled(); step += 1) await zoomIn.click();
+  const surfacesBefore = await page.evaluate(() => (window as any).testCanvases.length);
+  await page.evaluate(async () => {
+    for (const angle of [100, 120, 160, 200, 250]) {
+      (window as any).viewportTest.renderMesh(angle, 400, 800, true);
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }
+  });
+  expect(await page.evaluate(() => (window as any).testCanvases.length)).toBe(surfacesBefore);
+  const rotorBitmap = await page.evaluate(() => {
+    const surface = (window as any).testCanvases.at(-1) as HTMLCanvasElement;
+    return { width: surface.width, height: surface.height };
+  });
+  expect(rotorBitmap.width).toBe(2048);
+  expect(rotorBitmap.height).toBe(2048);
+});
+
+for (const view of ['mesh', 'docked-field'] as const) {
+  test(`${view} supports deep inspection zoom with anchored element picking and panning`, async ({ page }) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, view);
+    const canvas = page.locator(view === 'mesh' ? '.motor-canvas' : '.public-field-result-canvas > canvas');
+    await expect(canvas).toBeVisible();
+    const box = (await canvas.boundingBox())!;
+    const dimensions = await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height]);
+    const unitScale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+    // Rotor centroid: rotated 90 degrees in the mesh fixture, unrotated in the field.
+    const anchor = view === 'mesh'
+      ? { x: box.x + 317, y: box.y + 504 }
+      : { x: box.x + box.width / 2 + 8 * unitScale, y: box.y + box.height / 2 - (2 / 3) * unitScale };
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.mouse.wheel(0, -Math.log(128) / 0.0012);
+    const controls = page.locator('.public-viewport-nav-controls');
+    await expect(controls).toContainText('128x');
+    const inspectAt = async (x: number, y: number) => {
+      if (view === 'mesh') {
+        await page.mouse.click(x, y);
+        await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(0);
+      } else {
+        await page.mouse.move(x + 1, y + 1);
+        await expect(page.locator('.public-run-field-data-slot .public-field-probe')).toContainText('1.000 T');
+      }
+    };
+    await inspectAt(anchor.x, anchor.y);
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.mouse.down();
+    await page.mouse.move(anchor.x + 60, anchor.y - 30, { steps: 6 });
+    await page.mouse.up();
+    await inspectAt(anchor.x + 60, anchor.y - 30);
+    const zoomIn = controls.getByRole('button', { name: 'Zoom in', exact: true });
+    await expect(zoomIn).toBeEnabled();
+    for (let step = 0; step < 4; step += 1) await zoomIn.click();
+    await expect(controls).toContainText('256x');
+    await expect(zoomIn).toBeDisabled();
+    expect(await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height])).toEqual(dimensions);
+    await controls.locator('button.is-fit').click();
+    await expect(controls.locator('span[aria-live]')).toHaveText('1x');
+    await expect(zoomIn).toBeEnabled();
+  });
+}
+
+for (const view of ['mesh-menu', 'field'] as const) {
+  test(`${view} More menu anchors to its button and dismisses outside`, async ({ page }, info) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, view);
+    const menu = page.locator('details.public-field-layer-menu');
+    const summary = menu.locator('summary');
+    await summary.click();
+    const panel = menu.locator('.public-field-layer-controls');
+    await expect(panel).toBeVisible();
+    await expect.poll(async () => {
+      const buttonBox = (await summary.boundingBox())!;
+      const panelBox = (await panel.boundingBox())!;
+      return Math.abs(panelBox.x - buttonBox.x) + Math.abs(panelBox.y + panelBox.height + 8 - buttonBox.y);
+    }).toBeLessThan(3);
+    await page.screenshot({ path: info.outputPath(`${view}-menu.png`) });
+    if (view === 'field') {
+      await expect(menu.getByRole('button', { name: 'Magnifier', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(menu.getByRole('button', { name: 'Mesh', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    }
+    await menu.getByRole('button', { name: 'Magnifier', exact: true }).click();
+    await expect(menu).toHaveAttribute('open', '');
+    await page.mouse.click(20, 20);
+    await expect(menu).not.toHaveAttribute('open', '');
+    await summary.click();
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    if (view === 'field') {
+      await expect(page.getByRole('button', { name: 'Flux density', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('.public-field-result-legend')).not.toContainText('solved elements');
+      expect(await page.locator('.public-field-result-legend > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
+      await page.getByRole('button', { name: 'Field lines', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    }
+  });
+}
+
+for (const source of ['mesh', 'field'] as const) {
+  test(`${source} magnifier stays in the analysis rail and follows its width`, async ({ page }, info) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, `docked-${source}`);
+    const magnifierToggle = source === 'mesh'
+      ? page.getByRole('button', { name: 'Toggle mesh magnifier' })
+      : page.getByRole('button', { name: 'Magnifier', exact: true });
+    if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
+    if (source === 'mesh') await magnifierToggle.click();
+    else await expect(magnifierToggle).toHaveAttribute('aria-pressed', 'true');
+    if (source === 'field') await page.mouse.click(20, 20);
+    const panel = page.locator('.public-run-magnifier-slot .public-field-loupe');
+    await expect(panel).toBeVisible();
+    const before = (await panel.boundingBox())!;
+    expect(before.height).toBe(240);
+    expect(before.width).toBeGreaterThan(300);
+    const sourceCanvas = source === 'mesh' ? page.locator('.motor-canvas') : page.locator('.public-field-result-canvas > canvas');
+    const view = (await sourceCanvas.boundingBox())!;
+    await page.mouse.move(view.x + view.width * 0.75, view.y + view.height / 2);
+    await expect(panel.locator('p')).toHaveCount(0);
+    await page.mouse.move(view.x + 20, view.y + 20);
+    expect(await panel.boundingBox()).toEqual(before);
+    // Leaving the source retains the inspected image and its fixed panel.
+    await page.mouse.move(1500, 900);
+    await expect(panel).toBeVisible();
+    expect(await panel.boundingBox()).toEqual(before);
+    await page.locator('.public-run-plan').evaluate(element => {
+      element.style.width = '440px'; element.style.minWidth = '440px'; element.style.transition = 'none';
+    });
+    await expect.poll(async () => (await panel.boundingBox())!.width).toBeGreaterThan(before.width + 70);
+    await expect.poll(() => panel.locator('canvas').evaluate(canvas => Math.abs(canvas.width / canvas.clientWidth - Math.min(devicePixelRatio, 2)))).toBeLessThan(0.01);
+    expect((await panel.boundingBox())!.height).toBe(240);
+    await page.screenshot({ path: info.outputPath(`${source}-docked-magnifier.png`) });
+    // The magnifier belongs to the rail's normal scroll flow, above Analysis.
+    const unscrolled = (await panel.boundingBox())!;
+    await page.locator('.public-run-plan-scroll').evaluate(element => { element.scrollTop = 120; });
+    await expect.poll(async () => (await panel.boundingBox())!.y).toBeLessThan(unscrolled.y - 100);
+    if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
+    await magnifierToggle.click();
+    await expect(panel).toHaveCount(0);
+  });
+}
+
+test('selected airgap rings are also drawn in the field magnifier', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'docked-field');
+  const menu = page.locator('.public-field-layer-menu');
+  await menu.locator('summary').click();
+  const airgap = menu.getByRole('button', { name: 'Airgap', exact: true });
+  await airgap.click();
+  const ring = page.locator('.public-field-result-airgap-overlay circle:not(.is-halo)').last();
+  const bounds = (await ring.boundingBox())!;
+  await page.keyboard.press('Escape');
+  await page.mouse.move(bounds.x + bounds.width, bounds.y + bounds.height / 2);
+  const magnifier = page.locator('.public-run-magnifier-slot canvas');
+  const cyanPixels = () => magnifier.evaluate((canvas: HTMLCanvasElement) => {
+    const pixels = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
+    let count = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index] < 180 && pixels[index + 1] > 190 && pixels[index + 2] > 210) count += 1;
+    }
+    return count;
+  });
+  await expect.poll(cyanPixels).toBeGreaterThan(10);
+  await page.screenshot({ path: info.outputPath('magnified-airgap.png') });
+  await menu.locator('summary').click();
+  await airgap.click();
+  await expect.poll(cyanPixels).toBe(0);
+});
+
+test('heavy steel saturation uses red readout text and border while the knee remains yellow', async ({ page }, info) => {
+  await openViewportHarness(page, 'saturated-field');
+  const readout = page.locator('.public-run-field-data-slot .public-field-probe');
+  const box = (await page.locator('.public-field-result-canvas > canvas').boundingBox())!;
+  const scale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+  const hover = async (xMm: number) => page.mouse.move(box.x + box.width / 2 + xMm * scale, box.y + box.height / 2 - (2 / 3) * scale);
+  await hover(8);
+  await expect(readout).toHaveClass(/is-danger/);
+  await expect(readout.locator('strong')).toContainText('2.133 T');
+  await expect(readout.locator('p')).toContainText('1.78 T heavy-saturation');
+  await expect(readout).toHaveCSS('border-left-color', 'rgb(239, 68, 68)');
+  await expect(readout.locator('strong')).toHaveCSS('color', 'rgb(239, 68, 68)');
+  await expect(readout.locator('p')).toHaveCSS('color', 'rgb(239, 68, 68)');
+  await readout.screenshot({ path: info.outputPath('heavy-saturation-readout.png') });
+  await hover(-7);
+  await expect(readout).toHaveClass(/is-warning/);
+  await expect(readout.locator('strong')).toContainText('1.650 T');
+  await expect(readout.locator('p')).toContainText('1.47 T reference knee');
+  await expect(readout).toHaveCSS('border-left-color', 'rgb(250, 204, 21)');
+  await expect(readout.locator('p')).toHaveCSS('color', 'rgb(250, 204, 21)');
+  await expect(readout.locator('strong')).not.toHaveCSS('color', 'rgb(239, 68, 68)');
+});
+
+test('field element data sits below the magnifier and remains readable outside the drawing', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'docked-field');
+  const readout = page.locator('.public-run-field-data-slot .public-field-probe');
+  await expect(readout).toContainText('Hover over an element');
+  const canvas = page.locator('.public-field-result-canvas > canvas');
+  const box = (await canvas.boundingBox())!;
+  // The fixture has a 21mm square viewBox, including its margin.
+  const scale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+  const hover = async (xMm: number) => page.mouse.move(box.x + box.width / 2 + xMm * scale, box.y + box.height / 2 - (2 / 3) * scale);
+  await hover(8);
+  await expect(readout.locator('header')).toContainText('Rotor steel');
+  await expect(readout.locator('header')).toContainText('Element 1');
+  await expect(readout.locator('strong')).toContainText('1.000 T');
+  await expect(readout.locator('dt').filter({ hasText: /^Bx$/ }).locator('+ dd')).toHaveText('0.600 T');
+  await expect(readout.locator('dt').filter({ hasText: /^By$/ }).locator('+ dd')).toHaveText('0.800 T');
+  await expect(readout.locator('dt').filter({ hasText: /^Material$/ }).locator('+ dd')).not.toBeEmpty();
+  await expect(page.locator('.public-field-result-canvas .public-field-probe')).toHaveCount(0);
+  const magnifier = (await page.locator('.public-run-magnifier-slot .public-field-loupe').boundingBox())!;
+  const bounds = (await readout.boundingBox())!;
+  expect(bounds.y).toBeGreaterThanOrEqual(magnifier.y + magnifier.height);
+  expect(bounds.y - magnifier.y - magnifier.height).toBeLessThanOrEqual(14);
+  // The docked card must not send pointer events back into the drawing through its portal.
+  await page.mouse.move(bounds.x + 40, bounds.y + 30);
+  await expect(readout.locator('strong')).toContainText('1.000 T');
+  await hover(-7);
+  await expect(readout.locator('header')).toContainText('Stator tooth');
+  await expect(readout.locator('header')).toContainText('Element 2');
+  await expect(readout.locator('strong')).toContainText('1.500 T');
+  await page.mouse.move(1500, 900);
+  await expect(readout.locator('strong')).toContainText('1.500 T');
+  await page.screenshot({ path: info.outputPath('docked-field-data.png') });
+});
 
 for (const combined of [false, true]) {
   test(`partial ${combined ? 'combined' : 'map-only'} analysis retains outputs and shows point errors`, async ({ page }, info) => {
@@ -368,6 +646,9 @@ test('switches to Elmer with cogging enabled without submitting the unsupported 
   await page.getByRole('radio', { name: /Magneto2D/ }).click();
   await openSetupSection(page, 'analysis');
   await expect(cogging).toBeChecked();
+  // The page polls /health every few seconds through the route above. Let a poll
+  // still in flight go when the page closes, so it cannot fail a test that passed.
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
 test.describe('public developer preview release rehearsal', () => {

@@ -38,7 +38,7 @@ from backend.public_security import (
     public_request_rejection,
     public_ui_origins,
 )
-from backend.public_ui import install_ui_routes
+from backend.public_ui import install_ui_routes, ui_reload_token
 from backend.resources import build_identity
 from backend.solve_workspace import user_data_root_id
 
@@ -167,7 +167,9 @@ async def health_check() -> dict[str, Any]:
             "reason": "Elmer is disabled for this launch.",
         }
     )
+    reload_token = ui_reload_token()
     return {
+        **({"ui_reload_token": reload_token} if reload_token is not None else {}),
         "status": "ok",
         "mode": "local",
         "solver": "magneto2d",

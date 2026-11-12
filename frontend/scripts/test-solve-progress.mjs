@@ -6,6 +6,9 @@ const {
   EMPTY_PUBLIC_SOLVE_PROGRESS_BAR,
   PUBLIC_SOLVE_MESH_SHARE,
   nextPublicSolveProgressBar,
+  nextPublicSolveRotorTurn,
+  publicProgressFieldFrameId,
+  withFirstPublicSolveFieldFrame,
   publicSolveMeshFraction,
   publicSolvePositionFraction,
 } = await importTypeScriptModule(new URL('../src/public/solveProgress.ts', import.meta.url));
@@ -88,3 +91,56 @@ assert.equal(mapped[3], 95);
 assert.equal(mapped.at(-1), 100);
 
 console.log('solve progress checks passed (monotonic bar across meshing, solving and finalizing)');
+
+// The viewport turns the rotor while meshing and holds it while the field is solved.
+{
+  const meshed = (ready, total) => event('gmsh_mesh', 0, 48, { mesh_completed: ready, mesh_total: total });
+  const turn = (previous, progress) => nextPublicSolveRotorTurn(previous, progress, 360, 8);
+  assert.equal(turn(null, null), null, 'no solve, no turn');
+  assert.equal(turn(null, event('Validating', 0, 0)), null, 'validating shows the design as it is');
+  assert.deepEqual(turn(null, event('starting', 0, 0)), { turnDeg: 0, phase: 'meshing', finished: false }, 'the solve is meshing from its first report, before any mesh is ready');
+  const quarter = turn(null, meshed(12, 48));
+  assert.deepEqual(quarter, { turnDeg: 22.5, phase: 'meshing', finished: false }, 'a quarter of the meshes is a quarter of the 90 degree sweep of an 8-pole motor');
+  assert.equal(turn(quarter, event('solver_timing', 0, 0)), quarter, 'an event with no counts keeps the rotor and its phase');
+  assert.equal(turn(quarter, meshed(6, 48)).turnDeg, 22.5, 'it never turns backwards');
+  const whole = turn(quarter, meshed(48, 48));
+  assert.equal(whole.turnDeg, 90, 'the last mesh completes the turn');
+  const solving = turn(whole, event('magneto2d_sweep', 5, 48));
+  assert.deepEqual(solving, { turnDeg: 90, phase: 'solving', finished: false }, 'the field solve holds the rotor where meshing left it');
+  assert.equal(turn(solving, event('noload_sweep', 40, 48)).turnDeg, 90, 'and keeps holding it as positions are solved');
+  assert.deepEqual(turn(null, event('magneto2d_sweep', 5, 48)), { turnDeg: 0, phase: 'solving', finished: false }, 'a solve that reports no meshing leaves the rotor as designed');
+  const finished = turn(solving, event('magneto2d_complete', 48, 48));
+  assert.equal(finished.finished, true, 'finalizing ends it');
+  assert.equal(turn(finished, event('solver_timing', 3, 48)), finished, 'a late timing event does not start it again');
+  assert.equal(turn(finished, event('Validating', 0, 0)), null, 'the next solve starts clean');
+  assert.equal(turn(null, event('magneto2d_complete', 48, 48)), null, 'finalizing with nothing shown stays empty');
+  assert.equal(turn(quarter, event('torque_speed_map', 3, 10, { analysis_fraction: 0.3 })), null, 'a map does not sweep the rotor once');
+  assert.equal(nextPublicSolveRotorTurn(null, meshed(1, 4), 360, 0), null, 'no poles, no turn');
+  assert.deepEqual(nextPublicSolveRotorTurn(null, meshed(4, 4), 60, 14), { turnDeg: 60 / 7, phase: 'meshing', finished: false }, 'the span is the electrical range over the pole pairs');
+}
+
+// A progress event names the stored field of a solved position; the Solve page shows the first.
+{
+  assert.equal(publicProgressFieldFrameId(null), null);
+  assert.equal(publicProgressFieldFrameId(event('magneto2d_sweep', 1, 48)), null, 'most events name no frame');
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_frame: { angle_deg: 0, field_frame_artifact: { artifact_id: 'abc' } } }), 'abc');
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_frame: { field_frame_artifact: { artifact_id: '' } } }), null, 'an empty id is no frame');
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_frame: { field_frame_artifact: {} } }), null);
+  assert.equal(publicProgressFieldFrameId({ ...event('magneto2d_sweep', 1, 48), field_line_frame: { angle_deg: 285, field_frame_artifact: { artifact_id: 'slim' }, full_field_frame_artifact: { artifact_id: 'full' } } }), 'full', 'the solve stream names it on the frame it sends');
+}
+
+// Only the latest event is kept, so the first frame a solve names is carried along with it.
+{
+  const named = (id) => ({ ...event('magneto2d_sweep', 1, 48), field_frame: { angle_deg: 0, field_frame_artifact: { artifact_id: id } } });
+  const plain = event('noload_sweep', 2, 48);
+  assert.equal(withFirstPublicSolveFieldFrame(null, plain), plain, 'nothing to carry at the start');
+  const first = withFirstPublicSolveFieldFrame(plain, named('first'));
+  assert.equal(publicProgressFieldFrameId(first), 'first', 'an event that names a frame keeps it');
+  const later = withFirstPublicSolveFieldFrame(first, plain);
+  assert.equal(publicProgressFieldFrameId(later), 'first', 'later events carry it');
+  assert.equal(later.stage, 'noload_sweep', 'and are otherwise themselves');
+  assert.equal(publicProgressFieldFrameId(withFirstPublicSolveFieldFrame(later, named('second'))), 'first', 'the first frame stays the one shown');
+  assert.equal(publicProgressFieldFrameId(withFirstPublicSolveFieldFrame(later, event('Validating', 0, 0))), null, 'a new solve starts clean');
+  const fromStream = withFirstPublicSolveFieldFrame(plain, { ...plain, field_line_frame: { field_frame_artifact: { artifact_id: 'streamed' } } });
+  assert.equal(publicProgressFieldFrameId(withFirstPublicSolveFieldFrame(fromStream, plain)), 'streamed', 'a frame named by the solve stream is carried too');
+}

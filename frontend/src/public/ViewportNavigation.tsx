@@ -18,6 +18,7 @@ interface Point {
 
 interface PointerStart {
   pointerId: number;
+  captureTarget: Element;
   clientX: number;
   clientY: number;
   pan: Point;
@@ -25,10 +26,13 @@ interface PointerStart {
 
 const MIN_SCALE = 0.5;
 const DEFAULT_SCALE = 1;
-const MAX_SCALE = 8;
+// Fine air-gap elements need much more magnification than the whole motor.
+const MAX_SCALE = 256;
 const PAN_UNLOCK_SCALE = 1.02;
 /** How long a sector turn takes; prefers-reduced-motion makes it instant. */
 const SECTOR_TURN_MS = 260;
+/** One arrow-key step of a zoomed view; Shift takes four. */
+const ARROW_PAN_PX = 48;
 
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
@@ -181,22 +185,42 @@ export function useViewportNavigation(
   const stepSectorRef = useRef(stepSector);
   stepSectorRef.current = stepSector;
 
-  // Left and right arrows turn the sector round the ring while the pointer is over
-  // the view or focus is inside it; they stay with any field being typed in.
+  /** Move a zoomed view by this many px; false when the view is fitted and has nowhere to go. */
+  const panByRef = useRef<(deltaX: number, deltaY: number) => boolean>(() => false);
+  panByRef.current = (deltaX, deltaY) => {
+    if (!panEnabled) return false;
+    if (sectorActiveRef.current) leaveSector();
+    setPan((current) => clampPan({ x: current.x + deltaX, y: current.y + deltaY }, scale));
+    return true;
+  };
+
+  // The arrow keys move a zoomed view while the pointer is over it or focus is
+  // inside it; on a thin-ring motor left and right turn the sector round the
+  // ring instead. They stay with any field being typed in.
   useEffect(() => {
     const element = viewportRef.current;
-    if (!sectorAvailable || !element) return undefined;
+    if (!element) return undefined;
     let hovered = false;
     const enter = () => { hovered = true; };
     const leave = () => { hovered = false; };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      const sideways = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
+      if (!sideways && event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.defaultPrevented) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
       if (!hovered && !element.contains(document.activeElement)) return;
-      event.preventDefault();
-      stepSectorRef.current(event.key === 'ArrowRight' ? 1 : -1);
+      if (sideways && sectorAvailable) {
+        event.preventDefault();
+        stepSectorRef.current(event.key === 'ArrowRight' ? 1 : -1);
+        return;
+      }
+      // The key names where the view goes, so the picture slides the other way.
+      const step = event.shiftKey ? ARROW_PAN_PX * 4 : ARROW_PAN_PX;
+      const moved = sideways
+        ? panByRef.current(event.key === 'ArrowRight' ? -step : step, 0)
+        : panByRef.current(0, event.key === 'ArrowDown' ? -step : step);
+      if (moved) event.preventDefault();
     };
     element.addEventListener('pointerenter', enter);
     element.addEventListener('pointerleave', leave);
@@ -244,13 +268,17 @@ export function useViewportNavigation(
     ) return;
     event.preventDefault();
     didDragRef.current = false;
+    // Keep a click without a drag on its original canvas or SVG target, so
+    // element selection still works while the viewport is pannable.
+    const captureTarget = event.target instanceof Element ? event.target : event.currentTarget;
     pointerStartRef.current = {
       pointerId: event.pointerId,
+      captureTarget,
       clientX: event.clientX,
       clientY: event.clientY,
       pan,
     };
-    event.currentTarget.setPointerCapture(event.pointerId);
+    captureTarget.setPointerCapture(event.pointerId);
     setIsDragging(true);
   }, [pan, panEnabled]);
 
@@ -274,8 +302,8 @@ export function useViewportNavigation(
     if (!start || start.pointerId !== event.pointerId) return;
     pointerStartRef.current = null;
     setIsDragging(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    if (start.captureTarget.hasPointerCapture(event.pointerId)) {
+      start.captureTarget.releasePointerCapture(event.pointerId);
     }
   }, []);
 
