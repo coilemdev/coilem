@@ -471,10 +471,15 @@ export interface DistributedCoilSpec {
   stackHalf: number;
   /** +1 when the yoke is outside the slots (inner rotor), -1 when it is inside them. */
   yokeSide: 1 | -1;
+  /** Electrical turns per coil: one wire loop is drawn for each, up to `maxStrands`. */
+  turns: number;
+  /** The most loops to draw for this coil, so a machine with many coils stays light to draw. */
+  maxStrands: number;
+  /** How far an end turn may step towards the yoke before it would stand proud of the stator, in millimetres. */
+  yokeRoom: number;
 }
 
-const DISTRIBUTED_MAX_ROWS = 5;
-const DISTRIBUTED_COLUMNS = 2;
+const DISTRIBUTED_MAX_COLUMNS = 6;
 
 /**
  * One wire loop of a distributed coil: straight through one slot, over the end
@@ -545,27 +550,39 @@ export function buildDistributedCoil(spec: DistributedCoilSpec): { geometry: THR
   const bandDepth = Math.min(Math.abs(spec.inBand[1] - spec.inBand[0]), Math.abs(spec.outBand[1] - spec.outBand[0]));
   const middleRadius = (spec.inBand[0] + spec.inBand[1] + spec.outBand[0] + spec.outBand[1]) / 4;
   const slotWidth = middleRadius * spec.slotHalfAngle * 2;
-  // Wires sized to sit side by side across the slot, then stacked as deep as the band allows:
-  // a tight bundle, as wound wire packs, in place of a few loose strands.
-  const wireRadius = THREE.MathUtils.clamp(Math.min(slotWidth / (DISTRIBUTED_COLUMNS * 2), bandDepth / 2) * 0.9, 0.25, 2.6);
-  const rows = THREE.MathUtils.clamp(Math.floor(bandDepth / (wireRadius * 2.05)), 1, DISTRIBUTED_MAX_ROWS);
+  // One loop per turn where the budget allows. The wire is the thickest that packs that
+  // many loops into the slot's cross-section, as a wound slot is filled.
+  const strandTarget = Math.max(1, Math.min(Math.round(spec.turns) || 1, Math.round(spec.maxStrands)));
+  let columns = 1;
+  let rows = strandTarget;
+  let wireRadius = 0;
+  for (let across = 1; across <= Math.min(DISTRIBUTED_MAX_COLUMNS, strandTarget); across += 1) {
+    const deep = Math.ceil(strandTarget / across);
+    const radius = Math.min(slotWidth / (across * 2.05), bandDepth / (deep * 2.05));
+    if (radius > wireRadius) {
+      wireRadius = radius;
+      columns = across;
+      rows = deep;
+    }
+  }
+  wireRadius = THREE.MathUtils.clamp(wireRadius * 0.96, 0.18, 2.6);
   const pitch = wireRadius * 2.05;
   const arc = Math.abs(sweep) * middleRadius;
   // End turns held close to the stack, as a formed and laced winding sits: just enough
   // height for the bundle to turn and for the coils that cross it to pass.
-  const lowest = wireRadius * 5;
+  const lowest = Math.max(wireRadius * 5, columns * pitch + wireRadius * 2);
   const rise = THREE.MathUtils.clamp(arc * 0.15, lowest, Math.max(lowest, middleRadius * 0.2));
   // Sides in different radial halves of their slots (two layers) already change level at the knuckle.
   const sameBand = Math.abs((spec.inBand[0] + spec.inBand[1]) - (spec.outBand[0] + spec.outBand[1])) < bandDepth * 0.5;
-  const step = sameBand ? spec.yokeSide * (rows * pitch + wireRadius) : 0;
+  const step = sameBand ? spec.yokeSide * Math.min(rows * pitch + wireRadius, Math.max(0, spec.yokeRoom)) : 0;
   const strands: THREE.BufferGeometry[] = [];
   const bandSign = (band: [number, number]) => Math.sign(band[1] - band[0]) || 1;
   for (let row = 0; row < rows; row += 1) {
     const stacked = (row - (rows - 1) / 2) * pitch;
     const inRadius = (spec.inBand[0] + spec.inBand[1]) / 2 + bandSign(spec.inBand) * stacked;
     const outRadius = (spec.outBand[0] + spec.outBand[1]) / 2 + bandSign(spec.outBand) * stacked;
-    for (let column = 0; column < DISTRIBUTED_COLUMNS; column += 1) {
-      const offset = ((column - (DISTRIBUTED_COLUMNS - 1) / 2) * pitch) / middleRadius;
+    for (let column = 0; column < columns && strands.length < strandTarget; column += 1) {
+      const offset = ((column - (columns - 1) / 2) * pitch) / middleRadius;
       const curve = new DistributedCoilCurve(
         spec.slotInAngle + offset,
         spec.slotInAngle + sweep + offset,
@@ -576,7 +593,7 @@ export function buildDistributedCoil(spec: DistributedCoilSpec): { geometry: THR
         rise + row * wireRadius * 1.1,
         step,
       );
-      strands.push(new THREE.TubeGeometry(curve, 72, wireRadius, 6, true));
+      strands.push(new THREE.TubeGeometry(curve, 64, wireRadius, 5, true));
     }
   }
   const geometry = mergeGeometries(strands, false) ?? new THREE.BufferGeometry();

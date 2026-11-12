@@ -1911,6 +1911,10 @@ function ParametricMotor3D({
           slotHalfAngle: Math.max(0.04, slotPitch * 0.18),
           stackHalf: stackDepth / 2,
           yokeSide: outerRotor ? -1 : 1,
+          turns: config.winding.turns_per_coil,
+          yokeRoom: Math.abs(yokeFarRadius - yokeEnd) - 2,
+          // About 800 loops over the whole winding, at most 24 a coil as the tooth coils draw.
+          maxStrands: Math.max(6, Math.min(24, Math.floor(800 / spanning.length))),
         });
         const mesh = new THREE.Mesh(coilGeometry, coilMaterials[coil.phase]);
         mesh.castShadow = true;
