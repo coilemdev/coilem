@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 89758,
-      "sha256": "cadd1aa0f88fc5ed1cbc14c88a1726821a20b7649de804aeb48e14ff41d39f53"
+      "bytes": 90199,
+      "sha256": "ace54324d55b3f2cea4b96025ebe0cd642a12b9ede7c160e7a60d5e948cde2b7"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",

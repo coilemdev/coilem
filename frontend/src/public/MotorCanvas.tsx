@@ -1269,12 +1269,22 @@ function drawPhaseDrive(
   const frequencyHz = electricalFrequencyHz(previewRpm, drive.poleCount);
   const windowElecDeg = 360 * frequencyHz * PHASE_SCOPE_WINDOW_S;
   const strips = phaseStrips(panel);
-  const lead = Math.max(10, statorRadiusPx * 0.08);
-  // A above, C below, so the wires do not cross.
-  const leads = [16, 0, -16].map((offsetDeg) => {
-    const angle = Math.PI + (offsetDeg * Math.PI) / 180;
-    const at = (radius: number): [number, number] => [origin[0] + radius * Math.cos(angle), origin[1] + radius * Math.sin(angle)];
-    return { motor: at(statorRadiusPx), terminal: at(statorRadiusPx + lead) };
+  // Drawn like a schematic: each wire runs level out of its strip, turns once through
+  // a right angle, and from its terminal dot goes level into the motor. A enters
+  // above the centre and C below. The turns are staggered so that no wire crosses
+  // another: whichever way the wires have to drop, the one that drops furthest turns last.
+  const stripRight = panel.x + panel.width;
+  const entryStep = statorRadiusPx * Math.sin((16 * Math.PI) / 180);
+  const motorLeft = origin[0] - statorRadiusPx;
+  const lane = Math.max(6, Math.min(16, (motorLeft - stripRight) / 5));
+  const wiresDrop = strips[1].y + strips[1].height / 2 <= origin[1];
+  const leads = [-1, 0, 1].map((side, index) => {
+    const y = origin[1] + side * entryStep;
+    const turn = motorLeft - lane * (wiresDrop ? index + 1 : 3 - index);
+    return {
+      motor: [origin[0] - Math.sqrt(Math.max(0, statorRadiusPx ** 2 - (side * entryStep) ** 2)), y] as [number, number],
+      terminal: [turn, y] as [number, number],
+    };
   });
 
   context.save();
@@ -1356,14 +1366,12 @@ function drawPhaseDrive(
     context.moveTo(nowX, nowY);
     context.lineTo(nowX, mid);
     context.stroke();
-    // Straight runs with two bends, like a drawn circuit: out of the strip, across, and level into the motor.
-    const run = Math.min(18, Math.max(6, (terminal[0] - nowX) * 0.18));
-    context.lineJoin = 'round';
+    // Level out of the strip, one right-angle turn down or up to the terminal, then level into the motor.
+    context.lineJoin = 'miter';
     const wire = () => {
       context.beginPath();
       context.moveTo(nowX, mid);
-      context.lineTo(nowX + STRIP_END + run, mid);
-      context.lineTo(terminal[0] - run, terminal[1]);
+      context.lineTo(terminal[0], mid);
       context.lineTo(terminal[0], terminal[1]);
       context.lineTo(motor[0], motor[1]);
       context.stroke();
