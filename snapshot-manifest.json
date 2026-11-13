@@ -14460,8 +14460,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178052,
-      "sha256": "cc975398c18a9dda77fe50d6ac62a58e2f1ba9607c5238410fa0ff18117bef93"
+      "bytes": 178048,
+      "sha256": "cd6007e349a7b084077e561670b9fdc4675c4b9c2ad8cfdcc66dd4124bd6e9a6"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -14510,8 +14510,8 @@
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
-      "bytes": 3651,
-      "sha256": "15412afc99d02cf5d2512d23ead73e47dea5420ef7ecd89c61c41cfbc0adf398"
+      "bytes": 4293,
+      "sha256": "5288c4a00ef4731994688d80c8c48f7779728c90d1af25b9ce5d56f9df70a573"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -14980,8 +14980,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 94662,
-      "sha256": "d0b616950a21ed4e6e6be7c91adfed13cf1bc9f762406b1afb8d5fb935bcfb57"
+      "bytes": 95572,
+      "sha256": "3d6408a12b110dd65ec757f6c417fa15d5f2b1bcb0ddda5f4de5d3b4536f448d"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -15060,8 +15060,8 @@
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 18257,
-      "sha256": "9055222ce0e8d53642065070d166e069ccd432538be415eee94a59daaaaa57da"
+      "bytes": 18731,
+      "sha256": "efac218bcc4e735914cdf89ba5ca673a4727bf1561f49b1c72fa68f82e037185"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -15075,8 +15075,8 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 21457,
-      "sha256": "c5385089553aa17e0b0645b04ef5f7d246a6f13ef0052c8da393c450ca8346c9"
+      "bytes": 21969,
+      "sha256": "5151a2692c7523b01441270a00d93e6b6b8a991e7907828762cc1f7511126497"
     },
     {
       "path": "frontend/src/public/WorkspaceErrorBoundary.tsx",
@@ -15535,8 +15535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 326120,
-      "sha256": "7f013b4f3a89be7661ec51d8932eb3f04f02c9d19ee563a760d2f895b8a56f0d"
+      "bytes": 326049,
+      "sha256": "3672ca7fd427dfa3a679ce951d9d41267d9ef5c3e39b3573bc28786d289ce1ae"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -15570,8 +15570,8 @@
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
-      "bytes": 3131,
-      "sha256": "eea8c453a291b6051f99c94633c6a87001cd6fabb863650a5919d8a8cd66ce1e"
+      "bytes": 3813,
+      "sha256": "9a37172567b855ef3b2000fb5f3bae87431ed4405ac43b8d5a9d5d8d6f56d8d9"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
@@ -15630,8 +15630,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 82046,
-      "sha256": "6fd3b1e38234b36ad5b80744efb77c3d98e3fe03bbe2cc119652578907798f8f"
+      "bytes": 86092,
+      "sha256": "3a25f320860743b67be60ad9fe1ab6f73f13902cfa9cdd60e25235195dcc0f1a"
     },
     {
       "path": "frontend/tsconfig.performance.json",
@@ -17650,8 +17650,8 @@
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
-      "bytes": 6355,
-      "sha256": "14087110489f9a524ecdc3e4be8df4a9368d8ba828c1e35bb4ad43f5ee028e2d"
+      "bytes": 8307,
+      "sha256": "239aba6eeb113a5fbbc20af2d9cc6294b965e56da7fee1ec2438adf3d225945c"
     },
     {
       "path": "backend/rotor_construction_preview.py",

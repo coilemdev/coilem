@@ -1,11 +1,19 @@
 import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { fitTransform, viewportTransformOrigin, anchoredZoomPan, viewportScaleBar } = await importTypeScriptModule(
+const { fitTransform, viewportTransformOrigin, anchoredZoomPan, viewportScaleBar, viewportFrameContains, zoomedSvgViewBox } = await importTypeScriptModule(
   new URL('../src/public/viewportTransform.ts', import.meta.url),
 );
 const { phaseDriveFrame } = await importTypeScriptModule(new URL('../src/public/phaseDrive.ts', import.meta.url));
 const points = [[-100, -100], [100, 100]];
+assert.equal(viewportFrameContains({ x: 10, y: 10 }), true);
+const pane = { x: 400, y: 20, width: 600, height: 500 };
+assert.equal(viewportFrameContains({ x: 399, y: 200 }, pane), false);
+assert.equal(viewportFrameContains({ x: 400, y: 20 }, pane), true);
+assert.equal(viewportFrameContains({ x: 1001, y: 200 }, pane), false);
+assert.equal(viewportFrameContains({ x: 600, y: 521 }, pane), false);
+// SVG-native zoom keeps the same screen-space pan, including in a wide pane.
+assert.deepEqual(zoomedSvgViewBox(500, 1000, 700, 16, { x: 140, y: -70 }).split(' ').map(Number), [-43.75, -25, 62.5, 62.5]);
 for (const [width, height] of [[1000, 700], [760, 600], [400, 500]]) {
   for (const frame of [undefined, phaseDriveFrame(width, height)?.motor]) {
     const origin = viewportTransformOrigin(width, height, frame);

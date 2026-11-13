@@ -700,7 +700,7 @@ assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'pha
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
 assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
 assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor, rotationRad\)/);
-assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
+assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm, driveFrame\.motor\)/);
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 // ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
@@ -1471,7 +1471,7 @@ assert.match(viewportNavigationSource, /const DEFAULT_SCALE = 1/);
 assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
-assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
+assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frame \?\? undefined\)/);
 assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
