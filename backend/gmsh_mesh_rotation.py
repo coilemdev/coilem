@@ -664,10 +664,21 @@ def derive_congruent_solve_report(
     contribution data needed for an exact relabel; callers should fall back
     to a real solve in that case.
     """
-    report = copy_json_like(base_report)
-    results = report.get("results")
+    # Copy only what this synthesis changes: the top level, the results block
+    # (whose changed entries are replaced, not edited), the field plot's node
+    # list and solve_info. The large per-element field arrays are shared with
+    # the base report, as rotate_solve_mesh_artifact shares mesh arrays: a
+    # report is a value once produced, and a full copy of each derived
+    # position cost more than the synthesis itself.
+    report = dict(base_report)
+    results = base_report.get("results")
     if not isinstance(results, dict):
         raise ValueError("solution reuse requires a report with a results block")
+    results = report["results"] = dict(results)
+    if isinstance(report.get("field_plot"), dict):
+        report["field_plot"] = dict(report["field_plot"])
+    if isinstance(report.get("solve_info"), dict):
+        report["solve_info"] = copy_json_like(report["solve_info"])
 
     shift = int(n_slot_pitches) % max(1, slot_count)
 

@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 18825,
-      "sha256": "bf8617ae2b5afe4437eb7043d437dacdc3465a882428f076b432cb5cb1c1eff7"
+      "bytes": 18863,
+      "sha256": "1d5b23fa4bde1c41cc21561e54d8ce25725e8a1c985e5c3d1cd945e5268ec05e"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6526,
-      "sha256": "998f77bc2ca005a5e1033dfaaa19e5f96c6ac694a1588f9ef96059b3110ffa1a"
+      "bytes": 7284,
+      "sha256": "db5e5b4444799373498292d9b8179f2a849a7ef89252cae268ae9eb3a36a4873"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -315,8 +315,8 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 38396,
-      "sha256": "96dec0459b558a6b8d14f14f679a1e04afdb9b7aaf9b45b6cad872d8374f8f0f"
+      "bytes": 39099,
+      "sha256": "6c60a93474f3adca561b1e482b6865862d077920dbf7ccefdfda0482adb57054"
     },
     {
       "path": "backend/gmsh_solver.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_profile.py",
-      "bytes": 17747,
-      "sha256": "ddae70ca583c023dbc990bf95e4d2c9f9673ae6c9c692fb731718c19b01b0c5e"
+      "bytes": 18946,
+      "sha256": "5dde6d381f222a2205b522a6211ca8c7e56b4cb084b075f9e4417abf3f7e7dc8"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -650,13 +650,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 173543,
-      "sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5"
+      "bytes": 178761,
+      "sha256": "18ad9894d527c1ff8eaa892a5385ae556601071d219db510119ef298e9d94e0a"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 63728,
-      "sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1"
+      "bytes": 64040,
+      "sha256": "759a48e4b44837d7fe6c762c2deb868c44aa05f08aa8d449e107880b7befcc90"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -8445,8 +8445,8 @@
     },
     {
       "path": "tests/test_solve_profile.py",
-      "bytes": 7982,
-      "sha256": "5695f57f46858483aa9b7bcca6cb2a5f2a422f323b73c82503478d7db313dca7"
+      "bytes": 9735,
+      "sha256": "3c96a6cc0a98762e89801dbdb86c0d8bd506f435007fb3992a19f4de55b645b3"
     },
     {
       "path": "tests/test_solve_workspace.py",
@@ -14145,8 +14145,8 @@
     },
     {
       "path": "tests/test_two_layer_solution_reuse.py",
-      "bytes": 13716,
-      "sha256": "d0ab73da5ca5f777743a052a78bcd7182fedffda1e1c148852f6aa4b7711f663"
+      "bytes": 14413,
+      "sha256": "05c09366fda818804a4b62af71bfe0f6573709841facbb55ac0a0dbee44264b9"
     },
     {
       "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.md",
@@ -17652,6 +17652,56 @@
       "path": "benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
       "bytes": 2536,
       "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
+    },
+    {
+      "path": "backend/client/__init__.py",
+      "bytes": 1546,
+      "sha256": "a839173f11df9aa0459a81a1c614206de621adf9b01cc2467e9da595588bbf5b"
+    },
+    {
+      "path": "backend/client/_errors.py",
+      "bytes": 3878,
+      "sha256": "b7286b0ddd522a349ae6cdf931ef6a67fddc55019a13f582d0debf97c902f0dc"
+    },
+    {
+      "path": "backend/client/_inputs.py",
+      "bytes": 17091,
+      "sha256": "299f82adba48c0dd15440ea56ddfd94e7fd478e6335d61f5dee294d918c07ae3"
+    },
+    {
+      "path": "backend/client/_results.py",
+      "bytes": 13863,
+      "sha256": "4479077702622e673d2fad0dc1f5ad823d80eee8121d9ee259c3d5898a3adb44"
+    },
+    {
+      "path": "backend/client/_solve.py",
+      "bytes": 26354,
+      "sha256": "326044e2591da683bdc85d2a300ef32d407456a52886ec1ef81f9217d22fa088"
+    },
+    {
+      "path": "docs/PYTHON_CLIENT.md",
+      "bytes": 11593,
+      "sha256": "06e14ae742f2e4f079d4b68decab5535bbf24e96b8a83f9989c2e3e8865fee57"
+    },
+    {
+      "path": "docs/examples/client_ipm_motor.py",
+      "bytes": 4259,
+      "sha256": "22624043e90f4a7c8e10f9d171d2db62db1bb6d4b436a56b5188a598a676ede2"
+    },
+    {
+      "path": "docs/examples/client_spm_motor.py",
+      "bytes": 3769,
+      "sha256": "608fb7b6bada4da0d739f829101c88b4891305a35098b98c98aec95c0a0c902d"
+    },
+    {
+      "path": "tests/test_python_client.py",
+      "bytes": 25978,
+      "sha256": "ed65b5f05ae1d78f487f90d9227549ac22fba04a8eb4dcbe47ceaa7088e4417d"
+    },
+    {
+      "path": "tests/test_solve_reuse.py",
+      "bytes": 4052,
+      "sha256": "cb50a83b218471c9e471e1c64cf0982b0f71b8e52558d3ccabbec25db797685a"
     },
     {
       "path": "backend/rotor_construction_preview.py",
@@ -38943,6 +38993,138 @@
       "path": "benchmarks/records/windows-x86_64.json",
       "source_sha256": "a423ae328e7f280eef4aa99d2b9965af7bed21b6684d08898f35b0f95c1161e3",
       "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "README.md",
+      "source_sha256": "998f77bc2ca005a5e1033dfaaa19e5f96c6ac694a1588f9ef96059b3110ffa1a",
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/__init__.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_errors.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_inputs.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_results.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_solve.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "96dec0459b558a6b8d14f14f679a1e04afdb9b7aaf9b45b6cad872d8374f8f0f",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/solve_profile.py",
+      "source_sha256": "ddae70ca583c023dbc990bf95e4d2c9f9673ae6c9c692fb731718c19b01b0c5e",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "docs/PYTHON_CLIENT.md",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "docs/examples/client_ipm_motor.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "docs/examples/client_spm_motor.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "tests/test_python_client.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "tests/test_solve_reuse.py",
+      "source_sha256": null,
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "tests/test_two_layer_solution_reuse.py",
+      "source_sha256": "d0ab73da5ca5f777743a052a78bcd7182fedffda1e1c148852f6aa4b7711f663",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "bf8617ae2b5afe4437eb7043d437dacdc3465a882428f076b432cb5cb1c1eff7",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "backend/client/_solve.py",
+      "source_sha256": "39996027ee1b170731aacd113d8b52a8d5cc6670a7ea7afdb43087b5859ef02c",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "backend/solve_profile.py",
+      "source_sha256": "2215614c1a87736d6013c447d3c886a505b051d1d58c684ea9612bf75a654255",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "tests/test_python_client.py",
+      "source_sha256": "1758aeb11c21bfa66d28a2f3ee8f1f3514c3a0bdc7159f33ecd17fa22432e3ba",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "tests/test_solve_profile.py",
+      "source_sha256": "5695f57f46858483aa9b7bcca6cb2a5f2a422f323b73c82503478d7db313dca7",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "tests/test_solve_reuse.py",
+      "source_sha256": "ae4b3dd48464ed9b91d94bd42309cdf84913b6c654af761a5b773920e3d45d67",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
     }
   ]
 }
