@@ -220,8 +220,8 @@
     },
     {
       "path": "backend/elmer/adapter.py",
-      "bytes": 42132,
-      "sha256": "b60621e64cdf768d72a3f47f2d5d3944845ad120bdac4aad39e38a69542b628a"
+      "bytes": 42371,
+      "sha256": "d5e64956fb0ccace905f4ff2bee2e0c792dee678f09ff7464689f5c53842394b"
     },
     {
       "path": "backend/elmer/capabilities.py",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 18845,
-      "sha256": "02c655b416c187a260eae5799b4b3243a80e7d5d3dd11e710a8ecbaf85048da7"
+      "bytes": 19040,
+      "sha256": "64ea4c791c89c6c69ed5face5166d2f1902d747ab8a1b90d401d86d4da66099f"
     },
     {
       "path": "backend/field_composition.py",
@@ -285,8 +285,8 @@
     },
     {
       "path": "backend/field_lines.py",
-      "bytes": 31236,
-      "sha256": "3fbf0def71ecc1402b883b3692a07aac5083f30aeaac026747452ec257196a26"
+      "bytes": 31982,
+      "sha256": "10dd79b810788aaf3ec4d9e447aebac7cf110b2f5c6aac0f73405e37d4febbc0"
     },
     {
       "path": "backend/flux_linkage_map.py",
@@ -315,13 +315,13 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 38396,
-      "sha256": "96dec0459b558a6b8d14f14f679a1e04afdb9b7aaf9b45b6cad872d8374f8f0f"
+      "bytes": 43538,
+      "sha256": "67e88b68e06f7ff84a3a2be43dbc6f4f98353c2845bf79b47f51e5b5220c153b"
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 82612,
-      "sha256": "621e7d369503fd8508fa4eb1894808a3ecbafe6ecf4d28d7802a1811dc20f913"
+      "bytes": 91276,
+      "sha256": "7e4c2c9cb95db0d39695a6c8411c52be817d0fc511bcfff41ae3bba39b7a01cb"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 78294,
-      "sha256": "f156a0f4114cf0c90e49708ce89051262badc951304be34e02d34e2f5ca5f263"
+      "bytes": 78379,
+      "sha256": "9a22080297b26f60cb7e95c3fdce1f8c97945fd2f8b086f63902b60b025f7080"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -470,8 +470,8 @@
     },
     {
       "path": "backend/models/config.py",
-      "bytes": 34181,
-      "sha256": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c"
+      "bytes": 34953,
+      "sha256": "a2c26f125bf821e2704f21bbfafcc3d8101f540971f69fc21b5dbac82fc461e8"
     },
     {
       "path": "backend/models/errors.py",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 30859,
-      "sha256": "223a08ca60b792ee5072bfef7f4cf59cb67888fbd8a63aff0d4df4f3b53ec64f"
+      "bytes": 32876,
+      "sha256": "22af292449a60d041db5565e0b70cdd86fd9a1450fd5e585e0dc9912561898bb"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 93096,
-      "sha256": "8069a7b8847999718f4327ef003b22250882c00ca9e2577653f6dd354f622ab7"
+      "bytes": 93145,
+      "sha256": "e01cbf946254e7482dd26fccf0d05cc71df92e590da32a5ac79a3027a638dee6"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 58623,
-      "sha256": "b2fb259730cbb0f6deb39a05c9f7545043981a3d929471bf6f6963a84cd21be2"
+      "bytes": 58735,
+      "sha256": "ffce5ea30f351638e7ad6e99c3a769292967d56aa858cfdd023be61d9855db8d"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 12244,
-      "sha256": "e75094220ce861186d0aa3c01bc73cce6fa38d1053c874ddc6e57c36dcb101ab"
+      "bytes": 12453,
+      "sha256": "effca3cd6b50cf09e0eee3bfc552d37aac6940862b6f234a121d7d59436f5508"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -615,8 +615,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 20260,
-      "sha256": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f"
+      "bytes": 20727,
+      "sha256": "6a97e17ec07c8c70f9b2c9aa1786a22d4b41a062cbc56debb44a948409b75036"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -645,18 +645,18 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 59346,
-      "sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f"
+      "bytes": 60421,
+      "sha256": "58f7623ed4a72dedda87b2f9a603b12fa98b45f65aab59698053e6cf6a40dce2"
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 173543,
-      "sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5"
+      "bytes": 173797,
+      "sha256": "3e5aec9e737cfb4db27474742c039be8c9b94e34dd559eee48f81c421a142993"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 63728,
-      "sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1"
+      "bytes": 64118,
+      "sha256": "3239a5ed9cae9aeae0598e2faac6ef7c9d6d2454e753deba55d2a0c616f076bf"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -685,8 +685,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 8110,
-      "sha256": "db0dcb50b94ec15eb6ba5c2d994d5ea7ed04fe1379e438c84cdfcce78c1e9fdd"
+      "bytes": 8863,
+      "sha256": "cf77192b3754e26facb8a4a81ae169e280fe46b19673581438f2b0f14e05b5aa"
     },
     {
       "path": "backend/sweep_planning.py",
@@ -695,8 +695,8 @@
     },
     {
       "path": "backend/topology_provenance.py",
-      "bytes": 9411,
-      "sha256": "0ef8f7e6643f23a4529ae3ec7d9af3fd5ebc49e3dd954a6747850970aa77a372"
+      "bytes": 9681,
+      "sha256": "769e8e6019cacf5fed7d01a0c527462dc7f832cd278cc028437c7445b00a0966"
     },
     {
       "path": "backend/torque_metrics.py",
@@ -5965,8 +5965,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16821,
-      "sha256": "1168f4ee3be7c998d1b828d92029f0067574fd5aa869c7ce01fd692047c643fe"
+      "bytes": 17561,
+      "sha256": "5457949407bc8b2e1edcdccded7ee28b9ea574e27ee8d70d6b138ac7a3b93206"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5980,8 +5980,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 49956,
-      "sha256": "9824c66020cb5144d90797fc2413802f4232b39fcebcdfdba6ebf55562f36530"
+      "bytes": 53232,
+      "sha256": "56b576d2036948269046f5607926bd7087ef92e593b82f7d9cfebed2388304ab"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -6415,8 +6415,8 @@
     },
     {
       "path": "docs/local_solve_workspace.md",
-      "bytes": 7203,
-      "sha256": "cb49a7989a9f77b1db9ef1ead5af6a018b70a37f4193469bf1d6c5010c7d344b"
+      "bytes": 7255,
+      "sha256": "373babed3b17cc5f070cf499fd9cbf9ee36f8fedc9d27598bb88aad9488b7e5f"
     },
     {
       "path": "frontend/package-lock.json",
@@ -6485,8 +6485,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 9791,
-      "sha256": "6a176bba9fffebbe719ebec5814afaed2e1f3784589fc331af02fdef5ffaffbb"
+      "bytes": 10799,
+      "sha256": "1753b8c9966fdec6fa8130b54f969222d86f89f0031eebbfa5f4b719ae529dcc"
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 81572,
-      "sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec"
+      "bytes": 81627,
+      "sha256": "06e162240340dd43d620ca84c42f53882c01d63bbaf8cda2a2cd63feb4293b25"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 291844,
-      "sha256": "a332c5aacdd496a12b0d5b26d0c54087168bbbb1566906fb0fc6c4b20e1a3dac"
+      "bytes": 294428,
+      "sha256": "9230d056cc3aaddb222d833f17ee9b60b6fda29dcb521027ae04a06e2dfcf541"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7075,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 94662,
-      "sha256": "d0b616950a21ed4e6e6be7c91adfed13cf1bc9f762406b1afb8d5fb935bcfb57"
+      "bytes": 96278,
+      "sha256": "cbba138c658174b3b505f71462d66c746cefec78a35b066830e189698b9a371a"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7230,8 +7230,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 15806,
-      "sha256": "34d5d58a159ade2728b546500a209c84db3ec849ed7b04cfffc8a9a13f3afd2e"
+      "bytes": 15952,
+      "sha256": "d8694c0be70ef8b2844dd984f1672a8f995194f0351c4d286c9b096242725f53"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -7480,8 +7480,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24511,
-      "sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54"
+      "bytes": 24723,
+      "sha256": "e1c2befbc9ed2f1e31b6b89a8ed58a2dee41004b7ca0f8323f2ad1806898bb4f"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7785,13 +7785,13 @@
     },
     {
       "path": "solvers/magneto2d/src/assembly.rs",
-      "bytes": 62089,
-      "sha256": "f2fe403b64eb8d3f6b9bf6f612861b2bbb60f6091ab844092f198bc7e79be465"
+      "bytes": 62209,
+      "sha256": "6023b61a0e4c9ac160ce495b03b69ec40989709e0ce006a979b89b2cafe3c938"
     },
     {
       "path": "solvers/magneto2d/src/field.rs",
-      "bytes": 78994,
-      "sha256": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786"
+      "bytes": 88924,
+      "sha256": "b17f20a984d78adeeb2989e4a0b3ef6fa7280aa05da4e00cbe508eceee8188a0"
     },
     {
       "path": "solvers/magneto2d/src/lib.rs",
@@ -7815,8 +7815,8 @@
     },
     {
       "path": "solvers/magneto2d/src/mesh.rs",
-      "bytes": 5638,
-      "sha256": "c646a27dc8f77e676391e8ae8f2fab82dc2072b1b3784880ee57e274ac890855"
+      "bytes": 17359,
+      "sha256": "f2665ebec31b802d7cfb60caa7a28347a3afb2f01bc674ae8463191d59c0ad3d"
     },
     {
       "path": "solvers/magneto2d/src/motor.rs",
@@ -7825,18 +7825,18 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess.rs",
-      "bytes": 26870,
-      "sha256": "dd7753c5e7a48bf50df3717f9020e5ac6197ab4ee0876e6a3860cc7d062b7354"
+      "bytes": 28753,
+      "sha256": "fa071db8735f8ff26ea6de97a3b37ef84cda628679888ec4f0b4001fae234c3e"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
-      "bytes": 81626,
-      "sha256": "b054ade49a4cc1dea904064438af29e974f09023188dfe76f2aa64de897c6f9c"
+      "bytes": 82991,
+      "sha256": "75a567d6b26579aec566fba256311876d339587332fde97f4d8ee862e73546b0"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
-      "bytes": 48794,
-      "sha256": "2969e44fa4efe3577610f74f12f24d483ae6817e26550b8126ef73229168b5d8"
+      "bytes": 48872,
+      "sha256": "e5b50eb0b3812afb752d5b4ea638d6771adeae2bc09be6b91cafd952e9785ba9"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
@@ -7850,8 +7850,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/mod.rs",
-      "bytes": 115107,
-      "sha256": "795c7f4f476bdca43c315a176d3bfb79dfb70fea6a2839cb586347a1bd6f4502"
+      "bytes": 116905,
+      "sha256": "abb5cae14a4f61744c7a083527ad5c45f374b9e07851ee481846038d8baa14c5"
     },
     {
       "path": "solvers/magneto2d/src/run_config.rs",
@@ -7870,8 +7870,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mesh_metadata.rs",
-      "bytes": 22102,
-      "sha256": "37aa0a53aaa11688617e89f92c3c2826f39128d53a2b513f5247ccca6caa25df"
+      "bytes": 22142,
+      "sha256": "46431789284d60d68689980f93cd59b6e6231466a9d78d87769e87eaab41e73b"
     },
     {
       "path": "solvers/magneto2d/src/solve/metrics.rs",
@@ -7880,8 +7880,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 155656,
-      "sha256": "9d55c3400bf5917580abf61cf1e5b7976dfd7e362bbd797a5efcd52405d46c63"
+      "bytes": 156847,
+      "sha256": "631cc479a213440345460b65bb605be5bb2635c1043e32f9722eae4840432a90"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -7900,8 +7900,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 31124,
-      "sha256": "48a5f95a5846357cf2177c25606f0dad66f01f37dc08576079529d547d3c0d17"
+      "bytes": 31254,
+      "sha256": "448b51881e6f6b289d9841791f0b15a2eb0298b55e3f2e6fcc0afcf18ec1fe0e"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
@@ -7920,8 +7920,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 103405,
-      "sha256": "7a795a4544b97289c7dc28bf92a13d2a69e83a05cc647457121be6b23573e814"
+      "bytes": 106989,
+      "sha256": "e399014af1800210a6e015934bd9b113acec422d579a4a1d143839ef46f945e4"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
@@ -7930,8 +7930,8 @@
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
-      "bytes": 65085,
-      "sha256": "8469ed2f3d322a6cd7a4585f48d163871d23a88f444ccbb0af933ffea8fd343f"
+      "bytes": 65452,
+      "sha256": "f18aeecb5cd04e686681345914a8b54149f2e25eb714d5f0d5c412cbcc1eec8e"
     },
     {
       "path": "solvers/magneto2d/src/sparse.rs",
@@ -7940,8 +7940,8 @@
     },
     {
       "path": "solvers/magneto2d/src/teaching.rs",
-      "bytes": 126993,
-      "sha256": "9f241ac967a758f3fbbcf2736ddd20691a8af6f6dd65f22e9f2e21ea2ca67086"
+      "bytes": 127055,
+      "sha256": "069e4bb52eb87f8f17662ee303dc90ada9fa1d1c4a21066fddd8a73ebd3dc32e"
     },
     {
       "path": "solvers/magneto2d/src/thermal/assembly.rs",
@@ -7985,8 +7985,8 @@
     },
     {
       "path": "solvers/magneto2d/src/thermal/tests.rs",
-      "bytes": 49434,
-      "sha256": "c4df156288e20b0443739e349bac146575795b785941ab73387878b2710b8fdd"
+      "bytes": 49456,
+      "sha256": "4366d1f53400910b7bde26d20c69a3989750e11f6b64e565ff8bfe94064b31b7"
     },
     {
       "path": "solvers/magneto2d/src/thermal/types.rs",
@@ -8325,8 +8325,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 16427,
-      "sha256": "27af0046b26a9afea88f5b51a8b7970d62695065436862cd717eb9eca64cd270"
+      "bytes": 17596,
+      "sha256": "ca2acd3cf5c6387005fce386a63fd772a7e1c327b2c9ca92f9a61523e7294371"
     },
     {
       "path": "tests/test_public_phase_drive.py",
@@ -17707,6 +17707,21 @@
       "path": "tests/test_construction_preview.py",
       "bytes": 11219,
       "sha256": "67d4a7cfeb79469f6e164b5ebea0f249d89f4a0f0312abd26b79ea9d2a119ab3"
+    },
+    {
+      "path": "backend/sector_geometry.py",
+      "bytes": 47776,
+      "sha256": "c759764e13f9d7d64fde7c422d87264bf3f7fff0b6ac864bb726063d1d8c882e"
+    },
+    {
+      "path": "backend/sector_tiling.py",
+      "bytes": 15802,
+      "sha256": "485ecda2311b6fc67d69c1c60d83103a405f61cebe6975ae369c38aafc602e32"
+    },
+    {
+      "path": "tests/test_sector_symmetry.py",
+      "bytes": 27920,
+      "sha256": "00cd07f607d870d9ff5660de832e53fcc51c7aa7ec621514c9d7fe0b80776669"
     }
   ],
   "public_patches": [

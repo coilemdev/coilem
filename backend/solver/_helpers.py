@@ -19,6 +19,7 @@ from backend.back_emf_harmonics import (
 from backend.field_lines import build_field_line_plot
 from backend.logging_utils import log_event, tagged_log
 from backend.models import FieldLineFrame, MotorConfig, SlotExcitationFrame
+from backend.sector_tiling import sector_tiling_info
 from backend.solver_environment import solver_setting
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -648,6 +649,9 @@ def _field_line_frame_from_report(
     raw_mesh_info = report.get("mesh_info")
     if isinstance(raw_mesh_info, dict):
         frame["mesh_info"] = {**raw_mesh_info, **dict(frame.get("mesh_info") or {})}
+        tiling = sector_tiling_info(raw_mesh_info)
+        if tiling is not None:
+            frame["mesh_info"]["sector_tiling"] = tiling
 
 
     if noload_report is not None:
@@ -663,6 +667,9 @@ def _field_line_frame_from_report(
                     **raw_noload_mesh_info,
                     **dict(noload_frame.get("mesh_info") or {}),
                 }
+                noload_tiling = sector_tiling_info(raw_noload_mesh_info)
+                if noload_tiling is not None:
+                    noload_frame["mesh_info"]["sector_tiling"] = noload_tiling
             frame["noload_plot"] = noload_frame
 
     return frame

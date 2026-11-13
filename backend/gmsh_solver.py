@@ -25,6 +25,14 @@ from backend.models import MotorConfig
 from backend.reference_models import reference_model
 from backend.resources import package_resource
 from backend.rotor_layout import is_outer_rotor
+from backend.sector_geometry import (
+    SECTOR_EDGE_TAG,
+    SectorCurvePair,
+    SectorIR,
+    SectorUnsupportedError,
+    build_sector_ir,
+    detect_sector_symmetry,
+)
 from backend.solver_environment import ISOLATED_RUNTIME
 from backend.topology_provenance import build_topology_provenance
 
@@ -511,6 +519,11 @@ def _run_gmsh_ir_mesh_preview(
         joined = "; ".join(ir_report.issues)
         raise GmshMeshQAError(f"Geometry IR failed before Gmsh meshing: {joined}")
 
+    base_lc_mm = _base_lc_mm(config, density)
+    sector, sector_fallback = _sector_ir_for_solve(config, ir, base_lc_mm)
+    if sector is not None:
+        ir = sector.ir
+
     # No _GMSH_API_LOCK here: run_gmsh_mesh_preview already holds it across the call
     # into this function. threading.Lock is not reentrant, so taking it again would
     # deadlock the request thread outright.
@@ -523,10 +536,14 @@ def _run_gmsh_ir_mesh_preview(
         gmsh.model.add("openem_ir_motor_mesh")
         geometry_started = time.perf_counter()
 
-        builder = _GmshGeometryBuilder(base_lc_mm=_base_lc_mm(config, density))
-        region_by_surface = _build_ir_gmsh_surfaces(builder, ir)
+        builder = _GmshGeometryBuilder(base_lc_mm=base_lc_mm)
+        if sector is not None:
+            region_by_surface = _build_sector_gmsh_surfaces(builder, sector)
+        else:
+            region_by_surface = _build_ir_gmsh_surfaces(builder, ir)
         builder.apply_point_sizes()
         gmsh.model.geo.synchronize()
+        sector_curves = _tie_sector_curves(builder, sector) if sector is not None else []
         _apply_gmsh_physics_mesh_fields(
             builder,
             geom,
@@ -552,6 +569,9 @@ def _run_gmsh_ir_mesh_preview(
                 region_by_surface
             )
         dirichlet_nodes = _tagged_dirichlet_nodes(builder, nodes_mm) if builder.dirichlet_curves else None
+        sector_edge_pairs = (
+            _sector_edge_node_pairs(sector, sector_curves, nodes_mm) if sector is not None else []
+        )
     finally:
         gmsh.finalize()
 
@@ -567,6 +587,9 @@ def _run_gmsh_ir_mesh_preview(
         rotor_angle_deg=rotor_angle_deg,
         builder=builder,
         dirichlet_nodes=dirichlet_nodes,
+        sector=sector,
+        sector_edge_pairs=sector_edge_pairs,
+        sector_fallback=sector_fallback,
     )
     solve_profile.record(
         "mesh: build the solve mesh record", time.perf_counter() - artifact_started, triangles=len(triangles)
@@ -597,11 +620,163 @@ def _run_gmsh_ir_mesh_preview(
         "triangles": triangles,
         "regions": regions,
         "element_region_ids": element_region_ids,
-        "n_pole_pitches": config.rotor.pole_count,
-        "total_span_deg": 360.0,
+        "n_pole_pitches": solve_mesh_artifact["mesh"]["info"]["n_pole_pitches"],
+        "total_span_deg": solve_mesh_artifact["mesh"]["info"]["total_span_deg"],
         "generation_time_ms": generation_time_ms,
         "solve_mesh_artifact": solve_mesh_artifact,
     }
+
+
+def _sector_ir_for_solve(
+    config: MotorConfig,
+    ir: GeometryIR,
+    base_lc_mm: float,
+) -> tuple[SectorIR | None, str | None]:
+    """The sector to mesh, or None with the reason the full circle is meshed.
+
+    ``solve_params.symmetry = "full"`` always meshes the full circle.
+    """
+
+    if getattr(config.solve_params, "symmetry", "full") != "auto":
+        return None, None
+    symmetry = detect_sector_symmetry(ir)
+    if symmetry is None:
+        return None, "the geometry and winding do not repeat around the circle"
+    try:
+        sector = build_sector_ir(
+            ir,
+            symmetry,
+            min_mid_gap_offset_mm=0.5 * _feature_lc_mm(base_lc_mm, "airgap"),
+        )
+    except SectorUnsupportedError as exc:
+        return None, str(exc)
+    return sector, None
+
+
+def _build_sector_gmsh_surfaces(
+    builder: _GmshGeometryBuilder,
+    sector: SectorIR,
+) -> dict[int, str]:
+    """One plane surface per piece of each cut region."""
+
+    region_by_surface: dict[int, str] = {}
+    cut_points: set[tuple[int, int]] = set()
+    for pieces in sector.pieces_by_region.values():
+        for piece in pieces:
+            for loop in (piece.outer, *piece.holes):
+                for segment in loop.segments:
+                    if segment.boundary_tag == SECTOR_EDGE_TAG:
+                        for point in (segment.start, segment.end):
+                            cut_points.add((round(point.x_mm * 1.0e6), round(point.y_mm * 1.0e6)))
+    for region in sector.ir.regions:
+        for piece in sector.pieces_by_region.get(region.region_id, ()):
+            outer_loop = _curve_loop_from_ir_loop(builder, region, piece.outer, plain_points=cut_points)
+            hole_loops = [
+                _curve_loop_from_ir_loop(builder, region, hole, reverse=True, plain_points=cut_points)
+                for hole in piece.holes
+            ]
+            surface = gmsh.model.geo.addPlaneSurface([outer_loop, *hole_loops])
+            builder.surfaces_by_region.setdefault(region.region_id, []).append(surface)
+            region_by_surface[surface] = region.region_id
+    return region_by_surface
+
+
+def _builder_point_tag(builder: _GmshGeometryBuilder, xy: tuple[float, float]) -> int:
+    tag = builder.points.get((round(xy[0] * 1.0e6), round(xy[1] * 1.0e6)))
+    if tag is None:
+        raise GmshMeshQAError("A sector edge point is missing from the Gmsh geometry")
+    return tag
+
+
+def _builder_curve_tag(
+    builder: _GmshGeometryBuilder,
+    kind: str,
+    start_xy: tuple[float, float],
+    end_xy: tuple[float, float],
+) -> int:
+    start = _builder_point_tag(builder, start_xy)
+    end = _builder_point_tag(builder, end_xy)
+    if kind == "line":
+        tag = builder.lines.get((start, end)) or builder.lines.get((end, start))
+    else:
+        tag = builder.arcs.get((start, builder.center_tag, end)) or builder.arcs.get((end, builder.center_tag, start))
+    if tag is None:
+        raise GmshMeshQAError("A sector edge curve is missing from the Gmsh geometry")
+    return abs(tag)
+
+
+def _tie_sector_curves(
+    builder: _GmshGeometryBuilder,
+    sector: SectorIR,
+) -> list[tuple[SectorCurvePair, int, int]]:
+    """Make Gmsh copy each master edge curve's nodes onto its partner one sector away."""
+
+    tied: list[tuple[SectorCurvePair, int, int]] = []
+    for pair in sector.curve_pairs:
+        master = _builder_curve_tag(builder, pair.kind, pair.master_start, pair.master_end)
+        slave = _builder_curve_tag(builder, pair.kind, pair.slave_start, pair.slave_end)
+        cos_a, sin_a = math.cos(pair.rotation_rad), math.sin(pair.rotation_rad)
+        gmsh.model.mesh.setPeriodic(
+            1,
+            [slave],
+            [master],
+            [cos_a, -sin_a, 0.0, 0.0, sin_a, cos_a, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+        )
+        tied.append((pair, master, slave))
+    return tied
+
+
+def _sector_edge_node_pairs(
+    sector: SectorIR,
+    tied_curves: list[tuple[SectorCurvePair, int, int]],
+    nodes_mm: list[list[float]],
+) -> list[list[int]]:
+    """Node pairs (master, partner) across the sector edges, each node in one pair only.
+
+    A node on the motor axis sits on both cut edges; it is returned paired with
+    itself, and the solver holds it at zero for an anti-periodic sector.
+    Partner nodes are moved onto the exact rotated position of their master.
+    """
+
+    index = {(round(x * 1.0e9), round(y * 1.0e9)): i for i, (x, y) in enumerate(nodes_mm)}
+
+    def curve_nodes(tag: int) -> list[tuple[float, float, int]]:
+        _, coords, _ = gmsh.model.mesh.getNodes(1, tag, includeBoundary=True)
+        out: list[tuple[float, float, int]] = []
+        for k in range(0, len(coords), 3):
+            x, y = float(coords[k]), float(coords[k + 1])
+            node = index.get((round(x * 1.0e9), round(y * 1.0e9)))
+            if node is None:
+                raise GmshMeshQAError("A sector edge node is missing from the meshed triangles")
+            out.append((x, y, node))
+        return out
+
+    pairs: dict[int, int] = {}
+    for pair, master_tag, slave_tag in tied_curves:
+        master_nodes = curve_nodes(master_tag)
+        slave_nodes = curve_nodes(slave_tag)
+        if len(master_nodes) != len(slave_nodes):
+            raise GmshMeshQAError("Sector edge curves carry different node counts")
+        cos_a, sin_a = math.cos(pair.rotation_rad), math.sin(pair.rotation_rad)
+        remaining = list(slave_nodes)
+        for x, y, node in master_nodes:
+            tx, ty = x * cos_a - y * sin_a, x * sin_a + y * cos_a
+            best = min(range(len(remaining)), key=lambda k: (remaining[k][0] - tx) ** 2 + (remaining[k][1] - ty) ** 2)
+            bx, by, partner = remaining.pop(best)
+            if math.hypot(bx - tx, by - ty) > 1.0e-4:
+                raise GmshMeshQAError("Sector edge nodes do not match one sector apart")
+            if partner != node:
+                # Gmsh places arc nodes through its own parametrisation, about
+                # 1e-6 mm off; put the partner exactly one sector from its master.
+                nodes_mm[partner] = [tx, ty]
+            for one, other in ((node, partner), (partner, node)):
+                known = pairs.get(one)
+                if known is not None and known != other:
+                    raise GmshMeshQAError("A sector edge node has two different partners")
+                pairs[one] = other
+    if not pairs:
+        raise GmshMeshQAError("The sector edges carry no mesh nodes")
+    return [[node, partner] for node, partner in sorted(pairs.items()) if node <= partner]
 
 
 def _build_ir_gmsh_surfaces(
@@ -727,25 +902,25 @@ def _curve_loop_from_ir_loop(
     loop: GeometryIRLoop,
     *,
     reverse: bool = False,
+    plain_points: set[tuple[int, int]] | None = None,
 ) -> int:
+    """``plain_points`` are points a sector cut created: they are not geometric
+    corners, so they get no feature refinement and the mesh near a cut stays
+    like the same place in a full-circle mesh.
+    """
     curves: list[int] = []
     point_feature = _ir_point_feature(region)
     point_lc = _feature_lc_mm(builder.base_lc_mm, point_feature) if point_feature else None
     curve_feature = _ir_curve_feature(region)
 
+    def loop_point(point: Any) -> int:
+        if plain_points and (round(point.x_mm * 1.0e6), round(point.y_mm * 1.0e6)) in plain_points:
+            return builder.cartesian_point(point.x_mm, point.y_mm)
+        return builder.cartesian_point(point.x_mm, point.y_mm, point_lc, point_feature)
+
     for segment in loop.segments:
-        start = builder.cartesian_point(
-            segment.start.x_mm,
-            segment.start.y_mm,
-            point_lc,
-            point_feature,
-        )
-        end = builder.cartesian_point(
-            segment.end.x_mm,
-            segment.end.y_mm,
-            point_lc,
-            point_feature,
-        )
+        start = loop_point(segment.start)
+        end = loop_point(segment.end)
         if segment.kind == "arc":
             radius = segment.radius_mm
             if radius is None or radius <= 0:
@@ -930,6 +1105,9 @@ def _build_ir_solve_mesh_artifact(
     rotor_angle_deg: float,
     builder: _GmshGeometryBuilder,
     dirichlet_nodes: list[int] | None = None,
+    sector: SectorIR | None = None,
+    sector_edge_pairs: list[list[int]] | None = None,
+    sector_fallback: str | None = None,
 ) -> dict[str, Any]:
     region_by_id = {region.region_id: region for region in ir.regions}
     solve_regions = [
@@ -1018,8 +1196,8 @@ def _build_ir_solve_mesh_artifact(
         "num_nodes": len(nodes_mm),
         "num_triangles": len(triangles),
         "pole_pitch_deg": 360.0 / max(1, config.rotor.pole_count),
-        "n_pole_pitches": config.rotor.pole_count,
-        "total_span_deg": 360.0,
+        "n_pole_pitches": sector.symmetry.n_pole_pitches if sector is not None else config.rotor.pole_count,
+        "total_span_deg": sector.symmetry.span_deg if sector is not None else 360.0,
         "angular_divisions": 0,
         "radial_rings": 0,
         "mesh_density": f"gmsh_{density}",
@@ -1049,6 +1227,17 @@ def _build_ir_solve_mesh_artifact(
     if outer_rotor_info is not None:
         mesh_info["rotor_layout"] = "outer"
         mesh_info["outer_rotor"] = outer_rotor_info
+    if sector is not None:
+        mesh_info["sector"] = {
+            "repeats": sector.symmetry.repeats,
+            "anti_periodic": sector.symmetry.anti_periodic,
+            "slots": sector.symmetry.slots_per_sector,
+            "stator_start_deg": math.degrees(sector.stator_start_rad),
+            "rotor_start_deg": math.degrees(sector.rotor_start_rad),
+            "mid_gap_radius_mm": sector.mid_gap_radius_mm,
+        }
+    elif sector_fallback is not None:
+        mesh_info["sector_fallback_reason"] = sector_fallback
     artifact = {
         "mesh": {
             "nodes": nodes_mm,
@@ -1059,7 +1248,7 @@ def _build_ir_solve_mesh_artifact(
                 dirichlet_nodes if outer_rotor_info is not None
                 else _outer_boundary_nodes(nodes_mm, stator_outer_radius_mm)
             ),
-            "sector_edge_pairs": [],
+            "sector_edge_pairs": sector_edge_pairs or [],
             "info": mesh_info,
         },
         "element_region_ids": element_region_ids,
@@ -1083,7 +1272,10 @@ def _build_ir_solve_mesh_artifact(
             },
             "boundary_policy": {
                 "outer_boundary": "dirichlet_az_zero",
-                "sector_edges": "none",
+                "sector_edges": (
+                    "none" if sector is None
+                    else "anti_periodic" if sector.symmetry.anti_periodic else "periodic"
+                ),
             },
             "regions": region_contracts,
             "provenance": {

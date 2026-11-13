@@ -5,7 +5,7 @@ use crate::materials::SteinmetzCoefficients;
 use crate::mesh::{Region, TriMesh};
 use crate::sources::{
     flux_linkage_slot_side_turn_factor, phase_slot_side_phasor_magnitudes, slot_center_angle_rad,
-    slot_index_from_theta, slot_winding_layers, SlotExcitationContribution,
+    slot_winding_layers, SlotExcitationContribution,
 };
 
 use super::{
@@ -490,7 +490,12 @@ pub fn compute_flux_linkage(
         let cy = centroids[idx][1];
         let theta = cy.atan2(cx);
         let theta_pos = if theta < 0.0 { theta + 2.0 * PI } else { theta };
-        let slot_local = slot_index_from_theta(theta_pos, slot_pitch_rad, total_slots_in_span);
+        let slot_local = mesh.info.slot_local_from_theta(
+            theta_pos,
+            slot_pitch_rad,
+            total_slots_in_span,
+            slot_count as usize,
+        );
         let slot_idx = slot_local;
 
         slot_az_integral[slot_idx] += az_avg * area;
@@ -501,7 +506,7 @@ pub fn compute_flux_linkage(
         }
 
         if !slot_assigned[slot_idx] {
-            let slot_global = slot_local % slot_count as usize;
+            let slot_global = mesh.info.slot_global(slot_local, slot_count as usize);
             // Dispatch on the payload winding type so distributed
             // configs group slot flux linkages with the distributed phase-belt
             // layout instead of silently reusing the concentrated map.
@@ -590,8 +595,18 @@ pub fn compute_flux_linkage(
         .iter()
         .filter(|area| **area >= 1e-15)
         .count();
-    let slot_az_reference =
-        if subtract_slot_az_reference && occupied_slot_count > 1 && total_slot_area > 1e-15 {
+    // The reference is the mean potential over every slot of the motor. In an
+    // anti-periodic sector the neighbouring sector holds the negative of each
+    // slot here, so that mean is zero whatever this sector's own mean is.
+    let anti_periodic_sector = mesh
+        .info
+        .sector
+        .as_ref()
+        .map(|sector| sector.anti_periodic)
+        .unwrap_or(false);
+    let slot_az_reference = if anti_periodic_sector {
+        0.0
+    } else if subtract_slot_az_reference && occupied_slot_count > 1 && total_slot_area > 1e-15 {
             slot_az_integral.iter().sum::<f64>() / total_slot_area
         } else {
             0.0
@@ -609,7 +624,7 @@ pub fn compute_flux_linkage(
         }
         let az_avg_slot = slot_az_integral[s] / slot_area_total[s];
         let az_effective_slot = az_avg_slot - slot_az_reference;
-        let slot_global = s % slot_count as usize;
+        let slot_global = mesh.info.slot_global(s, slot_count as usize);
         // Chorded distributed slots and double-layer tooth-coil slots (#91) hold
         // more than one coil side: each side links the average A_z of its own
         // layer region (the whole slot's when the mesh has no layer regions)
@@ -623,7 +638,11 @@ pub fn compute_flux_linkage(
             coil_span,
         );
         if (winding_type == "distributed" && coil_span.is_some()) || sides.len() > 1 {
-            let theta_deg = slot_center_angle_rad(s, slot_pitch_rad).to_degrees();
+            let theta_deg = slot_center_angle_rad(
+            mesh.info.slot_global(s, slot_count as usize),
+            slot_pitch_rad,
+        )
+        .to_degrees();
             let per_layer = sides.len() == 2 && layer_area_total[s].iter().all(|area| *area >= 1e-15);
             for (side_idx, (phase, direction, turn_fraction)) in sides.into_iter().enumerate() {
                 let (az_side, area_side) = if per_layer {
@@ -685,8 +704,12 @@ pub fn compute_flux_linkage(
             * l_stack
             * az_effective_slot;
         phase_flux[phase] += contrib;
-        let theta_deg = slot_center_angle_rad(s, slot_pitch_rad).to_degrees();
-        let slot_global = s % slot_count as usize;
+        let theta_deg = slot_center_angle_rad(
+            mesh.info.slot_global(s, slot_count as usize),
+            slot_pitch_rad,
+        )
+        .to_degrees();
+        let slot_global = mesh.info.slot_global(s, slot_count as usize);
         if diagnostics_enabled {
             eprintln!(
                 "    slot[{}] @{:.1}°mech: phase={} dir={:+.0} az_avg={:.6e} az_eff={:.6e} contrib={:.6e}",
@@ -957,6 +980,8 @@ pub fn summarize_fields(
     let torque_arkkio_debug =
         compute_torque_arkkio_debug(mesh, fields, centroids, stack_length_mm, pole_count);
     let full_circle_model = (mesh.info.total_span_deg - 360.0).abs() < 1e-6;
+    // The A_z contour samples beyond a sector's edges through its repeat rule.
+    let az_contour_model = full_circle_model || mesh.info.sector.is_some();
     let (
         torque_contour_debug,
         torque_contour_az_nm,
@@ -1000,7 +1025,7 @@ pub fn summarize_fields(
     } else {
         let nodal_b_contour_debug =
             compute_torque_midgap_contour_debug(mesh, fields, stack_length_mm, pole_count);
-        let az_contour_debug = if full_circle_model {
+        let az_contour_debug = if az_contour_model {
             Some(compute_torque_midgap_contour_debug_from_az(
                 mesh,
                 az,
@@ -1153,7 +1178,7 @@ pub fn summarize_fields(
             torque_contour_inner_nm,
             torque_contour_outer_nm,
             torque_contour_multi_radius_diagnostics,
-        ) = if full_circle_model && use_az_contour {
+        ) = if az_contour_model && use_az_contour {
             compute_torque_at_multiple_radii_from_az(mesh, az, stack_length_mm, pole_count)
         } else {
             compute_torque_at_multiple_radii(mesh, fields, stack_length_mm, pole_count)
@@ -1435,10 +1460,11 @@ fn compute_point_sampled_peak_b(
     let mut peak_tooth = 0.0_f64;
     for s in 0..slot_count as usize {
         let theta = slot_center_angle_rad(s, slot_pitch_rad) + 0.5 * slot_pitch_rad;
-        if theta >= total_span_rad - 1e-9 {
+        // A sector folds every tooth onto one of its own, so none is skipped.
+        if mesh.info.sector.is_none() && theta >= total_span_rad - 1e-9 {
             continue;
         }
-        let point = [tooth_r * theta.cos(), tooth_r * theta.sin()];
+        let (point, _) = mesh.info.fold_point([tooth_r * theta.cos(), tooth_r * theta.sin()]);
         if let Some((bx, by)) =
             interpolate_nodal_b_in_regions(mesh, nodal_b, point, &[Region::StatorTooth])
         {
@@ -1446,11 +1472,20 @@ fn compute_point_sampled_peak_b(
         }
     }
 
-    let yoke_samples = ((36.0 * (mesh.info.total_span_deg / 360.0)).round() as usize).max(4);
+    // A sector is sampled at the full circle's own 36 points, folded into it,
+    // so the peak is taken over the same places.
+    let (yoke_samples, yoke_span_rad) = if mesh.info.sector.is_some() {
+        (36, 2.0 * PI)
+    } else {
+        (
+            ((36.0 * (mesh.info.total_span_deg / 360.0)).round() as usize).max(4),
+            total_span_rad,
+        )
+    };
     let mut peak_yoke = 0.0_f64;
     for sample_index in 0..yoke_samples {
-        let theta = total_span_rad * sample_index as f64 / yoke_samples as f64;
-        let point = [yoke_r * theta.cos(), yoke_r * theta.sin()];
+        let theta = yoke_span_rad * sample_index as f64 / yoke_samples as f64;
+        let (point, _) = mesh.info.fold_point([yoke_r * theta.cos(), yoke_r * theta.sin()]);
         if let Some((bx, by)) =
             interpolate_nodal_b_in_regions(mesh, nodal_b, point, &[Region::StatorYoke])
         {
@@ -1572,6 +1607,7 @@ mod tests {
                 stator_slot_outer_radius_mm: 42.0,
                 stator_outer_radius_mm: 50.0,
                 outer_rotor: None,
+                sector: None,
             },
         };
 

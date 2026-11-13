@@ -415,8 +415,31 @@ def test_composition_reuses_the_frame_geometry_exactly(monkeypatch, tmp_path) ->
     public_field_playback._package_playback_frame(
         0, "source-0", str(cache_dir), str(output_dir), "resultant_pm", 0.0
     )
-    # The loaded plot (|B| 0.5) once, the no-load plot (|B| 0.375) once.
-    assert built == [0.5, 0.375]
+    # The loaded plot (|B| 0.5) once; the no-load plot is on the same mesh and shares it.
+    assert built == [0.5]
+
+
+def test_pm_only_plot_shares_geometry_only_on_the_same_mesh() -> None:
+    plot, other = _plot(0.0), _plot(0.0)
+    assert public_field_playback._same_mesh(plot, other)
+    # The no-load solve can place a node a few 1e-15 mm away.
+    other["nodes_mm"][0][0] += 2e-15
+    assert public_field_playback._same_mesh(plot, other)
+    other["nodes_mm"][0][0] += 1e-6
+    assert not public_field_playback._same_mesh(plot, other)
+    moved = _plot(0.0)
+    moved["triangles"] = [list(reversed(triangle)) for triangle in moved["triangles"]]
+    assert not public_field_playback._same_mesh(plot, moved)
+    assert not public_field_playback._same_mesh(plot, {"triangles": plot["triangles"]})
+
+
+def test_a_frame_described_without_drawing_counts_the_same_triangles() -> None:
+    plot = _plot(0.0)
+    plot["triangles"] = [*plot["triangles"], [0, 1], [0, 1, 10**6], "bad"]
+    nodes, _ = public_field_playback._view_geometry(plot)
+    drawn = public_field_playback._triangles(plot, nodes)
+    assert public_field_playback._drawable_triangle_count(plot, nodes) == len(drawn) > 0
+    assert len(public_field_playback._drawable_geometry(plot, draw=False)[2]) == len(drawn)
 
 
 def test_flux_colours_use_one_fixed_scale_with_magenta_above_two_tesla() -> None:

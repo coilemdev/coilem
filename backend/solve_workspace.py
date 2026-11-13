@@ -257,18 +257,41 @@ def _atomic_write_bytes(path: Path, raw: bytes) -> None:
             pass
 
 
-def _atomic_write_json(path: Path, payload: Any) -> None:
+def _atomic_write_json(path: Path, payload: Any, *, compact: bool = False) -> None:
+    """Write ``payload`` as JSON, indented unless ``compact``.
+
+    A run's result holds a field plot of a million numbers. Indenting it uses
+    Python's slow encoder (1.5 s against 0.2 s) and nearly doubles the file,
+    for a file no one reads by eye; the small files stay indented.
+    """
+
     _atomic_write_bytes(
         path,
         json.dumps(
             payload,
-            indent=2,
+            indent=None if compact else 2,
+            separators=(",", ":") if compact else None,
             ensure_ascii=False,
             allow_nan=False,
             default=str,
         ).encode("utf-8")
         + b"\n",
     )
+
+
+def _copy_json_tree(value: Any) -> Any:
+    """``deepcopy`` for a JSON-like value: new dicts and lists, the same scalars.
+
+    ``deepcopy`` keeps a memo entry per object, about 1 s for a result's
+    million numbers; this takes a tenth of that. Anything that is not a dict
+    or a list is shared, which is right for the immutable values JSON holds.
+    """
+
+    if type(value) is dict:
+        return {key: _copy_json_tree(item) if type(item) in (dict, list) else item for key, item in value.items()}
+    if type(value) is list:
+        return [_copy_json_tree(item) if type(item) in (dict, list) else item for item in value]
+    return deepcopy(value)
 
 
 def user_data_root() -> Path:
@@ -667,7 +690,7 @@ class SolveRunWriter:
     def _complete(self, result: Mapping[str, Any]) -> RunLocation:
         if self._closed:
             raise SolveWorkspaceError("solve run writer is already closed")
-        stored_result = deepcopy(dict(result))
+        stored_result = _copy_json_tree(dict(result))
         _apply_output_statuses(stored_result, self.config)
         self._retain_artifacts(stored_result)
         materials = _material_records(self.config)
@@ -689,7 +712,7 @@ class SolveRunWriter:
             completed_at=completed_at,
         )
 
-        _atomic_write_json(self.partial_path / "result.json", stored_result)
+        _atomic_write_json(self.partial_path / "result.json", stored_result, compact=True)
         _atomic_write_json(self.partial_path / "material.json", material)
         report = {
             "schema_version": "coilem.solve_report_summary.v1",

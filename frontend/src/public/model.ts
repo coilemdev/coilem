@@ -19,6 +19,8 @@ export type SolveQuality = 'quick' | 'standard' | 'fine' | 'custom';
 export type MeshDensity = 'coarse' | 'normal' | 'fine' | 'very_fine';
 /** How exactly Gmsh places nodes along curves: Precise is what the benchmark measured. */
 export type MeshBuild = 'precise' | 'fast';
+/** How much of the motor is meshed and solved: one repeating sector when it has one, or always the full circle. */
+export type SolveSymmetry = 'auto' | 'full';
 
 export const PUBLIC_MAGNETO2D_SETTINGS = {
   torque_method: 'weighted_stress',
@@ -134,6 +136,7 @@ export interface MotorConfig {
     mesher: 'gmsh';
     corner_refinement: boolean;
     mesh_build: MeshBuild;
+    symmetry: SolveSymmetry;
     rotor_rotation_model: 'remesh_per_step';
     torque_method: 'contour' | 'arkkio' | 'weighted_stress';
     nonlinear_solver: 'picard' | 'newton';
@@ -743,6 +746,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     mesher: 'gmsh',
     corner_refinement: true,
     mesh_build: 'precise',
+    symmetry: 'full',
     rotor_rotation_model: 'remesh_per_step',
     torque_method: 'weighted_stress',
     nonlinear_solver: 'newton',
