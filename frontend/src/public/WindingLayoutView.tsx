@@ -11,6 +11,7 @@
  */
 import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { zoomedSvgViewBox } from './viewportTransform';
 import type { GeometryPreview, MotorConfig, PublicWindingCoil } from './model';
 import { PUBLIC_PHASE_COLORS, type PublicPhaseId } from './motorPalette';
 import { useViewportNavigation, ViewportNavigationControls } from './ViewportNavigation';
@@ -213,6 +214,20 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
   const [pathsHelpOpen, setPathsHelpOpen] = useState(false);
   const pathsHelpId = useId();
   const hasLayout = slots.length > 0;
+  const [ringSize, setRingSize] = useState({ width: 1, height: 1 });
+  useLayoutEffect(() => {
+    const ring = navigation.viewportRef.current;
+    if (!hasLayout || !ring) return undefined;
+    const measure = () => {
+      const { width, height } = ring.getBoundingClientRect();
+      setRingSize({ width, height });
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver(measure);
+    observer.observe(ring);
+    return () => observer.disconnect();
+  }, [hasLayout, navigation.viewportRef]);
   useLayoutEffect(() => {
     const section = pathsRef.current;
     if (!section) return undefined;
@@ -298,10 +313,9 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
           ref={navigation.viewportRef}
           {...navigation.bind}
         >
-          <div className="public-viewport-navigation-content" style={navigation.contentStyle}>
             <svg
               className="wl-ring-svg"
-              viewBox={`${-WINDING_RING_EXTENT} ${-WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT} ${2 * WINDING_RING_EXTENT}`}
+              viewBox={zoomedSvgViewBox(WINDING_RING_EXTENT, ringSize.width, ringSize.height, navigation.scale, navigation.pan)}
               preserveAspectRatio="xMidYMid meet"
               role="img"
               aria-label={`${slotCount} slots around the bore, numbered to match the cross-section, with each coil's end turn`}
@@ -366,7 +380,6 @@ export function WindingLayoutView({ config, geometry, navigationSlot = null }: {
                 );
               })}
             </svg>
-          </div>
         </div>
         {navigationSlot ? createPortal(
           <ViewportNavigationControls

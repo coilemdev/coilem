@@ -9,7 +9,7 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from 'react';
 import type { SectorView } from './sectorFraming';
-import { anchoredZoomPan, viewportTransformOrigin, type ViewportFrame } from './viewportTransform';
+import { anchoredZoomPan, viewportFrameContains, viewportTransformOrigin, type ViewportFrame } from './viewportTransform';
 
 interface Point {
   x: number;
@@ -114,13 +114,14 @@ export function useViewportNavigation(
     // A thin ring's sides lie at the motor's edge: let the pan go half a view
     // further so any part of the ring can sit in the middle.
     const reach = sectorAvailable ? 0.5 : 0;
-    const maximumX = Math.max(0, rect.width * (candidateScale - 1 + 2 * reach) / 2);
-    const maximumY = Math.max(0, rect.height * (candidateScale - 1 + 2 * reach) / 2);
+    const frame = frameForSize?.(rect.width, rect.height) ?? rect;
+    const maximumX = Math.max(0, frame.width * (candidateScale - 1 + 2 * reach) / 2);
+    const maximumY = Math.max(0, frame.height * (candidateScale - 1 + 2 * reach) / 2);
     return {
       x: clamp(candidate.x, -maximumX, maximumX),
       y: clamp(candidate.y, -maximumY, maximumY),
     };
-  }, [sectorAvailable]);
+  }, [frameForSize, sectorAvailable]);
 
   const setScaleAt = useCallback((
     requestedScale: number,
@@ -249,9 +250,11 @@ export function useViewportNavigation(
   const zoomOut = useCallback(() => setScaleAt(scale / 1.25), [scale, setScaleAt]);
 
   const onWheel = useCallback((event: ReactWheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
     const rect = event.currentTarget.getBoundingClientRect();
-    const origin = viewportTransformOrigin(rect.width, rect.height, frameForSize?.(rect.width, rect.height) ?? undefined);
+    const frame = frameForSize?.(rect.width, rect.height);
+    if (!viewportFrameContains({ x: event.clientX - rect.left, y: event.clientY - rect.top }, frame)) return;
+    event.preventDefault();
+    const origin = viewportTransformOrigin(rect.width, rect.height, frame ?? undefined);
     const anchor = {
       x: event.clientX - rect.left - origin.x,
       y: event.clientY - rect.top - origin.y,
@@ -266,6 +269,10 @@ export function useViewportNavigation(
       || (event.pointerType === 'mouse' && event.button !== 0)
       || (event.target as HTMLElement).closest('button, input, select, a')
     ) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    if (!viewportFrameContains(
+      { x: event.clientX - rect.left, y: event.clientY - rect.top }, frameForSize?.(rect.width, rect.height),
+    )) return;
     event.preventDefault();
     didDragRef.current = false;
     // Keep a click without a drag on its original canvas or SVG target, so
@@ -280,7 +287,7 @@ export function useViewportNavigation(
     };
     captureTarget.setPointerCapture(event.pointerId);
     setIsDragging(true);
-  }, [pan, panEnabled]);
+  }, [frameForSize, pan, panEnabled]);
 
   const onPointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     const start = pointerStartRef.current;
