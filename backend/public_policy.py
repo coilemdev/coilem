@@ -75,11 +75,15 @@ def _validation_error(exc: ValidationError) -> PublicConfigError:
     return PublicConfigError(message, field=field)
 
 
-def parse_public_motor_config(body: dict[str, Any], *, allow_experimental_rotors: bool = False) -> MotorConfig:
+def parse_public_motor_config(
+    body: dict[str, Any], *, allow_experimental_rotors: bool = False, allow_unfinished_winding: bool = False,
+) -> MotorConfig:
     """Validate a public request without entering excluded feature modules.
 
     ``allow_experimental_rotors`` also accepts EXPERIMENTAL_IPM_TOPOLOGIES. HTTP
     routes never pass it; every other check still applies.
+    ``allow_unfinished_winding`` is for a geometry-only construction preview.
+    Mesh, solve and ordinary preview requests always validate the winding.
     """
 
     if not isinstance(body, dict):
@@ -149,6 +153,7 @@ def parse_public_motor_config(body: dict[str, Any], *, allow_experimental_rotors
         config,
         solver_id="elmer" if requested_solver == "elmer" else "magneto2d",
         allow_experimental_rotors=allow_experimental_rotors,
+        allow_unfinished_winding=allow_unfinished_winding,
     )
     if support_error is not None:
         raise support_error
@@ -231,6 +236,7 @@ def public_config_support_error(
     require_solve_params: bool = False,
     solver_id: PublicSolverId = "magneto2d",
     allow_experimental_rotors: bool = False,
+    allow_unfinished_winding: bool = False,
 ) -> PublicConfigError | None:
     """Return an actionable public-boundary error, or ``None``."""
 
@@ -293,7 +299,7 @@ def public_config_support_error(
         if config.solve_params is not None and config.solve_params.rated_speed_rpm <= 0:
             return PublicConfigError("Torque–speed maps need a reference speed above 0 rpm.", field="solve_params.rated_speed_rpm")
 
-    winding_error = get_magneto2d_winding_support_error(config)
+    winding_error = None if allow_unfinished_winding else get_magneto2d_winding_support_error(config)
     if winding_error is not None:
         solver_label = "Elmer" if solver_id == "elmer" else "Magneto2D"
         if "FEMM" in winding_error:

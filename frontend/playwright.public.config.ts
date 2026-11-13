@@ -18,7 +18,7 @@ function shellQuote(value: string): string {
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: 'public-release.spec.ts',
+  testMatch: ['public-release.spec.ts', 'progressive-design.spec.ts'],
   outputDir: './test-results/public-release',
   timeout: 15 * 60_000,
   expect: { timeout: 30_000 },

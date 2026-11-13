@@ -57,7 +57,7 @@ export function CustomSteelImport({ disabled, onImport }: {
   }
 
   return <div className="custom-steel-import">
-    <button type="button" disabled={disabled} aria-expanded={open} onClick={() => setOpen(!open)}>Import steel material</button>
+    <button type="button" disabled={disabled} aria-expanded={open} onClick={() => setOpen(!open)}>Import steel material <small>(optional)</small></button>
     {open && <div className="custom-steel-form">
       <p>Import a static magnetization curve. CSV columns: <code>B_T,H_A_per_m</code> (tesla, A/m). Start at 0,0; both columns must increase.</p>
       <a href="/materials/sample-custom-steel.csv" download>Download sample curve</a>

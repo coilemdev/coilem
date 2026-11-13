@@ -95,6 +95,18 @@ def _flush_own_records() -> None:
         return
 
 
+def _close_own_records() -> None:
+    global _handle, _handle_pid
+    try:
+        with _lock:
+            handle, _handle = _handle, None
+            _handle_pid = None
+            if handle is not None:
+                handle.close()
+    except Exception:  # profiling must never break a solve
+        return
+
+
 def record(stage: str, seconds: float, **detail: Any) -> None:
     """Record ``seconds`` spent in ``stage``, ending now."""
 
@@ -238,10 +250,10 @@ def finish(output_dir: Path | None) -> dict[str, Any] | None:
     """Collect this solve's records, log the breakdown and write it to ``output_dir``."""
 
     global _started_at
-    if not enabled() or _started_at is None:
-        return None
     started_at, _started_at = _started_at, None
     try:
+        if not enabled() or started_at is None:
+            return None
         summary = summarize(_collect(started_at), started_at, time.time())
         if verbose():
             print(format_table(summary), file=sys.stderr, flush=True)
@@ -251,6 +263,11 @@ def finish(output_dir: Path | None) -> dict[str, Any] | None:
         return summary
     except Exception:  # profiling must never break a solve
         return None
+    finally:
+        # Worker pools have joined before the solve returns. Release this
+        # process's spool too, so Windows can archive/delete the runtime and
+        # the next solve opens a fresh file, possibly under a new data root.
+        _close_own_records()
 
 
 # The stages of each step, in reading order: (recorded stage, label, indent).

@@ -273,6 +273,37 @@ def test_solves_leave_out_the_field_pictures_unless_asked(monkeypatch) -> None:
     assert lean.metrics() == full.metrics()
 
 
+@pytest.mark.parametrize("currents", [[10], [10, 20]])
+def test_sweep_reuses_analysis_names_from_a_generator(monkeypatch, currents) -> None:
+    calls = []
+
+    def fake_in_process(body, on_progress, *, fields=False):
+        calls.append(body["solve_options"])
+        return _result_data()
+
+    monkeypatch.setattr(_solve, "_solve_in_process", fake_in_process)
+    monkeypatch.setattr(_solve, "check_main_module", lambda: None)
+    result = coilem.sweep(
+        coilem.Motor.load(SPM_FIXTURE), current_A=currents,
+        analyses=(name for name in ["torque", "back_emf"]),
+    )
+    assert not result.failed and len(calls) == len(currents)
+    assert all({key for key, on in options.items() if on} == {"torque_sweep", "back_emf"} for options in calls)
+
+
+def test_default_analyses_keep_the_field_pass(monkeypatch) -> None:
+    seen = []
+
+    def fake_selected(solver, config, **kwargs):
+        seen.append(solver._visual_outputs)
+        return types.SimpleNamespace(model_dump=lambda **_: _result_data())
+
+    monkeypatch.setattr(_solve, "check_main_module", lambda: None)
+    monkeypatch.setattr("backend.selected_analyses.solve_selected_analyses", fake_selected)
+    coilem.solve(coilem.Motor.load(SPM_FIXTURE).replace(solve_options=None))
+    assert seen == [True]
+
+
 @pytest.mark.parametrize(
     ("analyses", "fields", "lean"),
     [
@@ -429,6 +460,25 @@ def test_the_real_app_refuses_an_unsupported_design_with_the_field(tmp_path, mon
 
 
 # -- One real solve -----------------------------------------------------------------------
+
+
+@pytest.mark.weekly
+def test_default_analyses_preserve_losses_and_flux_statistics_without_pictures(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    motor = _spm_motor()
+    options = {
+        "quality": "custom", "mesh": "coarse",
+        "solve_params": {"rotor_step_deg": 30, "rotor_sweep_range_deg": 360},
+    }
+    point = coilem.OperatingPoint(current_A=20, current_angle_deg=30)
+    lean = coilem.solve(motor, point, **options)
+    full = coilem.solve(motor, point, fields=True, **options)
+    assert lean.summary["iron_loss"]["iron_loss_W"] > 0
+    assert lean.summary["loss_breakdown"]["efficiency_pct"] > 0
+    for name in ("iron_loss", "loss_breakdown", "rms_flux_density_teeth_T", "rms_flux_density_yoke_T"):
+        assert lean.summary[name] == full.summary[name]
+    assert not set(FIELD_KEYS) & set(lean.data)
+    assert full.data["field_line_frames"]
 
 
 @pytest.mark.weekly

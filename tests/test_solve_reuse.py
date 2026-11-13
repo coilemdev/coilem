@@ -68,6 +68,9 @@ class _CountingHandle:
         self.flushes += 1
         self.inner.flush()
 
+    def close(self) -> None:
+        self.inner.close()
+
 
 def test_the_solving_process_flushes_its_profile_records_once_when_it_collects(tmp_path, monkeypatch) -> None:
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
@@ -83,7 +86,8 @@ def test_the_solving_process_flushes_its_profile_records_once_when_it_collects(t
     assert handle.flushes == 0  # buffered while this process's solve is open
     summary = solve_profile.finish(None)
     assert handle.flushes == 1
+    assert handle.inner.closed
     assert [row["count"] for row in summary["stages"] if row["stage"] == "solve: one position"] == [2]
     solve_profile.record("worker stage", 0.1)  # no solve open: flushed at once, as a worker's are
-    assert handle.flushes == 2
-    handle.inner.close()
+    assert "worker stage" in Path(solve_profile._handle.name).read_text(encoding="utf-8")
+    solve_profile.finish(None)

@@ -25,6 +25,8 @@ export const PUBLIC_MOTOR_COLORS = {
   magnetBody: '#929eae',
   /** Bare copper, used where a slot is drawn without a phase. */
   winding: '#c77b30',
+  /** Schematic conductor sections drawn over a winding region, one per turn. */
+  windingTurn: '#703916',
 } as const;
 
 /** Per-phase winding colours, shared by the 2D slot fills and the 3D coils. */

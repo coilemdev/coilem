@@ -21,7 +21,7 @@ import numpy as np
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
 from backend.client._inputs import Motor, OperatingPoint, solve_options_for
 from backend.client._results import Result
-from backend.models.config import MotorConfig, SolveParams
+from backend.models.config import MotorConfig, SolveOptionsConfig, SolveParams
 
 QUALITIES: tuple[str, ...] = get_args(SolveParams.model_fields["solve_quality"].annotation)
 MESH_DENSITIES: tuple[str, ...] = get_args(SolveParams.model_fields["mesh_density"].annotation)
@@ -287,8 +287,8 @@ def _lean(config: MotorConfig, fields: bool) -> bool:
 
     if fields:
         return False
-    options = config.solve_options
-    return options is None or not (options.losses_efficiency or options.flux_density)
+    options = config.solve_options or SolveOptionsConfig()
+    return not (options.losses_efficiency or options.flux_density)
 
 
 def _solve_in_process(body: dict[str, Any], on_progress: ProgressCallback | None, *, fields: bool = False) -> dict[str, Any]:
@@ -577,6 +577,9 @@ def sweep(
     currents = _values(current_A, "current_A")
     angles = _values(current_angle_deg, "current_angle_deg")
     points = [base.replace(current_A=current, current_angle_deg=angle) for current in currents for angle in angles]
+    # Validation and each solve read these names; an iterator must be consumed only once.
+    if analyses is not None and not isinstance(analyses, str):
+        analyses = tuple(analyses)
     options = {"analyses": analyses, "quality": quality, "mesh": mesh, "solve_params": solve_params}
     for point in points:
         build_request(motor, point, **options)

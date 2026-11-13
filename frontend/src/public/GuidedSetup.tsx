@@ -1,414 +1,172 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { MotorConfig } from './model';
 import type { PublicParameterSection, SolveSetupSection } from './CoilEmWorkspace';
-
-/**
- * Guided setup coach for the public workspace: coach-marks over the real app,
- * pitched at someone building their first motor. Stops anchor to stable
- * [data-guide] attributes, the ring highlights the active parameter section,
- * and every stop offers the same Back/Next navigation. Workflow-boundary
- * steps use Next to enter Solve, start the run, or open the finished report.
- */
+import { GuidedDesignProgressContext, NewDesignEntryContext, entrySectionComplete, hasEntry } from './newDesignEntry';
 
 export type GuidedWorkflowStep = 'design' | 'solve' | 'report';
-
 export interface GuidedStop {
   id: string;
-  /** Workflow stage the stop belongs to. */
   step: GuidedWorkflowStep;
-  /** data-guide attribute of the highlighted element; null = centered card. */
-  target: string | null;
+  target: string;
+  label: string;
   title: string;
-  body: string;
-  /**
-   * Stops always expose Next. These values add optional automatic advancement:
-   * 'next'   — button only.
-   * 'anchor' — also advances when `advanceWhenActive` becomes active.
-   * 'stage'  — also advances when the workflow stage moves past this stop.
-   * 'result' — also advances when the solver result arrives.
-   */
-  advance: 'next' | 'anchor' | 'stage' | 'result';
-  advanceWhenActive?: string;
+  section?: PublicParameterSection;
+  solveSection?: SolveSetupSection;
 }
 
+/** The same outside-in sequence as New Design, followed by every Solve section. */
 export const PUBLIC_GUIDED_STOPS: GuidedStop[] = [
-  {
-    id: 'topology',
-    step: 'design',
-    target: 'topology-selector',
-    title: 'Choose the motor topology',
-    body: 'Start with the rotor architecture, before entering dimensions. Choose SPM for surface-mounted magnets or IPM for magnets buried inside the rotor. The starter design is already a valid 8-pole/12-slot motor, so you can accept every later default and keep moving.',
-    advance: 'next',
-  },
-  {
-    id: 'ipm-layout',
-    step: 'design',
-    target: 'ipm-layout-selector',
-    title: 'Choose the IPM rotor layout',
-    body: 'Flat / buried keeps each magnet parallel inside the rotor. V-shape angles magnet pairs to add saliency. Pick the architecture now; V-angle and depth remain available later under Advanced Geometry if you want to fine-tune them.',
-    advance: 'next',
-  },
-  {
-    id: 'stator',
-    step: 'design',
-    target: 'section-stator',
-    title: 'Start with the stator',
-    body: 'The stator is the stationary steel ring that carries the windings. Outer diameter, bore, slot count, and stack length live here — the cross-section redraws as you type, so nudge a value and watch it follow.',
-    advance: 'anchor',
-    advanceWhenActive: 'section-rotor',
-  },
-  {
-    id: 'rotor',
-    step: 'design',
-    target: 'section-rotor',
-    title: 'Shape the rotor and magnets',
-    body: 'The rotor spins inside the stator bore. Pole count and magnet size set the magnetic loading, and the derived air gap updates live — around half a millimetre to one millimetre is practical at this scale.',
-    advance: 'anchor',
-    advanceWhenActive: 'section-advanced',
-  },
-  {
-    id: 'advanced',
-    step: 'design',
-    target: 'section-advanced',
-    title: 'Tune the advanced geometry',
-    body: 'Bore tooth width, yoke tooth width, and yoke thickness trade copper room against iron saturation. The corresponding bore opening and yoke-side slot width are calculated from those two tooth widths. The defaults suit the example motor, so feel free to continue straight on to the winding.',
-    advance: 'anchor',
-    advanceWhenActive: 'section-winding',
-  },
-  {
-    id: 'winding',
-    step: 'design',
-    target: 'section-winding',
-    title: 'Define the winding',
-    body: 'Each stator tooth carries one concentrated coil, so every slot holds two coil sides — the 2D Winding layer paints both halves and marks current out of the page (⊙) and into the page (⊗). Turns and parallel paths scale torque against current.',
-    advance: 'anchor',
-    advanceWhenActive: 'section-materials',
-  },
-  {
-    id: 'materials',
-    step: 'design',
-    target: 'section-materials',
-    title: 'Assign materials',
-    body: 'Steel grades set saturation and the magnet grade sets remanence; the open reference set is made for learning. That completes the motor definition — select Next to move to the analysis stage.',
-    advance: 'stage',
-  },
-  {
-    id: 'solve-analysis',
-    step: 'solve',
-    target: 'solve-analysis',
-    title: 'Choose your analyses',
-    body: 'Choose which analyses to run. Torque and Back EMF are selected by default. Add Cogging torque, Losses & efficiency, or a Torque–speed map as needed; yellow Experimental badges identify analyses awaiting qualification.',
-    advance: 'next',
-  },
-  {
-    id: 'solve-plan',
-    step: 'solve',
-    target: 'solve-plan',
-    title: 'Pick a solve plan',
-    body: 'A plan sets mesh density and angular sampling: Preview offers a quick check, Standard balances resolution and runtime, and High accuracy uses a finer mesh. Choosing a plan prepares the mesh automatically. Preset names do not guarantee accuracy.',
-    advance: 'next',
-  },
-  {
-    id: 'solve-run',
-    step: 'solve',
-    target: 'solve-run',
-    title: 'Run the analysis',
-    body: 'Select Next to run your selected analyses locally. Progress and available waveforms appear on the right. The guide advances when the run completes.',
-    advance: 'result',
-  },
-  {
-    id: 'report',
-    step: 'solve',
-    target: 'open-report',
-    title: 'Solved — open the report',
-    body: 'Select Next to open Results and review the outputs you selected, together with the solved field. That is the whole loop: design, solve, report — change an analysis or operating point and run it again.',
-    advance: 'stage',
-  },
+  { id: 'arrangement', step: 'design', target: 'arrangement-selector', label: 'Arrangement',
+    title: 'Choose the rotor arrangement' },
+  { id: 'topology', step: 'design', target: 'topology-selector', label: 'Topology',
+    title: 'Choose the motor topology' },
+  { id: 'ipm-layout', step: 'design', target: 'ipm-layout-selector', label: 'IPM layout',
+    title: 'Choose the IPM rotor layout' },
+  { id: 'stator', step: 'design', target: 'section-stator', section: 'stator', label: 'Stator',
+    title: 'Build the stator from outside inward' },
+  { id: 'advanced', step: 'design', target: 'section-advanced', section: 'advanced', label: 'Teeth & slots',
+    title: 'Shape the teeth and slots' },
+  { id: 'rotor', step: 'design', target: 'section-rotor', section: 'rotor', label: 'Rotor & magnets',
+    title: 'Shape the rotor and magnets' },
+  { id: 'winding', step: 'design', target: 'section-winding', section: 'winding', label: 'Winding',
+    title: 'Define the winding' },
+  { id: 'materials', step: 'design', target: 'section-materials', section: 'materials', label: 'Materials',
+    title: 'Assign materials' },
+  { id: 'solve-operating', step: 'solve', target: 'solve-operating', solveSection: 'operating', label: 'Operating point',
+    title: 'Review the operating point' },
+  { id: 'solve-analysis', step: 'solve', target: 'solve-analysis', solveSection: 'analysis', label: 'Analysis',
+    title: 'Choose your analyses' },
+  { id: 'solve-plan', step: 'solve', target: 'solve-plan', solveSection: 'plan', label: 'Accuracy plan',
+    title: 'Pick a solve plan' },
+  { id: 'solve-run', step: 'solve', target: 'solve-run', label: 'Run',
+    title: 'Run the analysis' },
+  { id: 'report', step: 'solve', target: 'open-report', label: 'Results',
+    title: 'Solved — open the report' },
 ];
-
-const GUIDED_DESIGN_SECTIONS: Record<string, PublicParameterSection> = {
-  'section-stator': 'stator',
-  'section-rotor': 'rotor',
-  'section-advanced': 'advanced',
-  'section-winding': 'winding',
-  'section-materials': 'materials',
-};
-
-const GUIDED_SOLVE_SECTIONS: Record<string, SolveSetupSection> = {
-  'solve-analysis': 'analysis',
-  'solve-plan': 'plan',
-};
-
-function designSectionForStop(stop: GuidedStop): PublicParameterSection | null {
-  return stop.target ? GUIDED_DESIGN_SECTIONS[stop.target] ?? null : null;
-}
-
-interface GuidedTargetRect {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-}
 
 interface PublicGuidedSetupProps {
   activeStep: GuidedWorkflowStep;
+  activeDesignSection: PublicParameterSection | null;
   topology: MotorConfig['topology'];
   resultReady: boolean;
+  meshReady: boolean;
   busy: boolean;
   onWorkflowStepChange: (step: GuidedWorkflowStep) => void;
-  onDesignSectionChange: (section: PublicParameterSection | null) => string | null;
+  onDesignSectionChange: (section: PublicParameterSection | null) => void;
   onSolveSectionChange: (section: SolveSetupSection | null) => void;
+  onAcceptDesignSection: (section: PublicParameterSection) => void;
+  onGenerateMesh: () => void;
   onStartSolve: () => void;
   onExit: (completed: boolean) => void;
 }
 
-function prefersReducedMotion(): boolean {
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-}
+export function PublicGuidedSetup({ activeStep, activeDesignSection, topology, resultReady, meshReady, busy,
+  onWorkflowStepChange, onDesignSectionChange, onSolveSectionChange, onAcceptDesignSection,
+  onGenerateMesh, onStartSolve, onExit }: PublicGuidedSetupProps) {
+  const entry = useContext(NewDesignEntryContext);
+  const progress = useContext(GuidedDesignProgressContext);
+  const [currentId, setCurrentId] = useState('arrangement');
+  const [reviewed, setReviewed] = useState<string[]>([]);
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  const priorChoices = useRef({ layout: entry?.layout, topology: entry?.topology, ready: entry?.ready });
+  const stops = useMemo(() => PUBLIC_GUIDED_STOPS.filter((stop) => stop.id !== 'ipm-layout' || topology === 'IPM'), [topology]);
+  const index = Math.max(0, stops.findIndex((stop) => stop.id === currentId));
+  const stop = stops[index];
 
-function guidedStopsForTopology(topology: MotorConfig['topology']): GuidedStop[] {
-  return topology === 'IPM'
-    ? PUBLIC_GUIDED_STOPS
-    : PUBLIC_GUIDED_STOPS.filter((stop) => stop.id !== 'ipm-layout');
-}
+  const completed = useCallback((item: GuidedStop): boolean => {
+    if (item.id === 'arrangement') return Boolean(entry?.layout);
+    if (item.id === 'topology') return Boolean(entry?.topology);
+    if (item.id === 'ipm-layout') return Boolean(entry && hasEntry(entry, 'topology', 'IPM rotor layout'));
+    if (item.section) return Boolean(entry && entrySectionComplete(entry, item.section));
+    if (item.id === 'solve-run' || item.id === 'report') return resultReady;
+    return reviewed.includes(item.id);
+  }, [entry, resultReady, reviewed]);
+  const canVisit = (nextIndex: number) => stops.slice(0, nextIndex).every(completed)
+    && (stops[nextIndex].step !== 'solve' || progress.complete);
+  const ready = stop.step === 'design'
+    ? completed(stop) && !progress.blocked && (stop.id !== 'materials' || progress.complete)
+    : stop.id === 'report' ? resultReady : stop.id === 'solve-run' ? meshReady && !progress.blocked : true;
 
-function firstStopIndexForStep(step: GuidedWorkflowStep, stops: GuidedStop[]): number {
-  const index = stops.findIndex((stop) => stop.step === step);
-  return index >= 0 ? index : 0;
-}
-
-export function PublicGuidedSetup({
-  activeStep,
-  topology,
-  resultReady,
-  busy,
-  onWorkflowStepChange,
-  onDesignSectionChange,
-  onSolveSectionChange,
-  onStartSolve,
-  onExit,
-}: PublicGuidedSetupProps) {
-  const [index, setIndex] = useState(0);
-  const [rect, setRect] = useState<GuidedTargetRect | null>(null);
-  const [adjustmentMessage, setAdjustmentMessage] = useState<string | null>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const scrolledStopRef = useRef<string | null>(null);
-  const ipmAutoAdvanceRef = useRef(false);
-  const stops = useMemo(() => guidedStopsForTopology(topology), [topology]);
-  const currentIndex = Math.min(index, stops.length - 1);
-  const stop = stops[currentIndex];
-
-  const finish = useCallback((completed: boolean) => {
-    onExit(completed);
-  }, [onExit]);
-
-  useEffect(() => {
-    // Repair notes belong to the design stop that produced them. A direct
-    // stepper/stage jump must not carry that message into Solve or Report.
-    setAdjustmentMessage(null);
-  }, [activeStep]);
-
-  const showStop = useCallback((nextIndex: number) => {
-    const nextStop = stops[nextIndex];
-    if (!nextStop) return;
-    setIndex(nextIndex);
-    setAdjustmentMessage(onDesignSectionChange(designSectionForStop(nextStop)));
-    onSolveSectionChange(nextStop.target ? GUIDED_SOLVE_SECTIONS[nextStop.target] ?? null : null);
-    if (nextStop.step !== activeStep) onWorkflowStepChange(nextStop.step);
+  const showStop = useCallback((id: string) => {
+    let item = stops.find((candidate) => candidate.id === id);
+    if (!item) return;
+    if (item.step === 'solve' && activeStep !== 'solve') item = stops.find((candidate) => candidate.id === 'solve-operating')!;
+    setCurrentId(item.id);
+    onDesignSectionChange(item.section ?? null);
+    onSolveSectionChange(item.solveSection ?? null);
+    if (item.step !== activeStep) onWorkflowStepChange(item.step);
   }, [activeStep, onDesignSectionChange, onSolveSectionChange, onWorkflowStepChange, stops]);
 
-  const next = useCallback(() => {
-    showStop(Math.min(currentIndex + 1, stops.length - 1));
-  }, [currentIndex, showStop, stops.length]);
+  // The guide stays mounted in the entry context; only its normal-flow right
+  // panel host changes between Design and Solve. There is no viewport overlay.
+  useLayoutEffect(() => {
+    setHost(document.querySelector<HTMLElement>('[data-guide="guided-setup-panel"]'));
+  }, [activeStep]);
 
-  const handleNext = useCallback(() => {
-    if (stop.id === 'solve-run' && !resultReady) {
-      if (!busy) onStartSolve();
-      return;
+  useEffect(() => {
+    if (activeStep === 'report') { onExit(true); return; }
+    if (stop.step !== activeStep) {
+      const first = stops.find((item) => item.step === activeStep);
+      if (first) showStop(first.id);
     }
-    const nextStop = stops[currentIndex + 1];
-    if (!nextStop) {
-      if (stop.id === 'report') onWorkflowStepChange('report');
-      else finish(true);
-      return;
-    }
-    showStop(currentIndex + 1);
-  }, [
-    busy,
-    currentIndex,
-    finish,
-    onStartSolve,
-    onWorkflowStepChange,
-    resultReady,
-    showStop,
-    stop.id,
-    stops,
-  ]);
+  }, [activeStep, onExit, showStop, stop.step, stops]);
 
-  // Follow the workflow: performing a stage action (or jumping via the
-  // stepper) snaps the coach to that stage; reaching Report completes it.
+  // Follow actual choices, without auto-advancing again when Back reviews them.
   useEffect(() => {
-    if (activeStep === 'report') {
-      finish(true);
-      return;
-    }
-    if (activeStep !== 'design') onDesignSectionChange(null);
-    if (stop.step !== activeStep) setIndex(firstStopIndexForStep(activeStep, stops));
-  }, [activeStep, finish, onDesignSectionChange, stop.step, stops]);
+    const previous = priorChoices.current;
+    priorChoices.current = { layout: entry?.layout, topology: entry?.topology, ready: entry?.ready };
+    if (activeStep !== 'design') return;
+    if (entry?.layout && entry.layout !== previous.layout) { setReviewed([]); showStop('topology'); }
+    else if (entry?.topology && entry.topology !== previous.topology) { setReviewed([]); showStop(entry.topology === 'IPM' ? 'ipm-layout' : 'stator'); }
+    else if (entry?.ready && !previous.ready) showStop('stator');
+  }, [activeStep, entry?.layout, entry?.topology, entry?.ready, showStop]);
 
-  // Stage buttons can enter Solve without going through showStop. Keep the
-  // first Solve stop and its accordion in sync on that path as well.
+  // Sidebar Continue Setup and completed-section visits use the same guide.
   useEffect(() => {
-    onSolveSectionChange(activeStep === stop.step && stop.target ? GUIDED_SOLVE_SECTIONS[stop.target] ?? null : null);
-  }, [activeStep, onSolveSectionChange, stop]);
-
-  // Track the highlighted element. Poll cheaply — panels mount, sections
-  // expand, and layout shifts; a short cadence follows along closely enough.
-  useEffect(() => {
-    let cancelled = false;
-    const measure = () => {
-      if (cancelled) return;
-      const element = stop.target
-        ? document.querySelector<HTMLElement>(`[data-guide="${stop.target}"]`)
-        : null;
-      if (!element) {
-        setRect(null);
-        return;
-      }
-      if (scrolledStopRef.current !== stop.id) {
-        scrolledStopRef.current = stop.id;
-        element.scrollIntoView({
-          block: 'nearest',
-          behavior: prefersReducedMotion() ? 'auto' : 'smooth',
-        });
-      }
-      const bounds = element.getBoundingClientRect();
-      setRect({ top: bounds.top, left: bounds.left, width: bounds.width, height: bounds.height });
-    };
-    measure();
-    const interval = window.setInterval(measure, 300);
-    window.addEventListener('resize', measure);
-    window.addEventListener('scroll', measure, true);
-    return () => {
-      cancelled = true;
-      window.clearInterval(interval);
-      window.removeEventListener('resize', measure);
-      window.removeEventListener('scroll', measure, true);
-    };
-  }, [stop]);
-
-  // Anchor stops advance when the user clicks the section's own
-  // "Continue Setup: →" button and the next section becomes the active one.
-  useEffect(() => {
-    if (stop.advance !== 'anchor' || !stop.advanceWhenActive) return undefined;
-    const probe = window.setInterval(() => {
-      const nextSectionActive = document.querySelector(
-        `[data-guide="${stop.advanceWhenActive}"][data-guide-active="true"]`,
-      );
-      const ownSectionActive = stop.target
-        ? document.querySelector(`[data-guide="${stop.target}"][data-guide-active="true"]`)
-        : null;
-      if (nextSectionActive && !ownSectionActive) {
-        window.clearInterval(probe);
-        next();
-      }
-    }, 350);
-    return () => window.clearInterval(probe);
-  }, [next, stop]);
+    if (activeStep !== 'design' || !activeDesignSection) return;
+    const nextIndex = stops.findIndex((item) => item.section === activeDesignSection);
+    if (nextIndex >= 0 && nextIndex !== index && stops.slice(0, nextIndex).every(completed)) setCurrentId(stops[nextIndex].id);
+  }, [activeDesignSection, activeStep, completed, index, stops]);
 
   useEffect(() => {
-    if (stop.advance === 'result' && resultReady) next();
-  }, [next, resultReady, stop]);
+    if (stop.id === 'solve-run' && resultReady) showStop('report');
+  }, [resultReady, showStop, stop.id]);
 
-  // The starter is SPM, so choosing IPM is an explicit user decision. Move
-  // straight into the conditional layout stop rather than making them confirm
-  // the topology with a second click. Keep the ref set so Back remains useful.
-  useEffect(() => {
-    if (stop.id === 'topology' && topology === 'IPM' && !ipmAutoAdvanceRef.current) {
-      ipmAutoAdvanceRef.current = true;
-      next();
-    }
-  }, [next, stop.id, topology]);
+  const handleNext = () => {
+    if (!ready || busy) return;
+    if (stop.id === 'solve-run') { if (resultReady) showStop('report'); else onStartSolve(); return; }
+    if (stop.id === 'report') { onWorkflowStepChange('report'); return; }
+    if (stop.section) onAcceptDesignSection(stop.section);
+    if (stop.step === 'solve') setReviewed((current) => current.includes(stop.id) ? current : [...current, stop.id]);
+    if (stop.id === 'solve-plan' && !meshReady) onGenerateMesh();
+    const nextStop = stops[index + 1];
+    if (nextStop) showStop(nextStop.id);
+  };
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') finish(false);
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [finish]);
-
-  useEffect(() => {
-    cardRef.current?.focus({ preventScroll: true });
-  }, [stop.id]);
-
-  const cardStyle = useMemo(() => {
-    if (!rect) {
-      return { left: '50%', top: '50%', transform: 'translate(-50%, -50%)' } as const;
-    }
-    const cardWidth = 324;
-    const cardHeight = adjustmentMessage ? 278 : 236;
-    const margin = 12;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const fitsBeside = rect.left + rect.width + margin + cardWidth < viewportWidth;
-    const left = fitsBeside
-      ? rect.left + rect.width + margin
-      : Math.min(Math.max(rect.left, margin), Math.max(margin, viewportWidth - cardWidth - margin));
-    const below = rect.top + rect.height + margin;
-    const top = fitsBeside
-      ? Math.min(Math.max(rect.top, margin), Math.max(margin, viewportHeight - cardHeight - margin))
-      : below + cardHeight < viewportHeight
-        ? below
-        : Math.max(margin, rect.top - cardHeight - margin);
-    return { left: `${left}px`, top: `${top}px` } as const;
-  }, [adjustmentMessage, rect]);
-
-  const canGoBack = currentIndex > 0 && stops[currentIndex - 1].step === stop.step;
-  const nextDisabled = stop.id === 'solve-run' && busy;
-
-  return (
-    <div className="public-guided-coach" role="dialog" aria-label="Guided motor setup">
-      {rect ? (
-        <div
-          className="public-guided-highlight"
-          style={{ top: rect.top - 5, left: rect.left - 5, width: rect.width + 10, height: rect.height + 10 }}
-        />
-      ) : (
-        <div className="public-guided-scrim" />
-      )}
-      <div className="public-guided-card" style={cardStyle} ref={cardRef} tabIndex={-1}>
-        <div className="public-guided-progress">
-          <span className="public-section-kicker">Guided setup</span>
-          <span>Step {currentIndex + 1} of {stops.length}</span>
-        </div>
-        <h3>{stop.title}</h3>
-        <p aria-live="polite">{stop.body}</p>
-        {adjustmentMessage && (
-          <div className="public-guided-auto-adjustment" role="status">
-            <span aria-hidden="true">✓</span>
-            {adjustmentMessage}
-          </div>
-        )}
+  if (!host) return null;
+  return createPortal(
+    <aside className="public-guided-coach" role="region" aria-label="Guided motor setup">
+      <div className="public-guided-card">
+        <div className="public-guided-progress"><span className="public-section-kicker">Guided setup</span><span>Step {index + 1} of {stops.length}</span></div>
+        <h3 className="public-visually-hidden" aria-live="polite">{stop.title}</h3>
+        <nav className="public-guided-steps" aria-label="Guided setup steps">
+          {stops.map((item, itemIndex) => <button key={item.id} type="button"
+            aria-current={item.id === stop.id ? 'step' : undefined}
+            className={item.id === stop.id ? 'is-current' : completed(item) ? 'is-complete' : ''}
+            disabled={busy || item.id !== stop.id && !canVisit(itemIndex)}
+            onClick={() => showStop(item.id)}>
+            <span aria-hidden="true">{completed(item) && item.id !== stop.id ? '✓' : itemIndex + 1}</span>{item.label}
+          </button>)}
+        </nav>
         <div className="public-guided-actions">
-          <button type="button" className="public-guided-exit" onClick={() => finish(false)}>
-            Exit guided setup
-          </button>
+          <button type="button" className="public-guided-exit" onClick={() => onExit(false)}>Exit guided setup</button>
           <div className="public-guided-nav">
-            {canGoBack && (
-              <button type="button" onClick={() => showStop(currentIndex - 1)}>Back</button>
-            )}
-            <button
-              type="button"
-              className="public-guided-next"
-              disabled={nextDisabled}
-              onClick={handleNext}
-            >
-              Next
-            </button>
+            {index > 0 && stops[index - 1].step === stop.step && <button type="button" disabled={busy} onClick={() => showStop(stops[index - 1].id)}>Back</button>}
+            <button type="button" className="public-guided-next" disabled={busy || !ready} onClick={handleNext}>Next</button>
           </div>
         </div>
       </div>
-    </div>
+    </aside>, host,
   );
 }
