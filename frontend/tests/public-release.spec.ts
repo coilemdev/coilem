@@ -13,7 +13,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -25,6 +25,71 @@ async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-me
     </script>` }));
   await page.goto(`/__viewport_test__?view=${view}`);
 }
+
+test('winding layout zoom redraws SVG detail and preserves the pointer anchor and pan', async ({ page }, info) => {
+  await openViewportHarness(page, 'winding');
+  const svg = page.locator('.wl-ring-svg');
+  const ring = page.locator('.wl-ring');
+  const marker = svg.locator('.wl-ring-marker-disc').first();
+  await expect(marker).toBeVisible();
+  const before = (await marker.boundingBox())!;
+  const initialCenter = { x: before.x + before.width / 2, y: before.y + before.height / 2 };
+  // Wheel events report whole CSS pixels; preserve the marker's subpixel offset.
+  const anchor = { x: Math.round(initialCenter.x), y: Math.round(initialCenter.y) };
+  const zoomedCenter = { x: anchor.x + (initialCenter.x - anchor.x) * 16, y: anchor.y + (initialCenter.y - anchor.y) * 16 };
+  const initialBox = await svg.getAttribute('viewBox');
+  const initialScale = await svg.evaluate((s: SVGSVGElement) => s.getCTM()!.a);
+  await page.mouse.move(anchor.x, anchor.y);
+  await page.mouse.wheel(0, -Math.log(16) / 0.0012);
+  await expect(page.locator('.public-viewport-nav-controls')).toContainText('16x');
+  await expect.poll(() => svg.evaluate((s: SVGSVGElement) => s.getCTM()!.a)).toBeCloseTo(initialScale * 16, 3);
+  const center = async () => { const b = (await marker.boundingBox())!; return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; };
+  expect(Math.abs((await center()).x - zoomedCenter.x)).toBeLessThan(1.5);
+  expect(Math.abs((await center()).y - zoomedCenter.y)).toBeLessThan(1.5);
+  await page.mouse.down();
+  await page.mouse.move(anchor.x + 60, anchor.y - 30, { steps: 6 });
+  await page.mouse.up();
+  await expect.poll(async () => (await center()).x).toBeCloseTo(zoomedCenter.x + 60, 0);
+  await ring.screenshot({ path: info.outputPath('crisp-winding-zoom.png') });
+  await page.getByRole('button', { name: 'Fit winding to view', exact: true }).click();
+  await expect(svg).toHaveAttribute('viewBox', initialBox!);
+});
+
+test('phase chart is a hard boundary for motor drawing, zoom and pan', async ({ page }, info) => {
+  await openViewportHarness(page, 'phases');
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toBeVisible();
+  const box = (await canvas.boundingBox())!;
+  const frame = await page.evaluate(([w, h]) => (window as any).viewportTest.phaseDriveFrame(w, h), [box.width, box.height]);
+  const hash = async (rect: { x: number; y: number; width: number; height: number }) => canvas.evaluate((c: HTMLCanvasElement, r) => {
+    const data = c.getContext('2d')!.getImageData(Math.ceil(r.x), Math.ceil(r.y), Math.floor(r.width), Math.floor(r.height)).data;
+    let value = 2166136261;
+    for (const byte of data) value = Math.imul(value ^ byte, 16777619);
+    return value >>> 0;
+  }, rect);
+  const chart = { ...frame.panel, width: frame.panel.width - 30 };
+  const chartBefore = await hash(chart);
+  const chartPoint = { x: box.x + frame.panel.x + 30, y: box.y + frame.panel.y + 50 };
+  const controls = page.locator('.public-viewport-nav-controls');
+  await page.mouse.move(chartPoint.x, chartPoint.y);
+  await page.mouse.wheel(0, -Math.log(4) / 0.0012);
+  await expect(controls.locator('span[aria-live]')).toHaveText('1x');
+  const motorPoint = { x: box.x + frame.motor.x + frame.motor.width / 2, y: box.y + frame.motor.y + frame.motor.height / 2 };
+  await page.mouse.move(motorPoint.x, motorPoint.y);
+  await page.mouse.wheel(0, -Math.log(8) / 0.0012);
+  await expect(controls.locator('span[aria-live]')).toHaveText('8x');
+  await page.mouse.down();
+  await page.mouse.move(box.x + 10, motorPoint.y + 80, { steps: 10 });
+  await page.mouse.up();
+  await expect.poll(() => hash(chart)).toBe(chartBefore);
+  const motorBefore = await hash(frame.motor);
+  await page.mouse.move(chartPoint.x, chartPoint.y);
+  await page.mouse.down();
+  await page.mouse.move(chartPoint.x + 50, chartPoint.y + 50, { steps: 6 });
+  await page.mouse.up();
+  expect(await hash(frame.motor)).toBe(motorBefore);
+  await canvas.screenshot({ path: info.outputPath('phase-chart-boundary.png') });
+});
 
 test('rotated mesh hit targets follow the rotor and leave stator targets fixed', async ({ page }) => {
   test.setTimeout(45_000);

@@ -3022,8 +3022,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 
 /* The ring scales to the smaller side of its half (viewBox, meet). Stroke widths
    are in viewBox units so they scale with it. */
-/* Pinned to the zoom layer's box: in its grid a percentage height did not
-   resolve, and the square SVG grew to the full width, below the half. */
+/* Fill the ring pane; native viewBox zoom keeps the vector strokes sharp. */
 .public-winding-layout .wl-ring-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; }
 .public-winding-layout .wl-ring-bore,
 .public-winding-layout .wl-ring-back { fill: none; stroke: var(--border-default); stroke-width: 2; }

@@ -12,6 +12,18 @@ export function viewportScaleBar(pixelsPerMm: number, maximumPixels = 120): { mm
   return { mm, pixels: mm * pixelsPerMm };
 }
 
+export function viewportFrameContains(point: ViewportPoint, frame?: ViewportFrame | null): boolean {
+  return !frame || (point.x >= frame.x && point.x <= frame.x + frame.width
+    && point.y >= frame.y && point.y <= frame.y + frame.height);
+}
+
+/** Zoom an SVG by changing its viewBox, so it is redrawn at the display's resolution. */
+export function zoomedSvgViewBox(extent: number, width: number, height: number, scale: number, pan: ViewportPoint): string {
+  const span = 2 * extent / scale;
+  const unitsPerPixel = 2 * extent / Math.max(1, Math.min(width, height)) / scale;
+  return `${-span / 2 - pan.x * unitsPerPixel} ${-span / 2 - pan.y * unitsPerPixel} ${span} ${span}`;
+}
+
 export function viewportTransformOrigin(width: number, height: number, frame?: ViewportFrame): ViewportPoint {
   const box = frame ?? { x: 0, y: 0, width, height };
   return { x: box.x + box.width / 2, y: box.y + box.height / 2 };

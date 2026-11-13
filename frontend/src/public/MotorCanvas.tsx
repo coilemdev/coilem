@@ -22,7 +22,7 @@ import {
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
 import { polygonLabelSpot } from './canvasLabels';
 import { buildWindingTurnDots, type WindingTurnDots } from './windingTurnDots';
-import { fitTransform, viewportScaleBar } from './viewportTransform';
+import { fitTransform, viewportFrameContains, viewportScaleBar } from './viewportTransform';
 import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -662,6 +662,14 @@ function drawGeometry(
       : 0;
     driveFrame.panel.y = phasePanelTop(driveFrame.panel, height, covered);
   }
+  // The phase chart and motor are separate panes, including while zooming and
+  // panning. Clip all motor geometry, labels and marks to its own pane.
+  context.save();
+  if (driveFrame) {
+    context.beginPath();
+    context.rect(driveFrame.motor.x, driveFrame.motor.y, driveFrame.motor.width, driveFrame.motor.height);
+    context.clip();
+  }
   const rotorElecDeg = phaseDrive ? rotorElectricalDeg(rotorAngleDeg, phaseDrive.poleCount) : 0;
   const currents = (layer === 'phases' || showToothPoles) && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
   // Phases keeps each coil at its full, steady colour: the waveforms, the wires and
@@ -1278,11 +1286,11 @@ function drawGeometry(
     );
   }
 
-
-  if (driveFrame && phaseDrive && currents) {
-    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm);
-  }
   drawRotorZeroMark(context, origin, Math.max(outerRadiusPx, boundingRadiusMm * scale), rotorAngleDeg, rotationRad);
+  context.restore();
+  if (driveFrame && phaseDrive && currents) {
+    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm, driveFrame.motor);
+  }
   return scale;
 }
 
@@ -1344,6 +1352,7 @@ function drawPhaseDrive(
   origin: [number, number],
   statorRadiusPx: number,
   previewRpm: number,
+  motorFrame: Rect,
 ): void {
   const strips = phaseStrips(panel);
   // Drawn like a schematic: each wire runs level out of its strip, turns once through
@@ -1352,14 +1361,14 @@ function drawPhaseDrive(
   // another: whichever way the wires have to drop, the one that drops furthest turns last.
   const stripRight = panel.x + panel.width;
   const entryStep = statorRadiusPx * Math.sin((16 * Math.PI) / 180);
-  const motorLeft = origin[0] - statorRadiusPx;
+  const motorLeft = Math.max(motorFrame.x, origin[0] - statorRadiusPx);
   const lane = Math.max(6, Math.min(16, (motorLeft - stripRight) / 5));
   const wiresDrop = strips[1].y + strips[1].height / 2 <= origin[1];
   const leads = [-1, 0, 1].map((side, index) => {
     const y = origin[1] + side * entryStep;
     const turn = motorLeft - lane * (wiresDrop ? index + 1 : 3 - index);
     return {
-      motor: [origin[0] - Math.sqrt(Math.max(0, statorRadiusPx ** 2 - (side * entryStep) ** 2)), y] as [number, number],
+      motor: [Math.max(motorFrame.x, origin[0] - Math.sqrt(Math.max(0, statorRadiusPx ** 2 - (side * entryStep) ** 2))), y] as [number, number],
       terminal: [turn, y] as [number, number],
     };
   });
@@ -2065,8 +2074,14 @@ export function MotorCanvas({
     return [event.clientX - rect.left, event.clientY - rect.top];
   };
 
+  const pointWithinMotor = (event: MouseEvent<HTMLCanvasElement>, point: [number, number]) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return viewportFrameContains({ x: point[0], y: point[1] }, navigationFrame(rect.width, rect.height));
+  };
+
   const componentAtPointer = (event: MouseEvent<HTMLCanvasElement>) => {
     const point = pointerPoint(event);
+    if (!pointWithinMotor(event, point)) return null;
     for (let index = hitRegionsRef.current.length - 1; index >= 0; index -= 1) {
       const region = hitRegionsRef.current[index];
       if (region && pointInContours(point, region.loops ?? [region.points])) return region.selection;
@@ -2076,6 +2091,7 @@ export function MotorCanvas({
 
   const meshElementAtPointer = (event: MouseEvent<HTMLCanvasElement>) => {
     const point = pointerPoint(event);
+    if (!pointWithinMotor(event, point)) return null;
     const rotation = meshHitRotationRef.current;
     // Unturn the pointer once; the cached rotor hit polygons stay at 0°.
     const rotorPoint = rotation ? rotatePoint(
@@ -2091,6 +2107,7 @@ export function MotorCanvas({
   /** Nearest dimension line within a finger's width, so 1mm spans stay clickable. */
   const dimensionAtPointer = (event: MouseEvent<HTMLCanvasElement>): DimensionId | null => {
     const [px, py] = pointerPoint(event);
+    if (!pointWithinMotor(event, [px, py])) return null;
     const TOLERANCE = 7;
     let best: { id: DimensionId; distance: number } | null = null;
     for (const hit of dimensionHitsRef.current) {

@@ -3,7 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { useState, type CSSProperties } from 'react';
 import { MotorCanvas } from '../src/public/MotorCanvas';
 import { SolvedFieldViewer } from '../src/public/SolvedFieldViewer';
-import { DEFAULT_CONFIG, type MaterialCatalog, type MeshPreview, type PublicFieldLinePlot, type SolveResult } from '../src/public/model';
+import { WindingLayoutView } from '../src/public/WindingLayoutView';
+import { phaseDriveFrame } from '../src/public/phaseDrive';
+import { DEFAULT_CONFIG, type GeometryPreview, type MaterialCatalog, type MeshPreview, type PublicFieldLinePlot, type SolveResult } from '../src/public/model';
 import m350Curve from '../../materials/electrical-steel/M350-50A.csv?raw';
 import { useLayerMenu } from '../src/public/useLayerMenu';
 import '../src/styles/variables.css';
@@ -105,7 +107,26 @@ function DockedMagnifier({ field, fieldResult = result }: { field: boolean; fiel
   </div>;
 }
 
-Object.assign(window, { viewportTest: { renderMesh, state } });
+const circle = (radius: number): Array<[number, number]> => Array.from({ length: 80 }, (_, i) => [radius * Math.cos(i * Math.PI / 40), radius * Math.sin(i * Math.PI / 40)]);
+const phaseGeometry: GeometryPreview = {
+  regions: [{ region_type: 'stator_yoke', points: circle(10) }, { region_type: 'rotor_core', points: circle(5) }],
+  metadata: { stator_od_mm: 20, rotor_od_mm: 10, slot_count: 12, pole_count: 8 },
+  validation_errors: [], generation_time_ms: 0,
+};
+const windingConfig = { ...DEFAULT_CONFIG, stator: { ...DEFAULT_CONFIG.stator, slot_count: 54 }, rotor: { ...DEFAULT_CONFIG.rotor, pole_count: 18 } };
+const windingGeometry = { ...phaseGeometry, regions: [],
+  winding_layout: Array.from({ length: 54 }, (_, slot_index) => ({ slot_index, phase: ['A', 'B', 'C'][Math.floor(slot_index / 2) % 3], direction: slot_index % 2 ? 'in' : 'out', layer: 1 })),
+  winding_coils: Array.from({ length: 27 }, (_, coil_index) => ({ coil_index, slot_in: coil_index * 2, slot_out: coil_index * 2 + 1, phase: ['A', 'B', 'C'][coil_index % 3], polarity: 1, layer: 1, tooth_wound: true })),
+} as GeometryPreview;
+function WindingHarness() {
+  const [slot, setSlot] = useState<HTMLDivElement | null>(null);
+  return <section className="public-motor-viewport" style={{ width: 1100, height: 700 }}>
+    <WindingLayoutView config={windingConfig} geometry={windingGeometry} navigationSlot={slot} />
+    <div ref={setSlot} />
+  </section>;
+}
+
+Object.assign(window, { viewportTest: { renderMesh, state, phaseDriveFrame } });
 const mode = new URLSearchParams(location.search).get('view');
 if (mode === 'field') {
   root.render(<div style={{ width: 1100, height: 700 }}>
@@ -113,6 +134,10 @@ if (mode === 'field') {
       armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false} onRequestArmature={() => {}} />
   </div>);
 } else if (mode === 'saturated-field') root.render(<DockedMagnifier field fieldResult={saturatedResult} />);
+else if (mode === 'winding') root.render(<WindingHarness />);
+else if (mode === 'phases') root.render(<section className="public-motor-viewport" style={{ width: 1100, height: 700 }}>
+  <MotorCanvas config={smallConfig} geometry={phaseGeometry} mode="geometry" layer="phases" onComponentSelect={selection => { state.selection = selection; }} />
+</section>);
 else if (mode === 'docked-field' || mode === 'docked-mesh') root.render(<DockedMagnifier field={mode === 'docked-field'} />);
 else if (mode === 'mesh-menu') root.render(<MeshMenu />);
 else renderMesh(90);
