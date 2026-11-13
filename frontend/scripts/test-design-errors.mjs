@@ -8,6 +8,8 @@ const {
   designErrorSection,
   designErrorText,
   parallelPathsMessage,
+  enteredGeometryError,
+  humanizeGeometryMessage,
 } = await importTypeScriptModule(new URL('../src/public/designErrors.ts', import.meta.url));
 const { coilsPerPhase } = await importTypeScriptModule(new URL('../src/public/toothCoils.ts', import.meta.url));
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
@@ -93,11 +95,23 @@ assert.equal(section('solve_params.current_amplitude_A'), 'winding');
 assert.equal(section('stator.slot_count'), 'stator');
 assert.equal(section('stator.tooth_width_mm'), 'advanced');
 assert.equal(section('rotor.pole_count'), 'rotor');
-assert.equal(section('rotor.v_angle_deg'), 'advanced');
+assert.equal(section('rotor.v_angle_deg'), 'rotor');
+assert.equal(section('rotor.v_depth_mm'), 'rotor');
 assert.equal(section('materials.stator_steel'), 'materials');
 assert.equal(section('solve_params.solve_quality'), null);
 assert.equal(section(null), null);
 assert.equal(designErrorSection(null), null);
+assert.deepEqual(enteredGeometryError('rotor.v_depth_mm', 'Pocket overlaps the shaft'), {
+  section: 'rotor', label: 'V Depth', message: 'Pocket overlaps the shaft',
+});
+assert.equal(enteredGeometryError('stator.slot_count', 'Unbalanced winding'), null);
+assert.equal(enteredGeometryError(null, 'Unknown fault'), null);
+assert.equal(humanizeGeometryMessage('Increase v_depth_mm, reduce magnet_width_mm or magnet_thickness_mm, and review rotor OD_mm.'),
+  'Increase V Depth, reduce Magnet Width or Magnet Thick., and review Rotor OD.');
+const vMotor = cloneDefaultConfig();
+vMotor.topology = 'IPM'; vMotor.rotor.ipm_topology = 'v_shape';
+assert.match(designErrorText({ error_code: 'INVALID_GEOMETRY', message: 'V-shape IPM magnet does not fit below the outer bridge' }, vMotor), /Increase V Depth.*reduce Magnet Width/);
+assert.match(designErrorText({ error_code: 'INVALID_GEOMETRY', message: 'V-shape IPM pocket overlaps the shaft\/inner-rotor margin' }, vMotor), /Reduce V Depth.*outward/);
 assert.equal(designErrorSection({ error_code: 'LOCAL_REQUEST_FAILED', message: `${backendMessage} Use one of: [1]` }), 'winding');
 
 console.log('design error wording and section checks passed');

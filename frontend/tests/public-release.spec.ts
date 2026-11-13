@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
+import { configureSection } from './design-helpers';
 
 const apiUrl = 'http://127.0.0.1:58000';
 const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
@@ -365,70 +366,148 @@ print(result_for(config(back_emf=True)).model_dump_json())
   await expect(page.getByText('Phase resistance', { exact: true }).first()).toBeVisible();
 });
 
-for (const topology of ['SPM', 'IPM'] as const) {
-  test(`guided ${topology} setup reviews Analysis before the accuracy plan and Run`, async ({ page }, info) => {
+for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inrunner', topology: 'IPM' }, { layout: 'Outrunner', topology: 'SPM' }]) {
+  test(`guided progressive ${scenario.layout} ${scenario.topology} setup reviews every design section and Operating point first`, async ({ page }, info) => {
     const errors: string[] = [];
-    let solveRequests = 0;
+    let meshes = 0, solves = 0;
     page.on('pageerror', error => errors.push(error.message));
-    page.on('request', request => {
-      if (['/solve', '/solve/stream'].includes(new URL(request.url()).pathname)) solveRequests += 1;
+    page.on('request', request => { if (['/solve', '/solve/stream'].includes(new URL(request.url()).pathname)) solves++; });
+    await page.route('**/solver/mesh-preview', route => {
+      meshes++;
+      return route.fulfill({ json: { nodes_mm: [[-10,-10],[10,-10],[10,10],[-10,10],[7,0],[9,0],[8,2],[-8,0],[-6,0],[-7,2]],
+        triangles: [[4,5,6],[7,8,9]], regions: ['rotor_core','stator_tooth'], mesh_info: {}, mesh_qa: {}, generation_time_ms: 0 } });
     });
     await page.goto('/');
     await page.getByRole('button', { name: 'Start a design', exact: true }).click();
-    const coach = page.getByRole('dialog', { name: 'Guided motor setup' });
+    const coach = page.getByRole('region', { name: 'Guided motor setup', exact: true });
     const title = coach.locator('h3');
-    if (topology === 'IPM') {
-      await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /IPM/ }).click();
+    const next = coach.getByRole('button', { name: 'Next', exact: true });
+    await expect(title).toHaveText('Choose the rotor arrangement');
+    await expect(next).toBeDisabled();
+    const arrangement = page.getByRole('group', { name: 'Rotor arrangement', exact: true });
+    await expect(arrangement.locator('[aria-pressed="true"]')).toHaveCount(0);
+    await expect(page.locator('[data-guide="topology-selector"] [aria-pressed="true"]')).toHaveCount(0);
+    await expect(page.getByRole('img', { name: /^View scale:/ })).toHaveCount(0);
+    await expect(coach.locator('xpath=ancestor::div[contains(@class,"design-workspace-health-scroll")]')).toHaveCount(1);
+    const guideBox = await coach.boundingBox(), canvasBox = await page.locator('canvas.motor-canvas').boundingBox();
+    expect(guideBox && canvasBox && guideBox.x >= canvasBox.x + canvasBox.width).toBe(true);
+    await expect(page.locator('.public-guided-highlight, .public-guided-scrim')).toHaveCount(0);
+    await page.screenshot({ path: info.outputPath('guided-arrangement.png') });
+    await arrangement.getByRole('button', { name: new RegExp(scenario.layout) }).click();
+    await expect(title).toHaveText('Choose the motor topology');
+    await expect(next).toBeDisabled();
+    await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: new RegExp(`^${scenario.topology}`) }).click();
+    if (scenario.topology === 'IPM') {
       await expect(title).toHaveText('Choose the IPM rotor layout');
+      await expect(next).toBeDisabled();
+      await page.getByRole('group', { name: 'IPM rotor layout', exact: true }).getByRole('button', { name: /^V-shape/ }).click();
     }
-    for (let count = 0; count < 10; count += 1) {
-      const before = await title.innerText();
-      if (before === 'Choose your analyses') break;
-      await coach.getByRole('button', { name: 'Next', exact: true }).click();
-      await expect(title).not.toHaveText(before);
+    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toBeFocused();
+    for (const input of await page.locator('[data-guide="section-stator"]').getByRole('spinbutton').all()) await expect(input).toHaveValue('');
+    await expect(next).toBeDisabled();
+    await configureSection(page, 'stator');
+    await expect(next).toBeEnabled();
+    await next.click();
+    await expect(title).toHaveText('Shape the teeth and slots');
+    await expect(page.locator('[data-guide="section-advanced"]').getByRole('group', { name: 'Tooth Profile', exact: true }).getByRole('button', { name: 'Plain', exact: true })).toBeFocused();
+    await expect(next).toBeDisabled();
+    await coach.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).not.toHaveValue('');
+    await next.click();
+    await configureSection(page, 'advanced');
+    await next.click();
+    await expect(title).toHaveText('Shape the rotor and magnets');
+    await expect(page.locator('[data-guide="section-rotor"]').getByRole('spinbutton', { name: 'Pole Count', exact: true })).toBeFocused();
+    if (scenario.topology === 'IPM') {
+      for (const [name,value] of [['Pole Count','8'],['Rotor OD','58'],['Magnet Thick.','2'],['Magnet Width','5'],['V Angle','40'],['V Depth','12']]) {
+        await page.locator('[data-guide="section-rotor"]').getByRole('spinbutton', { name, exact: true }).fill(value);
+      }
     }
+    await configureSection(page, 'rotor');
+    await next.click();
+    await expect(title).toHaveText('Define the winding');
+    await configureSection(page, 'winding');
+    // The existing sidebar Continue button advances the same guide.
+    await page.getByRole('button', { name: /^Continue Setup: Materials/ }).click();
+    await expect(title).toHaveText('Assign materials');
+    await configureSection(page, 'materials');
+    await page.screenshot({ path: info.outputPath('guided-complete-design.png') });
+    if (scenario.layout === 'Inrunner' && scenario.topology === 'SPM') {
+      await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+    } else await next.click();
+    await expect(title).toHaveText('Review the operating point');
+    await expect(page.locator('[data-guide="solve-operating"]')).toHaveAttribute('data-guide-active', 'true');
+    await expect(page.locator('[data-guide="solve-analysis"]')).toHaveAttribute('data-guide-active', 'false');
+    await expect(coach.locator('xpath=ancestor::aside[contains(@class,"public-run-plan")]')).toHaveCount(1);
+    expect(meshes).toBe(0);
+    const operating = page.locator('[data-guide="solve-operating"]');
+    await expect(operating.getByRole('spinbutton', { name: /^(Phase Current|Conducting phase current)$/ })).not.toHaveValue('');
+    await expect(operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true })).toHaveValue(scenario.layout === 'Outrunner' ? '8000' : '7000');
+    const guidedNav = coach.getByRole('navigation', { name: 'Guided setup steps' });
+    await expect(guidedNav.getByRole('button', { name: /Analysis/ })).toBeDisabled();
+    await expect(guidedNav.locator('.is-complete')).toHaveCount(scenario.topology === 'IPM' ? 8 : 7);
+    await operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true }).fill('6500');
+    await guidedNav.getByRole('button', { name: /Stator/ }).click();
+    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).not.toHaveValue('');
+    await guidedNav.getByRole('button', { name: /Operating point/ }).click();
+    await expect(title).toHaveText('Review the operating point');
+    await expect(operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true })).toHaveValue('6500');
+    expect(meshes).toBe(0);
+    await page.screenshot({ path: info.outputPath('guided-operating-point.png') });
+    await next.click();
     await expect(title).toHaveText('Choose your analyses');
     const analysis = page.locator('[data-guide="solve-analysis"]');
-    const plan = page.locator('[data-guide="solve-plan"]');
     await expect(analysis).toHaveAttribute('data-guide-active', 'true');
-    await expect(plan).toHaveAttribute('data-guide-active', 'false');
-    for (const name of ['Torque', 'Back EMF']) {
-      await expect(analysis.getByRole('checkbox', { name, exact: true })).toBeChecked();
-    }
-    for (const name of ['Cogging torque', 'Losses & efficiency', 'Torque–speed map']) {
-      await expect(analysis.getByRole('checkbox', { name, exact: true })).toBeVisible();
-      await expect(analysis.getByRole('checkbox', { name, exact: true })).not.toBeChecked();
-    }
     await analysis.getByRole('checkbox', { name: 'Cogging torque', exact: true }).check();
-    await page.screenshot({ path: info.outputPath('guided-analysis.png'), animations: 'disabled' });
-    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await next.click();
     await expect(title).toHaveText('Pick a solve plan');
-    await expect(plan).toHaveAttribute('data-guide-active', 'true');
     await coach.getByRole('button', { name: 'Back', exact: true }).click();
     await expect(title).toHaveText('Choose your analyses');
-    await expect(analysis).toHaveAttribute('data-guide-active', 'true');
     await expect(analysis.getByRole('checkbox', { name: 'Cogging torque', exact: true })).toBeChecked();
-    await coach.getByRole('button', { name: 'Next', exact: true }).click();
-    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await coach.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(title).toHaveText('Review the operating point');
+    await expect(operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true })).toHaveValue('6500');
+    await next.click(); await next.click(); await next.click();
     await expect(title).toHaveText('Run the analysis');
-    expect(solveRequests).toBe(0);
+    await expect.poll(() => meshes).toBeGreaterThan(0);
+    expect(solves).toBe(0);
     await coach.getByRole('button', { name: 'Exit guided setup', exact: true }).click();
-    await expect(coach).not.toBeVisible();
+    await expect(coach).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 }
 
-test('jumping into Solve during guided setup opens Analysis, while ordinary setup opens the plan', async ({ page }) => {
+test('guided progressive reset restarts blank entry and Exit preserves the unfinished New Design', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Start a design', exact: true }).click();
-  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
-  const coach = page.getByRole('dialog', { name: 'Guided motor setup' });
-  await expect(coach.locator('h3')).toHaveText('Choose your analyses');
-  await expect(page.locator('[data-guide="solve-analysis"]')).toHaveAttribute('data-guide-active', 'true');
-  await page.reload();
+  const coach = page.getByRole('region', { name: 'Guided motor setup', exact: true });
+  await page.getByRole('group', { name: 'Rotor arrangement', exact: true }).getByRole('button', { name: /Inrunner/ }).click();
+  await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /^SPM/ }).click();
+  await page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).fill('120');
+  await page.getByRole('button', { name: 'Collapse design health', exact: true }).click();
+  await expect(coach).toBeVisible();
+  expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
+  await page.getByRole('button', { name: 'Reset', exact: true }).click();
+  await expect(coach.locator('h3')).toHaveText('Choose the rotor arrangement');
+  await expect(page.getByRole('group', { name: 'Rotor arrangement', exact: true }).locator('[aria-pressed="true"]')).toHaveCount(0);
+  await expect(page.locator('.public-parameter-panel')).toHaveCount(1);
+  await expect(page.locator('[data-guide="section-stator"]')).toHaveCount(0);
+  await coach.getByRole('button', { name: 'Exit guided setup', exact: true }).click();
+  await expect(coach).toHaveCount(0);
+  await page.getByRole('group', { name: 'Rotor arrangement', exact: true }).getByRole('button', { name: /Inrunner/ }).click();
+  await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /^SPM/ }).click();
+  await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toHaveValue('');
+});
+
+test('ordinary example setup still opens the accuracy plan without a guide', async ({ page }) => {
+  await page.route('**/solver/mesh-preview', route => route.fulfill({ status: 400, json: { detail: 'No native meshing in this navigation check.' } }));
+  await page.goto('/');
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
-  await expect(coach).not.toBeVisible();
+  await expect(page.getByRole('region', { name: 'Guided motor setup' })).toHaveCount(0);
   await expect(page.locator('[data-guide="solve-plan"]')).toHaveAttribute('data-guide-active', 'true');
 });
 
