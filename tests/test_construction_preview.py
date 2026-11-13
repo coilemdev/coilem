@@ -32,6 +32,7 @@ def test_construction_draws_the_requested_poles_without_inventing_a_winding():
     assert preview["winding_layout"] == preview["winding_coils"] == []
     assert "winding_resistance" not in preview["metadata"]
     assert "qualification" not in preview["metadata"]
+    assert not {"coil_span_label", "coil_span_slots", "mmf_harmonics"} & preview["metadata"].keys()
     assert any("winding" in issue["message"].lower() for issue in preview["validation_errors"])
 
 

@@ -120,7 +120,8 @@ async def preview(body: dict[str, Any], construction: bool = False, stator_only:
         # Geometry construction must not invent copper or qualify an unfinished
         # winding. Retain its validation errors so the UI can explain the issue.
         metadata = {key: value for key, value in result.metadata.items() if not key.startswith("winding_")
-                    and key not in {"qualification", "fill_factor", "phase_axis_offset_elec_deg", "phase_current_convention"}}
+                    and key not in {"qualification", "fill_factor", "phase_axis_offset_elec_deg", "phase_current_convention",
+                                    "coil_span_label", "coil_span_slots", "mmf_harmonics"}}
         metadata["construction_only"] = True
         return result.model_copy(update={
             "regions": [region for region in result.regions if not any(

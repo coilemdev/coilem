@@ -690,6 +690,68 @@ for (const layout of ['Inrunner', 'Outrunner']) {
   });
 }
 
+for (const complete of [false, true]) {
+  test(`progressive topology changes preserve entered stator and teeth while resetting rotor entry (${complete ? 'completed' : 'partial'} motor)`, async ({ page }) => {
+    await newDesign(page);
+    const expected: Record<string, string> = { 'Outer Diameter': '120', 'Yoke Thickness': '8', 'Slot Count': '12', 'Bore Diameter (ID)': '70', 'Stack Length': '50' };
+    for (const [name, value] of Object.entries(expected)) await stator(page).getByRole('spinbutton', { name, exact: true }).fill(value);
+    await continueSetup(page, 'Tooth');
+    await configureSection(page, 'advanced');
+    const teeth = page.locator('[data-guide="section-advanced"]');
+    const width = await teeth.getByRole('spinbutton', { name: 'Bore Tooth Width', exact: true }).inputValue();
+    await continueSetup(page, 'Rotor');
+    await configureSection(page, 'rotor');
+    if (complete) {
+      await continueSetup(page, 'Winding');
+      await completeWinding(page);
+      await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
+    } else await expect(health(page)).toContainText('5 of 6 parts drawn');
+    const previews: string[] = [];
+    page.on('request', (request) => {
+      if (new URL(request.url()).pathname === '/preview' && request.postDataJSON()?.topology === 'IPM') previews.push(request.url());
+    });
+    const topology = page.locator('[data-guide="topology-selector"]');
+    await topology.getByRole('button', { name: /^IPM/ }).click();
+    await page.getByRole('group', { name: 'IPM rotor layout', exact: true }).getByRole('button', { name: /^Flat \/ buried/ }).click();
+    await expect(health(page)).toContainText('3 of 6 parts drawn');
+    if (await stator(page).getAttribute('data-guide-active') !== 'true') await stator(page).locator('.param-group-header').click();
+    for (const [name, value] of Object.entries(expected)) await expect(stator(page).getByRole('spinbutton', { name, exact: true })).toHaveValue(value);
+    if (await teeth.getAttribute('data-guide-active') !== 'true') await teeth.locator('.param-group-header').click();
+    await expect(teeth.getByRole('group', { name: 'Tooth Profile', exact: true }).getByRole('button', { name: 'Plain', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(teeth.getByRole('spinbutton', { name: 'Bore Tooth Width', exact: true })).toHaveValue(width);
+    await expect.poll(() => previews.length).toBeGreaterThan(0);
+    expect(previews.every((url) => new URL(url).searchParams.get('stator_only') === 'true' && !new URL(url).searchParams.has('diagnostic'))).toBe(true);
+    await page.getByRole('button', { name: 'Undo', exact: true }).click();
+    await expect(topology.getByRole('button', { name: /^SPM/ })).toHaveAttribute('aria-pressed', 'true');
+    if (complete) await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
+    else await expect(health(page)).toContainText('5 of 6 parts drawn');
+    await topology.getByRole('button', { name: /^IPM/ }).click();
+    await page.getByRole('group', { name: 'IPM rotor layout', exact: true }).getByRole('button', { name: /^Flat \/ buried/ }).click();
+    if (await rotor(page).getAttribute('data-guide-active') !== 'true') await rotor(page).locator('.param-group-header').click();
+    for (const name of ['Pole Count', 'Rotor OD', 'Magnet Thick.', 'Magnet Width']) await expect(rotor(page).getByRole('spinbutton', { name, exact: true })).toHaveValue('');
+  });
+}
+
+test('progressive Undo restores unentered fields instead of revealing hidden starter values', async ({ page }) => {
+  await newDesign(page);
+  const diameter = stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true });
+  await diameter.fill('120');
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect(diameter).toHaveValue('');
+  await expect(diameter.locator('xpath=ancestor::label')).toHaveAttribute('data-entry-configured', 'false');
+  await expect(health(page)).toContainText('0 of 6 parts drawn');
+  await expect(page.getByRole('img', { name: /^View scale:/ })).toHaveCount(0);
+  await diameter.fill('120');
+  await stator(page).getByRole('spinbutton', { name: 'Yoke Thickness', exact: true }).fill('8');
+  const slots = stator(page).getByRole('spinbutton', { name: 'Slot Count', exact: true });
+  await slots.fill('12');
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect(diameter).toHaveValue('120');
+  await expect(slots).toHaveValue('');
+  await expect(slots.locator('xpath=ancestor::label')).toHaveAttribute('data-entry-configured', 'false');
+  await expect(health(page)).toContainText('1 of 6 parts drawn');
+});
+
 test('progressive native inputs flag invalid values, support undo and block a magnet clash', async ({ page }) => {
   await newDesign(page);
   const diameter = stator(page).getByRole('spinbutton', { name: /Outer Diameter/ });

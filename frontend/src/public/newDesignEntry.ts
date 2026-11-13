@@ -4,11 +4,13 @@ import type { BuiltParts } from './progressiveDesign';
 
 interface RequiredField { section: string; label: string; required: boolean }
 export const entryKey = (section: string, label: string) => `${section}:${label}`;
-export interface NewDesignEntry {
+export interface NewDesignEntrySnapshot {
   layout: RotorLayout | null;
   topology: MotorConfig['topology'] | null;
-  ready: boolean;
   fields: Record<string, boolean>;
+}
+export interface NewDesignEntry extends NewDesignEntrySnapshot {
+  ready: boolean;
   requirements: Record<string, RequiredField>;
   confirm: (section: string, label: string) => void;
   forget: (section: string, labels: string[]) => void;
@@ -81,8 +83,28 @@ export function useNewDesignEntry(designActive: boolean) {
   const entry: NewDesignEntry = { layout, topology, fields, requirements, confirm, forget, register, unregister, mountSection,
     ready: Boolean(layout && topology && (topology !== 'IPM' || fields[entryKey('topology', 'IPM rotor layout')])) };
   return { entry,
+    restore: (snapshot: NewDesignEntrySnapshot, keys: string[], topologyChanged: boolean) => {
+      setLayout(snapshot.layout); setTopology(snapshot.topology);
+      setFields((current) => {
+        const next = { ...current };
+        const restoreKeys = new Set(keys);
+        if (topologyChanged) {
+          for (const key of Object.keys({ ...current, ...snapshot.fields })) {
+            if (/^(rotor|topology):/.test(key)) restoreKeys.add(key);
+          }
+        }
+        for (const key of restoreKeys) {
+          if (snapshot.fields[key]) next[key] = true;
+          else delete next[key];
+        }
+        return next;
+      });
+    },
     chooseLayout: (value: RotorLayout) => { setLayout(value); setTopology(null); setFields({}); setRequirements({}); },
-    chooseTopology: (value: MotorConfig['topology']) => { setTopology(value); setFields({}); },
+    chooseTopology: (value: MotorConfig['topology']) => {
+      setTopology(value);
+      setFields((current) => Object.fromEntries(Object.entries(current).filter(([key]) => !/^(rotor|topology):/.test(key))));
+    },
   };
 }
 

@@ -838,6 +838,8 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-coilem-shell .design-workspace.is-viewport-expanded .design-workspace-main { gap: 0; }
 .public-coilem-shell .design-workspace.is-viewport-expanded .public-parameter-panel,
 .public-coilem-shell .design-workspace.is-viewport-expanded .design-workspace-health { display: none; }
+.public-coilem-shell .design-workspace.is-viewport-expanded.has-guided-setup { gap: 12px; padding: 12px; }
+.public-coilem-shell .design-workspace.is-viewport-expanded.has-guided-setup .design-workspace-health { display: flex; }
 .public-coilem-shell .design-workspace-health { display: flex; width: var(--public-workspace-rail-width); min-width: var(--public-workspace-rail-width); min-height: 0; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 16px; background: rgba(18, 20, 27, 0.82); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5); }
 .public-coilem-shell .design-workspace-health-scroll { width: 100%; min-height: 0; overflow-y: auto; }
 /* Collapsed, Design health is a strip that keeps the status icon; clicking it
@@ -1226,6 +1228,8 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-solve-workspace.is-viewport-expanded { gap: 0; padding: 0; }
 .public-solve-workspace.is-viewport-expanded .public-solve-setup,
 .public-solve-workspace.is-viewport-expanded .public-run-plan { display: none; }
+.public-solve-workspace.is-viewport-expanded.has-guided-setup { gap: 12px; padding: 12px; }
+.public-solve-workspace.is-viewport-expanded.has-guided-setup .public-run-plan { display: flex; }
 .public-coilem-shell .design-workspace.is-viewport-expanded .public-3d-part-toggles,
 .public-coilem-shell .public-solve-workspace.is-viewport-expanded .public-3d-part-toggles {
   top: 16px;

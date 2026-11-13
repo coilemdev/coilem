@@ -406,6 +406,12 @@ for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inru
     await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toBeFocused();
     for (const input of await page.locator('[data-guide="section-stator"]').getByRole('spinbutton').all()) await expect(input).toHaveValue('');
     await expect(next).toBeDisabled();
+    await page.getByRole('button', { name: 'Expand motor view', exact: true }).click();
+    await expect(page.locator('.public-parameter-panel')).not.toBeVisible();
+    await expect(coach).toBeVisible();
+    expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
+    await page.getByRole('button', { name: 'Restore side panels', exact: true }).click();
+    await expect(page.locator('.public-parameter-panel')).toBeVisible();
     await configureSection(page, 'stator');
     await expect(next).toBeEnabled();
     await next.click();
@@ -441,6 +447,12 @@ for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inru
     await expect(page.locator('[data-guide="solve-operating"]')).toHaveAttribute('data-guide-active', 'true');
     await expect(page.locator('[data-guide="solve-analysis"]')).toHaveAttribute('data-guide-active', 'false');
     await expect(coach.locator('xpath=ancestor::aside[contains(@class,"public-run-plan")]')).toHaveCount(1);
+    await page.getByRole('button', { name: 'Expand motor view', exact: true }).click();
+    await expect(page.locator('.public-solve-setup')).not.toBeVisible();
+    await expect(coach).toBeVisible();
+    expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
+    await page.getByRole('button', { name: 'Restore side panels', exact: true }).click();
+    await expect(page.locator('.public-solve-setup')).toBeVisible();
     expect(meshes).toBe(0);
     const operating = page.locator('[data-guide="solve-operating"]');
     await expect(operating.getByRole('spinbutton', { name: /^(Phase Current|Conducting phase current)$/ })).not.toHaveValue('');

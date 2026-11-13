@@ -3,7 +3,7 @@ import { useTurningRotorAngle } from './useTurningRotorAngle';
 import { useLayerMenu } from './useLayerMenu';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
-import { NewDesignEntryContext, GuidedDesignProgressContext, DesignSectionContext, useNewDesignEntry, useEntryField, hasEntry, entrySectionComplete, enteredDesignParts } from './newDesignEntry';
+import { NewDesignEntryContext, GuidedDesignProgressContext, DesignSectionContext, useNewDesignEntry, useEntryField, hasEntry, entrySectionComplete, enteredDesignParts, type NewDesignEntrySnapshot } from './newDesignEntry';
 import { DESIGN_PARTS, buildIssues, designPartsComplete, maximumShoeOverhangMm, progressiveGeometry, shoeOverhangLimitNotice, type BuiltParts, type DesignIssue } from './progressiveDesign';
 import { windingBuildChecks } from './windingBuild';
 import { AWG_SIZES, awgFor, awgNote, awgStoredDiameterMm } from './wireGauge';
@@ -153,6 +153,7 @@ export interface PublicDesignEditFeedback {
   message: string;
   consequence: string | null;
   affectedKind: PublicMotorComponentKind | null;
+  previousEntry?: NewDesignEntrySnapshot;
 }
 
 interface CoilEmWorkspaceProps {
@@ -202,14 +203,14 @@ interface CoilEmWorkspaceProps {
   onOpenHalbach?: () => void;
   onHome: () => void;
   onStepChange: (step: PublicWorkflowStep) => void;
-  onTopologyChange: (topology: MotorConfig['topology']) => void;
+  onTopologyChange: (topology: MotorConfig['topology'], entrySnapshot?: NewDesignEntrySnapshot) => void;
   onRotorLayoutChange: (layout: RotorLayout) => void;
   onSectionChange: (
     section: PublicEditableSection,
     field: string,
     value: unknown,
     visitedSection?: PublicParameterSection,
-    enteredFields?: Record<string, boolean>,
+    entrySnapshot?: NewDesignEntrySnapshot,
   ) => void;
   onDesignSectionVisit: (section: PublicParameterSection) => void;
   onConvertProjectSteelToM350: () => void;
@@ -4218,7 +4219,7 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
           <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
         </div>
       )}
-    <div className={`public-solve-workspace${resizingPanel === 'runPlan' ? ' is-resizing-run-plan' : ''}${resizingPanel === 'setup' ? ' is-resizing-setup' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
+    <div className={`public-solve-workspace${resizingPanel === 'runPlan' ? ' is-resizing-run-plan' : ''}${resizingPanel === 'setup' ? ' is-resizing-setup' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}${guidedActive ? ' has-guided-setup' : ''}`}>
       <aside
         ref={setupRef}
         className="public-solve-setup"
@@ -4977,6 +4978,21 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
   const fieldFocus = useMemo(() => ({ field: focusedField, setField: setFocusedField }), [focusedField]);
   const setup = useNewDesignEntry(props.activeStep === 'design');
   const entry = props.newDesignParts ? setup.entry : null;
+  const entrySnapshot: NewDesignEntrySnapshot | undefined = entry
+    ? { layout: entry.layout, topology: entry.topology, fields: entry.fields } : undefined;
+  const entryUndoScope = useRef<{ id: number; keys: string[]; topologyChanged: boolean } | null>(null);
+  useLayoutEffect(() => {
+    if (entryUndoScope.current?.id === props.editFeedback?.id) return;
+    const previous = props.editFeedback?.previousEntry;
+    if (!entry || !previous || !props.editFeedback) { entryUndoScope.current = null; return; }
+    // Capture this edit's entry changes once. Later confirmations of unrelated
+    // rows must survive Undo even when they keep the same configured value.
+    entryUndoScope.current = {
+      id: props.editFeedback.id,
+      keys: Object.keys({ ...previous.fields, ...entry.fields }).filter((key) => previous.fields[key] !== entry.fields[key]),
+      topologyChanged: previous.topology !== entry.topology,
+    };
+  }, [entry, props.editFeedback]);
   const drawnParts = props.newDesignParts && entry ? enteredDesignParts(props.config, props.newDesignParts, entry) : props.newDesignParts;
   const reportAvailable = Boolean(props.result);
   const buildComplete = designPartsComplete(drawnParts) && (!entry || entry.ready && ['stator', 'advanced', 'rotor', 'winding', 'materials'].every((section) => entrySectionComplete(entry, section)));
@@ -5068,7 +5084,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
       <main className="workflow-stage-shell">
         <div className="workflow-stage-content">
           {props.activeStep === 'design' && (
-            <div className={`design-workspace workflow-stage-content${designViewportExpanded ? ' is-viewport-expanded' : ''}`}>
+            <div className={`design-workspace workflow-stage-content${designViewportExpanded ? ' is-viewport-expanded' : ''}${props.guidedActive ? ' has-guided-setup' : ''}`}>
               <div className="design-workspace-main">
                 <ParameterPanel
                   config={props.config}
@@ -5089,9 +5105,9 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   guidedActive={props.guidedActive}
                   guidedDesignSection={props.guidedDesignSection}
                   selectedComponent={selectedComponent}
-                  onTopologyChange={(topology) => { setSelectedComponent(null); if (entry && entry.topology !== topology) setup.chooseTopology(topology); props.onTopologyChange(topology); }}
+                  onTopologyChange={(topology) => { setSelectedComponent(null); if (entry && entry.topology !== topology) setup.chooseTopology(topology); props.onTopologyChange(topology, entrySnapshot); }}
                   onRotorLayoutChange={(layout) => { setSelectedComponent(null); if (entry && entry.layout !== layout) setup.chooseLayout(layout); props.onRotorLayoutChange(layout); }}
-                  onSectionChange={(section, field, value, visitedSection) => props.onSectionChange(section, field, value, visitedSection, entry?.fields)}
+                  onSectionChange={(section, field, value, visitedSection) => props.onSectionChange(section, field, value, visitedSection, entrySnapshot)}
                   onDesignSectionVisit={props.onDesignSectionVisit}
                   onConvertProjectSteelToM350={props.onConvertProjectSteelToM350}
                   onImportSteel={props.onImportSteel}
@@ -5140,7 +5156,13 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                     <strong>{props.editFeedback.message}</strong>
                     {!entry && props.editFeedback.consequence && <small>{props.editFeedback.consequence}</small>}
                   </span>
-                  {props.editFeedback && props.onUndoDesignEdit && <button type="button" className="public-design-edit-undo" onClick={props.onUndoDesignEdit}>Undo</button>}
+                  {props.editFeedback && props.onUndoDesignEdit && <button type="button" className="public-design-edit-undo" onClick={() => {
+                    if (props.editFeedback?.previousEntry) {
+                      const scope = entryUndoScope.current;
+                      setup.restore(props.editFeedback.previousEntry, scope?.keys ?? [], scope?.topologyChanged ?? false);
+                    }
+                    props.onUndoDesignEdit?.();
+                  }}>Undo</button>}
                   {props.onDismissDesignEdit && <button type="button" className="public-design-edit-dismiss" aria-label="Dismiss edit confirmation" onClick={props.onDismissDesignEdit}>×</button>}
                 </div>
               )}

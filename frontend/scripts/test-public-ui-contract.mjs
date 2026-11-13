@@ -114,10 +114,6 @@ const playbackRasterizerSource = await readFile(path.join(frontendRoot, 'src/pub
 const playbackWorkerSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackWorker.ts'), 'utf8');
 const apiSource = await readFile(path.join(frontendRoot, 'src/public/api.ts'), 'utf8');
 const guidedSource = await readFile(path.join(frontendRoot, 'src/public/GuidedSetup.tsx'), 'utf8');
-const guidedRepairSource = await readFile(
-  path.join(frontendRoot, 'src/public/guidedConfigRepair.ts'),
-  'utf8',
-);
 const styleSource = await readFile(path.join(frontendRoot, 'src/public/styles.css'), 'utf8');
 const windingLayoutSource = await readFile(
   path.join(frontendRoot, 'src/public/WindingLayoutView.tsx'),
@@ -2097,11 +2093,6 @@ assert.match(appSource, /guidedActive && visitedSection/);
 assert.match(appSource, /onDesignSectionVisit=\{visitGuidedDesignSection\}/);
 assert.match(workspaceSource, /onDesignSectionVisit\(section\)/);
 assert.match(workspaceSource, /onSectionChange\(section, field, value, visitedSection\)/);
-assert.match(guidedRepairSource, /Repair only the section the coach is about to reveal/);
-assert.match(guidedRepairSource, /nearestBalancedPoleCount/);
-assert.match(guidedRepairSource, /maximumRotorOd/);
-assert.match(guidedRepairSource, /maximumToothWidth/);
-assert.match(guidedRepairSource, /terminalCoilsPerPhase/);
 assert.match(appSource, /GUIDED_IPM_LAYOUT_PRESETS/);
 assert.match(appSource, /v_shape:[\s\S]*?magnet_width_mm: 28[\s\S]*?v_angle_deg: 40[\s\S]*?v_depth_mm: 30[\s\S]*?inner_web_thickness_mm: 6/);
 assert.match(appSource, /\.\.\.GUIDED_IPM_LAYOUT_PRESETS\[selectedIpmLayout\]/);

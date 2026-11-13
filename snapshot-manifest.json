@@ -575,8 +575,8 @@
     },
     {
       "path": "backend/public_routes/preview.py",
-      "bytes": 9086,
-      "sha256": "93e01fd4fdf9a78bda1ab222c84b978f6b9e842e6d1e751c05d408112f353377"
+      "bytes": 9177,
+      "sha256": "44a22090eb7a57400054a8c7d04e47acbdd2e46fcd985fc92d2c4cd13a8a17b8"
     },
     {
       "path": "backend/public_routes/runs.py",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178489,
-      "sha256": "19d9d0504008ff782b384e305a1b7493000e640f2f9b2e68107367aac0e6937c"
+      "bytes": 178052,
+      "sha256": "cc975398c18a9dda77fe50d6ac62a58e2f1ba9607c5238410fa0ff18117bef93"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6610,8 +6610,8 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 9248,
-      "sha256": "e896db2b872e75cc944ac43a6ec27cf0401b06fad742b6cb71617c77e16098ef"
+      "bytes": 8378,
+      "sha256": "987272eedaf33b7336738e3246907ee04e49672e16f7d0d90c8e76b8e3fceb4a"
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 81177,
-      "sha256": "e423952a04063bf4720a76b68b2ea010402f266e606e593923c1a048111babc0"
+      "bytes": 81572,
+      "sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 290350,
-      "sha256": "b25cc225f47d9bb6cd84fb7c1cc5f7fb00a607516215487211718af6743d4e6f"
+      "bytes": 291844,
+      "sha256": "a332c5aacdd496a12b0d5b26d0c54087168bbbb1566906fb0fc6c4b20e1a3dac"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7370,8 +7370,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 11614,
-      "sha256": "daff73ef6a8b9e565ee0120a28745fa98f96bdfa5481413286c61d3d7c48dbc7"
+      "bytes": 1723,
+      "sha256": "768e6c7e3b38f951408272994eedee630d955e2f183b7a0894357d79c1a5509d"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -7565,8 +7565,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 325702,
-      "sha256": "9dba5a46a039b7a183f971b154f7e6631590f072ed76d5d848f387e202ebac45"
+      "bytes": 326120,
+      "sha256": "7f013b4f3a89be7661ec51d8932eb3f04f02c9d19ee563a760d2f895b8a56f0d"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7655,8 +7655,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 81182,
-      "sha256": "b384a29c55c3e15d6caadf5a707a399a2afd46b24b2f1cff5c64c3e44a616097"
+      "bytes": 82046,
+      "sha256": "6fd3b1e38234b36ad5b80744efb77c3d98e3fe03bbe2cc119652578907798f8f"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
@@ -17675,8 +17675,8 @@
     },
     {
       "path": "frontend/src/public/newDesignEntry.ts",
-      "bytes": 6102,
-      "sha256": "934c46b8b8d4fe50740943d34de89af110ba6cfe1aec1179262f787adad20db3"
+      "bytes": 6948,
+      "sha256": "2ed89fd72fa7745bbd4c035c9440f2ff29d691e56f46fa793d1f0696106eccf2"
     },
     {
       "path": "frontend/src/public/progressiveDesign.ts",
@@ -17700,13 +17700,13 @@
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 79996,
-      "sha256": "ccf4c4dff16904c65a87fcea6ed9451a022ababb86421acb2187219fe2a6ed42"
+      "bytes": 84724,
+      "sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721"
     },
     {
       "path": "tests/test_construction_preview.py",
-      "bytes": 11119,
-      "sha256": "387a055affa7b2c50d1396edb4595b605c3d91b48bf1ce86c346756c471efdfc"
+      "bytes": 11219,
+      "sha256": "67d4a7cfeb79469f6e164b5ebea0f249d89f4a0f0312abd26b79ea9d2a119ab3"
     }
   ],
   "public_patches": [

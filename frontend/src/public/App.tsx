@@ -30,6 +30,7 @@ import {
   type PublicWorkflowStep,
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
+import type { NewDesignEntrySnapshot } from './newDesignEntry';
 import { coilsPerPhase, parallelPathsDividing, windingForType } from './guidedConfigRepair';
 import { designErrorText } from './designErrors';
 import { windingLayerWording } from './toothCoils';
@@ -694,9 +695,10 @@ export function App() {
     field: string,
     value: unknown,
     visitedSection?: PublicParameterSection,
-    enteredFields?: Record<string, boolean>,
+    entrySnapshot?: NewDesignEntrySnapshot,
   ) => {
     if (config.geometry_reference && section !== "solve_params") return;
+    const enteredFields = entrySnapshot?.fields;
     if (guidedActive && visitedSection) setGuidedDesignSection(visitedSection);
     const selectedIpmLayout = section === 'rotor'
       && field === 'ipm_topology'
@@ -777,6 +779,7 @@ export function App() {
       previousConfig: config,
       previousBlankDesign: blankDesign,
       previousNewDesignParts: newDesignParts,
+      previousEntry: entrySnapshot,
       ...describeDesignEdit(config, nextConfig, section, field),
     });
     setBlankDesign(false);
@@ -816,7 +819,7 @@ export function App() {
     setNotice(`${material.name} imported and assigned. Save the design to keep its curve with the project.`);
   }, [config.materials.custom_steels, invalidateGeometryPreview, resetComputedState]);
 
-  const updateTopology = useCallback((topology: MotorConfig['topology']) => {
+  const updateTopology = useCallback((topology: MotorConfig['topology'], entrySnapshot?: NewDesignEntrySnapshot) => {
     if (topology === config.topology) return;
     let nextConfig = changeTopologyPreservingAirgap(config, topology);
     if (topology !== 'SPM' && nextConfig.solve_params.excitation_mode === 'ideal_six_step_120') {
@@ -839,10 +842,13 @@ export function App() {
       ? `airgap held at ${nextAirgapMm.toFixed(2)} mm`
       : `airgap adjusted ${previousAirgapMm.toFixed(2)} → ${nextAirgapMm.toFixed(2)} mm to keep the geometry valid`;
     setConfig(nextConfig);
+    if (newDesignParts) setNewDesignParts({ ...newDesignParts, rotor: false, magnets: false });
     setEditFeedback({
       id: ++editFeedbackId.current,
       previousConfig: config,
       previousBlankDesign: blankDesign,
+      previousNewDesignParts: newDesignParts,
+      previousEntry: entrySnapshot,
       message: 'Motor topology updated',
       consequence: `${config.topology} → ${topology} · ${airgapConsequence}`,
       affectedKind: 'rotor',
@@ -850,7 +856,7 @@ export function App() {
     setBlankDesign(false);
     invalidateGeometryPreview();
     resetComputedState();
-  }, [blankDesign, config, invalidateGeometryPreview, resetComputedState]);
+  }, [blankDesign, config, invalidateGeometryPreview, newDesignParts, resetComputedState]);
 
   const undoLastDesignEdit = useCallback(() => {
     if (!editFeedback) return;
@@ -1015,7 +1021,7 @@ export function App() {
     setNotice('Custom full-cycle sweep selected. Updating the run estimate.');
   }, [config]);
 
-  const constructionPreview = newDesignParts !== null && !newDesignParts.winding;
+  const constructionPreview = newDesignParts !== null && !designPartsComplete(newDesignParts);
   const statorOnlyPreview = constructionPreview && config.topology === 'IPM'
     && !newDesignParts?.rotor && config.rotor_layout !== 'outer';
   const diagnosticPreview = constructionPreview && config.topology === 'IPM'
