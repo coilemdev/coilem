@@ -2,6 +2,16 @@
 export interface ViewportFrame { x: number; y: number; width: number; height: number }
 export interface ViewportPoint { x: number; y: number }
 
+/** A map-style scale with a readable 1 / 2 / 5 length in motor millimetres. */
+export function viewportScaleBar(pixelsPerMm: number, maximumPixels = 120): { mm: number; pixels: number } | null {
+  if (!Number.isFinite(pixelsPerMm) || pixelsPerMm <= 0 || !Number.isFinite(maximumPixels) || maximumPixels <= 0) return null;
+  const availableMm = maximumPixels / pixelsPerMm;
+  const decade = 10 ** Math.floor(Math.log10(availableMm));
+  const fraction = availableMm / decade;
+  const mm = Number(((fraction >= 5 ? 5 : fraction >= 2 ? 2 : 1) * decade).toPrecision(12));
+  return { mm, pixels: mm * pixelsPerMm };
+}
+
 export function viewportTransformOrigin(width: number, height: number, frame?: ViewportFrame): ViewportPoint {
   const box = frame ?? { x: 0, y: 0, width, height };
   return { x: box.x + box.width / 2, y: box.y + box.height / 2 };

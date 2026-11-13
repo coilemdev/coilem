@@ -16,11 +16,16 @@ export type DimensionId =
   | 'airgap'
   | 'magnet-thickness'
   | 'magnet-width'
+  | 'v-angle'
+  | 'v-depth'
+  | 'outer-bridge'
   | 'bore-tooth-width'
   | 'tooth-width-at-yoke'
   | 'bore-slot-opening'
   | 'slot-width-at-yoke'
   | 'yoke-thickness'
+  | 'shoe-height'
+  | 'shoe-overhang'
   | 'rotor-back-iron'
   | 'stack-length';
 
@@ -34,6 +39,7 @@ export interface DimensionSegment {
 /** An arc measured along a radius, angles in radians. */
 export interface DimensionArc {
   kind: 'arc';
+  centerMm?: [number, number];
   radiusMm: number;
   startRad: number;
   endRad: number;
@@ -60,6 +66,21 @@ export interface DimensionAnnotation {
  * having happened.
  */
 export const RESTING_DIMENSIONS: DimensionId[] = ['stator-od', 'rotor-od'];
+
+/** Parameter names share the same measurements as the Dims overlay. */
+export function designFieldDimension(section: string, label: string): DimensionId | null {
+  if (!['stator', 'advanced', 'rotor'].includes(section)) return null;
+  const fields: Record<string, DimensionId> = {
+    'Outer Diameter': 'stator-od', 'Bore Diameter (ID)': 'bore', 'Hub Bore (ID)': 'bore',
+    'Yoke Thickness': 'yoke-thickness', 'Yoke Thick.': 'yoke-thickness', 'Stack Length': 'stack-length',
+    'Rotor OD': 'rotor-od', 'Magnet Thick.': 'magnet-thickness', 'Magnet Width': 'magnet-width',
+    'V Angle': 'v-angle', 'V Depth': 'v-depth', 'Outer Bridge': 'outer-bridge',
+    'Bore Tooth Width': 'bore-tooth-width', 'Yoke Tooth Width': 'tooth-width-at-yoke', 'Slot Opening': 'bore-slot-opening',
+    'Back Iron': 'rotor-back-iron',
+    'Shoe Height': 'shoe-height', 'Shoe Overhang': 'shoe-overhang',
+  };
+  return fields[label] ?? null;
+}
 
 const polar = (radiusMm: number, angleRad: number): [number, number] => [
   radiusMm * Math.cos(angleRad),
@@ -95,6 +116,13 @@ const tangentialSpan = (
     to: polar(radiusMm, angleRad + halfRad),
   };
 };
+
+/** Tooth widths follow an arc at the exact section used by the field. */
+const toothWidthArc = (radiusMm: number, centreRad: number, widthMm: number): DimensionArc => ({
+  kind: 'arc', radiusMm,
+  startRad: centreRad - widthMm / (2 * Math.max(radiusMm, 1e-6)),
+  endRad: centreRad + widthMm / (2 * Math.max(radiusMm, 1e-6)),
+});
 
 interface RegionAngles {
   centreRad: number;
@@ -152,39 +180,7 @@ function firstRegionPoints(
   return null;
 }
 
-/**
- * Angles at which a region's outline crosses `radiusMm`, sorted.
- *
- * This is how a tangential dimension gets its ends from the shape itself: a tooth
- * is a tapered wedge, so its width is only defined at a stated radius, and taking
- * the crossings there puts the line's ticks on the flanks that are drawn.
- */
-function radiusCrossings(points: Array<[number, number]>, radiusMm: number): number[] {
-  const polarPoints = points.map(([x, y]) => ({ r: Math.hypot(x, y), a: Math.atan2(y, x) }));
-  const crossings: number[] = [];
-  for (let i = 0; i < polarPoints.length; i += 1) {
-    const start = polarPoints[i];
-    const end = polarPoints[(i + 1) % polarPoints.length];
-    if ((start.r - radiusMm) * (end.r - radiusMm) >= 0) continue;
-    // Unwrap the step so an edge crossing the +/-pi seam interpolates the short way.
-    let delta = end.a - start.a;
-    while (delta > Math.PI) delta -= 2 * Math.PI;
-    while (delta < -Math.PI) delta += 2 * Math.PI;
-    const t = (radiusMm - start.r) / (end.r - start.r);
-    crossings.push(start.a + delta * t);
-  }
-  return crossings.sort((a, b) => a - b);
-}
-
 const deg = (value: number) => (value * Math.PI) / 180;
-
-interface ToothMeasurement {
-  /** Tangential width of the drawn tooth at the sampled radius, in mm. */
-  widthMm: number;
-  radiusMm: number;
-  /** Angles of the two flanks at that radius. */
-  flanks: [number, number];
-}
 
 export interface StatorSectionWidths {
   borePitchMm: number;
@@ -292,33 +288,11 @@ export function deriveStatorSectionWidths(
   };
 }
 
-function measureToothAtFraction(
-  geometry: GeometryPreview | null,
-  fraction: number,
-): ToothMeasurement | null {
-  const points = firstRegionPoints(geometry, (t) => t.includes('tooth'));
-  const angles = points ? regionAngles(points) : null;
-  if (!points || !angles) return null;
-  const span = angles.outerMm - angles.innerMm;
-  if (span <= 0) return null;
-  const boundedFraction = Math.max(0, Math.min(1, fraction));
-  const radiusMm = angles.innerMm + span * (0.001 + 0.998 * boundedFraction);
-  const crossings = radiusCrossings(points, radiusMm);
-  if (crossings.length < 2) return null;
-  const first = crossings[0];
-  const last = crossings[crossings.length - 1];
-  return {
-    widthMm: (last - first) * radiusMm,
-    radiusMm,
-    flanks: [first, last],
-  };
-}
-
 export function buildDimensionAnnotations(
   config: MotorConfig,
   geometry: GeometryPreview | null,
 ): DimensionAnnotation[] {
-  if (config.rotor_layout === 'outer') return buildOuterRotorDimensionAnnotations(config, geometry);
+  if (config.rotor_layout === 'outer') return addShoeDimensions(buildOuterRotorDimensionAnnotations(config, geometry), config, geometry);
   const metadata = (geometry?.metadata ?? {}) as Record<string, unknown>;
   const statorOuterMm = config.stator.OD_mm / 2;
   const boreMm = config.stator.ID_mm / 2;
@@ -389,38 +363,26 @@ export function buildDimensionAnnotations(
     });
   }
 
+  if (!isSpm) addIpmMagnetDimensions(annotations, config, geometry);
+
   if (tooth) {
-    const boreTooth = measureToothAtFraction(geometry, 0);
-    const yokeTooth = measureToothAtFraction(geometry, 1);
     const yokeRadiusMm = statorOuterMm - config.stator.yoke_thickness_mm;
     const slotPitchRad = (2 * Math.PI) / Math.max(1, config.stator.slot_count);
     const slotCentreRad = tooth.centreRad + slotPitchRad / 2;
     annotations.push({
       id: 'bore-tooth-width',
       label: 'Bore tooth',
-      value: mm(boreTooth?.widthMm ?? statorWidths.boreToothWidthMm),
+      value: mm(statorWidths.boreToothWidthMm),
       dash: [4, 3],
-      shapes: [boreTooth
-        ? {
-          kind: 'segment',
-          from: polar(boreTooth.radiusMm, boreTooth.flanks[0]),
-          to: polar(boreTooth.radiusMm, boreTooth.flanks[1]),
-        }
-        : tangentialSpan(boreMm, tooth.centreRad, statorWidths.boreToothWidthMm)],
+      shapes: [toothWidthArc(boreMm, tooth.centreRad, statorWidths.boreToothWidthMm)],
       note: 'controlled by Bore Tooth Width',
     });
     annotations.push({
       id: 'tooth-width-at-yoke',
       label: 'Yoke tooth',
-      value: mm(yokeTooth?.widthMm ?? statorWidths.toothWidthAtYokeMm),
+      value: mm(statorWidths.toothWidthAtYokeMm, 2),
       dash: [7, 3],
-      shapes: [yokeTooth
-        ? {
-          kind: 'segment',
-          from: polar(yokeTooth.radiusMm, yokeTooth.flanks[0]),
-          to: polar(yokeTooth.radiusMm, yokeTooth.flanks[1]),
-        }
-        : tangentialSpan(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
+      shapes: [toothWidthArc(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
       note: 'controlled by Yoke Tooth Width',
     });
     annotations.push({
@@ -463,6 +425,76 @@ export function buildDimensionAnnotations(
     note: 'along the axis',
   });
 
+  return addShoeDimensions(annotations, config, geometry);
+}
+
+/** Measure the actual rectangular slab, along and normal to its long axis. */
+function addIpmMagnetDimensions(annotations: DimensionAnnotation[], config: MotorConfig, geometry: GeometryPreview | null): void {
+  if (!['flat_buried', 'v_shape'].includes(config.rotor.ipm_topology)
+    || config.rotor.ipm_topology === 'flat_buried' && config.rotor.flat_buried_magnet_shape === 'legacy_arc') return;
+  const points = firstRegionPoints(geometry, (type) => type.startsWith('magnet_'));
+  if (!points || points.length < 4) return;
+  const edges = points.map((point, index) => {
+    const next = points[(index + 1) % points.length];
+    return { x: next[0] - point[0], y: next[1] - point[1], length: Math.hypot(next[0] - point[0], next[1] - point[1]) };
+  }).filter((edge) => edge.length > 1e-6);
+  const edge = edges.sort((a, b) => Math.abs(a.length - config.rotor.magnet_width_mm) - Math.abs(b.length - config.rotor.magnet_width_mm))[0];
+  if (!edge) return;
+  const axis: [number, number] = [edge.x / edge.length, edge.y / edge.length];
+  const normal: [number, number] = [-axis[1], axis[0]];
+  const along = points.map(([x, y]) => x * axis[0] + y * axis[1]);
+  const across = points.map(([x, y]) => x * normal[0] + y * normal[1]);
+  const lo = Math.min(...along), hi = Math.max(...along), bottom = Math.min(...across), top = Math.max(...across);
+  const at = (a: number, n: number): [number, number] => [a * axis[0] + n * normal[0], a * axis[1] + n * normal[1]];
+  annotations.push({ id: 'magnet-width', label: 'Magnet Width', value: `${(hi - lo).toFixed(1)} mm`, dash: [6, 3],
+    shapes: [{ kind: 'segment', from: at(lo, (bottom + top) / 2), to: at(hi, (bottom + top) / 2) }] });
+  annotations.push({ id: 'magnet-thickness', label: 'Magnet Thick.', value: `${(top - bottom).toFixed(1)} mm`, dash: [3, 2],
+    shapes: [{ kind: 'segment', from: at((lo + hi) / 2, bottom), to: at((lo + hi) / 2, top) }] });
+  const rotorRadius = config.rotor.OD_mm / 2;
+  if (config.rotor.ipm_topology === 'v_shape') {
+    const poleAngle = deg(config.rotor.magnet_angle_deg);
+    const apexRadius = rotorRadius - config.rotor.v_depth_mm;
+    const apex = polar(apexRadius, poleAngle);
+    const half = deg(config.rotor.v_angle_deg / 2);
+    const radius = Math.max(1, Math.min(config.rotor.magnet_width_mm * 0.6, rotorRadius * 0.3));
+    annotations.push({ id: 'v-depth', label: 'V Depth', value: `${config.rotor.v_depth_mm.toFixed(1)} mm`, dash: [5, 3],
+      shapes: [radialSpan(apexRadius, rotorRadius, poleAngle)] });
+    annotations.push({ id: 'v-angle', label: 'V Angle', value: `${config.rotor.v_angle_deg.toFixed(1)}°`, dash: [4, 3],
+      shapes: [{ kind: 'arc', centerMm: apex, radiusMm: radius, startRad: poleAngle - half, endRad: poleAngle + half },
+        ...[-half, half].map((angle): DimensionSegment => ({ kind: 'segment', from: apex,
+          to: [apex[0] + radius * Math.cos(poleAngle + angle), apex[1] + radius * Math.sin(poleAngle + angle)] }))] });
+  } else if (config.rotor.ipm_topology === 'flat_buried') {
+    // Outer Bridge is steel outside the pocket, including its air clearance;
+    // measuring from the magnet would incorrectly add that clearance to it.
+    const pocket = firstRegionPoints(geometry, (type) => type.includes('pocket')) ?? points;
+    const corner = pocket.reduce((furthest, point) => Math.hypot(...point) > Math.hypot(...furthest) ? point : furthest);
+    const radius = Math.hypot(...corner);
+    annotations.push({ id: 'outer-bridge', label: 'Outer Bridge', value: `${(rotorRadius - radius).toFixed(2)} mm`, dash: [4, 3],
+      shapes: [radialSpan(radius, rotorRadius, Math.atan2(corner[1], corner[0]))] });
+  }
+}
+
+/** The IR defines shoe height radially and overhang as an arc at the gap face. */
+function addShoeDimensions(annotations: DimensionAnnotation[], config: MotorConfig, geometry: GeometryPreview | null): DimensionAnnotation[] {
+  if (!config.stator.tooth_shoe_enabled) return annotations;
+  const tooth = firstRegionAngles(geometry, (t) => t.includes('tooth'));
+  if (!tooth) return annotations;
+  const s = config.stator;
+  const outer = config.rotor_layout === 'outer';
+  const gapRadius = (outer ? s.OD_mm : s.ID_mm) / 2;
+  const bodyRadius = outer ? s.ID_mm / 2 + s.yoke_thickness_mm : s.OD_mm / 2 - s.yoke_thickness_mm;
+  const height = Math.min(s.tooth_shoe_height_mm ?? 0, Math.abs(bodyRadius - gapRadius) - 1e-6);
+  if (gapRadius <= 0 || height <= 0) return annotations;
+  const shoulderRadius = gapRadius + (outer ? -height : height);
+  const bodyHalf = Math.PI / s.slot_count - s.slot_opening_mm / (2 * gapRadius);
+  const tipHalf = Math.min(bodyHalf + (s.tooth_shoe_overhang_mm ?? 0) / gapRadius, Math.PI / s.slot_count - 1e-9);
+  annotations.push({
+    id: 'shoe-height', label: 'Shoe height', value: `${height.toFixed(1)} mm`, dash: [3, 2],
+    shapes: [radialSpan(gapRadius, shoulderRadius, tooth.centreRad)],
+  }, {
+    id: 'shoe-overhang', label: 'Shoe overhang / side', value: `${(s.tooth_shoe_overhang_mm ?? 0).toFixed(2)} mm`, dash: [3, 2],
+    shapes: [{ kind: 'arc', radiusMm: gapRadius, startRad: tooth.centreRad + bodyHalf, endRad: tooth.centreRad + tipHalf }],
+  });
   return annotations;
 }
 
@@ -546,36 +578,22 @@ function buildOuterRotorDimensionAnnotations(
 
   if (tooth) {
     // The tooth region runs outward from the yoke, so its far end is the air gap.
-    const gapTooth = measureToothAtFraction(geometry, 1);
-    const yokeTooth = measureToothAtFraction(geometry, 0);
     const slotPitchRad = (2 * Math.PI) / Math.max(1, config.stator.slot_count);
     const slotCentreRad = tooth.centreRad + slotPitchRad / 2;
     annotations.push({
       id: 'bore-tooth-width',
       label: 'Gap tooth',
-      value: mm(gapTooth?.widthMm ?? statorWidths.boreToothWidthMm),
+      value: mm(statorWidths.boreToothWidthMm, 2),
       dash: [4, 3],
-      shapes: [gapTooth
-        ? {
-          kind: 'segment',
-          from: polar(gapTooth.radiusMm, gapTooth.flanks[0]),
-          to: polar(gapTooth.radiusMm, gapTooth.flanks[1]),
-        }
-        : tangentialSpan(gapFaceMm, tooth.centreRad, statorWidths.boreToothWidthMm)],
+      shapes: [toothWidthArc(gapFaceMm, tooth.centreRad, statorWidths.boreToothWidthMm)],
       note: 'the tooth tip at the air gap',
     });
     annotations.push({
       id: 'tooth-width-at-yoke',
       label: 'Yoke tooth',
-      value: mm(yokeTooth?.widthMm ?? statorWidths.toothWidthAtYokeMm),
+      value: mm(statorWidths.toothWidthAtYokeMm, 2),
       dash: [7, 3],
-      shapes: [yokeTooth
-        ? {
-          kind: 'segment',
-          from: polar(yokeTooth.radiusMm, yokeTooth.flanks[0]),
-          to: polar(yokeTooth.radiusMm, yokeTooth.flanks[1]),
-        }
-        : tangentialSpan(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
+      shapes: [toothWidthArc(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
       note: 'the tooth body where it meets the yoke',
     });
     annotations.push({

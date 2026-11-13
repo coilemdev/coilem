@@ -590,8 +590,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 13816,
-      "sha256": "8092e218243fc0935b0b706a4709656ba55e2a8875fdfcee2d6e3456b5be81f4"
+      "bytes": 14157,
+      "sha256": "450e24e3e04b18e50591dab32e445b275773ca553375d3611ddbd332a0e85b05"
     },
     {
       "path": "backend/public_report.py",
@@ -615,8 +615,8 @@
     },
     {
       "path": "backend/public_routes/preview.py",
-      "bytes": 5887,
-      "sha256": "0504b07ba202c130ccb641c15d1ec8bb9956f95043e63131dff10163812ede77"
+      "bytes": 9177,
+      "sha256": "44a22090eb7a57400054a8c7d04e47acbdd2e46fcd985fc92d2c4cd13a8a17b8"
     },
     {
       "path": "backend/public_routes/runs.py",
@@ -14255,8 +14255,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3271,
-      "sha256": "e908cc7ede1243d28eb2973d057c12f2932463639b81c36e6da05b2ac2c6e1d3"
+      "bytes": 3314,
+      "sha256": "805ec9b72b991f79c6893209f542d993b76626b7bdb763d28534b5c9444caf1f"
     },
     {
       "path": "frontend/playwright.performance-harness.config.ts",
@@ -14270,8 +14270,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 2667,
-      "sha256": "18c86f9e40ca214c555ba162b82e8ca11b39a5d3176f5b155cd0ce9c44c98a50"
+      "bytes": 2699,
+      "sha256": "78a620504be92d87f966282d3d7a65461030f52f7ccf16f2430d342729cb7679"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -14335,8 +14335,8 @@
     },
     {
       "path": "frontend/scripts/test-design-errors.mjs",
-      "bytes": 5205,
-      "sha256": "ec7c1bbd67974e5a005f5803c63b8b5bb0c92c0037b0ecb9f0ad33a4e841420a"
+      "bytes": 6297,
+      "sha256": "03265c06c9c73b4be3392a35b1b95fba9827cd5c6f776c34a53747122bf230f3"
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
@@ -14460,8 +14460,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178234,
-      "sha256": "ecdf4b0ec291a2ca2a0e7afbea2cd8c513df84b34c9478825a1bd16871530d97"
+      "bytes": 178052,
+      "sha256": "cc975398c18a9dda77fe50d6ac62a58e2f1ba9607c5238410fa0ff18117bef93"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -14500,8 +14500,8 @@
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 9248,
-      "sha256": "e896db2b872e75cc944ac43a6ec27cf0401b06fad742b6cb71617c77e16098ef"
+      "bytes": 8378,
+      "sha256": "987272eedaf33b7336738e3246907ee04e49672e16f7d0d90c8e76b8e3fceb4a"
     },
     {
       "path": "frontend/scripts/test-value-axis.mjs",
@@ -14510,8 +14510,8 @@
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
-      "bytes": 2566,
-      "sha256": "00438ce61f26d5eaff9d67eed5b915df18ec581e4b93296478340b2e72c78ec4"
+      "bytes": 3651,
+      "sha256": "15412afc99d02cf5d2512d23ead73e47dea5420ef7ecd89c61c41cfbc0adf398"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -14920,8 +14920,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 77793,
-      "sha256": "30693fe13e6660902a88ec80d5687dfafb3429b389d39596eb2932938cb25799"
+      "bytes": 81572,
+      "sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -14935,8 +14935,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 265427,
-      "sha256": "19ad6ac40356392fdc677d60713c6b613de097a65c72ed33cb7f0330bb5f974f"
+      "bytes": 291844,
+      "sha256": "a332c5aacdd496a12b0d5b26d0c54087168bbbb1566906fb0fc6c4b20e1a3dac"
     },
     {
       "path": "frontend/src/public/ConvergenceHelp.tsx",
@@ -14945,8 +14945,8 @@
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
-      "bytes": 5368,
-      "sha256": "eeda67dc260b2b9cf81b079c4c54b23a5a37abf51b241236d5b35228c1126572"
+      "bytes": 5394,
+      "sha256": "41511b35aeb9290c897b28b381c69927eeb1c8d98f83aaf898eb9c8bbc2d5116"
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
@@ -14960,8 +14960,8 @@
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
-      "bytes": 15869,
-      "sha256": "6dc6d9f62791d5191803a8b89c0ed9221ec1ab37cac37ef90a32bf4747dfe96b"
+      "bytes": 9589,
+      "sha256": "2ed3785272b471f447c4bec3e7d95e9425412ff376d42c6059828b0277fea27d"
     },
     {
       "path": "frontend/src/public/LandingMotorTypes.tsx",
@@ -14980,8 +14980,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 87966,
-      "sha256": "2fb821b20ca15fe627fb757346343a35731aecbc77478c6f4ba32b08bd6cd510"
+      "bytes": 94662,
+      "sha256": "d0b616950a21ed4e6e6be7c91adfed13cf1bc9f762406b1afb8d5fb935bcfb57"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -15030,8 +15030,8 @@
     },
     {
       "path": "frontend/src/public/RotorArrangement.tsx",
-      "bytes": 1201,
-      "sha256": "75c60a42663f59d6b3ee6ce93f9d672474d75eb2447de774cd8eeb4f322c8f82"
+      "bytes": 1595,
+      "sha256": "a84aac81c67a5feed41bc3ce204e831276a2ed406b57fa0ed63089023243c56e"
     },
     {
       "path": "frontend/src/public/RpmField.tsx",
@@ -15090,8 +15090,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 14477,
-      "sha256": "f464cc945ffae136b8bb8ce8c72778d38bab527b0f2f410a97ce2708554ea7f1"
+      "bytes": 14738,
+      "sha256": "e20693aecb7307c9dd5c6e867470e4385a6652f1a3cab8413b0750a4ad559963"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -15145,8 +15145,8 @@
     },
     {
       "path": "frontend/src/public/designErrors.ts",
-      "bytes": 4673,
-      "sha256": "967bdce9d3a8fd5653e8866494c119f5134f05ded43997c99d5e5ec77f7031a0"
+      "bytes": 7746,
+      "sha256": "591320b7df61f6aae964f64df43533c15a70eaf8fce8955f35cda85c31118a3e"
     },
     {
       "path": "frontend/src/public/designFile.ts",
@@ -15160,8 +15160,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 20676,
-      "sha256": "198f35343b2a79693c22e9087cd092a37af7d255f13acf01b1221268e1d3d92a"
+      "bytes": 24147,
+      "sha256": "d8169ddffc361f34c04b11ad61c6ff3a0514f4ecbf9b53ff008f9c321af365f1"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -15305,8 +15305,8 @@
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 11614,
-      "sha256": "daff73ef6a8b9e565ee0120a28745fa98f96bdfa5481413286c61d3d7c48dbc7"
+      "bytes": 1723,
+      "sha256": "768e6c7e3b38f951408272994eedee630d955e2f183b7a0894357d79c1a5509d"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
@@ -15415,8 +15415,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24219,
-      "sha256": "cbd2bc6c56276d8c50516d36be7855637a94d4ebe77f84a3c351702e4e7ad2f0"
+      "bytes": 24511,
+      "sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -15435,8 +15435,8 @@
     },
     {
       "path": "frontend/src/public/motorPalette.ts",
-      "bytes": 2646,
-      "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
+      "bytes": 2753,
+      "sha256": "caece56ab631bee85d627dd776934a71ecc4c1268fddb4a5508c5df0a8833db1"
     },
     {
       "path": "frontend/src/public/numberFormat.ts",
@@ -15535,8 +15535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 320429,
-      "sha256": "057eb0e36f1362f13d032673d2058697ca39bae6364a4e8e89dcaea7588a632b"
+      "bytes": 326120,
+      "sha256": "7f013b4f3a89be7661ec51d8932eb3f04f02c9d19ee563a760d2f895b8a56f0d"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -15570,8 +15570,8 @@
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
-      "bytes": 2517,
-      "sha256": "3f38eeb560678e3bca9bde3a4b701dd171c7fdec66b090be0a6ab0de74c2d83c"
+      "bytes": 3131,
+      "sha256": "eea8c453a291b6051f99c94633c6a87001cd6fabb863650a5919d8a8cd66ce1e"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
@@ -15630,8 +15630,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 74295,
-      "sha256": "541b2bd229ffb175b75feba1f695ea879e630c4923b9316b2271fbf3e4f10c78"
+      "bytes": 82046,
+      "sha256": "6fd3b1e38234b36ad5b80744efb77c3d98e3fe03bbe2cc119652578907798f8f"
     },
     {
       "path": "frontend/tsconfig.performance.json",
@@ -17652,6 +17652,61 @@
       "path": "frontend/tests/viewport-harness.tsx",
       "bytes": 6355,
       "sha256": "14087110489f9a524ecdc3e4be8df4a9368d8ba828c1e35bb4ad43f5ee028e2d"
+    },
+    {
+      "path": "backend/rotor_construction_preview.py",
+      "bytes": 5715,
+      "sha256": "5ce79dba68a3c699cf76db72b557ffa02fde7177953ef4794dcf63560e131c0a"
+    },
+    {
+      "path": "backend/stator_construction_preview.py",
+      "bytes": 3273,
+      "sha256": "fb04595743c091c58a49ead501690c26d5d85cd7af7ede48cefe179bf0746169"
+    },
+    {
+      "path": "frontend/scripts/test-winding-turn-dots.mjs",
+      "bytes": 2830,
+      "sha256": "28db502e49e66ca7bfc9163f1174f4f4b6bd0626d5e217fa9bc77d92f66f3621"
+    },
+    {
+      "path": "frontend/src/public/RotorArrangementPreview.tsx",
+      "bytes": 6698,
+      "sha256": "36a795d12bc4ea12ba951bd32b4b0f123f8059d367abfb48a469e968f658330d"
+    },
+    {
+      "path": "frontend/src/public/newDesignEntry.ts",
+      "bytes": 6948,
+      "sha256": "2ed89fd72fa7745bbd4c035c9440f2ff29d691e56f46fa793d1f0696106eccf2"
+    },
+    {
+      "path": "frontend/src/public/progressiveDesign.ts",
+      "bytes": 15684,
+      "sha256": "8889bdf2bdb262079f4c12eae00e1f24181bc7ae043cabec588069625b804667"
+    },
+    {
+      "path": "frontend/src/public/useMotorHoverPreview.tsx",
+      "bytes": 4681,
+      "sha256": "4da53209a64f440a123ccc6339ae05c5009a483b7ccf3e15f873e7c71c89de7f"
+    },
+    {
+      "path": "frontend/src/public/windingTurnDots.ts",
+      "bytes": 5576,
+      "sha256": "f9e3688ce2602d7ee9304a197d7aeb790ef2936d2589171732ca3ab4ed66268e"
+    },
+    {
+      "path": "frontend/tests/design-helpers.ts",
+      "bytes": 5508,
+      "sha256": "1ca36470e81ca20347caac4771f585cd3cf8effa623683047a10fd6305fd8b85"
+    },
+    {
+      "path": "frontend/tests/progressive-design.spec.ts",
+      "bytes": 84724,
+      "sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721"
+    },
+    {
+      "path": "tests/test_construction_preview.py",
+      "bytes": 11219,
+      "sha256": "67d4a7cfeb79469f6e164b5ebea0f249d89f4a0f0312abd26b79ea9d2a119ab3"
     }
   ],
   "public_patches": [

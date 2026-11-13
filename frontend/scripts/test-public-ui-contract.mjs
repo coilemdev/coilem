@@ -114,10 +114,6 @@ const playbackRasterizerSource = await readFile(path.join(frontendRoot, 'src/pub
 const playbackWorkerSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackWorker.ts'), 'utf8');
 const apiSource = await readFile(path.join(frontendRoot, 'src/public/api.ts'), 'utf8');
 const guidedSource = await readFile(path.join(frontendRoot, 'src/public/GuidedSetup.tsx'), 'utf8');
-const guidedRepairSource = await readFile(
-  path.join(frontendRoot, 'src/public/guidedConfigRepair.ts'),
-  'utf8',
-);
 const styleSource = await readFile(path.join(frontendRoot, 'src/public/styles.css'), 'utf8');
 const windingLayoutSource = await readFile(
   path.join(frontendRoot, 'src/public/WindingLayoutView.tsx'),
@@ -182,7 +178,7 @@ const selectSolverBlock = appSource.slice(
   appSource.indexOf('const updateSolvePlan'),
 );
 assert.doesNotMatch(selectSolverBlock, /setConfig/, 'Solver selection must not overwrite project settings');
-assert.match(workspaceSource, /aria-pressed=\{config\.topology === topology\}/);
+assert.match(workspaceSource, /aria-pressed=\{entry \? entry\.topology === topology : config\.topology === topology\}/);
 // Hovering opens the Examples submenu; a click must not toggle it closed again (#22).
 assert.match(workspaceSource, /onMouseEnter=\{\(\) => setExamplesMenuOpen\(true\)\}/);
 assert.match(workspaceSource, /onClick=\{\(\) => setExamplesMenuOpen\(true\)\}/);
@@ -190,7 +186,7 @@ assert.doesNotMatch(workspaceSource, /setExamplesMenuOpen\(\(open\) => !open\)/)
 assert.match(workspaceSource, /className="workflow-stepper workflow-stepper-inline"/);
 assert.match(workspaceSource, /design-workspace workflow-stage-content\$\{designViewportExpanded/);
 assert.match(workspaceSource, /className="design-workspace-main"/);
-assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed \? ' is-collapsed' : ''\}`\}/);
+assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed && !props\.guidedActive \? ' is-collapsed' : ''\}`\}/);
 // Design health folds to a strip that keeps its status icon, and opens again from it.
 assert.match(workspaceSource, /collapsed=\{designHealthCollapsed\} onCollapsedChange=\{setDesignHealthCollapsed\}/);
 assert.match(workspaceSource, /if \(collapsed\) return collapsedStrip\(tone, ready \? '✓'/);
@@ -203,11 +199,13 @@ assert.match(workspaceSource, /'Bore tooth is much narrower' : 'Bore tooth is sl
 assert.match(workspaceSource, /Bore \$\{statorWidths\.boreToothWidthMm\.toFixed\(1\)\} mm · yoke \$\{statorWidths\.toothWidthAtYokeMm/);
 assert.match(workspaceSource, /This mild taper is usually acceptable/);
 assert.match(workspaceSource, /<HealthPanel[^>]*geometryStale=\{props\.geometryStale\}/);
-assert.match(workspaceSource, /className="panel-left public-parameter-panel"/);
+assert.match(workspaceSource, /className=\{`panel-left public-parameter-panel/);
 assert.match(workspaceSource, /const burialHealth = publicFlatIpmBurialHealth\(config\)/);
 assert.match(workspaceSource, /\.\.\.\(burialHealth \? \[burialHealth\] : \[\]\)/);
 assert.match(workspaceSource, /burialHealth\?\.blocking !== true/);
-assert.match(workspaceSource, /NumberRow label="Bore Tooth Width".*min=\{minimumBoreToothWidthMm\}.*max=\{maximumBoreToothWidthMm\}/);
+// A derived width at the physical limit must remain valid after display rounding;
+// the setter still clamps against the unrounded geometry limit.
+assert.match(workspaceSource, /NumberRow label="Bore Tooth Width".*min=\{minimumBoreToothWidthMm\}.*max=\{Number\(maximumBoreToothWidthMm\.toFixed\(1\)\)\}/);
 // Inner rotors keep the 2 mm floor; outer rotors (drone stators) go to 0.5 mm.
 assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width".*min=\{outer \? 0\.5 : 2\}/);
 assert.match(workspaceSource, /label="Outer Bridge"/);
@@ -239,7 +237,7 @@ assert.match(workspaceSource, /Converting changes the material model and predict
 assert.match(workspaceSource, />Convert project to M350-50A</);
 assert.match(workspaceSource, /Material not supported/);
 // Schema errors lead with their location; solve settings are not geometry (#19).
-assert.match(workspaceSource, /\/\^solve_\(params\|options\)\\b\/\.test\(error\)\s*\?\s*'Solve settings need attention'/);
+assert.match(workspaceSource, /\/\^solve_\(params\|options\)\\b\/\.test\(error\)\) currentErrorTitle = 'Solve settings need attention'/);
 // Every stage shows the benchmark qualification the backend computed (#20).
 assert.match(workspaceSource, /function readQualification\(value: unknown\): PublicQualification \| null/);
 assert.match(workspaceSource, /docs\/VALIDATION\.md#qualification-status/);
@@ -938,7 +936,7 @@ assert.match(styleSource, /\.public-run-plan-section\[open\] > summary::after \{
 // The Solve setup's sections collapse like Design's: one shared section block
 // and one look, one section open at a time, the accuracy plan open first.
 assert.match(workspaceSource, /function ParameterSectionBlock<Id extends string = PublicParameterSection>/);
-assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\}>/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\} guide="solve-operating">/);
 assert.match(workspaceSource, /<ParameterSectionBlock id="plan" label="Accuracy plan" summary=\{planSummary\} active=\{openSetupSection === 'plan'\} onToggle=\{toggleSetupSection\} guide="solve-plan">/);
 assert.match(workspaceSource, /<ParameterSectionBlock id="advanced" label="Advanced options" summary=\{advancedSummary\} active=\{advancedOpen\} attention=\{convergenceFailed\}/);
 assert.match(workspaceSource, /useState<SolveSetupSection \| null>\(guidedSolveSection \?\? 'plan'\)/);
@@ -1683,9 +1681,9 @@ assert.match(appSource, /workflowDisabled/);
 assert.match(workspaceSource, />New Design</);
 assert.match(workspaceSource, /workflowDisabled \|\| \(!step\.available && !active\)/);
 assert.match(workspaceSource, /aria-label="Blank design canvas"/);
-assert.match(workspaceSource, /solveAvailable=\{!props\.blankDesign\}/);
-assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => String\(value\)\)/);
-assert.match(workspaceSource, /onBlur=\{commitDraft\}/);
+assert.match(workspaceSource, /solveAvailable=\{!props\.blankDesign && buildComplete && !props\.designInputInvalid\}/);
+assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => entryField\.unset \? '' : String\(value\)\)/);
+assert.match(workspaceSource, /onBlur=\{\(\) => \{ commitDraft\(\); fieldFocus\?\.setField\(null\); \}\}/);
 assert.match(workspaceSource, /event\.key === 'Enter'/);
 assert.doesNotMatch(workspaceSource, /onChange=\{\(event\) => onChange\(Number\(event\.target\.value\)\)\}/);
 assert.match(landingSource, /LandingWorkflowHero/);
@@ -2073,9 +2071,9 @@ assert.match(workspaceSource, /const showLayerRow = !\(layerWording\.hidden && l
 // and the section holding the field shows a warning instead of a green check.
 assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);
 assert.match(appSource, /setPreviewNetworkFailed\(requestError instanceof TypeError\);\s*setError\(requestFailure\(requestError\)\);/);
-assert.match(workspaceSource, /const errorSection = error \? designErrorSection\(errorDetails\) : null;/);
-assert.match(workspaceSource, /className=\{`param-group-header \$\{attention \? 'status-attention' : 'status-complete'\}/);
-assert.match(workspaceSource, /<StatusGlyph tone=\{attention \? 'warning' : 'good'\} \/>/);
+assert.match(workspaceSource, /const errorSection = error \? designIssue\?\.section \?\? designErrorSection\(errorDetails\) : null;/);
+assert.match(workspaceSource, /className=\{`param-group-header \$\{attention \? 'status-attention' : complete \? 'status-complete' : 'status-pending'\}/);
+assert.match(workspaceSource, /<StatusGlyph tone=\{attention \? 'warning' : complete \? 'good' : 'info'\} \/>/);
 for (const section of ['stator', 'rotor', 'advanced', 'winding', 'materials']) {
   assert.ok(workspaceSource.includes(`<ParameterSectionBlock id="${section}" attention={errorSection === '${section}'}`), section);
 }
@@ -2089,17 +2087,12 @@ assert.match(appSource, /const nextConfig = cloneDefaultConfig\(\)/);
 assert.match(appSource, /topology=\{config\.topology\}/);
 assert.match(appSource, /guidedDesignSection=\{guidedDesignSection\}/);
 assert.match(appSource, /onDesignSectionChange=\{revealGuidedDesignSection\}/);
-assert.match(appSource, /guidedVisitedSectionsRef/);
-assert.match(appSource, /repairGuidedSection\(config, section\)/);
+assert.match(appSource, /if \(guided\) \{ beginNewDesign\(true\); return; \}/);
+assert.doesNotMatch(appSource, /repairGuidedSection\(config, section\)/);
 assert.match(appSource, /guidedActive && visitedSection/);
 assert.match(appSource, /onDesignSectionVisit=\{visitGuidedDesignSection\}/);
 assert.match(workspaceSource, /onDesignSectionVisit\(section\)/);
 assert.match(workspaceSource, /onSectionChange\(section, field, value, visitedSection\)/);
-assert.match(guidedRepairSource, /Repair only the section the coach is about to reveal/);
-assert.match(guidedRepairSource, /nearestBalancedPoleCount/);
-assert.match(guidedRepairSource, /maximumRotorOd/);
-assert.match(guidedRepairSource, /maximumToothWidth/);
-assert.match(guidedRepairSource, /terminalCoilsPerPhase/);
 assert.match(appSource, /GUIDED_IPM_LAYOUT_PRESETS/);
 assert.match(appSource, /v_shape:[\s\S]*?magnet_width_mm: 28[\s\S]*?v_angle_deg: 40[\s\S]*?v_depth_mm: 30[\s\S]*?inner_web_thickness_mm: 6/);
 assert.match(appSource, /\.\.\.GUIDED_IPM_LAYOUT_PRESETS\[selectedIpmLayout\]/);
@@ -2116,7 +2109,7 @@ assert.ok(
 assert.doesNotMatch(workspaceSource, /<SelectRow label="Rotor Layout"/);
 assert.match(workspaceSource, /data-guide=\{guide \?\? `section-\$\{id\}`\}/);
 assert.match(workspaceSource, /data-guide-active=\{active \? 'true' : 'false'\}/);
-assert.match(workspaceSource, /setActiveSection\(guidedDesignSection \?\? null\)/);
+assert.match(workspaceSource, /setActiveSection\(guidedDesignSection\)/);
 assert.match(workspaceSource, /data-guide="design-continue"/);
 assert.match(workspaceSource, /guide="solve-plan"/);
 assert.match(workspaceSource, /data-guide="solve-run"/);
@@ -2166,30 +2159,20 @@ assert.match(bldcChartSource, /showPhaseCurrents && \[phaseA, phaseB, phaseC\]/)
 assert.match(runComparisonSource, /Excitation identity/);
 assert.match(appSource, /excitationDraftRef/);
 assert.match(workspaceSource, /designName=\{props\.designName \?\? null\}/);
+// Guide navigation shares New Design completion and lives in a normal-flow right rail.
 assert.match(guidedSource, /PUBLIC_GUIDED_STOPS/);
-assert.match(guidedSource, /target: 'topology-selector'/);
-assert.match(guidedSource, /target: 'ipm-layout-selector'/);
-assert.match(guidedSource, /stop\.id !== 'ipm-layout'/);
-assert.match(guidedSource, /stop\.id === 'topology' && topology === 'IPM'/);
-assert.match(guidedSource, /'section-stator'/);
-assert.match(guidedSource, /target: 'solve-analysis'/);
-assert.match(guidedSource, /'solve-plan'/);
-assert.match(guidedSource, /'solve-run'/);
-assert.match(guidedSource, /'open-report'/);
-assert.match(guidedSource, /prefers-reduced-motion/);
+for (const target of ['arrangement-selector', 'topology-selector', 'ipm-layout-selector', 'section-stator', 'section-advanced', 'section-rotor', 'section-winding', 'section-materials', 'solve-operating', 'solve-analysis', 'solve-plan', 'solve-run', 'open-report']) assert.ok(guidedSource.includes(`target: '${target}'`), target);
+assert.ok(guidedSource.indexOf("id: 'advanced'") < guidedSource.indexOf("id: 'rotor'"));
+assert.ok(guidedSource.indexOf("id: 'solve-operating'") < guidedSource.indexOf("id: 'solve-analysis'"));
+assert.match(guidedSource, /entrySectionComplete/);
+assert.match(guidedSource, /GuidedDesignProgressContext/);
+assert.match(guidedSource, /createPortal/);
+assert.match(guidedSource, /aria-label="Guided setup steps"/);
 assert.match(guidedSource, /Exit guided setup/);
-assert.match(guidedSource, /className="public-guided-next"/);
 assert.match(guidedSource, /onClick=\{handleNext\}/);
-assert.match(guidedSource, /stop\.id === 'solve-run' && !resultReady/);
-assert.match(guidedSource, /onDesignSectionChange\(designSectionForStop\(nextStop\)\)/);
-assert.match(guidedSource, /setAdjustmentMessage\(null\);[\s\S]*?\[activeStep\]/);
-assert.match(guidedSource, /onWorkflowStepChange\(nextStop\.step\)/);
-assert.match(guidedSource, /stop\.id === 'report'\) onWorkflowStepChange\('report'\)/);
-assert.doesNotMatch(guidedSource, /public-guided-hint/);
-assert.doesNotMatch(guidedSource, /actionHint:/);
-assert.match(guidedSource, /data-guide-active="true"/);
-assert.match(styleSource, /\.public-guided-highlight/);
+assert.match(workspaceSource, /data-guide="guided-setup-panel"/);
 assert.match(styleSource, /\.public-guided-card/);
+assert.doesNotMatch(guidedSource, /public-guided-highlight|public-guided-scrim/);
 
 // 2D lighting pass and the drive-end shaft convention.
 assert.match(motorCanvasSource, /shadedRegionFill/);

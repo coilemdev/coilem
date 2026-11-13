@@ -21,7 +21,8 @@ import {
 } from './magnetPoleFaces';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
 import { polygonLabelSpot } from './canvasLabels';
-import { fitTransform } from './viewportTransform';
+import { buildWindingTurnDots, type WindingTurnDots } from './windingTurnDots';
+import { fitTransform, viewportScaleBar } from './viewportTransform';
 import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -71,6 +72,8 @@ const EMPTY_MESH_QUALITIES: number[] = [];
 
 interface MotorCanvasProps {
   geometry: GeometryPreview | null;
+  /** Never label old polygons with dimensions from a newer configuration. */
+  geometryStale?: boolean;
   mesh: MeshPreview | null;
   mode: 'geometry' | 'mesh';
   layer?: PublicCanvasLayer;
@@ -84,6 +87,8 @@ interface MotorCanvasProps {
   /** Needed by the Dims layer: tooth, slot, magnet and yoke sizes are config-only. */
   config?: MotorConfig;
   activeDimension?: DimensionId | null;
+  /** The focused parameter uses its Dims measurement without enabling the full overlay. */
+  editingDimension?: DimensionId | null;
   /** Previewed from the readout without committing a selection. */
   hoveredDimension?: DimensionId | null;
   onDimensionSelect?: (dimension: DimensionId | null) => void;
@@ -153,6 +158,7 @@ interface MeshDrawOptions {
 interface MeshDrawFrame {
   origin: [number, number];
   radiusPx: number;
+  scale: number;
 }
 
 const MESH_FILL_KEY_SEPARATOR = '\u0000';
@@ -633,9 +639,17 @@ function drawGeometry(
   previewRpm: number,
   plainWinding = false,
   overlays: PublicCanvasOverlays = NO_CANVAS_OVERLAYS,
-): void {
+  turnDots: ReadonlyMap<GeometryPreview['regions'][number], WindingTurnDots> | null = null,
+  editingDimension: DimensionId | null = null,
+): number | null {
   const points = data.regions.flatMap((region) => region.points);
-  if (points.length === 0) return;
+  if (points.length === 0) return null;
+  // Fit the complete stator envelope, including the future teeth of an outrunner.
+  // Construction circles stay separate from steel, winding and hit-test regions.
+  if (data.stator_guide) {
+    const radius = Math.max(data.stator_guide.outerDiameterMm, data.stator_guide.boreConfigured === false ? 0 : data.stator_guide.innerDiameterMm) / 2;
+    points.push([-radius, -radius], [radius, radius]);
+  }
   // Phases: the motor moves right, a little smaller, to make room for the A / B / C
   // waveforms wired into it, and its phases light with the currents they carry.
   const driveFrame = layer === 'phases' && phaseDrive ? phaseDriveFrame(width, height) : null;
@@ -671,6 +685,7 @@ function drawGeometry(
   const [, boundingRadiusMm] = radialExtentMm(points);
   const outerRadiusPx = Math.max(1, (Number(data.metadata.stator_od_mm || 0) / 2 || boundingRadiusMm) * scale);
   const pendingMarkers: Array<{ x: number; y: number; radius: number; outOfPage: boolean; ring: string }> = [];
+  const directionTargets: Array<{ contours: Contour[]; x: number; y: number; radius: number }> = [];
   interface ComponentPath {
     points: Array<[number, number]>;
     loops?: Contour[];
@@ -757,6 +772,14 @@ function drawGeometry(
     if (coilSideMark(region)) return;
     const slotNumber = slotNumberFromRegion(region.region_type);
     const [innerRadiusMm, outerRadiusMm] = radialExtentMm(region.points);
+    if (region.region_type === 'construction_outline') {
+      context.beginPath();
+      context.arc(origin[0], origin[1], outerRadiusMm * scale, 0, Math.PI * 2);
+      context.strokeStyle = PUBLIC_MOTOR_COLORS.statorSteel;
+      context.lineWidth = 2;
+      context.stroke();
+      return;
+    }
     if (/^airgap$/i.test(region.region_type)) {
       // The airgap reads as a glowing clearance ring, like the 3D torus cue.
       const midRadiusPx = ((innerRadiusMm + outerRadiusMm) / 2) * scale;
@@ -818,6 +841,38 @@ function drawGeometry(
     context.globalAlpha = /air/i.test(region.region_type) ? 0.45 : 0.94;
     context.fill('evenodd');
     context.globalAlpha = 1;
+    const turns = layer !== 'materials' ? turnDots?.get(region) : null;
+    if (turns) {
+      const [x, y] = map(turns.marker.point);
+      directionTargets.push({ contours: canvasLoops, x, y, radius: Math.min(9, turns.marker.radius * scale) });
+      // A turn passes through each coil side once. These are schematic copper
+      // sections; they do not stand for individual strands or change slot fill.
+      const radius = turns.radius * scale;
+      if (radius >= 0.65) {
+        context.save();
+        context.clip('evenodd');
+        context.beginPath();
+        for (const point of turns.points) {
+          const [dx, dy] = map(point);
+          context.moveTo(dx + radius, dy);
+          context.arc(dx, dy, radius, 0, Math.PI * 2);
+        }
+        context.fillStyle = PUBLIC_MOTOR_COLORS.windingTurn;
+        context.fill();
+        context.strokeStyle = 'rgba(247, 185, 111, 0.45)';
+        context.lineWidth = Math.min(0.7, radius * 0.22);
+        context.stroke();
+        context.restore();
+        // Restore the region path for its outline and any selection treatment.
+        context.beginPath();
+        for (const loop of canvasLoops) {
+          if (!loop.length) continue;
+          context.moveTo(...loop[0]);
+          for (const point of loop.slice(1)) context.lineTo(...point);
+          context.closePath();
+        }
+      }
+    }
     if (poleByTooth && /stator_tooth/i.test(region.region_type)) {
       // The tooth as an electromagnet pole: red N, blue S, as the magnets are, and
       // as strong as its share of the stator MMF.
@@ -856,8 +911,10 @@ function drawGeometry(
       // Every magnet says which pole faces the airgap; split, each half its own.
       magnetPoleLabels.push({ points: canvasPoints, north: magnetAirgapPolarity(region.region_type) === 'north', halves: splitHalves });
     }
-    context.strokeStyle = 'rgba(6, 8, 12, 0.68)';
-    context.lineWidth = Math.max(0.7, Math.min(1.5, scale * 0.035));
+    const diagnosticMagnet = Boolean(data.metadata.diagnostic_only && /magnet/i.test(region.region_type));
+    context.strokeStyle = diagnosticMagnet ? '#fb7185' : 'rgba(6, 8, 12, 0.68)';
+    context.setLineDash(diagnosticMagnet ? [4, 3] : []);
+    context.lineWidth = diagnosticMagnet ? 1.8 : Math.max(0.7, Math.min(1.5, scale * 0.035));
     if (ANNULAR_REGIONS.test(region.region_type) && !region.loops?.length) {
       // Concentric boundaries: stroke true circles so the polygon's radial
       // closing seam never shows.
@@ -880,6 +937,7 @@ function drawGeometry(
     } else {
       context.stroke();
     }
+    context.setLineDash([]);
     let selection = componentSelectionFromRegion(region.region_type, regionIndex);
     if (selection && concentratedWinding && selection.kind === 'winding' && slotNumber !== null) {
       selection = {
@@ -931,7 +989,9 @@ function drawGeometry(
   context.restore();
 
   pendingMarkers.forEach((marker) => {
-    drawCurrentMarker(context, marker.x, marker.y, marker.radius, marker.outOfPage, marker.ring);
+    const target = directionTargets.find(({ contours }) => pointInContours([marker.x, marker.y], contours));
+    if (target && target.radius < 1.8) return; // Inspection zoom makes narrow coil sides readable.
+    drawCurrentMarker(context, target?.x ?? marker.x, target?.y ?? marker.y, target?.radius ?? marker.radius, marker.outOfPage, marker.ring);
   });
 
   // N / S on every magnet, upright. A thin SPM magnet is narrower than a readable
@@ -1206,21 +1266,24 @@ function drawGeometry(
     14,
   );
 
-  if (overlays.dimensions) {
+  if (overlays.dimensions || editingDimension) {
     drawDimensionAnnotations(
       context,
       map,
       annotations,
-      activeDimension,
-      hoveredDimension,
+      editingDimension ?? activeDimension,
+      editingDimension ? null : hoveredDimension,
       dimensionHits,
+      editingDimension ? { width, height } : undefined,
     );
   }
+
 
   if (driveFrame && phaseDrive && currents) {
     drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm);
   }
   drawRotorZeroMark(context, origin, Math.max(outerRadiusPx, boundingRadiusMm * scale), rotorAngleDeg, rotationRad);
+  return scale;
 }
 
 /**
@@ -1317,6 +1380,7 @@ function drawDimensionAnnotations(
   activeDimension: DimensionId | null,
   hoveredDimension: DimensionId | null,
   dimensionHits: DimensionHit[],
+  captionBounds?: { width: number; height: number },
 ): void {
   const TICK = 5;
   // A pick shows that dimension and only that dimension. With nothing picked the
@@ -1366,8 +1430,8 @@ function drawDimensionAnnotations(
         for (let i = 0; i <= steps; i += 1) {
           const angle = shape.startRad + ((shape.endRad - shape.startRad) * i) / steps;
           points.push(map([
-            shape.radiusMm * Math.cos(angle),
-            shape.radiusMm * Math.sin(angle),
+            (shape.centerMm?.[0] ?? 0) + shape.radiusMm * Math.cos(angle),
+            (shape.centerMm?.[1] ?? 0) + shape.radiusMm * Math.sin(angle),
           ]));
         }
         context.setLineDash(annotation.dash);
@@ -1379,6 +1443,25 @@ function drawDimensionAnnotations(
           dimensionHits.push({ id: annotation.id, from: points[i], to: points[i + 1] });
         }
       }
+    }
+    if (isPicked && captionBounds) {
+      const shape = annotation.shapes[0];
+      const middle = !shape ? map([0, 0]) : shape.kind === 'segment'
+        ? map([(shape.from[0] + shape.to[0]) / 2, (shape.from[1] + shape.to[1]) / 2])
+        : map([(shape.centerMm?.[0] ?? 0) + shape.radiusMm * Math.cos((shape.startRad + shape.endRad) / 2), (shape.centerMm?.[1] ?? 0) + shape.radiusMm * Math.sin((shape.startRad + shape.endRad) / 2)]);
+      const text = `${annotation.label}  ${annotation.value}${!shape && annotation.note ? ` · ${annotation.note}` : ''}`;
+      context.font = '600 11px ui-monospace, monospace';
+      const labelWidth = context.measureText(text).width + 16;
+      const x = Math.max(labelWidth / 2 + 8, Math.min(middle[0], captionBounds.width - labelWidth / 2 - 8));
+      const y = Math.max(18, Math.min(middle[1] - 16, captionBounds.height - 18));
+      context.fillStyle = 'rgba(15, 17, 22, 0.94)';
+      context.beginPath();
+      context.roundRect(x - labelWidth / 2, y - 11, labelWidth, 22, 4);
+      context.fill();
+      context.fillStyle = '#fbbf24';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(text, x, y);
     }
   }
 
@@ -1406,7 +1489,7 @@ function drawMesh(
   options: MeshDrawOptions = {},
 ): MeshDrawFrame | null {
   if (data.nodes_mm.length === 0 || data.triangles.length === 0) return null;
-  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
+  const { map, scale } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
   const part = options.part ?? 'all';
   const fillRegions = options.fill ?? true;
   const cull = options.cull ?? null;
@@ -1568,11 +1651,12 @@ function drawMesh(
   }
   const origin = map([0, 0]);
   const [edgeX, edgeY] = map([meshOuterRadiusMm(data), 0]);
-  return { origin, radiusPx: Math.hypot(edgeX - origin[0], edgeY - origin[1]) };
+  return { origin, radiusPx: Math.hypot(edgeX - origin[0], edgeY - origin[1]), scale };
 }
 
 export function MotorCanvas({
   geometry,
+  geometryStale = false,
   mesh,
   mode,
   layer = 'dimensions',
@@ -1584,6 +1668,7 @@ export function MotorCanvas({
   onComponentSelect,
   config,
   activeDimension = null,
+  editingDimension = null,
   hoveredDimension = null,
   onDimensionSelect,
   magnetPolarityView = 'dominant',
@@ -1603,8 +1688,12 @@ export function MotorCanvas({
   navigationSlot = null,
 }: MotorCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [pixelsPerMm, setPixelsPerMm] = useState<number | null>(null);
+  const scaleRef = useRef<number | null>(null);
   // Phases: the solve's drive settings with the geometry's phase-A axis and poles.
   const solveParams = config?.solve_params;
+  const turnDots = useMemo(() => buildWindingTurnDots(geometry, config?.winding.turns_per_coil ?? 0),
+    [geometry, config?.winding.turns_per_coil]);
   const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
   const metadataPoles = Number(geometry?.metadata.pole_count);
   const phaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
@@ -1662,8 +1751,8 @@ export function MotorCanvas({
     [overlayDimensions, overlaySlots, overlayTeeth, overlayWindings],
   );
   const annotations = useMemo(
-    () => (config && overlayDimensions ? buildDimensionAnnotations(config, geometry) : []),
-    [config, geometry, overlayDimensions],
+    () => (config && !geometryStale && (overlayDimensions || editingDimension) ? buildDimensionAnnotations(config, geometry) : []),
+    [config, geometry, geometryStale, overlayDimensions, editingDimension],
   );
 
   // The mesh view can carry the Slots or Winding overlay: the geometry is drawn
@@ -1808,8 +1897,9 @@ export function MotorCanvas({
         context.stroke();
       }
 
+      let drawnScale: number | null = null;
       if (mode === 'geometry' && geometry) {
-        drawGeometry(
+        drawnScale = drawGeometry(
           context,
           geometry,
           rect.width,
@@ -1834,6 +1924,8 @@ export function MotorCanvas({
           previewRpm,
           plainWinding,
           shownOverlays,
+          turnDots,
+          editingDimension,
         );
       } else if (mode === 'mesh' && mesh) {
         const viewRotationRad = (navigation.rotationDeg * Math.PI) / 180;
@@ -1919,6 +2011,14 @@ export function MotorCanvas({
         }
         // The geometry drawn under an overlay has already marked the rotor's place.
         if (frame && !(meshOverlay && geometry)) drawRotorZeroMark(context, frame.origin, frame.radiusPx, rotorAngleDeg, viewRotationRad);
+        drawnScale = frame?.scale ?? null;
+      }
+      // Read the scale from the same fit that draws the motor. ResizeObserver,
+      // construction outlines, phase framing and zoom all reach this path.
+      // Rotation and hovering keep the same scale and need no React update.
+      if (drawnScale !== scaleRef.current) {
+        scaleRef.current = drawnScale;
+        setPixelsPerMm(drawnScale);
       }
     };
 
@@ -1928,6 +2028,7 @@ export function MotorCanvas({
     return () => observer.disconnect();
   }, [
     activeDimension,
+    editingDimension,
     annotations,
     geometry,
     highlightComponentKind,
@@ -1956,6 +2057,7 @@ export function MotorCanvas({
     meshEdgeColor,
     focusedMeshElementIndex,
     windingType,
+    turnDots,
   ]);
 
   const pointerPoint = (event: MouseEvent<HTMLCanvasElement>): [number, number] => {
@@ -2009,6 +2111,8 @@ export function MotorCanvas({
     return best?.id ?? null;
   };
 
+  const scaleBar = pixelsPerMm === null ? null : viewportScaleBar(pixelsPerMm);
+  const editingAnnotation = editingDimension ? annotations.find(({ id }) => id === editingDimension) : null;
   return (
     <div
       className={`public-viewport-navigation public-motor-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
@@ -2018,6 +2122,7 @@ export function MotorCanvas({
       <canvas
         className="motor-canvas"
         ref={canvasRef}
+        data-editing-dimension={editingDimension ?? undefined}
         aria-label={`${mode} motor view, ${layer} layer`}
         onPointerMove={(event) => {
           if (loupeShown) {
@@ -2063,6 +2168,17 @@ export function MotorCanvas({
           onComponentSelect?.(componentAtPointer(event));
         }}
       />
+      {editingAnnotation && <output className="public-visually-hidden" role="status" aria-label="Active geometry dimension">
+        {editingAnnotation.label} {editingAnnotation.value}{!editingAnnotation.shapes.length && editingAnnotation.note ? ` · ${editingAnnotation.note}` : ''}
+      </output>}
+      {scaleBar && <div className="public-viewport-scale" role="img" aria-label={`View scale: ${scaleBar.mm} millimetres`}
+        data-mm={scaleBar.mm} data-pixels-per-mm={pixelsPerMm}>
+        <div className="public-viewport-scale-label"><span>0</span><span>{scaleBar.mm} mm</span></div>
+        <svg width={scaleBar.pixels + 2} height="11" aria-hidden="true">
+          <path d={`M 1 1 V 8 H ${scaleBar.pixels + 1} V 1 M ${scaleBar.pixels / 2 + 1} 4 V 8`} />
+        </svg>
+        <small>{navigation.scale === 1 ? 'Auto-fit' : 'View scale'}</small>
+      </div>}
       {loupeShown && (
         <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={MESH_LOUPE_MAGNIFICATION} label="Mesh magnifier" />
       )}
