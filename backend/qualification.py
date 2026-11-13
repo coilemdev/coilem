@@ -15,6 +15,7 @@ import re
 from fractions import Fraction
 from typing import Literal, TypedDict
 
+from backend.gmsh_mesh_rotation import gmsh_pole_pitch_mesh_reuse_enabled
 from backend.models import MotorConfig
 from backend.models.performance import (
     COGGING_TORQUE_QUALIFIED_REASON,
@@ -187,6 +188,10 @@ def classify_qualification(config: MotorConfig) -> Qualification:
         status, reason = "experimental", f"Custom steel: the benchmark qualified only the bundled {_QUALIFIED_STEEL} curve."
     if status == "qualified" and config.solve_params is not None and config.solve_params.mesh_build == "fast":
         status, reason = "experimental", "Fast mesh build: the benchmark measured meshes built with Precise node placement."
+    if status == "qualified" and gmsh_pole_pitch_mesh_reuse_enabled():
+        status, reason = "experimental", (
+            "Pole-pitch mesh reuse: the benchmark measured positions meshed or turned by slot pitches only."
+        )
     if status == "qualified" and not evidence_matches_runtime():
         status, reason = "experimental", (
             "This build's physics do not match the measured benchmark basis. "
