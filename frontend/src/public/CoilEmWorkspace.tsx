@@ -1,3 +1,4 @@
+import { validSlotCount, slotPitchText } from './designHealth';
 import { solveViewMemory } from './solveViewMemory';
 import { useTurningRotorAngle } from './useTurningRotorAngle';
 import { useLayerMenu } from './useLayerMenu';
@@ -118,7 +119,7 @@ import { HOLEM50_FIELDS } from './model';
 import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
-import { designErrorSection, designErrorText, enteredGeometryError } from './designErrors';
+import { designErrorSection, designErrorText, enteredGeometryError, humanizeGeometryMessage } from './designErrors';
 import { magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
 import { formatVolts, solvedPhaseCurrent, torqueRippleView, waveformMeasure, type WaveformMeasure } from './resultMetrics';
@@ -1626,7 +1627,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         <NumberRow label="Slot Count" value={config.stator.slot_count} hint="Three-phase slot counts run from 6 to 96 in multiples of 3. Use the arrows to choose the next valid count." min={6} max={96} step={3} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
         <NumberRow label={outer ? 'Hub Bore (ID)' : 'Bore Diameter (ID)'} value={config.stator.ID_mm} unit="mm" hint={outer ? 'Stator centre hole, inside the yoke.' : 'Stator bore at the tooth tips, facing the rotor. This is separate from the inner edge of the yoke.'} min={outer ? 2 : 20} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={outer ? 2 : 10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
-        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · {outer ? 'tip' : 'bore'} pitch {(Math.PI * (outer ? config.stator.OD_mm : config.stator.ID_mm) / config.stator.slot_count).toFixed(1)} mm</span></div>
+        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>{slotPitchText(config.stator.slot_count, outer ? config.stator.OD_mm : config.stator.ID_mm, outer)}</span></div>
       </ParameterSectionBlock>}
 
       {newDesignParts && advancedGeometrySection}
@@ -1658,6 +1659,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           </>
         )}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape' && <>
+          <NumberRow label="Minimum Outer Bridge" value={config.rotor.outer_bridge_thickness_mm} unit="mm" min={0.1} max={20} step={0.1} disabled={disabled} hint="Minimum clearance from a magnet pocket to the rotor surface. The actual bridge also depends on V Depth, V Angle and magnet dimensions." onChange={set('rotor', 'outer_bridge_thickness_mm', 'rotor')} />
+          {!geometryStale && geometry?.metadata?.interpreted_rotor_inputs && <p className="ipm-layout-note">Actual outer bridge: {Number((geometry.metadata.interpreted_rotor_inputs as Record<string, number>).actual_outer_bridge_mm).toFixed(3)} mm. Coverage follows the slab geometry; the saved magnet_embrace value is not used for V-shape rotors.</p>}
           <NumberRow label="V Angle" value={config.rotor.v_angle_deg} unit="deg" hint="Included angle between the paired magnets buried in each rotor pole." min={0} max={120} step={1} disabled={disabled} onChange={set('rotor', 'v_angle_deg', 'rotor')} />
           <NumberRow label="V Depth" value={config.rotor.v_depth_mm} unit="mm" hint="Radial depth of the magnet pair's V apex from the rotor outer surface." min={0} max={200} step={0.1} disabled={disabled} onChange={set('rotor', 'v_depth_mm', 'rotor')} />
         </>}
@@ -3050,6 +3053,8 @@ function HealthPanel({
     windingType: config.winding.type,
     toothWidthMm: statorWidths.narrowestToothWidthMm,
   }) : [];
+  const validSlots = validSlotCount(config.stator.slot_count);
+  const balancedSlots = validSlots && config.stator.slot_count % 3 === 0;
   const issues: DesignHealthIssue[] = [
     ...currentIssues,
     airgapHealth,
@@ -3057,8 +3062,8 @@ function HealthPanel({
     { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
       title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
       copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` },
-    { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
-    { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
+    { severity: balancedSlots ? 'positive' : 'warning', title: !validSlots ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: validSlots ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
+    { severity: !error && geometry && !geometryStale ? 'positive' : 'info', title: error ? 'Preview waiting for valid inputs' : geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: error ? 'Correct the input errors to refresh the preview.' : geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
       title: qualificationLabel(qualification, ' motor combination'),
@@ -3086,7 +3091,7 @@ function HealthPanel({
   const validToSolve = !error && errorCount === 0
     && airgap >= PUBLIC_AIRGAP_LAUNCH_MIN_MM
     && burialHealth?.blocking !== true
-    && config.stator.slot_count % 3 === 0;
+    && balancedSlots;
   const statusLabel = attentionIssues.length ? 'Need attention' : ready ? 'Ready to solve' : 'Updating preview';
 
   if (collapsed) return collapsedStrip(tone, ready ? '✓' : tone === 'updating' ? '↻' : '!', statusLabel);
@@ -3105,7 +3110,7 @@ function HealthPanel({
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
         <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>
-        <div className="design-health-metric"><span>Q</span><strong>{Number((config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)).toFixed(3))} </strong></div>
+        <div className="design-health-metric"><span>Q</span><strong>{validSlots && !error && config.rotor.pole_count > 0 ? Number((config.stator.slot_count / (config.rotor.pole_count * 3)).toFixed(3)) : '—'} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
       <div className="design-health-issue-list">
@@ -3458,7 +3463,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   const resultsHeadingId = useId();
   const allResultsId = useId();
   const [showAllResults, setShowAllResults] = useState(false);
-  const preview = sixStep && !completeCycle ? ' · preview' : '';
+  const preview = result.solve_metadata.loaded_cycle_complete === false ? ' · partial window' : '';
   // The panel opens on the few numbers people check first; the rest are one
   // click away, and Full results has everything.
   const constants = hasMotorConstants(result.summary) ? motorConstantsView(result.summary) : null;
@@ -3485,6 +3490,9 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
 
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
+      {losses?.efficiency_pct == null && losses && <p className="performance-message" role="status">{losses.efficiency_status_reason} {losses.iron_loss_status_reason} Known loss subtotal excludes unavailable iron loss.</p>}
+      {result.solve_metadata.loaded_cycle_complete === false && hasTorque && <p className="performance-message" role="status">Average torque and d/q values cover a partial angular window. Use a full electrical cycle for cycle-average comparisons.</p>}
+      {result.warnings?.map((warning) => <p className="performance-message" role="status" key={warning}>{humanizeGeometryMessage(warning)}</p>)}
       <div className="public-completed-results-heading">
         <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
@@ -3502,7 +3510,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
                   ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
                   : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatTorqueNm(cogging.peak_to_peak_Nm), 'N·m')}
-                {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
+                {losses && resultRow(losses.iron_loss_W == null ? 'Known loss subtotal' : 'Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
                 {hasTorque && resultRow(`Average torque${preview}`, formatTorqueNm(result.summary.avg_torque_Nm), 'N·m')}
                 {hasTorque && rippleRows}
@@ -3526,7 +3534,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
                   ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
                   : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatTorqueNm(cogging.peak_to_peak_Nm), 'N·m')}
-                {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
+                {losses && resultRow(losses.iron_loss_W == null ? 'Known loss subtotal' : 'Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
               {hasTorque && resultRow(`Average torque${preview}`, formatTorqueNm(result.summary.avg_torque_Nm), 'N·m')}
               {hasTorque && rippleRows}
@@ -3746,6 +3754,10 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
   // solve; the mesh view turns a picture of the rotor it drew once.
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
+  const partialPlanNote = config.solve_params.solve_quality === 'quick'
+    ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window. Iron loss and efficiency may be unavailable; choose Custom with a full electrical cycle for cycle-average comparisons.'
+    : config.solve_params.solve_quality === 'custom' && sweepRangeDeg < 360
+      ? 'This custom sweep covers a partial electrical window. Torque and d/q averages describe only that window.' : null;
   const sweepPoleCount = config.rotor.pole_count;
   useEffect(() => {
     setSolveRotorTurn((previous) => (busy === 'solve'
@@ -4478,6 +4490,7 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
             </StatusTag>
             <strong>{estimatedTimeText}</strong>
           </div>
+          {partialPlanNote && <p className="public-mesh-build-note" role="status">{partialPlanNote}</p>}
           {completedAnalysisAvailable ? (
             <>
               <button className="public-run-btn" type="button" data-guide="open-report" onClick={onOpenReport}>View Results →</button>

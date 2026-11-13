@@ -1,3 +1,4 @@
+import { savedResultPlayback } from './savedRunPlayback';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -1619,7 +1620,7 @@ export function App() {
         }
         const provenance = (payload.manifest as PublicJson | undefined)?.provenance as PublicJson | undefined;
         setResult({
-          ...(storedResult as PublicJson),
+          ...savedResultPlayback(storedResult as unknown as SolveResult, payload.field_playback),
           saved_run: payload.saved_run,
           qualification: provenance?.qualification ?? null,
         } as unknown as SolveResult);

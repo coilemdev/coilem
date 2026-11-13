@@ -1,3 +1,4 @@
+import { humanizeGeometryMessage } from '../designErrors';
 import {
   useEffect,
   useMemo,
@@ -1265,14 +1266,14 @@ export function LinearHalbachWorkspace({
               </div>
               {localErrors.map((issue) => (
                 <div key={`${issue.field}-${issue.message}`} className="halbach-issue error">
-                  <strong>{issue.field}</strong><span>{issue.message}</span>
+                  <strong>{humanizeGeometryMessage(issue.field)}</strong><span>{humanizeGeometryMessage(issue.message)}</span>
                 </div>
               ))}
               {validationIssues
                 .filter((issue) => !localErrors.some((local) => local.field === issue.field))
                 .map((issue) => (
                   <div key={`${issue.field}-${issue.message}`} className="halbach-issue error">
-                    <strong>{issue.field}</strong><span>{issue.message}</span>
+                    <strong>{humanizeGeometryMessage(issue.field)}</strong><span>{humanizeGeometryMessage(issue.message)}</span>
                   </div>
                 ))}
               {previewWarnings.map((issue) => (

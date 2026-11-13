@@ -1,3 +1,4 @@
+import { humanizeGeometryMessage } from '../designErrors';
 import {
   useEffect,
   useMemo,
@@ -1175,7 +1176,7 @@ function CylindricalHalbachWorkspace({
               </div>
               {localErrors.map((issue) => (
                 <div key={`${issue.field}-${issue.message}`} className="halbach-issue error">
-                  <strong>{issue.field}</strong><span>{issue.message}</span>
+                  <strong>{humanizeGeometryMessage(issue.field)}</strong><span>{humanizeGeometryMessage(issue.message)}</span>
                 </div>
               ))}
               {(health?.warnings ?? []).map((issue) => (
@@ -1303,7 +1304,7 @@ function CylindricalHalbachWorkspace({
           {validationIssues.length > 0 && localErrors.length === 0 && (
             <div className="halbach-issue error">
               <strong>Backend validation</strong>
-              <span>{validationIssues.map((issue) => `${issue.field}: ${issue.message}`).join('; ')}</span>
+              <span>{validationIssues.map((issue) => humanizeGeometryMessage(`${issue.field}: ${issue.message}`)).join('; ')}</span>
             </div>
           )}
           {error && <div className="halbach-error-banner" role="alert">{error}</div>}
