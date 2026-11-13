@@ -112,6 +112,7 @@ jobs:
           tests/test_windows_field_frame_pool.py tests/test_windows_mesh_pool.py
           tests/test_field_frame_locality.py tests/test_field_frame_pipeline.py
           tests/test_parallel_fallback_solves.py tests/test_launcher_shutdown.py
+          tests/test_solve_profile.py
 
   frontend:
     if: ${{ !inputs.performance_acceptance_only }}

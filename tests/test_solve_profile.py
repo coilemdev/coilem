@@ -102,6 +102,45 @@ def test_recording_is_on_by_default_and_only_the_verbose_mode_logs_and_writes_a_
     assert not (data_root / "out").exists()
 
 
+def test_completed_profiles_can_be_archived_and_recorded_again(data_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tools.benchmark_archive import archive_runtime
+
+    monkeypatch.delenv("COILEM_SOLVE_PROFILE", raising=False)
+    for index in range(2):
+        runtime = data_root / "runtime"
+        monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(runtime))
+        solve_profile.begin()
+        solve_profile.record("solver: linear solves", 0.25)
+        handle = solve_profile._handle
+        worker = multiprocessing.get_context("spawn").Process(target=_worker_stage)
+        worker.start()
+        worker.join(30)
+        assert worker.exitcode == 0
+        summary = solve_profile.finish(None)
+        assert handle.closed
+        assert {row["stage"] for row in summary["stages"]} == {"solver: linear solves", "mesh worker: build base mesh"}
+        receipt = archive_runtime(runtime, data_root / f"runtime-{index}.tar.gz")
+        assert not runtime.exists()
+        assert len([name for name in receipt["files"] if name.endswith(".jsonl")]) == 2
+
+
+@pytest.mark.parametrize("failure", ["collection", "disabled"])
+def test_finishing_releases_the_profile_even_without_a_summary(data_root: Path, monkeypatch: pytest.MonkeyPatch, failure) -> None:
+    monkeypatch.delenv("COILEM_SOLVE_PROFILE", raising=False)
+    solve_profile.begin()
+    solve_profile.record("solver: linear solves", 0.25)
+    handle = solve_profile._handle
+    if failure == "disabled":
+        monkeypatch.setenv("COILEM_SOLVE_PROFILE", "0")
+    else:
+        def refuse(*args):
+            raise OSError("collection failed")
+
+        monkeypatch.setattr(solve_profile, "_collect", refuse)
+    assert solve_profile.finish(None) is None
+    assert handle.closed
+
+
 def _summary() -> dict:
     now = 1_000.0
     entries = [

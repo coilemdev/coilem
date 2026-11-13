@@ -115,6 +115,24 @@ cases, or use `--list` to see the selection and recorded runtime estimates.
 It needs no Git, Rust, Node.js or FEMM. See
 [benchmark protocol 1.10.0](benchmarks/af-v1.10/README.md).
 
+## Script it from Python
+
+Define a motor, solve it and read the results from Python, with no request
+JSON to write by hand:
+
+```python
+from backend import client as coilem
+
+if __name__ == "__main__":  # the solver's worker processes import this file again
+    motor = coilem.Motor.load("my_motor.coilem")  # or build one from coilem.Stator(...), Rotor(...), Winding(...)
+    result = coilem.solve(motor, coilem.OperatingPoint(current_A=20, current_angle_deg=30))
+    print(result.average_torque_Nm, result.torque_ripple_pct, result.dq.L_d_H, result.dq.L_q_H)
+```
+
+The [Python client guide](docs/PYTHON_CLIENT.md) covers typed inputs and
+their errors, current and current-angle sweeps, waveforms as arrays, solving
+in a running app, and two example scripts.
+
 ## Build from source
 
 To work on coilEM itself you need Python 3.11 to 3.15, Node.js 24 with npm,

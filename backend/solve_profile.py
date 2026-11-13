@@ -76,7 +76,33 @@ def _write(entry: dict[str, Any]) -> None:
                 _handle = (folder / f"{os.getpid()}.jsonl").open("a", encoding="utf-8")
                 _handle_pid = os.getpid()
             _handle.write(json.dumps(entry) + "\n")
-            _handle.flush()
+            # Workers flush every record, because the solving process reads
+            # their files. The solving process itself reads its own records
+            # only when the solve finishes (_collect flushes them first), and
+            # a flush per record cost several milliseconds on its threads.
+            if _started_at is None:
+                _handle.flush()
+    except Exception:  # profiling must never break a solve
+        return
+
+
+def _flush_own_records() -> None:
+    try:
+        with _lock:
+            if _handle is not None and _handle_pid == os.getpid():
+                _handle.flush()
+    except Exception:  # profiling must never break a solve
+        return
+
+
+def _close_own_records() -> None:
+    global _handle, _handle_pid
+    try:
+        with _lock:
+            handle, _handle = _handle, None
+            _handle_pid = None
+            if handle is not None:
+                handle.close()
     except Exception:  # profiling must never break a solve
         return
 
@@ -124,6 +150,7 @@ def begin() -> None:
 
 def _collect(started_at: float) -> list[dict[str, Any]]:
     entries: list[dict[str, Any]] = []
+    _flush_own_records()
     try:
         files = sorted(_spool_dir().glob("*.jsonl"))
     except OSError:
@@ -223,10 +250,10 @@ def finish(output_dir: Path | None) -> dict[str, Any] | None:
     """Collect this solve's records, log the breakdown and write it to ``output_dir``."""
 
     global _started_at
-    if not enabled() or _started_at is None:
-        return None
     started_at, _started_at = _started_at, None
     try:
+        if not enabled() or started_at is None:
+            return None
         summary = summarize(_collect(started_at), started_at, time.time())
         if verbose():
             print(format_table(summary), file=sys.stderr, flush=True)
@@ -236,6 +263,11 @@ def finish(output_dir: Path | None) -> dict[str, Any] | None:
         return summary
     except Exception:  # profiling must never break a solve
         return None
+    finally:
+        # Worker pools have joined before the solve returns. Release this
+        # process's spool too, so Windows can archive/delete the runtime and
+        # the next solve opens a fresh file, possibly under a new data root.
+        _close_own_records()
 
 
 # The stages of each step, in reading order: (recorded stage, label, indent).
