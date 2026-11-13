@@ -195,6 +195,15 @@ export interface PublicWindingCoil {
 
 export interface GeometryPreview {
   regions: PreviewRegion[];
+  /** Client-only construction dimensions before the teeth are drawn; never a solver region. */
+  stator_guide?: {
+    outerDiameterMm: number;
+    innerDiameterMm: number;
+    yokeThicknessMm: number;
+    outerRotor: boolean;
+    boreConfigured?: boolean;
+    yokeConfigured?: boolean;
+  };
   /** Both were already sent by /preview; the Layout view is the first reader. */
   winding_layout?: PublicWindingSlot[];
   winding_coils?: PublicWindingCoil[];

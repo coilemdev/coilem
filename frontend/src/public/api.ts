@@ -151,8 +151,11 @@ export function getPublicMaterials(): Promise<PublicJson> {
   return requestJson('/materials');
 }
 
-export function generatePublicPreview(config: PublicMotorConfig): Promise<PublicJson> {
-  return postConfig('/preview', config);
+export function generatePublicPreview(config: PublicMotorConfig, options?: { construction?: boolean; statorOnly?: boolean; diagnostic?: boolean }): Promise<PublicJson> {
+  const path = options?.construction
+    ? `/preview?construction=true${options.statorOnly ? '&stator_only=true' : ''}${options.diagnostic ? '&diagnostic=true' : ''}`
+    : '/preview';
+  return postConfig(path, config);
 }
 
 export function generatePublicMesh(config: PublicMotorConfig): Promise<PublicJson> {
