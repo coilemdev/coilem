@@ -35,7 +35,7 @@ if __name__ == "__main__":  # required: see "Scripts and worker processes" below
     main()
 ```
 
-Two complete examples run end to end in about 10 s and about a minute:
+Two complete examples run end to end in about 10 s and 12 s:
 
 ```bash
 python docs/examples/client_spm_motor.py
@@ -121,11 +121,17 @@ result = coilem.solve(motor, point, analyses=["torque", "back_emf"], quality="st
 Anything the run did not compute is `None`: `cogging` without the cogging
 analysis, `dq.L_d_H` without back-EMF (the apparent L_d needs the magnet flux
 linkage from the no-load sweep). `result.save(path)` and
-`coilem.Result.load(path)` keep a result with its request; the field
-pictures for the app's viewers (several MB per result) are left out unless
-you pass `fields=True`, and `result.without_fields()` drops them in memory. As in the app, d/q
-quantities, inductances and cogging are experimental outputs; `dq.status`,
-`dq.inductance_status` and `cogging.status` carry that label.
+`coilem.Result.load(path)` keep a result with its request.
+
+The field pictures for the app's viewers (field-line frames and playback,
+several MB per result) are not built unless you pass `fields=True` to
+`solve` or `sweep`: the solve then skips that pass, which is a large part of
+its time, and every number is the same. The losses and flux-density
+analyses still run it, because the iron loss and the RMS steel flux
+densities come from it. `result.without_fields()` and `result.save(path)`
+(without `fields=True`) drop any pictures a result carries. As in the app,
+d/q quantities, inductances and cogging are experimental outputs;
+`dq.status`, `dq.inductance_status` and `cogging.status` carry that label.
 
 ## Sweeps
 
@@ -139,9 +145,40 @@ sweep.to_csv("sweep.csv")                       # one row per point, with any er
 
 Every point is checked before the first solve. A point that fails keeps its
 error (`point.error`) and the sweep goes on, unless `stop_on_error=True`.
-`on_point(index, total, point)` reports progress. Each point's result is kept
-without its field pictures, so long sweeps stay small in memory; pass
-`keep_fields=True` to keep them.
+`on_point(index, total, point)` reports progress. As with `solve`, field
+pictures are left out unless `fields=True`, so long sweeps stay fast and
+small in memory.
+
+## Speed
+
+A solve's time goes into meshing each rotor position, the field solves and
+packaging the result. The client keeps all three small:
+
+- **No field pictures by default.** See "Results" above.
+- **Later points re-use earlier work.** Within one Python process, the mesh
+  of each rotor position is cached, so a later solve of the same geometry
+  only re-bakes the slot currents. The no-load solves behind back-EMF,
+  cogging, the magnet flux linkage and the apparent L_d do not depend on the
+  phase current, so a later operating point re-uses them too, and only the
+  loaded positions are solved again. (This needs a solve without field
+  pictures; with `fields=True`, losses or flux density, every point solves
+  its no-load positions again.) Any change to the geometry, the
+  materials, the magnet temperature, the speed or the mesh settings solves
+  everything afresh. Results are identical to solving each point from
+  scratch.
+- So run a sweep, or several solves of one design, in one script rather than
+  one script per point.
+
+On a 16-core Windows desktop, the 8-pole, 12-slot SPM motor of the quick
+start (quick preset, coarse mesh) takes about 6 s for its first solve and
+about 3 s for each later operating point, with torque, back-EMF and cogging;
+the IPM example's five-point angle sweep runs in about 12 s.
+
+`quality` and `mesh` set the resolution: start with `quick` and `coarse`
+to explore, then confirm at `standard` or `fine`. The same reuse applies at
+every resolution. A solve with `server=` runs in the app with its field
+pictures and saved run, so it takes longer than the same solve in your
+process.
 
 ## Errors
 
@@ -204,4 +241,6 @@ python -m pytest tests/test_python_client.py
 ```
 
 Most tests run without solving; one solves a small motor at the quick preset
-on a coarse mesh (about 10 s).
+on a coarse mesh and then a second operating point that re-uses its no-load
+solves (about 15 s). `tests/test_solve_reuse.py` covers the no-load reuse
+itself.

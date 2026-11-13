@@ -277,7 +277,21 @@ def _solve_error(exc: Exception) -> CoilemError:
     return SolveError(f"The solve failed unexpectedly: {type(exc).__name__}: {_short(exc)}", error_code="SOLVE_FAILED")
 
 
-def _solve_in_process(body: dict[str, Any], on_progress: ProgressCallback | None) -> dict[str, Any]:
+def _lean(config: MotorConfig, fields: bool) -> bool:
+    """Whether a solve can skip the field-frame pass the app's viewers use.
+
+    The losses and the steel flux-density statistics are computed in that
+    pass, so it still runs when either is requested; every other number is
+    the same either way.
+    """
+
+    if fields:
+        return False
+    options = config.solve_options
+    return options is None or not (options.losses_efficiency or options.flux_density)
+
+
+def _solve_in_process(body: dict[str, Any], on_progress: ProgressCallback | None, *, fields: bool = False) -> dict[str, Any]:
     check_main_module()
     config = prepared_config(body)
     _raise_for_geometry(config)
@@ -298,7 +312,7 @@ def _solve_in_process(body: dict[str, Any], on_progress: ProgressCallback | None
                 callback_errors.append(exc)
                 raise
 
-    solver = Magneto2DSolver(launch_surface=True)
+    solver = Magneto2DSolver(launch_surface=True, visual_outputs=not _lean(config, fields))
     try:
         result = solve_selected_analyses(solver, config, on_progress=progress)
     except KeyboardInterrupt:
@@ -384,6 +398,7 @@ def solve(
     server: str | None = None,
     on_progress: ProgressCallback | None = None,
     timeout_s: float | None = 3600.0,
+    fields: bool = False,
 ) -> Result:
     """Solve a motor at one operating point.
 
@@ -405,6 +420,11 @@ def solve(
             Leave it out to solve in this Python process.
         on_progress: ``callback(done, total, stage)`` for in-process solves.
         timeout_s: How long to wait for the app's answer when ``server`` is given.
+        fields: Also build the field pictures for the app's viewers
+            (field-line frames, playback). Left out by default: the solve
+            then skips the field-frame pass unless the losses or flux-density
+            analysis needs it, which saves a large part of the solve time,
+            and every number in the result is the same.
 
     Raises:
         InputError: The request is not accepted; ``.field`` names the input.
@@ -415,12 +435,13 @@ def solve(
 
     body = build_request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params)
     if server is None:
-        data = _solve_in_process(body, on_progress)
+        data = _solve_in_process(body, on_progress, fields=fields)
     else:
         if on_progress is not None:
             raise InputError("on_progress reports in-process solves only; the app's /solve route sends no progress", field="on_progress")
         data = _solve_over_http(str(server), body, timeout_s)
-    return Result(data, request=body)
+    result = Result(data, request=body)
+    return result if fields else result.without_fields()
 
 
 @dataclass(frozen=True)
@@ -535,7 +556,7 @@ def sweep(
     server: str | None = None,
     stop_on_error: bool = False,
     on_point: Callable[[int, int, SweepPoint], Any] | None = None,
-    keep_fields: bool = False,
+    fields: bool = False,
     timeout_s: float | None = 3600.0,
 ) -> Sweep:
     """Solve every combination of phase current and current angle.
@@ -544,9 +565,11 @@ def sweep(
     it defaults to the motor's saved point. Every point is checked before the
     first solve. A point that fails is kept with its error and the sweep goes
     on, unless ``stop_on_error`` is set. ``on_point(index, total, point)`` is
-    called after each point. Results are kept without their field pictures
-    (several MB each) unless ``keep_fields`` is set. The other arguments are
-    those of :func:`solve`.
+    called after each point. As in :func:`solve`, the field pictures are
+    left out unless ``fields`` is set, which keeps long sweeps fast and small
+    in memory. Points share this process's mesh cache: after the first point
+    each rotor position re-uses its mesh and only the slot currents change.
+    The other arguments are those of :func:`solve`.
     """
 
     motor = _as_motor(motor)
@@ -562,8 +585,8 @@ def sweep(
     entries: list[SweepPoint] = []
     for index, point in enumerate(points):
         try:
-            result = solve(motor, point, server=server, timeout_s=timeout_s, **options)
-            entry = SweepPoint(point, result=result if keep_fields else result.without_fields())
+            result = solve(motor, point, server=server, timeout_s=timeout_s, fields=fields, **options)
+            entry = SweepPoint(point, result=result)
         except (InputError, SolveError) as exc:
             if stop_on_error:
                 raise

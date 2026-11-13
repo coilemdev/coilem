@@ -113,6 +113,20 @@ def _derive(report: dict[str, Any], shift: int = 1, **overrides: Any) -> dict[st
     return derive_congruent_solve_report(report, **arguments)
 
 
+def test_derived_report_copies_what_it_changes_and_shares_the_field_arrays() -> None:
+    base = _report()
+    original = copy.deepcopy(base)
+
+    derived = _derive(base, 1)
+
+    assert base == original
+    # Unchanged per-element field data is shared, not copied once per derived position.
+    assert derived["field_plot"]["az"] is base["field_plot"]["az"]
+    assert derived["field_plot"] is not base["field_plot"] and derived["field_plot"]["nodes_mm"] != base["field_plot"]["nodes_mm"]
+    assert derived["results"] is not base["results"] and derived["solve_info"] is not base["solve_info"]
+    assert derived["solve_info"]["total_time_ms"] == 0 and base["solve_info"]["total_time_ms"] == 15
+
+
 @pytest.mark.parametrize("shift", [0, 1, -1, 2, SLOTS + 1, -SLOTS - 1])
 def test_layer_permutation_matches_direct_physical_sum_and_keeps_base_unchanged(shift: int) -> None:
     base = _report()

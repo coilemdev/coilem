@@ -76,7 +76,21 @@ def _write(entry: dict[str, Any]) -> None:
                 _handle = (folder / f"{os.getpid()}.jsonl").open("a", encoding="utf-8")
                 _handle_pid = os.getpid()
             _handle.write(json.dumps(entry) + "\n")
-            _handle.flush()
+            # Workers flush every record, because the solving process reads
+            # their files. The solving process itself reads its own records
+            # only when the solve finishes (_collect flushes them first), and
+            # a flush per record cost several milliseconds on its threads.
+            if _started_at is None:
+                _handle.flush()
+    except Exception:  # profiling must never break a solve
+        return
+
+
+def _flush_own_records() -> None:
+    try:
+        with _lock:
+            if _handle is not None and _handle_pid == os.getpid():
+                _handle.flush()
     except Exception:  # profiling must never break a solve
         return
 
@@ -124,6 +138,7 @@ def begin() -> None:
 
 def _collect(started_at: float) -> list[dict[str, Any]]:
     entries: list[dict[str, Any]] = []
+    _flush_own_records()
     try:
         files = sorted(_spool_dir().glob("*.jsonl"))
     except OSError:

@@ -18,6 +18,7 @@ import pytest
 
 from backend import client as coilem
 from backend.client import _solve
+from backend.client._results import FIELD_KEYS
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = sorted(ROOT.glob("benchmarks/*/fixtures/*.json"))
@@ -222,9 +223,11 @@ def test_result_accessors_return_numbers_and_arrays(tmp_path) -> None:
 
 def test_sweep_tables_grid_and_best_point(monkeypatch, tmp_path) -> None:
     calls = []
+    fields_requested = []
 
-    def fake_solve(motor, point, **_):
+    def fake_solve(motor, point, **kwargs):
         calls.append(point)
+        fields_requested.append(kwargs.get("fields"))
         if point.current_A == 20 and point.current_angle_deg == 60:
             raise coilem.SolveError("did not converge", error_code="NONLINEAR_CONVERGENCE_FAILED")
         data = {**_result_data(), "field_line_plot": {"lines": []}}
@@ -241,7 +244,7 @@ def test_sweep_tables_grid_and_best_point(monkeypatch, tmp_path) -> None:
     assert [(p.current_A, p.current_angle_deg) for p in calls] == [(10, 0), (10, 30), (10, 60), (20, 0), (20, 30), (20, 60)]
     assert calls[0].speed_rpm == 3000  # the motor's saved operating point supplies the other fields
     assert seen[-1] == (5, 6, False) and len(result.failed) == 1
-    assert "field_line_plot" not in result[0].result.data  # field pictures are dropped unless keep_fields=True
+    assert set(fields_requested) == {False}  # field pictures are left out unless fields=True
     assert result.failed[0].error.error_code == "NONLINEAR_CONVERGENCE_FAILED"
     grid = result.grid("average_torque_Nm")
     assert grid.shape == (2, 3) and math.isnan(grid[1, 2]) and grid[1, 1] == pytest.approx(20 * math.cos(math.radians(10)))
@@ -251,6 +254,37 @@ def test_sweep_tables_grid_and_best_point(monkeypatch, tmp_path) -> None:
     assert len(rows) == 6 and rows[5]["average_torque_Nm"] == "" and "did not converge" in rows[5]["error"]
     with pytest.raises(coilem.SolveError):
         coilem.sweep(coilem.Motor.load(SPM_FIXTURE), current_A=20, current_angle_deg=[60], stop_on_error=True)
+
+
+def test_solves_leave_out_the_field_pictures_unless_asked(monkeypatch) -> None:
+    seen = []
+
+    def fake_in_process(body, on_progress, *, fields=False):
+        seen.append(fields)
+        return {**_result_data(), "field_line_plot": {"lines": []}, "field_line_frames": [{"angle_deg": 0.0}]}
+
+    monkeypatch.setattr(_solve, "_solve_in_process", fake_in_process)
+    motor = coilem.Motor.load(SPM_FIXTURE)
+    lean = coilem.solve(motor)
+    full = coilem.solve(motor, fields=True)
+    assert seen == [False, True]
+    assert not set(FIELD_KEYS) & set(lean.data)
+    assert {"field_line_plot", "field_line_frames"} <= set(full.data)
+    assert lean.metrics() == full.metrics()
+
+
+@pytest.mark.parametrize(
+    ("analyses", "fields", "lean"),
+    [
+        (["torque", "back_emf", "cogging", "thd"], False, True),
+        (["torque", "losses"], False, False),  # iron loss is computed in the field-frame pass
+        (["torque", "flux_density"], False, False),  # so are the steel flux-density statistics
+        (["torque"], True, False),
+    ],
+)
+def test_the_field_frame_pass_runs_only_when_something_needs_it(analyses, fields, lean) -> None:
+    body = coilem.build_request(coilem.Motor.load(SPM_FIXTURE), analyses=analyses)
+    assert _solve._lean(_solve.prepared_config(body), fields) is lean
 
 
 # -- Worker processes and the main module ----------------------------------------------
@@ -399,7 +433,10 @@ def test_the_real_app_refuses_an_unsupported_design_with_the_field(tmp_path, mon
 
 @pytest.mark.weekly
 def test_a_small_real_solve_reads_torque_back_emf_dq_and_cogging(tmp_path, monkeypatch) -> None:
+    from backend.solver import clear_per_angle_gmsh_mesh_cache
+
     monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    clear_per_angle_gmsh_mesh_cache()
     progress = []
     result = coilem.solve(
         _spm_motor(),
@@ -421,3 +458,30 @@ def test_a_small_real_solve_reads_torque_back_emf_dq_and_cogging(tmp_path, monke
     cogging = result.cogging
     assert cogging is not None and cogging.peak_to_peak_Nm == pytest.approx(result.cogging_torque.peak_to_peak)
     assert result.request["solve_params"]["solve_quality"] == "quick"
+    assert not result.data.get("field_line_frames")  # a lean solve: no field-frame pass
+
+    # A second operating point re-uses this process's meshes and no-load solves,
+    # and the no-load numbers are exactly the same.
+    from backend import solver as solver_module
+
+    lookups = []
+    real_lookup = solver_module._noload_report_cache_get
+
+    def spy(key):
+        report = real_lookup(key)
+        lookups.append(report is not None)
+        return report
+
+    monkeypatch.setattr(solver_module, "_noload_report_cache_get", spy)
+    again = coilem.solve(
+        _spm_motor(),
+        coilem.OperatingPoint(current_A=30, current_angle_deg=45),
+        analyses=["torque", "back_emf", "cogging"],
+        quality="quick",
+        mesh="coarse",
+    )
+    assert lookups and all(lookups)  # every no-load position came from the first solve
+    assert again.back_emf.a.tolist() == result.back_emf.a.tolist()
+    assert again.cogging_torque.values.tolist() == result.cogging_torque.values.tolist()
+    assert again.dq.lambda_pm_Wb == result.dq.lambda_pm_Wb
+    assert again.average_torque_Nm != result.average_torque_Nm
