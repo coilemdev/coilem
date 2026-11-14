@@ -908,9 +908,18 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, []);
 
   const updateSolveSetting = useCallback((
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => {
+    if (field === 'magnet_temperature_C' && config.geometry_reference === 'pyleecan_prius_2004') {
+      if (value !== 20 && value !== 60) return;
+      const next: MotorConfig = { ...config,
+        reference_case: value === 60 ? 'prius-2004-loaded-torque-v1' : 'prius-2004-tutorial-bemf-v1',
+        solve_params: { ...config.solve_params, magnet_temperature_C: value },
+      };
+      setConfig(next); resetComputedState(); void prepareMesh(next);
+      return;
+    }
     validationRequestId.current += 1;
     if (field === 'excitation_mode' && value === 'ideal_six_step_120') {
       setSelectedSolver('magneto2d');
@@ -940,7 +949,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setLiveSamples([]);
     setError(null);
     setNotice('Analysis settings changed. Updating the run estimate.');
-  }, []);
+  }, [config, prepareMesh, resetComputedState]);
 
   const updateAnalysis = useCallback((key: AnalysisKey, enabled: boolean) => {
     validationRequestId.current += 1;

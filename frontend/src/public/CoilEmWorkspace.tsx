@@ -224,7 +224,7 @@ interface CoilEmWorkspaceProps {
   onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => void;
   /** Changes which analyses are included in the next run. */
@@ -4340,6 +4340,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           {sixStepSelected && <NumberRow label="Commutation advance" value={config.solve_params.commutation_advance_deg} unit="electrical degrees" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('commutation_advance_deg', value)} />}
           <NumberRow label="Rated Speed" value={config.solve_params.rated_speed_rpm} unit="rpm" min={0} max={30000} step={50} disabled={busy !== null} onChange={(value) => onSolveSettingChange('rated_speed_rpm', value)} />
           <NumberRow label="Mechanical loss" value={config.solve_params.mechanical_loss_W ?? 0} unit="W" min={0} max={100000} step={1} hint="Friction and windage at the rated speed, if known. It lowers the shaft power and efficiency; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('mechanical_loss_W', value)} />
+          {config.geometry_reference === 'pyleecan_prius_2004' && <SelectRow label="Magnet temp" value={String(config.solve_params.magnet_temperature_C ?? 20)} disabled={busy !== null}
+            choices={[{ value: '20', label: '20 °C reference' }, { value: '60', label: '60 °C reference' }]}
+            onChange={value => onSolveSettingChange('magnet_temperature_C', Number(value))} />}
           {!config.geometry_reference && (() => {
             const grade = config.materials.magnet_grade;
             const temperature = config.solve_params.magnet_temperature_C ?? 20;
@@ -4486,6 +4489,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                     <button type="button" aria-pressed={config.solve_params.nonlinear_solver === 'picard'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'picard') onSolveSettingChange('nonlinear_solver', 'picard'); }}>Picard</button>
                   </span>
                 </div>
+                <NumberRow label="Maximum nonlinear iterations" value={config.solve_params.max_nonlinear_iterations ?? 200} min={1} max={200} step={1} disabled={busy !== null} onChange={value => onSolveSettingChange('max_nonlinear_iterations', value)} />
                 <p className="public-solver-help">Newton is the default and needs far fewer iterations. It falls back to Picard at any position where it doesn't converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}

@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 84681,
-      "sha256": "e0d359ef80fb61cb9890cc6c15ef2177e059658da665c63b2da3ddd48ab77ab5"
+      "bytes": 85220,
+      "sha256": "5aa35a9a08915fe47f6b4942349d187e78f3aacf8f0619b725535f20f5a66a34"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 296148,
-      "sha256": "fe5dcb00fd5b5f47fcaa262a56fff039deff180a7c83434491a97e7eb1dd4a46"
+      "bytes": 296824,
+      "sha256": "46996cc593ce2b79cb997f4fb3c446a3253717c7d61b5346d09c12970f84f81a"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -8376,7 +8376,7 @@
     {
       "path": "tests/test_solve_workspace.py",
       "bytes": 27014,
-      "sha256": "37140b377229330da8e1a4d03710bcafed7716efe8eda0f5fd02c1b622995f88"
+      "sha256": "3977796831c6d35ff10c544b8db11113e651eb7812643a423d68c5e9ac9c6795"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -18720,13 +18720,13 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 2723,
-      "sha256": "19be5999ba454915cf16edd7141714ff9002cdd8faacb624533134e8bae2700d"
+      "bytes": 2943,
+      "sha256": "4013b67ca744d384e0b752c6fa912020affd12cf4b35737b25a3e397c2ddb7af"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
-      "bytes": 4886,
-      "sha256": "032e5255035c43b06c7d08886412cda0ec18e70c711c2851bc2adde13996f0c4"
+      "bytes": 5050,
+      "sha256": "5e6e011a10d234d5ea91afe77d0250e305988e3db9d5d63886c89327c9746692"
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
@@ -18750,8 +18750,8 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 8058,
-      "sha256": "930a4fcc2d76c627f92de95752092cb4c829420b981f76f0a1ba5f9ac39eb7b1"
+      "bytes": 8343,
+      "sha256": "aad572ac19fed2760effe9778f4bb2e9276b6d7a75b58cdc3735c7e9989b359b"
     }
   ],
   "public_patches": [

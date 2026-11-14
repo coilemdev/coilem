@@ -92,6 +92,7 @@ test('reference setups are immutable, apply complete conditions, and edits save 
   await section.getByRole('spinbutton', { name: 'Rated Speed', exact: true }).fill('1100');
   await section.getByRole('spinbutton', { name: 'Rated Speed', exact: true }).press('Tab');
   await expect(page.getByText('Modified from Prius · no-load BEMF reference.', { exact: false })).toBeVisible();
+  await section.getByRole('combobox', { name: 'Magnet temp', exact: true }).selectOption('60');
   await page.getByRole('button', { name: 'Save a copy…', exact: true }).click();
   await page.getByLabel('Setup name', { exact: true }).fill('My BEMF point');
   await page.getByRole('button', { name: 'Save setup', exact: true }).click();
@@ -99,6 +100,9 @@ test('reference setups are immutable, apply complete conditions, and edits save 
   const copied = await saveFile(page, info.outputPath('reference-copy.coilem'));
   expect(copied.run_setups.profiles[0].includesNumerics).toBe(true);
   expect(copied.run_setups.profiles[0].parameters.rated_speed_rpm).toBe(1100);
+  expect(copied.solve_params.magnet_temperature_C).toBe(60);
+  expect(copied.reference_case).toBe('prius-2004-loaded-torque-v1');
+  expect(copied.solve_params.current_amplitude_A).toBe(0);
   expect(copied.run_setups.profiles[0].builtin).toBeUndefined();
 });
 

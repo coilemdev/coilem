@@ -34,6 +34,10 @@ compatible physical model and cannot overwrite its geometry or materials.
 Changing their values marks the active setup Modified; **Save a copy…** creates
 a user setup. Built-ins cannot be updated, renamed or deleted.
 
+The Prius magnet-temperature control selects the supported 20 C or 60 C
+reference material case while preserving the other operating settings. The
+nonlinear iteration cap is visible and editable under Advanced options.
+
 Reference setups describe registered software comparisons, not measured Prius
 hardware accuracy. Saving a label does not change qualification status.
 

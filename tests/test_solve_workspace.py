@@ -704,7 +704,7 @@ def test_custom_runs_do_not_inherit_cached_setup_labels(tmp_path: Path, label) -
 
 
 def test_setup_metadata_does_not_change_resolved_physics() -> None:
-    from backend.public_policy import parse_public_solve_request, PublicConfigError
+    from backend.public_policy import PublicConfigError, parse_public_solve_request
 
     before, _, _ = parse_public_solve_request({"config": VALID_CONFIG})
     after, _, _ = parse_public_solve_request({

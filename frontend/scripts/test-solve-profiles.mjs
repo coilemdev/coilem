@@ -61,6 +61,8 @@ for (const [i, profile] of builtins.entries()) {
   assert.equal(profileProvenance(profile, result, 'magneto2d'), null);
   assert.equal(profileCompatible({ ...profile, referenceRevision: 'wrong' }, configs[i]), false);
   assert.equal(profileCompatible(profile, original), false);
+  const differentGeometry = structuredClone(configs[i]); differentGeometry.stator.OD_mm += 1;
+  assert.equal(profileCompatible(profile, differentGeometry), false);
   assert.throws(() => applyProfile(original, profile), /different reference/);
   assert.throws(() => saveProfile(doc, profile), /cannot be overwritten/);
 }
