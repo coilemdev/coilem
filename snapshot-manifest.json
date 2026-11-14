@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 28581,
-      "sha256": "d2f9664ac9900146f10e3908b53d4ac27b453fec623714fee4fdfe9f317a9f66"
+      "bytes": 29066,
+      "sha256": "63d509a72945711a88a8f925e11cfe64a0e3ab3e951b9c1abec23fa95fc8c843"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7530,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 332515,
-      "sha256": "dfeea8a501c29a900cc155d3c99ea6dae7c9171409f758ce25d6ab59eb52a64e"
+      "bytes": 332997,
+      "sha256": "1879f9bfccba39fa432b03b3529d8d030f57e3378823bcab15175618c85cea05"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 106270,
-      "sha256": "a6a43d56244147fafae9723381e2337e0d40713b55d24ced6e84f0ffe3450313"
+      "bytes": 107861,
+      "sha256": "a9bad017dde7d8c8467de297c254dbd75e3ee7d406f8cd573851e492395591af"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -18755,8 +18755,8 @@
     },
     {
       "path": "docs/COMPARE_RUNS.md",
-      "bytes": 1625,
-      "sha256": "f349807e8a83cc9d34e7df411318f805e3dd32c085c0208d9818af201da6d9c4"
+      "bytes": 2005,
+      "sha256": "69ee9a9a8559a3d5db994a85dd0cfbd0cefc5c8bdf615783c272f9bed69804a2"
     },
     {
       "path": "frontend/src/public/RunChangesTable.tsx",
@@ -40758,73 +40758,73 @@
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "backend/solve_workspace.py",
       "source_sha256": "c05a1c1e79145e434ad20e61cacc7c3b5f6da4252958cfffaa1c0897da381f17",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "docs/COMPARE_RUNS.md",
       "source_sha256": null,
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/scripts/test-run-comparison.mjs",
       "source_sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
       "source_sha256": "46996cc593ce2b79cb997f4fb3c446a3253717c7d61b5346d09c12970f84f81a",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/RunChangesTable.tsx",
       "source_sha256": null,
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/api.ts",
       "source_sha256": "914fd5f0ee1c6ca6910ffd6c6ba10a2ac5390475a205e36f78ffa5f131503e89",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/runComparison.ts",
       "source_sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/runInputChanges.ts",
       "source_sha256": null,
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/src/public/styles.css",
       "source_sha256": "a64723bfecabf4cfe13b8cdb0459a3baf1a2111d2556ff359e410ad518d6176a",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "4350ea7e3ab259ef61880f4f801ddd3b13fc6eb33e33483aa3e70ed27e09dec2",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     },
     {
       "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40",
-      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+      "reason": "Add Compare 2.0 recorded input differences, readable metric tables and distinct run overlays without changing physics or stored evidence."
     }
   ]
 }

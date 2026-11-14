@@ -22,6 +22,12 @@ gaps. Rows with missing data are counted separately from known changed inputs.
 Equal records show **No differences in the recorded inputs**; this does not
 claim that unrecorded settings were equal or establish solver qualification.
 
-The existing scalar deltas, torque and back-EMF overlays remain available.
+Results appear in a table with a metric per row and columns for Run A, Run B,
+absolute delta (B − A) and percentage delta versus A. Percentage-valued metrics
+use percentage points (`pp`) for their absolute delta. Missing results remain
+unavailable; a zero baseline does not produce an infinite percentage.
+
+The torque and back-EMF overlays draw Run A solid and Run B dashed, including
+their legend swatches, so coincident traces remain distinguishable.
 Multi-run baselines, further result types, comparison exports and studies are
 subsequent Compare 2.0 work.

@@ -1302,11 +1302,11 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
-  const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics article').filter({
+  const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics tbody tr').filter({
     has: page.getByText(label, { exact: true }),
   });
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['— N·m', '0.200 N·m']);
-  await expect(coggingRow('Cogging fundamental').locator('strong')).toHaveText(['— N·m', '0.100 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['— N·m', '0.200 N·m', '— N·m', '—']);
+  await expect(coggingRow('Cogging fundamental').locator('td')).toHaveText(['— N·m', '0.100 N·m', '— N·m', '—']);
   await dialog.getByLabel('Run B · candidate').selectOption('regression/emf');
   await expect(coggingRow('Cogging torque p-p')).toHaveCount(0);
   await expect(coggingRow('Cogging fundamental')).toHaveCount(0);
@@ -1319,12 +1319,10 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Run A 2 positions · Run B not computed', { exact: true })).toBeVisible();
   await dialog.getByLabel('Run A · baseline').selectOption('regression/cogging');
   await dialog.getByLabel('Run B · candidate').selectOption('regression/cogging2');
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.200 N·m', '0.300 N·m']);
-  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.100 N·m+50.0% vs A');
-  await expect(coggingRow('Cogging fundamental').locator('em')).toHaveText('+0.150 N·m+150.0% vs A');
+  await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['0.200 N·m', '0.300 N·m', '+0.100 N·m', '+50.0%']);
+  await expect(coggingRow('Cogging fundamental').locator('td')).toHaveText(['0.100 N·m', '0.250 N·m', '+0.150 N·m', '+150.0%']);
   await dialog.getByLabel('Run A · baseline').selectOption('regression/zero');
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.00 N·m', '0.300 N·m']);
-  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.30 N·m— vs A');
+  await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['0.00 N·m', '0.300 N·m', '+0.30 N·m', '—']);
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
@@ -1401,6 +1399,23 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(changes.locator('[data-input-path="config.solve_params.max_nonlinear_iterations"] td')).toHaveText(['Not recorded', '120']);
     await expect(changes.locator('[data-input-path="run_setup.version"] td')).toHaveText(['1', '2']);
     await expect(page.getByRole('tab', { name: 'Torque overlay', exact: true })).toBeVisible();
+    const metrics = page.getByRole('table', { name: 'Results comparison', exact: true });
+    await expect(metrics.getByRole('columnheader')).toHaveText(['Metric', 'Run A · baseline', 'Run B · candidate', 'Δ (B − A)', 'Δ vs A (%)']);
+    await expect(metrics.getByRole('rowheader', { name: 'Average torque', exact: true })).toBeVisible();
+    await metrics.screenshot({ path: info.outputPath('compare-metrics-table.png') });
+    const torquePlot = page.getByRole('img', { name: 'Torque comparison waveform', exact: true });
+    const baselineTrace = torquePlot.locator('path[stroke="#f59e0b"]');
+    const candidateTrace = torquePlot.locator('path[stroke="#22d3ee"]');
+    await expect(candidateTrace).toHaveAttribute('stroke-dasharray', '7 5');
+    await expect(baselineTrace).not.toHaveAttribute('stroke-dasharray');
+    expect(await candidateTrace.getAttribute('d')).toBe(await baselineTrace.getAttribute('d')); // Coincident curves remain distinguishable.
+    const torqueLegend = page.locator('.public-waveform-legend[aria-label="Torque comparison series"]');
+    await expect(torqueLegend.getByRole('button', { name: /^Run B ·/ }).locator('i')).toHaveCSS('background-image', /repeating-linear-gradient/);
+    await torquePlot.locator('../..').screenshot({ path: info.outputPath('compare-overlap-dashed.png') });
+    await page.getByRole('tab', { name: 'Back EMF overlay', exact: true }).click();
+    const emfPlot = page.getByRole('img', { name: 'Three-phase back EMF comparison waveform', exact: true });
+    await expect(emfPlot.locator('path[stroke-dasharray="7 5"]')).toHaveCount(3);
+    await expect(emfPlot.locator('path[stroke]:not([stroke-dasharray])')).toHaveCount(3);
     await page.screenshot({ path: info.outputPath('compare-what-changed.png'), fullPage: true });
     await left.selectOption('comparison-motor/legacy');
     await expect(changes).toContainText('Input snapshots were not recorded for one or both runs');
