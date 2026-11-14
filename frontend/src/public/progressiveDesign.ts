@@ -2,6 +2,8 @@ import { createPublicExampleDesign } from './exampleDesigns';
 import { cloneDefaultConfig, type GeometryPreview, type MotorConfig, type PreviewRegion, type RotorLayout } from './model';
 import { concentratedLayoutIsBalanced, concentratedUsesToothCoils } from './toothCoils';
 
+const mm = (value: number) => `${Number(value.toFixed(1))} mm`;
+
 export const DESIGN_PARTS = [
   { id: 'stator', label: 'Stator yoke' }, { id: 'slots', label: 'Slots' },
   { id: 'teeth', label: 'Tooth profile' }, { id: 'rotor', label: 'Rotor' },
@@ -165,9 +167,15 @@ export function buildIssues(config: MotorConfig, built: BuiltParts): DesignIssue
     if (s.tooth_shoe_enabled && (s.tooth_shoe_height_mm ?? 0) > (s.OD_mm - s.ID_mm) / 2 - s.yoke_thickness_mm - 0.5) add('advanced', 'Shoe Height', 'The tooth shoe is too deep for the available slot depth.');
   }
   if (built.rotor) {
-    if ((r.ID_mm ?? 0) >= r.OD_mm || (r.ID_mm ?? 0) < 0 || r.OD_mm < 15 || r.OD_mm > 450) add('rotor', 'Rotor OD', 'Rotor OD must exceed its inner diameter, within 15–450 mm.');
+    const seat = r.ID_mm ?? 0;
+    // Each message names the values involved and a size that would fit, so a
+    // reader does not have to work out which diameter is wrong.
+    const surface = config.topology === 'SPM' ? r.magnet_thickness_mm : 0;
+    if (outer && seat >= r.OD_mm) add('rotor', 'Rotor OD', `Rotor OD (${mm(r.OD_mm)}) is the outside of the rotor ring, so it must be larger than the Magnet Seat (${mm(seat)}), the ring's inner face.`);
+    else if (seat >= r.OD_mm || seat < 0 || r.OD_mm < 15 || r.OD_mm > 450) add('rotor', 'Rotor OD', 'Rotor OD must exceed its inner diameter, within 15–450 mm.');
     if (r.pole_count < 2 || r.pole_count > 64 || r.pole_count % 2 !== 0) add('rotor', 'Pole Count', 'Use an even pole count from 2 to 64.');
-    if (outer ? (r.ID_mm ?? 0) <= s.OD_mm : r.OD_mm >= s.ID_mm) add('rotor', outer ? 'Magnet Seat' : 'Rotor OD', 'The rotor steel overlaps the stator. Review the rotor diameters.');
+    if (outer && seat <= s.OD_mm) add('rotor', 'Magnet Seat', `The rotor overlaps the stator. Magnet Seat is the rotor's inner diameter, where the magnets sit, so it must clear the stator OD (${mm(s.OD_mm)}) plus two magnet thicknesses and two air gaps: with ${mm(surface)} magnets and a 1 mm air gap, use ${mm(s.OD_mm + 2 * surface + 2)} or more (now ${mm(seat)}).`);
+    if (!outer && r.OD_mm >= s.ID_mm) add('rotor', 'Rotor OD', `The rotor overlaps the stator. Rotor OD (${mm(r.OD_mm)}) must be smaller than the stator bore (${mm(s.ID_mm)})${surface ? ' minus two magnet thicknesses' : ''} and two air gaps: ${surface ? `with ${mm(surface)} magnets and ` : 'with '}a 1 mm air gap, use ${mm(s.ID_mm - 2 * surface - 2)} or less.`);
   }
   if (built.magnets) {
     const min = outer ? 0.1 : 2;
@@ -190,6 +198,47 @@ export function buildIssues(config: MotorConfig, built: BuiltParts): DesignIssue
 
 function circle(radius: number): Array<[number, number]> {
   return Array.from({ length: 181 }, (_, i) => [radius * Math.cos(i * Math.PI / 90), radius * Math.sin(i * Math.PI / 90)]);
+}
+
+function arc(radius: number, from: number, to: number, steps = 24): Array<[number, number]> {
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const angle = from + (to - from) * i / steps;
+    return [radius * Math.cos(angle), radius * Math.sin(angle)];
+  });
+}
+
+/** The rotor ring and surface magnets exactly as entered. */
+export function enteredRotorRegions(config: MotorConfig, magnets = true): PreviewRegion[] {
+  const outer = config.rotor_layout === 'outer';
+  const r = config.rotor;
+  const outside = r.OD_mm / 2;
+  const inside = Math.max(0, (r.ID_mm ?? 0) / 2);
+  const regions: PreviewRegion[] = [];
+  if (outside > inside) regions.push({ region_type: 'rotor_core', points: circle(outside), loops: inside > 0 ? [circle(outside), circle(inside)] : [circle(outside)], fill: '#536174' });
+  if (!outer && inside > 0) regions.push({ region_type: 'shaft', points: circle(inside), fill: '#303846' });
+  if (magnets && config.topology === 'SPM' && r.pole_count >= 2) {
+    // Surface magnets sit on the rotor face that looks at the stator; the width is the arc at mid-thickness.
+    const low = outer ? inside - r.magnet_thickness_mm : outside;
+    const high = outer ? inside : outside + r.magnet_thickness_mm;
+    const pitch = 2 * Math.PI / r.pole_count;
+    const half = Math.min(pitch / 2, r.magnet_width_mm / (low + high));
+    if (low > 0 && high > low && half > 0) {
+      for (let pole = 0; pole < r.pole_count; pole += 1) {
+        const centre = pole * pitch;
+        const loop = [...arc(high, centre - half, centre + half), ...arc(low, centre + half, centre - half)];
+        const north = pole % 2 === 0;
+        regions.push({ region_type: `magnet_${north ? 'n' : 's'}_${pole}`, points: loop, loops: [loop], fill: north ? '#E53E3E' : '#3182CE' });
+      }
+    }
+  }
+  return regions;
+}
+
+/** When the backend refuses a preview (an overlapping rotor, say), its last drawing would show
+ * the old rotor. Draw the rotor from the entered values instead, over the stator it overlaps. */
+export function withEnteredRotor(geometry: GeometryPreview, config: MotorConfig, magnets = true): GeometryPreview {
+  const rotorPart = (type: string) => !/stator/i.test(type) && /rotor|shaft|magnet|pocket|inter_pole|^airgap$/i.test(type);
+  return { ...geometry, regions: [...geometry.regions.filter((region) => !rotorPart(region.region_type)), ...enteredRotorRegions(config, magnets)] };
 }
 
 /** The yoke and bare rotor are exact annuli; slotted steel and magnets use the backend preview. */

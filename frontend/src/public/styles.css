@@ -2262,16 +2262,6 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-param-row .param-label small { font-size: 9px; }
 .public-param-row .param-number-input,
 .public-param-row .param-select { height: 30px; font-size: 12px; }
-.public-toggle-row { align-items: center; }
-.public-param-switch { display: inline-flex; align-items: center; justify-content: flex-end; gap: 7px; min-width: 72px; padding: 4px 7px; border: 1px solid var(--border-default); border-radius: 999px; color: var(--text-muted); background: rgba(8,10,14,.5); font: 10px var(--font-mono); cursor: pointer; }
-.public-param-switch:hover { border-color: var(--border-accent); color: var(--text-secondary); }
-.public-param-switch:focus-visible { outline: 2px solid rgba(245,158,11,.6); outline-offset: 2px; }
-.public-param-switch:disabled { cursor: not-allowed; opacity: .55; }
-.public-param-switch-track { position: relative; width: 25px; height: 14px; border-radius: 999px; background: rgba(148,163,184,.22); transition: background .15s ease; }
-.public-param-switch-track i { position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; border-radius: 50%; background: var(--text-muted); transition: transform .15s ease, background .15s ease; }
-.public-param-switch.is-on { border-color: var(--border-accent); color: var(--text-accent); background: rgba(245,158,11,.08); }
-.public-param-switch.is-on .public-param-switch-track { background: rgba(245,158,11,.38); }
-.public-param-switch.is-on .public-param-switch-track i { transform: translateX(11px); background: var(--accent-primary); }
 .public-derived-row strong { font-size: 12px; }
 .public-material-compat-warning strong { font-size: 12px; }
 .public-material-compat-warning span,

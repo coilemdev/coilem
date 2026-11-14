@@ -12,6 +12,7 @@ import type { GeometryPreview, MotorConfig } from './model';
 export type DimensionId =
   | 'stator-od'
   | 'rotor-od'
+  | 'magnet-seat'
   | 'bore'
   | 'airgap'
   | 'magnet-thickness'
@@ -73,7 +74,7 @@ export function designFieldDimension(section: string, label: string): DimensionI
   const fields: Record<string, DimensionId> = {
     'Outer Diameter': 'stator-od', 'Bore Diameter (ID)': 'bore', 'Hub Bore (ID)': 'bore',
     'Yoke Thickness': 'yoke-thickness', 'Yoke Thick.': 'yoke-thickness', 'Stack Length': 'stack-length',
-    'Rotor OD': 'rotor-od', 'Magnet Thick.': 'magnet-thickness', 'Magnet Width': 'magnet-width',
+    'Rotor OD': 'rotor-od', 'Magnet Seat': 'magnet-seat', 'Magnet Thick.': 'magnet-thickness', 'Magnet Width': 'magnet-width',
     'V Angle': 'v-angle', 'V Depth': 'v-depth', 'Outer Bridge': 'outer-bridge', 'Minimum Outer Bridge': 'outer-bridge',
     'Bore Tooth Width': 'bore-tooth-width', 'Yoke Tooth Width': 'tooth-width-at-yoke', 'Slot Opening': 'bore-slot-opening',
     'Back Iron': 'rotor-back-iron',
@@ -554,6 +555,16 @@ function buildOuterRotorDimensionAnnotations(
       shapes: [radialSpan(gapFaceMm, magnetFaceMm, deg(20))],
     },
   ];
+  // The rotor's inner face, where the magnets sit; it must clear the stator OD.
+  if (magnetSeatMm > 0) {
+    annotations.push({
+      id: 'magnet-seat',
+      label: 'Magnet seat Ø',
+      value: mm(config.rotor.ID_mm ?? 0),
+      dash: [4, 3],
+      shapes: [diameter(magnetSeatMm, deg(135))],
+    });
+  }
 
   if (magnet && magnetSeatMm > 0) {
     annotations.push({

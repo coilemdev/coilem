@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3392,
-      "sha256": "bd26db92daea21d4eb0b9464120c3d33115aa700e6b5e18a1082ea3cf3f17d2e"
+      "bytes": 3441,
+      "sha256": "36470043cd1b6601ed53732ee2c81c74d11c3bf262b1e6746dc831bb92030ed3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6440,8 +6440,8 @@
     },
     {
       "path": "frontend/scripts/import-typescript-module.mjs",
-      "bytes": 1636,
-      "sha256": "0b0494fca09b8be2eaedddba5a61e1a61e9fc92fc26cac1dd9a676cd72ab1ea8"
+      "bytes": 2067,
+      "sha256": "4309dc9251d858cfdf6c877a3ad345fa5cb885179fdfc0193f124f368537ed33"
     },
     {
       "path": "frontend/scripts/test-advanced-geometry-display.mjs",
@@ -6554,6 +6554,11 @@
       "sha256": "58e0360c33fe693f251ca80a79639f321d45b8c59d7d551c7510f73481463fb1"
     },
     {
+      "path": "frontend/scripts/test-outrunner-design-guides.mjs",
+      "bytes": 5030,
+      "sha256": "04f7ee313ed63dd898688ea2a1d54446b700be41b1e3fcc325f5b1958aa46edf"
+    },
+    {
       "path": "frontend/scripts/test-performance-view.mjs",
       "bytes": 7396,
       "sha256": "e5329347ce4c05bd493e094093fd7cbc2de4c4e1e8ea4683c792007fc83cd2cf"
@@ -6585,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178174,
-      "sha256": "699b580002f0b4705ab9d302cb33700121c4fbd60e380ef38e2080f29c8fc7a2"
+      "bytes": 178407,
+      "sha256": "e914a38197708b33304f1716b8254eb1015a2ec9233fc0bf2b459570ef6af8d8"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7025,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 296014,
-      "sha256": "774e9434c67e499fc26ef4d9bcc843929273343ec4f57b2624eab077c5f32372"
+      "bytes": 295128,
+      "sha256": "aa830f49fb00642e766407fdaa7ad913892a5e5d74ccdff57fadd214c2ace0de"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7060,8 +7065,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 95572,
-      "sha256": "3d6408a12b110dd65ec757f6c417fa15d5f2b1bcb0ddda5f4de5d3b4536f448d"
+      "bytes": 95890,
+      "sha256": "527fb6651e44a2192aff1dad05b4d1a0164c92aeae5b1a960a5d5ab34161bc28"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7200,8 +7205,8 @@
     },
     {
       "path": "frontend/src/public/designErrors.ts",
-      "bytes": 8717,
-      "sha256": "e99ec1dd31c4e99b5dc6a383338818f3c118197cff6e579362251d8b023588cf"
+      "bytes": 8675,
+      "sha256": "462280a1d270bce540d0c7f668e84179c15e67d320ab2738924c366422629a17"
     },
     {
       "path": "frontend/src/public/designFile.ts",
@@ -7220,8 +7225,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 24269,
-      "sha256": "8f24f8daf9ef0e835a20244bcd525eb522b31cbf3fdad0ce53cb4163b0ba4818"
+      "bytes": 24627,
+      "sha256": "b693524e8b6391ddfb2a82d632b470d24b07e7671b9120c4ada3a04979f0e52a"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -7530,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 327121,
-      "sha256": "767873504a82c8b4227cfcca53cf32358b8d98590d630e9d3d50ebb4adb2c3c1"
+      "bytes": 325786,
+      "sha256": "66fbf1c8980a22f930e97d60231a2a01d96fc0e579667a0587b295d3614cd8e8"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -17710,8 +17715,8 @@
     },
     {
       "path": "frontend/src/public/progressiveDesign.ts",
-      "bytes": 15684,
-      "sha256": "8889bdf2bdb262079f4c12eae00e1f24181bc7ae043cabec588069625b804667"
+      "bytes": 19141,
+      "sha256": "4ca58b13d655bbd5e5546cc0030d5424dc3babfa568ef23e1841a10c2d77a608"
     },
     {
       "path": "frontend/src/public/ringShape.ts",
@@ -17770,8 +17775,8 @@
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 86917,
-      "sha256": "1062766e3796ac77fb81ec194d400a846c4f08f390fafe3aea189085e688f256"
+      "bytes": 90821,
+      "sha256": "643363ff261594b4cbb35614f7749c83cbabcd57fd8f92d1ad915e1dec2ca922"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",

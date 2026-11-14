@@ -1080,6 +1080,9 @@ test('progressive preview masks hide unbuilt rotor, magnets and copper', async (
 
 test('progressive changes preserve normal loading of a shipped motor example', async ({ page }) => {
   await newDesign(page);
+  // Opening a file from the menu takes focus from the blank Outer Diameter field first;
+  // setInputFiles alone would leave its empty draft focused over the loaded design.
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
   await page.locator('input[type="file"]').setInputFiles('src/public/examples/validation_spm_24p_small.openem');
   await expect(page.locator('.design-workspace')).toBeVisible();
   await expect(health(page)).not.toContainText('Design in progress');
@@ -1087,6 +1090,55 @@ test('progressive changes preserve normal loading of a shipped motor example', a
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
   await expect(page.getByRole('button', { name: 'Show 3D motor view', exact: true })).toBeEnabled();
   await expect(page.locator('.progressive-design')).toHaveCount(0);
+  // A loaded design uses the New Design order and names: the yoke is stator geometry and
+  // the tooth and slot shapes follow it, before the rotor.
+  await expect(page.locator('.param-group[data-guide^="section-"]')).toHaveCount(5);
+  expect(await page.locator('.param-group[data-guide^="section-"]').evaluateAll((groups) => groups.map((group) => group.getAttribute('data-guide'))))
+    .toEqual(['section-stator', 'section-advanced', 'section-rotor', 'section-winding', 'section-materials']);
+  await expect(page.locator('[data-guide="section-advanced"] .param-group-header')).toContainText('Tooth & Slot Geometry');
+  await stator(page).locator('.param-group-header').click();
+  await expect(stator(page).getByRole('spinbutton', { name: 'Yoke Thickness', exact: true })).toBeVisible();
+});
+
+test('an overlapping outrunner rotor keeps its guides, names a fitting size and draws the rotor as entered', async ({ page }, info) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await newDesign(page, 'Outrunner');
+  for (const [name, value] of [['Outer Diameter', '119.4'], ['Yoke Thickness', '9.5'], ['Slot Count', '36'], ['Hub Bore (ID)', '60'], ['Stack Length', '30']]) {
+    await stator(page).getByRole('spinbutton', { name, exact: true }).fill(value);
+  }
+  await continueSetup(page, 'Tooth');
+  await continueSetup(page, 'Rotor');
+  // The reported entries: a rotor sized like the stator, so its inner face (Magnet Seat) sits inside it.
+  const refused = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.status() === 400);
+  for (const [name, value] of [['Pole Count', '24'], ['Rotor OD', '119.4'], ['Magnet Seat', '102.6'], ['Magnet Thick.', '4'], ['Magnet Width', '10']]) {
+    await rotor(page).getByRole('spinbutton', { name, exact: true }).fill(value);
+  }
+  await refused;
+  await expect(health(page)).toContainText('use 129.4 mm or more (now 102.6 mm)');
+  await expect(rotor(page).locator('.public-airgap-row')).toContainText('12.40 overlap');
+  // Guides are drawn from the entered values while the backend refuses the preview.
+  const canvas = page.locator('canvas.motor-canvas');
+  const readout = page.getByRole('status', { name: 'Active geometry dimension', exact: true });
+  await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).focus();
+  await expect(canvas).toHaveAttribute('data-editing-dimension', 'magnet-seat');
+  await expect(readout).toContainText('102.6');
+  await page.screenshot({ path: info.outputPath('outrunner-overlap-entered-rotor.png') });
+  await stator(page).locator('.param-group-header').click();
+  await stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).focus();
+  await expect(canvas).toHaveAttribute('data-editing-dimension', 'stator-od');
+  await expect(readout).toContainText('119.4');
+  // A rotor that clears the stator is accepted again, with the gap it leaves.
+  await rotor(page).locator('.param-group-header').click();
+  const accepted = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.status() === 200
+    && r.request().postDataJSON()?.rotor?.ID_mm === 130);
+  await rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true }).fill('150');
+  await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).fill('130');
+  await accepted;
+  await expect(health(page)).not.toContainText('overlaps the stator');
+  await expect(rotor(page).locator('.public-airgap-row')).toContainText('1.30');
+  await expect(rotor(page).locator('.public-airgap-row')).not.toContainText('overlap');
+  expect(errors).toEqual([]);
 });
 
 test('progressive entry feedback shows ranges, defers tooth advice and reuses the drawn widths', async ({ page }, info) => {

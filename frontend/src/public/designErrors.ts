@@ -115,7 +115,6 @@ const SECTION_BY_FIELD: Record<string, PublicParameterSection> = {
   'stator.tooth_shoe_height_mm': 'advanced',
   'stator.tooth_shoe_overhang_mm': 'advanced',
   'stator.tooth_width_mm': 'advanced',
-  'stator.yoke_thickness_mm': 'advanced',
   'solve_params.current_amplitude_A': 'winding',
 };
 

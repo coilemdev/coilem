@@ -5,7 +5,7 @@ import { useLayerMenu } from './useLayerMenu';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
 import { NewDesignEntryContext, GuidedDesignProgressContext, DesignSectionContext, useNewDesignEntry, useEntryField, entryKey, hasEntry, entrySectionComplete, enteredDesignParts, type NewDesignEntrySnapshot } from './newDesignEntry';
-import { DESIGN_PARTS, buildIssues, designPartsComplete, maximumShoeOverhangMm, progressiveGeometry, shoeOverhangLimitNotice, type BuiltParts, type DesignIssue } from './progressiveDesign';
+import { DESIGN_PARTS, buildIssues, designPartsComplete, maximumShoeOverhangMm, progressiveGeometry, shoeOverhangLimitNotice, signedBuildAirgap, withEnteredRotor, type BuiltParts, type DesignIssue } from './progressiveDesign';
 import { windingBuildChecks } from './windingBuild';
 import { AWG_SIZES, awgFor, awgNote, awgStoredDiameterMm } from './wireGauge';
 import { CustomSteelImport } from './CustomSteelImport';
@@ -1002,32 +1002,6 @@ function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1
   );
 }
 
-function ToggleRow({ label, checked, hint, disabled, onChange }: {
-  label: string;
-  checked: boolean;
-  hint?: string;
-  disabled?: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <div className="param-row public-param-row public-toggle-row" title={hint}>
-      <span className="param-label">{label}</span>
-      <button
-        type="button"
-        className={`public-param-switch${checked ? ' is-on' : ''}`}
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        disabled={disabled}
-        onClick={() => onChange(!checked)}
-      >
-        <span className="public-param-switch-track" aria-hidden="true"><i /></span>
-        <span>{checked ? 'On' : 'Off'}</span>
-      </button>
-    </div>
-  );
-}
-
 function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef, entryOptional = false, entryAlias }: {
   label: string;
   value: string;
@@ -1397,6 +1371,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     set('stator', 'slot_opening_mm', 'advanced')(boreSlotOpeningMm);
   };
   const airgap = magneticAirgapMm(config);
+  // The magnetic air gap stops at zero; an overlapping rotor reads as its overlap instead of 0.00.
+  const rotorOverlapMm = Math.max(0, -signedBuildAirgap(config));
   const largeAirgapNotice = airgap > (outer ? OUTER_ROTOR_AIRGAP_PRACTICAL_MAX_MM : PUBLIC_AIRGAP_PRACTICAL_MAX_MM)
     ? publicAirgapHealth(airgap, config.rotor_layout) : null;
   const coverage = magnetPoleCoveragePct(config);
@@ -1452,20 +1428,12 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   }, [guidedActive, guidedDesignSection, Boolean(newDesignParts)]);
 
   const advancedGeometrySection = (
-    matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label={newDesignParts ? 'Tooth & Slot Geometry' : 'Advanced Geometry'} active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : newDesignParts ? 'Rotor & Magnets' : 'Winding'} onNext={normalizedSearch ? undefined : setNext(newDesignParts ? 'rotor' : 'winding')}>
-        {newDesignParts && <ChoiceRow label="Tooth Profile" value={config.stator.tooth_shoe_enabled ? 'shoed' : 'plain'} choices={[{ value: 'plain', label: 'Plain' }, { value: 'shoed', label: 'Tooth shoes' }]} disabled={disabled} onChange={(profile) => set('stator', 'tooth_shoe_enabled', 'advanced')(profile === 'shoed')} />}
+    matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Tooth & Slot Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
+        <ChoiceRow label="Tooth Profile" value={config.stator.tooth_shoe_enabled ? 'shoed' : 'plain'} choices={[{ value: 'plain', label: 'Plain' }, { value: 'shoed', label: 'Tooth shoes' }]} disabled={disabled} onChange={(profile) => set('stator', 'tooth_shoe_enabled', 'advanced')(profile === 'shoed')} />
         {outer
           ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
           : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={Number(maximumBoreToothWidthMm.toFixed(1))} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
         <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
-        {!newDesignParts && <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />}
-        {!newDesignParts && <ToggleRow
-          label="Tooth Shoe"
-          checked={Boolean(config.stator.tooth_shoe_enabled)}
-          hint={`Adds a widened tooth tip at the ${outer ? 'stator OD' : 'bore'}, leaving a narrower physical slot mouth ahead of the winding pocket.`}
-          disabled={disabled}
-          onChange={set('stator', 'tooth_shoe_enabled', 'advanced')}
-        />}
         {config.stator.tooth_shoe_enabled && <>
           <NumberRow
             label="Shoe Height"
@@ -1623,24 +1591,24 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </div>}
 
       {(!entry || entry.ready) && <>
-      {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : newDesignParts ? 'Tooth & Slot Geometry' : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext(newDesignParts ? 'advanced' : 'rotor')}>
+      {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Tooth & Slot Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
         <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" hint={outer ? 'Tooth-tip diameter facing the rotor magnets across the air gap.' : undefined} min={outer ? 10 : 30} max={500} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
-        {newDesignParts && <NumberRow label="Yoke Thickness" value={config.stator.yoke_thickness_mm} unit="mm" hint={outer ? 'Back-iron thickness outside the hub bore.' : 'Back-iron thickness. The yoke inner diameter is OD minus twice this thickness.'} min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'stator')} />}
+        <NumberRow label="Yoke Thickness" value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" hint={outer ? 'Back-iron thickness outside the hub bore.' : 'Back-iron thickness. The yoke inner diameter is OD minus twice this thickness.'} min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'stator')} />
         <NumberRow label="Slot Count" value={config.stator.slot_count} hint="Three-phase slot counts run from 6 to 96 in multiples of 3. Use the arrows to choose the next valid count." min={6} max={96} step={3} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
         <NumberRow label={outer ? 'Hub Bore (ID)' : 'Bore Diameter (ID)'} value={config.stator.ID_mm} unit="mm" hint={outer ? 'Stator centre hole, inside the yoke.' : 'Stator bore at the tooth tips, facing the rotor. This is separate from the inner edge of the yoke.'} min={outer ? 2 : 20} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={outer ? 2 : 10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
         <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>{slotPitchText(config.stator.slot_count, outer ? config.stator.OD_mm : config.stator.ID_mm, outer)}</span></div>
       </ParameterSectionBlock>}
 
-      {newDesignParts && advancedGeometrySection}
+      {advancedGeometrySection}
 
-      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : newDesignParts ? 'Winding' : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext(newDesignParts ? 'winding' : 'advanced')}>
+      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={64} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" hint={outer ? 'Outside of the rotor back-iron ring.' : undefined} min={outer ? 10 : 15} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
-        {outer && <NumberRow label="Magnet Seat" value={config.rotor.ID_mm ?? 0} unit="mm" hint="Rotor ID: the back-iron face the magnets sit on." min={4} step={0.1} disabled={disabled} onChange={set('rotor', 'ID_mm', 'rotor')} />}
-        <div className={`param-row public-param-row public-derived-row public-airgap-row${largeAirgapNotice ? ' has-warning' : ''}`}>
+        {outer && <NumberRow label="Magnet Seat" value={config.rotor.ID_mm ?? 0} unit="mm" hint="The rotor's inner diameter, where the magnets sit. It must clear the stator OD plus two magnet thicknesses and two air gaps." min={4} step={0.1} disabled={disabled} onChange={set('rotor', 'ID_mm', 'rotor')} />}
+        <div className={`param-row public-param-row public-derived-row public-airgap-row${largeAirgapNotice || rotorOverlapMm > 0 ? ' has-warning' : ''}`}>
           <span className="param-label">Air Gap<small>mm</small></span>
-          <strong aria-describedby={largeAirgapNotice ? 'design-airgap-advisory' : undefined}>{airgap.toFixed(2)}</strong>
+          <strong aria-describedby={largeAirgapNotice ? 'design-airgap-advisory' : undefined}>{rotorOverlapMm > 0 ? `${rotorOverlapMm.toFixed(2)} overlap` : airgap.toFixed(2)}</strong>
         </div>
         {largeAirgapNotice && <div className="public-airgap-advisory" id="design-airgap-advisory" role="status">
           <strong><StatusGlyph tone="warning" />{largeAirgapNotice.title}</strong>
@@ -1685,8 +1653,6 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         )}
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
-
-      {!newDesignParts && advancedGeometrySection}
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
         {/* Four steps, each what is set and then what follows from it: layout, turns, wire, resistance. */}
@@ -5046,9 +5012,17 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
   const designError = localDesignIssue?.message ?? (!entry || !props.errorDetails?.field || entrySectionComplete(entry, 'stator') && entrySectionComplete(entry, 'advanced') && entrySectionComplete(entry, 'rotor') ? props.error : null);
   const designAlertTitle = localDesignIssue ? `${localDesignIssue.label} needs attention`
     : 'Design needs attention';
-  const designGeometry = useMemo(() => drawnParts && !buildComplete
-    ? progressiveGeometry(props.config, drawnParts, props.geometry, entry?.fields)
-    : props.geometry, [props.config, props.geometry, drawnParts, buildComplete, entry?.fields]);
+  // A refused preview (an overlapping rotor, say) leaves its last drawing on screen, which
+  // would show the old rotor. Draw the rotor as entered so the problem is visible.
+  const previewRefused = props.geometryStale && Boolean(props.error);
+  const designGeometry = useMemo(() => {
+    const drawn = drawnParts && !buildComplete
+      ? progressiveGeometry(props.config, drawnParts, props.geometry, entry?.fields)
+      : props.geometry;
+    return previewRefused && drawn && (!drawnParts || drawnParts.rotor)
+      ? withEnteredRotor(drawn, props.config, !drawnParts || Boolean(drawnParts.magnets))
+      : drawn;
+  }, [props.config, props.geometry, drawnParts, buildComplete, entry?.fields, previewRefused]);
   const designHealth = useMemo(() => ({ geometry: props.geometry, mesh: props.mesh }), [props.geometry, props.mesh]);
   const [selectedComponent, setSelectedComponent] = useState<PublicMotorComponentSelection | null>(null);
   const [designViewportExpanded, setDesignViewportExpanded] = useState(false);
