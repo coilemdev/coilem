@@ -158,7 +158,8 @@ test('inline setup naming supports keyboard, cancellation, blur and one Save for
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.getByLabel('Setup name', { exact: true }).fill('Discard this name');
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
-  await expect(page.getByLabel('Setup name', { exact: true })).toHaveValue('Custom');
+  await expect(page.getByLabel('Setup name', { exact: true })).toHaveValue('');
+  await expect(page.getByLabel('Setup name', { exact: true })).toHaveAttribute('placeholder', 'Custom');
   await saveSetup(page, 'Original');
   const panel = page.locator('.public-run-setups');
   const name = panel.getByRole('textbox', { name: 'Setup name', exact: true });
@@ -387,4 +388,28 @@ test('setup libraries follow the design through Reset and the rotor-arrangement 
   await expect(selector).toHaveValue(fileId);
   await expect(selector.locator('option', { hasText: 'Starter point' })).toHaveCount(0);
   expect(errors).toEqual([]);
+});
+
+test('Custom setup accepts direct keyboard naming without first pressing Save', async ({ page }, info) => {
+  await start(page);
+  const name = page.getByRole('textbox', { name: 'Setup name', exact: true });
+  await expect(name).toHaveAttribute('placeholder', 'Custom');
+  await expect(name).toBeEditable();
+  await name.click();
+  await name.pressSequentially('High Speed', { delay: 40 });
+  await expect(name).toHaveValue('High Speed');
+  await expect(name).toBeFocused();
+  await expect(page.getByRole('checkbox', { name: 'Include accuracy and solver settings', exact: true })).toBeChecked();
+  await name.press('Enter');
+  const selector = page.getByRole('combobox', { name: 'Run setup', exact: true });
+  await expect(selector).not.toHaveValue('');
+  await expect(name).toHaveValue('High Speed');
+  await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
+  const file = await saveFile(page, info.outputPath('typed-setup.coilem'));
+  expect(file.run_setups.profiles[0].name).toBe('High Speed');
+  await selector.selectOption('');
+  await name.click(); await name.pressSequentially('Discard me'); await name.press('Escape');
+  await expect(name).toHaveValue('');
+  await expect(name).toHaveAttribute('placeholder', 'Custom');
+  await expect(selector).toBeEnabled();
 });

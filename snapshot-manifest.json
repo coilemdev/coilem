@@ -18725,8 +18725,8 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 6228,
-      "sha256": "e7705e62f16838c62227179d9fbe777d10298f64969ace31d9b32712f8da7afc"
+      "bytes": 6245,
+      "sha256": "f3da31c193b6f0ac10c43134f79fff1ffa2a7faeaeb6a9069e26806f2fa04298"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
@@ -18735,8 +18735,8 @@
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 11418,
-      "sha256": "79b801f421eeba15a7666ea7f2caef4621082ddd66d508c425059300c74fb5ab"
+      "bytes": 11784,
+      "sha256": "b107a87a2b5e1c9d9ce8bc7543541de4c0a7ce26eda8582ee650615363fc8c7e"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18755,8 +18755,8 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 26489,
-      "sha256": "e7203b5a854346fe624927e4778d468c1211c94cdcb5f2872daa21c847e2b89a"
+      "bytes": 27892,
+      "sha256": "b71a798bdb8a1dc0fcc13af6b8eb2d03e637c1d9a7418142720fa2df8c700531"
     },
     {
       "path": "docs/COMPARE_RUNS.md",
@@ -40912,79 +40912,97 @@
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "RELEASE_NOTES.md",
       "source_sha256": "7a7b1419e2cd1d8ad7bc6ed4a5537c3189f169fdbdb1a5c38cebcde380384752",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "docs/COMPARE_RUNS.md",
       "source_sha256": "64276926f7c6d80f3e0bfa23abf1820029e92caaaa02b0618be094f8b432f82a",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "docs/SOLVE_SETUPS.md",
+      "source_sha256": "e7705e62f16838c62227179d9fbe777d10298f64969ace31d9b32712f8da7afc",
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "e823bf87d123c2eee17f941895058ea3b3984bdf469f42b7c0636084f1bc57ed",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/scripts/test-run-comparison.mjs",
       "source_sha256": "5c407e39dcf07d69302bf35e8156267a5fd9ec8b8be7d91ce7ace42628190b46",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "b3f9e2eacc65906705726cff47314edf2a1e7775abfb707af11bd04ea5e15e33",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/RunChangesTable.tsx",
       "source_sha256": "dd79d83b873981bca057f2a8a3684ac7495d756d1b352e0f06ae191c6f0687e8",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/RunSetupControl.tsx",
+      "source_sha256": "79b801f421eeba15a7666ea7f2caef4621082ddd66d508c425059300c74fb5ab",
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "a723c495b09bc3d93bc2e76ee266adaceae9f3a802880e698ddc323786c8a64d",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/WaveformReadout.tsx",
       "source_sha256": "2647d1bab21ce42f9fdee6cd919d9809cf57349c14e58e5327d0f5cd67f10f2b",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/multiRunComparison.ts",
       "source_sha256": null,
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/runComparison.ts",
       "source_sha256": "1375b27fc8c647ebb781add6f5673d7bd1829b185f4ab1fc46ac471d51f54017",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/runInputChanges.ts",
       "source_sha256": "427fe04aba980e8518b8ea0d82a0f3bd677d5c88e53027d1a8ac2ef0b7f241ea",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/src/public/styles.css",
       "source_sha256": "4f015b7c8aa97976c43448bfff0aa9f38be5d15c3b8d4ff54b21f73543a19e54",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     },
     {
       "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "8c36032fe398419e10e888a9a1e097fe131a047dd8ab18b17d78f5be958dc4e6",
-      "reason": "Compare two to six saved runs against a pinned baseline using recorded inputs and results, without changing physics or stored evidence."
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "source_sha256": "e7203b5a854346fe624927e4778d468c1211c94cdcb5f2872daa21c847e2b89a",
+      "reason": "Compare recorded runs against a pinned baseline and support direct Custom setup naming without changing physics or stored evidence."
     }
   ]
 }
