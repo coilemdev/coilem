@@ -441,7 +441,6 @@ for (const fixtureName of [
   const referenceFixture = JSON.parse(await readFile(path.join(frontendRoot, '../references/benchmark_configs', fixtureName), 'utf8'));
   assert.deepEqual(bundledFixture, referenceFixture, `${fixtureName} public copy must match the validation fixture`);
 }
-assert.match(runComparisonSource, /Compare up to six completed analyses/);
 assert.match(runComparisonSource, /run\.status === 'complete' && isMagneto2dRun\(run\)/);
 assert.match(runComparisonSource, /listPublicRuns/);
 assert.match(runComparisonSource, /if \(!records\.length\) return/);

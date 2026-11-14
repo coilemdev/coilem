@@ -478,7 +478,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
         </section>
       )}
       <div className="public-run-compare-heading">
-        <div><span className="eyebrow">Run comparison</span><h2>Compare up to six completed analyses</h2><p>Pin a baseline and compare recorded inputs and results. Each delta is relative to the pinned run.</p></div>
+        <div><span className="eyebrow">Run comparison</span><p>Pin a baseline and compare recorded inputs and results. Each delta is relative to the pinned run.</p></div>
       </div>
       <div className="public-run-compare-selectors" aria-busy={Boolean(loadingStatus)}>
         {selection.slots.map(slot => {
