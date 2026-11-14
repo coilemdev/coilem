@@ -1399,3 +1399,20 @@ test('priority fixes: Halbach health fits split-screen and invalid diameters sur
   await page.screenshot({ path: info.outputPath('halbach-recovered.png') });
   expect(errors).toEqual([]);
 });
+
+test('priority fixes: a partial loaded sweep keeps its averaging warning in Results', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'analysis');
+  await page.getByRole('checkbox', { name: 'Back EMF', exact: true }).uncheck();
+  await openSetupSection(page, 'plan');
+  await page.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
+  await page.getByRole('button', { name: '▶ Run analysis', exact: true }).click();
+  const completed = page.getByRole('region', { name: 'Completed solver results' });
+  await expect(completed).toBeVisible({ timeout: 120_000 });
+  await expect(completed.getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await expect(page.locator('.public-report-stage').getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
+});

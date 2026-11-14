@@ -32,10 +32,11 @@ def test_vshape_reports_minimum_and_actual_bridge_without_changing_the_design(na
     assert compute_v_shape_magnet_placements(changed) == compute_v_shape_magnet_placements(cfg)
 
 
-def test_partial_window_warning_survives_selected_analysis_and_is_not_added_to_complete_cycles():
+@pytest.mark.parametrize("cycle_flag", [None, False])
+def test_partial_window_warning_survives_selected_analysis_and_is_not_added_to_complete_cycles(cycle_flag):
     cfg = MotorConfig.model_validate(json.loads((FIXTURES / "ipm_vshape_8p12s_baseline_contract__native.json").read_text()))
     result = result_for(cfg)
-    result.solve_metadata.loaded_cycle_complete = False
+    result.solve_metadata.loaded_cycle_complete = cycle_flag
     result.solve_metadata.torque_sweep_computed = True
 
     class Solver:
@@ -43,7 +44,15 @@ def test_partial_window_warning_survives_selected_analysis_and_is_not_added_to_c
             return deepcopy(result)
 
     solved = solve_selected_analyses(Solver(), cfg)
+    assert solved.solve_metadata.loaded_cycle_complete is False
     assert partial_sweep_advisory(False) in solved.warnings
     assert all(message in solved.warnings for message in geometry_input_advisories(cfg))
     assert partial_sweep_advisory(True) is None
     assert partial_sweep_advisory(None) is None
+
+    result.solve_metadata.loaded_cycle_complete = None
+    result.torque_waveform.electrical_angle_deg = [0, 90, 180, 270, 360]
+    result.torque_waveform.torque_Nm = [1, 1, 1, 1, 1]
+    complete = solve_selected_analyses(Solver(), cfg)
+    assert complete.solve_metadata.loaded_cycle_complete is True
+    assert partial_sweep_advisory(False) not in complete.warnings

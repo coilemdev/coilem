@@ -64,6 +64,7 @@ def point(case: str, density: str) -> dict:
     assert dq is not None and cogging is not None
     return {
         "case": case, "mesh_density": density, "request": body,
+        "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "fixture_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "elapsed_s": round(time.monotonic() - started, 2), "mesh_elements": result.solve_metadata.mesh_element_count,
         "average_torque_Nm": result.summary.avg_torque_Nm, "back_emf_fundamental_V": result.summary.back_emf_fundamental_V,
@@ -80,6 +81,8 @@ def main() -> None:
     args = parser.parse_args()
     args.out.parent.mkdir(parents=True, exist_ok=True)
     if args.case:
+        if not args.density:
+            parser.error("--case requires --density")
         args.out.write_text(json.dumps(point(args.case, args.density), indent=2) + "\n")
         return
     report = {

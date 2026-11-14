@@ -415,7 +415,7 @@ export function LossesCard({
           <p className="popover-note">{notModelledText(loss)}</p>
         </StatusSummary>
       </div>
-      {view.efficiency.status === 'unavailable' && <p className="performance-message" role="status">{view.efficiency.reason || 'Efficiency is unavailable for this run.'} {loss.iron_loss_status_reason} The loss subtotal excludes unavailable iron loss.</p>}
+      {view.efficiency.status === 'unavailable' && <p className="performance-message" role="status">{view.efficiency.reason || 'Efficiency is unavailable for this run.'} {loss.iron_loss_status_reason} {loss.iron_loss_W == null && 'The loss subtotal excludes unavailable iron loss.'}</p>}
       <div className="losses-card-body">
         <div className="losses-card-numbers">
           <table>

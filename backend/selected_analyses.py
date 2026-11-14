@@ -13,6 +13,7 @@ from backend.models import MotorConfig, SolveOptionsConfig, SolveResult
 from backend.models.result import TorqueSpeedAnalysisResult
 from backend.solve_workspace import user_data_root
 from backend.solver_contract import ProgressCallback, SolveCancelledError, Solver
+from backend.sweep_planning import is_uniform_full_cycle_grid
 from backend.winding_resistance import winding_resistance
 
 
@@ -48,6 +49,10 @@ def solve_selected_analyses(
     # With only the map selected this is a single zero-current preview, not a
     # loaded sweep. The map computes its own torque, flux and loss dependencies.
     result = solver.solve(base_config, on_progress=base_progress if on_progress else None, solve_mesh_key=solve_mesh_key)
+    # Older sinusoidal solvers only populate this flag for six-step runs.
+    # Infer the averaging scope from the actual sampled grid, not the preset.
+    if result.solve_metadata.loaded_cycle_complete is None and len(result.torque_waveform.electrical_angle_deg) > 1:
+        result.solve_metadata.loaded_cycle_complete = is_uniform_full_cycle_grid(result.torque_waveform.electrical_angle_deg)
     advisories = geometry_input_advisories(config)
     window_note = partial_sweep_advisory(result.solve_metadata.loaded_cycle_complete)
     if window_note and result.solve_metadata.torque_sweep_computed is not False:

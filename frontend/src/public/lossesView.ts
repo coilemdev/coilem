@@ -118,9 +118,7 @@ export function lossesView(
   const copperStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const statuses: NamedOutputStatus[] = [];
   statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
-  {
-    statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
-  }
+  statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
   statuses.push({ key: 'copper', label: 'Copper loss, from the phase resistance', ...copperStatus });
   const rows: LossRow[] = [
     powerRow('input', 'Input power', loss.input_power_W, 'Electrical input: the solved torque times speed, plus copper loss.'),

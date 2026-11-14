@@ -1660,7 +1660,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         )}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape' && <>
           <NumberRow label="Minimum Outer Bridge" value={config.rotor.outer_bridge_thickness_mm} unit="mm" min={0.1} max={20} step={0.1} disabled={disabled} hint="Minimum clearance from a magnet pocket to the rotor surface. The actual bridge also depends on V Depth, V Angle and magnet dimensions." onChange={set('rotor', 'outer_bridge_thickness_mm', 'rotor')} />
-          {!geometryStale && geometry?.metadata?.interpreted_rotor_inputs && <p className="ipm-layout-note">Actual outer bridge: {Number((geometry.metadata.interpreted_rotor_inputs as Record<string, number>).actual_outer_bridge_mm).toFixed(3)} mm. Coverage follows the slab geometry; the saved magnet_embrace value is not used for V-shape rotors.</p>}
+          {!geometryStale && geometry?.metadata?.interpreted_rotor_inputs && <p className="ipm-layout-note">Actual outer bridge: {Number((geometry.metadata.interpreted_rotor_inputs as Record<string, number>).actual_outer_bridge_mm).toFixed(3)} mm. Coverage follows the slab geometry; the saved magnet coverage is not used for V-shape rotors.</p>}
           <NumberRow label="V Angle" value={config.rotor.v_angle_deg} unit="deg" hint="Included angle between the paired magnets buried in each rotor pole." min={0} max={120} step={1} disabled={disabled} onChange={set('rotor', 'v_angle_deg', 'rotor')} />
           <NumberRow label="V Depth" value={config.rotor.v_depth_mm} unit="mm" hint="Radial depth of the magnet pair's V apex from the rotor outer surface." min={0} max={200} step={0.1} disabled={disabled} onChange={set('rotor', 'v_depth_mm', 'rotor')} />
         </>}
@@ -3448,6 +3448,8 @@ function LiveSolveMonitor({ config, busy, progress, liveSamples, progressPercent
 }
 
 function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result: SolveResult; onOpenReport: () => void; positionLink?: FieldPositionLink }) {
+  const sixStep = resultUsesSixStep(result);
+  const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
   const hasTorque = hasTorqueResult(result);
   const hasBackEmf = hasBackEmfResult(result);
   const cogging = result.summary.cogging;
@@ -3456,8 +3458,6 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   const firstPlot = hasTorque ? 'torque' : hasBackEmf ? 'back-emf' : result.cogging_torque_waveform ? 'cogging' : 'torque-speed';
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'torque-speed'>(firstPlot);
   useEffect(() => { setActivePlot(firstPlot); }, [result, firstPlot]);
-  const sixStep = resultUsesSixStep(result);
-  const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
   const thdLabel = result.back_emf_harmonic_analysis
     ? 'Back EMF THD H12'
     : 'Back EMF THD legacy';
@@ -3491,8 +3491,10 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
 
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
-      {losses?.efficiency_pct == null && losses && <p className="performance-message" role="status">{losses.efficiency_status_reason} {losses.iron_loss_status_reason} Known loss subtotal excludes unavailable iron loss.</p>}
-      {result.solve_metadata.loaded_cycle_complete === false && hasTorque && <p className="performance-message" role="status">Average torque and d/q values cover a partial angular window. Use a full electrical cycle for cycle-average comparisons.</p>}
+      {losses?.efficiency_pct == null && losses && <p className="performance-message" role="status">{losses.efficiency_status_reason} {losses.iron_loss_status_reason} {losses.iron_loss_W == null && 'Known loss subtotal excludes unavailable iron loss.'}</p>}
+      {result.solve_metadata.loaded_cycle_complete === false && hasTorque
+        && !result.warnings?.some((warning) => warning.startsWith('Partial electrical sweep:'))
+        && <p className="performance-message" role="status">Average torque and d/q values cover a partial angular window. Use a full electrical cycle for cycle-average comparisons.</p>}
       {result.warnings?.map((warning) => <p className="performance-message" role="status" key={warning}>{humanizeGeometryMessage(warning)}</p>)}
       <div className="public-completed-results-heading">
         <span className="public-section-kicker">Completed results</span>
@@ -3755,7 +3757,8 @@ function SolveStage({ config, designName, guidedActive, guidedSolveSection, mate
   // solve; the mesh view turns a picture of the rotor it drew once.
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
-  const partialPlanNote = config.solve_params.solve_quality === 'quick'
+  const hasLoadedWindow = config.solve_options.torque_sweep || config.solve_options.losses_efficiency;
+  const partialPlanNote = !hasLoadedWindow ? null : config.solve_params.solve_quality === 'quick'
     ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window. Iron loss and efficiency may be unavailable; choose Custom with a full electrical cycle for cycle-average comparisons.'
     : config.solve_params.solve_quality === 'custom' && sweepRangeDeg < 360
       ? 'This custom sweep covers a partial electrical window. Torque and d/q averages describe only that window.' : null;
@@ -4939,6 +4942,10 @@ function ReportStage({
       {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
       {savedRunPanel}
       {reportQualification && !qualificationChip && <QualificationNote qualification={reportQualification} />}
+      {result.warnings?.map((warning) => <p className="performance-message" role="status" key={warning}>{humanizeGeometryMessage(warning)}</p>)}
+      {result.solve_metadata.loaded_cycle_complete === false && hasTorqueResult(result)
+        && !result.warnings?.some((warning) => warning.startsWith('Partial electrical sweep:'))
+        && <p className="performance-message" role="status">Average torque and d/q values cover a partial angular window. Use a full electrical cycle for cycle-average comparisons.</p>}
       <ResultSummary
         result={result}
         config={config}
