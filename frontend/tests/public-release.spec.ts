@@ -1286,6 +1286,9 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
       back_emf_waveform: { electrical_angle_deg: [0, 90, 180, 270], phase_a_V: [0, 2, 0, -2], phase_b_V: [-1, 1, 1, -1], phase_c_V: [1, -1, -1, 1] } },
     torque: { summary: { ...summary, avg_torque_Nm: 4, torque_ripple_pct: 2 }, solve_metadata: { ...metadata, current_amplitude_A: 10 },
       torque_waveform: { electrical_angle_deg: [0, 30], torque_Nm: [3.9, 4.1] }, back_emf_waveform: {} },
+    cogging_samples: { summary: { ...summary, cogging: { peak_to_peak_Nm: 0.004, first_harmonic_Nm: 0.002 } },
+      solve_metadata: metadata, torque_waveform: {}, back_emf_waveform: {},
+      cogging_torque_waveform: { electrical_angle_deg: [0, 15, 30], torque_Nm: [0, 0.002, -0.002] } },
   };
   await page.route('**/runs', (route) => route.fulfill({ json: {
     storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true },
@@ -1307,7 +1310,7 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
   await storedRow.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
-  await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
+  await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
   const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics tbody tr').filter({
@@ -1331,10 +1334,21 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(coggingRow('Cogging fundamental').locator('td')).toHaveText(['0.100 N·m', '0.250 N·m', '+0.150 N·m', '+150.0%']);
   await dialog.getByLabel('Run A · baseline').selectOption('regression/zero');
   await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['0.00 N·m', '0.300 N·m', '+0.30 N·m', '—']);
+  await dialog.getByLabel('Run A · baseline').selectOption('regression/cogging_samples');
+  await expect(dialog.getByRole('tab', { name: 'Cogging overlay', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(dialog.getByRole('tab', { name: 'Torque overlay', exact: true })).toHaveCount(0);
+  await expect(dialog.getByRole('tab', { name: 'Back EMF overlay', exact: true })).toHaveCount(0);
+  await expect(dialog.getByRole('img', { name: 'Cogging torque comparison waveform', exact: true }).locator('path[stroke]')).toHaveCount(1);
+  await expect(dialog.getByText('Run A 0–30° electrical · Run B not recorded', { exact: true })).toBeVisible();
+  const singleCoggingLegend = dialog.locator('.public-waveform-legend[aria-label="Cogging torque comparison series"]').getByRole('button');
+  await singleCoggingLegend.click();
+  await expect(dialog.getByRole('status').filter({ hasText: 'All curves are hidden.' })).toBeVisible();
+  await singleCoggingLegend.click();
+  await expect(dialog.getByRole('img', { name: 'Cogging torque comparison waveform', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
-  await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
+  await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
   expect(errors).toEqual([]);
   expect(solveRequests).toEqual([]);
 });
@@ -1379,7 +1393,17 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   await page.route('**/runs/*/*/comparison', route => {
     const id = new URL(route.request().url()).pathname.split('/').at(-2);
     const setup = { id: 'profile-1', name: 'Report', version: id === 'current' ? 2 : 1, kind: 'user', includes_numerics: true };
-    return route.fulfill({ json: { result: fixture, ...(id !== 'legacy' ? { inputs: {
+    const counts = { meshes_built: id === 'current' ? 48 : 42, meshes_rotated: id === 'current' ? 8 : 0, solves: id === 'current' ? 192 : 144, field_frames: id === 'current' ? 96 : 72 };
+    const time = id === 'current' ? [90, 45, 30, 15] : [60, 30, 20, 10];
+    const result = { ...fixture, solve_metadata: { ...fixture.solve_metadata,
+      time_breakdown: id === 'legacy' ? null : { schema_version: 'coilem.solve_time_breakdown.v1', elapsed_s: time[0],
+        elapsed_steps: ['meshing', 'field_solve', 'packaging'].map((key, index) => ({ key, seconds: time[index + 1] })),
+        steps: [{ key: 'meshing', work_s: 99999, parts: [] }], counts } },
+      cogging_torque_waveform: id === 'legacy' ? {} : id === 'current'
+        ? { electrical_angle_deg: [0, 10, 20, 30], torque_Nm: [0.001, 0.003, -0.003, 0.001] }
+        : { electrical_angle_deg: [0, 15, 30, 45, 60], torque_Nm: [0, 0.002, 0, -0.002, 0] },
+    };
+    return route.fulfill({ json: { result, ...(id !== 'legacy' ? { inputs: {
       config: id === 'current' ? candidate : baseline, solver: 'magneto2d', solver_name: fixture.solve_metadata.solver_name, run_setup: setup,
     } } : {}) } });
   });
@@ -1417,6 +1441,12 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(details.getByRole('rowheader', { name: 'Excitation identity', exact: true })).toBeVisible();
     await expect(details.getByRole('rowheader', { name: 'Completed', exact: true })).toBeVisible();
     await expect(page.locator('.public-run-compare-identities')).toHaveCount(0);
+    const timing = page.getByRole('region', { name: 'Solve time breakdown comparison', exact: true });
+    await expect(timing.getByRole('row', { name: /^Meshing/ }).locator('td')).toHaveText(['30.0 s', '45.0 s', '+15.0 s', '+50.0%']);
+    await expect(timing.getByRole('row', { name: /^Total elapsed/ }).locator('td')).toHaveText(['60.0 s', '90.0 s', '+30.0 s', '+50.0%']);
+    await expect(timing.getByRole('row', { name: /^Meshes rotated/ }).locator('td')).toHaveText(['0', '8', '+8', '—']);
+    await expect(timing.getByRole('row', { name: /^Field solves/ }).locator('td')).toHaveText(['144', '192', '+48', '+33.3%']);
+    await timing.screenshot({ path: info.outputPath('compare-time-breakdown.png') });
     await expect(page.getByRole('tab', { name: 'Torque overlay', exact: true })).toBeVisible();
     const metrics = page.getByRole('table', { name: 'Results comparison', exact: true });
     await expect(metrics.getByRole('columnheader')).toHaveText(['Metric', 'Run A · baseline', 'Run B · candidate', 'Δ (B − A)', 'Δ vs A (%)']);
@@ -1465,8 +1495,38 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(page.getByRole('status').filter({ hasText: 'All curves are hidden.' })).toBeVisible();
     for (let index = 0; index < 6; index++) await emfToggles.nth(index).click();
     await expect(emfPlot.locator('path[stroke]')).toHaveCount(6);
+    await page.getByRole('tab', { name: 'Cogging overlay', exact: true }).click();
+    const coggingPlot = page.getByRole('img', { name: 'Cogging torque comparison waveform', exact: true });
+    await expect(coggingPlot.locator('path[stroke]')).toHaveCount(2);
+    await expect(coggingPlot.locator('path[stroke="#22d3ee"]')).toHaveAttribute('stroke-dasharray', '7 5');
+    await expect(page.getByText('Run A 0–60° electrical · Run B 0–30° electrical', { exact: true })).toBeVisible();
+    const coggingLegend = page.locator('.public-waveform-legend[aria-label="Cogging torque comparison series"]');
+    const coggingA = coggingLegend.getByRole('button', { name: /^Run A ·/ });
+    const coggingB = coggingLegend.getByRole('button', { name: /^Run B ·/ });
+    await coggingA.click();
+    await expect(coggingPlot.locator('path[stroke="#f59e0b"]')).toHaveCount(0);
+    await coggingB.click();
+    await expect(coggingPlot).toHaveCount(0);
+    await expect(page.getByRole('status').filter({ hasText: 'All curves are hidden.' })).toBeVisible();
+    await coggingA.click();
+    await coggingB.click();
+    await expect(coggingPlot.locator('path[stroke]')).toHaveCount(2);
+    const coggingPlotGroup = page.getByRole('group', { name: 'Cogging torque comparison plot', exact: true });
+    const coggingReadout = coggingPlot.locator('../..').getByRole('status');
+    await coggingPlotGroup.press('Home');
+    await expect(coggingReadout.locator('.public-waveform-readout-difference')).toContainText('+1.00 mN·m');
+    await coggingPlotGroup.press('ArrowRight');
+    await expect(coggingReadout).toContainText('10° electrical');
+    await expect(coggingReadout).toContainText('not solved at this angle');
+    await expect(coggingReadout.locator('.public-waveform-readout-difference')).toHaveCount(0);
+    await coggingPlotGroup.press('Home');
+    await coggingPlot.locator('../..').screenshot({ path: info.outputPath('compare-cogging-overlay.png') });
     await page.screenshot({ path: info.outputPath('compare-what-changed.png'), fullPage: true });
     await left.selectOption('comparison-motor/legacy');
+    await expect(timing.getByRole('row', { name: /^Meshing/ }).locator('td')).toHaveText(['Not recorded', '45.0 s', '—', '—']);
+    await expect(timing).toContainText('Run A: stage timings were not recorded.');
+    await expect(coggingPlot.locator('path[stroke]')).toHaveCount(1);
+    await expect(page.getByText('Run A not recorded · Run B 0–30° electrical', { exact: true })).toBeVisible();
     await expect(changes).toContainText('Input snapshots were not recorded for one or both runs');
     await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['Not recorded', '4.5 mm']);
     await expect(page.getByText('No differences in the recorded inputs.', { exact: true })).toHaveCount(0);

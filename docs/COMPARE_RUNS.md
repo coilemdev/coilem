@@ -34,9 +34,20 @@ absolute delta (B − A) and percentage delta versus A. Percentage-valued metric
 use percentage points (`pp`) for their absolute delta. Missing results remain
 unavailable; a zero baseline does not produce an infinite percentage.
 
-The torque and back-EMF overlays draw Run A solid and Run B dashed, including
+The torque, back-EMF and cogging overlays draw Run A solid and Run B dashed, including
 their legend swatches, so coincident traces remain distinguishable.
 Each legend item toggles independently. Hiding every curve shows an empty-chart
 message and keeps the legend available so any curve can be turned back on.
+Cogging uses each run's recorded electrical angles and shows both angle ranges.
+It does not stretch different periods onto the same span or interpolate missing
+samples; the readout delta is available only at angles solved by both runs.
+A cogging overlay is available if either run contains valid cogging samples.
+
+**Time breakdown** compares total elapsed time, meshing, field solve and
+packaging with absolute and percentage deltas. These are the recorded elapsed
+partitions, separate from combined worker time. Workload rows compare mesh
+elements, rotor positions, generated/rotated meshes, field solves and frames
+when recorded. Missing historical timings and counts remain **Not recorded**;
+zero counts remain zero and nonzero changes from zero have no percentage delta.
 Multi-run baselines, further result types, comparison exports and studies are
 subsequent Compare 2.0 work.

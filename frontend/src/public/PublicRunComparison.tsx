@@ -9,12 +9,14 @@ import {
 } from './api';
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
-import { previousCompletedRun, type ComparisonResult } from './runComparison';
+import { compareRunTiming, previousCompletedRun, type ComparisonResult } from './runComparison';
 import { recordedSetupLabel, type ComparisonInputs } from './runInputChanges';
 import { RunInputChanges } from './RunChangesTable';
 import { torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
+import { InfoTip } from './Popover';
+import { formatSeconds } from './solveTime';
 
 interface LoadedRun {
   record: PublicRunListRecord;
@@ -138,6 +140,23 @@ function percentDelta(left: number | null | undefined, right: number | null | un
   return `${rounded > 0 ? '+' : ''}${rounded.toFixed(1)}%`;
 }
 
+function timingValue(value: number | null, unit: string): string {
+  return value === null ? 'Not recorded' : unit === 's' ? formatSeconds(value) : number(value, 0);
+}
+
+function timingDelta(before: number | null, after: number | null, unit: string): string {
+  if (before === null || after === null) return '—';
+  if (unit !== 's') return delta(before, after, 0);
+  const difference = after - before;
+  return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${formatSeconds(Math.abs(difference))}`;
+}
+
+function coggingCoverage(label: string, waveform: ComparisonResult['cogging_torque_waveform']): string {
+  if (!waveform) return `${label} not recorded`;
+  const angles = waveform.electrical_angle_deg;
+  return `${label} ${Number(Math.min(...angles).toFixed(3))}–${Number(Math.max(...angles).toFixed(3))}° electrical`;
+}
+
 function sameAngleGrid(left: number[], right: number[]): boolean {
   return left.length === right.length && left.every((angle, index) => Math.abs(angle - right[index]) <= 1e-6);
 }
@@ -192,7 +211,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
   const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
-  const [plot, setPlot] = useState<'torque' | 'back-emf'>('torque');
+  const [plot, setPlot] = useState<'torque' | 'back-emf' | 'cogging'>('torque');
   const [hiddenSeriesKeys, setHiddenSeriesKeys] = useState<string[]>([]);
 
   const refreshRuns = useCallback(async (): Promise<void> => {
@@ -388,6 +407,12 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       dashArray: '7 5',
     },
   ] : [], [ready, left, right]);
+  const coggingSeries = useMemo(() => ready ? [
+    { id: 'cogging-run-a', label: `Run A · ${left.inputs?.run_setup?.name || left.record.project_name || left.record.project_slug}`,
+      angles: left.result.cogging_torque_waveform?.electrical_angle_deg || [], values: left.result.cogging_torque_waveform?.torque_Nm || [], color: '#f59e0b' },
+    { id: 'cogging-run-b', label: `Run B · ${right.inputs?.run_setup?.name || right.record.project_name || right.record.project_slug}`,
+      angles: right.result.cogging_torque_waveform?.electrical_angle_deg || [], values: right.result.cogging_torque_waveform?.torque_Nm || [], color: '#22d3ee', dashArray: '7 5' },
+  ] : [], [ready, left, right]);
   const torqueSampling = ready ? samplingLabel(
     left.result.torque_waveform.electrical_angle_deg,
     right.result.torque_waveform.electrical_angle_deg,
@@ -398,11 +423,13 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   ) : '';
   const torqueAvailable = torqueSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
   const emfAvailable = emfSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const coggingAvailable = coggingSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const timing = ready ? compareRunTiming(left.result, right.result) : null;
   useEffect(() => {
     if (!ready) return;
-    setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable)
-      ? current : torqueAvailable ? 'torque' : 'back-emf');
-  }, [ready, torqueAvailable, emfAvailable]);
+    setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
+      ? current : torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : 'cogging');
+  }, [ready, torqueAvailable, emfAvailable, coggingAvailable]);
   return (
     <section className="public-run-compare" aria-label="Compare two saved runs">
       {manageRuns && (
@@ -527,13 +554,35 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           })}</tbody>
           </table>
         </div>
-        {(torqueAvailable || emfAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
+        {timing && <div className="public-run-compare-metrics public-run-compare-timing" role="region" aria-label="Solve time breakdown comparison" tabIndex={0}>
+          <table>
+            <caption>Time breakdown <InfoTip label="Time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Percentages compare Run B with Run A.</InfoTip></caption>
+            <thead><tr><th scope="col">Stage / workload</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+            {(['Elapsed time', 'Work performed'] as const).map(group => {
+              const rows = timing.rows.filter(row => row.group === group);
+              return rows.length > 0 && <tbody key={group} aria-label={group}>
+                <tr className="public-run-compare-timing-group"><th scope="rowgroup" colSpan={5}>{group}</th></tr>
+                {rows.map(row => <tr key={row.key}>
+                  <th scope="row">{row.label}</th><td>{timingValue(row.before, row.unit)}</td><td>{timingValue(row.after, row.unit)}</td>
+                  <td>{timingDelta(row.before, row.after, row.unit)}</td><td>{percentDelta(row.before, row.after)}</td>
+                </tr>)}
+              </tbody>;
+            })}
+          </table>
+          {(!timing.recordedBefore || !timing.recordedAfter) && <p className="public-run-compare-timing-note" role="note">{!timing.recordedBefore && !timing.recordedAfter ? 'Stage timings were not recorded for either run.' : `Run ${!timing.recordedBefore ? 'A' : 'B'}: stage timings were not recorded.`}</p>}
+        </div>}
+        {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
           {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
           {emfAvailable && <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>}
+          {coggingAvailable && <button type="button" role="tab" aria-selected={plot === 'cogging'} className={plot === 'cogging' ? 'active' : ''} onClick={() => setPlot('cogging')}>Cogging overlay</button>}
         </div>}
-        {!torqueAvailable && !emfAvailable && <p className="public-run-compare-message">Neither run has torque or Back EMF waveforms to overlay. Available summary metrics are shown above.</p>}
+        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">Neither run has torque, Back EMF or cogging waveforms to overlay. Available summary metrics are shown above.</p>}
         {plot === 'torque' && torqueAvailable && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' }} />}
         {plot === 'back-emf' && emfAvailable && <WaveformChart angles={left.result.back_emf_waveform.electrical_angle_deg} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={emfSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
+        {plot === 'cogging' && coggingAvailable && <>
+          <p className="public-run-compare-cogging-coverage">{coggingCoverage('Run A', left.result.cogging_torque_waveform)} · {coggingCoverage('Run B', right.result.cogging_torque_waveform)}</p>
+          <WaveformChart angles={left.result.cogging_torque_waveform?.electrical_angle_deg || []} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(left.result.cogging_torque_waveform?.electrical_angle_deg || [], right.result.cogging_torque_waveform?.electrical_angle_deg || [])} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'cogging-run-b', subtrahendKey: 'cogging-run-a', label: 'Run B − Run A' }} />
+        </>}
       </>}
     </section>
   );

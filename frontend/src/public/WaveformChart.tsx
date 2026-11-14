@@ -154,7 +154,7 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
         <span>{label}</span>
         <span>{samplingLabel || `${positionCounts.join(' / ')} positions`}</span>
       </div>
-      {eligibleSeries.length > 1 && (
+      {(eligibleSeries.length > 1 || toggleableSeries) && (
         <div className={`public-waveform-legend${groupedLegend ? ' public-waveform-legend-grouped' : ''}`} aria-label={`${label} series`}>
           {groupedLegend
             ? legendGroups.map((group) => <div className="public-waveform-legend-row" role="group" aria-label={group.label} key={group.label}>
