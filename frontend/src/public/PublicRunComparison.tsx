@@ -9,7 +9,9 @@ import {
 } from './api';
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
-import type { ComparisonResult } from './runComparison';
+import { previousCompletedRun, type ComparisonResult } from './runComparison';
+import { recordedSetupLabel, type ComparisonInputs } from './runInputChanges';
+import { RunInputChanges } from './RunChangesTable';
 import { torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
@@ -17,11 +19,13 @@ import { WaveformChart } from './WaveformChart';
 interface LoadedRun {
   record: PublicRunListRecord;
   result: ComparisonResult;
+  inputs?: ComparisonInputs | null;
 }
 
 interface PublicRunComparisonProps {
   currentResult?: SolveResult | null;
   manageRuns?: boolean;
+  compareWithPrevious?: boolean;
   /** Opens a completed run's stored result in Solve and Results. */
   onOpenRun?: (run: PublicRunListRecord) => void;
 }
@@ -161,13 +165,14 @@ function excitationProvenance(result: ComparisonResult): string {
   return `Ideal six-step (120°) · ${advance} · ${metadata.phase_connection || 'wye'} · ${metadata.current_amplitude_convention || 'plateau'}`;
 }
 
-export function PublicRunComparison({ currentResult, manageRuns = false, onOpenRun }: PublicRunComparisonProps) {
+export function PublicRunComparison({ currentResult, manageRuns = false, compareWithPrevious = false, onOpenRun }: PublicRunComparisonProps) {
   const currentSaved = currentResult?.saved_run;
   const [allRecords, setAllRecords] = useState<PublicRunListRecord[]>([]);
   const [records, setRecords] = useState<PublicRunListRecord[]>([]);
   const [storage, setStorage] = useState<PublicRunStoragePolicy | null>(null);
-  const [leftKey, setLeftKey] = useState(currentSaved ? runKey(currentSaved) : '');
-  const [rightKey, setRightKey] = useState('');
+  const [leftKey, setLeftKey] = useState(currentSaved && !compareWithPrevious ? runKey(currentSaved) : '');
+  const [rightKey, setRightKey] = useState(currentSaved && compareWithPrevious ? runKey(currentSaved) : '');
+  const [runsLoaded, setRunsLoaded] = useState(false);
   const [loaded, setLoaded] = useState<Record<string, LoadedRun>>({});
   const [error, setError] = useState<string | null>(null);
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
@@ -181,6 +186,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
     setAllRecords(payload.runs);
     setStorage(payload.storage);
     setRecords(payload.runs.filter((run) => run.status === 'complete' && isMagneto2dRun(run)));
+    setRunsLoaded(true);
     setError(null);
   }, []);
 
@@ -194,20 +200,33 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
     return () => { active = false; };
   }, [refreshRuns]);
 
+  const currentKey = currentSaved ? runKey(currentSaved) : '';
+  const currentRecord = records.find(run => runKey(run) === currentKey);
+  const previousRecord = currentRecord ? previousCompletedRun(records, currentRecord) : undefined;
+  const previousKey = previousRecord ? runKey(previousRecord) : '';
+
   useEffect(() => {
     const keys = new Set(records.map(runKey));
     const currentKey = currentSaved ? runKey(currentSaved) : '';
+    if (compareWithPrevious) {
+      const nextRight = keys.has(rightKey) ? rightKey : keys.has(currentKey) ? currentKey : '';
+      const nextLeft = keys.has(leftKey) && leftKey !== nextRight ? leftKey : previousKey;
+      if (nextLeft !== leftKey) setLeftKey(nextLeft);
+      if (nextRight !== rightKey) setRightKey(nextRight);
+      return;
+    }
     const nextLeft = keys.has(leftKey)
       ? leftKey
       : keys.has(currentKey)
         ? currentKey
-        : runKey(records[0] || { project_slug: '', run_id: '' });
+        : records[0] ? runKey(records[0]) : '';
+    const fallbackRight = records.find((run) => runKey(run) !== nextLeft);
     const nextRight = keys.has(rightKey) && rightKey !== nextLeft
       ? rightKey
-      : runKey(records.find((run) => runKey(run) !== nextLeft) || { project_slug: '', run_id: '' });
+      : fallbackRight ? runKey(fallbackRight) : '';
     if (nextLeft !== leftKey) setLeftKey(nextLeft);
     if (nextRight !== rightKey) setRightKey(nextRight);
-  }, [currentSaved, leftKey, records, rightKey]);
+  }, [compareWithPrevious, currentSaved, leftKey, previousKey, records, rightKey]);
 
   useEffect(() => {
     if (!records.length) return;
@@ -224,6 +243,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
         value: {
           record,
           result: payload.result,
+          inputs: payload.inputs,
         },
       };
     })).then((entries) => {
@@ -277,6 +297,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
   const left = loaded[leftKey];
   const right = loaded[rightKey];
   const ready = Boolean(left && right && leftKey !== rightKey);
+  const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !leftKey;
   const torqueSeries = useMemo(() => ready ? [
     {
       id: 'run-a',
@@ -444,13 +465,18 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
         <div className="public-run-compare-legend"><span><i className="run-a" />Run A</span><span><i className="run-b" />Run B</span></div>
       </div>
       <div className="public-run-compare-selectors">
-        <label><span>Run A · baseline</span><select value={leftKey} onChange={(event) => setLeftKey(event.target.value)}>{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
-        <label><span>Run B · candidate</span><select value={rightKey} onChange={(event) => setRightKey(event.target.value)}>{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
+        <label><span>Run A · baseline</span><select value={leftKey} onChange={(event) => setLeftKey(event.target.value)}>{!leftKey && <option value="">Choose a baseline</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
+        <label><span>Run B · candidate</span><select value={rightKey} onChange={(event) => setRightKey(event.target.value)}>{!rightKey && <option value="">Choose a candidate</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
       </div>
       {error && <div className="public-run-compare-message error" role="alert">{error}</div>}
-      {!error && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
-      {!error && records.length >= 2 && !ready && <div className="public-run-compare-message">Loading saved run data…</div>}
+      {!error && noPrevious && <div className="public-run-compare-message" role="status">{currentRecord
+        ? 'No earlier completed Magneto2D run with a recorded completion time was found in this saved project. Choose a baseline manually to compare another run.'
+        : 'The current run is no longer available in saved runs. Choose two saved runs manually.'}</div>}
+      {!error && !compareWithPrevious && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
+      {!error && !noPrevious && records.length >= 2 && !ready && <div className="public-run-compare-message">Loading saved run data…</div>}
       {ready && <>
+        {compareWithPrevious && leftKey === previousKey && rightKey === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
+        <RunInputChanges before={left.inputs} after={right.inputs} />
         <div className="public-run-compare-identities" aria-label="Compared run identity and provenance">
           {[
             { key: 'run-a', side: 'Run A · baseline', run: left },
@@ -464,6 +490,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
                 <div><dt>Actual mesh</dt><dd>{actualMeshProvenance(run.result)}</dd></div>
                 <div><dt>Torque extraction</dt><dd>{actualTorqueProvenance(run.result)}</dd></div>
                 <div><dt>Excitation identity</dt><dd>{excitationProvenance(run.result)}</dd></div>
+                <div><dt>Saved setup</dt><dd>{recordedSetupLabel(run.inputs)}</dd></div>
                 <div><dt>Completed</dt><dd>{run.record.completed_at ? new Date(run.record.completed_at).toLocaleString() : 'Not recorded'}</dd></div>
               </dl>
             </article>

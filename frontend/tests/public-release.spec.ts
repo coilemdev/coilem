@@ -1334,6 +1334,95 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
 });
 
 
+for (const hasPrevious of [true, false]) {
+test(`Compare 2.0: Results ${hasPrevious ? 'selects the previous completed project run and shows input differences' : 'explains when no previous project run exists'}`, async ({ page }, info) => {
+  const errors: string[] = [], solves: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (['/solve', '/solve/stream', '/performance/map/stream'].includes(new URL(request.url()).pathname)) solves.push(request.url());
+  });
+  const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+from tests.test_analysis_options import config, result_for
+print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+  const baseline = JSON.parse(await readFile(new URL('../../tests/fixtures/spm_4p12s_simple.json', import.meta.url), 'utf8'));
+  baseline.rotor.magnet_thickness_mm = 4;
+  baseline.solve_params.current_amplitude_A = 20;
+  baseline.solve_params.current_amplitude_convention = 'rms';
+  delete baseline.solve_params.max_nonlinear_iterations;
+  const candidate = structuredClone(baseline);
+  candidate.rotor.magnet_thickness_mm = 4.5;
+  candidate.solve_params.current_amplitude_A = 30;
+  candidate.solve_params.max_nonlinear_iterations = 120;
+  const current = { project_slug: 'comparison-motor', run_id: 'current', project_name: 'Compare motor',
+    status: 'complete', solver_name: fixture.solve_metadata.solver_name, completed_at: '2026-11-14T12:00:00Z', path: '' };
+  const records = [
+    { ...current, project_slug: 'another-motor', run_id: 'unrelated', completed_at: '2026-11-14T11:59:00Z' },
+    { ...current, run_id: 'newer', completed_at: '2026-11-14T13:00:00Z' },
+    { ...current, run_id: 'failed', status: 'failed', completed_at: '2026-11-14T11:58:00Z' },
+    ...(hasPrevious ? [
+      { ...current, run_id: 'older', completed_at: '2026-11-14T10:00:00Z' },
+      { ...current, run_id: 'legacy', completed_at: '2026-11-14T09:00:00Z' },
+      { ...current, run_id: 'previous', completed_at: '2026-11-14T11:00:00Z' },
+    ] : []), current,
+  ];
+  await page.route('**/runs', route => route.fulfill({ json: {
+    storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true }, runs: records,
+  } }));
+  await page.route('**/runs/*/*/comparison', route => {
+    const id = new URL(route.request().url()).pathname.split('/').at(-2);
+    const setup = { id: 'profile-1', name: 'Report', version: id === 'current' ? 2 : 1, kind: 'user', includes_numerics: true };
+    return route.fulfill({ json: { result: fixture, ...(id !== 'legacy' ? { inputs: {
+      config: id === 'current' ? candidate : baseline, solver: 'magneto2d', solver_name: fixture.solve_metadata.solver_name, run_setup: setup,
+    } } : {}) } });
+  });
+  await page.route('**/runs/comparison-motor/current', route => route.fulfill({ json: {
+    integrity: { valid: true }, project: { openem_schema_version: 4, name: 'Compare motor', ...candidate },
+    request: { submitted: { solver: 'magneto2d' }, resolved_config: candidate }, result: fixture,
+    saved_run: { ...current, schema_version: 'coilem.solve_run.v2' },
+  } }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
+  await dialog.locator('[data-run-id="current"]').getByRole('button', { name: 'Open results', exact: true }).click();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await page.getByRole('button', { name: 'Compare with previous run', exact: true }).click();
+  const left = page.getByRole('combobox', { name: 'Run A · baseline', exact: true });
+  const right = page.getByRole('combobox', { name: 'Run B · candidate', exact: true });
+  await expect(right).toHaveValue('comparison-motor/current');
+  if (hasPrevious) {
+    await expect(left).toHaveValue('comparison-motor/previous');
+    const changes = page.getByRole('region', { name: 'What changed between runs', exact: true });
+    await expect(changes).toBeVisible();
+    await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['4 mm', '4.5 mm']);
+    await expect(changes.locator('[data-input-path="config.solve_params.current_amplitude_A"] td')).toHaveText(['20 A rms', '30 A rms']);
+    await expect(changes.locator('[data-input-path="config.solve_params.max_nonlinear_iterations"] td')).toHaveText(['Not recorded', '120']);
+    await expect(changes.locator('[data-input-path="run_setup.version"] td')).toHaveText(['1', '2']);
+    await expect(page.getByRole('tab', { name: 'Torque overlay', exact: true })).toBeVisible();
+    await page.screenshot({ path: info.outputPath('compare-what-changed.png'), fullPage: true });
+    await left.selectOption('comparison-motor/legacy');
+    await expect(changes).toContainText('Input snapshots were not recorded for one or both runs');
+    await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['Not recorded', '4.5 mm']);
+    await expect(page.getByText('No differences in the recorded inputs.', { exact: true })).toHaveCount(0);
+    await left.selectOption('comparison-motor/older');
+    await right.selectOption('comparison-motor/previous');
+    await expect(changes).toContainText('No differences in the recorded inputs.');
+    await expect(changes.locator('table')).toHaveCount(0);
+  } else {
+    await expect(left).toHaveValue('');
+    await expect(page.getByRole('status').filter({ hasText: 'No earlier completed Magneto2D run' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'What changed between runs', exact: true })).toHaveCount(0);
+    // Manual comparison remains available; there is no automatic unrelated baseline.
+    await left.selectOption('another-motor/unrelated');
+    await expect(page.getByRole('region', { name: 'What changed between runs', exact: true })).toBeVisible();
+  }
+  expect(errors).toEqual([]);
+  expect(solves).toEqual([]);
+});
+}
+
 test('priority fixes: pruned playback stays static and never requests removed frames', async ({ page }, info) => {
   const requests: string[] = [];
   const errors: string[] = [];

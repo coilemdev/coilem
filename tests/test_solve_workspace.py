@@ -415,6 +415,33 @@ def test_comparison_loads_pre_v4_run_without_parity_migration(
     assert stored["project_name"] == "legacy-flat-ipm"
     assert stored["result"]["summary"] == {}
     assert "parity_identity" not in stored
+    assert stored["inputs"]["config"] == old_config
+    assert "flat_buried_magnet_shape" not in stored["inputs"]["config"]["rotor"]
+    assert stored["inputs"]["run_setup"] is None
+    assert stored["inputs"]["solver"] is None
+
+
+def test_comparison_inputs_are_immutable_resolved_settings_and_recorded_setup(tmp_path: Path) -> None:
+    config = deepcopy(VALID_CONFIG)
+    config["rotor"]["magnet_thickness_mm"] = 4.5
+    label = {"id": "setup-1", "name": "Report", "version": 2, "kind": "user", "includes_numerics": True}
+    workspace = SolveWorkspace(tmp_path / "data")
+    writer = workspace.begin_run(
+        project_name="input-differences", config=config,
+        submitted_request={"config": config, "solver": "magneto2d", "run_setup": label},
+    )
+    result = _result("cache-frame")
+    result["solve_metadata"]["run_setup"] = deepcopy(label)
+    location = writer.complete(result)
+    config["rotor"]["magnet_thickness_mm"] = 99
+    result["solve_metadata"]["run_setup"]["name"] = "Later rename"
+    compared = workspace.load_run_comparison(location.project_slug, location.run_id)
+    assert compared["inputs"]["config"]["rotor"]["magnet_thickness_mm"] == 4.5
+    assert compared["inputs"]["solver"] == "magneto2d"
+    assert compared["inputs"]["run_setup"] == label
+    assert "run_setups" not in compared["inputs"]
+    compared["inputs"]["run_setup"]["name"] = "UI edit"
+    assert workspace.load_run_comparison(location.project_slug, location.run_id)["inputs"]["run_setup"] == label
 
 
 def test_failed_run_remains_explicit_partial_diagnostic(tmp_path: Path) -> None:

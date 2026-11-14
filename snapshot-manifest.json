@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 61783,
-      "sha256": "c05a1c1e79145e434ad20e61cacc7c3b5f6da4252958cfffaa1c0897da381f17"
+      "bytes": 62990,
+      "sha256": "d9e5e828c9fca41b8920b43537e27a603ea243a0c0e4b752328e8d0b78b42f0c"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 296824,
-      "sha256": "46996cc593ce2b79cb997f4fb3c446a3253717c7d61b5346d09c12970f84f81a"
+      "bytes": 297453,
+      "sha256": "4c122040f859a254ae6bab86f1ef944de275d0f5a4a34f5a1e93bef021fcdabb"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7100,8 +7100,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 26433,
-      "sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f"
+      "bytes": 28581,
+      "sha256": "d2f9664ac9900146f10e3908b53d4ac27b453fec623714fee4fdfe9f317a9f66"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7150,8 +7150,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 14897,
-      "sha256": "914fd5f0ee1c6ca6910ffd6c6ba10a2ac5390475a205e36f78ffa5f131503e89"
+      "bytes": 14992,
+      "sha256": "d65ff3f57bd8a2e7629ba15b909fa2fa39b4a757ac67b5fbdda504dd7bcd1489"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7530,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 330619,
-      "sha256": "a64723bfecabf4cfe13b8cdb0459a3baf1a2111d2556ff359e410ad518d6176a"
+      "bytes": 332515,
+      "sha256": "dfeea8a501c29a900cc155d3c99ea6dae7c9171409f758ce25d6ab59eb52a64e"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 99926,
-      "sha256": "4350ea7e3ab259ef61880f4f801ddd3b13fc6eb33e33483aa3e70ed27e09dec2"
+      "bytes": 106270,
+      "sha256": "a6a43d56244147fafae9723381e2337e0d40713b55d24ced6e84f0ffe3450313"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8375,8 +8375,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 28472,
-      "sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40"
+      "bytes": 29971,
+      "sha256": "ce13482f19adc1fc5df36c755e3ac1b771bd34939e3311bba42bdd99aeab8cc2"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -11670,13 +11670,13 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 1573,
-      "sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64"
+      "bytes": 5721,
+      "sha256": "9c3f0d3f7251376d49d2b6998e55a980a51cdba5014b375d3d76876438f94b99"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
-      "bytes": 1070,
-      "sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768"
+      "bytes": 1918,
+      "sha256": "6b222217e4fb47996ca45ac4715a96a4b785bbfee113780df92db869c86bd8d7"
     },
     {
       "path": "backend/report_numbers.py",
@@ -18752,6 +18752,21 @@
       "path": "frontend/tests/solve-profiles.spec.ts",
       "bytes": 18653,
       "sha256": "0d03f4f46971df4b10d744ce491f707ca55a704a55f2ebf02972bf27fb676fc0"
+    },
+    {
+      "path": "docs/COMPARE_RUNS.md",
+      "bytes": 1625,
+      "sha256": "f349807e8a83cc9d34e7df411318f805e3dd32c085c0208d9818af201da6d9c4"
+    },
+    {
+      "path": "frontend/src/public/RunChangesTable.tsx",
+      "bytes": 1916,
+      "sha256": "7e3f1ac5aa5a672a86fa52238042afbd60713b969417e645c1da232a5190fa48"
+    },
+    {
+      "path": "frontend/src/public/runInputChanges.ts",
+      "bytes": 8351,
+      "sha256": "260c6774de48071d40d45704fe9d1fb034edb2c675ffdd899204848b0b562e40"
     }
   ],
   "public_patches": [
@@ -40738,6 +40753,78 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
       "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "c05a1c1e79145e434ad20e61cacc7c3b5f6da4252958cfffaa1c0897da381f17",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "docs/COMPARE_RUNS.md",
+      "source_sha256": null,
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "46996cc593ce2b79cb997f4fb3c446a3253717c7d61b5346d09c12970f84f81a",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/RunChangesTable.tsx",
+      "source_sha256": null,
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "914fd5f0ee1c6ca6910ffd6c6ba10a2ac5390475a205e36f78ffa5f131503e89",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/runComparison.ts",
+      "source_sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/runInputChanges.ts",
+      "source_sha256": null,
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "a64723bfecabf4cfe13b8cdb0459a3baf1a2111d2556ff359e410ad518d6176a",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "4350ea7e3ab259ef61880f4f801ddd3b13fc6eb33e33483aa3e70ed27e09dec2",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "55ac5abcdd19ddf46e6be84c36bc3c930db3350a",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40",
+      "reason": "Add Compare 2.0 recorded input differences and a previous-run Results shortcut on top of saved run setups, without changing physics or stored evidence."
     }
   ]
 }

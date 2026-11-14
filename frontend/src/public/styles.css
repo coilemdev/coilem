@@ -1653,6 +1653,24 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-report-mode button { min-height: 28px; border: 0; background: transparent; }
 .public-report-mode button.active { color: var(--text-accent); background: rgba(245,158,11,.1); }
 .public-run-compare { max-width: 1080px; margin: 0 auto; }
+.public-run-input-changes { margin: 16px 0; padding: 16px; border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface-1); }
+.public-run-compare-previous-note { margin: 12px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.public-run-input-changes > header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.public-run-input-changes h3 { margin: 0; color: var(--text-primary); font-size: 15px; }
+.public-run-input-changes > header > span { color: var(--text-accent); font-size: 11px; }
+.public-run-input-changes > p { margin: 8px 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.public-run-input-changes > .public-run-input-notice { color: var(--text-secondary); }
+.public-run-input-table-scroll { max-height: 480px; margin-top: 12px; overflow: auto; border: 1px solid var(--border-subtle); border-radius: 7px; }
+.public-run-input-changes table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; text-align: left; }
+.public-run-input-changes th, .public-run-input-changes td { padding: 9px 12px; border-bottom: 1px solid var(--border-subtle); overflow-wrap: anywhere; vertical-align: top; }
+.public-run-input-changes th { color: var(--text-secondary); font-weight: 500; }
+.public-run-input-changes td { color: var(--text-primary); font-family: var(--font-mono); }
+.public-run-input-changes thead th { position: sticky; top: 0; z-index: 1; background: var(--bg-surface-3); font-size: 10px; font-weight: 600; }
+.public-run-input-changes thead th:first-child { width: 42%; }
+.public-run-input-changes td:nth-child(2) { color: #fbbf24; }
+.public-run-input-changes td:nth-child(3) { color: #67e8f9; }
+.public-run-input-group th { background: var(--bg-surface-2); color: var(--text-primary); font-weight: 600; }
+.public-report-mode { flex-wrap: wrap; }
 .public-run-compare-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid var(--border-subtle); border-radius: 10px 10px 0 0; background: var(--bg-surface-1); }
 .public-run-compare-heading h2 { margin: 5px 0 3px; color: var(--text-primary); font-size: 17px; }
 .public-run-compare-heading p { color: var(--text-muted); font-size: 10px; }
