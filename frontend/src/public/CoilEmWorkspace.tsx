@@ -1,11 +1,22 @@
+import { validSlotCount, slotPitchText } from './designHealth';
 import { solveViewMemory } from './solveViewMemory';
+import { useTurningRotorAngle } from './useTurningRotorAngle';
+import { useLayerMenu } from './useLayerMenu';
+import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
+import { NewDesignEntryContext, GuidedDesignProgressContext, DesignSectionContext, useNewDesignEntry, useEntryField, entryKey, hasEntry, entrySectionComplete, enteredDesignParts, type NewDesignEntrySnapshot } from './newDesignEntry';
+import { DESIGN_PARTS, buildIssues, designPartsComplete, maximumShoeOverhangMm, progressiveGeometry, shoeOverhangLimitNotice, type BuiltParts, type DesignIssue } from './progressiveDesign';
+import { windingBuildChecks } from './windingBuild';
+import { AWG_SIZES, awgFor, awgNote, awgStoredDiameterMm } from './wireGauge';
 import { CustomSteelImport } from './CustomSteelImport';
 import { projectMaterialCatalog, steelDisplayName, type CustomSteel, type SteelTarget } from './customSteel';
 import {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,11 +30,15 @@ import type { PublicApiError } from './api';
 import { DESIGN_FILE_ACCEPT, DESIGN_FILE_EXTENSION } from './designFile';
 import { publishedReference } from './publishedReferences';
 import { RotorArrangement } from './RotorArrangement';
+import { RotorArrangementPreview } from './RotorArrangementPreview';
+import { useMotorHoverPreview } from './useMotorHoverPreview';
 import { outerRotorRing } from './sectorFraming';
 
 import {
   MotorCanvas,
   type PublicCanvasLayer,
+  type PublicCanvasOverlays,
+  NO_CANVAS_OVERLAYS,
   type PublicMeshDisplayMode,
   type PublicMeshElementSelection,
 } from './MotorCanvas';
@@ -32,12 +47,13 @@ import { coilsPerPhase, wholeSlotConcentratedNote, windingLayerOptions, windingL
 import {
   advancedGeometrySummary,
   buildDimensionAnnotations,
+  designFieldDimension,
   deriveStatorSectionWidths,
   shownWidthMm,
   type DimensionAnnotation,
   type DimensionId,
 } from './dimensionAnnotations';
-import { FieldResultPlot } from './FieldResultPlot';
+import { FIELD_FIT_LIKE_MOTOR_CANVAS, FieldResultPlot } from './FieldResultPlot';
 import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   MaterialAssignmentStrip,
@@ -77,6 +93,8 @@ import { examplesByLayout, publicExampleOptions, type PublicExampleId } from './
 import {
   magneticAirgapMm,
   PUBLIC_AIRGAP_LAUNCH_MIN_MM,
+  PUBLIC_AIRGAP_PRACTICAL_MAX_MM,
+  OUTER_ROTOR_AIRGAP_PRACTICAL_MAX_MM,
   publicAirgapHealth,
 } from './motorAirgap';
 import { publicFlatIpmBurialHealth } from './flatIpmBurialHealth';
@@ -101,8 +119,8 @@ import { HOLEM50_FIELDS } from './model';
 import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
-import { designErrorSection } from './designErrors';
-import { magnetPoleCoveragePct } from './magnetCoverage';
+import { designErrorSection, designErrorText, enteredGeometryError, humanizeGeometryMessage } from './designErrors';
+import { hasPoleCoverageEstimate, magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
 import { formatVolts, solvedPhaseCurrent, torqueRippleView, waveformMeasure, type WaveformMeasure } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
@@ -120,6 +138,8 @@ import {
 import {
   isPublicSolveFinalizing,
   projectedPublicSolveElapsedSeconds,
+  nextPublicSolveRotorTurn,
+  type PublicSolveRotorTurn,
 } from './solveProgress';
 import { formatTorqueNm } from './numberFormat';
 
@@ -134,6 +154,7 @@ export interface PublicDesignEditFeedback {
   message: string;
   consequence: string | null;
   affectedKind: PublicMotorComponentKind | null;
+  previousEntry?: NewDesignEntrySnapshot;
 }
 
 interface CoilEmWorkspaceProps {
@@ -153,6 +174,7 @@ interface CoilEmWorkspaceProps {
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
   guidedSolveSection?: SolveSetupSection | null;
+  guidedSetup?: ReactNode;
   busy: PublicBusyAction;
   connectionStatus: PublicConnectionStatus;
   appVersion?: string | null;
@@ -168,6 +190,11 @@ interface CoilEmWorkspaceProps {
   meshQuality: number;
   designName?: string | null;
   blankDesign?: boolean;
+  newDesignParts?: BuiltParts | null;
+  designInputInvalid?: boolean;
+  designInputIssue?: DesignIssue | null;
+  onDesignInputIssueChange?: (field: string, issue: DesignIssue | null) => void;
+  onAcceptDesignSection?: (section: PublicParameterSection) => void;
   editFeedback?: PublicDesignEditFeedback | null;
   onNewDesign?: () => void;
   onOpenDesignFile?: (file: File) => void;
@@ -177,13 +204,14 @@ interface CoilEmWorkspaceProps {
   onOpenHalbach?: () => void;
   onHome: () => void;
   onStepChange: (step: PublicWorkflowStep) => void;
-  onTopologyChange: (topology: MotorConfig['topology']) => void;
+  onTopologyChange: (topology: MotorConfig['topology'], entrySnapshot?: NewDesignEntrySnapshot) => void;
   onRotorLayoutChange: (layout: RotorLayout) => void;
   onSectionChange: (
     section: PublicEditableSection,
     field: string,
     value: unknown,
     visitedSection?: PublicParameterSection,
+    entrySnapshot?: NewDesignEntrySnapshot,
   ) => void;
   onDesignSectionVisit: (section: PublicParameterSection) => void;
   onConvertProjectSteelToM350: () => void;
@@ -395,7 +423,7 @@ function needsRunStorageRecovery(message: string | null): boolean {
   return /saved-run workspace is full|solve workspace size limit|not have enough free disk space/i.test(message);
 }
 
-function StatusGlyph({ tone = 'good' }: { tone?: 'good' | 'info' | 'warning' }) {
+function StatusGlyph({ tone = 'good' }: { tone?: 'good' | 'info' | 'warning' | 'error' }) {
   return (
     <span className={`public-status-glyph ${tone}`} aria-hidden="true">
       {tone === 'good' ? '✓' : tone === 'info' ? 'i' : '!'}
@@ -840,24 +868,72 @@ interface NumberRowProps {
   value: number;
   unit?: string;
   hint?: string;
+  advisory?: string | null;
   min?: number;
   max?: number;
   step?: number;
   disabled?: boolean;
+  clampToBounds?: boolean;
+  entryOptional?: boolean;
   onChange: (value: number) => void;
 }
 
-function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled, onChange }: NumberRowProps) {
+const NewDesignDraftContext = createContext<((field: string, issue: DesignIssue | null) => void) | null>(null);
+const DesignIssueContext = createContext<DesignIssue | null>(null);
+const DesignFieldFocusContext = createContext<{
+  field: { section: string; label: string } | null;
+  setField: (field: { section: string; label: string } | null) => void;
+} | null>(null);
+
+function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1, disabled, clampToBounds = false, entryOptional = false, onChange }: NumberRowProps) {
+  const entryField = useEntryField(label, !entryOptional);
+  const unset = entryField.unset && !entryOptional;
+  const reportDraftValidity = useContext(NewDesignDraftContext);
+  const section = useContext(DesignSectionContext);
+  const designIssue = useContext(DesignIssueContext);
+  const fieldFocus = useContext(DesignFieldFocusContext);
+  const reportDraftValidityRef = useRef(reportDraftValidity);
+  reportDraftValidityRef.current = reportDraftValidity;
+  useEffect(() => () => reportDraftValidityRef.current?.(label, null), [label]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [draftValue, setDraftValue] = useState(() => String(value));
+  const [draftValue, setDraftValue] = useState(() => unset ? '' : String(value));
+  const [touched, setTouched] = useState(false);
+  const cancelDraft = useRef(false);
+  const draftError = (text: string): string | null => {
+    const range = min !== undefined && max !== undefined ? ` Valid range: ${min}–${max}${unit ? ` ${unit}` : ''}.`
+      : min !== undefined ? ` Minimum: ${min}${unit ? ` ${unit}` : ''}.`
+      : max !== undefined ? ` Maximum: ${max}${unit ? ` ${unit}` : ''}.` : '';
+    if (text.trim() === '' || !Number.isFinite(Number(text))) return `Enter a numeric value for ${label}.${range}`;
+    if (min !== undefined && Number(text) < min) return `${label} must be at least ${min}${unit ? ` ${unit}` : ''}.${range}`;
+    if (max !== undefined && Number(text) > max) return `${label} must be at most ${max}${unit ? ` ${unit}` : ''}.${range}`;
+    if (Number.isInteger(step) && step >= 1 && !Number.isInteger(Number(text))) return `${label} must be a whole number.${range}`;
+    return null;
+  };
+  const reportDraft = (text: string) => {
+    const message = draftError(text);
+    reportDraftValidity?.(label, message ? { label, message, section: section ?? undefined } : null);
+    return message !== null;
+  };
+  const fieldError = reportDraftValidity
+    ? ((!unset || touched) ? draftError(draftValue) : null) ?? (designIssue?.label === label ? designIssue.message : null)
+    : null;
+  const errorId = `design-field-error-${label.replace(/\W+/g, '-').toLowerCase()}`;
+  const advisoryId = `design-field-advisory-${label.replace(/\W+/g, '-').toLowerCase()}`;
 
   useEffect(() => {
-    if (inputRef.current !== document.activeElement) {
-      setDraftValue(String(value));
+    if (unset || inputRef.current !== document.activeElement) {
+      setDraftValue(unset ? '' : String(value));
     }
-  }, [value]);
+  }, [value, unset]);
 
   const commitDraft = () => {
+    if (cancelDraft.current) { cancelDraft.current = false; return; }
+    if (unset && !touched && !draftValue.trim()) return;
+    if (reportDraftValidity) {
+      const invalid = reportDraft(draftValue);
+      if (!invalid) { entryField.confirm(); onChange(Number(draftValue)); }
+      return;
+    }
     const parsed = Number(draftValue);
     if (!Number.isFinite(parsed)) {
       setDraftValue(String(value));
@@ -868,7 +944,7 @@ function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled
   };
 
   return (
-    <label className="param-row public-param-row" title={hint}>
+    <label className={`param-row public-param-row${fieldError ? ' has-field-error' : advisory ? ' has-field-warning' : ''}`} title={hint} data-entry-field={entryField.active ? entryField.key : undefined} data-entry-configured={!unset} data-entry-required={entryField.required}>
       <span className="param-label">{label}{unit && <small>{unit}</small>}</span>
       <span className="param-control">
         <input
@@ -876,23 +952,52 @@ function NumberRow({ label, value, unit = '', hint, min, max, step = 1, disabled
           className="param-number-input"
           type="number"
           value={draftValue}
+          placeholder={unset ? 'Enter…' : undefined}
+          aria-label={label}
+          aria-invalid={reportDraftValidity ? Boolean(fieldError) : undefined}
+          aria-describedby={fieldError ? errorId : advisory ? advisoryId : undefined}
           min={min}
           max={max}
           step={step}
           disabled={disabled}
-          onChange={(event) => setDraftValue(event.target.value)}
-          onBlur={commitDraft}
+          onChange={(event) => {
+            const text = event.target.value;
+            setTouched(true);
+            const parsed = Number(text);
+            if (clampToBounds && text.trim() && Number.isFinite(parsed)) {
+              const bounded = Math.min(max ?? Infinity, Math.max(min ?? -Infinity, parsed));
+              if (bounded !== parsed) {
+                setDraftValue(String(bounded));
+                reportDraftValidity?.(label, null);
+                entryField.confirm();
+                onChange(bounded);
+                return;
+              }
+            }
+            setDraftValue(text);
+            if (reportDraftValidity) {
+              const invalid = reportDraft(text);
+              if (!invalid) { entryField.confirm(); onChange(Number(text)); }
+            }
+          }}
+          onFocus={() => fieldFocus?.setField({ section: section ?? '', label })}
+          onBlur={() => { commitDraft(); fieldFocus?.setField(null); }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault();
               event.currentTarget.blur();
             } else if (event.key === 'Escape') {
-              setDraftValue(String(value));
+              cancelDraft.current = true;
+              setDraftValue(unset ? '' : String(value));
+              setTouched(false);
+              reportDraftValidity?.(label, null);
               event.currentTarget.blur();
             }
           }}
         />
       </span>
+      {fieldError && <span className="public-param-field-error" id={errorId}>{fieldError}</span>}
+      {!fieldError && advisory && <span className="public-param-field-warning" id={advisoryId}>{advisory}</span>}
     </label>
   );
 }
@@ -923,22 +1028,56 @@ function ToggleRow({ label, checked, hint, disabled, onChange }: {
   );
 }
 
-function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef }: {
+function SelectRow({ label, value, choices, hint, disabled, onChange, selectRef, entryOptional = false, entryAlias }: {
   label: string;
   value: string;
   choices: Array<{ value: string; label: string; disabled?: boolean }>;
   hint?: string;
   disabled?: boolean;
   selectRef?: Ref<HTMLSelectElement>;
+  entryOptional?: boolean;
+  entryAlias?: string;
   onChange: (value: string) => void;
 }) {
+  const field = useEntryField(label, !entryOptional, entryAlias);
   return (
-    <label className="param-row public-param-row" title={hint}>
+    <label className="param-row public-param-row" title={hint} data-entry-field={field.active ? field.key : undefined} data-entry-configured={!field.unset} data-entry-required={field.required}>
       <span className="param-label">{label}</span>
-      <select ref={selectRef} className="param-select" value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)}>
+      <select ref={selectRef} className="param-select" value={field.unset ? '' : value} disabled={disabled} onChange={(event) => { field.confirm(); onChange(event.target.value); }}>
+        {field.active && <option value="" disabled>Select…</option>}
         {choices.map((choice) => <option value={choice.value} disabled={choice.disabled} key={choice.value}>{choice.label}</option>)}
       </select>
     </label>
+  );
+}
+
+/** A choice between a few options as side-by-side buttons: one click to switch, where a list takes two. */
+function ChoiceRow({ label, value, choices, hint, disabled, onChange }: {
+  label: string;
+  value: string;
+  choices: Array<{ value: string; label: string; disabled?: boolean }>;
+  hint?: string;
+  disabled?: boolean;
+  onChange: (value: string) => void;
+}) {
+  const field = useEntryField(label);
+  return (
+    <div className="param-row public-param-row public-choice-row" role="group" aria-label={label} title={hint} data-entry-field={field.active ? field.key : undefined} data-entry-configured={!field.unset} data-entry-required={field.required}>
+      <span className="param-label">{label}</span>
+      <span className="public-param-choices">
+        {choices.map((choice) => (
+          <button
+            type="button"
+            aria-pressed={!field.unset && choice.value === value}
+            disabled={disabled || choice.disabled}
+            onClick={() => { if (field.unset || choice.value !== value) { field.confirm(); onChange(choice.value); } }}
+            key={choice.value}
+          >
+            {choice.label}
+          </button>
+        ))}
+      </span>
+    </div>
   );
 }
 
@@ -985,7 +1124,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ...(config.geometry_reference ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
+        ...(config.geometry_reference || !hasPoleCoverageEstimate(config) ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -1092,35 +1231,45 @@ function ParameterSectionBlock<Id extends string = PublicParameterSection>({
   sectionRef?: Ref<HTMLElement>;
   className?: string;
 }) {
+  const entry = useContext(NewDesignEntryContext);
+  const complete = !entry || entrySectionComplete(entry, id);
+  const mountSection = entry?.mountSection;
+  useLayoutEffect(() => mountSection?.(id), [mountSection, id]);
+  const required = entry ? Object.values(entry.requirements).filter((field) => field.section === id && field.required) : [];
+  const nextBlocked = Boolean(entry && !complete);
   return (
-    <section ref={sectionRef} className={`param-group${className ? ` ${className}` : ''}`} data-guide={guide ?? `section-${id}`} data-guide-active={active ? 'true' : 'false'}>
+    <section ref={sectionRef} className={`param-group${className ? ` ${className}` : ''}`} data-guide={guide ?? `section-${id}`} data-guide-active={active ? 'true' : 'false'} data-entry-complete={complete}>
       <button
         type="button"
-        className={`param-group-header ${attention ? 'status-attention' : 'status-complete'}${active ? '' : ' collapsed'}`}
+        className={`param-group-header ${attention ? 'status-attention' : complete ? 'status-complete' : 'status-pending'}${active ? '' : ' collapsed'}`}
         // The chevron is aria-hidden, so without this the header gave no clue
         // that it opens and closes anything.
         aria-expanded={active}
         aria-controls={`param-group-content-${id}`}
         onClick={() => onToggle(id)}
       >
-        <StatusGlyph tone={attention ? 'warning' : 'good'} />
+        <StatusGlyph tone={attention ? 'warning' : complete ? 'good' : 'info'} />
         <span className="param-group-titles">
           <span className="param-group-label">{label}{attention && <span className="public-visually-hidden"> needs attention</span>}</span>
-          {!active && <span className="param-group-chip">{summary}</span>}
+          {!active && <span className="param-group-chip">{complete ? summary : `${required.filter((field) => entry && hasEntry(entry, id, field.label)).length} of ${required.length} fields configured`}</span>}
         </span>
         <span className="chevron" aria-hidden="true">▼</span>
       </button>
       <div id={`param-group-content-${id}`} className={`param-group-content${active ? '' : ' collapsed'}`}>
+        <DesignSectionContext.Provider value={id}>
         {children}
-        {nextLabel && onNext && <button className="param-section-advance" type="button" onClick={onNext}>Continue Setup: {nextLabel} →</button>}
+        {nextLabel && onNext && <button className="param-section-advance" type="button" disabled={nextBlocked} title={nextBlocked ? 'Configure each field in this section to continue.' : undefined} onClick={onNext}>Continue Setup: {nextLabel} →</button>}
+        {nextBlocked && <div className="public-entry-guidance">Configure each field in this section to continue.</div>}
+        </DesignSectionContext.Provider>
       </div>
     </section>
   );
 }
 
-function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, notice, blankDesign = false, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onRotorLayoutChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onRefreshGeometry, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
-  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'experimentalRotors' | 'onTopologyChange' | 'onRotorLayoutChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset' | 'onRefreshGeometry'
+function ParameterPanel({ config, materials, geometry, geometryStale, busy, error, errorDetails, designIssue, notice, blankDesign = false, newDesignParts, designInputInvalid, onDesignInputIssueChange, onAcceptDesignSection, guidedActive, guidedDesignSection, selectedComponent, experimentalRotors, onTopologyChange, onRotorLayoutChange, onSectionChange, onDesignSectionVisit, onConvertProjectSteelToM350, onImportSteel, onReset, onNext, onClearComponent }: Pick<CoilEmWorkspaceProps,
+  'config' | 'materials' | 'geometry' | 'geometryStale' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'blankDesign' | 'newDesignParts' | 'designInputInvalid' | 'onDesignInputIssueChange' | 'onAcceptDesignSection' | 'experimentalRotors' | 'onTopologyChange' | 'onRotorLayoutChange' | 'onSectionChange' | 'onDesignSectionVisit' | 'onConvertProjectSteelToM350' | 'onImportSteel' | 'onReset'
 > & {
+  designIssue: DesignIssue | null;
   guidedActive?: boolean;
   guidedDesignSection?: PublicParameterSection | null;
   selectedComponent: PublicMotorComponentSelection | null;
@@ -1130,35 +1279,69 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   // null = every section collapsed. Clicking the open section's header used to be
   // a no-op: the toggle tested `current === section` and then returned `section`
   // from both branches, so a group could be opened but never closed.
+  const entry = useContext(NewDesignEntryContext);
   const [activeSection, setActiveSection] = useState<PublicParameterSection | null>(
-    guidedActive ? null : 'stator',
+    guidedActive || entry ? null : 'stator',
   );
   const [searchQuery, setSearchQuery] = useState('');
+  const panelRef = useRef<HTMLElement>(null);
+  const pendingFirstControl = useRef<PublicParameterSection | null>(newDesignParts ? 'stator' : null);
   const setNext = (section: PublicParameterSection) => () => {
+    if (designInputInvalid || (newDesignParts && designIssue) || (entry && activeSection && !entrySectionComplete(entry, activeSection))) return;
+    if (activeSection) onAcceptDesignSection?.(activeSection);
     onDesignSectionVisit(section);
+    if (newDesignParts) pendingFirstControl.current = section;
     setActiveSection(section);
   };
   const toggle = (section: PublicParameterSection) => setActiveSection((current) => {
     const next = current === section ? null : section;
-    if (next) onDesignSectionVisit(next);
+    if (next) {
+      onDesignSectionVisit(next);
+      if (newDesignParts) pendingFirstControl.current = next;
+    }
     return next;
   });
   const disabled = busy !== null || Boolean(config.geometry_reference);
+  useEffect(() => {
+    if (!entry || activeSection !== 'advanced' || !entrySectionComplete(entry, 'stator')) return;
+    // These are already the dimensions of the slotted stator the user built.
+    // Opening tooth setup accepts them without rewriting rounded display values.
+    entry.confirm('advanced', config.rotor_layout === 'outer' ? 'Slot Opening' : 'Bore Tooth Width');
+    entry.confirm('advanced', 'Yoke Tooth Width');
+  }, [activeSection, entry?.fields, entry?.requirements, config.rotor_layout]);
+  useLayoutEffect(() => {
+    if (!entry) return;
+    if (entry.ready) {
+      pendingFirstControl.current = 'stator';
+      setActiveSection('stator');
+    } else {
+      setActiveSection(null);
+      const selector = !entry.layout ? '[aria-label="Rotor arrangement"] button:not(:disabled)'
+        : !entry.topology ? '[data-guide="topology-selector"] .topo-card:not(:disabled)'
+        : '[aria-label="IPM rotor layout"] button:not(:disabled)';
+      panelRef.current?.querySelector<HTMLElement>(selector)?.focus({ preventScroll: true });
+    }
+  }, [entry?.ready, entry?.layout, entry?.topology]);
+  useLayoutEffect(() => {
+    if (!newDesignParts || (entry && !entry.ready) || pendingFirstControl.current !== activeSection) return;
+    const row = panelRef.current?.querySelector<HTMLElement>(`[data-guide="section-${activeSection}"] .param-group-content .public-param-row`);
+    const control = row?.querySelector<HTMLElement>('button[aria-pressed="true"]:not(:disabled)')
+      ?? row?.querySelector<HTMLElement>('input:not(:disabled), select:not(:disabled), button:not(:disabled)');
+    if (!control) return;
+    pendingFirstControl.current = null;
+    control.focus({ preventScroll: true });
+    row?.scrollIntoView({ block: 'nearest' });
+  }, [activeSection, disabled, Boolean(newDesignParts), entry?.ready]);
+  const buildComplete = designPartsComplete(newDesignParts) && (!entry || entry.ready && ['stator', 'advanced', 'rotor', 'winding', 'materials'].every((section) => entrySectionComplete(entry, section)));
   const reference = publishedReference(config);
   const outer = config.rotor_layout === 'outer';
+  const topologyHover = useMotorHoverPreview<'SPM' | 'IPM'>(disabled || Boolean(entry && !entry.layout));
+  const ipmLayoutHover = useMotorHoverPreview<'flat_buried' | 'v_shape'>(disabled || (entry ? entry.topology !== 'IPM' : config.topology !== 'IPM'));
   const set = (
     section: PublicEditableSection,
     field: string,
     visitedSection?: PublicParameterSection,
   ) => (value: unknown) => onSectionChange(section, field, value, visitedSection);
-  // Advisory notes from the backend: drawable and solvable, but one tooth section
-  // can become narrower than the other. They travel in metadata rather than
-  // validation_errors precisely so they cannot block a solve.
-  // Only describe the geometry currently on screen. Editing a field flips
-  // geometryStale while the previous payload is still held, and a failed re-preview
-  // leaves it held indefinitely — so an unsuppressed note would keep explaining a
-  // shape the user has already changed.
-  const geometryWarnings = currentGeometryWarnings(geometry, geometryStale);
   // Resistance and fill come with the preview; while it is stale they would
   // describe the previous wire, so they wait for the new one (#136).
   const windingResistanceRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
@@ -1168,7 +1351,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   const setWire = (next: WireSpec | null) => set('winding', 'wire', 'winding')(next);
   // Every section header showed a green check, even beside "Winding needs
   // attention"; the one holding the faulty field now shows the warning instead.
-  const errorSection = error ? designErrorSection(errorDetails) : null;
+  const errorSection = error ? designIssue?.section ?? designErrorSection(errorDetails) : null;
   const statorWidths = deriveStatorSectionWidths(
     config,
     geometryStale ? null : geometry,
@@ -1183,13 +1366,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
     ? 2 * Math.max(0, config.stator.tooth_shoe_overhang_mm ?? 0)
     : 0;
   const toothShoeOverhangMm = Math.max(0, config.stator.tooth_shoe_overhang_mm ?? 1.5);
-  const maximumToothShoeOverhangMm = Math.max(
-    0,
-    Math.min(
-      15,
-      Math.floor(((config.stator.slot_opening_mm - 0.1) / 2) * 10) / 10,
-    ),
-  );
+  const maximumToothShoeOverhangMm = maximumShoeOverhangMm(config);
   const physicalSlotMouthMm = Math.max(
     0,
     config.stator.slot_opening_mm
@@ -1203,13 +1380,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   );
   const maximumBoreToothWidthMm = Math.max(
     minimumBoreToothWidthMm,
-    Math.floor(
-      (
-        statorWidths.borePitchMm
-        - minimumBoreSlotOpeningMm
-        + toothShoeAdditionMm
-      ) * 10,
-    ) / 10,
+    statorWidths.borePitchMm - minimumBoreSlotOpeningMm + toothShoeAdditionMm,
   );
   const setBoreToothWidth = (requestedWidthMm: number) => {
     const boundedWidthMm = Math.min(
@@ -1220,18 +1391,14 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
       50,
       Math.max(
         minimumBoreSlotOpeningMm,
-        Math.round(
-          (
-            statorWidths.borePitchMm
-            + toothShoeAdditionMm
-            - boundedWidthMm
-          ) * 10,
-        ) / 10,
+        statorWidths.borePitchMm + toothShoeAdditionMm - boundedWidthMm,
       ),
     );
     set('stator', 'slot_opening_mm', 'advanced')(boreSlotOpeningMm);
   };
   const airgap = magneticAirgapMm(config);
+  const largeAirgapNotice = airgap > (outer ? OUTER_ROTOR_AIRGAP_PRACTICAL_MAX_MM : PUBLIC_AIRGAP_PRACTICAL_MAX_MM)
+    ? publicAirgapHealth(airgap, config.rotor_layout) : null;
   const coverage = magnetPoleCoveragePct(config);
   const steelChoices = (current: string) => [
     ...(!materials.steels.includes(current)
@@ -1248,8 +1415,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   const searchTerms: Record<PublicParameterSection | 'topology', string> = {
     topology: 'topology spm ipm surface permanent magnet flat buried v shape',
     stator: 'stator geometry outer diameter inner diameter slot count stack length bore pitch',
-    rotor: 'rotor magnets pole count rotor od air gap magnet thickness magnet width burial depth outer bridge bridge thickness magnet position coverage magnet grade',
-    advanced: 'advanced geometry bore tooth width tooth width at yoke bore slot opening physical slot mouth slot width at yoke yoke thickness tooth shoe shoulder height overhang rotor layout v angle v depth',
+    rotor: 'rotor magnets pole count rotor od air gap magnet thickness magnet width burial depth outer bridge bridge thickness magnet position coverage magnet grade v angle v depth',
+    advanced: 'advanced geometry bore tooth width tooth width at yoke bore slot opening physical slot mouth slot width at yoke yoke thickness tooth shoe shoulder height overhang',
     winding: 'winding type wound teeth alternate all coil sides slot layers layer single double tooth coils per phase turns coil parallel paths phase current amp rms',
     materials: 'materials stator steel rotor steel magnet grade conductor',
   };
@@ -1278,11 +1445,76 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   }, [onDesignSectionVisit, selectedComponent]);
 
   useEffect(() => {
-    if (guidedActive) setActiveSection(guidedDesignSection ?? null);
-  }, [guidedActive, guidedDesignSection]);
+    if (guidedActive && guidedDesignSection) {
+      if (newDesignParts) pendingFirstControl.current = guidedDesignSection;
+      setActiveSection(guidedDesignSection);
+    }
+  }, [guidedActive, guidedDesignSection, Boolean(newDesignParts)]);
+
+  const advancedGeometrySection = (
+    matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label={newDesignParts ? 'Tooth & Slot Geometry' : 'Advanced Geometry'} active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : newDesignParts ? 'Rotor & Magnets' : 'Winding'} onNext={normalizedSearch ? undefined : setNext(newDesignParts ? 'rotor' : 'winding')}>
+        {newDesignParts && <ChoiceRow label="Tooth Profile" value={config.stator.tooth_shoe_enabled ? 'shoed' : 'plain'} choices={[{ value: 'plain', label: 'Plain' }, { value: 'shoed', label: 'Tooth shoes' }]} disabled={disabled} onChange={(profile) => set('stator', 'tooth_shoe_enabled', 'advanced')(profile === 'shoed')} />}
+        {outer
+          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
+          : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={Number(maximumBoreToothWidthMm.toFixed(1))} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
+        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
+        {!newDesignParts && <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />}
+        {!newDesignParts && <ToggleRow
+          label="Tooth Shoe"
+          checked={Boolean(config.stator.tooth_shoe_enabled)}
+          hint={`Adds a widened tooth tip at the ${outer ? 'stator OD' : 'bore'}, leaving a narrower physical slot mouth ahead of the winding pocket.`}
+          disabled={disabled}
+          onChange={set('stator', 'tooth_shoe_enabled', 'advanced')}
+        />}
+        {config.stator.tooth_shoe_enabled && <>
+          <NumberRow
+            label="Shoe Height"
+            value={config.stator.tooth_shoe_height_mm ?? 1.5}
+            unit="mm"
+            hint={outer ? 'Radial distance in from the stator OD to the tooth-body shoulder.' : 'Radial distance from the bore to the tooth-body shoulder.'}
+            min={0.5}
+            max={10}
+            step={0.1}
+            disabled={disabled}
+            onChange={(value) => set('stator', 'tooth_shoe_height_mm', 'advanced')(Math.min(10, Math.max(0.5, value)))}
+          />
+          <NumberRow
+            label="Shoe Overhang"
+            advisory={!entry || hasEntry(entry, 'advanced', 'Tooth Profile', 'Shoe Overhang') ? shoeOverhangLimitNotice(config) : null}
+            value={toothShoeOverhangMm}
+            unit="mm / side"
+            hint="Tangential extension on each side of the tooth body. Two overhangs are subtracted from the body opening to give the physical slot mouth."
+            min={0}
+            max={maximumToothShoeOverhangMm}
+            clampToBounds
+            step={0.1}
+            disabled={disabled}
+            onChange={(value) => set('stator', 'tooth_shoe_overhang_mm', 'advanced')(
+              Math.min(maximumToothShoeOverhangMm, Math.max(0, value)),
+            )}
+          />
+        </>}
+        <div className="public-stator-derived-measures" aria-label="Calculated stator slot widths">
+          <div className="param-row public-param-row public-derived-row" title="Remaining open mouth after subtracting the tooth-shoe overhang on both sides.">
+            <span className="param-label">Physical Slot Mouth<small>mm · calc</small></span>
+            <strong>{physicalSlotMouthMm.toFixed(1)}</strong>
+          </div>
+          <div className="param-row public-param-row public-derived-row" title="Slot opening at the underlying tooth body before the optional shoe overhang.">
+            <span className="param-label">Tooth Body Opening<small>mm · calc</small></span>
+            <strong>{config.stator.slot_opening_mm.toFixed(1)}</strong>
+          </div>
+          <div className="param-row public-param-row public-derived-row" title="Yoke-side pitch minus the tooth width at the yoke.">
+            <span className="param-label">Slot Width at Yoke<small>mm · calc</small></span>
+            <strong>{statorWidths.slotWidthAtYokeMm.toFixed(1)}</strong>
+          </div>
+        </div>
+      </ParameterSectionBlock>
+  );
 
   return (
-    <aside className="panel-left public-parameter-panel" data-tour="parameter-panel">
+    <NewDesignDraftContext.Provider value={newDesignParts ? onDesignInputIssueChange ?? null : null}>
+    <DesignIssueContext.Provider value={designIssue}>
+    <aside ref={panelRef} className={`panel-left public-parameter-panel${newDesignParts ? ' is-building' : ''}`} data-tour="parameter-panel">
       {/* Title and selected-component card are pinned; everything from the search
           box down through the parameter accordion is one scroll region.
           Previously the accordion and footer were fixed-height siblings that
@@ -1313,6 +1545,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             <input
               className="param-search-input"
               type="search"
+              disabled={Boolean(entry && !entry.ready)}
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Search slot, magnet, turns…"
@@ -1320,30 +1553,32 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             />
           </label>
         </div>
-        {matchesSearch('topology') && <RotorArrangement value={outer ? 'outer' : 'inner'} disabled={disabled} onChange={onRotorLayoutChange} />}
+        {matchesSearch('topology') && <RotorArrangement value={entry ? entry.layout : outer ? 'outer' : 'inner'} disabled={disabled} onChange={onRotorLayoutChange} />}
         {matchesSearch('topology') && <div className="param-section param-primary-section" data-guide="topology-selector">
           <div className="param-section-label">Topology</div>
-          <div className="topology-cards">
+          <div ref={topologyHover.groupRef} className="topology-cards">
             {(['SPM', 'IPM'] as const).map((topology) => (
               <button
                 type="button"
-                className={`topo-card${config.topology === topology ? ' active' : ''}`}
-                aria-pressed={config.topology === topology}
-                disabled={disabled || (outer && topology === 'IPM')}
+                className={`topo-card${(entry ? entry.topology === topology : config.topology === topology) ? ' active' : ''}`}
+                aria-pressed={entry ? entry.topology === topology : config.topology === topology}
+                {...topologyHover.triggerProps(topology, outer && topology === 'IPM')}
+                disabled={disabled || Boolean(entry && !entry.layout) || (outer && topology === 'IPM')}
                 title={outer && topology === 'IPM' ? 'Outer rotors use surface magnets' : undefined}
-                onClick={() => onTopologyChange(topology)}
+                onClick={() => { topologyHover.dismiss(); onTopologyChange(topology); }}
                 key={topology}
               >
-                <span className="topo-icon" aria-hidden="true">◉</span>
+                <span className="topo-icon" aria-hidden="true">{(entry ? entry.topology === topology : config.topology === topology) ? '◉' : '○'}</span>
                 <span className="topo-text"><span className="topo-name">{topology}</span><span className="topo-sub">{topology === 'SPM' ? 'Surface PM' : 'Flat / V'}</span></span>
                 <span className="topo-badge topo-badge-guided">Guided</span>
               </button>
             ))}
           </div>
-          {config.topology === 'IPM' && (
+          {topologyHover.renderPreview((topology) => <RotorArrangementPreview layout={outer ? 'outer' : 'inner'} variant={topology === 'SPM' ? 'spm' : 'flat_buried'} />)}
+          {(entry ? entry.topology === 'IPM' : config.topology === 'IPM') && (
             <div className="ipm-layout-selector" data-guide="ipm-layout-selector">
               <div className="param-section-label">IPM rotor layout</div>
-              <div className="ipm-layout-cards" role="group" aria-label="IPM rotor layout">
+              <div ref={ipmLayoutHover.groupRef} className="ipm-layout-cards" role="group" aria-label="IPM rotor layout">
                 {([
                   {
                     value: 'flat_buried',
@@ -1358,10 +1593,11 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                 ] as const).map((layout) => (
                   <button
                     type="button"
-                    className={`ipm-layout-card${config.rotor.ipm_topology === layout.value ? ' active' : ''}`}
-                    aria-pressed={config.rotor.ipm_topology === layout.value}
+                    className={`ipm-layout-card${(!entry || hasEntry(entry, 'topology', 'IPM rotor layout')) && config.rotor.ipm_topology === layout.value ? ' active' : ''}`}
+                    aria-pressed={(!entry || hasEntry(entry, 'topology', 'IPM rotor layout')) && config.rotor.ipm_topology === layout.value}
+                    {...ipmLayoutHover.triggerProps(layout.value)}
                     disabled={disabled}
-                    onClick={() => set('rotor', 'ipm_topology')(layout.value)}
+                    onClick={() => { ipmLayoutHover.dismiss(); entry?.confirm('topology', 'IPM rotor layout'); set('rotor', 'ipm_topology')(layout.value); }}
                     key={layout.value}
                   >
                     <span>{layout.label}</span>
@@ -1369,6 +1605,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                   </button>
                 ))}
               </div>
+              {ipmLayoutHover.renderPreview((layout) => <RotorArrangementPreview layout="inner" variant={layout} />)}
               {config.rotor.ipm_topology === 'pyleecan_holem50' ? (
                 <p className="ipm-layout-note ipm-experimental-note" role="note">
                   <strong>HoleM50 (experimental). </strong>
@@ -1379,25 +1616,37 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                     : `This rotor needs coilEM started with ${experimentalRotors?.switch ?? 'COILEM_EXPERIMENTAL_ROTORS'}=1 to preview and solve.`}
                 </p>
               ) : (
-                <p className="ipm-layout-note">Fine-tune V-angle and depth later in Advanced Geometry.</p>
+                <p className="ipm-layout-note">Configure magnet dimensions{config.rotor.ipm_topology === 'v_shape' ? ', V angle and V depth' : ''} in Rotor &amp; Magnets.</p>
               )}
             </div>
           )}
         </div>}
 
-      {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext('rotor')}>
-        <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" hint={outer ? 'Tooth-tip diameter facing the rotor magnets across the air gap.' : undefined} min={outer ? 10 : 30} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
-        <NumberRow label={outer ? 'Hub Bore' : 'Inner Diameter'} value={config.stator.ID_mm} unit="mm" hint={outer ? 'Stator centre hole, inside the yoke.' : undefined} min={outer ? 2 : 20} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
-        <NumberRow label="Slot Count" value={config.stator.slot_count} min={6} step={1} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
+      {(!entry || entry.ready) && <>
+      {matchesSearch('stator') && <ParameterSectionBlock id="stator" attention={errorSection === 'stator'} label="Stator Geometry" active={Boolean(normalizedSearch) || activeSection === 'stator'} onToggle={toggle} summary={`${config.stator.OD_mm} mm OD · ${config.stator.slot_count} slots · ${config.stator.stack_length_mm} mm stack`} nextLabel={normalizedSearch ? undefined : newDesignParts ? 'Tooth & Slot Geometry' : 'Rotor & Magnets'} onNext={normalizedSearch ? undefined : setNext(newDesignParts ? 'advanced' : 'rotor')}>
+        <NumberRow label="Outer Diameter" value={config.stator.OD_mm} unit="mm" hint={outer ? 'Tooth-tip diameter facing the rotor magnets across the air gap.' : undefined} min={outer ? 10 : 30} max={500} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'OD_mm', 'stator')} />
+        {newDesignParts && <NumberRow label="Yoke Thickness" value={config.stator.yoke_thickness_mm} unit="mm" hint={outer ? 'Back-iron thickness outside the hub bore.' : 'Back-iron thickness. The yoke inner diameter is OD minus twice this thickness.'} min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'stator')} />}
+        <NumberRow label="Slot Count" value={config.stator.slot_count} hint="Three-phase slot counts run from 6 to 96 in multiples of 3. Use the arrows to choose the next valid count." min={6} max={96} step={3} disabled={disabled} onChange={set('stator', 'slot_count', 'stator')} />
+        <NumberRow label={outer ? 'Hub Bore (ID)' : 'Bore Diameter (ID)'} value={config.stator.ID_mm} unit="mm" hint={outer ? 'Stator centre hole, inside the yoke.' : 'Stator bore at the tooth tips, facing the rotor. This is separate from the inner edge of the yoke.'} min={outer ? 2 : 20} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('stator', 'ID_mm', 'stator')} />
         <NumberRow label="Stack Length" value={config.stator.stack_length_mm} unit="mm" min={outer ? 2 : 10} step={1} disabled={disabled} onChange={set('stator', 'stack_length_mm', 'stator')} />
-        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>slot pitch {(360 / config.stator.slot_count).toFixed(1)}° · {outer ? 'tip' : 'bore'} pitch {(Math.PI * (outer ? config.stator.OD_mm : config.stator.ID_mm) / config.stator.slot_count).toFixed(1)} mm</span></div>
+        <div className="fable-derived"><span className="fable-derived-fx">ƒ</span><span>{slotPitchText(config.stator.slot_count, outer ? config.stator.OD_mm : config.stator.ID_mm, outer)}</span></div>
       </ParameterSectionBlock>}
 
-      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext('advanced')}>
+      {newDesignParts && advancedGeometrySection}
+
+      {matchesSearch('rotor') && <ParameterSectionBlock id="rotor" attention={errorSection === 'rotor'} label="Rotor & Magnets" active={Boolean(normalizedSearch) || activeSection === 'rotor'} onToggle={toggle} summary={`${config.rotor.pole_count} poles · ${config.rotor.OD_mm} mm rotor · ${config.rotor.magnet_thickness_mm} mm magnet`} nextLabel={normalizedSearch ? undefined : newDesignParts ? 'Winding' : 'Advanced Geometry'} onNext={normalizedSearch ? undefined : setNext(newDesignParts ? 'winding' : 'advanced')}>
         <NumberRow label="Pole Count" value={config.rotor.pole_count} min={2} max={64} step={2} disabled={disabled} onChange={set('rotor', 'pole_count', 'rotor')} />
         <NumberRow label="Rotor OD" value={config.rotor.OD_mm} unit="mm" hint={outer ? 'Outside of the rotor back-iron ring.' : undefined} min={outer ? 10 : 15} step={outer ? 0.1 : 1} disabled={disabled} onChange={set('rotor', 'OD_mm', 'rotor')} />
         {outer && <NumberRow label="Magnet Seat" value={config.rotor.ID_mm ?? 0} unit="mm" hint="Rotor ID: the back-iron face the magnets sit on." min={4} step={0.1} disabled={disabled} onChange={set('rotor', 'ID_mm', 'rotor')} />}
-        <div className="param-row public-param-row public-derived-row"><span className="param-label">Air Gap<small>mm</small></span><strong>{airgap.toFixed(2)}</strong></div>
+        <div className={`param-row public-param-row public-derived-row public-airgap-row${largeAirgapNotice ? ' has-warning' : ''}`}>
+          <span className="param-label">Air Gap<small>mm</small></span>
+          <strong aria-describedby={largeAirgapNotice ? 'design-airgap-advisory' : undefined}>{airgap.toFixed(2)}</strong>
+        </div>
+        {largeAirgapNotice && <div className="public-airgap-advisory" id="design-airgap-advisory" role="status">
+          <strong><StatusGlyph tone="warning" />{largeAirgapNotice.title}</strong>
+          <p>{largeAirgapNotice.copy}</p>
+          <p>{outer ? 'Review the magnet-seat diameter, stator OD and magnet thickness.' : config.topology === 'SPM' ? 'Review Rotor OD, bore diameter and magnet thickness.' : 'Review Rotor OD and bore diameter.'} This is an advisory, not a maximum-airgap limit.</p>
+        </div>}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'pyleecan_holem50' ? (
           HOLEM50_FIELDS.map((field) => (
             <div className="param-row public-param-row public-derived-row" key={field}>
@@ -1411,6 +1660,12 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             <NumberRow label="Magnet Width" value={config.rotor.magnet_width_mm} unit="mm" min={1} step={0.1} disabled={disabled} onChange={set('rotor', 'magnet_width_mm', 'rotor')} />
           </>
         )}
+        {config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape' && <>
+          <NumberRow entryOptional label="Minimum Outer Bridge" value={config.rotor.outer_bridge_thickness_mm} unit="mm" min={0.1} max={20} step={0.1} disabled={disabled} hint="Minimum clearance from a magnet pocket to the rotor surface. The actual bridge also depends on V Depth, V Angle and magnet dimensions." onChange={set('rotor', 'outer_bridge_thickness_mm', 'rotor')} />
+          {!geometryStale && geometry?.metadata?.interpreted_rotor_inputs && <p className="ipm-layout-note">Actual outer bridge: {Number((geometry.metadata.interpreted_rotor_inputs as Record<string, number>).actual_outer_bridge_mm).toFixed(3)} mm. Coverage follows the slab geometry; the saved magnet coverage is not used for V-shape rotors.</p>}
+          <NumberRow label="V Angle" value={config.rotor.v_angle_deg} unit="deg" hint="Included angle between the paired magnets buried in each rotor pole." min={0} max={120} step={1} disabled={disabled} onChange={set('rotor', 'v_angle_deg', 'rotor')} />
+          <NumberRow label="V Depth" value={config.rotor.v_depth_mm} unit="mm" hint="Radial depth of the magnet pair's V apex from the rotor outer surface." min={0} max={200} step={0.1} disabled={disabled} onChange={set('rotor', 'v_depth_mm', 'rotor')} />
+        </>}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried' && (
           <NumberRow
             label="Outer Bridge"
@@ -1424,76 +1679,21 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             onChange={set('rotor', 'bridge_thickness_mm', 'rotor')}
           />
         )}
-        {config.rotor.ipm_topology !== 'pyleecan_holem50' && (
+        {config.rotor.ipm_topology !== 'pyleecan_holem50' && hasPoleCoverageEstimate(config) && (
           // A surface magnet's coverage follows from its width, as the geometry builds it.
           <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>{config.topology === 'SPM' ? '% · calc' : '%'}</small></span><strong>{coverage}</strong></div>
         )}
         <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
       </ParameterSectionBlock>}
 
-      {matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Advanced Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : 'Winding'} onNext={normalizedSearch ? undefined : setNext('winding')}>
-        {outer
-          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
-          : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={maximumBoreToothWidthMm} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
-        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
-        <NumberRow label="Yoke Thick." value={shownWidthMm(config.stator.yoke_thickness_mm)} unit="mm" min={outer ? 0.5 : 1} step={0.1} disabled={disabled} onChange={set('stator', 'yoke_thickness_mm', 'advanced')} />
-        <ToggleRow
-          label="Tooth Shoe"
-          checked={Boolean(config.stator.tooth_shoe_enabled)}
-          hint={`Adds a widened tooth tip at the ${outer ? 'stator OD' : 'bore'}, leaving a narrower physical slot mouth ahead of the winding pocket.`}
-          disabled={disabled}
-          onChange={set('stator', 'tooth_shoe_enabled', 'advanced')}
-        />
-        {config.stator.tooth_shoe_enabled && <>
-          <NumberRow
-            label="Shoe Height"
-            value={config.stator.tooth_shoe_height_mm ?? 1.5}
-            unit="mm"
-            hint={outer ? 'Radial distance in from the stator OD to the tooth-body shoulder.' : 'Radial distance from the bore to the tooth-body shoulder.'}
-            min={0.5}
-            max={10}
-            step={0.1}
-            disabled={disabled}
-            onChange={(value) => set('stator', 'tooth_shoe_height_mm', 'advanced')(Math.min(10, Math.max(0.5, value)))}
-          />
-          <NumberRow
-            label="Shoe Overhang"
-            value={toothShoeOverhangMm}
-            unit="mm / side"
-            hint="Tangential extension on each side of the tooth body. Two overhangs are subtracted from the body opening to give the physical slot mouth."
-            min={0}
-            max={maximumToothShoeOverhangMm}
-            step={0.1}
-            disabled={disabled}
-            onChange={(value) => set('stator', 'tooth_shoe_overhang_mm', 'advanced')(
-              Math.min(maximumToothShoeOverhangMm, Math.max(0, value)),
-            )}
-          />
-        </>}
-        <div className="public-stator-derived-measures" aria-label="Calculated stator slot widths">
-          <div className="param-row public-param-row public-derived-row" title="Remaining open mouth after subtracting the tooth-shoe overhang on both sides.">
-            <span className="param-label">Physical Slot Mouth<small>mm · calc</small></span>
-            <strong>{physicalSlotMouthMm.toFixed(1)}</strong>
-          </div>
-          <div className="param-row public-param-row public-derived-row" title="Slot opening at the underlying tooth body before the optional shoe overhang.">
-            <span className="param-label">Tooth Body Opening<small>mm · calc</small></span>
-            <strong>{config.stator.slot_opening_mm.toFixed(1)}</strong>
-          </div>
-          <div className="param-row public-param-row public-derived-row" title="Yoke-side pitch minus the tooth width at the yoke.">
-            <span className="param-label">Slot Width at Yoke<small>mm · calc</small></span>
-            <strong>{statorWidths.slotWidthAtYokeMm.toFixed(1)}</strong>
-          </div>
-        </div>
-        {config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape' && <>
-          <NumberRow label="V Angle" value={config.rotor.v_angle_deg} unit="deg" min={0} max={120} step={1} disabled={disabled} onChange={set('rotor', 'v_angle_deg', 'advanced')} />
-          <NumberRow label="V Depth" value={config.rotor.v_depth_mm} unit="mm" min={0} step={0.1} disabled={disabled} onChange={set('rotor', 'v_depth_mm', 'advanced')} />
-        </>}
-      </ParameterSectionBlock>}
+      {!newDesignParts && advancedGeometrySection}
 
       {matchesSearch('winding') && <ParameterSectionBlock id="winding" attention={errorSection === 'winding'} label="Winding" active={Boolean(normalizedSearch) || activeSection === 'winding'} onToggle={toggle} summary={`${config.winding.type}${showLayerRow ? ` · ${layerWording.summary[layerCount]}` : ''} · ${config.winding.turns_per_coil} turns × ${config.winding.parallel_paths}p`} nextLabel={normalizedSearch ? undefined : 'Materials'} onNext={normalizedSearch ? undefined : setNext('materials')}>
-        <SelectRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
+        {/* Four steps, each what is set and then what follows from it: layout, turns, wire, resistance. */}
+        <p className="public-param-group-label">Layout</p>
+        <ChoiceRow label="Type" value={config.winding.type} choices={[{ value: 'concentrated', label: 'Concentrated' }, { value: 'distributed', label: 'Distributed' }]} disabled={disabled} onChange={set('winding', 'type', 'winding')} />
         {wholeSlotNote && <p className="public-winding-note" role="note">{wholeSlotNote}</p>}
-        {showLayerRow && <SelectRow
+        {showLayerRow && <ChoiceRow
           label={layerWording.label}
           value={String(config.winding.layers)}
           choices={windingLayerOptions(config.stator.slot_count, config.rotor.pole_count, config.winding.type).map(({ layers, available }) => ({
@@ -1509,37 +1709,77 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           <span className="param-label">Coils per Phase<small>calc</small></span>
           <strong>{coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, config.winding.layers)}</strong>
         </div>
-        <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
+        <p className="public-param-group-label">Turns</p>
+        <NumberRow label="Turns / Coil" value={config.winding.turns_per_coil} min={1} step={1} hint="How many times the conductor goes round each coil. Each dark copper dot in a coil-side region represents one turn, not one strand; dot sizes are schematic. More turns raise back-EMF and inductance; the field depends on turns × current." disabled={disabled} onChange={set('winding', 'turns_per_coil', 'winding')} />
         <NumberRow label="Parallel Paths" value={config.winding.parallel_paths} min={1} step={1} disabled={disabled} onChange={set('winding', 'parallel_paths', 'winding')} />
+        <p className="public-param-group-label">Wire</p>
         {config.geometry_reference && !wire ? (
           // A pinned reference without its own wire uses its published conductor (backend/winding_resistance.py).
           <div className="param-row public-param-row public-derived-row" title={windingResistanceRecord?.notes[0] ?? "The reference's published conductor."}>
             <span className="param-label">Wire<small>published</small></span>
             <strong>{windingResistanceRecord ? `${windingResistanceRecord.strands_in_hand} × ${windingResistanceRecord.strand_diameter_mm} mm` : '—'}</strong>
           </div>
-        ) : <SelectRow
+        ) : <ChoiceRow
           label="Wire"
           value={wire ? 'specified' : 'derived'}
-          choices={[{ value: 'derived', label: 'Derived from slot' }, { value: 'specified', label: 'Specified' }]}
+          choices={[{ value: 'derived', label: 'Derived' }, { value: 'specified', label: 'Specified' }]}
           hint="Derived sizes the wire to fill 45% of the slot with copper. Specify the wire for the real phase resistance."
           disabled={disabled}
-          onChange={(value) => setWire(value === 'specified'
+          onChange={(value) => { entry?.forget('winding', ['Wire Gauge', 'Wire Ø (bare)', 'Strands in Hand', 'End-turn Extension']); setWire(value === 'specified'
             ? { wire_bare_diameter_mm: Number((windingResistanceRecord?.strand_diameter_mm ?? 1).toFixed(2)), strands_in_hand: 1 }
-            : null)}
+            : null); }}
         />}
+        {!wire && windingResistanceRecord?.wire_source === 'derived' && (
+          // The derived wire, shown so its thickness is seen to change with the turns and the slot.
+          <div className="param-row public-param-row public-derived-row is-wide" title="The wire the slot would take at 45% copper fill, for the turns set above. More turns give a thinner wire. Beside it, where that sits among the standard gauges. Choose Specified to set a real one.">
+            <span className="param-label">Wire Ø (bare)<small>mm · derived</small></span>
+            <strong>{Number(windingResistanceRecord.strand_diameter_mm.toFixed(2))} · {awgNote(windingResistanceRecord.strand_diameter_mm)}</strong>
+          </div>
+        )}
         {wire && <>
+          <SelectRow
+            label="Wire Gauge"
+            entryOptional entryAlias="Wire Ø (bare)"
+            value={String(awgFor(wire.wire_bare_diameter_mm) ?? 'custom')}
+            choices={[
+              { value: 'custom', label: 'Custom', disabled: awgFor(wire.wire_bare_diameter_mm) !== null },
+              ...AWG_SIZES.map(({ gauge, diameterMm }) => ({ value: String(gauge), label: `AWG ${gauge} · ${diameterMm} mm` })),
+            ]}
+            hint="Pick a standard gauge to set the diameter, or type any diameter below for a wire that is not a standard size."
+            disabled={disabled}
+            onChange={(value) => { if (value !== 'custom') setWire({ ...wire, wire_bare_diameter_mm: awgStoredDiameterMm(Number(value)) }); }}
+          />
           <NumberRow label="Wire Ø (bare)" value={wire.wire_bare_diameter_mm} unit="mm" min={0.06} max={10} step={0.01} disabled={disabled} onChange={(value) => setWire({ ...wire, wire_bare_diameter_mm: value })} />
-          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
+          <NumberRow label="Strands in Hand" value={wire.strands_in_hand ?? 1} min={1} max={200} step={1} hint="Wires wound together as one turn. They share the turn's current and lower the resistance; they do not add turns." disabled={disabled} onChange={(value) => setWire({ ...wire, strands_in_hand: Math.max(1, Math.round(value)) })} />
           <NumberRow label="End-turn Extension" value={wire.end_turn_extension_mm ?? 0} unit="mm" min={0} max={200} step={1} hint="Straight length each coil side runs out of the stack before its end turn bends." disabled={disabled} onChange={(value) => setWire({ ...wire, end_turn_extension_mm: value > 0 ? value : null })} />
         </>}
-        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
-        {windingRows.map((row) => (
+        {windingResistanceRecord && (
+          // Turns and wires are different counts: a turn of several strands in hand is still one turn.
+          <div className="param-row public-param-row public-derived-row is-wide" title="Wires passing through each slot: turns in the slot × strands in hand. The field solve uses the turns; the wires set resistance and slot fill.">
+            <span className="param-label">Wires per Slot<small>calc</small></span>
+            <strong>
+              {`${windingResistanceRecord.conductors_per_slot} × ${windingResistanceRecord.strands_in_hand} = ${windingResistanceRecord.conductors_per_slot * windingResistanceRecord.strands_in_hand}`}
+            </strong>
+          </div>
+        )}
+        {/* Slot fill and mean turn follow from the wire; the temperature only moves the resistance. */}
+        {windingRows.filter((row) => row.key !== 'resistance').map((row) => (
           <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
             <span className="param-label">{row.label}<small>{row.tag}</small></span>
             <strong>{row.text}</strong>
             {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
           </div>
         ))}
+        <p className="public-param-group-label">Resistance</p>
+        <NumberRow label="Winding Temp" value={windingTemperatureC} unit="°C" min={-50} max={250} step={5} hint="Winding temperature for the phase resistance." disabled={disabled} onChange={set('solve_params', 'winding_temperature_C', 'winding')} />
+        {windingRows.filter((row) => row.key === 'resistance').map((row) => (
+          <div key={row.key} className={`param-row public-param-row public-derived-row${row.warning ? ' is-warning' : ''}`} title={row.hint}>
+            <span className="param-label">{row.label}<small>{row.tag}</small></span>
+            <strong>{row.text}</strong>
+            {row.status && <StatusBadge status={row.status.status} title={row.status.reason} />}
+          </div>
+        ))}
+        <p className="public-param-group-label">Drive</p>
         <NumberRow label="Phase Current" value={config.solve_params.current_amplitude_A} unit={`A ${config.solve_params.current_amplitude_convention}`} min={0} step={0.5} disabled={disabled} onChange={set('solve_params', 'current_amplitude_A', 'winding')} />
       </ParameterSectionBlock>}
 
@@ -1562,6 +1802,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         </p>
       </ParameterSectionBlock>}
 
+      </>}
       {normalizedSearch && visibleSections.length === 0 && !matchesSearch('topology') && (
         <div className="public-search-empty" role="status">No design parameters match “{searchQuery}”.</div>
       )}
@@ -1569,35 +1810,14 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
 
       <div className="panel-footer-cta" data-guide="design-continue">
         {notice && <div className="public-design-notice" role="status">{notice}</div>}
-        {/* Names which part is wrong. "Fix validation errors" left the reader to
-            work out whether it was the geometry or the winding, and a winding fault
-            used to leave this reading "Geometry valid — ready to solve" outright,
-            because nothing validated parallel paths on a concentrated layout.
-            Schema errors lead with their location, such as "solve_params.…". */}
-        {error && (
-          <div className="validation-ok has-error">
-            <StatusGlyph tone="warning" />
-            {/material|steel|M350-50A/i.test(error)
-              ? 'Material not supported'
-              : /^solve_(params|options)\b/.test(error)
-                ? 'Solve settings need attention'
-                : /winding|parallel_path|turns|coil|phase/i.test(error)
-                  ? 'Winding needs attention'
-                  : 'Geometry needs attention'}
-          </div>
-        )}
-        <button type="button" className={`panel-next-btn ${error || blankDesign ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || busy !== null} onClick={onNext}>Continue to Solve</button>
-        {blankDesign && <div className="panel-next-feedback">Change a design parameter to enable Solve.</div>}
-        {error && <div className="panel-next-feedback is-error">{error}</div>}
-        {error && geometryStale && !blankDesign && <button type="button" className="public-back-link" disabled={busy !== null} onClick={onRefreshGeometry}>Retry geometry preview</button>}
-        {/* Geometry that draws and solves, but whose bore or tooth-shoe shoulder is
-            narrower than the yoke-side tooth. Advisory on purpose: the FEM mesh is
-            still complete and the condition never blocks the solve. */}
-        {geometryWarnings.map((warning) => (
-          <div key={warning} className="panel-next-feedback is-warning">{warning}</div>
-        ))}
+        <button type="button" className={`panel-next-btn ${error || blankDesign || !buildComplete ? 'is-blocked' : 'is-ready'}`} disabled={Boolean(error) || blankDesign || !buildComplete || designInputInvalid || busy !== null} onClick={onNext}>Continue to Solve</button>
+        {newDesignParts && !buildComplete && <div className="panel-next-feedback is-progress">{DESIGN_PARTS.filter(({ id }) => newDesignParts[id]).length} of 6 parts {geometry?.metadata?.diagnostic_rotor ? 'configured' : 'drawn'} · configure each field, then continue to the next section.</div>}
+        {blankDesign && <div className="panel-next-feedback is-progress">Change a design parameter to enable Solve.</div>}
+
       </div>
     </aside>
+    </DesignIssueContext.Provider>
+    </NewDesignDraftContext.Provider>
   );
 }
 
@@ -1668,6 +1888,8 @@ type PublicViewportMode = '2d' | '3d' | 'materials' | 'layout';
  * interactive behind it.
  */
 const DESIGN_INTRO_DURATION_MS = 2_000;
+/** Whether opening a motor plays the 3D-to-2D intro. Off: the 2D view shows the 3D motor in its corner. */
+const DESIGN_INTRO_PLAYS = false as boolean;
 const DESIGN_INTRO_CROSSFADE_START = 0.68;
 
 function ViewportExpandButton({
@@ -1709,16 +1931,29 @@ const VIEWPORT_DOCK_MIN_HEIGHT = 48;
 const VIEWPORT_DOCK_MAX_FRACTION = 0.45;
 const VIEWPORT_DOCK_STEP = 16;
 
+/**
+ * Whether the first solved field replaces the turning motor part-way through a
+ * solve. Off: the motor keeps turning until the solve is complete, and the
+ * field is first seen in the finished view.
+ */
+const SHOW_FIRST_SOLVED_FIELD = false as boolean;
+/** The mesh edges while the field is solved: light orange, so the pulsing mesh reads as warm. */
+const SOLVING_MESH_EDGE_COLOR = 'rgba(253, 186, 116, 0.6)';
+
 function ViewportChrome({
   config,
+  designName = null,
   materials,
   geometry,
   mesh,
   mode,
   stale,
+  previewFailed = false,
   busy,
   showConfigurationLabel = true,
   enableDesignIntro = true,
+  show3dInset = false,
+  magnifierSlot = null,
   isExpanded = false,
   onExpandToggle,
   selectedComponent = null,
@@ -1732,13 +1967,31 @@ function ViewportChrome({
   onShowMeshEdgesChange,
   onFocusedMeshElementChange,
   dockStrip,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  solveRotorAngleDeg = null,
+  solveRotorCaption = null,
+  solvePulse = false,
+  solveFieldPreview = null,
+  partialDesign = false,
+}: Pick<CoilEmWorkspaceProps, 'config' | 'designName' | 'materials' | 'geometry' | 'mesh' | 'geometryStale' | 'busy' | 'meshElements' | 'meshQuality'> & {
+  /** While a solve sweeps: the rotor turn to draw in place of the preview's own, and a line saying what it is. */
+  solveRotorAngleDeg?: number | null;
+  solveRotorCaption?: string | null;
+  /** While the field is being solved: a slow glow on the 2D view. */
+  solvePulse?: boolean;
+  /** A solved field to show in place of the drawing while the rest of the sweep runs. */
+  solveFieldPreview?: ReactNode;
   /** Shown on a strip at the top of the bottom section (the Solve page's view tabs). */
   dockStrip?: ReactNode;
   mode: 'geometry' | 'mesh';
   stale: boolean;
+  /** A rejected update is explained in Design Health, not an ongoing preview. */
+  previewFailed?: boolean;
   showConfigurationLabel?: boolean;
   enableDesignIntro?: boolean;
+  /** A small live 3D view in the corner of the 2D view; clicking it opens the 3D view. */
+  show3dInset?: boolean;
+  partialDesign?: boolean;
+  magnifierSlot?: HTMLElement | null;
   isExpanded?: boolean;
   onExpandToggle?: () => void;
   selectedComponent?: PublicMotorComponentSelection | null;
@@ -1752,21 +2005,48 @@ function ViewportChrome({
   onShowMeshEdgesChange?: (show: boolean) => void;
   onFocusedMeshElementChange?: (elementIndex: number | null) => void;
 }) {
+  const entry = useContext(NewDesignEntryContext);
+  const enteredCounts = entry ? [hasEntry(entry, 'rotor', 'Pole Count') ? `${config.rotor.pole_count}p` : '', hasEntry(entry, 'stator', 'Slot Count') ? `${config.stator.slot_count}s` : ''].filter(Boolean).join('/') : '';
+  const fieldFocus = useContext(DesignFieldFocusContext)?.field;
+  const editingDimension = fieldFocus && (!entry || hasEntry(entry, fieldFocus.section, fieldFocus.label)
+    || entry.requirements[entryKey(fieldFocus.section, fieldFocus.label)]?.required === false
+    || fieldFocus.section === 'rotor' && Boolean(geometry?.metadata?.diagnostic_rotor))
+    ? designFieldDimension(fieldFocus.section, fieldFocus.label) : null;
+  const configurationLabel = entry
+    ? !entry.ready ? 'New Design' : `${entry.topology}${enteredCounts ? ` ${enteredCounts}` : ''}`
+    : `${config.topology} ${config.rotor.pole_count}p/${config.stator.slot_count}s`;
+  const constructionPrompt = entry && !entry.layout ? 'Choose Inrunner or Outrunner to begin.'
+    : entry && !entry.topology ? 'Choose SPM or IPM.' : entry && !entry.ready ? 'Choose the IPM rotor layout.'
+    : 'Enter the stator outer diameter to start the drawing.';
   const designIntroEnabled = enableDesignIntro && mode === 'geometry';
   // The intro plays when a motor is first opened. Coming back to Design from
   // Solve or Results resumes the view that was left (designViewMemory).
   const [resumeDesignView] = useState(() => designIntroEnabled && designViewMemory.introPlayed);
+  // The 2D view carries a small live 3D view, so a motor opens straight on 2D
+  // unless the 3D-to-2D intro is switched back on.
+  const playDesignIntro = DESIGN_INTRO_PLAYS && designIntroEnabled && !resumeDesignView;
   const [viewportMode, setViewportMode] = useState<PublicViewportMode>(() => {
-    if (!designIntroEnabled) return '2d';
+    if (!designIntroEnabled || (!playDesignIntro && !resumeDesignView)) return '2d';
     return resumeDesignView ? designViewMemory.view as PublicViewportMode : '3d';
   });
-  const [introProgress, setIntroProgress] = useState(() => (designIntroEnabled && !resumeDesignView ? 0 : 1));
+  const [introProgress, setIntroProgress] = useState(() => (playDesignIntro ? 0 : 1));
   const [canvasLayer, setCanvasLayer] = useState<PublicCanvasLayer>(() => (
     resumeDesignView ? designViewMemory.layer as PublicCanvasLayer : 'none'
   ));
+  // Dims, Slots, Tooth and Winding are labels over the motor, each on or off by itself.
+  const [overlays, setOverlays] = useState<PublicCanvasOverlays>(() => (
+    resumeDesignView ? designViewMemory.overlays : NO_CANVAS_OVERLAYS
+  ));
+  const toggleOverlay = (overlay: keyof PublicCanvasOverlays) => setOverlays((current) => ({ ...current, [overlay]: !current[overlay] }));
   // Each stator tooth's N / S pole as the rotor turns; its own toggle, so it
   // works with or without Phases.
   const [showToothPoles, setShowToothPoles] = useState(false);
+  const [meshMagnifier, setMeshMagnifier] = useState(false);
+  const meshLayerMenu = useLayerMenu();
+  // Where the 3D view draws its part controls: the right-hand column of the dock.
+  const [dock3dSlot, setDock3dSlot] = useState<HTMLElement | null>(null);
+  const [showCoilColors, setShowCoilColors] = useState(false);
+  const meshMoreOn = Number(meshMagnifier) + Number(showToothPoles) + Number(showCoilColors);
   const [materialSubview, setMaterialSubview] = useState<PublicMaterialSubview>('assignment');
   const [materialTarget, setMaterialTarget] = useState<PublicMaterialTarget>('stator');
   const [previewMaterialTarget, setPreviewMaterialTarget] = useState<PublicMaterialTarget | null>(null);
@@ -1778,7 +2058,6 @@ function ViewportChrome({
   const [explodedAmount, setExplodedAmount] = useState(0);
   const [threeResetSignal, setThreeResetSignal] = useState(0);
   const [hoveredMeshElement, setHoveredMeshElement] = useState<PublicMeshElementSelection | null>(null);
-  const [showMeshNavigationHint, setShowMeshNavigationHint] = useState(false);
   const viewportRef = useRef<HTMLElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   // The 2D canvas puts its zoom controls in the title bar, beside fullscreen.
@@ -1872,7 +2151,7 @@ function ViewportChrome({
   }, [clampDockHeight, dockStrip, mode, viewportMode]);
   const animationFrameRef = useRef(0);
   const introAnimationFrameRef = useRef(0);
-  const introCompleteRef = useRef(!designIntroEnabled || resumeDesignView);
+  const introCompleteRef = useRef(!playDesignIntro);
   const previousFrameRef = useRef<number | null>(null);
 
   const finishDesignIntro = useCallback((finalMode: PublicViewportMode) => {
@@ -1894,16 +2173,6 @@ function ViewportChrome({
     setViewportMode((current) => (current === '3d' ? '2d' : current));
   }, [mode]);
 
-  useEffect(() => {
-    if (mode !== 'mesh') {
-      setShowMeshNavigationHint(false);
-      return undefined;
-    }
-    setShowMeshNavigationHint(true);
-    const timer = window.setTimeout(() => setShowMeshNavigationHint(false), 4_200);
-    return () => window.clearTimeout(timer);
-  }, [mode]);
-
   // Remember the Design view once its intro is over. No dependency list: a
   // motor loaded while this canvas stays mounted resets the memory, and the
   // next render records again that the intro has already been seen here.
@@ -1912,6 +2181,7 @@ function ViewportChrome({
     designViewMemory.introPlayed = true;
     designViewMemory.view = viewportMode;
     designViewMemory.layer = canvasLayer;
+    designViewMemory.overlays = overlays;
   });
 
   useEffect(() => {
@@ -1981,12 +2251,13 @@ function ViewportChrome({
     : viewportMode === 'layout'
       ? 'windings'
       : canvasLayer;
-  const showDimensionReadout = viewportMode === '2d' && displayLayer === 'dimensions';
+  const showDimensionReadout = viewportMode === '2d' && overlays.dimensions;
   // Layout is no longer a recolour of the cross-section: it unrolls the winding,
   // which is the only place slot order, coil spans and parallel paths are legible.
   const showWindingLayout = viewportMode === 'layout' && mode === 'geometry';
   const showPlayback = mode === 'geometry'
-    && (viewportMode === '2d' || viewportMode === '3d');
+    ? (viewportMode === '2d' || viewportMode === '3d')
+    : mode === 'mesh';
   const showMaterialAssignment = viewportMode === 'materials'
     && materialSubview === 'assignment'
     && mode === 'geometry';
@@ -1998,8 +2269,8 @@ function ViewportChrome({
     ? materialHighlightKind
     : highlightComponentKind;
   const dimensionAnnotations = useMemo(
-    () => (showDimensionReadout ? buildDimensionAnnotations(config, geometry ?? null) : []),
-    [showDimensionReadout, config, geometry],
+    () => (showDimensionReadout ? buildDimensionAnnotations(config, stale ? null : geometry ?? null) : []),
+    [showDimensionReadout, config, geometry, stale],
   );
   const focusedMeshElement = useMemo<PublicMeshElementSelection | null>(() => {
     if (
@@ -2031,6 +2302,8 @@ function ViewportChrome({
             className={viewportMode === viewMode ? 'is-active' : ''}
             aria-label={`Show ${viewMode === '2d' ? '2D motor' : viewMode === '3d' ? '3D motor' : viewMode} view`}
             aria-pressed={viewportMode === viewMode}
+            disabled={partialDesign && viewMode !== '2d'}
+            title={partialDesign && viewMode !== '2d' ? 'Add the remaining motor parts first' : undefined}
             onClick={() => selectViewportMode(viewMode)}
             key={viewMode}
           >
@@ -2052,7 +2325,12 @@ function ViewportChrome({
       style={{ ['--viewport-dock-height' as never]: `${dockHeight}px` }}
     >
       {showConfigurationLabel && (
-        <div className="viewport-label viewport-label-cad">{config.topology} {config.rotor.pole_count}p/{config.stator.slot_count}s</div>
+        <div className="viewport-label viewport-label-cad">{configurationLabel}</div>
+      )}
+      {partialDesign && !geometry?.regions.length && <div className="public-viewport-message">{constructionPrompt}</div>}
+
+      {solveRotorCaption && viewportMode !== '3d' && (
+        <div className="viewport-label viewport-label-cad public-solve-rotor-caption" role="status" aria-live="off">{solveRotorCaption}</div>
       )}
       {showDimensionReadout && (
         <DimensionReadout
@@ -2072,9 +2350,17 @@ function ViewportChrome({
         >
           <PublicMotor3D
             config={config}
+            designName={designName}
             geometry={geometry}
             resetSignal={threeResetSignal}
             rotorAngleDeg={rotorAngleDeg}
+            plainWinding={!showCoilColors}
+            showToothPoles={showToothPoles}
+            showPhases={canvasLayer === 'phases'}
+            overlays={overlays}
+            previewRpm={animationRpm}
+            controlsInDock
+            dockSlot={dock3dSlot}
             explodedAmount={explodedAmount}
             introProgress={introActive ? introCameraProgress : null}
             onInteraction={() => finishDesignIntro('3d')}
@@ -2084,7 +2370,7 @@ function ViewportChrome({
       )}
       {(viewportMode !== '3d' || introActive) && (
         <div
-          className="public-viewport-stage public-viewport-stage-2d"
+          className={`public-viewport-stage public-viewport-stage-2d${solvePulse ? ' is-solving-field' : ''}`}
           style={{
             opacity: introActive ? introCrossfade : 1,
             pointerEvents: introActive && introCrossfade <= 0.5 ? 'none' : 'auto',
@@ -2099,25 +2385,34 @@ function ViewportChrome({
             />
           ) : showWindingLayout ? (
             <WindingLayoutView config={config} geometry={geometry ?? null} navigationSlot={navigationSlot} />
+          ) : solveFieldPreview ? (
+            solveFieldPreview
           ) : (
             <MotorCanvas
               geometry={geometry}
+              geometryStale={stale}
               mesh={mesh}
               mode={mode}
               layer={displayLayer}
-              rotorAngleDeg={rotorAngleDeg}
+              overlays={viewportMode === '2d' ? overlays : NO_CANVAS_OVERLAYS}
+              rotorAngleDeg={solveRotorAngleDeg ?? rotorAngleDeg}
               windingType={config.winding.type}
               selectedComponent={selectedComponent}
               highlightComponentKind={effectiveHighlightKind}
               onComponentSelect={mode === 'geometry' ? onComponentSelect : undefined}
               config={config}
               activeDimension={showDimensionReadout ? activeDimension : null}
+              editingDimension={viewportMode === '2d' && mode === 'geometry' ? editingDimension : null}
               hoveredDimension={showDimensionReadout ? hoveredDimension : null}
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               showToothPoles={viewportMode === '2d' && showToothPoles}
               previewRpm={animationRpm}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
+              meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
+              magnifier={mode === 'mesh' && meshMagnifier}
+              magnifierSlot={magnifierSlot}
+              plainWinding={!showCoilColors}
               meshQualities={meshQualitySummary?.qualities}
               meshQualityThreshold={meshQualitySummary?.threshold}
               focusedMeshElementIndex={focusedMeshElementIndex}
@@ -2148,9 +2443,30 @@ function ViewportChrome({
           <em>{introCrossfade > 0 ? 'Opening the engineering view' : 'Turning to the front plane'}</em>
         </div>
       )}
+      {show3dInset && !partialDesign && viewportMode === '2d' && mode === 'geometry' && !introActive && geometry && (
+        <div className="public-viewport-3d-inset">
+          <div className="public-viewport-3d-inset-scene" aria-hidden="true">
+            <PublicMotor3D
+              config={config}
+              designName={designName}
+              geometry={geometry}
+              resetSignal={threeResetSignal}
+              rotorAngleDeg={rotorAngleDeg}
+              plainWinding={!showCoilColors}
+              showToothPoles={showToothPoles}
+              showPhases={canvasLayer === 'phases'}
+              explodedAmount={0}
+              introProgress={null}
+            />
+          </div>
+          <button type="button" aria-label="Open the 3D view" title="Open the 3D view" onClick={() => selectViewportMode('3d')}>
+            <span>3D</span>
+          </button>
+        </div>
+      )}
       {!geometry && mode === 'geometry' && viewportMode !== '3d' && <div className="public-viewport-message">Start the local backend to load geometry.</div>}
       {!mesh && mode === 'mesh' && viewportMode === '2d' && <div className="public-viewport-message">Generate the mesh to inspect its elements.</div>}
-      {mode === 'geometry' && stale && viewportMode !== '3d' && <div className="viewport-preview-note">Updating preview…</div>}
+      {mode === 'geometry' && stale && !previewFailed && viewportMode !== '3d' && !shoeOverhangLimitNotice(config) && <div className="viewport-preview-note">Updating preview…</div>}
       {busy === 'mesh' && <div className="public-canvas-progress"><span>Meshing…</span><i /></div>}
       {/* The floating layout card is gone: WindingLayoutView states the same slots,
           poles, type, turns and paths in its own header, and the card sat on top of
@@ -2172,12 +2488,6 @@ function ViewportChrome({
                       ? 'Air'
                       : selectedComponent.role}
           </span>
-        </div>
-      )}
-      {mode === 'mesh' && showMeshNavigationHint && (
-        <div className="public-mesh-navigation-hint" role="status">
-          <span>Scroll to zoom · drag once zoomed</span>
-          <button type="button" aria-label="Dismiss mesh navigation hint" onClick={() => setShowMeshNavigationHint(false)}>×</button>
         </div>
       )}
       {mode === 'mesh' && meshQualitySummary && meshDisplayMode !== 'geometry' && (
@@ -2274,7 +2584,7 @@ function ViewportChrome({
             </div>
           </div>
         )}
-        <div className="viewport-controls viewport-controls-cad" aria-label="Motor view and overlay controls">
+        <div className={`viewport-controls viewport-controls-cad${viewportMode === '3d' && mode === 'geometry' ? ' is-3d' : ''}`} aria-label="Motor view and overlay controls">
           {/* Each group has a small label and one of two shapes: a segmented
               control picks one way to draw the view, a dot toggle switches a
               layer on or off on its own. Tabs in the title bar pick the view. */}
@@ -2312,18 +2622,46 @@ function ViewportChrome({
               </span>
             </span>
           )}
+          {mode === 'mesh' && <span className="public-dock-row-break" aria-hidden="true" />}
           {mode === 'mesh' && (
-            <span className="vc-group public-mesh-layer-controls" role="group" aria-label="Mesh layers">
-              <span className="public-dock-group-label" aria-hidden="true">Show</span>
-              <button
-                type="button"
-                className="public-dock-toggle"
-                aria-pressed={showMeshEdges}
-                onClick={() => onShowMeshEdgesChange?.(!showMeshEdges)}
-              >
-                Element edges
-              </button>
+            <span className="vc-group public-view-modes" role="group" aria-label="Mesh overlays">
+              <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
+              <span className="public-dock-segmented">
+                {([
+                  ['slots', 'Slots', 'slot numbers'],
+                  ['teeth', 'Tooth', 'tooth numbers'],
+                  ['windings', 'Winding', 'winding labels'],
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).map(([overlay, label, what]) => {
+                  const pressed = meshDisplayMode === 'geometry' && overlays[overlay];
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={pressed}
+                      disabled={meshDisplayMode !== 'geometry'}
+                      title={meshDisplayMode !== 'geometry' ? 'Overlays show with the Regions colouring' : `${pressed ? 'Hide' : 'Show'} the ${what} over the mesh`}
+                      onClick={() => toggleOverlay(overlay)}
+                      key={overlay}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </span>
             </span>
+          )}
+          {mode === 'mesh' && (
+            // The on/off layers wait in More, as on the Field tab, so the dock keeps to three rows at any width.
+            <details
+              className="public-field-layer-menu public-dock-more"
+              {...meshLayerMenu}
+            >
+              <summary>More{meshMoreOn > 0 && <em>{meshMoreOn} on</em>}</summary>
+              <div className="public-field-layer-controls" role="group" aria-label="More mesh layers">
+                <button type="button" aria-pressed={meshMagnifier} title="Show an enlarged view of the area under the pointer" onClick={() => setMeshMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
+                <button type="button" aria-pressed={showToothPoles} title="Show each stator tooth's N / S pole as the rotor turns" onClick={() => setShowToothPoles((shown) => !shown)}><i aria-hidden="true" />Tooth poles</button>
+                <button type="button" aria-pressed={showCoilColors} title="Color each coil by its phase; off draws them all in one plain color" onClick={() => setShowCoilColors((shown) => !shown)}><i aria-hidden="true" />Coil colors</button>
+              </div>
+            </details>
           )}
           {viewportMode === 'materials' && mode === 'geometry' && (
             <span className="vc-group public-material-subview-controls" role="group" aria-label="Materials view mode">
@@ -2345,37 +2683,85 @@ function ViewportChrome({
               </span>
             </span>
           )}
-          {viewportMode === '2d' && mode === 'geometry' && (
-            <span className="vc-group public-view-modes" role="group" aria-label="2D display layers">
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && (
+            <span className="vc-group public-view-modes" role="group" aria-label="Display layers">
               <span className="public-dock-group-label" aria-hidden="true">Overlay</span>
               <span className="public-dock-segmented">
                 {([
-                  ['none', 'None'],
-                  ['dimensions', 'Dims'],
-                  ['slots', 'Slots'],
-                  ['windings', 'Winding'],
-                ] as Array<[PublicCanvasLayer, string]>).map(([layer, label]) => {
-                  // Phases is the winding overlay shaded by phase current, so
-                  // Winding stays pressed under it and turns both off.
-                  const pressed = canvasLayer === layer || (layer === 'windings' && canvasLayer === 'phases');
-                  return (
-                    <button
-                      type="button"
-                      aria-pressed={pressed}
-                      title={layer === 'none' ? 'Show the bare cross-section' : pressed ? `Hide the ${label.toLowerCase()} overlay` : `Show ${label.toLowerCase()}`}
-                      // One overlay at a time. None, or clicking the active one again,
-                      // leaves the bare cross-section: Dims in particular puts a
-                      // legend and dashed lines over the motor.
-                      onClick={() => setCanvasLayer(pressed ? 'none' : layer)}
-                      key={layer}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
+                  ['dimensions', 'Dims', 'dimensions'],
+                  ['slots', 'Slots', 'slot numbers'],
+                  ['teeth', 'Tooth', 'tooth numbers'],
+                  ['windings', 'Winding', 'winding labels (A+, A-)'],
+                ] as Array<[keyof PublicCanvasOverlays, string, string]>).filter(([overlay]) => (
+                  // The 3D view carries the number chips, not the dimension lines.
+                  viewportMode === '2d' || overlay !== 'dimensions'
+                )).map(([overlay, label, what]) => (
+                  // Each overlay is on or off by itself; none pressed is the bare cross-section.
+                  <button
+                    type="button"
+                    aria-pressed={overlays[overlay]}
+                    disabled={partialDesign && overlay === 'dimensions'}
+                    title={`${overlays[overlay] ? 'Hide' : 'Show'} the ${what}`}
+                    onClick={() => toggleOverlay(overlay)}
+                    key={overlay}
+                  >
+                    {label}
+                  </button>
+                ))}
               </span>
             </span>
           )}
+          {/* Three rows on every tab, so the motor never moves between them:
+              what is drawn, what is shown over it, and the transport. */}
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && <span className="public-dock-row-break" aria-hidden="true" />}
+          {(viewportMode === '2d' || viewportMode === '3d') && mode === 'geometry' && (
+            <span className="vc-group public-view-toggles" role="group" aria-label="Display toggles">
+              <span className="public-dock-group-label" aria-hidden="true">Show</span>
+              {/* Phases only means something while the rotor turns: it shades the
+                  coils by each phase's current, so it sits with the preview
+                  rather than among the label overlays. */}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={canvasLayer === 'phases'}
+                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
+                  onClick={() => {
+                    // Phases brings the coil colours on with it; Coil colors can then be turned off again for copper coils.
+                    if (canvasLayer !== 'phases') setShowCoilColors(true);
+                    setCanvasLayer((current) => (current === 'phases' ? 'none' : 'phases'));
+                  }}
+                >
+                  Phases
+                </button>
+              )}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showToothPoles}
+                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
+                  onClick={() => setShowToothPoles((shown) => !shown)}
+                >
+                  Tooth poles
+                </button>
+              )}
+              {mode === 'geometry' && (
+                <button
+                  type="button"
+                  className="public-dock-toggle"
+                  aria-pressed={showCoilColors}
+                  title={showCoilColors ? 'Draw every coil in one plain color, to follow the N / S fields' : 'Color each coil by its phase'}
+                  onClick={() => setShowCoilColors((shown) => !shown)}
+                >
+                  Coil colors
+                </button>
+              )}
+            </span>
+          )}
+          {/* 3D only, in a right-hand column beside Overlay, Show and Spin: Explode here, then the
+              peel slider and the part list, which the 3D view draws into the slot (PublicMotor3D). */}
+          {viewportMode === '3d' && mode === 'geometry' && <span className="public-dock-3d-slot" ref={setDock3dSlot} />}
           {viewportMode === '3d' && (
             <span className="vc-group public-explode-controls" role="group" aria-label="Exploded view">
               <span className="public-dock-group-label" aria-hidden="true">Explode</span>
@@ -2420,31 +2806,6 @@ function ViewportChrome({
                 title="Preview speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
                 onChange={setAnimationRpm}
               />
-              {/* Phases only means something while the rotor turns: it shades the
-                  winding overlay by each phase's current, so it sits with the
-                  preview rather than among the static overlays. */}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={canvasLayer === 'phases'}
-                  title={canvasLayer === 'phases' ? 'Stop shading the winding by phase current' : 'Shade the winding by phase current as the rotor turns'}
-                  onClick={() => setCanvasLayer((current) => (current === 'phases' ? 'windings' : 'phases'))}
-                >
-                  Phases
-                </button>
-              )}
-              {viewportMode === '2d' && (
-                <button
-                  type="button"
-                  className="public-dock-toggle"
-                  aria-pressed={showToothPoles}
-                  title={showToothPoles ? 'Hide the stator teeth\'s N / S poles' : 'Show each stator tooth\'s N / S pole as the rotor turns'}
-                  onClick={() => setShowToothPoles((shown) => !shown)}
-                >
-                  Tooth poles
-                </button>
-              )}
             </span>
           )}
         </div>
@@ -2550,12 +2911,24 @@ function QualificationTag({ qualification }: { qualification: PublicQualificatio
   );
 }
 
-type DesignHealthSeverity = 'positive' | 'info' | 'warning';
+type DesignHealthSeverity = 'positive' | 'info' | 'warning' | 'error';
 
 interface DesignHealthIssue {
   severity: DesignHealthSeverity;
   title: string;
   copy: string;
+}
+
+/** One home for design messages that are not attached to a parameter field. */
+function HealthAttention({ issues }: { issues: DesignHealthIssue[] }) {
+  if (!issues.length) return null;
+  return <section className="public-health-attention" aria-label="Need attention">
+    {issues.map((issue) => <div className={`design-health-issue severity-${issue.severity}`} key={`${issue.title}:${issue.copy}`}
+      role={issue.severity === 'error' ? 'alert' : 'status'}>
+      <span className="design-health-issue-icon"><StatusGlyph tone={issue.severity === 'error' ? 'error' : 'warning'} /><span className="public-visually-hidden">{issue.severity === 'error' ? 'Error' : 'Warning'}</span></span>
+      <span className="design-health-issue-body"><span className="design-health-issue-title">{issue.title}</span><span className="design-health-issue-copy">{issue.copy}</span></span>
+    </div>)}
+  </section>;
 }
 
 function HealthPanel({
@@ -2565,13 +2938,19 @@ function HealthPanel({
   mesh,
   geometryStale,
   blankDesign = false,
+  newDesignParts = null,
   collapsed = false,
   onCollapsedChange,
-}: Pick<CoilEmWorkspaceProps, 'config' | 'error' | 'geometry' | 'mesh' | 'geometryStale' | 'blankDesign'> & {
+  errorTitle = 'Design needs attention',
+  geometryLimitNotice = null,
+}: Pick<CoilEmWorkspaceProps, 'config' | 'error' | 'geometry' | 'mesh' | 'geometryStale' | 'blankDesign' | 'newDesignParts'> & {
   /** Folded to a strip that keeps the status, to give the motor view the room. */
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
+  errorTitle?: string;
+  geometryLimitNotice?: string | null;
 }) {
+  const entry = useContext(NewDesignEntryContext);
   const reference = publishedReference(config);
   const collapseButton = onCollapsedChange ? (
     <button
@@ -2585,7 +2964,7 @@ function HealthPanel({
       ›
     </button>
   ) : null;
-  const collapsedStrip = (tone: 'good' | 'warning' | 'updating', icon: string, label: string) => (
+  const collapsedStrip = (tone: 'good' | 'warning' | 'error' | 'updating', icon: string, label: string) => (
     <aside className={`design-health-panel is-collapsed tone-${tone}`}>
       <button
         type="button"
@@ -2600,6 +2979,47 @@ function HealthPanel({
       </button>
     </aside>
   );
+  const toothConfigured = !entry || hasEntry(entry, 'advanced', 'Tooth Profile');
+  const geometryWarnings = currentGeometryWarnings(geometry, geometryStale)
+    .filter((warning) => toothConfigured || !/tooth|shoulder/i.test(warning));
+  let currentErrorTitle = errorTitle;
+  if (errorTitle === 'Design needs attention' && error) {
+    if (/material|steel|M350-50A/i.test(error)) currentErrorTitle = 'Material not supported';
+    else if (/^solve_(params|options)\b/.test(error)) currentErrorTitle = 'Solve settings need attention';
+    else if (/winding|coil|phase|parallel_paths/i.test(error)) currentErrorTitle = 'Winding needs attention';
+  }
+  const currentIssues: DesignHealthIssue[] = [
+    ...(error ? [{ severity: 'error' as const, title: currentErrorTitle, copy: error }] : []),
+    ...(geometryLimitNotice ? [{ severity: 'warning' as const, title: 'Shoe Overhang needs attention', copy: geometryLimitNotice }] : []),
+    // Do not stack downstream winding errors on a faulty geometry field, or
+    // report a winding made from a pole count the user has not chosen yet.
+    ...(!geometryStale && (!error || geometry?.metadata?.diagnostic_only) && (!entry || hasEntry(entry, 'rotor', 'Pole Count')) ? geometry?.validation_errors.map((issue) => {
+      const copy = designErrorText({ error_code: String(issue.error_code ?? 'INVALID_GEOMETRY'), message: String(issue.message ?? 'Review the geometry.'), field: typeof issue.field === 'string' ? issue.field : null, suggestion: typeof issue.suggestion === 'string' ? issue.suggestion : null }, config);
+      const control = enteredGeometryError(typeof issue.field === 'string' ? issue.field : null, copy);
+      return { severity: 'error' as const, title: /winding|coil|phase|parallel|turns/i.test(`${issue.field ?? ''} ${copy}`) ? 'Winding needs attention' : control ? `${control.label} needs attention` : 'Geometry needs attention', copy };
+    }).filter((issue) => issue.copy !== error) ?? [] : []),
+    ...[...new Set(geometryWarnings)].map((copy) => ({ severity: 'warning' as const,
+      title: /mesh-sensitive/i.test(copy) ? 'Mesh convergence needs review' : /tooth-shoe shoulder/i.test(copy) ? 'Tooth-shoe shoulder needs review' : /bore tooth/i.test(copy) ? 'Bore tooth needs review' : 'Geometry needs review', copy: humanizeGeometryMessage(copy) })),
+  ];
+  const hasCurrentErrors = currentIssues.some((issue) => issue.severity === 'error');
+  const currentTone = hasCurrentErrors ? 'error' : currentIssues.length ? 'warning' : 'updating';
+  if (newDesignParts && (!designPartsComplete(newDesignParts) || entry && !['stator', 'advanced', 'rotor', 'winding', 'materials'].every((section) => entrySectionComplete(entry, section)))) {
+    if (collapsed) return collapsedStrip(currentTone, currentIssues.length ? '!' : '○', currentIssues.length ? 'Need attention' : 'Design in progress');
+    return <aside className={`design-health-panel tone-${currentTone}`}>
+      <div className="design-health-header"><div><div className="design-health-eyebrow">Design Health</div><div className="design-health-caption">The cross-section follows the parts you define.</div></div>{collapseButton}</div>
+      <div className={`public-health-status-card ${currentTone}`} role="status">
+        <div className="public-health-status-icon" aria-hidden="true">{currentIssues.length ? '!' : '○'}</div>
+        <div><div className={`design-health-score-label tone-${currentTone}`}>{currentIssues.length ? 'Need attention' : 'Design in progress'}</div><p>{DESIGN_PARTS.filter(({ id }) => newDesignParts[id]).length} of 6 parts {geometry?.metadata?.diagnostic_rotor ? 'configured' : 'drawn'}</p></div>
+      </div>
+      <HealthAttention issues={currentIssues} />
+      <div className="design-health-issue-list">{DESIGN_PARTS.map(({ id, label }) => <div className={`design-health-issue severity-${newDesignParts[id] ? 'positive' : 'info'}`} key={id}>
+        <span className="design-health-issue-icon"><StatusGlyph tone={newDesignParts[id] ? 'good' : 'info'} /></span>
+        <span className="design-health-issue-body"><span className="design-health-issue-title">{label}</span><span className="design-health-issue-copy">{id === 'magnets' && geometry?.metadata?.diagnostic_rotor && newDesignParts.rotor
+          ? geometry.metadata.diagnostic_only ? 'Requested magnets shown · correct the highlighted geometry issues' : newDesignParts.magnets ? 'Shown in the cross-section' : 'Suggested magnets shown · finish configuring their dimensions'
+          : newDesignParts[id] ? 'Shown in the cross-section' : 'Set its parameters to add it'}</span></span>
+      </div>)}</div>
+    </aside>;
+  }
   if (blankDesign) {
     if (collapsed) return collapsedStrip('updating', '○', 'Blank design');
     return (
@@ -2628,26 +3048,34 @@ function HealthPanel({
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
   const qualification = geometryStale ? null : readQualification(geometry?.metadata?.qualification);
+  // Can it be wound: the wire against the slot, the slot mouth and the bends it has to make (windingBuild.ts).
+  const windingRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
+  const windingChecks = windingRecord ? windingBuildChecks({
+    record: windingRecord,
+    slotMouthMm: Math.max(0, config.stator.slot_opening_mm - (config.stator.tooth_shoe_enabled ? 2 * Math.max(0, config.stator.tooth_shoe_overhang_mm ?? 1.5) : 0)),
+    windingType: config.winding.type,
+    toothWidthMm: statorWidths.narrowestToothWidthMm,
+  }) : [];
+  const validSlots = validSlotCount(config.stator.slot_count);
+  const slotInputsReady = validSlots && !error;
+  const balancedSlots = slotInputsReady && config.stator.slot_count % 3 === 0;
   const issues: DesignHealthIssue[] = [
-    ...(error ? [{
-      severity: 'warning' as const,
-      title: 'Current design needs attention',
-      copy: error,
-    }] : []),
+    ...currentIssues,
     airgapHealth,
     ...(burialHealth ? [burialHealth] : []),
-    { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
+    ...(config.geometry_reference || hasPoleCoverageEstimate(config) ? [{ severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
       title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
-      copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` },
-    { severity: config.stator.slot_count % 3 === 0 ? 'positive' : 'warning', title: config.stator.slot_count % 3 === 0 ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: `${config.stator.slot_count} stator slots across three phases.` },
-    { severity: geometry && !geometryStale ? 'positive' : 'info', title: geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
+      copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` }] as DesignHealthIssue[] : []),
+    { severity: balancedSlots ? 'positive' : 'warning', title: !slotInputsReady ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: slotInputsReady ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
+    { severity: !error && geometry && !geometryStale ? 'positive' : 'info', title: error ? 'Preview waiting for valid inputs' : geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: error ? 'Correct the input errors to refresh the preview.' : geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
       title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
+    ...windingChecks,
     ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
-    ...(toothWidthAdvisory ? [{
+    ...(toothWidthAdvisory && !geometryWarnings.some((warning) => /tooth-shoe shoulder|bore tooth/i.test(warning)) ? [{
       severity: toothWidthAdvisory.severity,
       title: toothWidthAdvisory.kind === 'tooth_shoe_shoulder'
         ? toothWidthAdvisory.severity === 'warning' ? 'Tooth-shoe shoulder is much narrower' : 'Tooth-shoe shoulder is slightly narrower'
@@ -2660,19 +3088,15 @@ function HealthPanel({
   const positiveCount = issues.filter((issue) => issue.severity === 'positive').length;
   const infoCount = issues.filter((issue) => issue.severity === 'info').length;
   const warningCount = issues.filter((issue) => issue.severity === 'warning').length;
-  const tone = warningCount > 0 ? 'warning' : infoCount > 0 ? 'updating' : 'good';
+  const errorCount = issues.filter((issue) => issue.severity === 'error').length;
+  const attentionIssues = issues.filter((issue) => issue.severity === 'error' || issue.severity === 'warning');
+  const tone = errorCount > 0 ? 'error' : warningCount > 0 ? 'warning' : infoCount > 0 ? 'updating' : 'good';
   const ready = tone === 'good';
-  const validToSolve = !error
+  const validToSolve = !error && errorCount === 0
     && airgap >= PUBLIC_AIRGAP_LAUNCH_MIN_MM
     && burialHealth?.blocking !== true
-    && config.stator.slot_count % 3 === 0;
-  const statusLabel = ready
-    ? 'Ready to solve'
-    : tone === 'updating'
-      ? 'Updating preview'
-      : validToSolve
-        ? 'Valid to solve · review design'
-        : 'Review before solving';
+    && balancedSlots;
+  const statusLabel = attentionIssues.length ? 'Need attention' : ready ? 'Ready to solve' : 'Updating preview';
 
   if (collapsed) return collapsedStrip(tone, ready ? '✓' : tone === 'updating' ? '↻' : '!', statusLabel);
   return (
@@ -2682,17 +3106,19 @@ function HealthPanel({
         <div className="public-health-status-icon" aria-hidden="true">{ready ? '✓' : tone === 'updating' ? '↻' : '!'}</div>
         <div>
           <div className={`design-health-score-label tone-${tone}`}>{statusLabel}</div>
-          <p>{positiveCount} checks passed · {warningCount} {warningCount === 1 ? 'warning' : 'warnings'}{infoCount > 0 ? ` · ${infoCount} updating` : ''}</p>
+          <p>{positiveCount} checks passed{errorCount > 0 ? ` · ${errorCount} ${errorCount === 1 ? 'error' : 'errors'}` : ''} · {warningCount} {warningCount === 1 ? 'warning' : 'warnings'}{infoCount > 0 ? ` · ${infoCount} updating` : ''}</p>
+          {validToSolve && warningCount > 0 && errorCount === 0 && <p>Valid to solve · review design</p>}
         </div>
       </div>
+      <HealthAttention issues={attentionIssues} />
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>
-        <div className="design-health-metric"><span>Q</span><strong>{Number((config.stator.slot_count / Math.max(1, config.rotor.pole_count * 3)).toFixed(3))} </strong></div>
+        {(config.geometry_reference || hasPoleCoverageEstimate(config)) && <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>}
+        <div className="design-health-metric"><span>Q</span><strong>{validSlots && !error && config.rotor.pole_count > 0 ? Number((config.stator.slot_count / (config.rotor.pole_count * 3)).toFixed(3)) : '—'} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
       <div className="design-health-issue-list">
-        {issues.map((issue) => (
+        {issues.filter((issue) => issue.severity !== 'error' && issue.severity !== 'warning').map((issue) => (
           <div className={`design-health-issue severity-${issue.severity}`} key={issue.title}>
             <span className="design-health-issue-icon"><StatusGlyph tone={issue.severity === 'positive' ? 'good' : issue.severity} /></span>
             <span className="design-health-issue-body"><span className="design-health-issue-title">{issue.title}</span><span className="design-health-issue-copy">{issue.copy}</span></span>
@@ -3024,7 +3450,16 @@ function LiveSolveMonitor({ config, busy, progress, liveSamples, progressPercent
   );
 }
 
+function ResultInputNotes({ result }: { result: SolveResult }) {
+  if (!result.input_notes?.length) return null;
+  return <details className="performance-message"><summary>Interpreted rotor inputs</summary>
+    {result.input_notes.map((note) => <p key={note}>{humanizeGeometryMessage(note)}</p>)}
+  </details>;
+}
+
 function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result: SolveResult; onOpenReport: () => void; positionLink?: FieldPositionLink }) {
+  const sixStep = resultUsesSixStep(result);
+  const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
   const hasTorque = hasTorqueResult(result);
   const hasBackEmf = hasBackEmfResult(result);
   const cogging = result.summary.cogging;
@@ -3033,15 +3468,13 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   const firstPlot = hasTorque ? 'torque' : hasBackEmf ? 'back-emf' : result.cogging_torque_waveform ? 'cogging' : 'torque-speed';
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'torque-speed'>(firstPlot);
   useEffect(() => { setActivePlot(firstPlot); }, [result, firstPlot]);
-  const sixStep = resultUsesSixStep(result);
-  const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
   const thdLabel = result.back_emf_harmonic_analysis
     ? 'Back EMF THD H12'
     : 'Back EMF THD legacy';
   const resultsHeadingId = useId();
   const allResultsId = useId();
   const [showAllResults, setShowAllResults] = useState(false);
-  const preview = sixStep && !completeCycle ? ' · preview' : '';
+  const preview = result.solve_metadata.loaded_cycle_complete === false ? ' · partial window' : '';
   // The panel opens on the few numbers people check first; the rest are one
   // click away, and Full results has everything.
   const constants = hasMotorConstants(result.summary) ? motorConstantsView(result.summary) : null;
@@ -3068,6 +3501,12 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
 
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
+      <ResultInputNotes result={result} />
+      {losses?.efficiency_pct == null && losses && <p className="performance-message" role="status">{losses.efficiency_status_reason} {losses.iron_loss_status_reason} {losses.iron_loss_W == null && 'Known loss subtotal excludes unavailable iron loss.'}</p>}
+      {result.solve_metadata.loaded_cycle_complete === false && hasTorque
+        && !result.warnings?.some((warning) => warning.startsWith('Partial electrical sweep:'))
+        && <p className="performance-message" role="status">Average torque and d/q values cover a partial angular window. Use a full electrical cycle for cycle-average comparisons.</p>}
+      {result.warnings?.map((warning) => <p className="performance-message" role="status" key={warning}>{humanizeGeometryMessage(warning)}</p>)}
       <div className="public-completed-results-heading">
         <span className="public-section-kicker">Completed results</span>
         <button type="button" data-guide="open-report" onClick={onOpenReport}>Full results →</button>
@@ -3085,7 +3524,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
                   ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
                   : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatTorqueNm(cogging.peak_to_peak_Nm), 'N·m')}
-                {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
+                {losses && resultRow(losses.iron_loss_W == null ? 'Known loss subtotal' : 'Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
                 {hasTorque && resultRow(`Average torque${preview}`, formatTorqueNm(result.summary.avg_torque_Nm), 'N·m')}
                 {hasTorque && rippleRows}
@@ -3109,7 +3548,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
                   ? `${torqueSpeed.map.points.filter((point) => point.status === 'ok').length} / ${torqueSpeed.map.points.length}`
                   : String(torqueSpeed.map.points.length), torqueSpeed.status === 'partial' ? 'solved · incomplete' : 'points')}
                 {cogging && resultRow('Cogging torque p-p', formatTorqueNm(cogging.peak_to_peak_Nm), 'N·m')}
-                {losses && resultRow('Total loss', formatNumber(losses.total_loss_W), 'W')}
+                {losses && resultRow(losses.iron_loss_W == null ? 'Known loss subtotal' : 'Total loss', formatNumber(losses.total_loss_W), 'W')}
                 {losses && resultRow('Efficiency', formatNumber(losses.efficiency_pct), '%')}
               {hasTorque && resultRow(`Average torque${preview}`, formatTorqueNm(result.summary.avg_torque_Nm), 'N·m')}
               {hasTorque && rippleRows}
@@ -3294,8 +3733,8 @@ function BackEMFHarmonicSpectrum({
 
 export type SolveSetupSection = 'solver' | 'operating' | 'analysis' | 'plan' | 'advanced';
 
-function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, cancellingSolve = false, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
-  'config' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'cancellingSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
+function SolveStage({ config, designName, guidedActive, guidedSolveSection, materials, geometry, mesh, validation, validationChecking, validationError, result, armatureField, armatureFieldError, progress, liveSamples, busy, error, errorDetails, notice, progressPercent, meshElements, meshQuality, selectedSolver, elmerCapability, onBack, onOpenReport, onGenerateMesh, onStartSolve, onCancelSolve, cancellingSolve = false, onRequestArmatureField, onCancelArmatureField, onMeshSettingChange, onSolvePlanChange, onCustomSweepChange, onSolveSettingChange, onAnalysisChange, onTorqueSpeedChange, onSolverChange, onManageRuns }: Pick<CoilEmWorkspaceProps,
+  'config' | 'designName' | 'guidedActive' | 'guidedSolveSection' | 'materials' | 'geometry' | 'mesh' | 'validation' | 'validationChecking' | 'validationError' | 'result' | 'armatureField' | 'armatureFieldError' | 'progress' | 'liveSamples' | 'busy' | 'error' | 'errorDetails' | 'notice' | 'progressPercent' | 'meshElements' | 'meshQuality' | 'selectedSolver' | 'elmerCapability' | 'onGenerateMesh' | 'onStartSolve' | 'onCancelSolve' | 'cancellingSolve' | 'onRequestArmatureField' | 'onCancelArmatureField' | 'onMeshSettingChange' | 'onSolvePlanChange' | 'onCustomSweepChange' | 'onSolveSettingChange' | 'onAnalysisChange' | 'onTorqueSpeedChange' | 'onSolverChange'
 > & { onBack: () => void; onOpenReport: () => void; onManageRuns?: () => void }) {
   const reference = publishedReference(config);
   // The setup sections open one at a time, as Design's do. The accuracy plan
@@ -3321,6 +3760,29 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
     resumeSolveView ? solveViewMemory.stage.solveView as 'geometry' | 'mesh' | 'field' : mesh ? 'mesh' : 'geometry'
   ));
   const [solveViewportExpanded, setSolveViewportExpanded] = useState(false);
+  const [magnifierSlot, setMagnifierSlot] = useState<HTMLDivElement | null>(null);
+  const [fieldDataSlot, setFieldDataSlot] = useState<HTMLDivElement | null>(null);
+  // While a solve meshes and solves, the viewport turns the rotor steadily, so
+  // the wait reads as work in progress; during the field solve it pulses too. Both
+  // read progress the solver already reports, so they add nothing to the
+  // solve; the mesh view turns a picture of the rotor it drew once.
+  const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
+  const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
+  const hasLoadedWindow = config.solve_options.torque_sweep || config.solve_options.losses_efficiency;
+  const partialPlanNote = !hasLoadedWindow ? null : config.solve_params.solve_quality === 'quick'
+    ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window. Iron loss and efficiency may be unavailable; choose Custom with a full electrical cycle for cycle-average comparisons.'
+    : config.solve_params.solve_quality === 'custom' && sweepRangeDeg < 360
+      ? 'This custom sweep covers a partial electrical window. Torque and d/q averages describe only that window.' : null;
+  const sweepPoleCount = config.rotor.pole_count;
+  useEffect(() => {
+    setSolveRotorTurn((previous) => (busy === 'solve'
+      ? nextPublicSolveRotorTurn(previous, progress, sweepRangeDeg, sweepPoleCount)
+      : null));
+  }, [busy, progress, sweepRangeDeg, sweepPoleCount]);
+  // It keeps turning while the result is put together: the turn ends when the solve does.
+  const shownRotorTurn = solveRotorTurn;
+  const solvingField = shownRotorTurn?.phase === 'solving';
+  const solveRotorAngleDeg = useTurningRotorAngle(shownRotorTurn ? true : null, 12);
   const [meshDisplayMode, setMeshDisplayMode] = useState<PublicMeshDisplayMode>(() => (
     resumeSolveView ? solveViewMemory.stage.meshDisplayMode as PublicMeshDisplayMode : 'geometry'
   ));
@@ -3329,6 +3791,25 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   // reset the view only when one of them is replaced, not on a resumed mount.
   const viewedMeshRef = useRef<unknown>(resumeSolveView ? mesh : undefined);
   const viewedResultRef = useRef<unknown>(resumeSolveView ? result : undefined);
+  // As soon as the first position is solved its field is shown: a real result
+  // to look at while the rest of the sweep runs. It is read once.
+  const firstSolvedField = useFirstSolvedField(SHOW_FIRST_SOLVED_FIELD && busy === 'solve', progress);
+  // It stays up while the result is put together, and for the one render
+  // between the result arriving and the view switching to it, so the mesh
+  // does not flash back in between.
+  const resultNotYetViewed = Boolean(result) && viewedResultRef.current !== result;
+  const shownSolvedField = busy === 'solve' || resultNotYetViewed ? firstSolvedField : null;
+  const previewShowedMeshRef = useRef(false);
+  previewShowedMeshRef.current = Boolean(shownSolvedField) && solveView === 'mesh';
+  const solveRotorCaption = shownSolvedField
+    ? 'A solved rotor position · finishing the rest'
+    : !shownRotorTurn || solveRotorAngleDeg === null
+      ? null
+      : shownRotorTurn.finished
+        ? 'Putting the results together'
+        : solvingField
+        ? 'Solving the field at each rotor position'
+        : 'Meshing the rotor positions';
   useEffect(() => {
     solveViewMemory.stage = { result, mesh, solveView, meshDisplayMode, showMeshEdges };
   });
@@ -3342,7 +3823,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const [resizingPanel, setResizingPanel] = useState<'setup' | 'runPlan' | null>(null);
   const completedResultAvailableRef = useRef(Boolean(result));
   const advancedOptionsRef = useRef<HTMLElement>(null);
-  const nonlinearSolverRef = useRef<HTMLSelectElement>(null);
+  const nonlinearSolverRef = useRef<HTMLButtonElement>(null);
   const fineMeshRef = useRef<HTMLButtonElement>(null);
   const recoveryFocusTargetRef = useRef<HTMLElement | null>(null);
   const [recoveryFocusRequest, setRecoveryFocusRequest] = useState(0);
@@ -3364,9 +3845,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
   const sixStepSelected = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
-  const solverCaption = selectedSolver === 'elmer'
-    ? `External Elmer ${elmerCapability.solver_version || '26.2'} · Gmsh · remesh per position.`
-    : 'Built-in field solver using the prepared Gmsh mesh.';
   const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
@@ -3575,7 +4053,11 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
       setMeshDisplayMode('geometry');
     }
     if (!result && mesh) setSolveView('mesh');
-    if (resultChanged && result) setSolveView('field');
+    if (resultChanged && result) {
+      // The finished field opens the way the in-run field was showing: with the mesh if it had it.
+      if (previewShowedMeshRef.current) solveViewMemory.field.showMesh = true;
+      setSolveView('field');
+    }
   }, [mesh, result]);
 
   useEffect(() => {
@@ -3764,7 +4246,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           <button type="button" aria-label="Dismiss update" onClick={() => setTransientNotice(null)}>×</button>
         </div>
       )}
-    <div className={`public-solve-workspace${resizingPanel === 'runPlan' ? ' is-resizing-run-plan' : ''}${resizingPanel === 'setup' ? ' is-resizing-setup' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}`}>
+    <div className={`public-solve-workspace${resizingPanel === 'runPlan' ? ' is-resizing-run-plan' : ''}${resizingPanel === 'setup' ? ' is-resizing-setup' : ''}${solveInProgress ? ' is-run-plan-focused' : ''}${solveViewportExpanded ? ' is-viewport-expanded' : ''}${guidedActive ? ' has-guided-setup' : ''}`}>
       <aside
         ref={setupRef}
         className="public-solve-setup"
@@ -3822,7 +4304,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           </div>
           {!elmerAvailable && <p className="public-solver-diagnostic">{elmerCapability.reason || 'Qualified Elmer 26.2 runtime not detected.'}</p>}
         </ParameterSectionBlock>}
-        <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection}>
+        <ParameterSectionBlock id="operating" label="Operating point" summary={operatingSummary} active={openSetupSection === 'operating'} onToggle={toggleSetupSection} guide="solve-operating">
           {reference && <p className="public-design-notice">{reference.solveNotice(config)}</p>}
           {reference?.affiliationNotice && <p className="public-design-notice">{reference.affiliationNotice}</p>}
           <div className="public-excitation-selector" role="radiogroup" aria-label="Stator excitation">
@@ -3992,7 +4474,16 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
                   <div><dt>Torque method</dt><dd>WST</dd></div>
                   <div><dt>Linear solver</dt><dd>Direct Cholesky</dd></div>
                 </dl>
-                <SelectRow selectRef={nonlinearSolverRef} label="Nonlinear solver" value={config.solve_params.nonlinear_solver} disabled={busy !== null} choices={[{ value: 'newton', label: 'Newton (recommended)' }, { value: 'picard', label: 'Picard' }]} onChange={(value) => onSolveSettingChange('nonlinear_solver', value as MotorConfig['solve_params']['nonlinear_solver'])} />
+                <div className="param-row public-param-row public-choice-row public-nonlinear-choice" role="group" aria-label="Nonlinear solver">
+                  <span className="param-label">Nonlinear solver</span>
+                  <span className="public-param-choices">
+                    <span className="public-recommended-choice">
+                      <small id="public-newton-recommendation">Recommended</small>
+                      <button type="button" ref={nonlinearSolverRef} aria-describedby="public-newton-recommendation" aria-pressed={config.solve_params.nonlinear_solver === 'newton'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'newton') onSolveSettingChange('nonlinear_solver', 'newton'); }}>Newton</button>
+                    </span>
+                    <button type="button" aria-pressed={config.solve_params.nonlinear_solver === 'picard'} disabled={busy !== null} onClick={() => { if (config.solve_params.nonlinear_solver !== 'picard') onSolveSettingChange('nonlinear_solver', 'picard'); }}>Picard</button>
+                  </span>
+                </div>
                 <p className="public-solver-help">Newton is the default and needs far fewer iterations. It falls back to Picard at any position where it doesn't converge.</p>
               </>}
               {!sixStepSelected && <SelectRow label="Current convention" value={config.solve_params.current_amplitude_convention} disabled={busy !== null} choices={[{ value: 'rms', label: 'RMS' }, { value: 'peak', label: 'Peak' }]} onChange={(value) => onSolveSettingChange('current_amplitude_convention', value as MotorConfig['solve_params']['current_amplitude_convention'])} />}
@@ -4014,6 +4505,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
             </StatusTag>
             <strong>{estimatedTimeText}</strong>
           </div>
+          {partialPlanNote && <p className="public-mesh-build-note" role="status">{partialPlanNote}</p>}
           {completedAnalysisAvailable ? (
             <>
               <button className="public-run-btn" type="button" data-guide="open-report" onClick={onOpenReport}>View Results →</button>
@@ -4031,6 +4523,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           ? (
             <SolvedFieldViewer
               materials={materials}
+              magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
+              probeSlot={solveViewportExpanded ? null : fieldDataSlot}
               viewControls={solveViewportSwitch}
               expandControl={(
                 <ViewportExpandButton
@@ -4054,6 +4548,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           : (
             <ViewportChrome
               config={config}
+              designName={designName}
               materials={materials}
               geometry={geometry}
               mesh={mesh}
@@ -4065,6 +4560,23 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
               meshQuality={meshQuality}
               showConfigurationLabel={false}
               enableDesignIntro={false}
+              magnifierSlot={solveViewportExpanded ? null : magnifierSlot}
+              solveRotorAngleDeg={solveRotorAngleDeg}
+              solveRotorCaption={solveRotorCaption}
+              solvePulse={solvingField || Boolean(shownSolvedField)}
+              solveFieldPreview={shownSolvedField && (
+                <FieldResultPlot
+                  plot={shownSolvedField}
+                  ring={outerRotorRing(config)}
+                  saturationTicks={statorSteelSaturationTicks(config, materials)}
+                  showMesh={solveView === 'mesh'}
+                  showHeading={false}
+                  showStatistics={false}
+                  showControls={false}
+                  fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
+                  rotorMarkDeg={(shownSolvedField.angle_deg ?? 0) / Math.max(1, config.rotor.pole_count / 2)}
+                />
+              )}
               dockStrip={solveViewportSwitch}
               isExpanded={solveViewportExpanded}
               onExpandToggle={() => setSolveViewportExpanded((expanded) => !expanded)}
@@ -4094,6 +4606,7 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
           onPointerDown={handleRunPlanResizeStart}
         />
         <div ref={runPlanScrollRef} className="public-run-plan-scroll">
+        {guidedActive && <div data-guide="guided-setup-panel" />}
         <div className="mesh-panel-header">
           <span className="mesh-panel-header-title">Run plan</span>
           {!error && (
@@ -4112,6 +4625,8 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
             </div>
           )}
         </div>
+        <div className="public-run-magnifier-slot" ref={setMagnifierSlot} />
+        <div className="public-run-field-data-slot" ref={setFieldDataSlot} />
         <details
           className="public-run-plan-section public-run-analysis"
           open={analysisDetailsOpen}
@@ -4119,8 +4634,6 @@ function SolveStage({ config, guidedSolveSection, materials, geometry, mesh, val
         >
           <summary className="public-run-copy">
             <span className="eyebrow">Analysis</span>
-            <strong className="public-run-plan-title">{solverLabel}</strong>
-            <small className="public-run-plan-caption">{solverCaption}</small>
           </summary>
           <div className="public-run-analysis-body">
             {error && <div className="error-banner" role="alert">
@@ -4439,7 +4952,12 @@ function ReportStage({
       <div className="public-report-header"><div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div><div className="public-report-header-actions"><div className="public-report-mode" role="group" aria-label="Results view"><button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button><button type="button" className={reportMode === 'compare' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button></div><button type="button" onClick={onBack}>← Back to Solve</button></div></div>
       {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
       {savedRunPanel}
+      <ResultInputNotes result={result} />
       {reportQualification && !qualificationChip && <QualificationNote qualification={reportQualification} />}
+      {result.warnings?.map((warning) => <p className="performance-message" role="status" key={warning}>{humanizeGeometryMessage(warning)}</p>)}
+      {result.solve_metadata.loaded_cycle_complete === false && hasTorqueResult(result)
+        && !result.warnings?.some((warning) => warning.startsWith('Partial electrical sweep:'))
+        && <p className="performance-message" role="status">Average torque and d/q values cover a partial angular window. Use a full electrical cycle for cycle-average comparisons.</p>}
       <ResultSummary
         result={result}
         config={config}
@@ -4482,14 +5000,55 @@ function ReportStage({
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
       {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
-      <ResultDiagnostics report={result.solver_convergence} />
+      <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown} />
       </>}
     </div>
   );
 }
 
 export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
+  const [focusedField, setFocusedField] = useState<{ section: string; label: string } | null>(null);
+  const fieldFocus = useMemo(() => ({ field: focusedField, setField: setFocusedField }), [focusedField]);
+  const setup = useNewDesignEntry(props.activeStep === 'design');
+  const entry = props.newDesignParts ? setup.entry : null;
+  const entrySnapshot: NewDesignEntrySnapshot | undefined = entry
+    ? { layout: entry.layout, topology: entry.topology, fields: entry.fields } : undefined;
+  const entryUndoScope = useRef<{ id: number; keys: string[]; topologyChanged: boolean } | null>(null);
+  useLayoutEffect(() => {
+    if (entryUndoScope.current?.id === props.editFeedback?.id) return;
+    const previous = props.editFeedback?.previousEntry;
+    if (!entry || !previous || !props.editFeedback) { entryUndoScope.current = null; return; }
+    // Capture this edit's entry changes once. Later confirmations of unrelated
+    // rows must survive Undo even when they keep the same configured value.
+    entryUndoScope.current = {
+      id: props.editFeedback.id,
+      keys: Object.keys({ ...previous.fields, ...entry.fields }).filter((key) => previous.fields[key] !== entry.fields[key]),
+      topologyChanged: previous.topology !== entry.topology,
+    };
+  }, [entry, props.editFeedback]);
+  const drawnParts = props.newDesignParts && entry ? enteredDesignParts(props.config, props.newDesignParts, entry) : props.newDesignParts;
   const reportAvailable = Boolean(props.result);
+  const buildComplete = designPartsComplete(drawnParts) && (!entry || entry.ready && ['stator', 'advanced', 'rotor', 'winding', 'materials'].every((section) => entrySectionComplete(entry, section)));
+  const geometryLimitNotice = !entry || hasEntry(entry, 'advanced', 'Tooth Profile', 'Shoe Overhang') ? shoeOverhangLimitNotice(props.config) : null;
+  const enteredIssues = props.newDesignParts ? buildIssues(props.config, props.newDesignParts).filter((issue) => {
+    if (!entry) return true;
+    if (!hasEntry(entry, issue.section ?? '', issue.label)) return false;
+    if (issue.section === 'stator' && issue.label === 'Yoke Thickness') return hasEntry(entry, 'stator', props.config.rotor_layout === 'outer' ? 'Hub Bore (ID)' : 'Bore Diameter (ID)');
+    if (issue.label === 'Magnet Thick.') return Boolean(drawnParts?.magnets);
+    return true;
+  }) : [];
+  const backendFieldIssue = props.error ? enteredGeometryError(props.errorDetails?.field, props.error) : null;
+  const enteredBackendIssue = entry && backendFieldIssue && (hasEntry(entry, backendFieldIssue.section ?? '', backendFieldIssue.label)
+    || Boolean(drawnParts?.rotor && props.geometry?.metadata?.diagnostic_only))
+    ? backendFieldIssue : null;
+  const localDesignIssue = props.designInputIssue
+    ?? enteredIssues[0] ?? enteredBackendIssue ?? null;
+  const designError = localDesignIssue?.message ?? (!entry || !props.errorDetails?.field || entrySectionComplete(entry, 'stator') && entrySectionComplete(entry, 'advanced') && entrySectionComplete(entry, 'rotor') ? props.error : null);
+  const designAlertTitle = localDesignIssue ? `${localDesignIssue.label} needs attention`
+    : 'Design needs attention';
+  const designGeometry = useMemo(() => drawnParts && !buildComplete
+    ? progressiveGeometry(props.config, drawnParts, props.geometry, entry?.fields)
+    : props.geometry, [props.config, props.geometry, drawnParts, buildComplete, entry?.fields]);
   const designHealth = useMemo(() => ({ geometry: props.geometry, mesh: props.mesh }), [props.geometry, props.mesh]);
   const [selectedComponent, setSelectedComponent] = useState<PublicMotorComponentSelection | null>(null);
   const [designViewportExpanded, setDesignViewportExpanded] = useState(false);
@@ -4530,11 +5089,13 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
   }, [props.editFeedback?.id, props.editFeedback?.affectedKind]);
 
   return (
+    <NewDesignEntryContext.Provider value={props.activeStep === 'design' ? entry : null}>
+    <DesignFieldFocusContext.Provider value={props.activeStep === 'design' ? fieldFocus : null}>
     <div className="public-coilem-shell">
       <CoilEmTopBar
         config={props.config}
         activeStep={props.activeStep}
-        solveAvailable={!props.blankDesign}
+        solveAvailable={!props.blankDesign && buildComplete && !props.designInputInvalid}
         resultReady={reportAvailable}
         solveRunning={props.busy === 'solve'}
         connectionStatus={props.connectionStatus}
@@ -4543,7 +5104,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
         onHome={props.onHome}
         onStepChange={props.onStepChange}
         onOpenDesignFile={props.onOpenDesignFile}
-        onSaveDesign={props.onSaveDesign}
+        onSaveDesign={buildComplete && !props.designInputInvalid ? props.onSaveDesign : undefined}
         onResetDesign={props.onResetDesign}
         onLoadExample={props.onLoadExample}
         onOpenHalbach={props.onOpenHalbach}
@@ -4556,7 +5117,7 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
       <main className="workflow-stage-shell">
         <div className="workflow-stage-content">
           {props.activeStep === 'design' && (
-            <div className={`design-workspace workflow-stage-content${designViewportExpanded ? ' is-viewport-expanded' : ''}`}>
+            <div className={`design-workspace workflow-stage-content${designViewportExpanded ? ' is-viewport-expanded' : ''}${props.guidedActive ? ' has-guided-setup' : ''}`}>
               <div className="design-workspace-main">
                 <ParameterPanel
                   config={props.config}
@@ -4565,25 +5126,29 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                   geometry={props.geometry}
                   geometryStale={props.geometryStale}
                   busy={props.busy}
-                  error={props.error}
-                  errorDetails={props.errorDetails}
-                  notice={props.notice}
+                  error={designError}
+                  errorDetails={localDesignIssue ? null : props.errorDetails}
+                  designIssue={localDesignIssue}
+                  notice={entry ? !entry.layout ? 'Choose Inrunner or Outrunner to start.' : !entry.topology ? 'Choose a motor topology.' : !entry.ready ? 'Choose the IPM rotor layout.' : 'Enter each field to build your motor.' : props.notice}
                   blankDesign={props.blankDesign}
+                  newDesignParts={drawnParts}
+                  designInputInvalid={props.designInputInvalid}
+                  onDesignInputIssueChange={props.onDesignInputIssueChange}
+                  onAcceptDesignSection={props.onAcceptDesignSection}
                   guidedActive={props.guidedActive}
                   guidedDesignSection={props.guidedDesignSection}
                   selectedComponent={selectedComponent}
-                  onTopologyChange={(topology) => { setSelectedComponent(null); props.onTopologyChange(topology); }}
-                  onRotorLayoutChange={(layout) => { setSelectedComponent(null); props.onRotorLayoutChange(layout); }}
-                  onSectionChange={props.onSectionChange}
+                  onTopologyChange={(topology) => { setSelectedComponent(null); if (entry && entry.topology !== topology) setup.chooseTopology(topology); props.onTopologyChange(topology, entrySnapshot); }}
+                  onRotorLayoutChange={(layout) => { setSelectedComponent(null); if (entry && entry.layout !== layout) setup.chooseLayout(layout); props.onRotorLayoutChange(layout); }}
+                  onSectionChange={(section, field, value, visitedSection) => props.onSectionChange(section, field, value, visitedSection, entrySnapshot)}
                   onDesignSectionVisit={props.onDesignSectionVisit}
                   onConvertProjectSteelToM350={props.onConvertProjectSteelToM350}
                   onImportSteel={props.onImportSteel}
                   onReset={() => { setSelectedComponent(null); props.onReset(); }}
-                  onRefreshGeometry={props.onRefreshGeometry}
                   onClearComponent={() => setSelectedComponent(null)}
                   onNext={() => props.onStepChange('solve')}
                 />
-                {props.blankDesign ? (
+                {props.blankDesign && !props.newDesignParts ? (
                   <section className="viewport viewport-cad viewport-cad-grid public-motor-viewport public-blank-design" aria-label="Blank design canvas">
                     <div className="public-blank-design-copy">
                       <span>New Design</span>
@@ -4594,41 +5159,59 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
                 ) : (
                   <ViewportChrome
                     config={props.config}
+                    designName={props.designName}
                     materials={props.materials}
-                    geometry={props.geometry}
+                    geometry={designGeometry}
                     mesh={props.mesh}
                     mode="geometry"
+                    show3dInset
+                    partialDesign={!buildComplete}
+                    enableDesignIntro={!props.newDesignParts}
                     stale={props.geometryStale}
+                    previewFailed={Boolean(designError)}
                     geometryStale={props.geometryStale}
                     busy={props.busy}
                     meshElements={props.meshElements}
                     meshQuality={props.meshQuality}
                     isExpanded={designViewportExpanded}
-                    onExpandToggle={props.guidedActive ? undefined : () => setDesignViewportExpanded((expanded) => !expanded)}
+                    onExpandToggle={() => setDesignViewportExpanded((expanded) => !expanded)}
                     selectedComponent={selectedComponent}
                     highlightComponentKind={liveEditHighlight}
                     onComponentSelect={setSelectedComponent}
                   />
                 )}
               </div>
-              <div className={`design-workspace-health${designHealthCollapsed ? ' is-collapsed' : ''}`}><div className="design-workspace-health-scroll"><HealthPanel config={props.config} error={props.error} geometry={designHealth.geometry} mesh={designHealth.mesh} geometryStale={props.geometryStale} blankDesign={props.blankDesign} collapsed={designHealthCollapsed} onCollapsedChange={setDesignHealthCollapsed} /></div></div>
-              {props.editFeedback && (
+              <div className={`design-workspace-health${designHealthCollapsed && !props.guidedActive ? ' is-collapsed' : ''}`}><div className="design-workspace-health-scroll">{props.guidedActive && <div data-guide="guided-setup-panel" />}<HealthPanel config={props.config} error={designError} errorTitle={designAlertTitle} geometryLimitNotice={geometryLimitNotice} geometry={designHealth.geometry} mesh={designHealth.mesh} geometryStale={props.geometryStale} blankDesign={props.blankDesign} newDesignParts={drawnParts} collapsed={designHealthCollapsed} onCollapsedChange={setDesignHealthCollapsed} /></div></div>
+              {!designError && !geometryLimitNotice && props.editFeedback && (
                 <div className="public-design-edit-toast" role="status" aria-live="polite">
                   <span className="public-design-edit-toast-icon" aria-hidden="true">✓</span>
                   <span className="public-design-edit-toast-copy">
                     <strong>{props.editFeedback.message}</strong>
-                    {props.editFeedback.consequence && <small>{props.editFeedback.consequence}</small>}
+                    {!entry && props.editFeedback.consequence && <small>{props.editFeedback.consequence}</small>}
                   </span>
-                  {props.onUndoDesignEdit && <button type="button" className="public-design-edit-undo" onClick={props.onUndoDesignEdit}>Undo</button>}
+                  {props.editFeedback && props.onUndoDesignEdit && <button type="button" className="public-design-edit-undo" onClick={() => {
+                    if (props.editFeedback?.previousEntry) {
+                      const scope = entryUndoScope.current;
+                      setup.restore(props.editFeedback.previousEntry, scope?.keys ?? [], scope?.topologyChanged ?? false);
+                    }
+                    props.onUndoDesignEdit?.();
+                  }}>Undo</button>}
                   {props.onDismissDesignEdit && <button type="button" className="public-design-edit-dismiss" aria-label="Dismiss edit confirmation" onClick={props.onDismissDesignEdit}>×</button>}
                 </div>
               )}
             </div>
           )}
-          {props.activeStep === 'solve' && <SolveStage config={props.config} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} cancellingSolve={props.cancellingSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} />}
+          {props.activeStep === 'solve' && <NewDesignEntryContext.Provider value={null}><SolveStage config={props.config} designName={props.designName} guidedActive={props.guidedActive} guidedSolveSection={props.guidedSolveSection} materials={props.materials} geometry={props.geometry} mesh={props.mesh} validation={props.validation} validationChecking={props.validationChecking} validationError={props.validationError} result={props.result} armatureField={props.armatureField} armatureFieldError={props.armatureFieldError} progress={props.progress} liveSamples={props.liveSamples} busy={props.busy} error={props.error} errorDetails={props.errorDetails} notice={props.notice} progressPercent={props.progressPercent} meshElements={props.meshElements} meshQuality={props.meshQuality} selectedSolver={props.selectedSolver} elmerCapability={props.elmerCapability} onBack={() => props.onStepChange('design')} onOpenReport={() => props.onStepChange('report')} onGenerateMesh={props.onGenerateMesh} onStartSolve={props.onStartSolve} onCancelSolve={props.onCancelSolve} cancellingSolve={props.cancellingSolve} onRequestArmatureField={props.onRequestArmatureField} onCancelArmatureField={props.onCancelArmatureField} onMeshSettingChange={props.onMeshSettingChange} onSolvePlanChange={props.onSolvePlanChange} onCustomSweepChange={props.onCustomSweepChange} onSolveSettingChange={props.onSolveSettingChange} onAnalysisChange={props.onAnalysisChange} onTorqueSpeedChange={props.onTorqueSpeedChange} onSolverChange={props.onSolverChange} onManageRuns={needsRunStorageRecovery(props.error) ? () => setRunHistoryOpen(true) : undefined} /></NewDesignEntryContext.Provider>}
           {props.activeStep === 'report' && props.result && <ReportStage result={props.result} config={props.config} materials={props.materials} designName={props.designName ?? null} onBack={() => props.onStepChange('solve')} onOpenRunFolder={props.onOpenRunFolder} onDownloadRunExport={props.onDownloadRunExport} onOpenRunProject={props.onOpenRunProject} onRerun={props.onRerun} />}
         </div>
       </main>
     </div>
+    <NewDesignEntryContext.Provider value={entry}>
+    <GuidedDesignProgressContext.Provider value={{ blocked: Boolean(designError || props.designInputInvalid), complete: buildComplete }}>
+      {props.guidedSetup}
+    </GuidedDesignProgressContext.Provider>
+    </NewDesignEntryContext.Provider>
+    </DesignFieldFocusContext.Provider>
+    </NewDesignEntryContext.Provider>
   );
 }

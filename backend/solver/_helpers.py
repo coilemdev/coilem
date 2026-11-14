@@ -1018,7 +1018,12 @@ def _aggregate_per_angle_mesh_sweep(
     include_no_load_field_frames: bool | None = None,
     precomputed_field_line_frames: list[dict[str, Any]] | None = None,
     precomputed_steel_flux_density_rms: dict[str, float | None] | None = None,
+    include_slot_excitation_frames: bool | None = None,
 ) -> dict[str, Any]:
+    # Slot-excitation frames are small and feed the d/q flux-linkage record,
+    # so a solve without visual frames may still keep them.
+    if include_slot_excitation_frames is None:
+        include_slot_excitation_frames = include_visual_frames
     if not loaded_reports:
         raise ValueError("per-angle Gmsh mesh sweep did not produce any loaded reports")
     if config.solve_params is None:
@@ -1238,7 +1243,7 @@ def _aggregate_per_angle_mesh_sweep(
             loaded_reports,
             angles_elec_deg,
         )
-        if include_visual_frames
+        if include_slot_excitation_frames
         else []
     )
     phase_current_samples: list[list[float]] = []

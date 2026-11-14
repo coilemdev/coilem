@@ -152,7 +152,143 @@ pub fn project_field_to_polar(field: &ElementField, point_xy_m: [f64; 2]) -> Opt
     Some((b_r, b_t))
 }
 
-fn collect_airgap_triangle_records(mesh: &TriMesh) -> Vec<AirgapTriangleRecord> {
+/// The air-gap triangles with a grid over them, so a point is matched
+/// against the few triangles near it instead of all of them.
+///
+/// A contour torque takes five field samples at each of 720 points, at up to
+/// nine radii, and each sample used to test every air-gap triangle in turn:
+/// on a 96,000-element mesh that search was half of a solve's run time.
+/// `find` applies the same tests in the same order as that scan and so
+/// returns the same triangle, including for a point on an edge two triangles
+/// share (the one listed first).
+struct AirgapTriangleRecords {
+    records: Vec<AirgapTriangleRecord>,
+    xmin: f64,
+    ymin: f64,
+    inv_cell_w: f64,
+    inv_cell_h: f64,
+    nx: usize,
+    ny: usize,
+    /// `cell_items[cell_starts[c]..cell_starts[c + 1]]` are the records whose
+    /// padded bounding box overlaps cell `c`, in ascending order.
+    cell_starts: Vec<u32>,
+    cell_items: Vec<u32>,
+}
+
+const AIRGAP_MATCH_PAD: f64 = 1e-9;
+const AIRGAP_GRID_CELLS: usize = 256;
+
+impl std::ops::Deref for AirgapTriangleRecords {
+    type Target = [AirgapTriangleRecord];
+    fn deref(&self) -> &[AirgapTriangleRecord] {
+        &self.records
+    }
+}
+
+impl AirgapTriangleRecords {
+    fn new(records: Vec<AirgapTriangleRecord>) -> Self {
+        let mut bounds = [f64::INFINITY, f64::NEG_INFINITY, f64::INFINITY, f64::NEG_INFINITY];
+        for record in &records {
+            bounds[0] = bounds[0].min(record.bbox[0] - AIRGAP_MATCH_PAD);
+            bounds[1] = bounds[1].max(record.bbox[1] + AIRGAP_MATCH_PAD);
+            bounds[2] = bounds[2].min(record.bbox[2] - AIRGAP_MATCH_PAD);
+            bounds[3] = bounds[3].max(record.bbox[3] + AIRGAP_MATCH_PAD);
+        }
+        let usable = !records.is_empty()
+            && bounds.iter().all(|value| value.is_finite())
+            && bounds[1] > bounds[0]
+            && bounds[3] > bounds[2];
+        let (nx, ny) = if usable {
+            (AIRGAP_GRID_CELLS, AIRGAP_GRID_CELLS)
+        } else {
+            (1, 1)
+        };
+        let mut index = Self {
+            xmin: if usable { bounds[0] } else { 0.0 },
+            ymin: if usable { bounds[2] } else { 0.0 },
+            inv_cell_w: if usable { nx as f64 / (bounds[1] - bounds[0]) } else { 0.0 },
+            inv_cell_h: if usable { ny as f64 / (bounds[3] - bounds[2]) } else { 0.0 },
+            nx,
+            ny,
+            cell_starts: vec![0; nx * ny + 1],
+            cell_items: Vec::new(),
+            records,
+        };
+        // Two passes: count each cell's records, then place them. Records are
+        // placed in order, so every cell lists its records ascending.
+        let ranges: Vec<[usize; 4]> = index
+            .records
+            .iter()
+            .map(|record| {
+                [
+                    index.column(record.bbox[0] - AIRGAP_MATCH_PAD),
+                    index.column(record.bbox[1] + AIRGAP_MATCH_PAD),
+                    index.row(record.bbox[2] - AIRGAP_MATCH_PAD),
+                    index.row(record.bbox[3] + AIRGAP_MATCH_PAD),
+                ]
+            })
+            .collect();
+        for range in &ranges {
+            for iy in range[2]..=range[3] {
+                for ix in range[0]..=range[1] {
+                    index.cell_starts[iy * nx + ix + 1] += 1;
+                }
+            }
+        }
+        for cell in 0..nx * ny {
+            index.cell_starts[cell + 1] += index.cell_starts[cell];
+        }
+        let mut cursor: Vec<u32> = index.cell_starts[..nx * ny].to_vec();
+        index.cell_items = vec![0; index.cell_starts[nx * ny] as usize];
+        for (record_index, range) in ranges.iter().enumerate() {
+            for iy in range[2]..=range[3] {
+                for ix in range[0]..=range[1] {
+                    let slot = &mut cursor[iy * nx + ix];
+                    index.cell_items[*slot as usize] = record_index as u32;
+                    *slot += 1;
+                }
+            }
+        }
+        index
+    }
+
+    /// Grid column of `x`, clamped to the grid. Non-decreasing in `x`, so a
+    /// point inside a record's padded box falls in a column that record is
+    /// listed in.
+    fn column(&self, x: f64) -> usize {
+        (((x - self.xmin) * self.inv_cell_w).floor().max(0.0) as usize).min(self.nx - 1)
+    }
+
+    fn row(&self, y: f64) -> usize {
+        (((y - self.ymin) * self.inv_cell_h).floor().max(0.0) as usize).min(self.ny - 1)
+    }
+
+    fn find(&self, point_xy_m: [f64; 2]) -> Option<(&AirgapTriangleRecord, [f64; 3])> {
+        let cell = self.row(point_xy_m[1]) * self.nx + self.column(point_xy_m[0]);
+        let items = &self.cell_items[self.cell_starts[cell] as usize..self.cell_starts[cell + 1] as usize];
+        for &record_index in items {
+            let record = &self.records[record_index as usize];
+            if let Some(weights) = airgap_record_match(record, point_xy_m) {
+                return Some((record, weights));
+            }
+        }
+        None
+    }
+}
+
+fn airgap_record_match(record: &AirgapTriangleRecord, point_xy_m: [f64; 2]) -> Option<[f64; 3]> {
+    let pad = AIRGAP_MATCH_PAD;
+    if point_xy_m[0] < record.bbox[0] - pad
+        || point_xy_m[0] > record.bbox[1] + pad
+        || point_xy_m[1] < record.bbox[2] - pad
+        || point_xy_m[1] > record.bbox[3] + pad
+    {
+        return None;
+    }
+    barycentric_weights(point_xy_m, record.tri_xy)
+}
+
+fn collect_airgap_triangle_records(mesh: &TriMesh) -> AirgapTriangleRecords {
     let mut records = Vec::new();
     for (triangle_index, tri) in mesh.triangles.iter().enumerate() {
         if mesh.regions[triangle_index] != Region::Airgap {
@@ -174,26 +310,26 @@ fn collect_airgap_triangle_records(mesh: &TriMesh) -> Vec<AirgapTriangleRecord> 
             ],
         });
     }
-    records
+    AirgapTriangleRecords::new(records)
 }
 
-fn find_airgap_triangle_match<'a>(
-    records: &'a [AirgapTriangleRecord],
+fn find_airgap_triangle_match(
+    records: &AirgapTriangleRecords,
     point_xy_m: [f64; 2],
-) -> Option<(&'a AirgapTriangleRecord, [f64; 3])> {
+) -> Option<(&AirgapTriangleRecord, [f64; 3])> {
+    records.find(point_xy_m)
+}
+
+/// The scan `AirgapTriangleRecords::find` replaces, kept to check it against.
+#[cfg(test)]
+fn find_airgap_triangle_match_by_scan(
+    records: &[AirgapTriangleRecord],
+    point_xy_m: [f64; 2],
+) -> Option<(&AirgapTriangleRecord, [f64; 3])> {
     for record in records {
-        let pad = 1e-9;
-        if point_xy_m[0] < record.bbox[0] - pad
-            || point_xy_m[0] > record.bbox[1] + pad
-            || point_xy_m[1] < record.bbox[2] - pad
-            || point_xy_m[1] > record.bbox[3] + pad
-        {
-            continue;
+        if let Some(weights) = airgap_record_match(record, point_xy_m) {
+            return Some((record, weights));
         }
-        let Some(weights) = barycentric_weights(point_xy_m, record.tri_xy) else {
-            continue;
-        };
-        return Some((record, weights));
     }
     None
 }
@@ -205,7 +341,7 @@ fn interpolate_az_from_record(az: &[f64], record: &AirgapTriangleRecord, weights
 }
 
 fn sample_az_on_airgap(
-    records: &[AirgapTriangleRecord],
+    records: &AirgapTriangleRecords,
     az: &[f64],
     point_xy_m: [f64; 2],
 ) -> Option<f64> {
@@ -266,7 +402,7 @@ fn choose_az_contour_radial_step(mesh: &TriMesh, contour_radius_m: f64) -> f64 {
 }
 
 fn sample_contour_field_from_az(
-    records: &[AirgapTriangleRecord],
+    records: &AirgapTriangleRecords,
     az: &[f64],
     point_xy_m: [f64; 2],
     dtheta: f64,

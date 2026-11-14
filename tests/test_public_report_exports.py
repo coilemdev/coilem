@@ -164,8 +164,8 @@ def test_pdf_reports_actual_torque_method_separately_from_request(used):
         project=config, request={"resolved_config": config}, result=result, material={}, manifest={},
     )
     text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages)
-    assert f"Torque method used\n{used or 'Not recorded'}" in text
-    assert "Torque method requested\nweighted_stress" in text
+    assert f"Torque method used\n{ {'weighted_stress': 'Weighted stress', 'contour': 'contour'}.get(used, 'Not recorded')}" in text
+    assert "Torque method requested\nWeighted stress" in text
 
 
 def _complete_run(
@@ -626,7 +626,7 @@ def test_pdf_settings_follow_rotor_type_plan_and_tooth_shoe() -> None:
     assert groups["Rotor"]["HoleM50 W0"] == f"{_plain(config['rotor']['holem50_w0_mm'])} mm"
     assert groups["Rotor"]["IPM rotor type"] == "pyleecan_holem50"
     assert not set().union(*_POCKET_SETTINGS.values()) & set(groups["Rotor"])
-    assert "Tooth shoe height" not in groups["Stator"] and groups["Stator"]["Tooth shoe enabled"] == "false"
+    assert "Tooth shoe height" not in groups["Stator"] and groups["Stator"]["Tooth shoe enabled"] == "No"
     assert groups["Solve plan"]["Rotor step"] == "2.5 deg"
     assert groups["Solve plan"]["Rotor sweep range"] == "120 deg"
     assert "Magneto2d workers" not in groups["Solve plan"]

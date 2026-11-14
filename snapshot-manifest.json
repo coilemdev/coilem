@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 2951,
-      "sha256": "5ce5695b7aaaac385ca9a4afc91bf82266667fe605a8b4b2b914f152b957feab"
+      "bytes": 3024,
+      "sha256": "7de1d9dce888cc264e11568b360a0e41776a5218c87e6ea11cad51afe98bc143"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 18825,
-      "sha256": "bf8617ae2b5afe4437eb7043d437dacdc3465a882428f076b432cb5cb1c1eff7"
+      "bytes": 19568,
+      "sha256": "65765455df10bb2cf6f4a76d2f69e2bdeead99df2c992e396e1efa14086b39ec"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 6789,
-      "sha256": "baa69a775111edfaff9e06b43dc328bcacd9556e8eb011cc21c2dffedf46831e"
+      "bytes": 8367,
+      "sha256": "e47524da3ae339498121424779cfd8745f2e3cae4942dfd4ae01c542835c3637"
     },
     {
       "path": "README.md",
-      "bytes": 6526,
-      "sha256": "66768708dc60e4345757c0fc99f676dd7b9f6b7fe5ac3854e8b17a323b2858a9"
+      "bytes": 7284,
+      "sha256": "768af4706dfe31da04b42f4e26032141d9b5aad93047137161a5ffd38afd2ed2"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 24727,
-      "sha256": "6ab95b89d1c7d794a1890414c0f45c11a82e897a07526fae874037acbe871d73"
+      "bytes": 27695,
+      "sha256": "f53a7b34df2e5647a47b36afb4ee90c07ed0289ed23a3258d7b7ad4469e98b76"
     },
     {
       "path": "SECURITY.md",
@@ -96,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "ecf5d090d4b0093cbba271858d870a8af6ca484974ce7e8ad5262b147dcda5d2"
+      "sha256": "566d7f60987bee900dc08f2a54149999b661e4d1fce6c7ae0ec5744d99b30fbd"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 18390,
-      "sha256": "b8390e78c773b8210494b3826d63e351e7da53783bdf3350fbc8b2193ed26808"
+      "bytes": 18845,
+      "sha256": "02c655b416c187a260eae5799b4b3243a80e7d5d3dd11e710a8ecbaf85048da7"
     },
     {
       "path": "backend/field_composition.py",
@@ -315,13 +315,13 @@
     },
     {
       "path": "backend/gmsh_mesh_rotation.py",
-      "bytes": 37312,
-      "sha256": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0"
+      "bytes": 39099,
+      "sha256": "6c60a93474f3adca561b1e482b6865862d077920dbf7ccefdfda0482adb57054"
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 81911,
-      "sha256": "536d7aba129cd3163a165fe675f6aa0f8fb5fc514ecb4a4fc254d4be9ad0aac6"
+      "bytes": 82612,
+      "sha256": "621e7d369503fd8508fa4eb1894808a3ecbafe6ecf4d28d7802a1811dc20f913"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 76498,
-      "sha256": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa"
+      "bytes": 78294,
+      "sha256": "f156a0f4114cf0c90e49708ce89051262badc951304be34e02d34e2f5ca5f263"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -455,8 +455,8 @@
     },
     {
       "path": "backend/mesh_evidence.py",
-      "bytes": 7348,
-      "sha256": "456222cc40fc5cf41083cca94ff3b782aaf724cffd0e210235b116c667229e88"
+      "bytes": 8566,
+      "sha256": "5c48878678dc34549af3001710d6b7b9449eb2129e79911bd0e9f0cdca7dc185"
     },
     {
       "path": "backend/mesh_profiles/gmsh_profiles.json",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 9047,
-      "sha256": "a6f0f2932df4afa32f6e1e51525767edd6df4dcee7317eb66bebb3fee45cbd34"
+      "bytes": 9630,
+      "sha256": "5fdbc3d4007c45f650fca794ec6db4839f78b3445e4f57d5fd719c115ec0f068"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 41460,
-      "sha256": "206fbd1d32be52bc722f894d8f39f23a3db75d10b6cc08eb5abc5462f7cf3e3b"
+      "bytes": 41738,
+      "sha256": "0b18942e7797b9861f2f86a62480524f8f37c80a8c21583ebff9ad5f9a0f4f03"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 30793,
-      "sha256": "7c8eac9e46d63d684be71293e569557183cca28811508ab0ab824696d8d7a1d0"
+      "bytes": 30859,
+      "sha256": "223a08ca60b792ee5072bfef7f4cf59cb67888fbd8a63aff0d4df4f3b53ec64f"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10097,
-      "sha256": "59085291c63f46b28e1e9060d7539bb293699448d0023ae40bc4603e55f5e704"
+      "bytes": 10234,
+      "sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -550,13 +550,13 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 13816,
-      "sha256": "8092e218243fc0935b0b706a4709656ba55e2a8875fdfcee2d6e3456b5be81f4"
+      "bytes": 14157,
+      "sha256": "450e24e3e04b18e50591dab32e445b275773ca553375d3611ddbd332a0e85b05"
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 92296,
-      "sha256": "e0b570fe210c2420acf580227a457192bdcb632577038acbb470eb0817087b47"
+      "bytes": 94594,
+      "sha256": "ce3aed7fbcc0471e4b4c860511284e41b39ede638b2fa5abdeaf65a25d3112aa"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -575,8 +575,8 @@
     },
     {
       "path": "backend/public_routes/preview.py",
-      "bytes": 5887,
-      "sha256": "0504b07ba202c130ccb641c15d1ec8bb9956f95043e63131dff10163812ede77"
+      "bytes": 9177,
+      "sha256": "44a22090eb7a57400054a8c7d04e47acbdd2e46fcd985fc92d2c4cd13a8a17b8"
     },
     {
       "path": "backend/public_routes/runs.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 58623,
-      "sha256": "b2fb259730cbb0f6deb39a05c9f7545043981a3d929471bf6f6963a84cd21be2"
+      "bytes": 58805,
+      "sha256": "2cf6b87b51189a2df57b06157c0857975ba33020e00095785839ce912420fc72"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -600,8 +600,8 @@
     },
     {
       "path": "backend/public_ui.py",
-      "bytes": 5363,
-      "sha256": "361975044c426c497547f46a0773e7d6f2d28f8ebf1c0fa9c60079fea9252e9a"
+      "bytes": 6549,
+      "sha256": "bf136ae9740e2250490450c0a6c663269442966dc0e2ee1f379d464fd9952de4"
     },
     {
       "path": "backend/qualification.py",
@@ -645,13 +645,13 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 170286,
-      "sha256": "990bfcc6e5236aa561128ac3bb2c86bb09a035dcef70b33973d7a496e79bbc0c"
+      "bytes": 178761,
+      "sha256": "be488af5d3f2555cd2da41e80358184a6ece8cb1db27bf49d6a2c8eb656f7a52"
     },
     {
       "path": "backend/solver/_helpers.py",
-      "bytes": 63728,
-      "sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1"
+      "bytes": 64040,
+      "sha256": "759a48e4b44837d7fe6c762c2deb868c44aa05f08aa8d449e107880b7befcc90"
     },
     {
       "path": "backend/solver/_mesh_pool.py",
@@ -680,8 +680,8 @@
     },
     {
       "path": "backend/steel_flux_metrics.py",
-      "bytes": 7570,
-      "sha256": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69"
+      "bytes": 8110,
+      "sha256": "db0dcb50b94ec15eb6ba5c2d994d5ea7ed04fe1379e438c84cdfcce78c1e9fdd"
     },
     {
       "path": "backend/sweep_planning.py",
@@ -3505,13 +3505,13 @@
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
-      "bytes": 47984,
-      "sha256": "7c0714ab859d371f707a24c6e292033e29e71c7f7b27e535062883a9fa2f15c5"
+      "bytes": 47955,
+      "sha256": "ef6dd0627cd256afc11cbe5cdea6f836f7c9244c0757372c4cd5bf468e0e111d"
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
-      "bytes": 47993,
-      "sha256": "46dd05c2028858bb7850c41071b74ffe7891cf2c424a24a3c4fe810fb0143132"
+      "bytes": 47965,
+      "sha256": "220fdf90b687d6d09587d0fc62c9154e5f6b7862e36a99bad643a68f514ec2ea"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16821,
-      "sha256": "1168f4ee3be7c998d1b828d92029f0067574fd5aa869c7ce01fd692047c643fe"
+      "bytes": 16801,
+      "sha256": "32db7a05dd2abb670237e1215b3b79d4ed32bc99bf89078fbdb21ecc8226da46"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 49956,
-      "sha256": "9824c66020cb5144d90797fc2413802f4232b39fcebcdfdba6ebf55562f36530"
+      "bytes": 50037,
+      "sha256": "e547575ed5928efff66737d86c77711eae9cabf825573136172279b340b6abe9"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -6416,17 +6416,17 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "737418dcd484f1ed358562f819c14e2f6f9f0bf8dfbc32b58eef5582aab8989a"
+      "sha256": "5e61118d967facda2c82ea341d920b7462c23d1d03373d2c26e94a770fe8ed85"
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3196,
-      "sha256": "f23c15299b09b22f2bcddf792b2d1c01ac53d6ec159fcde32c64d63985308389"
+      "bytes": 3392,
+      "sha256": "bd26db92daea21d4eb0b9464120c3d33115aa700e6b5e18a1082ea3cf3f17d2e"
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 2667,
-      "sha256": "18c86f9e40ca214c555ba162b82e8ca11b39a5d3176f5b155cd0ce9c44c98a50"
+      "bytes": 2699,
+      "sha256": "78a620504be92d87f966282d3d7a65461030f52f7ccf16f2430d342729cb7679"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -6475,8 +6475,8 @@
     },
     {
       "path": "frontend/scripts/test-design-errors.mjs",
-      "bytes": 5205,
-      "sha256": "ec7c1bbd67974e5a005f5803c63b8b5bb0c92c0037b0ecb9f0ad33a4e841420a"
+      "bytes": 6297,
+      "sha256": "03265c06c9c73b4be3392a35b1b95fba9827cd5c6f776c34a53747122bf230f3"
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
@@ -6510,8 +6510,8 @@
     },
     {
       "path": "frontend/scripts/test-field-probe-region.mjs",
-      "bytes": 3514,
-      "sha256": "0a01699dfcf1178236caf7dfd204d269d5f763879904da2b43559f5d1f0e9d70"
+      "bytes": 5845,
+      "sha256": "593623b961c4cdb4c5460164b83575aac9f1d5612783599365ffa63bc353c483"
     },
     {
       "path": "frontend/scripts/test-flat-ipm-burial-health.mjs",
@@ -6530,13 +6530,13 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 7440,
-      "sha256": "4d0fa3608acc5a369c66aedae06636d793cc1b3097158bbc4c7f6283e7cbf9ed"
+      "bytes": 7639,
+      "sha256": "13397e4a8ba47d7739a83138d44f30b753e3ec214eddedad3bbac2b19ff0cefd"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
-      "bytes": 2558,
-      "sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0"
+      "bytes": 2759,
+      "sha256": "63a1cb7cf39923c8983800db02a08fcedf0022ca1dedd6f5525c42f65f321743"
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
@@ -6560,8 +6560,8 @@
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
-      "bytes": 14363,
-      "sha256": "26e4efc20cb89cbf8f9e09cee3d608ce637a9cc6a773b8e8d8f3886283e61b9c"
+      "bytes": 15277,
+      "sha256": "c5535056100d070e8ec460d2c86e08f012019d0f76db87647877ce1fe950b76a"
     },
     {
       "path": "frontend/scripts/test-public-airgap-ux.mjs",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177711,
-      "sha256": "e7c68f489a38d3fe48a87d0b73bac2c6bdab12cf0245c854a8377f374528bb2e"
+      "bytes": 178150,
+      "sha256": "b42367b580c42396ebedfc9225af52500dfe9104c9af5a053f8213df85e12ee0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6595,18 +6595,18 @@
     },
     {
       "path": "frontend/scripts/test-solve-progress.mjs",
-      "bytes": 4537,
-      "sha256": "b04e3090e7b18ebaca1cd60080a8ed031c52c2bad01a19263d27340ced0f79b6"
+      "bytes": 9604,
+      "sha256": "79a539b97571eaf7d46aeed494ef6eabf399c567f1c21f6e70218876ed95f9d0"
     },
     {
       "path": "frontend/scripts/test-tooth-coil-repair.mjs",
-      "bytes": 9248,
-      "sha256": "e896db2b872e75cc944ac43a6ec27cf0401b06fad742b6cb71617c77e16098ef"
+      "bytes": 8378,
+      "sha256": "987272eedaf33b7336738e3246907ee04e49672e16f7d0d90c8e76b8e3fceb4a"
     },
     {
       "path": "frontend/scripts/test-viewport-transform.mjs",
-      "bytes": 2566,
-      "sha256": "00438ce61f26d5eaff9d67eed5b915df18ec581e4b93296478340b2e72c78ec4"
+      "bytes": 4293,
+      "sha256": "5288c4a00ef4731994688d80c8c48f7779728c90d1af25b9ce5d56f9df70a573"
     },
     {
       "path": "frontend/scripts/test-winding-resistance.mjs",
@@ -6640,8 +6640,8 @@
     },
     {
       "path": "frontend/src/components/landing-3d/Landing3DPreview.tsx",
-      "bytes": 68755,
-      "sha256": "b9027fd752b576307ca4937ed6f76560b9b0c4f95e83ac448f313879420b25fd"
+      "bytes": 68612,
+      "sha256": "81ee407ae74dcddc0ad8b5a1ab4842c06f770c612d13f4082157c45bbe1ce60d"
     },
     {
       "path": "frontend/src/components/landing-3d/LandingHalbachPreview.tsx",
@@ -6700,8 +6700,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
-      "bytes": 33938,
-      "sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5"
+      "bytes": 35111,
+      "sha256": "2092bf8db795ba1b9221e296538531d4935a04c2b79da0017536052020e2edb1"
     },
     {
       "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
@@ -6805,8 +6805,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MeshViewer.tsx",
-      "bytes": 110869,
-      "sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4"
+      "bytes": 111175,
+      "sha256": "dfa1a18cb1f298bbc47b6e5a43b24d9e93b7a929fc34012f73baace3d1e64a8c"
     },
     {
       "path": "frontend/src/components/tutorials/MotorEffectLoop3D.tsx",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 76950,
-      "sha256": "1272c56dba7e94f13693c334230ed8ab659d19be691d94516f8b058525ea43db"
+      "bytes": 81685,
+      "sha256": "2c8cb1a6a4f2c1ae84df05ddcff0c1d9ab5da5869321ca2115847cae06a0e5c8"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7025,13 +7025,13 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 248623,
-      "sha256": "60b814342160e4837ba541c93989f716a5aebd15ae9436b3b9f7bd0c3be42c65"
+      "bytes": 296014,
+      "sha256": "774e9434c67e499fc26ef4d9bcc843929273343ec4f57b2624eab077c5f32372"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
-      "bytes": 5368,
-      "sha256": "eeda67dc260b2b9cf81b079c4c54b23a5a37abf51b241236d5b35228c1126572"
+      "bytes": 5394,
+      "sha256": "41511b35aeb9290c897b28b381c69927eeb1c8d98f83aaf898eb9c8bbc2d5116"
     },
     {
       "path": "frontend/src/public/DqCard.tsx",
@@ -7040,18 +7040,18 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 61182,
-      "sha256": "bf6c096256476b9198007ecfe0e6a3d0b02a0047f8754df53e30c58ab2fd0ea2"
+      "bytes": 72035,
+      "sha256": "0b0daa3bd6d4e6cdd855f020cb976a669659da904410ff89c83518b83469c8b6"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
-      "bytes": 15869,
-      "sha256": "6dc6d9f62791d5191803a8b89c0ed9221ec1ab37cac37ef90a32bf4747dfe96b"
+      "bytes": 9589,
+      "sha256": "2ed3785272b471f447c4bec3e7d95e9425412ff376d42c6059828b0277fea27d"
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 22151,
-      "sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a"
+      "bytes": 22582,
+      "sha256": "2fee88e4da62070cfb58208d3d841df0089ef1d181955841d151ce81939836c4"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -7060,8 +7060,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 66656,
-      "sha256": "288d046ef3979d07cdafa955fc44a9756bba9d2665aded732250039b0cac8ac3"
+      "bytes": 95572,
+      "sha256": "3d6408a12b110dd65ec757f6c417fa15d5f2b1bcb0ddda5f4de5d3b4536f448d"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7095,8 +7095,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 89764,
-      "sha256": "3422f73e494c25e1cf60448a8265259835c3cb25dc7abfafd902d92b35b1f9c7"
+      "bytes": 124309,
+      "sha256": "36fe9390a8868e93b8b144dcbac52608fd2ade524f5bfba1f2fbbb19c8d587f5"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
-      "bytes": 10422,
-      "sha256": "dd8f8bdbc35c96028c782d9b0d64addd2e529b6ee0ac01344fe37d21106cd8a5"
+      "bytes": 10306,
+      "sha256": "c308fc4c86fa5233805e61f19b78056796977cc3d6c5e9c08b0bfc485f3d8942"
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
@@ -7125,13 +7125,13 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 60223,
-      "sha256": "79fe46e42521646242158fe0fbff49b91fda638c0c94f67a5f48e9c5946c1395"
+      "bytes": 61833,
+      "sha256": "bcd258a42beb88d445d6fa933ccf3991bbde163a7631488253214c1f04e2246f"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 16825,
-      "sha256": "c53384988bc96652f35966e2bb79db000636fe53873e0adff569ed8430dd9df7"
+      "bytes": 18731,
+      "sha256": "efac218bcc4e735914cdf89ba5ca673a4727bf1561f49b1c72fa68f82e037185"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -7145,13 +7145,13 @@
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
-      "bytes": 21457,
-      "sha256": "c5385089553aa17e0b0645b04ef5f7d246a6f13ef0052c8da393c450ca8346c9"
+      "bytes": 21969,
+      "sha256": "5151a2692c7523b01441270a00d93e6b6b8a991e7907828762cc1f7511126497"
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 14477,
-      "sha256": "f464cc945ffae136b8bb8ce8c72778d38bab527b0f2f410a97ce2708554ea7f1"
+      "bytes": 14738,
+      "sha256": "e20693aecb7307c9dd5c6e867470e4385a6652f1a3cab8413b0750a4ad559963"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7185,8 +7185,8 @@
     },
     {
       "path": "frontend/src/public/coil3d.ts",
-      "bytes": 20994,
-      "sha256": "e36bfe69357fed2fbcb896796384d961114c43845edc9637bd10c7c1d2a88e5d"
+      "bytes": 30016,
+      "sha256": "6ca645c6791a312a77842741d537748294d961476e413fc516f53d2b3b880bb2"
     },
     {
       "path": "frontend/src/public/customSteel.css",
@@ -7200,28 +7200,28 @@
     },
     {
       "path": "frontend/src/public/designErrors.ts",
-      "bytes": 4673,
-      "sha256": "967bdce9d3a8fd5653e8866494c119f5134f05ded43997c99d5e5ec77f7031a0"
+      "bytes": 8717,
+      "sha256": "e99ec1dd31c4e99b5dc6a383338818f3c118197cff6e579362251d8b023588cf"
     },
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 15806,
-      "sha256": "3c630e1bdffe386741a330a5d2ff138dee77235139d7c8fa099284953feb0496"
+      "sha256": "608eb75ebccf5462dd05693eddaab60c3fd5f64aa7349dba6076ca96f7ce872e"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
-      "bytes": 638,
-      "sha256": "8e98368f7000737cf7d9db12f1c3135d62747be678404c3d361d39a7fd404706"
+      "bytes": 816,
+      "sha256": "2077bddc5f7d0ec69758fb7e02a4b1c6470bb25b318569d98d1b6a9fcaf266ed"
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 897,
-      "sha256": "37dbdaa7a6e32ba0a58eabcded944254b9a46463362cc4a17924a1a51c9d3df0"
+      "bytes": 919,
+      "sha256": "30c709b239785a8a0ea17089cad1a77448bf6d97a2707b6685ffa56d2b2bc61c"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 20676,
-      "sha256": "198f35343b2a79693c22e9087cd092a37af7d255f13acf01b1221268e1d3d92a"
+      "bytes": 24269,
+      "sha256": "8f24f8daf9ef0e835a20244bcd525eb522b31cbf3fdad0ce53cb4163b0ba4818"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -7315,8 +7315,8 @@
     },
     {
       "path": "frontend/src/public/fieldProbeRegion.ts",
-      "bytes": 4770,
-      "sha256": "80021a9faceb977393d2d275f0997d9eabbc089c76984df803456998c266a97d"
+      "bytes": 5159,
+      "sha256": "7d36b0e08f6a3c240e295cce811bbbf3d7a8ee0cab47ca5e1df0444ad5d15ef5"
     },
     {
       "path": "frontend/src/public/fieldViewportRange.ts",
@@ -7330,18 +7330,18 @@
     },
     {
       "path": "frontend/src/public/fluxColorScale.ts",
-      "bytes": 4536,
-      "sha256": "931357e75db566eb4f8c626a4795701fcc4b39c611daedc7ae5e4b8dad9d96cc"
+      "bytes": 4834,
+      "sha256": "a496659a202ff06305889036300334cbf59ce4056891d2576788ffed244d0f4d"
     },
     {
       "path": "frontend/src/public/guidedConfigRepair.ts",
-      "bytes": 11614,
-      "sha256": "daff73ef6a8b9e565ee0120a28745fa98f96bdfa5481413286c61d3d7c48dbc7"
+      "bytes": 1723,
+      "sha256": "768e6c7e3b38f951408272994eedee630d955e2f183b7a0894357d79c1a5509d"
     },
     {
       "path": "frontend/src/public/halbach/Halbach2DViewport.tsx",
-      "bytes": 32158,
-      "sha256": "5ce5a7e3db7f464008e32f5046c43e501e608b7577230847dd50fdcdf5c062bb"
+      "bytes": 32091,
+      "sha256": "967f07b5436b3b9c8cafad84819a5cbfc6ae9330c0213ed02b32f5fe75fc2356"
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
@@ -7350,13 +7350,13 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "bytes": 60513,
-      "sha256": "23ed6f72b44dcd8f3f0d0ff5e85349107bd416b1bed964d1d4d9c3488caf0bf7"
+      "bytes": 60647,
+      "sha256": "03b772c2c9cfa655be878b2299aa746d1be5d4a5f46600aaa34e90d57b94a644"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
-      "bytes": 33382,
-      "sha256": "c73afa6a2e09599dd56c93c2268c408be8b9dad2a60a1cb888cacfba91511209"
+      "bytes": 33315,
+      "sha256": "75a0b00a51edc20dfa12630380f86b1177e248f49614555ff465ecbd701416c1"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
@@ -7365,8 +7365,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "bytes": 58859,
-      "sha256": "459c4cbbce65c219d089079cbc5cc8b707c022a174b97c7b7aca9f4f3d6377f5"
+      "bytes": 59018,
+      "sha256": "1ae09c3952fdbc5a53c54701a4340a7c0d358891606c71f36727b4e38dbbbf70"
     },
     {
       "path": "frontend/src/public/halbach/api.ts",
@@ -7380,8 +7380,8 @@
     },
     {
       "path": "frontend/src/public/halbach/halbach.css",
-      "bytes": 52699,
-      "sha256": "ca66bb39f75a94689b589e5ba69b9b0ba471f4c36021072118cc25e83f9a556f"
+      "bytes": 52701,
+      "sha256": "e83a5e0ee777c8b35b5ea9638516f153bbdf2fbd9af7f702a19452f92ff90e07"
     },
     {
       "path": "frontend/src/public/halbach/poleRendering.ts",
@@ -7405,8 +7405,8 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 10107,
-      "sha256": "fe1a9ee6c1214a68205ffe52acc63312de0e4eb60d175f01b30c5c7ba4f2ae20"
+      "bytes": 10034,
+      "sha256": "f67cb87887177b1457b69af7276c0ec7c6dde3a9b179edc99a25fc46e3a1abc9"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
@@ -7415,8 +7415,8 @@
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
-      "bytes": 1331,
-      "sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4"
+      "bytes": 1600,
+      "sha256": "b45ce788040d0d6796fdc92fb841539a4172556126be3d0d3a492ef319a47f2a"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -7445,8 +7445,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24030,
-      "sha256": "483af069100ffa5d07274d1a4dd46432695dd58349b23e5cb3e494dadedb04b0"
+      "bytes": 24613,
+      "sha256": "157ab8e8290fd2355a396d591a4ec8f270ea5c1a3d38939c9f5e67c345f6edcd"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7465,8 +7465,8 @@
     },
     {
       "path": "frontend/src/public/motorPalette.ts",
-      "bytes": 2646,
-      "sha256": "40d69d324708b41486ee891c31d9a43e2e4bef0b00d2cc10f3bf96a92e737072"
+      "bytes": 2753,
+      "sha256": "caece56ab631bee85d627dd776934a71ecc4c1268fddb4a5508c5df0a8833db1"
     },
     {
       "path": "frontend/src/public/numberFormat.ts",
@@ -7490,8 +7490,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 11135,
-      "sha256": "fc162c344a73b14d5c52d3f594e5baf06a918a244ac05a16cc45904c9dc4c818"
+      "bytes": 12253,
+      "sha256": "b08736fab8c944e867880583c0e8a8102a011a0337bc630c203fd7e26fc5ee33"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -7525,13 +7525,13 @@
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
-      "bytes": 3938,
-      "sha256": "ad194cfb088b70ca940f3127b0f4dbcb92e3ebe06114f173de6365f0be9b5fee"
+      "bytes": 7664,
+      "sha256": "a570ee1b23a82d6b373c42ac3ce7502a52eefaa763857b7c066bf0fcad0d3265"
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 303215,
-      "sha256": "acca10d9e372ea279dee33246b0f8dc06a9583aaae8142081d05752d9e972d2d"
+      "bytes": 327121,
+      "sha256": "767873504a82c8b4227cfcca53cf32358b8d98590d630e9d3d50ebb4adb2c3c1"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7560,8 +7560,8 @@
     },
     {
       "path": "frontend/src/public/viewportTransform.ts",
-      "bytes": 2517,
-      "sha256": "3f38eeb560678e3bca9bde3a4b701dd171c7fdec66b090be0a6ab0de74c2d83c"
+      "bytes": 3813,
+      "sha256": "9a37172567b855ef3b2000fb5f3bae87431ed4405ac43b8d5a9d5d8d6f56d8d9"
     },
     {
       "path": "frontend/src/public/windingResistance.ts",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 57736,
-      "sha256": "d742b0f7d7e390265abfdf0a31cc9475664ed699274b87c8699b65a3229ec6f4"
+      "bytes": 99455,
+      "sha256": "b21da55a01ea2ad0e4a4237fd4074653a66caf0e28c313de149701156bb21f29"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7706,12 +7706,12 @@
     {
       "path": "solvers/magneto2d/Cargo.lock",
       "bytes": 28550,
-      "sha256": "28660551e81970d446c41d64119245eadd68685dab3b8c46a65e65bb5eaa61dc"
+      "sha256": "4664ca8863cb3668f0a095f5231b322264f23ffed4a446b1f271fcbf91b6ed76"
     },
     {
       "path": "solvers/magneto2d/Cargo.toml",
       "bytes": 522,
-      "sha256": "967b6113c53a1722b4cce5d69510208f2ce8ac5ca002973d339a72a3018d8503"
+      "sha256": "f6d50b1cae24d1020b1538cd023ba6565bbab96a760670a69272395c49e913c6"
     },
     {
       "path": "solvers/magneto2d/build.rs",
@@ -7730,8 +7730,8 @@
     },
     {
       "path": "solvers/magneto2d/src/lib.rs",
-      "bytes": 6785,
-      "sha256": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04"
+      "bytes": 7320,
+      "sha256": "16130a039f710cc6d74b6564af5a066358b2fc5a3895caa37660cc47d484ef84"
     },
     {
       "path": "solvers/magneto2d/src/magnet_fraction.rs",
@@ -7760,8 +7760,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess.rs",
-      "bytes": 21541,
-      "sha256": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838"
+      "bytes": 26870,
+      "sha256": "dd7753c5e7a48bf50df3717f9020e5ac6197ab4ee0876e6a3860cc7d062b7354"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/summary.rs",
@@ -7770,8 +7770,8 @@
     },
     {
       "path": "solvers/magneto2d/src/postprocess/tests.rs",
-      "bytes": 45894,
-      "sha256": "5aaf206eb015c22ba66de41808b413d69625e6b84b7393608b087f2c82ed43d9"
+      "bytes": 48794,
+      "sha256": "2969e44fa4efe3577610f74f12f24d483ae6817e26550b8126ef73229168b5d8"
     },
     {
       "path": "solvers/magneto2d/src/postprocess/torque/env_flags.rs",
@@ -7815,8 +7815,8 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/mod.rs",
-      "bytes": 155078,
-      "sha256": "c0c581e8d5e27529d7b981dc9f5fd97d4753d772c7d0c757d843ca249c801be6"
+      "bytes": 155656,
+      "sha256": "9d55c3400bf5917580abf61cf1e5b7976dfd7e362bbd797a5efcd52405d46c63"
     },
     {
       "path": "solvers/magneto2d/src/solve/model/ipm.rs",
@@ -7835,18 +7835,18 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/newton.rs",
-      "bytes": 30298,
-      "sha256": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b"
+      "bytes": 31124,
+      "sha256": "48a5f95a5846357cf2177c25606f0dad66f01f37dc08576079529d547d3c0d17"
     },
     {
       "path": "solvers/magneto2d/src/solve/nonlinear.rs",
-      "bytes": 16578,
-      "sha256": "6f1da85708f5974ec96a8f16a058ffd3c68f4dc18835672b45e409266c6ef5ee"
+      "bytes": 19050,
+      "sha256": "4c8f58ea693e4e1fe682967daad045c0d78453c587047e77c53d3d599c32eec4"
     },
     {
       "path": "solvers/magneto2d/src/solve/picard.rs",
-      "bytes": 16346,
-      "sha256": "a117d2f9d19a98ba43c3e6f4c318ec2e3c2b060e959e551746290feb9f2069ca"
+      "bytes": 16395,
+      "sha256": "154d3ec52e191939f5bbe1601a5bbeac2e07b69f0249d5fdfeac29e8c808d4bc"
     },
     {
       "path": "solvers/magneto2d/src/solve/problem.rs",
@@ -7855,13 +7855,13 @@
     },
     {
       "path": "solvers/magneto2d/src/solve/tests.rs",
-      "bytes": 102653,
-      "sha256": "044cdb25f7423e647f81420c088a79d47bc3f814f3bc72f6c1095de06e0bce2f"
+      "bytes": 103405,
+      "sha256": "7a795a4544b97289c7dc28bf92a13d2a69e83a05cc647457121be6b23573e814"
     },
     {
       "path": "solvers/magneto2d/src/solve/types.rs",
-      "bytes": 16286,
-      "sha256": "697aa65a80474b91740081284e5744bde86ad26684972842ac27c8f85b7c1eba"
+      "bytes": 16532,
+      "sha256": "9317e59676377aa6142d23ad1a0c88651b420c61e25a5b553dadeef230bc0318"
     },
     {
       "path": "solvers/magneto2d/src/sources.rs",
@@ -8050,8 +8050,8 @@
     },
     {
       "path": "tests/test_field_frame_storage.py",
-      "bytes": 5305,
-      "sha256": "5e49cda17ce913788dde60bf374cd2769137e69cea827a596fbc9b356f3235c8"
+      "bytes": 5390,
+      "sha256": "6c6ffddd56a6bf855b07ffc193de57a6017d8e72de9ada6c476fd48e928d46d6"
     },
     {
       "path": "tests/test_field_lines_numpy.py",
@@ -8240,8 +8240,8 @@
     },
     {
       "path": "tests/test_prius_convergence_audit.py",
-      "bytes": 3669,
-      "sha256": "a566932ee576a3a039a74512fda6bd2280e66d20c6650b9f45ef149e75763d51"
+      "bytes": 6331,
+      "sha256": "e5fcecacf90dd29f825ca00c62d3b847e2bb90117275b1aca849b01b77ef0a1e"
     },
     {
       "path": "tests/test_public_cancellation.py",
@@ -8251,7 +8251,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20531,
-      "sha256": "f28a006414c3d8513b08337d2528fbceb4e096a62aa0e9109bc98f4c25ce10d3"
+      "sha256": "819965426478c1d0660bd55ee44a7c8ad8555f7a61a4e0d0846ed053b765ad97"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -8265,8 +8265,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32867,
-      "sha256": "4c11aa55c6b3a36d7ed70e369150c76fc607209259386e9d18a28446d4e183ab"
+      "bytes": 32929,
+      "sha256": "81e64984c2bf100d1b5bbb4f01f53f33a9e2bcabcde550bfb86ee39cf063fd92"
     },
     {
       "path": "tests/test_public_security.py",
@@ -8280,8 +8280,8 @@
     },
     {
       "path": "tests/test_public_ui.py",
-      "bytes": 7530,
-      "sha256": "9fab4d66ca16b11d3ab4ece8ab6901447ce74c60cdddd94c0716c01fffed82bc"
+      "bytes": 8334,
+      "sha256": "1e3d4752079a4b290020abf75d130c030390031e2114f2ce1eee4c6c9d9400f9"
     },
     {
       "path": "tests/test_public_validation_errors.py",
@@ -8340,8 +8340,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 31701,
-      "sha256": "81cd2d625004f168740fc17767bc6ae3040a339a93c845660a8dd621d3d11305"
+      "bytes": 33856,
+      "sha256": "38eb895b8cb1e2d88f03370d94fdddcac0c8a8ce723b11f1d9d749c8b8df91dc"
     },
     {
       "path": "tests/test_shoed_benchmark_case.py",
@@ -8400,8 +8400,8 @@
     },
     {
       "path": "tests/test_windows_field_frame_pool.py",
-      "bytes": 5570,
-      "sha256": "aca2c20e80585355cfb454d2662952bb9f1c9ac2567e141da8bb24e5c83f7460"
+      "bytes": 5554,
+      "sha256": "561251996e967d5e1f21503a4f5c6d0220eaf3fc88818548b6d45021017e07b6"
     },
     {
       "path": "tests/test_windows_mesh_pool.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 22713,
-      "sha256": "d32351f91691530f412666e72ccbfeb5621710c94203bdf14f38dc434042d74d"
+      "bytes": 25990,
+      "sha256": "da22784c0b3b33ceac65262215f82b60228ead6c9da699bee8fa2fde86393ad3"
     },
     {
       "path": "tools/release/artifacts.py",
@@ -8620,8 +8620,8 @@
     },
     {
       "path": "tools/report_prius_benchmark.py",
-      "bytes": 26986,
-      "sha256": "ee5277136d93ecd506aeb802af331e3c3871927d1d4064eacdbce7b918efccba"
+      "bytes": 28449,
+      "sha256": "99d23d6b045f14659e8d7c878138667aaeb7d7b150579aebe5a19a3b8240f909"
     },
     {
       "path": "tools/run_benchmarks.py",
@@ -8650,8 +8650,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 27116,
-      "sha256": "a8d6005a65813588a9fe43121b5c5662c305aabe4046df088efa21cf74a55977"
+      "bytes": 27375,
+      "sha256": "74c311471f1457dfa2383e6eef01375f7ba8f2bdc1714a78773cc355df5faa3f"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -11650,8 +11650,8 @@
     },
     {
       "path": "backend/selected_analyses.py",
-      "bytes": 5399,
-      "sha256": "da1867335ffd642f2d136c25243687e2e64ded0b6d5b3b548862760c74e0ebb0"
+      "bytes": 6439,
+      "sha256": "78e6256811a25ac037854278f0cb36ecdb9f165455a0b5a1f3d7e15b57c1e06b"
     },
     {
       "path": "frontend/src/public/TorqueSpeedSettings.tsx",
@@ -12105,8 +12105,8 @@
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
-      "bytes": 10818,
-      "sha256": "2c95f31a9a3f51a633eef26eb79fe321c5465b13598017bfe825da30ca8ea693"
+      "bytes": 11066,
+      "sha256": "7394f9fd77f592de90c5e5b4a12917d5d912f16dd2721700aa921153b5ada97b"
     },
     {
       "path": "tests/test_convergence_reporting.py",
@@ -12975,8 +12975,8 @@
     },
     {
       "path": "backend/field_frame_codec.py",
-      "bytes": 6884,
-      "sha256": "1d3d54c63a1b75829fdef64ed0474b40861be6ff425f698a7f22f71102288310"
+      "bytes": 8740,
+      "sha256": "f11bcbb3c284c04eb0b32084be38d9acea945a907f4d18ef2b2eced7ef097e3f"
     },
     {
       "path": "backend/reference_models/lrk.py",
@@ -13105,8 +13105,8 @@
     },
     {
       "path": "frontend/src/public/RotorArrangement.tsx",
-      "bytes": 1201,
-      "sha256": "75c60a42663f59d6b3ee6ce93f9d672474d75eb2447de774cd8eeb4f322c8f82"
+      "bytes": 1595,
+      "sha256": "a84aac81c67a5feed41bc3ce204e831276a2ed406b57fa0ed63089023243c56e"
     },
     {
       "path": "frontend/src/public/examples/drone_outrunner_36s40p_b.coilem",
@@ -13160,8 +13160,8 @@
     },
     {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 27958,
-      "sha256": "c5ecfebecf4def7cfc8cea6eb9f870496b4e037b6b30d59321c5a6663af4cba9"
+      "bytes": 29127,
+      "sha256": "6d04db6ac4293881874566b54cc8a4112cd751bb32f421000398e85ca440a9f6"
     },
     {
       "path": "tests/test_lrk_reference.py",
@@ -13870,8 +13870,8 @@
     },
     {
       "path": "tests/test_field_frame_locality.py",
-      "bytes": 8936,
-      "sha256": "a04f7cd616f5fa34d5269d7752b8cead3e375e0057b0a41778c9058f4c9a0bf6"
+      "bytes": 8945,
+      "sha256": "97b8140bd0054c39ce80c95dde50a22b83e6854faca72a7b9891bae9d27e05cf"
     },
     {
       "path": "tests/test_field_frame_pipeline.py",
@@ -14070,8 +14070,8 @@
     },
     {
       "path": "tests/test_two_layer_solution_reuse.py",
-      "bytes": 13716,
-      "sha256": "d0ab73da5ca5f777743a052a78bcd7182fedffda1e1c148852f6aa4b7711f663"
+      "bytes": 14413,
+      "sha256": "05c09366fda818804a4b62af71bfe0f6573709841facbb55ac0a0dbee44264b9"
     },
     {
       "path": "docs/benchmarks/two-layer-solution-reuse-windows-20261109.md",
@@ -17577,6 +17577,1116 @@
       "path": "benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
       "bytes": 2536,
       "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
+    },
+    {
+      "path": "backend/client/__init__.py",
+      "bytes": 1546,
+      "sha256": "a839173f11df9aa0459a81a1c614206de621adf9b01cc2467e9da595588bbf5b"
+    },
+    {
+      "path": "backend/client/_errors.py",
+      "bytes": 3878,
+      "sha256": "b7286b0ddd522a349ae6cdf931ef6a67fddc55019a13f582d0debf97c902f0dc"
+    },
+    {
+      "path": "backend/client/_inputs.py",
+      "bytes": 17091,
+      "sha256": "299f82adba48c0dd15440ea56ddfd94e7fd478e6335d61f5dee294d918c07ae3"
+    },
+    {
+      "path": "backend/client/_results.py",
+      "bytes": 13863,
+      "sha256": "4479077702622e673d2fad0dc1f5ad823d80eee8121d9ee259c3d5898a3adb44"
+    },
+    {
+      "path": "backend/client/_solve.py",
+      "bytes": 26354,
+      "sha256": "326044e2591da683bdc85d2a300ef32d407456a52886ec1ef81f9217d22fa088"
+    },
+    {
+      "path": "backend/input_advisories.py",
+      "bytes": 2094,
+      "sha256": "2ac078ed3f1237799819532de944bd241cdc468dd20fdc9a592e01c4142786d5"
+    },
+    {
+      "path": "backend/rotor_construction_preview.py",
+      "bytes": 5715,
+      "sha256": "5ce79dba68a3c699cf76db72b557ffa02fde7177953ef4794dcf63560e131c0a"
+    },
+    {
+      "path": "backend/solve_profile.py",
+      "bytes": 18946,
+      "sha256": "5dde6d381f222a2205b522a6211ca8c7e56b4cb084b075f9e4417abf3f7e7dc8"
+    },
+    {
+      "path": "backend/stator_construction_preview.py",
+      "bytes": 3273,
+      "sha256": "fb04595743c091c58a49ead501690c26d5d85cd7af7ede48cefe179bf0746169"
+    },
+    {
+      "path": "docs/PYTHON_CLIENT.md",
+      "bytes": 11593,
+      "sha256": "06e14ae742f2e4f079d4b68decab5535bbf24e96b8a83f9989c2e3e8865fee57"
+    },
+    {
+      "path": "docs/RELEASE_0_5_8.md",
+      "bytes": 4589,
+      "sha256": "65c2f6fe790208f13921d9d3128d524fb87e4ce5af66cb71ab4908a9d002f2ec"
+    },
+    {
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
+      "bytes": 54137,
+      "sha256": "4eaa88d62c35b2c49982fa75074f19130d6de7bc9d69df7e2d6ba3eb14c33ffd"
+    },
+    {
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
+      "bytes": 6810,
+      "sha256": "d3c5e18fc4fda702160e8b6198927126b5543cfff3e699c60bb033ea3c012d87"
+    },
+    {
+      "path": "docs/examples/client_ipm_motor.py",
+      "bytes": 4259,
+      "sha256": "22624043e90f4a7c8e10f9d171d2db62db1bb6d4b436a56b5188a598a676ede2"
+    },
+    {
+      "path": "docs/examples/client_spm_motor.py",
+      "bytes": 3769,
+      "sha256": "608fb7b6bada4da0d739f829101c88b4891305a35098b98c98aec95c0a0c902d"
+    },
+    {
+      "path": "frontend/scripts/test-release-priority.mjs",
+      "bytes": 2879,
+      "sha256": "25564be6e45150183c4bf8c44252c2a902854f7e8a232169cf07d9c8689a45d9"
+    },
+    {
+      "path": "frontend/scripts/test-ring-shape.mjs",
+      "bytes": 1145,
+      "sha256": "9ea0ed195817e85412c774b65165c2106b5dc4b4974b1e8e86e3f36d6cc42a9c"
+    },
+    {
+      "path": "frontend/scripts/test-solve-time.mjs",
+      "bytes": 4131,
+      "sha256": "94d63b1d791bb11dbc84cd7210eb4b9fa5a27c910bd6b611477514b722c29bd2"
+    },
+    {
+      "path": "frontend/scripts/test-winding-build.mjs",
+      "bytes": 4606,
+      "sha256": "99c9e908321222b8bf9b1adba76aed5c6b910e6cb192d884f12bf6a76121138d"
+    },
+    {
+      "path": "frontend/scripts/test-winding-turn-dots.mjs",
+      "bytes": 2830,
+      "sha256": "28db502e49e66ca7bfc9163f1174f4f4b6bd0626d5e217fa9bc77d92f66f3621"
+    },
+    {
+      "path": "frontend/src/public/RotorArrangementPreview.tsx",
+      "bytes": 6698,
+      "sha256": "36a795d12bc4ea12ba951bd32b4b0f123f8059d367abfb48a469e968f658330d"
+    },
+    {
+      "path": "frontend/src/public/SolveTimeCard.tsx",
+      "bytes": 4659,
+      "sha256": "8989e9084434cc54e52c586b69304e5a3b0a7a19c4843c6b03f2f941ea69a36d"
+    },
+    {
+      "path": "frontend/src/public/ViewportMagnifier.tsx",
+      "bytes": 1529,
+      "sha256": "d768395e9b10f92a5fef0b048f3ea6474ea733483d50d0177b6cc0835a47d777"
+    },
+    {
+      "path": "frontend/src/public/designHealth.ts",
+      "bytes": 585,
+      "sha256": "bfb87474342225ec5e81d392c54c2a42f9e325387253da6dd4d637cb7b363d06"
+    },
+    {
+      "path": "frontend/src/public/newDesignEntry.ts",
+      "bytes": 6948,
+      "sha256": "2ed89fd72fa7745bbd4c035c9440f2ff29d691e56f46fa793d1f0696106eccf2"
+    },
+    {
+      "path": "frontend/src/public/phaseDrivePanel.ts",
+      "bytes": 6097,
+      "sha256": "b0b33081b3d0f5f2a7a0e76b722cd2d0d399d8570df95218b64d000511a1d885"
+    },
+    {
+      "path": "frontend/src/public/progressiveDesign.ts",
+      "bytes": 15684,
+      "sha256": "8889bdf2bdb262079f4c12eae00e1f24181bc7ae043cabec588069625b804667"
+    },
+    {
+      "path": "frontend/src/public/ringShape.ts",
+      "bytes": 451,
+      "sha256": "99cdd58592fa6863de50e1bdff8912dd1341900f2f471f8c15000ae362812a4c"
+    },
+    {
+      "path": "frontend/src/public/savedRunPlayback.ts",
+      "bytes": 772,
+      "sha256": "ebfd86255934d4360c2e1cf8be69adb7555c0a8b066de08e5df4da36dc21d6c3"
+    },
+    {
+      "path": "frontend/src/public/solveTime.ts",
+      "bytes": 4485,
+      "sha256": "083ea48d534adb54c81160587691a3eeca47696725b64a3e1e658cd776e836a7"
+    },
+    {
+      "path": "frontend/src/public/useFirstSolvedField.ts",
+      "bytes": 1627,
+      "sha256": "0331fc392988e752bbbf9a965cd9943a78bcf23b0f30bd8670f9823ba9dbdc71"
+    },
+    {
+      "path": "frontend/src/public/useLayerMenu.ts",
+      "bytes": 2096,
+      "sha256": "c30ee90074df1a903302972ea1163517a2cec8f7894ca41dcf3b52286af4584c"
+    },
+    {
+      "path": "frontend/src/public/useMotorHoverPreview.tsx",
+      "bytes": 4681,
+      "sha256": "4da53209a64f440a123ccc6339ae05c5009a483b7ccf3e15f873e7c71c89de7f"
+    },
+    {
+      "path": "frontend/src/public/useTurningRotorAngle.ts",
+      "bytes": 1572,
+      "sha256": "681c67af9180a6395a1cbd51657389761a05a6771b3bdd55d1b9dd9ed875f0cf"
+    },
+    {
+      "path": "frontend/src/public/windingBuild.ts",
+      "bytes": 7641,
+      "sha256": "b578bb92dd13c0b21d21a8102d2ec268d7751582108c32cd9cac835a758a0a12"
+    },
+    {
+      "path": "frontend/src/public/windingTurnDots.ts",
+      "bytes": 5576,
+      "sha256": "f9e3688ce2602d7ee9304a197d7aeb790ef2936d2589171732ca3ab4ed66268e"
+    },
+    {
+      "path": "frontend/src/public/wireGauge.ts",
+      "bytes": 2111,
+      "sha256": "482f4261ddb9f0925061dd416f8b0c9968a7ab68fb689c53b393f8fc8fd02b32"
+    },
+    {
+      "path": "frontend/tests/design-helpers.ts",
+      "bytes": 5508,
+      "sha256": "1ca36470e81ca20347caac4771f585cd3cf8effa623683047a10fd6305fd8b85"
+    },
+    {
+      "path": "frontend/tests/progressive-design.spec.ts",
+      "bytes": 85503,
+      "sha256": "0e7b4640fbf81a4ff4f87498aa50f60d71f09bfc69b7c1b7e9995ae526d03bdb"
+    },
+    {
+      "path": "frontend/tests/viewport-harness.tsx",
+      "bytes": 10750,
+      "sha256": "27325b5c4d82bb2ecbdd4f1a128b5486ea812095b7a285f3563617b02493faf0"
+    },
+    {
+      "path": "tests/test_construction_preview.py",
+      "bytes": 11219,
+      "sha256": "67d4a7cfeb79469f6e164b5ebea0f249d89f4a0f0312abd26b79ea9d2a119ab3"
+    },
+    {
+      "path": "tests/test_input_advisories.py",
+      "bytes": 3198,
+      "sha256": "5ec293b2d9c053b680a1978b652fb07d41397dadfb2b26efca9d9688838b775c"
+    },
+    {
+      "path": "tests/test_mesh_evidence_shared_text.py",
+      "bytes": 5281,
+      "sha256": "6312558d4a8e9494dbd12892055f27c10fce0ffdebe0ed80f5f15cc72b4395a9"
+    },
+    {
+      "path": "tests/test_python_client.py",
+      "bytes": 25978,
+      "sha256": "ed65b5f05ae1d78f487f90d9227549ac22fba04a8eb4dcbe47ceaa7088e4417d"
+    },
+    {
+      "path": "tests/test_release_priority_report.py",
+      "bytes": 3051,
+      "sha256": "772d0f724863bcc872d90227d9c8a7e3a0b2efc1a0e1286b4df487c397c4a7cd"
+    },
+    {
+      "path": "tests/test_solve_profile.py",
+      "bytes": 9735,
+      "sha256": "3c96a6cc0a98762e89801dbdb86c0d8bd506f435007fb3992a19f4de55b645b3"
+    },
+    {
+      "path": "tests/test_solve_reuse.py",
+      "bytes": 4052,
+      "sha256": "cb50a83b218471c9e471e1c64cf0982b0f71b8e52558d3ccabbec25db797685a"
+    },
+    {
+      "path": "tests/test_vshape_mesh_study.py",
+      "bytes": 1308,
+      "sha256": "3f5fe267508a13bf7dc9b35ccde66c967d2ea361b7662f4d22d626bdae2003fa"
+    },
+    {
+      "path": "tools/vshape_mesh_study.py",
+      "bytes": 6934,
+      "sha256": "595d99fe29a6702aba719e493a2f11d8fd8324d8970815bdd0654b37f74313ad"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/carry-receipt.json",
+      "bytes": 339,
+      "sha256": "0f789b4d36a60821b200d743c735252c186aa5470c2d2c8729f3ad8f7ac70c40"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/prius/app-results.json",
+      "bytes": 2429710,
+      "sha256": "d6fe82d08b379efbafd1e1fceacbc0ec460514ce17c485d5d182c6facf77b6b7"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/prius/app-results.md",
+      "bytes": 3538,
+      "sha256": "5a16050d0205114186ffe42a074610ea396557dd503ce24f310337b00e89a61b"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/prius/source-snapshot.json",
+      "bytes": 2036222,
+      "sha256": "d0ea7b7d6073af8dc12ba26633e2292cf380372d87c7d3426d3711128eb6a9c6"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/reference-reuse.json",
+      "bytes": 2863,
+      "sha256": "c10bbd95cedf737efd3daf1cbbc8dbe834a8d78e819450c3c78a57ef0bca45f2"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/artifact_manifest.json",
+      "bytes": 10191,
+      "sha256": "31b1c53e40eb0514d0100f814d1ce42d1af7bb0240d755e43376580751a4a8ff"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/benchmark_report.md",
+      "bytes": 12843,
+      "sha256": "2471f31ba695219152ee951ea52cae3e6fab54daf15d71ecb89ab3c2bbe22902"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/benchmark_results.csv",
+      "bytes": 38486,
+      "sha256": "8a9e22fe7e43c7672c1ee61cc7f23777a5796d1729f8b6d6cc854cd4568990e5"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/benchmark_summary.json",
+      "bytes": 5510589,
+      "sha256": "b6151a3f8a047f5716d8b35e1a4af7ca69bbe8bd9708b291e5f9e222aeea648a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/coilem_benchmark_report.html",
+      "bytes": 1550666,
+      "sha256": "27f78fd4396b42bab12d46b9790d5e6d0b44cd84d4ce4d0459024a1e834abc63"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_12s10p_fscw_contract__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_24s16p_industrial_contract__cogging__native.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging__native.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__cogging__native.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_12p36s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2506,
+      "sha256": "9e002b53a883c0545606b6cdf9036cfc3ce8775d94d7628f18296b2af163db3d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "a99cdfd3963ee07c528ecd79a5dcbad7ed003f9e7edb5c5be41e0fd9c16116ee"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "a90c0a1a3b4a5a95a552a425c36131db012ea21f59a6a39c071eda22a157ee6a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3a629ad6f3a956728ac6e0c219781ccb9021072e5e1402bb051a4551efecf227"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple__baseline__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "57aa20885cbbfba6fb30c7e07435e72646a8645aa0ebdc31719fb3657213dbe0"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "f78d9209b332c17bc9d61056edecdca60c1a69a790a5327a61af82e5fed3450f"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple__tight_airgap__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "104775a4a4ecb05a6c9c6f885e65c87a97f7dedbee835479879c42204308d25d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "a02804f82208d5ed10fdaad15174d90e0d9efbe31bff5b3faabaec7a523190ef"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "a112b985ee51200f32a66b70bfc96f5518996a8e1bb0bc19829d4ba2e9a341c8"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "97d116f9c724e0c249b097318ebced96c0039ed9a33a53cedc54420f1bd8b9b3"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "6bdc644570d0ee995be420795672c0d10fe404be5c56e476c7adeed4c7f28506"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "aa1907ee5ab216548e005e580865d9f53651865e1031cf99c0468036c866d206"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "6b6490590987002c637e76b784367fcf9b69abf7e9294c4835c2da1cf73b5ffa"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__baseline__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2507,
+      "sha256": "ba385f48b07ed83a0c889c004ca8bb1c04905cd18be46cde04973c2a28de161f"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2507,
+      "sha256": "7ac7698afc34549d25a0b0823f0de731395ca40f4ad21145c66e33816fc433dc"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2506,
+      "sha256": "2935c5f06447b0441cd35589a4d561fc12d7dea23686a9bfa68733ac71ed5dcd"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2507,
+      "sha256": "944150f581698d9f0fb4fe3bf542f45fcc377c091a015671884e41f6b36a5ea7"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2507,
+      "sha256": "e2d5ceec9c51259e49806e286bf89c0b124d979c42106c26335f8da5660eb213"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "fceacc3526000c8be7407480cc2d1ac2c356dfee39587cc095ef61b94b09f991"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2507,
+      "sha256": "8442f48b237734f8ca100401366009fd30d0a51eb89ff4a2f942f226b2e943e4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2506,
+      "sha256": "207af96c9bb5d0e45aa3560fbd48f9cba61194d3ab792b4bbc73ec12dd422a77"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__tight_airgap__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "b58b9887679eac10367307ae1faf096c02e51abfe916b5b8b292ca6950292cc8"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_example_shoed__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2506,
+      "sha256": "89f1889d798356d7a5419abb08df4d2760f905b947c42f45ee6c860c6052ff84"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "26f2567f279fb57aab90378c95ce1eb24e969ea7fd7afb66d2de089d257a2bed"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "32a9fc96dec79ecfa4a1f59b88a5786b307b94d5f99f5bf7324277897bc087d4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "2eb6f0e194ceb16680ff33f6797fe00b969e2883c2f14609efb55c8883e532d8"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "1b1e8820fa4e936c2c109398d0af03d2c04324475dc4c18b464cd3b2de758971"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p24s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2507,
+      "sha256": "7fe2ec151213f159144c5f6cd39eab12f88f34d24b32774b03de83e9a28aafc5"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p48s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2505,
+      "sha256": "4a1c1d6c843d9aa169d0f2d15c6a12773a781eb9e49d4b944e88472e9617fa97"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+      "bytes": 2534,
+      "sha256": "db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+      "bytes": 2533,
+      "sha256": "34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+      "bytes": 2533,
+      "sha256": "86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+      "bytes": 2532,
+      "sha256": "207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+      "bytes": 2536,
+      "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/carry-receipt.json",
+      "bytes": 339,
+      "sha256": "0f789b4d36a60821b200d743c735252c186aa5470c2d2c8729f3ad8f7ac70c40"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/prius/app-results.json",
+      "bytes": 2429731,
+      "sha256": "788305be906eb391430e24e013b1aee7b82bb578537300e8e346c35a26768922"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/prius/app-results.md",
+      "bytes": 3538,
+      "sha256": "8249ed2c6af75b98ae2595e5f7c7beb28eee951ead82b12541ef6c0597e385f9"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/prius/source-snapshot.json",
+      "bytes": 2036222,
+      "sha256": "d0ea7b7d6073af8dc12ba26633e2292cf380372d87c7d3426d3711128eb6a9c6"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/reference-reuse.json",
+      "bytes": 2863,
+      "sha256": "c10bbd95cedf737efd3daf1cbbc8dbe834a8d78e819450c3c78a57ef0bca45f2"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/artifact_manifest.json",
+      "bytes": 10191,
+      "sha256": "ef55186c24e99031978ef0e03ebe5fb5d372b7676895f3875617370d7fcb707a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/benchmark_report.md",
+      "bytes": 12843,
+      "sha256": "9f340dbd8064cd5e8fc0d11c4bc6e109799ea3bb6dbfdf9a208a70b6aec277a9"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/benchmark_results.csv",
+      "bytes": 38483,
+      "sha256": "e70970c9161262540e1cb43e901dcb8ab8ac32b3c5623078c37f886d0aceb0d9"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/benchmark_summary.json",
+      "bytes": 5527747,
+      "sha256": "da7fc2fc760231a7d661087135889d9edcb7228103941c24347baa517f9a7fbd"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/coilem_benchmark_report.html",
+      "bytes": 1558301,
+      "sha256": "e68ba368fca939aa58ee02e08d11b4000e00803d0fd91247e1c21e99e8dac2c4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_12s10p_fscw_contract__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_24s16p_industrial_contract__cogging__native.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging__native.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__cogging__native.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_12p36s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2506,
+      "sha256": "9e002b53a883c0545606b6cdf9036cfc3ce8775d94d7628f18296b2af163db3d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "a99cdfd3963ee07c528ecd79a5dcbad7ed003f9e7edb5c5be41e0fd9c16116ee"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "a90c0a1a3b4a5a95a552a425c36131db012ea21f59a6a39c071eda22a157ee6a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3a629ad6f3a956728ac6e0c219781ccb9021072e5e1402bb051a4551efecf227"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple__baseline__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "57aa20885cbbfba6fb30c7e07435e72646a8645aa0ebdc31719fb3657213dbe0"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "f78d9209b332c17bc9d61056edecdca60c1a69a790a5327a61af82e5fed3450f"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple__tight_airgap__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "104775a4a4ecb05a6c9c6f885e65c87a97f7dedbee835479879c42204308d25d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "a02804f82208d5ed10fdaad15174d90e0d9efbe31bff5b3faabaec7a523190ef"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "a112b985ee51200f32a66b70bfc96f5518996a8e1bb0bc19829d4ba2e9a341c8"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "97d116f9c724e0c249b097318ebced96c0039ed9a33a53cedc54420f1bd8b9b3"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "6bdc644570d0ee995be420795672c0d10fe404be5c56e476c7adeed4c7f28506"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "aa1907ee5ab216548e005e580865d9f53651865e1031cf99c0468036c866d206"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "6b6490590987002c637e76b784367fcf9b69abf7e9294c4835c2da1cf73b5ffa"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__baseline__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2507,
+      "sha256": "ba385f48b07ed83a0c889c004ca8bb1c04905cd18be46cde04973c2a28de161f"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2507,
+      "sha256": "7ac7698afc34549d25a0b0823f0de731395ca40f4ad21145c66e33816fc433dc"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2506,
+      "sha256": "2935c5f06447b0441cd35589a4d561fc12d7dea23686a9bfa68733ac71ed5dcd"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2507,
+      "sha256": "944150f581698d9f0fb4fe3bf542f45fcc377c091a015671884e41f6b36a5ea7"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2507,
+      "sha256": "e2d5ceec9c51259e49806e286bf89c0b124d979c42106c26335f8da5660eb213"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "fceacc3526000c8be7407480cc2d1ac2c356dfee39587cc095ef61b94b09f991"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2507,
+      "sha256": "8442f48b237734f8ca100401366009fd30d0a51eb89ff4a2f942f226b2e943e4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2506,
+      "sha256": "207af96c9bb5d0e45aa3560fbd48f9cba61194d3ab792b4bbc73ec12dd422a77"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__tight_airgap__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "b58b9887679eac10367307ae1faf096c02e51abfe916b5b8b292ca6950292cc8"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_example_shoed__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2506,
+      "sha256": "89f1889d798356d7a5419abb08df4d2760f905b947c42f45ee6c860c6052ff84"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "26f2567f279fb57aab90378c95ce1eb24e969ea7fd7afb66d2de089d257a2bed"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "32a9fc96dec79ecfa4a1f59b88a5786b307b94d5f99f5bf7324277897bc087d4"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "2eb6f0e194ceb16680ff33f6797fe00b969e2883c2f14609efb55c8883e532d8"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "1b1e8820fa4e936c2c109398d0af03d2c04324475dc4c18b464cd3b2de758971"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p24s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2507,
+      "sha256": "7fe2ec151213f159144c5f6cd39eab12f88f34d24b32774b03de83e9a28aafc5"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p48s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2505,
+      "sha256": "4a1c1d6c843d9aa169d0f2d15c6a12773a781eb9e49d4b944e88472e9617fa97"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+      "bytes": 2534,
+      "sha256": "db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+      "bytes": 2533,
+      "sha256": "34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+      "bytes": 2533,
+      "sha256": "86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+      "bytes": 2532,
+      "sha256": "207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+      "bytes": 2536,
+      "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/README.md",
+      "bytes": 2123,
+      "sha256": "fbacfa1d692c05109256a307582f7e67bbcb0c36051849706ea973ff27e90812"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/publication-projection.json",
+      "bytes": 2777,
+      "sha256": "c9391901af4ed12b9897ce338b2eaa9c826c626735a447fbc41adce1402a3aaa"
+    },
+    {
+      "path": "benchmarks/qualification-78e6f4fc8aa8/release-qualification.json",
+      "bytes": 39,
+      "sha256": "b6ea3bda40f5075e0ba746878a397cc03ed84df2743a5c15f891a63f1c3cb0c8"
     }
   ],
   "public_patches": [
@@ -38813,6 +39923,492 @@
       "path": "benchmarks/records/windows-x86_64.json",
       "source_sha256": "a423ae328e7f280eef4aa99d2b9965af7bed21b6684d08898f35b0f95c1161e3",
       "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "README.md",
+      "source_sha256": "998f77bc2ca005a5e1033dfaaa19e5f96c6ac694a1588f9ef96059b3110ffa1a",
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/__init__.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_errors.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_inputs.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_results.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/client/_solve.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/gmsh_mesh_rotation.py",
+      "source_sha256": "96dec0459b558a6b8d14f14f679a1e04afdb9b7aaf9b45b6cad872d8374f8f0f",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/solve_profile.py",
+      "source_sha256": "ddae70ca583c023dbc990bf95e4d2c9f9673ae6c9c692fb731718c19b01b0c5e",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/solver/__init__.py",
+      "source_sha256": "4bc6dd0097d286baee1cda18c7b6c774ea56b1450aa5bf9f6397cdd770f89cc5",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "backend/solver/_helpers.py",
+      "source_sha256": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "docs/PYTHON_CLIENT.md",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "docs/examples/client_ipm_motor.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "docs/examples/client_spm_motor.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "tests/test_python_client.py",
+      "source_sha256": null,
+      "reason": "Add a Python client (backend.client) for defining, solving and sweeping motors from scripts, with docs, examples and tests."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "tests/test_solve_reuse.py",
+      "source_sha256": null,
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "85984df281652e040763ef9c582be1ddef958be6",
+      "path": "tests/test_two_layer_solution_reuse.py",
+      "source_sha256": "d0ab73da5ca5f777743a052a78bcd7182fedffda1e1c148852f6aa4b7711f663",
+      "reason": "Speed up repeated solves: reuse no-load solves across operating points, skip re-caching meshes that came from the cache, share unchanged report arrays in congruent reuse, offer solves without field frames, and buffer the solving process's profile records."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "bf8617ae2b5afe4437eb7043d437dacdc3465a882428f076b432cb5cb1c1eff7",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "backend/client/_solve.py",
+      "source_sha256": "39996027ee1b170731aacd113d8b52a8d5cc6670a7ea7afdb43087b5859ef02c",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "backend/solve_profile.py",
+      "source_sha256": "2215614c1a87736d6013c447d3c886a505b051d1d58c684ea9612bf75a654255",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "tests/test_python_client.py",
+      "source_sha256": "1758aeb11c21bfa66d28a2f3ee8f1f3514c3a0bdc7159f33ecd17fa22432e3ba",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "tests/test_solve_profile.py",
+      "source_sha256": "5695f57f46858483aa9b7bcca6cb2a5f2a422f323b73c82503478d7db313dca7",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c88712abce9aaee2f758a9bf1cedbbf9557bf435",
+      "path": "tests/test_solve_reuse.py",
+      "source_sha256": "ae4b3dd48464ed9b91d94bd42309cdf84913b6c654af761a5b773920e3d45d67",
+      "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/input_advisories.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/models/result.py",
+      "source_sha256": "230491043a812ada40187dfbb42d5fa1e52a40cc690475d18fa3399bcda2f313",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/preview.py",
+      "source_sha256": "206fbd1d32be52bc722f894d8f39f23a3db75d10b6cc08eb5abc5462f7cf3e3b",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/public_report.py",
+      "source_sha256": "8069a7b8847999718f4327ef003b22250882c00ca9e2577653f6dd354f622ab7",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "b2fb259730cbb0f6deb39a05c9f7545043981a3d929471bf6f6963a84cd21be2",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/selected_analyses.py",
+      "source_sha256": "da1867335ffd642f2d136c25243687e2e64ded0b6d5b3b548862760c74e0ebb0",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/package.json",
+      "source_sha256": "de70acdfb028cce754e7ce78bc639b1537670f7e123f9b4d669fb992a3585a60",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "4d0fa3608acc5a369c66aedae06636d793cc1b3097158bbc4c7f6283e7cbf9ed",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "source_sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "cd6007e349a7b084077e561670b9fdc4675c4b9c2ad8cfdcc66dd4124bd6e9a6",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-release-priority.mjs",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-ring-shape.mjs",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
+      "source_sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/components/tutorials/MeshViewer.tsx",
+      "source_sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "a332c5aacdd496a12b0d5b26d0c54087168bbbb1566906fb0fc6c4b20e1a3dac",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "b17412d51a5c1b257be667e7ecbdcca6dcbb827ca0f7b044f5ef7d1725f4b69e",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "c7d49c30421fe0c6b02b0d65f7ab64cd246c7f75ee9a29f77b176d6987bd25e1",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/designErrors.ts",
+      "source_sha256": "591320b7df61f6aae964f64df43533c15a70eaf8fce8955f35cda85c31118a3e",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/designHealth.ts",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/dimensionAnnotations.ts",
+      "source_sha256": "d8169ddffc361f34c04b11ad61c6ff3a0514f4ecbf9b53ff008f9c321af365f1",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
+      "source_sha256": "23ed6f72b44dcd8f3f0d0ff5e85349107bd416b1bed964d1d4d9c3488caf0bf7",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
+      "source_sha256": "459c4cbbce65c219d089079cbc5cc8b707c022a174b97c7b7aca9f4f3d6377f5",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/halbach/halbach.css",
+      "source_sha256": "ca66bb39f75a94689b589e5ba69b9b0ba471f4c36021072118cc25e83f9a556f",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "fe1a9ee6c1214a68205ffe52acc63312de0e4eb60d175f01b30c5c7ba4f2ae20",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/magnetCoverage.ts",
+      "source_sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/ringShape.ts",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/savedRunPlayback.ts",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "3672ca7fd427dfa3a679ce951d9d41267d9ef5c3e39b3573bc28786d289ce1ae",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/progressive-design.spec.ts",
+      "source_sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "3a25f320860743b67be60ad9fe1ab6f73f13902cfa9cdd60e25235195dcc0f1a",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/viewport-harness.tsx",
+      "source_sha256": "239aba6eeb113a5fbbc20af2d9cc6294b965e56da7fee1ec2438adf3d225945c",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_input_advisories.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "4c11aa55c6b3a36d7ed70e369150c76fc607209259386e9d18a28446d4e183ab",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_release_priority_report.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_vshape_mesh_study.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tools/vshape_mesh_study.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "baa69a775111edfaff9e06b43dc328bcacd9556e8eb011cc21c2dffedf46831e",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "README.md",
+      "source_sha256": "66768708dc60e4345757c0fc99f676dd7b9f6b7fe5ac3854e8b17a323b2858a9",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "6ab95b89d1c7d794a1890414c0f45c11a82e897a07526fae874037acbe871d73",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "backend/__init__.py",
+      "source_sha256": "ecf5d090d4b0093cbba271858d870a8af6ca484974ce7e8ad5262b147dcda5d2",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "docs/RELEASE_0_5_8.md",
+      "source_sha256": null,
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "frontend/package-lock.json",
+      "source_sha256": "737418dcd484f1ed358562f819c14e2f6f9f0bf8dfbc32b58eef5582aab8989a",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "frontend/package.json",
+      "source_sha256": "f23c15299b09b22f2bcddf792b2d1c01ac53d6ec159fcde32c64d63985308389",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "19548e1460cd9b2c19c0ea644aa0bf9957d0ddcb",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "3c630e1bdffe386741a330a5d2ff138dee77235139d7c8fa099284953feb0496",
+      "reason": "Prepare v0.5.8 release metadata, candidate notes and pending verification checklist."
+    },
+    {
+      "base_commit": "78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9",
+      "path": "benchmarks/records/macos-arm64.json",
+      "source_sha256": "7c0714ab859d371f707a24c6e292033e29e71c7f7b27e535062883a9fa2f15c5",
+      "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9",
+      "path": "benchmarks/records/windows-x86_64.json",
+      "source_sha256": "46dd05c2028858bb7850c41071b74ffe7891cf2c424a24a3c4fe810fb0143132",
+      "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "e007bc583ab44f2fc768a0c504dbcfba27d7117f",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "837a369ef0da885affe492e73809d13fa7bd1a8ee4bb5b8bc8e38d3b8586d0a1",
+      "reason": "Publish validated v0.5.8 two-platform evidence and retain the historical 0.5.7 report CSVs."
+    },
+    {
+      "base_commit": "e007bc583ab44f2fc768a0c504dbcfba27d7117f",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "0e9aeb23b370afadcb22f350ebad4c884d7bb89d776ea574d995d852b72231c8",
+      "reason": "Publish validated v0.5.8 two-platform evidence and retain the historical 0.5.7 report CSVs."
+    },
+    {
+      "base_commit": "e007bc583ab44f2fc768a0c504dbcfba27d7117f",
+      "path": "docs/RELEASE_0_5_8.md",
+      "source_sha256": "8ca97222646fe838de9ed3b889c11754409f898df7a75980e09dbb3b47286b1e",
+      "reason": "Publish validated v0.5.8 two-platform evidence and retain the historical 0.5.7 report CSVs."
+    },
+    {
+      "base_commit": "e007bc583ab44f2fc768a0c504dbcfba27d7117f",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "a8d6005a65813588a9fe43121b5c5662c305aabe4046df088efa21cf74a55977",
+      "reason": "Publish validated v0.5.8 two-platform evidence and retain the historical 0.5.7 report CSVs."
+    },
+    {
+      "base_commit": "e007bc583ab44f2fc768a0c504dbcfba27d7117f",
+      "path": ".gitattributes",
+      "source_sha256": "5ce5695b7aaaac385ca9a4afc91bf82266667fe605a8b4b2b914f152b957feab",
+      "reason": "Preserve measured v0.5.8 evidence line endings and artifact hashes in Git."
+    },
+    {
+      "base_commit": "df7ea2d531d414b702994123bbe26b985d04e6ef",
+      "path": "docs/RELEASE_0_5_8.md",
+      "source_sha256": "e35221483fcf34f5c150e408cc94662ac465fd615f67c3fb0f995d523d88c781",
+      "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
+    },
+    {
+      "base_commit": "df7ea2d531d414b702994123bbe26b985d04e6ef",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "656b14e5ff9f311c2db19b2e4cbb109ea4f4a4dd9020ccd4511e9ede110e2ec5",
+      "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
+    },
+    {
+      "base_commit": "df7ea2d531d414b702994123bbe26b985d04e6ef",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "07233710ae9acd8e8b2e1e473448e5a7c14a38a08ce0f06da931cb793538df87",
+      "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
     }
   ]
 }

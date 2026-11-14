@@ -5,11 +5,355 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
+import { configureSection } from './design-helpers';
 
 const apiUrl = 'http://127.0.0.1:58000';
+const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
+
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
+  await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
+    <!doctype html><div id="root"></div><script type="module">
+    import RefreshRuntime from '/@react-refresh';
+    RefreshRuntime.injectIntoGlobalHook(window);
+    window.$RefreshReg$ = () => {};
+    window.$RefreshSig$ = () => type => type;
+    window.__vite_plugin_react_preamble_installed__ = true;
+    await import('/@fs/${viewportHarness}');
+    </script>` }));
+  await page.goto(`/__viewport_test__?view=${view}`);
+}
+
+test('winding layout zoom redraws SVG detail and preserves the pointer anchor and pan', async ({ page }, info) => {
+  await openViewportHarness(page, 'winding');
+  const svg = page.locator('.wl-ring-svg');
+  const ring = page.locator('.wl-ring');
+  const marker = svg.locator('.wl-ring-marker-disc').first();
+  await expect(marker).toBeVisible();
+  const before = (await marker.boundingBox())!;
+  const initialCenter = { x: before.x + before.width / 2, y: before.y + before.height / 2 };
+  // Wheel events report whole CSS pixels; preserve the marker's subpixel offset.
+  const anchor = { x: Math.round(initialCenter.x), y: Math.round(initialCenter.y) };
+  const zoomedCenter = { x: anchor.x + (initialCenter.x - anchor.x) * 16, y: anchor.y + (initialCenter.y - anchor.y) * 16 };
+  const initialBox = await svg.getAttribute('viewBox');
+  const initialScale = await svg.evaluate((s: SVGSVGElement) => s.getCTM()!.a);
+  await page.mouse.move(anchor.x, anchor.y);
+  await page.mouse.wheel(0, -Math.log(16) / 0.0012);
+  await expect(page.locator('.public-viewport-nav-controls')).toContainText('16x');
+  await expect.poll(() => svg.evaluate((s: SVGSVGElement) => s.getCTM()!.a)).toBeCloseTo(initialScale * 16, 3);
+  const center = async () => { const b = (await marker.boundingBox())!; return { x: b.x + b.width / 2, y: b.y + b.height / 2 }; };
+  expect(Math.abs((await center()).x - zoomedCenter.x)).toBeLessThan(1.5);
+  expect(Math.abs((await center()).y - zoomedCenter.y)).toBeLessThan(1.5);
+  await page.mouse.down();
+  await page.mouse.move(anchor.x + 60, anchor.y - 30, { steps: 6 });
+  await page.mouse.up();
+  await expect.poll(async () => (await center()).x).toBeCloseTo(zoomedCenter.x + 60, 0);
+  await ring.screenshot({ path: info.outputPath('crisp-winding-zoom.png') });
+  await page.getByRole('button', { name: 'Fit winding to view', exact: true }).click();
+  await expect(svg).toHaveAttribute('viewBox', initialBox!);
+});
+
+test('phase chart is a hard boundary for motor drawing, zoom and pan', async ({ page }, info) => {
+  await openViewportHarness(page, 'phases');
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toBeVisible();
+  const box = (await canvas.boundingBox())!;
+  const frame = await page.evaluate(([w, h]) => (window as any).viewportTest.phaseDriveFrame(w, h), [box.width, box.height]);
+  const hash = async (rect: { x: number; y: number; width: number; height: number }) => canvas.evaluate((c: HTMLCanvasElement, r) => {
+    const data = c.getContext('2d')!.getImageData(Math.ceil(r.x), Math.ceil(r.y), Math.floor(r.width), Math.floor(r.height)).data;
+    let value = 2166136261;
+    for (const byte of data) value = Math.imul(value ^ byte, 16777619);
+    return value >>> 0;
+  }, rect);
+  const chart = { ...frame.panel, width: frame.panel.width - 30 };
+  const chartBefore = await hash(chart);
+  const chartPoint = { x: box.x + frame.panel.x + 30, y: box.y + frame.panel.y + 50 };
+  const controls = page.locator('.public-viewport-nav-controls');
+  await page.mouse.move(chartPoint.x, chartPoint.y);
+  await page.mouse.wheel(0, -Math.log(4) / 0.0012);
+  await expect(controls.locator('span[aria-live]')).toHaveText('1x');
+  const motorPoint = { x: box.x + frame.motor.x + frame.motor.width / 2, y: box.y + frame.motor.y + frame.motor.height / 2 };
+  await page.mouse.move(motorPoint.x, motorPoint.y);
+  await page.mouse.wheel(0, -Math.log(8) / 0.0012);
+  await expect(controls.locator('span[aria-live]')).toHaveText('8x');
+  await page.mouse.down();
+  await page.mouse.move(box.x + 10, motorPoint.y + 80, { steps: 10 });
+  await page.mouse.up();
+  await expect.poll(() => hash(chart)).toBe(chartBefore);
+  const motorBefore = await hash(frame.motor);
+  await page.mouse.move(chartPoint.x, chartPoint.y);
+  await page.mouse.down();
+  await page.mouse.move(chartPoint.x + 50, chartPoint.y + 50, { steps: 6 });
+  await page.mouse.up();
+  expect(await hash(frame.motor)).toBe(motorBefore);
+  await canvas.screenshot({ path: info.outputPath('phase-chart-boundary.png') });
+});
+
+test('rotated mesh hit targets follow the rotor and leave stator targets fixed', async ({ page }) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'mesh');
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toBeVisible();
+  const box = (await canvas.boundingBox())!;
+  // 600px fit => 25.5 px/mm. The rotor centroid [8, 2/3] turns to [317, 504].
+  await page.mouse.click(box.x + 317, box.y + 504);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(0);
+  await page.mouse.click(box.x + 504, box.y + 283);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection)).toBeNull();
+  await page.mouse.click(box.x + 121.5, box.y + 283);
+  await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(1);
+});
+
+test('a zoomed rotor retains elements that rotate into view and reuses bounded bitmaps', async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.addInitScript(() => {
+    const original = document.createElement.bind(document);
+    (window as any).testCanvases = [];
+    document.createElement = ((...args: Parameters<typeof document.createElement>) => {
+      const element = original(...args);
+      if (args[0] === 'canvas') (window as any).testCanvases.push(element);
+      return element;
+    }) as typeof document.createElement;
+  });
+  await openViewportHarness(page, 'mesh');
+  await page.waitForFunction(() => Boolean((window as any).viewportTest));
+  await page.evaluate(() => (window as any).viewportTest.renderMesh(90, 400, 800, true));
+  const canvas = page.locator('.motor-canvas');
+  await expect(canvas).toHaveJSProperty('height', 800);
+  for (let step = 0; step < 4; step += 1) await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  // At 1.25^4 zoom, this triangle is clipped at 0° but belongs inside the view at 90°.
+  await expect.poll(() => canvas.evaluate((surface: HTMLCanvasElement) => {
+    const pixel = surface.getContext('2d')!.getImageData(228, 732, 1, 1).data;
+    return pixel[0];
+  })).toBeGreaterThan(35);
+  // At overview zoom the bounded rotor bitmap must be reused across angles.
+  const zoomIn = page.getByRole('button', { name: 'Zoom in', exact: true });
+  for (let step = 0; step < 5 && await zoomIn.isEnabled(); step += 1) await zoomIn.click();
+  const surfacesBefore = await page.evaluate(() => (window as any).testCanvases.length);
+  await page.evaluate(async () => {
+    for (const angle of [100, 120, 160, 200, 250]) {
+      (window as any).viewportTest.renderMesh(angle, 400, 800, true);
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }
+  });
+  expect(await page.evaluate(() => (window as any).testCanvases.length)).toBe(surfacesBefore);
+  const rotorBitmap = await page.evaluate(() => {
+    const surface = (window as any).testCanvases.at(-1) as HTMLCanvasElement;
+    return { width: surface.width, height: surface.height };
+  });
+  expect(rotorBitmap.width).toBe(2048);
+  expect(rotorBitmap.height).toBe(2048);
+});
+
+for (const view of ['mesh', 'docked-field'] as const) {
+  test(`${view} supports deep inspection zoom with anchored element picking and panning`, async ({ page }) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, view);
+    const canvas = page.locator(view === 'mesh' ? '.motor-canvas' : '.public-field-result-canvas > canvas');
+    await expect(canvas).toBeVisible();
+    const box = (await canvas.boundingBox())!;
+    const dimensions = await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height]);
+    const unitScale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+    // Rotor centroid: rotated 90 degrees in the mesh fixture, unrotated in the field.
+    const anchor = view === 'mesh'
+      ? { x: box.x + 317, y: box.y + 504 }
+      : { x: box.x + box.width / 2 + 8 * unitScale, y: box.y + box.height / 2 - (2 / 3) * unitScale };
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.mouse.wheel(0, -Math.log(128) / 0.0012);
+    const controls = page.locator('.public-viewport-nav-controls');
+    await expect(controls).toContainText('128x');
+    const inspectAt = async (x: number, y: number) => {
+      if (view === 'mesh') {
+        await page.mouse.click(x, y);
+        await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(0);
+      } else {
+        await page.mouse.move(x + 1, y + 1);
+        await expect(page.locator('.public-run-field-data-slot .public-field-probe')).toContainText('1.000 T');
+      }
+    };
+    await inspectAt(anchor.x, anchor.y);
+    await page.mouse.move(anchor.x, anchor.y);
+    await page.mouse.down();
+    await page.mouse.move(anchor.x + 60, anchor.y - 30, { steps: 6 });
+    await page.mouse.up();
+    await inspectAt(anchor.x + 60, anchor.y - 30);
+    const zoomIn = controls.getByRole('button', { name: 'Zoom in', exact: true });
+    await expect(zoomIn).toBeEnabled();
+    for (let step = 0; step < 4; step += 1) await zoomIn.click();
+    await expect(controls).toContainText('256x');
+    await expect(zoomIn).toBeDisabled();
+    expect(await canvas.evaluate((c: HTMLCanvasElement) => [c.width, c.height])).toEqual(dimensions);
+    await controls.locator('button.is-fit').click();
+    await expect(controls.locator('span[aria-live]')).toHaveText('1x');
+    await expect(zoomIn).toBeEnabled();
+  });
+}
+
+for (const view of ['mesh-menu', 'field'] as const) {
+  test(`${view} More menu anchors to its button and dismisses outside`, async ({ page }, info) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, view);
+    const menu = page.locator('details.public-field-layer-menu');
+    const summary = menu.locator('summary');
+    await summary.click();
+    const panel = menu.locator('.public-field-layer-controls');
+    await expect(panel).toBeVisible();
+    await expect.poll(async () => {
+      const buttonBox = (await summary.boundingBox())!;
+      const panelBox = (await panel.boundingBox())!;
+      return Math.abs(panelBox.x - buttonBox.x) + Math.abs(panelBox.y + panelBox.height + 8 - buttonBox.y);
+    }).toBeLessThan(3);
+    await page.screenshot({ path: info.outputPath(`${view}-menu.png`) });
+    if (view === 'field') {
+      await expect(menu.getByRole('button', { name: 'Magnifier', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(menu.getByRole('button', { name: 'Mesh', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    }
+    await menu.getByRole('button', { name: 'Magnifier', exact: true }).click();
+    await expect(menu).toHaveAttribute('open', '');
+    await page.mouse.click(20, 20);
+    await expect(menu).not.toHaveAttribute('open', '');
+    await summary.click();
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    if (view === 'field') {
+      await expect(page.getByRole('button', { name: 'Flux density', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.locator('.public-field-result-legend')).not.toContainText('solved elements');
+      expect(await page.locator('.public-field-result-legend > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
+      await page.getByRole('button', { name: 'Field lines', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    }
+  });
+}
+
+for (const source of ['mesh', 'field'] as const) {
+  test(`${source} magnifier stays in the analysis rail and follows its width`, async ({ page }, info) => {
+    test.setTimeout(45_000);
+    await openViewportHarness(page, `docked-${source}`);
+    const magnifierToggle = source === 'mesh'
+      ? page.getByRole('button', { name: 'Toggle mesh magnifier' })
+      : page.getByRole('button', { name: 'Magnifier', exact: true });
+    if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
+    if (source === 'mesh') await magnifierToggle.click();
+    else await expect(magnifierToggle).toHaveAttribute('aria-pressed', 'true');
+    if (source === 'field') await page.mouse.click(20, 20);
+    const panel = page.locator('.public-run-magnifier-slot .public-field-loupe');
+    await expect(panel).toBeVisible();
+    const before = (await panel.boundingBox())!;
+    expect(before.height).toBe(240);
+    expect(before.width).toBeGreaterThan(300);
+    const sourceCanvas = source === 'mesh' ? page.locator('.motor-canvas') : page.locator('.public-field-result-canvas > canvas');
+    const view = (await sourceCanvas.boundingBox())!;
+    await page.mouse.move(view.x + view.width * 0.75, view.y + view.height / 2);
+    await expect(panel.locator('p')).toHaveCount(0);
+    await page.mouse.move(view.x + 20, view.y + 20);
+    expect(await panel.boundingBox()).toEqual(before);
+    // Leaving the source retains the inspected image and its fixed panel.
+    await page.mouse.move(1500, 900);
+    await expect(panel).toBeVisible();
+    expect(await panel.boundingBox()).toEqual(before);
+    await page.locator('.public-run-plan').evaluate(element => {
+      element.style.width = '440px'; element.style.minWidth = '440px'; element.style.transition = 'none';
+    });
+    await expect.poll(async () => (await panel.boundingBox())!.width).toBeGreaterThan(before.width + 70);
+    await expect.poll(() => panel.locator('canvas').evaluate(canvas => Math.abs(canvas.width / canvas.clientWidth - Math.min(devicePixelRatio, 2)))).toBeLessThan(0.01);
+    expect((await panel.boundingBox())!.height).toBe(240);
+    await page.screenshot({ path: info.outputPath(`${source}-docked-magnifier.png`) });
+    // The magnifier belongs to the rail's normal scroll flow, above Analysis.
+    const unscrolled = (await panel.boundingBox())!;
+    await page.locator('.public-run-plan-scroll').evaluate(element => { element.scrollTop = 120; });
+    await expect.poll(async () => (await panel.boundingBox())!.y).toBeLessThan(unscrolled.y - 100);
+    if (source === 'field') await page.locator('.public-field-layer-menu summary').click();
+    await magnifierToggle.click();
+    await expect(panel).toHaveCount(0);
+  });
+}
+
+test('selected airgap rings are also drawn in the field magnifier', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'docked-field');
+  const menu = page.locator('.public-field-layer-menu');
+  await menu.locator('summary').click();
+  const airgap = menu.getByRole('button', { name: 'Airgap', exact: true });
+  await airgap.click();
+  const ring = page.locator('.public-field-result-airgap-overlay circle:not(.is-halo)').last();
+  const bounds = (await ring.boundingBox())!;
+  await page.keyboard.press('Escape');
+  await page.mouse.move(bounds.x + bounds.width, bounds.y + bounds.height / 2);
+  const magnifier = page.locator('.public-run-magnifier-slot canvas');
+  const cyanPixels = () => magnifier.evaluate((canvas: HTMLCanvasElement) => {
+    const pixels = canvas.getContext('2d')!.getImageData(0, 0, canvas.width, canvas.height).data;
+    let count = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index] < 180 && pixels[index + 1] > 190 && pixels[index + 2] > 210) count += 1;
+    }
+    return count;
+  });
+  await expect.poll(cyanPixels).toBeGreaterThan(10);
+  await page.screenshot({ path: info.outputPath('magnified-airgap.png') });
+  await menu.locator('summary').click();
+  await airgap.click();
+  await expect.poll(cyanPixels).toBe(0);
+});
+
+test('heavy steel saturation uses red readout text and border while the knee remains yellow', async ({ page }, info) => {
+  await openViewportHarness(page, 'saturated-field');
+  const readout = page.locator('.public-run-field-data-slot .public-field-probe');
+  const box = (await page.locator('.public-field-result-canvas > canvas').boundingBox())!;
+  const scale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+  const hover = async (xMm: number) => page.mouse.move(box.x + box.width / 2 + xMm * scale, box.y + box.height / 2 - (2 / 3) * scale);
+  await hover(8);
+  await expect(readout).toHaveClass(/is-danger/);
+  await expect(readout.locator('strong')).toContainText('2.133 T');
+  await expect(readout.locator('p')).toContainText('1.78 T heavy-saturation');
+  await expect(readout).toHaveCSS('border-left-color', 'rgb(239, 68, 68)');
+  await expect(readout.locator('strong')).toHaveCSS('color', 'rgb(239, 68, 68)');
+  await expect(readout.locator('p')).toHaveCSS('color', 'rgb(239, 68, 68)');
+  await readout.screenshot({ path: info.outputPath('heavy-saturation-readout.png') });
+  await hover(-7);
+  await expect(readout).toHaveClass(/is-warning/);
+  await expect(readout.locator('strong')).toContainText('1.650 T');
+  await expect(readout.locator('p')).toContainText('1.47 T reference knee');
+  await expect(readout).toHaveCSS('border-left-color', 'rgb(250, 204, 21)');
+  await expect(readout.locator('p')).toHaveCSS('color', 'rgb(250, 204, 21)');
+  await expect(readout.locator('strong')).not.toHaveCSS('color', 'rgb(239, 68, 68)');
+});
+
+test('field element data sits below the magnifier and remains readable outside the drawing', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  await openViewportHarness(page, 'docked-field');
+  const readout = page.locator('.public-run-field-data-slot .public-field-probe');
+  await expect(readout).toContainText('Hover over an element');
+  const canvas = page.locator('.public-field-result-canvas > canvas');
+  const box = (await canvas.boundingBox())!;
+  // The fixture has a 21mm square viewBox, including its margin.
+  const scale = Math.min(box.width, box.height) * (0.85 * 1.05) / 21;
+  const hover = async (xMm: number) => page.mouse.move(box.x + box.width / 2 + xMm * scale, box.y + box.height / 2 - (2 / 3) * scale);
+  await hover(8);
+  await expect(readout.locator('header')).toContainText('Rotor steel');
+  await expect(readout.locator('header')).toContainText('Element 1');
+  await expect(readout.locator('strong')).toContainText('1.000 T');
+  await expect(readout.locator('dt').filter({ hasText: /^Bx$/ }).locator('+ dd')).toHaveText('0.600 T');
+  await expect(readout.locator('dt').filter({ hasText: /^By$/ }).locator('+ dd')).toHaveText('0.800 T');
+  await expect(readout.locator('dt').filter({ hasText: /^Material$/ }).locator('+ dd')).not.toBeEmpty();
+  await expect(page.locator('.public-field-result-canvas .public-field-probe')).toHaveCount(0);
+  const magnifier = (await page.locator('.public-run-magnifier-slot .public-field-loupe').boundingBox())!;
+  const bounds = (await readout.boundingBox())!;
+  expect(bounds.y).toBeGreaterThanOrEqual(magnifier.y + magnifier.height);
+  expect(bounds.y - magnifier.y - magnifier.height).toBeLessThanOrEqual(14);
+  // The docked card must not send pointer events back into the drawing through its portal.
+  await page.mouse.move(bounds.x + 40, bounds.y + 30);
+  await expect(readout.locator('strong')).toContainText('1.000 T');
+  await hover(-7);
+  await expect(readout.locator('header')).toContainText('Stator tooth');
+  await expect(readout.locator('header')).toContainText('Element 2');
+  await expect(readout.locator('strong')).toContainText('1.500 T');
+  await page.mouse.move(1500, 900);
+  await expect(readout.locator('strong')).toContainText('1.500 T');
+  await page.screenshot({ path: info.outputPath('docked-field-data.png') });
+});
 
 for (const combined of [false, true]) {
   test(`partial ${combined ? 'combined' : 'map-only'} analysis retains outputs and shows point errors`, async ({ page }, info) => {
@@ -87,70 +431,160 @@ print(result_for(config(back_emf=True)).model_dump_json())
   await expect(page.getByText('Phase resistance', { exact: true }).first()).toBeVisible();
 });
 
-for (const topology of ['SPM', 'IPM'] as const) {
-  test(`guided ${topology} setup reviews Analysis before the accuracy plan and Run`, async ({ page }, info) => {
+for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inrunner', topology: 'IPM' }, { layout: 'Outrunner', topology: 'SPM' }]) {
+  test(`guided progressive ${scenario.layout} ${scenario.topology} setup reviews every design section and Operating point first`, async ({ page }, info) => {
     const errors: string[] = [];
-    let solveRequests = 0;
+    let meshes = 0, solves = 0;
     page.on('pageerror', error => errors.push(error.message));
-    page.on('request', request => {
-      if (['/solve', '/solve/stream'].includes(new URL(request.url()).pathname)) solveRequests += 1;
+    page.on('request', request => { if (['/solve', '/solve/stream'].includes(new URL(request.url()).pathname)) solves++; });
+    await page.route('**/solver/mesh-preview', route => {
+      meshes++;
+      return route.fulfill({ json: { nodes_mm: [[-10,-10],[10,-10],[10,10],[-10,10],[7,0],[9,0],[8,2],[-8,0],[-6,0],[-7,2]],
+        triangles: [[4,5,6],[7,8,9]], regions: ['rotor_core','stator_tooth'], mesh_info: {}, mesh_qa: {}, generation_time_ms: 0 } });
     });
     await page.goto('/');
     await page.getByRole('button', { name: 'Start a design', exact: true }).click();
-    const coach = page.getByRole('dialog', { name: 'Guided motor setup' });
+    const coach = page.getByRole('region', { name: 'Guided motor setup', exact: true });
     const title = coach.locator('h3');
-    if (topology === 'IPM') {
-      await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /IPM/ }).click();
+    const next = coach.getByRole('button', { name: 'Next', exact: true });
+    await expect(title).toHaveText('Choose the rotor arrangement');
+    await expect(next).toBeDisabled();
+    const arrangement = page.getByRole('group', { name: 'Rotor arrangement', exact: true });
+    await expect(arrangement.locator('[aria-pressed="true"]')).toHaveCount(0);
+    await expect(page.locator('[data-guide="topology-selector"] [aria-pressed="true"]')).toHaveCount(0);
+    await expect(page.getByRole('img', { name: /^View scale:/ })).toHaveCount(0);
+    await expect(coach.locator('xpath=ancestor::div[contains(@class,"design-workspace-health-scroll")]')).toHaveCount(1);
+    const guideBox = await coach.boundingBox(), canvasBox = await page.locator('canvas.motor-canvas').boundingBox();
+    expect(guideBox && canvasBox && guideBox.x >= canvasBox.x + canvasBox.width).toBe(true);
+    await expect(page.locator('.public-guided-highlight, .public-guided-scrim')).toHaveCount(0);
+    await page.screenshot({ path: info.outputPath('guided-arrangement.png') });
+    await arrangement.getByRole('button', { name: new RegExp(scenario.layout) }).click();
+    await expect(title).toHaveText('Choose the motor topology');
+    await expect(next).toBeDisabled();
+    await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: new RegExp(`^${scenario.topology}`) }).click();
+    if (scenario.topology === 'IPM') {
       await expect(title).toHaveText('Choose the IPM rotor layout');
+      await expect(next).toBeDisabled();
+      await page.getByRole('group', { name: 'IPM rotor layout', exact: true }).getByRole('button', { name: /^V-shape/ }).click();
     }
-    for (let count = 0; count < 10; count += 1) {
-      const before = await title.innerText();
-      if (before === 'Choose your analyses') break;
-      await coach.getByRole('button', { name: 'Next', exact: true }).click();
-      await expect(title).not.toHaveText(before);
+    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toBeFocused();
+    for (const input of await page.locator('[data-guide="section-stator"]').getByRole('spinbutton').all()) await expect(input).toHaveValue('');
+    await expect(next).toBeDisabled();
+    await page.getByRole('button', { name: 'Expand motor view', exact: true }).click();
+    await expect(page.locator('.public-parameter-panel')).not.toBeVisible();
+    await expect(coach).toBeVisible();
+    expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
+    await page.getByRole('button', { name: 'Restore side panels', exact: true }).click();
+    await expect(page.locator('.public-parameter-panel')).toBeVisible();
+    await configureSection(page, 'stator');
+    await expect(next).toBeEnabled();
+    await next.click();
+    await expect(title).toHaveText('Shape the teeth and slots');
+    await expect(page.locator('[data-guide="section-advanced"]').getByRole('group', { name: 'Tooth Profile', exact: true }).getByRole('button', { name: 'Plain', exact: true })).toBeFocused();
+    await expect(next).toBeDisabled();
+    await coach.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).not.toHaveValue('');
+    await next.click();
+    await configureSection(page, 'advanced');
+    await next.click();
+    await expect(title).toHaveText('Shape the rotor and magnets');
+    await expect(page.locator('[data-guide="section-rotor"]').getByRole('spinbutton', { name: 'Pole Count', exact: true })).toBeFocused();
+    if (scenario.topology === 'IPM') {
+      for (const [name,value] of [['Pole Count','8'],['Rotor OD','58'],['Magnet Thick.','2'],['Magnet Width','5'],['V Angle','40'],['V Depth','12']]) {
+        await page.locator('[data-guide="section-rotor"]').getByRole('spinbutton', { name, exact: true }).fill(value);
+      }
     }
+    await configureSection(page, 'rotor');
+    await next.click();
+    await expect(title).toHaveText('Define the winding');
+    await configureSection(page, 'winding');
+    // The existing sidebar Continue button advances the same guide.
+    await page.getByRole('button', { name: /^Continue Setup: Materials/ }).click();
+    await expect(title).toHaveText('Assign materials');
+    await configureSection(page, 'materials');
+    await page.screenshot({ path: info.outputPath('guided-complete-design.png') });
+    if (scenario.layout === 'Inrunner' && scenario.topology === 'SPM') {
+      await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+    } else await next.click();
+    await expect(title).toHaveText('Review the operating point');
+    await expect(page.locator('[data-guide="solve-operating"]')).toHaveAttribute('data-guide-active', 'true');
+    await expect(page.locator('[data-guide="solve-analysis"]')).toHaveAttribute('data-guide-active', 'false');
+    await expect(coach.locator('xpath=ancestor::aside[contains(@class,"public-run-plan")]')).toHaveCount(1);
+    await page.getByRole('button', { name: 'Expand motor view', exact: true }).click();
+    await expect(page.locator('.public-solve-setup')).not.toBeVisible();
+    await expect(coach).toBeVisible();
+    expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
+    await page.getByRole('button', { name: 'Restore side panels', exact: true }).click();
+    await expect(page.locator('.public-solve-setup')).toBeVisible();
+    expect(meshes).toBe(0);
+    const operating = page.locator('[data-guide="solve-operating"]');
+    await expect(operating.getByRole('spinbutton', { name: /^(Phase Current|Conducting phase current)$/ })).not.toHaveValue('');
+    await expect(operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true })).toHaveValue(scenario.layout === 'Outrunner' ? '8000' : '7000');
+    const guidedNav = coach.getByRole('navigation', { name: 'Guided setup steps' });
+    await expect(guidedNav.getByRole('button', { name: /Analysis/ })).toBeDisabled();
+    await expect(guidedNav.locator('.is-complete')).toHaveCount(scenario.topology === 'IPM' ? 8 : 7);
+    await operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true }).fill('6500');
+    await guidedNav.getByRole('button', { name: /Stator/ }).click();
+    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).not.toHaveValue('');
+    await guidedNav.getByRole('button', { name: /Operating point/ }).click();
+    await expect(title).toHaveText('Review the operating point');
+    await expect(operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true })).toHaveValue('6500');
+    expect(meshes).toBe(0);
+    await page.screenshot({ path: info.outputPath('guided-operating-point.png') });
+    await next.click();
     await expect(title).toHaveText('Choose your analyses');
     const analysis = page.locator('[data-guide="solve-analysis"]');
-    const plan = page.locator('[data-guide="solve-plan"]');
     await expect(analysis).toHaveAttribute('data-guide-active', 'true');
-    await expect(plan).toHaveAttribute('data-guide-active', 'false');
-    for (const name of ['Torque', 'Back EMF']) {
-      await expect(analysis.getByRole('checkbox', { name, exact: true })).toBeChecked();
-    }
-    for (const name of ['Cogging torque', 'Losses & efficiency', 'Torque–speed map']) {
-      await expect(analysis.getByRole('checkbox', { name, exact: true })).toBeVisible();
-      await expect(analysis.getByRole('checkbox', { name, exact: true })).not.toBeChecked();
-    }
     await analysis.getByRole('checkbox', { name: 'Cogging torque', exact: true }).check();
-    await page.screenshot({ path: info.outputPath('guided-analysis.png'), animations: 'disabled' });
-    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await next.click();
     await expect(title).toHaveText('Pick a solve plan');
-    await expect(plan).toHaveAttribute('data-guide-active', 'true');
     await coach.getByRole('button', { name: 'Back', exact: true }).click();
     await expect(title).toHaveText('Choose your analyses');
-    await expect(analysis).toHaveAttribute('data-guide-active', 'true');
     await expect(analysis.getByRole('checkbox', { name: 'Cogging torque', exact: true })).toBeChecked();
-    await coach.getByRole('button', { name: 'Next', exact: true }).click();
-    await coach.getByRole('button', { name: 'Next', exact: true }).click();
+    await coach.getByRole('button', { name: 'Back', exact: true }).click();
+    await expect(title).toHaveText('Review the operating point');
+    await expect(operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true })).toHaveValue('6500');
+    await next.click(); await next.click(); await next.click();
     await expect(title).toHaveText('Run the analysis');
-    expect(solveRequests).toBe(0);
+    await expect.poll(() => meshes).toBeGreaterThan(0);
+    expect(solves).toBe(0);
     await coach.getByRole('button', { name: 'Exit guided setup', exact: true }).click();
-    await expect(coach).not.toBeVisible();
+    await expect(coach).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 }
 
-test('jumping into Solve during guided setup opens Analysis, while ordinary setup opens the plan', async ({ page }) => {
+test('guided progressive reset restarts blank entry and Exit preserves the unfinished New Design', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('button', { name: 'Start a design', exact: true }).click();
-  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
-  const coach = page.getByRole('dialog', { name: 'Guided motor setup' });
-  await expect(coach.locator('h3')).toHaveText('Choose your analyses');
-  await expect(page.locator('[data-guide="solve-analysis"]')).toHaveAttribute('data-guide-active', 'true');
-  await page.reload();
+  const coach = page.getByRole('region', { name: 'Guided motor setup', exact: true });
+  await page.getByRole('group', { name: 'Rotor arrangement', exact: true }).getByRole('button', { name: /Inrunner/ }).click();
+  await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /^SPM/ }).click();
+  await page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).fill('120');
+  await page.getByRole('button', { name: 'Collapse design health', exact: true }).click();
+  await expect(coach).toBeVisible();
+  expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
+  await page.getByRole('button', { name: 'Reset', exact: true }).click();
+  await expect(coach.locator('h3')).toHaveText('Choose the rotor arrangement');
+  await expect(page.getByRole('group', { name: 'Rotor arrangement', exact: true }).locator('[aria-pressed="true"]')).toHaveCount(0);
+  await expect(page.locator('.public-parameter-panel')).toHaveCount(1);
+  await expect(page.locator('[data-guide="section-stator"]')).toHaveCount(0);
+  await coach.getByRole('button', { name: 'Exit guided setup', exact: true }).click();
+  await expect(coach).toHaveCount(0);
+  await page.getByRole('group', { name: 'Rotor arrangement', exact: true }).getByRole('button', { name: /Inrunner/ }).click();
+  await page.locator('[data-guide="topology-selector"]').getByRole('button', { name: /^SPM/ }).click();
+  await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toHaveValue('');
+});
+
+test('ordinary example setup still opens the accuracy plan without a guide', async ({ page }) => {
+  await page.route('**/solver/mesh-preview', route => route.fulfill({ status: 400, json: { detail: 'No native meshing in this navigation check.' } }));
+  await page.goto('/');
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
-  await expect(coach).not.toBeVisible();
+  await expect(page.getByRole('region', { name: 'Guided motor setup' })).toHaveCount(0);
   await expect(page.locator('[data-guide="solve-plan"]')).toHaveAttribute('data-guide-active', 'true');
 });
 
@@ -368,6 +802,9 @@ test('switches to Elmer with cogging enabled without submitting the unsupported 
   await page.getByRole('radio', { name: /Magneto2D/ }).click();
   await openSetupSection(page, 'analysis');
   await expect(cogging).toBeChecked();
+  // The page polls /health every few seconds through the route above. Let a poll
+  // still in flight go when the page closes, so it cannot fail a test that passed.
+  await page.unrouteAll({ behavior: 'ignoreErrors' });
 });
 
 test.describe('public developer preview release rehearsal', () => {
@@ -732,6 +1169,13 @@ for (const analysis of ['Back EMF', 'Cogging torque'] as const) {
     expect(payload.solve_metadata.rotor_positions).toBe(1);
     expect(payload.solve_metadata.current_amplitude_A).toBe(0);
     expect(payload.summary.loss_breakdown).toBeNull();
+    if (analysis === 'Cogging torque') {
+      await page.getByRole('button', { name: 'Field solution', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Play field clockwise', exact: true })).toBeEnabled({ timeout: 120_000 });
+      await expect(page.getByRole('button', { name: 'Stator-current-only field, permanent-magnet remanence disabled', exact: true })).toBeDisabled();
+      await page.getByRole('button', { name: 'Play field clockwise', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Pause clockwise field playback', exact: true })).toBeVisible();
+    }
     await page.getByRole('button', { name: 'Full results →', exact: true }).click();
     const report = page.locator('.public-report-stage');
     await expect(report.getByRole('tab', { name: 'Torque', exact: true })).toHaveCount(0);
@@ -848,6 +1292,13 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
+  const storedRow = dialog.locator('[data-run-id="map"]');
+  await storedRow.getByRole('button', { name: 'Delete run', exact: true }).click();
+  await expect(storedRow.getByRole('button', { name: 'Delete permanently', exact: true })).toBeVisible();
+  await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
+  await storedRow.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
@@ -880,4 +1331,225 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   expect(errors).toEqual([]);
   expect(solveRequests).toEqual([]);
+});
+
+
+test('priority fixes: pruned playback stays static and never requests removed frames', async ({ page }, info) => {
+  const requests: string[] = [];
+  const errors: string[] = [];
+  page.on('request', request => { if (/\/solve\/(?:field|playback)/.test(request.url())) requests.push(request.url()); });
+  page.on('pageerror', error => errors.push(error.message));
+  await openViewportHarness(page, 'pruned-field');
+  const play = page.getByRole('button', { name: 'Play field clockwise', exact: true });
+  await expect(play).toBeDisabled();
+  await expect(play).toHaveAttribute('title', /removed to save disk space/);
+  await expect(page.getByRole('status').filter({ hasText: 'Field playback was removed' })).toBeVisible();
+  await expect(page.locator('canvas').first()).toBeVisible();
+  await page.screenshot({ path: info.outputPath('pruned-playback.png') });
+  expect(requests).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test('priority fixes: unavailable losses have visible reasons and a subtotal', async ({ page }, info) => {
+  await openViewportHarness(page, 'losses-unavailable');
+  await expect(page.getByRole('status').filter({ hasText: 'Efficiency needs the iron loss' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: 'full or half electrical cycle' })).toBeVisible();
+  await expect(page.getByRole('row', { name: /Known loss subtotal/ })).toBeVisible();
+  await expect(page.getByRole('row', { name: /^Total loss/ })).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath('partial-losses.png') });
+});
+
+for (const width of [900, 375]) {
+  test(`priority fixes: Design Health remains reachable at ${width}px`, async ({ page }, info) => {
+    await page.setViewportSize({ width, height: 850 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+    const health = page.locator('.design-health-panel');
+    await health.scrollIntoViewIfNeeded();
+    await expect(health).toBeVisible();
+    const box = (await health.boundingBox())!;
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
+    expect(box.width).toBeGreaterThan(250);
+    await page.screenshot({ path: info.outputPath(`health-${width}.png`) });
+  });
+}
+
+test('priority fixes: Halbach health fits split-screen and invalid diameters survive reload', async ({ page }, info) => {
+  // Real app workflow: CI runners draw the UI in software, many times slower than a desktop.
+  test.setTimeout(180_000);
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 900, height: 850 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Halbach arrays', exact: true }).click();
+  await page.getByRole('button', { name: 'Design a Halbach array', exact: true }).click();
+  const health = page.getByRole('complementary', { name: 'Design health and solve controls' });
+  await health.scrollIntoViewIfNeeded();
+  await expect(health).toBeVisible();
+  const box = (await health.boundingBox())!;
+  expect(box.x + box.width).toBeLessThanOrEqual(901);
+  const bore = page.getByRole('spinbutton', { name: 'Bore diameter mm', exact: true });
+  await bore.fill('-5');
+  await bore.blur();
+  await expect(page.getByText('Bore diameter must be greater than zero.', { exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'Halbach arrays', exact: true }).click();
+  await page.getByRole('button', { name: 'Design a Halbach array', exact: true }).click();
+  await expect(page.locator('.halbach-workspace')).toBeVisible();
+  await page.screenshot({ path: info.outputPath('halbach-recovered.png') });
+  expect(errors).toEqual([]);
+});
+
+test('priority fixes: a partial loaded sweep keeps its averaging warning in Results', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'analysis');
+  await page.getByRole('checkbox', { name: 'Back EMF', exact: true }).uncheck();
+  await openSetupSection(page, 'plan');
+  await page.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
+  await page.getByRole('button', { name: '▶ Run analysis', exact: true }).click();
+  const completed = page.getByRole('region', { name: 'Completed solver results' });
+  await expect(completed).toBeVisible({ timeout: 120_000 });
+  await expect(completed.getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await expect(page.locator('.public-report-stage').getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
+});
+
+for (const width of [1500, 900, 375]) {
+  test(`small release fixes: horizontal field labels do not overlap at ${width}px`, async ({ page }, info) => {
+    await page.setViewportSize({ width, height: 850 });
+    await openViewportHarness(page, 'horizontal-legend');
+    const knee = page.locator('.public-field-legend-tick.is-knee em');
+    const saturation = page.locator('.public-field-legend-tick.is-saturation em');
+    await expect(knee).toContainText('1.47 knee');
+    await expect(saturation).toContainText('1.78 sat.');
+    const a = (await knee.boundingBox())!;
+    const b = (await saturation.boundingBox())!;
+    expect(a.x + a.width + 2).toBeLessThanOrEqual(b.x);
+    expect(a.x).toBeGreaterThanOrEqual(0);
+    expect(b.x + b.width).toBeLessThanOrEqual(width);
+    await page.screenshot({ path: info.outputPath(`horizontal-legend-${width}.png`) });
+  });
+}
+
+test('small release fixes: tutorial scale follows actual SVG fit, zoom and resize', async ({ page }) => {
+  await openViewportHarness(page, 'tutorial-scale');
+  const svg = page.locator('.mesh-viewer-svg');
+  const bar = page.locator('.mesh-viewer-scale-bar');
+  const checkScale = async () => {
+    await expect(bar).toBeVisible();
+    await expect.poll(async () => {
+      const mm = Number.parseFloat((await bar.locator('span').textContent())!);
+      const scale = await svg.locator(':scope > g[transform]').first().evaluate((g: SVGGraphicsElement) => {
+        const m = g.getScreenCTM()!;
+        return Math.hypot(m.a, m.b);
+      });
+      return Math.abs((await bar.locator('.mesh-viewer-scale-bar-line').boundingBox())!.width - mm * scale);
+    }).toBeLessThan(1);
+    const width = (await bar.locator('.mesh-viewer-scale-bar-line').boundingBox())!.width;
+    expect(width).toBeGreaterThan(30);
+    expect(width).toBeLessThanOrEqual(97);
+  };
+  for (const width of [1200, 900, 375]) {
+    await page.setViewportSize({ width, height: 850 });
+    await checkScale();
+    for (let i = 0; i < 3; i++) await page.getByTitle('Zoom in', { exact: true }).click();
+    await checkScale();
+    await page.getByTitle('Fit to view', { exact: true }).click();
+    await checkScale();
+  }
+});
+
+test('small release fixes: capstone requires a fresh qualifying solve and completed run', async ({ page }) => {
+  // Real app workflow: CI runners draw the UI in software, many times slower than a desktop.
+  test.setTimeout(180_000);
+  await page.addInitScript(() => sessionStorage.setItem('coilem.learning.session.v1.review-fields', JSON.stringify({
+    phase: 'strengthen', magnetOrientations: [1, -1, 1, -1], currentA: 10, currentSign: 1, gapMm: 2, windingSpacingMm: 18,
+  })));
+  let failNext = false;
+  let unsolvedNext = true;
+  await page.route('**/tutorials/chapter-1-capstone/solve?*', async route => {
+    if (failNext) {
+      failNext = false;
+      return route.fulfill({ status: 500, json: { detail: { message: 'Test solve failed' } } });
+    }
+    const query = new URL(route.request().url()).searchParams;
+    const solved = !unsolvedNext;
+    unsolvedNext = false;
+    const current = Number(query.get('current_a'));
+    const force = Math.abs(current) >= 8 ? 0.338 : 0.1;
+    return route.fulfill({ json: {
+      schema_version: '1.0', fixture: 'linear_motor_capstone', solved,
+      current_a: current, airgap_mm: Number(query.get('airgap_mm')),
+      magnet_orientations: [1, 2, 3, 4].map(i => Number(query.get(`magnet_${i}`))),
+      winding_spacing_mm: Number(query.get('winding_spacing_mm')), winding_signs: [1, -1, 1, -1],
+      winding_turns: 20, wire_radius_mm: 1, wire_center_y_mm: 5, teaching_depth_mm: 20,
+      net_force_x_n: force, net_force_y_n: 0, net_force_magnitude_n: force, force_method: 'volume_lorentz_j_cross_b',
+      config_summary: { topology: 'linear', slots: 4, poles: 4, stator_od_mm: 40, rotor_od_mm: 20, magnet_thickness_mm: 2, stack_length_mm: 20 },
+      mesh_info: { num_nodes: 4, num_triangles: 2, pole_pitch_deg: 90, n_pole_pitches: 4, total_span_deg: 360 },
+      nodes_mm: [[-20, -10], [20, -10], [20, 10], [-20, 10]], triangles: [[0, 1, 2], [0, 2, 3]], regions: ['air', 'air'],
+      n_pole_pitches: 4, total_span_deg: 360, contour_levels: [], az_min: 0, az_max: 1,
+      element_b_mag_t: [1, 1], generation_time_ms: 1,
+    } });
+  });
+  await page.goto('/tutorials/chapter-1-capstone');
+  const testPerformance = page.getByRole('button', { name: 'Test performance', exact: true });
+  const run = page.getByRole('button', { name: 'Run actuator', exact: true });
+  const finish = page.getByRole('button', { name: 'Finish chapter', exact: true });
+  const current = page.getByRole('slider', { name: 'Linear motor current', exact: true });
+  const completed = () => page.evaluate(() => JSON.parse(localStorage.getItem('coilem.learning.primer.v1') || '[]').includes('review-fields'));
+  await testPerformance.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'has not been solved' })).toBeVisible();
+  await expect(run).toHaveCount(0);
+  expect(await completed()).toBe(false);
+  await testPerformance.click();
+  await expect(run).toBeVisible();
+  // Editing on the reveal step must require another solve, not reuse the old success.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft'); // 10 -> 8 A
+  await expect(run).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
+  await testPerformance.click();
+  await run.click();
+  // Editing during motion must invalidate the timer as well as the solved field.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft'); // 8 -> 6 A, below target
+  await page.waitForTimeout(2800);
+  await expect(finish).toHaveCount(0);
+  expect(await completed()).toBe(false);
+  await testPerformance.click();
+  await expect(testPerformance).toBeEnabled();
+  await expect(run).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
+  failNext = true;
+  await testPerformance.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'Field solve unavailable' })).toBeVisible();
+  await expect(finish).toHaveCount(0);
+  expect(await completed()).toBe(false);
+  // Force alone is insufficient when the saturation limit is reached.
+  await current.focus();
+  await page.keyboard.press('End'); // 12 A reaches the saturation warning zone.
+  await testPerformance.click();
+  await expect(testPerformance).toBeEnabled();
+  await expect(run).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
+  // A fresh qualifying result still needs a completed actuator run.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft'); // 12 -> 10 A
+  await testPerformance.click();
+  await expect(run).toBeVisible();
+  await expect(finish).toHaveCount(0);
+  await run.click();
+  await expect(finish).toBeVisible();
+  await finish.click();
+  await expect(page.getByText('You made a motor move.', { exact: true })).toBeVisible();
+  await expect.poll(completed).toBe(true);
+  // Editing after completion must not keep displaying success for an unsolved machine.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.getByText('You made a motor move.', { exact: true })).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
 });

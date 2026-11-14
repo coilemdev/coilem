@@ -1221,7 +1221,7 @@
   .halbach-file-actions { display: none; }
 }
 
-@media (max-width: 880px) {
+@media (max-width: 1180px) {
   .halbach-app { min-height: 100vh; overflow: auto; }
   .halbach-topbar { position: sticky; top: 0; z-index: 10; grid-template-columns: 1fr auto; }
   .halbach-project-name { display: none; }
@@ -1644,7 +1644,7 @@ button.halbach-dock-toggle[aria-pressed="true"]::before { border-color: var(--te
 /* Stacked layout: the panels take their content's height and the page
    scrolls, so the parameter list is not squeezed to nothing between the
    panel's header and footer. */
-@media (max-width: 880px) {
+@media (max-width: 1180px) {
   .halbach-app.public-coilem-shell { height: auto; min-height: 100vh; }
   .halbach-app .halbach-config-panel { overflow: visible; }
   .halbach-panel-scroll { flex: 0 0 auto; overflow: visible; }

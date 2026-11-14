@@ -4,7 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 // Pole coverage as the geometry builds the magnets. An SPM magnet's width is an
 // arc at its radial centre (rotor radius + half the thickness), so coverage
 // follows the width; magnet_embrace does not shape an SPM rotor.
-const { magnetPoleCoverage, magnetPoleCoveragePct } = await importTypeScriptModule(
+const { hasPoleCoverageEstimate, magnetPoleCoverage, magnetPoleCoveragePct } = await importTypeScriptModule(
   new URL('../src/public/magnetCoverage.ts', import.meta.url),
 );
 
@@ -39,3 +39,6 @@ const outerCoverage = magnetPoleCoverage({
 });
 assert.ok(Math.abs(outerCoverage - 0.85) < 0.005, `outer coverage ${outerCoverage}`);
 console.log('outer-rotor magnet coverage checks passed');
+
+assert.equal(hasPoleCoverageEstimate({ topology: 'IPM', rotor: { ...spm({}).rotor, ipm_topology: 'v_shape' } }), false);
+assert.equal(hasPoleCoverageEstimate(spm({})), true);

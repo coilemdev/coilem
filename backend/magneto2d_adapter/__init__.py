@@ -18,7 +18,7 @@ from math import ceil, gcd, isfinite
 from pathlib import Path
 from typing import Any
 
-from backend import fast_json
+from backend import fast_json, solve_profile
 from backend.gmsh_solver import run_gmsh_mesh_preview
 from backend.logging_utils import log_event
 from backend.material_contract import electrical_steel_preflight_records
@@ -1141,6 +1141,7 @@ def run_magneto2d_report(
     runner: Any = subprocess.run,
 ) -> dict[str, Any]:
     """Run magneto2d and return its raw JSON report."""
+    prepare_started = time.perf_counter()
     require_magneto2d_supported(config)
     mesher_choice = getattr(config.solve_params, "mesher", None)
     mesh_source = str(_solve_param_value(config, "mesh_source", "native") or "native")
@@ -1223,6 +1224,8 @@ def run_magneto2d_report(
         + cli_sweep_span_log,
     )
 
+    solve_profile.record("solve: prepare the solver's settings", time.perf_counter() - prepare_started)
+
     # `dir=None` → uses tempfile.gettempdir() (portable across Windows / macOS / Linux).
     # Previous code hardcoded `dir="/tmp"` which is a Linux/macOS path and breaks on
     # Windows unless `C:\tmp` happens to exist.
@@ -1271,6 +1274,22 @@ def run_magneto2d_report(
                     staged.unlink(missing_ok=True)
 
 
+def _record_solver_internal_times(report: Any, process_seconds: float) -> None:
+    """Split one solver process's time by what the solver itself reports."""
+
+    info = report.get("solve_info") if isinstance(report, dict) else None
+    if not isinstance(info, dict):
+        return
+    assembly = float(info.get("assembly_time_ms") or 0.0) / 1000.0
+    linear = float(info.get("solve_time_ms") or 0.0) / 1000.0
+    total = float(info.get("total_time_ms") or 0.0) / 1000.0
+    solve_profile.record("solver: matrix assembly", assembly)
+    solve_profile.record("solver: linear solves", linear, iterations=info.get("nonlinear_iterations"))
+    solve_profile.record("solver: rest of its timed work (fields, torque)", max(0.0, total - assembly - linear))
+    # Start-up, reading the mesh file and writing the report fall outside the solver's own clock.
+    solve_profile.record("solver: start-up, reading mesh, writing report", max(0.0, process_seconds - total))
+
+
 def _run_magneto2d_report_files(
     config: MotorConfig,
     *,
@@ -1294,13 +1313,15 @@ def _run_magneto2d_report_files(
 ) -> dict[str, Any]:
     """Write the solver's files, run it, and keep its files when ``persist_artifacts_dir`` is set."""
 
-    input_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    if solve_mesh_artifact is not None:
-        # Compact JSON (an indent forces the pure-Python encoder); fast_json
-        # writes the same values, and the solver reads them either way.
-        solve_mesh_path.write_bytes(fast_json.dumps_bytes(solve_mesh_artifact))
+    with solve_profile.span("solve: write input and mesh files"):
+        input_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        if solve_mesh_artifact is not None:
+            # Compact JSON (an indent forces the pure-Python encoder); fast_json
+            # writes the same values, and the solver reads them either way.
+            solve_mesh_path.write_bytes(fast_json.dumps_bytes(solve_mesh_artifact))
 
-    executable = ensure_magneto2d_binary() if runner is subprocess.run else MAGNETO2D_BINARY
+    with solve_profile.span("solve: find the solver executable"):
+        executable = ensure_magneto2d_binary() if runner is subprocess.run else MAGNETO2D_BINARY
     command = build_magneto2d_command(
         input_path,
         output_path,
@@ -1311,10 +1332,13 @@ def _run_magneto2d_report_files(
         executable=executable,
         mesher=mesher_choice,
     )
+    process_started = time.perf_counter()
     if progress_callback is not None and runner is subprocess.run:
         completed = _run_with_progress(command, progress_callback, cwd=cwd, env=run_env)
     else:
         completed = _run_magneto2d_command(runner, command, cwd=cwd, env=run_env)
+    process_seconds = time.perf_counter() - process_started
+    solve_profile.record("solve: solver process, start to exit", process_seconds)
     if completed.returncode != 0:
         raise Magneto2DExecutionError(
             "magneto2d CLI failed: "
@@ -1327,12 +1351,16 @@ def _run_magneto2d_report_files(
     if not output_path.exists():
         raise Magneto2DExecutionError("magneto2d CLI did not produce a report JSON")
 
-    report_bytes = output_path.read_bytes()
-    try:
-        report = fast_json.loads(report_bytes)
-    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
-        raise Magneto2DExecutionError("magneto2d returned invalid JSON") from exc
+    with solve_profile.span("solve: read and parse the report"):
+        report_bytes = output_path.read_bytes()
+        try:
+            report = fast_json.loads(report_bytes)
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+            raise Magneto2DExecutionError("magneto2d returned invalid JSON") from exc
+    if solve_profile.enabled():
+        _record_solver_internal_times(report, process_seconds)
 
+    keep_started = time.perf_counter()
     solver_environment = solver_environment_provenance(env_overrides)
     appendable = (
         isinstance(report, dict)
@@ -1367,6 +1395,7 @@ def _run_magneto2d_report_files(
             solve_mesh_path.replace(persist_artifacts_dir / f"{prefix}_mesh.json")
             write_provenance_sidecar(persist_artifacts_dir, prefix, solve_mesh_artifact)
 
+    solve_profile.record("solve: record settings and keep the solver's files", time.perf_counter() - keep_started)
     return report
 
 

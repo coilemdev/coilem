@@ -1,11 +1,19 @@
 import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { fitTransform, viewportTransformOrigin, anchoredZoomPan } = await importTypeScriptModule(
+const { fitTransform, viewportTransformOrigin, anchoredZoomPan, viewportScaleBar, viewportFrameContains, zoomedSvgViewBox } = await importTypeScriptModule(
   new URL('../src/public/viewportTransform.ts', import.meta.url),
 );
 const { phaseDriveFrame } = await importTypeScriptModule(new URL('../src/public/phaseDrive.ts', import.meta.url));
 const points = [[-100, -100], [100, 100]];
+assert.equal(viewportFrameContains({ x: 10, y: 10 }), true);
+const pane = { x: 400, y: 20, width: 600, height: 500 };
+assert.equal(viewportFrameContains({ x: 399, y: 200 }, pane), false);
+assert.equal(viewportFrameContains({ x: 400, y: 20 }, pane), true);
+assert.equal(viewportFrameContains({ x: 1001, y: 200 }, pane), false);
+assert.equal(viewportFrameContains({ x: 600, y: 521 }, pane), false);
+// SVG-native zoom keeps the same screen-space pan, including in a wide pane.
+assert.deepEqual(zoomedSvgViewBox(500, 1000, 700, 16, { x: 140, y: -70 }).split(' ').map(Number), [-43.75, -25, 62.5, 62.5]);
 for (const [width, height] of [[1000, 700], [760, 600], [400, 500]]) {
   for (const frame of [undefined, phaseDriveFrame(width, height)?.motor]) {
     const origin = viewportTransformOrigin(width, height, frame);
@@ -39,4 +47,22 @@ for (const [width, height] of [[1000, 700], [760, 600], [400, 500]]) {
   assert.ok(Math.abs(topTurned[0] - (centre[0] + radius)) < 1e-9 && Math.abs(topTurned[1] - centre[1]) < 1e-9);
   assert.equal(turned.scale, still.scale);
 }
-console.log('shifted and full viewport zoom checks passed');
+// A scale bar measures the same physical distance as the fitted drawing,
+// including small decimals at inspection zoom and a shifted/rotated frame.
+for (const diameter of [10, 48, 100, 190, 500]) {
+  for (const zoom of [0.5, 1, 1.25, 8, 256]) {
+    for (const frame of [undefined, { x: 100, y: 30, width: 470, height: 550 }]) {
+      const fit = fitTransform([[-diameter / 2, -diameter / 2], [diameter / 2, diameter / 2]], 900, 650, zoom, [37, -29], frame, 0.8);
+      const bar = viewportScaleBar(fit.scale);
+      assert.ok(bar && bar.mm > 0 && bar.pixels > 0 && bar.pixels <= 120 + 1e-9);
+      const from = fit.map([0, 0]);
+      const to = fit.map([bar.mm, 0]);
+      assert.ok(Math.abs(Math.hypot(to[0] - from[0], to[1] - from[1]) - bar.pixels) < 1e-8);
+      const mantissa = bar.mm / 10 ** Math.floor(Math.log10(bar.mm));
+      assert.ok([1, 2, 5].some((n) => Math.abs(n - mantissa) < 1e-9));
+    }
+  }
+}
+for (const value of [0, -1, NaN, Infinity]) assert.equal(viewportScaleBar(value), null);
+assert.equal(viewportScaleBar(3, 0), null);
+console.log('shifted/full viewport zoom and physical scale-bar checks passed');

@@ -1,20 +1,28 @@
+import { ringShape } from './ringShape';
 import { ReferenceMotor3D } from './ReferenceMotor3D';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
-import { buildConcentratedCoil, buildWindingHarness } from './coil3d';
+import { buildConcentratedCoil, buildDistributedCoil, buildWindingHarness } from './coil3d';
 import { deriveStatorSectionWidths } from './dimensionAnnotations';
 import { publicFlatIpmMagnetCenterRadiusMm } from './flatIpmBurialHealth';
 import { magnetPoleCoverage } from './magnetCoverage';
-import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection } from './model';
+import type { GeometryPreview, MotorConfig, PublicMotorComponentSelection, PublicWindingCoil } from './model';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS, renderTargetColor } from './motorPalette';
+import { STRIP_END, phaseCurrents, phaseDriveFrame, phaseStrips, rotorElectricalDeg, slotCurrents, toothPoles, type PhaseDrive, type WindingSide } from './phaseDrive';
+import { drawPhaseDriveWired } from './phaseDrivePanel';
+import { publishedReference } from './publishedReferences';
+import { insulatedDiameterMm } from './windingBuild';
+import { readWindingResistance } from './windingResistance';
 import { shoeShoulderFraction, stator3dRadii } from './stator3dRadii';
 import { concentratedUsesToothCoils, toothCoilAssignments } from './toothCoils';
 
 interface PublicMotor3DProps {
   config: MotorConfig;
+  designName?: string | null;
   geometry?: GeometryPreview | null;
   resetSignal: number;
   rotorAngleDeg: number;
@@ -22,7 +30,26 @@ interface PublicMotor3DProps {
   introProgress?: number | null;
   onInteraction?: () => void;
   onComponentSelect?: (component: PublicMotorComponentSelection | null) => void;
+  /** Draw every coil in one plain copper instead of its phase colour, as the 2D view does. */
+  plainWinding?: boolean;
+  /** Tint each stator tooth by its N / S pole as the rotor turns. */
+  showToothPoles?: boolean;
+  /** Shade each phase's coils by the current it carries as the rotor turns. */
+  showPhases?: boolean;
+  /** Number chips over the slots, teeth and coil sides. */
+  overlays?: Motor3DOverlays;
+  /** The preview speed, which sets the frequency the Phases waveforms show. */
+  previewRpm?: number;
+  /**
+   * The part toggles and the peel slider go in the viewport dock instead of over
+   * the motor: they are drawn into `dockSlot` once the dock has made it.
+   */
+  controlsInDock?: boolean;
+  dockSlot?: HTMLElement | null;
 }
+
+export interface Motor3DOverlays { slots: boolean; teeth: boolean; windings: boolean }
+const NO_3D_OVERLAYS: Motor3DOverlays = { slots: false, teeth: false, windings: false };
 
 /**
  * Parts the viewer can hide. Hiding one or more is how you look inside the
@@ -30,10 +57,11 @@ interface PublicMotor3DProps {
  * `stator` covers the yoke and its teeth, `windings` takes the rear links with
  * it, since neither reads on its own.
  */
-type HideablePartId = 'stator' | 'windings' | 'rotor' | 'magnets' | 'airgap' | 'endcaps' | 'bearings' | 'shaft';
+type HideablePartId = 'stator' | 'windings' | 'rotor' | 'rotorBell' | 'magnets' | 'airgap' | 'endcaps' | 'bearings' | 'shaft';
 
 const HIDEABLE_PARTS: Array<{ id: HideablePartId; label: string }> = [
   { id: 'endcaps', label: 'End caps' },
+  { id: 'rotorBell', label: 'Rotor bell' },
   { id: 'stator', label: 'Stator' },
   { id: 'windings', label: 'Windings' },
   { id: 'airgap', label: 'Air gap' },
@@ -68,15 +96,6 @@ function componentSelectionForObject(object: THREE.Object3D): { object: THREE.Ob
     current = current.parent;
   }
   return null;
-}
-
-function ringShape(outerRadius: number, innerRadius: number): THREE.Shape {
-  const shape = new THREE.Shape();
-  shape.absarc(0, 0, outerRadius, 0, Math.PI * 2, false);
-  const hole = new THREE.Path();
-  hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
-  shape.holes.push(hole);
-  return shape;
 }
 
 function sectorShape(innerRadius: number, outerRadius: number, halfSpanRad: number): THREE.Shape {
@@ -208,8 +227,8 @@ function annulusGeometry(innerRadius: number, outerRadius: number, depth: number
 /**
  * Rotation cue for the rotor end faces. The core is a surface of revolution,
  * so a plain finish renders identically at every angle and the spinning rotor
- * reads as standing still — the same problem the shaft key solves at the
- * drive end. A square grid scribed into a canvas texture gives each end face a
+ * reads as standing still — the same problem the bearing's race mark solves
+ * at the drive end. A square grid scribed into a canvas texture gives each end face a
  * visible angular position while staying the same steel colour as the rest of
  * the core. The fine Cartesian pattern reads as a subtle inspection/scribe grid
  * instead of the heavy radial spokes of a polar plot. It goes on the caps only:
@@ -331,9 +350,8 @@ function vShapeMagnetPlacement(
 }
 
 /**
- * Assembled, the end cap is a translucent shell: a closed machine would
- * otherwise hide the end windings that make the assembled view legible. It goes
- * fully solid as soon as the explode pulls it clear of the stack.
+ * The IPM drive-end cap stays translucent in the assembled preview. SPM caps
+ * are fitted, opaque cups; the parts toggle exposes the windings inside them.
  */
 const ENDCAP_ASSEMBLED_OPACITY = 0.42;
 
@@ -533,17 +551,19 @@ function buildEndCap(
 /**
  * An outer rotor's end bell: the drive-end plate closing its can, clamped to the
  * shaft so the shaft turns with the rotor. Open between spokes, as on a drone
- * motor, so the windings stay in view. Built with its inner face at z = 0,
- * facing -z, and positioned by the caller.
+ * motor, so the windings stay in view. The spokes slope up from the rim to a
+ * raised hub, leaving room over the end turns. Built with the rim's inner face
+ * at z = 0 and positioned by the caller.
  */
 function buildRotorBell(
-  dims: { shaftRadius: number; rimInnerRadius: number; outerRadius: number; thickness: number },
+  dims: { shaftRadius: number; rimInnerRadius: number; outerRadius: number; thickness: number; rise: number },
   material: THREE.Material,
 ): HousingBuild {
   const group = new THREE.Group();
   const hubOuterRadius = Math.max(dims.shaftRadius * 2.1, dims.shaftRadius + dims.thickness);
 
-  const rimGeometry = annulusGeometry(dims.rimInnerRadius, dims.outerRadius, dims.thickness);
+  const bevel = Math.min(dims.thickness * 0.12, (dims.outerRadius - dims.rimInnerRadius) * 0.12);
+  const rimGeometry = annulusGeometry(dims.rimInnerRadius, dims.outerRadius, dims.thickness, bevel);
   const rim = new THREE.Mesh(rimGeometry, material);
   rim.position.z = dims.thickness / 2;
   group.add(rim);
@@ -551,18 +571,33 @@ function buildRotorBell(
   // The clamp hub stands proud of the plate on both faces, gripping the shaft.
   const hubGeometry = annulusGeometry(dims.shaftRadius, hubOuterRadius, dims.thickness * 1.8);
   const hub = new THREE.Mesh(hubGeometry, material);
-  hub.position.z = dims.thickness / 2;
+  hub.position.z = dims.rise + dims.thickness / 2;
   group.add(hub);
 
   const spokeCount = 5;
-  const spokeLength = Math.max(0.1, dims.rimInnerRadius - hubOuterRadius) + dims.thickness;
   const spokeWidth = Math.max(dims.thickness, ((2 * Math.PI * dims.rimInnerRadius) / spokeCount) * 0.2);
-  const spokeGeometry = new THREE.BoxGeometry(spokeLength, spokeWidth, dims.thickness);
+  const spokeRoot = hubOuterRadius * 0.85;
+  const spokeTip = dims.rimInnerRadius + dims.thickness * 0.4;
+  const spokeShape = new THREE.Shape();
+  spokeShape.moveTo(spokeRoot, -spokeWidth * 0.32);
+  spokeShape.lineTo(spokeTip, -spokeWidth / 2);
+  spokeShape.lineTo(spokeTip, spokeWidth / 2);
+  spokeShape.lineTo(spokeRoot, spokeWidth * 0.32);
+  spokeShape.closePath();
+  const spokeGeometry = extrude(spokeShape, dims.thickness, bevel);
+  spokeGeometry.translate(0, 0, dims.thickness / 2);
+  // Lift the inner end without rotating a thick box into the hub or rim.
+  const positions = spokeGeometry.getAttribute('position');
+  for (let index = 0; index < positions.count; index += 1) {
+    const lift = THREE.MathUtils.clamp(
+      (dims.rimInnerRadius - positions.getX(index)) / (dims.rimInnerRadius - hubOuterRadius), 0, 1,
+    ) * dims.rise;
+    positions.setZ(index, positions.getZ(index) + lift);
+  }
+  spokeGeometry.computeVertexNormals();
   for (let index = 0; index < spokeCount; index += 1) {
     const angle = (index / spokeCount) * Math.PI * 2;
     const spoke = new THREE.Mesh(spokeGeometry, material);
-    const middle = (hubOuterRadius + dims.rimInnerRadius) / 2;
-    spoke.position.set(middle * Math.cos(angle), middle * Math.sin(angle), dims.thickness / 2);
     spoke.rotation.z = angle;
     group.add(spoke);
   }
@@ -571,12 +606,69 @@ function buildRotorBell(
 }
 
 /**
+ * Illustrative carrier and hollow mounting flanges for the Accord IMA.
+ * ORNL/TM-2006/535, Fig. 2.4 and section 3.1.1: the production rotor bolts to
+ * the engine and torque converter, with no separate motor shaft or bearings.
+ * Flange details follow the photographs; the solved EM dimensions stay fixed.
+ */
+function buildImaMount(
+  dims: { rotorBoreRadius: number; motorRadius: number; stackDepth: number },
+  carrierMaterial: THREE.Material,
+  machinedMaterial: THREE.Material,
+): HousingBuild {
+  const group = new THREE.Group();
+  const hubRadius = Math.min(dims.rotorBoreRadius * 0.64, dims.motorRadius * 0.32);
+  const boreRadius = dims.motorRadius * 0.07;
+  const bossRadius = dims.motorRadius * 0.15;
+  const webThickness = dims.stackDepth * 0.14;
+  const flangeDepth = dims.stackDepth * 0.65;
+  const hubGeometry = annulusGeometry(boreRadius, hubRadius, flangeDepth, webThickness * 0.1);
+  group.add(new THREE.Mesh(hubGeometry, carrierMaterial));
+  const rimGeometry = annulusGeometry(dims.rotorBoreRadius * 0.96, dims.rotorBoreRadius * 1.02, webThickness);
+  group.add(new THREE.Mesh(rimGeometry, carrierMaterial));
+  const spokeRoot = hubRadius * 0.9;
+  const spokeTip = dims.rotorBoreRadius * 1.01;
+  const spokeGeometry = new THREE.BoxGeometry(spokeTip - spokeRoot, hubRadius * 0.23, webThickness);
+  for (let index = 0; index < 8; index += 1) {
+    const angle = index * Math.PI / 4;
+    const spoke = new THREE.Mesh(spokeGeometry, carrierMaterial);
+    spoke.position.set((spokeRoot + spokeTip) / 2 * Math.cos(angle), (spokeRoot + spokeTip) / 2 * Math.sin(angle), 0);
+    spoke.rotation.z = angle;
+    group.add(spoke);
+  }
+  const bossDepth = dims.stackDepth * 0.3;
+  const bossGeometry = annulusGeometry(boreRadius, bossRadius, bossDepth, webThickness * 0.1);
+  const boltRadius = hubRadius * 0.068;
+  const boltDepth = webThickness * 0.6;
+  const boltGeometry = new THREE.CylinderGeometry(boltRadius, boltRadius, boltDepth, 6);
+  boltGeometry.rotateX(Math.PI / 2);
+  const washerGeometry = annulusGeometry(boltRadius * 0.65, boltRadius * 1.3, boltDepth * 0.2);
+  for (const side of [-1, 1]) {
+    const boss = new THREE.Mesh(bossGeometry, machinedMaterial);
+    boss.position.z = side * (flangeDepth / 2 + bossDepth / 2);
+    group.add(boss);
+    for (let index = 0; index < 8; index += 1) {
+      const angle = index * Math.PI / 4 + Math.PI / 8;
+      const x = hubRadius * 0.83 * Math.cos(angle);
+      const y = hubRadius * 0.83 * Math.sin(angle);
+      const washer = new THREE.Mesh(washerGeometry, machinedMaterial);
+      washer.position.set(x, y, side * (flangeDepth / 2 + boltDepth * 0.1));
+      const bolt = new THREE.Mesh(boltGeometry, machinedMaterial);
+      bolt.position.set(x, y, side * (flangeDepth / 2 + boltDepth * 0.7));
+      bolt.rotation.z = angle;
+      group.add(washer, bolt);
+    }
+  }
+  return { group, geometries: [hubGeometry, rimGeometry, spokeGeometry, bossGeometry, boltGeometry, washerGeometry] };
+}
+
+/**
  * Floating part label for the exploded view: a rounded chip drawn to a canvas
  * and hung off a sprite, so it stays screen-facing and legible from any orbit
  * angle. The texture comes back alongside the sprite because only the caller
  * knows when the scene is torn down.
  */
-function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.CanvasTexture | null } {
+function makeChipSprite(text: string, stroke = 'rgba(103, 232, 249, 0.34)'): { sprite: THREE.Sprite; texture: THREE.CanvasTexture | null } {
   const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
   const fontPx = 44;
   const padX = 26;
@@ -612,7 +704,7 @@ function makeChipSprite(text: string): { sprite: THREE.Sprite; texture: THREE.Ca
     context.closePath();
     context.fillStyle = 'rgba(9, 13, 22, 0.86)';
     context.fill();
-    context.strokeStyle = 'rgba(103, 232, 249, 0.34)';
+    context.strokeStyle = stroke;
     context.lineWidth = 2;
     context.stroke();
     context.font = font;
@@ -642,18 +734,80 @@ export function PublicMotor3D(props: PublicMotor3DProps) {
 
 function ParametricMotor3D({
   config,
+  designName = null,
   resetSignal,
   rotorAngleDeg,
   explodedAmount,
   introProgress = null,
   onInteraction,
   onComponentSelect,
+  geometry,
+  plainWinding = false,
+  showToothPoles = false,
+  showPhases = false,
+  overlays = NO_3D_OVERLAYS,
+  previewRpm = 20,
+  controlsInDock = false,
+  dockSlot = null,
 }: PublicMotor3DProps) {
+  // The named vehicle example supplies the mechanical arrangement; a large
+  // rotor bore alone does not imply either a large shaft or a crank mounting.
+  const hondaIma = /honda.*accord/i.test(designName ?? '')
+    && config.topology === 'IPM' && config.rotor_layout !== 'outer'
+    && config.rotor.pole_count === 16 && config.stator.slot_count === 24
+    && (config.rotor.ID_mm ?? 0) > config.rotor.OD_mm * 0.5;
+  // The same phase drive the 2D view shades by: the solve's own terminal currents.
+  const solveParams = config.solve_params;
+  const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
+  const metadataPoles = Number(geometry?.metadata.pole_count);
+  const pyleecanAxis = geometry?.metadata.phase_current_convention === 'pyleecan_d_axis'
+    || publishedReference(config)?.phaseCurrentConvention === 'pyleecan_d_axis';
+  const phaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
+    ? {
+      mode: solveParams.excitation_mode,
+      currentAngleDeg: solveParams.current_angle_deg,
+      currentAngleReference: pyleecanAxis ? 'pyleecan_d_axis' : 'q_axis',
+      currentAmplitudeA: solveParams.current_amplitude_A,
+      commutationAdvanceDeg: solveParams.commutation_advance_deg,
+      axisOffsetDeg: Number.isFinite(metadataAxis) ? metadataAxis : 0,
+      poleCount: Number.isFinite(metadataPoles) && metadataPoles > 0 ? metadataPoles : config.rotor.pole_count,
+    }
+    : null), [
+    solveParams?.excitation_mode,
+    solveParams?.current_angle_deg,
+    solveParams?.current_amplitude_A,
+    solveParams?.commutation_advance_deg,
+    pyleecanAxis,
+    metadataAxis,
+    metadataPoles,
+    config.rotor.pole_count,
+  ]);
+  const windingLayout: WindingSide[] | null = geometry?.winding_layout ?? null;
+  const windingCoils: PublicWindingCoil[] | null = geometry?.winding_coils ?? null;
+  // One turn's conductor as the preview sizes it: the insulated wire, or the bundle its strands in hand make.
+  const wireRecord = readWindingResistance(geometry?.metadata?.winding_resistance);
+  const strandsInHand = wireRecord?.wire_source === 'specified' ? Math.max(1, Math.round(wireRecord.strands_in_hand)) : 1;
+  const turnDiameter = wireRecord
+    ? Number((insulatedDiameterMm(wireRecord.strand_diameter_mm) * Math.sqrt(wireRecord.strands_in_hand)).toFixed(3))
+    : null;
+  // What the scene shows now. It is built once per design, so the toggles reach it through this.
+  const displayRef = useRef({ plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, turnDiameter, strandsInHand, previewRpm });
+  displayRef.current = { plainWinding, showToothPoles, showPhases, overlays, rotorAngleDeg, phaseDrive, windingLayout, windingCoils, turnDiameter, strandsInHand, previewRpm };
+  // The Phases waveforms are drawn on a flat canvas: under the 3D one while the
+  // drive leads are on the far side of the motor, so the wires pass behind it, and
+  // over it once the view is turned to the back and the leads are in sight.
+  const driveUnderRef = useRef<HTMLCanvasElement>(null);
+  const driveOverRef = useRef<HTMLCanvasElement>(null);
+  const applyDisplayRef = useRef<(() => void) | null>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rotorRef = useRef<THREE.Group | null>(null);
   const bearingRigsRef = useRef<BearingAnimationRig[]>([]);
   const resetCameraRef = useRef<(() => void) | null>(null);
+  // The view the user left, kept across a scene rebuild: a change to the winding or
+  // the wire redraws the motor where it was, turned and zoomed as before. A change to
+  // the machine's size or layout frames it afresh.
+  const keptViewRef = useRef<{ frame: string; position: THREE.Vector3; target: THREE.Vector3 } | null>(null);
   const requestRenderRef = useRef<(() => void) | null>(null);
   const explodedAmountRef = useRef(explodedAmount);
   const introProgressRef = useRef(introProgress);
@@ -675,6 +829,26 @@ function ParametricMotor3D({
       return next;
     });
   };
+
+  // The parts from the outside in, for the slider that peels the motor: on an
+  // outer-rotor machine the rotor and magnets are outside the stator.
+  const outerRotor = config.rotor_layout === 'outer';
+  const availableParts = useMemo(() => HIDEABLE_PARTS
+    .filter(({ id }) => (outerRotor || id !== 'rotorBell') && (!hondaIma || (id !== 'bearings' && id !== 'endcaps')))
+    .map((part) => hondaIma && part.id === 'shaft' ? { ...part, label: 'Mounting hub' } : part), [outerRotor, hondaIma]);
+  const shownPartCount = availableParts.filter(({ id }) => !hiddenParts.has(id)).length;
+  const peelOrder = useMemo<HideablePartId[]>(() => (hondaIma
+    ? ['stator', 'windings', 'airgap', 'magnets', 'rotor', 'shaft']
+    : outerRotor
+    ? ['endcaps', 'rotorBell', 'rotor', 'magnets', 'airgap', 'windings', 'stator', 'bearings', 'shaft']
+    : ['endcaps', 'stator', 'windings', 'airgap', 'magnets', 'rotor', 'bearings', 'shaft']), [outerRotor, hondaIma]);
+  // How many parts are left, counted from the shaft outwards: every part up to the first one still shown is peeled.
+  const firstShown = peelOrder.findIndex((part) => !hiddenParts.has(part));
+  const partsLeft = firstShown < 0 ? 0 : peelOrder.length - firstShown;
+  const peelTo = (left: number) => {
+    setHiddenParts(new Set(peelOrder.slice(0, peelOrder.length - left)));
+  };
+  const outermostShown = firstShown < 0 ? null : availableParts.find(({ id }) => id === peelOrder[firstShown])?.label ?? null;
 
   useEffect(() => {
     hiddenPartsRef.current = hiddenParts;
@@ -754,7 +928,7 @@ function ParametricMotor3D({
     const magnetSeatRadius = outerRotor ? (config.rotor.ID_mm ?? 0) / 2 : rotorRadius;
     // An outer rotor's shaft runs through the stator hub. Size it off the machine,
     // not the hub bore: a drone motor's hub can be most of its stator.
-    const shaftRadius = outerRotor
+    const shaftRadius = hondaIma ? outerRadius * 0.07 : outerRotor
       ? Math.min(yokeOuterRadius * 0.42, Math.max(0.6, outerRadius * 0.08))
       : Math.max(outerRadius * 0.055, (config.rotor.ID_mm || outerRadius * 0.12) / 2);
     const stackDepth = Math.max(8, config.stator.stack_length_mm);
@@ -764,13 +938,17 @@ function ParametricMotor3D({
     // stands clear of the stack ends and the bearing seats inside its bore.
     const capBoreRadius = Math.max(shaftRadius * 1.95, outerRadius * 0.16);
     const capThickness = stackDepth * 0.115;
-    const capCenterZ = stackDepth / 2 + stackDepth * 0.13 + capThickness / 2;
-    const capOuterFaceZ = capCenterZ + capThickness / 2;
+    const defaultCapCenterZ = stackDepth / 2 + stackDepth * 0.13 + capThickness / 2;
+    const fittedEndcaps = outerRotor || config.topology === 'SPM';
+    const assembledEndcapOpacity = fittedEndcaps ? 1 : ENDCAP_ASSEMBLED_OPACITY;
     // Frame off whichever dimension actually drives the silhouette. Keying the
     // camera off the radius alone puts a long-stack machine half outside the
     // view before the explode even starts, and the max() only ever pulls back,
     // so nothing shorter than a 2.4:1 stack-to-radius machine moves at all.
-    const framingRadius = Math.max(outerRadius, stackDepth * 0.42);
+    // The inrunner's two fitted cups extend beyond both stack faces and its
+    // diameter. Leave room for their rims and the longer drive shaft as well.
+    const housingFrameScale = fittedEndcaps && !outerRotor ? 1.16 : 1;
+    const framingRadius = Math.max(outerRadius, stackDepth * 0.42) * housingFrameScale;
     const assembledCameraPosition = new THREE.Vector3(
       framingRadius * 2.45,
       framingRadius * 1.8,
@@ -800,6 +978,12 @@ function ParametricMotor3D({
     };
     resetCameraRef.current = resetCamera;
     resetCamera();
+    const viewFrame = `${outerRotor}:${outerRadius}:${stackDepth}`;
+    if (keptViewRef.current?.frame === viewFrame && introProgressRef.current === null) {
+      camera.position.copy(keptViewRef.current.position);
+      controls.target.copy(keptViewRef.current.target);
+      controls.update();
+    }
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     const environmentTarget = pmrem.fromScene(new RoomEnvironment(), 0.04);
@@ -854,9 +1038,9 @@ function ParametricMotor3D({
         color: STEEL_3D.rotor,
         metalness: 0.9,
         roughness: 0.36,
-        transparent: config.topology === 'IPM',
-        opacity: config.topology === 'IPM' ? 0.68 : 1,
-        depthWrite: config.topology !== 'IPM',
+        transparent: config.topology === 'IPM' && !hondaIma,
+        opacity: config.topology === 'IPM' && !hondaIma ? 0.68 : 1,
+        depthWrite: config.topology !== 'IPM' || hondaIma,
       }),
       // End-cap faces of the rotor core: same steel, but the fine square
       // grid makes the spin visible. White base colour so the map carries the tint.
@@ -878,6 +1062,7 @@ function ParametricMotor3D({
         roughness: 0.24,
         envMapIntensity: 0.8,
       }),
+      imaCarrier: new THREE.MeshPhysicalMaterial({ color: 0x484a4c, metalness: 0.82, roughness: 0.5 }),
       // Coated magnets, each one piece coloured by the pole it presents to the
       // stator: red north, blue south. The colours are muted towards the steel
       // around them, as on the landing page motor, so the magnets read as coated
@@ -935,16 +1120,24 @@ function ParametricMotor3D({
         roughness: 0.52,
         envMapIntensity: 0.5,
         transparent: true,
-        opacity: ENDCAP_ASSEMBLED_OPACITY,
+        opacity: assembledEndcapOpacity,
       }),
-      // The rear cap is solid: nothing sits behind it to read through, so its
-      // only job is to close the machine off. Only the drive-end cap — the one
-      // between the camera and the end windings — stays a shell.
+      // The rear cap is solid, as are the fitted SPM drive-end cups. The IPM
+      // drive-end cap keeps its translucent assembled preview above.
       endcapRear: new THREE.MeshPhysicalMaterial({
         color: 0x8b95a3,
         metalness: 0.7,
         roughness: 0.52,
         envMapIntensity: 0.5,
+      }),
+      // Black anodized aluminium on the outrunner's open, raised end bell.
+      rotorBell: new THREE.MeshPhysicalMaterial({
+        color: 0x171a1f,
+        metalness: 0.78,
+        roughness: 0.38,
+        clearcoat: 0.16,
+        clearcoatRoughness: 0.4,
+        envMapIntensity: 0.65,
       }),
       bearingRace: new THREE.MeshPhysicalMaterial({
         color: 0xbfc7d2,
@@ -1097,15 +1290,22 @@ function ParametricMotor3D({
 
     // The coil builder winds from the tooth's inner radius out; an outer
     // stator's tooth runs from the yoke out to the shoe, so its ends swap.
-    // Draw the coil as tightly wound magnet wire, as on the landing page motor.
-    // The loop count is a drawing choice: fine wire reads as a real winding where
-    // one fat loop per turn reads as a diagram. Machines with many teeth get
-    // fewer loops per coil to stay light to render.
+    // Draw the coil as wound magnet wire, one loop for each turn: a one-turn coil
+    // is one loop round the tooth. Coils with more turns than the limit draw the
+    // limit, and machines with many teeth get a lower one to stay light to render.
     const handWound = {
-      strands: config.stator.slot_count > 24 ? 24 : HAND_WOUND_STRANDS,
+      strands: Math.min(
+        Math.max(1, Math.round(config.winding.turns_per_coil) || 1),
+        config.stator.slot_count > 24 ? 24 : HAND_WOUND_STRANDS,
+      ),
       endTurnRoundness: 0.5,
       irregularity: 0.14,
     };
+    // A wire the designer has set is drawn at its own size; without one the loops fill the slot.
+    const setWire = config.winding.wire;
+    const specifiedTurnDiameter = setWire
+      ? insulatedDiameterMm(setWire.wire_bare_diameter_mm) * Math.sqrt(Math.max(1, setWire.strands_in_hand ?? 1))
+      : undefined;
     const concentratedCoil = config.winding.type === 'concentrated'
       ? buildConcentratedCoil(outerRotor
         ? {
@@ -1116,6 +1316,7 @@ function ParametricMotor3D({
             slotPitchRad: slotPitch,
             stackLength: stackDepth,
             turnsPerCoil: config.winding.turns_per_coil,
+            turnDiameter: specifiedTurnDiameter,
             handWound,
           }
         : {
@@ -1126,6 +1327,7 @@ function ParametricMotor3D({
             slotPitchRad: slotPitch,
             stackLength: stackDepth,
             turnsPerCoil: config.winding.turns_per_coil,
+            turnDiameter: specifiedTurnDiameter,
             handWound,
           })
       : null;
@@ -1133,7 +1335,9 @@ function ParametricMotor3D({
     if (concentratedCoil) {
       geometries.push(concentratedCoil.geometry, concentratedCoil.linerGeometry);
       // The loops are illustrative; the turn count is the design's.
-      const turnsNote = `${concentratedCoil.turnsRepresented} turns per coil · drawn as ${concentratedCoil.strandCount} wire loops`;
+      // A turn of several strands in hand is one loop here: say so, so loops are not read as wires.
+      const strandsInHand = Math.max(1, Math.round(setWire?.strands_in_hand ?? 1));
+      const turnsNote = `${concentratedCoil.turnsRepresented} turns per coil · drawn as ${concentratedCoil.strandCount} wire loops${strandsInHand > 1 ? ` · each turn is ${strandsInHand} strands in hand` : ''}`;
       const bundleNote = concentratedCoil.wireLayers === 1
         ? `single wire layer × ${concentratedCoil.turnsPerLayer}`
         : `${concentratedCoil.wireLayers} wire layers × ${concentratedCoil.turnsPerLayer} per layer`;
@@ -1149,12 +1353,18 @@ function ParametricMotor3D({
           .map((coil) => [coil.tooth, coil] as const),
       )
       : null;
+    const toothMaterials: THREE.MeshPhysicalMaterial[] = [];
+    // A distributed winding's plain slot blocks, shown only until the preview brings its coils.
+    const slotBlocks: THREE.Mesh[] = [];
     for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
       // The backend centres slot k at k slot pitches and tooth k between slots
       // k and k + 1, the frame the 2D view and the tooth-coil rules use.
       const angle = (slot + 0.5) * slotPitch;
       const slotAngle = slot * slotPitch;
-      const tooth = new THREE.Mesh(toothGeometry, materials.tooth);
+      // Its own material, so Tooth poles can tint each tooth by itself.
+      const toothMaterial = materials.tooth.clone();
+      toothMaterials.push(toothMaterial);
+      const tooth = new THREE.Mesh(toothGeometry, toothMaterial);
       tooth.rotation.z = angle;
       makeSelectable(tooth, { id: `3d-stator-tooth-${slot + 1}`, kind: 'stator', label: `Stator tooth ${slot + 1}`, role: 'Stationary magnetic flux path', slotIndex: slot + 1 });
       teethGroup.add(tooth);
@@ -1195,6 +1405,7 @@ function ParametricMotor3D({
         geometries.push(coilGeometry);
         const phaseMaterial = { A: materials.phaseA, B: materials.phaseB, C: materials.phaseC }[phase];
         const coil = new THREE.Mesh(coilGeometry, phaseMaterial);
+        slotBlocks.push(coil);
         coil.rotation.z = slotAngle;
         makeSelectable(coil, { id: `3d-winding-${slot + 1}`, kind: 'winding', label: `Slot ${slot + 1} · phase ${phase}${direction}`, role: 'Current-carrying stator winding', slotIndex: slot + 1, phase, direction });
         windingsGroup.add(coil);
@@ -1205,6 +1416,8 @@ function ParametricMotor3D({
 
     let harnessGroup: THREE.Group | null = null;
     const harnessMaterials: THREE.MeshPhysicalMaterial[] = [];
+    const harnessByPhase: Partial<Record<'A' | 'B' | 'C', THREE.MeshPhysicalMaterial>> = {};
+    const leadLandings: Partial<Record<'A' | 'B' | 'C', THREE.Vector3>> = {};
     if (concentratedCoil) {
       const harness = buildWindingHarness({
         slotCount: config.stator.slot_count,
@@ -1232,6 +1445,8 @@ function ParametricMotor3D({
           true,
         );
         harnessMaterials.push(material);
+        harnessByPhase[phase] = material;
+        if (harness.leadLandings[phase]) leadLandings[phase] = harness.leadLandings[phase];
         const mesh = new THREE.Mesh(geometry, material);
         makeSelectable(mesh, {
           id: `3d-harness-${phase}`,
@@ -1283,14 +1498,19 @@ function ParametricMotor3D({
 
     const rotorGroup = new THREE.Group();
     const rotorCoreGroup = new THREE.Group();
+    const rotorBellGroup = new THREE.Group();
     const pocketsGroup = new THREE.Group();
     const magnetsGroup = new THREE.Group();
     const shaftGroup = new THREE.Group();
     rotorCoreGroup.add(pocketsGroup);
-    rotorGroup.add(rotorCoreGroup, magnetsGroup, shaftGroup);
+    rotorGroup.add(rotorCoreGroup, rotorBellGroup, magnetsGroup, shaftGroup);
     rotorRef.current = rotorGroup;
     let core: THREE.Mesh;
-    if (outerRotor) {
+    if (hondaIma) {
+      const coreGeometry = annulusGeometry((config.rotor.ID_mm ?? 0) / 2, rotorRadius, stackDepth);
+      geometries.push(coreGeometry);
+      core = new THREE.Mesh(coreGeometry, materials.rotor);
+    } else if (outerRotor) {
       // The back-iron ring round the stator. Extrude groups are the end faces
       // then the sides, so the grid again sits only on the end faces.
       const coreGeometry = annulusGeometry(magnetSeatRadius, rotorRadius, stackDepth);
@@ -1311,15 +1531,17 @@ function ParametricMotor3D({
 
     // An outer rotor is a cup: its can runs on past the stack and the coils' end
     // turns to an end bell clamped to the shaft, which is how the shaft turns
-    // with it. The bell rides with the rotor core, so it spins, explodes and
-    // hides with the rotor; open between spokes, it keeps the windings in view.
+    // with it. The bell spins and explodes with the rotor core, with a separate
+    // visibility toggle so the windings can be inspected through the open can.
     let bellOuterFaceZ = 0;
     if (outerRotor) {
       const bellThickness = Math.max(0.6, capThickness);
+      const bellRise = Math.max(bellThickness * 1.5, rotorRadius * 0.11);
       const bellInnerFaceZ = stackDepth / 2
         + (concentratedCoil?.axialOverhang ?? stackDepth * 0.08)
-        + Math.max(0.5, bellThickness * 0.6);
-      bellOuterFaceZ = bellInnerFaceZ + bellThickness;
+        + Math.max(0.8, rotorRadius * 0.045, bellThickness * 0.9);
+      // Include the raised clamp hub when sizing the visible shaft extension.
+      bellOuterFaceZ = bellInnerFaceZ + bellRise + bellThickness * 1.4;
       const canGeometry = annulusGeometry(magnetSeatRadius, rotorRadius, bellInnerFaceZ - stackDepth / 2);
       geometries.push(canGeometry);
       const can = new THREE.Mesh(canGeometry, [materials.rotorFace, materials.rotor]);
@@ -1328,8 +1550,8 @@ function ParametricMotor3D({
       addEdges(can);
       rotorCoreGroup.add(can);
       const bell = buildRotorBell(
-        { shaftRadius, rimInnerRadius: magnetSeatRadius * 0.86, outerRadius: rotorRadius, thickness: bellThickness },
-        materials.endcapRear,
+        { shaftRadius, rimInnerRadius: magnetSeatRadius * 0.86, outerRadius: rotorRadius, thickness: bellThickness, rise: bellRise },
+        materials.rotorBell,
       );
       geometries.push(...bell.geometries);
       bell.group.position.z = bellInnerFaceZ;
@@ -1339,54 +1561,62 @@ function ParametricMotor3D({
         label: 'Rotor bell',
         role: 'Closes the outer rotor and is clamped to the shaft, so the shaft turns with it · illustrative · not part of the EM model',
       });
-      rotorCoreGroup.add(bell.group);
+      rotorBellGroup.add(bell.group);
     }
+
+    // Fit each cup behind the actual end turns and crossovers. Rear wiring can
+    // project further than the front windings, so each end has its own depth.
+    const windingBounds = new THREE.Box3().setFromObject(windingsGroup);
+    if (harnessGroup) windingBounds.union(new THREE.Box3().setFromObject(harnessGroup));
+    const capClearance = Math.max(0.6, capThickness * 0.8);
+    const driveCapCenterZ = fittedEndcaps && !outerRotor
+      ? Math.max(stackDepth / 2, windingBounds.max.z) + capClearance + capThickness / 2
+      : defaultCapCenterZ;
+    const rearCapCenterZ = fittedEndcaps
+      ? Math.max(stackDepth / 2, -windingBounds.min.z) + capClearance + capThickness / 2
+      : defaultCapCenterZ;
 
     // Drive-end convention: the shaft runs long out the front face toward the
     // load, with only a short stub behind the rear bearing plane. Both ends are
     // measured off the cap's outer face so the shaft always passes through both
     // castings — a visible drive stub at the front, just enough to read as
     // supported at the rear.
-    const shaftCapClearance = capOuterFaceZ - stackDepth / 2;
+    const shaftCapClearance = driveCapCenterZ + capThickness / 2 - stackDepth / 2;
     const shaftFrontOverhang = Math.max(
       stackDepth * 0.34,
       shaftRadius * 1.6,
       shaftCapClearance + stackDepth * 0.28,
       outerRotor ? bellOuterFaceZ - stackDepth / 2 + stackDepth * 0.3 : 0,
     );
-    const shaftRearStub = shaftCapClearance + stackDepth * 0.06;
-    const shaftGeometry = new THREE.CylinderGeometry(
-      shaftRadius,
-      shaftRadius,
-      stackDepth + shaftFrontOverhang + shaftRearStub,
-      64,
-    );
-    shaftGeometry.rotateX(Math.PI / 2);
-    shaftGeometry.translate(0, 0, (shaftFrontOverhang - shaftRearStub) / 2);
-    geometries.push(shaftGeometry);
-    const shaft = new THREE.Mesh(shaftGeometry, materials.shaft);
-    makeSelectable(shaft, { id: '3d-shaft', kind: 'shaft', label: 'Shaft', role: 'Mechanical rotor support' });
-    shaftGroup.add(shaft);
+    const shaftRearStub = rearCapCenterZ + capThickness / 2 - stackDepth / 2 + stackDepth * 0.06;
+    if (hondaIma) {
+      const mount = buildImaMount({
+        rotorBoreRadius: (config.rotor.ID_mm ?? 0) / 2,
+        motorRadius: outerRadius,
+        stackDepth,
+      }, materials.imaCarrier, materials.shaft);
+      geometries.push(...mount.geometries);
+      makeSelectable(mount.group, {
+        id: '3d-ima-mount', kind: 'shaft', label: 'IMA mounting hub',
+        role: 'Engine and torque-converter mounting flanges · no separate motor shaft or bearings · illustrative from ORNL Fig. 2.4',
+      });
+      shaftGroup.add(mount.group);
+    } else {
+      const shaftGeometry = new THREE.CylinderGeometry(
+        shaftRadius,
+        shaftRadius,
+        stackDepth + shaftFrontOverhang + shaftRearStub,
+        64,
+      );
+      shaftGeometry.rotateX(Math.PI / 2);
+      shaftGeometry.translate(0, 0, (shaftFrontOverhang - shaftRearStub) / 2);
+      geometries.push(shaftGeometry);
+      const shaft = new THREE.Mesh(shaftGeometry, materials.shaft);
+      makeSelectable(shaft, { id: '3d-shaft', kind: 'shaft', label: 'Shaft', role: 'Mechanical rotor support' });
+      shaftGroup.add(shaft);
+    }
 
-    // Drive key on the exposed stub. The shaft already turns with the rotor —
-    // it is a child of rotorGroup — but a plain cylinder is its own surface of
-    // revolution, so every frame of that rotation renders identically and the
-    // shaft reads as standing still next to the visibly turning magnets. The
-    // key is what a real shaft carries to drive a load, and it gives the
-    // rotation something to show. Parented to the shaft MESH, not the group,
-    // so clicking it still resolves to the shaft's own selection.
-    const shaftEndZ = stackDepth / 2 + shaftFrontOverhang;
-    const keyLength = Math.max(1, (shaftEndZ - capOuterFaceZ) * 0.62);
-    const keyGeometry = new THREE.BoxGeometry(
-      Math.max(0.5, shaftRadius * 0.44),
-      Math.max(0.4, shaftRadius * 0.3),
-      keyLength,
-    );
-    geometries.push(keyGeometry);
-    const shaftKey = new THREE.Mesh(keyGeometry, materials.shaft);
-    // Seated on the shaft surface, standing a little proud of it.
-    shaftKey.position.set(0, shaftRadius * 0.94, (capOuterFaceZ + shaftEndZ) / 2);
-    shaft.add(shaftKey);
+    // The shaft carries no key: the mark on the drive-end bearing's turning race shows the rotation.
 
     const polePitch = (Math.PI * 2) / Math.max(1, config.rotor.pole_count);
     if (config.topology === 'SPM') {
@@ -1564,9 +1794,16 @@ function ParametricMotor3D({
     const bearingRigs: BearingAnimationRig[] = [];
     const bearingWidth = stackDepth * 0.13;
     const hubBearingOuterRadius = Math.min(yokeOuterRadius * 0.98, shaftRadius * 2.4);
-    [1, -1].forEach((zSign) => {
+    // Cups lap the stack's edge: the stator on an inrunner, or the rotating can
+    // on an outrunner. A small radial gap keeps the skirt clear of that body.
+    const capRadialClearance = Math.max(0.3, outerRadius * 0.018);
+    const capWallThickness = Math.max(0.6, outerRadius * 0.035);
+    const capSkirtInnerRadius = outerRadius + capRadialClearance;
+    const fittedCapRadius = capSkirtInnerRadius + capWallThickness;
+    (hondaIma ? [] : [1, -1]).forEach((zSign) => {
       const isDriveEnd = zSign > 0;
       const end = isDriveEnd ? 'drive' : 'non-drive';
+      const endCapCenterZ = isDriveEnd ? driveCapCenterZ : rearCapCenterZ;
 
       const bearing = buildBearing(
         outerRotor
@@ -1586,7 +1823,7 @@ function ParametricMotor3D({
       // Seated in the cap bore, inboard of the cap's outer face — the bearing
       // never hangs off the shaft outside the casting. An outer rotor's shaft
       // runs through the stator hub, so its bearings sit in the hub bore.
-      bearing.group.position.z = zSign * (outerRotor ? stackDepth / 2 - bearingWidth * 0.7 : capCenterZ);
+      bearing.group.position.z = zSign * (outerRotor ? stackDepth / 2 - bearingWidth * 0.7 : endCapCenterZ);
       makeSelectable(bearing.group, {
         id: `3d-bearing-${end}`,
         kind: 'bearing',
@@ -1598,21 +1835,36 @@ function ParametricMotor3D({
       (isDriveEnd ? driveBearingGroup : rearBearingGroup).add(bearing.group);
 
       if (outerRotor && isDriveEnd) return;
-      const cap = buildEndCap(
-        outerRotor
-          ? { boreRadius: shaftRadius * 1.3, outerRadius: yokeInnerRadius, thickness: capThickness, hubDepth: stackDepth * 0.1 }
-          : { boreRadius: capBoreRadius, outerRadius, thickness: capThickness, hubDepth: stackDepth * 0.1 },
-        isDriveEnd ? materials.endcap : materials.endcapRear,
-      );
+      const capMaterial = isDriveEnd ? materials.endcap : materials.endcapRear;
+      const cap = buildEndCap({
+        boreRadius: outerRotor ? shaftRadius * 1.3 : capBoreRadius,
+        outerRadius: fittedEndcaps ? fittedCapRadius : outerRadius,
+        thickness: capThickness,
+        hubDepth: outerRotor ? rearCapCenterZ - stackDepth / 2 : stackDepth * 0.1,
+      }, capMaterial);
+      if (fittedEndcaps) {
+        const skirtOverlap = Math.min(capThickness * 0.4, stackDepth * 0.04);
+        const skirtDepth = endCapCenterZ - capThickness / 2 - stackDepth / 2 + skirtOverlap;
+        const skirtGeometry = annulusGeometry(
+          capSkirtInnerRadius, fittedCapRadius, skirtDepth,
+          Math.min(capThickness * 0.1, capWallThickness * 0.2),
+        );
+        cap.geometries.push(skirtGeometry);
+        const skirt = new THREE.Mesh(skirtGeometry, capMaterial);
+        // Local -z is inboard; the rear cap is mirrored below, as is its hub.
+        skirt.position.z = -capThickness / 2 - skirtDepth / 2;
+        addEdges(skirt);
+        cap.group.add(skirt);
+      }
       if (outerRotor) {
         // Bolt holes through the stator mount, where it fixes to the frame.
-        const holeRadius = Math.max(0.3, yokeInnerRadius * 0.06);
+        const holeRadius = Math.max(0.3, fittedCapRadius * 0.035);
         const holeGeometry = new THREE.CylinderGeometry(holeRadius, holeRadius, capThickness * 1.04, 20);
         holeGeometry.rotateX(Math.PI / 2);
         cap.geometries.push(holeGeometry);
         // Disposed with the rest when the scene is torn down (scene.traverse).
         const holeMaterial = new THREE.MeshStandardMaterial({ color: 0x0b1220, roughness: 0.9 });
-        const holeRadiusPosition = (hubBearingOuterRadius + yokeInnerRadius) / 2 + yokeInnerRadius * 0.12;
+        const holeRadiusPosition = (hubBearingOuterRadius + fittedCapRadius) / 2 + fittedCapRadius * 0.12;
         for (let hole = 0; hole < 4; hole += 1) {
           const angle = Math.PI / 4 + (hole * Math.PI) / 2;
           const mesh = new THREE.Mesh(holeGeometry, holeMaterial);
@@ -1623,7 +1875,7 @@ function ParametricMotor3D({
       geometries.push(...cap.geometries);
       // Mirror the casting so both hubs reach inboard toward the stack.
       cap.group.scale.z = zSign;
-      cap.group.position.z = zSign * capCenterZ;
+      cap.group.position.z = zSign * endCapCenterZ;
       makeSelectable(cap.group, {
         id: `3d-endcap-${end}`,
         kind: 'endcap',
@@ -1721,8 +1973,10 @@ function ParametricMotor3D({
     // have to widen with them or the row's chips overlap even though the parts
     // are well separated. The max() is inert until the stack passes ~2× the OD.
     const chipLane = Math.max(outerRadius, chipScale);
-    addPartChip(outerRotor ? 'Stator mount' : 'End cap', rearEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, -capCenterZ));
-    addPartChip('Bearing', rearBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, -capCenterZ));
+    if (!hondaIma) {
+      addPartChip(outerRotor ? 'Stator mount' : 'End cap', rearEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, -rearCapCenterZ));
+      addPartChip('Bearing', rearBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, -(outerRotor ? defaultCapCenterZ : rearCapCenterZ)));
+    }
     // Yoke and teeth explode as one part now, so they take one chip between
     // them — two labels on a single station would just stack on each other.
     addPartChip('Stator', statorGroup, new THREE.Vector3(0, chipLane * 1.14, 0));
@@ -1732,10 +1986,244 @@ function ParametricMotor3D({
     }
     addPartChip('Air gap', airgap, new THREE.Vector3(0, -chipLane * 0.9, 0));
     addPartChip('Magnets', magnetsGroup, new THREE.Vector3(0, Math.max(rotorRadius * 1.5, chipLane * 0.82), 0));
-    addPartChip(outerRotor ? 'Rotor and bell' : 'Rotor core', rotorCoreGroup, new THREE.Vector3(0, -Math.max(rotorRadius * 1.28, chipLane * 0.7), 0));
-    addPartChip('Shaft', shaftGroup, new THREE.Vector3(0, shaftRadius + chipLane * 0.22, 0));
-    addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, capCenterZ));
-    if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, capCenterZ));
+    addPartChip(outerRotor ? 'Rotor can' : 'Rotor core', rotorCoreGroup, new THREE.Vector3(0, -Math.max(rotorRadius * 1.28, chipLane * 0.7), 0));
+    if (outerRotor) addPartChip('Rotor bell', rotorBellGroup, new THREE.Vector3(0, chipLane * 1.2, bellOuterFaceZ));
+    addPartChip(hondaIma ? 'Mounting hub' : 'Shaft', shaftGroup, new THREE.Vector3(0, shaftRadius + chipLane * 0.22, 0));
+    if (!hondaIma) {
+      addPartChip('Bearing', driveBearingGroup, new THREE.Vector3(0, -chipLane * 1.22, driveCapCenterZ));
+      if (!outerRotor) addPartChip('End cap', driveEndcapGroup, new THREE.Vector3(0, chipLane * 1.3, driveCapCenterZ));
+    }
+
+    // Slot, tooth and coil-side chips on the stack's end face, for the Overlay toggles.
+    const overlayLabels: Array<{ sprite: THREE.Sprite; kind: keyof Motor3DOverlays }> = [];
+    const slotTotal = Math.max(1, config.stator.slot_count);
+    const slotBackRadius = outerRotor ? yokeOuterRadius : yokeInnerRadius;
+    const yokeFarRadius = outerRotor ? yokeInnerRadius : outerRadius;
+    const along = (from: number, to: number, share: number) => from + (to - from) * share;
+    const labelHeight = THREE.MathUtils.clamp(
+      (Math.PI * 2 * along(statorInnerRadius, slotBackRadius, 0.5)) / slotTotal * 0.42,
+      outerRadius * 0.03,
+      outerRadius * 0.07,
+    );
+    const addOverlayLabel = (kind: keyof Motor3DOverlays, text: string, angle: number, radius: number, stroke?: string) => {
+      const { sprite, texture } = makeChipSprite(text, stroke);
+      if (texture) chipTextures.push(texture);
+      sprite.material.opacity = 1;
+      sprite.scale.set(labelHeight * (sprite.userData.aspect as number), labelHeight, 1);
+      sprite.position.set(Math.cos(angle) * radius, Math.sin(angle) * radius, stackDepth / 2);
+      sprite.visible = false;
+      sprite.raycast = () => {};
+      scene.add(sprite);
+      overlayLabels.push({ sprite, kind });
+    };
+    for (let slot = 0; slot < config.stator.slot_count; slot += 1) {
+      addOverlayLabel('slots', String(slot + 1), slot * slotPitch, along(statorInnerRadius, slotBackRadius, 0.5), 'rgba(255, 255, 255, 0.34)');
+      addOverlayLabel('teeth', `T${slot + 1}`, (slot + 0.5) * slotPitch, along(statorInnerRadius, slotBackRadius, 0.8), 'rgba(255, 255, 255, 0.34)');
+    }
+    // Coil sides sit on the yoke behind their slot; a second side in the slot steps further back.
+    // The layout comes with the preview, after the scene is built, so its chips are made when it arrives.
+    let labelledLayout: WindingSide[] | null = null;
+    const syncWindingLabels = (layout: WindingSide[] | null) => {
+      if (layout === labelledLayout) return;
+      labelledLayout = layout;
+      for (let index = overlayLabels.length - 1; index >= 0; index -= 1) {
+        const { sprite, kind } = overlayLabels[index];
+        if (kind !== 'windings') continue;
+        scene.remove(sprite);
+        sprite.material.map?.dispose();
+        sprite.material.dispose();
+        overlayLabels.splice(index, 1);
+      }
+      const sidesPlaced = new Map<number, number>();
+      (layout ?? []).forEach((side) => {
+        const placed = sidesPlaced.get(side.slot_index) ?? 0;
+        sidesPlaced.set(side.slot_index, placed + 1);
+        addOverlayLabel(
+          'windings',
+          `${side.phase}${side.direction === 'in' ? '+' : '\u2212'}`,
+          side.slot_index * slotPitch,
+          along(slotBackRadius, yokeFarRadius, Math.min(0.9, 0.3 + placed * 0.45)),
+          PUBLIC_PHASE_COLORS[side.phase],
+        );
+      });
+    };
+
+    // A distributed winding drawn coil by coil, as the backend lays it out: each coil
+    // is a wound loop through its two slots with an end turn over each end of the stack.
+    // The coil list comes with the preview, after the scene is built.
+    let builtCoils = '';
+    const distributedCoils: THREE.Mesh[] = [];
+    const syncDistributedCoils = (coils: PublicWindingCoil[] | null, wireDiameter: number | null, strandsInHand: number) => {
+      if (concentratedCoil) return;
+      const spanning = (coils ?? []).filter((coil) => !coil.tooth_wound && coil.slot_in !== coil.slot_out);
+      const signature = JSON.stringify([spanning, wireDiameter, strandsInHand]);
+      if (signature === builtCoils) return;
+      builtCoils = signature;
+      distributedCoils.splice(0).forEach((mesh) => {
+        windingsGroup.remove(mesh);
+        mesh.geometry.dispose();
+      });
+      slotBlocks.forEach((block) => { block.visible = spanning.length === 0; });
+      if (spanning.length === 0) return;
+      const boreEnd = outerRotor ? statorInnerRadius - 1.2 : statorInnerRadius + 1.2;
+      const yokeEnd = outerRotor
+        ? Math.min(statorInnerRadius - 2, yokeInnerRadius + 1)
+        : Math.max(statorInnerRadius + 2, yokeInnerRadius - 1);
+      const middle = (boreEnd + yokeEnd) / 2;
+      // Two coil sides share a slot in a two-layer winding: the side going in takes the yoke half, the one coming out the bore half.
+      const sidesInSlot = new Map<number, number>();
+      spanning.forEach((coil) => [coil.slot_in, coil.slot_out].forEach((slot) => sidesInSlot.set(slot, (sidesInSlot.get(slot) ?? 0) + 1)));
+      const twoLayer = Math.max(...sidesInSlot.values()) > 1;
+      const coilMaterials = { A: materials.coilA, B: materials.coilB, C: materials.coilC };
+      // With two coil sides in a slot, each side holds half the slot's turns (backend/gmsh_solver.py
+      // _coil_side_turn_fraction), so each drawn coil carries half of Turns / Coil.
+      const turnsPerDrawnCoil = Math.max(1, Math.round(config.winding.turns_per_coil / (twoLayer ? 2 : 1)));
+      spanning.forEach((coil) => {
+        const { geometry: coilGeometry, strandCount } = buildDistributedCoil({
+          slotInAngle: coil.slot_in * slotPitch,
+          slotOutAngle: coil.slot_out * slotPitch,
+          inBand: twoLayer ? [middle, yokeEnd] : [boreEnd, yokeEnd],
+          outBand: twoLayer ? [boreEnd, middle] : [boreEnd, yokeEnd],
+          slotHalfAngle: Math.max(0.04, slotPitch * 0.18),
+          stackHalf: stackDepth / 2,
+          yokeSide: outerRotor ? -1 : 1,
+          turns: turnsPerDrawnCoil,
+          turnDiameter: wireDiameter ?? undefined,
+          yokeRoom: Math.abs(yokeFarRadius - yokeEnd) - 2,
+          // About 800 loops over the whole winding, at most 24 a coil as the tooth coils draw.
+          maxStrands: Math.max(6, Math.min(24, Math.floor(800 / spanning.length))),
+        });
+        const mesh = new THREE.Mesh(coilGeometry, coilMaterials[coil.phase]);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        makeSelectable(mesh, {
+          id: `3d-winding-coil-${coil.coil_index + 1}`,
+          kind: 'winding',
+          label: `Coil ${coil.coil_index + 1} · phase ${coil.phase} · slots ${coil.slot_in + 1} to ${coil.slot_out + 1}`,
+          role: 'Distributed coil: two slot sides joined by an end turn at each end of the stack',
+          slotIndex: coil.slot_in + 1,
+          phase: coil.phase,
+          windingModel: `${turnsPerDrawnCoil} turns in this coil${twoLayer ? ' (half the slot)' : ''} · drawn as ${strandCount} wire loops${strandsInHand > 1 ? ` · each turn is ${strandsInHand} strands in hand` : ''}`,
+        });
+        windingsGroup.add(mesh);
+        distributedCoils.push(mesh);
+      });
+    };
+
+    // Coil colours, Phases and Tooth poles recolour materials in place, so no toggle rebuilds the scene.
+    const plainCoil = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.winding));
+    const toothBase = materials.tooth.color.clone();
+    const northPole = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.magnetNorth));
+    const southPole = new THREE.Color(renderTargetColor(PUBLIC_MOTOR_COLORS.magnetSouth));
+    const phaseTints = (['A', 'B', 'C'] as const).map((phase) => (
+      [materials[`coil${phase}`], materials[`phase${phase}`], harnessByPhase[phase]]
+        .filter((material): material is THREE.MeshPhysicalMaterial => Boolean(material))
+        .map((material) => ({ material, base: material.color.clone() }))
+    ));
+    const applyDisplay = () => {
+      const shown = displayRef.current;
+      syncWindingLabels(shown.windingLayout);
+      syncDistributedCoils(shown.windingCoils, shown.turnDiameter, shown.strandsInHand);
+      const drive = shown.phaseDrive;
+      const currents = (shown.showPhases || shown.showToothPoles) && drive
+        ? phaseCurrents(drive, rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount))
+        : null;
+      phaseTints.forEach((tints, index) => {
+        // The coils hold a steady colour under Phases, as in 2D: phase colours, or copper with Coil colors off.
+        const strength = 1;
+        tints.forEach(({ material, base }) => {
+          material.color.copy(shown.plainWinding ? plainCoil : base).multiplyScalar(strength);
+        });
+      });
+      const poles = shown.showToothPoles && currents && shown.windingLayout?.length
+        ? toothPoles(slotCurrents(shown.windingLayout, config.stator.slot_count, currents), outerRotor ? 'outward' : 'inward')
+        : null;
+      toothMaterials.forEach((material, tooth) => {
+        const strength = poles?.[tooth] ?? 0;
+        material.color.copy(toothBase);
+        if (Math.abs(strength) > 0.06) material.color.lerp(strength > 0 ? northPole : southPole, 0.25 + 0.6 * Math.abs(strength));
+      });
+    };
+    applyDisplayRef.current = applyDisplay;
+    applyDisplay();
+
+    // Phases in 3D: the 2D view's waveforms, wired to where the drive leads come in
+    // at the back of the motor. A machine drawn without its leads takes three points
+    // on the rear face of the yoke instead.
+    const rearYokeRadius = (slotBackRadius + yokeFarRadius) / 2;
+    const leadEntries = (['A', 'B', 'C'] as const).map((phase, index) => leadLandings[phase]
+      ?? new THREE.Vector3(Math.cos(Math.PI + (index - 1) * 0.12) * rearYokeRadius, Math.sin(Math.PI + (index - 1) * 0.12) * rearYokeRadius, -stackDepth / 2));
+    let viewShift = 0;
+    let viewShiftSize = '';
+    /** Moves the motor right to make room for the waveforms; null when they are not shown. */
+    const phaseDrivePanel = () => {
+      const shown = displayRef.current;
+      const width = host.clientWidth;
+      const height = host.clientHeight;
+      const frame = shown.showPhases && shown.phaseDrive && introProgressRef.current === null ? phaseDriveFrame(width, height) : null;
+      const shift = frame ? Math.round((frame.panel.x + frame.panel.width) / 2) : 0;
+      // The motor is drawn below the part toggles and the peel slider, a little smaller, so it never runs behind them.
+      const peel = host.querySelector<HTMLElement>('.public-3d-peel');
+      const top = peel && peel.offsetParent !== null && introProgressRef.current === null
+        ? Math.round(peel.getBoundingClientRect().bottom - host.getBoundingClientRect().top + 6)
+        : 0;
+      const size = `${width}x${height}x${top}`;
+      if (shift !== viewShift || size !== viewShiftSize) {
+        viewShift = shift;
+        viewShiftSize = size;
+        if (shift > 0 || top > 0) {
+          const scale = Math.max(0.5, (height - top) / height);
+          camera.setViewOffset(width * scale, height * scale, -(width * (1 - scale)) / 2 - shift, -top, width, height);
+        } else camera.clearViewOffset();
+      }
+      if (!frame) return null;
+      // Below the part toggles and the peel slider at the top left.
+      const panel = { ...frame.panel };
+      // Below the bars over the motor where there are any; otherwise just below the design's name chip.
+      panel.y = Math.max(panel.y, top > 0 ? 104 : 56);
+      panel.height = Math.max(110, Math.min(panel.height, height - 28 - panel.y));
+      return { panel, width, height };
+    };
+    const drawPhaseDriveOverlay = (layout: ReturnType<typeof phaseDrivePanel>) => {
+      const shown = displayRef.current;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = host.clientWidth;
+      const height = host.clientHeight;
+      const canvases = [driveUnderRef.current, driveOverRef.current];
+      const contexts = canvases.map((overlay) => {
+        if (!overlay) return null;
+        if (overlay.width !== Math.round(width * pixelRatio) || overlay.height !== Math.round(height * pixelRatio)) {
+          overlay.width = Math.round(width * pixelRatio);
+          overlay.height = Math.round(height * pixelRatio);
+        }
+        const context = overlay.getContext('2d');
+        context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        context?.clearRect(0, 0, width, height);
+        return context ?? null;
+      });
+      const drive = shown.phaseDrive;
+      if (!layout || !drive) return;
+      const carrier = harnessGroup ?? statorGroup;
+      const ends = leadEntries.map((entry) => {
+        const point = entry.clone().add(carrier.position).project(camera);
+        return [(point.x + 1) / 2 * width, (1 - point.y) / 2 * height] as [number, number];
+      });
+      // One right-angle turn each, staggered as in 2D so the wires do not cross on the way down or up.
+      const strips = phaseStrips(layout.panel);
+      const stripRight = layout.panel.x + layout.panel.width;
+      const nearest = Math.min(...ends.map(([x]) => x));
+      const lane = Math.max(6, Math.min(16, (nearest - stripRight) / 5));
+      const wiresDrop = strips[1].y + strips[1].height / 2 <= ends[1][1];
+      const leads = ends.map((end, index) => ({
+        terminal: [Math.max(stripRight + STRIP_END + 4, nearest - lane * (wiresDrop ? index + 1 : 3 - index)), end[1]] as [number, number],
+        motor: end,
+      }));
+      const rotorElecDeg = rotorElectricalDeg(shown.rotorAngleDeg, drive.poleCount);
+      // Looking at the front, the leads are behind the motor: draw under it.
+      const leadsInSight = camera.position.z < leadEntries[1].z + carrier.position.z;
+      const context = contexts[leadsInSight ? 1 : 0];
+      if (context) drawPhaseDriveWired(context, layout.panel, drive, rotorElecDeg, phaseCurrents(drive, rotorElecDeg), leads, shown.previewRpm);
+    };
 
     // Show/hide plumbing. Each toggle owns the groups that only read as a part
     // together — hiding the stator without its teeth, or the coils without
@@ -1744,6 +2232,7 @@ function ParametricMotor3D({
       stator: [statorGroup, teethGroup],
       windings: harnessGroup ? [windingsGroup, harnessGroup] : [windingsGroup],
       rotor: [rotorCoreGroup],
+      rotorBell: [rotorBellGroup],
       magnets: [magnetsGroup],
       airgap: [airgap],
       endcaps: [driveEndcapGroup, rearEndcapGroup],
@@ -1761,6 +2250,7 @@ function ParametricMotor3D({
     applyPartVisibility(hiddenPartsRef.current);
 
     let fullExplosionAutoFitApplied = false;
+    let explodedChipFitScale = 1;
     const applyExplosion = (amount: number) => {
       const normalized = THREE.MathUtils.clamp(amount, 0, 1);
       const eased = normalized * normalized * (3 - 2 * normalized);
@@ -1785,6 +2275,7 @@ function ParametricMotor3D({
       airgap.position.z = -1.25 * station;
       magnetsGroup.position.z = 1.25 * station;
       rotorCoreGroup.position.z = 2.55 * station;
+      rotorBellGroup.position.z = rotorCoreGroup.position.z;
       shaftGroup.position.z = 4.25 * station;
       // Each end's housing continues past the outermost part on ITS side: the
       // rear pair beyond the stator, the drive pair beyond the shaft. The
@@ -1798,12 +2289,11 @@ function ParametricMotor3D({
       driveBearingGroup.position.z = 5.45 * station;
       driveEndcapGroup.position.z = 6.1 * station;
       airgapMaterial.opacity = 0.14 - eased * 0.035;
-      // Assembled, the drive-end cap is a shell you read the end windings
-      // through; once it clears the stack it turns into a solid casting. Only
-      // opacity moves — `transparent` stays pinned, so this never triggers a
+      // IPM's translucent drive-end preview becomes solid during the explode.
+      // Fitted SPM cups stay opaque; `transparent` stays pinned to avoid a
       // shader recompile. The rear cap is opaque throughout and needs no ramp.
       materials.endcap.opacity = THREE.MathUtils.lerp(
-        ENDCAP_ASSEMBLED_OPACITY,
+        assembledEndcapOpacity,
         1,
         THREE.MathUtils.smoothstep(normalized, 0.05, 0.4),
       );
@@ -1814,6 +2304,10 @@ function ParametricMotor3D({
         // would leave a caption pointing at empty space.
         sprite.visible = chipOpacity > 0.02 && follows.visible;
         sprite.material.opacity = chipOpacity;
+      });
+      // The number chips belong to the assembled stator: they go while it is hidden or taken apart.
+      overlayLabels.forEach(({ sprite, kind }) => {
+        sprite.visible = displayRef.current.overlays[kind] && normalized < 0.05 && statorGroup.visible;
       });
       radialExplodables.forEach(({ object, basePosition, direction, distance }) => {
         object.position.copy(basePosition).addScaledVector(direction, distance * eased);
@@ -1842,8 +2336,37 @@ function ParametricMotor3D({
         // has to track whichever dimension is actually driving the spread. Do
         // this once when the slider enters its fully exploded range: repeating
         // the fit every render frame would undo every user wheel-zoom at 100%.
-        if (cameraOffset.length() < explodedFitDistance) {
-          camera.position.copy(controls.target).add(cameraOffset.setLength(explodedFitDistance));
+        let fitDistance = explodedFitDistance;
+        if (fittedEndcaps && !outerRotor) {
+          // The deeper cups and their bearing seats extend the row. Fit its
+          // actual corners in the current viewing direction, including parts
+          // the user may reveal later, instead of clipping the near end cap.
+          const bounds = new THREE.Box3();
+          Object.values(hideableGroups).flat().forEach((part) => {
+            bounds.union(new THREE.Box3().setFromObject(part));
+          });
+          const back = cameraOffset.clone().normalize();
+          const right = new THREE.Vector3().crossVectors(camera.up, back).normalize();
+          const up = new THREE.Vector3().crossVectors(back, right);
+          const verticalTan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 0.9;
+          for (const x of [bounds.min.x, bounds.max.x]) {
+            for (const y of [bounds.min.y, bounds.max.y]) {
+              for (const z of [bounds.min.z, bounds.max.z]) {
+                const corner = new THREE.Vector3(x, y, z).sub(controls.target);
+                fitDistance = Math.max(fitDistance, corner.dot(back) + Math.max(
+                  Math.abs(corner.dot(right)) / (verticalTan * camera.aspect),
+                  Math.abs(corner.dot(up)) / verticalTan,
+                ));
+              }
+            }
+          }
+          controls.maxDistance = Math.max(controls.maxDistance, fitDistance * 1.1);
+          const chipFitScale = fitDistance / explodedFitDistance;
+          partChips.forEach(({ sprite }) => sprite.scale.multiplyScalar(chipFitScale / explodedChipFitScale));
+          explodedChipFitScale = chipFitScale;
+        }
+        if (cameraOffset.length() < fitDistance) {
+          camera.position.copy(controls.target).add(cameraOffset.setLength(fitDistance));
           controls.update();
         }
         fullExplosionAutoFitApplied = true;
@@ -1922,7 +2445,9 @@ function ParametricMotor3D({
       }
       syncBearingKinematics(bearingRigs, rotorGroup.rotation.z);
       selectionHelper?.update();
+      const driveLayout = phaseDrivePanel();
       renderer.render(scene, camera);
+      drawPhaseDriveOverlay(driveLayout);
     };
     const requestRender = () => {
       if (!animationFrame) animationFrame = window.requestAnimationFrame(render);
@@ -1944,10 +2469,13 @@ function ParametricMotor3D({
         selectionHelper.geometry.dispose();
         selectionHelper.material.dispose();
       }
+      keptViewRef.current = { frame: viewFrame, position: camera.position.clone(), target: controls.target.clone() };
       resetCameraRef.current = null;
       rotorRef.current = null;
       bearingRigsRef.current = [];
       applyPartVisibilityRef.current = null;
+      applyDisplayRef.current = null;
+      distributedCoils.forEach((mesh) => mesh.geometry.dispose());
       scene.traverse((object) => {
         const material = 'material' in object ? object.material as THREE.Material | THREE.Material[] : null;
         (Array.isArray(material) ? material : material ? [material] : []).forEach((item) => item.dispose());
@@ -1962,7 +2490,12 @@ function ParametricMotor3D({
       environmentTarget.dispose();
       renderer.dispose();
     };
-  }, [config]);
+  }, [config, hondaIma]);
+
+  useEffect(() => {
+    applyDisplayRef.current?.();
+    requestRenderRef.current?.();
+  }, [plainWinding, showToothPoles, showPhases, overlays, phaseDrive, rotorAngleDeg, windingLayout, windingCoils, turnDiameter, strandsInHand, previewRpm]);
 
   useEffect(() => {
     if (!rotorRef.current) return;
@@ -1989,10 +2522,12 @@ function ParametricMotor3D({
       ref={hostRef}
       aria-label="Interactive 3D motor view"
     >
+      <canvas className="public-3d-drive is-under" ref={driveUnderRef} aria-hidden="true" />
       <canvas ref={canvasRef} />
-      {introProgress === null && (
+      <canvas className="public-3d-drive is-over" ref={driveOverRef} aria-hidden="true" />
+      {introProgress === null && !controlsInDock && (
         <div className="public-3d-part-toggles" role="group" aria-label="Show or hide motor parts">
-          {HIDEABLE_PARTS.map(({ id, label }) => {
+          {availableParts.map(({ id, label }) => {
               const shown = !hiddenParts.has(id);
               return (
                 <button
@@ -2009,11 +2544,78 @@ function ParametricMotor3D({
             })}
         </div>
       )}
-      <div className="public-3d-hint">
-        {introProgress !== null
-          ? 'Assembly view · turning to engineering cross-section'
-          : `${explodedAmount > 0.04 ? 'Exploded assembly · ' : ''}Click a part · drag to orbit · wheel to zoom`}
-      </div>
+      {introProgress === null && !controlsInDock && (
+        <label className="public-3d-peel" title="Slide left to take the motor apart from the outside in; all the way right shows every part">
+          <span>Outside in</span>
+          <input
+            type="range"
+            min={0}
+            max={peelOrder.length}
+            step={1}
+            value={partsLeft}
+            aria-label="Parts shown, from the shaft outwards"
+            aria-valuetext={outermostShown ? `Out to the ${outermostShown.toLowerCase()}` : 'No parts'}
+            onChange={(event) => peelTo(Number(event.target.value))}
+          />
+          <em>{outermostShown ?? 'None'}</em>
+        </label>
+      )}
+      {controlsInDock && dockSlot && createPortal(
+        <>
+          <span className="vc-group public-dock-peel" role="group" aria-label="Peel the motor from the outside in" title="Slide left to take the motor apart from the outside in; all the way right shows every part">
+            <span className="public-dock-group-label" aria-hidden="true">Outside in</span>
+            <input
+              type="range"
+              min={0}
+              max={peelOrder.length}
+              step={1}
+              value={partsLeft}
+              aria-label="Parts shown, from the shaft outwards"
+              aria-valuetext={outermostShown ? `Out to the ${outermostShown.toLowerCase()}` : 'No parts'}
+              onChange={(event) => peelTo(Number(event.target.value))}
+            />
+            <output aria-live="polite">{outermostShown ?? 'None'}</output>
+          </span>
+          <span className="vc-group public-dock-parts" role="group" aria-label="Motor parts">
+            <span className="public-dock-group-label" aria-hidden="true">Parts</span>
+            <details
+              className="public-field-layer-menu public-dock-more"
+              // Opens above the dock, lined up with its button, as More does on the Mesh tab.
+              onToggle={(event) => {
+                const menu = event.currentTarget;
+                const dock = menu.closest('.viewport-bottom-bar');
+                const panel = menu.querySelector<HTMLElement>('.public-field-layer-controls');
+                // The list is placed against whatever positions it, so it is measured from there: clear of the whole dock, tab row included.
+                const anchor = panel?.offsetParent?.getBoundingClientRect();
+                if (dock && panel && anchor) {
+                  panel.style.left = `${menu.getBoundingClientRect().left - anchor.left}px`;
+                  panel.style.bottom = `${anchor.bottom - dock.getBoundingClientRect().top + 6}px`;
+                }
+              }}
+            >
+              <summary>Shown<em>{shownPartCount} of {availableParts.length}</em></summary>
+              <div className="public-field-layer-controls" role="group" aria-label="Show or hide motor parts">
+                {availableParts.map(({ id, label }) => {
+                  const shown = !hiddenParts.has(id);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      aria-pressed={shown}
+                      title={shown ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+                      onClick={() => togglePart(id)}
+                    >
+                      <i aria-hidden="true" />{label}
+                    </button>
+                  );
+                })}
+              </div>
+            </details>
+          </span>
+        </>,
+        dockSlot,
+      )}
+      {introProgress !== null && <div className="public-3d-hint">Assembly view · turning to engineering cross-section</div>}
       {failed && <div className="public-viewport-message">3D preview is unavailable on this graphics device.</div>}
     </div>
   );

@@ -1,6 +1,7 @@
 import type { PublicApiError } from './api';
 import type { PublicParameterSection } from './CoilEmWorkspace';
 import type { MotorConfig } from './model';
+import type { DesignIssue } from './progressiveDesign';
 import { coilsPerPhase, concentratedUsesToothCoils, windingLayerOptions } from './toothCoils';
 
 // backend/models/config.py WindingConfig.parallel_paths le=32 (#91).
@@ -70,13 +71,45 @@ export function designErrorText(error: PublicApiError, config: MotorConfig): str
     const message = parallelPathsMessage(config);
     if (message) return message;
   }
-  return [error.message, error.suggestion ?? ''].filter(Boolean).join(' ');
+  if (config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape') {
+    const correction = error.suggestion?.match(/For these dimensions, try V Depth [\d.]+ mm\./)?.[0];
+    if (/does not fit below the outer bridge|violates the outer bridge/.test(error.message)) {
+      return 'The requested magnets extend beyond the rotor’s outer bridge. Increase V Depth to move the V apex inward, reduce Magnet Width to shorten the magnets, or reduce V Angle.' + (correction ? ` ${correction}` : '');
+    }
+    if (/overlaps the shaft\/inner-rotor margin/.test(error.message)) {
+      return 'The requested magnet pockets enter the shaft clearance. Reduce V Depth to move the V apex outward, or reduce Magnet Width.' + (correction ? ` ${correction}` : '');
+    }
+  }
+  return humanizeGeometryMessage([error.message, error.suggestion ?? ''].filter(Boolean).join(' '));
+}
+
+/** Keep request/schema identifiers out of field guidance and Design Health. */
+export function humanizeGeometryMessage(message: string): string {
+  const labels: Record<string, string> = {
+    magnet_embrace: 'Saved magnet coverage', v_depth_mm: 'V Depth', v_angle_deg: 'V Angle', magnet_width_mm: 'Magnet Width',
+    magnet_thickness_mm: 'Magnet Thick.', inner_web_thickness_mm: 'Inner Web',
+    outer_bridge_thickness_mm: 'Minimum Outer Bridge', bridge_thickness_mm: 'Outer Bridge',
+    pocket_clearance_mm: 'Pocket Clearance', side_bridge_thickness_mm: 'Side Bridge',
+    tooth_width_mm: 'Yoke Tooth Width', slot_opening_mm: 'Tooth Body Opening',
+    yoke_thickness_mm: 'Yoke Thickness', pole_count: 'Pole Count', slot_count: 'Slot Count',
+  };
+  message = message.replace(/\b(stator|rotor|winding|Geometry)\.([A-Za-z0-9_]+)/g, (_token, group: string, field: string) => {
+    const names: Record<string, string> = { 'stator.ID_mm': 'Bore Diameter', 'stator.OD_mm': 'Outer Diameter',
+      'rotor.ID_mm': 'Shaft Bore', 'rotor.OD_mm': 'Rotor OD', stack_length_mm: 'Stack Length',
+      Segment_count: 'Segment Count', Outer_radius: 'Outer Radius', Inner_radius: 'Bore Radius', Segment_gap_angle: 'Segment Gap Angle' };
+    return names[`${group}.${field}`] ?? names[field] ?? labels[field] ?? field.replace(/_/g, ' ');
+  });
+  return message.replace(/\b(?:rotor\.|stator\.)?([a-z]+(?:_[a-z0-9]+)+)\b/g, (token, key: string) => labels[key] ?? token)
+    .replace(/\brotor ID_mm\b/g, 'Shaft Bore').replace(/\brotor OD_mm\b/g, 'Rotor OD')
+    .replace(/\bstator ID_mm\b/g, 'Bore Diameter').replace(/\bstator OD_mm\b/g, 'Outer Diameter')
+    .replace(/ID_mm/g, 'Bore Diameter').replace(/OD_mm/g, 'Outer Diameter')
+    .replace(/: Input should be greater than or equal to /g, ' must be at least ')
+    .replace(/: Input should be less than or equal to /g, ' must be at most ')
+    .replace(/\{'A': (\d+), 'B': (\d+), 'C': (\d+)\}/g, '$1 / $2 / $3 coils in phases A / B / C');
 }
 
 // Fields whose control sits outside the section their config group suggests.
 const SECTION_BY_FIELD: Record<string, PublicParameterSection> = {
-  'rotor.v_angle_deg': 'advanced',
-  'rotor.v_depth_mm': 'advanced',
   'stator.slot_opening_mm': 'advanced',
   'stator.tooth_shoe_enabled': 'advanced',
   'stator.tooth_shoe_height_mm': 'advanced',
@@ -85,6 +118,29 @@ const SECTION_BY_FIELD: Record<string, PublicParameterSection> = {
   'stator.yoke_thickness_mm': 'advanced',
   'solve_params.current_amplitude_A': 'winding',
 };
+
+/** Associate a backend fault with the progressive field that the user entered. */
+export function enteredGeometryError(field: string | null | undefined, message: string): DesignIssue | null {
+  const controls: Record<string, [PublicParameterSection, string]> = {
+    'stator.OD_mm': ['stator', 'Outer Diameter'],
+    'stator.ID_mm': ['stator', 'Bore Diameter (ID)'],
+    // Backend slot-count faults describe winding balance, not invalid iron.
+    'stator.yoke_thickness_mm': ['stator', 'Yoke Thickness'],
+    'stator.slot_opening_mm': ['advanced', 'Bore Tooth Width'],
+    'stator.tooth_width_mm': ['advanced', 'Yoke Tooth Width'],
+    'stator.tooth_shoe_height_mm': ['advanced', 'Shoe Height'],
+    'stator.tooth_shoe_overhang_mm': ['advanced', 'Shoe Overhang'],
+    'rotor.OD_mm': ['rotor', 'Rotor OD'],
+    'rotor.magnet_thickness_mm': ['rotor', 'Magnet Thick.'],
+    'rotor.magnet_width_mm': ['rotor', 'Magnet Width'],
+    'rotor.v_depth_mm': ['rotor', 'V Depth'],
+    'rotor.v_angle_deg': ['rotor', 'V Angle'],
+    'rotor.outer_bridge_thickness_mm': ['rotor', 'Minimum Outer Bridge'],
+    'rotor.bridge_thickness_mm': ['rotor', 'Outer Bridge'],
+  };
+  const control = field ? controls[field] : null;
+  return control ? { section: control[0], label: control[1], message } : null;
+}
 
 /** The Design section holding the field an error names, or null when it names none. */
 export function designErrorSection(error: PublicApiError | null | undefined): PublicParameterSection | null {

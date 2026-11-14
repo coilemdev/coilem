@@ -19,7 +19,7 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Literal, Protocol, cast, overload
 
-from backend import fast_json, field_artifacts
+from backend import fast_json, field_artifacts, solve_profile
 from backend.cogging import cogging_record
 from backend.dq_flux_linkage import dq_flux_linkage_from_sweep
 from backend.field_lines import build_field_line_plot
@@ -709,6 +709,67 @@ def _angle_mesh_cache_store(scope: str, angle_key: int, artifact: dict[str, Any]
         _PER_ANGLE_GMSH_MESH_CACHE.move_to_end((scope, angle_key))
         while len(_PER_ANGLE_GMSH_MESH_CACHE) > max_entries:
             _PER_ANGLE_GMSH_MESH_CACHE.popitem(last=False)
+        # A new mesh for this angle: no-load reports solved on the old one go.
+        for key in [key for key in _NOLOAD_REPORT_CACHE if key[0] == scope and key[1] == angle_key]:
+            del _NOLOAD_REPORT_CACHE[key]
+
+
+# ── No-load solve reuse across operating points ───────────────────────
+#
+# A no-load solve has no stator current, so its report depends on the mesh,
+# the materials and the solve settings but not on the operating point's
+# current amplitude or current angle. A current or current-angle sweep with
+# Back-EMF would otherwise repeat the same no-load solves at every point.
+# Reports are kept per (mesh cache scope, rotor angle, no-load settings) and
+# dropped whenever the mesh cached for that angle is replaced, so a reused
+# report always belongs to the mesh this solve's loaded lane uses. Only solves
+# that keep no solve files use it (Magneto2DSolver(visual_outputs=False), as
+# scripted solves do): the app's runs keep every no-load report on disk.
+_NOLOAD_REPORT_CACHE: OrderedDict[tuple[str, int, str], dict[str, Any]] = OrderedDict()
+
+
+def _noload_reuse_signature(noload_config: MotorConfig) -> str:
+    """Hash of the no-load solve's settings, without the current angle (no current flows)."""
+
+    payload = noload_config.model_dump(mode="json")
+    params = payload.get("solve_params")
+    if isinstance(params, dict):
+        params.pop("current_angle_deg", None)
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode("utf-8")).hexdigest()
+
+
+def _report_value_copy(report: dict[str, Any]) -> dict[str, Any]:
+    # Reports are values once produced (see derive_congruent_solve_report):
+    # copy the levels the pipeline assigns into and share the field arrays.
+    copied = dict(report)
+    if isinstance(copied.get("results"), dict):
+        copied["results"] = dict(copied["results"])
+    if isinstance(copied.get("solve_info"), dict):
+        copied["solve_info"] = copy_json_like(copied["solve_info"])
+    return copied
+
+
+def _noload_report_cache_get(key: tuple[str, int, str]) -> dict[str, Any] | None:
+    with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
+        report = _NOLOAD_REPORT_CACHE.get(key)
+        if report is None:
+            return None
+        _NOLOAD_REPORT_CACHE.move_to_end(key)
+    return _report_value_copy(report)
+
+
+def _noload_report_cache_store(key: tuple[str, int, str], report: dict[str, Any]) -> None:
+    max_entries = _angle_mesh_cache_max_entries()
+    if max_entries <= 0:
+        return
+    stored = _report_value_copy(report)
+    with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
+        if (key[0], key[1]) not in _PER_ANGLE_GMSH_MESH_CACHE:
+            return  # only reports whose mesh is cached can be matched to it later
+        _NOLOAD_REPORT_CACHE[key] = stored
+        _NOLOAD_REPORT_CACHE.move_to_end(key)
+        while len(_NOLOAD_REPORT_CACHE) > max_entries:
+            _NOLOAD_REPORT_CACHE.popitem(last=False)
 
 
 def _angle_mesh_cache_take_all(
@@ -729,9 +790,10 @@ def _angle_mesh_cache_take_all(
 
 
 def clear_per_angle_gmsh_mesh_cache() -> None:
-    """Test hook: drop all cached per-angle Gmsh artifacts."""
+    """Test hook: drop all cached per-angle Gmsh artifacts and their no-load reports."""
     with _PER_ANGLE_GMSH_MESH_CACHE_LOCK:
         _PER_ANGLE_GMSH_MESH_CACHE.clear()
+        _NOLOAD_REPORT_CACHE.clear()
 
 
 def _assert_imported_mesh_consumed_by_rust(
@@ -812,6 +874,7 @@ def _solve_mesh_evidence_pair(
     *,
     loaded: bool,
     noload: bool,
+    canonical_cache: dict[int, tuple[Any, str]] | None = None,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
     """Evidence for the loaded and the zero-current no-load solve of one mesh.
 
@@ -819,9 +882,12 @@ def _solve_mesh_evidence_pair(
     objects, so both lanes share their serialized text and the loaded
     geometry hash. The pipeline's main thread and its mesh worker processes
     both call this, so a mesh's evidence is the same wherever it is built.
+    ``canonical_cache`` carries serialized text between calls for meshes that
+    share arrays, such as a mesh and its rotations to congruent positions.
     """
 
-    canonical_cache: dict[int, tuple[Any, str]] = {}
+    if canonical_cache is None:
+        canonical_cache = {}
     loaded_evidence: dict[str, Any] | None = None
     if loaded:
         loaded_evidence = build_solve_mesh_evidence(
@@ -860,15 +926,23 @@ def _prepare_gmsh_mesh_group_in_subprocess(
     """
 
     check_mesh_worker_cancelled()
+    worker_started = time.perf_counter()
     config = MotorConfig.model_validate(config_payload)
     started = time.perf_counter()
     if cached_artifact is None:
-        artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
+        with solve_profile.span("mesh worker: build base mesh"):
+            artifact, generation_time_ms = _GmshMeshProducer.build(config, rotor_angle_mech_deg)
     else:
-        artifact = _rebake_gmsh_artifact_for_config(cached_artifact, config)
+        with solve_profile.span("mesh worker: re-bake cached mesh"):
+            artifact = _rebake_gmsh_artifact_for_config(cached_artifact, config)
         generation_time_ms = int((time.perf_counter() - started) * 1000.0)
     check_mesh_worker_cancelled()
-    evidence = _solve_mesh_evidence_pair(artifact, loaded=lanes[0], noload=lanes[1])
+    # One cache for the group: a rotated mesh shares most arrays with its base.
+    canonical_cache: dict[int, tuple[Any, str]] = {}
+    with solve_profile.span("mesh worker: evidence hashes"):
+        evidence = _solve_mesh_evidence_pair(
+            artifact, loaded=lanes[0], noload=lanes[1], canonical_cache=canonical_cache
+        )
     derived_meshes: list[tuple[dict[str, Any], int, tuple[dict[str, Any] | None, dict[str, Any] | None]]] = []
     for target_rotor_angle_mech_deg, loaded, noload in derived:
         check_mesh_worker_cancelled()
@@ -879,9 +953,15 @@ def _prepare_gmsh_mesh_group_in_subprocess(
             float(target_rotor_angle_mech_deg),
         )
         rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
-        derived_meshes.append(
-            (derived_artifact, rotation_ms, _solve_mesh_evidence_pair(derived_artifact, loaded=loaded, noload=noload))
-        )
+        solve_profile.record("mesh worker: rotate to a matching position", rotation_ms / 1000.0)
+        with solve_profile.span("mesh worker: evidence hashes"):
+            derived_evidence = _solve_mesh_evidence_pair(
+                derived_artifact, loaded=loaded, noload=noload, canonical_cache=canonical_cache
+            )
+        derived_meshes.append((derived_artifact, rotation_ms, derived_evidence))
+    solve_profile.record(
+        "mesh worker: one group, total", time.perf_counter() - worker_started, derived=len(derived_meshes)
+    )
     return {
         "artifact": artifact,
         "generation_time_ms": generation_time_ms,
@@ -1128,11 +1208,14 @@ def _build_field_line_frame_from_sources_in_subprocess(
     include_live_frame: bool,
     capture_stator_field: bool = False,
 ):
+    with solve_profile.span("frame worker: read solver reports"):
+        loaded_report = _read_field_frame_report(loaded_source)
+        noload_report = _read_field_frame_report(noload_source) if noload_source is not None else None
     return _build_field_line_frame_in_subprocess(
         idx,
-        _read_field_frame_report(loaded_source),
+        loaded_report,
         angle_elec_deg,
-        _read_field_frame_report(noload_source) if noload_source is not None else None,
+        noload_report,
         solve_cache_dir_text,
         include_live_frame,
         capture_stator_field,
@@ -1175,15 +1258,17 @@ def _build_field_line_frame_in_subprocess(
     StatorFieldSample | None,
 ]:
     check_process_worker_cancelled()
-    frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
+    with solve_profile.span("frame worker: build frame from reports"):
+        frame = _field_line_frame_from_report(loaded_report, angle_elec_deg, noload_report)
     if frame is None:
         return idx, None, None, None, None
 
-    attached = _attach_field_frame_artifacts(
-        [frame],
-        solve_cache_dir_text,
-        start_idx=idx,
-    )
+    with solve_profile.span("frame worker: encode and write frame"):
+        attached = _attach_field_frame_artifacts(
+            [frame],
+            solve_cache_dir_text,
+            start_idx=idx,
+        )
     if attached:
         frame_payload = attached[0].model_dump(mode="json")
     else:
@@ -1193,10 +1278,12 @@ def _build_field_line_frame_in_subprocess(
     # it afterwards re-read and re-parsed all ~11 MB frames serially (~6.7 s
     # for a 48-position IPM run).
     steel_accumulator = new_steel_flux_density_rms_accumulator()
-    update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
-    # The stator part of the field is what iron loss needs from each position,
-    # taken here for the same reason.
-    stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
+    with solve_profile.span("frame worker: flux statistics and iron-loss sample"):
+        update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
+        # The stator part of the field is what iron loss needs from each position,
+        # taken here for the same reason.
+        stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
+    solve_profile.mark("frame finished")
     check_process_worker_cancelled()
     return idx, _slim_result_field_frame(frame_payload), live_frame, steel_accumulator, stator_sample
 
@@ -1209,6 +1296,7 @@ def _solve_with_per_angle_producer_meshes(
     on_progress=None,
     clockwise_positive: bool = False,
     check_cancelled: Callable[[], None] | None = None,
+    compact_report: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Shared per-angle remesh sweep for imported-mesh producers (FEMM/Gmsh).
 
@@ -1364,7 +1452,7 @@ def _solve_with_per_angle_producer_meshes(
         if run_no_load_solves
         else None
     )
-    compact_qa_report = solver_setting("COILEM_MAGNETO2D_COMPACT_QA_REPORT") == "1"
+    compact_qa_report = compact_report or solver_setting("COILEM_MAGNETO2D_COMPACT_QA_REPORT") == "1"
     raw_artifact_dir = None if compact_qa_report else _magneto2d_raw_cache_dir(solve_cache_dir)
     summary_cache_dir = _magneto2d_summary_cache_dir(solve_cache_dir)
     completed_steps = 0
@@ -1476,6 +1564,9 @@ def _solve_with_per_angle_producer_meshes(
             if no_load_config is not None
             else None
         )
+        noload_reuse_signature = (
+            _noload_reuse_signature(noload_solve_config) if noload_solve_config is not None else None
+        )
         config_payload = excitation_config.model_dump(mode="json")
         if excitation_config.solve_params is not None:
             config_payload["solve_params"]["excitation_rotation_convention"] = (
@@ -1517,7 +1608,17 @@ def _solve_with_per_angle_producer_meshes(
             solve_config = loaded_solve_config if lane == "loaded" else noload_solve_config
             if solve_config is None:
                 raise ValueError("No-load solve job was queued without a no-load config")
+            reuse_key = None
+            # Only solves that keep no solve files reuse: a run that keeps its
+            # files (the app's) needs every no-load report on disk for playback.
+            if lane == "noload" and raw_artifact_dir is None and cache_scope is not None and noload_reuse_signature is not None:
+                reuse_key = (cache_scope, int(job["angle_key"]), noload_reuse_signature)
+                reused = _noload_report_cache_get(reuse_key)
+                if reused is not None:
+                    solve_profile.mark("no-load solve reused")
+                    return lane, job, reused, 0.0
             solve_started = time.perf_counter()
+            solve_profile.mark("solve started")
             artifact_prefix = pipeline_artifact_prefix(lane, job)
             report = run_magneto2d_report(
                 solve_config.model_copy(deep=True),
@@ -1527,6 +1628,10 @@ def _solve_with_per_angle_producer_meshes(
                 persist_artifacts_dir=raw_artifact_dir,
                 artifact_prefix=artifact_prefix,
             )
+            solve_profile.record(f"solve ({lane}): one position, total", time.perf_counter() - solve_started)
+            solve_profile.mark("solve finished")
+            if reuse_key is not None:
+                _noload_report_cache_store(reuse_key, report)
             return lane, job, report, (time.perf_counter() - solve_started) * 1000.0
 
         def solve_lanes(job: dict[str, Any]) -> tuple[bool, bool]:
@@ -1638,6 +1743,7 @@ def _solve_with_per_angle_producer_meshes(
                 cache_scope,
                 [int(job["angle_key"]) for job in producer_jobs],
             )
+        store_meshes_in_cache = cache_scope is not None and cached_base_artifacts is None
 
         # Mesh-completion progress: one tick per ready solve mesh (base Gmsh
         # build or derived rotation), with running counts in solver_detail so
@@ -1711,7 +1817,10 @@ def _solve_with_per_angle_producer_meshes(
             # thread with the same steps as below.
             # Populate the per-angle cache BEFORE the artifact is
             # handed to solve threads (store deep-copies internally).
-            if cache_scope is not None:
+            # Artifacts re-baked from a cache hit are already cached under
+            # these angles (slot currents are re-baked on every use), so
+            # storing them again only repeats a deep copy per position.
+            if store_meshes_in_cache:
                 _angle_mesh_cache_store(
                     cache_scope, int(job["angle_key"]), solve_mesh_artifact
                 )
@@ -1737,7 +1846,7 @@ def _solve_with_per_angle_producer_meshes(
                         float(derived_job["rotor_angle_mech_deg"]),
                     )
                     rotation_ms = int((time.perf_counter() - rotation_started) * 1000.0)
-                if cache_scope is not None:
+                if store_meshes_in_cache:
                     _angle_mesh_cache_store(
                         cache_scope, int(derived_job["angle_key"]), derived_artifact
                     )
@@ -1812,21 +1921,29 @@ def _solve_with_per_angle_producer_meshes(
                 # emit_mesh_ready_tick); submission-time ticks all fire
                 # in the same instant with identical counts and read as
                 # a frozen bar in the UI.
+                groups_submitted = time.perf_counter()
                 for job in producer_jobs:
                     if check_cancelled is not None:
                         check_cancelled()
                     cached_artifact = cached[int(job["angle_key"])] if cached is not None else None
                     mesh_futures[prepare_mesh_group(mesh_pool, job, cached_artifact)] = job
+                solve_profile.mark(f"mesh groups submitted ({len(mesh_futures)} groups, {producer_workers} workers)")
                 for mesh_future in completed_mesh_futures(mesh_futures, check_cancelled):
                     job = mesh_futures[mesh_future]
-                    prepared = mesh_future.result()
-                    handle_group_mesh_ready(
-                        solve_pool,
-                        job,
-                        prepared["artifact"],
-                        prepared["generation_time_ms"],
-                        prepared=prepared,
-                    )
+                    with solve_profile.span("main: receive mesh group from worker"):
+                        prepared = mesh_future.result()
+                    # Submission to arrival: waiting for a free worker, the
+                    # worker's start-up, its work and the transfer back.
+                    solve_profile.record("mesh group: submitted to received", time.perf_counter() - groups_submitted)
+                    solve_profile.mark("mesh group ready")
+                    with solve_profile.span("main: hand mesh group to solves"):
+                        handle_group_mesh_ready(
+                            solve_pool,
+                            job,
+                            prepared["artifact"],
+                            prepared["generation_time_ms"],
+                            prepared=prepared,
+                        )
 
         frame_workers = _field_preview_worker_count(len(angles_elec_deg), solve_workers)
         overlap_frames = not compact_qa_report and frame_workers > 1 and len(angles_elec_deg) > 1
@@ -2242,7 +2359,7 @@ def _solve_with_per_angle_producer_meshes(
             no_load_angles_elec_deg=no_load_angles_elec_deg if run_no_load else None,
             mesh_generation_time_ms=mesh_generation_time_ms,
             mesh_label=producer.source,
-            include_visual_frames=not compact_qa_report,
+            include_visual_frames=not compact_qa_report, include_slot_excitation_frames=not compact_qa_report or compact_report,
             include_no_load_field_frames=include_no_load_field_frames,
             precomputed_field_line_frames=precomputed_field_line_frames,
             precomputed_steel_flux_density_rms=precomputed_steel_flux_density_rms,
@@ -2751,7 +2868,7 @@ def _solve_with_per_angle_producer_meshes(
             no_load_angles_elec_deg=no_load_angles_elec_deg if run_no_load else None,
             mesh_generation_time_ms=mesh_generation_time_ms,
             mesh_label=producer.source,
-            include_visual_frames=not compact_qa_report,
+            include_visual_frames=not compact_qa_report, include_slot_excitation_frames=not compact_qa_report or compact_report,
             include_no_load_field_frames=include_no_load_field_frames,
         )
         emit_timing_delta(
@@ -2977,7 +3094,7 @@ def _solve_with_per_angle_producer_meshes(
         no_load_angles_elec_deg=no_load_angles_elec_deg if run_no_load else None,
         mesh_generation_time_ms=mesh_generation_time_ms,
         mesh_label=producer.source,
-        include_visual_frames=not compact_qa_report,
+        include_visual_frames=not compact_qa_report, include_slot_excitation_frames=not compact_qa_report or compact_report,
         include_no_load_field_frames=include_no_load_field_frames,
     )
     emit_timing_delta(
@@ -3012,8 +3129,19 @@ def _solve_with_per_angle_producer_meshes(
 class Magneto2DSolver(Solver):
     """Motor orchestration around native Magneto2D reports."""
 
-    def __init__(self, *, launch_surface: bool = False) -> None:
+    def __init__(self, *, launch_surface: bool = False, visual_outputs: bool = True) -> None:
+        """``visual_outputs=False`` leaves out what only the app's viewers use.
+
+        The field-line frames and playback are not built and no solve files
+        are kept on disk, which also lets later operating points of the same
+        design reuse their no-load solves. Torque, back-EMF, flux linkage,
+        inductances, cogging and THD are the same as with them; the iron loss
+        and the RMS steel flux densities, which come from the field-frame
+        pass, are left out. Scripted solves that read only those numbers use
+        it to finish sooner.
+        """
         self._launch_surface = bool(launch_surface)
+        self._visual_outputs = bool(visual_outputs)
         self._cancelled = threading.Event()
 
     def cancel_active_solve(self) -> None:
@@ -3449,7 +3577,7 @@ class Magneto2DSolver(Solver):
             slot_excitation_frames=slot_excitation_frames,
             iron_loss_density=iron_loss_density,
             solve_metadata=SolveMetadata(
-                solver_name="magneto2d-rust-0.5.0",
+                solver_name="magneto2d-rust-0.6.0",
                 reference_model=(
                     {"geometry_reference": config.geometry_reference, "case_id": config.reference_case,
                      "geometry_asset_sha256": build_topology_geometry_provenance(config)["geometry_asset_sha256"],
@@ -3653,9 +3781,28 @@ class Magneto2DSolver(Solver):
             on_progress=on_progress,
             clockwise_positive=clockwise_positive,
             check_cancelled=self._raise_if_cancelled,
+            compact_report=not self._visual_outputs,
         )
 
     def solve(
+        self,
+        config: MotorConfig,
+        on_progress=None,
+        solve_mesh_key: str | None = None,
+    ) -> SolveResult:
+        # The solve records where its time goes (backend/solve_profile.py)
+        # and stores the breakdown with its result.
+        solve_profile.begin()
+        result: SolveResult | None = None
+        try:
+            result = self._solve(config, on_progress, solve_mesh_key)
+        finally:
+            cache_dir = getattr(getattr(result, "solve_metadata", None), "solve_cache_dir", None)
+            profile = solve_profile.finish(Path(cache_dir) if cache_dir else None)
+        result.solve_metadata.time_breakdown = solve_profile.breakdown(profile)
+        return result
+
+    def _solve(
         self,
         config: MotorConfig,
         on_progress=None,
@@ -3674,7 +3821,9 @@ class Magneto2DSolver(Solver):
         config = _config_with_gmsh_remesh_per_step(config)
         require_magneto2d_supported(config)
 
-        solve_cache_dir = self._prepare_solve_cache_dir() if _magneto2d_prepare_cache_dir() else None
+        solve_cache_dir = (
+            self._prepare_solve_cache_dir() if self._visual_outputs and _magneto2d_prepare_cache_dir() else None
+        )
 
         def build_result_from_reports_with_timing(
             sweep_report: dict[str, Any],
@@ -3686,16 +3835,17 @@ class Magneto2DSolver(Solver):
         ) -> SolveResult:
             self._raise_if_cancelled()
             result_start = time.perf_counter()
-            result = self.build_result_from_reports(
-                config,
-                sweep_report,
-                single_report,
-                solve_cache_dir=_magneto2d_summary_cache_dir(solve_cache_dir),
-                pipeline_stage=pipeline_stage,
-                solve_mesh_artifact=solve_mesh_artifact,
-                solve_mesh_key=solve_mesh_key,
-                launch_surface=self._launch_surface,
-            )
+            with solve_profile.span("result: assemble from reports"):
+                result = self.build_result_from_reports(
+                    config,
+                    sweep_report,
+                    single_report,
+                    solve_cache_dir=_magneto2d_summary_cache_dir(solve_cache_dir),
+                    pipeline_stage=pipeline_stage,
+                    solve_mesh_artifact=solve_mesh_artifact,
+                    solve_mesh_key=solve_mesh_key,
+                    launch_surface=self._launch_surface,
+                )
             # The reports' times add up every position's solver process, which
             # run in parallel; a 4-minute run summed to over 20 minutes. Report
             # this call's wall-clock time and keep the sum as solver CPU time.

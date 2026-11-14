@@ -1,8 +1,8 @@
 {
   "schema": "coilem.benchmark_record/v1",
   "platform": "macos-arm64",
-  "source": "benchmarks/qualification-4b41f837f3d8/macos-arm64/report",
-  "measured_commit": "4b41f837f3d89d4fbc836be54ecafff4729491c0",
+  "source": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report",
+  "measured_commit": "78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9",
   "environment": {
     "platform": "macOS-15.8.2-arm64-arm-64bit",
     "machine": "arm64",
@@ -26,9 +26,9 @@
     "backend/geometry_drawer.py": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
     "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
     "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
-    "backend/gmsh_mesh_rotation.py": "7707b34d1f6d2e866c0c0ff7716777b59ef33e4ca06411312a6cc1a280119eb0",
-    "backend/gmsh_solver.py": "536d7aba129cd3163a165fe675f6aa0f8fb5fc514ecb4a4fc254d4be9ad0aac6",
-    "backend/magneto2d_adapter/__init__.py": "db74f4e2fa4829144834339630950ca5783073259c88376e21d5b7781e1b53aa",
+    "backend/gmsh_mesh_rotation.py": "6c60a93474f3adca561b1e482b6865862d077920dbf7ccefdfda0482adb57054",
+    "backend/gmsh_solver.py": "621e7d369503fd8508fa4eb1894808a3ecbafe6ecf4d28d7802a1811dc20f913",
+    "backend/magneto2d_adapter/__init__.py": "f156a0f4114cf0c90e49708ce89051262badc951304be34e02d34e2f5ca5f263",
     "backend/magneto2d_adapter/_state.py": "71cba96ae3c9685381a77c76fcd736728d10da0d842a4e436c729d2b320c87f5",
     "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
     "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
@@ -39,11 +39,11 @@
     "backend/reference_models/prius.py": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
     "backend/reference_models/lrk.py": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43",
     "backend/rotor_layout.py": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27",
-    "backend/solver/__init__.py": "990bfcc6e5236aa561128ac3bb2c86bb09a035dcef70b33973d7a496e79bbc0c",
-    "backend/solver/_helpers.py": "b3acff8a6f0c7d5a8253a06a9e1175866defe117e85d6f564ea9e2766f3ce8b1",
+    "backend/solver/__init__.py": "be488af5d3f2555cd2da41e80358184a6ece8cb1db27bf49d6a2c8eb656f7a52",
+    "backend/solver/_helpers.py": "759a48e4b44837d7fe6c762c2deb868c44aa05f08aa8d449e107880b7befcc90",
     "backend/solver_contract.py": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
     "backend/solver_environment.py": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
-    "backend/steel_flux_metrics.py": "8e2a9d89aa3b50272ad40d60e69d34da321e10bbf1860bf4b0a426601d59ea69",
+    "backend/steel_flux_metrics.py": "db0dcb50b94ec15eb6ba5c2d994d5ea7ed04fe1379e438c84cdfcce78c1e9fdd",
     "backend/sweep_planning.py": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c",
     "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
     "backend/topology_provenance.py": "0ef8f7e6643f23a4529ae3ec7d9af3fd5ebc49e3dd954a6747850970aa77a372",
@@ -55,16 +55,16 @@
     "backend/reference_models/pyleecan_prius_2004_config.json": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a",
     "backend/reference_models/lrk_12s14p_source.json": "474c5ce06d530a9c6281da165f83e28eeba40ba3458617001b18d11b5e17d608",
     "backend/reference_models/lrk_12s14p_config.json": "46add87f28066dd32cbc96d91b1f7cfc9d025fea753b59495d6ba696423307bf",
-    "solvers/magneto2d/Cargo.lock": "28660551e81970d446c41d64119245eadd68685dab3b8c46a65e65bb5eaa61dc",
+    "solvers/magneto2d/Cargo.lock": "4664ca8863cb3668f0a095f5231b322264f23ffed4a446b1f271fcbf91b6ed76",
     "solvers/magneto2d/src/assembly.rs": "f2fe403b64eb8d3f6b9bf6f612861b2bbb60f6091ab844092f198bc7e79be465",
     "solvers/magneto2d/src/field.rs": "3f21a82ed7c0c93ac452fa2fd00cd0570077aabc976e666f974427e87dfd8786",
-    "solvers/magneto2d/src/lib.rs": "8969b5f87342662624715f873cbfbcd63e1bdd360313d788c631d2ec26491b04",
+    "solvers/magneto2d/src/lib.rs": "16130a039f710cc6d74b6564af5a066358b2fc5a3895caa37660cc47d484ef84",
     "solvers/magneto2d/src/magnet_fraction.rs": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
     "solvers/magneto2d/src/main.rs": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
     "solvers/magneto2d/src/materials.rs": "bd0ea38b6bd405657ace25496711b59cd447e3e5e4fed47b9e0014b0ce0a0699",
     "solvers/magneto2d/src/mesh.rs": "c646a27dc8f77e676391e8ae8f2fab82dc2072b1b3784880ee57e274ac890855",
     "solvers/magneto2d/src/motor.rs": "1b8cccbe7c4603100ced441f0f4fa59efe84178a81d21a732d287eb53d4587b8",
-    "solvers/magneto2d/src/postprocess.rs": "ff9b7d727df7a4610f7d1c22e6c48771c260b50c18f6de4671d3d59558c14838",
+    "solvers/magneto2d/src/postprocess.rs": "dd7753c5e7a48bf50df3717f9020e5ac6197ab4ee0876e6a3860cc7d062b7354",
     "solvers/magneto2d/src/postprocess/summary.rs": "b054ade49a4cc1dea904064438af29e974f09023188dfe76f2aa64de897c6f9c",
     "solvers/magneto2d/src/postprocess/torque/env_flags.rs": "5f838a51b6deb4e61f9ea34161d3cbde24bc062cfbdd11aab1dd5c4c0843549a",
     "solvers/magneto2d/src/postprocess/torque/localization.rs": "fc850cee925b0158be741b3d3e2a616144218ff563d00e180fbc09fe0fb4d5c8",
@@ -74,87 +74,87 @@
     "solvers/magneto2d/src/solve/context.rs": "48e777b8678dec6cc59b63af46bbe5ef320c6bf5aac84a8dddcfb923723dd9f4",
     "solvers/magneto2d/src/solve/mesh_metadata.rs": "37aa0a53aaa11688617e89f92c3c2826f39128d53a2b513f5247ccca6caa25df",
     "solvers/magneto2d/src/solve/metrics.rs": "cde1d765e21376773d93f8f7541954a82e8e6fffc08dcfb94cd74f683139be60",
-    "solvers/magneto2d/src/solve/mod.rs": "c0c581e8d5e27529d7b981dc9f5fd97d4753d772c7d0c757d843ca249c801be6",
+    "solvers/magneto2d/src/solve/mod.rs": "9d55c3400bf5917580abf61cf1e5b7976dfd7e362bbd797a5efcd52405d46c63",
     "solvers/magneto2d/src/solve/model/ipm.rs": "4c48ee72bf5964fd89de9ac5db8af4bd973f6e3ebfa46310edb84b30e398a6e0",
     "solvers/magneto2d/src/solve/model/mod.rs": "714736b57d6ef1d2ec77f2e07846b10bb7fe29957e195a4e9f5e2af1576cad91",
     "solvers/magneto2d/src/solve/model/spm.rs": "7f7d1009a5b84672e155475e99ae3e07c7956d9e0b9d976ad9e474019589ffd3",
-    "solvers/magneto2d/src/solve/newton.rs": "6e6bd06393aef3594df9d9515c4ded4408f13348a0c6e20374e02849af92954b",
-    "solvers/magneto2d/src/solve/nonlinear.rs": "6f1da85708f5974ec96a8f16a058ffd3c68f4dc18835672b45e409266c6ef5ee",
-    "solvers/magneto2d/src/solve/picard.rs": "a117d2f9d19a98ba43c3e6f4c318ec2e3c2b060e959e551746290feb9f2069ca",
+    "solvers/magneto2d/src/solve/newton.rs": "48a5f95a5846357cf2177c25606f0dad66f01f37dc08576079529d547d3c0d17",
+    "solvers/magneto2d/src/solve/nonlinear.rs": "4c8f58ea693e4e1fe682967daad045c0d78453c587047e77c53d3d599c32eec4",
+    "solvers/magneto2d/src/solve/picard.rs": "154d3ec52e191939f5bbe1601a5bbeac2e07b69f0249d5fdfeac29e8c808d4bc",
     "solvers/magneto2d/src/solve/problem.rs": "e2b82d01dbe57a3d4b45f2df3912648ffe42d400e8683ec7941cd16d3dab7460",
-    "solvers/magneto2d/src/solve/types.rs": "697aa65a80474b91740081284e5744bde86ad26684972842ac27c8f85b7c1eba",
+    "solvers/magneto2d/src/solve/types.rs": "9317e59676377aa6142d23ad1a0c88651b420c61e25a5b553dadeef230bc0318",
     "solvers/magneto2d/src/sources.rs": "8469ed2f3d322a6cd7a4585f48d163871d23a88f444ccbb0af933ffea8fd343f",
     "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
   },
   "case_runtime_s": {
-    "spm_4p12s_simple__baseline": 87.0,
-    "spm_4p12s_simple__high_current": 101.2,
-    "spm_4p12s_simple__tight_airgap": 67.5,
-    "spm_4p12s_simple_noload__baseline": 116.8,
-    "spm_4p12s_simple_noload__high_current": 90.4,
-    "spm_4p12s_simple_noload__tight_airgap": 71.3,
-    "spm_8p12s_concentrated__baseline": 241.4,
-    "spm_8p12s_concentrated__high_current": 233.9,
-    "spm_8p12s_concentrated__tight_airgap": 217.3,
-    "spm_8p12s_reference_angle30__baseline": 190.3,
-    "ipm_flat_12s10p_fscw_contract": 167.2,
-    "ipm_flat_24s16p_industrial_contract": 164.2,
-    "ipm_flat_4p12s_micro_contract": 225.3,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract": 225.2,
-    "ipm_flat_8p12s_fsae_contract": 234.8,
-    "ipm_flat_8p12s_fsae_thin_bridge_contract": 205.5,
-    "ipm_vshape_8p12s_baseline_contract": 151.6,
-    "ipm_vshape_8p12s_deep_apex_high_output_v1": 157.4,
-    "ipm_vshape_8p12s_narrow_angle_contract": 82.4,
-    "ipm_vshape_8p12s_pocket_offset_contract": 188.6,
-    "ipm_vshape_8p12s_thin_bridge_contract": 110.7,
-    "ipm_vshape_8p12s_wide_angle_high_output_v1": 169.2,
-    "spm_12p36s_distributed_femm_validation": 77.8,
-    "spm_8p24s_distributed_femm_validation": 61.0,
-    "spm_8p48s_chorded_5_6": 96.5,
-    "spm_8p48s_distributed_femm_validation": 83.6,
-    "spm_14p12s_high_pole": 493.1,
-    "spm_4p12s_small": 186.2,
-    "spm_8p12s_reference": 204.2,
-    "spm_8p12s_example_shoed": 214.4,
-    "spm_8p12s_concentrated__magnet_60C": 234.6,
-    "spm_8p12s_concentrated__magnet_100C": 229.6,
-    "spm_8p12s_concentrated__dq_I20_g0": 180.3,
-    "spm_8p12s_concentrated__dq_I20_g30": 139.1,
-    "spm_8p12s_concentrated__dq_I20_g60": 238.3,
-    "spm_8p12s_concentrated__dq_I40_g0": 254.1,
-    "spm_8p12s_concentrated__dq_I40_g30": 227.5,
-    "spm_8p12s_concentrated__dq_I40_g60": 238.8,
-    "ipm_flat_8p12s_fsae_contract__magnet_60C": 232.7,
-    "ipm_flat_8p12s_fsae_contract__magnet_100C": 205.3,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 221.6,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 231.3,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 139.3,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 209.6,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 241.0,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 235.2,
-    "spm_4p12s_simple__baseline__cogging": 45.9,
-    "spm_4p12s_simple__tight_airgap__cogging": 46.0,
-    "spm_8p12s_concentrated__baseline__cogging": 73.6,
-    "spm_8p12s_concentrated__tight_airgap__cogging": 99.1,
-    "spm_8p12s_example_shoed__cogging": 60.5,
-    "ipm_flat_8p12s_fsae_contract__cogging": 56.0,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": 59.3,
-    "ipm_flat_12s10p_fscw_contract__cogging": 54.6,
-    "ipm_flat_24s16p_industrial_contract__cogging": 56.0,
-    "spm_8p24s_distributed_femm_validation__cogging": 254.3,
-    "spm_8p48s_distributed_femm_validation__cogging": 351.1,
-    "spm_12p36s_distributed_femm_validation__cogging": 325.0,
-    "spm_outer_14p12s_drone__baseline": 262.4,
-    "spm_outer_14p12s_drone__high_current": 290.0,
-    "spm_outer_14p12s_drone__tight_airgap": 232.3,
-    "spm_outer_14p12s_drone__angle30": 304.3,
-    "spm_outer_14p12s_drone_noload__baseline": 278.5,
-    "spm_outer_12p9s_micro__baseline": 366.0,
-    "spm_outer_12p9s_micro_noload__baseline": 402.6,
-    "spm_outer_10p12s_single_layer__baseline": 215.9,
-    "spm_outer_28p24s_multirotor__baseline": 154.8,
-    "spm_outer_30p27s_hub__baseline": 91.5
+    "spm_4p12s_simple__baseline": 43.1,
+    "spm_4p12s_simple__high_current": 50.7,
+    "spm_4p12s_simple__tight_airgap": 32.0,
+    "spm_4p12s_simple_noload__baseline": 44.0,
+    "spm_4p12s_simple_noload__high_current": 47.3,
+    "spm_4p12s_simple_noload__tight_airgap": 37.4,
+    "spm_8p12s_concentrated__baseline": 84.5,
+    "spm_8p12s_concentrated__high_current": 83.9,
+    "spm_8p12s_concentrated__tight_airgap": 95.3,
+    "spm_8p12s_reference_angle30__baseline": 86.0,
+    "ipm_flat_12s10p_fscw_contract": 45.9,
+    "ipm_flat_24s16p_industrial_contract": 81.2,
+    "ipm_flat_4p12s_micro_contract": 77.6,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract": 100.1,
+    "ipm_flat_8p12s_fsae_contract": 97.7,
+    "ipm_flat_8p12s_fsae_thin_bridge_contract": 88.8,
+    "ipm_vshape_8p12s_baseline_contract": 70.4,
+    "ipm_vshape_8p12s_deep_apex_high_output_v1": 64.4,
+    "ipm_vshape_8p12s_narrow_angle_contract": 58.5,
+    "ipm_vshape_8p12s_pocket_offset_contract": 70.4,
+    "ipm_vshape_8p12s_thin_bridge_contract": 65.5,
+    "ipm_vshape_8p12s_wide_angle_high_output_v1": 65.0,
+    "spm_12p36s_distributed_femm_validation": 27.4,
+    "spm_8p24s_distributed_femm_validation": 37.2,
+    "spm_8p48s_chorded_5_6": 35.7,
+    "spm_8p48s_distributed_femm_validation": 37.9,
+    "spm_14p12s_high_pole": 282.8,
+    "spm_4p12s_small": 124.2,
+    "spm_8p12s_reference": 182.4,
+    "spm_8p12s_example_shoed": 93.4,
+    "spm_8p12s_concentrated__magnet_60C": 89.3,
+    "spm_8p12s_concentrated__magnet_100C": 94.5,
+    "spm_8p12s_concentrated__dq_I20_g0": 65.9,
+    "spm_8p12s_concentrated__dq_I20_g30": 103.4,
+    "spm_8p12s_concentrated__dq_I20_g60": 103.1,
+    "spm_8p12s_concentrated__dq_I40_g0": 101.8,
+    "spm_8p12s_concentrated__dq_I40_g30": 113.2,
+    "spm_8p12s_concentrated__dq_I40_g60": 92.4,
+    "ipm_flat_8p12s_fsae_contract__magnet_60C": 65.8,
+    "ipm_flat_8p12s_fsae_contract__magnet_100C": 111.2,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 90.8,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 112.7,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 120.8,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 65.4,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 110.0,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 94.5,
+    "spm_4p12s_simple__baseline__cogging": 38.4,
+    "spm_4p12s_simple__tight_airgap__cogging": 33.9,
+    "spm_8p12s_concentrated__baseline__cogging": 57.5,
+    "spm_8p12s_concentrated__tight_airgap__cogging": 90.7,
+    "spm_8p12s_example_shoed__cogging": 50.5,
+    "ipm_flat_8p12s_fsae_contract__cogging": 46.6,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": 34.0,
+    "ipm_flat_12s10p_fscw_contract__cogging": 36.4,
+    "ipm_flat_24s16p_industrial_contract__cogging": 51.9,
+    "spm_8p24s_distributed_femm_validation__cogging": 145.4,
+    "spm_8p48s_distributed_femm_validation__cogging": 188.4,
+    "spm_12p36s_distributed_femm_validation__cogging": 107.2,
+    "spm_outer_14p12s_drone__baseline": 150.3,
+    "spm_outer_14p12s_drone__high_current": 118.9,
+    "spm_outer_14p12s_drone__tight_airgap": 166.5,
+    "spm_outer_14p12s_drone__angle30": 208.9,
+    "spm_outer_14p12s_drone_noload__baseline": 129.6,
+    "spm_outer_12p9s_micro__baseline": 193.0,
+    "spm_outer_12p9s_micro_noload__baseline": 186.1,
+    "spm_outer_10p12s_single_layer__baseline": 122.0,
+    "spm_outer_28p24s_multirotor__baseline": 91.8,
+    "spm_outer_30p27s_hub__baseline": 93.5
   },
   "cases": {
     "ipm_flat_12s10p_fscw_contract": {
@@ -169,7 +169,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.807107162666216,
+        "mean_torque_Nm": 4.807106998369081,
         "back_emf_fundamental_V": 23.603063597346086,
         "back_emf_peak_V": 38.74288434256393
       }
@@ -202,7 +202,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 19.397369866862512,
+        "mean_torque_Nm": 19.39736957009322,
         "back_emf_fundamental_V": 28.88561048645484,
         "back_emf_peak_V": 42.19607286460807
       }
@@ -235,7 +235,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.02141540396996676,
+        "mean_torque_Nm": 0.021415403937135338,
         "back_emf_fundamental_V": 0.4500765717931696,
         "back_emf_peak_V": 0.6350220943073305
       }
@@ -252,7 +252,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.155199588751125,
+        "mean_torque_Nm": 2.1551995916957702,
         "back_emf_fundamental_V": 7.0309539974109665,
         "back_emf_peak_V": 10.48833491343362
       }
@@ -285,9 +285,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.56742802147716,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 2.5674280237174067,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__cogging": {
@@ -321,9 +321,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 5.1614957161424675,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 5.161495693549664,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I100_g30": {
@@ -341,9 +341,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.673674421042121,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 4.673674407415849,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I100_g60": {
@@ -361,9 +361,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.7911748081234853,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 2.791174826489996,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I50_g0": {
@@ -381,9 +381,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.56742802147716,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 2.5674280237174067,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I50_g30": {
@@ -401,9 +401,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2763073992279517,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 2.2763073971963252,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__dq_I50_g60": {
@@ -421,9 +421,9 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 1.3346722117512635,
-        "back_emf_fundamental_V": 7.658144182482689,
-        "back_emf_peak_V": 11.210167803918967
+        "mean_torque_Nm": 1.334672213634036,
+        "back_emf_fundamental_V": 7.658144182482699,
+        "back_emf_peak_V": 11.210167803918644
       }
     },
     "ipm_flat_8p12s_fsae_contract__magnet_100C": {
@@ -438,9 +438,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2217449940537946,
-        "back_emf_fundamental_V": 6.615197347335603,
-        "back_emf_peak_V": 9.685014419361408
+        "mean_torque_Nm": 2.22174499935696,
+        "back_emf_fundamental_V": 6.615197347335609,
+        "back_emf_peak_V": 9.685014419361352
       }
     },
     "ipm_flat_8p12s_fsae_contract__magnet_60C": {
@@ -455,9 +455,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.394213751851772,
-        "back_emf_fundamental_V": 7.135043040354565,
-        "back_emf_peak_V": 10.445408108062958
+        "mean_torque_Nm": 2.3942137541620165,
+        "back_emf_fundamental_V": 7.135043040354557,
+        "back_emf_peak_V": 10.445408108063889
       }
     },
     "ipm_flat_8p12s_fsae_thin_bridge_contract": {
@@ -472,8 +472,8 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 3.170676017352643,
-        "back_emf_fundamental_V": 9.550698650619994,
+        "mean_torque_Nm": 3.1706760168788297,
+        "back_emf_fundamental_V": 9.550698650619987,
         "back_emf_peak_V": 14.103449037826476
       }
     },
@@ -489,7 +489,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.897138788208279,
+        "mean_torque_Nm": 0.897138779793907,
         "back_emf_fundamental_V": 2.3546859338884967,
         "back_emf_peak_V": 3.57012596580451
       }
@@ -506,7 +506,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.6571482777618414,
+        "mean_torque_Nm": 0.6571482795877479,
         "back_emf_fundamental_V": 1.5588433829722843,
         "back_emf_peak_V": 2.230764167846236
       }
@@ -523,7 +523,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.8930802870572679,
+        "mean_torque_Nm": 0.8930802879383292,
         "back_emf_fundamental_V": 2.283919023822514,
         "back_emf_peak_V": 3.7649717871342205
       }
@@ -540,7 +540,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 1.1113014879223728,
+        "mean_torque_Nm": 1.1113014666246241,
         "back_emf_fundamental_V": 2.3506149788432418,
         "back_emf_peak_V": 3.5895574389923808
       }
@@ -557,7 +557,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.6861917936785926,
+        "mean_torque_Nm": 2.6861917530188006,
         "back_emf_fundamental_V": 7.4409471772895275,
         "back_emf_peak_V": 12.137839947937993
       }
@@ -574,7 +574,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.7860204154861063,
+        "mean_torque_Nm": 0.7860204053884092,
         "back_emf_fundamental_V": 2.046657087579349,
         "back_emf_peak_V": 2.9891031450265566
       }
@@ -597,7 +597,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.943464746542444,
+        "mean_torque_Nm": 4.943464642598595,
         "back_emf_fundamental_V": 120.09296158751994,
         "back_emf_peak_V": 166.45480342712972
       }
@@ -638,9 +638,9 @@
         "femm-standard_golden_current_sequence": "PASS"
       },
       "values": {
-        "analytical.mean_torque_Nm": 0.33532388709961664,
-        "native-fine.mean_torque_Nm": 3.349941738775795,
-        "native-standard.mean_torque_Nm": 3.348752635203231
+        "analytical.mean_torque_Nm": 0.3353238872227458,
+        "native-fine.mean_torque_Nm": 3.3499417453132074,
+        "native-standard.mean_torque_Nm": 3.3487526418034186
       }
     },
     "spm_4p12s_simple__baseline": {
@@ -655,7 +655,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.47746321521109675,
+        "mean_torque_Nm": 0.47746321280503196,
         "back_emf_fundamental_V": 4.986590939524895,
         "back_emf_peak_V": 6.678850584788016
       }
@@ -688,7 +688,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.7160347811676583,
+        "mean_torque_Nm": 0.7160347770966866,
         "back_emf_fundamental_V": 4.986590939524895,
         "back_emf_peak_V": 6.678850584788016
       }
@@ -705,7 +705,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.5818527373115178,
+        "mean_torque_Nm": 0.5818527368994649,
         "back_emf_fundamental_V": 6.079125131996941,
         "back_emf_peak_V": 8.687375230604134
       }
@@ -755,7 +755,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.23876152079109134,
+        "mean_torque_Nm": 0.23876151936622933,
         "back_emf_fundamental_V": 4.986590939524895,
         "back_emf_peak_V": 6.678850584788016
       }
@@ -797,9 +797,9 @@
         "femm-standard_golden_current_sequence": "PASS"
       },
       "values": {
-        "analytical.mean_torque_Nm": 0.057484836916277406,
-        "native-fine.mean_torque_Nm": 0.5744569593486423,
-        "native-standard.mean_torque_Nm": 0.5733880033999949
+        "analytical.mean_torque_Nm": 0.057484836688407794,
+        "native-fine.mean_torque_Nm": 0.5744569601198916,
+        "native-standard.mean_torque_Nm": 0.5733880048079981
       }
     },
     "spm_8p12s_concentrated__baseline": {
@@ -814,7 +814,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2085066362641257,
+        "mean_torque_Nm": 2.208506642764558,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -850,7 +850,7 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.2085066362641257,
+        "mean_torque_Nm": 2.208506642764558,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -870,7 +870,7 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 1.9208133496979938,
+        "mean_torque_Nm": 1.9208133563834149,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -890,7 +890,7 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 1.1126107900316002,
+        "mean_torque_Nm": 1.1126107945113062,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -910,7 +910,7 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.393644679907728,
+        "mean_torque_Nm": 4.393644689300804,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -930,7 +930,7 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 3.832665796705282,
+        "mean_torque_Nm": 3.832665821412133,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -950,7 +950,7 @@
         "reference_dq_torque": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.215445406380237,
+        "mean_torque_Nm": 2.215445421119141,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -967,7 +967,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 3.3048333285955658,
+        "mean_torque_Nm": 3.3048333243807027,
         "back_emf_fundamental_V": 16.280186107315647,
         "back_emf_peak_V": 23.65250209189159
       }
@@ -984,7 +984,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.0117623214388565,
+        "mean_torque_Nm": 2.0117623236199083,
         "back_emf_fundamental_V": 14.815648211105952,
         "back_emf_peak_V": 21.55976824488052
       }
@@ -1001,7 +1001,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.111918585512648,
+        "mean_torque_Nm": 2.1119185903958386,
         "back_emf_fundamental_V": 15.560918745380233,
         "back_emf_peak_V": 22.633799307748735
       }
@@ -1018,7 +1018,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.3421474824355766,
+        "mean_torque_Nm": 2.3421474788626804,
         "back_emf_fundamental_V": 17.35004493570641,
         "back_emf_peak_V": 25.202052059832656
       }
@@ -1051,7 +1051,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 11.183347693232653,
+        "mean_torque_Nm": 11.183347703309542,
         "back_emf_fundamental_V": 31.0932426728157,
         "back_emf_peak_V": 45.90344549728644
       }
@@ -1092,9 +1092,9 @@
         "femm-standard_golden_current_sequence": "PASS"
       },
       "values": {
-        "analytical.mean_torque_Nm": 1.4598384199622094,
-        "native-fine.mean_torque_Nm": 14.548356048633558,
-        "native-standard.mean_torque_Nm": 14.550099300942058
+        "analytical.mean_torque_Nm": 1.4598384048626432,
+        "native-fine.mean_torque_Nm": 14.548355966866026,
+        "native-standard.mean_torque_Nm": 14.550099254418809
       }
     },
     "spm_8p12s_reference_angle30__baseline": {
@@ -1109,7 +1109,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 16.588861903196307,
+        "mean_torque_Nm": 16.5888619069698,
         "back_emf_fundamental_V": 39.91720484007561,
         "back_emf_peak_V": 63.08328350730283
       }
@@ -1126,7 +1126,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 5.4892444409671795,
+        "mean_torque_Nm": 5.4892443794974515,
         "back_emf_fundamental_V": 120.77571364276533,
         "back_emf_peak_V": 167.36342536461487
       }
@@ -1159,7 +1159,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 5.894888561163815,
+        "mean_torque_Nm": 5.894888529666815,
         "back_emf_fundamental_V": 112.03017761208662,
         "back_emf_peak_V": 163.12042552108286
       }
@@ -1176,7 +1176,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 6.204721602038778,
+        "mean_torque_Nm": 6.20472160470975,
         "back_emf_fundamental_V": 115.98219750320116,
         "back_emf_peak_V": 164.8745480232138
       }
@@ -1209,7 +1209,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.5683527703941335,
+        "mean_torque_Nm": 0.5683527718735853,
         "back_emf_fundamental_V": 5.617962530120639,
         "back_emf_peak_V": 7.468463803248115
       }
@@ -1226,7 +1226,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.015325116240974561,
+        "mean_torque_Nm": 0.01532511659196315,
         "back_emf_fundamental_V": 0.4526581886847778,
         "back_emf_peak_V": 0.6363012584477213
       }
@@ -1260,7 +1260,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.04675149945990242,
+        "mean_torque_Nm": 0.04675149926537925,
         "back_emf_fundamental_V": 0.7888473020615769,
         "back_emf_peak_V": 1.0606028072967366
       }
@@ -1277,7 +1277,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.053352100167880855,
+        "mean_torque_Nm": 0.053352100437162875,
         "back_emf_fundamental_V": 0.7888473020615769,
         "back_emf_peak_V": 1.0606028072967366
       }
@@ -1294,7 +1294,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.07989726366246343,
+        "mean_torque_Nm": 0.07989726376401345,
         "back_emf_fundamental_V": 0.7888473020615769,
         "back_emf_peak_V": 1.0606028072967366
       }
@@ -1311,7 +1311,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.056402549603247115,
+        "mean_torque_Nm": 0.05640254990120474,
         "back_emf_fundamental_V": 0.833993821361369,
         "back_emf_peak_V": 1.1683716682352328
       }
@@ -1345,7 +1345,7 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.3245984745293721,
+        "mean_torque_Nm": 0.32459847487036714,
         "back_emf_fundamental_V": 4.793941218642472,
         "back_emf_peak_V": 6.1065123456242105
       }
@@ -1362,13 +1362,13 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 4.4305825715280385,
+        "mean_torque_Nm": 4.430582654659226,
         "back_emf_fundamental_V": 32.73117844392474,
         "back_emf_peak_V": 41.23268150919363
       }
     }
   },
-  "prius_report": "benchmarks/qualification-4b41f837f3d8/macos-arm64/prius/app-results.json",
-  "carry_receipt": "benchmarks/qualification-4b41f837f3d8/macos-arm64/carry-receipt.json",
-  "reference_reuse": "benchmarks/qualification-4b41f837f3d8/macos-arm64/reference-reuse.json"
+  "prius_report": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/prius/app-results.json",
+  "carry_receipt": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/carry-receipt.json",
+  "reference_reuse": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/reference-reuse.json"
 }

@@ -10,6 +10,8 @@ import {
   type PositionStatus,
 } from './convergenceOverview';
 import type { ConvergenceRow, SolverConvergenceReport } from './model';
+import { SolveTimeCard } from './SolveTimeCard';
+import type { SolveTimeBreakdown } from './solveTime';
 
 const SWEEP_STYLE = {
   no_load: { color: '#60a5fa', dash: undefined },
@@ -199,13 +201,14 @@ export function SolverConvergenceCard({ report }: { report?: SolverConvergenceRe
 }
 
 /** The end of Results: checks on how the numbers were computed. */
-export function ResultDiagnostics({ report }: { report?: SolverConvergenceReport | null }) {
+export function ResultDiagnostics({ report, timeBreakdown }: { report?: SolverConvergenceReport | null; timeBreakdown?: SolveTimeBreakdown | null }) {
   const headingId = useId();
   return (
     <section className="public-diagnostics" aria-labelledby={headingId}>
       <h2 id={headingId}>Diagnostics</h2>
-      <p className="public-diagnostics-intro">How far to trust the results above.</p>
+      <p className="public-diagnostics-intro">How far to trust the results above, and where the solve spent its time.</p>
       <SolverConvergenceCard report={report} />
+      <SolveTimeCard breakdown={timeBreakdown} />
     </section>
   );
 }

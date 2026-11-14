@@ -12,6 +12,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from backend import solve_profile
 from backend.custom_materials import is_custom_steel_id
 from backend.geometry_drawer import (
     MotorGeometry,
@@ -503,8 +504,9 @@ def _run_gmsh_ir_mesh_preview(
 ) -> dict[str, Any]:
     """Generate an IR-driven Gmsh mesh for SPM/IPM topologies."""
 
-    ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=rotor_angle_deg)
-    ir_report = ir.validation_report()
+    with solve_profile.span("mesh: describe the geometry"):
+        ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=rotor_angle_deg)
+        ir_report = ir.validation_report()
     if ir_report.issues:
         joined = "; ".join(ir_report.issues)
         raise GmshMeshQAError(f"Geometry IR failed before Gmsh meshing: {joined}")
@@ -512,12 +514,14 @@ def _run_gmsh_ir_mesh_preview(
     # No _GMSH_API_LOCK here: run_gmsh_mesh_preview already holds it across the call
     # into this function. threading.Lock is not reentrant, so taking it again would
     # deadlock the request thread outright.
-    initialize_gmsh()
+    with solve_profile.span("mesh: start Gmsh"):
+        initialize_gmsh()
     try:
         gmsh.option.setNumber("General.Terminal", 0)
         gmsh.option.setNumber("Mesh.Algorithm", 5)
         gmsh.option.setNumber("Mesh.LcIntegrationPrecision", _gmsh_lc_integration_precision(config))
         gmsh.model.add("openem_ir_motor_mesh")
+        geometry_started = time.perf_counter()
 
         builder = _GmshGeometryBuilder(base_lc_mm=_base_lc_mm(config, density))
         region_by_surface = _build_ir_gmsh_surfaces(builder, ir)
@@ -540,14 +544,18 @@ def _run_gmsh_ir_mesh_preview(
                     surfaces,
                     name=_gmsh_physical_name(region),
                 )
-        gmsh.model.mesh.generate(2)
-        nodes_mm, triangles, element_region_ids = _extract_gmsh_triangles_by_surface(
-            region_by_surface
-        )
+        solve_profile.record("mesh: build geometry and size fields", time.perf_counter() - geometry_started)
+        with solve_profile.span("mesh: Gmsh generates the mesh"):
+            gmsh.model.mesh.generate(2)
+        with solve_profile.span("mesh: copy triangles out of Gmsh"):
+            nodes_mm, triangles, element_region_ids = _extract_gmsh_triangles_by_surface(
+                region_by_surface
+            )
         dirichlet_nodes = _tagged_dirichlet_nodes(builder, nodes_mm) if builder.dirichlet_curves else None
     finally:
         gmsh.finalize()
 
+    artifact_started = time.perf_counter()
     solve_mesh_artifact = _build_ir_solve_mesh_artifact(
         config,
         ir,
@@ -560,7 +568,11 @@ def _run_gmsh_ir_mesh_preview(
         builder=builder,
         dirichlet_nodes=dirichlet_nodes,
     )
-    mesh_qa = _validate_gmsh_ir_solve_mesh_artifact(solve_mesh_artifact, ir)
+    solve_profile.record(
+        "mesh: build the solve mesh record", time.perf_counter() - artifact_started, triangles=len(triangles)
+    )
+    with solve_profile.span("mesh: mesh checks"):
+        mesh_qa = _validate_gmsh_ir_solve_mesh_artifact(solve_mesh_artifact, ir)
     generation_time_ms = int((time.monotonic() - start_time) * 1000)
     contract_regions = solve_mesh_artifact["physics_contract"]["regions"]
     contract_region_by_id = {entry["id"]: entry for entry in contract_regions}

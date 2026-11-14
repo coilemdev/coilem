@@ -2,6 +2,28 @@
 export interface ViewportFrame { x: number; y: number; width: number; height: number }
 export interface ViewportPoint { x: number; y: number }
 
+/** A map-style scale with a readable 1 / 2 / 5 length in motor millimetres. */
+export function viewportScaleBar(pixelsPerMm: number, maximumPixels = 120): { mm: number; pixels: number } | null {
+  if (!Number.isFinite(pixelsPerMm) || pixelsPerMm <= 0 || !Number.isFinite(maximumPixels) || maximumPixels <= 0) return null;
+  const availableMm = maximumPixels / pixelsPerMm;
+  const decade = 10 ** Math.floor(Math.log10(availableMm));
+  const fraction = availableMm / decade;
+  const mm = Number(((fraction >= 5 ? 5 : fraction >= 2 ? 2 : 1) * decade).toPrecision(12));
+  return { mm, pixels: mm * pixelsPerMm };
+}
+
+export function viewportFrameContains(point: ViewportPoint, frame?: ViewportFrame | null): boolean {
+  return !frame || (point.x >= frame.x && point.x <= frame.x + frame.width
+    && point.y >= frame.y && point.y <= frame.y + frame.height);
+}
+
+/** Zoom an SVG by changing its viewBox, so it is redrawn at the display's resolution. */
+export function zoomedSvgViewBox(extent: number, width: number, height: number, scale: number, pan: ViewportPoint): string {
+  const span = 2 * extent / scale;
+  const unitsPerPixel = 2 * extent / Math.max(1, Math.min(width, height)) / scale;
+  return `${-span / 2 - pan.x * unitsPerPixel} ${-span / 2 - pan.y * unitsPerPixel} ${span} ${span}`;
+}
+
 export function viewportTransformOrigin(width: number, height: number, frame?: ViewportFrame): ViewportPoint {
   const box = frame ?? { x: 0, y: 0, width, height };
   return { x: box.x + box.width / 2, y: box.y + box.height / 2 };

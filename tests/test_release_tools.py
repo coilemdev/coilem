@@ -591,3 +591,39 @@ def test_release_notes_links_become_absolute_for_the_release_page() -> None:
     assert not [t for t in re.findall(r"\]\(([^)\s]+)\)", rewritten) if not t.startswith(("http://", "https://", "#", "mailto:"))]
     release = _job((REPO_ROOT / ".github/workflows/release-wheels.yml").read_text(), "github-release")
     assert "tools/release/release_notes.py RELEASE_NOTES.md" in release and '--notes-file "$RUNNER_TEMP/notes.md"' in release
+
+
+def _sse(event: str, payload: dict) -> list[str]:
+    return [f"event: {event}\n", f"data: {json.dumps(payload)}\n", "\n"]
+
+
+def test_acceptance_interrupts_once_the_stream_reports_magneto2d_at_work() -> None:
+    acceptance = _acceptance_module()
+    stream = acceptance.SolveStream.__new__(acceptance.SolveStream)
+    stream.solving, stream.ended = acceptance.threading.Event(), acceptance.threading.Event()
+    stream.last, stream.outcome = None, None
+    lines = [
+        *_sse("progress", {"position": 0, "total": 0, "stage": "starting", "elapsed_s": 0}),
+        *_sse("progress", {"position": 4, "total": 72, "stage": "gmsh_mesh", "elapsed_s": 1.2}),
+    ]
+    stream.read(iter(lines))
+    assert not stream.solving.is_set()
+    assert stream.describe() == "progress gmsh_mesh 4/72"
+    stream.read(iter(_sse("progress", {"position": 9, "total": 72, "stage": "magneto2d_sweep", "torque_Nm": 0.4})))
+    assert stream.solving.is_set() and stream.outcome is None
+    assert stream.describe() == "progress magneto2d_sweep 9/72"
+
+
+def test_acceptance_reports_a_solve_that_finished_before_the_interrupt() -> None:
+    acceptance = _acceptance_module()
+    assert acceptance.magneto2d_solving("progress", {"position": 3, "total": 40, "stage": "noload_sweep"})
+    assert not acceptance.magneto2d_solving("progress", {"position": 40, "total": 40, "stage": "magneto2d_sweep"})
+    assert not acceptance.magneto2d_solving("progress", {"position": 40, "total": 40, "stage": "packaging_results"})
+    assert not acceptance.magneto2d_solving("complete", {"summary": {}})
+    stream = acceptance.SolveStream.__new__(acceptance.SolveStream)
+    stream.solving, stream.ended = acceptance.threading.Event(), acceptance.threading.Event()
+    stream.last, stream.outcome = None, None
+    stream.read(iter([*_sse("progress", {"position": 40, "total": 40, "stage": "saving_run"}), *_sse("complete", {"summary": {}})]))
+    assert not stream.solving.is_set()
+    assert stream.describe() == "the solve ended with 'complete' before it could be interrupted"
+    assert list(acceptance.sse_events(["data: not json\n", "\n", ": comment\n", "\n"])) == [("message", None)]

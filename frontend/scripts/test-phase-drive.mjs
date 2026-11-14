@@ -232,3 +232,18 @@ const sides = [{ slot_index: 0, phase: 'A', direction: 'in' }, { slot_index: 1, 
 const slotNet = slotCurrents(sides, 2, [-0.8, 0, 0.8]);
 assert.deepEqual(sides.map((side) => coilSideOutOfPage(side.direction, -0.8)), slotNet.map((value) => value > 0));
 console.log('live coil-side mark checks passed');
+
+// The waveforms move up to clear whatever covers the foot of the canvas, never off the top.
+{
+  const { phasePanelTop, phaseChargeShift } = await importTypeScriptModule(new URL('../src/public/phaseDrive.ts', import.meta.url));
+  {
+    const panel = { x: 20, y: 150, width: 200, height: 300 };
+    assert.equal(phasePanelTop(panel, 600, 0), 150);
+    assert.equal(phasePanelTop(panel, 600, 200), 74);
+    assert.equal(phasePanelTop(panel, 600, 400), 24);
+    // Charge runs in over the positive half cycle and is back where it began after a whole one.
+    const sine = { mode: 'sinusoidal', currentAngleDeg: 0, currentAngleReference: 'q_axis', currentAmplitudeA: 10, commutationAdvanceDeg: 0, axisOffsetDeg: 0, poleCount: 8 };
+    const shifts = [0, 90, 180, 270, 359.9].map((angle) => phaseChargeShift(sine, 0, angle));
+    assert.ok(Math.max(...shifts.map(Math.abs)) > 0.5 && Math.abs(shifts[4]) < 0.05);
+  }
+}

@@ -78,6 +78,88 @@ export function nextPublicSolveProgressBar(
   return { ...previous, percent: Math.max(previous.percent, percent) };
 }
 
+/** What the viewport shows while a solve works through its positions. */
+export interface PublicSolveRotorTurn {
+  /** Mechanical degrees from the first position of the sweep. */
+  turnDeg: number;
+  /** Meshing turns the rotor; solving holds it where meshing left it, and the view pulses instead. */
+  phase: 'meshing' | 'solving';
+  /** The sweep is over and the result is being put together: the rotor is shown as designed again. */
+  finished: boolean;
+}
+
+/**
+ * The rotor turn to show after an event, or null when no sweep is under way.
+ *
+ * The rotor turns through the sweep as the meshes are prepared, forwards only,
+ * and then stays still while the field is solved. It is drawn from progress
+ * the solver already reports, so showing it costs the solve nothing; it is a
+ * picture of how far meshing has got, not of any one mesh.
+ */
+export function nextPublicSolveRotorTurn(
+  previous: PublicSolveRotorTurn | null,
+  progress: PublicSolveProgress | null,
+  sweepRangeElectricalDeg: number,
+  poleCount: number,
+): PublicSolveRotorTurn | null {
+  if (!progress || progress.stage === 'Validating') return null;
+  // Late timing events follow the end of a sweep; they must not start the turn again.
+  if (previous?.finished) return previous;
+  if (isPublicSolveFinalizing(progress)) {
+    return previous ? { ...previous, finished: true } : null;
+  }
+  // A torque-speed map and other analyses that report one fraction do not sweep the rotor once.
+  if (finiteNumber(progress.solver_detail?.analysis_fraction) !== null) return null;
+  const polePairs = poleCount / 2;
+  if (!(polePairs > 0) || !(sweepRangeElectricalDeg > 0)) return null;
+  const meshFraction = publicSolveMeshFraction(progress);
+  if (meshFraction !== null) {
+    const turnDeg = (sweepRangeElectricalDeg / polePairs) * meshFraction;
+    return { turnDeg: Math.max(previous?.turnDeg ?? 0, turnDeg), phase: 'meshing', finished: false };
+  }
+  if (publicSolvePositionFraction(progress) !== null) {
+    return { turnDeg: previous?.turnDeg ?? 0, phase: 'solving', finished: false };
+  }
+  // Before the first mesh is ready the solve is already meshing.
+  return previous ?? { turnDeg: 0, phase: 'meshing', finished: false };
+}
+
+type NamedFieldFrame = {
+  field_frame_artifact?: { artifact_id?: unknown };
+  full_field_frame_artifact?: { artifact_id?: unknown };
+};
+
+function namedFieldFrameId(frame: unknown): string | null {
+  if (!frame || typeof frame !== 'object') return null;
+  const named = frame as NamedFieldFrame;
+  const artifactId = named.full_field_frame_artifact?.artifact_id ?? named.field_frame_artifact?.artifact_id;
+  return typeof artifactId === 'string' && artifactId ? artifactId : null;
+}
+
+/**
+ * The id of the stored field frame a progress event names, or null. The solve
+ * stream names it on the frame it sends; the stator-field stream on a descriptor.
+ */
+export function publicProgressFieldFrameId(progress: PublicSolveProgress | null): string | null {
+  return namedFieldFrameId(progress?.field_frame) ?? namedFieldFrameId(progress?.field_line_frame);
+}
+
+/**
+ * The progress to keep after an event, with the first stored field frame the
+ * solve named carried along as `field_frame`. Events arrive in bursts and only
+ * the latest is kept, so without this the one event that names a frame is
+ * usually replaced before anything can read it.
+ */
+export function withFirstPublicSolveFieldFrame(
+  previous: PublicSolveProgress | null,
+  next: PublicSolveProgress,
+): PublicSolveProgress {
+  if (next.stage === 'Validating') return next;
+  const carriedId = publicProgressFieldFrameId(previous);
+  if (carriedId === null) return next;
+  return { ...next, field_frame: { field_frame_artifact: { artifact_id: carriedId } } };
+}
+
 export function projectedPublicSolveElapsedSeconds(
   reportedSeconds: number | undefined,
   observedAtMs: number,

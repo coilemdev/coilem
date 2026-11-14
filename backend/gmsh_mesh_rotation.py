@@ -303,9 +303,27 @@ def rotate_solve_mesh_artifact(
             f"pitches: delta={delta_deg:.9f}deg, slot_pitch={pitch:.9f}deg"
         )
 
-    rotated = copy_json_like(artifact)
     if n_slots == 0 and abs(delta_deg) <= tol_deg:
-        return rotated
+        return copy_json_like(artifact)
+
+    # Copy only what rotation changes. Triangles, region tags and the
+    # per-element provenance lists are the same for every congruent position,
+    # and artifacts are treated as values (see copy_json_like's callers), so
+    # the rotated artifact shares them with its base: a full copy took as
+    # long as the rotation itself, and shared arrays are hashed for evidence
+    # and sent between processes once instead of once per position.
+    rotated = dict(artifact)
+    rotated["mesh"] = dict(artifact["mesh"])
+    if isinstance(rotated["mesh"].get("info"), dict):
+        rotated["mesh"]["info"] = copy_json_like(rotated["mesh"]["info"])
+    if isinstance(artifact.get("physics_contract"), dict):
+        contract_copy = dict(artifact["physics_contract"])
+        for key in ("regions", "motion"):
+            if key in contract_copy:
+                contract_copy[key] = copy_json_like(contract_copy[key])
+        if isinstance(contract_copy.get("provenance"), dict):
+            contract_copy["provenance"] = dict(contract_copy["provenance"])
+        rotated["physics_contract"] = contract_copy
 
     delta_rad = math.radians(delta_deg)
     cos_d = math.cos(delta_rad)
@@ -646,10 +664,21 @@ def derive_congruent_solve_report(
     contribution data needed for an exact relabel; callers should fall back
     to a real solve in that case.
     """
-    report = copy_json_like(base_report)
-    results = report.get("results")
+    # Copy only what this synthesis changes: the top level, the results block
+    # (whose changed entries are replaced, not edited), the field plot's node
+    # list and solve_info. The large per-element field arrays are shared with
+    # the base report, as rotate_solve_mesh_artifact shares mesh arrays: a
+    # report is a value once produced, and a full copy of each derived
+    # position cost more than the synthesis itself.
+    report = dict(base_report)
+    results = base_report.get("results")
     if not isinstance(results, dict):
         raise ValueError("solution reuse requires a report with a results block")
+    results = report["results"] = dict(results)
+    if isinstance(report.get("field_plot"), dict):
+        report["field_plot"] = dict(report["field_plot"])
+    if isinstance(report.get("solve_info"), dict):
+        report["solve_info"] = copy_json_like(report["solve_info"])
 
     shift = int(n_slot_pitches) % max(1, slot_count)
 

@@ -178,7 +178,6 @@ export function ReferenceMotor3D(props: Props) {
         title={`${hidden.has(id) ? 'Show' : 'Hide'} ${label.toLowerCase()}`}
         onClick={() => setHidden((current) => { const next = new Set(current); if (!next.delete(id)) next.add(id); return next; })}>{label}</button>)}
     </div>}
-    <div className="public-3d-hint">Reference cross-section · click a part · drag to orbit · wheel to zoom</div>
     {(error || !preview) && <div className="public-viewport-message">{error || 'Loading reference geometry…'}</div>}
   </div>;
 }

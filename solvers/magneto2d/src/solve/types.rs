@@ -19,6 +19,9 @@ pub struct NonlinearConvergence {
     pub scaled_residual: Option<f64>,
     pub rhs_scaled_residual: Option<f64>,
     pub initial_rhs_scaled_residual: Option<f64>,
+    /// What `scaled_residual` divides by when that is not the starting mismatch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference_rhs_scaled_residual: Option<f64>,
     pub absolute_residual_floor: Option<f64>,
     pub residual_definition: String,
     pub tolerance: f64,
@@ -39,6 +42,7 @@ impl NonlinearConvergence {
             scaled_residual: None,
             rhs_scaled_residual: None,
             initial_rhs_scaled_residual: None,
+            reference_rhs_scaled_residual: None,
             absolute_residual_floor: None,
             residual_definition: "linear material; no nonlinear mismatch".into(),
             tolerance: 0.0,

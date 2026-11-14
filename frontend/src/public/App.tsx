@@ -1,3 +1,4 @@
+import { savedResultPlayback } from './savedRunPlayback';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -30,7 +31,8 @@ import {
   type PublicWorkflowStep,
 } from './CoilEmWorkspace';
 import { PublicGuidedSetup } from './GuidedSetup';
-import { coilsPerPhase, parallelPathsDividing, repairGuidedSection, windingForType } from './guidedConfigRepair';
+import type { NewDesignEntrySnapshot } from './newDesignEntry';
+import { coilsPerPhase, parallelPathsDividing, windingForType } from './guidedConfigRepair';
 import { designErrorText } from './designErrors';
 import { windingLayerWording } from './toothCoils';
 import { PublicLanding } from './PublicLanding';
@@ -61,6 +63,7 @@ import { asPublicConfig } from './publicRequest';
 import { setAnalysisOption, type AnalysisKey } from './analysisOptions';
 import { projectMaterialCatalog, type CustomSteel, type SteelTarget } from './customSteel';
 import { resetDesignViewMemory } from './designViewMemory';
+import { acceptDesignSection, designPartsComplete, fitPoleMagnets, fitUnbuiltParts, newBuildConfig, revealEditedPart, type BuiltParts, type DesignIssue } from './progressiveDesign';
 import { createPublicExampleDesign, type PublicExampleId } from './exampleDesigns';
 import {
   cloneDefaultConfig,
@@ -87,7 +90,7 @@ import {
   type PublicSolvePreset,
   type PublicSweepSampling,
 } from './solvePlan';
-import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar } from './solveProgress';
+import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar, withFirstPublicSolveFieldFrame } from './solveProgress';
 
 const FALLBACK_MATERIALS: MaterialCatalog = {
   steels: ['M350-50A'],
@@ -375,6 +378,7 @@ const DESIGN_FIELD_UNITS: Record<string, string> = {
 interface DesignEditState extends PublicDesignEditFeedback {
   previousConfig: MotorConfig;
   previousBlankDesign: boolean;
+  previousNewDesignParts?: BuiltParts | null;
 }
 
 function slotsPerPolePerPhase(config: MotorConfig): number {
@@ -538,6 +542,9 @@ export function App() {
   const [config, setConfig] = useState<MotorConfig>(() => cloneDefaultConfig());
   const [designName, setDesignName] = useState<string | null>(null);
   const [blankDesign, setBlankDesign] = useState(false);
+  const [newDesignParts, setNewDesignParts] = useState<BuiltParts | null>(null);
+  const [designSession, setDesignSession] = useState(0);
+  const [designInputErrors, setDesignInputErrors] = useState<Record<string, DesignIssue | null>>({});
   const [materials, setMaterials] = useState<MaterialCatalog>(FALLBACK_MATERIALS);
   const [geometry, setGeometry] = useState<GeometryPreview | null>(null);
   const [mesh, setMesh] = useState<MeshPreview | null>(null);
@@ -554,6 +561,10 @@ export function App() {
   const [guidedDesignSection, setGuidedDesignSection] = useState<PublicParameterSection | null>(null);
   const [guidedSolveSection, setGuidedSolveSection] = useState<SolveSetupSection | null>(null);
   const [busy, setBusy] = useState<PublicBusyAction>(null);
+  // Development auto reload (COILEM_UI_AUTO_RELOAD=1): the page reloads when the launcher reports a rebuilt UI, but never under a running solve.
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
+  const uiReloadTokenRef = useRef<string | null>(null);
   const [cancellingSolve, setCancellingSolve] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
@@ -583,7 +594,6 @@ export function App() {
   const meshRequestId = useRef(0);
   const validationRequestId = useRef(0);
   const editFeedbackId = useRef(0);
-  const guidedVisitedSectionsRef = useRef(new Set<PublicParameterSection>());
   const presetSweepRef = useRef<PublicSweepSampling>({ ...PUBLIC_DEFAULT_PRESET_SWEEP });
   const excitationDraftRef = useRef(createExcitationDrafts(config, cloneDefaultConfig()));
 
@@ -686,14 +696,11 @@ export function App() {
     field: string,
     value: unknown,
     visitedSection?: PublicParameterSection,
+    entrySnapshot?: NewDesignEntrySnapshot,
   ) => {
     if (config.geometry_reference && section !== "solve_params") return;
-    // An edit is explicit ownership of the section, even if the submitted
-    // value equals its current value. Never let a later coach stop silently
-    // repair a section the user has already touched.
-    if (guidedActive && visitedSection) {
-      guidedVisitedSectionsRef.current.add(visitedSection);
-    }
+    const enteredFields = entrySnapshot?.fields;
+    if (guidedActive && visitedSection) setGuidedDesignSection(visitedSection);
     const selectedIpmLayout = section === 'rotor'
       && field === 'ipm_topology'
       && (value === 'flat_buried' || value === 'v_shape')
@@ -708,7 +715,7 @@ export function App() {
     const layerCoilsPerPhase = layerCount === null
       ? 0
       : coilsPerPhase(config.stator.slot_count, config.rotor.pole_count, config.winding.type, layerCount);
-    const nextConfig: MotorConfig = selectedIpmLayout
+    let nextConfig: MotorConfig = selectedIpmLayout
       ? {
         ...config,
         rotor: {
@@ -750,18 +757,36 @@ export function App() {
         ...config,
         [section]: { ...config[section], [field]: value },
       };
-    if (Object.is(editableValue(config, section, field), editableValue(nextConfig, section, field))) return;
+    // Confirmation and this edit share one React event. Include the current
+    // field before checking whether an unchanged default reveals another part.
+    const magnetLabel = section === 'rotor' ? { magnet_thickness_mm: 'Magnet Thick.', magnet_width_mm: 'Magnet Width', v_angle_deg: 'V Angle', v_depth_mm: 'V Depth' }[field] : undefined;
+    const confirmed = enteredFields && { ...enteredFields, ...(magnetLabel ? { [`rotor:${magnetLabel}`]: true } : {}) };
+    let nextParts = newDesignParts ? revealEditedPart(newDesignParts, section, field) : null;
+    if (nextParts && confirmed) nextParts = { ...nextParts,
+      magnets: Boolean(confirmed['rotor:Magnet Thick.'] && confirmed['rotor:Magnet Width']
+        && (nextConfig.topology !== 'IPM' || nextConfig.rotor.ipm_topology !== 'v_shape'
+          || confirmed['rotor:V Angle'] && confirmed['rotor:V Depth'])),
+    };
+    const revealsPart = JSON.stringify(nextParts) !== JSON.stringify(newDesignParts);
+    if (Object.is(editableValue(config, section, field), editableValue(nextConfig, section, field)) && !revealsPart) return;
+    if (nextParts) {
+      if (section === 'rotor' && field === 'pole_count') nextConfig = fitPoleMagnets(config, nextConfig, newDesignParts!, confirmed);
+      nextConfig = fitUnbuiltParts(nextConfig, nextParts, confirmed);
+      setNewDesignParts(nextParts);
+    }
     setConfig(nextConfig);
     setEditFeedback({
       id: ++editFeedbackId.current,
       previousConfig: config,
       previousBlankDesign: blankDesign,
+      previousNewDesignParts: newDesignParts,
+      previousEntry: entrySnapshot,
       ...describeDesignEdit(config, nextConfig, section, field),
     });
     setBlankDesign(false);
     if (section !== 'solve_params') invalidateGeometryPreview();
     resetComputedState();
-  }, [blankDesign, config, guidedActive, invalidateGeometryPreview, resetComputedState]);
+  }, [blankDesign, config, guidedActive, invalidateGeometryPreview, newDesignParts, resetComputedState]);
 
   const convertProjectSteelToM350 = useCallback(() => {
     setConfig((current) => ({
@@ -795,7 +820,7 @@ export function App() {
     setNotice(`${material.name} imported and assigned. Save the design to keep its curve with the project.`);
   }, [config.materials.custom_steels, invalidateGeometryPreview, resetComputedState]);
 
-  const updateTopology = useCallback((topology: MotorConfig['topology']) => {
+  const updateTopology = useCallback((topology: MotorConfig['topology'], entrySnapshot?: NewDesignEntrySnapshot) => {
     if (topology === config.topology) return;
     let nextConfig = changeTopologyPreservingAirgap(config, topology);
     if (topology !== 'SPM' && nextConfig.solve_params.excitation_mode === 'ideal_six_step_120') {
@@ -818,10 +843,13 @@ export function App() {
       ? `airgap held at ${nextAirgapMm.toFixed(2)} mm`
       : `airgap adjusted ${previousAirgapMm.toFixed(2)} → ${nextAirgapMm.toFixed(2)} mm to keep the geometry valid`;
     setConfig(nextConfig);
+    if (newDesignParts) setNewDesignParts({ ...newDesignParts, rotor: false, magnets: false });
     setEditFeedback({
       id: ++editFeedbackId.current,
       previousConfig: config,
       previousBlankDesign: blankDesign,
+      previousNewDesignParts: newDesignParts,
+      previousEntry: entrySnapshot,
       message: 'Motor topology updated',
       consequence: `${config.topology} → ${topology} · ${airgapConsequence}`,
       affectedKind: 'rotor',
@@ -829,12 +857,13 @@ export function App() {
     setBlankDesign(false);
     invalidateGeometryPreview();
     resetComputedState();
-  }, [blankDesign, config, invalidateGeometryPreview, resetComputedState]);
+  }, [blankDesign, config, invalidateGeometryPreview, newDesignParts, resetComputedState]);
 
   const undoLastDesignEdit = useCallback(() => {
     if (!editFeedback) return;
     setConfig(editFeedback.previousConfig);
     setBlankDesign(editFeedback.previousBlankDesign);
+    if (editFeedback.previousNewDesignParts !== undefined) setNewDesignParts(editFeedback.previousNewDesignParts);
     setEditFeedback(null);
     invalidateGeometryPreview();
     if (editFeedback.previousBlankDesign) {
@@ -993,6 +1022,11 @@ export function App() {
     setNotice('Custom full-cycle sweep selected. Updating the run estimate.');
   }, [config]);
 
+  const constructionPreview = newDesignParts !== null && !designPartsComplete(newDesignParts);
+  const statorOnlyPreview = constructionPreview && config.topology === 'IPM'
+    && !newDesignParts?.rotor && config.rotor_layout !== 'outer';
+  const diagnosticPreview = constructionPreview && config.topology === 'IPM'
+    && Boolean(newDesignParts?.rotor) && config.rotor_layout !== 'outer';
   const refreshGeometry = useCallback(async (nextConfig: MotorConfig, clearExistingError = true) => {
     const requestId = ++previewRequestId.current;
     setGeometryStale(true);
@@ -1004,12 +1038,17 @@ export function App() {
       setError(null);
     }
     try {
-      const payload = await generatePublicPreview(asPublicConfig(nextConfig));
+      const payload = await generatePublicPreview(asPublicConfig(nextConfig), { construction: constructionPreview, statorOnly: statorOnlyPreview, diagnostic: diagnosticPreview });
       if (requestId !== previewRequestId.current) return;
-      setGeometry(payload as unknown as GeometryPreview);
+      const nextGeometry = payload as unknown as GeometryPreview;
+      setGeometry(nextGeometry);
       setGeometryStale(false);
       setConnectionStatus('online');
-      setError(null);
+      const diagnosticIssue = nextGeometry.metadata?.diagnostic_only ? nextGeometry.validation_errors[0] : null;
+      setError(diagnosticIssue ? { error_code: String(diagnosticIssue.error_code ?? 'INVALID_GEOMETRY'),
+        message: String(diagnosticIssue.message ?? 'Review the rotor geometry.'),
+        field: typeof diagnosticIssue.field === 'string' ? diagnosticIssue.field : null,
+        suggestion: typeof diagnosticIssue.suggestion === 'string' ? diagnosticIssue.suggestion : null } : null);
     } catch (requestError) {
       if (requestId !== previewRequestId.current) return;
       setPreviewNetworkFailed(requestError instanceof TypeError);
@@ -1020,7 +1059,7 @@ export function App() {
         setBusy((current) => current === 'geometry' ? null : current);
       }
     }
-  }, []);
+  }, [constructionPreview, statorOnlyPreview, diagnosticPreview]);
 
   const refreshSolveValidation = useCallback(async (nextConfig: MotorConfig) => {
     const requestId = ++validationRequestId.current;
@@ -1073,6 +1112,14 @@ export function App() {
     const stopBackendMonitor = startPublicBackendMonitor({
       probe: getPublicHealth,
       onOnline: (health) => {
+        const reloadToken = typeof health.ui_reload_token === 'string' ? health.ui_reload_token : null;
+        if (reloadToken !== null) {
+          if (uiReloadTokenRef.current === null) uiReloadTokenRef.current = reloadToken;
+          else if (reloadToken !== uiReloadTokenRef.current && busyRef.current !== 'solve') {
+            window.location.reload();
+            return;
+          }
+        }
         const nextElmerCapability = elmerCapabilityFromHealth(health);
         setConnectionStatus('online');
         setAppVersion(typeof health.version === 'string' && health.version.trim() ? health.version.trim() : null);
@@ -1134,7 +1181,8 @@ export function App() {
   const generateMesh = (): Promise<MeshPreview | null> => prepareMesh(config);
 
   const handleSolveProgress = useCallback((nextProgress: PublicSolveProgress) => {
-    setProgress(nextProgress);
+    // The first solved field a run names stays on the progress for the Solve page to show.
+    setProgress((previous) => withFirstPublicSolveFieldFrame(previous, nextProgress));
     const hasAngle = typeof nextProgress.angle_deg === 'number' && Number.isFinite(nextProgress.angle_deg);
     const hasTorque = typeof nextProgress.torque_Nm === 'number' && Number.isFinite(nextProgress.torque_Nm);
     const hasBackEmf = [nextProgress.phase_a_V, nextProgress.phase_b_V, nextProgress.phase_c_V]
@@ -1356,6 +1404,8 @@ export function App() {
   };
 
   const reset = () => {
+    setNewDesignParts(null);
+    setDesignInputErrors({});
     const next = cloneDefaultConfig();
     rememberPresetSweep(next);
     setConfig(next);
@@ -1371,7 +1421,7 @@ export function App() {
     setNotice('Design reset to the example motor.');
   };
 
-  const startNewDesign = () => {
+  const beginNewDesign = (guided: boolean) => {
     resetDesignViewMemory();
     solveRequestId.current += 1;
     meshRequestId.current += 1;
@@ -1382,31 +1432,37 @@ export function App() {
     armatureFieldController.current = null;
     solveResultBeforeRun.current = null;
     previewRequestId.current += 1;
-    const nextConfig = cloneDefaultConfig();
+    const nextConfig = newBuildConfig('inner');
     rememberPresetSweep(nextConfig);
     setConfig(nextConfig);
     setDesignName('New Design');
     setBlankDesign(true);
+    setNewDesignParts({});
+    setDesignInputErrors({});
+    setDesignSession((session) => session + 1);
     setGeometry(null);
     setGeometryStale(false);
     setEditFeedback(null);
     resetComputedState();
-    setGuidedActive(false);
+    setGuidedActive(guided);
     setGuidedDesignSection(null);
     setGuidedSolveSection(null);
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
-    setNotice('Blank design ready. Change a design parameter to create its first preview.');
+    setNotice('Choose the rotor arrangement and topology, then build the motor from outside inward.');
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }
   };
+  const startNewDesign = () => beginNewDesign(false);
 
   const openDesignFile = async (file: File) => {
     resetDesignViewMemory();
     try {
       const parsed = parseDesignFile(await file.text());
+      setNewDesignParts(null);
+      setDesignInputErrors({});
       rememberPresetSweep(parsed.config);
       setConfig(parsed.config);
       if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
@@ -1431,6 +1487,19 @@ export function App() {
   // dimensions as an outer rotor's; the last inrunner comes back on return.
   const lastInrunnerRef = useRef<{ name: string | null; config: MotorConfig } | null>(null);
   const updateRotorLayout = (layout: RotorLayout) => {
+    if (newDesignParts) {
+      const next = newBuildConfig(layout);
+      rememberPresetSweep(next);
+      setConfig(next);
+      setNewDesignParts({});
+      setDesignInputErrors({});
+      setGeometry(null);
+      setBlankDesign(true);
+      setEditFeedback(null);
+      invalidateGeometryPreview();
+      resetComputedState();
+      return;
+    }
     if (layout === (config.rotor_layout ?? 'inner')) return;
     if (layout === 'outer') {
       lastInrunnerRef.current = { name: designName, config };
@@ -1442,6 +1511,8 @@ export function App() {
   };
 
   const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string | null; config: MotorConfig }) => {
+    setNewDesignParts(null);
+    setDesignInputErrors({});
     resetDesignViewMemory();
     const example = restored ?? createPublicExampleDesign(exampleId);
     rememberPresetSweep(example.config);
@@ -1516,6 +1587,8 @@ export function App() {
         throw new Error('The saved run does not contain a replayable project.');
       }
       const parsed = parseDesignFile(JSON.stringify(project));
+      setNewDesignParts(null);
+      setDesignInputErrors({});
       const requestPayload = payload.request;
       const submittedRequest = requestPayload && typeof requestPayload === 'object'
         ? (requestPayload as PublicJson).submitted
@@ -1547,7 +1620,7 @@ export function App() {
         }
         const provenance = (payload.manifest as PublicJson | undefined)?.provenance as PublicJson | undefined;
         setResult({
-          ...(storedResult as PublicJson),
+          ...savedResultPlayback(storedResult as unknown as SolveResult, payload.field_playback),
           saved_run: payload.saved_run,
           qualification: provenance?.qualification ?? null,
         } as unknown as SolveResult);
@@ -1574,6 +1647,9 @@ export function App() {
   };
 
   const openWorkspace = (guided: boolean) => {
+    if (guided) { beginNewDesign(true); return; }
+    setNewDesignParts(null);
+    setDesignInputErrors({});
     resetDesignViewMemory();
     if (blankDesign) {
       const nextConfig = cloneDefaultConfig();
@@ -1585,59 +1661,28 @@ export function App() {
       resetComputedState();
     }
     setBlankDesign(false);
-    if (guided) {
-      // Begin from the valid 8-pole/12-slot starter. If an upstream choice
-      // invalidates later defaults, the coach repairs only the still-unseen
-      // section immediately before the user reaches it.
-      const nextConfig = cloneDefaultConfig();
-      rememberPresetSweep(nextConfig);
-      setConfig(nextConfig);
-      setEditFeedback(null);
-      setDesignName(null);
-      invalidateGeometryPreview();
-      resetComputedState();
-    }
     setShowLanding(false);
     setView('design');
-    guidedVisitedSectionsRef.current = new Set();
     setGuidedDesignSection(null);
     setGuidedSolveSection(null);
     setGuidedActive(guided);
     setNotice(null);
   };
 
-  const prepareGuidedDesignSection = useCallback((
-    section: PublicParameterSection,
-  ): string | null => {
-    if (!guidedActive || guidedVisitedSectionsRef.current.has(section)) return null;
-    guidedVisitedSectionsRef.current.add(section);
-    const repaired = repairGuidedSection(config, section);
-    if (repaired.adjustments.length === 0) return null;
-    setConfig(repaired.config);
-    setEditFeedback(null);
-    setBlankDesign(false);
-    invalidateGeometryPreview();
-    resetComputedState();
-    const summary = repaired.adjustments
-      .map((adjustment) => `${adjustment.label} → ${adjustment.next ?? 'automatic'}`)
-      .join(' · ');
-    return `Adjusted upcoming defaults to fit your earlier choices: ${summary}.`;
-  }, [config, guidedActive, invalidateGeometryPreview, resetComputedState]);
-
   const visitGuidedDesignSection = useCallback((section: PublicParameterSection) => {
-    const adjustment = prepareGuidedDesignSection(section);
-    if (adjustment) setNotice(adjustment);
-  }, [prepareGuidedDesignSection]);
+    if (guidedActive) setGuidedDesignSection(section);
+  }, [guidedActive]);
 
   const revealGuidedDesignSection = useCallback((section: PublicParameterSection | null) => {
-    if (!section) {
-      setGuidedDesignSection(null);
-      return null;
-    }
-    const adjustment = prepareGuidedDesignSection(section);
     setGuidedDesignSection(section);
-    return adjustment;
-  }, [prepareGuidedDesignSection]);
+  }, []);
+
+  const acceptNewDesignSection = (section: PublicParameterSection) => {
+    if (!newDesignParts || Object.values(designInputErrors).some(Boolean)) return;
+    setNewDesignParts(acceptDesignSection(newDesignParts, section));
+    setEditFeedback(null);
+    setBlankDesign(false);
+  };
 
   // Tutorials get real URLs so a lesson can be linked to and the browser back
   // button behaves. Paths match the private app's table, so a link shared out of
@@ -1672,8 +1717,10 @@ export function App() {
   }, []);
 
   const changeWorkflowStep = (step: PublicWorkflowStep) => {
+    if (step === 'solve' && (!designPartsComplete(newDesignParts) || Object.values(designInputErrors).some(Boolean))) return;
     setView(step);
-    if (step === 'solve' && !mesh && busy !== 'mesh' && busy !== 'solve') {
+    if (step === 'solve' && guidedActive) setGuidedSolveSection('operating');
+    if (step === 'solve' && !guidedActive && !mesh && busy !== 'mesh' && busy !== 'solve') {
       void generateMesh();
     }
   };
@@ -1712,7 +1759,7 @@ export function App() {
           }}
           onOpenDesignFile={(file) => void openDesignFile(file)}
           onSaveDesign={saveDesign}
-          onResetDesign={resetDesign}
+          onResetDesign={guidedActive ? () => beginNewDesign(true) : resetDesign}
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
           onNewDesign={startNewDesign}
@@ -1811,7 +1858,7 @@ export function App() {
           }}
           onOpenDesignFile={(file) => void openDesignFile(file)}
           onSaveDesign={saveDesign}
-          onResetDesign={resetDesign}
+          onResetDesign={guidedActive ? () => beginNewDesign(true) : resetDesign}
           onLoadExample={loadExampleDesign}
           onOpenHalbach={() => setShowHalbachWorkspace(true)}
           onNewDesign={startNewDesign}
@@ -1832,7 +1879,9 @@ export function App() {
 
   return (
     <>
+    {/* Replace the whole workspace on New Design, including panel and viewport state. */}
     <CoilEmWorkspace
+      key={designSession}
       appVersion={appVersion}
       config={config}
       materials={projectMaterialCatalog(materials, config)}
@@ -1850,6 +1899,25 @@ export function App() {
       guidedActive={guidedActive}
       guidedDesignSection={guidedDesignSection}
       guidedSolveSection={guidedSolveSection}
+      guidedSetup={guidedActive ? <PublicGuidedSetup
+        activeStep={view}
+        activeDesignSection={guidedDesignSection}
+        topology={config.topology}
+        resultReady={Boolean(result)}
+        meshReady={Boolean(mesh)}
+        busy={busy !== null}
+        onWorkflowStepChange={changeWorkflowStep}
+        onDesignSectionChange={revealGuidedDesignSection}
+        onSolveSectionChange={setGuidedSolveSection}
+        onAcceptDesignSection={acceptNewDesignSection}
+        onGenerateMesh={() => void generateMesh()}
+        onStartSolve={() => void startSolve()}
+        onExit={() => {
+          setGuidedActive(false);
+          setGuidedDesignSection(null);
+          setGuidedSolveSection(null);
+        }}
+      /> : null}
       busy={busy}
       connectionStatus={connectionStatus}
       selectedSolver={selectedSolver}
@@ -1864,10 +1932,15 @@ export function App() {
       meshQuality={meshQuality}
       designName={designName}
       blankDesign={blankDesign}
+      newDesignParts={newDesignParts}
+      designInputInvalid={Object.values(designInputErrors).some(Boolean)}
+      designInputIssue={Object.values(designInputErrors).find((issue) => issue !== null)}
+      onDesignInputIssueChange={(field, issue) => setDesignInputErrors((current) => current[field]?.message === issue?.message ? current : { ...current, [field]: issue })}
+      onAcceptDesignSection={acceptNewDesignSection}
       editFeedback={editFeedback}
       onOpenDesignFile={(file) => void openDesignFile(file)}
       onSaveDesign={saveDesign}
-      onResetDesign={resetDesign}
+      onResetDesign={guidedActive ? () => beginNewDesign(true) : resetDesign}
       onLoadExample={loadExampleDesign}
       onOpenHalbach={() => setShowHalbachWorkspace(true)}
       onNewDesign={startNewDesign}
@@ -1891,7 +1964,7 @@ export function App() {
       onAnalysisChange={updateAnalysis}
       onTorqueSpeedChange={updateTorqueSpeed}
       onSolverChange={selectSolver}
-      onReset={reset}
+      onReset={guidedActive ? () => beginNewDesign(true) : reset}
       onRefreshGeometry={() => void refreshGeometry(config)}
       onGenerateMesh={() => void generateMesh()}
       onStartSolve={() => void startSolve()}
@@ -1907,23 +1980,6 @@ export function App() {
       onUndoDesignEdit={undoLastDesignEdit}
       onDismissDesignEdit={() => setEditFeedback(null)}
     />
-    {guidedActive && (
-      <PublicGuidedSetup
-        activeStep={view}
-        topology={config.topology}
-        resultReady={Boolean(result)}
-        busy={busy !== null}
-        onWorkflowStepChange={changeWorkflowStep}
-        onDesignSectionChange={revealGuidedDesignSection}
-        onSolveSectionChange={setGuidedSolveSection}
-        onStartSolve={() => void startSolve()}
-        onExit={() => {
-          setGuidedActive(false);
-          setGuidedDesignSection(null);
-          setGuidedSolveSection(null);
-        }}
-      />
-    )}
     </>
   );
 }

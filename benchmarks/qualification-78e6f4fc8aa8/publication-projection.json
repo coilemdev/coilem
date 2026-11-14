@@ -1,0 +1,58 @@
+{
+  "schema": "coilem.qualification_publication_projection/v1",
+  "measured_commit": "78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9",
+  "source_run": 43555487683,
+  "note": "Only machine-local diagnostic paths are redacted for publication. Original CI artifacts retain their bytes. Numerical values, gate verdicts, requests and measured identities are unchanged.",
+  "files": [
+    {
+      "platform": "windows-x86_64",
+      "file": "report/benchmark_summary.json",
+      "original_sha256": "da7fc2fc760231a7d661087135889d9edcb7228103941c24347baa517f9a7fbd",
+      "published_sha256": "da7fc2fc760231a7d661087135889d9edcb7228103941c24347baa517f9a7fbd",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/coilem_benchmark_report.html",
+      "original_sha256": "e68ba368fca939aa58ee02e08d11b4000e00803d0fd91247e1c21e99e8dac2c4",
+      "published_sha256": "e68ba368fca939aa58ee02e08d11b4000e00803d0fd91247e1c21e99e8dac2c4",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "ef55186c24e99031978ef0e03ebe5fb5d372b7676895f3875617370d7fcb707a",
+      "published_sha256": "ef55186c24e99031978ef0e03ebe5fb5d372b7676895f3875617370d7fcb707a",
+      "purpose": "Index the exact public projection bytes; original index remains in the CI artifact."
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/benchmark_summary.json",
+      "original_sha256": "d952c7768e65cdb18ba0e9533209bbd8c3460e7f4015cf65e528bc08429c8758",
+      "published_sha256": "b6151a3f8a047f5716d8b35e1a4af7ca69bbe8bd9708b291e5f9e222aeea648a",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/coilem_benchmark_report.html",
+      "original_sha256": "e0b7f6eb2283d7a5558f9e7b7e576a732f6c302ec2cc48a7c2b1604cbd781396",
+      "published_sha256": "27f78fd4396b42bab12d46b9790d5e6d0b44cd84d4ce4d0459024a1e834abc63",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "12400a6f0f4ce721617b14e7fcc98c18a2850d38d02e981c29c9d5c635e6fe0f",
+      "published_sha256": "31b1c53e40eb0514d0100f814d1ce42d1af7bb0240d755e43376580751a4a8ff",
+      "purpose": "Index the exact public projection bytes; original index remains in the CI artifact."
+    }
+  ]
+}

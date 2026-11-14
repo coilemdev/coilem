@@ -114,10 +114,6 @@ const playbackRasterizerSource = await readFile(path.join(frontendRoot, 'src/pub
 const playbackWorkerSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackWorker.ts'), 'utf8');
 const apiSource = await readFile(path.join(frontendRoot, 'src/public/api.ts'), 'utf8');
 const guidedSource = await readFile(path.join(frontendRoot, 'src/public/GuidedSetup.tsx'), 'utf8');
-const guidedRepairSource = await readFile(
-  path.join(frontendRoot, 'src/public/guidedConfigRepair.ts'),
-  'utf8',
-);
 const styleSource = await readFile(path.join(frontendRoot, 'src/public/styles.css'), 'utf8');
 const windingLayoutSource = await readFile(
   path.join(frontendRoot, 'src/public/WindingLayoutView.tsx'),
@@ -182,7 +178,7 @@ const selectSolverBlock = appSource.slice(
   appSource.indexOf('const updateSolvePlan'),
 );
 assert.doesNotMatch(selectSolverBlock, /setConfig/, 'Solver selection must not overwrite project settings');
-assert.match(workspaceSource, /aria-pressed=\{config\.topology === topology\}/);
+assert.match(workspaceSource, /aria-pressed=\{entry \? entry\.topology === topology : config\.topology === topology\}/);
 // Hovering opens the Examples submenu; a click must not toggle it closed again (#22).
 assert.match(workspaceSource, /onMouseEnter=\{\(\) => setExamplesMenuOpen\(true\)\}/);
 assert.match(workspaceSource, /onClick=\{\(\) => setExamplesMenuOpen\(true\)\}/);
@@ -190,7 +186,7 @@ assert.doesNotMatch(workspaceSource, /setExamplesMenuOpen\(\(open\) => !open\)/)
 assert.match(workspaceSource, /className="workflow-stepper workflow-stepper-inline"/);
 assert.match(workspaceSource, /design-workspace workflow-stage-content\$\{designViewportExpanded/);
 assert.match(workspaceSource, /className="design-workspace-main"/);
-assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed \? ' is-collapsed' : ''\}`\}/);
+assert.match(workspaceSource, /className=\{`design-workspace-health\$\{designHealthCollapsed && !props\.guidedActive \? ' is-collapsed' : ''\}`\}/);
 // Design health folds to a strip that keeps its status icon, and opens again from it.
 assert.match(workspaceSource, /collapsed=\{designHealthCollapsed\} onCollapsedChange=\{setDesignHealthCollapsed\}/);
 assert.match(workspaceSource, /if \(collapsed\) return collapsedStrip\(tone, ready \? '✓'/);
@@ -203,11 +199,13 @@ assert.match(workspaceSource, /'Bore tooth is much narrower' : 'Bore tooth is sl
 assert.match(workspaceSource, /Bore \$\{statorWidths\.boreToothWidthMm\.toFixed\(1\)\} mm · yoke \$\{statorWidths\.toothWidthAtYokeMm/);
 assert.match(workspaceSource, /This mild taper is usually acceptable/);
 assert.match(workspaceSource, /<HealthPanel[^>]*geometryStale=\{props\.geometryStale\}/);
-assert.match(workspaceSource, /className="panel-left public-parameter-panel"/);
+assert.match(workspaceSource, /className=\{`panel-left public-parameter-panel/);
 assert.match(workspaceSource, /const burialHealth = publicFlatIpmBurialHealth\(config\)/);
 assert.match(workspaceSource, /\.\.\.\(burialHealth \? \[burialHealth\] : \[\]\)/);
 assert.match(workspaceSource, /burialHealth\?\.blocking !== true/);
-assert.match(workspaceSource, /NumberRow label="Bore Tooth Width".*min=\{minimumBoreToothWidthMm\}.*max=\{maximumBoreToothWidthMm\}/);
+// A derived width at the physical limit must remain valid after display rounding;
+// the setter still clamps against the unrounded geometry limit.
+assert.match(workspaceSource, /NumberRow label="Bore Tooth Width".*min=\{minimumBoreToothWidthMm\}.*max=\{Number\(maximumBoreToothWidthMm\.toFixed\(1\)\)\}/);
 // Inner rotors keep the 2 mm floor; outer rotors (drone stators) go to 0.5 mm.
 assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width".*min=\{outer \? 0\.5 : 2\}/);
 assert.match(workspaceSource, /label="Outer Bridge"/);
@@ -239,7 +237,7 @@ assert.match(workspaceSource, /Converting changes the material model and predict
 assert.match(workspaceSource, />Convert project to M350-50A</);
 assert.match(workspaceSource, /Material not supported/);
 // Schema errors lead with their location; solve settings are not geometry (#19).
-assert.match(workspaceSource, /\/\^solve_\(params\|options\)\\b\/\.test\(error\)\s*\?\s*'Solve settings need attention'/);
+assert.match(workspaceSource, /\/\^solve_\(params\|options\)\\b\/\.test\(error\)\) currentErrorTitle = 'Solve settings need attention'/);
 // Every stage shows the benchmark qualification the backend computed (#20).
 assert.match(workspaceSource, /function readQualification\(value: unknown\): PublicQualification \| null/);
 assert.match(workspaceSource, /docs\/VALIDATION\.md#qualification-status/);
@@ -657,10 +655,10 @@ assert.match(motorThreeSource, /const airgapGeometry = outerRotor\s+\? annulusGe
 // extrude their preview regions.
 assert.match(motorThreeSource, /return props\.config\.geometry_reference\s+\? <ReferenceMotor3D \{\.\.\.props\} \/> : <ParametricMotor3D \{\.\.\.props\} \/>;/);
 assert.match(motorThreeSource, /const magnetSeatRadius = outerRotor \?/);
-// An outer rotor's can is closed by a spoked bell on the rotor core, so it turns
-// the shaft; a fixed tube in the stator hub holds the bearings.
+// An outer rotor's can is closed by a spoked bell that turns the shaft and can
+// be hidden independently; a fixed tube in the stator hub holds the bearings.
 assert.match(motorThreeSource, /function buildRotorBell\(/);
-assert.match(motorThreeSource, /rotorCoreGroup\.add\(bell\.group\)/);
+assert.match(motorThreeSource, /rotorBellGroup\.add\(bell\.group\)/);
 assert.match(motorThreeSource, /label: 'Stator hub · bearing tube'/);
 assert.doesNotMatch(motorThreeSource, /new THREE\.TorusGeometry/);
 assert.match(motorThreeSource, /statorGroup\.position\.z = -4\.25 \* station/);
@@ -689,21 +687,20 @@ assert.match(workspaceSource, /showPlayback && \(\s*<span className="vc-group pu
 assert.match(workspaceSource, /<button type="button" className="public-field-transport-play" aria-label=\{isAnimating \? 'Pause preview' : 'Play preview'\}/);
 assert.match(workspaceSource, /<RpmField\s+value=\{animationRpm\}\s+min=\{0\.1\}\s+max=\{100\}\s+label="Speed"\s+ariaLabel="Preview speed \(RPM\)"/);
 // Phases only means something while the rotor turns, so it is a toggle beside the
-// preview speed (2D only), not one of the static overlays; it is the winding overlay
-// shaded by phase current, so Winding stays pressed under it.
-assert.match(workspaceSource, /\['windings', 'Winding'\],\s*\] as Array<\[PublicCanvasLayer, string\]>\)/);
+// preview speed (2D only), not one of the label overlays.
+assert.match(workspaceSource, /\['windings', 'Winding', 'winding labels \(A\+, A-\)'\],\s*\] as Array<\[keyof PublicCanvasOverlays, string, string\]>\)/);
 assert.doesNotMatch(workspaceSource, /\['phases', 'Phases'\]/);
-assert.match(workspaceSource, /const pressed = canvasLayer === layer \|\| \(layer === 'windings' && canvasLayer === 'phases'\);/);
-assert.match(workspaceSource, /onChange=\{setAnimationRpm\}\s*\/>[\s\S]{0,400}?\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
-assert.match(workspaceSource, /onClick=\{\(\) => setCanvasLayer\(\(current\) => \(current === 'phases' \? 'windings' : 'phases'\)\)\}\s*>\s*Phases\s*<\/button>/);
-// With Phases on, the motor shows only the phase colours changing: no slot labels.
-assert.match(motorCanvasSource, /\n  if \(layer === 'slots' \|\| layer === 'windings'\) \{\n    context\.textAlign = 'center';/);
+assert.match(workspaceSource, /aria-label="Display toggles">[\s\S]{0,700}?\{mode === 'geometry' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{canvasLayer === 'phases'\}/);
+assert.match(workspaceSource, /if \(canvasLayer !== 'phases'\) setShowCoilColors\(true\);\s*setCanvasLayer\(\(current\) => \(current === 'phases' \? 'none' : 'phases'\)\);\s*\}\}\s*>\s*Phases\s*<\/button>/);
+// Slots and Winding are labels only, each on or off by itself, whatever colours the coils.
+assert.match(motorCanvasSource, /const badgeKinds = \(\['slots', 'windings'\] as const\)\.filter\(\(kind\) => overlays\[kind\]\);/);
+assert.match(motorCanvasSource, /if \(overlays\.teeth\) \{/);
 assert.doesNotMatch(motorCanvasSource, /layer === 'windings' \|\| layer === 'phases'\) \{\n    context\.textAlign/);
 // Phases: the motor moves right, smaller, beside A / B / C waveforms wired into it,
 // all driven by the solve's own terminal currents (phaseDrive.ts, test-phase-drive.mjs).
 assert.match(motorCanvasSource, /const driveFrame = layer === 'phases' && phaseDrive \? phaseDriveFrame\(width, height\) : null;/);
 assert.match(motorCanvasSource, /fitTransform\(points, width, height, viewportScale, pan, driveFrame\?\.motor, rotationRad\)/);
-assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm\)/);
+assert.match(motorCanvasSource, /drawPhaseDrive\(context, driveFrame\.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm, driveFrame\.motor\)/);
 assert.match(motorCanvasSource, /axisOffsetDeg: Number\.isFinite\(metadataAxis\) \? metadataAxis : 0,/);
 assert.doesNotMatch(motorCanvasSource, /Math\.sin\(\(rotorAngleDeg \+ phaseOffset\)/);
 // ...and each stator tooth shows the pole the slot currents make it, N red / S blue.
@@ -711,7 +708,7 @@ assert.match(motorCanvasSource, /const poleByTooth = showToothPoles && currents 
 // Tooth poles has its own toggle beside Phases (2D only), so it works with or without it.
 assert.match(motorCanvasSource, /const currents = \(layer === 'phases' \|\| showToothPoles\) && phaseDrive \? phaseCurrents\(phaseDrive, rotorElecDeg\) : null;/);
 assert.match(workspaceSource, /const \[showToothPoles, setShowToothPoles\] = useState\(false\);/);
-assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{viewportMode === '2d' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
+assert.match(workspaceSource, />\s*Phases\s*<\/button>\s*\)\}\s*\{mode === 'geometry' && \(\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showToothPoles\}[\s\S]*?>\s*Tooth poles\s*<\/button>/);
 assert.match(workspaceSource, /showToothPoles=\{viewportMode === '2d' && showToothPoles\}/);
 assert.match(motorCanvasSource, /strength > 0 \? PUBLIC_MOTOR_COLORS\.magnetNorth : PUBLIC_MOTOR_COLORS\.magnetSouth/);
 // Every magnet is lettered N / S by the pole facing the airgap; in the Split view each
@@ -721,9 +718,11 @@ assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
 // The Phases strips are a 1 s scope at the preview speed, frequency shown in the
 // heading and in each strip (test-phase-drive.mjs checks the cycle count).
 assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
-assert.match(motorCanvasSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
-assert.match(motorCanvasSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
-assert.match(motorCanvasSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
+// The waveform drawing is shared by the 2D cross-section and the 3D view (phaseDrivePanel.ts).
+const phaseDrivePanelSource = await readFile(path.join(frontendRoot, 'src/public/phaseDrivePanel.ts'), 'utf8');
+assert.match(phaseDrivePanelSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
+assert.match(phaseDrivePanelSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
+assert.match(phaseDrivePanelSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
 assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
 assert.match(workspaceSource, /<div className="public-winding-key public-canvas-legend" aria-label="Winding phase and current direction legend">/);
@@ -855,8 +854,9 @@ assert.match(workspaceSource, /\{coggingWaveform && <button type="button" role="
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Torque method"/);
 assert.match(workspaceSource, /<dt>Torque method<\/dt><dd>WST<\/dd>/);
 assert.match(workspaceSource, /onSolveSettingChange\('nonlinear_solver'/);
-assert.match(workspaceSource, /Newton \(recommended\)/);
-assert.match(workspaceSource, /\{ value: 'picard', label: 'Picard' \}/);
+assert.match(workspaceSource, /id="public-newton-recommendation">Recommended<\/small>/);
+assert.match(workspaceSource, />Newton<\/button>/);
+assert.match(workspaceSource, />Picard<\/button>/);
 assert.doesNotMatch(workspaceSource, /Newton \(experimental\)/);
 assert.doesNotMatch(workspaceSource, /<SelectRow[^>]*label="Linear solver"/);
 assert.match(workspaceSource, /<dt>Linear solver<\/dt><dd>Direct Cholesky<\/dd>/);
@@ -891,14 +891,16 @@ assert.match(modelSource, /nonlinear_solver: 'newton'/);
 assert.match(modelSource, /linear_solver_preconditioner: 'direct'/);
 assert.match(modelSource, /cogging_torque_waveform\?/);
 assert.match(modelSource, /field_line_plot\?: PublicFieldLinePlot/);
-// The mesh panel separates how elements are coloured (one choice) from the
-// edges layer (on or off on its own), so the two no longer look alike.
+// The mesh panel separates how elements are coloured (one choice) from its
+// on/off tools. The element edges are always drawn: a mesh without them is not a mesh view.
 assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Color by<\/span>\s*<span className="public-dock-segmented">[\s\S]*?Regions[\s\S]*?Quality[\s\S]*?Weak elements/);
-assert.match(workspaceSource, /<span className="public-dock-group-label" aria-hidden="true">Show<\/span>\s*<button\s*type="button"\s*className="public-dock-toggle"\s*aria-pressed=\{showMeshEdges\}/);
-assert.match(workspaceSource, /Element edges/);
+assert.match(workspaceSource, /aria-label="More mesh layers">\s*<button type="button" aria-pressed=\{meshMagnifier\}/);
+assert.doesNotMatch(workspaceSource, /Element edges/);
 assert.match(workspaceSource, /Quality heatmap/);
-// 2D overlays are one choice at a time, with None for the bare cross-section.
-assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['none', 'None'\],\s*\['dimensions', 'Dims'\]/);
+// 2D overlays are each on or off by themselves; none pressed is the bare cross-section.
+assert.match(workspaceSource, /Overlay<\/span>\s*<span className="public-dock-segmented">\s*\{\(\[\s*\['dimensions', 'Dims', 'dimensions'\],\s*\['slots', 'Slots', 'slot numbers'\],\s*\['teeth', 'Tooth', 'tooth numbers'\]/);
+assert.doesNotMatch(workspaceSource, /\['none', 'None'\]/);
+assert.match(workspaceSource, /const \[showCoilColors, setShowCoilColors\] = useState\(false\);/);
 assert.match(styleSource, /\.public-dock-segmented \{ display: inline-flex;[^}]*border: 1px solid rgba\(148,163,184,\.16\); border-radius: 10px;/);
 assert.match(styleSource, /\.public-dock-segmented button\[aria-pressed="true"\] \{ color: var\(--text-accent\); background: rgba\(245,158,11,\.14\);/);
 assert.match(styleSource, /button\.public-dock-toggle\[aria-pressed="true"\]::before \{ border-color: var\(--text-accent\); background: var\(--text-accent\);/);
@@ -934,7 +936,7 @@ assert.match(styleSource, /\.public-run-plan-section\[open\] > summary::after \{
 // The Solve setup's sections collapse like Design's: one shared section block
 // and one look, one section open at a time, the accuracy plan open first.
 assert.match(workspaceSource, /function ParameterSectionBlock<Id extends string = PublicParameterSection>/);
-assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\}>/);
+assert.match(workspaceSource, /<ParameterSectionBlock id="operating" label="Operating point" summary=\{operatingSummary\} active=\{openSetupSection === 'operating'\} onToggle=\{toggleSetupSection\} guide="solve-operating">/);
 assert.match(workspaceSource, /<ParameterSectionBlock id="plan" label="Accuracy plan" summary=\{planSummary\} active=\{openSetupSection === 'plan'\} onToggle=\{toggleSetupSection\} guide="solve-plan">/);
 assert.match(workspaceSource, /<ParameterSectionBlock id="advanced" label="Advanced options" summary=\{advancedSummary\} active=\{advancedOpen\} attention=\{convergenceFailed\}/);
 assert.match(workspaceSource, /useState<SolveSetupSection \| null>\(guidedSolveSection \?\? 'plan'\)/);
@@ -988,7 +990,7 @@ for (const lessonFile of [
 assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
 assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
 assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
-assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
 assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
 assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve
@@ -1069,8 +1071,8 @@ assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlayback
 assert.match(solvedFieldSource, /getPublicPlaybackStatus\(check\.artifactId, check\.composition\)/);
 assert.match(solvedFieldSource, /ref\.byte_count === null/);
 assert.match(solvedFieldSource, /const ready = statuses\.every\(\(status\) => status\.ready \|\| !status\.drawing\);/);
-assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
-assert.match(solvedFieldSource, /\{playbackPreparing && \(\s*<span className="public-field-playback-preparing" role="status" aria-live="polite">\{playbackPreparingLabel\}<\/span>/);
+assert.match(solvedFieldSource, /disabled=\{Boolean\(playbackUnavailableReason\) \|\| angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
+assert.match(solvedFieldSource, /\{playbackPreparing && !playbackUnavailableReason && \(\s*<span className="public-field-playback-preparing" role="status" aria-live="polite">\{playbackPreparingLabel\}<\/span>/);
 assert.match(apiSource, /\/solve\/playback-status\/\$\{encodeURIComponent\(artifactId\)\}\?\$\{query\}/);
 assert.match(solvedFieldSource, /const stopPlayback = \(\) => \{[\s\S]*?setFrameIndex\(0\);\s*\};/);
 assert.match(solvedFieldSource, /positionLink\?\.subscribeRequests\(\(angleDeg\) => scrubToAngleRef\.current\(angleDeg\)\)/);
@@ -1187,13 +1189,12 @@ assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-con
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button\[aria-pressed="true"\] > i \{[^}]*background: var\(--text-accent\);[^}]*box-shadow: none;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-canvas > canvas \{ position: absolute; inset: 0; \}/);
 assert.match(fieldResultSource, /className="is-mid">\{legendLabel\(\(legendScale\.minB \+ legendScale\.maxB\) \/ 2\)\}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*top: 60px[^}]*right: 0[^}]*bottom: 18px[^}]*width: 10px/s);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend > span \{[^}]*position: absolute[^}]*right: 14px/s);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-min \{ bottom: 0; \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-mid \{ top: 50%; transform: translateY\(-50%\); \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \.is-max \{ top: 0; \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend small \{ display: none; \}/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend i \{[^}]*position: absolute[^}]*inset: 0[^}]*background-color: #1b8eb7[^}]*linear-gradient\(to top/s);
+// The finished field view carries its colour scale as a strip under the motor,
+// the same one the in-run preview shows, not as a bar down the right-hand side.
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result \{ flex-direction: column; \}/);
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend,\s*\.public-viewport-stage-2d > \.public-field-result \.public-field-result-legend \{[^}]*flex: none[^}]*justify-content: center/s);
+assert.doesNotMatch(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*width: 10px/s);
+assert.doesNotMatch(styleSource, /\.public-solved-field-canvas \.public-field-result-legend small \{ display: none; \}/);
 assert.match(styleSource, /\.public-field-range-control \{/);
 assert.match(styleSource, /\.public-field-probe \{/);
 assert.match(styleSource, /@container \(max-width: 1040px\)/);
@@ -1236,10 +1237,12 @@ assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
 // A Fit-view colour range still disables Play (as does playback that is still being drawn, checked above).
-assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
+assert.match(solvedFieldSource, /disabled=\{Boolean\(playbackUnavailableReason\) \|\| angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
 assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-legend-tick \{[^}]*bottom: var\(--tick-at\);/);
+// The knee and saturation marks are close: their labels read away from each other.
+assert.match(styleSource, /\.public-field-legend-tick\.is-knee em \{[^}]*right: 100%/);
+assert.match(styleSource, /\.public-field-legend-tick:not\(\.is-knee\) em \{[^}]*left: 100%/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
 assert.match(fieldResultSource, /element_bx_t/);
 assert.match(fieldResultSource, /element_by_t/);
@@ -1247,7 +1250,7 @@ assert.match(solvedFieldSource, /viewControls: ReactNode/);
 assert.match(solvedFieldSource, /\{viewControls\}/);
 // Controls sit in a dock below the field (field source and layers, then
 // playback; zoom and field details are in its title bar), so nothing floats over the field.
-assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu">\s*<summary>More/);
+assert.match(solvedFieldSource, /className="public-field-dock-controls"[\s\S]*?<details className="public-field-layer-menu"[^>]*>\s*<summary>More/);
 assert.match(styleSource, /\.public-field-layer-menu > \.public-field-layer-controls \{ position: absolute; z-index: 20; bottom: calc\(100% \+ 8px\);/);
 assert.match(styleSource, /@container \(max-width: 1040px\) \{\s*\.public-field-control-cluster > span \{ display: none; \}\s*\}/);
 assert.doesNotMatch(styleSource, /\.public-field-overlay-cluster \{ display: none; \}/);
@@ -1468,7 +1471,7 @@ assert.match(viewportNavigationSource, /const DEFAULT_SCALE = 1/);
 assert.match(viewportNavigationSource, /useState\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
-assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frameForSize\?\.\(rect\.width, rect\.height\)/);
+assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frame \?\? undefined\)/);
 assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
@@ -1678,9 +1681,9 @@ assert.match(appSource, /workflowDisabled/);
 assert.match(workspaceSource, />New Design</);
 assert.match(workspaceSource, /workflowDisabled \|\| \(!step\.available && !active\)/);
 assert.match(workspaceSource, /aria-label="Blank design canvas"/);
-assert.match(workspaceSource, /solveAvailable=\{!props\.blankDesign\}/);
-assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => String\(value\)\)/);
-assert.match(workspaceSource, /onBlur=\{commitDraft\}/);
+assert.match(workspaceSource, /solveAvailable=\{!props\.blankDesign && buildComplete && !props\.designInputInvalid\}/);
+assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => unset \? '' : String\(value\)\)/);
+assert.match(workspaceSource, /onBlur=\{\(\) => \{ commitDraft\(\); fieldFocus\?\.setField\(null\); \}\}/);
 assert.match(workspaceSource, /event\.key === 'Enter'/);
 assert.doesNotMatch(workspaceSource, /onChange=\{\(event\) => onChange\(Number\(event\.target\.value\)\)\}/);
 assert.match(landingSource, /LandingWorkflowHero/);
@@ -2000,7 +2003,8 @@ assert.match(motorThreeSource, /outerRace\.add\(\s*new THREE\.Mesh\(outerRaceGeo
 assert.match(motorThreeSource, /renderer\.shadowMap\.type = THREE\.PCFSoftShadowMap/);
 // The balls never stand proud of the seal faces, however short the bearing.
 assert.match(motorThreeSource, /Math\.min\(\(outerRaceInner - innerRaceOuter\) \* 0\.62, dims\.width \* 0\.36\)/);
-assert.match(motorThreeSource, /strands: config\.stator\.slot_count > 24 \? 24 : HAND_WOUND_STRANDS/);
+// One loop for each turn, up to a limit that drops on machines with many teeth.
+assert.match(motorThreeSource, /strands: Math\.min\(\s*Math\.max\(1, Math\.round\(config\.winding\.turns_per_coil\) \|\| 1\),\s*config\.stator\.slot_count > 24 \? 24 : HAND_WOUND_STRANDS,\s*\)/);
 assert.match(motorThreeSource, /turns per coil · drawn as \$\{concentratedCoil\.strandCount\} wire loops/);
 assert.doesNotMatch(landingThreeSource, /landing-3d-steps/);
 assert.doesNotMatch(landingThreeSource, /aria-label="Workflow steps"/);
@@ -2067,9 +2071,9 @@ assert.match(workspaceSource, /const showLayerRow = !\(layerWording\.hidden && l
 // and the section holding the field shows a warning instead of a green check.
 assert.match(appSource, /const error = errorDetails \? designErrorText\(errorDetails, config\) : null;/);
 assert.match(appSource, /setPreviewNetworkFailed\(requestError instanceof TypeError\);\s*setError\(requestFailure\(requestError\)\);/);
-assert.match(workspaceSource, /const errorSection = error \? designErrorSection\(errorDetails\) : null;/);
-assert.match(workspaceSource, /className=\{`param-group-header \$\{attention \? 'status-attention' : 'status-complete'\}/);
-assert.match(workspaceSource, /<StatusGlyph tone=\{attention \? 'warning' : 'good'\} \/>/);
+assert.match(workspaceSource, /const errorSection = error \? designIssue\?\.section \?\? designErrorSection\(errorDetails\) : null;/);
+assert.match(workspaceSource, /className=\{`param-group-header \$\{attention \? 'status-attention' : complete \? 'status-complete' : 'status-pending'\}/);
+assert.match(workspaceSource, /<StatusGlyph tone=\{attention \? 'warning' : complete \? 'good' : 'info'\} \/>/);
 for (const section of ['stator', 'rotor', 'advanced', 'winding', 'materials']) {
   assert.ok(workspaceSource.includes(`<ParameterSectionBlock id="${section}" attention={errorSection === '${section}'}`), section);
 }
@@ -2083,17 +2087,12 @@ assert.match(appSource, /const nextConfig = cloneDefaultConfig\(\)/);
 assert.match(appSource, /topology=\{config\.topology\}/);
 assert.match(appSource, /guidedDesignSection=\{guidedDesignSection\}/);
 assert.match(appSource, /onDesignSectionChange=\{revealGuidedDesignSection\}/);
-assert.match(appSource, /guidedVisitedSectionsRef/);
-assert.match(appSource, /repairGuidedSection\(config, section\)/);
+assert.match(appSource, /if \(guided\) \{ beginNewDesign\(true\); return; \}/);
+assert.doesNotMatch(appSource, /repairGuidedSection\(config, section\)/);
 assert.match(appSource, /guidedActive && visitedSection/);
 assert.match(appSource, /onDesignSectionVisit=\{visitGuidedDesignSection\}/);
 assert.match(workspaceSource, /onDesignSectionVisit\(section\)/);
 assert.match(workspaceSource, /onSectionChange\(section, field, value, visitedSection\)/);
-assert.match(guidedRepairSource, /Repair only the section the coach is about to reveal/);
-assert.match(guidedRepairSource, /nearestBalancedPoleCount/);
-assert.match(guidedRepairSource, /maximumRotorOd/);
-assert.match(guidedRepairSource, /maximumToothWidth/);
-assert.match(guidedRepairSource, /terminalCoilsPerPhase/);
 assert.match(appSource, /GUIDED_IPM_LAYOUT_PRESETS/);
 assert.match(appSource, /v_shape:[\s\S]*?magnet_width_mm: 28[\s\S]*?v_angle_deg: 40[\s\S]*?v_depth_mm: 30[\s\S]*?inner_web_thickness_mm: 6/);
 assert.match(appSource, /\.\.\.GUIDED_IPM_LAYOUT_PRESETS\[selectedIpmLayout\]/);
@@ -2110,7 +2109,7 @@ assert.ok(
 assert.doesNotMatch(workspaceSource, /<SelectRow label="Rotor Layout"/);
 assert.match(workspaceSource, /data-guide=\{guide \?\? `section-\$\{id\}`\}/);
 assert.match(workspaceSource, /data-guide-active=\{active \? 'true' : 'false'\}/);
-assert.match(workspaceSource, /setActiveSection\(guidedDesignSection \?\? null\)/);
+assert.match(workspaceSource, /setActiveSection\(guidedDesignSection\)/);
 assert.match(workspaceSource, /data-guide="design-continue"/);
 assert.match(workspaceSource, /guide="solve-plan"/);
 assert.match(workspaceSource, /data-guide="solve-run"/);
@@ -2160,30 +2159,20 @@ assert.match(bldcChartSource, /showPhaseCurrents && \[phaseA, phaseB, phaseC\]/)
 assert.match(runComparisonSource, /Excitation identity/);
 assert.match(appSource, /excitationDraftRef/);
 assert.match(workspaceSource, /designName=\{props\.designName \?\? null\}/);
+// Guide navigation shares New Design completion and lives in a normal-flow right rail.
 assert.match(guidedSource, /PUBLIC_GUIDED_STOPS/);
-assert.match(guidedSource, /target: 'topology-selector'/);
-assert.match(guidedSource, /target: 'ipm-layout-selector'/);
-assert.match(guidedSource, /stop\.id !== 'ipm-layout'/);
-assert.match(guidedSource, /stop\.id === 'topology' && topology === 'IPM'/);
-assert.match(guidedSource, /'section-stator'/);
-assert.match(guidedSource, /target: 'solve-analysis'/);
-assert.match(guidedSource, /'solve-plan'/);
-assert.match(guidedSource, /'solve-run'/);
-assert.match(guidedSource, /'open-report'/);
-assert.match(guidedSource, /prefers-reduced-motion/);
+for (const target of ['arrangement-selector', 'topology-selector', 'ipm-layout-selector', 'section-stator', 'section-advanced', 'section-rotor', 'section-winding', 'section-materials', 'solve-operating', 'solve-analysis', 'solve-plan', 'solve-run', 'open-report']) assert.ok(guidedSource.includes(`target: '${target}'`), target);
+assert.ok(guidedSource.indexOf("id: 'advanced'") < guidedSource.indexOf("id: 'rotor'"));
+assert.ok(guidedSource.indexOf("id: 'solve-operating'") < guidedSource.indexOf("id: 'solve-analysis'"));
+assert.match(guidedSource, /entrySectionComplete/);
+assert.match(guidedSource, /GuidedDesignProgressContext/);
+assert.match(guidedSource, /createPortal/);
+assert.match(guidedSource, /aria-label="Guided setup steps"/);
 assert.match(guidedSource, /Exit guided setup/);
-assert.match(guidedSource, /className="public-guided-next"/);
 assert.match(guidedSource, /onClick=\{handleNext\}/);
-assert.match(guidedSource, /stop\.id === 'solve-run' && !resultReady/);
-assert.match(guidedSource, /onDesignSectionChange\(designSectionForStop\(nextStop\)\)/);
-assert.match(guidedSource, /setAdjustmentMessage\(null\);[\s\S]*?\[activeStep\]/);
-assert.match(guidedSource, /onWorkflowStepChange\(nextStop\.step\)/);
-assert.match(guidedSource, /stop\.id === 'report'\) onWorkflowStepChange\('report'\)/);
-assert.doesNotMatch(guidedSource, /public-guided-hint/);
-assert.doesNotMatch(guidedSource, /actionHint:/);
-assert.match(guidedSource, /data-guide-active="true"/);
-assert.match(styleSource, /\.public-guided-highlight/);
+assert.match(workspaceSource, /data-guide="guided-setup-panel"/);
 assert.match(styleSource, /\.public-guided-card/);
+assert.doesNotMatch(guidedSource, /public-guided-highlight|public-guided-scrim/);
 
 // 2D lighting pass and the drive-end shaft convention.
 assert.match(motorCanvasSource, /shadedRegionFill/);

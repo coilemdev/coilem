@@ -10,8 +10,9 @@ the installed ``coilem --no-browser`` and checks, through HTTP only:
 - a motor Preview solve, cylindrical and linear Halbach solves and a lesson solve;
 - the saved run's PDF, CSV and replay-package downloads;
 - that a second launch reuses the running server;
-- that Ctrl+C (CTRL_BREAK_EVENT on Windows) during a solve stops the server
-  and leaves no Magneto2D process behind.
+- that Ctrl+C (CTRL_BREAK_EVENT on Windows) during a solve, once the solve
+  stream reports Magneto2D at work, stops the server, leaves no Magneto2D
+  process behind and records the run as cancelled.
 
 This file uses only the standard library and carries its own inputs, so copy it
 anywhere and run it with the Python version under test:
@@ -27,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
 import re
@@ -435,16 +437,16 @@ class Acceptance:
     def interrupt(self, server: subprocess.Popen, base: str) -> None:
         standard = json.loads(json.dumps(MOTOR))
         standard["solve_params"].update({"solve_quality": "standard", "mesh_density": "normal"})
-        threading.Thread(target=lambda: request("POST", base + "/solve/stream", standard, timeout=900), daemon=True).start()
-        # Record what the wait saw: solver batches are short-lived, and a second
-        # query (about a second through PowerShell on Windows) can fall between two.
-        running: list[str] = []
+        stream = SolveStream(base + "/solve/stream", standard)
+        # Interrupt once the stream reports a Magneto2D position solved with more
+        # to come. Polling for magneto2d processes missed them: each one can live
+        # under a second, less than one process query takes through PowerShell on
+        # Windows, so the whole solve could finish before any query saw one.
         deadline = time.monotonic() + 180
-        while time.monotonic() < deadline and not running:
-            running = self.solver_processes()
-            if not running:
-                time.sleep(0.2)
-        self.check("a solve is running before the interrupt", bool(running), f"{running[:2]}")
+        while time.monotonic() < deadline and not stream.solving.is_set() and not stream.ended.is_set():
+            stream.solving.wait(0.2)
+        running = stream.solving.is_set() and not stream.ended.is_set()
+        self.check("a solve is running before the interrupt", running, stream.describe())
         started = time.monotonic()
         server.send_signal(signal.CTRL_BREAK_EVENT if WINDOWS else signal.SIGINT)
         try:
@@ -476,6 +478,83 @@ def request(method: str, url: str, body: object | None = None, timeout: float = 
             return response.status, {key.lower(): value for key, value in response.headers.items()}, response.read()
     except urllib.error.HTTPError as error:
         return error.code, {key.lower(): value for key, value in error.headers.items()}, error.read()
+
+
+def sse_events(lines):
+    """Yield ``(event, data)`` for each server-sent event in ``lines``; data is parsed JSON or None."""
+
+    event, data = "message", []
+    for raw in lines:
+        line = raw.rstrip("\r\n")
+        if line:
+            if line.startswith("event:"):
+                event = line[len("event:"):].strip()
+            elif line.startswith("data:"):
+                data.append(line[len("data:"):].lstrip())
+            continue
+        if data:
+            try:
+                payload = json.loads("\n".join(data))
+            except ValueError:
+                payload = None
+            yield event, payload
+        event, data = "message", []
+
+
+# Progress stages the solver reports after each Magneto2D solve: loaded positions,
+# no-load positions and cogging positions.
+MAGNETO2D_STAGES = ("magneto2d_", "noload_sweep")
+
+
+def magneto2d_solving(event: str, payload: object) -> bool:
+    """True for a progress event that follows a Magneto2D solve, with positions still to solve."""
+
+    if event != "progress" or not isinstance(payload, dict):
+        return False
+    try:
+        position, total = int(payload.get("position") or 0), int(payload.get("total") or 0)
+    except (TypeError, ValueError):
+        return False
+    return str(payload.get("stage", "")).startswith(MAGNETO2D_STAGES) and 0 < position < total
+
+
+class SolveStream:
+    """Follow one ``/solve/stream`` request in the background."""
+
+    def __init__(self, url: str, body: object) -> None:
+        self.solving = threading.Event()
+        self.ended = threading.Event()
+        self.last: tuple[str, str, object, object] | None = None
+        self.outcome: str | None = None
+        data = json.dumps(body).encode()
+        self.request = urllib.request.Request(url, data=data, method="POST", headers={"Content-Type": "application/json"})
+        threading.Thread(target=self.follow, daemon=True).start()
+
+    def follow(self) -> None:
+        try:
+            with urllib.request.urlopen(self.request, timeout=900) as response:
+                self.read(line.decode("utf-8", "replace") for line in response)
+        except (urllib.error.URLError, http.client.HTTPException, OSError, ValueError):
+            pass  # The interrupt closes the connection, possibly mid-event.
+        finally:
+            self.ended.set()
+
+    def read(self, lines) -> None:
+        for event, payload in sse_events(lines):
+            fields = payload if isinstance(payload, dict) else {}
+            self.last = (event, str(fields.get("stage", "")), fields.get("position"), fields.get("total"))
+            if magneto2d_solving(event, payload):
+                self.solving.set()
+            if event in ("complete", "error"):
+                self.outcome = event
+
+    def describe(self) -> str:
+        if self.outcome:
+            return f"the solve ended with {self.outcome!r} before it could be interrupted"
+        if self.last is None:
+            return "no stream event yet"
+        event, stage, position, total = self.last
+        return f"{event} {stage} {position}/{total}"
 
 
 def main() -> int:

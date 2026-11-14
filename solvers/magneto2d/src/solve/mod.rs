@@ -67,7 +67,7 @@ use self::model::MachineModel;
 use self::newton::run_newton_nonlinear_loop;
 use self::nonlinear::{
     apply_nonlinear_warm_start, build_nonlinear_warm_start, nonlinear_diagnostics_path,
-    resolve_newton_current_scales, resolve_nonlinear_solve_config,
+    resolve_newton_current_plan, resolve_nonlinear_solve_config,
     write_nonlinear_diagnostics_artifact, NonlinearDiagnosticsArtifact, NonlinearSolverKind,
     NonlinearWarmStart,
 };
@@ -1760,26 +1760,35 @@ fn solve_at_angle(
     let mut newton_fallback = false;
     if nonlinear_enabled && nonlinear_config.solver_kind == NonlinearSolverKind::Newton {
         eprintln!("  nonlinear_solver: newton requested");
-        let newton_current_scales = resolve_newton_current_scales(&j_z);
-        match run_newton_nonlinear_loop(
-            &solve_mesh,
-            ctx.n_pole_pitches,
-            config,
-            &nonlinear_curve_ids_by_element,
-            &nonlinear_curves,
-            &nonlinear_material_labels,
-            &j_z,
-            &newton_current_scales,
-            materials.clone(),
-            magnet_fractions.as_deref(),
-            last_az.as_deref(),
-            progress,
-            rotor_angle_rad,
-            nonlinear_config,
-            linear_policy,
-            matrix_pattern.as_ref(),
-            solve_profile.as_mut(),
-        ) {
+        let plan = resolve_newton_current_plan(&j_z);
+        let attempt = |scales: &[f64], reference_cap: Option<f64>, profile: Option<&mut SolveProfile>| {
+            run_newton_nonlinear_loop(
+                &solve_mesh,
+                ctx.n_pole_pitches,
+                config,
+                &nonlinear_curve_ids_by_element,
+                &nonlinear_curves,
+                &nonlinear_material_labels,
+                &j_z,
+                scales,
+                reference_cap,
+                materials.clone(),
+                magnet_fractions.as_deref(),
+                last_az.as_deref(),
+                progress,
+                rotor_angle_rad,
+                nonlinear_config,
+                linear_policy,
+                matrix_pattern.as_ref(),
+                profile,
+            )
+        };
+        let mut outcome = attempt(&plan.scales, plan.reference_cap, solve_profile.as_mut());
+        if let (Err(err), Some(fallback_scales)) = (&outcome, plan.fallback_scales.as_deref()) {
+            eprintln!("  nonlinear_solver: newton at full current failed; ramping the current instead ({err})");
+            outcome = attempt(fallback_scales, None, solve_profile.as_mut());
+        }
+        match outcome {
             Ok(output) => {
                 total_assembly_ms += output.assembly_time_ms;
                 total_solve_ms += output.solve_time_ms;

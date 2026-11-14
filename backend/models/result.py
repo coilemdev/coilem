@@ -68,6 +68,8 @@ class NonlinearConvergence(BaseModel):
     scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     initial_rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    # What scaled_residual divides by, when that is not the starting mismatch.
+    reference_rhs_scaled_residual: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     absolute_residual_floor: float | None = Field(default=None, gt=0, lt=1, allow_inf_nan=False)
     residual_definition: str
     tolerance: float = Field(ge=0, lt=1, allow_inf_nan=False)
@@ -120,6 +122,13 @@ class SolveMetadata(BaseModel):
         default=None,
         ge=0,
         description="Sum of every rotor position's solver process time; positions run in parallel",
+    )
+    time_breakdown: dict | None = Field(
+        default=None,
+        description=(
+            "Where the solve's time went: meshing, field solve and packaging, which add up to the elapsed "
+            "time, and the stages of each with their counts and times across workers"
+        ),
     )
     mesher: str | None = None
     mesh_density: str | None = None
@@ -176,6 +185,8 @@ class TorqueSpeedAnalysisResult(BaseModel):
 
 
 class SolveResult(BaseModel):
+    warnings: list[str] = Field(default_factory=list)
+    input_notes: list[str] = Field(default_factory=list)
     summary: SolveSummary
     torque_waveform: TorqueWaveform
     phase_current_waveform: PhaseCurrentWaveform | None = None

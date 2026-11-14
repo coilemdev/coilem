@@ -1,6 +1,7 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
 import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
+import type { SolveTimeBreakdown } from './solveTime';
 import type { WindingResistance } from './windingResistance';
 
 export type Topology = 'SPM' | 'IPM';
@@ -194,6 +195,15 @@ export interface PublicWindingCoil {
 
 export interface GeometryPreview {
   regions: PreviewRegion[];
+  /** Client-only construction dimensions before the teeth are drawn; never a solver region. */
+  stator_guide?: {
+    outerDiameterMm: number;
+    innerDiameterMm: number;
+    yokeThicknessMm: number;
+    outerRotor: boolean;
+    boreConfigured?: boolean;
+    yokeConfigured?: boolean;
+  };
   /** Both were already sent by /preview; the Layout view is the first reader. */
   winding_layout?: PublicWindingSlot[];
   winding_coils?: PublicWindingCoil[];
@@ -463,6 +473,9 @@ export interface PublicArmatureFieldComposition {
 }
 
 export interface SolveResult {
+  warnings?: string[];
+  input_notes?: string[];
+  field_playback_unavailable_reason?: string | null;
   torque_speed_analysis?: TorqueSpeedAnalysisResult | null;
   summary: {
     avg_torque_Nm: number | null;
@@ -542,6 +555,8 @@ export interface SolveResult {
     solver_name: string;
     mesh_element_count: number;
     rotor_positions: number;
+    /** Where the solve's time went; absent on runs solved before it was recorded. */
+    time_breakdown?: SolveTimeBreakdown | null;
     /** Hot-magnet runs (#137): the temperature and the derated Br and HcJ the solve used. */
     magnet_temperature_C?: number | null;
     magnet_remanence_T?: number | null;

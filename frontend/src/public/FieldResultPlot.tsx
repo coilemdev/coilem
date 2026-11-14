@@ -9,6 +9,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { useMagnifierCanvas, ViewportMagnifier } from './ViewportMagnifier';
 
 import {
   airgapHarmonic,
@@ -44,6 +45,14 @@ import {
   type SaturationTick,
 } from './fluxColorScale';
 const FIELD_RASTER_SIZE = 900;
+/** Magnification relative to the main view. */
+const LOUPE_MAGNIFICATION = 3;
+/**
+ * The fit that draws the motor the size the geometry and mesh canvases draw it,
+ * so it does not jump between the Solve tabs: they give the motor 85% of the
+ * view's smaller side (viewportTransform.ts), this plot 1 / 1.05 of it.
+ */
+export const FIELD_FIT_LIKE_MOTOR_CANVAS = 0.85 * 1.05;
 const FIELD_DIRECTION_CUE_TARGET = 32;
 const DETAIL_RENDER_SCALE = 1.08;
 const VIEWPORT_SCALE_SETTLE_MS = 140;
@@ -71,7 +80,7 @@ export interface FieldProbeDescription {
   regionLabel: string;
   materialLabel: string;
   saturationLabel: string;
-  saturationTone: 'neutral' | 'good' | 'warning';
+  saturationTone: 'neutral' | 'good' | 'warning' | 'danger';
 }
 
 interface RenderedFieldLayers {
@@ -522,6 +531,7 @@ export function FieldResultPlot({
   showMagnets = false,
   showAirgap = false,
   airgapInnerRadiusMm,
+  airgapRingMm,
   showMagnetPolarityLabels = true,
   magnetReference = false,
   showStatorPolarity = false,
@@ -536,7 +546,13 @@ export function FieldResultPlot({
   title = 'Flux-density field map',
   subtitle = 'Completed Magneto2D solution',
   showHeading = true,
+  showStatistics = true,
   probeEnabled = true,
+  magnifier = false,
+  magnifierSlot = null,
+  probeSlot = null,
+  fitScale = 1,
+  rotorMarkDeg = null,
   describeProbe = defaultProbeDescription,
   onViewportScaleSettled,
   overlay = null,
@@ -560,6 +576,8 @@ export function FieldResultPlot({
   showMagnets?: boolean;
   showAirgap?: boolean;
   airgapInnerRadiusMm?: number;
+  /** The air gap's two edges, inner then outer, where they are not the rotor surface and the stator bore: an outer rotor. */
+  airgapRingMm?: readonly [number, number];
   showMagnetPolarityLabels?: boolean;
   magnetReference?: boolean;
   showStatorPolarity?: boolean;
@@ -574,7 +592,17 @@ export function FieldResultPlot({
   title?: string;
   subtitle?: string;
   showHeading?: boolean;
+  showStatistics?: boolean;
   probeEnabled?: boolean;
+  /** Show the area under the pointer enlarged in a corner of the view. */
+  magnifier?: boolean;
+  magnifierSlot?: HTMLElement | null;
+  /** Render the element readout beneath the magnifier in the analysis rail. */
+  probeSlot?: HTMLElement | null;
+  /** The share of the usual fit to draw the motor at; below 1 leaves a wider margin. */
+  fitScale?: number;
+  /** The rotor's mechanical angle: draws the 0° tick and the dot that goes round with the rotor. Null hides them. */
+  rotorMarkDeg?: number | null;
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
@@ -593,8 +621,8 @@ export function FieldResultPlot({
     ringInnerMm !== undefined && ringOuterMm !== undefined ? { innerMm: ringInnerMm, outerMm: ringOuterMm } : null,
     width,
     height,
-    Math.min(width, height) / (2 * 1.05),
-  ), [ringInnerMm, ringOuterMm]);
+    (Math.min(width, height) * fitScale) / (2 * 1.05),
+  ), [fitScale, ringInnerMm, ringOuterMm]);
   const navigation = useViewportNavigation(
     undefined,
     undefined,
@@ -644,6 +672,8 @@ export function FieldResultPlot({
   const [internalShowMesh, setInternalShowMesh] = useState(false);
   const [internalShowFieldLines, setInternalShowFieldLines] = useState(true);
   const [probe, setProbe] = useState<FieldProbe | null>(null);
+  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number } | null>(null);
+  const { canvasRef: loupeCanvasRef, width: loupeWidth, height: loupeHeight } = useMagnifierCanvas(magnifier, magnifierSlot);
   const [viewportRange, setViewportRange] = useState<FieldViewportRange | null>(null);
   const viewportRangeRef = useRef<FieldViewportRange | null>(null);
   // Whether the canvas shows exact vectors (drawn here, on the chosen scale) or a
@@ -653,10 +683,157 @@ export function FieldResultPlot({
   const showHeatmap = controlledShowHeatmap ?? internalShowHeatmap;
   const showMesh = controlledShowMesh ?? internalShowMesh;
   const showFieldLines = controlledShowFieldLines ?? internalShowFieldLines;
+  // Inner-rotor gap edges, or the explicit stator-OD/magnet edges of an outer rotor.
+  const airgapEdges: readonly [number, number] = airgapRingMm ?? [airgapInnerRadiusMm ?? NaN, statorInnerRadiusMm ?? NaN];
+  const hasAirgapOverlay = showAirgap
+    && Number.isFinite(airgapEdges[0]) && Number.isFinite(airgapEdges[1])
+    && airgapEdges[0] > 0 && airgapEdges[1] > airgapEdges[0];
 
   useEffect(() => {
     if (!probeEnabled || !sourcePlot) setProbe(null);
   }, [probeEnabled, sourcePlot]);
+  useEffect(() => {
+    if (!magnifier) setLoupePoint(null);
+  }, [magnifier]);
+
+  // The magnifier panel: the picture around the pointer, redrawn from the solved
+  // elements at a higher zoom when they are loaded, so it is sharp and not a
+  // stretched copy; otherwise an enlarged copy of the view.
+  const loupeX = loupePoint?.x ?? null;
+  const loupeY = loupePoint?.y ?? null;
+  useEffect(() => {
+    const loupe = loupeCanvasRef.current;
+    const canvas = canvasRef.current;
+    if (!magnifier || loupeX === null || loupeY === null || !loupe || !canvas) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      const pixelWidth = Math.round(loupeWidth * pixelRatio);
+      const pixelHeight = Math.round(loupeHeight * pixelRatio);
+      if (loupe.width !== pixelWidth || loupe.height !== pixelHeight) {
+        loupe.width = pixelWidth;
+        loupe.height = pixelHeight;
+      }
+      const context = loupe.getContext('2d');
+      if (!context) return;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.fillStyle = '#0b0d12';
+      context.fillRect(0, 0, pixelWidth, pixelHeight);
+      const width = Math.max(1, canvas.clientWidth);
+      const height = Math.max(1, canvas.clientHeight);
+      const pivotX = width / 2 + navigation.pan.x;
+      const pivotY = height / 2 + navigation.pan.y;
+      const intoLoupe = new DOMMatrix()
+        .scaleSelf(pixelRatio)
+        .translateSelf(loupeWidth / 2, loupeHeight / 2)
+        .scaleSelf(LOUPE_MAGNIFICATION)
+        .translateSelf(-loupeX, -loupeY)
+        .translateSelf(pivotX, pivotY)
+        .rotateSelf(navigation.rotationDeg)
+        .translateSelf(-pivotX, -pivotY);
+      let worldTransform: DOMMatrix | null = null;
+      if (prepared) {
+        const [viewX, viewY, viewWidth, viewHeight] = prepared.viewBox.split(' ').map(Number);
+        const size = Math.min(width, height) * fitScale;
+        const baseScale = Math.min(size / viewWidth, size / viewHeight);
+        const baseOffsetX = (width - viewWidth * baseScale) / 2;
+        const baseOffsetY = (height - viewHeight * baseScale) / 2;
+        const scale = baseScale * navigation.scale;
+        const translateX = width / 2 + (baseOffsetX - viewX * baseScale - width / 2) * navigation.scale + navigation.pan.x;
+        const translateY = height / 2 + (baseOffsetY - viewY * baseScale - height / 2) * navigation.scale + navigation.pan.y;
+        worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, translateX, translateY]));
+        context.setTransform(worldTransform);
+        drawBase(context, prepared);
+        if (showHeatmap) {
+          drawHeat(context, prepared, colorRangeMode === 'viewport' && viewportRange
+            ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
+            : FIXED_FLUX_SCALE);
+        }
+        if (showMesh) drawMeshEdges(context, prepared, navigation.scale * LOUPE_MAGNIFICATION);
+        if (showFieldLines) {
+          context.save();
+          drawFieldLines(context, prepared, fieldLineDensity, pmLines);
+          context.restore();
+        }
+      } else {
+        const sourceScale = canvas.width / width;
+        const spanX = loupeWidth / LOUPE_MAGNIFICATION;
+        const spanY = loupeHeight / LOUPE_MAGNIFICATION;
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        context.drawImage(
+          canvas,
+          (loupeX - spanX / 2) * sourceScale,
+          (loupeY - spanY / 2) * sourceScale,
+          spanX * sourceScale,
+          spanY * sourceScale,
+          0,
+          0,
+          pixelWidth,
+          pixelHeight,
+        );
+        const square = rasterWorldSquare(raster?.viewBox ?? '');
+        if (square) {
+          const drawSize = Math.min(width, height) * fitScale * navigation.scale;
+          const scale = drawSize / square.size;
+          const x = (width - drawSize) / 2 + navigation.pan.x - square.left * scale;
+          const y = (height - drawSize) / 2 + navigation.pan.y - square.top * scale;
+          worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, x, y]));
+        }
+      }
+      // The main view's airgap rings are an SVG overlay, so neither its canvas
+      // nor a fresh vector redraw contains them. Draw both edges here as well.
+      if (hasAirgapOverlay && worldTransform) {
+        context.setTransform(worldTransform);
+        const strokeScale = pixelRatio * LOUPE_MAGNIFICATION / Math.hypot(worldTransform.a, worldTransform.b);
+        for (const [color, strokeWidth] of [['rgba(8,47,73,.85)', 1.5], ['rgba(103,232,249,.92)', 0.575]] as const) {
+          context.strokeStyle = color;
+          context.lineWidth = strokeWidth * strokeScale;
+          for (const radius of airgapEdges) {
+            context.beginPath();
+            context.arc(0, 0, radius, 0, 2 * Math.PI);
+            context.stroke();
+          }
+        }
+      }
+      // A small cross marks the point under the pointer.
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      context.lineWidth = 1;
+      const centreX = loupeWidth / 2;
+      const centreY = loupeHeight / 2;
+      context.beginPath();
+      context.moveTo(centreX - 7, centreY);
+      context.lineTo(centreX + 7, centreY);
+      context.moveTo(centreX, centreY - 7);
+      context.lineTo(centreX, centreY + 7);
+      context.stroke();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [
+    airgapEdges[0],
+    airgapEdges[1],
+    colorRangeMode,
+    fieldLineDensity,
+    fitScale,
+    hasAirgapOverlay,
+    loupeX,
+    loupeY,
+    loupeWidth,
+    loupeHeight,
+    magnifierSlot,
+    magnifier,
+    navigation.pan.x,
+    navigation.pan.y,
+    navigation.rotationDeg,
+    navigation.scale,
+    pmLines,
+    prepared,
+    raster,
+    showFieldLines,
+    showHeatmap,
+    showMesh,
+    viewportRange,
+  ]);
 
   useEffect(() => {
     if (!onViewportScaleSettled) return undefined;
@@ -722,7 +899,7 @@ export function FieldResultPlot({
       if (!context) return;
       context.setTransform(1, 0, 0, 1, 0, 0);
       context.clearRect(0, 0, pixelWidth, pixelHeight);
-      const size = Math.min(pixelWidth, pixelHeight);
+      const size = Math.min(pixelWidth, pixelHeight) * fitScale;
       const panX = navigation.pan.x * pixelRatio;
       const panY = navigation.pan.y * pixelRatio;
       // The sector turntable turns the whole picture about the motor centre, which the
@@ -888,14 +1065,60 @@ export function FieldResultPlot({
         }
       }
     };
-    draw();
-    const observer = new ResizeObserver(draw);
+    // Where the rotor is: a tick fixed at 0° just outside the motor and a dot that
+    // goes round with the rotor, as on the geometry and mesh views.
+    const drawRotorMark = () => {
+      const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
+      const context = canvas.getContext('2d');
+      if (rotorMarkDeg === null || !square || !context) return;
+      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
+      const worldScale = drawSize / square.size;
+      const originX = (canvas.width - drawSize) / 2 + navigation.pan.x * pixelRatio - square.left * worldScale;
+      const originY = (canvas.height - drawSize) / 2 + navigation.pan.y * pixelRatio - square.top * worldScale;
+      // The plot pads the motor by 2.5% of its size on each side.
+      const radius = (square.size / 1.05 / 2) * worldScale;
+      const at = (distance: number, angleDeg: number): [number, number] => {
+        const angle = ((angleDeg + navigation.rotationDeg) * Math.PI) / 180;
+        return [originX + distance * Math.cos(angle), originY + distance * Math.sin(angle)];
+      };
+      context.save();
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      const [tickFromX, tickFromY] = at(radius + 5 * pixelRatio, 0);
+      const [tickToX, tickToY] = at(radius + 19 * pixelRatio, 0);
+      context.beginPath();
+      context.moveTo(tickFromX, tickFromY);
+      context.lineTo(tickToX, tickToY);
+      context.strokeStyle = 'rgba(148, 163, 184, 0.7)';
+      context.lineWidth = 1.5 * pixelRatio;
+      context.lineCap = 'round';
+      context.stroke();
+      const [dotX, dotY] = at(radius + 12 * pixelRatio, rotorMarkDeg);
+      context.beginPath();
+      context.arc(dotX, dotY, 4 * pixelRatio, 0, Math.PI * 2);
+      context.fillStyle = '#fbbf24';
+      context.shadowColor = 'rgba(251, 191, 36, 0.8)';
+      context.shadowBlur = 6 * pixelRatio;
+      context.fill();
+      context.shadowBlur = 0;
+      context.strokeStyle = 'rgba(8, 10, 14, 0.9)';
+      context.lineWidth = pixelRatio;
+      context.stroke();
+      context.restore();
+    };
+    const drawWithRotorMark = () => {
+      draw();
+      drawRotorMark();
+    };
+    drawWithRotorMark();
+    const observer = new ResizeObserver(drawWithRotorMark);
     observer.observe(canvas);
     return () => observer.disconnect();
   }, [
     colorRangeMode,
     highResolutionPlot,
     fieldLineDensity,
+    fitScale,
     navigation.pan.x,
     navigation.pan.y,
     navigation.scale,
@@ -905,6 +1128,7 @@ export function FieldResultPlot({
     pmLines,
     prepared,
     raster,
+    rotorMarkDeg,
     showFieldLines,
     showHeatmap,
     showMesh,
@@ -1017,11 +1241,6 @@ export function FieldResultPlot({
     ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
     : null;
   const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
-  const hasAirgapOverlay = showAirgap
-    && Number.isFinite(airgapInnerRadiusMm)
-    && Number.isFinite(statorInnerRadiusMm)
-    && (airgapInnerRadiusMm ?? 0) > 0
-    && (statorInnerRadiusMm ?? 0) > (airgapInnerRadiusMm ?? 0);
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
   const hasFieldAxes = fieldAxes !== null
@@ -1077,6 +1296,12 @@ export function FieldResultPlot({
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     navigation.bind.onPointerMove(event);
+    if (magnifier) {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - bounds.left;
+      const y = event.clientY - bounds.top;
+      setLoupePoint({ x, y });
+    }
     if (
       navigation.isDragging
       || event.buttons !== 0
@@ -1089,7 +1314,7 @@ export function FieldResultPlot({
       return;
     }
     const rect = event.currentTarget.getBoundingClientRect();
-    const size = Math.min(rect.width, rect.height);
+    const size = Math.min(rect.width, rect.height) * fitScale;
     const drawSize = size * navigation.scale;
     const drawX = (rect.width - drawSize) / 2 + navigation.pan.x;
     const drawY = (rect.height - drawSize) / 2 + navigation.pan.y;
@@ -1134,6 +1359,26 @@ export function FieldResultPlot({
     });
   };
   const probeDescription = probe ? describeProbe(probe) : null;
+  const probeReadout = probe && probeDescription ? (
+    <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">
+      <header>
+        <span>{probeDescription.regionLabel}</span>
+        <small>Element {probe.elementIndex + 1}</small>
+      </header>
+      <strong>{probe.bMagT.toFixed(3)} T <em>|B|</em></strong>
+      <dl>
+        <div><dt>Bx</dt><dd>{probe.bxT === null ? '—' : `${probe.bxT.toFixed(3)} T`}</dd></div>
+        <div><dt>By</dt><dd>{probe.byT === null ? '—' : `${probe.byT.toFixed(3)} T`}</dd></div>
+        <div><dt>Material</dt><dd>{probeDescription.materialLabel}</dd></div>
+      </dl>
+      <p>{probeDescription.saturationLabel}</p>
+    </div>
+  ) : probeSlot && probeEnabled ? (
+    <div className="public-field-probe is-empty" role="status">
+      <strong>Field data</strong>
+      <p>Hover over an element to inspect its field.</p>
+    </div>
+  ) : null;
   const linesLegendNote = [
     'Separate solves: in saturated steel the resultant is not their sum.',
     hasFieldAxes && leadElecDeg !== null
@@ -1168,19 +1413,20 @@ export function FieldResultPlot({
         className={`public-field-result-canvas public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
         ref={navigation.viewportRef}
         style={motorFitWidth === null ? undefined : { flex: `0 0 ${motorFitWidth.toFixed(1)}px` }}
-        title="Use the mouse wheel to zoom; drag to pan when zoomed"
         {...navigation.bind}
         onPointerMove={handlePointerMove}
-        onPointerLeave={() => setProbe(null)}
+        onPointerLeave={() => { if (!probeSlot) setProbe(null); }}
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" aria-hidden="true">
+          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
-                  <circle cx="0" cy="0" r={airgapInnerRadiusMm} />
-                  <circle cx="0" cy="0" r={statorInnerRadiusMm} />
+                  <circle className="is-halo" cx="0" cy="0" r={airgapEdges[0]} />
+                  <circle className="is-halo" cx="0" cy="0" r={airgapEdges[1]} />
+                  <circle cx="0" cy="0" r={airgapEdges[0]} />
+                  <circle cx="0" cy="0" r={airgapEdges[1]} />
                 </g>
               )}
               {hasDirectionCues && directionCues.map((cue, index) => {
@@ -1296,22 +1542,12 @@ export function FieldResultPlot({
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
         })()}
-        {probe && probeDescription && (
-          <div className={`public-field-probe is-${probeDescription.saturationTone}`} role="status">
-            <header>
-              <span>{probeDescription.regionLabel}</span>
-              <small>Element {probe.elementIndex + 1}</small>
-            </header>
-            <strong>{probe.bMagT.toFixed(3)} T <em>|B|</em></strong>
-            <dl>
-              <div><dt>Bx</dt><dd>{probe.bxT === null ? '—' : `${probe.bxT.toFixed(3)} T`}</dd></div>
-              <div><dt>By</dt><dd>{probe.byT === null ? '—' : `${probe.byT.toFixed(3)} T`}</dd></div>
-              <div><dt>Material</dt><dd>{probeDescription.materialLabel}</dd></div>
-            </dl>
-            <p>{probeDescription.saturationLabel}</p>
-          </div>
+        {magnifier && (
+          <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
         )}
+        {!probeSlot && probeReadout}
       </div>
+      {probeSlot && createPortal(probeReadout, probeSlot)}
       {overlay ? (
         // One line above the view: the two line colours and the stator lead.
         // The longer notes are its tooltip, not text over the motor.
@@ -1376,7 +1612,7 @@ export function FieldResultPlot({
             </button>
           </div>
         )}
-        <small>{triangleCount.toLocaleString()} solved elements · {contourLevelCount} contour levels</small>
+        {showStatistics && <small>{triangleCount.toLocaleString()} solved elements · {contourLevelCount} contour levels</small>}
       </div>}
     </section>
   );

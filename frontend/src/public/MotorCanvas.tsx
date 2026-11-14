@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
+import { useMagnifierCanvas, ViewportMagnifier } from './ViewportMagnifier';
 
 import {
   buildDimensionAnnotations,
@@ -20,7 +21,8 @@ import {
 } from './magnetPoleFaces';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
 import { polygonLabelSpot } from './canvasLabels';
-import { fitTransform } from './viewportTransform';
+import { buildWindingTurnDots, type WindingTurnDots } from './windingTurnDots';
+import { fitTransform, viewportFrameContains, viewportScaleBar } from './viewportTransform';
 import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -32,6 +34,9 @@ import {
   phaseCurrents,
   phaseDriveFrame,
   phaseStrips,
+  TRACE_AMPLITUDE,
+  phaseChargeShift,
+  phasePanelTop,
   rotorElectricalDeg,
   slotCurrents,
   toothIndexAt,
@@ -41,6 +46,7 @@ import {
   type PhaseDrive,
   type Rect,
 } from './phaseDrive';
+import { drawPhaseDriveWired } from './phaseDrivePanel';
 import { pointInContours, previewContours, type Contour } from './previewContours';
 import { publishedReference } from './publishedReferences';
 import { outerRotorRing, ringKey, sectorView } from './sectorFraming';
@@ -66,9 +72,13 @@ const EMPTY_MESH_QUALITIES: number[] = [];
 
 interface MotorCanvasProps {
   geometry: GeometryPreview | null;
+  /** Never label old polygons with dimensions from a newer configuration. */
+  geometryStale?: boolean;
   mesh: MeshPreview | null;
   mode: 'geometry' | 'mesh';
   layer?: PublicCanvasLayer;
+  /** Labels drawn over the motor, each on or off by itself. Left out, they follow `layer`. */
+  overlays?: PublicCanvasOverlays;
   rotorAngleDeg?: number;
   windingType?: 'concentrated' | 'distributed';
   selectedComponent?: PublicMotorComponentSelection | null;
@@ -77,6 +87,8 @@ interface MotorCanvasProps {
   /** Needed by the Dims layer: tooth, slot, magnet and yoke sizes are config-only. */
   config?: MotorConfig;
   activeDimension?: DimensionId | null;
+  /** The focused parameter uses its Dims measurement without enabling the full overlay. */
+  editingDimension?: DimensionId | null;
   /** Previewed from the readout without committing a selection. */
   hoveredDimension?: DimensionId | null;
   onDimensionSelect?: (dimension: DimensionId | null) => void;
@@ -88,6 +100,13 @@ interface MotorCanvasProps {
   previewRpm?: number;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
+  /** Element-edge colour in place of the usual grey. */
+  meshEdgeColor?: string | null;
+  /** Mesh view: show the area under the pointer enlarged in a corner. */
+  magnifier?: boolean;
+  magnifierSlot?: HTMLElement | null;
+  /** Draw every coil side in one plain colour instead of its phase colour. */
+  plainWinding?: boolean;
   meshQualities?: number[];
   meshQualityThreshold?: number;
   focusedMeshElementIndex?: number | null;
@@ -99,6 +118,9 @@ interface MotorCanvasProps {
 
 /** 'none' = every overlay off, leaving the bare cross-section. */
 export type PublicCanvasLayer = 'none' | 'dimensions' | 'slots' | 'windings' | 'phases' | 'materials';
+/** The label overlays: dimension lines, slot numbers, tooth numbers and coil-side labels (A+, A-). */
+export interface PublicCanvasOverlays { dimensions: boolean; slots: boolean; teeth: boolean; windings: boolean }
+export const NO_CANVAS_OVERLAYS: PublicCanvasOverlays = { dimensions: false, slots: false, teeth: false, windings: false };
 export type PublicMagnetPolarityView = 'dominant' | 'split';
 
 interface HitRegion {
@@ -117,6 +139,91 @@ interface DimensionHit {
 interface MeshTriangleHit {
   points: Array<[number, number]>;
   selection: PublicMeshElementSelection;
+}
+
+/** What one pass of drawMesh leaves out or changes. */
+interface MeshDrawOptions {
+  /** Only the elements that turn with the rotor, or only those that do not. */
+  part?: 'all' | 'fixed' | 'rotor';
+  /** False leaves the region fills out, for a mesh drawn over the geometry. */
+  fill?: boolean;
+  /** Each element's phase when it is in a coil side (meshCoilPhases). */
+  coilPhases?: Array<string | null> | null;
+  /** Draw only elements touching this box, in canvas px: left, top, right, bottom. */
+  cull?: [number, number, number, number] | null;
+  edgeWidthScale?: number;
+}
+
+/** Where a drawn mesh sits on the canvas: the motor centre and its outer radius, in px. */
+interface MeshDrawFrame {
+  origin: [number, number];
+  radiusPx: number;
+  scale: number;
+}
+
+const MESH_FILL_KEY_SEPARATOR = '\u0000';
+/** Magnification relative to the main view. */
+const MESH_LOUPE_MAGNIFICATION = 3;
+/** Keep a full rotor bitmap within 16 MiB, even at the highest viewport zoom. */
+const MAX_ROTOR_CACHE_SIDE_PX = 2048;
+const ROTOR_CACHE_PADDING_PX = 16;
+
+const meshRotorRadiusCache = new WeakMap<MeshPreview, number>();
+function meshRotorRadiusMm(mesh: MeshPreview): number {
+  let radius = meshRotorRadiusCache.get(mesh);
+  if (radius === undefined) {
+    radius = 0;
+    for (let index = 0; index < mesh.triangles.length; index += 1) {
+      if (!isRotorRegion(mesh.regions[index] || 'mesh')) continue;
+      for (const node of mesh.triangles[index]) radius = Math.max(radius, Math.hypot(...mesh.nodes_mm[node]));
+    }
+    meshRotorRadiusCache.set(mesh, radius);
+  }
+  return radius;
+}
+
+const meshOuterRadiusCache = new WeakMap<MeshPreview, number>();
+function meshOuterRadiusMm(mesh: MeshPreview): number {
+  let radius = meshOuterRadiusCache.get(mesh);
+  if (radius === undefined) {
+    radius = 0;
+    for (const [x, y] of mesh.nodes_mm) radius = Math.max(radius, Math.hypot(x, y));
+    meshOuterRadiusCache.set(mesh, radius);
+  }
+  return radius;
+}
+
+const meshCoilPhaseCache = new WeakMap<MeshPreview, { geometry: GeometryPreview; phases: Array<string | null> }>();
+/**
+ * The phase of each mesh element that lies in a coil side, null elsewhere. The
+ * mesh names its coil regions without a phase, so it is read from the geometry
+ * preview's coil sides: the one that contains the element's centre.
+ */
+function meshCoilPhases(mesh: MeshPreview, geometry: GeometryPreview): Array<string | null> {
+  const cached = meshCoilPhaseCache.get(mesh);
+  if (cached && cached.geometry === geometry) return cached.phases;
+  const coilSides = geometry.regions.flatMap((region) => {
+    const winding = windingToken(region.region_type);
+    if (!winding || region.points.length < 3) return [];
+    const xs = region.points.map(([x]) => x);
+    const ys = region.points.map(([, y]) => y);
+    return [{
+      phase: winding.phase as string,
+      points: region.points,
+      box: [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)],
+    }];
+  });
+  const phases = mesh.triangles.map((triangle, index) => {
+    if (coilSides.length === 0 || !/slot|winding|coil/i.test(mesh.regions[index] || '')) return null;
+    const x = (mesh.nodes_mm[triangle[0]][0] + mesh.nodes_mm[triangle[1]][0] + mesh.nodes_mm[triangle[2]][0]) / 3;
+    const y = (mesh.nodes_mm[triangle[0]][1] + mesh.nodes_mm[triangle[1]][1] + mesh.nodes_mm[triangle[2]][1]) / 3;
+    const side = coilSides.find(({ box, points }) => (
+      x >= box[0] && x <= box[2] && y >= box[1] && y <= box[3] && pointInPolygon([x, y], points)
+    ));
+    return side?.phase ?? null;
+  });
+  meshCoilPhaseCache.set(mesh, { geometry, phases });
+  return phases;
 }
 
 const REGION_COLORS: Array<[RegExp, string]> = [
@@ -295,18 +402,19 @@ function rotatePoint([x, y]: [number, number], angleDeg: number): [number, numbe
 /** How hard each phase is driven right now, 0..1 (phaseDrive.ts). */
 type PhaseLevels = Record<keyof typeof PHASE_COLORS, number>;
 
-function phaseFill(phase: keyof typeof PHASE_COLORS, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null): string {
+function phaseFill(phase: keyof typeof PHASE_COLORS, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null, plain = false): string {
   if (layer === 'phases' && phaseLevels) {
     // Each phase as bright as the current the solver drives through it at this
     // rotor position, so a phase six-step switches off goes dark.
     const strength = 0.48 + phaseLevels[phase] * 0.52;
-    const color = PHASE_COLORS[phase];
+    // With Coil colors off the coils stay copper, and only their brightness follows the current.
+    const color = plain ? PUBLIC_MOTOR_COLORS.winding : PHASE_COLORS[phase];
     const red = Math.round(Number.parseInt(color.slice(1, 3), 16) * strength);
     const green = Math.round(Number.parseInt(color.slice(3, 5), 16) * strength);
     const blue = Math.round(Number.parseInt(color.slice(5, 7), 16) * strength);
     return `rgb(${red}, ${green}, ${blue})`;
   }
-  return PHASE_COLORS[phase];
+  return plain ? PUBLIC_MOTOR_COLORS.winding : PHASE_COLORS[phase];
 }
 
 function parseColorChannels(color: string): [number, number, number] {
@@ -487,8 +595,11 @@ function drawSpmMagnetPolarityHalves(
  */
 const ANNULAR_REGIONS = /^(stator_yoke|rotor_core|shaft)$/i;
 
-function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null): string {
+function regionFill(regionType: string, sourceFill: string | null | undefined, layer: PublicCanvasLayer, phaseLevels: PhaseLevels | null, plainWinding = false): string {
   const winding = windingToken(regionType);
+  // One colour for every coil side, so the eye stays on the N / S fields. Phases keeps the copper and shades it by current.
+  if (plainWinding && winding && layer === 'phases') return phaseFill(winding.phase, layer, phaseLevels, true);
+  if (plainWinding && winding && layer !== 'windings' && layer !== 'materials') return PUBLIC_MOTOR_COLORS.winding;
   if (layer === 'materials') {
     if (/stator/i.test(regionType)) return PUBLIC_MOTOR_COLORS.statorSteel;
     if (/rotor/i.test(regionType)) return PUBLIC_MOTOR_COLORS.rotorSteel;
@@ -526,17 +637,44 @@ function drawGeometry(
   phaseDrive: PhaseDrive | null,
   showToothPoles: boolean,
   previewRpm: number,
-): void {
+  plainWinding = false,
+  overlays: PublicCanvasOverlays = NO_CANVAS_OVERLAYS,
+  turnDots: ReadonlyMap<GeometryPreview['regions'][number], WindingTurnDots> | null = null,
+  editingDimension: DimensionId | null = null,
+): number | null {
   const points = data.regions.flatMap((region) => region.points);
-  if (points.length === 0) return;
+  if (points.length === 0) return null;
+  // Fit the complete stator envelope, including the future teeth of an outrunner.
+  // Construction circles stay separate from steel, winding and hit-test regions.
+  if (data.stator_guide) {
+    const radius = Math.max(data.stator_guide.outerDiameterMm, data.stator_guide.boreConfigured === false ? 0 : data.stator_guide.innerDiameterMm) / 2;
+    points.push([-radius, -radius], [radius, radius]);
+  }
   // Phases: the motor moves right, a little smaller, to make room for the A / B / C
   // waveforms wired into it, and its phases light with the currents they carry.
   const driveFrame = layer === 'phases' && phaseDrive ? phaseDriveFrame(width, height) : null;
+  if (driveFrame) {
+    // The small 3D view sits over the canvas's bottom-left corner: the waveforms move up to clear it.
+    const canvasBox = context.canvas.getBoundingClientRect?.();
+    const insetBox = context.canvas.ownerDocument?.querySelector('.public-viewport-3d-inset')?.getBoundingClientRect();
+    const covered = canvasBox && insetBox && insetBox.right > canvasBox.left + driveFrame.panel.x
+      ? Math.max(0, canvasBox.bottom - insetBox.top)
+      : 0;
+    driveFrame.panel.y = phasePanelTop(driveFrame.panel, height, covered);
+  }
+  // The phase chart and motor are separate panes, including while zooming and
+  // panning. Clip all motor geometry, labels and marks to its own pane.
+  context.save();
+  if (driveFrame) {
+    context.beginPath();
+    context.rect(driveFrame.motor.x, driveFrame.motor.y, driveFrame.motor.width, driveFrame.motor.height);
+    context.clip();
+  }
   const rotorElecDeg = phaseDrive ? rotorElectricalDeg(rotorAngleDeg, phaseDrive.poleCount) : 0;
   const currents = (layer === 'phases' || showToothPoles) && phaseDrive ? phaseCurrents(phaseDrive, rotorElecDeg) : null;
-  const phaseLevels: PhaseLevels | null = layer === 'phases' && currents
-    ? { A: Math.abs(currents[0]), B: Math.abs(currents[1]), C: Math.abs(currents[2]) }
-    : null;
+  // Phases keeps each coil at its full, steady colour: the waveforms, the wires and
+  // the ⊙ / ⊗ marks carry the change, and coils pulsing as well were too much to follow.
+  const phaseLevels: PhaseLevels | null = null;
   // Tooth poles, with or without Phases: each stator tooth turns N or S with the
   // slot currents either side of it.
   const statorSlotCount = Number(data.metadata.slot_count || 0);
@@ -555,6 +693,7 @@ function drawGeometry(
   const [, boundingRadiusMm] = radialExtentMm(points);
   const outerRadiusPx = Math.max(1, (Number(data.metadata.stator_od_mm || 0) / 2 || boundingRadiusMm) * scale);
   const pendingMarkers: Array<{ x: number; y: number; radius: number; outOfPage: boolean; ring: string }> = [];
+  const directionTargets: Array<{ contours: Contour[]; x: number; y: number; radius: number }> = [];
   interface ComponentPath {
     points: Array<[number, number]>;
     loops?: Contour[];
@@ -630,7 +769,7 @@ function drawGeometry(
     let marker: number | null = null;
     if (outOfPage !== null) {
       const [x, y] = map([cx, cy]);
-      const ring = layer === 'phases' || layer === 'windings' ? PHASE_COLORS[side.phase] : 'rgba(226, 232, 240, 0.8)';
+      const ring = (layer === 'phases' && !plainWinding) || layer === 'windings' ? PHASE_COLORS[side.phase] : 'rgba(226, 232, 240, 0.8)';
       marker = pendingMarkers.push({ x, y, radius: Math.max(3, radiusMm * scale * 1.1), outOfPage, ring }) - 1;
     }
     lastCross = side.direction === 'out' ? { phase: side.phase, x: cx, y: cy, marker } : null;
@@ -641,6 +780,14 @@ function drawGeometry(
     if (coilSideMark(region)) return;
     const slotNumber = slotNumberFromRegion(region.region_type);
     const [innerRadiusMm, outerRadiusMm] = radialExtentMm(region.points);
+    if (region.region_type === 'construction_outline') {
+      context.beginPath();
+      context.arc(origin[0], origin[1], outerRadiusMm * scale, 0, Math.PI * 2);
+      context.strokeStyle = PUBLIC_MOTOR_COLORS.statorSteel;
+      context.lineWidth = 2;
+      context.stroke();
+      return;
+    }
     if (/^airgap$/i.test(region.region_type)) {
       // The airgap reads as a glowing clearance ring, like the 3D torus cue.
       const midRadiusPx = ((innerRadiusMm + outerRadiusMm) / 2) * scale;
@@ -694,7 +841,7 @@ function drawGeometry(
       region.region_type,
       usesSplitPolarity
         ? PUBLIC_MOTOR_COLORS.magnetBody
-        : regionFill(region.region_type, region.fill, layer, phaseLevels),
+        : regionFill(region.region_type, region.fill, layer, phaseLevels, plainWinding),
       origin,
       /shaft/i.test(region.region_type) ? 0 : innerRadiusMm * scale,
       outerRadiusMm * scale,
@@ -702,6 +849,38 @@ function drawGeometry(
     context.globalAlpha = /air/i.test(region.region_type) ? 0.45 : 0.94;
     context.fill('evenodd');
     context.globalAlpha = 1;
+    const turns = layer !== 'materials' ? turnDots?.get(region) : null;
+    if (turns) {
+      const [x, y] = map(turns.marker.point);
+      directionTargets.push({ contours: canvasLoops, x, y, radius: Math.min(9, turns.marker.radius * scale) });
+      // A turn passes through each coil side once. These are schematic copper
+      // sections; they do not stand for individual strands or change slot fill.
+      const radius = turns.radius * scale;
+      if (radius >= 0.65) {
+        context.save();
+        context.clip('evenodd');
+        context.beginPath();
+        for (const point of turns.points) {
+          const [dx, dy] = map(point);
+          context.moveTo(dx + radius, dy);
+          context.arc(dx, dy, radius, 0, Math.PI * 2);
+        }
+        context.fillStyle = PUBLIC_MOTOR_COLORS.windingTurn;
+        context.fill();
+        context.strokeStyle = 'rgba(247, 185, 111, 0.45)';
+        context.lineWidth = Math.min(0.7, radius * 0.22);
+        context.stroke();
+        context.restore();
+        // Restore the region path for its outline and any selection treatment.
+        context.beginPath();
+        for (const loop of canvasLoops) {
+          if (!loop.length) continue;
+          context.moveTo(...loop[0]);
+          for (const point of loop.slice(1)) context.lineTo(...point);
+          context.closePath();
+        }
+      }
+    }
     if (poleByTooth && /stator_tooth/i.test(region.region_type)) {
       // The tooth as an electromagnet pole: red N, blue S, as the magnets are, and
       // as strong as its share of the stator MMF.
@@ -740,8 +919,10 @@ function drawGeometry(
       // Every magnet says which pole faces the airgap; split, each half its own.
       magnetPoleLabels.push({ points: canvasPoints, north: magnetAirgapPolarity(region.region_type) === 'north', halves: splitHalves });
     }
-    context.strokeStyle = 'rgba(6, 8, 12, 0.68)';
-    context.lineWidth = Math.max(0.7, Math.min(1.5, scale * 0.035));
+    const diagnosticMagnet = Boolean(data.metadata.diagnostic_only && /magnet/i.test(region.region_type));
+    context.strokeStyle = diagnosticMagnet ? '#fb7185' : 'rgba(6, 8, 12, 0.68)';
+    context.setLineDash(diagnosticMagnet ? [4, 3] : []);
+    context.lineWidth = diagnosticMagnet ? 1.8 : Math.max(0.7, Math.min(1.5, scale * 0.035));
     if (ANNULAR_REGIONS.test(region.region_type) && !region.loops?.length) {
       // Concentric boundaries: stroke true circles so the polygon's radial
       // closing seam never shows.
@@ -764,6 +945,7 @@ function drawGeometry(
     } else {
       context.stroke();
     }
+    context.setLineDash([]);
     let selection = componentSelectionFromRegion(region.region_type, regionIndex);
     if (selection && concentratedWinding && selection.kind === 'winding' && slotNumber !== null) {
       selection = {
@@ -815,7 +997,9 @@ function drawGeometry(
   context.restore();
 
   pendingMarkers.forEach((marker) => {
-    drawCurrentMarker(context, marker.x, marker.y, marker.radius, marker.outOfPage, marker.ring);
+    const target = directionTargets.find(({ contours }) => pointInContours([marker.x, marker.y], contours));
+    if (target && target.radius < 1.8) return; // Inspection zoom makes narrow coil sides readable.
+    drawCurrentMarker(context, target?.x ?? marker.x, target?.y ?? marker.y, target?.radius ?? marker.radius, marker.outOfPage, marker.ring);
   });
 
   // N / S on every magnet, upright. A thin SPM magnet is narrower than a readable
@@ -867,15 +1051,18 @@ function drawGeometry(
     context.restore();
   }
 
-  // Phases is only the phase colours changing as the rotor turns, so it carries
-  // no slot labels; Slots and Winding do.
-  if (layer === 'slots' || layer === 'windings') {
+  // Slots and Winding are labels only, each on or off by itself; the coil
+  // colours have their own toggle. With both on, the slot numbers go down first
+  // and the winding labels step clear of them.
+  const badgeKinds = (['slots', 'windings'] as const).filter((kind) => overlays[kind]);
+  const placed: Array<[number, number]> = [];
+  for (const badgeKind of badgeKinds) {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     // The badges sit on the yoke just behind each slot, clear of the ⊙ / ⊗
     // marks drawn inside it. The yoke is outside the slots on an inner-rotor
     // machine and inside them on an outer-rotor one.
-    const badgeRadius = layer === 'slots' ? 10 : 12;
+    const badgeRadius = badgeKind === 'slots' ? 10 : 12;
     const yokeInside = data.metadata.rotor_layout === 'outer';
     const [originX, originY] = map([0, 0]);
     const [unitX, unitY] = map([1, 0]);
@@ -883,11 +1070,11 @@ function drawGeometry(
     const slotRegions = data.regions.filter((region) => /slot_(\d+)/i.test(region.region_type) && region.points.length > 0);
     const slotRadii = slotRegions.flatMap((region) => region.points.map(([px, py]) => Math.hypot(px, py)));
     const slotBackMm = slotRadii.length ? (yokeInside ? Math.min(...slotRadii) : Math.max(...slotRadii)) : 0;
+    const slotFrontMm = slotRadii.length ? (yokeInside ? Math.max(...slotRadii) : Math.min(...slotRadii)) : 0;
     const badgeStepMm = (badgeRadius + 4) / pixelsPerMm;
-    const placed: Array<[number, number]> = [];
     // Slots numbers each slot once, however many coil sides it holds; Winding
     // labels every coil side.
-    const badges = new Map<string, { sumX: number; sumY: number; slot: string; region: (typeof slotRegions)[number] }>();
+    const badges = new Map<string, { sumX: number; sumY: number; count: number; slot: string; region: (typeof slotRegions)[number] }>();
     slotRegions.forEach((region, index) => {
       const slot = region.region_type.match(/slot_(\d+)/i)?.[1];
       if (!slot) return;
@@ -895,26 +1082,44 @@ function drawGeometry(
         (current, point) => [current[0] + point[0], current[1] + point[1]],
         [0, 0],
       ).map((value) => value / region.points.length) as [number, number];
-      const key = layer === 'slots' ? slot : `${slot}:${index}`;
-      const badge = badges.get(key) ?? { sumX: 0, sumY: 0, slot, region };
+      const key = badgeKind === 'slots' ? slot : `${slot}:${index}`;
+      const badge = badges.get(key) ?? { sumX: 0, sumY: 0, count: 0, slot, region };
       badge.sumX += center[0];
       badge.sumY += center[1];
+      badge.count += 1;
       badges.set(key, badge);
     });
-    for (const { sumX, sumY, slot, region } of badges.values()) {
+    // A small yoke (the inside of an outer-rotor stator) has no room for a ring of
+    // badges: they would pile onto each other. There each badge sits in its own
+    // coil side instead, between the ⊙ / ⊗ mark and the slot opening, where the
+    // slot is widest.
+    const yokeRadiusMm = slotBackMm + (yokeInside ? -badgeStepMm : badgeStepMm);
+    const badgeAngles = [...badges.values()].map(({ sumX, sumY }) => Math.atan2(sumY, sumX)).sort((a, b) => a - b);
+    const closestGapRad = badgeAngles.reduce((closest, angle, index) => {
+      const next = index + 1 < badgeAngles.length ? badgeAngles[index + 1] : badgeAngles[0] + Math.PI * 2;
+      return Math.min(closest, next - angle);
+    }, Math.PI * 2);
+    const yokeCrowded = badgeAngles.length > 1
+      && Math.max(0, yokeRadiusMm) * pixelsPerMm * closestGapRad < badgeRadius * 2 + 2;
+    for (const { sumX, sumY, count, slot, region } of badges.values()) {
       const slotMatch = [slot, slot];
       const angle = Math.atan2(sumY, sumX);
+      const centroidMm = Math.hypot(sumX, sumY) / Math.max(1, count);
       // Two coil sides stacked in one slot share an angle: the second badge
       // steps further back rather than landing on the first.
-      let radiusMm = slotBackMm + (yokeInside ? -badgeStepMm : badgeStepMm);
+      // Inside the slot, with both kinds on, the slot number takes the back of the slot and the winding label the front.
+      const inSlotMm = badgeKind === 'slots' && badgeKinds.length > 1
+        ? centroidMm + (slotBackMm - centroidMm) * 0.6
+        : centroidMm + (slotFrontMm - centroidMm) * 0.55;
+      let radiusMm = yokeCrowded ? inSlotMm : yokeRadiusMm;
       let [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
-      for (let attempt = 0; attempt < 3 && placed.some(([px, py]) => Math.hypot(px - x, py - y) < badgeRadius * 2); attempt += 1) {
+      for (let attempt = 0; !yokeCrowded && attempt < 3 && placed.some(([px, py]) => Math.hypot(px - x, py - y) < badgeRadius * 2); attempt += 1) {
         radiusMm += (yokeInside ? -1 : 1) * (badgeRadius * 2 + 2) / pixelsPerMm;
         [x, y] = map([Math.cos(angle) * radiusMm, Math.sin(angle) * radiusMm]);
       }
       placed.push([x, y]);
       const winding = windingToken(region.region_type);
-      const label = layer === 'slots' ? slotMatch[1] : winding ? `${winding.phase}${winding.direction}` : slotMatch[1];
+      const label = badgeKind === 'slots' ? slotMatch[1] : winding ? `${winding.phase}${winding.direction}` : slotMatch[1];
       context.beginPath();
       context.arc(x, y, badgeRadius, 0, Math.PI * 2);
       context.fillStyle = 'rgba(8, 10, 14, 0.78)';
@@ -923,9 +1128,68 @@ function drawGeometry(
       context.lineWidth = 1.2;
       context.stroke();
       context.fillStyle = '#f8fafc';
-      context.font = `700 ${layer === 'slots' ? 9 : 10}px ui-monospace, monospace`;
+      context.font = `700 ${badgeKind === 'slots' ? 9 : 10}px ui-monospace, monospace`;
       context.fillText(label, x, y + 0.5);
     }
+  }
+
+  if (overlays.teeth) {
+    // Tooth k stands between slot k and slot k + 1, as the tooth poles count them.
+    // Its number sits toward the yoke, clear of the N / S letter at the tooth's middle.
+    const slotAngles = new Map<number, { x: number; y: number }>();
+    for (const region of data.regions) {
+      const slot = Number(region.region_type.match(/slot_(\d+)/i)?.[1]);
+      if (!slot || region.points.length === 0) continue;
+      const sum = slotAngles.get(slot) ?? { x: 0, y: 0 };
+      for (const [px, py] of region.points) { sum.x += px; sum.y += py; }
+      slotAngles.set(slot, sum);
+    }
+    const slotTotal = Math.max(0, ...slotAngles.keys());
+    const turn = (angle: number) => ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    const yokeInside = data.metadata.rotor_layout === 'outer';
+    context.save();
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    for (const region of data.regions) {
+      if (!/stator_tooth/i.test(region.region_type) || region.points.length < 3) continue;
+      const [meanX, meanY] = region.points.reduce<[number, number]>(
+        (sum, [px, py]) => [sum[0] + px / region.points.length, sum[1] + py / region.points.length],
+        [0, 0],
+      );
+      const toothAngle = Math.atan2(meanY, meanX);
+      // The slot just behind the tooth, going the way the slots count up.
+      let number = 0;
+      let nearest = Infinity;
+      for (const [slot, sum] of slotAngles) {
+        const next = slotAngles.get(slot === slotTotal ? 1 : slot + 1);
+        if (!next) continue;
+        const from = Math.atan2(sum.y, sum.x);
+        const span = turn(Math.atan2(next.y, next.x) - from);
+        const forward = span <= Math.PI;
+        const offset = forward ? turn(toothAngle - from) : turn(from - toothAngle);
+        const width = forward ? span : Math.PI * 2 - span;
+        if (offset <= width && offset < nearest) { nearest = offset; number = slot; }
+      }
+      if (!number) continue;
+      const [innerMm, outerMm] = radialExtentMm(region.points);
+      const backMm = yokeInside ? innerMm : outerMm;
+      const centreMm = Math.hypot(meanX, meanY);
+      const radiusMm = centreMm + (backMm - centreMm) * 0.6;
+      const [x, y] = map([Math.cos(toothAngle) * radiusMm, Math.sin(toothAngle) * radiusMm]);
+      const text = `T${number}`;
+      context.font = '700 9px ui-monospace, monospace';
+      const half = Math.max(9, context.measureText(text).width / 2 + 4);
+      context.beginPath();
+      context.roundRect(x - half, y - 8, half * 2, 16, 4);
+      context.fillStyle = 'rgba(8, 10, 14, 0.78)';
+      context.fill();
+      context.strokeStyle = 'rgba(255,255,255,.34)';
+      context.lineWidth = 1.2;
+      context.stroke();
+      context.fillStyle = '#f8fafc';
+      context.fillText(text, x, y + 0.5);
+    }
+    context.restore();
   }
 
   const addComponentPath = (path: Path2D, componentPath: ComponentPath) => {
@@ -1010,20 +1274,67 @@ function drawGeometry(
     14,
   );
 
-  if (layer === 'dimensions') {
+  if (overlays.dimensions || editingDimension) {
     drawDimensionAnnotations(
       context,
       map,
       annotations,
-      activeDimension,
-      hoveredDimension,
+      editingDimension ?? activeDimension,
+      editingDimension ? null : hoveredDimension,
       dimensionHits,
+      editingDimension ? { width, height } : undefined,
     );
   }
 
+  drawRotorZeroMark(context, origin, Math.max(outerRadiusPx, boundingRadiusMm * scale), rotorAngleDeg, rotationRad);
+  context.restore();
   if (driveFrame && phaseDrive && currents) {
-    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm);
+    drawPhaseDrive(context, driveFrame.panel, phaseDrive, rotorElecDeg, currents, origin, outerRadiusPx, previewRpm, driveFrame.motor);
   }
+  return scale;
+}
+
+/**
+ * Where the rotor is: a tick fixed at 0° just outside the motor, and a dot that
+ * starts on it and goes round with the rotor.
+ */
+function drawRotorZeroMark(
+  context: CanvasRenderingContext2D,
+  origin: [number, number],
+  motorRadiusPx: number,
+  rotorAngleDeg: number,
+  /** The view's own rotation (the sector turntable), clockwise on screen. */
+  viewRotationRad: number,
+): void {
+  const at = (radius: number, angleRad: number): [number, number] => [
+    origin[0] + radius * Math.cos(angleRad),
+    origin[1] + radius * Math.sin(angleRad),
+  ];
+  const zero = viewRotationRad;
+  // The rotor turns clockwise on screen as its angle grows, as the drawing does.
+  const rotor = viewRotationRad + (rotorAngleDeg * Math.PI) / 180;
+  context.save();
+  const [tickFromX, tickFromY] = at(motorRadiusPx + 5, zero);
+  const [tickToX, tickToY] = at(motorRadiusPx + 19, zero);
+  context.beginPath();
+  context.moveTo(tickFromX, tickFromY);
+  context.lineTo(tickToX, tickToY);
+  context.strokeStyle = 'rgba(148, 163, 184, 0.7)';
+  context.lineWidth = 1.5;
+  context.lineCap = 'round';
+  context.stroke();
+  const [dotX, dotY] = at(motorRadiusPx + 12, rotor);
+  context.beginPath();
+  context.arc(dotX, dotY, 4, 0, Math.PI * 2);
+  context.fillStyle = '#fbbf24';
+  context.shadowColor = 'rgba(251, 191, 36, 0.8)';
+  context.shadowBlur = 6;
+  context.fill();
+  context.shadowBlur = 0;
+  context.strokeStyle = 'rgba(8, 10, 14, 0.9)';
+  context.lineWidth = 1;
+  context.stroke();
+  context.restore();
 }
 
 /**
@@ -1041,101 +1352,28 @@ function drawPhaseDrive(
   origin: [number, number],
   statorRadiusPx: number,
   previewRpm: number,
+  motorFrame: Rect,
 ): void {
-  const phases = ['A', 'B', 'C'] as const;
-  // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
-  // time at the preview speed, so twice the speed shows twice as many.
-  const frequencyHz = electricalFrequencyHz(previewRpm, drive.poleCount);
-  const windowElecDeg = 360 * frequencyHz * PHASE_SCOPE_WINDOW_S;
   const strips = phaseStrips(panel);
-  const lead = Math.max(10, statorRadiusPx * 0.08);
-  // A above, C below, so the wires do not cross.
-  const leads = [16, 0, -16].map((offsetDeg) => {
-    const angle = Math.PI + (offsetDeg * Math.PI) / 180;
-    const at = (radius: number): [number, number] => [origin[0] + radius * Math.cos(angle), origin[1] + radius * Math.sin(angle)];
-    return { motor: at(statorRadiusPx), terminal: at(statorRadiusPx + lead) };
+  // Drawn like a schematic: each wire runs level out of its strip, turns once through
+  // a right angle, and from its terminal dot goes level into the motor. A enters
+  // above the centre and C below. The turns are staggered so that no wire crosses
+  // another: whichever way the wires have to drop, the one that drops furthest turns last.
+  const stripRight = panel.x + panel.width;
+  const entryStep = statorRadiusPx * Math.sin((16 * Math.PI) / 180);
+  const motorLeft = Math.max(motorFrame.x, origin[0] - statorRadiusPx);
+  const lane = Math.max(6, Math.min(16, (motorLeft - stripRight) / 5));
+  const wiresDrop = strips[1].y + strips[1].height / 2 <= origin[1];
+  const leads = [-1, 0, 1].map((side, index) => {
+    const y = origin[1] + side * entryStep;
+    const turn = motorLeft - lane * (wiresDrop ? index + 1 : 3 - index);
+    return {
+      motor: [Math.max(motorFrame.x, origin[0] - Math.sqrt(Math.max(0, statorRadiusPx ** 2 - (side * entryStep) ** 2))), y] as [number, number],
+      terminal: [turn, y] as [number, number],
+    };
   });
 
-  context.save();
-  context.fillStyle = 'rgba(148, 163, 184, 0.78)';
-  context.font = '700 10px ui-monospace, monospace';
-  context.textAlign = 'left';
-  context.textBaseline = 'bottom';
-  context.fillText(`${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
-  // What sets the frequency, and the sweep the strips show.
-  context.fillStyle = 'rgba(148, 163, 184, 0.6)';
-  context.font = '600 9px ui-monospace, monospace';
-  context.textBaseline = 'top';
-  context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${formatRevPerSecond(previewRpm)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
-
-  strips.forEach((strip, index) => {
-    const colour = PHASE_COLORS[phases[index]];
-    const level = Math.abs(currents[index]);
-    const mid = strip.y + strip.height / 2;
-    const right = strip.x + strip.width;
-
-    context.beginPath();
-    if (typeof context.roundRect === 'function') context.roundRect(strip.x, strip.y, strip.width, strip.height, 8);
-    else context.rect(strip.x, strip.y, strip.width, strip.height);
-    context.fillStyle = 'rgba(12, 15, 21, 0.78)';
-    context.fill();
-    context.strokeStyle = 'rgba(148, 163, 184, 0.16)';
-    context.lineWidth = 1;
-    context.stroke();
-
-    context.setLineDash([3, 4]);
-    context.beginPath();
-    context.moveTo(strip.x + STRIP_LABEL, mid);
-    context.lineTo(right - STRIP_END, mid);
-    context.strokeStyle = 'rgba(148, 163, 184, 0.24)';
-    context.stroke();
-    context.setLineDash([]);
-
-    context.fillStyle = colour;
-    context.font = '800 11px ui-monospace, monospace';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(phases[index], strip.x + STRIP_LABEL / 2, mid + 0.5);
-    // The wave's frequency, in its own plot.
-    context.fillStyle = 'rgba(148, 163, 184, 0.72)';
-    context.font = '700 9px ui-monospace, monospace';
-    context.textAlign = 'right';
-    context.textBaseline = 'top';
-    context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
-
-    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg);
-    context.beginPath();
-    context.moveTo(trace[0][0], trace[0][1]);
-    for (const [x, y] of trace.slice(1)) context.lineTo(x, y);
-    context.strokeStyle = colour;
-    context.lineWidth = 1.8;
-    context.lineJoin = 'round';
-    context.stroke();
-    const [nowX, nowY] = trace[trace.length - 1];
-    context.beginPath();
-    context.arc(nowX, nowY, 3.2, 0, Math.PI * 2);
-    context.fillStyle = colour;
-    context.fill();
-
-    // The wire from the waveform into the motor, as live as the current in it.
-    const { motor, terminal } = leads[index];
-    const reach = Math.max(24, (terminal[0] - right) * 0.5);
-    context.globalAlpha = 0.3 + 0.7 * level;
-    context.strokeStyle = colour;
-    context.lineWidth = 1.2 + 2 * level;
-    context.lineCap = 'round';
-    context.beginPath();
-    context.moveTo(right, mid);
-    context.bezierCurveTo(right + reach, mid, terminal[0] - reach, terminal[1], terminal[0], terminal[1]);
-    context.lineTo(motor[0], motor[1]);
-    context.stroke();
-    context.beginPath();
-    context.arc(terminal[0], terminal[1], 2.8, 0, Math.PI * 2);
-    context.fillStyle = colour;
-    context.fill();
-    context.globalAlpha = 1;
-  });
-  context.restore();
+  drawPhaseDriveWired(context, panel, drive, rotorElecDeg, currents, leads, previewRpm);
 }
 
 /**
@@ -1151,6 +1389,7 @@ function drawDimensionAnnotations(
   activeDimension: DimensionId | null,
   hoveredDimension: DimensionId | null,
   dimensionHits: DimensionHit[],
+  captionBounds?: { width: number; height: number },
 ): void {
   const TICK = 5;
   // A pick shows that dimension and only that dimension. With nothing picked the
@@ -1200,8 +1439,8 @@ function drawDimensionAnnotations(
         for (let i = 0; i <= steps; i += 1) {
           const angle = shape.startRad + ((shape.endRad - shape.startRad) * i) / steps;
           points.push(map([
-            shape.radiusMm * Math.cos(angle),
-            shape.radiusMm * Math.sin(angle),
+            (shape.centerMm?.[0] ?? 0) + shape.radiusMm * Math.cos(angle),
+            (shape.centerMm?.[1] ?? 0) + shape.radiusMm * Math.sin(angle),
           ]));
         }
         context.setLineDash(annotation.dash);
@@ -1213,6 +1452,25 @@ function drawDimensionAnnotations(
           dimensionHits.push({ id: annotation.id, from: points[i], to: points[i + 1] });
         }
       }
+    }
+    if (isPicked && captionBounds) {
+      const shape = annotation.shapes[0];
+      const middle = !shape ? map([0, 0]) : shape.kind === 'segment'
+        ? map([(shape.from[0] + shape.to[0]) / 2, (shape.from[1] + shape.to[1]) / 2])
+        : map([(shape.centerMm?.[0] ?? 0) + shape.radiusMm * Math.cos((shape.startRad + shape.endRad) / 2), (shape.centerMm?.[1] ?? 0) + shape.radiusMm * Math.sin((shape.startRad + shape.endRad) / 2)]);
+      const text = `${annotation.label}  ${annotation.value}${!shape && annotation.note ? ` · ${annotation.note}` : ''}`;
+      context.font = '600 11px ui-monospace, monospace';
+      const labelWidth = context.measureText(text).width + 16;
+      const x = Math.max(labelWidth / 2 + 8, Math.min(middle[0], captionBounds.width - labelWidth / 2 - 8));
+      const y = Math.max(18, Math.min(middle[1] - 16, captionBounds.height - 18));
+      context.fillStyle = 'rgba(15, 17, 22, 0.94)';
+      context.beginPath();
+      context.roundRect(x - labelWidth / 2, y - 11, labelWidth, 22, 4);
+      context.fill();
+      context.fillStyle = '#fbbf24';
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(text, x, y);
     }
   }
 
@@ -1235,9 +1493,18 @@ function drawMesh(
   qualityThreshold: number,
   focusedElementIndex: number | null,
   meshHits: MeshTriangleHit[],
-): void {
-  if (data.nodes_mm.length === 0 || data.triangles.length === 0) return;
-  const { map } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
+  /** Replaces the usual grey of the element edges (the Solve page's field-solve glow). */
+  edgeColor: string | null,
+  options: MeshDrawOptions = {},
+): MeshDrawFrame | null {
+  if (data.nodes_mm.length === 0 || data.triangles.length === 0) return null;
+  const { map, scale } = fitTransform(data.nodes_mm, width, height, viewportScale, pan, undefined, rotationRad);
+  const part = options.part ?? 'all';
+  const fillRegions = options.fill ?? true;
+  const cull = options.cull ?? null;
+  const coilPhases = options.coilPhases ?? null;
+  // Elements left out of this pass: the other layer's, or those outside the magnifier's window.
+  const skipped = part !== 'all' || cull ? new Uint8Array(data.triangles.length) : null;
   const fillPaths = new Map<string, Path2D>();
   const qualityColors: Record<PublicMeshQualityBand, string> = {
     good: '#2a9d8f',
@@ -1258,16 +1525,31 @@ function drawMesh(
   data.triangles.forEach((triangle, index) => {
     const region = data.regions[index] || 'mesh';
     const rotateRotor = isRotorRegion(region);
-    const path = fillPaths.get(region) || new Path2D();
+    if (skipped && part !== 'all' && rotateRotor !== (part === 'rotor')) {
+      skipped[index] = 1;
+      return;
+    }
+    // A coil side takes its phase colour, so the winding reads in the mesh too.
+    const phase = coilPhases?.[index] ?? null;
+    const fillKey = phase ? `${region}${MESH_FILL_KEY_SEPARATOR}${phase}` : region;
+    const path = fillPaths.get(fillKey) || new Path2D();
     const a = mapMeshNode(triangle[0], rotateRotor);
     const b = mapMeshNode(triangle[1], rotateRotor);
     const c = mapMeshNode(triangle[2], rotateRotor);
+    if (skipped && cull && (
+      Math.max(a[0], b[0], c[0]) < cull[0] || Math.min(a[0], b[0], c[0]) > cull[2]
+      || Math.max(a[1], b[1], c[1]) < cull[1] || Math.min(a[1], b[1], c[1]) > cull[3]
+    )) {
+      skipped[index] = 1;
+      return;
+    }
     const quality = qualities[index] ?? 0;
     const band = publicMeshQualityBand(quality, qualityThreshold);
     meshHits.push({
       points: [a, b, c],
       selection: { index, quality, band, region },
     });
+    if (displayMode === 'geometry' && !fillRegions) return;
     if (displayMode === 'geometry') {
       // An explicit closing edge, not closePath(): Chromium's closePath() cost
       // grows with the path built so far, so per-region paths of thousands of
@@ -1276,7 +1558,7 @@ function drawMesh(
       path.lineTo(b[0], b[1]);
       path.lineTo(c[0], c[1]);
       path.lineTo(a[0], a[1]);
-      fillPaths.set(region, path);
+      fillPaths.set(fillKey, path);
       return;
     }
     const weak = band === 'marginal' || band === 'failing';
@@ -1293,9 +1575,10 @@ function drawMesh(
   });
 
   if (displayMode === 'geometry') {
-    for (const [region, path] of fillPaths) {
-      context.fillStyle = regionColor(region, '#697386');
-      context.globalAlpha = /air/i.test(region) ? 0.25 : 0.68;
+    for (const [fillKey, path] of fillPaths) {
+      const [region, phase] = fillKey.split(MESH_FILL_KEY_SEPARATOR);
+      context.fillStyle = phase ? PHASE_COLORS[phase as keyof typeof PHASE_COLORS] : regionColor(region, '#697386');
+      context.globalAlpha = phase ? 0.78 : /air/i.test(region) ? 0.25 : 0.68;
       context.fill(path);
     }
   }
@@ -1305,6 +1588,7 @@ function drawMesh(
     const uniqueEdges = new Set<string>();
     context.beginPath();
     data.triangles.forEach((triangle, triangleIndex) => {
+      if (skipped?.[triangleIndex]) return;
       const rotateRotor = isRotorRegion(data.regions[triangleIndex] || 'mesh');
       const triangleEdges: Array<[number, number]> = [
         [triangle[0], triangle[1]],
@@ -1323,10 +1607,10 @@ function drawMesh(
         context.lineTo(end[0], end[1]);
       });
     });
-    context.strokeStyle = displayMode === 'problems'
+    context.strokeStyle = edgeColor ?? (displayMode === 'problems'
       ? 'rgba(226, 232, 240, 0.12)'
-      : 'rgba(226, 232, 240, 0.28)';
-    context.lineWidth = 0.4;
+      : 'rgba(226, 232, 240, 0.28)');
+    context.lineWidth = (edgeColor ? 0.5 : 0.4) * (options.edgeWidthScale ?? 1);
     context.stroke();
   }
 
@@ -1356,6 +1640,7 @@ function drawMesh(
     focusedElementIndex !== null
     && focusedElementIndex >= 0
     && focusedElementIndex < data.triangles.length
+    && !skipped?.[focusedElementIndex]
   ) {
     const triangle = data.triangles[focusedElementIndex];
     const rotateRotor = isRotorRegion(data.regions[focusedElementIndex] || 'mesh');
@@ -1373,13 +1658,18 @@ function drawMesh(
     context.stroke();
     context.restore();
   }
+  const origin = map([0, 0]);
+  const [edgeX, edgeY] = map([meshOuterRadiusMm(data), 0]);
+  return { origin, radiusPx: Math.hypot(edgeX - origin[0], edgeY - origin[1]), scale };
 }
 
 export function MotorCanvas({
   geometry,
+  geometryStale = false,
   mesh,
   mode,
   layer = 'dimensions',
+  overlays,
   rotorAngleDeg = 0,
   windingType = 'concentrated',
   selectedComponent = null,
@@ -1387,6 +1677,7 @@ export function MotorCanvas({
   onComponentSelect,
   config,
   activeDimension = null,
+  editingDimension = null,
   hoveredDimension = null,
   onDimensionSelect,
   magnetPolarityView = 'dominant',
@@ -1397,13 +1688,21 @@ export function MotorCanvas({
   meshQualities = EMPTY_MESH_QUALITIES,
   meshQualityThreshold = 0.01,
   focusedMeshElementIndex = null,
+  meshEdgeColor = null,
+  magnifier = false,
+  magnifierSlot = null,
+  plainWinding = false,
   onMeshElementHover,
   onMeshElementSelect,
   navigationSlot = null,
 }: MotorCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [pixelsPerMm, setPixelsPerMm] = useState<number | null>(null);
+  const scaleRef = useRef<number | null>(null);
   // Phases: the solve's drive settings with the geometry's phase-A axis and poles.
   const solveParams = config?.solve_params;
+  const turnDots = useMemo(() => buildWindingTurnDots(geometry, config?.winding.turns_per_coil ?? 0),
+    [geometry, config?.winding.turns_per_coil]);
   const metadataAxis = Number(geometry?.metadata.phase_axis_offset_elec_deg);
   const metadataPoles = Number(geometry?.metadata.pole_count);
   const phaseDrive = useMemo<PhaseDrive | null>(() => (solveParams
@@ -1451,10 +1750,114 @@ export function MotorCanvas({
     );
   }, [navigationFrame, ringInnerMm, ringOuterMm]);
   const navigation = useViewportNavigation(undefined, navigationFrame, sectorForSize, ringKey(ring));
-  const annotations = useMemo(
-    () => (config && layer === 'dimensions' ? buildDimensionAnnotations(config, geometry) : []),
-    [config, geometry, layer],
+  // A caller that passes no overlays gets the ones its layer used to stand for.
+  const overlayDimensions = overlays ? overlays.dimensions : layer === 'dimensions';
+  const overlaySlots = overlays ? overlays.slots : layer === 'slots';
+  const overlayTeeth = overlays ? overlays.teeth : false;
+  const overlayWindings = overlays ? overlays.windings : layer === 'windings';
+  const shownOverlays = useMemo<PublicCanvasOverlays>(
+    () => ({ dimensions: overlayDimensions, slots: overlaySlots, teeth: overlayTeeth, windings: overlayWindings }),
+    [overlayDimensions, overlaySlots, overlayTeeth, overlayWindings],
   );
+  const annotations = useMemo(
+    () => (config && !geometryStale && (overlayDimensions || editingDimension) ? buildDimensionAnnotations(config, geometry) : []),
+    [config, geometry, geometryStale, overlayDimensions, editingDimension],
+  );
+
+  // The mesh view can carry the Slots or Winding overlay: the geometry is drawn
+  // with it, and the mesh's edges go over the top.
+  // Tooth poles are drawn by the geometry too, so they bring it in on their own.
+  const meshOverlay: PublicCanvasLayer | null = mode === 'mesh' && meshDisplayMode === 'geometry' && geometry
+    && (overlaySlots || overlayTeeth || overlayWindings || showToothPoles)
+    ? 'none'
+    : null;
+  // The mesh carries no dimension lines.
+  const meshOverlays = useMemo<PublicCanvasOverlays>(() => ({ ...shownOverlays, dimensions: false }), [shownOverlays]);
+  const drawMeshOverlayGeometry = (target: CanvasRenderingContext2D, width: number, height: number) => {
+    if (!meshOverlay || !geometry) return;
+    drawGeometry(
+      target, geometry, width, height, meshOverlay, rotorAngleDeg, windingType, [], null, null, null,
+      navigation.scale, [navigation.pan.x, navigation.pan.y], (navigation.rotationDeg * Math.PI) / 180,
+      [], null, null, [], magnetPolarityView, phaseDrive, showToothPoles, previewRpm, plainWinding, meshOverlays,
+    );
+  };
+  const meshLayersRef = useRef<{
+    key: unknown[];
+    fixed: HTMLCanvasElement;
+    rotor: HTMLCanvasElement;
+    rotorSize: number;
+    frame: MeshDrawFrame | null;
+    hits: MeshTriangleHit[];
+  } | null>(null);
+  const meshHitRotationRef = useRef<{ origin: [number, number]; angleDeg: number } | null>(null);
+  // Hold the last inspected point when the pointer leaves the view.
+  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number } | null>(null);
+  const loupeShown = magnifier && mode === 'mesh' && Boolean(mesh);
+  const { canvasRef: loupeCanvasRef, width: loupeWidth, height: loupeHeight } = useMagnifierCanvas(loupeShown, magnifierSlot);
+  useEffect(() => {
+    if (!loupeShown) setLoupePoint(null);
+  }, [loupeShown]);
+  const loupeX = loupePoint?.x ?? null;
+  const loupeY = loupePoint?.y ?? null;
+  useEffect(() => {
+    const loupe = loupeCanvasRef.current;
+    const canvas = canvasRef.current;
+    if (!loupeShown || !mesh || loupeX === null || loupeY === null || !loupe || !canvas) return undefined;
+    const animationFrame = window.requestAnimationFrame(() => {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const pixelWidth = Math.round(loupeWidth * ratio);
+      const pixelHeight = Math.round(loupeHeight * ratio);
+      if (loupe.width !== pixelWidth || loupe.height !== pixelHeight) {
+        loupe.width = pixelWidth;
+        loupe.height = pixelHeight;
+      }
+      const context = loupe.getContext('2d');
+      if (!context) return;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.fillStyle = '#0b0d12';
+      context.fillRect(0, 0, pixelWidth, pixelHeight);
+      // The view's own drawing, redrawn larger about the pointer, so it stays sharp.
+      const zoom = MESH_LOUPE_MAGNIFICATION;
+      context.setTransform(
+        ratio * zoom, 0, 0, ratio * zoom,
+        ratio * (loupeWidth / 2 - zoom * loupeX),
+        ratio * (loupeHeight / 2 - zoom * loupeY),
+      );
+      const reachX = loupeWidth / (2 * zoom);
+      const reachY = loupeHeight / (2 * zoom);
+      if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
+      drawMesh(
+        context, mesh, rect.width, rect.height, rotorAngleDeg, navigation.scale,
+        [navigation.pan.x, navigation.pan.y], (navigation.rotationDeg * Math.PI) / 180,
+        meshDisplayMode, showMeshEdges, meshQualities, meshQualityThreshold, focusedMeshElementIndex, [], meshEdgeColor,
+        {
+          fill: !meshOverlay,
+          coilPhases: geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null,
+          cull: [loupeX - reachX, loupeY - reachY, loupeX + reachX, loupeY + reachY],
+          edgeWidthScale: 0.6,
+        },
+      );
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      context.lineWidth = 1;
+      const centreX = loupeWidth / 2;
+      const centreY = loupeHeight / 2;
+      context.beginPath();
+      context.moveTo(centreX - 7, centreY);
+      context.lineTo(centreX + 7, centreY);
+      context.moveTo(centreX, centreY - 7);
+      context.lineTo(centreX, centreY + 7);
+      context.stroke();
+    });
+    return () => window.cancelAnimationFrame(animationFrame);
+    // drawMeshOverlayGeometry reads only values listed here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    focusedMeshElementIndex, geometry, loupeShown, loupeX, loupeY, loupeWidth, loupeHeight, magnifierSlot, magnetPolarityView, mesh, meshDisplayMode,
+    meshEdgeColor, meshOverlay, meshOverlays, meshQualities, meshQualityThreshold, navigation.pan.x, navigation.pan.y,
+    navigation.rotationDeg, navigation.scale, phaseDrive, plainWinding, previewRpm, rotorAngleDeg, showMeshEdges, showToothPoles, windingType,
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1485,6 +1888,7 @@ export function MotorCanvas({
       hitRegionsRef.current = [];
       dimensionHitsRef.current = [];
       meshHitsRef.current = [];
+      meshHitRotationRef.current = null;
 
       context.strokeStyle = 'rgba(255, 255, 255, 0.035)';
       context.lineWidth = 1;
@@ -1502,8 +1906,9 @@ export function MotorCanvas({
         context.stroke();
       }
 
+      let drawnScale: number | null = null;
       if (mode === 'geometry' && geometry) {
-        drawGeometry(
+        drawnScale = drawGeometry(
           context,
           geometry,
           rect.width,
@@ -1526,24 +1931,103 @@ export function MotorCanvas({
           phaseDrive,
           showToothPoles,
           previewRpm,
+          plainWinding,
+          shownOverlays,
+          turnDots,
+          editingDimension,
         );
       } else if (mode === 'mesh' && mesh) {
-        drawMesh(
-          context,
+        const viewRotationRad = (navigation.rotationDeg * Math.PI) / 180;
+        const pan: [number, number] = [navigation.pan.x, navigation.pan.y];
+        // A full-rotor bitmap is intentionally bounded in size. At inspection
+        // zoom, draw the visible triangles directly so their edges stay sharp.
+        const detailZoom = navigation.scale > 8;
+        const coilPhases = geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null;
+        if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
+        const meshPass = (
+          target: CanvasRenderingContext2D,
+          angleDeg: number,
+          hits: MeshTriangleHit[],
+          part: 'all' | 'fixed' | 'rotor',
+        ) => drawMesh(
+          target,
           mesh,
           rect.width,
           rect.height,
-          rotorAngleDeg,
+          angleDeg,
           navigation.scale,
-          [navigation.pan.x, navigation.pan.y],
-          (navigation.rotationDeg * Math.PI) / 180,
+          pan,
+          viewRotationRad,
           meshDisplayMode,
           showMeshEdges,
           meshQualities,
           meshQualityThreshold,
           focusedMeshElementIndex,
-          meshHitsRef.current,
+          hits,
+          meshEdgeColor,
+          { part, fill: !meshOverlay, coilPhases, cull: detailZoom && part === 'all' ? [0, 0, rect.width, rect.height] : undefined },
         );
+        let frame: MeshDrawFrame | null;
+        if (rotorAngleDeg === 0 || detailZoom) {
+          meshLayersRef.current = null;
+          frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all');
+        } else {
+          // A turning rotor: the still part and the rotor are each drawn once, and the
+          // rotor's picture is turned for every frame, which is what keeps it smooth.
+          const key = [
+            mesh, canvas.width, canvas.height, navigation.scale, pan[0], pan[1], viewRotationRad, meshDisplayMode,
+            showMeshEdges, meshQualities, meshQualityThreshold, focusedMeshElementIndex, meshEdgeColor, meshOverlay, coilPhases,
+          ];
+          let layers = meshLayersRef.current;
+          if (!layers || layers.key.length !== key.length || layers.key.some((value, index) => value !== key[index])) {
+            const fixedHits: MeshTriangleHit[] = [];
+            const rotorHits: MeshTriangleHit[] = [];
+            const fixed = document.createElement('canvas');
+            fixed.width = canvas.width;
+            fixed.height = canvas.height;
+            const fixedContext = fixed.getContext('2d');
+            fixedContext?.setTransform(ratio, 0, 0, ratio, 0, 0);
+            const fixedFrame = fixedContext ? meshPass(fixedContext, 0, fixedHits, 'fixed') : null;
+            const { map, scale } = fitTransform(mesh.nodes_mm, rect.width, rect.height, navigation.scale, pan, undefined, viewRotationRad);
+            const origin = map([0, 0]);
+            // Centre the entire rotor in its own surface. Viewport-sized layers
+            // discard off-screen elements before rotation can bring them back.
+            const rotorSize = Math.max(1, 2 * (meshRotorRadiusMm(mesh) * scale + ROTOR_CACHE_PADDING_PX));
+            const rotor = document.createElement('canvas');
+            rotor.width = rotor.height = Math.min(MAX_ROTOR_CACHE_SIDE_PX, Math.ceil(rotorSize * ratio));
+            const rotorContext = rotor.getContext('2d');
+            const rotorRatio = rotor.width / rotorSize;
+            rotorContext?.setTransform(
+              rotorRatio, 0, 0, rotorRatio,
+              (rotorSize / 2 - origin[0]) * rotorRatio,
+              (rotorSize / 2 - origin[1]) * rotorRatio,
+            );
+            const rotorFrame = rotorContext ? meshPass(rotorContext, 0, rotorHits, 'rotor') : null;
+            layers = { key, fixed, rotor, rotorSize, frame: fixedFrame ?? rotorFrame, hits: [...fixedHits, ...rotorHits] };
+            meshLayersRef.current = layers;
+          }
+          frame = layers.frame;
+          meshHitsRef.current = layers.hits;
+          context.drawImage(layers.fixed, 0, 0, rect.width, rect.height);
+          if (frame) {
+            meshHitRotationRef.current = { origin: frame.origin, angleDeg: rotorAngleDeg };
+            context.save();
+            context.translate(frame.origin[0], frame.origin[1]);
+            context.rotate((rotorAngleDeg * Math.PI) / 180);
+            context.drawImage(layers.rotor, -layers.rotorSize / 2, -layers.rotorSize / 2, layers.rotorSize, layers.rotorSize);
+            context.restore();
+          }
+        }
+        // The geometry drawn under an overlay has already marked the rotor's place.
+        if (frame && !(meshOverlay && geometry)) drawRotorZeroMark(context, frame.origin, frame.radiusPx, rotorAngleDeg, viewRotationRad);
+        drawnScale = frame?.scale ?? null;
+      }
+      // Read the scale from the same fit that draws the motor. ResizeObserver,
+      // construction outlines, phase framing and zoom all reach this path.
+      // Rotation and hovering keep the same scale and need no React update.
+      if (drawnScale !== scaleRef.current) {
+        scaleRef.current = drawnScale;
+        setPixelsPerMm(drawnScale);
       }
     };
 
@@ -1553,6 +2037,7 @@ export function MotorCanvas({
     return () => observer.disconnect();
   }, [
     activeDimension,
+    editingDimension,
     annotations,
     geometry,
     highlightComponentKind,
@@ -1566,6 +2051,9 @@ export function MotorCanvas({
     magnetPolarityView,
     mode,
     phaseDrive,
+    plainWinding,
+    shownOverlays,
+    meshOverlays,
     showToothPoles,
     previewRpm,
     navigation.pan.x,
@@ -1575,8 +2063,10 @@ export function MotorCanvas({
     rotorAngleDeg,
     selectedComponent,
     showMeshEdges,
+    meshEdgeColor,
     focusedMeshElementIndex,
     windingType,
+    turnDots,
   ]);
 
   const pointerPoint = (event: MouseEvent<HTMLCanvasElement>): [number, number] => {
@@ -1584,8 +2074,14 @@ export function MotorCanvas({
     return [event.clientX - rect.left, event.clientY - rect.top];
   };
 
+  const pointWithinMotor = (event: MouseEvent<HTMLCanvasElement>, point: [number, number]) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return viewportFrameContains({ x: point[0], y: point[1] }, navigationFrame(rect.width, rect.height));
+  };
+
   const componentAtPointer = (event: MouseEvent<HTMLCanvasElement>) => {
     const point = pointerPoint(event);
+    if (!pointWithinMotor(event, point)) return null;
     for (let index = hitRegionsRef.current.length - 1; index >= 0; index -= 1) {
       const region = hitRegionsRef.current[index];
       if (region && pointInContours(point, region.loops ?? [region.points])) return region.selection;
@@ -1595,9 +2091,15 @@ export function MotorCanvas({
 
   const meshElementAtPointer = (event: MouseEvent<HTMLCanvasElement>) => {
     const point = pointerPoint(event);
+    if (!pointWithinMotor(event, point)) return null;
+    const rotation = meshHitRotationRef.current;
+    // Unturn the pointer once; the cached rotor hit polygons stay at 0°.
+    const rotorPoint = rotation ? rotatePoint(
+      [point[0] - rotation.origin[0], point[1] - rotation.origin[1]], -rotation.angleDeg,
+    ).map((value, axis) => value + rotation.origin[axis]) as [number, number] : point;
     for (let index = meshHitsRef.current.length - 1; index >= 0; index -= 1) {
       const hit = meshHitsRef.current[index];
-      if (hit && pointInPolygon(point, hit.points)) return hit.selection;
+      if (hit && pointInPolygon(isRotorRegion(hit.selection.region) ? rotorPoint : point, hit.points)) return hit.selection;
     }
     return null;
   };
@@ -1605,6 +2107,7 @@ export function MotorCanvas({
   /** Nearest dimension line within a finger's width, so 1mm spans stay clickable. */
   const dimensionAtPointer = (event: MouseEvent<HTMLCanvasElement>): DimensionId | null => {
     const [px, py] = pointerPoint(event);
+    if (!pointWithinMotor(event, [px, py])) return null;
     const TOLERANCE = 7;
     let best: { id: DimensionId; distance: number } | null = null;
     for (const hit of dimensionHitsRef.current) {
@@ -1625,6 +2128,8 @@ export function MotorCanvas({
     return best?.id ?? null;
   };
 
+  const scaleBar = pixelsPerMm === null ? null : viewportScaleBar(pixelsPerMm);
+  const editingAnnotation = editingDimension ? annotations.find(({ id }) => id === editingDimension) : null;
   return (
     <div
       className={`public-viewport-navigation public-motor-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
@@ -1634,8 +2139,15 @@ export function MotorCanvas({
       <canvas
         className="motor-canvas"
         ref={canvasRef}
+        data-editing-dimension={editingDimension ?? undefined}
         aria-label={`${mode} motor view, ${layer} layer`}
         onPointerMove={(event) => {
+          if (loupeShown) {
+            const bounds = event.currentTarget.getBoundingClientRect();
+            const x = event.clientX - bounds.left;
+            const y = event.clientY - bounds.top;
+            setLoupePoint({ x, y });
+          }
           if (navigation.panEnabled) {
             setHoveredComponent(null);
             onMeshElementHover?.(null);
@@ -1673,6 +2185,20 @@ export function MotorCanvas({
           onComponentSelect?.(componentAtPointer(event));
         }}
       />
+      {editingAnnotation && <output className="public-visually-hidden" role="status" aria-label="Active geometry dimension">
+        {editingAnnotation.label} {editingAnnotation.value}{!editingAnnotation.shapes.length && editingAnnotation.note ? ` · ${editingAnnotation.note}` : ''}
+      </output>}
+      {scaleBar && <div className="public-viewport-scale" role="img" aria-label={`View scale: ${scaleBar.mm} millimetres`}
+        data-mm={scaleBar.mm} data-pixels-per-mm={pixelsPerMm}>
+        <div className="public-viewport-scale-label"><span>0</span><span>{scaleBar.mm} mm</span></div>
+        <svg width={scaleBar.pixels + 2} height="11" aria-hidden="true">
+          <path d={`M 1 1 V 8 H ${scaleBar.pixels + 1} V 1 M ${scaleBar.pixels / 2 + 1} 4 V 8`} />
+        </svg>
+        <small>{navigation.scale === 1 ? 'Auto-fit' : 'View scale'}</small>
+      </div>}
+      {loupeShown && (
+        <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={MESH_LOUPE_MAGNIFICATION} label="Mesh magnifier" />
+      )}
       {(() => {
         const zoomControls = (
           <ViewportNavigationControls

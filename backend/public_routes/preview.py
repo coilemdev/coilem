@@ -15,7 +15,7 @@ from backend.magneto2d_adapter import (
     get_magneto2d_support_error,
     run_magneto2d_mesh_preview,
 )
-from backend.models import GeometryPreview, MotorConfig
+from backend.models import ErrorResponse, GeometryPreview, MotorConfig
 from backend.preview import generate_preview
 from backend.public_policy import (
     PublicConfigError,
@@ -23,6 +23,8 @@ from backend.public_policy import (
     parse_public_motor_config,
     public_config_support_error,
 )
+from backend.rotor_construction_preview import generate_rotor_construction_preview
+from backend.stator_construction_preview import generate_stator_construction_preview
 
 router = APIRouter()
 
@@ -38,7 +40,7 @@ def _public_config_http_error(exc: PublicConfigError) -> HTTPException:
     )
 
 
-def _raise_for_invalid_geometry(config: MotorConfig) -> None:
+def _raise_for_invalid_geometry(config: MotorConfig, *, allow_unfinished_winding: bool = False, stator_only: bool = False) -> None:
     """Reject geometry the mesher cannot build, with the reason and the fix.
 
     Neither public route used to run this, so an invalid rotor — raising the pole
@@ -49,6 +51,29 @@ def _raise_for_invalid_geometry(config: MotorConfig) -> None:
     """
 
     errors = validate_geometry(config) or []
+    if allow_unfinished_winding:
+        # These slot-count errors describe winding balance/q, not iron geometry.
+        # All physical containment, clearance and dimensional checks still apply.
+        errors = [error for error in errors if not (
+            error.field == "stator.slot_count" or (error.field or "").startswith("winding")
+        )]
+    if stator_only:
+        # Only this explicitly partial response omits unfinished rotor checks.
+        # Physical stator checks and the public schema/material policy still run.
+        errors = [error for error in errors if (error.field or "").startswith("stator.")]
+        slot_depth = (config.stator.OD_mm - config.stator.ID_mm) / 2 - config.stator.yoke_thickness_mm
+        if slot_depth < 0.5:
+            errors.append(ErrorResponse(
+                error_code="INVALID_GEOMETRY", field="stator.yoke_thickness_mm",
+                message=f"The yoke leaves {slot_depth:.2f}mm for the stator slots.",
+                suggestion="Reduce yoke thickness or bore diameter to leave at least 0.5mm for the slots.",
+            ))
+        elif config.stator.tooth_shoe_enabled and config.stator.tooth_shoe_height_mm > slot_depth - 0.5:
+            errors.append(ErrorResponse(
+                error_code="INVALID_GEOMETRY", field="stator.tooth_shoe_height_mm",
+                message="The tooth shoe leaves less than 0.5mm for the slot body.",
+                suggestion="Reduce shoe height or deepen the slots.",
+            ))
     if not errors:
         return
     first = errors[0]
@@ -75,13 +100,35 @@ def _raise_for_invalid_geometry(config: MotorConfig) -> None:
 
 
 @router.post("/preview", response_model=GeometryPreview, tags=["preview"])
-async def preview(body: dict[str, Any]) -> GeometryPreview:
+async def preview(body: dict[str, Any], construction: bool = False, stator_only: bool = False, diagnostic: bool = False) -> GeometryPreview:
     """Generate a launch-supported geometry preview without a solver."""
 
     try:
-        config = parse_public_motor_config(body)
-        _raise_for_invalid_geometry(config)
-        return generate_preview(config)
+        if (stator_only or diagnostic) and not construction:
+            raise ValueError("Partial or diagnostic preview requires construction=true.")
+        if stator_only and diagnostic:
+            raise ValueError("Choose either stator-only or diagnostic rotor construction.")
+        config = parse_public_motor_config(body, allow_unfinished_winding=construction)
+        _raise_for_invalid_geometry(config, allow_unfinished_winding=construction, stator_only=stator_only or diagnostic)
+        if diagnostic:
+            return generate_rotor_construction_preview(config)
+        if stator_only:
+            return generate_stator_construction_preview(config)
+        result = generate_preview(config)
+        if not construction:
+            return result
+        # Geometry construction must not invent copper or qualify an unfinished
+        # winding. Retain its validation errors so the UI can explain the issue.
+        metadata = {key: value for key, value in result.metadata.items() if not key.startswith("winding_")
+                    and key not in {"qualification", "fill_factor", "phase_axis_offset_elec_deg", "phase_current_convention",
+                                    "coil_span_label", "coil_span_slots", "mmf_harmonics"}}
+        metadata["construction_only"] = True
+        return result.model_copy(update={
+            "regions": [region for region in result.regions if not any(
+                token in region.region_type.lower() for token in ("slot", "winding", "coil")
+            )],
+            "winding_layout": [], "winding_coils": [], "metadata": metadata,
+        })
     except PublicConfigError as exc:
         raise _public_config_http_error(exc) from exc
     except ValueError as exc:
