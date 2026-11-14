@@ -86,16 +86,26 @@ export function designErrorText(error: PublicApiError, config: MotorConfig): str
 /** Keep request/schema identifiers out of field guidance and Design Health. */
 export function humanizeGeometryMessage(message: string): string {
   const labels: Record<string, string> = {
-    v_depth_mm: 'V Depth', v_angle_deg: 'V Angle', magnet_width_mm: 'Magnet Width',
+    magnet_embrace: 'Saved magnet coverage', v_depth_mm: 'V Depth', v_angle_deg: 'V Angle', magnet_width_mm: 'Magnet Width',
     magnet_thickness_mm: 'Magnet Thick.', inner_web_thickness_mm: 'Inner Web',
-    outer_bridge_thickness_mm: 'Outer Bridge', bridge_thickness_mm: 'Outer Bridge',
+    outer_bridge_thickness_mm: 'Minimum Outer Bridge', bridge_thickness_mm: 'Outer Bridge',
     pocket_clearance_mm: 'Pocket Clearance', side_bridge_thickness_mm: 'Side Bridge',
     tooth_width_mm: 'Yoke Tooth Width', slot_opening_mm: 'Tooth Body Opening',
     yoke_thickness_mm: 'Yoke Thickness', pole_count: 'Pole Count', slot_count: 'Slot Count',
   };
+  message = message.replace(/\b(stator|rotor|winding|Geometry)\.([A-Za-z0-9_]+)/g, (_token, group: string, field: string) => {
+    const names: Record<string, string> = { 'stator.ID_mm': 'Bore Diameter', 'stator.OD_mm': 'Outer Diameter',
+      'rotor.ID_mm': 'Shaft Bore', 'rotor.OD_mm': 'Rotor OD', stack_length_mm: 'Stack Length',
+      Segment_count: 'Segment Count', Outer_radius: 'Outer Radius', Inner_radius: 'Bore Radius', Segment_gap_angle: 'Segment Gap Angle' };
+    return names[`${group}.${field}`] ?? names[field] ?? labels[field] ?? field.replace(/_/g, ' ');
+  });
   return message.replace(/\b(?:rotor\.|stator\.)?([a-z]+(?:_[a-z0-9]+)+)\b/g, (token, key: string) => labels[key] ?? token)
     .replace(/\brotor ID_mm\b/g, 'Shaft Bore').replace(/\brotor OD_mm\b/g, 'Rotor OD')
-    .replace(/\bstator ID_mm\b/g, 'Bore Diameter').replace(/\bstator OD_mm\b/g, 'Outer Diameter');
+    .replace(/\bstator ID_mm\b/g, 'Bore Diameter').replace(/\bstator OD_mm\b/g, 'Outer Diameter')
+    .replace(/ID_mm/g, 'Bore Diameter').replace(/OD_mm/g, 'Outer Diameter')
+    .replace(/: Input should be greater than or equal to /g, ' must be at least ')
+    .replace(/: Input should be less than or equal to /g, ' must be at most ')
+    .replace(/\{'A': (\d+), 'B': (\d+), 'C': (\d+)\}/g, '$1 / $2 / $3 coils in phases A / B / C');
 }
 
 // Fields whose control sits outside the section their config group suggests.
@@ -125,7 +135,7 @@ export function enteredGeometryError(field: string | null | undefined, message: 
     'rotor.magnet_width_mm': ['rotor', 'Magnet Width'],
     'rotor.v_depth_mm': ['rotor', 'V Depth'],
     'rotor.v_angle_deg': ['rotor', 'V Angle'],
-    'rotor.outer_bridge_thickness_mm': ['rotor', 'Outer Bridge'],
+    'rotor.outer_bridge_thickness_mm': ['rotor', 'Minimum Outer Bridge'],
     'rotor.bridge_thickness_mm': ['rotor', 'Outer Bridge'],
   };
   const control = field ? controls[field] : null;

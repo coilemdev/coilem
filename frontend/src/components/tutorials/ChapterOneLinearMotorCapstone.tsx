@@ -284,12 +284,16 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
     [magnetOrientations],
   );
   const coherence = Math.abs(alignment);
-  const measuredForceX = solvedForceX(fieldData);
+  const fieldIsCurrent = fieldStatus === 'solved' && fieldData !== null && fieldData.solved
+    && fieldData.current_a === currentA * currentSign && fieldData.airgap_mm === gapMm
+    && fieldData.winding_spacing_mm === windingSpacingMm
+    && magnetOrientations.every((orientation, index) => orientation === fieldData.magnet_orientations[index]);
+  const measuredForceX = fieldIsCurrent ? solvedForceX(fieldData) : null;
   const signedForceN = energized && measuredForceX !== null ? measuredForceX : 0;
   const forceDirection = signOf(signedForceN);
   const saturationPercent = Math.round(clamp(24 + currentA * 3.8 + Math.max(0, 4 - gapMm) * 10, 0, 100));
   const trackReady = coherence >= 0.74;
-  const movesRight = energized && fieldStatus === 'solved' && forceDirection > 0;
+  const movesRight = energized && fieldIsCurrent && forceDirection > 0;
   const strengthReady = movesRight && signedForceN >= FORCE_TARGET_N && saturationPercent < 90;
   const complete = isLessonComplete(LESSON_ID);
   const conductorLabels = React.useMemo<MeshViewerPointLabel[]>(() => (
@@ -316,13 +320,18 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
     setFieldData(null);
     setFieldStatus('idle');
     setFieldError(null);
-  }, []);
+    setRunning(false);
+    setRunOnce(false);
+    setPhase((previous) => previous === 'complete' ? 'reveal' : previous);
+  }, [setPhase]);
 
   const solveField = React.useCallback(async (requestedCurrentA: number) => {
     const requestId = solveRequestId.current + 1;
     solveRequestId.current = requestId;
     setFieldStatus('solving');
     setFieldError(null);
+    setRunning(false);
+    setRunOnce(false);
     try {
       const data = await solveClient.fetchLinearMotorCapstoneSolve(
         requestedCurrentA,
@@ -331,6 +340,7 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
         windingSpacingMm,
       );
       if (solveRequestId.current !== requestId) return null;
+      if (!data.solved) throw new Error('The field has not been solved. Test the current design again.');
       setFieldData(data);
       setFieldStatus('solved');
       return data;
@@ -394,13 +404,15 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
   }, [onStageChange, phase]);
 
   React.useEffect(() => {
-    if (!running) return undefined;
+    if (!running || phase !== 'reveal' || !strengthReady) return undefined;
+    const runRequestId = solveRequestId.current;
     const timeout = window.setTimeout(() => {
+      if (solveRequestId.current !== runRequestId) return;
       setRunning(false);
       setRunOnce(true);
     }, 2600);
     return () => window.clearTimeout(timeout);
-  }, [running]);
+  }, [running, phase, strengthReady]);
 
   React.useEffect(() => () => {
     if (inspectorFlashTimerRef.current !== null) window.clearTimeout(inspectorFlashTimerRef.current);
@@ -478,6 +490,11 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
       return;
     }
     if (phase === 'reveal') {
+      if (!strengthReady) {
+        const solved = await solveField(currentA * currentSign);
+        if (solved) setEnergized(true);
+        return;
+      }
       if (!runOnce) {
         setRunning(true);
         return;
@@ -504,11 +521,13 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
           ? 'Reveal in 3D'
           : 'Test performance'
         : phase === 'reveal'
-          ? runOnce
-            ? 'Finish chapter'
-            : running
-              ? 'Running…'
-              : 'Run actuator'
+          ? !strengthReady
+            ? 'Test performance'
+            : runOnce
+              ? 'Finish chapter'
+              : running
+                ? 'Running…'
+                : 'Run actuator'
           : 'Chapter complete';
 
   const insight = phase === 'build'
@@ -528,7 +547,9 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
           ? 'Target reached without driving the iron into the warning zone.'
           : `Reach ${formatForce(FORCE_TARGET_N)} to the right while keeping saturation below 90%.`
         : phase === 'reveal'
-          ? 'The cross-section is now a physical machine. Run what you built.'
+          ? strengthReady
+            ? 'The cross-section is now a physical machine. Run what you built.'
+            : 'Solve the current design and meet the target before running the actuator.'
           : 'Field became force. Force became motion.';
 
   const goalPhase: GoalPhase = phase === 'complete' ? 'reveal' : phase;
@@ -609,7 +630,7 @@ export const ChapterOneLinearMotorCapstone: React.FC<ChapterOneLinearMotorCapsto
         <span>{strengthReady ? '✓' : '○'}</span>
         <div><small>Design target</small><strong>{formatForce(FORCE_TARGET_N)} right · saturation below 90%</strong></div>
       </div>
-      {phase === 'complete' || complete ? (
+      {phase === 'complete' && strengthReady && runOnce ? (
         <section className="linear-capstone-complete-card">
           <small>Your chapter result</small>
           <strong>{formatForce(signedForceN)} to the {forceDirection > 0 ? 'right' : forceDirection < 0 ? 'left' : 'stationary'}</strong>

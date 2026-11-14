@@ -5262,3 +5262,16 @@ button.performance-tag { cursor: help; }
 .public-field-dock .public-field-dock-controls .public-field-control-cluster > span,
 .public-field-dock > .public-field-playback > .public-field-playback-label { display: inline-block; flex: none; min-width: 58px; color: rgba(148,163,184,.58); font: 600 10px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 
+
+/* Validation remains reachable in split-screen layouts (#273). */
+@media (max-width: 900px) {
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) { flex-direction: column; overflow-y: auto; align-items: stretch; }
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .design-workspace-main { flex: 0 0 auto; min-height: 520px; }
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .design-workspace-health { display: flex; flex: 0 0 auto; width: 100%; min-width: 0; min-height: fit-content; }
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .design-workspace-health-scroll { overflow: visible; }
+}
+@media (max-width: 620px) {
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .design-workspace-main { flex-direction: column; }
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .public-parameter-panel { width: 100%; min-width: 0; max-height: 360px; }
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .public-motor-viewport { min-height: 360px; }
+}

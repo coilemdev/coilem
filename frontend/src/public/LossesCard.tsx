@@ -21,7 +21,7 @@ import {
 } from './lossesView';
 import { formatSignificant } from './numberFormat';
 
-function LossBar({ segments, totalW }: { segments: LossSegment[]; totalW: number }) {
+function LossBar({ segments, totalW, partial }: { segments: LossSegment[]; totalW: number; partial: boolean }) {
   const [hovered, setHovered] = useState<LossSegment['key'] | null>(null);
   const active = segments.find((segment) => segment.key === hovered) ?? null;
   const total = formatPower(totalW);
@@ -40,7 +40,7 @@ function LossBar({ segments, totalW }: { segments: LossSegment[]; totalW: number
       <p className="losses-bar-readout" aria-live="polite">
         {active
           ? `${active.label}: ${formatPower(active.watts).value} ${formatPower(active.watts).unit} (${Math.round(active.share * 100)}%)`
-          : `${total.value} ${total.unit} total loss`}
+          : `${total.value} ${total.unit} ${partial ? 'known loss subtotal' : 'total loss'}`}
       </p>
       {/* Shares here: the table above already gives the watts, and each item's tooltip repeats them. */}
       <ul className="losses-legend">
@@ -399,7 +399,7 @@ export function LossesCard({
       </div>
       <table><tbody>
         <tr><th scope="row">Phase resistance</th><td>{formatResistance(winding.phase_resistance_ohm)} at {winding.winding_temperature_C} °C</td></tr>
-        <tr><th scope="row">Phase resistance at 20 °C</th><td>{formatResistance(winding.phase_resistance_20C_ohm)}</td></tr>
+        {winding.winding_temperature_C !== 20 && <tr><th scope="row">Phase resistance at 20 °C</th><td>{formatResistance(winding.phase_resistance_20C_ohm)}</td></tr>}
       </tbody></table>
     </section>;
   }
@@ -415,6 +415,7 @@ export function LossesCard({
           <p className="popover-note">{notModelledText(loss)}</p>
         </StatusSummary>
       </div>
+      {view.efficiency.status === 'unavailable' && <p className="performance-message" role="status">{view.efficiency.reason || 'Efficiency is unavailable for this run.'} {loss.iron_loss_status_reason} {loss.iron_loss_W == null && 'The loss subtotal excludes unavailable iron loss.'}</p>}
       <div className="losses-card-body">
         <div className="losses-card-numbers">
           <table>
@@ -442,7 +443,7 @@ export function LossesCard({
               })}
             </tbody>
           </table>
-          {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} />}
+          {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} partial={loss.iron_loss_W == null} />}
         </div>
         {showMap && plot && (
           <LossMap

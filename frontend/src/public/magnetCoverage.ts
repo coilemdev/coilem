@@ -27,3 +27,8 @@ export function magnetPoleCoverage(
 export function magnetPoleCoveragePct(config: Pick<MotorConfig, 'topology' | 'rotor' | 'rotor_layout'>): number {
   return Math.round(magnetPoleCoverage(config) * 100);
 }
+
+/** V-shape coverage needs the slab geometry; its saved embrace is not an estimate. */
+export function hasPoleCoverageEstimate(config: Pick<MotorConfig, 'topology' | 'rotor'>): boolean {
+  return config.topology !== 'IPM' || config.rotor.ipm_topology !== 'v_shape';
+}

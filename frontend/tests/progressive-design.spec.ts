@@ -289,7 +289,10 @@ test(`progressive ${layout.name} stator geometry and tooth dimensions follow the
     await continueSetup(page, 'Rotor');
     await expect(rotor(page).getByRole('spinbutton', { name: 'Pole Count', exact: true })).toBeFocused();
     const rotorLabels = await rotor(page).locator('.public-param-row:has(input)').evaluateAll((rows) => rows.map((row) => row.querySelector('.param-label')?.firstChild?.textContent));
-    expect(rotorLabels).toEqual(['Pole Count', 'Rotor OD', 'Magnet Thick.', 'Magnet Width', 'V Angle', 'V Depth']);
+    expect(rotorLabels).toEqual(['Pole Count', 'Rotor OD', 'Magnet Thick.', 'Magnet Width', 'Minimum Outer Bridge', 'V Angle', 'V Depth']);
+    const minimumBridge = rotor(page).getByRole('spinbutton', { name: 'Minimum Outer Bridge', exact: true });
+    await expect(minimumBridge.locator('xpath=ancestor::label')).toHaveAttribute('data-entry-required', 'false');
+    await expect(minimumBridge).not.toHaveValue('');
     const vAngle = rotor(page).getByRole('spinbutton', { name: 'V Angle', exact: true });
     const vDepth = rotor(page).getByRole('spinbutton', { name: 'V Depth', exact: true });
     await expect(vAngle).toHaveValue('');
@@ -324,6 +327,14 @@ test(`progressive ${layout.name} stator geometry and tooth dimensions follow the
     await expect(dimension).toContainText('V Depth 30.0 mm');
     await expect(page.locator('.viewport-preview-note')).toHaveCount(0);
     await page.screenshot({ path: info.outputPath('v-ipm-pocket-error.png') });
+    await vDepth.fill('14');
+    await configureSection(page, 'rotor');
+    await expect(rotor(page).getByRole('button', { name: /^Continue Setup: Winding/ })).toBeEnabled();
+    await minimumBridge.focus();
+    await expect(dimension).toContainText('Actual Outer Bridge');
+    await expect(health(page).getByText('Magnet coverage is in a practical range', { exact: true })).toHaveCount(0);
+    await expect(health(page).getByText('Coverage', { exact: true })).toHaveCount(0);
+
   }
 });
 }

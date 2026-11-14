@@ -117,10 +117,8 @@ export function lossesView(
     : `${significant(loss.phase_resistance_ohm)} Ω`;
   const copperStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const statuses: NamedOutputStatus[] = [];
-  if (efficiency.status !== 'unavailable') statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
-  if (ironAvailable && loss.iron_loss_status !== 'unavailable') {
-    statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
-  }
+  statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
+  statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
   statuses.push({ key: 'copper', label: 'Copper loss, from the phase resistance', ...copperStatus });
   const rows: LossRow[] = [
     powerRow('input', 'Input power', loss.input_power_W, 'Electrical input: the solved torque times speed, plus copper loss.'),
@@ -135,7 +133,7 @@ export function lossesView(
       ? powerRow('iron', 'Iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
       : { key: 'iron', label: 'Iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' },
     powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'),
-    powerRow('total', 'Total loss', loss.total_loss_W, notModelledText(loss)),
+    powerRow('total', ironAvailable ? 'Total loss' : 'Known loss subtotal', loss.total_loss_W, notModelledText(loss)),
   ];
   return { efficiency, rows, statuses, segments, totalW };
 }

@@ -1071,8 +1071,8 @@ assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlayback
 assert.match(solvedFieldSource, /getPublicPlaybackStatus\(check\.artifactId, check\.composition\)/);
 assert.match(solvedFieldSource, /ref\.byte_count === null/);
 assert.match(solvedFieldSource, /const ready = statuses\.every\(\(status\) => status\.ready \|\| !status\.drawing\);/);
-assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
-assert.match(solvedFieldSource, /\{playbackPreparing && \(\s*<span className="public-field-playback-preparing" role="status" aria-live="polite">\{playbackPreparingLabel\}<\/span>/);
+assert.match(solvedFieldSource, /disabled=\{Boolean\(playbackUnavailableReason\) \|\| angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
+assert.match(solvedFieldSource, /\{playbackPreparing && !playbackUnavailableReason && \(\s*<span className="public-field-playback-preparing" role="status" aria-live="polite">\{playbackPreparingLabel\}<\/span>/);
 assert.match(apiSource, /\/solve\/playback-status\/\$\{encodeURIComponent\(artifactId\)\}\?\$\{query\}/);
 assert.match(solvedFieldSource, /const stopPlayback = \(\) => \{[\s\S]*?setFrameIndex\(0\);\s*\};/);
 assert.match(solvedFieldSource, /positionLink\?\.subscribeRequests\(\(angleDeg\) => scrubToAngleRef\.current\(angleDeg\)\)/);
@@ -1237,7 +1237,7 @@ assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.
 assert.match(fieldResultSource, /className=\{`public-field-legend-tick is-\$\{tick\.label\}`\}/);
 assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)/);
 // A Fit-view colour range still disables Play (as does playback that is still being drawn, checked above).
-assert.match(solvedFieldSource, /disabled=\{angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
+assert.match(solvedFieldSource, /disabled=\{Boolean\(playbackUnavailableReason\) \|\| angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
 assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
 // The knee and saturation marks are close: their labels read away from each other.
@@ -1682,7 +1682,7 @@ assert.match(workspaceSource, />New Design</);
 assert.match(workspaceSource, /workflowDisabled \|\| \(!step\.available && !active\)/);
 assert.match(workspaceSource, /aria-label="Blank design canvas"/);
 assert.match(workspaceSource, /solveAvailable=\{!props\.blankDesign && buildComplete && !props\.designInputInvalid\}/);
-assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => entryField\.unset \? '' : String\(value\)\)/);
+assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => unset \? '' : String\(value\)\)/);
 assert.match(workspaceSource, /onBlur=\{\(\) => \{ commitDraft\(\); fieldFocus\?\.setField\(null\); \}\}/);
 assert.match(workspaceSource, /event\.key === 'Enter'/);
 assert.doesNotMatch(workspaceSource, /onChange=\{\(event\) => onChange\(Number\(event\.target\.value\)\)\}/);
