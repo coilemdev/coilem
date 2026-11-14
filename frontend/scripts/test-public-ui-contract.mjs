@@ -165,7 +165,7 @@ assert.match(appSource, /void prepareMesh\(/);
 assert.match(appSource, /const refreshSolveValidation = useCallback/);
 assert.match(appSource, /void refreshSolveValidation\(config\)/);
 assert.match(appSource, /validationChecking=\{validationChecking\}/);
-assert.match(appSource, /useState<PublicSolverId>\('magneto2d'\)/);
+assert.match(appSource, /useState<PublicSolverId>\(initialSetup\.solver \?\? 'magneto2d'\)/);
 assert.match(appSource, /elmerCapabilityFromHealth/);
 assert.match(appSource, /elmerCapabilityIsReady/);
 assert.match(appSource, /feature_enabled: payload\.feature_enabled === true/);

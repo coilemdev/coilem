@@ -3,21 +3,33 @@
 Solve's **Run setup** selector restores an operating point and its requested
 outputs without changing motor geometry, winding or materials.
 
-1. Set the operating point and analyses in Solve, then choose **Save setup…**.
-2. Give it a name. Leave **Include accuracy and solver settings** unchecked
-   to keep mesh, sweep resolution and solver separately selectable. Check it
-   when the setup should also restore those numerical choices.
-3. Select a saved setup to apply its settings together. Review the existing
-   controls before running. An edit marks the selected setup **Modified**.
-4. Use **Update setup**, **Rename setup**, or **Delete setup** to manage it.
-   **Save setup…** while one is selected creates a separate named copy.
+1. Set the operating point and analyses in Solve, then choose the **Save** (disk)
+   icon beside the dropdown while **Custom** is selected. Type a name in the
+   setup field and choose **Save**
+   again. Leave **Include accuracy and solver settings** unchecked to keep
+   numerical quality separately selectable, or check it to capture those choices.
+2. Use the arrow beside the name to select a setup. An edit to its captured
+   settings marks it **Modified**. **Save** replaces that setup's saved values.
+   Saving unchanged settings keeps the same version.
+3. Double-click a user setup's name, or focus it and press **F2**, to rename it
+   inline. **Enter** or leaving the field saves the name; **Escape** cancels.
+4. Choose **Custom**, then **Save**, to create another setup from the current
+   values. The **Delete** (trash) icon asks for confirmation and leaves the
+   operating settings and earlier run records in place.
 
-User setups are stored locally in this browser for the current design. Save
-the `.coilem` design file to keep a portable copy of the setups, their active
-identity/version and the actual settings. This also works when browser storage
-is unavailable; a notice explains that the design file must be saved. Older
-files open without setups, and earlier app versions may discard setups when
-saving a design again.
+User setups are stored locally in this browser for the current design. Reopening
+the same original file, or reloading an example, restores its active setup and
+the settings it captured. Check **Include accuracy and solver settings** when
+saving to restore the accuracy plan, mesh and advanced options too. Files without
+setup metadata are identified by their contents, so a different design with the
+same filename keeps its own library.
+
+Save the `.coilem` design file to keep a portable copy of the setups, their active
+identity/version and the actual settings. Opening that portable file preserves
+its exact settings, including any unsaved changes to the selected setup. This
+also works when browser storage is unavailable; a notice explains that the
+design file must be saved. Older files start without setups, and earlier app
+versions may discard setups when saving a design again.
 
 ## Reference setups
 
@@ -31,8 +43,8 @@ The exact Pyleecan Prius model offers two immutable built-ins:
 These use Pyleecan's d-axis convention. They include the numerical settings
 from the shipped, versioned reference designs. They are only offered for a
 compatible physical model and cannot overwrite its geometry or materials.
-Changing their values marks the active setup Modified; **Save a copy…** creates
-a user setup. Built-ins cannot be updated, renamed or deleted.
+Changing their values marks the active setup Modified; **Save** creates
+a personal copy after asking for a name. Built-ins cannot be updated, renamed or deleted.
 
 The Prius magnet-temperature control selects the supported 20 C or 60 C
 reference material case while preserving the other operating settings. The

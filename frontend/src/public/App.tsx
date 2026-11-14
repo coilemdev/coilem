@@ -1,7 +1,7 @@
 import { RunSetupControl } from './RunSetupControl';
 import { BUILTIN_SOLVE_PROFILES } from './builtinSolveProfiles';
-import { newProfileDocument, parseProfileDocument, profileProvenance } from './solveProfiles';
-import { loadProfileDocument, storeProfileDocument } from './profileStorage';
+import { newProfileDocument, parseProfileDocument, profileProvenance, restoreActiveProfile } from './solveProfiles';
+import { loadProfileDocument, profileScopeForFile, storeProfileDocument } from './profileStorage';
 import { savedResultPlayback } from './savedRunPlayback';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -543,8 +543,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   );
   const [tutorialsStage, setTutorialsStage] = useState<LearningLessonStage>('design');
   const [tutorialHeaderProgress, setTutorialHeaderProgress] = useState<LearningLessonHeaderProgress | null>(null);
-  const [config, setConfig] = useState<MotorConfig>(() => initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig());
-  const [runSetups, setRunSetups] = useState(() => initialNewDesign ? newProfileDocument() : loadProfileDocument('starter:spm'));
+  const [initialSetup] = useState(() => restoreActiveProfile(
+    initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig(),
+    initialNewDesign ? newProfileDocument() : loadProfileDocument('starter:spm'), BUILTIN_SOLVE_PROFILES,
+  ));
+  const [config, setConfig] = useState<MotorConfig>(initialSetup.config);
+  const [runSetups, setRunSetups] = useState(initialSetup.document);
   const [designName, setDesignName] = useState<string | null>(initialNewDesign ? 'New Design' : null);
   const [blankDesign, setBlankDesign] = useState(initialNewDesign);
   const [newDesignParts, setNewDesignParts] = useState<BuiltParts | null>(initialNewDesign ? {} : null);
@@ -573,7 +577,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const [cancellingSolve, setCancellingSolve] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
-  const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
+  const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>(initialSetup.solver ?? 'magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
   const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
   const [geometryStale, setGeometryStale] = useState(!initialNewDesign);
@@ -1487,13 +1491,20 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const openDesignFile = async (file: File) => {
     resetDesignViewMemory();
     try {
-      const parsed = parseDesignFile(await file.text());
-      setRunSetups(parsed.runSetups ?? newProfileDocument());
+      const text = await file.text();
+      const parsed = parseDesignFile(text);
+      const restored = restoreActiveProfile(parsed.config,
+        parsed.runSetups ?? loadProfileDocument(await profileScopeForFile(text)), BUILTIN_SOLVE_PROFILES);
+      // A portable file owns its exact settings, including edits made after saving
+      // a setup. Only a browser-only library needs its active setup reapplied.
+      const nextConfig = parsed.runSetups ? parsed.config : restored.config;
+      setRunSetups(restored.document);
       setNewDesignParts(null);
       setDesignInputErrors({});
-      rememberPresetSweep(parsed.config);
-      setConfig(parsed.config);
-      if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
+      rememberPresetSweep(nextConfig);
+      setConfig(nextConfig);
+      const unavailableElmer = restored.solver === 'elmer' && !elmerCapabilityIsReady(elmerCapability);
+      setSelectedSolver(unavailableElmer ? 'magneto2d' : restored.solver ?? (nextConfig.geometry_reference ? 'magneto2d' : selectedSolver));
       setGeometry(null);
       setEditFeedback(null);
       setDesignName(parsed.name ?? designFileBaseName(file.name));
@@ -1505,7 +1516,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       const loadedNotice = parsed.fromFuture
         ? `Loaded ${file.name} — saved by a newer schema, unrecognized settings were ignored.`
         : `Loaded design file ${file.name}.`;
-      setNotice([loadedNotice, parsed.solverSettingsNotice].filter(Boolean).join(' '));
+      setNotice([loadedNotice, parsed.solverSettingsNotice, unavailableElmer
+        ? 'The saved setup uses Elmer, which is not available. Its settings are loaded with Magneto2D selected; review before solving.' : null].filter(Boolean).join(' '));
     } catch (error) {
       setNotice(`Could not open design file — ${error instanceof Error ? error.message : 'unrecognized format'}.`);
     }
@@ -1543,10 +1555,14 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setDesignInputErrors({});
     resetDesignViewMemory();
     const example = restored ?? createPublicExampleDesign(exampleId);
-    setRunSetups(loadProfileDocument(`example:${exampleId}`));
-    rememberPresetSweep(example.config);
-    setConfig(example.config);
-    if (example.config.geometry_reference) setSelectedSolver("magneto2d");
+    const restoredSetup = restoreActiveProfile(example.config, loadProfileDocument(`example:${exampleId}`), BUILTIN_SOLVE_PROFILES);
+    // Returning to the previous inrunner retains its unsaved operating edits.
+    const nextConfig = restored ? example.config : restoredSetup.config;
+    setRunSetups(restoredSetup.document);
+    rememberPresetSweep(nextConfig);
+    setConfig(nextConfig);
+    const unavailableElmer = restoredSetup.solver === 'elmer' && !elmerCapabilityIsReady(elmerCapability);
+    setSelectedSolver(unavailableElmer ? 'magneto2d' : restoredSetup.solver ?? (nextConfig.geometry_reference ? 'magneto2d' : selectedSolver));
     setGeometry(null);
     setEditFeedback(null);
     setDesignName(example.name);
@@ -1559,7 +1575,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
-    setNotice(`Loaded ${example.name ?? 'the previous inrunner'}.`);
+    setNotice(`Loaded ${example.name ?? 'the previous inrunner'}.${unavailableElmer ? ' The saved setup uses Elmer, which is not available. Review the restored settings with Magneto2D selected.' : ''}`);
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }

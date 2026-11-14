@@ -5,7 +5,7 @@ const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/publ
 const profiles = await importTypeScriptModule(new URL('../src/public/solveProfiles.ts', import.meta.url));
 const { parseDesignFile, serializeDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
 const { captureProfile, applyProfile, profileMatches, profileCompatible, profileProvenance, builtinProfiles,
-  newProfileDocument, saveProfile, parseProfileDocument } = profiles;
+  newProfileDocument, saveProfile, parseProfileDocument, restoreActiveProfile } = profiles;
 const original = cloneDefaultConfig();
 const physical = c => JSON.stringify([c.topology, c.rotor, c.stator, c.winding, c.materials]);
 const user = captureProfile(original, 'Rated speed', false, 'magneto2d', 'user-1');
@@ -32,6 +32,17 @@ assert.equal(doc.profiles[0].version, 2);
 assert.throws(() => saveProfile(doc, user), /new version/);
 assert.throws(() => saveProfile(doc, captureProfile(original, 'Rated speed', false, 'magneto2d', 'different')), /name already exists/);
 assert.equal(profileProvenance(user, changed, 'magneto2d'), null, 'edited settings do not retain an unchanged setup identity');
+const restored = restoreActiveProfile(original, doc);
+assert.equal(restored.config.solve_params.rated_speed_rpm, 9000);
+assert.equal(restored.config.solve_params.current_amplitude_A, 80);
+assert.equal(restored.config.solve_params.mesh_density, original.solve_params.mesh_density);
+assert.equal(physical(restored.config), physical(original));
+assert.equal(restored.document.activeVersion, 2);
+assert.equal(restoreActiveProfile(original, { ...doc, activeVersion: 1 }).document.activeId, null, 'a stale version is not applied');
+assert.equal(restoreActiveProfile(original, { ...doc, activeId: 'missing' }).document.activeId, null);
+const exactRestored = restoreActiveProfile(changed, saveProfile(newProfileDocument(), exact));
+assert.equal(exactRestored.solver, 'magneto2d');
+assert.equal(exactRestored.config.solve_params.mesh_density, original.solve_params.mesh_density);
 const reopened = parseDesignFile(serializeDesignFile(changed, 'Motor', doc));
 assert.deepEqual(reopened.runSetups, doc);
 assert.equal(physical(reopened.config), physical(parseDesignFile(serializeDesignFile(changed, 'Motor')).config));
@@ -47,6 +58,8 @@ for (const name of ['prius-2004-tutorial-bemf-v1', 'prius-2004-loaded-torque-v1'
 }
 const builtins = builtinProfiles(...configs);
 for (const [i, profile] of builtins.entries()) {
+  assert.equal(restoreActiveProfile(original, { ...newProfileDocument(), activeId: profile.id, activeVersion: 1 }, builtins).document.activeId,
+    null, 'a remembered setup cannot be applied to an incompatible design');
   const altered = structuredClone(configs[1 - i]); altered.solve_params.mesh_density = 'coarse';
   const result = applyProfile(altered, profile);
   assert.equal(physical(result), physical(altered));
@@ -66,4 +79,7 @@ for (const [i, profile] of builtins.entries()) {
   assert.throws(() => applyProfile(original, profile), /different reference/);
   assert.throws(() => saveProfile(doc, profile), /cannot be overwritten/);
 }
+const { profileScopeForFile } = await importTypeScriptModule(new URL('../src/public/profileStorage.ts', import.meta.url));
+assert.equal(await profileScopeForFile('motor A'), await profileScopeForFile('motor A'));
+assert.notEqual(await profileScopeForFile('motor A'), await profileScopeForFile('motor B'));
 console.log('Solve profiles: complete reference settings, ordinary accuracy separation, immutable provenance, compatibility and file round-trip passed.');

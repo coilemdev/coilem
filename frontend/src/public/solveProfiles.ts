@@ -75,6 +75,14 @@ export function applyProfile(config: MotorConfig, profile: SolveProfile): MotorC
       preset: profile.includesNumerics ? profile.map.preset : config.torque_speed_analysis?.preset ?? 'preview' } : null,
     ...(profile.referenceModel ? { reference_case: profile.referenceCase } : {}) };
 }
+/** Restore a browser library's active setup without carrying it to another model. */
+export function restoreActiveProfile(config: MotorConfig, document: SolveProfileDocument, builtins: SolveProfile[] = []) {
+  const active = [...builtins, ...document.profiles].find(p => p.id === document.activeId && p.version === document.activeVersion);
+  if (!active || !profileCompatible(active, config)) {
+    return { config, document: { ...document, activeId: null, activeVersion: null }, solver: undefined };
+  }
+  return { config: applyProfile(config, active), document, solver: active.includesNumerics ? active.solver : undefined };
+}
 export function profileMatches(profile: SolveProfile, config: MotorConfig, solver: PublicSolverId): boolean {
   if (!profileCompatible(profile, config)) return false;
   const actual = captureProfile(config, profile.name, profile.includesNumerics, solver, profile.id, profile.version);

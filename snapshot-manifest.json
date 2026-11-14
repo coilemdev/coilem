@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178174,
-      "sha256": "699b580002f0b4705ab9d302cb33700121c4fbd60e380ef38e2080f29c8fc7a2"
+      "bytes": 178200,
+      "sha256": "9d56c0dd899022db17b5281dd956ce2809dcb54529e500556296bf670f49defb"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 85220,
-      "sha256": "5aa35a9a08915fe47f6b4942349d187e78f3aacf8f0619b725535f20f5a66a34"
+      "bytes": 86718,
+      "sha256": "7bb56630ea702d2e94179c5d4601abf97d42c1b738351679652e5e00d107e265"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7530,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 328057,
-      "sha256": "423cd91a2eb6053449de3ae05a0912e4e7036d68ca514615ed0da21bf1f4c293"
+      "bytes": 330552,
+      "sha256": "f6d0021423778883a662a0eeade2af970f4a822e398164d7829ab7970fa6b40d"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -18720,18 +18720,18 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 2943,
-      "sha256": "4013b67ca744d384e0b752c6fa912020affd12cf4b35737b25a3e397c2ddb7af"
+      "bytes": 3767,
+      "sha256": "f4d14a4e0dfe7d9c7be40945de098ccd2025fa1f927887ed618d5dd4bd2a6986"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
-      "bytes": 5050,
-      "sha256": "5e6e011a10d234d5ea91afe77d0250e305988e3db9d5d63886c89327c9746692"
+      "bytes": 6470,
+      "sha256": "6ff12c2e3c9e5b1f111bf77d8f26fcda1b408cc6322483fa7eddaaf20a8e1390"
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 6282,
-      "sha256": "101337b85163c53f6f9594ad322b0edc54d6c455fdb3d620fa033cee03f32c74"
+      "bytes": 10213,
+      "sha256": "97f34e4339d6d90e43d8069213fc110fd05d085adf6d79327c08e901222af05d"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18740,18 +18740,18 @@
     },
     {
       "path": "frontend/src/public/profileStorage.ts",
-      "bytes": 761,
-      "sha256": "578d68e24d3155daced53266e94cb0d81dced7441ad6d1eedda32383d11cc3cd"
+      "bytes": 1119,
+      "sha256": "c4f96963e8e5b749f3f4100312ce28eb7a323745a75adf8dd48e864dba266b66"
     },
     {
       "path": "frontend/src/public/solveProfiles.ts",
-      "bytes": 12633,
-      "sha256": "621cb9806d9bc574d61889fc37d868fd8ee1dfc4c103852ffc5b15284a7caf6d"
+      "bytes": 13263,
+      "sha256": "b1b2f18248b93305020e74f0c66c6ef06a93cbad1d578eeecb9db32d26b07874"
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 8343,
-      "sha256": "aad572ac19fed2760effe9778f4bb2e9276b6d7a75b58cdc3735c7e9989b359b"
+      "bytes": 15038,
+      "sha256": "c16223bdb32da8f5ee2bd7f5bd1061169962ebe06aeef776e54715275dc1388b"
     }
   ],
   "public_patches": [
@@ -40641,6 +40641,12 @@
       "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
       "path": "frontend/playwright.public.config.ts",
       "source_sha256": "f64f0451ff9fddfcb5f58d483deeab00e0dc8fd4500fb46278bc35018b138186",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "699b580002f0b4705ab9d302cb33700121c4fbd60e380ef38e2080f29c8fc7a2",
       "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
     },
     {
