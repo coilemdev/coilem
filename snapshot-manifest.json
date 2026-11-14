@@ -40587,6 +40587,162 @@
       "path": "docs/CI.md",
       "source_sha256": null,
       "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "66ed6d7410558bdc348b84c76b30e009da74bb200c9e6ee53658962b95af886a",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "e47524da3ae339498121424779cfd8745f2e3cae4942dfd4ae01c542835c3637",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "9b637e19486975f30abbddef8ba9e5a0fd8970e092b8d4963da5e1b336e35d14",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "backend/client/_inputs.py",
+      "source_sha256": "299f82adba48c0dd15440ea56ddfd94e7fd478e6335d61f5dee294d918c07ae3",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "backend/public_policy.py",
+      "source_sha256": "450e24e3e04b18e50591dab32e445b275773ca553375d3611ddbd332a0e85b05",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "docs/RELEASE_0_5_8.md",
+      "source_sha256": "65c2f6fe790208f13921d9d3128d524fb87e4ce5af66cb71ab4908a9d002f2ec",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "docs/SOLVE_SETUPS.md",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/package.json",
+      "source_sha256": "36470043cd1b6601ed53732ee2c81c74d11c3bf262b1e6746dc831bb92030ed3",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "f64f0451ff9fddfcb5f58d483deeab00e0dc8fd4500fb46278bc35018b138186",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "4d7a7beaa5cb7a6390c35a282c2395224386ec0b202378929e2a08ef018c41eb",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/scripts/test-solve-profiles.mjs",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "1eef298b58db75f219f144e00111ccdd9710243cd0e2e0da43f962400f647d6f",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "8a51947844a9d84502812764f5380fe4719e9237e6ff2ea163383136d94fb777",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "2734fcff7e6a7feb516cd91beddf1e7383027cf1a8ce5d23a1effa01e800a165",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/RunSetupControl.tsx",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "e20693aecb7307c9dd5c6e867470e4385a6652f1a3cab8413b0750a4ad559963",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/builtinSolveProfiles.ts",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "608eb75ebccf5462dd05693eddaab60c3fd5f64aa7349dba6076ca96f7ce872e",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "157ab8e8290fd2355a396d591a4ec8f270ea5c1a3d38939c9f5e67c345f6edcd",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/profileStorage.ts",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/solveProfiles.ts",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "dc0a8a99043ca27bb0d7fe746641bae157e4f611a70e359ea401b5bd0bcdf153",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "source_sha256": null,
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "tests/test_python_client.py",
+      "source_sha256": "ed65b5f05ae1d78f487f90d9227549ac22fba04a8eb4dcbe47ceaa7088e4417d",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "5f7fe59d77bdc9508a85f0edc146924165c9e425",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
+      "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
     }
   ]
 }
