@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import type { MotorConfig, PublicSolverId } from './model';
+import { InfoTip } from './Popover';
 import { applyProfile, captureProfile, profileCompatible, profileMatches, saveProfile,
   type SolveProfile, type SolveProfileDocument } from './solveProfiles';
 
@@ -86,7 +87,15 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
     : active ? 'Double-click the name or press F2 to rename. Choose Custom to save another setup.'
     : 'Choose Save to name and keep the current settings.';
   return <section className="public-run-setups" aria-label="Saved run setups">
-    <label htmlFor={nameId}>Run setup</label>
+    <div className="public-run-setup-heading">
+      <label htmlFor={nameId}>Run setup</label>
+      <InfoTip label="Run setup help">
+        <p>{active ? active.includesNumerics ? 'Includes operating conditions, outputs, accuracy and solver settings.'
+          : 'Includes operating conditions and outputs. Accuracy and solver settings stay separately selectable.'
+          : 'Save an operating point and its requested outputs for this design.'}</p>
+        <p id={hintId}>{hint}</p>
+      </InfoTip>
+    </div>
     <div className="public-run-setup-toolbar">
       <div className="public-run-setup-picker">
         <input id={nameId} ref={nameInput} aria-label="Setup name" aria-describedby={hintId}
@@ -133,17 +142,14 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
       </div>}
     </div>
     {deleting && active && <p className="public-run-setup-hint" role="alert">Delete “{active.name}”? Confirm with the trash icon, or cancel.</p>}
-    <p className="public-design-notice" aria-live="polite">
-      {active ? !unchanged ? `Modified from ${active.name}. The next run uses the values shown below.`
-        : active.includesNumerics ? 'Includes operating conditions, outputs, accuracy and solver settings.'
-        : 'Includes operating conditions and outputs. Accuracy and solver settings stay separately selectable.'
-        : 'Save an operating point and its requested outputs for this design.'}
-    </p>
+    {active && !unchanged && <p className="public-design-notice" aria-live="polite">
+      Modified from {active.name}. The next run uses the values shown below.
+    </p>}
     {editing === 'new' && <label className="public-run-setup-checkbox" htmlFor={numericalId}>
       <input id={numericalId} type="checkbox" checked={includeNumerics} disabled={disabled}
         onChange={e => setIncludeNumerics(e.target.checked)} />Include accuracy and solver settings
     </label>}
-    <p id={hintId} className="public-run-setup-hint" role="status">{feedback ?? hint}</p>
+    {(feedback || editing === 'new') && <p className="public-run-setup-hint" role="status">{feedback ?? hint}</p>}
     {error && <p role="alert">{error}</p>}
   </section>;
 }

@@ -2,6 +2,9 @@
 
 Solve's **Run setup** selector restores an operating point and its requested
 outputs without changing motor geometry, winding or materials.
+The information icon beside **Run setup** explains what the selected setup
+captures and how to rename or save another setup. Hover, focus or tap it to read
+the tooltip; press **Escape** to dismiss it.
 
 1. Set the operating point and analyses in Solve, then choose the **Save** (disk)
    icon beside the dropdown while **Custom** is selected. Type a name in the

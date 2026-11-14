@@ -7530,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 330552,
-      "sha256": "f6d0021423778883a662a0eeade2af970f4a822e398164d7829ab7970fa6b40d"
+      "bytes": 330619,
+      "sha256": "a64723bfecabf4cfe13b8cdb0459a3baf1a2111d2556ff359e410ad518d6176a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -18720,8 +18720,8 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 3767,
-      "sha256": "f4d14a4e0dfe7d9c7be40945de098ccd2025fa1f927887ed618d5dd4bd2a6986"
+      "bytes": 3968,
+      "sha256": "99bd4920831af59fe43e13fa8e662f7b0dd5d966ea0691104e30799ee73406a7"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
@@ -18730,8 +18730,8 @@
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 10213,
-      "sha256": "97f34e4339d6d90e43d8069213fc110fd05d085adf6d79327c08e901222af05d"
+      "bytes": 10444,
+      "sha256": "56fd3c2c906ae3d03a808e3a92d5d85ee040b2f2af09cdba571407920d543add"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18750,8 +18750,8 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 15038,
-      "sha256": "c16223bdb32da8f5ee2bd7f5bd1061169962ebe06aeef776e54715275dc1388b"
+      "bytes": 15082,
+      "sha256": "a8edbed6b6a32f93cddb96de3348dca302c124eaa792607443bb559adee2b1f2"
     }
   ],
   "public_patches": [

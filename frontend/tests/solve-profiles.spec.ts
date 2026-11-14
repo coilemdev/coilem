@@ -38,7 +38,7 @@ test('user setups support save, apply, update, rename, copy, delete and file rou
   await saveSetup(page, 'Rated current');
   const selector = page.getByRole('combobox', { name: 'Run setup', exact: true });
   const id = await selector.inputValue();
-  await expect(page.locator('.public-run-setups').getByRole('button')).toHaveCount(2);
+  await expect(page.locator('.public-run-setup-actions').getByRole('button')).toHaveCount(2);
   await page.getByRole('button', { name: 'Save', exact: true }).click(); // Unchanged Save must not create a version.
   await current.fill('33'); await current.press('Tab');
   await expect(page.getByText('Modified from Rated current.', { exact: false })).toBeVisible();
@@ -111,7 +111,7 @@ test('inline setup naming supports keyboard, cancellation, blur and one Save for
   expect(file.run_setups.profiles[0].name).toBe('Combined edit');
   expect(file.run_setups.profiles[0].parameters.current_amplitude_A).toBe(31);
   await panel.getByRole('button', { name: 'Delete', exact: true }).click();
-  await expect(panel.getByRole('button')).toHaveCount(2);
+  await expect(panel.locator('.public-run-setup-actions').getByRole('button')).toHaveCount(2);
   await panel.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(selector).toHaveValue(id);
   await expect(name).toHaveValue('Combined edit');
