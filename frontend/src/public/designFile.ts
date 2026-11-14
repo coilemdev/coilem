@@ -147,6 +147,16 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     solve_options: mergeSection(defaults.solve_options, source.solve_options),
   };
   config.schema_version = '1.0';
+  // Settings without a starter default, which the section merge does not carry. Saved setups
+  // and their run labels depend on them, so they reopen as saved.
+  if (isRecord(source.solve_params)) {
+    for (const key of ['magnet_temperature_C', 'mechanical_loss_W'] as const) {
+      const value = source.solve_params[key];
+      if (value === null || (typeof value === 'number' && Number.isFinite(value))) config.solve_params[key] = value;
+    }
+    const iterations = source.solve_params.max_nonlinear_iterations;
+    if (typeof iterations === 'number' && Number.isInteger(iterations) && iterations > 0) config.solve_params.max_nonlinear_iterations = iterations;
+  }
   // A missing layout is an inner rotor, so only an outer rotor is carried.
   if (source.rotor_layout === 'outer') config.rotor_layout = 'outer';
   // The wire is an object, which the section merge does not carry (#136).

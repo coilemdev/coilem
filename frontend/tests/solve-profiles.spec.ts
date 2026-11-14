@@ -112,6 +112,15 @@ test('inline setup naming supports keyboard, cancellation, blur and one Save for
   await name.press('Tab');
   await expect(name).toHaveAttribute('readonly', '');
   await expect(name).toHaveValue('Renamed on blur');
+  // The rename stays open while focus is on Save, and ends when focus leaves Save.
+  const saveButton = panel.getByRole('button', { name: 'Save', exact: true });
+  await name.dblclick();
+  await name.fill('Renamed past Save');
+  await saveButton.focus();
+  await expect(name).not.toHaveAttribute('readonly', '');
+  await saveButton.press('Tab');
+  await expect(name).toHaveAttribute('readonly', '');
+  await expect(name).toHaveValue('Renamed past Save');
   const current = (await operating(page)).getByRole('spinbutton', { name: 'Phase Current', exact: true });
   await current.fill('31'); await current.press('Tab');
   await name.dblclick();
@@ -121,7 +130,7 @@ test('inline setup naming supports keyboard, cancellation, blur and one Save for
   await expect(panel.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
   const file = await saveFile(page, info.outputPath('inline-name.coilem'));
   expect(file.run_setups.activeId).toBe(id);
-  expect(file.run_setups.activeVersion).toBe(3);
+  expect(file.run_setups.activeVersion).toBe(4);
   expect(file.run_setups.profiles).toHaveLength(1);
   expect(file.run_setups.profiles[0].name).toBe('Combined edit');
   expect(file.run_setups.profiles[0].parameters.current_amplitude_A).toBe(31);
@@ -241,6 +250,43 @@ test('ordinary setup application preserves accuracy and submits its versioned id
   const submitted = (await request).postDataJSON();
   expect(submitted.run_setup).toMatchObject({ id, version: 1, name: 'Operating only', kind: 'user', includes_numerics: false });
   expect(submitted.config.solve_params.solve_quality).toBe('quick');
+});
+
+test('setups saved on an edited example stay with that design, not the example', async ({ page }, info) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  await start(page);
+  const selector = page.getByRole('combobox', { name: 'Run setup', exact: true });
+  // An edited copy of the starter, saved with the example's library as earlier versions did.
+  const edited = await saveFile(page, info.outputPath('starter.coilem'));
+  edited.stator.OD_mm += 2;
+  edited.run_setups = { schema: 1, scope: 'example:spm-8p12s', profiles: [], activeId: null, activeVersion: null };
+  await page.locator('input[type="file"][accept*=".coilem"]').setInputFiles({ name: 'edited.coilem', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify(edited)) });
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await saveSetup(page, 'Edited point');
+  await expect(selector.locator('option', { hasText: 'Edited point' })).toHaveCount(1);
+  const saved = await saveFile(page, info.outputPath('edited-saved.coilem'));
+  expect(saved.run_setups.scope).not.toBe('example:spm-8p12s');
+  expect(saved.run_setups.profiles.map((profile: { name: string }) => profile.name)).toEqual(['Edited point']);
+  await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Reset to example design', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await expect(selector.locator('option', { hasText: 'Edited point' })).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test('a second window picks up setups saved in the first before storing its own', async ({ page, context }) => {
+  await start(page);
+  const other = await context.newPage();
+  await start(other);
+  await saveSetup(page, 'From window A');
+  const otherSelector = other.getByRole('combobox', { name: 'Run setup', exact: true });
+  await expect(otherSelector.locator('option', { hasText: 'From window A' })).toHaveCount(1);
+  await saveSetup(other, 'From window B');
+  await expect(page.getByRole('combobox', { name: 'Run setup', exact: true }).locator('option', { hasText: 'From window B' })).toHaveCount(1);
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('coilem.run-setups.v1:example:spm-8p12s') ?? 'null'));
+  expect(stored.profiles.map((profile: { name: string }) => profile.name).sort()).toEqual(['From window A', 'From window B']);
+  await other.close();
 });
 
 test('setup libraries follow the design through Reset and the rotor-arrangement switch', async ({ page }, info) => {

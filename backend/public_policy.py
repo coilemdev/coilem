@@ -173,10 +173,11 @@ def _check_run_setup_metadata(body: dict[str, Any]) -> None:
         if not isinstance(value, dict):
             raise PublicConfigError("Run-setup metadata must be an object.", field=name)
         try:
-            encoded = json.dumps(value, allow_nan=False, ensure_ascii=False, separators=(",", ":"))
+            # Encoding is checked too: a lone surrogate is valid JSON but not UTF-8 text.
+            size = len(json.dumps(value, allow_nan=False, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
         except (TypeError, ValueError):
-            raise PublicConfigError("Run-setup metadata must contain only finite JSON values.", field=name) from None
-        if len(encoded.encode("utf-8")) > limit:
+            raise PublicConfigError("Run-setup metadata must contain only finite JSON values and valid text.", field=name) from None
+        if size > limit:
             raise PublicConfigError("Run-setup metadata is too large.", field=name)
 
 

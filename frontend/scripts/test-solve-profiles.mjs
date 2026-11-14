@@ -4,6 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 const profiles = await importTypeScriptModule(new URL('../src/public/solveProfiles.ts', import.meta.url));
 const { parseDesignFile, serializeDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
+const { torqueSpeedSettings } = await importTypeScriptModule(new URL('../src/public/torqueSpeedAnalysis.ts', import.meta.url));
 const { captureProfile, applyProfile, profileMatches, profileCompatible, profileProvenance, builtinProfiles,
   newProfileDocument, saveProfile, parseProfileDocument, restoreActiveProfile, readProfileDocument, mergeProfileDocuments } = profiles;
 const original = cloneDefaultConfig();
@@ -103,6 +104,37 @@ for (const name of ['lrk-12s14p-fixed-current-v1', 'lrk-12s14p-six-step']) {
   assert.equal(parseDesignFile(serializeDesignFile(applied, 'LRK')).config.solve_params.magnet_temperature_C ?? null, null,
     'an LRK design saved after applying a setup reopens');
 }
+// Values without a starter default reopen as saved, so the file's active setup still matches.
+const tuned = structuredClone(original);
+Object.assign(tuned.solve_params, { magnet_temperature_C: 80, mechanical_loss_W: 15, max_nonlinear_iterations: 120 });
+const tunedSetup = captureProfile(tuned, 'Tuned', true, 'magneto2d', 'tuned');
+const tunedFile = parseDesignFile(serializeDesignFile(tuned, 'Tuned', saveProfile(newProfileDocument('tuned'), tunedSetup))).config;
+for (const key of ['magnet_temperature_C', 'mechanical_loss_W', 'max_nonlinear_iterations']) {
+  assert.equal(tunedFile.solve_params[key], tuned.solve_params[key], `${key} reopens as saved`);
+}
+assert.ok(profileMatches(tunedSetup, tunedFile, 'magneto2d'));
+// An unset iteration limit stays unset, so Elmer keeps its frozen limit.
+const defaultNumerics = captureProfile(original, 'Default numerics', true, 'elmer', 'numerics');
+assert.equal(defaultNumerics.parameters.max_nonlinear_iterations, null);
+assert.equal('max_nonlinear_iterations' in applyProfile(tuned, defaultNumerics).solve_params, false);
+assert.ok(profileMatches(defaultNumerics, applyProfile(tuned, defaultNumerics), 'elmer'));
+assert.equal(parseProfileDocument(saveProfile(newProfileDocument('n'), defaultNumerics)).profiles[0].parameters.max_nonlinear_iterations, null);
+// A setup captured with the map off leaves the design's drive limits in place.
+const mapOff = captureProfile(original, 'Map off', false, 'magneto2d', 'map-off');
+assert.equal(mapOff.map, null);
+const limited = structuredClone(original); limited.torque_speed_analysis = torqueSpeedSettings(original);
+assert.deepEqual(applyProfile(limited, mapOff).torque_speed_analysis, limited.torque_speed_analysis);
+assert.ok(profileMatches(mapOff, applyProfile(limited, mapOff), 'magneto2d'));
+// An operating-only setup records the design's analyses whichever solver is selected.
+const analyses = structuredClone(original); Object.assign(analyses.solve_options, { cogging_torque: true, losses_efficiency: true });
+const rated = captureProfile(analyses, 'Rated', false, 'elmer', 'rated');
+assert.equal(rated.outputs.cogging_torque, true);
+assert.equal(rated.outputs.losses_efficiency, true);
+assert.ok(profileMatches(rated, analyses, 'magneto2d') && profileMatches(rated, analyses, 'elmer'), 'switching solver does not modify it');
+// Published references solve on Magneto2D, so an imported Elmer reference setup is not read.
+const { builtin: _builtin, ...importedReference } = { ...structuredClone(builtins[0]), id: 'imported' };
+assert.equal(parseProfileDocument({ ...newProfileDocument('prius'), profiles: [importedReference] }).profiles.length, 1);
+assert.throws(() => parseProfileDocument({ ...newProfileDocument('prius'), profiles: [{ ...importedReference, solver: 'elmer' }] }), /invalid saved run setup/);
 // Setups this version cannot read are skipped with a notice; the motor and the rest still open.
 const future = structuredClone(doc);
 future.profiles.push({ ...structuredClone(future.profiles[0]), id: 'future', name: 'From a newer version',
@@ -125,23 +157,49 @@ for (const [local, incoming] of [[newerLibrary, olderCopy], [olderCopy, newerLib
   assert.deepEqual(mergeProfileDocuments(local, incoming).profiles.map(p => [p.id, p.version]), [['user-1', 2], ['user-2', 1]]);
 }
 const sameName = saveProfile(newProfileDocument('motor-1'), captureProfile(original, 'Second', false, 'magneto2d', 'user-3'));
-assert.deepEqual(mergeProfileDocuments(sameName, newerLibrary).profiles.map(p => p.id).sort(), ['user-1', 'user-3']);
+assert.deepEqual(mergeProfileDocuments(sameName, newerLibrary).profiles.map(p => p.id).sort(), ['user-1', 'user-3'], 'identical settings are not copied');
+// Separately edited setups are added as renamed copies, never dropped silently.
+const mine = saveProfile(newProfileDocument('motor-1'), captureProfile(changed, 'Rated speed', false, 'magneto2d', 'user-1', 2));
+const theirs = { ...newProfileDocument('motor-1'), profiles: [captureProfile(heated, 'Rated speed', false, 'magneto2d', 'user-1', 2)] };
+const merged = mergeProfileDocuments(mine, theirs);
+assert.deepEqual(merged.profiles.map(p => p.name), ['Rated speed', 'Rated speed (from file)']);
+assert.notEqual(merged.profiles[1].id, 'user-1', 'the copy has its own identity');
+assert.equal(mergeProfileDocuments(merged, theirs).profiles.length, 2, 'reopening the file adds no further copy');
+const otherSecond = { ...newProfileDocument('motor-1'), profiles: [captureProfile(heated, 'Second', false, 'magneto2d', 'user-9')] };
+assert.deepEqual(mergeProfileDocuments(sameName, otherSecond).profiles.map(p => p.name), ['Second', 'Second (from file)']);
 // Browser storage keeps what it cannot read and leaves no entry for an empty library.
 const store = new Map();
 Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
   getItem: k => store.has(k) ? store.get(k) : null, setItem: (k, v) => { store.set(k, String(v)); }, removeItem: k => { store.delete(k); },
 } });
-const { profileScopeForFile, loadProfileDocument, storeProfileDocument } = await importTypeScriptModule(new URL('../src/public/profileStorage.ts', import.meta.url));
+const { profileScopeForFile, loadProfileDocument, storeProfileDocument, readStoredProfileDocument, newSessionProfileDocument, keepProfileScope }
+  = await importTypeScriptModule(new URL('../src/public/profileStorage.ts', import.meta.url));
 assert.ok(storeProfileDocument(newProfileDocument('empty-design')));
 assert.equal(store.size, 0, 'an empty library leaves no browser entry');
 assert.ok(storeProfileDocument({ ...newProfileDocument('prius'), activeId: 'builtin:prius-2004-tutorial-bemf-v1', activeVersion: 1 }));
 assert.equal(loadProfileDocument('prius').activeId, 'builtin:prius-2004-tutorial-bemf-v1', 'a selected reference setup is remembered');
-store.set('coilem.run-setups.v1:motor-1', JSON.stringify(future));
-assert.equal(loadProfileDocument('motor-1').profiles.length, doc.profiles.length, 'one unreadable setup does not discard the library');
-assert.equal(store.get('coilem.run-setups.v1:motor-1:unreadable'), JSON.stringify(future), 'what could not be read is kept');
+// A library this version cannot fully read is never written over; this version keeps its own copy.
+const futureText = JSON.stringify(future);
+store.set('coilem.run-setups.v1:motor-1', futureText);
+const partial = loadProfileDocument('motor-1');
+assert.equal(partial.profiles.length, doc.profiles.length, 'one unreadable setup does not discard the library');
+assert.ok(storeProfileDocument({ ...partial, activeId: null, activeVersion: null }));
+assert.equal(store.get('coilem.run-setups.v1:motor-1'), futureText, 'the newer library is left as it is');
+assert.equal(loadProfileDocument('motor-1').activeId, null, "this version's own copy is read back");
 store.set('coilem.run-setups.v1:broken', '{not json');
 assert.equal(loadProfileDocument('broken').profiles.length, 0);
-assert.equal(store.get('coilem.run-setups.v1:broken:unreadable'), '{not json');
+assert.ok(storeProfileDocument(saveProfile(newProfileDocument('broken'), user)));
+assert.equal(store.get('coilem.run-setups.v1:broken'), '{not json');
+assert.equal(readStoredProfileDocument('motor-1', futureText), undefined, 'another window adopts only a library it can fully read');
+assert.deepEqual(readStoredProfileDocument('motor-1', JSON.stringify(doc)), doc);
+// A design that exists only in this window stores its library once its file is saved.
+const session = newSessionProfileDocument(doc);
+const entries = store.size;
+assert.ok(storeProfileDocument(session));
+assert.equal(store.size, entries, 'an unsaved design leaves no browser entry');
+keepProfileScope(session.scope);
+assert.ok(storeProfileDocument(session));
+assert.equal(loadProfileDocument(session.scope).profiles.length, doc.profiles.length);
 assert.equal(await profileScopeForFile('motor A'), await profileScopeForFile('motor A'));
 assert.notEqual(await profileScopeForFile('motor A'), await profileScopeForFile('motor B'));
 console.log('Solve profiles: complete reference settings, unset catalogue defaults, ordinary accuracy separation, immutable provenance, compatibility, tolerant reading, library merge, storage and file round-trip passed.');
