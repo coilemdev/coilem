@@ -6715,8 +6715,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
-      "bytes": 33938,
-      "sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5"
+      "bytes": 35111,
+      "sha256": "2092bf8db795ba1b9221e296538531d4935a04c2b79da0017536052020e2edb1"
     },
     {
       "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
@@ -6820,8 +6820,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MeshViewer.tsx",
-      "bytes": 110869,
-      "sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4"
+      "bytes": 111175,
+      "sha256": "dfa1a18cb1f298bbc47b6e5a43b24d9e93b7a929fc34012f73baace3d1e64a8c"
     },
     {
       "path": "frontend/src/components/tutorials/MotorEffectLoop3D.tsx",
@@ -7655,13 +7655,13 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 92178,
-      "sha256": "145aad59471613243c6ed6aaa5bb648c66dbe3e7bd4d7bf7163fd67e95c7d0cd"
+      "bytes": 99265,
+      "sha256": "812e6933005613377d8d84274dcda0989d0d070515ea43970977f713709770e6"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
-      "bytes": 9611,
-      "sha256": "ace558740262a3fbe24e6f27b2a66dd043055b81c56bda3c8294b63ada74abc6"
+      "bytes": 10750,
+      "sha256": "27325b5c4d82bb2ecbdd4f1a128b5486ea812095b7a285f3563617b02493faf0"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -39268,6 +39268,18 @@
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/scripts/test-ring-shape.mjs",
       "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
+      "source_sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/components/tutorials/MeshViewer.tsx",
+      "source_sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
     },
     {

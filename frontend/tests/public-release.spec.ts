@@ -13,7 +13,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'pruned-field' | 'losses-unavailable') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -1415,4 +1415,139 @@ test('priority fixes: a partial loaded sweep keeps its averaging warning in Resu
   await expect(completed.getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
   await page.getByRole('button', { name: 'Full results →', exact: true }).click();
   await expect(page.locator('.public-report-stage').getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
+});
+
+for (const width of [1500, 900, 375]) {
+  test(`small release fixes: horizontal field labels do not overlap at ${width}px`, async ({ page }, info) => {
+    await page.setViewportSize({ width, height: 850 });
+    await openViewportHarness(page, 'horizontal-legend');
+    const knee = page.locator('.public-field-legend-tick.is-knee em');
+    const saturation = page.locator('.public-field-legend-tick.is-saturation em');
+    await expect(knee).toContainText('1.47 knee');
+    await expect(saturation).toContainText('1.78 sat.');
+    const a = (await knee.boundingBox())!;
+    const b = (await saturation.boundingBox())!;
+    expect(a.x + a.width + 2).toBeLessThanOrEqual(b.x);
+    expect(a.x).toBeGreaterThanOrEqual(0);
+    expect(b.x + b.width).toBeLessThanOrEqual(width);
+    await page.screenshot({ path: info.outputPath(`horizontal-legend-${width}.png`) });
+  });
+}
+
+test('small release fixes: tutorial scale follows actual SVG fit, zoom and resize', async ({ page }) => {
+  await openViewportHarness(page, 'tutorial-scale');
+  const svg = page.locator('.mesh-viewer-svg');
+  const bar = page.locator('.mesh-viewer-scale-bar');
+  const checkScale = async () => {
+    await expect(bar).toBeVisible();
+    await expect.poll(async () => {
+      const mm = Number.parseFloat((await bar.locator('span').textContent())!);
+      const scale = await svg.locator(':scope > g[transform]').first().evaluate((g: SVGGraphicsElement) => {
+        const m = g.getScreenCTM()!;
+        return Math.hypot(m.a, m.b);
+      });
+      return Math.abs((await bar.locator('.mesh-viewer-scale-bar-line').boundingBox())!.width - mm * scale);
+    }).toBeLessThan(1);
+    const width = (await bar.locator('.mesh-viewer-scale-bar-line').boundingBox())!.width;
+    expect(width).toBeGreaterThan(30);
+    expect(width).toBeLessThanOrEqual(97);
+  };
+  for (const width of [1200, 900, 375]) {
+    await page.setViewportSize({ width, height: 850 });
+    await checkScale();
+    for (let i = 0; i < 3; i++) await page.getByTitle('Zoom in', { exact: true }).click();
+    await checkScale();
+    await page.getByTitle('Fit to view', { exact: true }).click();
+    await checkScale();
+  }
+});
+
+test('small release fixes: capstone requires a fresh qualifying solve and completed run', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.addInitScript(() => sessionStorage.setItem('coilem.learning.session.v1.review-fields', JSON.stringify({
+    phase: 'strengthen', magnetOrientations: [1, -1, 1, -1], currentA: 10, currentSign: 1, gapMm: 2, windingSpacingMm: 18,
+  })));
+  let failNext = false;
+  let unsolvedNext = true;
+  await page.route('**/tutorials/chapter-1-capstone/solve?*', async route => {
+    if (failNext) {
+      failNext = false;
+      return route.fulfill({ status: 500, json: { detail: { message: 'Test solve failed' } } });
+    }
+    const query = new URL(route.request().url()).searchParams;
+    const solved = !unsolvedNext;
+    unsolvedNext = false;
+    const current = Number(query.get('current_a'));
+    const force = Math.abs(current) >= 8 ? 0.338 : 0.1;
+    return route.fulfill({ json: {
+      schema_version: '1.0', fixture: 'linear_motor_capstone', solved,
+      current_a: current, airgap_mm: Number(query.get('airgap_mm')),
+      magnet_orientations: [1, 2, 3, 4].map(i => Number(query.get(`magnet_${i}`))),
+      winding_spacing_mm: Number(query.get('winding_spacing_mm')), winding_signs: [1, -1, 1, -1],
+      winding_turns: 20, wire_radius_mm: 1, wire_center_y_mm: 5, teaching_depth_mm: 20,
+      net_force_x_n: force, net_force_y_n: 0, net_force_magnitude_n: force, force_method: 'volume_lorentz_j_cross_b',
+      config_summary: { topology: 'linear', slots: 4, poles: 4, stator_od_mm: 40, rotor_od_mm: 20, magnet_thickness_mm: 2, stack_length_mm: 20 },
+      mesh_info: { num_nodes: 4, num_triangles: 2, pole_pitch_deg: 90, n_pole_pitches: 4, total_span_deg: 360 },
+      nodes_mm: [[-20, -10], [20, -10], [20, 10], [-20, 10]], triangles: [[0, 1, 2], [0, 2, 3]], regions: ['air', 'air'],
+      n_pole_pitches: 4, total_span_deg: 360, contour_levels: [], az_min: 0, az_max: 1,
+      element_b_mag_t: [1, 1], generation_time_ms: 1,
+    } });
+  });
+  await page.goto('/tutorials/chapter-1-capstone');
+  const testPerformance = page.getByRole('button', { name: 'Test performance', exact: true });
+  const run = page.getByRole('button', { name: 'Run actuator', exact: true });
+  const finish = page.getByRole('button', { name: 'Finish chapter', exact: true });
+  const current = page.getByRole('slider', { name: 'Linear motor current', exact: true });
+  const completed = () => page.evaluate(() => JSON.parse(localStorage.getItem('coilem.learning.primer.v1') || '[]').includes('review-fields'));
+  await testPerformance.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'has not been solved' })).toBeVisible();
+  await expect(run).toHaveCount(0);
+  expect(await completed()).toBe(false);
+  await testPerformance.click();
+  await expect(run).toBeVisible();
+  // Editing on the reveal step must require another solve, not reuse the old success.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft'); // 10 -> 8 A
+  await expect(run).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
+  await testPerformance.click();
+  await run.click();
+  // Editing during motion must invalidate the timer as well as the solved field.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft'); // 8 -> 6 A, below target
+  await page.waitForTimeout(2800);
+  await expect(finish).toHaveCount(0);
+  expect(await completed()).toBe(false);
+  await testPerformance.click();
+  await expect(testPerformance).toBeEnabled();
+  await expect(run).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
+  failNext = true;
+  await testPerformance.click();
+  await expect(page.getByRole('alert').filter({ hasText: 'Field solve unavailable' })).toBeVisible();
+  await expect(finish).toHaveCount(0);
+  expect(await completed()).toBe(false);
+  // Force alone is insufficient when the saturation limit is reached.
+  await current.focus();
+  await page.keyboard.press('End'); // 12 A reaches the saturation warning zone.
+  await testPerformance.click();
+  await expect(testPerformance).toBeEnabled();
+  await expect(run).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
+  // A fresh qualifying result still needs a completed actuator run.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft'); // 12 -> 10 A
+  await testPerformance.click();
+  await expect(run).toBeVisible();
+  await expect(finish).toHaveCount(0);
+  await run.click();
+  await expect(finish).toBeVisible();
+  await finish.click();
+  await expect(page.getByText('You made a motor move.', { exact: true })).toBeVisible();
+  await expect.poll(completed).toBe(true);
+  // Editing after completion must not keep displaying success for an unsolved machine.
+  await current.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.getByText('You made a motor move.', { exact: true })).toHaveCount(0);
+  await expect(finish).toHaveCount(0);
 });

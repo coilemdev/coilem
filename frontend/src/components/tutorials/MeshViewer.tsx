@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { viewportScaleBar } from '../../public/viewportTransform';
 import type { FieldLinePlotData, MeshPreviewData } from './lessonSolveTypes';
 import { BACK_EMF_PHASE_COLORS } from './phaseColors';
 import { deriveMagneticPolarityCues } from './fieldPolarityCues';
@@ -89,7 +90,6 @@ const REGION_LABELS: Record<string, string> = {
 };
 
 const SCALE_BAR_TARGET_PX = 96;
-const SCALE_BAR_STEPS_MM = [1, 2, 5, 10, 20, 50, 100, 200];
 const ROTOR_REGIONS = new Set([
   'rotor_core',
   'magnet',
@@ -588,6 +588,7 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
   windingMmfSampleSector = null,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [pixelsPerMm, setPixelsPerMm] = useState<number | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef<number | null>(null);
   const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
@@ -1083,11 +1084,19 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
   const vbY = useSolverScreenCoordinates ? minY - pad : -(maxY + pad);
   const vbW = rangeX + 2 * pad;
   const vbH = rangeY + 2 * pad;
-  const viewWidthPx = 1200;
-  const pxPerMm = viewWidthPx / vbW;
-  const scaleBarMm = SCALE_BAR_STEPS_MM.find((value) => value * pxPerMm >= SCALE_BAR_TARGET_PX)
-    ?? SCALE_BAR_STEPS_MM[SCALE_BAR_STEPS_MM.length - 1];
-  const scaleBarWidth = scaleBarMm / pxPerMm;
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const measure = () => {
+      const matrix = svg.getScreenCTM();
+      setPixelsPerMm(matrix ? Math.hypot(matrix.a, matrix.b) * effectiveScale : null);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, [vbW, vbH, effectiveScale, embedded]);
+  const scaleBar = viewportScaleBar(pixelsPerMm ?? 0, SCALE_BAR_TARGET_PX);
 
   const statorOuterRadiusMm = meshData.config_summary.stator_od_mm / 2;
   const statorInnerRadiusMm = meshData.config_summary.rotor_od_mm / 2 + meshData.config_summary.magnet_thickness_mm;
@@ -2451,10 +2460,10 @@ export const MeshViewer: React.FC<MeshViewerProps> = ({
           </g>
         </svg>
 
-        {!fixedView && (
+        {!fixedView && scaleBar && (
           <div className="mesh-viewer-scale-bar" aria-hidden="true">
-            <div className="mesh-viewer-scale-bar-line" style={{ width: `${scaleBarWidth}px` }} />
-            <span>{scaleBarMm.toFixed(0)} mm</span>
+            <div className="mesh-viewer-scale-bar-line" style={{ width: `${scaleBar.pixels}px` }} />
+            <span>{scaleBar.mm} mm</span>
           </div>
         )}
 
