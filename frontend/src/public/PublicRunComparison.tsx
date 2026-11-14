@@ -480,26 +480,16 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       {!error && !noPrevious && records.length >= 2 && !ready && <div className="public-run-compare-message">Loading saved run data…</div>}
       {ready && <>
         {compareWithPrevious && leftKey === previousKey && rightKey === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
-        <RunInputChanges before={left.inputs} after={right.inputs} />
-        <div className="public-run-compare-identities" aria-label="Compared run identity and provenance">
-          {[
-            { key: 'run-a', side: 'Run A · baseline', run: left },
-            { key: 'run-b', side: 'Run B · candidate', run: right },
-          ].map(({ key, side, run }) => (
-            <article className={key} key={key}>
-              <span>{side}</span>
-              <strong>{solverLabel(run.result.solve_metadata.solver_name)}</strong>
-              <small>{run.record.project_name || run.record.project_slug}</small>
-              <dl>
-                <div><dt>Actual mesh</dt><dd>{actualMeshProvenance(run.result)}</dd></div>
-                <div><dt>Torque extraction</dt><dd>{actualTorqueProvenance(run.result)}</dd></div>
-                <div><dt>Excitation identity</dt><dd>{excitationProvenance(run.result)}</dd></div>
-                <div><dt>Saved setup</dt><dd>{recordedSetupLabel(run.inputs)}</dd></div>
-                <div><dt>Completed</dt><dd>{run.record.completed_at ? new Date(run.record.completed_at).toLocaleString() : 'Not recorded'}</dd></div>
-              </dl>
-            </article>
-          ))}
-        </div>
+        <RunInputChanges before={left.inputs} after={right.inputs} details={[
+          { label: 'Design', before: left.record.project_name || left.record.project_slug, after: right.record.project_name || right.record.project_slug },
+          { label: 'Solver', before: solverLabel(left.result.solve_metadata.solver_name), after: solverLabel(right.result.solve_metadata.solver_name) },
+          { label: 'Actual mesh', before: actualMeshProvenance(left.result), after: actualMeshProvenance(right.result) },
+          { label: 'Torque extraction', before: actualTorqueProvenance(left.result), after: actualTorqueProvenance(right.result) },
+          { label: 'Excitation identity', before: excitationProvenance(left.result), after: excitationProvenance(right.result) },
+          { label: 'Saved setup', before: recordedSetupLabel(left.inputs), after: recordedSetupLabel(right.inputs) },
+          { label: 'Completed', before: left.record.completed_at ? new Date(left.record.completed_at).toLocaleString() : 'Not recorded',
+            after: right.record.completed_at ? new Date(right.record.completed_at).toLocaleString() : 'Not recorded' },
+        ]} />
         <section className="public-run-compare-mode-note design" aria-live="polite">
           <strong>Descriptive run comparison</strong>
           <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>

@@ -15,6 +15,10 @@ accuracy/solver settings, requested analyses and saved setup identity/version.
 The table reads the integrity-checked resolved request and recorded setup label
 from each run, independently of the current open design or profile library.
 Stored profile metadata from the saved-setups feature is supported when present.
+The same table includes a Run details group with the design, solver, actual
+mesh, torque extraction, excitation, saved setup and completion time. These
+context rows remain visible even when they match; the changed-input count only
+counts input differences.
 
 Missing historical inputs are shown as **Not recorded**, while an explicit
 stored null is **Not set**. No current schema migration or defaults fill these
@@ -29,5 +33,7 @@ unavailable; a zero baseline does not produce an infinite percentage.
 
 The torque and back-EMF overlays draw Run A solid and Run B dashed, including
 their legend swatches, so coincident traces remain distinguishable.
+Each legend item toggles independently. Hiding every curve shows an empty-chart
+message and keeps the legend available so any curve can be turned back on.
 Multi-run baselines, further result types, comparison exports and studies are
 subsequent Compare 2.0 work.

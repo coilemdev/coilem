@@ -1658,7 +1658,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-run-input-changes > header > span { color: var(--text-accent); font-size: 11px; }
 .public-run-input-changes > p { margin: 8px 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .public-run-input-changes > .public-run-input-notice { color: var(--text-secondary); }
-.public-run-input-table-scroll { max-height: 480px; margin-top: 12px; overflow: auto; border: 1px solid var(--border-subtle); border-radius: 7px; }
+.public-run-input-table-scroll { margin-top: 12px; overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: 7px; }
 .public-run-input-changes table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11px; text-align: left; }
 .public-run-input-changes th, .public-run-input-changes td { padding: 9px 12px; border-bottom: 1px solid var(--border-subtle); overflow-wrap: anywhere; vertical-align: top; }
 .public-run-input-changes th { color: var(--text-secondary); font-weight: 500; }
@@ -1690,18 +1690,6 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-run-compare-mode button.active { border-color: rgba(34, 211, 238, .45); color: var(--text-primary); background: rgba(34, 211, 238, .08); }
 .public-run-compare-mode button strong { font-size: 11px; }
 .public-run-compare-mode button span { font-size: 9px; line-height: 1.4; }
-.public-run-compare-identities { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-top: 16px; }
-.public-run-compare-identities article { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--border-subtle); border-left: 3px solid #f59e0b; border-radius: 9px; background: var(--bg-surface-1); }
-.public-run-compare-identities article.run-b { border-left-color: #22d3ee; }
-.public-run-compare-identities span { color: var(--text-muted); font-size: 8px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-.public-run-compare-identities strong { color: var(--text-primary); font-size: 14px; }
-.public-run-compare-identities article.run-b strong { color: #67e8f9; }
-.public-run-compare-identities small { overflow: hidden; color: var(--text-muted); font: 9px var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
-.public-run-compare-identities dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 12px; margin: 8px 0 0; padding-top: 9px; border-top: 1px solid var(--border-subtle); }
-.public-run-compare-identities dl > div { min-width: 0; }
-.public-run-compare-identities dl > div:nth-last-child(1) { grid-column: 1 / -1; }
-.public-run-compare-identities dt { color: var(--text-muted); font-size: 8px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-.public-run-compare-identities dd { overflow-wrap: anywhere; margin: 3px 0 0; color: var(--text-secondary); font: 9px/1.4 var(--font-mono); }
 .public-run-compare-mode-note,
 .public-run-compare-parity-block { margin-top: 12px; padding: 14px; border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface-1); }
 .public-run-compare-mode-note.compatible { border-color: rgba(52, 211, 153, .32); background: rgba(52, 211, 153, .05); }
@@ -1740,7 +1728,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-run-compare-metrics tbody tr:hover { background: var(--bg-surface-2); }
 .public-run-compare-metrics:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .public-run-compare-message.warning { border-color: rgba(245, 158, 11, .34); color: #fbbf24; background: rgba(245, 158, 11, .08); }
-@media (max-width: 820px) { .public-report-header { gap: 12px; } .public-report-header-actions { align-items: stretch; flex-direction: column-reverse; } .public-run-storage-summary { flex-direction: column; } .public-run-storage-row { grid-template-columns: minmax(0,1fr) auto; } .public-run-storage-size { text-align: left; } .public-run-storage-actions { justify-content: flex-start; } .public-run-compare-selectors, .public-run-compare-mode, .public-run-compare-identities { grid-template-columns: 1fr; } .public-run-compare-parity-block-heading { flex-direction: column; } }
+@media (max-width: 820px) { .public-report-header { gap: 12px; } .public-report-header-actions { align-items: stretch; flex-direction: column-reverse; } .public-run-storage-summary { flex-direction: column; } .public-run-storage-row { grid-template-columns: minmax(0,1fr) auto; } .public-run-storage-size { text-align: left; } .public-run-storage-actions { justify-content: flex-start; } .public-run-compare-selectors, .public-run-compare-mode { grid-template-columns: 1fr; } .public-run-compare-parity-block-heading { flex-direction: column; } }
 .public-saved-run { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 14px auto; max-width: 1080px; padding: 8px 10px 8px 14px; border: 1px solid var(--border-subtle); border-radius: 10px; background: var(--bg-surface-1); }
 .public-saved-run-summary { display: flex; flex: 1 1 auto; align-items: center; gap: 10px; min-width: 0; color: var(--text-secondary); font-size: 11px; }
 .public-saved-run-label { color: var(--success); font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
@@ -1965,6 +1953,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-waveform-legend button[aria-pressed="false"] { opacity: .48; }
 .public-waveform-legend button[aria-pressed="false"] i { background-color: var(--text-muted) !important; }
 .public-waveform-legend button:disabled { cursor: default; }
+.public-waveform-empty { display: grid; place-items: center; min-height: 200px; margin-top: 12px; padding: 24px; border: 1px dashed var(--border-default); border-radius: 8px; color: var(--text-muted); font-size: 12px; text-align: center; }
 .public-waveform-legend-grouped { display: grid; gap: 8px; }
 .public-waveform-legend-row { display: grid; grid-template-columns: minmax(150px, .72fr) repeat(3, minmax(110px, 1fr)); align-items: center; gap: 8px; }
 .public-waveform-legend-row > strong { color: var(--text-secondary); font: 600 10px var(--font-sans); }
