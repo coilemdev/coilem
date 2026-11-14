@@ -227,9 +227,10 @@ export function SolvedFieldViewer({
   onRequestArmature,
   positionLink,
 }: SolvedFieldViewerProps) {
+  const playbackUnavailableReason = result.field_playback_unavailable_reason;
   const resultantFrames = useMemo(
-    () => playbackDescriptors(result.field_playback, result.field_line_frames ?? []),
-    [result.field_line_frames, result.field_playback],
+    () => playbackUnavailableReason ? [] : playbackDescriptors(result.field_playback, result.field_line_frames ?? []),
+    [result.field_line_frames, result.field_playback, playbackUnavailableReason],
   );
   const armatureFrames = useMemo(
     () => playbackDescriptors(
@@ -1351,12 +1352,12 @@ export function SolvedFieldViewer({
             className="public-field-transport-play"
             type="button"
             aria-label={playing ? 'Pause clockwise field playback' : 'Play field clockwise'}
-            title={playbackPreparing
+            title={playbackUnavailableReason || (playbackPreparing
               ? `${playbackPreparingLabel}: Play starts once every position is drawn.`
               : colorRangeMode === 'viewport'
                 ? 'Switch the flux-density range to Fixed to animate.'
-                : 'Clockwise — follows the public solve angle convention'}
-            disabled={angleFrames.length < 2 || colorRangeMode === 'viewport' || playbackPreparing}
+                : 'Clockwise — follows the public solve angle convention')}
+            disabled={Boolean(playbackUnavailableReason) || angleFrames.length < 2 || colorRangeMode === 'viewport' || playbackPreparing}
             onClick={togglePlayback}
           >
             {playing ? 'Ⅱ' : '▶'}
@@ -1380,7 +1381,8 @@ export function SolvedFieldViewer({
             title="Visual playback speed — not the solve operating point. Type 0.1 to 100 or use the arrows (tenths below 1 RPM); Shift+arrow steps by 10."
             onChange={setPlaybackRpm}
           />
-          {playbackPreparing && (
+          {playbackUnavailableReason && <span className="public-field-playback-preparing" role="status">{playbackUnavailableReason}</span>}
+          {playbackPreparing && !playbackUnavailableReason && (
             <span className="public-field-playback-preparing" role="status" aria-live="polite">{playbackPreparingLabel}</span>
           )}
         </div>

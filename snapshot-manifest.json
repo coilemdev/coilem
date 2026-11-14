@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 9519,
-      "sha256": "230491043a812ada40187dfbb42d5fa1e52a40cc690475d18fa3399bcda2f313"
+      "bytes": 9630,
+      "sha256": "5fdbc3d4007c45f650fca794ec6db4839f78b3445e4f57d5fd719c115ec0f068"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 41460,
-      "sha256": "206fbd1d32be52bc722f894d8f39f23a3db75d10b6cc08eb5abc5462f7cf3e3b"
+      "bytes": 41738,
+      "sha256": "0b18942e7797b9861f2f86a62480524f8f37c80a8c21583ebff9ad5f9a0f4f03"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 93096,
-      "sha256": "8069a7b8847999718f4327ef003b22250882c00ca9e2577653f6dd354f622ab7"
+      "bytes": 94594,
+      "sha256": "ce3aed7fbcc0471e4b4c860511284e41b39ede638b2fa5abdeaf65a25d3112aa"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 58623,
-      "sha256": "b2fb259730cbb0f6deb39a05c9f7545043981a3d929471bf6f6963a84cd21be2"
+      "bytes": 58805,
+      "sha256": "2cf6b87b51189a2df57b06157c0857975ba33020e00095785839ce912420fc72"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3314,
-      "sha256": "de70acdfb028cce754e7ce78bc639b1537670f7e123f9b4d669fb992a3585a60"
+      "bytes": 3392,
+      "sha256": "cf6834a6a425018bd98d9d9793a3b111d9b31ba930ddc06a576fd037f30338f3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6535,13 +6535,13 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 7440,
-      "sha256": "4d0fa3608acc5a369c66aedae06636d793cc1b3097158bbc4c7f6283e7cbf9ed"
+      "bytes": 7639,
+      "sha256": "13397e4a8ba47d7739a83138d44f30b753e3ec214eddedad3bbac2b19ff0cefd"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
-      "bytes": 2558,
-      "sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0"
+      "bytes": 2759,
+      "sha256": "63a1cb7cf39923c8983800db02a08fcedf0022ca1dedd6f5525c42f65f321743"
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178048,
-      "sha256": "cd6007e349a7b084077e561670b9fdc4675c4b9c2ad8cfdcc66dd4124bd6e9a6"
+      "bytes": 178150,
+      "sha256": "b42367b580c42396ebedfc9225af52500dfe9104c9af5a053f8213df85e12ee0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -6715,8 +6715,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
-      "bytes": 33938,
-      "sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5"
+      "bytes": 35111,
+      "sha256": "2092bf8db795ba1b9221e296538531d4935a04c2b79da0017536052020e2edb1"
     },
     {
       "path": "frontend/src/components/tutorials/CurrentConductor3D.tsx",
@@ -6820,8 +6820,8 @@
     },
     {
       "path": "frontend/src/components/tutorials/MeshViewer.tsx",
-      "bytes": 110869,
-      "sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4"
+      "bytes": 111175,
+      "sha256": "dfa1a18cb1f298bbc47b6e5a43b24d9e93b7a929fc34012f73baace3d1e64a8c"
     },
     {
       "path": "frontend/src/components/tutorials/MotorEffectLoop3D.tsx",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 81572,
-      "sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec"
+      "bytes": 81685,
+      "sha256": "2c8cb1a6a4f2c1ae84df05ddcff0c1d9ab5da5869321ca2115847cae06a0e5c8"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 291844,
-      "sha256": "a332c5aacdd496a12b0d5b26d0c54087168bbbb1566906fb0fc6c4b20e1a3dac"
+      "bytes": 296014,
+      "sha256": "774e9434c67e499fc26ef4d9bcc843929273343ec4f57b2624eab077c5f32372"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7065,8 +7065,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 22151,
-      "sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a"
+      "bytes": 22582,
+      "sha256": "2fee88e4da62070cfb58208d3d841df0089ef1d181955841d151ce81939836c4"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 124571,
-      "sha256": "b17412d51a5c1b257be667e7ecbdcca6dcbb827ca0f7b044f5ef7d1725f4b69e"
+      "bytes": 124309,
+      "sha256": "36fe9390a8868e93b8b144dcbac52608fd2ade524f5bfba1f2fbbb19c8d587f5"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -7145,8 +7145,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 61456,
-      "sha256": "c7d49c30421fe0c6b02b0d65f7ab64cd246c7f75ee9a29f77b176d6987bd25e1"
+      "bytes": 61833,
+      "sha256": "bcd258a42beb88d445d6fa933ccf3991bbde163a7631488253214c1f04e2246f"
     },
     {
       "path": "frontend/src/public/ViewportMagnifier.tsx",
@@ -7225,8 +7225,8 @@
     },
     {
       "path": "frontend/src/public/designErrors.ts",
-      "bytes": 7746,
-      "sha256": "591320b7df61f6aae964f64df43533c15a70eaf8fce8955f35cda85c31118a3e"
+      "bytes": 8717,
+      "sha256": "e99ec1dd31c4e99b5dc6a383338818f3c118197cff6e579362251d8b023588cf"
     },
     {
       "path": "frontend/src/public/designFile.ts",
@@ -7255,8 +7255,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 24147,
-      "sha256": "d8169ddffc361f34c04b11ad61c6ff3a0514f4ecbf9b53ff008f9c321af365f1"
+      "bytes": 24269,
+      "sha256": "8f24f8daf9ef0e835a20244bcd525eb522b31cbf3fdad0ce53cb4163b0ba4818"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -7385,8 +7385,8 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "bytes": 60513,
-      "sha256": "23ed6f72b44dcd8f3f0d0ff5e85349107bd416b1bed964d1d4d9c3488caf0bf7"
+      "bytes": 60647,
+      "sha256": "03b772c2c9cfa655be878b2299aa746d1be5d4a5f46600aaa34e90d57b94a644"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
@@ -7400,8 +7400,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "bytes": 58859,
-      "sha256": "459c4cbbce65c219d089079cbc5cc8b707c022a174b97c7b7aca9f4f3d6377f5"
+      "bytes": 59018,
+      "sha256": "1ae09c3952fdbc5a53c54701a4340a7c0d358891606c71f36727b4e38dbbbf70"
     },
     {
       "path": "frontend/src/public/halbach/api.ts",
@@ -7415,8 +7415,8 @@
     },
     {
       "path": "frontend/src/public/halbach/halbach.css",
-      "bytes": 52699,
-      "sha256": "ca66bb39f75a94689b589e5ba69b9b0ba471f4c36021072118cc25e83f9a556f"
+      "bytes": 52701,
+      "sha256": "e83a5e0ee777c8b35b5ea9638516f153bbdf2fbd9af7f702a19452f92ff90e07"
     },
     {
       "path": "frontend/src/public/halbach/poleRendering.ts",
@@ -7440,8 +7440,8 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 10107,
-      "sha256": "fe1a9ee6c1214a68205ffe52acc63312de0e4eb60d175f01b30c5c7ba4f2ae20"
+      "bytes": 10034,
+      "sha256": "f67cb87887177b1457b69af7276c0ec7c6dde3a9b179edc99a25fc46e3a1abc9"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
-      "bytes": 1331,
-      "sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4"
+      "bytes": 1600,
+      "sha256": "b45ce788040d0d6796fdc92fb841539a4172556126be3d0d3a492ef319a47f2a"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -7480,8 +7480,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24511,
-      "sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54"
+      "bytes": 24613,
+      "sha256": "157ab8e8290fd2355a396d591a4ec8f270ea5c1a3d38939c9f5e67c345f6edcd"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7565,8 +7565,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 326049,
-      "sha256": "3672ca7fd427dfa3a679ce951d9d41267d9ef5c3e39b3573bc28786d289ce1ae"
+      "bytes": 327121,
+      "sha256": "767873504a82c8b4227cfcca53cf32358b8d98590d630e9d3d50ebb4adb2c3c1"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7655,13 +7655,13 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 86092,
-      "sha256": "3a25f320860743b67be60ad9fe1ab6f73f13902cfa9cdd60e25235195dcc0f1a"
+      "bytes": 99265,
+      "sha256": "812e6933005613377d8d84274dcda0989d0d070515ea43970977f713709770e6"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
-      "bytes": 8307,
-      "sha256": "239aba6eeb113a5fbbc20af2d9cc6294b965e56da7fee1ec2438adf3d225945c"
+      "bytes": 10750,
+      "sha256": "27325b5c4d82bb2ecbdd4f1a128b5486ea812095b7a285f3563617b02493faf0"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8335,8 +8335,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32867,
-      "sha256": "4c11aa55c6b3a36d7ed70e369150c76fc607209259386e9d18a28446d4e183ab"
+      "bytes": 32929,
+      "sha256": "81e64984c2bf100d1b5bbb4f01f53f33a9e2bcabcde550bfb86ee39cf063fd92"
     },
     {
       "path": "tests/test_public_security.py",
@@ -11725,8 +11725,8 @@
     },
     {
       "path": "backend/selected_analyses.py",
-      "bytes": 5399,
-      "sha256": "da1867335ffd642f2d136c25243687e2e64ded0b6d5b3b548862760c74e0ebb0"
+      "bytes": 6439,
+      "sha256": "78e6256811a25ac037854278f0cb36ecdb9f165455a0b5a1f3d7e15b57c1e06b"
     },
     {
       "path": "frontend/src/public/TorqueSpeedSettings.tsx",
@@ -17750,13 +17750,73 @@
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 84724,
-      "sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721"
+      "bytes": 85503,
+      "sha256": "0e7b4640fbf81a4ff4f87498aa50f60d71f09bfc69b7c1b7e9995ae526d03bdb"
     },
     {
       "path": "tests/test_construction_preview.py",
       "bytes": 11219,
       "sha256": "67d4a7cfeb79469f6e164b5ebea0f249d89f4a0f0312abd26b79ea9d2a119ab3"
+    },
+    {
+      "path": "backend/input_advisories.py",
+      "bytes": 2094,
+      "sha256": "2ac078ed3f1237799819532de944bd241cdc468dd20fdc9a592e01c4142786d5"
+    },
+    {
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
+      "bytes": 54137,
+      "sha256": "4eaa88d62c35b2c49982fa75074f19130d6de7bc9d69df7e2d6ba3eb14c33ffd"
+    },
+    {
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
+      "bytes": 6414,
+      "sha256": "5d2b82511a71a8284b18e9889cc3caf38e8ad9709cb40213d0fd92a0e91c4252"
+    },
+    {
+      "path": "frontend/scripts/test-release-priority.mjs",
+      "bytes": 2879,
+      "sha256": "25564be6e45150183c4bf8c44252c2a902854f7e8a232169cf07d9c8689a45d9"
+    },
+    {
+      "path": "frontend/scripts/test-ring-shape.mjs",
+      "bytes": 1145,
+      "sha256": "9ea0ed195817e85412c774b65165c2106b5dc4b4974b1e8e86e3f36d6cc42a9c"
+    },
+    {
+      "path": "frontend/src/public/designHealth.ts",
+      "bytes": 585,
+      "sha256": "bfb87474342225ec5e81d392c54c2a42f9e325387253da6dd4d637cb7b363d06"
+    },
+    {
+      "path": "frontend/src/public/ringShape.ts",
+      "bytes": 451,
+      "sha256": "99cdd58592fa6863de50e1bdff8912dd1341900f2f471f8c15000ae362812a4c"
+    },
+    {
+      "path": "frontend/src/public/savedRunPlayback.ts",
+      "bytes": 772,
+      "sha256": "ebfd86255934d4360c2e1cf8be69adb7555c0a8b066de08e5df4da36dc21d6c3"
+    },
+    {
+      "path": "tests/test_input_advisories.py",
+      "bytes": 3198,
+      "sha256": "5ec293b2d9c053b680a1978b652fb07d41397dadfb2b26efca9d9688838b775c"
+    },
+    {
+      "path": "tests/test_release_priority_report.py",
+      "bytes": 3051,
+      "sha256": "772d0f724863bcc872d90227d9c8a7e3a0b2efc1a0e1286b4df487c397c4a7cd"
+    },
+    {
+      "path": "tests/test_vshape_mesh_study.py",
+      "bytes": 1308,
+      "sha256": "3f5fe267508a13bf7dc9b35ccde66c967d2ea361b7662f4d22d626bdae2003fa"
+    },
+    {
+      "path": "tools/vshape_mesh_study.py",
+      "bytes": 6934,
+      "sha256": "595d99fe29a6702aba719e493a2f11d8fd8324d8970815bdd0654b37f74313ad"
     }
   ],
   "public_patches": [
@@ -39125,6 +39185,252 @@
       "path": "tests/test_solve_reuse.py",
       "source_sha256": "ae4b3dd48464ed9b91d94bd42309cdf84913b6c654af761a5b773920e3d45d67",
       "reason": "Fix Python client default analyses and iterable sweeps; release profiling spool handles after solving so Windows benchmark runtimes can be archived, with regression coverage."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/input_advisories.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/models/result.py",
+      "source_sha256": "230491043a812ada40187dfbb42d5fa1e52a40cc690475d18fa3399bcda2f313",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/preview.py",
+      "source_sha256": "206fbd1d32be52bc722f894d8f39f23a3db75d10b6cc08eb5abc5462f7cf3e3b",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/public_report.py",
+      "source_sha256": "8069a7b8847999718f4327ef003b22250882c00ca9e2577653f6dd354f622ab7",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/public_routes/solve.py",
+      "source_sha256": "b2fb259730cbb0f6deb39a05c9f7545043981a3d929471bf6f6963a84cd21be2",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "backend/selected_analyses.py",
+      "source_sha256": "da1867335ffd642f2d136c25243687e2e64ded0b6d5b3b548862760c74e0ebb0",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/package.json",
+      "source_sha256": "de70acdfb028cce754e7ce78bc639b1537670f7e123f9b4d669fb992a3585a60",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-losses-view.mjs",
+      "source_sha256": "4d0fa3608acc5a369c66aedae06636d793cc1b3097158bbc4c7f6283e7cbf9ed",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "source_sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "cd6007e349a7b084077e561670b9fdc4675c4b9c2ad8cfdcc66dd4124bd6e9a6",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-release-priority.mjs",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-ring-shape.mjs",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/components/tutorials/ChapterOneLinearMotorCapstone.tsx",
+      "source_sha256": "464912e680de5263d15b1cb8e89e63a08dde78b75a163436b7c0971ab2b6c7c5",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/components/tutorials/MeshViewer.tsx",
+      "source_sha256": "ea36fef75101a73d9e54b50d26b07d88bab09fc0dbf768265ed7389c15c159a4",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "a332c5aacdd496a12b0d5b26d0c54087168bbbb1566906fb0fc6c4b20e1a3dac",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/LossesCard.tsx",
+      "source_sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "b17412d51a5c1b257be667e7ecbdcca6dcbb827ca0f7b044f5ef7d1725f4b69e",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/SolvedFieldViewer.tsx",
+      "source_sha256": "c7d49c30421fe0c6b02b0d65f7ab64cd246c7f75ee9a29f77b176d6987bd25e1",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/designErrors.ts",
+      "source_sha256": "591320b7df61f6aae964f64df43533c15a70eaf8fce8955f35cda85c31118a3e",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/designHealth.ts",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/dimensionAnnotations.ts",
+      "source_sha256": "d8169ddffc361f34c04b11ad61c6ff3a0514f4ecbf9b53ff008f9c321af365f1",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
+      "source_sha256": "23ed6f72b44dcd8f3f0d0ff5e85349107bd416b1bed964d1d4d9c3488caf0bf7",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
+      "source_sha256": "459c4cbbce65c219d089079cbc5cc8b707c022a174b97c7b7aca9f4f3d6377f5",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/halbach/halbach.css",
+      "source_sha256": "ca66bb39f75a94689b589e5ba69b9b0ba471f4c36021072118cc25e83f9a556f",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/lossesView.ts",
+      "source_sha256": "fe1a9ee6c1214a68205ffe52acc63312de0e4eb60d175f01b30c5c7ba4f2ae20",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/magnetCoverage.ts",
+      "source_sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/ringShape.ts",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/savedRunPlayback.ts",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "3672ca7fd427dfa3a679ce951d9d41267d9ef5c3e39b3573bc28786d289ce1ae",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/progressive-design.spec.ts",
+      "source_sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "3a25f320860743b67be60ad9fe1ab6f73f13902cfa9cdd60e25235195dcc0f1a",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/viewport-harness.tsx",
+      "source_sha256": "239aba6eeb113a5fbbc20af2d9cc6294b965e56da7fee1ec2438adf3d225945c",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_input_advisories.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "4c11aa55c6b3a36d7ed70e369150c76fc607209259386e9d18a28446d4e183ab",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_release_priority_report.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_vshape_mesh_study.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tools/vshape_mesh_study.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
     }
   ]
 }

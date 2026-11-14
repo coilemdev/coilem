@@ -112,6 +112,9 @@ assert.equal(recorded.statuses[2].reason, 'As recorded.');
 const qualified = lossesView(loss, iron, { status: 'qualified', status_reason: PHASE_RESISTANCE_STATUS_REASON });
 assert.deepEqual(qualified.statuses[2], { key: 'copper', label: 'Copper loss, from the phase resistance', status: 'qualified', reason: PHASE_RESISTANCE_STATUS_REASON });
 assert.equal(qualified.rows.find((row) => row.key === 'copper').status, 'qualified', 'a qualified winding badges its copper loss');
-assert.deepEqual(noIron.statuses.map((item) => item.key), ['copper'], 'no status for an unavailable efficiency or iron loss');
+assert.deepEqual(noIron.statuses.map((item) => item.key), ['efficiency', 'iron', 'copper'], 'unavailable outputs retain their explanation');
 
 console.log('losses view: rows, efficiency status, bar segments, density scale and copper per kilogram pass');
+
+assert.equal(noIron.rows.find(row => row.key === 'total').label, 'Known loss subtotal');
+assert.match(noIron.statuses.find(row => row.key === 'iron').reason, /full electrical cycle/);

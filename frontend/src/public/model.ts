@@ -473,6 +473,9 @@ export interface PublicArmatureFieldComposition {
 }
 
 export interface SolveResult {
+  warnings?: string[];
+  input_notes?: string[];
+  field_playback_unavailable_reason?: string | null;
   torque_speed_analysis?: TorqueSpeedAnalysisResult | null;
   summary: {
     avg_torque_Nm: number | null;

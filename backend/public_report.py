@@ -706,6 +706,12 @@ _PLANS_USING_SETTING = {
 _RUNTIME_ONLY_SETTINGS = frozenset({"magneto2d_workers", "stream_noload_field_lines"})
 
 
+def _platform_text(value: Any) -> str:
+    if isinstance(value, Mapping):
+        return ", ".join(f"{key}: {item}" for key, item in value.items())
+    return _plain(value)
+
+
 def _setting_is_empty(value: Any) -> bool:
     if value is None:
         return True
@@ -728,6 +734,18 @@ def _setting_entry(name: str, value: Any) -> tuple[str, str]:
         else:
             words = base.replace("_", " ")
             label = words[:1].upper() + words[1:]
+    if isinstance(value, bool):
+        value = "Yes" if value else "No"
+    elif name == "magnet_embrace" and isinstance(value, (int, float)):
+        value, unit = f"{value * 100:.1f}", "% (saved input)"
+    else:
+        display_names = {
+            "solve_quality": {"quick": "Preview", "standard": "Standard", "fine": "High accuracy", "custom": "Custom"},
+            "torque_method": {"weighted_stress": "Weighted stress"},
+            "rotor_rotation_model": {"remesh_per_step": "Remesh each position", "fixed_mesh": "Fixed mesh"},
+            "ipm_topology": {"flat_buried": "Flat buried", "v_shape": "V-shape"},
+        }
+        value = display_names.get(name, {}).get(str(value), value)
     return label, f"{_pdf_text(value)} {unit}".strip()
 
 
@@ -1291,8 +1309,8 @@ def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -
             [
                 ("Current angle", f"{_number(dq.get('current_angle_deg'))} deg"),
                 ("Positions averaged", _number(dq.get("positions"))),
-                ("d-axis current", f"{_number(dq.get('i_d_A'))} A"),
-                ("q-axis current", f"{_number(dq.get('i_q_A'))} A"),
+                ("d-axis current", f"{_number(dq.get('i_d_A'))} A peak"),
+                ("q-axis current", f"{_number(dq.get('i_q_A'))} A peak"),
                 ("d-axis flux linkage", milli(dq.get("lambda_d_Wb"), "mWb")),
                 ("q-axis flux linkage", milli(dq.get("lambda_q_Wb"), "mWb")),
                 ("Magnet flux linkage", milli(dq.get("lambda_pm_Wb"), "mWb")),
@@ -1470,7 +1488,8 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                     ("End turn, each end", f"{_number(winding.get('end_turn_length_mm'))} mm"),
                     ("Copper slot fill", f"{_percent(winding.get('copper_fill'))} of {_number(winding.get('slot_area_mm2'))} mm2"),
                     ("Fill limit", _percent(winding.get("copper_fill_limit"))),
-                    ("Phase resistance, 20 C", _resistance_text(winding.get("phase_resistance_20C_ohm"))),
+                    *([("Phase resistance, 20 C", _resistance_text(winding.get("phase_resistance_20C_ohm")))]
+                      if winding.get("winding_temperature_C") != 20 else []),
                     (f"Phase resistance, {_number(winding.get('winding_temperature_C'))} C", _resistance_text(winding.get("phase_resistance_ohm"))),
                 ],
                 styles,
@@ -1497,7 +1516,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                     ("Copper loss", f"{_number(losses.get('copper_loss_W'))} W"),
                     ("Iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
                     ("Mechanical loss", f"{_number(losses.get('mechanical_loss_W'))} W"),
-                    ("Total loss", f"{_number(losses.get('total_loss_W'))} W"),
+                    ("Known loss subtotal" if losses.get("iron_loss_W") is None else "Total loss", f"{_number(losses.get('total_loss_W'))} W"),
                     ("Input power", f"{_number(losses.get('input_power_W'), 4)} W"),
                     ("Shaft power", f"{_number(losses.get('shaft_power_W'), 4)} W"),
                     ("Efficiency", efficiency_text),
@@ -1799,12 +1818,12 @@ def build_public_run_pdf(
                         if solve_metadata.get("magnet_remanence_T") is not None
                         else []
                     ),
-                    ("Solve quality", solve_params.get("solve_quality")),
+                    ("Accuracy plan", _setting_entry("solve_quality", solve_params.get("solve_quality"))[1]),
                     ("Mesh density", solve_metadata.get("mesh_density") or solve_params.get("mesh_density")),
                     ("Mesh elements", solve_metadata.get("mesh_element_count")),
                     ("Rotor positions", solve_metadata.get("rotor_positions")),
-                    ("Torque method used", solve_metadata.get("torque_method") or "Not recorded"),
-                    ("Torque method requested", solve_params.get("torque_method")),
+                    ("Torque method used", _setting_entry("torque_method", solve_metadata.get("torque_method") or "Not recorded")[1]),
+                    ("Torque method requested", _setting_entry("torque_method", solve_params.get("torque_method"))[1]),
                 ],
                 styles,
                 columns=2,
@@ -1819,7 +1838,7 @@ def build_public_run_pdf(
                             ("Application version", provenance.get("application_version")),
                             ("Application commit", provenance.get("application_commit")),
                             *_build_rows(_mapping(provenance.get("build"))),
-                            ("Platform", _plain(provenance.get("platform"))),
+                            ("Platform", _platform_text(provenance.get("platform"))),
                             ("Result SHA-256", _mapping(manifest.get("bindings")).get("result_sha256")),
                             ("Resolved request SHA-256", _mapping(manifest.get("bindings")).get("resolved_request_sha256")),
                         ],
@@ -1994,6 +2013,12 @@ def build_public_run_pdf(
                 ]
             )
         )
+
+    input_notes = result.get("input_notes")
+    if isinstance(input_notes, list) and input_notes:
+        note_lines = [_safe_paragraph(note, styles["body"]) for note in input_notes if isinstance(note, str)]
+        if note_lines:
+            story.extend([KeepTogether([_section("Interpreted rotor inputs", styles), note_lines[0]]), *note_lines[1:]])
 
     # Keep each closing heading on the page of its first line.
     warnings = _warnings(result)
