@@ -1,7 +1,8 @@
 # Release status
 
 **coilEM 0.5.8 Developer Preview is in preparation, not approved for publication.**
-The application and frontend identify as 0.5.8; Magneto2D remains 0.5.0.
+The application and frontend identify as 0.5.8; Magneto2D is 0.6.0 (0.5.7
+bundled Magneto2D 0.5.0).
 The release branch is rebased onto current main, retaining the 0.5.7 metadata
 and historical evidence with their original identities.
 

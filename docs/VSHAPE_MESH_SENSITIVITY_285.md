@@ -8,6 +8,7 @@ This study samples three imported V-shape fixture geometries at four existing me
 
 - Numerical source: `a9f6a2302967595553fac73a89a424e062325e51`; source-file hashes and the native binary hash are recorded in the [raw results](VSHAPE_MESH_SENSITIVITY_285.json).
 - The collector ran from a frozen checkpoint with those numerical sources. The later Python-client/cache merge was excluded from the matrix. The PR itself is based on the latest release branch.
+- The release branch was rebased after this study ran, so neither commit is on it. Both are kept as tags: `evidence/vshape-285-source` for the numerical source above, and `evidence/vshape-285-collector` for the collector checkpoint `2597054e2566ec3e9745c76e1f33a71170ce6578` in the raw results. Fetch them with `git fetch origin tag evidence/vshape-285-source tag evidence/vshape-285-collector`.
 - Fixtures: `benchmarks/windows-rc-20261013-1fac3a1/fixtures/ipm_vshape_8p12s_*__native.json`. Each original fixture is hashed; each modified request is retained.
 - 50 A **peak**, 30-degree current angle, 3,000 rpm; full 360-degree electrical loaded sweep with 7.5-degree steps. The imported fixtures originally used a 90-degree window at zero current angle, so these are sensitivity measurements, not replacements for their historical benchmark numbers.
 - Imported Newton/direct solver settings are retained. Loaded torque, no-load back EMF, apparent d/q inductances and a cogging-period sweep are computed using the existing public rotation convention and reuse.

@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 7642,
-      "sha256": "28aa285f3736202c16f0722e4cac625b06d9d65c3a2d5220a1da43423fa6148e"
+      "bytes": 7669,
+      "sha256": "837a369ef0da885affe492e73809d13fa7bd1a8ee4bb5b8bc8e38d3b8586d0a1"
     },
     {
       "path": "README.md",
       "bytes": 7284,
-      "sha256": "8020794fc93cbcb638811fd0fd5315d3d692475192bcbf0437225d226cd0d80e"
+      "sha256": "768af4706dfe31da04b42f4e26032141d9b5aad93047137161a5ffd38afd2ed2"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 27272,
-      "sha256": "5a2f75964df75be03b9060cde65c047bac69790062d66799b1202aa8f3c33a59"
+      "bytes": 27332,
+      "sha256": "0e9aeb23b370afadcb22f350ebad4c884d7bb89d776ea574d995d852b72231c8"
     },
     {
       "path": "SECURITY.md",
@@ -646,7 +646,7 @@
     {
       "path": "backend/solver/__init__.py",
       "bytes": 178761,
-      "sha256": "18ad9894d527c1ff8eaa892a5385ae556601071d219db510119ef298e9d94e0a"
+      "sha256": "be488af5d3f2555cd2da41e80358184a6ece8cb1db27bf49d6a2c8eb656f7a52"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 16821,
-      "sha256": "1168f4ee3be7c998d1b828d92029f0067574fd5aa869c7ce01fd692047c643fe"
+      "bytes": 16801,
+      "sha256": "32db7a05dd2abb670237e1215b3b79d4ed32bc99bf89078fbdb21ecc8226da46"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 49956,
-      "sha256": "9824c66020cb5144d90797fc2413802f4232b39fcebcdfdba6ebf55562f36530"
+      "bytes": 50037,
+      "sha256": "e547575ed5928efff66737d86c77711eae9cabf825573136172279b340b6abe9"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -7706,12 +7706,12 @@
     {
       "path": "solvers/magneto2d/Cargo.lock",
       "bytes": 28550,
-      "sha256": "28660551e81970d446c41d64119245eadd68685dab3b8c46a65e65bb5eaa61dc"
+      "sha256": "4664ca8863cb3668f0a095f5231b322264f23ffed4a446b1f271fcbf91b6ed76"
     },
     {
       "path": "solvers/magneto2d/Cargo.toml",
       "bytes": 522,
-      "sha256": "967b6113c53a1722b4cce5d69510208f2ce8ac5ca002973d339a72a3018d8503"
+      "sha256": "f6d50b1cae24d1020b1538cd023ba6565bbab96a760670a69272395c49e913c6"
     },
     {
       "path": "solvers/magneto2d/build.rs",
@@ -8251,7 +8251,7 @@
     {
       "path": "tests/test_public_candidate.py",
       "bytes": 20531,
-      "sha256": "f28a006414c3d8513b08337d2528fbceb4e096a62aa0e9109bc98f4c25ce10d3"
+      "sha256": "819965426478c1d0660bd55ee44a7c8ad8555f7a61a4e0d0846ed053b765ad97"
     },
     {
       "path": "tests/test_public_field_playback.py",
@@ -17630,8 +17630,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_8.md",
-      "bytes": 3450,
-      "sha256": "06142f0603fa454ddc21863e0fea0a37f433f8df81e0d05a45cbe1886d5fbc36"
+      "bytes": 3555,
+      "sha256": "8ca97222646fe838de9ed3b889c11754409f898df7a75980e09dbb3b47286b1e"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
@@ -17640,8 +17640,8 @@
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
-      "bytes": 6414,
-      "sha256": "5d2b82511a71a8284b18e9889cc3caf38e8ad9709cb40213d0fd92a0e91c4252"
+      "bytes": 6810,
+      "sha256": "d3c5e18fc4fda702160e8b6198927126b5543cfff3e699c60bb033ea3c012d87"
     },
     {
       "path": "docs/examples/client_ipm_motor.py",

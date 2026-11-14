@@ -1,7 +1,7 @@
 # coilEM v0.5.8 release preparation
 
 The draft integration PR brings `release/v0.5.8` into `main`. Application and
-frontend versions are 0.5.8; bundled Magneto2D remains 0.5.0. The
+frontend versions are 0.5.8; bundled Magneto2D is 0.6.0 for the changed solver sources. The
 [release notes](../RELEASE_NOTES.md) describe changes since published v0.5.7.
 
 ## Candidate and scope
@@ -22,6 +22,7 @@ commits; a later merge must match the accepted physics cohort.
 
 - [x] Rebase release work onto current main and retain historical metadata.
 - [x] Set backend, frontend and frontend lockfile versions to 0.5.8.
+- [x] Bump Magneto2D to 0.6.0 for the changed solver sources, before freezing.
 - [x] Prepare release notes and disclose unresolved limitations.
 - [ ] Freeze the exact versioned candidate and record immutable identities.
 - [ ] Pass candidate CI, backend/native tests and browser workflows.
