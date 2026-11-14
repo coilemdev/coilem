@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 22435,
-      "sha256": "6a31796e01fa7a0ecb97736bc01c033ebd73cbb09c59131d0d83de0b40b0fd45"
+      "bytes": 22583,
+      "sha256": "66ed6d7410558bdc348b84c76b30e009da74bb200c9e6ee53658962b95af886a"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -18690,13 +18690,13 @@
     },
     {
       "path": ".github/actions/rust-cache/action.yml",
-      "bytes": 1215,
-      "sha256": "98ac582d6ff789c380b3d0e452e6a0fb03dc7f47e0c1c8e86ee6e41144a37f9c"
+      "bytes": 1431,
+      "sha256": "8fdb55b9ebafbadfc8546d7c9d8d3a156d45fd296b67699329caf1995c9a79f6"
     },
     {
       "path": "docs/CI.md",
-      "bytes": 5211,
-      "sha256": "9bb359fbf4fe5e7c9dc4a7f2fa2e165d65f089a56874ab1793dc8c75f5e61cf8"
+      "bytes": 5351,
+      "sha256": "289468570f018bbdd5ccecac038d36baab903593b1ec20e181a32c576e32b28f"
     },
     {
       "path": "docs/PLAN_0_5_8.md",
@@ -40442,24 +40442,6 @@
     },
     {
       "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
-      "path": ".github/actions/rust-cache/action.yml",
-      "source_sha256": null,
-      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
-    },
-    {
-      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
-      "path": ".github/workflows/ci.yml",
-      "source_sha256": "65765455df10bb2cf6f4a76d2f69e2bdeead99df2c992e396e1efa14086b39ec",
-      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
-    },
-    {
-      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
-      "path": "docs/CI.md",
-      "source_sha256": null,
-      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
-    },
-    {
-      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
       "path": "docs/PLAN_0_5_8.md",
       "source_sha256": null,
       "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
@@ -40545,6 +40527,24 @@
     {
       "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
       "path": "tools/ci_plan.py",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": ".github/actions/rust-cache/action.yml",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "65765455df10bb2cf6f4a76d2f69e2bdeead99df2c992e396e1efa14086b39ec",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "docs/CI.md",
       "source_sha256": null,
       "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
     }

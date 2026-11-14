@@ -53,8 +53,10 @@ release-wait timeout tests and launcher shutdown regressions are unchanged.
 
 Pip caches are keyed by Python/runtime requirements and development dependency
 metadata. npm caches use the frontend lockfile. Cargo caches include OS,
-architecture, the exact Rust/LLVM compiler fingerprint, lockfile and sources;
-Cargo still checks/builds the requested artifacts. Playwright browser downloads
+architecture, the exact Rust/LLVM compiler fingerprint, lockfile, sources and
+artifact group (release, runtime, tests or audit). Separate groups prevent a
+fast debug-only job from claiming the release-build cache key. Cargo still
+checks/builds the requested artifacts. Playwright browser downloads
 use OS/architecture and the frontend lockfile. Browser system dependencies are
 installed even on a browser-cache hit. Measurement workflows and qualification
 publication are unchanged.

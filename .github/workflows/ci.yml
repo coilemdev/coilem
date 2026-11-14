@@ -68,7 +68,7 @@ jobs:
           python-version: '3.11'
           cache: pip
           cache-dependency-path: pyproject.toml
-      - run: python -m pip install 'pypdf>=5,<7' 'ruff>=0.1.0'
+      - run: python -m pip install 'pypdf>=5,<7' 'pillow>=13,<14' 'ruff>=0.1.0'
       - name: Verify the exported snapshot and publication contents
         run: python tools/verify_snapshot.py --publication
       - name: Lint exported Python
@@ -94,6 +94,8 @@ jobs:
             requirements.lock
             pyproject.toml
       - uses: ./.github/actions/rust-cache
+        with:
+          cache-group: runtime
       - name: Install Linux mesh system library
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libglu1-mesa
@@ -278,6 +280,8 @@ jobs:
             pip-audit -r "$pins" --no-deps --disable-pip
           done
       - uses: ./.github/actions/rust-cache
+        with:
+          cache-group: audit
       - name: Audit locked Rust dependencies
         run: |
           cargo install cargo-audit --version 0.22.2 --locked
@@ -291,6 +295,8 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: ./.github/actions/rust-cache
+        with:
+          cache-group: tests
       - name: Test the exported native solver
         run: cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml
 

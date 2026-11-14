@@ -1,5 +1,9 @@
 name: Rust toolchain and build cache
 description: Cache Cargo downloads and builds for the exact compiler and lockfile.
+inputs:
+  cache-group:
+    description: Separate jobs that build different artifact sets so a debug-only cache cannot preempt a release cache.
+    default: release
 runs:
   using: composite
   steps:
@@ -21,6 +25,6 @@ runs:
           ~/.cargo/registry/cache
           ~/.cargo/git/db
           solvers/magneto2d/target
-        key: ${{ runner.os }}-${{ runner.arch }}-cargo-v1-${{ steps.compiler.outputs.hash }}-${{ hashFiles('solvers/magneto2d/Cargo.lock') }}-${{ hashFiles('solvers/magneto2d/Cargo.toml', 'solvers/magneto2d/src/**') }}
+        key: ${{ runner.os }}-${{ runner.arch }}-cargo-v2-${{ inputs.cache-group }}-${{ steps.compiler.outputs.hash }}-${{ hashFiles('solvers/magneto2d/Cargo.lock') }}-${{ hashFiles('solvers/magneto2d/Cargo.toml', 'solvers/magneto2d/src/**') }}
         restore-keys: |
-          ${{ runner.os }}-${{ runner.arch }}-cargo-v1-${{ steps.compiler.outputs.hash }}-${{ hashFiles('solvers/magneto2d/Cargo.lock') }}-
+          ${{ runner.os }}-${{ runner.arch }}-cargo-v2-${{ inputs.cache-group }}-${{ steps.compiler.outputs.hash }}-${{ hashFiles('solvers/magneto2d/Cargo.lock') }}-
