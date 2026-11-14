@@ -10,6 +10,19 @@ export const DESIGN_PARTS = [
   { id: 'magnets', label: 'Magnets' }, { id: 'winding', label: 'Winding' },
 ] as const;
 export type BuiltParts = Partial<Record<typeof DESIGN_PARTS[number]['id'], boolean>>;
+/** Design builds a motor from the outside inward: an inrunner from its stator, an
+ * outrunner from its rotor, whose outer diameter is usually the first thing known. */
+export function designSectionOrder(layout?: RotorLayout | null) {
+  return layout === 'outer'
+    ? ['rotor', 'stator', 'advanced', 'winding', 'materials'] as const
+    : ['stator', 'advanced', 'rotor', 'winding', 'materials'] as const;
+}
+/** The parts in the order they are drawn. */
+export function designPartsOrder(layout?: RotorLayout | null): ReadonlyArray<typeof DESIGN_PARTS[number]> {
+  if (layout !== 'outer') return DESIGN_PARTS;
+  const rotorParts = DESIGN_PARTS.filter(({ id }) => id === 'rotor' || id === 'magnets');
+  return [...rotorParts, ...DESIGN_PARTS.filter((part) => !rotorParts.includes(part))];
+}
 export interface DesignIssue {
   label: string;
   message: string;
@@ -77,13 +90,9 @@ export function fitUnbuiltParts(config: MotorConfig, built: BuiltParts, fields?:
   const s = next.stator;
   const r = next.rotor;
   const outer = next.rotor_layout === 'outer';
-  if (!built.teeth) {
-    const bodyRadius = outer ? s.ID_mm / 2 + s.yoke_thickness_mm : s.OD_mm / 2 - s.yoke_thickness_mm;
-    const pitch = 2 * Math.PI * bodyRadius / s.slot_count;
-    s.tooth_width_mm = Number(Math.max(outer ? 0.5 : 2, Math.min(pitch - 0.5, pitch * (outer ? 0.28 : 0.41))).toFixed(2));
-    const facePitch = Math.PI * (outer ? s.OD_mm : s.ID_mm) / s.slot_count;
-    s.slot_opening_mm = Number(Math.max(outer ? 0.5 : 2, Math.min(outer ? 4 : 2, facePitch - 0.5)).toFixed(2));
-  }
+  // An outrunner is entered rotor first: until its stator is, the stator's
+  // defaults follow the rotor instead of the rotor following the stator.
+  const statorFollowsRotor = outer && Boolean(built.rotor) && !built.stator;
   if (!built.rotor) {
     if (outer) {
       r.ID_mm = s.OD_mm + 2 * (r.magnet_thickness_mm + 0.4);
@@ -95,13 +104,18 @@ export function fitUnbuiltParts(config: MotorConfig, built: BuiltParts, fields?:
     const candidates = [r.pole_count, 8, 14, 10, 6, 4, 12, 16, 20, 28, 32];
     r.pole_count = candidates.find((p) => concentratedLayoutIsBalanced(s.slot_count, p, outer ? 2 : 1)) ?? r.pole_count;
   }
+  // An entered outrunner Rotor OD carries a thin back-iron ring until its Magnet Seat is entered.
+  if (statorFollowsRotor && fields?.['rotor:Rotor OD'] && !fields['rotor:Magnet Seat']) {
+    r.ID_mm = Number((r.OD_mm - 2 * Math.max(0.8, r.OD_mm * 0.046)).toFixed(1));
+  }
   // The new-design UI has no shaft-bore input yet. Keep that hidden default
   // inside a small inner rotor rather than blocking an otherwise valid OD.
   if (fields && !outer) r.ID_mm = Math.min(20, r.OD_mm - 5);
   const thicknessEntered = fields ? Boolean(fields['rotor:Magnet Thick.']) : Boolean(built.magnets);
   const widthEntered = fields ? Boolean(fields['rotor:Magnet Width']) : Boolean(built.magnets);
   if (!thicknessEntered) {
-    const room = outer ? ((r.ID_mm ?? 0) - s.OD_mm) / 2 : next.topology === 'IPM' ? r.OD_mm / 4 : (s.ID_mm - r.OD_mm) / 2;
+    const room = outer ? (statorFollowsRotor ? (r.ID_mm ?? 0) / 4 : ((r.ID_mm ?? 0) - s.OD_mm) / 2)
+      : next.topology === 'IPM' ? r.OD_mm / 4 : (s.ID_mm - r.OD_mm) / 2;
     r.magnet_thickness_mm = Math.max(outer ? 0.1 : 2, Math.min(r.magnet_thickness_mm, room - (outer ? 0.15 : 0.5), outer ? Infinity : r.OD_mm / 4));
   }
   if (!widthEntered) {
@@ -109,6 +123,24 @@ export function fitUnbuiltParts(config: MotorConfig, built: BuiltParts, fields?:
       ? r.OD_mm / 2 - r.bridge_thickness_mm - (r.pocket_clearance_mm ?? 0) - r.magnet_thickness_mm / 2
       : r.OD_mm / 2 + r.magnet_thickness_mm / 2;
     r.magnet_width_mm = 2 * Math.PI * radius / r.pole_count * r.magnet_embrace;
+  }
+  if (statorFollowsRotor) {
+    const entered = (label: string) => Boolean(fields?.[`stator:${label}`]);
+    // Leave a small air gap inside the magnets, and keep the shipped outrunner's proportions.
+    if (!entered('Outer Diameter')) s.OD_mm = Number(Math.max(10, (r.ID_mm ?? 0) - 2 * (r.magnet_thickness_mm + 0.4)).toFixed(1));
+    if (!entered('Hub Bore (ID)')) s.ID_mm = Number(Math.max(2, s.OD_mm * 0.36).toFixed(1));
+    if (!entered('Yoke Thickness')) s.yoke_thickness_mm = Number(Math.max(0.5, s.OD_mm * 0.07).toFixed(1));
+    if (!built.slots && !entered('Slot Count')) {
+      const candidates = [s.slot_count, 12, 9, 18, 24, 36, 15, 27, 6];
+      s.slot_count = candidates.find((slots) => concentratedLayoutIsBalanced(slots, r.pole_count, 2)) ?? s.slot_count;
+    }
+  }
+  if (!built.teeth) {
+    const bodyRadius = outer ? s.ID_mm / 2 + s.yoke_thickness_mm : s.OD_mm / 2 - s.yoke_thickness_mm;
+    const pitch = 2 * Math.PI * bodyRadius / s.slot_count;
+    s.tooth_width_mm = Number(Math.max(outer ? 0.5 : 2, Math.min(pitch - 0.5, pitch * (outer ? 0.28 : 0.41))).toFixed(2));
+    const facePitch = Math.PI * (outer ? s.OD_mm : s.ID_mm) / s.slot_count;
+    s.slot_opening_mm = Number(Math.max(outer ? 0.5 : 2, Math.min(outer ? 4 : 2, facePitch - 0.5)).toFixed(2));
   }
   if (!built.winding) {
     next.winding.parallel_paths = 1;
@@ -134,6 +166,13 @@ export function fitPoleMagnets(previous: MotorConfig, next: MotorConfig, built: 
     if (pitch > 0) config.rotor.magnet_embrace = Math.max(0.1, Math.min(0.95, previous.rotor.magnet_width_mm / pitch));
   }
   return fitUnbuiltParts(config, { ...built, rotor: true, magnets: false }, fields && { ...fields, 'rotor:Magnet Width': false });
+}
+
+/** The largest outrunner stator that fits inside the entered rotor, in words. */
+export function outerStatorFit(config: MotorConfig): string {
+  const seat = config.rotor.ID_mm ?? 0;
+  const face = seat - 2 * config.rotor.magnet_thickness_mm;
+  return `The magnets' inner face is ${mm(face)} across (Magnet Seat ${mm(seat)} minus two ${mm(config.rotor.magnet_thickness_mm)} magnets), so with a 1 mm air gap the stator's Outer Diameter can be at most ${mm(face - 2)} (now ${mm(config.stator.OD_mm)}).`;
 }
 
 export function signedBuildAirgap(config: MotorConfig): number {
@@ -174,14 +213,18 @@ export function buildIssues(config: MotorConfig, built: BuiltParts): DesignIssue
     if (outer && seat >= r.OD_mm) add('rotor', 'Rotor OD', `Rotor OD (${mm(r.OD_mm)}) is the outside of the rotor ring, so it must be larger than the Magnet Seat (${mm(seat)}), the ring's inner face.`);
     else if (seat >= r.OD_mm || seat < 0 || r.OD_mm < 15 || r.OD_mm > 450) add('rotor', 'Rotor OD', 'Rotor OD must exceed its inner diameter, within 15–450 mm.');
     if (r.pole_count < 2 || r.pole_count > 64 || r.pole_count % 2 !== 0) add('rotor', 'Pole Count', 'Use an even pole count from 2 to 64.');
-    if (outer && seat <= s.OD_mm) add('rotor', 'Magnet Seat', `The rotor overlaps the stator. Magnet Seat is the rotor's inner diameter, where the magnets sit, so it must clear the stator OD (${mm(s.OD_mm)}) plus two magnet thicknesses and two air gaps: with ${mm(surface)} magnets and a 1 mm air gap, use ${mm(s.OD_mm + 2 * surface + 2)} or more (now ${mm(seat)}).`);
+    // An outrunner's stator is entered inside the rotor, so an overlap is the stator's to fix.
+    if (outer && built.stator && seat <= s.OD_mm) add('stator', 'Outer Diameter', `The stator overlaps the rotor. ${outerStatorFit(config)}`);
     if (!outer && r.OD_mm >= s.ID_mm) add('rotor', 'Rotor OD', `The rotor overlaps the stator. Rotor OD (${mm(r.OD_mm)}) must be smaller than the stator bore (${mm(s.ID_mm)})${surface ? ' minus two magnet thicknesses' : ''} and two air gaps: ${surface ? `with ${mm(surface)} magnets and ` : 'with '}a 1 mm air gap, use ${mm(s.ID_mm - 2 * surface - 2)} or less.`);
   }
   if (built.magnets) {
     const min = outer ? 0.1 : 2;
     if (r.magnet_thickness_mm < min || r.magnet_thickness_mm > 50) add('rotor', 'Magnet Thick.', `Magnet thickness must be between ${min} and 50 mm.`);
     const gap = signedBuildAirgap(config);
-    if (gap < (outer ? 0.1 : 0.3)) add('rotor', 'Magnet Thick.', gap <= 0 ? `Magnets intersect the stator by ${Math.abs(gap).toFixed(2)} mm. Reduce thickness or change rotor size.` : `Only ${gap.toFixed(2)} mm of airgap remains; increase the clearance.`);
+    if (gap < (outer ? 0.1 : 0.3)) {
+      if (!outer) add('rotor', 'Magnet Thick.', gap <= 0 ? `Magnets intersect the stator by ${Math.abs(gap).toFixed(2)} mm. Reduce thickness or change rotor size.` : `Only ${gap.toFixed(2)} mm of airgap remains; increase the clearance.`);
+      else if (built.stator && (r.ID_mm ?? 0) > s.OD_mm) add('stator', 'Outer Diameter', `${gap <= 0 ? `The stator reaches ${Math.abs(gap).toFixed(2)} mm into the magnets.` : `Only ${gap.toFixed(2)} mm of air gap remains.`} ${outerStatorFit(config)}`);
+    }
     if (config.topology === 'SPM') {
       const radius = outer ? (r.ID_mm ?? 0) / 2 - r.magnet_thickness_mm / 2 : r.OD_mm / 2 + r.magnet_thickness_mm / 2;
       const pitch = 2 * Math.PI * radius / r.pole_count;
@@ -249,6 +292,10 @@ export function progressiveGeometry(config: MotorConfig, built: BuiltParts, prev
   let regions: PreviewRegion[] = [];
   const enteredOd = Boolean(fields?.['stator:Outer Diameter']);
   if (enteredOd && !built.stator) regions.push({ region_type: 'construction_outline', points: circle(config.stator.OD_mm / 2) });
+  // Each entered diameter shows before its part is complete, so the next value has
+  // something to be measured from: the hub carries an outrunner's yoke.
+  if (outer && fields?.['stator:Hub Bore (ID)'] && !built.stator) regions.push({ region_type: 'construction_outline', points: circle(config.stator.ID_mm / 2) });
+  if (outer && fields?.['rotor:Rotor OD'] && !built.rotor) regions.push({ region_type: 'construction_outline', points: circle(config.rotor.OD_mm / 2) });
   if (built.stator) {
     const inner = outer ? config.stator.ID_mm / 2 : config.stator.OD_mm / 2 - config.stator.yoke_thickness_mm;
     const radius = outer ? inner + config.stator.yoke_thickness_mm : config.stator.OD_mm / 2;
@@ -263,7 +310,7 @@ export function progressiveGeometry(config: MotorConfig, built: BuiltParts, prev
         if (/magnet/i.test(type)) return visibleMagnets;
         if (/pocket/i.test(type)) return visibleMagnets;
         if (/rotor|shaft/i.test(type)) return Boolean(built.rotor) && !bareRotor;
-        if (/^airgap$/i.test(type)) return Boolean(built.magnets);
+        if (/^airgap$/i.test(type)) return Boolean(built.magnets && built.stator);
         if (/slot|winding|coil/i.test(type)) return Boolean(built.winding);
         return false;
       }),

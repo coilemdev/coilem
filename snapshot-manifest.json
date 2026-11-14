@@ -6555,8 +6555,8 @@
     },
     {
       "path": "frontend/scripts/test-outrunner-design-guides.mjs",
-      "bytes": 5030,
-      "sha256": "04f7ee313ed63dd898688ea2a1d54446b700be41b1e3fcc325f5b1958aa46edf"
+      "bytes": 7633,
+      "sha256": "c7b426cc7d18ff609a74dd8167d5f79df7c1e2386885a949cfa4fc83bb1c9691"
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178407,
-      "sha256": "e914a38197708b33304f1716b8254eb1015a2ec9233fc0bf2b459570ef6af8d8"
+      "bytes": 178493,
+      "sha256": "4d7a7beaa5cb7a6390c35a282c2395224386ec0b202378929e2a08ef018c41eb"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 295128,
-      "sha256": "aa830f49fb00642e766407fdaa7ad913892a5e5d74ccdff57fadd214c2ace0de"
+      "bytes": 297011,
+      "sha256": "b1eed6a5d52e100d835d5e39558e03b4a3d1cc33a8f3cbcd517d428ef9d76e2d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7050,8 +7050,8 @@
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
-      "bytes": 9589,
-      "sha256": "2ed3785272b471f447c4bec3e7d95e9425412ff376d42c6059828b0277fea27d"
+      "bytes": 10393,
+      "sha256": "95c4b4ee483761225c7a702413f327c5f5d7f1d8c4ab9b919a2281d62a9e2840"
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 99926,
-      "sha256": "4350ea7e3ab259ef61880f4f801ddd3b13fc6eb33e33483aa3e70ed27e09dec2"
+      "bytes": 100386,
+      "sha256": "1ba7ff99f7326f5ae619ecdf57f7b65198b01facd6241ed433b6d902389fc2ff"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -17705,8 +17705,8 @@
     },
     {
       "path": "frontend/src/public/newDesignEntry.ts",
-      "bytes": 6948,
-      "sha256": "2ed89fd72fa7745bbd4c035c9440f2ff29d691e56f46fa793d1f0696106eccf2"
+      "bytes": 7051,
+      "sha256": "8e2d1b83e05322b0389efbfb44fa0187f1562f4242f3f1593a837e9206ae1430"
     },
     {
       "path": "frontend/src/public/phaseDrivePanel.ts",
@@ -17715,8 +17715,8 @@
     },
     {
       "path": "frontend/src/public/progressiveDesign.ts",
-      "bytes": 19141,
-      "sha256": "4ca58b13d655bbd5e5546cc0030d5424dc3babfa568ef23e1841a10c2d77a608"
+      "bytes": 22408,
+      "sha256": "781ddb04649f2471cc42e8b9742e9aa615556c60193e8eeb859c5f31ed1149ff"
     },
     {
       "path": "frontend/src/public/ringShape.ts",
@@ -17775,8 +17775,8 @@
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 90821,
-      "sha256": "643363ff261594b4cbb35614f7749c83cbabcd57fd8f92d1ad915e1dec2ca922"
+      "bytes": 93471,
+      "sha256": "8e8ddfbd48b22bcd203f1f2d8f5853ba3766f49d698ba9760a33612682828ad5"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",

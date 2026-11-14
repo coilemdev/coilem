@@ -256,7 +256,9 @@ test('progressive topology choices are explicit for outrunner and IPM layouts', 
   await expect(topology.locator('[aria-pressed="true"]')).toHaveCount(0);
   await expect(topology.getByRole('button', { name: /^IPM/ })).toBeDisabled();
   await topology.getByRole('button', { name: /^SPM/ }).click();
-  await expect(stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toHaveValue('');
+  // An outrunner opens at its rotor, the outermost part, with nothing prefilled.
+  await expect(rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true })).toBeFocused();
+  await expect(rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true })).toHaveValue('');
   await arrangement.getByRole('button', { name: /Inrunner/ }).click();
   await expect(topology.locator('[aria-pressed="true"]')).toHaveCount(0);
   await topology.getByRole('button', { name: /^IPM/ }).click();
@@ -593,6 +595,7 @@ for (const layout of ['Inrunner', 'Outrunner']) {
       };
     });
     await newDesign(page, layout);
+    if (layout === 'Outrunner') await continueSetup(page, 'Stator'); // An outrunner is built from its rotor inward.
     await continueSetup(page, 'Tooth');
     const teeth = page.locator('[data-guide="section-advanced"]');
     await teeth.getByRole('button', { name: 'Tooth shoes', exact: true }).click();
@@ -665,29 +668,46 @@ for (const layout of ['Inrunner', 'Outrunner']) {
     await newDesign(page, layout);
     await expect(health(page)).toContainText('0 of 6 parts drawn');
     await expect(page.getByRole('button', { name: 'Show 3D motor view', exact: true })).toBeDisabled();
+    // Each motor is built from the outside inward: an outrunner's rotor comes first.
+    const drawn = (stage: number) => `${layout === 'Inrunner' ? stage : stage + 2} of 6 parts drawn`;
+    if (layout === 'Outrunner') {
+      const od = rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true });
+      await expect(od).toBeFocused();
+      await od.press('Enter'); // An untouched empty field does not accept an internal default.
+      await expect(health(page)).toContainText('0 of 6 parts drawn');
+      await od.fill('36');
+      await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).fill('33');
+      await expect(health(page)).toContainText('1 of 6 parts drawn');
+      await page.screenshot({ path: info.outputPath('outrunner-rotor.png') });
+      await configureSection(page, 'rotor');
+      await expect(health(page)).toContainText('2 of 6 parts drawn');
+      await continueSetup(page, 'Stator');
+    }
     await stator(page).getByRole('spinbutton', { name: /Outer Diameter/ }).fill(layout === 'Inrunner' ? '102' : '29');
-    await stator(page).getByRole('spinbutton', { name: 'Yoke Thickness', exact: true }).fill(layout === 'Inrunner' ? '8' : '2');
     if (layout === 'Outrunner') await stator(page).getByRole('spinbutton', { name: 'Hub Bore (ID)', exact: true }).fill('10');
-    await expect(health(page)).toContainText('1 of 6 parts drawn');
+    await stator(page).getByRole('spinbutton', { name: 'Yoke Thickness', exact: true }).fill(layout === 'Inrunner' ? '8' : '2');
+    await expect(health(page)).toContainText(drawn(1));
     await page.screenshot({ path: info.outputPath(`${layout.toLowerCase()}-yoke.png`) });
     if (layout === 'Inrunner') await stator(page).getByRole('spinbutton', { name: 'Bore Diameter (ID)', exact: true }).fill('60');
     await stator(page).getByRole('spinbutton', { name: 'Slot Count', exact: true }).fill('24');
-    await expect(health(page)).toContainText('2 of 6 parts drawn');
+    await expect(health(page)).toContainText(drawn(2));
     await stator(page).getByRole('spinbutton', { name: 'Slot Count', exact: true }).fill('12');
     await continueSetup(page, 'Tooth');
     await page.getByRole('group', { name: 'Tooth Profile', exact: true }).getByRole('button', { name: 'Tooth shoes', exact: true }).click();
     await configureSection(page, 'advanced');
-    await expect(health(page)).toContainText('3 of 6 parts drawn');
+    await expect(health(page)).toContainText(drawn(3));
     await expect(page.locator('.viewport-preview-note')).toHaveCount(0);
     await page.screenshot({ path: info.outputPath(`${layout.toLowerCase()}-tooth-profile.png`) });
-    await continueSetup(page, 'Rotor');
-    const od = rotor(page).getByRole('spinbutton', { name: /Rotor OD/ });
-    await od.press('Enter'); // An untouched empty field does not accept an internal default.
-    await configureSection(page, 'rotor');
-    await expect(health(page)).toContainText('5 of 6 parts drawn');
-    await rotor(page).getByRole('spinbutton', { name: /Magnet Thick/ }).press('Enter');
-    await configureSection(page, 'rotor');
-    await expect(health(page)).toContainText('5 of 6 parts drawn');
+    if (layout === 'Inrunner') {
+      await continueSetup(page, 'Rotor');
+      const od = rotor(page).getByRole('spinbutton', { name: /Rotor OD/ });
+      await od.press('Enter'); // An untouched empty field does not accept an internal default.
+      await configureSection(page, 'rotor');
+      await expect(health(page)).toContainText('5 of 6 parts drawn');
+      await rotor(page).getByRole('spinbutton', { name: /Magnet Thick/ }).press('Enter');
+      await configureSection(page, 'rotor');
+      await expect(health(page)).toContainText('5 of 6 parts drawn');
+    }
     await continueSetup(page, 'Winding');
     await page.locator('[data-guide="section-winding"]').getByRole('spinbutton', { name: 'Turns / Coil', exact: true }).fill('11');
     await completeWinding(page);
@@ -826,29 +846,38 @@ test('progressive native inputs flag invalid values, support undo and block a ma
 for (const layout of ['Inrunner', 'Outrunner']) {
   test(`progressive ${layout} shows large-airgap advice beside the row without blocking Solve`, async ({ page }, info) => {
     await newDesign(page, layout);
-    await continueSetup(page, 'Tooth');
-    await continueSetup(page, 'Rotor');
-    await configureSection(page, 'rotor');
-    const warning = rotor(page).locator('.public-airgap-advisory');
+    if (layout === 'Inrunner') {
+      await continueSetup(page, 'Tooth');
+      await continueSetup(page, 'Rotor');
+      await configureSection(page, 'rotor');
+    } else {
+      await continueSetup(page, 'Stator');
+      await configureSection(page, 'stator');
+    }
+    // The gap reads out where the inner part is entered: an inrunner's rotor, an outrunner's stator.
+    const fitted = layout === 'Inrunner' ? rotor(page) : stator(page);
+    const warning = fitted.locator('.public-airgap-advisory');
     await expect(warning).toHaveCount(0);
     const largePreview = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.ok()
       && (layout === 'Inrunner'
         ? r.request().postDataJSON()?.rotor?.OD_mm === 34 && r.request().postDataJSON()?.rotor?.magnet_width_mm === 10
-        : r.request().postDataJSON()?.rotor?.OD_mm === 50 && r.request().postDataJSON()?.rotor?.ID_mm === 40));
-    await rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true }).fill(layout === 'Inrunner' ? '34' : '50');
-    if (layout === 'Inrunner') await rotor(page).getByRole('spinbutton', { name: 'Magnet Width', exact: true }).fill('10');
-    else await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).fill('40');
+        : r.request().postDataJSON()?.stator?.OD_mm === 22));
+    if (layout === 'Inrunner') {
+      await rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true }).fill('34');
+      await rotor(page).getByRole('spinbutton', { name: 'Magnet Width', exact: true }).fill('10');
+    } else await stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).fill('22');
     expect((await largePreview).status()).toBe(200);
-    await expect(rotor(page).locator('.public-airgap-row')).toContainText(layout === 'Inrunner' ? '9.00' : '4.50');
+    await expect(fitted.locator('.public-airgap-row')).toContainText(layout === 'Inrunner' ? '9.00' : '3.40');
     await expect(warning).toBeInViewport();
     await expect(warning).toHaveAttribute('role', 'status');
     await expect(warning).toContainText('Airgap is substantially oversized');
     await expect(warning).toContainText('torque per ampere');
     await expect(warning).toContainText('advisory, not a maximum-airgap limit');
-    const rowBox = await rotor(page).locator('.public-airgap-row').boundingBox();
+    const rowBox = await fitted.locator('.public-airgap-row').boundingBox();
     const warningBox = await warning.boundingBox();
     expect(warningBox!.y).toBeGreaterThanOrEqual(rowBox!.y + rowBox!.height);
     await page.screenshot({ path: info.outputPath(`${layout.toLowerCase()}-airgap-warning.png`) });
+    if (layout === 'Outrunner') await continueSetup(page, 'Tooth');
     await continueSetup(page, 'Winding');
     const completed = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.ok()
       && r.request().postDataJSON()?.winding?.turns_per_coil === 11);
@@ -857,9 +886,9 @@ for (const layout of ['Inrunner', 'Outrunner']) {
     await completeWinding(page);
     await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
     // Bringing the gap back to the existing practical upper limit clears the advice.
-    await rotor(page).locator('.param-group-header').click();
+    await fitted.locator('.param-group-header').click();
     if (layout === 'Inrunner') await rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true }).fill('49');
-    else await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).fill('33');
+    else await stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).fill('27');
     await expect(warning).toHaveCount(0);
   });
 }
@@ -892,10 +921,17 @@ for (const [layout, slots, poles] of [['Inrunner', 12, 8], ['Inrunner', 33, 16],
       };
     });
     await newDesign(page, layout);
-    await stator(page).getByRole('spinbutton', { name: 'Slot Count', exact: true }).fill(String(slots));
-    await continueSetup(page, 'Tooth');
-    await continueSetup(page, 'Rotor');
-    await rotor(page).getByRole('spinbutton', { name: 'Pole Count', exact: true }).fill(String(poles));
+    if (layout === 'Outrunner') {
+      await rotor(page).getByRole('spinbutton', { name: 'Pole Count', exact: true }).fill(String(poles));
+      await continueSetup(page, 'Stator');
+      await stator(page).getByRole('spinbutton', { name: 'Slot Count', exact: true }).fill(String(slots));
+      await continueSetup(page, 'Tooth');
+    } else {
+      await stator(page).getByRole('spinbutton', { name: 'Slot Count', exact: true }).fill(String(slots));
+      await continueSetup(page, 'Tooth');
+      await continueSetup(page, 'Rotor');
+      await rotor(page).getByRole('spinbutton', { name: 'Pole Count', exact: true }).fill(String(poles));
+    }
     await continueSetup(page, 'Winding');
     await configureSection(page, 'winding', ['Turns / Coil']);
     const turns = page.locator('[data-guide="section-winding"]').getByRole('spinbutton', { name: 'Turns / Coil', exact: true });
@@ -1100,44 +1136,51 @@ test('progressive changes preserve normal loading of a shipped motor example', a
   await expect(stator(page).getByRole('spinbutton', { name: 'Yoke Thickness', exact: true })).toBeVisible();
 });
 
-test('an overlapping outrunner rotor keeps its guides, names a fitting size and draws the rotor as entered', async ({ page }, info) => {
+test('an outrunner is built rotor first, and a stator that overlaps it keeps its guides, names a fitting size and draws as entered', async ({ page }, info) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await newDesign(page, 'Outrunner');
-  for (const [name, value] of [['Outer Diameter', '119.4'], ['Yoke Thickness', '9.5'], ['Slot Count', '36'], ['Hub Bore (ID)', '60'], ['Stack Length', '30']]) {
-    await stator(page).getByRole('spinbutton', { name, exact: true }).fill(value);
-  }
-  await continueSetup(page, 'Tooth');
-  await continueSetup(page, 'Rotor');
-  // The reported entries: a rotor sized like the stator, so its inner face (Magnet Seat) sits inside it.
-  const refused = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.status() === 400);
-  for (const [name, value] of [['Pole Count', '24'], ['Rotor OD', '119.4'], ['Magnet Seat', '102.6'], ['Magnet Thick.', '4'], ['Magnet Width', '10']]) {
+  // Outside inward: the rotor section opens first, at its outer diameter.
+  expect(await page.locator('.param-group[data-guide^="section-"]').evaluateAll((groups) => groups.map((group) => group.getAttribute('data-guide'))))
+    .toEqual(['section-rotor', 'section-stator', 'section-advanced', 'section-winding', 'section-materials']);
+  await expect(rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true })).toBeFocused();
+  await expect(page.locator('.public-viewport-message')).toHaveText('Enter the rotor outer diameter to start the drawing.');
+  for (const [name, value] of [['Rotor OD', '119.4'], ['Magnet Seat', '102.6'], ['Pole Count', '24'], ['Magnet Thick.', '4'], ['Magnet Width', '10']]) {
     await rotor(page).getByRole('spinbutton', { name, exact: true }).fill(value);
   }
+  await expect(health(page)).toContainText('2 of 6 parts drawn');
+  await expect(health(page)).not.toContainText('needs attention');
+  await continueSetup(page, 'Stator');
+  await expect(stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toBeFocused();
+  // The reported stator, sized like the rotor, overlaps the magnets.
+  const refused = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.status() === 400);
+  for (const [name, value] of [['Outer Diameter', '119.4'], ['Hub Bore (ID)', '60'], ['Yoke Thickness', '9.5'], ['Slot Count', '36'], ['Stack Length', '30']]) {
+    await stator(page).getByRole('spinbutton', { name, exact: true }).fill(value);
+  }
   await refused;
-  await expect(health(page)).toContainText('use 129.4 mm or more (now 102.6 mm)');
-  await expect(rotor(page).locator('.public-airgap-row')).toContainText('12.40 overlap');
+  await expect(health(page)).toContainText('The stator overlaps the rotor');
+  await expect(health(page)).toContainText('at most 92.6 mm (now 119.4 mm)');
+  await expect(stator(page).locator('.public-airgap-row')).toContainText('12.40 overlap');
   // Guides are drawn from the entered values while the backend refuses the preview.
   const canvas = page.locator('canvas.motor-canvas');
   const readout = page.getByRole('status', { name: 'Active geometry dimension', exact: true });
-  await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).focus();
-  await expect(canvas).toHaveAttribute('data-editing-dimension', 'magnet-seat');
-  await expect(readout).toContainText('102.6');
-  await page.screenshot({ path: info.outputPath('outrunner-overlap-entered-rotor.png') });
-  await stator(page).locator('.param-group-header').click();
   await stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).focus();
   await expect(canvas).toHaveAttribute('data-editing-dimension', 'stator-od');
   await expect(readout).toContainText('119.4');
-  // A rotor that clears the stator is accepted again, with the gap it leaves.
+  await page.screenshot({ path: info.outputPath('outrunner-overlap-entered-rotor.png') });
   await rotor(page).locator('.param-group-header').click();
+  await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).focus();
+  await expect(canvas).toHaveAttribute('data-editing-dimension', 'magnet-seat');
+  await expect(readout).toContainText('102.6');
+  // The suggested stator fits, with the gap it leaves.
+  await stator(page).locator('.param-group-header').click();
   const accepted = page.waitForResponse((r) => new URL(r.url()).pathname === '/preview' && r.status() === 200
-    && r.request().postDataJSON()?.rotor?.ID_mm === 130);
-  await rotor(page).getByRole('spinbutton', { name: 'Rotor OD', exact: true }).fill('150');
-  await rotor(page).getByRole('spinbutton', { name: 'Magnet Seat', exact: true }).fill('130');
+    && r.request().postDataJSON()?.stator?.OD_mm === 92);
+  await stator(page).getByRole('spinbutton', { name: 'Outer Diameter', exact: true }).fill('92');
   await accepted;
-  await expect(health(page)).not.toContainText('overlaps the stator');
-  await expect(rotor(page).locator('.public-airgap-row')).toContainText('1.30');
-  await expect(rotor(page).locator('.public-airgap-row')).not.toContainText('overlap');
+  await expect(health(page)).not.toContainText('overlaps the rotor');
+  await expect(stator(page).locator('.public-airgap-row')).toContainText('1.30');
+  await expect(stator(page).locator('.public-airgap-row')).not.toContainText('overlap');
   expect(errors).toEqual([]);
 });
 

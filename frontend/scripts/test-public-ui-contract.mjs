@@ -2103,10 +2103,11 @@ assert.match(workspaceSource, /data-guide="topology-selector"/);
 assert.match(workspaceSource, /data-guide="ipm-layout-selector"/);
 assert.match(workspaceSource, /label: 'Flat \/ buried'/);
 assert.match(workspaceSource, /label: 'V-shape'/);
+// The Design sections are rendered together, in the layout's order, after the topology choices.
 assert.ok(
   workspaceSource.indexOf('data-guide="ipm-layout-selector"')
-    < workspaceSource.indexOf('<ParameterSectionBlock id="stator"'),
-  'IPM layout selection must appear before stator geometry',
+    < workspaceSource.indexOf('{sectionsInOrder}'),
+  'IPM layout selection must appear before the geometry sections',
 );
 assert.doesNotMatch(workspaceSource, /<SelectRow label="Rotor Layout"/);
 assert.match(workspaceSource, /data-guide=\{guide \?\? `section-\$\{id\}`\}/);
