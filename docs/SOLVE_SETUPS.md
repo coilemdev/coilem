@@ -13,8 +13,9 @@ the tooltip; press **Escape** to dismiss it.
    starts checked. Uncheck it only when you want to reuse an operating point and
    its requested analyses while keeping accuracy and solver choices separate.
 2. Use the arrow beside the name to select a setup. An edit to its captured
-   settings marks it **Modified**. **Save** replaces that setup's saved values.
-   Saving unchanged settings keeps the same version.
+   settings marks it **Modified** and enables **Save**. Saving replaces that
+   setup's values, confirms **Updated setup**, and disables **Save** again.
+   Reverting the values also disables **Save**, keeping the same version.
 3. Double-click a user setup's name, or focus it and press **F2**, to rename it
    inline. **Enter** or leaving the field saves the name; **Escape** cancels.
 4. Choose **Custom**, then **Save**, to create another setup from the current

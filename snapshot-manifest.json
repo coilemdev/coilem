@@ -18720,8 +18720,8 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 4030,
-      "sha256": "577a9426a3a11626a38b34027982aed2b6aba8d6946e56db5ef6ed43abe13360"
+      "bytes": 4124,
+      "sha256": "1d268deef3953d96ae787e161cdde612a25879e5ece6a0118133fb08849b10e4"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
@@ -18730,8 +18730,8 @@
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 10416,
-      "sha256": "5eb2574b36c15c6a763a171469e0e7188032be0d551e80512041fff3a6f426d9"
+      "bytes": 10870,
+      "sha256": "a40636d62cce55def51a32deb6b22682306375221063c108318f8de5eb4d7aa8"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18750,8 +18750,8 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 15418,
-      "sha256": "22da0623a02c59bfe993e5f15dff9c5fd08e88fa8c13be27635e36ee2a40b632"
+      "bytes": 16193,
+      "sha256": "1215895506899a0beb30a578250c6f7961f69194f4dc6b5476b666c1820c1a0a"
     }
   ],
   "public_patches": [

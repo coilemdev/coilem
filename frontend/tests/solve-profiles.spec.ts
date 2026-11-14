@@ -40,18 +40,27 @@ test('user setups support save, apply, update, rename, copy, delete and file rou
   await current.fill('22'); await current.press('Tab');
   await saveSetup(page, 'Rated current');
   const selector = page.getByRole('combobox', { name: 'Run setup', exact: true });
+  const save = page.getByRole('button', { name: 'Save', exact: true });
   const id = await selector.inputValue();
   await expect(page.locator('.public-run-setup-actions').getByRole('button')).toHaveCount(2);
-  await page.getByRole('button', { name: 'Save', exact: true }).click(); // Unchanged Save must not create a version.
+  await expect(save).toBeDisabled();
+  await current.fill('33'); await current.press('Tab');
+  await expect(save).toBeEnabled();
+  await current.fill('22'); await current.press('Tab');
+  await expect(save).toBeDisabled(); // Reverting the edit must not create a version.
   await current.fill('33'); await current.press('Tab');
   await expect(page.getByText('Modified from Rated current.', { exact: false })).toBeVisible();
   await selector.selectOption(''); await selector.selectOption(id);
   await expect(current).toHaveValue('22');
+  await expect(save).toBeDisabled();
   await page.getByRole('textbox', { name: 'Setup name', exact: true }).dblclick();
   await page.getByLabel('Setup name', { exact: true }).fill('Rated operating point');
   await page.getByLabel('Setup name', { exact: true }).press('Enter');
+  await expect(save).toBeDisabled();
   await current.fill('33'); await current.press('Tab');
   await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(save).toBeDisabled();
+  await expect(page.getByRole('status').filter({ hasText: 'Updated setup “Rated operating point”.' })).toBeVisible();
   const filePath = info.outputPath('setups.coilem');
   const file = await saveFile(page, filePath);
   expect(file.run_setups.activeId).toBe(id);
@@ -93,9 +102,11 @@ test('inline setup naming supports keyboard, cancellation, blur and one Save for
   await name.focus();
   await name.press('F2');
   await name.fill('Cancelled');
+  await expect(panel.getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
   await name.press('Escape');
   await expect(name).toHaveValue('Original');
   await expect(name).toHaveAttribute('readonly', '');
+  await expect(panel.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
   await name.dblclick();
   await name.fill('Renamed on blur');
   await name.press('Tab');
@@ -107,7 +118,7 @@ test('inline setup naming supports keyboard, cancellation, blur and one Save for
   await name.fill('Combined edit');
   await panel.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(name).toHaveAttribute('readonly', '');
-  await panel.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(panel.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
   const file = await saveFile(page, info.outputPath('inline-name.coilem'));
   expect(file.run_setups.activeId).toBe(id);
   expect(file.run_setups.activeVersion).toBe(3);
@@ -221,6 +232,7 @@ test('ordinary setup application preserves accuracy and submits its versioned id
   await accuracy.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
   await selector.selectOption(''); await selector.selectOption(id);
   await expect(accuracy.getByRole('button', { name: /Preview.*Coarse mesh/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeDisabled(); // Accuracy was explicitly excluded.
   await page.route('**/solve/stream', async route => {
     await route.fulfill({ contentType: 'text/event-stream', body: 'event: error\ndata: {"error_code":"PROBE_STOP","message":"Request captured"}\n\n' });
   });

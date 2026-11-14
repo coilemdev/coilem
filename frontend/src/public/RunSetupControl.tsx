@@ -30,6 +30,8 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
   const active = all.find(p => p.id === document.activeId);
   const compatible = Boolean(active && profileCompatible(active, config));
   const unchanged = Boolean(active && active.version === document.activeVersion && profileMatches(active, config, solver));
+  const nameChanged = editing === 'rename' && Boolean(active && name.trim() !== active.name);
+  const saveDisabled = disabled || Boolean(editing !== 'new' && active && unchanged && !nameChanged);
   useEffect(() => { setEditing(null); setDeleting(false); setError(null); setFeedback(null); }, [document.scope]);
   useEffect(() => { setFeedback(null); }, [config, solver]);
   useEffect(() => { if (editing) { nameInput.current?.focus(); nameInput.current?.select(); } }, [editing]);
@@ -54,22 +56,24 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
     if (editing !== 'rename' || !active || active.builtin) return;
     change(() => {
       const nextName = validName();
-      if (nextName !== active.name) onChange(saveProfile(document, { ...active, name: nextName, version: active.version + 1 }));
-      setEditing(null); setFeedback(`Saved “${nextName}”.`);
+      if (nextName !== active.name) {
+        onChange(saveProfile(document, { ...active, name: nextName, version: active.version + 1 }));
+        setFeedback(`Renamed setup to “${nextName}”.`);
+      }
+      setEditing(null);
     });
   };
   const save = () => change(() => {
     if (editing === 'new') {
       const profile = captureProfile(config, validName(), includeNumerics, solver);
-      onChange(saveProfile(document, profile)); setEditing(null); setFeedback(`Saved “${profile.name}”.`);
+      onChange(saveProfile(document, profile)); setEditing(null); setFeedback(`Saved new setup “${profile.name}”.`);
       return;
     }
     if (!active || active.builtin || !compatible) { beginNew(); return; }
     const nextName = editing === 'rename' ? validName() : active.name;
-    if (!unchanged || nextName !== active.name) {
-      onChange(saveProfile(document, captureProfile(config, nextName, active.includesNumerics, solver, active.id, active.version + 1)));
-    }
-    setEditing(null); setFeedback(`Saved “${nextName}”.`);
+    if (unchanged && nextName === active.name) return;
+    onChange(saveProfile(document, captureProfile(config, nextName, active.includesNumerics, solver, active.id, active.version + 1)));
+    setEditing(null); setFeedback(`Updated setup “${nextName}”.`);
   });
   const select = (id: string) => change(() => {
     setEditing(null); setDeleting(false); setFeedback(null);
@@ -82,9 +86,9 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
     }
   });
   const hint = editing === 'new' ? 'Enter a name, then Save. Escape or Cancel discards the name.'
-    : active?.builtin ? 'Published references are read-only. Save creates a personal copy.'
+    : active?.builtin ? 'Published references are read-only. Change settings, then Save a personal copy. Choose Custom to copy the current values.'
     : active && !compatible ? 'This setup belongs to a different model. Save creates a copy for this design.'
-    : active ? 'Double-click the name or press F2 to rename. Choose Custom to save another setup.'
+    : active ? 'Save enables when captured settings change. Double-click the name or press F2 to rename. Choose Custom to save another setup.'
     : 'Choose Save to name and keep the current settings.';
   const capturesNumerics = editing === 'new' ? includeNumerics : active?.includesNumerics ?? true;
   return <section className="public-run-setups" aria-label="Saved run setups">
@@ -132,9 +136,11 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
           setDeleting(false); setFeedback('Setup deleted. The current operating settings are kept.');
         }}><SetupIcon kind="delete" /></button>
       </div> : <div className="public-run-setup-actions">
-        <button type="button" className="primary" data-setup-save aria-label="Save" disabled={disabled}
+        <button type="button" className="primary" data-setup-save aria-label="Save" disabled={saveDisabled}
           onMouseDown={e => { if (editing === 'rename') e.preventDefault(); }} onClick={save}
-          title={active && !active.builtin && compatible ? 'Save the current settings to this setup' : 'Save the current settings as a new setup'}><SetupIcon kind="save" /></button>
+          title={saveDisabled && !disabled ? 'No changes to save'
+            : active && !active.builtin && compatible && editing !== 'new' ? 'Update this setup with the current settings'
+              : 'Save the current settings as a new setup'}><SetupIcon kind="save" /></button>
         {editing === 'new' ? <button type="button" aria-label="Cancel" title="Cancel new setup" disabled={disabled} onClick={cancel}><SetupIcon kind="cancel" /></button>
           : <button type="button" className="danger" aria-label="Delete" title={active ? `Delete “${active.name}”` : 'Select a saved setup to delete'}
             disabled={disabled || !active || Boolean(active.builtin)}
