@@ -475,6 +475,6 @@ jobs:
         with:
           name: windows-cancel-${{ matrix.python }}
           path: |
-            ${{ runner.temp }}/cancel-probe/**/result.json
-            ${{ runner.temp }}/cancel-probe/**/launcher.txt
-            ${{ runner.temp }}/cancel-probe/**/traceback.txt
+            ${{ runner.temp }}/cancel-probe/attempt-*/result.json
+            ${{ runner.temp }}/cancel-probe/attempt-*/launcher.txt
+            ${{ runner.temp }}/cancel-probe/attempt-*/traceback.txt

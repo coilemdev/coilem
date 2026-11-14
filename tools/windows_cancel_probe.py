@@ -19,8 +19,11 @@ from tools.release.acceptance import CYLINDRICAL_HALBACH, LINEAR_HALBACH, MOTOR,
 
 
 class StageStream(SolveStream):
-    def __init__(self, url, body, stage):
+    def __init__(self, url, body, stage, interrupt):
         self.target_stage = stage
+        self.interrupt = interrupt
+        self.interrupted_at = None
+        self.interrupted_progress = None
         super().__init__(url, body)
 
     def read(self, lines):
@@ -29,7 +32,11 @@ class StageStream(SolveStream):
             self.last = (event, str(fields.get('stage', '')), fields.get('position'), fields.get('total'))
             position, total = fields.get('position'), fields.get('total')
             if (event == 'progress' and fields.get('stage') == self.target_stage
-                    and isinstance(position, int) and isinstance(total, int) and 0 < position < total):
+                    and isinstance(position, int) and isinstance(total, int) and 0 < position < total
+                    and not self.solving.is_set()):
+                self.interrupted_progress = self.last
+                self.interrupted_at = time.monotonic()
+                self.interrupt()
                 self.solving.set()
             if event in ('complete', 'error'):
                 self.outcome = event
@@ -101,16 +108,15 @@ def attempt(folder, stage, entrypoint):
             raise RuntimeError(f'lesson warm-up: {status}')
         standard = copy.deepcopy(MOTOR)
         standard['solve_params'].update(solve_quality='standard', mesh_density='normal')
-        stream = StageStream(base + '/solve/stream', standard, stage)
+        stream = StageStream(base + '/solve/stream', standard, stage,
+                             lambda: process.send_signal(signal.CTRL_BREAK_EVENT if os.name == 'nt' else signal.SIGINT))
         deadline = time.monotonic() + 180
         while time.monotonic() < deadline and not stream.solving.is_set() and not stream.ended.is_set():
             stream.solving.wait(0.05)
-        if not stream.solving.is_set() or stream.ended.is_set():
+        if not stream.solving.is_set():
             raise RuntimeError(f'target stage not reached: {stream.describe()}')
-        result['progress'] = stream.last
-        (folder / 'interrupt').touch()
-        started = time.monotonic()
-        process.send_signal(signal.CTRL_BREAK_EVENT if os.name == 'nt' else signal.SIGINT)
+        result['progress'] = stream.interrupted_progress
+        started = stream.interrupted_at
         try:
             result['exit'] = process.wait(timeout=35)
         except subprocess.TimeoutExpired:
