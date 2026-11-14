@@ -63,6 +63,9 @@ ALLOWED_DATA_FILES = {
     # Final protocol 1.9.0 records and the original protocol 1.10.0 anchors.
     "benchmarks/qualification-e9eb89e818ed/windows-x86_64/report/benchmark_results.csv",
     "benchmarks/qualification-e9eb89e818ed/macos-arm64/report/benchmark_results.csv",
+    # Retain the published 0.5.7 measurements after advancing the platform records.
+    "benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/benchmark_results.csv",
+    "benchmarks/qualification-4b41f837f3d8/macos-arm64/report/benchmark_results.csv",
     "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_results.csv",
     "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_results.csv",
     "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",

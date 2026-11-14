@@ -6,14 +6,22 @@ bundled Magneto2D 0.5.0).
 The release branch is rebased onto current main, retaining the 0.5.7 metadata
 and historical evidence with their original identities.
 
-The current release qualification gate is **BLOCKED**: platform records do not
-match the changed 0.5.8 physics sources. Passing historical records below apply
-only to their measured source cohort. Fresh Windows/macOS evidence, candidate
-CI, wheel acceptance, Windows cancellation verification and the V-shape accuracy
-disposition remain pending. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
+The current release qualification gate **PASSES** for measured candidate
+`78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`. The
+[two-platform evidence](benchmarks/qualification-78e6f4fc8aa8/README.md) records
+68 supported cases and 468/468 A–F gates passing on each platform, plus all ten
+separate Prius checks (17 jobs / 568 field positions each). Trusted carry
+validation found no moved values beyond existing limits and no reference
+incompatibility; no numerical exception or tolerance change was needed.
+
+Candidate CI, browser checks, four-platform wheel builds and installed-package
+acceptance passed on the subsequent metadata/test cohort. Publication-commit
+CI still needs its own rerun. Windows cancellation stress verification and the
+V-shape accuracy disposition remain separate checklist items; numerical parity
+does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
 and [candidate release notes](RELEASE_NOTES.md).
 
-No v0.5.8 tag, package upload or workflow dispatch is part of this preparation.
+No v0.5.8 tag or package upload has been performed by this evidence publication.
 
 # Historical release status
 
@@ -24,8 +32,8 @@ Prepared November 11, 2026: **coilEM 0.5.7 Developer Preview**, with
 ## 0.5.7 qualification and publication
 
 The formal release qualification gate passed for the 0.5.7 application
-physics. The [Windows](benchmarks/records/windows-x86_64.json) and
-[macOS](benchmarks/records/macos-arm64.json) records bind measured candidate
+physics. The [Windows](benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/benchmark_summary.json) and
+[macOS](benchmarks/qualification-4b41f837f3d8/macos-arm64/report/benchmark_summary.json) reports retain measured candidate
 `4b41f837f3d89d4fbc836be54ecafff4729491c0`, protocol 1.10.0's full A–F
 selection, 68 supported cases and all 468 registered gates per platform. The
 planned unsupported Prius suite row is retained; the separate 17-job Prius

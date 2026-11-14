@@ -1,0 +1,37 @@
+{
+  "schema": "coilem.reference_reuse/v1",
+  "candidate": "78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9",
+  "suite_sha256": "14f80962ecb09ef4c5df569d0e5c89158dc7b2516cc9a8e47df34a57f501bcc4",
+  "bundle_sha256": "5e3acea9a4e4dbbc53169b73445bb5802d2d39a99e7080b3f6b65e9468e8733c",
+  "reference_commit": null,
+  "reference_fields_mutated": false,
+  "reference_commits": [
+    "341cd09342d58323689491ca060a913a34474ed1",
+    "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+    "7d9445c7f328fabb8aff13141b105769f1c1f644",
+    "faced858937e93740ddf7f6f3583a3ad5ec35646"
+  ],
+  "reference_sensitive_sources": {
+    "backend/geometry.py": "75d36dd236b3b276b2fde1a058e8896af2f2508709a0cb1de9e8c77c94f84610",
+    "backend/geometry_drawer.py": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+    "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+    "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+    "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+    "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
+    "backend/public_material_catalog.py": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
+    "backend/winding_utils.py": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+    "backend/excitation.py": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab",
+    "backend/reference_models/prius.py": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
+    "backend/reference_models/pyleecan_prius_2004.json": "3fd70d01f18a814661c055706ee18314a32670a413cec8a686665230b21c4f7e",
+    "backend/reference_models/pyleecan_prius_2004_config.json": "9709ff1b1b289eb2c1102da87b5a97596d4427e02aeda99320030832f698ed3a",
+    "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+    "backend/reference_models/lrk.py": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43",
+    "backend/reference_models/lrk_12s14p_source.json": "474c5ce06d530a9c6281da165f83e28eeba40ba3458617001b18d11b5e17d608",
+    "backend/reference_models/lrk_12s14p_config.json": "46add87f28066dd32cbc96d91b1f7cfc9d025fea753b59495d6ba696423307bf",
+    "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+    "backend/dq_flux_linkage.py": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8",
+    "backend/models/config.py": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c",
+    "materials/electrical-steel/M350-50A.csv": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
+  },
+  "registered_requests_sha256": "6b9528799156af7271130c943f6674ee7a4caa0426dcc5f8116489b23f6517da"
+}

@@ -12,11 +12,12 @@ Python client, guided design, release fixes and timing clarification).
 Sector models (#242) and opt-in pole-pitch mesh reuse (#281) remain excluded.
 Do not add feature scope while collecting release evidence.
 
-Freeze the exact versioned commit before measurement. Record its full commit,
-tree, physics hashes, native binary identity and dependency versions alongside
-all measurements. This preparation does not create a freeze tag or assert a
-measured candidate identity. Evidence publication must preserve actual field
-commits; a later merge must match the accepted physics cohort.
+The frozen measured candidate is `78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`.
+Its [two-platform evidence](../benchmarks/qualification-78e6f4fc8aa8/README.md)
+records source hashes, binary identity, dependency versions and the original
+field provenance. Later CI/test and evidence commits preserve those measured
+identities and must retain identical guarded physics. No freeze tag is needed
+to identify the immutable measured commit.
 
 ## Required before publication
 
@@ -24,9 +25,9 @@ commits; a later merge must match the accepted physics cohort.
 - [x] Set backend, frontend and frontend lockfile versions to 0.5.8.
 - [x] Bump Magneto2D to 0.6.0 for the changed solver sources, before freezing.
 - [x] Prepare release notes and disclose unresolved limitations.
-- [ ] Freeze the exact versioned candidate and record immutable identities.
-- [ ] Pass candidate CI, backend/native tests and browser workflows.
-- [ ] Complete registered protocol 1.10.0 A–F and separate complete Prius
+- [x] Freeze the exact versioned candidate and record immutable identities.
+- [x] Pass candidate CI, backend/native tests and browser workflows.
+- [x] Complete registered protocol 1.10.0 A–F and separate complete Prius
   qualification on Windows x86-64 and macOS arm64. Publish matching evidence
   and pass `python -m tools.release.qualification --candidate FULL_SHA`.
 - [ ] Review weekly qualification drift (#236) and candidate performance (#277).
@@ -36,7 +37,7 @@ commits; a later merge must match the accepted physics cohort.
 - [ ] Resolve #285's V-shape accuracy disposition: establish convergence or
   obtain an explicit scope decision consistent with qualification policy.
   The existing warning and mesh study alone do not close the accuracy issue.
-- [ ] Build all four supported platform wheels and pass installed-package
+- [x] Build all four supported platform wheels and pass installed-package
   acceptance, including startup, motor/Halbach/tutorial solves, save/reopen,
   exports, interrupt during solve and native process cleanup.
 - [ ] Review and merge the release PR only after required evidence is accepted.
@@ -52,9 +53,10 @@ python -m tools.verify_snapshot --publication
 python -m tools.release.qualification
 ```
 
-The final command currently reports BLOCKED because existing platform records
-bind older physics. This is a pending release gate, not a reason to rewrite
-historical records or weaken tolerances.
+The final command passes with matching Windows/macOS A–F and Prius records.
+It also passes with `--candidate 78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`.
+No historical fields were relabeled and no numerical gates were weakened.
+Rerun CI on the evidence publication commit before approving the release.
 
 Keep the PR draft and use `[skip ci]` on preparation commits. Once the candidate
 is frozen, run checks deliberately against its exact identity; draft status

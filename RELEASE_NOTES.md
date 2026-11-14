@@ -1,10 +1,11 @@
 # coilEM 0.5.8 Developer Preview — release candidate
 
 This candidate bundles Magneto2D 0.6.0, up from 0.5.0 in coilEM 0.5.7 for the
-solver changes below. Release qualification, platform wheel
-acceptance and publication are pending; see the [release checklist](docs/RELEASE_0_5_8.md)
-and [release status](PUBLICATION_STATUS.md). Historical 0.5.7 benchmark records
-do not qualify the changed 0.5.8 solver sources.
+solver changes below. Fresh [Windows/macOS qualification](benchmarks/qualification-78e6f4fc8aa8/README.md)
+passes all 468 registered A–F gates and all ten separate Prius checks on each
+platform at candidate `78e6f4fc8aa8`. Historical measurements retain their
+original identities. Release approval and publication remain pending; see the
+[release checklist](docs/RELEASE_0_5_8.md) and [release status](PUBLICATION_STATUS.md).
 
 - **Guided motor design.** New Design exposes parameters progressively, with
   guided setup, rotor construction previews, winding checks and clearer invalid
