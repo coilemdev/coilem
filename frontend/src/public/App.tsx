@@ -1,3 +1,7 @@
+import { RunSetupControl } from './RunSetupControl';
+import { BUILTIN_SOLVE_PROFILES } from './builtinSolveProfiles';
+import { newProfileDocument, parseProfileDocument, profileProvenance } from './solveProfiles';
+import { loadProfileDocument, storeProfileDocument } from './profileStorage';
 import { savedResultPlayback } from './savedRunPlayback';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -540,6 +544,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const [tutorialsStage, setTutorialsStage] = useState<LearningLessonStage>('design');
   const [tutorialHeaderProgress, setTutorialHeaderProgress] = useState<LearningLessonHeaderProgress | null>(null);
   const [config, setConfig] = useState<MotorConfig>(() => initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig());
+  const [runSetups, setRunSetups] = useState(() => initialNewDesign ? newProfileDocument() : loadProfileDocument('starter:spm'));
   const [designName, setDesignName] = useState<string | null>(initialNewDesign ? 'New Design' : null);
   const [blankDesign, setBlankDesign] = useState(initialNewDesign);
   const [newDesignParts, setNewDesignParts] = useState<BuiltParts | null>(initialNewDesign ? {} : null);
@@ -585,6 +590,14 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, []);
   const [notice, setNotice] = useState<string | null>(initialNewDesign
     ? 'Choose the rotor arrangement and topology, then build the motor from outside inward.' : null);
+  useEffect(() => {
+    if (!storeProfileDocument(runSetups)) setNotice('Run setups could not be stored in this browser. Save the design file to keep them.');
+  }, [runSetups]);
+  const activeRunSetup = [...BUILTIN_SOLVE_PROFILES, ...runSetups.profiles].find(
+    p => p.id === runSetups.activeId && p.version === runSetups.activeVersion,
+  );
+  const runSetupMetadata = profileProvenance(activeRunSetup, config, selectedSolver);
+
   const [editFeedback, setEditFeedback] = useState<DesignEditState | null>(null);
   const solveController = useRef<AbortController | null>(null);
   const armatureFieldController = useRef<AbortController | null>(null);
@@ -1224,6 +1237,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       const solveRequest: PublicSolveRequest = {
         config: asPublicConfig(config, selectedSolver),
         solver: selectedSolver,
+        run_setup: runSetupMetadata,
+        run_setups: runSetups,
         project_name: designName
           ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
         ...(selectedSolver === 'magneto2d' && preparedMesh.solve_mesh_key
@@ -1419,10 +1434,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     reset();
     setBlankDesign(false);
     setDesignName(null);
+    setRunSetups(loadProfileDocument('starter:spm'));
     setNotice('Design reset to the example motor.');
   };
 
   const beginNewDesign = (guided: boolean) => {
+    setRunSetups(newProfileDocument());
     resetDesignViewMemory();
     solveRequestId.current += 1;
     meshRequestId.current += 1;
@@ -1462,6 +1479,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     resetDesignViewMemory();
     try {
       const parsed = parseDesignFile(await file.text());
+      setRunSetups(parsed.runSetups ?? newProfileDocument());
       setNewDesignParts(null);
       setDesignInputErrors({});
       rememberPresetSweep(parsed.config);
@@ -1516,6 +1534,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setDesignInputErrors({});
     resetDesignViewMemory();
     const example = restored ?? createPublicExampleDesign(exampleId);
+    setRunSetups(loadProfileDocument(`example:${exampleId}`));
     rememberPresetSweep(example.config);
     setConfig(example.config);
     if (example.config.geometry_reference) setSelectedSolver("magneto2d");
@@ -1541,6 +1560,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     void saveDesignFileAs(
       config,
       designName ?? `coilem-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
+      runSetups,
     );
   };
 
@@ -1594,6 +1614,9 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       const submittedRequest = requestPayload && typeof requestPayload === 'object'
         ? (requestPayload as PublicJson).submitted
         : null;
+      setRunSetups(parsed.runSetups ?? parseProfileDocument(
+        submittedRequest && typeof submittedRequest === 'object' ? (submittedRequest as PublicJson).run_setups : undefined,
+      ) ?? newProfileDocument());
       const storedSolver = submittedRequest && typeof submittedRequest === 'object'
         ? (submittedRequest as PublicJson).solver
         : null;
@@ -1882,6 +1905,24 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     <>
     {/* Replace the whole workspace on New Design, including panel and viewport state. */}
     <CoilEmWorkspace
+      runSetupControl={<RunSetupControl config={config} solver={selectedSolver} document={runSetups}
+        builtins={BUILTIN_SOLVE_PROFILES} disabled={busy !== null} onChange={setRunSetups}
+        onApply={(next, nextSolver) => {
+          if ((nextSolver ?? selectedSolver) === 'elmer' && (next.solve_options.cogging_torque || next.solve_options.losses_efficiency || next.solve_options.torque_speed_envelope)) {
+            setNotice('This setup requests analyses that require Magneto2D. Select Magneto2D before applying it.'); return false;
+          }
+          if ((nextSolver ?? selectedSolver) === 'elmer' && next.solve_params.excitation_mode === 'ideal_six_step_120') {
+            setNotice('Six-step setups require Magneto2D. Select Magneto2D before applying this setup.'); return false;
+          }
+          if (nextSolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)) {
+            setNotice('This setup requires the qualified Elmer runtime, which is not available.'); return false;
+          }
+          rememberPresetSweep(next);
+          setConfig(next); if (nextSolver) setSelectedSolver(nextSolver);
+          resetComputedState(); void prepareMesh(next);
+          setNotice('Run setup applied. Review the values below before solving.');
+          return true;
+        }} />}
       key={designSession}
       appVersion={appVersion}
       config={config}

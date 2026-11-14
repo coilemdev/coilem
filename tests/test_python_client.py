@@ -535,3 +535,14 @@ def test_a_small_real_solve_reads_torque_back_emf_dq_and_cogging(tmp_path, monke
     assert again.cogging_torque.values.tolist() == result.cogging_torque.values.tolist()
     assert again.dq.lambda_pm_Wb == result.dq.lambda_pm_Wb
     assert again.average_torque_Nm != result.average_torque_Nm
+
+
+def test_ui_setup_metadata_does_not_change_client_motor_inputs() -> None:
+    motor = _spm_motor()
+    restored = coilem.Motor.from_request({
+        "config": motor.to_request(),
+        "run_setup": {"id": "user-rated", "version": 2, "name": "Rated load"},
+        "run_setups": {"schema": 1, "scope": "motor-1", "profiles": []},
+    })
+    assert restored == motor
+    assert restored.to_request() == motor.to_request()

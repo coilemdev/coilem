@@ -218,7 +218,7 @@ class Motor:
                     field="openem_schema_version",
                 )
         if isinstance(body, Mapping) and "config" in body:
-            unexpected = set(body) - {"config", "project_name", "solve_mesh_key", "solver"}
+            unexpected = set(body) - {"config", "project_name", "solve_mesh_key", "solver", "run_setup", "run_setups"}
             if unexpected:
                 raise InputError(f"Unexpected wrapper field(s): {', '.join(sorted(unexpected))}", field=sorted(unexpected)[0])
             config = body["config"]

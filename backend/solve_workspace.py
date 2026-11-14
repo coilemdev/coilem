@@ -414,6 +414,20 @@ def _qualification(config: Mapping[str, Any]) -> dict[str, Any] | None:
         return None
 
 
+def _submitted_run_setup(submitted: Mapping[str, Any]) -> dict[str, Any] | None:
+    """A submitted display label, never an input to physics or qualification."""
+    raw = submitted.get("run_setup")
+    if not isinstance(raw, Mapping):
+        return None
+    if (not isinstance(raw.get("id"), str) or not raw["id"] or len(raw["id"]) > 200
+            or not isinstance(raw.get("name"), str) or not raw["name"].strip() or len(raw["name"]) > 100
+            or type(raw.get("version")) is not int or raw["version"] < 1
+            or raw.get("kind") not in {"reference", "user"}
+            or type(raw.get("includes_numerics")) is not bool):
+        return None
+    return {key: deepcopy(raw[key]) for key in ("id", "version", "name", "kind", "includes_numerics")}
+
+
 class SolveRunWriter:
     """Build one run in a hidden partial directory, then publish atomically."""
 
@@ -449,7 +463,7 @@ class SolveRunWriter:
             )
             _atomic_write_json(
                 self.partial_path / PROJECT_FILE_NAME,
-                _project_payload(self.config, self.project_name),
+                self._project_snapshot(),
             )
             _atomic_write_json(
                 self.partial_path / "request.json",
@@ -462,6 +476,16 @@ class SolveRunWriter:
         except BaseException:
             _unregister_active_partial(self.partial_path)
             raise
+
+    def _project_snapshot(self) -> dict[str, Any]:
+        project = _project_payload(self.config, self.project_name)
+        setups = self.submitted_request.get("run_setups")
+        if (isinstance(setups, Mapping) and setups.get("schema") == 1
+                and isinstance(setups.get("scope"), str) and len(setups["scope"]) <= 200
+                and isinstance(setups.get("profiles"), list) and len(setups["profiles"]) <= 100
+                and len(_canonical_json_bytes(setups)) <= 256 * 1024):
+            project["run_setups"] = deepcopy(dict(setups))
+        return project
 
     def _mark_closed(self) -> None:
         self._closed = True
@@ -476,7 +500,7 @@ class SolveRunWriter:
         failure: Mapping[str, Any] | None = None,
         completed_at: str | None = None,
     ) -> dict[str, Any]:
-        project = _project_payload(self.config, self.project_name)
+        project = self._project_snapshot()
         request = {
             "schema_version": RUN_REQUEST_SCHEMA,
             "submitted": self.submitted_request,
@@ -668,10 +692,19 @@ class SolveRunWriter:
         if self._closed:
             raise SolveWorkspaceError("solve run writer is already closed")
         stored_result = deepcopy(dict(result))
+        metadata = stored_result.get("solve_metadata")
+        # A cached numerical result cannot carry another run's setup identity.
+        if isinstance(metadata, dict):
+            metadata.pop("run_setup", None)
+        label = _submitted_run_setup(self.submitted_request)
+        if label is not None:
+            if not isinstance(metadata, dict):
+                metadata = stored_result["solve_metadata"] = {}
+            metadata["run_setup"] = label
         _apply_output_statuses(stored_result, self.config)
         self._retain_artifacts(stored_result)
         materials = _material_records(self.config)
-        project = _project_payload(self.config, self.project_name)
+        project = self._project_snapshot()
         request = {
             "schema_version": RUN_REQUEST_SCHEMA,
             "submitted": self.submitted_request,

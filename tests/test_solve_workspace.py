@@ -665,3 +665,52 @@ def test_workspace_quota_refuses_to_publish_oversized_run(tmp_path: Path) -> Non
     assert manifest["status"] == "failed"
     assert manifest["failure"]["error_code"] == "RUN_STORAGE_LIMIT"
     assert not (writer.partial_path / "result.json").exists()
+
+
+def test_run_setups_are_portable_snapshots_with_immutable_result_labels(tmp_path: Path) -> None:
+    workspace = SolveWorkspace(tmp_path / "profiles")
+    label = {"id": "user-rated", "version": 1, "name": "Rated load", "kind": "user", "includes_numerics": False}
+    setups = {"schema": 1, "scope": "motor-1", "profiles": [], "activeId": None, "activeVersion": None}
+    submitted = {"config": deepcopy(VALID_CONFIG), "run_setup": label, "run_setups": setups}
+    writer = workspace.begin_run(project_name="Motor", config=VALID_CONFIG, submitted_request=submitted)
+    # A later edit in the caller must not relabel an in-flight or saved solve.
+    label["version"] = 2
+    label["name"] = "Renamed load"
+    setups["scope"] = "another-motor"
+    original = _result()
+    location = writer.complete(original)
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert loaded["result"]["solve_metadata"]["run_setup"]["name"] == "Rated load"
+    assert loaded["result"]["solve_metadata"]["run_setup"]["version"] == 1
+    assert loaded["request"]["submitted"]["run_setup"]["version"] == 1
+    assert loaded["project"]["run_setups"]["scope"] == "motor-1"
+    assert loaded["request"]["resolved_config"] == VALID_CONFIG
+    assert "run_setup" not in original["solve_metadata"]
+
+
+@pytest.mark.parametrize("label", [None, {"id": "invalid", "version": True}])
+def test_custom_runs_do_not_inherit_cached_setup_labels(tmp_path: Path, label) -> None:
+    workspace = SolveWorkspace(tmp_path / "custom")
+    writer = workspace.begin_run(project_name="Custom", config=VALID_CONFIG,
+                                 submitted_request={"config": VALID_CONFIG, "run_setup": label})
+    cached = _result()
+    cached["solve_metadata"]["run_setup"] = {"id": "obsolete", "version": 9, "name": "Other run"}
+    location = writer.complete(cached)
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert "run_setup" not in loaded["result"]["solve_metadata"]
+    assert "run_setups" not in loaded["project"]
+
+
+def test_setup_metadata_does_not_change_resolved_physics() -> None:
+    from backend.public_policy import parse_public_solve_request, PublicConfigError
+
+    before, _, _ = parse_public_solve_request({"config": VALID_CONFIG})
+    after, _, _ = parse_public_solve_request({
+        "config": VALID_CONFIG, "run_setup": {"name": "An arbitrary display label"},
+        "run_setups": {"schema": 1, "profiles": []},
+    })
+    assert before.model_dump() == after.model_dump()
+    with pytest.raises(PublicConfigError, match="must be an object"):
+        parse_public_solve_request({"config": VALID_CONFIG, "run_setup": "invalid"})

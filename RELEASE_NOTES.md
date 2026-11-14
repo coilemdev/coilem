@@ -12,6 +12,11 @@ original identities. Release approval and publication remain pending; see the
   input messages. Design Health stays reachable on narrow screens.
 - **Clearer design and field views.** Rotor previews, 3D windings, phase controls,
   layout zoom and field legends make geometry and excitation easier to inspect.
+- **Saved run setups.** Name and reuse operating conditions and requested
+  outputs, optionally including accuracy and solver settings. Immutable Prius
+  reference setups apply the shipped complete conditions; edits become Modified
+  or user copies. Setups travel with design files and saved runs retain the
+  actual setup identity/version. See [Saved run setups](docs/SOLVE_SETUPS.md).
 - **Python scripting.** The [Python client](docs/PYTHON_CLIENT.md) supports
   scripted motor solves with typed inputs, results and executable examples.
 - **Solve execution and timing.** Direct Newton execution, worker/thread handling,

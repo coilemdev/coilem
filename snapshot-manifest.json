@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 22583,
-      "sha256": "66ed6d7410558bdc348b84c76b30e009da74bb200c9e6ee53658962b95af886a"
+      "bytes": 22724,
+      "sha256": "0cf80f836ee04c504a5f79524ab8551af52467e3e567221d563ce073fa299178"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -60,8 +60,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 8367,
-      "sha256": "e47524da3ae339498121424779cfd8745f2e3cae4942dfd4ae01c542835c3637"
+      "bytes": 8627,
+      "sha256": "51850cb0d50541da83186b88806ddd68df903746aa18ab6095150ca30895e9dc"
     },
     {
       "path": "README.md",
@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 27695,
-      "sha256": "f53a7b34df2e5647a47b36afb4ee90c07ed0289ed23a3258d7b7ad4469e98b76"
+      "bytes": 28082,
+      "sha256": "095265fcc22665e0fe070164b694c94df956d5e210ce5355957f3912d4496d52"
     },
     {
       "path": "SECURITY.md",
@@ -550,8 +550,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 14157,
-      "sha256": "450e24e3e04b18e50591dab32e445b275773ca553375d3611ddbd332a0e85b05"
+      "bytes": 14451,
+      "sha256": "636d3cc468a240cf6650395ace9082165b7bb7b0c26464f8033670ca75043836"
     },
     {
       "path": "backend/public_report.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 59346,
-      "sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f"
+      "bytes": 61087,
+      "sha256": "01c27c1d0789b232d22c7edfe162e84da4fd5845ee76158496be6fc6f842363b"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6420,13 +6420,13 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3392,
-      "sha256": "bd26db92daea21d4eb0b9464120c3d33115aa700e6b5e18a1082ea3cf3f17d2e"
+      "bytes": 3432,
+      "sha256": "61f187f26a9e82412e7c1b3375456654020fa3a63acb97947a1d65af7c6800e4"
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 2784,
-      "sha256": "f64f0451ff9fddfcb5f58d483deeab00e0dc8fd4500fb46278bc35018b138186"
+      "bytes": 2810,
+      "sha256": "281d11acd794d4ba5856a6cd341ab40dc31b6e83b8c00c838b894aa3375d11b9"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 81997,
-      "sha256": "1eef298b58db75f219f144e00111ccdd9710243cd0e2e0da43f962400f647d6f"
+      "bytes": 84681,
+      "sha256": "e0d359ef80fb61cb9890cc6c15ef2177e059658da665c63b2da3ddd48ab77ab5"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7025,8 +7025,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 296014,
-      "sha256": "774e9434c67e499fc26ef4d9bcc843929273343ec4f57b2624eab077c5f32372"
+      "bytes": 296148,
+      "sha256": "fe5dcb00fd5b5f47fcaa262a56fff039deff180a7c83434491a97e7eb1dd4a46"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/ResultSummary.tsx",
-      "bytes": 12261,
-      "sha256": "2734fcff7e6a7feb516cd91beddf1e7383027cf1a8ce5d23a1effa01e800a165"
+      "bytes": 12407,
+      "sha256": "cd1c556b5b7fd60d0e10ebbba242b15caa787b9b90933777c6bd49c07ce43777"
     },
     {
       "path": "frontend/src/public/WorkspaceErrorBoundary.tsx",
@@ -7150,8 +7150,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 14738,
-      "sha256": "e20693aecb7307c9dd5c6e867470e4385a6652f1a3cab8413b0750a4ad559963"
+      "bytes": 14897,
+      "sha256": "914fd5f0ee1c6ca6910ffd6c6ba10a2ac5390475a205e36f78ffa5f131503e89"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7205,8 +7205,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 15806,
-      "sha256": "608eb75ebccf5462dd05693eddaab60c3fd5f64aa7349dba6076ca96f7ce872e"
+      "bytes": 16108,
+      "sha256": "8d6bbb0229854492f4c3e7767e37c49a0287c5432b7bf6374c9343eefaa20a17"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -7445,8 +7445,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24613,
-      "sha256": "157ab8e8290fd2355a396d591a4ec8f270ea5c1a3d38939c9f5e67c345f6edcd"
+      "bytes": 24732,
+      "sha256": "a7311b25c1419f099976e6544e360af10b877d84d963a2df195cea8fdb034bef"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7530,8 +7530,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 327121,
-      "sha256": "767873504a82c8b4227cfcca53cf32358b8d98590d630e9d3d50ebb4adb2c3c1"
+      "bytes": 328057,
+      "sha256": "423cd91a2eb6053449de3ae05a0912e4e7036d68ca514615ed0da21bf1f4c293"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -8375,8 +8375,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 24253,
-      "sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be"
+      "bytes": 27014,
+      "sha256": "37140b377229330da8e1a4d03710bcafed7716efe8eda0f5fd02c1b622995f88"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -17590,8 +17590,8 @@
     },
     {
       "path": "backend/client/_inputs.py",
-      "bytes": 17091,
-      "sha256": "299f82adba48c0dd15440ea56ddfd94e7fd478e6335d61f5dee294d918c07ae3"
+      "bytes": 17118,
+      "sha256": "bfe54587244aaf1db2b91eaa7dc3d5c7dff1d258d4490342d44653b8d1ece06e"
     },
     {
       "path": "backend/client/_results.py",
@@ -17630,8 +17630,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_8.md",
-      "bytes": 4589,
-      "sha256": "65c2f6fe790208f13921d9d3128d524fb87e4ce5af66cb71ab4908a9d002f2ec"
+      "bytes": 5061,
+      "sha256": "d557ba11a7fc999fbb69be7f9abb22f6a86b2c38d4d35315eabf55eb2f614705"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
@@ -17795,8 +17795,8 @@
     },
     {
       "path": "tests/test_python_client.py",
-      "bytes": 25978,
-      "sha256": "ed65b5f05ae1d78f487f90d9227549ac22fba04a8eb4dcbe47ceaa7088e4417d"
+      "bytes": 26403,
+      "sha256": "76d648f9e69b13b8e163524ffde7d27b88fa0458c5e909d91221684249858e7e"
     },
     {
       "path": "tests/test_release_priority_report.py",
@@ -18717,6 +18717,41 @@
       "path": "tools/ci_plan.py",
       "bytes": 3725,
       "sha256": "a7a81e20d90e1b5b5d159fd0c651970a65f36bf8cce3b6e860e323f557d7342a"
+    },
+    {
+      "path": "docs/SOLVE_SETUPS.md",
+      "bytes": 2723,
+      "sha256": "19be5999ba454915cf16edd7141714ff9002cdd8faacb624533134e8bae2700d"
+    },
+    {
+      "path": "frontend/scripts/test-solve-profiles.mjs",
+      "bytes": 4886,
+      "sha256": "032e5255035c43b06c7d08886412cda0ec18e70c711c2851bc2adde13996f0c4"
+    },
+    {
+      "path": "frontend/src/public/RunSetupControl.tsx",
+      "bytes": 6282,
+      "sha256": "101337b85163c53f6f9594ad322b0edc54d6c455fdb3d620fa033cee03f32c74"
+    },
+    {
+      "path": "frontend/src/public/builtinSolveProfiles.ts",
+      "bytes": 363,
+      "sha256": "c01acb553a848e5b947cbeccfd8788d63a79e123f32b334b37419234346c4d82"
+    },
+    {
+      "path": "frontend/src/public/profileStorage.ts",
+      "bytes": 761,
+      "sha256": "578d68e24d3155daced53266e94cb0d81dced7441ad6d1eedda32383d11cc3cd"
+    },
+    {
+      "path": "frontend/src/public/solveProfiles.ts",
+      "bytes": 12633,
+      "sha256": "621cb9806d9bc574d61889fc37d868fd8ee1dfc4c103852ffc5b15284a7caf6d"
+    },
+    {
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "bytes": 8058,
+      "sha256": "930a4fcc2d76c627f92de95752092cb4c829420b981f76f0a1ba5f9ac39eb7b1"
     }
   ],
   "public_patches": [
@@ -40547,6 +40582,156 @@
       "path": "docs/CI.md",
       "source_sha256": null,
       "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "66ed6d7410558bdc348b84c76b30e009da74bb200c9e6ee53658962b95af886a",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "e47524da3ae339498121424779cfd8745f2e3cae4942dfd4ae01c542835c3637",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "f53a7b34df2e5647a47b36afb4ee90c07ed0289ed23a3258d7b7ad4469e98b76",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "backend/client/_inputs.py",
+      "source_sha256": "299f82adba48c0dd15440ea56ddfd94e7fd478e6335d61f5dee294d918c07ae3",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "backend/public_policy.py",
+      "source_sha256": "450e24e3e04b18e50591dab32e445b275773ca553375d3611ddbd332a0e85b05",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "4764fcf82a84989def780493f22074e042743f5f13ed0e1aca30b336a96f029f",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "docs/RELEASE_0_5_8.md",
+      "source_sha256": "65c2f6fe790208f13921d9d3128d524fb87e4ce5af66cb71ab4908a9d002f2ec",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "docs/SOLVE_SETUPS.md",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/package.json",
+      "source_sha256": "bd26db92daea21d4eb0b9464120c3d33115aa700e6b5e18a1082ea3cf3f17d2e",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "f64f0451ff9fddfcb5f58d483deeab00e0dc8fd4500fb46278bc35018b138186",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/scripts/test-solve-profiles.mjs",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "1eef298b58db75f219f144e00111ccdd9710243cd0e2e0da43f962400f647d6f",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "774e9434c67e499fc26ef4d9bcc843929273343ec4f57b2624eab077c5f32372",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/ResultSummary.tsx",
+      "source_sha256": "2734fcff7e6a7feb516cd91beddf1e7383027cf1a8ce5d23a1effa01e800a165",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/RunSetupControl.tsx",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "e20693aecb7307c9dd5c6e867470e4385a6652f1a3cab8413b0750a4ad559963",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/builtinSolveProfiles.ts",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "608eb75ebccf5462dd05693eddaab60c3fd5f64aa7349dba6076ca96f7ce872e",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "157ab8e8290fd2355a396d591a4ec8f270ea5c1a3d38939c9f5e67c345f6edcd",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/profileStorage.ts",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/solveProfiles.ts",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "767873504a82c8b4227cfcca53cf32358b8d98590d630e9d3d50ebb4adb2c3c1",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "source_sha256": null,
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "tests/test_python_client.py",
+      "source_sha256": "ed65b5f05ae1d78f487f90d9227549ac22fba04a8eb4dcbe47ceaa7088e4417d",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
+    },
+    {
+      "base_commit": "06c4a4bc123e60d422cc2dc54eafde724e639f2e",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
+      "reason": "Add saved run setup UX, portable design metadata and immutable run provenance outside the motor configuration; preserve the current CI coverage and physics qualification."
     }
   ]
 }

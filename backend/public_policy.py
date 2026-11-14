@@ -181,6 +181,8 @@ def parse_public_solve_request(
         unexpected = set(body) - {
             "config",
             "project_name",
+            "run_setup",
+            "run_setups",
             "solve_mesh_key",
             "solver",
         }
@@ -188,6 +190,10 @@ def parse_public_solve_request(
             raise PublicConfigError(
                 "Solve request contains unsupported wrapper fields.",
             )
+        for name in ("run_setup", "run_setups"):
+            value = body.get(name)
+            if value is not None and not isinstance(value, dict):
+                raise PublicConfigError("Run-setup metadata must be an object.", field=name)
         raw_config = body.get("config")
         if not isinstance(raw_config, dict):
             raise PublicConfigError(

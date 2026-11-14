@@ -1,0 +1,67 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { importTypeScriptModule } from './import-typescript-module.mjs';
+const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
+const profiles = await importTypeScriptModule(new URL('../src/public/solveProfiles.ts', import.meta.url));
+const { parseDesignFile, serializeDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
+const { captureProfile, applyProfile, profileMatches, profileCompatible, profileProvenance, builtinProfiles,
+  newProfileDocument, saveProfile, parseProfileDocument } = profiles;
+const original = cloneDefaultConfig();
+const physical = c => JSON.stringify([c.topology, c.rotor, c.stator, c.winding, c.materials]);
+const user = captureProfile(original, 'Rated speed', false, 'magneto2d', 'user-1');
+const changed = structuredClone(original);
+changed.solve_params.rated_speed_rpm = 9000;
+changed.solve_params.current_amplitude_A = 80;
+changed.solve_params.mesh_density = 'very_fine';
+changed.solve_params.solve_quality = 'fine';
+const applied = applyProfile(changed, user);
+assert.equal(applied.solve_params.rated_speed_rpm, original.solve_params.rated_speed_rpm);
+assert.equal(applied.solve_params.current_amplitude_A, original.solve_params.current_amplitude_A);
+assert.equal(applied.solve_params.mesh_density, 'very_fine');
+assert.equal(applied.solve_params.solve_quality, 'fine');
+assert.equal(physical(applied), physical(changed));
+assert.ok(profileMatches(user, applied, 'magneto2d'), 'ordinary setups do not pin numerical quality');
+const exact = captureProfile(original, 'Exact grid', true, 'magneto2d', 'user-exact');
+assert.equal(applyProfile(changed, exact).solve_params.mesh_density, original.solve_params.mesh_density);
+assert.equal(profileMatches(exact, original, 'elmer'), false);
+let doc = saveProfile(newProfileDocument('motor-1'), user);
+const oldMetadata = profileProvenance(user, original, 'magneto2d');
+doc = saveProfile(doc, captureProfile(changed, 'Rated speed', false, 'magneto2d', 'user-1', 2));
+assert.equal(oldMetadata.version, 1);
+assert.equal(doc.profiles[0].version, 2);
+assert.throws(() => saveProfile(doc, user), /new version/);
+assert.throws(() => saveProfile(doc, captureProfile(original, 'Rated speed', false, 'magneto2d', 'different')), /name already exists/);
+assert.equal(profileProvenance(user, changed, 'magneto2d'), null, 'edited settings do not retain an unchanged setup identity');
+const reopened = parseDesignFile(serializeDesignFile(changed, 'Motor', doc));
+assert.deepEqual(reopened.runSetups, doc);
+assert.equal(physical(reopened.config), physical(parseDesignFile(serializeDesignFile(changed, 'Motor')).config));
+assert.equal(parseDesignFile(serializeDesignFile(original, 'Old file')).runSetups, undefined);
+assert.throws(() => parseProfileDocument({ ...doc, schema: 2 }), /unsupported/);
+const malicious = structuredClone(doc); malicious.profiles[0].parameters.stator = { OD_mm: 99 };
+assert.throws(() => parseProfileDocument(malicious), /settings/);
+const badValue = structuredClone(doc); badValue.profiles[0].parameters.current_amplitude_A = 'wrong';
+assert.throws(() => parseProfileDocument(badValue), /values/);
+const configs = [];
+for (const name of ['prius-2004-tutorial-bemf-v1', 'prius-2004-loaded-torque-v1']) {
+  configs.push(parseDesignFile(await readFile(new URL(`../src/public/examples/${name}.coilem`, import.meta.url), 'utf8')).config);
+}
+const builtins = builtinProfiles(...configs);
+for (const [i, profile] of builtins.entries()) {
+  const altered = structuredClone(configs[1 - i]); altered.solve_params.mesh_density = 'coarse';
+  const result = applyProfile(altered, profile);
+  assert.equal(physical(result), physical(altered));
+  assert.equal(result.solve_params.rated_speed_rpm, i === 0 ? 1000 : 2000);
+  assert.equal(result.solve_params.magnet_temperature_C, i === 0 ? 20 : 60);
+  assert.equal(result.solve_params.current_amplitude_A, i === 0 ? 0 : 250);
+  assert.equal(result.solve_params.current_amplitude_convention, 'peak');
+  assert.equal(result.solve_params.current_angle_deg, 140);
+  assert.deepEqual(result.solve_options, configs[i].solve_options);
+  assert.ok(profileMatches(profile, result, 'magneto2d'));
+  result.solve_params.current_amplitude_A += 1;
+  assert.equal(profileProvenance(profile, result, 'magneto2d'), null);
+  assert.equal(profileCompatible({ ...profile, referenceRevision: 'wrong' }, configs[i]), false);
+  assert.equal(profileCompatible(profile, original), false);
+  assert.throws(() => applyProfile(original, profile), /different reference/);
+  assert.throws(() => saveProfile(doc, profile), /cannot be overwritten/);
+}
+console.log('Solve profiles: complete reference settings, ordinary accuracy separation, immutable provenance, compatibility and file round-trip passed.');

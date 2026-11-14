@@ -127,6 +127,7 @@ export function ResultSummary({
 
   return (
     <div className="public-result-summary">
+      {metadata.run_setup && <p className="public-result-setup">Run setup: {metadata.run_setup.name} · version {metadata.run_setup.version}</p>}
       {result.torque_speed_analysis?.status === 'partial' && <p className="performance-message is-warning" role="status">
         Torque–speed map incomplete: completed analyses and points are saved. Review failed points under Torque–speed and run again to retry.
       </p>}

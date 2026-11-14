@@ -1,3 +1,4 @@
+import type { RunSetupProvenance, SolveProfileDocument } from './solveProfiles';
 import type { SolveResult } from './model';
 import { normalizeComparisonResult, type ComparisonResult } from './runComparison';
 import type { CustomSteel } from './customSteel';
@@ -13,6 +14,8 @@ export type PublicSolverId = 'magneto2d' | 'elmer';
 export type PublicSolveRequest = PublicMotorConfig | {
   config: PublicMotorConfig;
   project_name?: string;
+  run_setup?: RunSetupProvenance | null;
+  run_setups?: SolveProfileDocument;
   solve_mesh_key?: string;
   solver?: PublicSolverId;
 };
