@@ -34,10 +34,13 @@ control the actual bridge. Magnet coverage does not control V-shape pockets.
 The [mesh sensitivity study](docs/VSHAPE_MESH_SENSITIVITY_285.md) found material
 changes between Fine and Very Fine; spatial convergence remains unproven
 ([#285](https://github.com/coilemdev/coilem/issues/285)). A warning does not
-establish numerical accuracy. Its release disposition remains pending.
+establish numerical accuracy. The remaining convergence work is deferred to
+the next release by the release owner; existing warnings remain in place.
 
-Windows cancellation reliability still requires repeated platform acceptance
-([#234](https://github.com/coilemdev/coilem/issues/234)). Sector models and
+Windows Ctrl+Break cancellation can intermittently hang during a solve
+([#234](https://github.com/coilemdev/coilem/issues/234)); passing retries do not
+establish a fix. Investigation and repeated cancellation checks are deferred
+to the next release by the release owner. Sector models and
 opt-in pole-pitch mesh reuse are excluded from this candidate. Hardware accuracy,
 3D end effects and Experimental outputs remain outside any software parity
 claim; see [Validation](docs/VALIDATION.md).

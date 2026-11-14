@@ -16,9 +16,10 @@ incompatibility; no numerical exception or tolerance change was needed.
 
 Candidate CI, browser checks, four-platform wheel builds and installed-package
 acceptance passed on the subsequent metadata/test cohort. Publication-commit
-CI still needs its own rerun. Windows cancellation stress verification and the
-V-shape accuracy disposition remain separate checklist items; numerical parity
-does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
+CI passed in run `43564890229`. On November 14, 2026, the release owner
+accepted deferring the unresolved Windows cancellation issue (#234) and
+V-shape convergence work (#285) to the next release. Both remain open and
+are disclosed limitations; passing numerical parity does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
 and [candidate release notes](RELEASE_NOTES.md).
 
 No v0.5.8 tag or package upload has been performed by this evidence publication.

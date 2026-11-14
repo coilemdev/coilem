@@ -32,17 +32,34 @@ to identify the immutable measured commit.
   and pass `python -m tools.release.qualification --candidate FULL_SHA`.
 - [ ] Review weekly qualification drift (#236) and candidate performance (#277).
   Preserve failed attempts and distinguish elapsed from summed worker time.
-- [ ] Verify repeated Windows solve/cancel/restart and multiple/late worker
-  cleanup for #234; retain platform, repetition count, logs and failures.
-- [ ] Resolve #285's V-shape accuracy disposition: establish convergence or
-  obtain an explicit scope decision consistent with qualification policy.
-  The existing warning and mesh study alone do not close the accuracy issue.
+- [x] Record the release owner's decision to defer #234 and the remaining
+  convergence work in #285 to the next release, with limitations disclosed below.
+  Both issues remain open; neither is treated as technically fixed.
 - [x] Build all four supported platform wheels and pass installed-package
   acceptance, including startup, motor/Halbach/tutorial solves, save/reopen,
   exports, interrupt during solve and native process cleanup.
 - [ ] Review and merge the release PR only after required evidence is accepted.
 - [ ] Tag the accepted publication commit `v0.5.8`; run the protected release
   workflow and verify published-package acceptance before announcing it.
+
+## Deferred issues accepted for 0.5.8
+
+On November 14, 2026, the release owner chose to merge this release and fix
+these remaining issues in the next release:
+
+- **#234, Windows cancellation:** intermittent Ctrl+Break shutdown hangs remain
+  unresolved. Two hangs occurred in 12 recorded Windows interrupt attempts;
+  passing retries do not establish a fix. Further investigation and counted
+  cancellation/cleanup testing remain required.
+- **#285, V-shape convergence:** input semantics and partial-sweep labels are
+  fixed, but the mesh study does not establish spatial convergence. Existing
+  warnings and the published sensitivity results remain visible. Default mesh
+  sizing is unchanged, and arbitrary V-shape accuracy is not established by
+  the passing registered parity checks.
+
+This is a release-scope decision, not a numerical exception: frozen references,
+qualification tolerances, measured values and feature qualification rules are
+unchanged. Both issues stay open and move to the next-release milestone.
 
 ## Local checks and controlled workflows
 
@@ -56,7 +73,7 @@ python -m tools.release.qualification
 The final command passes with matching Windows/macOS A–F and Prius records.
 It also passes with `--candidate 78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`.
 No historical fields were relabeled and no numerical gates were weakened.
-Rerun CI on the evidence publication commit before approving the release.
+CI on evidence publication commit `df7ea2d` passed in run `43564890229`.
 
 Keep the PR draft and use `[skip ci]` on preparation commits. Once the candidate
 is frozen, run checks deliberately against its exact identity; draft status

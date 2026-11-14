@@ -60,8 +60,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 8255,
-      "sha256": "656b14e5ff9f311c2db19b2e4cbb109ea4f4a4dd9020ccd4511e9ede110e2ec5"
+      "bytes": 8367,
+      "sha256": "e47524da3ae339498121424779cfd8745f2e3cae4942dfd4ae01c542835c3637"
     },
     {
       "path": "README.md",
@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 27480,
-      "sha256": "07233710ae9acd8e8b2e1e473448e5a7c14a38a08ce0f06da931cb793538df87"
+      "bytes": 27695,
+      "sha256": "f53a7b34df2e5647a47b36afb4ee90c07ed0289ed23a3258d7b7ad4469e98b76"
     },
     {
       "path": "SECURITY.md",
@@ -17630,8 +17630,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_8.md",
-      "bytes": 3721,
-      "sha256": "e35221483fcf34f5c150e408cc94662ac465fd615f67c3fb0f995d523d88c781"
+      "bytes": 4589,
+      "sha256": "65c2f6fe790208f13921d9d3128d524fb87e4ce5af66cb71ab4908a9d002f2ec"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
@@ -40391,6 +40391,24 @@
       "path": ".gitattributes",
       "source_sha256": "5ce5695b7aaaac385ca9a4afc91bf82266667fe605a8b4b2b914f152b957feab",
       "reason": "Preserve measured v0.5.8 evidence line endings and artifact hashes in Git."
+    },
+    {
+      "base_commit": "df7ea2d531d414b702994123bbe26b985d04e6ef",
+      "path": "docs/RELEASE_0_5_8.md",
+      "source_sha256": "e35221483fcf34f5c150e408cc94662ac465fd615f67c3fb0f995d523d88c781",
+      "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
+    },
+    {
+      "base_commit": "df7ea2d531d414b702994123bbe26b985d04e6ef",
+      "path": "PUBLICATION_STATUS.md",
+      "source_sha256": "656b14e5ff9f311c2db19b2e4cbb109ea4f4a4dd9020ccd4511e9ede110e2ec5",
+      "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
+    },
+    {
+      "base_commit": "df7ea2d531d414b702994123bbe26b985d04e6ef",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "07233710ae9acd8e8b2e1e473448e5a7c14a38a08ce0f06da931cb793538df87",
+      "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
     }
   ]
 }
