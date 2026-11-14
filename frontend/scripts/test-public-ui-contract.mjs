@@ -217,10 +217,12 @@ assert.match(workspaceSource, /burial depth outer bridge bridge thickness magnet
 assert.match(workspaceSource, /Physical Slot Mouth<small>mm · calc/);
 assert.match(workspaceSource, /Tooth Body Opening<small>mm · calc/);
 assert.match(workspaceSource, /Slot Width at Yoke<small>mm · calc/);
-assert.match(workspaceSource, /label="Tooth Shoe"/);
+// Every design shows one panel order: Tooth & Slot Geometry follows the stator, with the tooth profile as a choice.
+assert.match(workspaceSource, /label="Tooth & Slot Geometry"/);
+assert.match(workspaceSource, /\n\s+<ChoiceRow label="Tooth Profile"/);
+assert.doesNotMatch(workspaceSource, /Advanced Geometry'|label="Yoke Thick\."/);
 assert.match(workspaceSource, /label="Shoe Height"/);
 assert.match(workspaceSource, /label="Shoe Overhang"/);
-assert.match(workspaceSource, /role="switch"/);
 assert.match(workspaceSource, /statorWidths\.borePitchMm[\s\S]*?\+ toothShoeAdditionMm[\s\S]*?- boundedWidthMm/);
 assert.match(workspaceSource, /set\('stator', 'slot_opening_mm', 'advanced'\)\(boreSlotOpeningMm\)/);
 assert.match(dimensionsSource, /borePitchMm - boreOpeningMm \+ toothShoeAdditionMm/);
@@ -2101,10 +2103,11 @@ assert.match(workspaceSource, /data-guide="topology-selector"/);
 assert.match(workspaceSource, /data-guide="ipm-layout-selector"/);
 assert.match(workspaceSource, /label: 'Flat \/ buried'/);
 assert.match(workspaceSource, /label: 'V-shape'/);
+// The Design sections are rendered together, in the layout's order, after the topology choices.
 assert.ok(
   workspaceSource.indexOf('data-guide="ipm-layout-selector"')
-    < workspaceSource.indexOf('<ParameterSectionBlock id="stator"'),
-  'IPM layout selection must appear before stator geometry',
+    < workspaceSource.indexOf('{sectionsInOrder}'),
+  'IPM layout selection must appear before the geometry sections',
 );
 assert.doesNotMatch(workspaceSource, /<SelectRow label="Rotor Layout"/);
 assert.match(workspaceSource, /data-guide=\{guide \?\? `section-\$\{id\}`\}/);

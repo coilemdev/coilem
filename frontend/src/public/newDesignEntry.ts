@@ -35,11 +35,12 @@ export function enteredDesignParts(config: MotorConfig, built: BuiltParts, entry
     && (!outer || hasEntry(entry, 'stator', 'Hub Bore (ID)')));
   const slots = Boolean(stator && built.slots && hasEntry(entry, 'stator', 'Slot Count', outer ? 'Hub Bore (ID)' : 'Bore Diameter (ID)'));
   const teeth = Boolean(slots && built.teeth && entrySectionComplete(entry, 'advanced'));
-  const rotor = Boolean(slots && built.rotor && hasEntry(entry, 'rotor', 'Rotor OD') && (!outer || hasEntry(entry, 'rotor', 'Magnet Seat')));
+  // An outrunner is entered rotor first, so its rotor is drawn before any stator.
+  const rotor = Boolean((outer || slots) && built.rotor && hasEntry(entry, 'rotor', 'Rotor OD') && (!outer || hasEntry(entry, 'rotor', 'Magnet Seat')));
   const vPocketReady = config.topology !== 'IPM' || config.rotor.ipm_topology !== 'v_shape'
     || hasEntry(entry, 'rotor', 'V Angle', 'V Depth');
   const magnets = Boolean(rotor && built.magnets && vPocketReady && hasEntry(entry, 'rotor', 'Pole Count', 'Magnet Thick.', 'Magnet Width'));
-  const winding = Boolean(magnets && built.winding && hasEntry(entry, 'winding', 'Type', 'Turns / Coil', 'Parallel Paths'));
+  const winding = Boolean(magnets && slots && built.winding && hasEntry(entry, 'winding', 'Type', 'Turns / Coil', 'Parallel Paths'));
   return { stator, slots, teeth, rotor, magnets, winding };
 }
 

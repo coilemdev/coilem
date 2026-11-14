@@ -23,14 +23,19 @@ async function transpileToDataUrl(moduleUrl, cache) {
       target: typescript.ScriptTarget.ES2022,
     },
     fileName: moduleUrl.pathname,
-  }).outputText;
+  }).outputText
+    // Vite's build-time flags are unset under node, as in a default build.
+    .replaceAll('import.meta.env', '({})');
 
   const relativeSpecifiers = new Set(
     [...output.matchAll(/from\s+["'](\.{1,2}\/[^"']+)["']/g)].map((match) => match[1]),
   );
   for (const specifier of relativeSpecifiers) {
     const withExtension = /\.[cm]?[jt]sx?$/.test(specifier) ? specifier : `${specifier}.ts`;
-    const childUrl = await transpileToDataUrl(new URL(withExtension, moduleUrl), cache);
+    // Vite's `?raw` imports (the bundled example designs) are the file's text.
+    const childUrl = specifier.endsWith('?raw')
+      ? `data:text/javascript;base64,${Buffer.from(`export default ${JSON.stringify(await readFile(new URL(specifier.slice(0, -'?raw'.length), moduleUrl), 'utf8'))};`, 'utf8').toString('base64')}`
+      : await transpileToDataUrl(new URL(withExtension, moduleUrl), cache);
     output = output
       .split(`"${specifier}"`).join(`"${childUrl}"`)
       .split(`'${specifier}'`).join(`'${childUrl}'`);

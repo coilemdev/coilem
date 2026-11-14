@@ -10,6 +10,11 @@ original identities. Release approval and publication remain pending; see the
 - **Guided motor design.** New Design exposes parameters progressively, with
   guided setup, rotor construction previews, winding checks and clearer invalid
   input messages. Design Health stays reachable on narrow screens.
+- **Outrunner design.** New Design builds an outrunner from its rotor inward and
+  fits the stator inside the magnets. When parts overlap or a slot and pole count
+  cannot be wound, Design Health names a size or count that fits. Field guides
+  stay visible while a preview is refused, and loaded designs use the same panel
+  order.
 - **Clearer design and field views.** Rotor previews, 3D windings, phase controls,
   layout zoom and field legends make geometry and excitation easier to inspect.
 - **Python scripting.** The [Python client](docs/PYTHON_CLIENT.md) supports
