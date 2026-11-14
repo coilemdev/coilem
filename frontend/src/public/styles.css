@@ -5295,9 +5295,18 @@ button.performance-tag { cursor: help; }
 .public-run-setup-picker input { flex: 1; min-width: 0; width: 100%; padding: 8px 10px; border: 0; border-radius: 7px 0 0 7px; color: var(--text-primary); background: transparent; font: inherit; font-size: 12px; font-weight: 600; }
 .public-run-setup-picker input:focus { outline: none; }
 .public-run-setup-picker input:not([readonly]) { background: var(--accent-soft); }
-.public-run-setup-picker select { appearance: none; flex: 0 0 36px; width: 36px; min-width: 36px; padding: 0; border: 0; border-radius: 0 7px 7px 0; color: transparent; background: transparent; cursor: pointer; }
-.public-run-setup-picker select option, .public-run-setup-picker select optgroup { color: var(--text-primary); background: var(--bg-surface-2); }
-.public-run-setup-picker::after { position: absolute; top: 50%; right: 11px; transform: translateY(-50%); color: var(--text-secondary); content: '▾'; pointer-events: none; }
+.public-run-setup-menu-trigger { display: grid; place-items: center; flex: 0 0 36px; width: 36px; min-width: 36px; padding: 0; border: 0; border-left: 1px solid var(--border-subtle); border-radius: 0 7px 7px 0; color: var(--text-secondary); background: transparent; cursor: pointer; }
+.public-run-setup-menu-trigger:hover:not(:disabled), .public-run-setup-menu-trigger[aria-expanded="true"] { color: var(--text-accent); background: var(--accent-soft); }
+.public-run-setup-menu-trigger:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -3px; }
+.public-run-setup-menu-trigger:disabled { opacity: .4; cursor: default; }
+.public-run-setup-menu { position: fixed; z-index: 1300; overflow-y: auto; overscroll-behavior: contain; padding: 5px; border: 1px solid var(--border-strong); border-radius: 9px; color: var(--text-primary); background: var(--bg-surface-1); box-shadow: 0 14px 38px rgba(0,0,0,.4); font-family: var(--font-sans); }
+.public-run-setup-menu-group { padding: 10px 10px 5px; color: var(--text-muted); font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.public-run-setup-menu [role="option"] { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 36px; padding: 8px 10px; border: 1px solid transparent; border-radius: 5px; color: var(--text-secondary); text-align: left; background: transparent; font: 12px/1.4 var(--font-sans); cursor: pointer; overflow-wrap: anywhere; }
+.public-run-setup-menu [role="option"][aria-selected="true"] { color: var(--text-accent); background: var(--accent-soft); }
+.public-run-setup-menu [role="option"][data-highlighted="true"] { border-color: var(--border-strong); background: var(--bg-surface-3); }
+.public-run-setup-menu [role="option"][aria-selected="true"][data-highlighted="true"] { border-color: color-mix(in srgb, var(--accent-primary) 45%, var(--border-default)); background: var(--accent-soft); }
+.public-run-setup-menu [role="option"]:disabled { opacity: .4; cursor: default; }
+.public-run-setup-menu-mark { flex: 0 0 14px; color: var(--text-accent); font-size: 15px; font-weight: 700; text-align: center; }
 .public-run-setup-actions { display: flex; flex: none; gap: 6px; }
 .public-run-setup-actions button { appearance: none; display: grid; place-items: center; flex: 0 0 36px; width: 36px; min-height: 36px; padding: 0; border: 1px solid var(--border-default); border-radius: 6px; color: var(--text-secondary); background: var(--bg-surface-2); cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
 .public-run-setup-actions button:hover:not(:disabled) { border-color: var(--border-strong); color: var(--text-primary); background: var(--bg-surface-3); }

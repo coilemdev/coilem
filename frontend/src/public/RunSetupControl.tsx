@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { MotorConfig, PublicSolverId } from './model';
 import { InfoTip } from './Popover';
+import { RunSetupMenu, type RunSetupOption } from './RunSetupMenu';
 import { applyProfile, captureProfile, profileCompatible, profileMatches, saveProfile,
   type SolveProfile, type SolveProfileDocument } from './solveProfiles';
 
@@ -21,6 +22,7 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
   const nameId = useId(), numericalId = useId(), hintId = useId();
   const nameInput = useRef<HTMLInputElement>(null);
   const typedName = useRef(false);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
   const [editing, setEditing] = useState<'new' | 'rename' | null>(null);
   const [name, setName] = useState('');
   const [includeNumerics, setIncludeNumerics] = useState(true);
@@ -82,9 +84,9 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
     onChange(saveProfile(document, captureProfile(config, nextName, active.includesNumerics, solver, active.id, active.version + 1)));
     setEditing(null); setFeedback(`Updated setup “${nextName}”.`);
   });
-  const select = (id: string) => change(() => {
+  const select = (id: string, focusName = true) => change(() => {
     setEditing(null); setDeleting(false); setFeedback(null);
-    if (!id) { onChange({ ...document, activeId: null, activeVersion: null }); return; }
+    if (!id) { onChange({ ...document, activeId: null, activeVersion: null }); if (focusName) requestAnimationFrame(() => nameInput.current?.focus()); return; }
     const profile = all.find(p => p.id === id);
     if (!profile) throw new Error('This setup is no longer available.');
     const next = applyProfile(config, profile);
@@ -93,11 +95,18 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
     }
   });
   const hint = editing === 'new' ? 'Enter a name, then Save. Escape or Cancel discards the name.'
-    : active?.builtin ? 'Published references are read-only. Change settings, then Save a personal copy. Choose Custom to copy the current values.'
+    : active?.builtin ? 'Published references are read-only. Change settings, then Save a personal copy. Choose New setup… to copy the current values.'
     : active && !compatible ? 'This setup belongs to a different model. Save creates a copy for this design.'
-    : active ? 'Save enables when captured settings change. Double-click the name or press F2 to rename. Choose Custom to save another setup.'
+    : active ? 'Save enables when captured settings change. Double-click the name or press F2 to rename. Choose New setup… to save another setup.'
     : 'Type a name, then Save to keep the current settings.';
   const capturesNumerics = editing === 'new' ? includeNumerics : active?.includesNumerics ?? true;
+  const menuOptions: RunSetupOption[] = [
+    { value: '', label: 'New setup…' },
+    ...builtins.filter(profile => compatibleIds.has(profile.id)).map(profile => ({ value: profile.id,
+      label: `${profile.name}${profile.id === active?.id && !unchanged ? ' (Modified)' : ''}`, group: 'Published references' })),
+    ...document.profiles.map(profile => ({ value: profile.id, group: 'Your setups', disabled: !compatibleIds.has(profile.id),
+      label: `${profile.name}${!compatibleIds.has(profile.id) ? ' (different model)' : profile.id === active?.id && !unchanged ? ' (Modified)' : ''}` })),
+  ];
   return <section className="public-run-setups" aria-label="Saved run setups">
     <div className="public-run-setup-heading">
       <label htmlFor={nameId}>Run setup</label>
@@ -111,13 +120,14 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
       <div className="public-run-setup-picker">
         <input id={nameId} ref={nameInput} aria-label="Setup name" aria-describedby={hintId}
           value={editing ? name : active ? `${active.name}${!unchanged ? ' (Modified)' : ''}` : ''} readOnly={!editing && Boolean(active)} disabled={disabled || deleting}
-          maxLength={100} placeholder={editing ? 'Setup name' : 'Custom'} onDoubleClick={beginRename}
+          maxLength={100} placeholder="Setup name" onDoubleClick={beginRename}
           title={active && !active.builtin ? 'Double-click or press F2 to rename this setup' : !active ? 'Type a name, then Save the current settings' : undefined}
           onChange={e => {
             if (!editing && !active) { typedName.current = true; setEditing('new'); setIncludeNumerics(true); }
             setName(e.target.value); setError(null); setFeedback(null);
           }}
           onKeyDown={e => {
+            if (!editing && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); menuTrigger.current?.focus(); menuTrigger.current?.click(); }
             if (e.key === 'F2' && !editing) { e.preventDefault(); if (active) beginRename(); else beginNew(); }
             if (e.key === 'Escape' && editing) { e.preventDefault(); cancel(); }
             if (e.key === 'Enter' && editing) { e.preventDefault(); if (editing === 'rename') finishRename(); else save(); }
@@ -127,17 +137,7 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
             if (e.relatedTarget instanceof HTMLElement && e.relatedTarget.hasAttribute('data-setup-save')) return;
             finishRename();
           }} />
-        <select aria-label="Run setup" value={active?.id ?? ''} disabled={disabled || deleting || editing === 'new'} onChange={e => select(e.target.value)}>
-          <option value="">Custom</option>
-          {builtins.some(p => compatibleIds.has(p.id)) && <optgroup label="Published reference setups">
-            {builtins.filter(p => compatibleIds.has(p.id)).map(p => <option key={p.id} value={p.id}>{p.name}{p.id === active?.id && !unchanged ? ' (Modified)' : ''}</option>)}
-          </optgroup>}
-          {document.profiles.length > 0 && <optgroup label="Your setups">
-            {document.profiles.map(p => <option key={p.id} value={p.id} disabled={!compatibleIds.has(p.id)}>
-              {p.name}{!compatibleIds.has(p.id) ? ' (different model)' : p.id === active?.id && !unchanged ? ' (Modified)' : ''}
-            </option>)}
-          </optgroup>}
-        </select>
+        <RunSetupMenu options={menuOptions} value={active?.id ?? ''} disabled={disabled || deleting || editing === 'new'} triggerRef={menuTrigger} onChange={select} />
       </div>
       {deleting && active ? <div className="public-run-setup-actions" role="group" aria-label="Confirm setup deletion">
         <button type="button" aria-label="Cancel" title="Cancel deletion" disabled={disabled} onClick={cancel}><SetupIcon kind="cancel" /></button>
