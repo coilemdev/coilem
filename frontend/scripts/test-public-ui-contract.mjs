@@ -2083,7 +2083,9 @@ assert.match(appSource, /layers: 'Winding layers'/);
 assert.match(landingWorkflowHeroSource, /Start a design/);
 assert.match(appSource, /<PublicGuidedSetup/);
 assert.match(appSource, /setGuidedActive\(guided\)/);
-assert.match(appSource, /const nextConfig = cloneDefaultConfig\(\)/);
+// Leaving a blank New Design for the example motor restores the starter's setup library, as Reset and launch do.
+assert.match(appSource, /if \(blankDesign\) \{\n\s+loadStarterMotor\(\);/);
+assert.match(appSource, /restoreActiveProfile\(cloneDefaultConfig\(\), loadProfileDocument\(STARTER_SETUP_SCOPE\), BUILTIN_SOLVE_PROFILES\)/);
 assert.match(appSource, /topology=\{config\.topology\}/);
 assert.match(appSource, /guidedDesignSection=\{guidedDesignSection\}/);
 assert.match(appSource, /onDesignSectionChange=\{revealGuidedDesignSection\}/);

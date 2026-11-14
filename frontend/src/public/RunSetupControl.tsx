@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { MotorConfig, PublicSolverId } from './model';
 import { InfoTip } from './Popover';
 import { applyProfile, captureProfile, profileCompatible, profileMatches, saveProfile,
@@ -26,10 +26,13 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const all = [...builtins, ...document.profiles];
+  // The workspace re-renders on every solve progress update; compare setups only when their inputs change.
+  const all = useMemo(() => [...builtins, ...document.profiles], [builtins, document.profiles]);
+  const compatibleIds = useMemo(() => new Set(all.filter(p => profileCompatible(p, config)).map(p => p.id)), [all, config]);
   const active = all.find(p => p.id === document.activeId);
-  const compatible = Boolean(active && profileCompatible(active, config));
-  const unchanged = Boolean(active && active.version === document.activeVersion && profileMatches(active, config, solver));
+  const compatible = Boolean(active && compatibleIds.has(active.id));
+  const unchanged = useMemo(() => Boolean(active && active.version === document.activeVersion && profileMatches(active, config, solver)),
+    [active, document.activeVersion, config, solver]);
   const nameChanged = editing === 'rename' && Boolean(active && name.trim() !== active.name);
   const saveDisabled = disabled || Boolean(editing !== 'new' && active && unchanged && !nameChanged);
   useEffect(() => { setEditing(null); setDeleting(false); setError(null); setFeedback(null); }, [document.scope]);
@@ -119,12 +122,12 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
           }} />
         <select aria-label="Run setup" value={active?.id ?? ''} disabled={disabled || deleting || editing === 'new'} onChange={e => select(e.target.value)}>
           <option value="">Custom</option>
-          {builtins.some(p => profileCompatible(p, config)) && <optgroup label="Published reference setups">
-            {builtins.filter(p => profileCompatible(p, config)).map(p => <option key={p.id} value={p.id}>{p.name}{p.id === active?.id && !unchanged ? ' (Modified)' : ''}</option>)}
+          {builtins.some(p => compatibleIds.has(p.id)) && <optgroup label="Published reference setups">
+            {builtins.filter(p => compatibleIds.has(p.id)).map(p => <option key={p.id} value={p.id}>{p.name}{p.id === active?.id && !unchanged ? ' (Modified)' : ''}</option>)}
           </optgroup>}
           {document.profiles.length > 0 && <optgroup label="Your setups">
-            {document.profiles.map(p => <option key={p.id} value={p.id} disabled={!profileCompatible(p, config)}>
-              {p.name}{!profileCompatible(p, config) ? ' (different model)' : p.id === active?.id && !unchanged ? ' (Modified)' : ''}
+            {document.profiles.map(p => <option key={p.id} value={p.id} disabled={!compatibleIds.has(p.id)}>
+              {p.name}{!compatibleIds.has(p.id) ? ' (different model)' : p.id === active?.id && !unchanged ? ' (Modified)' : ''}
             </option>)}
           </optgroup>}
         </select>

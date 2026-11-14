@@ -1,4 +1,4 @@
-import { parseProfileDocument, type SolveProfileDocument } from './solveProfiles';
+import { readProfileDocument, type SolveProfileDocument } from './solveProfiles';
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema';
 import { parseTorqueSpeedSettings, torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
@@ -39,6 +39,8 @@ export interface ParsedDesignFile {
   fromFuture: boolean;
   solverSettingsNotice: string | null;
   runSetups?: SolveProfileDocument;
+  /** Saved run setups that could not be read; the motor still opens without them. */
+  runSetupsNotice: string | null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -237,8 +239,14 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   config.solve_options.thd_analysis = config.solve_options.back_emf && (solve.solve_quality === 'standard'
     || solve.solve_quality === 'fine');
   const name = typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : null;
+  const setups = readProfileDocument(raw.run_setups);
   return {
-    name, config, runSetups: parseProfileDocument(raw.run_setups), declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,
+    name, config, runSetups: setups.document, declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,
+    runSetupsNotice: setups.error
+      ? 'Its saved run setups use a format this version cannot read, so they were not loaded.'
+      : setups.skipped
+        ? `${setups.skipped === 1 ? 'One saved run setup' : `${setups.skipped} saved run setups`} could not be read and ${setups.skipped === 1 ? 'was' : 'were'} skipped.`
+        : null,
     solverSettingsNotice: solverSettingsChanged
       ? 'Solver settings changed to WST torque and Direct Cholesky for the public app. Other methods are available in the dev build.'
       : null,

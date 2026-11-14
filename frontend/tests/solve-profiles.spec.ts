@@ -242,3 +242,38 @@ test('ordinary setup application preserves accuracy and submits its versioned id
   expect(submitted.run_setup).toMatchObject({ id, version: 1, name: 'Operating only', kind: 'user', includes_numerics: false });
   expect(submitted.config.solve_params.solve_quality).toBe('quick');
 });
+
+test('setup libraries follow the design through Reset and the rotor-arrangement switch', async ({ page }, info) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  await start(page);
+  const selector = page.getByRole('combobox', { name: 'Run setup', exact: true });
+  const current = async () => (await operating(page)).getByRole('spinbutton', { name: 'Phase Current', exact: true });
+  await (await current()).fill('22'); await (await current()).press('Tab');
+  await saveSetup(page, 'Starter point');
+  const starterId = await selector.inputValue();
+  await (await current()).fill('30'); await (await current()).press('Tab');
+  // Reset returns the starter with its active setup applied, as a reload does.
+  await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Reset to example design', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await expect(selector).toHaveValue(starterId);
+  await expect(await current()).toHaveValue('22');
+  // A design opened from a file keeps its own library through Outrunner and back.
+  const original = await saveFile(page, info.outputPath('starter.coilem'));
+  delete original.run_setups;
+  await page.locator('input[type="file"][accept*=".coilem"]').setInputFiles({ name: 'other.coilem', mimeType: 'application/json',
+    buffer: Buffer.from(JSON.stringify({ ...original, name: 'Other motor' })) });
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await expect(selector.locator('option', { hasText: 'Starter point' })).toHaveCount(0);
+  await saveSetup(page, 'File point');
+  const fileId = await selector.inputValue();
+  await page.getByRole('button', { name: '← Back to Design', exact: true }).click();
+  const arrangement = page.getByRole('group', { name: 'Rotor arrangement', exact: true });
+  await arrangement.getByRole('button', { name: /Outrunner/ }).click();
+  await expect(arrangement.getByRole('button', { name: /Outrunner/ })).toHaveAttribute('aria-pressed', 'true');
+  await arrangement.getByRole('button', { name: /Inrunner/ }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await expect(selector).toHaveValue(fileId);
+  await expect(selector.locator('option', { hasText: 'Starter point' })).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

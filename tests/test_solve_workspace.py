@@ -685,6 +685,8 @@ def test_run_setups_are_portable_snapshots_with_immutable_result_labels(tmp_path
     assert loaded["result"]["solve_metadata"]["run_setup"]["version"] == 1
     assert loaded["request"]["submitted"]["run_setup"]["version"] == 1
     assert loaded["project"]["run_setups"]["scope"] == "motor-1"
+    # The library is stored once, in the project snapshot; the request keeps only the label.
+    assert "run_setups" not in loaded["request"]["submitted"]
     assert loaded["request"]["resolved_config"] == VALID_CONFIG
     assert "run_setup" not in original["solve_metadata"]
 
@@ -714,3 +716,30 @@ def test_setup_metadata_does_not_change_resolved_physics() -> None:
     assert before.model_dump() == after.model_dump()
     with pytest.raises(PublicConfigError, match="must be an object"):
         parse_public_solve_request({"config": VALID_CONFIG, "run_setup": "invalid"})
+
+
+def test_unreadable_setup_library_never_blocks_a_run(tmp_path: Path) -> None:
+    workspace = SolveWorkspace(tmp_path / "nan")
+    setups = {"schema": 1, "scope": "motor-1", "profiles": [float("nan")]}
+    writer = workspace.begin_run(project_name="Motor", config=VALID_CONFIG,
+                                 submitted_request={"config": VALID_CONFIG, "run_setups": setups})
+    location = writer.complete(_result())
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert "run_setups" not in loaded["project"]
+
+
+@pytest.mark.parametrize(
+    ("name", "value", "message"),
+    [
+        ("run_setups", {"schema": 1, "scope": "s", "profiles": [float("nan")]}, "finite"),
+        ("run_setup", {"id": "a", "version": float("inf")}, "finite"),
+        ("run_setups", {"schema": 1, "scope": "s", "profiles": ["x" * (256 * 1024)]}, "too large"),
+        ("run_setup", {"name": "x" * 5000}, "too large"),
+    ],
+)
+def test_setup_metadata_must_be_finite_bounded_json(name: str, value: dict, message: str) -> None:
+    from backend.public_policy import PublicConfigError, parse_public_solve_request
+
+    with pytest.raises(PublicConfigError, match=message):
+        parse_public_solve_request({"config": VALID_CONFIG, name: value})

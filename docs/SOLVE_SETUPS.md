@@ -24,17 +24,32 @@ the tooltip; press **Escape** to dismiss it.
 
 User setups are stored locally in this browser for the current design. Reopening
 the same original file, or reloading an example, restores its active setup and
-the settings it captured. The default includes the accuracy plan, mesh and
-advanced options. Files without
+the settings it captured. The starter motor and the gallery's SPM 8p/12s example
+share one library, and **Reset** restores the starter with its active setup, as
+launching the app does. Switching the rotor arrangement to Outrunner and back
+returns the previous inrunner with its own library. The default includes the
+accuracy plan, mesh and advanced options. Files without
 setup metadata are identified by their contents, so a different design with the
 same filename keeps its own library.
 
+Settings left at their catalogue default (20 C magnet and winding temperature,
+no mechanical loss) stay unset in a setup. Applying a setup therefore never adds
+an explicit temperature to a magnet grade without cited temperature data, or to
+the LRK reference, which both refuse one.
+
 Save the `.coilem` design file to keep a portable copy of the setups, their active
 identity/version and the actual settings. Opening that portable file preserves
-its exact settings, including any unsaved changes to the selected setup. This
+its exact settings, including any unsaved changes to the selected setup. Its
+setups join this browser's library for the same design; where both hold the
+same setup, the newer version is kept, so opening an older copy never removes
+setups or versions saved since. This
 also works when browser storage is unavailable; a notice explains that the
 design file must be saved. Older files start without setups, and earlier app
 versions may discard setups when saving a design again.
+
+A setup this version cannot read, for example one saved by a newer coilEM, is
+skipped with a notice. The motor and the other setups still open, and browser
+storage keeps the unreadable copy beside the library instead of overwriting it.
 
 ## Reference setups
 
@@ -53,6 +68,8 @@ a personal copy after asking for a name. Built-ins cannot be updated, renamed or
 
 The Prius magnet-temperature control selects the supported 20 C or 60 C
 reference material case while preserving the other operating settings. The
+recorded case ID then names that magnet case; the run's speed and current are
+the values shown in Solve, as for any edited reference operating point. The
 nonlinear iteration cap is visible and editable under Advanced options.
 
 Reference setups describe registered software comparisons, not measured Prius
@@ -64,7 +81,12 @@ A run stores the submitted setup's ID, version and name alongside the actual
 resolved request. Its result displays that recorded name/version. Later profile
 updates or renames cannot relabel an earlier run. Modified or Custom conditions
 do not claim to be an unchanged saved setup. Saved run projects/packages retain
-the setup library snapshot for replay.
+the setup library snapshot for replay; the request record keeps only the
+submitted setup's label. Opening a saved run keeps this browser's current library
+for that design and selects the run's setup only while that version still exists.
+The snapshot is used when this browser has no library for the design. Setup
+metadata in a solve request must be plain JSON with finite numbers, and the
+library is limited to 256 KB.
 
 THD availability follows the selected accuracy plan. When accuracy and solver
 settings are excluded, the torque-speed map's grid stays separately selectable;

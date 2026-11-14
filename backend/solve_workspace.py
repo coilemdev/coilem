@@ -414,6 +414,23 @@ def _qualification(config: Mapping[str, Any]) -> dict[str, Any] | None:
         return None
 
 
+#: Largest saved-setup library a run keeps; the public solve policy refuses larger ones.
+RUN_SETUPS_MAX_BYTES = 256 * 1024
+
+
+def _run_setups_snapshot(raw: Any) -> dict[str, Any] | None:
+    """The submitted setup library, kept once in the run's project snapshot for replay."""
+    if not (isinstance(raw, Mapping) and type(raw.get("schema")) is int and raw["schema"] == 1
+            and isinstance(raw.get("scope"), str) and 0 < len(raw["scope"]) <= 200
+            and isinstance(raw.get("profiles"), list) and len(raw["profiles"]) <= 100):
+        return None
+    try:
+        size = len(_canonical_json_bytes(raw))
+    except (TypeError, ValueError):
+        return None
+    return deepcopy(dict(raw)) if size <= RUN_SETUPS_MAX_BYTES else None
+
+
 def _submitted_run_setup(submitted: Mapping[str, Any]) -> dict[str, Any] | None:
     """A submitted display label, never an input to physics or qualification."""
     raw = submitted.get("run_setup")
@@ -443,7 +460,11 @@ class SolveRunWriter:
         self.project_name = project_name.strip() or "Untitled"
         self.project_slug = _slug(_project_base_name(self.project_name), fallback="untitled")
         self.config = deepcopy(dict(config))
-        self.submitted_request = deepcopy(dict(submitted_request))
+        submitted = deepcopy(dict(submitted_request))
+        # The setup library is stored once, in the project snapshot; the request keeps the
+        # submitted setup's label (run_setup) beside the resolved configuration.
+        self._run_setups = _run_setups_snapshot(submitted.pop("run_setups", None))
+        self.submitted_request = submitted
         self.started_at = _utc_text()
         self.application_commit = _application_commit()
         self.run_id, self.partial_path, self.final_path = workspace._allocate_run_paths(self.project_slug)
@@ -479,12 +500,8 @@ class SolveRunWriter:
 
     def _project_snapshot(self) -> dict[str, Any]:
         project = _project_payload(self.config, self.project_name)
-        setups = self.submitted_request.get("run_setups")
-        if (isinstance(setups, Mapping) and setups.get("schema") == 1
-                and isinstance(setups.get("scope"), str) and len(setups["scope"]) <= 200
-                and isinstance(setups.get("profiles"), list) and len(setups["profiles"]) <= 100
-                and len(_canonical_json_bytes(setups)) <= 256 * 1024):
-            project["run_setups"] = deepcopy(dict(setups))
+        if self._run_setups is not None:
+            project["run_setups"] = deepcopy(self._run_setups)
         return project
 
     def _mark_closed(self) -> None:

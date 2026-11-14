@@ -550,8 +550,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 14451,
-      "sha256": "636d3cc468a240cf6650395ace9082165b7bb7b0c26464f8033670ca75043836"
+      "bytes": 15176,
+      "sha256": "df4e220107be5bb2f107c5f545af2a8a2af30863639ecd6e904fd00ade13b6e9"
     },
     {
       "path": "backend/public_report.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 61087,
-      "sha256": "01c27c1d0789b232d22c7edfe162e84da4fd5845ee76158496be6fc6f842363b"
+      "bytes": 61783,
+      "sha256": "c05a1c1e79145e434ad20e61cacc7c3b5f6da4252958cfffaa1c0897da381f17"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178200,
-      "sha256": "9d56c0dd899022db17b5281dd956ce2809dcb54529e500556296bf670f49defb"
+      "bytes": 178463,
+      "sha256": "037391543d2bc7d88a4bd8ae7bf5b266653517d0caed80626dff7d5911798da2"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 86718,
-      "sha256": "7bb56630ea702d2e94179c5d4601abf97d42c1b738351679652e5e00d107e265"
+      "bytes": 88558,
+      "sha256": "32150b0c40cbfd00442f54114d00b2e08cad5ee49f47ad230b87ccf85652e064"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7205,8 +7205,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 16108,
-      "sha256": "8d6bbb0229854492f4c3e7767e37c49a0287c5432b7bf6374c9343eefaa20a17"
+      "bytes": 16599,
+      "sha256": "8874c2ed6a5bbf0f9df7f4fd0597330c628a6aae30e1cd1758f08f0f2353b3b9"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -8375,8 +8375,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 27014,
-      "sha256": "3977796831c6d35ff10c544b8db11113e651eb7812643a423d68c5e9ac9c6795"
+      "bytes": 28472,
+      "sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -18720,18 +18720,18 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 4124,
-      "sha256": "1d268deef3953d96ae787e161cdde612a25879e5ece6a0118133fb08849b10e4"
+      "bytes": 5633,
+      "sha256": "cf3b6a43ae5c3f1fad3670b66a402120c0fa6996404dee9a7ee00ed5d7c87151"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
-      "bytes": 6470,
-      "sha256": "6ff12c2e3c9e5b1f111bf77d8f26fcda1b408cc6322483fa7eddaaf20a8e1390"
+      "bytes": 11821,
+      "sha256": "0d7d26d4f08a57da43e2ecb177b0a439354c8dc4d2e7f8d0515ecdda0d6abd07"
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 10870,
-      "sha256": "a40636d62cce55def51a32deb6b22682306375221063c108318f8de5eb4d7aa8"
+      "bytes": 11202,
+      "sha256": "0935149b789da9673d9037a9a3ab11594fc4aa87e26f1825300bac402363d592"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18740,18 +18740,18 @@
     },
     {
       "path": "frontend/src/public/profileStorage.ts",
-      "bytes": 1119,
-      "sha256": "c4f96963e8e5b749f3f4100312ce28eb7a323745a75adf8dd48e864dba266b66"
+      "bytes": 2095,
+      "sha256": "826137da6c93e0862a1df65917f394d73ed771c48e367ed25bb3c7dafbb2393e"
     },
     {
       "path": "frontend/src/public/solveProfiles.ts",
-      "bytes": 13263,
-      "sha256": "b1b2f18248b93305020e74f0c66c6ef06a93cbad1d578eeecb9db32d26b07874"
+      "bytes": 17318,
+      "sha256": "4ba04d2d923331334b0e6319803db2473d7d7df4fd7b8ae087db4ee01aea99d7"
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 16193,
-      "sha256": "1215895506899a0beb30a578250c6f7961f69194f4dc6b5476b666c1820c1a0a"
+      "bytes": 18653,
+      "sha256": "0d03f4f46971df4b10d744ce491f707ca55a704a55f2ebf02972bf27fb676fc0"
     }
   ],
   "public_patches": [
