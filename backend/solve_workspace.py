@@ -1272,9 +1272,31 @@ class SolveWorkspace:
             })
             compact_waveforms[result_field] = waveform
 
+        # Read the integrity-bound request as recorded. Parsing it through today's
+        # MotorConfig would fill missing historical inputs with current defaults.
+        request = loaded.get("request")
+        request = request if isinstance(request, Mapping) else {}
+        resolved = request.get("resolved_config")
+        submitted = request.get("submitted")
+        submitted = submitted if isinstance(submitted, Mapping) else {}
+        result_metadata = loaded.get("result", {}).get("solve_metadata", {})
+        result_metadata = result_metadata if isinstance(result_metadata, Mapping) else {}
+        setup = result_metadata.get("run_setup")
+        inputs = {
+            "config": deepcopy(dict(resolved)) if isinstance(resolved, Mapping) else None,
+            "solver": submitted.get("solver") if isinstance(submitted.get("solver"), str) else None,
+            "solver_name": result_metadata.get("solver_name"),
+            "run_setup": {
+                key: deepcopy(setup[key])
+                for key in ("id", "name", "version", "kind", "includes_numerics")
+                if key in setup
+            } if isinstance(setup, Mapping) else None,
+        }
+
         return {
             "schema_version": RUN_MANIFEST_SCHEMA,
             "project_name": manifest.get("project_name"),
+            "inputs": inputs,
             "result": {
                 "summary": report_summary.get("summary", {}),
                 "solve_metadata": report_summary.get("solve_metadata", {}),

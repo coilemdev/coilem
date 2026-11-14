@@ -4777,7 +4777,8 @@ function ReportStage({
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
   const reference = publishedReference(config);
-  const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
+  const [reportMode, setReportMode] = useState<'single' | 'compare' | 'previous'>('single');
+  useEffect(() => { setReportMode('single'); }, [result]);
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
@@ -4955,8 +4956,20 @@ function ReportStage({
   ) : null;
   return (
     <div className="results-dashboard public-report-stage">
-      <div className="public-report-header"><div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div><div className="public-report-header-actions"><div className="public-report-mode" role="group" aria-label="Results view"><button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button><button type="button" className={reportMode === 'compare' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button></div><button type="button" onClick={onBack}>← Back to Solve</button></div></div>
-      {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
+      <div className="public-report-header">
+        <div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div>
+        <div className="public-report-header-actions">
+          <div className="public-report-mode" role="group" aria-label="Results view">
+            <button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button>
+            <button type="button" className={reportMode !== 'single' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button>
+            <button type="button" disabled={!result.saved_run || resultUsesElmer}
+              title={!result.saved_run ? 'This shortcut requires a saved run.' : resultUsesElmer ? 'Run comparison currently supports Magneto2D results.' : 'Use the previous completed run in this saved project as the baseline'}
+              onClick={() => setReportMode('previous')}>Compare with previous run</button>
+          </div>
+          <button type="button" onClick={onBack}>← Back to Solve</button>
+        </div>
+      </div>
+      {reportMode !== 'single' ? <PublicRunComparison key={reportMode} currentResult={result} compareWithPrevious={reportMode === 'previous'} /> : <>
       {savedRunPanel}
       <ResultInputNotes result={result} />
       {reportQualification && !qualificationChip && <QualificationNote qualification={reportQualification} />}

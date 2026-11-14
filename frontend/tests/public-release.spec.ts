@@ -1302,11 +1302,11 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
-  const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics article').filter({
+  const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics tbody tr').filter({
     has: page.getByText(label, { exact: true }),
   });
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['— N·m', '0.200 N·m']);
-  await expect(coggingRow('Cogging fundamental').locator('strong')).toHaveText(['— N·m', '0.100 N·m']);
+  await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['— N·m', '0.200 N·m', '— N·m', '—']);
+  await expect(coggingRow('Cogging fundamental').locator('td')).toHaveText(['— N·m', '0.100 N·m', '— N·m', '—']);
   await dialog.getByLabel('Run B · candidate').selectOption('regression/emf');
   await expect(coggingRow('Cogging torque p-p')).toHaveCount(0);
   await expect(coggingRow('Cogging fundamental')).toHaveCount(0);
@@ -1319,12 +1319,10 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Run A 2 positions · Run B not computed', { exact: true })).toBeVisible();
   await dialog.getByLabel('Run A · baseline').selectOption('regression/cogging');
   await dialog.getByLabel('Run B · candidate').selectOption('regression/cogging2');
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.200 N·m', '0.300 N·m']);
-  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.100 N·m+50.0% vs A');
-  await expect(coggingRow('Cogging fundamental').locator('em')).toHaveText('+0.150 N·m+150.0% vs A');
+  await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['0.200 N·m', '0.300 N·m', '+0.100 N·m', '+50.0%']);
+  await expect(coggingRow('Cogging fundamental').locator('td')).toHaveText(['0.100 N·m', '0.250 N·m', '+0.150 N·m', '+150.0%']);
   await dialog.getByLabel('Run A · baseline').selectOption('regression/zero');
-  await expect(coggingRow('Cogging torque p-p').locator('strong')).toHaveText(['0.00 N·m', '0.300 N·m']);
-  await expect(coggingRow('Cogging torque p-p').locator('em')).toHaveText('+0.30 N·m— vs A');
+  await expect(coggingRow('Cogging torque p-p').locator('td')).toHaveText(['0.00 N·m', '0.300 N·m', '+0.30 N·m', '—']);
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
@@ -1333,6 +1331,112 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   expect(solveRequests).toEqual([]);
 });
 
+
+for (const hasPrevious of [true, false]) {
+test(`Compare 2.0: Results ${hasPrevious ? 'selects the previous completed project run and shows input differences' : 'explains when no previous project run exists'}`, async ({ page }, info) => {
+  const errors: string[] = [], solves: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (['/solve', '/solve/stream', '/performance/map/stream'].includes(new URL(request.url()).pathname)) solves.push(request.url());
+  });
+  const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+from tests.test_analysis_options import config, result_for
+print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+  const baseline = JSON.parse(await readFile(new URL('../../tests/fixtures/spm_4p12s_simple.json', import.meta.url), 'utf8'));
+  baseline.rotor.magnet_thickness_mm = 4;
+  baseline.solve_params.current_amplitude_A = 20;
+  baseline.solve_params.current_amplitude_convention = 'rms';
+  delete baseline.solve_params.max_nonlinear_iterations;
+  const candidate = structuredClone(baseline);
+  candidate.rotor.magnet_thickness_mm = 4.5;
+  candidate.solve_params.current_amplitude_A = 30;
+  candidate.solve_params.max_nonlinear_iterations = 120;
+  const current = { project_slug: 'comparison-motor', run_id: 'current', project_name: 'Compare motor',
+    status: 'complete', solver_name: fixture.solve_metadata.solver_name, completed_at: '2026-11-14T12:00:00Z', path: '' };
+  const records = [
+    { ...current, project_slug: 'another-motor', run_id: 'unrelated', completed_at: '2026-11-14T11:59:00Z' },
+    { ...current, run_id: 'newer', completed_at: '2026-11-14T13:00:00Z' },
+    { ...current, run_id: 'failed', status: 'failed', completed_at: '2026-11-14T11:58:00Z' },
+    ...(hasPrevious ? [
+      { ...current, run_id: 'older', completed_at: '2026-11-14T10:00:00Z' },
+      { ...current, run_id: 'legacy', completed_at: '2026-11-14T09:00:00Z' },
+      { ...current, run_id: 'previous', completed_at: '2026-11-14T11:00:00Z' },
+    ] : []), current,
+  ];
+  await page.route('**/runs', route => route.fulfill({ json: {
+    storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true }, runs: records,
+  } }));
+  await page.route('**/runs/*/*/comparison', route => {
+    const id = new URL(route.request().url()).pathname.split('/').at(-2);
+    const setup = { id: 'profile-1', name: 'Report', version: id === 'current' ? 2 : 1, kind: 'user', includes_numerics: true };
+    return route.fulfill({ json: { result: fixture, ...(id !== 'legacy' ? { inputs: {
+      config: id === 'current' ? candidate : baseline, solver: 'magneto2d', solver_name: fixture.solve_metadata.solver_name, run_setup: setup,
+    } } : {}) } });
+  });
+  await page.route('**/runs/comparison-motor/current', route => route.fulfill({ json: {
+    integrity: { valid: true }, project: { openem_schema_version: 4, name: 'Compare motor', ...candidate },
+    request: { submitted: { solver: 'magneto2d' }, resolved_config: candidate }, result: fixture,
+    saved_run: { ...current, schema_version: 'coilem.solve_run.v2' },
+  } }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
+  await dialog.locator('[data-run-id="current"]').getByRole('button', { name: 'Open results', exact: true }).click();
+  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await page.getByRole('button', { name: 'Compare with previous run', exact: true }).click();
+  const left = page.getByRole('combobox', { name: 'Run A · baseline', exact: true });
+  const right = page.getByRole('combobox', { name: 'Run B · candidate', exact: true });
+  await expect(right).toHaveValue('comparison-motor/current');
+  if (hasPrevious) {
+    await expect(left).toHaveValue('comparison-motor/previous');
+    const changes = page.getByRole('region', { name: 'What changed between runs', exact: true });
+    await expect(changes).toBeVisible();
+    await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['4 mm', '4.5 mm']);
+    await expect(changes.locator('[data-input-path="config.solve_params.current_amplitude_A"] td')).toHaveText(['20 A rms', '30 A rms']);
+    await expect(changes.locator('[data-input-path="config.solve_params.max_nonlinear_iterations"] td')).toHaveText(['Not recorded', '120']);
+    await expect(changes.locator('[data-input-path="run_setup.version"] td')).toHaveText(['1', '2']);
+    await expect(page.getByRole('tab', { name: 'Torque overlay', exact: true })).toBeVisible();
+    const metrics = page.getByRole('table', { name: 'Results comparison', exact: true });
+    await expect(metrics.getByRole('columnheader')).toHaveText(['Metric', 'Run A · baseline', 'Run B · candidate', 'Δ (B − A)', 'Δ vs A (%)']);
+    await expect(metrics.getByRole('rowheader', { name: 'Average torque', exact: true })).toBeVisible();
+    await metrics.screenshot({ path: info.outputPath('compare-metrics-table.png') });
+    const torquePlot = page.getByRole('img', { name: 'Torque comparison waveform', exact: true });
+    const baselineTrace = torquePlot.locator('path[stroke="#f59e0b"]');
+    const candidateTrace = torquePlot.locator('path[stroke="#22d3ee"]');
+    await expect(candidateTrace).toHaveAttribute('stroke-dasharray', '7 5');
+    await expect(baselineTrace).not.toHaveAttribute('stroke-dasharray');
+    expect(await candidateTrace.getAttribute('d')).toBe(await baselineTrace.getAttribute('d')); // Coincident curves remain distinguishable.
+    const torqueLegend = page.locator('.public-waveform-legend[aria-label="Torque comparison series"]');
+    await expect(torqueLegend.getByRole('button', { name: /^Run B ·/ }).locator('i')).toHaveCSS('background-image', /repeating-linear-gradient/);
+    await torquePlot.locator('../..').screenshot({ path: info.outputPath('compare-overlap-dashed.png') });
+    await page.getByRole('tab', { name: 'Back EMF overlay', exact: true }).click();
+    const emfPlot = page.getByRole('img', { name: 'Three-phase back EMF comparison waveform', exact: true });
+    await expect(emfPlot.locator('path[stroke-dasharray="7 5"]')).toHaveCount(3);
+    await expect(emfPlot.locator('path[stroke]:not([stroke-dasharray])')).toHaveCount(3);
+    await page.screenshot({ path: info.outputPath('compare-what-changed.png'), fullPage: true });
+    await left.selectOption('comparison-motor/legacy');
+    await expect(changes).toContainText('Input snapshots were not recorded for one or both runs');
+    await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['Not recorded', '4.5 mm']);
+    await expect(page.getByText('No differences in the recorded inputs.', { exact: true })).toHaveCount(0);
+    await left.selectOption('comparison-motor/older');
+    await right.selectOption('comparison-motor/previous');
+    await expect(changes).toContainText('No differences in the recorded inputs.');
+    await expect(changes.locator('table')).toHaveCount(0);
+  } else {
+    await expect(left).toHaveValue('');
+    await expect(page.getByRole('status').filter({ hasText: 'No earlier completed Magneto2D run' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'What changed between runs', exact: true })).toHaveCount(0);
+    // Manual comparison remains available; there is no automatic unrelated baseline.
+    await left.selectOption('another-motor/unrelated');
+    await expect(page.getByRole('region', { name: 'What changed between runs', exact: true })).toBeVisible();
+  }
+  expect(errors).toEqual([]);
+  expect(solves).toEqual([]);
+});
+}
 
 test('priority fixes: pruned playback stays static and never requests removed frames', async ({ page }, info) => {
   const requests: string[] = [];
