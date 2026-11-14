@@ -1,4 +1,4 @@
-import type { MotorConfig, SolveQuality } from './model';
+import type { MotorConfig, PublicSolverId, SolveQuality } from './model';
 
 export type PublicSolvePreset = Exclude<SolveQuality, 'custom'>;
 
@@ -22,6 +22,17 @@ export const PUBLIC_SOLVE_PLAN_MESH_DENSITY = {
   standard: 'normal',
   fine: 'fine',
 } as const satisfies Record<PublicSolvePreset, MotorConfig['solve_params']['mesh_density']>;
+
+/** Loss estimates need a uniform full cycle; presets can otherwise shorten the range. */
+export function ensureLossesFullCycle(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): MotorConfig {
+  if (solver === 'elmer' || !config.solve_options.losses_efficiency) return config;
+  const params = config.solve_params;
+  const step = Number.isFinite(params.rotor_step_deg) ? params.rotor_step_deg : PUBLIC_DEFAULT_PRESET_SWEEP.rotor_step_deg;
+  const rotorStepDeg = Math.min(PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG, Math.max(PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG, step));
+  if (params.solve_quality === 'custom' && params.rotor_sweep_range_deg === PUBLIC_CUSTOM_SWEEP_RANGE_DEG && params.rotor_step_deg === rotorStepDeg && !config.solve_options.thd_analysis) return config;
+  return { ...config, solve_options: { ...config.solve_options, thd_analysis: false }, solve_params: { ...params, solve_quality: 'custom',
+    rotor_sweep_range_deg: PUBLIC_CUSTOM_SWEEP_RANGE_DEG, rotor_step_deg: rotorStepDeg } };
+}
 
 export function capturePublicPresetSweep(config: MotorConfig): PublicSweepSampling {
   return {
@@ -54,8 +65,9 @@ export function applyPublicSolvePreset(
   config: MotorConfig,
   solvePlan: PublicSolvePreset,
   presetSweep: PublicSweepSampling,
+  solver: PublicSolverId = 'magneto2d',
 ): MotorConfig {
-  return {
+  return ensureLossesFullCycle({
     ...config,
     solve_options: {
       ...config.solve_options,
@@ -67,5 +79,5 @@ export function applyPublicSolvePreset(
       mesh_density: PUBLIC_SOLVE_PLAN_MESH_DENSITY[solvePlan],
       ...presetSweep,
     },
-  };
+  }, solver);
 }

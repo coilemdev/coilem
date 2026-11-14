@@ -1,5 +1,6 @@
 import type { MotorConfig, PublicSolverId, SolveResult, SolveValidation } from './model';
 import { torqueSpeedSettings } from './torqueSpeedAnalysis';
+import { ensureLossesFullCycle } from './solvePlan';
 
 export type AnalysisKey = 'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency' | 'torque_speed_envelope';
 
@@ -28,13 +29,13 @@ export function analysisPositions(config: MotorConfig, validation: SolveValidati
     : `${ANALYSIS_LABELS[key]} ${validation.analysis_positions?.[key] ?? '—'}`).join(' · ');
 }
 
-export function setAnalysisOption(config: MotorConfig, key: AnalysisKey, enabled: boolean): MotorConfig {
+export function setAnalysisOption(config: MotorConfig, key: AnalysisKey, enabled: boolean, solver: PublicSolverId = 'magneto2d'): MotorConfig {
   const options = { ...config.solve_options, [key]: enabled };
   options.thd_analysis = options.back_emf && (config.solve_params.solve_quality === 'standard' || config.solve_params.solve_quality === 'fine');
-  return {
+  return ensureLossesFullCycle({
     ...config, solve_options: options,
     ...(key === 'torque_speed_envelope' && enabled ? { torque_speed_analysis: torqueSpeedSettings(config) } : {}),
-  };
+  }, solver);
 }
 
 export function hasTorqueResult(result: Pick<SolveResult, 'summary' | 'solve_metadata'>): boolean {

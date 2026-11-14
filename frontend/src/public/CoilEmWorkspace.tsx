@@ -134,6 +134,7 @@ import {
   PUBLIC_CUSTOM_SWEEP_DEFAULT_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG,
+  PUBLIC_SOLVE_PLAN_MESH_DENSITY,
   type PublicSolvePreset,
 } from './solvePlan';
 import {
@@ -3757,6 +3758,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
+  const lossesFullCycle = selectedSolver !== 'elmer' && config.solve_options.losses_efficiency;
+  useEffect(() => { if (lossesFullCycle) setCustomSweepOpen(true); }, [lossesFullCycle]);
   // Coming back to Solve with the same mesh and result resumes the tab and
   // mesh display that were left (solveViewMemory); anything new opens on its default.
   const [resumeSolveView] = useState(() => (
@@ -3867,7 +3870,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const weakElementCount = meshQualitySummary.weakElementIndices.length;
   const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
   const planLabel = config.solve_params.solve_quality === 'custom'
-    ? `Custom · ${config.solve_params.rotor_step_deg}° elec`
+    ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
     : solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
       ?? config.solve_params.solve_quality;
   const estimatedTimeText = validation
@@ -3917,7 +3920,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
-  const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
+  const selectedPreset = lossesFullCycle
+    ? solvePlans.find(plan => PUBLIC_SOLVE_PLAN_MESH_DENSITY[plan.value] === config.solve_params.mesh_density)?.value
+    : config.solve_params.solve_quality;
+  const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
   const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
   const runReady = Boolean(mesh)
@@ -4391,8 +4397,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
             {solvePlans.map((plan) => (
               <button
                 type="button"
-                className={config.solve_params.solve_quality === plan.value ? 'active' : ''}
-                aria-pressed={config.solve_params.solve_quality === plan.value}
+                className={selectedPreset === plan.value ? 'active' : ''}
+                aria-pressed={selectedPreset === plan.value}
                 disabled={busy !== null}
                 onClick={() => {
                   setCustomSweepOpen(false);
@@ -4403,7 +4409,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 {plan.recommended && <em>Recommended</em>}
                 <span>{plan.label}</span>
                 <small>{plan.meshLabel}</small>
-                <small>{config.solve_params.solve_quality === plan.value && validation
+                <small>{selectedPreset === plan.value && validation
                   ? estimatedTimeText
                   : plan.tradeoff}</small>
               </button>
@@ -4424,7 +4430,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 }
               }}
             >
-              <span>Custom...</span>
+              <span>{lossesFullCycle ? 'Full-cycle step' : 'Custom...'}</span>
               <small>Choose the electrical-angle step</small>
               <i aria-hidden="true">{customSweepOpen ? '▴' : '▾'}</i>
             </button>
@@ -4453,7 +4459,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
               </div>
             )}
           </div>
-          {config.solve_params.solve_quality === 'quick' && (
+          {selectedPreset === 'quick' && (
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
 

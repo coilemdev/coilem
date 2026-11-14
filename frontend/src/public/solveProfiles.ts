@@ -1,6 +1,7 @@
 import type { MotorConfig, PublicSolverId } from './model';
 import { asPublicConfig } from './publicRequest';
 import { parseTorqueSpeedSettings } from './torqueSpeedAnalysis';
+import { ensureLossesFullCycle } from './solvePlan';
 
 const OPERATING_KEYS = ['rated_speed_rpm', 'current_amplitude_A', 'current_amplitude_convention',
   'current_angle_deg', 'magnet_temperature_C', 'winding_temperature_C', 'mechanical_loss_W',
@@ -100,10 +101,10 @@ export function profileCompatible(profile: SolveProfile, config: MotorConfig): b
 export function applyProfile(config: MotorConfig, profile: SolveProfile): MotorConfig {
   if (!profileCompatible(profile, config)) throw new Error('This setup uses a different reference model, revision or current-angle convention.');
   const parameters = { ...config.solve_params, ...withUnsetDefaults(copy(profile.parameters), config) };
-  return { ...config, solve_params: parameters,
+  return ensureLossesFullCycle({ ...config, solve_params: parameters,
     solve_options: { ...copy(profile.outputs), thd_analysis: profile.outputs.back_emf && ['standard', 'fine'].includes(parameters.solve_quality) }, torque_speed_analysis: profile.map ? { ...copy(profile.map),
       preset: profile.includesNumerics ? profile.map.preset : config.torque_speed_analysis?.preset ?? 'preview' } : null,
-    ...(profile.referenceModel ? { reference_case: profile.referenceCase } : {}) };
+    ...(profile.referenceModel ? { reference_case: profile.referenceCase } : {}) });
 }
 /** Restore a browser library's active setup without carrying it to another model. */
 export function restoreActiveProfile(config: MotorConfig, document: SolveProfileDocument, builtins: SolveProfile[] = []) {

@@ -23,7 +23,7 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
     { key: 'torque_sweep', label: 'Torque', hint: 'Loaded torque waveform, mean torque and ripple.' },
     { key: 'back_emf', label: 'Back EMF', hint: 'No-current voltage waveform at the rated speed.' },
     { key: 'cogging_torque', label: 'Cogging torque', hint: 'No-current torque over one cogging period.', unavailable: elmer },
-    { key: 'losses_efficiency', label: 'Losses & efficiency', hint: 'Estimated copper and iron losses, and efficiency. Includes the loaded fields needed for losses.', unavailable: elmer,
+    { key: 'losses_efficiency', label: 'Losses & efficiency', hint: 'Estimated copper and iron losses, and efficiency. Automatically uses a full 360° electrical sweep for the loaded fields needed for iron loss.', unavailable: elmer,
       experimentalReason: 'Includes experimental iron-loss and efficiency estimates. Copper-loss qualification is reported separately in Results.' },
     { key: 'torque_speed_envelope', label: 'Torque–speed map', hint: 'Torque, power and efficiency across speeds and loads.', unavailable: elmer,
       experimentalReason: FLUX_LINKAGE_MAP_STATUS_REASON },
@@ -49,6 +49,9 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
               </div>
             </InfoTip>
           </div>
+          {row.key === 'losses_efficiency' && !elmer && options.losses_efficiency && (
+            <p className="public-losses-full-cycle" role="note">Full 360° electrical sweep selected for losses and efficiency.</p>
+          )}
           {row.key === 'torque_speed_envelope' && !elmer && options.torque_speed_envelope && (
             <TorqueSpeedSettings config={config} busy={busy} onChange={onTorqueSpeedChange} />
           )}

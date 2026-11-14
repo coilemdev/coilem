@@ -1,12 +1,13 @@
 import type { PublicMotorConfig } from './api';
 import { applyPublicSolverSettings, type MotorConfig, type PublicSolverId } from './model';
 import { torqueSpeedSettings } from './torqueSpeedAnalysis';
+import { ensureLossesFullCycle } from './solvePlan';
 
 /** The design as the local API's solve routes take it, with the public solver settings. */
 export function asPublicConfig(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): PublicMotorConfig {
   const thdAnalysis = config.solve_options.back_emf && (config.solve_params.solve_quality === 'standard'
     || config.solve_params.solve_quality === 'fine');
-  return {
+  return ensureLossesFullCycle({
     ...applyPublicSolverSettings(config),
     torque_speed_analysis: solver !== 'elmer' && config.solve_options.torque_speed_envelope
       ? torqueSpeedSettings(config) : null,
@@ -19,5 +20,5 @@ export function asPublicConfig(config: MotorConfig, solver: PublicSolverId = 'ma
       torque_speed_envelope: solver !== 'elmer' && Boolean(config.solve_options.torque_speed_envelope),
       thd_analysis: thdAnalysis,
     },
-  } as unknown as PublicMotorConfig;
+  }) as unknown as PublicMotorConfig;
 }

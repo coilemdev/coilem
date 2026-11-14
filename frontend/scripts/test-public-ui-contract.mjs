@@ -817,7 +817,7 @@ assert.match(workspaceSource, /checked=\{config\.solve_params\.corner_refinement
 assert.match(workspaceSource, /onMeshSettingChange\('corner_refinement', event\.target\.checked\)/);
 assert.doesNotMatch(workspaceSource, /defaultChecked/);
 assert.match(workspaceSource, /onSolvePlanChange\(plan\.value\)/);
-assert.match(workspaceSource, />Custom\.\.\.<\/span>/);
+assert.match(workspaceSource, /lossesFullCycle \? 'Full-cycle step' : 'Custom\.\.\.'/);
 assert.match(workspaceSource, /label="Step Size \(° elec\)"/);
 assert.match(workspaceSource, /PUBLIC_CUSTOM_SWEEP_DEFAULT_STEP_DEG/);
 assert.match(workspaceSource, /No-current electrical sweep/);

@@ -55,6 +55,13 @@ their reasons remain available beside values. Missing analysis records stay
 and known subtotals use separate rows, and partial shaft outputs exclude iron
 loss and are compared only with other partial outputs. If neither run has loss
 data, the section explains how to enable it for a new analysis.
+Selecting **Losses & efficiency** now prepares a full 360° electrical sweep
+automatically for future analyses. Mesh choices and angular step remain
+adjustable. Applying an older setup or opening a design with a short loss sweep
+also prepares a full cycle; saved setup versions are updated only when explicitly
+saved. The public request uses the existing custom full-cycle grid, so accuracy
+presets cannot shorten a loss sweep. Archived comparison inputs and results
+retain their original settings.
 
 **Solve time breakdown**, last after losses, compares total elapsed time, meshing, field solve and
 packaging with absolute and percentage deltas. These are the recorded elapsed
