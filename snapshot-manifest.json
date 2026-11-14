@@ -8340,8 +8340,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 31701,
-      "sha256": "81cd2d625004f168740fc17767bc6ae3040a339a93c845660a8dd621d3d11305"
+      "bytes": 33856,
+      "sha256": "38eb895b8cb1e2d88f03370d94fdddcac0c8a8ce723b11f1d9d749c8b8df91dc"
     },
     {
       "path": "tests/test_shoed_benchmark_case.py",
@@ -8545,8 +8545,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 22713,
-      "sha256": "d32351f91691530f412666e72ccbfeb5621710c94203bdf14f38dc434042d74d"
+      "bytes": 25990,
+      "sha256": "da22784c0b3b33ceac65262215f82b60228ead6c9da699bee8fa2fde86393ad3"
     },
     {
       "path": "tools/release/artifacts.py",
