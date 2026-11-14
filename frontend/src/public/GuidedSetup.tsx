@@ -45,6 +45,17 @@ export const PUBLIC_GUIDED_STOPS: GuidedStop[] = [
     title: 'Solved — open the report' },
 ];
 
+/** The stops for this motor. An outrunner is built from its rotor inward, as Design orders its sections. */
+export function guidedStops(topology: MotorConfig['topology'], outer: boolean): GuidedStop[] {
+  const stops = PUBLIC_GUIDED_STOPS.filter((stop) => stop.id !== 'ipm-layout' || topology === 'IPM');
+  if (!outer) return stops;
+  const rotor = stops.find((stop) => stop.id === 'rotor')!;
+  const rest = stops.filter((stop) => stop !== rotor);
+  const at = rest.findIndex((stop) => stop.id === 'stator');
+  return [...rest.slice(0, at), { ...rotor, title: 'Start with the rotor and magnets' },
+    ...rest.slice(at).map((stop) => stop.id === 'stator' ? { ...stop, title: 'Fit the stator inside the rotor' } : stop)];
+}
+
 interface PublicGuidedSetupProps {
   activeStep: GuidedWorkflowStep;
   activeDesignSection: PublicParameterSection | null;
@@ -70,7 +81,9 @@ export function PublicGuidedSetup({ activeStep, activeDesignSection, topology, r
   const [reviewed, setReviewed] = useState<string[]>([]);
   const [host, setHost] = useState<HTMLElement | null>(null);
   const priorChoices = useRef({ layout: entry?.layout, topology: entry?.topology, ready: entry?.ready });
-  const stops = useMemo(() => PUBLIC_GUIDED_STOPS.filter((stop) => stop.id !== 'ipm-layout' || topology === 'IPM'), [topology]);
+  const outer = entry?.layout === 'outer';
+  const stops = useMemo(() => guidedStops(topology, outer), [topology, outer]);
+  const firstDesignStop = outer ? 'rotor' : 'stator';
   const index = Math.max(0, stops.findIndex((stop) => stop.id === currentId));
   const stop = stops[index];
 
@@ -118,9 +131,9 @@ export function PublicGuidedSetup({ activeStep, activeDesignSection, topology, r
     priorChoices.current = { layout: entry?.layout, topology: entry?.topology, ready: entry?.ready };
     if (activeStep !== 'design') return;
     if (entry?.layout && entry.layout !== previous.layout) { setReviewed([]); showStop('topology'); }
-    else if (entry?.topology && entry.topology !== previous.topology) { setReviewed([]); showStop(entry.topology === 'IPM' ? 'ipm-layout' : 'stator'); }
-    else if (entry?.ready && !previous.ready) showStop('stator');
-  }, [activeStep, entry?.layout, entry?.topology, entry?.ready, showStop]);
+    else if (entry?.topology && entry.topology !== previous.topology) { setReviewed([]); showStop(entry.topology === 'IPM' ? 'ipm-layout' : firstDesignStop); }
+    else if (entry?.ready && !previous.ready) showStop(firstDesignStop);
+  }, [activeStep, entry?.layout, entry?.topology, entry?.ready, firstDesignStop, showStop]);
 
   // Sidebar Continue Setup and completed-section visits use the same guide.
   useEffect(() => {

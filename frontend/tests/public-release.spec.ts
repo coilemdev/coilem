@@ -467,9 +467,18 @@ for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inru
       await expect(next).toBeDisabled();
       await page.getByRole('group', { name: 'IPM rotor layout', exact: true }).getByRole('button', { name: /^V-shape/ }).click();
     }
-    await expect(title).toHaveText('Build the stator from outside inward');
-    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).toBeFocused();
-    for (const input of await page.locator('[data-guide="section-stator"]').getByRole('spinbutton').all()) await expect(input).toHaveValue('');
+    // Each motor is built from the outside inward: an inrunner from its stator, an outrunner from its rotor.
+    const outer = scenario.layout === 'Outrunner';
+    const stops = outer ? ['rotor', 'stator', 'advanced'] as const : ['stator', 'advanced', 'rotor'] as const;
+    const titles = { stator: outer ? 'Fit the stator inside the rotor' : 'Build the stator from outside inward',
+      advanced: 'Shape the teeth and slots', rotor: outer ? 'Start with the rotor and magnets' : 'Shape the rotor and magnets' };
+    const sectionOf = (stop: typeof stops[number]) => page.locator(`[data-guide="section-${stop}"]`);
+    const firstControl = (stop: typeof stops[number]) => stop === 'advanced'
+      ? sectionOf(stop).getByRole('group', { name: 'Tooth Profile', exact: true }).getByRole('button', { name: 'Plain', exact: true })
+      : sectionOf(stop).getByRole('spinbutton', { name: stop === 'stator' ? 'Outer Diameter' : outer ? 'Rotor OD' : 'Pole Count', exact: true });
+    await expect(title).toHaveText(titles[stops[0]]);
+    await expect(firstControl(stops[0])).toBeFocused();
+    for (const input of await sectionOf(stops[0]).getByRole('spinbutton').all()) await expect(input).toHaveValue('');
     await expect(next).toBeDisabled();
     await page.getByRole('button', { name: 'Expand motor view', exact: true }).click();
     await expect(page.locator('.public-parameter-panel')).not.toBeVisible();
@@ -477,26 +486,26 @@ for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inru
     expect((await coach.boundingBox())!.width).toBeGreaterThan(250);
     await page.getByRole('button', { name: 'Restore side panels', exact: true }).click();
     await expect(page.locator('.public-parameter-panel')).toBeVisible();
-    await configureSection(page, 'stator');
+    await configureSection(page, stops[0]);
     await expect(next).toBeEnabled();
     await next.click();
-    await expect(title).toHaveText('Shape the teeth and slots');
-    await expect(page.locator('[data-guide="section-advanced"]').getByRole('group', { name: 'Tooth Profile', exact: true }).getByRole('button', { name: 'Plain', exact: true })).toBeFocused();
+    await expect(title).toHaveText(titles[stops[1]]);
+    await expect(firstControl(stops[1])).toBeFocused();
     await expect(next).toBeDisabled();
     await coach.getByRole('button', { name: 'Back', exact: true }).click();
-    await expect(title).toHaveText('Build the stator from outside inward');
-    await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).not.toHaveValue('');
+    await expect(title).toHaveText(titles[stops[0]]);
+    await expect(firstControl(stops[0])).not.toHaveValue('');
     await next.click();
-    await configureSection(page, 'advanced');
+    await configureSection(page, stops[1]);
     await next.click();
-    await expect(title).toHaveText('Shape the rotor and magnets');
-    await expect(page.locator('[data-guide="section-rotor"]').getByRole('spinbutton', { name: 'Pole Count', exact: true })).toBeFocused();
+    await expect(title).toHaveText(titles[stops[2]]);
+    await expect(firstControl(stops[2])).toBeFocused();
     if (scenario.topology === 'IPM') {
       for (const [name,value] of [['Pole Count','8'],['Rotor OD','58'],['Magnet Thick.','2'],['Magnet Width','5'],['V Angle','40'],['V Depth','12']]) {
         await page.locator('[data-guide="section-rotor"]').getByRole('spinbutton', { name, exact: true }).fill(value);
       }
     }
-    await configureSection(page, 'rotor');
+    await configureSection(page, stops[2]);
     await next.click();
     await expect(title).toHaveText('Define the winding');
     await configureSection(page, 'winding');
@@ -527,7 +536,7 @@ for (const scenario of [{ layout: 'Inrunner', topology: 'SPM' }, { layout: 'Inru
     await expect(guidedNav.locator('.is-complete')).toHaveCount(scenario.topology === 'IPM' ? 8 : 7);
     await operating.getByRole('spinbutton', { name: 'Rated Speed', exact: true }).fill('6500');
     await guidedNav.getByRole('button', { name: /Stator/ }).click();
-    await expect(title).toHaveText('Build the stator from outside inward');
+    await expect(title).toHaveText(titles.stator);
     await expect(page.locator('[data-guide="section-stator"]').getByRole('spinbutton', { name: 'Outer Diameter', exact: true })).not.toHaveValue('');
     await guidedNav.getByRole('button', { name: /Operating point/ }).click();
     await expect(title).toHaveText('Review the operating point');

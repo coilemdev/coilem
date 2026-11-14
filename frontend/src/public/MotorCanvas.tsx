@@ -1760,7 +1760,12 @@ export function MotorCanvas({
     [overlayDimensions, overlaySlots, overlayTeeth, overlayWindings],
   );
   const annotations = useMemo(
-    () => (config && !geometryStale && (overlayDimensions || editingDimension) ? buildDimensionAnnotations(config, geometry) : []),
+    // Measures follow the entered values, so a guide stays on screen while a preview is
+    // pending or was refused (an invalid rotor, say). A stale preview only places them
+    // around the motor; its measured metadata (air gap, widths) would be out of date.
+    () => (config && (overlayDimensions || editingDimension)
+      ? buildDimensionAnnotations(config, geometryStale && geometry ? { ...geometry, metadata: {} } : geometry)
+      : []),
     [config, geometry, geometryStale, overlayDimensions, editingDimension],
   );
 
