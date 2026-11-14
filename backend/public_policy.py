@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from typing import Any, Literal, cast
 
@@ -160,6 +161,25 @@ def parse_public_motor_config(
     return config
 
 
+def _check_run_setup_metadata(body: dict[str, Any]) -> None:
+    """Saved-setup labels are display metadata: plain, finite and bounded JSON objects."""
+
+    from backend.solve_workspace import RUN_SETUPS_MAX_BYTES
+
+    for name, limit in (("run_setup", 4 * 1024), ("run_setups", RUN_SETUPS_MAX_BYTES)):
+        value = body.get(name)
+        if value is None:
+            continue
+        if not isinstance(value, dict):
+            raise PublicConfigError("Run-setup metadata must be an object.", field=name)
+        try:
+            encoded = json.dumps(value, allow_nan=False, ensure_ascii=False, separators=(",", ":"))
+        except (TypeError, ValueError):
+            raise PublicConfigError("Run-setup metadata must contain only finite JSON values.", field=name) from None
+        if len(encoded.encode("utf-8")) > limit:
+            raise PublicConfigError("Run-setup metadata is too large.", field=name)
+
+
 def parse_public_solve_request(
     body: dict[str, Any],
     *,
@@ -181,6 +201,8 @@ def parse_public_solve_request(
         unexpected = set(body) - {
             "config",
             "project_name",
+            "run_setup",
+            "run_setups",
             "solve_mesh_key",
             "solver",
         }
@@ -188,6 +210,7 @@ def parse_public_solve_request(
             raise PublicConfigError(
                 "Solve request contains unsupported wrapper fields.",
             )
+        _check_run_setup_metadata(body)
         raw_config = body.get("config")
         if not isinstance(raw_config, dict):
             raise PublicConfigError(

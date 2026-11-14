@@ -19,6 +19,14 @@ field provenance. Later CI/test and evidence commits preserve those measured
 identities and must retain identical guarded physics. No freeze tag is needed
 to identify the immutable measured commit.
 
+## Continued 0.5.8 development
+
+After merging #292, the release owner held public PyPI publication to combine
+more work into 0.5.8. [Saved run setups](SOLVE_SETUPS.md) (#127) are an additive
+workflow feature. The registered numerical sources remain unchanged, so the
+published physics evidence still applies; freeze and verify the final
+application/UI candidate and its wheels before publication.
+
 ## Required before publication
 
 - [x] Rebase release work onto current main and retain historical metadata.
@@ -26,7 +34,7 @@ to identify the immutable measured commit.
 - [x] Bump Magneto2D to 0.6.0 for the changed solver sources, before freezing.
 - [x] Prepare release notes and disclose unresolved limitations.
 - [x] Freeze the exact versioned candidate and record immutable identities.
-- [x] Pass candidate CI, backend/native tests and browser workflows.
+- [ ] Pass final candidate CI, backend/native tests and browser workflows after the additional 0.5.8 work.
 - [x] Complete registered protocol 1.10.0 A–F and separate complete Prius
   qualification on Windows x86-64 and macOS arm64. Publish matching evidence
   and pass `python -m tools.release.qualification --candidate FULL_SHA`.
@@ -35,7 +43,7 @@ to identify the immutable measured commit.
 - [x] Record the release owner's decision to defer #234 and the remaining
   convergence work in #285 to the next release, with limitations disclosed below.
   Both issues remain open; neither is treated as technically fixed.
-- [x] Build all four supported platform wheels and pass installed-package
+- [ ] Build all four supported platform wheels for the final application candidate and pass installed-package
   acceptance, including startup, motor/Halbach/tutorial solves, save/reopen,
   exports, interrupt during solve and native process cleanup.
 - [ ] Review and merge the release PR only after required evidence is accepted.

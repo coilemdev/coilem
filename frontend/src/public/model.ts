@@ -552,6 +552,7 @@ export interface SolveResult {
     }>;
   } | null;
   solve_metadata: {
+    run_setup?: { id: string; version: number; name: string; kind: 'reference' | 'user'; includes_numerics: boolean };
     solver_name: string;
     mesh_element_count: number;
     rotor_positions: number;

@@ -200,6 +200,8 @@ jobs:
             command: npx playwright test --config playwright.public.config.ts tests/progressive-design.spec.ts --shard=1/2
           - suite: progressive-design-2
             command: npx playwright test --config playwright.public.config.ts tests/progressive-design.spec.ts --shard=2/2 && npx playwright test --config playwright.performance-harness.config.ts
+          - suite: solve-profiles
+            command: npx playwright test --config playwright.public.config.ts tests/solve-profiles.spec.ts
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0

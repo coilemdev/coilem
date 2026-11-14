@@ -1,3 +1,4 @@
+import { readProfileDocument, type SolveProfileDocument } from './solveProfiles';
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema';
 import { parseTorqueSpeedSettings, torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
@@ -37,6 +38,9 @@ export interface ParsedDesignFile {
   declaredSchemaVersion: number;
   fromFuture: boolean;
   solverSettingsNotice: string | null;
+  runSetups?: SolveProfileDocument;
+  /** Saved run setups that could not be read; the motor still opens without them. */
+  runSetupsNotice: string | null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -235,8 +239,14 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   config.solve_options.thd_analysis = config.solve_options.back_emf && (solve.solve_quality === 'standard'
     || solve.solve_quality === 'fine');
   const name = typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : null;
+  const setups = readProfileDocument(raw.run_setups);
   return {
-    name, config, declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,
+    name, config, runSetups: setups.document, declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,
+    runSetupsNotice: setups.error
+      ? 'Its saved run setups use a format this version cannot read, so they were not loaded.'
+      : setups.skipped
+        ? `${setups.skipped === 1 ? 'One saved run setup' : `${setups.skipped} saved run setups`} could not be read and ${setups.skipped === 1 ? 'was' : 'were'} skipped.`
+        : null,
     solverSettingsNotice: solverSettingsChanged
       ? 'Solver settings changed to WST torque and Direct Cholesky for the public app. Other methods are available in the dev build.'
       : null,
@@ -247,12 +257,13 @@ export function designFileBaseName(name: string, fallback = 'coilem-design'): st
   return name.trim().replace(/\.(?:coilem|openem|json)$/i, '').trim() || fallback;
 }
 
-export function serializeDesignFile(config: MotorConfig, name: string): string {
+export function serializeDesignFile(config: MotorConfig, name: string, runSetups?: SolveProfileDocument): string {
   return `${JSON.stringify(
     {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
       openem_version: COILEM_APP_VERSION,
       name: designFileBaseName(name),
+      ...(runSetups ? { run_setups: runSetups } : {}),
       ...(publishedReference(config)?.fileNotice
         ? { reference_notice: publishedReference(config)?.fileNotice } : {}),
       ...applyPublicSolverSettings(config),
@@ -263,9 +274,9 @@ export function serializeDesignFile(config: MotorConfig, name: string): string {
 }
 
 /** Save via the browser's file picker when available, else download. */
-export async function saveDesignFileAs(config: MotorConfig, name: string): Promise<boolean> {
+export async function saveDesignFileAs(config: MotorConfig, name: string, runSetups?: SolveProfileDocument): Promise<boolean> {
   const filename = `${designFileBaseName(name)}${DESIGN_FILE_EXTENSION}`;
-  const blob = new Blob([serializeDesignFile(config, name)], { type: 'application/json' });
+  const blob = new Blob([serializeDesignFile(config, name, runSetups)], { type: 'application/json' });
   const picker = (window as { showSaveFilePicker?: (options: unknown) => Promise<any> }).showSaveFilePicker;
   if (typeof picker === 'function') {
     try {
