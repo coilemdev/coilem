@@ -151,8 +151,13 @@ function actualMeshProvenance(result: ComparisonResult): string {
 
 function actualTorqueProvenance(result: ComparisonResult): string {
   const metadata = result.solve_metadata;
+  const labels: Record<string, string> = {
+    weighted_stress: 'WST', contour: 'Contour MST', arkkio: 'Arkkio',
+    remesh_per_step: 'Remesh Per Step', fixed_mesh: 'Fixed Mesh',
+  };
   return [metadata.torque_method, metadata.rotor_rotation_model]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .map(value => labels[value] || value.replace(/_/g, ' '))
     .join(' · ') || 'Not recorded';
 }
 
@@ -490,10 +495,6 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           { label: 'Completed', before: left.record.completed_at ? new Date(left.record.completed_at).toLocaleString() : 'Not recorded',
             after: right.record.completed_at ? new Date(right.record.completed_at).toLocaleString() : 'Not recorded' },
         ]} />
-        <section className="public-run-compare-mode-note design" aria-live="polite">
-          <strong>Descriptive run comparison</strong>
-          <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>
-        </section>
         <div className="public-run-compare-metrics" role="region" aria-label="Run comparison metric differences" tabIndex={0}>
           <table>
             <caption>Results comparison</caption>

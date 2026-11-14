@@ -972,7 +972,6 @@ test.describe('public developer preview release rehearsal', () => {
 
     await test.step('navigate saved-run comparison and history', async () => {
       await page.getByRole('button', { name: 'Compare runs', exact: true }).click();
-      await expect(page.getByText('Descriptive run comparison', { exact: true })).toBeVisible();
       await expect(page.locator('[aria-label="Run comparison metric differences"]')).toBeVisible();
       await page.getByRole('tab', { name: 'Back EMF overlay', exact: true }).click();
       await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
