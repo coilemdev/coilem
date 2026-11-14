@@ -460,7 +460,6 @@ assert.match(runComparisonSource, /groupLabel: `Run A/);
 assert.match(runComparisonSource, /groupLabel: `Run B/);
 assert.match(runComparisonSource, /legendLabel: 'Phase A'/);
 assert.match(runComparisonSource, /shared positions/);
-assert.match(runComparisonSource, /solverLabel\(run\.solver_name\)/);
 // Recorded run details share the input table; the Compare browser flow checks the rows.
 assert.match(runComparisonSource, /solverLabel\(left\.result\.solve_metadata\.solver_name\)/);
 assert.match(runComparisonSource, /solverLabel\(right\.result\.solve_metadata\.solver_name\)/);

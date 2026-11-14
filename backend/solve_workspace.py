@@ -1432,6 +1432,20 @@ class SolveWorkspace:
                 }
                 if isinstance(solver_name, str) and solver_name:
                     record["solver_name"] = solver_name
+                # List the saved label without loading large results or today's profile library.
+                try:
+                    request_path = run / "request.json"
+                    self._require_safe_path(request_path)
+                    request = json.loads(request_path.read_text(encoding="utf-8"))
+                    bindings = manifest.get("bindings")
+                    if (isinstance(request, Mapping) and isinstance(bindings, Mapping)
+                            and bindings.get("resolved_request_sha256") == _sha256_json(request)):
+                        submitted = request.get("submitted")
+                        setup = _submitted_run_setup(submitted) if isinstance(submitted, Mapping) else None
+                        if setup is not None:
+                            record["run_setup"] = setup
+                except (OSError, ValueError, SolveWorkspaceError):
+                    pass  # Historical or damaged requests remain listable without a setup label.
                 retention = manifest.get("retention")
                 if isinstance(retention, Mapping) and retention.get("field_playback_removed_at"):
                     record["field_playback_removed_at"] = retention["field_playback_removed_at"]

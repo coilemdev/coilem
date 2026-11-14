@@ -70,10 +70,20 @@ function isMagneto2dRun(run: PublicRunListRecord): boolean {
   return run.solver_name?.toLowerCase().startsWith('magneto2d') === true;
 }
 
+const runDateTime = new Intl.DateTimeFormat('en-US', {
+  month: '2-digit', day: '2-digit', year: '2-digit',
+  hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+});
+
+function formatRunTime(timestamp: string | null | undefined, fallback: string): string {
+  const date = timestamp ? new Date(timestamp) : null;
+  return date && Number.isFinite(date.getTime()) ? runDateTime.format(date).replace(',', '') : fallback;
+}
+
 function runLabel(run: PublicRunListRecord): string {
   const name = run.project_name || run.project_slug;
-  const timestamp = run.completed_at ? new Date(run.completed_at).toLocaleString() : run.run_id;
-  return `${name} · ${solverLabel(run.solver_name)} · ${timestamp}`;
+  const timestamp = formatRunTime(run.completed_at, run.run_id);
+  return `${name} · ${run.run_setup?.name || 'Setup not recorded'} · ${timestamp}`;
 }
 
 function formatBytes(value: number | null | undefined): string {
@@ -97,8 +107,7 @@ function apiErrorMessage(reason: unknown, fallback: string): string {
 }
 
 function storedRunTime(run: PublicRunListRecord): string {
-  const timestamp = run.completed_at || run.started_at;
-  return timestamp ? new Date(timestamp).toLocaleString() : run.run_id;
+  return formatRunTime(run.completed_at || run.started_at, run.run_id);
 }
 
 function storedRunStatus(run: PublicRunListRecord): string {
@@ -443,7 +452,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
                 return (
                   <article className="public-run-storage-row" role="listitem" key={key} data-run-id={record.run_id}>
                     <div>
-                      <strong>{record.project_name || record.project_slug}</strong>
+                      <strong>{record.project_name || record.project_slug}{record.run_setup?.name ? ` · ${record.run_setup.name}` : ''}</strong>
                       <small>{storedRunTime(record)} · {record.run_id}{record.field_playback_removed_at ? ' · field playback removed' : ''}</small>
                     </div>
                     <span className={`public-run-storage-status is-${record.status}`}>{storedRunStatus(record)}</span>
@@ -492,8 +501,8 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           { label: 'Torque extraction', before: actualTorqueProvenance(left.result), after: actualTorqueProvenance(right.result) },
           { label: 'Excitation identity', before: excitationProvenance(left.result), after: excitationProvenance(right.result) },
           { label: 'Saved setup', before: recordedSetupLabel(left.inputs), after: recordedSetupLabel(right.inputs) },
-          { label: 'Completed', before: left.record.completed_at ? new Date(left.record.completed_at).toLocaleString() : 'Not recorded',
-            after: right.record.completed_at ? new Date(right.record.completed_at).toLocaleString() : 'Not recorded' },
+          { label: 'Completed', before: formatRunTime(left.record.completed_at, 'Not recorded'),
+            after: formatRunTime(right.record.completed_at, 'Not recorded') },
         ]} />
         <div className="public-run-compare-metrics" role="region" aria-label="Run comparison metric differences" tabIndex={0}>
           <table>

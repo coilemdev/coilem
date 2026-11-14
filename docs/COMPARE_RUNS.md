@@ -19,6 +19,9 @@ The same table includes a Run details group with the design, solver, actual
 mesh, torque extraction, excitation, saved setup and completion time. These
 context rows remain visible even when they match; the changed-input count only
 counts input differences.
+Saved-run selectors show the design and recorded setup name, with timestamps
+in local time as MM/DD/YY HH:mm:ss (24-hour time). Older runs without a recorded
+setup label say **Setup not recorded**. Listing these labels does not load results.
 
 Missing historical inputs are shown as **Not recorded**, while an explicit
 stored null is **Not set**. No current schema migration or defaults fill these

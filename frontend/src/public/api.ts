@@ -61,6 +61,7 @@ export interface PublicRunListRecord {
   started_at?: string | null;
   completed_at?: string | null;
   solver_name?: string | null;
+  run_setup?: RunSetupProvenance | null;
   field_playback_removed_at?: string | null;
 }
 

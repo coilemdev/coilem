@@ -1361,15 +1361,16 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   candidate.solve_params.current_amplitude_A = 30;
   candidate.solve_params.max_nonlinear_iterations = 120;
   const current = { project_slug: 'comparison-motor', run_id: 'current', project_name: 'Compare motor',
-    status: 'complete', solver_name: fixture.solve_metadata.solver_name, completed_at: '2026-11-14T12:00:00Z', path: '' };
+    status: 'complete', solver_name: fixture.solve_metadata.solver_name, completed_at: '2026-11-14T12:00:00Z', path: '',
+    run_setup: { id: 'profile-1', name: 'Report', version: 2, kind: 'user', includes_numerics: true } };
   const records = [
     { ...current, project_slug: 'another-motor', run_id: 'unrelated', completed_at: '2026-11-14T11:59:00Z' },
     { ...current, run_id: 'newer', completed_at: '2026-11-14T13:00:00Z' },
     { ...current, run_id: 'failed', status: 'failed', completed_at: '2026-11-14T11:58:00Z' },
     ...(hasPrevious ? [
       { ...current, run_id: 'older', completed_at: '2026-11-14T10:00:00Z' },
-      { ...current, run_id: 'legacy', completed_at: '2026-11-14T09:00:00Z' },
-      { ...current, run_id: 'previous', completed_at: '2026-11-14T11:00:00Z' },
+      { ...current, run_id: 'legacy', completed_at: '2026-11-14T09:00:00Z', run_setup: undefined },
+      { ...current, run_id: 'previous', completed_at: '2026-11-14T11:00:00Z', run_setup: { ...current.run_setup, version: 1 } },
     ] : []), current,
   ];
   await page.route('**/runs', route => route.fulfill({ json: {
@@ -1398,8 +1399,11 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   const left = page.getByRole('combobox', { name: 'Run A · baseline', exact: true });
   const right = page.getByRole('combobox', { name: 'Run B · candidate', exact: true });
   await expect(right).toHaveValue('comparison-motor/current');
+  await expect(right.locator('option[value="comparison-motor/current"]')).toHaveText(/^Compare motor · Report · 11\/14\/26 (?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$/);
+  await expect(right).not.toContainText('Magneto2D');
   if (hasPrevious) {
     await expect(left).toHaveValue('comparison-motor/previous');
+    await expect(left.locator('option[value="comparison-motor/legacy"]')).toContainText('Setup not recorded');
     const changes = page.getByRole('region', { name: 'What changed between runs', exact: true });
     await expect(changes).toBeVisible();
     await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['4 mm', '4.5 mm']);

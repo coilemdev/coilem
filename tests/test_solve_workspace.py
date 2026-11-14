@@ -442,6 +442,17 @@ def test_comparison_inputs_are_immutable_resolved_settings_and_recorded_setup(tm
     assert "run_setups" not in compared["inputs"]
     compared["inputs"]["run_setup"]["name"] = "UI edit"
     assert workspace.load_run_comparison(location.project_slug, location.run_id)["inputs"]["run_setup"] == label
+    assert workspace.list_runs()[0]["run_setup"] == label
+    # The picker only needs the small recorded request, not large result data.
+    (location.path / "result.json").write_text("unreadable result", encoding="utf-8")
+    assert workspace.list_runs()[0]["run_setup"] == label
+    request_path = location.path / "request.json"
+    request = json.loads(request_path.read_text(encoding="utf-8"))
+    request["submitted"]["run_setup"]["name"] = "Unbound edit"
+    request_path.write_text(json.dumps(request), encoding="utf-8")
+    listed = workspace.list_runs()[0]
+    assert "run_setup" not in listed
+    assert listed["run_id"] == location.run_id
 
 
 def test_failed_run_remains_explicit_partial_diagnostic(tmp_path: Path) -> None:
