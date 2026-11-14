@@ -1102,8 +1102,8 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-viewport-stage-2d { z-index: 2; }
 .public-viewport-stage-3d { z-index: 3; }
 /* The 2D Design view keeps a small live 3D view in its corner; a click opens the 3D view. */
-/* The inset hugs the viewport edge so it covers less of the 2D motor. */
-.public-viewport-3d-inset { position: absolute; left: 8px; bottom: calc(var(--viewport-dock-height, 0px) + 16px); z-index: 4; width: clamp(180px, 22%, 280px); aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 12px; background: radial-gradient(circle at 50% 40%, #171a22, #0b0d12); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45); }
+/* The inset sits on the viewport's left edge, in line with the dock below it, so it covers less of the 2D motor. */
+.public-viewport-3d-inset { position: absolute; left: 0; bottom: calc(var(--viewport-dock-height, 0px) + 16px); z-index: 4; width: clamp(180px, 22%, 280px); aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 12px; background: radial-gradient(circle at 50% 40%, #171a22, #0b0d12); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45); }
 .public-viewport-3d-inset-scene { position: absolute; inset: 0; pointer-events: none; }
 .public-viewport-3d-inset-scene .public-3d-part-toggles, .public-viewport-3d-inset-scene .public-3d-hint, .public-viewport-3d-inset-scene .public-3d-peel { display: none; }
 /* The 3D view's slider: peel the motor from the outside in. */

@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 329081,
-      "sha256": "8cc18ae4df4cf727ffe0758a13abe71d86edd0a7cdbde67288e9c7dbaafff10c"
+      "bytes": 329122,
+      "sha256": "77b9a2030ef2f21a82b579e2c4e0cc56ddebbecdb002e6c572953c06e72edf43"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
