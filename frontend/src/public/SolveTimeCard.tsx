@@ -1,6 +1,9 @@
 import { useId } from 'react';
 import { solveTimeView, type SolveTimeBreakdown } from './solveTime';
 
+const WORKER_TIME_HELP = 'Adds the measured duration of every occurrence across all workers. Workers run in parallel, so this can exceed the elapsed time above. Average = combined worker time ÷ times run.';
+const PREPARE_SETTINGS_HELP = "Measures the time spent checking the design and mesh, preparing solver inputs and process settings, and choosing sweep positions before launching the solver. If a mesh must be generated here, that time is included. Durations are added across every occurrence and worker; parallel work overlaps, so the combined worker time can exceed elapsed time.";
+
 /**
  * Solve time: where the elapsed time went. Three steps that add up to the
  * total, then the stages inside each step. Stage times are summed over the
@@ -52,12 +55,16 @@ export function SolveTimeCard({ breakdown }: { breakdown?: SolveTimeBreakdown | 
               <p className="public-solve-time-note">{step.summary}</p>
               <div className="public-solve-time-scroll">
                 <table>
-                  <thead><tr><th scope="col">Stage</th><th scope="col">Times run</th><th scope="col">Total</th><th scope="col">Each, average</th><th scope="col">Slowest</th></tr></thead>
+                  <thead><tr><th scope="col">Stage</th><th scope="col">Times run</th><th scope="col" title={WORKER_TIME_HELP}>Combined worker time</th><th scope="col">Each, average</th><th scope="col">Slowest</th></tr></thead>
                   <tbody>{step.rows.map(row => (
                     <tr key={row.key} className={row.indent ? 'is-part' : undefined}>
                       <th scope="row">
                         <span className="public-solve-time-weight" style={{ width: `${Math.round(row.weight * 100)}%` }} aria-hidden="true" />
-                        <span>{row.label}</span>
+                        <span
+                          title={row.label === "Prepare the solver's settings" ? PREPARE_SETTINGS_HELP : undefined}
+                          tabIndex={row.label === "Prepare the solver's settings" ? 0 : undefined}
+                          aria-label={row.label === "Prepare the solver's settings" ? `${row.label}. ${PREPARE_SETTINGS_HELP}` : undefined}
+                        >{row.label}{row.label === "Prepare the solver's settings" && <span aria-hidden="true"> ⓘ</span>}</span>
                       </th>
                       <td>{row.count}</td><td>{row.total}</td><td>{row.mean}</td><td>{row.max}</td>
                     </tr>
