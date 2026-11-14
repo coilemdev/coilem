@@ -28,8 +28,15 @@ def geometry_input_advisories(config: MotorConfig) -> list[str]:
         f"V-shape outer bridge is a minimum clearance: requested {facts['minimum_outer_bridge_mm']:.3g} mm; "
         f"actual nearest pocket-to-surface clearance {facts['actual_outer_bridge_mm']:.3g} mm. "
         "V Depth, V Angle and magnet dimensions determine the actual bridge.",
-        f"V-shape magnet_embrace={config.rotor.magnet_embrace:g} is not used. "
+        "Saved magnet coverage is not used for V-shape rotors. "
         "Magnet coverage is determined by the slab dimensions and V geometry.",
+    ]
+
+
+def geometry_mesh_advisories(config: MotorConfig) -> list[str]:
+    if not vshape_input_facts(config):
+        return []
+    return [
         "V-shape results are mesh-sensitive, especially cogging torque. Compare progressively refined meshes "
         "for this design before relying on the values; a Fine mesh alone does not establish convergence.",
     ]

@@ -88,7 +88,7 @@ export function humanizeGeometryMessage(message: string): string {
   const labels: Record<string, string> = {
     magnet_embrace: 'Saved magnet coverage', v_depth_mm: 'V Depth', v_angle_deg: 'V Angle', magnet_width_mm: 'Magnet Width',
     magnet_thickness_mm: 'Magnet Thick.', inner_web_thickness_mm: 'Inner Web',
-    outer_bridge_thickness_mm: 'Outer Bridge', bridge_thickness_mm: 'Outer Bridge',
+    outer_bridge_thickness_mm: 'Minimum Outer Bridge', bridge_thickness_mm: 'Outer Bridge',
     pocket_clearance_mm: 'Pocket Clearance', side_bridge_thickness_mm: 'Side Bridge',
     tooth_width_mm: 'Yoke Tooth Width', slot_opening_mm: 'Tooth Body Opening',
     yoke_thickness_mm: 'Yoke Thickness', pole_count: 'Pole Count', slot_count: 'Slot Count',
@@ -135,7 +135,7 @@ export function enteredGeometryError(field: string | null | undefined, message: 
     'rotor.magnet_width_mm': ['rotor', 'Magnet Width'],
     'rotor.v_depth_mm': ['rotor', 'V Depth'],
     'rotor.v_angle_deg': ['rotor', 'V Angle'],
-    'rotor.outer_bridge_thickness_mm': ['rotor', 'Outer Bridge'],
+    'rotor.outer_bridge_thickness_mm': ['rotor', 'Minimum Outer Bridge'],
     'rotor.bridge_thickness_mm': ['rotor', 'Outer Bridge'],
   };
   const control = field ? controls[field] : null;

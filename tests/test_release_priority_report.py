@@ -5,7 +5,7 @@ from copy import deepcopy
 from pypdf import PdfReader
 
 from backend.models import MotorConfig
-from backend.public_report import build_public_run_csv, build_public_run_pdf
+from backend.public_report import _setting_entry, build_public_run_csv, build_public_run_pdf
 from backend.winding_resistance import winding_resistance
 from tests.test_public_report_exports import CONFIG, _result_with_motor_field
 
@@ -45,3 +45,18 @@ def test_pdf_labels_peak_currents_and_plain_settings_without_changing_csv_values
     csv = build_public_run_csv(**args).decode()
     assert "-7.248" in csv and "19.936" in csv
     assert args == original
+
+
+def test_report_display_names_are_scoped_to_the_setting():
+    assert _setting_entry("solve_quality", "fine") == ("Solve quality", "High accuracy")
+    assert _setting_entry("mesh_density", "fine") == ("Mesh density", "fine")
+    assert _setting_entry("unknown_setting", "custom") == ("Unknown setting", "custom")
+    assert _setting_entry("unknown_setting", "standard") == ("Unknown setting", "standard")
+
+
+def test_input_interpretation_is_reported_as_information():
+    args = report_arguments()
+    args["result"]["input_notes"] = ["Actual outer bridge: 3.36 mm; the requested clearance is a minimum."]
+    text = "\n".join(page.extract_text() or "" for page in PdfReader(io.BytesIO(build_public_run_pdf(**args))).pages)
+    assert "Interpreted rotor inputs" in text
+    assert "Actual outer bridge: 3.36 mm" in text

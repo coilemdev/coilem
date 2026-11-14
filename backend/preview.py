@@ -24,7 +24,7 @@ from backend.geometry_drawer import (
     tooth_width_at_yoke_mm,
 )
 from backend.geometry_ir import build_geometry_ir
-from backend.input_advisories import geometry_input_advisories, vshape_input_facts
+from backend.input_advisories import geometry_input_advisories, geometry_mesh_advisories, vshape_input_facts
 from backend.models import (
     ErrorResponse,
     GeometryPreview,
@@ -225,7 +225,8 @@ def generate_preview(config: MotorConfig) -> GeometryPreview:
     # Non-blocking: geometry that draws and solves but no longer matches what the
     # fields say. Kept out of validation_errors on purpose so it cannot stop a solve.
     metadata["interpreted_rotor_inputs"] = vshape_input_facts(config)
-    warnings = geometry_warnings(config) + geometry_input_advisories(config)
+    metadata["input_notes"] = geometry_input_advisories(config)
+    warnings = geometry_warnings(config) + geometry_mesh_advisories(config)
     if warnings:
         metadata["geometry_warnings"] = warnings
     width_advisory = tooth_width_advisory(config)

@@ -8,7 +8,7 @@ from collections.abc import Callable
 from backend.drive_performance import efficiency_map, torque_speed_envelope
 from backend.field_artifacts import protect_result_cache
 from backend.flux_linkage_map import MapStore, map_agreement_pct, map_grid, map_scope_key, map_solve_count, run_flux_linkage_map
-from backend.input_advisories import geometry_input_advisories, partial_sweep_advisory
+from backend.input_advisories import geometry_input_advisories, geometry_mesh_advisories, partial_sweep_advisory
 from backend.models import MotorConfig, SolveOptionsConfig, SolveResult
 from backend.models.result import TorqueSpeedAnalysisResult
 from backend.solve_workspace import user_data_root
@@ -49,15 +49,17 @@ def solve_selected_analyses(
     # With only the map selected this is a single zero-current preview, not a
     # loaded sweep. The map computes its own torque, flux and loss dependencies.
     result = solver.solve(base_config, on_progress=base_progress if on_progress else None, solve_mesh_key=solve_mesh_key)
-    # Older sinusoidal solvers only populate this flag for six-step runs.
-    # Infer the averaging scope from the actual sampled grid, not the preset.
-    if result.solve_metadata.loaded_cycle_complete is None and len(result.torque_waveform.electrical_angle_deg) > 1:
-        result.solve_metadata.loaded_cycle_complete = is_uniform_full_cycle_grid(result.torque_waveform.electrical_angle_deg)
-    advisories = geometry_input_advisories(config)
-    window_note = partial_sweep_advisory(result.solve_metadata.loaded_cycle_complete)
-    if window_note and result.solve_metadata.torque_sweep_computed is not False:
-        advisories.append(window_note)
-    result.warnings = list(dict.fromkeys([*result.warnings, *advisories]))
+    if isinstance(result, SolveResult):
+        # Older sinusoidal solvers only populate this flag for six-step runs.
+        # Infer the averaging scope from the actual sampled grid, not the preset.
+        if result.solve_metadata.loaded_cycle_complete is None and len(result.torque_waveform.electrical_angle_deg) > 1:
+            result.solve_metadata.loaded_cycle_complete = is_uniform_full_cycle_grid(result.torque_waveform.electrical_angle_deg)
+        result.input_notes = geometry_input_advisories(config)
+        advisories = geometry_mesh_advisories(config)
+        window_note = partial_sweep_advisory(result.solve_metadata.loaded_cycle_complete)
+        if window_note and result.solve_metadata.torque_sweep_computed is not False:
+            advisories.append(window_note)
+        result.warnings = list(dict.fromkeys([*result.warnings, *advisories]))
     settings = config.torque_speed_analysis
     if settings is None or not map_supported or not options.torque_speed_envelope:
         return result

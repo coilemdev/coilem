@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const { validSlotCount, slotPitchText } = await importTypeScriptModule(new URL('../src/public/designHealth.ts', import.meta.url));
-const { humanizeGeometryMessage } = await importTypeScriptModule(new URL('../src/public/designErrors.ts', import.meta.url));
+const { enteredGeometryError, humanizeGeometryMessage } = await importTypeScriptModule(new URL('../src/public/designErrors.ts', import.meta.url));
 const { savedResultPlayback, REMOVED_PLAYBACK_REASON } = await importTypeScriptModule(new URL('../src/public/savedRunPlayback.ts', import.meta.url));
 for (const slots of [0, -3, 2, 12.5, Infinity, NaN, 99]) {
   assert.equal(validSlotCount(slots), false);
@@ -30,3 +30,9 @@ for (const [availability, removed] of [[{ available: false }, undefined], [undef
   assert.equal(result.field_line_frames.length, 1);
 }
 console.log('release priority: invalid drafts, readable errors and pruned playback pass');
+
+assert.equal(savedResultPlayback(result, { available: false, message: 'Server retention reason' }).field_playback_unavailable_reason, 'Server retention reason');
+assert.equal(savedResultPlayback(result, { available: false, message: '  ' }).field_playback_unavailable_reason, REMOVED_PLAYBACK_REASON);
+
+assert.equal(enteredGeometryError('rotor.outer_bridge_thickness_mm', 'Invalid bridge').label, 'Minimum Outer Bridge');
+assert.equal(enteredGeometryError('rotor.bridge_thickness_mm', 'Invalid bridge').label, 'Outer Bridge');

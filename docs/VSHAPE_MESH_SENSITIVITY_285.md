@@ -1,6 +1,6 @@
 # V-shape input interpretation and mesh sensitivity (#285)
 
-The V-shape input clarification and the numerical accuracy question are separate. The bridge input is a **minimum** pocket-to-rotor-surface clearance; the drawn bridge also depends on V Depth, V Angle and slab dimensions. Saved magnet coverage (`magnet_embrace`) does not control this geometry. The app now reports the actual clearance and warns about the unused input, both before solving and in stored results.
+The V-shape input clarification and the numerical accuracy question are separate. The bridge input is a **minimum** pocket-to-rotor-surface clearance; the drawn bridge also depends on V Depth, V Angle and slab dimensions. Saved magnet coverage (`magnet_embrace`) does not control this geometry. The app reports the actual clearance and explains the unused input as information, both before solving and in stored results. Mesh sensitivity remains a separate warning.
 
 This study samples three imported V-shape fixture geometries at four existing mesh densities. It measures sensitivity; it does **not** establish mesh convergence, certify a new default, or replace the release qualification/FEMM/hardware comparisons. The mesh-accuracy part of [issue #285](https://github.com/coilemdev/coilem/issues/285) remains open.
 

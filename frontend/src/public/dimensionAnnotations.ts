@@ -74,7 +74,7 @@ export function designFieldDimension(section: string, label: string): DimensionI
     'Outer Diameter': 'stator-od', 'Bore Diameter (ID)': 'bore', 'Hub Bore (ID)': 'bore',
     'Yoke Thickness': 'yoke-thickness', 'Yoke Thick.': 'yoke-thickness', 'Stack Length': 'stack-length',
     'Rotor OD': 'rotor-od', 'Magnet Thick.': 'magnet-thickness', 'Magnet Width': 'magnet-width',
-    'V Angle': 'v-angle', 'V Depth': 'v-depth', 'Outer Bridge': 'outer-bridge',
+    'V Angle': 'v-angle', 'V Depth': 'v-depth', 'Outer Bridge': 'outer-bridge', 'Minimum Outer Bridge': 'outer-bridge',
     'Bore Tooth Width': 'bore-tooth-width', 'Yoke Tooth Width': 'tooth-width-at-yoke', 'Slot Opening': 'bore-slot-opening',
     'Back Iron': 'rotor-back-iron',
     'Shoe Height': 'shoe-height', 'Shoe Overhang': 'shoe-overhang',
@@ -463,13 +463,14 @@ function addIpmMagnetDimensions(annotations: DimensionAnnotation[], config: Moto
       shapes: [{ kind: 'arc', centerMm: apex, radiusMm: radius, startRad: poleAngle - half, endRad: poleAngle + half },
         ...[-half, half].map((angle): DimensionSegment => ({ kind: 'segment', from: apex,
           to: [apex[0] + radius * Math.cos(poleAngle + angle), apex[1] + radius * Math.sin(poleAngle + angle)] }))] });
-  } else if (config.rotor.ipm_topology === 'flat_buried') {
+  }
+  if (['v_shape', 'flat_buried'].includes(config.rotor.ipm_topology)) {
     // Outer Bridge is steel outside the pocket, including its air clearance;
     // measuring from the magnet would incorrectly add that clearance to it.
     const pocket = firstRegionPoints(geometry, (type) => type.includes('pocket')) ?? points;
     const corner = pocket.reduce((furthest, point) => Math.hypot(...point) > Math.hypot(...furthest) ? point : furthest);
     const radius = Math.hypot(...corner);
-    annotations.push({ id: 'outer-bridge', label: 'Outer Bridge', value: `${(rotorRadius - radius).toFixed(2)} mm`, dash: [4, 3],
+    annotations.push({ id: 'outer-bridge', label: config.rotor.ipm_topology === 'v_shape' ? 'Actual Outer Bridge' : 'Outer Bridge', value: `${(rotorRadius - radius).toFixed(2)} mm`, dash: [4, 3],
       shapes: [radialSpan(radius, rotorRadius, Math.atan2(corner[1], corner[0]))] });
   }
 }

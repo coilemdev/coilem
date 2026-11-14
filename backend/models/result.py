@@ -186,6 +186,7 @@ class TorqueSpeedAnalysisResult(BaseModel):
 
 class SolveResult(BaseModel):
     warnings: list[str] = Field(default_factory=list)
+    input_notes: list[str] = Field(default_factory=list)
     summary: SolveSummary
     torque_waveform: TorqueWaveform
     phase_current_waveform: PhaseCurrentWaveform | None = None

@@ -739,9 +739,13 @@ def _setting_entry(name: str, value: Any) -> tuple[str, str]:
     elif name == "magnet_embrace" and isinstance(value, (int, float)):
         value, unit = f"{value * 100:.1f}", "% (saved input)"
     else:
-        value = {"quick": "Preview", "standard": "Standard", "fine": "High accuracy", "custom": "Custom",
-                 "weighted_stress": "Weighted stress", "remesh_per_step": "Remesh each position",
-                 "fixed_mesh": "Fixed mesh", "flat_buried": "Flat buried", "v_shape": "V-shape"}.get(str(value), value)
+        display_names = {
+            "solve_quality": {"quick": "Preview", "standard": "Standard", "fine": "High accuracy", "custom": "Custom"},
+            "torque_method": {"weighted_stress": "Weighted stress"},
+            "rotor_rotation_model": {"remesh_per_step": "Remesh each position", "fixed_mesh": "Fixed mesh"},
+            "ipm_topology": {"flat_buried": "Flat buried", "v_shape": "V-shape"},
+        }
+        value = display_names.get(name, {}).get(str(value), value)
     return label, f"{_pdf_text(value)} {unit}".strip()
 
 
@@ -2009,6 +2013,12 @@ def build_public_run_pdf(
                 ]
             )
         )
+
+    input_notes = result.get("input_notes")
+    if isinstance(input_notes, list) and input_notes:
+        note_lines = [_safe_paragraph(note, styles["body"]) for note in input_notes if isinstance(note, str)]
+        if note_lines:
+            story.extend([KeepTogether([_section("Interpreted rotor inputs", styles), note_lines[0]]), *note_lines[1:]])
 
     # Keep each closing heading on the page of its first line.
     warnings = _warnings(result)

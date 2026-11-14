@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from backend.geometry_drawer import compute_v_shape_magnet_placements
-from backend.input_advisories import geometry_input_advisories, partial_sweep_advisory, vshape_input_facts
+from backend.input_advisories import geometry_input_advisories, geometry_mesh_advisories, partial_sweep_advisory, vshape_input_facts
 from backend.models import MotorConfig
 from backend.preview import generate_preview
 from backend.selected_analyses import solve_selected_analyses
@@ -25,7 +25,9 @@ def test_vshape_reports_minimum_and_actual_bridge_without_changing_the_design(na
     assert facts["actual_outer_bridge_mm"] > facts["minimum_outer_bridge_mm"] + 0.5
     preview = generate_preview(cfg)
     assert preview.metadata["interpreted_rotor_inputs"] == facts
-    assert any("magnet_embrace" in warning and "not used" in warning for warning in preview.metadata["geometry_warnings"])
+    assert any("Saved magnet coverage" in note and "not used" in note for note in preview.metadata["input_notes"])
+    assert preview.metadata["geometry_warnings"] == geometry_mesh_advisories(cfg)
+    assert all("magnet_embrace" not in message for message in preview.metadata["input_notes"])
     assert cfg.model_dump() == original
     changed = cfg.model_copy(deep=True)
     changed.rotor.magnet_embrace = 0.25
@@ -46,7 +48,9 @@ def test_partial_window_warning_survives_selected_analysis_and_is_not_added_to_c
     solved = solve_selected_analyses(Solver(), cfg)
     assert solved.solve_metadata.loaded_cycle_complete is False
     assert partial_sweep_advisory(False) in solved.warnings
-    assert all(message in solved.warnings for message in geometry_input_advisories(cfg))
+    assert solved.input_notes == geometry_input_advisories(cfg)
+    assert all(message in solved.warnings for message in geometry_mesh_advisories(cfg))
+    assert not any(note in solved.warnings for note in solved.input_notes)
     assert partial_sweep_advisory(True) is None
     assert partial_sweep_advisory(None) is None
 

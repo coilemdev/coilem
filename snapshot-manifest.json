@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 9573,
-      "sha256": "edeb3ab19bfebb350ea0334074a24943b4c25121ba58debeea0e87f2794e2481"
+      "bytes": 9630,
+      "sha256": "5fdbc3d4007c45f650fca794ec6db4839f78b3445e4f57d5fd719c115ec0f068"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -520,8 +520,8 @@
     },
     {
       "path": "backend/preview.py",
-      "bytes": 41649,
-      "sha256": "8beac753c4a87dcdb82f8e21a8d633941a8464e84b587f61ffc254514cb3d2f9"
+      "bytes": 41738,
+      "sha256": "0b18942e7797b9861f2f86a62480524f8f37c80a8c21583ebff9ad5f9a0f4f03"
     },
     {
       "path": "backend/preview_from_ir.py",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 94082,
-      "sha256": "8e292a7f51ab59017c92a24bf019f6569c337e740a7275ff07638a71ea09d206"
+      "bytes": 94594,
+      "sha256": "ce3aed7fbcc0471e4b4c860511284e41b39ede638b2fa5abdeaf65a25d3112aa"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 58722,
-      "sha256": "6f51737690f2cbcecb989c8285f6857b6f503dfa2290837cf200819a5c4bb38e"
+      "bytes": 58805,
+      "sha256": "2cf6b87b51189a2df57b06157c0857975ba33020e00095785839ce912420fc72"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -6540,8 +6540,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
-      "bytes": 2558,
-      "sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0"
+      "bytes": 2759,
+      "sha256": "63a1cb7cf39923c8983800db02a08fcedf0022ca1dedd6f5525c42f65f321743"
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178162,
-      "sha256": "9a519921974542d07a9de98838b9d4e630f7f0e9fd8085ff3577e5a431ab102a"
+      "bytes": 178150,
+      "sha256": "b42367b580c42396ebedfc9225af52500dfe9104c9af5a053f8213df85e12ee0"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7040,8 +7040,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 295119,
-      "sha256": "85ce0fbe34d171011d6dc21badcfdb3a378b57b527d0b5035d0c397c4a70705a"
+      "bytes": 296014,
+      "sha256": "774e9434c67e499fc26ef4d9bcc843929273343ec4f57b2624eab077c5f32372"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7225,8 +7225,8 @@
     },
     {
       "path": "frontend/src/public/designErrors.ts",
-      "bytes": 8701,
-      "sha256": "3d6faf7aa3d38f7af0ead0141d93b82895db57de7cc20d08f29050924b1d35f4"
+      "bytes": 8717,
+      "sha256": "e99ec1dd31c4e99b5dc6a383338818f3c118197cff6e579362251d8b023588cf"
     },
     {
       "path": "frontend/src/public/designFile.ts",
@@ -7255,8 +7255,8 @@
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 24147,
-      "sha256": "d8169ddffc361f34c04b11ad61c6ff3a0514f4ecbf9b53ff008f9c321af365f1"
+      "bytes": 24269,
+      "sha256": "8f24f8daf9ef0e835a20244bcd525eb522b31cbf3fdad0ce53cb4163b0ba4818"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
-      "bytes": 1331,
-      "sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4"
+      "bytes": 1600,
+      "sha256": "b45ce788040d0d6796fdc92fb841539a4172556126be3d0d3a492ef319a47f2a"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -7480,8 +7480,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24587,
-      "sha256": "2293c5720d476fabd856737e2cd8e30bb9e9a368e50f9917bccca44bf25e855a"
+      "bytes": 24613,
+      "sha256": "157ab8e8290fd2355a396d591a4ec8f270ea5c1a3d38939c9f5e67c345f6edcd"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -11725,8 +11725,8 @@
     },
     {
       "path": "backend/selected_analyses.py",
-      "bytes": 6275,
-      "sha256": "c71933d1dc4341f3e9cc8549ffdfd6f21aa9d24e7917681cf36c27919b49c5dc"
+      "bytes": 6439,
+      "sha256": "78e6256811a25ac037854278f0cb36ecdb9f165455a0b5a1f3d7e15b57c1e06b"
     },
     {
       "path": "frontend/src/public/TorqueSpeedSettings.tsx",
@@ -17750,8 +17750,8 @@
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 84724,
-      "sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721"
+      "bytes": 85503,
+      "sha256": "0e7b4640fbf81a4ff4f87498aa50f60d71f09bfc69b7c1b7e9995ae526d03bdb"
     },
     {
       "path": "tests/test_construction_preview.py",
@@ -17760,8 +17760,8 @@
     },
     {
       "path": "backend/input_advisories.py",
-      "bytes": 1967,
-      "sha256": "21a7ac1eb7efc8db0a65dfb3b81a63eafdff3b71c42578797326c3b6848b4ead"
+      "bytes": 2094,
+      "sha256": "2ac078ed3f1237799819532de944bd241cdc468dd20fdc9a592e01c4142786d5"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
@@ -17770,13 +17770,13 @@
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
-      "bytes": 6361,
-      "sha256": "c4a8d19bc25629b17040870aff26c40064ba44ffe0b34b736c462a5dd0f68e94"
+      "bytes": 6414,
+      "sha256": "5d2b82511a71a8284b18e9889cc3caf38e8ad9709cb40213d0fd92a0e91c4252"
     },
     {
       "path": "frontend/scripts/test-release-priority.mjs",
-      "bytes": 2330,
-      "sha256": "bf6fce4b67405b344cfbd3a97abda96d7eb7c23959df242cf6debc0e272c872d"
+      "bytes": 2879,
+      "sha256": "25564be6e45150183c4bf8c44252c2a902854f7e8a232169cf07d9c8689a45d9"
     },
     {
       "path": "frontend/src/public/designHealth.ts",
@@ -17785,18 +17785,18 @@
     },
     {
       "path": "frontend/src/public/savedRunPlayback.ts",
-      "bytes": 651,
-      "sha256": "596c0e005714e005c0ebd1eec9dc44e1a8a7194eceb502c0e7765251b2d84eb6"
+      "bytes": 772,
+      "sha256": "ebfd86255934d4360c2e1cf8be69adb7555c0a8b066de08e5df4da36dc21d6c3"
     },
     {
       "path": "tests/test_input_advisories.py",
-      "bytes": 2865,
-      "sha256": "b41ddee630a06a6f31009c687e5150ffc06896e52d4eaa0b7a48e3bb767a6903"
+      "bytes": 3198,
+      "sha256": "5ec293b2d9c053b680a1978b652fb07d41397dadfb2b26efca9d9688838b775c"
     },
     {
       "path": "tests/test_release_priority_report.py",
-      "bytes": 2213,
-      "sha256": "f17001a7a5e46535950337cce61cdacc9e5d45fb70f6d9e2ee8e24c78be37f8d"
+      "bytes": 3051,
+      "sha256": "772d0f724863bcc872d90227d9c8a7e3a0b2efc1a0e1286b4df487c397c4a7cd"
     },
     {
       "path": "tests/test_vshape_mesh_study.py",
@@ -39238,6 +39238,12 @@
     },
     {
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-magnet-coverage.mjs",
+      "source_sha256": "4a735fb1084779fd196beedd59418de5d33fd408d41689f197838978f43447c0",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/scripts/test-public-ui-contract.mjs",
       "source_sha256": "cd6007e349a7b084077e561670b9fdc4675c4b9c2ad8cfdcc66dd4124bd6e9a6",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
@@ -39286,6 +39292,12 @@
     },
     {
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/dimensionAnnotations.ts",
+      "source_sha256": "d8169ddffc361f34c04b11ad61c6ff3a0514f4ecbf9b53ff008f9c321af365f1",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
       "source_sha256": "23ed6f72b44dcd8f3f0d0ff5e85349107bd416b1bed964d1d4d9c3488caf0bf7",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
@@ -39310,6 +39322,12 @@
     },
     {
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/magnetCoverage.ts",
+      "source_sha256": "bf61b387c3da0d881c438ec3ff12f7a0c645f12b1b1ed085a3e5e15a6b4e8bb4",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/src/public/model.ts",
       "source_sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
@@ -39324,6 +39342,12 @@
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/src/public/styles.css",
       "source_sha256": "3672ca7fd427dfa3a679ce951d9d41267d9ef5c3e39b3573bc28786d289ce1ae",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/tests/progressive-design.spec.ts",
+      "source_sha256": "25751faf30ba5acc99a6597b5ee29d52c00486e014343eca895152e34dd41721",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
     },
     {

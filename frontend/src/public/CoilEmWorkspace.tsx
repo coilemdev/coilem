@@ -4,7 +4,7 @@ import { useTurningRotorAngle } from './useTurningRotorAngle';
 import { useLayerMenu } from './useLayerMenu';
 import { useFirstSolvedField } from './useFirstSolvedField';
 import { designViewMemory } from './designViewMemory';
-import { NewDesignEntryContext, GuidedDesignProgressContext, DesignSectionContext, useNewDesignEntry, useEntryField, hasEntry, entrySectionComplete, enteredDesignParts, type NewDesignEntrySnapshot } from './newDesignEntry';
+import { NewDesignEntryContext, GuidedDesignProgressContext, DesignSectionContext, useNewDesignEntry, useEntryField, entryKey, hasEntry, entrySectionComplete, enteredDesignParts, type NewDesignEntrySnapshot } from './newDesignEntry';
 import { DESIGN_PARTS, buildIssues, designPartsComplete, maximumShoeOverhangMm, progressiveGeometry, shoeOverhangLimitNotice, type BuiltParts, type DesignIssue } from './progressiveDesign';
 import { windingBuildChecks } from './windingBuild';
 import { AWG_SIZES, awgFor, awgNote, awgStoredDiameterMm } from './wireGauge';
@@ -120,7 +120,7 @@ import type { PublicRunExportKind } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
 import { designErrorSection, designErrorText, enteredGeometryError, humanizeGeometryMessage } from './designErrors';
-import { magnetPoleCoveragePct } from './magnetCoverage';
+import { hasPoleCoverageEstimate, magnetPoleCoveragePct } from './magnetCoverage';
 import { RpmField } from './RpmField';
 import { formatVolts, solvedPhaseCurrent, torqueRippleView, waveformMeasure, type WaveformMeasure } from './resultMetrics';
 import type { LearningLessonHeaderProgress } from '../components/tutorials/lessonStage';
@@ -874,6 +874,7 @@ interface NumberRowProps {
   step?: number;
   disabled?: boolean;
   clampToBounds?: boolean;
+  entryOptional?: boolean;
   onChange: (value: number) => void;
 }
 
@@ -884,8 +885,9 @@ const DesignFieldFocusContext = createContext<{
   setField: (field: { section: string; label: string } | null) => void;
 } | null>(null);
 
-function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1, disabled, clampToBounds = false, onChange }: NumberRowProps) {
-  const entryField = useEntryField(label);
+function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1, disabled, clampToBounds = false, entryOptional = false, onChange }: NumberRowProps) {
+  const entryField = useEntryField(label, !entryOptional);
+  const unset = entryField.unset && !entryOptional;
   const reportDraftValidity = useContext(NewDesignDraftContext);
   const section = useContext(DesignSectionContext);
   const designIssue = useContext(DesignIssueContext);
@@ -894,7 +896,7 @@ function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1
   reportDraftValidityRef.current = reportDraftValidity;
   useEffect(() => () => reportDraftValidityRef.current?.(label, null), [label]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [draftValue, setDraftValue] = useState(() => entryField.unset ? '' : String(value));
+  const [draftValue, setDraftValue] = useState(() => unset ? '' : String(value));
   const [touched, setTouched] = useState(false);
   const cancelDraft = useRef(false);
   const draftError = (text: string): string | null => {
@@ -913,20 +915,20 @@ function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1
     return message !== null;
   };
   const fieldError = reportDraftValidity
-    ? ((!entryField.unset || touched) ? draftError(draftValue) : null) ?? (designIssue?.label === label ? designIssue.message : null)
+    ? ((!unset || touched) ? draftError(draftValue) : null) ?? (designIssue?.label === label ? designIssue.message : null)
     : null;
   const errorId = `design-field-error-${label.replace(/\W+/g, '-').toLowerCase()}`;
   const advisoryId = `design-field-advisory-${label.replace(/\W+/g, '-').toLowerCase()}`;
 
   useEffect(() => {
-    if (entryField.unset || inputRef.current !== document.activeElement) {
-      setDraftValue(entryField.unset ? '' : String(value));
+    if (unset || inputRef.current !== document.activeElement) {
+      setDraftValue(unset ? '' : String(value));
     }
-  }, [value, entryField.unset]);
+  }, [value, unset]);
 
   const commitDraft = () => {
     if (cancelDraft.current) { cancelDraft.current = false; return; }
-    if (entryField.unset && !touched && !draftValue.trim()) return;
+    if (unset && !touched && !draftValue.trim()) return;
     if (reportDraftValidity) {
       const invalid = reportDraft(draftValue);
       if (!invalid) { entryField.confirm(); onChange(Number(draftValue)); }
@@ -942,7 +944,7 @@ function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1
   };
 
   return (
-    <label className={`param-row public-param-row${fieldError ? ' has-field-error' : advisory ? ' has-field-warning' : ''}`} title={hint} data-entry-field={entryField.active ? entryField.key : undefined} data-entry-configured={!entryField.unset} data-entry-required={entryField.required}>
+    <label className={`param-row public-param-row${fieldError ? ' has-field-error' : advisory ? ' has-field-warning' : ''}`} title={hint} data-entry-field={entryField.active ? entryField.key : undefined} data-entry-configured={!unset} data-entry-required={entryField.required}>
       <span className="param-label">{label}{unit && <small>{unit}</small>}</span>
       <span className="param-control">
         <input
@@ -950,7 +952,7 @@ function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1
           className="param-number-input"
           type="number"
           value={draftValue}
-          placeholder={entryField.unset ? 'Enter…' : undefined}
+          placeholder={unset ? 'Enter…' : undefined}
           aria-label={label}
           aria-invalid={reportDraftValidity ? Boolean(fieldError) : undefined}
           aria-describedby={fieldError ? errorId : advisory ? advisoryId : undefined}
@@ -986,7 +988,7 @@ function NumberRow({ label, value, unit = '', hint, advisory, min, max, step = 1
               event.currentTarget.blur();
             } else if (event.key === 'Escape') {
               cancelDraft.current = true;
-              setDraftValue(entryField.unset ? '' : String(value));
+              setDraftValue(unset ? '' : String(value));
               setTouched(false);
               reportDraftValidity?.(label, null);
               event.currentTarget.blur();
@@ -1122,7 +1124,7 @@ function componentFacts(
         ...(config.topology === 'IPM' && config.rotor.ipm_topology === 'flat_buried'
           ? ([['Outer bridge', `${config.rotor.bridge_thickness_mm} mm`]] as Array<[string, string]>)
           : []),
-        ...(config.geometry_reference ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
+        ...(config.geometry_reference || !hasPoleCoverageEstimate(config) ? [] : [['Pole coverage', `${magnetPoleCoveragePct(config)}%`]] as Array<[string, string]>),
       ];
     case 'winding': {
       const facts: Array<[string, string]> = [
@@ -1659,7 +1661,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
           </>
         )}
         {config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape' && <>
-          <NumberRow label="Minimum Outer Bridge" value={config.rotor.outer_bridge_thickness_mm} unit="mm" min={0.1} max={20} step={0.1} disabled={disabled} hint="Minimum clearance from a magnet pocket to the rotor surface. The actual bridge also depends on V Depth, V Angle and magnet dimensions." onChange={set('rotor', 'outer_bridge_thickness_mm', 'rotor')} />
+          <NumberRow entryOptional label="Minimum Outer Bridge" value={config.rotor.outer_bridge_thickness_mm} unit="mm" min={0.1} max={20} step={0.1} disabled={disabled} hint="Minimum clearance from a magnet pocket to the rotor surface. The actual bridge also depends on V Depth, V Angle and magnet dimensions." onChange={set('rotor', 'outer_bridge_thickness_mm', 'rotor')} />
           {!geometryStale && geometry?.metadata?.interpreted_rotor_inputs && <p className="ipm-layout-note">Actual outer bridge: {Number((geometry.metadata.interpreted_rotor_inputs as Record<string, number>).actual_outer_bridge_mm).toFixed(3)} mm. Coverage follows the slab geometry; the saved magnet coverage is not used for V-shape rotors.</p>}
           <NumberRow label="V Angle" value={config.rotor.v_angle_deg} unit="deg" hint="Included angle between the paired magnets buried in each rotor pole." min={0} max={120} step={1} disabled={disabled} onChange={set('rotor', 'v_angle_deg', 'rotor')} />
           <NumberRow label="V Depth" value={config.rotor.v_depth_mm} unit="mm" hint="Radial depth of the magnet pair's V apex from the rotor outer surface." min={0} max={200} step={0.1} disabled={disabled} onChange={set('rotor', 'v_depth_mm', 'rotor')} />
@@ -1677,7 +1679,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             onChange={set('rotor', 'bridge_thickness_mm', 'rotor')}
           />
         )}
-        {config.rotor.ipm_topology !== 'pyleecan_holem50' && (
+        {config.rotor.ipm_topology !== 'pyleecan_holem50' && hasPoleCoverageEstimate(config) && (
           // A surface magnet's coverage follows from its width, as the geometry builds it.
           <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>{config.topology === 'SPM' ? '% · calc' : '%'}</small></span><strong>{coverage}</strong></div>
         )}
@@ -2007,6 +2009,7 @@ function ViewportChrome({
   const enteredCounts = entry ? [hasEntry(entry, 'rotor', 'Pole Count') ? `${config.rotor.pole_count}p` : '', hasEntry(entry, 'stator', 'Slot Count') ? `${config.stator.slot_count}s` : ''].filter(Boolean).join('/') : '';
   const fieldFocus = useContext(DesignFieldFocusContext)?.field;
   const editingDimension = fieldFocus && (!entry || hasEntry(entry, fieldFocus.section, fieldFocus.label)
+    || entry.requirements[entryKey(fieldFocus.section, fieldFocus.label)]?.required === false
     || fieldFocus.section === 'rotor' && Boolean(geometry?.metadata?.diagnostic_rotor))
     ? designFieldDimension(fieldFocus.section, fieldFocus.label) : null;
   const configurationLabel = entry
@@ -2996,7 +2999,7 @@ function HealthPanel({
       return { severity: 'error' as const, title: /winding|coil|phase|parallel|turns/i.test(`${issue.field ?? ''} ${copy}`) ? 'Winding needs attention' : control ? `${control.label} needs attention` : 'Geometry needs attention', copy };
     }).filter((issue) => issue.copy !== error) ?? [] : []),
     ...[...new Set(geometryWarnings)].map((copy) => ({ severity: 'warning' as const,
-      title: /tooth-shoe shoulder/i.test(copy) ? 'Tooth-shoe shoulder needs review' : /bore tooth/i.test(copy) ? 'Bore tooth needs review' : 'Geometry needs review', copy })),
+      title: /mesh-sensitive/i.test(copy) ? 'Mesh convergence needs review' : /tooth-shoe shoulder/i.test(copy) ? 'Tooth-shoe shoulder needs review' : /bore tooth/i.test(copy) ? 'Bore tooth needs review' : 'Geometry needs review', copy: humanizeGeometryMessage(copy) })),
   ];
   const hasCurrentErrors = currentIssues.some((issue) => issue.severity === 'error');
   const currentTone = hasCurrentErrors ? 'error' : currentIssues.length ? 'warning' : 'updating';
@@ -3060,9 +3063,9 @@ function HealthPanel({
     ...currentIssues,
     airgapHealth,
     ...(burialHealth ? [burialHealth] : []),
-    { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
+    ...(config.geometry_reference || hasPoleCoverageEstimate(config) ? [{ severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
       title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
-      copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` },
+      copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` }] as DesignHealthIssue[] : []),
     { severity: balancedSlots ? 'positive' : 'warning', title: !slotInputsReady ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: slotInputsReady ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
     { severity: !error && geometry && !geometryStale ? 'positive' : 'info', title: error ? 'Preview waiting for valid inputs' : geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: error ? 'Correct the input errors to refresh the preview.' : geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
@@ -3110,7 +3113,7 @@ function HealthPanel({
       <HealthAttention issues={attentionIssues} />
       <div className="design-health-metrics">
         <div className="design-health-metric"><span>Airgap</span><strong>{airgap.toFixed(2)} mm</strong></div>
-        <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>
+        {(config.geometry_reference || hasPoleCoverageEstimate(config)) && <div className="design-health-metric"><span>{config.geometry_reference ? 'Reference' : 'Coverage'}</span><strong>{reference ? reference.shortName : `${coverage}%`}</strong></div>}
         <div className="design-health-metric"><span>Q</span><strong>{validSlots && !error && config.rotor.pole_count > 0 ? Number((config.stator.slot_count / (config.rotor.pole_count * 3)).toFixed(3)) : '—'} </strong></div>
       </div>
       <div className="public-check-heading"><span>Pre-solve checks</span><strong>{positiveCount} ✓{infoCount > 0 ? ` · ${infoCount} i` : ''}{warningCount > 0 ? ` · ${warningCount} △` : ''}</strong></div>
@@ -3447,6 +3450,13 @@ function LiveSolveMonitor({ config, busy, progress, liveSamples, progressPercent
   );
 }
 
+function ResultInputNotes({ result }: { result: SolveResult }) {
+  if (!result.input_notes?.length) return null;
+  return <details className="performance-message"><summary>Interpreted rotor inputs</summary>
+    {result.input_notes.map((note) => <p key={note}>{humanizeGeometryMessage(note)}</p>)}
+  </details>;
+}
+
 function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result: SolveResult; onOpenReport: () => void; positionLink?: FieldPositionLink }) {
   const sixStep = resultUsesSixStep(result);
   const completeCycle = result.solve_metadata.loaded_cycle_complete === true;
@@ -3491,6 +3501,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
 
   return (
     <section className="public-completed-results" aria-label="Completed solver results">
+      <ResultInputNotes result={result} />
       {losses?.efficiency_pct == null && losses && <p className="performance-message" role="status">{losses.efficiency_status_reason} {losses.iron_loss_status_reason} {losses.iron_loss_W == null && 'Known loss subtotal excludes unavailable iron loss.'}</p>}
       {result.solve_metadata.loaded_cycle_complete === false && hasTorque
         && !result.warnings?.some((warning) => warning.startsWith('Partial electrical sweep:'))
@@ -4941,6 +4952,7 @@ function ReportStage({
       <div className="public-report-header"><div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div><div className="public-report-header-actions"><div className="public-report-mode" role="group" aria-label="Results view"><button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button><button type="button" className={reportMode === 'compare' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button></div><button type="button" onClick={onBack}>← Back to Solve</button></div></div>
       {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
       {savedRunPanel}
+      <ResultInputNotes result={result} />
       {reportQualification && !qualificationChip && <QualificationNote qualification={reportQualification} />}
       {result.warnings?.map((warning) => <p className="performance-message" role="status" key={warning}>{humanizeGeometryMessage(warning)}</p>)}
       {result.solve_metadata.loaded_cycle_complete === false && hasTorqueResult(result)

@@ -32,7 +32,7 @@ from backend.field_artifacts import (
 from backend.field_composition import solve_armature_field_sweep
 from backend.geometry import validate_geometry, winding_feasibility_warnings
 from backend.gmsh_solver import GmshUnavailableError
-from backend.input_advisories import geometry_input_advisories
+from backend.input_advisories import geometry_input_advisories, geometry_mesh_advisories
 from backend.magneto2d_adapter import (
     Magneto2DExecutionError,
     Magneto2DUnsupportedError,
@@ -1266,7 +1266,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         map_low = zero_estimate.low_s + (solves - 1) * point_estimate.low_s
         map_high = zero_estimate.high_s + (solves - 1) * point_estimate.high_s
         map_work = {"solves": solves, "positions_per_point": map_positions_per_point(settings.preset)}
-    warnings = winding_feasibility_warnings(config) + geometry_input_advisories(config)
+    warnings = winding_feasibility_warnings(config) + geometry_mesh_advisories(config)
     if estimate.seconds > 120 and solve_params.solve_quality != "quick":
         warnings.append(
             "Estimated solve time exceeds two minutes; use the Preview plan for iteration.",
@@ -1278,6 +1278,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
         "valid": not error_list,
         "errors": error_list,
         "warnings": warnings,
+        "input_notes": geometry_input_advisories(config),
         "estimated_solve_time_s": round(estimate.seconds + map_seconds, 1),
         "estimated_solve_time_range_s": [round(estimate.low_s + map_low), round(estimate.high_s + map_high)],
         "estimated_mesh_elements": estimate.mesh_elements,

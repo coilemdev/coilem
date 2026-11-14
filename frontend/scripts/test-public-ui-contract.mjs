@@ -1682,7 +1682,7 @@ assert.match(workspaceSource, />New Design</);
 assert.match(workspaceSource, /workflowDisabled \|\| \(!step\.available && !active\)/);
 assert.match(workspaceSource, /aria-label="Blank design canvas"/);
 assert.match(workspaceSource, /solveAvailable=\{!props\.blankDesign && buildComplete && !props\.designInputInvalid\}/);
-assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => entryField\.unset \? '' : String\(value\)\)/);
+assert.match(workspaceSource, /const \[draftValue, setDraftValue\] = useState\(\(\) => unset \? '' : String\(value\)\)/);
 assert.match(workspaceSource, /onBlur=\{\(\) => \{ commitDraft\(\); fieldFocus\?\.setField\(null\); \}\}/);
 assert.match(workspaceSource, /event\.key === 'Enter'/);
 assert.doesNotMatch(workspaceSource, /onChange=\{\(event\) => onChange\(Number\(event\.target\.value\)\)\}/);
