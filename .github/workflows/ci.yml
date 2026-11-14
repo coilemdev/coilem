@@ -11,6 +11,11 @@ on:
         description: Run only the repeated Windows interrupt investigation
         type: boolean
         default: false
+      windows_cancel_probe_entrypoint:
+        description: Compare the installed console wrapper with direct Python
+        type: choice
+        options: [console, python]
+        default: console
       windows_cancel_probe_stage:
         description: Real solve stage to interrupt
         type: choice
@@ -462,8 +467,9 @@ jobs:
       - name: Repeat the real interrupted solve, preserving every failure
         env:
           PROBE_ATTEMPTS: ${{ inputs.windows_cancel_probe_attempts }}
+          PROBE_ENTRYPOINT: ${{ inputs.windows_cancel_probe_entrypoint }}
           PROBE_STAGE: ${{ inputs.windows_cancel_probe_stage }}
-        run: python -m tools.windows_cancel_probe --out "$env:RUNNER_TEMP/cancel-probe" --attempts "$env:PROBE_ATTEMPTS" --stage "$env:PROBE_STAGE"
+        run: python -m tools.windows_cancel_probe --out "$env:RUNNER_TEMP/cancel-probe" --attempts "$env:PROBE_ATTEMPTS" --stage "$env:PROBE_STAGE" --entrypoint "$env:PROBE_ENTRYPOINT"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         if: always()
         with:

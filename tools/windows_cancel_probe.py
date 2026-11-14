@@ -49,15 +49,26 @@ def serve(folder):
     return launcher.main(['--no-browser', '--port', os.environ['COILEM_PROBE_PORT']])
 
 
-def attempt(folder, stage):
+def attempt(folder, stage, entrypoint):
     folder.mkdir(parents=True)
     (folder / 'ui').mkdir()
     (folder / 'ui/index.html').write_text('<!doctype html><title>coilEM probe</title>')
-    command = [sys.executable, '-u', '-m', 'tools.windows_cancel_probe', '--serve', str(folder)]
+    if entrypoint == 'console':
+        from pip._vendor.distlib.scripts import ScriptMaker
+
+        maker = ScriptMaker(None, str(folder))
+        maker.executable = sys.executable
+        maker.variants = {''}
+        maker.make('coilem-cancel-probe = tools.windows_cancel_probe:main')
+        command = [str(folder / ('coilem-cancel-probe.exe' if os.name == 'nt' else 'coilem-cancel-probe')),
+                   '--serve', str(folder)]
+    else:
+        command = [sys.executable, '-u', '-m', 'tools.windows_cancel_probe', '--serve', str(folder)]
     with socket.socket() as reserve:
         reserve.bind(('127.0.0.1', 0))
         port = reserve.getsockname()[1]
-    env = {**os.environ, 'COILEM_USER_DATA_ROOT': str(folder / 'data'), 'COILEM_PROBE_PORT': str(port)}
+    env = {**os.environ, 'COILEM_USER_DATA_ROOT': str(folder / 'data'), 'COILEM_PROBE_PORT': str(port),
+           'PYTHONPATH': str(Path(__file__).resolve().parents[1]), 'PYTHONUNBUFFERED': '1'}
     process = subprocess.Popen(command, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                text=True, encoding='utf-8', errors='replace',
                                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0)
@@ -73,7 +84,7 @@ def attempt(folder, stage):
                 address.append(found[1]); ready.set()
 
     reader = threading.Thread(target=drain, daemon=True); reader.start()
-    result = {'stage': stage}
+    result = {'stage': stage, 'entrypoint': entrypoint}
     try:
         if not ready.wait(90):
             raise RuntimeError('launcher never became ready')
@@ -129,6 +140,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--serve', type=Path)
     parser.add_argument('--out', type=Path)
+    parser.add_argument('--entrypoint', choices=['python', 'console'], default='console' if os.name == 'nt' else 'python')
     parser.add_argument('--attempts', type=int, default=8)
     parser.add_argument('--stage', choices=['noload_sweep', 'magneto2d_sweep'], default='noload_sweep')
     args = parser.parse_args()
@@ -136,7 +148,7 @@ def main():
         return serve(args.serve)
     if args.out is None:
         parser.error('--out is required')
-    results = [attempt(args.out.resolve() / f'attempt-{i:02}', args.stage) for i in range(args.attempts)]
+    results = [attempt(args.out.resolve() / f'attempt-{i:02}', args.stage, args.entrypoint) for i in range(args.attempts)]
     return 0 if all(r['pass'] for r in results) else 1
 
 
