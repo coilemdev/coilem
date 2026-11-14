@@ -1,12 +1,28 @@
 # Release status
 
+**coilEM 0.5.8 Developer Preview is in preparation, not approved for publication.**
+The application and frontend identify as 0.5.8; Magneto2D remains 0.5.0.
+The release branch is rebased onto current main, retaining the 0.5.7 metadata
+and historical evidence with their original identities.
+
+The current release qualification gate is **BLOCKED**: platform records do not
+match the changed 0.5.8 physics sources. Passing historical records below apply
+only to their measured source cohort. Fresh Windows/macOS evidence, candidate
+CI, wheel acceptance, Windows cancellation verification and the V-shape accuracy
+disposition remain pending. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
+and [candidate release notes](RELEASE_NOTES.md).
+
+No v0.5.8 tag, package upload or workflow dispatch is part of this preparation.
+
+# Historical release status
+
 Prepared November 11, 2026: **coilEM 0.5.7 Developer Preview**, with
 **Magneto2D 0.5.0**. The 0.5.7 release branch is integrated into `main` by
 [PR #250](https://github.com/coilemdev/coilem/pull/250).
 
 ## 0.5.7 qualification and publication
 
-The formal release qualification gate passes for the current application
+The formal release qualification gate passed for the 0.5.7 application
 physics. The [Windows](benchmarks/records/windows-x86_64.json) and
 [macOS](benchmarks/records/macos-arm64.json) records bind measured candidate
 `4b41f837f3d89d4fbc836be54ecafff4729491c0`, protocol 1.10.0's full A–F

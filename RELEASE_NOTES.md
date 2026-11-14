@@ -1,3 +1,45 @@
+# coilEM 0.5.8 Developer Preview — release candidate
+
+This candidate bundles Magneto2D 0.5.0. Release qualification, platform wheel
+acceptance and publication are pending; see the [release checklist](docs/RELEASE_0_5_8.md)
+and [release status](PUBLICATION_STATUS.md). Historical 0.5.7 benchmark records
+do not qualify the changed 0.5.8 solver sources.
+
+- **Guided motor design.** New Design exposes parameters progressively, with
+  guided setup, rotor construction previews, winding checks and clearer invalid
+  input messages. Design Health stays reachable on narrow screens.
+- **Clearer design and field views.** Rotor previews, 3D windings, phase controls,
+  layout zoom and field legends make geometry and excitation easier to inspect.
+- **Python scripting.** The [Python client](docs/PYTHON_CLIENT.md) supports
+  scripted motor solves with typed inputs, results and executable examples.
+- **Solve execution and timing.** Direct Newton execution, worker/thread handling,
+  mesh and frame sharing, and repeated-solve reuse reduce overhead. Results and
+  reports distinguish elapsed time from combined worker time. Release-specific
+  speed claims await measurements of this candidate.
+- **More useful results and reports.** Partial analyses explain unavailable
+  losses and efficiency; incomplete totals are labelled Known loss subtotal.
+  PDF currents use A peak, resistance rows avoid duplicates, and diagnostic
+  plots handle empty bore contours.
+- **Saved runs and tutorials.** Pruned runs keep static results and explain why
+  playback is unavailable. Tutorial scale bars follow the displayed geometry;
+  capstone completion requires a current solved design meeting its targets and
+  a completed run.
+
+## Known limitations
+
+V-shape bridge thickness is a minimum clearance; other geometry inputs also
+control the actual bridge. Magnet coverage does not control V-shape pockets.
+The [mesh sensitivity study](docs/VSHAPE_MESH_SENSITIVITY_285.md) found material
+changes between Fine and Very Fine; spatial convergence remains unproven
+([#285](https://github.com/coilemdev/coilem/issues/285)). A warning does not
+establish numerical accuracy. Its release disposition remains pending.
+
+Windows cancellation reliability still requires repeated platform acceptance
+([#234](https://github.com/coilemdev/coilem/issues/234)). Sector models and
+opt-in pole-pitch mesh reuse are excluded from this candidate. Hardware accuracy,
+3D end effects and Experimental outputs remain outside any software parity
+claim; see [Validation](docs/VALIDATION.md).
+
 # coilEM 0.5.7 Developer Preview
 
 Prepared November 11, 2026. coilEM 0.5.7 bundles Magneto2D 0.5.0 and the
