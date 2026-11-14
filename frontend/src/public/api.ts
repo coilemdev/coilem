@@ -62,6 +62,8 @@ export interface PublicRunListRecord {
   completed_at?: string | null;
   solver_name?: string | null;
   run_setup?: RunSetupProvenance | null;
+  /** The design's saved-setup scope, which survives edits; unnamed designs can share a slug. */
+  design_scope?: string | null;
   field_playback_removed_at?: string | null;
 }
 

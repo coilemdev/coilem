@@ -465,6 +465,8 @@ assert.match(runComparisonSource, /solverLabel\(left\.result\.solve_metadata\.so
 assert.match(runComparisonSource, /solverLabel\(right\.result\.solve_metadata\.solver_name\)/);
 assert.match(runComparisonSource, /toggleableSeries/);
 assert.match(runComparisonSource, /hiddenSeriesKeys=\{hiddenSeriesKeys\}/);
+assert.match(runComparisonSource, /Descriptive run comparison/);
+assert.match(runComparisonSource, /not a solver-validation verdict/);
 assert.match(runComparisonSource, /aria-label="Run comparison metric differences"/);
 assert.doesNotMatch(runComparisonSource, /Solver parity/);
 assert.doesNotMatch(runComparisonSource, /Elmer/);

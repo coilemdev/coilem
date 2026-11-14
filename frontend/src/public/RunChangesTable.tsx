@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { INPUT_GROUPS, inputChanges, type ComparisonInputs } from './runInputChanges';
 
 export function RunInputChanges({ before, after, details = [] }: {
@@ -5,7 +6,7 @@ export function RunInputChanges({ before, after, details = [] }: {
   after?: ComparisonInputs | null;
   details?: Array<{ label: string; before: string; after: string }>;
 }) {
-  const changes = inputChanges(before, after);
+  const changes = useMemo(() => inputChanges(before, after), [before, after]);
   const missing = changes.filter(change => change.missing).length;
   return <section className="public-run-input-changes" aria-label="What changed between runs">
     <header><h3>What changed?</h3><span>{changes.length - missing} changed inputs{missing ? ` · ${missing} not recorded in one run` : ''}</span></header>

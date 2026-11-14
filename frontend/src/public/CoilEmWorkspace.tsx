@@ -134,7 +134,7 @@ import {
   PUBLIC_CUSTOM_SWEEP_DEFAULT_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG,
-  PUBLIC_SOLVE_PLAN_MESH_DENSITY,
+  ensureLossesFullCycle,
   type PublicSolvePreset,
 } from './solvePlan';
 import {
@@ -3758,8 +3758,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
+  // A custom step with losses always solves a full cycle; a preset is requested as one only when
+  // it does not solve one already (ensureLossesFullCycle). The chosen plan itself is unchanged.
   const lossesFullCycle = selectedSolver !== 'elmer' && config.solve_options.losses_efficiency;
-  useEffect(() => { if (lossesFullCycle) setCustomSweepOpen(true); }, [lossesFullCycle]);
+  const lossesSweep = ensureLossesFullCycle(config, selectedSolver);
   // Coming back to Solve with the same mesh and result resumes the tab and
   // mesh display that were left (solveViewMemory); anything new opens on its default.
   const [resumeSolveView] = useState(() => (
@@ -3871,8 +3873,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
   const planLabel = config.solve_params.solve_quality === 'custom'
     ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
-    : solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
-      ?? config.solve_params.solve_quality;
+    : `${solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
+      ?? config.solve_params.solve_quality}${lossesSweep !== config ? ` · 360° at ${lossesSweep.solve_params.rotor_step_deg}° for losses` : ''}`;
   const estimatedTimeText = validation
     ? formatRunTimeRange(validation)
     : validationChecking
@@ -3920,9 +3922,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
-  const selectedPreset = lossesFullCycle
-    ? solvePlans.find(plan => PUBLIC_SOLVE_PLAN_MESH_DENSITY[plan.value] === config.solve_params.mesh_density)?.value
-    : config.solve_params.solve_quality;
+  const selectedPreset = config.solve_params.solve_quality;
   const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
   const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;

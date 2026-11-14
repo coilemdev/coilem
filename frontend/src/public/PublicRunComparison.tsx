@@ -10,7 +10,8 @@ import {
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
 import { compareRunLosses, compareRunTiming, previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
-import { recordedSetupLabel, type ComparisonInputs } from './runInputChanges';
+import type { ComparisonInputs } from './runInputChanges';
+import { COGGING_METHOD_LABELS } from './coggingView';
 import { RunInputChanges } from './RunChangesTable';
 import { formatSignificant, torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
@@ -56,7 +57,6 @@ const METRICS: Array<{
   // The cogging sweep (#185), for runs that solved one.
   { label: 'Cogging torque p-p', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
   { label: 'Cogging fundamental', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.first_harmonic_Nm },
-  { label: 'Solve time', unit: 's', digits: 1, value: (run) => run.summary.solve_time_s },
 ];
 
 function runKey(run: Pick<PublicRunListRecord, 'project_slug' | 'run_id'>): string {
@@ -153,11 +153,14 @@ function lossDelta(before: number | null, after: number | null, unit: string): s
   if (before === null || after === null) return '—';
   if (unit === '%') return delta(before, after, 1);
   // A delta must not imply finer precision than either displayed run value.
+  // Negative digits round to tens or hundreds, as formatSignificant shows values of 1000 and above.
   const precisions = [before, after].filter(value => value !== 0)
-    .map(value => Math.max(0, 2 - Math.floor(Math.log10(Math.abs(Number(value.toPrecision(3)))))));
+    .map(value => 2 - Math.floor(Math.log10(Math.abs(Number(value.toPrecision(3))))));
   const digits = Math.min(12, precisions.length ? Math.min(...precisions) : 0);
-  const difference = Number((after - before).toFixed(digits));
-  const text = Math.abs(difference).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  const fractionDigits = Math.max(0, digits);
+  const scale = 10 ** Math.max(0, -digits);
+  const difference = Number((Math.round((after - before) / scale) * scale).toFixed(fractionDigits));
+  const text = Math.abs(difference).toLocaleString(undefined, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits });
   return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${text}`;
 }
 
@@ -204,10 +207,7 @@ function actualMeshProvenance(result: ComparisonResult): string {
 
 function actualTorqueProvenance(result: ComparisonResult): string {
   const metadata = result.solve_metadata;
-  const labels: Record<string, string> = {
-    weighted_stress: 'WST', contour: 'Contour MST', arkkio: 'Arkkio',
-    remesh_per_step: 'Remesh Per Step', fixed_mesh: 'Fixed Mesh',
-  };
+  const labels: Record<string, string> = { ...COGGING_METHOD_LABELS, remesh_per_step: 'Remesh Per Step', fixed_mesh: 'Fixed Mesh' };
   return [metadata.torque_method, metadata.rotor_rotation_model]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
     .map(value => labels[value] || value.replace(/_/g, ' '))
@@ -357,8 +357,9 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const right = loaded[rightKey];
   const ready = Boolean(left && right && leftKey !== rightKey);
   const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !leftKey;
+  // Only a chosen pair is prepared; with one run still to pick, the selectors say so.
   const loadingStatus = error ? null : !runsLoaded ? 'Loading saved runs…'
-    : !noPrevious && records.length >= 2 && !ready ? 'Preparing comparison…' : null;
+    : leftKey && rightKey && leftKey !== rightKey && !ready ? 'Preparing comparison…' : null;
   const torqueSeries = useMemo(() => ready ? [
     {
       id: 'run-a',
@@ -552,14 +553,16 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
         {compareWithPrevious && leftKey === previousKey && rightKey === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
         <RunInputChanges before={left.inputs} after={right.inputs} details={[
           { label: 'Design', before: left.record.project_name || left.record.project_slug, after: right.record.project_name || right.record.project_slug },
-          { label: 'Solver', before: solverLabel(left.result.solve_metadata.solver_name), after: solverLabel(right.result.solve_metadata.solver_name) },
           { label: 'Actual mesh', before: actualMeshProvenance(left.result), after: actualMeshProvenance(right.result) },
           { label: 'Torque extraction', before: actualTorqueProvenance(left.result), after: actualTorqueProvenance(right.result) },
           { label: 'Excitation identity', before: excitationProvenance(left.result), after: excitationProvenance(right.result) },
-          { label: 'Saved setup', before: recordedSetupLabel(left.inputs), after: recordedSetupLabel(right.inputs) },
           { label: 'Completed', before: formatRunTime(left.record.completed_at, 'Not recorded'),
             after: formatRunTime(right.record.completed_at, 'Not recorded') },
         ]} />
+        <section className="public-run-compare-mode-note design" aria-live="polite">
+          <strong>Descriptive run comparison</strong>
+          <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>
+        </section>
         <div className="public-run-compare-metrics" role="region" aria-label="Run comparison metric differences" tabIndex={0}>
           <table>
             <caption>Results comparison</caption>

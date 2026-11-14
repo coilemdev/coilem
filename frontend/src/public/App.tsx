@@ -960,7 +960,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
 
   const updateAnalysis = useCallback((key: AnalysisKey, enabled: boolean) => {
     validationRequestId.current += 1;
-    setConfig((current) => setAnalysisOption(current, key, enabled, selectedSolver));
+    setConfig((current) => setAnalysisOption(current, key, enabled));
     setValidation(null);
     setValidationChecking(false);
     setValidationError(null);
@@ -969,7 +969,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setLiveSamples([]);
     setError(null);
     setNotice('Analysis settings changed. Updating the run estimate.');
-  }, [selectedSolver]);
+  }, []);
 
   const updateTorqueSpeed = useCallback((settings: TorqueSpeedAnalysisSettings) => {
     validationRequestId.current += 1;
@@ -1026,7 +1026,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       ? presetSweepRef.current
       : capturePublicPresetSweep(config);
     presetSweepRef.current = presetSweep;
-    const nextConfig = applyPublicSolvePreset(config, solvePlan, presetSweep, selectedSolver);
+    const nextConfig = applyPublicSolvePreset(config, solvePlan, presetSweep);
     setConfig(nextConfig);
     setMesh(null);
     setValidation(null);
@@ -1037,7 +1037,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setLiveSamples([]);
     setError(null);
     void prepareMesh(nextConfig);
-  }, [config, prepareMesh, selectedSolver]);
+  }, [config, prepareMesh]);
 
   const updateCustomSweep = useCallback((stepDeg: number) => {
     validationRequestId.current += 1;

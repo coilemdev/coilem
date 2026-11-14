@@ -452,6 +452,7 @@ def test_comparison_inputs_are_immutable_resolved_settings_and_recorded_setup(tm
     request_path.write_text(json.dumps(request), encoding="utf-8")
     listed = workspace.list_runs()[0]
     assert "run_setup" not in listed
+    assert "design_scope" not in listed  # No setup library was submitted with this run.
     assert listed["run_id"] == location.run_id
 
 
@@ -723,6 +724,7 @@ def test_run_setups_are_portable_snapshots_with_immutable_result_labels(tmp_path
     assert loaded["result"]["solve_metadata"]["run_setup"]["version"] == 1
     assert loaded["request"]["submitted"]["run_setup"]["version"] == 1
     assert loaded["project"]["run_setups"]["scope"] == "motor-1"
+    assert workspace.list_runs()[0]["design_scope"] == "motor-1"
     # The library is stored once, in the project snapshot; the request keeps only the label.
     assert "run_setups" not in loaded["request"]["submitted"]
     assert loaded["request"]["resolved_config"] == VALID_CONFIG

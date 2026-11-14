@@ -3,7 +3,6 @@ import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema'
 import { parseTorqueSpeedSettings, torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
 import type { MotorConfig } from './model';
-import { ensureLossesFullCycle } from './solvePlan';
 import { parseCustomSteels } from './customSteel';
 import type { WireSpec } from './performance';
 import { PUBLISHED_REFERENCES, publishedReference, type PublishedReferenceId } from './publishedReferences';
@@ -242,7 +241,7 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   const name = typeof raw.name === 'string' && raw.name.trim() ? raw.name.trim() : null;
   const setups = readProfileDocument(raw.run_setups);
   return {
-    name, config: ensureLossesFullCycle(config), runSetups: setups.document, declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,
+    name, config, runSetups: setups.document, declaredSchemaVersion: declared, fromFuture: migrated.fromFuture,
     runSetupsNotice: setups.error
       ? 'Its saved run setups use a format this version cannot read, so they were not loaded.'
       : setups.skipped
@@ -267,7 +266,7 @@ export function serializeDesignFile(config: MotorConfig, name: string, runSetups
       ...(runSetups ? { run_setups: runSetups } : {}),
       ...(publishedReference(config)?.fileNotice
         ? { reference_notice: publishedReference(config)?.fileNotice } : {}),
-      ...applyPublicSolverSettings(ensureLossesFullCycle(config)),
+      ...applyPublicSolverSettings(config),
     },
     null,
     2,

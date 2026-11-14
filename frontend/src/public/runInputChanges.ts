@@ -1,3 +1,5 @@
+import { OPERATING_KEYS, canonical as stable, record } from './solveProfiles';
+
 /** Stored inputs only: never merge these records with the open design or defaults. */
 export interface ComparisonInputs {
   config?: Record<string, unknown> | null;
@@ -17,9 +19,11 @@ export interface InputChange {
   missing: boolean;
 }
 
-const OPERATING = new Set(['rated_speed_rpm', 'current_amplitude_A', 'current_amplitude_convention',
-  'current_angle_deg', 'magnet_temperature_C', 'winding_temperature_C', 'mechanical_loss_W',
-  'excitation_mode', 'phase_connection', 'commutation_advance_deg', 'motor_input_dc_bus_V']);
+const OPERATING = new Set<string>(OPERATING_KEYS);
+/** An entry that one recorded run has and the other does not: unset, not unrecorded. */
+const ABSENT = Symbol('absent');
+/** Maps keyed by the user's own names: a missing key is an entry the run did not have. */
+const NAMED_MAPS = new Set(['config.materials.custom_steels']);
 const LABELS: Record<string, string> = {
   'config.topology': 'Motor topology', 'config.rotor_layout': 'Rotor arrangement',
   'config.geometry_reference': 'Reference model', 'config.reference_case': 'Reference case',
@@ -47,13 +51,7 @@ const LABELS: Record<string, string> = {
 };
 const UNITS: Record<string, string> = { mm: 'mm', mm2: 'mm²', mm3: 'mm³', rpm: 'rpm', deg: '°',
   A: 'A', V: 'V', W: 'W', C: '°C', T: 'T', ohm: 'Ω', m: 'm', kg: 'kg', pct: '%' };
-const record = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 const words = (key: string) => key.replace(/_/g, ' ').replace(/\b(?:rpm|rms|thd|spm|ipm|dc)\b/gi, part => part.toUpperCase());
-function stable(value: unknown): string | undefined {
-  if (Array.isArray(value)) return `[${value.map(stable).join(',')}]`;
-  if (record(value)) return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stable(value[key])}`).join(',')}}`;
-  return JSON.stringify(value);
-}
 function groupFor(path: string): InputGroup {
   if (path === 'run_setup' || path.startsWith('run_setup.')) return 'Saved setup';
   const [, section, field] = path.split('.');
@@ -78,7 +76,7 @@ function describe(path: string): { label: string; unit: string } {
 }
 function format(value: unknown, path: string, unit: string): string {
   if (value === undefined) return 'Not recorded';
-  if (value === null) return 'Not set';
+  if (value === null || value === ABSENT) return 'Not set';
   if (typeof value === 'boolean') return value ? 'On' : 'Off';
   if (typeof value === 'number') return `${value}${unit ? ` ${unit}` : ''}`;
   if (typeof value === 'string') {
@@ -86,11 +84,6 @@ function format(value: unknown, path: string, unit: string): string {
     return value || 'Empty';
   }
   return JSON.stringify(value);
-}
-
-export function recordedSetupLabel(inputs?: ComparisonInputs | null): string {
-  const setup = inputs?.run_setup;
-  return setup?.name ? `${setup.name}${setup.version != null ? ` · v${setup.version}` : ''}` : 'Not recorded';
 }
 
 export function inputChanges(before?: ComparisonInputs | null, after?: ComparisonInputs | null): InputChange[] {
@@ -106,27 +99,36 @@ export function inputChanges(before?: ComparisonInputs | null, after?: Compariso
     changes.push({ path, label, group: groupFor(path), before: format(left, path, unitFor(before)), after: format(right, path, unitFor(after)),
       missing: left === undefined || right === undefined });
   }
+  // Unset (null) and absent containers compare as empty, so a recorded value on one side reads
+  // 'Not set' on the other, as do extra list entries and named-map entries. A schema field an
+  // older snapshot lacks (undefined) reads 'Not recorded'.
+  const empty = (value: unknown) => value === undefined || value === null || value === ABSENT;
+  const field = (parent: unknown, key: string, path: string) => {
+    if (record(parent) && key in parent) return parent[key];
+    if (parent === undefined || (record(parent) && !NAMED_MAPS.has(path) && !NAMED_MAPS.has(`${path}.${key}`))) return undefined;
+    return ABSENT;
+  };
+  const entry = (parent: unknown, index: number) => parent === undefined ? undefined
+    : Array.isArray(parent) && index < parent.length ? parent[index] : ABSENT;
   function visit(left: unknown, right: unknown, path: string) {
     if (stable(left) === stable(right)) return;
-    if ((record(left) || left === undefined) && (record(right) || right === undefined) && (record(left) || record(right))) {
-      const keys = [...new Set([...Object.keys(left ?? {}), ...Object.keys(right ?? {})])].sort();
+    if ((record(left) || empty(left)) && (record(right) || empty(right)) && (record(left) || record(right))) {
+      const keys = [...new Set([...Object.keys(record(left) ? left : {}), ...Object.keys(record(right) ? right : {})])].sort();
       if (!keys.length) add(left, right, path);
       for (const key of keys) {
         if (path === 'config' && key === 'schema_version') continue;
-        visit(record(left) ? left[key] : undefined, record(right) ? right[key] : undefined, `${path}.${key}`);
+        visit(field(left, key, path), field(right, key, path), `${path}.${key}`);
       }
-    } else if ((Array.isArray(left) || left === undefined) && (Array.isArray(right) || right === undefined) && (Array.isArray(left) || Array.isArray(right))) {
-      if ((left === undefined || right === undefined) && !(Array.isArray(left) ? left.length : 0) && !(Array.isArray(right) ? right.length : 0)) {
-        add(left, right, path);
-      }
-      for (let index = 0; index < Math.max(Array.isArray(left) ? left.length : 0, Array.isArray(right) ? right.length : 0); index++) {
-        visit(Array.isArray(left) ? left[index] : undefined, Array.isArray(right) ? right[index] : undefined, `${path}.${index + 1}`);
-      }
+    } else if ((Array.isArray(left) || empty(left)) && (Array.isArray(right) || empty(right)) && (Array.isArray(left) || Array.isArray(right))) {
+      const length = Math.max(Array.isArray(left) ? left.length : 0, Array.isArray(right) ? right.length : 0);
+      if (!length) add(left, right, path);
+      for (let index = 0; index < length; index++) visit(entry(left, index), entry(right, index), `${path}.${index + 1}`);
     } else {
       add(left, right, path);
     }
   }
-  visit(before?.config ?? undefined, after?.config ?? undefined, 'config');
+  // A run without a config snapshot is reported once by the table's notice, not field by field.
+  if (before?.config && after?.config) visit(before.config, after.config, 'config');
   for (const key of ['solver', 'solver_name', 'run_setup'] as const) visit(before?.[key] ?? undefined, after?.[key] ?? undefined, key);
   return changes;
 }

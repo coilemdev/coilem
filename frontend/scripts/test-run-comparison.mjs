@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const { normalizeComparisonResult, previousCompletedRun, compareRunTiming, compareRunLosses } = await importTypeScriptModule(new URL('../src/public/runComparison.ts', import.meta.url));
-const { inputChanges, recordedSetupLabel } = await importTypeScriptModule(new URL('../src/public/runInputChanges.ts', import.meta.url));
+const { inputChanges } = await importTypeScriptModule(new URL('../src/public/runInputChanges.ts', import.meta.url));
 const emptyTorque = { electrical_angle_deg: [], torque_Nm: [] };
 const emptyEmf = { electrical_angle_deg: [], phase_a_V: [], phase_b_V: [], phase_c_V: [] };
 
@@ -110,8 +110,6 @@ assert.deepEqual(changes.find(row => row.path === 'config.rotor.magnet_thickness
 });
 assert.equal(changes.find(row => row.path === 'config.solve_params.current_amplitude_A').before, '20 A rms');
 assert.equal(changes.find(row => row.path === 'config.solve_options.cogging_torque').before, 'Off');
-assert.equal(recordedSetupLabel(left), 'Report · v1');
-assert.equal(recordedSetupLabel(null), 'Not recorded');
 assert.equal(JSON.stringify([left, right]), original, 'diffs must not rewrite saved input snapshots');
 assert.deepEqual(inputChanges(left, structuredClone(left)), []);
 assert.deepEqual(inputChanges({ config: { rotor: { a: 1, b: 2 } } }, { config: { rotor: { b: 2, a: 1 } } }), []);
@@ -120,8 +118,26 @@ assert.equal(legacy.find(row => row.path.endsWith('winding_temperature_C')).befo
 assert.equal(legacy.find(row => row.path.endsWith('winding_temperature_C')).missing, false);
 assert.equal(legacy.find(row => row.path.endsWith('magnet_temperature_C')).before, 'Not recorded');
 assert.equal(legacy.find(row => row.path.endsWith('magnet_temperature_C')).missing, true);
-assert.equal(inputChanges(null, { config: { winding: { coil_map: [] } } })[0].before, 'Not recorded');
+// A run without a config snapshot is reported by the table notice, not leaf by leaf.
+assert.deepEqual(inputChanges(null, { config: { winding: { coil_map: [] } } }), []);
+assert.deepEqual(inputChanges({ config: null, solver: 'magneto2d' }, { config: left.config, solver: 'magneto2d' }), []);
 assert.equal(inputChanges({ config: { winding: { coil_map: [0, 1] } } }, { config: { winding: { coil_map: [1, 0] } } }).length, 2);
+// Entries both runs recorded, but only one has, read 'Not set' and are not counted as missing.
+const grown = inputChanges({ config: { winding: { coil_map: [0, 1] } } }, { config: { winding: { coil_map: [0, 1, 2, 3] } } });
+assert.deepEqual(grown.map(row => [row.path, row.before, row.after, row.missing]),
+  [['config.winding.coil_map.3', 'Not set', '2', false], ['config.winding.coil_map.4', 'Not set', '3', false]]);
+for (const steels of [undefined, {}]) {
+  const added = inputChanges({ config: { materials: { stator_steel: 'M19', ...(steels ? { custom_steels: steels } : {}) } } },
+    { config: { materials: { stator_steel: 'Mine', custom_steels: { Mine: { density_kg_m3: 7650 } } } } });
+  assert.equal(added.find(row => row.path === 'config.materials.custom_steels.Mine.density_kg_m3').before, 'Not set');
+  assert.equal(added.filter(row => row.missing).length, 0);
+}
+// An unset section is compared field by field, never printed as one JSON cell.
+const envelope = inputChanges({ config: { torque_speed_analysis: null } }, { config: { torque_speed_analysis: { preset: 'preview', speeds_rpm: [1000, 2000] } } });
+assert.deepEqual(envelope.map(row => [row.path, row.before, row.after, row.missing]), [
+  ['config.torque_speed_analysis.preset', 'Not set', 'preview', false],
+  ['config.torque_speed_analysis.speeds_rpm.1', 'Not set', '1000', false],
+  ['config.torque_speed_analysis.speeds_rpm.2', 'Not set', '2000', false]]);
 assert.deepEqual(inputChanges(null, null), []);
 
 const current = { project_slug: 'motor', run_id: 'current', status: 'complete', solver_name: 'magneto2d-test', completed_at: '2026-11-14T12:00:00Z' };
@@ -133,6 +149,10 @@ const records = [run('older', '00'), run('future', '59', { completed_at: '2026-1
 const order = records.map(row => row.run_id);
 assert.equal(previousCompletedRun(records, current).run_id, 'previous');
 assert.deepEqual(records.map(row => row.run_id), order, 'selection must not reorder saved run records');
+// Unnamed designs share a slug; a different design (scope) is never the previous run.
+const scoped = { ...current, design_scope: 'design-1' };
+assert.equal(previousCompletedRun([run('other-design', '40', { design_scope: 'design-2' }), run('same', '20', { design_scope: 'design-1' })], scoped).run_id, 'same');
+assert.equal(previousCompletedRun([run('unscoped', '40')], scoped).run_id, 'unscoped', 'runs from before setup scopes stay comparable');
 assert.equal(previousCompletedRun(records.filter(row => row.project_slug === 'other'), current), undefined);
 assert.equal(previousCompletedRun(records, { ...current, completed_at: null }), undefined);
 assert.equal(previousCompletedRun([current], current), undefined);

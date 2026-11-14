@@ -972,6 +972,7 @@ test.describe('public developer preview release rehearsal', () => {
 
     await test.step('navigate saved-run comparison and history', async () => {
       await page.getByRole('button', { name: 'Compare runs', exact: true }).click();
+      await expect(page.getByText('Descriptive run comparison', { exact: true })).toBeVisible();
       await expect(page.locator('[aria-label="Run comparison metric differences"]')).toBeVisible();
       await page.getByRole('tab', { name: 'Back EMF overlay', exact: true }).click();
       await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
@@ -1481,7 +1482,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(changes.locator('[data-input-path="config.solve_params.max_nonlinear_iterations"] td')).toHaveText(['Not recorded', '120']);
     await expect(changes.locator('[data-input-path="run_setup.version"] td')).toHaveText(['1', '2']);
     const details = changes.getByRole('rowgroup', { name: 'Recorded run details', exact: true });
-    await expect(details.getByRole('row', { name: /^Saved setup/ }).locator('td')).toHaveText(['Report · v1', 'Report · v2']);
+    await expect(details.getByRole('row', { name: /^Saved setup/ })).toHaveCount(0); // The Saved setup rows carry it.
     await expect(details.getByRole('row', { name: /^Actual mesh/ }).locator('td')).toHaveText(['native · gmsh · normal', 'native · gmsh · normal']);
     await expect(details.getByRole('rowheader', { name: 'Torque extraction', exact: true })).toBeVisible();
     await expect(details.getByRole('rowheader', { name: 'Excitation identity', exact: true })).toBeVisible();
@@ -1588,7 +1589,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(coggingPlot.locator('path[stroke]')).toHaveCount(1);
     await expect(page.getByText('Run A not recorded · Run B 0–30° electrical', { exact: true })).toBeVisible();
     await expect(changes).toContainText('Input snapshots were not recorded for one or both runs');
-    await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['Not recorded', '4.5 mm']);
+    await expect(changes.locator('[data-input-path^="config."]')).toHaveCount(0); // The notice reports it once, not per field.
     await expect(page.getByText('No differences in the recorded inputs.', { exact: true })).toHaveCount(0);
     await left.selectOption('comparison-motor/partial');
     await expect(lossRow('Efficiency').locator('.public-run-compare-loss-value')).toHaveText(['Unavailable', '92.0 %']);

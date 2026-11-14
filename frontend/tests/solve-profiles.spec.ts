@@ -32,7 +32,7 @@ async function saveSetup(page: Page, name: string, includeNumerics = true) {
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 }
 
-test('losses use a full cycle across mesh choices, saved setups, legacy files and submitted requests', async ({ page }, info) => {
+test('losses request a full cycle while mesh choices, saved setups and legacy files keep their plan', async ({ page }, info) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await start(page);
   const analysis = page.locator('[data-guide="solve-analysis"]');
@@ -50,10 +50,14 @@ test('losses use a full cycle across mesh choices, saved setups, legacy files an
   await expect(analysis.getByRole('note')).toHaveText('Full 360° electrical sweep selected for losses and efficiency.');
   await openPlan();
   const plan = page.locator('[data-guide="solve-plan"]');
+  const planHeader = page.locator('button[aria-controls="param-group-content-plan"]');
   await expect(plan.getByRole('button', { name: /Standard.*Medium mesh/ })).toHaveAttribute('aria-pressed', 'true');
-  await expect(plan.getByRole('spinbutton', { name: 'Step Size (° elec)', exact: true })).toHaveValue('15');
+  await expect(plan.getByRole('spinbutton', { name: 'Step Size (° elec)', exact: true })).toHaveCount(0);
   await plan.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
   await expect(plan.getByRole('button', { name: /Preview.*Coarse mesh/ })).toHaveAttribute('aria-pressed', 'true');
+  await planHeader.click();
+  await expect(planHeader).toContainText('Preview · 360° at 15° for losses');
+  await openPlan();
   await plan.getByRole('button', { name: /Standard.*Medium mesh/ }).click();
   const stepToggle = plan.getByRole('button', { name: /Full-cycle step/ });
   if (await stepToggle.getAttribute('aria-expanded') !== 'true') await stepToggle.click();
@@ -78,14 +82,16 @@ test('losses use a full cycle across mesh choices, saved setups, legacy files an
   await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
   const imported = await saveFile(page, info.outputPath('imported-loss-study.coilem'));
-  expect(imported.solve_params.rotor_sweep_range_deg).toBe(360);
+  expect(imported.solve_params).toMatchObject({ solve_quality: 'standard', rotor_sweep_range_deg: 60 }); // Files open as saved.
   expect(imported.run_setups.profiles[0].parameters.rotor_sweep_range_deg).toBe(60); // Saved versions change only on explicit update.
   await page.route('**/solve/stream', route => route.fulfill({ contentType: 'text/event-stream', body: 'event: error\ndata: {"error_code":"PROBE_STOP","message":"Request captured"}\n\n' }));
   const request = page.waitForRequest('**/solve/stream');
   await expect(page.getByRole('button', { name: /Run analysis/ })).toBeEnabled();
   await page.getByRole('button', { name: /Run analysis/ }).click();
   const submitted = (await request).postDataJSON();
-  expect(submitted.config.solve_params).toMatchObject({ solve_quality: 'custom', rotor_sweep_range_deg: 360, rotor_step_deg: 30, mesh_density: 'normal' });
+  // Standard with Back EMF already solves a full cycle, so the request keeps the file's plan.
+  expect(submitted.config.solve_options.back_emf).toBe(true);
+  expect(submitted.config.solve_params).toMatchObject({ solve_quality: 'standard', mesh_density: 'normal' });
   expect(submitted.config.solve_options.losses_efficiency).toBe(true);
   expect(submitted.config.solve_options.cogging_torque).toBe(false);
   expect(errors).toEqual([]);

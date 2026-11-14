@@ -1693,8 +1693,12 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-run-compare-mode button.active { border-color: rgba(34, 211, 238, .45); color: var(--text-primary); background: rgba(34, 211, 238, .08); }
 .public-run-compare-mode button strong { font-size: 11px; }
 .public-run-compare-mode button span { font-size: 9px; line-height: 1.4; }
+.public-run-compare-mode-note,
 .public-run-compare-parity-block { margin-top: 12px; padding: 14px; border: 1px solid var(--border-default); border-radius: 10px; background: var(--bg-surface-1); }
+.public-run-compare-mode-note.design { border-color: rgba(245, 158, 11, .32); background: rgba(245, 158, 11, .05); }
+.public-run-compare-mode-note > strong,
 .public-run-compare-parity-block-heading strong { color: var(--text-primary); font-size: 12px; }
+.public-run-compare-mode-note > p,
 .public-run-compare-parity-block-heading p { margin: 5px 0 0; color: var(--text-muted); font-size: 10px; line-height: 1.5; }
 .public-run-compare-parity-block { border-color: rgba(248, 113, 113, .42); background: rgba(248, 113, 113, .055); }
 .public-run-compare-parity-block-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }

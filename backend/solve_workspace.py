@@ -1446,6 +1446,20 @@ class SolveWorkspace:
                             record["run_setup"] = setup
                 except (OSError, ValueError, SolveWorkspaceError):
                     pass  # Historical or damaged requests remain listable without a setup label.
+                # The design's setup-library scope outlives edits, unlike the slug that unnamed
+                # designs share, so Compare with previous run keeps to one design.
+                try:
+                    project_path = run / PROJECT_FILE_NAME
+                    self._require_safe_path(project_path)
+                    project = json.loads(project_path.read_text(encoding="utf-8"))
+                    bindings = manifest.get("bindings")
+                    setups = project.get("run_setups") if isinstance(project, Mapping) else None
+                    if (isinstance(bindings, Mapping) and isinstance(setups, Mapping)
+                            and isinstance(setups.get("scope"), str)
+                            and bindings.get("project_sha256") == _sha256_json(project)):
+                        record["design_scope"] = setups["scope"]
+                except (OSError, ValueError, SolveWorkspaceError):
+                    pass  # Older runs have no setup library and stay listable without a scope.
                 retention = manifest.get("retention")
                 if isinstance(retention, Mapping) and retention.get("field_playback_removed_at"):
                     record["field_playback_removed_at"] = retention["field_playback_removed_at"]

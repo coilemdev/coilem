@@ -11,13 +11,16 @@ interface RecordedRun {
   status: string;
   solver_name?: string | null;
   completed_at?: string | null;
+  design_scope?: string | null;
 }
 
-/** Never select a newer run, a partial run, or another project's run as the baseline. */
-export function previousCompletedRun<T extends RecordedRun>(runs: T[], current: Pick<RecordedRun, 'project_slug' | 'run_id' | 'completed_at'>): T | undefined {
+/** Never select a newer run, a partial run, or another project's run as the baseline. Unnamed
+ * designs share a slug, so design scopes must match where both runs recorded one. */
+export function previousCompletedRun<T extends RecordedRun>(runs: T[], current: Pick<RecordedRun, 'project_slug' | 'run_id' | 'completed_at' | 'design_scope'>): T | undefined {
   const completed = Date.parse(current.completed_at ?? '');
   if (!Number.isFinite(completed)) return undefined;
   return runs.filter(run => run.project_slug === current.project_slug && run.run_id !== current.run_id
+    && (!run.design_scope || !current.design_scope || run.design_scope === current.design_scope)
     && run.status === 'complete' && run.solver_name?.toLowerCase().startsWith('magneto2d')
     && Date.parse(run.completed_at ?? '') < completed)
     .sort((a, b) => Date.parse(b.completed_at!) - Date.parse(a.completed_at!))[0];
