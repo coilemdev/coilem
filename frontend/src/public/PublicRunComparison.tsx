@@ -263,6 +263,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
 
   useEffect(() => {
     if (!records.length) return;
+    setError(null);
     const missing = [...new Set([leftKey, rightKey])]
       .filter((key) => key && !loaded[key])
       .map((key) => records.find((candidate) => runKey(candidate) === key))
@@ -331,6 +332,8 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const right = loaded[rightKey];
   const ready = Boolean(left && right && leftKey !== rightKey);
   const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !leftKey;
+  const loadingStatus = error ? null : !runsLoaded ? 'Loading saved runs…'
+    : !noPrevious && records.length >= 2 && !ready ? 'Preparing comparison…' : null;
   const torqueSeries = useMemo(() => ready ? [
     {
       id: 'run-a',
@@ -509,16 +512,16 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
         <div><span className="eyebrow">Run comparison</span><h2>Compare two completed Magneto2D analyses</h2><p>Review how design inputs, operating points, or numerical settings changed the saved results.</p></div>
         <div className="public-run-compare-legend"><span><i className="run-a" />Run A</span><span><i className="run-b" />Run B</span></div>
       </div>
-      <div className="public-run-compare-selectors">
-        <label><span>Run A · baseline</span><select value={leftKey} onChange={(event) => setLeftKey(event.target.value)}>{!leftKey && <option value="">Choose a baseline</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
-        <label><span>Run B · candidate</span><select value={rightKey} onChange={(event) => setRightKey(event.target.value)}>{!rightKey && <option value="">Choose a candidate</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
+      <div className="public-run-compare-selectors" aria-busy={Boolean(loadingStatus)}>
+        <label><span>Run A · baseline</span><select value={runsLoaded ? leftKey : ''} disabled={!runsLoaded} onChange={(event) => setLeftKey(event.target.value)}>{(!runsLoaded || !leftKey) && <option value="">{runsLoaded ? 'Choose a baseline' : 'Loading saved runs…'}</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
+        <label><span>Run B · candidate</span><select value={runsLoaded ? rightKey : ''} disabled={!runsLoaded} onChange={(event) => setRightKey(event.target.value)}>{(!runsLoaded || !rightKey) && <option value="">{runsLoaded ? 'Choose a candidate' : 'Loading saved runs…'}</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
       </div>
       {error && <div className="public-run-compare-message error" role="alert">{error}</div>}
       {!error && noPrevious && <div className="public-run-compare-message" role="status">{currentRecord
         ? 'No earlier completed Magneto2D run with a recorded completion time was found in this saved project. Choose a baseline manually to compare another run.'
         : 'The current run is no longer available in saved runs. Choose two saved runs manually.'}</div>}
-      {!error && !compareWithPrevious && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
-      {!error && !noPrevious && records.length >= 2 && !ready && <div className="public-run-compare-message">Loading saved run data…</div>}
+      {!error && runsLoaded && !compareWithPrevious && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
+      {loadingStatus && <div className="public-run-compare-message public-run-compare-loading" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true" />{loadingStatus}</div>}
       {ready && <>
         {compareWithPrevious && leftKey === previousKey && rightKey === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
         <RunInputChanges before={left.inputs} after={right.inputs} details={[
@@ -554,9 +557,21 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           })}</tbody>
           </table>
         </div>
+        {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
+          {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
+          {emfAvailable && <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>}
+          {coggingAvailable && <button type="button" role="tab" aria-selected={plot === 'cogging'} className={plot === 'cogging' ? 'active' : ''} onClick={() => setPlot('cogging')}>Cogging overlay</button>}
+        </div>}
+        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">Neither run has torque, Back EMF or cogging waveforms to overlay. Available summary metrics are shown above.</p>}
+        {plot === 'torque' && torqueAvailable && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' }} />}
+        {plot === 'back-emf' && emfAvailable && <WaveformChart angles={left.result.back_emf_waveform.electrical_angle_deg} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={emfSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
+        {plot === 'cogging' && coggingAvailable && <>
+          <p className="public-run-compare-cogging-coverage">{coggingCoverage('Run A', left.result.cogging_torque_waveform)} · {coggingCoverage('Run B', right.result.cogging_torque_waveform)}</p>
+          <WaveformChart angles={left.result.cogging_torque_waveform?.electrical_angle_deg || []} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(left.result.cogging_torque_waveform?.electrical_angle_deg || [], right.result.cogging_torque_waveform?.electrical_angle_deg || [])} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'cogging-run-b', subtrahendKey: 'cogging-run-a', label: 'Run B − Run A' }} />
+        </>}
         {timing && <div className="public-run-compare-metrics public-run-compare-timing" role="region" aria-label="Solve time breakdown comparison" tabIndex={0}>
           <table>
-            <caption>Time breakdown <InfoTip label="Time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Percentages compare Run B with Run A.</InfoTip></caption>
+            <caption>Solve time breakdown <InfoTip label="Solve time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Percentages compare Run B with Run A.</InfoTip></caption>
             <thead><tr><th scope="col">Stage / workload</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
             {(['Elapsed time', 'Work performed'] as const).map(group => {
               const rows = timing.rows.filter(row => row.group === group);
@@ -571,18 +586,6 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           </table>
           {(!timing.recordedBefore || !timing.recordedAfter) && <p className="public-run-compare-timing-note" role="note">{!timing.recordedBefore && !timing.recordedAfter ? 'Stage timings were not recorded for either run.' : `Run ${!timing.recordedBefore ? 'A' : 'B'}: stage timings were not recorded.`}</p>}
         </div>}
-        {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
-          {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
-          {emfAvailable && <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>}
-          {coggingAvailable && <button type="button" role="tab" aria-selected={plot === 'cogging'} className={plot === 'cogging' ? 'active' : ''} onClick={() => setPlot('cogging')}>Cogging overlay</button>}
-        </div>}
-        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">Neither run has torque, Back EMF or cogging waveforms to overlay. Available summary metrics are shown above.</p>}
-        {plot === 'torque' && torqueAvailable && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' }} />}
-        {plot === 'back-emf' && emfAvailable && <WaveformChart angles={left.result.back_emf_waveform.electrical_angle_deg} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={emfSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
-        {plot === 'cogging' && coggingAvailable && <>
-          <p className="public-run-compare-cogging-coverage">{coggingCoverage('Run A', left.result.cogging_torque_waveform)} · {coggingCoverage('Run B', right.result.cogging_torque_waveform)}</p>
-          <WaveformChart angles={left.result.cogging_torque_waveform?.electrical_angle_deg || []} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(left.result.cogging_torque_waveform?.electrical_angle_deg || [], right.result.cogging_torque_waveform?.electrical_angle_deg || [])} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'cogging-run-b', subtrahendKey: 'cogging-run-a', label: 'Run B − Run A' }} />
-        </>}
       </>}
     </section>
   );

@@ -1349,6 +1349,13 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
+  await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
+  await page.route('**/runs', route => route.fulfill({ json: {
+    storage: { used_bytes: 0, max_bytes: 10000, available_bytes: 10000, accepting_new_runs: true }, runs: [],
+  } }));
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  await expect(dialog.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toBeVisible();
+  await expect(dialog.getByRole('status').filter({ hasText: /Loading saved runs|Preparing comparison/ })).toHaveCount(0);
   expect(errors).toEqual([]);
   expect(solveRequests).toEqual([]);
 });
@@ -1387,10 +1394,18 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
       { ...current, run_id: 'previous', completed_at: '2026-11-14T11:00:00Z', run_setup: { ...current.run_setup, version: 1 } },
     ] : []), current,
   ];
-  await page.route('**/runs', route => route.fulfill({ json: {
-    storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true }, runs: records,
-  } }));
-  await page.route('**/runs/*/*/comparison', route => {
+  let releaseRuns: () => void = () => {};
+  let releaseComparisons: () => void = () => {};
+  const runsGate = new Promise<void>(resolve => { releaseRuns = resolve; });
+  const comparisonsGate = new Promise<void>(resolve => { releaseComparisons = resolve; });
+  await page.route('**/runs', async route => {
+    await runsGate;
+    return route.fulfill({ json: {
+      storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true }, runs: records,
+    } });
+  });
+  await page.route('**/runs/*/*/comparison', async route => {
+    await comparisonsGate;
     const id = new URL(route.request().url()).pathname.split('/').at(-2);
     const setup = { id: 'profile-1', name: 'Report', version: id === 'current' ? 2 : 1, kind: 'user', includes_numerics: true };
     const counts = { meshes_built: id === 'current' ? 48 : 42, meshes_rotated: id === 'current' ? 8 : 0, solves: id === 'current' ? 192 : 144, field_frames: id === 'current' ? 96 : 72 };
@@ -1416,6 +1431,21 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  try {
+    await expect(dialog.getByRole('status').filter({ hasText: 'Loading saved runs…' })).toBeVisible();
+    await expect(dialog.getByLabel('Run A · baseline')).toBeDisabled();
+    await expect(dialog.getByLabel('Run B · candidate')).toBeDisabled();
+    await expect(dialog.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toHaveCount(0);
+    releaseRuns();
+    await expect(dialog.getByRole('status').filter({ hasText: 'Preparing comparison…' })).toBeVisible();
+    await expect(dialog.getByLabel('Run A · baseline')).toBeEnabled();
+    await expect(dialog.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toHaveCount(0);
+  } finally {
+    releaseRuns();
+    releaseComparisons();
+  }
+  await expect(dialog.getByRole('region', { name: 'What changed between runs', exact: true })).toBeVisible();
+  await expect(dialog.getByRole('status').filter({ hasText: /Loading saved runs|Preparing comparison/ })).toHaveCount(0);
   await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
   await dialog.locator('[data-run-id="current"]').getByRole('button', { name: 'Open results', exact: true }).click();
   await page.getByRole('button', { name: 'Full results →', exact: true }).click();
@@ -1520,6 +1550,8 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(coggingReadout).toContainText('not solved at this angle');
     await expect(coggingReadout.locator('.public-waveform-readout-difference')).toHaveCount(0);
     await coggingPlotGroup.press('Home');
+    await expect(timing.locator('caption')).toContainText('Solve time breakdown');
+    expect(await coggingPlot.evaluate((plot, table) => Boolean(plot.compareDocumentPosition(table as Node) & Node.DOCUMENT_POSITION_FOLLOWING), await timing.elementHandle())).toBe(true);
     await coggingPlot.locator('../..').screenshot({ path: info.outputPath('compare-cogging-overlay.png') });
     await page.screenshot({ path: info.outputPath('compare-what-changed.png'), fullPage: true });
     await left.selectOption('comparison-motor/legacy');

@@ -2,6 +2,9 @@
 
 Compare shows two completed Magneto2D runs. Run A is the baseline; values and
 deltas for Run B are read from its saved result. No analysis starts when comparing.
+Compare shows **Loading saved runs…** while listing saved analyses, then
+**Preparing comparison…** while loading selected results. The insufficient-runs
+message appears only after the run list has finished loading.
 
 From Results, **Compare with previous run** chooses the most recent earlier
 completed Magneto2D run in the same saved project as Run A, with the result you
@@ -43,7 +46,7 @@ It does not stretch different periods onto the same span or interpolate missing
 samples; the readout delta is available only at angles solved by both runs.
 A cogging overlay is available if either run contains valid cogging samples.
 
-**Time breakdown** compares total elapsed time, meshing, field solve and
+**Solve time breakdown**, below the waveform overlays, compares total elapsed time, meshing, field solve and
 packaging with absolute and percentage deltas. These are the recorded elapsed
 partitions, separate from combined worker time. Workload rows compare mesh
 elements, rotor positions, generated/rotated meshes, field solves and frames
