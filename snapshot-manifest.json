@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3356,
-      "sha256": "7ab357fb26000a8ec8e1036093516f95efadf375b733942dbc502294bbcb0466"
+      "bytes": 3392,
+      "sha256": "cf6834a6a425018bd98d9d9793a3b111d9b31ba930ddc06a576fd037f30338f3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7110,8 +7110,8 @@
     },
     {
       "path": "frontend/src/public/PublicMotor3D.tsx",
-      "bytes": 124571,
-      "sha256": "b17412d51a5c1b257be667e7ecbdcca6dcbb827ca0f7b044f5ef7d1725f4b69e"
+      "bytes": 124309,
+      "sha256": "36fe9390a8868e93b8b144dcbac52608fd2ade524f5bfba1f2fbbb19c8d587f5"
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
@@ -17779,9 +17779,19 @@
       "sha256": "25564be6e45150183c4bf8c44252c2a902854f7e8a232169cf07d9c8689a45d9"
     },
     {
+      "path": "frontend/scripts/test-ring-shape.mjs",
+      "bytes": 1145,
+      "sha256": "9ea0ed195817e85412c774b65165c2106b5dc4b4974b1e8e86e3f36d6cc42a9c"
+    },
+    {
       "path": "frontend/src/public/designHealth.ts",
       "bytes": 585,
       "sha256": "bfb87474342225ec5e81d392c54c2a42f9e325387253da6dd4d637cb7b363d06"
+    },
+    {
+      "path": "frontend/src/public/ringShape.ts",
+      "bytes": 451,
+      "sha256": "99cdd58592fa6863de50e1bdff8912dd1341900f2f471f8c15000ae362812a4c"
     },
     {
       "path": "frontend/src/public/savedRunPlayback.ts",
@@ -39256,6 +39266,12 @@
     },
     {
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/scripts/test-ring-shape.mjs",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/src/public/App.tsx",
       "source_sha256": "84e6e91a34c9e421958f597ab9b3ad7de26544eb0e8a8576b8efeeb46f3887ec",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
@@ -39270,6 +39286,12 @@
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/src/public/LossesCard.tsx",
       "source_sha256": "4431bbbc2059a1cc74508525679e3bcd1e36c42989a92a5dcb84be0e9c2b273a",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/PublicMotor3D.tsx",
+      "source_sha256": "b17412d51a5c1b257be667e7ecbdcca6dcbb827ca0f7b044f5ef7d1725f4b69e",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
     },
     {
@@ -39330,6 +39352,12 @@
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/src/public/model.ts",
       "source_sha256": "511bc4aed3477a24d01e589cd184347166590ed9b3f53d10b785ea836fb8bc54",
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "frontend/src/public/ringShape.ts",
+      "source_sha256": null,
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
     },
     {

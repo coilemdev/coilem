@@ -1,3 +1,4 @@
+import { ringShape } from './ringShape';
 import { ReferenceMotor3D } from './ReferenceMotor3D';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -95,15 +96,6 @@ function componentSelectionForObject(object: THREE.Object3D): { object: THREE.Ob
     current = current.parent;
   }
   return null;
-}
-
-function ringShape(outerRadius: number, innerRadius: number): THREE.Shape {
-  const shape = new THREE.Shape();
-  shape.absarc(0, 0, outerRadius, 0, Math.PI * 2, false);
-  const hole = new THREE.Path();
-  hole.absarc(0, 0, innerRadius, 0, Math.PI * 2, true);
-  shape.holes.push(hole);
-  return shape;
 }
 
 function sectorShape(innerRadius: number, outerRadius: number, halfSpanRad: number): THREE.Shape {
