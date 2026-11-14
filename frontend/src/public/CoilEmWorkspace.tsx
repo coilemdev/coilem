@@ -3054,7 +3054,8 @@ function HealthPanel({
     toothWidthMm: statorWidths.narrowestToothWidthMm,
   }) : [];
   const validSlots = validSlotCount(config.stator.slot_count);
-  const balancedSlots = validSlots && config.stator.slot_count % 3 === 0;
+  const slotInputsReady = validSlots && !error;
+  const balancedSlots = slotInputsReady && config.stator.slot_count % 3 === 0;
   const issues: DesignHealthIssue[] = [
     ...currentIssues,
     airgapHealth,
@@ -3062,7 +3063,7 @@ function HealthPanel({
     { severity: config.geometry_reference || coverage >= 55 && coverage <= 90 ? 'positive' : 'warning',
       title: config.geometry_reference ? 'Pinned published geometry' : coverage >= 55 && coverage <= 90 ? 'Magnet coverage is in a practical range' : 'Magnet coverage needs review',
       copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` },
-    { severity: balancedSlots ? 'positive' : 'warning', title: !validSlots ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: validSlots ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
+    { severity: balancedSlots ? 'positive' : 'warning', title: !slotInputsReady ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: slotInputsReady ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
     { severity: !error && geometry && !geometryStale ? 'positive' : 'info', title: error ? 'Preview waiting for valid inputs' : geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: error ? 'Correct the input errors to refresh the preview.' : geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
     ...(qualification ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,

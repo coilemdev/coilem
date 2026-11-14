@@ -5273,5 +5273,5 @@ button.performance-tag { cursor: help; }
 @media (max-width: 620px) {
   .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .design-workspace-main { flex-direction: column; }
   .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .public-parameter-panel { width: 100%; min-width: 0; max-height: 360px; }
-  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .motor-viewport { min-height: 360px; }
+  .public-coilem-shell .design-workspace:not(.is-viewport-expanded) .public-motor-viewport { min-height: 360px; }
 }

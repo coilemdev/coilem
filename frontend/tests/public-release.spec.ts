@@ -13,7 +13,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'pruned-field' | 'losses-unavailable') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -1169,6 +1169,13 @@ for (const analysis of ['Back EMF', 'Cogging torque'] as const) {
     expect(payload.solve_metadata.rotor_positions).toBe(1);
     expect(payload.solve_metadata.current_amplitude_A).toBe(0);
     expect(payload.summary.loss_breakdown).toBeNull();
+    if (analysis === 'Cogging torque') {
+      await page.getByRole('button', { name: 'Field solution', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Play field clockwise', exact: true })).toBeEnabled({ timeout: 120_000 });
+      await expect(page.getByRole('button', { name: 'Stator-current-only field, permanent-magnet remanence disabled', exact: true })).toBeDisabled();
+      await page.getByRole('button', { name: 'Play field clockwise', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Pause clockwise field playback', exact: true })).toBeVisible();
+    }
     await page.getByRole('button', { name: 'Full results →', exact: true }).click();
     const report = page.locator('.public-report-stage');
     await expect(report.getByRole('tab', { name: 'Torque', exact: true })).toHaveCount(0);
@@ -1285,6 +1292,13 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
+  const storedRow = dialog.locator('[data-run-id="map"]');
+  await storedRow.getByRole('button', { name: 'Delete run', exact: true }).click();
+  await expect(storedRow.getByRole('button', { name: 'Delete permanently', exact: true })).toBeVisible();
+  await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
+  await storedRow.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
@@ -1317,4 +1331,71 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Neither run has torque or Back EMF waveforms to overlay.', { exact: false })).toBeVisible();
   expect(errors).toEqual([]);
   expect(solveRequests).toEqual([]);
+});
+
+
+test('priority fixes: pruned playback stays static and never requests removed frames', async ({ page }, info) => {
+  const requests: string[] = [];
+  const errors: string[] = [];
+  page.on('request', request => { if (/\/solve\/(?:field|playback)/.test(request.url())) requests.push(request.url()); });
+  page.on('pageerror', error => errors.push(error.message));
+  await openViewportHarness(page, 'pruned-field');
+  const play = page.getByRole('button', { name: 'Play field clockwise', exact: true });
+  await expect(play).toBeDisabled();
+  await expect(play).toHaveAttribute('title', /removed to save disk space/);
+  await expect(page.getByRole('status').filter({ hasText: 'Field playback was removed' })).toBeVisible();
+  await expect(page.locator('canvas').first()).toBeVisible();
+  await page.screenshot({ path: info.outputPath('pruned-playback.png') });
+  expect(requests).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test('priority fixes: unavailable losses have visible reasons and a subtotal', async ({ page }, info) => {
+  await openViewportHarness(page, 'losses-unavailable');
+  await expect(page.getByRole('status').filter({ hasText: 'Efficiency needs the iron loss' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: 'full or half electrical cycle' })).toBeVisible();
+  await expect(page.getByRole('row', { name: /Known loss subtotal/ })).toBeVisible();
+  await expect(page.getByRole('row', { name: /^Total loss/ })).toHaveCount(0);
+  await page.screenshot({ path: info.outputPath('partial-losses.png') });
+});
+
+for (const width of [900, 375]) {
+  test(`priority fixes: Design Health remains reachable at ${width}px`, async ({ page }, info) => {
+    await page.setViewportSize({ width, height: 850 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+    const health = page.locator('.design-health-panel');
+    await health.scrollIntoViewIfNeeded();
+    await expect(health).toBeVisible();
+    const box = (await health.boundingBox())!;
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
+    expect(box.width).toBeGreaterThan(250);
+    await page.screenshot({ path: info.outputPath(`health-${width}.png`) });
+  });
+}
+
+test('priority fixes: Halbach health fits split-screen and invalid diameters survive reload', async ({ page }, info) => {
+  test.setTimeout(45_000);
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 900, height: 850 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Halbach arrays', exact: true }).click();
+  await page.getByRole('button', { name: 'Design a Halbach array', exact: true }).click();
+  const health = page.getByRole('complementary', { name: 'Design health and solve controls' });
+  await health.scrollIntoViewIfNeeded();
+  await expect(health).toBeVisible();
+  const box = (await health.boundingBox())!;
+  expect(box.x + box.width).toBeLessThanOrEqual(901);
+  const bore = page.getByRole('spinbutton', { name: 'Bore diameter mm', exact: true });
+  await bore.fill('-5');
+  await bore.blur();
+  await expect(page.getByText('Bore diameter must be greater than zero.', { exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByRole('button', { name: 'Halbach arrays', exact: true }).click();
+  await page.getByRole('button', { name: 'Design a Halbach array', exact: true }).click();
+  await expect(page.locator('.halbach-workspace')).toBeVisible();
+  await page.screenshot({ path: info.outputPath('halbach-recovered.png') });
+  expect(errors).toEqual([]);
 });

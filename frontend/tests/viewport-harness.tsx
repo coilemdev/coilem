@@ -1,3 +1,6 @@
+import { LossesCard } from '../src/public/LossesCard';
+import { savedResultPlayback } from '../src/public/savedRunPlayback';
+import type { LossBreakdown } from '../src/public/performance';
 /** Browser-only fixtures for canvas interaction; never imported by the production entry point. */
 import { createRoot } from 'react-dom/client';
 import { useState, type CSSProperties } from 'react';
@@ -128,9 +131,18 @@ function WindingHarness() {
 
 Object.assign(window, { viewportTest: { renderMesh, state, phaseDriveFrame } });
 const mode = new URLSearchParams(location.search).get('view');
-if (mode === 'field') {
+if (mode === 'losses-unavailable') {
+  const loss = { speed_rpm: 3000, phase_current_rms_A: 10, electromagnetic_torque_Nm: 1, shaft_torque_Nm: 1,
+    electromagnetic_power_W: 314, phase_resistance_ohm: 0.05, winding_temperature_C: 20, copper_loss_W: 15,
+    copper_active_loss_W: 10, copper_end_winding_loss_W: 5, iron_loss_W: null,
+    iron_hysteresis_loss_W: null, iron_eddy_loss_W: null, iron_loss_status: 'unavailable',
+    iron_loss_status_reason: 'Iron loss needs a full or half electrical cycle in equal steps.',
+    mechanical_loss_W: 0, total_loss_W: 15, shaft_power_W: 314, input_power_W: 329,
+    efficiency_pct: null, efficiency_status: 'unavailable', efficiency_status_reason: 'Efficiency needs the iron loss.' } as LossBreakdown;
+  root.render(<div style={{ width: 850, padding: 24 }}><LossesCard loss={loss} /></div>);
+} else if (mode === 'field' || mode === 'pruned-field') {
   root.render(<div style={{ width: 1100, height: 700 }}>
-    <SolvedFieldViewer viewControls="Field solution" config={DEFAULT_CONFIG} geometry={null} result={result}
+    <SolvedFieldViewer viewControls="Field solution" config={DEFAULT_CONFIG} geometry={null} result={mode === 'pruned-field' ? savedResultPlayback({ ...result, field_line_frames: [{ angle_deg: 0, field_frame_artifact: { artifact_id: 'removed' } }, { angle_deg: 30, field_frame_artifact: { artifact_id: 'removed-too' } }] }, { available: false }) : result}
       armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false} onRequestArmature={() => {}} />
   </div>);
 } else if (mode === 'saturated-field') root.render(<DockedMagnifier field fieldResult={saturatedResult} />);

@@ -30,6 +30,8 @@ def geometry_input_advisories(config: MotorConfig) -> list[str]:
         "V Depth, V Angle and magnet dimensions determine the actual bridge.",
         f"V-shape magnet_embrace={config.rotor.magnet_embrace:g} is not used. "
         "Magnet coverage is determined by the slab dimensions and V geometry.",
+        "V-shape results are mesh-sensitive, especially cogging torque. Compare progressively refined meshes "
+        "for this design before relying on the values; a Fine mesh alone does not establish convergence.",
     ]
 
 
