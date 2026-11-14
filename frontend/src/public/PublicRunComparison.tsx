@@ -312,6 +312,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       angles: right.result.torque_waveform.electrical_angle_deg,
       values: right.result.torque_waveform.torque_Nm,
       color: '#22d3ee',
+      dashArray: '7 5',
     },
   ] : [], [ready, left, right]);
   const emfSeries = useMemo(() => ready ? [
@@ -350,6 +351,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       angles: right.result.back_emf_waveform.electrical_angle_deg,
       values: right.result.back_emf_waveform.phase_a_V,
       color: '#22d3ee',
+      dashArray: '7 5',
     },
     {
       id: 'run-b-phase-b',
@@ -359,6 +361,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       angles: right.result.back_emf_waveform.electrical_angle_deg,
       values: right.result.back_emf_waveform.phase_b_V,
       color: '#60a5fa',
+      dashArray: '7 5',
     },
     {
       id: 'run-b-phase-c',
@@ -368,6 +371,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       angles: right.result.back_emf_waveform.electrical_angle_deg,
       values: right.result.back_emf_waveform.phase_c_V,
       color: '#2dd4bf',
+      dashArray: '7 5',
     },
   ] : [], [ready, left, right]);
   const torqueSampling = ready ? samplingLabel(
@@ -500,8 +504,11 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           <strong>Descriptive run comparison</strong>
           <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>
         </section>
-        <div className="public-run-compare-metrics" aria-label="Run comparison metric differences">
-          {METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
+        <div className="public-run-compare-metrics" role="region" aria-label="Run comparison metric differences" tabIndex={0}>
+          <table>
+            <caption>Results comparison</caption>
+            <thead><tr><th scope="col">Metric</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+            <tbody>{METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
             const leftValue = metric.value(left.result);
             const rightValue = metric.value(right.result);
             // Each torque keeps its own three significant figures, so a small
@@ -510,8 +517,15 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
             const leftDigits = metric.torque ? torqueDecimals(leftValue) : metric.digits;
             const rightDigits = metric.torque ? torqueDecimals(rightValue) : metric.digits;
             const deltaDigits = metric.torque ? Math.min(torqueDecimals(leftValue), torqueDecimals(rightValue)) : metric.digits;
-            return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, leftDigits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, rightDigits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, deltaDigits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
-          })}
+            return <tr key={metric.label}>
+              <th scope="row">{metric.label}</th>
+              <td>{number(leftValue, leftDigits)} <small>{metric.unit}</small></td>
+              <td>{number(rightValue, rightDigits)} <small>{metric.unit}</small></td>
+              <td>{delta(leftValue, rightValue, deltaDigits)} <small>{metric.deltaUnit || metric.unit}</small></td>
+              <td>{percentDelta(leftValue, rightValue)}</td>
+            </tr>;
+          })}</tbody>
+          </table>
         </div>
         {(torqueAvailable || emfAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
           {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
