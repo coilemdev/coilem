@@ -1,3 +1,8 @@
+import { RunSetupControl } from './RunSetupControl';
+import { BUILTIN_SOLVE_PROFILES } from './builtinSolveProfiles';
+import { mergeProfileDocuments, physicalModel, profileMatches, profileProvenance, restoreActiveProfile, type SolveProfileDocument } from './solveProfiles';
+import { keepProfileScope, loadProfileDocument, newSessionProfileDocument, profileScopeForFile, profileStorageKey, readStoredProfileDocument,
+  STARTER_SETUP_SCOPE, storeProfileDocument } from './profileStorage';
 import { savedResultPlayback } from './savedRunPlayback';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -539,7 +544,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   );
   const [tutorialsStage, setTutorialsStage] = useState<LearningLessonStage>('design');
   const [tutorialHeaderProgress, setTutorialHeaderProgress] = useState<LearningLessonHeaderProgress | null>(null);
-  const [config, setConfig] = useState<MotorConfig>(() => initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig());
+  const [initialSetup] = useState(() => restoreActiveProfile(
+    initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig(),
+    initialNewDesign ? newSessionProfileDocument() : loadProfileDocument(STARTER_SETUP_SCOPE), BUILTIN_SOLVE_PROFILES,
+  ));
+  const [config, setConfig] = useState<MotorConfig>(initialSetup.config);
+  const [runSetups, setRunSetups] = useState(initialSetup.document);
   const [designName, setDesignName] = useState<string | null>(initialNewDesign ? 'New Design' : null);
   const [blankDesign, setBlankDesign] = useState(initialNewDesign);
   const [newDesignParts, setNewDesignParts] = useState<BuiltParts | null>(initialNewDesign ? {} : null);
@@ -568,7 +578,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const [cancellingSolve, setCancellingSolve] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<PublicConnectionStatus>('checking');
   const [appVersion, setAppVersion] = useState<string | null>(null);
-  const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
+  const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>(initialSetup.solver ?? 'magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
   const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
   const [geometryStale, setGeometryStale] = useState(!initialNewDesign);
@@ -585,6 +595,51 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, []);
   const [notice, setNotice] = useState<string | null>(initialNewDesign
     ? 'Choose the rotor arrangement and topology, then build the motor from outside inward.' : null);
+  const runSetupsRef = useRef(runSetups);
+  runSetupsRef.current = runSetups;
+  const adoptedRunSetups = useRef<SolveProfileDocument | null>(null);
+  useEffect(() => {
+    // A library adopted from another window is already stored; writing it back would echo between windows.
+    if (adoptedRunSetups.current === runSetups) return;
+    if (!storeProfileDocument(runSetups)) setNotice('Run setups could not be stored in this browser. Save the design file to keep them.');
+  }, [runSetups]);
+  useEffect(() => {
+    // Another window saved, renamed or deleted this design's setups. Adopt its library, keeping
+    // this window's selection, so this window's next write cannot restore a stale copy.
+    const adopt = (event: StorageEvent) => {
+      const current = runSetupsRef.current;
+      if (event.key !== profileStorageKey(current.scope)) return;
+      const incoming = readStoredProfileDocument(current.scope, event.newValue);
+      if (!incoming) return;
+      const keep = Boolean(current.activeId?.startsWith('builtin:'))
+        || incoming.profiles.some(p => p.id === current.activeId && p.version === current.activeVersion);
+      const next = { ...incoming, activeId: keep ? current.activeId : null, activeVersion: keep ? current.activeVersion : null };
+      adoptedRunSetups.current = next;
+      setRunSetups(next);
+    };
+    window.addEventListener('storage', adopt);
+    return () => window.removeEventListener('storage', adopt);
+  }, []);
+  /** A gallery example's library belongs to the unedited example. Once the design is edited, its
+   * setups move to a library of its own, kept with its design file, so other designs started
+   * from the same example neither list nor restore them. */
+  const ownRunSetups = (document: SolveProfileDocument, design: MotorConfig): SolveProfileDocument => {
+    if (!document.scope.startsWith('example:')) return document;
+    try {
+      const example = createPublicExampleDesign(document.scope.slice('example:'.length) as PublicExampleId).config;
+      return physicalModel(example) === physicalModel(design) ? document : newSessionProfileDocument(document);
+    } catch {
+      return document;
+    }
+  };
+  // Recomputed only when its inputs change, not on every progress update during a solve.
+  const runSetupMetadata = useMemo(() => profileProvenance(
+    [...BUILTIN_SOLVE_PROFILES, ...runSetups.profiles].find(
+      p => p.id === runSetups.activeId && p.version === runSetups.activeVersion,
+    ),
+    config, selectedSolver,
+  ), [config, runSetups, selectedSolver]);
+
   const [editFeedback, setEditFeedback] = useState<DesignEditState | null>(null);
   const solveController = useRef<AbortController | null>(null);
   const armatureFieldController = useRef<AbortController | null>(null);
@@ -895,9 +950,18 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, []);
 
   const updateSolveSetting = useCallback((
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => {
+    if (field === 'magnet_temperature_C' && config.geometry_reference === 'pyleecan_prius_2004') {
+      if (value !== 20 && value !== 60) return;
+      const next: MotorConfig = { ...config,
+        reference_case: value === 60 ? 'prius-2004-loaded-torque-v1' : 'prius-2004-tutorial-bemf-v1',
+        solve_params: { ...config.solve_params, magnet_temperature_C: value },
+      };
+      setConfig(next); resetComputedState(); void prepareMesh(next);
+      return;
+    }
     validationRequestId.current += 1;
     if (field === 'excitation_mode' && value === 'ideal_six_step_120') {
       setSelectedSolver('magneto2d');
@@ -927,7 +991,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setLiveSamples([]);
     setError(null);
     setNotice('Analysis settings changed. Updating the run estimate.');
-  }, []);
+  }, [config, prepareMesh, resetComputedState]);
 
   const updateAnalysis = useCallback((key: AnalysisKey, enabled: boolean) => {
     validationRequestId.current += 1;
@@ -975,7 +1039,10 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, [elmerCapability]);
 
   useEffect(() => {
-    if (connectionStatus !== 'online' || elmerCapability.feature_enabled || selectedSolver !== 'elmer') return;
+    // Also covers a restored setup or project that selected Elmer before its availability was known.
+    // A preview can bring the app online before the health check reports Elmer, so wait for it.
+    if (connectionStatus !== 'online' || elmerCapability === ELMER_CHECKING
+      || elmerCapabilityIsReady(elmerCapability) || selectedSolver !== 'elmer') return;
     validationRequestId.current += 1;
     setSelectedSolver('magneto2d');
     setValidation(null);
@@ -985,8 +1052,10 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setProgress(null);
     setLiveSamples([]);
     setError(null);
-    setNotice('Elmer is disabled for this launch. Magneto2D is selected.');
-  }, [connectionStatus, elmerCapability.feature_enabled, selectedSolver]);
+    setNotice(elmerCapability.feature_enabled
+      ? 'Elmer is not available on this workstation. Magneto2D is selected.'
+      : 'Elmer is disabled for this launch. Magneto2D is selected.');
+  }, [connectionStatus, elmerCapability, selectedSolver]);
 
   const updateSolvePlan = useCallback((solvePlan: PublicSolvePreset) => {
     validationRequestId.current += 1;
@@ -1224,6 +1293,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       const solveRequest: PublicSolveRequest = {
         config: asPublicConfig(config, selectedSolver),
         solver: selectedSolver,
+        run_setup: runSetupMetadata,
+        run_setups: runSetups,
         project_name: designName
           ?? `coilEM-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
         ...(selectedSolver === 'magneto2d' && preparedMesh.solve_mesh_key
@@ -1404,12 +1475,20 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     }
   };
 
+  /** The starter motor with its browser setup library and that library's active setup, as at launch. */
+  const loadStarterMotor = () => {
+    const starter = restoreActiveProfile(cloneDefaultConfig(), loadProfileDocument(STARTER_SETUP_SCOPE), BUILTIN_SOLVE_PROFILES);
+    rememberPresetSweep(starter.config);
+    setConfig(starter.config);
+    setRunSetups(starter.document);
+    // An Elmer setup on a workstation without Elmer falls back through the capability effect.
+    if (starter.solver) setSelectedSolver(starter.solver);
+  };
+
   const reset = () => {
     setNewDesignParts(null);
     setDesignInputErrors({});
-    const next = cloneDefaultConfig();
-    rememberPresetSweep(next);
-    setConfig(next);
+    loadStarterMotor();
     setEditFeedback(null);
     invalidateGeometryPreview();
     resetComputedState();
@@ -1423,6 +1502,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   };
 
   const beginNewDesign = (guided: boolean) => {
+    setRunSetups(newSessionProfileDocument());
     resetDesignViewMemory();
     solveRequestId.current += 1;
     meshRequestId.current += 1;
@@ -1461,12 +1541,30 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const openDesignFile = async (file: File) => {
     resetDesignViewMemory();
     try {
-      const parsed = parseDesignFile(await file.text());
+      const text = await file.text();
+      const parsed = parseDesignFile(text);
+      // A portable file's setups join this browser's library for the same design; the newer
+      // version of a shared setup wins, so reopening an older copy never discards later setups.
+      const library = parsed.runSetups
+        ? mergeProfileDocuments(loadProfileDocument(parsed.runSetups.scope), parsed.runSetups)
+        : loadProfileDocument(await profileScopeForFile(text));
+      const restored = restoreActiveProfile(parsed.config, library, BUILTIN_SOLVE_PROFILES);
+      // A portable file owns its exact settings, including edits made after saving
+      // a setup. Only a browser-only library needs its active setup reapplied.
+      const nextConfig = parsed.runSetups ? parsed.config : restored.config;
+      // Likewise, a portable file selects its setup's solver only where that setup still
+      // describes the file's settings; otherwise they could be paired with another solver.
+      const activeSetup = [...BUILTIN_SOLVE_PROFILES, ...restored.document.profiles]
+        .find(p => p.id === restored.document.activeId && p.version === restored.document.activeVersion);
+      const setupSolver = !parsed.runSetups ? restored.solver
+        : restored.solver && activeSetup && profileMatches(activeSetup, nextConfig, restored.solver) ? restored.solver : undefined;
+      setRunSetups(restored.document);
       setNewDesignParts(null);
       setDesignInputErrors({});
-      rememberPresetSweep(parsed.config);
-      setConfig(parsed.config);
-      if (parsed.config.geometry_reference) setSelectedSolver("magneto2d");
+      rememberPresetSweep(nextConfig);
+      setConfig(nextConfig);
+      const unavailableElmer = setupSolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability);
+      setSelectedSolver(unavailableElmer ? 'magneto2d' : setupSolver ?? (nextConfig.geometry_reference ? 'magneto2d' : selectedSolver));
       setGeometry(null);
       setEditFeedback(null);
       setDesignName(parsed.name ?? designFileBaseName(file.name));
@@ -1478,7 +1576,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       const loadedNotice = parsed.fromFuture
         ? `Loaded ${file.name} — saved by a newer schema, unrecognized settings were ignored.`
         : `Loaded design file ${file.name}.`;
-      setNotice([loadedNotice, parsed.solverSettingsNotice].filter(Boolean).join(' '));
+      setNotice([loadedNotice, parsed.solverSettingsNotice, parsed.runSetupsNotice, unavailableElmer
+        ? 'The saved setup uses Elmer, which is not available. Its settings are loaded with Magneto2D selected; review before solving.' : null].filter(Boolean).join(' '));
     } catch (error) {
       setNotice(`Could not open design file — ${error instanceof Error ? error.message : 'unrecognized format'}.`);
     }
@@ -1486,7 +1585,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
 
   // The arrangement switch swaps designs rather than reinterpreting inrunner
   // dimensions as an outer rotor's; the last inrunner comes back on return.
-  const lastInrunnerRef = useRef<{ name: string | null; config: MotorConfig } | null>(null);
+  const lastInrunnerRef = useRef<{ name: string | null; config: MotorConfig; runSetups: SolveProfileDocument } | null>(null);
   const updateRotorLayout = (layout: RotorLayout) => {
     if (newDesignParts) {
       const next = newBuildConfig(layout);
@@ -1503,7 +1602,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     }
     if (layout === (config.rotor_layout ?? 'inner')) return;
     if (layout === 'outer') {
-      lastInrunnerRef.current = { name: designName, config };
+      lastInrunnerRef.current = { name: designName, config, runSetups };
       loadExampleDesign('spm-outrunner-14p12s');
       return;
     }
@@ -1511,14 +1610,22 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     loadExampleDesign('spm-8p12s', previous ?? undefined);
   };
 
-  const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string | null; config: MotorConfig }) => {
+  const loadExampleDesign = (exampleId: PublicExampleId, restored?: { name: string | null; config: MotorConfig; runSetups: SolveProfileDocument }) => {
     setNewDesignParts(null);
     setDesignInputErrors({});
     resetDesignViewMemory();
     const example = restored ?? createPublicExampleDesign(exampleId);
-    rememberPresetSweep(example.config);
-    setConfig(example.config);
-    if (example.config.geometry_reference) setSelectedSolver("magneto2d");
+    // Returning to the previous inrunner retains its unsaved operating edits and its own
+    // setup library; a gallery example restores its library's active setup.
+    const restoredSetup = restored
+      ? { config: restored.config, document: restored.runSetups, solver: undefined }
+      : restoreActiveProfile(example.config, loadProfileDocument(`example:${exampleId}`), BUILTIN_SOLVE_PROFILES);
+    const nextConfig = restoredSetup.config;
+    setRunSetups(restoredSetup.document);
+    rememberPresetSweep(nextConfig);
+    setConfig(nextConfig);
+    const unavailableElmer = restoredSetup.solver === 'elmer' && !elmerCapabilityIsReady(elmerCapability);
+    setSelectedSolver(unavailableElmer ? 'magneto2d' : restoredSetup.solver ?? (nextConfig.geometry_reference ? 'magneto2d' : selectedSolver));
     setGeometry(null);
     setEditFeedback(null);
     setDesignName(example.name);
@@ -1531,17 +1638,25 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setShowLanding(false);
     setTutorialsView(null);
     setView('design');
-    setNotice(`Loaded ${example.name ?? 'the previous inrunner'}.`);
+    setNotice(`Loaded ${example.name ?? 'the previous inrunner'}.${unavailableElmer ? ' The saved setup uses Elmer, which is not available. Review the restored settings with Magneto2D selected.' : ''}`);
     if (typeof window !== 'undefined' && window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
     }
   };
 
   const saveDesign = () => {
+    const library = ownRunSetups(runSetups, config);
     void saveDesignFileAs(
       config,
       designName ?? `coilem-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
-    );
+      library,
+    ).then((saved) => {
+      if (!saved) return;
+      // The saved file can reopen this library, so this browser keeps it from now on.
+      keepProfileScope(library.scope);
+      if (library === runSetups) storeProfileDocument(library);
+      else setRunSetups((current) => (current === runSetups ? library : current));
+    });
   };
 
   const openSavedRunFolder = async (savedRun: PublicSavedRun) => {
@@ -1594,6 +1709,15 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       const submittedRequest = requestPayload && typeof requestPayload === 'object'
         ? (requestPayload as PublicJson).submitted
         : null;
+      // The run keeps a snapshot of its setup library as provenance. This browser's current
+      // library for that design stays authoritative, selection included, so viewing an older
+      // run never replaces setups saved since or the setup restored next time; the snapshot is
+      // used only where this browser has none. A run without one starts a window-only library.
+      const snapshot = parsed.runSetups;
+      const live = snapshot ? loadProfileDocument(snapshot.scope) : null;
+      setRunSetups(!snapshot ? newSessionProfileDocument()
+        : live && (live.profiles.length || live.activeId) ? live
+          : restoreActiveProfile(parsed.config, snapshot, BUILTIN_SOLVE_PROFILES).document);
       const storedSolver = submittedRequest && typeof submittedRequest === 'object'
         ? (submittedRequest as PublicJson).solver
         : null;
@@ -1632,6 +1756,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           `Showing the saved result${completedAt ? ` from ${completedAt}` : ''}. It is stored evidence for these inputs; solve again for a current result.`,
           playback?.available === false ? 'Its field playback was removed to save disk space.' : null,
           parsed.solverSettingsNotice,
+          parsed.runSetupsNotice,
         ].filter(Boolean).join(' '));
         return;
       }
@@ -1641,7 +1766,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           ? 'Saved Elmer settings restored, but Elmer is not currently available. Magneto2D remains selected.'
           : `Saved ${replaySolver === 'elmer' ? 'Elmer' : 'Magneto2D'} settings restored. Prepare the mesh, review them, then explicitly start a new analysis.`
         : 'Saved project opened. Its stored result remains immutable; edit or solve explicitly.';
-      setNotice([restoredNotice, parsed.solverSettingsNotice].filter(Boolean).join(' '));
+      setNotice([restoredNotice, parsed.solverSettingsNotice, parsed.runSetupsNotice].filter(Boolean).join(' '));
     } catch (requestError) {
       setNotice(errorMessage(requestError));
     }
@@ -1653,9 +1778,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setDesignInputErrors({});
     resetDesignViewMemory();
     if (blankDesign) {
-      const nextConfig = cloneDefaultConfig();
-      rememberPresetSweep(nextConfig);
-      setConfig(nextConfig);
+      loadStarterMotor();
       setEditFeedback(null);
       setDesignName(null);
       invalidateGeometryPreview();
@@ -1882,6 +2005,26 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     <>
     {/* Replace the whole workspace on New Design, including panel and viewport state. */}
     <CoilEmWorkspace
+      runSetupControl={<RunSetupControl config={config} solver={selectedSolver} document={runSetups}
+        builtins={BUILTIN_SOLVE_PROFILES} disabled={busy !== null} onChange={(next) => setRunSetups(ownRunSetups(next, config))}
+        onApply={(next, nextSolver) => {
+          // An operating-only setup keeps the design's Magneto2D analyses, which Elmer requests
+          // leave out; only a setup that selects Elmer itself must not ask for them.
+          if (nextSolver === 'elmer' && (next.solve_options.cogging_torque || next.solve_options.losses_efficiency || next.solve_options.torque_speed_envelope)) {
+            setNotice('This setup requests analyses that require Magneto2D. Select Magneto2D before applying it.'); return false;
+          }
+          if ((nextSolver ?? selectedSolver) === 'elmer' && next.solve_params.excitation_mode === 'ideal_six_step_120') {
+            setNotice('Six-step setups require Magneto2D. Select Magneto2D before applying this setup.'); return false;
+          }
+          if (nextSolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)) {
+            setNotice('This setup requires the qualified Elmer runtime, which is not available.'); return false;
+          }
+          rememberPresetSweep(next);
+          setConfig(next); if (nextSolver) setSelectedSolver(nextSolver);
+          resetComputedState(); void prepareMesh(next);
+          setNotice('Run setup applied. Review the values below before solving.');
+          return true;
+        }} />}
       key={designSession}
       appVersion={appVersion}
       config={config}

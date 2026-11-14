@@ -1,5 +1,7 @@
+import type { RunSetupProvenance, SolveProfileDocument } from './solveProfiles';
 import type { SolveResult } from './model';
 import { normalizeComparisonResult, type ComparisonResult } from './runComparison';
+import type { ComparisonInputs } from './runInputChanges';
 import type { CustomSteel } from './customSteel';
 import type { DrivePerformance, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress, PerformanceMapStatus, PerformanceReportKind } from './performance';
 
@@ -13,6 +15,8 @@ export type PublicSolverId = 'magneto2d' | 'elmer';
 export type PublicSolveRequest = PublicMotorConfig | {
   config: PublicMotorConfig;
   project_name?: string;
+  run_setup?: RunSetupProvenance | null;
+  run_setups?: SolveProfileDocument;
   solve_mesh_key?: string;
   solver?: PublicSolverId;
 };
@@ -57,6 +61,9 @@ export interface PublicRunListRecord {
   started_at?: string | null;
   completed_at?: string | null;
   solver_name?: string | null;
+  run_setup?: RunSetupProvenance | null;
+  /** The design's saved-setup scope, which survives edits; unnamed designs can share a slug. */
+  design_scope?: string | null;
   field_playback_removed_at?: string | null;
 }
 
@@ -84,6 +91,7 @@ export interface PublicRunDeletionPayload extends PublicJson {
 
 export interface PublicRunComparisonPayload extends PublicJson {
   result: ComparisonResult;
+  inputs?: ComparisonInputs | null;
 }
 
 const LOCAL_API_HOSTS = new Set(['127.0.0.1', 'localhost', '::1']);

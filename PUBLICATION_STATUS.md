@@ -22,6 +22,11 @@ V-shape convergence work (#285) to the next release. Both remain open and
 are disclosed limitations; passing numerical parity does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
 and [candidate release notes](RELEASE_NOTES.md).
 
+Public PyPI publication is on hold while additional 0.5.8 items are completed.
+Saved run setups (#127) change the app workflow, not the guarded numerical
+sources. Final application CI and wheel acceptance must cover the expanded
+candidate before publication.
+
 No v0.5.8 tag or package upload has been performed by this evidence publication.
 
 # Historical release status

@@ -1,4 +1,4 @@
-import type { MotorConfig, SolveQuality } from './model';
+import type { MotorConfig, PublicSolverId, SolveQuality } from './model';
 
 export type PublicSolvePreset = Exclude<SolveQuality, 'custom'>;
 
@@ -22,6 +22,33 @@ export const PUBLIC_SOLVE_PLAN_MESH_DENSITY = {
   standard: 'normal',
   fine: 'fine',
 } as const satisfies Record<PublicSolvePreset, MotorConfig['solve_params']['mesh_density']>;
+
+/** The step of a loss sweep whose plan does not already solve a full cycle: Preview keeps a
+ * quick 15° grid and Standard its own 7.5°. High accuracy always solves a full cycle. */
+const LOSSES_FULL_CYCLE_STEP_DEG: Record<PublicSolvePreset, number> = { quick: 15, standard: 7.5, fine: 3.75 };
+
+/** Whether the backend already solves this plan's loaded sweep as a uniform 360° electrical
+ * cycle: High accuracy always, and Standard with Back EMF (and its harmonics) or six-step drive. */
+function planSolvesFullCycle(config: MotorConfig): boolean {
+  const { solve_quality: quality, excitation_mode: mode } = config.solve_params;
+  return quality === 'fine' || (quality === 'standard' && (config.solve_options.back_emf || mode === 'ideal_six_step_120'));
+}
+
+/**
+ * Loss estimates need a uniform full cycle. A plan that already solves one is kept, with its own
+ * step and harmonic analysis; any other plan is requested as 360° at its own step. This shapes
+ * requests only, so the plan the user chose is never rewritten.
+ */
+export function ensureLossesFullCycle(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): MotorConfig {
+  if (solver === 'elmer' || !config.solve_options.losses_efficiency || planSolvesFullCycle(config)) return config;
+  const params = config.solve_params;
+  const step = params.solve_quality !== 'custom' ? LOSSES_FULL_CYCLE_STEP_DEG[params.solve_quality]
+    : Number.isFinite(params.rotor_step_deg) ? params.rotor_step_deg : PUBLIC_DEFAULT_PRESET_SWEEP.rotor_step_deg;
+  const rotorStepDeg = Math.min(PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG, Math.max(PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG, step));
+  if (params.solve_quality === 'custom' && params.rotor_sweep_range_deg === PUBLIC_CUSTOM_SWEEP_RANGE_DEG && params.rotor_step_deg === rotorStepDeg && !config.solve_options.thd_analysis) return config;
+  return { ...config, solve_options: { ...config.solve_options, thd_analysis: false }, solve_params: { ...params, solve_quality: 'custom',
+    rotor_sweep_range_deg: PUBLIC_CUSTOM_SWEEP_RANGE_DEG, rotor_step_deg: rotorStepDeg } };
+}
 
 export function capturePublicPresetSweep(config: MotorConfig): PublicSweepSampling {
   return {

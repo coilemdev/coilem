@@ -59,18 +59,20 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
   // not 0.00 N·m); every value below is in the displayed unit.
   const dataMaxAbs = Math.max(0, ...eligibleSeries.flatMap((item) => item.values.map(Math.abs)));
   const { unit, factor } = displayUnitScale(dataUnit, dataMaxAbs);
-  const plottedSeries = (toggleableSeries
-    ? eligibleSeries.filter((item, index) => !hiddenSeriesKeys.includes(seriesKey(item, index)))
-    : eligibleSeries
-  ).map((item) => (factor === 1 ? item : { ...item, values: item.values.map((value) => value * factor) }));
+  const scaledSeries = eligibleSeries.map((item) => (factor === 1 ? item : { ...item, values: item.values.map((value) => value * factor) }));
+  const plottedSeries = toggleableSeries
+    ? scaledSeries.filter((item, index) => !hiddenSeriesKeys.includes(seriesKey(item, index)))
+    : scaledSeries;
+  // Keep finite axes and the legend available when every trace is hidden.
+  const axisSeries = plottedSeries.length ? plottedSeries : scaledSeries;
   const width = 760;
   const height = 250;
   const margin = { top: 22, right: 24, bottom: 38, left: 56 };
   const plotWidth = width - margin.left - margin.right;
-  const allAngles = plottedSeries.flatMap((item) => item.angles);
-  const minX = Math.min(...allAngles);
-  const maxX = Math.max(...allAngles);
-  const axisMaxX = Math.max(maxX, ...plottedSeries.map((item) => periodicAxisEnd(item.angles)));
+  const allAngles = axisSeries.flatMap((item) => item.angles);
+  const minX = allAngles.length ? Math.min(...allAngles) : 0;
+  const maxX = allAngles.length ? Math.max(...allAngles) : 0;
+  const axisMaxX = Math.max(maxX, ...axisSeries.map((item) => periodicAxisEnd(item.angles)));
   // The readout lists only the shown series, at their own solved angles.
   const readoutSeries: WaveformReadoutSeries[] = plottedSeries.map((item) => ({
     key: item.id || item.label,
@@ -85,12 +87,10 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
     angleAtX: (svgX) => minX + ((svgX - margin.left) / plotWidth) * Math.max(axisMaxX - minX, 1),
     dataKey: `${label}|${eligibleSeries.map((item) => `${item.id || item.label}:${item.angles.length}:${item.angles[0]}:${item.angles[item.angles.length - 1]}`).join('|')}`,
   });
-  if (plottedSeries.length === 0) return null;
+  if (eligibleSeries.length === 0) return null;
 
   const toggleSeries = (item: WaveformSeries, index: number) => {
     const key = seriesKey(item, index);
-    const visible = !hiddenSeriesKeys.includes(key);
-    if (visible && plottedSeries.length === 1) return;
     const next = hiddenSeriesKeys.includes(key)
       ? hiddenSeriesKeys.filter((candidate) => candidate !== key)
       : [...hiddenSeriesKeys, key];
@@ -98,7 +98,7 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
     else setInternalHiddenSeriesKeys(next);
   };
 
-  const allValues = plottedSeries.flatMap((item) => item.values);
+  const allValues = axisSeries.flatMap((item) => item.values);
   // Round-number ticks spanning the data. The span is never floored at one
   // unit: a waveform of a few mN·m used to be squeezed into the top of the plot.
   const yAxis = valueAxis(Math.min(...allValues), Math.max(...allValues));
@@ -142,7 +142,6 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
           key={key}
           aria-label={item.label}
           aria-pressed={visible}
-          disabled={visible && plottedSeries.length === 1}
           title={`${visible ? 'Hide' : 'Show'} ${item.label}`}
           onClick={() => toggleSeries(item, index)}
         ><i style={swatchStyle} />{text}{item.legendValue && <b className="public-waveform-legend-value">{item.legendValue}</b>}</button>
@@ -155,7 +154,7 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
         <span>{label}</span>
         <span>{samplingLabel || `${positionCounts.join(' / ')} positions`}</span>
       </div>
-      {eligibleSeries.length > 1 && (
+      {(eligibleSeries.length > 1 || toggleableSeries) && (
         <div className={`public-waveform-legend${groupedLegend ? ' public-waveform-legend-grouped' : ''}`} aria-label={`${label} series`}>
           {groupedLegend
             ? legendGroups.map((group) => <div className="public-waveform-legend-row" role="group" aria-label={group.label} key={group.label}>
@@ -165,6 +164,9 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
             : eligibleSeries.map((item, index) => legendControl(item, index))}
         </div>
       )}
+      {plottedSeries.length === 0 ? <div className="public-waveform-empty" role="status" ref={readout.plotProps.ref}>
+        All curves are hidden. Select a legend item to show it again.
+      </div> : <>
       <WaveformReadoutBar
         id={readout.readoutId}
         angleDeg={readout.shownAngle}
@@ -219,6 +221,7 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
           )}
         </svg>
       </div>
+      </>}
     </div>
   );
 }

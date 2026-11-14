@@ -9,19 +9,27 @@ import {
 } from './api';
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
-import type { ComparisonResult } from './runComparison';
-import { torqueDecimals } from './numberFormat';
+import { compareRunLosses, compareRunTiming, previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
+import type { ComparisonInputs } from './runInputChanges';
+import { COGGING_METHOD_LABELS } from './coggingView';
+import { RunInputChanges } from './RunChangesTable';
+import { formatSignificant, torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
+import { InfoTip } from './Popover';
+import { formatSeconds } from './solveTime';
+import { StatusDot } from './OutputStatusBadge';
 
 interface LoadedRun {
   record: PublicRunListRecord;
   result: ComparisonResult;
+  inputs?: ComparisonInputs | null;
 }
 
 interface PublicRunComparisonProps {
   currentResult?: SolveResult | null;
   manageRuns?: boolean;
+  compareWithPrevious?: boolean;
   /** Opens a completed run's stored result in Solve and Results. */
   onOpenRun?: (run: PublicRunListRecord) => void;
 }
@@ -49,7 +57,6 @@ const METRICS: Array<{
   // The cogging sweep (#185), for runs that solved one.
   { label: 'Cogging torque p-p', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
   { label: 'Cogging fundamental', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.first_harmonic_Nm },
-  { label: 'Solve time', unit: 's', digits: 1, value: (run) => run.summary.solve_time_s },
 ];
 
 function runKey(run: Pick<PublicRunListRecord, 'project_slug' | 'run_id'>): string {
@@ -66,10 +73,20 @@ function isMagneto2dRun(run: PublicRunListRecord): boolean {
   return run.solver_name?.toLowerCase().startsWith('magneto2d') === true;
 }
 
+const runDateTime = new Intl.DateTimeFormat('en-US', {
+  month: '2-digit', day: '2-digit', year: '2-digit',
+  hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
+});
+
+function formatRunTime(timestamp: string | null | undefined, fallback: string): string {
+  const date = timestamp ? new Date(timestamp) : null;
+  return date && Number.isFinite(date.getTime()) ? runDateTime.format(date).replace(',', '') : fallback;
+}
+
 function runLabel(run: PublicRunListRecord): string {
   const name = run.project_name || run.project_slug;
-  const timestamp = run.completed_at ? new Date(run.completed_at).toLocaleString() : run.run_id;
-  return `${name} · ${solverLabel(run.solver_name)} · ${timestamp}`;
+  const timestamp = formatRunTime(run.completed_at, run.run_id);
+  return `${name} · ${run.run_setup?.name || 'Setup not recorded'} · ${timestamp}`;
 }
 
 function formatBytes(value: number | null | undefined): string {
@@ -93,8 +110,7 @@ function apiErrorMessage(reason: unknown, fallback: string): string {
 }
 
 function storedRunTime(run: PublicRunListRecord): string {
-  const timestamp = run.completed_at || run.started_at;
-  return timestamp ? new Date(timestamp).toLocaleString() : run.run_id;
+  return formatRunTime(run.completed_at || run.started_at, run.run_id);
 }
 
 function storedRunStatus(run: PublicRunListRecord): string {
@@ -125,6 +141,50 @@ function percentDelta(left: number | null | undefined, right: number | null | un
   return `${rounded > 0 ? '+' : ''}${rounded.toFixed(1)}%`;
 }
 
+function timingValue(value: number | null, unit: string): string {
+  return value === null ? 'Not recorded' : unit === 's' ? formatSeconds(value) : number(value, 0);
+}
+
+function lossNumber(value: number, unit: string): string {
+  return unit === '%' ? value.toFixed(1) : formatSignificant(value);
+}
+
+function lossDelta(before: number | null, after: number | null, unit: string): string {
+  if (before === null || after === null) return '—';
+  if (unit === '%') return delta(before, after, 1);
+  // A delta must not imply finer precision than either displayed run value.
+  // Negative digits round to tens or hundreds, as formatSignificant shows values of 1000 and above.
+  const precisions = [before, after].filter(value => value !== 0)
+    .map(value => 2 - Math.floor(Math.log10(Math.abs(Number(value.toPrecision(3))))));
+  const digits = Math.min(12, precisions.length ? Math.min(...precisions) : 0);
+  const fractionDigits = Math.max(0, digits);
+  const scale = 10 ** Math.max(0, -digits);
+  const difference = Number((Math.round((after - before) / scale) * scale).toFixed(fractionDigits));
+  const text = Math.abs(difference).toLocaleString(undefined, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits });
+  return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${text}`;
+}
+
+function LossComparisonValue({ cell, label, unit }: { cell: ComparisonLossCell; label: string; unit: string }) {
+  return <>
+    <span className="public-run-compare-loss-value">{cell.value === null ? cell.missing : <>{lossNumber(cell.value, unit)} <small>{unit}</small></>}</span>
+    {cell.status && <StatusDot status={cell.status} label={label} reason={cell.reason || 'No status reason was recorded.'} />}
+    {cell.partial && <small className="public-run-compare-loss-partial">Partial <InfoTip label={`${label} partial output`}>This recorded shaft output excludes the unavailable iron loss. Deltas require the same loss basis in both runs.</InfoTip></small>}
+  </>;
+}
+
+function timingDelta(before: number | null, after: number | null, unit: string): string {
+  if (before === null || after === null) return '—';
+  if (unit !== 's') return delta(before, after, 0);
+  const difference = after - before;
+  return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${formatSeconds(Math.abs(difference))}`;
+}
+
+function coggingCoverage(label: string, waveform: ComparisonResult['cogging_torque_waveform']): string {
+  if (!waveform) return `${label} not recorded`;
+  const angles = waveform.electrical_angle_deg;
+  return `${label} ${Number(Math.min(...angles).toFixed(3))}–${Number(Math.max(...angles).toFixed(3))}° electrical`;
+}
+
 function sameAngleGrid(left: number[], right: number[]): boolean {
   return left.length === right.length && left.every((angle, index) => Math.abs(angle - right[index]) <= 1e-6);
 }
@@ -147,8 +207,10 @@ function actualMeshProvenance(result: ComparisonResult): string {
 
 function actualTorqueProvenance(result: ComparisonResult): string {
   const metadata = result.solve_metadata;
+  const labels: Record<string, string> = { ...COGGING_METHOD_LABELS, remesh_per_step: 'Remesh Per Step', fixed_mesh: 'Fixed Mesh' };
   return [metadata.torque_method, metadata.rotor_rotation_model]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .map(value => labels[value] || value.replace(/_/g, ' '))
     .join(' · ') || 'Not recorded';
 }
 
@@ -161,19 +223,20 @@ function excitationProvenance(result: ComparisonResult): string {
   return `Ideal six-step (120°) · ${advance} · ${metadata.phase_connection || 'wye'} · ${metadata.current_amplitude_convention || 'plateau'}`;
 }
 
-export function PublicRunComparison({ currentResult, manageRuns = false, onOpenRun }: PublicRunComparisonProps) {
+export function PublicRunComparison({ currentResult, manageRuns = false, compareWithPrevious = false, onOpenRun }: PublicRunComparisonProps) {
   const currentSaved = currentResult?.saved_run;
   const [allRecords, setAllRecords] = useState<PublicRunListRecord[]>([]);
   const [records, setRecords] = useState<PublicRunListRecord[]>([]);
   const [storage, setStorage] = useState<PublicRunStoragePolicy | null>(null);
-  const [leftKey, setLeftKey] = useState(currentSaved ? runKey(currentSaved) : '');
-  const [rightKey, setRightKey] = useState('');
+  const [leftKey, setLeftKey] = useState(currentSaved && !compareWithPrevious ? runKey(currentSaved) : '');
+  const [rightKey, setRightKey] = useState(currentSaved && compareWithPrevious ? runKey(currentSaved) : '');
+  const [runsLoaded, setRunsLoaded] = useState(false);
   const [loaded, setLoaded] = useState<Record<string, LoadedRun>>({});
   const [error, setError] = useState<string | null>(null);
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
   const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
-  const [plot, setPlot] = useState<'torque' | 'back-emf'>('torque');
+  const [plot, setPlot] = useState<'torque' | 'back-emf' | 'cogging'>('torque');
   const [hiddenSeriesKeys, setHiddenSeriesKeys] = useState<string[]>([]);
 
   const refreshRuns = useCallback(async (): Promise<void> => {
@@ -181,6 +244,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
     setAllRecords(payload.runs);
     setStorage(payload.storage);
     setRecords(payload.runs.filter((run) => run.status === 'complete' && isMagneto2dRun(run)));
+    setRunsLoaded(true);
     setError(null);
   }, []);
 
@@ -194,23 +258,37 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
     return () => { active = false; };
   }, [refreshRuns]);
 
+  const currentKey = currentSaved ? runKey(currentSaved) : '';
+  const currentRecord = records.find(run => runKey(run) === currentKey);
+  const previousRecord = currentRecord ? previousCompletedRun(records, currentRecord) : undefined;
+  const previousKey = previousRecord ? runKey(previousRecord) : '';
+
   useEffect(() => {
     const keys = new Set(records.map(runKey));
     const currentKey = currentSaved ? runKey(currentSaved) : '';
+    if (compareWithPrevious) {
+      const nextRight = keys.has(rightKey) ? rightKey : keys.has(currentKey) ? currentKey : '';
+      const nextLeft = keys.has(leftKey) && leftKey !== nextRight ? leftKey : previousKey;
+      if (nextLeft !== leftKey) setLeftKey(nextLeft);
+      if (nextRight !== rightKey) setRightKey(nextRight);
+      return;
+    }
     const nextLeft = keys.has(leftKey)
       ? leftKey
       : keys.has(currentKey)
         ? currentKey
-        : runKey(records[0] || { project_slug: '', run_id: '' });
+        : records[0] ? runKey(records[0]) : '';
+    const fallbackRight = records.find((run) => runKey(run) !== nextLeft);
     const nextRight = keys.has(rightKey) && rightKey !== nextLeft
       ? rightKey
-      : runKey(records.find((run) => runKey(run) !== nextLeft) || { project_slug: '', run_id: '' });
+      : fallbackRight ? runKey(fallbackRight) : '';
     if (nextLeft !== leftKey) setLeftKey(nextLeft);
     if (nextRight !== rightKey) setRightKey(nextRight);
-  }, [currentSaved, leftKey, records, rightKey]);
+  }, [compareWithPrevious, currentSaved, leftKey, previousKey, records, rightKey]);
 
   useEffect(() => {
     if (!records.length) return;
+    setError(null);
     const missing = [...new Set([leftKey, rightKey])]
       .filter((key) => key && !loaded[key])
       .map((key) => records.find((candidate) => runKey(candidate) === key))
@@ -224,6 +302,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
         value: {
           record,
           result: payload.result,
+          inputs: payload.inputs,
         },
       };
     })).then((entries) => {
@@ -277,6 +356,10 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
   const left = loaded[leftKey];
   const right = loaded[rightKey];
   const ready = Boolean(left && right && leftKey !== rightKey);
+  const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !leftKey;
+  // Only a chosen pair is prepared; with one run still to pick, the selectors say so.
+  const loadingStatus = error ? null : !runsLoaded ? 'Loading saved runs…'
+    : leftKey && rightKey && leftKey !== rightKey && !ready ? 'Preparing comparison…' : null;
   const torqueSeries = useMemo(() => ready ? [
     {
       id: 'run-a',
@@ -291,6 +374,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
       angles: right.result.torque_waveform.electrical_angle_deg,
       values: right.result.torque_waveform.torque_Nm,
       color: '#22d3ee',
+      dashArray: '7 5',
     },
   ] : [], [ready, left, right]);
   const emfSeries = useMemo(() => ready ? [
@@ -329,6 +413,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
       angles: right.result.back_emf_waveform.electrical_angle_deg,
       values: right.result.back_emf_waveform.phase_a_V,
       color: '#22d3ee',
+      dashArray: '7 5',
     },
     {
       id: 'run-b-phase-b',
@@ -338,6 +423,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
       angles: right.result.back_emf_waveform.electrical_angle_deg,
       values: right.result.back_emf_waveform.phase_b_V,
       color: '#60a5fa',
+      dashArray: '7 5',
     },
     {
       id: 'run-b-phase-c',
@@ -347,7 +433,14 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
       angles: right.result.back_emf_waveform.electrical_angle_deg,
       values: right.result.back_emf_waveform.phase_c_V,
       color: '#2dd4bf',
+      dashArray: '7 5',
     },
+  ] : [], [ready, left, right]);
+  const coggingSeries = useMemo(() => ready ? [
+    { id: 'cogging-run-a', label: `Run A · ${left.inputs?.run_setup?.name || left.record.project_name || left.record.project_slug}`,
+      angles: left.result.cogging_torque_waveform?.electrical_angle_deg || [], values: left.result.cogging_torque_waveform?.torque_Nm || [], color: '#f59e0b' },
+    { id: 'cogging-run-b', label: `Run B · ${right.inputs?.run_setup?.name || right.record.project_name || right.record.project_slug}`,
+      angles: right.result.cogging_torque_waveform?.electrical_angle_deg || [], values: right.result.cogging_torque_waveform?.torque_Nm || [], color: '#22d3ee', dashArray: '7 5' },
   ] : [], [ready, left, right]);
   const torqueSampling = ready ? samplingLabel(
     left.result.torque_waveform.electrical_angle_deg,
@@ -359,11 +452,14 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
   ) : '';
   const torqueAvailable = torqueSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
   const emfAvailable = emfSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const coggingAvailable = coggingSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const timing = ready ? compareRunTiming(left.result, right.result) : null;
+  const losses = ready ? compareRunLosses(left.result, right.result) : null;
   useEffect(() => {
     if (!ready) return;
-    setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable)
-      ? current : torqueAvailable ? 'torque' : 'back-emf');
-  }, [ready, torqueAvailable, emfAvailable]);
+    setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
+      ? current : torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : 'cogging');
+  }, [ready, torqueAvailable, emfAvailable, coggingAvailable]);
   return (
     <section className="public-run-compare" aria-label="Compare two saved runs">
       {manageRuns && (
@@ -413,7 +509,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
                 return (
                   <article className="public-run-storage-row" role="listitem" key={key} data-run-id={record.run_id}>
                     <div>
-                      <strong>{record.project_name || record.project_slug}</strong>
+                      <strong>{record.project_name || record.project_slug}{record.run_setup?.name ? ` · ${record.run_setup.name}` : ''}</strong>
                       <small>{storedRunTime(record)} · {record.run_id}{record.field_playback_removed_at ? ' · field playback removed' : ''}</small>
                     </div>
                     <span className={`public-run-storage-status is-${record.status}`}>{storedRunStatus(record)}</span>
@@ -443,38 +539,35 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
         <div><span className="eyebrow">Run comparison</span><h2>Compare two completed Magneto2D analyses</h2><p>Review how design inputs, operating points, or numerical settings changed the saved results.</p></div>
         <div className="public-run-compare-legend"><span><i className="run-a" />Run A</span><span><i className="run-b" />Run B</span></div>
       </div>
-      <div className="public-run-compare-selectors">
-        <label><span>Run A · baseline</span><select value={leftKey} onChange={(event) => setLeftKey(event.target.value)}>{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
-        <label><span>Run B · candidate</span><select value={rightKey} onChange={(event) => setRightKey(event.target.value)}>{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
+      <div className="public-run-compare-selectors" aria-busy={Boolean(loadingStatus)}>
+        <label><span>Run A · baseline</span><select value={runsLoaded ? leftKey : ''} disabled={!runsLoaded} onChange={(event) => setLeftKey(event.target.value)}>{(!runsLoaded || !leftKey) && <option value="">{runsLoaded ? 'Choose a baseline' : 'Loading saved runs…'}</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
+        <label><span>Run B · candidate</span><select value={runsLoaded ? rightKey : ''} disabled={!runsLoaded} onChange={(event) => setRightKey(event.target.value)}>{(!runsLoaded || !rightKey) && <option value="">{runsLoaded ? 'Choose a candidate' : 'Loading saved runs…'}</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
       </div>
       {error && <div className="public-run-compare-message error" role="alert">{error}</div>}
-      {!error && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
-      {!error && records.length >= 2 && !ready && <div className="public-run-compare-message">Loading saved run data…</div>}
+      {!error && noPrevious && <div className="public-run-compare-message" role="status">{currentRecord
+        ? 'No earlier completed Magneto2D run with a recorded completion time was found in this saved project. Choose a baseline manually to compare another run.'
+        : 'The current run is no longer available in saved runs. Choose two saved runs manually.'}</div>}
+      {!error && runsLoaded && !compareWithPrevious && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
+      {loadingStatus && <div className="public-run-compare-message public-run-compare-loading" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true" />{loadingStatus}</div>}
       {ready && <>
-        <div className="public-run-compare-identities" aria-label="Compared run identity and provenance">
-          {[
-            { key: 'run-a', side: 'Run A · baseline', run: left },
-            { key: 'run-b', side: 'Run B · candidate', run: right },
-          ].map(({ key, side, run }) => (
-            <article className={key} key={key}>
-              <span>{side}</span>
-              <strong>{solverLabel(run.result.solve_metadata.solver_name)}</strong>
-              <small>{run.record.project_name || run.record.project_slug}</small>
-              <dl>
-                <div><dt>Actual mesh</dt><dd>{actualMeshProvenance(run.result)}</dd></div>
-                <div><dt>Torque extraction</dt><dd>{actualTorqueProvenance(run.result)}</dd></div>
-                <div><dt>Excitation identity</dt><dd>{excitationProvenance(run.result)}</dd></div>
-                <div><dt>Completed</dt><dd>{run.record.completed_at ? new Date(run.record.completed_at).toLocaleString() : 'Not recorded'}</dd></div>
-              </dl>
-            </article>
-          ))}
-        </div>
+        {compareWithPrevious && leftKey === previousKey && rightKey === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
+        <RunInputChanges before={left.inputs} after={right.inputs} details={[
+          { label: 'Design', before: left.record.project_name || left.record.project_slug, after: right.record.project_name || right.record.project_slug },
+          { label: 'Actual mesh', before: actualMeshProvenance(left.result), after: actualMeshProvenance(right.result) },
+          { label: 'Torque extraction', before: actualTorqueProvenance(left.result), after: actualTorqueProvenance(right.result) },
+          { label: 'Excitation identity', before: excitationProvenance(left.result), after: excitationProvenance(right.result) },
+          { label: 'Completed', before: formatRunTime(left.record.completed_at, 'Not recorded'),
+            after: formatRunTime(right.record.completed_at, 'Not recorded') },
+        ]} />
         <section className="public-run-compare-mode-note design" aria-live="polite">
           <strong>Descriptive run comparison</strong>
           <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>
         </section>
-        <div className="public-run-compare-metrics" aria-label="Run comparison metric differences">
-          {METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
+        <div className="public-run-compare-metrics" role="region" aria-label="Run comparison metric differences" tabIndex={0}>
+          <table>
+            <caption>Results comparison</caption>
+            <thead><tr><th scope="col">Metric</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+            <tbody>{METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
             const leftValue = metric.value(left.result);
             const rightValue = metric.value(right.result);
             // Each torque keeps its own three significant figures, so a small
@@ -483,16 +576,61 @@ export function PublicRunComparison({ currentResult, manageRuns = false, onOpenR
             const leftDigits = metric.torque ? torqueDecimals(leftValue) : metric.digits;
             const rightDigits = metric.torque ? torqueDecimals(rightValue) : metric.digits;
             const deltaDigits = metric.torque ? Math.min(torqueDecimals(leftValue), torqueDecimals(rightValue)) : metric.digits;
-            return <article key={metric.label}><span>{metric.label}</span><div><strong>{number(leftValue, leftDigits)} <small>{metric.unit}</small></strong><strong>{number(rightValue, rightDigits)} <small>{metric.unit}</small></strong></div><em><span>{delta(leftValue, rightValue, deltaDigits)} {metric.deltaUnit || metric.unit}</span><span>{percentDelta(leftValue, rightValue)} vs A</span></em></article>;
-          })}
+            return <tr key={metric.label}>
+              <th scope="row">{metric.label}</th>
+              <td>{number(leftValue, leftDigits)} <small>{metric.unit}</small></td>
+              <td>{number(rightValue, rightDigits)} <small>{metric.unit}</small></td>
+              <td>{delta(leftValue, rightValue, deltaDigits)} <small>{metric.deltaUnit || metric.unit}</small></td>
+              <td>{percentDelta(leftValue, rightValue)}</td>
+            </tr>;
+          })}</tbody>
+          </table>
         </div>
-        {(torqueAvailable || emfAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
+        {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
           {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
           {emfAvailable && <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>}
+          {coggingAvailable && <button type="button" role="tab" aria-selected={plot === 'cogging'} className={plot === 'cogging' ? 'active' : ''} onClick={() => setPlot('cogging')}>Cogging overlay</button>}
         </div>}
-        {!torqueAvailable && !emfAvailable && <p className="public-run-compare-message">Neither run has torque or Back EMF waveforms to overlay. Available summary metrics are shown above.</p>}
+        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">Neither run has torque, Back EMF or cogging waveforms to overlay. Available summary metrics are shown above.</p>}
         {plot === 'torque' && torqueAvailable && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' }} />}
         {plot === 'back-emf' && emfAvailable && <WaveformChart angles={left.result.back_emf_waveform.electrical_angle_deg} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={emfSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
+        {plot === 'cogging' && coggingAvailable && <>
+          <p className="public-run-compare-cogging-coverage">{coggingCoverage('Run A', left.result.cogging_torque_waveform)} · {coggingCoverage('Run B', right.result.cogging_torque_waveform)}</p>
+          <WaveformChart angles={left.result.cogging_torque_waveform?.electrical_angle_deg || []} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(left.result.cogging_torque_waveform?.electrical_angle_deg || [], right.result.cogging_torque_waveform?.electrical_angle_deg || [])} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'cogging-run-b', subtrahendKey: 'cogging-run-a', label: 'Run B − Run A' }} />
+        </>}
+        <div className="public-run-compare-metrics public-run-compare-losses" role="region" aria-label="Losses and efficiency comparison" tabIndex={0}>
+          <table>
+            <caption>Losses &amp; efficiency <InfoTip label="Losses comparison help">Values and output statuses come from each saved run. Absolute efficiency changes are in percentage points. Total loss and known loss subtotals use separate rows; partial shaft outputs are compared only with other partial outputs.</InfoTip></caption>
+            {losses && <>
+              <thead><tr><th scope="col">Metric</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+              <tbody>{losses.map(row => <tr key={row.key} className={row.indent ? 'public-run-compare-loss-component' : undefined}>
+                <th scope="row">{row.label}</th>
+                <td><LossComparisonValue cell={row.before} label={`Run A ${row.label}`} unit={row.unit} /></td>
+                <td><LossComparisonValue cell={row.after} label={`Run B ${row.label}`} unit={row.unit} /></td>
+                <td>{row.comparable ? <>{lossDelta(row.before.value, row.after.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : '—'}</td>
+                <td>{row.comparable ? percentDelta(row.before.value, row.after.value) : '—'}</td>
+              </tr>)}</tbody>
+            </>}
+          </table>
+          {!losses && <p className="public-run-compare-timing-note">Losses &amp; efficiency were not recorded for either run. Enable Losses &amp; efficiency in Analysis and solve to compare them.</p>}
+        </div>
+        {timing && <div className="public-run-compare-metrics public-run-compare-timing" role="region" aria-label="Solve time breakdown comparison" tabIndex={0}>
+          <table>
+            <caption>Solve time breakdown <InfoTip label="Solve time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Percentages compare Run B with Run A.</InfoTip></caption>
+            <thead><tr><th scope="col">Stage / workload</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+            {(['Elapsed time', 'Work performed'] as const).map(group => {
+              const rows = timing.rows.filter(row => row.group === group);
+              return rows.length > 0 && <tbody key={group} aria-label={group}>
+                <tr className="public-run-compare-timing-group"><th scope="rowgroup" colSpan={5}>{group}</th></tr>
+                {rows.map(row => <tr key={row.key}>
+                  <th scope="row">{row.label}</th><td>{timingValue(row.before, row.unit)}</td><td>{timingValue(row.after, row.unit)}</td>
+                  <td>{timingDelta(row.before, row.after, row.unit)}</td><td>{percentDelta(row.before, row.after)}</td>
+                </tr>)}
+              </tbody>;
+            })}
+          </table>
+          {(!timing.recordedBefore || !timing.recordedAfter) && <p className="public-run-compare-timing-note" role="note">{!timing.recordedBefore && !timing.recordedAfter ? 'Stage timings were not recorded for either run.' : `Run ${!timing.recordedBefore ? 'A' : 'B'}: stage timings were not recorded.`}</p>}
+        </div>}
       </>}
     </section>
   );

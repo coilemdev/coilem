@@ -415,6 +415,45 @@ def test_comparison_loads_pre_v4_run_without_parity_migration(
     assert stored["project_name"] == "legacy-flat-ipm"
     assert stored["result"]["summary"] == {}
     assert "parity_identity" not in stored
+    assert stored["inputs"]["config"] == old_config
+    assert "flat_buried_magnet_shape" not in stored["inputs"]["config"]["rotor"]
+    assert stored["inputs"]["run_setup"] is None
+    assert stored["inputs"]["solver"] is None
+
+
+def test_comparison_inputs_are_immutable_resolved_settings_and_recorded_setup(tmp_path: Path) -> None:
+    config = deepcopy(VALID_CONFIG)
+    config["rotor"]["magnet_thickness_mm"] = 4.5
+    label = {"id": "setup-1", "name": "Report", "version": 2, "kind": "user", "includes_numerics": True}
+    workspace = SolveWorkspace(tmp_path / "data")
+    writer = workspace.begin_run(
+        project_name="input-differences", config=config,
+        submitted_request={"config": config, "solver": "magneto2d", "run_setup": label},
+    )
+    result = _result("cache-frame")
+    result["solve_metadata"]["run_setup"] = deepcopy(label)
+    location = writer.complete(result)
+    config["rotor"]["magnet_thickness_mm"] = 99
+    result["solve_metadata"]["run_setup"]["name"] = "Later rename"
+    compared = workspace.load_run_comparison(location.project_slug, location.run_id)
+    assert compared["inputs"]["config"]["rotor"]["magnet_thickness_mm"] == 4.5
+    assert compared["inputs"]["solver"] == "magneto2d"
+    assert compared["inputs"]["run_setup"] == label
+    assert "run_setups" not in compared["inputs"]
+    compared["inputs"]["run_setup"]["name"] = "UI edit"
+    assert workspace.load_run_comparison(location.project_slug, location.run_id)["inputs"]["run_setup"] == label
+    assert workspace.list_runs()[0]["run_setup"] == label
+    # The picker only needs the small recorded request, not large result data.
+    (location.path / "result.json").write_text("unreadable result", encoding="utf-8")
+    assert workspace.list_runs()[0]["run_setup"] == label
+    request_path = location.path / "request.json"
+    request = json.loads(request_path.read_text(encoding="utf-8"))
+    request["submitted"]["run_setup"]["name"] = "Unbound edit"
+    request_path.write_text(json.dumps(request), encoding="utf-8")
+    listed = workspace.list_runs()[0]
+    assert "run_setup" not in listed
+    assert "design_scope" not in listed  # No setup library was submitted with this run.
+    assert listed["run_id"] == location.run_id
 
 
 def test_failed_run_remains_explicit_partial_diagnostic(tmp_path: Path) -> None:
@@ -665,3 +704,85 @@ def test_workspace_quota_refuses_to_publish_oversized_run(tmp_path: Path) -> Non
     assert manifest["status"] == "failed"
     assert manifest["failure"]["error_code"] == "RUN_STORAGE_LIMIT"
     assert not (writer.partial_path / "result.json").exists()
+
+
+def test_run_setups_are_portable_snapshots_with_immutable_result_labels(tmp_path: Path) -> None:
+    workspace = SolveWorkspace(tmp_path / "profiles")
+    label = {"id": "user-rated", "version": 1, "name": "Rated load", "kind": "user", "includes_numerics": False}
+    setups = {"schema": 1, "scope": "motor-1", "profiles": [], "activeId": None, "activeVersion": None}
+    submitted = {"config": deepcopy(VALID_CONFIG), "run_setup": label, "run_setups": setups}
+    writer = workspace.begin_run(project_name="Motor", config=VALID_CONFIG, submitted_request=submitted)
+    # A later edit in the caller must not relabel an in-flight or saved solve.
+    label["version"] = 2
+    label["name"] = "Renamed load"
+    setups["scope"] = "another-motor"
+    original = _result()
+    location = writer.complete(original)
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert loaded["result"]["solve_metadata"]["run_setup"]["name"] == "Rated load"
+    assert loaded["result"]["solve_metadata"]["run_setup"]["version"] == 1
+    assert loaded["request"]["submitted"]["run_setup"]["version"] == 1
+    assert loaded["project"]["run_setups"]["scope"] == "motor-1"
+    assert workspace.list_runs()[0]["design_scope"] == "motor-1"
+    # The library is stored once, in the project snapshot; the request keeps only the label.
+    assert "run_setups" not in loaded["request"]["submitted"]
+    assert loaded["request"]["resolved_config"] == VALID_CONFIG
+    assert "run_setup" not in original["solve_metadata"]
+
+
+@pytest.mark.parametrize("label", [None, {"id": "invalid", "version": True}])
+def test_custom_runs_do_not_inherit_cached_setup_labels(tmp_path: Path, label) -> None:
+    workspace = SolveWorkspace(tmp_path / "custom")
+    writer = workspace.begin_run(project_name="Custom", config=VALID_CONFIG,
+                                 submitted_request={"config": VALID_CONFIG, "run_setup": label})
+    cached = _result()
+    cached["solve_metadata"]["run_setup"] = {"id": "obsolete", "version": 9, "name": "Other run"}
+    location = writer.complete(cached)
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert "run_setup" not in loaded["result"]["solve_metadata"]
+    assert "run_setups" not in loaded["project"]
+
+
+def test_setup_metadata_does_not_change_resolved_physics() -> None:
+    from backend.public_policy import PublicConfigError, parse_public_solve_request
+
+    before, _, _ = parse_public_solve_request({"config": VALID_CONFIG})
+    after, _, _ = parse_public_solve_request({
+        "config": VALID_CONFIG, "run_setup": {"name": "An arbitrary display label"},
+        "run_setups": {"schema": 1, "profiles": []},
+    })
+    assert before.model_dump() == after.model_dump()
+    with pytest.raises(PublicConfigError, match="must be an object"):
+        parse_public_solve_request({"config": VALID_CONFIG, "run_setup": "invalid"})
+
+
+def test_unreadable_setup_library_never_blocks_a_run(tmp_path: Path) -> None:
+    workspace = SolveWorkspace(tmp_path / "nan")
+    setups = {"schema": 1, "scope": "motor-1", "profiles": [float("nan")]}
+    writer = workspace.begin_run(project_name="Motor", config=VALID_CONFIG,
+                                 submitted_request={"config": VALID_CONFIG, "run_setups": setups})
+    location = writer.complete(_result())
+    loaded = workspace.load_run(location.project_slug, location.run_id)
+    assert loaded["integrity"]["valid"] is True
+    assert "run_setups" not in loaded["project"]
+
+
+@pytest.mark.parametrize(
+    ("name", "value", "message"),
+    [
+        ("run_setups", {"schema": 1, "scope": "s", "profiles": [float("nan")]}, "finite"),
+        ("run_setup", {"id": "a", "version": float("inf")}, "finite"),
+        ("run_setups", {"schema": 1, "scope": "s", "profiles": ["x" * (256 * 1024)]}, "too large"),
+        ("run_setup", {"name": "x" * 5000}, "too large"),
+        # A lone surrogate (JSON "\\ud800") is valid JSON but not UTF-8 text: a validation error, not a 500.
+        ("run_setup", {"name": "Rated \ud800"}, "valid text"),
+        ("run_setups", {"schema": 1, "scope": "s", "profiles": [{"name": "\ud800"}]}, "valid text"),
+    ],
+)
+def test_setup_metadata_must_be_finite_bounded_json(name: str, value: dict, message: str) -> None:
+    from backend.public_policy import PublicConfigError, parse_public_solve_request
+
+    with pytest.raises(PublicConfigError, match=message):
+        parse_public_solve_request({"config": VALID_CONFIG, name: value})

@@ -165,7 +165,7 @@ assert.match(appSource, /void prepareMesh\(/);
 assert.match(appSource, /const refreshSolveValidation = useCallback/);
 assert.match(appSource, /void refreshSolveValidation\(config\)/);
 assert.match(appSource, /validationChecking=\{validationChecking\}/);
-assert.match(appSource, /useState<PublicSolverId>\('magneto2d'\)/);
+assert.match(appSource, /useState<PublicSolverId>\(initialSetup\.solver \?\? 'magneto2d'\)/);
 assert.match(appSource, /elmerCapabilityFromHealth/);
 assert.match(appSource, /elmerCapabilityIsReady/);
 assert.match(appSource, /feature_enabled: payload\.feature_enabled === true/);
@@ -460,8 +460,7 @@ assert.match(runComparisonSource, /groupLabel: `Run A/);
 assert.match(runComparisonSource, /groupLabel: `Run B/);
 assert.match(runComparisonSource, /legendLabel: 'Phase A'/);
 assert.match(runComparisonSource, /shared positions/);
-assert.match(runComparisonSource, /solverLabel\(run\.solver_name\)/);
-assert.match(runComparisonSource, /public-run-compare-identities/);
+// Recorded run details share the input table; the Compare browser flow checks the rows.
 assert.match(runComparisonSource, /solverLabel\(left\.result\.solve_metadata\.solver_name\)/);
 assert.match(runComparisonSource, /solverLabel\(right\.result\.solve_metadata\.solver_name\)/);
 assert.match(runComparisonSource, /toggleableSeries/);
@@ -474,7 +473,7 @@ assert.doesNotMatch(runComparisonSource, /Elmer/);
 assert.match(waveformSource, /item\.angles \|\| angles/);
 assert.match(waveformSource, /pathFor\(item\.angles, item\.values\)/);
 assert.match(waveformSource, /aria-pressed=\{visible\}/);
-assert.match(waveformSource, /visible && plottedSeries\.length === 1/);
+// Legend hide-all/recovery is exercised by the Compare browser flow.
 assert.match(waveformSource, /samplingLabel \|\|/);
 assert.match(waveformSource, /periodicAxisEnd/);
 assert.match(waveformSource, /inferredEnd - 360/);
@@ -820,7 +819,7 @@ assert.match(workspaceSource, /checked=\{config\.solve_params\.corner_refinement
 assert.match(workspaceSource, /onMeshSettingChange\('corner_refinement', event\.target\.checked\)/);
 assert.doesNotMatch(workspaceSource, /defaultChecked/);
 assert.match(workspaceSource, /onSolvePlanChange\(plan\.value\)/);
-assert.match(workspaceSource, />Custom\.\.\.<\/span>/);
+assert.match(workspaceSource, /lossesFullCycle \? 'Full-cycle step' : 'Custom\.\.\.'/);
 assert.match(workspaceSource, /label="Step Size \(° elec\)"/);
 assert.match(workspaceSource, /PUBLIC_CUSTOM_SWEEP_DEFAULT_STEP_DEG/);
 assert.match(workspaceSource, /No-current electrical sweep/);
@@ -2085,7 +2084,9 @@ assert.match(appSource, /layers: 'Winding layers'/);
 assert.match(landingWorkflowHeroSource, /Start a design/);
 assert.match(appSource, /<PublicGuidedSetup/);
 assert.match(appSource, /setGuidedActive\(guided\)/);
-assert.match(appSource, /const nextConfig = cloneDefaultConfig\(\)/);
+// Leaving a blank New Design for the example motor restores the starter's setup library, as Reset and launch do.
+assert.match(appSource, /if \(blankDesign\) \{\n\s+loadStarterMotor\(\);/);
+assert.match(appSource, /restoreActiveProfile\(cloneDefaultConfig\(\), loadProfileDocument\(STARTER_SETUP_SCOPE\), BUILTIN_SOLVE_PROFILES\)/);
 assert.match(appSource, /topology=\{config\.topology\}/);
 assert.match(appSource, /guidedDesignSection=\{guidedDesignSection\}/);
 assert.match(appSource, /onDesignSectionChange=\{revealGuidedDesignSection\}/);
