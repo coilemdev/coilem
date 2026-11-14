@@ -1,7 +1,18 @@
 # Compare saved runs
 
-Compare shows two completed Magneto2D runs. Run A is the baseline; values and
-deltas for Run B are read from its saved result. No analysis starts when comparing.
+Compare shows **two to six** completed Magneto2D runs. Start with the usual
+pair, then choose **+ Add run** for up to four more. Duplicate selections are
+disabled. Use **Pin as baseline** on any selected run: it moves to the first
+table column and every candidate's delta is calculated against it. The baseline
+stays selected when candidates are added, changed or removed; its Remove button
+is disabled. Run letters, colors and line patterns stay attached to their slots
+when pinning or removing another run. No analysis starts when comparing.
+
+If a selected run fails to load, its selector shows the error and a Retry button.
+Only selected compact comparison records are fetched, with in-flight and completed
+requests reused. Removing a run during loading cannot change the selection later.
+Deleting the pinned run from local storage leaves its choice empty so a replacement
+must be selected explicitly.
 Compare shows **Loading saved runs…** while listing saved analyses, then
 **Preparing comparison…** while loading selected results. The insufficient-runs
 message appears only after the run list has finished loading.
@@ -21,7 +32,8 @@ Stored profile metadata from the saved-setups feature is supported when present.
 The same table includes a Run details group with the design, solver, actual
 mesh, torque extraction, excitation, saved setup and completion time. These
 context rows remain visible even when they match; the changed-input count only
-counts input differences.
+counts distinct input paths with a known change from the baseline. A path may
+also be marked incomplete if another selected run did not record it.
 Saved-run selectors show the design and recorded setup name, with timestamps
 in local time as MM/DD/YY HH:mm:ss (24-hour time). Older runs without a recorded
 setup label say **Setup not recorded**. Listing these labels does not load results.
@@ -32,19 +44,24 @@ gaps. Rows with missing data are counted separately from known changed inputs.
 Equal records show **No differences in the recorded inputs**; this does not
 claim that unrecorded settings were equal or establish solver qualification.
 
-Results appear in a table with a metric per row and columns for Run A, Run B,
-absolute delta (B − A) and percentage delta versus A. Percentage-valued metrics
+Results appear in a table with a metric per row. Two-run comparisons retain
+separate value, absolute-delta and percentage-delta columns. With three to six
+runs, each candidate column shows its value and the absolute/percentage change
+from the pinned baseline directly below. Input details, results, losses and timing
+all use the same baseline-first column order. Tables scroll on narrow screens;
+row names remain visible, and the baseline value also stays visible on wide screens. Percentage-valued metrics
 use percentage points (`pp`) for their absolute delta. Missing results remain
 unavailable; a zero baseline does not produce an infinite percentage.
 
-The torque, back-EMF and cogging overlays draw Run A solid and Run B dashed, including
-their legend swatches, so coincident traces remain distinguishable.
+The torque, back-EMF and cogging overlays include every selected run. Run A is
+solid and B–F have distinct dash patterns, also shown in their legend swatches.
+Pinning another baseline preserves those identities and styles.
 Each legend item toggles independently. Hiding every curve shows an empty-chart
 message and keeps the legend available so any curve can be turned back on.
-Cogging uses each run's recorded electrical angles and shows both angle ranges.
+Cogging uses each run's recorded electrical angles and shows each recorded angle range.
 It does not stretch different periods onto the same span or interpolate missing
-samples; the readout delta is available only at angles solved by both runs.
-A cogging overlay is available if either run contains valid cogging samples.
+samples; the readout delta is available only at angles solved by the candidate and pinned baseline.
+A cogging overlay is available if any selected run contains valid cogging samples.
 
 **Losses & efficiency**, below the waveform overlays, compares efficiency,
 input and shaft power, shaft torque, copper loss (stack and end turns), iron
@@ -53,14 +70,12 @@ Absolute efficiency deltas use percentage points. Recorded output statuses and
 their reasons remain available beside values. Missing analysis records stay
 **Not recorded**; unavailable outputs are not replaced by zero. Full loss totals
 and known subtotals use separate rows, and partial shaft outputs exclude iron
-loss and are compared only with other partial outputs. If neither run has loss
+loss and are compared only with other partial outputs. If no selected run has loss
 data, the section explains how to enable it for a new analysis.
-Selecting **Losses & efficiency** now prepares a full 360° electrical sweep
-automatically for future analyses. Mesh choices and angular step remain
-adjustable. Applying an older setup or opening a design with a short loss sweep
-also prepares a full cycle; saved setup versions are updated only when explicitly
-saved. The public request uses the existing custom full-cycle grid, so accuracy
-presets cannot shorten a loss sweep. Archived comparison inputs and results
+Selecting **Losses & efficiency** requests a full 360° electrical sweep for
+future analyses. The selected accuracy plan and its harmonic analysis are
+preserved; existing full-cycle plans keep their own grid, and a shortened plan
+is submitted using the existing full-cycle grid. Archived inputs and results
 retain their original settings.
 
 **Solve time breakdown**, last after losses, compares total elapsed time, meshing, field solve and
@@ -69,5 +84,4 @@ partitions, separate from combined worker time. Workload rows compare mesh
 elements, rotor positions, generated/rotated meshes, field solves and frames
 when recorded. Missing historical timings and counts remain **Not recorded**;
 zero counts remain zero and nonzero changes from zero have no percentage delta.
-Multi-run baselines, further result types, comparison exports and studies are
-subsequent Compare 2.0 work.
+Further result types, comparison exports and studies are subsequent Compare 2.0 work.

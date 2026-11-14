@@ -441,28 +441,28 @@ for (const fixtureName of [
   const referenceFixture = JSON.parse(await readFile(path.join(frontendRoot, '../references/benchmark_configs', fixtureName), 'utf8'));
   assert.deepEqual(bundledFixture, referenceFixture, `${fixtureName} public copy must match the validation fixture`);
 }
-assert.match(runComparisonSource, /Compare two completed Magneto2D analyses/);
+assert.match(runComparisonSource, /Compare up to six completed analyses/);
 assert.match(runComparisonSource, /run\.status === 'complete' && isMagneto2dRun\(run\)/);
 assert.match(runComparisonSource, /listPublicRuns/);
 assert.match(runComparisonSource, /if \(!records\.length\) return/);
 assert.match(runComparisonSource, /return changed \? next : previous/);
-assert.match(runComparisonSource, /angles: right\.result\.torque_waveform\.electrical_angle_deg/);
-assert.match(runComparisonSource, /id: 'run-a'/);
+
+
 assert.match(runComparisonSource, /function percentDelta/);
 assert.match(runComparisonSource, /percentage\.toFixed\(1\)/);
 assert.match(runComparisonSource, /metric\.deltaUnit \|\| metric\.unit/);
-assert.match(runComparisonSource, /percentDelta\(leftValue, rightValue\)/);
-assert.match(runComparisonSource, /phase_a_V/);
-assert.match(runComparisonSource, /phase_b_V/);
-assert.match(runComparisonSource, /phase_c_V/);
+
+
+
+
 assert.match(runComparisonSource, /Three-phase back EMF comparison/);
-assert.match(runComparisonSource, /groupLabel: `Run A/);
-assert.match(runComparisonSource, /groupLabel: `Run B/);
-assert.match(runComparisonSource, /legendLabel: 'Phase A'/);
+
+
+
 assert.match(runComparisonSource, /shared positions/);
 // Recorded run details share the input table; the Compare browser flow checks the rows.
-assert.match(runComparisonSource, /solverLabel\(left\.result\.solve_metadata\.solver_name\)/);
-assert.match(runComparisonSource, /solverLabel\(right\.result\.solve_metadata\.solver_name\)/);
+
+
 assert.match(runComparisonSource, /toggleableSeries/);
 assert.match(runComparisonSource, /hiddenSeriesKeys=\{hiddenSeriesKeys\}/);
 assert.match(runComparisonSource, /Descriptive run comparison/);
@@ -502,8 +502,9 @@ assert.match(waveformSource, /<WaveformReadoutBar/);
 assert.match(waveformSource, /<WaveformReadoutMarker/);
 assert.match(waveformSource, /className="public-waveform-plot"[^>]*\{\.\.\.readout\.plotProps\}/);
 assert.match(waveformSource, /<svg ref=\{readout\.svgRef\}/);
-assert.match(runComparisonSource, /label="Torque comparison"[^\n]*readoutDifference=\{\{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' \}\}/,
-  'Compare torque shows each run and Run B − Run A, like the metric cards');
+// Multi-run baseline/readout and phase behavior are exercised in the browser workflows.
+assert.match(runComparisonSource, /readoutDifferences=\{differencesFor\(torqueSeries\)\}/);
+assert.match(runComparisonSource, /groupLabel: `\$\{run.label\}/);
 assert.doesNotMatch(runComparisonSource, /label="Three-phase back EMF comparison"[^\n]*readoutDifference/);
 assert.match(bldcChartSource, /\.\.\.\(showTorque \? \[\{ key: 'torque', label: 'Torque'/);
 assert.match(bldcChartSource, /\.\.\.\(showPhaseCurrents\s*\? \[phaseA, phaseB, phaseC\]\.map/);

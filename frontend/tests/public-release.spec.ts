@@ -1842,3 +1842,126 @@ test('small release fixes: capstone requires a fresh qualifying solve and comple
   await expect(page.getByText('You made a motor move.', { exact: true })).toHaveCount(0);
   await expect(finish).toHaveCount(0);
 });
+
+function multiRunFixture(index: number) {
+  const partial = index === 3;
+  const loss = index === 4 ? null : { input_power_W: 1000, shaft_power_W: 900 + index * 10, shaft_torque_Nm: 9 + index,
+    efficiency_pct: partial ? null : 90 + index, efficiency_status: partial ? 'unavailable' : 'experimental', efficiency_status_reason: 'Recorded estimate.',
+    copper_loss_W: 50, copper_active_loss_W: 30, copper_end_winding_loss_W: 20, iron_loss_W: partial ? null : 40,
+    iron_loss_status: partial ? 'unavailable' : 'experimental', iron_loss_status_reason: 'Recorded iron loss.', mechanical_loss_W: 10, total_loss_W: partial ? 60 : 100 };
+  return { result: {
+    summary: { avg_torque_Nm: 10 + index, torque_ripple_pct: 5, back_emf_fundamental_V: 20 + index,
+      peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1, cogging: { peak_to_peak_Nm: 0.004 }, loss_breakdown: loss },
+    solve_metadata: { solver_name: 'magneto2d-test', mesh_source: 'native', mesher: 'gmsh', mesh_density: 'normal',
+      time_breakdown: index === 5 ? null : { schema_version: 'coilem.solve_time_breakdown.v1', elapsed_s: 10 + index * 5,
+        elapsed_steps: ['meshing', 'field_solve', 'packaging'].map(key => ({ key, seconds: 1 + index })), steps: [],
+        counts: { meshes_built: 4 + index, meshes_rotated: index, solves: 12 + index, field_frames: 0 } } },
+    torque_waveform: { electrical_angle_deg: [0, 90, 180, 270], torque_Nm: [10 + index, 12 + index, 10 + index, 8 + index] },
+    back_emf_waveform: { electrical_angle_deg: [0, 90, 180, 270], phase_a_V: [0, 20, 0, -20], phase_b_V: [10, 0, -10, 0], phase_c_V: [-10, -20, 10, 20] },
+    cogging_torque_waveform: { electrical_angle_deg: [0, 15, 30, 45], torque_Nm: [0, 0.002, 0, -0.002] },
+  }, ...(index === 5 ? {} : { inputs: { config: { rotor: { magnet_thickness_mm: 4 + index / 10 },
+    solve_params: { current_amplitude_A: 20 + index, current_amplitude_convention: 'rms' } },
+    run_setup: { id: `setup-${index}`, name: `Setup ${index}`, version: 1 } } }) };
+}
+async function multiRunPage(page: Page) {
+  const records = Array.from({ length: 8 }, (_, index) => ({ project_slug: 'multi', run_id: `r${index}`, project_name: 'Comparison motor',
+    status: 'complete', solver_name: 'magneto2d-test', completed_at: `2026-11-14T12:0${index}:00Z`, run_setup: { name: `Setup ${index}`, id: `setup-${index}`, version: 1 } }));
+  const storage = { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true };
+  await page.route('**/runs', route => route.fulfill({ json: { runs: records, storage } }));
+  await page.route('**/runs/*/*/comparison', route => route.fulfill({ json: multiRunFixture(Number(new URL(route.request().url()).pathname.split('/').at(-2)!.slice(1))) }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  return { dialog: page.getByRole('dialog', { name: 'Previous runs', exact: true }), records, storage };
+}
+
+test('Multi-run Compare: six runs retain identities and every table follows the pinned baseline', async ({ page }, info) => {
+  const errors: string[] = [], solves: string[] = [], comparisons: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (/\/(solve|solve\/stream|performance\/map\/stream)$/.test(path)) solves.push(path);
+    if (path.endsWith('/comparison')) comparisons.push(path);
+  });
+  const { dialog } = await multiRunPage(page);
+  const metrics = dialog.getByRole('region', { name: 'Run comparison metric differences', exact: true });
+  await expect(metrics.getByRole('columnheader')).toHaveCount(5);
+  for (let index = 0; index < 4; index++) {
+    await dialog.getByRole('button', { name: '+ Add run', exact: true }).click();
+    await expect(dialog.getByRole('combobox')).toHaveCount(3 + index);
+  }
+  await expect(dialog.getByRole('button', { name: '+ Add run', exact: true })).toBeDisabled();
+  await expect(metrics.getByRole('columnheader')).toHaveCount(7);
+  await expect(dialog.getByRole('combobox', { name: 'Run A · baseline', exact: true })).toHaveValue('multi/r0');
+  await expect(dialog.getByRole('combobox', { name: 'Run F · candidate', exact: true }).locator('option[value="multi/r0"]')).toHaveAttribute('disabled', '');
+  const torque = dialog.getByRole('img', { name: 'Torque comparison waveform', exact: true });
+  await expect(torque.locator('path[stroke]')).toHaveCount(6);
+  await dialog.getByRole('button', { name: 'Pin Run C as baseline', exact: true }).click();
+  await expect(dialog.getByRole('combobox', { name: 'Run C · baseline', exact: true })).toHaveValue('multi/r2');
+  await expect(dialog.getByRole('button', { name: 'Remove Run C from comparison', exact: true })).toBeDisabled();
+  await expect(metrics.getByRole('columnheader')).toHaveText(['Metric', 'Run C · baseline', 'Run A · candidate', 'Run B · candidate', 'Run D · candidate', 'Run E · candidate', 'Run F · candidate']);
+  await expect(metrics.getByRole('rowheader', { name: 'Average torque', exact: true }).locator('..').locator('td[data-run-column="run-a"] .public-run-compare-cell-delta')).toContainText('-16.7%');
+  await expect(torque.locator('path[stroke="#c4b5fd"]')).toHaveAttribute('stroke-dasharray', '2 4');
+  const inputs = dialog.getByRole('region', { name: 'What changed between runs', exact: true });
+  await expect(inputs.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['4.2 mm', '4 mm', '4.1 mm', '4.3 mm', '4.4 mm', 'Not recorded']);
+  const losses = dialog.getByRole('region', { name: 'Losses and efficiency comparison', exact: true });
+  await expect(losses.getByRole('rowheader', { name: 'Shaft power', exact: true }).locator('..').locator('td[data-run-column="run-d"] .public-run-compare-cell-delta')).toHaveText('Δ — · —');
+  await expect(losses.getByRole('rowheader', { name: 'Known loss subtotal', exact: true }).locator('..').locator('.public-run-compare-loss-value')).toHaveText(['Not applicable', 'Not applicable', 'Not applicable', '60.0 W', 'Not recorded', 'Not applicable']);
+  const timing = dialog.getByRole('region', { name: 'Solve time breakdown comparison', exact: true });
+  await expect(timing.getByRole('rowheader', { name: 'Total elapsed', exact: true }).locator('..').locator('td[data-run-column="run-a"]')).toContainText('−10.0 s');
+  await expect(timing).toContainText('Run F: stage timings were not recorded.');
+  await torque.click({ position: { x: 250, y: 110 } });
+  await expect(dialog.locator('.public-waveform-readout-difference')).toHaveCount(5);
+  await expect(dialog.locator('.public-waveform-readout-difference').first()).toContainText('Run A − Run C');
+  const legend = dialog.locator('[aria-label="Torque comparison series"]');
+  for (const button of await legend.getByRole('button').all()) await button.click();
+  await expect(dialog.getByRole('status').filter({ hasText: 'All curves are hidden.' })).toBeVisible();
+  await legend.getByRole('button', { name: /^Run C ·/ }).click();
+  await expect(torque.locator('path[stroke]')).toHaveCount(1);
+  await dialog.getByRole('tab', { name: 'Back EMF overlay', exact: true }).click();
+  await expect(dialog.getByRole('img', { name: 'Three-phase back EMF comparison waveform', exact: true }).locator('path[stroke]')).toHaveCount(18);
+  await dialog.getByRole('tab', { name: 'Cogging overlay', exact: true }).click();
+  await expect(dialog.getByRole('img', { name: 'Cogging torque comparison waveform', exact: true }).locator('path[stroke]')).toHaveCount(6);
+  await metrics.screenshot({ path: info.outputPath('six-run-results.png') });
+  await page.setViewportSize({ width: 600, height: 950 });
+  expect(await metrics.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+  await metrics.screenshot({ path: info.outputPath('six-run-results-narrow.png') });
+  await dialog.getByRole('button', { name: 'Remove Run A from comparison', exact: true }).click();
+  await expect(dialog.getByRole('combobox')).toHaveCount(5);
+  await expect(dialog.getByRole('combobox', { name: 'Run C · baseline', exact: true })).toHaveValue('multi/r2');
+  expect(errors).toEqual([]); expect(solves).toEqual([]);
+  expect(comparisons).toHaveLength(6);
+  expect(new Set(comparisons).size).toBe(6);
+});
+
+test('Multi-run Compare: failed and stale loads recover without replacing the pinned run', async ({ page }) => {
+  const { dialog, records, storage } = await multiRunPage(page);
+  let fail = true;
+  let release: () => void = () => {};
+  const held = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/runs/multi/r2/comparison', route => fail ? route.fulfill({ status: 500, json: { detail: 'Recorded run is unavailable.' } }) : route.fulfill({ json: multiRunFixture(2) }));
+  await page.route('**/runs/multi/r6/comparison', async route => { await held; await route.fulfill({ json: multiRunFixture(6) }); });
+  const metrics = dialog.getByRole('region', { name: 'Run comparison metric differences', exact: true });
+  await expect(metrics).toBeVisible();
+  await dialog.getByRole('button', { name: '+ Add run', exact: true }).click();
+  await expect(dialog.getByRole('alert')).toContainText('Run C');
+  await expect(dialog.getByRole('combobox', { name: 'Run A · baseline', exact: true })).toHaveValue('multi/r0');
+  fail = false;
+  await dialog.getByRole('button', { name: 'Retry Run C', exact: true }).click();
+  await expect(metrics.getByRole('columnheader')).toHaveCount(4);
+  await dialog.getByRole('combobox', { name: 'Run C · candidate', exact: true }).selectOption('multi/r6');
+  await expect(dialog.getByRole('status').filter({ hasText: 'Preparing comparison' })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Remove Run C from comparison', exact: true }).click();
+  await expect(metrics.getByRole('columnheader')).toHaveCount(5);
+  release();
+  await expect(dialog.getByRole('combobox')).toHaveCount(2);
+  await dialog.getByRole('button', { name: 'Pin Run B as baseline', exact: true }).click();
+  await expect(metrics.getByRole('columnheader')).toHaveText(['Metric', 'Run B · baseline', 'Run A · candidate', 'Δ (A − B)', 'Δ vs B (%)']);
+  await page.route('**/runs/multi/r1', route => { records.splice(records.findIndex(record => record.run_id === 'r1'), 1); return route.fulfill({ json: { storage } }); });
+  await dialog.getByText('Manage stored runs', { exact: false }).click();
+  const stored = dialog.locator('[data-run-id="r1"]');
+  await stored.getByRole('button', { name: 'Delete run', exact: true }).click();
+  await stored.getByRole('button', { name: 'Delete permanently', exact: true }).click();
+  await expect(dialog.getByRole('combobox', { name: 'Run B · baseline', exact: true })).toHaveValue('');
+  await expect(dialog.getByRole('combobox', { name: 'Run A · candidate', exact: true })).toHaveValue('multi/r0');
+});

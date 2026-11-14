@@ -86,6 +86,41 @@ function format(value: unknown, path: string, unit: string): string {
   return JSON.stringify(value);
 }
 
+/** Resolve a union-table cell from that run alone, including its own current convention. */
+export function recordedInputValue(inputs: ComparisonInputs | null | undefined, path: string): string {
+  let value: unknown = inputs ?? undefined;
+  let parentPath = '';
+  for (const key of path.split('.')) {
+    if (Array.isArray(value)) value = Number(key) <= value.length ? value[Number(key) - 1] : ABSENT;
+    else if (record(value) && key in value) value = value[key];
+    else value = value === undefined || (record(value) && !NAMED_MAPS.has(parentPath) && !NAMED_MAPS.has(`${parentPath}.${key}`)) ? undefined : ABSENT;
+    parentPath = parentPath ? `${parentPath}.${key}` : key;
+    if (['config', 'run_setup'].includes(parentPath) && value === null) value = undefined;
+  }
+  let { unit } = describe(path);
+  if (path === 'config.solve_params.current_amplitude_A') {
+    const params = inputs?.config?.solve_params;
+    const convention = record(params) ? params.current_amplitude_convention : undefined;
+    unit = convention === 'rms' ? 'A rms' : convention === 'peak' ? 'A peak' : convention === 'plateau' ? 'A plateau' : unit;
+  }
+  return format(value, path, unit);
+}
+
+export function multipleInputChanges(inputs: Array<ComparisonInputs | null | undefined>) {
+  const rows = new Map<string, InputChange>();
+  const knownChanged = new Set<string>();
+  for (const candidate of inputs.slice(1)) {
+    for (const row of inputChanges(inputs[0], candidate)) {
+      rows.set(row.path, row);
+      if (!row.missing) knownChanged.add(row.path);
+    }
+  }
+  return [...rows.values()].map(row => {
+    const values = inputs.map(input => recordedInputValue(input, row.path));
+    return { ...row, values, missing: values.includes('Not recorded'), knownChanged: knownChanged.has(row.path) };
+  });
+}
+
 export function inputChanges(before?: ComparisonInputs | null, after?: ComparisonInputs | null): InputChange[] {
   const changes: InputChange[] = [];
   function add(left: unknown, right: unknown, path: string) {
