@@ -37,13 +37,9 @@
 .public-parameter-panel.is-building [data-entry-complete="false"] .public-derived-row,
 .public-parameter-panel.is-building [data-entry-complete="false"] .public-stator-derived-measures,
 .public-parameter-panel.is-building [data-entry-complete="false"] .fable-derived,
-.public-parameter-panel.is-building [data-entry-complete="false"] .public-airgap-advisory,
 .public-parameter-panel.is-building [data-entry-complete="false"] .public-winding-note { display: none; }
 .public-param-row input::placeholder { color: var(--text-disabled); font: 10px var(--font-mono); }
 .public-airgap-row.has-warning strong { color: #fbbf24; }
-.public-airgap-advisory { margin: 2px 0 10px; padding: 9px 10px; border: 1px solid rgba(245, 158, 11, .35); border-left: 3px solid #f59e0b; border-radius: 6px; background: rgba(245, 158, 11, .07); color: #e6cba7; font-size: 11px; line-height: 1.5; }
-.public-airgap-advisory > strong { display: flex; align-items: center; gap: 7px; color: #fcd98a; font-size: 11px; }
-.public-airgap-advisory p { margin: 6px 0 0; }
 .public-parameter-panel .panel-next-feedback.is-progress { color: var(--text-tertiary); line-height: 1.45; }
 
 
@@ -1026,6 +1022,8 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-param-row .public-param-choices button[aria-pressed="true"] { background: rgba(251, 191, 36, 0.14); color: #fbbf24; box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.45); }
 .public-param-row .public-param-choices button:disabled { opacity: 0.4; cursor: not-allowed; }
 .public-param-row .public-param-choices button:focus-visible { outline: 2px solid rgba(251, 191, 36, 0.7); outline-offset: 1px; }
+/* Focus on an unchosen option must not read as the amber selection. */
+.public-param-row .public-param-choices button:not([aria-pressed="true"]):focus-visible { outline: 1px dashed var(--text-secondary); outline-offset: 1px; }
 .public-param-row.public-nonlinear-choice { padding-top: 18px; }
 .public-nonlinear-choice > .param-label { white-space: nowrap; }
 .public-nonlinear-choice .public-param-choices button { height: 27px; font-size: 12px; }

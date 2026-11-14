@@ -4,7 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 const { parseDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
-const { buildIssues, enteredRotorRegions, withEnteredRotor, signedBuildAirgap, designSectionOrder, designPartsOrder, fitUnbuiltParts, newBuildConfig } = await importTypeScriptModule(new URL('../src/public/progressiveDesign.ts', import.meta.url));
+const { buildIssues, enteredRotorRegions, withEnteredRotor, signedBuildAirgap, designSectionOrder, designPartsOrder, fitUnbuiltParts, newBuildConfig, windingFits, fittingSlotCounts } = await importTypeScriptModule(new URL('../src/public/progressiveDesign.ts', import.meta.url));
 const { buildDimensionAnnotations, designFieldDimension } = await importTypeScriptModule(new URL('../src/public/dimensionAnnotations.ts', import.meta.url));
 
 const all = { stator: true, slots: true, teeth: true, rotor: true, magnets: true, winding: true };
@@ -20,7 +20,7 @@ assert.equal(statorIssue?.section, 'stator', 'an overlapping outrunner names the
 for (const text of ['The stator overlaps the rotor', "magnets' inner face is 94.6 mm across (Magnet Seat 102.6 mm minus two 4 mm magnets)", 'at most 92.6 mm (now 119.4 mm)']) {
   assert.ok(statorIssue.message.includes(text), `${text} in: ${statorIssue.message}`);
 }
-assert.equal(buildIssues(outer, { ...all, stator: false }).filter((issue) => issue.section === 'stator').length, 0, 'an unentered stator is not blamed');
+assert.equal(buildIssues(outer, { ...all, stator: false }).filter((issue) => issue.label === 'Outer Diameter').length, 0, 'an unentered stator is not blamed for the overlap');
 const statorAt = (od) => buildIssues({ ...outer, stator: { ...outer.stator, OD_mm: od } }, all).find((issue) => issue.label === 'Outer Diameter')?.message;
 assert.match(statorAt(94.5), /^Only 0\.05 mm of air gap remains\. .*at most 92\.6 mm \(now 94\.5 mm\)\.$/);
 assert.match(statorAt(100), /^The stator reaches 2\.70 mm into the magnets\. /);
@@ -83,4 +83,24 @@ assert.equal(seated.stator.OD_mm, fitted.stator.OD_mm, 'an entered stator OD is 
 assert.equal(seated.rotor.ID_mm, 120, 'an entered Magnet Seat is kept');
 const inrunner = fitUnbuiltParts(newBuildConfig('inner'), { stator: true }, { 'stator:Outer Diameter': true });
 assert.equal(inrunner.stator.OD_mm, 100, 'an inrunner still fits its rotor to the stator');
+// A slot and pole count without a balanced three-phase winding is named where the second count is
+// entered, with counts that work, and an outrunner is still drawn with tooth coils.
+assert.equal(windingFits(42, 24), false);
+assert.equal(windingFits(15, 24), false);
+assert.equal(windingFits(36, 24), true);
+assert.equal(windingFits(45, 24), true);
+assert.deepEqual(fittingSlotCounts(24).slice(0, 5), [9, 18, 27, 36, 45]);
+const unwound = structuredClone(outer);
+Object.assign(unwound.stator, { OD_mm: 92, slot_count: 42 });
+const slotIssue = buildIssues(unwound, all).find((issue) => issue.label === 'Slot Count');
+assert.equal(slotIssue?.section, 'stator');
+assert.equal(slotIssue.message, "42 slots can't carry a balanced three-phase winding with 24 poles. With 24 poles, try 27, 36, 45 or 54 slots.");
+assert.equal(buildIssues({ ...unwound, stator: { ...unwound.stator, slot_count: 45 } }, all).some((issue) => issue.label === 'Slot Count'), false);
+const innerUnwound = cloneDefaultConfig();
+Object.assign(innerUnwound.stator, { slot_count: 42 }); innerUnwound.rotor.pole_count = 24;
+assert.match(buildIssues(innerUnwound, all).find((issue) => issue.label === 'Pole Count')?.message ?? '',
+  /^24 poles can't carry a balanced three-phase winding with 42 slots\. With 42 slots, try \d+(, \d+)* or \d+ poles\.$/);
+const drawnWinding = fitUnbuiltParts(unwound, { stator: true, slots: true, rotor: true, magnets: true });
+assert.deepEqual([drawnWinding.winding.type, drawnWinding.winding.layers], ['concentrated', 2], 'an outrunner placeholder winding is one it can draw');
+assert.equal(fitUnbuiltParts(innerUnwound, { stator: true, slots: true, rotor: true, magnets: true }).winding.type, 'distributed', 'an inrunner keeps its distributed placeholder');
 console.log('Outrunner design guides: specific overlap messages, Magnet Seat guide and the entered rotor drawing passed.');

@@ -6555,8 +6555,8 @@
     },
     {
       "path": "frontend/scripts/test-outrunner-design-guides.mjs",
-      "bytes": 7633,
-      "sha256": "c7b426cc7d18ff609a74dd8167d5f79df7c1e2386885a949cfa4fc83bb1c9691"
+      "bytes": 9444,
+      "sha256": "a8604a869f5ee01428fa164dbc5af40a5bd691b02e5e0edeea48c9d797787437"
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 297011,
-      "sha256": "b1eed6a5d52e100d835d5e39558e03b4a3d1cc33a8f3cbcd517d428ef9d76e2d"
+      "bytes": 298045,
+      "sha256": "8a51947844a9d84502812764f5380fe4719e9237e6ff2ea163383136d94fb777"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 325786,
-      "sha256": "66fbf1c8980a22f930e97d60231a2a01d96fc0e579667a0587b295d3614cd8e8"
+      "bytes": 325510,
+      "sha256": "dc0a8a99043ca27bb0d7fe746641bae157e4f611a70e359ea401b5bd0bcdf153"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -17715,8 +17715,8 @@
     },
     {
       "path": "frontend/src/public/progressiveDesign.ts",
-      "bytes": 22408,
-      "sha256": "781ddb04649f2471cc42e8b9742e9aa615556c60193e8eeb859c5f31ed1149ff"
+      "bytes": 24804,
+      "sha256": "b759be123634ea266b8c866c1e1ad1aaa3e2fb7c6b38a70ef7bdc777ec4b299e"
     },
     {
       "path": "frontend/src/public/ringShape.ts",
@@ -17775,8 +17775,8 @@
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 93471,
-      "sha256": "8e8ddfbd48b22bcd203f1f2d8f5853ba3766f49d698ba9760a33612682828ad5"
+      "bytes": 97165,
+      "sha256": "3152a16aee58d2e788a91091ad74d293f6c5fea23ac7bc05d3df50b6d702338c"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",

@@ -1435,13 +1435,17 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
   const sectionOrder = designSectionOrder(config.rotor_layout);
   const nextSection = (section: 'stator' | 'advanced' | 'rotor') => sectionOrder[sectionOrder.indexOf(section) + 1];
   const outerStatorMaxMm = outer ? (config.rotor.ID_mm ?? 0) - 2 * config.rotor.magnet_thickness_mm - 2 : 0;
+  const toothProfileChosen = !entry || hasEntry(entry, 'advanced', 'Tooth Profile');
+  const toothFieldsDisabled = disabled || !toothProfileChosen;
   const advancedGeometrySection = (
     matchesSearch('advanced') && <ParameterSectionBlock id="advanced" attention={errorSection === 'advanced'} label="Tooth & Slot Geometry" active={Boolean(normalizedSearch) || activeSection === 'advanced'} onToggle={toggle} summary={advancedGeometrySummary(config, statorWidths)} nextLabel={normalizedSearch ? undefined : SECTION_TITLES[nextSection('advanced')]} onNext={normalizedSearch ? undefined : setNext(nextSection('advanced'))}>
         <ChoiceRow label="Tooth Profile" value={config.stator.tooth_shoe_enabled ? 'shoed' : 'plain'} choices={[{ value: 'plain', label: 'Plain' }, { value: 'shoed', label: 'Tooth shoes' }]} disabled={disabled} onChange={(profile) => set('stator', 'tooth_shoe_enabled', 'advanced')(profile === 'shoed')} />
+        {/* A new design picks its tooth profile first: the dimensions below stay visible but wait for it. */}
+        {!toothProfileChosen && <div className="public-entry-guidance">Choose Plain or Tooth shoes to continue.</div>}
         {outer
-          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={disabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
-          : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={Number(maximumBoreToothWidthMm.toFixed(1))} step={0.1} disabled={disabled} onChange={setBoreToothWidth} />}
-        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={disabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
+          ? <NumberRow label="Slot Opening" value={shownWidthMm(config.stator.slot_opening_mm)} unit="mm" hint={config.stator.tooth_shoe_enabled ? 'Tooth-body opening at the stator OD; the shoes narrow the physical mouth by two overhangs.' : 'Slot mouth at the stator OD, facing the rotor.'} min={0.5} step={0.1} disabled={toothFieldsDisabled} onChange={set('stator', 'slot_opening_mm', 'advanced')} />
+          : <NumberRow label="Bore Tooth Width" value={Number(statorWidths.boreToothWidthMm.toFixed(1))} unit="mm" hint="Tangential tooth width at the stator bore. Bore slot opening is calculated from the remaining pitch." min={minimumBoreToothWidthMm} max={Number(maximumBoreToothWidthMm.toFixed(1))} step={0.1} disabled={toothFieldsDisabled} onChange={setBoreToothWidth} />}
+        <NumberRow label="Yoke Tooth Width" value={shownWidthMm(config.stator.tooth_width_mm)} unit="mm" hint="Tangential tooth-body width where the slot terminates beside the yoke." min={outer ? 0.5 : 2} step={0.1} disabled={toothFieldsDisabled} onChange={set('stator', 'tooth_width_mm', 'advanced')} />
         {config.stator.tooth_shoe_enabled && <>
           <NumberRow
             label="Shoe Height"
@@ -1451,7 +1455,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             min={0.5}
             max={10}
             step={0.1}
-            disabled={disabled}
+            disabled={toothFieldsDisabled}
             onChange={(value) => set('stator', 'tooth_shoe_height_mm', 'advanced')(Math.min(10, Math.max(0.5, value)))}
           />
           <NumberRow
@@ -1464,7 +1468,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             max={maximumToothShoeOverhangMm}
             clampToBounds
             step={0.1}
-            disabled={disabled}
+            disabled={toothFieldsDisabled}
             onChange={(value) => set('stator', 'tooth_shoe_overhang_mm', 'advanced')(
               Math.min(maximumToothShoeOverhangMm, Math.max(0, value)),
             )}
@@ -1484,21 +1488,17 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             <strong>{statorWidths.slotWidthAtYokeMm.toFixed(1)}</strong>
           </div>
         </div>
-      </ParameterSectionBlock>
+    </ParameterSectionBlock>
   );
 
   // The air gap reads out in the section entered second: an inrunner's rotor, an outrunner's stator.
+  // Advice about its size is in Design Health, with the other checks.
   const airgapReadout = (
     <>
       <div className={`param-row public-param-row public-derived-row public-airgap-row${largeAirgapNotice || rotorOverlapMm > 0 ? ' has-warning' : ''}`}>
         <span className="param-label">Air Gap<small>mm</small></span>
-        <strong aria-describedby={largeAirgapNotice ? 'design-airgap-advisory' : undefined}>{rotorOverlapMm > 0 ? `${rotorOverlapMm.toFixed(2)} overlap` : airgap.toFixed(2)}</strong>
+        <strong>{rotorOverlapMm > 0 ? `${rotorOverlapMm.toFixed(2)} overlap` : airgap.toFixed(2)}</strong>
       </div>
-      {largeAirgapNotice && <div className="public-airgap-advisory" id="design-airgap-advisory" role="status">
-        <strong><StatusGlyph tone="warning" />{largeAirgapNotice.title}</strong>
-        <p>{largeAirgapNotice.copy}</p>
-        <p>{outer ? 'Review the magnet-seat diameter, stator OD and magnet thickness.' : config.topology === 'SPM' ? 'Review Rotor OD, bore diameter and magnet thickness.' : 'Review Rotor OD and bore diameter.'} This is an advisory, not a maximum-airgap limit.</p>
-      </div>}
     </>
   );
   const boreRow = (
@@ -2996,21 +2996,27 @@ function HealthPanel({
       const copy = designErrorText({ error_code: String(issue.error_code ?? 'INVALID_GEOMETRY'), message: String(issue.message ?? 'Review the geometry.'), field: typeof issue.field === 'string' ? issue.field : null, suggestion: typeof issue.suggestion === 'string' ? issue.suggestion : null }, config);
       const control = enteredGeometryError(typeof issue.field === 'string' ? issue.field : null, copy);
       return { severity: 'error' as const, title: /winding|coil|phase|parallel|turns/i.test(`${issue.field ?? ''} ${copy}`) ? 'Winding needs attention' : control ? `${control.label} needs attention` : 'Geometry needs attention', copy };
-    }).filter((issue) => issue.copy !== error) ?? [] : []),
+    // A winding the user has not chosen yet is only the drawing's placeholder; the slot or
+    // pole count check names the actual problem.
+    }).filter((issue) => issue.copy !== error && !(entry && !hasEntry(entry, 'winding', 'Type') && issue.title === 'Winding needs attention')) ?? [] : []),
     ...[...new Set(geometryWarnings)].map((copy) => ({ severity: 'warning' as const,
       title: /mesh-sensitive/i.test(copy) ? 'Mesh convergence needs review' : /tooth-shoe shoulder/i.test(copy) ? 'Tooth-shoe shoulder needs review' : /bore tooth/i.test(copy) ? 'Bore tooth needs review' : 'Geometry needs review', copy: humanizeGeometryMessage(copy) })),
   ];
   const hasCurrentErrors = currentIssues.some((issue) => issue.severity === 'error');
-  const currentTone = hasCurrentErrors ? 'error' : currentIssues.length ? 'warning' : 'updating';
+  // While a design is being built, its air gap is advised on once both sides of it are drawn.
+  const draftAirgap = newDesignParts?.stator && newDesignParts.magnets ? publicAirgapHealth(magneticAirgapMm(config), config.rotor_layout) : null;
+  const draftIssues: DesignHealthIssue[] = [...currentIssues, ...(draftAirgap?.severity === 'warning' ? [{ ...draftAirgap,
+    copy: `${draftAirgap.copy} Review the ${config.rotor_layout === 'outer' ? 'stator OD, Magnet Seat' : config.topology === 'SPM' ? 'Rotor OD, bore diameter' : 'Rotor OD and bore diameter'}${config.topology === 'SPM' ? ' and magnet thickness' : ''}. This is advice, not a limit.` }] : [])];
+  const draftTone = hasCurrentErrors ? 'error' : draftIssues.length ? 'warning' : 'updating';
   if (newDesignParts && (!designPartsComplete(newDesignParts) || entry && !['stator', 'advanced', 'rotor', 'winding', 'materials'].every((section) => entrySectionComplete(entry, section)))) {
-    if (collapsed) return collapsedStrip(currentTone, currentIssues.length ? '!' : '○', currentIssues.length ? 'Need attention' : 'Design in progress');
-    return <aside className={`design-health-panel tone-${currentTone}`}>
+    if (collapsed) return collapsedStrip(draftTone, draftIssues.length ? '!' : '○', draftIssues.length ? 'Need attention' : 'Design in progress');
+    return <aside className={`design-health-panel tone-${draftTone}`}>
       <div className="design-health-header"><div><div className="design-health-eyebrow">Design Health</div><div className="design-health-caption">The cross-section follows the parts you define.</div></div>{collapseButton}</div>
-      <div className={`public-health-status-card ${currentTone}`} role="status">
-        <div className="public-health-status-icon" aria-hidden="true">{currentIssues.length ? '!' : '○'}</div>
-        <div><div className={`design-health-score-label tone-${currentTone}`}>{currentIssues.length ? 'Need attention' : 'Design in progress'}</div><p>{DESIGN_PARTS.filter(({ id }) => newDesignParts[id]).length} of 6 parts {geometry?.metadata?.diagnostic_rotor ? 'configured' : 'drawn'}</p></div>
+      <div className={`public-health-status-card ${draftTone}`} role="status">
+        <div className="public-health-status-icon" aria-hidden="true">{draftIssues.length ? '!' : '○'}</div>
+        <div><div className={`design-health-score-label tone-${draftTone}`}>{draftIssues.length ? 'Need attention' : 'Design in progress'}</div><p>{DESIGN_PARTS.filter(({ id }) => newDesignParts[id]).length} of 6 parts {geometry?.metadata?.diagnostic_rotor ? 'configured' : 'drawn'}</p></div>
       </div>
-      <HealthAttention issues={currentIssues} />
+      <HealthAttention issues={draftIssues} />
       <div className="design-health-issue-list">{designPartsOrder(config.rotor_layout).map(({ id, label }) => <div className={`design-health-issue severity-${newDesignParts[id] ? 'positive' : 'info'}`} key={id}>
         <span className="design-health-issue-icon"><StatusGlyph tone={newDesignParts[id] ? 'good' : 'info'} /></span>
         <span className="design-health-issue-body"><span className="design-health-issue-title">{label}</span><span className="design-health-issue-copy">{id === 'magnets' && geometry?.metadata?.diagnostic_rotor && newDesignParts.rotor
@@ -5034,6 +5040,8 @@ export function CoilEmWorkspace(props: CoilEmWorkspaceProps) {
     if (!hasEntry(entry, issue.section ?? '', issue.label)) return false;
     if (issue.section === 'stator' && issue.label === 'Yoke Thickness') return hasEntry(entry, 'stator', props.config.rotor_layout === 'outer' ? 'Hub Bore (ID)' : 'Bore Diameter (ID)');
     if (issue.label === 'Magnet Thick.') return Boolean(drawnParts?.magnets);
+    // A slot and pole count is judged once both counts are entered, not against a placeholder.
+    if (/balanced three-phase winding/.test(issue.message)) return hasEntry(entry, 'stator', 'Slot Count') && hasEntry(entry, 'rotor', 'Pole Count');
     return true;
   }) : [];
   const backendFieldIssue = props.error ? enteredGeometryError(props.errorDetails?.field, props.error) : null;

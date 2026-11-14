@@ -148,7 +148,9 @@ export function fitUnbuiltParts(config: MotorConfig, built: BuiltParts, fields?:
       (n === 1 || concentratedUsesToothCoils(s.slot_count, r.pole_count))
       && concentratedLayoutIsBalanced(s.slot_count, r.pole_count, n)
     ));
-    next.winding.type = layers ? 'concentrated' : 'distributed';
+    // An outrunner cannot draw a radially stacked two-layer distributed winding, so a slot and
+    // pole count without a balanced layout is still drawn, with tooth coils on every tooth.
+    next.winding.type = layers || outer ? 'concentrated' : 'distributed';
     next.winding.layers = layers ?? 2;
     next.winding.coil_span = null;
   }
@@ -173,6 +175,27 @@ export function outerStatorFit(config: MotorConfig): string {
   const seat = config.rotor.ID_mm ?? 0;
   const face = seat - 2 * config.rotor.magnet_thickness_mm;
   return `The magnets' inner face is ${mm(face)} across (Magnet Seat ${mm(seat)} minus two ${mm(config.rotor.magnet_thickness_mm)} magnets), so with a 1 mm air gap the stator's Outer Diameter can be at most ${mm(face - 2)} (now ${mm(config.stator.OD_mm)}).`;
+}
+
+const validWindingCount = (slots: number) => Number.isInteger(slots) && slots >= 6 && slots <= 96 && slots % 3 === 0;
+/** Whether a slot and pole count can carry a balanced three-phase winding: tooth coils on
+ * alternate or every tooth, or a distributed winding with a slot per pole per phase or more. */
+export function windingFits(slots: number, poles: number): boolean {
+  return [1, 2].some((layers) => concentratedLayoutIsBalanced(slots, poles, layers)) || (slots % 3 === 0 && slots >= 3 * poles);
+}
+const balancedToothCoils = (slots: number, poles: number) => [1, 2].some((layers) => concentratedLayoutIsBalanced(slots, poles, layers));
+export function fittingSlotCounts(poles: number): number[] {
+  const counts = Array.from({ length: 31 }, (_, i) => 6 + 3 * i);
+  const toothCoil = counts.filter((slots) => balancedToothCoils(slots, poles));
+  return toothCoil.length ? toothCoil : counts.filter((slots) => windingFits(slots, poles));
+}
+export function fittingPoleCounts(slots: number): number[] {
+  return Array.from({ length: 32 }, (_, i) => 2 + 2 * i).filter((poles) => windingFits(slots, poles));
+}
+/** The few counts nearest the entered one, in order. */
+function countList(counts: number[], near: number): string {
+  const nearest = [...counts].sort((a, b) => Math.abs(a - near) - Math.abs(b - near) || a - b).slice(0, 4).sort((a, b) => a - b);
+  return nearest.length > 1 ? `${nearest.slice(0, -1).join(', ')} or ${nearest[nearest.length - 1]}` : String(nearest[0] ?? '');
 }
 
 export function signedBuildAirgap(config: MotorConfig): number {
@@ -231,6 +254,11 @@ export function buildIssues(config: MotorConfig, built: BuiltParts): DesignIssue
       if (r.magnet_width_mm > pitch + 1e-9) add('rotor', 'Magnet Width', `The entered magnet width exceeds the ${pitch.toFixed(2)} mm pole pitch at this rotor size. Reduce magnet width or increase the rotor size to avoid overlapping magnets.`);
     }
     if (r.magnet_embrace <= 0 || r.magnet_embrace >= 1) add('rotor', 'Magnet Width', 'Magnet coverage must be greater than 0% and less than 100%.');
+  }
+  // The count entered second names counts that work: an outrunner's slots, an inrunner's poles.
+  if (built.slots && (built.rotor || built.magnets) && validWindingCount(s.slot_count) && !windingFits(s.slot_count, r.pole_count)) {
+    if (outer) add('stator', 'Slot Count', `${s.slot_count} slots can't carry a balanced three-phase winding with ${r.pole_count} poles. With ${r.pole_count} poles, try ${countList(fittingSlotCounts(r.pole_count), s.slot_count)} slots.`);
+    else add('rotor', 'Pole Count', `${r.pole_count} poles can't carry a balanced three-phase winding with ${s.slot_count} slots. With ${s.slot_count} slots, try ${countList(fittingPoleCounts(s.slot_count), r.pole_count)} poles.`);
   }
   if (built.winding) {
     if (!Number.isInteger(config.winding.turns_per_coil) || config.winding.turns_per_coil < 1) add('winding', 'Turns / Coil', 'Turns per coil must be a positive whole number.');
