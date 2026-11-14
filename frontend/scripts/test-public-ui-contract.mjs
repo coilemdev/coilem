@@ -1672,9 +1672,9 @@ assert.doesNotMatch(styleSource, /100vh - 78px\)\); min-height: 0; background: v
 assert.doesNotMatch(workspaceSource, /Loopback API · no account required/);
 assert.match(appSource, /issue\.suggestion/);
 assert.match(workspaceSource, /connectionStatus === 'checking'/);
-assert.match(appSource, /const \[showLanding, setShowLanding\] = useState\(true\)/);
+assert.match(appSource, /const \[showLanding, setShowLanding\] = useState\(!initialNewDesign\)/);
 assert.match(appSource, /<PublicLanding/);
-assert.match(appSource, /const \[blankDesign, setBlankDesign\] = useState\(false\)/);
+assert.match(appSource, /const \[blankDesign, setBlankDesign\] = useState\(initialNewDesign\)/);
 assert.match(appSource, /setDesignName\('New Design'\)/);
 assert.match(appSource, /setGeometry\(null\)/);
 assert.match(appSource, /workflowDisabled/);

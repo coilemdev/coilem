@@ -6,9 +6,9 @@ export async function chooseSetup(page: Page, layout = 'Inrunner') {
 }
 
 export async function newDesign(page: Page, layout = 'Inrunner', choose = true) {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
-  await page.getByRole('menuitem', { name: 'New Design', exact: true }).click();
+  // Open the existing blank workspace without mounting the animated landing
+  // scene on software-rendered CI. File-menu/landing entry is covered separately.
+  await page.goto('/?new=1');
   await expect(page.locator('.design-workspace')).toBeVisible();
   await expect(page.locator('.public-parameter-panel')).toBeVisible();
   await expect(page.locator('.design-health-panel')).toBeVisible();

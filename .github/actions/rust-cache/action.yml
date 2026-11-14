@@ -1,0 +1,30 @@
+name: Rust toolchain and build cache
+description: Cache Cargo downloads and builds for the exact compiler and lockfile.
+inputs:
+  cache-group:
+    description: Separate jobs that build different artifact sets so a debug-only cache cannot preempt a release cache.
+    default: release
+runs:
+  using: composite
+  steps:
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Fingerprint the compiler, including host and LLVM
+      id: compiler
+      shell: python
+      run: |
+        import hashlib
+        import os
+        import subprocess
+        compiler = subprocess.check_output(['rustc', '-vV'])
+        with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+            output.write('hash=' + hashlib.sha256(compiler).hexdigest() + '\n')
+    - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+      with:
+        path: |
+          ~/.cargo/registry/index
+          ~/.cargo/registry/cache
+          ~/.cargo/git/db
+          solvers/magneto2d/target
+        key: ${{ runner.os }}-${{ runner.arch }}-cargo-v2-${{ inputs.cache-group }}-${{ steps.compiler.outputs.hash }}-${{ hashFiles('solvers/magneto2d/Cargo.lock') }}-${{ hashFiles('solvers/magneto2d/Cargo.toml', 'solvers/magneto2d/src/**') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ runner.arch }}-cargo-v2-${{ inputs.cache-group }}-${{ steps.compiler.outputs.hash }}-${{ hashFiles('solvers/magneto2d/Cargo.lock') }}-

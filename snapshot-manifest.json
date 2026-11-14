@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 19568,
-      "sha256": "65765455df10bb2cf6f4a76d2f69e2bdeead99df2c992e396e1efa14086b39ec"
+      "bytes": 22583,
+      "sha256": "66ed6d7410558bdc348b84c76b30e009da74bb200c9e6ee53658962b95af886a"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 2699,
-      "sha256": "78a620504be92d87f966282d3d7a65461030f52f7ccf16f2430d342729cb7679"
+      "bytes": 2784,
+      "sha256": "f64f0451ff9fddfcb5f58d483deeab00e0dc8fd4500fb46278bc35018b138186"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -6585,8 +6585,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178150,
-      "sha256": "b42367b580c42396ebedfc9225af52500dfe9104c9af5a053f8213df85e12ee0"
+      "bytes": 178174,
+      "sha256": "699b580002f0b4705ab9d302cb33700121c4fbd60e380ef38e2080f29c8fc7a2"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7010,8 +7010,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 81685,
-      "sha256": "2c8cb1a6a4f2c1ae84df05ddcff0c1d9ab5da5869321ca2115847cae06a0e5c8"
+      "bytes": 81997,
+      "sha256": "1eef298b58db75f219f144e00111ccdd9710243cd0e2e0da43f962400f647d6f"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7430,8 +7430,8 @@
     },
     {
       "path": "frontend/src/public/main.tsx",
-      "bytes": 425,
-      "sha256": "f512ccf4db09afe8b87248f7d6c93482455db7de499e369e449e9a5998140984"
+      "bytes": 923,
+      "sha256": "63a3551ff1f2e58efc3978eefc0e327566204ce43f1dfa1a9e3329ea1ea882e1"
     },
     {
       "path": "frontend/src/public/mapJob.ts",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 99455,
-      "sha256": "b21da55a01ea2ad0e4a4237fd4074653a66caf0e28c313de149701156bb21f29"
+      "bytes": 99926,
+      "sha256": "4350ea7e3ab259ef61880f4f801ddd3b13fc6eb33e33483aa3e70ed27e09dec2"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7615,8 +7615,8 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 1848,
-      "sha256": "720f4373cd8a05bd7872c254d71729366281395f00c29af0d79fe9b02cbfc26b"
+      "bytes": 1876,
+      "sha256": "a8eacb9223c92d048ad9ed4384c64275d96a3a57cfb862ef8fbc24ce7782bf59"
     },
     {
       "path": "references/benchmark_configs/validation_ipm_10p_v_shape_medium.openem",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_public_security.py",
-      "bytes": 4365,
-      "sha256": "01234a2230e350633aba3b841f2e965c3085ea052e4b706c51056925292e962b"
+      "bytes": 4692,
+      "sha256": "db408176168207f33c0996c01f99b0015afb6121b77091b8f5ef249df2665666"
     },
     {
       "path": "tests/test_public_solver_environment.py",
@@ -8325,8 +8325,8 @@
     },
     {
       "path": "tests/test_reference_recovery.py",
-      "bytes": 15399,
-      "sha256": "36e213543a0705d97239aa57c5ea8f2e601048e2cda73a2aea80f7991a34b32a"
+      "bytes": 15497,
+      "sha256": "a959854007718e91fc723323ad195a605b1eeb68b579bf0b1ae40f954f764fbf"
     },
     {
       "path": "tests/test_reference_runner.py",
@@ -8340,8 +8340,8 @@
     },
     {
       "path": "tests/test_release_tools.py",
-      "bytes": 33856,
-      "sha256": "38eb895b8cb1e2d88f03370d94fdddcac0c8a8ce723b11f1d9d749c8b8df91dc"
+      "bytes": 33983,
+      "sha256": "8f1ab07363e349c667c4c0cc59fe2e8516c8e82e5d0cc67a7c7fc96a9c432e18"
     },
     {
       "path": "tests/test_shoed_benchmark_case.py",
@@ -17766,12 +17766,12 @@
     {
       "path": "frontend/tests/design-helpers.ts",
       "bytes": 5508,
-      "sha256": "1ca36470e81ca20347caac4771f585cd3cf8effa623683047a10fd6305fd8b85"
+      "sha256": "e09dbd36e470aef90701a3ef557bbc4bbf55baad7cc3f535e734011d8354c37b"
     },
     {
       "path": "frontend/tests/progressive-design.spec.ts",
-      "bytes": 85503,
-      "sha256": "0e7b4640fbf81a4ff4f87498aa50f60d71f09bfc69b7c1b7e9995ae526d03bdb"
+      "bytes": 86917,
+      "sha256": "1062766e3796ac77fb81ec194d400a846c4f08f390fafe3aea189085e688f256"
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
@@ -18687,6 +18687,36 @@
       "path": "benchmarks/qualification-78e6f4fc8aa8/release-qualification.json",
       "bytes": 39,
       "sha256": "b6ea3bda40f5075e0ba746878a397cc03ed84df2743a5c15f891a63f1c3cb0c8"
+    },
+    {
+      "path": ".github/actions/rust-cache/action.yml",
+      "bytes": 1431,
+      "sha256": "8fdb55b9ebafbadfc8546d7c9d8d3a156d45fd296b67699329caf1995c9a79f6"
+    },
+    {
+      "path": "docs/CI.md",
+      "bytes": 5351,
+      "sha256": "289468570f018bbdd5ccecac038d36baab903593b1ec20e181a32c576e32b28f"
+    },
+    {
+      "path": "docs/PLAN_0_5_8.md",
+      "bytes": 3115,
+      "sha256": "d03abcc18f615065604c4cc8733d8b31544a3d4ac011e544dedb373697ad8791"
+    },
+    {
+      "path": "tests/conftest.py",
+      "bytes": 404,
+      "sha256": "8620de672c210b89d95b9655555240f9ac90fb72b31cd64f21dcd4e79c09fc5c"
+    },
+    {
+      "path": "tests/test_ci_plan.py",
+      "bytes": 5156,
+      "sha256": "2534d1a051f5b65673e020b93d01a49ba395b3859e1cb92b2831149210f97c6f"
+    },
+    {
+      "path": "tools/ci_plan.py",
+      "bytes": 3725,
+      "sha256": "a7a81e20d90e1b5b5d159fd0c651970a65f36bf8cce3b6e860e323f557d7342a"
     }
   ],
   "public_patches": [
@@ -40409,6 +40439,114 @@
       "path": "RELEASE_NOTES.md",
       "source_sha256": "07233710ae9acd8e8b2e1e473448e5a7c14a38a08ce0f06da931cb793538df87",
       "reason": "Record the release owner decision to defer unresolved Windows cancellation and V-shape convergence to the next release."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "docs/PLAN_0_5_8.md",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "78a620504be92d87f966282d3d7a65461030f52f7ccf16f2430d342729cb7679",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "b42367b580c42396ebedfc9225af52500dfe9104c9af5a053f8213df85e12ee0",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "2c8cb1a6a4f2c1ae84df05ddcff0c1d9ab5da5869321ca2115847cae06a0e5c8",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/src/public/main.tsx",
+      "source_sha256": "f512ccf4db09afe8b87248f7d6c93482455db7de499e369e449e9a5998140984",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/tests/design-helpers.ts",
+      "source_sha256": "1ca36470e81ca20347caac4771f585cd3cf8effa623683047a10fd6305fd8b85",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/tests/progressive-design.spec.ts",
+      "source_sha256": "0e7b4640fbf81a4ff4f87498aa50f60d71f09bfc69b7c1b7e9995ae526d03bdb",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "b21da55a01ea2ad0e4a4237fd4074653a66caf0e28c313de149701156bb21f29",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "pyproject.toml",
+      "source_sha256": "720f4373cd8a05bd7872c254d71729366281395f00c29af0d79fe9b02cbfc26b",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "tests/conftest.py",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "tests/test_ci_plan.py",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "tests/test_public_security.py",
+      "source_sha256": "01234a2230e350633aba3b841f2e965c3085ea052e4b706c51056925292e962b",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "tests/test_reference_recovery.py",
+      "source_sha256": "36e213543a0705d97239aa57c5ea8f2e601048e2cda73a2aea80f7991a34b32a",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "tests/test_release_tools.py",
+      "source_sha256": "38eb895b8cb1e2d88f03370d94fdddcac0c8a8ce723b11f1d9d749c8b8df91dc",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "tools/ci_plan.py",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": ".github/actions/rust-cache/action.yml",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": ".github/workflows/ci.yml",
+      "source_sha256": "65765455df10bb2cf6f4a76d2f69e2bdeead99df2c992e396e1efa14086b39ec",
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
+    },
+    {
+      "base_commit": "487526a74cdd1496b8d28dc027473a16983de60d",
+      "path": "docs/CI.md",
+      "source_sha256": null,
+      "reason": "Speed up 0.5.8 CI with conservative path selection, cached dependencies, isolated parallel tests and browser sharding; preserve physics qualification."
     }
   ]
 }

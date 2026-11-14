@@ -528,8 +528,8 @@ function requestFailure(error: unknown): PublicApiError | string {
   return errorMessage(error);
 }
 
-export function App() {
-  const [showLanding, setShowLanding] = useState(true);
+export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }) {
+  const [showLanding, setShowLanding] = useState(!initialNewDesign);
   const [showHalbachWorkspace, setShowHalbachWorkspace] = useState(false);
   // The tutorials area is its own top-level surface. It is deliberately separate
   // state rather than a value folded into showLanding or PublicWorkflowStep,
@@ -539,10 +539,10 @@ export function App() {
   );
   const [tutorialsStage, setTutorialsStage] = useState<LearningLessonStage>('design');
   const [tutorialHeaderProgress, setTutorialHeaderProgress] = useState<LearningLessonHeaderProgress | null>(null);
-  const [config, setConfig] = useState<MotorConfig>(() => cloneDefaultConfig());
-  const [designName, setDesignName] = useState<string | null>(null);
-  const [blankDesign, setBlankDesign] = useState(false);
-  const [newDesignParts, setNewDesignParts] = useState<BuiltParts | null>(null);
+  const [config, setConfig] = useState<MotorConfig>(() => initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig());
+  const [designName, setDesignName] = useState<string | null>(initialNewDesign ? 'New Design' : null);
+  const [blankDesign, setBlankDesign] = useState(initialNewDesign);
+  const [newDesignParts, setNewDesignParts] = useState<BuiltParts | null>(initialNewDesign ? {} : null);
   const [designSession, setDesignSession] = useState(0);
   const [designInputErrors, setDesignInputErrors] = useState<Record<string, DesignIssue | null>>({});
   const [materials, setMaterials] = useState<MaterialCatalog>(FALLBACK_MATERIALS);
@@ -571,7 +571,7 @@ export function App() {
   const [selectedSolver, setSelectedSolver] = useState<PublicSolverId>('magneto2d');
   const [elmerCapability, setElmerCapability] = useState<PublicElmerCapability>(ELMER_CHECKING);
   const [experimentalRotors, setExperimentalRotors] = useState<PublicExperimentalRotorCapability>(EXPERIMENTAL_ROTORS_OFF);
-  const [geometryStale, setGeometryStale] = useState(true);
+  const [geometryStale, setGeometryStale] = useState(!initialNewDesign);
   const [previewNetworkFailed, setPreviewNetworkFailed] = useState(false);
   const [backendRecovery, setBackendRecovery] = useState(0);
   const previewRecoveryAttempt = useRef(0);
@@ -583,7 +583,8 @@ export function App() {
       ? { error_code: 'LOCAL_REQUEST_FAILED', message: value }
       : value);
   }, []);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(initialNewDesign
+    ? 'Choose the rotor arrangement and topology, then build the motor from outside inward.' : null);
   const [editFeedback, setEditFeedback] = useState<DesignEditState | null>(null);
   const solveController = useRef<AbortController | null>(null);
   const armatureFieldController = useRef<AbortController | null>(null);
