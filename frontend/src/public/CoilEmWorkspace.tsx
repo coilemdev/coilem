@@ -134,6 +134,7 @@ import {
   PUBLIC_CUSTOM_SWEEP_DEFAULT_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG,
+  ensureLossesFullCycle,
   type PublicSolvePreset,
 } from './solvePlan';
 import {
@@ -3757,6 +3758,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const [customSweepOpen, setCustomSweepOpen] = useState(
     () => config.solve_params.solve_quality === 'custom',
   );
+  // A custom step with losses always solves a full cycle; a preset is requested as one only when
+  // it does not solve one already (ensureLossesFullCycle). The chosen plan itself is unchanged.
+  const lossesFullCycle = selectedSolver !== 'elmer' && config.solve_options.losses_efficiency;
+  const lossesSweep = ensureLossesFullCycle(config, selectedSolver);
   // Coming back to Solve with the same mesh and result resumes the tab and
   // mesh display that were left (solveViewMemory); anything new opens on its default.
   const [resumeSolveView] = useState(() => (
@@ -3867,9 +3872,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const weakElementCount = meshQualitySummary.weakElementIndices.length;
   const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
   const planLabel = config.solve_params.solve_quality === 'custom'
-    ? `Custom · ${config.solve_params.rotor_step_deg}° elec`
-    : solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
-      ?? config.solve_params.solve_quality;
+    ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
+    : `${solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
+      ?? config.solve_params.solve_quality}${lossesSweep !== config ? ` · 360° at ${lossesSweep.solve_params.rotor_step_deg}° for losses` : ''}`;
   const estimatedTimeText = validation
     ? formatRunTimeRange(validation)
     : validationChecking
@@ -3917,7 +3922,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
-  const planMeshLabel = solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.meshLabel;
+  const selectedPreset = config.solve_params.solve_quality;
+  const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
   const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
   const runReady = Boolean(mesh)
@@ -4391,8 +4397,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
             {solvePlans.map((plan) => (
               <button
                 type="button"
-                className={config.solve_params.solve_quality === plan.value ? 'active' : ''}
-                aria-pressed={config.solve_params.solve_quality === plan.value}
+                className={selectedPreset === plan.value ? 'active' : ''}
+                aria-pressed={selectedPreset === plan.value}
                 disabled={busy !== null}
                 onClick={() => {
                   setCustomSweepOpen(false);
@@ -4403,7 +4409,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 {plan.recommended && <em>Recommended</em>}
                 <span>{plan.label}</span>
                 <small>{plan.meshLabel}</small>
-                <small>{config.solve_params.solve_quality === plan.value && validation
+                <small>{selectedPreset === plan.value && validation
                   ? estimatedTimeText
                   : plan.tradeoff}</small>
               </button>
@@ -4424,7 +4430,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 }
               }}
             >
-              <span>Custom...</span>
+              <span>{lossesFullCycle ? 'Full-cycle step' : 'Custom...'}</span>
               <small>Choose the electrical-angle step</small>
               <i aria-hidden="true">{customSweepOpen ? '▴' : '▾'}</i>
             </button>
@@ -4453,7 +4459,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
               </div>
             )}
           </div>
-          {config.solve_params.solve_quality === 'quick' && (
+          {selectedPreset === 'quick' && (
             <p className="public-plan-advisory">Preview is intended for iteration, not final result sign-off.</p>
           )}
 
@@ -4782,7 +4788,8 @@ function ReportStage({
   onRerun: (savedRun: PublicSavedRun) => void;
 }) {
   const reference = publishedReference(config);
-  const [reportMode, setReportMode] = useState<'single' | 'compare'>('single');
+  const [reportMode, setReportMode] = useState<'single' | 'compare' | 'previous'>('single');
+  useEffect(() => { setReportMode('single'); }, [result]);
   const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
@@ -4960,8 +4967,20 @@ function ReportStage({
   ) : null;
   return (
     <div className="results-dashboard public-report-stage">
-      <div className="public-report-header"><div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div><div className="public-report-header-actions"><div className="public-report-mode" role="group" aria-label="Results view"><button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button><button type="button" className={reportMode === 'compare' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button></div><button type="button" onClick={onBack}>← Back to Solve</button></div></div>
-      {reportMode === 'compare' ? <PublicRunComparison currentResult={result} /> : <>
+      <div className="public-report-header">
+        <div><span className="eyebrow">Completed analysis</span><h1>Electromagnetic performance</h1><p>Local {reportSolverLabel} result for the current motor definition.</p></div>
+        <div className="public-report-header-actions">
+          <div className="public-report-mode" role="group" aria-label="Results view">
+            <button type="button" className={reportMode === 'single' ? 'active' : ''} onClick={() => setReportMode('single')}>This run</button>
+            <button type="button" className={reportMode !== 'single' ? 'active' : ''} onClick={() => setReportMode('compare')}>Compare runs</button>
+            <button type="button" disabled={!result.saved_run || resultUsesElmer}
+              title={!result.saved_run ? 'This shortcut requires a saved run.' : resultUsesElmer ? 'Run comparison currently supports Magneto2D results.' : 'Use the previous completed run in this saved project as the baseline'}
+              onClick={() => setReportMode('previous')}>Compare with previous run</button>
+          </div>
+          <button type="button" onClick={onBack}>← Back to Solve</button>
+        </div>
+      </div>
+      {reportMode !== 'single' ? <PublicRunComparison key={reportMode} currentResult={result} compareWithPrevious={reportMode === 'previous'} /> : <>
       {savedRunPanel}
       <ResultInputNotes result={result} />
       {reportQualification && !qualificationChip && <QualificationNote qualification={reportQualification} />}

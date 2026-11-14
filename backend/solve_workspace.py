@@ -1272,9 +1272,31 @@ class SolveWorkspace:
             })
             compact_waveforms[result_field] = waveform
 
+        # Read the integrity-bound request as recorded. Parsing it through today's
+        # MotorConfig would fill missing historical inputs with current defaults.
+        request = loaded.get("request")
+        request = request if isinstance(request, Mapping) else {}
+        resolved = request.get("resolved_config")
+        submitted = request.get("submitted")
+        submitted = submitted if isinstance(submitted, Mapping) else {}
+        result_metadata = loaded.get("result", {}).get("solve_metadata", {})
+        result_metadata = result_metadata if isinstance(result_metadata, Mapping) else {}
+        setup = result_metadata.get("run_setup")
+        inputs = {
+            "config": deepcopy(dict(resolved)) if isinstance(resolved, Mapping) else None,
+            "solver": submitted.get("solver") if isinstance(submitted.get("solver"), str) else None,
+            "solver_name": result_metadata.get("solver_name"),
+            "run_setup": {
+                key: deepcopy(setup[key])
+                for key in ("id", "name", "version", "kind", "includes_numerics")
+                if key in setup
+            } if isinstance(setup, Mapping) else None,
+        }
+
         return {
             "schema_version": RUN_MANIFEST_SCHEMA,
             "project_name": manifest.get("project_name"),
+            "inputs": inputs,
             "result": {
                 "summary": report_summary.get("summary", {}),
                 "solve_metadata": report_summary.get("solve_metadata", {}),
@@ -1410,6 +1432,34 @@ class SolveWorkspace:
                 }
                 if isinstance(solver_name, str) and solver_name:
                     record["solver_name"] = solver_name
+                # List the saved label without loading large results or today's profile library.
+                try:
+                    request_path = run / "request.json"
+                    self._require_safe_path(request_path)
+                    request = json.loads(request_path.read_text(encoding="utf-8"))
+                    bindings = manifest.get("bindings")
+                    if (isinstance(request, Mapping) and isinstance(bindings, Mapping)
+                            and bindings.get("resolved_request_sha256") == _sha256_json(request)):
+                        submitted = request.get("submitted")
+                        setup = _submitted_run_setup(submitted) if isinstance(submitted, Mapping) else None
+                        if setup is not None:
+                            record["run_setup"] = setup
+                except (OSError, ValueError, SolveWorkspaceError):
+                    pass  # Historical or damaged requests remain listable without a setup label.
+                # The design's setup-library scope outlives edits, unlike the slug that unnamed
+                # designs share, so Compare with previous run keeps to one design.
+                try:
+                    project_path = run / PROJECT_FILE_NAME
+                    self._require_safe_path(project_path)
+                    project = json.loads(project_path.read_text(encoding="utf-8"))
+                    bindings = manifest.get("bindings")
+                    setups = project.get("run_setups") if isinstance(project, Mapping) else None
+                    if (isinstance(bindings, Mapping) and isinstance(setups, Mapping)
+                            and isinstance(setups.get("scope"), str)
+                            and bindings.get("project_sha256") == _sha256_json(project)):
+                        record["design_scope"] = setups["scope"]
+                except (OSError, ValueError, SolveWorkspaceError):
+                    pass  # Older runs have no setup library and stay listable without a scope.
                 retention = manifest.get("retention")
                 if isinstance(retention, Mapping) and retention.get("field_playback_removed_at"):
                     record["field_playback_removed_at"] = retention["field_playback_removed_at"]

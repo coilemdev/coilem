@@ -2,7 +2,7 @@ import type { MotorConfig, PublicSolverId } from './model';
 import { asPublicConfig } from './publicRequest';
 import { parseTorqueSpeedSettings } from './torqueSpeedAnalysis';
 
-const OPERATING_KEYS = ['rated_speed_rpm', 'current_amplitude_A', 'current_amplitude_convention',
+export const OPERATING_KEYS = ['rated_speed_rpm', 'current_amplitude_A', 'current_amplitude_convention',
   'current_angle_deg', 'magnet_temperature_C', 'winding_temperature_C', 'mechanical_loss_W',
   'excitation_mode', 'phase_connection', 'commutation_advance_deg', 'motor_input_dc_bus_V'] as const;
 const NUMERICAL_KEYS = ['solve_quality', 'rotor_sweep_range_deg', 'rotor_step_deg', 'mesh_density',
@@ -46,9 +46,9 @@ export type RunSetupProvenance = { id: string; version: number; name: string; ki
 /** What could be read from stored or imported setups; unreadable setups are counted, not fatal. */
 export type ProfileDocumentRead = { document?: SolveProfileDocument; skipped: number; error?: string };
 const copy = <T,>(v: T): T => v == null ? v : JSON.parse(JSON.stringify(v));
-const record = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === 'object' && !Array.isArray(v);
+export const record = (v: unknown): v is Record<string, unknown> => Boolean(v) && typeof v === 'object' && !Array.isArray(v);
 const sameName = (a: string, b: string) => a.toLocaleLowerCase() === b.toLocaleLowerCase();
-function canonical(v: unknown): string {
+export function canonical(v: unknown): string {
   if (Array.isArray(v)) return `[${v.map(canonical).join(',')}]`;
   if (record(v)) return `{${Object.keys(v).sort().filter(k => v[k] !== undefined).map(k => `${JSON.stringify(k)}:${canonical(v[k])}`).join(',')}}`;
   return JSON.stringify(v);
@@ -76,8 +76,9 @@ export function newProfileDocument(scope: string = crypto.randomUUID()): SolvePr
 export function captureProfile(config: MotorConfig, name: string, includesNumerics: boolean,
   solver: PublicSolverId, id: string = crypto.randomUUID(), version = 1): SolveProfile {
   // An operating-only setup is solver-independent: it keeps the design's Magneto2D analyses,
-  // which Elmer requests leave out, rather than recording them as off.
-  config = asPublicConfig(config, includesNumerics ? solver : 'magneto2d') as unknown as MotorConfig;
+  // which Elmer requests leave out, rather than recording them as off. It records the plan as
+  // chosen, without the full-cycle sweep a loss request adds.
+  config = asPublicConfig(config, includesNumerics ? solver : 'magneto2d', { lossesSweep: false }) as unknown as MotorConfig;
   const captured: Partial<Parameters> = {};
   for (const key of [...OPERATING_KEYS, ...(includesNumerics ? NUMERICAL_KEYS : [])]) {
     if (config.solve_params[key] !== undefined) Object.assign(captured, { [key]: config.solve_params[key] });

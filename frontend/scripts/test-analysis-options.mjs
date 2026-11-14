@@ -4,7 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 const { analysisSummary, setAnalysisOption, hasTorqueResult, hasBackEmfResult, defaultResultPlot } = await importTypeScriptModule(new URL('../src/public/analysisOptions.ts', import.meta.url));
 const { asPublicConfig } = await importTypeScriptModule(new URL('../src/public/publicRequest.ts', import.meta.url));
-const { applyPublicSolvePreset } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
+const { applyPublicSolvePreset, ensureLossesFullCycle } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
 const { parseDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
 
 let config = cloneDefaultConfig();
@@ -18,6 +18,26 @@ config = setAnalysisOption(config, 'back_emf', false);
 config = setAnalysisOption(config, 'cogging_torque', true);
 config = setAnalysisOption(config, 'losses_efficiency', true);
 assert.equal(analysisSummary(config), 'Cogging · Losses & efficiency');
+// Losses keep the chosen plan; only the request is widened to a full cycle at the plan's step.
+const lossPlan = c => [c.solve_params.solve_quality, c.solve_params.rotor_sweep_range_deg, c.solve_params.rotor_step_deg, c.solve_params.mesh_density];
+for (const [preset, request] of [['quick', ['custom', 360, 15, 'coarse']], ['standard', ['custom', 360, 7.5, 'normal']], ['fine', ['fine', 360, 7.5, 'fine']]]) {
+  const planned = applyPublicSolvePreset(config, preset, { rotor_sweep_range_deg: preset === 'fine' ? 360 : 60, rotor_step_deg: 7.5 });
+  assert.equal(planned.solve_params.solve_quality, preset, 'losses do not rewrite the chosen plan');
+  assert.deepEqual(lossPlan(asPublicConfig(planned)), request, `${preset} requests solve a full cycle at the plan's own step`);
+  assert.equal(planned.solve_params.solve_quality, preset, 'request preparation must not mutate stored settings');
+}
+const withBackEmf = setAnalysisOption(config, 'back_emf', true);
+assert.equal(asPublicConfig(withBackEmf).solve_params.solve_quality, 'standard', 'Standard with Back EMF already solves a full cycle');
+assert.equal(asPublicConfig(withBackEmf).solve_options.thd_analysis, true, 'and keeps its harmonic analysis');
+const customLosses = structuredClone(config);
+Object.assign(customLosses.solve_params, { solve_quality: 'custom', rotor_sweep_range_deg: 60, rotor_step_deg: 2 });
+assert.deepEqual(lossPlan(asPublicConfig(customLosses)), ['custom', 360, 2, 'normal']);
+const request = asPublicConfig(config);
+assert.equal(ensureLossesFullCycle(request), request, 'already normalized settings remain stable');
+assert.deepEqual(lossPlan(asPublicConfig(config, 'elmer')), lossPlan(config), 'unsupported Elmer analyses do not promote its sweep');
+assert.deepEqual(lossPlan(parseDesignFile(JSON.stringify(config)).config), lossPlan(config), 'files open with the plan they were saved with');
+const disabled = setAnalysisOption(config, 'losses_efficiency', false);
+assert.deepEqual(lossPlan(asPublicConfig(disabled)), lossPlan(config));
 assert.equal(asPublicConfig(config).solve_options.thd_analysis, false);
 const fine = applyPublicSolvePreset(config, 'fine', { rotor_sweep_range_deg: 360, rotor_step_deg: 7.5 });
 assert.equal(fine.solve_options.thd_analysis, false, 'changing accuracy must not re-enable Back EMF');

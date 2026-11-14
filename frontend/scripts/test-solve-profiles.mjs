@@ -8,6 +8,17 @@ const { torqueSpeedSettings } = await importTypeScriptModule(new URL('../src/pub
 const { captureProfile, applyProfile, profileMatches, profileCompatible, profileProvenance, builtinProfiles,
   newProfileDocument, saveProfile, parseProfileDocument, restoreActiveProfile, readProfileDocument, mergeProfileDocuments } = profiles;
 const original = cloneDefaultConfig();
+const oldLossProfile = { ...captureProfile(original, 'Old loss setup', true, 'magneto2d', 'old-loss'),
+  outputs: { ...original.solve_options, losses_efficiency: true } };
+const oldLossSnapshot = JSON.stringify(oldLossProfile);
+const appliedLosses = applyProfile(original, oldLossProfile);
+for (const key of ['solve_quality', 'rotor_sweep_range_deg', 'rotor_step_deg', 'mesh_density']) {
+  assert.equal(appliedLosses.solve_params[key], original.solve_params[key], 'applying a loss setup keeps its plan');
+}
+assert.equal(JSON.stringify(oldLossProfile), oldLossSnapshot, 'old setup versions remain immutable');
+assert.equal(profileMatches(oldLossProfile, appliedLosses, 'magneto2d'), true, 'the full-cycle rule shapes requests, not saved setups');
+const recapturedLossProfile = captureProfile(appliedLosses, 'Old loss setup', true, 'magneto2d', 'old-loss', 2);
+assert.equal(profileMatches(recapturedLossProfile, appliedLosses, 'magneto2d'), true);
 const physical = c => JSON.stringify([c.topology, c.rotor, c.stator, c.winding, c.materials]);
 const user = captureProfile(original, 'Rated speed', false, 'magneto2d', 'user-1');
 const changed = structuredClone(original);
