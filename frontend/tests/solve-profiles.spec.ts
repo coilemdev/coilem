@@ -22,10 +22,13 @@ async function saveFile(page: Page, path: string) {
   const download = await pending; await download.saveAs(path);
   return JSON.parse(await readFile(path, 'utf8'));
 }
-async function saveSetup(page: Page, name: string) {
+async function saveSetup(page: Page, name: string, includeNumerics = true) {
   await page.getByRole('combobox', { name: 'Run setup', exact: true }).selectOption('');
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.getByLabel('Setup name', { exact: true }).fill(name);
+  const numerical = page.getByRole('checkbox', { name: 'Include accuracy and solver settings', exact: true });
+  await expect(numerical).toBeChecked();
+  if (!includeNumerics) await numerical.uncheck();
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 }
 
@@ -55,7 +58,8 @@ test('user setups support save, apply, update, rename, copy, delete and file rou
   expect(file.run_setups.activeVersion).toBe(3);
   expect(file.run_setups.profiles[0].name).toBe('Rated operating point');
   expect(file.solve_params.current_amplitude_A).toBe(33);
-  expect(file.run_setups.profiles[0].parameters.mesh_density).toBeUndefined();
+  expect(file.run_setups.profiles[0].includesNumerics).toBe(true);
+  expect(file.run_setups.profiles[0].parameters.mesh_density).toBe(file.solve_params.mesh_density);
   await saveSetup(page, 'A second point');
   await page.getByRole('button', { name: 'Delete', exact: true }).click();
   await page.getByRole('button', { name: 'Confirm delete setup', exact: true }).click();
@@ -145,7 +149,7 @@ test('reopening the original file restores the last setup including accuracy and
   await page.getByRole('spinbutton', { name: 'Maximum nonlinear iterations', exact: true }).press('Tab');
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.getByLabel('Setup name', { exact: true }).fill('Newton preview');
-  await page.getByRole('checkbox', { name: 'Include accuracy and solver settings', exact: true }).check();
+  await expect(page.getByRole('checkbox', { name: 'Include accuracy and solver settings', exact: true })).toBeChecked();
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   const id = await page.getByRole('combobox', { name: 'Run setup', exact: true }).inputValue();
   await page.reload();
@@ -208,7 +212,7 @@ test('reference setups are immutable, apply complete conditions, and edits save 
 
 test('ordinary setup application preserves accuracy and submits its versioned identity', async ({ page }) => {
   await start(page);
-  await saveSetup(page, 'Operating only');
+  await saveSetup(page, 'Operating only', false);
   const selector = page.getByRole('combobox', { name: 'Run setup', exact: true });
   const id = await selector.inputValue();
   const accuracy = page.locator('[data-guide="solve-plan"]');

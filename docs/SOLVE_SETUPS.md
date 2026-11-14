@@ -1,16 +1,17 @@
 # Saved run setups
 
-Solve's **Run setup** selector restores an operating point and its requested
-outputs without changing motor geometry, winding or materials.
+Solve's **Run setup** selector restores operating conditions, requested outputs,
+accuracy, mesh and advanced solver settings by default, without changing motor
+geometry, winding or materials.
 The information icon beside **Run setup** explains what the selected setup
 captures and how to rename or save another setup. Hover, focus or tap it to read
 the tooltip; press **Escape** to dismiss it.
 
 1. Set the operating point and analyses in Solve, then choose the **Save** (disk)
    icon beside the dropdown while **Custom** is selected. Type a name in the
-   setup field and choose **Save**
-   again. Leave **Include accuracy and solver settings** unchecked to keep
-   numerical quality separately selectable, or check it to capture those choices.
+   setup field and choose **Save** again. **Include accuracy and solver settings**
+   starts checked. Uncheck it only when you want to reuse an operating point and
+   its requested analyses while keeping accuracy and solver choices separate.
 2. Use the arrow beside the name to select a setup. An edit to its captured
    settings marks it **Modified**. **Save** replaces that setup's saved values.
    Saving unchanged settings keeps the same version.
@@ -22,8 +23,8 @@ the tooltip; press **Escape** to dismiss it.
 
 User setups are stored locally in this browser for the current design. Reopening
 the same original file, or reloading an example, restores its active setup and
-the settings it captured. Check **Include accuracy and solver settings** when
-saving to restore the accuracy plan, mesh and advanced options too. Files without
+the settings it captured. The default includes the accuracy plan, mesh and
+advanced options. Files without
 setup metadata are identified by their contents, so a different design with the
 same filename keeps its own library.
 
@@ -64,7 +65,7 @@ updates or renames cannot relabel an earlier run. Modified or Custom conditions
 do not claim to be an unchanged saved setup. Saved run projects/packages retain
 the setup library snapshot for replay.
 
-THD availability follows the selected accuracy plan. The torque-speed map's
-grid also stays separately selectable for ordinary operating setups; its drive
-limits and control choice are retained. Setups requesting analyses unavailable
+THD availability follows the selected accuracy plan. When accuracy and solver
+settings are excluded, the torque-speed map's grid stays separately selectable;
+its drive limits and control choice are retained. Setups requesting analyses unavailable
 with Elmer require selecting Magneto2D rather than silently dropping outputs.

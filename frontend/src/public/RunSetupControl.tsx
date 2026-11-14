@@ -22,7 +22,7 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
   const nameInput = useRef<HTMLInputElement>(null);
   const [editing, setEditing] = useState<'new' | 'rename' | null>(null);
   const [name, setName] = useState('');
-  const [includeNumerics, setIncludeNumerics] = useState(false);
+  const [includeNumerics, setIncludeNumerics] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
   };
   const beginNew = () => {
     setEditing('new'); setName(active ? `${active.name} copy` : '');
-    setIncludeNumerics(Boolean(active?.includesNumerics)); setDeleting(false); setError(null); setFeedback(null);
+    setIncludeNumerics(true); setDeleting(false); setError(null); setFeedback(null);
   };
   const beginRename = () => {
     if (disabled || !active || active.builtin) return;
@@ -86,13 +86,13 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
     : active && !compatible ? 'This setup belongs to a different model. Save creates a copy for this design.'
     : active ? 'Double-click the name or press F2 to rename. Choose Custom to save another setup.'
     : 'Choose Save to name and keep the current settings.';
+  const capturesNumerics = editing === 'new' ? includeNumerics : active?.includesNumerics ?? true;
   return <section className="public-run-setups" aria-label="Saved run setups">
     <div className="public-run-setup-heading">
       <label htmlFor={nameId}>Run setup</label>
       <InfoTip label="Run setup help">
-        <p>{active ? active.includesNumerics ? 'Includes operating conditions, outputs, accuracy and solver settings.'
-          : 'Includes operating conditions and outputs. Accuracy and solver settings stay separately selectable.'
-          : 'Save an operating point and its requested outputs for this design.'}</p>
+        <p>{capturesNumerics ? 'Includes operating conditions, outputs, accuracy and solver settings.'
+          : 'Includes operating conditions and outputs. Accuracy and solver settings stay separately selectable.'}</p>
         <p id={hintId}>{hint}</p>
       </InfoTip>
     </div>
