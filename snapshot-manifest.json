@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 61783,
-      "sha256": "c05a1c1e79145e434ad20e61cacc7c3b5f6da4252958cfffaa1c0897da381f17"
+      "bytes": 63983,
+      "sha256": "a3d6ae178f762918de34f75414367d84f937c2f196dece9cc8020ee72b55f53b"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178782,
-      "sha256": "f0781bd26fc1f8c8533912c022e5be832ff0f2850db0a0405a7b225f2755f0c4"
+      "bytes": 178628,
+      "sha256": "43a579356fd70ba84597353e4e57845e9ebf95f3a599a96928012dc293c62b31"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7015,8 +7015,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 88558,
-      "sha256": "32150b0c40cbfd00442f54114d00b2e08cad5ee49f47ad230b87ccf85652e064"
+      "bytes": 88620,
+      "sha256": "7867a0e91fdd2d16b9975c81011e588205557b52043391abad44020c82c19ed8"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 298855,
-      "sha256": "bae0194ac109d50a775e0dd7f26757cc8ae6dc1048c8c817643e411baef2265f"
+      "bytes": 299895,
+      "sha256": "ad72b8785f77d452b6d52437ec59a4132dfae18b8f4e3b09ae1b6bb4e08e6471"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 26433,
-      "sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f"
+      "bytes": 37946,
+      "sha256": "1da768ccb7b3a47d2853cb5b9baa087f1f165069ce11ec09d9916f10408fed73"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7140,8 +7140,8 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 11593,
-      "sha256": "73b6f2cdd967cb347c1e3bdf9249a67191501bd9ca957ee34417fcd5491b435a"
+      "bytes": 11882,
+      "sha256": "a723c495b09bc3d93bc2e76ee266adaceae9f3a802880e698ddc323786c8a64d"
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 14897,
-      "sha256": "914fd5f0ee1c6ca6910ffd6c6ba10a2ac5390475a205e36f78ffa5f131503e89"
+      "bytes": 15033,
+      "sha256": "c53f5766b60191c4743eac91477e818a3f1c0f0b1def2fdb19adf468459e6c60"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7210,8 +7210,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 16599,
-      "sha256": "8874c2ed6a5bbf0f9df7f4fd0597330c628a6aae30e1cd1758f08f0f2353b3b9"
+      "bytes": 16706,
+      "sha256": "e0e8c6a3ec619dd6f04a43e34fa62d52047329511fe0846d1f95d5e84180649c"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -7505,8 +7505,8 @@
     },
     {
       "path": "frontend/src/public/publicRequest.ts",
-      "bytes": 1336,
-      "sha256": "a97820d23dc70952293b181fad9cc77e61be8f8e5f53645f7c187df0bcb92f4f"
+      "bytes": 1412,
+      "sha256": "eb7a9fcd3be3070a72ba65976ac3a2e2198ca9a4f2aa87fa8568750c2c98d166"
     },
     {
       "path": "frontend/src/public/pyleecanReferenceNotice.ts",
@@ -7525,8 +7525,8 @@
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
-      "bytes": 2053,
-      "sha256": "c0a2a482e97f1c0320f779aa8c19509e09211318f805dfdfd4f1766726c7aa5e"
+      "bytes": 3141,
+      "sha256": "f788c8bf3d8eca78c00e502c84632aebbf1915577e656b833814a9c3204ea71e"
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 329008,
-      "sha256": "fd30a801f329f1c2dd75d26cffec029e150f98f1476f4a77464ef551db42489a"
+      "bytes": 330930,
+      "sha256": "e6d0f75f0d0c88d4b34c6a0d7a4f1de7a6bf6679ca6fc2472bcd1d41737f86ba"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 100386,
-      "sha256": "1ba7ff99f7326f5ae619ecdf57f7b65198b01facd6241ed433b6d902389fc2ff"
+      "bytes": 122744,
+      "sha256": "f7a865a4b4c010bb564e4634faf6fd5c7903fc16fda5e14d02242ee9ef15fd04"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8380,8 +8380,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 28472,
-      "sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40"
+      "bytes": 30621,
+      "sha256": "7112617702c063077065cdacaf20c0e81728ced7123eefbd44293b956576eefe"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -11635,18 +11635,18 @@
     },
     {
       "path": "frontend/scripts/test-analysis-options.mjs",
-      "bytes": 4577,
-      "sha256": "810026835bf38824b57de8eb5c1114e9bf0e2a1410ac77a8ad0bccd66c6850be"
+      "bytes": 6595,
+      "sha256": "33ba954765a5dd7bb61fedc52bd8d4880102b6370ca68600e158e571266f747a"
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
-      "bytes": 3506,
-      "sha256": "b440bfa06e98f4e90f1166a7ef639722d68dff49fa93ea089d9b53087f72bea4"
+      "bytes": 3785,
+      "sha256": "fd105e6834d7228f483a1fced18a1e787f362b82185c209728cbe296dc572417"
     },
     {
       "path": "frontend/src/public/analysisOptions.ts",
-      "bytes": 2803,
-      "sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b"
+      "bytes": 2925,
+      "sha256": "86145c72baef4c289f9cdcc9ffa38934f8f4113114e327803bff30d0c569fd6b"
     },
     {
       "path": "tests/test_analysis_options.py",
@@ -11675,13 +11675,13 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 1573,
-      "sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64"
+      "bytes": 11716,
+      "sha256": "7e6db8ea3554b6bb9c5c614270c07b03db7d22729ac28bd472d46de7034df189"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
-      "bytes": 1070,
-      "sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768"
+      "bytes": 9087,
+      "sha256": "33e053ee05c529d47689088e6609acd812816b2886c32e40265e22451a1da56a"
     },
     {
       "path": "backend/report_numbers.py",
@@ -18730,8 +18730,8 @@
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
-      "bytes": 11821,
-      "sha256": "0d7d26d4f08a57da43e2ecb177b0a439354c8dc4d2e7f8d0515ecdda0d6abd07"
+      "bytes": 12884,
+      "sha256": "b61f61db6270e1843db903858ffb0063e2277dd4763e63e945c591ce06e98287"
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
@@ -18750,13 +18750,28 @@
     },
     {
       "path": "frontend/src/public/solveProfiles.ts",
-      "bytes": 17318,
-      "sha256": "4ba04d2d923331334b0e6319803db2473d7d7df4fd7b8ae087db4ee01aea99d7"
+      "bytes": 17394,
+      "sha256": "df816d75a81d3195c3d42843917c0693179a2249e9aa3860be411863e4261a86"
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 18653,
-      "sha256": "0d03f4f46971df4b10d744ce491f707ca55a704a55f2ebf02972bf27fb676fc0"
+      "bytes": 23106,
+      "sha256": "b08cf214161c671f15d939a89bd37dcc580065d5e49c5e1a366723673091aed9"
+    },
+    {
+      "path": "docs/COMPARE_RUNS.md",
+      "bytes": 4870,
+      "sha256": "64276926f7c6d80f3e0bfa23abf1820029e92caaaa02b0618be094f8b432f82a"
+    },
+    {
+      "path": "frontend/src/public/RunChangesTable.tsx",
+      "bytes": 2381,
+      "sha256": "e187803211a4b59ba9cdf7d8a4a411d402e67dc33727b9e4daf0fcddde70ba6f"
+    },
+    {
+      "path": "frontend/src/public/runInputChanges.ts",
+      "bytes": 8351,
+      "sha256": "260c6774de48071d40d45704fe9d1fb034edb2c675ffdd899204848b0b562e40"
     }
   ],
   "public_patches": [
@@ -40743,6 +40758,150 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "e415aef5f58ea4a342d69bd8a7df673008a0b19d8d77ea059d9462338ddca0be",
       "reason": "Integrate saved run setups with current main while preserving physics sources and recorded evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "c05a1c1e79145e434ad20e61cacc7c3b5f6da4252958cfffaa1c0897da381f17",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "docs/COMPARE_RUNS.md",
+      "source_sha256": null,
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/scripts/test-analysis-options.mjs",
+      "source_sha256": "810026835bf38824b57de8eb5c1114e9bf0e2a1410ac77a8ad0bccd66c6850be",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "f0781bd26fc1f8c8533912c022e5be832ff0f2850db0a0405a7b225f2755f0c4",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "34e6997c11ec47dd452e2a331716624cf1b5534ca11a509b86028dd676703f64",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/scripts/test-solve-profiles.mjs",
+      "source_sha256": "0d7d26d4f08a57da43e2ecb177b0a439354c8dc4d2e7f8d0515ecdda0d6abd07",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/AnalysisSelector.tsx",
+      "source_sha256": "b440bfa06e98f4e90f1166a7ef639722d68dff49fa93ea089d9b53087f72bea4",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "32150b0c40cbfd00442f54114d00b2e08cad5ee49f47ad230b87ccf85652e064",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "bae0194ac109d50a775e0dd7f26757cc8ae6dc1048c8c817643e411baef2265f",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "9eeda9429d7053b8439765625d3dd06e4c0b256e7f1e6b44e0b09ac78805bb4f",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/RunChangesTable.tsx",
+      "source_sha256": null,
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "73b6f2cdd967cb347c1e3bdf9249a67191501bd9ca957ee34417fcd5491b435a",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/analysisOptions.ts",
+      "source_sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "914fd5f0ee1c6ca6910ffd6c6ba10a2ac5390475a205e36f78ffa5f131503e89",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "8874c2ed6a5bbf0f9df7f4fd0597330c628a6aae30e1cd1758f08f0f2353b3b9",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/publicRequest.ts",
+      "source_sha256": "a97820d23dc70952293b181fad9cc77e61be8f8e5f53645f7c187df0bcb92f4f",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/runComparison.ts",
+      "source_sha256": "bc2a4d28e54aa0e8a70a330611cf5231f063e6dd090a2f31bcb2f8a5a76e9768",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/runInputChanges.ts",
+      "source_sha256": null,
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/solvePlan.ts",
+      "source_sha256": "c0a2a482e97f1c0320f779aa8c19509e09211318f805dfdfd4f1766726c7aa5e",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/solveProfiles.ts",
+      "source_sha256": "4ba04d2d923331334b0e6319803db2473d7d7df4fd7b8ae087db4ee01aea99d7",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "fd30a801f329f1c2dd75d26cffec029e150f98f1476f4a77464ef551db42489a",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "1ba7ff99f7326f5ae619ecdf57f7b65198b01facd6241ed433b6d902389fc2ff",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "source_sha256": "0d03f4f46971df4b10d744ce491f707ca55a704a55f2ebf02972bf27fb676fc0",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "b26b70a37164b2322200b0bc1dfd594ef2140804",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40",
+      "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
     }
   ]
 }
