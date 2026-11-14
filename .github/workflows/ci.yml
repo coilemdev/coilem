@@ -7,6 +7,18 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
     inputs:
+      windows_cancel_probe_only:
+        description: Run only the repeated Windows interrupt investigation
+        type: boolean
+        default: false
+      windows_cancel_probe_stage:
+        description: Real solve stage to interrupt
+        type: choice
+        options: [noload_sweep, magneto2d_sweep]
+        default: noload_sweep
+      windows_cancel_probe_attempts:
+        description: Independent launcher attempts per Python version
+        default: '8'
       qualification_base:
         description: 'Trusted base SHA for CI after an evidence publication commit'
         type: string
@@ -34,7 +46,7 @@ concurrency:
 
 jobs:
   runtime:
-    if: ${{ !inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (!inputs.performance_acceptance_only) }}
     strategy:
       fail-fast: false
       matrix:
@@ -91,7 +103,7 @@ jobs:
           --out-dir "${{ runner.temp }}/coilem-abcd-smoke" --pdf
 
   windows-cancellation:
-    if: ${{ !inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (!inputs.performance_acceptance_only) }}
     runs-on: windows-2022
     timeout-minutes: 10
     steps:
@@ -115,7 +127,7 @@ jobs:
           tests/test_solve_profile.py
 
   frontend:
-    if: ${{ !inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (!inputs.performance_acceptance_only) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -137,7 +149,7 @@ jobs:
 
   public-browser:
     name: public-browser (${{ matrix.suite }})
-    if: ${{ !inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (!inputs.performance_acceptance_only) }}
     runs-on: ubuntu-24.04
     # The suite ran about 36 minutes as one job; two shards each start their own
     # backend, since the app solves one motor at a time. `npm run test:browser`
@@ -189,7 +201,7 @@ jobs:
             frontend/test-results/public-release.json
 
   dependency-audit:
-    if: ${{ !inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (!inputs.performance_acceptance_only) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -214,7 +226,7 @@ jobs:
           cargo audit --file solvers/magneto2d/Cargo.lock
 
   native-tests:
-    if: ${{ !inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (!inputs.performance_acceptance_only) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -224,7 +236,7 @@ jobs:
         run: cargo test --locked --manifest-path solvers/magneto2d/Cargo.toml
 
   performance-acceptance:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.performance_acceptance_only }}
+    if: ${{ !inputs.windows_cancel_probe_only && (github.event_name == 'workflow_dispatch' && inputs.performance_acceptance_only) }}
     runs-on: windows-latest
     # 120 min per test, with setup/build/upload headroom outside Playwright.
     timeout-minutes: 180
@@ -296,7 +308,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-    if: ${{ github.event_name == 'pull_request' || inputs.qualification_base }}
+    if: ${{ !inputs.windows_cancel_probe_only && (github.event_name == 'pull_request' || inputs.qualification_base) }}
     runs-on: ubuntu-24.04
     outputs:
       physics_change: ${{ steps.impact.outputs.physics_change }}
@@ -323,7 +335,7 @@ jobs:
     name: qualification evidence required
     # One-time owner-approved integration exception: #190 is benchmarked from
     # its exact main merge commit. Runtime and release qualification stay intact.
-    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.number != 190) || inputs.qualification_base }}
+    if: ${{ !inputs.windows_cancel_probe_only && ((github.event_name == 'pull_request' && github.event.pull_request.number != 190) || inputs.qualification_base) }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -342,14 +354,14 @@ jobs:
       contents: read
       actions: read
     needs: qualification-impact
-    if: ${{ needs.qualification-impact.outputs.measurement_required == 'true' && !github.event.pull_request.draft && github.event.pull_request.number != 190 }}
+    if: ${{ !inputs.windows_cancel_probe_only && (needs.qualification-impact.outputs.measurement_required == 'true' && !github.event.pull_request.draft && github.event.pull_request.number != 190) }}
     uses: ./.github/workflows/release-benchmarks.yml
     with:
       candidate: ${{ github.event.pull_request.head.sha }}
 
   qualification-label:
     needs: qualification-impact
-    if: ${{ needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ !inputs.windows_cancel_probe_only && (needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-24.04
     permissions:
       issues: write
@@ -366,7 +378,7 @@ jobs:
 
   qualification-publication:
     needs: [qualification-impact, qualification-measure]
-    if: ${{ always() && github.event.pull_request.number != 190 && needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (needs.qualification-measure.result == 'success' || needs.qualification-impact.outputs.collection_state == 'complete') }}
+    if: ${{ !inputs.windows_cancel_probe_only && (always() && github.event.pull_request.number != 190 && needs.qualification-impact.outputs.physics_change == 'true' && github.event.pull_request.head.repo.full_name == github.repository && (needs.qualification-measure.result == 'success' || needs.qualification-impact.outputs.collection_state == 'complete')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -431,3 +443,32 @@ jobs:
           git -C candidate commit -m 'Publish matching measured qualification evidence'
           git -C candidate push origin "HEAD:$PR_BRANCH"
           gh workflow run ci.yml --ref "$PR_BRANCH" -f qualification_base="$BASE_SHA"
+
+  windows-cancel-probe:
+    if: ${{ inputs.windows_cancel_probe_only }}
+    runs-on: windows-2022
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.14', '3.15']
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r requirements.lock
+      - run: cargo build --release --locked --manifest-path solvers/magneto2d/Cargo.toml
+      - name: Repeat the real interrupted solve, preserving every failure
+        env:
+          PROBE_ATTEMPTS: ${{ inputs.windows_cancel_probe_attempts }}
+          PROBE_STAGE: ${{ inputs.windows_cancel_probe_stage }}
+        run: python -m tools.windows_cancel_probe --out "$env:RUNNER_TEMP/cancel-probe" --attempts "$env:PROBE_ATTEMPTS" --stage "$env:PROBE_STAGE"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: windows-cancel-${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/cancel-probe/**/result.json
+            ${{ runner.temp }}/cancel-probe/**/launcher.txt
+            ${{ runner.temp }}/cancel-probe/**/traceback.txt
