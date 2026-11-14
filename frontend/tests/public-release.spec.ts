@@ -1376,7 +1376,8 @@ for (const width of [900, 375]) {
 }
 
 test('priority fixes: Halbach health fits split-screen and invalid diameters survive reload', async ({ page }, info) => {
-  test.setTimeout(45_000);
+  // Real app workflow: CI runners draw the UI in software, many times slower than a desktop.
+  test.setTimeout(180_000);
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.setViewportSize({ width: 900, height: 850 });
@@ -1463,7 +1464,8 @@ test('small release fixes: tutorial scale follows actual SVG fit, zoom and resiz
 });
 
 test('small release fixes: capstone requires a fresh qualifying solve and completed run', async ({ page }) => {
-  test.setTimeout(60_000);
+  // Real app workflow: CI runners draw the UI in software, many times slower than a desktop.
+  test.setTimeout(180_000);
   await page.addInitScript(() => sessionStorage.setItem('coilem.learning.session.v1.review-fields', JSON.stringify({
     phase: 'strengthen', magnetOrientations: [1, -1, 1, -1], currentA: 10, currentSign: 1, gapMm: 2, windingSpacingMm: 18,
   })));

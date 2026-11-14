@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 18863,
-      "sha256": "1d5b23fa4bde1c41cc21561e54d8ce25725e8a1c985e5c3d1cd945e5268ec05e"
+      "bytes": 19568,
+      "sha256": "65765455df10bb2cf6f4a76d2f69e2bdeead99df2c992e396e1efa14086b39ec"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -7595,8 +7595,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 99265,
-      "sha256": "812e6933005613377d8d84274dcda0989d0d070515ea43970977f713709770e6"
+      "bytes": 99455,
+      "sha256": "b21da55a01ea2ad0e4a4237fd4074653a66caf0e28c313de149701156bb21f29"
     },
     {
       "path": "frontend/tsconfig.public.json",

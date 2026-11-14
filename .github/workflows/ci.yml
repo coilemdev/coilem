@@ -136,9 +136,21 @@ jobs:
         run: npm audit --audit-level=high
 
   public-browser:
+    name: public-browser (${{ matrix.suite }})
     if: ${{ !inputs.performance_acceptance_only }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 40
+    # The suite ran about 36 minutes as one job; two shards each start their own
+    # backend, since the app solves one motor at a time. `npm run test:browser`
+    # still runs the whole suite locally.
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: release-workflows
+            command: npx playwright test --config playwright.public.config.ts tests/public-release.spec.ts
+          - suite: design-and-harness
+            command: npx playwright test --config playwright.public.config.ts tests/progressive-design.spec.ts && npx playwright test --config playwright.performance-harness.config.ts
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
@@ -163,12 +175,12 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Exercise real Standard motor workflows in Chromium
         working-directory: frontend
-        run: npm run test:browser
+        run: ${{ matrix.command }}
       - name: Retain browser diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: public-browser-diagnostics
+          name: public-browser-diagnostics-${{ matrix.suite }}
           retention-days: 7
           path: |
             frontend/test-results/**/*.png
