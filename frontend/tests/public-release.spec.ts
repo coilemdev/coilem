@@ -1507,6 +1507,12 @@ test('small release fixes: capstone requires a fresh qualifying solve and comple
   expect(await completed()).toBe(false);
   await testPerformance.click();
   await expect(run).toBeVisible();
+  // The qualifying solve reveals an animated 3D scene. Check that transition,
+  // then exercise stale-result/completion guards in 2D so software WebGL does
+  // not consume the rest of this test's time budget on CI.
+  const view = page.getByRole('group', { name: 'View', exact: true });
+  await expect(view.getByRole('button', { name: '3D', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await view.getByRole('button', { name: '2D', exact: true }).click();
   // Editing on the reveal step must require another solve, not reuse the old success.
   await current.focus();
   await page.keyboard.press('ArrowLeft'); // 10 -> 8 A

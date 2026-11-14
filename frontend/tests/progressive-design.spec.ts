@@ -3,6 +3,30 @@ import { readFile } from 'node:fs/promises';
 
 import { chooseSetup, newDesign, stator, rotor, health, configureSection, continueSetup, completeWinding } from './design-helpers';
 
+test('New Design shortcut opens a blank workspace without constructing a WebGL landing scene', async ({ page }) => {
+  await page.addInitScript(() => {
+    (window as any).__webglContexts = 0;
+    const original = HTMLCanvasElement.prototype.getContext;
+    Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+      value: function (this: HTMLCanvasElement, context: string, ...options: unknown[]) {
+        if (context === 'webgl' || context === 'webgl2' || context === 'experimental-webgl') {
+          (window as any).__webglContexts += 1;
+        }
+        return Reflect.apply(original, this, [context, ...options]);
+      },
+    });
+  });
+  await newDesign(page, 'Inrunner', false);
+  await expect(page.locator('.public-landing')).toHaveCount(0);
+  await expect(page.getByRole('group', { name: 'Rotor arrangement', exact: true }).locator('[aria-pressed="true"]')).toHaveCount(0);
+  expect(await page.evaluate(() => (window as any).__webglContexts)).toBe(0);
+  expect(new URL(page.url()).searchParams.has('new')).toBe(false);
+  // File-menu entry must keep exactly the same blank workflow.
+  await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'New Design', exact: true }).click();
+  await expect(page.getByRole('group', { name: 'Rotor arrangement', exact: true }).locator('[aria-pressed="true"]')).toHaveCount(0);
+});
+
 test('progressive arrangement hover previews explain both motors without selecting one', async ({ page }, info) => {
   await newDesign(page, 'Inrunner', false);
   const arrangement = page.getByRole('group', { name: 'Rotor arrangement', exact: true });

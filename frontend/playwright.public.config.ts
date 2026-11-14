@@ -22,7 +22,8 @@ export default defineConfig({
   outputDir: './test-results/public-release',
   timeout: 15 * 60_000,
   expect: { timeout: 30_000 },
-  fullyParallel: false,
+  // Enables test-level sharding; one worker still serializes access to this backend.
+  fullyParallel: true,
   workers: 1,
   retries: 0,
   reporter: [

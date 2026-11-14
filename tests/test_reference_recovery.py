@@ -198,9 +198,10 @@ def test_interrupt_retains_results_written_between_controller_polls(tmp_path, mo
 
 
 def test_resume_keeps_results_whose_worker_was_stopped_after_writing(tmp_path, monkeypatch):
-    # Each worker lingers after writing its result, so the interrupt's cleanup
-    # stops it and it exits by signal. Resume must still accept the results.
-    args = setup_run(tmp_path, '    import atexit\n    atexit.register(time.sleep, 1.0)\n    return {"status":"COMPLETE"}',
+    # Hold each worker until the controller stops it. A one-second atexit sleep
+    # lets the first worker exit before the second one writes on a busy runner,
+    # so stopped_by_controller depended on scheduling rather than recovery.
+    args = setup_run(tmp_path, '    import atexit, threading\n    atexit.register(threading.Event().wait)\n    return {"status":"COMPLETE"}',
                      cases='{"a":"A","b":"B"}')
     original_sleep = time.sleep
     interrupted = False

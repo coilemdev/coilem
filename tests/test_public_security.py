@@ -17,6 +17,9 @@ def active_solver(monkeypatch):
 
         def cancel_active_solve(self):
             self.cancelled = True
+            # No worker is running in these provenance tests. Simulate its
+            # release so an allowed request does not wait the real 60s budget.
+            solve._ACTIVE_SOLVE.update(running=False, solver=None)
 
     solver = FakeSolver()
     monkeypatch.setattr(solve, "_ACTIVE_SOLVE", {
@@ -55,6 +58,7 @@ def test_untrusted_host_cannot_reach_routes(active_solver, host):
 def test_loopback_cli_can_cancel(active_solver, host):
     response = TestClient(app, base_url="http://127.0.0.1").post("/solve/cancel", headers={"Host": host})
     assert response.status_code == 200
+    assert response.json() == {"status": "cancelled"}
     assert active_solver.cancelled
 
 
@@ -68,6 +72,7 @@ def test_trusted_ui_preflight_and_action(active_solver, origin):
     assert preflight.headers["access-control-allow-origin"] == origin
     result = client.post("/solve/cancel", headers={"Origin": origin, "Sec-Fetch-Site": "cross-site"})
     assert result.status_code == 200
+    assert result.json() == {"status": "cancelled"}
     assert result.headers["access-control-allow-origin"] == origin
     assert active_solver.cancelled
 

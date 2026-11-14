@@ -476,6 +476,7 @@ def test_release_workflow_publishes_only_after_acceptance() -> None:
 
 # Actions that ran on Node 20 and the first major of each that runs on Node 24 (#79).
 NODE24_MAJORS = {
+    "actions/cache": 5,
     "actions/checkout": 5,
     "actions/setup-python": 6,
     "actions/setup-node": 5,
@@ -489,7 +490,9 @@ def test_workflow_actions_are_pinned_by_commit_to_node24_releases() -> None:
 
     pattern = re.compile(r"uses: (actions/[a-z-]+)@(\S+)(?: # v(\d+)\.\d+\.\d+)?")
     seen = set()
-    for workflow in sorted((REPO_ROOT / ".github/workflows").glob("*.yml")):
+    workflows = sorted((REPO_ROOT / ".github/workflows").glob("*.yml"))
+    workflows += sorted((REPO_ROOT / ".github/actions").rglob("action.yml"))
+    for workflow in workflows:
         for action, ref, major in pattern.findall(workflow.read_text()):
             seen.add(action)
             assert re.fullmatch(r"[0-9a-f]{40}", ref), f"{workflow.name}: {action}@{ref} is not pinned by commit"
