@@ -1,0 +1,10 @@
+{
+  "schema": "coilem.qualification_carry/v1",
+  "status": "READY",
+  "candidate": "ba7e1fd775d4370f1e1bc2e0804a6686cde0a4e4",
+  "moved_values": [],
+  "reference_review": [],
+  "accepted_moved_values": false,
+  "approved_policy_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2",
+  "measurements_mutated": false
+}
