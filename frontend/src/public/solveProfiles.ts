@@ -53,7 +53,7 @@ export function canonical(v: unknown): string {
   if (record(v)) return `{${Object.keys(v).sort().filter(k => v[k] !== undefined).map(k => `${JSON.stringify(k)}:${canonical(v[k])}`).join(',')}}`;
   return JSON.stringify(v);
 }
-function physicalModel(config: MotorConfig): string {
+export function physicalModel(config: MotorConfig): string {
   return canonical({ topology: config.topology, rotor_layout: config.rotor_layout ?? 'inner',
     geometry_reference: config.geometry_reference ?? null, stator: config.stator, rotor: config.rotor,
     winding: config.winding, materials: config.materials });
@@ -75,13 +75,17 @@ export function newProfileDocument(scope: string = crypto.randomUUID()): SolvePr
 }
 export function captureProfile(config: MotorConfig, name: string, includesNumerics: boolean,
   solver: PublicSolverId, id: string = crypto.randomUUID(), version = 1): SolveProfile {
-  config = asPublicConfig(config, solver, { lossesSweep: false }) as unknown as MotorConfig;
+  // An operating-only setup is solver-independent: it keeps the design's Magneto2D analyses,
+  // which Elmer requests leave out, rather than recording them as off. It records the plan as
+  // chosen, without the full-cycle sweep a loss request adds.
+  config = asPublicConfig(config, includesNumerics ? solver : 'magneto2d', { lossesSweep: false }) as unknown as MotorConfig;
   const captured: Partial<Parameters> = {};
   for (const key of [...OPERATING_KEYS, ...(includesNumerics ? NUMERICAL_KEYS : [])]) {
     if (config.solve_params[key] !== undefined) Object.assign(captured, { [key]: config.solve_params[key] });
   }
   const parameters = withUnsetDefaults(captured, config);
-  if (includesNumerics) parameters.max_nonlinear_iterations = config.solve_params.max_nonlinear_iterations ?? 200;
+  // Unset (null) leaves each solver its own limit; Elmer v1 accepts only its frozen 100.
+  if (includesNumerics) Object.assign(parameters, { max_nonlinear_iterations: config.solve_params.max_nonlinear_iterations ?? null });
   const cleanName = name.trim();
   if (!cleanName || cleanName.length > 100) throw new Error('Give the setup a name of 1–100 characters.');
   return { id, version, name: cleanName, includesNumerics, parameters, outputs: { ...copy(config.solve_options), ...(!includesNumerics ? { thd_analysis: false } : {}) },
@@ -100,9 +104,11 @@ export function profileCompatible(profile: SolveProfile, config: MotorConfig): b
 export function applyProfile(config: MotorConfig, profile: SolveProfile): MotorConfig {
   if (!profileCompatible(profile, config)) throw new Error('This setup uses a different reference model, revision or current-angle convention.');
   const parameters = { ...config.solve_params, ...withUnsetDefaults(copy(profile.parameters), config) };
+  if (parameters.max_nonlinear_iterations == null) delete parameters.max_nonlinear_iterations;
+  // A setup captured with the map off records no map; the design keeps its drive limits.
   return { ...config, solve_params: parameters,
     solve_options: { ...copy(profile.outputs), thd_analysis: profile.outputs.back_emf && ['standard', 'fine'].includes(parameters.solve_quality) }, torque_speed_analysis: profile.map ? { ...copy(profile.map),
-      preset: profile.includesNumerics ? profile.map.preset : config.torque_speed_analysis?.preset ?? 'preview' } : null,
+      preset: profile.includesNumerics ? profile.map.preset : config.torque_speed_analysis?.preset ?? 'preview' } : config.torque_speed_analysis ?? null,
     ...(profile.referenceModel ? { reference_case: profile.referenceCase } : {}) };
 }
 /** Restore a browser library's active setup without carrying it to another model. */
@@ -111,7 +117,8 @@ export function restoreActiveProfile(config: MotorConfig, document: SolveProfile
   if (!active || !profileCompatible(active, config)) {
     return { config, document: { ...document, activeId: null, activeVersion: null }, solver: undefined };
   }
-  return { config: applyProfile(config, active), document, solver: active.includesNumerics ? active.solver : undefined };
+  // Published references solve on Magneto2D only.
+  return { config: applyProfile(config, active), document, solver: active.includesNumerics && !config.geometry_reference ? active.solver : undefined };
 }
 export function profileMatches(profile: SolveProfile, config: MotorConfig, solver: PublicSolverId): boolean {
   if (!profileCompatible(profile, config)) return false;
@@ -144,15 +151,33 @@ export function saveProfile(doc: SolveProfileDocument, profile: SolveProfile): S
   return { ...doc, profiles: [...doc.profiles.filter(p => p.id !== profile.id), copy(profile)], activeId: profile.id, activeVersion: profile.version };
 }
 /** Add a portable file's setups to this browser's library for the same design. Where both hold
- * a setup, the newer version wins, so opening an older copy never discards later edits. */
+ * a setup, the newer version wins, so opening an older copy never discards later edits. A setup
+ * edited separately to the same version, or whose name is taken, is added as a renamed copy
+ * with its own identity rather than dropped. */
 export function mergeProfileDocuments(local: SolveProfileDocument, incoming: SolveProfileDocument): SolveProfileDocument {
   const profiles = [...local.profiles];
+  const copyName = (name: string) => {
+    for (let n = 1; ; n += 1) {
+      const candidate = `${name.slice(0, 80)} (from file${n > 1 ? ` ${n}` : ''})`;
+      if (!profiles.some(p => sameName(p.name, candidate))) return candidate;
+    }
+  };
   for (const profile of incoming.profiles) {
     const index = profiles.findIndex(p => p.id === profile.id);
+    const existing = index >= 0 ? profiles[index] : undefined;
     const nameTaken = profiles.some(p => p.id !== profile.id && sameName(p.name, profile.name));
-    if (index >= 0) {
-      if (profile.version > profiles[index].version && !nameTaken) profiles[index] = profile;
-    } else if (!nameTaken && profiles.length < MAX_PROFILES) {
+    const conflict = existing ? (profile.version > existing.version && nameTaken)
+      || (profile.version === existing.version && canonical(profile) !== canonical(existing)) : nameTaken;
+    // Settings already held under another name (for example a copy made when this file was
+    // last opened) are not copied again.
+    const settings = (p: SolveProfile) => canonical({ ...p, id: null, name: null });
+    if (conflict) {
+      if (profiles.length < MAX_PROFILES && !profiles.some(p => settings(p) === settings(profile))) {
+        profiles.push({ ...copy(profile), id: crypto.randomUUID(), name: copyName(profile.name) });
+      }
+    } else if (existing) {
+      if (profile.version > existing.version) profiles[index] = profile;
+    } else if (profiles.length < MAX_PROFILES) {
       profiles.push(profile);
     }
   }
@@ -173,13 +198,15 @@ function parseProfile(raw: unknown): SolveProfile {
     || typeof raw.includesNumerics !== 'boolean' || !record(raw.parameters) || !record(raw.outputs)
     || !['q_axis', 'pyleecan_d_axis'].includes(String(raw.angleConvention))
     || !new Set<unknown>([null, 'pyleecan_prius_2004', 'lrk_12s14p']).has(raw.referenceModel)
-    || (raw.includesNumerics && !['magneto2d', 'elmer'].includes(String(raw.solver)))) throw new Error('This file has an invalid saved run setup.');
+    || (raw.includesNumerics && !['magneto2d', 'elmer'].includes(String(raw.solver)))
+    // Published references solve on Magneto2D only.
+    || (raw.referenceModel != null && raw.solver === 'elmer')) throw new Error('This file has an invalid saved run setup.');
   const allowed = new Set<string>([...OPERATING_KEYS, ...(raw.includesNumerics ? NUMERICAL_KEYS : [])]);
   if (Object.entries(raw.parameters).some(([k, v]) => !allowed.has(k) || !(v === null || typeof v === 'boolean' || typeof v === 'string' || (typeof v === 'number' && Number.isFinite(v))))
     || OUTPUT_KEYS.some(k => typeof (raw.outputs as Record<string, unknown>)[k] !== 'boolean')
     || Object.keys(raw.outputs).some(k => !OUTPUT_KEYS.includes(k as typeof OUTPUT_KEYS[number]))) throw new Error('This file has invalid run-setup settings.');
   const enums: Record<string, readonly unknown[]> = ENUMS;
-  const nullable = new Set<string>(Object.keys(UNSET_DEFAULTS));
+  const nullable = new Set<string>([...Object.keys(UNSET_DEFAULTS), 'max_nonlinear_iterations']);
   for (const [key, v] of Object.entries(raw.parameters)) {
     const valid = enums[key] ? enums[key].includes(v)
       : key === 'corner_refinement' ? typeof v === 'boolean'

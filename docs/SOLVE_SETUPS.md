@@ -27,7 +27,13 @@ the same original file, or reloading an example, restores its active setup and
 the settings it captured. The starter motor and the gallery's SPM 8p/12s example
 share one library, and **Reset** restores the starter with its active setup, as
 launching the app does. Switching the rotor arrangement to Outrunner and back
-returns the previous inrunner with its own library. The default includes the
+returns the previous inrunner with its own library. Once an example's geometry,
+winding or materials are edited, its setups move to a library of the edited
+design, saved with its design file, so other designs started from the same
+example neither list nor restore them. A new design, or an edited example, keeps
+its library in the window until its design file is saved. Other windows open on
+the same design pick up saved, renamed and deleted setups as they happen. The
+default includes the
 accuracy plan, mesh and advanced options. Files without
 setup metadata are identified by their contents, so a different design with the
 same filename keeps its own library.
@@ -42,14 +48,17 @@ identity/version and the actual settings. Opening that portable file preserves
 its exact settings, including any unsaved changes to the selected setup. Its
 setups join this browser's library for the same design; where both hold the
 same setup, the newer version is kept, so opening an older copy never removes
-setups or versions saved since. This
+setups or versions saved since. A setup edited separately to the same version,
+or one whose name is already taken, is added as a renamed copy marked
+"(from file)". This
 also works when browser storage is unavailable; a notice explains that the
 design file must be saved. Older files start without setups, and earlier app
 versions may discard setups when saving a design again.
 
 A setup this version cannot read, for example one saved by a newer coilEM, is
-skipped with a notice. The motor and the other setups still open, and browser
-storage keeps the unreadable copy beside the library instead of overwriting it.
+skipped with a notice. The motor and the other setups still open. Browser
+storage leaves that library as it is for the version that saved it; this version
+keeps its own changes in a separate copy beside it.
 
 ## Reference setups
 

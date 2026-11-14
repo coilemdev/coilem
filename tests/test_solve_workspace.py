@@ -776,6 +776,9 @@ def test_unreadable_setup_library_never_blocks_a_run(tmp_path: Path) -> None:
         ("run_setup", {"id": "a", "version": float("inf")}, "finite"),
         ("run_setups", {"schema": 1, "scope": "s", "profiles": ["x" * (256 * 1024)]}, "too large"),
         ("run_setup", {"name": "x" * 5000}, "too large"),
+        # A lone surrogate (JSON "\\ud800") is valid JSON but not UTF-8 text: a validation error, not a 500.
+        ("run_setup", {"name": "Rated \ud800"}, "valid text"),
+        ("run_setups", {"schema": 1, "scope": "s", "profiles": [{"name": "\ud800"}]}, "valid text"),
     ],
 )
 def test_setup_metadata_must_be_finite_bounded_json(name: str, value: dict, message: str) -> None:

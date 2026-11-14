@@ -141,6 +141,8 @@ export function RunSetupControl({ config, solver, document, builtins, disabled, 
       </div> : <div className="public-run-setup-actions">
         <button type="button" className="primary" data-setup-save aria-label="Save" disabled={saveDisabled}
           onMouseDown={e => { if (editing === 'rename') e.preventDefault(); }} onClick={save}
+          // The name field leaves a rename open while focus is on Save; leaving Save elsewhere ends it.
+          onBlur={e => { if (editing === 'rename' && e.relatedTarget !== nameInput.current) finishRename(); }}
           title={saveDisabled && !disabled ? 'No changes to save'
             : active && !active.builtin && compatible && editing !== 'new' ? 'Update this setup with the current settings'
               : 'Save the current settings as a new setup'}><SetupIcon kind="save" /></button>

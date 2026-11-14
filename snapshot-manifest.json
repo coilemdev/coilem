@@ -550,8 +550,8 @@
     },
     {
       "path": "backend/public_policy.py",
-      "bytes": 15176,
-      "sha256": "df4e220107be5bb2f107c5f545af2a8a2af30863639ecd6e904fd00ade13b6e9"
+      "bytes": 15275,
+      "sha256": "a23f9ef1d673f5404f9a703441f4895187c5cd81ceaa9a85504b4343f086ec6b"
     },
     {
       "path": "backend/public_report.py",
@@ -7015,8 +7015,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 88558,
-      "sha256": "32150b0c40cbfd00442f54114d00b2e08cad5ee49f47ad230b87ccf85652e064"
+      "bytes": 91940,
+      "sha256": "c4e0f180841eba1956b23cb1537d954e5c85caa27984e7aefc6c8de26c020844"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7210,8 +7210,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 16599,
-      "sha256": "8874c2ed6a5bbf0f9df7f4fd0597330c628a6aae30e1cd1758f08f0f2353b3b9"
+      "bytes": 17270,
+      "sha256": "b26d2afcbce080264236c9c9d64f65ca077238cd9c9f9ca962680f5ee7e52b61"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 331153,
-      "sha256": "6c5ba220919b173b3d48df4a7290b37acb43e391a8f50e691870659f3b7755e8"
+      "bytes": 331267,
+      "sha256": "4f015b7c8aa97976c43448bfff0aa9f38be5d15c3b8d4ff54b21f73543a19e54"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -8380,8 +8380,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 30775,
-      "sha256": "3b870e1d723e1a50be6b037e2f1caf03b3b27bd3149efb66545ac0cc1e67e7e1"
+      "bytes": 31048,
+      "sha256": "f8820ef754d406ff659386a3587a6000d795e864fcce1b19ad508488219f05d4"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -18725,18 +18725,18 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 5633,
-      "sha256": "cf3b6a43ae5c3f1fad3670b66a402120c0fa6996404dee9a7ee00ed5d7c87151"
+      "bytes": 6228,
+      "sha256": "e7705e62f16838c62227179d9fbe777d10298f64969ace31d9b32712f8da7afc"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
-      "bytes": 12767,
-      "sha256": "f4d01396de1af930922582a6b15775d6bc2dad3a3f951d321e45612fd4673e27"
+      "bytes": 17823,
+      "sha256": "09a5d8ce5793c110e4545fcc5e7211b78b0e346c2cfb32403aa39f4933083d71"
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 11202,
-      "sha256": "0935149b789da9673d9037a9a3ab11594fc4aa87e26f1825300bac402363d592"
+      "bytes": 11418,
+      "sha256": "79b801f421eeba15a7666ea7f2caef4621082ddd66d508c425059300c74fb5ab"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18745,18 +18745,18 @@
     },
     {
       "path": "frontend/src/public/profileStorage.ts",
-      "bytes": 2095,
-      "sha256": "826137da6c93e0862a1df65917f394d73ed771c48e367ed25bb3c7dafbb2393e"
+      "bytes": 4069,
+      "sha256": "46bbd0fbc8a7af79f51ec0a016eaf57ad66a70101b8d68ea2f40c2cb8b807597"
     },
     {
       "path": "frontend/src/public/solveProfiles.ts",
-      "bytes": 17363,
-      "sha256": "1243856acafb6ccd720bfdcece2c99e24fd063c233ab40548ec680a08c48ec6e"
+      "bytes": 19272,
+      "sha256": "86ee79c32727f89ac23053df33c8cabb84621a7cf853eece04bf7992525f8864"
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 23493,
-      "sha256": "300ce7ccc4bb31aaa885116b3474280c55ea99f324a09b4ae64130d4da8a4051"
+      "bytes": 26489,
+      "sha256": "e7203b5a854346fe624927e4778d468c1211c94cdcb5f2872daa21c847e2b89a"
     },
     {
       "path": "docs/COMPARE_RUNS.md",
