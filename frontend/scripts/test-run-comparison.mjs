@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
-const { normalizeComparisonResult, previousCompletedRun, compareRunTiming } = await importTypeScriptModule(new URL('../src/public/runComparison.ts', import.meta.url));
+const { normalizeComparisonResult, previousCompletedRun, compareRunTiming, compareRunLosses } = await importTypeScriptModule(new URL('../src/public/runComparison.ts', import.meta.url));
 const { inputChanges, recordedSetupLabel } = await importTypeScriptModule(new URL('../src/public/runInputChanges.ts', import.meta.url));
 const emptyTorque = { electrical_angle_deg: [], torque_Nm: [] };
 const emptyEmf = { electrical_angle_deg: [], phase_a_V: [], phase_b_V: [], phase_c_V: [] };
@@ -54,6 +54,41 @@ assert.equal(compareRunTiming(invalid, timedB).rows.find(row => row.key === 'sol
 assert.equal(compareRunTiming(torqueOnly, torqueOnly).rows.length, 0);
 assert.equal(compareRunTiming({ ...timedA, solve_metadata: { time_breakdown: { schema_version: 'unknown' } } }, torqueOnly).recordedBefore, false);
 console.log('Cogging samples remain unmodified; timing comparisons use elapsed partitions, preserve zero counts and leave missing/invalid data unrecorded.');
+
+const fullLoss = { efficiency_pct: 90, efficiency_status: 'experimental', efficiency_status_reason: 'Recorded efficiency scope.',
+  input_power_W: 1000, shaft_power_W: 900, shaft_torque_Nm: 2.86,
+  copper_loss_W: 50, copper_active_loss_W: 30, copper_end_winding_loss_W: 20,
+  iron_loss_W: 40, iron_hysteresis_loss_W: 40, iron_eddy_loss_W: 0, iron_loss_status: 'experimental', iron_loss_status_reason: 'Recorded iron scope.',
+  mechanical_loss_W: 10, total_loss_W: 100 };
+const withLoss = loss => ({ ...torqueOnly, summary: { loss_breakdown: loss,
+  winding_resistance: { status: 'qualified', status_reason: 'Recorded resistance scope.' } } });
+const lossA = withLoss(fullLoss), lossB = withLoss({ ...fullLoss, efficiency_pct: 92, copper_loss_W: 40, total_loss_W: 80 });
+const lossesOriginal = JSON.stringify([lossA, lossB]);
+const lossRows = compareRunLosses(lossA, lossB);
+assert.equal(lossRows.find(row => row.key === 'efficiency').after.value, 92);
+assert.equal(lossRows.find(row => row.key === 'efficiency').before.reason, 'Recorded efficiency scope.');
+assert.equal(lossRows.find(row => row.key === 'copper').before.status, 'qualified');
+assert.equal(lossRows.find(row => row.key === 'eddy').before.value, 0);
+assert.equal(lossRows.find(row => row.key === 'total').after.value, 80, 'compare reads stored totals without summing component fields');
+assert.equal(lossRows.some(row => row.key === 'subtotal'), false);
+assert.equal(JSON.stringify([lossA, lossB]), lossesOriginal);
+assert.equal(compareRunLosses(torqueOnly, torqueOnly), null);
+assert.equal(compareRunLosses(torqueOnly, lossB).find(row => row.key === 'efficiency').before.missing, 'Not recorded');
+const partialLoss = { ...fullLoss, iron_loss_W: null, iron_hysteresis_loss_W: null, iron_eddy_loss_W: null,
+  iron_loss_status: 'unavailable', iron_loss_status_reason: 'Requires a full electrical cycle.',
+  efficiency_pct: null, efficiency_status: 'unavailable', total_loss_W: 60, shaft_power_W: 940 };
+const partialRows = compareRunLosses(withLoss(partialLoss), lossB);
+assert.equal(partialRows.find(row => row.key === 'total').before.value, null);
+assert.equal(partialRows.find(row => row.key === 'subtotal').before.value, 60);
+assert.equal(partialRows.find(row => row.key === 'subtotal').after.missing, 'Not applicable');
+assert.equal(partialRows.find(row => row.key === 'efficiency').before.missing, 'Unavailable');
+assert.equal(partialRows.find(row => row.key === 'shaft').before.partial, true);
+assert.equal(partialRows.find(row => row.key === 'shaft').comparable, false, 'partial and complete shaft outputs have different bases');
+const bothPartial = compareRunLosses(withLoss(partialLoss), withLoss({ ...partialLoss, total_loss_W: 70 }));
+assert.equal(bothPartial.some(row => row.key === 'total'), false);
+assert.equal(bothPartial.find(row => row.key === 'subtotal').comparable, true);
+assert.equal(compareRunLosses(withLoss({ ...fullLoss, copper_end_winding_loss_W: NaN }), lossB).find(row => row.key === 'copper_end').before.value, null);
+console.log('Loss comparisons preserve archived statuses and zeros, distinguish full totals from known subtotals, and suppress mixed-basis shaft deltas.');
 
 const left = { config: { topology: 'SPM', rotor: { magnet_thickness_mm: 4 }, winding: { turns_per_coil: 20 },
   materials: { magnet_grade: 'N42' }, solve_params: { current_amplitude_A: 20, current_amplitude_convention: 'rms', mesh_density: 'normal' },

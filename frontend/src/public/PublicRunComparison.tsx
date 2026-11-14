@@ -9,14 +9,15 @@ import {
 } from './api';
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
-import { compareRunTiming, previousCompletedRun, type ComparisonResult } from './runComparison';
+import { compareRunLosses, compareRunTiming, previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
 import { recordedSetupLabel, type ComparisonInputs } from './runInputChanges';
 import { RunInputChanges } from './RunChangesTable';
-import { torqueDecimals } from './numberFormat';
+import { formatSignificant, torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
 import { InfoTip } from './Popover';
 import { formatSeconds } from './solveTime';
+import { StatusDot } from './OutputStatusBadge';
 
 interface LoadedRun {
   record: PublicRunListRecord;
@@ -142,6 +143,30 @@ function percentDelta(left: number | null | undefined, right: number | null | un
 
 function timingValue(value: number | null, unit: string): string {
   return value === null ? 'Not recorded' : unit === 's' ? formatSeconds(value) : number(value, 0);
+}
+
+function lossNumber(value: number, unit: string): string {
+  return unit === '%' ? value.toFixed(1) : formatSignificant(value);
+}
+
+function lossDelta(before: number | null, after: number | null, unit: string): string {
+  if (before === null || after === null) return '—';
+  if (unit === '%') return delta(before, after, 1);
+  // A delta must not imply finer precision than either displayed run value.
+  const precisions = [before, after].filter(value => value !== 0)
+    .map(value => Math.max(0, 2 - Math.floor(Math.log10(Math.abs(Number(value.toPrecision(3)))))));
+  const digits = Math.min(12, precisions.length ? Math.min(...precisions) : 0);
+  const difference = Number((after - before).toFixed(digits));
+  const text = Math.abs(difference).toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${text}`;
+}
+
+function LossComparisonValue({ cell, label, unit }: { cell: ComparisonLossCell; label: string; unit: string }) {
+  return <>
+    <span className="public-run-compare-loss-value">{cell.value === null ? cell.missing : <>{lossNumber(cell.value, unit)} <small>{unit}</small></>}</span>
+    {cell.status && <StatusDot status={cell.status} label={label} reason={cell.reason || 'No status reason was recorded.'} />}
+    {cell.partial && <small className="public-run-compare-loss-partial">Partial <InfoTip label={`${label} partial output`}>This recorded shaft output excludes the unavailable iron loss. Deltas require the same loss basis in both runs.</InfoTip></small>}
+  </>;
 }
 
 function timingDelta(before: number | null, after: number | null, unit: string): string {
@@ -428,6 +453,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const emfAvailable = emfSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
   const coggingAvailable = coggingSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
   const timing = ready ? compareRunTiming(left.result, right.result) : null;
+  const losses = ready ? compareRunLosses(left.result, right.result) : null;
   useEffect(() => {
     if (!ready) return;
     setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
@@ -569,6 +595,22 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           <p className="public-run-compare-cogging-coverage">{coggingCoverage('Run A', left.result.cogging_torque_waveform)} · {coggingCoverage('Run B', right.result.cogging_torque_waveform)}</p>
           <WaveformChart angles={left.result.cogging_torque_waveform?.electrical_angle_deg || []} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(left.result.cogging_torque_waveform?.electrical_angle_deg || [], right.result.cogging_torque_waveform?.electrical_angle_deg || [])} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'cogging-run-b', subtrahendKey: 'cogging-run-a', label: 'Run B − Run A' }} />
         </>}
+        <div className="public-run-compare-metrics public-run-compare-losses" role="region" aria-label="Losses and efficiency comparison" tabIndex={0}>
+          <table>
+            <caption>Losses &amp; efficiency <InfoTip label="Losses comparison help">Values and output statuses come from each saved run. Absolute efficiency changes are in percentage points. Total loss and known loss subtotals use separate rows; partial shaft outputs are compared only with other partial outputs.</InfoTip></caption>
+            {losses && <>
+              <thead><tr><th scope="col">Metric</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+              <tbody>{losses.map(row => <tr key={row.key} className={row.indent ? 'public-run-compare-loss-component' : undefined}>
+                <th scope="row">{row.label}</th>
+                <td><LossComparisonValue cell={row.before} label={`Run A ${row.label}`} unit={row.unit} /></td>
+                <td><LossComparisonValue cell={row.after} label={`Run B ${row.label}`} unit={row.unit} /></td>
+                <td>{row.comparable ? <>{lossDelta(row.before.value, row.after.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : '—'}</td>
+                <td>{row.comparable ? percentDelta(row.before.value, row.after.value) : '—'}</td>
+              </tr>)}</tbody>
+            </>}
+          </table>
+          {!losses && <p className="public-run-compare-timing-note">Losses &amp; efficiency were not recorded for either run. Enable Losses &amp; efficiency in Analysis and solve to compare them.</p>}
+        </div>
         {timing && <div className="public-run-compare-metrics public-run-compare-timing" role="region" aria-label="Solve time breakdown comparison" tabIndex={0}>
           <table>
             <caption>Solve time breakdown <InfoTip label="Solve time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Percentages compare Run B with Run A.</InfoTip></caption>

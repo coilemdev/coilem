@@ -46,7 +46,17 @@ It does not stretch different periods onto the same span or interpolate missing
 samples; the readout delta is available only at angles solved by both runs.
 A cogging overlay is available if either run contains valid cogging samples.
 
-**Solve time breakdown**, below the waveform overlays, compares total elapsed time, meshing, field solve and
+**Losses & efficiency**, below the waveform overlays, compares efficiency,
+input and shaft power, shaft torque, copper loss (stack and end turns), iron
+loss (hysteresis and eddy current), mechanical loss and recorded totals.
+Absolute efficiency deltas use percentage points. Recorded output statuses and
+their reasons remain available beside values. Missing analysis records stay
+**Not recorded**; unavailable outputs are not replaced by zero. Full loss totals
+and known subtotals use separate rows, and partial shaft outputs exclude iron
+loss and are compared only with other partial outputs. If neither run has loss
+data, the section explains how to enable it for a new analysis.
+
+**Solve time breakdown**, last after losses, compares total elapsed time, meshing, field solve and
 packaging with absolute and percentage deltas. These are the recorded elapsed
 partitions, separate from combined worker time. Workload rows compare mesh
 elements, rotor positions, generated/rotated meshes, field solves and frames

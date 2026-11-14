@@ -1,5 +1,6 @@
 import type { SolveResult } from './model';
 import { isSolveTimeBreakdown } from './solveTime';
+import type { LossBreakdown, PerformanceOutputStatus } from './performance';
 
 /** The comparison route omits fields, playback and other heavy results. */
 export type ComparisonResult = Pick<SolveResult, 'summary' | 'solve_metadata' | 'torque_waveform' | 'back_emf_waveform' | 'cogging_torque_waveform'>;
@@ -86,4 +87,65 @@ export function compareRunTiming(before: ComparisonResult, after: ComparisonResu
     if (count(left) !== null || count(right) !== null) rows.push({ key, label, group: 'Work performed', unit: '', before: count(left), after: count(right) });
   }
   return { recordedBefore: Boolean(a), recordedAfter: Boolean(b), rows };
+}
+
+export interface ComparisonLossCell {
+  value: number | null;
+  missing?: 'Not recorded' | 'Unavailable' | 'Not applicable';
+  status?: PerformanceOutputStatus;
+  reason?: string;
+  partial?: boolean;
+}
+
+export interface ComparisonLossRow {
+  key: string;
+  label: string;
+  unit: 'W' | 'N·m' | '%';
+  before: ComparisonLossCell;
+  after: ComparisonLossCell;
+  comparable: boolean;
+  indent?: boolean;
+}
+
+const finiteNumber = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) ? value : null;
+const outputStatus = (value: unknown): PerformanceOutputStatus | undefined => value === 'qualified' || value === 'experimental' || value === 'unavailable' ? value : undefined;
+
+/** Read recorded losses only; incomplete shaft outputs and full outputs have different bases. */
+export function compareRunLosses(before: ComparisonResult, after: ComparisonResult): ComparisonLossRow[] | null {
+  if (!before.summary.loss_breakdown && !after.summary.loss_breakdown) return null;
+  type Descriptor = { key: string; label: string; field: keyof LossBreakdown; unit: ComparisonLossRow['unit']; indent?: boolean; status?: 'efficiency' | 'iron' | 'copper'; };
+  const descriptors: Descriptor[] = [
+    { key: 'efficiency', label: 'Efficiency', field: 'efficiency_pct', unit: '%', status: 'efficiency' },
+    { key: 'input', label: 'Input power', field: 'input_power_W', unit: 'W' },
+    { key: 'shaft', label: 'Shaft power', field: 'shaft_power_W', unit: 'W' },
+    { key: 'shaft_torque', label: 'Shaft torque', field: 'shaft_torque_Nm', unit: 'N·m' },
+    { key: 'copper', label: 'Copper loss', field: 'copper_loss_W', unit: 'W', status: 'copper' },
+    { key: 'copper_active', label: 'Copper, stack', field: 'copper_active_loss_W', unit: 'W', indent: true },
+    { key: 'copper_end', label: 'Copper, end turns', field: 'copper_end_winding_loss_W', unit: 'W', indent: true },
+    { key: 'iron', label: 'Iron loss', field: 'iron_loss_W', unit: 'W', status: 'iron' },
+    { key: 'hysteresis', label: 'Iron, hysteresis', field: 'iron_hysteresis_loss_W', unit: 'W', indent: true, status: 'iron' },
+    { key: 'eddy', label: 'Iron, eddy current', field: 'iron_eddy_loss_W', unit: 'W', indent: true, status: 'iron' },
+    { key: 'mechanical', label: 'Mechanical loss', field: 'mechanical_loss_W', unit: 'W' },
+    { key: 'total', label: 'Total loss', field: 'total_loss_W', unit: 'W' },
+    { key: 'subtotal', label: 'Known loss subtotal', field: 'total_loss_W', unit: 'W' },
+  ];
+  const cell = (run: ComparisonResult, row: Descriptor): ComparisonLossCell => {
+    const loss = run.summary.loss_breakdown;
+    if (!loss) return { value: null, missing: 'Not recorded' };
+    const partial = finiteNumber(loss.iron_loss_W) === null || loss.iron_loss_status === 'unavailable';
+    if (row.key === 'total' && partial) return { value: null, missing: 'Unavailable' };
+    if (row.key === 'subtotal' && !partial) return { value: null, missing: 'Not applicable' };
+    const status = outputStatus(row.status === 'efficiency' ? loss.efficiency_status
+      : row.status === 'iron' ? loss.iron_loss_status : row.status === 'copper' ? run.summary.winding_resistance?.status : undefined);
+    const reason = row.status === 'efficiency' ? loss.efficiency_status_reason
+      : row.status === 'iron' ? loss.iron_loss_status_reason : row.status === 'copper' ? run.summary.winding_resistance?.status_reason : undefined;
+    const value = status === 'unavailable' ? null : finiteNumber(loss[row.field]);
+    return { value, ...(value === null ? { missing: status === 'unavailable' ? 'Unavailable' as const : 'Not recorded' as const } : {}),
+      status, reason: reason || undefined, partial: value !== null && partial && (row.key === 'shaft' || row.key === 'shaft_torque') };
+  };
+  return descriptors.map(row => {
+    const a = cell(before, row), b = cell(after, row);
+    return { key: row.key, label: row.label, unit: row.unit, indent: row.indent, before: a, after: b,
+      comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) };
+  }).filter(row => !['total', 'subtotal'].includes(row.key) || row.before.value !== null || row.after.value !== null);
 }

@@ -1313,6 +1313,7 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
+  await expect(dialog.getByRole('region', { name: 'Losses and efficiency comparison', exact: true })).toContainText('Losses & efficiency were not recorded for either run.');
   const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics tbody tr').filter({
     has: page.getByText(label, { exact: true }),
   });
@@ -1391,6 +1392,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     ...(hasPrevious ? [
       { ...current, run_id: 'older', completed_at: '2026-11-14T10:00:00Z' },
       { ...current, run_id: 'legacy', completed_at: '2026-11-14T09:00:00Z', run_setup: undefined },
+      { ...current, run_id: 'partial', completed_at: '2026-11-14T10:30:00Z' },
       { ...current, run_id: 'previous', completed_at: '2026-11-14T11:00:00Z', run_setup: { ...current.run_setup, version: 1 } },
     ] : []), current,
   ];
@@ -1418,6 +1420,20 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
         ? { electrical_angle_deg: [0, 10, 20, 30], torque_Nm: [0.001, 0.003, -0.003, 0.001] }
         : { electrical_angle_deg: [0, 15, 30, 45, 60], torque_Nm: [0, 0.002, 0, -0.002, 0] },
     };
+    const loss = { speed_rpm: 3000, phase_current_rms_A: 20, electromagnetic_torque_Nm: 3.02,
+      shaft_torque_Nm: id === 'current' ? 2.93 : 2.86, electromagnetic_power_W: id === 'current' ? 960 : 950,
+      phase_resistance_ohm: 0.05, winding_temperature_C: 80,
+      input_power_W: 1000, shaft_power_W: id === 'current' ? 920 : 900,
+      efficiency_pct: id === 'current' ? 92 : 90, efficiency_status: 'experimental', efficiency_status_reason: 'Recorded efficiency scope.',
+      copper_loss_W: id === 'current' ? 40 : 50, copper_active_loss_W: id === 'current' ? 25 : 30, copper_end_winding_loss_W: id === 'current' ? 15 : 20,
+      iron_loss_W: id === 'current' ? 30 : 40, iron_hysteresis_loss_W: id === 'current' ? 20 : 40, iron_eddy_loss_W: id === 'current' ? 10 : 0,
+      iron_loss_status: 'experimental', iron_loss_status_reason: 'Recorded iron-loss scope.', mechanical_loss_W: 10, total_loss_W: id === 'current' ? 80 : 100 };
+    result.summary = { ...result.summary, loss_breakdown: id === 'legacy' ? null : id === 'partial'
+      ? { ...loss, efficiency_pct: null, efficiency_status: 'unavailable', efficiency_status_reason: 'Efficiency needs the iron loss.',
+        iron_loss_W: null, iron_hysteresis_loss_W: null, iron_eddy_loss_W: null, iron_loss_status: 'unavailable',
+        iron_loss_status_reason: 'Needs one full electrical cycle.', total_loss_W: 60, shaft_power_W: 940 }
+      : loss,
+      winding_resistance: { status: 'qualified', status_reason: 'Recorded resistance scope.' } };
     return route.fulfill({ json: { result, ...(id !== 'legacy' ? { inputs: {
       config: id === 'current' ? candidate : baseline, solver: 'magneto2d', solver_name: fixture.solve_metadata.solver_name, run_setup: setup,
     } } : {}) } });
@@ -1476,6 +1492,16 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(timing.getByRole('row', { name: /^Total elapsed/ }).locator('td')).toHaveText(['60.0 s', '90.0 s', '+30.0 s', '+50.0%']);
     await expect(timing.getByRole('row', { name: /^Meshes rotated/ }).locator('td')).toHaveText(['0', '8', '+8', '—']);
     await expect(timing.getByRole('row', { name: /^Field solves/ }).locator('td')).toHaveText(['144', '192', '+48', '+33.3%']);
+    const losses = page.getByRole('region', { name: 'Losses and efficiency comparison', exact: true });
+    const lossRow = (label: string) => losses.getByRole('rowheader', { name: label, exact: true }).locator('..');
+    await expect(lossRow('Efficiency').locator('.public-run-compare-loss-value')).toHaveText(['90.0 %', '92.0 %']);
+    await expect(lossRow('Efficiency').locator('td').nth(2)).toHaveText('+2.0 pp');
+    await expect(lossRow('Copper loss').locator('.public-run-compare-loss-value')).toHaveText(['50.0 W', '40.0 W']);
+    await expect(lossRow('Copper loss').locator('td').nth(2)).toHaveText('−10.0 W');
+    await expect(lossRow('Total loss').locator('.public-run-compare-loss-value')).toHaveText(['100 W', '80.0 W']);
+    await expect(lossRow('Iron, eddy current').locator('td').nth(3)).toHaveText('—');
+    await expect(losses.getByRole('button', { name: 'Run A Efficiency: Experimental', exact: true })).toBeVisible();
+    await losses.screenshot({ path: info.outputPath('compare-losses-efficiency.png') });
     await timing.screenshot({ path: info.outputPath('compare-time-breakdown.png') });
     await expect(page.getByRole('tab', { name: 'Torque overlay', exact: true })).toBeVisible();
     const metrics = page.getByRole('table', { name: 'Results comparison', exact: true });
@@ -1555,6 +1581,8 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await coggingPlot.locator('../..').screenshot({ path: info.outputPath('compare-cogging-overlay.png') });
     await page.screenshot({ path: info.outputPath('compare-what-changed.png'), fullPage: true });
     await left.selectOption('comparison-motor/legacy');
+    await expect(lossRow('Efficiency').locator('.public-run-compare-loss-value')).toHaveText(['Not recorded', '92.0 %']);
+    await expect(lossRow('Efficiency').locator('td').nth(2)).toHaveText('—');
     await expect(timing.getByRole('row', { name: /^Meshing/ }).locator('td')).toHaveText(['Not recorded', '45.0 s', '—', '—']);
     await expect(timing).toContainText('Run A: stage timings were not recorded.');
     await expect(coggingPlot.locator('path[stroke]')).toHaveCount(1);
@@ -1562,6 +1590,14 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(changes).toContainText('Input snapshots were not recorded for one or both runs');
     await expect(changes.locator('[data-input-path="config.rotor.magnet_thickness_mm"] td')).toHaveText(['Not recorded', '4.5 mm']);
     await expect(page.getByText('No differences in the recorded inputs.', { exact: true })).toHaveCount(0);
+    await left.selectOption('comparison-motor/partial');
+    await expect(lossRow('Efficiency').locator('.public-run-compare-loss-value')).toHaveText(['Unavailable', '92.0 %']);
+    await expect(lossRow('Total loss').locator('.public-run-compare-loss-value')).toHaveText(['Unavailable', '80.0 W']);
+    await expect(lossRow('Known loss subtotal').locator('.public-run-compare-loss-value')).toHaveText(['60.0 W', 'Not applicable']);
+    await expect(lossRow('Shaft power').locator('td').nth(2)).toHaveText('—');
+    await expect(lossRow('Shaft power').locator('.public-run-compare-loss-partial')).toContainText('Partial');
+    await losses.getByRole('button', { name: 'Run A Iron loss: Unavailable', exact: true }).click();
+    await expect(page.getByRole('tooltip').filter({ hasText: 'Needs one full electrical cycle.' })).toBeVisible();
     await left.selectOption('comparison-motor/older');
     await right.selectOption('comparison-motor/previous');
     await expect(changes).toContainText('No differences in the recorded inputs.');
