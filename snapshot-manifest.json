@@ -17764,6 +17764,16 @@
       "sha256": "21a7ac1eb7efc8db0a65dfb3b81a63eafdff3b71c42578797326c3b6848b4ead"
     },
     {
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
+      "bytes": 54137,
+      "sha256": "4eaa88d62c35b2c49982fa75074f19130d6de7bc9d69df7e2d6ba3eb14c33ffd"
+    },
+    {
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
+      "bytes": 6361,
+      "sha256": "c4a8d19bc25629b17040870aff26c40064ba44ffe0b34b736c462a5dd0f68e94"
+    },
+    {
       "path": "frontend/scripts/test-release-priority.mjs",
       "bytes": 2330,
       "sha256": "bf6fce4b67405b344cfbd3a97abda96d7eb7c23959df242cf6debc0e272c872d"
@@ -17789,9 +17799,14 @@
       "sha256": "f17001a7a5e46535950337cce61cdacc9e5d45fb70f6d9e2ee8e24c78be37f8d"
     },
     {
+      "path": "tests/test_vshape_mesh_study.py",
+      "bytes": 1308,
+      "sha256": "3f5fe267508a13bf7dc9b35ccde66c967d2ea361b7662f4d22d626bdae2003fa"
+    },
+    {
       "path": "tools/vshape_mesh_study.py",
-      "bytes": 5466,
-      "sha256": "98fdd20226c26d0cb2f0156b8b861974182ec1bf5d27332963cbccae2f0d8891"
+      "bytes": 6934,
+      "sha256": "595d99fe29a6702aba719e493a2f11d8fd8324d8970815bdd0654b37f74313ad"
     }
   ],
   "public_patches": [
@@ -39199,6 +39214,18 @@
     },
     {
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "frontend/package.json",
       "source_sha256": "de70acdfb028cce754e7ce78bc639b1537670f7e123f9b4d669fb992a3585a60",
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
@@ -39326,6 +39353,12 @@
     {
       "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
       "path": "tests/test_release_priority_report.py",
+      "source_sha256": null,
+      "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
+    },
+    {
+      "base_commit": "c89702fca1c56a657f5d68da774de2c558a649d0",
+      "path": "tests/test_vshape_mesh_study.py",
       "source_sha256": null,
       "reason": "Clarify release result limitations, V-shape interpreted inputs, invalid drafts and retained playback; verify the public UI and report contracts."
     },
