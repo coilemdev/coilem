@@ -26,8 +26,18 @@ assert.equal(magnetPoleCoveragePct(spm({ magnet_embrace: 0.9 })), 71);
 // The tutorial's width formula for a 2-pole rotor round-trips to its arc.
 const lessonWidth = Math.PI * (60 + 6) * 0.74 / 2;
 close(magnetPoleCoverage(spm({ OD_mm: 60, magnet_thickness_mm: 6, pole_count: 2, magnet_width_mm: lessonWidth })), 0.74, 'tutorial');
-// IPM rotors keep their stored coverage; no poles means no coverage.
-assert.equal(magnetPoleCoverage({ topology: 'IPM', rotor: spm({}).rotor }), 0.7);
+// V-shape and HoleM50 rotors keep their stored coverage; no poles means no coverage.
+assert.equal(magnetPoleCoverage({ topology: 'IPM', rotor: { ...spm({}).rotor, ipm_topology: 'v_shape' } }), 0.7);
+assert.equal(magnetPoleCoverage({ topology: 'IPM', rotor: { ...spm({}).rotor, ipm_topology: 'pyleecan_holem50' } }), 0.7);
+// A straight flat-buried magnet is measured at its pocket centreline, as the backend draws it
+// (geometry_drawer.magnet_radial_center_mm): the Honda Accord example draws 85%, not its saved 80%.
+const accord = { OD_mm: 230, magnet_width_mm: 36.9, magnet_thickness_mm: 4.46, pole_count: 16, bridge_thickness_mm: 1,
+  pocket_clearance_mm: 0.25, magnet_embrace: 0.8, ipm_topology: 'flat_buried', flat_buried_magnet_shape: 'straight' };
+const centre = Math.sqrt((115 - 1) ** 2 - (18.45 + 0.25) ** 2) - (2.23 + 0.25);
+close(magnetPoleCoverage({ topology: 'IPM', rotor: accord }), 36.9 / (2 * Math.PI * centre / 16), 'flat IPM');
+assert.equal(magnetPoleCoveragePct({ topology: 'IPM', rotor: accord }), 85);
+assert.equal(magnetPoleCoveragePct({ topology: 'IPM', rotor: { ...accord, magnet_embrace: 0.5 } }),
+  magnetPoleCoveragePct({ topology: 'IPM', rotor: accord }), 'the saved coverage does not shape a flat IPM rotor');
 assert.equal(magnetPoleCoverage(spm({ pole_count: 0 })), 0);
 
 console.log('magnet coverage checks passed');

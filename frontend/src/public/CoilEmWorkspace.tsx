@@ -1561,8 +1561,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />
       )}
       {config.rotor.ipm_topology !== 'pyleecan_holem50' && hasPoleCoverageEstimate(config) && (
-        // A surface magnet's coverage follows from its width, as the geometry builds it.
-        <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>{config.topology === 'SPM' ? '% · calc' : '%'}</small></span><strong>{coverage}</strong></div>
+        // A surface or flat-buried magnet's coverage follows from its width, as the geometry builds it.
+        <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>% · calc</small></span><strong>{coverage}</strong></div>
       )}
       <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
     </ParameterSectionBlock>

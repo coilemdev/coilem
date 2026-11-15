@@ -6535,8 +6535,8 @@
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
-      "bytes": 2759,
-      "sha256": "63a1cb7cf39923c8983800db02a08fcedf0022ca1dedd6f5525c42f65f321743"
+      "bytes": 3848,
+      "sha256": "4ae58038eba86380d2c3b518bd5cad62798b2550fa783c47e090843421e515de"
     },
     {
       "path": "frontend/scripts/test-magnet-temperature.mjs",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 179648,
-      "sha256": "bc79aa6b6c4f1899699fcc143ce945f45d8fdde0db5c67d042399737fd6c3a95"
+      "bytes": 179606,
+      "sha256": "b183adad0734b0867977bc30bcfdb3168dd4020b0532dfe75e487f6b3c4a40c7"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 299810,
-      "sha256": "c09f40b23d7ce8e13b7daa41fc76ebb91fd7b44f82719a4e30f7669cc6029624"
+      "bytes": 299787,
+      "sha256": "3ff213c828aaca6c08a3b0a0d84f0d4a62bac9609eac3bed7994c0a044bb6dba"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7420,8 +7420,8 @@
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
-      "bytes": 1600,
-      "sha256": "b45ce788040d0d6796fdc92fb841539a4172556126be3d0d3a492ef319a47f2a"
+      "bytes": 2106,
+      "sha256": "357460ef77a2bf2dae675c000afa7d784fab8a9e4c07ec67c2d9c796f929b02d"
     },
     {
       "path": "frontend/src/public/magnetPoleFaces.ts",
@@ -17610,8 +17610,8 @@
     },
     {
       "path": "backend/input_advisories.py",
-      "bytes": 2094,
-      "sha256": "2ac078ed3f1237799819532de944bd241cdc468dd20fdc9a592e01c4142786d5"
+      "bytes": 3639,
+      "sha256": "781cc89eda8c3c7f788db6f1a9d842d669f251038fe9a3577640030089d92af2"
     },
     {
       "path": "backend/rotor_construction_preview.py",
@@ -17790,8 +17790,8 @@
     },
     {
       "path": "tests/test_input_advisories.py",
-      "bytes": 3198,
-      "sha256": "5ec293b2d9c053b680a1978b652fb07d41397dadfb2b26efca9d9688838b775c"
+      "bytes": 5227,
+      "sha256": "d922022253c5d0ff614f2cd3dbc5a52e7d894b88a7099b722c2408270e806538"
     },
     {
       "path": "tests/test_mesh_evidence_shared_text.py",
