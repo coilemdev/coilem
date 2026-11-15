@@ -406,3 +406,18 @@ console.log('Multi-run comparison preserves pinned identities, the six-run limit
   assert.doesNotMatch(comparisonCsv([zero, missing]), /NaN|Infinity/);
   console.log('Comparison CSV preserves pinned identities, precision, statuses, partial bases and exact sample grids with safe spreadsheet text.');
 }
+
+{
+  // Run details name what each run actually solved: its sector and its rotor positions.
+  const { actualMeshProvenance, actualPositionsProvenance } = await importTypeScriptModule(new URL('../src/public/comparisonMetrics.ts', import.meta.url));
+  const run = (metadata, summary = {}, angles = []) => ({ solve_metadata: { mesh_source: 'native', mesher: 'gmsh', mesh_density: 'fine', ...metadata },
+    summary, torque_waveform: { electrical_angle_deg: angles, torque_Nm: angles.map(() => 1) } });
+  const grid = (count) => Array.from({ length: count }, (_, index) => index * 360 / count);
+  assert.equal(actualMeshProvenance(run({ sector_repeats: 2 })), 'native · gmsh · fine · 1/2 sector');
+  assert.equal(actualMeshProvenance(run({ sector_repeats: null })), 'native · gmsh · fine');
+  assert.equal(actualMeshProvenance(run({})), 'native · gmsh · fine');
+  assert.equal(actualPositionsProvenance(run({}, { cogging: { positions_per_period: 48 } }, grid(96))), '96 loaded · 48 per cogging period');
+  assert.equal(actualPositionsProvenance(run({}, {}, grid(48))), '48 loaded');
+  assert.equal(actualPositionsProvenance(run({}, {})), 'Not recorded');
+  console.log('Run details name the solved sector and the rotor positions of each run.');
+}

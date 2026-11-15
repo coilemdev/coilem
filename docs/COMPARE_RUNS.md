@@ -30,7 +30,10 @@ The table reads the integrity-checked resolved request and recorded setup label
 from each run, independently of the current open design or profile library.
 Stored profile metadata from the saved-setups feature is supported when present.
 The same table includes a Run details group with the design, solver, actual
-mesh, torque extraction, excitation, saved setup and completion time. These
+mesh (with the solved sector, such as `1/2 sector`, for a sector solve), rotor
+positions (the loaded sweep and the cogging sweep per cogging period), torque
+extraction, excitation, saved setup and completion time. Runs on different
+angle grids differ in ripple and cogging harmonics for that reason alone. These
 context rows remain visible even when they match; the changed-input count only
 counts distinct input paths with a known change from the baseline. A path may
 also be marked incomplete if another selected run did not record it.

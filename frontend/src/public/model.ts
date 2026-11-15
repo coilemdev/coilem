@@ -559,6 +559,8 @@ export interface SolveResult {
     run_setup?: { id: string; version: number; name: string; kind: 'reference' | 'user'; includes_numerics: boolean };
     solver_name: string;
     mesh_element_count: number;
+    /** Copies of the solved sector that make the motor; null or absent when the full motor was solved. */
+    sector_repeats?: number | null;
     rotor_positions: number;
     /** Where the solve's time went; absent on runs solved before it was recorded. */
     time_breakdown?: SolveTimeBreakdown | null;
