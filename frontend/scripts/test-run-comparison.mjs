@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
+import { parseCsv } from './csv-test-helpers.mjs';
 
 const { normalizeComparisonResult, previousCompletedRun, compareRunTiming, compareRunLosses } = await importTypeScriptModule(new URL('../src/public/runComparison.ts', import.meta.url));
 const { inputChanges } = await importTypeScriptModule(new URL('../src/public/runInputChanges.ts', import.meta.url));
@@ -299,3 +300,81 @@ assert.deepEqual(multipleTiming.rows.find(row => row.key === 'elapsed').values, 
 assert.deepEqual(multipleTiming.rows.find(row => row.key === 'meshes_rotated').values, [null, 0, 8]);
 assert.equal(JSON.stringify([left, right]), original, 'multi-run input tables preserve archived inputs');
 console.log('Multi-run comparison preserves pinned identities, the six-run limit, units, missing evidence, partial loss bases and elapsed timings.');
+
+{
+  const { comparisonCsv, comparisonCsvFilename } = await importTypeScriptModule(new URL('../src/public/comparisonCsv.ts', import.meta.url));
+  const makeRun = (index) => ({ id: `run-${index}`, label: `Run ${String.fromCharCode(65 + index)}`,
+    record: { project_slug: 'motor', project_name: 'Motor, "α"\r\nsecond line', run_id: `r${index}`, status: 'complete', completed_at: '2026-11-15T01:00:00Z' },
+    inputs: { config: { rotor: { magnet_thickness_mm: 4 + index }, solve_params: { current_amplitude_A: 20 + index, current_amplitude_convention: 'rms' } },
+      run_setup: { id: `setup-${index}`, name: index === 2 ? '=HYPERLINK("example", "profile")' : `Setup ${index}`, version: 1 } },
+    result: { ...timedA, summary: { avg_torque_Nm: 10 + index, torque_ripple_pct: 5, back_emf_fundamental_V: 20, Ke_Vs_per_rad_mech: 0.1,
+      peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1,
+      dq_flux_linkage: index === 5 ? null : { ...dqRecord, d_axis_source: index === 3 ? 'applied_current_angle' : 'no_load_flux_linkage' },
+      loss_breakdown: index === 5 ? null : index === 4 ? partialLoss : fullLoss,
+      cogging: { peak_to_peak_Nm: 0.004, status: 'experimental', status_reason: 'Archived cogging, not qualified.' } },
+      torque_waveform: { electrical_angle_deg: index === 1 ? [0, 0, 90] : index === 2 ? [0, 30, 90] : [0, 90], torque_Nm: index === 1 ? [1, 2, 3] : index === 2 ? [4, 5, 6] : [-1, 2] },
+      back_emf_waveform: { electrical_angle_deg: [0, 90], phase_a_V: [0, 1], phase_b_V: [1, 0], phase_c_V: [-1, 0] },
+      cogging_torque_waveform: { electrical_angle_deg: [0, 15], mechanical_angle_deg: [0, 7.5], torque_Nm: [-0.002, 0.002] },
+      torque_speed_analysis: { settings: { preset: 'preview', control: 'mtpa' }, envelope: { status: 'experimental', status_reason: 'Stored envelope coverage.',
+        limits: { dc_bus_V: 48, peak_current_A: 30, continuous_current_A: null }, winding_temperature_C: 80, phase_resistance_ohm: 0.05,
+        curves: [{ limit: 'peak', speed_rpm: [0, 1000], torque_Nm: [10, 8], power_W: [0, 2000], i_d_A: [0, -1], i_q_A: [20, 18], region: ['mtpa', 'field_weakening'],
+          base_speed_rpm: 500, max_speed_rpm: 1000, peak_power_W: 2000 }] } } },
+  });
+  const runs = [2, 0, 1, 3, 4, 5].map(makeRun);
+  const before = structuredClone(runs);
+  const csv = comparisonCsv(runs), table = parseCsv(csv), header = table[0];
+  assert.equal(csv.charCodeAt(0), 0xfeff, 'UTF-8 BOM keeps scientific symbols readable in spreadsheets');
+  assert.ok(table.every(row => row.length === header.length), 'every section uses the same columns');
+  assert.deepEqual(header.slice(9, 15), ['Run C', 'Run A', 'Run B', 'Run D', 'Run E', 'Run F']);
+  const row = (section, metric, record = 'value', coordinate = '', group) => table.find(item => item[0] === section && item[2] === metric && item[3] === record && item[6] === String(coordinate) && (group === undefined || item[1] === group));
+  assert.deepEqual(row('Run details', 'Role').slice(9, 15), ['Pinned baseline', 'Candidate', 'Candidate', 'Candidate', 'Candidate', 'Candidate']);
+  assert.equal(row('Run details', 'Design')[9], 'Motor, "α"\r\nsecond line', 'quoted multiline names round-trip');
+  assert.equal(row('Run details', 'Setup name')[9], '\'=HYPERLINK("example", "profile")', 'formula-like text is escaped');
+  const torque = row('Results comparison', 'Average torque');
+  assert.equal(torque[9], '12'); assert.equal(torque[10], '10'); assert.equal(torque[15], '-2');
+  assert.ok(Math.abs(Number(torque[20]) - (-2 / 12 * 100)) < 1e-12);
+  assert.equal(row('What changed?', 'Phase current')[10], '20 A rms');
+  assert.equal(row('Results comparison', 'Back EMF constant (Ke)')[4], 'V/krpm L-L rms');
+  assert.ok(Math.abs(Number(row('Results comparison', 'Back EMF constant (Ke)')[9]) - 12.82549830161864) < 1e-10);
+  assert.equal(row('Inductance & d/q', 'Ld · d-axis inductance')[9], '0.1');
+  assert.equal(row('Inductance & d/q', 'Ld · d-axis inductance', 'status')[9], 'experimental');
+  assert.equal(row('Inductance & d/q', 'λd · d-axis flux linkage', 'status')[9], 'qualified');
+  assert.equal(row('Inductance & d/q', 'λd · d-axis flux linkage')[17], '', 'different references have no component delta');
+  assert.match(row('Inductance & d/q', 'λd · d-axis flux linkage', 'comparison note')[12], /references differ/);
+  assert.equal(row('Inductance & d/q', 'λd · d-axis flux linkage')[14], 'Not recorded');
+  assert.equal(row('Losses & efficiency', 'Efficiency')[5], 'pp');
+  assert.equal(row('Losses & efficiency', 'Shaft power')[18], '', 'full and partial loss bases never produce a delta');
+  assert.match(row('Losses & efficiency', 'Shaft power', 'basis')[13], /Partial/);
+  assert.equal(row('Torque samples', 'Torque', 'value', 30)[10], 'Not sampled', 'grids are not interpolated');
+  assert.equal(row('Torque samples', 'Torque', 'sample index', 90)[9], '2');
+  assert.equal(row('Torque samples', 'Torque', 'sample index', 90)[10], '1');
+  assert.equal(row('Torque samples', 'Torque', 'value', 0)[10], '-1', 'negative numeric readings are not formula-escaped');
+  assert.equal(table.filter(item => item[0] === 'Torque samples' && item[2] === 'Torque' && item[3] === 'value' && item[6] === '0').length, 2, 'repeated coordinates keep both samples');
+  assert.equal(row('Torque–speed samples', 'Power', 'value', 1000, 'peak')[9], '2');
+  assert.equal(row('Torque–speed samples', 'Power', 'value', 1000, 'peak')[4], 'kW');
+  assert.equal(row('Cogging samples', 'Mechanical angle', 'value', 15)[9], '7.5', 'recorded mechanical angles are retained without deriving a new grid');
+  assert.equal(row('Solve time breakdown', 'Meshes rotated')[9], '0', 'zero counts are not missing');
+  assert.equal(row('Run details', 'Stored field snapshot')[9], 'Not recorded', 'no field fetch or fabricated snapshot');
+  assert.deepEqual(runs, before, 'export never mutates stored results');
+  const zero = makeRun(0); zero.result.summary.avg_torque_Nm = 0;
+  const two = parseCsv(comparisonCsv([zero, makeRun(1)]));
+  const changed = two.find(item => item[0] === 'Results comparison' && item[2] === 'Average torque' && item[3] === 'value');
+  assert.equal(changed[11], '11'); assert.equal(changed[12], '', 'nonzero change from zero has no percentage');
+  assert.equal(comparisonCsvFilename(runs), 'coilem-comparison-r2.csv');
+  const withLineVoltage = makeRun(0); withLineVoltage.result.back_emf_waveform.line_ab_V = [10, 20];
+  const sparse = parseCsv(comparisonCsv([makeRun(2), withLineVoltage]));
+  const lineVoltage = sparse.find(item => item[0] === 'Back EMF samples' && item[2] === 'Line A–B' && item[3] === 'value' && item[6] === '0');
+  assert.equal(lineVoltage[9], 'Not recorded', 'missing optional waveforms do not inherit another quantity’s coordinates');
+  assert.equal(lineVoltage[10], '10'); assert.equal(lineVoltage[11], '');
+  for (const name of ['=1+1', '+1', '-1', '@SUM(1,2)', '  =1', '\t=1', '\n=1']) {
+    const named = makeRun(0); named.record.project_name = name;
+    const exported = parseCsv(comparisonCsv([named, makeRun(1)]));
+    assert.equal(exported.find(item => item[0] === 'Run details' && item[2] === 'Design')[9], `'${name}`);
+  }
+  assert.throws(() => comparisonCsv([runs[0]]), /two to six/);
+  assert.throws(() => comparisonCsv([runs[0], runs[0]]), /distinct completed/);
+  assert.throws(() => comparisonCsv([{ ...runs[0], record: { ...runs[0].record, status: 'running' } }, runs[1]]), /completed/);
+  const missing = makeRun(5); missing.result.summary.avg_torque_Nm = NaN;
+  assert.doesNotMatch(comparisonCsv([zero, missing]), /NaN|Infinity/);
+  console.log('Comparison CSV preserves pinned identities, precision, statuses, partial bases and exact sample grids with safe spreadsheet text.');
+}

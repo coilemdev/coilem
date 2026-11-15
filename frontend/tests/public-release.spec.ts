@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
 import { configureSection } from './design-helpers';
+import { parseCsv } from '../scripts/csv-test-helpers.mjs';
 
 const apiUrl = `http://127.0.0.1:${process.env.COILEM_TEST_API_PORT || 58000}`;
 const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
@@ -1983,6 +1984,78 @@ async function multiRunPage(page: Page) {
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   return { dialog: page.getByRole('dialog', { name: 'Previous runs', exact: true }), records, storage };
 }
+
+test('Compare CSV: downloads two to six selected runs, follows the pinned baseline and blocks stale exports', async ({ page }, info) => {
+  const errors: string[] = [], forbidden: string[] = [], reads: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (/\/(solve|solve\/stream|performance\/.*)$/.test(path) || path.includes('/solve/field-frame/') || path.endsWith('/comparison/field')) forbidden.push(path);
+    if (path.endsWith('/comparison')) reads.push(path);
+  });
+  const { dialog } = await multiRunPage(page);
+  const button = dialog.getByRole('button', { name: 'Export CSV', exact: true });
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+  const download = async (name: string) => {
+    const before = reads.length;
+    const pending = page.waitForEvent('download');
+    await button.click();
+    const file = await pending;
+    expect(file.suggestedFilename()).toMatch(/^coilem-comparison-r\d+\.csv$/);
+    const path = info.outputPath(name);
+    await file.saveAs(path);
+    const content = await readFile(path, 'utf8');
+    expect(content.charCodeAt(0)).toBe(0xfeff);
+    expect(reads.length).toBe(before);
+    const rows = parseCsv(content);
+    expect(rows.every((row: string[]) => row.length === rows[0].length)).toBe(true);
+    return rows as string[][];
+  };
+  const pair = await download('comparison-two.csv');
+  expect(pair[0].slice(9, 11)).toEqual(['Run A', 'Run B']);
+  expect(pair.find(row => row[0] === 'Results comparison' && row[2] === 'Average torque' && row[3] === 'value')!.slice(9, 13)).toEqual(['10', '11', '1', '10']);
+  for (let i = 0; i < 4; i++) {
+    await dialog.getByRole('button', { name: '+ Add run', exact: true }).click();
+    await expect(dialog.getByRole('combobox')).toHaveCount(3 + i);
+    await expect(button).toBeEnabled();
+  }
+  await dialog.getByRole('button', { name: 'Pin Run C as baseline', exact: true }).click();
+  const six = await download('comparison-six.csv');
+  expect(six[0].slice(9, 15)).toEqual(['Run C', 'Run A', 'Run B', 'Run D', 'Run E', 'Run F']);
+  expect(six.find(row => row[0] === 'Run details' && row[2] === 'Run ID')!.slice(9, 15)).toEqual(['r2', 'r0', 'r1', 'r3', 'r4', 'r5']);
+  const torque = six.find(row => row[0] === 'Results comparison' && row[2] === 'Average torque' && row[3] === 'value')!;
+  expect(torque[15]).toBe('-2');
+  expect(Number(torque[20])).toBeCloseTo(-16.6666666667);
+  expect(six.find(row => row[0] === 'Losses & efficiency' && row[2] === 'Shaft power' && row[3] === 'value')![17]).toBe('');
+  expect(six.find(row => row[0] === 'Inductance & d/q' && row[2] === 'λd · d-axis flux linkage' && row[3] === 'status')![9]).toBe('qualified');
+  expect(six.some(row => row[0] === 'Torque–speed samples' && row[2] === 'Power' && row[4] === 'kW')).toBe(true);
+  await expect(dialog.getByRole('status').filter({ hasText: 'Exported 6 runs with Run C as the baseline.' })).toBeVisible();
+  await page.setViewportSize({ width: 600, height: 950 });
+  await expect(button).toBeVisible();
+  const box = await button.boundingBox();
+  expect(box!.x + box!.width).toBeLessThanOrEqual(600);
+  await button.screenshot({ path: info.outputPath('export-csv-button.png') });
+
+  let release: () => void = () => {};
+  const held = new Promise<void>(resolve => { release = resolve; });
+  let fail = true;
+  await page.route('**/runs/multi/r6/comparison', async route => {
+    await held;
+    await route.fulfill(fail ? { status: 500, json: { detail: 'Comparison fixture is unavailable.' } } : { json: multiRunFixture(6) });
+  });
+  await dialog.getByRole('combobox', { name: 'Run B · candidate', exact: true }).selectOption('multi/r6');
+  await expect(button).toBeDisabled();
+  release();
+  await expect(dialog.getByRole('alert').filter({ hasText: 'Run B' })).toBeVisible();
+  await expect(button).toBeDisabled();
+  fail = false;
+  await dialog.getByRole('button', { name: 'Retry Run B', exact: true }).click();
+  await expect(button).toBeEnabled();
+  const retried = await download('comparison-after-retry.csv');
+  expect(retried.find(row => row[0] === 'Run details' && row[2] === 'Run ID')!.slice(9, 15)).toEqual(['r2', 'r0', 'r6', 'r3', 'r4', 'r5']);
+  expect(errors).toEqual([]); expect(forbidden).toEqual([]);
+});
 
 test('Compare views: envelopes use rpm, independent toggles and a pinned baseline for six runs', async ({ page }, info) => {
   const forbidden: string[] = [], fieldRequests: string[] = [];

@@ -24,6 +24,7 @@ const motorConstantsComponentSource = await readFile(path.join(frontendRoot, 'sr
 const bldcChartSource = await readFile(path.join(frontendRoot, 'src/public/BldcTorqueCurrentChart.tsx'), 'utf8');
 const exampleDesignsSource = await readFile(path.join(frontendRoot, 'src/public/exampleDesigns.ts'), 'utf8');
 const runComparisonSource = await readFile(path.join(frontendRoot, 'src/public/PublicRunComparison.tsx'), 'utf8');
+const comparisonMetricsSource = await readFile(path.join(frontendRoot, 'src/public/comparisonMetrics.ts'), 'utf8');
 const materialWorkspaceSource = await readFile(
   path.join(frontendRoot, 'src/public/MaterialWorkspace.tsx'),
   'utf8',
@@ -2187,8 +2188,8 @@ assert.match(motorThreeSource, /shaftFrontOverhang/);
 
 
 // #153: Compare runs shows Kt per rms ampere, from the same view as Results.
-assert.match(runComparisonSource, /\{ label: 'Torque constant', unit: 'N·m\/A rms', value: \(run\) => motorConstantsView\(run\.summary\)\.kt\.value \}/);
-assert.doesNotMatch(runComparisonSource, /run\.summary\.Kt_Nm_per_A/);
+assert.match(comparisonMetricsSource, /\{ label: 'Torque constant', unit: 'N·m\/A rms', value: \(run\) => motorConstantsView\(run\.summary\)\.kt\.value \}/);
+assert.doesNotMatch(comparisonMetricsSource, /run\.summary\.Kt_Nm_per_A/);
 // #154: Advanced Geometry rounds the stored widths for display only.
 assert.match(workspaceSource, /summary=\{advancedGeometrySummary\(config, statorWidths\)\}/);
 assert.match(workspaceSource, /NumberRow label="Yoke Tooth Width" value=\{shownWidthMm\(config\.stator\.tooth_width_mm\)\}/);
