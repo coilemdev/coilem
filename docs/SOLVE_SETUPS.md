@@ -47,6 +47,12 @@ no mechanical loss) stay unset in a setup. Applying a setup therefore never adds
 an explicit temperature to a magnet grade without cited temperature data, or to
 the LRK reference, which both refuse one.
 
+A setup that includes accuracy and solver settings also records the **Solved
+region** (Mesh preparation). It records **One sector** only; a full-motor setup
+leaves the field out, as setups saved before sector solves did, and applying any
+such setup without **One sector** solves the full motor. An operating-point-only
+setup keeps the design's solved region.
+
 Save the `.coilem` design file to keep a portable copy of the setups, their active
 identity/version and the actual settings. Opening that portable file preserves
 its exact settings, including any unsaved changes to the selected setup. Its

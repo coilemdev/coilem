@@ -52,6 +52,7 @@ NUMERICAL_KEYS: tuple[str, ...] = (
     "mesher",
     "corner_refinement",
     "mesh_build",
+    "symmetry",
     "rotor_rotation_model",
     "torque_method",
     "nonlinear_solver",
@@ -86,6 +87,7 @@ ENUMS: dict[str, tuple[str, ...]] = {
     "mesh_source": ("native",),
     "mesher": ("gmsh",),
     "mesh_build": ("precise", "fast"),
+    "symmetry": ("full", "auto"),
     "rotor_rotation_model": ("remesh_per_step",),
     "torque_method": ("contour", "arkkio", "weighted_stress"),
     "nonlinear_solver": ("picard", "newton"),
@@ -461,6 +463,10 @@ def _with_unset_defaults(parameters: Mapping[str, Any], body: Mapping[str, Any])
             result[key] = default if value is None else value
         else:
             result[key] = None if _number(value) and value == default else value
+    # The full motor is left out, as saved run configs leave it out, so a setup saved
+    # before sector solves existed still matches a full-motor design.
+    if result.get("symmetry") == "full":
+        del result["symmetry"]
     return result
 
 
@@ -485,7 +491,12 @@ def apply_setup(body: Mapping[str, Any], setup: RunSetup) -> dict[str, Any]:
             suggestion="List the design's setups with `coilem setups DESIGN` and choose one marked compatible.",
         )
     result = copy.deepcopy(dict(body))
-    parameters = {**(result.get("solve_params") or {}), **_with_unset_defaults(copy.deepcopy(setup.parameters), body)}
+    # A setup with accuracy and solver settings that names no solved region solves the full motor.
+    parameters = {
+        **(result.get("solve_params") or {}),
+        **({"symmetry": "full"} if setup.includes_numerics else {}),
+        **_with_unset_defaults(copy.deepcopy(setup.parameters), body),
+    }
     if parameters.get("max_nonlinear_iterations") is None:
         parameters.pop("max_nonlinear_iterations", None)
     outputs = {**copy.deepcopy(setup.outputs), "thd_analysis": _thd(setup.outputs["back_emf"], parameters.get("solve_quality"))}
