@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { createServer } from 'node:net';
+import { importTypeScriptModule } from './import-typescript-module.mjs';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -2211,4 +2213,29 @@ assert.match(workspaceSource, /\{row\.status && <StatusBadge status=\{row\.statu
 // A pinned reference without its own wire shows the published conductor its resistance uses, not 'Derived from slot'.
 assert.match(workspaceSource, /config\.geometry_reference && !wire \? \(/);
 assert.match(workspaceSource, /<span className="param-label">Wire<small>published<\/small><\/span>/);
+// Browser shards must not assume a particular loopback port is unused.
+{
+  const { publicTestPorts } = await importTypeScriptModule(new URL('../playwrightPorts.ts', import.meta.url));
+  const occupied = createServer();
+  await new Promise(resolve => occupied.listen(0, '127.0.0.1', resolve));
+  const probes = [];
+  try {
+    const busy = occupied.address().port;
+    const ports = await publicTestPorts({});
+    assert.notEqual(ports.apiPort, ports.uiPort);
+    assert.notEqual(ports.apiPort, busy);
+    assert.notEqual(ports.uiPort, busy);
+    for (const port of [ports.apiPort, ports.uiPort]) {
+      const probe = createServer();
+      probes.push(probe);
+      await new Promise((resolve, reject) => probe.once('error', reject).listen(port, '127.0.0.1', resolve));
+    }
+    assert.deepEqual(await publicTestPorts({ COILEM_TEST_API_PORT: '12001', COILEM_TEST_UI_PORT: '12002' }), { apiPort: 12001, uiPort: 12002 });
+    await assert.rejects(publicTestPorts({ COILEM_TEST_API_PORT: '0' }), /must be a port/);
+    await assert.rejects(publicTestPorts({ COILEM_TEST_UI_PORT: 'invalid' }), /must be a port/);
+    await assert.rejects(publicTestPorts({ COILEM_TEST_API_PORT: '12345', COILEM_TEST_UI_PORT: '12345' }), /different ports/);
+  } finally {
+    await Promise.all([occupied, ...probes].map(server => new Promise(resolve => server.close(resolve))));
+  }
+}
 console.log('public UI contract audit passed');

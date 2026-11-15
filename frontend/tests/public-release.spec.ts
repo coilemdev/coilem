@@ -7,7 +7,7 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
 import { configureSection } from './design-helpers';
 
-const apiUrl = 'http://127.0.0.1:58000';
+const apiUrl = `http://127.0.0.1:${process.env.COILEM_TEST_API_PORT || 58000}`;
 const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
@@ -1311,8 +1311,9 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
   await storedRow.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
-  await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
-  await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
+  await expect(dialog.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true }).getByRole('tab')).toHaveText(['Torque–speed', 'Fields']);
+  await expect(dialog.getByRole('region', { name: 'Torque–speed comparison', exact: true })).toContainText('A torque–speed map was not recorded for this run.');
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
   await expect(dialog.getByRole('region', { name: 'Losses and efficiency comparison', exact: true })).toContainText('Losses & efficiency were not recorded for either run.');
   const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics tbody tr').filter({
@@ -1350,7 +1351,7 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
-  await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
+  await expect(dialog.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await page.route('**/runs', route => route.fulfill({ json: {
     storage: { used_bytes: 0, max_bytes: 10000, available_bytes: 10000, accepting_new_runs: true }, runs: [],

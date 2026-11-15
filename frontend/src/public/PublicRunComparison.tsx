@@ -239,7 +239,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
   const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
-  const [plot, setPlot] = useState<'torque' | 'back-emf' | 'cogging' | 'torque-speed' | 'fields'>('torque');
+  const [plotChoice, setPlot] = useState<'auto' | 'torque' | 'back-emf' | 'cogging' | 'torque-speed' | 'fields'>('auto');
   const [hiddenSeriesKeys, setHiddenSeriesKeys] = useState<string[]>([]);
   const [envelopeState, setEnvelopeState] = useState<EnvelopeComparisonState>({ limit: 'peak', quantity: 'torque', hidden: [], speed: 0 });
   const [fieldState, setFieldState] = useState<FieldComparisonState>({ position: 'snapshot', source: 'resultant' });
@@ -376,14 +376,13 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const torqueAvailable = torqueSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
   const emfAvailable = emfSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
   const coggingAvailable = coggingSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const automaticPlot = torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : coggingAvailable ? 'cogging' : 'torque-speed';
+  const selectedPlotAvailable = plotChoice === 'torque-speed' || plotChoice === 'fields'
+    || (plotChoice === 'torque' && torqueAvailable) || (plotChoice === 'back-emf' && emfAvailable) || (plotChoice === 'cogging' && coggingAvailable);
+  const plot = selectedPlotAvailable ? plotChoice : automaticPlot;
   const timing = ready ? compareMultipleTiming(runs.map(run => run.result)) : null;
   const losses = ready ? compareMultipleLosses(runs.map(run => run.result)) : [];
   const dq = compareRunDq(runs.map(run => run.result));
-  useEffect(() => {
-    if (!ready) return;
-    setPlot((current) => current === 'torque-speed' || current === 'fields' || (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
-      ? current : torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : coggingAvailable ? 'cogging' : 'torque-speed');
-  }, [ready, torqueAvailable, emfAvailable, coggingAvailable]);
   return (
     <section className="public-run-compare" aria-label="Compare saved runs">
       {manageRuns && (

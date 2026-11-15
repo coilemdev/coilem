@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 2810,
-      "sha256": "281d11acd794d4ba5856a6cd341ab40dc31b6e83b8c00c838b894aa3375d11b9"
+      "bytes": 3195,
+      "sha256": "11a26c3b782ada1f487dc142bf8c04a70be343df1a52d6369b1915be16c6e857"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177840,
-      "sha256": "c411324ae713999d57e66b6c4507d727b3341ab021c92ac2ef8eeb241ab8c135"
+      "bytes": 179319,
+      "sha256": "3d6343f3a14846f67cd81fad211ab8bef42ced0f42cb05a04471b32683e5719e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 40489,
-      "sha256": "85485c49ad023c6f162918888ce106633a18dc4b6d1ea65bab3450eb6dfe46cf"
+      "bytes": 40493,
+      "sha256": "2a9a64b1c14df38d7788d767dcbcaad2e8bbf984e728297b1e1c7574f50d8327"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 151136,
-      "sha256": "e075f0769f8c0ce83ae8b63e83af17dd9d85e43d709a06a11bfb376097c7c8a0"
+      "bytes": 151359,
+      "sha256": "483385218e45ada1ffa8fa70942ce754719e25dfd0eb1efe660c3fef8ab7d698"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -18817,6 +18817,11 @@
       "path": "frontend/src/public/fieldComparison.ts",
       "bytes": 1560,
       "sha256": "542fa6990f49de94c9e9377ce7daf0cf58ee810ce6f6aa9d911954bdb8a604d4"
+    },
+    {
+      "path": "frontend/playwrightPorts.ts",
+      "bytes": 1508,
+      "sha256": "897a28ba906acf4fbae26f2938591ff2b9ac9ea7a09124158dfd186dfb1904a9"
     }
   ],
   "public_patches": [
@@ -41108,6 +41113,18 @@
       "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
       "path": "docs/PUBLIC_BOUNDARY.md",
       "source_sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "281d11acd794d4ba5856a6cd341ab40dc31b6e83b8c00c838b894aa3375d11b9",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/playwrightPorts.ts",
+      "source_sha256": null,
       "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
     },
     {
