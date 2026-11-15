@@ -75,7 +75,7 @@ def geometry_input_advisories(config: MotorConfig) -> list[str]:
 # Keep equal to SECTOR_COGGING_NOTE in frontend/src/public/coggingView.ts.
 SECTOR_COGGING_ADVISORY = (
     "Cogging torque from one sector can differ from a full-motor solve by up to 9% at the Coarse, Medium and Fine meshes. "
-    "Solve the full motor when cogging matters; loaded torque, ripple and back-EMF are not affected."
+    "Choose the Very fine mesh, or solve the full motor, when cogging matters; loaded torque, ripple and back-EMF are not affected."
 )
 
 

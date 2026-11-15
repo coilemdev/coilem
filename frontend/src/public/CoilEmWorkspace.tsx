@@ -3848,10 +3848,11 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const sixStepSelected = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
-  const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
+  const densityChoices: Array<{ value: MotorConfig['solve_params']['mesh_density']; label: string; title?: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
     { value: 'fine', label: 'Fine' },
+    { value: 'very_fine', label: 'Very fine', title: 'About 3–6× the elements of Medium: slower meshing and solving. For cogging and mesh-convergence checks.' },
   ];
   const meshBuild = config.solve_params.mesh_build ?? 'precise';
   const meshBuildChoices: Array<{ value: MotorConfig['solve_params']['mesh_build']; label: string; title: string }> = [
@@ -3918,9 +3919,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     : config.solve_params.linear_solver_preconditioner === 'ic0'
       ? 'IC(0)'
       : 'Jacobi';
-  const meshDensityLabel = config.solve_params.mesh_density === 'normal'
-    ? 'Medium'
-    : config.solve_params.mesh_density.replace('_', ' ');
+  const meshDensityLabel = densityChoices.find((choice) => choice.value === config.solve_params.mesh_density)?.label
+    ?? config.solve_params.mesh_density.replace('_', ' ');
   const currentEnabled = selectedAnalyses(config, selectedSolver).some((key) => key === 'torque_sweep' || key === 'losses_efficiency');
   const mapEnabled = selectedSolver !== 'elmer' && config.solve_options.torque_speed_envelope;
   const operatingSummary = currentEnabled ? [
@@ -3947,7 +3947,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     ? 'In Advanced options, change Nonlinear solver to Newton, then run the analysis again.'
     : reviewDesignForConvergence
       ? 'Newton and a fine mesh are already selected. Review the geometry and steel B–H curve, especially near saturation, before retrying.'
-      : 'Try a finer mesh: in Advanced options, choose Fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
+      : 'Try a finer mesh: in Advanced options, choose Fine or Very fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
   const openConvergenceSettings = () => {
     recoveryFocusTargetRef.current = config.solve_params.nonlinear_solver === 'picard'
       ? nonlinearSolverRef.current
@@ -4481,7 +4481,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <div className="public-advanced-body">
             <section className="public-advanced-section public-advanced-mesh-section" aria-labelledby="public-mesh-preparation-heading">
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
-              <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} title={choice.title} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              {config.solve_params.mesh_density === 'very_fine' && <p className="public-mesh-build-note">Very fine meshes have about 3–6× the elements of Medium, so meshing and solving take several times longer and saved runs are larger. Use it for cogging and for checking that results have converged.</p>}
               <label className="public-check-row"><input type="checkbox" checked={config.solve_params.corner_refinement} disabled={busy !== null} onChange={(event) => onMeshSettingChange('corner_refinement', event.target.checked)} /> Corner refinement</label>
               <div className="public-mesh-build" role="group" aria-labelledby="public-mesh-build-label">
                 <span id="public-mesh-build-label">Mesh build</span>

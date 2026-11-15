@@ -96,7 +96,7 @@ export function coggingPlanNote(
  * motor, and only the Very fine mesh brought it within 0.4%. Loaded torque, ripple and back-EMF
  * agreed. Keep this text equal to backend/input_advisories.py SECTOR_COGGING_ADVISORY.
  */
-export const SECTOR_COGGING_NOTE = 'Cogging torque from one sector can differ from a full-motor solve by up to 9% at the Coarse, Medium and Fine meshes. Solve the full motor when cogging matters; loaded torque, ripple and back-EMF are not affected.';
+export const SECTOR_COGGING_NOTE = 'Cogging torque from one sector can differ from a full-motor solve by up to 9% at the Coarse, Medium and Fine meshes. Choose the Very fine mesh, or solve the full motor, when cogging matters; loaded torque, ripple and back-EMF are not affected.';
 
 /** The warning for a one-sector Magneto2D request with cogging below the Very fine mesh, or null. */
 export function sectorCoggingNote(

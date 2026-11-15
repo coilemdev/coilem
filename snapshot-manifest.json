@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/scripts/test-cogging-view.mjs",
-      "bytes": 6541,
-      "sha256": "e7139599dd4f13f0eb6727767325a9f6e180150019d58a2a41f70038177c551f"
+      "bytes": 6572,
+      "sha256": "b7467525364d73319fe3f5b34861a3a4e8010a59f074f3a03fa67383b2fb257d"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 302786,
-      "sha256": "0a289ea5f5f0393ce94033597abf216887a9b1bb0784f159ef3a74d918f3b847"
+      "bytes": 303357,
+      "sha256": "f05ec47299c9f90246f871a7d26e6b6b896e532ded633fc7ee5edcdc27091f95"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7185,8 +7185,8 @@
     },
     {
       "path": "frontend/src/public/coggingView.ts",
-      "bytes": 8631,
-      "sha256": "b70831d3709673a1dab76915e290e766a3161453217c82a692530872a7b7781c"
+      "bytes": 8662,
+      "sha256": "94ef35504d8123ff0bfd3ad0f152a000d57c3470c9b06953bb8d1c32a42ea419"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -17995,8 +17995,8 @@
     },
     {
       "path": "backend/input_advisories.py",
-      "bytes": 4890,
-      "sha256": "6f6d3746c065b437273c71990c39894583e419fc64dbe32e36df788468b38488"
+      "bytes": 4921,
+      "sha256": "1caf415160b039e1a5c170725f80495e0746f9d9cdc02bdcb15434cfd0832b5c"
     },
     {
       "path": "backend/rotor_construction_preview.py",

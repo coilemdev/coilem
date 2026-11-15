@@ -93,7 +93,7 @@ assert.equal(sectorCoggingNote(sectorRequest('auto', 'very_fine')), null);
 assert.equal(sectorCoggingNote(sectorRequest('full', 'normal')), null);
 assert.equal(sectorCoggingNote(sectorRequest('auto', 'normal', false)), null);
 assert.equal(sectorCoggingNote(sectorRequest('auto', 'normal'), 'elmer'), null);
-assert.match(SECTOR_COGGING_NOTE, /up to 9% at the Coarse, Medium and Fine meshes\. Solve the full motor when cogging matters/);
+assert.match(SECTOR_COGGING_NOTE, /up to 9% at the Coarse, Medium and Fine meshes\. Choose the Very fine mesh, or solve the full motor, when cogging matters/);
 assert.doesNotMatch(coggingPlanNote(12, 8, 24), /can miss peaks/);
 assert.doesNotMatch(coggingPlanNote(12, 8, 48), /can miss peaks/);
 
