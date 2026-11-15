@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 15998,
-      "sha256": "320117cf170b7fe6bd7beb1b6bb00e1985630958fefee034ba451eeb8ac512fc"
+      "bytes": 16253,
+      "sha256": "b73e61739173faf7831de0e409a3a556cf9394f76f67df5a36548a525daa3a3e"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 660,
-      "sha256": "01d4a96eb3cf7cd2b4e4e815ce630ce43bfb4a426766e27512e392cb8c9438e8"
+      "bytes": 810,
+      "sha256": "5d63c27e7974f39d062db3b7ebc820fde0379cfb857c5b1bb1ba0ead6213c222"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -125,8 +125,8 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 22658,
-      "sha256": "3eb9505e7739b9a4ea606562f7d9dfa330875daa053725b9a3d595fd3b66162e"
+      "bytes": 23144,
+      "sha256": "cf1fa11451cfb497799ec9a1710915912042f1126380fd9aaec036319d74775b"
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
@@ -135,13 +135,13 @@
     },
     {
       "path": "backend/benchmark_suite/command.py",
-      "bytes": 8127,
-      "sha256": "cccd8cf4641d98a957ae042bef7e3f048edd207f83999169e37a8588a3672fe0"
+      "bytes": 8870,
+      "sha256": "92fbdfe1ec5f684bb4689ba5e1ab219164f3ca103f6d76b6a7d2abd27f45a87b"
     },
     {
       "path": "backend/benchmark_suite/contract.py",
-      "bytes": 6924,
-      "sha256": "374371a1873e0798a8c9ba1a668f9454bafd7c4bcf17e8defae1d18514ad63c4"
+      "bytes": 7011,
+      "sha256": "cc1541632bc3795edb23fce38d93c617702c931bb4f0713af282b018244cbafd"
     },
     {
       "path": "backend/benchmark_suite/dq_metrics.py",
@@ -170,13 +170,13 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 18370,
-      "sha256": "7bb95768e00e74ae02f67d6b051609c01dc845230927335f56ab468947f10cef"
+      "bytes": 20525,
+      "sha256": "015494fc38b1230798ce0f78ec5d2c73d22504663bac8989cc80f0349cdcc836"
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 30850,
-      "sha256": "1cb43e25d38a992823275b08a2e98b84f36619bb9db476cfab26abca2b8b9a2e"
+      "bytes": 32490,
+      "sha256": "e8a95f747ee34493292169adc9d8e4ea5d359a3d835ce247da0b814c313933a7"
     },
     {
       "path": "backend/benchmark_suite/resistance_metrics.py",
@@ -500,8 +500,8 @@
     },
     {
       "path": "backend/models/result.py",
-      "bytes": 9630,
-      "sha256": "5fdbc3d4007c45f650fca794ec6db4839f78b3445e4f57d5fd719c115ec0f068"
+      "bytes": 9824,
+      "sha256": "5d7bd727508749974bb6cdd72531625bf5f670895b20cbec9b7d1fda774bf2a9"
     },
     {
       "path": "backend/models/waveforms.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 9949,
-      "sha256": "eecaec7cea349d1275a625f9bd4c56d60cecac6c6bb31314dc012f0876a1f96d"
+      "bytes": 10170,
+      "sha256": "2c88c96ca9a385bcafcd08615776e5e9d6b89aceccbb5199537143ab1e1cf418"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -645,8 +645,8 @@
     },
     {
       "path": "backend/solver/__init__.py",
-      "bytes": 179015,
-      "sha256": "3ee199eb6298fa2fd3bd6bd11b03e18b332126523695492ae4bbced53e5fdf19"
+      "bytes": 179094,
+      "sha256": "ca63994b48db1451333cb59da8c66f74c1666a77afc6151cb83e1afc6b468c21"
     },
     {
       "path": "backend/solver/_helpers.py",
@@ -8425,8 +8425,8 @@
     },
     {
       "path": "tools/benchmark_prius.py",
-      "bytes": 13926,
-      "sha256": "1345c63f4868e05da249d7f0a6d6d27d0f368a7eca7a0a125af7f74ffb644d20"
+      "bytes": 14724,
+      "sha256": "ca4f1ad605c9992e7aeae512267b0c12e9a9eb12d895dcb9ed9ceb6f9edec6cb"
     },
     {
       "path": "tools/benchmark_suite/external.py",
@@ -12130,8 +12130,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 8218,
-      "sha256": "93a995c61b2eb94ab05db1a7f711f2e51ff7378902045f4e721d23d2b88dd2fd"
+      "bytes": 8579,
+      "sha256": "35121177a3a20273d7b9f3bf97c3af9cc79f8c0bbeed9aedeb3fb2ef859ea5e5"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12150,8 +12150,8 @@
     },
     {
       "path": "tools/benchmark_ci.py",
-      "bytes": 5044,
-      "sha256": "eab8da52e7a613c77ea7462b2d82f080b2db5a492a6dfaecd021b37a50993fcb"
+      "bytes": 5616,
+      "sha256": "3890d85f9e88d95bfa8fe2b566229e3872d64960fb732d0539d78de24f3ab588"
     },
     {
       "path": "tools/benchmark_shards.py",
@@ -12160,8 +12160,8 @@
     },
     {
       "path": "tools/join_benchmark_runs.py",
-      "bytes": 9064,
-      "sha256": "23fb056ec0c6a8bb7fb4c79bb47e0294ed8bcf865f5d924b3bc3eb418e3159f0"
+      "bytes": 9170,
+      "sha256": "6af15ea8dbe7c95cdded37df8266049a543c24b7bdcd0732c27c065a52d300f0"
     },
     {
       "path": "tools/physics_impact.py",
@@ -15704,6 +15704,391 @@
       "sha256": "b21ec354056e98e53eeeb3faa611f824c05f4d9390892e0e405c8e88aa80044b"
     },
     {
+      "path": "benchmarks/af-v1.11-sector/README.md",
+      "bytes": 2098,
+      "sha256": "f402353bb04f52a02f99c9cae4e2f1afb37cd74ad307c20f3aa89372491b1308"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/benchmark_spec.json",
+      "bytes": 51240,
+      "sha256": "1a9d6891aff70c95b7fddc29f40aa359126c86e71b3e92e5f622ad781c0509b7"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_12s10p_fscw_contract__cogging__native.json",
+      "bytes": 2528,
+      "sha256": "328b2247e7f753b5f41983bc092fa9dc0c7f4a6d55436b80e6f84e8c7cc6b5f4"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2530,
+      "sha256": "f19e56abdc72faa5f9cfac475938af94a5ef92d370661fc3376e0df6d8c3098c"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_24s16p_industrial_contract__cogging__native.json",
+      "bytes": 2569,
+      "sha256": "fbed8454ebe5a8c8fba5bbc44805ee3e0839a4e7a4a15d2da386a2a42f79d43c"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2571,
+      "sha256": "2667e730458d4d30751a6fc09791a6e432b2f60f63e21fa708e9a6e2f96c6c3a"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2523,
+      "sha256": "fa3bce4b9be6e1613ede2fad2ebbf32a7adc947052f1812c31c8235bf1d0c48f"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging__native.json",
+      "bytes": 2555,
+      "sha256": "3753685aeb0d506b7b85fd8cbdbcb68179502d35f8d4171cbef6a03d374d8f60"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2557,
+      "sha256": "a9c5e8ed067c772f2d59f7df587fa0a8bcb1f6f6042a0cdc3c45b8ec492b51d0"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__cogging__native.json",
+      "bytes": 2568,
+      "sha256": "9372670ddbbcb05a757f13eea47392ec5ffb948bce31a32ecaca4157bc1cffcd"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2571,
+      "sha256": "6bff745ffbcb4693b767578689079c681e164abbd5008233bf36f81b551bf17a"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2572,
+      "sha256": "2d5e2a3b42988067d8ab274035d790c78c52092bc8882c1668a3061fecf36e85"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2572,
+      "sha256": "a3bd8e28eb9e6d5d55c6fca92513cfddc673e5da2aff953c0d2281a8ba8d8c81"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2570,
+      "sha256": "a9133f4db6be735a23af3f6a5fe66e75a2478ba3f78d8cfbc7940baa72e33455"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2571,
+      "sha256": "fba6731337b6f40a5b2f8c42483a90a1b25fa56049a7d586b47e5b94df88f102"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2571,
+      "sha256": "5f0fbf28148ff97f4242ffdfc6f5f086575542ef5a426b5c6b3938ab1fc7f9e7"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2571,
+      "sha256": "6b553feae3bb104c8b4ff14c8e3fe56fca9037c83282c37e8fbc012538bb8ac4"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2570,
+      "sha256": "a796a862aa1eca8b3c673ab053b89bd988d45e08d56f94f746096ad2fb280f2b"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2570,
+      "sha256": "a9133f4db6be735a23af3f6a5fe66e75a2478ba3f78d8cfbc7940baa72e33455"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2569,
+      "sha256": "688199235f20296968acef0399766115adb983a6eb64bf72f2a3241db8cbca07"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2551,
+      "sha256": "4fab344d634f6345ed4dd825f4f272106a788a5d5780082416ca497ca2927363"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2551,
+      "sha256": "d2f8623e5326e4c342f2f6f5d46f0bd2549599c00dbcf7f1d5bcef332f83b76a"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2551,
+      "sha256": "f46cf081c7fbd01517d8eeff28647bc61341528dd6db4e8dc26b733997fc0523"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2551,
+      "sha256": "c08c8c4e09de4c650b99329d7509d75db3434cdf0870d09b1c4ab92b29819fc7"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2551,
+      "sha256": "04e50547b07353a39022c5a9f7d97dba242c850a3b234aed34b2c8ab0564878f"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2551,
+      "sha256": "87625fb2609bb7123dfcea95325f99b8b0657bf16af8d4e1bab313d44254c84d"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2554,
+      "sha256": "e21248be2619c9e2ab7bed5cfabd787025daf477dc6809e2d61d5b2438ecd9d6"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_12p36s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2530,
+      "sha256": "ed3cae84555cfec7e8b14cff25cefaaa271eb135e893e2661a9dc3d4892191dc"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2529,
+      "sha256": "7b33b6089a21526f83d4f0416e6d2e7a7ee30041b971e7aa3b2ba70b25f80d43"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1628,
+      "sha256": "80dc465637ca9a711f4ded6f8c968eebb71e8d876ca42b11edc92552c2c6798e"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1631,
+      "sha256": "f59c5209927235009c1501f34786b46413fa23ab34825035b5df465963022a75"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1630,
+      "sha256": "75a8e99f1e62ebafa77232cbf4d392b46e866dda4fe9dabed1639dc779a42b00"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__baseline__cogging__native.json",
+      "bytes": 2525,
+      "sha256": "5220e03f94d2e90e14c5efdb7e46f2c2e0dd53abb475559b4cdc641613e8842e"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2527,
+      "sha256": "349cc49cbf3fa7e8472b5ac54a3bee94c0c0d19e620c3ee6085fd20a5d89b116"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2527,
+      "sha256": "a95118df0889868be8f2e9a131e89494338f4869bd905d67ffbd154a76ace997"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__tight_airgap__cogging__native.json",
+      "bytes": 2525,
+      "sha256": "947d40c0e72bf103ebf812d7224e6fb28e82e515f5021fb83d0081c5e6b51a50"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2527,
+      "sha256": "b5d80d4ea47dcfaad37c1339a57ff631b291dcec2c19e4ceb356d4547bf4c099"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2526,
+      "sha256": "aaf815ecdc0fda33d37262cea9c350d7e4f6c80669bac48596d7e95ed11087d5"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2526,
+      "sha256": "9b1aff8fbfc3398bf8d092b43c7da16527e91e09075eea28a25aa2044e8a91c6"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2526,
+      "sha256": "8ef9fc4b7d6b034a5fdd1313bdd3748391f81f4db522da0246e9c6cd6f775082"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1618,
+      "sha256": "9e72a2d27c0828e14a42e38ce722f3b2304372b690173667309442ec2d5e7742"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1620,
+      "sha256": "174ddbdeb15e50dadb3a7c0c80e24b0473373cd326d69f06b4ac54ab6f298b4d"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1619,
+      "sha256": "182d1e96127c31b2345b0b9e2a5413d3f577de764a99e32714ee5a7226d50aaa"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__baseline__cogging__native.json",
+      "bytes": 2528,
+      "sha256": "97828c516869b02c3e7ef2789fc79d29cb401c4c05aa3c280d6cafc6cd2d8d9b"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2530,
+      "sha256": "9943e72449e1b4a1bfdc569568ac91925e1577e768a1a878a903f29e6187c24f"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2530,
+      "sha256": "9943e72449e1b4a1bfdc569568ac91925e1577e768a1a878a903f29e6187c24f"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2531,
+      "sha256": "d16d68fdb8a9f5dfba0dfab245e5d9ea45cea21c4d5e296375e708ad9dd9acb1"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2531,
+      "sha256": "6e24359b6fb411332c931763731c814aea448d7d98a6d4ba4bd9d55ad57e64af"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2530,
+      "sha256": "1e6682cb99556b6d7af9fa94810b15458217b8c1dca54068d029beaaaf861099"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2531,
+      "sha256": "fe8996e3b11d367b3a591aa3c159252d55d27b8622ce32864986e5c45067c5e5"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2531,
+      "sha256": "a4e83726a524b78d5fb2853488a39302386132563111c9dd0bb62e969069c58f"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2530,
+      "sha256": "3cd9299a85c2859f52b4ed648bed7771fe280ac6c0c7a14425854ec51d05565d"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2531,
+      "sha256": "95f5ac903331138a27079f9a50e7048cd58f5e463438993a982d0103e329f0ed"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2530,
+      "sha256": "d0c12c0bb3e6520adca581af4c9527e743b83a0efe4d318d45c483b2b6060b83"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__tight_airgap__cogging__native.json",
+      "bytes": 2528,
+      "sha256": "01aab6adaeecca13c7cb4b76cff454f65c8a0c7640e45fdbf27bbab30ce85464"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2530,
+      "sha256": "2fc8a3cf46f2b97dadb82cbd1af2c0e99694d832d7c888a159c73bdef9944992"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_example_shoed__cogging__native.json",
+      "bytes": 2528,
+      "sha256": "2d0d4c40cdb17845c403034ef5d0695abb0ce89cd1532bcc37bb666e9fc4af7f"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2530,
+      "sha256": "fc40460c7e0f2f23ee3071d51a1e65f0a69c207a70a7168822208a283f0556f3"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1664,
+      "sha256": "ec98f290b5a9fe70ce9ad82e0f46d34e4239da724085ffce598a055d8ecd7073"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1666,
+      "sha256": "dc5903df469b463052d630170f959a9f3b47c6ec4fb36ba6f61240b2ca070d77"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1665,
+      "sha256": "9c3e921a468640d6d1ef268ce09af439bf3536e0b066f8f76fd0a5b7b01df66c"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2574,
+      "sha256": "c18f84cfb9e92a198acd81d43fbf1401518d60a65f07da5bb79443314fa84f25"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p24s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2531,
+      "sha256": "58dd6c39cc3f6fda7475693bc22f7b2d448c5f7b1cd8bea9aaf9dd311d503abd"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2530,
+      "sha256": "4141508dd0633a52380984fce6077fcf091b07833fede37dc7286964d6aac67c"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2525,
+      "sha256": "d0a5c77f1ad58babd282b41a6c240eee028f013a5b703700d3cf0e39fdbd29e0"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p48s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2529,
+      "sha256": "a2b77cf9ff4603743424906e66e0ac919a0217ee11210fe84a59d10c97d41150"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2528,
+      "sha256": "94e210140c0c37ce3b6c638279a22bc9552793de4bf6cd6a0ec6ff79badb2c40"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+      "bytes": 2557,
+      "sha256": "1c0831f47d8d3905468dd2c2b1e60adb35cc380d63719cf10fca65a815caeeda"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+      "bytes": 2553,
+      "sha256": "ee0239a357662fb56e7b8d83d812016adff29885601d455b6319897798dc3f77"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+      "bytes": 2553,
+      "sha256": "f6ebc408c0bd7b386951d8dc1dccc4042285e9ebadcec06b11de5290aa6c346a"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+      "bytes": 2558,
+      "sha256": "0140ea8fb09ebbe3437458f3b410f68bb80b71f6be47109cb32f34b987c25ccd"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+      "bytes": 2557,
+      "sha256": "99b76be099afaf98020fbb83771ecfdf16f1b4b406da3900ad3cae6352be3560"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+      "bytes": 2557,
+      "sha256": "c19a5189b30af4580e1dc202fef7ff564629a7eab2cb54d5b37503e0f0dbb459"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+      "bytes": 2557,
+      "sha256": "c4547c24699568a4cdff7d8cf31472547f9841e842f693a20180503fb8375a80"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+      "bytes": 2556,
+      "sha256": "911e607eabfc106dcc870ba7f3546c990db4826597be0479372fdc72cee4c69e"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+      "bytes": 2557,
+      "sha256": "85857765399f12e49013f76a0e6a62c173798b5da8e755d532a09c78b88f3529"
+    },
+    {
+      "path": "benchmarks/af-v1.11-sector/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+      "bytes": 2560,
+      "sha256": "9b5ca051b8eb88a2ca0b5a963a7a2e40e26657393bf8e4202b5595c1883c069e"
+    },
+    {
       "path": "benchmarks/reference-baselines/e-normal-20261110/ipm_flat_12s10p_fscw_contract__cogging.json",
       "bytes": 2871,
       "sha256": "0a59e92467c1a52f8e0168c0fb9840edbf512530a4234399ebbd7d84ed7374b1"
@@ -18724,6 +19109,11 @@
       "sha256": "c85465d0bf4da382f8e6af7b2ccaf9aceea2bccf770014649a30d7d61022c962"
     },
     {
+      "path": "tests/test_benchmark_sector_registration.py",
+      "bytes": 7844,
+      "sha256": "2b544fcf4b8a0422e8af4ab76e4ac6a7f4f2832f9b9055cf106c683455148ca9"
+    },
+    {
       "path": "tests/test_ci_plan.py",
       "bytes": 5156,
       "sha256": "2534d1a051f5b65673e020b93d01a49ba395b3859e1cb92b2831149210f97c6f"
@@ -18732,6 +19122,11 @@
       "path": "tools/ci_plan.py",
       "bytes": 3725,
       "sha256": "a7a81e20d90e1b5b5d159fd0c651970a65f36bf8cce3b6e860e323f557d7342a"
+    },
+    {
+      "path": "tools/make_sector_protocol.py",
+      "bytes": 4946,
+      "sha256": "49b4cfbbd8115ee0bfd82ce9495e2ab4ff86499a75711b9e23975ca7fea41437"
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
@@ -18895,8 +19290,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 27920,
-      "sha256": "00cd07f607d870d9ff5660de832e53fcc51c7aa7ec621514c9d7fe0b80776669"
+      "bytes": 28682,
+      "sha256": "11ec4f31191fa1cfabb662ed850358336e935a7145ffb2c84db9ad863dc68375"
     },
     {
       "path": "frontend/scripts/csv-test-helpers.mjs",
