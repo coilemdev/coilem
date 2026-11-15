@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
+from backend.gmsh_mesh_rotation import gmsh_pole_pitch_mesh_reuse_enabled
 from backend.models import MotorConfig
 from backend.reference_models import reference_model
 
@@ -166,6 +167,10 @@ def build_mesh_policy_provenance(
     mesh_build = _value(solve_params, "mesh_build", "precise")
     if mesh_build != "precise":
         policy["mesh_build"] = mesh_build
+    # Likewise off by default and absent when off: positions served by a mesh
+    # turned across pole pitches are solved on a different mesh.
+    if gmsh_pole_pitch_mesh_reuse_enabled():
+        policy["pole_pitch_mesh_reuse"] = True
     return policy
 
 
