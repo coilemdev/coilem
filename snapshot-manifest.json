@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10234,
-      "sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29"
+      "bytes": 10292,
+      "sha256": "c45411505ced3434d6238ac12fd496d5a509c9c320167bf474fdac714b8ccada"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 12953,
-      "sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea"
+      "bytes": 13008,
+      "sha256": "4eb9f6bd56ccb5fa59c124a2c98462391b83967b5c926c0703d0eeedd52505e0"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -41082,6 +41082,12 @@
     },
     {
       "base_commit": "687a38afeb890917d698808015e00a4e8ac57730",
+      "path": "backend/public_main.py",
+      "source_sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "687a38afeb890917d698808015e00a4e8ac57730",
       "path": "backend/public_routes/runs.py",
       "source_sha256": "7af7c5201876a7768c35c08f7324e203e6e5f4f83a4de1ebeb302a8e9cba9329",
       "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
@@ -41096,6 +41102,12 @@
       "base_commit": "687a38afeb890917d698808015e00a4e8ac57730",
       "path": "docs/COMPARE_RUNS.md",
       "source_sha256": "b97f6ce9c6f0b962c31ec27718be971aa8f95e94179fac478aaad98d2767c9c3",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "687a38afeb890917d698808015e00a4e8ac57730",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea",
       "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
     },
     {
