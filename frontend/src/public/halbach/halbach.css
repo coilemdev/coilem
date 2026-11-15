@@ -1631,8 +1631,20 @@ button.halbach-dock-toggle:hover { color: var(--text-secondary, #c6cdd8); backgr
 button.halbach-dock-toggle[aria-pressed="true"] { border-color: rgba(148, 163, 184, .26); color: var(--text-secondary, #c6cdd8); background: rgba(15, 17, 23, .76); }
 button.halbach-dock-toggle[aria-pressed="true"]::before { border-color: var(--text-accent, #fbbf24); background: var(--text-accent, #fbbf24); opacity: 1; }
 .halbach-dock-note { color: var(--text-muted, #8792a2); font: 400 12px var(--font-mono, monospace); }
-/* Legends stay on the canvas, in its top corners, as the motor field view's do. */
-.halbach-app .halbach-pole-legend { top: 14px; left: 14px; font-size: 11px; }
+/* Legends stay on the canvas, in its top corners, as the motor field view's do.
+   The pole legend wraps onto two lines rather than run under the zoom controls
+   on a narrow viewer, and the 3D one drops the centring shift it had when it sat
+   at the top middle, which pushed its left half out of the viewer. */
+.halbach-app .halbach-pole-legend {
+  top: 14px;
+  left: 14px;
+  max-width: calc(100% - 28px - var(--halbach-zoom-control-width, 141px) - var(--halbach-viewport-control-gap, 10px));
+  flex-wrap: wrap;
+  row-gap: 4px;
+  padding: 6px 9px;
+  font-size: 11px;
+}
+.halbach-app .halbach-viewport-3d .halbach-pole-legend { transform: none; }
 .halbach-app .halbach-field-legend { top: 14px; right: 14px; }
 @container (max-width: 760px) {
   .halbach-dock-strip { padding: 0 10px; }

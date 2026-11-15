@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 28650,
-      "sha256": "78684e701b10baf98fffb42d7676d6e2399b38b94e8a2045a9eff401c7993d32"
+      "bytes": 28905,
+      "sha256": "44c77f0148484db56b920853876f6ddf7cc21ba1fead8f1201a97690f9164605"
     },
     {
       "path": "SECURITY.md",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3481,
-      "sha256": "e73c73822c4140f8ecd63906f3bac6637bd38f08f167ab47b0ae4d30221c2595"
+      "bytes": 3525,
+      "sha256": "1efc19c0dbb348d2c51a069c1f4c9149663b433057bd452eaf8c68fdcf8e3ed1"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6560,8 +6560,8 @@
     },
     {
       "path": "frontend/scripts/test-performance-view.mjs",
-      "bytes": 7396,
-      "sha256": "e5329347ce4c05bd493e094093fd7cbc2de4c4e1e8ea4683c792007fc83cd2cf"
+      "bytes": 12617,
+      "sha256": "9cb515062faabb25fb51a675537e74d94f2460cc9b63d87bd02d026828486fe9"
     },
     {
       "path": "frontend/scripts/test-phase-drive.mjs",
@@ -7080,8 +7080,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 30541,
-      "sha256": "7db8ac9f05457b49408af13668c0d7a9b49489df743c5c2a2ee22b178fd822f9"
+      "bytes": 31077,
+      "sha256": "5b4c606a49c50d040c2824dc617389bdd379f3b565786e86a1aa24539e8fbd82"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -7350,8 +7350,8 @@
     },
     {
       "path": "frontend/src/public/halbach/Halbach3DViewer.tsx",
-      "bytes": 14205,
-      "sha256": "76bf593352f5a1773b214f13bc35a08ed87b80cf15a69ab4bc830c20208b77ec"
+      "bytes": 15776,
+      "sha256": "cb9d5041e887c81ed10ca1e55d8d99ab99d4bc2af72527f0b2f60809dbb4055b"
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
@@ -7365,8 +7365,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach3DViewer.tsx",
-      "bytes": 31353,
-      "sha256": "49d8300116ea373ea2c38b70c673fb5ce8e67cb7cee374049c7059d72f089875"
+      "bytes": 34115,
+      "sha256": "d73ce0d5d591a4797ac3ca0cbb1f93c0c70ec3ca1420cee709ce6f857c352097"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
@@ -7385,8 +7385,8 @@
     },
     {
       "path": "frontend/src/public/halbach/halbach.css",
-      "bytes": 52701,
-      "sha256": "e83a5e0ee777c8b35b5ea9638516f153bbdf2fbd9af7f702a19452f92ff90e07"
+      "bytes": 53187,
+      "sha256": "0c09caabab920b959ec54cc87764db0256e3e1449fa502745de490f0164d99e5"
     },
     {
       "path": "frontend/src/public/halbach/poleRendering.ts",
@@ -7490,8 +7490,8 @@
     },
     {
       "path": "frontend/src/public/performanceView.ts",
-      "bytes": 12158,
-      "sha256": "69452958e25d618da86a1790343cdfdd535d4078583d0262412bfadd1fe77c4b"
+      "bytes": 17432,
+      "sha256": "4a6ee0ae3a21a1f62dd067dbecd34f7b2a084097e7dd4255f57632d3fcb935c2"
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 133830,
-      "sha256": "64a0718e9b84fbe5c228affbc5f5969bb1c015b79a5ac4d5889a177404cb7de0"
+      "bytes": 138257,
+      "sha256": "3f8bbb18a0d8521aa41c2b09bc82fc6fab7fc3b194d86672edb3bf10c732630c"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -18782,6 +18782,16 @@
       "path": "frontend/src/public/RunSetupMenu.tsx",
       "bytes": 8475,
       "sha256": "b73739ddc5e2ec9a8f716a1b8c1fbd57a93cde3651de79935af319385834c4b1"
+    },
+    {
+      "path": "frontend/scripts/test-halbach-camera-fit.mjs",
+      "bytes": 4904,
+      "sha256": "3373c00924b7295e8b41ca3d33a3fa6e767ed2ecfbe44c5b55d5de34b3cdb01f"
+    },
+    {
+      "path": "frontend/src/public/halbach/cameraFit.ts",
+      "bytes": 3880,
+      "sha256": "6e6cd20a15913f7d79078023f5ca8e4b94aa0c30d44cb06740e900eb7fa187f2"
     }
   ],
   "public_patches": [

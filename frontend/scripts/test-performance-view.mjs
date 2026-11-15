@@ -113,3 +113,52 @@ assert.equal(formatSignificant(Number.NaN), '—');
 assert.equal(formatSignificant(null), '—');
 
 console.log('performance view: current at a point ok');
+
+// #274: a note when the run's solved point lies outside the map, and which limit keeps it out.
+const { solvedPointOutsideMap, solvedPointOutsideNote } = await importTypeScriptModule(new URL('../src/public/performanceView.ts', import.meta.url));
+const asRms = (peakA) => `${Number((peakA / Math.SQRT2).toPrecision(3)).toLocaleString()} A rms`;
+const peakCurve = (speeds, torques) => ({
+  limit: 'peak', speed_rpm: speeds, torque_Nm: torques, power_W: speeds.map((speed, index) => torques[index] * speed * Math.PI / 30),
+  i_d_A: speeds.map(() => 0), i_q_A: speeds.map(() => 84.85), region: speeds.map(() => 'mtpa'),
+  base_speed_rpm: speeds[1], max_speed_rpm: speeds[speeds.length - 1], peak_power_W: 0,
+});
+// The Example SPM 8p/12s run: 30 A rms at 2,400 rpm, 11.2 N·m, its loaded d/q record and its map's limits.
+const spmLimits = { dc_bus_V: 48, modulation_index_max: SVPWM_MODULATION, peak_current_A: 84.8528, continuous_current_A: 42.4264, max_speed_rpm: 7200 };
+const spmEnvelope = (limits, speeds, torques) => ({ limits, phase_resistance_ohm: 0.0057745, curves: [peakCurve(speeds, torques)] });
+const spmDq = { i_d_A: -0.00095, i_q_A: 42.4264, lambda_d_Wb: 0.0438556, lambda_q_Wb: 0.0057824 };
+// At 48 V the peak curve ends at 2,068 rpm, short of the solved 2,400 rpm.
+const spm = { envelope: spmEnvelope(spmLimits, [0, 1437, 1800, 2068], [22.4, 22.4, 12, 0.3]), polePairs: 4, speedRpm: 2400, torqueNm: 11.1645, dq: spmDq };
+const outsideAt48 = solvedPointOutsideMap(spm);
+assert.equal(outsideAt48.aboveTopSpeed, false);
+assert.equal(outsideAt48.currentAbovePeakA, null);
+// ωe = 2,400 rpm × 4 pole pairs = 1,005 rad/s; |(R·id − ωe·λq, R·iq + ωe·λd)| = 44.7 V peak; Vdc = 2 × 44.7 V / (2/√3).
+assert.ok(Math.abs(outsideAt48.busNeededV - 77.445) < 0.01, 'the map\'s voltage model at the run\'s own d/q point');
+assert.equal(solvedPointOutsideNote(outsideAt48, asRms),
+  'The solved point (2,400 rpm, 11.2 N·m) is outside this map at the 48 V DC bus. At its solved current it needs about 78 V; raise DC bus in Solve → Analysis → Torque–speed map to include it.');
+// At 78 V the peak curve passes 2,400 rpm well above 11.2 N·m: no note.
+assert.equal(solvedPointOutsideMap({ ...spm, envelope: spmEnvelope({ ...spmLimits, dc_bus_V: 78 }, [0, 2350, 3360], [22.4, 22.4, 0.5]) }), null);
+// Within 1% above the drawn curve counts as on it.
+assert.equal(solvedPointOutsideMap({ ...spm, envelope: spmEnvelope(spmLimits, [0, 1437, 2400, 3000], [22.4, 22.4, 11.1, 0.3]) }), null);
+// Above the curve while the d/q record fits every limit: the gap is the map's interpolation, not a limit.
+assert.equal(solvedPointOutsideMap({ ...spm, envelope: spmEnvelope({ ...spmLimits, dc_bus_V: 78 }, [0, 2350, 2400, 3360], [11, 11, 10.5, 0.5]) }), null);
+// No d/q record (a six-step run): no estimate, and both limits named.
+const noRecord = solvedPointOutsideMap({ ...spm, dq: null });
+assert.equal(noRecord.busNeededV, null);
+assert.equal(solvedPointOutsideNote(noRecord, asRms),
+  'The solved point (2,400 rpm, 11.2 N·m) is outside this map at the 48 V DC bus and 60 A rms Peak current. Raise DC bus or Peak current in Solve → Analysis → Torque–speed map to include it.');
+// Beyond the Top speed, alone and with the bus.
+const slowMap = { ...spmLimits, max_speed_rpm: 2000 };
+assert.equal(solvedPointOutsideNote(solvedPointOutsideMap({ ...spm, envelope: spmEnvelope(slowMap, [0, 1437, 1800, 2000], [22.4, 22.4, 12, 3]) }), asRms),
+  'The solved point (2,400 rpm, 11.2 N·m) is outside this map at the 2,000 rpm Top speed and 48 V DC bus. At its solved current it needs about 78 V; raise Top speed and DC bus in Solve → Analysis → Torque–speed map to include it.');
+assert.equal(solvedPointOutsideNote(solvedPointOutsideMap({ ...spm, envelope: spmEnvelope({ ...slowMap, dc_bus_V: 78 }, [0, 2000], [22.4, 22.4]) }), asRms),
+  'The solved point (2,400 rpm, 11.2 N·m) is outside this map at the 2,000 rpm Top speed. Raise Top speed in Solve → Analysis → Torque–speed map to include it.');
+// A Peak current below the solved current: at 1,000 rpm the bus is enough (32.5 V needed), the current is not.
+const lowCurrent = { ...spmLimits, peak_current_A: 30, continuous_current_A: null };
+assert.equal(solvedPointOutsideNote(solvedPointOutsideMap({ ...spm, speedRpm: 1000, envelope: spmEnvelope(lowCurrent, [0, 2500], [7.9, 7.9]) }), asRms),
+  'The solved point (1,000 rpm, 11.2 N·m) is outside this map at the 21.2 A rms Peak current. It was solved at 30 A rms; raise Peak current in Solve → Analysis → Torque–speed map to include it.');
+assert.equal(solvedPointOutsideNote(solvedPointOutsideMap({ ...spm, envelope: spmEnvelope(lowCurrent, [0, 1500, 2100], [7.9, 7.9, 0.2]) }), asRms),
+  'The solved point (2,400 rpm, 11.2 N·m) is outside this map at the 48 V DC bus and 21.2 A rms Peak current. It was solved at 30 A rms, where it needs about 78 V; raise DC bus and Peak current in Solve → Analysis → Torque–speed map to include it.');
+// No solved torque, no note.
+assert.equal(solvedPointOutsideMap({ ...spm, torqueNm: 0 }), null);
+assert.equal(solvedPointOutsideMap({ ...spm, torqueNm: Number.NaN }), null);
+console.log('performance view: solved point outside the map ok');
