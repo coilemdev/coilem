@@ -30,6 +30,11 @@ ROOT = Path(__file__).resolve().parents[2]
 LICENSE_FILES = ("LICENSE", "THIRD_PARTY_NOTICES.md")
 
 
+# Top-level packages a wheel installs, and package files beyond backend's runtime data.
+PACKAGES = ("backend", "coilem")
+PACKAGE_FILES = ("coilem/__init__.py", "coilem/__main__.py", "backend/client/reference_setups.json")
+
+
 def _requirement_key(requirement: Requirement) -> tuple[str, str, str]:
     return canonicalize_name(requirement.name), str(requirement.specifier), str(requirement.marker or "")
 
@@ -81,8 +86,10 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
         names = set(archive.namelist())
         dist_info = f"{name.replace('-', '_')}-{version}.dist-info"
         top_level = {entry.split("/", 1)[0] for entry in names}
-        if top_level != {"backend", dist_info}:
-            problems.append(f"unexpected top-level entries: {sorted(top_level - {'backend', dist_info})}")
+        # `backend` holds the app; `coilem` is the public Python name of its client.
+        expected = {*PACKAGES, dist_info}
+        if top_level != expected:
+            problems.append(f"unexpected top-level entries: {sorted(top_level - expected)}; missing: {sorted(expected - top_level)}")
 
         metadata = Parser().parsestr(archive.read(f"{dist_info}/METADATA").decode("utf-8"))
         runtime = [Requirement(value) for value in metadata.get_all("Requires-Dist", []) if "extra ==" not in value]
@@ -110,6 +117,7 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
         binary_name = f"backend/{resources.PACKAGED_BIN_DIR}/{executable}"
         required = [
             "backend/__init__.py",
+            *PACKAGE_FILES,
             binary_name,
             f"backend/{resources.PACKAGED_UI_DIR}/index.html",
             f"backend/{resources.PACKAGED_LICENSES_DIR}/{resources.MAGNETO2D_LICENSES_FILE}",

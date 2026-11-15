@@ -317,7 +317,7 @@ def test_native_dependency_parsers_and_rules(tmp_path: Path) -> None:
 
 def _write_wheel(
     path: Path, *, requires: list[str], binary: bytes = b"binary", stamp_binary: bytes | None = None,
-    runtime_version: str = "0.2.0", crate_licenses: str | None = None,
+    runtime_version: str = "0.2.0", crate_licenses: str | None = None, without: tuple[str, ...] = (),
 ) -> Path:
     dist_info = "coilem-0.2.0.dist-info"
     ui = {"index.html": b"<!doctype html>", "assets/index-AbCd1234.js": b"export {};", "assets/Lesson-AbCd1234.js": b"export {};"}
@@ -358,8 +358,9 @@ def _write_wheel(
         archive.writestr("backend/_build_info.json", json.dumps(build))
         for relative in (*resources.PACKAGED_DATA_FILES, *resources.benchmark_data_files(REPO_ROOT)):
             archive.writestr(f"backend/_data/{relative}", (REPO_ROOT / relative).read_bytes())
-        for relative in resources.PACKAGE_DATA_FILES:
-            archive.writestr(relative, (REPO_ROOT / relative).read_bytes())
+        for relative in (*resources.PACKAGE_DATA_FILES, *verify_wheel.PACKAGE_FILES):
+            if not without or relative not in without:
+                archive.writestr(relative, (REPO_ROOT / relative).read_bytes())
     return path
 
 
@@ -388,6 +389,9 @@ def test_wheel_checks(tmp_path: Path) -> None:
     assert verify_wheel.check_wheel(stale) == ["build info magneto2d_sha256 does not match the packaged binary"]
     linux = _write_wheel(tmp_path / "coilem-0.2.0-py3-none-linux_x86_64.whl", requires=lock)
     assert "linux_x86_64 is not a publishable platform tag" in verify_wheel.check_wheel(linux)
+    public = ("coilem/__init__.py", "coilem/__main__.py")
+    unnamed = _write_wheel(tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl", requires=lock, without=public)
+    assert verify_wheel.check_wheel(unnamed)[0] == "unexpected top-level entries: []; missing: ['coilem']"
 
 
 @pytest.mark.parametrize("newline", ["\n", "\r\n"])
