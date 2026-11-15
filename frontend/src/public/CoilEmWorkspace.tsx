@@ -2401,7 +2401,6 @@ function ViewportChrome({
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               showToothPoles={viewportMode === '2d' && showToothPoles}
               previewRpm={animationRpm}
-              rotorTurning={isAnimating || solveRotorAngleDeg !== null}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
@@ -4496,7 +4495,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 <span id="public-solve-symmetry-label">Solved region</span>
                 <div className="mesh-segmented-control">{symmetryChoices.map((choice) => <button type="button" className={symmetry === choice.value ? 'active' : ''} aria-pressed={symmetry === choice.value} title={choice.title} disabled={busy !== null || selectedSolver === 'elmer'} onClick={() => onMeshSettingChange('symmetry', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
-              {meshSector && <p className="public-mesh-build-note">This motor repeats {meshSector.repeats} times: one sector of {Number(mesh?.mesh_info.num_triangles ?? 0).toLocaleString()} triangles is solved. In the Mesh view the solved sector is bright and its copies around the motor are dimmed. Each rotor position is cut where a tooth and a pole gap are nearest each other, so the solved sector steps round as the rotor turns: stop the rotor to see where it is cut, and while it turns the whole motor is drawn bright.</p>}
+              {meshSector && <p className="public-mesh-build-note">This motor repeats {meshSector.repeats} times: one sector of {Number(mesh?.mesh_info.num_triangles ?? 0).toLocaleString()} triangles is solved. In the Mesh view the solved sector is bright and its copies around the motor are dimmed. Each rotor position is cut where a tooth and a pole gap are nearest each other, so the bright sector steps round as the rotor turns.</p>}
               {symmetry === 'auto' && !meshSector && mesh && <p className="public-mesh-build-note">This motor is solved in full{typeof mesh.mesh_info.sector_fallback_reason === 'string' ? `: ${mesh.mesh_info.sector_fallback_reason}` : ''}.</p>}
               {symmetry === 'auto' && <p className="public-mesh-build-note">Solves one repeating sector and shows the full motor. A motor that does not repeat is solved in full. Results match the full motor to mesh-noise level and are marked experimental.</p>}
               {sectorCoggingNote(config, selectedSolver) && <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, selectedSolver)}</p>}
