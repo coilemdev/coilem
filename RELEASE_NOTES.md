@@ -26,8 +26,14 @@ original identities. Release approval and publication remain pending; see the
 - **Compare saved runs.** Compare two to six analyses with a pinned baseline.
   Inputs, results, losses and elapsed timing share the run columns and baseline
   deltas; torque, back-EMF and cogging overlays retain each run's line style.
-- **Python scripting.** The [Python client](docs/PYTHON_CLIENT.md) supports
-  scripted motor solves with typed inputs, results and executable examples.
+- **Python scripting and command line.** `import coilem` scripts motor solves
+  with typed inputs, results and executable examples ([Python client](docs/PYTHON_CLIENT.md)).
+  `coilem check`, `solve`, `setups`, `schema` and `version` do the same from a
+  terminal or a coding agent, with one versioned JSON document per command,
+  documented exit codes and error codes ([Command line](docs/COMMAND_LINE.md)).
+  Both select a design file's saved run setups by name with the app's rules,
+  refuse a missing or incompatible setup before solving, and report the setup
+  and settings used.
 - **Solve execution and timing.** Direct Newton execution, worker/thread handling,
   mesh and frame sharing, and repeated-solve reuse reduce overhead. Results and
   reports distinguish elapsed time from combined worker time. Release-specific

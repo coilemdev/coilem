@@ -1,14 +1,17 @@
 # Python client
 
-`backend.client` lets you script coilEM: define a motor in Python, solve it,
-and read torque, back-EMF, d/q flux linkage, inductances, cogging and the
-waveforms as numbers and NumPy arrays, without writing request JSON by hand.
-It ships with coilEM; there is nothing extra to install.
+`import coilem` lets you script coilEM: define a motor in Python or load a
+design file saved by the app, choose one of its saved run setups, check and
+solve it, and read torque, back-EMF, d/q flux linkage, inductances, cogging
+and the waveforms as numbers and NumPy arrays, without writing request JSON
+by hand. It ships with coilEM; there is nothing extra to install. The same
+steps are terminal commands for scripts and coding agents: see
+[Command line](COMMAND_LINE.md).
 
 ## Quick start
 
 ```python
-from backend import client as coilem
+import coilem
 
 
 def main():
@@ -102,7 +105,44 @@ result = coilem.solve(motor, point, analyses=["torque", "back_emf"], quality="st
   operating point, `quality`, `mesh` and `solve_params`.
 - `coilem.build_request(...)` returns the exact request `solve` would send,
   and `coilem.check(...)` runs the app's pre-solve checks and returns its
-  winding warnings, both without solving.
+  winding warnings, both without solving. `coilem.prepare(...)` does both
+  and also says which run setup is used (below).
+
+## Saved run setups
+
+A design file saved by the app carries its [saved run setups](SOLVE_SETUPS.md).
+Name one with `setup=` (its name, in any case, or its id):
+
+```python
+motor = coilem.Motor.load("motor.coilem")
+for status in coilem.setups(motor):          # the design's setups, then any Prius reference that fits
+    print(status.setup.name, status.usable, status.reason, status.active)
+result = coilem.solve(motor, setup="High Speed")
+print(result.setup["source"], result.setup["run_setup"])
+```
+
+The client applies a setup exactly as the app's setup picker does: an
+operating-only setup leaves the design's accuracy, mesh and solver settings
+alone, and the Prius reference setups apply only to the unchanged published
+motor. Which settings are solved:
+
+1. The setup named with `setup=`, applied to the design's saved settings.
+   One that is missing, unreadable (for example saved by a newer coilEM),
+   made for another reference model or current-angle convention, or that
+   solves with Elmer, is refused with an `InputError` before anything is
+   solved (`error_code` `SETUP_NOT_FOUND`, `SETUP_UNREADABLE`,
+   `SETUP_INCOMPATIBLE` or `SETUP_SOLVER_UNAVAILABLE`).
+2. Otherwise the design's saved settings, as the app solves a reopened
+   design file. When the design's active setup still describes them, the run
+   is labelled with it; when they were edited after the setup was chosen,
+   they are still solved as saved, and `result.setup["notes"]` says so.
+
+The operating point, `analyses`, `quality`, `mesh` and `solve_params` are
+applied on top of the setup. When they change it, the result still names the
+setup, with `modified` true and no `run_setup` label, as the app shows a
+changed setup as Modified. Files and request JSON without saved setups solve
+exactly as before. `sweep(..., setup=...)` starts every point from the
+setup's operating point.
 
 ## Results
 
@@ -182,17 +222,21 @@ process.
 
 ## Errors
 
-- `InputError` (a `ValueError`): an input is outside what the app accepts.
-  `error.field` is its dotted path, such as `stator.slot_count`,
-  `operating_point.current_A` or `rotor.pole_count`, and the message starts
-  with it.
+- `InputError` (a `ValueError`): an input or run setup is outside what the
+  app accepts. `error.field` is its dotted path, such as `stator.slot_count`,
+  `operating_point.current_A`, `rotor.pole_count` or `setup`, and the message
+  starts with it. `error.error_code` is `INVALID_INPUT` or a more specific
+  code such as `SETUP_NOT_FOUND`, `DESIGN_FILE_UNREADABLE` or
+  `OUTSIDE_SOLVE_BOUNDARY`.
 - `SolveError`: the solve started but did not finish. `error.error_code` is
   the app's code, for example `NONLINEAR_CONVERGENCE_FAILED`,
   `GMSH_UNAVAILABLE`, `SOLVE_ALREADY_RUNNING` or `SERVER_UNREACHABLE`; the
   original exception is chained.
 - `MainModuleError`: see the next section.
 
-All three derive from `coilem.CoilemError`.
+All three derive from `coilem.CoilemError`, and `error.to_dict()` gives
+`error_code`, `message`, `field` and `suggestion` (None when not known) in
+the JSON form the command line writes.
 
 ## Scripts and worker processes
 
@@ -230,15 +274,21 @@ does the solving.
 
 ## The import name
 
-The client is `backend.client` because coilEM installs a single top-level
-package, `backend`; `from backend import client as coilem` reads well in
-scripts.
+`import coilem` is the public name. coilEM also installs the `backend`
+package, and `from backend import client as coilem` keeps working: both names
+are the same objects. Importing either never starts the app, a server or a
+solve.
 
 ## Tests
 
 ```bash
-python -m pytest tests/test_python_client.py
+python -m pytest tests/test_python_client.py tests/test_run_setups.py tests/test_cli.py
 ```
+
+`tests/test_run_setups.py` holds the setup rules to the app's own: its
+fixture is generated from `frontend/src/public/solveProfiles.ts` by
+`frontend/scripts/test-run-setup-parity.mjs`, which `npm run test:public-ui`
+runs to keep the fixture and the shipped reference setups current.
 
 Most tests run without solving; one solves a small motor at the quick preset
 on a coarse mesh and then a second operating point that re-uses its no-load

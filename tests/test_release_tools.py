@@ -630,3 +630,15 @@ def test_acceptance_reports_a_solve_that_finished_before_the_interrupt() -> None
     assert not stream.solving.is_set()
     assert stream.describe() == "the solve ended with 'complete' before it could be interrupted"
     assert list(acceptance.sse_events(["data: not json\n", "\n", ": comment\n", "\n"])) == [("message", None)]
+
+
+def test_the_acceptance_design_file_has_a_usable_saved_setup() -> None:
+    from backend import client as coilem
+    from tools.release.acceptance import headless_design
+
+    motor = coilem.Motor.from_request(headless_design())
+    [status] = coilem.setups(motor)
+    assert status.setup.name == "Quick torque" and status.usable
+    prepared = coilem.prepare(motor, setup="Quick torque")
+    assert prepared.setup.label["name"] == "Quick torque"
+    assert prepared.request["solve_params"]["solve_quality"] == "quick" and prepared.request["solve_options"]["torque_sweep"] is True

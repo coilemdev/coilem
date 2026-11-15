@@ -486,16 +486,27 @@ def launch(args: argparse.Namespace) -> int:
         lock.close()
 
 
+# `coilem <command>` runs these without starting the app (backend/client/_cli.py).
+HEADLESS_COMMANDS = ("check", "solve", "setups", "schema", "version")
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if argv[:1] == ["benchmark"]:
         from backend.benchmark_suite.command import main as benchmark
 
         return benchmark(argv[1:])
+    if argv[:1] and argv[0] in HEADLESS_COMMANDS:
+        from backend.client._cli import main as command
+
+        return command(argv)
     parser = argparse.ArgumentParser(
         prog="coilem",
         description="Start coilEM and open it in your browser.",
-        epilog="Run `coilem benchmark --help` to check this installation against the published benchmark.",
+        epilog=(
+            "Headless commands: coilem check | solve | setups | schema | version (run `coilem solve --help`). "
+            "Run `coilem benchmark --help` to check this installation against the published benchmark."
+        ),
     )
     parser.add_argument(
         "--port",

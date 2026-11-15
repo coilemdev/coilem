@@ -15,14 +15,18 @@ sends them to a running app instead. On Windows, call ``solve`` from under
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
 from backend.client._inputs import ANALYSES, Materials, Motor, OperatingPoint, Rotor, Stator, Winding, Wire
 from backend.client._results import Cogging, DqFluxLinkage, PhaseWaveforms, Result, Waveform
+from backend.client._setups import REFERENCE_SETUPS, RunSetup, SetupStatus, SetupUse
 from backend.client._solve import (
     MESH_DENSITIES,
     QUALITIES,
+    PreparedSolve,
     Sweep,
     SweepPoint,
     build_request,
     check,
     check_main_module,
+    prepare,
+    setups,
     solve,
     sweep,
 )
@@ -40,8 +44,13 @@ __all__ = [
     "Motor",
     "OperatingPoint",
     "PhaseWaveforms",
+    "PreparedSolve",
+    "REFERENCE_SETUPS",
     "Result",
     "Rotor",
+    "RunSetup",
+    "SetupStatus",
+    "SetupUse",
     "SolveError",
     "Stator",
     "Sweep",
@@ -52,6 +61,8 @@ __all__ = [
     "build_request",
     "check",
     "check_main_module",
+    "prepare",
+    "setups",
     "solve",
     "sweep",
 ]

@@ -206,6 +206,31 @@ LINEAR_HALBACH = json.loads("""
 """)
 
 
+def headless_design() -> dict:
+    """MOTOR as a design file with one saved run setup, for the installed `coilem` commands."""
+
+    params = MOTOR["solve_params"]
+    parameters = {
+        key: params[key] for key in ("rated_speed_rpm", "current_amplitude_A", "current_amplitude_convention", "current_angle_deg")
+    }
+    # Every setting the app records for a setup with accuracy and solver settings, so the
+    # solved request is exactly the setup and the run is labelled with it.
+    parameters.update(
+        excitation_mode="sinusoidal", phase_connection="wye", commutation_advance_deg=0, solve_quality="quick", mesh_density="coarse",
+        rotor_step_deg=30, rotor_sweep_range_deg=180, mesh_source="native", mesher="gmsh", corner_refinement=True,
+        rotor_rotation_model="remesh_per_step", torque_method="weighted_stress", linear_solver_preconditioner="direct",
+        max_nonlinear_iterations=None,
+    )
+    outputs = dict.fromkeys(("back_emf", "flux_density", "cogging_torque", "losses_efficiency", "torque_speed_envelope", "thd_analysis"), False)
+    setup = {
+        "id": "acceptance-quick", "version": 1, "name": "Quick torque", "includesNumerics": True, "solver": "magneto2d",
+        "angleConvention": "q_axis", "referenceModel": None, "parameters": parameters, "outputs": {"torque_sweep": True, **outputs},
+        "map": None,
+    }
+    library = {"schema": 1, "scope": "acceptance", "profiles": [setup], "activeId": None, "activeVersion": None}
+    return {"openem_schema_version": 4, "name": "acceptance", **json.loads(json.dumps(MOTOR)), "run_setups": library}
+
+
 class Acceptance:
     def __init__(self, work: Path) -> None:
         self.work = work
@@ -381,6 +406,7 @@ class Acceptance:
         base = f"http://127.0.0.1:{port}"
         try:
             self.exercise(base, port)
+            self.headless(base)
             self.interrupt(server, base)
         finally:
             if server.poll() is None:
@@ -433,6 +459,107 @@ class Acceptance:
         assert isinstance(second, subprocess.CompletedProcess)
         reused = second.returncode == 0 and f"running at {base}" in second.stdout
         self.check("second launch reuses the server", reused, (second.stdout + second.stderr).strip())
+
+    def coilem(self, *arguments: str, timeout: float = 900) -> subprocess.CompletedProcess:
+        command = [str(self.bin / ("coilem.exe" if WINDOWS else "coilem")), *arguments]
+        return subprocess.run(command, cwd=self.work, env=self.env, capture_output=True, text=True, timeout=timeout)
+
+    def headless(self, base: str) -> None:
+        """The installed `coilem` package and its headless commands, outside any checkout."""
+
+        interpreter = self.bin / ("python.exe" if WINDOWS else "python")
+        probe = (
+            "import json, sys, coilem; print(json.dumps({'version': coilem.__version__, 'file': coilem.__file__, "
+            "'server': sorted(m for m in ('uvicorn', 'backend.public_main', 'backend.launcher') if m in sys.modules)}))"
+        )
+        imported = subprocess.run(
+            [str(interpreter), "-I", "-c", probe], cwd=self.work, env=self.env, capture_output=True, text=True, timeout=120
+        )
+        info = json.loads(imported.stdout) if imported.returncode == 0 else {}
+        self.check(
+            "import coilem loads the installed package and starts nothing",
+            info.get("version") == self.version and str(self.venv).lower() in str(info.get("file", "")).lower() and info.get("server") == [],
+            (imported.stdout + imported.stderr).strip()[-300:],
+        )
+        design = self.work / "motor.coilem"
+        design.write_text(json.dumps(headless_design()), encoding="utf-8")
+
+        def document(completed: subprocess.CompletedProcess, path: Path | None = None) -> dict:
+            try:
+                return json.loads(path.read_text(encoding="utf-8") if path else completed.stdout)
+            except (OSError, ValueError):
+                return {}
+
+        schema = self.work / "schema.json"
+        listed = self.coilem("schema", "--out", str(schema))
+        described = document(listed, schema).get("schema") == "coilem.cli.schema/v1"
+        self.check("coilem schema", listed.returncode == 0 and described, listed.stderr[-300:])
+        listed = self.coilem("setups", str(design))
+        rows = document(listed).get("setups") or [{}]
+        self.check("coilem setups", listed.returncode == 0 and rows[0].get("name") == "Quick torque" and rows[0].get("usable"), listed.stderr[-300:])
+        checked = self.coilem("check", str(design), "--setup", "Quick torque")
+        self.check("coilem check with a saved setup", checked.returncode == 0 and document(checked).get("ok") is True, checked.stderr[-300:])
+        refused = self.coilem("check", str(design), "--setup", "Nope")
+        code = (document(refused).get("error") or {}).get("error_code")
+        missing = refused.returncode == 3 and code == "SETUP_NOT_FOUND"
+        self.check("a missing setup exits 3 with SETUP_NOT_FOUND", missing, f"exit={refused.returncode} {code}")
+        torques = {}
+        for mode, extra in (("in_process", ()), ("server", ("--server", base))):
+            out = self.work / f"solve-{mode}.json"
+            solved = self.coilem("solve", str(design), "--setup", "Quick torque", *extra, "--out", str(out), "--quiet")
+            result = document(solved, out)
+            torques[mode] = (result.get("metrics") or {}).get("average_torque_Nm")
+            labelled = ((result.get("setup") or {}).get("run_setup") or {}).get("name") == "Quick torque"
+            self.check(f"coilem solve ({mode})", solved.returncode == 0 and isinstance(torques[mode], float) and labelled, solved.stderr[-300:])
+        solved = all(isinstance(value, float) for value in torques.values())
+        same = solved and abs(torques["in_process"] - torques["server"]) <= 1e-6 * abs(torques["server"])
+        self.check("the CLI solves in-process and in the app to the same torque", same, f"{torques}")
+        self.cancel_cli(design)
+
+    def cancel_cli(self, design: Path) -> None:
+        out = self.work / "cancelled.json"
+        command = [
+            str(self.bin / ("coilem.exe" if WINDOWS else "coilem")), "solve", str(design), "--setup", "Quick torque",
+            "--quality", "standard", "--mesh", "normal", "--analyses", "torque,back_emf,cogging", "--progress", "json", "--out", str(out),
+        ]
+        flags = subprocess.CREATE_NEW_PROCESS_GROUP if WINDOWS else 0
+        process = subprocess.Popen(
+            command, cwd=self.work, env=self.env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, creationflags=flags
+        )
+        assert process.stderr is not None
+        solving = threading.Event()
+        lines: list[str] = []
+
+        def follow() -> None:
+            for line in process.stderr:
+                lines.append(line.rstrip())
+                try:
+                    event = json.loads(line)
+                except ValueError:
+                    continue
+                if isinstance(event, dict):
+                    position = {"stage": event.get("stage"), "position": event.get("done"), "total": event.get("total")}
+                    if magneto2d_solving("progress", position):
+                        solving.set()
+
+        threading.Thread(target=follow, daemon=True).start()
+        solving.wait(180)
+        self.check("a CLI solve is running before the interrupt", solving.is_set() and process.poll() is None, lines[-1] if lines else "")
+        process.send_signal(signal.CTRL_BREAK_EVENT if WINDOWS else signal.SIGINT)
+        try:
+            code = process.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            code = None
+            process.kill()
+        time.sleep(2)
+        try:
+            error = json.loads(out.read_text(encoding="utf-8")).get("error") or {}
+        except (OSError, ValueError):
+            error = {}
+        cancelled = code == 130 and error.get("error_code") == "SOLVER_CANCELLED"
+        self.check("interrupting a CLI solve exits 130 with SOLVER_CANCELLED", cancelled, f"exit={code}")
+        remaining = self.solver_processes()
+        self.check("no Magneto2D process remains after the CLI interrupt", not remaining, f"{remaining}")
 
     def interrupt(self, server: subprocess.Popen, base: str) -> None:
         standard = json.loads(json.dumps(MOTOR))
