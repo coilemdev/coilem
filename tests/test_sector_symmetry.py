@@ -571,3 +571,31 @@ def test_one_sector_cogging_below_very_fine_is_flagged_and_matches_the_app() -> 
     # The app shows the same words (frontend/src/public/coggingView.ts).
     app = Path("frontend/src/public/coggingView.ts").read_text(encoding="utf-8")
     assert f"export const SECTOR_COGGING_NOTE = '{SECTOR_COGGING_ADVISORY}';" in app
+
+
+@pytest.mark.parametrize(
+    "fixture",
+    ["abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json", "abcd-v1.7/fixtures/ipm_flat_24s16p_industrial_contract__cogging.json"],
+)
+def test_the_stator_cut_follows_the_rotor_cut_over_a_cogging_period(fixture) -> None:
+    """A fixed stator tooth let the cuts drift up to half a pole pitch apart over a sweep, and that
+    steady change in the mesh where the wedges meet biased the cogging fundamental (7% on the shoed
+    example). The nearest tooth keeps them within half the common pitch, and the period's two ends,
+    one physical position, are cut the same way."""
+
+    from backend.gmsh_solver import _base_lc_mm, _sector_ir_for_solve
+    from backend.solver import _cogging_angle_grid
+
+    config = _config(fixture, symmetry="auto", mesh_density="normal")
+    slots, poles = config.stator.slot_count, config.rotor.pole_count
+    half_common_pitch = 0.5 * 360.0 / math.lcm(slots, poles)
+    offsets = []
+    for angle in _cogging_angle_grid(config):
+        mech = -angle / (poles // 2)
+        geom = compute_geometry(config)
+        _rotate_magnets_in_place(geom, math.radians(mech))
+        sector, reason = _sector_ir_for_solve(config, build_geometry_ir(config, geom=geom, rotor_angle_deg=mech), _base_lc_mm(config, "normal"))
+        assert sector is not None, reason
+        offsets.append(((math.degrees(sector.rotor_start_rad - sector.stator_start_rad) + 180.0) % 360.0) - 180.0)
+    assert max(abs(offset) for offset in offsets) <= half_common_pitch + 1e-9
+    assert offsets[-1] == pytest.approx(offsets[0], abs=1e-9)

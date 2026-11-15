@@ -974,10 +974,11 @@ def build_sector_ir(
         raise SectorUnsupportedError("no circle fits inside the air gap")
     mid_r = 0.5 * (gap_inner_r + gap_outer_r)
 
-    stator_start = _snap_stator_cut(ir, _stator_cut_angle(ir))
+    first_tooth = _snap_stator_cut(ir, _stator_cut_angle(ir))
 
     last_error: SectorUnsupportedError | None = None
     for rotor_axis in _rotor_cut_candidates(ir):
+        stator_start = _nearest_tooth_cut(ir, first_tooth, rotor_axis, pole_pitch)
         offset = _wrap_signed(rotor_axis - stator_start, pole_pitch)
         if abs(offset) * mid_r < 1.0e-9:
             offset = 0.0
@@ -994,6 +995,29 @@ def build_sector_ir(
         except SectorUnsupportedError as exc:
             last_error = exc
     raise last_error or SectorUnsupportedError("no clean rotor cut was found")
+
+
+def _nearest_tooth_cut(ir: GeometryIR, first_tooth: float, rotor_axis: float, pole_pitch: float) -> float:
+    """The tooth centre that leaves the shortest stator-only arc to the rotor cut.
+
+    Any tooth centre can start the sector: the geometry and the winding repeat
+    over its span. A fixed tooth lets the rotor cut drift up to half a pole
+    pitch away as the rotor turns, so the mesh where the two wedges meet changes
+    steadily over a sweep; on the shoed 8p/12s example that moved the cogging
+    fundamental 7% from a full-motor solve. The nearest tooth keeps the two cuts
+    within half the common pitch of slots and poles. At exactly half, the
+    negative offset wins, so a position one period on is cut the same way and
+    its mesh is the same mesh turned; then the tooth nearest the first one.
+    """
+
+    slot_pitch = _TWO_PI / ir.slot_count
+
+    def rank(step: int) -> tuple[float, int, int]:
+        offset = _wrap_signed(rotor_axis - (first_tooth + step * slot_pitch), pole_pitch)
+        return (round(abs(offset), 9), 0 if round(offset, 9) <= 0 else 1, abs(step))
+
+    steps = range(-(ir.slot_count // 2), ir.slot_count - ir.slot_count // 2)
+    return first_tooth + min(steps, key=rank) * slot_pitch
 
 
 def _build_with_cuts(

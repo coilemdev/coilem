@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 54438,
-      "sha256": "856dbc17543275a3dde890710762a1b423dbccbe0bdc57db813400d0c57d66f3"
+      "bytes": 54814,
+      "sha256": "9fb487855e8be91a5466b3e4e54211a6d8862efd231ad173bbd1a2872e6b47a8"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -18005,8 +18005,8 @@
     },
     {
       "path": "backend/sector_geometry.py",
-      "bytes": 47776,
-      "sha256": "c759764e13f9d7d64fde7c422d87264bf3f7fff0b6ac864bb726063d1d8c882e"
+      "bytes": 49088,
+      "sha256": "13807381c608733bab65266e76cb59f4863bad1996f495a0e08e151314f585be"
     },
     {
       "path": "backend/sector_tiling.py",
@@ -19290,8 +19290,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 29824,
-      "sha256": "3effb40b4c481772bb176a8b895f6e328b22fbf40088c303a676b85f75541c06"
+      "bytes": 31409,
+      "sha256": "41b19b69813b4ff699b13d22360ea88186e3aebd93b9c4e879cd616af68f2a3e"
     },
     {
       "path": "frontend/scripts/csv-test-helpers.mjs",

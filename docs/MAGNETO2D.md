@@ -753,15 +753,20 @@ meshing. Compare lists a change between the full motor and one sector as
 setup with accuracy and solver settings records **One sector** when it was
 chosen and otherwise solves the full motor ([Saved run setups](SOLVE_SETUPS.md)).
 
-**Cogging from a sector.** On the 12 benchmark cogging cases, sector and
-full-motor solves agree within 1% on 10. On two (the shoed 8p/12s example and
-the flat IPM 24s/16p) the sector mesh remeshes more noisily between rotor
-positions, and its cogging fundamental or peak-to-peak moved up to 8.5% from
-the full motor at the Medium mesh and 6% at Fine; at the Very fine mesh both
-agree within 0.4% and with FEMM within 0.6%. Loaded torque, ripple and back-EMF
-agree at every mesh. The app therefore warns when One sector and Cogging torque
-are both selected below the Very fine mesh, and the warning is repeated in the
-pre-solve checks and with the results.
+**Cogging from a sector.** At each rotor position the stator is cut through
+the tooth nearest the rotor cut, so the two cuts stay within half the common
+pitch of slots and poles, and a position one cogging period on is cut the same
+way. A cut held at one tooth let the rotor cut drift up to half a pole pitch
+away over a sweep; that steady change in the mesh where the wedges meet moved
+the cogging fundamental 7% from a full-motor solve on the shoed 8p/12s example
+and 3% on the flat IPM 24s/16p. With the nearest tooth, all 12 benchmark
+cogging cases are within 5.9% of FEMM as sectors and 6.0% as full motors at
+their registered meshes; sector and full differ from each other by at most 5.3
+points on peak-to-peak, each carrying its own Medium-mesh noise, and agree
+within 0.4% at the Very fine mesh. Loaded torque, ripple and back-EMF agree at
+every mesh. The app still warns when One sector and Cogging torque are both
+selected below the Very fine mesh, and the warning is repeated in the pre-solve
+checks and with the results.
 
 ### Teaching-mode exception
 
