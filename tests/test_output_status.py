@@ -37,7 +37,7 @@ from backend.models.result import SolveMetadata
 from backend.performance_report import ReportContext, StatedStatus, build_performance_csv, build_performance_pdf, performance_data
 from backend.public_report import build_public_run_csv, build_public_run_pdf
 from backend.qualification import magnet_temperature_status
-from backend.solve_workspace import _apply_output_statuses
+from backend.solve_workspace import apply_output_statuses
 from tests.test_drive_performance import LIMITS, _map
 from tests.test_loss_breakdown import RAW, _config, _iron, _stored_result
 from tests.test_magnet_temperature import _config as _magnet_config
@@ -102,7 +102,7 @@ def test_each_record_says_whether_a_benchmark_gate_covers_it(monkeypatch, measur
         (110.0, ("experimental", MAGNET_TEMPERATURE_STATUS_REASON)),
     ):
         stored = {"solve_metadata": magnet_temperature_record(_magnet_config(temperature))}
-        _apply_output_statuses(stored, _magnet_config(temperature).model_dump(mode="json"))
+        apply_output_statuses(stored, _magnet_config(temperature).model_dump(mode="json"))
         assert (stored["solve_metadata"]["magnet_temperature_status"], stored["solve_metadata"]["magnet_temperature_status_reason"]) == expected
     metadata = SolveMetadata(solver_name="magneto2d", mesh_element_count=100, rotor_positions=2, timestamp="2026-10-22T00:00:00Z", **record)
     assert metadata.magnet_temperature_status == "experimental"
@@ -246,7 +246,7 @@ def test_cogging_is_qualified_for_a_qualified_inner_rotor_design_only(monkeypatc
     assert qualification.cogging_torque_status(outer) == ("experimental", COGGING_TORQUE_STATUS_REASON)
 
     stored = {"summary": {"cogging": {"status": "experimental", "status_reason": COGGING_TORQUE_STATUS_REASON}}}
-    _apply_output_statuses(stored, INNER)
+    apply_output_statuses(stored, INNER)
     assert stored["summary"]["cogging"]["status"] == "qualified"
     assert stored["summary"]["cogging"]["status_reason"] == COGGING_TORQUE_QUALIFIED_REASON
 
@@ -270,7 +270,7 @@ def test_distributed_cogging_requires_the_registered_mesh_and_matching_evidence(
     assert qualification.cogging_torque_status(config) == expected
 
     stored = {"summary": {"cogging": {"status": "qualified", "status_reason": "Old claim"}}}
-    _apply_output_statuses(stored, config.model_dump(mode="json"))
+    apply_output_statuses(stored, config.model_dump(mode="json"))
     assert stored["summary"]["cogging"] == {"status": expected[0], "status_reason": expected[1]}
 
 
@@ -292,7 +292,7 @@ def test_outer_rotor_design_rating_does_not_qualify_dq_or_temperature(monkeypatc
         "summary": {"dq_flux_linkage": {"status": "qualified", "status_reason": "Old claim"}},
         "solve_metadata": {"magnet_temperature_status": "qualified", "magnet_temperature_status_reason": "Old claim"},
     }
-    _apply_output_statuses(stored, config.model_dump(mode="json"))
+    apply_output_statuses(stored, config.model_dump(mode="json"))
     assert stored["summary"]["dq_flux_linkage"] == {"status": "experimental", "status_reason": DQ_FLUX_LINKAGE_STATUS_REASON}
     assert stored["solve_metadata"] == {
         "magnet_temperature_status": "experimental", "magnet_temperature_status_reason": MAGNET_TEMPERATURE_STATUS_REASON,

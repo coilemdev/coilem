@@ -10,6 +10,7 @@ import sys
 import threading
 import time
 import types
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -144,6 +145,8 @@ def test_build_request_layers_the_settings_over_the_saved_ones() -> None:
         (lambda m: coilem.build_request(m, analyses=["torq"]), "analyses"),
         (lambda m: coilem.build_request(m, quality="ultra"), "quality"),
         (lambda m: coilem.build_request(m, solve_params={"rotor_step_deg": 0.1}), "solve_params.rotor_step_deg"),
+        # QA 0.5.8 CLI-2: check accepted this and solve then refused it with no field.
+        (lambda m: coilem.check(m, solve_params={"rotor_rotation_model": "fixed_mesh"}), "solve_params.rotor_rotation_model"),
         (lambda m: coilem.check(m.replace(rotor={"pole_count": 7})), "rotor.pole_count"),
         (lambda m: coilem.check(m.replace(materials={"stator_steel": "M270"})), "materials"),
         (lambda m: coilem.sweep(m, current_A=[10, 2000]), "operating_point.current_A"),
@@ -455,6 +458,30 @@ def test_a_solve_in_a_running_app_returns_its_result_and_maps_its_errors(stub_ap
         coilem.solve(motor, server=url, on_progress=lambda *args: None)
 
 
+def test_interrupting_a_solve_in_a_running_app_cancels_it_there(stub_app, monkeypatch) -> None:
+    # QA 0.5.8 CLI-3: Ctrl+C stopped waiting but left the app solving, and the run was saved as complete.
+    url, replies, requests = stub_app
+    real_build_opener = urllib.request.build_opener
+
+    def build_opener(*handlers):
+        opener = real_build_opener(*handlers)
+        real_open = opener.open
+
+        def interrupted(request, *args, **kwargs):
+            if request.full_url.endswith("/solve"):
+                raise KeyboardInterrupt  # as Ctrl+C lands while the app solves
+            return real_open(request, *args, **kwargs)
+
+        opener.open = interrupted
+        return opener
+
+    monkeypatch.setattr(urllib.request, "build_opener", build_opener)
+    replies.append((200, {"status": "cancelled"}))
+    with pytest.raises(KeyboardInterrupt):
+        coilem.solve(coilem.Motor.load(SPM_FIXTURE), quality="quick", server=url)
+    assert [request["path"] for request in requests] == ["/solve/cancel"]
+
+
 def test_an_unreachable_app_is_a_clear_solve_error() -> None:
     with pytest.raises(coilem.SolveError) as caught:
         coilem.solve(coilem.Motor.load(SPM_FIXTURE), server=f"127.0.0.1:{_free_port()}", timeout_s=5)
@@ -507,6 +534,49 @@ def test_default_analyses_preserve_losses_and_flux_statistics_without_pictures(t
         assert lean.summary[name] == full.summary[name]
     assert not set(FIELD_KEYS) & set(lean.data)
     assert full.data["field_line_frames"]
+
+
+def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch) -> None:
+    # QA 0.5.8 CLI-4: only results solved in the app said whether they are qualified.
+    from backend import selected_analyses
+    from backend.qualification import classify_qualification, cogging_torque_status
+    from tests.test_analysis_options import result_for
+
+    motor = coilem.Motor.load(SPM_FIXTURE)
+    solved = result_for(motor.config)
+    solved.summary.cogging = {"peak_to_peak_Nm": 0.01, "first_harmonic_Nm": 0.005, "status": "experimental"}
+    monkeypatch.setattr(selected_analyses, "solve_selected_analyses", lambda solver, config, on_progress=None: solved)
+    monkeypatch.setattr(_solve, "check_main_module", lambda: None)
+    result = coilem.solve(motor, quality="quick", mesh="coarse")
+    config = _solve.prepared_config(coilem.prepare(motor, quality="quick", mesh="coarse").request)
+    assert result.data["qualification"] == dict(classify_qualification(config))
+    assert result.data["qualification"]["status"] == "qualified"
+    assert result.data["summary"]["cogging"]["status"] == cogging_torque_status(config)[0] == "qualified"
+    assert isinstance(result.data["solver_convergence"], dict) and "status" in result.data["solver_convergence"]
+
+
+def test_script_solves_keep_their_cache_apart_from_the_apps(tmp_path, monkeypatch) -> None:
+    # QA 0.5.8 CLI-6: the solver prunes old cache folders, so a script solving on
+    # the app's cache could remove the folders behind results open in the app.
+    from backend import field_artifacts, selected_analyses
+
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    assert field_artifacts.solve_cache_root() == tmp_path / "solve_cache", "the app's cache"
+    seen = []
+
+    def stop(solver, config, on_progress=None):
+        seen.append(field_artifacts.solve_cache_root())
+        raise RuntimeError("stop before solving")
+
+    monkeypatch.setattr(selected_analyses, "solve_selected_analyses", stop)
+    monkeypatch.setattr(_solve, "check_main_module", lambda: None)
+    with pytest.raises(coilem.SolveError):
+        coilem.solve(coilem.Motor.load(SPM_FIXTURE), quality="quick", mesh="coarse")
+    assert seen == [tmp_path / "script_solve_cache"]
+    monkeypatch.setenv("COILEM_SOLVE_CACHE_ROOT", str(tmp_path / "chosen"))
+    with pytest.raises(coilem.SolveError):
+        coilem.solve(coilem.Motor.load(SPM_FIXTURE), quality="quick", mesh="coarse")
+    assert seen[-1] == tmp_path / "chosen", "a folder the user chose is kept"
 
 
 @pytest.mark.weekly

@@ -169,6 +169,27 @@ def setups(motor: MotorLike) -> list[SetupStatus]:
     return setup_statuses(_as_motor(motor).to_request())[0]
 
 
+def _raise_for_unsolvable(config: MotorConfig) -> None:
+    """Refuse, with its field, what the solver would refuse only once it starts."""
+
+    params = config.solve_params
+    if (
+        params is not None
+        and config.topology == "SPM"
+        and params.rotor_rotation_model == "fixed_mesh"
+        and params.mesher == "gmsh"
+        and params.mesh_source == "native"
+    ):
+        # magneto2d_adapter refuses this sweep: an imported Gmsh mesh cannot be
+        # rotated in place. Before, check passed it and solve failed with no field.
+        raise InputError(
+            "solve_params.rotor_rotation_model: a surface-magnet rotor is solved with its mesh rebuilt at "
+            "every rotor position; 'fixed_mesh' is not supported for it",
+            field="solve_params.rotor_rotation_model",
+            suggestion="Leave rotor_rotation_model out, or set it to 'remesh_per_step' as the app does.",
+        )
+
+
 def _raise_for_geometry(config: MotorConfig) -> None:
     from backend.geometry import validate_geometry
 
@@ -245,6 +266,7 @@ def prepare(
 
     body, use = _request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params, setup=setup)
     config = prepared_config(body)
+    _raise_for_unsolvable(config)
     _raise_for_geometry(config)
     return PreparedSolve(body, use, list(winding_feasibility_warnings(config)))
 
@@ -365,10 +387,26 @@ def _lean(config: MotorConfig, fields: bool) -> bool:
     return not (options.losses_efficiency or options.flux_density)
 
 
+# In-process solves keep their solver cache apart from the app's: the solver
+# prunes old cache folders, and a script must not remove the folders behind
+# results open in a running app. Set COILEM_SOLVE_CACHE_ROOT to choose another.
+SCRIPT_SOLVE_CACHE_DIR = "script_solve_cache"
+
+
+def _use_script_solve_cache() -> None:
+    from backend.field_artifacts import SOLVE_CACHE_ROOT_ENV
+    from backend.solve_workspace import user_data_root
+
+    if not os.environ.get(SOLVE_CACHE_ROOT_ENV, "").strip():
+        os.environ[SOLVE_CACHE_ROOT_ENV] = str(user_data_root() / SCRIPT_SOLVE_CACHE_DIR)
+
+
 def _solve_in_process(body: dict[str, Any], on_progress: ProgressCallback | None, *, fields: bool = False) -> dict[str, Any]:
     check_main_module()
     config = prepared_config(body)
+    _raise_for_unsolvable(config)
     _raise_for_geometry(config)
+    _use_script_solve_cache()
 
     from backend.selected_analyses import solve_selected_analyses
     from backend.solver import Magneto2DSolver
@@ -396,7 +434,24 @@ def _solve_in_process(body: dict[str, Any], on_progress: ProgressCallback | None
         if callback_errors and exc is callback_errors[-1]:
             raise
         raise _solve_error(exc) from exc
-    return result.model_dump(mode="json")
+    return _as_app_reports(result.model_dump(mode="json"), config)
+
+
+def _as_app_reports(payload: dict[str, Any], config: MotorConfig) -> dict[str, Any]:
+    """Add what the app's saved run adds to a result: output statuses, qualification and solver convergence.
+
+    The solver records the d/q record, cogging and magnet derating as
+    experimental; the app qualifies them inside their gates for the design.
+    """
+
+    from backend.convergence_reporting import convergence_report
+    from backend.solve_workspace import apply_output_statuses, run_qualification
+
+    request = config.model_dump(mode="json")
+    apply_output_statuses(payload, request)
+    payload["qualification"] = run_qualification(request)
+    payload["solver_convergence"] = convergence_report(payload)
+    return payload
 
 
 # -- Solve in a running app -------------------------------------------------------------
@@ -443,6 +498,25 @@ def _server_request(body: dict[str, Any], use: SetupUse) -> dict[str, Any]:
     return wrapped
 
 
+def _cancel_server_solve(opener: urllib.request.OpenerDirector, base: str) -> None:
+    """Stop the app's solve when the caller is interrupted (Ctrl+C), as an in-process solve stops.
+
+    The app runs one solve at a time and refuses another while it does, so its
+    active solve is the one this request started. Best effort: the interrupt
+    is raised whether or not the app answers.
+    """
+
+    request = urllib.request.Request(
+        f"{base}/solve/cancel", data=b"{}", method="POST",
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+    )
+    try:
+        with opener.open(request, timeout=5) as response:
+            response.read()
+    except (urllib.error.URLError, OSError, ValueError):
+        pass
+
+
 def _solve_over_http(server: str, body: dict[str, Any], timeout_s: float | None) -> dict[str, Any]:
     base = server.rstrip("/")
     if "://" not in base:
@@ -458,6 +532,9 @@ def _solve_over_http(server: str, body: dict[str, Any], timeout_s: float | None)
     try:
         with opener.open(request, timeout=timeout_s) as response:
             payload = json.loads(response.read().decode("utf-8"))
+    except KeyboardInterrupt:
+        _cancel_server_solve(opener, base)
+        raise
     except urllib.error.HTTPError as exc:
         raise _http_error(exc) from None
     except TimeoutError as exc:

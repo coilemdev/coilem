@@ -105,7 +105,8 @@ preserved; existing full-cycle plans keep their own grid, and a shortened plan
 is submitted using the existing full-cycle grid. Archived inputs and results
 retain their original settings.
 
-**Solve time breakdown**, last after losses, compares total elapsed time, meshing, field solve and
+**Solve time breakdown**, last after losses, compares the solver time (the Solver time on
+Results, without playback images and saving), meshing, field solve and
 packaging with absolute and percentage deltas. These are the recorded elapsed
 partitions, separate from combined worker time. Workload rows compare mesh
 elements, rotor positions, generated/rotated meshes, field solves and frames

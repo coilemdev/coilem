@@ -80,7 +80,8 @@ export function compareRunTiming(before: ComparisonResult, after: ComparisonResu
   const b = isSolveTimeBreakdown(after.solve_metadata.time_breakdown) ? after.solve_metadata.time_breakdown : null;
   const rows: ComparisonTimingRow[] = [];
   if (a || b) {
-    rows.push({ key: 'elapsed', label: 'Total elapsed', group: 'Elapsed time', unit: 's', before: nonnegative(a?.elapsed_s), after: nonnegative(b?.elapsed_s) });
+    // Results calls this Solver time; its Total elapsed also counts playback images and saving (QA 0.5.8 UI-5).
+    rows.push({ key: 'elapsed', label: 'Solver time', group: 'Elapsed time', unit: 's', before: nonnegative(a?.elapsed_s), after: nonnegative(b?.elapsed_s) });
     for (const [key, label] of [['meshing', 'Meshing'], ['field_solve', 'Field solve'], ['packaging', 'Packaging results']]) {
       rows.push({ key, label, group: 'Elapsed time', unit: 's',
         before: nonnegative(a?.elapsed_steps.find(step => step?.key === key)?.seconds),

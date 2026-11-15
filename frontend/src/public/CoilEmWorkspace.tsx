@@ -4023,7 +4023,12 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     : runReadinessCopy;
 
   useEffect(() => {
-    if (!notice) return undefined;
+    // A cleared notice (a new run starts) hides the toast too: the cleanup below
+    // cancels its 4 s timer, which otherwise left it up through the next run.
+    if (!notice) {
+      setTransientNotice(null);
+      return undefined;
+    }
     setTransientNotice(notice);
     const timer = window.setTimeout(() => setTransientNotice(null), 4_000);
     return () => window.clearTimeout(timer);
