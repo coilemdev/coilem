@@ -157,3 +157,40 @@ assert.equal(previousCompletedRun(records.filter(row => row.project_slug === 'ot
 assert.equal(previousCompletedRun(records, { ...current, completed_at: null }), undefined);
 assert.equal(previousCompletedRun([current], current), undefined);
 console.log('Saved input diffs preserve units, missing historical values and profile versions; previous-run selection stays in the completed project history.');
+
+const { initialComparisonSelection, addComparisonRun, removeComparisonRun, pinComparisonBaseline,
+  selectComparisonRun, reconcileComparisonSelection, compareMultipleLosses, compareMultipleTiming } = await importTypeScriptModule(new URL('../src/public/multiRunComparison.ts', import.meta.url));
+const { multipleInputChanges, recordedInputValue } = await importTypeScriptModule(new URL('../src/public/runInputChanges.ts', import.meta.url));
+let selection = initialComparisonSelection('baseline', 'candidate');
+for (const key of ['third', 'fourth', 'fifth', 'sixth']) selection = addComparisonRun(selection, key);
+assert.equal(addComparisonRun(selection, 'seventh'), selection, 'at most six distinct runs');
+assert.equal(selectComparisonRun(selection, 'run-b', 'baseline'), selection, 'a run cannot occupy two columns');
+assert.equal(removeComparisonRun(selection, 'run-a'), selection, 'the pinned baseline cannot be removed');
+selection = pinComparisonBaseline(selection, 'run-c');
+selection = removeComparisonRun(selection, 'run-a');
+assert.equal(selection.baselineId, 'run-c');
+assert.deepEqual(selection.slots.map(slot => slot.id), ['run-b', 'run-c', 'run-d', 'run-e', 'run-f']);
+assert.equal(selection.slots.find(slot => slot.id === 'run-c').key, 'third');
+selection = reconcileComparisonSelection(selection, new Set(['candidate', 'fourth', 'fifth', 'sixth']));
+assert.equal(selection.slots.find(slot => slot.id === 'run-c').key, '', 'a missing pinned run is never silently replaced');
+const unchangedPoint = structuredClone(left);
+unchangedPoint.config.solve_params.current_amplitude_convention = 'peak';
+const multiInputs = multipleInputChanges([left, right, unchangedPoint, null]);
+assert.deepEqual(multiInputs.find(row => row.path === 'config.solve_params.current_amplitude_A').values,
+  ['20 A rms', '30 A rms', '20 A peak', 'Not recorded']);
+assert.equal(multiInputs.find(row => row.path === 'config.rotor.magnet_thickness_mm').knownChanged, true, 'a missing third record does not hide known changes');
+assert.equal(recordedInputValue({ config: { rotor: { test: null } } }, 'config.rotor.test'), 'Not set');
+const multipleLosses = compareMultipleLosses([withLoss(fullLoss), lossB, withLoss(partialLoss), torqueOnly]);
+assert.deepEqual(multipleLosses.find(row => row.key === 'total').cells.map(cell => cell.missing ?? cell.value),
+  [fullLoss.total_loss_W, lossB.summary.loss_breakdown.total_loss_W, 'Unavailable', 'Not recorded']);
+assert.deepEqual(multipleLosses.find(row => row.key === 'subtotal').cells.map(cell => cell.missing ?? cell.value),
+  ['Not applicable', 'Not applicable', partialLoss.total_loss_W, 'Not recorded']);
+assert.deepEqual(multipleLosses.find(row => row.key === 'shaft').comparable, [false, true, false, false]);
+const partialBaseline = compareMultipleLosses([withLoss(partialLoss), withLoss({ ...partialLoss, total_loss_W: 70 }), lossB]);
+assert.deepEqual(partialBaseline.find(row => row.key === 'shaft').comparable, [false, true, false]);
+const multipleTiming = compareMultipleTiming([torqueOnly, timedA, timedB]);
+assert.deepEqual(multipleTiming.recorded, [false, true, true]);
+assert.deepEqual(multipleTiming.rows.find(row => row.key === 'elapsed').values, [null, 60, 90]);
+assert.deepEqual(multipleTiming.rows.find(row => row.key === 'meshes_rotated').values, [null, 0, 8]);
+assert.equal(JSON.stringify([left, right]), original, 'multi-run input tables preserve archived inputs');
+console.log('Multi-run comparison preserves pinned identities, the six-run limit, units, missing evidence, partial loss bases and elapsed timings.');

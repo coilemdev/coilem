@@ -139,11 +139,12 @@ interface WaveformReadoutBarProps {
   angleNote?: string;
   values: readonly WaveformReadoutValue[];
   difference?: { label: string; value: number; unit: string } | null;
+  differences?: Array<{ label: string; value: number; unit: string }>;
   previewing: boolean;
 }
 
 /** The angle and stored values of the shown position, under the plot header. */
-export function WaveformReadoutBar({ id, angleDeg, angleNote, values, difference, previewing }: WaveformReadoutBarProps) {
+export function WaveformReadoutBar({ id, angleDeg, angleNote, values, difference, differences = [], previewing }: WaveformReadoutBarProps) {
   return (
     <div id={id} className={`public-waveform-readout${previewing ? ' is-preview' : ''}`} role="status" aria-live="polite">
       {angleDeg === null
@@ -159,12 +160,12 @@ export function WaveformReadoutBar({ id, angleDeg, angleNote, values, difference
                 </b>
               </span>
             ))}
-            {difference && (
-              <span className="public-waveform-readout-difference">
+            {[...(difference ? [difference] : []), ...differences].map(difference => (
+              <span key={difference.label} className="public-waveform-readout-difference">
                 {difference.label}
                 <b>{formatWaveformReadoutDifference(difference.value, difference.unit)}</b>
               </span>
-            )}
+            ))}
           </>}
     </div>
   );

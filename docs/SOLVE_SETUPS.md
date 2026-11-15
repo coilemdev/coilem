@@ -7,18 +7,22 @@ The information icon beside **Run setup** explains what the selected setup
 captures and how to rename or save another setup. Hover, focus or tap it to read
 the tooltip; press **Escape** to dismiss it.
 
-1. Set the operating point and analyses in Solve, then choose the **Save** (disk)
-   icon beside the dropdown while **Custom** is selected. Type a name in the
-   setup field and choose **Save** again. **Include accuracy and solver settings**
+1. Set the operating point and analyses in Solve. With **New setup…** selected,
+   type a name directly in the setup field, then choose **Save** (disk) or press
+   **Enter**. The Save icon can also start naming. **Include accuracy and solver settings**
    starts checked. Uncheck it only when you want to reuse an operating point and
    its requested analyses while keeping accuracy and solver choices separate.
-2. Use the arrow beside the name to select a setup. An edit to its captured
+2. Use the arrow beside the name to open the setup menu.
+   Saved setups are grouped under **Your setups** or **Published references**,
+   with the current choice marked in amber. Arrow keys, Home/End and typing a
+   name navigate the choices; Enter or Tab selects, and Escape cancels.
+   Selecting **New setup…** clears and focuses the name while keeping the current settings. An edit to its captured
    settings marks it **Modified** and enables **Save**. Saving replaces that
    setup's values, confirms **Updated setup**, and disables **Save** again.
    Reverting the values also disables **Save**, keeping the same version.
 3. Double-click a user setup's name, or focus it and press **F2**, to rename it
    inline. **Enter** or leaving the field saves the name; **Escape** cancels.
-4. Choose **Custom**, then **Save**, to create another setup from the current
+4. Choose **New setup…**, type another name and **Save** to create a setup from the current
    values. The **Delete** (trash) icon asks for confirmation and leaves the
    operating settings and earlier run records in place.
 
@@ -88,7 +92,7 @@ hardware accuracy. Saving a label does not change qualification status.
 
 A run stores the submitted setup's ID, version and name alongside the actual
 resolved request. Its result displays that recorded name/version. Later profile
-updates or renames cannot relabel an earlier run. Modified or Custom conditions
+updates or renames cannot relabel an earlier run. Modified or unsaved conditions
 do not claim to be an unchanged saved setup. Saved run projects/packages retain
 the setup library snapshot for replay; the request record keeps only the
 submitted setup's label. Opening a saved run keeps this browser's current library

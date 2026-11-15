@@ -22,6 +22,9 @@ original identities. Release approval and publication remain pending; see the
   reference setups apply the shipped complete conditions; edits become Modified
   or user copies. Setups travel with design files and saved runs retain the
   actual setup identity/version. See [Saved run setups](docs/SOLVE_SETUPS.md).
+- **Compare saved runs.** Compare two to six analyses with a pinned baseline.
+  Inputs, results, losses and elapsed timing share the run columns and baseline
+  deltas; torque, back-EMF and cogging overlays retain each run's line style.
 - **Python scripting.** The [Python client](docs/PYTHON_CLIENT.md) supports
   scripted motor solves with typed inputs, results and executable examples.
 - **Solve execution and timing.** Direct Newton execution, worker/thread handling,

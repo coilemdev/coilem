@@ -114,7 +114,7 @@ const finiteNumber = (value: unknown): number | null => typeof value === 'number
 const outputStatus = (value: unknown): PerformanceOutputStatus | undefined => value === 'qualified' || value === 'experimental' || value === 'unavailable' ? value : undefined;
 
 /** Read recorded losses only; incomplete shaft outputs and full outputs have different bases. */
-export function compareRunLosses(before: ComparisonResult, after: ComparisonResult): ComparisonLossRow[] | null {
+export function compareRunLosses(before: ComparisonResult, after: ComparisonResult, includeAllTotals = false): ComparisonLossRow[] | null {
   if (!before.summary.loss_breakdown && !after.summary.loss_breakdown) return null;
   type Descriptor = { key: string; label: string; field: keyof LossBreakdown; unit: ComparisonLossRow['unit']; indent?: boolean; status?: 'efficiency' | 'iron' | 'copper'; };
   const descriptors: Descriptor[] = [
@@ -150,5 +150,5 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
     const a = cell(before, row), b = cell(after, row);
     return { key: row.key, label: row.label, unit: row.unit, indent: row.indent, before: a, after: b,
       comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) };
-  }).filter(row => !['total', 'subtotal'].includes(row.key) || row.before.value !== null || row.after.value !== null);
+  }).filter(row => includeAllTotals || !['total', 'subtotal'].includes(row.key) || row.before.value !== null || row.after.value !== null);
 }

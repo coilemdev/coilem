@@ -34,6 +34,7 @@ interface WaveformChartProps {
   onHiddenSeriesKeysChange?: (keys: string[]) => void;
   /** Two series whose difference the readout shows, for example Run B − Run A. */
   readoutDifference?: WaveformReadoutDifference;
+  readoutDifferences?: WaveformReadoutDifference[];
 }
 
 function periodicAxisEnd(angles: number[]) {
@@ -48,7 +49,7 @@ function periodicAxisEnd(angles: number[]) {
     : finalAngle;
 }
 
-export function WaveformChart({ angles, values, series, label, unit: dataUnit, samplingLabel, toggleableSeries = false, hiddenSeriesKeys: controlledHiddenSeriesKeys, onHiddenSeriesKeysChange, readoutDifference }: WaveformChartProps) {
+export function WaveformChart({ angles, values, series, label, unit: dataUnit, samplingLabel, toggleableSeries = false, hiddenSeriesKeys: controlledHiddenSeriesKeys, onHiddenSeriesKeysChange, readoutDifference, readoutDifferences = [] }: WaveformChartProps) {
   const [internalHiddenSeriesKeys, setInternalHiddenSeriesKeys] = useState<string[]>([]);
   const hiddenSeriesKeys = controlledHiddenSeriesKeys || internalHiddenSeriesKeys;
   const eligibleSeries = (series || (values ? [{ label, values, color: '#de7948' }] : []))
@@ -133,8 +134,14 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
     const key = seriesKey(item, index);
     const visible = !toggleableSeries || !hiddenSeriesKeys.includes(key);
     const text = item.legendLabel || item.label;
-    const swatchStyle = item.dashArray
-      ? { background: `repeating-linear-gradient(90deg, ${item.color} 0 6px, transparent 6px 10px)` }
+    let offset = 0;
+    const stops = item.dashArray?.split(/\s+/).map((length, index) => {
+      const start = offset;
+      offset += Number(length);
+      return `${index % 2 === 0 ? item.color : 'transparent'} ${start}px ${offset}px`;
+    });
+    const swatchStyle = stops
+      ? { background: `repeating-linear-gradient(90deg, ${stops.join(', ')})` }
       : { backgroundColor: item.color };
     return toggleableSeries
       ? <button
@@ -171,6 +178,10 @@ export function WaveformChart({ angles, values, series, label, unit: dataUnit, s
         id={readout.readoutId}
         angleDeg={readout.shownAngle}
         values={readoutValues}
+        differences={readoutDifferences.flatMap(difference => {
+          const value = waveformReadoutDifferenceValue(readoutValues, difference);
+          return value === null ? [] : [{ label: difference.label, value, unit }];
+        })}
         difference={readoutDifference && readoutDifferenceValue !== null
           ? { label: readoutDifference.label, value: readoutDifferenceValue, unit }
           : null}

@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 28414,
-      "sha256": "7a7b1419e2cd1d8ad7bc6ed4a5537c3189f169fdbdb1a5c38cebcde380384752"
+      "bytes": 28650,
+      "sha256": "78684e701b10baf98fffb42d7676d6e2399b38b94e8a2045a9eff401c7993d32"
     },
     {
       "path": "SECURITY.md",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 178763,
-      "sha256": "e823bf87d123c2eee17f941895058ea3b3984bdf469f42b7c0636084f1bc57ed"
+      "bytes": 177963,
+      "sha256": "86b3c590ab9102c3cd5f7972a0ed62c8ba5f5d49f904d4dfc66474185ebaf8e6"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 38220,
-      "sha256": "b3f9e2eacc65906705726cff47314edf2a1e7775abfb707af11bd04ea5e15e33"
+      "bytes": 38671,
+      "sha256": "969f7ca19721fd88c6a86d9d3e47fd3e3320a41426f1934ea0bcd593da19fb38"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7140,13 +7140,13 @@
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
-      "bytes": 11882,
-      "sha256": "a723c495b09bc3d93bc2e76ee266adaceae9f3a802880e698ddc323786c8a64d"
+      "bytes": 12417,
+      "sha256": "bd46cdf4afdfbbd46b86a598756912bca3612e5f69b39fc5476bed5083833a89"
     },
     {
       "path": "frontend/src/public/WaveformReadout.tsx",
-      "bytes": 6506,
-      "sha256": "2647d1bab21ce42f9fdee6cd919d9809cf57349c14e58e5327d0f5cd67f10f2b"
+      "bytes": 6677,
+      "sha256": "e698b27006bb063dfee0d6007e5982406feb507b8f5e389a54e102481c42b9ae"
     },
     {
       "path": "frontend/src/public/WindingLayoutView.tsx",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 331267,
-      "sha256": "4f015b7c8aa97976c43448bfff0aa9f38be5d15c3b8d4ff54b21f73543a19e54"
+      "bytes": 335881,
+      "sha256": "d2f0d373a721bccb7fd78b7c75e0c6dff2524839a98ef357e185377edbcd1260"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 122826,
-      "sha256": "8c36032fe398419e10e888a9a1e097fe131a047dd8ab18b17d78f5be958dc4e6"
+      "bytes": 133830,
+      "sha256": "64a0718e9b84fbe5c228affbc5f5969bb1c015b79a5ac4d5889a177404cb7de0"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11675,13 +11675,13 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 13653,
-      "sha256": "5c407e39dcf07d69302bf35e8156267a5fd9ec8b8be7d91ce7ace42628190b46"
+      "bytes": 17223,
+      "sha256": "01f16ea8d0f1c6ee07f77ad3ba05c8da26303ca5eff0f0717fab1dd53d589766"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
-      "bytes": 9324,
-      "sha256": "1375b27fc8c647ebb781add6f5673d7bd1829b185f4ab1fc46ac471d51f54017"
+      "bytes": 9370,
+      "sha256": "f3b3ee1a2ffd2b15b81bf13050b663d5db51e295e381ea9799d534f60a169b3c"
     },
     {
       "path": "backend/report_numbers.py",
@@ -18725,8 +18725,8 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 6228,
-      "sha256": "e7705e62f16838c62227179d9fbe777d10298f64969ace31d9b32712f8da7afc"
+      "bytes": 6586,
+      "sha256": "01432f29e36f00b2492505a03a96da8968650263d04dc0211982188091a04653"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
@@ -18735,8 +18735,8 @@
     },
     {
       "path": "frontend/src/public/RunSetupControl.tsx",
-      "bytes": 11418,
-      "sha256": "79b801f421eeba15a7666ea7f2caef4621082ddd66d508c425059300c74fb5ab"
+      "bytes": 12036,
+      "sha256": "c1c288b14c4fa48707df6c5d5fca722eafce4885a319c2a45f7bb1a444e7cb60"
     },
     {
       "path": "frontend/src/public/builtinSolveProfiles.ts",
@@ -18755,23 +18755,33 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 26489,
-      "sha256": "e7203b5a854346fe624927e4778d468c1211c94cdcb5f2872daa21c847e2b89a"
+      "bytes": 31522,
+      "sha256": "c32489a5b0ad5ed2f54da36df55cc701d799091a459190c7371d4937158b6d07"
     },
     {
       "path": "docs/COMPARE_RUNS.md",
-      "bytes": 4870,
-      "sha256": "64276926f7c6d80f3e0bfa23abf1820029e92caaaa02b0618be094f8b432f82a"
+      "bytes": 6012,
+      "sha256": "b97f6ce9c6f0b962c31ec27718be971aa8f95e94179fac478aaad98d2767c9c3"
     },
     {
       "path": "frontend/src/public/RunChangesTable.tsx",
-      "bytes": 2446,
-      "sha256": "dd79d83b873981bca057f2a8a3684ac7495d756d1b352e0f06ae191c6f0687e8"
+      "bytes": 2958,
+      "sha256": "288c81cfdaa11d472ba9bccf22dd9b0fb8ce72111d4bb2aa46294274399cb373"
     },
     {
       "path": "frontend/src/public/runInputChanges.ts",
-      "bytes": 8514,
-      "sha256": "427fe04aba980e8518b8ea0d82a0f3bd677d5c88e53027d1a8ac2ef0b7f241ea"
+      "bytes": 10309,
+      "sha256": "0623a874d399df5459125314601034b0e6f0d741dd6f00f934cafa0b56785058"
+    },
+    {
+      "path": "frontend/src/public/multiRunComparison.ts",
+      "bytes": 4499,
+      "sha256": "bfaeddae365a3fa349dc3768bd8ea1ad93c0b88c7579ff16cb3d3c00a5f046da"
+    },
+    {
+      "path": "frontend/src/public/RunSetupMenu.tsx",
+      "bytes": 8475,
+      "sha256": "b73739ddc5e2ec9a8f716a1b8c1fbd57a93cde3651de79935af319385834c4b1"
     }
   ],
   "public_patches": [
@@ -40902,6 +40912,108 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "b60643d8a409a755cbb395474142eaf836681a95ce2e38f47a3a6468a9ecac40",
       "reason": "Stack Compare 2.0 and full-cycle loss setup on saved run setups and current main without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "7a7b1419e2cd1d8ad7bc6ed4a5537c3189f169fdbdb1a5c38cebcde380384752",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "docs/COMPARE_RUNS.md",
+      "source_sha256": "64276926f7c6d80f3e0bfa23abf1820029e92caaaa02b0618be094f8b432f82a",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "docs/SOLVE_SETUPS.md",
+      "source_sha256": "e7705e62f16838c62227179d9fbe777d10298f64969ace31d9b32712f8da7afc",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "e823bf87d123c2eee17f941895058ea3b3984bdf469f42b7c0636084f1bc57ed",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "5c407e39dcf07d69302bf35e8156267a5fd9ec8b8be7d91ce7ace42628190b46",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "b3f9e2eacc65906705726cff47314edf2a1e7775abfb707af11bd04ea5e15e33",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/RunChangesTable.tsx",
+      "source_sha256": "dd79d83b873981bca057f2a8a3684ac7495d756d1b352e0f06ae191c6f0687e8",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/RunSetupControl.tsx",
+      "source_sha256": "79b801f421eeba15a7666ea7f2caef4621082ddd66d508c425059300c74fb5ab",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/RunSetupMenu.tsx",
+      "source_sha256": null,
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/WaveformChart.tsx",
+      "source_sha256": "a723c495b09bc3d93bc2e76ee266adaceae9f3a802880e698ddc323786c8a64d",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/WaveformReadout.tsx",
+      "source_sha256": "2647d1bab21ce42f9fdee6cd919d9809cf57349c14e58e5327d0f5cd67f10f2b",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/multiRunComparison.ts",
+      "source_sha256": null,
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/runComparison.ts",
+      "source_sha256": "1375b27fc8c647ebb781add6f5673d7bd1829b185f4ab1fc46ac471d51f54017",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/runInputChanges.ts",
+      "source_sha256": "427fe04aba980e8518b8ea0d82a0f3bd677d5c88e53027d1a8ac2ef0b7f241ea",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "4f015b7c8aa97976c43448bfff0aa9f38be5d15c3b8d4ff54b21f73543a19e54",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "8c36032fe398419e10e888a9a1e097fe131a047dd8ab18b17d78f5be958dc4e6",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "e1df8ebe6fcf0dc3c6a0ce8296579ba3e589b505",
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "source_sha256": "e7203b5a854346fe624927e4778d468c1211c94cdcb5f2872daa21c847e2b89a",
+      "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
     }
   ]
 }

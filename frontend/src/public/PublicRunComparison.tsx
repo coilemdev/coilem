@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import {
   deletePublicRun,
@@ -9,10 +9,11 @@ import {
 } from './api';
 import { motorConstantsView } from './machineConstants';
 import type { SolveResult } from './model';
-import { compareRunLosses, compareRunTiming, previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
+import { previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
 import type { ComparisonInputs } from './runInputChanges';
 import { COGGING_METHOD_LABELS } from './coggingView';
 import { RunInputChanges } from './RunChangesTable';
+import { COMPARISON_STYLES, addComparisonRun, compareMultipleLosses, compareMultipleTiming, initialComparisonSelection, pinComparisonBaseline, reconcileComparisonSelection, removeComparisonRun, selectComparisonRun, type ComparisonSlotId } from './multiRunComparison';
 import { formatSignificant, torqueDecimals } from './numberFormat';
 import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
@@ -189,13 +190,13 @@ function sameAngleGrid(left: number[], right: number[]): boolean {
   return left.length === right.length && left.every((angle, index) => Math.abs(angle - right[index]) <= 1e-6);
 }
 
-function samplingLabel(left: number[], right: number[]): string {
-  if (!left.length || !right.length) {
-    return `Run A ${left.length ? `${left.length} positions` : 'not computed'} · Run B ${right.length ? `${right.length} positions` : 'not computed'}`;
+function samplingLabel(runs: Array<{ label: string; angles: number[] }>): string {
+  const first = runs[0]?.angles || [];
+  if (first.length && runs.every(run => sameAngleGrid(first, run.angles))) {
+    const step = first.length >= 2 ? first[1] - first[0] : 0;
+    return `${first.length} shared positions${step > 0 ? ` · ${step.toFixed(1)}° step` : ''}`;
   }
-  if (!sameAngleGrid(left, right)) return `Run A ${left.length} · Run B ${right.length} positions`;
-  const step = left.length >= 2 ? left[1] - left[0] : 0;
-  return `${left.length} shared positions${step > 0 ? ` · ${step.toFixed(1)}° step` : ''}`;
+  return runs.map(run => `${run.label} ${run.angles.length ? `${run.angles.length} positions` : 'not computed'}`).join(' · ');
 }
 
 function actualMeshProvenance(result: ComparisonResult): string {
@@ -223,15 +224,39 @@ function excitationProvenance(result: ComparisonResult): string {
   return `Ideal six-step (120°) · ${advance} · ${metadata.phase_connection || 'wye'} · ${metadata.current_amplitude_convention || 'plateau'}`;
 }
 
+interface ComparisonColumn extends LoadedRun {
+  id: ComparisonSlotId;
+  label: string;
+  color: string;
+  dashArray?: string;
+}
+
+function ComparisonHeader({ runs, label = 'Metric' }: { runs: ComparisonColumn[]; label?: string }) {
+  return <thead><tr><th scope="col">{label}</th>{runs.map((run, index) => <th key={run.id} scope="col" style={{ color: run.color }} title={runLabel(run.record)}>{run.label} · {index === 0 ? 'baseline' : 'candidate'}</th>)}
+    {runs.length === 2 && <><th scope="col">Δ ({runs[1].label.slice(4)} − {runs[0].label.slice(4)})</th><th scope="col">Δ vs {runs[0].label.slice(4)} (%)</th></>}
+  </tr></thead>;
+}
+
+function ComparisonCells({ runs, values, differences }: {
+  runs: ComparisonColumn[]; values: ReactNode[]; differences: Array<{ absolute: ReactNode; percent: string }>;
+}) {
+  return <>{runs.map((run, index) => <td key={run.id} style={{ color: run.color }} data-run-column={run.id}>
+    {values[index]}
+    {runs.length > 2 && index > 0 && <small className="public-run-compare-cell-delta" aria-label={`${run.label} change from ${runs[0].label}`}>Δ {differences[index].absolute} · {differences[index].percent}</small>}
+  </td>)}{runs.length === 2 && <><td>{differences[1].absolute}</td><td>{differences[1].percent}</td></>}</>;
+}
+
 export function PublicRunComparison({ currentResult, manageRuns = false, compareWithPrevious = false, onOpenRun }: PublicRunComparisonProps) {
   const currentSaved = currentResult?.saved_run;
   const [allRecords, setAllRecords] = useState<PublicRunListRecord[]>([]);
   const [records, setRecords] = useState<PublicRunListRecord[]>([]);
   const [storage, setStorage] = useState<PublicRunStoragePolicy | null>(null);
-  const [leftKey, setLeftKey] = useState(currentSaved && !compareWithPrevious ? runKey(currentSaved) : '');
-  const [rightKey, setRightKey] = useState(currentSaved && compareWithPrevious ? runKey(currentSaved) : '');
+  const [selection, setSelection] = useState(() => initialComparisonSelection());
+  const selectionContext = useRef<string | null>(null);
+  const [loadErrors, setLoadErrors] = useState<Record<string, string>>({});
   const [runsLoaded, setRunsLoaded] = useState(false);
   const [loaded, setLoaded] = useState<Record<string, LoadedRun>>({});
+  const comparisonRequests = useRef(new Map<string, Promise<LoadedRun>>());
   const [error, setError] = useState<string | null>(null);
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
   const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
@@ -264,66 +289,54 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const previousKey = previousRecord ? runKey(previousRecord) : '';
 
   useEffect(() => {
-    const keys = new Set(records.map(runKey));
-    const currentKey = currentSaved ? runKey(currentSaved) : '';
-    if (compareWithPrevious) {
-      const nextRight = keys.has(rightKey) ? rightKey : keys.has(currentKey) ? currentKey : '';
-      const nextLeft = keys.has(leftKey) && leftKey !== nextRight ? leftKey : previousKey;
-      if (nextLeft !== leftKey) setLeftKey(nextLeft);
-      if (nextRight !== rightKey) setRightKey(nextRight);
-      return;
-    }
-    const nextLeft = keys.has(leftKey)
-      ? leftKey
-      : keys.has(currentKey)
-        ? currentKey
-        : records[0] ? runKey(records[0]) : '';
-    const fallbackRight = records.find((run) => runKey(run) !== nextLeft);
-    const nextRight = keys.has(rightKey) && rightKey !== nextLeft
-      ? rightKey
-      : fallbackRight ? runKey(fallbackRight) : '';
-    if (nextLeft !== leftKey) setLeftKey(nextLeft);
-    if (nextRight !== rightKey) setRightKey(nextRight);
-  }, [compareWithPrevious, currentSaved, leftKey, previousKey, records, rightKey]);
+    if (!runsLoaded) return;
+    const context = `${compareWithPrevious}:${currentKey}`;
+    const available = new Set(records.map(runKey));
+    if (selectionContext.current !== context) {
+      selectionContext.current = context;
+      const baseline = compareWithPrevious ? previousKey : available.has(currentKey) ? currentKey : records[0] ? runKey(records[0]) : '';
+      const candidate = compareWithPrevious ? available.has(currentKey) ? currentKey : '' : records.find(run => runKey(run) !== baseline);
+      setSelection(initialComparisonSelection(baseline, typeof candidate === 'string' ? candidate : candidate ? runKey(candidate) : ''));
+    } else setSelection(previous => reconcileComparisonSelection(previous, available));
+  }, [compareWithPrevious, currentKey, previousKey, records, runsLoaded]);
 
+  const selectedKeys = useMemo(() => selection.slots.map(slot => slot.key).filter(Boolean), [selection]);
   useEffect(() => {
     if (!records.length) return;
-    setError(null);
-    const missing = [...new Set([leftKey, rightKey])]
-      .filter((key) => key && !loaded[key])
-      .map((key) => records.find((candidate) => runKey(candidate) === key))
-      .filter((record): record is PublicRunListRecord => Boolean(record));
+    const missing = selectedKeys.filter(key => !loaded[key] && !loadErrors[key])
+      .map(key => records.find(record => runKey(record) === key)).filter((record): record is PublicRunListRecord => Boolean(record));
     if (!missing.length) return;
     let active = true;
-    void Promise.all(missing.map(async (record) => {
-      const payload = await loadPublicRunComparison(record.project_slug, record.run_id);
-      return {
-        key: runKey(record),
-        value: {
-          record,
-          result: payload.result,
-          inputs: payload.inputs,
-        },
-      };
-    })).then((entries) => {
+    void Promise.allSettled(missing.map(record => {
+      const key = runKey(record);
+      let request = comparisonRequests.current.get(key);
+      if (!request) {
+        request = loadPublicRunComparison(record.project_slug, record.run_id)
+          .then(payload => ({ record, result: payload.result, inputs: payload.inputs }))
+          .catch(reason => { comparisonRequests.current.delete(key); throw reason; });
+        comparisonRequests.current.set(key, request);
+      }
+      return request;
+    })).then(outcomes => {
       if (!active) return;
-      setLoaded((previous) => {
+      setLoaded(previous => {
         const next = { ...previous };
         let changed = false;
-        entries.forEach((entry) => {
-          if (!previous[entry.key]) {
-            next[entry.key] = entry.value;
-            changed = true;
-          }
+        outcomes.forEach((outcome, index) => {
+          if (outcome.status === 'fulfilled') { next[runKey(missing[index])] = outcome.value; changed = true; }
         });
         return changed ? next : previous;
       });
-      setError(null);
-    }).catch((reason: unknown) => {
-      if (active) setError(apiErrorMessage(reason, 'A saved run could not be loaded.'));
+      setLoadErrors(previous => {
+        const next = { ...previous };
+        outcomes.forEach((outcome, index) => {
+          if (outcome.status === 'rejected') next[runKey(missing[index])] = apiErrorMessage(outcome.reason, 'This saved run could not be loaded.');
+        });
+        return next;
+      });
     });
     return () => { active = false; };
-  }, [leftKey, rightKey, records, loaded]);
+  }, [selectedKeys, records, loaded, loadErrors]);
 
   const deleteRun = async (record: PublicRunListRecord) => {
     const key = runKey(record);
@@ -331,6 +344,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
     setManagementNotice(null);
     try {
       const deleted = await deletePublicRun(record.project_slug, record.run_id);
+      comparisonRequests.current.delete(key);
       setStorage(deleted.storage);
       setAllRecords((previous) => previous.filter((candidate) => runKey(candidate) !== key));
       setRecords((previous) => previous.filter((candidate) => runKey(candidate) !== key));
@@ -353,115 +367,43 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
     }
   };
 
-  const left = loaded[leftKey];
-  const right = loaded[rightKey];
-  const ready = Boolean(left && right && leftKey !== rightKey);
-  const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !leftKey;
-  // Only a chosen pair is prepared; with one run still to pick, the selectors say so.
-  const loadingStatus = error ? null : !runsLoaded ? 'Loading saved runs…'
-    : leftKey && rightKey && leftKey !== rightKey && !ready ? 'Preparing comparison…' : null;
-  const torqueSeries = useMemo(() => ready ? [
-    {
-      id: 'run-a',
-      label: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)} · ${left.record.project_name || left.record.project_slug}`,
-      angles: left.result.torque_waveform.electrical_angle_deg,
-      values: left.result.torque_waveform.torque_Nm,
-      color: '#f59e0b',
-    },
-    {
-      id: 'run-b',
-      label: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)} · ${right.record.project_name || right.record.project_slug}`,
-      angles: right.result.torque_waveform.electrical_angle_deg,
-      values: right.result.torque_waveform.torque_Nm,
-      color: '#22d3ee',
-      dashArray: '7 5',
-    },
-  ] : [], [ready, left, right]);
-  const emfSeries = useMemo(() => ready ? [
-    {
-      id: 'run-a-phase-a',
-      label: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)} · Phase A`,
-      legendLabel: 'Phase A',
-      groupLabel: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)}`,
-      angles: left.result.back_emf_waveform.electrical_angle_deg,
-      values: left.result.back_emf_waveform.phase_a_V,
-      color: '#f59e0b',
-    },
-    {
-      id: 'run-a-phase-b',
-      label: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)} · Phase B`,
-      legendLabel: 'Phase B',
-      groupLabel: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)}`,
-      angles: left.result.back_emf_waveform.electrical_angle_deg,
-      values: left.result.back_emf_waveform.phase_b_V,
-      color: '#fb7185',
-    },
-    {
-      id: 'run-a-phase-c',
-      label: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)} · Phase C`,
-      legendLabel: 'Phase C',
-      groupLabel: `Run A · ${solverLabel(left.result.solve_metadata.solver_name)}`,
-      angles: left.result.back_emf_waveform.electrical_angle_deg,
-      values: left.result.back_emf_waveform.phase_c_V,
-      color: '#facc15',
-    },
-    {
-      id: 'run-b-phase-a',
-      label: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)} · Phase A`,
-      legendLabel: 'Phase A',
-      groupLabel: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)}`,
-      angles: right.result.back_emf_waveform.electrical_angle_deg,
-      values: right.result.back_emf_waveform.phase_a_V,
-      color: '#22d3ee',
-      dashArray: '7 5',
-    },
-    {
-      id: 'run-b-phase-b',
-      label: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)} · Phase B`,
-      legendLabel: 'Phase B',
-      groupLabel: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)}`,
-      angles: right.result.back_emf_waveform.electrical_angle_deg,
-      values: right.result.back_emf_waveform.phase_b_V,
-      color: '#60a5fa',
-      dashArray: '7 5',
-    },
-    {
-      id: 'run-b-phase-c',
-      label: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)} · Phase C`,
-      legendLabel: 'Phase C',
-      groupLabel: `Run B · ${solverLabel(right.result.solve_metadata.solver_name)}`,
-      angles: right.result.back_emf_waveform.electrical_angle_deg,
-      values: right.result.back_emf_waveform.phase_c_V,
-      color: '#2dd4bf',
-      dashArray: '7 5',
-    },
-  ] : [], [ready, left, right]);
-  const coggingSeries = useMemo(() => ready ? [
-    { id: 'cogging-run-a', label: `Run A · ${left.inputs?.run_setup?.name || left.record.project_name || left.record.project_slug}`,
-      angles: left.result.cogging_torque_waveform?.electrical_angle_deg || [], values: left.result.cogging_torque_waveform?.torque_Nm || [], color: '#f59e0b' },
-    { id: 'cogging-run-b', label: `Run B · ${right.inputs?.run_setup?.name || right.record.project_name || right.record.project_slug}`,
-      angles: right.result.cogging_torque_waveform?.electrical_angle_deg || [], values: right.result.cogging_torque_waveform?.torque_Nm || [], color: '#22d3ee', dashArray: '7 5' },
-  ] : [], [ready, left, right]);
-  const torqueSampling = ready ? samplingLabel(
-    left.result.torque_waveform.electrical_angle_deg,
-    right.result.torque_waveform.electrical_angle_deg,
-  ) : '';
-  const emfSampling = ready ? samplingLabel(
-    left.result.back_emf_waveform.electrical_angle_deg,
-    right.result.back_emf_waveform.electrical_angle_deg,
-  ) : '';
-  const torqueAvailable = torqueSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
-  const emfAvailable = emfSeries.some((series) => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const baselineSlot = selection.slots.find(slot => slot.id === selection.baselineId)!;
+  const orderedSlots = [baselineSlot, ...selection.slots.filter(slot => slot.id !== selection.baselineId)];
+  const ready = selection.slots.every(slot => slot.key && loaded[slot.key]);
+  const runs: ComparisonColumn[] = ready ? orderedSlots.map(slot => ({ ...loaded[slot.key], ...COMPARISON_STYLES.find(style => style.id === slot.id)! })) : [];
+  const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !baselineSlot.key;
+  const selectionErrors = selection.slots.filter(slot => loadErrors[slot.key]);
+  const loadingStatus = error || selectionErrors.length ? null : !runsLoaded ? 'Loading saved runs…'
+    : selectedKeys.length === selection.slots.length && !ready ? 'Preparing comparison…' : null;
+  const unused = records.find(record => !selectedKeys.includes(runKey(record)));
+  const changeSelection = (id: ComparisonSlotId, key: string) => {
+    setSelection(previous => selectComparisonRun(previous, id, key));
+    setHiddenSeriesKeys([]);
+  };
+  const torqueSeries = runs.map(run => ({ id: `${run.id}:${runKey(run.record)}`, label: `${run.label} · ${solverLabel(run.result.solve_metadata.solver_name)} · ${run.record.project_name || run.record.project_slug}`,
+    angles: run.result.torque_waveform.electrical_angle_deg, values: run.result.torque_waveform.torque_Nm, color: run.color, dashArray: run.dashArray }));
+  const emfSeries = runs.flatMap(run => {
+    const style = COMPARISON_STYLES.find(style => style.id === run.id)!;
+    return (['a', 'b', 'c'] as const).map((phase, index) => ({ id: `${run.id}:${runKey(run.record)}:phase-${phase}`,
+      label: `${run.label} · ${solverLabel(run.result.solve_metadata.solver_name)} · Phase ${phase.toUpperCase()}`,
+      legendLabel: `Phase ${phase.toUpperCase()}`, groupLabel: `${run.label} · ${solverLabel(run.result.solve_metadata.solver_name)}`,
+      angles: run.result.back_emf_waveform.electrical_angle_deg, values: run.result.back_emf_waveform[`phase_${phase}_V`], color: style.phases[index], dashArray: run.dashArray }));
+  });
+  const coggingSeries = runs.map(run => ({ id: `cogging-${run.id}:${runKey(run.record)}`, label: `${run.label} · ${run.inputs?.run_setup?.name || run.record.project_name || run.record.project_slug}`,
+    angles: run.result.cogging_torque_waveform?.electrical_angle_deg || [], values: run.result.cogging_torque_waveform?.torque_Nm || [], color: run.color, dashArray: run.dashArray }));
+  const differencesFor = (series: typeof torqueSeries) => series.slice(1).map((item, index) => ({ minuendKey: item.id, subtrahendKey: series[0].id, label: `${runs[index + 1].label} − ${runs[0].label}` }));
+  const torqueAvailable = torqueSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
+  const emfAvailable = emfSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
   const coggingAvailable = coggingSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
-  const timing = ready ? compareRunTiming(left.result, right.result) : null;
-  const losses = ready ? compareRunLosses(left.result, right.result) : null;
+  const timing = ready ? compareMultipleTiming(runs.map(run => run.result)) : null;
+  const losses = ready ? compareMultipleLosses(runs.map(run => run.result)) : [];
   useEffect(() => {
     if (!ready) return;
     setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
       ? current : torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : 'cogging');
   }, [ready, torqueAvailable, emfAvailable, coggingAvailable]);
   return (
-    <section className="public-run-compare" aria-label="Compare two saved runs">
+    <section className="public-run-compare" aria-label="Compare saved runs">
       {manageRuns && (
         <section className="public-run-storage" aria-label="Local run storage">
           <div className="public-run-storage-summary">
@@ -536,54 +478,58 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
         </section>
       )}
       <div className="public-run-compare-heading">
-        <div><span className="eyebrow">Run comparison</span><h2>Compare two completed Magneto2D analyses</h2><p>Review how design inputs, operating points, or numerical settings changed the saved results.</p></div>
-        <div className="public-run-compare-legend"><span><i className="run-a" />Run A</span><span><i className="run-b" />Run B</span></div>
+        <div><span className="eyebrow">Run comparison</span><p>Pin a baseline and compare recorded inputs and results. Each delta is relative to the pinned run.</p></div>
       </div>
       <div className="public-run-compare-selectors" aria-busy={Boolean(loadingStatus)}>
-        <label><span>Run A · baseline</span><select value={runsLoaded ? leftKey : ''} disabled={!runsLoaded} onChange={(event) => setLeftKey(event.target.value)}>{(!runsLoaded || !leftKey) && <option value="">{runsLoaded ? 'Choose a baseline' : 'Loading saved runs…'}</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === rightKey}>{runLabel(run)}</option>)}</select></label>
-        <label><span>Run B · candidate</span><select value={runsLoaded ? rightKey : ''} disabled={!runsLoaded} onChange={(event) => setRightKey(event.target.value)}>{(!runsLoaded || !rightKey) && <option value="">{runsLoaded ? 'Choose a candidate' : 'Loading saved runs…'}</option>}{records.map((run) => <option key={runKey(run)} value={runKey(run)} disabled={runKey(run) === leftKey}>{runLabel(run)}</option>)}</select></label>
+        {selection.slots.map(slot => {
+          const style = COMPARISON_STYLES.find(style => style.id === slot.id)!;
+          const baseline = slot.id === selection.baselineId;
+          return <div key={slot.id} className={`public-run-compare-choice${baseline ? ' is-baseline' : ''}`} data-comparison-slot={slot.id}>
+            <label><span style={{ color: style.color }}>{style.label} · {baseline ? 'baseline' : 'candidate'}</span>
+              <select value={runsLoaded ? slot.key : ''} disabled={!runsLoaded} onChange={event => changeSelection(slot.id, event.target.value)}>
+                {(!runsLoaded || !slot.key) && <option value="">{runsLoaded ? baseline ? 'Choose a baseline' : 'Choose a candidate' : 'Loading saved runs…'}</option>}
+                {records.map(record => <option key={runKey(record)} value={runKey(record)} disabled={selection.slots.some(other => other.id !== slot.id && other.key === runKey(record))}>{runLabel(record)}</option>)}
+              </select>
+            </label>
+            <div className="public-run-compare-choice-actions">
+              {baseline ? <span className="public-run-compare-pinned">Pinned baseline</span> : <button type="button" disabled={!slot.key || !runsLoaded} onClick={() => setSelection(previous => pinComparisonBaseline(previous, slot.id))} aria-label={`Pin ${style.label} as baseline`}>Pin as baseline</button>}
+              <button type="button" disabled={baseline || selection.slots.length <= 2} aria-label={`Remove ${style.label} from comparison`} onClick={() => setSelection(previous => removeComparisonRun(previous, slot.id))}>Remove</button>
+            </div>
+            {loadErrors[slot.key] && <div className="public-run-compare-load-error" role="alert">{style.label}: {loadErrors[slot.key]} <button type="button" onClick={() => setLoadErrors(previous => { const next = { ...previous }; delete next[slot.key]; return next; })}>Retry {style.label}</button></div>}
+          </div>;
+        })}
+        <div className="public-run-compare-add"><button type="button" disabled={!runsLoaded || selection.slots.length >= 6 || !unused || selectedKeys.length !== selection.slots.length} onClick={() => unused && setSelection(previous => addComparisonRun(previous, runKey(unused)))}>+ Add run</button><span>{selection.slots.length} of 6 runs · baseline stays pinned</span></div>
       </div>
       {error && <div className="public-run-compare-message error" role="alert">{error}</div>}
       {!error && noPrevious && <div className="public-run-compare-message" role="status">{currentRecord
         ? 'No earlier completed Magneto2D run with a recorded completion time was found in this saved project. Choose a baseline manually to compare another run.'
         : 'The current run is no longer available in saved runs. Choose two saved runs manually.'}</div>}
+      {!error && runsLoaded && !noPrevious && !baselineSlot.key && selectedKeys.length > 0 && <p className="public-run-compare-message" role="status">Choose a baseline to resume the comparison.</p>}
       {!error && runsLoaded && !compareWithPrevious && records.length < 2 && <div className="public-run-compare-message">Complete one more Magneto2D analysis to compare two runs.</div>}
       {loadingStatus && <div className="public-run-compare-message public-run-compare-loading" role="status" aria-live="polite" aria-atomic="true"><i aria-hidden="true" />{loadingStatus}</div>}
       {ready && <>
-        {compareWithPrevious && leftKey === previousKey && rightKey === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
-        <RunInputChanges before={left.inputs} after={right.inputs} details={[
-          { label: 'Design', before: left.record.project_name || left.record.project_slug, after: right.record.project_name || right.record.project_slug },
-          { label: 'Actual mesh', before: actualMeshProvenance(left.result), after: actualMeshProvenance(right.result) },
-          { label: 'Torque extraction', before: actualTorqueProvenance(left.result), after: actualTorqueProvenance(right.result) },
-          { label: 'Excitation identity', before: excitationProvenance(left.result), after: excitationProvenance(right.result) },
-          { label: 'Completed', before: formatRunTime(left.record.completed_at, 'Not recorded'),
-            after: formatRunTime(right.record.completed_at, 'Not recorded') },
-        ]} />
+        {compareWithPrevious && baselineSlot.key === previousKey && selection.slots.find(slot => slot.id === 'run-b')?.key === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
+        <RunInputChanges runs={runs.map(run => ({ ...run, details: {
+          Design: run.record.project_name || run.record.project_slug,
+          'Actual mesh': actualMeshProvenance(run.result), 'Torque extraction': actualTorqueProvenance(run.result),
+          'Excitation identity': excitationProvenance(run.result), Completed: formatRunTime(run.record.completed_at, 'Not recorded'),
+        } }))} />
+        {runs.length > 2 && <p className="public-run-compare-delta-note">Values below include Δ and percentage change from {runs[0].label}, the pinned baseline.</p>}
         <section className="public-run-compare-mode-note design" aria-live="polite">
           <strong>Descriptive run comparison</strong>
           <p>Deltas may come from the motor design, materials, operating point, or numerical setup. They describe change and are not a solver-validation verdict.</p>
         </section>
-        <div className="public-run-compare-metrics" role="region" aria-label="Run comparison metric differences" tabIndex={0}>
+        <div className={`public-run-compare-metrics${runs.length > 2 ? ' is-multi-run' : ''}`} role="region" aria-label="Run comparison metric differences" tabIndex={0}>
           <table>
             <caption>Results comparison</caption>
-            <thead><tr><th scope="col">Metric</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
-            <tbody>{METRICS.filter((metric) => !metric.optional || metric.value(left.result) != null || metric.value(right.result) != null).map((metric) => {
-            const leftValue = metric.value(left.result);
-            const rightValue = metric.value(right.result);
-            // Each torque keeps its own three significant figures, so a small
-            // motor still reads 0.0641 beside a large one (#270); the delta
-            // is only as precise as the coarser of the two.
-            const leftDigits = metric.torque ? torqueDecimals(leftValue) : metric.digits;
-            const rightDigits = metric.torque ? torqueDecimals(rightValue) : metric.digits;
-            const deltaDigits = metric.torque ? Math.min(torqueDecimals(leftValue), torqueDecimals(rightValue)) : metric.digits;
-            return <tr key={metric.label}>
-              <th scope="row">{metric.label}</th>
-              <td>{number(leftValue, leftDigits)} <small>{metric.unit}</small></td>
-              <td>{number(rightValue, rightDigits)} <small>{metric.unit}</small></td>
-              <td>{delta(leftValue, rightValue, deltaDigits)} <small>{metric.deltaUnit || metric.unit}</small></td>
-              <td>{percentDelta(leftValue, rightValue)}</td>
-            </tr>;
-          })}</tbody>
+            <ComparisonHeader runs={runs} />
+            <tbody>{METRICS.filter(metric => !metric.optional || runs.some(run => metric.value(run.result) != null)).map(metric => {
+              const values = runs.map(run => metric.value(run.result));
+              return <tr key={metric.label}><th scope="row">{metric.label}</th>
+                <ComparisonCells runs={runs} values={values.map(value => <>{number(value, metric.torque ? torqueDecimals(value) : metric.digits)} <small>{metric.unit}</small></>)}
+                  differences={values.map(value => ({ absolute: <>{delta(values[0], value, metric.torque ? Math.min(torqueDecimals(values[0]), torqueDecimals(value)) : metric.digits)} <small>{metric.deltaUnit || metric.unit}</small></>, percent: percentDelta(values[0], value) }))} />
+              </tr>;
+            })}</tbody>
           </table>
         </div>
         {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
@@ -591,45 +537,44 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           {emfAvailable && <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>}
           {coggingAvailable && <button type="button" role="tab" aria-selected={plot === 'cogging'} className={plot === 'cogging' ? 'active' : ''} onClick={() => setPlot('cogging')}>Cogging overlay</button>}
         </div>}
-        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">Neither run has torque, Back EMF or cogging waveforms to overlay. Available summary metrics are shown above.</p>}
-        {plot === 'torque' && torqueAvailable && <WaveformChart angles={left.result.torque_waveform.electrical_angle_deg} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={torqueSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'run-b', subtrahendKey: 'run-a', label: 'Run B − Run A' }} />}
-        {plot === 'back-emf' && emfAvailable && <WaveformChart angles={left.result.back_emf_waveform.electrical_angle_deg} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={emfSampling} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
+        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">{runs.length === 2 ? 'Neither run has torque, Back EMF or cogging waveforms to overlay.' : 'No selected run has torque, Back EMF or cogging waveforms to overlay.'} Available summary metrics are shown above.</p>}
+        {plot === 'torque' && torqueAvailable && <WaveformChart angles={torqueSeries[0].angles} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={samplingLabel(runs.map((run, index) => ({ label: run.label, angles: torqueSeries[index].angles })))} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifferences={differencesFor(torqueSeries)} />}
+        {plot === 'back-emf' && emfAvailable && <WaveformChart angles={emfSeries[0].angles} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={samplingLabel(runs.map(run => ({ label: run.label, angles: run.result.back_emf_waveform.electrical_angle_deg })))} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
         {plot === 'cogging' && coggingAvailable && <>
-          <p className="public-run-compare-cogging-coverage">{coggingCoverage('Run A', left.result.cogging_torque_waveform)} · {coggingCoverage('Run B', right.result.cogging_torque_waveform)}</p>
-          <WaveformChart angles={left.result.cogging_torque_waveform?.electrical_angle_deg || []} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(left.result.cogging_torque_waveform?.electrical_angle_deg || [], right.result.cogging_torque_waveform?.electrical_angle_deg || [])} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifference={{ minuendKey: 'cogging-run-b', subtrahendKey: 'cogging-run-a', label: 'Run B − Run A' }} />
+          <p className="public-run-compare-cogging-coverage">{runs.map(run => coggingCoverage(run.label, run.result.cogging_torque_waveform)).join(' · ')}</p>
+          <WaveformChart angles={coggingSeries[0].angles} series={coggingSeries} label="Cogging torque comparison" unit="N·m" samplingLabel={samplingLabel(runs.map((run, index) => ({ label: run.label, angles: coggingSeries[index].angles })))} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifferences={differencesFor(coggingSeries)} />
         </>}
-        <div className="public-run-compare-metrics public-run-compare-losses" role="region" aria-label="Losses and efficiency comparison" tabIndex={0}>
+        <div className={`public-run-compare-metrics public-run-compare-losses${runs.length > 2 ? ' is-multi-run' : ''}`} role="region" aria-label="Losses and efficiency comparison" tabIndex={0}>
           <table>
             <caption>Losses &amp; efficiency <InfoTip label="Losses comparison help">Values and output statuses come from each saved run. Absolute efficiency changes are in percentage points. Total loss and known loss subtotals use separate rows; partial shaft outputs are compared only with other partial outputs.</InfoTip></caption>
-            {losses && <>
-              <thead><tr><th scope="col">Metric</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+            {losses.length > 0 && <>
+              <ComparisonHeader runs={runs} />
               <tbody>{losses.map(row => <tr key={row.key} className={row.indent ? 'public-run-compare-loss-component' : undefined}>
                 <th scope="row">{row.label}</th>
-                <td><LossComparisonValue cell={row.before} label={`Run A ${row.label}`} unit={row.unit} /></td>
-                <td><LossComparisonValue cell={row.after} label={`Run B ${row.label}`} unit={row.unit} /></td>
-                <td>{row.comparable ? <>{lossDelta(row.before.value, row.after.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : '—'}</td>
-                <td>{row.comparable ? percentDelta(row.before.value, row.after.value) : '—'}</td>
+                <ComparisonCells runs={runs} values={row.cells.map((cell, index) => <LossComparisonValue cell={cell} label={`${runs[index].label} ${row.label}`} unit={row.unit} />)}
+                  differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
               </tr>)}</tbody>
             </>}
           </table>
-          {!losses && <p className="public-run-compare-timing-note">Losses &amp; efficiency were not recorded for either run. Enable Losses &amp; efficiency in Analysis and solve to compare them.</p>}
+          {!losses.length && <p className="public-run-compare-timing-note">Losses &amp; efficiency were not recorded for {runs.length === 2 ? 'either run' : 'the selected runs'}. Enable Losses &amp; efficiency in Analysis and solve to compare them.</p>}
         </div>
-        {timing && <div className="public-run-compare-metrics public-run-compare-timing" role="region" aria-label="Solve time breakdown comparison" tabIndex={0}>
+        {timing && <div className={`public-run-compare-metrics public-run-compare-timing${runs.length > 2 ? ' is-multi-run' : ''}`} role="region" aria-label="Solve time breakdown comparison" tabIndex={0}>
           <table>
-            <caption>Solve time breakdown <InfoTip label="Solve time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Percentages compare Run B with Run A.</InfoTip></caption>
-            <thead><tr><th scope="col">Stage / workload</th><th scope="col">Run A · baseline</th><th scope="col">Run B · candidate</th><th scope="col">Δ (B − A)</th><th scope="col">Δ vs A (%)</th></tr></thead>
+            <caption>Solve time breakdown <InfoTip label="Solve time breakdown help">Elapsed times for each stage, separate from combined worker time. Mesh and solve counts show how much work each run performed. Changes compare each run with the pinned baseline.</InfoTip></caption>
+            <ComparisonHeader runs={runs} label="Stage / workload" />
             {(['Elapsed time', 'Work performed'] as const).map(group => {
               const rows = timing.rows.filter(row => row.group === group);
               return rows.length > 0 && <tbody key={group} aria-label={group}>
-                <tr className="public-run-compare-timing-group"><th scope="rowgroup" colSpan={5}>{group}</th></tr>
+                <tr className="public-run-compare-timing-group"><th scope="rowgroup" colSpan={runs.length === 2 ? 5 : runs.length + 1}>{group}</th></tr>
                 {rows.map(row => <tr key={row.key}>
-                  <th scope="row">{row.label}</th><td>{timingValue(row.before, row.unit)}</td><td>{timingValue(row.after, row.unit)}</td>
-                  <td>{timingDelta(row.before, row.after, row.unit)}</td><td>{percentDelta(row.before, row.after)}</td>
+                  <th scope="row">{row.label}</th>
+                  <ComparisonCells runs={runs} values={row.values.map(value => timingValue(value, row.unit))}
+                    differences={row.values.map(value => ({ absolute: timingDelta(row.values[0], value, row.unit), percent: percentDelta(row.values[0], value) }))} />
                 </tr>)}
               </tbody>;
             })}
           </table>
-          {(!timing.recordedBefore || !timing.recordedAfter) && <p className="public-run-compare-timing-note" role="note">{!timing.recordedBefore && !timing.recordedAfter ? 'Stage timings were not recorded for either run.' : `Run ${!timing.recordedBefore ? 'A' : 'B'}: stage timings were not recorded.`}</p>}
+          {timing.recorded.some(recorded => !recorded) && <p className="public-run-compare-timing-note" role="note">{timing.recorded.map((recorded, index) => !recorded ? `${runs[index].label}: stage timings were not recorded.` : null).filter(Boolean).join(' ')}</p>}
         </div>}
       </>}
     </section>
