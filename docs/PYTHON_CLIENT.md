@@ -213,6 +213,11 @@ packaging the result. The client keeps all three small:
   scratch.
 - So run a sweep, or several solves of one design, in one script rather than
   one script per point.
+- **Its own cache folder.** Solves in your Python process (and `coilem solve`
+  without `--server`) keep their solver cache in `script_solve_cache` under
+  the coilEM data folder, apart from the app's. The solver trims old cache
+  folders as it goes, and a script never trims the ones behind results open
+  in a running app. Set `COILEM_SOLVE_CACHE_ROOT` to use another folder.
 
 On a 16-core Windows desktop, the 8-pole, 12-slot SPM motor of the quick
 start (quick preset, coarse mesh) takes about 6 s for its first solve and

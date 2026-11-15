@@ -133,7 +133,7 @@ It also prints the message on standard error.
 | 2 | Invalid command line; usage on standard error, no document |
 | 3 | Invalid input: design file, run setup, settings or `--out` path. Nothing was solved. |
 | 4 | The solve started but failed: solver, convergence, timeout, or no app at `--server` |
-| 130 | Cancelled with Ctrl+C, Ctrl+Break (Windows) or SIGTERM. The solve's worker processes are stopped. |
+| 130 | Cancelled with Ctrl+C, Ctrl+Break (Windows) or SIGTERM. The solve's worker processes are stopped; with `--server`, the app's solve is cancelled too. |
 
 `coilem schema` lists every `error_code` with its meaning. Common ones:
 

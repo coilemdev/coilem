@@ -37,7 +37,9 @@ original identities. Release approval and publication remain pending; see the
   documented exit codes and error codes ([Command line](docs/COMMAND_LINE.md)).
   Both select a design file's saved run setups by name with the app's rules,
   refuse a missing or incompatible setup before solving, and report the setup
-  and settings used.
+  and settings used. Results solved in the script report qualification and
+  solver convergence as the app's do, scripts keep their solver cache apart
+  from the app's, and Ctrl+C on a `--server` solve also stops it in the app.
 - **Solve execution and timing.** Direct Newton execution, worker/thread handling,
   mesh and frame sharing, and repeated-solve reuse reduce overhead. Results and
   reports distinguish elapsed time from combined worker time. The Solve page's

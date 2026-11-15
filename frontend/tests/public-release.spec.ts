@@ -1568,7 +1568,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(page.locator('.public-run-compare-identities')).toHaveCount(0);
     const timing = page.getByRole('region', { name: 'Solve time breakdown comparison', exact: true });
     await expect(timing.getByRole('row', { name: /^Meshing/ }).locator('td')).toHaveText(['30.0 s', '45.0 s', '+15.0 s', '+50.0%']);
-    await expect(timing.getByRole('row', { name: /^Total elapsed/ }).locator('td')).toHaveText(['60.0 s', '90.0 s', '+30.0 s', '+50.0%']);
+    await expect(timing.getByRole('row', { name: /^Solver time/ }).locator('td')).toHaveText(['60.0 s', '90.0 s', '+30.0 s', '+50.0%']);
     await expect(timing.getByRole('row', { name: /^Meshes rotated/ }).locator('td')).toHaveText(['0', '8', '+8', '—']);
     await expect(timing.getByRole('row', { name: /^Field solves/ }).locator('td')).toHaveText(['144', '192', '+48', '+33.3%']);
     const losses = page.getByRole('region', { name: 'Losses and efficiency comparison', exact: true });
@@ -2307,7 +2307,7 @@ test('Multi-run Compare: six runs retain identities and every table follows the 
   await expect(losses.getByRole('rowheader', { name: 'Shaft power', exact: true }).locator('..').locator('td[data-run-column="run-d"] .public-run-compare-cell-delta')).toHaveText('Δ — · —');
   await expect(losses.getByRole('rowheader', { name: 'Known loss subtotal', exact: true }).locator('..').locator('.public-run-compare-loss-value')).toHaveText(['Not applicable', 'Not applicable', 'Not applicable', '60.0 W', 'Not recorded', 'Not applicable']);
   const timing = dialog.getByRole('region', { name: 'Solve time breakdown comparison', exact: true });
-  await expect(timing.getByRole('rowheader', { name: 'Total elapsed', exact: true }).locator('..').locator('td[data-run-column="run-a"]')).toContainText('−10.0 s');
+  await expect(timing.getByRole('rowheader', { name: 'Solver time', exact: true }).locator('..').locator('td[data-run-column="run-a"]')).toContainText('−10.0 s');
   await expect(timing).toContainText('Run F: stage timings were not recorded.');
   await torque.click({ position: { x: 250, y: 110 } });
   await expect(dialog.locator('.public-waveform-readout-difference')).toHaveCount(5);

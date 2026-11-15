@@ -45,12 +45,21 @@ def solve_cache_is_protected(path: Path) -> bool:
         return _CACHE_LEASES.get(path.resolve(), 0) > 0
 
 
+# Python and command-line solves in their own process set this to their own
+# folder (backend.client), so their cache pruning never removes the app's.
+SOLVE_CACHE_ROOT_ENV = "COILEM_SOLVE_CACHE_ROOT"
+
+
 def solve_cache_root() -> Path:
     """Return the disposable solver-cache root under the coilEM user-data root.
 
-    Resolved on each call so ``COILEM_USER_DATA_ROOT`` also isolates the cache.
+    Resolved on each call so ``COILEM_USER_DATA_ROOT`` also isolates the cache;
+    ``COILEM_SOLVE_CACHE_ROOT`` names another folder for it.
     """
 
+    override = os.environ.get(SOLVE_CACHE_ROOT_ENV, "").strip()
+    if override:
+        return Path(override).expanduser()
     # Imported here because solve_workspace imports this module.
     from backend.solve_workspace import user_data_root
 

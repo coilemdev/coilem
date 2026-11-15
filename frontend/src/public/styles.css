@@ -669,7 +669,7 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  max-width: 360px;
+  max-width: min(360px, 100%);
   min-width: 0;
   height: 30px;
   padding: 0 11px;
@@ -2865,7 +2865,8 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 }
 
 /* Design-file menu on the project chip */
-.public-project-chip-wrap { position: relative; display: inline-flex; }
+/* min-width: 0 lets a long design name shrink to an ellipsis instead of covering Previous runs on a phone. */
+.public-project-chip-wrap { position: relative; display: inline-flex; min-width: 0; }
 /* The top bar is a stacking context (z-index 20), so its menu's own z-index
    only counts inside it. While the menu is open, lift the whole bar above the
    workspace's floating toolbars (z-index 30–60) and below dialogs (120). */

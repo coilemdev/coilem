@@ -379,7 +379,7 @@ class RunLocation:
         }
 
 
-def _apply_output_statuses(result: dict[str, Any], config: Mapping[str, Any]) -> None:
+def apply_output_statuses(result: dict[str, Any], config: Mapping[str, Any]) -> None:
     """Qualify the loaded d/q record, cogging torque and the magnet derating inside their gates (backend/qualification.py).
 
     The solver records them as experimental; only the stored run knows the
@@ -405,7 +405,7 @@ def _apply_output_statuses(result: dict[str, Any], config: Mapping[str, Any]) ->
         metadata["magnet_temperature_status"], metadata["magnet_temperature_status_reason"] = magnet_temperature_status(motor)
 
 
-def _qualification(config: Mapping[str, Any]) -> dict[str, Any] | None:
+def run_qualification(config: Mapping[str, Any]) -> dict[str, Any] | None:
     """The run's qualification status (backend/qualification.py), or None
     for a configuration that no longer validates."""
 
@@ -583,7 +583,7 @@ class SolveRunWriter:
                 "build": build_identity(),
                 "solver_name": solver_name or None,
                 "excitation": excitation_provenance,
-                "qualification": _qualification(self.config),
+                "qualification": run_qualification(self.config),
                 "platform": {
                     "system": platform.system(),
                     "machine": platform.machine(),
@@ -719,7 +719,7 @@ class SolveRunWriter:
             if not isinstance(metadata, dict):
                 metadata = stored_result["solve_metadata"] = {}
             metadata["run_setup"] = label
-        _apply_output_statuses(stored_result, self.config)
+        apply_output_statuses(stored_result, self.config)
         self._retain_artifacts(stored_result)
         materials = _material_records(self.config)
         project = self._project_snapshot()

@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 29781,
-      "sha256": "9e3fb77c1d0755444cc103b493cf52a93706bdc1f3d6ce25e18b713d2a206339"
+      "bytes": 29988,
+      "sha256": "5a13ec551ad17c11a1f9204de90c27f6156d38abc834f3cfe16fb439fd7602e9"
     },
     {
       "path": "SECURITY.md",
@@ -275,8 +275,8 @@
     },
     {
       "path": "backend/field_artifacts.py",
-      "bytes": 18845,
-      "sha256": "02c655b416c187a260eae5799b4b3243a80e7d5d3dd11e710a8ecbaf85048da7"
+      "bytes": 19232,
+      "sha256": "8b8ac22c69ae451fd3bfb0464179de16645e326871b199c4ecdb502efa6d522f"
     },
     {
       "path": "backend/field_composition.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 67766,
-      "sha256": "1a21b32773c471d499fa3634912a6df7ccd1eb98b11a24e5faaa3b895f6c296a"
+      "bytes": 67770,
+      "sha256": "c6cf39fbe94da0e32d8e3c9bcfc98f8fc2698bcfffaaa00649b7b1964df06ec8"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 299787,
-      "sha256": "3ff213c828aaca6c08a3b0a0d84f0d4a62bac9609eac3bed7994c0a044bb6dba"
+      "bytes": 299994,
+      "sha256": "56479769cff641c99c0421d2f8969fd771c85ac0946e0ba0cb5d8e0af1f8467d"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 339664,
-      "sha256": "b68914b98915f36ad1a0e37603d3a612088a538f66338b9fd631ce27ff4fa5e7"
+      "bytes": 339800,
+      "sha256": "a29875d5dbc17c147b32f2bd682ff8fbe4b9a9be7ba610e50a9bd63fb6e791e0"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 162567,
-      "sha256": "84ed390910d655af244fee9477044f22ee1a870625798af76d79b9464af5a8a2"
+      "bytes": 162563,
+      "sha256": "292bfefa0723723d64a6334be1919118a30d267184c8e4590fec769cd5654706"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8200,8 +8200,8 @@
     },
     {
       "path": "tests/test_output_status.py",
-      "bytes": 17388,
-      "sha256": "41a9129398f158eb96aa677280aa8786a0c30e05303b18ac1dc6b822e18988a9"
+      "bytes": 17383,
+      "sha256": "3dd8c03dc9dfb087155ff6bfac45d0e8dcdff1961be1335299e17da3d78968d4"
     },
     {
       "path": "tests/test_payload_reuse.py",
@@ -8325,8 +8325,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 19763,
-      "sha256": "8677e309247af82a8bc469c16d0ac41cba509c5fedb40487be66e537f017fe56"
+      "bytes": 19769,
+      "sha256": "316689d07a4c7a3359b2eaef904ffbfb7a08fef21edaddb0216dd7dc53dec158"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -11680,8 +11680,8 @@
     },
     {
       "path": "frontend/src/public/runComparison.ts",
-      "bytes": 9748,
-      "sha256": "a1761bbdea8f36f1d82cd21ffb109335fc4e7968127e62219a22de7ef0c693a0"
+      "bytes": 9859,
+      "sha256": "aaf06dfc21e2ee37212d76357966c332800fef4a66f37f9731ccda7efd26c0e3"
     },
     {
       "path": "backend/report_numbers.py",
@@ -17605,8 +17605,8 @@
     },
     {
       "path": "backend/client/_solve.py",
-      "bytes": 30936,
-      "sha256": "8cd6bfcd0de9eb7603af7688d4331c7e907017ad74a10fea3ceb6f727c46abfe"
+      "bytes": 34148,
+      "sha256": "3b6cd9e84eca8017c1a619f8676b36d3c73145baed9c17e45a16df236ce6c8c6"
     },
     {
       "path": "backend/input_advisories.py",
@@ -17630,8 +17630,8 @@
     },
     {
       "path": "docs/PYTHON_CLIENT.md",
-      "bytes": 14750,
-      "sha256": "02f95ac9fa6b5c0bbee4c7f6231e3bc3ecbf320c8a06b7c7f7235f7b01f2a3d7"
+      "bytes": 15128,
+      "sha256": "635c5f41e8016c82da92ad0122929082b3913318f205ecc62cda19a884928aff"
     },
     {
       "path": "docs/RELEASE_0_5_8.md",
@@ -17800,8 +17800,8 @@
     },
     {
       "path": "tests/test_python_client.py",
-      "bytes": 28151,
-      "sha256": "4fa4b4ffa37ad409e65f7562ff5624750fa8900bd2d882036b1277e68d5b4cf3"
+      "bytes": 31916,
+      "sha256": "84458fb1363cea7108d6f85b1f864ebfcf656bb5289a84a6b185554ece4613b2"
     },
     {
       "path": "tests/test_release_priority_report.py",
@@ -18710,8 +18710,8 @@
     },
     {
       "path": "tests/conftest.py",
-      "bytes": 404,
-      "sha256": "8620de672c210b89d95b9655555240f9ac90fb72b31cd64f21dcd4e79c09fc5c"
+      "bytes": 585,
+      "sha256": "c85465d0bf4da382f8e6af7b2ccaf9aceea2bccf770014649a30d7d61022c962"
     },
     {
       "path": "tests/test_ci_plan.py",
@@ -18760,8 +18760,8 @@
     },
     {
       "path": "docs/COMPARE_RUNS.md",
-      "bytes": 9730,
-      "sha256": "2c784016bff8af7e090092360048fa830c9990e29e9a8c145f180b365892b08d"
+      "bytes": 9792,
+      "sha256": "7b654ba1695be4d0ef29bc396c5685dd44702f8950b6161b461771e96124f0e2"
     },
     {
       "path": "frontend/src/public/RunChangesTable.tsx",
@@ -18860,8 +18860,8 @@
     },
     {
       "path": "docs/COMMAND_LINE.md",
-      "bytes": 7276,
-      "sha256": "5f6a61cad0777811317af003d4255d587eafb45030b3f3b78c820f1e963310e4"
+      "bytes": 7327,
+      "sha256": "647abf5d44da1c6cf84c8d38744b8720182c674e88b7fbc312acbe23e0d80bcb"
     },
     {
       "path": "frontend/scripts/test-run-setup-parity.mjs",

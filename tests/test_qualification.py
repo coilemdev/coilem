@@ -26,7 +26,7 @@ from backend.models.performance import (
 from backend.public_main import app
 from backend.public_routes.solve import _store_public_result
 from backend.qualification import QUALIFICATION_BASIS, QUALIFICATION_REPORT, classify_qualification
-from backend.solve_workspace import SolveRunWriter, SolveWorkspace, _qualification
+from backend.solve_workspace import SolveRunWriter, SolveWorkspace, run_qualification
 from tools.build_benchmark_record import historical_basis
 
 FIXTURES = Path("benchmarks/main-20261009-bad71d9/fixtures")
@@ -296,8 +296,8 @@ def test_completed_result_carries_the_stored_status(tmp_path: Path) -> None:
 def test_run_without_a_valid_config_records_no_status(measured_build) -> None:
     config = deepcopy(SPM_CONCENTRATED)
     del config["stator"]
-    assert _qualification(config) is None
-    assert _qualification(SPM_CONCENTRATED)["status"] == "qualified"
+    assert run_qualification(config) is None
+    assert run_qualification(SPM_CONCENTRATED)["status"] == "qualified"
 
 
 def test_changed_or_unverifiable_physics_cannot_keep_a_qualified_label(monkeypatch):
@@ -351,12 +351,12 @@ def test_magnet_derating_is_qualified_from_20_to_100C_on_a_qualified_design(temp
 
 
 def test_stored_run_sets_the_dq_status_from_its_design(measured_build) -> None:
-    from backend.solve_workspace import _apply_output_statuses
+    from backend.solve_workspace import apply_output_statuses
 
     config = _fixture("spm_8p12s_concentrated__baseline.json").model_dump(mode="json")
     result = {"summary": {"dq_flux_linkage": {"status": "experimental", "status_reason": DQ_FLUX_LINKAGE_STATUS_REASON}}}
-    _apply_output_statuses(result, config)
+    apply_output_statuses(result, config)
     assert result["summary"]["dq_flux_linkage"] == {"status": "qualified", "status_reason": DQ_FLUX_LINKAGE_QUALIFIED_REASON}
     empty = {"summary": {"dq_flux_linkage": None}}
-    _apply_output_statuses(empty, config)
+    apply_output_statuses(empty, config)
     assert empty == {"summary": {"dq_flux_linkage": None}}
