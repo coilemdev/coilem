@@ -115,13 +115,13 @@ cases, or use `--list` to see the selection and recorded runtime estimates.
 It needs no Git, Rust, Node.js or FEMM. See
 [benchmark protocol 1.10.0](benchmarks/af-v1.10/README.md).
 
-## Script it from Python
+## Script it from Python or the command line
 
 Define a motor, solve it and read the results from Python, with no request
 JSON to write by hand:
 
 ```python
-from backend import client as coilem
+import coilem
 
 if __name__ == "__main__":  # the solver's worker processes import this file again
     motor = coilem.Motor.load("my_motor.coilem")  # or build one from coilem.Stator(...), Rotor(...), Winding(...)
@@ -132,6 +132,17 @@ if __name__ == "__main__":  # the solver's worker processes import this file aga
 The [Python client guide](docs/PYTHON_CLIENT.md) covers typed inputs and
 their errors, current and current-angle sweeps, waveforms as arrays, solving
 in a running app, and two example scripts.
+
+The `coilem` command does the same from a terminal or a coding agent, with
+one JSON document per command and the design file's saved run setups:
+
+```bash
+coilem setups my_motor.coilem
+coilem solve my_motor.coilem --setup "High Speed" --quality quick --out result.json
+```
+
+See [Command line](docs/COMMAND_LINE.md) for every command, its options and
+exit codes.
 
 ## Build from source
 

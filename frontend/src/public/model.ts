@@ -232,7 +232,7 @@ export interface PublicQualification {
 }
 
 export interface SolveValidation {
-  torque_speed_map?: { solves: number; positions_per_point: number } | null;
+  torque_speed_map?: { solves: number; solves_remaining?: number; positions_per_point: number } | null;
   valid: boolean;
   errors: Array<{ code?: string; message: string; suggestion?: string }>;
   warnings: Array<{ code?: string; message: string; suggestion?: string }>;

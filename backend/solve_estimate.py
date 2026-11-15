@@ -9,13 +9,15 @@ with the mesh size.
 
 The coefficients come from timed runs of the bundled examples (Preview,
 Standard and High accuracy) on a 10-core Apple-silicon laptop with coilEM
-0.2.0 and Magneto2D 0.3.2. Machines differ, so callers show the range.
+0.5.8 and Magneto2D 0.6.0 (tests/fixtures/solve_time_calibration.json).
+Machines differ, so callers show the range.
 """
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from backend.gmsh_mesh_rotation import full_cycle_congruent_bases, gmsh_mesh_reuse_enabled, slot_congruence_groups
 from backend.magneto2d_adapter import get_cached_solve_mesh_artifact
@@ -23,23 +25,36 @@ from backend.models import MotorConfig
 from backend.solver import _cogging_angle_grid, _gmsh_pipeline_worker_count
 from backend.sweep_planning import full_cycle_back_emf_angle_grid, loaded_angle_grid, no_load_field_frame_angles
 
-_FIXED_S = 8.4
+if TYPE_CHECKING:
+    from backend.flux_linkage_map import MapStore
+    from backend.models.config import TorqueSpeedAnalysisConfig
+
+# Validation, run storage and the stream outside the solver: 1.9 to 2.5 s for Preview.
+_FIXED_S = 2.0
 # Seconds per base mesh per 1000 elements, with the reference producer pool.
-_MESH_S_PER_KELEMENT = 0.0394
+_MESH_S_PER_KELEMENT = 0.0191
 _REFERENCE_MESH_WORKERS = 8
 # Fast mesh build (solve_params.mesh_build): the meshing stage took 0.47x
 # (IPM 14p) and 0.71x (SPM 24p) of its Precise time in one timed pass.
 _FAST_MESH_FACTOR = 0.6
-# Seconds per loaded position per 1000 elements: field playback and saving.
-_FINALIZE_S_PER_KELEMENT = 0.0605
-# The ten calibration runs took 0.82x to 1.32x the central estimate
-# (tests/fixtures/solve_time_calibration.json).
-_RANGE = (0.75, 1.4)
+# Seconds per loaded position per 1000 elements: its field solve, playback and saving.
+_FINALIZE_S_PER_KELEMENT = 0.0098
+# The ten calibration runs took 0.79x (surface-magnet) to 1.66x (interior-magnet
+# rotors mesh slower) the central estimate on battery power; the low end leaves
+# room for a faster run on mains power.
+_RANGE = (0.7, 1.75)
 # Elements per mesh-density step relative to coarse, for when no prepared mesh exists.
 # Measured: normal about 2x coarse, fine about 3% above normal; very fine is a guess.
 _DENSITY_ELEMENT_FACTOR = {"coarse": 1.0, "normal": 2.0, "fine": 2.1, "very_fine": 4.0}
 # The Elmer lane remeshes and solves every position externally.
 _ELMER_FACTOR = 3.0
+# A torque-speed map solves its grid points one after another, each over half an
+# electrical cycle (backend.flux_linkage_map), with its meshes from the solve cache
+# after the first point. Each point costs a fixed part (setup, loss and d/q
+# post-processing) and a part per rotor position; the three timed maps took 0.96x
+# to 1.12x this estimate.
+_MAP_POINT_S = 2.0
+_MAP_S_PER_POSITION_KELEMENT = 0.006
 
 
 @dataclass(frozen=True)
@@ -146,4 +161,52 @@ def estimate_solve(config: MotorConfig, *, mesh_elements: int | None = None, sol
         mesh_elements_source=source,
         base_meshes=work["base_meshes"],
         field_solves=work["loaded"] + work["no_load"],
+    )
+
+
+
+@dataclass(frozen=True)
+class MapEstimate:
+    seconds: float
+    low_s: float
+    high_s: float
+    solves: int
+    solves_remaining: int
+    positions_per_point: int
+
+
+def stored_map_points(store: MapStore, currents: Sequence[float], gammas: Sequence[float]) -> int:
+    """Grid points a map store already holds; a map run solves only the others."""
+
+    finished = sum(1 for current in currents for gamma in gammas if current > 0 and store.load(current, gamma) is not None)
+    zero = any(current == 0 for current in currents) and store.load(0.0, gammas[0]) is not None
+    return finished + (1 if zero else 0)
+
+
+def estimate_map(
+    settings: TorqueSpeedAnalysisConfig, *, mesh_elements: int, store: MapStore | None = None
+) -> MapEstimate:
+    """Wall-clock estimate for a torque-speed map, counting only the points ``store`` lacks.
+
+    A stored map that covers the peak current is reused whole, so it costs nothing.
+    """
+
+    from backend.flux_linkage_map import map_grid, map_positions_per_point, map_solve_count
+
+    currents, gammas = map_grid(settings.limits.peak_current_A, settings.preset)
+    solves = map_solve_count(currents, gammas)
+    remaining = solves
+    if store is not None:
+        remaining = 0 if store.covering_map(settings.limits.peak_current_A) is not None else (
+            solves - stored_map_points(store, currents, gammas)
+        )
+    positions = map_positions_per_point(settings.preset)
+    seconds = remaining * (_MAP_POINT_S + _MAP_S_PER_POSITION_KELEMENT * positions * mesh_elements / 1000.0)
+    return MapEstimate(
+        seconds=seconds,
+        low_s=seconds * _RANGE[0],
+        high_s=seconds * _RANGE[1],
+        solves=solves,
+        solves_remaining=remaining,
+        positions_per_point=positions,
     )

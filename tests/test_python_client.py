@@ -157,6 +157,34 @@ def test_input_errors_name_the_field(make, field) -> None:
     assert isinstance(caught.value, ValueError)
 
 
+@pytest.mark.parametrize(
+    ("make", "field", "meant"),
+    [
+        (lambda m: coilem.prepare(m, solve_params={"current_amplitude": 99}), "solve_params.current_amplitude",
+         "solve_params.current_amplitude_A"),
+        (lambda m: coilem.build_request(m, solve_params={"nonlinear_solvr": "picard"}), "solve_params.nonlinear_solvr",
+         "solve_params.nonlinear_solver"),
+        (lambda m: coilem.Stator(**m.stator.model_dump(), tooth_shoe_hieght_mm=3), "stator.tooth_shoe_hieght_mm",
+         "stator.tooth_shoe_height_mm"),
+        (lambda m: coilem.Winding(turns_per_coil=12, wire={"wire_bare_diamter_mm": 1}), "winding.wire.wire_bare_diamter_mm",
+         "winding.wire.wire_bare_diameter_mm"),
+        (lambda m: m.replace(stator={"stack_lenght_mm": 80}), "stator.stack_lenght_mm", "stator.stack_length_mm"),
+        (lambda m: m.replace(winding={"wire": {"wire_bare_diamter_mm": 1}}), "winding.wire.wire_bare_diamter_mm",
+         "winding.wire.wire_bare_diameter_mm"),
+        (lambda m: coilem.Motor(topology="SPM", stator=m.stator, rotor={**m.rotor.model_dump(), "pole_cont": 8},
+                                winding=m.winding), "rotor.pole_cont", "rotor.pole_count"),
+    ],
+)
+def test_a_misspelt_input_is_refused_instead_of_ignored(make, field, meant) -> None:
+    # The app's models drop names they do not know, so without this a typo
+    # would solve with the saved or default value and keep the setup's label.
+    with pytest.raises(coilem.InputError) as caught:
+        make(_spm_motor())
+    assert caught.value.field == field and caught.value.error_code == "INVALID_INPUT"
+    assert str(caught.value).startswith(f"{field}: there is no ")
+    assert caught.value.suggestion.startswith(f"Did you mean {meant}?")
+
+
 def test_check_accepts_the_fixtures_used_by_the_examples() -> None:
     for path in (SPM_FIXTURE, IPM_FIXTURE):
         assert coilem.check(coilem.Motor.load(path)) == []

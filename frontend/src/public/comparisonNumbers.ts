@@ -1,7 +1,12 @@
-export function comparisonPercentDelta(left: number | null | undefined, right: number | null | undefined): string {
+/**
+ * Percentage change from the baseline. A baseline whose magnitude is at most
+ * `floor` gives "—" (or 0.0% when nothing changed): a percentage of a zero or
+ * near-zero baseline, such as the d-axis current of an all-q-axis run, says nothing.
+ */
+export function comparisonPercentDelta(left: number | null | undefined, right: number | null | undefined, floor = 1e-12): string {
   if (typeof left !== 'number' || typeof right !== 'number' || !Number.isFinite(left) || !Number.isFinite(right)) return '—';
   const difference = right - left;
-  if (Math.abs(left) <= 1e-12) return Math.abs(difference) <= 1e-12 ? '0.0%' : '—';
+  if (Math.abs(left) <= Math.max(floor, 1e-12)) return Math.abs(difference) <= 1e-12 ? '0.0%' : '—';
   const percentage = difference / Math.abs(left) * 100;
   const rounded = Number(percentage.toFixed(1));
   return `${rounded > 0 ? '+' : ''}${rounded.toFixed(1)}%`;

@@ -19,7 +19,7 @@ from typing import Any, get_args, overload
 import numpy as np
 
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
-from backend.client._inputs import Motor, OperatingPoint, solve_options_for
+from backend.client._inputs import Motor, OperatingPoint, refuse_unknown_inputs, solve_options_for
 from backend.client._results import Result
 from backend.client._setups import SetupStatus, SetupUse, after_changes, library_of, resolve_setup, setup_statuses
 from backend.models.config import MotorConfig, SolveOptionsConfig, SolveParams
@@ -104,6 +104,7 @@ def _request(
     if solve_params is not None:
         if not isinstance(solve_params, Mapping):
             raise InputError("solve_params must be a mapping of solve_params field names to values", field="solve_params")
+        refuse_unknown_inputs(SolveParams, solve_params, "solve_params")
         params.update(solve_params)
     body["solve_params"] = params
     if analyses is not None:

@@ -212,6 +212,29 @@ def _mapping(value: Any) -> Mapping[str, Any]:
     return value if isinstance(value, Mapping) else {}
 
 
+# Text width of the identity table's value column: 130 mm less 2.5 mm padding each side.
+_IDENTITY_VALUE_WIDTH = 125 * mm
+
+
+def _run_setup_row(result: Mapping[str, Any]) -> list[tuple[str, Any]]:
+    """The saved run setup the run was solved with, as the Results page names it."""
+
+    setup = _mapping(_mapping(result.get("solve_metadata")).get("run_setup"))
+    name = setup.get("name")
+    if not isinstance(name, str) or not name.strip():
+        return []
+    name, version = name.strip(), setup.get("version")
+    suffix = f" · version {version}" if isinstance(version, int) else ""
+    # One line, so the provenance table still fits on the first page: a long
+    # name is shortened here and kept in full in the CSV (run_setup.name).
+    room = _IDENTITY_VALUE_WIDTH - stringWidth(suffix, "Helvetica", 8.5)
+    if stringWidth(name, "Helvetica", 8.5) > room:
+        while name and stringWidth(name + "…", "Helvetica", 8.5) > room:
+            name = name[:-1]
+        name = name.rstrip() + "…"
+    return [("Run setup", name + suffix)]
+
+
 def _qualification_row(manifest: Mapping[str, Any]) -> list[tuple[str, Any]]:
     """The run's qualification status (backend/qualification.py) for the
     report header; runs stored before it was recorded have none."""
@@ -1762,6 +1785,7 @@ def build_public_run_pdf(
                 ("Run ID", manifest.get("run_id")),
                 ("Completed (UTC)", manifest.get("completed_at")),
                 ("Topology", project.get("topology")),
+                *_run_setup_row(result),
                 *_qualification_row(manifest),
             ],
             styles,

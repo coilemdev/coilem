@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import difflib
 import json
+import types
 from collections.abc import Iterable, Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Union, get_args, get_origin
 
 from pydantic import BaseModel, ValidationError
 
@@ -23,9 +25,49 @@ from backend.models.config import (
     WireSpec,
 )
 
+
+def _section_model(annotation: Any) -> type[BaseModel] | None:
+    """The model of a section field typed ``X`` or ``X | None``; None for any other field."""
+
+    if isinstance(annotation, type) and issubclass(annotation, BaseModel):
+        return annotation
+    if get_origin(annotation) in (Union, types.UnionType):
+        models = [arg for arg in get_args(annotation) if isinstance(arg, type) and issubclass(arg, BaseModel)]
+        return models[0] if len(models) == 1 else None
+    return None
+
+
+def refuse_unknown_inputs(model: type[BaseModel], data: Mapping[str, Any], prefix: str) -> None:
+    """Raise :class:`InputError` for a name the app's model does not have.
+
+    The app's models drop names they do not know, so a misspelt input would
+    otherwise be ignored and the solve would use the saved or default value.
+    Nested sections (such as ``winding.wire``) are checked too. Only inputs
+    given in Python are checked: a design file is read as saved, including
+    keys this version does not use.
+    """
+
+    for key, value in data.items():
+        path = f"{prefix}.{key}"
+        field = model.model_fields.get(key) if isinstance(key, str) else None
+        if field is None:
+            what = "solve setting" if model is SolveParams else f"{prefix} input"
+            close = difflib.get_close_matches(str(key), list(model.model_fields), n=1)
+            hint = f"Did you mean {prefix}.{close[0]}? " if close else ""
+            raise InputError(
+                f"{path}: there is no {what} with that name",
+                field=path,
+                suggestion=f"{hint}`coilem schema` lists every {prefix} field with its unit and limits.",
+            )
+        nested = _section_model(field.annotation)
+        if nested is not None and isinstance(value, Mapping):
+            refuse_unknown_inputs(nested, value, path)
+
+
 # Each section class is the app's own model, so the fields, units, limits and
-# defaults are exactly those of the Design page. The subclasses only turn a
-# pydantic error into an InputError that names the field with its section.
+# defaults are exactly those of the Design page. The subclasses only refuse
+# names the model does not have and turn a pydantic error into an InputError
+# that names the field with its section.
 # Type checkers see the inherited keyword signature; at run time __init__ is
 # wrapped.
 
@@ -36,6 +78,7 @@ class Stator(StatorConfig):
     if not TYPE_CHECKING:
 
         def __init__(self, /, **data: Any) -> None:
+            refuse_unknown_inputs(StatorConfig, data, "stator")
             try:
                 super().__init__(**data)
             except ValidationError as exc:
@@ -48,6 +91,7 @@ class Rotor(RotorConfig):
     if not TYPE_CHECKING:
 
         def __init__(self, /, **data: Any) -> None:
+            refuse_unknown_inputs(RotorConfig, data, "rotor")
             try:
                 super().__init__(**data)
             except ValidationError as exc:
@@ -60,6 +104,7 @@ class Wire(WireSpec):
     if not TYPE_CHECKING:
 
         def __init__(self, /, **data: Any) -> None:
+            refuse_unknown_inputs(WireSpec, data, "winding.wire")
             try:
                 super().__init__(**data)
             except ValidationError as exc:
@@ -72,6 +117,7 @@ class Winding(WindingConfig):
     if not TYPE_CHECKING:
 
         def __init__(self, /, **data: Any) -> None:
+            refuse_unknown_inputs(WindingConfig, data, "winding")
             try:
                 super().__init__(**data)
             except ValidationError as exc:
@@ -84,6 +130,7 @@ class Materials(MaterialsConfig):
     if not TYPE_CHECKING:
 
         def __init__(self, /, **data: Any) -> None:
+            refuse_unknown_inputs(MaterialsConfig, data, "materials")
             try:
                 super().__init__(**data)
             except ValidationError as exc:
@@ -114,6 +161,9 @@ def _section(value: Any, name: str) -> dict[str, Any]:
     if isinstance(value, BaseModel):
         return value.model_dump(mode="json")
     if isinstance(value, Mapping):
+        model = _section_model(MotorConfig.model_fields[name].annotation)
+        if model is not None:
+            refuse_unknown_inputs(model, value, name)
         return copy.deepcopy(dict(value))
     raise InputError(f"{name} must be a model such as {name.title()}(...) or a mapping, not {type(value).__name__}", field=name)
 
@@ -262,7 +312,9 @@ class Motor:
         """Return a copy with some inputs changed.
 
         Mappings are merged into the section, so only the named fields
-        change; a model replaces the section; ``None`` removes it::
+        change (a name the section does not have raises
+        :class:`InputError`); a model replaces the section; ``None`` removes
+        it::
 
             longer = motor.replace(stator={"stack_length_mm": 80})
             n52 = motor.replace(materials={"magnet_grade": "N52"})
@@ -277,6 +329,9 @@ class Motor:
             elif isinstance(value, BaseModel):
                 body[key] = value.model_dump(mode="json")
             elif isinstance(value, Mapping):
+                model = _section_model(MotorConfig.model_fields[key].annotation)
+                if model is not None:
+                    refuse_unknown_inputs(model, value, key)
                 current = body.get(key)
                 body[key] = _merged(current, value) if isinstance(current, dict) else copy.deepcopy(dict(value))
             else:

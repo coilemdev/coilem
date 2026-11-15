@@ -1408,6 +1408,39 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
 });
 
 
+test('An opened saved run prepares its mesh so it can be run again', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+from tests.test_analysis_options import config, result_for
+print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+  const design = JSON.parse(await readFile(new URL('../../benchmarks/abcd-v1.5/fixtures/spm_8p12s_example_shoed.json', import.meta.url), 'utf8'));
+  const run = { project_slug: 'reopened-motor', run_id: 'stored', project_name: 'Reopened motor', status: 'complete',
+    solver_name: fixture.solve_metadata.solver_name, completed_at: '2026-11-14T12:00:00Z', path: '' };
+  await page.route('**/runs', route => route.fulfill({ json: {
+    storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true }, runs: [run],
+  } }));
+  await page.route('**/runs/reopened-motor/stored', route => route.fulfill({ json: {
+    integrity: { valid: true }, project: { openem_schema_version: 4, name: 'Reopened motor', ...design },
+    request: { submitted: { solver: 'magneto2d' }, resolved_config: design }, result: fixture,
+    saved_run: { ...run, schema_version: 'coilem.solve_run.v2' },
+  } }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
+  await dialog.locator('[data-run-id="stored"]').getByRole('button', { name: 'Open results', exact: true }).click();
+  // The stored result stays viewable while the mesh is prepared, as Continue to Solve
+  // prepares it, and the run can then be solved again without going back to Design.
+  await expect(page.getByRole('button', { name: 'View Results →', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Run again', exact: true })).toBeEnabled({ timeout: 120_000 });
+  await expect(page.getByText(/^Showing the saved result/)).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+
 for (const hasPrevious of [true, false]) {
 test(`Compare 2.0: Results ${hasPrevious ? 'selects the previous completed project run and shows input differences' : 'explains when no previous project run exists'}`, async ({ page }, info) => {
   const errors: string[] = [], solves: string[] = [];

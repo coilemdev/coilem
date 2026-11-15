@@ -37,6 +37,7 @@ from backend.performance_report import (
 )
 from backend.public_policy import PublicConfigError
 from backend.public_routes import solve as solve_routes
+from backend.solve_estimate import stored_map_points
 from backend.solve_workspace import user_data_root
 
 router = APIRouter(tags=["performance"])
@@ -119,8 +120,7 @@ async def map_status(body: dict[str, Any]) -> dict[str, Any]:
     scope_key = store.scope_key
     currents, gammas = map_grid(settings.peak_current_A, settings.preset)
     covering = store.covering_map(settings.peak_current_A)
-    finished = sum(1 for current in currents for gamma in gammas if current > 0 and store.load(current, gamma) is not None)
-    finished += 1 if store.load(0.0, gammas[0]) is not None else 0
+    finished = stored_map_points(store, currents, gammas)
     return {
         "scope_key": scope_key,
         "solves_total": map_solve_count(currents, gammas),

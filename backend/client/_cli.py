@@ -225,6 +225,7 @@ def _motor(path: str) -> Any:
 
 
 def _settings(pairs: Sequence[str]) -> dict[str, Any] | None:
+    from backend.client._inputs import refuse_unknown_inputs
     from backend.models.config import SolveParams
 
     if not pairs:
@@ -235,12 +236,7 @@ def _settings(pairs: Sequence[str]) -> dict[str, Any] | None:
         name = name.strip()
         if not separator or not name:
             raise _UsageError(f"coilem: error: --set expects NAME=VALUE, got {pair!r}")
-        if name not in SolveParams.model_fields:
-            raise InputError(
-                f"solve_params.{name}: there is no solve setting with that name",
-                field=f"solve_params.{name}",
-                suggestion="`coilem schema` lists every solve_params field with its unit and limits.",
-            )
+        refuse_unknown_inputs(SolveParams, {name: None}, "solve_params")
         try:
             settings[name] = json.loads(text)
         except json.JSONDecodeError:

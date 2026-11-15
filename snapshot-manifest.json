@@ -65,13 +65,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 7284,
-      "sha256": "768af4706dfe31da04b42f4e26032141d9b5aad93047137161a5ffd38afd2ed2"
+      "bytes": 7643,
+      "sha256": "32f063669b20a858f83c6110af8872f95166665d265e9ef5b5f874f645b01753"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 29337,
-      "sha256": "aabb26808444a0999c47273f90d4444dccbb4591a5573524fadc1890782ddca0"
+      "bytes": 29781,
+      "sha256": "9e3fb77c1d0755444cc103b493cf52a93706bdc1f3d6ce25e18b713d2a206339"
     },
     {
       "path": "SECURITY.md",
@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 94594,
-      "sha256": "ce3aed7fbcc0471e4b4c860511284e41b39ede638b2fa5abdeaf65a25d3112aa"
+      "bytes": 95686,
+      "sha256": "d0cd80556f5a7ba3c8911e92cd3b6ebd68e2ca8dc672992f46c22271e48c3c79"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -570,8 +570,8 @@
     },
     {
       "path": "backend/public_routes/performance.py",
-      "bytes": 11304,
-      "sha256": "9add05185e6b2098c3a6c2fd1363840c330cd451806b693a9bffce79b42c0359"
+      "bytes": 11224,
+      "sha256": "99f89bd4fb800e1d88d674dc09718e6b815527ef114a237b14df5229db8e3961"
     },
     {
       "path": "backend/public_routes/preview.py",
@@ -585,8 +585,8 @@
     },
     {
       "path": "backend/public_routes/solve.py",
-      "bytes": 58805,
-      "sha256": "2cf6b87b51189a2df57b06157c0857975ba33020e00095785839ce912420fc72"
+      "bytes": 58740,
+      "sha256": "901e101df6c757c815665fb88cb531a81f661a23c49fbd077b93bc1a9ce34819"
     },
     {
       "path": "backend/public_routes/tutorials.py",
@@ -635,8 +635,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "bytes": 6844,
-      "sha256": "ae66f8ae4280013c0f42b8158050844b2483e7569e01fe8f377c63b8dba4a5f4"
+      "bytes": 9427,
+      "sha256": "49b1c46376e798b960ee7ffbfa80a8529e08668d9929c1e9281b651be078766d"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -7015,8 +7015,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 91940,
-      "sha256": "c4e0f180841eba1956b23cb1537d954e5c85caa27984e7aefc6c8de26c020844"
+      "bytes": 92166,
+      "sha256": "67bd6d7baba421b2c4a4f6038322d2c0f0b7b18da7d2d77bc0b6c42fa5322d20"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 300028,
-      "sha256": "f8585f7c02fd2b59eb72853c69a7df002cc457404db3f1c820a992f0179920aa"
+      "bytes": 300194,
+      "sha256": "1ca34f07c9d816d008f167b7f3bbbc49e7e4fe3b34e7e513c2c2cdafd2dcd84f"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 38884,
-      "sha256": "8a12fb3c5678d18718f004f028f719a326f2c2dafac9d94534b0f8a29535eb0b"
+      "bytes": 38902,
+      "sha256": "1e31a1df4d5e17402a6df43e8c86ac7eda603f17834c511136c463dab3535fbb"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24769,
-      "sha256": "ed1bd65ee092555224192cec4511d9fa244bf87dc0cc6317937585328533d5fe"
+      "bytes": 24796,
+      "sha256": "a4d404e5d8794e9d6574724ce8ca96d28f41c79ad5e00b77bcca3779dd83e56f"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 160182,
-      "sha256": "b91c195e2b4874ee7cccdb196fa37bd443b5c5b83281373b7987e779650516b2"
+      "bytes": 162567,
+      "sha256": "84ed390910d655af244fee9477044f22ee1a870625798af76d79b9464af5a8a2"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -7970,8 +7970,8 @@
     },
     {
       "path": "tests/fixtures/solve_time_calibration.json",
-      "bytes": 10098,
-      "sha256": "603f5d1a641b8d59277c9a604346cf692dcf29f12b9bb825c93a5a0d9d0cd1f2"
+      "bytes": 13099,
+      "sha256": "39a6d8de2922c2639eddc0533ab565edfea85aebd6ea3fd3f16a6dbb24faec3a"
     },
     {
       "path": "tests/fixtures/spm_4p12s_simple.json",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 32929,
-      "sha256": "81e64984c2bf100d1b5bbb4f01f53f33a9e2bcabcde550bfb86ee39cf063fd92"
+      "bytes": 33897,
+      "sha256": "55ab83205e38b0c90c30a12fbfabd6ad91c1517d52c126fd19343c5c1ab8952d"
     },
     {
       "path": "tests/test_public_security.py",
@@ -8370,8 +8370,8 @@
     },
     {
       "path": "tests/test_solve_estimate.py",
-      "bytes": 4802,
-      "sha256": "40b6589ce1b3590b30ddcc404c9648c19113ceb24b08e30cd4a978defd0e8bf8"
+      "bytes": 6748,
+      "sha256": "13f6d97c77ef3c0874a43d029ef36abffa6a623946776938e6e9cbc59bccf64c"
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
@@ -11635,8 +11635,8 @@
     },
     {
       "path": "frontend/scripts/test-analysis-options.mjs",
-      "bytes": 6616,
-      "sha256": "b6617c432145c6de56ada4a3c60221e3762119f9a011b51d7c9842155380ccff"
+      "bytes": 7467,
+      "sha256": "b172891fce654bdd44dd59cd3bc3e45954938d7803af5fa585c6aac92ea3deb4"
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
@@ -11645,8 +11645,8 @@
     },
     {
       "path": "frontend/src/public/analysisOptions.ts",
-      "bytes": 2803,
-      "sha256": "a02984fc068ddc982e016e6fef6eab809b3953c8f2018d95a0b0d110e613e36b"
+      "bytes": 3203,
+      "sha256": "0a2f79ce82dede5f1be9d8c540ead2b983ae696925cdaa3c7fa00705a71645d9"
     },
     {
       "path": "tests/test_analysis_options.py",
@@ -11670,13 +11670,13 @@
     },
     {
       "path": "tests/test_torque_speed_analysis.py",
-      "bytes": 14331,
-      "sha256": "7ff6c0b40b822f21d90f0789ed43602f0cb8573d8fcec7e507533fa259fcb976"
+      "bytes": 14666,
+      "sha256": "81b98fe68e5d080fd03d4580e31f092115854de1334b7a3f91b2f5111a7c2a5c"
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 34625,
-      "sha256": "304e9c12a216bd6f212339c8428508f777cec9049df989823d4a404647bb6cad"
+      "bytes": 36422,
+      "sha256": "4872da7d751d1ed5c8997b71ddcc962fc2dbdb0108b64d3e3199ccca48b93fbb"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
@@ -17595,8 +17595,8 @@
     },
     {
       "path": "backend/client/_inputs.py",
-      "bytes": 17360,
-      "sha256": "d9d53e38a4a7a010f585b0e110e57731749f4a7ca35bb6fbd14cfd0f812b318d"
+      "bytes": 20054,
+      "sha256": "62ad2e29f46042f02c57c9bf966572c5cd59bda189c96463b804a1adb2db0980"
     },
     {
       "path": "backend/client/_results.py",
@@ -17605,8 +17605,8 @@
     },
     {
       "path": "backend/client/_solve.py",
-      "bytes": 30840,
-      "sha256": "9855e3778005ee6cdec8bcf1b6186c17ea0b5888b3ec05a724de9a30454784f5"
+      "bytes": 30936,
+      "sha256": "8cd6bfcd0de9eb7603af7688d4331c7e907017ad74a10fea3ceb6f727c46abfe"
     },
     {
       "path": "backend/input_advisories.py",
@@ -17630,8 +17630,8 @@
     },
     {
       "path": "docs/PYTHON_CLIENT.md",
-      "bytes": 14417,
-      "sha256": "b32b494ccdd7595a23403e68790e4f04e4bd3526c58de68eca7e1d37dee1cee1"
+      "bytes": 14750,
+      "sha256": "02f95ac9fa6b5c0bbee4c7f6231e3bc3ecbf320c8a06b7c7f7235f7b01f2a3d7"
     },
     {
       "path": "docs/RELEASE_0_5_8.md",
@@ -17800,8 +17800,8 @@
     },
     {
       "path": "tests/test_python_client.py",
-      "bytes": 26403,
-      "sha256": "76d648f9e69b13b8e163524ffde7d27b88fa0458c5e909d91221684249858e7e"
+      "bytes": 28151,
+      "sha256": "4fa4b4ffa37ad409e65f7562ff5624750fa8900bd2d882036b1277e68d5b4cf3"
     },
     {
       "path": "tests/test_release_priority_report.py",
@@ -18785,8 +18785,8 @@
     },
     {
       "path": "frontend/src/public/dqComparison.ts",
-      "bytes": 6136,
-      "sha256": "56175a49ed2b6abd1972fff32176a1fe61bddf9d1ccc20cd28a3546a805184c3"
+      "bytes": 7228,
+      "sha256": "3d720c99345023a9aace7bfd47d08533e1c229768d2f71129ccfa4cb0fa8bd79"
     },
     {
       "path": "frontend/src/public/ComparisonTable.tsx",
@@ -18805,8 +18805,8 @@
     },
     {
       "path": "frontend/src/public/comparisonNumbers.ts",
-      "bytes": 1624,
-      "sha256": "72a44c53f31db64ab8c206c1e6fbc95f3fe93aa5a2309e78d23291130ba044ce"
+      "bytes": 1909,
+      "sha256": "57e0d965f0c36149bceb5433bdd50abeea9ddcaf03ec94e454b0e4cbb85808cb"
     },
     {
       "path": "frontend/src/public/envelopeComparison.ts",
@@ -18835,8 +18835,8 @@
     },
     {
       "path": "backend/client/_cli.py",
-      "bytes": 21591,
-      "sha256": "560554ce91719fa0cfc18953741fba483408a2a34457b5bd43c1f085615ba627"
+      "bytes": 21401,
+      "sha256": "61b50d8147b80774a739afc3caba6a59b6d07887eeda45046790c733d9dcac82"
     },
     {
       "path": "backend/client/_setups.py",
@@ -18860,8 +18860,8 @@
     },
     {
       "path": "docs/COMMAND_LINE.md",
-      "bytes": 7162,
-      "sha256": "f1abd37eb31f4e9ba7ba596b25edc276dc63b3db67682beba8b281b89e3c9032"
+      "bytes": 7276,
+      "sha256": "5f6a61cad0777811317af003d4255d587eafb45030b3f3b78c820f1e963310e4"
     },
     {
       "path": "frontend/scripts/test-run-setup-parity.mjs",
@@ -18880,8 +18880,8 @@
     },
     {
       "path": "tests/test_run_setups.py",
-      "bytes": 11976,
-      "sha256": "51e64122dab65e564355fc0be3affc80f3f64579836f29b72dd303c17e2254d1"
+      "bytes": 12236,
+      "sha256": "a070c7f81d7438251a3ef7316a13a9b0d9d48b50311215d9930f633294b843f0"
     },
     {
       "path": "frontend/scripts/csv-test-helpers.mjs",
@@ -18890,8 +18890,8 @@
     },
     {
       "path": "frontend/src/public/comparisonCsv.ts",
-      "bytes": 15312,
-      "sha256": "f374ebd63c2c332db8acd9e8de348c806abe39608f959177f6b1d032f020a242"
+      "bytes": 15511,
+      "sha256": "81b33e2ac4cf5684260fdbf74db6c82698cbed70533690513883eae1b07979aa"
     },
     {
       "path": "frontend/src/public/comparisonMetrics.ts",

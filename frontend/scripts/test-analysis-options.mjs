@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
-const { analysisSummary, setAnalysisOption, hasTorqueResult, hasBackEmfResult, defaultResultPlot } = await importTypeScriptModule(new URL('../src/public/analysisOptions.ts', import.meta.url));
+const { analysisSummary, analysisPositions, setAnalysisOption, hasTorqueResult, hasBackEmfResult, defaultResultPlot } = await importTypeScriptModule(new URL('../src/public/analysisOptions.ts', import.meta.url));
 const { asPublicConfig } = await importTypeScriptModule(new URL('../src/public/publicRequest.ts', import.meta.url));
 const { applyPublicSolvePreset, ensureLossesFullCycle } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
 const { parseDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
@@ -18,6 +18,15 @@ config = setAnalysisOption(config, 'back_emf', false);
 config = setAnalysisOption(config, 'cogging_torque', true);
 config = setAnalysisOption(config, 'losses_efficiency', true);
 assert.equal(analysisSummary(config), 'Cogging · Losses & efficiency');
+{
+  // The map line counts only the solves a run will do: stored points are reused.
+  const mapped = setAnalysisOption(setAnalysisOption(cloneDefaultConfig(), 'back_emf', false), 'torque_speed_envelope', true);
+  const positions = (map) => analysisPositions(mapped, { sweep_positions: 17, analysis_positions: { torque_sweep: 17 }, torque_speed_map: map }, 'magneto2d');
+  assert.equal(positions({ solves: 29, positions_per_point: 12 }), 'Torque 17 · Map 29 solves');
+  assert.equal(positions({ solves: 29, solves_remaining: 29, positions_per_point: 12 }), 'Torque 17 · Map 29 solves');
+  assert.equal(positions({ solves: 29, solves_remaining: 11, positions_per_point: 12 }), 'Torque 17 · Map 11 of 29 solves');
+  assert.equal(positions({ solves: 29, solves_remaining: 0, positions_per_point: 12 }), 'Torque 17 · Map stored');
+}
 // Losses keep the chosen plan; only the request is widened to a full cycle at the plan's step.
 const lossPlan = c => [c.solve_params.solve_quality, c.solve_params.rotor_sweep_range_deg, c.solve_params.rotor_step_deg, c.solve_params.mesh_density];
 for (const [preset, request] of [['quick', ['custom', 360, 15, 'coarse']], ['standard', ['custom', 360, 7.5, 'normal']], ['fine', ['fine', 360, 7.5, 'fine']]]) {

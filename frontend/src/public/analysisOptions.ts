@@ -21,10 +21,18 @@ export function analysisSummary(config: MotorConfig, solver: PublicSolverId = 'm
   return selectedAnalyses(config, solver).map((key) => ANALYSIS_LABELS[key]).join(' · ') || 'Select analyses';
 }
 
+/** A stored map, or the points a cancelled one finished, are reused, so only the rest are solved. */
+function mapSolves(map: SolveValidation['torque_speed_map']): string {
+  if (!map) return 'Map — solves';
+  const remaining = map.solves_remaining ?? map.solves;
+  if (remaining === map.solves) return `Map ${map.solves} solves`;
+  return remaining === 0 ? 'Map stored' : `Map ${remaining} of ${map.solves} solves`;
+}
+
 export function analysisPositions(config: MotorConfig, validation: SolveValidation, solver: PublicSolverId): string {
   if (!validation.analysis_positions) return `${validation.sweep_positions} rotor positions`;
   return selectedAnalyses(config, solver).map((key) => key === 'torque_speed_envelope'
-    ? `Map ${validation.torque_speed_map?.solves ?? '—'} solves`
+    ? mapSolves(validation.torque_speed_map)
     : `${ANALYSIS_LABELS[key]} ${validation.analysis_positions?.[key] ?? '—'}`).join(' · ');
 }
 

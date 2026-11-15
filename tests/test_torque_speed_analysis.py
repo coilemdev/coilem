@@ -257,7 +257,7 @@ def test_map_validation_and_stream_save_replayable_results(monkeypatch):
     raw = map_config().model_dump(mode="json")
     checked = client.post("/solve/validate", json=raw)
     assert checked.status_code == 200, checked.text
-    assert checked.json()["torque_speed_map"] == {"solves": 29, "positions_per_point": 12}
+    assert checked.json()["torque_speed_map"] == {"solves": 29, "solves_remaining": 29, "positions_per_point": 12}
     invalid = deepcopy(raw)
     invalid.pop("torque_speed_analysis")
     assert client.post("/solve/validate", json=invalid).status_code == 400
@@ -266,6 +266,10 @@ def test_map_validation_and_stream_save_replayable_results(monkeypatch):
     response = client.post("/solve/stream", json=raw)
     events = response.text.split("\n\n")
     completed = next(event for event in events if event.startswith("event: complete"))
+    # The stored map is reused by the next run, so validation no longer counts its solves.
+    rechecked = client.post("/solve/validate", json=raw).json()
+    assert rechecked["torque_speed_map"]["solves_remaining"] == 0
+    assert rechecked["estimated_solve_time_s"] < checked.json()["estimated_solve_time_s"]
     payload = json.loads(completed.split("\ndata: ")[1])
     saved = payload["saved_run"]
     reopened = client.get(f"/runs/{saved['project_slug']}/{saved['run_id']}").json()

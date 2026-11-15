@@ -64,6 +64,25 @@ function cell(dq: DqFluxLinkage | null | undefined, metric: DqMetric): Compariso
     : value === null ? metric.hint || 'This value was not recorded as a finite number in the saved run.' : undefined };
 }
 
+// Smallest baseline magnitude a percentage change is shown for, in the row's
+// display unit. An all-q-axis run records a current angle of a few hundredths of
+// a degree and a d-axis current of a few mA, which turn any change into a
+// five-digit percentage. Components under 1% of their d/q vector, and angles
+// under 0.5° (about the same share of the current), count as zero.
+const COMPONENT_SHARE = 0.01;
+const ANGLE_FLOOR_DEG = 0.5;
+
+function percentFloor(metric: DqMetric, baseline: DqFluxLinkage | null | undefined): number {
+  if (!baseline) return 0;
+  const magnitude = (d: unknown, q: unknown) => Math.hypot(finite(d) ? d : 0, finite(q) ? q : 0);
+  if (metric.key === 'current_angle_deg') return ANGLE_FLOOR_DEG;
+  if (metric.key === 'i_d_A' || metric.key === 'i_q_A') return COMPONENT_SHARE * magnitude(baseline.i_d_A, baseline.i_q_A);
+  if (metric.key === 'lambda_d_Wb' || metric.key === 'lambda_q_Wb') {
+    return COMPONENT_SHARE * magnitude(baseline.lambda_d_Wb, baseline.lambda_q_Wb) * (metric.scale ?? 1);
+  }
+  return 0;
+}
+
 /** Read stored outputs only. Missing records, unavailable statuses and frame mismatches never produce deltas. */
 export function compareRunDq(results: ComparisonResult[]) {
   const records = results.map(result => result.summary.dq_flux_linkage);
@@ -80,7 +99,7 @@ export function compareRunDq(results: ComparisonResult[]) {
       : !frameComparable[index] ? 'Component and inductance deltas are hidden because the d-axis references differ or were not recorded.' : null),
     rows: METRICS.map(metric => {
       const cells = records.map(dq => cell(dq, metric));
-      return { ...metric, cells, comparable: records.map((dq, index) => cells[0].value !== null && cells[index].value !== null
+      return { ...metric, cells, percentFloor: percentFloor(metric, baseline), comparable: records.map((dq, index) => cells[0].value !== null && cells[index].value !== null
         && Boolean(baseline && dq && knownFrame(baseline) && knownFrame(dq))
         && (!metric.frameDependent || frameComparable[index])) };
     }),

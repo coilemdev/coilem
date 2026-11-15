@@ -494,7 +494,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
                 {dq.rows.map(row => <tr key={row.key}>
                   <th scope="row" aria-label={row.label}>{row.label}{row.hint && <InfoTip label={`${row.label} help`}>{row.hint}</InfoTip>}</th>
                   <ComparisonCells runs={runs} values={row.cells.map((cell, index) => <DqComparisonValue cell={cell} label={`${runs[index].label} ${row.label}`} unit={row.unit} />)}
-                    differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit}</small></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
+                    differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit}</small></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value, row.percentFloor) : '—' }))} />
                 </tr>)}
               </tbody>
             </>}

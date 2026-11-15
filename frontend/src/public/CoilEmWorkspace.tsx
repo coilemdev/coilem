@@ -3949,7 +3949,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     setAdvancedOpen(true);
     setRecoveryFocusRequest((request) => request + 1);
   };
-  const completedAnalysisAvailable = Boolean(result) && busy === null;
+  // A shown result stays viewable while a mesh is prepared for the next run
+  // (as when a saved run is opened); Run again waits for the mesh.
+  const completedAnalysisAvailable = Boolean(result) && (busy === null || busy === 'mesh');
   const finalizingResults = solveInProgress && isPublicSolveFinalizing(progress);
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);
