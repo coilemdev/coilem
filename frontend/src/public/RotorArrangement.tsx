@@ -14,12 +14,11 @@ export function RotorArrangement({ value, disabled = false, onChange }: {
     <div className="param-section-label">Rotor arrangement</div>
     <div ref={hover.groupRef} className="topology-cards" role="group" aria-label="Rotor arrangement">
       {(['inner', 'outer'] as const).map((layout) => <button key={layout} type="button"
-        className={`topo-card${value === layout ? ' active' : ''}`} aria-pressed={value === layout}
+        className={`topo-card is-compact${value === layout ? ' active' : ''}`} aria-pressed={value === layout}
         {...hover.triggerProps(layout)}
         disabled={disabled} onClick={() => { hover.dismiss(); if (layout !== value) onChange(layout); }}>
         <span className="topo-icon" aria-hidden="true">{value === layout ? '◉' : '○'}</span>
-        <span className="topo-text"><span className="topo-name">{layout === 'inner' ? 'Inrunner' : 'Outrunner'}</span>
-          <span className="topo-sub">{layout === 'inner' ? 'Rotor inside stator' : 'Rotor outside stator'}</span></span>
+        <span className="topo-text"><span className="topo-name">{layout === 'inner' ? 'Inrunner' : 'Outrunner'}</span></span>
       </button>)}
     </div>
     {hover.renderPreview((layout) => <RotorArrangementPreview layout={layout} />)}

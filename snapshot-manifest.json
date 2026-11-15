@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 300194,
-      "sha256": "1ca34f07c9d816d008f167b7f3bbbc49e7e4fe3b34e7e513c2c2cdafd2dcd84f"
+      "bytes": 299810,
+      "sha256": "c09f40b23d7ce8e13b7daa41fc76ebb91fd7b44f82719a4e30f7669cc6029624"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 339685,
-      "sha256": "d1f03e4ef8a90f4724ce279bc0c9b129aeca1e3684de39088dd58464bbd754d4"
+      "bytes": 339664,
+      "sha256": "b68914b98915f36ad1a0e37603d3a612088a538f66338b9fd631ce27ff4fa5e7"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -13110,8 +13110,8 @@
     },
     {
       "path": "frontend/src/public/RotorArrangement.tsx",
-      "bytes": 1595,
-      "sha256": "a84aac81c67a5feed41bc3ce204e831276a2ed406b57fa0ed63089023243c56e"
+      "bytes": 1492,
+      "sha256": "ee6bb43d8d904c4e19efebf13e5172d122e81f25877c9acfce3fcfc7826e0565"
     },
     {
       "path": "frontend/src/public/examples/drone_outrunner_36s40p_b.coilem",
