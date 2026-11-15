@@ -7,8 +7,9 @@
  * peak phase amperes, torque is electromagnetic, speed is shaft rpm.
  */
 
-import type { DriveLimits, EfficiencyMap, FluxLinkageMap, TorqueSpeedCurve } from './performance';
+import type { DqFluxLinkage, DriveLimits, EfficiencyMap, FluxLinkageMap, TorqueSpeedCurve, TorqueSpeedEnvelope } from './performance';
 import { rampColor } from './lossesView';
+import { formatSignificant } from './numberFormat';
 import { FLUX_LINKAGE_MAP_STATUS_REASON } from './outputStatus';
 
 // Efficiency bands: the validated sequential blue, dark (less efficient) to light.
@@ -141,6 +142,91 @@ export function curveAt(curve: TorqueSpeedCurve, speedRpm: number): CurvePoint |
     currentPeakA: Math.hypot(iD, iQ),
     gammaDeg: (Math.atan2(-iD, iQ) * 180) / Math.PI,
   };
+}
+
+// The peak curve is a polyline through interpolated map values, so a point
+// this little above it still counts as on it.
+const OUTSIDE_TORQUE_SHARE = 0.01;
+
+export interface SolvedPointMapInput {
+  envelope: TorqueSpeedEnvelope;
+  /** The map's pole pairs, for the electrical speed. */
+  polePairs: number;
+  speedRpm: number;
+  torqueNm: number;
+  /** The run's loaded d/q record at the solved point; pass it for sinusoidal current only. */
+  dq?: Pick<DqFluxLinkage, 'i_d_A' | 'i_q_A' | 'lambda_d_Wb' | 'lambda_q_Wb'> | null;
+}
+
+export interface SolvedPointOutsideMap {
+  speedRpm: number;
+  torqueNm: number;
+  limits: DriveLimits;
+  aboveTopSpeed: boolean;
+  /** DC bus the point needs at its own current and angle; null without a d/q record. */
+  busNeededV: number | null;
+  /** The point's peak phase current, when it is above the map's Peak current. */
+  currentAbovePeakA: number | null;
+}
+
+/**
+ * The limits that keep the run's solved point outside the map's peak envelope,
+ * or null when it lies on or under the peak curve (within 1%).
+ *
+ * The bus the point needs applies the map's own voltage model
+ * (backend/drive_performance.py) to the run's loaded d/q record, which comes
+ * from the same routine as every map point:
+ * |v| = |(R·id − ωe·λq, R·iq + ωe·λd)| ≤ m·Vdc / 2, with the envelope's phase
+ * resistance and modulation limit. That is the bus at the point's own current
+ * and angle; field weakening at more current may reach the same torque with
+ * less. When the record shows the point within every limit, it is outside only
+ * by the map's interpolation, and null is returned too.
+ */
+export function solvedPointOutsideMap({ envelope, polePairs, speedRpm, torqueNm, dq }: SolvedPointMapInput): SolvedPointOutsideMap | null {
+  const peak = envelope.curves.find((curve) => curve.limit === 'peak') ?? envelope.curves[0];
+  if (!peak || !peak.speed_rpm.length || !finite(speedRpm) || !finite(torqueNm) || speedRpm < 0 || torqueNm <= 0) return null;
+  const at = curveAt(peak, speedRpm);
+  if (at !== null && torqueNm <= at.torque * (1 + OUTSIDE_TORQUE_SHARE)) return null;
+  const { limits } = envelope;
+  const aboveTopSpeed = speedRpm > limits.max_speed_rpm * (1 + 1e-9);
+  if (!dq || ![dq.i_d_A, dq.i_q_A, dq.lambda_d_Wb, dq.lambda_q_Wb, polePairs, limits.modulation_index_max].every(finite) || polePairs <= 0) {
+    return { speedRpm, torqueNm, limits, aboveTopSpeed, busNeededV: null, currentAbovePeakA: null };
+  }
+  const omegaE = ((speedRpm * 2 * Math.PI) / 60) * polePairs;
+  const resistance = finite(envelope.phase_resistance_ohm) ? envelope.phase_resistance_ohm : 0;
+  const volts = Math.hypot(resistance * dq.i_d_A - omegaE * dq.lambda_q_Wb, resistance * dq.i_q_A + omegaE * dq.lambda_d_Wb);
+  const busNeededV = (2 * volts) / limits.modulation_index_max;
+  const current = Math.hypot(dq.i_d_A, dq.i_q_A);
+  const currentAbovePeakA = current > limits.peak_current_A * (1 + 1e-6) ? current : null;
+  if (!aboveTopSpeed && busNeededV <= limits.dc_bus_V && currentAbovePeakA === null) return null;
+  return { speedRpm, torqueNm, limits, aboveTopSpeed, busNeededV, currentAbovePeakA };
+}
+
+const listed = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`);
+
+/** The Torque–speed tab's note for a solved point outside the map, naming the settings that would take it in. */
+export function solvedPointOutsideNote(outside: SolvedPointOutsideMap, formatCurrent: (peakA: number) => string): string {
+  const { limits, busNeededV, currentAbovePeakA } = outside;
+  const point = `The solved point (${formatSignificant(outside.speedRpm)} rpm, ${formatSignificant(outside.torqueNm)} N·m)`;
+  const bus = `${limits.dc_bus_V.toLocaleString()} V DC bus`;
+  const peak = `${formatCurrent(limits.peak_current_A)} Peak current`;
+  const where = 'in Solve → Analysis → Torque–speed map to include it.';
+  const busShort = busNeededV !== null && busNeededV > limits.dc_bus_V;
+  if (!outside.aboveTopSpeed && !busShort && currentAbovePeakA === null) {
+    // No d/q record to tell the voltage limit from the current limit.
+    return `${point} is outside this map at the ${bus} and ${peak}. Raise DC bus or Peak current ${where}`;
+  }
+  const limitsHit = [
+    ...(outside.aboveTopSpeed ? [{ at: `${limits.max_speed_rpm.toLocaleString()} rpm Top speed`, setting: 'Top speed' }] : []),
+    ...(busShort ? [{ at: bus, setting: 'DC bus' }] : []),
+    ...(currentAbovePeakA !== null ? [{ at: peak, setting: 'Peak current' }] : []),
+  ];
+  const volts = busShort ? (busNeededV >= 10 ? Math.ceil(busNeededV) : Math.ceil(busNeededV * 10) / 10).toLocaleString() : '';
+  const detail = busShort && currentAbovePeakA !== null ? `It was solved at ${formatCurrent(currentAbovePeakA)}, where it needs about ${volts} V; raise`
+    : busShort ? `At its solved current it needs about ${volts} V; raise`
+      : currentAbovePeakA !== null ? `It was solved at ${formatCurrent(currentAbovePeakA)}; raise`
+        : 'Raise';
+  return `${point} is outside this map at the ${listed(limitsHit.map((limit) => limit.at))}. ${detail} ${listed(limitsHit.map((limit) => limit.setting))} ${where}`;
 }
 
 /** The least-loss current at the map cell nearest a point, rms and angle, or null. */

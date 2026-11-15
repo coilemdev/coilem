@@ -23,6 +23,8 @@ import {
   inductanceTable,
   mapCsv,
   niceTicks,
+  solvedPointOutsideMap,
+  solvedPointOutsideNote,
 } from './performanceView';
 import { isDeratedRun } from './magnetTemperature';
 import { formatSignificant } from './numberFormat';
@@ -435,10 +437,16 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
   const temperature = winding?.winding_temperature_C ?? 20;
   const resistanceStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
   const magnetsDerated = isDeratedRun(result.solve_metadata);
+  const sinusoidal = config.solve_params.excitation_mode === 'sinusoidal';
   const solvedPoint: SolvedPoint | null = typeof result.summary.avg_torque_Nm === 'number' && result.summary.avg_torque_Nm > 0
     ? { speedRpm: config.solve_params.rated_speed_rpm, torqueNm: result.summary.avg_torque_Nm,
-      gammaDeg: config.solve_params.excitation_mode === 'sinusoidal' ? config.solve_params.current_angle_deg : null }
+      gammaDeg: sinusoidal ? config.solve_params.current_angle_deg : null }
     : null;
+  // One note for both charts when the solved point lies outside the map's limits (#274).
+  const outside = solvedPoint && solvedPointOutsideMap({
+    envelope, polePairs: map.pole_pairs, speedRpm: solvedPoint.speedRpm, torqueNm: solvedPoint.torqueNm,
+    dq: sinusoidal ? result.summary.dq_flux_linkage : null,
+  });
   const agreement = analysis.torque_agreement_pct.filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
   const agreementText = agreement.length > 0
     ? `FEM torque is ${Math.min(...agreement).toFixed(1)}–${Math.max(...agreement).toFixed(1)}% of the d/q torque across ${agreement.length} map points.`
@@ -519,6 +527,7 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
             <div><span>Best efficiency</span><strong>{bestEfficiency !== null && Number.isFinite(bestEfficiency) ? bestEfficiency.toFixed(1) : '—'}<small>%</small></strong></div>
           </div>
           <TorqueSpeedChart envelope={drive.envelope} formatCurrent={formatCurrent} solved={solvedPoint} />
+          {outside && <p className="performance-message is-warning" role="note">{solvedPointOutsideNote(outside, formatCurrent)}</p>}
           <EfficiencyMapChart map={drive.efficiency_map} envelope={drive.envelope} solved={solvedPoint} formatCurrent={formatCurrent} />
           {inductances.length > 0 && (
             <details className="performance-details">

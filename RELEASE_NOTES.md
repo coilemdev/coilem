@@ -17,6 +17,7 @@ original identities. Release approval and publication remain pending; see the
   order.
 - **Clearer design and field views.** Rotor previews, 3D windings, phase controls,
   layout zoom and field legends make geometry and excitation easier to inspect.
+  Halbach 3D views frame the whole array at any viewer size, with the full legend.
 - **Saved run setups.** Name and reuse operating conditions and requested
   outputs, optionally including accuracy and solver settings. Immutable Prius
   reference setups apply the shipped complete conditions; edits become Modified
@@ -34,7 +35,9 @@ original identities. Release approval and publication remain pending; see the
 - **More useful results and reports.** Partial analyses explain unavailable
   losses and efficiency; incomplete totals are labelled Known loss subtotal.
   PDF currents use A peak, resistance rows avoid duplicates, and diagnostic
-  plots handle empty bore contours.
+  plots handle empty bore contours. When a run's solved point lies outside its
+  torque–speed map, the map says which drive limit to raise and, for sinusoidal
+  runs, about how much DC bus the point needs.
 - **Saved runs and tutorials.** Pruned runs keep static results and explain why
   playback is unavailable. Tutorial scale bars follow the displayed geometry;
   capstone completion requires a current solved design meeting its targets and

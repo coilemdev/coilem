@@ -4,6 +4,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { ViewportNavigationControls } from '../ViewportNavigation';
 import type { HalbachArrayConfig, HalbachReport } from './types';
+import {
+  halbachCameraFitDistance,
+  halbachCylinderFramePoints,
+  type HalbachVec3,
+} from './cameraFit';
 import { halbachDisplaySegments, isDrawableLength } from './geometry';
 import {
   HALBACH_POLE_NORTH_FALLBACK,
@@ -31,7 +36,11 @@ interface SceneHandles {
   arrowGroup: THREE.Group;
   raycaster: THREE.Raycaster;
   pointer: THREE.Vector2;
+  fitView: () => void;
 }
+
+/** The default three-quarter view, looking down on the ring from above one side. */
+const CAMERA_DIRECTION: HalbachVec3 = [2.15, -2.15, 1.55];
 
 function polygonShape(points: HalbachPolePoint[]): THREE.Shape {
   const shape = new THREE.Shape();
@@ -61,6 +70,8 @@ export function Halbach3DViewer({
   selectedSegmentRef.current = selectedSegment;
   const [cutaway, setCutaway] = useState(false);
   const [explode, setExplode] = useState(0);
+  const explodeRef = useRef(explode);
+  explodeRef.current = explode;
   const [fitNonce, setFitNonce] = useState(0);
   const [zoomScale, setZoomScale] = useState(1);
   // The scene, grid and camera are sized from these. A value that cannot be
@@ -139,6 +150,38 @@ export function Halbach3DViewer({
     scene.add(segmentGroup, arrowGroup);
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
+
+    // Pull back along the default view direction until the whole ring (pushed
+    // out by any radial explode) and the arrows on its top face fit inside the
+    // canvas at its current aspect ratio, with a margin all round.
+    const framingRadius = Math.max(safeOuterRadius, safeAxialLength / 2);
+    let fittedPosition: THREE.Vector3 | null = null;
+    const fitView = () => {
+      const distance = Math.max(1, halbachCameraFitDistance(
+        halbachCylinderFramePoints(
+          safeOuterRadius + explodeRef.current,
+          -safeAxialLength / 2,
+          safeAxialLength / 2 + 1,
+        ),
+        { direction: CAMERA_DIRECTION, up: [0, 0, 1], fovDeg: camera.fov, aspect: camera.aspect },
+      ));
+      controls.target.set(0, 0, 0);
+      camera.position.set(...CAMERA_DIRECTION).setLength(distance);
+      fittedDistanceRef.current = distance;
+      controls.minDistance = Math.max(framingRadius * 0.35, 1);
+      controls.maxDistance = Math.max(framingRadius * 9, distance * 2.5);
+      camera.near = Math.max(0.1, framingRadius / 200);
+      camera.far = Math.max(2000, framingRadius * 30, controls.maxDistance * 2);
+      camera.updateProjectionMatrix();
+      controls.update();
+      fittedPosition = camera.position.clone();
+      setZoomScale(1);
+    };
+    // True until the view is orbited, panned or zoomed away from the fit.
+    const atFittedView = () => fittedPosition !== null
+      && camera.position.distanceTo(fittedPosition) <= fittedDistanceRef.current * 1e-3
+      && controls.target.length() <= fittedDistanceRef.current * 1e-3;
+
     handlesRef.current = {
       camera,
       controls,
@@ -148,18 +191,23 @@ export function Halbach3DViewer({
       arrowGroup,
       raycaster,
       pointer,
+      fitView,
     };
 
     const resize = () => {
       const width = Math.max(320, host.clientWidth);
       const height = Math.max(320, host.clientHeight);
+      const keepFitted = atFittedView();
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      // A viewer that changes shape refits, unless the user has moved the view.
+      if (keepFitted) fitView();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
+    fitView();
 
     const selectAtPointer = (event: PointerEvent) => {
       const rect = renderer.domElement.getBoundingClientRect();
@@ -306,21 +354,11 @@ export function Halbach3DViewer({
     }
   }, [config, cutaway, explode, selectedSegment]);
 
+  // The scene fits itself when it is built (on every geometry change); the
+  // Fit button refits it on demand.
   useEffect(() => {
-    const handles = handlesRef.current;
-    if (!handles) return;
-    const radius = Math.max(safeOuterRadius, safeAxialLength / 2);
-    handles.camera.position.set(radius * 2.15, -radius * 2.15, radius * 1.55);
-    fittedDistanceRef.current = handles.camera.position.distanceTo(handles.controls.target);
-    handles.controls.minDistance = Math.max(radius * 0.35, 1);
-    handles.controls.maxDistance = radius * 9;
-    handles.camera.near = Math.max(0.1, radius / 200);
-    handles.camera.far = Math.max(2000, radius * 30);
-    handles.camera.updateProjectionMatrix();
-    handles.controls.target.set(0, 0, 0);
-    handles.controls.update();
-    setZoomScale(1);
-  }, [safeAxialLength, safeOuterRadius, fitNonce]);
+    if (fitNonce > 0) handlesRef.current?.fitView();
+  }, [fitNonce]);
 
   const zoomBy = (factor: number) => {
     const handles = handlesRef.current;

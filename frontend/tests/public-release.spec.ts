@@ -407,6 +407,49 @@ with tempfile.TemporaryDirectory() as root:
   });
 }
 
+test('a solved point outside the torque–speed map says which limit to raise (#274)', async ({ page }, info) => {
+  const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
+import json, os, tempfile
+from tests.test_torque_speed_analysis import map_config, SelectedSolver
+from backend.selected_analyses import solve_selected_analyses
+with tempfile.TemporaryDirectory() as root:
+    os.environ['COILEM_USER_DATA_ROOT'] = root
+    cfg = map_config()
+    cfg.solve_options.torque_sweep = True
+    print(solve_selected_analyses(SelectedSolver(), cfg).model_dump_json())
+`], { cwd: fileURLToPath(new URL('../..', import.meta.url)), encoding: 'utf8' }));
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.route('**/solve/stream', route => route.fulfill({
+    contentType: 'text/event-stream',
+    body: `event: complete\ndata: ${JSON.stringify({ ...fixture, summary: { ...fixture.summary, avg_torque_Nm: 5 } })}\n\n`,
+  }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  await openSetupSection(page, 'analysis');
+  await page.getByRole('checkbox', { name: 'Torque–speed map', exact: true }).check();
+  const run = page.getByRole('button', { name: '▶ Run analysis', exact: true });
+  const outsideNote = page.getByRole('note').filter({ hasText: 'is outside this map' });
+  // The note sits with the full Results map, where the solved point is drawn.
+  const openResultsMap = async () => {
+    await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+    await page.getByRole('tab', { name: 'Torque–speed', exact: true }).click();
+    await expect(page.getByText('Torque–speed and efficiency', { exact: true })).toBeVisible();
+  };
+  // Far above the fixture's peak curve (0.678 N·m), with no d/q record to say which limit binds.
+  // (Points inside the map, which get no note, are covered by test-performance-view.mjs.)
+  await expect(run).toBeEnabled({ timeout: 120_000 });
+  await run.click();
+  await openResultsMap();
+  await expect(outsideNote).toContainText(/^The solved point \(2,400 rpm, 5(\.0+)? N·m\) is outside this map at the 48 V DC bus/);
+  await expect(outsideNote).toContainText('Raise DC bus or Peak current in Solve → Analysis → Torque–speed map to include it.');
+  const capture = info.outputPath('solved-point-outside-map.png');
+  await outsideNote.screenshot({ path: capture });
+  await info.attach('solved-point-outside-map', { path: capture, contentType: 'image/png' });
+  expect(errors).toEqual([]);
+});
+
 test('no-current Results settings report actual field current and retain winding resistance', async ({ page }) => {
   const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
 from tests.test_analysis_options import config, result_for
@@ -1745,6 +1788,35 @@ test('small release fixes: tutorial scale follows actual SVG fit, zoom and resiz
     await page.getByTitle('Fit to view', { exact: true }).click();
     await checkScale();
   }
+});
+
+test('a lesson in progress survives a reload and a trip to the catalog (#259)', async ({ page }) => {
+  // Real Lesson 2 solves (well under a second each locally); CI draws the UI in software.
+  test.setTimeout(180_000);
+  await page.goto('/tutorials/lesson-2');
+  await page.getByRole('radio', { name: /The two airgaps/ }).click();
+  await page.getByRole('button', { name: 'Reveal the airgap tax →', exact: true }).click();
+  await page.getByRole('button', { name: 'Solve wide-gap baseline', exact: true }).click();
+  const results = page.getByRole('region', { name: 'Solved gap comparison', exact: true });
+  await expect(results).toContainText('1 run');
+  const expectResumed = async () => {
+    // Back in the lab at the same step, with the prediction kept and the solved gap solved again.
+    await expect(page.locator('[aria-current="step"]')).toHaveText(/Airgap lab/);
+    await expect(results).toContainText('1 run');
+    await expect(results).toContainText('Now halve the gap.');
+    await expect(page.getByRole('button', { name: 'Halve the gap to 3.0 mm', exact: true })).toBeVisible();
+  };
+  await page.reload();
+  await expectResumed();
+  // The header's "Tutorials" crumb opens the catalog.
+  await page.getByRole('button', { name: /^Tutorials Lesson 2 of 10/ }).click();
+  await expect(page).toHaveURL(/\/tutorials\/?$/);
+  await page.goBack();
+  await expect(page).toHaveURL(/\/tutorials\/lesson-2$/);
+  await expectResumed();
+  // The prediction step stays done (✓) and still holds the student's answer.
+  await page.getByRole('button', { name: '✓ Predict', exact: true }).click();
+  await expect(page.getByRole('radio', { name: /The two airgaps/ })).toHaveAttribute('aria-checked', 'true');
 });
 
 test('small release fixes: capstone requires a fresh qualifying solve and completed run', async ({ page }) => {

@@ -3,7 +3,14 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 import { ViewportNavigationControls } from '../ViewportNavigation';
-import { linearHalbachDrawableMagnetCount } from './geometry';
+import {
+  HALBACH_3D_FRAME_FILL,
+  HALBACH_3D_HERO_FRAME_FILL,
+  halbachBoxFramePoints,
+  halbachCameraFitDistance,
+  type HalbachVec3,
+} from './cameraFit';
+import { isDrawableLength, linearHalbachDrawableMagnetCount } from './geometry';
 import type {
   LinearHalbachResultView,
   LinearHalbachViewportMode,
@@ -52,6 +59,9 @@ interface SceneHandles {
   pointer: THREE.Vector2;
   grid: THREE.GridHelper;
 }
+
+/** The default view: from above the enhanced side, a little off the array's axis. */
+const CAMERA_DIRECTION: HalbachVec3 = [0.45, 1.75, 0.9];
 
 interface FieldLegend {
   label: string;
@@ -264,6 +274,10 @@ export function LinearHalbach3DViewer({
   const handlesRef = useRef<SceneHandles | null>(null);
   const animationRef = useRef<number | null>(null);
   const fittedDistanceRef = useRef(1);
+  // The latest fit, for the resize observer and a rebuilt scene, and the pose it
+  // left the camera in, to tell whether the user has moved the view since.
+  const fitViewRef = useRef<(() => void) | null>(null);
+  const fittedPoseRef = useRef<{ position: THREE.Vector3; target: THREE.Vector3 } | null>(null);
   const selectedMagnetRef = useRef(selectedMagnet);
   const selectMagnetRef = useRef(onSelectMagnet);
   selectedMagnetRef.current = selectedMagnet;
@@ -353,17 +367,31 @@ export function LinearHalbach3DViewer({
       grid,
     };
 
+    // True until the view is orbited, panned or zoomed away from the fit.
+    const atFittedView = () => {
+      const pose = fittedPoseRef.current;
+      const tolerance = fittedDistanceRef.current * 1e-3;
+      return pose !== null
+        && camera.position.distanceTo(pose.position) <= tolerance
+        && controls.target.distanceTo(pose.target) <= tolerance;
+    };
     const resize = () => {
       const width = host.clientWidth;
       const height = host.clientHeight;
       if (width <= 0 || height <= 0) return;
+      const keepFitted = atFittedView();
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      // A viewer that changes shape refits, unless the user has moved the view.
+      if (keepFitted) fitViewRef.current?.();
     };
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
+    // A rebuilt scene starts from a fresh camera. On first mount there is no
+    // fit yet; the framing effect below runs next.
+    fitViewRef.current?.();
 
     renderer.domElement.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' || magnetCount === 0) {
@@ -739,47 +767,73 @@ export function LinearHalbach3DViewer({
   ]);
 
   useEffect(() => {
-    const handles = handlesRef.current;
-    if (!handles) return;
-    const verticalExtent = Math.max(
-      config.geometry.magnet_height * 2,
-      config.geometry.magnet_height / 2 + config.sample_region.probe_offset,
-    );
-    const radius = Math.max(
-      1,
-      Math.hypot(
-        activeLength / 2,
-        verticalExtent,
-        config.geometry.out_of_plane_depth / 2,
-      ),
-    );
-    const modelCenterY = config.geometry.out_of_plane_depth / 2;
-    // The displayed model is rotated -90° about X: solve X/Y lie on the table,
-    // and solve Z (out-of-plane depth) becomes the vertical display thickness.
-    handles.camera.position.set(
-      radius * 0.45,
-      modelCenterY + radius * 1.75,
-      radius * 0.9,
-    );
-    handles.controls.target.set(0, modelCenterY, 0);
-    handles.controls.minDistance = Math.max(radius * 0.25, 1);
-    handles.controls.maxDistance = radius * 10;
-    handles.camera.near = Math.max(0.05, radius / 300);
-    handles.camera.far = Math.max(2000, radius * 30);
-    handles.camera.updateProjectionMatrix();
-    handles.controls.update();
-    fittedDistanceRef.current = handles.camera.position.distanceTo(handles.controls.target);
-    setZoomScale(1);
+    const fitView = () => {
+      const handles = handlesRef.current;
+      if (!handles) return;
+      const { camera, controls, grid } = handles;
+      // A value that cannot be drawn frames as nothing, so the view stays usable.
+      const length = Number.isFinite(activeLength) ? Math.max(0, activeLength) : 0;
+      const depth = isDrawableLength(config.geometry.out_of_plane_depth)
+        ? config.geometry.out_of_plane_depth
+        : 0;
+      const magnetHeight = isDrawableLength(config.geometry.magnet_height)
+        ? config.geometry.magnet_height
+        : 0;
+      const probeOffset = Number.isFinite(config.sample_region.probe_offset)
+        ? Math.max(0, config.sample_region.probe_offset)
+        : 0;
+      const halfLength = Math.max(1, length / 2);
+      // Across the array: the probe lines and the enhanced-side arrow.
+      const halfWidth = Math.max(1, magnetHeight * 2, magnetHeight / 2 + probeOffset);
+      const modelCenterY = depth / 2;
+      // The displayed model is rotated -90° about X: solve X/Y lie on the table,
+      // and solve Z (out-of-plane depth) becomes the vertical display thickness.
+      // The box is taken about the model's centre (the camera target); the field
+      // sheet, arrows and probe lines sit just above its top face. Pull back along
+      // the default view direction until all of it fits the canvas at its current
+      // aspect ratio, with a margin all round.
+      const distance = Math.max(1, halbachCameraFitDistance(
+        halbachBoxFramePoints(
+          [-halfLength, -depth / 2, -halfWidth],
+          [halfLength, depth / 2 + 1.5, halfWidth],
+        ),
+        {
+          direction: CAMERA_DIRECTION,
+          up: [0, 1, 0],
+          fovDeg: camera.fov,
+          aspect: camera.aspect,
+          fill: presentation === 'hero' ? HALBACH_3D_HERO_FRAME_FILL : HALBACH_3D_FRAME_FILL,
+        },
+      ));
+      const radius = Math.max(1, Math.hypot(halfLength, halfWidth, depth / 2));
+      controls.target.set(0, modelCenterY, 0);
+      camera.position.set(...CAMERA_DIRECTION).setLength(distance).add(controls.target);
+      controls.minDistance = Math.max(radius * 0.25, 1);
+      controls.maxDistance = Math.max(radius * 10, distance * 2.5);
+      camera.near = Math.max(0.05, radius / 300);
+      camera.far = Math.max(2000, radius * 30, controls.maxDistance * 2);
+      camera.updateProjectionMatrix();
+      fittedDistanceRef.current = distance;
+      controls.update();
+      fittedPoseRef.current = {
+        position: camera.position.clone(),
+        target: controls.target.clone(),
+      };
+      setZoomScale(1);
 
-    const gridSize = Math.max(activeLength * 1.4, config.geometry.out_of_plane_depth * 2.2, 20);
-    handles.grid.scale.setScalar(gridSize / 100);
-    handles.grid.position.y = -Math.max(0.35, gridSize * 0.004);
+      const gridSize = Math.max(length * 1.4, depth * 2.2, 20);
+      grid.scale.setScalar(gridSize / 100);
+      grid.position.y = -Math.max(0.35, gridSize * 0.004);
+    };
+    fitViewRef.current = fitView;
+    fitView();
   }, [
     activeLength,
     config.geometry.magnet_height,
     config.geometry.out_of_plane_depth,
     config.sample_region.probe_offset,
     fitNonce,
+    presentation,
   ]);
 
   const zoomBy = (factor: number) => {
