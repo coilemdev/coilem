@@ -172,3 +172,25 @@ The 24/48/96 comparisons reuse the same full-turn data at integer strides. The
 closure endpoint is excluded from each harmonic calculation. Mesh invariance
 means the geometry stayed fixed during collection; spatial mesh convergence is
 a separate gate. This remains one loaded SPM case, not the full release matrix.
+
+## Follow-up: 192/384 angular refinement
+
+Collect the 384-sample full-turn grid once. Its even-indexed positions form
+the 192-sample grid and every fourth position forms the 96-sample grid. Every
+position is independently solved, including both endpoints; earlier runs are
+retained as reproduction controls. Motor, currents, speed, material law, mesh
+and air-gap settings remain unchanged.
+
+```powershell
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 384 --limit 1 --out output/rotor-fixed-384
+# In separate shells: run this command with --shard 0/4, 1/4, 2/4 and 3/4.
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 384 --resume --shard 0/4 --out output/rotor-fixed-384
+# After all four workers finish, in a fresh process:
+python -m tools.rotor_loss_pilot_report output/rotor-fixed-384
+```
+
+The analyser reports 96/192/384 losses and both successive refinement gates.
+All workers and the prior zero-angle preflight are separate owned FEMM
+sessions; in the four-worker collection each worker reloads the unsolved base
+at every assigned pose. Mesh identity and full-turn closure are checked again.
+Spatial refinement and the multi-motor release matrix remain separate work.

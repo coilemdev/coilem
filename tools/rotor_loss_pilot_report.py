@@ -192,6 +192,11 @@ def markdown_report(report):
     for item in report["angular_convergence"]:
         lines.append(f'- {item["from"]} → {item["to"]} samples: **{"PASS" if item["pass"] else "FAIL"}** '
                      "(hysteresis, eddy and total checked separately in both calculations).")
+    nyquist_note = (
+        "24 full-turn samples cannot resolve the mechanical order-12 slot harmonic; the Nyquist bin is excluded."
+        if any(row["positions"] == 24 for row in report["results"])
+        else "The unresolved Nyquist bin and the repeated closure endpoint are excluded at every resolution."
+    )
     lines.extend([
         "- Mesh convergence: **NOT RUN**.", "",
         f'Raw coordinate frame: {report["raw_coordinate_frame"]}. '
@@ -202,7 +207,7 @@ def markdown_report(report):
         f'Mean time per position: {report["timing"]["mean_position_s"]:.2f} s. '
         f'Sum of per-position wall times: {report["timing"]["sum_position_wall_s"]:.2f} s.', "",
         "Gates: 10% reference agreement; 5% successive convergence changes; absolute 0.001 W floor for near-zero losses.",
-        "24 full-turn samples cannot resolve the mechanical order-12 slot harmonic; the Nyquist bin is excluded.", "",
+        nyquist_note, "",
         "The raw models, answers, export scripts and fields are retained beside this report. `analysis.json` contains component errors,",
         "harmonic spectra, material/operating inputs and analysis source hashes. `protocol.json` identifies the collector and FEMM binaries.", "",
         "Before expanding: review this pilot, then select angular refinements and independent mesh refinements. Public efficiency integration",
