@@ -53,6 +53,14 @@ row names remain visible, and the baseline value also stays visible on wide scre
 use percentage points (`pp`) for their absolute delta. Missing results remain
 unavailable; a zero baseline does not produce an infinite percentage.
 
+Ke uses the single-run Results convention: V/krpm, line-to-line rms.
+**Inductance & d/q** compares apparent Ld/Lq, current angle, id/iq,
+λd/λq/λpm and d/q torque. Currents consistently use peak amperes, and flux
+linkages use mWb. Recorded flux and inductance statuses retain their own
+reasons. Missing records, unavailable results and open-circuit quantities stay
+distinct. Component and inductance deltas require the same recorded d-axis
+reference and supported conventions.
+
 The torque, back-EMF and cogging overlays include every selected run. Run A is
 solid and B–F have distinct dash patterns, also shown in their legend swatches.
 Pinning another baseline preserves those identities and styles.
@@ -62,6 +70,25 @@ Cogging uses each run's recorded electrical angles and shows each recorded angle
 It does not stretch different periods onto the same span or interpolate missing
 samples; the readout delta is available only at angles solved by the candidate and pinned baseline.
 A cogging overlay is available if any selected run contains valid cogging samples.
+
+The **Torque–speed** tab overlays saved peak or continuous envelopes on a common
+rpm axis, with Torque and Power views and independent run toggles. Its table
+compares base/max speed, peak power, drive limits, resistance and winding
+temperature with the pinned baseline. Readouts interpolate within each recorded
+curve and never extrapolate. Incomplete maps, unavailable outputs and runs
+without a map are labelled separately. This view does not compute a drive
+envelope or start a map solve; each run keeps its recorded status and limits.
+
+The **Fields** tab loads numerical pictures only when opened. It shows two to
+six field maps in baseline-first order, using one fixed 0–2.0 T color scale
+(above 2.0 T is magenta). Each motor fits its own panel, so picture sizes do not
+compare dimensions. Choose Resultant or PM only, and either each run's stored
+snapshot (with its own angle shown) or an exact recorded electrical angle.
+Missing angles stay empty; the view does not choose a nearest frame or wrap
+different periods. Older runs whose playback was removed can still show their
+retained inline snapshot. Loading, errors and retry appear per run. Loaded
+frames are cached with a bounded size, requests for superseded positions are
+cancelled, and no field solve is started.
 
 **Losses & efficiency**, below the waveform overlays, compares efficiency,
 input and shaft power, shaft torque, copper loss (stack and end turns), iron
@@ -84,4 +111,4 @@ partitions, separate from combined worker time. Workload rows compare mesh
 elements, rotor positions, generated/rotated meshes, field solves and frames
 when recorded. Missing historical timings and counts remain **Not recorded**;
 zero counts remain zero and nonzero changes from zero have no percentage delta.
-Further result types, comparison exports and studies are subsequent Compare 2.0 work.
+Comparison exports and API-backed studies are subsequent Compare 2.0 work.

@@ -1,6 +1,6 @@
 import type { RunSetupProvenance, SolveProfileDocument } from './solveProfiles';
 import type { SolveResult } from './model';
-import { normalizeComparisonResult, type ComparisonResult } from './runComparison';
+import { normalizeComparisonResult, type ComparisonFields, type ComparisonResult } from './runComparison';
 import type { ComparisonInputs } from './runInputChanges';
 import type { CustomSteel } from './customSteel';
 import type { DrivePerformance, FluxLinkageMapPayload, MapSettings, PerformanceMapProgress, PerformanceMapStatus, PerformanceReportKind } from './performance';
@@ -92,6 +92,7 @@ export interface PublicRunDeletionPayload extends PublicJson {
 export interface PublicRunComparisonPayload extends PublicJson {
   result: ComparisonResult;
   inputs?: ComparisonInputs | null;
+  fields?: ComparisonFields | null;
 }
 
 const LOCAL_API_HOSTS = new Set(['127.0.0.1', 'localhost', '::1']);
@@ -191,6 +192,10 @@ export async function loadPublicRunComparison(projectSlug: string, runId: string
   return { ...payload, result: normalizeComparisonResult(payload.result) };
 }
 
+export function loadPublicRunComparisonField(projectSlug: string, runId: string, signal?: AbortSignal): Promise<PublicJson> {
+  return requestJson(`/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/comparison/field`, { signal });
+}
+
 export function listPublicRuns(): Promise<PublicRunListPayload> {
   return requestJson('/runs') as Promise<PublicRunListPayload>;
 }
@@ -248,8 +253,8 @@ async function saveDownload(response: Response, defaultName: string): Promise<vo
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
-export function getPublicFieldFrame(artifactId: string): Promise<PublicJson> {
-  return requestJson(`/solve/field-frame/${encodeURIComponent(artifactId)}`);
+export function getPublicFieldFrame(artifactId: string, signal?: AbortSignal): Promise<PublicJson> {
+  return requestJson(`/solve/field-frame/${encodeURIComponent(artifactId)}`, { signal });
 }
 
 /** How far a saved run's playback images are drawn; totals are null for images drawn with their result. */

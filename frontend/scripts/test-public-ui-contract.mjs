@@ -447,8 +447,6 @@ assert.match(runComparisonSource, /if \(!records\.length\) return/);
 assert.match(runComparisonSource, /return changed \? next : previous/);
 
 
-assert.match(runComparisonSource, /function percentDelta/);
-assert.match(runComparisonSource, /percentage\.toFixed\(1\)/);
 assert.match(runComparisonSource, /metric\.deltaUnit \|\| metric\.unit/);
 
 

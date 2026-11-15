@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   deletePublicRun,
@@ -9,8 +9,8 @@ import {
 } from './api';
 import { motorConstantsView } from './machineConstants';
 import { compareRunDq, type ComparisonDqCell } from './dqComparison';
-import type { SolveResult } from './model';
-import { previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
+import type { PublicFieldLinePlot, SolveResult } from './model';
+import { previousCompletedRun, type ComparisonFields, type ComparisonLossCell, type ComparisonResult } from './runComparison';
 import type { ComparisonInputs } from './runInputChanges';
 import { COGGING_METHOD_LABELS } from './coggingView';
 import { RunInputChanges } from './RunChangesTable';
@@ -21,11 +21,16 @@ import { WaveformChart } from './WaveformChart';
 import { InfoTip } from './Popover';
 import { formatSeconds } from './solveTime';
 import { StatusDot } from './OutputStatusBadge';
+import { ComparisonCells, ComparisonHeader } from './ComparisonTable';
+import { comparisonPercentDelta as percentDelta, comparisonSignificantDelta as lossDelta } from './comparisonNumbers';
+import { RunEnvelopeComparison, type EnvelopeComparisonState } from './RunEnvelopeComparison';
+import { RunFieldComparison, type FieldComparisonState } from './RunFieldComparison';
 
 interface LoadedRun {
   record: PublicRunListRecord;
   result: ComparisonResult;
   inputs?: ComparisonInputs | null;
+  fields?: ComparisonFields | null;
 }
 
 interface PublicRunComparisonProps {
@@ -135,36 +140,12 @@ function delta(left: number | null | undefined, right: number | null | undefined
   return `${rounded > 0 ? '+' : ''}${rounded.toFixed(digits)}`;
 }
 
-function percentDelta(left: number | null | undefined, right: number | null | undefined): string {
-  if (typeof left !== 'number' || typeof right !== 'number' || !Number.isFinite(left) || !Number.isFinite(right)) return '—';
-  const difference = right - left;
-  if (Math.abs(left) <= 1e-12) return Math.abs(difference) <= 1e-12 ? '0.0%' : '—';
-  const percentage = difference / Math.abs(left) * 100;
-  const rounded = Number(percentage.toFixed(1));
-  return `${rounded > 0 ? '+' : ''}${rounded.toFixed(1)}%`;
-}
-
 function timingValue(value: number | null, unit: string): string {
   return value === null ? 'Not recorded' : unit === 's' ? formatSeconds(value) : number(value, 0);
 }
 
 function lossNumber(value: number, unit: string): string {
   return unit === '%' ? value.toFixed(1) : formatSignificant(value);
-}
-
-function lossDelta(before: number | null, after: number | null, unit: string): string {
-  if (before === null || after === null) return '—';
-  if (unit === '%') return delta(before, after, 1);
-  // A delta must not imply finer precision than either displayed run value.
-  // Negative digits round to tens or hundreds, as formatSignificant shows values of 1000 and above.
-  const precisions = [before, after].filter(value => value !== 0)
-    .map(value => 2 - Math.floor(Math.log10(Math.abs(Number(value.toPrecision(3))))));
-  const digits = Math.min(12, precisions.length ? Math.min(...precisions) : 0);
-  const fractionDigits = Math.max(0, digits);
-  const scale = 10 ** -digits;
-  const difference = Number((Math.round((after - before) / scale) * scale).toFixed(fractionDigits));
-  const text = Math.abs(difference).toLocaleString(undefined, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits });
-  return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${text}`;
 }
 
 function LossComparisonValue({ cell, label, unit }: { cell: ComparisonLossCell; label: string; unit: string }) {
@@ -239,21 +220,7 @@ interface ComparisonColumn extends LoadedRun {
   label: string;
   color: string;
   dashArray?: string;
-}
-
-function ComparisonHeader({ runs, label = 'Metric' }: { runs: ComparisonColumn[]; label?: string }) {
-  return <thead><tr><th scope="col">{label}</th>{runs.map((run, index) => <th key={run.id} scope="col" style={{ color: run.color }} title={runLabel(run.record)}>{run.label} · {index === 0 ? 'baseline' : 'candidate'}</th>)}
-    {runs.length === 2 && <><th scope="col">Δ ({runs[1].label.slice(4)} − {runs[0].label.slice(4)})</th><th scope="col">Δ vs {runs[0].label.slice(4)} (%)</th></>}
-  </tr></thead>;
-}
-
-function ComparisonCells({ runs, values, differences }: {
-  runs: ComparisonColumn[]; values: ReactNode[]; differences: Array<{ absolute: ReactNode; percent: string }>;
-}) {
-  return <>{runs.map((run, index) => <td key={run.id} style={{ color: run.color }} data-run-column={run.id}>
-    {values[index]}
-    {runs.length > 2 && index > 0 && <small className="public-run-compare-cell-delta" aria-label={`${run.label} change from ${runs[0].label}`}>Δ {differences[index].absolute} · {differences[index].percent}</small>}
-  </td>)}{runs.length === 2 && <><td>{differences[1].absolute}</td><td>{differences[1].percent}</td></>}</>;
+  title: string;
 }
 
 export function PublicRunComparison({ currentResult, manageRuns = false, compareWithPrevious = false, onOpenRun }: PublicRunComparisonProps) {
@@ -267,12 +234,15 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const [runsLoaded, setRunsLoaded] = useState(false);
   const [loaded, setLoaded] = useState<Record<string, LoadedRun>>({});
   const comparisonRequests = useRef(new Map<string, Promise<LoadedRun>>());
+  const fieldCache = useRef(new Map<string, PublicFieldLinePlot>());
   const [error, setError] = useState<string | null>(null);
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
   const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
-  const [plot, setPlot] = useState<'torque' | 'back-emf' | 'cogging'>('torque');
+  const [plot, setPlot] = useState<'torque' | 'back-emf' | 'cogging' | 'torque-speed' | 'fields'>('torque');
   const [hiddenSeriesKeys, setHiddenSeriesKeys] = useState<string[]>([]);
+  const [envelopeState, setEnvelopeState] = useState<EnvelopeComparisonState>({ limit: 'peak', quantity: 'torque', hidden: [], speed: 0 });
+  const [fieldState, setFieldState] = useState<FieldComparisonState>({ position: 'snapshot', source: 'resultant' });
 
   const refreshRuns = useCallback(async (): Promise<void> => {
     const payload = await listPublicRuns();
@@ -322,7 +292,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       let request = comparisonRequests.current.get(key);
       if (!request) {
         request = loadPublicRunComparison(record.project_slug, record.run_id)
-          .then(payload => ({ record, result: payload.result, inputs: payload.inputs }))
+          .then(payload => ({ record, result: payload.result, inputs: payload.inputs, fields: payload.fields }))
           .catch(reason => { comparisonRequests.current.delete(key); throw reason; });
         comparisonRequests.current.set(key, request);
       }
@@ -380,7 +350,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const baselineSlot = selection.slots.find(slot => slot.id === selection.baselineId)!;
   const orderedSlots = [baselineSlot, ...selection.slots.filter(slot => slot.id !== selection.baselineId)];
   const ready = selection.slots.every(slot => slot.key && loaded[slot.key]);
-  const runs: ComparisonColumn[] = ready ? orderedSlots.map(slot => ({ ...loaded[slot.key], ...COMPARISON_STYLES.find(style => style.id === slot.id)! })) : [];
+  const runs: ComparisonColumn[] = ready ? orderedSlots.map(slot => ({ ...loaded[slot.key], title: runLabel(loaded[slot.key].record), ...COMPARISON_STYLES.find(style => style.id === slot.id)! })) : [];
   const noPrevious = compareWithPrevious && runsLoaded && !previousKey && !baselineSlot.key;
   const selectionErrors = selection.slots.filter(slot => loadErrors[slot.key]);
   const loadingStatus = error || selectionErrors.length ? null : !runsLoaded ? 'Loading saved runs…'
@@ -389,6 +359,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const changeSelection = (id: ComparisonSlotId, key: string) => {
     setSelection(previous => selectComparisonRun(previous, id, key));
     setHiddenSeriesKeys([]);
+    setEnvelopeState(previous => ({ ...previous, hidden: [] }));
   };
   const torqueSeries = runs.map(run => ({ id: `${run.id}:${runKey(run.record)}`, label: `${run.label} · ${solverLabel(run.result.solve_metadata.solver_name)} · ${run.record.project_name || run.record.project_slug}`,
     angles: run.result.torque_waveform.electrical_angle_deg, values: run.result.torque_waveform.torque_Nm, color: run.color, dashArray: run.dashArray }));
@@ -410,8 +381,8 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const dq = compareRunDq(runs.map(run => run.result));
   useEffect(() => {
     if (!ready) return;
-    setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
-      ? current : torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : 'cogging');
+    setPlot((current) => current === 'torque-speed' || current === 'fields' || (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
+      ? current : torqueAvailable ? 'torque' : emfAvailable ? 'back-emf' : coggingAvailable ? 'cogging' : 'torque-speed');
   }, [ready, torqueAvailable, emfAvailable, coggingAvailable]);
   return (
     <section className="public-run-compare" aria-label="Compare saved runs">
@@ -561,12 +532,16 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
           {!dq.recorded && <p className="public-run-compare-timing-note">Inductance and d/q results were not recorded for the selected runs.</p>}
           {dq.notes.some(Boolean) && <p className="public-run-compare-timing-note" role="note">{dq.notes.map((note, index) => note ? `${runs[index].label}: ${note}` : null).filter(Boolean).join(' ')}</p>}
         </div>
-        {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
+        <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
           {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
           {emfAvailable && <button type="button" role="tab" aria-selected={plot === 'back-emf'} className={plot === 'back-emf' ? 'active' : ''} onClick={() => setPlot('back-emf')}>Back EMF overlay</button>}
           {coggingAvailable && <button type="button" role="tab" aria-selected={plot === 'cogging'} className={plot === 'cogging' ? 'active' : ''} onClick={() => setPlot('cogging')}>Cogging overlay</button>}
-        </div>}
-        {!torqueAvailable && !emfAvailable && !coggingAvailable && <p className="public-run-compare-message">{runs.length === 2 ? 'Neither run has torque, Back EMF or cogging waveforms to overlay.' : 'No selected run has torque, Back EMF or cogging waveforms to overlay.'} Available summary metrics are shown above.</p>}
+          <button type="button" role="tab" aria-selected={plot === 'torque-speed'} className={plot === 'torque-speed' ? 'active' : ''} onClick={() => setPlot('torque-speed')}>Torque–speed</button>
+          <button type="button" role="tab" aria-selected={plot === 'fields'} className={plot === 'fields' ? 'active' : ''} onClick={() => setPlot('fields')}>Fields</button>
+        </div>
+        {plot === 'torque-speed' && <RunEnvelopeComparison runs={runs} state={envelopeState} onChange={setEnvelopeState} />}
+        {plot === 'fields' && <RunFieldComparison runs={runs} cache={fieldCache.current} state={fieldState} onChange={setFieldState} />}
+        {!torqueAvailable && !emfAvailable && !coggingAvailable && plot !== 'torque-speed' && plot !== 'fields' && <p className="public-run-compare-message">{runs.length === 2 ? 'Neither run has torque, Back EMF or cogging waveforms to overlay.' : 'No selected run has torque, Back EMF or cogging waveforms to overlay.'} Available summary metrics are shown above.</p>}
         {plot === 'torque' && torqueAvailable && <WaveformChart angles={torqueSeries[0].angles} series={torqueSeries} label="Torque comparison" unit="N·m" samplingLabel={samplingLabel(runs.map((run, index) => ({ label: run.label, angles: torqueSeries[index].angles })))} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} readoutDifferences={differencesFor(torqueSeries)} />}
         {plot === 'back-emf' && emfAvailable && <WaveformChart angles={emfSeries[0].angles} series={emfSeries} label="Three-phase back EMF comparison" unit="V" samplingLabel={samplingLabel(runs.map(run => ({ label: run.label, angles: run.result.back_emf_waveform.electrical_angle_deg })))} toggleableSeries hiddenSeriesKeys={hiddenSeriesKeys} onHiddenSeriesKeysChange={setHiddenSeriesKeys} />}
         {plot === 'cogging' && coggingAvailable && <>
