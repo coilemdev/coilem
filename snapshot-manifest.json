@@ -18880,8 +18880,8 @@
     },
     {
       "path": "tests/fixtures/run_setup_parity.json",
-      "bytes": 204931,
-      "sha256": "7e166a0e7723bc9e1cc2a99b8949ac4cde8f6bfc5449f7454122a9f7db91aaf8"
+      "bytes": 205669,
+      "sha256": "7f89440035a520a305aded5138f513d38a1cdb03700062a644e7f13e825c56c8"
     },
     {
       "path": "tests/test_cli.py",
