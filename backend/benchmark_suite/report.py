@@ -325,6 +325,8 @@ def build(output, manifest, rows, *, pdf=False):
         "All raw statuses, counts, gates and the overall numerical status include the full registered selection.",
         "unsupported_capabilities": {"thermal": "No public thermal benchmark in this electromagnetic benchmark"},
     }
+    if any(row.get("sector_repeats") for row in rows):
+        summary["sector_repeats"] = {row["id"]: row["sector_repeats"] for row in rows if row.get("sector_repeats")}
     write(report / "benchmark_summary.json", summary)
     styles = (
         "body{font:15px Arial;max-width:1150px;margin:35px auto;padding:0 24px;color:#182636}table{border-collapse:collapse;width:100%}"
@@ -378,6 +380,9 @@ def build(output, manifest, rows, *, pdf=False):
     )
     markdown.extend(["", summary["presentation_scope"],
                      "The legacy ORNL Prius row is distinct from the completed Pyleecan Prius software benchmark."])
+    if solved_region_summary(rows):
+        parts.append(f"<p>{html.escape(solved_region_summary(rows))}</p>")
+        markdown.extend(["", solved_region_summary(rows)])
     for phase, label in PHASE_LABELS.items():
         selected = [r for r in rows if r["phase"] == phase]
         if not selected:
@@ -389,7 +394,7 @@ def build(output, manifest, rows, *, pdf=False):
                 f'<tr class="{presentation_status(row)}"><td><a href="{html.escape(link, quote=True)}">{html.escape(row["id"])}</a></td>'
                 f"<td>{display_outcome(row)}</td></tr>"
             )
-            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**{energy_balance_text(row)}"])
+            markdown.extend(["", f"- [{row['id']}]({link}): **{display_outcome(row)}**{energy_balance_text(row)}{solved_region_text(row)}"])
             plan = coverage_plan(row)
             if plan:
                 markdown.extend(["", f"{plan['reason']} {plan['next_step']} Numerical status remains UNSUPPORTED; no comparison was performed."])
@@ -404,7 +409,7 @@ def build(output, manifest, rows, *, pdf=False):
                     "<p>Frozen inputs: "
                     + ", ".join(f'<a href="{html.escape(link, quote=True)}">{html.escape(stage)}</a>' for stage, link in row["fixture_files"].items())
                     + "</p>",
-                    f"<p>{html.escape(display_outcome(row))}{html.escape(energy_balance_text(row))}</p>",
+                    f"<p>{html.escape(display_outcome(row))}{html.escape(energy_balance_text(row))}{html.escape(solved_region_text(row))}</p>",
                     (
                         f"<p>{html.escape(coverage_plan(row)['reason'])} {html.escape(coverage_plan(row)['next_step'])} "
                         "Numerical status: UNSUPPORTED; no comparison was performed.</p>"
@@ -449,6 +454,29 @@ def build(output, manifest, rows, *, pdf=False):
         {p.relative_to(report).as_posix(): sha(p) for p in sorted(report.rglob("*")) if p.is_file() and p.name != "artifact_manifest.json"},
     )
     return overall
+
+
+def solved_region_text(row):
+    """Which region a sector request (protocol 1.11.0) solved; empty for a full-motor request."""
+
+    regions = row.get("sector_repeats")
+    if not regions:
+        return ""
+    words = {stage: f"one 1/{repeats} sector" if repeats else "the full motor (it does not repeat)" for stage, repeats in regions.items()}
+    if len(set(words.values())) == 1:
+        return f". Solved as {next(iter(words.values()))}"
+    return ". Solved as " + "; ".join(f"{stage}: {text}" for stage, text in words.items())
+
+
+def solved_region_summary(rows):
+    """One sentence on how many sector requests solved a sector, naming those that solved the full motor."""
+
+    requested = [row for row in rows if row.get("sector_repeats")]
+    if not requested:
+        return ""
+    full = [row["id"] for row in requested if not all(row["sector_repeats"].values())]
+    text = f"Sector solves: {len(requested) - len(full)} of {len(requested)} measured cases solved one repeating sector."
+    return text + (f" Solved as the full motor: {', '.join(full)}." if full else "")
 
 
 def energy_balance_text(row):
@@ -558,6 +586,8 @@ def export_pdf(report, summary):
             # Relative, like the HTML report: an absolute file: URI would publish this machine's path.
             fixture_url = html.escape(name, quote=True)
             story.append(Paragraph(f'<a href="{fixture_url}" color="blue">Frozen {html.escape(stage)} fixture JSON</a>', styles["BodyText"]))
+        if solved_region_text(row):
+            story.append(Paragraph(html.escape(solved_region_text(row).removeprefix(". ") + "."), styles["BodyText"]))
         story.append(Spacer(1, 8))
         plan = coverage_plan(row)
         if plan:

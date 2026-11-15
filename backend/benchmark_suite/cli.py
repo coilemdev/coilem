@@ -111,13 +111,16 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
     rows = []
     for case in selected:
         jobs = [j for j in manifest["jobs"] if j["case_id"] == case["id"]]
-        measurements = {}
+        measurements, sector_repeats = {}, {}
         for job in jobs:
             if sha(output / job["request"]) != job["request_sha256"]:
                 raise ValueError("Registered request changed")
             if job["status"] == "COMPLETE":
                 data = verify_artifact(output, job, manifest["identity"])
                 measurements[job["stage"]] = compact(data["result"]) if case["phase"] == "D" else data["result"]
+                # What a sector request (protocol 1.11.0) actually solved: None is the full motor.
+                if read(output / job["request"])["config"]["solve_params"].get("symmetry") == "auto":
+                    sector_repeats[job["stage"]] = data["result"]["solve_metadata"].get("sector_repeats")
         reference = references.get(case["id"])
         if all(j["status"] == "UNSUPPORTED" for j in jobs):
             evaluation = {"status": "UNSUPPORTED", "gates": [], "reason": jobs[0]["reason"]}
@@ -178,6 +181,9 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
             }
         if case.get("experimental_rotor"):
             row["experimental_rotor"] = True
+        if sector_repeats:
+            # Row level, outside the evaluation: which region each stage solved.
+            row["sector_repeats"] = sector_repeats
         targets = (hardware or {}).get(case["id"])
         if targets is not None and not manifest["smoke"] and "native" in measurements:
             # Row level, outside the evaluation, so registered gate results stay unchanged.
