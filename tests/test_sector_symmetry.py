@@ -521,6 +521,19 @@ def test_a_full_circle_frame_is_stored_as_it_is() -> None:
     assert "sector_tiling" not in frame["mesh_info"]
 
 
+@pytest.mark.parametrize(("symmetry", "repeats"), [("auto", 4), ("full", None)])
+def test_a_solve_result_records_the_region_it_solved(tmp_path, monkeypatch, symmetry, repeats) -> None:
+    """The benchmark's sector lane reads this to show which cases solved a sector (protocol 1.11.0)."""
+
+    from backend.solver import Magneto2DSolver
+
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    config = _config(SPM_4P12S, symmetry=symmetry, mesh_density="coarse", rotor_sweep_range_deg=15.0, rotor_step_deg=7.5)
+    config.solve_options.back_emf = config.solve_options.thd_analysis = config.solve_options.flux_density = False
+    result = Magneto2DSolver(launch_surface=True).solve(config)
+    assert result.solve_metadata.sector_repeats == repeats
+
+
 def test_the_mesh_preview_draws_a_sector_as_the_whole_motor_and_keeps_the_solved_count() -> None:
     from backend.magneto2d_adapter import run_magneto2d_mesh_preview
 

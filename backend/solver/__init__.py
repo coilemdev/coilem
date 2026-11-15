@@ -3594,6 +3594,7 @@ class Magneto2DSolver(Solver):
                 torque_sweep_computed=torque_requested,
                 solver_environment=single_report.get("solver_environment"),
                 mesh_element_count=mesh_info["num_triangles"],
+                sector_repeats=(mesh_info.get("sector") or {}).get("repeats"),
                 rotor_positions=len(sweep["rotor_positions_elec_deg"]),
                 timestamp=datetime.now(timezone.utc),
                 current_amplitude_A=operating_point["resolved_phase_current_peak_a"],
