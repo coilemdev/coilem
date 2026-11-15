@@ -17,7 +17,7 @@ import math
 import sys
 from pathlib import Path
 
-from backend import client as coilem
+import coilem
 
 
 def build_motor() -> coilem.Motor:
