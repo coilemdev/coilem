@@ -8,6 +8,7 @@ import {
   type PublicRunStoragePolicy,
 } from './api';
 import { motorConstantsView } from './machineConstants';
+import { compareRunDq, type ComparisonDqCell } from './dqComparison';
 import type { SolveResult } from './model';
 import { previousCompletedRun, type ComparisonLossCell, type ComparisonResult } from './runComparison';
 import type { ComparisonInputs } from './runInputChanges';
@@ -54,6 +55,7 @@ const METRICS: Array<{
   { label: 'Peak yoke B', unit: 'T', value: (run) => run.summary.peak_flux_density_yoke_T },
   // Per rms ampere, as in Results: the summary stores Kt per peak ampere (#153).
   { label: 'Torque constant', unit: 'N·m/A rms', value: (run) => motorConstantsView(run.summary).kt.value },
+  { label: 'Back EMF constant (Ke)', unit: 'V/krpm L-L rms', value: (run) => motorConstantsView(run.summary).ke.value },
   { label: 'Back EMF THD (headline)', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.back_emf_thd_pct },
   // The cogging sweep (#185), for runs that solved one.
   { label: 'Cogging torque p-p', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
@@ -159,7 +161,7 @@ function lossDelta(before: number | null, after: number | null, unit: string): s
     .map(value => 2 - Math.floor(Math.log10(Math.abs(Number(value.toPrecision(3))))));
   const digits = Math.min(12, precisions.length ? Math.min(...precisions) : 0);
   const fractionDigits = Math.max(0, digits);
-  const scale = 10 ** Math.max(0, -digits);
+  const scale = 10 ** -digits;
   const difference = Number((Math.round((after - before) / scale) * scale).toFixed(fractionDigits));
   const text = Math.abs(difference).toLocaleString(undefined, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits });
   return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${text}`;
@@ -170,6 +172,14 @@ function LossComparisonValue({ cell, label, unit }: { cell: ComparisonLossCell; 
     <span className="public-run-compare-loss-value">{cell.value === null ? cell.missing : <>{lossNumber(cell.value, unit)} <small>{unit}</small></>}</span>
     {cell.status && <StatusDot status={cell.status} label={label} reason={cell.reason || 'No status reason was recorded.'} />}
     {cell.partial && <small className="public-run-compare-loss-partial">Partial <InfoTip label={`${label} partial output`}>This recorded shaft output excludes the unavailable iron loss. Deltas require the same loss basis in both runs.</InfoTip></small>}
+  </>;
+}
+
+function DqComparisonValue({ cell, label, unit }: { cell: ComparisonDqCell; label: string; unit: string }) {
+  return <>
+    {cell.value === null ? <>{cell.missing}{cell.reason && cell.status?.status !== 'unavailable' && <InfoTip label={`${label} availability`}>{cell.reason}</InfoTip>}</>
+      : <>{formatSignificant(cell.value)} <small>{unit}</small></>}
+    {cell.status && <StatusDot status={cell.status.status} label={label} reason={cell.status.reason || 'No status reason was recorded.'} />}
   </>;
 }
 
@@ -397,6 +407,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const coggingAvailable = coggingSeries.some(series => series.angles.length >= 2 && series.values.length === series.angles.length);
   const timing = ready ? compareMultipleTiming(runs.map(run => run.result)) : null;
   const losses = ready ? compareMultipleLosses(runs.map(run => run.result)) : [];
+  const dq = compareRunDq(runs.map(run => run.result));
   useEffect(() => {
     if (!ready) return;
     setPlot((current) => (current === 'torque' && torqueAvailable) || (current === 'back-emf' && emfAvailable) || (current === 'cogging' && coggingAvailable)
@@ -531,6 +542,24 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
               </tr>;
             })}</tbody>
           </table>
+        </div>
+        <div className={`public-run-compare-metrics public-run-compare-dq${runs.length > 2 ? ' is-multi-run' : ''}`} role="region" aria-label="Inductance and d/q comparison" tabIndex={0}>
+          <table>
+            <caption>Inductance &amp; d/q <InfoTip label="Inductance and d/q comparison help">Recorded values at each run’s operating point. Currents use peak amperes for every run, regardless of the setup’s current units. Ld and Lq are apparent (secant) inductances, with their own output status. Component and inductance deltas require the same recorded d-axis reference and supported conventions.</InfoTip></caption>
+            {dq.recorded && <>
+              <ComparisonHeader runs={runs} />
+              <tbody>
+                <tr><th scope="row">D-axis reference</th>{runs.map((run, index) => <td key={run.id} data-run-column={run.id} style={{ color: run.color }}>{dq.references[index]}</td>)}{runs.length === 2 && <><td>—</td><td>—</td></>}</tr>
+                {dq.rows.map(row => <tr key={row.key}>
+                  <th scope="row" aria-label={row.label}>{row.label}{row.hint && <InfoTip label={`${row.label} help`}>{row.hint}</InfoTip>}</th>
+                  <ComparisonCells runs={runs} values={row.cells.map((cell, index) => <DqComparisonValue cell={cell} label={`${runs[index].label} ${row.label}`} unit={row.unit} />)}
+                    differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit}</small></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
+                </tr>)}
+              </tbody>
+            </>}
+          </table>
+          {!dq.recorded && <p className="public-run-compare-timing-note">Inductance and d/q results were not recorded for the selected runs.</p>}
+          {dq.notes.some(Boolean) && <p className="public-run-compare-timing-note" role="note">{dq.notes.map((note, index) => note ? `${runs[index].label}: ${note}` : null).filter(Boolean).join(' ')}</p>}
         </div>
         {(torqueAvailable || emfAvailable || coggingAvailable) && <div className="public-report-plot-tabs" role="tablist" aria-label="Comparison plots">
           {torqueAvailable && <button type="button" role="tab" aria-selected={plot === 'torque'} className={plot === 'torque' ? 'active' : ''} onClick={() => setPlot('torque')}>Torque overlay</button>}
