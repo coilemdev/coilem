@@ -1,6 +1,7 @@
 # coilEM v0.5.8 release preparation
 
-The draft integration PR brings `release/v0.5.8` into `main`. Application and
+[PR #292](https://github.com/coilemdev/coilem/pull/292) brought `release/v0.5.8`
+into `main`, and later 0.5.8 work merged into `main` directly. Application and
 frontend versions are 0.5.8; bundled Magneto2D is 0.6.0 for the changed solver sources. The
 [release notes](../RELEASE_NOTES.md) describe changes since published v0.5.7.
 
@@ -27,6 +28,12 @@ workflow feature. The registered numerical sources remain unchanged, so the
 published physics evidence still applies; freeze and verify the final
 application/UI candidate and its wheels before publication.
 
+The final application candidate is `a8e87521deb950ff4f028b1b0b720ae3908b0fcd`,
+with the later 0.5.8 PRs (#293–#305) on top of the release merge.
+`python -m tools.physics_impact --base 78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`
+reports no physics change and no measurement required, and
+`python -m tools.release.qualification` passes.
+
 ## Required before publication
 
 - [x] Rebase release work onto current main and retain historical metadata.
@@ -34,19 +41,31 @@ application/UI candidate and its wheels before publication.
 - [x] Bump Magneto2D to 0.6.0 for the changed solver sources, before freezing.
 - [x] Prepare release notes and disclose unresolved limitations.
 - [x] Freeze the exact versioned candidate and record immutable identities.
-- [ ] Pass final candidate CI, backend/native tests and browser workflows after the additional 0.5.8 work.
+- [x] Pass final candidate CI, backend/native tests and browser workflows after the additional 0.5.8 work.
+  Main CI passed on `a8e87521` in run `43737595956`: runtime on Windows and
+  Ubuntu, frontend, every browser shard, Windows cancellation and the snapshot
+  gate. The wheel run below builds and exercises Magneto2D on all four platforms.
 - [x] Complete registered protocol 1.10.0 A–F and separate complete Prius
   qualification on Windows x86-64 and macOS arm64. Publish matching evidence
   and pass `python -m tools.release.qualification --candidate FULL_SHA`.
-- [ ] Review weekly qualification drift (#236) and candidate performance (#277).
+- [x] Review weekly qualification drift (#236) and candidate performance (#277).
   Preserve failed attempts and distinguish elapsed from summed worker time.
+  #236 was closed on November 15: its weekly run was incomplete (one macOS
+  shard was never picked up by a hosted runner), so it measured no drift;
+  release qualification rests on the fresh two-platform measurement of
+  `78e6f4fc`. For #277, the release notes make no release-specific speed claim,
+  and Results and reports show elapsed and summed worker time separately.
 - [x] Record the release owner's decision to defer #234 and the remaining
   convergence work in #285 to the next release, with limitations disclosed below.
   Both issues remain open; neither is treated as technically fixed.
-- [ ] Build all four supported platform wheels for the final application candidate and pass installed-package
+- [x] Build all four supported platform wheels for the final application candidate and pass installed-package
   acceptance, including startup, motor/Halbach/tutorial solves, save/reopen,
   exports, interrupt during solve and native process cleanup.
-- [ ] Review and merge the release PR only after required evidence is accepted.
+  Run `43747536086` on `a8e87521`: 21 acceptance jobs on Python 3.11–3.15, then
+  a TestPyPI rehearsal (`0.5.8.dev437475360861`) installed and accepted on all
+  four platforms.
+- [x] Review and merge the release PR only after required evidence is accepted.
+  PR #292 merged on November 14, 2026.
 - [ ] Tag the accepted publication commit `v0.5.8`; run the protected release
   workflow and verify published-package acceptance before announcing it.
 
@@ -68,6 +87,10 @@ these remaining issues in the next release:
 This is a release-scope decision, not a numerical exception: frozen references,
 qualification tolerances, measured values and feature qualification rules are
 unchanged. Both issues stay open and move to the next-release milestone.
+
+#274 also moves to the next-release milestone. Its 48 V default bus voltage is
+a physics-registered input, so 0.5.8 adds only a note when a run's solved
+point lies outside its torque–speed map.
 
 ## Local checks and controlled workflows
 

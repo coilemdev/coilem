@@ -60,8 +60,8 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 8627,
-      "sha256": "51850cb0d50541da83186b88806ddd68df903746aa18ab6095150ca30895e9dc"
+      "bytes": 8868,
+      "sha256": "4ae55d91dd1806cbe4c7b857ac735eab06f9557b8e99d6675f6feb98b2a283bd"
     },
     {
       "path": "README.md",
@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 29988,
-      "sha256": "5a13ec551ad17c11a1f9204de90c27f6156d38abc834f3cfe16fb439fd7602e9"
+      "bytes": 30977,
+      "sha256": "de6545deb41e47d37d9d78044005404e646781feb34ba0d3a924cf07d2f149bc"
     },
     {
       "path": "SECURITY.md",
@@ -17635,8 +17635,8 @@
     },
     {
       "path": "docs/RELEASE_0_5_8.md",
-      "bytes": 5061,
-      "sha256": "d557ba11a7fc999fbb69be7f9abb22f6a86b2c38d4d35315eabf55eb2f614705"
+      "bytes": 6505,
+      "sha256": "eb1bf5e5b602f5dfa434773d0f5b39269bdba45f6ad11dd2fab0c8c2891fb60c"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
