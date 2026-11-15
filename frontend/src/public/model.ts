@@ -513,6 +513,7 @@ export interface SolveResult {
   } | null;
   cogging_torque_waveform?: {
     electrical_angle_deg: number[];
+    mechanical_angle_deg?: number[];
     torque_Nm: number[];
   } | null;
   back_emf_waveform: {

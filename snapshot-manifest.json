@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 179319,
-      "sha256": "3d6343f3a14846f67cd81fad211ab8bef42ced0f42cb05a04471b32683e5719e"
+      "bytes": 179443,
+      "sha256": "b5efb96eafeb07a7969edb425c43acf357816e5aa87bdb7baf53ee7b89a37988"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 40493,
-      "sha256": "2a9a64b1c14df38d7788d767dcbcaad2e8bbf984e728297b1e1c7574f50d8327"
+      "bytes": 38884,
+      "sha256": "8a12fb3c5678d18718f004f028f719a326f2c2dafac9d94534b0f8a29535eb0b"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 24732,
-      "sha256": "a7311b25c1419f099976e6544e360af10b877d84d963a2df195cea8fdb034bef"
+      "bytes": 24769,
+      "sha256": "ed1bd65ee092555224192cec4511d9fa244bf87dc0cc6317937585328533d5fe"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 339090,
-      "sha256": "be1a1ff6d0732b064ed5dd0eb4030aff03a695cf7fa67b519997e93a15d3624b"
+      "bytes": 339685,
+      "sha256": "d1f03e4ef8a90f4724ce279bc0c9b129aeca1e3684de39088dd58464bbd754d4"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 155786,
-      "sha256": "0389bef4426d728badc3fd2b1debb6f120f8c4703d1cbc8bf7b235d68fe76874"
+      "bytes": 160182,
+      "sha256": "b91c195e2b4874ee7cccdb196fa37bd443b5c5b83281373b7987e779650516b2"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11675,8 +11675,8 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 26830,
-      "sha256": "00de865a7118a8d766070b46abcbc2d18835de720ff40647c9378598af72eb35"
+      "bytes": 34625,
+      "sha256": "304e9c12a216bd6f212339c8428508f777cec9049df989823d4a404647bb6cad"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
@@ -18760,8 +18760,8 @@
     },
     {
       "path": "docs/COMPARE_RUNS.md",
-      "bytes": 7762,
-      "sha256": "cdcf7bb254c3ffe0b5e30f104586ee902e95fec6dfa3fb5347dee47bfcf4928c"
+      "bytes": 9730,
+      "sha256": "2c784016bff8af7e090092360048fa830c9990e29e9a8c145f180b365892b08d"
     },
     {
       "path": "frontend/src/public/RunChangesTable.tsx",
@@ -18882,6 +18882,21 @@
       "path": "tests/test_run_setups.py",
       "bytes": 11976,
       "sha256": "51e64122dab65e564355fc0be3affc80f3f64579836f29b72dd303c17e2254d1"
+    },
+    {
+      "path": "frontend/scripts/csv-test-helpers.mjs",
+      "bytes": 917,
+      "sha256": "ea93e654709477139dc45e6984e0dbff4ef9f7491e3de34015003ae8888ccf6a"
+    },
+    {
+      "path": "frontend/src/public/comparisonCsv.ts",
+      "bytes": 15312,
+      "sha256": "f374ebd63c2c332db8acd9e8de348c806abe39608f959177f6b1d032f020a242"
+    },
+    {
+      "path": "frontend/src/public/comparisonMetrics.ts",
+      "bytes": 3253,
+      "sha256": "3165ca86714c371b6d134fecb4c8a35d8133c16bf30c1a3e380390fbcd4b3ad2"
     }
   ],
   "public_patches": [
@@ -41270,6 +41285,66 @@
       "path": "tests/test_solve_workspace.py",
       "source_sha256": "f8820ef754d406ff659386a3587a6000d795e864fcce1b19ad508488219f05d4",
       "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "docs/COMPARE_RUNS.md",
+      "source_sha256": "cdcf7bb254c3ffe0b5e30f104586ee902e95fec6dfa3fb5347dee47bfcf4928c",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/scripts/csv-test-helpers.mjs",
+      "source_sha256": null,
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "3d6343f3a14846f67cd81fad211ab8bef42ced0f42cb05a04471b32683e5719e",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "00de865a7118a8d766070b46abcbc2d18835de720ff40647c9378598af72eb35",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "2a9a64b1c14df38d7788d767dcbcaad2e8bbf984e728297b1e1c7574f50d8327",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/src/public/comparisonCsv.ts",
+      "source_sha256": null,
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/src/public/comparisonMetrics.ts",
+      "source_sha256": null,
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/src/public/model.ts",
+      "source_sha256": "a7311b25c1419f099976e6544e360af10b877d84d963a2df195cea8fdb034bef",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "be1a1ff6d0732b064ed5dd0eb4030aff03a695cf7fa67b519997e93a15d3624b",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "7c246d0fc116f3f59016567693a9c941cef3a115",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "0389bef4426d728badc3fd2b1debb6f120f8c4703d1cbc8bf7b235d68fe76874",
+      "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
     }
   ]
 }

@@ -111,4 +111,34 @@ partitions, separate from combined worker time. Workload rows compare mesh
 elements, rotor positions, generated/rotated meshes, field solves and frames
 when recorded. Missing historical timings and counts remain **Not recorded**;
 zero counts remain zero and nonzero changes from zero have no percentage delta.
-Comparison exports and API-backed studies are subsequent Compare 2.0 work.
+**Export CSV** downloads the selected two to six runs, with the pinned baseline
+first and each run's letter unchanged. It is available in Results and Previous
+runs once all selected records are loaded. Loading, failed or incomplete
+selections disable export. The download uses these stored records, independently
+of the open design and visible plot; it starts no solve and loads no field meshes.
+
+The UTF-8 CSV (`coilem.compare.csv.v1`) has one fixed header across labelled
+sections: run/setup identity and provenance, differing recorded inputs, scalar
+results, d/q, losses, timing, both envelope limits and their drive settings, field
+availability, and torque/back-EMF/cogging/envelope samples. Run value columns are
+followed by absolute and percentage changes from the baseline. `Unit` and
+`Delta unit` distinguish percentage values from percentage-point changes.
+`Record=value` rows hold the values; companion records hold availability, status,
+reason, partial-loss basis, comparison notes and original sample indices. Filter
+the Record column to `value` for a compact spreadsheet view.
+
+Numbers use full precision and decimal points rather than the UI's display
+rounding. The same unit conversions and comparability rules apply: mismatched
+d/q references and full/partial shaft outputs have no delta, and a nonzero
+change from a zero baseline has no percentage. Missing values remain labelled,
+never zero-filled. Raw samples align only at identical recorded coordinates;
+different grids are not interpolated or wrapped. Repeated coordinates retain
+their occurrence and each run's original index. Cogging mechanical angles are
+included where recorded.
+
+The file has a UTF-8 BOM for scientific symbols, CRLF records and quoted text
+that preserves commas, quotes and newlines. Text that spreadsheets might treat
+as a formula is prefixed with an apostrophe; negative numeric readings remain
+numbers. Stored results and generated single-run reports are unchanged.
+
+PDF comparison reports and API-backed studies are subsequent Compare 2.0 work.

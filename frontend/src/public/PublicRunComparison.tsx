@@ -7,18 +7,17 @@ import {
   type PublicRunListRecord,
   type PublicRunStoragePolicy,
 } from './api';
-import { motorConstantsView } from './machineConstants';
 import { compareRunDq, type ComparisonDqCell } from './dqComparison';
 import type { PublicFieldLinePlot, SolveResult } from './model';
 import { previousCompletedRun, type ComparisonFields, type ComparisonLossCell, type ComparisonResult } from './runComparison';
 import type { ComparisonInputs } from './runInputChanges';
-import { COGGING_METHOD_LABELS } from './coggingView';
 import { RunInputChanges } from './RunChangesTable';
 import { COMPARISON_STYLES, addComparisonRun, compareMultipleLosses, compareMultipleTiming, initialComparisonSelection, pinComparisonBaseline, reconcileComparisonSelection, removeComparisonRun, selectComparisonRun, type ComparisonSlotId } from './multiRunComparison';
 import { formatSignificant, torqueDecimals } from './numberFormat';
-import { torqueRippleView } from './resultMetrics';
 import { WaveformChart } from './WaveformChart';
 import { InfoTip } from './Popover';
+import { COMPARISON_METRICS as METRICS, actualMeshProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
+import { comparisonCsv, comparisonCsvFilename } from './comparisonCsv';
 import { formatSeconds } from './solveTime';
 import { StatusDot } from './OutputStatusBadge';
 import { ComparisonCells, ComparisonHeader } from './ComparisonTable';
@@ -40,32 +39,6 @@ interface PublicRunComparisonProps {
   /** Opens a completed run's stored result in Solve and Results. */
   onOpenRun?: (run: PublicRunListRecord) => void;
 }
-
-const METRICS: Array<{
-  label: string;
-  unit: string;
-  deltaUnit?: string;
-  digits?: number;
-  /** A torque in N·m: small values keep three significant figures (#270). */
-  torque?: boolean;
-  /** Shown only when either run has the value. */
-  optional?: boolean;
-  value: (result: ComparisonResult) => number | null | undefined;
-}> = [
-  { label: 'Average torque', unit: 'N·m', torque: true, value: (run) => run.summary.avg_torque_Nm },
-  // No percentage where it means nothing (no current, near-zero average).
-  { label: 'Torque ripple', unit: '%', deltaUnit: 'pp', value: (run) => torqueRippleView(run).ripplePct },
-  { label: 'Back EMF', unit: 'V', value: (run) => run.summary.back_emf_fundamental_V },
-  { label: 'Peak tooth B', unit: 'T', value: (run) => run.summary.peak_flux_density_teeth_T },
-  { label: 'Peak yoke B', unit: 'T', value: (run) => run.summary.peak_flux_density_yoke_T },
-  // Per rms ampere, as in Results: the summary stores Kt per peak ampere (#153).
-  { label: 'Torque constant', unit: 'N·m/A rms', value: (run) => motorConstantsView(run.summary).kt.value },
-  { label: 'Back EMF constant (Ke)', unit: 'V/krpm L-L rms', value: (run) => motorConstantsView(run.summary).ke.value },
-  { label: 'Back EMF THD (headline)', unit: '%', deltaUnit: 'pp', value: (run) => run.summary.back_emf_thd_pct },
-  // The cogging sweep (#185), for runs that solved one.
-  { label: 'Cogging torque p-p', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.peak_to_peak_Nm },
-  { label: 'Cogging fundamental', unit: 'N·m', torque: true, optional: true, value: (run) => run.summary.cogging?.first_harmonic_Nm },
-];
 
 function runKey(run: Pick<PublicRunListRecord, 'project_slug' | 'run_id'>): string {
   return `${run.project_slug}/${run.run_id}`;
@@ -190,31 +163,6 @@ function samplingLabel(runs: Array<{ label: string; angles: number[] }>): string
   return runs.map(run => `${run.label} ${run.angles.length ? `${run.angles.length} positions` : 'not computed'}`).join(' · ');
 }
 
-function actualMeshProvenance(result: ComparisonResult): string {
-  const metadata = result.solve_metadata;
-  return [metadata.mesh_source, metadata.mesher, metadata.mesh_density, metadata.mesh_source_detail]
-    .filter((value): value is string => typeof value === 'string' && value.length > 0)
-    .join(' · ') || 'Not recorded';
-}
-
-function actualTorqueProvenance(result: ComparisonResult): string {
-  const metadata = result.solve_metadata;
-  const labels: Record<string, string> = { ...COGGING_METHOD_LABELS, remesh_per_step: 'Remesh Per Step', fixed_mesh: 'Fixed Mesh' };
-  return [metadata.torque_method, metadata.rotor_rotation_model]
-    .filter((value): value is string => typeof value === 'string' && value.length > 0)
-    .map(value => labels[value] || value.replace(/_/g, ' '))
-    .join(' · ') || 'Not recorded';
-}
-
-function excitationProvenance(result: ComparisonResult): string {
-  const metadata = result.solve_metadata;
-  if (metadata.excitation_mode !== 'ideal_six_step_120') return 'Sinusoidal';
-  const advance = typeof metadata.commutation_advance_deg === 'number'
-    ? `${metadata.commutation_advance_deg.toFixed(2)}° advance`
-    : 'advance not recorded';
-  return `Ideal six-step (120°) · ${advance} · ${metadata.phase_connection || 'wye'} · ${metadata.current_amplitude_convention || 'plateau'}`;
-}
-
 interface ComparisonColumn extends LoadedRun {
   id: ComparisonSlotId;
   label: string;
@@ -237,6 +185,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const fieldCache = useRef(new Map<string, PublicFieldLinePlot>());
   const [error, setError] = useState<string | null>(null);
   const [managementNotice, setManagementNotice] = useState<string | null>(null);
+  const [exportNotice, setExportNotice] = useState<string | null>(null);
   const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
   const [deletingKey, setDeletingKey] = useState<string | null>(null);
   const [plotChoice, setPlot] = useState<'auto' | 'torque' | 'back-emf' | 'cogging' | 'torque-speed' | 'fields'>('auto');
@@ -356,6 +305,25 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const loadingStatus = error || selectionErrors.length ? null : !runsLoaded ? 'Loading saved runs…'
     : selectedKeys.length === selection.slots.length && !ready ? 'Preparing comparison…' : null;
   const unused = records.find(record => !selectedKeys.includes(runKey(record)));
+  useEffect(() => { setExportNotice(null); }, [selection]);
+  const exportCsv = () => {
+    if (!ready || error || selectionErrors.length || deletingKey) return;
+    let url: string | null = null;
+    try {
+      url = URL.createObjectURL(new Blob([comparisonCsv(runs)], { type: 'text/csv;charset=utf-8' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = comparisonCsvFilename(runs);
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setExportNotice(`Exported ${runs.length} runs with ${runs[0].label} as the baseline.`);
+    } catch (reason: unknown) {
+      setExportNotice(apiErrorMessage(reason, 'The comparison CSV could not be exported.'));
+    } finally {
+      if (url) window.setTimeout(() => URL.revokeObjectURL(url!), 1000);
+    }
+  };
   const changeSelection = (id: ComparisonSlotId, key: string) => {
     setSelection(previous => selectComparisonRun(previous, id, key));
     setHiddenSeriesKeys([]);
@@ -460,7 +428,10 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       )}
       <div className="public-run-compare-heading">
         <div><span className="eyebrow">Run comparison</span><p>Pin a baseline and compare recorded inputs and results. Each delta is relative to the pinned run.</p></div>
+        <button type="button" className="public-run-compare-export" disabled={!ready || Boolean(error) || selectionErrors.length > 0 || deletingKey !== null} onClick={exportCsv}
+          title="Export the selected runs, recorded inputs, comparison tables and waveform samples. No new solve is started.">Export CSV</button>
       </div>
+      {exportNotice && <p className="public-run-storage-notice" role="status" aria-live="polite">{exportNotice}</p>}
       <div className="public-run-compare-selectors" aria-busy={Boolean(loadingStatus)}>
         {selection.slots.map(slot => {
           const style = COMPARISON_STYLES.find(style => style.id === slot.id)!;
