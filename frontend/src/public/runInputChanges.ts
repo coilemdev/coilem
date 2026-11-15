@@ -24,6 +24,9 @@ const OPERATING = new Set<string>(OPERATING_KEYS);
 const ABSENT = Symbol('absent');
 /** Maps keyed by the user's own names: a missing key is an entry the run did not have. */
 const NAMED_MAPS = new Set(['config.materials.custom_steels']);
+/** Fields a saved config leaves out at their default (backend/models/config.py), so a run that
+ * lacks one solved with that default, including runs saved before the field existed. */
+const OMITTED_DEFAULTS: Record<string, string> = { 'config.solve_params.symmetry': 'full', 'config.rotor_layout': 'inner' };
 const LABELS: Record<string, string> = {
   'config.topology': 'Motor topology', 'config.rotor_layout': 'Rotor arrangement',
   'config.geometry_reference': 'Reference model', 'config.reference_case': 'Reference case',
@@ -40,7 +43,7 @@ const LABELS: Record<string, string> = {
   'config.solve_params.nonlinear_solver': 'Nonlinear solver',
   'config.solve_params.linear_solver_preconditioner': 'Linear solver',
   'config.solve_params.corner_refinement': 'Corner refinement',
-  'config.solve_params.mesh_build': 'Mesh build',
+  'config.solve_params.mesh_build': 'Mesh build', 'config.solve_params.symmetry': 'Solved region',
   'config.solve_options.torque_sweep': 'Torque', 'config.solve_options.back_emf': 'Back EMF',
   'config.solve_options.flux_density': 'Field maps', 'config.solve_options.cogging_torque': 'Cogging torque',
   'config.solve_options.losses_efficiency': 'Losses and efficiency',
@@ -81,6 +84,7 @@ function format(value: unknown, path: string, unit: string): string {
   if (typeof value === 'number') return `${value}${unit ? ` ${unit}` : ''}`;
   if (typeof value === 'string') {
     if (path === 'config.solve_params.solve_quality') return ({ quick: 'Preview', standard: 'Standard', fine: 'High accuracy', custom: 'Custom' })[value] ?? value;
+    if (path === 'config.solve_params.symmetry') return ({ full: 'Full motor', auto: 'One sector' })[value] ?? value;
     return value || 'Empty';
   }
   return JSON.stringify(value);
@@ -93,6 +97,7 @@ export function recordedInputValue(inputs: ComparisonInputs | null | undefined, 
   for (const key of path.split('.')) {
     if (Array.isArray(value)) value = Number(key) <= value.length ? value[Number(key) - 1] : ABSENT;
     else if (record(value) && key in value) value = value[key];
+    else if (record(value) && `${parentPath}.${key}` in OMITTED_DEFAULTS) value = OMITTED_DEFAULTS[`${parentPath}.${key}`];
     else value = value === undefined || (record(value) && !NAMED_MAPS.has(parentPath) && !NAMED_MAPS.has(`${parentPath}.${key}`)) ? undefined : ABSENT;
     parentPath = parentPath ? `${parentPath}.${key}` : key;
     if (['config', 'run_setup'].includes(parentPath) && value === null) value = undefined;
@@ -140,6 +145,7 @@ export function inputChanges(before?: ComparisonInputs | null, after?: Compariso
   const empty = (value: unknown) => value === undefined || value === null || value === ABSENT;
   const field = (parent: unknown, key: string, path: string) => {
     if (record(parent) && key in parent) return parent[key];
+    if (record(parent) && `${path}.${key}` in OMITTED_DEFAULTS) return OMITTED_DEFAULTS[`${path}.${key}`];
     if (parent === undefined || (record(parent) && !NAMED_MAPS.has(path) && !NAMED_MAPS.has(`${path}.${key}`))) return undefined;
     return ABSENT;
   };
