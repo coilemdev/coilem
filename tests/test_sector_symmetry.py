@@ -552,3 +552,22 @@ def test_the_mesh_preview_draws_a_sector_as_the_whole_motor_and_keeps_the_solved
     full = run_magneto2d_mesh_preview(_config(SPM_4P12S, mesh_density="coarse"), rotor_angle_deg=0.0)
     assert len(full["triangles"]) == full["mesh_info"]["num_triangles"]
     assert len(preview["triangles"]) == pytest.approx(len(full["triangles"]), rel=0.12)
+
+
+def test_one_sector_cogging_below_very_fine_is_flagged_and_matches_the_app() -> None:
+    from backend.input_advisories import SECTOR_COGGING_ADVISORY, geometry_mesh_advisories
+
+    def advisories(**solve_params) -> list[str]:
+        config = _config("abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json", **solve_params)
+        return geometry_mesh_advisories(config)
+
+    for mesh in ("coarse", "normal", "fine"):
+        assert SECTOR_COGGING_ADVISORY in advisories(symmetry="auto", mesh_density=mesh)
+    assert SECTOR_COGGING_ADVISORY not in advisories(symmetry="auto", mesh_density="very_fine")
+    assert SECTOR_COGGING_ADVISORY not in advisories(symmetry="full")
+    without_cogging = _config("abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json", symmetry="auto")
+    without_cogging.solve_options.cogging_torque = False
+    assert geometry_mesh_advisories(without_cogging) == []
+    # The app shows the same words (frontend/src/public/coggingView.ts).
+    app = Path("frontend/src/public/coggingView.ts").read_text(encoding="utf-8")
+    assert f"export const SECTOR_COGGING_NOTE = '{SECTOR_COGGING_ADVISORY}';" in app

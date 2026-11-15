@@ -753,6 +753,16 @@ meshing. Compare lists a change between the full motor and one sector as
 setup with accuracy and solver settings records **One sector** when it was
 chosen and otherwise solves the full motor ([Saved run setups](SOLVE_SETUPS.md)).
 
+**Cogging from a sector.** On the 12 benchmark cogging cases, sector and
+full-motor solves agree within 1% on 10. On two (the shoed 8p/12s example and
+the flat IPM 24s/16p) the sector mesh remeshes more noisily between rotor
+positions, and its cogging fundamental or peak-to-peak moved up to 8.5% from
+the full motor at the Medium mesh and 6% at Fine; at the Very fine mesh both
+agree within 0.4% and with FEMM within 0.6%. Loaded torque, ripple and back-EMF
+agree at every mesh. The app therefore warns when One sector and Cogging torque
+are both selected below the Very fine mesh, and the warning is repeated in the
+pre-solve checks and with the results.
+
 ### Teaching-mode exception
 
 The learning fixtures reuse the P1 assembly and field postprocessing, but they

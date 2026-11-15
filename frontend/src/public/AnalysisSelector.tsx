@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { coggingPlanNote } from './coggingView';
+import { coggingPlanNote, sectorCoggingNote } from './coggingView';
 import type { AnalysisKey } from './analysisOptions';
 import type { MotorConfig, PublicSolverId } from './model';
 import { InfoTip } from './Popover';
@@ -49,6 +49,9 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
               </div>
             </InfoTip>
           </div>
+          {row.key === 'cogging_torque' && sectorCoggingNote(config, solver) && (
+            <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, solver)}</p>
+          )}
           {row.key === 'losses_efficiency' && !elmer && options.losses_efficiency && (
             <p className="public-losses-full-cycle" role="note">Full 360° electrical sweep selected for losses and efficiency.</p>
           )}

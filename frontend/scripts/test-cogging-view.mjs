@@ -6,7 +6,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const { COGGING_TORQUE_STATUS_REASON } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
 const { asPublicConfig } = await importTypeScriptModule(new URL('../src/public/publicRequest.ts', import.meta.url));
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
-const { COGGING_HARMONIC_BARS, coggingPeriod, coggingPlanNote, coggingView } = await importTypeScriptModule(
+const { COGGING_HARMONIC_BARS, SECTOR_COGGING_NOTE, coggingPeriod, coggingPlanNote, coggingView, sectorCoggingNote } = await importTypeScriptModule(
   new URL('../src/public/coggingView.ts', import.meta.url),
 );
 
@@ -85,6 +85,15 @@ assert.match(coggingPlanNote(12, 8, 24, false), /Corner refinement is off, which
 assert.doesNotMatch(coggingPlanNote(12, 8, 24, true), /Corner refinement/);
 
 assert.match(coggingPlanNote(12, 8, 12), /Preview is for iteration: 12 positions can miss peaks and higher harmonics/);
+
+// One-sector cogging below the Very fine mesh gets a warning (#222).
+const sectorRequest = (symmetry, mesh_density, cogging_torque = true) => ({ solve_params: { symmetry, mesh_density }, solve_options: { cogging_torque } });
+for (const mesh of ['coarse', 'normal', 'fine']) assert.equal(sectorCoggingNote(sectorRequest('auto', mesh)), SECTOR_COGGING_NOTE);
+assert.equal(sectorCoggingNote(sectorRequest('auto', 'very_fine')), null);
+assert.equal(sectorCoggingNote(sectorRequest('full', 'normal')), null);
+assert.equal(sectorCoggingNote(sectorRequest('auto', 'normal', false)), null);
+assert.equal(sectorCoggingNote(sectorRequest('auto', 'normal'), 'elmer'), null);
+assert.match(SECTOR_COGGING_NOTE, /up to 9% at the Coarse, Medium and Fine meshes\. Solve the full motor when cogging matters/);
 assert.doesNotMatch(coggingPlanNote(12, 8, 24), /can miss peaks/);
 assert.doesNotMatch(coggingPlanNote(12, 8, 48), /can miss peaks/);
 
