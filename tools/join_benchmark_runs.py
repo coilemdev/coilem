@@ -89,10 +89,10 @@ def join_suite(shards, *, suite, bundle, output):
                                          references, hardware_targets(spec["cases"])), pdf=False)
 
 
-def join_prius(shards, output):
+def join_prius(shards, output, *, symmetry="full"):
     from backend.public_policy import parse_public_motor_config
 
-    expected = {name: parse_public_motor_config(body).model_dump(mode="json") for name, body in prius_jobs(True, True)}
+    expected = {name: parse_public_motor_config(body).model_dump(mode="json") for name, body in prius_jobs(True, True, symmetry)}
     first, gathered, receipts, intervals = None, {}, [], []
     for folder in shards:
         registration = read(folder / "registration.json")
@@ -124,6 +124,7 @@ def join_prius(shards, output):
     merged = copy.deepcopy(first)
     merged.update(started_utc=min(i[0] for i in intervals), finished_utc=max(i[1] for i in intervals))
     merged.update(jobs=[], job_states={}, selection={"curve": True, "refinement": True, "only": None,
+                  **({"symmetry": symmetry} if symmetry != "full" else {}),
                   "jobs": [{"job": name, "request": body} for name, body in expected.items()]})
     for entry in first["frozen_inputs"].values():
         target = checked_path(output, entry["file"])

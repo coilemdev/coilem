@@ -34,9 +34,9 @@ on:
         type: string
         default: ''
       collection:
-        description: Compare to registered references or collect native only
+        description: Compare to registered references, collect native only, or solve every case and Prius job as one repeating sector (protocol 1.11.0)
         type: choice
-        options: [registered, protocol16-native-only, cogging-refined-very-fine]
+        options: [registered, protocol16-native-only, cogging-refined-very-fine, sector]
         default: registered
   workflow_call:
     inputs:
@@ -80,6 +80,8 @@ defaults:
 
 env:
   COILEM_BUILD_COMMIT: ${{ inputs.candidate || github.sha }}
+  # tools.benchmark_ci reads it in every stage, so plan, build, shards and join use the same suite.
+  COILEM_BENCHMARK_COLLECTION: ${{ inputs.collection || 'registered' }}
   COILEM_WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
