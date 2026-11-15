@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 38671,
-      "sha256": "969f7ca19721fd88c6a86d9d3e47fd3e3320a41426f1934ea0bcd593da19fb38"
+      "bytes": 41505,
+      "sha256": "2495b295040080589b820b6942f72d51285eb51fccf6d61d19df105f7dd5629f"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 335881,
-      "sha256": "d2f0d373a721bccb7fd78b7c75e0c6dff2524839a98ef357e185377edbcd1260"
+      "bytes": 335996,
+      "sha256": "edbbf0874e20bbd477f4e2857c317fede4259e433a20bd91e3776e195a8fc614"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 138257,
-      "sha256": "3f8bbb18a0d8521aa41c2b09bc82fc6fab7fc3b194d86672edb3bf10c732630c"
+      "bytes": 143686,
+      "sha256": "d999b0c2e6edffdf2e4f4d99a4ee8703e5239455fef40fb1ac1f8aa0bac80094"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11675,8 +11675,8 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 17223,
-      "sha256": "01f16ea8d0f1c6ee07f77ad3ba05c8da26303ca5eff0f0717fab1dd53d589766"
+      "bytes": 22778,
+      "sha256": "db1735ff19de0498dc3884f7d028fe8cc909ac69860eb227ad44296c9fcb2b3a"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
@@ -18782,6 +18782,11 @@
       "path": "frontend/src/public/RunSetupMenu.tsx",
       "bytes": 8475,
       "sha256": "b73739ddc5e2ec9a8f716a1b8c1fbd57a93cde3651de79935af319385834c4b1"
+    },
+    {
+      "path": "frontend/src/public/dqComparison.ts",
+      "bytes": 6136,
+      "sha256": "56175a49ed2b6abd1972fff32176a1fe61bddf9d1ccc20cd28a3546a805184c3"
     },
     {
       "path": "frontend/scripts/test-halbach-camera-fit.mjs",
@@ -41024,6 +41029,36 @@
       "path": "frontend/tests/solve-profiles.spec.ts",
       "source_sha256": "e7203b5a854346fe624927e4778d468c1211c94cdcb5f2872daa21c847e2b89a",
       "reason": "Compare recorded runs against a pinned baseline and provide direct naming with an app-themed setup menu, without changing physics or stored evidence."
+    },
+    {
+      "base_commit": "099ef4f804b2152e903df7458d025126f869b422",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "01f16ea8d0f1c6ee07f77ad3ba05c8da26303ca5eff0f0717fab1dd53d589766",
+      "reason": "Compare recorded inductance, d/q operating points and Ke with pinned-baseline deltas for 0.5.8."
+    },
+    {
+      "base_commit": "099ef4f804b2152e903df7458d025126f869b422",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "969f7ca19721fd88c6a86d9d3e47fd3e3320a41426f1934ea0bcd593da19fb38",
+      "reason": "Compare recorded inductance, d/q operating points and Ke with pinned-baseline deltas for 0.5.8."
+    },
+    {
+      "base_commit": "099ef4f804b2152e903df7458d025126f869b422",
+      "path": "frontend/src/public/dqComparison.ts",
+      "source_sha256": null,
+      "reason": "Compare recorded inductance, d/q operating points and Ke with pinned-baseline deltas for 0.5.8."
+    },
+    {
+      "base_commit": "099ef4f804b2152e903df7458d025126f869b422",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "d2f0d373a721bccb7fd78b7c75e0c6dff2524839a98ef357e185377edbcd1260",
+      "reason": "Compare recorded inductance, d/q operating points and Ke with pinned-baseline deltas for 0.5.8."
+    },
+    {
+      "base_commit": "099ef4f804b2152e903df7458d025126f869b422",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "64a0718e9b84fbe5c228affbc5f5969bb1c015b79a5ac4d5889a177404cb7de0",
+      "reason": "Compare recorded inductance, d/q operating points and Ke with pinned-baseline deltas for 0.5.8."
     }
   ]
 }

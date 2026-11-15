@@ -1923,7 +1923,18 @@ function multiRunFixture(index: number) {
     iron_loss_status: partial ? 'unavailable' : 'experimental', iron_loss_status_reason: 'Recorded iron loss.', mechanical_loss_W: 10, total_loss_W: partial ? 60 : 100 };
   return { result: {
     summary: { avg_torque_Nm: 10 + index, torque_ripple_pct: 5, back_emf_fundamental_V: 20 + index,
-      peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1, cogging: { peak_to_peak_Nm: 0.004 }, loss_breakdown: loss },
+      peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1, cogging: { peak_to_peak_Nm: 0.004 }, loss_breakdown: loss,
+      Ke_Vs_per_rad_mech: index === 5 ? null : 0.1 + index * 0.02,
+      dq_flux_linkage: index === 5 ? null : {
+        transform: 'amplitude_invariant_park', current_angle_convention: 'q_axis_gamma_flux_weakening_positive',
+        d_axis_source: index === 3 ? 'applied_current_angle' : 'no_load_flux_linkage',
+        i_d_A: -10 - index * 5, i_q_A: 20 + index, current_angle_deg: 26.565 + index,
+        lambda_d_Wb: 0.01 + index * 0.001, lambda_q_Wb: 0.004 + index * 0.0002,
+        lambda_pm_Wb: index === 3 ? null : 0.011, apparent_L_d_H: index === 3 ? null : 0.0001 + index * 0.00005,
+        apparent_L_q_H: 0.0002 + index * 0.00001, torque_dq_Nm: 1.44 + index * 0.1,
+        status: index === 4 ? 'unavailable' : 'qualified', status_reason: index === 4 ? 'Recorded d/q unavailable.' : 'Recorded flux qualification.',
+        inductance_status: index === 4 ? 'unavailable' : 'experimental', inductance_status_reason: 'Recorded apparent inductance uncertainty.',
+      } },
     solve_metadata: { solver_name: 'magneto2d-test', mesh_source: 'native', mesher: 'gmsh', mesh_density: 'normal',
       time_breakdown: index === 5 ? null : { schema_version: 'coilem.solve_time_breakdown.v1', elapsed_s: 10 + index * 5,
         elapsed_steps: ['meshing', 'field_solve', 'packaging'].map(key => ({ key, seconds: 1 + index })), steps: [],
@@ -1946,6 +1957,60 @@ async function multiRunPage(page: Page) {
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   return { dialog: page.getByRole('dialog', { name: 'Previous runs', exact: true }), records, storage };
 }
+
+test('D/q Compare: Ke units, archived statuses and deltas follow the pinned baseline for two to six runs', async ({ page }, info) => {
+  const solves: string[] = [], errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (/\/(solve|solve\/stream|performance\/map\/stream)$/.test(new URL(request.url()).pathname)) solves.push(request.url());
+  });
+  const { dialog } = await multiRunPage(page);
+  const table = dialog.getByRole('region', { name: 'Inductance and d/q comparison', exact: true });
+  const metrics = dialog.getByRole('region', { name: 'Run comparison metric differences', exact: true });
+  const row = (label: string) => table.getByRole('rowheader', { name: label, exact: true }).locator('..');
+  const cell = (label: string, run: string) => row(label).locator(`td[data-run-column="${run}"]`);
+  await expect(table.getByRole('columnheader')).toHaveText(['Metric', 'Run A · baseline', 'Run B · candidate', 'Δ (B − A)', 'Δ vs A (%)']);
+  const ke = metrics.getByRole('rowheader', { name: 'Back EMF constant (Ke)', exact: true }).locator('..');
+  await expect(ke.locator('td').nth(0)).toHaveText('12.83 V/krpm L-L rms');
+  await expect(ke.locator('td').nth(1)).toHaveText('15.39 V/krpm L-L rms');
+  await expect(ke.locator('td').nth(3)).toHaveText('+20.0%');
+  await expect(cell('Ld · d-axis inductance', 'run-a')).toContainText('0.100 mH');
+  await expect(cell('Ld · d-axis inductance', 'run-b')).toContainText('0.150 mH');
+  await expect(row('Ld · d-axis inductance').locator('td').nth(2)).toHaveText('+0.050 mH');
+  await expect(row('Ld · d-axis inductance').locator('td').nth(3)).toHaveText('+50.0%');
+  await expect(cell('id · d-axis current', 'run-a')).toHaveText('-10.0 A peak');
+  await expect(cell('λd · d-axis flux linkage', 'run-b')).toContainText('11.0 mWb');
+  await table.getByRole('button', { name: 'Run A Ld · d-axis inductance: Experimental', exact: true }).click();
+  await expect(page.getByRole('tooltip').filter({ hasText: 'Recorded apparent inductance uncertainty.' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await table.getByRole('button', { name: 'Run A λd · d-axis flux linkage: Qualified', exact: true }).click();
+  await expect(page.getByRole('tooltip').filter({ hasText: 'Recorded flux qualification.' })).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  for (let index = 0; index < 4; index++) {
+    await dialog.getByRole('button', { name: '+ Add run', exact: true }).click();
+    await expect(table.getByRole('columnheader')).toHaveCount(4 + index);
+  }
+  await dialog.getByRole('button', { name: 'Pin Run C as baseline', exact: true }).click();
+  await expect(table.getByRole('columnheader')).toHaveText(['Metric', 'Run C · baseline', 'Run A · candidate', 'Run B · candidate', 'Run D · candidate', 'Run E · candidate', 'Run F · candidate']);
+  await expect(cell('Ld · d-axis inductance', 'run-a').locator('.public-run-compare-cell-delta')).toHaveText('Δ −0.100 mH · -50.0%');
+  await expect(cell('id · d-axis current', 'run-a').locator('.public-run-compare-cell-delta')).toHaveText('Δ +10.0 A peak · +50.0%');
+  await expect(cell('λq · q-axis flux linkage', 'run-d').locator('.public-run-compare-cell-delta')).toHaveText('Δ — · —');
+  await expect(row('D-axis reference').locator('td[data-run-column="run-d"]')).toHaveText('Applied current angle');
+  await expect(table.getByRole('note')).toContainText('Run D: Component and inductance deltas are hidden');
+  await expect(cell('λd · d-axis flux linkage', 'run-e')).toContainText('Unavailable');
+  await expect(cell('λd · d-axis flux linkage', 'run-e')).not.toContainText('14.0');
+  await expect(cell('λd · d-axis flux linkage', 'run-f')).toContainText('Not recorded');
+  await table.getByRole('button', { name: 'Run E λd · d-axis flux linkage: Unavailable', exact: true }).click();
+  await expect(page.getByRole('tooltip').filter({ hasText: 'Recorded d/q unavailable.' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await table.screenshot({ path: info.outputPath('dq-six-run-comparison.png') });
+  await page.setViewportSize({ width: 600, height: 950 });
+  expect(await table.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+  await table.screenshot({ path: info.outputPath('dq-six-run-comparison-narrow.png') });
+  expect(errors).toEqual([]);
+  expect(solves).toEqual([]);
+});
 
 test('Multi-run Compare: six runs retain identities and every table follows the pinned baseline', async ({ page }, info) => {
   const errors: string[] = [], solves: string[] = [], comparisons: string[] = [];

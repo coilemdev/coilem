@@ -6,6 +6,67 @@ const { inputChanges } = await importTypeScriptModule(new URL('../src/public/run
 const emptyTorque = { electrical_angle_deg: [], torque_Nm: [] };
 const emptyEmf = { electrical_angle_deg: [], phase_a_V: [], phase_b_V: [], phase_c_V: [] };
 
+const { compareRunDq } = await importTypeScriptModule(new URL('../src/public/dqComparison.ts', import.meta.url));
+const dqRecord = { transform: 'amplitude_invariant_park', current_angle_convention: 'q_axis_gamma_flux_weakening_positive',
+  d_axis_source: 'no_load_flux_linkage', i_d_A: -10, i_q_A: 20, current_angle_deg: 26.565,
+  lambda_d_Wb: 0.01, lambda_q_Wb: 0.004, lambda_pm_Wb: 0.011,
+  apparent_L_d_H: 0.0001, apparent_L_q_H: 0.0002, torque_dq_Nm: 1.44,
+  status: 'qualified', status_reason: 'Stored flux qualification.',
+  inductance_status: 'experimental', inductance_status_reason: 'Stored inductance uncertainty.' };
+const dqRun = (record) => ({ summary: { dq_flux_linkage: record } });
+const dqRow = (comparison, key) => comparison.rows.find(row => row.key === key);
+const dqComparison = compareRunDq([dqRun(dqRecord), dqRun({ ...dqRecord, i_d_A: -15, apparent_L_d_H: 0.00015 })]);
+assert.deepEqual(dqRow(dqComparison, 'apparent_L_d_H').cells.map(cell => cell.value), [0.1, 0.15], 'H → mH');
+assert.deepEqual(dqRow(dqComparison, 'lambda_d_Wb').cells.map(cell => cell.value), [10, 10], 'Wb → mWb');
+assert.deepEqual(dqRow(dqComparison, 'i_d_A').cells.map(cell => cell.value), [-10, -15], 'currents keep their signs and peak units');
+assert.deepEqual(dqRow(dqComparison, 'apparent_L_d_H').cells[0].status, { status: 'experimental', reason: 'Stored inductance uncertainty.' });
+assert.deepEqual(dqRow(dqComparison, 'lambda_d_Wb').cells[0].status, { status: 'qualified', reason: 'Stored flux qualification.' });
+assert.equal(dqRow(dqComparison, 'i_d_A').cells[0].status, undefined, 'flux status is not a current qualification');
+assert.equal(dqRow(dqComparison, 'apparent_L_d_H').comparable[1], true);
+
+const differentReference = { ...dqRecord, d_axis_source: 'applied_current_angle', apparent_L_d_H: null, lambda_pm_Wb: null };
+const unavailableDq = { ...dqRecord, status: 'unavailable', status_reason: 'Stored failure.', inductance_status: 'unavailable' };
+const openDq = { ...dqRecord, i_d_A: 0, i_q_A: 0, current_angle_deg: null, apparent_L_d_H: null, apparent_L_q_H: null, torque_dq_Nm: 0, lambda_q_Wb: 0 };
+const sixDq = compareRunDq([dqRun(dqRecord), dqRun(differentReference), dqRun(null), dqRun(unavailableDq), dqRun(openDq), dqRun({ ...dqRecord, lambda_d_Wb: 0 })]);
+assert.deepEqual(sixDq.references.slice(0, 3), ['No-load flux linkage', 'Applied current angle', 'Not recorded']);
+assert.deepEqual(dqRow(sixDq, 'lambda_d_Wb').comparable, [true, false, false, false, true, true], 'comparability is pairwise with the pinned baseline');
+assert.equal(dqRow(sixDq, 'torque_dq_Nm').comparable[1], true, 'torque is frame independent under the same transform and sign convention');
+assert.equal(dqRow(sixDq, 'lambda_d_Wb').cells[3].value, null, 'an unavailable status overrides any stored number');
+assert.equal(dqRow(sixDq, 'torque_dq_Nm').cells[3].value, null, 'torque derived from unavailable flux linkage is also unavailable');
+assert.equal(dqRow(sixDq, 'lambda_d_Wb').cells[3].status.reason, 'Stored failure.');
+assert.equal(dqRow(sixDq, 'apparent_L_d_H').cells[4].missing, 'Not applicable', 'open-circuit Ld is not a zero inductance');
+assert.equal(dqRow(sixDq, 'torque_dq_Nm').cells[4].missing, 'Not applicable');
+assert.equal(dqRow(sixDq, 'i_d_A').cells[4].value, 0, 'zero applied current is valid');
+assert.equal(dqRow(sixDq, 'lambda_q_Wb').cells[4].value, 0, 'zero flux linkage is valid');
+assert.equal(dqRow(sixDq, 'lambda_d_Wb').cells[5].value, 0);
+assert.equal(dqRow(sixDq, 'lambda_d_Wb').cells[2].missing, 'Not recorded');
+assert.match(sixDq.notes[1], /references differ/);
+assert.equal(sixDq.notes[5], null);
+assert.equal(compareRunDq([dqRun(null), { summary: {} }]).recorded, false);
+assert.equal(compareRunDq([]).recorded, false);
+const missingBaseline = compareRunDq([dqRun(null), dqRun(dqRecord)]);
+assert.equal(dqRow(missingBaseline, 'i_q_A').comparable[1], false);
+assert.match(missingBaseline.notes[1], /recorded baseline/);
+const repinnedDq = compareRunDq([dqRun(differentReference), dqRun(dqRecord), dqRun({ ...differentReference, i_d_A: -20 })]);
+assert.deepEqual(dqRow(repinnedDq, 'i_d_A').comparable, [true, false, true]);
+for (const override of [{ transform: 'other' }, { current_angle_convention: 'other' }, { transform: undefined }]) {
+  const result = compareRunDq([dqRun(dqRecord), dqRun({ ...dqRecord, ...override })]);
+  assert.equal(dqRow(result, 'torque_dq_Nm').comparable[1], false);
+  assert.match(result.notes[1], /convention/);
+}
+for (const override of [{ d_axis_source: undefined }, { d_axis_source: 'future_reference' }]) {
+  assert.equal(dqRow(compareRunDq([dqRun(dqRecord), dqRun({ ...dqRecord, ...override })]), 'lambda_d_Wb').comparable[1], false);
+}
+for (const value of [null, undefined, NaN, Infinity, -0.1, 0]) {
+  assert.equal(dqRow(compareRunDq([dqRun({ ...dqRecord, apparent_L_d_H: value })]), 'apparent_L_d_H').cells[0].value, null);
+}
+const legacyDq = { ...dqRecord, status: undefined, status_reason: undefined, inductance_status: undefined, inductance_status_reason: undefined };
+const legacyComparison = compareRunDq([dqRun(legacyDq)]);
+assert.equal(dqRow(legacyComparison, 'lambda_d_Wb').cells[0].status.status, 'experimental', 'historical results are not requalified by current policy');
+assert.equal(dqRow(legacyComparison, 'apparent_L_d_H').cells[0].status.status, 'experimental');
+assert.equal(dqRecord.i_d_A, -10, 'comparison does not mutate saved records');
+console.log('D/q comparison preserves recorded units, signs and statuses and gates deltas by the pinned reference.');
+
 // The old comparison route emits {} for analyses with no CSV rows. Opening
 // Previous runs must not hand undefined angle arrays to the comparison view.
 for (const missing of [undefined, null, {}]) {
