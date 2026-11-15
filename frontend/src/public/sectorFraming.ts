@@ -2,7 +2,7 @@
  * Sector framing for thin-ring motors. An outrunner's active parts (stator
  * teeth, air gap, magnets, rotor ring) are the outer band of its circle; inside
  * is the unmodelled hub. Fitting the whole circle leaves that band small, so the
- * views open zoomed on the top of the ring instead, with Fit for the whole motor.
+ * views offer Sector, which zooms on the top of the ring; they open on the whole motor.
  */
 import type { MotorConfig } from './model';
 

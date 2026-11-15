@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 179443,
-      "sha256": "b5efb96eafeb07a7969edb425c43acf357816e5aa87bdb7baf53ee7b89a37988"
+      "bytes": 179648,
+      "sha256": "bc79aa6b6c4f1899699fcc143ce945f45d8fdde0db5c67d042399737fd6c3a95"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7135,8 +7135,8 @@
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
-      "bytes": 18731,
-      "sha256": "efac218bcc4e735914cdf89ba5ca673a4727bf1561f49b1c72fa68f82e037185"
+      "bytes": 18877,
+      "sha256": "49229f42916c1a62791b32acd6655ceb5d163567802f8245c395cee69083ba6d"
     },
     {
       "path": "frontend/src/public/WaveformChart.tsx",
@@ -13100,8 +13100,8 @@
     },
     {
       "path": "frontend/scripts/test-sector-framing.mjs",
-      "bytes": 3688,
-      "sha256": "2262465fc92e562f1790c63bfe302f47902a66136335176540d3c3339f1cfd9d"
+      "bytes": 3702,
+      "sha256": "bf99baaff5f0118b5e317e8a7edf7248d4600019a0aa1299dca2b80720db9ccf"
     },
     {
       "path": "frontend/scripts/test-stator-3d-radii.mjs",
@@ -13155,8 +13155,8 @@
     },
     {
       "path": "frontend/src/public/sectorFraming.ts",
-      "bytes": 3265,
-      "sha256": "58dd90355ef2a8ab4e4772db1ba86c7e590cb8423e4ece33c0106495a52c56d7"
+      "bytes": 3271,
+      "sha256": "2cb9f69207d5e81d1af9dde2c98bf0ef79f3f14da79ed231e1a5c490e86b99f3"
     },
     {
       "path": "frontend/src/public/stator3dRadii.ts",

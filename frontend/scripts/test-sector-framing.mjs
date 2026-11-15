@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 // Thin-ring motors (outrunners whose active ring is the outer band of the circle)
-// open zoomed on the top of the ring; everything else keeps the whole-motor fit.
+// offer a Sector view zoomed on the top of the ring; every motor opens on the whole-motor fit.
 const { THIN_RING_MAX_FRACTION, isThinRing, outerRotorRing, ringKey, sectorView } = await importTypeScriptModule(
   new URL('../src/public/sectorFraming.ts', import.meta.url),
 );

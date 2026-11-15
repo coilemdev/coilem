@@ -233,12 +233,15 @@ export function useViewportNavigation(
     };
   }, [sectorAvailable]);
 
-  // A thin-ring motor opens on its sector, and a new ring re-frames; without one the view stays fitted.
+  // Every motor opens on the whole-motor fit; Sector or the arrow keys zoom to a thin
+  // ring's top. In the sector view a new ring re-frames it, and a motor without one
+  // goes back to the fit.
   useEffect(() => {
     if (sectorKey === null) {
       if (sectorActiveRef.current || rotationRef.current !== 0) reset();
       return undefined;
     }
+    if (!sectorActiveRef.current) return undefined;
     resetTurntable();
     const frame = window.requestAnimationFrame(() => {
       applySectorRef.current();

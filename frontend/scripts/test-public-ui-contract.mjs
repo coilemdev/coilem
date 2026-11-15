@@ -1475,6 +1475,8 @@ assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
 assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frame \?\? undefined\)/);
 assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
+// Every motor opens on the fit; only a view already in the sector re-frames a new ring.
+assert.match(viewportNavigationSource, /if \(!sectorActiveRef\.current\) return undefined;\s*resetTurntable\(\);/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);
