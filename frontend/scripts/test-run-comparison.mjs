@@ -6,6 +6,50 @@ const { inputChanges } = await importTypeScriptModule(new URL('../src/public/run
 const emptyTorque = { electrical_angle_deg: [], torque_Nm: [] };
 const emptyEmf = { electrical_angle_deg: [], phase_a_V: [], phase_b_V: [], phase_c_V: [] };
 
+{
+const { comparisonEnvelope, validEnvelopeCurve, envelopePoint } = await importTypeScriptModule(new URL('../src/public/envelopeComparison.ts', import.meta.url));
+const { comparisonFieldAngles, comparisonFieldTarget } = await importTypeScriptModule(new URL('../src/public/fieldComparison.ts', import.meta.url));
+const { comparisonPercentDelta, comparisonSignificantDelta } = await importTypeScriptModule(new URL('../src/public/comparisonNumbers.ts', import.meta.url));
+const curve = { limit: 'peak', speed_rpm: [0, 1000, 3000], torque_Nm: [10, 10, 5], power_W: [0, 1000, 1500], i_d_A: [0, 0, -10], i_q_A: [20, 20, 10], region: ['mtpa', 'mtpa', 'field_weakening'] };
+assert.equal(validEnvelopeCurve(curve), true);
+assert.equal(envelopePoint(curve, 2000).torque, 7.5);
+assert.equal(envelopePoint(curve, 2000).power, 1250);
+assert.equal(envelopePoint(curve, -1), null);
+assert.equal(envelopePoint(curve, 3001), null);
+for (const override of [{ speed_rpm: [0, 1000, 1000] }, { speed_rpm: [0, 3000, 1000] }, { speed_rpm: [0] }, { torque_Nm: [10, NaN, 5] }, { i_q_A: [] }]) {
+  assert.equal(validEnvelopeCurve({ ...curve, ...override }), false);
+  assert.equal(envelopePoint({ ...curve, ...override }, 1000), null);
+}
+const envelope = { curves: [curve], status: 'experimental', status_reason: 'Stored envelope coverage.' };
+const mapRun = { summary: {}, torque_speed_analysis: { status: 'complete', envelope, settings: { preset: 'preview', control: 'mtpa' } } };
+assert.deepEqual(comparisonEnvelope(mapRun).curves, [curve]);
+assert.deepEqual(comparisonEnvelope(mapRun).status, { status: 'experimental', reason: 'Stored envelope coverage.' });
+assert.equal(comparisonEnvelope({ summary: {} }).missing, 'Not recorded');
+assert.equal(comparisonEnvelope({ summary: {}, torque_speed_analysis: { status: 'partial', envelope: null, status_reason: 'Recorded failed points.' } }).reason, 'Recorded failed points.');
+assert.equal(comparisonEnvelope({ ...mapRun, torque_speed_analysis: { ...mapRun.torque_speed_analysis, status: 'partial' } }).envelope, null, 'an incomplete map cannot expose a completed envelope');
+assert.equal(comparisonEnvelope({ ...mapRun, torque_speed_analysis: { envelope: { ...envelope, status: 'unavailable' } } }).curves.length, 0);
+assert.equal(comparisonEnvelope({ ...mapRun, torque_speed_analysis: { envelope: { ...envelope, status: undefined, status_reason: undefined } } }).status.status, 'experimental');
+assert.equal(comparisonSignificantDelta(0.1, 0.15), '+0.050');
+assert.equal(comparisonSignificantDelta(1000, 900), '−100');
+assert.equal(comparisonSignificantDelta(90, 85, '%'), '-5.0');
+assert.equal(comparisonSignificantDelta(null, 1), '—');
+assert.equal(comparisonPercentDelta(0, 1), '—');
+assert.equal(comparisonPercentDelta(0, 0), '0.0%');
+assert.equal(comparisonPercentDelta(-10, -5), '+50.0%');
+const fields = { frames: [{ angle_deg: 0, artifact_id: 'frame0' }, { angle_deg: 30, artifact_id: 'frame30' }], snapshot_available: true, snapshot_angle_deg: 15, playback_removed: false };
+assert.deepEqual(comparisonFieldAngles([fields, { ...fields, frames: [{ angle_deg: 30.00001, artifact_id: 'other' }] }]), [0, 15, 30]);
+assert.equal(comparisonFieldTarget(fields, 30).artifactId, 'frame30');
+assert.equal(comparisonFieldTarget(fields, 15).id, 'snapshot');
+assert.equal(comparisonFieldTarget(fields, 14), null, 'no nearest-frame substitution');
+assert.equal(comparisonFieldTarget(fields, 360), null, 'do not wrap periods');
+assert.equal(comparisonFieldTarget({ ...fields, snapshot_angle_deg: null }, 15), null, 'unknown snapshot angle cannot match an angle');
+assert.equal(comparisonFieldTarget({ ...fields, snapshot_angle_deg: null }, 'snapshot').angle, null);
+assert.equal(comparisonFieldTarget({ ...fields, frames: [], playback_removed: true }, 'snapshot').id, 'snapshot');
+assert.equal(comparisonFieldTarget(null, 0), null);
+assert.equal(curve.torque_Nm[2], 5, 'saved data is not changed');
+console.log('Envelope and field comparisons preserve recorded data, limit interpolation and match exact saved positions.');
+}
+
 const { compareRunDq } = await importTypeScriptModule(new URL('../src/public/dqComparison.ts', import.meta.url));
 const dqRecord = { transform: 'amplitude_invariant_park', current_angle_convention: 'q_axis_gamma_flux_weakening_positive',
   d_axis_source: 'no_load_flux_linkage', i_d_A: -10, i_q_A: 20, current_angle_deg: 26.565,

@@ -7,7 +7,7 @@ import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { checkPerformanceRegressions } from './performance-regressions';
 import { configureSection } from './design-helpers';
 
-const apiUrl = 'http://127.0.0.1:58000';
+const apiUrl = `http://127.0.0.1:${process.env.COILEM_TEST_API_PORT || 58000}`;
 const viewportHarness = fileURLToPath(new URL('./viewport-harness.tsx', import.meta.url)).replaceAll('\\', '/');
 const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.png', import.meta.url));
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
@@ -1311,8 +1311,9 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
   await storedRow.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
-  await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
-  await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true })).toHaveCount(0);
+  await expect(dialog.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true }).getByRole('tab')).toHaveText(['Torque–speed', 'Fields']);
+  await expect(dialog.getByRole('region', { name: 'Torque–speed comparison', exact: true })).toContainText('A torque–speed map was not recorded for this run.');
   await expect(dialog.getByText('Peak tooth B', { exact: true })).toBeVisible();
   await expect(dialog.getByRole('region', { name: 'Losses and efficiency comparison', exact: true })).toContainText('Losses & efficiency were not recorded for either run.');
   const coggingRow = (label: string) => dialog.locator('.public-run-compare-metrics tbody tr').filter({
@@ -1350,7 +1351,7 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
-  await expect(dialog.getByText('Neither run has torque, Back EMF or cogging waveforms to overlay.', { exact: false })).toBeVisible();
+  await expect(dialog.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
   await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await page.route('**/runs', route => route.fulfill({ json: {
     storage: { used_bytes: 0, max_bytes: 10000, available_bytes: 10000, accepting_new_runs: true }, runs: [],
@@ -1843,13 +1844,38 @@ test('small release fixes: capstone requires a fresh qualifying solve and comple
   await expect(finish).toHaveCount(0);
 });
 
+function comparisonMapFixture(index: number) {
+  if (index === 5) return null;
+  const curve = (limit: 'peak' | 'continuous') => {
+    const speeds = index === 1 ? [0, 500, 2000] : [0, 1000, 3000 + index * 500];
+    const torques = [10 + index, 10 + index, 5 + index].map(value => value * (limit === 'continuous' ? 0.6 : 1));
+    const power = torques.map((torque, i) => torque * speeds[i] * 2 * Math.PI / 60);
+    return { limit, speed_rpm: speeds, torque_Nm: torques, power_W: power, i_d_A: [0, 0, -10], i_q_A: [20, 20, 10], phase_voltage_peak_V: [5, 10, 20],
+      region: ['mtpa', 'mtpa', 'field_weakening'], base_speed_rpm: 1000 + index * 100, max_speed_rpm: speeds.at(-1), peak_power_W: Math.max(...power) };
+  };
+  const limits = { dc_bus_V: 48 + index * 12, modulation_index_max: 1, peak_current_A: 30 + index, continuous_current_A: index === 1 ? null : 20, max_speed_rpm: 5000 };
+  return { status: index === 3 ? 'partial' : 'complete', status_reason: index === 3 ? 'Two recorded map points failed.' : null,
+    settings: { preset: 'preview', control: 'mtpa', limits },
+    envelope: index === 3 ? null : { kind: 'torque_speed_envelope', schema_version: 1, map_scope_key: `map-${index}`, limits,
+      phase_resistance_ohm: 0.05, winding_temperature_C: 80, curves: index === 1 ? [curve('peak')] : [curve('peak'), curve('continuous')],
+      status: index === 4 ? 'unavailable' : 'experimental', status_reason: index === 4 ? 'Recorded envelope unavailable.' : 'Recorded envelope coverage.' } };
+}
+
+function comparisonFieldFixture(index: number, angle = 0) {
+  const plot = { angle_deg: angle, nodes_mm: [[-1, -1], [1, -1], [1, 1], [-1, 1]], triangles: [[0, 1, 2], [0, 2, 3]], regions: ['stator_iron', 'rotor_iron'],
+    element_b_mag_t: [0.4 + index * 0.2, 1.2], contour_levels: [], az_min: -0.1, az_max: 0.1, n_pole_pitches: 1, total_span_deg: 360 };
+  return { field_line_frame: { ...plot, noload_plot: { ...plot, element_b_mag_t: [0.2, 0.8] } } };
+}
+
 function multiRunFixture(index: number) {
   const partial = index === 3;
   const loss = index === 4 ? null : { input_power_W: 1000, shaft_power_W: 900 + index * 10, shaft_torque_Nm: 9 + index,
     efficiency_pct: partial ? null : 90 + index, efficiency_status: partial ? 'unavailable' : 'experimental', efficiency_status_reason: 'Recorded estimate.',
     copper_loss_W: 50, copper_active_loss_W: 30, copper_end_winding_loss_W: 20, iron_loss_W: partial ? null : 40,
     iron_loss_status: partial ? 'unavailable' : 'experimental', iron_loss_status_reason: 'Recorded iron loss.', mechanical_loss_W: 10, total_loss_W: partial ? 60 : 100 };
-  return { result: {
+  return { fields: { snapshot_available: index !== 5, snapshot_angle_deg: index === 5 ? null : index === 1 ? 15 : 0, playback_removed: index === 3,
+    frames: index === 3 || index === 5 ? [] : (index === 1 ? [0, 15] : [0, 30]).map(angle => ({ angle_deg: angle, artifact_id: `comparison-r${index}-a${angle}` })) }, result: {
+    torque_speed_analysis: comparisonMapFixture(index),
     summary: { avg_torque_Nm: 10 + index, torque_ripple_pct: 5, back_emf_fundamental_V: 20 + index,
       peak_flux_density_teeth_T: 1.2, peak_flux_density_yoke_T: 1, cogging: { peak_to_peak_Nm: 0.004 }, loss_breakdown: loss,
       Ke_Vs_per_rad_mech: index === 5 ? null : 0.1 + index * 0.02,
@@ -1885,6 +1911,136 @@ async function multiRunPage(page: Page) {
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   return { dialog: page.getByRole('dialog', { name: 'Previous runs', exact: true }), records, storage };
 }
+
+test('Compare views: envelopes use rpm, independent toggles and a pinned baseline for six runs', async ({ page }, info) => {
+  const forbidden: string[] = [], fieldRequests: string[] = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (/\/(solve|solve\/stream|performance\/.*)$/.test(path)) forbidden.push(path);
+    if (path.endsWith('/comparison/field') || path.includes('/solve/field-frame/')) fieldRequests.push(path);
+  });
+  const { dialog } = await multiRunPage(page);
+  await dialog.getByRole('tab', { name: 'Torque–speed', exact: true }).click();
+  const envelope = dialog.getByRole('region', { name: 'Torque–speed comparison', exact: true });
+  const chart = envelope.getByRole('img', { name: 'Torque–speed comparison', exact: true });
+  const metrics = envelope.getByRole('region', { name: 'Envelope metrics and drive limits', exact: true });
+  const row = (name: string | RegExp) => metrics.getByRole('rowheader', { name }).locator('..');
+  await expect(chart.locator('path[stroke]')).toHaveCount(2);
+  await expect(chart.locator('path[stroke="#22d3ee"]')).toHaveAttribute('stroke-dasharray', '7 5');
+  await envelope.getByRole('spinbutton', { name: 'Envelope readout speed' }).fill('2000');
+  await expect(row(/^Torque at 2,000 rpm/).locator('td').nth(0)).toHaveText('7.50 N·m');
+  await expect(row(/^Torque at 2,000 rpm/).locator('td').nth(1)).toHaveText('6.00 N·m');
+  await expect(row(/^Torque at 2,000 rpm/).locator('td').nth(2)).toHaveText('−1.50 N·m');
+  await envelope.getByRole('spinbutton', { name: 'Envelope readout speed' }).fill('2500');
+  await expect(row(/^Torque at 2,500 rpm/).locator('td').nth(1)).toHaveText('—');
+  await envelope.getByRole('button', { name: 'Hide Run A envelope', exact: true }).click();
+  await expect(chart.locator('path[stroke]')).toHaveCount(1);
+  await envelope.getByRole('button', { name: 'Hide Run B envelope', exact: true }).click();
+  await expect(envelope.getByRole('status')).toContainText('All envelopes are hidden');
+  await envelope.getByRole('button', { name: 'Show Run B envelope', exact: true }).click();
+  await envelope.getByRole('button', { name: 'Show Run A envelope', exact: true }).click();
+  await envelope.getByRole('button', { name: 'Power', exact: true }).click();
+  await expect(envelope.getByRole('img', { name: 'Power–speed comparison', exact: true })).toBeVisible();
+  for (let i = 0; i < 4; i++) {
+    await dialog.getByRole('button', { name: '+ Add run', exact: true }).click();
+    await expect(metrics.getByRole('columnheader')).toHaveCount(4 + i);
+  }
+  await dialog.getByRole('button', { name: 'Pin Run C as baseline', exact: true }).click();
+  await expect(metrics.getByRole('columnheader').nth(1)).toHaveText('Run C · baseline');
+  await expect(row('Base speed').locator('td[data-run-column="run-a"]')).toContainText('Δ −200 rpm · -16.7%');
+  await expect(row('Envelope status').locator('td[data-run-column="run-d"]')).toHaveText('Incomplete map');
+  await expect(row('Envelope status').locator('td[data-run-column="run-e"]')).toContainText('Unavailable');
+  await expect(row('Envelope status').locator('td[data-run-column="run-f"]')).toHaveText('Not recorded');
+  await envelope.getByRole('button', { name: 'Run A envelope: Experimental', exact: true }).click();
+  await expect(page.getByRole('tooltip').filter({ hasText: 'Recorded envelope coverage.' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await envelope.getByRole('button', { name: 'Continuous', exact: true }).click();
+  await expect(envelope.getByRole('img', { name: 'Power–speed comparison', exact: true }).locator('path[stroke]')).toHaveCount(2);
+  await expect(row('Base speed').locator('td[data-run-column="run-b"]')).toContainText('Unavailable');
+  await envelope.screenshot({ path: info.outputPath('envelope-comparison-six.png') });
+  await page.setViewportSize({ width: 600, height: 950 });
+  expect(await metrics.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true);
+  await metrics.screenshot({ path: info.outputPath('envelope-comparison-narrow.png') });
+  expect(fieldRequests).toEqual([]); expect(forbidden).toEqual([]);
+});
+
+test('Compare views: fields load lazily, retry, match exact angles and ignore stale responses', async ({ page }, info) => {
+  const requests: string[] = [], errors: string[] = [], forbidden: string[] = [];
+  let failB = true;
+  let release: () => void = () => {};
+  const held = new Promise<void>(resolve => { release = resolve; });
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (/\/(solve|solve\/stream|performance\/.*)$/.test(path)) forbidden.push(path);
+    if (path.endsWith('/comparison/field') || path.includes('/solve/field-frame/')) requests.push(path);
+  });
+  await page.route('**/runs/multi/*/comparison/field', route => {
+    const index = Number(new URL(route.request().url()).pathname.split('/')[3].slice(1));
+    return index === 1 && failB ? route.fulfill({ status: 500, json: { detail: 'Temporary field load failure.' } })
+      : route.fulfill({ json: comparisonFieldFixture(index, index === 1 ? 15 : 0) });
+  });
+  await page.route('**/solve/field-frame/*', async route => {
+    const match = route.request().url().match(/comparison-r(\d+)-a(\d+)/)!;
+    if (match[1] === '0' && match[2] === '0') await held;
+    await route.fulfill({ json: comparisonFieldFixture(Number(match[1]), Number(match[2])) }).catch(() => {});
+  });
+  const { dialog } = await multiRunPage(page);
+  await expect(dialog.getByRole('region', { name: 'Run comparison metric differences' })).toBeVisible();
+  expect(requests).toEqual([]);
+  await dialog.getByRole('tab', { name: 'Fields', exact: true }).click();
+  const fields = dialog.getByRole('region', { name: 'Side-by-side field comparison', exact: true });
+  const a = fields.getByRole('article', { name: 'Run A field', exact: true });
+  const b = fields.getByRole('article', { name: 'Run B field', exact: true });
+  await expect(a.getByRole('img').first()).toBeVisible();
+  await expect(b.getByRole('button', { name: 'Retry Run B field', exact: true })).toBeVisible();
+  failB = false;
+  await b.getByRole('button', { name: 'Retry Run B field', exact: true }).click();
+  await expect(b.getByRole('img').first()).toBeVisible();
+  await expect(b).toContainText('Stored snapshot · 15° electrical');
+  await expect(fields).toContainText('Fixed color scale · 0–2.0 T');
+  await fields.getByRole('combobox', { name: 'Comparison field position' }).selectOption('30');
+  await expect(a).toContainText('Recorded frame · 30° electrical');
+  await expect(a.getByRole('img').first()).toBeVisible();
+  await expect(b).toContainText('No field frame was recorded at 30° electrical.');
+  await fields.getByRole('combobox', { name: 'Comparison field position' }).selectOption('0');
+  await expect(a.getByRole('status')).toHaveText('Loading Run A field…');
+  await fields.getByRole('combobox', { name: 'Comparison field position' }).selectOption('30');
+  release();
+  await expect(a.getByRole('img').first()).toBeVisible();
+  await expect(a).toContainText('Recorded frame · 30° electrical');
+  expect(requests.filter(path => path.endsWith('comparison-r0-a30')).length).toBe(1);
+  await fields.getByRole('combobox', { name: 'Comparison field source' }).selectOption('pm');
+  await expect(a.getByRole('img').first()).toBeVisible();
+  expect(requests.filter(path => path.endsWith('comparison-r0-a30')).length).toBe(1);
+  await fields.getByRole('combobox', { name: 'Comparison field position' }).selectOption('snapshot');
+  await expect(b.getByRole('img').first()).toBeVisible();
+  const countBefore = requests.length;
+  await dialog.getByRole('button', { name: 'Pin Run B as baseline', exact: true }).click();
+  await expect(fields.getByRole('article').first()).toHaveAttribute('aria-label', 'Run B field');
+  await expect(b).toContainText('Run B · baseline');
+  expect(requests.length).toBe(countBefore);
+  await fields.screenshot({ path: info.outputPath('field-comparison-two.png') });
+  await page.setViewportSize({ width: 600, height: 950 });
+  await fields.screenshot({ path: info.outputPath('field-comparison-narrow.png') });
+  expect(await fields.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await page.setViewportSize({ width: 1753, height: 980 });
+  const beforeAdding = requests.length;
+  for (let index = 0; index < 4; index++) {
+    await dialog.getByRole('button', { name: '+ Add run', exact: true }).click();
+    await expect(fields.getByRole('article')).toHaveCount(3 + index);
+    const added = fields.getByRole('article', { name: `Run ${String.fromCharCode(67 + index)} field`, exact: true });
+    if (index < 3) await expect(added.getByRole('img').first()).toBeVisible();
+    else await expect(added).toContainText('A field snapshot was not recorded.');
+  }
+  await expect(fields.getByRole('combobox', { name: 'Comparison field source' })).toHaveValue('pm');
+  expect(requests.length).toBe(beforeAdding + 3);
+  await fields.getByRole('combobox', { name: 'Comparison field position' }).selectOption('30');
+  await expect(fields.getByRole('article', { name: 'Run D field', exact: true })).toContainText('Field playback was removed to free storage.');
+  await expect(a).toContainText('Recorded frame · 30° electrical');
+  await fields.screenshot({ path: info.outputPath('field-comparison-six.png') });
+  expect(errors).toEqual([]); expect(forbidden).toEqual([]);
+});
 
 test('D/q Compare: Ke units, archived statuses and deltas follow the pinned baseline for two to six runs', async ({ page }, info) => {
   const solves: string[] = [], errors: string[] = [];

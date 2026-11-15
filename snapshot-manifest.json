@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 10234,
-      "sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29"
+      "bytes": 10292,
+      "sha256": "c45411505ced3434d6238ac12fd496d5a509c9c320167bf474fdac714b8ccada"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -580,8 +580,8 @@
     },
     {
       "path": "backend/public_routes/runs.py",
-      "bytes": 6445,
-      "sha256": "7af7c5201876a7768c35c08f7324e203e6e5f4f83a4de1ebeb302a8e9cba9329"
+      "bytes": 7247,
+      "sha256": "11d231d053daad9db9ae40678109b046e94d4913988727b4f0d3d9d7af3338a6"
     },
     {
       "path": "backend/public_routes/solve.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 65009,
-      "sha256": "bb5c1ff1d2732a25eba0c12190c313546adb86dc96457a6a8d8d7694af71bb1e"
+      "bytes": 67766,
+      "sha256": "1a21b32773c471d499fa3634912a6df7ccd1eb98b11a24e5faaa3b895f6c296a"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 12953,
-      "sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea"
+      "bytes": 13008,
+      "sha256": "4eb9f6bd56ccb5fa59c124a2c98462391b83967b5c926c0703d0eeedd52505e0"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 2810,
-      "sha256": "281d11acd794d4ba5856a6cd341ab40dc31b6e83b8c00c838b894aa3375d11b9"
+      "bytes": 3195,
+      "sha256": "11a26c3b782ada1f487dc142bf8c04a70be343df1a52d6369b1915be16c6e857"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 177963,
-      "sha256": "86b3c590ab9102c3cd5f7972a0ed62c8ba5f5d49f904d4dfc66474185ebaf8e6"
+      "bytes": 179319,
+      "sha256": "3d6343f3a14846f67cd81fad211ab8bef42ced0f42cb05a04471b32683e5719e"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7105,8 +7105,8 @@
     },
     {
       "path": "frontend/src/public/PublicRunComparison.tsx",
-      "bytes": 41505,
-      "sha256": "2495b295040080589b820b6942f72d51285eb51fccf6d61d19df105f7dd5629f"
+      "bytes": 40493,
+      "sha256": "2a9a64b1c14df38d7788d767dcbcaad2e8bbf984e728297b1e1c7574f50d8327"
     },
     {
       "path": "frontend/src/public/ReferenceMotor3D.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 15162,
-      "sha256": "5e3efe7186ab968caabcb8c094c9548499b4c5913797e971715e30b2d21cdeca"
+      "bytes": 15508,
+      "sha256": "beb77957eaf4895c358639f1b810fc4cc69cf5759c314822648b16064193ce87"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 335996,
-      "sha256": "edbbf0874e20bbd477f4e2857c317fede4259e433a20bd91e3776e195a8fc614"
+      "bytes": 339090,
+      "sha256": "be1a1ff6d0732b064ed5dd0eb4030aff03a695cf7fa67b519997e93a15d3624b"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 139259,
-      "sha256": "c02aab42bec73c8f7228e4639acc56c20be4dd9ae5e396158e247178ecf7d913"
+      "bytes": 151359,
+      "sha256": "483385218e45ada1ffa8fa70942ce754719e25dfd0eb1efe660c3fef8ab7d698"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8380,8 +8380,8 @@
     },
     {
       "path": "tests/test_solve_workspace.py",
-      "bytes": 31048,
-      "sha256": "f8820ef754d406ff659386a3587a6000d795e864fcce1b19ad508488219f05d4"
+      "bytes": 35540,
+      "sha256": "3136b4e60a62c9f26b11547621c7982f8a85c79666c22b61914082859cde7d43"
     },
     {
       "path": "tests/test_sweep_planning.py",
@@ -11675,13 +11675,13 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 22778,
-      "sha256": "db1735ff19de0498dc3884f7d028fe8cc909ac69860eb227ad44296c9fcb2b3a"
+      "bytes": 26830,
+      "sha256": "00de865a7118a8d766070b46abcbc2d18835de720ff40647c9378598af72eb35"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
-      "bytes": 9370,
-      "sha256": "f3b3ee1a2ffd2b15b81bf13050b663d5db51e295e381ea9799d534f60a169b3c"
+      "bytes": 9748,
+      "sha256": "a1761bbdea8f36f1d82cd21ffb109335fc4e7968127e62219a22de7ef0c693a0"
     },
     {
       "path": "backend/report_numbers.py",
@@ -18760,8 +18760,8 @@
     },
     {
       "path": "docs/COMPARE_RUNS.md",
-      "bytes": 6012,
-      "sha256": "b97f6ce9c6f0b962c31ec27718be971aa8f95e94179fac478aaad98d2767c9c3"
+      "bytes": 7762,
+      "sha256": "cdcf7bb254c3ffe0b5e30f104586ee902e95fec6dfa3fb5347dee47bfcf4928c"
     },
     {
       "path": "frontend/src/public/RunChangesTable.tsx",
@@ -18787,6 +18787,41 @@
       "path": "frontend/src/public/dqComparison.ts",
       "bytes": 6136,
       "sha256": "56175a49ed2b6abd1972fff32176a1fe61bddf9d1ccc20cd28a3546a805184c3"
+    },
+    {
+      "path": "frontend/src/public/ComparisonTable.tsx",
+      "bytes": 1330,
+      "sha256": "f12a0e76024a6d3c92f2f0c30ea98a2245a5313790a4f140b1248829c6881c82"
+    },
+    {
+      "path": "frontend/src/public/RunEnvelopeComparison.tsx",
+      "bytes": 9155,
+      "sha256": "5f36ee7899efa5b92b3be9097b44c486c7ff6395cb7d04504b6813a9e31f04b8"
+    },
+    {
+      "path": "frontend/src/public/RunFieldComparison.tsx",
+      "bytes": 7097,
+      "sha256": "8ff8587df54f38f421a66437b24aedbb3e60c950b94aabbfc4ca5e80d5c9646e"
+    },
+    {
+      "path": "frontend/src/public/comparisonNumbers.ts",
+      "bytes": 1624,
+      "sha256": "72a44c53f31db64ab8c206c1e6fbc95f3fe93aa5a2309e78d23291130ba044ce"
+    },
+    {
+      "path": "frontend/src/public/envelopeComparison.ts",
+      "bytes": 3265,
+      "sha256": "d2f0a02e98ea9366f1522e05a6bbbf121bca83229c20fd25ccec6fd7d9b00176"
+    },
+    {
+      "path": "frontend/src/public/fieldComparison.ts",
+      "bytes": 1560,
+      "sha256": "542fa6990f49de94c9e9377ce7daf0cf58ee810ce6f6aa9d911954bdb8a604d4"
+    },
+    {
+      "path": "frontend/playwrightPorts.ts",
+      "bytes": 1508,
+      "sha256": "897a28ba906acf4fbae26f2938591ff2b9ac9ea7a09124158dfd186dfb1904a9"
     }
   ],
   "public_patches": [
@@ -41049,6 +41084,132 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "64a0718e9b84fbe5c228affbc5f5969bb1c015b79a5ac4d5889a177404cb7de0",
       "reason": "Compare recorded inductance, d/q operating points and Ke with pinned-baseline deltas for 0.5.8."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "backend/public_main.py",
+      "source_sha256": "4990205f02529ba9c301abaeab5e16919a6d3464eb56d7fe0abd1912bfb45c29",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "7af7c5201876a7768c35c08f7324e203e6e5f4f83a4de1ebeb302a8e9cba9329",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "bb5c1ff1d2732a25eba0c12190c313546adb86dc96457a6a8d8d7694af71bb1e",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "docs/COMPARE_RUNS.md",
+      "source_sha256": "b97f6ce9c6f0b962c31ec27718be971aa8f95e94179fac478aaad98d2767c9c3",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "67b61e91f9370db45a18136ef0f6663efd10eccb2f7dd3cd7db9eef9d5294dea",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "281d11acd794d4ba5856a6cd341ab40dc31b6e83b8c00c838b894aa3375d11b9",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/playwrightPorts.ts",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/scripts/test-public-ui-contract.mjs",
+      "source_sha256": "86b3c590ab9102c3cd5f7972a0ed62c8ba5f5d49f904d4dfc66474185ebaf8e6",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/scripts/test-run-comparison.mjs",
+      "source_sha256": "db1735ff19de0498dc3884f7d028fe8cc909ac69860eb227ad44296c9fcb2b3a",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/ComparisonTable.tsx",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/PublicRunComparison.tsx",
+      "source_sha256": "2495b295040080589b820b6942f72d51285eb51fccf6d61d19df105f7dd5629f",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/RunEnvelopeComparison.tsx",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/RunFieldComparison.tsx",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "5e3efe7186ab968caabcb8c094c9548499b4c5913797e971715e30b2d21cdeca",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/comparisonNumbers.ts",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/envelopeComparison.ts",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/fieldComparison.ts",
+      "source_sha256": null,
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/runComparison.ts",
+      "source_sha256": "f3b3ee1a2ffd2b15b81bf13050b663d5db51e295e381ea9799d534f60a169b3c",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "edbbf0874e20bbd477f4e2857c317fede4259e433a20bd91e3776e195a8fc614",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "frontend/tests/public-release.spec.ts",
+      "source_sha256": "c02aab42bec73c8f7228e4639acc56c20be4dd9ae5e396158e247178ecf7d913",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
+    },
+    {
+      "base_commit": "81821c5909828f82998a0cc71f3930d9b17d12c4",
+      "path": "tests/test_solve_workspace.py",
+      "source_sha256": "f8820ef754d406ff659386a3587a6000d795e864fcce1b19ad508488219f05d4",
+      "reason": "Compare recorded torque-speed envelopes and lazy field views for two to six runs without new solves."
     }
   ]
 }

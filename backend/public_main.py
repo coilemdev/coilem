@@ -72,6 +72,7 @@ PUBLIC_API_PATHS = frozenset(
         "/runs",
         "/runs/{project_slug}/{run_id}",
         "/runs/{project_slug}/{run_id}/comparison",
+        "/runs/{project_slug}/{run_id}/comparison/field",
         "/runs/{project_slug}/{run_id}/open-folder",
         "/runs/{project_slug}/{run_id}/package.zip",
         "/runs/{project_slug}/{run_id}/report.csv",
