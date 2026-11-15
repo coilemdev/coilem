@@ -131,6 +131,10 @@ def test_a_reference_setup_fits_only_the_unchanged_published_motor() -> None:
     with pytest.raises(coilem.InputError) as refused:
         setups.resolve_setup(changed, "Prius · no-load BEMF reference")
     assert refused.value.error_code == "SETUP_INCOMPATIBLE" and refused.value.field == "setup"
+    shipped = json.loads((ROOT / "frontend/src/public/examples/prius-2004-loaded-torque-v1.coilem").read_text(encoding="utf-8"))
+    assert [status.setup.name for status in setups.setup_statuses(shipped)[0]] == [
+        "Prius · no-load BEMF reference", "Prius · loaded torque reference",
+    ], "the shipped example leaves some fields at their defaults, which the app fills in"
     names = [status.setup.name for status in setups.setup_statuses(_design("starter"))[0]]
     assert not any(name.startswith("Prius") for name in names), "references are listed only for their own motor"
 

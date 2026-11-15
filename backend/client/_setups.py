@@ -395,6 +395,41 @@ def physical_model(body: Mapping[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in model.items() if value is not ABSENT}
 
 
+_PHYSICAL_KEYS = ("topology", "rotor_layout", "geometry_reference", "stator", "rotor", "winding", "materials")
+
+
+def _validated_physical_model(body: Mapping[str, Any]) -> dict[str, Any] | None:
+    """The physical model with every field the file leaves out at its default, or None when invalid."""
+
+    from pydantic import ValidationError
+
+    from backend.models.config import MotorConfig
+
+    try:
+        config = MotorConfig.model_validate(dict(body)).model_dump(mode="json")
+    except ValidationError:
+        return None
+    return {key: config.get(key) for key in _PHYSICAL_KEYS}
+
+
+def same_physical_model(reference: str, body: Mapping[str, Any]) -> bool:
+    """Whether a design is the motor a reference setup was saved for.
+
+    The app compares the design as it opened it, with every field the file
+    leaves out filled in from its defaults; a design file saved by the app
+    holds them all. Files written by hand or by an older version may leave
+    some out, so a design that differs only there is compared with those
+    fields at their defaults.
+    """
+
+    saved = json.loads(reference)
+    if same(saved, physical_model(body)):
+        return True
+    ours = _validated_physical_model(body)
+    theirs = _validated_physical_model({**body, **saved})
+    return ours is not None and theirs is not None and same(ours, theirs)
+
+
 def _angle_convention(body: Mapping[str, Any]) -> str:
     return "pyleecan_d_axis" if body.get("geometry_reference") == PRIUS_REFERENCE else "q_axis"
 
@@ -411,7 +446,7 @@ def incompatibility(setup: RunSetup, body: Mapping[str, Any]) -> str | None:
     if setup.builtin and (
         setup.reference_revision != REFERENCE_REVISION
         or setup.physical_model is None
-        or not same(json.loads(setup.physical_model), physical_model(body))
+        or not same_physical_model(setup.physical_model, body)
     ):
         return "it is a reference setup for the unchanged published motor, and this design's geometry, winding or materials differ"
     return None

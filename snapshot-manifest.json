@@ -18840,8 +18840,8 @@
     },
     {
       "path": "backend/client/_setups.py",
-      "bytes": 29989,
-      "sha256": "d43cdbc6cf645393e4633972d9d04417f739b8c3162d1a8dffa42462d05d7678"
+      "bytes": 31322,
+      "sha256": "45a60d7b10a9147586c8234ca4ac9ea5468669da2e79b6353788a4e57b50d2fd"
     },
     {
       "path": "backend/client/reference_setups.json",
@@ -18880,8 +18880,8 @@
     },
     {
       "path": "tests/test_run_setups.py",
-      "bytes": 11594,
-      "sha256": "134ed6016e35d17f60ae5e185d5d80e5e67d271e1c6714c9369312974fe269ed"
+      "bytes": 11976,
+      "sha256": "51e64122dab65e564355fc0be3affc80f3f64579836f29b72dd303c17e2254d1"
     }
   ],
   "public_patches": [
