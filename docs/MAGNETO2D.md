@@ -746,6 +746,13 @@ full circle it agrees to mesh noise.
 motor. A stored frame keeps one sector and is rebuilt as the full motor when it
 is read, so saved runs shrink with the sector.
 
+**In the app.** The run-time estimate counts the solved sector's elements, from
+the prepared mesh or, before one exists, from the same repeat check without
+meshing. Compare lists a change between the full motor and one sector as
+**Solved region**; a saved run without the field solved the full motor. A saved
+setup with accuracy and solver settings records **One sector** when it was
+chosen and otherwise solves the full motor ([Saved run setups](SOLVE_SETUPS.md)).
+
 ### Teaching-mode exception
 
 The learning fixtures reuse the P1 assembly and field postprocessing, but they

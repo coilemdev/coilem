@@ -635,8 +635,8 @@
     },
     {
       "path": "backend/solve_estimate.py",
-      "bytes": 9427,
-      "sha256": "49b1c46376e798b960ee7ffbfa80a8529e08668d9929c1e9281b651be078766d"
+      "bytes": 10975,
+      "sha256": "7307aababa5e9eee46e85a08903a93dc50c90ff514d0a5a230561f56e95f346b"
     },
     {
       "path": "backend/solve_workspace.py",
@@ -5975,8 +5975,8 @@
     },
     {
       "path": "docs/MAGNETO2D.md",
-      "bytes": 53313,
-      "sha256": "804283ee96834b5573ddcdfea9db6f1c16fd96a87930ca33ed5fb30f25595a07"
+      "bytes": 53780,
+      "sha256": "77151f04bae36bc7288cb5df4dee13ee26728c11c125a13c516dbff25244ff9a"
     },
     {
       "path": "docs/NONLINEAR_CONVERGENCE.md",
@@ -8370,8 +8370,8 @@
     },
     {
       "path": "tests/test_solve_estimate.py",
-      "bytes": 6748,
-      "sha256": "13f6d97c77ef3c0874a43d029ef36abffa6a623946776938e6e9cbc59bccf64c"
+      "bytes": 8540,
+      "sha256": "6a02c3307c1e9c1b3535c1aa6c2c65a60e81e1f826c11fd08c880327cc077ad6"
     },
     {
       "path": "tests/test_solve_pipeline_overhead.py",
@@ -11675,8 +11675,8 @@
     },
     {
       "path": "frontend/scripts/test-run-comparison.mjs",
-      "bytes": 36422,
-      "sha256": "4872da7d751d1ed5c8997b71ddcc962fc2dbdb0108b64d3e3199ccca48b93fbb"
+      "bytes": 37466,
+      "sha256": "737e7ceb219f783ce5c272a8b180d7b49970311579ad6556168dc7873a2025d4"
     },
     {
       "path": "frontend/src/public/runComparison.ts",
@@ -18735,8 +18735,8 @@
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
-      "bytes": 6586,
-      "sha256": "01432f29e36f00b2492505a03a96da8968650263d04dc0211982188091a04653"
+      "bytes": 6946,
+      "sha256": "6c1972d71aa8d5a71ffdf15ac4f4427a17de4bac960c1fd123798ed5ce6e358c"
     },
     {
       "path": "frontend/scripts/test-solve-profiles.mjs",
@@ -18760,8 +18760,8 @@
     },
     {
       "path": "frontend/src/public/solveProfiles.ts",
-      "bytes": 19272,
-      "sha256": "86ee79c32727f89ac23053df33c8cabb84621a7cf853eece04bf7992525f8864"
+      "bytes": 19690,
+      "sha256": "0637b74ad4a944a5410ae21df0fe56fb1054a8b6ba1665396e5ea26184ed7c99"
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
@@ -18780,8 +18780,8 @@
     },
     {
       "path": "frontend/src/public/runInputChanges.ts",
-      "bytes": 10309,
-      "sha256": "0623a874d399df5459125314601034b0e6f0d741dd6f00f934cafa0b56785058"
+      "bytes": 11017,
+      "sha256": "e6f04f202ce95a4792d1346370308b8234867234cc63366d87b6bb9cd3b236c0"
     },
     {
       "path": "frontend/src/public/multiRunComparison.ts",
@@ -18850,8 +18850,8 @@
     },
     {
       "path": "backend/client/_setups.py",
-      "bytes": 31322,
-      "sha256": "45a60d7b10a9147586c8234ca4ac9ea5468669da2e79b6353788a4e57b50d2fd"
+      "bytes": 31791,
+      "sha256": "d2a888260d276adde5e7b68be9899bb6c35e85e232a870aaea33bb78d2a76508"
     },
     {
       "path": "backend/client/reference_setups.json",
@@ -18875,13 +18875,13 @@
     },
     {
       "path": "frontend/scripts/test-run-setup-parity.mjs",
-      "bytes": 9959,
-      "sha256": "944e3220839eaf17b77013244e3104cb592e55535fa3d72df9e2bd96c5d4ec70"
+      "bytes": 11647,
+      "sha256": "311b4ece0bbf229fafea1418e3930898924b81b08c0b5e66d8f08bc23bcd30f0"
     },
     {
       "path": "tests/fixtures/run_setup_parity.json",
-      "bytes": 205669,
-      "sha256": "7f89440035a520a305aded5138f513d38a1cdb03700062a644e7f13e825c56c8"
+      "bytes": 239981,
+      "sha256": "90524c42c1d1fb128f42e42bb8aec4b943a4c80e29793e476fff334eb7d4e1ee"
     },
     {
       "path": "tests/test_cli.py",
