@@ -95,10 +95,15 @@ result = coilem.solve(motor, point, analyses=["torque", "back_emf"], quality="st
   `thd` and `flux_density`. Left out, the motor's saved selection is used, or
   the app's defaults for a motor with none.
 - `quality` is `quick`, `standard`, `fine` or `custom` (then set
-  `rotor_step_deg` and `rotor_sweep_range_deg` in `solve_params`); `mesh`
-  is `coarse`, `normal`, `fine` or `very_fine`. Quick and coarse are for
-  trying things; use standard or finer for design numbers.
-- `solve_params` sets any other request field by name.
+  `rotor_step_deg` and `rotor_sweep_range_deg` in `solve_params`): the app's
+  Preview, Standard, High accuracy and Custom plans. `mesh` is `coarse`,
+  `normal`, `fine` or `very_fine`, the app's Coarse, Medium, Fine and Very
+  fine meshes. Quick and coarse are for trying things; use standard or finer
+  for design numbers.
+- `solve_params` sets any other request field by name. A name the request
+  does not have raises `InputError` and suggests the closest one, as do
+  misspelt fields in `Stator(...)`, `Rotor(...)`, `Winding(...)`, `Wire(...)`,
+  `Materials(...)` and `Motor.replace(...)`.
 - Settings layer in this order: the motor's saved solve settings, then the
   app's new-design solver settings for fields they leave unset (the mesh is
   rebuilt at every rotor position and corner refinement is on), then the

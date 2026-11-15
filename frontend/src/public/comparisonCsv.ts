@@ -19,6 +19,8 @@ export interface ComparisonCsvRun {
 interface RowOptions {
   group?: string; unit?: string; deltaUnit?: string; noDelta?: boolean; comparable?: boolean[];
   notes?: Array<string | null>; coordinate?: number; coordinateUnit?: string; occurrence?: number;
+  /** Baselines at or below this magnitude give no percentage change (see compareRunDq). */
+  percentFloor?: number;
 }
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const numeric = (value: unknown, missing = 'Not recorded'): Cell => ({ value: finite(value) ? value : null, missing });
@@ -50,7 +52,7 @@ export function comparisonCsv(runs: ComparisonCsvRun[]): string {
     const percent = cells.slice(1).map((cell, index) => {
       if (!comparable[index + 1]) return null;
       const baseline = cells[0].value as number, difference = (cell.value as number) - baseline;
-      return Math.abs(baseline) <= 1e-12 ? Math.abs(difference) <= 1e-12 ? 0 : null : difference / Math.abs(baseline) * 100;
+      return Math.abs(baseline) <= Math.max(options.percentFloor ?? 0, 1e-12) ? Math.abs(difference) <= 1e-12 ? 0 : null : difference / Math.abs(baseline) * 100;
     });
     const secondary = (record: string, values: Value[]) => rows.push([...prefix(record), ...values, ...runs.slice(1).flatMap(() => [null, null])]);
     rows.push([...prefix('value'), ...cells.map(cell => cell.value ?? cell.missing ?? 'Not recorded'), ...absolute, ...percent]);
@@ -59,7 +61,7 @@ export function comparisonCsv(runs: ComparisonCsvRun[]): string {
     if (cells.some(cell => cell.reason)) secondary('reason', cells.map(cell => cell.reason || ''));
     if (cells.some(cell => cell.partial)) secondary('basis', cells.map(cell => cell.value === null ? cell.missing || 'Not recorded' : cell.partial ? 'Partial: excludes unavailable iron loss' : 'Complete'));
     const notes = cells.map((cell, index) => options.notes?.[index]
-      || (index > 0 && comparable[index] && percent[index - 1] === null ? 'Percentage change is undefined for a zero baseline.' : ''));
+      || (index > 0 && comparable[index] && percent[index - 1] === null ? 'Percentage change is undefined for a zero or near-zero baseline.' : ''));
     if (notes.some(Boolean)) secondary('comparison note', notes);
   };
   const meta = (metric: string, values: Array<string | number | null | undefined>, group = '') => add('Run details', metric, values.map(text), { noDelta: true, group });
@@ -94,7 +96,7 @@ export function comparisonCsv(runs: ComparisonCsvRun[]): string {
   const dq = compareRunDq(results);
   add('Inductance & d/q', 'D-axis reference', dq.references.map(value => ({ value })), { noDelta: true });
   for (const row of dq.rows) add('Inductance & d/q', row.label, row.cells.map(cell => ({ ...cell, status: cell.status?.status, reason: cell.reason || cell.status?.reason })), {
-    unit: row.unit, comparable: row.comparable, notes: dq.notes.map((note, index) => row.frameDependent || !row.comparable[index] ? note : null),
+    unit: row.unit, comparable: row.comparable, percentFloor: row.percentFloor, notes: dq.notes.map((note, index) => row.frameDependent || !row.comparable[index] ? note : null),
   });
   const losses = compareMultipleLosses(results);
   if (!losses.length) add('Losses & efficiency', 'Analysis', runs.map(() => ({ value: null, missing: 'Not recorded' })), { noDelta: true });

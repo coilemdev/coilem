@@ -1,10 +1,11 @@
 {
- "description": "Wall-clock /solve/stream times for the bundled examples, measured through the local API the way the UI runs them (mesh preview, validate, stream). designs holds each design at the Standard plan; tests apply the other plans' settings. mesh_elements is the prepared mesh's triangle count.",
+ "description": "Wall-clock /solve/stream times for the bundled examples, measured through the local API the way the UI runs them (mesh preview, validate, stream). designs holds each design at the Standard plan; tests apply the other plans' settings. mesh_elements is the prepared mesh's triangle count. previous_estimate_s is the estimate the app showed before this calibration. maps time Preview-plan runs with a torque-speed map at the preset given: map_s is from the map stage's first progress event to the result, and previous_estimate_s covers the whole run. spm_24p has two winding layers, as the shipped example does: 27 slots with 24 poles cannot be wound single-layer.",
  "measured_with": {
-  "coilem": "0.2.0",
-  "magneto2d": "0.3.2",
-  "machine": "Apple silicon laptop, 10 cores, macOS 15",
-  "date": "2026-10-11",
+  "coilem": "0.5.8 (main 042744b0, installed wheel)",
+  "magneto2d": "0.6.0",
+  "machine": "Apple silicon laptop, 10 cores, macOS",
+  "power": "battery",
+  "date": "2026-11-15",
   "gmsh_producer_workers": 8
  },
  "designs": {
@@ -266,7 +267,7 @@
    "winding": {
     "type": "concentrated",
     "turns_per_coil": 18,
-    "layers": 1,
+    "layers": 2,
     "parallel_paths": 3
    },
    "materials": {
@@ -310,75 +311,192 @@
    "design": "spm_8p12s",
    "plan": "quick",
    "mesh_elements": 13948,
-   "measured_s": 41.35,
-   "previous_estimate_s": 71.4,
-   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   "measured_s": 8.52,
+   "previous_estimate_s": 35.9
   },
   {
    "design": "ipm_10p_v",
    "plan": "quick",
    "mesh_elements": 15860,
-   "measured_s": 50.05,
-   "previous_estimate_s": 71.4,
-   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   "measured_s": 13.31,
+   "previous_estimate_s": 42.2
   },
   {
    "design": "ipm_14p_flat",
    "plan": "quick",
    "mesh_elements": 18654,
-   "measured_s": 119.15,
-   "previous_estimate_s": 54.6,
-   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   "measured_s": 39.28,
+   "previous_estimate_s": 62.8
   },
   {
    "design": "spm_24p",
    "plan": "quick",
-   "mesh_elements": 23896,
-   "measured_s": 91.9,
-   "previous_estimate_s": 37.8,
-   "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   "mesh_elements": 27912,
+   "measured_s": 29.24,
+   "previous_estimate_s": 80.8
   },
   {
    "design": "spm_8p12s",
    "plan": "standard",
    "mesh_elements": 29240,
-   "measured_s": 101.41,
-   "previous_estimate_s": 105.0
+   "measured_s": 19.99,
+   "previous_estimate_s": 111.7
   },
   {
    "design": "ipm_10p_v",
    "plan": "standard",
    "mesh_elements": 35006,
-   "measured_s": 129.67,
-   "previous_estimate_s": 105.0
+   "measured_s": 37.15,
+   "previous_estimate_s": 137.6
   },
   {
    "design": "ipm_14p_flat",
    "plan": "standard",
    "mesh_elements": 33572,
-   "measured_s": 223.72,
-   "previous_estimate_s": 105.0
+   "measured_s": 62.36,
+   "previous_estimate_s": 169.4
   },
   {
    "design": "spm_24p",
    "plan": "standard",
-   "mesh_elements": 43858,
-   "measured_s": 256.38,
-   "previous_estimate_s": 105.0
+   "mesh_elements": 50328,
+   "measured_s": 65.39,
+   "previous_estimate_s": 249.7
   },
   {
    "design": "spm_8p12s",
    "plan": "fine",
    "mesh_elements": 30120,
-   "measured_s": 207.21,
-   "previous_estimate_s": 403.2
+   "measured_s": 51.83,
+   "previous_estimate_s": 221.3
   },
   {
    "design": "ipm_10p_v",
    "plan": "fine",
    "mesh_elements": 36090,
-   "measured_s": 277.35,
-   "previous_estimate_s": 403.2
+   "measured_s": 85.69,
+   "previous_estimate_s": 274.9
   }
- ]
+ ],
+ "maps": [
+  {
+   "design": "spm_8p12s",
+   "plan": "quick",
+   "preset": "preview",
+   "mesh_elements": 13948,
+   "solves": 29,
+   "positions_per_point": 12,
+   "measured_s": 98.77,
+   "map_s": 83.74,
+   "previous_estimate_s": 700.7
+  },
+  {
+   "design": "ipm_14p_flat",
+   "plan": "quick",
+   "preset": "preview",
+   "mesh_elements": 18654,
+   "solves": 29,
+   "positions_per_point": 12,
+   "measured_s": 149.63,
+   "map_s": 108.99,
+   "previous_estimate_s": 963.7
+  },
+  {
+   "design": "spm_8p12s",
+   "plan": "quick",
+   "preset": "standard",
+   "mesh_elements": 13948,
+   "solves": 61,
+   "positions_per_point": 24,
+   "measured_s": 245.51,
+   "map_s": 235.81,
+   "previous_estimate_s": 2320.1
+  }
+ ],
+ "previous_calibration": {
+  "measured_with": {
+   "coilem": "0.2.0",
+   "magneto2d": "0.3.2",
+   "machine": "Apple silicon laptop, 10 cores, macOS 15",
+   "date": "2026-10-11",
+   "gmsh_producer_workers": 8
+  },
+  "runs": [
+   {
+    "design": "spm_8p12s",
+    "plan": "quick",
+    "mesh_elements": 13948,
+    "measured_s": 41.35,
+    "previous_estimate_s": 71.4,
+    "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   },
+   {
+    "design": "ipm_10p_v",
+    "plan": "quick",
+    "mesh_elements": 15860,
+    "measured_s": 50.05,
+    "previous_estimate_s": 71.4,
+    "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   },
+   {
+    "design": "ipm_14p_flat",
+    "plan": "quick",
+    "mesh_elements": 18654,
+    "measured_s": 119.15,
+    "previous_estimate_s": 54.6,
+    "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   },
+   {
+    "design": "spm_24p",
+    "plan": "quick",
+    "mesh_elements": 23896,
+    "measured_s": 91.9,
+    "previous_estimate_s": 37.8,
+    "superseded_by": "#58: Preview's Back-EMF grid now has 48 angles, not 96, so it plans fewer meshes than this run measured"
+   },
+   {
+    "design": "spm_8p12s",
+    "plan": "standard",
+    "mesh_elements": 29240,
+    "measured_s": 101.41,
+    "previous_estimate_s": 105.0
+   },
+   {
+    "design": "ipm_10p_v",
+    "plan": "standard",
+    "mesh_elements": 35006,
+    "measured_s": 129.67,
+    "previous_estimate_s": 105.0
+   },
+   {
+    "design": "ipm_14p_flat",
+    "plan": "standard",
+    "mesh_elements": 33572,
+    "measured_s": 223.72,
+    "previous_estimate_s": 105.0
+   },
+   {
+    "design": "spm_24p",
+    "plan": "standard",
+    "mesh_elements": 43858,
+    "measured_s": 256.38,
+    "previous_estimate_s": 105.0
+   },
+   {
+    "design": "spm_8p12s",
+    "plan": "fine",
+    "mesh_elements": 30120,
+    "measured_s": 207.21,
+    "previous_estimate_s": 403.2
+   },
+   {
+    "design": "ipm_10p_v",
+    "plan": "fine",
+    "mesh_elements": 36090,
+    "measured_s": 277.35,
+    "previous_estimate_s": 403.2
+   }
+  ],
+  "superseded_by": "The 0.5.8 solver runs these plans 3x to 6x faster (direct Newton, mesh and frame sharing, repeated-solve reuse); the runs above were re-timed on 0.5.8."
+ }
 }

@@ -1093,7 +1093,7 @@ assert.match(packageSource, /node scripts\/test-field-position-link\.mjs/);
 assert.match(packageSource, /node scripts\/test-magnet-coverage\.mjs/);
 assert.equal((workspaceSource.match(/const coverage = magnetPoleCoveragePct\(config\);/g) || []).length, 2);
 assert.match(workspaceSource, /\['Pole coverage', `\$\{magnetPoleCoveragePct\(config\)\}%`\]/);
-assert.match(workspaceSource, /<span className="param-label">Coverage<small>\{config\.topology === 'SPM' \? '% · calc' : '%'\}<\/small><\/span>/);
+assert.match(workspaceSource, /<span className="param-label">Coverage<small>% · calc<\/small><\/span>/);
 assert.doesNotMatch(workspaceSource, /Math\.round\(config\.rotor\.magnet_embrace \* 100\)/);
 assert.match(motorThreeSource, /polePitch \* Math\.min\(1, magnetPoleCoverage\(config\)\) \/ 2/);
 assert.match(solvedFieldSource, /<div><dt>Frames<\/dt><dd>\{bufferStatus\}<\/dd><\/div>/);
@@ -1475,6 +1475,8 @@ assert.match(viewportNavigationSource, /setScale\(DEFAULT_SCALE\)/);
 assert.match(viewportNavigationSource, /anchoredZoomPan\(current, scale, nextScale, anchor\)/);
 assert.match(viewportNavigationSource, /viewportTransformOrigin\(rect\.width, rect\.height, frame \?\? undefined\)/);
 assert.match(motorCanvasSource, /useViewportNavigation\(undefined, navigationFrame, sectorForSize, ringKey\(ring\)\)/);
+// Every motor opens on the fit; only a view already in the sector re-frames a new ring.
+assert.match(viewportNavigationSource, /if \(!sectorActiveRef\.current\) return undefined;\s*resetTurntable\(\);/);
 assert.match(viewportNavigationSource, /fitSubject = 'motor'/);
 assert.match(viewportNavigationSource, /Fit \$\{fitSubject\} to view/);
 assert.match(styleSource, /\.public-viewport-navigation\.is-pannable \{ cursor: grab; \}/);

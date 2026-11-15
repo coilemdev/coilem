@@ -183,6 +183,9 @@ def test_settings_given_with_the_solve_drop_the_setup_label() -> None:
     assert changed.request["solve_params"]["current_amplitude_A"] == 25
     assert changed.request["solve_params"]["solve_quality"] == "fine", "the rest of the setup still applies"
     assert changed.effective_settings()["solve_params"] == changed.request["solve_params"]
+    with pytest.raises(coilem.InputError) as misspelt:
+        coilem.prepare(motor, setup="High Speed", solve_params={"current_amplitude": 25})
+    assert misspelt.value.field == "solve_params.current_amplitude", "a typo never solves under the setup's label"
 
 
 def test_setups_lists_every_saved_setup_with_whether_it_can_be_used() -> None:

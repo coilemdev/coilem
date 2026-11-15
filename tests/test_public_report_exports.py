@@ -699,13 +699,28 @@ def test_pdf_first_page_holds_the_whole_provenance_table() -> None:
         },
         "bindings": {"result_sha256": "d" * 64, "resolved_request_sha256": "e" * 64},
     }
+    result = _result()
+    # The longest setup name the app accepts (100 characters) is shortened to one line.
+    result["solve_metadata"]["run_setup"] = {"id": "user-1", "name": "Wide " * 19 + "name.", "version": 12, "kind": "user", "includes_numerics": True}
     pdf = build_public_run_pdf(
-        project={"topology": "SPM"}, request={"resolved_config": config}, result=_result(), material={}, manifest=manifest,
+        project={"topology": "SPM"}, request={"resolved_config": config}, result=result, material={}, manifest=manifest,
     )
     first_page = pypdf.PdfReader(io.BytesIO(pdf)).pages[0].extract_text() or ""
     for row in ("Solver and build provenance", "UI bundle SHA-256", "Platform", "Result SHA-256", "Resolved request SHA-256", "e" * 64):
         assert row in first_page, row
     assert "Torque method requested" in first_page
+    assert "Run setup" in first_page and "… · version 12" in first_page
+
+
+def test_pdf_names_the_run_setup_as_the_results_page_does() -> None:
+    def text(result: dict) -> str:
+        pdf = build_public_run_pdf(project={"topology": "SPM"}, request={}, result=result, material={}, manifest={"run_id": "r"})
+        return pypdf.PdfReader(io.BytesIO(pdf)).pages[0].extract_text() or ""
+
+    labelled = _result()
+    labelled["solve_metadata"]["run_setup"] = {"id": "user-2", "name": "QA Standard 20deg", "version": 1, "kind": "user"}
+    assert "QA Standard 20deg · version 1" in text(labelled)
+    assert "Run setup" not in text(_result()), "a run solved from the design's own settings has no setup row"
 
 
 def test_pdf_plot_angle_axis_matches_the_apps_steps() -> None:

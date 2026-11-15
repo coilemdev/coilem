@@ -37,6 +37,9 @@ assert.equal(comparisonSignificantDelta(null, 1), '—');
 assert.equal(comparisonPercentDelta(0, 1), '—');
 assert.equal(comparisonPercentDelta(0, 0), '0.0%');
 assert.equal(comparisonPercentDelta(-10, -5), '+50.0%');
+assert.equal(comparisonPercentDelta(0.0146, -6.8, 0.2), '—', 'a near-zero baseline gives no percentage');
+assert.equal(comparisonPercentDelta(0.0146, 0.0146, 0.2), '0.0%');
+assert.equal(comparisonPercentDelta(0.5, 1, 0.2), '+100.0%');
 const fields = { frames: [{ angle_deg: 0, artifact_id: 'frame0' }, { angle_deg: 30, artifact_id: 'frame30' }], snapshot_available: true, snapshot_angle_deg: 15, playback_removed: false };
 assert.deepEqual(comparisonFieldAngles([fields, { ...fields, frames: [{ angle_deg: 30.00001, artifact_id: 'other' }] }]), [0, 15, 30]);
 assert.equal(comparisonFieldTarget(fields, 30).artifactId, 'frame30');
@@ -68,6 +71,15 @@ assert.deepEqual(dqRow(dqComparison, 'apparent_L_d_H').cells[0].status, { status
 assert.deepEqual(dqRow(dqComparison, 'lambda_d_Wb').cells[0].status, { status: 'qualified', reason: 'Stored flux qualification.' });
 assert.equal(dqRow(dqComparison, 'i_d_A').cells[0].status, undefined, 'flux status is not a current qualification');
 assert.equal(dqRow(dqComparison, 'apparent_L_d_H').comparable[1], true);
+// QA 0.5.8 UI-2: a 0° run records γ −0.0198° and id 0.0146 A; no five-digit percentages from those.
+const allQ = { ...dqRecord, i_d_A: 0.0146, i_q_A: 20, current_angle_deg: -0.0198 };
+const nearZero = compareRunDq([dqRun(allQ), dqRun(dqRecord)]);
+assert.equal(dqRow(nearZero, 'current_angle_deg').percentFloor, 0.5);
+assert.ok(Math.abs(dqRow(nearZero, 'i_d_A').percentFloor - 0.01 * Math.hypot(0.0146, 20)) < 1e-12);
+assert.ok(Math.abs(dqRow(nearZero, 'lambda_q_Wb').percentFloor - 0.01 * Math.hypot(10, 4)) < 1e-9, 'flux floors are in mWb');
+assert.equal(dqRow(nearZero, 'i_q_A').percentFloor < 20, true, 'the dominant component keeps its percentage');
+assert.equal(dqRow(nearZero, 'apparent_L_d_H').percentFloor, 0);
+assert.equal(dqRow(compareRunDq([dqRun(null), dqRun(dqRecord)]), 'i_d_A').percentFloor, 0);
 
 const differentReference = { ...dqRecord, d_axis_source: 'applied_current_angle', apparent_L_d_H: null, lambda_pm_Wb: null };
 const unavailableDq = { ...dqRecord, status: 'unavailable', status_reason: 'Stored failure.', inductance_status: 'unavailable' };
@@ -360,6 +372,13 @@ console.log('Multi-run comparison preserves pinned identities, the six-run limit
   const two = parseCsv(comparisonCsv([zero, makeRun(1)]));
   const changed = two.find(item => item[0] === 'Results comparison' && item[2] === 'Average torque' && item[3] === 'value');
   assert.equal(changed[11], '11'); assert.equal(changed[12], '', 'nonzero change from zero has no percentage');
+  const allQ = makeRun(0); allQ.result.summary.dq_flux_linkage = { ...dqRecord, i_d_A: 0.0146, i_q_A: 20, current_angle_deg: -0.0198 };
+  const fromAllQ = parseCsv(comparisonCsv([allQ, makeRun(1)]));
+  const dqValue = (metric, record = 'value') => fromAllQ.find(item => item[0] === 'Inductance & d/q' && item[2] === metric && item[3] === record);
+  assert.equal(dqValue('γ · current angle')[12], '', 'near-zero γ baseline has no percentage');
+  assert.equal(dqValue('id · d-axis current')[12], '', 'near-zero id baseline has no percentage');
+  assert.match(dqValue('id · d-axis current', 'comparison note')[10], /near-zero baseline/);
+  assert.notEqual(dqValue('iq · q-axis current')[12], '', 'the q-axis current keeps its percentage');
   assert.equal(comparisonCsvFilename(runs), 'coilem-comparison-r2.csv');
   const withLineVoltage = makeRun(0); withLineVoltage.result.back_emf_waveform.line_ab_V = [10, 20];
   const sparse = parseCsv(comparisonCsv([makeRun(2), withLineVoltage]));

@@ -10,10 +10,13 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend import solve_estimate
+from backend.flux_linkage_map import MapStore, map_grid
 from backend.magneto2d_adapter import cache_magneto2d_solve_mesh
 from backend.models import MotorConfig
+from backend.models.config import TorqueSpeedAnalysisConfig
+from backend.models.performance import FluxLinkageMapPoint, dq_currents
 from backend.public_main import app
-from backend.solve_estimate import estimate_solve, planned_work, prepared_mesh_elements
+from backend.solve_estimate import estimate_map, estimate_solve, planned_work, prepared_mesh_elements
 
 CALIBRATION = json.loads(Path("tests/fixtures/solve_time_calibration.json").read_text(encoding="utf-8"))
 # The UI's plan buttons (frontend/src/public/solvePlan.ts and App.tsx asPublicConfig).
@@ -46,6 +49,35 @@ CURRENT_RUNS = [run for run in CALIBRATION["runs"] if "superseded_by" not in run
 def test_measured_runs_fall_inside_the_estimated_range(run: dict) -> None:
     estimate = estimate_solve(_planned(run["design"], run["plan"]), mesh_elements=run["mesh_elements"])
     assert estimate.low_s <= run["measured_s"] <= estimate.high_s, (estimate, run["measured_s"])
+
+
+def _map_settings(preset: str, peak_current_A: float = 40.0) -> TorqueSpeedAnalysisConfig:
+    return TorqueSpeedAnalysisConfig.model_validate(
+        {"preset": preset, "limits": {"dc_bus_V": 48, "peak_current_A": peak_current_A, "max_speed_rpm": 4800}}
+    )
+
+
+@pytest.mark.parametrize("timed", CALIBRATION["maps"], ids=lambda timed: f"{timed['design']}-{timed['preset']}")
+def test_measured_maps_fall_inside_the_estimated_range(timed: dict) -> None:
+    estimate = estimate_map(_map_settings(timed["preset"]), mesh_elements=timed["mesh_elements"])
+    assert (estimate.solves, estimate.positions_per_point) == (timed["solves"], timed["positions_per_point"])
+    assert estimate.low_s <= timed["map_s"] <= estimate.high_s, (estimate, timed["map_s"])
+
+
+def test_a_map_estimate_counts_only_the_points_still_to_solve(tmp_path: Path) -> None:
+    settings = _map_settings("preview")
+    store = MapStore(tmp_path, "scope-key-for-this-test")
+    fresh = estimate_map(settings, mesh_elements=14000, store=store)
+    assert fresh.solves == fresh.solves_remaining == 29
+    currents, gammas = map_grid(40.0, "preview")
+    # A cancelled map keeps its finished points: the zero point and four at the first current.
+    for current, gamma in [(0.0, gammas[0]), *((currents[1], gamma) for gamma in gammas[:4])]:
+        i_d, i_q = dq_currents(current, gamma)
+        store.save(FluxLinkageMapPoint(current_peak_A=current, gamma_deg=gamma, i_d_A=i_d, i_q_A=i_q, status="ok",
+                                       avg_torque_Nm=1.0, lambda_d_Wb=0.01, lambda_q_Wb=0.0))
+    resumed = estimate_map(settings, mesh_elements=14000, store=store)
+    assert resumed.solves_remaining == 24
+    assert resumed.seconds == pytest.approx(fresh.seconds * 24 / 29)
 
 
 def test_planned_work_counts_meshes_after_slot_pitch_reuse() -> None:

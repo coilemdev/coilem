@@ -26,6 +26,10 @@ original identities. Release approval and publication remain pending; see the
 - **Compare saved runs.** Compare two to six analyses with a pinned baseline.
   Inputs, results, losses and elapsed timing share the run columns and baseline
   deltas; torque, back-EMF and cogging overlays retain each run's line style.
+  Ld and Lq, the d/q currents and flux linkages and Ke are compared at each
+  run's operating point. The Torque–speed and Fields tabs put the runs' maps
+  and field plots side by side, and Export CSV writes the whole comparison,
+  baseline first. See [Compare runs](docs/COMPARE_RUNS.md).
 - **Python scripting and command line.** `import coilem` scripts motor solves
   with typed inputs, results and executable examples ([Python client](docs/PYTHON_CLIENT.md)).
   `coilem check`, `solve`, `setups`, `schema` and `version` do the same from a
@@ -36,7 +40,9 @@ original identities. Release approval and publication remain pending; see the
   and settings used.
 - **Solve execution and timing.** Direct Newton execution, worker/thread handling,
   mesh and frame sharing, and repeated-solve reuse reduce overhead. Results and
-  reports distinguish elapsed time from combined worker time. Release-specific
+  reports distinguish elapsed time from combined worker time. The Solve page's
+  run-time estimate is refitted to this release's timings, and a torque–speed
+  map counts only the points it has not already stored. Release-specific
   speed claims await measurements of this candidate.
 - **More useful results and reports.** Partial analyses explain unavailable
   losses and efficiency; incomplete totals are labelled Known loss subtotal.

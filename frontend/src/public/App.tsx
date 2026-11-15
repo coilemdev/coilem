@@ -1750,6 +1750,9 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           qualification: provenance?.qualification ?? null,
         } as unknown as SolveResult);
         setView('solve');
+        // Prepare the mesh as Continue to Solve does, so Run again is available
+        // without a trip back to Design; the stored result stays on show meanwhile.
+        if (!guidedActive) void prepareMesh(parsed.config);
         const completedAt = typeof savedRun.completed_at === 'string' ? new Date(savedRun.completed_at).toLocaleString() : null;
         const playback = payload.field_playback as { available?: unknown } | undefined;
         setNotice([

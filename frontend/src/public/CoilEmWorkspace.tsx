@@ -1561,8 +1561,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
         />
       )}
       {config.rotor.ipm_topology !== 'pyleecan_holem50' && hasPoleCoverageEstimate(config) && (
-        // A surface magnet's coverage follows from its width, as the geometry builds it.
-        <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>{config.topology === 'SPM' ? '% · calc' : '%'}</small></span><strong>{coverage}</strong></div>
+        // A surface or flat-buried magnet's coverage follows from its width, as the geometry builds it.
+        <div className="param-row public-param-row public-derived-row"><span className="param-label">Coverage<small>% · calc</small></span><strong>{coverage}</strong></div>
       )}
       <SelectRow label="Magnet Grade" value={config.materials.magnet_grade} choices={materials.magnet_grades.map((value) => ({ value, label: value }))} disabled={disabled} onChange={set('materials', 'magnet_grade', 'rotor')} />
     </ParameterSectionBlock>
@@ -1621,7 +1621,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
             {(['SPM', 'IPM'] as const).map((topology) => (
               <button
                 type="button"
-                className={`topo-card${(entry ? entry.topology === topology : config.topology === topology) ? ' active' : ''}`}
+                className={`topo-card is-compact${(entry ? entry.topology === topology : config.topology === topology) ? ' active' : ''}`}
                 aria-pressed={entry ? entry.topology === topology : config.topology === topology}
                 {...topologyHover.triggerProps(topology, outer && topology === 'IPM')}
                 disabled={disabled || Boolean(entry && !entry.layout) || (outer && topology === 'IPM')}
@@ -1630,7 +1630,7 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                 key={topology}
               >
                 <span className="topo-icon" aria-hidden="true">{(entry ? entry.topology === topology : config.topology === topology) ? '◉' : '○'}</span>
-                <span className="topo-text"><span className="topo-name">{topology}</span><span className="topo-sub">{topology === 'SPM' ? 'Surface PM' : 'Flat / V'}</span></span>
+                <span className="topo-text"><span className="topo-name">{topology}</span></span>
                 <span className="topo-badge topo-badge-guided">Guided</span>
               </button>
             ))}
@@ -1641,16 +1641,8 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
               <div className="param-section-label">IPM rotor layout</div>
               <div ref={ipmLayoutHover.groupRef} className="ipm-layout-cards" role="group" aria-label="IPM rotor layout">
                 {([
-                  {
-                    value: 'flat_buried',
-                    label: 'Flat / buried',
-                    description: 'Parallel magnets inside the rotor',
-                  },
-                  {
-                    value: 'v_shape',
-                    label: 'V-shape',
-                    description: 'Angled magnet pairs for saliency',
-                  },
+                  { value: 'flat_buried', label: 'Flat / buried' },
+                  { value: 'v_shape', label: 'V-shape' },
                 ] as const).map((layout) => (
                   <button
                     type="button"
@@ -1662,7 +1654,6 @@ function ParameterPanel({ config, materials, geometry, geometryStale, busy, erro
                     key={layout.value}
                   >
                     <span>{layout.label}</span>
-                    <small>{layout.description}</small>
                   </button>
                 ))}
               </div>
@@ -3949,7 +3940,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     setAdvancedOpen(true);
     setRecoveryFocusRequest((request) => request + 1);
   };
-  const completedAnalysisAvailable = Boolean(result) && busy === null;
+  // A shown result stays viewable while a mesh is prepared for the next run
+  // (as when a saved run is opened); Run again waits for the mesh.
+  const completedAnalysisAvailable = Boolean(result) && (busy === null || busy === 'mesh');
   const finalizingResults = solveInProgress && isPublicSolveFinalizing(progress);
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);

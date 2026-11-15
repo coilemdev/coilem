@@ -48,7 +48,7 @@ from backend.public_policy import (
 )
 from backend.qualification import classify_qualification
 from backend.selected_analyses import solve_selected_analyses
-from backend.solve_estimate import estimate_solve, prepared_mesh_elements
+from backend.solve_estimate import estimate_map, estimate_solve, prepared_mesh_elements
 from backend.solve_workspace import (
     RUN_ARTIFACT_PREFIX,
     SolveRunWriter,
@@ -57,6 +57,7 @@ from backend.solve_workspace import (
     SolveWorkspaceError,
     resolve_run_artifact_id,
     run_artifact_location,
+    user_data_root,
 )
 from backend.solver import Magneto2DSolver
 from backend.solver_contract import SolveCancelledError, Solver
@@ -1255,17 +1256,21 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
     map_work = None
     map_seconds = map_low = map_high = 0.0
     if config.solve_options and config.solve_options.torque_speed_envelope and config.torque_speed_analysis:
-        from backend.flux_linkage_map import map_grid, map_positions_per_point, map_solve_count, point_config
+        from backend.flux_linkage_map import MapStore, map_scope_key
 
         settings = config.torque_speed_analysis
-        solves = map_solve_count(*map_grid(settings.limits.peak_current_A, settings.preset))
-        point_estimate = estimate_solve(point_config(config, settings.limits.peak_current_A, 0, settings.preset),
-                                        mesh_elements=estimate.mesh_elements)
-        zero_estimate = estimate_solve(point_config(config, 0, 0, settings.preset), mesh_elements=estimate.mesh_elements)
-        map_seconds = zero_estimate.seconds + (solves - 1) * point_estimate.seconds
-        map_low = zero_estimate.low_s + (solves - 1) * point_estimate.low_s
-        map_high = zero_estimate.high_s + (solves - 1) * point_estimate.high_s
-        map_work = {"solves": solves, "positions_per_point": map_positions_per_point(settings.preset)}
+        # The solve reuses a stored map, or the points a cancelled map finished (selected_analyses).
+        try:
+            store = MapStore(user_data_root() / "performance_maps", map_scope_key(config, settings.preset))
+        except (ValueError, OSError):
+            store = None
+        map_estimate = estimate_map(settings, mesh_elements=estimate.mesh_elements, store=store)
+        map_seconds, map_low, map_high = map_estimate.seconds, map_estimate.low_s, map_estimate.high_s
+        map_work = {
+            "solves": map_estimate.solves,
+            "solves_remaining": map_estimate.solves_remaining,
+            "positions_per_point": map_estimate.positions_per_point,
+        }
     warnings = winding_feasibility_warnings(config) + geometry_mesh_advisories(config)
     if estimate.seconds > 120 and solve_params.solve_quality != "quick":
         warnings.append(

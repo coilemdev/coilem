@@ -49,8 +49,8 @@ that the Python client reads.
 |---|---|
 | `--setup NAME` | Apply this saved run setup, by name (any case) or id. `--profile` is the same option. |
 | `--analyses LIST` | Comma-separated analyses: `torque`, `back_emf`, `cogging`, `losses`, `thd`, `flux_density` |
-| `--quality NAME` | `quick`, `standard`, `fine` or `custom` |
-| `--mesh NAME` | `coarse`, `normal`, `fine` or `very_fine` |
+| `--quality NAME` | `quick`, `standard`, `fine` or `custom`: the app's Preview, Standard, High accuracy and Custom plans |
+| `--mesh NAME` | `coarse`, `normal`, `fine` or `very_fine`: the app's Coarse, Medium, Fine and Very fine meshes |
 | `--set NAME=VALUE` | Set any `solve_params` field, for example `--set current_amplitude_A=20`. VALUE is read as JSON when it parses (`20`, `true`, `null`), else as text. Repeat for more fields. |
 
 `solve` also takes:
