@@ -3222,7 +3222,12 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   background: rgba(26, 28, 34, 0.5);
   font: 600 9px var(--font-mono);
 }
+/* Four plans: one row when the setup panel has room, otherwise two by two. */
+.public-solve-plan-frame { container-type: inline-size; }
 .public-solve-plan-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (min-width: 420px) {
+  .public-solve-plan-choices { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 .public-solve-plan-choices button {
   position: relative;
   min-height: 78px;

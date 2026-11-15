@@ -4408,7 +4408,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <AnalysisOptions config={config} solver={selectedSolver} busy={busy !== null} coggingPositions={validation?.cogging_positions_per_period} onChange={onAnalysisChange} onTorqueSpeedChange={onTorqueSpeedChange} />
         </ParameterSectionBlock>
         <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
-          <div className="public-choice-row public-solve-plan-choices">
+          <div className="public-solve-plan-frame"><div className="public-choice-row public-solve-plan-choices">
             {solvePlans.map((plan) => (
               <button
                 type="button"
@@ -4429,7 +4429,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                   : plan.tradeoff}</small>
               </button>
             ))}
-          </div>
+          </div></div>
           <div className={`public-custom-sweep${config.solve_params.solve_quality === 'custom' ? ' active' : ''}`}>
             <button
               type="button"
