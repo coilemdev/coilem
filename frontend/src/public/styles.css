@@ -1732,6 +1732,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-run-compare-metrics:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .public-run-compare-timing caption .info-tip { margin-left: 6px; vertical-align: middle; }
 .public-run-compare-losses caption .info-tip, .public-run-compare-losses td .status-dot { margin-left: 6px; vertical-align: middle; }
+.public-run-compare-dq .info-tip, .public-run-compare-dq .status-dot { margin-left: 6px; vertical-align: middle; }
 .public-run-compare-loss-component th { padding-left: 30px; color: var(--text-muted) !important; }
 .public-run-compare-loss-partial { display: block; margin-top: 4px; }
 .public-losses-full-cycle { margin: 6px 0 0; color: var(--text-accent); font-size: 11px; line-height: 1.5; }
