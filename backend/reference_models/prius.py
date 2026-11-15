@@ -164,7 +164,9 @@ def extract_winding_report(report, config, artifact):
         "flux_rule": "signed turns * physical stack length * area-weighted nodal Az in each exact winding region",
         "phase_flux_linkage_Wb": flux.tolist(),
         "sum_phase_flux_current_J": float(np.dot(flux, artifact["physics_contract"]["provenance"]["phase_current_A"])),
-        "integral_Az_Jz_L_J": float(np.dot(element_az * densities, areas) * config.stator.stack_length_mm * .001),
+        # Az and Jz both change sign in an anti-periodic neighbour, so every
+        # repeat holds the same Az·Jz energy as the modelled one.
+        "integral_Az_Jz_L_J": repeats * float(np.dot(element_az * densities, areas) * config.stator.stack_length_mm * .001),
     }
 
 

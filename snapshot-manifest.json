@@ -615,8 +615,8 @@
     },
     {
       "path": "backend/reference_models/prius.py",
-      "bytes": 20727,
-      "sha256": "6a97e17ec07c8c70f9b2c9aa1786a22d4b41a062cbc56debb44a948409b75036"
+      "bytes": 20881,
+      "sha256": "334e1cec53d5a8335ace024fd96023453c4e780f8103ce4fcec77391649ed2d5"
     },
     {
       "path": "backend/reference_models/pyleecan_prius_2004.json",
@@ -19290,8 +19290,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 31409,
-      "sha256": "41b19b69813b4ff699b13d22360ea88186e3aebd93b9c4e879cd616af68f2a3e"
+      "bytes": 31942,
+      "sha256": "c7e16224e54273fce3c637f683bfa94c9317cb51df97a5f3a6cd96844ffe373b"
     },
     {
       "path": "frontend/scripts/csv-test-helpers.mjs",

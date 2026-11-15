@@ -372,6 +372,13 @@ def test_a_sector_solve_equals_the_full_circle_solve_of_the_same_mesh(fixture) -
         tolerance = 1e-6 * (scale if key.startswith("flux") else max(abs(b["torque_nm"]), abs(b[key]), 1e-9))
         assert a[key] == pytest.approx(b[key], abs=tolerance), key
     assert a["energy_functional"]["coenergy_j"] == pytest.approx(b["energy_functional"]["coenergy_j"], rel=1e-8)
+    if "reference_winding_extraction" in tiled_report:
+        # The published-winding audit compares the phase linkage with the source
+        # integral, so both must cover the whole motor.
+        x, y = sector_report["reference_winding_extraction"], tiled_report["reference_winding_extraction"]
+        for key in ("sum_phase_flux_current_J", "integral_Az_Jz_L_J"):
+            assert x[key] == pytest.approx(y[key], rel=1e-6), key
+        assert x["sum_phase_flux_current_J"] == pytest.approx(x["integral_Az_Jz_L_J"], rel=1e-9)
     # The contour torque that grades benchmarks is available on a sector.
     assert a["torque_contour_selection"] == b["torque_contour_selection"] == "az"
 
