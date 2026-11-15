@@ -58,6 +58,8 @@ PACKAGE_DATA_FILES = (
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
 BENCHMARK_SUITE_FILE = "benchmarks/af-v1.10/benchmark_spec.json"
+# The same cases solved as one repeating sector (protocol 1.11.0), graded against the same references.
+BENCHMARK_SECTOR_SUITE_FILE = "benchmarks/af-v1.11-sector/benchmark_spec.json"
 BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol110-combined-20261110"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
 
@@ -140,6 +142,7 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
                 files.update(geometry["current_sources"])
 
     suite(BENCHMARK_SUITE_FILE)
+    suite(BENCHMARK_SECTOR_SUITE_FILE)
     bundle(BENCHMARK_REFERENCE_BUNDLE_DIR)
     files.update(path.relative_to(root).as_posix() for path in (root / BENCHMARK_RECORDS_DIR).glob("*.json"))
     return tuple(sorted(files))

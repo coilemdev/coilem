@@ -5,6 +5,7 @@ import math
 
 from backend.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.contract import DATA_ROOT, canonical, checked_json, read, sha
+from backend.resources import BENCHMARK_SUITE_FILE
 
 
 def load_suite(path):
@@ -17,6 +18,8 @@ def load_suite(path):
         from backend.benchmark_suite.composition import components
 
         components(spec, DATA_ROOT)
+    elif spec["protocol_version"] == "1.11.0":
+        _sector_suite_measured(spec)
     for case in spec["cases"]:
         # A Phase E case is graded against its own registered absolute floor (protocol 1.7.0).
         floor = case.get("cogging_floor_Nm")
@@ -65,8 +68,11 @@ def _cap_compatible_inputs(spec, bridge):
 
 # coilEM solve options that a reference solver never reads, with the one change a bridge may register for
 # each. FEMM solves its own nonlinear problem, so changing coilEM's nonlinear method leaves a frozen FEMM
-# record valid for the changed request (protocol 1.9.0). Anything else needs a new reference bundle.
-REFERENCE_INDEPENDENT_SOLVE_OPTIONS = {"nonlinear_solver": ("picard", "newton")}
+# record valid for the changed request (protocol 1.9.0). FEMM always solves the whole motor, so solving one
+# repeating sector in coilEM leaves it valid too (protocol 1.11.0). Anything else needs a new reference bundle.
+REFERENCE_INDEPENDENT_SOLVE_OPTIONS = {"nonlinear_solver": ("picard", "newton"), "symmetry": ("full", "auto")}
+# What a request means when it leaves one of those options out: requests and saved configs omit the full motor.
+SOLVE_OPTION_DEFAULTS = {"symmetry": "full"}
 
 
 def _solve_option_compatible_inputs(spec, bridge):
@@ -105,7 +111,7 @@ def _solve_option_compatible_inputs(spec, bridge):
             current = checked_json(DATA_ROOT, job["fixture"], job["fixture_sha256"])
             expected = copy.deepcopy(old)
             for name, rule in options.items():
-                if old["solve_params"].get(name) == rule["from"]:
+                if old["solve_params"].get(name, SOLVE_OPTION_DEFAULTS.get(name)) == rule["from"]:
                     expected["solve_params"][name] = rule["to"]
             if (current == old or current != expected or canonical(old) != old_job["input_sha256"]
                     or canonical(current) != job["input_sha256"]):
@@ -114,6 +120,28 @@ def _solve_option_compatible_inputs(spec, bridge):
     if not compatible:
         raise ValueError("Reference solve-option bridge has no changed requests")
     return compatible
+
+
+def _sector_suite_measured(spec):
+    """The combined A-F suite that the sector suite (protocol 1.11.0) solves as sectors.
+
+    Every request must be its protocol 1.10.0 request with ``symmetry`` changed from the full motor
+    to ``auto``, and nothing else; cases, grids, floors and gates stay as registered.
+    """
+    from backend.benchmark_suite.composition import components
+
+    bridge = spec.get("reference_compatibility") or {}
+    change = bridge.get("solve_option_change") or {}
+    if (bridge.get("schema") != "coilem.reference_validation_bridge/v1" or bridge.get("measured_protocol_version") != "1.10.0"
+            or change.get("solve_params") != {"symmetry": {"from": "full", "to": "auto"}}
+            or bridge.keys() & {"iteration_cap_change", "cogging_native_mesh_change"} or spec.get("components")):
+        raise ValueError("Protocol 1.11.0 is only the combined A-F suite solved as sectors")
+    _solve_option_compatible_inputs(spec, bridge)
+    measured = checked_json(DATA_ROOT, change["measured_suite"], change["measured_suite_sha256"])
+    if change["measured_suite"] != BENCHMARK_SUITE_FILE or measured.get("protocol_version") != "1.10.0":
+        raise ValueError("Protocol 1.11.0 must bridge the registered combined A-F suite")
+    components(measured, DATA_ROOT)
+    return measured
 
 
 def _compatible_inputs(spec, bridge):
@@ -167,12 +195,18 @@ def _reviewed_suite(spec):
     return checked_json(DATA_ROOT, change["measured_suite"], change["measured_suite_sha256"])
 
 
+def _combined_suite(spec):
+    """The suite a combined bundle was registered for: this one, or the one the sector suite bridges."""
+    return _sector_suite_measured(spec) if spec.get("protocol_version") == "1.11.0" else spec
+
+
 def load_bundle(directory, spec):
     manifest = read(directory / "manifest.json")
     if manifest.get("schema") == "coilem.combined_reference_bundle/v1":
         from backend.benchmark_suite.composition import load
 
-        return load(directory, spec, DATA_ROOT, load_bundle, require_reviewed_bundle)
+        # The sector suite grades against the combined records unchanged; its bridge was checked above.
+        return load(directory, _combined_suite(spec), DATA_ROOT, load_bundle, require_reviewed_bundle)
     # A new validation frame can reuse unchanged physical fields only through
     # an explicit, hash-bound bridge. This never rewrites a measured record.
     bridge = None
@@ -226,7 +260,7 @@ def require_reviewed_bundle(directory, manifest, spec):
     if manifest.get("schema") == "coilem.combined_reference_bundle/v1":
         from backend.benchmark_suite.composition import load
 
-        load(directory, spec, DATA_ROOT, load_bundle, require_reviewed_bundle)
+        load(directory, _combined_suite(spec), DATA_ROOT, load_bundle, require_reviewed_bundle)
         return checked_json(directory, manifest["review"]["file"], manifest["review"]["sha256"])
     entry = manifest.get("review") or {}
     review = checked_json(directory, entry["file"], entry["sha256"])
