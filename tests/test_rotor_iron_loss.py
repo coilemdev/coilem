@@ -193,3 +193,47 @@ def test_nonfinite_fields_and_degenerate_integration_cells_are_rejected():
     samples = [replace(s, corners_mm=np.zeros_like(s.corners_mm)) for s in samples]
     with pytest.raises(ValueError, match="positive element areas"):
         rotor_flux_history(plan, samples)
+
+
+@pytest.mark.parametrize("angle", [-90.0, 37.0, 180.0])
+def test_material_coordinate_adapter_does_not_rotate_geometry_or_b_again(angle):
+    raw = frame_at(0, (0.3, -0.4))
+    material_sample = sample_rotor_field(raw, mechanical_angle_deg=angle, coordinate_frame="rotor_material")
+    global_sample = sample_rotor_field(frame_at(angle, (0.3, -0.4)), mechanical_angle_deg=angle)
+    assert material_sample.corners_mm == pytest.approx(raw.nodes_mm[raw.triangles], abs=1e-14)
+    assert material_sample.bx_t == pytest.approx([0.3, 0.3])
+    assert material_sample.by_t == pytest.approx([-0.4, -0.4])
+    assert material_sample.corners_mm == pytest.approx(global_sample.corners_mm, abs=1e-14)
+    assert material_sample.bx_t == pytest.approx(global_sample.bx_t, abs=1e-14)
+    assert material_sample.mechanical_angle_deg == angle
+
+
+@pytest.mark.parametrize("direction", [-1, 1])
+def test_material_frame_histories_preserve_dc_and_real_harmonics(direction):
+    plan = RotorSamplingPlan(1800, 64, direction)
+    samples, queries = [], []
+    for k, angle in enumerate(plan.mechanical_angles_deg):
+        field = (1.2 + 0.3*np.cos(2*np.pi*3*k/64), 0.4*np.sin(2*np.pi*3*k/64))
+        raw = frame_at(0, field)
+        samples.append(sample_rotor_field(raw, mechanical_angle_deg=angle, coordinate_frame="rotor_material"))
+        queries.append(np.column_stack([raw.bx_t, raw.by_t]))
+    history = rotor_flux_history(plan, samples)
+    product = harmonic_rotor_iron_loss(history, material=MATERIAL, stack_length_m=STACK)
+    oracle = reference_loss(queries, plan.mechanical_angles_deg, history.area_m2,
+                            speed_rpm=1800, stack_m=STACK, coefficients=COEFFICIENTS.__dict__, field_frame="rotor_material")
+    h, e = expected_loss([(3, 0.5)], 1800)
+    assert history.distinct_meshes == 1
+    assert product.hysteresis_W == pytest.approx(h, rel=0.01)
+    assert product.lamination_eddy_W == pytest.approx(e, rel=0.01)
+    assert oracle["total_W"] == pytest.approx(h+e, rel=0.01)
+    dc = [sample_rotor_field(frame_at(0, (1.2, -0.4)), mechanical_angle_deg=a, coordinate_frame="rotor_material")
+          for a in plan.mechanical_angles_deg]
+    assert harmonic_rotor_iron_loss(rotor_flux_history(plan, dc), material=MATERIAL, stack_length_m=STACK).total_W < 1e-20
+
+
+def test_unknown_coordinate_frames_are_rejected():
+    with pytest.raises(ValueError, match="coordinate frame"):
+        sample_rotor_field(frame_at(0, (1, 0)), mechanical_angle_deg=0, coordinate_frame="unknown")
+    with pytest.raises(ValueError, match="reference field frame"):
+        reference_loss(np.zeros((8, 1, 2)), np.arange(8)*45, [1], speed_rpm=1800,
+                       stack_m=STACK, coefficients=COEFFICIENTS.__dict__, field_frame="unknown")

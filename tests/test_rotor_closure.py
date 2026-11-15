@@ -110,9 +110,9 @@ def test_same_mesh_count_cannot_hide_changed_geometry(tmp_path):
     assert analyse_closure(tmp_path)["mesh_invariance_gate"] == "FAIL"
 
 
-def test_global_frame_loss_analyser_refuses_moving_airgap_exports(tmp_path):
+def test_closure_probe_cannot_be_mistaken_for_a_full_history(tmp_path):
     make_probe(tmp_path)
-    with pytest.raises(ValueError, match="rotor-material axes"):
+    with pytest.raises(ValueError, match="closure probe is not a full-turn history"):
         analyse(tmp_path)
 
 

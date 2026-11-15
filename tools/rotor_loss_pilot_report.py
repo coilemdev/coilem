@@ -20,25 +20,48 @@ from backend.rotor_iron_loss import (
     rotor_flux_history,
     sample_rotor_field,
 )
+from tools.femm_reference.rotor_airgap import mesh_signature
+from tools.rotor_closure_report import REQUIRED, boundary_pose, closure_metrics
 from tools.rotor_loss_reference import reference_loss
+
+
+def history_coordinate_frame(protocol):
+    """Accept complete, explicit representations; never guess a moving-band frame."""
+    if protocol.get("motion_model") == "periodic-air-gap":
+        if protocol.get("collection_kind") != "full_turn_history":
+            raise ValueError("A closure probe is not a full-turn history; use tools.rotor_closure_report")
+        if (protocol.get("raw_mesh_frame") != "rotor_material" or protocol.get("raw_field_frame") != "rotor_material"
+                or not protocol.get("independent_base_reload")):
+            raise ValueError("Moving-air-gap histories require explicit rotor-material axes and fresh base reloads")
+        return "rotor_material"
+    if protocol.get("motion_model") not in (None, "remesh"):
+        raise ValueError("unsupported reference motion model")
+    if any(protocol.get(k, "global") != "global" for k in ("raw_mesh_frame", "raw_field_frame")):
+        raise ValueError("Remeshed histories must declare matching global mesh and field axes")
+    return "global"
 
 
 def analyse(directory):
     directory = Path(directory)
     protocol = json.loads((directory / "protocol.json").read_text())
-    if protocol.get("motion_model") == "periodic-air-gap":
-        raise ValueError("Moving-air-gap exports use rotor-material axes; use tools.rotor_closure_report for the closure probe. "
-                         "Full-history loss analysis needs an explicit coordinate adapter before use.")
+    coordinate_frame = history_coordinate_frame(protocol)
     reference_points = np.loadtxt(directory / "reference-points.csv", delimiter=",", ndmin=2)
     count = protocol["positions"]
     if count % 4 or count < 32:
         raise ValueError("pilot analysis needs a grid divisible by four and at least 32 positions")
+    if coordinate_frame == "rotor_material":
+        expected_angles = [-360*k/count for k in range(count+1)]
+        if protocol.get("mechanical_angles_deg") != expected_angles:
+            raise ValueError("Moving-air-gap poses do not match the full-turn grid")
     samples, queried_fields, timing, element_counts = [], [], [], []
+    mesh_hashes, reference_raw_corners = [], None
     for index in range(count+1):
         position = directory / f"position-{index:04d}"
         record = json.loads((position / "position.json").read_text())
+        if coordinate_frame == "rotor_material" and not REQUIRED.issubset(record["sha256"]):
+            raise ValueError("Moving-air-gap history is missing required evidence")
         for name, digest in record["sha256"].items():
-            if hashlib.sha256((position / name).read_bytes()).hexdigest() != digest:
+            if Path(name).name != name or hashlib.sha256((position / name).read_bytes()).hexdigest() != digest:
                 raise ValueError("reference artifact hash mismatch")
         angle = -360*index/count
         if record["index"] != index or abs(record["mechanical_angle_deg"]-angle) > 1e-10:
@@ -46,14 +69,27 @@ def analyse(directory):
         queries = re.findall(r"mo_getpointvalues\(([^,]+),([^\)]+)\)", (position / "point-export.lua").read_text())
         query_coordinates = np.asarray(queries, dtype=float)
         c, s = np.cos(np.deg2rad(angle)), np.sin(np.deg2rad(angle))
-        expected_coordinates = reference_points @ np.array([[c, s], [-s, c]])
+        expected_coordinates = reference_points if coordinate_frame == "rotor_material" else reference_points @ np.array([[c, s], [-s, c]])
         if query_coordinates.shape != expected_coordinates.shape or not np.allclose(query_coordinates, expected_coordinates, rtol=0, atol=1e-10):
             raise ValueError("FEMM queries do not follow the fixed rotor material points")
         mesh = np.loadtxt(position / "rotor.csv", delimiter=",", ndmin=2)
         corners = mesh[:, :6].reshape(-1, 3, 2)
+        if coordinate_frame == "rotor_material":
+            model_text = (position / "model.fem").read_text(encoding="latin-1")
+            previous = re.search(r'^\[PrevSoln\]\s*=\s*"([^"]*)"', model_text, flags=re.M)
+            if previous is None or previous[1] or boundary_pose(model_text) != angle:
+                raise ValueError("Moving-air-gap history needs fresh solves at the unwrapped requested poses")
+            geometry_hash = mesh_signature(position / "model.ans")
+            if geometry_hash != record.get("mesh_geometry_sha256"):
+                raise ValueError("Moving-air-gap mesh hash mismatch")
+            if reference_raw_corners is None:
+                reference_raw_corners = corners.copy()
+            if (mesh_hashes and geometry_hash != mesh_hashes[0]) or not np.array_equal(corners, reference_raw_corners):
+                raise ValueError("Moving-air-gap mesh changed during the full-turn history")
+            mesh_hashes.append(geometry_hash)
         frame = FieldFrame(corners.reshape(-1, 2), np.arange(len(corners)*3).reshape(-1, 3),
                            ["rotor_core"]*len(corners), mesh[:, 6], mesh[:, 7])
-        samples.append(sample_rotor_field(frame, mechanical_angle_deg=angle))
+        samples.append(sample_rotor_field(frame, mechanical_angle_deg=angle, coordinate_frame=coordinate_frame))
         queried_fields.append(np.loadtxt(position / "points.csv", delimiter=",", ndmin=2))
         timing.append(record["wall_s"])
         element_counts.append(record["total_elements"])
@@ -76,7 +112,8 @@ def analyse(directory):
         selected = [samples[k] for k in indices]
         reference_start = time.perf_counter()
         reference = reference_loss(fields[indices], plan.mechanical_angles_deg, areas,
-                                   speed_rpm=plan.speed_rpm, stack_m=stack, coefficients=asdict(material.coefficients))
+                                   speed_rpm=plan.speed_rpm, stack_m=stack, coefficients=asdict(material.coefficients),
+                                   field_frame=coordinate_frame)
         reference_seconds = time.perf_counter() - reference_start
         high_frequency_loss = sum(h["hysteresis_W"] + h["eddy_W"] for h in reference["harmonics"] if h["frequency_Hz"] > 1000)
         reference["share_loss_above_1kHz"] = high_frequency_loss/reference["total_W"] if reference["total_W"] else 0.0
@@ -110,17 +147,22 @@ def analyse(directory):
                             "production_pass": product_pass, "pass": reference_pass and product_pass})
     closure = float(np.max(np.abs(fields[-1]-fields[0])))
     closure_rms = float(np.sqrt(np.mean((fields[-1]-fields[0])**2)))
+    closure_gate = closure_metrics(fields[0], fields[-1], protocol["closure_tolerances"])["gate"] if mesh_hashes else "NOT_GATED"
     return {
         "status": "PILOT_NOT_QUALIFIED", "scope": "one loaded SPM, FEMM fields only; no native field-solver parity or mesh qualification",
         "protocol_sha256": hashlib.sha256((directory / "protocol.json").read_bytes()).hexdigest(),
         "analysis_sources_sha256": {
             path: hashlib.sha256((Path(__file__).resolve().parents[1] / path).read_bytes()).hexdigest()
-            for path in ("backend/iron_loss.py", "backend/rotor_iron_loss.py", "tools/rotor_loss_reference.py", "tools/rotor_loss_pilot_report.py")
+            for path in ("backend/iron_loss.py", "backend/rotor_iron_loss.py", "tools/rotor_loss_reference.py", "tools/rotor_loss_pilot_report.py",
+                         "tools/rotor_closure_report.py", "tools/femm_reference/rotor_airgap.py")
         },
         "sampling_plan": RotorSamplingPlan(protocol["speed_rpm"], count).metadata(),
         "operating_point": {k: protocol.get(k) for k in ("fixture", "fixture_sha256", "current_peak_A", "gamma_deg", "mesh", "smoothing")},
         "material": asdict(material), "stack_m": stack, "results": results,
         "angular_convergence": convergence, "angular_gate_pass": all(c["pass"] for c in convergence),
+        "raw_coordinate_frame": coordinate_frame, "closure_gate": closure_gate,
+        "mesh_invariance_gate": "PASS" if mesh_hashes else "NOT_APPLICABLE",
+        "distinct_triangle_meshes": len(set(mesh_hashes)) if mesh_hashes else None,
         "mesh_gate": "NOT_RUN", "independent_endpoint_max_component_difference_T": closure,
         "independent_endpoint_rms_component_difference_T": closure_rms,
         "timing": {"field_solves_including_endpoint": count+1, "sum_position_wall_s": sum(timing),
@@ -152,6 +194,8 @@ def markdown_report(report):
                      "(hysteresis, eddy and total checked separately in both calculations).")
     lines.extend([
         "- Mesh convergence: **NOT RUN**.", "",
+        f'Raw coordinate frame: {report["raw_coordinate_frame"]}. '
+        f'Mesh invariance: {report["mesh_invariance_gate"]}. Closure: {report["closure_gate"]}.', "",
         f'Independent endpoint maximum B-component mismatch: {report["independent_endpoint_max_component_difference_T"]:.8g} T.', "",
         f'Independent endpoint RMS B-component mismatch: {report["independent_endpoint_rms_component_difference_T"]:.8g} T.', "",
         f'Field solves, including endpoint: {report["timing"]["field_solves_including_endpoint"]}. '

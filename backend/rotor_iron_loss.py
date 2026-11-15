@@ -12,7 +12,7 @@ from __future__ import annotations
 import hashlib
 import math
 from dataclasses import asdict, dataclass
-from typing import Sequence
+from typing import Literal, Sequence
 
 import numpy as np
 
@@ -128,11 +128,21 @@ def _to_rotor(values: np.ndarray, angle_deg: float) -> np.ndarray:
     return values @ np.array([[cosine, -sine], [sine, cosine]])
 
 
-def sample_rotor_field(frame: FieldFrame, *, mechanical_angle_deg: float) -> RotorFieldSample:
-    """Select explicit rotor-core tags; never infer laminated steel from radius."""
+def sample_rotor_field(
+    frame: FieldFrame, *, mechanical_angle_deg: float,
+    coordinate_frame: Literal["global", "rotor_material"] = "global",
+) -> RotorFieldSample:
+    """Adapt an explicitly declared mesh/vector frame into rotor-material axes.
+
+    Remeshed global exports rotate both geometry and B. Moving-air-gap FEMM
+    exports already follow the rotor in its drawn axes, so both are retained.
+    The actual signed mechanical pose is required in either representation.
+    """
 
     if not math.isfinite(mechanical_angle_deg):
         raise ValueError("a signed native mechanical pose is required")
+    if coordinate_frame not in ("global", "rotor_material"):
+        raise ValueError("the mesh and B coordinate frame must be global or rotor_material")
     nodes, triangles = np.asarray(frame.nodes_mm), np.asarray(frame.triangles)
     if nodes.ndim != 2 or nodes.shape[1] != 2 or not np.isfinite(nodes).all():
         raise ValueError("invalid field nodes")
@@ -150,8 +160,11 @@ def sample_rotor_field(frame: FieldFrame, *, mechanical_angle_deg: float) -> Rot
     field = np.column_stack([np.asarray(frame.bx_t)[indices], np.asarray(frame.by_t)[indices]])
     if not np.isfinite(field).all():
         raise ValueError("rotor field values must be finite")
-    corners = _to_rotor(nodes[triangles[indices]], mechanical_angle_deg)
-    vectors = _to_rotor(field, mechanical_angle_deg)
+    corners = nodes[triangles[indices]]
+    vectors = field
+    if coordinate_frame == "global":
+        corners = _to_rotor(corners, mechanical_angle_deg)
+        vectors = _to_rotor(vectors, mechanical_angle_deg)
     return RotorFieldSample(mechanical_angle_deg, corners, vectors[:, 0], vectors[:, 1], indices)
 
 

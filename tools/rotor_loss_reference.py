@@ -1,8 +1,8 @@
 """Independent direct-DFT loss oracle for fixed material-point reference data.
 
 No production backend imports or production FFT/loss helpers are permitted here.
-Inputs are full-turn global B queries, signed native mechanical poses, and the
-first mesh's integration areas. Coefficients use Hz, peak T and W/kg.
+Inputs are full-turn B queries with an explicit frame, signed native mechanical
+poses, and the first mesh's integration areas. Coefficients use Hz, peak T and W/kg.
 """
 
 from __future__ import annotations
@@ -12,8 +12,8 @@ import math
 import numpy as np
 
 
-def reference_loss(global_fields, angles_deg, areas_m2, *, speed_rpm, stack_m, coefficients, stacking_factor=1.0):
-    fields = np.asarray(global_fields, dtype=float)
+def reference_loss(field_queries, angles_deg, areas_m2, *, speed_rpm, stack_m, coefficients, stacking_factor=1.0, field_frame="global"):
+    fields = np.asarray(field_queries, dtype=float)
     angles = np.asarray(angles_deg, dtype=float)
     areas = np.asarray(areas_m2, dtype=float)
     if fields.shape != (len(angles), len(areas), 2) or len(angles) < 8:
@@ -23,8 +23,14 @@ def reference_loss(global_fields, angles_deg, areas_m2, *, speed_rpm, stack_m, c
     step = np.diff(angles)
     if not np.allclose(np.abs(step), 360/len(angles), rtol=0, atol=1e-8) or not np.allclose(step, step[0]):
         raise ValueError("reference needs an ordered half-open full mechanical turn")
-    c, s = np.cos(angles*np.pi/180)[:, None], np.sin(angles*np.pi/180)[:, None]
-    x, y = c*fields[:, :, 0] + s*fields[:, :, 1], -s*fields[:, :, 0] + c*fields[:, :, 1]
+    if field_frame == "global":
+        c, s = np.cos(angles*np.pi/180)[:, None], np.sin(angles*np.pi/180)[:, None]
+        x, y = c*fields[:, :, 0] + s*fields[:, :, 1], -s*fields[:, :, 0] + c*fields[:, :, 1]
+    elif field_frame == "rotor_material":
+        # The independent oracle reads raw material-frame queries directly.
+        x, y = fields[:, :, 0], fields[:, :, 1]
+    else:
+        raise ValueError("reference field frame must be global or rotor_material")
     count = len(angles)
     orders = np.arange(1, (count-1)//2 + 1)
     # Explicit DFT projections are independent of the production rFFT path.

@@ -12,8 +12,10 @@ map requests, field solves, saved results or release qualification claims.
   are signed, unwrapped native CCW mechanical degrees. Negative direction is
   clockwise motion. The time base is `60 / speed_rpm`, independent of pole pairs.
   An independently solved endpoint is diagnostic and is excluded from the DFT.
-- `sample_rotor_field`: transforms both mesh coordinates and vector fields into
-  rotor coordinates. Only explicit `rotor_core`/`RotorCore` elements are accepted;
+- `sample_rotor_field`: adapts explicitly declared `global` or `rotor_material`
+  mesh/vector coordinates into rotor axes. Already-material-frame exports are
+  retained; global exports rotate both geometry and B. Only explicit
+  `rotor_core`/`RotorCore` elements are accepted;
   shafts, magnets, pockets and generic steel tags do not imply laminations.
 - `rotor_flux_history`: follows first-frame triangle centroids through reordered
   or independently remeshed rotor meshes. Integration areas stay attached to the
@@ -134,11 +136,39 @@ hashes. A count of mesh elements alone is insufficient.
 **Coordinate convention:** unlike remeshed exports, moving-air-gap exports are
 in FEMM's fixed drawn rotor-material axes. The query positions must remain
 fixed in those axes. They must not be rotated again as if they were moving
-global coordinates. The existing global-frame loss report rejects these
-exports explicitly. A tested coordinate adapter is required before a later
-full-history loss comparison; this five-pose check reports no loss watts.
+global coordinates. The history report now accepts this explicit representation
+through the tested adapter. Mixed or missing frame declarations are rejected.
+A five-pose closure probe is still rejected by the full-history analyser;
+the closure check itself reports no loss watts.
 
 The [closure results](benchmarks/rotor-closure-pilot-306-20261115.md) retain the
 measured outcome and remaining limits. The original remeshing pilot is retained
 unchanged. FEMM documents this method in [Rotor Motion using an (Anti)Periodic
 Air Gap Boundary Condition](https://www.femm.info/wiki/RotorMotion).
+
+## Follow-up: fixed-mesh full-turn history
+
+The production sampler accepts the raw material-frame triangles and B without
+another rotation. The independent direct-DFT oracle separately reads the raw
+material-frame B components directly. Synthetic analytical checks and equivalent
+global/material-frame histories verify the two representations give the same
+loss, including both rotation directions, nonzero poses, DC bias and real time harmonics.
+
+The analyser requires the complete registered angle list, explicit frame tags,
+fresh base reloads, saved unwrapped boundary angles, identical full mesh hashes
+and unchanged rotor integration cells. It checks that query locations stay
+fixed in the drawn rotor axes and verifies independent endpoint closure.
+
+```powershell
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 96 --limit 1 --out output/rotor-fixed-history
+# In two separate shells using the same pinned environment:
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 96 --resume --shard 0/2 --out output/rotor-fixed-history
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 96 --resume --shard 1/2 --out output/rotor-fixed-history
+# After both workers finish, in a fresh process:
+python -m tools.rotor_loss_pilot_report output/rotor-fixed-history
+```
+
+The 24/48/96 comparisons reuse the same full-turn data at integer strides. The
+closure endpoint is excluded from each harmonic calculation. Mesh invariance
+means the geometry stayed fixed during collection; spatial mesh convergence is
+a separate gate. This remains one loaded SPM case, not the full release matrix.
