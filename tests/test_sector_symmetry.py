@@ -606,3 +606,36 @@ def test_the_stator_cut_follows_the_rotor_cut_over_a_cogging_period(fixture) -> 
         offsets.append(((math.degrees(sector.rotor_start_rad - sector.stator_start_rad) + 180.0) % 360.0) - 180.0)
     assert max(abs(offset) for offset in offsets) <= half_common_pitch + 1e-9
     assert offsets[-1] == pytest.approx(offsets[0], abs=1e-9)
+
+
+@pytest.mark.parametrize(
+    "fixture",
+    [OUTER_14P12S, "abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json", IPM_24S16P, SPM_8P48S],
+)
+def test_the_mesh_preview_says_where_the_solver_cuts_at_every_rotor_angle(fixture) -> None:
+    """The Mesh view turns the rotor of one meshed sector, but every position is solved as its
+    own sector, cut at the tooth and pole gap nearest each other there. The preview's table must
+    give the cuts the mesher makes at any angle, sweep positions (which often fall exactly where
+    the cut steps) included."""
+
+    from backend.magneto2d_adapter import run_magneto2d_mesh_preview
+
+    config = _config(fixture, symmetry="auto", mesh_density="coarse")
+    cuts = run_magneto2d_mesh_preview(config, rotor_angle_deg=0.0)["sector_cuts"]
+    steps = math.lcm(config.stator.slot_count, config.rotor.pole_count)
+    assert len(cuts) == steps and cuts[0]["turn_from_deg"] == 0.0
+    common = 360.0 / steps
+
+    def wrapped(angle: float) -> float:
+        return ((angle + 180.0) % 360.0) - 180.0
+
+    turns = [-index * common for index in range(3)] + [-index * 0.61 * common for index in range(1, 7)] + [-137.3, 211.9]
+    for turn in turns:
+        reached = turn % 360.0
+        entry = max((cut for cut in cuts if cut["turn_from_deg"] <= reached + 1e-6), key=lambda cut: cut["turn_from_deg"])
+        geom = compute_geometry(config)
+        _rotate_magnets_in_place(geom, math.radians(turn))
+        ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=turn)
+        sector = sg.build_sector_ir(ir, sg.detect_sector_symmetry(ir), min_mid_gap_offset_mm=0.0)
+        assert wrapped(math.degrees(sector.stator_start_rad) - entry["stator_cut_deg"]) == pytest.approx(0.0, abs=1e-6), turn
+        assert wrapped(math.degrees(sector.rotor_start_rad) - (entry["rotor_cut_deg"] + turn)) == pytest.approx(0.0, abs=1e-6), turn

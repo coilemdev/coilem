@@ -108,6 +108,10 @@ class SectorIR:
     curve_pairs: tuple[SectorCurvePair, ...]
     # The wedge reaches the centre: both cut edges share that node.
     apex_at_centre: bool
+    # The tooth centre the cut search starts from (the one before slot 0); it
+    # breaks ties between equally near teeth, so the cut can be found again at
+    # any other rotor angle (sector_cuts_by_turn).
+    first_tooth_rad: float | None = None
 
 
 # --------------------------------------------------------------------------
@@ -978,7 +982,7 @@ def build_sector_ir(
 
     last_error: SectorUnsupportedError | None = None
     for rotor_axis in _rotor_cut_candidates(ir):
-        stator_start = _nearest_tooth_cut(ir, first_tooth, rotor_axis, pole_pitch)
+        stator_start = _nearest_tooth_cut(ir.slot_count, first_tooth, rotor_axis, pole_pitch)
         offset = _wrap_signed(rotor_axis - stator_start, pole_pitch)
         if abs(offset) * mid_r < 1.0e-9:
             offset = 0.0
@@ -989,15 +993,16 @@ def build_sector_ir(
             offset = 0.0
         rotor_cut = stator_cut + offset
         try:
-            return _build_with_cuts(
+            sector = _build_with_cuts(
                 ir, symmetry, airgap, stator_cut, rotor_cut, mid_r, outer_rotor, span, offset
             )
+            return replace(sector, first_tooth_rad=first_tooth)
         except SectorUnsupportedError as exc:
             last_error = exc
     raise last_error or SectorUnsupportedError("no clean rotor cut was found")
 
 
-def _nearest_tooth_cut(ir: GeometryIR, first_tooth: float, rotor_axis: float, pole_pitch: float) -> float:
+def _nearest_tooth_cut(slot_count: int, first_tooth: float, rotor_axis: float, pole_pitch: float) -> float:
     """The tooth centre that leaves the shortest stator-only arc to the rotor cut.
 
     Any tooth centre can start the sector: the geometry and the winding repeat
@@ -1010,14 +1015,70 @@ def _nearest_tooth_cut(ir: GeometryIR, first_tooth: float, rotor_axis: float, po
     its mesh is the same mesh turned; then the tooth nearest the first one.
     """
 
-    slot_pitch = _TWO_PI / ir.slot_count
+    slot_pitch = _TWO_PI / slot_count
 
     def rank(step: int) -> tuple[float, int, int]:
         offset = _wrap_signed(rotor_axis - (first_tooth + step * slot_pitch), pole_pitch)
         return (round(abs(offset), 9), 0 if round(offset, 9) <= 0 else 1, abs(step))
 
-    steps = range(-(ir.slot_count // 2), ir.slot_count - ir.slot_count // 2)
+    steps = range(-(slot_count // 2), slot_count - slot_count // 2)
     return first_tooth + min(steps, key=rank) * slot_pitch
+
+
+# A pattern longer than this is not worth sending to a viewer.
+_MAX_CUT_TABLE_ENTRIES = 4096
+
+
+def sector_cuts_by_turn(
+    slot_count: int,
+    pole_count: int,
+    first_tooth_deg: float,
+    rotor_cut_deg: float,
+) -> list[dict[str, float]] | None:
+    """Where one sector is cut at every rotor angle, from a sector meshed at one.
+
+    A turn is the rotor's rotation from the meshed angle, in degrees,
+    counter-clockwise positive (a sweep turns it clockwise), over one
+    revolution. Each entry holds from its ``turn_from_deg`` to the next one's:
+    ``stator_cut_deg`` in the stator's frame and ``rotor_cut_deg`` in the
+    rotor's own frame, before the turn. Neither cut moves in its own frame
+    within an entry; at the next one both step to the next nearest tooth and
+    pole gap, once per common pitch of slots and poles. These are the cuts
+    ``build_sector_ir`` makes at that angle, by the same rule, except that a
+    stator cut it moves onto the rotor cut (an arc shorter than
+    ``min_mid_gap_offset_mm``) stays on its tooth here. None when the pattern
+    would need more than a few thousand entries.
+    """
+
+    steps_per_turn = math.lcm(slot_count, pole_count)
+    if steps_per_turn > _MAX_CUT_TABLE_ENTRIES:
+        return None
+    pole_pitch = _TWO_PI / pole_count
+    common = _TWO_PI / steps_per_turn
+    first_tooth = math.radians(first_tooth_deg)
+    # The rotor cut lies between two poles: the rule needs it only modulo a pole pitch.
+    rotor_axis = math.radians(rotor_cut_deg)
+    # Every tooth-to-gap offset differs from every other by a whole common pitch, so
+    # the nearest pair changes when the offset reaches half of one.
+    first_step = (first_tooth - rotor_axis + 0.5 * common) % common
+    starts = [0.0] + [
+        first_step + step * common
+        for step in range(steps_per_turn)
+        if 1.0e-9 < first_step + step * common < _TWO_PI - 1.0e-9
+    ]
+    entries = []
+    for index, start in enumerate(starts):
+        end = starts[index + 1] if index + 1 < len(starts) else _TWO_PI
+        middle = 0.5 * (start + end)
+        axis = rotor_axis + middle
+        stator_cut = _nearest_tooth_cut(slot_count, first_tooth, axis, pole_pitch)
+        rotor_cut = stator_cut + _wrap_signed(axis - stator_cut, pole_pitch) - middle
+        entries.append({
+            "turn_from_deg": round(math.degrees(start), 9),
+            "stator_cut_deg": round(math.degrees(stator_cut) % 360.0, 9),
+            "rotor_cut_deg": round(math.degrees(rotor_cut) % 360.0, 9),
+        })
+    return entries
 
 
 def _build_with_cuts(

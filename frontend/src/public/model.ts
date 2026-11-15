@@ -215,6 +215,18 @@ export interface GeometryPreview {
   generation_time_ms: number;
 }
 
+/**
+ * Where one solved sector is cut while the rotor is turned from the meshed angle
+ * (backend/sector_geometry.py sector_cuts_by_turn). Each entry holds from its turn
+ * (degrees, counter-clockwise positive) to the next one's: the stator cut in the
+ * stator's frame and the rotor cut in the rotor's own frame.
+ */
+export interface SectorCut {
+  turn_from_deg: number;
+  stator_cut_deg: number;
+  rotor_cut_deg: number;
+}
+
 export interface MeshPreview {
   nodes_mm: Array<[number, number]>;
   triangles: Array<[number, number, number]>;
@@ -223,6 +235,8 @@ export interface MeshPreview {
   mesh_qa: Record<string, unknown>;
   generation_time_ms: number;
   solve_mesh_key?: string;
+  /** A sector mesh: the cuts the solver makes at every rotor angle, over one revolution. */
+  sector_cuts?: SectorCut[] | null;
 }
 
 /** Benchmark qualification of a design (backend/qualification.py). */

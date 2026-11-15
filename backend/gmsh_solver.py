@@ -1236,6 +1236,8 @@ def _build_ir_solve_mesh_artifact(
             "rotor_start_deg": math.degrees(sector.rotor_start_rad),
             "mid_gap_radius_mm": sector.mid_gap_radius_mm,
         }
+        if sector.first_tooth_rad is not None:
+            mesh_info["sector"]["first_tooth_deg"] = math.degrees(sector.first_tooth_rad)
     elif sector_fallback is not None:
         mesh_info["sector_fallback_reason"] = sector_fallback
     artifact = {

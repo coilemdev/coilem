@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 91276,
-      "sha256": "7e4c2c9cb95db0d39695a6c8411c52be817d0fc511bcfff41ae3bba39b7a01cb"
+      "bytes": 91413,
+      "sha256": "51f414b682360e0b40316a1b7bf177400159d9f6f9e589ccb553bf2ee4cf8bed"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3567,
-      "sha256": "712341fd2242264551b09f968dab7ad633f5ab659f760e65c71a8c0c655acc2e"
+      "bytes": 3604,
+      "sha256": "1816a04bb9b9289b9748590baee86731da7bce6827fb936a6b4adb9001171164"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 303539,
-      "sha256": "9ea3f2f2701b0b17ad3caaad140fee4e2a135d3c918260282a4c883ffe99ee38"
+      "bytes": 303835,
+      "sha256": "23361eed2caa9584cfacb8fbd150bf4815202cf57b83ae58587b009f75502a4e"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7065,8 +7065,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 97506,
-      "sha256": "3db7b0e11161c34fa50799628136f72e66bc815e5aef584ee72351e1807c0204"
+      "bytes": 101661,
+      "sha256": "4bd081399d17959f32330543cc317ad08d28a24e94a19d26b512094ac06dc93f"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 25151,
-      "sha256": "32347329d50e00112fa535f8d064b7ec0f5e9c012a8bb302382c79cac6e49961"
+      "bytes": 25706,
+      "sha256": "33288e1d039459807a2fa4cc55e0cc6836fc826955101abc142056bb6dd76ba0"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -18005,13 +18005,13 @@
     },
     {
       "path": "backend/sector_geometry.py",
-      "bytes": 49088,
-      "sha256": "13807381c608733bab65266e76cb59f4863bad1996f495a0e08e151314f585be"
+      "bytes": 51943,
+      "sha256": "9604c4f110602a23e18c4fabfd78b84677bff4406c38329aa1bcebdc6aa6cb35"
     },
     {
       "path": "backend/sector_tiling.py",
-      "bytes": 15802,
-      "sha256": "485ecda2311b6fc67d69c1c60d83103a405f61cebe6975ae369c38aafc602e32"
+      "bytes": 16506,
+      "sha256": "ee18044937ac2a380bb6a48b328a38c0e58ec9b2d9c76b5945ab24a8f1a221e5"
     },
     {
       "path": "backend/solve_profile.py",
@@ -19290,13 +19290,18 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 31942,
-      "sha256": "c7e16224e54273fce3c637f683bfa94c9317cb51df97a5f3a6cd96844ffe373b"
+      "bytes": 33809,
+      "sha256": "44a2cab58326bb5e2c01701078cfa572ae031b12aacca475a80d7935c2648505"
     },
     {
       "path": "frontend/scripts/csv-test-helpers.mjs",
       "bytes": 917,
       "sha256": "ea93e654709477139dc45e6984e0dbff4ef9f7491e3de34015003ae8888ccf6a"
+    },
+    {
+      "path": "frontend/scripts/test-sector-cuts.mjs",
+      "bytes": 2066,
+      "sha256": "21119500bd8abd1a8d3fa12c61267d3c99d222ac25cb119fcdd3e60135b371fe"
     },
     {
       "path": "frontend/src/public/comparisonCsv.ts",
@@ -19307,6 +19312,11 @@
       "path": "frontend/src/public/comparisonMetrics.ts",
       "bytes": 4053,
       "sha256": "e975706160fd19a1b2abbc0f7adb1a6bbe9ac29b6011fbe78416be83b55bd144"
+    },
+    {
+      "path": "frontend/src/public/sectorCuts.ts",
+      "bytes": 1049,
+      "sha256": "26a52e65c30d85117b3066681d6cfaf9f24ed056aef2377638a3cdb0507f695b"
     }
   ],
   "public_patches": [

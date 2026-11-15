@@ -15,6 +15,8 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from backend.sector_geometry import sector_cuts_by_turn
+
 # Merged nodes agree to round-off; this only has to beat the mesh spacing [mm].
 _MERGE_TOL_MM = 1.0e-5
 
@@ -347,4 +349,15 @@ def tile_sector_mesh_preview(preview: dict) -> dict:
     tiled["total_span_deg"] = 360.0
     if isinstance(preview.get("n_pole_pitches"), int):
         tiled["n_pole_pitches"] = preview["n_pole_pitches"] * tiling.repeats
+    # Each rotor position is solved as its own sector, cut at the tooth and pole
+    # gap nearest each other there: a viewer that turns the rotor needs these
+    # cuts to show which part is solved at that angle.
+    pole_pitch_deg = mesh_info.get("pole_pitch_deg")
+    if isinstance(sector.get("first_tooth_deg"), (int, float)) and isinstance(pole_pitch_deg, (int, float)) and pole_pitch_deg > 0:
+        tiled["sector_cuts"] = sector_cuts_by_turn(
+            int(sector["slots"]) * tiling.repeats,
+            round(360.0 / pole_pitch_deg),
+            float(sector["first_tooth_deg"]),
+            float(sector["rotor_start_deg"]),
+        )
     return tiled
