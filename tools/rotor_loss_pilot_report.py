@@ -26,6 +26,9 @@ from tools.rotor_loss_reference import reference_loss
 def analyse(directory):
     directory = Path(directory)
     protocol = json.loads((directory / "protocol.json").read_text())
+    if protocol.get("motion_model") == "periodic-air-gap":
+        raise ValueError("Moving-air-gap exports use rotor-material axes; use tools.rotor_closure_report for the closure probe. "
+                         "Full-history loss analysis needs an explicit coordinate adapter before use.")
     reference_points = np.loadtxt(directory / "reference-points.csv", delimiter=",", ndmin=2)
     count = protocol["positions"]
     if count % 4 or count < 32:

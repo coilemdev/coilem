@@ -106,3 +106,39 @@ the output directory; it is not bundled into the application or the repository.
 Method reference: David Meeker, [Rotating Losses in a Surface Mount Permanent
 Magnet Motor](https://www.femm.info/doku/doku.php?id=spmloss), especially rotor
 material coordinates, complete winding periods and mesh-noise sensitivity.
+
+## Follow-up: fixed-mesh closure probe
+
+The moving-air-gap option adds two circular boundaries wholly inside the free
+air gap, with a Periodic Air Gap condition and an unmeshed band between them.
+The geometry stays at its drawn zero pose. For every requested position the
+collector reloads an unsolved baseline, sets the unwrapped inner boundary angle
+and updates winding current densities. Each endpoint is solved independently;
+the -360 degree angle is saved as -360, not replaced with zero or its solution.
+
+This changes a reference-collection option only. The sealed E/F sources and
+the application's existing field/loss calculation are unchanged.
+
+```powershell
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --closure-only --out output/rotor-closure
+python -m tools.rotor_closure_report output/rotor-closure
+```
+
+This probe collects exactly five fresh solves at 0, -3.75, -90, -360 and 0
+native mechanical degrees. Its predeclared closure tolerances are 1e-6 T
+maximum component error and 1e-7 T RMS component error. It verifies complete
+triangular mesh coordinates/connectivity, raw rotor triangles, material query
+locations, saved boundary angles, absent previous-solution seeds and artifact
+hashes. A count of mesh elements alone is insufficient.
+
+**Coordinate convention:** unlike remeshed exports, moving-air-gap exports are
+in FEMM's fixed drawn rotor-material axes. The query positions must remain
+fixed in those axes. They must not be rotated again as if they were moving
+global coordinates. The existing global-frame loss report rejects these
+exports explicitly. A tested coordinate adapter is required before a later
+full-history loss comparison; this five-pose check reports no loss watts.
+
+The [closure results](benchmarks/rotor-closure-pilot-306-20261115.md) retain the
+measured outcome and remaining limits. The original remeshing pilot is retained
+unchanged. FEMM documents this method in [Rotor Motion using an (Anti)Periodic
+Air Gap Boundary Condition](https://www.femm.info/wiki/RotorMotion).

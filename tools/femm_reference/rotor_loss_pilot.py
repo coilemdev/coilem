@@ -19,6 +19,7 @@ from pathlib import Path
 import numpy as np
 
 from tools.femm_reference import phase_e, runtime
+from tools.femm_reference.rotor_airgap import add_periodic_airgap, mesh_signature, update_pose_and_currents
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / "benchmarks/abcd-v1.9/fixtures/spm_8p12s_concentrated__baseline__native.json"
@@ -77,12 +78,17 @@ def main():
     parser.add_argument("--limit", type=int, help="Maximum new positions this invocation, including the independent endpoint")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--shard", default="0/1", help="Disjoint position shard INDEX/COUNT; prepare position zero first")
+    parser.add_argument("--motion", choices=["remesh", "periodic-air-gap"], default="remesh")
+    parser.add_argument("--closure-only", action="store_true", help="Five fresh solves, including two equivalent endpoints and repeated zero")
     args = parser.parse_args()
     if args.positions < 8 or (args.limit is not None and args.limit < 1):
         parser.error("positions must be >=8 and limit must be positive")
     shard, shards = map(int, args.shard.split("/"))
     if shards < 1 or not 0 <= shard < shards:
         parser.error("invalid shard")
+    if args.closure_only and (args.motion != "periodic-air-gap" or shards != 1):
+        parser.error("closure-only requires periodic-air-gap and a single worker")
+    angles = [0.0, -3.75, -90.0, -360.0, 0.0] if args.closure_only else [-360.0*k/args.positions for k in range(args.positions+1)]
     directory = args.out.resolve()
     directory.mkdir(parents=True, exist_ok=True)
     identity = runtime.identity("e")
@@ -98,6 +104,12 @@ def main():
             "convergence_relative": 0.05, "absolute_loss_W": 0.001,
         },
     }
+    if args.motion == "periodic-air-gap":
+        protocol.update(schema="coilem.rotor_loss_pilot/v2", motion_model=args.motion,
+                        collection_kind="closure_probe" if args.closure_only else "full_turn_history",
+                        raw_mesh_frame="rotor_material", raw_field_frame="rotor_material",
+                        mechanical_angles_deg=angles, independent_base_reload=True,
+                        closure_tolerances={"max_component_T": 1e-6, "rms_component_T": 1e-7})
     protocol_path = directory / "protocol.json"
     if protocol_path.exists():
         if not args.resume or json.loads(protocol_path.read_text()) != protocol:
@@ -136,12 +148,22 @@ def main():
     start = time.perf_counter()
     try:
         automation.open(1)
-        for index in range(args.positions + 1):
+        base_model = worker_directory / "fixed-geometry-base.fem"
+        if args.motion == "periodic-air-gap":
+            solver = PilotSolver()
+            solver._last_geom, solver._last_rotor_offset_rad = geom, 0.0
+            solver._setup_problem(femm, config, geom)
+            solver._draw_full_geometry(femm, config, geom, rotor_offset_deg=0)
+            solver._apply_winding_current(femm, config, geom, 0)
+            add_periodic_airgap(femm, solver, config, geom)
+            solver._apply_boundary(femm, geom)
+            femm.mi_saveas(str(base_model))
+            femm.mi_close()
+        for index, angle in enumerate(angles):
             if index % shards != shard:
                 continue
             output = directory / f"position-{index:04d}"
             checkpoint = output / "position.json"
-            angle = -360.0 * index/args.positions
             if checkpoint.exists():
                 recorded = json.loads(checkpoint.read_text())
                 if recorded["mechanical_angle_deg"] != angle or any(sha(output/name) != digest for name, digest in recorded["sha256"].items()):
@@ -151,26 +173,32 @@ def main():
                 break
             output.mkdir(exist_ok=True)
             started = time.perf_counter()
-            solver = PilotSolver()
-            solver._last_geom = geom
-            solver._last_rotor_offset_rad = math.radians(angle)
-            solver._setup_problem(femm, config, geom)
-            femm.mi_probdef(0, "millimeters", "planar", 1e-8, config.stator.stack_length_mm, 30, 0)
-            solver._draw_full_geometry(femm, config, geom, rotor_offset_deg=angle)
-            solver._apply_winding_current(femm, config, geom, -angle*config.rotor.pole_count/2)
-            solver._apply_boundary(femm, geom)
+            if args.motion == "periodic-air-gap":
+                femm.opendocument(str(base_model))
+                update_pose_and_currents(femm, adapter, config, geom, angle)
+            else:
+                solver = PilotSolver()
+                solver._last_geom = geom
+                solver._last_rotor_offset_rad = math.radians(angle)
+                solver._setup_problem(femm, config, geom)
+                femm.mi_probdef(0, "millimeters", "planar", 1e-8, config.stator.stack_length_mm, 30, 0)
+                solver._draw_full_geometry(femm, config, geom, rotor_offset_deg=angle)
+                solver._apply_winding_current(femm, config, geom, -angle*config.rotor.pole_count/2)
+                solver._apply_boundary(femm, geom)
             model = output / "model.fem"
             femm.mi_saveas(str(model))
             femm.mi_createmesh()
             femm.mi_analyze(1)
             femm.mi_loadsolution()
-            reference_points, rotor_elements = export_fields(femm, output, angle, reference_points)
+            query_angle = 0.0 if args.motion == "periodic-air-gap" else angle
+            reference_points, rotor_elements = export_fields(femm, output, query_angle, reference_points)
             if not reference_path.exists():
                 np.savetxt(reference_path, reference_points, delimiter=",", fmt="%.17g")
             record = {
                 "index": index, "mechanical_angle_deg": angle,
-                "endpoint": index == args.positions, "rotor_elements": rotor_elements,
+                "endpoint": angle == -360.0, "rotor_elements": rotor_elements,
                 "total_elements": int(femm.mo_numelements()), "airgap_target_mm": gap,
+                "mesh_geometry_sha256": mesh_signature(model.with_suffix(".ans")),
                 "wall_s": time.perf_counter()-started,
                 "sha256": {p.name: sha(p) for p in sorted(output.iterdir()) if p.is_file()},
             }
@@ -183,8 +211,8 @@ def main():
         automation.close()
     completed = len(list(directory.glob("position-*/position.json")))
     runtime.write(directory / f"collection-{shard}-of-{shards}.json", {
-        "status": "COMPLETE" if completed == args.positions+1 else "PARTIAL",
-        "committed_positions": completed, "expected_positions_with_closure": args.positions+1,
+        "status": "COMPLETE" if completed == len(angles) else "PARTIAL",
+        "committed_positions": completed, "expected_positions_with_closure": len(angles),
         "new_positions": new_positions, "invocation_wall_s": time.perf_counter()-start,
         "reference_points_sha256": sha(reference_path) if reference_path.exists() else None,
     })
