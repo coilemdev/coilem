@@ -233,8 +233,8 @@ completed run.
 
 Tick **Cogging torque** under **Analysis** to add a no-current sweep over
 one cogging period, 180·gcd(slots, poles)/slots electrical degrees, at 12, 24
-or 48 positions per period for Preview, Standard and High accuracy, plus the
-repeated end. The run estimate includes it. Cogging torque is experimental: it
+or 48 positions per period for Preview, Standard and High accuracy (Very fine
+uses High accuracy's 48), plus the repeated end. The run estimate includes it. Cogging torque is experimental: it
 has no FEMM gate yet. Keep **Corner refinement** on: without it, cogging on the
 example design is about twenty times noisier.
 
@@ -242,7 +242,10 @@ If you only want a fast pipeline check, choose **Preview**. Preview does not
 report an under-sampled THD value. Use **Standard** for the release walkthrough; it
 reports Back-EMF THD and the H1-H12 spectrum. **High accuracy** is the UI name
 for the `fine` preset; it uses a fine mesh and extends the spectrum through H24,
-but it is not a separate launch benchmark requirement.
+but it is not a separate launch benchmark requirement. **Very fine** is High
+accuracy's angle grid on the Very fine mesh, about 3–6 times Medium's elements
+and correspondingly slower; use it for cogging, especially from a one-sector
+solve, and to check that results have converged.
 
 ## 9. Review the result
 

@@ -92,7 +92,7 @@ import {
   applyPublicSolvePreset,
   capturePublicPresetSweep,
   PUBLIC_DEFAULT_PRESET_SWEEP,
-  type PublicSolvePreset,
+  type PublicSolvePlanChoice,
   type PublicSweepSampling,
 } from './solvePlan';
 import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar, withFirstPublicSolveFieldFrame } from './solveProgress';
@@ -1057,7 +1057,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       : 'Elmer is disabled for this launch. Magneto2D is selected.');
   }, [connectionStatus, elmerCapability, selectedSolver]);
 
-  const updateSolvePlan = useCallback((solvePlan: PublicSolvePreset) => {
+  const updateSolvePlan = useCallback((solvePlan: PublicSolvePlanChoice) => {
     validationRequestId.current += 1;
     const presetSweep = config.solve_params.solve_quality === 'custom'
       ? presetSweepRef.current

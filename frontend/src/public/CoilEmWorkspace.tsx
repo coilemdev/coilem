@@ -136,7 +136,8 @@ import {
   PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG,
   ensureLossesFullCycle,
-  type PublicSolvePreset,
+  type PublicSolvePlanChoice,
+  selectedSolvePlan,
 } from './solvePlan';
 import {
   isPublicSolveFinalizing,
@@ -227,7 +228,7 @@ interface CoilEmWorkspaceProps {
     field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
     value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => void;
-  onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
+  onSolvePlanChange: (solvePlan: PublicSolvePlanChoice) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
     field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
@@ -3836,10 +3837,11 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const panelDragRef = useRef<{ panel: 'setup' | 'runPlan'; startX: number; startWidth: number } | null>(null);
   const setupRef = useRef<HTMLElement>(null);
   const runPlanRef = useRef<HTMLElement>(null);
-  const solvePlans: Array<{ value: PublicSolvePreset; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
+  const solvePlans: Array<{ value: PublicSolvePlanChoice; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
     { value: 'quick', label: 'Preview', meshLabel: 'Coarse mesh', tradeoff: 'Fast iteration' },
     { value: 'standard', label: 'Standard', meshLabel: 'Medium mesh', tradeoff: 'Balanced', recommended: true },
     { value: 'fine', label: 'High accuracy', meshLabel: 'Fine mesh', tradeoff: 'Finer detail' },
+    { value: 'very_fine', label: 'Very fine', meshLabel: 'Very fine mesh', tradeoff: 'Cogging, convergence' },
   ];
   const elmerAvailable = elmerCapability.available
     && elmerCapability.qualified
@@ -3880,7 +3882,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
   const planLabel = config.solve_params.solve_quality === 'custom'
     ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
-    : `${solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
+    : `${solvePlans.find((plan) => plan.value === selectedSolvePlan(config))?.label
       ?? config.solve_params.solve_quality}${lossesSweep !== config ? ` · 360° at ${lossesSweep.solve_params.rotor_step_deg}° for losses` : ''}`;
   const estimatedTimeText = validation
     ? formatRunTimeRange(validation)
@@ -3928,7 +3930,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
-  const selectedPreset = config.solve_params.solve_quality;
+  const selectedPreset = selectedSolvePlan(config);
   const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
   const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''} · ${symmetry === 'auto' ? 'One sector' : 'Full motor'}`;
