@@ -2,13 +2,19 @@ import { mkdirSync, mkdtempSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, devices } from '@playwright/test';
+import { publicTestPorts } from './playwrightPorts';
 
 const frontendRoot = dirname(fileURLToPath(import.meta.url));
 const testResults = join(frontendRoot, 'test-results');
 mkdirSync(testResults, { recursive: true });
 const runtimeRoot = mkdtempSync(join(testResults, 'public-runtime-'));
-const apiUrl = 'http://127.0.0.1:58000';
-const uiUrl = 'http://127.0.0.1:54173';
+const { apiPort, uiPort } = await publicTestPorts();
+// Workers inherit the selected pair instead of allocating another pair when
+// Playwright imports this config again. Set either variable to pin a debug port.
+process.env.COILEM_TEST_API_PORT = String(apiPort);
+process.env.COILEM_TEST_UI_PORT = String(uiPort);
+const apiUrl = `http://127.0.0.1:${apiPort}`;
+const uiUrl = `http://127.0.0.1:${uiPort}`;
 
 function shellQuote(value: string): string {
   return process.platform === 'win32'
@@ -46,7 +52,7 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chromium', viewport: { width: 1753, height: 980 } } }],
   webServer: [
     {
-      command: `${shellQuote(process.env.COILEM_TEST_PYTHON || 'python')} -m uvicorn backend.public_main:app --host 127.0.0.1 --port 58000`,
+      command: `${shellQuote(process.env.COILEM_TEST_PYTHON || 'python')} -m uvicorn backend.public_main:app --host 127.0.0.1 --port ${apiPort}`,
       cwd: resolve(frontendRoot, '..'),
       url: `${apiUrl}/health`,
       reuseExistingServer: false,
@@ -59,7 +65,7 @@ export default defineConfig({
       },
     },
     {
-      command: `${shellQuote(process.execPath)} node_modules/vite/bin/vite.js --config vite.public.config.ts --host 127.0.0.1 --port 54173 --strictPort`,
+      command: `${shellQuote(process.execPath)} node_modules/vite/bin/vite.js --config vite.public.config.ts --host 127.0.0.1 --port ${uiPort} --strictPort`,
       cwd: frontendRoot,
       url: uiUrl,
       reuseExistingServer: false,

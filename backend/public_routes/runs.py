@@ -109,10 +109,27 @@ async def load_run(project_slug: str, run_id: str) -> dict[str, Any]:
 
 @router.get("/runs/{project_slug}/{run_id}/comparison", tags=["runs"])
 async def load_run_comparison(project_slug: str, run_id: str) -> dict[str, Any]:
-    """Load only the small stored result subset needed for two-run comparison."""
+    """Load the stored envelopes and compact records for multi-run comparison."""
 
     try:
         return SolveWorkspace().load_run_comparison(project_slug, run_id)
+    except FileNotFoundError as exc:
+        raise _not_found(exc) from exc
+    except (OSError, SolveWorkspaceError, ValueError) as exc:
+        raise _invalid(exc) from exc
+
+
+@router.get("/runs/{project_slug}/{run_id}/comparison/field", tags=["runs"])
+def load_run_comparison_field(project_slug: str, run_id: str) -> dict[str, Any]:
+    """Fetch an integrity-checked stored snapshot only when its view is opened."""
+    from backend.public_routes.solve import _public_field_plot_payload
+
+    try:
+        plot = SolveWorkspace().load_run_comparison_field(project_slug, run_id)
+        public_plot = _public_field_plot_payload(plot)
+        if public_plot is None:
+            raise FileNotFoundError("A field snapshot was not recorded for this run.")
+        return {"field_line_frame": public_plot}
     except FileNotFoundError as exc:
         raise _not_found(exc) from exc
     except (OSError, SolveWorkspaceError, ValueError) as exc:

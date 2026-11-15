@@ -666,6 +666,75 @@ def test_load_reports_tampered_bound_file(tmp_path: Path) -> None:
     assert loaded["integrity"]["binding_mismatches"] == ["resolved_request_sha256"]
     with pytest.raises(SolveWorkspaceError, match="integrity check"):
         workspace.load_run_comparison(location.project_slug, location.run_id)
+    with pytest.raises(SolveWorkspaceError, match="integrity check"):
+        workspace.load_run_comparison_field(location.project_slug, location.run_id)
+
+
+def test_comparison_projects_saved_envelopes_and_lazy_field_snapshots(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import gzip
+
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+
+    from backend.public_routes import runs
+
+    monkeypatch.setattr("backend.solve_workspace.build_public_run_pdf", lambda **_: b"%PDF comparison fixture")
+    plot = {"angle_deg": 15.0, "nodes_mm": [[0, 0], [1, 0], [0, 1]], "triangles": [[0, 1, 2]],
+            "regions": ["stator"], "element_b_mag_t": [1.2], "contour_levels": [], "az_min": 0,
+            "az_max": 1, "n_pole_pitches": 1, "total_span_deg": 360, "private_path": "must-not-be-exposed"}
+    artifact = tmp_path / "frame.json.gz"
+    artifact.write_bytes(gzip.compress(json.dumps({"field_line_frame": plot}).encode()))
+    monkeypatch.setattr("backend.solve_workspace.resolve_solve_cache_artifact_id", lambda _: artifact)
+    result = _result("cache-frame")
+    result["field_line_frames"][0]["angle_deg"] = 15.0
+    result["field_line_frames"][0]["field_frame_artifact"]["schema_version"] = field_artifacts.FIELD_LINE_FRAME_ARTIFACT_SCHEMA
+    result["field_line_plot"] = plot
+    result["torque_speed_analysis"] = {"status": "complete", "settings": {"preset": "preview", "control": "mtpa"},
+        "envelope": {"status": "experimental", "status_reason": "Recorded envelope reason.", "curves": []},
+        "map": {"points": ["omitted-grid"]}, "efficiency_map": {"efficiency_pct": [[90]]}, "torque_agreement_pct": [100]}
+    workspace = SolveWorkspace(tmp_path / "data")
+    location = workspace.begin_run(project_name="comparison views", config=VALID_CONFIG, submitted_request={"config": VALID_CONFIG}).complete(result)
+    before = (location.path / "result.json").read_bytes()
+    compact = workspace.load_run_comparison(location.project_slug, location.run_id)
+    drive = compact["result"]["torque_speed_analysis"]
+    assert set(drive) == {"status", "settings", "envelope"}
+    assert drive["envelope"] == result["torque_speed_analysis"]["envelope"]
+    assert compact["fields"]["snapshot_available"] is True
+    assert compact["fields"]["snapshot_angle_deg"] == 15.0
+    assert compact["fields"]["playback_removed"] is False
+    frames = compact["fields"]["frames"]
+    assert len(frames) == 1 and frames[0]["angle_deg"] == 15.0
+    assert frames[0]["artifact_id"].startswith(RUN_ARTIFACT_PREFIX)
+    assert "field_line_plot" not in compact["result"]
+    assert "private_path" not in json.dumps(compact)
+
+    monkeypatch.setattr(runs, "SolveWorkspace", lambda: workspace)
+    app = FastAPI()
+    app.include_router(runs.router)
+    client = TestClient(app)
+    path = f"/runs/{location.project_slug}/{location.run_id}/comparison/field"
+    response = client.get(path)
+    assert response.status_code == 200
+    assert response.json()["field_line_frame"]["element_b_mag_t"] == [1.2]
+    assert "private_path" not in response.text
+    # Retention removes numerical frames, but the immutable inline snapshot remains.
+    manifest = json.loads((location.path / "manifest.json").read_text())
+    workspace._remove_field_playback(location.path, manifest)
+    retained = workspace.load_run_comparison(location.project_slug, location.run_id)
+    assert retained["fields"] == {"frames": [], "snapshot_available": True, "snapshot_angle_deg": 15.0, "playback_removed": True}
+    assert client.get(path).status_code == 200
+    assert (location.path / "result.json").read_bytes() == before
+
+
+def test_comparison_missing_map_and_snapshot_do_not_gain_defaults(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("backend.solve_workspace.build_public_run_pdf", lambda **_: b"%PDF comparison fixture")
+    workspace = SolveWorkspace(tmp_path / "data")
+    location = workspace.begin_run(project_name="historical", config=VALID_CONFIG, submitted_request={"config": VALID_CONFIG}).complete(_result())
+    compact = workspace.load_run_comparison(location.project_slug, location.run_id)
+    assert compact["result"]["torque_speed_analysis"] is None
+    assert compact["fields"] == {"frames": [], "snapshot_available": False, "snapshot_angle_deg": None, "playback_removed": False}
+    with pytest.raises(FileNotFoundError, match="not recorded"):
+        workspace.load_run_comparison_field(location.project_slug, location.run_id)
 
 
 @pytest.mark.parametrize("analysis", ["torque", "back-emf", "losses"])

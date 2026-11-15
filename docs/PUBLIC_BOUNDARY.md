@@ -64,6 +64,7 @@ The coilEM launch service is local-only and exposes exactly these paths:
 - `GET /runs`
 - `GET /runs/{project_slug}/{run_id}`
 - `GET /runs/{project_slug}/{run_id}/comparison`
+- `GET /runs/{project_slug}/{run_id}/comparison/field`
 - `DELETE /runs/{project_slug}/{run_id}`
 - `POST /runs/{project_slug}/{run_id}/open-folder`
 - `GET /runs/{project_slug}/{run_id}/report.pdf`

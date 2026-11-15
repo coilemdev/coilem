@@ -12,6 +12,7 @@ import csv
 import gzip
 import hashlib
 import json
+import math
 import os
 import platform
 import re
@@ -1208,15 +1209,27 @@ class SolveWorkspace:
             },
         }
 
-    def load_run_comparison(self, project_slug: str, run_id: str) -> dict[str, Any]:
-        """Load the compact, immutable subset used by the public comparison UI."""
-
+    def _load_comparable_run(self, project_slug: str, run_id: str) -> dict[str, Any]:
         loaded = self.load_run(project_slug, run_id)
         integrity = loaded.get("integrity")
         if not isinstance(integrity, Mapping) or integrity.get("valid") is not True:
             raise SolveWorkspaceError(
                 "The stored run failed its integrity check and cannot be compared."
             )
+        return loaded
+
+    def load_run_comparison_field(self, project_slug: str, run_id: str) -> dict[str, Any]:
+        """Read the inline snapshot on demand, including after playback retention."""
+        loaded = self._load_comparable_run(project_slug, run_id)
+        plot = loaded["result"].get("field_line_plot")
+        if not isinstance(plot, Mapping) or not plot:
+            raise FileNotFoundError("A field snapshot was not recorded for this run.")
+        return dict(plot)
+
+    def load_run_comparison(self, project_slug: str, run_id: str) -> dict[str, Any]:
+        """Load the compact, immutable subset used by the public comparison UI."""
+
+        loaded = self._load_comparable_run(project_slug, run_id)
 
         run = Path(loaded["saved_run"]["path"])
         manifest = loaded["manifest"]
@@ -1293,13 +1306,47 @@ class SolveWorkspace:
             } if isinstance(setup, Mapping) else None,
         }
 
+        result = loaded["result"]
+        analysis = result.get("torque_speed_analysis")
+        # Omit the map grid and efficiency matrices: envelopes are already stored,
+        # and comparison must never evaluate a new drive request.
+        drive = {
+            key: deepcopy(analysis[key])
+            for key in ("status", "status_reason", "settings", "envelope")
+            if key in analysis
+        } if isinstance(analysis, Mapping) else None
+        plot = result.get("field_line_plot")
+        snapshot = isinstance(plot, Mapping) and bool(plot)
+        angle = plot.get("angle_deg") if snapshot else None
+        snapshot_angle = angle if isinstance(angle, (int, float)) and not isinstance(angle, bool) and math.isfinite(angle) else None
+        frames = []
+        retained = {artifact.get("relative_path") for artifact in manifest.get("artifacts", [])
+                    if isinstance(artifact, Mapping) and not artifact.get("removed_at")}
+        for frame in result.get("field_line_frames") or []:
+            if not isinstance(frame, Mapping):
+                continue
+            artifact = frame.get("full_field_frame_artifact") or frame.get("field_frame_artifact")
+            artifact_id = artifact.get("artifact_id") if isinstance(artifact, Mapping) else None
+            angle = frame.get("angle_deg")
+            if not isinstance(artifact_id, str) or not isinstance(angle, (int, float)) or isinstance(angle, bool) or not math.isfinite(angle):
+                continue
+            try:
+                project, saved_run, relative = run_artifact_location(artifact_id)
+            except (ValueError, SolveWorkspaceError):
+                continue
+            if (project, saved_run) == (project_slug, run_id) and relative in retained:
+                frames.append({"angle_deg": angle, "artifact_id": artifact_id})
+
         return {
             "schema_version": RUN_MANIFEST_SCHEMA,
             "project_name": manifest.get("project_name"),
             "inputs": inputs,
+            "fields": {"frames": frames, "snapshot_available": snapshot, "snapshot_angle_deg": snapshot_angle,
+                       "playback_removed": bool(loaded.get("field_playback", {}).get("removed_at"))},
             "result": {
                 "summary": report_summary.get("summary", {}),
                 "solve_metadata": report_summary.get("solve_metadata", {}),
+                "torque_speed_analysis": drive,
                 **compact_waveforms,
             },
             "saved_run": RunLocation(

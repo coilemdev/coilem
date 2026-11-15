@@ -1,9 +1,18 @@
 import type { SolveResult } from './model';
 import { isSolveTimeBreakdown } from './solveTime';
-import type { LossBreakdown, PerformanceOutputStatus } from './performance';
+import type { LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult } from './performance';
 
-/** The comparison route omits fields, playback and other heavy results. */
-export type ComparisonResult = Pick<SolveResult, 'summary' | 'solve_metadata' | 'torque_waveform' | 'back_emf_waveform' | 'cogging_torque_waveform'>;
+/** Envelope curves are stored outputs; map grids, efficiency matrices and field meshes are omitted. */
+export type ComparisonResult = Pick<SolveResult, 'summary' | 'solve_metadata' | 'torque_waveform' | 'back_emf_waveform' | 'cogging_torque_waveform'> & {
+  torque_speed_analysis?: Pick<TorqueSpeedAnalysisResult, 'status' | 'status_reason' | 'settings' | 'envelope'> | null;
+};
+
+export interface ComparisonFields {
+  frames: Array<{ angle_deg: number; artifact_id: string }>;
+  snapshot_available: boolean;
+  snapshot_angle_deg: number | null;
+  playback_removed: boolean;
+}
 
 interface RecordedRun {
   project_slug: string;
