@@ -15,7 +15,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from backend import client as coilem
+import coilem
 
 
 def build_motor() -> coilem.Motor:

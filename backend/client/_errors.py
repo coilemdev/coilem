@@ -8,16 +8,39 @@ from pydantic import ValidationError
 
 
 class CoilemError(Exception):
-    """Base class for every error the client raises."""
+    """Base class for every error the client raises.
+
+    Every error has an ``error_code``, and :meth:`to_dict` gives the same
+    fields in JSON form: ``error_code``, ``message``, ``field`` and
+    ``suggestion`` (None when not known), plus ``problems`` for input errors.
+    """
+
+    error_code: str = "COILEM_ERROR"
+    field: str | None = None
+    suggestion: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "error_code": self.error_code,
+            "message": str(self),
+            "field": self.field,
+            "suggestion": self.suggestion,
+        }
+        problems = getattr(self, "problems", None)
+        if problems:
+            payload["problems"] = [{"field": field, "message": message} for field, message in problems]
+        return payload
 
 
 class InputError(CoilemError, ValueError):
-    """A motor, operating point or solve setting is not accepted.
+    """A motor, operating point, run setup or solve setting is not accepted.
 
     ``field`` is the dotted path of the input at fault, such as
     ``"stator.slot_count"`` or ``"operating_point.current_A"``, or ``None``
     when the problem involves several inputs. ``problems`` lists every
-    ``(field, message)`` pair found, first one first.
+    ``(field, message)`` pair found, first one first. ``error_code`` is
+    ``INVALID_INPUT`` unless a more specific code applies, for example
+    ``SETUP_NOT_FOUND``, ``SETUP_INCOMPATIBLE`` or ``DESIGN_FILE_UNREADABLE``.
     """
 
     def __init__(
@@ -27,11 +50,13 @@ class InputError(CoilemError, ValueError):
         field: str | None = None,
         suggestion: str | None = None,
         problems: list[tuple[str | None, str]] | None = None,
+        error_code: str = "INVALID_INPUT",
     ) -> None:
         super().__init__(message)
         self.field = field
         self.suggestion = suggestion
         self.problems = problems if problems is not None else [(field, message)]
+        self.error_code = error_code
 
 
 class SolveError(CoilemError, RuntimeError):
@@ -65,6 +90,9 @@ class MainModuleError(CoilemError, RuntimeError):
     that calls :func:`solve` must therefore live under
     ``if __name__ == "__main__":`` in a saved ``.py`` file.
     """
+
+    error_code = "MAIN_GUARD_REQUIRED"
+    suggestion = 'Call solve() from under `if __name__ == "__main__":` in a saved .py file, or use the `coilem solve` command.'
 
 
 def _location(loc: tuple[Any, ...], prefix: str | None) -> str | None:

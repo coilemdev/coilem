@@ -216,6 +216,7 @@ class Motor:
                     f"openem_schema_version: this design file uses schema {version!r}; open it in the coilEM app and "
                     f"save it to update it to schema {DESIGN_FILE_SCHEMA_VERSION}, which the Python client reads",
                     field="openem_schema_version",
+                    error_code="DESIGN_SCHEMA_UNSUPPORTED",
                 )
         if isinstance(body, Mapping) and "config" in body:
             unexpected = set(body) - {"config", "project_name", "solve_mesh_key", "solver", "run_setup", "run_setups"}
@@ -238,7 +239,9 @@ class Motor:
         try:
             body = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
-            raise InputError(f"{path}: not valid JSON ({exc.msg} at line {exc.lineno})") from None
+            raise InputError(f"{path}: not valid JSON ({exc.msg} at line {exc.lineno})", error_code="DESIGN_FILE_UNREADABLE") from None
+        except UnicodeDecodeError:
+            raise InputError(f"{path}: not a UTF-8 text file", error_code="DESIGN_FILE_UNREADABLE") from None
         return cls.from_request(body)
 
     def to_request(self) -> dict[str, Any]:

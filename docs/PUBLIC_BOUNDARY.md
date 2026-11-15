@@ -22,6 +22,12 @@ bundle sends API requests to its own origin, which it still checks is loopback.
 which a second launch uses to find a running server, and the `build` identity of
 an installed package; see [Release wheels](RELEASING.md).
 
+The headless commands (`coilem check`, `solve`, `setups`, `schema`,
+`version`; see [Command line](COMMAND_LINE.md)) and `import coilem` open no
+listening socket and add no HTTP route. They solve in their own process, or,
+with `coilem solve --server URL`, send the same `/solve` request a script or
+the UI sends to a running loopback app.
+
 UI files are an exact allowlist, kept separate from the API paths below and
 absent from `/openapi.json`: `/`, the tutorial routes defined in
 `frontend/src/public/tutorials/lessonRoutes.ts`, the files from

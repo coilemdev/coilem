@@ -12,6 +12,8 @@ from typing import Any
 import numpy as np
 
 RESULT_FILE_SCHEMA = "coilem.client_result/v1"
+# The document `coilem solve` writes; Result.load reads it too.
+CLI_SOLVE_SCHEMA = "coilem.cli.solve/v1"
 
 # Result keys holding field pictures for the app's viewers (field lines, flux
 # density, slot excitation, iron-loss density). One result's field-line plot
@@ -160,11 +162,12 @@ class Result:
 
     The accessors cover the numbers most scripts need; ``data`` holds the
     whole result as the app returns it (JSON-compatible), and ``request`` the
-    request that produced it. Quantities that the run did not compute are
-    None, for example ``cogging`` when cogging was not requested.
+    request that produced it. ``setup`` says which saved run setup the solve
+    used (see :class:`SetupUse`), when known. Quantities that the run did not
+    compute are None, for example ``cogging`` when cogging was not requested.
     """
 
-    __slots__ = ("data", "request")
+    __slots__ = ("data", "request", "setup")
 
     # The keys of metrics(), in order: one row of a sweep table.
     METRIC_NAMES: tuple[str, ...] = (
@@ -182,11 +185,14 @@ class Result:
         "solve_time_s",
     )
 
-    def __init__(self, data: Mapping[str, Any], request: Mapping[str, Any] | None = None) -> None:
+    def __init__(
+        self, data: Mapping[str, Any], request: Mapping[str, Any] | None = None, setup: Mapping[str, Any] | None = None
+    ) -> None:
         if not isinstance(data, Mapping) or not isinstance(data.get("summary"), Mapping):
             raise ValueError("Not a coilEM solve result: it has no summary")
         self.data: dict[str, Any] = dict(data)
         self.request: dict[str, Any] | None = dict(request) if request is not None else None
+        self.setup: dict[str, Any] | None = copy.deepcopy(dict(setup)) if setup is not None else None
 
     # -- Headline numbers ---------------------------------------------------------
 
@@ -348,10 +354,13 @@ class Result:
     def without_fields(self) -> Result:
         """A copy without the field pictures (:data:`FIELD_KEYS`); every accessor still works."""
 
-        return Result({key: value for key, value in self.data.items() if key not in FIELD_KEYS}, self.request)
+        return Result({key: value for key, value in self.data.items() if key not in FIELD_KEYS}, self.request, self.setup)
 
     def to_dict(self) -> dict[str, Any]:
-        return {"schema": RESULT_FILE_SCHEMA, "request": copy.deepcopy(self.request), "result": copy.deepcopy(self.data)}
+        payload = {"schema": RESULT_FILE_SCHEMA, "request": copy.deepcopy(self.request), "result": copy.deepcopy(self.data)}
+        if self.setup is not None:
+            payload["setup"] = copy.deepcopy(self.setup)
+        return payload
 
     def save(self, path: str | Path, *, fields: bool = False) -> Path:
         """Write the request and the result to one JSON file.
@@ -367,11 +376,11 @@ class Result:
 
     @classmethod
     def load(cls, path: str | Path) -> Result:
-        """Read a file written by :meth:`save`, or a bare result JSON."""
+        """Read a file written by :meth:`save` or by ``coilem solve``, or a bare result JSON."""
 
         payload = json.loads(Path(path).read_text(encoding="utf-8"))
-        if isinstance(payload, Mapping) and payload.get("schema") == RESULT_FILE_SCHEMA:
-            return cls(payload["result"], payload.get("request"))
+        if isinstance(payload, Mapping) and payload.get("schema") in (RESULT_FILE_SCHEMA, CLI_SOLVE_SCHEMA):
+            return cls(payload["result"], payload.get("request"), payload.get("setup"))
         return cls(payload)
 
     def __repr__(self) -> str:

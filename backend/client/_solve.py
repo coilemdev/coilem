@@ -21,6 +21,7 @@ import numpy as np
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
 from backend.client._inputs import Motor, OperatingPoint, solve_options_for
 from backend.client._results import Result
+from backend.client._setups import SetupStatus, SetupUse, after_changes, library_of, resolve_setup, setup_statuses
 from backend.models.config import MotorConfig, SolveOptionsConfig, SolveParams
 
 QUALITIES: tuple[str, ...] = get_args(SolveParams.model_fields["solve_quality"].annotation)
@@ -55,19 +56,34 @@ def build_request(
     quality: str | None = None,
     mesh: str | None = None,
     solve_params: Mapping[str, Any] | None = None,
+    setup: str | None = None,
 ) -> dict[str, Any]:
     """The request JSON that :func:`solve` sends, without solving.
 
-    The motor's saved solve settings are the starting point; fields they
-    leave unset take the app's new-design settings (:data:`APP_SOLVE_DEFAULTS`)
-    and then the schema defaults. The operating point, ``quality``, ``mesh``
-    and then ``solve_params`` (any other ``solve_params`` field, by its request
-    name) are applied over them, and ``analyses`` replaces the saved analysis
+    The motor's saved solve settings are the starting point, or the saved run
+    ``setup`` named (by name or id) applied to them; fields they leave unset
+    take the app's new-design settings (:data:`APP_SOLVE_DEFAULTS`) and then
+    the schema defaults. The operating point, ``quality``, ``mesh`` and then
+    ``solve_params`` (any other ``solve_params`` field, by its request name)
+    are applied over them, and ``analyses`` replaces the saved analysis
     selection. A motor with no saved settings and no operating point is
     solved at 0 A.
     """
 
-    body = _as_motor(motor).to_request()
+    return _request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params, setup=setup)[0]
+
+
+def _request(
+    motor: MotorLike,
+    operating_point: OperatingPoint | None = None,
+    *,
+    analyses: str | Iterable[str] | None = None,
+    quality: str | None = None,
+    mesh: str | None = None,
+    solve_params: Mapping[str, Any] | None = None,
+    setup: str | None = None,
+) -> tuple[dict[str, Any], SetupUse]:
+    body, use = resolve_setup(_as_motor(motor).to_request(), setup)
     params = dict(body.get("solve_params") or {})
     if operating_point is None and not params:
         operating_point = OperatingPoint()
@@ -93,7 +109,7 @@ def build_request(
     if analyses is not None:
         body["solve_options"] = solve_options_for(analyses, body.get("solve_options"))
     Motor.from_request(body)  # Validates the whole request; errors name solve_params.<field>.
-    return body
+    return body, after_changes(use, body)
 
 
 def prepared_config(body: Mapping[str, Any]) -> MotorConfig:
@@ -130,7 +146,7 @@ def prepared_config(body: Mapping[str, Any]) -> MotorConfig:
     config = normalize_public_mesh_preview_config(config)
     reason = get_magneto2d_support_error(config)
     if reason is not None:
-        raise InputError(f"This design is outside the Magneto2D solve boundary: {reason}")
+        raise InputError(f"This design is outside the Magneto2D solve boundary: {reason}", error_code="OUTSIDE_SOLVE_BOUNDARY")
     assert config.solve_params is not None
     return config.model_copy(
         update={
@@ -139,6 +155,17 @@ def prepared_config(body: Mapping[str, Any]) -> MotorConfig:
             )
         }
     )
+
+
+def setups(motor: MotorLike) -> list[SetupStatus]:
+    """The run setups saved in a design file, then the app's reference setups that fit it.
+
+    Each entry says whether the setup can be used with this design
+    (``usable`` and ``reason``), whether it is the design's active setup, and
+    whether the design's saved settings are exactly that setup.
+    """
+
+    return setup_statuses(_as_motor(motor).to_request())[0]
 
 
 def _raise_for_geometry(config: MotorConfig) -> None:
@@ -159,20 +186,66 @@ def check(
     quality: str | None = None,
     mesh: str | None = None,
     solve_params: Mapping[str, Any] | None = None,
+    setup: str | None = None,
 ) -> list[str]:
     """Run the app's pre-solve checks without solving.
 
     Raises :class:`InputError` for anything the app would refuse to solve,
-    and returns the app's non-blocking winding warnings.
+    and returns the app's non-blocking winding warnings. See :func:`prepare`
+    for the request and run setup the checks used.
+    """
+
+    return prepare(
+        motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params, setup=setup
+    ).warnings
+
+
+@dataclass(frozen=True)
+class PreparedSolve:
+    """A request that passed the app's pre-solve checks, not yet solved.
+
+    ``request`` is the exact request :func:`solve` would send, ``setup`` which
+    saved run setup it uses, and ``warnings`` the app's non-blocking winding
+    warnings.
+    """
+
+    request: dict[str, Any]
+    setup: SetupUse
+    warnings: list[str]
+
+    def effective_settings(self) -> dict[str, Any]:
+        """The solve settings, analyses and torque–speed map settings that will be used."""
+
+        return {
+            "solve_params": dict(self.request.get("solve_params") or {}),
+            "solve_options": dict(self.request.get("solve_options") or {}),
+            "torque_speed_analysis": self.request.get("torque_speed_analysis"),
+        }
+
+
+def prepare(
+    motor: MotorLike,
+    operating_point: OperatingPoint | None = None,
+    *,
+    analyses: str | Iterable[str] | None = None,
+    quality: str | None = None,
+    mesh: str | None = None,
+    solve_params: Mapping[str, Any] | None = None,
+    setup: str | None = None,
+) -> PreparedSolve:
+    """Choose the run setup, build the request and run the app's pre-solve checks, without meshing or solving.
+
+    Raises :class:`InputError` for anything the app would refuse to solve,
+    including a requested ``setup`` that is missing, unreadable or made for
+    another reference model.
     """
 
     from backend.geometry import winding_feasibility_warnings
 
-    config = prepared_config(
-        build_request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params)
-    )
+    body, use = _request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params, setup=setup)
+    config = prepared_config(body)
     _raise_for_geometry(config)
-    return list(winding_feasibility_warnings(config))
+    return PreparedSolve(body, use, list(winding_feasibility_warnings(config)))
 
 
 # -- Worker processes and the main module ------------------------------------------
@@ -259,7 +332,7 @@ def _solve_error(exc: Exception) -> CoilemError:
     from backend.solver_contract import SolveCancelledError
 
     if isinstance(exc, Magneto2DUnsupportedError):
-        return InputError(f"This design is outside the Magneto2D solve boundary: {_short(exc)}")
+        return InputError(f"This design is outside the Magneto2D solve boundary: {_short(exc)}", error_code="OUTSIDE_SOLVE_BOUNDARY")
     if isinstance(exc, GmshUnavailableError):
         return SolveError("Gmsh is required for coilEM solves and could not be loaded.", error_code="GMSH_UNAVAILABLE")
     if isinstance(exc, SolveCancelledError):
@@ -351,6 +424,24 @@ def _http_error(exc: urllib.error.HTTPError) -> CoilemError:
     return SolveError(message, error_code=str(code or f"HTTP_{exc.code}"), field=field, suggestion=suggestion)
 
 
+# Design-file keys that are not part of the motor configuration.
+_DESIGN_FILE_KEYS = frozenset({"openem_schema_version", "openem_version", "name", "description", "reference_notice", "run_setups"})
+
+
+def _server_request(body: dict[str, Any], use: SetupUse) -> dict[str, Any]:
+    """The app's wrapped request, carrying the run setup label as the app's own Solve button does."""
+
+    if use.label is None:
+        return body
+    config = {key: value for key, value in body.items() if key not in _DESIGN_FILE_KEYS}
+    wrapped: dict[str, Any] = {"config": config, "run_setup": use.label}
+    if "solver" in config:
+        wrapped["solver"] = config.pop("solver")
+    if isinstance(body.get("run_setups"), Mapping) and library_of(body).error is None:
+        wrapped["run_setups"] = body["run_setups"]
+    return wrapped
+
+
 def _solve_over_http(server: str, body: dict[str, Any], timeout_s: float | None) -> dict[str, Any]:
     base = server.rstrip("/")
     if "://" not in base:
@@ -399,6 +490,7 @@ def solve(
     on_progress: ProgressCallback | None = None,
     timeout_s: float | None = 3600.0,
     fields: bool = False,
+    setup: str | None = None,
 ) -> Result:
     """Solve a motor at one operating point.
 
@@ -425,22 +517,30 @@ def solve(
             then skips the field-frame pass unless the losses or flux-density
             analysis needs it, which saves a large part of the solve time,
             and every number in the result is the same.
+        setup: The name or id of a run setup saved in the design file (or one
+            of the app's reference setups), applied before the other
+            arguments. Without it the design's saved settings are solved, as
+            the app solves a reopened design file. ``Result.setup`` reports
+            which setup was used.
 
     Raises:
         InputError: The request is not accepted; ``.field`` names the input.
+            A requested setup that is missing or does not fit the design is
+            refused before solving (``error_code`` ``SETUP_NOT_FOUND``,
+            ``SETUP_INCOMPATIBLE``, ...).
         SolveError: The solve started but did not finish; ``.error_code`` says why.
         MainModuleError: In-process solves need an ``if __name__ == "__main__":``
             guard in the calling script on Windows (see :func:`check_main_module`).
     """
 
-    body = build_request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params)
+    body, use = _request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params, setup=setup)
     if server is None:
         data = _solve_in_process(body, on_progress, fields=fields)
     else:
         if on_progress is not None:
             raise InputError("on_progress reports in-process solves only; the app's /solve route sends no progress", field="on_progress")
-        data = _solve_over_http(str(server), body, timeout_s)
-    result = Result(data, request=body)
+        data = _solve_over_http(str(server), _server_request(body, use), timeout_s)
+    result = Result(data, request=body, setup=use.to_dict())
     return result if fields else result.without_fields()
 
 
@@ -558,6 +658,7 @@ def sweep(
     on_point: Callable[[int, int, SweepPoint], Any] | None = None,
     fields: bool = False,
     timeout_s: float | None = 3600.0,
+    setup: str | None = None,
 ) -> Sweep:
     """Solve every combination of phase current and current angle.
 
@@ -573,14 +674,15 @@ def sweep(
     """
 
     motor = _as_motor(motor)
-    base = operating_point or motor.operating_point or OperatingPoint()
+    saved = Motor._from_body(resolve_setup(motor.to_request(), setup)[0]) if setup is not None else motor
+    base = operating_point or saved.operating_point or OperatingPoint()
     currents = _values(current_A, "current_A")
     angles = _values(current_angle_deg, "current_angle_deg")
     points = [base.replace(current_A=current, current_angle_deg=angle) for current in currents for angle in angles]
     # Validation and each solve read these names; an iterator must be consumed only once.
     if analyses is not None and not isinstance(analyses, str):
         analyses = tuple(analyses)
-    options = {"analyses": analyses, "quality": quality, "mesh": mesh, "solve_params": solve_params}
+    options = {"analyses": analyses, "quality": quality, "mesh": mesh, "solve_params": solve_params, "setup": setup}
     for point in points:
         build_request(motor, point, **options)
     if server is None:

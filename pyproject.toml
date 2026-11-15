@@ -40,12 +40,12 @@ coilem-serve = "backend.public_main:start"
 dependencies = { file = ["requirements.lock"] }
 
 [tool.setuptools.packages.find]
-include = ["backend*"]
+include = ["backend*", "coilem*"]
 
 # setup.py also copies the schemas, the M350-50A curve, the built UI and the
 # Magneto2D binary into wheels; see backend/resources.py.
 [tool.setuptools.package-data]
-backend = ["elmer/profiles/*.json", "mesh_profiles/*.json", "reference_models/*.json"]
+backend = ["client/*.json", "elmer/profiles/*.json", "mesh_profiles/*.json", "reference_models/*.json"]
 
 [tool.ruff]
 target-version = "py310"
@@ -55,7 +55,7 @@ line-length = 150
 select = ["E", "F", "I", "W"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["backend"]
+known-first-party = ["backend", "coilem"]
 
 [tool.ruff.lint.per-file-ignores]
 "tools/femm_reference/_vendor/**" = ["ALL"]
