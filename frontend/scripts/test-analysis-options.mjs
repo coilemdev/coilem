@@ -83,7 +83,7 @@ assert.equal(defaultResultPlot({ ...result, summary: { ...result.summary, back_e
 assert.throws(() => parseDesignFile(JSON.stringify({ ...mapOnly, torque_speed_analysis: {
   ...mapOnly.torque_speed_analysis, limits: { ...mapOnly.torque_speed_analysis.limits, dc_bus_V: -5 },
 } })), /Invalid torque–speed map settings/);
-// The Very fine plan is High accuracy's grid on the Very fine mesh, and lights up only for that pair.
+// The Maximum accuracy plan is High accuracy's grid on the Very fine mesh, and lights up only for that pair.
 {
   const sweep = { rotor_sweep_range_deg: 60, rotor_step_deg: 15 };
   const base = setAnalysisOption(cloneDefaultConfig(), 'back_emf', true);
@@ -95,6 +95,6 @@ assert.throws(() => parseDesignFile(JSON.stringify({ ...mapOnly, torque_speed_an
   assert.equal(selectedSolvePlan(applyPublicSolvePreset(base, 'fine', sweep)), 'fine');
   assert.equal(selectedSolvePlan({ ...base, solve_params: { ...base.solve_params, solve_quality: 'standard', mesh_density: 'very_fine' } }), 'standard');
   assert.equal(applyPublicSolvePreset(veryFine, 'standard', sweep).solve_params.mesh_density, 'normal');
-  assert.equal(selectedSolvePlan(parseDesignFile(JSON.stringify(veryFine)).config), 'very_fine', 'files reopen on the Very fine plan');
+  assert.equal(selectedSolvePlan(parseDesignFile(JSON.stringify(veryFine)).config), 'very_fine', 'files reopen on the Maximum accuracy plan');
 }
 console.log('Analysis defaults, selection, standalone requests, roundtrip and result availability pass.');

@@ -3841,7 +3841,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     { value: 'quick', label: 'Preview', meshLabel: 'Coarse mesh', tradeoff: 'Fast iteration' },
     { value: 'standard', label: 'Standard', meshLabel: 'Medium mesh', tradeoff: 'Balanced', recommended: true },
     { value: 'fine', label: 'High accuracy', meshLabel: 'Fine mesh', tradeoff: 'Finer detail' },
-    { value: 'very_fine', label: 'Very fine', meshLabel: 'Very fine mesh', tradeoff: 'Cogging, convergence' },
+    { value: 'very_fine', label: 'Maximum accuracy', meshLabel: 'Very fine mesh', tradeoff: 'Cogging, convergence' },
   ];
   const elmerAvailable = elmerCapability.available
     && elmerCapability.qualified

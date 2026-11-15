@@ -23,7 +23,7 @@ export const PUBLIC_SOLVE_PLAN_MESH_DENSITY = {
   fine: 'fine',
 } as const satisfies Record<PublicSolvePreset, MotorConfig['solve_params']['mesh_density']>;
 
-/** The Accuracy plan buttons: the three preset grids, and Very fine, which is High accuracy's grid
+/** The Accuracy plan buttons: the three preset grids, and Maximum accuracy, which is High accuracy's grid
  * on the Very fine mesh. A plan is only these two settings, so saved setups, design files and the
  * backend need no new value. */
 export type PublicSolvePlanChoice = PublicSolvePreset | 'very_fine';

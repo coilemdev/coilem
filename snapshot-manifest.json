@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 17806,
-      "sha256": "fe5033ddbd289a51ddc073a6944723ad037fbeea138d1282b9d59673aac2e688"
+      "bytes": 17820,
+      "sha256": "7c59a5e8f4896838599604af112dcebbe4a4213b138f29903aed23460cb297f4"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6465,8 +6465,8 @@
     },
     {
       "path": "frontend/scripts/test-cogging-view.mjs",
-      "bytes": 6572,
-      "sha256": "b7467525364d73319fe3f5b34861a3a4e8010a59f074f3a03fa67383b2fb257d"
+      "bytes": 6592,
+      "sha256": "01fada08bb88a8d479a4506ba089b435b61b2e71ad41912f1d64de3ffde5aa34"
     },
     {
       "path": "frontend/scripts/test-custom-steel.mjs",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 303532,
-      "sha256": "8a09e93da4f7598d5c8364cc88d46d329aec5db0079e6d98e8f1f2e327f27f31"
+      "bytes": 303539,
+      "sha256": "9ea3f2f2701b0b17ad3caaad140fee4e2a135d3c918260282a4c883ffe99ee38"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7185,8 +7185,8 @@
     },
     {
       "path": "frontend/src/public/coggingView.ts",
-      "bytes": 8662,
-      "sha256": "94ef35504d8123ff0bfd3ad0f152a000d57c3470c9b06953bb8d1c32a42ea419"
+      "bytes": 8682,
+      "sha256": "d473c836951ce0b2f74a64c1caa2810ba8db82cabf3aff5c626d56d4535bc3eb"
     },
     {
       "path": "frontend/src/public/coil3d.ts",
@@ -7525,8 +7525,8 @@
     },
     {
       "path": "frontend/src/public/solvePlan.ts",
-      "bytes": 5252,
-      "sha256": "2cb0864a85663616f3b9a8fc8d353e7135a99a4a5b4bdfd47605490bb71dfad1"
+      "bytes": 5259,
+      "sha256": "7009dc4e61421fa53979399a0742437d6a6b20a6f9a7d1f148f161be269edb5c"
     },
     {
       "path": "frontend/src/public/solveProgress.ts",
@@ -11635,8 +11635,8 @@
     },
     {
       "path": "frontend/scripts/test-analysis-options.mjs",
-      "bytes": 8529,
-      "sha256": "6cdd0a13edb6b810835add710645a4a52bdd3c8d481602c9d82812b2d41152a5"
+      "bytes": 8543,
+      "sha256": "49555d33f57b1bb98e432ab82fd0168f6b3f7cf5510d346f515f170955750cae"
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
@@ -17995,8 +17995,8 @@
     },
     {
       "path": "backend/input_advisories.py",
-      "bytes": 4921,
-      "sha256": "1caf415160b039e1a5c170725f80495e0746f9d9cdc02bdcb15434cfd0832b5c"
+      "bytes": 4948,
+      "sha256": "a70b3fe2167d34c929bb01be7cfa0eb25398f4a505c20e1fffd110de94a9532f"
     },
     {
       "path": "backend/rotor_construction_preview.py",
@@ -19265,8 +19265,8 @@
     },
     {
       "path": "docs/COMMAND_LINE.md",
-      "bytes": 7384,
-      "sha256": "8b211115774e6a29bcef67058d149deccb43caa51669f51b9459960878b75638"
+      "bytes": 7391,
+      "sha256": "2e2202006674ebe5f064643c1e3c8beb715b4ba634a8fe6c562fe992933be16a"
     },
     {
       "path": "frontend/scripts/test-run-setup-parity.mjs",
