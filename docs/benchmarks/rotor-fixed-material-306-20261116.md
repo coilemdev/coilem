@@ -158,9 +158,11 @@ python -m tools.rotor_native_report OUTPUT/history
 python -m tools.rotor_native_remesh_probe OUTPUT/history
 ```
 
-The next reference comparison needs a new FEMM full-turn history with the
-corrected signed angle/current schedule and actual coil-area normalization.
-The archived 47.707 mW FEMM trajectory remains ineligible as a matching target.
+The [first corrected 96-sample reference comparison](rotor-matched-femm-306-20261116.md)
+now passes the three component agreement checks. It uses the corrected
+signed angle/current schedule, actual coil-area normalization and matched
+native magnet constants. Corrected FEMM 192/384 angular refinement remains
+open. The archived 47.707 mW trajectory remains ineligible as a matching target.
 Native spatial convergence, corrected reference convergence/agreement and
 full-versus-sector loss validation must precede release qualification and public
 loss/efficiency integration. This implementation does not close #306.

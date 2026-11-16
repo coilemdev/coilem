@@ -41,22 +41,26 @@ def history_coordinate_frame(protocol):
     return "global"
 
 
-def analyse(directory):
+def analyse(directory, *, sample_stride=1):
     directory = Path(directory)
     protocol = json.loads((directory / "protocol.json").read_text())
     coordinate_frame = history_coordinate_frame(protocol)
     reference_points = np.loadtxt(directory / "reference-points.csv", delimiter=",", ndmin=2)
-    count = protocol["positions"]
+    registered_count = protocol["positions"]
+    if sample_stride not in (1, 2, 4) or registered_count % sample_stride:
+        raise ValueError("invalid progressive reference subset")
+    count = registered_count // sample_stride
     if count % 4 or count < 32:
         raise ValueError("pilot analysis needs a grid divisible by four and at least 32 positions")
     if coordinate_frame == "rotor_material":
-        expected_angles = [-360*k/count for k in range(count+1)]
+        expected_angles = [-360*k/registered_count for k in range(registered_count+1)]
         if protocol.get("mechanical_angles_deg") != expected_angles:
             raise ValueError("Moving-air-gap poses do not match the full-turn grid")
     samples, queried_fields, timing, element_counts = [], [], [], []
     mesh_hashes, reference_raw_corners = [], None
     for index in range(count+1):
-        position = directory / f"position-{index:04d}"
+        pose_index = index*sample_stride
+        position = directory / f"position-{pose_index:04d}"
         record = json.loads((position / "position.json").read_text())
         if coordinate_frame == "rotor_material" and not REQUIRED.issubset(record["sha256"]):
             raise ValueError("Moving-air-gap history is missing required evidence")
@@ -64,7 +68,7 @@ def analyse(directory):
             if Path(name).name != name or hashlib.sha256((position / name).read_bytes()).hexdigest() != digest:
                 raise ValueError("reference artifact hash mismatch")
         angle = -360*index/count
-        if record["index"] != index or abs(record["mechanical_angle_deg"]-angle) > 1e-10:
+        if record["index"] != pose_index or abs(record["mechanical_angle_deg"]-angle) > 1e-10:
             raise ValueError("reference pose mismatch")
         queries = re.findall(r"mo_getpointvalues\(([^,]+),([^\)]+)\)", (position / "point-export.lua").read_text())
         query_coordinates = np.asarray(queries, dtype=float)
@@ -157,6 +161,7 @@ def analyse(directory):
                          "tools/rotor_closure_report.py", "tools/femm_reference/rotor_airgap.py")
         },
         "sampling_plan": RotorSamplingPlan(protocol["speed_rpm"], count).metadata(),
+        "registered_positions": registered_count, "sample_stride": sample_stride,
         "operating_point": {k: protocol.get(k) for k in ("fixture", "fixture_sha256", "current_peak_A", "gamma_deg", "mesh", "smoothing")},
         "material": asdict(material), "stack_m": stack, "results": results,
         "angular_convergence": convergence, "angular_gate_pass": all(c["pass"] for c in convergence),

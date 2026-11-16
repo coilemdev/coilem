@@ -256,3 +256,18 @@ must satisfy the predeclared max(5% of finer loss, 0.001 W) criterion. This is
 a convergence diagnostic, not a Richardson error bound or measured accuracy.
 The one-case numerical gates and the full release qualification remain
 separate; the multi-motor matrix is not started by this command.
+
+## Corrected native/FEMM comparison
+
+The historical collection commands above retain their original trajectories;
+they are not the reference for the corrected native operating point. Use
+`tools.femm_reference.rotor_matched_history` for explicit native angle/current,
+actual coil-area and magnet-property matching. It registers a 384-position
+grid and supports progressive strides 4, 2 and 1 with checkpoint reuse.
+`tools.rotor_matched_report` audits source evidence and separately compares
+hysteresis, lamination eddy and total with the native result at the same count.
+
+The [first 96-sample result](benchmarks/rotor-matched-femm-306-20261116.md)
+passes preliminary cross-solver agreement. Corrected reference angular and
+both solvers' spatial convergence remain open. Review that result before
+collecting further insertions or expanding the release matrix.
