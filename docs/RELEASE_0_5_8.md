@@ -66,8 +66,13 @@ reports no physics change and no measurement required, and
   four platforms.
 - [x] Review and merge the release PR only after required evidence is accepted.
   PR #292 merged on November 14, 2026.
-- [ ] Tag the accepted publication commit `v0.5.8`; run the protected release
+- [x] Tag the accepted publication commit `v0.5.8`; run the protected release
   workflow and verify published-package acceptance before announcing it.
+  `v0.5.8` points at `a3e70035`, the merge of #314. Tag run `43752888234`
+  passed all 21 acceptance jobs on its third attempt, uploaded 0.5.8 to PyPI
+  after the release owner approved the `pypi` environment, passed PyPI install
+  acceptance on all four platforms and attached the wheels to the GitHub
+  release, published as Latest on November 16, 2026 (UTC).
 
 ## Deferred issues accepted for 0.5.8
 
@@ -77,7 +82,10 @@ these remaining issues in the next release:
 - **#234, Windows cancellation:** intermittent Ctrl+Break shutdown hangs remain
   unresolved. Two hangs occurred in 12 recorded Windows interrupt attempts;
   passing retries do not establish a fix. Further investigation and counted
-  cancellation/cleanup testing remain required.
+  cancellation/cleanup testing remain required. In the tag run, an
+  interrupted in-process `coilem solve` also exited with code 4 instead of
+  130 in three of eight Windows attempts; the solve still stopped and no
+  solver process remained.
 - **#285, V-shape convergence:** input semantics and partial-sweep labels are
   fixed, but the mesh study does not establish spatial convergence. Existing
   warnings and the published sensitivity results remain visible. Default mesh

@@ -70,7 +70,10 @@ the next release by the release owner; existing warnings remain in place.
 
 Windows Ctrl+Break cancellation can intermittently hang during a solve
 ([#234](https://github.com/coilemdev/coilem/issues/234)); passing retries do not
-establish a fix. Investigation and repeated cancellation checks are deferred
+establish a fix. Interrupting an in-process `coilem solve` on Windows can also
+exit with code 4 (solve failed) instead of 130 (cancelled); the solve still
+stops and no solver process is left running.
+Investigation and repeated cancellation checks are deferred
 to the next release by the release owner. Sector models and
 opt-in pole-pitch mesh reuse are excluded from this release. Hardware accuracy,
 3D end effects and Experimental outputs remain outside any software parity
