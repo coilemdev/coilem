@@ -99,6 +99,12 @@ interface MotorCanvasProps {
   showToothPoles?: boolean;
   /** Preview speed: the Phases waveforms show the electrical frequency it makes. */
   previewRpm?: number;
+  /**
+   * The rotor is turning (Spin, or the rotor turned during a solve). A sector mesh is
+   * then drawn whole: which identical copy is solved changes as the rotor turns, so
+   * the solved sector is shown only when the rotor stops.
+   */
+  rotorTurning?: boolean;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
   /** Element-edge colour in place of the usual grey. */
@@ -1755,6 +1761,7 @@ export function MotorCanvas({
   magnetPolarityView = 'dominant',
   showToothPoles = false,
   previewRpm = 20,
+  rotorTurning = false,
   meshDisplayMode = 'geometry',
   showMeshEdges = true,
   meshQualities = EMPTY_MESH_QUALITIES,
@@ -2024,15 +2031,15 @@ export function MotorCanvas({
         const detailZoom = navigation.scale > 8;
         const coilPhases = geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null;
         if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
-        // A sector mesh is the solved sector at the meshed angle plus its copies. Turned
-        // away from that angle the solver cuts a different sector, at the tooth and pole
-        // gap nearest each other, and that sector is the bright one: it steps round as
-        // the rotor turns. Without the backend's table of cuts the whole motor is bright.
+        // A sector mesh is the solved sector at the meshed angle plus its copies. Stopped
+        // away from that angle, the bright sector is the one the solver cuts there, at the
+        // tooth and pole gap nearest each other. While the rotor turns, or without the
+        // backend's table of cuts, the whole motor is drawn bright.
         const sectorRepeats = Number((mesh.mesh_info.sector as { repeats?: number } | undefined)?.repeats ?? 0);
         const turnedSector = rotorAngleDeg !== 0 && sectorRepeats > 1 && solvedSectorTriangleCount(mesh) < mesh.triangles.length;
         const sectorInfo = mesh.mesh_info.sector as { mid_gap_radius_mm?: number } | undefined;
         const midGapMm = Number(sectorInfo?.mid_gap_radius_mm ?? 0);
-        const tableCut = turnedSector && midGapMm > 0 ? sectorCutAt(mesh.sector_cuts, rotorAngleDeg) : null;
+        const tableCut = turnedSector && !rotorTurning && midGapMm > 0 ? sectorCutAt(mesh.sector_cuts, rotorAngleDeg) : null;
         const shownCut = tableCut ? sectorCutAnglesDeg(tableCut, rotorAngleDeg) : null;
         const sectorShading: 'mesh' | 'bright' = turnedSector && !shownCut ? 'bright' : 'mesh';
         const sectorSpanDeg = sectorRepeats > 1 ? 360 / sectorRepeats : 360;
@@ -2215,6 +2222,7 @@ export function MotorCanvas({
     navigation.scale,
     navigation.rotationDeg,
     rotorAngleDeg,
+    rotorTurning,
     selectedComponent,
     showMeshEdges,
     meshEdgeColor,
