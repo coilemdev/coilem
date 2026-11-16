@@ -1586,6 +1586,22 @@ def _gmsh_refinement_profile_metadata(config: MotorConfig) -> dict[str, Any]:
     }
 
 
+def _is_v_shape_ipm(config: MotorConfig) -> bool:
+    rotor = getattr(config, "rotor", None)
+    return str(config.topology).upper() == "IPM" and getattr(rotor, "ipm_topology", None) == "v_shape"
+
+
+def _v_shape_corner_patch() -> tuple[float, float, float, int]:
+    """Size, radius, transition (mm) and sampling of the V-shape corner patch."""
+    profile = _gmsh_refined_mesh_profile()
+    return (
+        _gmsh_profile_number(profile, "v_shape_magnet_corner", "size_mm"),
+        _gmsh_profile_number(profile, "v_shape_magnet_corner", "core_radius_mm"),
+        _gmsh_profile_number(profile, "v_shape_magnet_corner", "transition_mm"),
+        _gmsh_profile_int(profile, "v_shape_magnet_corner", "sampling"),
+    )
+
+
 def _gmsh_mesh_size_metadata(config: MotorConfig, base_lc_mm: float) -> dict[str, Any]:
     metadata: dict[str, Any] = {
         "gmsh_base_lc_mm": base_lc_mm,
@@ -1594,6 +1610,9 @@ def _gmsh_mesh_size_metadata(config: MotorConfig, base_lc_mm: float) -> dict[str
     if _gmsh_corner_refinement_enabled(config):
         profile = _gmsh_refined_mesh_profile()
         metadata["gmsh_far_lc_mm"] = _gmsh_refined_far_lc_mm(profile, base_lc_mm)
+    if _is_v_shape_ipm(config):
+        size, radius, _transition, _sampling = _v_shape_corner_patch()
+        metadata["gmsh_v_shape_corner_patch_mm"] = {"size": size, "radius": radius}
     return metadata
 
 
@@ -1804,22 +1823,6 @@ def _apply_gmsh_physics_mesh_fields(
                     sampling=corner_sampling,
                 )
             )
-            if str(config.topology).upper() == "IPM":
-                # Buried magnets: leakage through the bridges depends on the
-                # field in the steel around each pocket corner, not only at the
-                # corner itself (#285). Hold a fine mesh over a wider patch.
-                buried_radius = _gmsh_profile_number(refined_profile, "buried_magnet_corner", "core_radius_mm")
-                fields.append(
-                    _add_threshold_field(
-                        points=magnet_points,
-                        size_min_mm=_gmsh_profile_number(refined_profile, "buried_magnet_corner", "size_mm"),
-                        size_max_mm=far_lc,
-                        dist_min_mm=buried_radius,
-                        dist_max_mm=buried_radius
-                        + _gmsh_profile_number(refined_profile, "buried_magnet_corner", "transition_mm"),
-                        sampling=_gmsh_profile_int(refined_profile, "buried_magnet_corner", "sampling"),
-                    )
-                )
         else:
             fields.append(
                 _add_threshold_field(
@@ -1831,6 +1834,24 @@ def _apply_gmsh_physics_mesh_fields(
                     sampling=80,
                 )
             )
+
+    if magnet_points and _is_v_shape_ipm(config):
+        # V-shape rotors: leakage through the bridges depends on the field in
+        # the steel around each pocket corner, not only at the corner itself.
+        # Without a fine mesh over this wider patch, torque and back EMF read
+        # several percent high (#285), so it applies with or without the
+        # Corner refinement option.
+        patch_size, patch_radius, patch_transition, patch_sampling = _v_shape_corner_patch()
+        fields.append(
+            _add_threshold_field(
+                points=magnet_points,
+                size_min_mm=patch_size,
+                size_max_mm=far_lc,
+                dist_min_mm=patch_radius,
+                dist_max_mm=patch_radius + patch_transition,
+                sampling=patch_sampling,
+            )
+        )
 
     slot_points = sorted(
         builder.points_by_feature.get("slot_mouth", set())

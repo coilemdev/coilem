@@ -69,12 +69,27 @@ A later pass refined one mesh region at a time on the same three fixtures and op
 - Holding the fine mesh within only 0.75 to 1.5 mm of each corner gives the same torque and back EMF as 5.5 mm.
 - The existing Corner refinement option uses about 0.1 mm elements within 0.3 mm of each corner. On its own it leaves torque up to 7.3% and back EMF up to 14.2% above the reference.
 
-With Corner refinement on, IPM rotors now also get 0.15 mm elements within 1.5 mm of each magnet and pocket corner (`buried_magnet_corner` in `backend/mesh_profiles/gmsh_profiles.json`). Difference from the reference:
+V-shape rotors now always get 0.15 mm elements within 1.5 mm of each magnet and pocket corner, with or without the Corner refinement option (`v_shape_magnet_corner` in `backend/mesh_profiles/gmsh_profiles.json`). Other rotors are unchanged. Difference from the reference, Corner refinement off / on:
 
 | Fixture | Elements | Torque | Back EMF | Cogging p-p |
 | --- | ---: | ---: | ---: | ---: |
-| baseline_contract | 107,358 | +0.3% | +0.5% | +3.3% |
-| thin_bridge_contract | 106,212 | +0.1% | +0.05% | +1.8% |
-| wide_angle_high_output_v1 | 109,336 | +0.4% | +0.8% | +1.9% |
+| baseline_contract | 218,086 / 107,358 | +0.2% / +0.3% | +0.6% / +0.5% | +4.4% / +3.3% |
+| thin_bridge_contract | 211,806 / 106,212 | 0.0% / +0.1% | -0.05% / +0.05% | +2.3% / +1.8% |
+| wide_angle_high_output_v1 | 209,602 / 109,336 | +0.4% / +0.4% | +1.1% / +0.8% | +1.3% / +1.9% |
 
-Cogging still changes by about 2% on the last reference step, so it is not shown to be converged. The flat IPM fixture `ipm_flat_8p12s_fsae_contract` is within 0.15% of its own fine reference with or without the patch. The V-shape benchmark fixtures run with Corner refinement off and are unchanged by this patch; their registered values and the release qualification are not updated here.
+Cogging still changes by about 2% on the last reference step, so it is not shown to be converged. The flat IPM fixture `ipm_flat_8p12s_fsae_contract` is within 0.15% of its own fine reference on the Normal mesh and is not changed by the patch.
+
+### Comparison with the stored FEMM references
+
+The six registered V-shape fixtures, solved unchanged (0 degree current angle, 90 degree window, Normal mesh, Corner refinement off) on macOS arm64, against the FEMM values in `benchmarks/qualification-70c5e3404c19`. Differences are coilEM relative to FEMM.
+
+| Fixture | Torque, main | Torque, patch | Back EMF fundamental, main | Back EMF fundamental, patch |
+| --- | ---: | ---: | ---: | ---: |
+| baseline_contract | +7.0% | -0.7% | +8.3% | -0.9% |
+| thin_bridge_contract | +2.6% | +0.6% | +1.1% | -0.3% |
+| wide_angle_high_output_v1 | +6.6% | -1.0% | +8.6% | -1.6% |
+| deep_apex_high_output_v1 | +5.1% | -1.8% | +8.2% | -1.4% |
+| narrow_angle_contract | +4.4% | -0.7% | +4.7% | -0.6% |
+| pocket_offset_contract | +5.1% | -0.7% | +8.1% | -0.9% |
+
+The record stores the back-EMF difference but not FEMM's value, so the FEMM back EMF is derived from the main-mesh run on this platform; main-mesh torque here matches the registered Windows value to four digits. This is an indication, not a qualification run: the registered benchmark values and the release qualification are not updated here.

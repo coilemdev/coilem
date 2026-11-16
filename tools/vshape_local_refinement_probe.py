@@ -6,6 +6,7 @@ mesher, so each point answers "what changes if only this region is finer".
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 import json
 import os
 import tempfile
@@ -75,16 +76,19 @@ def main() -> None:
     p.add_argument("--gap-scale", type=float)
     p.add_argument("--cogging", action="store_true")
     p.add_argument("--corner-refinement", action="store_true")
+    p.add_argument("--as-registered", action="store_true", help="solve the fixture request unchanged")
+    p.add_argument("--no-v-shape-patch", action="store_true", help="mesh as before the V-shape corner patch")
     p.add_argument("--label", required=True)
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args()
 
     body = json.loads((FIXTURES / (a.fixture or f"ipm_vshape_8p12s_{a.case}__native.json")).read_bytes())
-    body["solve_params"].update(current_amplitude_A=50, current_angle_deg=30, solve_quality="custom",
-                                rotor_sweep_range_deg=360, rotor_step_deg=7.5, mesh_density=a.density,
-                                rotor_rotation_model="remesh_per_step", corner_refinement=a.corner_refinement)
-    body["solve_options"].update(torque_sweep=True, back_emf=True, cogging_torque=a.cogging,
-                                 losses_efficiency=False, flux_density=False, thd_analysis=False)
+    if not a.as_registered:
+        body["solve_params"].update(current_amplitude_A=50, current_angle_deg=30, solve_quality="custom",
+                                    rotor_sweep_range_deg=360, rotor_step_deg=7.5, mesh_density=a.density,
+                                    rotor_rotation_model="remesh_per_step", corner_refinement=a.corner_refinement)
+        body["solve_options"].update(torque_sweep=True, back_emf=True, cogging_torque=a.cogging,
+                                     losses_efficiency=False, flux_density=False, thd_analysis=False)
     config = MotorConfig.model_validate(body)
     real_setting, real_report = solver.solver_setting, solver.run_magneto2d_report
     real_aggregate = solver._aggregate_per_angle_mesh_sweep
@@ -110,19 +114,20 @@ def main() -> None:
               patch.object(solver.Magneto2DSolver, "_prepare_solve_cache_dir", return_value=None),
               patch.object(solver, "run_magneto2d_report", numerical_report),
               patch.object(solver, "_aggregate_per_angle_mesh_sweep", aggregate),
-              _install_extra_fields(a.rotor_mm, a.rotor_reach_mm, a.rotor_grow_mm, a.slot_mm, a.gap_scale)):
+              _install_extra_fields(a.rotor_mm, a.rotor_reach_mm, a.rotor_grow_mm, a.slot_mm, a.gap_scale),
+              (patch.object(gmsh_solver, "_is_v_shape_ipm", return_value=False) if a.no_v_shape_patch else nullcontext())):
             started = time.monotonic()
             result = solver.Magneto2DSolver(launch_surface=True).solve(config)
     dq, cog = result.summary.dq_flux_linkage, result.summary.cogging
     row = {
-        "label": a.label, "corner_refinement": a.corner_refinement, "case": a.case, "density": a.density, "rotor_mm": a.rotor_mm,
+        "label": a.label, "as_registered": a.as_registered, "v_shape_patch": not a.no_v_shape_patch, "corner_refinement": a.corner_refinement, "case": a.case, "density": a.density, "rotor_mm": a.rotor_mm,
         "rotor_reach_mm": a.rotor_reach_mm, "rotor_grow_mm": a.rotor_grow_mm, "slot_mm": a.slot_mm, "gap_scale": a.gap_scale,
         "elapsed_s": round(time.monotonic() - started, 1),
         "elements": result.solve_metadata.mesh_element_count,
         "torque_Nm": result.summary.avg_torque_Nm,
         "bemf_V": result.summary.back_emf_fundamental_V,
-        "Ld_mH": None if dq is None else dq.apparent_L_d_H * 1e3,
-        "Lq_mH": None if dq is None else dq.apparent_L_q_H * 1e3,
+        "Ld_mH": None if dq is None or dq.apparent_L_d_H is None else dq.apparent_L_d_H * 1e3,
+        "Lq_mH": None if dq is None or dq.apparent_L_q_H is None else dq.apparent_L_q_H * 1e3,
         "cogging_pp_Nm": None if cog is None else cog.peak_to_peak_Nm,
         "cogging_end_mismatch_Nm": None if cog is None else cog.endpoint_mismatch_Nm,
     }

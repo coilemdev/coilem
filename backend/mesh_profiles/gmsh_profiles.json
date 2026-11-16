@@ -29,7 +29,7 @@
         "transition_base_scale": 0.08,
         "sampling": 220
       },
-      "buried_magnet_corner": {
+      "v_shape_magnet_corner": {
         "size_mm": 0.15,
         "core_radius_mm": 1.5,
         "transition_mm": 2.0,

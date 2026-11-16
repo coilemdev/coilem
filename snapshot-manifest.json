@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 83637,
-      "sha256": "93460f272dbdc43874d08848ef3abb7b4f217f58e12878b4457256bf547a732d"
+      "bytes": 84344,
+      "sha256": "bafafc0a2d1dd40acd6e6893672452628dcf4d616f50da7a840376019ea255f4"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/mesh_profiles/gmsh_profiles.json",
-      "bytes": 1661,
-      "sha256": "fabb99f58e52539cb51aa39cc2e5bfb6f4c889db5b1a5c34bacd0698078ab960"
+      "bytes": 1662,
+      "sha256": "bd562f6a13920871ac83d40e1cf4e0765c5974aeed15f4d9dd2ab0564f27abd6"
     },
     {
       "path": "backend/models/__init__.py",
@@ -8017,11 +8017,6 @@
       "path": "tests/test_bldc_angle_contract.py",
       "bytes": 7241,
       "sha256": "23663cd9d6ceddc8d7841c8c477ca7467706e89bd3b6c47a1126a52dff76bceb"
-    },
-    {
-      "path": "tests/test_buried_magnet_corner_mesh.py",
-      "bytes": 2369,
-      "sha256": "d149f9252fc5cf148d96e34541789d44314896082dbfad616afa08b93a0f1e2f"
     },
     {
       "path": "tests/test_cogging.py",
@@ -17645,8 +17640,8 @@
     },
     {
       "path": "docs/VSHAPE_CORNER_REFINEMENT_285.json",
-      "bytes": 32253,
-      "sha256": "c39e1efea57bccf111e4542f226ae403075c1e21ba40974e4fd347eaa456f80b"
+      "bytes": 48230,
+      "sha256": "493cd7cced9f3fc7ca4bec06eb9a38394c2be5e5c8d2f083fbdaba29586b7304"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
@@ -17655,8 +17650,8 @@
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
-      "bytes": 8644,
-      "sha256": "5de118d6045998b2f203550aeddb8274537b110ea598f3f8ed56a129f7e9ce79"
+      "bytes": 9824,
+      "sha256": "35330e292ebe47c07d4ddfd6949bb1e67571d69c81765b5093be74421d7d3f64"
     },
     {
       "path": "docs/examples/client_ipm_motor.py",
@@ -17829,14 +17824,19 @@
       "sha256": "cb50a83b218471c9e471e1c64cf0982b0f71b8e52558d3ccabbec25db797685a"
     },
     {
+      "path": "tests/test_v_shape_corner_mesh.py",
+      "bytes": 3317,
+      "sha256": "ea3ab8930070fe962da9df87dba140d0411d9e88834c77d5a4bf4874e28b51d9"
+    },
+    {
       "path": "tests/test_vshape_mesh_study.py",
       "bytes": 1308,
       "sha256": "3f5fe267508a13bf7dc9b35ccde66c967d2ea361b7662f4d22d626bdae2003fa"
     },
     {
       "path": "tools/vshape_local_refinement_probe.py",
-      "bytes": 6958,
-      "sha256": "4b8f957ec68bfd30ed19ed9fe482e4d65b1779d20f1616370d6447d36ca8cb6b"
+      "bytes": 7510,
+      "sha256": "a83db60a17be6c6438067427a2125f4c40c3e52b4e08ab5a8d2ec1f89f516511"
     },
     {
       "path": "tools/vshape_mesh_study.py",
