@@ -1024,10 +1024,23 @@ def build_sector_ir(
 
 
 def _rotor_cut_can_move(ir: GeometryIR, rotor_cut: float, span: float, shift: float) -> bool:
-    """Whether the rotor cut can move ``shift`` either way without crossing a magnet."""
+    """Whether the rotor cut can move ``shift`` either way without crossing a magnet or
+    passing a rotor corner within a hair: a rotor drawn with corners on its pole
+    boundary (the published Prius) would get a sliver where the moved cut grazes one."""
 
     if shift <= 0.0:
         return True
+    for angle in (rotor_cut, rotor_cut + span):
+        cos_a, sin_a = math.cos(angle), math.sin(angle)
+        for region in ir.regions:
+            if region.motion_group != "rotor":
+                continue
+            for loop in region.loops:
+                for segment in loop.segments:
+                    x, y = _xy(segment.start)
+                    along = x * cos_a + y * sin_a
+                    if along > 1.0e-6 and abs(x * sin_a - y * cos_a) <= 2.0 * shift * along:
+                        return False
     for region in ir.regions:
         if region.kind != "Magnet":
             continue

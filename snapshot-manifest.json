@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 98047,
-      "sha256": "db8f28a6a39538965fc39944c0e03d3629cb5dab6138f63a7ed814d5570c61cd"
+      "bytes": 99302,
+      "sha256": "6820d837d7945efbafd54d613b0a944e3cb483fad145e118e5978b297d5c632a"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -18005,8 +18005,8 @@
     },
     {
       "path": "backend/sector_geometry.py",
-      "bytes": 65554,
-      "sha256": "579c3b83830a8db5ee0c7563368b6800b7cbba5546cc29ccbeacc55bb401bcbb"
+      "bytes": 66243,
+      "sha256": "8ce9c6fb464a0d63ecb634110a5b95905bdd02267866a2397cb97c90f3c46db3"
     },
     {
       "path": "backend/sector_tiling.py",

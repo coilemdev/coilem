@@ -192,6 +192,12 @@ class _GmshGeometryBuilder:
     # Curves an IR segment tags A=0. Only outer-rotor IR tags them; inner
     # rotors keep the stator-OD radius rule.
     dirichlet_curves: set[int] = field(default_factory=set)
+    # A sector is meshed from rounded coordinates, and an arc's end recomputed from
+    # its radius and angle can then sit a nanometre from the same corner on the other
+    # side of a key boundary: points this close to an existing one are that point.
+    # Zero (the full motor) keeps exact key matching.
+    near_point_tolerance_mm: float = 0.0
+    point_xy: dict[int, tuple[float, float]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.center_tag = gmsh.model.geo.addPoint(0.0, 0.0, 0.0, self.base_lc_mm)
@@ -207,13 +213,14 @@ class _GmshGeometryBuilder:
         y_mm = radius_mm * math.sin(theta_rad)
         key = (round(x_mm * 1.0e6), round(y_mm * 1.0e6))
         requested_lc_mm = lc_mm or self.base_lc_mm
-        existing = self.points.get(key)
+        existing = self._existing_point(key, x_mm, y_mm)
         if existing is not None:
             self._set_point_size(existing, requested_lc_mm)
             self._register_point_feature(existing, feature)
             return existing
         tag = gmsh.model.geo.addPoint(x_mm, y_mm, 0.0, requested_lc_mm)
         self.points[key] = tag
+        self.point_xy[tag] = (x_mm, y_mm)
         self._set_point_size(tag, requested_lc_mm)
         self._register_point_feature(tag, feature)
         return tag
@@ -227,16 +234,30 @@ class _GmshGeometryBuilder:
     ) -> int:
         key = (round(x_mm * 1.0e6), round(y_mm * 1.0e6))
         requested_lc_mm = lc_mm or self.base_lc_mm
-        existing = self.points.get(key)
+        existing = self._existing_point(key, x_mm, y_mm)
         if existing is not None:
             self._set_point_size(existing, requested_lc_mm)
             self._register_point_feature(existing, feature)
             return existing
         tag = gmsh.model.geo.addPoint(x_mm, y_mm, 0.0, requested_lc_mm)
         self.points[key] = tag
+        self.point_xy[tag] = (x_mm, y_mm)
         self._set_point_size(tag, requested_lc_mm)
         self._register_point_feature(tag, feature)
         return tag
+
+    def _existing_point(self, key: tuple[int, int], x_mm: float, y_mm: float) -> int | None:
+        existing = self.points.get(key)
+        if existing is not None or self.near_point_tolerance_mm <= 0.0:
+            return existing
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                tag = self.points.get((key[0] + dx, key[1] + dy))
+                if tag is not None:
+                    px, py = self.point_xy[tag]
+                    if math.hypot(px - x_mm, py - y_mm) <= self.near_point_tolerance_mm:
+                        return tag
+        return None
 
     def line(self, start: int, end: int, feature: str | None = None) -> int:
         existing = self.lines.get((start, end))
@@ -541,7 +562,10 @@ def _run_gmsh_ir_mesh_preview(
         gmsh.model.add("openem_ir_motor_mesh")
         geometry_started = time.perf_counter()
 
-        builder = _GmshGeometryBuilder(base_lc_mm=base_lc_mm)
+        builder = _GmshGeometryBuilder(
+            base_lc_mm=base_lc_mm,
+            near_point_tolerance_mm=1.0e-7 if mesh_sector is not None else 0.0,
+        )
         if mesh_sector is not None:
             region_by_surface = _build_sector_gmsh_surfaces(builder, mesh_sector)
         else:
@@ -817,7 +841,7 @@ def _build_sector_gmsh_surfaces(
 
 
 def _builder_point_tag(builder: _GmshGeometryBuilder, xy: tuple[float, float]) -> int:
-    tag = builder.points.get((round(xy[0] * 1.0e6), round(xy[1] * 1.0e6)))
+    tag = builder._existing_point((round(xy[0] * 1.0e6), round(xy[1] * 1.0e6)), xy[0], xy[1])
     if tag is None:
         raise GmshMeshQAError("A sector edge point is missing from the Gmsh geometry")
     return tag
