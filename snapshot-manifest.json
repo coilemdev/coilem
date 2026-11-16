@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 82612,
-      "sha256": "621e7d369503fd8508fa4eb1894808a3ecbafe6ecf4d28d7802a1811dc20f913"
+      "bytes": 83637,
+      "sha256": "93460f272dbdc43874d08848ef3abb7b4f217f58e12878b4457256bf547a732d"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/mesh_profiles/gmsh_profiles.json",
-      "bytes": 1511,
-      "sha256": "6331458dde4128949058dfe3c80850aa42e98d1edc159a4b28266ff9161f4ab0"
+      "bytes": 1661,
+      "sha256": "fabb99f58e52539cb51aa39cc2e5bfb6f4c889db5b1a5c34bacd0698078ab960"
     },
     {
       "path": "backend/models/__init__.py",
@@ -8017,6 +8017,11 @@
       "path": "tests/test_bldc_angle_contract.py",
       "bytes": 7241,
       "sha256": "23663cd9d6ceddc8d7841c8c477ca7467706e89bd3b6c47a1126a52dff76bceb"
+    },
+    {
+      "path": "tests/test_buried_magnet_corner_mesh.py",
+      "bytes": 2369,
+      "sha256": "d149f9252fc5cf148d96e34541789d44314896082dbfad616afa08b93a0f1e2f"
     },
     {
       "path": "tests/test_cogging.py",
@@ -17639,14 +17644,19 @@
       "sha256": "9196f332d406638cc61e0c10e620bdc77799defd76d4abc06e80fed61d5ca19f"
     },
     {
+      "path": "docs/VSHAPE_CORNER_REFINEMENT_285.json",
+      "bytes": 32253,
+      "sha256": "c39e1efea57bccf111e4542f226ae403075c1e21ba40974e4fd347eaa456f80b"
+    },
+    {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.json",
       "bytes": 54137,
       "sha256": "4eaa88d62c35b2c49982fa75074f19130d6de7bc9d69df7e2d6ba3eb14c33ffd"
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
-      "bytes": 6810,
-      "sha256": "d3c5e18fc4fda702160e8b6198927126b5543cfff3e699c60bb033ea3c012d87"
+      "bytes": 8644,
+      "sha256": "5de118d6045998b2f203550aeddb8274537b110ea598f3f8ed56a129f7e9ce79"
     },
     {
       "path": "docs/examples/client_ipm_motor.py",
@@ -17822,6 +17832,11 @@
       "path": "tests/test_vshape_mesh_study.py",
       "bytes": 1308,
       "sha256": "3f5fe267508a13bf7dc9b35ccde66c967d2ea361b7662f4d22d626bdae2003fa"
+    },
+    {
+      "path": "tools/vshape_local_refinement_probe.py",
+      "bytes": 6958,
+      "sha256": "4b8f957ec68bfd30ed19ed9fe482e4d65b1779d20f1616370d6447d36ca8cb6b"
     },
     {
       "path": "tools/vshape_mesh_study.py",

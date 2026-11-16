@@ -59,3 +59,22 @@ python -m tools.vshape_mesh_study --out output/vshape-study.json
 ```
 
 The collector resumes matching point JSON files beside the output and rejects changed solver/source/fixture identities. This historical matrix predates those per-point fingerprints; it records the frozen source and binary hashes separately. Use a fresh output directory when changing sources, requests or the native binary; do not combine results from different solver builds. Run points sequentially: Very Fine is expensive. This diagnostic does not alter benchmark registrations or qualification records.
+
+## Follow-up: cause and corner patch
+
+A later pass refined one mesh region at a time on the same three fixtures and operating point. All rows are in [VSHAPE_CORNER_REFINEMENT_285.json](VSHAPE_CORNER_REFINEMENT_285.json); the collector is `tools/vshape_local_refinement_probe.py`.
+
+- Halving the air-gap size or refining the slot mouths to 0.25 mm moves torque by 0.3% or less. Refining around the magnet and pocket corners moves it by up to 6%.
+- With 0.1 mm elements held within 5.5 mm of every corner (about 1.2 million elements), the last refinement step changes torque by 0.4% or less and back EMF by 0.8% or less. These runs are the reference below.
+- Holding the fine mesh within only 0.75 to 1.5 mm of each corner gives the same torque and back EMF as 5.5 mm.
+- The existing Corner refinement option uses about 0.1 mm elements within 0.3 mm of each corner. On its own it leaves torque up to 7.3% and back EMF up to 14.2% above the reference.
+
+With Corner refinement on, IPM rotors now also get 0.15 mm elements within 1.5 mm of each magnet and pocket corner (`buried_magnet_corner` in `backend/mesh_profiles/gmsh_profiles.json`). Difference from the reference:
+
+| Fixture | Elements | Torque | Back EMF | Cogging p-p |
+| --- | ---: | ---: | ---: | ---: |
+| baseline_contract | 107,358 | +0.3% | +0.5% | +3.3% |
+| thin_bridge_contract | 106,212 | +0.1% | +0.05% | +1.8% |
+| wide_angle_high_output_v1 | 109,336 | +0.4% | +0.8% | +1.9% |
+
+Cogging still changes by about 2% on the last reference step, so it is not shown to be converged. The flat IPM fixture `ipm_flat_8p12s_fsae_contract` is within 0.15% of its own fine reference with or without the patch. The V-shape benchmark fixtures run with Corner refinement off and are unchanged by this patch; their registered values and the release qualification are not updated here.

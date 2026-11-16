@@ -1804,6 +1804,22 @@ def _apply_gmsh_physics_mesh_fields(
                     sampling=corner_sampling,
                 )
             )
+            if str(config.topology).upper() == "IPM":
+                # Buried magnets: leakage through the bridges depends on the
+                # field in the steel around each pocket corner, not only at the
+                # corner itself (#285). Hold a fine mesh over a wider patch.
+                buried_radius = _gmsh_profile_number(refined_profile, "buried_magnet_corner", "core_radius_mm")
+                fields.append(
+                    _add_threshold_field(
+                        points=magnet_points,
+                        size_min_mm=_gmsh_profile_number(refined_profile, "buried_magnet_corner", "size_mm"),
+                        size_max_mm=far_lc,
+                        dist_min_mm=buried_radius,
+                        dist_max_mm=buried_radius
+                        + _gmsh_profile_number(refined_profile, "buried_magnet_corner", "transition_mm"),
+                        sampling=_gmsh_profile_int(refined_profile, "buried_magnet_corner", "sampling"),
+                    )
+                )
         else:
             fields.append(
                 _add_threshold_field(
