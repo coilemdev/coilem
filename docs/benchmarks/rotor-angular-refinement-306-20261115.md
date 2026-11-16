@@ -1,5 +1,10 @@
 # #306: fixed-mesh 192/384-sample rotor loss refinement
 
+> **2026-11-16 correction:** the archived angle/current schedule does not match
+> a constant-gamma native solve. The numerical convergence results below are
+> preserved, but these watts are not eligible same-operating-point loss targets.
+> See the [native pilot and excitation erratum](rotor-native-pilot-306-20261116.md).
+
 Target: 0.5.9. Follow-up to `37144057` and the
 [96-sample history](rotor-fixed-history-306-20261115.md).
 

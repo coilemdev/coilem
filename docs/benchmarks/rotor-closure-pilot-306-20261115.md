@@ -1,5 +1,9 @@
 # #306: fixed-mesh FEMM closure probe
 
+> **2026-11-16 correction:** this closure probe uses the archived current
+> trajectory. Closure does not validate constant-gamma excitation. See the
+> [native pilot and excitation erratum](rotor-native-pilot-306-20261116.md).
+
 Target: 0.5.9. Follow-up to the first-slice commit `85d8dd06`.
 
 **Outcome: closure and mesh-invariance checks pass on the bounded five-solve

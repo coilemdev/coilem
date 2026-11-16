@@ -1,5 +1,10 @@
 # #306: coordinate adapter and fixed-mesh full-turn history
 
+> **2026-11-16 correction:** the archived angle/current schedule does not match
+> a constant-gamma native solve. Frame and closure findings remain useful, but
+> these loss watts are not eligible same-operating-point targets. See the
+> [native pilot and excitation erratum](rotor-native-pilot-306-20261116.md).
+
 Target: 0.5.9. Follow-up to `90367d6f`.
 
 **Outcome: coordinate adaptation, independent loss evaluation, fixed-mesh

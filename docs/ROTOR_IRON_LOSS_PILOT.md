@@ -1,5 +1,13 @@
 # Rotor iron loss: first slice of #306
 
+**2026-11-16 correction:** the archived FEMM full-turn collector used an
+incompatible angle/current trajectory. Its 47.707 mW result is not a
+same-operating-point native loss target. The new native pilot also fails
+angular convergence because the remeshing/element-gradient sampling path can
+generate false loss. See the [native pilot and excitation erratum](benchmarks/rotor-native-pilot-306-20261116.md).
+The historical commands below reproduce legacy evidence; they must not be used
+to qualify public gamma-zero rotor loss. The full release matrix remains unstarted.
+
 Target: 0.5.9. Base: main `a3e70035`. This slice defines and exercises an
 internal sampling contract. It does not change public loss/efficiency results,
 map requests, field solves, saved results or release qualification claims.

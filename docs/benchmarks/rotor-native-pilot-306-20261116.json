@@ -1,0 +1,4520 @@
+{
+  "status": "PILOT_NOT_QUALIFIED",
+  "target": "0.5.9",
+  "full_matrix_started": false,
+  "preflight": {
+    "schema": "coilem.native_rotor_analysis/v1",
+    "status": "PILOT_NOT_QUALIFIED",
+    "scope": "one native SPM; legacy FEMM loss target has incompatible excitation and is excluded",
+    "protocol_sha256": "8ab8cc29c210ae5b21a234cba9819e2b2969c01ce56911ab418c0ea4a8f1ce07",
+    "kind": "preflight",
+    "requested_gamma_deg": 0.0,
+    "native_gamma_deg": 180.0,
+    "mesh": "normal",
+    "speed_rpm": 3000.0,
+    "current_peak_A": 20.0,
+    "closure": {
+      "max_component_difference_T": 1.8629542353210127e-13,
+      "rms_component_difference_T": 6.0696164402192e-14,
+      "gate": "PASS"
+    },
+    "reference_loss_agreement_gate": "NOT_RUN_INVALID_LEGACY_EXCITATION",
+    "loss_material": {
+      "steel_id": "M350-50A",
+      "coefficients": {
+        "kh": 0.02363080387956422,
+        "alpha": 2.1133208693341228,
+        "kc": 0.0001273839224087156,
+        "density_kg_m3": 7650.0
+      },
+      "stacking_factor": 1.0,
+      "coefficient_source": "grade-limit hysteresis fit + classical lamination eddy term; not calibrated motor data"
+    },
+    "angular_tolerances": {
+      "relative_of_finer": 0.05,
+      "absolute_W": 0.001,
+      "successive_steps_required": 2
+    },
+    "native_spatial_gate": "NOT_RUN",
+    "full_matrix_started": false,
+    "timing": {
+      "field_solves": 5,
+      "sum_position_wall_s": 10.73948529997142,
+      "mean_position_s": 2.147897059994284,
+      "min_elements": 82736,
+      "max_elements": 82946
+    },
+    "repeat_zero": {
+      "max_component_difference_T": 0.0,
+      "rms_component_difference_T": 0.0,
+      "gate": "PASS"
+    },
+    "analysis_source_sha256": "c5588eb99276f6699850e5e81edea0ff3e9bcaf5477f020b5814efc4651bcafd",
+    "analysis_sources_sha256": {
+      "rotor_native_report.py": "c5588eb99276f6699850e5e81edea0ff3e9bcaf5477f020b5814efc4651bcafd",
+      "rotor_loss_reference.py": "157e0b1c4deda15d402fde7801658bed4c2d1a77744c38778602c4d3c808d8c2",
+      "rotor_closure_report.py": "7960ed2848313a03e64eb4e145f1458125c6d0cdf0ef9c2beb6f48a55184ee03"
+    }
+  },
+  "native_history": {
+    "schema": "coilem.native_rotor_analysis/v1",
+    "status": "PILOT_NOT_QUALIFIED",
+    "scope": "one native SPM; legacy FEMM loss target has incompatible excitation and is excluded",
+    "protocol_sha256": "bd1eefef1f274d75895671d112c09478f50ca8c748bf06b9d323dda435b2cbcf",
+    "kind": "full_turn_history",
+    "requested_gamma_deg": 0.0,
+    "native_gamma_deg": 180.0,
+    "mesh": "normal",
+    "speed_rpm": 3000.0,
+    "current_peak_A": 20.0,
+    "closure": {
+      "max_component_difference_T": 1.8629542353210127e-13,
+      "rms_component_difference_T": 6.0696164402192e-14,
+      "gate": "PASS"
+    },
+    "reference_loss_agreement_gate": "NOT_RUN_INVALID_LEGACY_EXCITATION",
+    "loss_material": {
+      "steel_id": "M350-50A",
+      "coefficients": {
+        "kh": 0.02363080387956422,
+        "alpha": 2.1133208693341228,
+        "kc": 0.0001273839224087156,
+        "density_kg_m3": 7650.0
+      },
+      "stacking_factor": 1.0,
+      "coefficient_source": "grade-limit hysteresis fit + classical lamination eddy term; not calibrated motor data"
+    },
+    "angular_tolerances": {
+      "relative_of_finer": 0.05,
+      "absolute_W": 0.001,
+      "successive_steps_required": 2
+    },
+    "native_spatial_gate": "NOT_RUN",
+    "full_matrix_started": false,
+    "timing": {
+      "field_solves": 385,
+      "sum_position_wall_s": 589.15943589987,
+      "mean_position_s": 1.5302842490905715,
+      "min_elements": 82716,
+      "max_elements": 82984
+    },
+    "results": [
+      {
+        "positions": 96,
+        "production_sampling": {
+          "hysteresis_W": 0.028337283968355997,
+          "lamination_eddy_W": 0.176949080171796,
+          "rotor_iron_mass_kg": 0.8411629977749437,
+          "method": "rotor_material_harmonic/v1",
+          "total_W": 0.205286364140152
+        },
+        "independent_loss_math": {
+          "hysteresis_W": 0.02833728396835603,
+          "lamination_eddy_W": 0.17694908017179625,
+          "total_W": 0.20528636414015228,
+          "mass_kg": 0.8411629977749437,
+          "harmonics": [
+            {
+              "mechanical_order": 1,
+              "frequency_Hz": 50.0,
+              "hysteresis_W": 5.590098909392501e-30,
+              "eddy_W": 5.431875752318224e-29
+            },
+            {
+              "mechanical_order": 2,
+              "frequency_Hz": 100.0,
+              "hysteresis_W": 6.365368941733953e-30,
+              "eddy_W": 1.2700673827350004e-28
+            },
+            {
+              "mechanical_order": 3,
+              "frequency_Hz": 150.0,
+              "hysteresis_W": 2.4458955097414533e-29,
+              "eddy_W": 7.028177866776476e-28
+            },
+            {
+              "mechanical_order": 4,
+              "frequency_Hz": 200.0,
+              "hysteresis_W": 5.26943900752163e-29,
+              "eddy_W": 1.9642379009044838e-27
+            },
+            {
+              "mechanical_order": 5,
+              "frequency_Hz": 250.0,
+              "hysteresis_W": 8.243332096355041e-29,
+              "eddy_W": 3.811557430503803e-27
+            },
+            {
+              "mechanical_order": 6,
+              "frequency_Hz": 300.0,
+              "hysteresis_W": 0.01364099443913543,
+              "eddy_W": 0.030100651648286358
+            },
+            {
+              "mechanical_order": 7,
+              "frequency_Hz": 350.0,
+              "hysteresis_W": 1.535689731524482e-29,
+              "eddy_W": 1.1054474799237198e-27
+            },
+            {
+              "mechanical_order": 8,
+              "frequency_Hz": 400.0,
+              "hysteresis_W": 2.9140976588602693e-28,
+              "eddy_W": 2.0682427379294563e-26
+            },
+            {
+              "mechanical_order": 9,
+              "frequency_Hz": 450.0,
+              "hysteresis_W": 4.713495862435563e-28,
+              "eddy_W": 3.7075438896143574e-26
+            },
+            {
+              "mechanical_order": 10,
+              "frequency_Hz": 500.0,
+              "hysteresis_W": 5.330823443143367e-28,
+              "eddy_W": 4.648414188216418e-26
+            },
+            {
+              "mechanical_order": 11,
+              "frequency_Hz": 550.0,
+              "hysteresis_W": 1.0791667246746608e-28,
+              "eddy_W": 1.1347123858656461e-26
+            },
+            {
+              "mechanical_order": 12,
+              "frequency_Hz": 600.0,
+              "hysteresis_W": 0.00432234083251417,
+              "eddy_W": 0.020008938233959016
+            },
+            {
+              "mechanical_order": 13,
+              "frequency_Hz": 650.0,
+              "hysteresis_W": 1.393176156556416e-28,
+              "eddy_W": 1.7192674820467932e-26
+            },
+            {
+              "mechanical_order": 14,
+              "frequency_Hz": 700.0,
+              "hysteresis_W": 4.069188502984259e-28,
+              "eddy_W": 5.1427320429569385e-26
+            },
+            {
+              "mechanical_order": 15,
+              "frequency_Hz": 750.0,
+              "hysteresis_W": 3.688509983342033e-28,
+              "eddy_W": 5.04758493131163e-26
+            },
+            {
+              "mechanical_order": 16,
+              "frequency_Hz": 800.0,
+              "hysteresis_W": 2.4591951948328446e-28,
+              "eddy_W": 3.6732181935513746e-26
+            },
+            {
+              "mechanical_order": 17,
+              "frequency_Hz": 850.0,
+              "hysteresis_W": 1.2354417106215706e-28,
+              "eddy_W": 2.017712503236543e-26
+            },
+            {
+              "mechanical_order": 18,
+              "frequency_Hz": 900.0,
+              "hysteresis_W": 5.3984076223701216e-05,
+              "eddy_W": 0.00048370937059219314
+            },
+            {
+              "mechanical_order": 19,
+              "frequency_Hz": 950.0,
+              "hysteresis_W": 8.733063153205892e-29,
+              "eddy_W": 1.6300255781689347e-26
+            },
+            {
+              "mechanical_order": 20,
+              "frequency_Hz": 1000.0,
+              "hysteresis_W": 7.50940797581179e-29,
+              "eddy_W": 1.506273608858378e-26
+            },
+            {
+              "mechanical_order": 21,
+              "frequency_Hz": 1050.0,
+              "hysteresis_W": 4.434115377583756e-29,
+              "eddy_W": 9.64223414798421e-27
+            },
+            {
+              "mechanical_order": 22,
+              "frequency_Hz": 1100.0,
+              "hysteresis_W": 1.5630436210712196e-28,
+              "eddy_W": 3.28519874011074e-26
+            },
+            {
+              "mechanical_order": 23,
+              "frequency_Hz": 1150.0,
+              "hysteresis_W": 9.34072989176548e-29,
+              "eddy_W": 2.1485519286645463e-26
+            },
+            {
+              "mechanical_order": 24,
+              "frequency_Hz": 1200.0,
+              "hysteresis_W": 0.004277841863778424,
+              "eddy_W": 0.04059748546827825
+            },
+            {
+              "mechanical_order": 25,
+              "frequency_Hz": 1250.0,
+              "hysteresis_W": 1.621635416705053e-28,
+              "eddy_W": 3.924336268089297e-26
+            },
+            {
+              "mechanical_order": 26,
+              "frequency_Hz": 1300.0,
+              "hysteresis_W": 1.3427021363458312e-29,
+              "eddy_W": 3.892718205014391e-27
+            },
+            {
+              "mechanical_order": 27,
+              "frequency_Hz": 1350.0,
+              "hysteresis_W": 1.3705926629918473e-28,
+              "eddy_W": 3.660225148065883e-26
+            },
+            {
+              "mechanical_order": 28,
+              "frequency_Hz": 1400.0,
+              "hysteresis_W": 5.786007407669202e-28,
+              "eddy_W": 1.4878243373157245e-25
+            },
+            {
+              "mechanical_order": 29,
+              "frequency_Hz": 1450.0,
+              "hysteresis_W": 2.539209655942725e-29,
+              "eddy_W": 7.941770082551182e-27
+            },
+            {
+              "mechanical_order": 30,
+              "frequency_Hz": 1500.0,
+              "hysteresis_W": 1.568517298370424e-05,
+              "eddy_W": 0.00026043086049577004
+            },
+            {
+              "mechanical_order": 31,
+              "frequency_Hz": 1550.0,
+              "hysteresis_W": 6.631369843840369e-29,
+              "eddy_W": 2.079544249464505e-26
+            },
+            {
+              "mechanical_order": 32,
+              "frequency_Hz": 1600.0,
+              "hysteresis_W": 1.627103609664477e-28,
+              "eddy_W": 5.1504291889987483e-26
+            },
+            {
+              "mechanical_order": 33,
+              "frequency_Hz": 1650.0,
+              "hysteresis_W": 1.45582642385264e-28,
+              "eddy_W": 4.753053171670333e-26
+            },
+            {
+              "mechanical_order": 34,
+              "frequency_Hz": 1700.0,
+              "hysteresis_W": 5.14502789875999e-29,
+              "eddy_W": 1.831832925198319e-26
+            },
+            {
+              "mechanical_order": 35,
+              "frequency_Hz": 1750.0,
+              "hysteresis_W": 1.818819399235695e-28,
+              "eddy_W": 6.282518294583307e-26
+            },
+            {
+              "mechanical_order": 36,
+              "frequency_Hz": 1800.0,
+              "hysteresis_W": 0.006008147428512569,
+              "eddy_W": 0.08507185152006784
+            },
+            {
+              "mechanical_order": 37,
+              "frequency_Hz": 1850.0,
+              "hysteresis_W": 8.592312374374308e-29,
+              "eddy_W": 3.2836234908369327e-26
+            },
+            {
+              "mechanical_order": 38,
+              "frequency_Hz": 1900.0,
+              "hysteresis_W": 8.498453917495514e-28,
+              "eddy_W": 2.9596960683064418e-25
+            },
+            {
+              "mechanical_order": 39,
+              "frequency_Hz": 1950.0,
+              "hysteresis_W": 7.710753712113717e-28,
+              "eddy_W": 2.772426578420623e-25
+            },
+            {
+              "mechanical_order": 40,
+              "frequency_Hz": 2000.0,
+              "hysteresis_W": 1.4664705337037126e-28,
+              "eddy_W": 5.85347168738458e-26
+            },
+            {
+              "mechanical_order": 41,
+              "frequency_Hz": 2050.0,
+              "hysteresis_W": 4.0295526163559405e-28,
+              "eddy_W": 1.5749927033191692e-25
+            },
+            {
+              "mechanical_order": 42,
+              "frequency_Hz": 2100.0,
+              "hysteresis_W": 1.829015520802596e-05,
+              "eddy_W": 0.0004260130701168427
+            },
+            {
+              "mechanical_order": 43,
+              "frequency_Hz": 2150.0,
+              "hysteresis_W": 1.2184673663876971e-28,
+              "eddy_W": 5.294132785287335e-26
+            },
+            {
+              "mechanical_order": 44,
+              "frequency_Hz": 2200.0,
+              "hysteresis_W": 7.178750688873429e-28,
+              "eddy_W": 2.907570621686067e-25
+            },
+            {
+              "mechanical_order": 45,
+              "frequency_Hz": 2250.0,
+              "hysteresis_W": 1.2511841188562686e-28,
+              "eddy_W": 5.653290580352731e-26
+            },
+            {
+              "mechanical_order": 46,
+              "frequency_Hz": 2300.0,
+              "hysteresis_W": 1.7219285441558792e-28,
+              "eddy_W": 7.981017175245878e-26
+            },
+            {
+              "mechanical_order": 47,
+              "frequency_Hz": 2350.0,
+              "hysteresis_W": 2.268421142022337e-28,
+              "eddy_W": 1.0522108605673118e-25
+            }
+          ]
+        },
+        "difference_W": {
+          "hysteresis_W": -3.122502256758253e-17,
+          "lamination_eddy_W": -2.498001805406602e-16,
+          "total_W": -2.7755575615628914e-16
+        },
+        "self_consistency_pass": true,
+        "distinct_rotor_meshes": 8,
+        "share_loss_above_1kHz": 0.6657809256445826,
+        "sampling_gate": "PASS"
+      },
+      {
+        "positions": 192,
+        "production_sampling": {
+          "hysteresis_W": 0.042125361062055944,
+          "lamination_eddy_W": 0.6660160148894723,
+          "rotor_iron_mass_kg": 0.8411629977749437,
+          "method": "rotor_material_harmonic/v1",
+          "total_W": 0.7081413759515283
+        },
+        "independent_loss_math": {
+          "hysteresis_W": 0.04212536106205598,
+          "lamination_eddy_W": 0.6660160148894727,
+          "total_W": 0.7081413759515287,
+          "mass_kg": 0.8411629977749437,
+          "harmonics": [
+            {
+              "mechanical_order": 1,
+              "frequency_Hz": 50.0,
+              "hysteresis_W": 6.337042990646201e-30,
+              "eddy_W": 6.105442569227837e-29
+            },
+            {
+              "mechanical_order": 2,
+              "frequency_Hz": 100.0,
+              "hysteresis_W": 3.692710099425146e-30,
+              "eddy_W": 7.694320412500696e-29
+            },
+            {
+              "mechanical_order": 3,
+              "frequency_Hz": 150.0,
+              "hysteresis_W": 4.3615762672504616e-29,
+              "eddy_W": 1.2222193073696217e-27
+            },
+            {
+              "mechanical_order": 4,
+              "frequency_Hz": 200.0,
+              "hysteresis_W": 4.0030359492917234e-29,
+              "eddy_W": 1.511671595902139e-27
+            },
+            {
+              "mechanical_order": 5,
+              "frequency_Hz": 250.0,
+              "hysteresis_W": 4.194497139585897e-29,
+              "eddy_W": 1.9967674700514193e-27
+            },
+            {
+              "mechanical_order": 6,
+              "frequency_Hz": 300.0,
+              "hysteresis_W": 0.013637605856913872,
+              "eddy_W": 0.030093744592860863
+            },
+            {
+              "mechanical_order": 7,
+              "frequency_Hz": 350.0,
+              "hysteresis_W": 1.7150557934612335e-29,
+              "eddy_W": 1.2309000391611473e-27
+            },
+            {
+              "mechanical_order": 8,
+              "frequency_Hz": 400.0,
+              "hysteresis_W": 2.8621005549581287e-28,
+              "eddy_W": 2.043220371308878e-26
+            },
+            {
+              "mechanical_order": 9,
+              "frequency_Hz": 450.0,
+              "hysteresis_W": 2.999216186513098e-28,
+              "eddy_W": 2.415281337729775e-26
+            },
+            {
+              "mechanical_order": 10,
+              "frequency_Hz": 500.0,
+              "hysteresis_W": 2.0657229320696635e-28,
+              "eddy_W": 1.8948439485877665e-26
+            },
+            {
+              "mechanical_order": 11,
+              "frequency_Hz": 550.0,
+              "hysteresis_W": 7.793623236390561e-29,
+              "eddy_W": 8.339058852415972e-27
+            },
+            {
+              "mechanical_order": 12,
+              "frequency_Hz": 600.0,
+              "hysteresis_W": 0.0032192810940256658,
+              "eddy_W": 0.01503713216544323
+            },
+            {
+              "mechanical_order": 13,
+              "frequency_Hz": 650.0,
+              "hysteresis_W": 8.565018615648605e-29,
+              "eddy_W": 1.089661881577636e-26
+            },
+            {
+              "mechanical_order": 14,
+              "frequency_Hz": 700.0,
+              "hysteresis_W": 2.2280285545990873e-28,
+              "eddy_W": 2.9127899409245725e-26
+            },
+            {
+              "mechanical_order": 15,
+              "frequency_Hz": 750.0,
+              "hysteresis_W": 2.0067862748360584e-28,
+              "eddy_W": 2.833898507804851e-26
+            },
+            {
+              "mechanical_order": 16,
+              "frequency_Hz": 800.0,
+              "hysteresis_W": 2.8188987185682228e-28,
+              "eddy_W": 4.168396957451169e-26
+            },
+            {
+              "mechanical_order": 17,
+              "frequency_Hz": 850.0,
+              "hysteresis_W": 1.480704152986786e-29,
+              "eddy_W": 2.7377313628310576e-27
+            },
+            {
+              "mechanical_order": 18,
+              "frequency_Hz": 900.0,
+              "hysteresis_W": 4.911863460634665e-05,
+              "eddy_W": 0.00044080720160753105
+            },
+            {
+              "mechanical_order": 19,
+              "frequency_Hz": 950.0,
+              "hysteresis_W": 3.5251845868360836e-29,
+              "eddy_W": 7.015519859085837e-27
+            },
+            {
+              "mechanical_order": 20,
+              "frequency_Hz": 1000.0,
+              "hysteresis_W": 4.884558234018341e-29,
+              "eddy_W": 9.954490120012569e-27
+            },
+            {
+              "mechanical_order": 21,
+              "frequency_Hz": 1050.0,
+              "hysteresis_W": 4.994859544702606e-29,
+              "eddy_W": 1.076264135319048e-26
+            },
+            {
+              "mechanical_order": 22,
+              "frequency_Hz": 1100.0,
+              "hysteresis_W": 1.2424882047252615e-28,
+              "eddy_W": 2.642084797456116e-26
+            },
+            {
+              "mechanical_order": 23,
+              "frequency_Hz": 1150.0,
+              "hysteresis_W": 7.96080337826276e-29,
+              "eddy_W": 1.851289330226709e-26
+            },
+            {
+              "mechanical_order": 24,
+              "frequency_Hz": 1200.0,
+              "hysteresis_W": 0.0021820531357649373,
+              "eddy_W": 0.021456845058984313
+            },
+            {
+              "mechanical_order": 25,
+              "frequency_Hz": 1250.0,
+              "hysteresis_W": 8.843132333024438e-29,
+              "eddy_W": 2.211017081249068e-26
+            },
+            {
+              "mechanical_order": 26,
+              "frequency_Hz": 1300.0,
+              "hysteresis_W": 1.5991274004093873e-29,
+              "eddy_W": 4.600139167717053e-27
+            },
+            {
+              "mechanical_order": 27,
+              "frequency_Hz": 1350.0,
+              "hysteresis_W": 7.041100189830162e-29,
+              "eddy_W": 1.9358678160298083e-26
+            },
+            {
+              "mechanical_order": 28,
+              "frequency_Hz": 1400.0,
+              "hysteresis_W": 1.6386277285753523e-28,
+              "eddy_W": 4.5166489320858163e-26
+            },
+            {
+              "mechanical_order": 29,
+              "frequency_Hz": 1450.0,
+              "hysteresis_W": 1.4508864226895882e-29,
+              "eddy_W": 4.697055560355251e-27
+            },
+            {
+              "mechanical_order": 30,
+              "frequency_Hz": 1500.0,
+              "hysteresis_W": 9.365518363158223e-06,
+              "eddy_W": 0.00016023679177741947
+            },
+            {
+              "mechanical_order": 31,
+              "frequency_Hz": 1550.0,
+              "hysteresis_W": 4.042969093936667e-29,
+              "eddy_W": 1.3232084145372128e-26
+            },
+            {
+              "mechanical_order": 32,
+              "frequency_Hz": 1600.0,
+              "hysteresis_W": 3.4733090933256465e-29,
+              "eddy_W": 1.1852759187674437e-26
+            },
+            {
+              "mechanical_order": 33,
+              "frequency_Hz": 1650.0,
+              "hysteresis_W": 1.311025907016392e-28,
+              "eddy_W": 4.353360799431092e-26
+            },
+            {
+              "mechanical_order": 34,
+              "frequency_Hz": 1700.0,
+              "hysteresis_W": 3.264344445622016e-29,
+              "eddy_W": 1.1988840106942188e-26
+            },
+            {
+              "mechanical_order": 35,
+              "frequency_Hz": 1750.0,
+              "hysteresis_W": 2.238449117053942e-29,
+              "eddy_W": 8.478443947583258e-27
+            },
+            {
+              "mechanical_order": 36,
+              "frequency_Hz": 1800.0,
+              "hysteresis_W": 0.003331320593491249,
+              "eddy_W": 0.04899496809679198
+            },
+            {
+              "mechanical_order": 37,
+              "frequency_Hz": 1850.0,
+              "hysteresis_W": 8.34992446430311e-29,
+              "eddy_W": 3.1841368681651066e-26
+            },
+            {
+              "mechanical_order": 38,
+              "frequency_Hz": 1900.0,
+              "hysteresis_W": 2.0983865515845847e-28,
+              "eddy_W": 7.881625504743067e-26
+            },
+            {
+              "mechanical_order": 39,
+              "frequency_Hz": 1950.0,
+              "hysteresis_W": 2.370884706606352e-28,
+              "eddy_W": 9.072437563597211e-26
+            },
+            {
+              "mechanical_order": 40,
+              "frequency_Hz": 2000.0,
+              "hysteresis_W": 7.27982152720729e-29,
+              "eddy_W": 3.0522840264912014e-26
+            },
+            {
+              "mechanical_order": 41,
+              "frequency_Hz": 2050.0,
+              "hysteresis_W": 1.5500190297906606e-28,
+              "eddy_W": 6.399428632903755e-26
+            },
+            {
+              "mechanical_order": 42,
+              "frequency_Hz": 2100.0,
+              "hysteresis_W": 9.319858216612404e-06,
+              "eddy_W": 0.00022574540689894985
+            },
+            {
+              "mechanical_order": 43,
+              "frequency_Hz": 2150.0,
+              "hysteresis_W": 9.667352107176859e-29,
+              "eddy_W": 4.1905403915668617e-26
+            },
+            {
+              "mechanical_order": 44,
+              "frequency_Hz": 2200.0,
+              "hysteresis_W": 1.871545470197276e-28,
+              "eddy_W": 8.163087365995259e-26
+            },
+            {
+              "mechanical_order": 45,
+              "frequency_Hz": 2250.0,
+              "hysteresis_W": 6.814758065052962e-29,
+              "eddy_W": 3.2305172444395157e-26
+            },
+            {
+              "mechanical_order": 46,
+              "frequency_Hz": 2300.0,
+              "hysteresis_W": 1.1245042005706392e-28,
+              "eddy_W": 5.283022506537655e-26
+            },
+            {
+              "mechanical_order": 47,
+              "frequency_Hz": 2350.0,
+              "hysteresis_W": 1.0968560320694788e-28,
+              "eddy_W": 5.319235368121584e-26
+            },
+            {
+              "mechanical_order": 48,
+              "frequency_Hz": 2400.0,
+              "hysteresis_W": 0.0033470018211330726,
+              "eddy_W": 0.06646214719545418
+            },
+            {
+              "mechanical_order": 49,
+              "frequency_Hz": 2450.0,
+              "hysteresis_W": 6.181800441825304e-29,
+              "eddy_W": 3.2181066798693884e-26
+            },
+            {
+              "mechanical_order": 50,
+              "frequency_Hz": 2500.0,
+              "hysteresis_W": 3.871250870854439e-29,
+              "eddy_W": 2.09588723886039e-26
+            },
+            {
+              "mechanical_order": 51,
+              "frequency_Hz": 2550.0,
+              "hysteresis_W": 1.0847485303127294e-28,
+              "eddy_W": 5.698278219770021e-26
+            },
+            {
+              "mechanical_order": 52,
+              "frequency_Hz": 2600.0,
+              "hysteresis_W": 2.476780585511625e-28,
+              "eddy_W": 1.261831747066516e-25
+            },
+            {
+              "mechanical_order": 53,
+              "frequency_Hz": 2650.0,
+              "hysteresis_W": 3.23463265792585e-29,
+              "eddy_W": 1.872221642125362e-26
+            },
+            {
+              "mechanical_order": 54,
+              "frequency_Hz": 2700.0,
+              "hysteresis_W": 1.1862038169073746e-05,
+              "eddy_W": 0.0003679216874667809
+            },
+            {
+              "mechanical_order": 55,
+              "frequency_Hz": 2750.0,
+              "hysteresis_W": 1.0672029997443957e-28,
+              "eddy_W": 6.071187046760795e-26
+            },
+            {
+              "mechanical_order": 56,
+              "frequency_Hz": 2800.0,
+              "hysteresis_W": 4.9998887027861695e-29,
+              "eddy_W": 3.0406257842705006e-26
+            },
+            {
+              "mechanical_order": 57,
+              "frequency_Hz": 2850.0,
+              "hysteresis_W": 3.1306245176793566e-28,
+              "eddy_W": 1.7436729097680854e-25
+            },
+            {
+              "mechanical_order": 58,
+              "frequency_Hz": 2900.0,
+              "hysteresis_W": 4.22444898418237e-28,
+              "eddy_W": 2.3860740902331778e-25
+            },
+            {
+              "mechanical_order": 59,
+              "frequency_Hz": 2950.0,
+              "hysteresis_W": 1.0516280635488965e-28,
+              "eddy_W": 6.430615842880638e-26
+            },
+            {
+              "mechanical_order": 60,
+              "frequency_Hz": 3000.0,
+              "hysteresis_W": 0.005683089262569526,
+              "eddy_W": 0.13801914264917
+            },
+            {
+              "mechanical_order": 61,
+              "frequency_Hz": 3050.0,
+              "hysteresis_W": 1.7043014649647634e-28,
+              "eddy_W": 1.0611852497321762e-25
+            },
+            {
+              "mechanical_order": 62,
+              "frequency_Hz": 3100.0,
+              "hysteresis_W": 1.1210913895506844e-28,
+              "eddy_W": 7.277651758980069e-26
+            },
+            {
+              "mechanical_order": 63,
+              "frequency_Hz": 3150.0,
+              "hysteresis_W": 1.0947508922270345e-28,
+              "eddy_W": 7.230611797035574e-26
+            },
+            {
+              "mechanical_order": 64,
+              "frequency_Hz": 3200.0,
+              "hysteresis_W": 2.9464116392708975e-28,
+              "eddy_W": 1.8642874613214402e-25
+            },
+            {
+              "mechanical_order": 65,
+              "frequency_Hz": 3250.0,
+              "hysteresis_W": 7.000447265687287e-29,
+              "eddy_W": 4.8840697535239807e-26
+            },
+            {
+              "mechanical_order": 66,
+              "frequency_Hz": 3300.0,
+              "hysteresis_W": 1.5082260161199208e-05,
+              "eddy_W": 0.0005693816923403953
+            },
+            {
+              "mechanical_order": 67,
+              "frequency_Hz": 3350.0,
+              "hysteresis_W": 7.800845589057565e-29,
+              "eddy_W": 5.589373179102234e-26
+            },
+            {
+              "mechanical_order": 68,
+              "frequency_Hz": 3400.0,
+              "hysteresis_W": 3.4200773585609217e-28,
+              "eddy_W": 2.2843842074152495e-25
+            },
+            {
+              "mechanical_order": 69,
+              "frequency_Hz": 3450.0,
+              "hysteresis_W": 2.582547382885431e-28,
+              "eddy_W": 1.7821190960010868e-25
+            },
+            {
+              "mechanical_order": 70,
+              "frequency_Hz": 3500.0,
+              "hysteresis_W": 8.343244691025023e-29,
+              "eddy_W": 6.235108171879838e-26
+            },
+            {
+              "mechanical_order": 71,
+              "frequency_Hz": 3550.0,
+              "hysteresis_W": 7.894534324772137e-29,
+              "eddy_W": 6.014343791629212e-26
+            },
+            {
+              "mechanical_order": 72,
+              "frequency_Hz": 3600.0,
+              "hysteresis_W": 0.005141424898941779,
+              "eddy_W": 0.15211683791679098
+            },
+            {
+              "mechanical_order": 73,
+              "frequency_Hz": 3650.0,
+              "hysteresis_W": 2.524600142925057e-29,
+              "eddy_W": 2.0862521329091098e-26
+            },
+            {
+              "mechanical_order": 74,
+              "frequency_Hz": 3700.0,
+              "hysteresis_W": 5.255615192008901e-29,
+              "eddy_W": 4.242862554475009e-26
+            },
+            {
+              "mechanical_order": 75,
+              "frequency_Hz": 3750.0,
+              "hysteresis_W": 2.5144197809534764e-28,
+              "eddy_W": 1.9034386769609231e-25
+            },
+            {
+              "mechanical_order": 76,
+              "frequency_Hz": 3800.0,
+              "hysteresis_W": 1.4910209377026478e-28,
+              "eddy_W": 1.1828433828349487e-25
+            },
+            {
+              "mechanical_order": 77,
+              "frequency_Hz": 3850.0,
+              "hysteresis_W": 1.5634428005683562e-28,
+              "eddy_W": 1.2491469393920766e-25
+            },
+            {
+              "mechanical_order": 78,
+              "frequency_Hz": 3900.0,
+              "hysteresis_W": 1.4401401929255469e-05,
+              "eddy_W": 0.0006512329972717603
+            },
+            {
+              "mechanical_order": 79,
+              "frequency_Hz": 3950.0,
+              "hysteresis_W": 4.485819646285866e-28,
+              "eddy_W": 3.4799331864064027e-25
+            },
+            {
+              "mechanical_order": 80,
+              "frequency_Hz": 4000.0,
+              "hysteresis_W": 9.672635708470094e-29,
+              "eddy_W": 8.215755993236368e-26
+            },
+            {
+              "mechanical_order": 81,
+              "frequency_Hz": 4050.0,
+              "hysteresis_W": 1.5072118754643779e-28,
+              "eddy_W": 1.273019514533221e-25
+            },
+            {
+              "mechanical_order": 82,
+              "frequency_Hz": 4100.0,
+              "hysteresis_W": 2.4874212492680966e-28,
+              "eddy_W": 2.0756191785537767e-25
+            },
+            {
+              "mechanical_order": 83,
+              "frequency_Hz": 4150.0,
+              "hysteresis_W": 9.944064253112518e-29,
+              "eddy_W": 8.770938899731373e-26
+            },
+            {
+              "mechanical_order": 84,
+              "frequency_Hz": 4200.0,
+              "hysteresis_W": 0.005453549528098756,
+              "eddy_W": 0.19034534623440408
+            },
+            {
+              "mechanical_order": 85,
+              "frequency_Hz": 4250.0,
+              "hysteresis_W": 3.370962997897561e-28,
+              "eddy_W": 2.883812762222072e-25
+            },
+            {
+              "mechanical_order": 86,
+              "frequency_Hz": 4300.0,
+              "hysteresis_W": 6.207645748472234e-28,
+              "eddy_W": 5.1930739174272635e-25
+            },
+            {
+              "mechanical_order": 87,
+              "frequency_Hz": 4350.0,
+              "hysteresis_W": 1.8719914033745875e-28,
+              "eddy_W": 1.6865167497369926e-25
+            },
+            {
+              "mechanical_order": 88,
+              "frequency_Hz": 4400.0,
+              "hysteresis_W": 3.180791580139002e-28,
+              "eddy_W": 2.819704799125925e-25
+            },
+            {
+              "mechanical_order": 89,
+              "frequency_Hz": 4450.0,
+              "hysteresis_W": 1.6138973009254118e-28,
+              "eddy_W": 1.5035396845437652e-25
+            },
+            {
+              "mechanical_order": 90,
+              "frequency_Hz": 4500.0,
+              "hysteresis_W": 2.0885159671472632e-05,
+              "eddy_W": 0.00107452520221014
+            },
+            {
+              "mechanical_order": 91,
+              "frequency_Hz": 4550.0,
+              "hysteresis_W": 3.2116969496243217e-28,
+              "eddy_W": 2.9396349434453804e-25
+            },
+            {
+              "mechanical_order": 92,
+              "frequency_Hz": 4600.0,
+              "hysteresis_W": 1.0779450658104307e-28,
+              "eddy_W": 1.0505647976015978e-25
+            },
+            {
+              "mechanical_order": 93,
+              "frequency_Hz": 4650.0,
+              "hysteresis_W": 2.54128109731188e-28,
+              "eddy_W": 2.410209578474483e-25
+            },
+            {
+              "mechanical_order": 94,
+              "frequency_Hz": 4700.0,
+              "hysteresis_W": 5.07693834283149e-29,
+              "eddy_W": 5.251286682696878e-26
+            },
+            {
+              "mechanical_order": 95,
+              "frequency_Hz": 4750.0,
+              "hysteresis_W": 4.9933226233556165e-29,
+              "eddy_W": 5.287212424740699e-26
+            }
+          ]
+        },
+        "difference_W": {
+          "hysteresis_W": -3.469446951953614e-17,
+          "lamination_eddy_W": -4.440892098500626e-16,
+          "total_W": -4.440892098500626e-16
+        },
+        "self_consistency_pass": true,
+        "distinct_rotor_meshes": 16,
+        "share_loss_above_1kHz": 0.91177229340468,
+        "sampling_gate": "PASS"
+      },
+      {
+        "positions": 384,
+        "production_sampling": {
+          "hysteresis_W": 0.07145873739371753,
+          "lamination_eddy_W": 2.923829122639111,
+          "rotor_iron_mass_kg": 0.8411629977749437,
+          "method": "rotor_material_harmonic/v1",
+          "total_W": 2.9952878600328283
+        },
+        "independent_loss_math": {
+          "hysteresis_W": 0.07145873739371747,
+          "lamination_eddy_W": 2.9238291226391078,
+          "total_W": 2.995287860032825,
+          "mass_kg": 0.8411629977749437,
+          "harmonics": [
+            {
+              "mechanical_order": 1,
+              "frequency_Hz": 50.0,
+              "hysteresis_W": 6.850237833320339e-30,
+              "eddy_W": 6.657782293686878e-29
+            },
+            {
+              "mechanical_order": 2,
+              "frequency_Hz": 100.0,
+              "hysteresis_W": 2.7737602956311552e-30,
+              "eddy_W": 5.877656828307242e-29
+            },
+            {
+              "mechanical_order": 3,
+              "frequency_Hz": 150.0,
+              "hysteresis_W": 4.306548956484008e-29,
+              "eddy_W": 1.2087017209069106e-27
+            },
+            {
+              "mechanical_order": 4,
+              "frequency_Hz": 200.0,
+              "hysteresis_W": 4.817897694437437e-29,
+              "eddy_W": 1.7952111097434094e-27
+            },
+            {
+              "mechanical_order": 5,
+              "frequency_Hz": 250.0,
+              "hysteresis_W": 3.2312132431313543e-29,
+              "eddy_W": 1.5533712324304052e-27
+            },
+            {
+              "mechanical_order": 6,
+              "frequency_Hz": 300.0,
+              "hysteresis_W": 0.013635355422165322,
+              "eddy_W": 0.030089231512428396
+            },
+            {
+              "mechanical_order": 7,
+              "frequency_Hz": 350.0,
+              "hysteresis_W": 1.8494929078899573e-29,
+              "eddy_W": 1.3201229990336184e-27
+            },
+            {
+              "mechanical_order": 8,
+              "frequency_Hz": 400.0,
+              "hysteresis_W": 2.5111291504878965e-28,
+              "eddy_W": 1.8080455381773635e-26
+            },
+            {
+              "mechanical_order": 9,
+              "frequency_Hz": 450.0,
+              "hysteresis_W": 1.9305752379264489e-28,
+              "eddy_W": 1.5912529557795913e-26
+            },
+            {
+              "mechanical_order": 10,
+              "frequency_Hz": 500.0,
+              "hysteresis_W": 1.7999926176052167e-28,
+              "eddy_W": 1.6627417079427483e-26
+            },
+            {
+              "mechanical_order": 11,
+              "frequency_Hz": 550.0,
+              "hysteresis_W": 6.623673403718985e-29,
+              "eddy_W": 7.171055681795049e-27
+            },
+            {
+              "mechanical_order": 12,
+              "frequency_Hz": 600.0,
+              "hysteresis_W": 0.0028217863787909324,
+              "eddy_W": 0.01320184238885555
+            },
+            {
+              "mechanical_order": 13,
+              "frequency_Hz": 650.0,
+              "hysteresis_W": 8.561710218965551e-29,
+              "eddy_W": 1.0864540574491659e-26
+            },
+            {
+              "mechanical_order": 14,
+              "frequency_Hz": 700.0,
+              "hysteresis_W": 2.1990298143126994e-28,
+              "eddy_W": 2.877236834954071e-26
+            },
+            {
+              "mechanical_order": 15,
+              "frequency_Hz": 750.0,
+              "hysteresis_W": 9.663188770101218e-29,
+              "eddy_W": 1.415212508014732e-26
+            },
+            {
+              "mechanical_order": 16,
+              "frequency_Hz": 800.0,
+              "hysteresis_W": 2.1841005781957424e-28,
+              "eddy_W": 3.285026951618252e-26
+            },
+            {
+              "mechanical_order": 17,
+              "frequency_Hz": 850.0,
+              "hysteresis_W": 1.0325058882022094e-29,
+              "eddy_W": 1.938133648296617e-27
+            },
+            {
+              "mechanical_order": 18,
+              "frequency_Hz": 900.0,
+              "hysteresis_W": 4.7075526722420345e-05,
+              "eddy_W": 0.00042292514465734003
+            },
+            {
+              "mechanical_order": 19,
+              "frequency_Hz": 950.0,
+              "hysteresis_W": 1.523947862388065e-29,
+              "eddy_W": 3.1408566073502637e-27
+            },
+            {
+              "mechanical_order": 20,
+              "frequency_Hz": 1000.0,
+              "hysteresis_W": 6.254213699582468e-29,
+              "eddy_W": 1.2505128693399946e-26
+            },
+            {
+              "mechanical_order": 21,
+              "frequency_Hz": 1050.0,
+              "hysteresis_W": 4.930259467770501e-29,
+              "eddy_W": 1.0688721867094005e-26
+            },
+            {
+              "mechanical_order": 22,
+              "frequency_Hz": 1100.0,
+              "hysteresis_W": 3.906669985815124e-29,
+              "eddy_W": 8.904860503952359e-27
+            },
+            {
+              "mechanical_order": 23,
+              "frequency_Hz": 1150.0,
+              "hysteresis_W": 4.1046621578018717e-29,
+              "eddy_W": 9.887013716961203e-27
+            },
+            {
+              "mechanical_order": 24,
+              "frequency_Hz": 1200.0,
+              "hysteresis_W": 0.0013235409130745298,
+              "eddy_W": 0.013422068277312595
+            },
+            {
+              "mechanical_order": 25,
+              "frequency_Hz": 1250.0,
+              "hysteresis_W": 1.4923600458128066e-29,
+              "eddy_W": 4.137123901283648e-27
+            },
+            {
+              "mechanical_order": 26,
+              "frequency_Hz": 1300.0,
+              "hysteresis_W": 1.36296766981466e-29,
+              "eddy_W": 3.969086188844714e-27
+            },
+            {
+              "mechanical_order": 27,
+              "frequency_Hz": 1350.0,
+              "hysteresis_W": 1.8759446554892416e-29,
+              "eddy_W": 5.508359226362523e-27
+            },
+            {
+              "mechanical_order": 28,
+              "frequency_Hz": 1400.0,
+              "hysteresis_W": 8.017408209396701e-29,
+              "eddy_W": 2.2974122667149766e-26
+            },
+            {
+              "mechanical_order": 29,
+              "frequency_Hz": 1450.0,
+              "hysteresis_W": 1.790805741291027e-29,
+              "eddy_W": 5.706462139289208e-27
+            },
+            {
+              "mechanical_order": 30,
+              "frequency_Hz": 1500.0,
+              "hysteresis_W": 5.929558835982899e-06,
+              "eddy_W": 0.00010456243692512783
+            },
+            {
+              "mechanical_order": 31,
+              "frequency_Hz": 1550.0,
+              "hysteresis_W": 2.1323614059414713e-29,
+              "eddy_W": 7.304459086756677e-27
+            },
+            {
+              "mechanical_order": 32,
+              "frequency_Hz": 1600.0,
+              "hysteresis_W": 3.6961396472502423e-29,
+              "eddy_W": 1.2581987605292339e-26
+            },
+            {
+              "mechanical_order": 33,
+              "frequency_Hz": 1650.0,
+              "hysteresis_W": 3.442375205029585e-29,
+              "eddy_W": 1.2260700224776175e-26
+            },
+            {
+              "mechanical_order": 34,
+              "frequency_Hz": 1700.0,
+              "hysteresis_W": 4.386402859784624e-29,
+              "eddy_W": 1.579673248403463e-26
+            },
+            {
+              "mechanical_order": 35,
+              "frequency_Hz": 1750.0,
+              "hysteresis_W": 2.0873135492752188e-29,
+              "eddy_W": 8.115622019715787e-27
+            },
+            {
+              "mechanical_order": 36,
+              "frequency_Hz": 1800.0,
+              "hysteresis_W": 0.00157516808750309,
+              "eddy_W": 0.024117827379093463
+            },
+            {
+              "mechanical_order": 37,
+              "frequency_Hz": 1850.0,
+              "hysteresis_W": 1.472959149233951e-29,
+              "eddy_W": 6.1725966081432916e-27
+            },
+            {
+              "mechanical_order": 38,
+              "frequency_Hz": 1900.0,
+              "hysteresis_W": 3.727503630059418e-29,
+              "eddy_W": 1.5259438509249546e-26
+            },
+            {
+              "mechanical_order": 39,
+              "frequency_Hz": 1950.0,
+              "hysteresis_W": 1.2475956065627037e-28,
+              "eddy_W": 4.9460526160353806e-26
+            },
+            {
+              "mechanical_order": 40,
+              "frequency_Hz": 2000.0,
+              "hysteresis_W": 1.7062064826285428e-29,
+              "eddy_W": 7.66794156097831e-27
+            },
+            {
+              "mechanical_order": 41,
+              "frequency_Hz": 2050.0,
+              "hysteresis_W": 2.0534218368369642e-29,
+              "eddy_W": 9.364138196038316e-27
+            },
+            {
+              "mechanical_order": 42,
+              "frequency_Hz": 2100.0,
+              "hysteresis_W": 4.445757833995243e-06,
+              "eddy_W": 0.0001124166531075184
+            },
+            {
+              "mechanical_order": 43,
+              "frequency_Hz": 2150.0,
+              "hysteresis_W": 6.569974714013226e-29,
+              "eddy_W": 2.989205967418731e-26
+            },
+            {
+              "mechanical_order": 44,
+              "frequency_Hz": 2200.0,
+              "hysteresis_W": 5.536174521641021e-29,
+              "eddy_W": 2.554600528842924e-26
+            },
+            {
+              "mechanical_order": 45,
+              "frequency_Hz": 2250.0,
+              "hysteresis_W": 7.142036048393168e-29,
+              "eddy_W": 3.37265118433927e-26
+            },
+            {
+              "mechanical_order": 46,
+              "frequency_Hz": 2300.0,
+              "hysteresis_W": 7.479895220415782e-29,
+              "eddy_W": 3.5805107329716324e-26
+            },
+            {
+              "mechanical_order": 47,
+              "frequency_Hz": 2350.0,
+              "hysteresis_W": 4.761717745967693e-29,
+              "eddy_W": 2.4139437107564477e-26
+            },
+            {
+              "mechanical_order": 48,
+              "frequency_Hz": 2400.0,
+              "hysteresis_W": 0.001568516506829674,
+              "eddy_W": 0.032077532556462035
+            },
+            {
+              "mechanical_order": 49,
+              "frequency_Hz": 2450.0,
+              "hysteresis_W": 1.7926417741841645e-29,
+              "eddy_W": 9.900068612661138e-27
+            },
+            {
+              "mechanical_order": 50,
+              "frequency_Hz": 2500.0,
+              "hysteresis_W": 6.762180915881525e-29,
+              "eddy_W": 3.5861697586340994e-26
+            },
+            {
+              "mechanical_order": 51,
+              "frequency_Hz": 2550.0,
+              "hysteresis_W": 1.563138571648441e-29,
+              "eddy_W": 9.159178244133762e-27
+            },
+            {
+              "mechanical_order": 52,
+              "frequency_Hz": 2600.0,
+              "hysteresis_W": 1.1663343391584266e-28,
+              "eddy_W": 6.274496248869988e-26
+            },
+            {
+              "mechanical_order": 53,
+              "frequency_Hz": 2650.0,
+              "hysteresis_W": 1.464083931713721e-29,
+              "eddy_W": 8.893153662286312e-27
+            },
+            {
+              "mechanical_order": 54,
+              "frequency_Hz": 2700.0,
+              "hysteresis_W": 5.889809924561572e-06,
+              "eddy_W": 0.00018939003467779693
+            },
+            {
+              "mechanical_order": 55,
+              "frequency_Hz": 2750.0,
+              "hysteresis_W": 2.2071244498627824e-29,
+              "eddy_W": 1.361324637761261e-26
+            },
+            {
+              "mechanical_order": 56,
+              "frequency_Hz": 2800.0,
+              "hysteresis_W": 8.316782003238436e-29,
+              "eddy_W": 4.9326781906527587e-26
+            },
+            {
+              "mechanical_order": 57,
+              "frequency_Hz": 2850.0,
+              "hysteresis_W": 1.517266935205784e-28,
+              "eddy_W": 8.702416411174816e-26
+            },
+            {
+              "mechanical_order": 58,
+              "frequency_Hz": 2900.0,
+              "hysteresis_W": 1.5360363251472947e-28,
+              "eddy_W": 9.130058900632737e-26
+            },
+            {
+              "mechanical_order": 59,
+              "frequency_Hz": 2950.0,
+              "hysteresis_W": 6.888448542806156e-29,
+              "eddy_W": 4.326097194471897e-26
+            },
+            {
+              "mechanical_order": 60,
+              "frequency_Hz": 3000.0,
+              "hysteresis_W": 0.002743179397651148,
+              "eddy_W": 0.06916769116078672
+            },
+            {
+              "mechanical_order": 61,
+              "frequency_Hz": 3050.0,
+              "hysteresis_W": 4.4940360950987613e-29,
+              "eddy_W": 2.9973972853015716e-26
+            },
+            {
+              "mechanical_order": 62,
+              "frequency_Hz": 3100.0,
+              "hysteresis_W": 7.40943663885706e-29,
+              "eddy_W": 4.923417043753567e-26
+            },
+            {
+              "mechanical_order": 63,
+              "frequency_Hz": 3150.0,
+              "hysteresis_W": 5.13285255449286e-29,
+              "eddy_W": 3.530887451751879e-26
+            },
+            {
+              "mechanical_order": 64,
+              "frequency_Hz": 3200.0,
+              "hysteresis_W": 4.0525505171929434e-29,
+              "eddy_W": 2.839655009522174e-26
+            },
+            {
+              "mechanical_order": 65,
+              "frequency_Hz": 3250.0,
+              "hysteresis_W": 9.580325277922161e-29,
+              "eddy_W": 6.538373948645781e-26
+            },
+            {
+              "mechanical_order": 66,
+              "frequency_Hz": 3300.0,
+              "hysteresis_W": 7.582949812234226e-06,
+              "eddy_W": 0.0002977739061073991
+            },
+            {
+              "mechanical_order": 67,
+              "frequency_Hz": 3350.0,
+              "hysteresis_W": 4.4169125307520725e-29,
+              "eddy_W": 3.273181341127294e-26
+            },
+            {
+              "mechanical_order": 68,
+              "frequency_Hz": 3400.0,
+              "hysteresis_W": 5.167087065584566e-29,
+              "eddy_W": 3.7796984462848477e-26
+            },
+            {
+              "mechanical_order": 69,
+              "frequency_Hz": 3450.0,
+              "hysteresis_W": 9.931833991195391e-29,
+              "eddy_W": 7.180569823290056e-26
+            },
+            {
+              "mechanical_order": 70,
+              "frequency_Hz": 3500.0,
+              "hysteresis_W": 5.267326355975978e-29,
+              "eddy_W": 4.041622692718839e-26
+            },
+            {
+              "mechanical_order": 71,
+              "frequency_Hz": 3550.0,
+              "hysteresis_W": 2.708713641367141e-29,
+              "eddy_W": 2.1835689374833443e-26
+            },
+            {
+              "mechanical_order": 72,
+              "frequency_Hz": 3600.0,
+              "hysteresis_W": 0.0027000692409182006,
+              "eddy_W": 0.08278133962104788
+            },
+            {
+              "mechanical_order": 73,
+              "frequency_Hz": 3650.0,
+              "hysteresis_W": 8.141516102585457e-29,
+              "eddy_W": 6.368336603705838e-26
+            },
+            {
+              "mechanical_order": 74,
+              "frequency_Hz": 3700.0,
+              "hysteresis_W": 4.543937770634263e-29,
+              "eddy_W": 3.668590831597229e-26
+            },
+            {
+              "mechanical_order": 75,
+              "frequency_Hz": 3750.0,
+              "hysteresis_W": 6.930394095559886e-29,
+              "eddy_W": 5.61906051824755e-26
+            },
+            {
+              "mechanical_order": 76,
+              "frequency_Hz": 3800.0,
+              "hysteresis_W": 9.568132462113696e-29,
+              "eddy_W": 7.739040335573872e-26
+            },
+            {
+              "mechanical_order": 77,
+              "frequency_Hz": 3850.0,
+              "hysteresis_W": 5.924533865836789e-29,
+              "eddy_W": 4.89176990612647e-26
+            },
+            {
+              "mechanical_order": 78,
+              "frequency_Hz": 3900.0,
+              "hysteresis_W": 7.243157138856345e-06,
+              "eddy_W": 0.00033993751269135346
+            },
+            {
+              "mechanical_order": 79,
+              "frequency_Hz": 3950.0,
+              "hysteresis_W": 7.006869289219076e-29,
+              "eddy_W": 6.01538066249116e-26
+            },
+            {
+              "mechanical_order": 80,
+              "frequency_Hz": 4000.0,
+              "hysteresis_W": 1.0743408692301797e-28,
+              "eddy_W": 9.135056809401255e-26
+            },
+            {
+              "mechanical_order": 81,
+              "frequency_Hz": 4050.0,
+              "hysteresis_W": 1.3624956051596773e-28,
+              "eddy_W": 1.1526182082404253e-25
+            },
+            {
+              "mechanical_order": 82,
+              "frequency_Hz": 4100.0,
+              "hysteresis_W": 6.21704888204371e-29,
+              "eddy_W": 5.5958044239063e-26
+            },
+            {
+              "mechanical_order": 83,
+              "frequency_Hz": 4150.0,
+              "hysteresis_W": 3.9702389495897334e-29,
+              "eddy_W": 3.670336190056792e-26
+            },
+            {
+              "mechanical_order": 84,
+              "frequency_Hz": 4200.0,
+              "hysteresis_W": 0.0026260126305513,
+              "eddy_W": 0.09525822610962548
+            },
+            {
+              "mechanical_order": 85,
+              "frequency_Hz": 4250.0,
+              "hysteresis_W": 1.0596620746698724e-28,
+              "eddy_W": 9.599981262661948e-26
+            },
+            {
+              "mechanical_order": 86,
+              "frequency_Hz": 4300.0,
+              "hysteresis_W": 7.942518073575072e-29,
+              "eddy_W": 7.366801953716058e-26
+            },
+            {
+              "mechanical_order": 87,
+              "frequency_Hz": 4350.0,
+              "hysteresis_W": 6.190093295474367e-29,
+              "eddy_W": 5.885808820796586e-26
+            },
+            {
+              "mechanical_order": 88,
+              "frequency_Hz": 4400.0,
+              "hysteresis_W": 3.7945277282677247e-29,
+              "eddy_W": 3.730495867895394e-26
+            },
+            {
+              "mechanical_order": 89,
+              "frequency_Hz": 4450.0,
+              "hysteresis_W": 9.250901777655137e-29,
+              "eddy_W": 8.890992703129886e-26
+            },
+            {
+              "mechanical_order": 90,
+              "frequency_Hz": 4500.0,
+              "hysteresis_W": 9.827640757304101e-06,
+              "eddy_W": 0.0005287528483436752
+            },
+            {
+              "mechanical_order": 91,
+              "frequency_Hz": 4550.0,
+              "hysteresis_W": 2.008461086692617e-28,
+              "eddy_W": 1.8743260123142302e-25
+            },
+            {
+              "mechanical_order": 92,
+              "frequency_Hz": 4600.0,
+              "hysteresis_W": 9.477165696658435e-29,
+              "eddy_W": 9.344381432966467e-26
+            },
+            {
+              "mechanical_order": 93,
+              "frequency_Hz": 4650.0,
+              "hysteresis_W": 1.0218149940844578e-28,
+              "eddy_W": 1.0152683732670577e-25
+            },
+            {
+              "mechanical_order": 94,
+              "frequency_Hz": 4700.0,
+              "hysteresis_W": 5.175787284807092e-29,
+              "eddy_W": 5.40203957185488e-26
+            },
+            {
+              "mechanical_order": 95,
+              "frequency_Hz": 4750.0,
+              "hysteresis_W": 6.177152161485992e-29,
+              "eddy_W": 6.45068584378933e-26
+            },
+            {
+              "mechanical_order": 96,
+              "frequency_Hz": 4800.0,
+              "hysteresis_W": 0.004776708495364063,
+              "eddy_W": 0.19223989901682884
+            },
+            {
+              "mechanical_order": 97,
+              "frequency_Hz": 4850.0,
+              "hysteresis_W": 1.34660565495261e-28,
+              "eddy_W": 1.3825286374856852e-25
+            },
+            {
+              "mechanical_order": 98,
+              "frequency_Hz": 4900.0,
+              "hysteresis_W": 9.511338799869824e-29,
+              "eddy_W": 1.0076188965556169e-25
+            },
+            {
+              "mechanical_order": 99,
+              "frequency_Hz": 4950.0,
+              "hysteresis_W": 5.650201784838631e-29,
+              "eddy_W": 6.235419976411772e-26
+            },
+            {
+              "mechanical_order": 100,
+              "frequency_Hz": 5000.0,
+              "hysteresis_W": 7.109188245422088e-29,
+              "eddy_W": 7.741670837748695e-26
+            },
+            {
+              "mechanical_order": 101,
+              "frequency_Hz": 5050.0,
+              "hysteresis_W": 9.047569717082974e-29,
+              "eddy_W": 9.903130330771394e-26
+            },
+            {
+              "mechanical_order": 102,
+              "frequency_Hz": 5100.0,
+              "hysteresis_W": 1.1312320613791825e-05,
+              "eddy_W": 0.000685045319193674
+            },
+            {
+              "mechanical_order": 103,
+              "frequency_Hz": 5150.0,
+              "hysteresis_W": 4.5930227670185123e-29,
+              "eddy_W": 5.341024511334229e-26
+            },
+            {
+              "mechanical_order": 104,
+              "frequency_Hz": 5200.0,
+              "hysteresis_W": 2.3278280386835646e-28,
+              "eddy_W": 2.4993812767394473e-25
+            },
+            {
+              "mechanical_order": 105,
+              "frequency_Hz": 5250.0,
+              "hysteresis_W": 1.4027555111888156e-28,
+              "eddy_W": 1.562103737081665e-25
+            },
+            {
+              "mechanical_order": 106,
+              "frequency_Hz": 5300.0,
+              "hysteresis_W": 3.399462979164227e-28,
+              "eddy_W": 3.6684359128161716e-25
+            },
+            {
+              "mechanical_order": 107,
+              "frequency_Hz": 5350.0,
+              "hysteresis_W": 1.3155945428892154e-28,
+              "eddy_W": 1.5061439227777963e-25
+            },
+            {
+              "mechanical_order": 108,
+              "frequency_Hz": 5400.0,
+              "hysteresis_W": 0.0033784587972141315,
+              "eddy_W": 0.15632697663978867
+            },
+            {
+              "mechanical_order": 109,
+              "frequency_Hz": 5450.0,
+              "hysteresis_W": 1.1689407970027432e-28,
+              "eddy_W": 1.371835697751141e-25
+            },
+            {
+              "mechanical_order": 110,
+              "frequency_Hz": 5500.0,
+              "hysteresis_W": 1.6300388772129627e-28,
+              "eddy_W": 1.8952320860312105e-25
+            },
+            {
+              "mechanical_order": 111,
+              "frequency_Hz": 5550.0,
+              "hysteresis_W": 1.7581823391766613e-28,
+              "eddy_W": 2.0460163112607446e-25
+            },
+            {
+              "mechanical_order": 112,
+              "frequency_Hz": 5600.0,
+              "hysteresis_W": 1.1771140386439577e-28,
+              "eddy_W": 1.3994546034880866e-25
+            },
+            {
+              "mechanical_order": 113,
+              "frequency_Hz": 5650.0,
+              "hysteresis_W": 4.144270498136807e-28,
+              "eddy_W": 4.718452079426682e-25
+            },
+            {
+              "mechanical_order": 114,
+              "frequency_Hz": 5700.0,
+              "hysteresis_W": 1.041688279873341e-05,
+              "eddy_W": 0.0007141744036683506
+            },
+            {
+              "mechanical_order": 115,
+              "frequency_Hz": 5750.0,
+              "hysteresis_W": 2.6982079187051733e-28,
+              "eddy_W": 3.2051002935836864e-25
+            },
+            {
+              "mechanical_order": 116,
+              "frequency_Hz": 5800.0,
+              "hysteresis_W": 1.2292716216363141e-28,
+              "eddy_W": 1.53160060167742e-25
+            },
+            {
+              "mechanical_order": 117,
+              "frequency_Hz": 5850.0,
+              "hysteresis_W": 1.843124029698992e-28,
+              "eddy_W": 2.2641591841779294e-25
+            },
+            {
+              "mechanical_order": 118,
+              "frequency_Hz": 5900.0,
+              "hysteresis_W": 2.947037187347483e-29,
+              "eddy_W": 4.025122897073987e-26
+            },
+            {
+              "mechanical_order": 119,
+              "frequency_Hz": 5950.0,
+              "hysteresis_W": 1.1133092563474444e-28,
+              "eddy_W": 1.4290728012134478e-25
+            },
+            {
+              "mechanical_order": 120,
+              "frequency_Hz": 6000.0,
+              "hysteresis_W": 0.004332712801218278,
+              "eddy_W": 0.2211483854622598
+            },
+            {
+              "mechanical_order": 121,
+              "frequency_Hz": 6050.0,
+              "hysteresis_W": 1.0868637818004466e-28,
+              "eddy_W": 1.4210642347604671e-25
+            },
+            {
+              "mechanical_order": 122,
+              "frequency_Hz": 6100.0,
+              "hysteresis_W": 7.505485393214996e-29,
+              "eddy_W": 1.0000735975084885e-25
+            },
+            {
+              "mechanical_order": 123,
+              "frequency_Hz": 6150.0,
+              "hysteresis_W": 1.1735241115373687e-28,
+              "eddy_W": 1.564128334313344e-25
+            },
+            {
+              "mechanical_order": 124,
+              "frequency_Hz": 6200.0,
+              "hysteresis_W": 3.132506273096425e-28,
+              "eddy_W": 3.959218214398523e-25
+            },
+            {
+              "mechanical_order": 125,
+              "frequency_Hz": 6250.0,
+              "hysteresis_W": 7.306246830901089e-29,
+              "eddy_W": 1.0090176700331216e-25
+            },
+            {
+              "mechanical_order": 126,
+              "frequency_Hz": 6300.0,
+              "hysteresis_W": 1.4130987434975854e-05,
+              "eddy_W": 0.0010570662208380813
+            },
+            {
+              "mechanical_order": 127,
+              "frequency_Hz": 6350.0,
+              "hysteresis_W": 2.051806735615505e-28,
+              "eddy_W": 2.7050931268280124e-25
+            },
+            {
+              "mechanical_order": 128,
+              "frequency_Hz": 6400.0,
+              "hysteresis_W": 2.7664084023738905e-28,
+              "eddy_W": 3.667889625212006e-25
+            },
+            {
+              "mechanical_order": 129,
+              "frequency_Hz": 6450.0,
+              "hysteresis_W": 8.252218970267114e-29,
+              "eddy_W": 1.171501573429136e-25
+            },
+            {
+              "mechanical_order": 130,
+              "frequency_Hz": 6500.0,
+              "hysteresis_W": 6.209927375121847e-29,
+              "eddy_W": 8.983812625914484e-26
+            },
+            {
+              "mechanical_order": 131,
+              "frequency_Hz": 6550.0,
+              "hysteresis_W": 1.2743411736045185e-28,
+              "eddy_W": 1.7930813726726977e-25
+            },
+            {
+              "mechanical_order": 132,
+              "frequency_Hz": 6600.0,
+              "hysteresis_W": 0.006094678707508046,
+              "eddy_W": 0.33728448616432594
+            },
+            {
+              "mechanical_order": 133,
+              "frequency_Hz": 6650.0,
+              "hysteresis_W": 1.1251426901018182e-28,
+              "eddy_W": 1.6315330262276282e-25
+            },
+            {
+              "mechanical_order": 134,
+              "frequency_Hz": 6700.0,
+              "hysteresis_W": 2.1149674709133776e-28,
+              "eddy_W": 2.9789978462378503e-25
+            },
+            {
+              "mechanical_order": 135,
+              "frequency_Hz": 6750.0,
+              "hysteresis_W": 2.9723479250537654e-28,
+              "eddy_W": 4.131410038338904e-25
+            },
+            {
+              "mechanical_order": 136,
+              "frequency_Hz": 6800.0,
+              "hysteresis_W": 2.022024173837747e-28,
+              "eddy_W": 2.886676980857303e-25
+            },
+            {
+              "mechanical_order": 137,
+              "frequency_Hz": 6850.0,
+              "hysteresis_W": 2.831195286044221e-28,
+              "eddy_W": 3.997739537042249e-25
+            },
+            {
+              "mechanical_order": 138,
+              "frequency_Hz": 6900.0,
+              "hysteresis_W": 1.465890401279075e-05,
+              "eddy_W": 0.0012025783954861763
+            },
+            {
+              "mechanical_order": 139,
+              "frequency_Hz": 6950.0,
+              "hysteresis_W": 1.1683209003893907e-28,
+              "eddy_W": 1.7615415481597092e-25
+            },
+            {
+              "mechanical_order": 140,
+              "frequency_Hz": 7000.0,
+              "hysteresis_W": 1.715499517703939e-28,
+              "eddy_W": 2.555673253633908e-25
+            },
+            {
+              "mechanical_order": 141,
+              "frequency_Hz": 7050.0,
+              "hysteresis_W": 2.154997013060529e-28,
+              "eddy_W": 3.197105548784019e-25
+            },
+            {
+              "mechanical_order": 142,
+              "frequency_Hz": 7100.0,
+              "hysteresis_W": 1.297858811437981e-28,
+              "eddy_W": 1.9928919424364374e-25
+            },
+            {
+              "mechanical_order": 143,
+              "frequency_Hz": 7150.0,
+              "hysteresis_W": 1.479560778766714e-28,
+              "eddy_W": 2.261042445120556e-25
+            },
+            {
+              "mechanical_order": 144,
+              "frequency_Hz": 7200.0,
+              "hysteresis_W": 0.00464850672418512,
+              "eddy_W": 0.28767321544577357
+            },
+            {
+              "mechanical_order": 145,
+              "frequency_Hz": 7250.0,
+              "hysteresis_W": 3.479592698509742e-28,
+              "eddy_W": 5.21083425681089e-25
+            },
+            {
+              "mechanical_order": 146,
+              "frequency_Hz": 7300.0,
+              "hysteresis_W": 8.427806688336082e-29,
+              "eddy_W": 1.3540509814424416e-25
+            },
+            {
+              "mechanical_order": 147,
+              "frequency_Hz": 7350.0,
+              "hysteresis_W": 5.649067481007781e-29,
+              "eddy_W": 9.403019214394259e-26
+            },
+            {
+              "mechanical_order": 148,
+              "frequency_Hz": 7400.0,
+              "hysteresis_W": 3.12802384487295e-28,
+              "eddy_W": 4.778161100574448e-25
+            },
+            {
+              "mechanical_order": 149,
+              "frequency_Hz": 7450.0,
+              "hysteresis_W": 2.3029640255790485e-28,
+              "eddy_W": 3.6284781396055796e-25
+            },
+            {
+              "mechanical_order": 150,
+              "frequency_Hz": 7500.0,
+              "hysteresis_W": 1.55684404908128e-05,
+              "eddy_W": 0.00139678081175412
+            },
+            {
+              "mechanical_order": 151,
+              "frequency_Hz": 7550.0,
+              "hysteresis_W": 6.288804439444371e-28,
+              "eddy_W": 9.516291731114715e-25
+            },
+            {
+              "mechanical_order": 152,
+              "frequency_Hz": 7600.0,
+              "hysteresis_W": 2.1175047468074454e-28,
+              "eddy_W": 3.382798536351057e-25
+            },
+            {
+              "mechanical_order": 153,
+              "frequency_Hz": 7650.0,
+              "hysteresis_W": 8.82373919989347e-29,
+              "eddy_W": 1.4920354607229172e-25
+            },
+            {
+              "mechanical_order": 154,
+              "frequency_Hz": 7700.0,
+              "hysteresis_W": 3.0907572341389182e-28,
+              "eddy_W": 4.968848318560582e-25
+            },
+            {
+              "mechanical_order": 155,
+              "frequency_Hz": 7750.0,
+              "hysteresis_W": 2.1407722236221838e-28,
+              "eddy_W": 3.4867712037938355e-25
+            },
+            {
+              "mechanical_order": 156,
+              "frequency_Hz": 7800.0,
+              "hysteresis_W": 0.007180818481213763,
+              "eddy_W": 0.47478306279319277
+            },
+            {
+              "mechanical_order": 157,
+              "frequency_Hz": 7850.0,
+              "hysteresis_W": 1.4205765599331103e-28,
+              "eddy_W": 2.416754217263706e-25
+            },
+            {
+              "mechanical_order": 158,
+              "frequency_Hz": 7900.0,
+              "hysteresis_W": 2.828566079244686e-28,
+              "eddy_W": 4.681777358987838e-25
+            },
+            {
+              "mechanical_order": 159,
+              "frequency_Hz": 7950.0,
+              "hysteresis_W": 2.1273949021237813e-28,
+              "eddy_W": 3.6065712904989555e-25
+            },
+            {
+              "mechanical_order": 160,
+              "frequency_Hz": 8000.0,
+              "hysteresis_W": 2.8379653032760897e-28,
+              "eddy_W": 4.679026660925149e-25
+            },
+            {
+              "mechanical_order": 161,
+              "frequency_Hz": 8050.0,
+              "hysteresis_W": 1.0394015034115525e-28,
+              "eddy_W": 1.8295750749378616e-25
+            },
+            {
+              "mechanical_order": 162,
+              "frequency_Hz": 8100.0,
+              "hysteresis_W": 1.8105350253569295e-05,
+              "eddy_W": 0.0017435090340596308
+            },
+            {
+              "mechanical_order": 163,
+              "frequency_Hz": 8150.0,
+              "hysteresis_W": 5.175109034804081e-28,
+              "eddy_W": 8.430215013974035e-25
+            },
+            {
+              "mechanical_order": 164,
+              "frequency_Hz": 8200.0,
+              "hysteresis_W": 2.6890436062540743e-28,
+              "eddy_W": 4.635701850913155e-25
+            },
+            {
+              "mechanical_order": 165,
+              "frequency_Hz": 8250.0,
+              "hysteresis_W": 2.8031951062513933e-28,
+              "eddy_W": 4.803938629258809e-25
+            },
+            {
+              "mechanical_order": 166,
+              "frequency_Hz": 8300.0,
+              "hysteresis_W": 7.047043974092001e-29,
+              "eddy_W": 1.3059484255513804e-25
+            },
+            {
+              "mechanical_order": 167,
+              "frequency_Hz": 8350.0,
+              "hysteresis_W": 3.5590863986947615e-28,
+              "eddy_W": 6.139333440675037e-25
+            },
+            {
+              "mechanical_order": 168,
+              "frequency_Hz": 8400.0,
+              "hysteresis_W": 0.006377218076459617,
+              "eddy_W": 0.4553671024555169
+            },
+            {
+              "mechanical_order": 169,
+              "frequency_Hz": 8450.0,
+              "hysteresis_W": 1.8769005232796496e-28,
+              "eddy_W": 3.400666704028442e-25
+            },
+            {
+              "mechanical_order": 170,
+              "frequency_Hz": 8500.0,
+              "hysteresis_W": 2.523512669100345e-28,
+              "eddy_W": 4.477256634754845e-25
+            },
+            {
+              "mechanical_order": 171,
+              "frequency_Hz": 8550.0,
+              "hysteresis_W": 5.134369537947574e-29,
+              "eddy_W": 1.0104354896100342e-25
+            },
+            {
+              "mechanical_order": 172,
+              "frequency_Hz": 8600.0,
+              "hysteresis_W": 1.6415007262792953e-28,
+              "eddy_W": 3.048282556072105e-25
+            },
+            {
+              "mechanical_order": 173,
+              "frequency_Hz": 8650.0,
+              "hysteresis_W": 2.2505222007035543e-28,
+              "eddy_W": 4.145569743148497e-25
+            },
+            {
+              "mechanical_order": 174,
+              "frequency_Hz": 8700.0,
+              "hysteresis_W": 1.703539684503428e-05,
+              "eddy_W": 0.0017667682521647458
+            },
+            {
+              "mechanical_order": 175,
+              "frequency_Hz": 8750.0,
+              "hysteresis_W": 1.0412955509432732e-28,
+              "eddy_W": 2.004602520007358e-25
+            },
+            {
+              "mechanical_order": 176,
+              "frequency_Hz": 8800.0,
+              "hysteresis_W": 4.71880237261104e-28,
+              "eddy_W": 8.53332061370241e-25
+            },
+            {
+              "mechanical_order": 177,
+              "frequency_Hz": 8850.0,
+              "hysteresis_W": 4.021783992132303e-28,
+              "eddy_W": 7.344768542162469e-25
+            },
+            {
+              "mechanical_order": 178,
+              "frequency_Hz": 8900.0,
+              "hysteresis_W": 6.415763061474609e-29,
+              "eddy_W": 1.3023483133894418e-25
+            },
+            {
+              "mechanical_order": 179,
+              "frequency_Hz": 8950.0,
+              "hysteresis_W": 4.733017869341609e-28,
+              "eddy_W": 8.540318748445135e-25
+            },
+            {
+              "mechanical_order": 180,
+              "frequency_Hz": 9000.0,
+              "hysteresis_W": 0.00546704281319088,
+              "eddy_W": 0.42614185741151134
+            },
+            {
+              "mechanical_order": 181,
+              "frequency_Hz": 9050.0,
+              "hysteresis_W": 1.2164959076411837e-28,
+              "eddy_W": 2.420436603977386e-25
+            },
+            {
+              "mechanical_order": 182,
+              "frequency_Hz": 9100.0,
+              "hysteresis_W": 6.686334385372651e-29,
+              "eddy_W": 1.383287456308454e-25
+            },
+            {
+              "mechanical_order": 183,
+              "frequency_Hz": 9150.0,
+              "hysteresis_W": 4.658602290235464e-28,
+              "eddy_W": 8.743301689163057e-25
+            },
+            {
+              "mechanical_order": 184,
+              "frequency_Hz": 9200.0,
+              "hysteresis_W": 2.149820088578847e-28,
+              "eddy_W": 4.207437446676858e-25
+            },
+            {
+              "mechanical_order": 185,
+              "frequency_Hz": 9250.0,
+              "hysteresis_W": 2.1885704915943874e-28,
+              "eddy_W": 4.26787130458409e-25
+            },
+            {
+              "mechanical_order": 186,
+              "frequency_Hz": 9300.0,
+              "hysteresis_W": 1.9741236404336895e-05,
+              "eddy_W": 0.0021866972706231216
+            },
+            {
+              "mechanical_order": 187,
+              "frequency_Hz": 9350.0,
+              "hysteresis_W": 1.024788177609486e-28,
+              "eddy_W": 2.1319086059477305e-25
+            },
+            {
+              "mechanical_order": 188,
+              "frequency_Hz": 9400.0,
+              "hysteresis_W": 1.898973662536197e-28,
+              "eddy_W": 3.843953930372869e-25
+            },
+            {
+              "mechanical_order": 189,
+              "frequency_Hz": 9450.0,
+              "hysteresis_W": 1.1411947302402783e-28,
+              "eddy_W": 2.3849034496318903e-25
+            },
+            {
+              "mechanical_order": 190,
+              "frequency_Hz": 9500.0,
+              "hysteresis_W": 5.654933887709186e-29,
+              "eddy_W": 1.2148539780441222e-25
+            },
+            {
+              "mechanical_order": 191,
+              "frequency_Hz": 9550.0,
+              "hysteresis_W": 3.335539459350131e-28,
+              "eddy_W": 6.578553068487743e-25
+            }
+          ]
+        },
+        "difference_W": {
+          "hysteresis_W": 5.551115123125783e-17,
+          "lamination_eddy_W": 3.1086244689504383e-15,
+          "total_W": 3.1086244689504383e-15
+        },
+        "self_consistency_pass": true,
+        "distinct_rotor_meshes": 34,
+        "share_loss_above_1kHz": 0.9798956830903858,
+        "sampling_gate": "PASS"
+      }
+    ],
+    "angular_convergence": [
+      {
+        "from": 96,
+        "to": 192,
+        "pass": false,
+        "production_sampling": {
+          "change_W": {
+            "hysteresis_W": 0.013788077093699946,
+            "lamination_eddy_W": 0.48906693471767626,
+            "total_W": 0.5028550118113763
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.32731059737122203,
+            "lamination_eddy_W": 0.7343170791453696,
+            "total_W": 0.7101053954596156
+          },
+          "pass": false
+        },
+        "independent_loss_math": {
+          "change_W": {
+            "hysteresis_W": 0.01378807709369995,
+            "lamination_eddy_W": 0.4890669347176765,
+            "total_W": 0.5028550118113764
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.3273105973712218,
+            "lamination_eddy_W": 0.7343170791453695,
+            "total_W": 0.7101053954596153
+          },
+          "pass": false
+        }
+      },
+      {
+        "from": 192,
+        "to": 384,
+        "pass": false,
+        "production_sampling": {
+          "change_W": {
+            "hysteresis_W": 0.02933337633166158,
+            "lamination_eddy_W": 2.2578131077496386,
+            "total_W": 2.2871464840813003
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.41049390741460956,
+            "lamination_eddy_W": 0.7722110332192355,
+            "total_W": 0.7635815290408292
+          },
+          "pass": false
+        },
+        "independent_loss_math": {
+          "change_W": {
+            "hysteresis_W": 0.02933337633166149,
+            "lamination_eddy_W": 2.257813107749635,
+            "total_W": 2.2871464840812967
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.4104939074146086,
+            "lamination_eddy_W": 0.7722110332192351,
+            "total_W": 0.7635815290408288
+          },
+          "pass": false
+        }
+      }
+    ],
+    "angular_gate_pass": false,
+    "sampling_gate_pass": true,
+    "loss_math_self_consistency_pass": true,
+    "material_query_spectrum": [
+      {
+        "mechanical_order": 6,
+        "frequency_Hz": 300.0,
+        "mean_squared_vector_amplitude_T2": 0.0028238100323813146
+      },
+      {
+        "mechanical_order": 12,
+        "frequency_Hz": 600.0,
+        "mean_squared_vector_amplitude_T2": 0.0005434577428171081
+      },
+      {
+        "mechanical_order": 24,
+        "frequency_Hz": 1200.0,
+        "mean_squared_vector_amplitude_T2": 0.00018110245111886472
+      },
+      {
+        "mechanical_order": 132,
+        "frequency_Hz": 6600.0,
+        "mean_squared_vector_amplitude_T2": 0.0001510976469153009
+      },
+      {
+        "mechanical_order": 96,
+        "frequency_Hz": 4800.0,
+        "mean_squared_vector_amplitude_T2": 0.00014401273012445764
+      },
+      {
+        "mechanical_order": 156,
+        "frequency_Hz": 7800.0,
+        "mean_squared_vector_amplitude_T2": 0.00013908839360485647
+      },
+      {
+        "mechanical_order": 60,
+        "frequency_Hz": 3000.0,
+        "mean_squared_vector_amplitude_T2": 0.00010293080009585982
+      },
+      {
+        "mechanical_order": 36,
+        "frequency_Hz": 1800.0,
+        "mean_squared_vector_amplitude_T2": 0.00010010023060760352
+      },
+      {
+        "mechanical_order": 48,
+        "frequency_Hz": 2400.0,
+        "mean_squared_vector_amplitude_T2": 9.695283043909232e-05
+      },
+      {
+        "mechanical_order": 168,
+        "frequency_Hz": 8400.0,
+        "mean_squared_vector_amplitude_T2": 9.582478364266227e-05
+      },
+      {
+        "mechanical_order": 120,
+        "frequency_Hz": 6000.0,
+        "mean_squared_vector_amplitude_T2": 9.351645612317935e-05
+      },
+      {
+        "mechanical_order": 84,
+        "frequency_Hz": 4200.0,
+        "mean_squared_vector_amplitude_T2": 9.229689821176435e-05
+      }
+    ],
+    "analysis_source_sha256": "c5588eb99276f6699850e5e81edea0ff3e9bcaf5477f020b5814efc4651bcafd",
+    "analysis_sources_sha256": {
+      "rotor_native_report.py": "c5588eb99276f6699850e5e81edea0ff3e9bcaf5477f020b5814efc4651bcafd",
+      "rotor_loss_reference.py": "157e0b1c4deda15d402fde7801658bed4c2d1a77744c38778602c4d3c808d8c2",
+      "rotor_closure_report.py": "7960ed2848313a03e64eb4e145f1458125c6d0cdf0ef9c2beb6f48a55184ee03"
+    }
+  },
+  "static_potential_replay": {
+    "schema": "coilem.rotor_static_potential_remesh_probe/v1",
+    "protocol_sha256": "bd1eefef1f274d75895671d112c09478f50ca8c748bf06b9d323dda435b2cbcf",
+    "analysis_source_sha256": "e9ccac266a88dc8f55721faef6b84f38c769a6d11a40bb850c9728a8eac3aa4d",
+    "exact_rotor_loss_W": 0,
+    "potential": "Az = B0/(4 R^3) * (x^4 - 6 x^2 y^2 + y^4), x,y in material metres; time invariant",
+    "boundary_peak_T": 0.7,
+    "radius_m": 0.028,
+    "fresh_field_solves": 0,
+    "interpretation": "nonzero values are numerical contamination, not motor loss; diagnostic cannot calibrate or correct native loss",
+    "results": [
+      {
+        "positions": 96,
+        "production_sampling": {
+          "hysteresis_W": 0.0013321113289063245,
+          "lamination_eddy_W": 0.01763891793141962,
+          "rotor_iron_mass_kg": 0.8411629977749437,
+          "method": "rotor_material_harmonic/v1",
+          "total_W": 0.01897102926032594
+        },
+        "independent_loss_math": {
+          "hysteresis_W": 0.0013321113289063253,
+          "lamination_eddy_W": 0.017638917931419633,
+          "total_W": 0.01897102926032596,
+          "mass_kg": 0.8411629977749437,
+          "harmonics": [
+            {
+              "mechanical_order": 1,
+              "frequency_Hz": 50.0,
+              "hysteresis_W": 6.546790488468641e-35,
+              "eddy_W": 1.1413834552888372e-33
+            },
+            {
+              "mechanical_order": 2,
+              "frequency_Hz": 100.0,
+              "hysteresis_W": 8.461858577546931e-35,
+              "eddy_W": 3.0506405876599146e-33
+            },
+            {
+              "mechanical_order": 3,
+              "frequency_Hz": 150.0,
+              "hysteresis_W": 8.899094219425763e-35,
+              "eddy_W": 4.9162105686886436e-33
+            },
+            {
+              "mechanical_order": 4,
+              "frequency_Hz": 200.0,
+              "hysteresis_W": 1.8887614276714322e-34,
+              "eddy_W": 1.3579397927881329e-32
+            },
+            {
+              "mechanical_order": 5,
+              "frequency_Hz": 250.0,
+              "hysteresis_W": 5.006956556209166e-34,
+              "eddy_W": 4.3371252832456144e-32
+            },
+            {
+              "mechanical_order": 6,
+              "frequency_Hz": 300.0,
+              "hysteresis_W": 4.770223628141818e-34,
+              "eddy_W": 5.02269169596801e-32
+            },
+            {
+              "mechanical_order": 7,
+              "frequency_Hz": 350.0,
+              "hysteresis_W": 6.74648328965715e-33,
+              "eddy_W": 7.257315048165465e-31
+            },
+            {
+              "mechanical_order": 8,
+              "frequency_Hz": 400.0,
+              "hysteresis_W": 4.761500965605723e-34,
+              "eddy_W": 6.791864763297131e-32
+            },
+            {
+              "mechanical_order": 9,
+              "frequency_Hz": 450.0,
+              "hysteresis_W": 9.386838928141354e-33,
+              "eddy_W": 1.2926873974430649e-30
+            },
+            {
+              "mechanical_order": 10,
+              "frequency_Hz": 500.0,
+              "hysteresis_W": 1.1031979237040496e-33,
+              "eddy_W": 1.9038491988967883e-31
+            },
+            {
+              "mechanical_order": 11,
+              "frequency_Hz": 550.0,
+              "hysteresis_W": 3.610247583333631e-33,
+              "eddy_W": 6.465930607878217e-31
+            },
+            {
+              "mechanical_order": 12,
+              "frequency_Hz": 600.0,
+              "hysteresis_W": 0.00022205173584935578,
+              "eddy_W": 0.0012580672754300046
+            },
+            {
+              "mechanical_order": 13,
+              "frequency_Hz": 650.0,
+              "hysteresis_W": 2.7907878714776994e-32,
+              "eddy_W": 5.341237827107204e-30
+            },
+            {
+              "mechanical_order": 14,
+              "frequency_Hz": 700.0,
+              "hysteresis_W": 1.9074231916317018e-32,
+              "eddy_W": 4.028285469731868e-30
+            },
+            {
+              "mechanical_order": 15,
+              "frequency_Hz": 750.0,
+              "hysteresis_W": 1.0902969241169649e-32,
+              "eddy_W": 2.551584958821377e-30
+            },
+            {
+              "mechanical_order": 16,
+              "frequency_Hz": 800.0,
+              "hysteresis_W": 2.8502673983041855e-32,
+              "eddy_W": 6.781591234704897e-30
+            },
+            {
+              "mechanical_order": 17,
+              "frequency_Hz": 850.0,
+              "hysteresis_W": 8.46915369838765e-32,
+              "eddy_W": 2.0260677813165205e-29
+            },
+            {
+              "mechanical_order": 18,
+              "frequency_Hz": 900.0,
+              "hysteresis_W": 5.594584836238621e-32,
+              "eddy_W": 1.4533768713388923e-29
+            },
+            {
+              "mechanical_order": 19,
+              "frequency_Hz": 950.0,
+              "hysteresis_W": 8.944522295246642e-32,
+              "eddy_W": 2.398804243244773e-29
+            },
+            {
+              "mechanical_order": 20,
+              "frequency_Hz": 1000.0,
+              "hysteresis_W": 4.504744379567791e-32,
+              "eddy_W": 1.322973534756812e-29
+            },
+            {
+              "mechanical_order": 21,
+              "frequency_Hz": 1050.0,
+              "hysteresis_W": 6.19121771919365e-33,
+              "eddy_W": 2.129066900852825e-30
+            },
+            {
+              "mechanical_order": 22,
+              "frequency_Hz": 1100.0,
+              "hysteresis_W": 2.481110272962813e-32,
+              "eddy_W": 8.318442012075824e-30
+            },
+            {
+              "mechanical_order": 23,
+              "frequency_Hz": 1150.0,
+              "hysteresis_W": 6.168693255308765e-33,
+              "eddy_W": 2.3358183914227692e-30
+            },
+            {
+              "mechanical_order": 24,
+              "frequency_Hz": 1200.0,
+              "hysteresis_W": 0.0004377427596939153,
+              "eddy_W": 0.004961648033019323
+            },
+            {
+              "mechanical_order": 25,
+              "frequency_Hz": 1250.0,
+              "hysteresis_W": 5.302886602408806e-32,
+              "eddy_W": 1.952982896556153e-29
+            },
+            {
+              "mechanical_order": 26,
+              "frequency_Hz": 1300.0,
+              "hysteresis_W": 9.056499602155224e-32,
+              "eddy_W": 3.3777968200514307e-29
+            },
+            {
+              "mechanical_order": 27,
+              "frequency_Hz": 1350.0,
+              "hysteresis_W": 1.8443411321440961e-31,
+              "eddy_W": 6.889951034191421e-29
+            },
+            {
+              "mechanical_order": 28,
+              "frequency_Hz": 1400.0,
+              "hysteresis_W": 2.744571838550264e-32,
+              "eddy_W": 1.1799464417529381e-29
+            },
+            {
+              "mechanical_order": 29,
+              "frequency_Hz": 1450.0,
+              "hysteresis_W": 2.584502136011136e-31,
+              "eddy_W": 1.022338837228882e-28
+            },
+            {
+              "mechanical_order": 30,
+              "frequency_Hz": 1500.0,
+              "hysteresis_W": 6.002862338785861e-32,
+              "eddy_W": 2.66124518288391e-29
+            },
+            {
+              "mechanical_order": 31,
+              "frequency_Hz": 1550.0,
+              "hysteresis_W": 1.6138719555423705e-31,
+              "eddy_W": 7.023860957194449e-29
+            },
+            {
+              "mechanical_order": 32,
+              "frequency_Hz": 1600.0,
+              "hysteresis_W": 1.566468466408991e-31,
+              "eddy_W": 7.060715092127756e-29
+            },
+            {
+              "mechanical_order": 33,
+              "frequency_Hz": 1650.0,
+              "hysteresis_W": 8.81696027359512e-34,
+              "eddy_W": 5.419916731183086e-31
+            },
+            {
+              "mechanical_order": 34,
+              "frequency_Hz": 1700.0,
+              "hysteresis_W": 4.168224259597672e-31,
+              "eddy_W": 1.9003216106251005e-28
+            },
+            {
+              "mechanical_order": 35,
+              "frequency_Hz": 1750.0,
+              "hysteresis_W": 7.840574288152411e-31,
+              "eddy_W": 3.562643524036161e-28
+            },
+            {
+              "mechanical_order": 36,
+              "frequency_Hz": 1800.0,
+              "hysteresis_W": 0.0006723168333630542,
+              "eddy_W": 0.011419202622970307
+            },
+            {
+              "mechanical_order": 37,
+              "frequency_Hz": 1850.0,
+              "hysteresis_W": 6.076247535047075e-32,
+              "eddy_W": 3.357746618207234e-29
+            },
+            {
+              "mechanical_order": 38,
+              "frequency_Hz": 1900.0,
+              "hysteresis_W": 6.583234643872834e-32,
+              "eddy_W": 3.725605021721502e-29
+            },
+            {
+              "mechanical_order": 39,
+              "frequency_Hz": 1950.0,
+              "hysteresis_W": 9.023020428098932e-32,
+              "eddy_W": 5.159862924501802e-29
+            },
+            {
+              "mechanical_order": 40,
+              "frequency_Hz": 2000.0,
+              "hysteresis_W": 8.971775204047599e-32,
+              "eddy_W": 5.270993139073468e-29
+            },
+            {
+              "mechanical_order": 41,
+              "frequency_Hz": 2050.0,
+              "hysteresis_W": 1.0442059711956618e-31,
+              "eddy_W": 6.245695390119525e-29
+            },
+            {
+              "mechanical_order": 42,
+              "frequency_Hz": 2100.0,
+              "hysteresis_W": 7.580276944748517e-32,
+              "eddy_W": 4.7309575277460295e-29
+            },
+            {
+              "mechanical_order": 43,
+              "frequency_Hz": 2150.0,
+              "hysteresis_W": 7.6335915037925005e-31,
+              "eddy_W": 4.314907843854758e-28
+            },
+            {
+              "mechanical_order": 44,
+              "frequency_Hz": 2200.0,
+              "hysteresis_W": 2.1939906888857147e-32,
+              "eddy_W": 1.5370381491825893e-29
+            },
+            {
+              "mechanical_order": 45,
+              "frequency_Hz": 2250.0,
+              "hysteresis_W": 2.9232984631602196e-31,
+              "eddy_W": 1.8250207630028481e-28
+            },
+            {
+              "mechanical_order": 46,
+              "frequency_Hz": 2300.0,
+              "hysteresis_W": 8.683116600674756e-34,
+              "eddy_W": 7.630235009223863e-31
+            },
+            {
+              "mechanical_order": 47,
+              "frequency_Hz": 2350.0,
+              "hysteresis_W": 7.223968617123566e-31,
+              "eddy_W": 4.4977909795824325e-28
+            }
+          ]
+        },
+        "difference_W": {
+          "hysteresis_W": -8.673617379884035e-19,
+          "lamination_eddy_W": -1.3877787807814457e-17,
+          "total_W": -1.734723475976807e-17
+        },
+        "self_consistency_pass": true,
+        "distinct_rotor_meshes": 8,
+        "share_loss_above_1kHz": 0.9219800364561809,
+        "sampling_gate": "PASS"
+      },
+      {
+        "positions": 192,
+        "production_sampling": {
+          "hysteresis_W": 0.0029593810157612778,
+          "lamination_eddy_W": 0.08585666181786729,
+          "rotor_iron_mass_kg": 0.8411629977749437,
+          "method": "rotor_material_harmonic/v1",
+          "total_W": 0.08881604283362857
+        },
+        "independent_loss_math": {
+          "hysteresis_W": 0.0029593810157612765,
+          "lamination_eddy_W": 0.08585666181786725,
+          "total_W": 0.08881604283362853,
+          "mass_kg": 0.8411629977749437,
+          "harmonics": [
+            {
+              "mechanical_order": 1,
+              "frequency_Hz": 50.0,
+              "hysteresis_W": 1.1789551553360433e-34,
+              "eddy_W": 1.9831304679082425e-33
+            },
+            {
+              "mechanical_order": 2,
+              "frequency_Hz": 100.0,
+              "hysteresis_W": 1.1921667513474754e-34,
+              "eddy_W": 4.1868977813019564e-33
+            },
+            {
+              "mechanical_order": 3,
+              "frequency_Hz": 150.0,
+              "hysteresis_W": 6.929176609440138e-35,
+              "eddy_W": 3.831802647941338e-33
+            },
+            {
+              "mechanical_order": 4,
+              "frequency_Hz": 200.0,
+              "hysteresis_W": 7.226920597374166e-35,
+              "eddy_W": 5.389805386376425e-33
+            },
+            {
+              "mechanical_order": 5,
+              "frequency_Hz": 250.0,
+              "hysteresis_W": 4.957273852886912e-35,
+              "eddy_W": 4.780260976914596e-33
+            },
+            {
+              "mechanical_order": 6,
+              "frequency_Hz": 300.0,
+              "hysteresis_W": 1.0866899030636866e-34,
+              "eddy_W": 1.2294819958239754e-32
+            },
+            {
+              "mechanical_order": 7,
+              "frequency_Hz": 350.0,
+              "hysteresis_W": 7.813277684856587e-33,
+              "eddy_W": 8.33779669872825e-31
+            },
+            {
+              "mechanical_order": 8,
+              "frequency_Hz": 400.0,
+              "hysteresis_W": 7.282655403501773e-35,
+              "eddy_W": 1.1371452916567342e-32
+            },
+            {
+              "mechanical_order": 9,
+              "frequency_Hz": 450.0,
+              "hysteresis_W": 1.0856427476953735e-34,
+              "eddy_W": 1.8866115496512052e-32
+            },
+            {
+              "mechanical_order": 10,
+              "frequency_Hz": 500.0,
+              "hysteresis_W": 5.312775753827464e-34,
+              "eddy_W": 9.533791883557585e-32
+            },
+            {
+              "mechanical_order": 11,
+              "frequency_Hz": 550.0,
+              "hysteresis_W": 1.8127119215003834e-33,
+              "eddy_W": 3.368185306434088e-31
+            },
+            {
+              "mechanical_order": 12,
+              "frequency_Hz": 600.0,
+              "hysteresis_W": 9.097737997696884e-05,
+              "eddy_W": 0.0005402541579603616
+            },
+            {
+              "mechanical_order": 13,
+              "frequency_Hz": 650.0,
+              "hysteresis_W": 1.3713289074692927e-33,
+              "eddy_W": 3.0837162612124433e-31
+            },
+            {
+              "mechanical_order": 14,
+              "frequency_Hz": 700.0,
+              "hysteresis_W": 8.294499040691409e-33,
+              "eddy_W": 1.8317306868066115e-30
+            },
+            {
+              "mechanical_order": 15,
+              "frequency_Hz": 750.0,
+              "hysteresis_W": 1.432882283318128e-32,
+              "eddy_W": 3.304575002706439e-30
+            },
+            {
+              "mechanical_order": 16,
+              "frequency_Hz": 800.0,
+              "hysteresis_W": 1.0136095626097996e-32,
+              "eddy_W": 2.5491410766785445e-30
+            },
+            {
+              "mechanical_order": 17,
+              "frequency_Hz": 850.0,
+              "hysteresis_W": 4.8420877376502474e-32,
+              "eddy_W": 1.1936222550662423e-29
+            },
+            {
+              "mechanical_order": 18,
+              "frequency_Hz": 900.0,
+              "hysteresis_W": 5.201948287229035e-32,
+              "eddy_W": 1.3566548011773072e-29
+            },
+            {
+              "mechanical_order": 19,
+              "frequency_Hz": 950.0,
+              "hysteresis_W": 9.618972879310321e-32,
+              "eddy_W": 2.569645214921216e-29
+            },
+            {
+              "mechanical_order": 20,
+              "frequency_Hz": 1000.0,
+              "hysteresis_W": 3.0740617352572646e-32,
+              "eddy_W": 9.214918761034794e-30
+            },
+            {
+              "mechanical_order": 21,
+              "frequency_Hz": 1050.0,
+              "hysteresis_W": 4.5759812581446205e-33,
+              "eddy_W": 1.5992513700722612e-30
+            },
+            {
+              "mechanical_order": 22,
+              "frequency_Hz": 1100.0,
+              "hysteresis_W": 6.0579867303956106e-33,
+              "eddy_W": 2.1904879315267454e-30
+            },
+            {
+              "mechanical_order": 23,
+              "frequency_Hz": 1150.0,
+              "hysteresis_W": 4.766922749660679e-33,
+              "eddy_W": 1.8296092436790504e-30
+            },
+            {
+              "mechanical_order": 24,
+              "frequency_Hz": 1200.0,
+              "hysteresis_W": 0.00019302840704312304,
+              "eddy_W": 0.0022848053231883775
+            },
+            {
+              "mechanical_order": 25,
+              "frequency_Hz": 1250.0,
+              "hysteresis_W": 3.031320816890657e-32,
+              "eddy_W": 1.1503681281504869e-29
+            },
+            {
+              "mechanical_order": 26,
+              "frequency_Hz": 1300.0,
+              "hysteresis_W": 5.089805664639593e-32,
+              "eddy_W": 1.9579017296669803e-29
+            },
+            {
+              "mechanical_order": 27,
+              "frequency_Hz": 1350.0,
+              "hysteresis_W": 3.124885718345895e-32,
+              "eddy_W": 1.2839654139013437e-29
+            },
+            {
+              "mechanical_order": 28,
+              "frequency_Hz": 1400.0,
+              "hysteresis_W": 5.610801193472124e-32,
+              "eddy_W": 2.321426531535393e-29
+            },
+            {
+              "mechanical_order": 29,
+              "frequency_Hz": 1450.0,
+              "hysteresis_W": 2.1049453524575956e-31,
+              "eddy_W": 8.418574418076211e-29
+            },
+            {
+              "mechanical_order": 30,
+              "frequency_Hz": 1500.0,
+              "hysteresis_W": 4.0765832065422435e-34,
+              "eddy_W": 2.36427060774207e-31
+            },
+            {
+              "mechanical_order": 31,
+              "frequency_Hz": 1550.0,
+              "hysteresis_W": 5.0219845296248756e-33,
+              "eddy_W": 2.6330497819202138e-30
+            },
+            {
+              "mechanical_order": 32,
+              "frequency_Hz": 1600.0,
+              "hysteresis_W": 8.14581780999915e-32,
+              "eddy_W": 3.802677314248512e-29
+            },
+            {
+              "mechanical_order": 33,
+              "frequency_Hz": 1650.0,
+              "hysteresis_W": 2.189298570908484e-33,
+              "eddy_W": 1.2814795444993852e-30
+            },
+            {
+              "mechanical_order": 34,
+              "frequency_Hz": 1700.0,
+              "hysteresis_W": 5.7835096210224414e-31,
+              "eddy_W": 2.5908196381145743e-28
+            },
+            {
+              "mechanical_order": 35,
+              "frequency_Hz": 1750.0,
+              "hysteresis_W": 5.110198332990278e-33,
+              "eddy_W": 3.042112524689908e-30
+            },
+            {
+              "mechanical_order": 36,
+              "frequency_Hz": 1800.0,
+              "hysteresis_W": 0.0003909955171158992,
+              "eddy_W": 0.006835953868297639
+            },
+            {
+              "mechanical_order": 37,
+              "frequency_Hz": 1850.0,
+              "hysteresis_W": 7.997284330840705e-32,
+              "eddy_W": 4.354694285982794e-29
+            },
+            {
+              "mechanical_order": 38,
+              "frequency_Hz": 1900.0,
+              "hysteresis_W": 6.222686923451951e-33,
+              "eddy_W": 3.996942464261264e-30
+            },
+            {
+              "mechanical_order": 39,
+              "frequency_Hz": 1950.0,
+              "hysteresis_W": 6.428560465866885e-33,
+              "eddy_W": 4.235620004569095e-30
+            },
+            {
+              "mechanical_order": 40,
+              "frequency_Hz": 2000.0,
+              "hysteresis_W": 8.635442068543167e-32,
+              "eddy_W": 5.08373863341e-29
+            },
+            {
+              "mechanical_order": 41,
+              "frequency_Hz": 2050.0,
+              "hysteresis_W": 7.093643521128968e-32,
+              "eddy_W": 4.3316887956374024e-29
+            },
+            {
+              "mechanical_order": 42,
+              "frequency_Hz": 2100.0,
+              "hysteresis_W": 1.9333756207273727e-31,
+              "eddy_W": 1.1475521077474674e-28
+            },
+            {
+              "mechanical_order": 43,
+              "frequency_Hz": 2150.0,
+              "hysteresis_W": 5.735727992037547e-31,
+              "eddy_W": 3.2922169604546537e-28
+            },
+            {
+              "mechanical_order": 44,
+              "frequency_Hz": 2200.0,
+              "hysteresis_W": 1.4626408497852015e-32,
+              "eddy_W": 1.0471602280108279e-29
+            },
+            {
+              "mechanical_order": 45,
+              "frequency_Hz": 2250.0,
+              "hysteresis_W": 1.3997614136303817e-31,
+              "eddy_W": 9.090883418968286e-29
+            },
+            {
+              "mechanical_order": 46,
+              "frequency_Hz": 2300.0,
+              "hysteresis_W": 1.0839205591849175e-32,
+              "eddy_W": 8.266777439923213e-30
+            },
+            {
+              "mechanical_order": 47,
+              "frequency_Hz": 2350.0,
+              "hysteresis_W": 6.602802296539086e-31,
+              "eddy_W": 4.1309332425098305e-28
+            },
+            {
+              "mechanical_order": 48,
+              "frequency_Hz": 2400.0,
+              "hysteresis_W": 0.0003958956801790721,
+              "eddy_W": 0.009358292309597905
+            },
+            {
+              "mechanical_order": 49,
+              "frequency_Hz": 2450.0,
+              "hysteresis_W": 2.591119523827782e-33,
+              "eddy_W": 2.2830889528071374e-30
+            },
+            {
+              "mechanical_order": 50,
+              "frequency_Hz": 2500.0,
+              "hysteresis_W": 1.866486819947032e-32,
+              "eddy_W": 1.5091500383676895e-29
+            },
+            {
+              "mechanical_order": 51,
+              "frequency_Hz": 2550.0,
+              "hysteresis_W": 1.1898757533487507e-31,
+              "eddy_W": 8.894355651337197e-29
+            },
+            {
+              "mechanical_order": 52,
+              "frequency_Hz": 2600.0,
+              "hysteresis_W": 1.293070163491237e-31,
+              "eddy_W": 9.821477796210407e-29
+            },
+            {
+              "mechanical_order": 53,
+              "frequency_Hz": 2650.0,
+              "hysteresis_W": 1.6252673453390555e-31,
+              "eddy_W": 1.2441223309952158e-28
+            },
+            {
+              "mechanical_order": 54,
+              "frequency_Hz": 2700.0,
+              "hysteresis_W": 1.4010334864649458e-30,
+              "eddy_W": 9.744992890048522e-28
+            },
+            {
+              "mechanical_order": 55,
+              "frequency_Hz": 2750.0,
+              "hysteresis_W": 1.0654482416978766e-31,
+              "eddy_W": 8.67480754807962e-29
+            },
+            {
+              "mechanical_order": 56,
+              "frequency_Hz": 2800.0,
+              "hysteresis_W": 2.0984400539661368e-32,
+              "eddy_W": 1.900266776120188e-29
+            },
+            {
+              "mechanical_order": 57,
+              "frequency_Hz": 2850.0,
+              "hysteresis_W": 1.2527102124669826e-31,
+              "eddy_W": 1.0498938794306719e-28
+            },
+            {
+              "mechanical_order": 58,
+              "frequency_Hz": 2900.0,
+              "hysteresis_W": 1.2100294338299696e-31,
+              "eddy_W": 1.0348042950309794e-28
+            },
+            {
+              "mechanical_order": 59,
+              "frequency_Hz": 2950.0,
+              "hysteresis_W": 2.533345324115049e-32,
+              "eddy_W": 2.3994710868763652e-29
+            },
+            {
+              "mechanical_order": 60,
+              "frequency_Hz": 3000.0,
+              "hysteresis_W": 0.0006508136666943999,
+              "eddy_W": 0.018962477830875672
+            },
+            {
+              "mechanical_order": 61,
+              "frequency_Hz": 3050.0,
+              "hysteresis_W": 3.819963096380334e-32,
+              "eddy_W": 3.665006858712154e-29
+            },
+            {
+              "mechanical_order": 62,
+              "frequency_Hz": 3100.0,
+              "hysteresis_W": 8.558258782435978e-31,
+              "eddy_W": 7.069849401268952e-28
+            },
+            {
+              "mechanical_order": 63,
+              "frequency_Hz": 3150.0,
+              "hysteresis_W": 7.488913785300752e-32,
+              "eddy_W": 7.169645667379302e-29
+            },
+            {
+              "mechanical_order": 64,
+              "frequency_Hz": 3200.0,
+              "hysteresis_W": 2.0738120770392683e-31,
+              "eddy_W": 1.9113153273867715e-28
+            },
+            {
+              "mechanical_order": 65,
+              "frequency_Hz": 3250.0,
+              "hysteresis_W": 8.184692938043882e-33,
+              "eddy_W": 9.123537139190187e-30
+            },
+            {
+              "mechanical_order": 66,
+              "frequency_Hz": 3300.0,
+              "hysteresis_W": 1.4876846344918728e-33,
+              "eddy_W": 1.8458421888109e-30
+            },
+            {
+              "mechanical_order": 67,
+              "frequency_Hz": 3350.0,
+              "hysteresis_W": 1.4479867634197163e-31,
+              "eddy_W": 1.4278103491839695e-28
+            },
+            {
+              "mechanical_order": 68,
+              "frequency_Hz": 3400.0,
+              "hysteresis_W": 1.7317117937664484e-32,
+              "eddy_W": 1.9433598213381476e-29
+            },
+            {
+              "mechanical_order": 69,
+              "frequency_Hz": 3450.0,
+              "hysteresis_W": 2.06475985534279e-33,
+              "eddy_W": 2.643859728227096e-30
+            },
+            {
+              "mechanical_order": 70,
+              "frequency_Hz": 3500.0,
+              "hysteresis_W": 5.27525858994551e-30,
+              "eddy_W": 4.4920831946754276e-27
+            },
+            {
+              "mechanical_order": 71,
+              "frequency_Hz": 3550.0,
+              "hysteresis_W": 7.147798644981478e-32,
+              "eddy_W": 7.781642123444037e-29
+            },
+            {
+              "mechanical_order": 72,
+              "frequency_Hz": 3600.0,
+              "hysteresis_W": 0.0005798160740608923,
+              "eddy_W": 0.02058641724542213
+            },
+            {
+              "mechanical_order": 73,
+              "frequency_Hz": 3650.0,
+              "hysteresis_W": 2.426872680195415e-30,
+              "eddy_W": 2.251855638262047e-27
+            },
+            {
+              "mechanical_order": 74,
+              "frequency_Hz": 3700.0,
+              "hysteresis_W": 5.186874932515254e-32,
+              "eddy_W": 6.000991868772039e-29
+            },
+            {
+              "mechanical_order": 75,
+              "frequency_Hz": 3750.0,
+              "hysteresis_W": 4.474410207241922e-30,
+              "eddy_W": 4.133728518065434e-27
+            },
+            {
+              "mechanical_order": 76,
+              "frequency_Hz": 3800.0,
+              "hysteresis_W": 1.0064501662641914e-31,
+              "eddy_W": 1.15573139600281e-28
+            },
+            {
+              "mechanical_order": 77,
+              "frequency_Hz": 3850.0,
+              "hysteresis_W": 2.5452122064951624e-31,
+              "eddy_W": 2.8192907302846324e-28
+            },
+            {
+              "mechanical_order": 78,
+              "frequency_Hz": 3900.0,
+              "hysteresis_W": 5.606260195003964e-31,
+              "eddy_W": 6.034092703704515e-28
+            },
+            {
+              "mechanical_order": 79,
+              "frequency_Hz": 3950.0,
+              "hysteresis_W": 2.6351466940800023e-31,
+              "eddy_W": 2.993297704347846e-28
+            },
+            {
+              "mechanical_order": 80,
+              "frequency_Hz": 4000.0,
+              "hysteresis_W": 5.8114199657660495e-31,
+              "eddy_W": 6.411476514250917e-28
+            },
+            {
+              "mechanical_order": 81,
+              "frequency_Hz": 4050.0,
+              "hysteresis_W": 1.4384249015322096e-32,
+              "eddy_W": 1.9628273662788933e-29
+            },
+            {
+              "mechanical_order": 82,
+              "frequency_Hz": 4100.0,
+              "hysteresis_W": 3.0272690173809286e-31,
+              "eddy_W": 3.5499476745012916e-28
+            },
+            {
+              "mechanical_order": 83,
+              "frequency_Hz": 4150.0,
+              "hysteresis_W": 4.76456688783699e-31,
+              "eddy_W": 5.523067236103234e-28
+            },
+            {
+              "mechanical_order": 84,
+              "frequency_Hz": 4200.0,
+              "hysteresis_W": 0.000657854290690921,
+              "eddy_W": 0.027288461082525153
+            },
+            {
+              "mechanical_order": 85,
+              "frequency_Hz": 4250.0,
+              "hysteresis_W": 3.1190476277182065e-30,
+              "eddy_W": 3.352005395290951e-27
+            },
+            {
+              "mechanical_order": 86,
+              "frequency_Hz": 4300.0,
+              "hysteresis_W": 4.186211523021124e-32,
+              "eddy_W": 5.739827134362724e-29
+            },
+            {
+              "mechanical_order": 87,
+              "frequency_Hz": 4350.0,
+              "hysteresis_W": 1.1961732067917831e-30,
+              "eddy_W": 1.3869107538485972e-27
+            },
+            {
+              "mechanical_order": 88,
+              "frequency_Hz": 4400.0,
+              "hysteresis_W": 7.509856199358298e-32,
+              "eddy_W": 1.022341735786579e-28
+            },
+            {
+              "mechanical_order": 89,
+              "frequency_Hz": 4450.0,
+              "hysteresis_W": 1.481005785601875e-30,
+              "eddy_W": 1.7387026610033054e-27
+            },
+            {
+              "mechanical_order": 90,
+              "frequency_Hz": 4500.0,
+              "hysteresis_W": 1.6382334489736312e-30,
+              "eddy_W": 1.935564332679714e-27
+            },
+            {
+              "mechanical_order": 91,
+              "frequency_Hz": 4550.0,
+              "hysteresis_W": 3.769258246153091e-30,
+              "eddy_W": 4.308632739378488e-27
+            },
+            {
+              "mechanical_order": 92,
+              "frequency_Hz": 4600.0,
+              "hysteresis_W": 2.7609104914034053e-31,
+              "eddy_W": 3.6730170413766503e-28
+            },
+            {
+              "mechanical_order": 93,
+              "frequency_Hz": 4650.0,
+              "hysteresis_W": 5.392171516549358e-30,
+              "eddy_W": 6.186713097392641e-27
+            },
+            {
+              "mechanical_order": 94,
+              "frequency_Hz": 4700.0,
+              "hysteresis_W": 1.9044915466527374e-31,
+              "eddy_W": 2.6438454859400553e-28
+            },
+            {
+              "mechanical_order": 95,
+              "frequency_Hz": 4750.0,
+              "hysteresis_W": 1.3131111751334564e-31,
+              "eddy_W": 1.8811563836012107e-28
+            }
+          ]
+        },
+        "difference_W": {
+          "hysteresis_W": 1.3010426069826053e-18,
+          "lamination_eddy_W": 4.163336342344337e-17,
+          "total_W": 4.163336342344337e-17
+        },
+        "self_consistency_pass": true,
+        "distinct_rotor_meshes": 16,
+        "share_loss_above_1kHz": 0.9928928207360042,
+        "sampling_gate": "PASS"
+      },
+      {
+        "positions": 384,
+        "production_sampling": {
+          "hysteresis_W": 0.006369260729612379,
+          "lamination_eddy_W": 0.39963257613418013,
+          "rotor_iron_mass_kg": 0.8411629977749437,
+          "method": "rotor_material_harmonic/v1",
+          "total_W": 0.4060018368637925
+        },
+        "independent_loss_math": {
+          "hysteresis_W": 0.006369260729612372,
+          "lamination_eddy_W": 0.3996325761341797,
+          "total_W": 0.40600183686379204,
+          "mass_kg": 0.8411629977749437,
+          "harmonics": [
+            {
+              "mechanical_order": 1,
+              "frequency_Hz": 50.0,
+              "hysteresis_W": 2.3517906285283984e-34,
+              "eddy_W": 3.7948750994951446e-33
+            },
+            {
+              "mechanical_order": 2,
+              "frequency_Hz": 100.0,
+              "hysteresis_W": 2.2495094286488653e-34,
+              "eddy_W": 7.593893914987827e-33
+            },
+            {
+              "mechanical_order": 3,
+              "frequency_Hz": 150.0,
+              "hysteresis_W": 1.754635948677245e-34,
+              "eddy_W": 9.241818484175906e-33
+            },
+            {
+              "mechanical_order": 4,
+              "frequency_Hz": 200.0,
+              "hysteresis_W": 1.7069758546566497e-34,
+              "eddy_W": 1.2203044254225585e-32
+            },
+            {
+              "mechanical_order": 5,
+              "frequency_Hz": 250.0,
+              "hysteresis_W": 9.42194529604771e-35,
+              "eddy_W": 8.804431348791368e-33
+            },
+            {
+              "mechanical_order": 6,
+              "frequency_Hz": 300.0,
+              "hysteresis_W": 9.066588073939199e-35,
+              "eddy_W": 1.0314117438438627e-32
+            },
+            {
+              "mechanical_order": 7,
+              "frequency_Hz": 350.0,
+              "hysteresis_W": 6.272707752807453e-34,
+              "eddy_W": 7.639535313679779e-32
+            },
+            {
+              "mechanical_order": 8,
+              "frequency_Hz": 400.0,
+              "hysteresis_W": 1.2825790441210606e-34,
+              "eddy_W": 1.9384794639414756e-32
+            },
+            {
+              "mechanical_order": 9,
+              "frequency_Hz": 450.0,
+              "hysteresis_W": 5.104655929295674e-35,
+              "eddy_W": 9.19126958809632e-33
+            },
+            {
+              "mechanical_order": 10,
+              "frequency_Hz": 500.0,
+              "hysteresis_W": 5.804458073022304e-34,
+              "eddy_W": 1.0344592939208197e-31
+            },
+            {
+              "mechanical_order": 11,
+              "frequency_Hz": 550.0,
+              "hysteresis_W": 1.680646985471242e-33,
+              "eddy_W": 3.1351495743640973e-31
+            },
+            {
+              "mechanical_order": 12,
+              "frequency_Hz": 600.0,
+              "hysteresis_W": 4.467749863172947e-05,
+              "eddy_W": 0.000275714577538422
+            },
+            {
+              "mechanical_order": 13,
+              "frequency_Hz": 650.0,
+              "hysteresis_W": 5.537937485408251e-34,
+              "eddy_W": 1.3069866711374562e-31
+            },
+            {
+              "mechanical_order": 14,
+              "frequency_Hz": 700.0,
+              "hysteresis_W": 2.4800672132391327e-33,
+              "eddy_W": 5.839652948623903e-31
+            },
+            {
+              "mechanical_order": 15,
+              "frequency_Hz": 750.0,
+              "hysteresis_W": 1.1101785331931925e-32,
+              "eddy_W": 2.5956652721072282e-30
+            },
+            {
+              "mechanical_order": 16,
+              "frequency_Hz": 800.0,
+              "hysteresis_W": 4.8092158856797445e-34,
+              "eddy_W": 1.4231454045069058e-31
+            },
+            {
+              "mechanical_order": 17,
+              "frequency_Hz": 850.0,
+              "hysteresis_W": 5.150341390988084e-32,
+              "eddy_W": 1.2654039547138373e-29
+            },
+            {
+              "mechanical_order": 18,
+              "frequency_Hz": 900.0,
+              "hysteresis_W": 2.4479984253201888e-33,
+              "eddy_W": 7.519655092803355e-31
+            },
+            {
+              "mechanical_order": 19,
+              "frequency_Hz": 950.0,
+              "hysteresis_W": 2.3162475480473772e-33,
+              "eddy_W": 7.555780744789964e-31
+            },
+            {
+              "mechanical_order": 20,
+              "frequency_Hz": 1000.0,
+              "hysteresis_W": 4.27903208580339e-33,
+              "eddy_W": 1.425835225958197e-30
+            },
+            {
+              "mechanical_order": 21,
+              "frequency_Hz": 1050.0,
+              "hysteresis_W": 3.132545999821507e-33,
+              "eddy_W": 1.1170899542440546e-30
+            },
+            {
+              "mechanical_order": 22,
+              "frequency_Hz": 1100.0,
+              "hysteresis_W": 4.170844184447866e-33,
+              "eddy_W": 1.5385545885360182e-30
+            },
+            {
+              "mechanical_order": 23,
+              "frequency_Hz": 1150.0,
+              "hysteresis_W": 3.86085652930108e-33,
+              "eddy_W": 1.4987585197471485e-30
+            },
+            {
+              "mechanical_order": 24,
+              "frequency_Hz": 1200.0,
+              "hysteresis_W": 9.807933661241643e-05,
+              "eddy_W": 0.0012047869300708543
+            },
+            {
+              "mechanical_order": 25,
+              "frequency_Hz": 1250.0,
+              "hysteresis_W": 3.073455422275838e-32,
+              "eddy_W": 1.165509551975378e-29
+            },
+            {
+              "mechanical_order": 26,
+              "frequency_Hz": 1300.0,
+              "hysteresis_W": 8.079907740553359e-33,
+              "eddy_W": 3.430541000377333e-30
+            },
+            {
+              "mechanical_order": 27,
+              "frequency_Hz": 1350.0,
+              "hysteresis_W": 1.4686533728457972e-32,
+              "eddy_W": 6.283973338705306e-30
+            },
+            {
+              "mechanical_order": 28,
+              "frequency_Hz": 1400.0,
+              "hysteresis_W": 1.374349138917567e-32,
+              "eddy_W": 6.131974783676594e-30
+            },
+            {
+              "mechanical_order": 29,
+              "frequency_Hz": 1450.0,
+              "hysteresis_W": 2.8268242221066487e-33,
+              "eddy_W": 1.4245811724872261e-30
+            },
+            {
+              "mechanical_order": 30,
+              "frequency_Hz": 1500.0,
+              "hysteresis_W": 4.5002333566325945e-33,
+              "eddy_W": 2.2922601432039445e-30
+            },
+            {
+              "mechanical_order": 31,
+              "frequency_Hz": 1550.0,
+              "hysteresis_W": 9.231197412862402e-34,
+              "eddy_W": 5.299581794649231e-31
+            },
+            {
+              "mechanical_order": 32,
+              "frequency_Hz": 1600.0,
+              "hysteresis_W": 2.8474330555874497e-32,
+              "eddy_W": 1.4062219998259414e-29
+            },
+            {
+              "mechanical_order": 33,
+              "frequency_Hz": 1650.0,
+              "hysteresis_W": 4.508769871056344e-33,
+              "eddy_W": 2.5392291013886916e-30
+            },
+            {
+              "mechanical_order": 34,
+              "frequency_Hz": 1700.0,
+              "hysteresis_W": 3.6055421160515034e-31,
+              "eddy_W": 1.6566083420805567e-28
+            },
+            {
+              "mechanical_order": 35,
+              "frequency_Hz": 1750.0,
+              "hysteresis_W": 2.6298721102135267e-33,
+              "eddy_W": 1.6221513762824622e-30
+            },
+            {
+              "mechanical_order": 36,
+              "frequency_Hz": 1800.0,
+              "hysteresis_W": 0.0001821027431643828,
+              "eddy_W": 0.0033190950464980053
+            },
+            {
+              "mechanical_order": 37,
+              "frequency_Hz": 1850.0,
+              "hysteresis_W": 1.8973655070573693e-32,
+              "eddy_W": 1.1160091141179213e-29
+            },
+            {
+              "mechanical_order": 38,
+              "frequency_Hz": 1900.0,
+              "hysteresis_W": 5.465679158971357e-32,
+              "eddy_W": 3.124128725522423e-29
+            },
+            {
+              "mechanical_order": 39,
+              "frequency_Hz": 1950.0,
+              "hysteresis_W": 1.7672259399120135e-32,
+              "eddy_W": 1.1029386756594103e-29
+            },
+            {
+              "mechanical_order": 40,
+              "frequency_Hz": 2000.0,
+              "hysteresis_W": 6.480223394629066e-32,
+              "eddy_W": 3.874165251093503e-29
+            },
+            {
+              "mechanical_order": 41,
+              "frequency_Hz": 2050.0,
+              "hysteresis_W": 1.4796232131824268e-31,
+              "eddy_W": 8.685822054053442e-29
+            },
+            {
+              "mechanical_order": 42,
+              "frequency_Hz": 2100.0,
+              "hysteresis_W": 6.023322091370203e-32,
+              "eddy_W": 3.8058649073406424e-29
+            },
+            {
+              "mechanical_order": 43,
+              "frequency_Hz": 2150.0,
+              "hysteresis_W": 2.7626323654777706e-31,
+              "eddy_W": 1.6490504555001685e-28
+            },
+            {
+              "mechanical_order": 44,
+              "frequency_Hz": 2200.0,
+              "hysteresis_W": 4.812028380112732e-33,
+              "eddy_W": 3.656624730636559e-30
+            },
+            {
+              "mechanical_order": 45,
+              "frequency_Hz": 2250.0,
+              "hysteresis_W": 1.0246474735687335e-31,
+              "eddy_W": 6.766898091161932e-29
+            },
+            {
+              "mechanical_order": 46,
+              "frequency_Hz": 2300.0,
+              "hysteresis_W": 1.0694905742566746e-32,
+              "eddy_W": 8.160784928047199e-30
+            },
+            {
+              "mechanical_order": 47,
+              "frequency_Hz": 2350.0,
+              "hysteresis_W": 1.2673406357308465e-31,
+              "eddy_W": 8.662544030397724e-29
+            },
+            {
+              "mechanical_order": 48,
+              "frequency_Hz": 2400.0,
+              "hysteresis_W": 0.00017229103457328917,
+              "eddy_W": 0.004259283290454425
+            },
+            {
+              "mechanical_order": 49,
+              "frequency_Hz": 2450.0,
+              "hysteresis_W": 6.0668193929411815e-34,
+              "eddy_W": 5.786354453387291e-31
+            },
+            {
+              "mechanical_order": 50,
+              "frequency_Hz": 2500.0,
+              "hysteresis_W": 3.735868249625274e-32,
+              "eddy_W": 2.910147599452351e-29
+            },
+            {
+              "mechanical_order": 51,
+              "frequency_Hz": 2550.0,
+              "hysteresis_W": 1.4714155041031052e-31,
+              "eddy_W": 1.0874064886890789e-28
+            },
+            {
+              "mechanical_order": 52,
+              "frequency_Hz": 2600.0,
+              "hysteresis_W": 1.2252111676171339e-31,
+              "eddy_W": 9.33302395042284e-29
+            },
+            {
+              "mechanical_order": 53,
+              "frequency_Hz": 2650.0,
+              "hysteresis_W": 8.612649604851335e-33,
+              "eddy_W": 7.717786278022613e-30
+            },
+            {
+              "mechanical_order": 54,
+              "frequency_Hz": 2700.0,
+              "hysteresis_W": 2.127544932377809e-31,
+              "eddy_W": 1.637222148896769e-28
+            },
+            {
+              "mechanical_order": 55,
+              "frequency_Hz": 2750.0,
+              "hysteresis_W": 9.448191992958973e-33,
+              "eddy_W": 8.760412298017156e-30
+            },
+            {
+              "mechanical_order": 56,
+              "frequency_Hz": 2800.0,
+              "hysteresis_W": 2.3497681801845528e-32,
+              "eddy_W": 2.114691933331532e-29
+            },
+            {
+              "mechanical_order": 57,
+              "frequency_Hz": 2850.0,
+              "hysteresis_W": 1.1496478349628786e-31,
+              "eddy_W": 9.679588782490705e-29
+            },
+            {
+              "mechanical_order": 58,
+              "frequency_Hz": 2900.0,
+              "hysteresis_W": 1.716097929668436e-32,
+              "eddy_W": 1.6298065098708904e-29
+            },
+            {
+              "mechanical_order": 59,
+              "frequency_Hz": 2950.0,
+              "hysteresis_W": 2.804702118468979e-33,
+              "eddy_W": 2.9896784303511976e-30
+            },
+            {
+              "mechanical_order": 60,
+              "frequency_Hz": 3000.0,
+              "hysteresis_W": 0.00031645494172860566,
+              "eddy_W": 0.009588001068049972
+            },
+            {
+              "mechanical_order": 61,
+              "frequency_Hz": 3050.0,
+              "hysteresis_W": 3.912784301132303e-32,
+              "eddy_W": 3.749120555512195e-29
+            },
+            {
+              "mechanical_order": 62,
+              "frequency_Hz": 3100.0,
+              "hysteresis_W": 1.1762924490550115e-30,
+              "eddy_W": 9.552785932420049e-28
+            },
+            {
+              "mechanical_order": 63,
+              "frequency_Hz": 3150.0,
+              "hysteresis_W": 1.1356203021817318e-32,
+              "eddy_W": 1.2029118216213974e-29
+            },
+            {
+              "mechanical_order": 64,
+              "frequency_Hz": 3200.0,
+              "hysteresis_W": 3.453815801552773e-32,
+              "eddy_W": 3.5043209822468996e-29
+            },
+            {
+              "mechanical_order": 65,
+              "frequency_Hz": 3250.0,
+              "hysteresis_W": 8.450803744424719e-33,
+              "eddy_W": 9.401051982619184e-30
+            },
+            {
+              "mechanical_order": 66,
+              "frequency_Hz": 3300.0,
+              "hysteresis_W": 1.6304777203508376e-32,
+              "eddy_W": 1.7790286750014256e-29
+            },
+            {
+              "mechanical_order": 67,
+              "frequency_Hz": 3350.0,
+              "hysteresis_W": 9.679164717699469e-32,
+              "eddy_W": 9.752457774317762e-29
+            },
+            {
+              "mechanical_order": 68,
+              "frequency_Hz": 3400.0,
+              "hysteresis_W": 1.900293082728706e-31,
+              "eddy_W": 1.8757220309376185e-28
+            },
+            {
+              "mechanical_order": 69,
+              "frequency_Hz": 3450.0,
+              "hysteresis_W": 3.89404755539438e-32,
+              "eddy_W": 4.2496788226409545e-29
+            },
+            {
+              "mechanical_order": 70,
+              "frequency_Hz": 3500.0,
+              "hysteresis_W": 1.4164722249544268e-33,
+              "eddy_W": 1.878158166155927e-30
+            },
+            {
+              "mechanical_order": 71,
+              "frequency_Hz": 3550.0,
+              "hysteresis_W": 3.4387185707854976e-32,
+              "eddy_W": 3.8932302460625653e-29
+            },
+            {
+              "mechanical_order": 72,
+              "frequency_Hz": 3600.0,
+              "hysteresis_W": 0.00031055004282127033,
+              "eddy_W": 0.011411400311502663
+            },
+            {
+              "mechanical_order": 73,
+              "frequency_Hz": 3650.0,
+              "hysteresis_W": 2.84329766553421e-30,
+              "eddy_W": 2.615897705886172e-27
+            },
+            {
+              "mechanical_order": 74,
+              "frequency_Hz": 3700.0,
+              "hysteresis_W": 1.5223535303444322e-32,
+              "eddy_W": 1.881075011245276e-29
+            },
+            {
+              "mechanical_order": 75,
+              "frequency_Hz": 3750.0,
+              "hysteresis_W": 3.6888159153261745e-30,
+              "eddy_W": 3.4434150448173096e-27
+            },
+            {
+              "mechanical_order": 76,
+              "frequency_Hz": 3800.0,
+              "hysteresis_W": 2.2258663476160487e-31,
+              "eddy_W": 2.449355659698635e-28
+            },
+            {
+              "mechanical_order": 77,
+              "frequency_Hz": 3850.0,
+              "hysteresis_W": 2.0621216517581137e-31,
+              "eddy_W": 2.3100772219057825e-28
+            },
+            {
+              "mechanical_order": 78,
+              "frequency_Hz": 3900.0,
+              "hysteresis_W": 2.718254540240752e-31,
+              "eddy_W": 3.0415307238881737e-28
+            },
+            {
+              "mechanical_order": 79,
+              "frequency_Hz": 3950.0,
+              "hysteresis_W": 4.7508956767894316e-32,
+              "eddy_W": 5.916133305620457e-29
+            },
+            {
+              "mechanical_order": 80,
+              "frequency_Hz": 4000.0,
+              "hysteresis_W": 2.2476254995922733e-31,
+              "eddy_W": 2.609290949750965e-28
+            },
+            {
+              "mechanical_order": 81,
+              "frequency_Hz": 4050.0,
+              "hysteresis_W": 7.653013952887235e-33,
+              "eddy_W": 1.0797902342352646e-29
+            },
+            {
+              "mechanical_order": 82,
+              "frequency_Hz": 4100.0,
+              "hysteresis_W": 3.340899163830468e-31,
+              "eddy_W": 3.8969964395997586e-28
+            },
+            {
+              "mechanical_order": 83,
+              "frequency_Hz": 4150.0,
+              "hysteresis_W": 2.0046307108903525e-31,
+              "eddy_W": 2.4341796395114683e-28
+            },
+            {
+              "mechanical_order": 84,
+              "frequency_Hz": 4200.0,
+              "hysteresis_W": 0.00032076570169266327,
+              "eddy_W": 0.013832273472990115
+            },
+            {
+              "mechanical_order": 85,
+              "frequency_Hz": 4250.0,
+              "hysteresis_W": 2.5288598666880572e-30,
+              "eddy_W": 2.7484597920516778e-27
+            },
+            {
+              "mechanical_order": 86,
+              "frequency_Hz": 4300.0,
+              "hysteresis_W": 1.3838872202184902e-31,
+              "eddy_W": 1.7793988518175351e-28
+            },
+            {
+              "mechanical_order": 87,
+              "frequency_Hz": 4350.0,
+              "hysteresis_W": 1.9414278792322796e-30,
+              "eddy_W": 2.1932503224728626e-27
+            },
+            {
+              "mechanical_order": 88,
+              "frequency_Hz": 4400.0,
+              "hysteresis_W": 2.3435597800700322e-32,
+              "eddy_W": 3.3960820873137806e-29
+            },
+            {
+              "mechanical_order": 89,
+              "frequency_Hz": 4450.0,
+              "hysteresis_W": 7.432550258792695e-31,
+              "eddy_W": 9.054490250628347e-28
+            },
+            {
+              "mechanical_order": 90,
+              "frequency_Hz": 4500.0,
+              "hysteresis_W": 2.0896038531938263e-31,
+              "eddy_W": 2.7571132883832563e-28
+            },
+            {
+              "mechanical_order": 91,
+              "frequency_Hz": 4550.0,
+              "hysteresis_W": 2.50791184402883e-30,
+              "eddy_W": 2.9301126790801947e-27
+            },
+            {
+              "mechanical_order": 92,
+              "frequency_Hz": 4600.0,
+              "hysteresis_W": 6.049243885340448e-33,
+              "eddy_W": 9.882059997653669e-30
+            },
+            {
+              "mechanical_order": 93,
+              "frequency_Hz": 4650.0,
+              "hysteresis_W": 3.623982811606372e-30,
+              "eddy_W": 4.247518499055799e-27
+            },
+            {
+              "mechanical_order": 94,
+              "frequency_Hz": 4700.0,
+              "hysteresis_W": 9.212056439537063e-31,
+              "eddy_W": 1.1751546214130703e-27
+            },
+            {
+              "mechanical_order": 95,
+              "frequency_Hz": 4750.0,
+              "hysteresis_W": 2.293953331030659e-31,
+              "eddy_W": 3.188327412212061e-28
+            },
+            {
+              "mechanical_order": 96,
+              "frequency_Hz": 4800.0,
+              "hysteresis_W": 0.0005598589370710834,
+              "eddy_W": 0.027002437071768012
+            },
+            {
+              "mechanical_order": 97,
+              "frequency_Hz": 4850.0,
+              "hysteresis_W": 1.424165902497738e-31,
+              "eddy_W": 2.075946048905241e-28
+            },
+            {
+              "mechanical_order": 98,
+              "frequency_Hz": 4900.0,
+              "hysteresis_W": 5.359437687235894e-32,
+              "eddy_W": 8.32289898253539e-29
+            },
+            {
+              "mechanical_order": 99,
+              "frequency_Hz": 4950.0,
+              "hysteresis_W": 2.756812116371604e-30,
+              "eddy_W": 3.5021380049324404e-27
+            },
+            {
+              "mechanical_order": 100,
+              "frequency_Hz": 5000.0,
+              "hysteresis_W": 7.937918255601542e-32,
+              "eddy_W": 1.232852152323857e-28
+            },
+            {
+              "mechanical_order": 101,
+              "frequency_Hz": 5050.0,
+              "hysteresis_W": 2.8953811780015867e-31,
+              "eddy_W": 4.239212493078375e-28
+            },
+            {
+              "mechanical_order": 102,
+              "frequency_Hz": 5100.0,
+              "hysteresis_W": 3.180527255414867e-30,
+              "eddy_W": 4.137640212272864e-27
+            },
+            {
+              "mechanical_order": 103,
+              "frequency_Hz": 5150.0,
+              "hysteresis_W": 1.7744935234664446e-31,
+              "eddy_W": 2.722849866367684e-28
+            },
+            {
+              "mechanical_order": 104,
+              "frequency_Hz": 5200.0,
+              "hysteresis_W": 1.9984014402082135e-31,
+              "eddy_W": 3.0780441212006815e-28
+            },
+            {
+              "mechanical_order": 105,
+              "frequency_Hz": 5250.0,
+              "hysteresis_W": 9.420208781222339e-32,
+              "eddy_W": 1.5262631635079498e-28
+            },
+            {
+              "mechanical_order": 106,
+              "frequency_Hz": 5300.0,
+              "hysteresis_W": 1.0174415617441365e-31,
+              "eddy_W": 1.6578270683136724e-28
+            },
+            {
+              "mechanical_order": 107,
+              "frequency_Hz": 5350.0,
+              "hysteresis_W": 3.5745619599389325e-32,
+              "eddy_W": 6.222641413458838e-29
+            },
+            {
+              "mechanical_order": 108,
+              "frequency_Hz": 5400.0,
+              "hysteresis_W": 0.0003939642706822109,
+              "eddy_W": 0.02188715142864674
+            },
+            {
+              "mechanical_order": 109,
+              "frequency_Hz": 5450.0,
+              "hysteresis_W": 6.958480364659552e-31,
+              "eddy_W": 1.053306454948127e-27
+            },
+            {
+              "mechanical_order": 110,
+              "frequency_Hz": 5500.0,
+              "hysteresis_W": 5.625774705063833e-31,
+              "eddy_W": 8.696370370494177e-28
+            },
+            {
+              "mechanical_order": 111,
+              "frequency_Hz": 5550.0,
+              "hysteresis_W": 8.400158727471911e-32,
+              "eddy_W": 1.4518761056809578e-28
+            },
+            {
+              "mechanical_order": 112,
+              "frequency_Hz": 5600.0,
+              "hysteresis_W": 7.860234262264749e-31,
+              "eddy_W": 1.216329121244858e-27
+            },
+            {
+              "mechanical_order": 113,
+              "frequency_Hz": 5650.0,
+              "hysteresis_W": 9.169769477137827e-31,
+              "eddy_W": 1.4205113393710561e-27
+            },
+            {
+              "mechanical_order": 114,
+              "frequency_Hz": 5700.0,
+              "hysteresis_W": 1.4682262507387249e-31,
+              "eddy_W": 2.532903993082968e-28
+            },
+            {
+              "mechanical_order": 115,
+              "frequency_Hz": 5750.0,
+              "hysteresis_W": 1.7609647104139065e-31,
+              "eddy_W": 3.0360683356337984e-28
+            },
+            {
+              "mechanical_order": 116,
+              "frequency_Hz": 5800.0,
+              "hysteresis_W": 7.529378316393189e-31,
+              "eddy_W": 1.2118008359639838e-27
+            },
+            {
+              "mechanical_order": 117,
+              "frequency_Hz": 5850.0,
+              "hysteresis_W": 1.8840837455973805e-30,
+              "eddy_W": 2.9129159966522135e-27
+            },
+            {
+              "mechanical_order": 118,
+              "frequency_Hz": 5900.0,
+              "hysteresis_W": 1.119817098122215e-33,
+              "eddy_W": 2.6158573461695853e-30
+            },
+            {
+              "mechanical_order": 119,
+              "frequency_Hz": 5950.0,
+              "hysteresis_W": 2.919261962189754e-30,
+              "eddy_W": 4.488113741792691e-27
+            },
+            {
+              "mechanical_order": 120,
+              "frequency_Hz": 6000.0,
+              "hysteresis_W": 0.0004973833425746975,
+              "eddy_W": 0.030508711061082217
+            },
+            {
+              "mechanical_order": 121,
+              "frequency_Hz": 6050.0,
+              "hysteresis_W": 9.320351384381073e-30,
+              "eddy_W": 1.3702937030120872e-26
+            },
+            {
+              "mechanical_order": 122,
+              "frequency_Hz": 6100.0,
+              "hysteresis_W": 6.577113865222578e-33,
+              "eddy_W": 1.4421769674859986e-29
+            },
+            {
+              "mechanical_order": 123,
+              "frequency_Hz": 6150.0,
+              "hysteresis_W": 1.7771570491077476e-30,
+              "eddy_W": 2.905431929577952e-27
+            },
+            {
+              "mechanical_order": 124,
+              "frequency_Hz": 6200.0,
+              "hysteresis_W": 2.247423281534687e-30,
+              "eddy_W": 3.659316789784329e-27
+            },
+            {
+              "mechanical_order": 125,
+              "frequency_Hz": 6250.0,
+              "hysteresis_W": 2.306259948590275e-30,
+              "eddy_W": 3.781818049540118e-27
+            },
+            {
+              "mechanical_order": 126,
+              "frequency_Hz": 6300.0,
+              "hysteresis_W": 3.5007059662823194e-31,
+              "eddy_W": 6.405348371507422e-28
+            },
+            {
+              "mechanical_order": 127,
+              "frequency_Hz": 6350.0,
+              "hysteresis_W": 5.063664040505563e-32,
+              "eddy_W": 1.036389918216036e-28
+            },
+            {
+              "mechanical_order": 128,
+              "frequency_Hz": 6400.0,
+              "hysteresis_W": 1.2185974156890447e-30,
+              "eddy_W": 2.120107075127234e-27
+            },
+            {
+              "mechanical_order": 129,
+              "frequency_Hz": 6450.0,
+              "hysteresis_W": 4.923677190086454e-32,
+              "eddy_W": 1.0263743331826882e-28
+            },
+            {
+              "mechanical_order": 130,
+              "frequency_Hz": 6500.0,
+              "hysteresis_W": 5.49481412180663e-31,
+              "eddy_W": 1.014171441493191e-27
+            },
+            {
+              "mechanical_order": 131,
+              "frequency_Hz": 6550.0,
+              "hysteresis_W": 2.8987209320245046e-31,
+              "eddy_W": 5.581916967126831e-28
+            },
+            {
+              "mechanical_order": 132,
+              "frequency_Hz": 6600.0,
+              "hysteresis_W": 0.0006887454191279097,
+              "eddy_W": 0.0459132979644048
+            },
+            {
+              "mechanical_order": 133,
+              "frequency_Hz": 6650.0,
+              "hysteresis_W": 7.3029380792006975e-31,
+              "eddy_W": 1.3597646850545408e-27
+            },
+            {
+              "mechanical_order": 134,
+              "frequency_Hz": 6700.0,
+              "hysteresis_W": 8.417954015770046e-31,
+              "eddy_W": 1.5678189128897786e-27
+            },
+            {
+              "mechanical_order": 135,
+              "frequency_Hz": 6750.0,
+              "hysteresis_W": 1.5332092745635373e-31,
+              "eddy_W": 3.153767904312905e-28
+            },
+            {
+              "mechanical_order": 136,
+              "frequency_Hz": 6800.0,
+              "hysteresis_W": 4.0808339140848644e-30,
+              "eddy_W": 7.093140203656085e-27
+            },
+            {
+              "mechanical_order": 137,
+              "frequency_Hz": 6850.0,
+              "hysteresis_W": 1.0369538673898543e-30,
+              "eddy_W": 1.954853905967254e-27
+            },
+            {
+              "mechanical_order": 138,
+              "frequency_Hz": 6900.0,
+              "hysteresis_W": 9.074454284229804e-31,
+              "eddy_W": 1.736249974194776e-27
+            },
+            {
+              "mechanical_order": 139,
+              "frequency_Hz": 6950.0,
+              "hysteresis_W": 6.118821011395209e-32,
+              "eddy_W": 1.3634706617638783e-28
+            },
+            {
+              "mechanical_order": 140,
+              "frequency_Hz": 7000.0,
+              "hysteresis_W": 4.0008244924535e-30,
+              "eddy_W": 7.177377327124336e-27
+            },
+            {
+              "mechanical_order": 141,
+              "frequency_Hz": 7050.0,
+              "hysteresis_W": 5.924046549332054e-31,
+              "eddy_W": 1.1862989085146812e-27
+            },
+            {
+              "mechanical_order": 142,
+              "frequency_Hz": 7100.0,
+              "hysteresis_W": 4.361243265550119e-31,
+              "eddy_W": 8.944072064632433e-28
+            },
+            {
+              "mechanical_order": 143,
+              "frequency_Hz": 7150.0,
+              "hysteresis_W": 4.894629256278149e-30,
+              "eddy_W": 8.882625192759666e-27
+            },
+            {
+              "mechanical_order": 144,
+              "frequency_Hz": 7200.0,
+              "hysteresis_W": 0.0005554774145082033,
+              "eddy_W": 0.04101335832440799
+            },
+            {
+              "mechanical_order": 145,
+              "frequency_Hz": 7250.0,
+              "hysteresis_W": 6.713751154221352e-30,
+              "eddy_W": 1.2155704048681138e-26
+            },
+            {
+              "mechanical_order": 146,
+              "frequency_Hz": 7300.0,
+              "hysteresis_W": 5.447276740298274e-30,
+              "eddy_W": 1.0046450806430989e-26
+            },
+            {
+              "mechanical_order": 147,
+              "frequency_Hz": 7350.0,
+              "hysteresis_W": 8.397502037587096e-31,
+              "eddy_W": 1.72447436137826e-27
+            },
+            {
+              "mechanical_order": 148,
+              "frequency_Hz": 7400.0,
+              "hysteresis_W": 3.8123707044470267e-31,
+              "eddy_W": 8.226225452975363e-28
+            },
+            {
+              "mechanical_order": 149,
+              "frequency_Hz": 7450.0,
+              "hysteresis_W": 3.1559817202829788e-31,
+              "eddy_W": 6.928559067842251e-28
+            },
+            {
+              "mechanical_order": 150,
+              "frequency_Hz": 7500.0,
+              "hysteresis_W": 1.1824027243998348e-29,
+              "eddy_W": 2.1523653957631824e-26
+            },
+            {
+              "mechanical_order": 151,
+              "frequency_Hz": 7550.0,
+              "hysteresis_W": 1.2739893263087586e-29,
+              "eddy_W": 2.326040035105617e-26
+            },
+            {
+              "mechanical_order": 152,
+              "frequency_Hz": 7600.0,
+              "hysteresis_W": 3.499083764887815e-32,
+              "eddy_W": 8.828488569975788e-29
+            },
+            {
+              "mechanical_order": 153,
+              "frequency_Hz": 7650.0,
+              "hysteresis_W": 3.591091211585253e-31,
+              "eddy_W": 8.051264681043794e-28
+            },
+            {
+              "mechanical_order": 154,
+              "frequency_Hz": 7700.0,
+              "hysteresis_W": 1.9605859164788136e-30,
+              "eddy_W": 4.040507845583801e-27
+            },
+            {
+              "mechanical_order": 155,
+              "frequency_Hz": 7750.0,
+              "hysteresis_W": 6.565326647731353e-32,
+              "eddy_W": 1.6351160362497096e-28
+            },
+            {
+              "mechanical_order": 156,
+              "frequency_Hz": 7800.0,
+              "hysteresis_W": 0.0008556740905574766,
+              "eddy_W": 0.0671810007103548
+            },
+            {
+              "mechanical_order": 157,
+              "frequency_Hz": 7850.0,
+              "hysteresis_W": 1.390715378846589e-30,
+              "eddy_W": 2.9795091825977384e-27
+            },
+            {
+              "mechanical_order": 158,
+              "frequency_Hz": 7900.0,
+              "hysteresis_W": 8.723823039724823e-31,
+              "eddy_W": 1.9291866717618365e-27
+            },
+            {
+              "mechanical_order": 159,
+              "frequency_Hz": 7950.0,
+              "hysteresis_W": 2.2321191503179304e-31,
+              "eddy_W": 5.346650649115575e-28
+            },
+            {
+              "mechanical_order": 160,
+              "frequency_Hz": 8000.0,
+              "hysteresis_W": 1.604459618499117e-30,
+              "eddy_W": 3.4795401994690985e-27
+            },
+            {
+              "mechanical_order": 161,
+              "frequency_Hz": 8050.0,
+              "hysteresis_W": 5.86768661340521e-30,
+              "eddy_W": 1.1948549728034438e-26
+            },
+            {
+              "mechanical_order": 162,
+              "frequency_Hz": 8100.0,
+              "hysteresis_W": 1.2804124407812561e-30,
+              "eddy_W": 2.8476650978067803e-27
+            },
+            {
+              "mechanical_order": 163,
+              "frequency_Hz": 8150.0,
+              "hysteresis_W": 6.10075313031589e-29,
+              "eddy_W": 1.1100786090735625e-25
+            },
+            {
+              "mechanical_order": 164,
+              "frequency_Hz": 8200.0,
+              "hysteresis_W": 5.704269524649621e-32,
+              "eddy_W": 1.5197087226778027e-28
+            },
+            {
+              "mechanical_order": 165,
+              "frequency_Hz": 8250.0,
+              "hysteresis_W": 8.700690041541867e-31,
+              "eddy_W": 2.0142154487526314e-27
+            },
+            {
+              "mechanical_order": 166,
+              "frequency_Hz": 8300.0,
+              "hysteresis_W": 1.6611170170873915e-30,
+              "eddy_W": 3.73810110083243e-27
+            },
+            {
+              "mechanical_order": 167,
+              "frequency_Hz": 8350.0,
+              "hysteresis_W": 4.295155260728168e-31,
+              "eddy_W": 1.0458916988627715e-27
+            },
+            {
+              "mechanical_order": 168,
+              "frequency_Hz": 8400.0,
+              "hysteresis_W": 0.0007176086176370708,
+              "eddy_W": 0.06151353626336307
+            },
+            {
+              "mechanical_order": 169,
+              "frequency_Hz": 8450.0,
+              "hysteresis_W": 4.4501139928794644e-30,
+              "eddy_W": 9.679438656269227e-27
+            },
+            {
+              "mechanical_order": 170,
+              "frequency_Hz": 8500.0,
+              "hysteresis_W": 4.482632507551541e-30,
+              "eddy_W": 9.807012617864487e-27
+            },
+            {
+              "mechanical_order": 171,
+              "frequency_Hz": 8550.0,
+              "hysteresis_W": 1.0524239766363708e-30,
+              "eddy_W": 2.504094168779201e-27
+            },
+            {
+              "mechanical_order": 172,
+              "frequency_Hz": 8600.0,
+              "hysteresis_W": 5.129489078568404e-31,
+              "eddy_W": 1.276305545878589e-27
+            },
+            {
+              "mechanical_order": 173,
+              "frequency_Hz": 8650.0,
+              "hysteresis_W": 5.512933817928986e-30,
+              "eddy_W": 1.2150003039987641e-26
+            },
+            {
+              "mechanical_order": 174,
+              "frequency_Hz": 8700.0,
+              "hysteresis_W": 6.649034112347175e-31,
+              "eddy_W": 1.651385789121634e-27
+            },
+            {
+              "mechanical_order": 175,
+              "frequency_Hz": 8750.0,
+              "hysteresis_W": 1.0431364774849138e-31,
+              "eddy_W": 2.87990235446892e-28
+            },
+            {
+              "mechanical_order": 176,
+              "frequency_Hz": 8800.0,
+              "hysteresis_W": 2.3950951720096563e-32,
+              "eddy_W": 7.201350179628275e-29
+            },
+            {
+              "mechanical_order": 177,
+              "frequency_Hz": 8850.0,
+              "hysteresis_W": 1.486098039527636e-29,
+              "eddy_W": 3.18133982826833e-26
+            },
+            {
+              "mechanical_order": 178,
+              "frequency_Hz": 8900.0,
+              "hysteresis_W": 2.2888602537370535e-31,
+              "eddy_W": 6.166382000713371e-28
+            },
+            {
+              "mechanical_order": 179,
+              "frequency_Hz": 8950.0,
+              "hysteresis_W": 7.101838607397594e-29,
+              "eddy_W": 1.4146425200518602e-25
+            },
+            {
+              "mechanical_order": 180,
+              "frequency_Hz": 9000.0,
+              "hysteresis_W": 0.0006556273382293633,
+              "eddy_W": 0.0607225286130476
+            },
+            {
+              "mechanical_order": 181,
+              "frequency_Hz": 9050.0,
+              "hysteresis_W": 6.955310549016954e-30,
+              "eddy_W": 1.5877646986917565e-26
+            },
+            {
+              "mechanical_order": 182,
+              "frequency_Hz": 9100.0,
+              "hysteresis_W": 4.1574894006729375e-30,
+              "eddy_W": 9.813233524442203e-27
+            },
+            {
+              "mechanical_order": 183,
+              "frequency_Hz": 9150.0,
+              "hysteresis_W": 4.930335685197308e-30,
+              "eddy_W": 1.1598236965746236e-26
+            },
+            {
+              "mechanical_order": 184,
+              "frequency_Hz": 9200.0,
+              "hysteresis_W": 1.4875066354473555e-29,
+              "eddy_W": 3.316970195846609e-26
+            },
+            {
+              "mechanical_order": 185,
+              "frequency_Hz": 9250.0,
+              "hysteresis_W": 8.671627027635455e-30,
+              "eddy_W": 2.0019002227164028e-26
+            },
+            {
+              "mechanical_order": 186,
+              "frequency_Hz": 9300.0,
+              "hysteresis_W": 2.0963799698858086e-30,
+              "eddy_W": 5.252162761631227e-27
+            },
+            {
+              "mechanical_order": 187,
+              "frequency_Hz": 9350.0,
+              "hysteresis_W": 1.1261338001239786e-31,
+              "eddy_W": 3.320599609376763e-28
+            },
+            {
+              "mechanical_order": 188,
+              "frequency_Hz": 9400.0,
+              "hysteresis_W": 1.774543758223964e-30,
+              "eddy_W": 4.536611638708765e-27
+            },
+            {
+              "mechanical_order": 189,
+              "frequency_Hz": 9450.0,
+              "hysteresis_W": 4.019482581032867e-30,
+              "eddy_W": 9.890211565378268e-27
+            },
+            {
+              "mechanical_order": 190,
+              "frequency_Hz": 9500.0,
+              "hysteresis_W": 1.624912962570163e-30,
+              "eddy_W": 4.220541696037876e-27
+            },
+            {
+              "mechanical_order": 191,
+              "frequency_Hz": 9550.0,
+              "hysteresis_W": 1.0434755007245748e-30,
+              "eddy_W": 2.79084228720039e-27
+            }
+          ]
+        },
+        "difference_W": {
+          "hysteresis_W": 6.938893903907228e-18,
+          "lamination_eddy_W": 4.440892098500626e-16,
+          "total_W": 4.440892098500626e-16
+        },
+        "self_consistency_pass": true,
+        "distinct_rotor_meshes": 32,
+        "share_loss_above_1kHz": 0.9992108605255459,
+        "sampling_gate": "PASS"
+      }
+    ],
+    "angular_convergence": [
+      {
+        "from": 96,
+        "to": 192,
+        "pass": false,
+        "production_sampling": {
+          "change_W": {
+            "hysteresis_W": 0.0016272696868549533,
+            "lamination_eddy_W": 0.06821774388644766,
+            "total_W": 0.06984501357330263
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.549868259000219,
+            "lamination_eddy_W": 0.7945538813419268,
+            "total_W": 0.7864008724655439
+          },
+          "pass": false
+        },
+        "independent_loss_math": {
+          "change_W": {
+            "hysteresis_W": 0.0016272696868549512,
+            "lamination_eddy_W": 0.06821774388644761,
+            "total_W": 0.06984501357330257
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.5498682590002184,
+            "lamination_eddy_W": 0.7945538813419265,
+            "total_W": 0.7864008724655437
+          },
+          "pass": false
+        }
+      },
+      {
+        "from": 192,
+        "to": 384,
+        "pass": false,
+        "production_sampling": {
+          "change_W": {
+            "hysteresis_W": 0.0034098797138511013,
+            "lamination_eddy_W": 0.31377591431631285,
+            "total_W": 0.3171857940301639
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.535365069606535,
+            "lamination_eddy_W": 0.7851610030183321,
+            "total_W": 0.781242263533342
+          },
+          "pass": false
+        },
+        "independent_loss_math": {
+          "change_W": {
+            "hysteresis_W": 0.0034098797138510956,
+            "lamination_eddy_W": 0.31377591431631247,
+            "total_W": 0.3171857940301635
+          },
+          "relative_change_of_finer": {
+            "hysteresis_W": 0.5353650696065347,
+            "lamination_eddy_W": 0.785161003018332,
+            "total_W": 0.7812422635333419
+          },
+          "pass": false
+        }
+      }
+    ],
+    "angular_gate_pass": false,
+    "full_matrix_started": false
+  },
+  "femm_excitation_anchors": {
+    "schema": "coilem.rotor_excitation_comparison/v1",
+    "protocol_sha256": "e26098cc55577c578ccfe39ab71ef99699b5d8ea09e129c36e115c642a24bdf8",
+    "analysis_source_sha256": "acce0c3244e0429e96a3b893c0ef7b681e21ebd5443170c6be1a92e50a3442a1",
+    "excitation_gate": "PASS",
+    "fixed_mesh_gate": "PASS",
+    "field_comparisons": [
+      {
+        "index": 0,
+        "native_ccw_angle_deg": 0.0,
+        "query_points": 384,
+        "rms_difference_T": 0.038440167121364686,
+        "relative_rms_difference": 0.08166884837696822,
+        "maximum_component_difference_T": 0.23458135239486372,
+        "maximum_saved_ampere_turn_error": 2.842170943040401e-14,
+        "native_preflight_bridge_exact": true
+      },
+      {
+        "index": 1,
+        "native_ccw_angle_deg": -0.9375,
+        "query_points": 384,
+        "rms_difference_T": 0.0446662833186998,
+        "relative_rms_difference": 0.094841312237002,
+        "maximum_component_difference_T": 0.3704155178937477,
+        "maximum_saved_ampere_turn_error": 2.842170943040401e-14,
+        "native_preflight_bridge_exact": true
+      },
+      {
+        "index": 2,
+        "native_ccw_angle_deg": -22.5,
+        "query_points": 384,
+        "rms_difference_T": 0.03922503914072517,
+        "relative_rms_difference": 0.08296504940426051,
+        "maximum_component_difference_T": 0.3116260723670491,
+        "maximum_saved_ampere_turn_error": 2.842170943040401e-14,
+        "native_preflight_bridge_exact": true
+      }
+    ],
+    "loss_watts": null,
+    "loss_agreement_gate": "NOT_RUN",
+    "legacy_47mW_target_eligible": false,
+    "bridge_protocol_sha256": "8ab8cc29c210ae5b21a234cba9819e2b2969c01ce56911ab418c0ea4a8f1ce07",
+    "full_matrix_started": false
+  }
+}

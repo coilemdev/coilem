@@ -1,5 +1,10 @@
 # #306 first slice: rotor sampling and FEMM pilot
 
+> **2026-11-16 correction:** later FEMM fixed-mesh results use an incompatible
+> angle/current schedule. Archived watts must not be treated as a constant-gamma
+> native loss target. See the
+> [native pilot and excitation erratum](rotor-native-pilot-306-20261116.md).
+
 Target: 0.5.9. Base: main `a3e70035`.
 
 **Outcome: sampling/oracle agreement passes; the FEMM history is not qualified

@@ -1,5 +1,12 @@
 # #306: FEMM rotor iron-loss spatial refinement
 
+> **2026-11-16 correction:** the numerical convergence below applies to the
+> archived current trajectory. Its angle/current schedule does not match a
+> constant-gamma native solve, so the 47.707 mW result is not an eligible
+> same-operating-point loss target. The reference-qualification claim below is
+> withdrawn. Raw data and numbers are preserved. See the
+> [native pilot and excitation erratum](rotor-native-pilot-306-20261116.md).
+
 Target: 0.5.9. Follow-up to `c9fda83e` and the
 [384-sample angular study](rotor-angular-refinement-306-20261115.md).
 
