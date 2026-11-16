@@ -127,7 +127,7 @@ def main():
     if not 0 <= shard < shards or (args.preflight and shards != 1):
         parser.error("invalid shard or preflight partition")
     for key in tuple(os.environ):
-        if key.startswith(("COILEM_", "OPENEM_", "MAGNETO2D_", "FEMM_", "GMSH_")):
+        if key.startswith(("COILEM_", "MAGNETO2D_", "FEMM_", "GMSH_")):
             os.environ.pop(key)
     directory = args.out.resolve()
     directory.mkdir(parents=True, exist_ok=True)

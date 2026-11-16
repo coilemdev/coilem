@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 from pathlib import Path
 
@@ -161,7 +162,7 @@ def main():
         case_path = args.out / f'{protocol["mesh"]}-analysis.json'
         case_path.write_text(json.dumps(report, indent=2)+"\n", encoding="utf-8")
         cases.append({"protocol": protocol, "analysis": report, "mesh_metrics": mesh_metrics(directory, protocol),
-                      "data_directory": directory.resolve().as_posix()})
+                      "data_directory": Path(os.path.relpath(directory.resolve(), args.out.resolve())).as_posix()})
         print(json.dumps({"mesh": protocol["mesh"], "analysis_complete": True}), flush=True)
     report = compare_cases(cases)
     report["comparison_source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()

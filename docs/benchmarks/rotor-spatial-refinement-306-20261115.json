@@ -7,7 +7,7 @@
   "cases": [
     {
       "mesh": "normal",
-      "data_directory": "C:/Users/14845/Documents/GitHub/coilem-launch/output/rotor-iron-loss-306/fixed-history-n384",
+      "data_directory": "../../fixed-history-n384",
       "mesh_geometry_sha256": "d0e20a3b7680a0f6b65b590a8f11af26f8dd19f937f0e7b033764311f7f7c30a",
       "total_elements": 78954,
       "rotor_cells": 9741,
@@ -87,7 +87,7 @@
     },
     {
       "mesh": "fine",
-      "data_directory": "C:/Users/14845/Documents/GitHub/coilem-launch/output/rotor-iron-loss-306/spatial-refinement-n384/fine-intermediate",
+      "data_directory": "../fine-intermediate",
       "mesh_geometry_sha256": "5eea08953a659ac7376a451a0b7a07f7dd5ac8c8b0f4683a6c420530d326bfda",
       "total_elements": 114948,
       "rotor_cells": 16313,
@@ -167,7 +167,7 @@
     },
     {
       "mesh": "very_fine",
-      "data_directory": "C:/Users/14845/Documents/GitHub/coilem-launch/output/rotor-iron-loss-306/spatial-refinement-n384/very-fine-intermediate",
+      "data_directory": "../very-fine-intermediate",
       "mesh_geometry_sha256": "b032b939aadbb223a05205861129f1f57e2756e3a48d89e748eecdac785b57a4",
       "total_elements": 190184,
       "rotor_cells": 29906,

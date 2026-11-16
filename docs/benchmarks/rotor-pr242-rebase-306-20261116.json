@@ -1,0 +1,117 @@
+{
+  "schema": "coilem.rotor_pr242_rebase_validation/v1",
+  "date": "2026-11-16",
+  "target": "0.5.9",
+  "status": "PILOT_NOT_QUALIFIED",
+  "branch": "codex/306-rotor-iron-loss-pilot",
+  "base_pr": 242,
+  "base_sha": "3870e0e16dbdcce36eb1697620bfac3741e150d4",
+  "original_pilot_commit": "8450e14a",
+  "rebased_pilot_commit": "fb4e90bd",
+  "original_six_patches_unchanged": true,
+  "python": "3.11.0b4",
+  "junit_receipts": {
+    "rotor-tests.xml": {
+      "tests": 149,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "8f80841c24bc7053709a7e1dba7047acdcaa867373a3c4bb08a473edfbe24f0f"
+    },
+    "sector-core.xml": {
+      "tests": 73,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "ecfa08a993a6bc92fe65000525c68507b639cf8e3a303174537b77d3ff24d0f8"
+    },
+    "sector-tail.xml": {
+      "tests": 8,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "b1dca944b0d832932fcb2de38fcf303076eb4dc5064c224f3e5534ab0a0bff43"
+    },
+    "sector-adjacent-outside-sandbox.xml": {
+      "tests": 69,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "sha256": "9ea02855c1b1ca4d692593b1f40cc13f73c615f939f884fd8c6810a281a25f9e"
+    }
+  },
+  "python_passed": 299,
+  "rust_passed": 283,
+  "rust_log_sha256": "032a654f20c97c0e577f1f7310e6bf80bea83109f46b086b54b6b43b35460eac",
+  "binary_sha256": "19851c45543cb3c1b64a1533f0d0a851df74348345e4dbe374c49a27ac0b69a9",
+  "ruff_passed": true,
+  "ruff_log_sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+  "historical_reference_sources_unchanged": 110,
+  "native_preflight": {
+    "preflight_protocol_sha256": "5bbccf1ff5f5a759e8a0878b411210bfd183da353e49ffc08fbe6d181f3bdcb3",
+    "comparison_to_pre_rebase": [
+      {
+        "index": 0,
+        "identical": true,
+        "max_component_difference_T": 0.0,
+        "rotor_material_export_identical": true,
+        "max_rotor_B_difference_T": 0.0,
+        "max_rotor_coordinate_difference_mm": 0.0
+      },
+      {
+        "index": 1,
+        "identical": true,
+        "max_component_difference_T": 0.0,
+        "rotor_material_export_identical": true,
+        "max_rotor_B_difference_T": 0.0,
+        "max_rotor_coordinate_difference_mm": 0.0
+      },
+      {
+        "index": 2,
+        "identical": true,
+        "max_component_difference_T": 0.0,
+        "rotor_material_export_identical": true,
+        "max_rotor_B_difference_T": 0.0,
+        "max_rotor_coordinate_difference_mm": 0.0
+      },
+      {
+        "index": 3,
+        "identical": true,
+        "max_component_difference_T": 0.0,
+        "rotor_material_export_identical": true,
+        "max_rotor_B_difference_T": 0.0,
+        "max_rotor_coordinate_difference_mm": 0.0
+      },
+      {
+        "index": 4,
+        "identical": true,
+        "max_component_difference_T": 0.0,
+        "rotor_material_export_identical": true,
+        "max_rotor_B_difference_T": 0.0,
+        "max_rotor_coordinate_difference_mm": 0.0
+      }
+    ],
+    "closure": {
+      "max_component_difference_T": 1.8629542353210127e-13,
+      "rms_component_difference_T": 6.0696164402192e-14,
+      "gate": "PASS"
+    },
+    "repeat_zero": {
+      "max_component_difference_T": 0.0,
+      "rms_component_difference_T": 0.0,
+      "gate": "PASS"
+    },
+    "full_history_rerun": false,
+    "full_matrix_started": false
+  },
+  "test_harness_notes": [
+    "Two initial collection attempts crashed during Gmsh DLL loading; completed runs preload Gmsh before pytest.",
+    "Interrupted combined run retained. Subsequent traceback identified Windows asyncio socketpair blocked before the API handler; API/playback checks pass outside the restricted sandbox.",
+    "All 81 sector tests covered as 73+8 in fresh processes; no assertion or tolerance changes."
+  ],
+  "publication_snapshot_refreshed": true,
+  "publication_check_log": "snapshot-final.log",
+  "full_history_rerun": false,
+  "full_matrix_started": false,
+  "public_efficiency_integration": false
+}

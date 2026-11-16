@@ -136,7 +136,9 @@ Mean position times were 101.92 s and 209.80 s; summed concurrent position wall
 times were 39,240.39 s and 80,771.84 s. The earlier normal history averaged
 30.16 s per position with four workers. These timings are diagnostic.
 
-The adjacent JSON is an unchanged copy of the generated combined analysis.
+The adjacent JSON preserves the generated numerical results and source hashes.
+Its three data-directory paths are normalized relative to the original raw
+report directory for publication; the original generated JSON remains archived.
 Raw models/answers, exports, checkpoints, protocols, source snapshots, worker
 automation records, per-mesh spectra and audits are retained in the parent
 checkout at `output/rotor-iron-loss-306/spatial-refinement-n384`. The normal

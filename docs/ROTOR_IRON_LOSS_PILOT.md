@@ -8,6 +8,9 @@ generate false loss. See the [native pilot and excitation erratum](benchmarks/ro
 The historical commands below reproduce legacy evidence; they must not be used
 to qualify public gamma-zero rotor loss. The full release matrix remains unstarted.
 
+The [PR #242 rebase validation](benchmarks/rotor-pr242-rebase-306-20261116.md)
+records compatibility tests and fresh native preflight controls on the sector branch.
+
 Target: 0.5.9. Base: main `a3e70035`. This slice defines and exercises an
 internal sampling contract. It does not change public loss/efficiency results,
 map requests, field solves, saved results or release qualification claims.

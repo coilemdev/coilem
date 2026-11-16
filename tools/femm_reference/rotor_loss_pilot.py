@@ -18,7 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
-from tools.femm_reference import phase_e, runtime
+from tools.femm_reference import e_producer, phase_e, runtime
 from tools.femm_reference.rotor_airgap import add_periodic_airgap, mesh_signature, update_pose_and_currents
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -131,9 +131,7 @@ def main():
         runtime.write(protocol_path, protocol)
     # Frozen geometry/excitation backend lives only in this collector process.
     Solver, Model, geometry, curve, magnets, femm, automation_module, adapter = phase_e.load_adapter()
-    for key in tuple(os.environ):
-        if key != "COILEM_FEMM_BIN" and key.startswith(("COILEM_", "OPENEM_", "FEMM_")):
-            os.environ.pop(key)
+    e_producer.clear_solver_environment()
     config = Model.model_validate(json.loads(FIXTURE.read_text()))
     config.solve_params.mesh_density = args.mesh
     geom = geometry(config)

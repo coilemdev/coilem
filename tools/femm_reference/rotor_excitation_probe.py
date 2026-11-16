@@ -15,7 +15,7 @@ from pathlib import Path
 
 import numpy as np
 
-from tools.femm_reference import phase_e, runtime
+from tools.femm_reference import e_producer, phase_e, runtime
 from tools.femm_reference.rotor_airgap import BOUNDARY, add_periodic_airgap, mesh_signature
 from tools.femm_reference.rotor_loss_pilot import FIXTURE, export_fields, sha
 
@@ -44,9 +44,7 @@ def main():
     directory.mkdir(parents=True)
     identity = runtime.identity("e")
     Solver, Model, geometry, _, _, femm, automation_module, adapter = phase_e.load_adapter()
-    for key in tuple(os.environ):
-        if key != "COILEM_FEMM_BIN" and key.startswith(("COILEM_", "OPENEM_", "FEMM_")):
-            os.environ.pop(key)
+    e_producer.clear_solver_environment()
     os.environ["FEMM_AIRGAP_MESHSIZE_MM"] = "0.125"
     config = Model.model_validate(json.loads(FIXTURE.read_text()))
     config.solve_params.current_angle_deg = protocol_native["native_gamma_deg"]
