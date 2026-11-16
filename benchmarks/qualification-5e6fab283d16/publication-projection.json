@@ -1,0 +1,64 @@
+{
+  "schema": "coilem.qualification_publication_projection/v1",
+  "measured_commit": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
+  "source_run": {
+    "windows-x86_64": {
+      "collection_run": 43918378159,
+      "join_run": 43964524118
+    },
+    "macos-arm64": "Collected and joined on a local Apple silicon Mac (macOS 27.2) with the workflow commands; hosted macOS runners did not start two shards of run 43918378159."
+  },
+  "note": "Only machine-local diagnostic paths are redacted for publication. Original joined reports retain their bytes. Numerical values, gate verdicts, requests and measured identities are unchanged.",
+  "files": [
+    {
+      "platform": "windows-x86_64",
+      "file": "report/benchmark_summary.json",
+      "original_sha256": "28289334453652775a84d0ae7cd4894a34fe4f224b07466ec532beb37f4c3726",
+      "published_sha256": "28289334453652775a84d0ae7cd4894a34fe4f224b07466ec532beb37f4c3726",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/coilem_benchmark_report.html",
+      "original_sha256": "4c52b4951f18ce308be6c446b699fc79095dd0a2bb50eceaa58797914b7182a9",
+      "published_sha256": "4c52b4951f18ce308be6c446b699fc79095dd0a2bb50eceaa58797914b7182a9",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "windows-x86_64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "640dc8dbb90df36d744de57573bebe91a1e954c9e7453308d16505ea4ca67fed",
+      "published_sha256": "640dc8dbb90df36d744de57573bebe91a1e954c9e7453308d16505ea4ca67fed",
+      "purpose": "Index the exact public projection bytes; the original index remains with the joined collection."
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/benchmark_summary.json",
+      "original_sha256": "c6938fae7789acf516cf88224ee0a14a8fb91d845675f0a9716d7c8b582d8fbc",
+      "published_sha256": "9c4ae0e0ffef9f8fcb6aed6df795b969c7373fdf2e17bee440e19f307ff97373",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/coilem_benchmark_report.html",
+      "original_sha256": "715ec7e4d68e396a181c48bc0c72dc26657f0d2c9c6d5e5c49afa264eeb0ea30",
+      "published_sha256": "d88f81a23c6010dff9984e55bb9883521fc1c673b3bd22a641f75cee60eb27e9",
+      "numerical_values_unchanged": true,
+      "gate_verdicts_unchanged": true,
+      "measured_identity_unchanged": true
+    },
+    {
+      "platform": "macos-arm64",
+      "file": "report/artifact_manifest.json",
+      "original_sha256": "33e7a3201f1b40ecff8bad799e202ac8f614dd71069574af0e442029444693a1",
+      "published_sha256": "8d874118a86bf4ded2891c87915906cc7e97c2db6a37109e853ca5cc05294ba3",
+      "purpose": "Index the exact public projection bytes; the original index remains with the joined collection."
+    }
+  ]
+}

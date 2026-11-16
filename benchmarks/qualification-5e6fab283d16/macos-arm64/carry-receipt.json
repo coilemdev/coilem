@@ -1,0 +1,1091 @@
+{
+  "schema": "coilem.qualification_carry/v1",
+  "status": "READY",
+  "candidate": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
+  "moved_values": [
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.3546455962273183,
+      "new": 2.1540826116961163,
+      "tolerance": 0.001177322798113659
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.3546455962273183,
+      "new": 2.1540826116961163,
+      "tolerance": 0.001177322798113659
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 3.57001290538377,
+      "new": 3.2170209972566584,
+      "tolerance": 0.05355019358075655
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 3.57001290538377,
+      "new": 3.2170209972566584,
+      "tolerance": 0.05355019358075655
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.0030336380641873403,
+      "new": 0.0028217763404804544,
+      "tolerance": 1.5168190320936702e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.003033638076404938,
+      "new": 0.0028217763404804544,
+      "tolerance": 1.516819038202469e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.0026587580578778824,
+      "new": 0.002432137268564575,
+      "tolerance": 1.3293790289389412e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.0026587580578778824,
+      "new": 0.002432137268564575,
+      "tolerance": 1.3293790289389412e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.8969422663084037,
+      "new": 0.8319724510882248,
+      "tolerance": 0.004484711331542018
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.8969422740364267,
+      "new": 0.8319724510882248,
+      "tolerance": 0.004484711370182134
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 1.5588307515425592,
+      "new": 1.4208462531168224,
+      "tolerance": 0.001
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 1.5588307515425592,
+      "new": 1.4208462531168224,
+      "tolerance": 0.001
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 2.2303752597182234,
+      "new": 2.0323479152621218,
+      "tolerance": 0.03345562889577335
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 2.2303752597182234,
+      "new": 2.0323479152621218,
+      "tolerance": 0.03345562889577335
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.0022659755168139206,
+      "new": 0.002108614970891077,
+      "tolerance": 1.1329877584069604e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.0022659754956541817,
+      "new": 0.002108614970891077,
+      "tolerance": 1.132987747827091e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.0017593414022550196,
+      "new": 0.0016036701956333454,
+      "tolerance": 1e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.0017593414022550196,
+      "new": 0.0016036701956333454,
+      "tolerance": 1e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.6571472139856929,
+      "new": 0.6141660993853633,
+      "tolerance": 0.0032857360699284645
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.6571472115443744,
+      "new": 0.6141660993853633,
+      "tolerance": 0.003285736057721872
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.2839194949191914,
+      "new": 2.167375333907188,
+      "tolerance": 0.0011419597474595956
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.2839194949191914,
+      "new": 2.167375333907188,
+      "tolerance": 0.0011419597474595956
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 3.7648821567932473,
+      "new": 3.521098852528601,
+      "tolerance": 0.05647323235189871
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 3.7648821567932473,
+      "new": 3.521098852528601,
+      "tolerance": 0.05647323235189871
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.0029442438066893473,
+      "new": 0.002818333706830158,
+      "tolerance": 1.4721219033446737e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.002944243807476913,
+      "new": 0.002818333706830158,
+      "tolerance": 1.4721219037384566e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.002579962722911309,
+      "new": 0.002448220065572783,
+      "tolerance": 1.2899813614556544e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.002579962722911309,
+      "new": 0.002448220065572783,
+      "tolerance": 1.2899813614556544e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.8930743536460073,
+      "new": 0.849419941503698,
+      "tolerance": 0.004465371768230037
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.8930743514442674,
+      "new": 0.849419941503698,
+      "tolerance": 0.004465371757221337
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.3505916643058384,
+      "new": 2.154064096530314,
+      "tolerance": 0.0011752958321529193
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.3505916643058384,
+      "new": 2.154064096530314,
+      "tolerance": 0.0011752958321529193
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 3.589479437818949,
+      "new": 3.2299511175307747,
+      "tolerance": 0.05384219156728423
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 3.589479437818949,
+      "new": 3.2299511175307747,
+      "tolerance": 0.05384219156728423
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": -0.0011964519029526494,
+      "new": -0.0014187361643018066,
+      "tolerance": 5.982259514763247e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": -0.0011964519508954202,
+      "new": -0.0014187361643018066,
+      "tolerance": 5.982259754477101e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.002654141630211834,
+      "new": 0.0024320888033307238,
+      "tolerance": 1.327070815105917e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.002654141630211834,
+      "new": 0.0024320888033307238,
+      "tolerance": 1.327070815105917e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 1.1113829314949704,
+      "new": 1.0503437755106293,
+      "tolerance": 0.005556914657474852
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 1.1113829514356433,
+      "new": 1.0503437755106293,
+      "tolerance": 0.005556914757178216
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 7.440944583438661,
+      "new": 7.337501477844545,
+      "tolerance": 0.0037204722917193304
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 7.440944583438661,
+      "new": 7.337501477844545,
+      "tolerance": 0.0037204722917193304
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 12.137787714975321,
+      "new": 11.873611322773245,
+      "tolerance": 0.18206681572462982
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 12.137787714975321,
+      "new": 11.873611322773245,
+      "tolerance": 0.18206681572462982
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.008670188233337792,
+      "new": 0.008546673465151523,
+      "tolerance": 4.335094116668896e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.008670188309670143,
+      "new": 0.008546673465151523,
+      "tolerance": 4.3350941548350716e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.00840638754830746,
+      "new": 0.008289309330434662,
+      "tolerance": 4.20319377415373e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.00840638754830746,
+      "new": 0.008289309330434662,
+      "tolerance": 4.20319377415373e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 2.6861872118040546,
+      "new": 2.6339381135492426,
+      "tolerance": 0.013430936059020274
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 2.6861872526633395,
+      "new": 2.6339381135492426,
+      "tolerance": 0.013430936263316698
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.0466362741658797,
+      "new": 1.8549136307032938,
+      "tolerance": 0.00102331813708294
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.0466362741658797,
+      "new": 1.8549136307032938,
+      "tolerance": 0.00102331813708294
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 2.9894563654821384,
+      "new": 2.6846595739251633,
+      "tolerance": 0.04484184548223207
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 2.9894563654821384,
+      "new": 2.6846595739251633,
+      "tolerance": 0.04484184548223207
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.0027227124064565737,
+      "new": 0.0025260000015972094,
+      "tolerance": 1.3613562032282869e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.002722712412473192,
+      "new": 0.0025260000015972094,
+      "tolerance": 1.3613562062365959e-05
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.002309965084155073,
+      "new": 0.002093513129851883,
+      "tolerance": 1.1549825420775365e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.002309965084155073,
+      "new": 0.002093513129851883,
+      "tolerance": 1.1549825420775365e-06
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.7859892088590676,
+      "new": 0.7300432777744833,
+      "tolerance": 0.003929946044295338
+    },
+    {
+      "platform": "windows-x86_64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.7859892185821585,
+      "new": 0.7300432777744833,
+      "tolerance": 0.003929946092910793
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.3546859338884967,
+      "new": 2.154111340727379,
+      "tolerance": 0.0011773429669442483
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.3546859338884967,
+      "new": 2.154111340727379,
+      "tolerance": 0.0011773429669442483
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 3.57012596580451,
+      "new": 3.217134284516809,
+      "tolerance": 0.05355188948706765
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 3.57012596580451,
+      "new": 3.217134284516809,
+      "tolerance": 0.05355188948706765
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.003033820788031926,
+      "new": 0.0028218440471381584,
+      "tolerance": 1.516910394015963e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.003033820802436458,
+      "new": 0.0028218440471381584,
+      "tolerance": 1.516910401218229e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.002658801085727035,
+      "new": 0.002432150584229557,
+      "tolerance": 1.3294005428635175e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.002658801085727035,
+      "new": 0.002432150584229557,
+      "tolerance": 1.3294005428635175e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.897138779793907,
+      "new": 0.8319511627585485,
+      "tolerance": 0.004485693898969535
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_baseline_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.897138788208279,
+      "new": 0.8319511627585485,
+      "tolerance": 0.004485693941041395
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 1.5588433829722843,
+      "new": 1.4209450837968287,
+      "tolerance": 0.001
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 1.5588433829722843,
+      "new": 1.4209450837968287,
+      "tolerance": 0.001
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 2.230764167846236,
+      "new": 2.031421208935689,
+      "tolerance": 0.033461462517693545
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 2.230764167846236,
+      "new": 2.031421208935689,
+      "tolerance": 0.033461462517693545
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.0022659959362107585,
+      "new": 0.002107808218988471,
+      "tolerance": 1.1329979681053793e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.002265995925351829,
+      "new": 0.002107808218988471,
+      "tolerance": 1.1329979626759145e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.0017593498682662815,
+      "new": 0.0016036081897497613,
+      "tolerance": 1e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.0017593498682662815,
+      "new": 0.0016036081897497613,
+      "tolerance": 1e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.6571482795877479,
+      "new": 0.6141134818003265,
+      "tolerance": 0.0032857413979387397
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.6571482777618414,
+      "new": 0.6141134818003265,
+      "tolerance": 0.003285741388809207
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.283919023822514,
+      "new": 2.1673767873970853,
+      "tolerance": 0.0011419595119112572
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.283919023822514,
+      "new": 2.1673767873970853,
+      "tolerance": 0.0011419595119112572
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 3.7649717871342205,
+      "new": 3.5209056822136233,
+      "tolerance": 0.05647457680701331
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 3.7649717871342205,
+      "new": 3.5209056822136233,
+      "tolerance": 0.05647457680701331
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.002944266874952887,
+      "new": 0.002818114685464933,
+      "tolerance": 1.4721334374764436e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.0029442668614517564,
+      "new": 0.002818114685464933,
+      "tolerance": 1.4721334307258781e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.0025799650497687963,
+      "new": 0.0024482308905747056,
+      "tolerance": 1.2899825248843982e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.0025799650497687963,
+      "new": 0.0024482308905747056,
+      "tolerance": 1.2899825248843982e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.8930802879383292,
+      "new": 0.849384499229196,
+      "tolerance": 0.004465401439691646
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_narrow_angle_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.8930802870572679,
+      "new": 0.849384499229196,
+      "tolerance": 0.00446540143528634
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.3506149788432418,
+      "new": 2.1541167225445634,
+      "tolerance": 0.0011753074894216209
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.3506149788432418,
+      "new": 2.1541167225445634,
+      "tolerance": 0.0011753074894216209
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 3.5895574389923808,
+      "new": 3.2288073519980633,
+      "tolerance": 0.05384336158488571
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 3.5895574389923808,
+      "new": 3.2288073519980633,
+      "tolerance": 0.05384336158488571
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": -0.0011966855700984674,
+      "new": -0.0014186325720226644,
+      "tolerance": 5.983427850492337e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": -0.001196685603571981,
+      "new": -0.0014186325720226644,
+      "tolerance": 5.983428017859906e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.0026541709611923436,
+      "new": 0.002432114100467423,
+      "tolerance": 1.3270854805961719e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.0026541709611923436,
+      "new": 0.002432114100467423,
+      "tolerance": 1.3270854805961719e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 1.1113014666246241,
+      "new": 1.050352934666819,
+      "tolerance": 0.005556507333123121
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_pocket_offset_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 1.1113014879223728,
+      "new": 1.050352934666819,
+      "tolerance": 0.005556507439611864
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 7.4409471772895275,
+      "new": 7.337521083513264,
+      "tolerance": 0.0037204735886447638
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 7.4409471772895275,
+      "new": 7.337521083513264,
+      "tolerance": 0.0037204735886447638
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 12.137839947937993,
+      "new": 11.873931404193929,
+      "tolerance": 0.18206759921906987
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 12.137839947937993,
+      "new": 11.873931404193929,
+      "tolerance": 0.18206759921906987
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.008670186207450359,
+      "new": 0.008546712651212476,
+      "tolerance": 4.3350931037251794e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.008670186284237961,
+      "new": 0.008546712651212476,
+      "tolerance": 4.3350931421189806e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.008406385275910849,
+      "new": 0.008289316203212013,
+      "tolerance": 4.2031926379554245e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.008406385275910849,
+      "new": 0.008289316203212013,
+      "tolerance": 4.2031926379554245e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 2.6861917530188006,
+      "new": 2.634147904799896,
+      "tolerance": 0.013430958765094004
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_thin_bridge_contract",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 2.6861917936785926,
+      "new": 2.634147904799896,
+      "tolerance": 0.013430958968392963
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "previous",
+      "old": 2.046657087579349,
+      "new": 1.8548891721212533,
+      "tolerance": 0.0010233285437896745
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_fundamental_V",
+      "baseline": "approved",
+      "old": 2.046657087579349,
+      "new": 1.8548891721212533,
+      "tolerance": 0.0010233285437896745
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "previous",
+      "old": 2.9891031450265566,
+      "new": 2.6846969974454837,
+      "tolerance": 0.044836547175398346
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "back_emf_peak_V",
+      "baseline": "approved",
+      "old": 2.9891031450265566,
+      "new": 2.6846969974454837,
+      "tolerance": 0.044836547175398346
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "previous",
+      "old": 0.0027226660889365308,
+      "new": 0.002525942208463579,
+      "tolerance": 1.3613330444682654e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_d_Wb",
+      "baseline": "approved",
+      "old": 0.002722666095990659,
+      "new": 0.002525942208463579,
+      "tolerance": 1.3613330479953294e-05
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "previous",
+      "old": 0.0023099683446657034,
+      "new": 0.0020934981030138835,
+      "tolerance": 1.1549841723328517e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "lambda_pm_Wb",
+      "baseline": "approved",
+      "old": 0.0023099683446657034,
+      "new": 0.0020934981030138835,
+      "tolerance": 1.1549841723328517e-06
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "previous",
+      "old": 0.7860204053884092,
+      "new": 0.7300353938409689,
+      "tolerance": 0.003930102026942046
+    },
+    {
+      "platform": "macos-arm64",
+      "case": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "metric": "mean_torque_Nm",
+      "baseline": "approved",
+      "old": 0.7860204154861063,
+      "new": 0.7300353938409689,
+      "tolerance": 0.003930102077430532
+    }
+  ],
+  "reference_review": [],
+  "accepted_moved_values": true,
+  "approved_policy_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2",
+  "measurements_mutated": false
+}
