@@ -66,6 +66,9 @@ ALLOWED_DATA_FILES = {
     # Retain the published 0.5.7 measurements after advancing the platform records.
     "benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/benchmark_results.csv",
     "benchmarks/qualification-4b41f837f3d8/macos-arm64/report/benchmark_results.csv",
+    # Retain the published 0.5.8 measurements after advancing the platform records.
+    "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/benchmark_results.csv",
+    "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/benchmark_results.csv",
     "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_results.csv",
     "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_results.csv",
     "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",
