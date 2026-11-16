@@ -4,7 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 // Every rotor position of a sector solve is cut where a tooth and a pole gap are nearest
 // each other, so the solved sector steps round as the rotor turns. The Mesh view looks up
 // the cut for the angle it shows in the table the backend sends with the mesh.
-const { sectorCutAt } = await importTypeScriptModule(new URL('../src/public/sectorCuts.ts', import.meta.url));
+const { sectorCutAnglesDeg, sectorCutAt, sectorRings } = await importTypeScriptModule(new URL('../src/public/sectorCuts.ts', import.meta.url));
 
 // The 14p/12s drone outrunner, a half sector: the cut steps every 360/lcm(12, 14) = 4.29 degrees
 // (first two and last two of its 84 entries, from backend/sector_geometry.py sector_cuts_by_turn).
@@ -31,5 +31,26 @@ assert.equal(sectorCutAt(cuts, 360 + 2.142857143).stator_cut_deg, 345);
 // No table (a full-motor mesh, or an older backend): nothing to show.
 assert.equal(sectorCutAt(undefined, 10), null);
 assert.equal(sectorCutAt([], 10), null);
+
+// On screen (the stator's frame): the rotor's cut is where the rotor has turned it to.
+assert.deepEqual(sectorCutAnglesDeg(cuts[0], 1), { statorDeg: 15, rotorDeg: 11.857142857 });
+// Where the two cuts are too close to mesh between, the stator is cut with the rotor.
+const close = { turn_from_deg: 1.502274188, stator_cut_deg: 15, rotor_cut_deg: 12.857142857, stator_on_rotor_cut: true };
+assert.deepEqual(sectorCutAnglesDeg(close, -2), { statorDeg: 14.857142857, rotorDeg: 14.857142857 });
+
+// The solved part steps on the mid-gap circle, as the solver's wedges meet: an outrunner's
+// stator and the inner half of the air gap from the stator cut, the rotor and the outer half
+// from the rotor cut; the copies are the rest of each ring.
+const outrunner = sectorRings({ statorDeg: 15, rotorDeg: 12.86 }, 180, 14.2, 100, true, true);
+assert.deepEqual(outrunner, [
+  { startDeg: 15, sweepDeg: 180, innerMm: 0, outerMm: 14.2 },
+  { startDeg: 12.86, sweepDeg: 180, innerMm: 14.2, outerMm: 100 },
+]);
+assert.deepEqual(sectorRings({ statorDeg: 15, rotorDeg: 12.86 }, 180, 14.2, 100, true, false).map((ring) => [ring.startDeg, ring.sweepDeg]), [[195, 180], [192.86, 180]]);
+// An inner rotor is the other way round; a 1/8 sector's copies cover the other 315 degrees.
+assert.deepEqual(sectorRings({ statorDeg: 0, rotorDeg: 3 }, 45, 30, 100, false, false), [
+  { startDeg: 45, sweepDeg: 315, innerMm: 30, outerMm: 100 },
+  { startDeg: 48, sweepDeg: 315, innerMm: 0, outerMm: 30 },
+]);
 
 console.log('sector cut tests passed');

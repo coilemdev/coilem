@@ -24,3 +24,47 @@ export function sectorCutAt(cuts: SectorCut[] | null | undefined, rotorAngleDeg:
   }
   return cuts[low];
 }
+
+/**
+ * Where the stator and rotor are cut on screen, in the stator's frame (degrees,
+ * counter-clockwise), with the rotor turned to the view angle. The wedges meet on
+ * the mid-gap circle: the stator side of the air gap is cut with the stator, the
+ * rotor side with the rotor.
+ */
+export function sectorCutAnglesDeg(cut: SectorCut, rotorAngleDeg: number): { statorDeg: number; rotorDeg: number } {
+  const rotorDeg = cut.rotor_cut_deg - rotorAngleDeg;
+  return { statorDeg: cut.stator_on_rotor_cut ? rotorDeg : cut.stator_cut_deg, rotorDeg };
+}
+
+export interface RingSector {
+  startDeg: number;
+  sweepDeg: number;
+  innerMm: number;
+  outerMm: number;
+}
+
+/**
+ * The part of the motor solved at the cut (or, with ``solved`` false, the copies
+ * outside it) as two ring sectors that meet on the mid-gap circle: the stator and
+ * its side of the air gap from the stator cut, the rotor and its side from the
+ * rotor cut. ``farMm`` is any radius beyond the motor.
+ */
+export function sectorRings(
+  cut: { statorDeg: number; rotorDeg: number },
+  spanDeg: number,
+  midGapMm: number,
+  farMm: number,
+  rotorOutside: boolean,
+  solved: boolean,
+): RingSector[] {
+  const sides: Array<[number, number, number]> = [
+    [cut.statorDeg, rotorOutside ? 0 : midGapMm, rotorOutside ? midGapMm : farMm],
+    [cut.rotorDeg, rotorOutside ? midGapMm : 0, rotorOutside ? farMm : midGapMm],
+  ];
+  return sides.map(([startDeg, innerMm, outerMm]) => ({
+    startDeg: solved ? startDeg : startDeg + spanDeg,
+    sweepDeg: solved ? spanDeg : 360 - spanDeg,
+    innerMm,
+    outerMm,
+  }));
+}

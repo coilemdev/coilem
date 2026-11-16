@@ -615,27 +615,41 @@ def test_the_stator_cut_follows_the_rotor_cut_over_a_cogging_period(fixture) -> 
 def test_the_mesh_preview_says_where_the_solver_cuts_at_every_rotor_angle(fixture) -> None:
     """The Mesh view turns the rotor of one meshed sector, but every position is solved as its
     own sector, cut at the tooth and pole gap nearest each other there. The preview's table must
-    give the cuts the mesher makes at any angle, sweep positions (which often fall exactly where
-    the cut steps) included."""
+    give the cuts a mesh built at any angle gets: sweep positions (which often fall exactly where
+    the cut steps) and angles where the cuts are so close that the stator is cut with the rotor."""
 
+    from backend.gmsh_solver import _base_lc_mm, _sector_ir_for_solve
     from backend.magneto2d_adapter import run_magneto2d_mesh_preview
 
     config = _config(fixture, symmetry="auto", mesh_density="coarse")
     cuts = run_magneto2d_mesh_preview(config, rotor_angle_deg=0.0)["sector_cuts"]
     steps = math.lcm(config.stator.slot_count, config.rotor.pole_count)
-    assert len(cuts) == steps and cuts[0]["turn_from_deg"] == 0.0
     common = 360.0 / steps
+    assert cuts[0]["turn_from_deg"] == 0.0
+    assert steps <= len(cuts) <= 3 * steps
+    snapped = [index for index, cut in enumerate(cuts) if cut.get("stator_on_rotor_cut")]
+    assert snapped, "the coarse air-gap mesh leaves a band where the stator is cut with the rotor"
 
     def wrapped(angle: float) -> float:
         return ((angle + 180.0) % 360.0) - 180.0
 
+    def inside(index: int, fraction: float) -> float:
+        end = cuts[index + 1]["turn_from_deg"] if index + 1 < len(cuts) else 360.0
+        return cuts[index]["turn_from_deg"] + fraction * (end - cuts[index]["turn_from_deg"])
+
     turns = [-index * common for index in range(3)] + [-index * 0.61 * common for index in range(1, 7)] + [-137.3, 211.9]
+    # Off the band's middle, where the two cuts would meet anyway, the stator cut has moved off its tooth.
+    turns += [inside(index, fraction) for index in snapped[:3] for fraction in (0.2, 0.8)]
+    turns += [cuts[index]["turn_from_deg"] - 1e-3 for index in snapped[:2]]
     for turn in turns:
         reached = turn % 360.0
         entry = max((cut for cut in cuts if cut["turn_from_deg"] <= reached + 1e-6), key=lambda cut: cut["turn_from_deg"])
         geom = compute_geometry(config)
         _rotate_magnets_in_place(geom, math.radians(turn))
         ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=turn)
-        sector = sg.build_sector_ir(ir, sg.detect_sector_symmetry(ir), min_mid_gap_offset_mm=0.0)
-        assert wrapped(math.degrees(sector.stator_start_rad) - entry["stator_cut_deg"]) == pytest.approx(0.0, abs=1e-6), turn
-        assert wrapped(math.degrees(sector.rotor_start_rad) - (entry["rotor_cut_deg"] + turn)) == pytest.approx(0.0, abs=1e-6), turn
+        sector, reason = _sector_ir_for_solve(config, ir, _base_lc_mm(config, "coarse"))
+        assert sector is not None, reason
+        rotor_cut = entry["rotor_cut_deg"] + turn
+        stator_cut = rotor_cut if entry.get("stator_on_rotor_cut") else entry["stator_cut_deg"]
+        assert wrapped(math.degrees(sector.stator_start_rad) - stator_cut) == pytest.approx(0.0, abs=1e-6), turn
+        assert wrapped(math.degrees(sector.rotor_start_rad) - rotor_cut) == pytest.approx(0.0, abs=1e-6), turn

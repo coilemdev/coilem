@@ -359,5 +359,7 @@ def tile_sector_mesh_preview(preview: dict) -> dict:
             round(360.0 / pole_pitch_deg),
             float(sector["first_tooth_deg"]),
             float(sector["rotor_start_deg"]),
+            float(sector.get("mid_gap_radius_mm") or 0.0),
+            float(sector.get("min_mid_gap_offset_mm") or 0.0),
         )
     return tiled

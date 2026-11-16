@@ -15,7 +15,7 @@ import type {
   PublicMotorComponentKind,
   PublicMotorComponentSelection,
 } from './model';
-import { sectorCutAt } from './sectorCuts';
+import { sectorCutAnglesDeg, sectorCutAt, sectorRings, type RingSector } from './sectorCuts';
 import {
   computeMagnetPoleFaces,
   computeSpmMagnetPolarityHalves,
@@ -1692,18 +1692,32 @@ function drawMesh(
 
 const COPY_PATH_SUFFIX = '\u0000copy';
 
-/** A wedge from the motor centre, in mesh angles (degrees, counter-clockwise), mapped to the canvas. */
-function meshWedgePath(map: (point: [number, number]) => [number, number], startDeg: number, sweepDeg: number, radiusMm: number): Path2D {
+/**
+ * Ring sectors around the motor centre, in mesh angles (degrees, counter-clockwise)
+ * and radii (mm), mapped to the canvas as one path; an inner radius of zero reaches
+ * the centre.
+ */
+function meshRingSectorsPath(map: (point: [number, number]) => [number, number], sectors: RingSector[]): Path2D {
   const path = new Path2D();
-  const [cx, cy] = map([0, 0]);
-  path.moveTo(cx, cy);
-  const steps = Math.max(2, Math.ceil(sweepDeg / 2));
-  for (let step = 0; step <= steps; step += 1) {
-    const angle = ((startDeg + (sweepDeg * step) / steps) * Math.PI) / 180;
-    const [x, y] = map([radiusMm * Math.cos(angle), radiusMm * Math.sin(angle)]);
-    path.lineTo(x, y);
+  const at = (radiusMm: number, deg: number) => map([radiusMm * Math.cos((deg * Math.PI) / 180), radiusMm * Math.sin((deg * Math.PI) / 180)]);
+  for (const { startDeg, sweepDeg, innerMm, outerMm } of sectors) {
+    const steps = Math.max(2, Math.ceil(sweepDeg / 2));
+    for (let step = 0; step <= steps; step += 1) {
+      const [x, y] = at(outerMm, startDeg + (sweepDeg * step) / steps);
+      if (step === 0) path.moveTo(x, y);
+      else path.lineTo(x, y);
+    }
+    if (innerMm > 0) {
+      for (let step = steps; step >= 0; step -= 1) {
+        const [x, y] = at(innerMm, startDeg + (sweepDeg * step) / steps);
+        path.lineTo(x, y);
+      }
+    } else {
+      const [cx, cy] = map([0, 0]);
+      path.lineTo(cx, cy);
+    }
+    path.closePath();
   }
-  path.closePath();
   return path;
 }
 
@@ -2016,18 +2030,24 @@ export function MotorCanvas({
         // the rotor turns. Without the backend's table of cuts the whole motor is bright.
         const sectorRepeats = Number((mesh.mesh_info.sector as { repeats?: number } | undefined)?.repeats ?? 0);
         const turnedSector = rotorAngleDeg !== 0 && sectorRepeats > 1 && solvedSectorTriangleCount(mesh) < mesh.triangles.length;
-        const shownCut = turnedSector ? sectorCutAt(mesh.sector_cuts, rotorAngleDeg) : null;
+        const sectorInfo = mesh.mesh_info.sector as { mid_gap_radius_mm?: number } | undefined;
+        const midGapMm = Number(sectorInfo?.mid_gap_radius_mm ?? 0);
+        const tableCut = turnedSector && midGapMm > 0 ? sectorCutAt(mesh.sector_cuts, rotorAngleDeg) : null;
+        const shownCut = tableCut ? sectorCutAnglesDeg(tableCut, rotorAngleDeg) : null;
         const sectorShading: 'mesh' | 'bright' = turnedSector && !shownCut ? 'bright' : 'mesh';
         const sectorSpanDeg = sectorRepeats > 1 ? 360 / sectorRepeats : 360;
-        let wedgeMap: ((point: [number, number]) => [number, number]) | null = null;
-        const sectorWedge = (startDeg: number, solved: boolean) => {
-          wedgeMap ??= fitTransform(mesh.nodes_mm, rect.width, rect.height, navigation.scale, pan, undefined, viewRotationRad).map;
-          return meshWedgePath(
-            wedgeMap,
-            solved ? startDeg : startDeg + sectorSpanDeg,
-            solved ? sectorSpanDeg : 360 - sectorSpanDeg,
+        let sectorMap: ((point: [number, number]) => [number, number]) | null = null;
+        // The part solved at this angle (or the copies outside it), in the stator's frame.
+        const sectorClip = (solved: boolean) => {
+          sectorMap ??= fitTransform(mesh.nodes_mm, rect.width, rect.height, navigation.scale, pan, undefined, viewRotationRad).map;
+          return meshRingSectorsPath(sectorMap, sectorRings(
+            shownCut ?? { statorDeg: 0, rotorDeg: 0 },
+            sectorSpanDeg,
+            midGapMm,
             2 * meshOuterRadiusMm(mesh) + 1,
-          );
+            mesh.mesh_info.rotor_layout === 'outer',
+            solved,
+          ));
         };
         const meshPass = (
           target: CanvasRenderingContext2D,
@@ -2054,32 +2074,20 @@ export function MotorCanvas({
           meshEdgeColor,
           { part, fill: !meshOverlay, coilPhases, cull: cull ? [0, 0, rect.width, rect.height] : undefined, shading },
         );
-        // One part of the motor, bright inside the wedge solved at this angle and dimmed outside it.
-        const sectorPass = (
-          target: CanvasRenderingContext2D,
-          angleDeg: number,
-          hits: MeshTriangleHit[],
-          part: 'fixed' | 'rotor',
-          wedgeStartDeg: number,
-          cull: boolean,
-        ) => {
-          target.save();
-          target.clip(sectorWedge(wedgeStartDeg, true));
-          const drawn = meshPass(target, angleDeg, hits, part, 'bright', cull);
-          target.restore();
-          target.save();
-          target.clip(sectorWedge(wedgeStartDeg, false));
-          meshPass(target, angleDeg, [], part, 'dim', cull);
-          target.restore();
-          return drawn;
-        };
         let frame: MeshDrawFrame | null;
         if (rotorAngleDeg === 0 || detailZoom) {
           meshLayersRef.current = null;
           if (shownCut) {
-            // Every element is drawn turned here, so both wedges are in the stator's frame.
-            frame = sectorPass(context, rotorAngleDeg, meshHitsRef.current, 'fixed', shownCut.stator_cut_deg, detailZoom);
-            frame = sectorPass(context, rotorAngleDeg, meshHitsRef.current, 'rotor', shownCut.rotor_cut_deg - rotorAngleDeg, detailZoom) ?? frame;
+            // Every element is drawn turned here: bright inside the part solved at this
+            // angle, dimmed outside it.
+            context.save();
+            context.clip(sectorClip(true));
+            frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all', 'bright');
+            context.restore();
+            context.save();
+            context.clip(sectorClip(false));
+            meshPass(context, rotorAngleDeg, [], 'all', 'dim');
+            context.restore();
           } else {
             frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all');
           }
@@ -2135,13 +2143,12 @@ export function MotorCanvas({
           frame = layers.frame;
           meshHitsRef.current = layers.hits;
           const { fixed, rotor, fixedDim, rotorDim, rotorSize } = layers;
-          // Both wedges are clipped on screen, before the rotor's picture is turned, so
-          // the rotor's cut (in its own frame) is placed where the rotor has turned it to.
-          const pieces: Array<[HTMLCanvasElement, HTMLCanvasElement | null, number]> = [
-            [fixed, fixedDim, shownCut?.stator_cut_deg ?? 0],
-            [rotor, rotorDim, (shownCut?.rotor_cut_deg ?? 0) - rotorAngleDeg],
-          ];
-          pieces.forEach(([bright, dim, cutDeg], index) => {
+          // The parts are clipped on screen, before the rotor's picture is turned, so the
+          // clip is in the stator's frame with the rotor's cut where the rotor has turned it.
+          const solvedClip = shownCut && fixedDim && rotorDim ? sectorClip(true) : null;
+          const copiesClip = solvedClip ? sectorClip(false) : null;
+          const pieces: Array<[HTMLCanvasElement, HTMLCanvasElement | null]> = [[fixed, fixedDim], [rotor, rotorDim]];
+          pieces.forEach(([bright, dim], index) => {
             const isRotor = index === 1;
             if (isRotor && !frame) return;
             const draw = (picture: HTMLCanvasElement, clip: Path2D | null) => {
@@ -2156,9 +2163,9 @@ export function MotorCanvas({
               }
               context.restore();
             };
-            if (shownCut && dim) {
-              draw(bright, sectorWedge(cutDeg, true));
-              draw(dim, sectorWedge(cutDeg, false));
+            if (solvedClip && copiesClip && dim) {
+              draw(bright, solvedClip);
+              draw(dim, copiesClip);
             } else {
               draw(bright, null);
             }

@@ -112,6 +112,9 @@ class SectorIR:
     # breaks ties between equally near teeth, so the cut can be found again at
     # any other rotor angle (sector_cuts_by_turn).
     first_tooth_rad: float | None = None
+    # A stator-only arc on the mid-gap circle shorter than this moves the stator
+    # cut onto the rotor cut.
+    min_mid_gap_offset_mm: float = 0.0
 
 
 # --------------------------------------------------------------------------
@@ -996,7 +999,7 @@ def build_sector_ir(
             sector = _build_with_cuts(
                 ir, symmetry, airgap, stator_cut, rotor_cut, mid_r, outer_rotor, span, offset
             )
-            return replace(sector, first_tooth_rad=first_tooth)
+            return replace(sector, first_tooth_rad=first_tooth, min_mid_gap_offset_mm=min_mid_gap_offset_mm)
         except SectorUnsupportedError as exc:
             last_error = exc
     raise last_error or SectorUnsupportedError("no clean rotor cut was found")
@@ -1034,24 +1037,27 @@ def sector_cuts_by_turn(
     pole_count: int,
     first_tooth_deg: float,
     rotor_cut_deg: float,
-) -> list[dict[str, float]] | None:
+    mid_gap_radius_mm: float = 0.0,
+    min_mid_gap_offset_mm: float = 0.0,
+) -> list[dict[str, float | bool]] | None:
     """Where one sector is cut at every rotor angle, from a sector meshed at one.
 
-    A turn is the rotor's rotation from the meshed angle, in degrees,
-    counter-clockwise positive (a sweep turns it clockwise), over one
-    revolution. Each entry holds from its ``turn_from_deg`` to the next one's:
-    ``stator_cut_deg`` in the stator's frame and ``rotor_cut_deg`` in the
-    rotor's own frame, before the turn. Neither cut moves in its own frame
-    within an entry; at the next one both step to the next nearest tooth and
-    pole gap, once per common pitch of slots and poles. These are the cuts
-    ``build_sector_ir`` makes at that angle, by the same rule, except that a
-    stator cut it moves onto the rotor cut (an arc shorter than
-    ``min_mid_gap_offset_mm``) stays on its tooth here. None when the pattern
-    would need more than a few thousand entries.
+    These are the cuts ``build_sector_ir`` makes for a mesh built at that
+    angle, by the same rule. A turn is the rotor's rotation from the meshed
+    angle, in degrees, counter-clockwise positive (a sweep turns it
+    clockwise), over one revolution. Each entry holds from its
+    ``turn_from_deg`` to the next one's: ``stator_cut_deg`` in the stator's
+    frame and ``rotor_cut_deg`` in the rotor's own frame, before the turn.
+    Neither cut moves in its own frame within an entry; both step to the next
+    nearest tooth and pole gap once per common pitch of slots and poles. Where
+    the two cuts are closer on the mid-gap circle than
+    ``min_mid_gap_offset_mm``, the stator is cut where the rotor is: those
+    entries say ``stator_on_rotor_cut``. None when the pattern would need more
+    than a few thousand entries.
     """
 
     steps_per_turn = math.lcm(slot_count, pole_count)
-    if steps_per_turn > _MAX_CUT_TABLE_ENTRIES:
+    if 3 * steps_per_turn > _MAX_CUT_TABLE_ENTRIES:
         return None
     pole_pitch = _TWO_PI / pole_count
     common = _TWO_PI / steps_per_turn
@@ -1066,18 +1072,39 @@ def sector_cuts_by_turn(
         for step in range(steps_per_turn)
         if 1.0e-9 < first_step + step * common < _TWO_PI - 1.0e-9
     ]
-    entries = []
+    # The stator cut moves onto the rotor cut within this angle either side of
+    # the turn where the two meet (an offset of exactly zero needs no move).
+    snap = min_mid_gap_offset_mm / mid_gap_radius_mm if mid_gap_radius_mm > 0.0 else 0.0
+    entries: list[dict[str, float | bool]] = []
+
+    def add(turn: float, stator_cut: float, rotor_cut: float, snapped: bool) -> None:
+        entry: dict[str, float | bool] = {
+            "turn_from_deg": round(math.degrees(turn), 9),
+            "stator_cut_deg": round(math.degrees(stator_cut) % 360.0, 9),
+            "rotor_cut_deg": round(math.degrees(rotor_cut) % 360.0, 9),
+        }
+        if snapped:
+            entry["stator_on_rotor_cut"] = True
+        entries.append(entry)
+
     for index, start in enumerate(starts):
         end = starts[index + 1] if index + 1 < len(starts) else _TWO_PI
         middle = 0.5 * (start + end)
         axis = rotor_axis + middle
         stator_cut = _nearest_tooth_cut(slot_count, first_tooth, axis, pole_pitch)
-        rotor_cut = stator_cut + _wrap_signed(axis - stator_cut, pole_pitch) - middle
-        entries.append({
-            "turn_from_deg": round(math.degrees(start), 9),
-            "stator_cut_deg": round(math.degrees(stator_cut) % 360.0, 9),
-            "rotor_cut_deg": round(math.degrees(rotor_cut) % 360.0, 9),
-        })
+        offset = _wrap_signed(axis - stator_cut, pole_pitch)
+        rotor_cut = stator_cut + offset - middle
+        # Within an entry the offset grows one for one with the turn.
+        meet = middle - offset
+        snap_from, snap_to = max(start, meet - snap), min(end, meet + snap)
+        if snap_to - snap_from <= 1.0e-12:
+            add(start, stator_cut, rotor_cut, False)
+            continue
+        if snap_from - start > 1.0e-12:
+            add(start, stator_cut, rotor_cut, False)
+        add(snap_from, stator_cut, rotor_cut, True)
+        if end - snap_to > 1.0e-12:
+            add(snap_to, stator_cut, rotor_cut, False)
     return entries
 
 
