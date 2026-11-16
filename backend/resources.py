@@ -61,6 +61,8 @@ BENCHMARK_SUITE_FILE = "benchmarks/af-v1.10/benchmark_spec.json"
 # The same cases solved as one repeating sector (protocol 1.11.0), graded against the same references.
 BENCHMARK_SECTOR_SUITE_FILE = "benchmarks/af-v1.11-sector/benchmark_spec.json"
 BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol110-combined-20261110"
+# Beside a reviewed geometry review: renewals that accept changed sources whose geometry is unchanged.
+GEOMETRY_RENEWALS_FILE = "geometry-renewals.json"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
 
 
@@ -140,6 +142,8 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
             if review.get("current_geometry_review"):
                 geometry = read(relative + "/" + review["current_geometry_review"]["file"])
                 files.update(geometry["current_sources"])
+                if (root / relative / GEOMETRY_RENEWALS_FILE).is_file():
+                    read(relative + "/" + GEOMETRY_RENEWALS_FILE)
 
     suite(BENCHMARK_SUITE_FILE)
     suite(BENCHMARK_SECTOR_SUITE_FILE)

@@ -5,7 +5,7 @@ import math
 
 from backend.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.contract import DATA_ROOT, canonical, checked_json, read, sha
-from backend.resources import BENCHMARK_SUITE_FILE
+from backend.resources import BENCHMARK_SUITE_FILE, GEOMETRY_RENEWALS_FILE
 
 
 def load_suite(path):
@@ -286,6 +286,38 @@ def require_reviewed_bundle(directory, manifest, spec):
     return review
 
 
+def _accepted_geometry_sources(directory, geometry_entry, geometry, required):
+    """Each reviewed geometry source's accepted hashes: the reviewed one, and any its renewals add.
+
+    A renewal record next to the review (``geometry-renewals.json``) can accept a
+    changed source only when it names this exact review, says the geometry is
+    unchanged, carries the reviewed cases with zero projection differences, and
+    renews a hash that is already accepted. Anything else fails closed. The
+    review, the suite and the reference bundle keep their bytes, so records
+    measured against them stay verifiable.
+    """
+
+    accepted = {name: {digest} for name, digest in geometry["current_sources"].items()}
+    path = directory / GEOMETRY_RENEWALS_FILE
+    if not path.is_file():
+        return accepted
+    renewals = read(path)
+    if (renewals.get("schema") != "coilem.cogging_geometry_renewal/v1"
+            or renewals.get("review") != {"file": geometry_entry["file"], "sha256": geometry_entry["sha256"]}
+            or not isinstance(renewals.get("renewals"), list)):
+        raise ValueError("Refined reference geometry renewal does not renew this review")
+    for entry in renewals["renewals"]:
+        cases = entry.get("cases") or {}
+        if (entry.get("decision") != "GEOMETRY_UNCHANGED" or entry.get("source") not in accepted
+                or entry.get("reviewed_sha256") not in accepted[entry["source"]]
+                or not isinstance(entry.get("renewed_sha256"), str) or len(entry["renewed_sha256"]) != 64
+                or set(cases) != required
+                or any(case.get("old_graph_projection_differences") != 0 for case in cases.values())):
+            raise ValueError("Refined reference geometry renewal is not a reviewed no-change renewal")
+        accepted[entry["source"]].add(entry["renewed_sha256"])
+    return accepted
+
+
 def _require_cogging_review(directory, manifest, reviewed, review):
     registered = DATA_ROOT / "benchmarks/cogging-refined-v1/measured-suite.json"
     required = {case["id"] for case in reviewed["cases"]}
@@ -299,8 +331,10 @@ def _require_cogging_review(directory, manifest, reviewed, review):
     geometry_entry = review.get("current_geometry_review") or {}
     geometry = checked_json(directory, geometry_entry["file"], geometry_entry["sha256"])
     if (geometry.get("schema") != "coilem.cogging_geometry_review/v1" or set(geometry.get("cases", {})) != required
-            or any(row.get("old_graph_projection_differences") != 0 for row in geometry["cases"].values())
-            or any(sha(DATA_ROOT / name) != digest for name, digest in geometry["current_sources"].items())):
+            or any(row.get("old_graph_projection_differences") != 0 for row in geometry["cases"].values())):
+        raise ValueError("Refined reference geometry review does not match current geometry sources")
+    accepted = _accepted_geometry_sources(directory, geometry_entry, geometry, required)
+    if any(sha(DATA_ROOT / name) not in accepted[name] for name in geometry["current_sources"]):
         raise ValueError("Refined reference geometry review does not match current geometry sources")
     for case in reviewed["cases"]:
         cid = case["id"]

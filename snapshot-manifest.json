@@ -170,8 +170,8 @@
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 20525,
-      "sha256": "015494fc38b1230798ce0f78ec5d2c73d22504663bac8989cc80f0349cdcc836"
+      "bytes": 22596,
+      "sha256": "0f1c86bcfd6dd865e574c9ed223408b946b4d1af5f8cdc046a798d5cb2447551"
     },
     {
       "path": "backend/benchmark_suite/report.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 10170,
-      "sha256": "2c88c96ca9a385bcafcd08615776e5e9d6b89aceccbb5199537143ab1e1cf418"
+      "bytes": 10462,
+      "sha256": "512ab35d54d1b6394227aaf3efdbe14d29c49daabf5f7a33e1f6c5853e2196de"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -15480,8 +15480,13 @@
     },
     {
       "path": "benchmarks/reference-baselines/cogging-refined-20261110/README.md",
-      "bytes": 892,
-      "sha256": "e8f5e56cac806ee783a81a5acdfd53772808d6bc7c20e7fd36387eb3d7eba95e"
+      "bytes": 1808,
+      "sha256": "018d9b1ae0c4d55e8731661247c5cd340f8e74a9bb054a4845c19cc24443dd06"
+    },
+    {
+      "path": "benchmarks/reference-baselines/cogging-refined-20261110/geometry-renewals.json",
+      "bytes": 2888,
+      "sha256": "2eb496712b4c10e255a82144558cfbd8cbc3a62c526a278a179cfe3df1cb2d04"
     },
     {
       "path": "benchmarks/reference-baselines/cogging-refined-20261110/geometry-review.json",
@@ -15525,8 +15530,8 @@
     },
     {
       "path": "tests/test_refined_cogging_registration.py",
-      "bytes": 3709,
-      "sha256": "cd04ceb463616919dcbd1108a3abf05289ef6768ecd4106179e58ebb31797182"
+      "bytes": 5744,
+      "sha256": "e17678fc7c71d6f72fdeee339083ae93461358ed5270c23c721f02f741651f6f"
     },
     {
       "path": "tests/test_rotor_chase_mesh_reuse.py",
