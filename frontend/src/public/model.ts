@@ -225,7 +225,9 @@ export interface SectorCut {
   turn_from_deg: number;
   stator_cut_deg: number;
   rotor_cut_deg: number;
-  /** The two cuts are too close to mesh between: the stator is cut where the rotor is. */
+  /** The two cuts are too close to mesh between: the rotor is cut at the tooth... */
+  rotor_on_stator_cut?: boolean;
+  /** ...or, for a rotor with no room for that, the stator where the rotor is. */
   stator_on_rotor_cut?: boolean;
 }
 

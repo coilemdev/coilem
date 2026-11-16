@@ -361,5 +361,6 @@ def tile_sector_mesh_preview(preview: dict) -> dict:
             float(sector["rotor_start_deg"]),
             float(sector.get("mid_gap_radius_mm") or 0.0),
             float(sector.get("min_mid_gap_offset_mm") or 0.0),
+            str(sector.get("snap_moves") or "rotor"),
         )
     return tiled

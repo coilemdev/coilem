@@ -7,6 +7,7 @@ import math
 from collections import Counter
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from backend import sector_geometry as sg
@@ -616,7 +617,7 @@ def test_the_mesh_preview_says_where_the_solver_cuts_at_every_rotor_angle(fixtur
     """The Mesh view turns the rotor of one meshed sector, but every position is solved as its
     own sector, cut at the tooth and pole gap nearest each other there. The preview's table must
     give the cuts a mesh built at any angle gets: sweep positions (which often fall exactly where
-    the cut steps) and angles where the cuts are so close that the stator is cut with the rotor."""
+    the cut steps) and angles where the cuts are so close that the rotor is cut at the tooth."""
 
     from backend.gmsh_solver import _base_lc_mm, _sector_ir_for_solve
     from backend.magneto2d_adapter import run_magneto2d_mesh_preview
@@ -627,8 +628,8 @@ def test_the_mesh_preview_says_where_the_solver_cuts_at_every_rotor_angle(fixtur
     common = 360.0 / steps
     assert cuts[0]["turn_from_deg"] == 0.0
     assert steps <= len(cuts) <= 3 * steps
-    snapped = [index for index, cut in enumerate(cuts) if cut.get("stator_on_rotor_cut")]
-    assert snapped, "the coarse air-gap mesh leaves a band where the stator is cut with the rotor"
+    snapped = [index for index, cut in enumerate(cuts) if cut.get("rotor_on_stator_cut") or cut.get("stator_on_rotor_cut")]
+    assert snapped, "the coarse air-gap mesh leaves a band where one cut moves onto the other"
 
     def wrapped(angle: float) -> float:
         return ((angle + 180.0) % 360.0) - 180.0
@@ -638,7 +639,7 @@ def test_the_mesh_preview_says_where_the_solver_cuts_at_every_rotor_angle(fixtur
         return cuts[index]["turn_from_deg"] + fraction * (end - cuts[index]["turn_from_deg"])
 
     turns = [-index * common for index in range(3)] + [-index * 0.61 * common for index in range(1, 7)] + [-137.3, 211.9]
-    # Off the band's middle, where the two cuts would meet anyway, the stator cut has moved off its tooth.
+    # Off the band's middle, where the two cuts would meet anyway, the rotor cut has moved onto the tooth.
     turns += [inside(index, fraction) for index in snapped[:3] for fraction in (0.2, 0.8)]
     turns += [cuts[index]["turn_from_deg"] - 1e-3 for index in snapped[:2]]
     for turn in turns:
@@ -649,7 +650,45 @@ def test_the_mesh_preview_says_where_the_solver_cuts_at_every_rotor_angle(fixtur
         ir = build_geometry_ir(config, geom=geom, rotor_angle_deg=turn)
         sector, reason = _sector_ir_for_solve(config, ir, _base_lc_mm(config, "coarse"))
         assert sector is not None, reason
-        rotor_cut = entry["rotor_cut_deg"] + turn
-        stator_cut = rotor_cut if entry.get("stator_on_rotor_cut") else entry["stator_cut_deg"]
+        if entry.get("rotor_on_stator_cut"):
+            stator_cut = rotor_cut = entry["stator_cut_deg"]
+        else:
+            rotor_cut = entry["rotor_cut_deg"] + turn
+            stator_cut = rotor_cut if entry.get("stator_on_rotor_cut") else entry["stator_cut_deg"]
         assert wrapped(math.degrees(sector.stator_start_rad) - stator_cut) == pytest.approx(0.0, abs=1e-6), turn
         assert wrapped(math.degrees(sector.rotor_start_rad) - rotor_cut) == pytest.approx(0.0, abs=1e-6), turn
+
+
+@pytest.mark.parametrize(
+    "fixture",
+    [OUTER_14P12S, "abcd-v1.7/fixtures/spm_8p12s_example_shoed__cogging.json", IPM_24S16P, ACCORD_TWO_LAYER],
+)
+def test_every_position_meshes_the_stator_iron_the_same_way(fixture) -> None:
+    """Iron loss follows each stator element through a sweep. On the full motor the stator mesh
+    repeats from position to position; a sector's stator cut moves to the tooth nearest the rotor
+    cut, so the sector meshes its stator iron in slot pitches copied from the first, in a frame
+    turned to the same tooth each time. Positions cut at different teeth must give the same
+    stator iron mesh (it made outrunner yoke iron loss read up to 69% high). Gmsh places copied
+    arc nodes through its own parametrisation, so corners agree to about 1e-5 mm, not exactly."""
+
+    from backend.iron_loss import _locate, _stator_elements
+    from backend.magneto2d_adapter import run_magneto2d_mesh_preview
+
+    quick = {} if fixture.startswith("examples:") else {"mesh_density": "coarse"}
+    config = _config(fixture, symmetry="auto", **quick)
+    common = 360.0 / math.lcm(config.stator.slot_count, config.rotor.pole_count)
+    meshes, cuts = [], set()
+    for turn in (0.0, -1.0 * common, -2.0 * common, -2.6 * common):
+        preview = run_magneto2d_mesh_preview(config, rotor_angle_deg=turn)
+        cuts.add(round(preview["mesh_info"]["sector"]["stator_start_deg"] % 360.0, 6))
+        nodes, triangles = np.asarray(preview["nodes_mm"]), np.asarray(preview["triangles"])
+        meshes.append(nodes[triangles[_stator_elements(preview["regions"])]])
+    assert len(cuts) > 1, "the sweep should cut the stator at more than one tooth"
+    reference = meshes[0]
+    for corners in meshes[1:]:
+        assert len(corners) == len(reference)
+        match = _locate(reference.mean(axis=1), corners)
+        assert np.all(match >= 0)
+        # Every corner of each reference triangle is a corner of the triangle found there.
+        gaps = np.linalg.norm(reference[:, :, None, :] - corners[match][:, None, :, :], axis=-1).min(axis=2)
+        assert gaps.max() < 1.0e-4

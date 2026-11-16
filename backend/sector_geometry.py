@@ -25,6 +25,7 @@ callers fall back to the full circle.
 from __future__ import annotations
 
 import math
+from collections.abc import Iterable
 from dataclasses import dataclass, replace
 
 from backend.geometry_ir import (
@@ -37,6 +38,9 @@ from backend.geometry_ir import (
 
 SECTOR_EDGE_TAG = "sector_edge"
 SECTOR_MID_GAP_TAG = "sector_mid_gap"
+# The line through a tooth centre between two slot-pitch pieces of the stator iron.
+SECTOR_SLOT_PITCH_TAG = "sector_slot_pitch"
+_STATOR_IRON_KINDS = frozenset({"StatorYoke", "StatorTooth"})
 
 # Points closer than this to a cut line count as on it [mm].
 _ON_LINE_TOL_MM = 1.0e-7
@@ -112,9 +116,15 @@ class SectorIR:
     # breaks ties between equally near teeth, so the cut can be found again at
     # any other rotor angle (sector_cuts_by_turn).
     first_tooth_rad: float | None = None
-    # A stator-only arc on the mid-gap circle shorter than this moves the stator
-    # cut onto the rotor cut.
+    # A stator-only arc on the mid-gap circle shorter than this is not meshed:
+    # one cut moves onto the other ("rotor" or "stator", see snap_moves).
     min_mid_gap_offset_mm: float = 0.0
+    snap_moves: str = "rotor"
+    # The stator iron in slot-pitch pieces from the stator cut, (region id, piece
+    # index, pitches from the cut): the mesher meshes the first pitch and copies it,
+    # so every position's stator iron mesh is the same mesh wherever it is cut.
+    stator_iron_units: tuple[tuple[str, int, int], ...] = ()
+    slot_pitch_rad: float = 0.0
 
 
 # --------------------------------------------------------------------------
@@ -983,26 +993,55 @@ def build_sector_ir(
 
     first_tooth = _snap_stator_cut(ir, _stator_cut_angle(ir))
 
+    snap = min_mid_gap_offset_mm / mid_r
     last_error: SectorUnsupportedError | None = None
     for rotor_axis in _rotor_cut_candidates(ir):
         stator_start = _nearest_tooth_cut(ir.slot_count, first_tooth, rotor_axis, pole_pitch)
         offset = _wrap_signed(rotor_axis - stator_start, pole_pitch)
         if abs(offset) * mid_r < 1.0e-9:
             offset = 0.0
-        stator_cut = stator_start
-        if offset != 0.0 and abs(offset) * mid_r < min_mid_gap_offset_mm:
-            # Too short an arc to mesh well: cut the stator where the rotor is cut.
-            stator_cut = stator_start + offset
+        snap_moves = "rotor" if _rotor_cut_can_move(ir, stator_start + offset, span, snap) else "stator"
+        if offset != 0.0 and abs(offset) < snap:
+            # Too short an arc to mesh well between the cuts: cut the rotor at the
+            # tooth, so the stator iron stays in whole slot pitches; a rotor with no
+            # room for that cuts the stator where the rotor is instead.
+            stator_cut = stator_start if snap_moves == "rotor" else stator_start + offset
             offset = 0.0
+        else:
+            stator_cut = stator_start
         rotor_cut = stator_cut + offset
         try:
             sector = _build_with_cuts(
-                ir, symmetry, airgap, stator_cut, rotor_cut, mid_r, outer_rotor, span, offset
+                ir, symmetry, airgap, stator_cut, rotor_cut, mid_r, outer_rotor, span, offset,
+                slot_pitch_units=abs(stator_cut - stator_start) < 1.0e-12,
             )
-            return replace(sector, first_tooth_rad=first_tooth, min_mid_gap_offset_mm=min_mid_gap_offset_mm)
+            return replace(
+                sector, first_tooth_rad=first_tooth, min_mid_gap_offset_mm=min_mid_gap_offset_mm, snap_moves=snap_moves
+            )
         except SectorUnsupportedError as exc:
             last_error = exc
     raise last_error or SectorUnsupportedError("no clean rotor cut was found")
+
+
+def _rotor_cut_can_move(ir: GeometryIR, rotor_cut: float, span: float, shift: float) -> bool:
+    """Whether the rotor cut can move ``shift`` either way without crossing a magnet."""
+
+    if shift <= 0.0:
+        return True
+    for region in ir.regions:
+        if region.kind != "Magnet":
+            continue
+        for start in (rotor_cut - shift, rotor_cut + shift):
+            try:
+                pieces = _clip_region_loops(region.loops, start, span)
+            except SectorUnsupportedError:
+                return False
+            if pieces and (
+                len(pieces) != 1
+                or abs(_piece_area(*pieces[0]) - _signed_area_of_region(region)) > 1.0e-6 * max(1.0, region.area_mm2)
+            ):
+                return False
+    return True
 
 
 def _nearest_tooth_cut(slot_count: int, first_tooth: float, rotor_axis: float, pole_pitch: float) -> float:
@@ -1039,6 +1078,7 @@ def sector_cuts_by_turn(
     rotor_cut_deg: float,
     mid_gap_radius_mm: float = 0.0,
     min_mid_gap_offset_mm: float = 0.0,
+    snap_moves: str = "rotor",
 ) -> list[dict[str, float | bool]] | None:
     """Where one sector is cut at every rotor angle, from a sector meshed at one.
 
@@ -1051,9 +1091,11 @@ def sector_cuts_by_turn(
     Neither cut moves in its own frame within an entry; both step to the next
     nearest tooth and pole gap once per common pitch of slots and poles. Where
     the two cuts are closer on the mid-gap circle than
-    ``min_mid_gap_offset_mm``, the stator is cut where the rotor is: those
-    entries say ``stator_on_rotor_cut``. None when the pattern would need more
-    than a few thousand entries.
+    ``min_mid_gap_offset_mm``, one moves onto the other: the rotor is cut at the
+    tooth (``rotor_on_stator_cut``), or, for a rotor with no room for that
+    (``snap_moves`` "stator"), the stator where the rotor is
+    (``stator_on_rotor_cut``). None when the pattern would need more than a few
+    thousand entries.
     """
 
     steps_per_turn = math.lcm(slot_count, pole_count)
@@ -1084,7 +1126,7 @@ def sector_cuts_by_turn(
             "rotor_cut_deg": round(math.degrees(rotor_cut) % 360.0, 9),
         }
         if snapped:
-            entry["stator_on_rotor_cut"] = True
+            entry["rotor_on_stator_cut" if snap_moves == "rotor" else "stator_on_rotor_cut"] = True
         entries.append(entry)
 
     for index, start in enumerate(starts):
@@ -1118,8 +1160,11 @@ def _build_with_cuts(
     outer_rotor: bool,
     span: float,
     offset: float,
+    *,
+    slot_pitch_units: bool = True,
 ) -> SectorIR:
     stator_frame = _Frame(stator_cut, span)
+    slot_pitch = _TWO_PI / ir.slot_count
     rotor_frame = _Frame(rotor_cut, span)
 
     steps = max(1, math.ceil(span / _MAX_MID_ARC_RAD - 1.0e-9))
@@ -1147,6 +1192,7 @@ def _build_with_cuts(
 
     stator_pieces: dict[str, _Pieces] = {}
     rotor_pieces: dict[str, _Pieces] = {}
+    iron_steps: dict[str, list[int]] = {}
     for region in ir.regions:
         if region.kind == "Airgap":
             continue
@@ -1156,7 +1202,12 @@ def _build_with_cuts(
             frame, target = rotor_frame, rotor_pieces
         else:
             raise SectorUnsupportedError(f"region {region.region_id} has no stator or rotor frame")
-        pieces = _clip_region_loops(region.loops, frame.start_rad, frame.span_rad)
+        if slot_pitch_units and region.motion_group == "stationary" and region.kind in _STATOR_IRON_KINDS:
+            pieces, iron_steps[region.region_id] = _slot_pitch_pieces(
+                region, stator_cut, slot_pitch, symmetry.slots_per_sector, _points_of_other_regions(ir, region)
+            )
+        else:
+            pieces = _clip_region_loops(region.loops, frame.start_rad, frame.span_rad)
         if not pieces:
             continue
         if region.kind == "Magnet" and (
@@ -1174,6 +1225,13 @@ def _build_with_cuts(
     rotor_pieces["airgap#rotor"] = _clip_region_loops(rotor_half, rotor_frame.start_rad, span)
     if not stator_pieces["airgap#stator"] or not rotor_pieces["airgap#rotor"]:
         raise SectorUnsupportedError("the air gap vanished in the sector cut")
+    if iron_steps:
+        # The slot-pitch cuts end on boundaries the iron shares (the tooth tips with
+        # the air gap): break those boundaries there too, or the mesh would not join.
+        _break_at_points(
+            {key: value for key, value in stator_pieces.items() if key not in iron_steps},
+            _slot_pitch_cut_points(stator_pieces[key] for key in iron_steps if key in stator_pieces),
+        )
 
     stator_intervals, stator_apex = _finish_edges(stator_pieces, stator_frame, [mid_r])
     rotor_intervals, rotor_apex = _finish_edges(rotor_pieces, rotor_frame, [mid_r])
@@ -1232,6 +1290,7 @@ def _build_with_cuts(
             )
 
     pieces_by_region: dict[str, tuple[SectorPiece, ...]] = {}
+    iron_units: list[tuple[str, int, int]] = []
     regions: list[GeometryIRRegion] = []
     for region in ir.regions:
         if region.kind == "Airgap":
@@ -1253,6 +1312,7 @@ def _build_with_cuts(
             loops.extend((outer_loop, *hole_loops))
             area += _piece_area(outer, holes)
         pieces_by_region[region.region_id] = tuple(pieces)
+        iron_units.extend((region.region_id, index, step) for index, step in enumerate(iron_steps.get(region.region_id, ())))
         regions.append(replace(region, loops=tuple(loops), area_mm2=area))
 
     metadata = dict(ir.metadata)
@@ -1275,6 +1335,227 @@ def _build_with_cuts(
         mid_gap_radius_mm=mid_r,
         curve_pairs=tuple(pairs),
         apex_at_centre=stator_apex or rotor_apex,
+        stator_iron_units=tuple(iron_units),
+        slot_pitch_rad=slot_pitch if iron_units else 0.0,
+    )
+
+
+def _slot_pitch_pieces(
+    region: GeometryIRRegion,
+    stator_cut: float,
+    slot_pitch: float,
+    pitches: int,
+    shared_points: set[tuple[int, int]],
+) -> tuple[_Pieces, list[int]]:
+    """A stator iron region cut into slot-pitch pieces at the tooth centres of the sector.
+
+    The cuts inside the sector are tagged apart from the sector's own edges: they
+    are not tied to anything, they only let the mesher copy one pitch's mesh. An
+    arc drawn in parts whose joins no other region uses (a hub bore drawn as four
+    quarter circles) is joined up, so every pitch has the same outline.
+    """
+
+    inner_rays = [stator_cut + step * slot_pitch for step in range(1, pitches)]
+    pieces: _Pieces = []
+    steps: list[int] = []
+
+    def tidy(loop: list[GeometryIRSegment]) -> list[GeometryIRSegment]:
+        return _join_unshared_arcs(_retag_inner_cuts(loop, inner_rays), shared_points)
+
+    for step in range(pitches):
+        for outer, holes in _clip_region_loops(region.loops, stator_cut + step * slot_pitch, slot_pitch):
+            pieces.append((tidy(outer), [tidy(hole) for hole in holes]))
+            steps.append(step)
+    return pieces, steps
+
+
+def _point_key(xy: tuple[float, float]) -> tuple[int, int]:
+    return (round(xy[0] * 1.0e6), round(xy[1] * 1.0e6))
+
+
+def _points_of_other_regions(ir: GeometryIR, region: GeometryIRRegion) -> set[tuple[int, int]]:
+    return {
+        _point_key(_xy(point))
+        for other in ir.regions
+        if other.region_id != region.region_id
+        for loop in other.loops
+        for segment in loop.segments
+        for point in (segment.start, segment.end)
+    }
+
+
+def _join_unshared_arcs(loop: list[GeometryIRSegment], shared_points: set[tuple[int, int]]) -> list[GeometryIRSegment]:
+    """Join consecutive arcs of one circle whose join no other region uses."""
+
+    def joinable(a: GeometryIRSegment, b: GeometryIRSegment) -> bool:
+        return (
+            a.kind == "arc" == b.kind
+            and a.center is not None and b.center is not None
+            and _point_key(_xy(a.center)) == _point_key(_xy(b.center))
+            and a.radius_mm is not None and b.radius_mm is not None
+            and abs(a.radius_mm - b.radius_mm) <= 1.0e-9
+            and a.boundary_tag == b.boundary_tag
+            and (a.sweep_deg or 0.0) * (b.sweep_deg or 0.0) > 0.0
+            and abs((a.sweep_deg or 0.0) + (b.sweep_deg or 0.0)) < 179.0
+            and _point_key(_xy(a.end)) not in shared_points
+        )
+
+    out = list(loop)
+    changed = True
+    while changed and len(out) > 2:
+        changed = False
+        for index in range(len(out)):
+            a, b = out[index], out[(index + 1) % len(out)]
+            if joinable(a, b):
+                merged = replace(a, end=b.end, sweep_deg=(a.sweep_deg or 0.0) + (b.sweep_deg or 0.0))
+                if index + 1 < len(out):
+                    out[index:index + 2] = [merged]
+                else:
+                    out = [merged, *out[1:-1]]
+                changed = True
+                break
+    return out
+
+
+def _slot_pitch_cut_points(pieces_of_regions: Iterable[_Pieces]) -> list[tuple[float, float]]:
+    points: dict[tuple[int, int], tuple[float, float]] = {}
+    for pieces in pieces_of_regions:
+        for outer, holes in pieces:
+            for loop in (outer, *holes):
+                for segment in loop:
+                    if segment.boundary_tag == SECTOR_SLOT_PITCH_TAG:
+                        for point in (segment.start, segment.end):
+                            points.setdefault(_point_key(_xy(point)), _xy(point))
+    return list(points.values())
+
+
+def _break_at_points(pieces_by_key: dict[str, _Pieces], points: list[tuple[float, float]]) -> None:
+    """Split, in place, every segment that passes through one of ``points``."""
+
+    if not points:
+        return
+    for pieces in pieces_by_key.values():
+        for piece_index, (outer, holes) in enumerate(pieces):
+            loops = [_break_loop(loop, points) for loop in (outer, *holes)]
+            pieces[piece_index] = (loops[0], loops[1:])
+
+
+def _break_loop(loop: list[GeometryIRSegment], points: list[tuple[float, float]]) -> list[GeometryIRSegment]:
+    out: list[GeometryIRSegment] = []
+    for segment in loop:
+        inside: list[tuple[float, tuple[float, float]]] = []
+        for xy in points:
+            fraction = _fraction_along(segment, xy)
+            if fraction is not None and 1.0e-9 < fraction < 1.0 - 1.0e-9:
+                inside.append((fraction, xy))
+        inside.sort()
+        out.extend(_split(segment, [f for f, _ in inside], [xy for _, xy in inside]))
+    return out
+
+
+def _fraction_along(segment: GeometryIRSegment, xy: tuple[float, float]) -> float | None:
+    """Where ``xy`` lies along a segment, as a fraction of it; None off the segment."""
+
+    tol = 5.0 * _ON_LINE_TOL_MM
+    start, end = _xy(segment.start), _xy(segment.end)
+    if segment.kind == "arc":
+        center = _xy(segment.center)  # type: ignore[arg-type]
+        radius = segment.radius_mm or 0.0
+        if abs(math.hypot(xy[0] - center[0], xy[1] - center[1]) - radius) > tol:
+            return None
+        sweep = _arc_sweep_rad(segment)
+        if abs(sweep) < 1.0e-15:
+            return None
+        a0 = math.atan2(start[1] - center[1], start[0] - center[0])
+        a = math.atan2(xy[1] - center[1], xy[0] - center[0])
+        delta = (a - a0) % _TWO_PI if sweep > 0 else -((a0 - a) % _TWO_PI)
+        fraction = delta / sweep
+        return fraction if 0.0 <= fraction <= 1.0 else None
+    dx, dy = end[0] - start[0], end[1] - start[1]
+    length_sq = dx * dx + dy * dy
+    if length_sq < 1.0e-24:
+        return None
+    t = ((xy[0] - start[0]) * dx + (xy[1] - start[1]) * dy) / length_sq
+    if abs((xy[0] - start[0]) * dy - (xy[1] - start[1]) * dx) / math.sqrt(length_sq) > tol:
+        return None
+    return t if 0.0 <= t <= 1.0 else None
+
+
+def _retag_inner_cuts(loop: list[GeometryIRSegment], inner_rays: list[float]) -> list[GeometryIRSegment]:
+    out = []
+    for segment in loop:
+        if segment.boundary_tag == SECTOR_EDGE_TAG and any(
+            _on_ray(_xy(segment.start), ray) is not None and _on_ray(_xy(segment.end), ray) is not None
+            for ray in inner_rays
+        ):
+            segment = replace(segment, boundary_tag=SECTOR_SLOT_PITCH_TAG)
+        out.append(segment)
+    return out
+
+
+def rotated_sector_ir(sector: SectorIR, angle_rad: float, *, digits: int = 9) -> SectorIR:
+    """The same sector turned about the motor axis, with coordinates rounded.
+
+    The mesher meshes every position's sector turned so its stator cut lies on the
+    same tooth; rounding makes that slot pitch's points identical from one position
+    to the next, so Gmsh meshes it the same way each time.
+    """
+
+    cos_a, sin_a = math.cos(angle_rad), math.sin(angle_rad)
+
+    def turn(x: float, y: float) -> tuple[float, float]:
+        return (round(x * cos_a - y * sin_a, digits) + 0.0, round(x * sin_a + y * cos_a, digits) + 0.0)
+
+    def point(p: GeometryIRPoint | None) -> GeometryIRPoint | None:
+        if p is None:
+            return None
+        if abs(p.x_mm) <= 1.0e-12 and abs(p.y_mm) <= 1.0e-12:
+            return GeometryIRPoint(0.0, 0.0)
+        return _pt(turn(p.x_mm, p.y_mm))
+
+    def loop(item: GeometryIRLoop) -> GeometryIRLoop:
+        return replace(
+            item,
+            segments=tuple(replace(seg, start=point(seg.start), end=point(seg.end), center=point(seg.center)) for seg in item.segments),
+            points_mm=tuple(point(p) for p in item.points_mm),
+        )
+
+    loops: dict[str, GeometryIRLoop] = {}
+
+    def cached(item: GeometryIRLoop) -> GeometryIRLoop:
+        if item.loop_id not in loops:
+            loops[item.loop_id] = loop(item)
+        return loops[item.loop_id]
+
+    pieces = {
+        key: tuple(SectorPiece(cached(piece.outer), tuple(cached(hole) for hole in piece.holes)) for piece in value)
+        for key, value in sector.pieces_by_region.items()
+    }
+    regions = []
+    for region in sector.ir.regions:
+        magnetization = region.magnetization_xy
+        if magnetization is not None:
+            mx, my = magnetization
+            magnetization = (mx * cos_a - my * sin_a, mx * sin_a + my * cos_a)
+        regions.append(replace(region, loops=tuple(cached(item) for item in region.loops), magnetization_xy=magnetization))
+    pairs = tuple(
+        replace(
+            pair,
+            master_start=turn(*pair.master_start),
+            master_end=turn(*pair.master_end),
+            slave_start=turn(*pair.slave_start),
+            slave_end=turn(*pair.slave_end),
+        )
+        for pair in sector.curve_pairs
+    )
+    return replace(
+        sector,
+        ir=replace(sector.ir, regions=tuple(regions)),
+        pieces_by_region=pieces,
+        curve_pairs=pairs,
+        stator_start_rad=sector.stator_start_rad + angle_rad,
+        rotor_start_rad=sector.rotor_start_rad + angle_rad,
+        first_tooth_rad=None if sector.first_tooth_rad is None else sector.first_tooth_rad + angle_rad,
     )
 
 

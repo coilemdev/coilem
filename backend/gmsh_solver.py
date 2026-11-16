@@ -12,6 +12,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+import numpy as np
+
 from backend import solve_profile
 from backend.custom_materials import is_custom_steel_id
 from backend.geometry_drawer import (
@@ -27,11 +29,13 @@ from backend.resources import package_resource
 from backend.rotor_layout import is_outer_rotor
 from backend.sector_geometry import (
     SECTOR_EDGE_TAG,
+    SECTOR_SLOT_PITCH_TAG,
     SectorCurvePair,
     SectorIR,
     SectorUnsupportedError,
     build_sector_ir,
     detect_sector_symmetry,
+    rotated_sector_ir,
 )
 from backend.solver_environment import ISOLATED_RUNTIME
 from backend.topology_provenance import build_topology_provenance
@@ -521,6 +525,7 @@ def _run_gmsh_ir_mesh_preview(
 
     base_lc_mm = _base_lc_mm(config, density)
     sector, sector_fallback = _sector_ir_for_solve(config, ir, base_lc_mm)
+    mesh_sector, turn_back_rad = (None, 0.0) if sector is None else _sector_in_mesh_frame(sector)
     if sector is not None:
         ir = sector.ir
 
@@ -537,13 +542,15 @@ def _run_gmsh_ir_mesh_preview(
         geometry_started = time.perf_counter()
 
         builder = _GmshGeometryBuilder(base_lc_mm=base_lc_mm)
-        if sector is not None:
-            region_by_surface = _build_sector_gmsh_surfaces(builder, sector)
+        if mesh_sector is not None:
+            region_by_surface = _build_sector_gmsh_surfaces(builder, mesh_sector)
         else:
             region_by_surface = _build_ir_gmsh_surfaces(builder, ir)
         builder.apply_point_sizes()
         gmsh.model.geo.synchronize()
-        sector_curves = _tie_sector_curves(builder, sector) if sector is not None else []
+        sector_curves = _tie_sector_curves(builder, mesh_sector) if mesh_sector is not None else []
+        if mesh_sector is not None:
+            _copy_stator_iron_pitches(builder, mesh_sector)
         _apply_gmsh_physics_mesh_fields(
             builder,
             geom,
@@ -570,10 +577,12 @@ def _run_gmsh_ir_mesh_preview(
             )
         dirichlet_nodes = _tagged_dirichlet_nodes(builder, nodes_mm) if builder.dirichlet_curves else None
         sector_edge_pairs = (
-            _sector_edge_node_pairs(sector, sector_curves, nodes_mm) if sector is not None else []
+            _sector_edge_node_pairs(mesh_sector, sector_curves, nodes_mm) if mesh_sector is not None else []
         )
     finally:
         gmsh.finalize()
+    if sector is not None:
+        nodes_mm = _sector_nodes_in_place(nodes_mm, sector, turn_back_rad)
 
     artifact_started = time.perf_counter()
     solve_mesh_artifact = _build_ir_solve_mesh_artifact(
@@ -653,6 +662,109 @@ def _sector_ir_for_solve(
     return sector, None
 
 
+def _sector_in_mesh_frame(sector: SectorIR) -> tuple[SectorIR, float]:
+    """The sector as Gmsh meshes it, and the angle that turns its mesh back.
+
+    A sector whose stator iron is cut in slot pitches is turned so that its stator
+    cut lies on the first tooth: the first pitch, which the others copy, then has
+    the same coordinates at every rotor position, so Gmsh meshes it the same way
+    and every position's stator iron mesh is one mesh. (Gmsh meshes a turned copy
+    of a shape differently, so meshing it where it lies would not do.)
+    """
+
+    turn = 0.0
+    if sector.stator_iron_units and sector.first_tooth_rad is not None:
+        turn = sector.stator_start_rad - sector.first_tooth_rad
+    return rotated_sector_ir(sector, -turn), turn
+
+
+def _sector_nodes_in_place(nodes_mm: list[list[float]], sector: SectorIR, turn_rad: float) -> list[list[float]]:
+    """The mesh turned back from the mesh frame, with the cut edges' nodes exactly on the cuts.
+
+    The mesh frame's coordinates are rounded and turned, so a node on a cut ends
+    up a nanometre or so off it; the field reconstruction then misses a contour
+    sample that lies on the cut. Nodes within a micrometre of a cut line are put
+    back on it, at their radius, as the geometry places cut points.
+    """
+
+    xy = np.asarray(nodes_mm, dtype=float)
+    if turn_rad:
+        cos_t, sin_t = math.cos(turn_rad), math.sin(turn_rad)
+        xy = np.column_stack((xy[:, 0] * cos_t - xy[:, 1] * sin_t, xy[:, 0] * sin_t + xy[:, 1] * cos_t))
+    radius = np.hypot(xy[:, 0], xy[:, 1])
+    span = sector.symmetry.span_rad
+    for angle in {
+        round(value % (2.0 * math.pi), 15)
+        for value in (sector.stator_start_rad, sector.stator_start_rad + span, sector.rotor_start_rad, sector.rotor_start_rad + span)
+    }:
+        cos_a, sin_a = math.cos(angle), math.sin(angle)
+        across = np.abs(xy[:, 0] * sin_a - xy[:, 1] * cos_a)
+        along = xy[:, 0] * cos_a + xy[:, 1] * sin_a
+        on = (across < 1.0e-6) & (along > 0.0)
+        xy[on, 0] = radius[on] * cos_a
+        xy[on, 1] = radius[on] * sin_a
+    return xy.tolist()
+
+
+def _copy_stator_iron_pitches(builder: _GmshGeometryBuilder, sector: SectorIR) -> int:
+    """Make each slot-pitch piece of the stator iron an exact turned copy of the one before.
+
+    Chaining each pitch to the previous one gives every curve between two pitches one
+    master. Returns the number of copied pieces.
+    """
+
+    if not sector.stator_iron_units or sector.slot_pitch_rad <= 0.0:
+        return 0
+    by_step: dict[int, list[tuple[int, tuple[float, float]]]] = {}
+    for region_id, index, step in sector.stator_iron_units:
+        surface = builder.surfaces_by_region[region_id][index]
+        by_step.setdefault(step, []).append((surface, _sector_piece_centroid(sector.pieces_by_region[region_id][index])))
+    pitch = sector.slot_pitch_rad
+    cos_p, sin_p = math.cos(pitch), math.sin(pitch)
+    transform = [cos_p, -sin_p, 0.0, 0.0, sin_p, cos_p, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+    copied = 0
+    for step in sorted(by_step):
+        previous = by_step.get(step - 1)
+        if not previous:
+            continue
+    # Pair every piece with the piece one pitch back before tying any: a stator whose
+    # pitches differ (a notch in one place) keeps its own mesh, which is still valid.
+    ties: list[tuple[int, int]] = []
+    for step in sorted(by_step):
+        previous = by_step.get(step - 1)
+        if not previous:
+            continue
+        if len(previous) != len(by_step[step]):
+            return 0
+        for surface, (x, y) in by_step[step]:
+            def distance(item: tuple[int, tuple[float, float]]) -> float:
+                px, py = item[1]
+                return math.hypot(px * cos_p - py * sin_p - x, px * sin_p + py * cos_p - y)
+            master = min(previous, key=distance)
+            if distance(master) > 1.0e-6 * max(1.0, math.hypot(x, y)):
+                return 0
+            ties.append((surface, master[0]))
+    for surface, master_surface in ties:
+        gmsh.model.mesh.setPeriodic(2, [surface], [master_surface], transform)
+        copied += 1
+    return copied
+
+
+def _sector_piece_centroid(piece: Any) -> tuple[float, float]:
+    """Area centroid of a piece's outline polygon (segment ends only: enough to tell pieces apart)."""
+
+    points = [(segment.start.x_mm, segment.start.y_mm) for segment in piece.outer.segments]
+    area = cx = cy = 0.0
+    for (x0, y0), (x1, y1) in zip(points, points[1:] + points[:1]):
+        cross = x0 * y1 - x1 * y0
+        area += cross
+        cx += (x0 + x1) * cross
+        cy += (y0 + y1) * cross
+    if abs(area) < 1.0e-12:
+        return (sum(x for x, _ in points) / len(points), sum(y for _, y in points) / len(points))
+    return (cx / (3.0 * area), cy / (3.0 * area))
+
+
 def _build_sector_gmsh_surfaces(
     builder: _GmshGeometryBuilder,
     sector: SectorIR,
@@ -665,19 +777,42 @@ def _build_sector_gmsh_surfaces(
         for piece in pieces:
             for loop in (piece.outer, *piece.holes):
                 for segment in loop.segments:
-                    if segment.boundary_tag == SECTOR_EDGE_TAG:
+                    if segment.boundary_tag in (SECTOR_EDGE_TAG, SECTOR_SLOT_PITCH_TAG):
                         for point in (segment.start, segment.end):
                             cut_points.add((round(point.x_mm * 1.0e6), round(point.y_mm * 1.0e6)))
+    regions = {region.region_id: region for region in sector.ir.regions}
+    # The stator iron goes first, pitch by pitch and in angle order within a pitch, so
+    # the first pitch (which the others copy) is built the same way, its curves made
+    # in the same order and direction, whichever teeth it holds; the rest follow the IR.
+    iron = {(region_id, index): step for region_id, index, step in sector.stator_iron_units}
+
+    def iron_order(item: tuple[str, int]) -> tuple[int, float]:
+        x, y = _sector_piece_centroid(sector.pieces_by_region[item[0]][item[1]])
+        return (iron[item], (math.atan2(y, x) - sector.stator_start_rad) % (2.0 * math.pi))
+
+    order = sorted(iron, key=iron_order) + [
+        (region.region_id, index)
+        for region in sector.ir.regions
+        for index in range(len(sector.pieces_by_region.get(region.region_id, ())))
+        if (region.region_id, index) not in iron
+    ]
+    surface_of: dict[tuple[str, int], int] = {}
+    for region_id, index in order:
+        region = regions[region_id]
+        piece = sector.pieces_by_region[region_id][index]
+        outer_loop = _curve_loop_from_ir_loop(builder, region, piece.outer, plain_points=cut_points)
+        hole_loops = [
+            _curve_loop_from_ir_loop(builder, region, hole, reverse=True, plain_points=cut_points)
+            for hole in piece.holes
+        ]
+        surface = gmsh.model.geo.addPlaneSurface([outer_loop, *hole_loops])
+        surface_of[(region_id, index)] = surface
+        region_by_surface[surface] = region_id
+    # Each region's surfaces in piece order, as the pitch copying looks them up.
     for region in sector.ir.regions:
-        for piece in sector.pieces_by_region.get(region.region_id, ()):
-            outer_loop = _curve_loop_from_ir_loop(builder, region, piece.outer, plain_points=cut_points)
-            hole_loops = [
-                _curve_loop_from_ir_loop(builder, region, hole, reverse=True, plain_points=cut_points)
-                for hole in piece.holes
-            ]
-            surface = gmsh.model.geo.addPlaneSurface([outer_loop, *hole_loops])
-            builder.surfaces_by_region.setdefault(region.region_id, []).append(surface)
-            region_by_surface[surface] = region.region_id
+        count = len(sector.pieces_by_region.get(region.region_id, ()))
+        if count:
+            builder.surfaces_by_region[region.region_id] = [surface_of[(region.region_id, index)] for index in range(count)]
     return region_by_surface
 
 
@@ -1239,6 +1374,7 @@ def _build_ir_solve_mesh_artifact(
         if sector.first_tooth_rad is not None:
             mesh_info["sector"]["first_tooth_deg"] = math.degrees(sector.first_tooth_rad)
             mesh_info["sector"]["min_mid_gap_offset_mm"] = sector.min_mid_gap_offset_mm
+            mesh_info["sector"]["snap_moves"] = sector.snap_moves
     elif sector_fallback is not None:
         mesh_info["sector_fallback_reason"] = sector_fallback
     artifact = {

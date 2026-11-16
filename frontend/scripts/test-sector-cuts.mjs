@@ -35,8 +35,12 @@ assert.equal(sectorCutAt([], 10), null);
 // On screen (the stator's frame): the rotor's cut is where the rotor has turned it to.
 assert.deepEqual(sectorCutAnglesDeg(cuts[0], 1), { statorDeg: 15, rotorDeg: 11.857142857 });
 // Where the two cuts are too close to mesh between, the stator is cut with the rotor.
-const close = { turn_from_deg: 1.502274188, stator_cut_deg: 15, rotor_cut_deg: 12.857142857, stator_on_rotor_cut: true };
-assert.deepEqual(sectorCutAnglesDeg(close, -2), { statorDeg: 14.857142857, rotorDeg: 14.857142857 });
+// Usually the rotor is then cut at the tooth, so the stator iron stays in whole slot pitches.
+const close = { turn_from_deg: 1.502274188, stator_cut_deg: 15, rotor_cut_deg: 12.857142857, rotor_on_stator_cut: true };
+assert.deepEqual(sectorCutAnglesDeg(close, -2), { statorDeg: 15, rotorDeg: 15 });
+// A rotor with no room for that moves the stator cut instead.
+const noRoom = { turn_from_deg: 1.502274188, stator_cut_deg: 15, rotor_cut_deg: 12.857142857, stator_on_rotor_cut: true };
+assert.deepEqual(sectorCutAnglesDeg(noRoom, -2), { statorDeg: 14.857142857, rotorDeg: 14.857142857 });
 
 // The solved part steps on the mid-gap circle, as the solver's wedges meet: an outrunner's
 // stator and the inner half of the air gap from the stator cut, the rotor and the outer half

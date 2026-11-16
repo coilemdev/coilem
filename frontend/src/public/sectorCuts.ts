@@ -32,6 +32,7 @@ export function sectorCutAt(cuts: SectorCut[] | null | undefined, rotorAngleDeg:
  * rotor side with the rotor.
  */
 export function sectorCutAnglesDeg(cut: SectorCut, rotorAngleDeg: number): { statorDeg: number; rotorDeg: number } {
+  if (cut.rotor_on_stator_cut) return { statorDeg: cut.stator_cut_deg, rotorDeg: cut.stator_cut_deg };
   const rotorDeg = cut.rotor_cut_deg - rotorAngleDeg;
   return { statorDeg: cut.stator_on_rotor_cut ? rotorDeg : cut.stator_cut_deg, rotorDeg };
 }

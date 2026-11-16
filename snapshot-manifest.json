@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 91501,
-      "sha256": "223041535db078963a5137177d772efac003fa35a18f69661a16baeca75ad48b"
+      "bytes": 98047,
+      "sha256": "db8f28a6a39538965fc39944c0e03d3629cb5dab6138f63a7ed814d5570c61cd"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -390,8 +390,8 @@
     },
     {
       "path": "backend/iron_loss.py",
-      "bytes": 24310,
-      "sha256": "070fe8a53400c1a760b5c919a13a4604fe63727eaf7461b9995ee1d3efbc0fe7"
+      "bytes": 24470,
+      "sha256": "28ae69b78b37c66147949f363bed2b28e05624ef34ddb198c6ce95cb004c6021"
     },
     {
       "path": "backend/launcher.py",
@@ -7450,8 +7450,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 25830,
-      "sha256": "4dcf2192ff776ad70ddb924a12bdfa64284c845e3fa95a00d8f495aaaa7222b8"
+      "bytes": 25940,
+      "sha256": "e413d7636478818a41df81ac3decb58a81a490be99d03b574b18d8958ceeb57f"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -18005,13 +18005,13 @@
     },
     {
       "path": "backend/sector_geometry.py",
-      "bytes": 53300,
-      "sha256": "c0b4726a530a3b22c3b0efb8aaa61d82233b87562652b5648f07234f6c696a56"
+      "bytes": 65554,
+      "sha256": "579c3b83830a8db5ee0c7563368b6800b7cbba5546cc29ccbeacc55bb401bcbb"
     },
     {
       "path": "backend/sector_tiling.py",
-      "bytes": 16628,
-      "sha256": "5f69a74eed7c9a1b81b257885c68bfd7ab4bd880894ca035c3d4f30475abcba1"
+      "bytes": 16682,
+      "sha256": "522f18be9f28a5ff7468c97c50e75f35179adea9f55b2bb941cf2525d8dbf37b"
     },
     {
       "path": "backend/solve_profile.py",
@@ -19290,8 +19290,8 @@
     },
     {
       "path": "tests/test_sector_symmetry.py",
-      "bytes": 34807,
-      "sha256": "84e1692c2e45da5cbb9c2a4d445bc7219af8b1eb5c9b5a7c222e263b90ea5bc0"
+      "bytes": 37082,
+      "sha256": "1890f892001fdf38765b2a2a9207bd06679e628bfa8381a9b8c16f0142e119bd"
     },
     {
       "path": "frontend/scripts/csv-test-helpers.mjs",
@@ -19300,8 +19300,8 @@
     },
     {
       "path": "frontend/scripts/test-sector-cuts.mjs",
-      "bytes": 3578,
-      "sha256": "75aeb9547f8ae68a2e686fc37b51983366ffa9db66406e95d9ec44152b713fa9"
+      "bytes": 3942,
+      "sha256": "9f26db74ba4eb6d89ba85bc7eaa01c97060fbaa90a174db7efc9cb87130ec593"
     },
     {
       "path": "frontend/src/public/comparisonCsv.ts",
@@ -19315,8 +19315,8 @@
     },
     {
       "path": "frontend/src/public/sectorCuts.ts",
-      "bytes": 2628,
-      "sha256": "13af525ab23baf8baa99cc0a16968fb4b432d04d28dcc4da207fd4eb323bb3fa"
+      "bytes": 2731,
+      "sha256": "f1a5904eeb8c078d6f2e63e8401a1c207524dc6a6b9654ff6bf2a36e1d72372a"
     }
   ],
   "public_patches": [
