@@ -718,7 +718,12 @@ therefore start at different angles and meet on a circle in the middle of the
 air gap. Where they do not overlap, the stator-only arc of that circle and the
 rotor-only arc are exactly one sector apart. Gmsh gives every cut edge, and
 those two arcs, matching nodes one sector apart; the artifact lists them in
-`sector_edge_pairs` and describes the wedges in `mesh.info.sector`.
+`sector_edge_pairs` and describes the wedges in `mesh.info.sector`. Where the
+two cuts would leave an arc too short to mesh well (under half the air-gap
+element size), the rotor is cut at the tooth instead: a fraction of a degree,
+which keeps the stator in whole slot pitches. A rotor with a corner near that
+line (the published Prius has corners on its pole boundary) would get a sliver
+there, so for such a rotor the stator cut moves onto the rotor cut instead.
 
 **Tying the edges.** For a described sector each pair is tied exactly: the
 second node takes the first node's unknown, negated for an anti-periodic
@@ -746,10 +751,37 @@ full circle it agrees to mesh noise.
 motor. A stored frame keeps one sector and is rebuilt as the full motor when it
 is read, so saved runs shrink with the sector.
 
+**The stator iron mesh.** Iron loss follows each stator element of the first
+position through the sweep. The full motor's stator mesh is the same at every
+rotor position. A sector's stator cut moves with the rotor, so a sector meshed
+freely would mesh its stator differently at most positions, and looking each
+element's flux density up in a different triangle each time reads as extra
+harmonics: sector yoke iron loss came out 19-69% high on the outrunners. The
+sector's stator iron (teeth and yoke) is therefore cut into slot pitches at the
+tooth centres. Gmsh meshes the first pitch and makes each next one an exact
+turned copy (periodic surfaces, each chained to the one before, so every curve
+has one master). Gmsh meshes a turned copy of a shape differently, so the
+sector is meshed in a frame turned to put its stator cut on the same tooth
+every time, from coordinates rounded to 1e-9 mm, with the iron built first in a
+fixed order. The mesh is then turned back, and nodes on the cut edges are put
+back exactly on the cuts. Boundaries the iron shares are broken at the new
+points (the tooth tips with the air gap), so the mesh stays joined. The lines
+through the tooth centres are mesh lines only: no tie or boundary condition
+acts on them. Every position then has the same stator iron mesh, to about
+1e-5 mm, and sector iron loss is within 1% of the full motor's on every A-F
+benchmark case. The rotor is meshed freely at each position, as in the full
+motor; a loss that follows rotor elements through a sweep would need the same
+treatment there (pole-pitch pieces in a fixed frame).
+
 **In the app.** The run-time estimate counts the solved sector's elements, from
 the prepared mesh or, before one exists, from the same repeat check without
 meshing. Compare lists a change between the full motor and one sector as
-**Solved region**; a saved run without the field solved the full motor. A saved
+**Solved region**; a saved run without the field solved the full motor. The
+Mesh view draws the whole motor. Stopped, the sector solved at that rotor angle
+is bright and its copies dimmed, cut exactly as the solver cuts it there (the
+mesh preview carries the cuts over one revolution, `sector_cuts`). While the
+rotor turns (Spin, or during a solve) the whole motor is drawn, because which
+identical copy is solved changes as it turns. A saved
 setup with accuracy and solver settings records **One sector** when it was
 chosen and otherwise solves the full motor ([Saved run setups](SOLVE_SETUPS.md)).
 
