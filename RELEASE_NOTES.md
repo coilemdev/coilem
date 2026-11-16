@@ -1,10 +1,11 @@
-# coilEM 0.5.8 Developer Preview — release candidate
+# coilEM 0.5.8 Developer Preview
 
-This candidate bundles Magneto2D 0.6.0, up from 0.5.0 in coilEM 0.5.7 for the
-solver changes below. Fresh [Windows/macOS qualification](benchmarks/qualification-78e6f4fc8aa8/README.md)
+Prepared November 15, 2026. coilEM 0.5.8 bundles Magneto2D 0.6.0, up from 0.5.0
+in coilEM 0.5.7, for the solver changes below. Fresh [Windows/macOS qualification](benchmarks/qualification-78e6f4fc8aa8/README.md)
 passes all 468 registered A–F gates and all ten separate Prius checks on each
-platform at candidate `78e6f4fc8aa8`. Historical measurements retain their
-original identities. Release approval and publication remain pending; see the
+platform at measured candidate `78e6f4fc8aa8`. The later application, interface
+and documentation changes leave the guarded numerical sources unchanged.
+Historical measurements retain their original identities. See the
 [release checklist](docs/RELEASE_0_5_8.md) and [release status](PUBLICATION_STATUS.md).
 
 - **Guided motor design.** New Design exposes parameters progressively, with
@@ -44,8 +45,8 @@ original identities. Release approval and publication remain pending; see the
   mesh and frame sharing, and repeated-solve reuse reduce overhead. Results and
   reports distinguish elapsed time from combined worker time. The Solve page's
   run-time estimate is refitted to this release's timings, and a torque–speed
-  map counts only the points it has not already stored. Release-specific
-  speed claims await measurements of this candidate.
+  map counts only the points it has not already stored. No release-specific
+  speed claim is made until this release is measured.
 - **More useful results and reports.** Partial analyses explain unavailable
   losses and efficiency; incomplete totals are labelled Known loss subtotal.
   PDF currents use A peak, resistance rows avoid duplicates, and diagnostic
@@ -69,11 +70,34 @@ the next release by the release owner; existing warnings remain in place.
 
 Windows Ctrl+Break cancellation can intermittently hang during a solve
 ([#234](https://github.com/coilemdev/coilem/issues/234)); passing retries do not
-establish a fix. Investigation and repeated cancellation checks are deferred
+establish a fix. Interrupting an in-process `coilem solve` on Windows can also
+exit with code 4 (solve failed) instead of 130 (cancelled); the solve still
+stops and no solver process is left running.
+Investigation and repeated cancellation checks are deferred
 to the next release by the release owner. Sector models and
-opt-in pole-pitch mesh reuse are excluded from this candidate. Hardware accuracy,
+opt-in pole-pitch mesh reuse are excluded from this release. Hardware accuracy,
 3D end effects and Experimental outputs remain outside any software parity
 claim; see [Validation](docs/VALIDATION.md).
+
+## Reproduce this record
+
+Install coilEM 0.5.8 after publication, then run:
+
+```sh
+coilem benchmark --list
+coilem benchmark --quick --out benchmark-output/058-quick
+coilem benchmark --phase E --phase F --out benchmark-output/058-ef
+coilem benchmark --out benchmark-output/058-af
+coilem benchmark --resume --out benchmark-output/058-af
+```
+
+The complete-grid requests, frozen reference components and numerical gates
+are unchanged. Windows and macOS installations compare their installed
+physics with the records measured at `78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`.
+The [Windows report](benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/benchmark_report.md)
+and [macOS report](benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/benchmark_report.md)
+retain the full measurements; the separate Prius evidence is linked by each
+platform record. A Linux replay is not a Linux numerical qualification.
 
 # coilEM 0.5.7 Developer Preview
 

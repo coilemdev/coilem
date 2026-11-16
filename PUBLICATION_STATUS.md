@@ -1,33 +1,46 @@
 # Release status
 
-**coilEM 0.5.8 Developer Preview is in preparation, not approved for publication.**
-The application and frontend identify as 0.5.8; Magneto2D is 0.6.0 (0.5.7
-bundled Magneto2D 0.5.0).
-The release branch is rebased onto current main, retaining the 0.5.7 metadata
-and historical evidence with their original identities.
+Published November 16, 2026 (UTC): **coilEM 0.5.8 Developer Preview**, with
+**Magneto2D 0.6.0** (0.5.7 bundled Magneto2D 0.5.0). The 0.5.8 release branch
+was integrated into `main` by [PR #292](https://github.com/coilemdev/coilem/pull/292);
+later 0.5.8 work merged into `main` directly.
 
-The current release qualification gate **PASSES** for measured candidate
+## 0.5.8 qualification and publication
+
+The formal release qualification gate passes for measured candidate
 `78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9`. The
 [two-platform evidence](benchmarks/qualification-78e6f4fc8aa8/README.md) records
 68 supported cases and 468/468 A–F gates passing on each platform, plus all ten
 separate Prius checks (17 jobs / 568 field positions each). Trusted carry
 validation found no moved values beyond existing limits and no reference
 incompatibility; no numerical exception or tolerance change was needed.
+The later application, interface, Python client and documentation changes
+leave the guarded numerical sources unchanged, so this evidence still applies.
 
-Candidate CI, browser checks, four-platform wheel builds and installed-package
-acceptance passed on the subsequent metadata/test cohort. Publication-commit
-CI passed in run `43564890229`. On November 14, 2026, the release owner
-accepted deferring the unresolved Windows cancellation issue (#234) and
-V-shape convergence work (#285) to the next release. Both remain open and
-are disclosed limitations; passing numerical parity does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
-and [candidate release notes](RELEASE_NOTES.md).
+Main CI passed on the final application candidate `a8e87521` in run
+`43737595956`. Four-platform wheel builds, installed-package acceptance and a
+TestPyPI rehearsal (`0.5.8.dev437475360861`) passed on the same commit in run
+`43747536086`.
 
-Public PyPI publication is on hold while additional 0.5.8 items are completed.
-Saved run setups (#127) change the app workflow, not the guarded numerical
-sources. Final application CI and wheel acceptance must cover the expanded
-candidate before publication.
+On November 14, 2026, the release owner accepted deferring the unresolved
+Windows cancellation issue (#234) and V-shape convergence work (#285) to the
+next release. Both remain open and are disclosed limitations; passing numerical
+parity does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
+and [release notes](RELEASE_NOTES.md).
 
-No v0.5.8 tag or package upload has been performed by this evidence publication.
+The annotated tag `v0.5.8` points at `a3e70035`, the merge of
+[PR #314](https://github.com/coilemdev/coilem/pull/314). Tag run
+[`43752888234`](https://github.com/coilemdev/coilem/actions/runs/43752888234)
+rebuilt the four wheels and reran installed-package acceptance. On Windows,
+the check that an interrupted CLI solve exits with code 130 failed in three of
+eight attempts across the run's three attempts: the solve stopped, but the CLI
+exited with code 4 ([#234](https://github.com/coilemdev/coilem/issues/234)).
+The third attempt passed all 21 acceptance jobs. After the release owner
+approved the `pypi` environment, 0.5.8 was uploaded to
+[PyPI](https://pypi.org/project/coilem/0.5.8/), PyPI install checks passed on
+all four platforms, and the
+[GitHub release](https://github.com/coilemdev/coilem/releases/tag/v0.5.8) was
+published as Latest.
 
 # Historical release status
 
