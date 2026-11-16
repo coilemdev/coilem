@@ -65,6 +65,34 @@ also fail for the rotor and pass for the stator.
 
 ## Next full-motor qualification slice
 
+### Qualification order before merging to 0.5.9
+
+Keep #318 on its current base while completing and qualifying the full-motor
+loss feature. Run the supported loss fixtures and full-mode regression controls
+on this branch before merge. Compare existing electromagnetic/stator outputs
+with the frozen `f2142dba` release baseline using identical full-motor requests.
+The branch already contains #242's code; `symmetry: full` isolates the exercised
+path, rather than pretending the sector code is absent from its ancestry.
+
+Validate [#317](https://github.com/coilemdev/coilem/pull/317) independently. It
+changes V-shape corner meshes and states that SPM, flat-IPM and Prius-style
+meshes are unchanged. The initial #306 fixture coverage is SPM and flat IPM;
+do not mix the V-shape change into its frozen validation baseline. Verify the
+claimed unaffected paths when assembling the release.
+
+After independently accepted changes land, run final qualification on the
+assembled `release/v0.5.9` candidate on both platforms, covering full-motor
+loss and the existing limited-sector functionality. Branch qualification
+does not qualify an untested merged tree. Retain FEMM reference field histories
+when geometry, materials, excitation and extraction remain identical and the
+reference convergence gates pass; verify those identities explicitly instead
+of recollecting FEMM merely because the native Git revision changed.
+
+Current internal collector measurements are numerical development evidence,
+not yet the complete qualification of the integrated public solve/API path.
+
+### Bounded numerical and integration work
+
 1. Finish the matched reference's registered 192/384-sample insertions on the
    same fixed FEMM mesh, checking component agreement, source/excitation
    identity, independent endpoint closure and both successive angular steps.

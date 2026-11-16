@@ -18,14 +18,24 @@ from tools.rotor_native_pilot import sha, write
 COMPONENTS = ("hysteresis_W", "lamination_eddy_W", "total_W")
 
 
-def audit_sources(directory, protocol, stride):
+def reference_source_audit(protocol, source_root=None):
     if protocol.get("schema") != "coilem.matched_rotor_reference/v1":
         raise ValueError("legacy FEMM histories are not matched native comparison targets")
-    package = Path(runtime.__file__).parent
+    package = Path(runtime.__file__).parent if source_root is None else Path(source_root) / "tools/femm_reference"
+    manifest_sha = sha(package / "source-manifest.json")
+    if manifest_sha != protocol["reference_identity"]["source_manifest_sha256"]:
+        raise ValueError("matched reference source manifest changed")
     for name, digest in protocol["reference_identity"]["implementation_sha256"].items():
         if Path(name).name != name or sha(package / name) != digest:
             raise ValueError("matched reference implementation changed")
-    runtime.verify_sources()
+    manifest = runtime.verify_sources(package)
+    return {"source_manifest_sha256": manifest_sha, "verified_source_files": len(manifest["files"]),
+            "explicit_frozen_source": source_root is not None,
+            "implementation_sha256": protocol["reference_identity"]["implementation_sha256"]}
+
+
+def audit_sources(directory, protocol, stride, *, source_root=None):
+    source_audit = reference_source_audit(protocol, source_root)
     preparation = json.loads((directory / "preparation.json").read_text())
     for name, digest in preparation["sha256"].items():
         if Path(name).name != name or sha(directory / name) != digest:
@@ -51,7 +61,7 @@ def audit_sources(directory, protocol, stride):
             raise ValueError("reference solution excitation or mesh audit failed")
         max_saved = max(max_saved, saved)
         max_solution = max(max_solution, record["solution_current_error_At"])
-    return {"saved_ampere_turn_error_max": max_saved, "solution_ampere_turn_error_max": max_solution,
+    return {"reference_sources": source_audit, "saved_ampere_turn_error_max": max_saved, "solution_ampere_turn_error_max": max_solution,
             "maximum_winding_centroid_difference_mm": max(e["centroid_distance_mm"] for e in preparation["winding_geometry_audit"]),
             "maximum_magnet_centroid_difference_mm": max(e["centroid_distance_mm"] for e in preparation["magnet_geometry_audit"]),
             "mesh_geometry_sha256": preparation["mesh_geometry_sha256"], "preparation_sha256": sha(directory / "preparation.json")}
@@ -121,18 +131,23 @@ def main():
     parser.add_argument("reference", type=Path)
     parser.add_argument("native", type=Path)
     parser.add_argument("--stride", type=int, choices=(1, 2, 4), default=4)
+    parser.add_argument("--reference-source-root", type=Path,
+                        help="Verify the frozen collector checkout that actually produced this history")
+    parser.add_argument("--out", type=Path, help="Keep reanalysis separate from archived evidence")
     args = parser.parse_args()
     protocol = json.loads((args.reference / "protocol.json").read_text())
     if (sha(args.native / "protocol.json") != protocol["native_protocol_sha256"]
             or sha(args.native / "analysis.json") != protocol["native_analysis_sha256"]
             or sha(args.native / "native-config.json") != protocol["native_config_sha256"]):
         raise ValueError("native comparison inputs changed after reference collection")
-    audit = audit_sources(args.reference, protocol, args.stride)
+    audit = audit_sources(args.reference, protocol, args.stride, source_root=args.reference_source_root)
     reference = analyse_reference(args.reference, sample_stride=args.stride)
     native_config = json.loads((args.native / "native-config.json").read_text())
     if reference["stack_m"] != native_config["stator"]["stack_length_mm"]*1e-3:
         raise ValueError("cross-solver stack lengths differ")
-    write(args.reference / f"analysis-stride-{args.stride}.json", reference)
+    output = args.out or args.reference
+    output.mkdir(parents=True, exist_ok=True)
+    write(output / f"analysis-stride-{args.stride}.json", reference)
     native = json.loads((args.native / "analysis.json").read_text())
     report = compare_results(reference, protocol, native)
     report["source_audit"] = audit
@@ -140,8 +155,8 @@ def main():
     report["steel_bh_sha256"] = protocol["steel_bh_sha256"]
     report["analysis_sources_sha256"] = {name: sha(Path(__file__).parent / name) for name in
                                          ("rotor_matched_report.py", "rotor_loss_pilot_report.py", "rotor_loss_reference.py")}
-    write(args.reference / f"comparison-stride-{args.stride}.json", report)
-    (args.reference / f"comparison-stride-{args.stride}.md").write_text(markdown_report(report), encoding="utf-8")
+    write(output / f"comparison-stride-{args.stride}.json", report)
+    (output / f"comparison-stride-{args.stride}.md").write_text(markdown_report(report), encoding="utf-8")
     print(markdown_report(report))
 
 

@@ -1,10 +1,38 @@
 """Cross-solver component gates cannot hide mismatched inputs or reference errors."""
 
+import json
 from copy import deepcopy
 
 import pytest
 
-from tools.rotor_matched_report import compare_results
+from tools.rotor_matched_report import compare_results, reference_source_audit
+from tools.rotor_native_pilot import sha
+
+
+def test_frozen_reference_source_must_match_its_original_identity(tmp_path):
+    package = tmp_path / "tools/femm_reference"
+    package.mkdir(parents=True)
+    collector = package / "collector.py"
+    collector.write_text("# original collector snapshot\n")
+    manifest = package / "source-manifest.json"
+    manifest.write_text(json.dumps({"files": {}}))
+    protocol = {"schema": "coilem.matched_rotor_reference/v1", "reference_identity": {
+        "source_manifest_sha256": sha(manifest), "implementation_sha256": {"collector.py": sha(collector)}}}
+    audit = reference_source_audit(protocol, tmp_path)
+    assert audit["explicit_frozen_source"] and audit["implementation_sha256"] == {"collector.py": sha(collector)}
+    collector.write_text("# different collector cannot relabel the original data\n")
+    with pytest.raises(ValueError, match="implementation changed"):
+        reference_source_audit(protocol, tmp_path)
+
+
+def test_frozen_manifest_identity_cannot_be_replaced(tmp_path):
+    package = tmp_path / "tools/femm_reference"
+    package.mkdir(parents=True)
+    (package / "source-manifest.json").write_text(json.dumps({"files": {}}))
+    protocol = {"schema": "coilem.matched_rotor_reference/v1", "reference_identity": {
+        "source_manifest_sha256": "another manifest", "implementation_sha256": {}}}
+    with pytest.raises(ValueError, match="manifest changed"):
+        reference_source_audit(protocol, tmp_path)
 
 
 def comparison():

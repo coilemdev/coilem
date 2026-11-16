@@ -56,6 +56,7 @@ settings. The saved template's actual target and geometry are audited.
 python -m tools.rotor_native_mesh_refinement --base-lc-mm 0.94 --positions 384 --mesh normal --airgap-divisions 2304 --airgap-layers 5 --limit 1 --out OUTPUT/native-h094 --binary PATH/magneto2d.exe
 python -m tools.rotor_native_mesh_refinement --base-lc-mm 0.75 --positions 384 --mesh normal --airgap-divisions 3072 --airgap-layers 6 --limit 1 --out OUTPUT/native-h075 --binary PATH/magneto2d.exe
 # Resume disjoint shards only after the authoritative template exists.
+python -m tools.rotor_native_spatial_report OUTPUT/native-normal OUTPUT/native-h094 OUTPUT/native-h075 --out OUTPUT/native-spatial-report
 ```
 
 ## Matched reference spatial controls
@@ -73,6 +74,12 @@ and unchanged sealed E/F source, binaries, excitation, steel and magnet
 assumptions. Any comparison across collector versions must audit both source
 snapshots and the explicit mesh-control-only change. Original raw evidence
 and protocols are preserved.
+
+`tools.rotor_matched_report --reference-source-root FROZEN_CHECKOUT --out REPORT`
+verifies the original collector snapshot and its sealed manifest rather than
+relabeling archived data as collected by the current implementation. Use a
+separate output directory to retain prior analyses. Native spatial reporting
+also leaves the registered baseline and its bound analysis unchanged.
 
 Verification: **282 rotor/loss/reference/sector checks pass** in 61.39 s,
 including invalid-control rejection and restoration/provenance checks. The
