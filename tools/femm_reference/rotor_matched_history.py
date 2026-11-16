@@ -33,6 +33,14 @@ def selected_indices(positions, stride, shard=0, shards=1):
     return [i for i in range(0, positions+1, stride) if (i//4) % shards == shard]
 
 
+def mesh_controls(mesh, airgap_target_mm, airgap_arc_step_deg):
+    if (mesh not in ("normal", "fine", "very_fine")
+            or not all(math.isfinite(v) and v > 0 for v in (airgap_target_mm, airgap_arc_step_deg))
+            or airgap_arc_step_deg >= 180):
+        raise ValueError("invalid explicit reference mesh controls")
+    return {"mesh": mesh, "airgap_target_mm": airgap_target_mm, "airgap_arc_step_deg": airgap_arc_step_deg}
+
+
 def validate_excitation(excitation, angle):
     if excitation["gate"] != "PASS" or excitation["native_rotor_mechanical_deg"] != angle or excitation["native_gamma_deg"] != 180:
         raise ValueError("native excitation audit or signed pose differs")
@@ -174,10 +182,14 @@ def main():
     parser.add_argument("--native-history", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--stride", type=int, choices=(1, 2, 4), default=4)
+    parser.add_argument("--mesh", choices=("normal", "fine", "very_fine"), default="normal")
+    parser.add_argument("--airgap-target-mm", type=float, default=0.125)
+    parser.add_argument("--airgap-arc-step-deg", type=float, default=0.25)
     parser.add_argument("--shard", default="0/1")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--resume", action="store_true")
     args = parser.parse_args()
+    controls = mesh_controls(args.mesh, args.airgap_target_mm, args.airgap_arc_step_deg)
     if args.limit is not None and args.limit < 1:
         parser.error("limit must be positive")
     shard, shards = map(int, args.shard.split("/"))
@@ -192,7 +204,7 @@ def main():
                 "raw_mesh_frame": "rotor_material", "raw_field_frame": "rotor_material", "independent_base_reload": True,
                 "fixture": FIXTURE.relative_to(ROOT).as_posix(), "fixture_sha256": sha(FIXTURE),
                 "speed_rpm": 3000, "current_peak_A": 20, "gamma_deg": 180, "requested_public_gamma_deg": 0,
-                "mesh": "normal", "smoothing": "off", "airgap_target_mm": 0.125, "airgap_arc_step_deg": 0.25,
+                **controls, "mesh_control_contract": "explicit_preset_airgap/v1", "smoothing": "off",
                 "native_protocol_sha256": native["protocol_sha256"], "native_analysis_sha256": native["analysis_sha256"],
                 "native_config_sha256": native["config_sha256"],
                 "native_excitation_sha256": native["excitation_sha256"], "native_loss_material": native["analysis"]["loss_material"],
@@ -210,11 +222,11 @@ def main():
         runtime.write(protocol_path, protocol)
     Solver, Model, geometry, curve, _, femm, automation_module, adapter = phase_e.load_adapter()
     e_producer.clear_solver_environment()
-    os.environ["FEMM_AIRGAP_MESHSIZE_MM"] = "0.125"
+    os.environ["FEMM_AIRGAP_MESHSIZE_MM"] = str(args.airgap_target_mm)
     if curve("M350-50A").sha256 != sha(ROOT / "materials/electrical-steel/M350-50A.csv"):
         raise ValueError("native and FEMM steel B-H curves differ")
     config = Model.model_validate(json.loads(FIXTURE.read_text()))
-    config.solve_params.current_angle_deg, config.solve_params.mesh_density = 180, "normal"
+    config.solve_params.current_angle_deg, config.solve_params.mesh_density = 180, args.mesh
     geom = geometry(config)
 
     class MatchedSolver(Solver):
@@ -252,7 +264,7 @@ def main():
                     femm.mi_modifymaterial(name, key, value)
             solver._draw_full_geometry(femm, config, geom, rotor_offset_deg=0)
             solver._apply_winding_current(femm, config, geom, 0)
-            add_periodic_airgap(femm, solver, config, geom, arc_step_deg=0.25)
+            add_periodic_airgap(femm, solver, config, geom, arc_step_deg=args.airgap_arc_step_deg)
             solver._apply_boundary(femm, geom)
             femm.mi_saveas(str(base))
             femm.mi_saveas(str(directory / "area-probe.fem"))
@@ -332,7 +344,8 @@ def main():
             runtime.write(output / "applied-excitation.json", applied)
             record = {"index": index, "mechanical_angle_deg": angle, "rotor_elements": rotor_elements,
                       "total_elements": int(femm.mo_numelements()), "mesh_geometry_sha256": signature,
-                      "airgap_target_mm": 0.125, "native_excitation_sha256": native["excitation_sha256"][index],
+                      "airgap_target_mm": args.airgap_target_mm, "airgap_arc_step_deg": args.airgap_arc_step_deg,
+                      "native_excitation_sha256": native["excitation_sha256"][index],
                       "saved_current_error_At": saved_error, "solution_current_error_At": observed_error,
                       "wall_s": time.perf_counter()-begin, "sha256": {p.name: sha(p) for p in output.iterdir() if p.is_file()}}
             femm.mo_close()

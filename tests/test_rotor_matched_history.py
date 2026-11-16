@@ -6,7 +6,18 @@ import math
 import pytest
 
 from tools.femm_reference.rotor_airgap import BOUNDARY
-from tools.femm_reference.rotor_matched_history import match_geometry, model_audit, selected_indices, validate_excitation
+from tools.femm_reference.rotor_matched_history import match_geometry, mesh_controls, model_audit, selected_indices, validate_excitation
+
+
+@pytest.mark.parametrize("mesh,target,arc", [("normal", 0.125, 0.25), ("fine", 0.1, 0.2), ("very_fine", 0.08, 0.16)])
+def test_spatial_controls_are_explicit(mesh, target, arc):
+    assert mesh_controls(mesh, target, arc) == {"mesh": mesh, "airgap_target_mm": target, "airgap_arc_step_deg": arc}
+
+
+@pytest.mark.parametrize("target,arc", [(0, 0.2), (0.1, 0), (float("nan"), 0.2), (0.1, float("inf")), (0.1, 180)])
+def test_nonphysical_spatial_controls_fail_before_collection(target, arc):
+    with pytest.raises(ValueError, match="mesh controls"):
+        mesh_controls("fine", target, arc)
 
 
 @pytest.mark.parametrize("stride", [1, 2, 4])

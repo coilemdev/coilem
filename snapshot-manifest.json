@@ -19525,8 +19525,8 @@
     },
     {
       "path": "tests/test_rotor_matched_history.py",
-      "bytes": 4307,
-      "sha256": "76d72dc0799aa702dad89d6d313d291ce4ae174361b80a7c73c2d5dd0b8bca56"
+      "bytes": 4913,
+      "sha256": "63eafcc5adb997a5ed684d1b5e1a68b8213af4938d0f5e4ac1f185552baf1ab8"
     },
     {
       "path": "tests/test_rotor_matched_report.py",
@@ -19535,8 +19535,8 @@
     },
     {
       "path": "tools/femm_reference/rotor_matched_history.py",
-      "bytes": 21246,
-      "sha256": "f8fde0faefe1c7d31148cf72bd8eec588c5fee0e14070bf177eed1c49e1e15af"
+      "bytes": 22134,
+      "sha256": "dc9abacd79bad7ec8d10fbfdab05f6092d5b4b27844a2396c3c017baec7987fb"
     },
     {
       "path": "tools/rotor_matched_report.py",
@@ -19552,6 +19552,26 @@
       "path": "docs/benchmarks/rotor-59-landing-306-20261116.json",
       "bytes": 5227,
       "sha256": "6cc7191d1990cd08fca1bf3a3a1b2e2c7919f5ed043ffb9ecdb29cc7b384f667"
+    },
+    {
+      "path": "docs/benchmarks/rotor-fullmotor-refinement-306-20261116.json",
+      "bytes": 7221,
+      "sha256": "2871da8b6ea1211e37e1381f3ee9c2d973761c1c1e9dc81d5529dd3b07d3f2e7"
+    },
+    {
+      "path": "docs/benchmarks/rotor-fullmotor-refinement-306-20261116.md",
+      "bytes": 4766,
+      "sha256": "cf3c9305d9f7f436a9f1b75226fc5789cd71e610b9403471bc846a4bd05439c2"
+    },
+    {
+      "path": "tests/test_rotor_native_mesh_refinement.py",
+      "bytes": 1864,
+      "sha256": "378f1dc1ce54dd4a79acafaf9482a4602853ddfd7be3c11536468f61ee7227db"
+    },
+    {
+      "path": "tools/rotor_native_mesh_refinement.py",
+      "bytes": 2049,
+      "sha256": "d0176bde8b7078e777d32037893800b6727fa270fb069dee1532505b45daf262"
     }
   ],
   "public_patches": [

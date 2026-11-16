@@ -1,0 +1,187 @@
+{
+  "schema": "coilem.fullmotor_rotor_refinement_checkpoint/v1",
+  "date": "2026-11-16",
+  "target": "0.5.9",
+  "domain": "full_motor_only",
+  "status": "PILOT_NOT_QUALIFIED",
+  "sector_rotor_loss_deferred_issue": 319,
+  "femm_192": {
+    "schema": "coilem.matched_rotor_comparison/v1",
+    "status": "PILOT_NOT_QUALIFIED",
+    "positions": 192,
+    "progressive_subset": true,
+    "registered_positions": 384,
+    "native_loss_W": {
+      "hysteresis_W": 0.016598403886528456,
+      "lamination_eddy_W": 0.047978376659562484,
+      "total_W": 0.06457678054609094
+    },
+    "femm_loss_W": {
+      "hysteresis_W": 0.01659233114686578,
+      "lamination_eddy_W": 0.04800555462870361,
+      "total_W": 0.06459788577556938
+    },
+    "native_minus_femm_W": {
+      "hysteresis_W": 6.072739662677656e-06,
+      "lamination_eddy_W": -2.7177969141124747e-05,
+      "total_W": -2.110522947844362e-05
+    },
+    "relative_difference_of_femm": {
+      "hysteresis_W": 0.00036599677338435785,
+      "lamination_eddy_W": -0.0005661421756571983,
+      "total_W": -0.0003267170314485048
+    },
+    "component_gates": {
+      "hysteresis_W": true,
+      "lamination_eddy_W": true,
+      "total_W": true
+    },
+    "cross_solver_loss_gate": "PASS",
+    "input_history_gates_pass": true,
+    "femm_loss_math_gate_pass": true,
+    "femm_angular_gate_complete": false,
+    "native_spatial_gate": "NOT_RUN",
+    "femm_spatial_gate": "NOT_RUN",
+    "full_matrix_started": false,
+    "tolerances": {
+      "cross_solver_relative_of_femm": 0.1,
+      "absolute_W": 0.001
+    },
+    "material": {
+      "steel_id": "M350-50A",
+      "coefficient_source": "EN 10106 grade limits + cited classical lamination eddy term",
+      "coefficients": {
+        "kh": 0.02363080387956422,
+        "alpha": 2.1133208693341228,
+        "kc": 0.0001273839224087156,
+        "density_kg_m3": 7650.0
+      },
+      "stacking_factor": 1.0
+    },
+    "stack_m": 0.05,
+    "native_mass_kg": 0.8411629977749437,
+    "femm_mass_kg": 0.8409283715925552,
+    "femm_loss_above_1kHz_share": 0.10486431004119359,
+    "native_loss_above_1kHz_share": 0.10554331209537013,
+    "femm_endpoint_max_T": 5.268230296451293e-11,
+    "femm_angular_convergence": [
+      {
+        "from": 48,
+        "to": 96,
+        "reference_change_W": {
+          "hysteresis_W": 0.0005066980783643149,
+          "lamination_eddy_W": 0.005889591049764845,
+          "total_W": 0.006396289128129153
+        },
+        "production_change_W": {
+          "hysteresis_W": 0.0005066980783642941,
+          "lamination_eddy_W": 0.005889591049764574,
+          "total_W": 0.006396289128128868
+        },
+        "reference_pass": false,
+        "production_pass": false,
+        "pass": false
+      },
+      {
+        "from": 96,
+        "to": 192,
+        "reference_change_W": {
+          "hysteresis_W": 2.3968423074338663e-06,
+          "lamination_eddy_W": 0.00042153841774905665,
+          "total_W": 0.0004239352600564905
+        },
+        "production_change_W": {
+          "hysteresis_W": 2.396842307416519e-06,
+          "lamination_eddy_W": 0.0004215384177484738,
+          "total_W": 0.00042393526005589377
+        },
+        "reference_pass": true,
+        "production_pass": true,
+        "pass": true
+      }
+    ],
+    "reference_timing": {
+      "field_solves_including_endpoint": 193,
+      "sum_position_wall_s": 6154.647482400149,
+      "mean_position_s": 31.889365193783156,
+      "min_elements": 78954,
+      "max_elements": 78954
+    },
+    "native_protocol_sha256": "e17edcc6c11cb86da8e45261628df5a85b9480679556a6fc80ee7ecfd5c3ed1b",
+    "reference_protocol_sha256": "889bce740fd59857f0862e7d597404ac3c422f73ede98a7f6ae506de3a234a0d",
+    "source_audit": {
+      "saved_ampere_turn_error_max": 2.842170943040401e-14,
+      "solution_ampere_turn_error_max": 6.536993168992922e-13,
+      "maximum_winding_centroid_difference_mm": 0.0004107455001133212,
+      "maximum_magnet_centroid_difference_mm": 0.00038610308908459956,
+      "mesh_geometry_sha256": "d0e20a3b7680a0f6b65b590a8f11af26f8dd19f937f0e7b033764311f7f7c30a",
+      "preparation_sha256": "4cd98a473a4a9b88bf36f2c6cb2baf66c07782c35145e3cc625ced60c4b3114d"
+    },
+    "matched_magnet": {
+      "grade": "N42",
+      "remanence_T": 1.315,
+      "relative_permeability": 1.05,
+      "native_source_sha256": "bd0ea38b6bd405657ace25496711b59cd447e3e5e4fed47b9e0014b0ce0a0699"
+    },
+    "steel_bh_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "analysis_sources_sha256": {
+      "rotor_matched_report.py": "a53c3cd503c96d2df07fea144b606658afdb3754b169b71b880e8ca9dce3936d",
+      "rotor_loss_pilot_report.py": "ec6491e1586f9ec7139988d83ce7081a56717f9a906f4c077297250c6addb5b7",
+      "rotor_loss_reference.py": "157e0b1c4deda15d402fde7801658bed4c2d1a77744c38778602c4d3c808d8c2"
+    }
+  },
+  "native_spatial_preflights": [
+    {
+      "directory": "fixed-material-n384-v1",
+      "base_lc_mm": 1.17,
+      "rotor_cells": 17742,
+      "rotor_max_cell_area_mm2": 0.6680812204609745,
+      "total_elements": 89160,
+      "solve_export_s": 1.905725499993423,
+      "airgap_angular_divisions": 1536,
+      "airgap_radial_layers": 4,
+      "protocol_sha256": "e17edcc6c11cb86da8e45261628df5a85b9480679556a6fc80ee7ecfd5c3ed1b",
+      "material_template_sha256": "c7dc2e03ed2672148d95bf32a86a8bb8e61157c6cebbe22e1446ac0e9334a863"
+    },
+    {
+      "directory": "native-spatial-h094-n384-v1",
+      "base_lc_mm": 0.94,
+      "rotor_cells": 27374,
+      "rotor_max_cell_area_mm2": 0.4324237449291725,
+      "total_elements": 140102,
+      "solve_export_s": 3.2862404999905266,
+      "airgap_angular_divisions": 2304,
+      "airgap_radial_layers": 5,
+      "protocol_sha256": "b2a23018cf77e46bb26c7805dd7db738f87caf679ec17c821aa5ac442fe80bca",
+      "material_template_sha256": "29f6c5f022752744053269eecbf3b342c10fd43719094e4a579d1b25341f8754"
+    },
+    {
+      "directory": "native-spatial-h075-n384-v1",
+      "base_lc_mm": 0.75,
+      "rotor_cells": 41318,
+      "rotor_max_cell_area_mm2": 0.32262642461254,
+      "total_elements": 219210,
+      "solve_export_s": 5.042794500011951,
+      "airgap_angular_divisions": 3072,
+      "airgap_radial_layers": 6,
+      "protocol_sha256": "7f11b4664d7c87cff4ed31e982ec7a36333066dda9420ff072249dea5ebd6ab9",
+      "material_template_sha256": "f2877c4de31979bf044f08469637d9b411074c20143309b518bc75f16121257e"
+    }
+  ],
+  "verification": {
+    "python_tests_passed": 282,
+    "python_test_elapsed_s": 61.39
+  },
+  "source_sha256": {
+    "tools/rotor_native_mesh_refinement.py": "d0176bde8b7078e777d32037893800b6727fa270fb069dee1532505b45daf262",
+    "tools/femm_reference/rotor_matched_history.py": "dc9abacd79bad7ec8d10fbfdab05f6092d5b4b27844a2396c3c017baec7987fb"
+  },
+  "evidence_sha256": {
+    "analysis-stride-2.json": "ee498463f31c0b3a3314daeeadebfbe3d5b1b9212f4afbf0ecf033f4dc0af230",
+    "comparison-stride-2.json": "8b4b180ba6e53628f619167cb5f04d1ee8cb73d2c2f5488a8e7220618165adb7"
+  },
+  "test_receipts_sha256": {
+    "rotor-refinement-controls-tests.log": "6d1af561d4cedf095b721f0e75ef784d3f69fac40e0c682a2f0ccb768aebb9ac",
+    "rotor-refinement-controls-tests.xml": "824900122b9629b700cb9fe5a33bdde68ff361345d891d26b200dbed99bccdba"
+  }
+}
