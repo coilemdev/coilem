@@ -2,9 +2,12 @@
 
 **2026-11-16 correction:** the archived FEMM full-turn collector used an
 incompatible angle/current trajectory. Its 47.707 mW result is not a
-same-operating-point native loss target. The new native pilot also fails
+same-operating-point native loss target. The initial native pilot failed
 angular convergence because the remeshing/element-gradient sampling path can
 generate false loss. See the [native pilot and excitation erratum](benchmarks/rotor-native-pilot-306-20261116.md).
+The [fixed-material implementation](benchmarks/rotor-fixed-material-306-20261116.md)
+now passes the static-field control and both angular refinements on the same
+SPM motor. Spatial convergence and a corrected FEMM loss comparison remain outstanding.
 The historical commands below reproduce legacy evidence; they must not be used
 to qualify public gamma-zero rotor loss. The full release matrix remains unstarted.
 

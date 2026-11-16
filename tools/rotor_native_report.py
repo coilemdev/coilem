@@ -25,6 +25,17 @@ from tools.rotor_native_pilot import material_query_points, sha, validate_conver
 COMPONENTS = ("hysteresis_W", "lamination_eddy_W", "total_W")
 
 
+def material_mesh_metrics(samples):
+    reference = samples[0].corners_mm
+    maximum = 0.0
+    for sample in samples[1:]:
+        if sample.corners_mm.shape != reference.shape:
+            return {"gate": "FAIL", "maximum_coordinate_difference_mm": None, "reason": "material cell count changed"}
+        maximum = max(maximum, float(np.max(abs(sample.corners_mm-reference))))
+    return {"gate": "PASS" if maximum <= 1e-9 else "FAIL", "maximum_coordinate_difference_mm": maximum,
+            "coordinate_tolerance_mm": 1e-9, "rotor_cells": len(reference)}
+
+
 def loss_rows(samples, positions, speed_rpm, stack_m):
     material = RotorLossMaterial("M350-50A", "EN 10106 grade limits + cited classical lamination eddy term", M350_50A_LOSS)
     rows = []
@@ -71,6 +82,13 @@ def analyse(directory):
         raise ValueError("native raw/export coordinate contract differs")
     if not protocol["fresh_field_solves"]:
         raise ValueError("native field reuse is not allowed in this pilot")
+    fixed_material = protocol.get("motion_model") == "fixed-material"
+    if fixed_material and sha(directory / "material-template.json") != protocol["material_template_sha256"]:
+        raise ValueError("fixed material mesh template changed")
+    expected_template_identity = None
+    if fixed_material:
+        template = json.loads((directory / "material-template.json").read_text())
+        expected_template_identity = hashlib.sha256(json.dumps(template, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     for name, digest in protocol["identity"]["source_sha256"].items():
         path = Path(__file__).resolve().parents[1] / name
         if sha(path) != digest:
@@ -82,6 +100,7 @@ def analyse(directory):
     if config["solve_params"]["current_angle_deg"] != protocol["native_gamma_deg"]:
         raise ValueError("native excitation config and declared gamma differ")
     samples, queries, timings, counts = [], [], [], []
+    template_identity = None
     for i, angle in enumerate(protocol["mechanical_angles_deg"]):
         position = directory / f"position-{i:04d}"
         record = json.loads((position / "position.json").read_text())
@@ -91,6 +110,15 @@ def analyse(directory):
             if Path(name).name != name or sha(position / name) != digest:
                 raise ValueError("native checkpoint artifact hash mismatch")
         validate_convergence(record["convergence"], protocol["expected_native_nonlinear_tolerance"])
+        if fixed_material:
+            motion = record["material_motion_mesh"]
+            if (motion["method"] != "fixed_material_conforming_airgap/v1"
+                    or motion["template_sha256"] != expected_template_identity
+                    or motion["angular_divisions"] != protocol["airgap_angular_divisions"]
+                    or motion["radial_layers"] != protocol["airgap_radial_layers"]
+                    or (template_identity is not None and motion["template_sha256"] != template_identity)):
+                raise ValueError("fixed material motion policy or template differs between poses")
+            template_identity = motion["template_sha256"]
         excitation = json.loads((position / "excitation.json").read_text())
         if excitation["gate"] != "PASS" or excitation["native_rotor_mechanical_deg"] != angle:
             raise ValueError("native excitation audit failed")
@@ -112,6 +140,7 @@ def analyse(directory):
               "protocol_sha256": sha(directory / "protocol.json"), "kind": protocol["kind"],
               "requested_gamma_deg": protocol["requested_gamma_deg"], "native_gamma_deg": protocol["native_gamma_deg"],
               "mesh": protocol["mesh"], "speed_rpm": protocol["speed_rpm"], "current_peak_A": protocol["current_peak_A"],
+              "motion_model": protocol.get("motion_model", "remesh"),
               "closure": closure, "reference_loss_agreement_gate": "NOT_RUN_INVALID_LEGACY_EXCITATION",
               "loss_material": {"steel_id": "M350-50A", "coefficients": asdict(M350_50A_LOSS), "stacking_factor": 1.0,
                                 "coefficient_source": "grade-limit hysteresis fit + classical lamination eddy term; not calibrated motor data"},
@@ -119,6 +148,8 @@ def analyse(directory):
               "native_spatial_gate": "NOT_RUN", "full_matrix_started": False,
               "timing": {"field_solves": len(samples), "sum_position_wall_s": sum(timings),
                          "mean_position_s": float(np.mean(timings)), "min_elements": min(counts), "max_elements": max(counts)}}
+    if fixed_material:
+        result["material_mesh_invariance"] = material_mesh_metrics(samples)
     if protocol["kind"] == "preflight":
         result["repeat_zero"] = closure_metrics(queries[0], queries[-1], protocol["closure_tolerances"])
     else:
@@ -129,6 +160,10 @@ def analyse(directory):
         result.update(results=rows, angular_convergence=convergence, angular_gate_pass=all(s["pass"] for s in convergence),
                       sampling_gate_pass=all(row["sampling_gate"] == "PASS" for row in rows),
                       loss_math_self_consistency_pass=all(row["self_consistency_pass"] for row in rows))
+        result["native_history_numerical_gates_pass"] = (result["closure"]["gate"] == "PASS"
+                                                       and result["sampling_gate_pass"] and result["angular_gate_pass"]
+                                                       and result["loss_math_self_consistency_pass"]
+                                                       and result.get("material_mesh_invariance", {"gate": "PASS"})["gate"] == "PASS")
         amplitude = 2*np.fft.rfft(np.asarray(queries[:n]), axis=0)/n
         power = np.mean(np.sum(abs(amplitude)**2, axis=-1), axis=-1)
         orders = sorted(range(1, n//2), key=lambda k: power[k], reverse=True)[:12]
@@ -145,6 +180,8 @@ def markdown_report(report):
              f'Public requested gamma: {report["requested_gamma_deg"]} degrees; native gamma: {report["native_gamma_deg"]} degrees.', "",
              f'Independent endpoint closure: **{report["closure"]["gate"]}**; maximum component error '
              f'{report["closure"]["max_component_difference_T"]:.8g} T.', ""]
+    if "material_mesh_invariance" in report:
+        lines += [f'Material mesh invariance: **{report["material_mesh_invariance"]["gate"]}**.', ""]
     if "results" in report:
         lines += ["| Samples | Hysteresis W | Lamination eddy W | Total W | Sampling |", "|---:|---:|---:|---:|---|"]
         for row in report["results"]:

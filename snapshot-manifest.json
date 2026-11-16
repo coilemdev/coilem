@@ -19330,8 +19330,8 @@
     },
     {
       "path": "docs/ROTOR_IRON_LOSS_PILOT.md",
-      "bytes": 15704,
-      "sha256": "ac19f8fdcb269eb28660347155feca54b6af81629e6b81a3ce3ed75e2d2c7786"
+      "bytes": 15954,
+      "sha256": "86fc17a699e3193318de8ec5d8d1325cadd16602d4565fa1666a1b6101c76d62"
     },
     {
       "path": "docs/benchmarks/rotor-angular-refinement-306-20261115.json",
@@ -19380,8 +19380,8 @@
     },
     {
       "path": "docs/benchmarks/rotor-native-pilot-306-20261116.md",
-      "bytes": 11445,
-      "sha256": "8a1fcf46c9a7eb6be4f0d7cec407261bb480c879eed0642c17887e9f64b6ea35"
+      "bytes": 11719,
+      "sha256": "37e1c4403f9d5a6c7a81ca0b41d515c43b54579491d31f119e67086e47d50de4"
     },
     {
       "path": "docs/benchmarks/rotor-pr242-rebase-306-20261116.json",
@@ -19425,8 +19425,8 @@
     },
     {
       "path": "tests/test_rotor_native_report.py",
-      "bytes": 3038,
-      "sha256": "3d4bf5a5ea0bc9f6ab9d36a6915a9af812a5b3f58e51f90b3cee27717932f62d"
+      "bytes": 3561,
+      "sha256": "eabf95902018bfd5d73c243976ef3f12f11edb24af489ffe45fe24a3d1db6263"
     },
     {
       "path": "tests/test_rotor_spatial_report.py",
@@ -19470,8 +19470,8 @@
     },
     {
       "path": "tools/rotor_native_pilot.py",
-      "bytes": 11978,
-      "sha256": "26868b2e63162224827a198329d84efaab9cc37d47dc6010f8f6ba03ae4d8689"
+      "bytes": 14104,
+      "sha256": "6aea18af4f794cace37f66b59ec04f34ae9b053be334f038374d8bc340d6685e"
     },
     {
       "path": "tools/rotor_native_remesh_probe.py",
@@ -19480,13 +19480,38 @@
     },
     {
       "path": "tools/rotor_native_report.py",
-      "bytes": 11713,
-      "sha256": "c5588eb99276f6699850e5e81edea0ff3e9bcaf5477f020b5814efc4651bcafd"
+      "bytes": 14258,
+      "sha256": "57cb09e670d11240ad1faa62d472f61df348cae57536ff02f3ab46152aa01d68"
     },
     {
       "path": "tools/rotor_spatial_report.py",
       "bytes": 12247,
       "sha256": "b322dc156616406ec28bc61eddddacac17a30411a989c75c07e3cac6141516e7"
+    },
+    {
+      "path": "backend/rotor_motion_mesh.py",
+      "bytes": 12405,
+      "sha256": "37e816da93ce87c4b2106282dce275fb9810b61cfb7dc769b555f9b22c76f608"
+    },
+    {
+      "path": "docs/benchmarks/rotor-fixed-material-306-20261116.json",
+      "bytes": 15874,
+      "sha256": "83952843e9b398a7b330ca47a26f947a3b16ec8a7d4db19a4954682793eb09e5"
+    },
+    {
+      "path": "docs/benchmarks/rotor-fixed-material-306-20261116.md",
+      "bytes": 9508,
+      "sha256": "85f5a1d55ad5653d0066f3de2f03c960d2f6be64323f0057e9a7c78573d69f56"
+    },
+    {
+      "path": "tests/test_rotor_motion_mesh.py",
+      "bytes": 9600,
+      "sha256": "b4b6575f0de6de8a5ce897bb3d4406190d551be77d8a0dca9b8cc15cca3d2986"
+    },
+    {
+      "path": "tools/rotor_fixed_mesh_control.py",
+      "bytes": 3494,
+      "sha256": "efad387a7089e3b3c6aa880c85d38c5bc657e30cfaa5fb632859e81876ad5afd"
     }
   ],
   "public_patches": [

@@ -1,5 +1,10 @@
 # #306: native rotor pilot and FEMM excitation correction
 
+Follow-up: the [fixed-material implementation](rotor-fixed-material-306-20261116.md)
+resolves the native static-field/angle-convergence failure on this motor. The
+results below remain the archived failed-remeshing diagnostic, and the FEMM
+excitation erratum still applies.
+
 Target: 0.5.9. Follow-up to `0735f5ba`. **PILOT_NOT_QUALIFIED.** The bounded
 native history is complete. Angular convergence fails; a time-invariant field
 replay demonstrates false loss from the remeshing/linear-gradient/material-point

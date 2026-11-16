@@ -19,6 +19,7 @@ from backend.iron_loss import FieldFrame, _locate
 from backend.magneto2d_adapter import run_magneto2d_report
 from backend.models import MotorConfig
 from backend.rotor_iron_loss import sample_rotor_field
+from backend.rotor_motion_mesh import FixedMaterialRotorMesh
 from backend.solver import _clockwise_excitation_config, _rotate_gmsh_artifact_for_config
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -113,6 +114,9 @@ def main():
     parser.add_argument("--preflight", action="store_true")
     parser.add_argument("--positions", type=int, default=384)
     parser.add_argument("--mesh", choices=("normal", "fine", "very_fine"), default="normal")
+    parser.add_argument("--motion", choices=("remesh", "fixed-material"), default="remesh")
+    parser.add_argument("--airgap-divisions", type=int, default=1536)
+    parser.add_argument("--airgap-layers", type=int, default=4)
     parser.add_argument("--excitation-frame", choices=("public-clockwise", "native-ccw"), default="public-clockwise")
     parser.add_argument("--expected-nonlinear-tolerance", type=float, default=1e-5,
                         help="Assert the native custom-quality stopping tolerance; no shell override")
@@ -138,6 +142,17 @@ def main():
     requested.solve_params.magneto2d_workers = 1
     config = _clockwise_excitation_config(requested) if args.excitation_frame == "public-clockwise" else requested.model_copy(deep=True)
     angles = list(PREFLIGHT_POSES) if args.preflight else [-360*k/args.positions for k in range(args.positions+1)]
+    motion_mesh = None
+    if args.motion == "fixed-material":
+        template_path = directory / "material-template.json"
+        if not template_path.exists():
+            if (directory / "protocol.json").exists():
+                raise ValueError("fixed-material collection lost its authoritative mesh template")
+            template = run_gmsh_mesh_preview(config, rotor_angle_deg=0)["solve_mesh_artifact"]
+            write(template_path, template)
+        else:
+            template = json.loads(template_path.read_text())
+        motion_mesh = FixedMaterialRotorMesh(template, angular_divisions=args.airgap_divisions, radial_layers=args.airgap_layers)
     protocol = {"schema": "coilem.native_rotor_pilot/v1", "kind": "preflight" if args.preflight else "full_turn_history",
                 "fixture": FIXTURE.relative_to(ROOT).as_posix(), "fixture_sha256": sha(FIXTURE), "positions": args.positions,
                 "mechanical_angles_deg": angles, "mesh": args.mesh, "excitation_frame": args.excitation_frame,
@@ -147,6 +162,11 @@ def main():
                 "mesh_policy": "Gmsh per relative angle; production slot-congruent mesh rotation; no solved-field reuse",
                 "closure_tolerances": {"max_component_T": 1e-6, "rms_component_T": 1e-7},
                 "identity": source_identity(args.binary), "full_matrix_started": False}
+    if motion_mesh is not None:
+        protocol.update(schema="coilem.native_rotor_pilot/v2", motion_model="fixed-material",
+                        material_template_sha256=sha(template_path), airgap_angular_divisions=args.airgap_divisions,
+                        airgap_radial_layers=args.airgap_layers,
+                        mesh_policy="fixed rotor and stator material cells; conforming air-gap retriangulation; no solved-field reuse")
     protocol_path = directory / "protocol.json"
     if protocol_path.exists():
         if not args.resume or json.loads(protocol_path.read_text()) != protocol:
@@ -173,12 +193,21 @@ def main():
             break
         output.mkdir(exist_ok=True)
         begin = time.perf_counter()
-        pitch = 360/config.stator.slot_count
-        base_angle = round(angle % pitch, 10)
-        if base_angle not in bases or (args.preflight and index == len(angles)-1):
-            mesh = run_gmsh_mesh_preview(config, rotor_angle_deg=base_angle)["solve_mesh_artifact"]
-            bases[base_angle] = mesh
-        artifact = _rotate_gmsh_artifact_for_config(bases[base_angle], config, angle)
+        if motion_mesh is not None:
+            if args.preflight and index == len(angles)-1:
+                # An independent remesh reproduces the template; the other
+                # poses all use the authoritative fixed material cells.
+                repeat = run_gmsh_mesh_preview(config, rotor_angle_deg=0)["solve_mesh_artifact"]
+                write(output / "independent-template.json", repeat)
+                motion_mesh = FixedMaterialRotorMesh(repeat, angular_divisions=args.airgap_divisions, radial_layers=args.airgap_layers)
+            artifact = motion_mesh.at_angle(config, angle)
+        else:
+            pitch = 360/config.stator.slot_count
+            base_angle = round(angle % pitch, 10)
+            if base_angle not in bases or (args.preflight and index == len(angles)-1):
+                mesh = run_gmsh_mesh_preview(config, rotor_angle_deg=base_angle)["solve_mesh_artifact"]
+                bases[base_angle] = mesh
+            artifact = _rotate_gmsh_artifact_for_config(bases[base_angle], config, angle)
         excitation = audit_excitation(artifact, config, angle)
         report = run_magneto2d_report(config, sweep=False, rotor_angle_deg=angle, solve_mesh_artifact=artifact,
                                      persist_artifacts_dir=output, artifact_prefix="native")
@@ -192,6 +221,7 @@ def main():
         record = {"index": index, "mechanical_angle_deg": angle, "native_gamma_deg": config.solve_params.current_angle_deg,
                   "rotor_elements": len(sample.bx_t), "total_elements": report["mesh_info"]["num_triangles"],
                   "wall_s": time.perf_counter()-begin, "convergence": convergence,
+                  "material_motion_mesh": artifact["mesh"]["info"].get("material_motion_mesh"),
                   "sha256": {p.name: sha(p) for p in output.iterdir() if p.is_file()}}
         write(checkpoint, record)
         print(json.dumps({k: record[k] for k in ("index", "mechanical_angle_deg", "rotor_elements", "total_elements", "wall_s")}), flush=True)

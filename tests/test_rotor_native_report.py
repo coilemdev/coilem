@@ -9,7 +9,7 @@ from backend.iron_loss import M350_50A_LOSS
 from backend.rotor_iron_loss import RotorFieldSample
 from tools.rotor_excitation_report import saved_current_error
 from tools.rotor_native_remesh_probe import linear_gradient_sample, static_potential
-from tools.rotor_native_report import loss_rows
+from tools.rotor_native_report import loss_rows, material_mesh_metrics
 
 
 def history():
@@ -39,6 +39,16 @@ def test_missing_material_points_fail_every_angular_gate():
     rows, steps = loss_rows(samples, 32, 3000, 0.05)
     assert all(row["sampling_gate"] == "FAIL" for row in rows)
     assert not any(step["pass"] for step in steps)
+
+
+def test_fixed_material_mesh_gate_detects_real_geometry_changes_and_missing_cells():
+    samples = history()[:32]
+    assert material_mesh_metrics(samples)["gate"] == "PASS"
+    original = samples[4]
+    samples[4] = replace(original, corners_mm=original.corners_mm+1e-4)
+    assert material_mesh_metrics(samples)["gate"] == "FAIL"
+    samples[4] = replace(original, corners_mm=np.concatenate((original.corners_mm, original.corners_mm)))
+    assert material_mesh_metrics(samples)["gate"] == "FAIL"
 
 
 def test_static_potential_has_known_values_and_remeshing_changes_linear_gradients():
