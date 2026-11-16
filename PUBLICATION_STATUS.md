@@ -1,6 +1,6 @@
 # Release status
 
-Prepared November 15, 2026: **coilEM 0.5.8 Developer Preview**, with
+Published November 16, 2026 (UTC): **coilEM 0.5.8 Developer Preview**, with
 **Magneto2D 0.6.0** (0.5.7 bundled Magneto2D 0.5.0). The 0.5.8 release branch
 was integrated into `main` by [PR #292](https://github.com/coilemdev/coilem/pull/292);
 later 0.5.8 work merged into `main` directly.
@@ -28,11 +28,19 @@ next release. Both remain open and are disclosed limitations; passing numerical
 parity does not resolve them. See the [0.5.8 release checklist](docs/RELEASE_0_5_8.md)
 and [release notes](RELEASE_NOTES.md).
 
-Pushing `v0.5.8` starts fresh four-platform wheel builds and installed
-acceptance checks. PyPI upload is gated by the workflow's `pypi` environment;
-successful PyPI install checks then attach the wheels to a draft GitHub release.
-This preparation does not claim that the package or GitHub release is already
-published. Follow [the release workflow](docs/RELEASING.md#publishing-a-release).
+The annotated tag `v0.5.8` points at `a3e70035`, the merge of
+[PR #314](https://github.com/coilemdev/coilem/pull/314). Tag run
+[`43752888234`](https://github.com/coilemdev/coilem/actions/runs/43752888234)
+rebuilt the four wheels and reran installed-package acceptance. On Windows,
+the check that an interrupted CLI solve exits with code 130 failed in three of
+eight attempts across the run's three attempts: the solve stopped, but the CLI
+exited with code 4 ([#234](https://github.com/coilemdev/coilem/issues/234)).
+The third attempt passed all 21 acceptance jobs. After the release owner
+approved the `pypi` environment, 0.5.8 was uploaded to
+[PyPI](https://pypi.org/project/coilem/0.5.8/), PyPI install checks passed on
+all four platforms, and the
+[GitHub release](https://github.com/coilemdev/coilem/releases/tag/v0.5.8) was
+published as Latest.
 
 # Historical release status
 
