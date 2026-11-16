@@ -48,6 +48,21 @@ const iron = {
 };
 
 const view = lossesView(loss, iron);
+{
+  const combined = { ...loss, rotor_iron_loss_W: 5, rotor_hysteresis_loss_W: 2, rotor_lamination_eddy_loss_W: 3,
+    rotor_iron_loss_status: 'experimental', loss_scope: 'stator_and_rotor', total_loss_W: loss.total_loss_W + 5 };
+  const rotorView = lossesView(combined, iron);
+  assert.ok(rotorView.rows.some(row => row.key === 'rotor_iron'));
+  const { segments, totalW } = lossSegments(combined);
+  assert.equal(segments.length, 7);
+  assert.equal(totalW, combined.total_loss_W);
+  assert.equal(segments.reduce((sum, segment) => sum + segment.watts, 0), combined.total_loss_W);
+  assert.doesNotMatch(notModelledText(combined), /rotor iron loss/);
+  const missing = lossesView({ ...combined, rotor_iron_loss_W: null, rotor_iron_loss_status: 'unavailable',
+    efficiency_pct: null, efficiency_status: 'unavailable' }, iron);
+  assert.equal(missing.efficiency.status, 'unavailable');
+  assert.equal(missing.rows.find(row => row.key === 'rotor_iron').value, '—');
+}
 assert.equal(view.efficiency.text, '96.6%'); // 3,091.6 W shaft of 3,201.6 W input
 assert.equal(view.efficiency.value, '96.6', 'the table cell takes the number; % sits in the unit column');
 assert.equal(view.efficiency.status, 'experimental');

@@ -62,6 +62,12 @@ export interface LossBreakdown {
   iron_eddy_loss_W?: number | null;
   iron_loss_status: PerformanceOutputStatus;
   iron_loss_status_reason?: string | null;
+  rotor_iron_loss_W?: number | null;
+  rotor_hysteresis_loss_W?: number | null;
+  rotor_lamination_eddy_loss_W?: number | null;
+  rotor_iron_loss_status?: PerformanceOutputStatus | null;
+  rotor_iron_loss_status_reason?: string | null;
+  loss_scope?: 'stator_only' | 'rotor_only' | 'stator_and_rotor';
   mechanical_loss_W: number;
   total_loss_W: number;
   shaft_power_W: number;
@@ -79,6 +85,34 @@ export interface IronLossDensity {
   element_hysteresis_w_per_kg?: Array<number | null> | null;
   element_eddy_w_per_kg?: Array<number | null> | null;
   max_w_per_kg: number;
+}
+
+/** Rotor iron loss from a full mechanical-turn material history (#306). */
+export interface RotorIronLoss {
+  status: PerformanceOutputStatus;
+  status_reason?: string | null;
+  method: 'rotor_material_harmonic/v1';
+  reference_frame: 'rotor_material';
+  solved_region: 'full_motor' | 'sector';
+  steel: string;
+  coefficient_source?: string | null;
+  coefficients?: Record<string, number> | null;
+  stacking_factor?: number | null;
+  speed_rpm?: number | null;
+  mechanical_frequency_Hz?: number | null;
+  samples_per_mechanical_turn?: number | null;
+  mechanical_span_deg: 360;
+  rotor_iron_loss_W?: number | null;
+  rotor_hysteresis_loss_W?: number | null;
+  rotor_lamination_eddy_loss_W?: number | null;
+  rotor_iron_mass_kg?: number | null;
+  share_above_validated_frequency?: number | null;
+  share_above_validated_flux_density?: number | null;
+  validated_max_frequency_Hz: number;
+  validated_max_flux_density_T: number;
+  endpoint_max_component_difference_T?: number | null;
+  endpoint_rms_component_difference_T?: number | null;
+  history_sha256?: string | null;
 }
 
 /** Stator iron loss over one electrical period at the solved point (#138). */
@@ -113,6 +147,7 @@ export interface FluxLinkageMapPoint {
   iron_loss_W?: number | null;
   iron_hysteresis_loss_W?: number | null;
   iron_eddy_loss_W?: number | null;
+  rotor_iron_loss?: RotorIronLoss | null;
   nonlinear_iterations_max?: number | null;
   nonlinear_residual_max?: number | null;
   error?: string | null;
@@ -132,6 +167,7 @@ export interface FluxLinkageMap {
   rotor_positions: number;
   mesh_density: string;
   torque_method?: string | null;
+  rotor_iron_loss_requested?: boolean;
   points: FluxLinkageMapPoint[];
 }
 
@@ -184,6 +220,9 @@ export interface EfficiencyMap {
   efficiency_pct: Array<Array<number | null>>;
   copper_loss_W: Array<Array<number | null>>;
   iron_loss_W: Array<Array<number | null>>;
+  loss_scope?: 'stator_only' | 'stator_and_rotor';
+  rotor_iron_loss_W?: Array<Array<number | null>> | null;
+  rotor_iron_loss_status?: PerformanceOutputStatus | null;
   /** The least-loss phase current at each point, rms, and its current angle γ. */
   phase_current_rms_A?: Array<Array<number | null>> | null;
   current_angle_deg?: Array<Array<number | null>> | null;
@@ -210,7 +249,7 @@ export interface PerformanceMapStatus {
   scope_key: string;
   solves_total: number;
   solves_finished: number;
-  /** Rotor positions each map point solves (half an electrical cycle). */
+  /** Positions each map point solves, including an explicitly requested full-turn rotor history. */
   positions_per_point?: number;
   map: FluxLinkageMap | null;
   torque_agreement_pct?: Array<number | null>;

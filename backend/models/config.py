@@ -696,6 +696,7 @@ class SolveOptionsConfig(BaseModel):
     flux_density: bool = Field(default=True, description="Extract flux density map")
     cogging_torque: bool = Field(default=False, description="Run zero-current cogging torque sweep")
     losses_efficiency: bool = Field(default=True, description="Compute operating-point losses and efficiency; requires a loaded field sweep")
+    rotor_iron_loss: bool = Field(default=False, description="Opt in to full-motor rotor iron loss using 384 mechanical-turn poses plus closure")
     torque_speed_envelope: bool = Field(default=False, description="Run solver-derived torque-speed sweep")
     thd_analysis: bool = Field(
         default=False,
@@ -704,6 +705,19 @@ class SolveOptionsConfig(BaseModel):
             "flux-linkage DFT (requires at least 48 positions)"
         ),
     )
+
+    @model_validator(mode="after")
+    def rotor_loss_requires_loss_analysis(self):
+        if self.rotor_iron_loss and not self.losses_efficiency:
+            raise ValueError("rotor_iron_loss requires losses_efficiency")
+        return self
+
+    @model_serializer(mode="wrap")
+    def omit_disabled_rotor_loss(self, handler):
+        result = handler(self)
+        if not self.rotor_iron_loss:
+            result.pop("rotor_iron_loss", None)
+        return result
 
 
 

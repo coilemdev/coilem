@@ -91,9 +91,15 @@ result = coilem.solve(motor, point, analyses=["torque", "back_emf"], quality="st
                       solve_params={"nonlinear_solver": "newton"})
 ```
 
-- `analyses` names what runs: `torque`, `back_emf`, `cogging`, `losses`,
+- `analyses` names what runs: `torque`, `back_emf`, `cogging`, `losses`, `rotor_loss`,
   `thd` and `flux_density`. Left out, the motor's saved selection is used, or
   the app's defaults for a motor with none.
+  `rotor_loss` also selects `losses` and adds 384 full mechanical-turn poses
+  plus an independently solved endpoint. It is an experimental option for
+  full inner-rotor SPM and flat-IPM models with sinusoidal excitation and
+  M350-50A rotor steel. Sector rotor loss is unavailable in 0.5.9.
+  Results expose `summary.rotor_iron_loss` separately; totals include its watts
+  once. A missing requested history withholds efficiency instead of using zero.
 - `quality` is `quick`, `standard`, `fine` or `custom` (then set
   `rotor_step_deg` and `rotor_sweep_range_deg` in `solve_params`): the app's
   Preview, Standard, High accuracy and Custom plans. `mesh` is `coarse`,

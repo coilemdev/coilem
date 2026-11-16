@@ -19,6 +19,33 @@ from tools.rotor_native_remesh_probe import static_potential
 FIXTURE = Path(__file__).resolve().parents[1] / "benchmarks/abcd-v1.9/fixtures/spm_8p12s_concentrated__baseline__native.json"
 
 
+def test_real_flat_ipm_material_mesh_keeps_a_static_material_field_lossless():
+    pytest.importorskip("gmsh")
+    from backend.gmsh_solver import run_gmsh_mesh_preview
+
+    fixture = FIXTURE.parents[2] / "windows-v3-20261015-738d951/fixtures/ipm_flat_4p12s_micro_contract__native.json"
+    config = MotorConfig.model_validate_json(fixture.read_text())
+    config.solve_params.mesh_density = "coarse"
+    config.solve_params.symmetry = "full"
+    template = run_gmsh_mesh_preview(config, rotor_angle_deg=0)["solve_mesh_artifact"]
+    motion = FixedMaterialRotorMesh(template, angular_divisions=128)
+    plan = RotorSamplingPlan(3000, 8)
+    samples = []
+    for angle in plan.mechanical_angles_deg:
+        mesh = motion.at_angle(config, angle)["mesh"]
+        a = math.radians(angle)
+        material_xy = np.asarray(mesh["nodes"]) @ np.array([[math.cos(a), -math.sin(a)], [math.sin(a), math.cos(a)]])
+        report = {"mesh_info": {"total_span_deg": 360}, "field_plot": {"total_span_deg": 360,
+            "nodes_mm": mesh["nodes"], "triangles": mesh["triangles"], "regions": mesh["regions"],
+            "az_nodal": static_potential(material_xy).tolist()}}
+        samples.append(field_sample(report, angle))
+    assert all(np.allclose(samples[0].corners_mm, sample.corners_mm, rtol=0, atol=1e-9) for sample in samples)
+    history = rotor_flux_history(plan, samples)
+    coefficients = SteinmetzCoefficients(kh=0.02, alpha=2.1, kc=0.0003, density_kg_m3=7650)
+    estimate = harmonic_rotor_iron_loss(history, material=RotorLossMaterial("synthetic", "analytical", coefficients), stack_length_m=0.05)
+    assert estimate.total_W < 1e-16
+
+
 def template():
     """Synthetic disk, gap and stator annulus; no FE solver or mesher needed."""
     config = MotorConfig.model_validate(json.loads(FIXTURE.read_text()))

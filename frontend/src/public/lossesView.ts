@@ -13,7 +13,7 @@ import type { IronLoss, LossBreakdown, PerformanceOutputStatus } from './perform
 import type { WindingResistance } from './windingResistance';
 
 export interface LossSegment {
-  key: 'copper_stack' | 'copper_end' | 'iron_hysteresis' | 'iron_eddy' | 'mechanical';
+  key: 'copper_stack' | 'copper_end' | 'iron_hysteresis' | 'iron_eddy' | 'rotor_hysteresis' | 'rotor_eddy' | 'mechanical';
   label: string;
   watts: number;
   share: number;
@@ -45,6 +45,8 @@ const SEGMENTS: Array<{ key: LossSegment['key']; label: string; field: keyof Los
   { key: 'copper_end', label: 'Copper, end turns', field: 'copper_end_winding_loss_W' },
   { key: 'iron_hysteresis', label: 'Iron, hysteresis', field: 'iron_hysteresis_loss_W' },
   { key: 'iron_eddy', label: 'Iron, eddy current', field: 'iron_eddy_loss_W' },
+  { key: 'rotor_hysteresis', label: 'Rotor iron, hysteresis', field: 'rotor_hysteresis_loss_W' },
+  { key: 'rotor_eddy', label: 'Rotor iron, lamination eddy', field: 'rotor_lamination_eddy_loss_W' },
   { key: 'mechanical', label: 'Mechanical', field: 'mechanical_loss_W' },
 ];
 
@@ -60,7 +62,8 @@ export function formatPower(watts: number): { value: string; unit: string } {
 
 /** What the loss breakdown leaves out, in words. */
 export function notModelledText(loss: LossBreakdown): string {
-  return 'Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects), inverter loss'
+  return 'Not modelled: ' + (finite(loss.rotor_iron_loss_W) ? '' : 'rotor iron loss, ')
+    + 'magnet/component eddy-current loss, AC copper loss (skin and proximity effects), inverter loss'
     + (loss.mechanical_loss_W > 0 ? '.' : ', and mechanical loss unless entered under Operating point.');
 }
 
@@ -96,6 +99,8 @@ export function lossesView(
     reason: loss.efficiency_status_reason ?? '',
   };
   const ironAvailable = finite(loss.iron_loss_W);
+  const rotorAvailable = finite(loss.rotor_iron_loss_W) && loss.rotor_iron_loss_status !== 'unavailable';
+  const rotorRequested = loss.rotor_iron_loss_status != null;
   const ironParts: string[] = [];
   if (ironAvailable) {
     ironParts.push(`Hysteresis ${formatPower(loss.iron_hysteresis_loss_W ?? NaN).value} W, eddy current ${formatPower(loss.iron_eddy_loss_W ?? NaN).value} W.`);
@@ -119,6 +124,8 @@ export function lossesView(
   const statuses: NamedOutputStatus[] = [];
   statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
   statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
+  if (rotorRequested) statuses.push({ key: 'rotor_iron', label: 'Rotor iron loss',
+    status: loss.rotor_iron_loss_status ?? 'unavailable', reason: loss.rotor_iron_loss_status_reason ?? '' });
   statuses.push({ key: 'copper', label: 'Copper loss, from the phase resistance', ...copperStatus });
   const rows: LossRow[] = [
     powerRow('input', 'Input power', loss.input_power_W, 'Electrical input: the solved torque times speed, plus copper loss.'),
@@ -132,8 +139,14 @@ export function lossesView(
     ironAvailable
       ? powerRow('iron', 'Iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
       : { key: 'iron', label: 'Iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' },
+    ...(rotorRequested ? [rotorAvailable
+      ? powerRow('rotor_iron', 'Rotor iron loss', loss.rotor_iron_loss_W as number,
+        `Hysteresis ${formatPower(loss.rotor_hysteresis_loss_W ?? NaN).value} W, lamination eddy ${formatPower(loss.rotor_lamination_eddy_loss_W ?? NaN).value} W. `
+          + (loss.rotor_iron_loss_status_reason ?? ''), loss.rotor_iron_loss_status ?? 'experimental')
+      : { key: 'rotor_iron', label: 'Rotor iron loss', value: '—', unit: '',
+        hint: loss.rotor_iron_loss_status_reason ?? 'Rotor iron loss is unavailable.', status: 'unavailable' as PerformanceOutputStatus }] : []),
     powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'),
-    powerRow('total', ironAvailable ? 'Total loss' : 'Known loss subtotal', loss.total_loss_W, notModelledText(loss)),
+    powerRow('total', ironAvailable && (!rotorRequested || rotorAvailable) ? 'Total loss' : 'Known loss subtotal', loss.total_loss_W, notModelledText(loss)),
   ];
   return { efficiency, rows, statuses, segments, totalW };
 }

@@ -1,5 +1,14 @@
 # #306: 0.5.9 landing readiness and remaining implementation
 
+**2026-11-16 implementation checkpoint:** the opt-in public stage now
+reproduces the internal one-motor native pilot exactly; saved replay, maps,
+accounting and exports are integrated. Both solvers' 96/192/384 angular
+checks and native spatial refinement pass. Matched FEMM spatial histories
+remain in progress, followed by review before the full matrix. See the
+[public-path rehearsal](benchmarks/rotor-public-integration-306-20261116.md).
+The original readiness notes below describe the earlier checkpoint; they do
+not override these newer results or mark the PR ready for release.
+
 Reviewed 2026-11-16 against `release/v0.5.9` at
 `f2142dba722140e04f9158a34d6183e62216c621`, the merge of PR #242.
 

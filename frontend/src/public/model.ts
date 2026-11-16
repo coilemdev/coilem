@@ -1,6 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, RotorIronLoss, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 import type { SolveTimeBreakdown } from './solveTime';
 import type { WindingResistance } from './windingResistance';
 
@@ -162,6 +162,7 @@ export interface MotorConfig {
     flux_density: boolean;
     cogging_torque: boolean;
     losses_efficiency: boolean;
+    rotor_iron_loss?: boolean;
     torque_speed_envelope: boolean;
     thd_analysis: boolean;
   };
@@ -264,7 +265,7 @@ export interface SolveValidation {
   sweep_positions: number;
   /** Cogging positions per period for the selected preset (#185), solved when Cogging torque is on. */
   cogging_positions_per_period?: number;
-  analysis_positions?: Partial<Record<'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency', number>>;
+  analysis_positions?: Partial<Record<'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency' | 'rotor_iron_loss', number>>;
   qualification?: PublicQualification;
 }
 
@@ -519,6 +520,7 @@ export interface SolveResult {
     dq_flux_linkage?: DqFluxLinkage | null;
     loss_breakdown?: LossBreakdown | null;
     iron_loss?: IronLoss | null;
+    rotor_iron_loss?: RotorIronLoss | null;
     winding_resistance?: WindingResistance | null;
     solve_time_s: number;
   };

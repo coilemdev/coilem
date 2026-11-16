@@ -115,6 +115,8 @@ class RotorIronLossEstimate:
     lamination_eddy_W: float
     rotor_iron_mass_kg: float
     method: str = METHOD
+    share_above_validated_frequency: float = 0.0
+    share_above_validated_flux_density: float = 0.0
 
     @property
     def total_W(self) -> float:
@@ -233,4 +235,6 @@ def harmonic_rotor_iron_loss(
         electrical_frequency_hz=history.plan.base_frequency_hz,
         stack_length_m=stack_length_m, machine_scale=1.0, coefficients=material.coefficients,
     )
-    return RotorIronLossEstimate(estimate.hysteresis_w, estimate.eddy_w, estimate.stator_iron_mass_kg)
+    return RotorIronLossEstimate(estimate.hysteresis_w, estimate.eddy_w, estimate.stator_iron_mass_kg,
+                                 share_above_validated_frequency=estimate.share_above_validated_frequency,
+                                 share_above_validated_flux_density=estimate.share_above_validated_flux_density)

@@ -295,8 +295,18 @@ export function mapCsv(map: FluxLinkageMap): string {
     `# iron loss at ${map.reference_speed_rpm} rpm; ${map.rotor_positions} rotor positions per point; mesh ${map.mesh_density}`,
     `# experimental: ${FLUX_LINKAGE_MAP_STATUS_REASON}`,
   ];
-  const rows = map.points.map((point) => CSV_COLUMNS.map(([, read]) => csvCell(read(point))).join(','));
-  return [...header, CSV_COLUMNS.map(([name]) => name).join(','), ...rows].join('\n') + '\n';
+  const columns = [...CSV_COLUMNS];
+  if (map.rotor_iron_loss_requested) {
+    header.push('# Rotor iron loss requested: full mechanical-turn history; stator and rotor columns are separate.');
+    for (const field of ['rotor_iron_loss_W', 'rotor_hysteresis_loss_W', 'rotor_lamination_eddy_loss_W', 'status', 'status_reason',
+      'method', 'reference_frame', 'solved_region', 'steel', 'coefficient_source', 'speed_rpm', 'samples_per_mechanical_turn',
+      'share_above_validated_frequency', 'share_above_validated_flux_density', 'history_sha256'] as const) {
+      columns.push([field.startsWith('rotor_') ? field : `rotor_${field}`, (point) => point.rotor_iron_loss?.[field]]);
+    }
+    columns.push(['rotor_coefficients', point => point.rotor_iron_loss?.coefficients ? JSON.stringify(point.rotor_iron_loss.coefficients) : null]);
+  }
+  const rows = map.points.map((point) => columns.map(([, read]) => csvCell(read(point))).join(','));
+  return [...header, columns.map(([name]) => name).join(','), ...rows].join('\n') + '\n';
 }
 
 export interface MapEstimateInput {

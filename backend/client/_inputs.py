@@ -144,6 +144,7 @@ ANALYSES: dict[str, str] = {
     "back_emf": "back_emf",
     "cogging": "cogging_torque",
     "losses": "losses_efficiency",
+    "rotor_loss": "rotor_iron_loss",
     "thd": "thd_analysis",
     "flux_density": "flux_density",
 }
@@ -495,5 +496,9 @@ def solve_options_for(analyses: str | Iterable[str], base: Mapping[str, Any] | N
     options = dict(base or {})
     for name, flag in ANALYSES.items():
         options[flag] = name in names
+    if options.get("rotor_iron_loss"):
+        options["losses_efficiency"] = True
+    else:
+        options.pop("rotor_iron_loss", None)
     options["torque_speed_envelope"] = False
     return options

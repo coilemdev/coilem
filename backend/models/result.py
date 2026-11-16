@@ -17,6 +17,7 @@ from .performance import (
     IronLossDensity,
     LossBreakdown,
     OutputStatus,
+    RotorIronLoss,
     TorqueSpeedEnvelope,
     WindingResistance,
 )
@@ -51,6 +52,7 @@ class SolveSummary(BaseModel):
     dq_flux_linkage: DqFluxLinkage | None = None
     loss_breakdown: LossBreakdown | None = None
     iron_loss: IronLoss | None = None
+    rotor_iron_loss: RotorIronLoss | None = None
     winding_resistance: WindingResistance | None = None
     slot_excitation_contributions: list[SlotExcitationContribution] | None = None
     solve_time_s: float = Field(ge=0)

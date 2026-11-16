@@ -1,13 +1,14 @@
 import type { MotorConfig, PublicSolverId, SolveResult, SolveValidation } from './model';
 import { torqueSpeedSettings } from './torqueSpeedAnalysis';
 
-export type AnalysisKey = 'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency' | 'torque_speed_envelope';
+export type AnalysisKey = 'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency' | 'rotor_iron_loss' | 'torque_speed_envelope';
 
 export const ANALYSIS_LABELS: Record<AnalysisKey, string> = {
   torque_sweep: 'Torque',
   back_emf: 'Back EMF',
   cogging_torque: 'Cogging',
   losses_efficiency: 'Losses & efficiency',
+  rotor_iron_loss: 'Rotor iron loss',
   torque_speed_envelope: 'Torque–speed map',
 };
 
@@ -38,6 +39,8 @@ export function analysisPositions(config: MotorConfig, validation: SolveValidati
 
 export function setAnalysisOption(config: MotorConfig, key: AnalysisKey, enabled: boolean): MotorConfig {
   const options = { ...config.solve_options, [key]: enabled };
+  if (key === 'rotor_iron_loss' && enabled) options.losses_efficiency = true;
+  if (key === 'losses_efficiency' && !enabled) delete options.rotor_iron_loss;
   options.thd_analysis = options.back_emf && (config.solve_params.solve_quality === 'standard' || config.solve_params.solve_quality === 'fine');
   return {
     ...config, solve_options: options,

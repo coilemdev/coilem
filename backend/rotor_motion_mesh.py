@@ -3,7 +3,7 @@
 The rotor (including magnets and shaft) moves rigidly, the stator stays fixed,
 and only the circular air-gap annulus is triangulated again. Every interface
 node is shared with the original material cells: there are no penalty ties,
-field interpolation, or changes to the loss kernel. Not enabled in public solves.
+field interpolation, or changes to the loss kernel. Used by the opt-in rotor-loss stage.
 """
 
 from __future__ import annotations
@@ -86,9 +86,8 @@ def validate_conforming_disk(nodes, triangles, boundary_nodes):
 class FixedMaterialRotorMesh:
     """Reusable geometry template; every pose still requires a fresh field solve.
 
-    First slice: one full-circle inner-rotor SPM with one circular sliding gap.
-    Unsupported geometry fails explicitly. No changes to the existing mesher's
-    default path, public configuration, sector behavior, or saved results.
+    Full-circle inner-rotor SPM or IPM with one circular sliding gap.
+    Unsupported geometry fails explicitly. The default mesher path is unchanged.
     """
 
     def __init__(self, artifact, *, angular_divisions=1536, radial_layers=4):
@@ -102,8 +101,8 @@ class FixedMaterialRotorMesh:
         contract = self.base["physics_contract"]
         if (mesh["length_units"] != "mm" or info["total_span_deg"] != 360 or mesh.get("sector_edge_pairs")
                 or info.get("sector") or info.get("rotor_layout", "inner") != "inner"
-                or contract["topology_hint"] != "SPM"):
-            raise ValueError("fixed material motion currently requires a full-circle inner SPM mesh")
+                or contract["topology_hint"] not in {"SPM", "IPM"}):
+            raise ValueError("fixed material motion currently requires a full-circle inner PM mesh")
         self.base_angle = float(self.base["rotor_angle_mech_deg"])
         self.ri, self.ro = info["airgap_inner_radius_mm"], info["airgap_outer_radius_mm"]
         if not math.isfinite(self.base_angle) or not 0 < self.ri < self.ro:

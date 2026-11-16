@@ -46,6 +46,17 @@ const fluxMap = {
   points: [point(0, 0, 0.011, 0), point(0, 90, 0.011, 0), point(10, 0, 0.011, 0.0005), point(10, 90, 0.0105, 0)],
 };
 const [row] = inductanceTable(fluxMap);
+{
+  const rotorCsv = mapCsv({ ...fluxMap, rotor_iron_loss_requested: true, points: fluxMap.points.map(point => ({
+    ...point, rotor_iron_loss: { status: 'experimental', method: 'rotor_material_harmonic/v1',
+      rotor_iron_loss_W: 5, rotor_hysteresis_loss_W: 2, rotor_lamination_eddy_loss_W: 3,
+      samples_per_mechanical_turn: 384, history_sha256: '0'.repeat(64), coefficients: { kh: 0.02, kc: 0.0001 } },
+  })) });
+  assert.match(rotorCsv, /Rotor iron loss requested/);
+  assert.match(rotorCsv, /rotor_iron_loss_W,rotor_hysteresis_loss_W,rotor_lamination_eddy_loss_W/);
+  assert.match(rotorCsv, /rotor_material_harmonic\/v1/);
+  assert.match(rotorCsv, /rotor_history_sha256/);
+}
 assert.equal(row.currentA, 10);
 assert.ok(Math.abs(row.ldH - 0.00005) < 1e-12, 'Ld = (10.5 − 11) mWb / −10 A');
 assert.ok(Math.abs(row.lqH - 0.00005) < 1e-12);

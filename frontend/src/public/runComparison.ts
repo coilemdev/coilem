@@ -126,7 +126,7 @@ const outputStatus = (value: unknown): PerformanceOutputStatus | undefined => va
 /** Read recorded losses only; incomplete shaft outputs and full outputs have different bases. */
 export function compareRunLosses(before: ComparisonResult, after: ComparisonResult, includeAllTotals = false): ComparisonLossRow[] | null {
   if (!before.summary.loss_breakdown && !after.summary.loss_breakdown) return null;
-  type Descriptor = { key: string; label: string; field: keyof LossBreakdown; unit: ComparisonLossRow['unit']; indent?: boolean; status?: 'efficiency' | 'iron' | 'copper'; };
+  type Descriptor = { key: string; label: string; field: keyof LossBreakdown; unit: ComparisonLossRow['unit']; indent?: boolean; status?: 'efficiency' | 'iron' | 'rotor' | 'copper'; };
   const descriptors: Descriptor[] = [
     { key: 'efficiency', label: 'Efficiency', field: 'efficiency_pct', unit: '%', status: 'efficiency' },
     { key: 'input', label: 'Input power', field: 'input_power_W', unit: 'W' },
@@ -138,6 +138,9 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
     { key: 'iron', label: 'Iron loss', field: 'iron_loss_W', unit: 'W', status: 'iron' },
     { key: 'hysteresis', label: 'Iron, hysteresis', field: 'iron_hysteresis_loss_W', unit: 'W', indent: true, status: 'iron' },
     { key: 'eddy', label: 'Iron, eddy current', field: 'iron_eddy_loss_W', unit: 'W', indent: true, status: 'iron' },
+    { key: 'rotor_iron', label: 'Rotor iron loss', field: 'rotor_iron_loss_W', unit: 'W', status: 'rotor' },
+    { key: 'rotor_hysteresis', label: 'Rotor iron, hysteresis', field: 'rotor_hysteresis_loss_W', unit: 'W', indent: true, status: 'rotor' },
+    { key: 'rotor_eddy', label: 'Rotor iron, lamination eddy', field: 'rotor_lamination_eddy_loss_W', unit: 'W', indent: true, status: 'rotor' },
     { key: 'mechanical', label: 'Mechanical loss', field: 'mechanical_loss_W', unit: 'W' },
     { key: 'total', label: 'Total loss', field: 'total_loss_W', unit: 'W' },
     { key: 'subtotal', label: 'Known loss subtotal', field: 'total_loss_W', unit: 'W' },
@@ -145,18 +148,21 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
   const cell = (run: ComparisonResult, row: Descriptor): ComparisonLossCell => {
     const loss = run.summary.loss_breakdown;
     if (!loss) return { value: null, missing: 'Not recorded' };
-    const partial = finiteNumber(loss.iron_loss_W) === null || loss.iron_loss_status === 'unavailable';
+    const partial = finiteNumber(loss.iron_loss_W) === null || loss.iron_loss_status === 'unavailable' || loss.rotor_iron_loss_status === 'unavailable';
     if (row.key === 'total' && partial) return { value: null, missing: 'Unavailable' };
     if (row.key === 'subtotal' && !partial) return { value: null, missing: 'Not applicable' };
     const status = outputStatus(row.status === 'efficiency' ? loss.efficiency_status
-      : row.status === 'iron' ? loss.iron_loss_status : row.status === 'copper' ? run.summary.winding_resistance?.status : undefined);
+      : row.status === 'iron' ? loss.iron_loss_status : row.status === 'rotor' ? loss.rotor_iron_loss_status
+        : row.status === 'copper' ? run.summary.winding_resistance?.status : undefined);
     const reason = row.status === 'efficiency' ? loss.efficiency_status_reason
-      : row.status === 'iron' ? loss.iron_loss_status_reason : row.status === 'copper' ? run.summary.winding_resistance?.status_reason : undefined;
+      : row.status === 'iron' ? loss.iron_loss_status_reason : row.status === 'rotor' ? loss.rotor_iron_loss_status_reason
+        : row.status === 'copper' ? run.summary.winding_resistance?.status_reason : undefined;
     const value = status === 'unavailable' ? null : finiteNumber(loss[row.field]);
     return { value, ...(value === null ? { missing: status === 'unavailable' ? 'Unavailable' as const : 'Not recorded' as const } : {}),
       status, reason: reason || undefined, partial: value !== null && partial && (row.key === 'shaft' || row.key === 'shaft_torque') };
   };
-  return descriptors.map(row => {
+  const hasRotorRecord = before.summary.loss_breakdown?.rotor_iron_loss_status != null || after.summary.loss_breakdown?.rotor_iron_loss_status != null;
+  return descriptors.filter(row => row.status !== 'rotor' || hasRotorRecord).map(row => {
     const a = cell(before, row), b = cell(after, row);
     return { key: row.key, label: row.label, unit: row.unit, indent: row.indent, before: a, after: b,
       comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) };

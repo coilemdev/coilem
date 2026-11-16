@@ -209,7 +209,11 @@ function parseProfile(raw: unknown): SolveProfile {
   const allowed = new Set<string>([...OPERATING_KEYS, ...(raw.includesNumerics ? NUMERICAL_KEYS : [])]);
   if (Object.entries(raw.parameters).some(([k, v]) => !allowed.has(k) || !(v === null || typeof v === 'boolean' || typeof v === 'string' || (typeof v === 'number' && Number.isFinite(v))))
     || OUTPUT_KEYS.some(k => typeof (raw.outputs as Record<string, unknown>)[k] !== 'boolean')
-    || Object.keys(raw.outputs).some(k => !OUTPUT_KEYS.includes(k as typeof OUTPUT_KEYS[number]))) throw new Error('This file has invalid run-setup settings.');
+    || Object.keys(raw.outputs).some(k => k !== 'rotor_iron_loss' && !OUTPUT_KEYS.includes(k as typeof OUTPUT_KEYS[number]))
+    || ('rotor_iron_loss' in raw.outputs && typeof (raw.outputs as Record<string, unknown>).rotor_iron_loss !== 'boolean')
+    || ((raw.outputs as Record<string, unknown>).rotor_iron_loss === true && (raw.outputs as Record<string, unknown>).losses_efficiency !== true)) {
+    throw new Error('This file has invalid run-setup settings.');
+  }
   const enums: Record<string, readonly unknown[]> = ENUMS;
   const nullable = new Set<string>([...Object.keys(UNSET_DEFAULTS), 'max_nonlinear_iterations']);
   for (const [key, v] of Object.entries(raw.parameters)) {
@@ -228,6 +232,7 @@ function parseProfile(raw: unknown): SolveProfile {
     map: raw.map == null ? null : parseTorqueSpeedSettings(raw.map),
     ...(raw.includesNumerics ? { solver: raw.solver as PublicSolverId } : {}),
   };
+  if (!profile.outputs.rotor_iron_loss) delete profile.outputs.rotor_iron_loss;
   if (profile.referenceModel) {
     const cases = profile.referenceModel === 'pyleecan_prius_2004'
       ? ['prius-2004-tutorial-bemf-v1', 'prius-2004-loaded-torque-v1'] : [null, 'lrk-12s14p-fixed-current-v1'];
