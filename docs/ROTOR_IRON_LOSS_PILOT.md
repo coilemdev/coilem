@@ -259,6 +259,10 @@ separate; the multi-motor matrix is not started by this command.
 
 ## Corrected native/FEMM comparison
 
+The [0.5.9 landing assessment](ROTOR_IRON_LOSS_59_LANDING_PLAN.md) tracks the
+remaining sector rotor-mesh, convergence, product integration and release
+gates. The current branch is a draft foundation and does not close #306.
+
 The historical collection commands above retain their original trajectories;
 they are not the reference for the corrected native operating point. Use
 `tools.femm_reference.rotor_matched_history` for explicit native angle/current,

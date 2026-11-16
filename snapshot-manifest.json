@@ -19330,8 +19330,8 @@
     },
     {
       "path": "docs/ROTOR_IRON_LOSS_PILOT.md",
-      "bytes": 16813,
-      "sha256": "04e0227dd5a255ef172022874ca8a876b5818017feb91475781ad272e03abd7a"
+      "bytes": 17039,
+      "sha256": "bcdf0798ea89bfb34bf1adb7fb4068c27fe00c39d65175fc88664cb630481336"
     },
     {
       "path": "docs/benchmarks/rotor-angular-refinement-306-20261115.json",
@@ -19542,6 +19542,16 @@
       "path": "tools/rotor_matched_report.py",
       "bytes": 10103,
       "sha256": "a53c3cd503c96d2df07fea144b606658afdb3754b169b71b880e8ca9dce3936d"
+    },
+    {
+      "path": "docs/ROTOR_IRON_LOSS_59_LANDING_PLAN.md",
+      "bytes": 8172,
+      "sha256": "3d41731fe4fe766d606313ea997c30632865d5bee1eeff1ffedc81d9683eb890"
+    },
+    {
+      "path": "docs/benchmarks/rotor-59-landing-306-20261116.json",
+      "bytes": 4908,
+      "sha256": "1657f9390a6d6a71222808d28de57406b40a0106cd8ecef2661a94e7f66c562d"
     }
   ],
   "public_patches": [
