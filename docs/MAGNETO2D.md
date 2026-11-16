@@ -773,6 +773,11 @@ benchmark case. The rotor is meshed freely at each position, as in the full
 motor; a loss that follows rotor elements through a sweep would need the same
 treatment there (pole-pitch pieces in a fixed frame).
 
+For 0.5.9, new rotor iron-loss support targets full-motor solves (#306).
+Rotor loss on sector runs is deferred to #319; the sector's existing stator
+loss and other implemented outputs retain their current scope. A missing
+rotor-loss term must not be interpreted as zero.
+
 **In the app.** The run-time estimate counts the solved sector's elements, from
 the prepared mesh or, before one exists, from the same repeat check without
 meshing. Compare lists a change between the full motor and one sector as

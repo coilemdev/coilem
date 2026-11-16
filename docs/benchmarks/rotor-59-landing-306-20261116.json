@@ -2,7 +2,7 @@
   "schema": "coilem.rotor_59_landing_readiness/v1",
   "date": "2026-11-16",
   "target": "0.5.9",
-  "decision": "DRAFT_NOT_COMPLETE_FEATURE",
+  "decision": "DRAFT_FULL_MOTOR_QUALIFICATION_IN_PROGRESS",
   "release_base_sha": "f2142dba722140e04f9158a34d6183e62216c621",
   "rebased_pilot_sha": "2dd41a76559affd0fd015b2a78e9faa8a5e2301b",
   "before_rebase_pilot_sha": "a4d7babe",
@@ -111,12 +111,18 @@
     "backend/solver/__init__.py": "ca63994b48db1451333cb59da8c66f74c1666a77afc6151cb83e1afc6b468c21"
   },
   "remaining_gates": [
-    "sector rotor material mesh and interface",
-    "full-motor versus sector analytical and solved-history checks",
     "corrected FEMM angular refinement",
     "native and reference spatial convergence",
-    "SPM/flat-IPM fixture coverage",
-    "public results, efficiency, maps and exports",
-    "two-platform combined qualification"
-  ]
+    "full-motor SPM/flat-IPM fixture coverage",
+    "public results, exact-once efficiency, maps and exports",
+    "explicit sector rotor-loss unavailable status",
+    "two-platform full-motor loss qualification and existing-sector regression"
+  ],
+  "release_scope": {
+    "rotor_iron_loss_domain": "full_motor_only",
+    "limited_existing_sector_functionality_retained": true,
+    "sector_rotor_loss_deferred_issue": 319,
+    "sector_rotor_loss_target": "after 0.5.9, release TBD",
+    "full_versus_sector_rotor_loss_parity_required_for_059": false
+  }
 }

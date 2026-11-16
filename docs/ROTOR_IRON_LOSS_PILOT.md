@@ -7,7 +7,8 @@ angular convergence because the remeshing/element-gradient sampling path can
 generate false loss. See the [native pilot and excitation erratum](benchmarks/rotor-native-pilot-306-20261116.md).
 The [fixed-material implementation](benchmarks/rotor-fixed-material-306-20261116.md)
 now passes the static-field control and both angular refinements on the same
-SPM motor. Spatial convergence and a corrected FEMM loss comparison remain outstanding.
+SPM motor. The matched 96-sample FEMM comparison passes preliminary agreement;
+reference angular refinement and both solvers' spatial convergence remain outstanding.
 The historical commands below reproduce legacy evidence; they must not be used
 to qualify public gamma-zero rotor loss. The full release matrix remains unstarted.
 
@@ -17,6 +18,12 @@ records compatibility tests and fresh native preflight controls on the sector br
 Target: 0.5.9. Base: main `a3e70035`. This slice defines and exercises an
 internal sampling contract. It does not change public loss/efficiency results,
 map requests, field solves, saved results or release qualification claims.
+
+**Approved 0.5.9 scope:** qualify and integrate full-motor rotor iron loss.
+Retain the limited sector functionality already merged by #242; new sector
+rotor-loss support is deferred to [#319](https://github.com/coilemdev/coilem/issues/319).
+The [landing plan](ROTOR_IRON_LOSS_59_LANDING_PLAN.md) separates full-motor
+acceptance gates from that later sector work.
 
 ## Contract
 
@@ -260,8 +267,8 @@ separate; the multi-motor matrix is not started by this command.
 ## Corrected native/FEMM comparison
 
 The [0.5.9 landing assessment](ROTOR_IRON_LOSS_59_LANDING_PLAN.md) tracks the
-remaining sector rotor-mesh, convergence, product integration and release
-gates. The current branch is a draft foundation and does not close #306.
+full-motor convergence, product integration and release gates. Sector rotor
+mesh work is deferred to #319. The current branch remains draft and does not close #306.
 
 The historical collection commands above retain their original trajectories;
 they are not the reference for the corrected native operating point. Use

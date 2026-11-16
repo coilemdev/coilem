@@ -3,18 +3,31 @@
 Reviewed 2026-11-16 against `release/v0.5.9` at
 `f2142dba722140e04f9158a34d6183e62216c621`, the merge of PR #242.
 
-**Decision: target 0.5.9 in a draft PR; the complete feature is not ready to
-merge or close #306.** The sampling/loss foundation, analytical tests and
-bounded full-circle SPM pilot are implemented. Sector rotor motion, public
-integration and the remaining numerical/reference gates are incomplete.
+**Approved scope: full-motor rotor iron loss for 0.5.9.** Sector rotor-loss
+support is deferred to [#319](https://github.com/coilemdev/coilem/issues/319)
+for a later release. The limited sector functionality already merged by #242
+remains in 0.5.9. Full-versus-sector rotor-loss parity is not a 0.5.9 gate.
 
-## What the sector note requires
+The sampling/loss foundation, analytical tests and bounded full-circle SPM
+pilot are implemented. Full-motor reference/spatial qualification and public
+integration remain incomplete, so #318 stays draft and #306 remains open.
+
+## Release boundary and the deferred sector note
 
 [PR #242's release plan](https://github.com/coilemdev/coilem/pull/242#issuecomment-6907488611)
-requires loss work to follow rotor elements with the rotor-side equivalent of
+originally required loss work to follow rotor elements with the rotor-side equivalent of
 the repeating stator mesh: pole-pitch pieces, matching copies, a stable rotor
 mesh frame, and a full-motor versus sector comparison. The sector feature is
 now merged into 0.5.9. Its stator fix does not stabilize rotor material meshes.
+The owner subsequently chose full-motor loss first for 0.5.9; the rotor-side
+sector work below belongs to #319 rather than blocking #306.
+
+Full-motor means a complete physical domain, not automatic support for every
+rotor topology or material. The current pilot supports inner SPM only; the
+issue's full-motor flat-IPM coverage and all unsupported-status rules remain
+required. Existing sector stator/copper estimates retain their documented
+scope. New sector rotor-loss results must be explicitly unavailable, never
+silently zero or presented as a complete full-motor loss calculation.
 
 The current code confirms the distinction:
 
@@ -50,7 +63,28 @@ There are no magnetic solves or loss estimates in this four-pose check.
 Mesh counts alone are not the stability test; the recorded corner comparisons
 also fail for the rotor and pass for the stator.
 
-## Next bounded implementation slice
+## Next full-motor qualification slice
+
+1. Finish the matched reference's registered 192/384-sample insertions on the
+   same fixed FEMM mesh, checking component agreement, source/excitation
+   identity, independent endpoint closure and both successive angular steps.
+2. Independently refine the native and matched FEMM spatial meshes, keeping
+   every material mesh fixed through its complete turn. Check hysteresis,
+   lamination eddy and total separately at two successive refinements.
+3. Review this same-motor proof before expanding the full-motor SPM/flat-IPM,
+   no-load/loaded, two-speed coverage required by #306. A complete mechanical
+   turn is required; a single electrical period is not silently reconstructed.
+4. Integrate only supported, validated full-motor histories into public results,
+   totals, efficiency/maps, API/CLI, saved results and exports, with exact-once
+   accounting, provenance and explicit unavailable states.
+
+The registered reference collection uses the frozen checkout at `205db73c`.
+This preserves all source hashes while development proceeds on #306; resumed
+histories must use the same frozen sources and inputs. Integration must also
+be checked against the qualified fields rather than assuming the internal
+pilot proves the public solve path.
+
+## Deferred sector implementation: #319, after 0.5.9
 
 1. **Rotor material mesh contract.** Extend the sector geometry/meshing
    machinery to identify rotor steel and magnet pieces by pole pitch and
@@ -85,7 +119,7 @@ also fail for the rotor and pass for the stator.
 The pole-pitch material identity should be usable by future component-loss
 work, but magnet/component eddy-current physics remains #307, outside #306.
 
-## Gates after the bounded sector proof
+## Full-motor 0.5.9 acceptance gates
 
 - **Corrected FEMM reference:** finish the same registered history's 192/384
   insertions, then spatial refinement. Both successive angular and mesh steps
@@ -93,7 +127,7 @@ work, but magnet/component eddy-current physics remains #307, outside #306.
   Native spatial refinement remains open too. The 96-sample comparison is
   preliminary, even though all component differences are below 0.063%.
 - **Supported fixtures:** satisfy #306's SPM and flat-IPM, no-load/loaded,
-  two-speed matrix, including full/sector parity on supported sectors. Do not
+  two-speed matrix on full-motor solves. Sector rotor-loss parity is deferred. Do not
   infer subharmonics from a single electrical period; the current rotor
   sampling contract requires a full mechanical turn.
 - **Product integration:** capture rotor fields with the complete sampling
@@ -101,15 +135,19 @@ work, but magnet/component eddy-current physics remains #307, outside #306.
   rotor hysteresis, lamination eddy and total. Include rotor loss exactly once
   in operating-point totals, shaft power/torque, efficiency maps, API/CLI,
   saved results and exports. Unsupported geometry/material/sampling must give
-  an explicit unavailable result, and older saved runs retain their method.
+  an explicit unavailable result, including sector rotor loss, and older saved
+  runs retain their method. Existing sector stator/copper estimates must retain
+  their documented scope without implying the missing rotor term is zero.
 - **Integration verification:** exact-once accounting and energy balance,
   unavailable propagation, zero-loss/backward-compatible saved records,
-  full/sector scaling, exports and maps. Add tests at these boundaries rather
+  full-domain integration, sector-unavailable behavior, exports and maps. Add tests at these boundaries rather
   than only repeating the loss kernel's equations.
-- **Release:** run combined sector/loss regression and qualification on both
+- **Release:** run existing limited-sector regression and new full-motor loss qualification on both
   platforms on the assembled release branch. Follow #242's plan to bump
   Magneto2D once before final qualification. Current evidence does not replace
   release qualification or validate the empirical coefficients against motors.
+  Rotor-loss sector mesh stability and full/sector loss parity are future #319
+  gates, not conditions for shipping qualified full-motor loss in 0.5.9.
 
 ## Branch and verification
 
