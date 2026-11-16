@@ -15,6 +15,7 @@ import type {
   PublicMotorComponentKind,
   PublicMotorComponentSelection,
 } from './model';
+import { sectorCutAnglesDeg, sectorCutAt, sectorRings, type RingSector } from './sectorCuts';
 import {
   computeMagnetPoleFaces,
   computeSpmMagnetPolarityHalves,
@@ -98,6 +99,12 @@ interface MotorCanvasProps {
   showToothPoles?: boolean;
   /** Preview speed: the Phases waveforms show the electrical frequency it makes. */
   previewRpm?: number;
+  /**
+   * The rotor is turning (Spin, or the rotor turned during a solve). A sector mesh is
+   * then drawn whole: which identical copy is solved changes as the rotor turns, so
+   * the solved sector is shown only when the rotor stops.
+   */
+  rotorTurning?: boolean;
   meshDisplayMode?: PublicMeshDisplayMode;
   showMeshEdges?: boolean;
   /** Element-edge colour in place of the usual grey. */
@@ -152,6 +159,12 @@ interface MeshDrawOptions {
   /** Draw only elements touching this box, in canvas px: left, top, right, bottom. */
   cull?: [number, number, number, number] | null;
   edgeWidthScale?: number;
+  /**
+   * How a sector mesh's copies are told apart: 'mesh' dims the copies the mesh
+   * lists after its solved sector; 'bright' and 'dim' draw every element one way
+   * (for a picture clipped to the part solved at another rotor angle).
+   */
+  shading?: 'mesh' | 'bright' | 'dim';
 }
 
 /** Where a drawn mesh sits on the canvas: the motor centre and its outer radius, in px. */
@@ -1512,6 +1525,12 @@ function drawMesh(
     marginal: '#f59e0b',
     failing: '#ef4444',
   };
+  // A sector solve's preview holds the solved sector first, then its copies
+  // around the motor. The copies are drawn dimmed so the solved part stands out.
+  const solvedTriangles = solvedSectorTriangleCount(data);
+  const shading = options.shading ?? 'mesh';
+  const isCopy = (index: number) => (shading === 'mesh' ? index >= solvedTriangles : shading === 'dim');
+  const COPY_DIM = 0.3;
   const rotorAngleRad = -rotorAngleDeg * Math.PI / 180;
   const rotorCosine = Math.cos(rotorAngleRad);
   const rotorSine = Math.sin(rotorAngleRad);
@@ -1531,7 +1550,9 @@ function drawMesh(
     }
     // A coil side takes its phase colour, so the winding reads in the mesh too.
     const phase = coilPhases?.[index] ?? null;
-    const fillKey = phase ? `${region}${MESH_FILL_KEY_SEPARATOR}${phase}` : region;
+    const copy = isCopy(index);
+    const regionKey = phase ? `${region}${MESH_FILL_KEY_SEPARATOR}${phase}` : region;
+    const fillKey = copy ? `${regionKey}${COPY_PATH_SUFFIX}` : regionKey;
     const path = fillPaths.get(fillKey) || new Path2D();
     const a = mapMeshNode(triangle[0], rotateRotor);
     const b = mapMeshNode(triangle[1], rotateRotor);
@@ -1570,15 +1591,17 @@ function drawMesh(
     context.fillStyle = displayMode === 'problems' && !weak
       ? '#202733'
       : qualityColors[band];
-    context.globalAlpha = displayMode === 'problems' && !weak ? 0.13 : 0.82;
+    context.globalAlpha = (displayMode === 'problems' && !weak ? 0.13 : 0.82) * (copy ? COPY_DIM : 1);
     context.fill();
   });
 
   if (displayMode === 'geometry') {
     for (const [fillKey, path] of fillPaths) {
-      const [region, phase] = fillKey.split(MESH_FILL_KEY_SEPARATOR);
+      const copy = fillKey.endsWith(COPY_PATH_SUFFIX);
+      const regionKey = copy ? fillKey.slice(0, -COPY_PATH_SUFFIX.length) : fillKey;
+      const [region, phase] = regionKey.split(MESH_FILL_KEY_SEPARATOR);
       context.fillStyle = phase ? PHASE_COLORS[phase as keyof typeof PHASE_COLORS] : regionColor(region, '#697386');
-      context.globalAlpha = phase ? 0.78 : /air/i.test(region) ? 0.25 : 0.68;
+      context.globalAlpha = (phase ? 0.78 : /air/i.test(region) ? 0.25 : 0.68) * (copy ? COPY_DIM : 1);
       context.fill(path);
     }
   }
@@ -1586,10 +1609,12 @@ function drawMesh(
 
   if (showEdges) {
     const uniqueEdges = new Set<string>();
+    const copyEdges = new Path2D();
     context.beginPath();
     data.triangles.forEach((triangle, triangleIndex) => {
       if (skipped?.[triangleIndex]) return;
       const rotateRotor = isRotorRegion(data.regions[triangleIndex] || 'mesh');
+      const copy = isCopy(triangleIndex);
       const triangleEdges: Array<[number, number]> = [
         [triangle[0], triangle[1]],
         [triangle[1], triangle[2]],
@@ -1603,6 +1628,11 @@ function drawMesh(
         uniqueEdges.add(edgeKey);
         const start = mapMeshNode(startIndex, rotateRotor);
         const end = mapMeshNode(endIndex, rotateRotor);
+        if (copy) {
+          copyEdges.moveTo(start[0], start[1]);
+          copyEdges.lineTo(end[0], end[1]);
+          return;
+        }
         context.moveTo(start[0], start[1]);
         context.lineTo(end[0], end[1]);
       });
@@ -1612,6 +1642,9 @@ function drawMesh(
       : 'rgba(226, 232, 240, 0.28)');
     context.lineWidth = (edgeColor ? 0.5 : 0.4) * (options.edgeWidthScale ?? 1);
     context.stroke();
+    context.globalAlpha = COPY_DIM;
+    context.stroke(copyEdges);
+    context.globalAlpha = 1;
   }
 
   if (displayMode === 'problems') {
@@ -1663,6 +1696,51 @@ function drawMesh(
   return { origin, radiusPx: Math.hypot(edgeX - origin[0], edgeY - origin[1]), scale };
 }
 
+const COPY_PATH_SUFFIX = '\u0000copy';
+
+/**
+ * Ring sectors around the motor centre, in mesh angles (degrees, counter-clockwise)
+ * and radii (mm), mapped to the canvas as one path; an inner radius of zero reaches
+ * the centre.
+ */
+function meshRingSectorsPath(map: (point: [number, number]) => [number, number], sectors: RingSector[]): Path2D {
+  const path = new Path2D();
+  const at = (radiusMm: number, deg: number) => map([radiusMm * Math.cos((deg * Math.PI) / 180), radiusMm * Math.sin((deg * Math.PI) / 180)]);
+  for (const { startDeg, sweepDeg, innerMm, outerMm } of sectors) {
+    const steps = Math.max(2, Math.ceil(sweepDeg / 2));
+    for (let step = 0; step <= steps; step += 1) {
+      const [x, y] = at(outerMm, startDeg + (sweepDeg * step) / steps);
+      if (step === 0) path.moveTo(x, y);
+      else path.lineTo(x, y);
+    }
+    if (innerMm > 0) {
+      for (let step = steps; step >= 0; step -= 1) {
+        const [x, y] = at(innerMm, startDeg + (sweepDeg * step) / steps);
+        path.lineTo(x, y);
+      }
+    } else {
+      const [cx, cy] = map([0, 0]);
+      path.lineTo(cx, cy);
+    }
+    path.closePath();
+  }
+  return path;
+}
+
+/**
+ * How many of a mesh preview's triangles are actually solved. A sector solve
+ * lists its solved sector first and then the copies that complete the motor;
+ * any other mesh is solved whole.
+ */
+export function solvedSectorTriangleCount(data: { triangles: unknown[]; mesh_info?: Record<string, unknown> }): number {
+  const sector = data.mesh_info?.sector as { repeats?: number } | undefined;
+  const solved = Number(data.mesh_info?.num_triangles);
+  if (!sector || !Number.isInteger(solved) || solved <= 0 || solved >= data.triangles.length) {
+    return data.triangles.length;
+  }
+  return solved * Number(sector.repeats ?? 0) === data.triangles.length ? solved : data.triangles.length;
+}
+
 export function MotorCanvas({
   geometry,
   geometryStale = false,
@@ -1683,6 +1761,7 @@ export function MotorCanvas({
   magnetPolarityView = 'dominant',
   showToothPoles = false,
   previewRpm = 20,
+  rotorTurning = false,
   meshDisplayMode = 'geometry',
   showMeshEdges = true,
   meshQualities = EMPTY_MESH_QUALITIES,
@@ -1790,6 +1869,9 @@ export function MotorCanvas({
     key: unknown[];
     fixed: HTMLCanvasElement;
     rotor: HTMLCanvasElement;
+    /** A turned sector mesh: the same layers dimmed, shown outside the sector solved at the angle on view. */
+    fixedDim: HTMLCanvasElement | null;
+    rotorDim: HTMLCanvasElement | null;
     rotorSize: number;
     frame: MeshDrawFrame | null;
     hits: MeshTriangleHit[];
@@ -1949,11 +2031,38 @@ export function MotorCanvas({
         const detailZoom = navigation.scale > 8;
         const coilPhases = geometry && !plainWinding ? meshCoilPhases(mesh, geometry) : null;
         if (meshOverlay && geometry) drawMeshOverlayGeometry(context, rect.width, rect.height);
+        // A sector mesh is the solved sector at the meshed angle plus its copies. Stopped
+        // away from that angle, the bright sector is the one the solver cuts there, at the
+        // tooth and pole gap nearest each other. While the rotor turns, or without the
+        // backend's table of cuts, the whole motor is drawn bright.
+        const sectorRepeats = Number((mesh.mesh_info.sector as { repeats?: number } | undefined)?.repeats ?? 0);
+        const turnedSector = rotorAngleDeg !== 0 && sectorRepeats > 1 && solvedSectorTriangleCount(mesh) < mesh.triangles.length;
+        const sectorInfo = mesh.mesh_info.sector as { mid_gap_radius_mm?: number } | undefined;
+        const midGapMm = Number(sectorInfo?.mid_gap_radius_mm ?? 0);
+        const tableCut = turnedSector && !rotorTurning && midGapMm > 0 ? sectorCutAt(mesh.sector_cuts, rotorAngleDeg) : null;
+        const shownCut = tableCut ? sectorCutAnglesDeg(tableCut, rotorAngleDeg) : null;
+        const sectorShading: 'mesh' | 'bright' = turnedSector && !shownCut ? 'bright' : 'mesh';
+        const sectorSpanDeg = sectorRepeats > 1 ? 360 / sectorRepeats : 360;
+        let sectorMap: ((point: [number, number]) => [number, number]) | null = null;
+        // The part solved at this angle (or the copies outside it), in the stator's frame.
+        const sectorClip = (solved: boolean) => {
+          sectorMap ??= fitTransform(mesh.nodes_mm, rect.width, rect.height, navigation.scale, pan, undefined, viewRotationRad).map;
+          return meshRingSectorsPath(sectorMap, sectorRings(
+            shownCut ?? { statorDeg: 0, rotorDeg: 0 },
+            sectorSpanDeg,
+            midGapMm,
+            2 * meshOuterRadiusMm(mesh) + 1,
+            mesh.mesh_info.rotor_layout === 'outer',
+            solved,
+          ));
+        };
         const meshPass = (
           target: CanvasRenderingContext2D,
           angleDeg: number,
           hits: MeshTriangleHit[],
           part: 'all' | 'fixed' | 'rotor',
+          shading: 'mesh' | 'bright' | 'dim' = sectorShading,
+          cull = detailZoom && part === 'all',
         ) => drawMesh(
           target,
           mesh,
@@ -1970,58 +2079,105 @@ export function MotorCanvas({
           focusedMeshElementIndex,
           hits,
           meshEdgeColor,
-          { part, fill: !meshOverlay, coilPhases, cull: detailZoom && part === 'all' ? [0, 0, rect.width, rect.height] : undefined },
+          { part, fill: !meshOverlay, coilPhases, cull: cull ? [0, 0, rect.width, rect.height] : undefined, shading },
         );
         let frame: MeshDrawFrame | null;
         if (rotorAngleDeg === 0 || detailZoom) {
           meshLayersRef.current = null;
-          frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all');
+          if (shownCut) {
+            // Every element is drawn turned here: bright inside the part solved at this
+            // angle, dimmed outside it.
+            context.save();
+            context.clip(sectorClip(true));
+            frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all', 'bright');
+            context.restore();
+            context.save();
+            context.clip(sectorClip(false));
+            meshPass(context, rotorAngleDeg, [], 'all', 'dim');
+            context.restore();
+          } else {
+            frame = meshPass(context, rotorAngleDeg, meshHitsRef.current, 'all');
+          }
         } else {
           // A turning rotor: the still part and the rotor are each drawn once, and the
-          // rotor's picture is turned for every frame, which is what keeps it smooth.
+          // rotor's picture is turned for every frame, which is what keeps it smooth. A
+          // turned sector mesh also keeps both parts dimmed; each frame shows the bright
+          // pictures inside the sector solved at that angle and the dimmed ones outside,
+          // so its steps round the motor cost no redrawing.
           const key = [
             mesh, canvas.width, canvas.height, navigation.scale, pan[0], pan[1], viewRotationRad, meshDisplayMode,
             showMeshEdges, meshQualities, meshQualityThreshold, focusedMeshElementIndex, meshEdgeColor, meshOverlay, coilPhases,
+            sectorShading, Boolean(shownCut),
           ];
           let layers = meshLayersRef.current;
           if (!layers || layers.key.length !== key.length || layers.key.some((value, index) => value !== key[index])) {
             const fixedHits: MeshTriangleHit[] = [];
             const rotorHits: MeshTriangleHit[] = [];
-            const fixed = document.createElement('canvas');
-            fixed.width = canvas.width;
-            fixed.height = canvas.height;
-            const fixedContext = fixed.getContext('2d');
-            fixedContext?.setTransform(ratio, 0, 0, ratio, 0, 0);
-            const fixedFrame = fixedContext ? meshPass(fixedContext, 0, fixedHits, 'fixed') : null;
+            const fixedLayer = (shading: 'mesh' | 'bright' | 'dim', hits: MeshTriangleHit[]) => {
+              const layer = document.createElement('canvas');
+              layer.width = canvas.width;
+              layer.height = canvas.height;
+              const layerContext = layer.getContext('2d');
+              layerContext?.setTransform(ratio, 0, 0, ratio, 0, 0);
+              return { layer, drawn: layerContext ? meshPass(layerContext, 0, hits, 'fixed', shading) : null };
+            };
+            const { layer: fixed, drawn: fixedFrame } = fixedLayer(shownCut ? 'bright' : sectorShading, fixedHits);
+            const fixedDim = shownCut ? fixedLayer('dim', []).layer : null;
             const { map, scale } = fitTransform(mesh.nodes_mm, rect.width, rect.height, navigation.scale, pan, undefined, viewRotationRad);
             const origin = map([0, 0]);
             // Centre the entire rotor in its own surface. Viewport-sized layers
             // discard off-screen elements before rotation can bring them back.
             const rotorSize = Math.max(1, 2 * (meshRotorRadiusMm(mesh) * scale + ROTOR_CACHE_PADDING_PX));
-            const rotor = document.createElement('canvas');
-            rotor.width = rotor.height = Math.min(MAX_ROTOR_CACHE_SIDE_PX, Math.ceil(rotorSize * ratio));
-            const rotorContext = rotor.getContext('2d');
-            const rotorRatio = rotor.width / rotorSize;
-            rotorContext?.setTransform(
-              rotorRatio, 0, 0, rotorRatio,
-              (rotorSize / 2 - origin[0]) * rotorRatio,
-              (rotorSize / 2 - origin[1]) * rotorRatio,
-            );
-            const rotorFrame = rotorContext ? meshPass(rotorContext, 0, rotorHits, 'rotor') : null;
-            layers = { key, fixed, rotor, rotorSize, frame: fixedFrame ?? rotorFrame, hits: [...fixedHits, ...rotorHits] };
+            const rotorLayer = (shading: 'mesh' | 'bright' | 'dim', hits: MeshTriangleHit[]) => {
+              const layer = document.createElement('canvas');
+              layer.width = layer.height = Math.min(MAX_ROTOR_CACHE_SIDE_PX, Math.ceil(rotorSize * ratio));
+              const layerContext = layer.getContext('2d');
+              const rotorRatio = layer.width / rotorSize;
+              layerContext?.setTransform(
+                rotorRatio, 0, 0, rotorRatio,
+                (rotorSize / 2 - origin[0]) * rotorRatio,
+                (rotorSize / 2 - origin[1]) * rotorRatio,
+              );
+              return { layer, drawn: layerContext ? meshPass(layerContext, 0, hits, 'rotor', shading) : null };
+            };
+            const { layer: rotor, drawn: rotorFrame } = rotorLayer(shownCut ? 'bright' : sectorShading, rotorHits);
+            const rotorDim = shownCut ? rotorLayer('dim', []).layer : null;
+            layers = {
+              key, fixed, rotor, fixedDim, rotorDim, rotorSize, frame: fixedFrame ?? rotorFrame, hits: [...fixedHits, ...rotorHits],
+            };
             meshLayersRef.current = layers;
           }
           frame = layers.frame;
           meshHitsRef.current = layers.hits;
-          context.drawImage(layers.fixed, 0, 0, rect.width, rect.height);
-          if (frame) {
-            meshHitRotationRef.current = { origin: frame.origin, angleDeg: rotorAngleDeg };
-            context.save();
-            context.translate(frame.origin[0], frame.origin[1]);
-            context.rotate((rotorAngleDeg * Math.PI) / 180);
-            context.drawImage(layers.rotor, -layers.rotorSize / 2, -layers.rotorSize / 2, layers.rotorSize, layers.rotorSize);
-            context.restore();
-          }
+          const { fixed, rotor, fixedDim, rotorDim, rotorSize } = layers;
+          // The parts are clipped on screen, before the rotor's picture is turned, so the
+          // clip is in the stator's frame with the rotor's cut where the rotor has turned it.
+          const solvedClip = shownCut && fixedDim && rotorDim ? sectorClip(true) : null;
+          const copiesClip = solvedClip ? sectorClip(false) : null;
+          const pieces: Array<[HTMLCanvasElement, HTMLCanvasElement | null]> = [[fixed, fixedDim], [rotor, rotorDim]];
+          pieces.forEach(([bright, dim], index) => {
+            const isRotor = index === 1;
+            if (isRotor && !frame) return;
+            const draw = (picture: HTMLCanvasElement, clip: Path2D | null) => {
+              context.save();
+              if (clip) context.clip(clip);
+              if (isRotor && frame) {
+                context.translate(frame.origin[0], frame.origin[1]);
+                context.rotate((rotorAngleDeg * Math.PI) / 180);
+                context.drawImage(picture, -rotorSize / 2, -rotorSize / 2, rotorSize, rotorSize);
+              } else {
+                context.drawImage(picture, 0, 0, rect.width, rect.height);
+              }
+              context.restore();
+            };
+            if (solvedClip && copiesClip && dim) {
+              draw(bright, solvedClip);
+              draw(dim, copiesClip);
+            } else {
+              draw(bright, null);
+            }
+          });
+          if (frame) meshHitRotationRef.current = { origin: frame.origin, angleDeg: rotorAngleDeg };
         }
         // The geometry drawn under an overlay has already marked the rotor's place.
         if (frame && !(meshOverlay && geometry)) drawRotorZeroMark(context, frame.origin, frame.radiusPx, rotorAngleDeg, viewRotationRad);
@@ -2066,6 +2222,7 @@ export function MotorCanvas({
     navigation.scale,
     navigation.rotationDeg,
     rotorAngleDeg,
+    rotorTurning,
     selectedComponent,
     showMeshEdges,
     meshEdgeColor,

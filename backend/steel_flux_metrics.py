@@ -25,8 +25,16 @@ def new_steel_flux_density_rms_accumulator() -> SteelFluxDensityAccumulator:
 def update_steel_flux_density_rms_accumulator(
     accumulator: SteelFluxDensityAccumulator,
     frame: Any,
+    *,
+    element_count: int | None = None,
 ) -> None:
-    """Accumulate area-weighted |B|^2 for stator teeth and yoke triangles."""
+    """Accumulate area-weighted |B|^2 for stator teeth and yoke triangles.
+
+    ``element_count`` limits the sum to the frame's first elements. A sector
+    solve's frame lists its solved sector first and then identical copies, and
+    the RMS is a ratio of sums, so one sector gives the whole motor's value.
+    Every frame of a run must use the same limit.
+    """
 
     nodes = _list_value(_field_value(frame, "nodes_mm"))
     triangles = _list_value(_field_value(frame, "triangles"))
@@ -34,7 +42,7 @@ def update_steel_flux_density_rms_accumulator(
     if not nodes or not triangles or not regions:
         artifact_frame = _field_frame_from_artifact_ref(frame)
         if artifact_frame is not None:
-            update_steel_flux_density_rms_accumulator(accumulator, artifact_frame)
+            update_steel_flux_density_rms_accumulator(accumulator, artifact_frame, element_count=element_count)
         return
     if not nodes or not triangles or len(regions) != len(triangles):
         return
@@ -47,7 +55,9 @@ def update_steel_flux_density_rms_accumulator(
     if not has_mag and not has_xy:
         return
 
-    for index, triangle in enumerate(triangles):
+    limit = len(triangles) if element_count is None else max(0, min(int(element_count), len(triangles)))
+    for index in range(limit):
+        triangle = triangles[index]
         bucket = _steel_region_bucket(regions[index])
         if bucket is None:
             continue
@@ -159,7 +169,15 @@ def _finite_float(value: Any) -> float | None:
 
 
 def _normalize_region_tag(value: Any) -> str:
-    text = str(value or "").strip()
+    # A frame names a handful of regions over tens of thousands of elements.
+    if isinstance(value, str):
+        return _normalize_region_text(value)
+    return _normalize_region_text(str(value or ""))
+
+
+@lru_cache(maxsize=256)
+def _normalize_region_text(value: str) -> str:
+    text = value.strip()
     if not text:
         return ""
     text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", text)

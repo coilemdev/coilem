@@ -18,6 +18,7 @@ from backend.benchmark_suite import HARNESS_VERSION, PROTOCOL_VERSION, SUPPORTED
 from backend.benchmark_suite.physics import PHYSICS_DATA_SOURCES
 from backend.resources import (
     BENCHMARK_REFERENCE_BUNDLE_DIR,
+    BENCHMARK_SECTOR_SUITE_FILE,
     BENCHMARK_SUITE_FILE,
     BUILD_INFO_FILE,
     PACKAGED_DATA_DIR,
@@ -43,6 +44,7 @@ def _data_root():
 
 DATA_ROOT = _data_root()
 SPEC = DATA_ROOT / BENCHMARK_SUITE_FILE
+SECTOR_SPEC = DATA_ROOT / BENCHMARK_SECTOR_SUITE_FILE
 DEFAULT_BUNDLE = DATA_ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR
 # Native solver isolation can change process PATH. Provenance calls must use the
 # Git executable/environment resolved before that scope, without changing solve options.

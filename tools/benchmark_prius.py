@@ -63,7 +63,16 @@ def solve_config(config, progress):
     return Magneto2DSolver(launch_surface=True).solve(config, on_progress=progress)
 
 
-def jobs(curve=False, refinement=False):
+def jobs(curve=False, refinement=False, symmetry="full"):
+    """The registered Prius jobs; ``symmetry="auto"`` solves each as one repeating sector (the sector lane)."""
+
+    for name, config in _jobs(curve, refinement):
+        if symmetry != "full":
+            config["solve_params"]["symmetry"] = symmetry
+        yield name, config
+
+
+def _jobs(curve=False, refinement=False):
     from backend.reference_models.prius import case_config
 
     tutorial = case_config("prius-2004-tutorial-bemf-v1")
@@ -146,6 +155,7 @@ def main(argv=None):
     ap.add_argument("--refinement", action="store_true", default=None, help="Separate angular and mesh controls at Phi0=140 degrees")
     ap.add_argument("--only", help="Run one named job (useful for sequential reproduction)")
     ap.add_argument("--job", action="append", help="Select jobs for a shard; repeat for each job")
+    ap.add_argument("--symmetry", choices=["full", "auto"], help="auto solves each job as one repeating sector (default full)")
     ap.add_argument("--resume", action="store_true", help="Verify and resume the saved selection in --out")
     args = ap.parse_args(argv)
     destination = args.out.resolve()
@@ -164,14 +174,18 @@ def main(argv=None):
             if args.only:
                 ap.error("--job cannot be combined with --only")
             options["job"] = args.job
+        # Registered only for a sector collection, so full-motor registrations keep their selection.
+        if args.symmetry == "auto" or (registration is not None and "symmetry" in registration["selection"]):
+            options["symmetry"] = args.symmetry
         if registration is not None:
             for key in options:
                 supplied = getattr(args, key)
-                saved = registration["selection"][key]
+                saved = registration["selection"].get(key)
                 if supplied is not None and supplied != saved:
                     raise ValueError("Resume selection differs from the registered jobs")
                 options[key] = saved
-        selected = [(name, parse_public_motor_config(body)) for name, body in jobs(options["curve"], options["refinement"])
+        registered = jobs(options["curve"], options["refinement"], options.get("symmetry") or "full")
+        selected = [(name, parse_public_motor_config(body)) for name, body in registered
                     if (not options["only"] or name == options["only"]) and (not options.get("job") or name in options["job"])]
         if options.get("job") and (len(options["job"]) != len(set(options["job"])) or set(options["job"]) != {n for n, _ in selected}):
             ap.error("--job contains duplicate or unknown jobs")

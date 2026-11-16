@@ -87,3 +87,50 @@ def test_mesh_bridge_cannot_change_registered_floor(cohort):
     changed["cases"][0]["cogging_floor_Nm"] *= 10
     with pytest.raises(ValueError, match="changed cases, floors or stages"):
         references.load_bundle(root / BUNDLE, changed)
+
+
+RENEWALS = BUNDLE + "/geometry-renewals.json"
+
+
+def _require_review(root, spec):
+    manifest, _, _ = references.load_bundle(root / BUNDLE, spec)
+    return references.require_reviewed_bundle(root / BUNDLE, manifest, spec)
+
+
+def test_the_geometry_renewal_is_what_accepts_the_changed_source(cohort):
+    """config.py changed after the geometry review (it gained solve_params.symmetry); the renewal
+    record beside the review accepts that one file, leaving the review, suite and bundle bytes as
+    measured. Without the record, or with the source changed again, the review fails closed."""
+
+    root, spec = cohort
+    _require_review(root, spec)
+    renewals = (root / RENEWALS).read_bytes()
+    (root / RENEWALS).unlink()
+    with pytest.raises(ValueError, match="does not match current geometry sources"):
+        _require_review(root, spec)
+    (root / RENEWALS).write_bytes(renewals)
+    source = root / "backend/models/config.py"
+    source.write_bytes(source.read_bytes() + b"\n")
+    with pytest.raises(ValueError, match="does not match current geometry sources"):
+        _require_review(root, spec)
+
+
+@pytest.mark.parametrize(
+    "tamper",
+    [
+        lambda record: record["review"].update(sha256="0" * 64),
+        lambda record: record["renewals"][0].update(decision="ACCEPTED"),
+        lambda record: record["renewals"][0].update(reviewed_sha256="0" * 64),
+        lambda record: record["renewals"][0].update(source="backend/geometry_ir.py", reviewed_sha256="0" * 64),
+        lambda record: next(iter(record["renewals"][0]["cases"].values())).update(old_graph_projection_differences=1),
+        lambda record: record["renewals"][0]["cases"].popitem(),
+        lambda record: record.update(schema="coilem.cogging_geometry_renewal/v0"),
+    ],
+)
+def test_a_tampered_geometry_renewal_fails_closed(cohort, tamper):
+    root, spec = cohort
+    record = read(root / RENEWALS)
+    tamper(record)
+    write(root / RENEWALS, record)
+    with pytest.raises(ValueError, match="renewal"):
+        _require_review(root, spec)

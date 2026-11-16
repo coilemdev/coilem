@@ -92,6 +92,11 @@ class SolveMetadata(BaseModel):
     reference_model: dict | None = None
     solver_name: str
     mesh_element_count: int = Field(ge=100)
+    sector_repeats: int | None = Field(
+        default=None,
+        ge=2,
+        description="How many copies of the solved sector make the motor; null when the full motor was solved",
+    )
     rotor_positions: int = Field(ge=1)
     timestamp: datetime
     current_amplitude_A: float | None = Field(default=None, ge=0, le=1000)

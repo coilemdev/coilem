@@ -31,8 +31,19 @@ export const COMPARISON_METRICS: Array<{
 
 export function actualMeshProvenance(result: ComparisonResult): string {
   const metadata = result.solve_metadata;
-  return [metadata.mesh_source, metadata.mesher, metadata.mesh_density, metadata.mesh_source_detail]
+  // What was actually solved: a sector request on a motor that does not repeat solves the full motor.
+  const sector = typeof metadata.sector_repeats === 'number' && metadata.sector_repeats > 1 ? `1/${metadata.sector_repeats} sector` : null;
+  return [metadata.mesh_source, metadata.mesher, metadata.mesh_density, metadata.mesh_source_detail, sector]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' · ') || 'Not recorded';
+}
+
+/** Rotor positions each run solved: its loaded sweep, and its cogging sweep per cogging period. */
+export function actualPositionsProvenance(result: ComparisonResult): string {
+  const loaded = result.torque_waveform?.electrical_angle_deg?.length ?? 0;
+  const cogging = result.summary.cogging?.positions_per_period;
+  return [loaded > 0 ? `${loaded} loaded` : null, typeof cogging === 'number' && cogging > 0 ? `${cogging} per cogging period` : null]
+    .filter((value): value is string => value !== null)
     .join(' · ') || 'Not recorded';
 }
 

@@ -5,7 +5,9 @@ rotor position. Gmsh meshes every distinct angle of the loaded grid, the
 full-cycle Back-EMF grid and the cogging period, except that angles a whole
 slot pitch apart share one mesh; the field solves overlap that meshing; and
 packaging builds field playback for every loaded position. Each term scales
-with the mesh size.
+with the mesh size. A sector solve (``solve_params.symmetry = "auto"`` on a
+motor that repeats) meshes and solves only one repeating sector, so the size
+that counts is the sector's.
 
 The coefficients come from timed runs of the bundled examples (Preview,
 Standard and High accuracy) on a 10-core Apple-silicon laptop with coilEM
@@ -19,9 +21,12 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Literal
 
+from backend.geometry_drawer import compute_geometry
+from backend.geometry_ir import build_geometry_ir
 from backend.gmsh_mesh_rotation import full_cycle_congruent_bases, gmsh_mesh_reuse_enabled, slot_congruence_groups
 from backend.magneto2d_adapter import get_cached_solve_mesh_artifact
 from backend.models import MotorConfig
+from backend.sector_geometry import detect_sector_symmetry
 from backend.solver import _cogging_angle_grid, _gmsh_pipeline_worker_count
 from backend.sweep_planning import full_cycle_back_emf_angle_grid, loaded_angle_grid, no_load_field_frame_angles
 
@@ -76,8 +81,36 @@ def heuristic_mesh_elements(config: MotorConfig) -> int:
     return int(round(coarse * _DENSITY_ELEMENT_FACTOR.get(density, 2.0)))
 
 
+def sector_repeats(config: MotorConfig, solver_id: str = "magneto2d") -> int:
+    """How many copies of the solved region make up the motor: 1 for a full-motor solve.
+
+    The mesher's own check (``gmsh_solver._sector_ir_for_solve``) without meshing:
+    Magneto2D solves a sector of an SPM or IPM design with ``symmetry = "auto"``
+    when its geometry and winding repeat. In the rare case that the mesher then
+    cannot cut that sector cleanly, it solves the full motor, and the estimate
+    reads low until a prepared mesh gives the real size.
+    """
+
+    if (
+        solver_id != "magneto2d"
+        or config.solve_params is None
+        or config.solve_params.symmetry != "auto"
+        or str(config.topology).upper() not in {"SPM", "IPM"}
+    ):
+        return 1
+    try:
+        symmetry = detect_sector_symmetry(build_geometry_ir(config, geom=compute_geometry(config), rotor_angle_deg=0.0))
+    except Exception:  # noqa: BLE001 - an estimate never fails the request it accompanies
+        return 1
+    return symmetry.repeats if symmetry is not None else 1
+
+
 def prepared_mesh_elements(solve_mesh_key: str | None, config: MotorConfig) -> int | None:
-    """Element count of the mesh the UI prepared for ``config``, while cached."""
+    """Element count of the mesh the UI prepared for ``config``, while cached.
+
+    For a sector solve that is the solved sector, not the whole motor the Mesh
+    tab draws.
+    """
 
     artifact = get_cached_solve_mesh_artifact(solve_mesh_key, config)
     mesh = artifact.get("mesh") if isinstance(artifact, dict) else None
@@ -144,7 +177,7 @@ def mesh_workers(mesh_jobs: int) -> int:
 def estimate_solve(config: MotorConfig, *, mesh_elements: int | None = None, solver_id: str = "magneto2d") -> SolveEstimate:
     work = planned_work(config)
     source: Literal["prepared_mesh", "estimate"] = "prepared_mesh" if mesh_elements else "estimate"
-    elements = mesh_elements or heuristic_mesh_elements(config)
+    elements = mesh_elements or max(1, round(heuristic_mesh_elements(config) / sector_repeats(config, solver_id)))
     kelements = elements / 1000.0
     workers = mesh_workers(work["mesh_jobs"])
     mesh_s = _MESH_S_PER_KELEMENT * work["base_meshes"] * kelements * min(_REFERENCE_MESH_WORKERS, work["mesh_jobs"]) / workers

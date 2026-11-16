@@ -4,7 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 const { analysisSummary, analysisPositions, setAnalysisOption, hasTorqueResult, hasBackEmfResult, defaultResultPlot } = await importTypeScriptModule(new URL('../src/public/analysisOptions.ts', import.meta.url));
 const { asPublicConfig } = await importTypeScriptModule(new URL('../src/public/publicRequest.ts', import.meta.url));
-const { applyPublicSolvePreset, ensureLossesFullCycle } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
+const { applyPublicSolvePreset, ensureLossesFullCycle, selectedSolvePlan } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
 const { parseDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
 
 let config = cloneDefaultConfig();
@@ -83,4 +83,18 @@ assert.equal(defaultResultPlot({ ...result, summary: { ...result.summary, back_e
 assert.throws(() => parseDesignFile(JSON.stringify({ ...mapOnly, torque_speed_analysis: {
   ...mapOnly.torque_speed_analysis, limits: { ...mapOnly.torque_speed_analysis.limits, dc_bus_V: -5 },
 } })), /Invalid torque–speed map settings/);
+// The Maximum accuracy plan is High accuracy's grid on the Very fine mesh, and lights up only for that pair.
+{
+  const sweep = { rotor_sweep_range_deg: 60, rotor_step_deg: 15 };
+  const base = setAnalysisOption(cloneDefaultConfig(), 'back_emf', true);
+  const veryFine = applyPublicSolvePreset(base, 'very_fine', sweep);
+  assert.equal(veryFine.solve_params.solve_quality, 'fine');
+  assert.equal(veryFine.solve_params.mesh_density, 'very_fine');
+  assert.equal(veryFine.solve_options.thd_analysis, true);
+  assert.equal(selectedSolvePlan(veryFine), 'very_fine');
+  assert.equal(selectedSolvePlan(applyPublicSolvePreset(base, 'fine', sweep)), 'fine');
+  assert.equal(selectedSolvePlan({ ...base, solve_params: { ...base.solve_params, solve_quality: 'standard', mesh_density: 'very_fine' } }), 'standard');
+  assert.equal(applyPublicSolvePreset(veryFine, 'standard', sweep).solve_params.mesh_density, 'normal');
+  assert.equal(selectedSolvePlan(parseDesignFile(JSON.stringify(veryFine)).config), 'very_fine', 'files reopen on the Maximum accuracy plan');
+}
 console.log('Analysis defaults, selection, standalone requests, roundtrip and result availability pass.');

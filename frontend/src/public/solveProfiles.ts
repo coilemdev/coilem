@@ -6,7 +6,7 @@ export const OPERATING_KEYS = ['rated_speed_rpm', 'current_amplitude_A', 'curren
   'current_angle_deg', 'magnet_temperature_C', 'winding_temperature_C', 'mechanical_loss_W',
   'excitation_mode', 'phase_connection', 'commutation_advance_deg', 'motor_input_dc_bus_V'] as const;
 const NUMERICAL_KEYS = ['solve_quality', 'rotor_sweep_range_deg', 'rotor_step_deg', 'mesh_density',
-  'mesh_source', 'mesher', 'corner_refinement', 'mesh_build', 'rotor_rotation_model', 'torque_method',
+  'mesh_source', 'mesher', 'corner_refinement', 'mesh_build', 'symmetry', 'rotor_rotation_model', 'torque_method',
   'nonlinear_solver', 'linear_solver_preconditioner', 'max_nonlinear_iterations', 'magneto2d_workers'] as const;
 const OUTPUT_KEYS = ['torque_sweep', 'back_emf', 'flux_density', 'cogging_torque', 'losses_efficiency',
   'torque_speed_envelope', 'thd_analysis'] as const;
@@ -17,7 +17,7 @@ const ENUMS = {
   current_amplitude_convention: ['rms', 'peak', 'plateau'], excitation_mode: ['sinusoidal', 'ideal_six_step_120'],
   phase_connection: ['wye'], solve_quality: ['quick', 'standard', 'fine', 'custom'],
   mesh_density: ['coarse', 'normal', 'fine', 'very_fine'], mesh_source: ['native'], mesher: ['gmsh'],
-  mesh_build: ['precise', 'fast'], rotor_rotation_model: ['remesh_per_step'], torque_method: ['contour', 'arkkio', 'weighted_stress'],
+  mesh_build: ['precise', 'fast'], symmetry: ['full', 'auto'], rotor_rotation_model: ['remesh_per_step'], torque_method: ['contour', 'arkkio', 'weighted_stress'],
   nonlinear_solver: ['picard', 'newton'], linear_solver_preconditioner: ['direct', 'ic0', 'jacobi'],
 } as const satisfies { [K in keyof Parameters]?: readonly Parameters[K][] };
 // A value added to one of these model unions without listing it above is a type error here,
@@ -68,6 +68,9 @@ function withUnsetDefaults(parameters: Partial<Parameters>, config: MotorConfig)
       ? value ?? UNSET_DEFAULTS[key]
       : value === UNSET_DEFAULTS[key] ? null : value;
   }
+  // The full motor is left out, as saved run configs leave it out, so a setup saved before
+  // sector solves existed still matches a full-motor design.
+  if (next.symmetry === 'full') delete next.symmetry;
   return next;
 }
 export function newProfileDocument(scope: string = crypto.randomUUID()): SolveProfileDocument {
@@ -103,7 +106,9 @@ export function profileCompatible(profile: SolveProfile, config: MotorConfig): b
 }
 export function applyProfile(config: MotorConfig, profile: SolveProfile): MotorConfig {
   if (!profileCompatible(profile, config)) throw new Error('This setup uses a different reference model, revision or current-angle convention.');
-  const parameters = { ...config.solve_params, ...withUnsetDefaults(copy(profile.parameters), config) };
+  // A setup with accuracy and solver settings that names no solved region solves the full motor.
+  const parameters = { ...config.solve_params, ...(profile.includesNumerics ? { symmetry: 'full' as const } : {}),
+    ...withUnsetDefaults(copy(profile.parameters), config) };
   if (parameters.max_nonlinear_iterations == null) delete parameters.max_nonlinear_iterations;
   // A setup captured with the map off records no map; the design keeps its drive limits.
   return { ...config, solve_params: parameters,

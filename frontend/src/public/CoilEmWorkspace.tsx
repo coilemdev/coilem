@@ -90,6 +90,7 @@ import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
 import { AnalysisOptions } from './AnalysisSelector';
 import { analysisSummary, analysisPositions, selectedAnalyses, hasTorqueResult, hasBackEmfResult, defaultResultPlot, type AnalysisKey } from './analysisOptions';
+import { sectorCoggingNote } from './coggingView';
 import { examplesByLayout, publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
@@ -135,7 +136,8 @@ import {
   PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG,
   ensureLossesFullCycle,
-  type PublicSolvePreset,
+  type PublicSolvePlanChoice,
+  selectedSolvePlan,
 } from './solvePlan';
 import {
   isPublicSolveFinalizing,
@@ -223,10 +225,10 @@ interface CoilEmWorkspaceProps {
   onConvertProjectSteelToM350: () => void;
   onImportSteel: (material: CustomSteel, target: SteelTarget) => void;
   onMeshSettingChange: (
-    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
-    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => void;
-  onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
+  onSolvePlanChange: (solvePlan: PublicSolvePlanChoice) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
     field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
@@ -2399,6 +2401,7 @@ function ViewportChrome({
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               showToothPoles={viewportMode === '2d' && showToothPoles}
               previewRpm={animationRpm}
+              rotorTurning={isAnimating || solveRotorAngleDeg !== null}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
@@ -3072,7 +3075,7 @@ function HealthPanel({
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
     ...windingChecks,
-    ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
+    ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${Number(mesh.mesh_info.num_triangles ?? mesh.triangles.length).toLocaleString()} generated triangles.` }] : []),
     ...(toothWidthAdvisory && !geometryWarnings.some((warning) => /tooth-shoe shoulder|bore tooth/i.test(warning)) ? [{
       severity: toothWidthAdvisory.severity,
       title: toothWidthAdvisory.kind === 'tooth_shoe_shoulder'
@@ -3835,10 +3838,11 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const panelDragRef = useRef<{ panel: 'setup' | 'runPlan'; startX: number; startWidth: number } | null>(null);
   const setupRef = useRef<HTMLElement>(null);
   const runPlanRef = useRef<HTMLElement>(null);
-  const solvePlans: Array<{ value: PublicSolvePreset; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
+  const solvePlans: Array<{ value: PublicSolvePlanChoice; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
     { value: 'quick', label: 'Preview', meshLabel: 'Coarse mesh', tradeoff: 'Fast iteration' },
     { value: 'standard', label: 'Standard', meshLabel: 'Medium mesh', tradeoff: 'Balanced', recommended: true },
     { value: 'fine', label: 'High accuracy', meshLabel: 'Fine mesh', tradeoff: 'Finer detail' },
+    { value: 'very_fine', label: 'Maximum accuracy', meshLabel: 'Very fine mesh', tradeoff: 'Cogging, convergence' },
   ];
   const elmerAvailable = elmerCapability.available
     && elmerCapability.qualified
@@ -3847,16 +3851,31 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const sixStepSelected = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
-  const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
+  const densityChoices: Array<{ value: MotorConfig['solve_params']['mesh_density']; label: string; title?: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
     { value: 'fine', label: 'Fine' },
+    { value: 'very_fine', label: 'Very fine', title: 'About 3–6× the elements of Medium: slower meshing and solving. For cogging and mesh-convergence checks.' },
   ];
   const meshBuild = config.solve_params.mesh_build ?? 'precise';
   const meshBuildChoices: Array<{ value: MotorConfig['solve_params']['mesh_build']; label: string; title: string }> = [
     { value: 'precise', label: 'Precise', title: 'Places mesh nodes as the benchmark report measured.' },
     { value: 'fast', label: 'Fast', title: 'About 4x faster meshing. Results move at mesh-noise level and are experimental.' },
   ];
+  const symmetry = config.solve_params.symmetry ?? 'full';
+  const symmetryChoices: Array<{ value: MotorConfig['solve_params']['symmetry']; label: string; title: string }> = [
+    { value: 'full', label: 'Full motor', title: 'Meshes and solves the whole cross-section, as the benchmark report measured.' },
+    { value: 'auto', label: 'One sector', title: 'Solves one repeating sector when the motor has one, and the full motor otherwise. Faster; results are experimental.' },
+  ];
+  const meshSector = mesh?.mesh_info.sector as { repeats: number; anti_periodic: boolean } | undefined;
+  // What is actually solved: a prepared mesh says so; before that, the request does.
+  const solvedRegionLabel = meshSector
+    ? `1/${meshSector.repeats} sector, shown as the full motor`
+    : symmetry === 'auto' && !mesh
+      ? 'One sector if the motor repeats'
+      : symmetry === 'auto'
+        ? 'Full motor (does not repeat)'
+        : 'Full motor';
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
@@ -3864,7 +3883,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
   const planLabel = config.solve_params.solve_quality === 'custom'
     ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
-    : `${solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
+    : `${solvePlans.find((plan) => plan.value === selectedSolvePlan(config))?.label
       ?? config.solve_params.solve_quality}${lossesSweep !== config ? ` · 360° at ${lossesSweep.solve_params.rotor_step_deg}° for losses` : ''}`;
   const estimatedTimeText = validation
     ? formatRunTimeRange(validation)
@@ -3903,9 +3922,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     : config.solve_params.linear_solver_preconditioner === 'ic0'
       ? 'IC(0)'
       : 'Jacobi';
-  const meshDensityLabel = config.solve_params.mesh_density === 'normal'
-    ? 'Medium'
-    : config.solve_params.mesh_density.replace('_', ' ');
+  const meshDensityLabel = densityChoices.find((choice) => choice.value === config.solve_params.mesh_density)?.label
+    ?? config.solve_params.mesh_density.replace('_', ' ');
   const currentEnabled = selectedAnalyses(config, selectedSolver).some((key) => key === 'torque_sweep' || key === 'losses_efficiency');
   const mapEnabled = selectedSolver !== 'elmer' && config.solve_options.torque_speed_envelope;
   const operatingSummary = currentEnabled ? [
@@ -3913,10 +3931,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
-  const selectedPreset = config.solve_params.solve_quality;
+  const selectedPreset = selectedSolvePlan(config);
   const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
-  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''} · ${symmetry === 'auto' ? 'One sector' : 'Full motor'}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -3932,7 +3950,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     ? 'In Advanced options, change Nonlinear solver to Newton, then run the analysis again.'
     : reviewDesignForConvergence
       ? 'Newton and a fine mesh are already selected. Review the geometry and steel B–H curve, especially near saturation, before retrying.'
-      : 'Try a finer mesh: in Advanced options, choose Fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
+      : 'Try a finer mesh: in Advanced options, choose Fine or Very fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
   const openConvergenceSettings = () => {
     recoveryFocusTargetRef.current = config.solve_params.nonlinear_solver === 'picard'
       ? nonlinearSolverRef.current
@@ -4391,7 +4409,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <AnalysisOptions config={config} solver={selectedSolver} busy={busy !== null} coggingPositions={validation?.cogging_positions_per_period} onChange={onAnalysisChange} onTorqueSpeedChange={onTorqueSpeedChange} />
         </ParameterSectionBlock>
         <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
-          <div className="public-choice-row public-solve-plan-choices">
+          <div className="public-solve-plan-frame"><div className="public-choice-row public-solve-plan-choices">
             {solvePlans.map((plan) => (
               <button
                 type="button"
@@ -4412,7 +4430,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                   : plan.tradeoff}</small>
               </button>
             ))}
-          </div>
+          </div></div>
           <div className={`public-custom-sweep${config.solve_params.solve_quality === 'custom' ? ' active' : ''}`}>
             <button
               type="button"
@@ -4466,13 +4484,22 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <div className="public-advanced-body">
             <section className="public-advanced-section public-advanced-mesh-section" aria-labelledby="public-mesh-preparation-heading">
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
-              <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} title={choice.title} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              {config.solve_params.mesh_density === 'very_fine' && <p className="public-mesh-build-note">Very fine meshes have about 3–6× the elements of Medium, so meshing and solving take several times longer and saved runs are larger. Use it for cogging and for checking that results have converged.</p>}
               <label className="public-check-row"><input type="checkbox" checked={config.solve_params.corner_refinement} disabled={busy !== null} onChange={(event) => onMeshSettingChange('corner_refinement', event.target.checked)} /> Corner refinement</label>
               <div className="public-mesh-build" role="group" aria-labelledby="public-mesh-build-label">
                 <span id="public-mesh-build-label">Mesh build</span>
                 <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
               {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
+              <div className="public-mesh-build" role="group" aria-labelledby="public-solve-symmetry-label">
+                <span id="public-solve-symmetry-label">Solved region</span>
+                <div className="mesh-segmented-control">{symmetryChoices.map((choice) => <button type="button" className={symmetry === choice.value ? 'active' : ''} aria-pressed={symmetry === choice.value} title={choice.title} disabled={busy !== null || selectedSolver === 'elmer'} onClick={() => onMeshSettingChange('symmetry', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              </div>
+              {meshSector && <p className="public-mesh-build-note">This motor repeats {meshSector.repeats} times: one sector of {Number(mesh?.mesh_info.num_triangles ?? 0).toLocaleString()} triangles is solved. In the Mesh view the solved sector is bright and its copies around the motor are dimmed. While the rotor turns the whole motor is drawn; stop it to see the sector solved at that angle.</p>}
+              {symmetry === 'auto' && !meshSector && mesh && <p className="public-mesh-build-note">This motor is solved in full{typeof mesh.mesh_info.sector_fallback_reason === 'string' ? `: ${mesh.mesh_info.sector_fallback_reason}` : ''}.</p>}
+              {symmetry === 'auto' && <p className="public-mesh-build-note">Solves one repeating sector and shows the full motor. A motor that does not repeat is solved in full. Results match the full motor to mesh-noise level and are marked experimental.</p>}
+              {sectorCoggingNote(config, selectedSolver) && <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, selectedSolver)}</p>}
               <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Meshing…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
@@ -4669,6 +4696,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
               <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : 'Preparing…'}</dd></div>
+              <div><dt>Solved region</dt><dd>{solvedRegionLabel}</dd></div>
               <div className="public-minimum-quality-row">
                 <dt>Minimum quality</dt>
                 <dd>

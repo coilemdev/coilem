@@ -166,7 +166,8 @@ class FieldFrame:
             corners_mm=corners,
             bx_t=self.bx_t[index],
             by_t=self.by_t[index],
-            signature=hashlib.sha1(np.round(corners, 3).tobytes()).hexdigest(),
+            # + 0.0 turns -0.0 into 0.0: a node on an axis must not make two equal meshes look different.
+            signature=hashlib.sha1((np.round(corners, 3) + 0.0).tobytes()).hexdigest(),
             pole_pitches=pole_pitches,
             element_index=index,
             in_teeth=np.asarray([_steel_region_bucket(self.regions[i]) == "teeth" for i in index], dtype=bool),
@@ -478,7 +479,7 @@ def _stator_elements(regions: Sequence[str]) -> np.ndarray:
 
 
 def _triangle_keys(corners: np.ndarray) -> list[bytes]:
-    rounded = np.round(corners, 4)
+    rounded = np.round(corners, 4) + 0.0  # -0.0 and 0.0 are the same coordinate
     order = np.lexsort((rounded[:, :, 1], rounded[:, :, 0]), axis=1)
     rounded = np.take_along_axis(rounded, order[:, :, None], axis=1)
     return [triangle.tobytes() for triangle in rounded]

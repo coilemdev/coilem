@@ -152,8 +152,10 @@ assert.match(appSource, /setView\('solve'\)/);
 assert.match(solvePlanSource, /quick: 'coarse'/);
 assert.match(solvePlanSource, /standard: 'normal'/);
 assert.match(solvePlanSource, /fine: 'fine'/);
-assert.match(solvePlanSource, /solve_quality: solvePlan/);
-assert.match(solvePlanSource, /mesh_density: PUBLIC_SOLVE_PLAN_MESH_DENSITY\[solvePlan\]/);
+// Each plan button sets an angle grid and a mesh density; Very fine is High accuracy's grid on the Very fine mesh.
+assert.match(solvePlanSource, /fine: \{ solve_quality: 'fine', mesh_density: 'fine' \}/);
+assert.match(solvePlanSource, /very_fine: \{ solve_quality: 'fine', mesh_density: 'very_fine' \}/);
+assert.match(solvePlanSource, /const settings = PUBLIC_SOLVE_PLAN_SETTINGS\[solvePlan\]/);
 assert.match(solvePlanSource, /solve_quality: 'custom'/);
 assert.match(solvePlanSource, /rotor_sweep_range_deg: PUBLIC_CUSTOM_SWEEP_RANGE_DEG/);
 assert.match(solvePlanSource, /rotor_step_deg: rotorStepDeg/);

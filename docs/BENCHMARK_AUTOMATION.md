@@ -16,6 +16,12 @@ queue time and platform concurrency limits can affect it. Collection jobs have
 a 90-minute safety limit so the timing target does not truncate valid fields.
 Standard runners are retained; actual wall times are reported separately.
 
+The `sector` collection measures the same groups as sectors: the A-F suite of
+protocol 1.11.0 (`benchmarks/af-v1.11-sector`), graded against the same frozen
+references, and every Prius job with `symmetry` set to `auto`. Its join reports
+which cases solved a sector. It is evidence for sector solves and does not
+replace the `registered` full-motor collection.
+
 Use dispatch input `reuse_run` with the original collection run ID and its exact
 measured candidate SHA to rebuild the joins without any field solves. The
 workflow uses its own current download tooling while grading with the frozen

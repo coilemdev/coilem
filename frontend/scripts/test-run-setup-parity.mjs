@@ -59,8 +59,12 @@ const priusUser = P.captureProfile(edit(priusLoaded, (c) => {
   c.solve_params.current_angle_deg += 10;
 }), 'Prius advanced angle', true, 'magneto2d', 'user-prius', 1);
 const lrkSetup = P.captureProfile(lrk, 'LRK as saved', true, 'magneto2d', 'user-lrk', 1);
+const sectorDesign = edit(starter, (c) => { c.solve_params.symmetry = 'auto'; });
+const sector = P.captureProfile(sectorDesign, 'One sector', true, 'magneto2d', 'user-sector', 1);
+assert.equal(sector.parameters.symmetry, 'auto');
+assert.equal('symmetry' in highSpeed.parameters, false, 'a full-motor setup leaves the solved region out');
 const setups = {
-  high_speed: highSpeed, hot, map_operating_only: mapOperatingOnly, elmer, prius_user: priusUser, lrk: lrkSetup,
+  high_speed: highSpeed, hot, map_operating_only: mapOperatingOnly, elmer, prius_user: priusUser, lrk: lrkSetup, sector,
   builtin_noload: builtins[0], builtin_loaded: builtins[1],
 };
 
@@ -72,12 +76,13 @@ const highSpeedSaved = P.applyProfile(starter, highSpeed);
 const designs = {
   starter, high_speed_saved: highSpeedSaved,
   high_speed_edited: edit(highSpeedSaved, (c) => { c.solve_params.current_amplitude_A = 35; }),
-  prius_noload: priusNoLoad, prius_loaded: priusLoaded, lrk,
+  prius_noload: priusNoLoad, prius_loaded: priusLoaded, lrk, sector: sectorDesign,
 };
 const libraries = {
   starter: library(userSetups, null), high_speed_saved: library(userSetups, highSpeed),
   high_speed_edited: library(userSetups, highSpeed), prius_noload: library([priusUser], builtins[0]),
   prius_loaded: library([priusUser], priusUser), lrk: library([lrkSetup], lrkSetup),
+  sector: library([highSpeed, hot, sector], sector),
 };
 const designFiles = Object.fromEntries(Object.entries(designs).map(([name, config]) => (
   [name, JSON.parse(serializeDesignFile(config, name, libraries[name]))]
@@ -105,6 +110,16 @@ for (const [designName, config] of Object.entries(designs)) {
     });
   }
 }
+// The solved region: a setup with accuracy and solver settings sets it (the full motor when it
+// names none), an operating-only setup leaves the design's choice alone.
+const caseFor = (design, setup) => cases.find((row) => row.design === design && row.setup === setup);
+assert.equal(caseFor('sector', 'high_speed').applied.solve_params.symmetry, 'full');
+assert.equal(caseFor('sector', 'hot').applied.solve_params.symmetry, 'auto');
+assert.equal(caseFor('starter', 'sector').applied.solve_params.symmetry, 'auto');
+assert.equal(caseFor('starter', 'sector').matches_applied, true);
+assert.equal(caseFor('sector', 'sector').matches_saved, true);
+assert.equal(caseFor('sector', 'high_speed').matches_saved, false, 'a full-motor setup does not describe a sector design');
+assert.equal(caseFor('high_speed_saved', 'high_speed').matches_saved, true, 'full-motor setups still match');
 
 const valid = JSON.parse(JSON.stringify(highSpeed));
 const variant = (change) => {
@@ -139,6 +154,10 @@ const parseInputs = {
   map_continuous_above_peak: variant((raw) => { raw.map.limits.continuous_current_A = 61; }),
   boolean_number: variant((raw) => { raw.parameters.current_angle_deg = true; }),
   corner_refinement_number: variant((raw) => { raw.parameters.corner_refinement = 1; }),
+  sector: JSON.parse(JSON.stringify(sector)),
+  explicit_full_motor: variant((raw) => { raw.parameters.symmetry = 'full'; }),
+  bad_symmetry: variant((raw) => { raw.parameters.symmetry = 'half'; }),
+  symmetry_in_operating_only: variant((raw) => { raw.includesNumerics = false; delete raw.solver; raw.parameters = { ...JSON.parse(JSON.stringify(hot)).parameters, symmetry: 'auto' }; }),
 };
 const parse = Object.entries(parseInputs).map(([name, raw]) => {
   let parsed = null;

@@ -1,5 +1,5 @@
 import type { PublicRunListRecord } from './api';
-import { COMPARISON_METRICS, actualMeshProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
+import { COMPARISON_METRICS, actualMeshProvenance, actualPositionsProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
 import { compareRunDq } from './dqComparison';
 import { comparisonEnvelope, ENVELOPE_METRICS } from './envelopeComparison';
 import { compareMultipleLosses, compareMultipleTiming } from './multiRunComparison';
@@ -77,6 +77,7 @@ export function comparisonCsv(runs: ComparisonCsvRun[]): string {
   meta('Solver version', runs.map(run => run.result.solve_metadata.solver_name || run.record.solver_name));
   meta('Physics contract', runs.map(run => run.result.solve_metadata.physics_contract_version));
   meta('Actual mesh', runs.map(run => actualMeshProvenance(run.result)));
+  meta('Rotor positions', runs.map(run => actualPositionsProvenance(run.result)));
   meta('Torque extraction', runs.map(run => actualTorqueProvenance(run.result)));
   meta('Excitation identity', runs.map(run => excitationProvenance(run.result)));
   meta('Input snapshot', runs.map(run => run.inputs?.config ? 'Recorded' : 'Not recorded'));

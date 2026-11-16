@@ -69,12 +69,36 @@ def geometry_input_advisories(config: MotorConfig) -> list[str]:
     ]
 
 
+# One-sector cogging (#222) is noisier than a full-motor solve at the meshes the app offers: on the
+# benchmark's 12 cogging cases its fundamental moved up to 8.5% (Medium) and 6% (Fine) from the full
+# motor; the Very fine mesh brought it within 0.4%. Loaded torque, ripple and back-EMF agreed.
+# Keep equal to SECTOR_COGGING_NOTE in frontend/src/public/coggingView.ts.
+SECTOR_COGGING_ADVISORY = (
+    "Cogging torque from one sector can differ from a full-motor solve by up to 9% at the Coarse, Medium and Fine meshes. "
+    "Choose Maximum accuracy or the Very fine mesh, or solve the full motor, when cogging matters; "
+    "loaded torque, ripple and back-EMF are not affected."
+)
+
+
+def _sector_cogging_advisory(config: MotorConfig) -> str | None:
+    params, options = config.solve_params, config.solve_options
+    if params is None or options is None or params.symmetry != "auto" or not options.cogging_torque or params.mesh_density == "very_fine":
+        return None
+    # A motor that does not repeat is solved in full, so the note would not apply.
+    from backend.solve_estimate import sector_repeats
+
+    return SECTOR_COGGING_ADVISORY if sector_repeats(config) > 1 else None
+
+
 def geometry_mesh_advisories(config: MotorConfig) -> list[str]:
+    sector = _sector_cogging_advisory(config)
+    advisories = [sector] if sector else []
     if not vshape_input_facts(config):
-        return []
+        return advisories
     return [
         "V-shape results are mesh-sensitive, especially cogging torque. Compare progressively refined meshes "
         "for this design before relying on the values; a Fine mesh alone does not establish convergence.",
+        *advisories,
     ]
 
 

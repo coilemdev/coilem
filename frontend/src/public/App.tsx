@@ -92,7 +92,7 @@ import {
   applyPublicSolvePreset,
   capturePublicPresetSweep,
   PUBLIC_DEFAULT_PRESET_SWEEP,
-  type PublicSolvePreset,
+  type PublicSolvePlanChoice,
   type PublicSweepSampling,
 } from './solvePlan';
 import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar, withFirstPublicSolveFieldFrame } from './solveProgress';
@@ -930,8 +930,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, [editFeedback, invalidateGeometryPreview, resetComputedState]);
 
   const updateMeshSetting = useCallback((
-    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
-    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => {
     validationRequestId.current += 1;
     setConfig((current) => ({
@@ -1057,7 +1057,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       : 'Elmer is disabled for this launch. Magneto2D is selected.');
   }, [connectionStatus, elmerCapability, selectedSolver]);
 
-  const updateSolvePlan = useCallback((solvePlan: PublicSolvePreset) => {
+  const updateSolvePlan = useCallback((solvePlan: PublicSolvePlanChoice) => {
     validationRequestId.current += 1;
     const presetSweep = config.solve_params.solve_quality === 'custom'
       ? presetSweepRef.current

@@ -421,6 +421,15 @@ class SolveParams(BaseModel):
             "element counts within 1%, moving results at mesh-noise level."
         ),
     )
+    symmetry: Literal["auto", "full"] = Field(
+        default="full",
+        description=(
+            "How much of the motor is meshed and solved. 'auto' solves one "
+            "repeating sector when the geometry and winding repeat around the "
+            "circle, and the full circle otherwise; 'full' always solves the "
+            "full circle."
+        ),
+    )
     slot_sidewall_refinement: bool = Field(
         default=False,
         description=(
@@ -623,6 +632,16 @@ class SolveParams(BaseModel):
             "'weighted_stress_centered' otherwise falls back to Arkkio."
         ),
     )
+
+    @model_serializer(mode="wrap")
+    def omit_full_circle_symmetry(self, handler):
+        # The full circle is what every earlier request solved. Leaving it out
+        # keeps every existing config dump, cache key, request hash and run
+        # record byte-identical.
+        data = handler(self)
+        if data.get("symmetry") == "full":
+            del data["symmetry"]
+        return data
 
     def effective_step_deg(self) -> float:
         """Return the rotor step in electrical degrees based on solve_quality preset.

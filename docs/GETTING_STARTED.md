@@ -195,6 +195,17 @@ makes each Gmsh mesh about four times faster with nearly the same element
 count. Results move at mesh-noise level. The benchmark measured Precise
 meshes, so a Fast run is experimental.
 
+**Solved region → One sector** meshes and solves one repeating sector of the
+motor instead of the whole cross-section: a quarter of a 12-slot, 4-pole motor,
+an eighth of a 48-slot, 8-pole one. coilEM finds the sector from the slot and
+pole counts and checks that the geometry and the winding really repeat over it;
+a motor that does not repeat is solved in full. The pinned Prius and LRK
+reference models solve as sectors too. Torque, flux linkage, Back-EMF and losses are those of the whole motor,
+and the field view shows the whole motor. Results match a full solve to
+mesh-noise level. The benchmark measured full-motor solves, so a sector run is
+experimental. **Full motor** is the default and always solves the whole
+cross-section.
+
 When meshing completes, confirm:
 
 - the geometry and mesh views match the intended motor;
@@ -222,8 +233,8 @@ completed run.
 
 Tick **Cogging torque** under **Analysis** to add a no-current sweep over
 one cogging period, 180·gcd(slots, poles)/slots electrical degrees, at 12, 24
-or 48 positions per period for Preview, Standard and High accuracy, plus the
-repeated end. The run estimate includes it. Cogging torque is experimental: it
+or 48 positions per period for Preview, Standard and High accuracy (Maximum
+accuracy uses High accuracy's 48), plus the repeated end. The run estimate includes it. Cogging torque is experimental: it
 has no FEMM gate yet. Keep **Corner refinement** on: without it, cogging on the
 example design is about twenty times noisier.
 
@@ -231,7 +242,10 @@ If you only want a fast pipeline check, choose **Preview**. Preview does not
 report an under-sampled THD value. Use **Standard** for the release walkthrough; it
 reports Back-EMF THD and the H1-H12 spectrum. **High accuracy** is the UI name
 for the `fine` preset; it uses a fine mesh and extends the spectrum through H24,
-but it is not a separate launch benchmark requirement.
+but it is not a separate launch benchmark requirement. **Maximum accuracy** is High
+accuracy's angle grid on the Very fine mesh, about 3–6 times Medium's elements
+and correspondingly slower; use it for cogging, especially from a one-sector
+solve, and to check that results have converged.
 
 ## 9. Review the result
 

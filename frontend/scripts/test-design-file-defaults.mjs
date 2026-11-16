@@ -93,6 +93,21 @@ fastDesign.solve_params.mesh_build = 'fast';
 assert.equal(parseDesignFile(serializeDesignFile(fastDesign, 'Fast mesh')).config.solve_params.mesh_build, 'fast');
 console.log('mesh build defaults passed');
 
+// Solved region: new designs and files saved before it existed solve the full
+// motor, as the benchmark measured; a design saved as a sector keeps it, and
+// an unknown value falls back to the full motor.
+assert.equal(cloneDefaultConfig().solve_params.symmetry, 'full');
+const beforeSymmetry = JSON.parse(serializeDesignFile(cloneDefaultConfig(), 'Before solved region'));
+delete beforeSymmetry.solve_params.symmetry;
+assert.equal(parseDesignFile(JSON.stringify(beforeSymmetry)).config.solve_params.symmetry, 'full');
+const sectorDesign = cloneDefaultConfig();
+sectorDesign.solve_params.symmetry = 'auto';
+assert.equal(parseDesignFile(serializeDesignFile(sectorDesign, 'Sector')).config.solve_params.symmetry, 'auto');
+const oddSymmetry = JSON.parse(serializeDesignFile(cloneDefaultConfig(), 'Odd solved region'));
+oddSymmetry.solve_params.symmetry = 'quarter';
+assert.equal(parseDesignFile(JSON.stringify(oddSymmetry)).config.solve_params.symmetry, 'full');
+console.log('solved region defaults passed');
+
 // The wire is an object the section merge would drop, and the winding
 // temperature defaults to null; both survive a save and reload (#136).
 const wired = cloneDefaultConfig();
