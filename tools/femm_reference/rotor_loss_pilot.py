@@ -79,6 +79,10 @@ def main():
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--shard", default="0/1", help="Disjoint position shard INDEX/COUNT; prepare position zero first")
     parser.add_argument("--motion", choices=["remesh", "periodic-air-gap"], default="remesh")
+    parser.add_argument("--airgap-arc-step-deg", type=float, default=0.25,
+                        help="Periodic-air-gap arc segmentation; record explicit spatial refinement")
+    parser.add_argument("--airgap-target-mm", type=float,
+                        help="Explicit air-gap block mesh target, overriding the density preset")
     parser.add_argument("--closure-only", action="store_true", help="Five fresh solves, including two equivalent endpoints and repeated zero")
     args = parser.parse_args()
     if args.positions < 8 or (args.limit is not None and args.limit < 1):
@@ -88,6 +92,12 @@ def main():
         parser.error("invalid shard")
     if args.closure_only and (args.motion != "periodic-air-gap" or shards != 1):
         parser.error("closure-only requires periodic-air-gap and a single worker")
+    if not math.isfinite(args.airgap_arc_step_deg) or not 0 < args.airgap_arc_step_deg <= 180:
+        parser.error("air-gap arc step must be finite and in (0, 180] degrees")
+    if args.motion != "periodic-air-gap" and args.airgap_arc_step_deg != 0.25:
+        parser.error("air-gap arc step requires periodic-air-gap motion")
+    if args.airgap_target_mm is not None and (not math.isfinite(args.airgap_target_mm) or args.airgap_target_mm <= 0):
+        parser.error("air-gap target must be positive and finite")
     angles = [0.0, -3.75, -90.0, -360.0, 0.0] if args.closure_only else [-360.0*k/args.positions for k in range(args.positions+1)]
     directory = args.out.resolve()
     directory.mkdir(parents=True, exist_ok=True)
@@ -109,7 +119,10 @@ def main():
                         collection_kind="closure_probe" if args.closure_only else "full_turn_history",
                         raw_mesh_frame="rotor_material", raw_field_frame="rotor_material",
                         mechanical_angles_deg=angles, independent_base_reload=True,
+                        airgap_arc_step_deg=args.airgap_arc_step_deg,
                         closure_tolerances={"max_component_T": 1e-6, "rms_component_T": 1e-7})
+    if args.airgap_target_mm is not None:
+        protocol["airgap_target_override_mm"] = args.airgap_target_mm
     protocol_path = directory / "protocol.json"
     if protocol_path.exists():
         if not args.resume or json.loads(protocol_path.read_text()) != protocol:
@@ -127,6 +140,8 @@ def main():
     from backend.femm_geometry import _femm_airgap_width_mm
 
     gap = min(0.25, _femm_airgap_width_mm(geom)/4) * {"normal": 1, "fine": 0.5, "very_fine": 0.25}[args.mesh]
+    if args.airgap_target_mm is not None:
+        gap = args.airgap_target_mm
     os.environ["FEMM_AIRGAP_MESHSIZE_MM"] = str(gap)
 
     class PilotSolver(Solver):
@@ -155,7 +170,7 @@ def main():
             solver._setup_problem(femm, config, geom)
             solver._draw_full_geometry(femm, config, geom, rotor_offset_deg=0)
             solver._apply_winding_current(femm, config, geom, 0)
-            add_periodic_airgap(femm, solver, config, geom)
+            add_periodic_airgap(femm, solver, config, geom, arc_step_deg=args.airgap_arc_step_deg)
             solver._apply_boundary(femm, geom)
             femm.mi_saveas(str(base_model))
             femm.mi_close()

@@ -25,8 +25,10 @@ def band_radii(rotor_surface_mm, stator_bore_mm):
     return rotor_surface_mm + gap/3, rotor_surface_mm + 2*gap/3
 
 
-def add_periodic_airgap(femm, solver, config, geom):
+def add_periodic_airgap(femm, solver, config, geom, *, arc_step_deg=0.25):
     """Insert an unmeshed circular band wholly inside this full-machine air gap."""
+    if not math.isfinite(arc_step_deg) or not 0 < arc_step_deg <= 180:
+        raise ValueError("air-gap arc step must be finite and in (0, 180] degrees")
     from backend.femm_geometry import _femm_airgap_inner_radius_mm
 
     inner, outer = band_radii(_femm_airgap_inner_radius_mm(geom), geom.stator_ID_r)
@@ -36,7 +38,7 @@ def add_periodic_airgap(femm, solver, config, geom):
         for degrees in (45, 135, 225, 315):
             angle = math.radians(degrees)
             femm.mi_selectarcsegment(radius*math.cos(angle), radius*math.sin(angle))
-        femm.mi_setarcsegmentprop(0.25, BOUNDARY, 0, 0)
+        femm.mi_setarcsegmentprop(arc_step_deg, BOUNDARY, 0, 0)
         femm.mi_clearselected()
     # The original inter-magnet air label remains on the rotor side.
     for radius, material in (((inner+outer)/2, "<No Mesh>"), ((outer+geom.stator_ID_r)/2, "Air")):
@@ -47,7 +49,7 @@ def add_periodic_airgap(femm, solver, config, geom):
         else:
             femm.mi_setblockprop(material, 1, 0, "<None>", 0, 0, 0)
         femm.mi_clearselected()
-    return {"inner_radius_mm": inner, "outer_radius_mm": outer, "arc_step_deg": 0.25}
+    return {"inner_radius_mm": inner, "outer_radius_mm": outer, "arc_step_deg": arc_step_deg}
 
 
 def update_pose_and_currents(femm, adapter, config, geom, mechanical_angle_deg):

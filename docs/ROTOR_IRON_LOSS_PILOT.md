@@ -194,3 +194,51 @@ All workers and the prior zero-angle preflight are separate owned FEMM
 sessions; in the four-worker collection each worker reloads the unsolved base
 at every assigned pose. Mesh identity and full-turn closure are checked again.
 Spatial refinement and the multi-motor release matrix remain separate work.
+
+## Follow-up: fixed-mesh spatial refinement at 384 samples
+
+Use the verified normal-mesh 384-position history as the baseline, with a fresh
+zero-angle reproduction control. Collect two further complete histories on
+independently refined meshes. Within each history the full triangular mesh,
+rotor integration cells and query points must stay fixed through all 385
+independent solves. Integration cells may differ between mesh levels; each
+level integrates its own physical rotor domain without mass renormalization.
+
+The bounded study uses these explicit controls. Fine and very fine retain the
+existing bulk and geometry-arc presets; their air-gap targets are overridden
+to intermediate values to bound collection time. Moving-band segmentation is
+refined separately from the bulk geometry's arc segmentation.
+
+| Level | Bulk preset | Air-gap target mm | Moving-band arc step degrees |
+|---|---|---:|---:|
+| Normal | normal | 0.125 | 0.25 |
+| Refined | fine | 0.100 | 0.20 |
+| Further refined | very_fine | 0.080 | 0.16 |
+
+```powershell
+# Prepare each independent integration grid with one fresh zero-angle solve.
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 384 --mesh fine --airgap-target-mm 0.1 --airgap-arc-step-deg 0.2 --limit 1 --out output/rotor-spatial/fine
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 384 --mesh very_fine --airgap-target-mm 0.08 --airgap-arc-step-deg 0.16 --limit 1 --out output/rotor-spatial/very-fine
+# In separate shells: fine shards 0/3, 1/3, 2/3; very-fine shards 0/5 through 4/5.
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 384 --mesh fine --airgap-target-mm 0.1 --airgap-arc-step-deg 0.2 --resume --shard 0/3 --out output/rotor-spatial/fine
+python -m tools.femm_reference.rotor_loss_pilot --motion periodic-air-gap --positions 384 --mesh very_fine --airgap-target-mm 0.08 --airgap-arc-step-deg 0.16 --resume --shard 0/5 --out output/rotor-spatial/very-fine
+# After all workers finish, analyse in a fresh process. The baseline stays read-only.
+python -m tools.rotor_spatial_report output/rotor-fixed-384 output/rotor-spatial/fine output/rotor-spatial/very-fine --out output/rotor-spatial/report
+```
+
+The spatial report verifies and reanalyses all three raw histories using the
+same current sampler and independent DFT. It rejects changes to operating
+point, angle grid, fixture, material law, reference binaries or unrelated
+reference implementations. Actual saved moving-band arc settings are checked
+against the protocol. Distinct mesh hashes, increasing total/core cell counts,
+decreasing maximum rotor-cell area, and decreasing air-gap/arc targets are
+required; element counts alone do not establish refinement.
+
+At every mesh level, the 96/192/384 subsets recheck angular convergence,
+reference agreement, closure and within-turn mesh invariance. Across meshes,
+only the 384-position results are compared, with hysteresis, lamination eddy
+and total tested separately in both calculations. Both successive mesh steps
+must satisfy the predeclared max(5% of finer loss, 0.001 W) criterion. This is
+a convergence diagnostic, not a Richardson error bound or measured accuracy.
+The one-case numerical gates and the full release qualification remain
+separate; the multi-motor matrix is not started by this command.
