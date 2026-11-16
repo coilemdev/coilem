@@ -1,0 +1,97 @@
+Starting tutorial-bemf-100
+tutorial-bemf-100: gmsh_mesh 0/201, electrical angle 3.6
+tutorial-bemf-100: magneto2d_complete 101/101, electrical angle None
+tutorial-bemf-100: solver_timing 0/0, electrical angle None
+Completed tutorial-bemf-100: {'mean_torque_Nm': -0.00015285268385535533, 'elapsed_s': 16.165351600007853, 'loaded_actual_positions': 100, 'line_ab_sampled_rms_V': 107.49181200605295, 'line_ab_sampled_peak_V': 171.64271650962934, 'phase_neutral_fundamental_rms_V': 61.854569585563574}
+Starting loaded-torque-32
+loaded-torque-32: gmsh_mesh 0/65, electrical angle 22.5
+loaded-torque-32: magneto2d_complete 33/33, electrical angle None
+loaded-torque-32: solver_timing 0/0, electrical angle None
+Completed loaded-torque-32: {'mean_torque_Nm': 353.99978155787915, 'elapsed_s': 7.162481200008187, 'loaded_actual_positions': 32, 'line_ab_sampled_rms_V': 204.0489671014593, 'line_ab_sampled_peak_V': 309.5867576508645, 'phase_neutral_fundamental_rms_V': 117.65327406340049}
+Starting curve-60-16
+curve-60-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-60-16: magneto2d_complete 17/17, electrical angle None
+curve-60-16: solver_timing 0/0, electrical angle None
+Completed curve-60-16: {'mean_torque_Nm': 80.75047595805535, 'elapsed_s': 4.546784700010903, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-70-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-70-16: gmsh_mesh 0/17, electrical angle 0.0
+curve-70-16: magneto2d_complete 17/17, electrical angle None
+curve-70-16: solver_timing 0/0, electrical angle None
+Completed curve-70-16: {'mean_torque_Nm': 124.79439641330328, 'elapsed_s': 4.296492199995555, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-80-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-80-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-80-16: magneto2d_complete 17/17, electrical angle None
+curve-80-16: solver_timing 0/0, electrical angle None
+Completed curve-80-16: {'mean_torque_Nm': 169.81270487084524, 'elapsed_s': 4.065067800023826, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-90-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-90-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-90-16: magneto2d_complete 17/17, electrical angle None
+curve-90-16: solver_timing 0/0, electrical angle None
+Completed curve-90-16: {'mean_torque_Nm': 213.72163328874652, 'elapsed_s': 4.095667999994475, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-100-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-100-16: gmsh_mesh 0/17, electrical angle 0.0
+curve-100-16: magneto2d_complete 17/17, electrical angle None
+curve-100-16: solver_timing 0/0, electrical angle None
+Completed curve-100-16: {'mean_torque_Nm': 254.94210089097774, 'elapsed_s': 4.04413399999612, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-110-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-110-16: gmsh_mesh 0/17, electrical angle 0.0
+curve-110-16: magneto2d_complete 17/17, electrical angle None
+curve-110-16: solver_timing 0/0, electrical angle None
+Completed curve-110-16: {'mean_torque_Nm': 291.7560067602081, 'elapsed_s': 4.4181595999980345, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-120-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-120-16: gmsh_mesh 0/17, electrical angle 0.0
+curve-120-16: magneto2d_complete 17/17, electrical angle None
+curve-120-16: solver_timing 0/0, electrical angle None
+Completed curve-120-16: {'mean_torque_Nm': 322.56652103604875, 'elapsed_s': 4.04727229999844, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-130-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-130-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-130-16: magneto2d_complete 17/17, electrical angle None
+curve-130-16: solver_timing 0/0, electrical angle None
+Completed curve-130-16: {'mean_torque_Nm': 344.73113141906225, 'elapsed_s': 4.093324700021185, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-140-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-140-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-140-16: magneto2d_complete 17/17, electrical angle None
+curve-140-16: solver_timing 0/0, electrical angle None
+Completed curve-140-16: {'mean_torque_Nm': 353.93895139871864, 'elapsed_s': 4.200928400008706, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-150-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-150-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-150-16: magneto2d_complete 17/17, electrical angle None
+curve-150-16: solver_timing 0/0, electrical angle None
+Completed curve-150-16: {'mean_torque_Nm': 339.2190448166488, 'elapsed_s': 4.055603100016015, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-160-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-160-16: gmsh_mesh 0/17, electrical angle 22.5
+curve-160-16: magneto2d_complete 17/17, electrical angle None
+curve-160-16: solver_timing 0/0, electrical angle None
+Completed curve-160-16: {'mean_torque_Nm': 275.0472492567766, 'elapsed_s': 4.2592861999874, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-170-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-170-16: gmsh_mesh 0/17, electrical angle 45.0
+curve-170-16: magneto2d_complete 17/17, electrical angle None
+curve-170-16: solver_timing 0/0, electrical angle None
+Completed curve-170-16: {'mean_torque_Nm': 155.96076289824657, 'elapsed_s': 4.193763999996008, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting curve-180-16
+magneto2d: per-angle Gmsh mesh cache — reusing 16 cached base mesh(es); slot currents re-baked for this operating point (COILEM_MAGNETO2D_ANGLE_MESH_CACHE=0 to disable)
+curve-180-16: gmsh_mesh 0/17, electrical angle 45.0
+curve-180-16: magneto2d_complete 17/17, electrical angle None
+curve-180-16: solver_timing 0/0, electrical angle None
+Completed curve-180-16: {'mean_torque_Nm': -0.0211470188447368, 'elapsed_s': 4.415456899994751, 'loaded_actual_positions': 16, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting angular-64
+angular-64: gmsh_mesh 0/65, electrical angle 5.625
+angular-64: magneto2d_complete 65/65, electrical angle None
+angular-64: solver_timing 0/0, electrical angle None
+Completed angular-64: {'mean_torque_Nm': 353.9942006082678, 'elapsed_s': 10.60291960000177, 'loaded_actual_positions': 64, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}
+Starting mesh-fine-32
+mesh-fine-32: gmsh_mesh 0/33, electrical angle 22.5
+mesh-fine-32: magneto2d_complete 33/33, electrical angle None
+mesh-fine-32: solver_timing 0/0, electrical angle None
+Completed mesh-fine-32: {'mean_torque_Nm': 353.8868548584918, 'elapsed_s': 6.667009500000859, 'loaded_actual_positions': 32, 'line_ab_sampled_rms_V': None, 'line_ab_sampled_peak_V': None, 'phase_neutral_fundamental_rms_V': None}

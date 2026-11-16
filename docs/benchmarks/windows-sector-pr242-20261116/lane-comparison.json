@@ -1,0 +1,186 @@
+{
+  "full": {
+    "status": "PASS_WITH_UNSUPPORTED",
+    "counts": {
+      "PASS": 68,
+      "UNSUPPORTED": 1
+    },
+    "elapsed_s": 1997.785954
+  },
+  "sector": {
+    "status": "PASS_WITH_UNSUPPORTED",
+    "counts": {
+      "PASS": 68,
+      "UNSUPPORTED": 1
+    },
+    "elapsed_s": 1022.025847
+  },
+  "status_differences": [],
+  "sector_fallbacks": [],
+  "sector_cases": 68,
+  "metric_differences": {
+    "loaded_mean_torque": {
+      "count": 52,
+      "max_abs_delta": 3.2530504842701546,
+      "worst": {
+        "case": "spm_12p36s_distributed_femm_validation",
+        "phase": "C",
+        "stage": "native",
+        "metric": "loaded_mean_torque",
+        "full": 4.945766179983543,
+        "sector": 5.106654450652367,
+        "delta": 3.2530504842701546,
+        "delta_unit": "%"
+      }
+    },
+    "back_emf_fundamental": {
+      "count": 53,
+      "max_abs_delta": 0.10503850855697996,
+      "worst": {
+        "case": "ipm_vshape_8p12s_narrow_angle_contract",
+        "phase": "B",
+        "stage": "native",
+        "metric": "back_emf_fundamental",
+        "full": 2.2839194949191914,
+        "sector": 2.281520499945086,
+        "delta": -0.10503850855697996,
+        "delta_unit": "%"
+      }
+    },
+    "iron_loss": {
+      "count": 29,
+      "max_abs_delta": 0.8833707963456734,
+      "worst": {
+        "case": "spm_4p12s_simple_noload__baseline",
+        "phase": "A",
+        "stage": "native",
+        "metric": "iron_loss",
+        "full": 2.5219294260260883,
+        "sector": 2.4996514379721257,
+        "delta": -0.8833707963456734,
+        "delta_unit": "%"
+      }
+    },
+    "yoke_iron_loss": {
+      "count": 29,
+      "max_abs_delta": 3.217169409851473,
+      "worst": {
+        "case": "spm_outer_10p12s_single_layer__baseline",
+        "phase": "F",
+        "stage": "native",
+        "metric": "yoke_iron_loss",
+        "full": 0.9579651463095036,
+        "sector": 0.9271457846653953,
+        "delta": -3.217169409851473,
+        "delta_unit": "%"
+      }
+    },
+    "efficiency": {
+      "count": 25,
+      "max_abs_delta": 0.056241521021291874,
+      "worst": {
+        "case": "spm_8p12s_concentrated__dq_I20_g60",
+        "phase": "A",
+        "stage": "native",
+        "metric": "efficiency",
+        "full": 89.95024179221403,
+        "sector": 89.89400027119274,
+        "delta": -0.056241521021291874,
+        "delta_unit": "percentage points"
+      }
+    },
+    "lambda_d_Wb": {
+      "count": 12,
+      "max_abs_delta": 0.005237807158662682,
+      "worst": {
+        "case": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+        "phase": "B",
+        "stage": "native",
+        "metric": "lambda_d_Wb",
+        "full": 0.0024830916474622372,
+        "sector": 0.0024829615879101703,
+        "delta": -0.005237807158662682,
+        "delta_unit": "%"
+      }
+    },
+    "lambda_q_Wb": {
+      "count": 12,
+      "max_abs_delta": 0.007061404146790476,
+      "worst": {
+        "case": "spm_8p12s_concentrated__dq_I20_g60",
+        "phase": "A",
+        "stage": "native",
+        "metric": "lambda_q_Wb",
+        "full": 0.0014229021207434074,
+        "sector": 0.0014228016438740485,
+        "delta": -0.007061404146790476,
+        "delta_unit": "%"
+      }
+    },
+    "cogging_peak_to_peak": {
+      "count": 12,
+      "max_abs_delta": 5.27503270296382,
+      "worst": {
+        "case": "spm_8p12s_example_shoed__cogging",
+        "phase": "E",
+        "stage": "native",
+        "metric": "cogging_peak_to_peak",
+        "full": 1.3324761602254667,
+        "sector": 1.2621876070143767,
+        "delta": -5.27503270296382,
+        "delta_unit": "%"
+      }
+    },
+    "cogging_fundamental": {
+      "count": 12,
+      "max_abs_delta": 3.608903630403491,
+      "worst": {
+        "case": "ipm_flat_24s16p_industrial_contract__cogging",
+        "phase": "E",
+        "stage": "native",
+        "metric": "cogging_fundamental",
+        "full": 0.8442983705960262,
+        "sector": 0.8138284560481487,
+        "delta": -3.608903630403491,
+        "delta_unit": "%"
+      }
+    }
+  },
+  "loaded_torque_bands": {
+    "within_0.5_percent": 44,
+    "0.5_to_1_percent": 5,
+    "above_1_percent": 3
+  },
+  "loaded_torque_above_1_percent": [
+    {
+      "case": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "metric": "loaded_mean_torque",
+      "full": 4.945766179983543,
+      "sector": 5.106654450652367,
+      "delta": 3.2530504842701546,
+      "delta_unit": "%"
+    },
+    {
+      "case": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "stage": "native",
+      "metric": "loaded_mean_torque",
+      "full": 5.8953110089745175,
+      "sector": 5.991982430856033,
+      "delta": 1.6398018990745513,
+      "delta_unit": "%"
+    },
+    {
+      "case": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "stage": "native",
+      "metric": "loaded_mean_torque",
+      "full": 6.205143771053461,
+      "sector": 6.301070297100733,
+      "delta": 1.5459194756254016,
+      "delta_unit": "%"
+    }
+  ]
+}

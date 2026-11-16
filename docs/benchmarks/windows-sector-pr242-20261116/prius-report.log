@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "tutorial_RMS": true,
+    "tutorial_peak": true,
+    "tutorial_waveform": true,
+    "loaded_mean_vs_FEMM": true,
+    "all_13_same_model_means": true,
+    "angular_control": true,
+    "mesh_control": true,
+    "all_fields_converged": true,
+    "all_phase_currents": true,
+    "source_linkage_duality": true
+  },
+  "loaded": {
+    "app_mean_Nm": 353.99978155787915,
+    "first_pose_mesh_triangles": 9538,
+    "retained_FEMM_16_half_cycle_mean_Nm": 354.95311529674495,
+    "difference_to_FEMM_relative": -0.0026858018644766446
+  },
+  "upstream_curve_RMSE_Nm": 11.465539434248376
+}

@@ -1,0 +1,5 @@
+INFO:     Started server process [46720]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+coilEM 0.5.8 is running at http://127.0.0.1:8242 (Ctrl+C to stop)
+magneto2d: Gmsh slot-pitch mesh reuse � meshing 42 base angles, deriving 30 congruent angles by rotation (COILEM_MAGNETO2D_GMSH_MESH_REUSE=0 to disable)

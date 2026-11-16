@@ -1,0 +1,65 @@
+Obtaining file:///USER_HOME/Documents/GitHub/coilem-launch/output/pr242-windows-52f19004/source
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: annotated-doc==0.0.4 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.0.4)
+Requirement already satisfied: annotated-types==0.7.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.7.0)
+Requirement already satisfied: anyio==4.14.2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (4.14.2)
+Requirement already satisfied: attrs==26.1.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (26.1.0)
+Requirement already satisfied: charset-normalizer==3.4.9 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (3.4.9)
+Requirement already satisfied: click==8.4.2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (8.4.2)
+Requirement already satisfied: colorama==0.4.6 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.4.6)
+Requirement already satisfied: fastapi==0.139.2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.139.2)
+Requirement already satisfied: gmsh==4.15.2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (4.15.2)
+Requirement already satisfied: h11==0.16.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.16.0)
+Requirement already satisfied: idna==3.18 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (3.18)
+Requirement already satisfied: jsonschema==4.26.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (4.26.0)
+Requirement already satisfied: jsonschema-specifications==2025.9.1 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (2025.9.1)
+Requirement already satisfied: markdown-it-py==4.2.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (4.2.0)
+Requirement already satisfied: mdurl==0.1.2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.1.2)
+Requirement already satisfied: meshio==5.3.5 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (5.3.5)
+Requirement already satisfied: numpy==2.4.6 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (2.4.6)
+Requirement already satisfied: orjson==3.13.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (3.13.0)
+Requirement already satisfied: pillow==13.0.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (13.0.0)
+Requirement already satisfied: pydantic==2.13.4 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (2.13.4)
+Requirement already satisfied: pydantic-core==2.46.4 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (2.46.4)
+Requirement already satisfied: pygments==2.20.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (2.20.0)
+Requirement already satisfied: reportlab==4.4.9 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (4.4.9)
+Requirement already satisfied: referencing==0.37.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.37.0)
+Requirement already satisfied: rich==15.0.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (15.0.0)
+Requirement already satisfied: rpds-py==0.30.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.30.0)
+Requirement already satisfied: starlette==1.3.1 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (1.3.1)
+Requirement already satisfied: typing-extensions==4.16.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (4.16.0)
+Requirement already satisfied: typing-inspection==0.4.2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.4.2)
+Requirement already satisfied: uvicorn==0.51.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.51.0)
+Requirement already satisfied: httpx<1,>=0.24.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (0.28.1)
+Requirement already satisfied: pypdf<7,>=5 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (6.21.4)
+Requirement already satisfied: pytest<10,>=7.0 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (9.2.0)
+Requirement already satisfied: pytest-xdist<4,>=3.6 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from coilem==0.5.8) (3.8.0)
+Collecting ruff>=0.1.0 (from coilem==0.5.8)
+  Downloading ruff-0.17.5-py3-none-win_amd64.whl.metadata (21 kB)
+Requirement already satisfied: certifi in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from httpx<1,>=0.24.0->coilem==0.5.8) (2026.10.23)
+Requirement already satisfied: httpcore==1.* in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from httpx<1,>=0.24.0->coilem==0.5.8) (1.0.9)
+Requirement already satisfied: iniconfig>=2 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from pytest<10,>=7.0->coilem==0.5.8) (2.3.1)
+Requirement already satisfied: packaging>=24 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from pytest<10,>=7.0->coilem==0.5.8) (26.3)
+Requirement already satisfied: pluggy<2,>=1.6 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from pytest<10,>=7.0->coilem==0.5.8) (1.7.0)
+Requirement already satisfied: execnet>=2.1 in USER_HOME\documents\github\coilem-launch\output\pr242-windows-52f19004\source\.venv\lib\site-packages (from pytest-xdist<4,>=3.6->coilem==0.5.8) (2.1.2)
+Downloading ruff-0.17.5-py3-none-win_amd64.whl (10.3 MB)
+   ---------------------------------------- 10.3/10.3 MB 5.3 MB/s  0:00:01
+Building wheels for collected packages: coilem
+  Building editable for coilem (pyproject.toml): started
+  Building editable for coilem (pyproject.toml): finished with status 'done'
+  Created wheel for coilem: filename=coilem-0.5.8-0.editable-py3-none-win_amd64.whl size=28354 sha256=b333701f8b03fdb986d38dbda2b04a3714f856ef4933d0a0fdf55c7912c8c2b5
+  Stored in directory: USER_HOME\AppData\Local\Temp\pip-ephem-wheel-cache-sitxb4h5\wheels\d8\f3\ed\326e99f08b9b8b30b9ead3f40a5d3988964fa25ac98e6e41c7
+Successfully built coilem
+Installing collected packages: ruff, coilem
+
+Successfully installed coilem-0.5.8 ruff-0.17.5
+
+[notice] A new release of pip is available: 25.2 -> 26.3
+[notice] To update, run: USER_HOME\Documents\GitHub\coilem-launch\output\pr242-windows-52f19004\source\.venv\Scripts\python.exe -m pip install --upgrade pip

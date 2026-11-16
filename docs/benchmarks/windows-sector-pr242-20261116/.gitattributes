@@ -1,0 +1,5 @@
+# Preserve published artifact bytes and their recorded SHA-256 hashes.
+* -text -eol whitespace=cr-at-eol
+# Traceback text retains its original source indentation and blank lines.
+*.log linguist-generated=true whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+*.xml linguist-generated=true whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

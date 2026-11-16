@@ -1,0 +1,149 @@
+[1/75] A / spm_4p12s_simple__baseline / native: starting native solve
+spm_4p12s_simple__baseline / native: COMPLETE
+[2/75] A / spm_4p12s_simple__high_current / native: starting native solve
+spm_4p12s_simple__high_current / native: COMPLETE
+[3/75] A / spm_4p12s_simple__tight_airgap / native: starting native solve
+spm_4p12s_simple__tight_airgap / native: COMPLETE
+[4/75] A / spm_4p12s_simple_noload__baseline / native: starting native solve
+spm_4p12s_simple_noload__baseline / native: COMPLETE
+[5/75] A / spm_4p12s_simple_noload__high_current / native: starting native solve
+spm_4p12s_simple_noload__high_current / native: COMPLETE
+[6/75] A / spm_4p12s_simple_noload__tight_airgap / native: starting native solve
+spm_4p12s_simple_noload__tight_airgap / native: COMPLETE
+[7/75] A / spm_8p12s_concentrated__baseline / native: starting native solve
+spm_8p12s_concentrated__baseline / native: COMPLETE
+[8/75] A / spm_8p12s_concentrated__high_current / native: starting native solve
+spm_8p12s_concentrated__high_current / native: COMPLETE
+[9/75] A / spm_8p12s_concentrated__tight_airgap / native: starting native solve
+spm_8p12s_concentrated__tight_airgap / native: COMPLETE
+[10/75] A / spm_8p12s_reference_angle30__baseline / native: starting native solve
+spm_8p12s_reference_angle30__baseline / native: COMPLETE
+[11/75] B / ipm_flat_12s10p_fscw_contract / native: starting native solve
+ipm_flat_12s10p_fscw_contract / native: COMPLETE
+[12/75] B / ipm_flat_24s16p_industrial_contract / native: starting native solve
+ipm_flat_24s16p_industrial_contract / native: COMPLETE
+[13/75] B / ipm_flat_4p12s_micro_contract / native: starting native solve
+ipm_flat_4p12s_micro_contract / native: COMPLETE
+[14/75] B / ipm_flat_8p12s_fsae_angled_pocket_contract / native: starting native solve
+ipm_flat_8p12s_fsae_angled_pocket_contract / native: COMPLETE
+[15/75] B / ipm_flat_8p12s_fsae_contract / native: starting native solve
+ipm_flat_8p12s_fsae_contract / native: COMPLETE
+[16/75] B / ipm_flat_8p12s_fsae_thin_bridge_contract / native: starting native solve
+ipm_flat_8p12s_fsae_thin_bridge_contract / native: COMPLETE
+[17/75] B / ipm_vshape_8p12s_baseline_contract / native: starting native solve
+ipm_vshape_8p12s_baseline_contract / native: COMPLETE
+[18/75] B / ipm_vshape_8p12s_deep_apex_high_output_v1 / native: starting native solve
+ipm_vshape_8p12s_deep_apex_high_output_v1 / native: COMPLETE
+[19/75] B / ipm_vshape_8p12s_narrow_angle_contract / native: starting native solve
+ipm_vshape_8p12s_narrow_angle_contract / native: COMPLETE
+[20/75] B / ipm_vshape_8p12s_pocket_offset_contract / native: starting native solve
+ipm_vshape_8p12s_pocket_offset_contract / native: COMPLETE
+[21/75] B / ipm_vshape_8p12s_thin_bridge_contract / native: starting native solve
+ipm_vshape_8p12s_thin_bridge_contract / native: COMPLETE
+[22/75] B / ipm_vshape_8p12s_wide_angle_high_output_v1 / native: starting native solve
+ipm_vshape_8p12s_wide_angle_high_output_v1 / native: COMPLETE
+[24/75] C / spm_12p36s_distributed_femm_validation / native: starting native solve
+spm_12p36s_distributed_femm_validation / native: COMPLETE
+[25/75] C / spm_8p24s_distributed_femm_validation / native: starting native solve
+spm_8p24s_distributed_femm_validation / native: COMPLETE
+[26/75] C / spm_8p48s_chorded_5_6 / native: starting native solve
+spm_8p48s_chorded_5_6 / native: COMPLETE
+[27/75] C / spm_8p48s_distributed_femm_validation / native: starting native solve
+spm_8p48s_distributed_femm_validation / native: COMPLETE
+[28/75] D / spm_14p12s_high_pole / native-standard: starting native solve
+spm_14p12s_high_pole / native-standard: COMPLETE
+[29/75] D / spm_14p12s_high_pole / native-fine: starting native solve
+spm_14p12s_high_pole / native-fine: COMPLETE
+[30/75] D / spm_14p12s_high_pole / analytical: starting native solve
+spm_14p12s_high_pole / analytical: COMPLETE
+[31/75] D / spm_4p12s_small / native-standard: starting native solve
+spm_4p12s_small / native-standard: COMPLETE
+[32/75] D / spm_4p12s_small / native-fine: starting native solve
+spm_4p12s_small / native-fine: COMPLETE
+[33/75] D / spm_4p12s_small / analytical: starting native solve
+spm_4p12s_small / analytical: COMPLETE
+[34/75] D / spm_8p12s_reference / native-standard: starting native solve
+spm_8p12s_reference / native-standard: COMPLETE
+[35/75] D / spm_8p12s_reference / native-fine: starting native solve
+spm_8p12s_reference / native-fine: COMPLETE
+[36/75] D / spm_8p12s_reference / analytical: starting native solve
+spm_8p12s_reference / analytical: COMPLETE
+[37/75] A / spm_8p12s_example_shoed / native: starting native solve
+spm_8p12s_example_shoed / native: COMPLETE
+[38/75] A / spm_8p12s_concentrated__magnet_60C / native: starting native solve
+spm_8p12s_concentrated__magnet_60C / native: COMPLETE
+[39/75] A / spm_8p12s_concentrated__magnet_100C / native: starting native solve
+spm_8p12s_concentrated__magnet_100C / native: COMPLETE
+[40/75] A / spm_8p12s_concentrated__dq_I20_g0 / native: starting native solve
+spm_8p12s_concentrated__dq_I20_g0 / native: COMPLETE
+[41/75] A / spm_8p12s_concentrated__dq_I20_g30 / native: starting native solve
+spm_8p12s_concentrated__dq_I20_g30 / native: COMPLETE
+[42/75] A / spm_8p12s_concentrated__dq_I20_g60 / native: starting native solve
+spm_8p12s_concentrated__dq_I20_g60 / native: COMPLETE
+[43/75] A / spm_8p12s_concentrated__dq_I40_g0 / native: starting native solve
+spm_8p12s_concentrated__dq_I40_g0 / native: COMPLETE
+[44/75] A / spm_8p12s_concentrated__dq_I40_g30 / native: starting native solve
+spm_8p12s_concentrated__dq_I40_g30 / native: COMPLETE
+[45/75] A / spm_8p12s_concentrated__dq_I40_g60 / native: starting native solve
+spm_8p12s_concentrated__dq_I40_g60 / native: COMPLETE
+[46/75] B / ipm_flat_8p12s_fsae_contract__magnet_60C / native: starting native solve
+ipm_flat_8p12s_fsae_contract__magnet_60C / native: COMPLETE
+[47/75] B / ipm_flat_8p12s_fsae_contract__magnet_100C / native: starting native solve
+ipm_flat_8p12s_fsae_contract__magnet_100C / native: COMPLETE
+[48/75] B / ipm_flat_8p12s_fsae_contract__dq_I50_g0 / native: starting native solve
+ipm_flat_8p12s_fsae_contract__dq_I50_g0 / native: COMPLETE
+[49/75] B / ipm_flat_8p12s_fsae_contract__dq_I50_g30 / native: starting native solve
+ipm_flat_8p12s_fsae_contract__dq_I50_g30 / native: COMPLETE
+[50/75] B / ipm_flat_8p12s_fsae_contract__dq_I50_g60 / native: starting native solve
+ipm_flat_8p12s_fsae_contract__dq_I50_g60 / native: COMPLETE
+[51/75] B / ipm_flat_8p12s_fsae_contract__dq_I100_g0 / native: starting native solve
+ipm_flat_8p12s_fsae_contract__dq_I100_g0 / native: COMPLETE
+[52/75] B / ipm_flat_8p12s_fsae_contract__dq_I100_g30 / native: starting native solve
+ipm_flat_8p12s_fsae_contract__dq_I100_g30 / native: COMPLETE
+[53/75] B / ipm_flat_8p12s_fsae_contract__dq_I100_g60 / native: starting native solve
+ipm_flat_8p12s_fsae_contract__dq_I100_g60 / native: COMPLETE
+[54/75] E / spm_4p12s_simple__baseline__cogging / native: starting native solve
+spm_4p12s_simple__baseline__cogging / native: COMPLETE
+[55/75] E / spm_4p12s_simple__tight_airgap__cogging / native: starting native solve
+spm_4p12s_simple__tight_airgap__cogging / native: COMPLETE
+[56/75] E / spm_8p12s_concentrated__baseline__cogging / native: starting native solve
+spm_8p12s_concentrated__baseline__cogging / native: COMPLETE
+[57/75] E / spm_8p12s_concentrated__tight_airgap__cogging / native: starting native solve
+spm_8p12s_concentrated__tight_airgap__cogging / native: COMPLETE
+[58/75] E / spm_8p12s_example_shoed__cogging / native: starting native solve
+spm_8p12s_example_shoed__cogging / native: COMPLETE
+[59/75] E / ipm_flat_8p12s_fsae_contract__cogging / native: starting native solve
+ipm_flat_8p12s_fsae_contract__cogging / native: COMPLETE
+[60/75] E / ipm_flat_8p12s_fsae_angled_pocket_contract__cogging / native: starting native solve
+ipm_flat_8p12s_fsae_angled_pocket_contract__cogging / native: COMPLETE
+[61/75] E / ipm_flat_12s10p_fscw_contract__cogging / native: starting native solve
+ipm_flat_12s10p_fscw_contract__cogging / native: COMPLETE
+[62/75] E / ipm_flat_24s16p_industrial_contract__cogging / native: starting native solve
+ipm_flat_24s16p_industrial_contract__cogging / native: COMPLETE
+[63/75] E / spm_8p24s_distributed_femm_validation__cogging / native: starting native solve
+spm_8p24s_distributed_femm_validation__cogging / native: COMPLETE
+[64/75] E / spm_8p48s_distributed_femm_validation__cogging / native: starting native solve
+spm_8p48s_distributed_femm_validation__cogging / native: COMPLETE
+[65/75] E / spm_12p36s_distributed_femm_validation__cogging / native: starting native solve
+spm_12p36s_distributed_femm_validation__cogging / native: COMPLETE
+[66/75] F / spm_outer_14p12s_drone__baseline / native: starting native solve
+spm_outer_14p12s_drone__baseline / native: COMPLETE
+[67/75] F / spm_outer_14p12s_drone__high_current / native: starting native solve
+spm_outer_14p12s_drone__high_current / native: COMPLETE
+[68/75] F / spm_outer_14p12s_drone__tight_airgap / native: starting native solve
+spm_outer_14p12s_drone__tight_airgap / native: COMPLETE
+[69/75] F / spm_outer_14p12s_drone__angle30 / native: starting native solve
+spm_outer_14p12s_drone__angle30 / native: COMPLETE
+[70/75] F / spm_outer_14p12s_drone_noload__baseline / native: starting native solve
+spm_outer_14p12s_drone_noload__baseline / native: COMPLETE
+[71/75] F / spm_outer_12p9s_micro__baseline / native: starting native solve
+spm_outer_12p9s_micro__baseline / native: COMPLETE
+[72/75] F / spm_outer_12p9s_micro_noload__baseline / native: starting native solve
+spm_outer_12p9s_micro_noload__baseline / native: COMPLETE
+[73/75] F / spm_outer_10p12s_single_layer__baseline / native: starting native solve
+spm_outer_10p12s_single_layer__baseline / native: COMPLETE
+[74/75] F / spm_outer_28p24s_multirotor__baseline / native: starting native solve
+spm_outer_28p24s_multirotor__baseline / native: COMPLETE
+[75/75] F / spm_outer_30p27s_hub__baseline / native: starting native solve
+spm_outer_30p27s_hub__baseline / native: COMPLETE
+PASS_WITH_UNSUPPORTED: USER_HOME\Documents\GitHub\coilem-launch\output\pr242-windows-52f19004\af-sector-win\report\coilem_benchmark_report.html

@@ -1,0 +1,312 @@
+{
+  "schema": "coilem.windows_sector_publication/v1",
+  "measured_commit": "52f19004982887a7d615bbb8ea3b5a69bdfcacf7",
+  "note": "Machine-local home-directory prefixes are replaced by USER_HOME; native Windows-1252 logs are normalized to UTF-8. The Prius Markdown protocol link points to the versioned repository document. JSON non-string values are verified unchanged. Original raw artifacts are retained locally.",
+  "helper_note": "run_lane_local.py is the same single-guard grading wrapper without the completed orchestration readiness wait; run_validation.py and duplicate comparison-summary.log are omitted.",
+  "files": [
+    {
+      "file": "af-full-win/report/benchmark_summary.json",
+      "original_sha256": "b6d73d692c69a553853532c74e5ad224e83fede5f0e67027c1ca8906df1a82c1",
+      "published_sha256": "68ca781a2f39919eb76a96fe7ee9bb256eb5aebd1fd87d7f62db72fa9c62e513",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "af-full.log",
+      "original_sha256": "cba87f69000f4a83d1988f1295ed9215650415e553d7b7aa5866a4724738c5a3",
+      "published_sha256": "3c50a49da9a306d125b81ed43515a18a9fbf9c7a567a4c08425313d05c2011ee",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "af-sector-win/report/benchmark_summary.json",
+      "original_sha256": "8e399140d73c9dc83cd6569babfbb082f00c466ac9c3d3466de277739c9fedf2",
+      "published_sha256": "832b7e37b8fa27f868c12a862864b0946b078c4d42bc55300f7b2d44a013e7bf",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "af-sector.log",
+      "original_sha256": "7a5171f047dd92fc32ff58467f557dd8a4c3184353d5e48c9b98a583bb21b990",
+      "published_sha256": "634af5bc02f5f21065e7c832c7e6c4dd9ed109b7a4d091abdab709a87762f08e",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "app-field-playback.jpg",
+      "original_sha256": "fd5910224d27d44eaa3b471f33f2f37a013f04f4d448a4f1ce8f35ce2def6a64",
+      "published_sha256": "fd5910224d27d44eaa3b471f33f2f37a013f04f4d448a4f1ce8f35ce2def6a64",
+      "bytes_changed": false,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "app-sector-mesh.jpg",
+      "original_sha256": "880f3abdf02c8355bb177dfe65b16db5757fd0c55ca32c4921e2de043d74f62a",
+      "published_sha256": "880f3abdf02c8355bb177dfe65b16db5757fd0c55ca32c4921e2de043d74f62a",
+      "bytes_changed": false,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "app-server.log",
+      "original_sha256": "ba240715d6d36c721f541f278f1878d928e04f5541ebae94d4f6ef244c2a1f48",
+      "published_sha256": "ba240715d6d36c721f541f278f1878d928e04f5541ebae94d4f6ef244c2a1f48",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "app-spinning-mesh.jpg",
+      "original_sha256": "13fcb619935a763daf0f1ddd2cf01419ad040c65215fdc33a89bb24b6d742ef7",
+      "published_sha256": "13fcb619935a763daf0f1ddd2cf01419ad040c65215fdc33a89bb24b6d742ef7",
+      "bytes_changed": false,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "cargo-build.log",
+      "original_sha256": "82f7e0e1dfd11d51f70c80e6ac5634f7f824d094ff18d63510a24bff4695be68",
+      "published_sha256": "97aee9bd3db1eee4700e3c4659e56dce63f7d9dab925c2d3cf52878c8da6c5b1",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "check_gmsh_executable_lookup.py",
+      "original_sha256": "1f53a7060b27255956cbd67d6b3df134c69589adc2a3a6e5e9eb5c96656c91fb",
+      "published_sha256": "1f53a7060b27255956cbd67d6b3df134c69589adc2a3a6e5e9eb5c96656c91fb",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "editable-install.log",
+      "original_sha256": "1ccecf13d64c98e1bd34440f1ef033bbd4bbeb88ce1735e4b4cb2cdd16b15888",
+      "published_sha256": "b6986b0f560ef00c07fb45eed2532e0fd1b9b79036a2d8712ced66ac41a771c9",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "frontend-build.log",
+      "original_sha256": "c321f52fbacdc081875fcd457bda1e6447f12608f713ecd9cfef2809b2a1db84",
+      "published_sha256": "c321f52fbacdc081875fcd457bda1e6447f12608f713ecd9cfef2809b2a1db84",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "full-vs-sector.csv",
+      "original_sha256": "af7b3a79a169fb6e6261a95e6d76268c4681b6f6a8d7beef0cb3a719bb2931fd",
+      "published_sha256": "af7b3a79a169fb6e6261a95e6d76268c4681b6f6a8d7beef0cb3a719bb2931fd",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "gmsh-executable-lookup.json",
+      "original_sha256": "418a55eedf4d1fbbe4b5d8e86d92491d6932c1a54cddad68c3b31957726212e6",
+      "published_sha256": "093bbeceae8c3f5ddb0e9ec64158dbc5992f845c8b624a91482eca495afabd26",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "gmsh-executable-lookup.log",
+      "original_sha256": "98fecc40acd07dc3ab566c28d1fa3f0959e1baea0c554e00c8260f9f224a8871",
+      "published_sha256": "98fecc40acd07dc3ab566c28d1fa3f0959e1baea0c554e00c8260f9f224a8871",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "lane-comparison.json",
+      "original_sha256": "057bae55e6ae8576847bc5ff84604377617d007240dbbc652ea8ca30d3330b83",
+      "published_sha256": "45849ccfb6fccf3ad5963c793a04fc67a97fa72384282dd2581f2ad5f318e55f",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "machine.json",
+      "original_sha256": "6d0b83e63a3cc62751be043d7b427a2aea7e20999813f3761ce51be3195974e2",
+      "published_sha256": "c95b45e3165790874241993b4265aaf53b5151e7d21ea73b635233e391fed04a",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "npm-ci.log",
+      "original_sha256": "9ae11bccfd92769626bd7bc60fc0a072257544377fa5850c9e4e1e5df9e8288f",
+      "published_sha256": "9ae11bccfd92769626bd7bc60fc0a072257544377fa5850c9e4e1e5df9e8288f",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "prius-report.log",
+      "original_sha256": "3c0cde0f1f076ca9ea7157e1d6c2723fd4c7af2eda321ef57d2b1fe30772af0d",
+      "published_sha256": "3c0cde0f1f076ca9ea7157e1d6c2723fd4c7af2eda321ef57d2b1fe30772af0d",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "prius-sector-win/report/app-results.json",
+      "original_sha256": "3499a8d3ad7f91ae733ca1233fc19fe3e79a8a102a0179a5839b0af294ee6f87",
+      "published_sha256": "3499a8d3ad7f91ae733ca1233fc19fe3e79a8a102a0179a5839b0af294ee6f87",
+      "bytes_changed": false,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "prius-sector-win/report/app-results.md",
+      "original_sha256": "5afcc09d79c2a819e869600a6267b81defd77e075fb9b276d5bc906c8940ca58",
+      "published_sha256": "b82af0a1737cb31f80eea1b2ddd1c345066754ba12c967a7e419c0ce2ed79140",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": true
+    },
+    {
+      "file": "prius-sector.log",
+      "original_sha256": "483b4c121d44a29d9dc757bec261061744735cc6ed1e8346ce2434c97797f9e2",
+      "published_sha256": "d724886aa0cdb506676d75cd19c85470ce3894c6e6f454c5a6c4cf32a0e7f683",
+      "bytes_changed": true,
+      "original_text_encoding": "windows-1252",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "python-environment.txt",
+      "original_sha256": "1b5bc3d5fa1966f278fc84719cf6eaac54bd1f39599b8148f4f2fbb7df2a452e",
+      "published_sha256": "1b5bc3d5fa1966f278fc84719cf6eaac54bd1f39599b8148f4f2fbb7df2a452e",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "python-tests-dev.log",
+      "original_sha256": "e3ea5931cf2b270eb9b47e877929211c037c022802c3a45bb75dedf31de83012",
+      "published_sha256": "a00b52adef092bc8cb0236982e52153c4401665d8ddf5f42afd74ead72de7f46",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "python-tests-dev.xml",
+      "original_sha256": "165d6e5df489ac33ea927aebad4ad251dad5e6cc42b1b394a4a2bee22f8ce6d3",
+      "published_sha256": "4219c528278ea1da6bc4becbe400a6fa6904619ffa444bdfdff7aa6d08ecdf67",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "python-tests.log",
+      "original_sha256": "97a1a576e33c74e44d1a7497907e626a5268a86ea7013e39dc45254e71ed9176",
+      "published_sha256": "f14f7fe566351513a98c8a1370115f62d9c3ff878341d3cd00d3cf746ec88574",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "python-tests.xml",
+      "original_sha256": "a04aafb32e58f19783f3d5ed4439178c1c921a5da474e38892f1503a3e025282",
+      "published_sha256": "118b81f2f8f659a1350c1a00b82ff0ba71913c768ceb9ccb40f610395f2adfd4",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "rust-tests.log",
+      "original_sha256": "c5872745347c44173058c89566c30b33111ca8f14dae5295e04f97fb2b1abda8",
+      "published_sha256": "861ee3fe5c2f84010f3680e15c2a1e431d0209a58d47e7813bb1ef2e7a64ea82",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "sector-tests.log",
+      "original_sha256": "f275ccedfd1736e32df8c8853136fd1206a8ce63d091fa16c91acfb2a3af6cd5",
+      "published_sha256": "333ae23317c962215cfab48396935ff537fe384ee18269232dcfac36e5663ff2",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "sector-tests.xml",
+      "original_sha256": "51b1778baa8898ffea92df34c26ca9e19d49ffeb0e49a6f3b2cdda4a1454ba41",
+      "published_sha256": "51b1778baa8898ffea92df34c26ca9e19d49ffeb0e49a6f3b2cdda4a1454ba41",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "summarize_validation.py",
+      "original_sha256": "05dcf4d5823867257c97c3cd1ce329bbfd363c63d6502fd3cc64bbd3bfebecf0",
+      "published_sha256": "05dcf4d5823867257c97c3cd1ce329bbfd363c63d6502fd3cc64bbd3bfebecf0",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "toolchain.log",
+      "original_sha256": "7a0bca81d46c212aabe780464a2c83070b9cd7d4e210d6a40baf3287084f52cc",
+      "published_sha256": "7a0bca81d46c212aabe780464a2c83070b9cd7d4e210d6a40baf3287084f52cc",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "v058-full-comparison.json",
+      "original_sha256": "fb82655898da01ebf66cc3c2510e8186e7ee8434d78055f00b3089e7ed0a3506",
+      "published_sha256": "e5dae396d1dd9480384fd7e625dc43d9dc25facce57618da364fecafb4694287",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "validation-report.html",
+      "original_sha256": "8f8e245a9a16dcc7d864e4b4c60bdec7732250b8751c099b96020c04e7ccb544",
+      "published_sha256": "8f8e245a9a16dcc7d864e4b4c60bdec7732250b8751c099b96020c04e7ccb544",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "validation-results.json",
+      "original_sha256": "1ab51bb50ddd4ff7ba371d35c30d4cc576e6fda3d0110c7081c4913e2fb45bdb",
+      "published_sha256": "5534079bab8a25f35ba666e2a6169da7046720441a26826e39b80bdc8401c8d3",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "validation-status.json",
+      "original_sha256": "bbccd42427954919e32b274b64724959de2fc4c44d0a6591a8ecd14cae057b89",
+      "published_sha256": "bf365773dd5a71d047bc350ba17447089d7dfa13a3acd5b986304776d559aadf",
+      "bytes_changed": true,
+      "original_text_encoding": null,
+      "protocol_link_updated": false
+    },
+    {
+      "file": "windows-followup.log",
+      "original_sha256": "ce80a6c7aa6f541c99d4caa820e0d451964ade47bd4e30c062e30df0cfaecd0a",
+      "published_sha256": "12141dee0dfe798546061a7fff1770b5c3b5544aaf955be0049fe5bad03d896b",
+      "bytes_changed": true,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    },
+    {
+      "file": "windows-followup.xml",
+      "original_sha256": "20999ce483b48193f8fec4bfc338f4ed4d08384950700230221a29522efb74dc",
+      "published_sha256": "20999ce483b48193f8fec4bfc338f4ed4d08384950700230221a29522efb74dc",
+      "bytes_changed": false,
+      "original_text_encoding": "utf-8",
+      "protocol_link_updated": false
+    }
+  ]
+}

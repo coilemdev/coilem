@@ -1,0 +1,20 @@
+{
+  "os": {
+    "Caption": "Microsoft Windows 11 Home",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200"
+  },
+  "cpu": {
+    "Name": "AMD Ryzen 7 7700 8-Core Processor              ",
+    "NumberOfCores": 8,
+    "NumberOfLogicalProcessors": 16
+  },
+  "memory": {
+    "TotalPhysicalMemory": 68441497600
+  },
+  "power": {
+    "PowerLineStatus": 1,
+    "BatteryChargeStatus": 128,
+    "BatteryLifePercent": 1.0
+  }
+}

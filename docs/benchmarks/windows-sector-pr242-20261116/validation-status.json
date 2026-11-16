@@ -1,0 +1,168 @@
+{
+  "commit": "52f19004982887a7d615bbb8ea3b5a69bdfcacf7",
+  "started_at": "2026-11-16T04:34:08.599546+00:00",
+  "source": "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source",
+  "binary": "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\solvers\\magneto2d\\target\\release\\magneto2d.exe",
+  "binary_sha256": "b6cb85ef6c755dd9493a35cbf12708989c9f9aba10f1f2ead0a248d4e6d2ec22",
+  "initial_git_status": "",
+  "stages": [
+    {
+      "name": "sector-tests",
+      "command": [
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "tests/test_sector_symmetry.py",
+        "-q",
+        "--tb=long",
+        "--junitxml=USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\sector-tests.xml"
+      ],
+      "started_at": "2026-11-16T04:34:08.997837+00:00",
+      "status": "COMPLETE",
+      "returncode": 0,
+      "elapsed_s": 49.75952660001349,
+      "ended_at": "2026-11-16T04:34:58.756527+00:00"
+    },
+    {
+      "name": "rust-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--release",
+        "--locked",
+        "--manifest-path",
+        "solvers/magneto2d/Cargo.toml"
+      ],
+      "started_at": "2026-11-16T04:34:58.757568+00:00",
+      "status": "COMPLETE",
+      "returncode": 0,
+      "elapsed_s": 132.05664209998213,
+      "ended_at": "2026-11-16T04:37:10.811163+00:00"
+    },
+    {
+      "name": "python-tests",
+      "command": [
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "-q",
+        "-n",
+        "auto",
+        "tests",
+        "--tb=long",
+        "--junitxml=USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\python-tests.xml"
+      ],
+      "started_at": "2026-11-16T04:37:10.812150+00:00",
+      "status": "COMPLETE",
+      "returncode": 1,
+      "elapsed_s": 166.9987637999875,
+      "ended_at": "2026-11-16T04:39:57.807073+00:00"
+    },
+    {
+      "name": "af-full",
+      "command": [
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\.venv\\Scripts\\python.exe",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\run_lane_local.py",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source",
+        "--suite",
+        "benchmarks/af-v1.10/benchmark_spec.json",
+        "--allow-dirty",
+        "--out-dir",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\af-full-win"
+      ],
+      "started_at": "2026-11-16T04:39:57.807512+00:00",
+      "status": "COMPLETE",
+      "returncode": 0,
+      "elapsed_s": 2266.326892699988,
+      "ended_at": "2026-11-16T05:17:44.089770+00:00"
+    },
+    {
+      "name": "af-sector",
+      "command": [
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\.venv\\Scripts\\python.exe",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\run_lane_local.py",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source",
+        "--suite",
+        "benchmarks/af-v1.11-sector/benchmark_spec.json",
+        "--allow-dirty",
+        "--out-dir",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\af-sector-win"
+      ],
+      "started_at": "2026-11-16T05:17:44.090210+00:00",
+      "status": "COMPLETE",
+      "returncode": 0,
+      "elapsed_s": 1025.1261665000056,
+      "ended_at": "2026-11-16T05:34:49.201068+00:00"
+    },
+    {
+      "name": "prius-sector",
+      "command": [
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\.venv\\Scripts\\python.exe",
+        "-m",
+        "tools.benchmark_prius",
+        "--out",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\prius-sector-win",
+        "--curve",
+        "--refinement",
+        "--symmetry",
+        "auto"
+      ],
+      "started_at": "2026-11-16T05:34:49.201543+00:00",
+      "status": "COMPLETE",
+      "returncode": 0,
+      "elapsed_s": 218.4713078000059,
+      "ended_at": "2026-11-16T05:38:27.670124+00:00"
+    },
+    {
+      "name": "prius-report",
+      "command": [
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\source\\.venv\\Scripts\\python.exe",
+        "-m",
+        "tools.report_prius_benchmark",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\prius-sector-win",
+        "--out",
+        "USER_HOME\\Documents\\GitHub\\coilem-launch\\output\\pr242-windows-52f19004\\prius-sector-win\\report"
+      ],
+      "started_at": "2026-11-16T05:38:27.670634+00:00",
+      "status": "COMPLETE",
+      "returncode": 0,
+      "elapsed_s": 26.789288900006795,
+      "ended_at": "2026-11-16T05:38:54.460347+00:00"
+    }
+  ],
+  "ended_at": "2026-11-16T05:38:54.460824+00:00",
+  "final_git_status": "",
+  "additional_checks": [
+    {
+      "name": "full-suite-with-dev-setup",
+      "xml": "python-tests-dev.xml",
+      "log": "python-tests-dev.log",
+      "suite": {
+        "name": "pytest",
+        "errors": "9",
+        "failures": "25",
+        "skipped": "3",
+        "tests": "2697",
+        "time": "126.485",
+        "timestamp": "2026-11-15T23:41:18.641761-05:00",
+        "hostname": "Legion3568"
+      }
+    },
+    {
+      "name": "windows-isolated-followup",
+      "xml": "windows-followup.xml",
+      "log": "windows-followup.log",
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "40",
+        "time": "10.788",
+        "timestamp": "2026-11-15T23:43:40.578900-05:00",
+        "hostname": "Legion3568"
+      }
+    }
+  ],
+  "primary_full_suite": "python-tests-dev.xml"
+}

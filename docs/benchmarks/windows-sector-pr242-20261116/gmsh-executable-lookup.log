@@ -1,0 +1,8 @@
+before_gmsh node bare_name v24.19.0
+before_gmsh node absolute_path v24.19.0
+before_gmsh git bare_name git version 2.45.2.windows.1
+before_gmsh git absolute_path git version 2.45.2.windows.1
+after_gmsh node bare_name [WinError 2] The system cannot find the file specified
+after_gmsh node absolute_path v24.19.0
+after_gmsh git bare_name [WinError 2] The system cannot find the file specified
+after_gmsh git absolute_path git version 2.45.2.windows.1
