@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 3097,
-      "sha256": "caee3eddd23c2f36d9247d8177f35183bb8d016b8cf5ec06b88df16fb59e59e4"
+      "bytes": 3310,
+      "sha256": "3b561b860efe5309ba36ad98a68a1e357af7d13fa052ed6ab197764615583815"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -8655,8 +8655,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 27634,
-      "sha256": "452a92b8a03e26ed51930a9fea371ba349904fe7df1120ebbd31a2513d5bbf7c"
+      "bytes": 28662,
+      "sha256": "ffbf638ab0a1c958b14484c30ff4cd88df629425ecc7bf5f94284b8d243b1b35"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -12130,8 +12130,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 8218,
-      "sha256": "93a995c61b2eb94ab05db1a7f711f2e51ff7378902045f4e721d23d2b88dd2fd"
+      "bytes": 11201,
+      "sha256": "6e0f7d480b706ceca06e3d5a3ba4455247fc116d4d321ec2cb4ba914d62a364e"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12180,8 +12180,8 @@
     },
     {
       "path": "tests/test_qualification_carry.py",
-      "bytes": 8704,
-      "sha256": "81b0a276182d30e257338d32a4a179ad6243b311023e896c31f541080a251384"
+      "bytes": 12048,
+      "sha256": "4702c56265902cf1ddb2c12ad025ede8d15d7f37f36d8c6040d662366dbf46fd"
     },
     {
       "path": "tests/test_qualification_publish.py",
@@ -12190,8 +12190,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 15678,
-      "sha256": "9312b459cd214de802fc54a398f7218263ed4596058c827817f5a05d25545eae"
+      "bytes": 19424,
+      "sha256": "7d6bbce30ac2e9cb4e316f8e697254b5b400ed207fc3d62731808c9cab75ae80"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -19767,6 +19767,21 @@
       "path": "benchmarks/qualification-5e6fab283d16/publication-projection.json",
       "bytes": 3073,
       "sha256": "1e462828f50949d3bda45bcb44b1b456621feac97d2d4c6947d9a064126b3da2"
+    },
+    {
+      "path": "tests/test_qualify_local.py",
+      "bytes": 5865,
+      "sha256": "c9c4c25e50259382713e13d47e253f717af338e30650a457ba62bc883ba79831"
+    },
+    {
+      "path": "tests/test_snapshot_report_csv.py",
+      "bytes": 1136,
+      "sha256": "f89e2581d5dfb8bd0c45d56f1e7167e572641b7498592ce47329cdcbaa82e124"
+    },
+    {
+      "path": "tools/qualify_local.py",
+      "bytes": 6987,
+      "sha256": "c903ede731bd7c9b522084032688573133904096708a452d3907c76dd914083f"
     }
   ],
   "public_patches": [
@@ -42239,6 +42254,36 @@
       "path": ".gitattributes",
       "source_sha256": "7de1d9dce888cc264e11568b360a0e41776a5218c87e6ea11cad51afe98bc143",
       "reason": "Keep the #285 candidate evidence byte-for-byte, including report CSV line endings."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": ".gitattributes",
+      "source_sha256": "caee3eddd23c2f36d9247d8177f35183bb8d016b8cf5ec06b88df16fb59e59e4",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "452a92b8a03e26ed51930a9fea371ba349904fe7df1120ebbd31a2513d5bbf7c",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "93a995c61b2eb94ab05db1a7f711f2e51ff7378902045f4e721d23d2b88dd2fd",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "81b0a276182d30e257338d32a4a179ad6243b311023e896c31f541080a251384",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "9312b459cd214de802fc54a398f7218263ed4596058c827817f5a05d25545eae",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
     }
   ]
 }
