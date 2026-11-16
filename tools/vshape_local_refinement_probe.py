@@ -6,11 +6,11 @@ mesher, so each point answers "what changes if only this region is finer".
 from __future__ import annotations
 
 import argparse
-from contextlib import nullcontext
 import json
 import os
 import tempfile
 import time
+from contextlib import nullcontext
 from pathlib import Path
 from unittest.mock import patch
 
@@ -120,7 +120,8 @@ def main() -> None:
             result = solver.Magneto2DSolver(launch_surface=True).solve(config)
     dq, cog = result.summary.dq_flux_linkage, result.summary.cogging
     row = {
-        "label": a.label, "as_registered": a.as_registered, "v_shape_patch": not a.no_v_shape_patch, "corner_refinement": a.corner_refinement, "case": a.case, "density": a.density, "rotor_mm": a.rotor_mm,
+        "label": a.label, "as_registered": a.as_registered, "v_shape_patch": not a.no_v_shape_patch,
+        "corner_refinement": a.corner_refinement, "case": a.case, "density": a.density, "rotor_mm": a.rotor_mm,
         "rotor_reach_mm": a.rotor_reach_mm, "rotor_grow_mm": a.rotor_grow_mm, "slot_mm": a.slot_mm, "gap_scale": a.gap_scale,
         "elapsed_s": round(time.monotonic() - started, 1),
         "elements": result.solve_metadata.mesh_element_count,
