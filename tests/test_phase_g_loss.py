@@ -128,6 +128,45 @@ def test_component_gate_cannot_hide_cancelling_errors_in_total():
     assert result == {"hysteresis_W": False, "lamination_eddy_W": False, "total_W": True}
 
 
+def test_femm_answer_reader_has_correct_units_curl_and_material_selection(tmp_path):
+    from tools.phase_g_loss.femm_answers import answer_fields
+
+    path = tmp_path / "linear.ans"
+    # A_z = 0.003*x_mm + 0.002*y_mm: B_x=2 T, B_y=-3 T.
+    path.write_text(
+        "\n".join(
+            [
+                "[Frequency] = 0",
+                "[LengthUnits] = millimeters",
+                '<BlockName> = "coilEM_M350_50A_test"',
+                "[NumBlockLabels] = 2",
+                "0.2 0.2 1 1 0 0 0 1 0",
+                "2.2 0.2 1 1 0 0 10 1 0",
+                "[Solution]",
+                "6",
+                "0 0 0 -1",
+                "1 0 0.003 -1",
+                "0 1 0.002 -1",
+                "2 0 0.006 -1",
+                "3 0 0.009 -1",
+                "2 1 0.008 -1",
+                "2",
+                "0 1 2 0 -1 -1 -1 0",
+                "3 4 5 1 -1 -1 -1 0",
+            ]
+        ),
+        encoding="ascii",
+    )
+    result = answer_fields(path)
+    assert result["stator"][0] == pytest.approx([2, -3])
+    assert result["rotor"][0] == pytest.approx([2, -3])
+    assert result["stator_corners"][0, 0] == pytest.approx([0, 0])
+    assert result["rotor_corners"][0, 0] == pytest.approx([2, 0])
+    path.write_text(path.read_text().replace("[Frequency] = 0", "[Frequency] = 50"))
+    with pytest.raises(ValueError, match="magnetostatic"):
+        answer_fields(path)
+
+
 def test_femm_worker_module_does_not_claim_the_production_backend_namespace():
     import subprocess
     import sys

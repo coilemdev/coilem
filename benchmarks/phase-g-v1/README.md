@@ -68,6 +68,24 @@ sector work is #319 and is outside this full-motor suite.
 
 ## Run on Windows
 
+An optional `reuse-femm.json` in the external campaign directory can map a case
+ID to `history` and `source_checkout` absolute directory paths. This selects
+read-only extraction of a previously audited, complete fixed-mesh FEMM history.
+The extractor verifies geometry/winding/materials, current/angle, mesh controls,
+the frozen producer sources, every original checkpoint and answer hash, and
+every saved solution's current and mesh audits. Only specified wire data may
+differ: it does not change the homogenized ampere-turn source; copper is
+recomputed independently for the newly declared conductor.
+
+Unsmoothed B is independently derived from each answer's linear triangular
+A_z solution and checked against its retained FEMM rotor CSV to 1e-9 T. The
+original histories stay untouched and keep their source identities. New reports
+link the original protocol/answer hashes, record the extraction implementation,
+and explicitly report **zero new FEMM field solves** for reused cases. This
+allows the new stator comparison without re-solving an identical magnetic case.
+Nonmatching or incomplete histories are rejected. Cases without a reuse mapping
+use fresh Windows FEMM solves as described above.
+
 Use a clean committed checkout, a source-matched Magneto2D binary and the pinned
 FEMM Python environment documented in `tools/femm_reference/README.md`.
 Output must be outside the checkout. The coordinator runs **all selected native

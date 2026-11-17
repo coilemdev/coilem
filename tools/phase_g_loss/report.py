@@ -67,6 +67,15 @@ def analyse(directory, *, reference=False):
         record = checkpoint(directory, index)
         if record is None:
             raise ValueError(f"Incomplete Phase G history: missing pose {index}")
+        if "reused_source_history" in protocol:
+            source = Path(protocol["reused_source_history"])
+            original = source / f"position-{index:04d}"
+            if (
+                sha(source / "protocol.json") != protocol["reused_protocol_sha256"]
+                or sha(original / "model.ans") != record["source_answer_sha256"]
+                or sha(original / "position.json") != record["original_checkpoint_sha256"]
+            ):
+                raise ValueError("Immutable source FEMM answer changed after extraction")
         if record["protocol_sha256"] != sha(directory / "protocol.json"):
             raise ValueError("A pose belongs to a different protocol")
         if record["geometry_sha256"] != sha(directory / "material-geometry.npz"):
@@ -82,6 +91,7 @@ def analyse(directory, *, reference=False):
         "case_id": protocol["case"]["id"],
         "solver": protocol["solver"],
         "protocol_sha256": sha(directory / "protocol.json"),
+        "analysis_implementation_sha256": sha(__file__),
         "bound_native_protocol_sha256": protocol.get("native_protocol_sha256"),
         "rotor_status": protocol["rotor_status"],
         "rotor_unavailable_reason": protocol["rotor_unavailable_reason"],

@@ -157,6 +157,13 @@ def main(argv=None):
     shard, shards = map(int, args.shard.split("/"))
     if not 0 <= shard < shards or args.limit is not None and args.limit < 1:
         parser.error("Invalid shard or limit")
+    reuse_path = args.out.resolve().parent.parent / "reuse-femm.json"
+    if reuse_path.exists():
+        reuse = read(reuse_path)
+        if args.case in reuse:
+            from tools.phase_g_loss.femm_answers import collect
+
+            return collect(args, reuse[args.case])
     case = case_by_id(args.case)
     native = read(args.native / "protocol.json")
     analysis = read(args.native / "analysis.json")
