@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 44110,
-      "sha256": "14dca8e9d05aec3eee163f2d8d093faef1ae8fee0da03f087d2c3aa9eaf7536c"
+      "bytes": 44361,
+      "sha256": "f14f15eac2f527cf9d52a18fbebde1c31a6162048d50ab5cc8f62ff25c8fb290"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -7290,8 +7290,8 @@
     },
     {
       "path": "frontend/src/public/fieldArrows.ts",
-      "bytes": 15679,
-      "sha256": "ef91b2455b26a28abf8dbf472254c10e2acaa0d2dd1a4c0ce182e10f1e106a8d"
+      "bytes": 15987,
+      "sha256": "2e3733df444b9ce615be6e73727e086fd823616ace2b51a78edbde0c2c680dcf"
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 23078,
-      "sha256": "c70a1451807f0390f75392889dac4ebc2b13d2de39ac32ba5c7596a80a34e37a"
+      "bytes": 23215,
+      "sha256": "d7a0bc245e94ee78f9acca4a09614b6074bcedc7da600e61d1716210b6c8c22b"
     },
     {
       "path": "tests/test_public_phase_drive.py",

@@ -88,7 +88,7 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert manifest is not None
     assert manifest["schema_version"] == "coilem.field_playback.v2"
     assert manifest["encoding"] == "layered-raster-v1"
-    assert manifest["renderer_revision"] == "medium-b-arrows-mesh-fixed-flux-scale-v4"
+    assert manifest["renderer_revision"] == "medium-b-arrows-mesh-fixed-flux-scale-v5"
     assert manifest["width_px"] == 1536
     assert manifest["height_px"] == 1536
     assert "detail_width_px" not in manifest
@@ -218,7 +218,14 @@ def test_playback_arrows_use_the_viewers_spacing_rings_and_fading() -> None:
     offsets = re.search(r"FIELD_ARROW_RING_OFFSET = \{ primary: ([\d.]+), pm: ([\d.]+) \}", source)
     assert offsets is not None
     assert {"primary": float(offsets.group(1)), "pm": float(offsets.group(2))} == public_field_playback.FIELD_ARROW_RING_OFFSET
-    for name in ("FIELD_ARROW_REFERENCE_PERCENTILE", "FIELD_ARROW_HIDE_BELOW_SHARE", "FIELD_ARROW_MIN_T"):
+    for name in (
+        "FIELD_ARROW_REFERENCE_PERCENTILE",
+        "FIELD_ARROW_HIDE_BELOW_SHARE",
+        "FIELD_ARROW_MIN_T",
+        "FIELD_ARROW_SHAFT_HALF_WIDTH",
+        "FIELD_ARROW_HEAD_HALF_WIDTH",
+        "FIELD_ARROW_RIM",
+    ):
         value = re.search(rf"{name} = ([\d.e-]+);", source)
         assert value is not None and float(value.group(1)) == getattr(public_field_playback, name), name
     steps = re.search(r"FIELD_ARROW_OPACITY_STEPS[^=]*= \[(.*?)\];", source, re.S)

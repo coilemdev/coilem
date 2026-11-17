@@ -50,13 +50,17 @@ PLAYBACK_DIRECTION_CUE_TARGET = 32
 PLAYBACK_DIRECTION_CUE_LIMIT = 48
 # The contour statistics and direction cues describe every second contour level.
 PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
-# v4 draws small B arrows in the lines layer in place of flux lines.
-PLAYBACK_RENDERER_REVISION = "medium-b-arrows-mesh-fixed-flux-scale-v4"
+# v4 drew small B arrows in the lines layer in place of flux lines; v5 thins them.
+PLAYBACK_RENDERER_REVISION = "medium-b-arrows-mesh-fixed-flux-scale-v5"
 # Field arrows: the viewer draws the same ones from an exact frame
 # (frontend/src/public/fieldArrows.ts); tests hold these constants equal. The
 # images carry the Medium spacing; a paused frame draws Low or High itself.
 FIELD_ARROW_SPACING_FRACTION = {"low": 1 / 24, "medium": 1 / 34, "high": 1 / 48}
 FIELD_ARROW_LENGTH_FRACTION = 0.64
+# Shaft half-width, head half-width and dark rim, as shares of the arrow's length.
+FIELD_ARROW_SHAFT_HALF_WIDTH = 0.045
+FIELD_ARROW_HEAD_HALF_WIDTH = 0.18
+FIELD_ARROW_RIM = 0.055
 FIELD_ARROW_RING_OFFSET = {"primary": 0.5, "pm": 1.0}
 # Fading is a share of each field's strong |B| (its 95th-percentile element),
 # so the stator's field alone reads as clearly as the resultant.
@@ -689,7 +693,7 @@ def _arrow_outline(
     cx, cy = centre
     tail, tip = -length / 2, length / 2
     head_base = tip - length * 0.4
-    head_half_width = max(length * 0.22, shaft_half_width * 2.2)
+    head_half_width = max(length * FIELD_ARROW_HEAD_HALF_WIDTH, shaft_half_width * 2.2)
 
     def point(along: float, across: float) -> tuple[float, float]:
         return (cx + ux * along + nx * across, cy + uy * along + ny * across)
@@ -750,8 +754,8 @@ def _render_arrows(
     pixels_per_mm = min(drawn_px / view_box[2], drawn_px / view_box[3])
     length = spacing * FIELD_ARROW_LENGTH_FRACTION * pixels_per_mm
     # fieldArrowWidths, with one output pixel being _ARROW_SUPERSAMPLE drawn ones.
-    shaft_half_width = max(length * 0.06, 0.55 * _ARROW_SUPERSAMPLE)
-    rim = max(length * 0.07, 0.8 * _ARROW_SUPERSAMPLE)
+    shaft_half_width = max(length * FIELD_ARROW_SHAFT_HALF_WIDTH, 0.55 * _ARROW_SUPERSAMPLE)
+    rim = max(length * FIELD_ARROW_RIM, 0.8 * _ARROW_SUPERSAMPLE)
     image = image_module.new("RGBA", (drawn_px, drawn_px), (0, 0, 0, 0))
     draw = image_draw_module.Draw(image, "RGBA")
     by_opacity: dict[float, list[tuple[float, float, float, float, float, float]]] = {}

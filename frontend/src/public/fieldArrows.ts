@@ -24,6 +24,10 @@ export const FIELD_ARROW_SPACING_FRACTION: Readonly<Record<FieldArrowDensity, nu
 };
 /** Arrow length as a share of the spacing. */
 export const FIELD_ARROW_LENGTH_FRACTION = 0.64;
+/** Shaft half-width, head half-width and dark rim, as shares of the arrow's length. */
+export const FIELD_ARROW_SHAFT_HALF_WIDTH = 0.045;
+export const FIELD_ARROW_HEAD_HALF_WIDTH = 0.18;
+export const FIELD_ARROW_RIM = 0.055;
 /**
  * Rings sit at (k + offset) spacings from the axis. The PM field's sit halfway
  * between the others, so in the Stator + PM view the two sets interleave.
@@ -257,7 +261,7 @@ export function sampleFieldArrows(
 export function fieldArrowOutline(
   arrow: Pick<FieldArrowSample, 'x' | 'y' | 'ux' | 'uy'>,
   length: number,
-  shaftHalfWidth = length * 0.06,
+  shaftHalfWidth = length * FIELD_ARROW_SHAFT_HALF_WIDTH,
 ): Array<[number, number]> {
   const ux = arrow.ux;
   const uy = -arrow.uy;
@@ -268,7 +272,7 @@ export function fieldArrowOutline(
   const tail = -length / 2;
   const tip = length / 2;
   const headBase = tip - length * 0.4;
-  const headHalfWidth = Math.max(length * 0.22, shaftHalfWidth * 2.2);
+  const headHalfWidth = Math.max(length * FIELD_ARROW_HEAD_HALF_WIDTH, shaftHalfWidth * 2.2);
   const point = (along: number, across: number): [number, number] => [
     cx + ux * along + nx * across,
     cy + uy * along + ny * across,
@@ -335,8 +339,8 @@ export function visibleFieldArrowRect(context: ArrowContext): FieldArrowRect | n
 /** Shaft half-width and rim width for arrows of this length, at least a pixel across at any size. */
 export function fieldArrowWidths(length: number, pixel: number): { shaftHalfWidth: number; rim: number } {
   return {
-    shaftHalfWidth: Math.max(length * 0.06, pixel * 0.55),
-    rim: Math.max(length * 0.07, pixel * 0.8),
+    shaftHalfWidth: Math.max(length * FIELD_ARROW_SHAFT_HALF_WIDTH, pixel * 0.55),
+    rim: Math.max(length * FIELD_ARROW_RIM, pixel * 0.8),
   };
 }
 
