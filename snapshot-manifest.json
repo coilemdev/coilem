@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3642,
-      "sha256": "3b56953e107f3aa22982cbcfc8fa186435887a44c38b1083557f03d4d11fc2e0"
+      "bytes": 3681,
+      "sha256": "374184a65cedcddaeb9ae075fe716c4cfe73416233866b9bf1127b8413717dee"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6595,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 180820,
-      "sha256": "fad9a2c80dd5b15b9985a8d5ca3585c3ea38eccae8e9eb1a0fe94ece9fa888a3"
+      "bytes": 181514,
+      "sha256": "8b075e255bb6b28d42e4fd61ee11ef1129ede47bfeb2b90879984397f0979ae4"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7050,8 +7050,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 68783,
-      "sha256": "dce4eaa09f2dc79ca48f7133d78b072f792e3897606d9a47c8a028514ad1097d"
+      "bytes": 73539,
+      "sha256": "759bb8d7a44c8f213740fb9083d14f5cecd78c25a8c157e7f443594aaa590ee0"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7290,8 +7290,8 @@
     },
     {
       "path": "frontend/src/public/fieldArrows.ts",
-      "bytes": 18208,
-      "sha256": "9694b520c7d044eb2484dac5f2532dc77a4c5b990abf347e5da5801e12e71005"
+      "bytes": 15679,
+      "sha256": "ef91b2455b26a28abf8dbf472254c10e2acaa0d2dd1a4c0ce182e10f1e106a8d"
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
@@ -13209,6 +13209,11 @@
       "sha256": "afe99c6f923f0a277f404b093036148e85683d4104676dd184762126d52f5150"
     },
     {
+      "path": "frontend/scripts/test-triangle-grid.mjs",
+      "bytes": 2661,
+      "sha256": "1294701e003a2a8fc390be09fb950a1ef1c198f25ed2fa3588c98b372b267145"
+    },
+    {
       "path": "frontend/scripts/test-value-axis.mjs",
       "bytes": 2294,
       "sha256": "8a4c22cb41d422c4f759ae8fbaff36731cc0389d084d5f312ecbd9a197ece0ae"
@@ -18142,6 +18147,11 @@
       "path": "frontend/src/public/solveTime.ts",
       "bytes": 4485,
       "sha256": "083ea48d534adb54c81160587691a3eeca47696725b64a3e1e658cd776e836a7"
+    },
+    {
+      "path": "frontend/src/public/triangleGrid.ts",
+      "bytes": 5260,
+      "sha256": "0d5412a99cf2e3c8fbb677ed4b306cb2d92bedd2d082a4cdf50b8499e142ed0f"
     },
     {
       "path": "frontend/src/public/useFirstSolvedField.ts",

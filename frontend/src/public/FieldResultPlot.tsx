@@ -35,6 +35,12 @@ import {
   type FieldArrowTone,
 } from './fieldArrows';
 import {
+  buildTriangleGrid,
+  triangleGridCell,
+  triangleGridItemsInRect,
+  type TriangleGrid,
+} from './triangleGrid';
+import {
   useViewportNavigation,
   ViewportNavigationControls,
 } from './ViewportNavigation';
@@ -149,6 +155,8 @@ interface PreparedFieldPlot {
   hasArrows: boolean;
   /** The elements indexed for the arrows, built when first drawn. */
   arrowMesh: FieldArrowMesh | null | undefined;
+  /** triangleRecords indexed by bounding box (magnifier, probe), built when first needed. */
+  recordGrid: TriangleGrid | null | undefined;
   plot: PublicFieldLinePlot;
   renderedLayers: RenderedFieldLayers | null;
 }
@@ -308,9 +316,82 @@ function prepareFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
     triangleCount,
     hasArrows: (plot.element_bx_t?.length ?? 0) > 0 && (plot.element_by_t?.length ?? 0) > 0,
     arrowMesh: undefined,
+    recordGrid: undefined,
     plot,
     renderedLayers: null,
   };
+}
+
+/** The plot's elements indexed by bounding box, built when first needed. */
+function fieldRecordGrid(prepared: PreparedFieldPlot): TriangleGrid | null {
+  if (prepared.recordGrid === undefined) {
+    const records = prepared.triangleRecords;
+    const boxes = new Float64Array(records.length * 4);
+    records.forEach(({ points: [[ax, ay], [bx, by], [cx, cy]] }, item) => {
+      boxes.set([Math.min(ax, bx, cx), Math.min(ay, by, cy), Math.max(ax, bx, cx), Math.max(ay, by, cy)], item * 4);
+    });
+    prepared.recordGrid = buildTriangleGrid(boxes, records.length);
+  }
+  return prepared.recordGrid;
+}
+
+/** The element under a model-space point, from the cell it falls in rather than every element. */
+function locateFieldRecord(prepared: PreparedFieldPlot, x: number, y: number): PreparedFieldPlot['triangleRecords'][number] | null {
+  const grid = fieldRecordGrid(prepared);
+  const cell = grid ? triangleGridCell(grid, x, y) : -1;
+  if (!grid || cell < 0) return null;
+  for (let entry = grid.cellStart[cell]; entry < grid.cellStart[cell + 1]; entry += 1) {
+    const record = prepared.triangleRecords[grid.cellItems[entry]];
+    if (pointInTriangle(x, y, record.points)) return record;
+  }
+  return null;
+}
+
+/**
+ * The base, flux colours and mesh edges of only the elements the canvas shows
+ * through its current transform. The magnifier sees a few percent of the
+ * motor; filling every element on each pointer move made it trail the pointer.
+ */
+function drawFieldRegion(
+  context: CanvasRenderingContext2D,
+  prepared: PreparedFieldPlot,
+  heatScale: FluxColorScale | null,
+  meshViewportScale: number | null,
+): void {
+  const rect = visibleFieldArrowRect(context);
+  const grid = fieldRecordGrid(prepared);
+  if (!rect || !grid) {
+    drawBase(context, prepared);
+    if (heatScale) drawHeat(context, prepared, heatScale);
+    if (meshViewportScale !== null) drawMeshEdges(context, prepared, meshViewportScale);
+    return;
+  }
+  const base = new Path2D();
+  const heat = heatScale ? Array.from({ length: FLUX_OVER_RANGE_INDEX + 1 }, () => new Path2D()) : null;
+  const filled = new Uint8Array(FLUX_OVER_RANGE_INDEX + 1);
+  triangleGridItemsInRect(grid, rect).forEach((item) => {
+    const { points, value } = prepared.triangleRecords[item];
+    addTrianglePath(base, points);
+    if (!heat || !heatScale || value === null || !Number.isFinite(value)) return;
+    const bucket = fluxColorIndex(value, heatScale);
+    addTrianglePath(heat[bucket], points);
+    filled[bucket] = 1;
+  });
+  context.fillStyle = '#202733';
+  context.fill(base);
+  heat?.forEach((path, bucket) => {
+    if (!filled[bucket]) return;
+    context.fillStyle = fluxColor(bucket);
+    context.fill(path);
+  });
+  if (meshViewportScale !== null) {
+    context.save();
+    context.strokeStyle = 'rgba(203,213,225,.42)';
+    context.lineWidth = (0.11 * prepared.strokeScale) / Math.max(meshViewportScale, Number.EPSILON);
+    context.lineJoin = 'round';
+    context.stroke(base);
+    context.restore();
+  }
 }
 
 function cachedFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
@@ -650,7 +731,15 @@ export function FieldResultPlot({
   const [internalShowMesh, setInternalShowMesh] = useState(false);
   const [internalShowFieldLines, setInternalShowFieldLines] = useState(true);
   const [probe, setProbe] = useState<FieldProbe | null>(null);
-  const [loupePoint, setLoupePoint] = useState<{ x: number; y: number } | null>(null);
+  // The plot the shown probe was read from, so a move within the same element is not a new state.
+  const probePlotRef = useRef<PublicFieldLinePlot | null>(null);
+  // The magnifier follows the pointer outside React: a pointer move records the
+  // point and asks for one redraw in the next frame, of the newest point. Only
+  // whether there is a point at all (the panel's hint) is state.
+  const loupePointRef = useRef<{ x: number; y: number } | null>(null);
+  const [hasLoupePoint, setHasLoupePoint] = useState(false);
+  const loupeFrameRef = useRef<number | null>(null);
+  const drawLoupeRef = useRef<() => void>(() => undefined);
   const { canvasRef: loupeCanvasRef, width: loupeWidth, height: loupeHeight } = useMagnifierCanvas(magnifier, magnifierSlot);
   const [viewportRange, setViewportRange] = useState<FieldViewportRange | null>(null);
   const viewportRangeRef = useRef<FieldViewportRange | null>(null);
@@ -674,19 +763,35 @@ export function FieldResultPlot({
     if (!probeEnabled || !sourcePlot) setProbe(null);
   }, [probeEnabled, sourcePlot]);
   useEffect(() => {
-    if (!magnifier) setLoupePoint(null);
+    if (magnifier) return;
+    loupePointRef.current = null;
+    setHasLoupePoint(false);
   }, [magnifier]);
+  const scheduleLoupeDraw = useCallback(() => {
+    // One redraw per frame, of whatever is newest when it runs. Cancelling and
+    // asking again on every pointer move put it off for as long as the pointer
+    // moved faster than the screen refreshed.
+    if (loupeFrameRef.current !== null) return;
+    loupeFrameRef.current = window.requestAnimationFrame(() => {
+      loupeFrameRef.current = null;
+      drawLoupeRef.current();
+    });
+  }, []);
+  useEffect(() => () => {
+    if (loupeFrameRef.current !== null) window.cancelAnimationFrame(loupeFrameRef.current);
+  }, []);
 
   // The magnifier panel: the picture around the pointer, redrawn from the solved
   // elements at a higher zoom when they are loaded, so it is sharp and not a
-  // stretched copy; otherwise an enlarged copy of the view.
-  const loupeX = loupePoint?.x ?? null;
-  const loupeY = loupePoint?.y ?? null;
-  useEffect(() => {
+  // stretched copy; otherwise an enlarged copy of the view. Only the elements
+  // inside the panel are drawn (drawFieldRegion).
+  drawLoupeRef.current = () => {
     const loupe = loupeCanvasRef.current;
     const canvas = canvasRef.current;
-    if (!magnifier || loupeX === null || loupeY === null || !loupe || !canvas) return undefined;
-    const frame = window.requestAnimationFrame(() => {
+    const point = loupePointRef.current;
+    if (!magnifier || !point || !loupe || !canvas) return;
+    const { x: loupeX, y: loupeY } = point;
+    {
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
       const pixelWidth = Math.round(loupeWidth * pixelRatio);
       const pixelHeight = Math.round(loupeHeight * pixelRatio);
@@ -723,13 +828,16 @@ export function FieldResultPlot({
         const translateY = height / 2 + (baseOffsetY - viewY * baseScale - height / 2) * navigation.scale + navigation.pan.y;
         worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, translateX, translateY]));
         context.setTransform(worldTransform);
-        drawBase(context, prepared);
-        if (showHeatmap) {
-          drawHeat(context, prepared, colorRangeMode === 'viewport' && viewportRange
-            ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
-            : FIXED_FLUX_SCALE);
-        }
-        if (showMesh) drawMeshEdges(context, prepared, navigation.scale * LOUPE_MAGNIFICATION);
+        drawFieldRegion(
+          context,
+          prepared,
+          showHeatmap
+            ? (colorRangeMode === 'viewport' && viewportRange
+              ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
+              : FIXED_FLUX_SCALE)
+            : null,
+          showMesh ? navigation.scale * LOUPE_MAGNIFICATION : null,
+        );
         if (showFieldLines) {
           drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale * LOUPE_MAGNIFICATION);
           if (overlayPrepared) {
@@ -789,8 +897,11 @@ export function FieldResultPlot({
       context.moveTo(centreX, centreY - 7);
       context.lineTo(centreX, centreY + 7);
       context.stroke();
-    });
-    return () => window.cancelAnimationFrame(frame);
+    }
+  };
+  // Anything else the panel shows changed: draw it again at the last point.
+  useEffect(() => {
+    scheduleLoupeDraw();
   }, [
     airgapEdges[0],
     airgapEdges[1],
@@ -798,8 +909,6 @@ export function FieldResultPlot({
     fieldLineDensity,
     fitScale,
     hasAirgapOverlay,
-    loupeX,
-    loupeY,
     loupeWidth,
     loupeHeight,
     magnifierSlot,
@@ -812,6 +921,7 @@ export function FieldResultPlot({
     prepared,
     primaryTone,
     raster,
+    scheduleLoupeDraw,
     showFieldLines,
     showHeatmap,
     showMesh,
@@ -1254,7 +1364,9 @@ export function FieldResultPlot({
       const bounds = event.currentTarget.getBoundingClientRect();
       const x = event.clientX - bounds.left;
       const y = event.clientY - bounds.top;
-      setLoupePoint({ x, y });
+      loupePointRef.current = { x, y };
+      if (!hasLoupePoint) setHasLoupePoint(true);
+      scheduleLoupeDraw();
     }
     if (
       navigation.isDragging
@@ -1293,13 +1405,14 @@ export function FieldResultPlot({
     }
     const worldX = (rasterX - overlayOffsetX) / overlayScale;
     const worldY = -(rasterY - overlayOffsetY) / overlayScale;
-    const record = prepared.triangleRecords.find(({ points }) => (
-      pointInTriangle(worldX, worldY, points)
-    ));
+    const record = locateFieldRecord(prepared, worldX, worldY);
     if (!record || !Number.isFinite(record.value)) {
       setProbe(null);
       return;
     }
+    // Still over the same element of the same frame: nothing new to show.
+    if (probe?.elementIndex === record.index && probePlotRef.current === sourcePlot) return;
+    probePlotRef.current = sourcePlot;
     const bxT = sourcePlot.element_bx_t?.[record.index];
     const byT = sourcePlot.element_by_t?.[record.index];
     const [[ax, ay], [bx, by], [cx, cy]] = record.points;
@@ -1467,7 +1580,7 @@ export function FieldResultPlot({
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
         })()}
         {magnifier && (
-          <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={loupePoint !== null} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
+          <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={hasLoupePoint} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
         )}
         {!probeSlot && probeReadout}
       </div>

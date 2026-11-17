@@ -1155,6 +1155,15 @@ assert.doesNotMatch(fieldResultSource, /sampleDirectionCues|public-field-directi
 assert.match(fieldResultSource, /buildFieldArrowMesh\(plot\.nodes_mm, plot\.triangles, plot\.element_bx_t, plot\.element_by_t\)/);
 assert.match(fieldResultSource, /const spacing = fieldArrowSpacingMm\(prepared\.viewSize, density, zoom\);/);
 assert.match(fieldResultSource, /visibleFieldArrowRect\(context\)/);
+// The magnifier draws only the elements it shows, once per frame from the newest
+// pointer position outside React; the probe finds its element through the grid.
+assert.match(fieldResultSource, /drawFieldRegion\(\s*context,\s*prepared,/);
+assert.match(fieldResultSource, /triangleGridItemsInRect\(grid, rect\)/);
+assert.match(fieldResultSource, /if \(loupeFrameRef\.current !== null\) return;/);
+assert.match(fieldResultSource, /loupePointRef\.current = \{ x, y \};/);
+assert.match(fieldResultSource, /const record = locateFieldRecord\(prepared, worldX, worldY\);/);
+assert.doesNotMatch(fieldResultSource, /triangleRecords\.find\(/);
+assert.doesNotMatch(fieldResultSource, /setLoupePoint\(/);
 assert.match(fieldResultSource, /Waiting for samples|Completed Magneto2D solution/);
 assert.match(fieldResultSource, /visibleLayerLabel/);
 assert.match(fieldResultSource, /probeEnabled\?: boolean/);

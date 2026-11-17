@@ -12,6 +12,8 @@
  * there and a test holds them equal.
  */
 
+import { buildTriangleGrid, triangleGridCell, type GridRect, type TriangleGrid } from './triangleGrid';
+
 export type FieldArrowDensity = 'low' | 'medium' | 'high';
 
 /** Ring spacing as a share of the view's larger side (the motor plus 2.5% padding per side). */
@@ -57,14 +59,8 @@ export interface FieldArrowMesh {
   corners: Int32Array;
   bx: Float64Array;
   by: Float64Array;
-  minX: number;
-  minY: number;
-  cellSize: number;
-  columns: number;
-  rows: number;
-  /** Elements whose bounding box meets cell c are cellItems[cellStart[c] .. cellStart[c + 1]). */
-  cellStart: Int32Array;
-  cellItems: Int32Array;
+  /** The usable elements by bounding box (triangleGrid.ts). */
+  grid: TriangleGrid;
   /** The farthest node from the axis, mm. */
   maxRadius: number;
   /** The field's strong |B| (T), which the fading is a share of. */
@@ -84,12 +80,7 @@ export interface FieldArrowSample {
 }
 
 /** A model-space rectangle, mm (y up). */
-export interface FieldArrowRect {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
+export type FieldArrowRect = GridRect;
 
 /** Index a solved plot's elements; null when it has no usable element with B. */
 export function buildFieldArrowMesh(
@@ -112,10 +103,7 @@ export function buildFieldArrowMesh(
   const corners: number[] = [];
   const bxValues: number[] = [];
   const byValues: number[] = [];
-  let minX = Number.POSITIVE_INFINITY;
-  let minY = Number.POSITIVE_INFINITY;
-  let maxX = Number.NEGATIVE_INFINITY;
-  let maxY = Number.NEGATIVE_INFINITY;
+  const boxes: number[] = [];
   triangles.forEach((triangle, index) => {
     const bx = elementBx[index];
     const by = elementBy[index];
@@ -126,53 +114,16 @@ export function buildFieldArrowMesh(
     corners.push(a, b, c);
     bxValues.push(bx);
     byValues.push(by);
-    for (const node of [a, b, c]) {
-      minX = Math.min(minX, xs[node]);
-      maxX = Math.max(maxX, xs[node]);
-      minY = Math.min(minY, ys[node]);
-      maxY = Math.max(maxY, ys[node]);
-    }
+    boxes.push(
+      Math.min(xs[a], xs[b], xs[c]),
+      Math.min(ys[a], ys[b], ys[c]),
+      Math.max(xs[a], xs[b], xs[c]),
+      Math.max(ys[a], ys[b], ys[c]),
+    );
   });
   const count = bxValues.length;
-  if (count === 0) return null;
-  // About two elements per cell on average; large elements span several.
-  const width = Math.max(maxX - minX, 1e-9);
-  const height = Math.max(maxY - minY, 1e-9);
-  const cellSize = Math.max(Math.sqrt((width * height) / count) * 1.4, 1e-6);
-  const columns = Math.max(1, Math.ceil(width / cellSize));
-  const rows = Math.max(1, Math.ceil(height / cellSize));
-  const cellOf = (value: number, origin: number, limit: number) => (
-    Math.min(limit - 1, Math.max(0, Math.floor((value - origin) / cellSize)))
-  );
-  const counts = new Int32Array(columns * rows + 1);
-  const spans = new Int32Array(count * 4);
-  for (let element = 0; element < count; element += 1) {
-    const a = corners[element * 3];
-    const b = corners[element * 3 + 1];
-    const c = corners[element * 3 + 2];
-    const column0 = cellOf(Math.min(xs[a], xs[b], xs[c]), minX, columns);
-    const column1 = cellOf(Math.max(xs[a], xs[b], xs[c]), minX, columns);
-    const row0 = cellOf(Math.min(ys[a], ys[b], ys[c]), minY, rows);
-    const row1 = cellOf(Math.max(ys[a], ys[b], ys[c]), minY, rows);
-    spans.set([column0, column1, row0, row1], element * 4);
-    for (let row = row0; row <= row1; row += 1) {
-      for (let column = column0; column <= column1; column += 1) counts[row * columns + column + 1] += 1;
-    }
-  }
-  const cellStart = new Int32Array(columns * rows + 1);
-  for (let cell = 0; cell < columns * rows; cell += 1) cellStart[cell + 1] = cellStart[cell] + counts[cell + 1];
-  const cellItems = new Int32Array(cellStart[columns * rows]);
-  const filled = cellStart.slice(0, columns * rows);
-  for (let element = 0; element < count; element += 1) {
-    const [column0, column1, row0, row1] = spans.subarray(element * 4, element * 4 + 4);
-    for (let row = row0; row <= row1; row += 1) {
-      for (let column = column0; column <= column1; column += 1) {
-        const cell = row * columns + column;
-        cellItems[filled[cell]] = element;
-        filled[cell] += 1;
-      }
-    }
-  }
+  const grid = buildTriangleGrid(Float64Array.from(boxes), count);
+  if (!grid) return null;
   const magnitudes = Float64Array.from(bxValues, (bx, index) => Math.hypot(bx, byValues[index])).sort();
   return {
     xs,
@@ -180,13 +131,7 @@ export function buildFieldArrowMesh(
     corners: Int32Array.from(corners),
     bx: Float64Array.from(bxValues),
     by: Float64Array.from(byValues),
-    minX,
-    minY,
-    cellSize,
-    columns,
-    rows,
-    cellStart,
-    cellItems,
+    grid,
     maxRadius,
     referenceT: magnitudes[Math.floor(FIELD_ARROW_REFERENCE_PERCENTILE * (count - 1))],
   };
@@ -194,14 +139,11 @@ export function buildFieldArrowMesh(
 
 /** The usable element under a point, or -1 outside the mesh. */
 export function locateFieldArrowElement(mesh: FieldArrowMesh, x: number, y: number): number {
-  const column = Math.floor((x - mesh.minX) / mesh.cellSize);
-  const row = Math.floor((y - mesh.minY) / mesh.cellSize);
-  // The bounding box's far edges fall in the last cell.
-  if (!(column >= 0 && row >= 0 && column <= mesh.columns && row <= mesh.rows)) return -1;
-  const cell = Math.min(mesh.rows - 1, row) * mesh.columns + Math.min(mesh.columns - 1, column);
-  const { xs, ys, corners } = mesh;
-  for (let item = mesh.cellStart[cell]; item < mesh.cellStart[cell + 1]; item += 1) {
-    const element = mesh.cellItems[item];
+  const { grid, xs, ys, corners } = mesh;
+  const cell = triangleGridCell(grid, x, y);
+  if (cell < 0) return -1;
+  for (let item = grid.cellStart[cell]; item < grid.cellStart[cell + 1]; item += 1) {
+    const element = grid.cellItems[item];
     const a = corners[element * 3];
     const b = corners[element * 3 + 1];
     const c = corners[element * 3 + 2];
@@ -372,7 +314,7 @@ export function offsetFieldArrowOutline(outline: ReadonlyArray<readonly [number,
 
 type ArrowContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-/** The model-space rectangle a context's canvas shows through its current transform. */
+/** The model-space rectangle a context's canvas shows through its current transform (y up). */
 export function visibleFieldArrowRect(context: ArrowContext): FieldArrowRect | null {
   const transform = context.getTransform();
   if (!transform.is2D || Math.abs(transform.a * transform.d - transform.b * transform.c) < 1e-18) return null;
