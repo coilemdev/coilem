@@ -2,11 +2,13 @@
 
 import hashlib
 import json
+import math
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
 
-from tools.femm_reference.rotor_airgap import BOUNDARY, band_radii, mesh_signature
+from tools.femm_reference.rotor_airgap import BOUNDARY, band_radii, inner_air_label_points, mesh_signature
 from tools.rotor_closure_report import POSES, analyse_closure, closure_metrics
 from tools.rotor_loss_pilot_report import analyse
 
@@ -125,6 +127,23 @@ def test_band_cannot_intersect_solid_geometry(radii):
 def test_band_is_inside_the_free_airgap():
     inner, outer = band_radii(29.5, 30)
     assert 29.5 < inner < outer < 30
+
+
+def test_flat_ipm_air_label_moves_out_of_unmeshed_band_into_inner_air():
+    geom = SimpleNamespace(stator_ID_r=48, rotor_OD_r=43,
+        magnets=[SimpleNamespace(center_angle_rad=a) for a in (0, math.pi/4)])
+    inner, outer = band_radii(43,48)
+    old, new = inner_air_label_points(geom,43,inner,outer)
+    assert inner < math.hypot(*old) < outer
+    assert 43 < math.hypot(*new) < inner
+    assert math.atan2(new[1],new[0]) == pytest.approx(math.pi/8)
+
+
+def test_completed_spm_pilot_keeps_its_original_inter_magnet_air_label():
+    geom = SimpleNamespace(stator_ID_r=30,rotor_OD_r=27,
+        magnets=[SimpleNamespace(center_angle_rad=a) for a in (0, math.pi/4)])
+    inner,outer = band_radii(29.5,30)
+    assert inner_air_label_points(geom,29.5,inner,outer) is None
 
 
 def test_closure_uses_both_maximum_and_rms_limits():

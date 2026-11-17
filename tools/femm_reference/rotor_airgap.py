@@ -25,13 +25,34 @@ def band_radii(rotor_surface_mm, stator_bore_mm):
     return rotor_surface_mm + gap/3, rotor_surface_mm + 2*gap/3
 
 
+def inner_air_label_points(geom, rotor_surface_mm, inner, outer):
+    """Relocate the legacy air label if the new unmeshed band contains it.
+
+    The legacy drawer places Air halfway from the bare rotor OD to the bore.
+    For the SPM pilot this is in the inter-magnet air region. For buried
+    magnets it is inside the new unmeshed band, leaving the inner air strip
+    without a material. Move only that label, preserving all solid geometry.
+    """
+    old_radius = (geom.stator_ID_r + geom.rotor_OD_r)/2
+    if old_radius < inner:
+        return None
+    if old_radius >= outer:
+        raise ValueError("Legacy air label is outside the expected moving-band region")
+    angle = ((geom.magnets[0].center_angle_rad + geom.magnets[1].center_angle_rad)/2
+             if len(geom.magnets) >= 2 else math.radians(7))
+    new_radius = (rotor_surface_mm + inner)/2
+    return ((old_radius*math.cos(angle), old_radius*math.sin(angle)),
+            (new_radius*math.cos(angle), new_radius*math.sin(angle)))
+
+
 def add_periodic_airgap(femm, solver, config, geom, *, arc_step_deg=0.25):
     """Insert an unmeshed circular band wholly inside this full-machine air gap."""
     if not math.isfinite(arc_step_deg) or not 0 < arc_step_deg <= 180:
         raise ValueError("air-gap arc step must be finite and in (0, 180] degrees")
     from backend.femm_geometry import _femm_airgap_inner_radius_mm
 
-    inner, outer = band_radii(_femm_airgap_inner_radius_mm(geom), geom.stator_ID_r)
+    rotor_surface = _femm_airgap_inner_radius_mm(geom)
+    inner, outer = band_radii(rotor_surface, geom.stator_ID_r)
     femm.mi_addboundprop(BOUNDARY, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0)
     for radius in (inner, outer):
         solver._draw_circle(femm, radius)
@@ -40,7 +61,17 @@ def add_periodic_airgap(femm, solver, config, geom, *, arc_step_deg=0.25):
             femm.mi_selectarcsegment(radius*math.cos(angle), radius*math.sin(angle))
         femm.mi_setarcsegmentprop(arc_step_deg, BOUNDARY, 0, 0)
         femm.mi_clearselected()
-    # The original inter-magnet air label remains on the rotor side.
+    relocation = inner_air_label_points(geom, rotor_surface, inner, outer)
+    if relocation is not None:
+        old, new = relocation
+        femm.mi_clearselected()
+        femm.mi_selectlabel(*old)
+        femm.mi_deleteselectedlabels()
+        femm.mi_addblocklabel(*new)
+        femm.mi_selectlabel(*new)
+        solver._set_femm_blockprop(femm, "Air", config, geom, "airgap")
+        femm.mi_clearselected()
+    # The existing Air label now covers the complete rotor-side air region.
     for radius, material in (((inner+outer)/2, "<No Mesh>"), ((outer+geom.stator_ID_r)/2, "Air")):
         femm.mi_addblocklabel(radius, 0)
         femm.mi_selectlabel(radius, 0)

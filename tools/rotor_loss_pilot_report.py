@@ -44,10 +44,10 @@ def history_coordinate_frame(protocol):
 def analyse(directory, *, sample_stride=1, evaluation_speed_rpm=None, fixture_root=None):
     directory = Path(directory)
     protocol = json.loads((directory / "protocol.json").read_text())
+    coordinate_frame = history_coordinate_frame(protocol)
     speed = protocol["speed_rpm"] if evaluation_speed_rpm is None else float(evaluation_speed_rpm)
     if not np.isfinite(speed) or speed <= 0:
         raise ValueError("Loss-evaluation speed must be finite and positive")
-    coordinate_frame = history_coordinate_frame(protocol)
     reference_points = np.loadtxt(directory / "reference-points.csv", delimiter=",", ndmin=2)
     registered_count = protocol["positions"]
     if sample_stride not in (1, 2, 4) or registered_count % sample_stride:
