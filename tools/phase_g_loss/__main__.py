@@ -14,7 +14,7 @@ from pathlib import Path
 from threading import Event
 
 from tools.benchmark_suite.external_contract import run_lock
-from tools.phase_g_loss.contract import ROOT, SUITE, read, sha, suite, write
+from tools.phase_g_loss.contract import ROOT, SUITE, checkpoint, read, sha, suite, write
 
 
 def live_femm_count():
@@ -71,6 +71,38 @@ def verify_native_snapshots(output):
                 raise ValueError("Measured native physics/collector source changed: " + name)
 
 
+def femm_worker_plan(args):
+    total, per_case = args.femm_workers, args.femm_workers_per_case
+    if not 1 <= total <= 4 or per_case not in (1, 2):
+        raise ValueError("FEMM supports one to four total workers and one or two per parallel case")
+    if args.parallel_femm_cases:
+        if total < per_case:
+            raise ValueError("FEMM workers per case exceed the global worker limit")
+        concurrent = total // per_case
+    else:
+        if per_case != 1:
+            raise ValueError("--femm-workers-per-case requires --parallel-femm-cases")
+        per_case, concurrent = total, 1
+    return {"femm_worker_limit": total, "femm_workers_per_case": per_case, "femm_case_concurrency": concurrent}
+
+
+def reference_prepared(directory):
+    """Only share a reference mesh after its zero-pose checkpoint is verified."""
+    directory = Path(directory)
+    names = ("protocol.json", "preparation.json", "material-geometry.npz")
+    if not all((directory / name).exists() for name in names):
+        return False
+    protocol = read(directory / "protocol.json")
+    if protocol.get("preparation_sha256") != sha(directory / "preparation.json"):
+        raise ValueError("FEMM preparation changed before sharding")
+    zero = checkpoint(directory, 0)
+    if zero is None:
+        return False
+    if zero["protocol_sha256"] != sha(directory / "protocol.json") or zero["geometry_sha256"] != sha(directory / "material-geometry.npz"):
+        raise ValueError("FEMM zero pose belongs to different inputs or integration geometry")
+    return True
+
+
 def run(args):
     output = args.out.resolve()
     if output.is_relative_to(ROOT):
@@ -80,6 +112,7 @@ def run(args):
     if subprocess.check_output(["git", "-C", str(ROOT), "status", "--porcelain"], text=True).strip():
         raise ValueError("Commit the benchmark sources before field collection")
     spec = suite()
+    worker_plan = femm_worker_plan(args)
     cases = [case for case in spec["cases"] if not args.case or case["id"] in args.case]
     if len(cases) != len(set(args.case or [c["id"] for c in cases])):
         raise ValueError("Unknown or duplicate Phase G case selection")
@@ -99,6 +132,9 @@ def run(args):
         # cannot change sources, suite, selection or the collected histories.
         if args.binary is None:
             registration["binary_sha256"] = old["binary_sha256"]
+        # Worker allocation is execution policy, not a magnetic input. Keep
+        # the original registration and record the actual plan separately.
+        registration["femm_workers"] = old["femm_workers"]
         if old["candidate"] != source:
             verify_native_snapshots(output)
             # Retain the actual field producer identity. Changes confined to
@@ -124,6 +160,7 @@ def run(args):
         "continue_independent_cases": args.continue_independent_cases,
         "parallel_femm_cases": args.parallel_femm_cases,
         "active_femm_cases": [],
+        **worker_plan,
         "allow_distributed_coarse_angular_failure": args.allow_angular_failure,
         "qualification_complete": False,
     }
@@ -173,15 +210,18 @@ def run(args):
         base = [str(args.femm_python), "-m", "tools.phase_g_loss.femm", "--case", case_id, "--native", str(native), "--out", str(directory)]
         if args.allow_angular_failure and case_id.startswith("distributed-spm-"):
             base.append("--allow-angular-failure")
-        if cancel is None:
-            commands([base + ["--limit", "1"]], [directory / "bootstrap.log"])
-            commands(
-                [base + ["--shard", f"{i}/{workers}"] for i in range(workers)],
-                [directory / f"worker-{i}.log" for i in range(workers)],
-            )
-        else:
-            commands([base + ["--limit", "1"]], [directory / "bootstrap.log"], cancel)
-            commands([base + ["--shard", "0/1"]], [directory / "case-worker.log"], cancel)
+        def execute(arguments, logs):
+            if cancel is None:
+                commands(arguments, logs)
+            else:
+                commands(arguments, logs, cancel)
+
+        if not reference_prepared(directory):
+            execute([base + ["--limit", "1"]], [directory / "bootstrap.log"])
+        execute(
+            [base + ["--shard", f"{i}/{workers}"] for i in range(workers)],
+            [directory / f"worker-{i}.log" for i in range(workers)],
+        )
         return analyse_case(directory, reference=True, cancel=cancel)
 
     def finish_reference(case, result):
@@ -201,6 +241,14 @@ def run(args):
         save("COLLECTING_FEMM_PARALLEL_CASES" if state["active_femm_cases"] else "FEMM_CASE_COMPLETE", case_id)
 
     with run_lock(output):
+        plan_path = output / "worker-plans" / (str(time.time_ns()) + ".json")
+        write(plan_path, {
+            "schema": "coilem.phase_g_worker_plan/v1", **worker_plan,
+            "parallel_femm_cases": args.parallel_femm_cases,
+            "registration_sha256": sha(registration_path), "initial_registered_femm_workers": registration["femm_workers"],
+            "tooling_commit": source, "recorded_utc": datetime.now(timezone.utc).isoformat(),
+        })
+        state["worker_plan_receipt"] = plan_path.relative_to(output).as_posix()
         try:
             if args.mode in ("native", "run"):
                 if args.binary is None:
@@ -270,18 +318,18 @@ def run(args):
                     pending = iter(eligible)
                     active = {}
                     cancel = Event()
-                    # Each task owns exactly one FEMM process, including its
-                    # bootstrap. No fixture has two writers or overlapping shards.
-                    with ThreadPoolExecutor(max_workers=args.femm_workers) as pool:
+                    # Each task bootstraps alone, then owns disjoint shards.
+                    # Case count times shards never exceeds the global budget.
+                    with ThreadPoolExecutor(max_workers=worker_plan["femm_case_concurrency"]) as pool:
                         try:
                             exhausted = False
                             while active or not exhausted:
-                                while not exhausted and len(active) < args.femm_workers:
+                                while not exhausted and len(active) < worker_plan["femm_case_concurrency"]:
                                     case = next(pending, None)
                                     if case is None:
                                         exhausted = True
                                         break
-                                    active[pool.submit(collect_reference, case, 1, cancel)] = case
+                                    active[pool.submit(collect_reference, case, worker_plan["femm_workers_per_case"], cancel)] = case
                                 state["active_femm_cases"] = [case["id"] for case in active.values()]
                                 save("COLLECTING_FEMM_PARALLEL_CASES")
                                 if not active:
@@ -318,11 +366,12 @@ def main():
     parser.add_argument("--binary", type=Path)
     parser.add_argument("--femm-python", type=Path)
     parser.add_argument("--native-workers", type=int, choices=range(1, 5), default=4)
-    parser.add_argument("--femm-workers", type=int, choices=(1, 2), default=2)
+    parser.add_argument("--femm-workers", type=int, choices=(1, 2, 3, 4), default=2, help="Global FEMM process limit")
+    parser.add_argument("--femm-workers-per-case", type=int, choices=(1, 2), default=1)
     parser.add_argument("--wait-for-femm", action="store_true")
     parser.add_argument(
         "--parallel-femm-cases", action="store_true",
-        help="Use one FEMM worker per independent fixture/load case, up to the global --femm-workers limit",
+        help="Collect independent fixture/load cases concurrently within the global --femm-workers limit",
     )
     parser.add_argument(
         "--continue-independent-cases",

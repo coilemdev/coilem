@@ -105,15 +105,20 @@ use fresh Windows FEMM solves as described above.
 Use a clean committed checkout, a source-matched Magneto2D binary and the pinned
 FEMM Python environment documented in `tools/femm_reference/README.md`.
 Output must be outside the checkout. The coordinator runs **all selected native
-conditions first**, then starts the slower FEMM work with at most two workers.
+conditions first**, then starts the slower FEMM work with two workers by default
+and at most four total when `--femm-workers 4` is selected.
 It waits for existing FEMM sessions rather than adding to an active campaign.
 
-`--parallel-femm-cases` assigns one worker to each independent fixture/load
-condition, up to the same global `--femm-workers` limit. For example, flat-IPM
-and distributed SPM can collect concurrently with two total FEMM instances.
-Each case bootstraps its own mesh, then one worker resumes all missing poses;
-previously completed even/odd shards are verified and retained. Scheduling
-changes do not change the registered magnetic inputs or source identities.
+`--parallel-femm-cases` collects independent fixture/load conditions within the
+global `--femm-workers` limit. Its default is one worker per case;
+`--femm-workers 4 --femm-workers-per-case 2 --parallel-femm-cases` runs two cases
+concurrently with two disjoint pose shards each. A case bootstraps its mesh with
+one process before its two workers start. A verified existing zero-pose
+checkpoint, preparation and integration geometry allow direct shard resumption;
+previously completed poses are verified and retained. Scheduling changes do
+not change the registered magnetic inputs or source identities. The original
+registration retains its initial worker count; `worker-plans/*.json` and run
+state record the actual resumed allocation and link the registration hash.
 An unexpected failure cancels the other owned worker. Numerical gates and the
 rules for withholding inadmissible native cases remain unchanged.
 
