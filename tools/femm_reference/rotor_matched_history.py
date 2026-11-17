@@ -177,7 +177,7 @@ def export_centroids(femm, directory, groups):
     return {int(g): [x, y] for g, x, y in np.loadtxt(output, delimiter=",", ndmin=2)}
 
 
-def main():
+def main(argv=None, *, native_provider=native_inputs, fixture=FIXTURE, matrix_case_id=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--native-history", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
@@ -188,22 +188,27 @@ def main():
     parser.add_argument("--shard", default="0/1")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--resume", action="store_true")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     controls = mesh_controls(args.mesh, args.airgap_target_mm, args.airgap_arc_step_deg)
     if args.limit is not None and args.limit < 1:
         parser.error("limit must be positive")
     shard, shards = map(int, args.shard.split("/"))
     indices = selected_indices(384, args.stride, shard, shards)
-    native = native_inputs(args.native_history.resolve())
+    native = native_provider(args.native_history.resolve())
+    fixture = Path(fixture)
     directory = args.out.resolve()
     directory.mkdir(parents=True, exist_ok=True)
     identity = runtime.identity("e")
+    if matrix_case_id is not None:
+        identity.update(native_results_read=True, native_fields_used_to_compute_reference=False)
     protocol = {"schema": "coilem.matched_rotor_reference/v1", "collection_kind": "full_turn_history",
                 "motion_model": "periodic-air-gap", "positions": 384,
                 "mechanical_angles_deg": native["protocol"]["mechanical_angles_deg"],
                 "raw_mesh_frame": "rotor_material", "raw_field_frame": "rotor_material", "independent_base_reload": True,
-                "fixture": FIXTURE.relative_to(ROOT).as_posix(), "fixture_sha256": sha(FIXTURE),
-                "speed_rpm": 3000, "current_peak_A": 20, "gamma_deg": 180, "requested_public_gamma_deg": 0,
+                "fixture": fixture.relative_to(ROOT).as_posix(), "fixture_sha256": sha(fixture),
+                "speed_rpm": native["protocol"]["speed_rpm"], "current_peak_A": native["protocol"]["current_peak_A"],
+                "gamma_deg": native["protocol"]["native_gamma_deg"],
+                "requested_public_gamma_deg": native["protocol"]["requested_gamma_deg"],
                 **controls, "mesh_control_contract": "explicit_preset_airgap/v1", "smoothing": "off",
                 "native_protocol_sha256": native["protocol_sha256"], "native_analysis_sha256": native["analysis_sha256"],
                 "native_config_sha256": native["config_sha256"],
@@ -214,6 +219,12 @@ def main():
                 "steel_bh_sha256": sha(ROOT / "materials/electrical-steel/M350-50A.csv"),
                 "closure_tolerances": {"max_component_T": 1e-6, "rms_component_T": 1e-7},
                 "cross_solver_tolerances": {"relative": 0.10, "absolute_W": 0.001}, "full_matrix_started": False}
+    if matrix_case_id is not None:
+        if native["protocol"]["matrix_case_id"] != matrix_case_id:
+            raise ValueError("Reference matrix case differs from its native source")
+        protocol.update(matrix_case_id=matrix_case_id, excitation_parameters=native["protocol"]["excitation_parameters"],
+            matrix_contract_sha256=sha(ROOT / "tools/rotor_matrix_contract.py"), full_matrix_started=True,
+            evaluation_speeds_rpm=[1500.0, 3000.0])
     protocol_path = directory / "protocol.json"
     if protocol_path.exists():
         if not args.resume or json.loads(protocol_path.read_text()) != protocol:
@@ -225,8 +236,10 @@ def main():
     os.environ["FEMM_AIRGAP_MESHSIZE_MM"] = str(args.airgap_target_mm)
     if curve("M350-50A").sha256 != sha(ROOT / "materials/electrical-steel/M350-50A.csv"):
         raise ValueError("native and FEMM steel B-H curves differ")
-    config = Model.model_validate(json.loads(FIXTURE.read_text()))
-    config.solve_params.current_angle_deg, config.solve_params.mesh_density = 180, args.mesh
+    config = Model.model_validate(json.loads(fixture.read_text()))
+    config.solve_params.current_angle_deg, config.solve_params.mesh_density = protocol["gamma_deg"], args.mesh
+    config.solve_params.current_amplitude_A = protocol["current_peak_A"]
+    config.solve_params.rated_speed_rpm = protocol["speed_rpm"]
     geom = geometry(config)
 
     class MatchedSolver(Solver):

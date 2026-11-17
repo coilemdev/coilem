@@ -75,7 +75,7 @@ def loss_rows(samples, positions, speed_rpm, stack_m):
     return rows, convergence
 
 
-def analyse(directory):
+def analyse(directory, *, source_root=None, evaluation_speed_rpm=None):
     directory = Path(directory)
     protocol = json.loads((directory / "protocol.json").read_text())
     if protocol["native_field_frame"] != "global" or protocol["export_frame"] != "rotor_material":
@@ -90,13 +90,25 @@ def analyse(directory):
         template = json.loads((directory / "material-template.json").read_text())
         expected_template_identity = hashlib.sha256(json.dumps(template, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     for name, digest in protocol["identity"]["source_sha256"].items():
-        path = Path(__file__).resolve().parents[1] / name
+        path = Path(source_root or Path(__file__).resolve().parents[1]) / name
         if sha(path) != digest:
             raise ValueError(f"native source identity changed: {name}")
     points = np.loadtxt(directory / "material-query-points.csv", delimiter=",", ndmin=2)
-    if not np.allclose(points, material_query_points(), rtol=0, atol=1e-12):
+    if protocol.get("schema") == "coilem.native_rotor_matrix/v1":
+        from tools.rotor_matrix_contract import material_query_points as matrix_query_points
+        expected_points = matrix_query_points(template)
+        if sha(directory / "material-query-points.csv") != protocol["material_query_points_sha256"]:
+            raise ValueError("Matrix query-grid hash changed")
+        if sha(directory / "native-config.json") != protocol["native_config_sha256"]:
+            raise ValueError("Matrix native configuration hash changed")
+    else:
+        expected_points = material_query_points()
+    if points.shape != expected_points.shape or not np.allclose(points, expected_points, rtol=0, atol=1e-12):
         raise ValueError("native material query grid changed")
     config = json.loads((directory / "native-config.json").read_text())
+    speed = protocol["speed_rpm"] if evaluation_speed_rpm is None else float(evaluation_speed_rpm)
+    if not np.isfinite(speed) or speed <= 0:
+        raise ValueError("Loss-evaluation speed must be finite and positive")
     if config["solve_params"]["current_angle_deg"] != protocol["native_gamma_deg"]:
         raise ValueError("native excitation config and declared gamma differ")
     samples, queries, timings, counts = [], [], [], []
@@ -122,6 +134,9 @@ def analyse(directory):
         excitation = json.loads((position / "excitation.json").read_text())
         if excitation["gate"] != "PASS" or excitation["native_rotor_mechanical_deg"] != angle:
             raise ValueError("native excitation audit failed")
+        if protocol.get("schema") == "coilem.native_rotor_matrix/v1":
+            from tools.rotor_matrix_contract import validate_excitation
+            validate_excitation(excitation, angle, protocol["excitation_parameters"])
         values = np.loadtxt(position / "rotor-material.csv", delimiter=",", ndmin=2)
         if values.shape != (record["rotor_elements"], 8) or not np.isfinite(values).all():
             raise ValueError("native rotor export malformed")
@@ -139,7 +154,7 @@ def analyse(directory):
               "scope": "one native SPM; legacy FEMM loss target has incompatible excitation and is excluded",
               "protocol_sha256": sha(directory / "protocol.json"), "kind": protocol["kind"],
               "requested_gamma_deg": protocol["requested_gamma_deg"], "native_gamma_deg": protocol["native_gamma_deg"],
-              "mesh": protocol["mesh"], "speed_rpm": protocol["speed_rpm"], "current_peak_A": protocol["current_peak_A"],
+              "mesh": protocol["mesh"], "speed_rpm": speed, "current_peak_A": protocol["current_peak_A"],
               "motion_model": protocol.get("motion_model", "remesh"),
               "closure": closure, "reference_loss_agreement_gate": "NOT_RUN_INVALID_LEGACY_EXCITATION",
               "loss_material": {"steel_id": "M350-50A", "coefficients": asdict(M350_50A_LOSS), "stacking_factor": 1.0,
@@ -156,7 +171,7 @@ def analyse(directory):
         n = protocol["positions"]
         if protocol["mechanical_angles_deg"] != [-360*k/n for k in range(n+1)]:
             raise ValueError("native history is not the registered full-turn grid")
-        rows, convergence = loss_rows(samples, n, protocol["speed_rpm"], config["stator"]["stack_length_mm"]*1e-3)
+        rows, convergence = loss_rows(samples, n, speed, config["stator"]["stack_length_mm"]*1e-3)
         result.update(results=rows, angular_convergence=convergence, angular_gate_pass=all(s["pass"] for s in convergence),
                       sampling_gate_pass=all(row["sampling_gate"] == "PASS" for row in rows),
                       loss_math_self_consistency_pass=all(row["self_consistency_pass"] for row in rows))
@@ -167,8 +182,15 @@ def analyse(directory):
         amplitude = 2*np.fft.rfft(np.asarray(queries[:n]), axis=0)/n
         power = np.mean(np.sum(abs(amplitude)**2, axis=-1), axis=-1)
         orders = sorted(range(1, n//2), key=lambda k: power[k], reverse=True)[:12]
-        result["material_query_spectrum"] = [{"mechanical_order": k, "frequency_Hz": k*protocol["speed_rpm"]/60,
+        result["material_query_spectrum"] = [{"mechanical_order": k, "frequency_Hz": k*speed/60,
                                               "mean_squared_vector_amplitude_T2": float(power[k])} for k in orders]
+    if evaluation_speed_rpm is not None:
+        result["field_history_speed_rpm"] = protocol["speed_rpm"]
+        result["evaluation_speed_rpm"] = speed
+    if "matrix_case_id" in protocol:
+        result["matrix_case_id"] = protocol["matrix_case_id"]
+        result["scope"] = "Registered reduced full-motor rotor-loss matrix; native history only"
+        result["full_matrix_started"] = True
     result["analysis_source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     result["analysis_sources_sha256"] = {name: sha(Path(__file__).parent / name) for name in
                                          ("rotor_native_report.py", "rotor_loss_reference.py", "rotor_closure_report.py")}

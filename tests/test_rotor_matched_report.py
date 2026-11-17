@@ -106,3 +106,23 @@ def test_declared_absolute_tolerance_handles_zero_reference_without_division():
     report = compare_results(ref, protocol, native)
     assert report["relative_difference_of_femm"]["hysteresis_W"] is None
     assert report["component_gates"]["hysteresis_W"]
+
+
+def test_second_speed_preserves_original_field_history_provenance():
+    ref, protocol, native = comparison()
+    ref.update(evaluation_speed_rpm=1500, field_history_speed_rpm=3000)
+    native.update(speed_rpm=1500, field_history_speed_rpm=3000)
+    assert compare_results(ref, protocol, native)["cross_solver_loss_gate"] == "PASS"
+    protocol["speed_rpm"] = 1500
+    with pytest.raises(ValueError, match="operating points"):
+        compare_results(ref, protocol, native)
+
+
+@pytest.mark.parametrize("wrong_field", ["evaluation_speed_rpm", "field_history_speed_rpm"])
+def test_speed_reuse_rejects_mismatched_evaluation_or_collection_speed(wrong_field):
+    ref, protocol, native = comparison()
+    ref.update(evaluation_speed_rpm=1500, field_history_speed_rpm=3000)
+    native.update(speed_rpm=1500, field_history_speed_rpm=3000)
+    ref[wrong_field] = 2000
+    with pytest.raises(ValueError, match="speeds differ|history speed changed"):
+        compare_results(ref, protocol, native)

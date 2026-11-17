@@ -41,9 +41,12 @@ def history_coordinate_frame(protocol):
     return "global"
 
 
-def analyse(directory, *, sample_stride=1):
+def analyse(directory, *, sample_stride=1, evaluation_speed_rpm=None, fixture_root=None):
     directory = Path(directory)
     protocol = json.loads((directory / "protocol.json").read_text())
+    speed = protocol["speed_rpm"] if evaluation_speed_rpm is None else float(evaluation_speed_rpm)
+    if not np.isfinite(speed) or speed <= 0:
+        raise ValueError("Loss-evaluation speed must be finite and positive")
     coordinate_frame = history_coordinate_frame(protocol)
     reference_points = np.loadtxt(directory / "reference-points.csv", delimiter=",", ndmin=2)
     registered_count = protocol["positions"]
@@ -103,7 +106,7 @@ def analyse(directory, *, sample_stride=1):
     u, v = reference_corners[:, 1]-reference_corners[:, 0], reference_corners[:, 2]-reference_corners[:, 0]
     areas = 0.5e-6*np.abs(u[:, 0]*v[:, 1]-u[:, 1]*v[:, 0])
     material = RotorLossMaterial("M350-50A", "EN 10106 grade limits + cited classical lamination eddy term", M350_50A_LOSS)
-    fixture_path = Path(__file__).resolve().parents[1] / protocol["fixture"]
+    fixture_path = Path(fixture_root or Path(__file__).resolve().parents[1]) / protocol["fixture"]
     if hashlib.sha256(fixture_path.read_bytes()).hexdigest() != protocol["fixture_sha256"]:
         raise ValueError("reference fixture changed")
     fixture = json.loads(fixture_path.read_text())
@@ -112,7 +115,7 @@ def analyse(directory, *, sample_stride=1):
     results = []
     for stride in (4, 2, 1):
         indices = list(range(0, count, stride))
-        plan = RotorSamplingPlan(protocol["speed_rpm"], len(indices))
+        plan = RotorSamplingPlan(speed, len(indices))
         selected = [samples[k] for k in indices]
         reference_start = time.perf_counter()
         reference = reference_loss(fields[indices], plan.mechanical_angles_deg, areas,
@@ -160,7 +163,8 @@ def analyse(directory, *, sample_stride=1):
             for path in ("backend/iron_loss.py", "backend/rotor_iron_loss.py", "tools/rotor_loss_reference.py", "tools/rotor_loss_pilot_report.py",
                          "tools/rotor_closure_report.py", "tools/femm_reference/rotor_airgap.py")
         },
-        "sampling_plan": RotorSamplingPlan(protocol["speed_rpm"], count).metadata(),
+        "sampling_plan": RotorSamplingPlan(speed, count).metadata(),
+        "field_history_speed_rpm": protocol["speed_rpm"], "evaluation_speed_rpm": speed,
         "registered_positions": registered_count, "sample_stride": sample_stride,
         "operating_point": {k: protocol.get(k) for k in ("fixture", "fixture_sha256", "current_peak_A", "gamma_deg", "mesh", "smoothing")},
         "material": asdict(material), "stack_m": stack, "results": results,

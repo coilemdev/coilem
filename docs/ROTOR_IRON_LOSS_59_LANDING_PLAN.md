@@ -3,8 +3,9 @@
 **2026-11-16 implementation checkpoint:** the opt-in public stage now
 reproduces the internal one-motor native pilot exactly; saved replay, maps,
 accounting and exports are integrated. Both solvers' 96/192/384 angular
-checks and native spatial refinement pass. Matched FEMM spatial histories
-remain in progress, followed by review before the full matrix. See the
+checks and independent native/FEMM spatial refinement pass. The loaded-SPM
+pilot is complete: default-native total 64.563 mW versus finest-FEMM 64.317 mW,
+a 0.384% difference. The owner approved the reduced matrix below. See the
 [public-path rehearsal](benchmarks/rotor-public-integration-306-20261116.md).
 The original readiness notes below describe the earlier checkpoint; they do
 not override these newer results or mark the PR ready for release.
@@ -17,9 +18,39 @@ support is deferred to [#319](https://github.com/coilemdev/coilem/issues/319)
 for a later release. The limited sector functionality already merged by #242
 remains in 0.5.9. Full-versus-sector rotor-loss parity is not a 0.5.9 gate.
 
-The sampling/loss foundation, analytical tests and bounded full-circle SPM
-pilot are implemented. Full-motor reference/spatial qualification and public
-integration remain incomplete, so #318 stays draft and #306 remains open.
+The sampling/loss foundation, analytical tests, public integration and bounded
+full-circle SPM pilot are implemented. Remaining fixture and platform
+qualification keeps #318 draft and #306 open.
+
+## Approved reduced qualification matrix (2026-11-16)
+
+Evaluate SPM 8p/12s concentrated at 0/20 A peak and flat-IPM 8p/12s FSAE at 0/50 A
+peak, each at 1500/3000 rpm, public gamma 0, full motor, sinusoidal excitation,
+matched M350-50A/N42 and fixed temperature assumptions. Preserve the completed
+loaded-SPM pilot and reprocess its immutable fields at both speeds. The
+magnetostatic model permits speed reuse at fixed geometry/materials/current;
+record collection speed and loss-evaluation speed separately and check H∝rpm,
+classical lamination E∝rpm² independently.
+
+Four new field histories per solver: SPM no-load on the established pilot
+mesh; flat-IPM loaded on working/finer meshes; flat-IPM no-load on its working
+mesh. The flat-IPM loaded pair receives one independent spatial check in each
+solver, max(5% of finer, 0.001 W) for hysteresis/lamination eddy/total. The
+completed SPM three-mesh study is retained. This explicitly narrows the
+original requirement for two successive mesh refinements at every condition;
+no independent spatial-convergence claim is made for each no-load point.
+Failed checks require investigation/refinement before acceptance.
+
+Retain 96→192→384 angular subset checks at both speeds for every history, with
+two successive component-wise max(5%, 0.001 W) steps. Collect 384 half-open poses
+plus a fresh endpoint on one fixed material mesh; closure maximum ≤1e-6 T and
+RMS ≤1e-7 T. Native/FEMM comparison remains max(10% FEMM, 0.001 W) per component.
+Reference fields use a separate direct-DFT calculation and physical integration
+weights, without mass normalization. Execute with at most two FEMM workers.
+
+The external campaign registration and resumable supervisor retain exact mesh
+controls, source snapshots, raw model/field hashes and each stage's verdict.
+The existing A-F torque/back-EMF qualification does not qualify rotor loss.
 
 ## Release boundary and the deferred sector note
 
@@ -32,9 +63,9 @@ The owner subsequently chose full-motor loss first for 0.5.9; the rotor-side
 sector work below belongs to #319 rather than blocking #306.
 
 Full-motor means a complete physical domain, not automatic support for every
-rotor topology or material. The current pilot supports inner SPM only; the
-issue's full-motor flat-IPM coverage and all unsupported-status rules remain
-required. Existing sector stator/copper estimates retain their documented
+rotor topology or material. The completed numerical pilot covers inner SPM;
+the public stage also accepts supported flat-IPM, whose qualification and
+unsupported-status rules remain required. Existing sector stator/copper estimates retain their documented
 scope. New sector rotor-loss results must be explicitly unavailable, never
 silently zero or presented as a complete full-motor loss calculation.
 
@@ -158,11 +189,10 @@ work, but magnet/component eddy-current physics remains #307, outside #306.
 
 ## Full-motor 0.5.9 acceptance gates
 
-- **Corrected FEMM reference:** finish the same registered history's 192/384
-  insertions, then spatial refinement. Both successive angular and mesh steps
-  must meet max(5% of finer loss, 0.001 W) separately for all three components.
-  Native spatial refinement remains open too. The 96-sample comparison is
-  preliminary, even though all component differences are below 0.063%.
+- **Corrected FEMM reference:** the loaded-SPM384 pilot, both angular steps,
+  and two independent native/FEMM spatial refinements have passed. Remaining
+  conditions follow the approved reduced mesh plan above, retaining angular,
+  source/excitation/closure and separate component-agreement gates.
 - **Supported fixtures:** satisfy #306's SPM and flat-IPM, no-load/loaded,
   two-speed matrix on full-motor solves. Sector rotor-loss parity is deferred. Do not
   infer subharmonics from a single electrical period; the current rotor

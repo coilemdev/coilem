@@ -36,6 +36,12 @@ def reference_source_audit(protocol, source_root=None):
 
 def audit_sources(directory, protocol, stride, *, source_root=None):
     source_audit = reference_source_audit(protocol, source_root)
+    if "matrix_case_id" in protocol:
+        root = Path(source_root or Path(__file__).resolve().parents[1])
+        if sha(root / "tools/rotor_matrix_contract.py") != protocol["matrix_contract_sha256"]:
+            raise ValueError("Reference matrix input contract changed")
+        if sha(Path(__file__).parent / "rotor_matrix_contract.py") != protocol["matrix_contract_sha256"]:
+            raise ValueError("Matrix audit uses a different excitation contract")
     preparation = json.loads((directory / "preparation.json").read_text())
     for name, digest in preparation["sha256"].items():
         if Path(name).name != name or sha(directory / name) != digest:
@@ -54,8 +60,13 @@ def audit_sources(directory, protocol, stride, *, source_root=None):
                 raise ValueError("reference phase ampere-turns differ among coil sides")
             phases[entry["phase"]] = ni
         angle = protocol["mechanical_angles_deg"][index]
-        validate_excitation({"gate": "PASS", "native_rotor_mechanical_deg": angle, "native_gamma_deg": protocol["gamma_deg"],
-                             "phase_ampere_turns": phases}, angle)
+        excitation = {"gate": "PASS", "native_rotor_mechanical_deg": angle, "native_gamma_deg": protocol["gamma_deg"],
+                      "phase_ampere_turns": phases}
+        if "matrix_case_id" in protocol:
+            from tools.rotor_matrix_contract import validate_excitation as validate_matrix_excitation
+            validate_matrix_excitation(excitation, angle, protocol["excitation_parameters"])
+        else:
+            validate_excitation(excitation, angle)
         saved = model_audit((position / "model.fem").read_text(encoding="latin-1"), angle, applied, protocol["matched_magnet"])
         if record["solution_current_error_At"] > 1e-8 or record["mesh_geometry_sha256"] != preparation["mesh_geometry_sha256"]:
             raise ValueError("reference solution excitation or mesh audit failed")
@@ -71,8 +82,13 @@ def compare_results(reference, protocol, native):
     if (protocol.get("schema") != "coilem.matched_rotor_reference/v1"
             or native["protocol_sha256"] != protocol["native_protocol_sha256"]
             or protocol["gamma_deg"] != native["native_gamma_deg"]
-            or protocol["speed_rpm"] != native["speed_rpm"] or protocol["current_peak_A"] != native["current_peak_A"]):
+            or protocol["speed_rpm"] != native.get("field_history_speed_rpm", native["speed_rpm"])
+            or protocol["current_peak_A"] != native["current_peak_A"]):
         raise ValueError("cross-solver operating points or source identity differ")
+    if reference.get("evaluation_speed_rpm", protocol["speed_rpm"]) != native["speed_rpm"]:
+        raise ValueError("Cross-solver loss-evaluation speeds differ")
+    if reference.get("field_history_speed_rpm", protocol["speed_rpm"]) != protocol["speed_rpm"]:
+        raise ValueError("Reference field-history speed changed")
     if (reference["material"]["coefficients"] != native["loss_material"]["coefficients"]
             or reference["material"]["stacking_factor"] != native["loss_material"]["stacking_factor"]):
         raise ValueError("cross-solver loss material assumptions differ")
