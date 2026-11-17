@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
+import json
 import math
 import re
 import shutil
@@ -16,6 +18,7 @@ from backend.benchmark_suite.contract import canonical, checked_path, read, sha,
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import TOLERANCES, build_record, gate_statuses, gated_values
 from backend.benchmark_suite.references import load_bundle, load_suite, require_reviewed_bundle
+from backend.local_paths import contains_local_path, redact_local_paths
 from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SUITE_FILE
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -224,6 +227,7 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
     if status != 'READY':
         return decision
     publication = output / 'publication'
+    projected = {}
     for platform, (folder, summary, receipt) in staged.items():
         base = f'benchmarks/qualification-{candidate[:12]}/{platform}'
         report_source = base + '/report'
@@ -237,7 +241,65 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
                       carry_receipt=base + '/carry-receipt.json', reference_reuse=base + '/reference-reuse.json')
         write(publication / base / 'carry-receipt.json', decision)
         write(publication / f'benchmarks/records/{platform}.json', record)
+        entry = {'files': redact_publication(publication / base)}
+        if (folder / 'local-collection.json').is_file():
+            # A collection made off the hosted runners says so in the published evidence.
+            entry['collection'] = read(folder / 'local-collection.json')
+        if entry['files'] or 'collection' in entry:
+            projected[platform] = entry
+    if projected:
+        write(publication / f'benchmarks/qualification-{candidate[:12]}/publication-projection.json', {
+            'schema': 'coilem.qualification_publication_projection/v2', 'measured_commit': candidate,
+            'note': 'Only machine-local diagnostic paths are redacted for publication. The joined collections '
+                    'retain their bytes. Numerical values, gate verdicts, requests and measured identities are unchanged.',
+            'platforms': projected})
     return decision
+
+
+def _only_paths_differ(original, published):
+    """True when two parsed JSON values differ only in strings that held a local path."""
+    if isinstance(original, dict) and isinstance(published, dict):
+        return original.keys() == published.keys() and all(_only_paths_differ(original[k], published[k]) for k in original)
+    if isinstance(original, list) and isinstance(published, list):
+        return len(original) == len(published) and all(map(_only_paths_differ, original, published))
+    if isinstance(original, str) and isinstance(published, str) and original != published:
+        return contains_local_path(original) and published == redact_local_paths(original)
+    return type(original) is type(published) and original == published
+
+
+def redact_publication(folder):
+    """Replace machine-local paths in one platform's copied reports; the inputs are never touched.
+
+    A report records where its solver cache was. On a runner under a home
+    directory that names the machine's user, which the publication gate
+    rejects. Returns one receipt entry per changed file.
+    """
+    changed = []
+    for path in sorted(p for p in folder.rglob('*') if p.is_file() and p.suffix in {'.json', '.html', '.md', '.csv'}):
+        original = path.read_bytes()
+        text = original.decode('utf-8')
+        if not contains_local_path(text):
+            continue
+        published = redact_local_paths(text)
+        if path.suffix == '.json' and not _only_paths_differ(json.loads(text), json.loads(published)):
+            raise ValueError(f'Path redaction would change more than local paths: {path.name}')
+        path.write_bytes(published.encode('utf-8'))
+        changed.append({'file': path.relative_to(folder).as_posix(), 'original_sha256': hashlib.sha256(original).hexdigest(),
+                        'published_sha256': sha(path), 'only_local_paths_changed': True})
+    # Each report folder indexes its own files; keep the index true for the published bytes.
+    for index in sorted({(folder / entry['file']).parent / 'artifact_manifest.json' for entry in changed}):
+        if not index.is_file():
+            continue
+        original = index.read_bytes()
+        listed = json.loads(original)
+        for name in listed:
+            if (index.parent / name).is_file():
+                listed[name] = sha(index.parent / name)
+        index.write_text(json.dumps(listed, indent=2) + '\n', encoding='utf-8', newline='\n')
+        if sha(index) != hashlib.sha256(original).hexdigest():
+            changed.append({'file': index.relative_to(folder).as_posix(), 'original_sha256': hashlib.sha256(original).hexdigest(),
+                            'published_sha256': sha(index), 'purpose': 'Index the published bytes.'})
+    return changed
 
 
 def main():

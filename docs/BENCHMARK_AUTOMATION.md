@@ -64,6 +64,64 @@ Phase E remains a separately registered analysis. Refreshing A–D or the Prius
 software reference does not qualify cogging, torque–speed maps or other
 unmeasured outputs. No source guard, numerical gate or tolerance is removed.
 
+## Collecting a platform locally
+
+Hosted macOS runners are sometimes not assigned to a job. When that blocks a
+collection, measure that platform on a local machine of the same kind. The
+evidence gate checks source hashes, the measured commit, coverage and verdicts;
+it does not need a workflow run or a particular OS version.
+
+From a clean checkout at the candidate, with the locked environment installed
+(`pip install -r requirements.lock`, then `pip install -e ".[dev]"`):
+
+```bash
+python -m tools.qualify_local --candidate <full SHA> --directory ~/coilem-qualification
+```
+
+This builds Magneto2D with the workflow's pinned toolchain, measures the twelve
+shards in series, keeps the compact part of each and joins them. On an Apple
+silicon laptop the collection takes about an hour and needs about 6 GB free at
+its peak. It stops before a shard when less than 5 GB is free; rerun the same
+command to continue from the first unfinished shard. Keep the machine on mains
+power and awake.
+
+All twelve shards of a platform must come from one machine. The join rejects a
+mixed identity, so a local machine cannot fill in single shards beside hosted
+ones. `retry_shards` also cannot repair a shard that never started, because it
+has no earlier artifact to resume from.
+
+The other platform still comes from the workflow. If its shards finished but
+the join was skipped, rejoin it alone, then download the result:
+
+```bash
+gh workflow run release-benchmarks.yml --ref <branch> -f runner=windows-2022 -f candidate=<full SHA> -f reuse_run=<collection run ID>
+gh run download <join run ID> --name benchmark-joined-windows-2022 --dir ~/coilem-qualification/windows
+```
+
+Then compare and publish with tooling from the PR base, as the publication job
+does. `<base>` is a checkout of the PR base and `<head>` a checkout of the PR
+branch, which may be ahead of the candidate by non-physics commits:
+
+```bash
+cd <base>
+python -m tools.qualification_carry --root <head> --baseline . --windows ~/coilem-qualification/windows --macos ~/coilem-qualification/qualification --out ~/coilem-qualification/prepared
+python -m tools.qualification_publish --root <head> --publication ~/coilem-qualification/prepared/publication --candidate <full SHA>
+python <head>/tools/verify_snapshot.py --publication
+git -C <head> add benchmarks snapshot-manifest.json
+git -C <head> commit -m 'Publish measured qualification evidence'
+git -C <head> push origin HEAD:<branch>
+```
+
+Moved values stop at `OWNER_REVIEW_REQUIRED` exactly as in the workflow.
+
+The published reports name no local path. Reports record where the solver
+cache was; under a home directory that names the machine's user, so the
+comparison step replaces such paths with `<local path>` in the copies it
+prepares and writes `publication-projection.json` with the original and
+published hashes. That receipt also carries `local-collection.json`, which
+states that the platform was collected locally. The raw fields of a local
+collection are not retained.
+
 ## PR evidence gate
 
 `python -m tools.physics_impact --base <base-sha>` compares the union of the old
