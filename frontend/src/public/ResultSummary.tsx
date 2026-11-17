@@ -225,6 +225,7 @@ export function ResultSummary({
         <LossesCard
           loss={summary.loss_breakdown}
           iron={summary.iron_loss}
+          rotor={summary.rotor_iron_loss}
           density={result.iron_loss_density}
           plot={result.field_line_plot}
           winding={summary.winding_resistance}

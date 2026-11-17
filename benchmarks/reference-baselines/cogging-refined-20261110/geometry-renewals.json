@@ -43,6 +43,53 @@
           "old_graph_projection_differences": 0
         }
       }
+    },
+    {
+      "source": "backend/models/config.py",
+      "reviewed_sha256": "a2c26f125bf821e2704f21bbfafcc3d8101f540971f69fc21b5dbac82fc461e8",
+      "renewed_sha256": "a701bd00888fdb727a083ac0e3220ccd5167011d43ed73b078f379137d6b3dd2",
+      "decision": "GEOMETRY_UNCHANGED",
+      "date": "2026-11-16",
+      "change": "#306 adds an opt-in rotor-loss analysis flag, its dependency check and omission of the disabled flag from serialization. Geometry sources and existing default options are unchanged.",
+      "method": "Fresh comparison of all three reviewed fixtures against the accepted release-based config source, using the same Python/Gmsh environment: default config dump, full-motor geometry IR and complete zero-pose solve-mesh artifact hashes are identical before and after. No measured loss or qualification verdict is carried forward by this renewal.",
+      "reviewer": {
+        "name": "Codex",
+        "owner_authorization": "User requested and approved the full-motor rotor-loss implementation for 0.5.9 in this chat."
+      },
+      "evidence_sha256": {
+        "tools/rotor_default_geometry_proof.py": "8bf4df3435fe677512906003eb6d1ff5e4a0fbd51a6333596054d7488a54b553",
+        "rotor-default-geometry-before.json": "c1790c919a6d149757c7caa73287c06f6bda3a26e9b8ae5295103b7fc6d39508",
+        "rotor-default-geometry-after.json": "41fbc0f0f2aa2bd1f04dc86115f02007d94ff989522920421e13258260731eb1"
+      },
+      "cases": {
+        "spm_8p24s_distributed_femm_validation__cogging": {
+          "fixture": "benchmarks/abcd-v1.7/fixtures/spm_8p24s_distributed_femm_validation__cogging.json",
+          "fixture_sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
+          "config_dump_sha256": "753429bdfdf8229ab7ea262450e26ef4e3299f6b321d44ffc74b5a656ec3fdbe",
+          "geometry_ir_sha256": "671544c4a4572d4d2dc5ad9eff6accb6bc1ae6f443d829268ab8606153c99c5d",
+          "full_motor_mesh_sha256": "4cdaec70535a78f3d60a6627b2fe9080b3cfbd773e88200934676e3d5b5b85e8",
+          "full_motor_mesh_triangles": 32962,
+          "old_graph_projection_differences": 0
+        },
+        "spm_8p48s_distributed_femm_validation__cogging": {
+          "fixture": "benchmarks/abcd-v1.7/fixtures/spm_8p48s_distributed_femm_validation__cogging.json",
+          "fixture_sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
+          "config_dump_sha256": "86661c5fcb58edccc1abc21ae61880b0bd4ce1f4288d9a6248d69ad6bb0b613c",
+          "geometry_ir_sha256": "ebced76920fa1652634b210ed67428cd30cd618e162c7b22124d8b55fef4033c",
+          "full_motor_mesh_sha256": "c58afcd186aee585253769ea4797830f2784a82dd2f5f5d0b419e2a0edcffb17",
+          "full_motor_mesh_triangles": 45300,
+          "old_graph_projection_differences": 0
+        },
+        "spm_12p36s_distributed_femm_validation__cogging": {
+          "fixture": "benchmarks/abcd-v1.7/fixtures/spm_12p36s_distributed_femm_validation__cogging.json",
+          "fixture_sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
+          "config_dump_sha256": "fe44e4fbf009e86402cbc33ce373a8146c99ffa889acddbbc5ffa15da819d9c6",
+          "geometry_ir_sha256": "b5662076110ff2eef80b52b950deedcc7451576bc3437fe7e2cbb50fcc91d7c0",
+          "full_motor_mesh_sha256": "f71d6d5c1c9d3eaa801c44604814edb400eeed5e9bef6152871c841cad0d8b53",
+          "full_motor_mesh_triangles": 39184,
+          "old_graph_projection_differences": 0
+        }
+      }
     }
   ]
 }

@@ -443,6 +443,8 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
             row("efficiency_map", "efficiency", value, "%", index)
             row("efficiency_map", "copper_loss", efficiency.copper_loss_W[row_index][column], "W", index)
             row("efficiency_map", "iron_loss", efficiency.iron_loss_W[row_index][column], "W", index)
+            if efficiency.rotor_iron_loss_W is not None:
+                row("efficiency_map", "rotor_iron_loss", efficiency.rotor_iron_loss_W[row_index][column], "W", index)
             if efficiency.phase_current_rms_A is not None:
                 row("efficiency_map", "current_rms", efficiency.phase_current_rms_A[row_index][column], "A", index)
             if efficiency.current_angle_deg is not None:
@@ -450,6 +452,9 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
             index += 1
     row("efficiency_map", "mechanical_loss", efficiency.mechanical_loss_W, "W")
     row("efficiency_map", "control", efficiency.control)
+    row("efficiency_map", "loss_scope", efficiency.loss_scope)
+    if efficiency.rotor_iron_loss_status is not None:
+        row("efficiency_map", "rotor_iron_loss_status", efficiency.rotor_iron_loss_status)
 
     for section, rows in (("mtpa", data.mtpa), ("idiq_table", data.idiq)):
         for index, entry in enumerate(rows):
@@ -477,6 +482,14 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
         row("map_point", "lambda_d", point.lambda_d_Wb, "Wb", index)
         row("map_point", "lambda_q", point.lambda_q_Wb, "Wb", index)
         row("map_point", "iron_loss", point.iron_loss_W, "W", index)
+        if point.rotor_iron_loss is not None:
+            rotor = point.rotor_iron_loss
+            row("map_point", "rotor_iron_loss", rotor.rotor_iron_loss_W, "W", index)
+            row("map_point", "rotor_hysteresis_loss", rotor.rotor_hysteresis_loss_W, "W", index)
+            row("map_point", "rotor_lamination_eddy_loss", rotor.rotor_lamination_eddy_loss_W, "W", index)
+            for name in ("status", "status_reason", "method", "reference_frame", "solved_region", "steel",
+                         "coefficient_source", "speed_rpm", "samples_per_mechanical_turn", "history_sha256"):
+                row("map_point", "rotor_" + name, getattr(rotor, name), sample_index=index)
         row("map_point", "torque_agreement", agreement[index], "%", index)
 
     for index, note in enumerate(_notes(data)):

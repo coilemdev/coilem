@@ -257,7 +257,9 @@ def parse_setup(raw: Any) -> RunSetup:
     if (
         any(key not in allowed or not (value is None or isinstance(value, (bool, str)) or _number(value)) for key, value in parameters.items())
         or any(not isinstance(outputs.get(key), bool) for key in OUTPUT_KEYS)
-        or any(key not in OUTPUT_KEYS for key in outputs)
+        or any(key not in (*OUTPUT_KEYS, "rotor_iron_loss") for key in outputs)
+        or ("rotor_iron_loss" in outputs and not isinstance(outputs["rotor_iron_loss"], bool))
+        or (outputs.get("rotor_iron_loss") and not outputs.get("losses_efficiency"))
     ):
         raise SetupFormatError("This file has invalid run-setup settings.")
     nullable = {*UNSET_DEFAULTS, "max_nonlinear_iterations"}
@@ -287,7 +289,7 @@ def parse_setup(raw: Any) -> RunSetup:
         reference_model=reference_model,
         reference_case=reference_case,
         parameters=copy.deepcopy(dict(parameters)),
-        outputs=copy.deepcopy(dict(outputs)),
+        outputs=copy.deepcopy({key: value for key, value in outputs.items() if key != "rotor_iron_loss" or value}),
         map=None if raw.get("map") is None else parse_torque_speed_settings(raw["map"]),
         solver=raw["solver"] if includes_numerics else None,
     )
@@ -525,6 +527,8 @@ def _captured(body: Mapping[str, Any], includes_numerics: bool, solver: str) -> 
         "losses_efficiency": not elmer and bool(saved_options.get("losses_efficiency")),
         "torque_speed_envelope": not elmer and bool(saved_options.get("torque_speed_envelope")),
     }
+    if elmer or not options["losses_efficiency"] or not options.get("rotor_iron_loss"):
+        options.pop("rotor_iron_loss", None)
     if "back_emf" in saved_options:
         options["thd_analysis"] = _thd(saved_options["back_emf"], params.get("solve_quality"))
     else:

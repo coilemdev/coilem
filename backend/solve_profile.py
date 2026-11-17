@@ -276,9 +276,10 @@ _STEPS: tuple[tuple[str, str, tuple[str, ...], tuple[tuple[str, str, int], ...]]
     (
         "meshing",
         "Meshing",
-        ("mesh worker: one group, total",),
+        ("mesh worker: one group, total", "rotor: prepare material mesh"),
         (
             ("mesh worker: build base mesh", "Build a mesh", 0),
+            ("rotor: prepare material mesh", "Build the fixed rotor material mesh", 0),
             ("mesh: describe the geometry", "Describe the geometry", 1),
             ("mesh: start Gmsh", "Start Gmsh", 1),
             ("mesh: build geometry and size fields", "Hand Gmsh the geometry and element sizes", 1),
@@ -294,8 +295,11 @@ _STEPS: tuple[tuple[str, str, tuple[str, ...], tuple[tuple[str, str, int], ...]]
     (
         "field_solve",
         "Field solve",
-        ("solve (loaded): one position, total", "solve (noload): one position, total"),
+        ("solve (loaded): one position, total", "solve (noload): one position, total", "solve (rotor): one position, total",
+         "rotor: connect air gap", "rotor: sample material field"),
         (
+            ("rotor: connect air gap", "Connect the moving rotor air gap", 0),
+            ("rotor: sample material field", "Sample the rotor material field", 0),
             ("solve: prepare the solver's settings", "Prepare the solver's settings", 0),
             ("solve: write input and mesh files", "Write the solver's input and mesh files", 0),
             ("solve: find the solver executable", "Find the solver", 0),
@@ -399,8 +403,8 @@ def breakdown(summary: dict[str, Any] | None) -> dict[str, Any] | None:
                 "seconds": round(max(0.0, elapsed - solve_end), 1),
             },
         ]
-    built = stages.get("mesh worker: build base mesh", {}).get("count", 0)
-    rotated = stages.get("mesh worker: rotate to a matching position", {}).get("count", 0)
+    built = stages.get("mesh worker: build base mesh", {}).get("count", 0) + stages.get("rotor: prepare material mesh", {}).get("count", 0)
+    rotated = stages.get("mesh worker: rotate to a matching position", {}).get("count", 0) + stages.get("rotor: connect air gap", {}).get("count", 0)
     return {
         "schema_version": BREAKDOWN_SCHEMA,
         "elapsed_s": round(elapsed, 1),

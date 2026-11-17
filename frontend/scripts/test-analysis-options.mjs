@@ -8,6 +8,16 @@ const { applyPublicSolvePreset, ensureLossesFullCycle, selectedSolvePlan } = awa
 const { parseDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
 
 let config = cloneDefaultConfig();
+{
+  assert.equal(asPublicConfig(config).solve_options.rotor_iron_loss, undefined, 'legacy requests do not opt in');
+  const selected = setAnalysisOption(config, 'rotor_iron_loss', true);
+  assert.equal(selected.solve_options.losses_efficiency, true, 'rotor selection includes its loss dependency');
+  assert.equal(asPublicConfig(selected).solve_options.rotor_iron_loss, true);
+  assert.equal(asPublicConfig(selected, 'elmer').solve_options.rotor_iron_loss, undefined);
+  assert.equal(setAnalysisOption(selected, 'losses_efficiency', false).solve_options.rotor_iron_loss, undefined);
+  assert.equal(parseDesignFile(JSON.stringify(selected)).config.solve_options.rotor_iron_loss, true);
+  assert.match(analysisPositions(selected, { analysis_positions: { rotor_iron_loss: 385 } }, 'magneto2d'), /Rotor iron loss 385/);
+}
 assert.equal(analysisSummary(config), 'Torque · Back EMF');
 assert.equal(config.solve_options.cogging_torque, false);
 assert.equal(config.solve_options.losses_efficiency, false);

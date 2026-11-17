@@ -565,8 +565,26 @@ one, in equal steps.
   and from flux densities above 1.5 T, outside what the grade limits cover. In
   the Prius loaded case 67% of the iron loss is above 1.5 T, so treat that
   value as an order of magnitude.
-- **Not modelled:** rotor iron loss, excess loss as a separate term, and the
-  extra loss from cutting and pressing.
+- **Not modelled by the stator estimate:** rotor iron loss, excess loss as a
+  separate term, and the extra loss from cutting and pressing.
+
+### Rotor iron loss in 0.5.9
+
+An explicit opt-in adds experimental full-motor rotor hysteresis and classical
+lamination eddy loss for supported inner SPM and flat-IPM sinusoidal requests
+using M350-50A. It defaults off and adds 384 poses plus a fresh closure solve.
+Requested completed rotor loss is included exactly once in totals and maps;
+an unavailable requested term withholds efficiency instead of implying zero.
+
+The completed loaded-SPM pilot and additional working-mesh comparisons are
+numerical development evidence. Remaining loss qualification and sector
+validation are deferred beyond 0.5.9 by the release owner. Rotor loss and
+efficiency remain experimental. Sector rotor loss is unavailable; existing
+limited sector functionality remains experimental. See
+[Rotor iron loss](ROTOR_IRON_LOSS.md) for supported requests, measured
+differences, model omissions and outstanding checks. Full-motor A–F/Prius
+regression of the assembled 0.5.9 build against the frozen FEMM references and
+published 0.5.8 evidence is a separate release check.
 
 ### Efficiency at the operating point
 

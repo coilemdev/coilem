@@ -134,7 +134,7 @@ def test_pdf_reports_winding_losses_breakdown_and_density():
     text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(io.BytesIO(pdf)).pages)
     for heading in (
         "d/q operating point", "Winding", "Losses and efficiency", "Loss breakdown",
-        "Where the iron loss is", "Iron-loss density", "Iron loss (W/kg)", "Cream: not modelled",
+        "Where the stator iron loss is", "Iron-loss density", "Iron loss (W/kg)", "Cream: not mapped",
     ):
         assert heading in text
     assert "0.047 mH" in text and "100.3%" in text

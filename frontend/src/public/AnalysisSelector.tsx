@@ -53,7 +53,15 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
             <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, solver)}</p>
           )}
           {row.key === 'losses_efficiency' && !elmer && options.losses_efficiency && (
-            <p className="public-losses-full-cycle" role="note">Full 360° electrical sweep selected for losses and efficiency.</p>
+            <div className="public-losses-full-cycle">
+              <p role="note">Full 360° electrical sweep selected for stator losses and efficiency.</p>
+              <label className="public-check-row">
+                <input type="checkbox" checked={Boolean(options.rotor_iron_loss)} disabled={busy || (config.solve_params.symmetry === 'auto' && !options.rotor_iron_loss)}
+                  onChange={(event) => onChange('rotor_iron_loss', event.target.checked)} />
+                <span>Include rotor iron loss</span>
+              </label>
+              <p role="note">Adds 384 positions over a full mechanical turn plus a closure solve. Supports full inner-rotor SPM/flat-IPM models with M350-50A rotor steel and sinusoidal excitation.</p>
+            </div>
           )}
           {row.key === 'torque_speed_envelope' && !elmer && options.torque_speed_envelope && (
             <TorqueSpeedSettings config={config} busy={busy} onChange={onTorqueSpeedChange} />

@@ -244,6 +244,11 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   if (config.solve_options.torque_speed_envelope && !config.torque_speed_analysis) config.torque_speed_analysis = torqueSpeedSettings(config);
   config.solve_options.cogging_torque = config.solve_options.cogging_torque === true;
   config.solve_options.losses_efficiency = config.solve_options.losses_efficiency === true;
+  if (isRecord(source.solve_options) && source.solve_options.rotor_iron_loss === true) {
+    config.solve_options.rotor_iron_loss = true;
+    config.solve_options.losses_efficiency = true;
+  }
+  else delete config.solve_options.rotor_iron_loss;
   config.solve_options.torque_sweep = config.solve_options.torque_sweep !== false;
   config.solve_options.back_emf = config.solve_options.back_emf !== false;
   // Public presets own the spectrum bandwidth: Standard reports H1-H12 and

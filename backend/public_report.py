@@ -90,6 +90,7 @@ _SUMMARY_RECORD_SECTIONS = {
     "winding_resistance": "winding",
     "loss_breakdown": "losses",
     "iron_loss": "iron_loss",
+    "rotor_iron_loss": "rotor_iron_loss",
 }
 _RECORD_UNIT_SUFFIXES = (
     ("_per_K", "1/K"), ("_mm2", "mm2"), ("_mm", "mm"), ("_ohm", "Ohm"), ("_Nm", "N m"),
@@ -98,7 +99,7 @@ _RECORD_UNIT_SUFFIXES = (
 )
 # Copper losses in copper shades, iron losses in steel shades, mechanical in green: palette-checked on white.
 # Each bar segment is also named in the legend.
-_LOSS_SEGMENT_COLORS = ("#943b12", "#c07525", "#14598b", "#3b8cba", "#2f8f4e")
+_LOSS_SEGMENT_COLORS = ("#943b12", "#c07525", "#14598b", "#3b8cba", "#69508e", "#9777ba", "#2f8f4e")
 # Iron-loss map on paper: pale steel (little loss) to dark slate (most), one hue, palette-checked on white.
 _STEEL_RAMP = ("#9eb8cc", "#7695ad", "#56728a", "#385169", "#203244")
 _NOT_MODELLED_FILL = "#eee7d9"
@@ -303,6 +304,9 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
     if iron.get("status") in ("qualified", "experimental"):
         statuses.append(("iron_loss", "Iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))
     losses = _mapping(summary.get("loss_breakdown"))
+    rotor = _mapping(summary.get("rotor_iron_loss"))
+    if rotor.get("status") in ("qualified", "experimental"):
+        statuses.append(("rotor_iron_loss", "Rotor iron loss", rotor["status"], _plain(rotor.get("status_reason"))))
     if losses.get("efficiency_status") in ("qualified", "experimental"):
         statuses.append(("efficiency", "Efficiency", losses["efficiency_status"], _plain(losses.get("efficiency_status_reason"))))
     if is_derated_run(metadata):
@@ -1540,8 +1544,12 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                     ("Shaft torque", f"{_number(losses.get('shaft_torque_Nm'), 4)} N m"),
                     ("Copper loss", f"{_number(losses.get('copper_loss_W'))} W"),
                     ("Iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
+                    *(([("Rotor iron loss", f"{_number(losses.get('rotor_iron_loss_W'))} W"
+                          if losses.get("rotor_iron_loss_W") is not None else "Unavailable")])
+                      if losses.get("rotor_iron_loss_status") is not None else []),
                     ("Mechanical loss", f"{_number(losses.get('mechanical_loss_W'))} W"),
-                    ("Known loss subtotal" if losses.get("iron_loss_W") is None else "Total loss", f"{_number(losses.get('total_loss_W'))} W"),
+                    ("Known loss subtotal" if losses.get("iron_loss_W") is None or losses.get("rotor_iron_loss_status") == "unavailable"
+                     else "Total loss", f"{_number(losses.get('total_loss_W'))} W"),
                     ("Input power", f"{_number(losses.get('input_power_W'), 4)} W"),
                     ("Shaft power", f"{_number(losses.get('shaft_power_W'), 4)} W"),
                     ("Efficiency", efficiency_text),
@@ -1570,21 +1578,33 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
         status.append(
             "Shaft torque is the solved torque less the iron and mechanical loss torque; the solved torque is unchanged. "
             "Copper loss uses the phase resistance at the winding temperature. "
-            "Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects) and inverter loss."
+            "Not modelled: " + ("rotor iron loss, " if losses.get("rotor_iron_loss_W") is None else "")
+            + "magnet/component eddy-current loss, AC copper loss (skin and proximity effects) and inverter loss."
         )
+        rotor = _mapping(summary.get("rotor_iron_loss"))
+        if rotor.get("status_reason"):
+            status.append("Rotor iron loss: " + escape(str(rotor["status_reason"])))
+        if rotor.get("status") in ("experimental", "qualified"):
+            status.append(f"Rotor method: {escape(str(rotor.get('method')))}; {escape(str(rotor.get('steel')))}; "
+                          f"{_number(rotor.get('samples_per_mechanical_turn'))} samples per mechanical turn. "
+                          + escape(str(rotor.get("coefficient_source") or "")))
+            above = rotor.get("share_above_validated_frequency")
+            if isinstance(above, (int, float)) and above > 0:
+                status.append(f"Rotor frequency coverage: {_number(100*above)}% of estimated loss comes from harmonics "
+                              f"above {_number(rotor.get('validated_max_frequency_Hz'))} Hz, outside the material model's range.")
         story.extend(Paragraph(line, styles["small"]) for line in status)
         story.extend(_status_paragraphs(result, ("efficiency",), styles))
     density = _iron_loss_density_figure(result)
     if density is not None:
         peak = _mapping(result.get("iron_loss_density")).get("max_w_per_kg")
         story.extend([
-            _section("Where the iron loss is", styles),
+            _section("Where the stator iron loss is", styles),
             density,
             Paragraph(
                 "Iron-loss density: iron loss per kilogram of each stator element (hysteresis and eddy current together) "
                 "over one electrical period, on the first stored rotor position's mesh. Darker is more loss. "
                 f"The color scale stops at the 98th percentile; the peak is {_number(peak)} W/kg. "
-                "Rotor and magnet losses are not modelled. Copper loss is not mapped: the model carries the same "
+                "Rotor and magnets are not coloured on this density map. Copper loss is not mapped: the model carries the same "
                 "current density in every coil side.",
                 styles["small"],
             ),
@@ -1603,6 +1623,8 @@ def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
         ("Copper, end turns", losses.get("copper_end_winding_loss_W")),
         ("Iron, hysteresis", hysteresis),
         ("Iron, eddy current", eddy),
+        ("Rotor, hysteresis", losses.get("rotor_hysteresis_loss_W")),
+        ("Rotor, lamination eddy", losses.get("rotor_lamination_eddy_loss_W")),
         ("Mechanical", losses.get("mechanical_loss_W")),
     ]
     segments = [
@@ -1614,16 +1636,17 @@ def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
     if total <= 0:
         return None
     width, bar_height = 170 * mm, 7 * mm
-    drawing = Drawing(width, 26 * mm)
+    extra = max(0, math.ceil(len(segments)/3)-2)*6*mm
+    drawing = Drawing(width, 26 * mm+extra)
     x = 0.0
     for label, value, color in segments:
         span = width * value / total
-        drawing.add(Rect(x, 17 * mm, max(span - 0.7, 0.5), bar_height, fillColor=colors.HexColor(color), strokeColor=None))
+        drawing.add(Rect(x, 17 * mm+extra, max(span - 0.7, 0.5), bar_height, fillColor=colors.HexColor(color), strokeColor=None))
         x += span
-    drawing.add(String(0, 25.2 * mm, f"Loss breakdown, {_number(total)} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
+    drawing.add(String(0, 25.2 * mm+extra, f"Loss breakdown, {_number(total)} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
     for index, (label, value, color) in enumerate(segments):
         column, line = index % 3, index // 3
-        lx, ly = column * 58 * mm, (11 - line * 6) * mm
+        lx, ly = column * 58 * mm, (11 - line * 6) * mm+extra
         drawing.add(Rect(lx, ly, 3 * mm, 3 * mm, fillColor=colors.HexColor(color), strokeColor=None))
         drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {_number(value)} W ({100 * value / total:.0f}%)",
                            fontName="Helvetica", fontSize=7.5, fillColor=_SLATE))
@@ -1677,7 +1700,7 @@ def _iron_loss_density_figure(result: Mapping[str, Any]) -> _MotorMeshFigure | N
     image.save(buffer, format="PNG")
     return _MotorMeshFigure(
         buffer.getvalue(), field_range=(0.0, high), legend_title="Iron loss (W/kg)",
-        legend_note="Cream: not modelled (rotor, magnets)\nLight grey: coil sides (copper loss is uniform)",
+        legend_note="Cream: not mapped (rotor, magnets)\nLight grey: coil sides (copper loss is uniform)",
         legend_colors=_STEEL_RAMP,
     )
 

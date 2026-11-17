@@ -4,6 +4,7 @@ from __future__ import annotations
 import ast
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -15,6 +16,18 @@ from tools.femm_reference import __main__ as command
 from tools.femm_reference import e_producer, f_producer, runtime
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_replay_collectors_share_the_existing_environment_boundary(monkeypatch):
+    monkeypatch.setenv("COILEM_FEMM_BIN", "chosen-install")
+    monkeypatch.setenv("COILEM_TEST_CONTROL", "remove")
+    monkeypatch.setenv("FEMM_TEST_CONTROL", "remove")
+    monkeypatch.setenv("UNRELATED_TEST_SETTING", "preserve")
+    e_producer.clear_solver_environment()
+    assert os.environ["COILEM_FEMM_BIN"] == "chosen-install"
+    assert os.environ["UNRELATED_TEST_SETTING"] == "preserve"
+    assert "COILEM_TEST_CONTROL" not in os.environ
+    assert "FEMM_TEST_CONTROL" not in os.environ
 
 
 def test_imported_sources_and_original_physics_definitions_are_intact():

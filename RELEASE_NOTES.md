@@ -1,3 +1,17 @@
+# coilEM 0.5.9 — in development
+
+- **Experimental rotor iron loss.** An explicit option under Losses & efficiency
+  adds full-motor rotor hysteresis and classical lamination eddy loss for
+  supported inner SPM/flat-IPM sinusoidal models using M350-50A. Results, maps,
+  saved runs and exports carry the separate terms and provenance. It defaults
+  off and adds a 384-pose mechanical turn plus a fresh closure solve. See
+  [scope, evidence and limitations](docs/ROTOR_IRON_LOSS.md).
+- **Qualification boundary.** Remaining rotor-loss qualification and sector
+  validation are deferred to a future release. Rotor loss and efficiency stay
+  experimental; sector rotor loss is unavailable. The assembled 0.5.9 candidate
+  still requires the full-motor A–F/Prius regression comparison against frozen
+  FEMM references and the published 0.5.8 evidence on Windows and macOS.
+
 # coilEM 0.5.8 Developer Preview
 
 Prepared November 15, 2026. coilEM 0.5.8 bundles Magneto2D 0.6.0, up from 0.5.0

@@ -3,7 +3,7 @@ import type { PublicFieldLinePlot } from './model';
 import { StatusDot, StatusSummary } from './OutputStatusBadge';
 import type { NamedOutputStatus } from './outputStatus';
 import { PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, recordStatus } from './outputStatus';
-import type { IronLoss, IronLossDensity, LossBreakdown } from './performance';
+import type { IronLoss, IronLossDensity, LossBreakdown, RotorIronLoss } from './performance';
 import { InfoTip } from './Popover';
 import type { WindingResistance } from './windingResistance';
 import { formatResistance } from './windingResistance';
@@ -313,7 +313,7 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
             </p>
           )}
           <p>
-            <span className="losses-map-swatch is-hatched" aria-hidden="true" /> Not modelled: rotor and magnets.
+            <span className="losses-map-swatch is-hatched" aria-hidden="true" /> Not shown on this density map: rotor and magnets.
             {shownMode !== 'copper' && <> <span className="losses-map-swatch" style={{ background: CONTEXT_FILL }} aria-hidden="true" /> Coil sides: choose Copper.</>}
           </p>
           <p>Scroll, double-click or use + and − to zoom; drag to move.</p>
@@ -373,6 +373,7 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
 export function LossesCard({
   loss,
   iron,
+  rotor,
   density,
   plot,
   winding,
@@ -381,6 +382,7 @@ export function LossesCard({
 }: {
   loss?: LossBreakdown | null;
   iron?: IronLoss | null;
+  rotor?: RotorIronLoss | null;
   density?: IronLossDensity | null;
   plot?: PublicFieldLinePlot | null;
   winding?: WindingResistance | null;
@@ -443,7 +445,13 @@ export function LossesCard({
               })}
             </tbody>
           </table>
-          {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} partial={loss.iron_loss_W == null} />}
+          {rotor && rotor.status !== 'unavailable' && <p className="popover-note">
+            Rotor iron: {rotor.steel}, {rotor.samples_per_mechanical_turn} positions over a full mechanical turn.
+            {rotor.share_above_validated_frequency != null && rotor.share_above_validated_frequency > 0 && <>
+              {' '}{(100 * rotor.share_above_validated_frequency).toFixed(1)}% of the estimate is above the material model’s {rotor.validated_max_frequency_Hz} Hz range.
+            </>}
+          </p>}
+          {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} partial={loss.iron_loss_W == null || loss.rotor_iron_loss_status === 'unavailable'} />}
         </div>
         {showMap && plot && (
           <LossMap

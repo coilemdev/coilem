@@ -1,7 +1,7 @@
 # Qualification collection
 
 The release benchmark workflow builds Magneto2D once on each selected platform,
-then measures eight balanced A–D groups and four Prius groups concurrently.
+then measures eight balanced A–F groups and four Prius groups concurrently.
 Every group uses the exact same clean candidate, locked Python environment and
 binary. The join verifies complete coverage, requests and result hashes before
 building a derived report. It rejects duplicate, missing, failed or mixed runs.
@@ -45,7 +45,7 @@ of repair-run IDs); every original request and result keeps its measured bytes.
 
 ## Disk and retention
 
-Keep output outside the checkout. A–D jobs use `--archive-runtime`: every raw
+Keep output outside the checkout. A–F jobs use `--archive-runtime`: every raw
 runtime is compressed, read back and checked file by file before deleting its
 temporary directory. Prius retains its existing independently hashed field
 copies and also removes its live cache after each completed job. Archives and

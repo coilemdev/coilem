@@ -47,6 +47,7 @@ const LABELS: Record<string, string> = {
   'config.solve_options.torque_sweep': 'Torque', 'config.solve_options.back_emf': 'Back EMF',
   'config.solve_options.flux_density': 'Field maps', 'config.solve_options.cogging_torque': 'Cogging torque',
   'config.solve_options.losses_efficiency': 'Losses and efficiency',
+  'config.solve_options.rotor_iron_loss': 'Rotor iron loss',
   'config.solve_options.torque_speed_envelope': 'Torque–speed map', 'config.solve_options.thd_analysis': 'Harmonic analysis',
   solver: 'Selected solver', solver_name: 'Solver version', 'run_setup.name': 'Setup name',
   'run_setup.id': 'Setup identity', 'run_setup.version': 'Setup version', 'run_setup.kind': 'Setup kind',

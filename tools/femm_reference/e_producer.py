@@ -29,6 +29,17 @@ def identity():
     return runtime.identity("e")
 
 
+def clear_solver_environment():
+    """Reset replay solver controls while preserving the selected FEMM install.
+
+    Keep historical environment vocabulary at this existing replay boundary;
+    optional pilot collectors share the same isolation policy.
+    """
+    for key in tuple(os.environ):
+        if key != "COILEM_FEMM_BIN" and key.startswith(("COILEM_", "OPENEM_", "FEMM_")):
+            os.environ.pop(key)
+
+
 def cases():
     base = library()
     suite, registered = base.inputs()
@@ -66,9 +77,7 @@ def context(case_id):
     Solver, Model, geometry, curve, magnets, femm, pilot, v3 = base.load_adapter()
     raw = base.read(base.PUBLIC / case["original_request"]["fixture"])
     config = Model.model_validate(raw)
-    for key in tuple(os.environ):
-        if key != "COILEM_FEMM_BIN" and key.startswith(("COILEM_", "OPENEM_", "FEMM_")):
-            os.environ.pop(key)
+    clear_solver_environment()
     magnet = spec["material_contract"]["magnets"][config.materials.magnet_grade]
     os.environ["OPENEM_MAGNET_BR_SCALE"] = str(magnet["Br_T"] / magnets[config.materials.magnet_grade]["remanence_T"])
     geom = geometry(config)

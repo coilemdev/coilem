@@ -3187,6 +3187,7 @@ function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyA
     magneto2d_single: 'Final field solve',
     magneto2d_complete: 'Finalizing results',
     magneto2d_cogging: 'Solving cogging sweep',
+    rotor_iron_loss: 'Solving full-turn rotor iron loss',
     torque_speed_map: 'Solving torque–speed map',
     // Both solvers emit these stages; the Run plan already names the solver.
     torque_sweep: 'Loaded-torque sweep',

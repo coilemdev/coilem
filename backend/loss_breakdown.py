@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import math
 
-from backend.models import IronLoss, LossBreakdown, MotorConfig, WindingResistance
+from backend.models import IronLoss, LossBreakdown, MotorConfig, RotorIronLoss, WindingResistance
 from backend.reference_models import reference_model
 from backend.winding_resistance import winding_resistance
 
@@ -47,6 +47,8 @@ def operating_point_losses(
     config: MotorConfig,
     electromagnetic_torque_nm: float,
     iron_loss: IronLoss | None,
+    *,
+    rotor_iron_loss: RotorIronLoss | None = None,
 ) -> tuple[WindingResistance | None, LossBreakdown | None]:
     """The winding's resistance record and the loss breakdown, or None where they cannot be formed."""
 
@@ -65,8 +67,10 @@ def operating_point_losses(
     copper_active = copper * winding.active_fraction
     iron_available = iron_loss is not None and iron_loss.status != "unavailable" and iron_loss.iron_loss_W is not None
     iron = iron_loss.iron_loss_W if iron_available else None
+    rotor_available = rotor_iron_loss is not None and rotor_iron_loss.status != "unavailable"
+    rotor = rotor_iron_loss.rotor_iron_loss_W if rotor_available else None
     mechanical = float(solve_params.mechanical_loss_W or 0.0)
-    drag = (iron or 0.0) + mechanical
+    drag = (iron or 0.0) + (rotor or 0.0) + mechanical
     electromagnetic_power = electromagnetic_torque_nm * omega
     shaft_power = electromagnetic_power - drag
     total = copper + drag
@@ -79,11 +83,13 @@ def operating_point_losses(
         reason = "Efficiency is reported for motoring, with positive torque."
     elif not iron_available:
         reason = "Efficiency needs the iron loss. " + (iron_loss.status_reason if iron_loss and iron_loss.status_reason else "")
+    elif rotor_iron_loss is not None and not rotor_available:
+        reason = "Efficiency needs the requested rotor iron loss. " + (rotor_iron_loss.status_reason or "")
     elif shaft_power <= 0 or input_power <= 0:
         reason = "The losses exceed the electromagnetic power at this operating point."
     else:
         efficiency = 100.0 * shaft_power / input_power
-        reason = "Uses the experimental iron loss."
+        reason = "Uses experimental stator and rotor iron loss." if rotor_available else "Uses the experimental iron loss."
 
     breakdown = LossBreakdown(
         speed_rpm=speed_rpm,
@@ -101,6 +107,12 @@ def operating_point_losses(
         iron_eddy_loss_W=iron_loss.iron_eddy_loss_W if iron_available else None,
         iron_loss_status=iron_loss.status if iron_available else "unavailable",
         iron_loss_status_reason=iron_loss.status_reason if iron_loss is not None else "No iron-loss estimate for this run.",
+        rotor_iron_loss_W=rotor,
+        rotor_hysteresis_loss_W=rotor_iron_loss.rotor_hysteresis_loss_W if rotor_available else None,
+        rotor_lamination_eddy_loss_W=rotor_iron_loss.rotor_lamination_eddy_loss_W if rotor_available else None,
+        rotor_iron_loss_status=rotor_iron_loss.status if rotor_iron_loss is not None else None,
+        rotor_iron_loss_status_reason=rotor_iron_loss.status_reason if rotor_iron_loss is not None else None,
+        loss_scope=("stator_and_rotor" if iron_available else "rotor_only") if rotor_available else "stator_only",
         mechanical_loss_W=mechanical,
         total_loss_W=total,
         shaft_power_W=shaft_power,
