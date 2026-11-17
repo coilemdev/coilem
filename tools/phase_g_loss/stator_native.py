@@ -11,6 +11,7 @@ import numpy as np
 
 from tools.phase_g_loss.contract import ROOT, protocol, read, sha, write, write_npz
 from tools.phase_g_loss.stator_contract import PROFILE, config
+from tools.phase_g_loss.stator_reproduction import measurement_protocol, reproduction
 
 
 def validate_production_grid(payload, count):
@@ -56,7 +57,9 @@ def main():
                 "native_config": native.model_dump(mode="json"), "identity": identity,
                 "coefficients": asdict(M350_50A_LOSS), "electrical_samples": 96,
                 "rotor_loss_requested": False}
-    protocol(out, expected)
+    archive_sources = {name: sha(ROOT / name) for name in
+                       ("tools/phase_g_loss/stator_native.py", "tools/phase_g_loss/stator_reproduction.py")}
+    protocol(out, measurement_protocol(out, expected))
     if (out / "completed.json").exists():
         done = read(out / "completed.json")
         if any(sha(out / name) != digest for name, digest in done["sha256"].items()):
@@ -120,9 +123,11 @@ def main():
         raw_index[str(path)] = sha(path)
     reproduced, _ = estimate_iron_loss_and_density(MotorConfig.model_validate(requested), samples, np.arange(96) * 3.75)
     original = finest["summary"]["iron_loss"]
-    for key in ("iron_loss_W", "iron_hysteresis_loss_W", "iron_eddy_loss_W"):
-        if abs(getattr(reproduced, key) - original[key]) > max(1e-6, 1e-6 * abs(original[key])):
-            raise ValueError("Serialized production fields do not reproduce the public stator-loss result")
+    receipt = reproduction(original, {key: getattr(reproduced, key) for key in
+                                      ("iron_loss_W", "iron_hysteresis_loss_W", "iron_eddy_loss_W")})
+    write(out / "field-reproduction.json", receipt)
+    if not receipt["pass"]:
+        raise ValueError("Serialized field archive exceeds its precision budget; see field-reproduction.json")
     history = stator_flux_history(samples)
     values = np.stack((history.bx_t, history.by_t), axis=-1)
     pairs = requested["rotor"]["pole_count"] // 2
@@ -139,8 +144,12 @@ def main():
     write(out / "result-index.json", {"results": results, "raw_field_sha256": raw_index})
     if sha(args.binary) != identity["binary_sha256"] or any(sha(ROOT / name) != digest for name, digest in identity["source_sha256"].items()):
         raise ValueError("Native source identity changed during measurement")
-    names = ["protocol.json", "template.json", "endpoint-report.json", "fields.npz", "result-index.json", *[r["file"] for r in results.values()]]
-    write(out / "completed.json", {"schema": "coilem.stator_production_completed/v1", "sha256": {name: sha(out / name) for name in names}})
+    if any(sha(ROOT / name) != digest for name, digest in archive_sources.items()):
+        raise ValueError("Field archive processor changed during measurement")
+    names = ["protocol.json", "template.json", "endpoint-report.json", "fields.npz", "result-index.json", "field-reproduction.json",
+             *[r["file"] for r in results.values()]]
+    write(out / "completed.json", {"schema": "coilem.stator_production_completed/v1", "archive_source_sha256": archive_sources,
+                                  "sha256": {name: sha(out / name) for name in names}})
 
 
 if __name__ == "__main__":

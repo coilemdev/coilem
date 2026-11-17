@@ -132,3 +132,37 @@ def test_loss_policy_keeps_failed_point_field_diagnostic_without_correcting_fiel
     assert repeat["raw_fields_corrected"] is False
     repeat["loss_sensitivity"]["3000"]["gates"]["lamination_eddy_W"] = False
     assert not loss_history_pass(stator, repeat)
+
+
+def test_float32_archive_budget_is_separate_from_physics_and_retains_old_failure():
+    from tools.phase_g_loss.stator_reproduction import reproduction
+    original = {key: value for key, value in zip(
+        ("iron_loss_W", "iron_hysteresis_loss_W", "iron_eddy_loss_W"), (492.476463481, 203.642084302, 288.834379179), strict=True)}
+    before = original.copy()
+    reconstructed = {key: value * (1 - 3.5e-6) for key, value in original.items()}
+    receipt = reproduction(original, reconstructed)
+    assert receipt["pass"]
+    assert all(not row["predecessor_1ppm_pass"] for row in receipt["components"].values())
+    assert not receipt["reported_api_losses_modified"]
+    assert not receipt["component_qualification_gates_modified"]
+    assert original == before
+    assert not reproduction(original, {key: value * 1.001 for key, value in original.items()})["pass"]
+
+
+def test_archive_resume_preserves_old_collector_and_refuses_other_source_changes(tmp_path, monkeypatch):
+    from tools.phase_g_loss import stator_reproduction as archive
+    directory = tmp_path / "native/example"
+    directory.mkdir(parents=True)
+    source = tmp_path / "backend.py"
+    source.write_text("physics")
+    expected = {"identity": {"source_sha256": {archive.COLLECTOR: "current", "backend.py": sha(source)}}, "request": 96}
+    previous = copy.deepcopy(expected)
+    previous["identity"]["source_sha256"][archive.COLLECTOR] = archive.PREDECESSOR
+    write(directory / "protocol.json", previous)
+    assert archive.measurement_protocol(directory, expected) == previous
+    assert expected["identity"]["source_sha256"][archive.COLLECTOR] == "current"
+    monkeypatch.setattr(archive, "ROOT", tmp_path)
+    archive.verify_measurement_sources(tmp_path)
+    source.write_text("different physics")
+    with pytest.raises(ValueError, match="backend.py"):
+        archive.verify_measurement_sources(tmp_path)

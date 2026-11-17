@@ -10,9 +10,10 @@ from pathlib import Path
 from threading import Event
 
 from tools.benchmark_suite.external_contract import run_lock
-from tools.phase_g_loss.__main__ import commands, live_femm_count, verify_native_snapshots
+from tools.phase_g_loss.__main__ import commands, live_femm_count
 from tools.phase_g_loss.contract import ROOT, SUITE, read, sha, suite, write
 from tools.phase_g_loss.stator_contract import PROFILE
+from tools.phase_g_loss.stator_reproduction import verify_measurement_sources
 
 
 def main():
@@ -42,7 +43,7 @@ def main():
     if path.exists():
         old = read(path)
         if old["candidate"] != candidate:
-            verify_native_snapshots(output)
+            verify_measurement_sources(output)
             registration["candidate"] = old["candidate"]
         if old != registration:
             raise ValueError("Registered stator/DC-copper campaign changed; use a new directory")
