@@ -178,6 +178,19 @@ reference contracts produce `REFERENCE_REVIEW_REQUIRED`. The immutable bundle
 is never retagged or rewritten to name a new candidate. The zero-solve candidate
 join supports `--reuse-reviewed-reference` only after this compatibility check.
 
+A change to a reference-sensitive source file, such as a new request option in
+`backend/models/config.py`, also stops at `REFERENCE_REVIEW_REQUIRED`, even when
+no value moves. After reviewing the listed files, the owner can rerun
+`tools.qualification_carry` with `--reference-reviewed`. Each platform's
+`reference-reuse.json` and the carry receipt then record every reviewed file
+with its approved and candidate hash. The flag accepts changed source files
+only: a changed suite, reference bundle, case coverage or registered request
+has no override, and moved values still need `--accept-moved`. The automatic
+publication job never passes either flag. Later comparisons keep reporting the
+same files until the approved reports in `benchmarks/qualification-policy.json`
+are replaced by ones measured with them, which is a separate owner-reviewed
+policy change.
+
 The public qualification basis and report path follow the primary registered
 record. The release gate still requires actual matching Windows/macOS/Prius
 measurements; changing hashes alone cannot qualify a build. A weekly workflow

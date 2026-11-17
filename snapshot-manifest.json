@@ -12130,8 +12130,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 11201,
-      "sha256": "6e0f7d480b706ceca06e3d5a3ba4455247fc116d4d321ec2cb4ba914d62a364e"
+      "bytes": 12062,
+      "sha256": "fbdac4c78eb0dfaeb510f27763906045a71f3aa47a072089c52d401e9c4ec59c"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12180,8 +12180,8 @@
     },
     {
       "path": "tests/test_qualification_carry.py",
-      "bytes": 12048,
-      "sha256": "4702c56265902cf1ddb2c12ad025ede8d15d7f37f36d8c6040d662366dbf46fd"
+      "bytes": 15717,
+      "sha256": "f6c47c26829f2b8a7cfba1a5fe465525471453bbbb66ebca76ac1328ba6c38f0"
     },
     {
       "path": "tests/test_qualification_publish.py",
@@ -12190,8 +12190,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 19424,
-      "sha256": "7d6bbce30ac2e9cb4e316f8e697254b5b400ed207fc3d62731808c9cab75ae80"
+      "bytes": 21045,
+      "sha256": "70cc5459f901cff300da8cb105705015c68853c3a0bbbd578b7f824c6559ab03"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -42295,6 +42295,24 @@
       "path": "benchmarks/qualification-policy.json",
       "source_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2",
       "reason": "Approve the post-#317 measurements as the replay baseline; the previous policy is archived unchanged."
+    },
+    {
+      "base_commit": "d22d4b2ffe7c3edda6f1545b7a814b02e782e476",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "6e0f7d480b706ceca06e3d5a3ba4455247fc116d4d321ec2cb4ba914d62a364e",
+      "reason": "Let the owner accept reviewed reference-sensitive source changes at publication, with the review on record."
+    },
+    {
+      "base_commit": "d22d4b2ffe7c3edda6f1545b7a814b02e782e476",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "4702c56265902cf1ddb2c12ad025ede8d15d7f37f36d8c6040d662366dbf46fd",
+      "reason": "Let the owner accept reviewed reference-sensitive source changes at publication, with the review on record."
+    },
+    {
+      "base_commit": "d22d4b2ffe7c3edda6f1545b7a814b02e782e476",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "7d6bbce30ac2e9cb4e316f8e697254b5b400ed207fc3d62731808c9cab75ae80",
+      "reason": "Let the owner accept reviewed reference-sensitive source changes at publication, with the review on record."
     }
   ]
 }
