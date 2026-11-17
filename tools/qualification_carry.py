@@ -45,7 +45,7 @@ def policy_report(root, entry):
     return read(path)
 
 
-def reference_compatibility(summary, anchor, suite, bundle):
+def reference_compatibility(summary, anchor, suite, bundle, *, reviewed_sources=False):
     spec = load_suite(suite)
     manifest, _, digest = load_bundle(bundle, spec)
     require_reviewed_bundle(bundle, manifest, spec)
@@ -62,10 +62,16 @@ def reference_compatibility(summary, anchor, suite, bundle):
     for row in summary['rows']:
         if row['configurations'] != before[row['id']]['configurations']:
             raise ValueError(f'Reference input interpretation needs review: {row["id"]}')
-    for path in REFERENCE_SOURCES:
-        if run['identity']['source_files'].get(path) != old['identity']['source_files'].get(path):
-            raise ValueError(f'Reference model or metric interpretation needs review: {path}')
+    changed = {path: {'approved_sha256': old['identity']['source_files'].get(path),
+                      'candidate_sha256': run['identity']['source_files'].get(path)}
+               for path in REFERENCE_SOURCES
+               if run['identity']['source_files'].get(path) != old['identity']['source_files'].get(path)}
+    if changed and not reviewed_sources:
+        raise ValueError('Reference model or metric interpretation needs review: ' + ', '.join(changed))
+    # Only changed reference-sensitive source files can be accepted. The suite,
+    # bundle, coverage and request checks above have no override.
     return {'schema': 'coilem.reference_reuse/v1', 'candidate': run['identity']['commit'],
+            **({'owner_reviewed_reference_sources': changed} if changed else {}),
             'suite_sha256': sha(suite), 'bundle_sha256': digest,
             'reference_commit': manifest['reference_commit'], 'reference_fields_mutated': False,
             'reference_commits': manifest.get('reference_commits', [manifest['reference_commit']]),
@@ -140,12 +146,12 @@ def prius_values(report):
     return values
 
 
-def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
+def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT, reference_reviewed=False):
     policy = read(baseline / POLICY)
     if set(platforms) != {'windows-x86_64', 'macos-arm64'}:
         raise ValueError('Both platform collections are required')
     output.mkdir(parents=True, exist_ok=False)
-    staged, all_moved, table, candidate, reference_errors = {}, [], [], None, []
+    staged, all_moved, table, candidate, reference_errors, reviewed = {}, [], [], None, [], {}
     physical = {name: sha(root / name) for name in physics_sources(root)}
     tolerances = {**TOLERANCES, **policy['additional_replay_tolerances']}
     for platform, folder in platforms.items():
@@ -167,7 +173,10 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
         approved = policy_report(baseline, policy['approved_reports'][platform])
         try:
             receipt = reference_compatibility(summary, approved, baseline / BENCHMARK_SUITE_FILE,
-                                               baseline / BENCHMARK_REFERENCE_BUNDLE_DIR)
+                                               baseline / BENCHMARK_REFERENCE_BUNDLE_DIR,
+                                               reviewed_sources=reference_reviewed)
+            if receipt.get('owner_reviewed_reference_sources'):
+                reviewed[platform] = receipt['owner_reviewed_reference_sources']
         except ValueError as error:
             receipt = {'status': 'REFERENCE_REVIEW_REQUIRED', 'reason': str(error)}
             reference_errors.append({'platform': platform, 'reason': str(error)})
@@ -208,6 +217,7 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
     decision = {'schema': 'coilem.qualification_carry/v1', 'status': status, 'candidate': candidate,
                 'moved_values': all_moved, 'reference_review': reference_errors,
                 'accepted_moved_values': bool(all_moved and accept_moved),
+                'owner_reviewed_reference_sources': reviewed,
                 'approved_policy_sha256': sha(baseline / POLICY), 'measurements_mutated': False}
     write(output / 'decision.json', decision)
     heading = {'READY': 'Qualification evidence ready',
@@ -216,8 +226,14 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
     lines = [f'# {heading}', '', f'Measured candidate: `{candidate}`.', '',
              '[Full old / new / approved / FEMM comparison](comparison.csv)', '']
     if reference_errors:
-        lines.extend(['Reference compatibility needs owner review. Accepting moved values cannot override this check.', ''])
+        lines.extend(['Reference compatibility needs owner review. Accepting moved values cannot override this check.',
+                      'After reviewing changed reference-sensitive source files, the owner can rerun with '
+                      '`--reference-reviewed`. A changed suite, bundle, coverage or request has no override.', ''])
         lines.extend(f'- {error["platform"]}: {error["reason"]}' for error in reference_errors)
+        lines.append('')
+    if reviewed:
+        lines.extend(['Owner-reviewed reference-sensitive source changes:', ''])
+        lines.extend(f'- {platform}: `{path}`' for platform, paths in reviewed.items() for path in paths)
         lines.append('')
     if all_moved:
         lines.extend(['| Platform | Case | Metric | Baseline | Old | New |', '|---|---|---|---|---:|---:|'])
@@ -310,9 +326,13 @@ def main():
     parser.add_argument('--root', type=Path, default=ROOT, help='Candidate checkout; tooling runs from the trusted base')
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--accept-moved', action='store_true', help='Owner-reviewed numerical changes only; never overrides gates')
+    parser.add_argument('--reference-reviewed', action='store_true',
+                        help='Owner has reviewed the changed reference-sensitive source files; recorded in the receipts. '
+                             'Never overrides a changed suite, bundle, coverage or request')
     args = parser.parse_args()
     result = prepare({'windows-x86_64': args.windows, 'macos-arm64': args.macos}, baseline=args.baseline,
-                     output=args.out, accept_moved=args.accept_moved, root=args.root)
+                     output=args.out, accept_moved=args.accept_moved, root=args.root,
+                     reference_reviewed=args.reference_reviewed)
     print(result['status'])
     return 0 if result['status'] == 'READY' else 2
 
