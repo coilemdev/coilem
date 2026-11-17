@@ -62,7 +62,9 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   await openAnalysis();
   const losses = analysis.getByRole('checkbox', { name: 'Losses & efficiency', exact: true });
   await losses.check();
-  await expect(analysis.getByRole('note')).toHaveText('Full 360° electrical sweep selected for losses and efficiency.');
+  // The rotor-loss option adds its own note under the full-cycle one.
+  const fullCycleNote = analysis.getByRole('note').filter({ hasText: 'Full 360°' });
+  await expect(fullCycleNote).toHaveText('Full 360° electrical sweep selected for stator losses and efficiency.');
   await openPlan();
   const plan = page.locator('[data-guide="solve-plan"]');
   const planHeader = page.locator('button[aria-controls="param-group-content-plan"]');
@@ -88,7 +90,7 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   await openPlan(); await plan.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
   await selectSetup(page, ''); await selectSetup(page, id);
   await openAnalysis(); await expect(losses).toBeChecked();
-  await expect(analysis.getByRole('note')).toContainText('360°');
+  await expect(analysis.getByRole('note').filter({ hasText: 'Full 360°' })).toContainText('360°');
   const legacy = structuredClone(file);
   Object.assign(legacy.solve_params, { solve_quality: 'standard', rotor_sweep_range_deg: 60 });
   legacy.run_setups.scope += '-legacy';

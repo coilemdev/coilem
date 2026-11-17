@@ -19165,8 +19165,8 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 31522,
-      "sha256": "c32489a5b0ad5ed2f54da36df55cc701d799091a459190c7371d4937158b6d07"
+      "bytes": 31707,
+      "sha256": "1c2ae80dc2ca63c513ee8f69ac876af275bf021574782cd0a5add777adcafdda"
     },
     {
       "path": "docs/COMPARE_RUNS.md",
@@ -43184,6 +43184,12 @@
       "path": "tests/test_rotor_loss_solver.py",
       "source_sha256": "8a53c344c0149219cee41b8358402420aaec608838fea8db032be9cd94fa33aa",
       "reason": "Offer rotor iron loss only where it can be computed, and refuse the Picard solver in plain words."
+    },
+    {
+      "base_commit": "3b6de767d083963ad2dfa83641dd194a79d9ecb6",
+      "path": "frontend/tests/solve-profiles.spec.ts",
+      "source_sha256": "c32489a5b0ad5ed2f54da36df55cc701d799091a459190c7371d4937158b6d07",
+      "reason": "Match the full-cycle note text and the second note that rotor iron loss added under Losses & efficiency."
     }
   ]
 }
