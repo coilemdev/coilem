@@ -58,7 +58,7 @@ fixture's diagnostic comparison only when closure and the final 192→384 step
 pass. The original two-step gate stays failed; component agreement is reported
 separately and cannot turn it into a numerical validation pass. Other fixtures,
 failed final refinements, closure failures and cross-solver disagreements have
-no exception. Model status and qualification remain experimental/incomplete.
+no gate waiver. Model status and qualification remain experimental/incomplete.
 
 Each history contains 384 half-open mechanical poses plus a fresh endpoint.
 Both 96→192→384 angular steps use max(5% of finer, 0.001 W), separately for
@@ -66,8 +66,14 @@ hysteresis, eddy and total. Endpoint maximum/RMS limits are 1e-6/1e-7 T.
 Native/FEMM component agreement uses max(10% FEMM, 0.001 W); independent
 resistance/loaded DC copper uses 1%. Zero-current cases still check resistance.
 Use the existing working meshes; this suite does not claim a new independent
-spatial convergence study at every point. Failed checks stop with all completed
-checkpoints retained; they are not converted to passes or repaired by fitting.
+spatial convergence study at every point. By default, failed checks stop with all
+completed checkpoints retained. `--continue-independent-cases` can finish the
+other registered conditions, recording the failed history and withholding its
+FEMM comparison when native closure or angular gates are inadmissible. It does
+not broaden the distributed pilot exception. Reference-history or comparison
+failures also remain failed when independent cases continue; unexpected worker,
+source or integrity errors still stop the campaign. No failed check is converted
+to a pass or repaired by fitting.
 
 The material law and dependent totals stay experimental. Magnet/component
 eddy currents, AC winding loss, inverter loss, separate excess loss, minor

@@ -243,3 +243,80 @@ def test_agreement_does_not_turn_failed_convergence_into_a_passing_comparison():
     assert not result["component_comparison_pass"]
     assert result["status"] == "COMPONENT_AGREEMENT_PASS_ANGULAR_CHECK_FAILED"
     assert not result["qualification_complete"]
+
+
+@pytest.mark.parametrize("continue_independent", [False, True])
+def test_campaign_keeps_closure_failure_and_only_compares_independent_valid_cases(tmp_path, monkeypatch, continue_independent):
+    import argparse
+    import sys
+    from pathlib import Path
+
+    import tools.phase_g_loss.__main__ as campaign
+    import tools.phase_g_loss.report as reporter
+    from tools.phase_g_loss.contract import read
+
+    cases = [case_by_id("inner-spm-loaded"), case_by_id("outer-spm-no-load")]
+    output = tmp_path / "campaign"
+    for case in cases:
+        for index in range(POSITIONS + 1):
+            directory = output / "native" / case["id"] / f"position-{index:04d}"
+            directory.mkdir(parents=True)
+            write(directory / "position.json", {})
+    binary = tmp_path / "solver"
+    binary.write_bytes(b"test identity")
+    monkeypatch.setattr(campaign, "suite", lambda: {"cases": cases})
+    monkeypatch.setattr(campaign.subprocess, "check_output", lambda command, **kw: "field-commit\n" if "rev-parse" in command else "")
+    monkeypatch.setattr(campaign, "live_femm_count", lambda: 0)
+    monkeypatch.setattr(reporter, "summary", lambda *a: None)
+    monkeypatch.setattr(reporter, "compare", lambda *a: {"component_comparison_pass": True, "component_agreement_pass": True})
+    events = []
+
+    def commands(arguments, logs):
+        for command, log in zip(arguments, logs, strict=True):
+            if "tools.phase_g_loss.report" in command:
+                directory = Path(command[command.index("--history") + 1])
+                valid = directory.name == "inner-spm-loaded"
+                result = {
+                    "case_id": directory.name,
+                    "numerical_history_pass": valid,
+                    "regions": {
+                        "stator": {
+                            "closure": {"pass": valid},
+                            "speeds": {"3000": {"angular_steps": [{"total_W": True}, {"total_W": True}]}},
+                        }
+                    },
+                }
+                write(directory / "analysis.json", result)
+                events.append(("analyse", directory.parent.name, directory.name))
+                if not valid:
+                    log.write_text("Phase G history gate failed; inspect analysis.json\n")
+                    raise RuntimeError("history gate failed")
+            elif "tools.phase_g_loss.femm" in command:
+                events.append(("femm", command[command.index("--case") + 1]))
+            else:
+                raise AssertionError("Unexpected collector command")
+
+    monkeypatch.setattr(campaign, "commands", commands)
+    args = argparse.Namespace(
+        mode="run", out=output, binary=binary, case=None, native_workers=4, femm_workers=2,
+        femm_python=Path(sys.executable), wait_for_femm=False, allow_angular_failure=True,
+        continue_independent_cases=continue_independent,
+    )
+    if not continue_independent:
+        with pytest.raises(RuntimeError, match="history gate"):
+            campaign.run(args)
+        assert read(output / "run-state.json")["status"] == "STOPPED_WITH_CHECKPOINTS"
+        assert not any(event[0] == "femm" for event in events)
+        return
+    campaign.run(args)
+    state = read(output / "run-state.json")
+    assert state["status"] == "PILOT_COLLECTION_COMPLETE_WITH_FAILED_CHECKS"
+    assert state["native_completed"] == [case["id"] for case in cases]
+    assert state["native_history_failures"] == ["outer-spm-no-load"]
+    assert state["native_angular_failures"] == []  # A closure failure is not an angular failure.
+    assert state["femm_completed"] == ["inner-spm-loaded"]
+    assert set(state["femm_skipped"]) == {"outer-spm-no-load"}
+    assert not state["qualification_complete"]
+    assert read(output / "native/outer-spm-no-load/analysis.json")["numerical_history_pass"] is False
+    assert all(event[1] == "inner-spm-loaded" for event in events if event[0] == "femm")
+    assert events.index(("analyse", "native", "outer-spm-no-load")) < next(i for i, event in enumerate(events) if event[0] == "femm")

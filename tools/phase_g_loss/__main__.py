@@ -111,6 +111,11 @@ def run(args):
         "native_angular_failures": [],
         "femm_completed": [],
         "femm_angular_failures": [],
+        "native_history_failures": [],
+        "femm_history_failures": [],
+        "femm_skipped": {},
+        "comparison_failures": [],
+        "continue_independent_cases": args.continue_independent_cases,
         "allow_distributed_coarse_angular_failure": args.allow_angular_failure,
         "qualification_complete": False,
     }
@@ -129,15 +134,25 @@ def run(args):
         try:
             commands([command], [log])
         except RuntimeError:
-            # Accept a declared failed coarse-grid check as a pilot result,
-            # never a traceback, invalid closure, or failed final refinement.
+            # Recognize a declared numerical failure, never a traceback.
+            # Continued cases retain the failure; reference admission below
+            # still requires valid closure/final refinement.
             message = log.read_text(encoding="utf-8").rstrip().splitlines()[-1]
             result = read(directory / "analysis.json")
-            if message != "Phase G history gate failed; inspect analysis.json" or not admissible_history(
-                result, allow_angular_failure=args.allow_angular_failure
+            if message != "Phase G history gate failed; inspect analysis.json" or not (
+                admissible_history(result, allow_angular_failure=args.allow_angular_failure) or args.continue_independent_cases
             ):
                 raise
         return read(directory / "analysis.json")
+
+    def record_history(result, solver):
+        if result["numerical_history_pass"]:
+            return
+        if result["case_id"] not in state[solver + "_history_failures"]:
+            state[solver + "_history_failures"].append(result["case_id"])
+        if any(not all(step.values()) for region in result["regions"].values() for row in region["speeds"].values() for step in row["angular_steps"]):
+            if result["case_id"] not in state[solver + "_angular_failures"]:
+                state[solver + "_angular_failures"].append(result["case_id"])
 
     with run_lock(output):
         try:
@@ -167,8 +182,7 @@ def run(args):
                             [directory / f"worker-{i}.log" for i in range(args.native_workers)],
                         )
                     result = analyse_case(directory)
-                    if not result["numerical_history_pass"]:
-                        state["native_angular_failures"].append(case_id)
+                    record_history(result, "native")
                     from tools.phase_g_loss.report import summary
 
                     summary(output, cases)
@@ -180,10 +194,12 @@ def run(args):
                     analysis_path = output / "native" / case["id"] / "analysis.json"
                     from tools.phase_g_loss.report import admissible_history
 
-                    if not analysis_path.exists() or not admissible_history(read(analysis_path), allow_angular_failure=args.allow_angular_failure):
+                    if not analysis_path.exists():
                         raise ValueError("Complete and audit every selected native case before FEMM")
-                    if not read(analysis_path)["numerical_history_pass"] and case["id"] not in state["native_angular_failures"]:
-                        state["native_angular_failures"].append(case["id"])
+                    result = read(analysis_path)
+                    if not admissible_history(result, allow_angular_failure=args.allow_angular_failure) and not args.continue_independent_cases:
+                        raise ValueError("Complete and audit every selected native case before FEMM")
+                    record_history(result, "native")
                     if case["id"] not in state["native_completed"]:
                         state["native_completed"].append(case["id"])
                 while live_femm_count():
@@ -195,8 +211,14 @@ def run(args):
                     raise ValueError("FEMM collection needs its pinned --femm-python environment")
                 for case in cases:
                     case_id = case["id"]
-                    save("COLLECTING_FEMM", case_id)
                     native = output / "native" / case_id
+                    if not admissible_history(read(native / "analysis.json"), allow_angular_failure=args.allow_angular_failure):
+                        # Continuing independent cases never waives this case's
+                        # closure/final-refinement gate or starts its reference.
+                        state["femm_skipped"][case_id] = "Native history failed closure or angular gates; no reference comparison permitted."
+                        save("FEMM_CASE_WITHHELD_FAILED_NATIVE_HISTORY", case_id)
+                        continue
+                    save("COLLECTING_FEMM", case_id)
                     directory = output / "femm" / case_id
                     directory.mkdir(parents=True, exist_ok=True)
                     base = [
@@ -218,8 +240,7 @@ def run(args):
                         [directory / f"worker-{i}.log" for i in range(args.femm_workers)],
                     )
                     result = analyse_case(directory, reference=True)
-                    if not result["numerical_history_pass"]:
-                        state["femm_angular_failures"].append(case_id)
+                    record_history(result, "femm")
                     from tools.phase_g_loss.report import compare, summary
 
                     comparison = compare(read(native / "analysis.json"), read(directory / "analysis.json"))
@@ -227,12 +248,14 @@ def run(args):
                     summary(output, cases)
                     if not comparison["component_comparison_pass"]:
                         if not (args.allow_angular_failure and case_id.startswith("distributed-spm-") and comparison["component_agreement_pass"]):
-                            raise RuntimeError("Phase G component comparison failed: " + case_id)
+                            if not args.continue_independent_cases:
+                                raise RuntimeError("Phase G component comparison failed: " + case_id)
+                            state["comparison_failures"].append(case_id)
                     state["femm_completed"].append(case_id)
                     save("FEMM_CASE_COMPLETE", case_id)
                 save(
-                    "PILOT_COLLECTION_COMPLETE_WITH_ANGULAR_FAILURES"
-                    if state["native_angular_failures"] or state["femm_angular_failures"]
+                    "PILOT_COLLECTION_COMPLETE_WITH_FAILED_CHECKS"
+                    if state["native_history_failures"] or state["femm_history_failures"] or state["femm_skipped"] or state["comparison_failures"]
                     else "NUMERICAL_COLLECTION_COMPLETE_EXPERIMENTAL"
                 )
             else:
@@ -252,6 +275,11 @@ def main():
     parser.add_argument("--native-workers", type=int, choices=range(1, 5), default=4)
     parser.add_argument("--femm-workers", type=int, choices=(1, 2), default=2)
     parser.add_argument("--wait-for-femm", action="store_true")
+    parser.add_argument(
+        "--continue-independent-cases",
+        action="store_true",
+        help="Record failed numerical gates and finish independent cases; withhold FEMM for inadmissible native histories, without waiving gates",
+    )
     parser.add_argument(
         "--allow-angular-failure",
         action="store_true",
