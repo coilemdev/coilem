@@ -1,5 +1,10 @@
 # Phase G: independent full-motor loss checks
 
+For the current 5.9 release scope, use the separate
+[stator iron and DC copper qualification](STATOR_COPPER_59.md).
+The original full-turn rotor campaign below remains experimental and is retained
+as diagnostic evidence; rotor qualification does not gate the stator/DC scope.
+
 Phase G is a separately selected, experimental loss benchmark for 0.5.9.
 It does not change the registered A–F suite, its FEMM references, or its gates.
 Four copied, hashed fixtures cover concentrated inner SPM 8p/12s, flat-IPM

@@ -1,5 +1,13 @@
 # coilEM 0.5.9 — in development
 
+- **Independent stator/DC-copper qualification.** A separate
+  [electrical-cycle workflow](benchmarks/phase-g-v1/STATOR_COPPER_59.md) exercises
+  the production loss path with rotor loss off, checks 24/48/96-position
+  convergence and compares stator iron and specified-wire DC copper against
+  independent FEMM-based references. It reuses verified completed poses and
+  leaves rotor qualification, empirical iron-model accuracy and full efficiency
+  experimental.
+
 - **Separate loss benchmark tooling.** Optional [Phase G](benchmarks/phase-g-v1/README.md)
   covers four full-motor fixtures at no-load and one loaded point. It compares
   stator/rotor iron components and independently checks DC winding resistance

@@ -3,6 +3,8 @@
 The optional [Phase G loss benchmark](../benchmarks/phase-g-v1/README.md) has
 its own four fixtures and Windows FEMM runner. It runs Magneto2D first and
 does not change the A–F requests, references or release regression collection.
+For 5.9, [stator iron and DC copper](../benchmarks/phase-g-v1/STATOR_COPPER_59.md)
+have a separate electrical-cycle qualification; rotor loss remains experimental.
 
 The release benchmark workflow builds Magneto2D once on each selected platform,
 then measures eight balanced A–F groups and four Prius groups concurrently.
