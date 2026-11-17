@@ -1,0 +1,46 @@
+{
+  "schema": "coilem.qualification_policy/v1",
+  "approved_reports": {
+    "windows-x86_64": {
+      "file": "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_summary.json",
+      "sha256": "871630a5a076456a0095e1fee861c6583b4bfcf52d2c1226d62ad54220ab24a3"
+    },
+    "macos-arm64": {
+      "file": "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_summary.json",
+      "sha256": "25b517795bd27e7314bc345c807e6399444e3d7bc3b28b480f3f858361e51f4a"
+    }
+  },
+  "additional_replay_tolerances": {
+    "lambda_d_Wb": [
+      0.005,
+      1e-06
+    ],
+    "lambda_q_Wb": [
+      0.005,
+      1e-06
+    ],
+    "lambda_pm_Wb": [
+      0.0005,
+      1e-06
+    ]
+  },
+  "note": "Protocol 1.10.0 baselines for the registered A-F requests. Prior records and policy remain immutable. Replay tolerances and FEMM gates are unchanged. Application qualification remains scoped independently.",
+  "protocol_version": "1.10.0",
+  "registered_scope": {
+    "candidate_commit": "70c5e3404c1962a811a915db292c31c28b92cf1a",
+    "qualification": "benchmarks/qualification-70c5e3404c19/qualification.json",
+    "qualification_sha256": "e97815eba5d7a0c6a1e0c0851f44be9e4b4bca7fde9abaf6b62138a3638581cb",
+    "previous_policy": "benchmarks/qualification-policy-history/protocol19-20261110.json",
+    "previous_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b"
+  },
+  "approved_prius_reports": {
+    "windows-x86_64": {
+      "file": "benchmarks/qualification-70c5e3404c19/windows-x86_64/prius/app-results.json",
+      "sha256": "f197ef317d511a647174d2130bdc5cb4ea26e22dca07646446b262893386cbb7"
+    },
+    "macos-arm64": {
+      "file": "benchmarks/qualification-70c5e3404c19/macos-arm64/prius/app-results.json",
+      "sha256": "4a971148c001ef82f755ebcdb82da96e54f1d5abdbfd64bf3af9bb625d685b81"
+    }
+  }
+}
