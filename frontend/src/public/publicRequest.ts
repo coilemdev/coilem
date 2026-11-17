@@ -2,6 +2,7 @@ import type { PublicMotorConfig } from './api';
 import { applyPublicSolverSettings, type MotorConfig, type PublicSolverId } from './model';
 import { torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { ensureLossesFullCycle } from './solvePlan';
+import { rotorIronLossSelected } from './analysisOptions';
 
 /** The design as the local API's solve routes take it, with the public solver settings. A request
  * also gets the full-cycle sweep losses need; a saved setup records the plan as chosen. */
@@ -22,8 +23,8 @@ export function asPublicConfig(config: MotorConfig, solver: PublicSolverId = 'ma
       thd_analysis: thdAnalysis,
     },
   };
-  if (solver === 'elmer' || !request.solve_options.losses_efficiency || !request.solve_options.rotor_iron_loss) {
-    delete request.solve_options.rotor_iron_loss;
-  }
+  // A design the rotor-loss stage cannot solve is sent without the request. The run then
+  // reports efficiency from the losses it can compute, instead of withholding it.
+  if (!rotorIronLossSelected(config, solver)) delete request.solve_options.rotor_iron_loss;
   return (lossesSweep ? ensureLossesFullCycle(request) : request) as unknown as PublicMotorConfig;
 }

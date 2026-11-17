@@ -91,6 +91,29 @@ def test_sector_is_explicitly_unavailable_without_starting_an_expensive_full_sol
     assert value.rotor_iron_loss_W is None and "sector" in value.status_reason
 
 
+def test_picard_is_explicitly_unavailable_without_starting_an_expensive_full_solve(monkeypatch):
+    cfg = config()
+    cfg.solve_params.nonlinear_solver = "picard"
+    monkeypatch.setattr(rotor, "run_gmsh_mesh_preview", lambda *a, **kw: pytest.fail("unsupported solve must not start"))
+    assert rotor.planned_positions(cfg) == 0
+    value = rotor.compute_rotor_iron_loss(cfg)
+    assert value.status == "unavailable" and value.rotor_iron_loss_W is None
+    assert "Newton" in value.status_reason and "NoneType" not in value.status_reason
+
+
+def test_a_position_solved_by_the_picard_fallback_is_refused_in_plain_words():
+    # Picard reports raw_max_residual and leaves Newton's residuals empty.
+    fallback = analytic_report(0)
+    fallback["solve_info"]["nonlinear_convergence"].update(
+        method="picard", fallback_from="newton", tolerance=0.05, raw_max_residual=0.04,
+        scaled_residual=None, rhs_scaled_residual=None, absolute_residual_floor=None)
+    with pytest.raises(ValueError, match="Picard fallback"):
+        rotor.field_sample(fallback, 0)
+    newton = analytic_report(0)
+    newton["solve_info"]["nonlinear_convergence"]["method"] = "newton"
+    assert rotor.field_sample(newton, 0) is not None
+
+
 def test_reused_or_unconverged_native_fields_cannot_be_loss_inputs():
     with pytest.raises(ValueError, match="fresh, converged"):
         rotor.field_sample(analytic_report(0, reused=True), 0)

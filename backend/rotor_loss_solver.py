@@ -83,6 +83,9 @@ def unavailable_reason(config: MotorConfig):
         return "Rotor iron loss currently requires the M350-50A rotor loss coefficients."
     if params.excitation_mode != "sinusoidal":
         return "Rotor iron loss currently supports sinusoidal excitation."
+    if params.nonlinear_solver != "newton":
+        # The convergence acceptance below is defined on Newton's residuals only.
+        return "Rotor iron loss needs the Newton nonlinear solver. Change Nonlinear solver to Newton and run again."
     return None
 
 
@@ -100,6 +103,11 @@ def field_sample(report, angle):
     if report["mesh_info"]["total_span_deg"] != 360 or report["field_plot"]["total_span_deg"] != 360:
         raise ValueError("rotor loss needs full-motor field reports")
     convergence = report["solve_info"]["nonlinear_convergence"]
+    if (convergence.get("method") == "picard" or convergence.get("scaled_residual") is None
+            or convergence.get("rhs_scaled_residual") is None):
+        # Newton falls back to Picard at a position it cannot converge; Picard
+        # reports a different residual that this acceptance does not cover.
+        raise ValueError("rotor loss needs Newton-converged fields; a rotor position was solved by the Picard fallback")
     if (convergence["solution_reused"] or not 0 < convergence["tolerance"] < 1
             or not (convergence["scaled_residual"] <= convergence["tolerance"]
                     or convergence["rhs_scaled_residual"] <= convergence["absolute_residual_floor"])):

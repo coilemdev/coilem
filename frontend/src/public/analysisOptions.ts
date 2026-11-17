@@ -12,9 +12,37 @@ export const ANALYSIS_LABELS: Record<AnalysisKey, string> = {
   torque_speed_envelope: 'Torque–speed map',
 };
 
+/** Why rotor iron loss cannot be computed for this design, or null when it can.
+ * Mirrors `unavailable_reason` in backend/rotor_loss_solver.py, in the same order, so the
+ * option is only offered where a run would produce the number. */
+export function rotorIronLossUnavailableReason(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): string | null {
+  const params = config.solve_params;
+  if (solver === 'elmer') return 'Rotor iron loss is available with Magneto2D.';
+  if (!(params.rated_speed_rpm > 0)) return 'Rotor iron loss needs a speed above zero.';
+  if (params.symmetry !== 'full') return 'Rotor iron loss needs the full motor. Set Solved region to Full motor.';
+  if ((config.rotor_layout ?? 'inner') !== 'inner') return 'Rotor iron loss is not available for outer-rotor motors yet.';
+  if (config.topology === 'IPM' && config.rotor.ipm_topology !== 'flat_buried') {
+    return 'Rotor iron loss is not available for V-shape IPM rotors yet.';
+  }
+  if (config.geometry_reference) return 'Rotor iron loss is not available for reference geometries yet.';
+  if (config.materials.rotor_steel !== 'M350-50A') return 'Rotor iron loss needs M350-50A rotor steel.';
+  if (params.excitation_mode !== 'sinusoidal') return 'Rotor iron loss needs sinusoidal drive.';
+  if (params.nonlinear_solver !== 'newton') {
+    return 'Rotor iron loss needs the Newton solver. Change Nonlinear solver in Advanced options.';
+  }
+  return null;
+}
+
+/** Whether a run of this design will compute rotor iron loss: chosen, with losses, and supported. */
+export function rotorIronLossSelected(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): boolean {
+  return Boolean(config.solve_options.losses_efficiency && config.solve_options.rotor_iron_loss)
+    && rotorIronLossUnavailableReason(config, solver) === null;
+}
+
 export function selectedAnalyses(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): AnalysisKey[] {
   return (Object.keys(ANALYSIS_LABELS) as AnalysisKey[]).filter((key) => (
-    config.solve_options[key] && (solver !== 'elmer' || key === 'torque_sweep' || key === 'back_emf')
+    key === 'rotor_iron_loss' ? rotorIronLossSelected(config, solver)
+      : config.solve_options[key] && (solver !== 'elmer' || key === 'torque_sweep' || key === 'back_emf')
   ));
 }
 

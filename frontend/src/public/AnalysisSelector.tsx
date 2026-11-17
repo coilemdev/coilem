@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import { coggingPlanNote, sectorCoggingNote } from './coggingView';
-import type { AnalysisKey } from './analysisOptions';
+import { rotorIronLossUnavailableReason, type AnalysisKey } from './analysisOptions';
 import type { MotorConfig, PublicSolverId } from './model';
 import { InfoTip } from './Popover';
 import { StatusBadge } from './OutputStatusBadge';
@@ -19,6 +19,7 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
   const id = useId();
   const options = config.solve_options;
   const elmer = solver === 'elmer';
+  const rotorLossUnavailable = rotorIronLossUnavailableReason(config, solver);
   const rows: Array<{ key: AnalysisKey; label: string; hint: string; unavailable?: boolean; experimentalReason?: string }> = [
     { key: 'torque_sweep', label: 'Torque', hint: 'Loaded torque waveform, mean torque and ripple.' },
     { key: 'back_emf', label: 'Back EMF', hint: 'No-current voltage waveform at the rated speed.' },
@@ -56,11 +57,12 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
             <div className="public-losses-full-cycle">
               <p role="note">Full 360° electrical sweep selected for stator losses and efficiency.</p>
               <label className="public-check-row">
-                <input type="checkbox" checked={Boolean(options.rotor_iron_loss)} disabled={busy || (config.solve_params.symmetry === 'auto' && !options.rotor_iron_loss)}
-                  onChange={(event) => onChange('rotor_iron_loss', event.target.checked)} />
+                <input type="checkbox" checked={!rotorLossUnavailable && Boolean(options.rotor_iron_loss)} disabled={busy || rotorLossUnavailable !== null}
+                  aria-describedby={`${id}-rotor-loss-note`} onChange={(event) => onChange('rotor_iron_loss', event.target.checked)} />
                 <span>Include rotor iron loss</span>
               </label>
-              <p role="note">Adds 384 positions over a full mechanical turn plus a closure solve. Supports full inner-rotor SPM/flat-IPM models with M350-50A rotor steel and sinusoidal excitation.</p>
+              <p role="note" id={`${id}-rotor-loss-note`}>{rotorLossUnavailable
+                ?? 'Adds 384 positions over a full mechanical turn plus a closure solve. Supports full inner-rotor SPM/flat-IPM models with M350-50A rotor steel and sinusoidal excitation.'}</p>
             </div>
           )}
           {row.key === 'torque_speed_envelope' && !elmer && options.torque_speed_envelope && (
