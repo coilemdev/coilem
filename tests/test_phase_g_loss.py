@@ -302,6 +302,7 @@ def test_campaign_keeps_closure_failure_and_only_compares_independent_valid_case
         femm_python=Path(sys.executable), wait_for_femm=False, allow_angular_failure=True,
         continue_independent_cases=continue_independent,
         parallel_femm_cases=False,
+        femm_workers_per_case=1,
     )
     if not continue_independent:
         with pytest.raises(RuntimeError, match="history gate"):
@@ -323,7 +324,8 @@ def test_campaign_keeps_closure_failure_and_only_compares_independent_valid_case
     assert events.index(("analyse", "native", "outer-spm-no-load")) < next(i for i, event in enumerate(events) if event[0] == "femm")
 
 
-def test_two_case_schedule_overlaps_fixtures_without_multiple_writers(tmp_path, monkeypatch):
+@pytest.mark.parametrize("workers_per_case,total_workers", [(1, 2), (2, 4)])
+def test_two_case_schedule_overlaps_fixtures_with_disjoint_shards(tmp_path, monkeypatch, workers_per_case, total_workers):
     import argparse
     import sys
     from pathlib import Path
@@ -340,6 +342,13 @@ def test_two_case_schedule_overlaps_fixtures_without_multiple_writers(tmp_path, 
             "case_id": case["id"], "numerical_history_pass": True,
             "regions": {"stator": {"closure": {"pass": True}, "speeds": {"3000": {"angular_steps": [{"total_W": True}]}}}},
         })
+    initial_registration = {
+        "schema": "coilem.phase_g_campaign/v1", "candidate": "field-commit",
+        "suite_sha256": sha(campaign.SUITE), "cases": cases, "binary_sha256": None,
+        "native_workers": 4, "femm_workers": 2,
+    }
+    write(output / "registration.json", initial_registration)
+    initial_hash = sha(output / "registration.json")
     monkeypatch.setattr(campaign, "suite", lambda: {"cases": cases})
     monkeypatch.setattr(campaign.subprocess, "check_output", lambda command, **kw: "field-commit\n" if "rev-parse" in command else "")
     monkeypatch.setattr(campaign, "live_femm_count", lambda: 0)
@@ -349,11 +358,11 @@ def test_two_case_schedule_overlaps_fixtures_without_multiple_writers(tmp_path, 
 
     def commands(arguments, logs, cancel=None):
         assert cancel is not None
-        assert len(arguments) == 1
         command = arguments[0]
         if "tools.phase_g_loss.femm" in command:
             case = command[command.index("--case") + 1]
             if "--limit" in command:
+                assert len(arguments) == 1  # A single bootstrap establishes the shared geometry.
                 with lock:
                     assert case not in active
                     active.add(case)
@@ -361,23 +370,33 @@ def test_two_case_schedule_overlaps_fixtures_without_multiple_writers(tmp_path, 
                 with lock:
                     seen.append(set(active))
             else:
-                shards.append(command[command.index("--shard") + 1])
+                assert len(arguments) == workers_per_case
+                shards.extend(command[command.index("--shard") + 1] for command in arguments)
         else:
             directory = Path(command[command.index("--history") + 1])
             write(directory / "analysis.json", read(output / "native" / directory.name / "analysis.json"))
 
     monkeypatch.setattr(campaign, "commands", commands)
     campaign.run(argparse.Namespace(
-        mode="femm", out=output, binary=None, case=None, native_workers=4, femm_workers=2,
+        mode="femm", out=output, binary=None, case=None, native_workers=4, femm_workers=total_workers,
         femm_python=Path(sys.executable), wait_for_femm=False, allow_angular_failure=True,
         continue_independent_cases=True, parallel_femm_cases=True,
+        femm_workers_per_case=workers_per_case,
     ))
     assert seen == [{case["id"] for case in cases}] * 2
-    assert shards == ["0/1", "0/1"]
+    assert sorted(shards) == sorted([f"{index}/{workers_per_case}" for index in range(workers_per_case)] * 2)
     state = read(output / "run-state.json")
     assert set(state["femm_completed"]) == {case["id"] for case in cases}
     assert state["active_femm_cases"] == []
     assert state["status"] == "NUMERICAL_COLLECTION_COMPLETE_EXPERIMENTAL"
+    assert state["femm_worker_limit"] == total_workers
+    assert state["femm_workers_per_case"] == workers_per_case
+    assert state["femm_case_concurrency"] == 2
+    assert sha(output / "registration.json") == initial_hash
+    plan = read(output / state["worker_plan_receipt"])
+    assert plan["femm_worker_limit"] == total_workers
+    assert plan["initial_registered_femm_workers"] == 2
+    assert plan["registration_sha256"] == initial_hash
 
 
 def test_cancelled_case_does_not_launch_more_field_workers(tmp_path, monkeypatch):
@@ -390,3 +409,36 @@ def test_cancelled_case_does_not_launch_more_field_workers(tmp_path, monkeypatch
     monkeypatch.setattr(campaign.subprocess, "Popen", lambda *a, **kw: pytest.fail("Cancelled case launched a field worker"))
     with pytest.raises(RuntimeError, match="peer worker failed"):
         campaign.commands([["never-start"]], [tmp_path / "worker.log"], cancel)
+
+
+@pytest.mark.parametrize("total,per_case,parallel", [(1, 2, True), (2, 2, False), (5, 1, True)])
+def test_worker_allocation_cannot_exceed_the_global_budget(total, per_case, parallel):
+    from argparse import Namespace
+
+    from tools.phase_g_loss.__main__ import femm_worker_plan
+
+    with pytest.raises(ValueError):
+        femm_worker_plan(Namespace(femm_workers=total, femm_workers_per_case=per_case, parallel_femm_cases=parallel))
+
+
+def test_sharding_requires_verified_zero_pose_and_shared_geometry(tmp_path):
+    from tools.phase_g_loss.__main__ import reference_prepared
+
+    assert not reference_prepared(tmp_path)
+    write(tmp_path / "preparation.json", {"mesh": "fixed"})
+    geometry = tmp_path / "material-geometry.npz"
+    np.savez(geometry, stator_corners=np.ones((1, 3, 2)))
+    protocol = tmp_path / "protocol.json"
+    write(protocol, {"preparation_sha256": sha(tmp_path / "preparation.json")})
+    assert not reference_prepared(tmp_path)
+    zero = tmp_path / "position-0000"
+    zero.mkdir()
+    np.savez(zero / "fields.npz", stator=np.ones((1, 2)))
+    write(zero / "position.json", {
+        "index": 0, "angle_deg": 0, "protocol_sha256": sha(protocol),
+        "geometry_sha256": sha(geometry), "sha256": {"fields.npz": sha(zero / "fields.npz")},
+    })
+    assert reference_prepared(tmp_path)
+    np.savez(geometry, stator_corners=np.zeros((1, 3, 2)))
+    with pytest.raises(ValueError, match="different inputs or integration geometry"):
+        reference_prepared(tmp_path)
