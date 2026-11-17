@@ -168,7 +168,7 @@ assert.doesNotMatch(
 );
 assert.match(appSource, /void prepareMesh\(/);
 assert.match(appSource, /const refreshSolveValidation = useCallback/);
-assert.match(appSource, /void refreshSolveValidation\(config\)/);
+assert.match(appSource, /void refreshSolveValidation\(config, mesh\?\.solve_mesh_key\)/);
 assert.match(appSource, /validationChecking=\{validationChecking\}/);
 assert.match(appSource, /useState<PublicSolverId>\(initialSetup\.solver \?\? 'magneto2d'\)/);
 assert.match(appSource, /elmerCapabilityFromHealth/);
@@ -2243,4 +2243,16 @@ assert.match(workspaceSource, /<span className="param-label">Wire<small>publishe
     await Promise.all([occupied, ...probes].map(server => new Promise(resolve => server.close(resolve))));
   }
 }
+// #333: a mesh-setting change meshes again at once, and the run plan never claims a mesh is preparing when none is.
+const meshSettingHandler = appSource.slice(appSource.indexOf('const updateMeshSetting'), appSource.indexOf('const updateSolveSetting'));
+assert.match(meshSettingHandler, /void prepareMesh\(next\);/, 'a mesh setting change prepares the new mesh');
+assert.doesNotMatch(appSource, /Prepare a new mesh to apply them/, 'no manual Prepare-mesh notice after a setting change');
+assert.match(workspaceSource, /busy === 'mesh' \? 'Meshing…' : 'Not prepared'/, 'the run plan reports the real mesh state');
+assert.doesNotMatch(workspaceSource, /meshElements\.toLocaleString\(\)\} elements` : 'Preparing…'/);
+// The run plan's estimate uses the prepared mesh's element count.
+assert.match(appSource, /refreshSolveValidation\(config, mesh\?\.solve_mesh_key\)/);
+assert.match(appSource.slice(appSource.indexOf('const refreshSolveValidation'), appSource.indexOf('const refreshSolveValidation') + 1200), /solve_mesh_key: solveMeshKey/);
+// A sector's quality counts are the solved sector's, as its Mesh row is; Results list the rotor-loss positions.
+assert.match(workspaceSource, /Counts are for the solved sector; the Mesh tab draws its \{qualityRepeats\} copies around the motor\./);
+assert.match(resultSummarySource, /`Rotor iron loss \$\{summary\.rotor_iron_loss\.samples_per_mechanical_turn \+ 1\}`/);
 console.log('public UI contract audit passed');

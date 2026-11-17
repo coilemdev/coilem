@@ -54,6 +54,10 @@ def refuse_unknown_inputs(model: type[BaseModel], data: Mapping[str, Any], prefi
             what = "solve setting" if model is SolveParams else f"{prefix} input"
             close = difflib.get_close_matches(str(key), list(model.model_fields), n=1)
             hint = f"Did you mean {prefix}.{close[0]}? " if close else ""
+            bare = str(key).removeprefix(f"{prefix}.")
+            if bare != str(key) and bare in model.model_fields:
+                # A dotted name for a field that exists: names here are already inside the section (#333).
+                hint = f"Give it as {bare}, without the `{prefix}.` prefix. "
             raise InputError(
                 f"{path}: there is no {what} with that name",
                 field=path,

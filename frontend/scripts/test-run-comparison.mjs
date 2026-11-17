@@ -190,6 +190,19 @@ assert.equal(lossRows.find(row => row.key === 'eddy').before.value, 0);
 assert.equal(lossRows.find(row => row.key === 'total').after.value, 80, 'compare reads stored totals without summing component fields');
 assert.equal(lossRows.some(row => row.key === 'subtotal'), false);
 assert.equal(JSON.stringify([lossA, lossB]), lossesOriginal);
+// #333: rotor iron loss in one run only puts the totals, shaft output and efficiency on different bases.
+const withRotor = withLoss({ ...fullLoss, rotor_iron_loss_W: 20, rotor_hysteresis_loss_W: 5, rotor_lamination_eddy_loss_W: 15,
+  rotor_iron_loss_status: 'experimental', total_loss_W: 120, shaft_power_W: 880, efficiency_pct: 88 });
+const scopeRows = compareRunLosses(lossA, withRotor);
+for (const key of ['efficiency', 'shaft', 'shaft_torque', 'total']) {
+  const row = scopeRows.find(item => item.key === key);
+  assert.equal(row.comparable, false, `${key} has no delta across loss bases`);
+  assert.match(row.basisNote, /Only one of these runs includes rotor iron loss/);
+}
+for (const key of ['copper', 'iron', 'input']) assert.equal(scopeRows.find(item => item.key === key).comparable, true, `${key} is unaffected by rotor loss`);
+assert.equal(compareRunLosses(withRotor, withRotor).find(row => row.key === 'total').comparable, true, 'same basis keeps its delta');
+const unavailableRotor = withLoss({ ...fullLoss, rotor_iron_loss_W: null, rotor_iron_loss_status: 'unavailable' });
+assert.equal(compareRunLosses(lossA, unavailableRotor).find(row => row.key === 'shaft').basisNote, undefined, 'an unavailable term is the partial rule, not this one');
 assert.equal(compareRunLosses(torqueOnly, torqueOnly), null);
 assert.equal(compareRunLosses(torqueOnly, lossB).find(row => row.key === 'efficiency').before.missing, 'Not recorded');
 const partialLoss = { ...fullLoss, iron_loss_W: null, iron_hysteresis_loss_W: null, iron_eddy_loss_W: null,
@@ -262,6 +275,9 @@ const sectorRun = inputChanges({ config: { solve_params: { mesh_build: 'precise'
 assert.deepEqual(sectorRun, [{ path: 'config.solve_params.symmetry', group: 'Accuracy and solver', label: 'Solved region',
   before: 'Full motor', after: 'One sector', missing: false }]);
 assert.deepEqual(inputChanges({ config: { solve_params: {} } }, { config: { solve_params: { symmetry: 'full' } } }), []);
+// #333: a request leaves rotor iron loss out whenever it is off, so absent reads as Off, not Not recorded.
+assert.deepEqual(inputChanges({ config: { solve_options: { losses_efficiency: true } } }, { config: { solve_options: { losses_efficiency: true, rotor_iron_loss: true } } })
+  .map(row => [row.label, row.before, row.after, row.missing]), [['Rotor iron loss', 'Off', 'On', false]]);
 const outerRun = inputChanges({ config: { topology: 'SPM' } }, { config: { topology: 'SPM', rotor_layout: 'outer' } });
 assert.deepEqual(outerRun.map(row => [row.label, row.before, row.after, row.missing]), [['Rotor arrangement', 'inner', 'outer', false]]);
 

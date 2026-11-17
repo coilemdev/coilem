@@ -302,7 +302,7 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
         recorded("phase_resistance", "Phase resistance and copper loss", winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON)
     iron = _mapping(summary.get("iron_loss"))
     if iron.get("status") in ("qualified", "experimental"):
-        statuses.append(("iron_loss", "Iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))
+        statuses.append(("iron_loss", "Stator iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))
     losses = _mapping(summary.get("loss_breakdown"))
     rotor = _mapping(summary.get("rotor_iron_loss"))
     if rotor.get("status") in ("qualified", "experimental"):
@@ -1568,7 +1568,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
             above_frequency = _percent(iron.get("share_above_validated_frequency"), 2)
             above_flux = _percent(iron.get("share_above_validated_flux_density"), 2)
             status.append(
-                f"Iron loss is experimental: {escape(str(iron.get('status_reason') or ''))} "
+                f"Stator iron loss is experimental: {escape(str(iron.get('status_reason') or ''))} "
                 f"{above_frequency} of it comes from harmonics above {_number(iron.get('validated_max_frequency_Hz'))} Hz "
                 f"and {above_flux} from flux densities above {_number(iron.get('validated_max_flux_density_T'))} T, "
                 "outside the range the model was checked over."
@@ -1613,25 +1613,55 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
     return story
 
 
+def _round_shares(values: Sequence[float], total: int) -> list[int]:
+    """Whole percents adding up to ``total`` (largest remainder), as the app's Losses card rounds them."""
+
+    whole = sum(values)
+    if whole <= 0:
+        return [0] * len(values)
+    exact = [value / whole * total for value in values]
+    rounded = [math.floor(value) for value in exact]
+    order = sorted(range(len(values)), key=lambda index: (-(exact[index] - rounded[index]), index))
+    for index in order[: total - sum(rounded)]:
+        rounded[index] += 1
+    return rounded
+
+
+def _loss_share_texts(parts: Sequence[tuple[str, float]]) -> list[str]:
+    """Each part's share of the total: groups add up to 100 %, and each group's parts to the group (#333)."""
+
+    groups = list(dict.fromkeys(group for group, _ in parts))
+    group_percents = dict(zip(groups, _round_shares([sum(v for g, v in parts if g == group) for group in groups], 100)))
+    total = sum(value for _, value in parts)
+    texts = [""] * len(parts)
+    for group in groups:
+        members = [index for index, (g, _) in enumerate(parts) if g == group]
+        for index, percent in zip(members, _round_shares([parts[i][1] for i in members], group_percents[group])):
+            texts[index] = "<1%" if percent == 0 and parts[index][1] > 0 else f"{percent}%"
+    return texts if total > 0 else ["0%"] * len(parts)
+
+
 def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
     """One stacked bar of the loss components, each named with its value."""
 
     hysteresis = losses.get("iron_hysteresis_loss_W")
     eddy = losses.get("iron_eddy_loss_W")
     segments = [
-        ("Copper, stack", losses.get("copper_active_loss_W")),
-        ("Copper, end turns", losses.get("copper_end_winding_loss_W")),
-        ("Stator iron, hysteresis", hysteresis),
-        ("Stator iron, lamination eddy", eddy),
-        ("Rotor iron, hysteresis", losses.get("rotor_hysteresis_loss_W")),
-        ("Rotor iron, lamination eddy", losses.get("rotor_lamination_eddy_loss_W")),
-        ("Mechanical", losses.get("mechanical_loss_W")),
+        ("copper", "Copper, stack", losses.get("copper_active_loss_W")),
+        ("copper", "Copper, end turns", losses.get("copper_end_winding_loss_W")),
+        ("stator", "Stator iron, hysteresis", hysteresis),
+        ("stator", "Stator iron, lamination eddy", eddy),
+        ("rotor", "Rotor iron, hysteresis", losses.get("rotor_hysteresis_loss_W")),
+        ("rotor", "Rotor iron, lamination eddy", losses.get("rotor_lamination_eddy_loss_W")),
+        ("mechanical", "Mechanical", losses.get("mechanical_loss_W")),
     ]
-    segments = [
-        (label, float(value), color)
-        for (label, value), color in zip(segments, _LOSS_SEGMENT_COLORS)
+    present = [
+        (group, label, float(value), color)
+        for (group, label, value), color in zip(segments, _LOSS_SEGMENT_COLORS)
         if isinstance(value, (int, float)) and math.isfinite(value) and value > 0
     ]
+    shares = _loss_share_texts([(group, value) for group, _, value, _ in present])
+    segments = [(label, value, color) for _, label, value, color in present]
     total = sum(value for _, value, _ in segments)
     if total <= 0:
         return None
@@ -1648,7 +1678,7 @@ def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
         column, line = index % 3, index // 3
         lx, ly = column * 58 * mm, (11 - line * 6) * mm+extra
         drawing.add(Rect(lx, ly, 3 * mm, 3 * mm, fillColor=colors.HexColor(color), strokeColor=None))
-        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {_number(value)} W ({100 * value / total:.0f}%)",
+        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {_number(value)} W ({shares[index]})",
                            fontName="Helvetica", fontSize=7.5, fillColor=_SLATE))
     return drawing
 

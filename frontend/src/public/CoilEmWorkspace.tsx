@@ -3880,8 +3880,14 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
-  const weakElementCount = meshQualitySummary.weakElementIndices.length;
-  const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
+  // A sector's copies around the motor repeat its elements exactly, so the run plan counts
+  // the solved sector, as its Mesh row does (#333).
+  const qualityRepeats = meshSector && meshSector.repeats > 1
+    && meshQualitySummary.qualities.length === meshSector.repeats * meshElements ? meshSector.repeats : 1;
+  const qualityCounts = Object.fromEntries(Object.entries(meshQualitySummary.counts)
+    .map(([band, count]) => [band, Math.round(count / qualityRepeats)])) as typeof meshQualitySummary.counts;
+  const weakElementCount = Math.round(meshQualitySummary.weakElementIndices.length / qualityRepeats);
+  const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length / qualityRepeats);
   const planLabel = config.solve_params.solve_quality === 'custom'
     ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
     : `${solvePlans.find((plan) => plan.value === selectedSolvePlan(config))?.label
@@ -4696,7 +4702,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
             <dl className="public-quality-list">
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
-              <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : 'Preparing…'}</dd></div>
+              <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : busy === 'mesh' ? 'Meshing…' : 'Not prepared'}</dd></div>
               <div><dt>Solved region</dt><dd>{solvedRegionLabel}</dd></div>
               <div className="public-minimum-quality-row">
                 <dt>Minimum quality</dt>
@@ -4763,22 +4769,23 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 {(['good', 'acceptable', 'marginal', 'failing'] as const).map((band) => (
                   <i
                     className={band}
-                    style={{ width: `${meshQualitySummary.counts[band] / qualityElementCount * 100}%` }}
+                    style={{ width: `${qualityCounts[band] / qualityElementCount * 100}%` }}
                     key={band}
                   />
                 ))}
               </div>
               <div className="public-quality-counts">
-                <span><i className="good" />Good <strong>{meshQualitySummary.counts.good.toLocaleString()}</strong></span>
-                <span><i className="acceptable" />Acceptable <strong>{meshQualitySummary.counts.acceptable.toLocaleString()}</strong></span>
-                <span><i className="marginal" />Marginal <strong>{meshQualitySummary.counts.marginal.toLocaleString()}</strong></span>
-                <span><i className="failing" />Failing <strong>{meshQualitySummary.counts.failing.toLocaleString()}</strong></span>
+                <span><i className="good" />Good <strong>{qualityCounts.good.toLocaleString()}</strong></span>
+                <span><i className="acceptable" />Acceptable <strong>{qualityCounts.acceptable.toLocaleString()}</strong></span>
+                <span><i className="marginal" />Marginal <strong>{qualityCounts.marginal.toLocaleString()}</strong></span>
+                <span><i className="failing" />Failing <strong>{qualityCounts.failing.toLocaleString()}</strong></span>
               </div>
               <p>{qualityPasses
                 ? weakElementCount > 0
                   ? `${weakElementCount.toLocaleString()} marginal elements pass the solver threshold but merit inspection.`
                   : 'All elements are comfortably above the solver threshold.'
                 : 'One or more elements must be improved before solving.'}</p>
+              {qualityRepeats > 1 && <p>Counts are for the solved sector; the Mesh tab draws its {qualityRepeats} copies around the motor.</p>}
             </div>
           </details>
         )}
