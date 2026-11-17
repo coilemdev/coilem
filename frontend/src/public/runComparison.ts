@@ -117,6 +117,8 @@ export interface ComparisonLossRow {
   before: ComparisonLossCell;
   after: ComparisonLossCell;
   comparable: boolean;
+  /** Why a delta is withheld although both values exist. */
+  basisNote?: string;
   indent?: boolean;
 }
 
@@ -162,9 +164,19 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
       status, reason: reason || undefined, partial: value !== null && partial && (row.key === 'shaft' || row.key === 'shaft_torque') };
   };
   const hasRotorRecord = before.summary.loss_breakdown?.rotor_iron_loss_status != null || after.summary.loss_breakdown?.rotor_iron_loss_status != null;
+  // Rotor iron loss enters the total, the shaft output and so the efficiency: with it in one
+  // run only, those rows are on different loss bases and get no delta (#333).
+  const rotorIncluded = (run: ComparisonResult) => {
+    const loss = run.summary.loss_breakdown;
+    return Boolean(loss) && loss!.rotor_iron_loss_status !== 'unavailable' && finiteNumber(loss!.rotor_iron_loss_W) !== null;
+  };
+  const scopeDiffers = Boolean(before.summary.loss_breakdown && after.summary.loss_breakdown) && rotorIncluded(before) !== rotorIncluded(after);
+  const scopeRows = new Set(['efficiency', 'shaft', 'shaft_torque', 'total', 'subtotal']);
   return descriptors.filter(row => row.status !== 'rotor' || hasRotorRecord).map(row => {
     const a = cell(before, row), b = cell(after, row);
+    const sameBasis = !(scopeDiffers && scopeRows.has(row.key));
     return { key: row.key, label: row.label, unit: row.unit, indent: row.indent, before: a, after: b,
-      comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) };
+      comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) && sameBasis,
+      ...(sameBasis ? {} : { basisNote: 'Only one of these runs includes rotor iron loss, so this value is on a different loss basis.' }) };
   }).filter(row => includeAllTotals || !['total', 'subtotal'].includes(row.key) || row.before.value !== null || row.after.value !== null);
 }

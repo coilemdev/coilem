@@ -1355,7 +1355,6 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-mesh-build-note { margin: 0; color: var(--text-muted); font-size: 9px; line-height: 1.45; }
 .public-advanced-controls-section .public-param-row + .public-param-row { border-top: 1px solid rgba(255,255,255,.035); }
 .public-advanced-output-section .public-output-chips { margin-top: 1px; }
-.public-prepare-mesh-btn { min-height: 34px; border: 1px solid var(--border-accent); border-radius: 7px; color: var(--text-accent); background: rgba(245,158,11,.08); font-size: 11px; font-weight: 700; }
 .public-back-link { min-height: 36px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-secondary); background: var(--bg-surface-2); font-size: 9px; }
 .public-solve-footer { flex: 0 0 auto; padding: 10px 14px 14px; border-top: 1px solid var(--border-subtle); background: rgba(13, 15, 20, 0.96); }
 .public-solve-footer .public-run-btn,

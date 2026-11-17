@@ -152,9 +152,11 @@ dead time, startup, or ESC dynamics.
 
 ## 7. Prepare and inspect the mesh
 
-The Solve stage begins preparing a mesh when it does not already have one.
-You can also open **Advanced options → Mesh preparation** and select
-**Prepare mesh** explicitly.
+The Solve stage begins preparing a mesh when it does not already have one,
+and prepares a new one as soon as you change a setting under **Advanced
+options → Mesh preparation**. If there is no mesh (for example after a failed
+attempt), the run button reads **Prepare mesh** or **Regenerate mesh**; once
+the mesh is ready it becomes **Run analysis**.
 
 Under **Analysis**, Torque and Back EMF start on. Cogging torque and
 Losses & efficiency and Torque–speed map are optional. Each analysis can run on its own: Back EMF
@@ -213,8 +215,8 @@ When meshing completes, confirm:
 - the minimum-quality row says **Pass**; and
 - the solver gate reports no weak-element blocker.
 
-If you change mesh density or refinement, select **Regenerate mesh** under
-**Advanced options → Mesh preparation** before running the analysis.
+Changing mesh density, refinement, mesh build or solved region prepares the
+new mesh at once; check these rows again before running the analysis.
 
 ## 8. Run the electromagnetic analysis
 

@@ -934,10 +934,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => {
     validationRequestId.current += 1;
-    setConfig((current) => ({
-      ...current,
-      solve_params: { ...current.solve_params, [field]: value },
-    }));
+    const next: MotorConfig = { ...config, solve_params: { ...config.solve_params, [field]: value } };
+    setConfig(next);
     setMesh(null);
     setValidation(null);
     setValidationChecking(false);
@@ -946,8 +944,10 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setProgress(null);
     setLiveSamples([]);
     setError(null);
-    setNotice('Mesh settings changed. Prepare a new mesh to apply them.');
-  }, []);
+    // A mesh setting takes effect at once: mesh again right after the change, so a run is
+    // never left waiting on a mesh nobody asked for (#333).
+    void prepareMesh(next);
+  }, [config, prepareMesh]);
 
   const updateSolveSetting = useCallback((
     field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
@@ -1131,7 +1131,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     }
   }, [constructionPreview, statorOnlyPreview, diagnosticPreview]);
 
-  const refreshSolveValidation = useCallback(async (nextConfig: MotorConfig) => {
+  const refreshSolveValidation = useCallback(async (nextConfig: MotorConfig, solveMeshKey?: string) => {
     const requestId = ++validationRequestId.current;
     setValidationChecking(true);
     setValidationError(null);
@@ -1141,6 +1141,9 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
         solver: selectedSolver,
         project_name: designName
           ?? `coilEM-${nextConfig.topology.toLowerCase()}-${nextConfig.rotor.pole_count}p${nextConfig.stator.slot_count}s`,
+        // The prepared mesh lets the run-time estimate use its real element count
+        // instead of a guess from the slot and pole counts (#333).
+        ...(selectedSolver === 'magneto2d' && solveMeshKey ? { solve_mesh_key: solveMeshKey } : {}),
       };
       const checked = await validatePublicSolve(request) as unknown as SolveValidation;
       if (requestId !== validationRequestId.current) return;
@@ -1243,10 +1246,10 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   useEffect(() => {
     if (view !== 'solve' || busy !== null) return undefined;
     const timer = window.setTimeout(() => {
-      void refreshSolveValidation(config);
+      void refreshSolveValidation(config, mesh?.solve_mesh_key);
     }, 140);
     return () => window.clearTimeout(timer);
-  }, [busy, config, refreshSolveValidation, view]);
+  }, [busy, config, mesh?.solve_mesh_key, refreshSolveValidation, view]);
 
   const generateMesh = (): Promise<MeshPreview | null> => prepareMesh(config);
 

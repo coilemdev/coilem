@@ -25,8 +25,11 @@ const ABSENT = Symbol('absent');
 /** Maps keyed by the user's own names: a missing key is an entry the run did not have. */
 const NAMED_MAPS = new Set(['config.materials.custom_steels']);
 /** Fields a saved config leaves out at their default (backend/models/config.py), so a run that
- * lacks one solved with that default, including runs saved before the field existed. */
-const OMITTED_DEFAULTS: Record<string, string> = { 'config.solve_params.symmetry': 'full', 'config.rotor_layout': 'inner' };
+ * lacks one solved with that default, including runs saved before the field existed. A request
+ * leaves rotor_iron_loss out whenever it is off (publicRequest.ts), so absent reads as Off (#333). */
+const OMITTED_DEFAULTS: Record<string, string | boolean> = {
+  'config.solve_params.symmetry': 'full', 'config.rotor_layout': 'inner', 'config.solve_options.rotor_iron_loss': false,
+};
 const LABELS: Record<string, string> = {
   'config.topology': 'Motor topology', 'config.rotor_layout': 'Rotor arrangement',
   'config.geometry_reference': 'Reference model', 'config.reference_case': 'Reference case',
