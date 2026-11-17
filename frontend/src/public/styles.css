@@ -1433,10 +1433,21 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .losses-bar-segment { min-width: 2px; transition: opacity .12s; }
 .losses-bar-segment.is-dimmed { opacity: .35; }
 .losses-bar-readout { margin: 4px 0 3px; color: var(--text-secondary); font: 10px var(--font-mono); font-variant-numeric: tabular-nums; }
-.losses-legend { display: flex; flex-wrap: wrap; gap: 3px 12px; margin: 0; padding: 0; list-style: none; }
-.losses-legend li { display: inline-flex; align-items: center; gap: 5px; color: var(--text-muted); font: 10px var(--font-ui); cursor: default; }
-.losses-swatch { width: 8px; height: 8px; border-radius: 2px; }
-.losses-legend-value { color: var(--text-secondary); font: 10px var(--font-mono); font-variant-numeric: tabular-nums; }
+/* The table is the bar's legend: loss rows open on their segment rows, each with the bar segment's swatch and share. */
+.losses-swatch { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 2px; vertical-align: -0.5px; }
+.losses-group-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.losses-group-toggle:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 3px; }
+/* Chevron, swatch and blank slot share one 8px column, so every loss row's name lines up. */
+.losses-chevron { display: inline-block; box-sizing: border-box; width: 6px; height: 6px; margin: 0 1px 1px; border-right: 1.5px solid var(--text-secondary); border-bottom: 1.5px solid var(--text-secondary); transform: rotate(-45deg); transition: transform .12s; }
+.losses-group-toggle[aria-expanded="true"] .losses-chevron { margin-bottom: 3px; transform: rotate(45deg); }
+.losses-group-toggle:hover .losses-chevron { border-color: var(--text-primary); }
+.losses-swatch.is-blank { background: none; }
+.losses-card tr.is-segment th { padding-left: 14px; color: var(--text-muted); }
+.losses-card tr.is-segment .motor-constants-value { color: var(--text-secondary); font-weight: 500; }
+.losses-card.is-report tr.is-segment th { font-size: 10px; }
+.losses-share-cell { width: 1%; padding: 3px 0 3px 10px; color: var(--text-muted); font: 9px/1.6 var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.losses-card.is-report .losses-share-cell { font-size: 10px; }
+.losses-card tr.is-lit > * { background: rgba(148, 163, 184, .08); }
 .losses-map { display: grid; justify-items: center; gap: 6px; margin: 0; }
 .losses-map-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; }
 .losses-map-heading h4 { margin: 0; color: var(--text-muted); font: 700 9px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }

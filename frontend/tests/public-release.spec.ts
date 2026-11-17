@@ -1578,7 +1578,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(lossRow('Copper loss').locator('.public-run-compare-loss-value')).toHaveText(['50.0 W', '40.0 W']);
     await expect(lossRow('Copper loss').locator('td').nth(2)).toHaveText('−10.0 W');
     await expect(lossRow('Total loss').locator('.public-run-compare-loss-value')).toHaveText(['100 W', '80.0 W']);
-    await expect(lossRow('Iron, eddy current').locator('td').nth(3)).toHaveText('—');
+    await expect(lossRow('Stator iron, lamination eddy').locator('td').nth(3)).toHaveText('—');
     await expect(losses.getByRole('button', { name: 'Run A Efficiency: Experimental', exact: true })).toBeVisible();
     await losses.screenshot({ path: info.outputPath('compare-losses-efficiency.png') });
     await timing.screenshot({ path: info.outputPath('compare-time-breakdown.png') });

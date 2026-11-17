@@ -1543,7 +1543,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                     ("Solved torque", f"{_number(losses.get('electromagnetic_torque_Nm'), 4)} N m"),
                     ("Shaft torque", f"{_number(losses.get('shaft_torque_Nm'), 4)} N m"),
                     ("Copper loss", f"{_number(losses.get('copper_loss_W'))} W"),
-                    ("Iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
+                    ("Stator iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
                     *(([("Rotor iron loss", f"{_number(losses.get('rotor_iron_loss_W'))} W"
                           if losses.get("rotor_iron_loss_W") is not None else "Unavailable")])
                       if losses.get("rotor_iron_loss_status") is not None else []),
@@ -1621,10 +1621,10 @@ def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
     segments = [
         ("Copper, stack", losses.get("copper_active_loss_W")),
         ("Copper, end turns", losses.get("copper_end_winding_loss_W")),
-        ("Iron, hysteresis", hysteresis),
-        ("Iron, eddy current", eddy),
-        ("Rotor, hysteresis", losses.get("rotor_hysteresis_loss_W")),
-        ("Rotor, lamination eddy", losses.get("rotor_lamination_eddy_loss_W")),
+        ("Stator iron, hysteresis", hysteresis),
+        ("Stator iron, lamination eddy", eddy),
+        ("Rotor iron, hysteresis", losses.get("rotor_hysteresis_loss_W")),
+        ("Rotor iron, lamination eddy", losses.get("rotor_lamination_eddy_loss_W")),
         ("Mechanical", losses.get("mechanical_loss_W")),
     ]
     segments = [

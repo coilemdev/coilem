@@ -17,44 +17,40 @@ import {
   notModelledText,
   stackCopperWPerKg,
   type LossMapMode,
+  type LossRow,
   type LossSegment,
 } from './lossesView';
 import { formatSignificant } from './numberFormat';
 
-function LossBar({ segments, totalW, partial }: { segments: LossSegment[]; totalW: number; partial: boolean }) {
-  const [hovered, setHovered] = useState<LossSegment['key'] | null>(null);
-  const active = segments.find((segment) => segment.key === hovered) ?? null;
+/** What the pointer is on: a bar segment, or a table row. Each lights up the other. */
+type LossHover = { kind: 'segment'; key: LossSegment['key'] } | { kind: 'row'; key: string } | null;
+
+/** One bar of the loss segments. The table above names them: each segment has its row and swatch there. */
+function LossBar({ segments, totalW, partial, lit, readout, onHover }: {
+  segments: LossSegment[];
+  totalW: number;
+  partial: boolean;
+  /** Segments to keep bright while something is hovered; the rest dim. */
+  lit: ReadonlySet<LossSegment['key']> | null;
+  readout: string | null;
+  onHover: (key: LossSegment['key'] | null) => void;
+}) {
   const total = formatPower(totalW);
   return (
     <div className="losses-bar-block">
-      <div className="losses-bar" role="img" aria-label={`Loss breakdown, ${total.value} ${total.unit} in total`} onMouseLeave={() => setHovered(null)}>
+      <div className="losses-bar" role="img" aria-label={`Loss breakdown, ${total.value} ${total.unit} in total`} onMouseLeave={() => onHover(null)}>
         {segments.map((segment) => (
           <span
             key={segment.key}
-            className={`losses-bar-segment${hovered && hovered !== segment.key ? ' is-dimmed' : ''}`}
+            className={`losses-bar-segment${lit && !lit.has(segment.key) ? ' is-dimmed' : ''}`}
             style={{ flexGrow: segment.watts, background: segment.color }}
-            onMouseEnter={() => setHovered(segment.key)}
+            onMouseEnter={() => onHover(segment.key)}
           />
         ))}
       </div>
       <p className="losses-bar-readout" aria-live="polite">
-        {active
-          ? `${active.label}: ${formatPower(active.watts).value} ${formatPower(active.watts).unit} (${Math.round(active.share * 100)}%)`
-          : `${total.value} ${total.unit} ${partial ? 'known loss subtotal' : 'total loss'}`}
+        {readout ?? `${total.value} ${total.unit} ${partial ? 'known loss subtotal' : 'total loss'}`}
       </p>
-      {/* Shares here: the table above already gives the watts, and each item's tooltip repeats them. */}
-      <ul className="losses-legend">
-        {segments.map((segment) => {
-          const power = formatPower(segment.watts);
-          return (
-            <li key={segment.key} title={`${power.value} ${power.unit}`} onMouseEnter={() => setHovered(segment.key)} onMouseLeave={() => setHovered(null)}>
-              <span className="losses-swatch" style={{ background: segment.color }} aria-hidden="true" />
-              <span className="losses-legend-label">{segment.label}</span>
-              <span className="losses-legend-value">{Math.round(segment.share * 100)}%</span>
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }
@@ -106,9 +102,9 @@ function scaleTop(values: Array<number | null>): { top: number; peak: number } |
 }
 
 const MODE_LABEL: Record<LossMapMode, string> = {
-  iron: 'Iron, total',
-  hysteresis: 'Iron, hysteresis',
-  eddy: 'Iron, eddy current',
+  iron: 'Stator iron, total',
+  hysteresis: 'Stator iron, hysteresis',
+  eddy: 'Stator iron, lamination eddy',
   copper: 'Copper',
 };
 const MODE_SHORT: Record<LossMapMode, string> = { iron: 'Iron', hysteresis: 'Hyst.', eddy: 'Eddy', copper: 'Copper' };
@@ -390,7 +386,10 @@ export function LossesCard({
   variant?: 'panel' | 'report';
 }) {
   const headingId = useId();
-  const view = lossesView(loss, iron, winding ?? null);
+  const [hover, setHover] = useState<LossHover>(null);
+  // Loss rows the user opened or closed; the rest follow the view's default.
+  const [opened, setOpened] = useState<Record<string, boolean>>({});
+  const view = lossesView(loss, iron, winding ?? null, rotor ?? null);
   if (!view || !loss) {
     if (!winding) return null;
     const status = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
@@ -409,6 +408,28 @@ export function LossesCard({
   const rowStatus = (key: string) => view.statuses.find((item) => item.key === key) ?? null;
   const efficiencyStatus = rowStatus('efficiency');
   const showMap = Boolean(plot && (density || copperWPerKg !== null));
+  const isOpen = (row: LossRow) => opened[row.key] ?? row.expanded ?? false;
+  const openParents = new Set(view.rows.filter((row) => row.expanded !== undefined && isOpen(row)).map((row) => row.key));
+  const shownRows = view.rows.filter((row) => !row.parent || openParents.has(row.parent));
+  // A segment's own row when it shows, else the loss row that holds it.
+  const rowOfSegment = (key: LossSegment['key']) => shownRows.find((row) => row.key === key) ?? shownRows.find((row) => row.segments?.includes(key));
+  const hoveredRow = hover?.kind === 'row' ? shownRows.find((row) => row.key === hover.key) : undefined;
+  const hoveredSegment = hover?.kind === 'segment' ? view.segments.find((segment) => segment.key === hover.key) : undefined;
+  const litRowKey = hoveredRow?.key ?? (hoveredSegment ? rowOfSegment(hoveredSegment.key)?.key : undefined);
+  const lit = hoveredSegment ? new Set([hoveredSegment.key]) : hoveredRow?.segments ? new Set(hoveredRow.segments) : null;
+  const segmentReadout = (segment: LossSegment) => {
+    const power = formatPower(segment.watts);
+    return `${segment.label}: ${power.value} ${power.unit} (${segment.shareText})`;
+  };
+  const readout = hoveredSegment ? segmentReadout(hoveredSegment)
+    : hoveredRow?.parent ? segmentReadout(view.segments.find((segment) => segment.key === hoveredRow.key)!)
+      : hoveredRow?.share ? `${hoveredRow.label}: ${hoveredRow.value} ${hoveredRow.unit} (${hoveredRow.share})` : null;
+  const hoverRow = (row: LossRow) => (row.segments ? () => setHover({ kind: 'row', key: row.key }) : undefined);
+  const rowClass = (row: LossRow) => [
+    row.key === 'input' || row.key === 'copper' ? 'is-group-start' : row.key === 'total' ? 'is-total' : '',
+    row.parent ? 'is-segment' : '',
+    row.key === litRowKey ? 'is-lit' : '',
+  ].filter(Boolean).join(' ') || undefined;
   return (
     <section className={`motor-constants losses-card${variant === 'report' ? ' is-report' : ''}${showMap ? ' has-map' : ''}`} aria-labelledby={headingId}>
       <div className="results-card-heading">
@@ -420,23 +441,49 @@ export function LossesCard({
       {view.efficiency.status === 'unavailable' && <p className="performance-message" role="status">{view.efficiency.reason || 'Efficiency is unavailable for this run.'} {loss.iron_loss_status_reason} {loss.iron_loss_W == null && 'The loss subtotal excludes unavailable iron loss.'}</p>}
       <div className="losses-card-body">
         <div className="losses-card-numbers">
+          {/* The table is the bar's legend: every bar segment has a row here with the same swatch and share. */}
           <table>
             <tbody>
               <tr className="losses-efficiency" title="Shaft power ÷ input power at the solved operating point.">
                 <th scope="row"><span className="losses-hint">Efficiency</span></th>
                 <td className="motor-constants-value">{view.efficiency.value}</td>
                 <td className="motor-constants-unit">{view.efficiency.value === '—' ? '' : '%'}</td>
+                <td className="losses-share-cell" />
                 <td className="losses-status-cell">
                   {efficiencyStatus && <StatusDot status={efficiencyStatus.status} label={efficiencyStatus.label} reason={efficiencyStatus.reason} />}
                 </td>
               </tr>
-              {view.rows.map((row) => {
+              {shownRows.map((row) => {
                 const status = row.status ? rowStatus(row.key) : null;
+                const label = <span className={row.hint ? 'losses-hint' : undefined}>{row.label}</span>;
+                const segment = row.parent ? view.segments.find((item) => item.key === row.key) : undefined;
                 return (
-                  <tr key={row.key} title={row.hint} className={row.key === 'input' || row.key === 'copper' ? 'is-group-start' : row.key === 'total' ? 'is-total' : undefined}>
-                    <th scope="row"><span className={row.hint ? 'losses-hint' : undefined}>{row.label}</span></th>
+                  <tr key={row.key} title={row.hint} className={rowClass(row)} onMouseEnter={hoverRow(row)} onMouseLeave={row.segments ? () => setHover(null) : undefined}>
+                    <th scope="row">
+                      {row.expanded !== undefined ? (
+                        <button
+                          type="button"
+                          className="losses-group-toggle"
+                          aria-expanded={isOpen(row)}
+                          onClick={() => setOpened((current) => ({ ...current, [row.key]: !isOpen(row) }))}
+                          onFocus={hoverRow(row)}
+                          onBlur={() => setHover(null)}
+                        >
+                          <span className="losses-chevron" aria-hidden="true" />
+                          {label}
+                        </button>
+                      ) : (
+                        <>
+                          {row.color
+                            ? <span className="losses-swatch" style={{ background: row.color }} aria-hidden="true" />
+                            : row.group && <span className="losses-swatch is-blank" aria-hidden="true" />}
+                          {segment ? <><span className="public-visually-hidden">{segment.label}</span><span aria-hidden="true">{label}</span></> : label}
+                        </>
+                      )}
+                    </th>
                     <td className="motor-constants-value">{row.value}</td>
                     <td className="motor-constants-unit">{row.unit}</td>
+                    <td className="losses-share-cell">{row.share ?? ''}</td>
                     <td className="losses-status-cell">
                       {row.status && <StatusDot status={row.status} label={status?.label ?? row.label} reason={status?.reason ?? row.hint ?? ''} />}
                     </td>
@@ -445,13 +492,14 @@ export function LossesCard({
               })}
             </tbody>
           </table>
-          {rotor && rotor.status !== 'unavailable' && <p className="popover-note">
-            Rotor iron: {rotor.steel}, {rotor.samples_per_mechanical_turn} positions over a full mechanical turn.
-            {rotor.share_above_validated_frequency != null && rotor.share_above_validated_frequency > 0 && <>
-              {' '}{(100 * rotor.share_above_validated_frequency).toFixed(1)}% of the estimate is above the material model’s {rotor.validated_max_frequency_Hz} Hz range.
-            </>}
-          </p>}
-          {view.segments.length > 0 && <LossBar segments={view.segments} totalW={view.totalW} partial={loss.iron_loss_W == null || loss.rotor_iron_loss_status === 'unavailable'} />}
+          {view.segments.length > 0 && <LossBar
+            segments={view.segments}
+            totalW={view.totalW}
+            partial={loss.iron_loss_W == null || loss.rotor_iron_loss_status === 'unavailable'}
+            lit={lit}
+            readout={readout}
+            onHover={(key) => setHover(key ? { kind: 'segment', key } : null)}
+          />}
         </div>
         {showMap && plot && (
           <LossMap
