@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 97649,
-      "sha256": "dfbfe9d4db6ba1769cc63e2094579fb8e4b268110457f78c50c4b1c8d9a52534"
+      "bytes": 97683,
+      "sha256": "90ad827ec6a9702fb175441827260eea10daaf2e7fd8c08d1ef7b8e95b151a21"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -6530,8 +6530,8 @@
     },
     {
       "path": "frontend/scripts/test-losses-view.mjs",
-      "bytes": 8607,
-      "sha256": "7e78dcf7e64bb3187c62f48f07b7906cecb9363b84aa730370d8e7e7ac3e35ad"
+      "bytes": 12875,
+      "sha256": "e0edf1254d154eef02ddc55f346ecd576a3065c84b52817e5fe5b06567e53e6c"
     },
     {
       "path": "frontend/scripts/test-magnet-coverage.mjs",
@@ -7055,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/LossesCard.tsx",
-      "bytes": 23216,
-      "sha256": "4fd7e3fbcf6232eebec78741dde0d2998504d07604d4a3ef7fd246ed2ea504ac"
+      "bytes": 26013,
+      "sha256": "6761b116497138789b5f46def554eee57f8c953751b1fbd5c4c7484b4c8ea6d4"
     },
     {
       "path": "frontend/src/public/MaterialWorkspace.tsx",
@@ -7410,8 +7410,8 @@
     },
     {
       "path": "frontend/src/public/lossesView.ts",
-      "bytes": 11360,
-      "sha256": "c9eb59db53046cc001b9b1a4e49b19489e7b99b2dc993b3d449a66f49173ea1d"
+      "bytes": 17605,
+      "sha256": "369527957fecb1027b03c48f15f5aba6f582a3e7369a1bb75ba8b107a00b51c2"
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 340197,
-      "sha256": "ea9f818ad9730e83e2a39bd693df5506376d9deff1a78f95f66389c86699610e"
+      "bytes": 341479,
+      "sha256": "72f2ece770dfca0172eba7df0b1734f802effd5455f3ce01bf82eb5e878b50fc"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 162563,
-      "sha256": "292bfefa0723723d64a6334be1919118a30d267184c8e4590fec769cd5654706"
+      "bytes": 162580,
+      "sha256": "c33f7b920cae36d7cf22aedb8b48701905cecb34abf61f4766a86dfde47f070c"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -11680,8 +11680,8 @@
     },
     {
       "path": "frontend/src/public/runComparison.ts",
-      "bytes": 10656,
-      "sha256": "a36764399db04cf335fc2496a653d53fe5d97536148da47ec817c61a8e881386"
+      "bytes": 10680,
+      "sha256": "9e6db0ef1c053ec8b2fad7cff3e8539e39edf65b0e97659328e2559e88ab1a4d"
     },
     {
       "path": "backend/report_numbers.py",

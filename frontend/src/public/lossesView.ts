@@ -9,14 +9,26 @@
 
 import { formatSignificant } from './numberFormat';
 import { PHASE_RESISTANCE_UNRECORDED_STATUS_REASON, recordStatus, type NamedOutputStatus } from './outputStatus';
-import type { IronLoss, LossBreakdown, PerformanceOutputStatus } from './performance';
+import type { IronLoss, LossBreakdown, PerformanceOutputStatus, RotorIronLoss } from './performance';
 import type { WindingResistance } from './windingResistance';
+
+/** The loss rows the bar's segments belong to: where the loss is. */
+export type LossGroup = 'copper' | 'iron' | 'rotor_iron' | 'mechanical';
 
 export interface LossSegment {
   key: 'copper_stack' | 'copper_end' | 'iron_hysteresis' | 'iron_eddy' | 'rotor_hysteresis' | 'rotor_eddy' | 'mechanical';
+  /** The loss row this segment is part of. */
+  group: LossGroup;
+  /** Full name, for the bar readout: "Stator iron, lamination eddy". */
   label: string;
+  /** Name under its loss row: "Lamination eddy". */
+  shortLabel: string;
   watts: number;
   share: number;
+  /** Rounded share of the bar's total, "85%"; shares of a loss row's segments add up to the row's. */
+  shareText: string;
+  /** What the segment is, in words. */
+  about: string;
   /** CSS custom property holding the segment's series color. */
   color: string;
 }
@@ -28,11 +40,24 @@ export interface LossRow {
   unit: string;
   hint?: string;
   status?: PerformanceOutputStatus;
+  /** On a loss row: the bar segments' group it heads. */
+  group?: LossGroup;
+  /** On a segment row: the loss row it is part of. Its key is the segment's key. */
+  parent?: LossGroup;
+  /** The bar segments the row stands for: its own, or its components'. */
+  segments?: LossSegment['key'][];
+  /** Rounded share of the bar's total, on rows the bar shows. */
+  share?: string;
+  /** Series color of the row's own segment: a segment row, or a loss row with only one. */
+  color?: string;
+  /** On a loss row with segment rows: whether they show before the user opens or closes them. */
+  expanded?: boolean;
 }
 
 export interface LossesView {
   /** `text` with its % sign, `value` without it for a table cell. */
   efficiency: { text: string; value: string; status: PerformanceOutputStatus; reason: string };
+  /** Loss rows, each followed by its segment rows: the table is the bar's legend. */
   rows: LossRow[];
   /** Efficiency, iron loss and copper loss, each with its status and reason in words. */
   statuses: NamedOutputStatus[];
@@ -40,15 +65,21 @@ export interface LossesView {
   totalW: number;
 }
 
-const SEGMENTS: Array<{ key: LossSegment['key']; label: string; field: keyof LossBreakdown }> = [
-  { key: 'copper_stack', label: 'Copper, stack', field: 'copper_active_loss_W' },
-  { key: 'copper_end', label: 'Copper, end turns', field: 'copper_end_winding_loss_W' },
-  { key: 'iron_hysteresis', label: 'Iron, hysteresis', field: 'iron_hysteresis_loss_W' },
-  { key: 'iron_eddy', label: 'Iron, eddy current', field: 'iron_eddy_loss_W' },
-  { key: 'rotor_hysteresis', label: 'Rotor iron, hysteresis', field: 'rotor_hysteresis_loss_W' },
-  { key: 'rotor_eddy', label: 'Rotor iron, lamination eddy', field: 'rotor_lamination_eddy_loss_W' },
-  { key: 'mechanical', label: 'Mechanical', field: 'mechanical_loss_W' },
+const HYSTERESIS = 'Energy spent re-magnetising the steel every cycle; it grows in proportion to frequency.';
+const LAMINATION_EDDY = 'Currents induced inside each steel sheet; they grow with frequency squared. Eddy loss in the magnets is a different loss and is not modelled.';
+
+const SEGMENTS: Array<{ key: LossSegment['key']; group: LossGroup; label: string; shortLabel: string; about: string; field: keyof LossBreakdown }> = [
+  { key: 'copper_stack', group: 'copper', label: 'Copper, stack', shortLabel: 'Stack', about: 'Copper loss in the coil sides along the stack.', field: 'copper_active_loss_W' },
+  { key: 'copper_end', group: 'copper', label: 'Copper, end turns', shortLabel: 'End turns', about: 'Copper loss in the end turns, outside the 2D cross-section.', field: 'copper_end_winding_loss_W' },
+  { key: 'iron_hysteresis', group: 'iron', label: 'Stator iron, hysteresis', shortLabel: 'Hysteresis', about: HYSTERESIS, field: 'iron_hysteresis_loss_W' },
+  { key: 'iron_eddy', group: 'iron', label: 'Stator iron, lamination eddy', shortLabel: 'Lamination eddy', about: LAMINATION_EDDY, field: 'iron_eddy_loss_W' },
+  { key: 'rotor_hysteresis', group: 'rotor_iron', label: 'Rotor iron, hysteresis', shortLabel: 'Hysteresis', about: HYSTERESIS, field: 'rotor_hysteresis_loss_W' },
+  { key: 'rotor_eddy', group: 'rotor_iron', label: 'Rotor iron, lamination eddy', shortLabel: 'Lamination eddy', about: LAMINATION_EDDY, field: 'rotor_lamination_eddy_loss_W' },
+  { key: 'mechanical', group: 'mechanical', label: 'Mechanical', shortLabel: 'Mechanical', about: 'Friction and windage as entered under Operating point.', field: 'mechanical_loss_W' },
 ];
+
+/** A loss row opens on its segment rows when it holds at least this share of the total. */
+export const EXPAND_SHARE = 0.01;
 
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const significant = (value: number, digits = 3) => Number(value.toPrecision(digits)).toString().replace('-', '−');
@@ -67,14 +98,50 @@ export function notModelledText(loss: LossBreakdown): string {
     + (loss.mechanical_loss_W > 0 ? '.' : ', and mechanical loss unless entered under Operating point.');
 }
 
-export function lossSegments(loss: LossBreakdown): { segments: LossSegment[]; totalW: number } {
+/**
+ * Whole percents that add up to `total` (largest remainder), so rounded shares
+ * never disagree with the sum they are part of.
+ */
+export function roundShares(values: readonly number[], total: number): number[] {
+  const sum = values.reduce((acc, value) => acc + value, 0);
+  if (!(sum > 0)) return values.map(() => 0);
+  const exact = values.map((value) => (value / sum) * total);
+  const rounded = exact.map(Math.floor);
+  const order = exact.map((value, index) => ({ index, rest: value - Math.floor(value) })).sort((a, b) => b.rest - a.rest || a.index - b.index);
+  for (let left = total - rounded.reduce((acc, value) => acc + value, 0), i = 0; left > 0 && i < order.length; left -= 1, i += 1) rounded[order[i].index] += 1;
+  return rounded;
+}
+
+/** A rounded percent, or "<1%" for a share too small to round to one. */
+export function shareText(percent: number, share: number): string {
+  return percent === 0 && share > 0 ? '<1%' : `${percent}%`;
+}
+
+const GROUPS: LossGroup[] = ['copper', 'iron', 'rotor_iron', 'mechanical'];
+
+export function lossSegments(loss: LossBreakdown): { segments: LossSegment[]; totalW: number; groupShares: Record<LossGroup, { share: number; percent: number }> } {
   const parts = SEGMENTS
-    .map(({ key, label, field }) => ({ key, label, watts: loss[field] as number | null | undefined }))
-    .filter((part): part is { key: LossSegment['key']; label: string; watts: number } => finite(part.watts) && part.watts > 0);
+    .map((part) => ({ ...part, watts: loss[part.field] as number | null | undefined }))
+    .filter((part): part is (typeof SEGMENTS)[number] & { watts: number } => finite(part.watts) && part.watts > 0);
   const totalW = parts.reduce((sum, part) => sum + part.watts, 0);
+  // Round each loss row's share of 100, then split that among its segments.
+  const groupWatts = GROUPS.map((group) => parts.filter((part) => part.group === group).reduce((sum, part) => sum + part.watts, 0));
+  const groupPercents = roundShares(groupWatts, 100);
+  const percents = new Map<LossSegment['key'], number>();
+  GROUPS.forEach((group, index) => {
+    const members = parts.filter((part) => part.group === group);
+    roundShares(members.map((part) => part.watts), groupPercents[index]).forEach((percent, member) => percents.set(members[member].key, percent));
+  });
+  const groupShares = Object.fromEntries(GROUPS.map((group, index) => [group, {
+    share: totalW > 0 ? groupWatts[index] / totalW : 0, percent: groupPercents[index],
+  }])) as Record<LossGroup, { share: number; percent: number }>;
   return {
     totalW,
-    segments: parts.map((part) => ({ ...part, share: totalW > 0 ? part.watts / totalW : 0, color: `var(--loss-${part.key.replace('_', '-')})` })),
+    groupShares,
+    segments: parts.map(({ field: _field, ...part }) => {
+      const share = totalW > 0 ? part.watts / totalW : 0;
+      return { ...part, share, shareText: shareText(percents.get(part.key) ?? 0, share), color: `var(--loss-${part.key.replace('_', '-')})` };
+    }),
   };
 }
 
@@ -83,11 +150,20 @@ function powerRow(key: string, label: string, watts: number, hint?: string, stat
   return { key, label, value, unit, hint, status };
 }
 
+/** How the rotor iron loss was sampled, and how much of it lies outside the material model's range. */
+export function rotorSamplingText(rotor: RotorIronLoss | null | undefined): string {
+  if (!rotor || rotor.status === 'unavailable') return '';
+  const outside = rotor.share_above_validated_frequency;
+  return `Rotor iron: ${rotor.steel}, ${rotor.samples_per_mechanical_turn} positions over a full mechanical turn.`
+    + (finite(outside) && outside > 0 ? ` ${(100 * outside).toFixed(1)}% of the estimate is above the material model’s ${rotor.validated_max_frequency_Hz} Hz range.` : '');
+}
+
 /** The card's content, or null for a run without a loss breakdown. */
 export function lossesView(
   loss: LossBreakdown | null | undefined,
   iron: IronLoss | null | undefined,
   winding: WindingResistance | null = null,
+  rotor: RotorIronLoss | null = null,
 ): LossesView | null {
   if (!loss) return null;
   const efficiencyAvailable = finite(loss.efficiency_pct);
@@ -103,7 +179,7 @@ export function lossesView(
   const rotorRequested = loss.rotor_iron_loss_status != null;
   const ironParts: string[] = [];
   if (ironAvailable) {
-    ironParts.push(`Hysteresis ${formatPower(loss.iron_hysteresis_loss_W ?? NaN).value} W, eddy current ${formatPower(loss.iron_eddy_loss_W ?? NaN).value} W.`);
+    ironParts.push(`Hysteresis ${formatPower(loss.iron_hysteresis_loss_W ?? NaN).value} W, lamination eddy ${formatPower(loss.iron_eddy_loss_W ?? NaN).value} W.`);
     if (iron && finite(iron.iron_teeth_loss_W) && finite(iron.iron_yoke_loss_W)) {
       ironParts.push(`Teeth ${formatPower(iron.iron_teeth_loss_W).value} W, yoke ${formatPower(iron.iron_yoke_loss_W).value} W.`);
     }
@@ -116,36 +192,53 @@ export function lossesView(
   } else {
     ironParts.push(loss.iron_loss_status_reason || 'Iron loss is unavailable for this run.');
   }
-  const { segments, totalW } = lossSegments(loss);
+  const { segments, totalW, groupShares } = lossSegments(loss);
   const resistance = loss.phase_resistance_ohm < 1
     ? `${significant(loss.phase_resistance_ohm * 1000)} mΩ`
     : `${significant(loss.phase_resistance_ohm)} Ω`;
   const copperStatus = recordStatus(winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON);
+  const rotorNote = rotorSamplingText(rotor);
   const statuses: NamedOutputStatus[] = [];
   statuses.push({ key: 'efficiency', label: 'Efficiency', ...efficiency });
-  statuses.push({ key: 'iron', label: 'Iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
+  statuses.push({ key: 'iron', label: 'Stator iron loss and its map', status: loss.iron_loss_status, reason: iron?.status_reason ?? loss.iron_loss_status_reason ?? '' });
   if (rotorRequested) statuses.push({ key: 'rotor_iron', label: 'Rotor iron loss',
-    status: loss.rotor_iron_loss_status ?? 'unavailable', reason: loss.rotor_iron_loss_status_reason ?? '' });
+    status: loss.rotor_iron_loss_status ?? 'unavailable', reason: [loss.rotor_iron_loss_status_reason, rotorNote].filter(Boolean).join(' ') });
   statuses.push({ key: 'copper', label: 'Copper loss, from the phase resistance', ...copperStatus });
+  // A loss row is followed by one row per bar segment it holds, so the table is the bar's legend.
+  const withSegments = (row: LossRow, group: LossGroup): LossRow[] => {
+    const members = segments.filter((segment) => segment.group === group);
+    if (!members.length) return [{ ...row, group }];
+    const { share, percent } = groupShares[group];
+    const parent: LossRow = { ...row, group, segments: members.map((member) => member.key), share: shareText(percent, share) };
+    if (members.length === 1) return [{ ...parent, color: members[0].color }];
+    return [
+      { ...parent, expanded: share >= EXPAND_SHARE },
+      ...members.map((member): LossRow => ({
+        key: member.key, label: member.shortLabel, ...formatPower(member.watts), hint: `${member.label}: ${member.about}`,
+        parent: group, segments: [member.key], share: member.shareText, color: member.color,
+      })),
+    ];
+  };
+  const rotorShown = rotorRequested || segments.some((segment) => segment.group === 'rotor_iron');
   const rows: LossRow[] = [
     powerRow('input', 'Input power', loss.input_power_W, 'Electrical input: the solved torque times speed, plus copper loss.'),
     powerRow('shaft', 'Shaft power', loss.shaft_power_W, 'Solved torque times speed, less iron and mechanical loss.'),
     { key: 'torque', label: 'Shaft torque', value: formatSignificant(loss.shaft_torque_Nm).replace('-', '−'), unit: 'N·m',
       hint: `The solved torque, ${significant(loss.electromagnetic_torque_Nm, 4)} N·m, less the iron and mechanical loss torque. The solved torque is unchanged.` },
-    powerRow('copper', 'Copper loss', loss.copper_loss_W,
+    ...withSegments(powerRow('copper', 'Copper loss', loss.copper_loss_W,
       `3 × (${significant(loss.phase_current_rms_A)} A rms)² × ${resistance} at ${significant(loss.winding_temperature_C)} °C. `
       + `Stack ${formatPower(loss.copper_active_loss_W).value} W, end turns ${formatPower(loss.copper_end_winding_loss_W).value} W.`,
-      copperStatus.status),
-    ironAvailable
-      ? powerRow('iron', 'Iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
-      : { key: 'iron', label: 'Iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' },
-    ...(rotorRequested ? [rotorAvailable
+      copperStatus.status), 'copper'),
+    ...withSegments(ironAvailable
+      ? powerRow('iron', 'Stator iron loss', loss.iron_loss_W as number, ironParts.join(' '), loss.iron_loss_status)
+      : { key: 'iron', label: 'Stator iron loss', value: '—', unit: '', hint: ironParts.join(' '), status: 'unavailable' }, 'iron'),
+    ...(rotorShown ? withSegments(rotorAvailable
       ? powerRow('rotor_iron', 'Rotor iron loss', loss.rotor_iron_loss_W as number,
         `Hysteresis ${formatPower(loss.rotor_hysteresis_loss_W ?? NaN).value} W, lamination eddy ${formatPower(loss.rotor_lamination_eddy_loss_W ?? NaN).value} W. `
-          + (loss.rotor_iron_loss_status_reason ?? ''), loss.rotor_iron_loss_status ?? 'experimental')
+          + (rotorNote ? `${rotorNote} ` : '') + (loss.rotor_iron_loss_status_reason ?? ''), loss.rotor_iron_loss_status ?? 'experimental')
       : { key: 'rotor_iron', label: 'Rotor iron loss', value: '—', unit: '',
-        hint: loss.rotor_iron_loss_status_reason ?? 'Rotor iron loss is unavailable.', status: 'unavailable' as PerformanceOutputStatus }] : []),
-    powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'),
+        hint: loss.rotor_iron_loss_status_reason ?? 'Rotor iron loss is unavailable.', status: 'unavailable' as PerformanceOutputStatus }, 'rotor_iron') : []),
+    ...withSegments(powerRow('mechanical', 'Mechanical loss', loss.mechanical_loss_W, 'Friction and windage as entered under Operating point; 0 when not set.'), 'mechanical'),
     powerRow('total', ironAvailable && (!rotorRequested || rotorAvailable) ? 'Total loss' : 'Known loss subtotal', loss.total_loss_W, notModelledText(loss)),
   ];
   return { efficiency, rows, statuses, segments, totalW };
