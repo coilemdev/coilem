@@ -47,6 +47,12 @@ image, `manylinux_2_28`, exceeds the 2.27 floor.
 - CI audits each supported Python's pins with pip-audit. `python -m
   tools.release.policy --audit-pins DIR` writes them without markers,
   because pip-audit skips pins whose markers do not match its interpreter.
+- CI audits the locked frontend dependencies with `npm run audit:deps`
+  (`frontend/scripts/audit-dependencies.mjs`). It fails on any high or critical
+  npm advisory unless `frontend/audit-exceptions.json` lists it with a reason,
+  its vulnerable range and a `review_by` date. An exception lapses, and the
+  audit fails again, when npm stops reporting the advisory, when a version
+  outside that range is published, or when the date passes.
 - Release builds use the pinned Rust toolchain with `cargo build --release
   --locked` and the frontend's `npm ci`. The UI is built once and shared by
   every wheel.

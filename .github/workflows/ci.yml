@@ -176,7 +176,9 @@ jobs:
         run: npm run build
       - name: Audit locked frontend dependencies
         working-directory: frontend
-        run: npm audit --audit-level=high
+        # Fails on any high or critical advisory not reviewed in audit-exceptions.json;
+        # an exception lapses once a fix is published or its review date passes.
+        run: npm run audit:deps
 
   public-browser:
     name: public-browser (${{ matrix.suite }})

@@ -25,8 +25,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 22724,
-      "sha256": "0cf80f836ee04c504a5f79524ab8551af52467e3e567221d563ce073fa299178"
+      "bytes": 22883,
+      "sha256": "e8fddd0ab2751b9d0ccde559b5de0aca9cbb9c4d51db320f3fed50171635448e"
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
@@ -86,7 +86,7 @@
     {
       "path": "THIRD_PARTY_NOTICES.md",
       "bytes": 29600,
-      "sha256": "bb65134c20e5620c089f460a3e8100986a6ae69afd061b0a71318e947047f8d1"
+      "sha256": "012fc6c9bf053028f0b8761675c098a881ee0c4d523b8f3e860407737ca03219"
     },
     {
       "path": "TRADEMARKS.md",
@@ -6050,8 +6050,8 @@
     },
     {
       "path": "docs/RELEASING.md",
-      "bytes": 11317,
-      "sha256": "5157fdcfbfedec0acf625a014d06fd48a5a8ffd7ff6e98be758ceeceb6ca5d47"
+      "bytes": 11758,
+      "sha256": "345f450f4257b6391daf97b3bf801434a98124f95096ea5d4ee1e178b53fa723"
     },
     {
       "path": "docs/RUNTIME_SETTINGS.md",
@@ -6414,14 +6414,19 @@
       "sha256": "373babed3b17cc5f070cf499fd9cbf9ee36f8fedc9d27598bb88aad9488b7e5f"
     },
     {
+      "path": "frontend/audit-exceptions.json",
+      "bytes": 767,
+      "sha256": "1bb2dcc79b6420817ce5a016e72ee9a1ae28fd600a2a742a91c655cd18cc6b3c"
+    },
+    {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "5e61118d967facda2c82ea341d920b7462c23d1d03373d2c26e94a770fe8ed85"
+      "sha256": "96ad6358d84de6546609daebced10518941f321caae8d9c252e621f9de054445"
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3604,
-      "sha256": "1816a04bb9b9289b9748590baee86731da7bce6827fb936a6b4adb9001171164"
+      "bytes": 3705,
+      "sha256": "ed4893eccbc135c8245037145f0987ec8026123f78211ffaeee918b2ee458ed3"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6437,6 +6442,11 @@
       "path": "frontend/public/materials/sample-custom-steel.csv",
       "bytes": 1099,
       "sha256": "8a7f5c648bf42ef3cf107d4542610e0c7b2f9d4728a00bb45434a15e49b2906d"
+    },
+    {
+      "path": "frontend/scripts/audit-dependencies.mjs",
+      "bytes": 5286,
+      "sha256": "8b90ba61f04f7e45af7bf83911a55099ae48f17c1ee97737dccb5d8f4d4a8842"
     },
     {
       "path": "frontend/scripts/import-typescript-module.mjs",
@@ -8656,7 +8666,7 @@
     {
       "path": "tools/verify_snapshot.py",
       "bytes": 28662,
-      "sha256": "ffbf638ab0a1c958b14484c30ff4cd88df629425ecc7bf5f94284b8d243b1b35"
+      "sha256": "f72ca79117b859fb5386976d509bc35c373f2412014c7f2cfab076868be2893b"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -11637,6 +11647,11 @@
       "path": "frontend/scripts/test-analysis-options.mjs",
       "bytes": 11309,
       "sha256": "d98db71b9f1da88744850a7c7a5a81e9883c685150aab19a59f8457591cc7caa"
+    },
+    {
+      "path": "frontend/scripts/test-audit-dependencies.mjs",
+      "bytes": 3818,
+      "sha256": "9e03c15b834b5004c27040c4a3b518b6dc670e57a8de77c2fa125e04879bee3a"
     },
     {
       "path": "frontend/src/public/AnalysisSelector.tsx",
