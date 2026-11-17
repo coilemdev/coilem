@@ -8,8 +8,10 @@ import os
 import subprocess
 import sys
 import time
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import Event
 
 from tools.benchmark_suite.external_contract import run_lock
 from tools.phase_g_loss.contract import ROOT, SUITE, read, sha, suite, write
@@ -23,15 +25,19 @@ def live_femm_count():
     return sum(row and row[0].lower() == "femm.exe" for row in csv.reader(output.splitlines()))
 
 
-def commands(arguments, log_paths):
+def commands(arguments, log_paths, cancel=None):
     """Fail fast, terminating only children launched by this invocation."""
     children, streams = [], []
     try:
         for args, path in zip(arguments, log_paths, strict=True):
+            if cancel is not None and cancel.is_set():
+                raise RuntimeError("Phase G peer worker failed; stopping this owned worker")
             stream = path.open("a", encoding="utf-8")
             streams.append(stream)
             children.append(subprocess.Popen(args, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT))
         while any(child.poll() is None for child in children):
+            if cancel is not None and cancel.is_set():
+                raise RuntimeError("Phase G peer worker failed; stopping this owned worker")
             if any(child.poll() not in (None, 0) for child in children):
                 raise RuntimeError("Phase G worker failed; see " + ", ".join(str(p) for p in log_paths))
             time.sleep(2)
@@ -116,6 +122,8 @@ def run(args):
         "femm_skipped": {},
         "comparison_failures": [],
         "continue_independent_cases": args.continue_independent_cases,
+        "parallel_femm_cases": args.parallel_femm_cases,
+        "active_femm_cases": [],
         "allow_distributed_coarse_angular_failure": args.allow_angular_failure,
         "qualification_complete": False,
     }
@@ -124,7 +132,7 @@ def run(args):
         state.update(status=status, current_case=case, updated_utc=datetime.now(timezone.utc).isoformat())
         write(output / "run-state.json", state)
 
-    def analyse_case(directory, *, reference=False):
+    def analyse_case(directory, *, reference=False, cancel=None):
         from tools.phase_g_loss.report import admissible_history
 
         command = [sys.executable, "-m", "tools.phase_g_loss.report", "--history", str(directory)]
@@ -132,7 +140,10 @@ def run(args):
             command.append("--reference")
         log = directory / "report.log"
         try:
-            commands([command], [log])
+            if cancel is None:
+                commands([command], [log])
+            else:
+                commands([command], [log], cancel)
         except RuntimeError:
             # Recognize a declared numerical failure, never a traceback.
             # Continued cases retain the failure; reference admission below
@@ -153,6 +164,41 @@ def run(args):
         if any(not all(step.values()) for region in result["regions"].values() for row in region["speeds"].values() for step in row["angular_steps"]):
             if result["case_id"] not in state[solver + "_angular_failures"]:
                 state[solver + "_angular_failures"].append(result["case_id"])
+
+    def collect_reference(case, workers, cancel=None):
+        case_id = case["id"]
+        native = output / "native" / case_id
+        directory = output / "femm" / case_id
+        directory.mkdir(parents=True, exist_ok=True)
+        base = [str(args.femm_python), "-m", "tools.phase_g_loss.femm", "--case", case_id, "--native", str(native), "--out", str(directory)]
+        if args.allow_angular_failure and case_id.startswith("distributed-spm-"):
+            base.append("--allow-angular-failure")
+        if cancel is None:
+            commands([base + ["--limit", "1"]], [directory / "bootstrap.log"])
+            commands(
+                [base + ["--shard", f"{i}/{workers}"] for i in range(workers)],
+                [directory / f"worker-{i}.log" for i in range(workers)],
+            )
+        else:
+            commands([base + ["--limit", "1"]], [directory / "bootstrap.log"], cancel)
+            commands([base + ["--shard", "0/1"]], [directory / "case-worker.log"], cancel)
+        return analyse_case(directory, reference=True, cancel=cancel)
+
+    def finish_reference(case, result):
+        from tools.phase_g_loss.report import compare, summary
+
+        case_id = case["id"]
+        record_history(result, "femm")
+        comparison = compare(read(output / "native" / case_id / "analysis.json"), result)
+        write(output / "reports" / (case_id + ".json"), comparison)
+        summary(output, cases)
+        if not comparison["component_comparison_pass"]:
+            if not (args.allow_angular_failure and case_id.startswith("distributed-spm-") and comparison["component_agreement_pass"]):
+                if not args.continue_independent_cases:
+                    raise RuntimeError("Phase G component comparison failed: " + case_id)
+                state["comparison_failures"].append(case_id)
+        state["femm_completed"].append(case_id)
+        save("COLLECTING_FEMM_PARALLEL_CASES" if state["active_femm_cases"] else "FEMM_CASE_COMPLETE", case_id)
 
     with run_lock(output):
         try:
@@ -209,6 +255,7 @@ def run(args):
                     time.sleep(10)
                 if args.femm_python is None:
                     raise ValueError("FEMM collection needs its pinned --femm-python environment")
+                eligible = []
                 for case in cases:
                     case_id = case["id"]
                     native = output / "native" / case_id
@@ -218,41 +265,39 @@ def run(args):
                         state["femm_skipped"][case_id] = "Native history failed closure or angular gates; no reference comparison permitted."
                         save("FEMM_CASE_WITHHELD_FAILED_NATIVE_HISTORY", case_id)
                         continue
-                    save("COLLECTING_FEMM", case_id)
-                    directory = output / "femm" / case_id
-                    directory.mkdir(parents=True, exist_ok=True)
-                    base = [
-                        str(args.femm_python),
-                        "-m",
-                        "tools.phase_g_loss.femm",
-                        "--case",
-                        case_id,
-                        "--native",
-                        str(native),
-                        "--out",
-                        str(directory),
-                    ]
-                    if args.allow_angular_failure and case_id.startswith("distributed-spm-"):
-                        base.append("--allow-angular-failure")
-                    commands([base + ["--limit", "1"]], [directory / "bootstrap.log"])
-                    commands(
-                        [base + ["--shard", f"{i}/{args.femm_workers}"] for i in range(args.femm_workers)],
-                        [directory / f"worker-{i}.log" for i in range(args.femm_workers)],
-                    )
-                    result = analyse_case(directory, reference=True)
-                    record_history(result, "femm")
-                    from tools.phase_g_loss.report import compare, summary
-
-                    comparison = compare(read(native / "analysis.json"), read(directory / "analysis.json"))
-                    write(output / "reports" / (case_id + ".json"), comparison)
-                    summary(output, cases)
-                    if not comparison["component_comparison_pass"]:
-                        if not (args.allow_angular_failure and case_id.startswith("distributed-spm-") and comparison["component_agreement_pass"]):
-                            if not args.continue_independent_cases:
-                                raise RuntimeError("Phase G component comparison failed: " + case_id)
-                            state["comparison_failures"].append(case_id)
-                    state["femm_completed"].append(case_id)
-                    save("FEMM_CASE_COMPLETE", case_id)
+                    eligible.append(case)
+                if args.parallel_femm_cases:
+                    pending = iter(eligible)
+                    active = {}
+                    cancel = Event()
+                    # Each task owns exactly one FEMM process, including its
+                    # bootstrap. No fixture has two writers or overlapping shards.
+                    with ThreadPoolExecutor(max_workers=args.femm_workers) as pool:
+                        try:
+                            exhausted = False
+                            while active or not exhausted:
+                                while not exhausted and len(active) < args.femm_workers:
+                                    case = next(pending, None)
+                                    if case is None:
+                                        exhausted = True
+                                        break
+                                    active[pool.submit(collect_reference, case, 1, cancel)] = case
+                                state["active_femm_cases"] = [case["id"] for case in active.values()]
+                                save("COLLECTING_FEMM_PARALLEL_CASES")
+                                if not active:
+                                    break
+                                completed, _ = wait(active, return_when=FIRST_COMPLETED)
+                                for future in completed:
+                                    case = active.pop(future)
+                                    state["active_femm_cases"] = [other["id"] for other in active.values()]
+                                    finish_reference(case, future.result())
+                        except BaseException:
+                            cancel.set()
+                            raise
+                else:
+                    for case in eligible:
+                        save("COLLECTING_FEMM", case["id"])
+                        finish_reference(case, collect_reference(case, args.femm_workers))
                 save(
                     "PILOT_COLLECTION_COMPLETE_WITH_FAILED_CHECKS"
                     if state["native_history_failures"] or state["femm_history_failures"] or state["femm_skipped"] or state["comparison_failures"]
@@ -275,6 +320,10 @@ def main():
     parser.add_argument("--native-workers", type=int, choices=range(1, 5), default=4)
     parser.add_argument("--femm-workers", type=int, choices=(1, 2), default=2)
     parser.add_argument("--wait-for-femm", action="store_true")
+    parser.add_argument(
+        "--parallel-femm-cases", action="store_true",
+        help="Use one FEMM worker per independent fixture/load case, up to the global --femm-workers limit",
+    )
     parser.add_argument(
         "--continue-independent-cases",
         action="store_true",
