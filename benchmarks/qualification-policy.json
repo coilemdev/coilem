@@ -2,12 +2,12 @@
   "schema": "coilem.qualification_policy/v1",
   "approved_reports": {
     "windows-x86_64": {
-      "file": "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_summary.json",
-      "sha256": "871630a5a076456a0095e1fee861c6583b4bfcf52d2c1226d62ad54220ab24a3"
+      "file": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/benchmark_summary.json",
+      "sha256": "28289334453652775a84d0ae7cd4894a34fe4f224b07466ec532beb37f4c3726"
     },
     "macos-arm64": {
-      "file": "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_summary.json",
-      "sha256": "25b517795bd27e7314bc345c807e6399444e3d7bc3b28b480f3f858361e51f4a"
+      "file": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/benchmark_summary.json",
+      "sha256": "9c4ae0e0ffef9f8fcb6aed6df795b969c7373fdf2e17bee440e19f307ff97373"
     }
   },
   "additional_replay_tolerances": {
@@ -24,23 +24,25 @@
       1e-06
     ]
   },
-  "note": "Protocol 1.10.0 baselines for the registered A-F requests. Prior records and policy remain immutable. Replay tolerances and FEMM gates are unchanged. Application qualification remains scoped independently.",
+  "note": "Protocol 1.10.0 baselines after the V-shape corner mesh patch (#317). The six ipm_vshape_8p12s cases moved with that change and were accepted by the owner; every other suite and Prius value agreed with the previous approved baseline within the replay tolerances. Prior records and policy remain immutable. Replay tolerances, FEMM gates and the registered suite and reference bundle are unchanged.",
   "protocol_version": "1.10.0",
   "registered_scope": {
-    "candidate_commit": "70c5e3404c1962a811a915db292c31c28b92cf1a",
-    "qualification": "benchmarks/qualification-70c5e3404c19/qualification.json",
-    "qualification_sha256": "e97815eba5d7a0c6a1e0c0851f44be9e4b4bca7fde9abaf6b62138a3638581cb",
-    "previous_policy": "benchmarks/qualification-policy-history/protocol19-20261110.json",
-    "previous_policy_sha256": "9b6a2e0828160590e59e43c0e87101735ad239d938af9e901e4627b57322e02b"
+    "candidate_commit": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
+    "publication_projection": "benchmarks/qualification-5e6fab283d16/publication-projection.json",
+    "publication_projection_sha256": "1e462828f50949d3bda45bcb44b1b456621feac97d2d4c6947d9a064126b3da2",
+    "protocol_registration": "benchmarks/qualification-70c5e3404c19/qualification.json",
+    "protocol_registration_sha256": "e97815eba5d7a0c6a1e0c0851f44be9e4b4bca7fde9abaf6b62138a3638581cb",
+    "previous_policy": "benchmarks/qualification-policy-history/protocol110-70c5e34-20261116.json",
+    "previous_policy_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2"
   },
   "approved_prius_reports": {
     "windows-x86_64": {
-      "file": "benchmarks/qualification-70c5e3404c19/windows-x86_64/prius/app-results.json",
-      "sha256": "f197ef317d511a647174d2130bdc5cb4ea26e22dca07646446b262893386cbb7"
+      "file": "benchmarks/qualification-5e6fab283d16/windows-x86_64/prius/app-results.json",
+      "sha256": "64e29621dc81f9b817abf5bbb6c691d0c08830f1f6e9b5a8376b256a56f6fe04"
     },
     "macos-arm64": {
-      "file": "benchmarks/qualification-70c5e3404c19/macos-arm64/prius/app-results.json",
-      "sha256": "4a971148c001ef82f755ebcdb82da96e54f1d5abdbfd64bf3af9bb625d685b81"
+      "file": "benchmarks/qualification-5e6fab283d16/macos-arm64/prius/app-results.json",
+      "sha256": "25b4a75e635c4d8a75e615f41805e682d22dc4bf586c2b575a6ef920dc58b7c9"
     }
   }
 }
