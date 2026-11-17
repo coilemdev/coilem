@@ -180,3 +180,66 @@ def test_femm_worker_module_does_not_claim_the_production_backend_namespace():
         cwd=ROOT,
         check=True,
     )
+
+
+def test_analysis_replay_preserves_original_receipt_and_rejects_changed_physics():
+    from tools.phase_g_loss.report import consistent_analysis
+
+    original = {"numerical_history_pass": True, "result": {"total_W": 12.0}, "case_id": "example"}
+    replay = original | {"analysis_implementation_sha256": "reader-version"}
+    assert consistent_analysis(original, replay)
+    assert not consistent_analysis(original, replay | {"result": {"total_W": 12.01}})
+    assert not consistent_analysis(original, replay | {"numerical_history_pass": False})
+    assert not consistent_analysis(original, replay | {"numerical_history_pass": 1})
+
+
+def test_resume_only_accepts_identical_hashed_native_producers(tmp_path):
+    from tools.phase_g_loss.__main__ import verify_native_snapshots
+
+    directory = tmp_path / "native" / "example"
+    directory.mkdir(parents=True)
+    name = "tools/phase_g_loss/native.py"
+    write(directory / "protocol.json", {"identity": {"source_sha256": {name: sha(ROOT / name)}}})
+    verify_native_snapshots(tmp_path)
+    write(directory / "protocol.json", {"identity": {"source_sha256": {name: "0" * 64}}})
+    with pytest.raises(ValueError, match="source changed"):
+        verify_native_snapshots(tmp_path)
+
+
+def test_pilot_exception_is_only_distributed_coarse_grid_with_stable_final_step():
+    from tools.phase_g_loss.report import admissible_history
+
+    analysis = {
+        "case_id": "distributed-spm-no-load",
+        "numerical_history_pass": False,
+        "regions": {"rotor": {"closure": {"pass": True}, "speeds": {"3000": {"angular_steps": [{"total_W": False}, {"total_W": True}]}}}},
+    }
+    assert not admissible_history(analysis)
+    assert admissible_history(analysis, allow_angular_failure=True)
+    assert not admissible_history(analysis | {"case_id": "outer-spm-loaded"}, allow_angular_failure=True)
+    analysis["regions"]["rotor"]["speeds"]["3000"]["angular_steps"][-1]["total_W"] = False
+    assert not admissible_history(analysis, allow_angular_failure=True)
+    analysis["regions"]["rotor"]["speeds"]["3000"]["angular_steps"][-1]["total_W"] = True
+    analysis["regions"]["rotor"]["closure"]["pass"] = False
+    assert not admissible_history(analysis, allow_angular_failure=True)
+
+
+def test_agreement_does_not_turn_failed_convergence_into_a_passing_comparison():
+    from tools.phase_g_loss.report import compare
+
+    value = {"hysteresis_W": 1.0, "lamination_eddy_W": 2.0, "total_W": 3.0}
+    native = {
+        "case_id": "distributed-spm-no-load",
+        "protocol_sha256": "native-history",
+        "numerical_history_pass": False,
+        "rotor_status": "experimental",
+        "copper": {"W": 0.0, "phase_resistance_ohm": 1.0},
+        "regions": {"rotor": {"speeds": {str(s): {"samples": {"384": value}} for s in (1500, 3000)}}},
+        "modelled_totals": {str(s): {"known_loss_subtotal_W": 3.0} for s in (1500, 3000)},
+    }
+    reference = native | {"numerical_history_pass": True, "bound_native_protocol_sha256": "native-history", "protocol_sha256": "femm-history"}
+    result = compare(native, reference)
+    assert result["component_agreement_pass"]
+    assert not result["component_comparison_pass"]
+    assert result["status"] == "COMPONENT_AGREEMENT_PASS_ANGULAR_CHECK_FAILED"
+    assert not result["qualification_complete"]

@@ -158,13 +158,23 @@ def analyse(directory, *, reference=False):
     return report
 
 
+def admissible_history(analysis, *, allow_angular_failure=False):
+    regions = analysis.get("regions", {})
+    if not regions or not all(region["closure"]["pass"] for region in regions.values()):
+        return False
+    if not all(all(row["angular_steps"][-1].values()) for region in regions.values() for row in region["speeds"].values()):
+        return False
+    return bool(analysis["numerical_history_pass"] or (allow_angular_failure and analysis["case_id"].startswith("distributed-spm-")))
+
+
 def compare(native, reference):
     if native["case_id"] != reference["case_id"]:
         raise ValueError("Cannot compare different fixture/load conditions")
     if reference.get("bound_native_protocol_sha256") != native["protocol_sha256"]:
         raise ValueError("Reference belongs to a different bound native history")
     comparisons = {}
-    passed = native["numerical_history_pass"] and reference["numerical_history_pass"]
+    history_pass = native["numerical_history_pass"] and reference["numerical_history_pass"]
+    passed = True
     for region in native["regions"]:
         comparisons[region] = {}
         for speed in SPEEDS:
@@ -197,12 +207,20 @@ def compare(native, reference):
         "copper": {"native": native["copper"], "femm": reference["copper"]},
         "native_protocol_sha256": native["protocol_sha256"],
         "reference_protocol_sha256": reference["protocol_sha256"],
-        "component_comparison_pass": bool(passed and copper_pass),
+        "component_comparison_pass": bool(history_pass and passed and copper_pass),
+        "component_agreement_pass": bool(passed and copper_pass),
+        "angular_and_closure_gates_pass": bool(history_pass),
         "dc_copper_formula_pass": copper_pass,
         "dc_copper_uses_shared_declared_resistance": False,
         "rotor_status": native["rotor_status"],
         "overall_loss_comparison_complete": native["rotor_status"] != "unavailable",
-        "status": "NUMERICAL_COMPONENT_PASS" if passed and copper_pass else "NUMERICAL_COMPONENT_FAIL",
+        "status": (
+            "NUMERICAL_COMPONENT_PASS"
+            if history_pass and passed and copper_pass
+            else "COMPONENT_AGREEMENT_PASS_ANGULAR_CHECK_FAILED"
+            if passed and copper_pass
+            else "NUMERICAL_COMPONENT_FAIL"
+        ),
         "model_status": "experimental",
         "qualification_complete": False,
     }
@@ -252,13 +270,34 @@ def summary(output, cases):
     (output / "benchmark_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def consistent_analysis(left, right):
+    """Replays preserve canonical receipts; metadata hashes may name newer readers."""
+    if isinstance(left, dict) and isinstance(right, dict):
+        omitted = {"analysis_implementation_sha256"}
+        keys = (set(left) | set(right)) - omitted
+        return all(k in left and k in right and consistent_analysis(left[k], right[k]) for k in keys)
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(consistent_analysis(a, b) for a, b in zip(left, right, strict=True))
+    if isinstance(left, bool) or isinstance(right, bool):
+        return type(left) is type(right) and left == right
+    if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+        return math.isclose(left, right, rel_tol=1e-10, abs_tol=1e-12)
+    return left == right
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--history", required=True, type=Path)
     parser.add_argument("--reference", action="store_true")
     args = parser.parse_args(argv)
     result = analyse(args.history, reference=args.reference)
-    write(args.history / "analysis.json", result)
+    target = args.history / "analysis.json"
+    if target.exists():
+        if not consistent_analysis(read(target), result):
+            raise ValueError("Analysis replay changed; preserve the original receipt and investigate")
+        write(args.history / "analysis-replay.json", result)
+    else:
+        write(target, result)
     if not result["numerical_history_pass"]:
         raise SystemExit("Phase G history gate failed; inspect analysis.json")
 

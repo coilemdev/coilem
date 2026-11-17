@@ -50,6 +50,16 @@ renormalized to match the other.
 
 ## Gates and limitations
 
+**Owner decision, 2026-11-17:** the distributed no-load native history failed
+96→192 angular refinement for rotor loss, then changed only 0.28% from 192→384
+at 3000 rpm. Keep the bounded 384-pose pilot and retain the failed gate, without
+adding a 768-pose campaign. `--allow-angular-failure` permits that distributed
+fixture's diagnostic comparison only when closure and the final 192→384 step
+pass. The original two-step gate stays failed; component agreement is reported
+separately and cannot turn it into a numerical validation pass. Other fixtures,
+failed final refinements, closure failures and cross-solver disagreements have
+no exception. Model status and qualification remain experimental/incomplete.
+
 Each history contains 384 half-open mechanical poses plus a fresh endpoint.
 Both 96→192→384 angular steps use max(5% of finer, 0.001 W), separately for
 hysteresis, eddy and total. Endpoint maximum/RMS limits are 1e-6/1e-7 T.
@@ -98,8 +108,14 @@ python -m tools.phase_g_loss run --out ../phase-g-run --binary <magneto2d.exe> -
 
 Use `native` or `femm` instead of `run` for a staged campaign; repeat the same
 command and output directory to resume. `--case` can be repeated to register a
-bounded selection. Changing sources, binary, fixtures, selection or controls
-requires a new registration. Case checkpoints retain source/input/mesh identity,
+bounded selection. Changing field producers, binary, fixtures, selection or
+controls requires a new registration. Orchestration/readers may advance only
+when every hashed native producer/physics file still matches; the actual field
+candidate is retained and the newer tooling commit is recorded separately.
+Analysis replay verifies the raw inputs and numerical result, preserving the
+original canonical receipt and writing a separate replay record. Completed
+reference extraction is verified and reused without retagging its producer.
+Case checkpoints retain source/input/mesh identity,
 excitation and raw-field hashes; writes are atomic. Each FEMM worker owns and
 closes only its own COM session. Monitor `run-state.json`, per-case worker logs,
 `analysis.json` and `reports/*.json`. Raw fields/meshes stay outside git.

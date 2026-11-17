@@ -20555,8 +20555,8 @@
     },
     {
       "path": "benchmarks/phase-g-v1/README.md",
-      "bytes": 6410,
-      "sha256": "571785fdcf1b8b295ec64b7af5926967420931fcfe38a74f4109d2394bd8f30c"
+      "bytes": 7555,
+      "sha256": "ea4fc0cb665bb0f7a2ae80d2a3731ae28a7977c3b6258f5ef0bd07136d8611aa"
     },
     {
       "path": "benchmarks/phase-g-v1/benchmark_spec.json",
@@ -20585,8 +20585,8 @@
     },
     {
       "path": "tests/test_phase_g_loss.py",
-      "bytes": 7770,
-      "sha256": "dd759a97b9ac64b0ea0b322ab7cc609ba977d3fd7bbf8260b1b4a1c7887e4b3d"
+      "bytes": 11062,
+      "sha256": "42d38a95d5e5c50518335470d390e82a77e5cea3bf9a45d9452b1a6549d9ae36"
     },
     {
       "path": "tools/phase_g_loss/__init__.py",
@@ -20595,8 +20595,8 @@
     },
     {
       "path": "tools/phase_g_loss/__main__.py",
-      "bytes": 9166,
-      "sha256": "d5e0ca706bb44bb36097dcb5defedf9ffeb7bfefb80d8b8423856708022ed0b7"
+      "bytes": 12987,
+      "sha256": "b6b187891501b7f3ad9550d9951be537264f520609f0eaa2875f5591bb6e8d6c"
     },
     {
       "path": "tools/phase_g_loss/contract.py",
@@ -20605,8 +20605,8 @@
     },
     {
       "path": "tools/phase_g_loss/femm.py",
-      "bytes": 19088,
-      "sha256": "120567f229ec8a7310d00f5e91e7414feffb88cd8f35263e12afc95077dc7cc7"
+      "bytes": 21355,
+      "sha256": "fbaaf2a7b21e9aa991a4b715ad57fba5955611ffdfc69db8958d85798d047b57"
     },
     {
       "path": "tools/phase_g_loss/native.py",
@@ -20615,8 +20615,8 @@
     },
     {
       "path": "tools/phase_g_loss/report.py",
-      "bytes": 12844,
-      "sha256": "8cb4409ed7af722eac27b530c078c95b7d0ee43b5c9a590c741a8219baf07d0d"
+      "bytes": 14814,
+      "sha256": "287d7f5608b096c08423aa14c181eccc380785b21efb02a3f65b7d3e3ab014c5"
     },
     {
       "path": "tools/phase_g_loss/femm_answers.py",

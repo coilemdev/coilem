@@ -146,6 +146,38 @@ def audit_spatial_sources(coils, template):
     return result
 
 
+def completed_reuse(args, mapping):
+    directory = args.out.resolve()
+    if not (directory / "protocol.json").exists():
+        return False
+    if not all((directory / f"position-{i:04d}" / "position.json").exists() for i in range(POSITIONS + 1)):
+        return False
+    existing = read(directory / "protocol.json")
+    native = read(args.native / "protocol.json")
+    native_analysis = read(args.native / "analysis.json")
+    source = Path(mapping["history"]).resolve()
+    if (
+        existing["case"] != case_by_id(args.case)
+        or existing["suite_sha256"] != sha(SUITE)
+        or existing["native_protocol_sha256"] != sha(args.native / "protocol.json")
+        or not native_analysis["numerical_history_pass"]
+        or native_analysis["protocol_sha256"] != sha(args.native / "protocol.json")
+        or existing.get("reused_source_history") != str(source)
+        or existing["reused_protocol_sha256"] != sha(source / "protocol.json")
+        or existing["extractor_sha256"] != sha(ROOT / "tools/phase_g_loss/femm_answers.py")
+    ):
+        raise ValueError("Completed reference has incompatible inputs, source or extractor")
+    for name, digest in native["identity"]["source_sha256"].items():
+        if sha(ROOT / name) != digest:
+            raise ValueError("Measured native source changed: " + name)
+    for index in range(POSITIONS + 1):
+        record = checkpoint(directory, index)
+        original = source / f"position-{index:04d}"
+        if sha(original / "model.ans") != record["source_answer_sha256"] or sha(original / "position.json") != record["original_checkpoint_sha256"]:
+            raise ValueError("Immutable reference answer changed")
+    return True
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case", required=True)
@@ -153,6 +185,7 @@ def main(argv=None):
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--shard", default="0/1")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--allow-angular-failure", action="store_true")
     args = parser.parse_args(argv)
     shard, shards = map(int, args.shard.split("/"))
     if not 0 <= shard < shards or args.limit is not None and args.limit < 1:
@@ -161,13 +194,22 @@ def main(argv=None):
     if reuse_path.exists():
         reuse = read(reuse_path)
         if args.case in reuse:
+            if completed_reuse(args, reuse[args.case]):
+                print(args.case + ": verified complete immutable reference; no new extraction or solves", flush=True)
+                return
             from tools.phase_g_loss.femm_answers import collect
 
             return collect(args, reuse[args.case])
     case = case_by_id(args.case)
     native = read(args.native / "protocol.json")
     analysis = read(args.native / "analysis.json")
-    if native["case"] != case or not analysis["numerical_history_pass"] or analysis["protocol_sha256"] != sha(args.native / "protocol.json"):
+    from tools.phase_g_loss.report import admissible_history
+
+    if (
+        native["case"] != case
+        or not admissible_history(analysis, allow_angular_failure=args.allow_angular_failure)
+        or analysis["protocol_sha256"] != sha(args.native / "protocol.json")
+    ):
         raise ValueError("FEMM requires completed, audited Magneto2D history first")
     for name, digest in native["identity"]["source_sha256"].items():
         if sha(ROOT / name) != digest:
@@ -208,6 +250,9 @@ def main(argv=None):
         "native_fields_used_to_compute_reference": False,
         "motion": "remesh; stator-only fixed physical queries" if outer else "FEMM periodic air gap; fixed material mesh",
     }
+    if not analysis["numerical_history_pass"]:
+        expected["native_angular_gate_pass"] = False
+        expected["pilot_coarse_angular_failure_allowed"] = True
     preparation_path = directory / "preparation.json"
     geometry_path = directory / "material-geometry.npz"
     if outer:
