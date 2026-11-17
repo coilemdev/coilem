@@ -1675,7 +1675,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(lossRow('Known loss subtotal').locator('.public-run-compare-loss-value')).toHaveText(['60.0 W', 'Not applicable']);
     await expect(lossRow('Shaft power').locator('td').nth(2)).toHaveText('—');
     await expect(lossRow('Shaft power').locator('.public-run-compare-loss-partial')).toContainText('Partial');
-    await losses.getByRole('button', { name: 'Run A Iron loss: Unavailable', exact: true }).click();
+    await losses.getByRole('button', { name: 'Run A Stator iron loss: Unavailable', exact: true }).click();
     await expect(page.getByRole('tooltip').filter({ hasText: 'Needs one full electrical cycle.' })).toBeVisible();
     await left.selectOption('comparison-motor/older');
     await right.selectOption('comparison-motor/previous');
