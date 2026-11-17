@@ -133,8 +133,10 @@ collection are not retained.
 `python -m tools.physics_impact --base <base-sha>` compares the union of the old
 and new source registries, including the Prius-specific sources. Removing a
 registry entry cannot hide a changed source. Changes to registered suite or
-reference contracts also require evidence. A physics PR passes only when the
-strict release check accepts its current-tree Windows, macOS and Prius reports.
+reference contracts also require evidence. A physics PR passes when the strict
+release check accepts its current-tree Windows, macOS and Prius reports, or when
+a [sentinel collection](#sentinel-collection-for-small-changes) of the current
+tree reproduces the full records.
 The check binds measurements to source identities, not subsequent metadata-only
 publication commits. Historical unit tests replay their original records;
 they never promote those records to qualify a changed build.
@@ -207,6 +209,81 @@ The public qualification basis and report path follow the primary registered
 record. The release gate still requires actual matching Windows/macOS/Prius
 measurements; changing hashes alone cannot qualify a build. A weekly workflow
 compares fresh measurements and opens one issue for unexplained drift.
+
+## Sentinel collection for small changes
+
+Most physics PRs are expected to move no value: a refactor, a new option that
+is off by default, a change to a path the benchmark requests do not take. For
+those, a sentinel collection measures 22 of the 68 supported cases and two of
+the 17 Prius jobs, with the unchanged full-grid requests, and compares them
+with the full record of the same platform. It is about a third of the case
+time of a full collection and needs five jobs per platform, not twelve.
+
+`benchmarks/qualification-sentinel.json` names the cases and jobs. Together
+they exercise every rotor family, winding layout, analysis lane, modifier
+(no load, current angle, magnet temperature, tooth shoes, corner refinement,
+angled magnets, chorded winding, parallel paths), mesh density and slot/pole
+combination that the registered suite solves. `tests/test_qualification_sentinel.py`
+fails when a suite change leaves one of these uncovered, so a new case family
+needs a sentinel case before it can rely on this path.
+
+The comparison is strict because the coverage is partial:
+
+- **macOS** must reproduce the full record exactly: every waveform sample and
+  every summary value (torque, back-EMF, flux densities, d/q flux linkages,
+  losses, resistance), within 1e-9 of the series peak and never tighter than
+  1e-12. macOS results are bit-reproducible across runs, machines and commits
+  that leave the physics alone, so any larger difference is a real change.
+- **Windows** uses the replay tolerances of the full comparison on the gated
+  values and d/q flux linkages, against both the previous record and the
+  approved baseline. Hosted Windows runners move some values by up to 0.2% of
+  the waveform peak between runs of unchanged code, so an exact rule would
+  fail without cause.
+- Verdicts, gate statuses, solved requests, the suite, the reference bundle
+  and the pinned Gmsh and meshio must be the full record's. Wall times and
+  run metadata are not compared.
+
+Collect on a runner by dispatching `release-benchmarks.yml` with
+`collection: sentinel`, or locally:
+
+```bash
+python -m tools.qualify_local --collection sentinel --candidate <full SHA> --directory ~/coilem-sentinel
+```
+
+Then compare and publish with tooling from the PR base, as for a full
+collection. Either platform can be compared and published alone:
+
+```bash
+cd <base>
+python -m tools.qualification_sentinel compare --root <head> --baseline . --windows ~/coilem-sentinel/windows --macos ~/coilem-sentinel/qualification --out ~/coilem-sentinel/prepared
+python -m tools.qualification_sentinel publish --publication ~/coilem-sentinel/prepared/publication --root <head>
+python <head>/tools/verify_snapshot.py --publication
+git -C <head> add benchmarks/sentinel snapshot-manifest.json
+git -C <head> commit -m 'Publish sentinel qualification evidence'
+```
+
+`compare` ends in one of four states. `UNCHANGED` stages one compact evidence
+file per platform under `benchmarks/sentinel/`. `MOVED` lists the values that
+differ in `REVIEW.md`; the change needs the full collection and the normal
+carry-forward review, and there is no flag to accept a moved sentinel value.
+`REFERENCE_REVIEW_REQUIRED` means a reference-sensitive source file changed;
+after reviewing the listed files the owner can rerun with
+`--reference-reviewed`, exactly as for a full collection, and a changed request
+has no override. `INVALID` means the collection is incomplete, dirty, mixed or
+measured from other sources.
+
+The PR evidence gate accepts committed sentinel evidence only when it re-checks
+all of this against the current tree: the evidence names the current sentinel
+definition, the current full record and the current physics sources, and the
+stored values still match the full record's report. The platform records are
+not rewritten. They keep naming the commit that the full collection measured.
+
+Sentinel evidence never qualifies a release. `tools.release.qualification`
+does not read it, so a release candidate still needs the full Windows, macOS
+and Prius collection at its frozen commit. The app's own qualification status
+also keeps following the full records. A sentinel pass says that the measured
+subset did not move; it cannot rule out a change that only affects a case
+outside the subset, which the next full collection would catch.
 
 Item 4 of #194 is deliberately excluded: the physics source registry remains
 unchanged, no solver modules are split, and dependency identity/fingerprints

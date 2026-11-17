@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/workflows/release-benchmarks.yml",
-      "bytes": 16253,
-      "sha256": "b73e61739173faf7831de0e409a3a556cf9394f76f67df5a36548a525daa3a3e"
+      "bytes": 16775,
+      "sha256": "b932ae177d8afd4afbcd00120083099c70928c9e3d05fe32df8305bc31b48c49"
     },
     {
       "path": ".github/workflows/release-wheels.yml",
@@ -12125,18 +12125,18 @@
     },
     {
       "path": ".github/CODEOWNERS",
-      "bytes": 1090,
-      "sha256": "911c39c01eb173cef9f9d5d4945abdefcbf3f0dd93cb3d0edb516825b65fe95d"
+      "bytes": 1174,
+      "sha256": "59085664c5807ed77d962d180251519f690daed5ee70358b7069c72025008275"
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 12822,
-      "sha256": "6daf393b2822afeb46d938d7438740dab1be3d6944379c4d7095b14ff69be3a4"
+      "bytes": 17240,
+      "sha256": "0efdf98b0f2a7aaeb589e16e72e9794a5cd80f50c95e7efd906754f675bd0a40"
     },
     {
       "path": "tests/test_benchmark_shards.py",
-      "bytes": 4799,
-      "sha256": "29eb6a6bcfac2bc6d0bc105e11143b5906c1df437115ac3f00580ed17fb738dc"
+      "bytes": 5987,
+      "sha256": "6512532d3d2c242c8c3988de78b0d9be607e3928e23cee65951a03344b2f91c9"
     },
     {
       "path": "tests/test_physics_impact.py",
@@ -12150,23 +12150,23 @@
     },
     {
       "path": "tools/benchmark_ci.py",
-      "bytes": 5616,
-      "sha256": "3890d85f9e88d95bfa8fe2b566229e3872d64960fb732d0539d78de24f3ab588"
+      "bytes": 6199,
+      "sha256": "77bf00ccd23ebcb905cf4eaee6272e07313c05c9cf5f1e5b81698595ec0d4175"
     },
     {
       "path": "tools/benchmark_shards.py",
-      "bytes": 2398,
-      "sha256": "a8d38b0eaa4bd2bd5cbb09ee3b4c7bf85eaccdbaabe6343375f035f2ec0ea6a9"
+      "bytes": 2984,
+      "sha256": "e944f32e1325a30d014fd53ef2b6bdfaaa86039776ee5cad50bf93469f008e72"
     },
     {
       "path": "tools/join_benchmark_runs.py",
-      "bytes": 9170,
-      "sha256": "6af15ea8dbe7c95cdded37df8266049a543c24b7bdcd0732c27c065a52d300f0"
+      "bytes": 9660,
+      "sha256": "9893f7346612dcf9cacff2ff3adc257284747d960d16b365c61e7304bd2a720e"
     },
     {
       "path": "tools/physics_impact.py",
-      "bytes": 8875,
-      "sha256": "2c51a8fde149bc6fe194bb39ec576d2ad11e231687406e3abdb4635af29c9369"
+      "bytes": 9651,
+      "sha256": "ae02d46ba7b81f672c182496557a2d2362c4a95653c7b810ad988c5bd96730a7"
     },
     {
       "path": ".github/workflows/qualification-weekly.yml",
@@ -12215,8 +12215,8 @@
     },
     {
       "path": "tools/download_benchmark_shards.py",
-      "bytes": 3636,
-      "sha256": "0a2c68610f175cd77f2de444a46f96e0df0ea8df3dc734c764076d088ae13a56"
+      "bytes": 3807,
+      "sha256": "485da0edf410f6ccae717d8d2a35f4d216037144c40a42101d9a33b622e7b121"
     },
     {
       "path": "tests/test_benchmark_repair.py",
@@ -20505,8 +20505,8 @@
     },
     {
       "path": "tests/test_qualify_local.py",
-      "bytes": 5865,
-      "sha256": "c9c4c25e50259382713e13d47e253f717af338e30650a457ba62bc883ba79831"
+      "bytes": 6565,
+      "sha256": "042290bb84da56ced9fbb820e03eae60a506e8184c61e1b0c5668ffcae25e1fe"
     },
     {
       "path": "tests/test_snapshot_report_csv.py",
@@ -20515,8 +20515,8 @@
     },
     {
       "path": "tools/qualify_local.py",
-      "bytes": 6987,
-      "sha256": "c903ede731bd7c9b522084032688573133904096708a452d3907c76dd914083f"
+      "bytes": 7728,
+      "sha256": "39b557df2b2080fe99cba5205d0f95c11b3d8eafee38d370ca54ad8eb9897b3b"
     },
     {
       "path": "benchmarks/qualification-policy-history/protocol110-70c5e34-20261116.json",
@@ -20672,6 +20672,21 @@
       "path": "tools/phase_g_loss/stator_reproduction.py",
       "bytes": 2852,
       "sha256": "e474fa4115ece56944c93cd4bf350a3167f78229670c8218c9b52b491b82f5a2"
+    },
+    {
+      "path": "benchmarks/qualification-sentinel.json",
+      "bytes": 1786,
+      "sha256": "53ac2bf2ab5ec596023bdfc347f168c6df9decb872eeb9c837c5e7568a3b84ec"
+    },
+    {
+      "path": "tests/test_qualification_sentinel.py",
+      "bytes": 17899,
+      "sha256": "f5d26c46b3e5a5468ae542c74562cfe7d147984917d7a65c044560501d629c0b"
+    },
+    {
+      "path": "tools/qualification_sentinel.py",
+      "bytes": 30430,
+      "sha256": "5059403397cf5b960887292959202fc9d38a7e6c2c48ed7f9829b0822a6834a3"
     }
   ],
   "public_patches": [
@@ -43240,6 +43255,72 @@
       "path": "frontend/tests/solve-profiles.spec.ts",
       "source_sha256": "c32489a5b0ad5ed2f54da36df55cc701d799091a459190c7371d4937158b6d07",
       "reason": "Match the full-cycle note text and the second note that rotor iron loss added under Losses & efficiency."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": ".github/workflows/release-benchmarks.yml",
+      "source_sha256": "b73e61739173faf7831de0e409a3a556cf9394f76f67df5a36548a525daa3a3e",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": ".github/CODEOWNERS",
+      "source_sha256": "911c39c01eb173cef9f9d5d4945abdefcbf3f0dd93cb3d0edb516825b65fe95d",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "6daf393b2822afeb46d938d7438740dab1be3d6944379c4d7095b14ff69be3a4",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tests/test_benchmark_shards.py",
+      "source_sha256": "29eb6a6bcfac2bc6d0bc105e11143b5906c1df437115ac3f00580ed17fb738dc",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tools/benchmark_ci.py",
+      "source_sha256": "3890d85f9e88d95bfa8fe2b566229e3872d64960fb732d0539d78de24f3ab588",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tools/benchmark_shards.py",
+      "source_sha256": "a8d38b0eaa4bd2bd5cbb09ee3b4c7bf85eaccdbaabe6343375f035f2ec0ea6a9",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tools/join_benchmark_runs.py",
+      "source_sha256": "6af15ea8dbe7c95cdded37df8266049a543c24b7bdcd0732c27c065a52d300f0",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tools/physics_impact.py",
+      "source_sha256": "2c51a8fde149bc6fe194bb39ec576d2ad11e231687406e3abdb4635af29c9369",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tools/download_benchmark_shards.py",
+      "source_sha256": "0a2c68610f175cd77f2de444a46f96e0df0ea8df3dc734c764076d088ae13a56",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tests/test_qualify_local.py",
+      "source_sha256": "c9c4c25e50259382713e13d47e253f717af338e30650a457ba62bc883ba79831",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
+    },
+    {
+      "base_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+      "path": "tools/qualify_local.py",
+      "source_sha256": "c903ede731bd7c9b522084032688573133904096708a452d3907c76dd914083f",
+      "reason": "Add a sentinel qualification collection for changes expected to move no value."
     }
   ]
 }

@@ -22,3 +22,5 @@
 /tools/release/qualification.py @coilemdev
 /benchmarks/reference-baselines/ @coilemdev
 /benchmarks/qualification-policy.json @coilemdev
+/benchmarks/qualification-sentinel.json @coilemdev
+/benchmarks/sentinel/ @coilemdev

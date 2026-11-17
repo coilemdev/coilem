@@ -24,15 +24,25 @@ def balance(names, runtimes, count):
     return [sorted(group) for group in groups]
 
 
-def plan(root=ROOT, *, count=8, suite=BENCHMARK_SUITE_FILE):
+def select(names, wanted):
+    """``names`` restricted to ``wanted``, in registered order; all of them when nothing is wanted."""
+    if wanted is None:
+        return names
+    if len(set(wanted)) != len(wanted) or not set(wanted) <= set(names):
+        raise ValueError("Selection has duplicate or unregistered names")
+    return [name for name in names if name in set(wanted)]
+
+
+def plan(root=ROOT, *, count=8, suite=BENCHMARK_SUITE_FILE, cases=None, prius=None, prius_count=None):
+    """Shards of the whole collection, or of the selected ``cases`` and ``prius`` jobs (the sentinel collection)."""
     spec = read(root / suite)
     record = read(root / "benchmarks/records/windows-x86_64.json")
-    suite_groups = balance([c["id"] for c in spec["cases"]], record.get("case_runtime_s", {}), count)
-    prius_names = [name for name, _ in jobs(True, True)]
+    suite_groups = balance(select([c["id"] for c in spec["cases"]], cases), record.get("case_runtime_s", {}), count)
+    prius_names = select([name for name, _ in jobs(True, True)], prius)
     prius_path = record.get("prius_report", "benchmarks/candidate-qualification-20261103/prius/app-results.json")
     prius_report = read(root / prius_path)
     prius_times = {job["job"]: job["metrics"].get("elapsed_s") for job in prius_report["jobs"]}
-    prius_groups = balance(prius_names, prius_times, min(count, 4))
+    prius_groups = balance(prius_names, prius_times, prius_count or min(count, 4))
     shards = [
         {"id": f"{kind}-{i:02d}", "kind": kind, "cases": cases}
         for kind, groups in (("suite", suite_groups), ("prius", prius_groups))

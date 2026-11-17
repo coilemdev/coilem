@@ -15,9 +15,13 @@ from tools.download_benchmark_shards import link_or_copy
 from tools.prius_benchmark_contract import grading_inputs, verify_completed_job, verify_registered_identity
 
 
-def join_suite(shards, *, suite, bundle, output):
+def join_suite(shards, *, suite, bundle, output, cases=None):
+    """Join shards that cover the whole suite, or exactly the selected ``cases`` (the sentinel collection)."""
     spec = load_suite(suite)
-    expected = [(case["id"], job["stage"]) for case in spec["cases"] for job in case["jobs"]]
+    selected_cases = [case for case in spec["cases"] if cases is None or case["id"] in cases]
+    if cases is not None and (len(set(cases)) != len(cases) or len(selected_cases) != len(cases)):
+        raise ValueError("Selection has duplicate or unregistered cases")
+    expected = [(case["id"], job["stage"]) for case in selected_cases for job in case["jobs"]]
     configs, protocols, golden = inputs(spec, spec["cases"])
     original, gathered, receipts, intervals = None, {}, [], []
     for folder in shards:
@@ -64,12 +68,13 @@ def join_suite(shards, *, suite, bundle, output):
             gathered[key] = folder, job
         receipts.append({"manifest_sha256": sha(folder / "run_manifest.json"), "case_ids": sorted(selected)})
     if set(gathered) != set(expected):
-        raise ValueError("Shards do not cover exactly the complete registered suite")
+        raise ValueError("Shards do not cover exactly the complete registered suite" if cases is None
+                         else "Shards do not cover exactly the selected cases")
     # Everything is validated before creating a derived output. Originals stay immutable.
     output.mkdir(parents=True, exist_ok=False)
     merged = copy.deepcopy(original)
     merged.update(started_at=min(i[0] for i in intervals), completed_at=max(i[1] for i in intervals))
-    merged["selection"]["case_ids"] = [case["id"] for case in spec["cases"]]
+    merged["selection"]["case_ids"] = [case["id"] for case in selected_cases]
     merged["jobs"] = []
     for key in expected:
         folder, job = gathered[key]
@@ -85,8 +90,8 @@ def join_suite(shards, *, suite, bundle, output):
         if digest != merged["selection"]["bundle_sha256"]:
             raise ValueError("Joined reference bundle differs from measured shards")
     from backend.benchmark_suite.cli import evaluate
-    return build(output, merged, evaluate(output, merged, spec["cases"], configs, protocols, golden,
-                                         references, hardware_targets(spec["cases"])), pdf=False)
+    return build(output, merged, evaluate(output, merged, selected_cases, configs, protocols, golden,
+                                         references, hardware_targets(selected_cases)), pdf=False)
 
 
 def join_prius(shards, output, *, symmetry="full"):

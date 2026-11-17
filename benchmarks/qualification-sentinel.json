@@ -1,0 +1,41 @@
+{
+  "schema": "coilem.qualification_sentinel/v1",
+  "suite": "benchmarks/af-v1.10/benchmark_spec.json",
+  "suite_sha256": "14f80962ecb09ef4c5df569d0e5c89158dc7b2516cc9a8e47df34a57f501bcc4",
+  "cases": [
+    "spm_4p12s_simple_noload__tight_airgap",
+    "ipm_flat_4p12s_micro_contract",
+    "ipm_vshape_8p12s_pocket_offset_contract",
+    "spm_12p36s_distributed_femm_validation",
+    "spm_8p48s_chorded_5_6",
+    "spm_14p12s_high_pole",
+    "spm_4p12s_small",
+    "spm_8p12s_concentrated__magnet_60C",
+    "ipm_flat_8p12s_fsae_contract__magnet_100C",
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+    "spm_8p12s_example_shoed__cogging",
+    "ipm_flat_8p12s_fsae_contract__cogging",
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+    "ipm_flat_12s10p_fscw_contract__cogging",
+    "ipm_flat_24s16p_industrial_contract__cogging",
+    "spm_8p24s_distributed_femm_validation__cogging",
+    "spm_outer_14p12s_drone__angle30",
+    "spm_outer_14p12s_drone_noload__baseline",
+    "spm_outer_12p9s_micro__baseline",
+    "spm_outer_10p12s_single_layer__baseline",
+    "spm_outer_28p24s_multirotor__baseline",
+    "spm_outer_30p27s_hub__baseline"
+  ],
+  "prius_jobs": [
+    "loaded-torque-32",
+    "curve-120-16"
+  ],
+  "exact": {
+    "platforms": [
+      "macos-arm64"
+    ],
+    "relative_to_peak": 1e-09,
+    "absolute": 1e-12
+  },
+  "note": "Covering subset of the registered A-F suite: every rotor family, winding type, analysis lane, modifier and slot/pole combination has at least one case (tests/test_qualification_sentinel.py). macOS must reproduce the full record's values to the exact limits; other platforms use the replay tolerances of the full comparison. A match lets a physics PR pass the evidence gate. It never replaces the full collection of a release candidate."
+}

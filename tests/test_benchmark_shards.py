@@ -65,6 +65,23 @@ def test_join_reproduces_real_registered_measurements_without_fields(collection)
     assert read(out / "report/benchmark_summary.json")["counts"] == {"NOT_COMPARED": 2}
 
 
+def test_join_of_a_selection_needs_exactly_the_selected_cases(collection):
+    # The sentinel collection joins a subset; the full join still needs every case.
+    shards, suite, out = collection
+    first, second = (read(shard / "run_manifest.json")["selection"]["case_ids"][0] for shard in shards)
+    with pytest.raises(ValueError, match="selected cases|registered selection|Unexpected"):
+        join_suite(shards, suite=suite, bundle=ROOT / "unused", output=out, cases=[first])
+    with pytest.raises(ValueError, match="selected cases"):
+        join_suite(shards[:1], suite=suite, bundle=ROOT / "unused", output=out, cases=[first, second])
+    with pytest.raises(ValueError, match="unregistered"):
+        join_suite(shards[:1], suite=suite, bundle=ROOT / "unused", output=out, cases=["no_such_case"])
+    assert not out.exists()
+    join_suite(shards[:1], suite=suite, bundle=ROOT / "unused", output=out, cases=[first])
+    manifest = read(out / "run_manifest.json")
+    assert manifest["selection"]["case_ids"] == [first] and {job["case_id"] for job in manifest["jobs"]} == {first}
+    assert [row["id"] for row in read(out / "report/benchmark_summary.json")["rows"]] == [first]
+
+
 @pytest.mark.parametrize("corruption", ["binary", "dependency", "smoke", "failed", "missing", "duplicate", "request", "path"])
 def test_join_rejects_corrupt_or_incomplete_shards_before_writing(collection, corruption):
     shards, _, out = collection

@@ -8,6 +8,10 @@ accepts it as ``--macos`` or ``--windows``.
 
     python -m tools.qualify_local --candidate <full SHA> --directory ~/coilem-qualification
 
+``--collection sentinel`` measures the covering subset of
+``tools.qualification_sentinel`` instead: about a third of the work, for a change
+that is expected to move no value. Use a separate directory for it.
+
 The checkout must be clean at the candidate and the directory must be outside
 it. A stopped run continues from the first unfinished shard. All shards of a
 platform must come from one machine: the join rejects a mixed identity, so
@@ -61,12 +65,14 @@ def check_candidate(candidate, directory, root=ROOT):
         raise ValueError("Keep the output directory outside the checkout")
 
 
-def collect(candidate, directory, *, root=ROOT, min_free_gb=5.0, build=True, run=command, free=free_gb, shards=None):
+def collect(candidate, directory, *, root=ROOT, min_free_gb=5.0, build=True, run=command, free=free_gb, shards=None,
+            collection="registered"):
     """Build, measure every shard, compact and join. Returns the joined folder."""
     directory = directory.resolve()
     check_candidate(candidate, directory, root)
     directory.mkdir(parents=True, exist_ok=True)
-    env = {**os.environ, "COILEM_BUILD_COMMIT": candidate}
+    # Every stage reads the collection from the environment, as in the workflow.
+    env = {**os.environ, "COILEM_BUILD_COMMIT": candidate, "COILEM_BENCHMARK_COLLECTION": collection}
     env.pop("COILEM_MAGNETO2D_BINARY", None)  # the standard solver path is part of the identity
     python = sys.executable
     binary, joined = directory / "binary", directory / "qualification"
@@ -109,7 +115,7 @@ def collect(candidate, directory, *, root=ROOT, min_free_gb=5.0, build=True, run
         shutil.rmtree(joined / name, ignore_errors=True)
     run(python, "-m", "tools.benchmark_ci", "join", "--directory", joined, root=root, env=env)
     (joined / "local-collection.json").write_text(json.dumps({
-        "schema": "coilem.local_collection/v1", "candidate": candidate, "collector": "local",
+        "schema": "coilem.local_collection/v1", "candidate": candidate, "collector": "local", "collection": collection,
         "platform": platform.platform(), "machine": platform.machine(), "python": platform.python_version(),
         "shard_wall_time_s": timings, "raw_fields_retained": False,
         "note": "Collected in series on one machine with the release-benchmarks.yml commands; no hosted runner.",
@@ -125,9 +131,13 @@ def main(argv=None):
                         help="Stop before a shard when the output drive has less free space (default 5)")
     parser.add_argument("--skip-build", action="store_true",
                         help="Use the Magneto2D binary already built at the standard solver path")
+    parser.add_argument("--collection", choices=["registered", "sentinel"], default="registered",
+                        help="registered measures everything; sentinel measures the covering subset for a change "
+                             "expected to move no value (default registered)")
     args = parser.parse_args(argv)
     try:
-        joined = collect(args.candidate, args.directory.expanduser(), min_free_gb=args.min_free_gb, build=not args.skip_build)
+        joined = collect(args.candidate, args.directory.expanduser(), min_free_gb=args.min_free_gb, build=not args.skip_build,
+                         collection=args.collection)
     except (ValueError, RuntimeError) as error:
         print(f"Stopped: {error}", file=sys.stderr)
         return 2
