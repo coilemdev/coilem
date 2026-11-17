@@ -20555,8 +20555,8 @@
     },
     {
       "path": "benchmarks/phase-g-v1/README.md",
-      "bytes": 7987,
-      "sha256": "f5354cf66706d85700514b97b2bc429145684198018cc1581b896ed5e831bfc2"
+      "bytes": 8591,
+      "sha256": "f86e5abb893e3a8bcb766ba865b3781e72294a47db7cff63724c540c198f4d17"
     },
     {
       "path": "benchmarks/phase-g-v1/benchmark_spec.json",
@@ -20585,8 +20585,8 @@
     },
     {
       "path": "tests/test_phase_g_loss.py",
-      "bytes": 15133,
-      "sha256": "c5c8f31b58b12609b532935ffbef5ccf7731360a97bbffe24807b7d3f5526f5b"
+      "bytes": 18425,
+      "sha256": "f5ac03b5bdacafdaa96672d4db23b0355423b3441f1e21083911c86f947c9dad"
     },
     {
       "path": "tools/phase_g_loss/__init__.py",
@@ -20595,8 +20595,8 @@
     },
     {
       "path": "tools/phase_g_loss/__main__.py",
-      "bytes": 14726,
-      "sha256": "ee6a8c859734b1c60d4fbdd4cab2f08bf2650034c2917e2a8097b1405793a4ad"
+      "bytes": 17459,
+      "sha256": "d6bad17912695e89d2d0f7423e159b2d5c169fa03abf02f6a209a6f8cb7ffb5f"
     },
     {
       "path": "tools/phase_g_loss/contract.py",

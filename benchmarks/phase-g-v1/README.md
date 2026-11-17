@@ -108,6 +108,15 @@ Output must be outside the checkout. The coordinator runs **all selected native
 conditions first**, then starts the slower FEMM work with at most two workers.
 It waits for existing FEMM sessions rather than adding to an active campaign.
 
+`--parallel-femm-cases` assigns one worker to each independent fixture/load
+condition, up to the same global `--femm-workers` limit. For example, flat-IPM
+and distributed SPM can collect concurrently with two total FEMM instances.
+Each case bootstraps its own mesh, then one worker resumes all missing poses;
+previously completed even/odd shards are verified and retained. Scheduling
+changes do not change the registered magnetic inputs or source identities.
+An unexpected failure cancels the other owned worker. Numerical gates and the
+rules for withholding inadmissible native cases remain unchanged.
+
 ```powershell
 python -m tools.phase_g_loss run --out ../phase-g-run --binary <magneto2d.exe> --femm-python <pinned-python.exe> --wait-for-femm
 ```

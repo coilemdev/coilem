@@ -271,7 +271,7 @@ def test_campaign_keeps_closure_failure_and_only_compares_independent_valid_case
     monkeypatch.setattr(reporter, "compare", lambda *a: {"component_comparison_pass": True, "component_agreement_pass": True})
     events = []
 
-    def commands(arguments, logs):
+    def commands(arguments, logs, cancel=None):
         for command, log in zip(arguments, logs, strict=True):
             if "tools.phase_g_loss.report" in command:
                 directory = Path(command[command.index("--history") + 1])
@@ -301,6 +301,7 @@ def test_campaign_keeps_closure_failure_and_only_compares_independent_valid_case
         mode="run", out=output, binary=binary, case=None, native_workers=4, femm_workers=2,
         femm_python=Path(sys.executable), wait_for_femm=False, allow_angular_failure=True,
         continue_independent_cases=continue_independent,
+        parallel_femm_cases=False,
     )
     if not continue_independent:
         with pytest.raises(RuntimeError, match="history gate"):
@@ -320,3 +321,72 @@ def test_campaign_keeps_closure_failure_and_only_compares_independent_valid_case
     assert read(output / "native/outer-spm-no-load/analysis.json")["numerical_history_pass"] is False
     assert all(event[1] == "inner-spm-loaded" for event in events if event[0] == "femm")
     assert events.index(("analyse", "native", "outer-spm-no-load")) < next(i for i, event in enumerate(events) if event[0] == "femm")
+
+
+def test_two_case_schedule_overlaps_fixtures_without_multiple_writers(tmp_path, monkeypatch):
+    import argparse
+    import sys
+    from pathlib import Path
+    from threading import Barrier, Lock
+
+    import tools.phase_g_loss.__main__ as campaign
+    import tools.phase_g_loss.report as reporter
+    from tools.phase_g_loss.contract import read
+
+    cases = [case_by_id("flat-ipm-no-load"), case_by_id("distributed-spm-no-load")]
+    output = tmp_path / "campaign"
+    for case in cases:
+        write(output / "native" / case["id"] / "analysis.json", {
+            "case_id": case["id"], "numerical_history_pass": True,
+            "regions": {"stator": {"closure": {"pass": True}, "speeds": {"3000": {"angular_steps": [{"total_W": True}]}}}},
+        })
+    monkeypatch.setattr(campaign, "suite", lambda: {"cases": cases})
+    monkeypatch.setattr(campaign.subprocess, "check_output", lambda command, **kw: "field-commit\n" if "rev-parse" in command else "")
+    monkeypatch.setattr(campaign, "live_femm_count", lambda: 0)
+    monkeypatch.setattr(reporter, "summary", lambda *a: None)
+    monkeypatch.setattr(reporter, "compare", lambda *a: {"component_comparison_pass": True, "component_agreement_pass": True})
+    barrier, lock, active, seen, shards = Barrier(2), Lock(), set(), [], []
+
+    def commands(arguments, logs, cancel=None):
+        assert cancel is not None
+        assert len(arguments) == 1
+        command = arguments[0]
+        if "tools.phase_g_loss.femm" in command:
+            case = command[command.index("--case") + 1]
+            if "--limit" in command:
+                with lock:
+                    assert case not in active
+                    active.add(case)
+                barrier.wait(timeout=5)
+                with lock:
+                    seen.append(set(active))
+            else:
+                shards.append(command[command.index("--shard") + 1])
+        else:
+            directory = Path(command[command.index("--history") + 1])
+            write(directory / "analysis.json", read(output / "native" / directory.name / "analysis.json"))
+
+    monkeypatch.setattr(campaign, "commands", commands)
+    campaign.run(argparse.Namespace(
+        mode="femm", out=output, binary=None, case=None, native_workers=4, femm_workers=2,
+        femm_python=Path(sys.executable), wait_for_femm=False, allow_angular_failure=True,
+        continue_independent_cases=True, parallel_femm_cases=True,
+    ))
+    assert seen == [{case["id"] for case in cases}] * 2
+    assert shards == ["0/1", "0/1"]
+    state = read(output / "run-state.json")
+    assert set(state["femm_completed"]) == {case["id"] for case in cases}
+    assert state["active_femm_cases"] == []
+    assert state["status"] == "NUMERICAL_COLLECTION_COMPLETE_EXPERIMENTAL"
+
+
+def test_cancelled_case_does_not_launch_more_field_workers(tmp_path, monkeypatch):
+    from threading import Event
+
+    import tools.phase_g_loss.__main__ as campaign
+
+    cancel = Event()
+    cancel.set()
+    monkeypatch.setattr(campaign.subprocess, "Popen", lambda *a, **kw: pytest.fail("Cancelled case launched a field worker"))
+    with pytest.raises(RuntimeError, match="peer worker failed"):
+        campaign.commands([["never-start"]], [tmp_path / "worker.log"], cancel)
