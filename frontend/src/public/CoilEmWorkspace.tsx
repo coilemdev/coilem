@@ -3957,7 +3957,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     ? 'In Advanced options, change Nonlinear solver to Newton, then run the analysis again.'
     : reviewDesignForConvergence
       ? 'Newton and a fine mesh are already selected. Review the geometry and steel B–H curve, especially near saturation, before retrying.'
-      : 'Try a finer mesh: in Advanced options, choose Fine or Very fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
+      : 'Try a finer mesh: in Advanced options, choose Fine or Very fine under Mesh preparation (the mesh is rebuilt at once), then rerun. If it still fails, review the geometry and steel B–H curve.';
   const openConvergenceSettings = () => {
     recoveryFocusTargetRef.current = config.solve_params.nonlinear_solver === 'picard'
       ? nonlinearSolverRef.current
@@ -3971,6 +3971,11 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const finalizingResults = solveInProgress && isPublicSolveFinalizing(progress);
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);
+  // Mesh settings re-mesh on their own; with no mesh and nothing running (the guided setup
+  // skipped it, or the last attempt failed) the run button prepares one, then becomes
+  // Run analysis (#333).
+  const meshNeeded = !mesh && busy === null && !cancellingSolve;
+  const meshActionLabel = error ? 'Regenerate mesh' : 'Prepare mesh';
   // [tag label, popover heading]
   const [runReadinessTag, runReadinessTitle] = cancellingSolve
     ? ['Stopping', 'Stopping the analysis']
@@ -4507,7 +4512,6 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
               {symmetry === 'auto' && !meshSector && mesh && <p className="public-mesh-build-note">This motor is solved in full{typeof mesh.mesh_info.sector_fallback_reason === 'string' ? `: ${mesh.mesh_info.sector_fallback_reason}` : ''}.</p>}
               {symmetry === 'auto' && <p className="public-mesh-build-note">Solves one repeating sector and shows the full motor. A motor that does not repeat is solved in full. Results match the full motor to mesh-noise level and are marked experimental.</p>}
               {sectorCoggingNote(config, selectedSolver) && <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, selectedSolver)}</p>}
-              <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Meshing…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
               <span className="public-section-kicker" id="public-electromagnetic-controls-heading">Electromagnetic controls</span>
@@ -4558,10 +4562,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           {completedAnalysisAvailable ? (
             <>
               <button className="public-run-btn" type="button" data-guide="open-report" onClick={onOpenReport}>View Results →</button>
-              <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={runDisabled} onClick={handleStartSolve}>Run again</button>
+              <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={!meshNeeded && runDisabled} onClick={meshNeeded ? onGenerateMesh : handleStartSolve}>{meshNeeded ? meshActionLabel : 'Run again'}</button>
             </>
           ) : (
-            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled || cancellingSolve} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{cancellingSolve ? 'Stopping…' : busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
+            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={!meshNeeded && (runDisabled || cancellingSolve)} onClick={meshNeeded ? onGenerateMesh : busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{cancellingSolve ? 'Stopping…' : busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : meshNeeded ? meshActionLabel : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>

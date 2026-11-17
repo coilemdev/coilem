@@ -322,8 +322,13 @@ assert.match(workspaceSource, /elmerAvailable \? `Version \$\{elmerCapability\.s
 assert.match(workspaceSource, /&& elmerCapability\.adapter_ready/);
 assert.match(workspaceSource, /Qualified Elmer 26\.2 profile/);
 assert.match(workspaceSource, /magnetoCompositionAvailable=\{selectedSolver === 'magneto2d'\}/);
-assert.match(workspaceSource, /Prepare mesh/);
-assert.match(workspaceSource, /Regenerate mesh/);
+// #333: mesh settings re-mesh on their own, so there is no separate mesh button; with no mesh the
+// run button prepares one (Regenerate after a failed attempt), then becomes Run analysis.
+assert.doesNotMatch(workspaceSource, /public-prepare-mesh-btn/);
+assert.match(workspaceSource, /const meshNeeded = !mesh && busy === null && !cancellingSolve;/);
+assert.match(workspaceSource, /const meshActionLabel = error \? 'Regenerate mesh' : 'Prepare mesh';/);
+assert.match(workspaceSource, /onClick=\{meshNeeded \? onGenerateMesh : busy === 'solve' \? onCancelSolve/);
+assert.match(workspaceSource, /onClick=\{meshNeeded \? onGenerateMesh : handleStartSolve\}>\{meshNeeded \? meshActionLabel : 'Run again'\}/);
 assert.match(workspaceSource, /className="results-dashboard public-report-stage"/);
 assert.match(workspaceSource, /className="public-saved-run"/);
 const reportStageIndex = workspaceSource.indexOf('className="results-dashboard public-report-stage"');
@@ -1646,7 +1651,7 @@ assert.match(styleSource, /\.public-run-plan-resizer,\s*\.public-solve-setup-res
 assert.match(workspaceSource, /const RUN_PLAN_ACTIVE_WIDTH = 440/);
 assert.match(workspaceSource, /setRunPlanWidth\(\(currentWidth\) => Math\.max/);
 assert.match(workspaceSource, /runPlanScrollRef\.current\?\.scrollTo/);
-assert.match(workspaceSource, /onClick=\{busy === 'solve' \? onCancelSolve : busy === 'field' \? onCancelArmatureField : handleStartSolve\}/);
+assert.match(workspaceSource, /onClick=\{meshNeeded \? onGenerateMesh : busy === 'solve' \? onCancelSolve : busy === 'field' \? onCancelArmatureField : handleStartSolve\}/);
 assert.match(workspaceSource, /solveInProgress \? ' is-run-plan-focused'/);
 assert.match(styleSource, /\.public-run-plan-resizer/);
 assert.match(styleSource, /cursor: col-resize/);
