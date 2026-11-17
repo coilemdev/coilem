@@ -34,7 +34,8 @@ def main():
         if key.startswith(("COILEM_", "MAGNETO2D_", "GMSH_", "FEMM_")):
             os.environ.pop(key)
     os.environ.update(COILEM_MAGNETO2D_BINARY=str(args.binary.resolve()),
-                      COILEM_MAGNETO2D_PERSIST_RAW_ARTIFACTS="1", COILEM_MAGNETO2D_PERSIST_SUMMARY_ARTIFACTS="1")
+                      COILEM_MAGNETO2D_PERSIST_RAW_ARTIFACTS="1", COILEM_MAGNETO2D_PERSIST_SUMMARY_ARTIFACTS="1",
+                      COILEM_SOLVE_CACHE_MAX_BYTES=str(32 * 1024**3))
     from backend import field_artifacts
     from backend.field_lines import generate_element_b_components
     from backend.gmsh_solver import run_gmsh_mesh_preview

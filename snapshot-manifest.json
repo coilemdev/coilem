@@ -20655,8 +20655,8 @@
     },
     {
       "path": "tools/phase_g_loss/stator_native.py",
-      "bytes": 8576,
-      "sha256": "a36ca83fce02fa091e191642793791c3af201b6a3e09e5d5e572cbe565fa2754"
+      "bytes": 8646,
+      "sha256": "1edf3e8f369d916b18d3885d8aede3635ded555657bedb0806fda3318e0e4aab"
     },
     {
       "path": "tools/phase_g_loss/stator_report.py",
