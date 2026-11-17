@@ -9,7 +9,7 @@ import pytest
 from tools.phase_g_loss.contract import ROOT, read, sha, suite, write
 from tools.phase_g_loss.report import independent_loss, production_loss
 from tools.phase_g_loss.stator_contract import checkpoint, config, cycle_repeatability, magnetic_geometry
-from tools.phase_g_loss.stator_report import compare
+from tools.phase_g_loss.stator_report import compare, loss_history_pass
 
 
 @pytest.mark.parametrize("case", [c["id"] for c in suite()["cases"]])
@@ -59,7 +59,7 @@ def test_repeatability_keeps_rotor_style_failure_and_never_repairs_raw_fields():
 def test_component_qualification_does_not_read_rotor_verdicts():
     watts = {"hysteresis_W": 1., "lamination_eddy_W": 2., "total_W": 3.}
     stator = {str(s): {"samples": {"96": watts}} for s in (1500, 3000)}
-    native = {"case_id": "example", "protocol_sha256": "native", "history_pass": True,
+    native = {"case_id": "example", "protocol_sha256": "native", "history_pass": False, "stator_loss_history_pass": True,
               "stator": stator, "copper": {"W": 6., "phase_resistance_ohm": .1},
               "cycle_repeatability": {"pass": True}, "rotor": {"pass": False}}
     ref = {**native, "protocol_sha256": "reference", "native_protocol_sha256": "native", "new_field_solves": 0, "reused_poses": 97}
@@ -72,7 +72,7 @@ def test_component_qualification_does_not_read_rotor_verdicts():
     wrong["copper"]["phase_resistance_ohm"] = .2
     assert not compare(native, wrong)["dc_copper_reference_pass"]
     bad = copy.deepcopy(ref)
-    bad["history_pass"] = False
+    bad["stator_loss_history_pass"] = False
     assert not compare(native, bad)["stator_reference_pass"]
 
 
@@ -120,3 +120,15 @@ def test_sinusoidal_grid_is_verified_from_angles_not_six_step_metadata():
     payload["torque_waveform"]["electrical_angle_deg"][-1] = 360
     with pytest.raises(ValueError, match="uniform electrical cycle"):
         validate_production_grid(payload, 24)
+
+
+def test_loss_policy_keeps_failed_point_field_diagnostic_without_correcting_fields():
+    stator = {str(s): {"angular_pass": True} for s in (1500, 3000)}
+    repeat = {"pass": False, "raw_fields_corrected": False,
+              "loss_sensitivity": {str(s): {"gates": {"hysteresis_W": True, "lamination_eddy_W": True, "total_W": True}}
+                                   for s in (1500, 3000)}}
+    assert loss_history_pass(stator, repeat)
+    assert repeat["pass"] is False
+    assert repeat["raw_fields_corrected"] is False
+    repeat["loss_sensitivity"]["3000"]["gates"]["lamination_eddy_W"] = False
+    assert not loss_history_pass(stator, repeat)

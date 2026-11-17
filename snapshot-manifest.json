@@ -20625,8 +20625,8 @@
     },
     {
       "path": "benchmarks/phase-g-v1/STATOR_COPPER_59.md",
-      "bytes": 3741,
-      "sha256": "500c43c85bf07707fe3197a6da63ed8a86ec23fdfa7db9e2b932475c2c733c41"
+      "bytes": 4606,
+      "sha256": "b16bc1536b6791245b8d8bb46877ecfb71a824c520ce4f0fb05318c3aae8eed8"
     },
     {
       "path": "benchmarks/phase-g-v1/stator-copper-59.json",
@@ -20635,8 +20635,8 @@
     },
     {
       "path": "tests/test_stator_copper_qualification.py",
-      "bytes": 6095,
-      "sha256": "36384f0785a4a78e0ffd19234eb88df51a24cdfef2c1a56b6fd3a850bbeeaac2"
+      "bytes": 6814,
+      "sha256": "255db7cf7ead5bb15b488436ca53fa1d48ee463edf2bc5108ecd7dde0c3bf43b"
     },
     {
       "path": "tools/phase_g_loss/stator59.py",
@@ -20660,8 +20660,13 @@
     },
     {
       "path": "tools/phase_g_loss/stator_report.py",
-      "bytes": 8905,
-      "sha256": "210686533b68ec7e69683065adecc643d0cf17a38b026d8a389b209b61973479"
+      "bytes": 10261,
+      "sha256": "b051662aeef9a7ed064fd5f0a4fde0690ababc827bf209d005081e50c987bdaa"
+    },
+    {
+      "path": "benchmarks/phase-g-v1/stator-copper-loss-gates-59.json",
+      "bytes": 613,
+      "sha256": "ddb8b94affd5507c46d69dfdcd89e1abf4052b30b534f819dd6889ac2d576ef6"
     }
   ],
   "public_patches": [
