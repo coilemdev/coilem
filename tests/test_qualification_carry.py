@@ -159,3 +159,55 @@ def test_missing_platform_or_mixed_candidates_cannot_publish(platform_inputs, tm
     write(path, changed)
     with pytest.raises(ValueError, match='mixed field'):
         carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'mixed')
+
+
+def test_publication_redacts_local_paths_and_records_a_local_collection(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    folder = platforms['macos-arm64']
+    path = folder / 'joined-suite/report/benchmark_summary.json'
+    report = read(path)
+    home = '/Users/' + 'someone/qualification/collect/suite-00/out/jobs/case/native/native-runtime/solve_cache/run'
+    report['rows'][0]['measurements']['native'].setdefault('solve_metadata', {})['solve_cache_dir'] = home
+    write(path, report)
+    html = folder / 'joined-suite/report/coilem_benchmark_report.html'
+    html.write_bytes(f'<td>{home}</td>\r\n<td>1.25</td>\r\n'.encode())
+    write(folder / 'joined-suite/report/artifact_manifest.json',
+          {'benchmark_summary.json': sha(path), 'coilem_benchmark_report.html': sha(html)})
+    write(folder / 'local-collection.json', {'schema': 'coilem.local_collection/v1', 'collector': 'local'})
+    inputs = {p: sha(p) for p in (path, html)}
+
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'output')
+
+    assert result['status'] == 'READY' and all(sha(p) == digest for p, digest in inputs.items())
+    base = tmp_path / f'output/publication/benchmarks/qualification-{result["candidate"][:12]}'
+    published = base / 'macos-arm64/report'
+    assert not any(carry.contains_local_path(p.read_text(encoding='utf-8')) for p in base.rglob('*') if p.is_file())
+    summary = read(published / 'benchmark_summary.json')
+    assert summary['rows'][0]['measurements']['native']['solve_metadata']['solve_cache_dir'] == '<local path>'
+    assert summary['rows'][0]['measurements']['native']['summary'] == report['rows'][0]['measurements']['native']['summary']
+    assert (published / 'coilem_benchmark_report.html').read_bytes() == b'<td><local path></td>\r\n<td>1.25</td>\r\n'
+    index = read(published / 'artifact_manifest.json')
+    assert index == {name: sha(published / name) for name in index}
+    projection = read(base / 'publication-projection.json')
+    assert set(projection['platforms']) == {'macos-arm64'} and projection['measured_commit'] == result['candidate']
+    entry = projection['platforms']['macos-arm64']
+    assert entry['collection']['collector'] == 'local'
+    assert {f['file'] for f in entry['files']} == {
+        'report/benchmark_summary.json', 'report/coilem_benchmark_report.html', 'report/artifact_manifest.json'}
+    assert all(f['original_sha256'] != f['published_sha256'] for f in entry['files'])
+
+
+def test_hosted_collections_without_local_paths_publish_no_projection(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'output')
+    base = tmp_path / f'output/publication/benchmarks/qualification-{result["candidate"][:12]}'
+    assert not (base / 'publication-projection.json').exists()
+
+
+def test_redaction_refuses_to_change_anything_but_paths():
+    assert carry._only_paths_differ({'a': ['/Users/' + 'x/y', 1.5]}, {'a': ['<local path>', 1.5]})
+    assert not carry._only_paths_differ({'a': 1.5}, {'a': 1.6})
+    assert not carry._only_paths_differ({'a': 'PASS'}, {'a': '<local path>'})
+    assert not carry._only_paths_differ({'a': 1}, {'a': 1, 'b': 2})
+    assert not carry._only_paths_differ([1, 2], [1])
+    assert not carry._only_paths_differ(1, True)

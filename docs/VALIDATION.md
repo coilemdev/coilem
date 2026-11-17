@@ -213,6 +213,16 @@ passes all 10 checks across 17 jobs and 568 field reports on each platform.
 All 47 A–D rows agree with the previous record on their platform within
 the existing replay tolerances.
 
+The platform records were measured again at `5e6fab2`, after V-shape rotors
+gained a fine mesh patch at the magnet and pocket corners ([#317](https://github.com/coilemdev/coilem/pull/317)). The
+[evidence](../benchmarks/qualification-5e6fab283d16/publication-projection.json)
+covers the same 68 supported cases and 468 passing gates on each platform, and
+the same Prius checks. Only the six V-shape cases moved; every other suite and
+Prius value agrees with the previous record within the replay tolerances.
+Windows was collected on a hosted runner. macOS was collected on a local Apple
+silicon Mac (macOS 27.2) with the same workflow commands, because hosted macOS
+runners were not available; the linked receipt records this.
+
 The [protocol 1.6.0 comparison](../benchmarks/candidate-qualification-20261103/README.md)
 and its review retain the historical 46-record basis. The current combined
 registry retains the reviewed FEMM source identities and scope for each
@@ -230,7 +240,7 @@ its registered gates.
 | SPM | Single-layer concentrated | Ideal six-step 120-degree wye (BLDC) | Phase D: 4-pole, 8-pole and 14-pole 12-slot designs | 3 PASS; 42/42 gates | Qualified |
 | SPM | Two-layer distributed, full pitch or 5/6 short pitch | Sinusoidal | Phase C: 8p/24s, 8p/48s, 8p/48s 5/6-chorded, 12p/36s | 4 PASS | Qualified |
 | Flat-buried IPM | Single-layer concentrated | Sinusoidal | Phase B: 14 cases, including temperature and d/q points | 14 PASS | Qualified |
-| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 6 PASS; increased fundamental-EMF discrepancy | Experimental |
+| V-shape IPM | Single-layer concentrated | Sinusoidal | Phase B: six fixtures | 6 PASS; fundamental-EMF error 0.3–1.6% with the corner mesh patch; cogging not mesh-converged | Experimental |
 | Multi-layer IPM (legacy ORNL Prius fixture) | - | - | Phase C | Rejected by public policy | Unsupported |
 
 The application also accepts combinations that the benchmark did not measure.
@@ -275,14 +285,34 @@ combination but outside the measured geometry range use the same solver path,
 but their accuracy has not been measured individually. Check
 mesh and angular convergence before relying on small differences.
 
-The V-shape baseline's peak-EMF error improves from 14.7787% in the v0.4
-report to 9.0128%, while its fundamental error rises from 2.0563% to 8.2864%.
-Across all six V-shape cases, mean fundamental error rises from 2.3866% to
-6.5029% against unchanged retained reference data. Passing the 10% gate does
-not establish improved accuracy. A tighter-precision/finer-bridge baseline
-reference control passes its registered comparisons but is only a sensitivity
-screen, not proof of spatial convergence. V-shape stays experimental. Earlier
-failed fixtures and diagnostic reports remain intact in their historical folders.
+Up to the `70c5e34` evidence, V-shape results on the Normal mesh read high.
+The baseline's peak-EMF error was 9.0128% (14.7787% in the v0.4 report) and
+its fundamental error 8.2864% (2.0563% in v0.4). Across all six V-shape cases,
+mean fundamental error was 6.5029%, against unchanged retained reference data.
+
+The [mesh-sensitivity study](VSHAPE_MESH_SENSITIVITY_285.md) traced this to
+the magnet and pocket corners, and V-shape rotors now always get a fine mesh
+patch there ([#317](https://github.com/coilemdev/coilem/pull/317)). Measured
+at `5e6fab2` on Windows against the same reference data:
+
+| V-shape fixture | Mean torque error, before → after | Fundamental-EMF error, before → after | Peak-EMF error, before → after |
+| --- | --- | --- | --- |
+| Baseline | 7.02% → 0.73% | 8.29% → 0.94% | 9.01% → 1.77% |
+| Deep apex | 5.08% → 1.79% | 8.20% → 1.38% | 8.60% → 1.05% |
+| Narrow angle | 4.40% → 0.70% | 4.71% → 0.63% | 4.79% → 1.99% |
+| Pocket offset | 5.08% → 0.69% | 8.11% → 0.93% | 9.81% → 1.19% |
+| Thin bridge | 2.58% → 0.58% | 1.11% → 0.30% | 0.61% → 1.58% |
+| Wide angle | 6.59% → 0.99% | 8.61% → 1.57% | 9.63% → 1.55% |
+
+Mean fundamental error across the six cases falls from 6.5029% to 0.9575%,
+and mean torque error from 5.1273% to 0.9146%. macOS agrees with Windows to
+within 0.05 percentage points on every entry.
+
+V-shape stays experimental. The six fixtures are one 8-pole, 12-slot family.
+Torque and Back-EMF converge with corner refinement, but cogging does not yet
+([#321](https://github.com/coilemdev/coilem/issues/321)), and flat-buried
+corners have not been checked the same way. Earlier failed fixtures and
+diagnostic reports remain intact in their historical folders.
 
 The [older Mac comparison](../benchmarks/windows-v050-20261102-88aae101/macos-comparison.txt)
 preserves its original `5b7cad8` and `f6c9fbb` pins. The new A–F evidence
