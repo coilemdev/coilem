@@ -159,3 +159,117 @@ def test_missing_platform_or_mixed_candidates_cannot_publish(platform_inputs, tm
     write(path, changed)
     with pytest.raises(ValueError, match='mixed field'):
         carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'mixed')
+
+
+def test_publication_redacts_local_paths_and_records_a_local_collection(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    folder = platforms['macos-arm64']
+    path = folder / 'joined-suite/report/benchmark_summary.json'
+    report = read(path)
+    home = '/Users/' + 'someone/qualification/collect/suite-00/out/jobs/case/native/native-runtime/solve_cache/run'
+    report['rows'][0]['measurements']['native'].setdefault('solve_metadata', {})['solve_cache_dir'] = home
+    write(path, report)
+    html = folder / 'joined-suite/report/coilem_benchmark_report.html'
+    html.write_bytes(f'<td>{home}</td>\r\n<td>1.25</td>\r\n'.encode())
+    write(folder / 'joined-suite/report/artifact_manifest.json',
+          {'benchmark_summary.json': sha(path), 'coilem_benchmark_report.html': sha(html)})
+    write(folder / 'local-collection.json', {'schema': 'coilem.local_collection/v1', 'collector': 'local'})
+    inputs = {p: sha(p) for p in (path, html)}
+
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'output')
+
+    assert result['status'] == 'READY' and all(sha(p) == digest for p, digest in inputs.items())
+    base = tmp_path / f'output/publication/benchmarks/qualification-{result["candidate"][:12]}'
+    published = base / 'macos-arm64/report'
+    assert not any(carry.contains_local_path(p.read_text(encoding='utf-8')) for p in base.rglob('*') if p.is_file())
+    summary = read(published / 'benchmark_summary.json')
+    assert summary['rows'][0]['measurements']['native']['solve_metadata']['solve_cache_dir'] == '<local path>'
+    assert summary['rows'][0]['measurements']['native']['summary'] == report['rows'][0]['measurements']['native']['summary']
+    assert (published / 'coilem_benchmark_report.html').read_bytes() == b'<td><local path></td>\r\n<td>1.25</td>\r\n'
+    index = read(published / 'artifact_manifest.json')
+    assert index == {name: sha(published / name) for name in index}
+    projection = read(base / 'publication-projection.json')
+    assert set(projection['platforms']) == {'macos-arm64'} and projection['measured_commit'] == result['candidate']
+    entry = projection['platforms']['macos-arm64']
+    assert entry['collection']['collector'] == 'local'
+    assert {f['file'] for f in entry['files']} == {
+        'report/benchmark_summary.json', 'report/coilem_benchmark_report.html', 'report/artifact_manifest.json'}
+    assert all(f['original_sha256'] != f['published_sha256'] for f in entry['files'])
+
+
+def test_hosted_collections_without_local_paths_publish_no_projection(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'output')
+    base = tmp_path / f'output/publication/benchmarks/qualification-{result["candidate"][:12]}'
+    assert not (base / 'publication-projection.json').exists()
+
+
+def test_redaction_refuses_to_change_anything_but_paths():
+    assert carry._only_paths_differ({'a': ['/Users/' + 'x/y', 1.5]}, {'a': ['<local path>', 1.5]})
+    assert not carry._only_paths_differ({'a': 1.5}, {'a': 1.6})
+    assert not carry._only_paths_differ({'a': 'PASS'}, {'a': '<local path>'})
+    assert not carry._only_paths_differ({'a': 1}, {'a': 1, 'b': 2})
+    assert not carry._only_paths_differ([1, 2], [1])
+    assert not carry._only_paths_differ(1, True)
+
+
+def changed_reference_source(platforms):
+    for folder in platforms.values():
+        path = folder / 'joined-suite/report/benchmark_summary.json'
+        changed = read(path)
+        changed['run']['identity']['source_files']['backend/geometry_ir.py'] = 'changed reference model'
+        write(path, changed)
+
+
+def test_owner_reviewed_reference_sources_publish_with_the_review_on_record(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    changed_reference_source(platforms)
+    blocked = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'blocked')
+    assert blocked['status'] == 'REFERENCE_REVIEW_REQUIRED' and not blocked['owner_reviewed_reference_sources']
+    assert '--reference-reviewed' in (tmp_path / 'blocked/REVIEW.md').read_text()
+
+    output = tmp_path / 'reviewed'
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=output, reference_reviewed=True)
+    assert result['status'] == 'READY' and not result['reference_review']
+    assert set(result['owner_reviewed_reference_sources']) == {'windows-x86_64', 'macos-arm64'}
+    base = output / f'publication/benchmarks/qualification-{result["candidate"][:12]}'
+    for key in platforms:
+        receipt = read(base / key / 'reference-reuse.json')['owner_reviewed_reference_sources']
+        assert list(receipt) == ['backend/geometry_ir.py']
+        assert receipt['backend/geometry_ir.py']['candidate_sha256'] == 'changed reference model'
+        assert receipt['backend/geometry_ir.py']['approved_sha256'] != 'changed reference model'
+        assert read(base / key / 'carry-receipt.json')['owner_reviewed_reference_sources'][key] == receipt
+    assert 'backend/geometry_ir.py' in (output / 'REVIEW.md').read_text()
+
+
+def test_unchanged_reference_sources_record_no_review_even_with_the_flag(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'output', reference_reviewed=True)
+    assert result['status'] == 'READY' and result['owner_reviewed_reference_sources'] == {}
+    receipt = read(tmp_path / f'output/publication/benchmarks/qualification-{result["candidate"][:12]}/macos-arm64/reference-reuse.json')
+    assert 'owner_reviewed_reference_sources' not in receipt
+
+
+def test_a_reviewed_reference_never_overrides_a_changed_request(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    path = platforms['windows-x86_64'] / 'joined-suite/report/benchmark_summary.json'
+    changed = read(path)
+    stage = next(iter(changed['rows'][0]['configurations']))
+    changed['rows'][0]['configurations'][stage]['solve_params']['mesh_density'] = 'coarse'
+    write(path, changed)
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'request', reference_reviewed=True)
+    assert result['status'] == 'REFERENCE_REVIEW_REQUIRED'
+    assert 'input interpretation' in result['reference_review'][0]['reason']
+    assert not (tmp_path / 'request/publication').exists()
+
+
+def test_a_reviewed_reference_still_needs_moved_values_accepted(platform_inputs, tmp_path):
+    platforms, root = platform_inputs
+    changed_reference_source(platforms)
+    path = platforms['windows-x86_64'] / 'joined-suite/report/benchmark_summary.json'
+    changed = read(path)
+    changed['rows'][0]['measurements']['native']['summary']['avg_torque_Nm'] *= 1.02
+    write(path, changed)
+    result = carry.prepare(platforms, baseline=ROOT, root=root, output=tmp_path / 'moved', reference_reviewed=True)
+    assert result['status'] == 'OWNER_REVIEW_REQUIRED' and result['moved_values']
+    assert not (tmp_path / 'moved/publication').exists()

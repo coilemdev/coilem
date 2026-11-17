@@ -66,6 +66,9 @@ ALLOWED_DATA_FILES = {
     # Retain the published 0.5.7 measurements after advancing the platform records.
     "benchmarks/qualification-4b41f837f3d8/windows-x86_64/report/benchmark_results.csv",
     "benchmarks/qualification-4b41f837f3d8/macos-arm64/report/benchmark_results.csv",
+    # Retain the published 0.5.8 measurements after advancing the platform records.
+    "benchmarks/qualification-78e6f4fc8aa8/windows-x86_64/report/benchmark_results.csv",
+    "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report/benchmark_results.csv",
     "benchmarks/qualification-70c5e3404c19/windows-x86_64/report/benchmark_results.csv",
     "benchmarks/qualification-70c5e3404c19/macos-arm64/report/benchmark_results.csv",
     "benchmarks/windows-v050-20261102-88aae101/comparison/report/benchmark_results.csv",
@@ -232,6 +235,28 @@ def pdf_hygiene_failures(relative: str, path: Path) -> list[str]:
     return []
 
 
+def indexed_report_csvs(root: Path) -> set[str]:
+    """Report CSVs of published evidence that the platform records no longer name.
+
+    Evidence stays in the repository after the records advance to a newer
+    candidate. Its results table is still report data, not a material curve,
+    when it sits at the fixed report path of a ``qualification-<commit>``
+    folder and that report's own index lists its exact bytes.
+    """
+    allowed = set()
+    for path in root.glob("benchmarks/qualification-*/*/report/benchmark_results.csv"):
+        if not re.fullmatch("qualification-[0-9a-f]{12}", path.parents[2].name):
+            continue
+        index = path.with_name("artifact_manifest.json")
+        try:
+            listed = json.loads(index.read_text(encoding="utf-8")).get(path.name)
+        except (OSError, ValueError, AttributeError):
+            continue
+        if listed == sha256(path):
+            allowed.add(path.relative_to(root).as_posix())
+    return allowed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--publication", action="store_true")
@@ -248,6 +273,7 @@ def main() -> int:
         source = record.get("source", "")
         if source.startswith("benchmarks/qualification-") and ".." not in Path(source).parts:
             registered_csv.add(source + "/benchmark_results.csv")
+    registered_csv |= indexed_report_csvs(root)
     actual = {
         path.relative_to(root).as_posix(): path
         for path in root.rglob("*")

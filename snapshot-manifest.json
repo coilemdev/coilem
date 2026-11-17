@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 3024,
-      "sha256": "7de1d9dce888cc264e11568b360a0e41776a5218c87e6ea11cad51afe98bc143"
+      "bytes": 3310,
+      "sha256": "3b561b860efe5309ba36ad98a68a1e357af7d13fa052ed6ab197764615583815"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 31160,
-      "sha256": "09c796a1603b1a18c4226f203da1ece1a0354fb61a66c8965b204dc608287289"
+      "bytes": 32033,
+      "sha256": "c373119687a08c935e01dadb242a81f2abc804f9fd9e71e59a741dcefb1396cb"
     },
     {
       "path": "SECURITY.md",
@@ -320,8 +320,8 @@
     },
     {
       "path": "backend/gmsh_solver.py",
-      "bytes": 99302,
-      "sha256": "6820d837d7945efbafd54d613b0a944e3cb483fad145e118e5978b297d5c632a"
+      "bytes": 101034,
+      "sha256": "99e3eb163b1ab52f406ee83728eb8b5843096f0c8400146423e53dde36a4b12a"
     },
     {
       "path": "backend/halbach/__init__.py",
@@ -460,8 +460,8 @@
     },
     {
       "path": "backend/mesh_profiles/gmsh_profiles.json",
-      "bytes": 1511,
-      "sha256": "6331458dde4128949058dfe3c80850aa42e98d1edc159a4b28266ff9161f4ab0"
+      "bytes": 1662,
+      "sha256": "bd562f6a13920871ac83d40e1cf4e0765c5974aeed15f4d9dd2ab0564f27abd6"
     },
     {
       "path": "backend/models/__init__.py",
@@ -3505,13 +3505,13 @@
     },
     {
       "path": "benchmarks/records/macos-arm64.json",
-      "bytes": 47955,
-      "sha256": "ef6dd0627cd256afc11cbe5cdea6f836f7c9244c0757372c4cd5bf468e0e111d"
+      "bytes": 47928,
+      "sha256": "795dbc78e8d7420a0ebdab5077e38fd7b74e72279d369fea6b229a93c5a02d19"
     },
     {
       "path": "benchmarks/records/windows-x86_64.json",
-      "bytes": 47965,
-      "sha256": "220fdf90b687d6d09587d0fc62c9154e5f6b7862e36a99bad643a68f514ec2ea"
+      "bytes": 47981,
+      "sha256": "23c314192a4120b288bd07cd02f6d96bf003eb49fc9692e699b575fe45f56a98"
     },
     {
       "path": "benchmarks/reference-baselines/ipm-high-output-v1/ipm_flat_12s10p_fscw_contract.json",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 52488,
-      "sha256": "06fd1fcaa9e4c45e21e25a7261f7d57578e128657c61aa5ee1160299b56280c8"
+      "bytes": 55463,
+      "sha256": "74a3a4361037538e3832590335971a9823e07900fe0e3c143a3ebe52def7ccd0"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -8655,8 +8655,8 @@
     },
     {
       "path": "tools/verify_snapshot.py",
-      "bytes": 27375,
-      "sha256": "74c311471f1457dfa2383e6eef01375f7ba8f2bdc1714a78773cc355df5faa3f"
+      "bytes": 28662,
+      "sha256": "ffbf638ab0a1c958b14484c30ff4cd88df629425ecc7bf5f94284b8d243b1b35"
     },
     {
       "path": "benchmarks/reference-adapters/windows-femm42-v3-20261102/README.md",
@@ -12130,8 +12130,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 8579,
-      "sha256": "35121177a3a20273d7b9f3bf97c3af9cc79f8c0bbeed9aedeb3fb2ef859ea5e5"
+      "bytes": 12423,
+      "sha256": "107b6b99999004be69763fdf117439b5940e36fdc0ba263f45d5a37beda06dd9"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12175,13 +12175,13 @@
     },
     {
       "path": "benchmarks/qualification-policy.json",
-      "bytes": 1855,
-      "sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2"
+      "bytes": 2275,
+      "sha256": "7327891a89e7b8f3d73f934f16e252ccbf80e1e7321c0299b7d6b700895e5bde"
     },
     {
       "path": "tests/test_qualification_carry.py",
-      "bytes": 8704,
-      "sha256": "81b0a276182d30e257338d32a4a179ad6243b311023e896c31f541080a251384"
+      "bytes": 15717,
+      "sha256": "f6c47c26829f2b8a7cfba1a5fe465525471453bbbb66ebca76ac1328ba6c38f0"
     },
     {
       "path": "tests/test_qualification_publish.py",
@@ -12190,8 +12190,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 15678,
-      "sha256": "9312b459cd214de802fc54a398f7218263ed4596058c827817f5a05d25545eae"
+      "bytes": 21045,
+      "sha256": "70cc5459f901cff300da8cb105705015c68853c3a0bbbd578b7f824c6559ab03"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -14825,8 +14825,8 @@
     },
     {
       "path": "tools/femm_reference/README.md",
-      "bytes": 5924,
-      "sha256": "92ab8598610c4663951d6f1d3010df3efe991ff65dab0347b0ed82284b51eb34"
+      "bytes": 7133,
+      "sha256": "445e9beca9f0b9c1133650aaa797019a1f68a6bad0ea1e1235c2462d7fff3ebe"
     },
     {
       "path": "tools/femm_reference/__init__.py",
@@ -18045,8 +18045,8 @@
     },
     {
       "path": "docs/VSHAPE_MESH_SENSITIVITY_285.md",
-      "bytes": 6810,
-      "sha256": "d3c5e18fc4fda702160e8b6198927126b5543cfff3e699c60bb033ea3c012d87"
+      "bytes": 9824,
+      "sha256": "35330e292ebe47c07d4ddfd6949bb1e67571d69c81765b5093be74421d7d3f64"
     },
     {
       "path": "docs/examples/client_ipm_motor.py",
@@ -18200,8 +18200,8 @@
     },
     {
       "path": "tests/test_python_client.py",
-      "bytes": 31916,
-      "sha256": "84458fb1363cea7108d6f85b1f864ebfcf656bb5289a84a6b185554ece4613b2"
+      "bytes": 32339,
+      "sha256": "7c1fb61f934bdde5da85a5d0d8cee4b5eb0930c93c2c4bf017bd4b5230c82865"
     },
     {
       "path": "tests/test_release_priority_report.py",
@@ -19330,8 +19330,8 @@
     },
     {
       "path": "docs/ROTOR_IRON_LOSS_PILOT.md",
-      "bytes": 17499,
-      "sha256": "1a52df7a638d10442d08823b652b58262f65181cc54535b8f57b825a37fea509"
+      "bytes": 17848,
+      "sha256": "c61912635dbd1f84071e0b322a14306e24651617090108f4c29d2ecb9407cd52"
     },
     {
       "path": "docs/benchmarks/rotor-angular-refinement-306-20261115.json",
@@ -19405,8 +19405,8 @@
     },
     {
       "path": "tests/test_rotor_closure.py",
-      "bytes": 5929,
-      "sha256": "c717508526e752c9c0cc32dc6dbd1820444a5aa93a45a2e7374c94d4c04690f3"
+      "bytes": 6772,
+      "sha256": "87b2065e177e4d1a2704b0d07d0b612033bef05a534bf304fb698d75c5cf525d"
     },
     {
       "path": "tests/test_rotor_iron_loss.py",
@@ -19435,8 +19435,8 @@
     },
     {
       "path": "tools/femm_reference/rotor_airgap.py",
-      "bytes": 4115,
-      "sha256": "130456c328f25ef4f181d7dbd96aadab51246b4fb3e08664eff545fc4da4255e"
+      "bytes": 5577,
+      "sha256": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5"
     },
     {
       "path": "tools/femm_reference/rotor_excitation_probe.py",
@@ -19460,8 +19460,8 @@
     },
     {
       "path": "tools/rotor_loss_pilot_report.py",
-      "bytes": 15482,
-      "sha256": "ec6491e1586f9ec7139988d83ce7081a56717f9a906f4c077297250c6addb5b7"
+      "bytes": 15829,
+      "sha256": "61ff7d516ede70db352cba15f5407a35e1869816a09b255938dd06790fc3d710"
     },
     {
       "path": "tools/rotor_loss_reference.py",
@@ -19480,8 +19480,8 @@
     },
     {
       "path": "tools/rotor_native_report.py",
-      "bytes": 14258,
-      "sha256": "57cb09e670d11240ad1faa62d472f61df348cae57536ff02f3ab46152aa01d68"
+      "bytes": 15755,
+      "sha256": "4d565091e88d748782da878a38bbbb96c284df1eaa5b2aaf9a036f884209afed"
     },
     {
       "path": "tools/rotor_spatial_report.py",
@@ -19530,23 +19530,23 @@
     },
     {
       "path": "tests/test_rotor_matched_report.py",
-      "bytes": 5601,
-      "sha256": "2c61ff5b4649996c615c8cfd66b0e81162c521a39805e9606ebba07a697c0f07"
+      "bytes": 6590,
+      "sha256": "8845e4cbc154bd670f34fcc2f8a567c8dfd10d86a94ea45116a54be83ac52bd3"
     },
     {
       "path": "tools/femm_reference/rotor_matched_history.py",
-      "bytes": 22134,
-      "sha256": "dc9abacd79bad7ec8d10fbfdab05f6092d5b4b27844a2396c3c017baec7987fb"
+      "bytes": 23172,
+      "sha256": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944"
     },
     {
       "path": "tools/rotor_matched_report.py",
-      "bytes": 11206,
-      "sha256": "3a3d7154be603ec92d35aa9549a1dcf87d51ac8369e683236655035c372844b6"
+      "bytes": 12326,
+      "sha256": "efba849a878eef58755cab4c0cf44b1a6a920d01c8b78747778f9f8c45824d3c"
     },
     {
       "path": "docs/ROTOR_IRON_LOSS_59_LANDING_PLAN.md",
-      "bytes": 12889,
-      "sha256": "944785f6aece61d65a404714aff304217e45c81619b1115992c14207a28cbfd1"
+      "bytes": 4037,
+      "sha256": "ea353d36ce465a1fed3f1ac2f6cb17c2a7cf4b5eab92b98e73f590c4607dc1ed"
     },
     {
       "path": "docs/benchmarks/rotor-59-landing-306-20261116.json",
@@ -19632,6 +19632,926 @@
       "path": "tools/rotor_matched_spatial_report.py",
       "bytes": 9562,
       "sha256": "0cecbe6b46aabc16260efdc2bda272b8350cbcdb1129e887c049d6078b9c38c2"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/carry-receipt.json",
+      "bytes": 33461,
+      "sha256": "d014d4242440127ae4ffb2ee61e33e33dcd02e290e9e026557f817ca7e81fc2e"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/prius/app-results.json",
+      "bytes": 2433836,
+      "sha256": "25b4a75e635c4d8a75e615f41805e682d22dc4bf586c2b575a6ef920dc58b7c9"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/prius/app-results.md",
+      "bytes": 3538,
+      "sha256": "4dae9431d58f52a5187b444bba0c29aa8957d6a69fb7e1a9997f3add7c07026f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/prius/source-snapshot.json",
+      "bytes": 2130727,
+      "sha256": "3d87babc3b497d0d1a3c636ff933435b2ba28734b9ca9450192c02f07d8400d0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/reference-reuse.json",
+      "bytes": 2863,
+      "sha256": "52f672482c215589510d7600b261b4c16a93855e6945de42049761df16e1ee73"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/artifact_manifest.json",
+      "bytes": 10191,
+      "sha256": "8d874118a86bf4ded2891c87915906cc7e97c2db6a37109e853ca5cc05294ba3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/benchmark_report.md",
+      "bytes": 12843,
+      "sha256": "69aae9e3b2e9e1a8f6909d173d555e9dc87e380ba70397504a983bcf3eed32df"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/benchmark_results.csv",
+      "bytes": 38486,
+      "sha256": "8a9e22fe7e43c7672c1ee61cc7f23777a5796d1729f8b6d6cc854cd4568990e5"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/benchmark_summary.json",
+      "bytes": 5510393,
+      "sha256": "9c4ae0e0ffef9f8fcb6aed6df795b969c7373fdf2e17bee440e19f307ff97373"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/coilem_benchmark_report.html",
+      "bytes": 1550185,
+      "sha256": "d88f81a23c6010dff9984e55bb9883521fc1c673b3bd22a641f75cee60eb27e9"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_12s10p_fscw_contract__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_24s16p_industrial_contract__cogging__native.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging__native.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__cogging__native.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_12p36s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2506,
+      "sha256": "9e002b53a883c0545606b6cdf9036cfc3ce8775d94d7628f18296b2af163db3d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "a99cdfd3963ee07c528ecd79a5dcbad7ed003f9e7edb5c5be41e0fd9c16116ee"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "a90c0a1a3b4a5a95a552a425c36131db012ea21f59a6a39c071eda22a157ee6a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3a629ad6f3a956728ac6e0c219781ccb9021072e5e1402bb051a4551efecf227"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple__baseline__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "57aa20885cbbfba6fb30c7e07435e72646a8645aa0ebdc31719fb3657213dbe0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "f78d9209b332c17bc9d61056edecdca60c1a69a790a5327a61af82e5fed3450f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple__tight_airgap__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "104775a4a4ecb05a6c9c6f885e65c87a97f7dedbee835479879c42204308d25d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "a02804f82208d5ed10fdaad15174d90e0d9efbe31bff5b3faabaec7a523190ef"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "a112b985ee51200f32a66b70bfc96f5518996a8e1bb0bc19829d4ba2e9a341c8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "97d116f9c724e0c249b097318ebced96c0039ed9a33a53cedc54420f1bd8b9b3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "6bdc644570d0ee995be420795672c0d10fe404be5c56e476c7adeed4c7f28506"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "aa1907ee5ab216548e005e580865d9f53651865e1031cf99c0468036c866d206"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "6b6490590987002c637e76b784367fcf9b69abf7e9294c4835c2da1cf73b5ffa"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__baseline__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2507,
+      "sha256": "ba385f48b07ed83a0c889c004ca8bb1c04905cd18be46cde04973c2a28de161f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2507,
+      "sha256": "7ac7698afc34549d25a0b0823f0de731395ca40f4ad21145c66e33816fc433dc"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2506,
+      "sha256": "2935c5f06447b0441cd35589a4d561fc12d7dea23686a9bfa68733ac71ed5dcd"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2507,
+      "sha256": "944150f581698d9f0fb4fe3bf542f45fcc377c091a015671884e41f6b36a5ea7"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2507,
+      "sha256": "e2d5ceec9c51259e49806e286bf89c0b124d979c42106c26335f8da5660eb213"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "fceacc3526000c8be7407480cc2d1ac2c356dfee39587cc095ef61b94b09f991"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2507,
+      "sha256": "8442f48b237734f8ca100401366009fd30d0a51eb89ff4a2f942f226b2e943e4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2506,
+      "sha256": "207af96c9bb5d0e45aa3560fbd48f9cba61194d3ab792b4bbc73ec12dd422a77"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__tight_airgap__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "b58b9887679eac10367307ae1faf096c02e51abfe916b5b8b292ca6950292cc8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_example_shoed__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2506,
+      "sha256": "89f1889d798356d7a5419abb08df4d2760f905b947c42f45ee6c860c6052ff84"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "26f2567f279fb57aab90378c95ce1eb24e969ea7fd7afb66d2de089d257a2bed"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "32a9fc96dec79ecfa4a1f59b88a5786b307b94d5f99f5bf7324277897bc087d4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "2eb6f0e194ceb16680ff33f6797fe00b969e2883c2f14609efb55c8883e532d8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "1b1e8820fa4e936c2c109398d0af03d2c04324475dc4c18b464cd3b2de758971"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p24s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2507,
+      "sha256": "7fe2ec151213f159144c5f6cd39eab12f88f34d24b32774b03de83e9a28aafc5"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p48s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2505,
+      "sha256": "4a1c1d6c843d9aa169d0f2d15c6a12773a781eb9e49d4b944e88472e9617fa97"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+      "bytes": 2534,
+      "sha256": "db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+      "bytes": 2533,
+      "sha256": "34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+      "bytes": 2533,
+      "sha256": "86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+      "bytes": 2532,
+      "sha256": "207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+      "bytes": 2536,
+      "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/publication-projection.json",
+      "bytes": 3073,
+      "sha256": "1e462828f50949d3bda45bcb44b1b456621feac97d2d4c6947d9a064126b3da2"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/carry-receipt.json",
+      "bytes": 33461,
+      "sha256": "d014d4242440127ae4ffb2ee61e33e33dcd02e290e9e026557f817ca7e81fc2e"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/prius/app-results.json",
+      "bytes": 2435185,
+      "sha256": "64e29621dc81f9b817abf5bbb6c691d0c08830f1f6e9b5a8376b256a56f6fe04"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/prius/app-results.md",
+      "bytes": 3538,
+      "sha256": "da2364bfec01faaa594cfe9441d35ec3c0b8096d610b44ba3a93e2ad563c39e1"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/prius/source-snapshot.json",
+      "bytes": 2130727,
+      "sha256": "3d87babc3b497d0d1a3c636ff933435b2ba28734b9ca9450192c02f07d8400d0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/reference-reuse.json",
+      "bytes": 2863,
+      "sha256": "52f672482c215589510d7600b261b4c16a93855e6945de42049761df16e1ee73"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/artifact_manifest.json",
+      "bytes": 10191,
+      "sha256": "640dc8dbb90df36d744de57573bebe91a1e954c9e7453308d16505ea4ca67fed"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/benchmark_report.md",
+      "bytes": 12843,
+      "sha256": "24dfb1cded1f90af99c75e5d031f2d830f312aaa18ad69685d9efcc2d85c61d8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/benchmark_results.csv",
+      "bytes": 38482,
+      "sha256": "95920016cc98fba21d0eb57d982d14453328a41b50a87dd203cfc7ff6189cbf6"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/benchmark_summary.json",
+      "bytes": 5528476,
+      "sha256": "28289334453652775a84d0ae7cd4894a34fe4f224b07466ec532beb37f4c3726"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/coilem_benchmark_report.html",
+      "bytes": 1558534,
+      "sha256": "4c52b4951f18ce308be6c446b699fc79095dd0a2bb50eceaa58797914b7182a9"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_12s10p_fscw_contract__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "b8ec65a0f26330a9f1e9e9829e6ec34752771678fc8dcdcf0789b9074a623fda"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+      "bytes": 2506,
+      "sha256": "bdc08d3b81678e5225778fdb30f6c2089ad95a9f497701c5b2d96d5cbd272290"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_24s16p_industrial_contract__cogging__native.json",
+      "bytes": 2545,
+      "sha256": "9db76e873718646ce320302b39c25301ef3915375cf91ed6489b07f68d53ea5f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+      "bytes": 2547,
+      "sha256": "e4f925ae1ad6515498bb8d16fd600fe02459383d0530ba0536c74a6c79c9fbc4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+      "bytes": 2499,
+      "sha256": "b29ede4afbef0487e552999861623ef234210bf99bb1bffd98ea5302e3cf23f3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging__native.json",
+      "bytes": 2531,
+      "sha256": "9ea0820bfe9507ed339415a49b66f207f994392d7172c9cc9f68793197e8af3c"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+      "bytes": 2533,
+      "sha256": "78fd656eb186a265b1bb1aa38f2f2d87b664cbd8aa205719ed2dd4eb30f7a18a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__cogging__native.json",
+      "bytes": 2544,
+      "sha256": "ec1ca45e0258ca76d072503a3160260377a57a1402b8161bd0952d8fad46bc0a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+      "bytes": 2547,
+      "sha256": "13946ec4812653453576460ffaaa556e1c0712dc60ea5bcf7527255ead98bea9"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+      "bytes": 2548,
+      "sha256": "8fd935a4b81d5aa3bbe9196151a84c9d745c268ea90702a4b92e07a76db62f47"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+      "bytes": 2548,
+      "sha256": "87b7306d1735934c0cb3c30c1fa0b970af2947efe1d2446538f41159371adbf0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+      "bytes": 2547,
+      "sha256": "5fed79cac72dd79b71355b60cd195a2f58d00470c36fdad314a236870c4abf2b"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+      "bytes": 2547,
+      "sha256": "e2bc18964582355fa7c838029693339374bb45456d2e21da26b76279cbd717cb"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+      "bytes": 2547,
+      "sha256": "d6125a01411ade4faf0f12fea6dd53ab0938f4ff0c2efc6f5ebb7cb7c2dbf2a3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+      "bytes": 2546,
+      "sha256": "afe7c558fc411f00408461add8a9b88b7eed38bff4338234e0188246abc6f9de"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+      "bytes": 2546,
+      "sha256": "02e3a63e15dbf58589a18f9f78bc81c0c5dab22fa8866ff2382c2a73077994cf"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+      "bytes": 2545,
+      "sha256": "aa344f57a477e6d4a97f04d69e9fae3c04a63a27ff25c73331182be8ff74e4b4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+      "bytes": 2527,
+      "sha256": "b890f276093d16428558e448bdf7349c1a0e7c9d37bd90c7e4bbdfb8c6b5ed6e"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "f2fa2d8bb9a5d38091a357fbbdc02356dc84ad647324d6c5c8fbe02506689577"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+      "bytes": 2527,
+      "sha256": "af3648c0e5983b76f7fad1abf30e09e121a28d25af4cdcea47be4901a451dd23"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+      "bytes": 2527,
+      "sha256": "4f26b43a945ceed75d7d6da81393fcb9d5206163414ac743ced78894b9a4114d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+      "bytes": 2527,
+      "sha256": "00c397e1f687699d645ddf976db5334c4cdc107baf234dd4dbe9e02161a1b95a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+      "bytes": 2527,
+      "sha256": "e52101c9e40ac041d86047d09d4e35c16fdd53ed3f5dd90501a8f16a780533df"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/ornl_prius_2004_ipm__native.json",
+      "bytes": 2530,
+      "sha256": "c1e9eb61eda871fbedcff3c52683299d6c2f14e949cf026b8f18b30da864de6c"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_12p36s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2506,
+      "sha256": "9e002b53a883c0545606b6cdf9036cfc3ce8775d94d7628f18296b2af163db3d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+      "bytes": 2505,
+      "sha256": "be18fc0314b74086dd28a8f850763828c98c97f034b343b31e854b8f4fda2400"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_14p12s_high_pole__analytical.json",
+      "bytes": 1604,
+      "sha256": "a99cdfd3963ee07c528ecd79a5dcbad7ed003f9e7edb5c5be41e0fd9c16116ee"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_14p12s_high_pole__native-fine.json",
+      "bytes": 1607,
+      "sha256": "a90c0a1a3b4a5a95a552a425c36131db012ea21f59a6a39c071eda22a157ee6a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_14p12s_high_pole__native-standard.json",
+      "bytes": 1606,
+      "sha256": "3a629ad6f3a956728ac6e0c219781ccb9021072e5e1402bb051a4551efecf227"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple__baseline__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "9061e1fc8358a04a3aee2d5fe2741a71b3eaa4ebb7bbb00f755df147bb21ad2a"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple__baseline__native.json",
+      "bytes": 2503,
+      "sha256": "57aa20885cbbfba6fb30c7e07435e72646a8645aa0ebdc31719fb3657213dbe0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple__high_current__native.json",
+      "bytes": 2503,
+      "sha256": "f78d9209b332c17bc9d61056edecdca60c1a69a790a5327a61af82e5fed3450f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple__tight_airgap__cogging__native.json",
+      "bytes": 2501,
+      "sha256": "5b95a62e94a7c11d693e24e11c8da3b18af252cbf811b7b6ccdddecf82235374"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+      "bytes": 2503,
+      "sha256": "104775a4a4ecb05a6c9c6f885e65c87a97f7dedbee835479879c42204308d25d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+      "bytes": 2502,
+      "sha256": "a02804f82208d5ed10fdaad15174d90e0d9efbe31bff5b3faabaec7a523190ef"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+      "bytes": 2502,
+      "sha256": "a112b985ee51200f32a66b70bfc96f5518996a8e1bb0bc19829d4ba2e9a341c8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+      "bytes": 2502,
+      "sha256": "97d116f9c724e0c249b097318ebced96c0039ed9a33a53cedc54420f1bd8b9b3"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_small__analytical.json",
+      "bytes": 1594,
+      "sha256": "6bdc644570d0ee995be420795672c0d10fe404be5c56e476c7adeed4c7f28506"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_small__native-fine.json",
+      "bytes": 1596,
+      "sha256": "aa1907ee5ab216548e005e580865d9f53651865e1031cf99c0468036c866d206"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_4p12s_small__native-standard.json",
+      "bytes": 1595,
+      "sha256": "6b6490590987002c637e76b784367fcf9b69abf7e9294c4835c2da1cf73b5ffa"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__baseline__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "e169414cf0d96355a3e7511d30a27e4c2490b4a61ee7b3ecebd1843089919cc7"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__baseline__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+      "bytes": 2506,
+      "sha256": "095c009ab1b109325a60ef5ed55e2887157f4755dceb6312463bb6bb11093f03"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+      "bytes": 2507,
+      "sha256": "ba385f48b07ed83a0c889c004ca8bb1c04905cd18be46cde04973c2a28de161f"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+      "bytes": 2507,
+      "sha256": "7ac7698afc34549d25a0b0823f0de731395ca40f4ad21145c66e33816fc433dc"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+      "bytes": 2506,
+      "sha256": "2935c5f06447b0441cd35589a4d561fc12d7dea23686a9bfa68733ac71ed5dcd"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+      "bytes": 2507,
+      "sha256": "944150f581698d9f0fb4fe3bf542f45fcc377c091a015671884e41f6b36a5ea7"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+      "bytes": 2507,
+      "sha256": "e2d5ceec9c51259e49806e286bf89c0b124d979c42106c26335f8da5660eb213"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__high_current__native.json",
+      "bytes": 2506,
+      "sha256": "fceacc3526000c8be7407480cc2d1ac2c356dfee39587cc095ef61b94b09f991"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+      "bytes": 2507,
+      "sha256": "8442f48b237734f8ca100401366009fd30d0a51eb89ff4a2f942f226b2e943e4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+      "bytes": 2506,
+      "sha256": "207af96c9bb5d0e45aa3560fbd48f9cba61194d3ab792b4bbc73ec12dd422a77"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__tight_airgap__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "94993fe381187c603f329a1f27363778bafd67bf0c993b97eb2c1ae9d03fb273"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+      "bytes": 2506,
+      "sha256": "b58b9887679eac10367307ae1faf096c02e51abfe916b5b8b292ca6950292cc8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_example_shoed__cogging__native.json",
+      "bytes": 2504,
+      "sha256": "a03ee5d1a0dc907cea8662bd8e0fc72aaeea2109b2591dac7cf1e0d7012677b0"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_example_shoed__native.json",
+      "bytes": 2506,
+      "sha256": "89f1889d798356d7a5419abb08df4d2760f905b947c42f45ee6c860c6052ff84"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_reference__analytical.json",
+      "bytes": 1640,
+      "sha256": "26f2567f279fb57aab90378c95ce1eb24e969ea7fd7afb66d2de089d257a2bed"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_reference__native-fine.json",
+      "bytes": 1642,
+      "sha256": "32a9fc96dec79ecfa4a1f59b88a5786b307b94d5f99f5bf7324277897bc087d4"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_reference__native-standard.json",
+      "bytes": 1641,
+      "sha256": "2eb6f0e194ceb16680ff33f6797fe00b969e2883c2f14609efb55c8883e532d8"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+      "bytes": 2550,
+      "sha256": "1b1e8820fa4e936c2c109398d0af03d2c04324475dc4c18b464cd3b2de758971"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p24s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2507,
+      "sha256": "7fe2ec151213f159144c5f6cd39eab12f88f34d24b32774b03de83e9a28aafc5"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+      "bytes": 2506,
+      "sha256": "e643054a09e8c29cb56756e215842f82ed362de1853bc88b96c97ea995ed1829"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p48s_chorded_5_6__native.json",
+      "bytes": 2501,
+      "sha256": "b179a3d4f5e72976f02745793de33c0cd0abef2e18e264a60fbcdbc45a91a136"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p48s_distributed_femm_validation__cogging__native.json",
+      "bytes": 2505,
+      "sha256": "4a1c1d6c843d9aa169d0f2d15c6a12773a781eb9e49d4b944e88472e9617fa97"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+      "bytes": 2504,
+      "sha256": "1f7621f476da6c93e27360860976f39cf13a5001ddacc6ba5e5e9063efa1b357"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "a568e1df4c89caa69eae57e02611549235d9888d1d4af944460237ec3d535a07"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "eab9a306c0e63e2e0ac14044baf4ab488ca78304161248d4ef3ed89aa817ec46"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+      "bytes": 2529,
+      "sha256": "baa532b5817af911fb81e971d9ba2a106403ce76e311bbd711780bee2dfce147"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+      "bytes": 2534,
+      "sha256": "db1cb043f057a5c5bd6bffe771ea7c66e9d95fb64b4e01a5fa1fc4f0aafebe5e"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "33331e3c477f8ab42b802c7504329d397bd169797bbb91a93b0660945a06f96b"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+      "bytes": 2533,
+      "sha256": "34dfd910ae330ea713689fd96fffb8c05ebee9d2e38b7f52fba4018a3514a435"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+      "bytes": 2533,
+      "sha256": "86fa0b1dd73f499307871174c140fc43bd8223073360d88e6eeb45f9ad57630d"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+      "bytes": 2532,
+      "sha256": "207ce0028af8c6c1567f545d969c2b6239574363b0a587c8047a05a815b889ed"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+      "bytes": 2533,
+      "sha256": "b0e14af6e83761af75594b94c1385554953336a29cdf6652a24aa2b56ec3ac70"
+    },
+    {
+      "path": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+      "bytes": 2536,
+      "sha256": "0039a0353e232bf68964bfebe8e2f623184986dffe1075dd3650cf2b5385f983"
+    },
+    {
+      "path": "docs/VSHAPE_CORNER_REFINEMENT_285.json",
+      "bytes": 48230,
+      "sha256": "493cd7cced9f3fc7ca4bec06eb9a38394c2be5e5c8d2f083fbdaba29586b7304"
+    },
+    {
+      "path": "tests/test_v_shape_corner_mesh.py",
+      "bytes": 3317,
+      "sha256": "ea3ab8930070fe962da9df87dba140d0411d9e88834c77d5a4bf4874e28b51d9"
+    },
+    {
+      "path": "tools/vshape_local_refinement_probe.py",
+      "bytes": 7518,
+      "sha256": "585fab075838b4eb7679a6b6af1dbb996e17ff03262a4c25f6080ea31424b361"
+    },
+    {
+      "path": "tests/test_qualify_local.py",
+      "bytes": 5865,
+      "sha256": "c9c4c25e50259382713e13d47e253f717af338e30650a457ba62bc883ba79831"
+    },
+    {
+      "path": "tests/test_snapshot_report_csv.py",
+      "bytes": 1136,
+      "sha256": "f89e2581d5dfb8bd0c45d56f1e7167e572641b7498592ce47329cdcbaa82e124"
+    },
+    {
+      "path": "tools/qualify_local.py",
+      "bytes": 6987,
+      "sha256": "c903ede731bd7c9b522084032688573133904096708a452d3907c76dd914083f"
+    },
+    {
+      "path": "benchmarks/qualification-policy-history/protocol110-70c5e34-20261116.json",
+      "bytes": 1855,
+      "sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2"
+    },
+    {
+      "path": "docs/ROTOR_IRON_LOSS.md",
+      "bytes": 4091,
+      "sha256": "97d4b2999ed0242120165db6f59c40795941db218f8d8415f0499f7b017296e4"
+    },
+    {
+      "path": "tests/test_rotor_matrix_contract.py",
+      "bytes": 2545,
+      "sha256": "51042a19c639bba034d941b211fede8159753cf2ec89f3e215421c9839308aef"
+    },
+    {
+      "path": "tools/femm_reference/rotor_matrix_history.py",
+      "bytes": 6194,
+      "sha256": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11"
+    },
+    {
+      "path": "tools/rotor_matrix_contract.py",
+      "bytes": 3905,
+      "sha256": "19a0a7adea18c1d11c04c0917c005f47922b2f49a970a1d077fcad5646fc6444"
+    },
+    {
+      "path": "tools/rotor_matrix_native.py",
+      "bytes": 8478,
+      "sha256": "f4118839b55c0499c46388be6267370f9ecbf4abc6d8a3af1740a6c8968f559e"
+    },
+    {
+      "path": "tools/rotor_matrix_report.py",
+      "bytes": 5655,
+      "sha256": "b0c78033f947698c42bbccd0f8d19bc6a18079c90d96e3e53a9ec08763bca104"
     }
   ],
   "public_patches": [
@@ -42080,6 +43000,84 @@
       "path": "frontend/tests/public-release.spec.ts",
       "source_sha256": "0389bef4426d728badc3fd2b1debb6f120f8c4703d1cbc8bf7b235d68fe76874",
       "reason": "Export selected run comparisons and recorded samples to CSV for 0.5.8 without new solves."
+    },
+    {
+      "base_commit": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
+      "path": "benchmarks/records/macos-arm64.json",
+      "source_sha256": "ef6dd0627cd256afc11cbe5cdea6f836f7c9244c0757372c4cd5bf468e0e111d",
+      "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
+      "path": "benchmarks/records/windows-x86_64.json",
+      "source_sha256": "220fdf90b687d6d09587d0fc62c9154e5f6b7862e36a99bad643a68f514ec2ea",
+      "reason": "Publish fresh measured qualification evidence (#194)."
+    },
+    {
+      "base_commit": "47a9b0be2538b87d610b383b7a252c779a5157e6",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "74c311471f1457dfa2383e6eef01375f7ba8f2bdc1714a78773cc355df5faa3f",
+      "reason": "Retain the published 0.5.8 report CSVs after the platform records advance to the #285 candidate."
+    },
+    {
+      "base_commit": "47a9b0be2538b87d610b383b7a252c779a5157e6",
+      "path": ".gitattributes",
+      "source_sha256": "7de1d9dce888cc264e11568b360a0e41776a5218c87e6ea11cad51afe98bc143",
+      "reason": "Keep the #285 candidate evidence byte-for-byte, including report CSV line endings."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": ".gitattributes",
+      "source_sha256": "caee3eddd23c2f36d9247d8177f35183bb8d016b8cf5ec06b88df16fb59e59e4",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "tools/verify_snapshot.py",
+      "source_sha256": "452a92b8a03e26ed51930a9fea371ba349904fe7df1120ebbd31a2513d5bbf7c",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "93a995c61b2eb94ab05db1a7f711f2e51ff7378902045f4e721d23d2b88dd2fd",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "81b0a276182d30e257338d32a4a179ad6243b311023e896c31f541080a251384",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "3ceb41f9ce338c4383b815c1abf2c473f402b353",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "9312b459cd214de802fc54a398f7218263ed4596058c827817f5a05d25545eae",
+      "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "620d0ba9cbdf39b2c56597b6e973bc210fb6e631",
+      "path": "benchmarks/qualification-policy.json",
+      "source_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2",
+      "reason": "Approve the post-#317 measurements as the replay baseline; the previous policy is archived unchanged."
+    },
+    {
+      "base_commit": "d22d4b2ffe7c3edda6f1545b7a814b02e782e476",
+      "path": "docs/BENCHMARK_AUTOMATION.md",
+      "source_sha256": "6e0f7d480b706ceca06e3d5a3ba4455247fc116d4d321ec2cb4ba914d62a364e",
+      "reason": "Let the owner accept reviewed reference-sensitive source changes at publication, with the review on record."
+    },
+    {
+      "base_commit": "d22d4b2ffe7c3edda6f1545b7a814b02e782e476",
+      "path": "tests/test_qualification_carry.py",
+      "source_sha256": "4702c56265902cf1ddb2c12ad025ede8d15d7f37f36d8c6040d662366dbf46fd",
+      "reason": "Let the owner accept reviewed reference-sensitive source changes at publication, with the review on record."
+    },
+    {
+      "base_commit": "d22d4b2ffe7c3edda6f1545b7a814b02e782e476",
+      "path": "tools/qualification_carry.py",
+      "source_sha256": "7d6bbce30ac2e9cb4e316f8e697254b5b400ed207fc3d62731808c9cab75ae80",
+      "reason": "Let the owner accept reviewed reference-sensitive source changes at publication, with the review on record."
     }
   ]
 }

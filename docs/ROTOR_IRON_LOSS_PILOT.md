@@ -1,5 +1,11 @@
 # Rotor iron loss: first slice of #306
 
+**Historical first-slice record.** Public integration and the loaded-SPM
+convergence study have since completed. The 2026-11-17 release decision lands
+the feature as experimental and defers remaining loss/sector qualification.
+See [current scope and evidence](ROTOR_IRON_LOSS.md) and the
+[updated landing plan](ROTOR_IRON_LOSS_59_LANDING_PLAN.md).
+
 **2026-11-16 correction:** the archived FEMM full-turn collector used an
 incompatible angle/current trajectory. Its 47.707 mW result is not a
 same-operating-point native loss target. The initial native pilot failed

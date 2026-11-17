@@ -1,12 +1,12 @@
 {
   "schema": "coilem.benchmark_record/v1",
   "platform": "macos-arm64",
-  "source": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/report",
-  "measured_commit": "78e6f4fc8aa8695c6f3ba1f4ad4eb9f843cf54f9",
+  "source": "benchmarks/qualification-5e6fab283d16/macos-arm64/report",
+  "measured_commit": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
   "environment": {
-    "platform": "macOS-15.8.2-arm64-arm-64bit",
+    "platform": "macOS-27.2-arm64-arm-64bit",
     "machine": "arm64",
-    "python": "3.12.10",
+    "python": "3.12.13",
     "dependencies": {
       "gmsh": "4.15.2",
       "meshio": "5.3.5",
@@ -27,7 +27,7 @@
     "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
     "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
     "backend/gmsh_mesh_rotation.py": "6c60a93474f3adca561b1e482b6865862d077920dbf7ccefdfda0482adb57054",
-    "backend/gmsh_solver.py": "621e7d369503fd8508fa4eb1894808a3ecbafe6ecf4d28d7802a1811dc20f913",
+    "backend/gmsh_solver.py": "bafafc0a2d1dd40acd6e6893672452628dcf4d616f50da7a840376019ea255f4",
     "backend/magneto2d_adapter/__init__.py": "f156a0f4114cf0c90e49708ce89051262badc951304be34e02d34e2f5ca5f263",
     "backend/magneto2d_adapter/_state.py": "71cba96ae3c9685381a77c76fcd736728d10da0d842a4e436c729d2b320c87f5",
     "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
@@ -87,74 +87,74 @@
     "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9"
   },
   "case_runtime_s": {
-    "spm_4p12s_simple__baseline": 43.1,
-    "spm_4p12s_simple__high_current": 50.7,
-    "spm_4p12s_simple__tight_airgap": 32.0,
-    "spm_4p12s_simple_noload__baseline": 44.0,
-    "spm_4p12s_simple_noload__high_current": 47.3,
-    "spm_4p12s_simple_noload__tight_airgap": 37.4,
-    "spm_8p12s_concentrated__baseline": 84.5,
-    "spm_8p12s_concentrated__high_current": 83.9,
-    "spm_8p12s_concentrated__tight_airgap": 95.3,
-    "spm_8p12s_reference_angle30__baseline": 86.0,
-    "ipm_flat_12s10p_fscw_contract": 45.9,
-    "ipm_flat_24s16p_industrial_contract": 81.2,
-    "ipm_flat_4p12s_micro_contract": 77.6,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract": 100.1,
-    "ipm_flat_8p12s_fsae_contract": 97.7,
-    "ipm_flat_8p12s_fsae_thin_bridge_contract": 88.8,
-    "ipm_vshape_8p12s_baseline_contract": 70.4,
-    "ipm_vshape_8p12s_deep_apex_high_output_v1": 64.4,
-    "ipm_vshape_8p12s_narrow_angle_contract": 58.5,
-    "ipm_vshape_8p12s_pocket_offset_contract": 70.4,
-    "ipm_vshape_8p12s_thin_bridge_contract": 65.5,
-    "ipm_vshape_8p12s_wide_angle_high_output_v1": 65.0,
-    "spm_12p36s_distributed_femm_validation": 27.4,
-    "spm_8p24s_distributed_femm_validation": 37.2,
-    "spm_8p48s_chorded_5_6": 35.7,
-    "spm_8p48s_distributed_femm_validation": 37.9,
-    "spm_14p12s_high_pole": 282.8,
-    "spm_4p12s_small": 124.2,
-    "spm_8p12s_reference": 182.4,
-    "spm_8p12s_example_shoed": 93.4,
-    "spm_8p12s_concentrated__magnet_60C": 89.3,
-    "spm_8p12s_concentrated__magnet_100C": 94.5,
-    "spm_8p12s_concentrated__dq_I20_g0": 65.9,
-    "spm_8p12s_concentrated__dq_I20_g30": 103.4,
-    "spm_8p12s_concentrated__dq_I20_g60": 103.1,
-    "spm_8p12s_concentrated__dq_I40_g0": 101.8,
-    "spm_8p12s_concentrated__dq_I40_g30": 113.2,
-    "spm_8p12s_concentrated__dq_I40_g60": 92.4,
-    "ipm_flat_8p12s_fsae_contract__magnet_60C": 65.8,
-    "ipm_flat_8p12s_fsae_contract__magnet_100C": 111.2,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 90.8,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 112.7,
-    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 120.8,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 65.4,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 110.0,
-    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 94.5,
-    "spm_4p12s_simple__baseline__cogging": 38.4,
-    "spm_4p12s_simple__tight_airgap__cogging": 33.9,
-    "spm_8p12s_concentrated__baseline__cogging": 57.5,
-    "spm_8p12s_concentrated__tight_airgap__cogging": 90.7,
-    "spm_8p12s_example_shoed__cogging": 50.5,
-    "ipm_flat_8p12s_fsae_contract__cogging": 46.6,
-    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": 34.0,
-    "ipm_flat_12s10p_fscw_contract__cogging": 36.4,
-    "ipm_flat_24s16p_industrial_contract__cogging": 51.9,
-    "spm_8p24s_distributed_femm_validation__cogging": 145.4,
-    "spm_8p48s_distributed_femm_validation__cogging": 188.4,
-    "spm_12p36s_distributed_femm_validation__cogging": 107.2,
-    "spm_outer_14p12s_drone__baseline": 150.3,
-    "spm_outer_14p12s_drone__high_current": 118.9,
-    "spm_outer_14p12s_drone__tight_airgap": 166.5,
-    "spm_outer_14p12s_drone__angle30": 208.9,
-    "spm_outer_14p12s_drone_noload__baseline": 129.6,
-    "spm_outer_12p9s_micro__baseline": 193.0,
-    "spm_outer_12p9s_micro_noload__baseline": 186.1,
-    "spm_outer_10p12s_single_layer__baseline": 122.0,
-    "spm_outer_28p24s_multirotor__baseline": 91.8,
-    "spm_outer_30p27s_hub__baseline": 93.5
+    "spm_4p12s_simple__baseline": 14.6,
+    "spm_4p12s_simple__high_current": 16.2,
+    "spm_4p12s_simple__tight_airgap": 11.8,
+    "spm_4p12s_simple_noload__baseline": 16.2,
+    "spm_4p12s_simple_noload__high_current": 16.4,
+    "spm_4p12s_simple_noload__tight_airgap": 9.7,
+    "spm_8p12s_concentrated__baseline": 30.1,
+    "spm_8p12s_concentrated__high_current": 30.5,
+    "spm_8p12s_concentrated__tight_airgap": 32.6,
+    "spm_8p12s_reference_angle30__baseline": 27.7,
+    "ipm_flat_12s10p_fscw_contract": 24.1,
+    "ipm_flat_24s16p_industrial_contract": 25.1,
+    "ipm_flat_4p12s_micro_contract": 23.8,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract": 30.4,
+    "ipm_flat_8p12s_fsae_contract": 23.4,
+    "ipm_flat_8p12s_fsae_thin_bridge_contract": 33.8,
+    "ipm_vshape_8p12s_baseline_contract": 70.2,
+    "ipm_vshape_8p12s_deep_apex_high_output_v1": 60.0,
+    "ipm_vshape_8p12s_narrow_angle_contract": 63.7,
+    "ipm_vshape_8p12s_pocket_offset_contract": 65.3,
+    "ipm_vshape_8p12s_thin_bridge_contract": 58.2,
+    "ipm_vshape_8p12s_wide_angle_high_output_v1": 57.1,
+    "spm_12p36s_distributed_femm_validation": 17.5,
+    "spm_8p24s_distributed_femm_validation": 16.0,
+    "spm_8p48s_chorded_5_6": 15.1,
+    "spm_8p48s_distributed_femm_validation": 15.3,
+    "spm_14p12s_high_pole": 85.9,
+    "spm_4p12s_small": 48.0,
+    "spm_8p12s_reference": 67.7,
+    "spm_8p12s_example_shoed": 29.3,
+    "spm_8p12s_concentrated__magnet_60C": 30.2,
+    "spm_8p12s_concentrated__magnet_100C": 30.4,
+    "spm_8p12s_concentrated__dq_I20_g0": 29.6,
+    "spm_8p12s_concentrated__dq_I20_g30": 29.8,
+    "spm_8p12s_concentrated__dq_I20_g60": 30.7,
+    "spm_8p12s_concentrated__dq_I40_g0": 32.1,
+    "spm_8p12s_concentrated__dq_I40_g30": 30.6,
+    "spm_8p12s_concentrated__dq_I40_g60": 32.0,
+    "ipm_flat_8p12s_fsae_contract__magnet_60C": 35.1,
+    "ipm_flat_8p12s_fsae_contract__magnet_100C": 34.7,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g0": 31.4,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g30": 33.3,
+    "ipm_flat_8p12s_fsae_contract__dq_I50_g60": 32.1,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g0": 30.8,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g30": 34.2,
+    "ipm_flat_8p12s_fsae_contract__dq_I100_g60": 25.2,
+    "spm_4p12s_simple__baseline__cogging": 11.7,
+    "spm_4p12s_simple__tight_airgap__cogging": 10.8,
+    "spm_8p12s_concentrated__baseline__cogging": 21.4,
+    "spm_8p12s_concentrated__tight_airgap__cogging": 36.2,
+    "spm_8p12s_example_shoed__cogging": 18.7,
+    "ipm_flat_8p12s_fsae_contract__cogging": 13.9,
+    "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging": 18.4,
+    "ipm_flat_12s10p_fscw_contract__cogging": 19.4,
+    "ipm_flat_24s16p_industrial_contract__cogging": 17.5,
+    "spm_8p24s_distributed_femm_validation__cogging": 40.3,
+    "spm_8p48s_distributed_femm_validation__cogging": 58.8,
+    "spm_12p36s_distributed_femm_validation__cogging": 56.6,
+    "spm_outer_14p12s_drone__baseline": 50.6,
+    "spm_outer_14p12s_drone__high_current": 53.1,
+    "spm_outer_14p12s_drone__tight_airgap": 46.9,
+    "spm_outer_14p12s_drone__angle30": 51.2,
+    "spm_outer_14p12s_drone_noload__baseline": 43.6,
+    "spm_outer_12p9s_micro__baseline": 58.4,
+    "spm_outer_12p9s_micro_noload__baseline": 63.0,
+    "spm_outer_10p12s_single_layer__baseline": 37.9,
+    "spm_outer_28p24s_multirotor__baseline": 36.1,
+    "spm_outer_30p27s_hub__baseline": 33.3
   },
   "cases": {
     "ipm_flat_12s10p_fscw_contract": {
@@ -489,9 +489,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.897138779793907,
-        "back_emf_fundamental_V": 2.3546859338884967,
-        "back_emf_peak_V": 3.57012596580451
+        "mean_torque_Nm": 0.8319511627585485,
+        "back_emf_fundamental_V": 2.154111340727379,
+        "back_emf_peak_V": 3.217134284516809
       }
     },
     "ipm_vshape_8p12s_deep_apex_high_output_v1": {
@@ -506,9 +506,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.6571482795877479,
-        "back_emf_fundamental_V": 1.5588433829722843,
-        "back_emf_peak_V": 2.230764167846236
+        "mean_torque_Nm": 0.6141134818003265,
+        "back_emf_fundamental_V": 1.4209450837968287,
+        "back_emf_peak_V": 2.031421208935689
       }
     },
     "ipm_vshape_8p12s_narrow_angle_contract": {
@@ -523,9 +523,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.8930802879383292,
-        "back_emf_fundamental_V": 2.283919023822514,
-        "back_emf_peak_V": 3.7649717871342205
+        "mean_torque_Nm": 0.849384499229196,
+        "back_emf_fundamental_V": 2.1673767873970853,
+        "back_emf_peak_V": 3.5209056822136233
       }
     },
     "ipm_vshape_8p12s_pocket_offset_contract": {
@@ -540,9 +540,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 1.1113014666246241,
-        "back_emf_fundamental_V": 2.3506149788432418,
-        "back_emf_peak_V": 3.5895574389923808
+        "mean_torque_Nm": 1.050352934666819,
+        "back_emf_fundamental_V": 2.1541167225445634,
+        "back_emf_peak_V": 3.2288073519980633
       }
     },
     "ipm_vshape_8p12s_thin_bridge_contract": {
@@ -557,9 +557,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 2.6861917530188006,
-        "back_emf_fundamental_V": 7.4409471772895275,
-        "back_emf_peak_V": 12.137839947937993
+        "mean_torque_Nm": 2.634147904799896,
+        "back_emf_fundamental_V": 7.337521083513264,
+        "back_emf_peak_V": 11.873931404193929
       }
     },
     "ipm_vshape_8p12s_wide_angle_high_output_v1": {
@@ -574,9 +574,9 @@
         "angle_grids": "PASS"
       },
       "values": {
-        "mean_torque_Nm": 0.7860204053884092,
-        "back_emf_fundamental_V": 2.046657087579349,
-        "back_emf_peak_V": 2.9891031450265566
+        "mean_torque_Nm": 0.7300353938409689,
+        "back_emf_fundamental_V": 1.8548891721212533,
+        "back_emf_peak_V": 2.6846969974454837
       }
     },
     "ornl_prius_2004_ipm": {
@@ -1368,7 +1368,7 @@
       }
     }
   },
-  "prius_report": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/prius/app-results.json",
-  "carry_receipt": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/carry-receipt.json",
-  "reference_reuse": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/reference-reuse.json"
+  "prius_report": "benchmarks/qualification-5e6fab283d16/macos-arm64/prius/app-results.json",
+  "carry_receipt": "benchmarks/qualification-5e6fab283d16/macos-arm64/carry-receipt.json",
+  "reference_reuse": "benchmarks/qualification-5e6fab283d16/macos-arm64/reference-reuse.json"
 }

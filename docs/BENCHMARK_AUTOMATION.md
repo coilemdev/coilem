@@ -1,7 +1,7 @@
 # Qualification collection
 
 The release benchmark workflow builds Magneto2D once on each selected platform,
-then measures eight balanced A–D groups and four Prius groups concurrently.
+then measures eight balanced A–F groups and four Prius groups concurrently.
 Every group uses the exact same clean candidate, locked Python environment and
 binary. The join verifies complete coverage, requests and result hashes before
 building a derived report. It rejects duplicate, missing, failed or mixed runs.
@@ -45,7 +45,7 @@ of repair-run IDs); every original request and result keeps its measured bytes.
 
 ## Disk and retention
 
-Keep output outside the checkout. A–D jobs use `--archive-runtime`: every raw
+Keep output outside the checkout. A–F jobs use `--archive-runtime`: every raw
 runtime is compressed, read back and checked file by file before deleting its
 temporary directory. Prius retains its existing independently hashed field
 copies and also removes its live cache after each completed job. Archives and
@@ -63,6 +63,64 @@ accumulation, rather than reducing mesh size or numerical coverage.
 Phase E remains a separately registered analysis. Refreshing A–D or the Prius
 software reference does not qualify cogging, torque–speed maps or other
 unmeasured outputs. No source guard, numerical gate or tolerance is removed.
+
+## Collecting a platform locally
+
+Hosted macOS runners are sometimes not assigned to a job. When that blocks a
+collection, measure that platform on a local machine of the same kind. The
+evidence gate checks source hashes, the measured commit, coverage and verdicts;
+it does not need a workflow run or a particular OS version.
+
+From a clean checkout at the candidate, with the locked environment installed
+(`pip install -r requirements.lock`, then `pip install -e ".[dev]"`):
+
+```bash
+python -m tools.qualify_local --candidate <full SHA> --directory ~/coilem-qualification
+```
+
+This builds Magneto2D with the workflow's pinned toolchain, measures the twelve
+shards in series, keeps the compact part of each and joins them. On an Apple
+silicon laptop the collection takes about an hour and needs about 6 GB free at
+its peak. It stops before a shard when less than 5 GB is free; rerun the same
+command to continue from the first unfinished shard. Keep the machine on mains
+power and awake.
+
+All twelve shards of a platform must come from one machine. The join rejects a
+mixed identity, so a local machine cannot fill in single shards beside hosted
+ones. `retry_shards` also cannot repair a shard that never started, because it
+has no earlier artifact to resume from.
+
+The other platform still comes from the workflow. If its shards finished but
+the join was skipped, rejoin it alone, then download the result:
+
+```bash
+gh workflow run release-benchmarks.yml --ref <branch> -f runner=windows-2022 -f candidate=<full SHA> -f reuse_run=<collection run ID>
+gh run download <join run ID> --name benchmark-joined-windows-2022 --dir ~/coilem-qualification/windows
+```
+
+Then compare and publish with tooling from the PR base, as the publication job
+does. `<base>` is a checkout of the PR base and `<head>` a checkout of the PR
+branch, which may be ahead of the candidate by non-physics commits:
+
+```bash
+cd <base>
+python -m tools.qualification_carry --root <head> --baseline . --windows ~/coilem-qualification/windows --macos ~/coilem-qualification/qualification --out ~/coilem-qualification/prepared
+python -m tools.qualification_publish --root <head> --publication ~/coilem-qualification/prepared/publication --candidate <full SHA>
+python <head>/tools/verify_snapshot.py --publication
+git -C <head> add benchmarks snapshot-manifest.json
+git -C <head> commit -m 'Publish measured qualification evidence'
+git -C <head> push origin HEAD:<branch>
+```
+
+Moved values stop at `OWNER_REVIEW_REQUIRED` exactly as in the workflow.
+
+The published reports name no local path. Reports record where the solver
+cache was; under a home directory that names the machine's user, so the
+comparison step replaces such paths with `<local path>` in the copies it
+prepares and writes `publication-projection.json` with the original and
+published hashes. That receipt also carries `local-collection.json`, which
+states that the platform was collected locally. The raw fields of a local
+collection are not retained.
 
 ## PR evidence gate
 
@@ -125,6 +183,19 @@ interpretation and metric definitions against the approved report. Changed
 reference contracts produce `REFERENCE_REVIEW_REQUIRED`. The immutable bundle
 is never retagged or rewritten to name a new candidate. The zero-solve candidate
 join supports `--reuse-reviewed-reference` only after this compatibility check.
+
+A change to a reference-sensitive source file, such as a new request option in
+`backend/models/config.py`, also stops at `REFERENCE_REVIEW_REQUIRED`, even when
+no value moves. After reviewing the listed files, the owner can rerun
+`tools.qualification_carry` with `--reference-reviewed`. Each platform's
+`reference-reuse.json` and the carry receipt then record every reviewed file
+with its approved and candidate hash. The flag accepts changed source files
+only: a changed suite, reference bundle, case coverage or registered request
+has no override, and moved values still need `--accept-moved`. The automatic
+publication job never passes either flag. Later comparisons keep reporting the
+same files until the approved reports in `benchmarks/qualification-policy.json`
+are replaced by ones measured with them, which is a separate owner-reviewed
+policy change.
 
 The public qualification basis and report path follow the primary registered
 record. The release gate still requires actual matching Windows/macOS/Prius

@@ -536,12 +536,17 @@ def test_default_analyses_preserve_losses_and_flux_statistics_without_pictures(t
     assert full.data["field_line_frames"]
 
 
-def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch) -> None:
+@pytest.mark.parametrize("evidence_matches", [False, True])
+def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch, evidence_matches) -> None:
     # QA 0.5.8 CLI-4: only results solved in the app said whether they are qualified.
-    from backend import selected_analyses
+    from backend import qualification, selected_analyses
     from backend.qualification import classify_qualification, cogging_torque_status
     from tests.test_analysis_options import result_for
 
+    # Client/app parity must hold for both a measured build and a candidate
+    # whose changed physics correctly remains experimental pending collection.
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: evidence_matches)
+    expected_status = "qualified" if evidence_matches else "experimental"
     motor = coilem.Motor.load(SPM_FIXTURE)
     solved = result_for(motor.config)
     solved.summary.cogging = {"peak_to_peak_Nm": 0.01, "first_harmonic_Nm": 0.005, "status": "experimental"}
@@ -550,8 +555,8 @@ def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch) -> N
     result = coilem.solve(motor, quality="quick", mesh="coarse")
     config = _solve.prepared_config(coilem.prepare(motor, quality="quick", mesh="coarse").request)
     assert result.data["qualification"] == dict(classify_qualification(config))
-    assert result.data["qualification"]["status"] == "qualified"
-    assert result.data["summary"]["cogging"]["status"] == cogging_torque_status(config)[0] == "qualified"
+    assert result.data["qualification"]["status"] == expected_status
+    assert result.data["summary"]["cogging"]["status"] == cogging_torque_status(config)[0] == expected_status
     assert isinstance(result.data["solver_convergence"], dict) and "status" in result.data["solver_convergence"]
 
 

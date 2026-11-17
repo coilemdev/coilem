@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
+import json
 import math
 import re
 import shutil
@@ -16,6 +18,7 @@ from backend.benchmark_suite.contract import canonical, checked_path, read, sha,
 from backend.benchmark_suite.physics import physics_sources
 from backend.benchmark_suite.record import TOLERANCES, build_record, gate_statuses, gated_values
 from backend.benchmark_suite.references import load_bundle, load_suite, require_reviewed_bundle
+from backend.local_paths import contains_local_path, redact_local_paths
 from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SUITE_FILE
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,7 +45,7 @@ def policy_report(root, entry):
     return read(path)
 
 
-def reference_compatibility(summary, anchor, suite, bundle):
+def reference_compatibility(summary, anchor, suite, bundle, *, reviewed_sources=False):
     spec = load_suite(suite)
     manifest, _, digest = load_bundle(bundle, spec)
     require_reviewed_bundle(bundle, manifest, spec)
@@ -59,10 +62,16 @@ def reference_compatibility(summary, anchor, suite, bundle):
     for row in summary['rows']:
         if row['configurations'] != before[row['id']]['configurations']:
             raise ValueError(f'Reference input interpretation needs review: {row["id"]}')
-    for path in REFERENCE_SOURCES:
-        if run['identity']['source_files'].get(path) != old['identity']['source_files'].get(path):
-            raise ValueError(f'Reference model or metric interpretation needs review: {path}')
+    changed = {path: {'approved_sha256': old['identity']['source_files'].get(path),
+                      'candidate_sha256': run['identity']['source_files'].get(path)}
+               for path in REFERENCE_SOURCES
+               if run['identity']['source_files'].get(path) != old['identity']['source_files'].get(path)}
+    if changed and not reviewed_sources:
+        raise ValueError('Reference model or metric interpretation needs review: ' + ', '.join(changed))
+    # Only changed reference-sensitive source files can be accepted. The suite,
+    # bundle, coverage and request checks above have no override.
     return {'schema': 'coilem.reference_reuse/v1', 'candidate': run['identity']['commit'],
+            **({'owner_reviewed_reference_sources': changed} if changed else {}),
             'suite_sha256': sha(suite), 'bundle_sha256': digest,
             'reference_commit': manifest['reference_commit'], 'reference_fields_mutated': False,
             'reference_commits': manifest.get('reference_commits', [manifest['reference_commit']]),
@@ -137,12 +146,12 @@ def prius_values(report):
     return values
 
 
-def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
+def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT, reference_reviewed=False):
     policy = read(baseline / POLICY)
     if set(platforms) != {'windows-x86_64', 'macos-arm64'}:
         raise ValueError('Both platform collections are required')
     output.mkdir(parents=True, exist_ok=False)
-    staged, all_moved, table, candidate, reference_errors = {}, [], [], None, []
+    staged, all_moved, table, candidate, reference_errors, reviewed = {}, [], [], None, [], {}
     physical = {name: sha(root / name) for name in physics_sources(root)}
     tolerances = {**TOLERANCES, **policy['additional_replay_tolerances']}
     for platform, folder in platforms.items():
@@ -164,7 +173,10 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
         approved = policy_report(baseline, policy['approved_reports'][platform])
         try:
             receipt = reference_compatibility(summary, approved, baseline / BENCHMARK_SUITE_FILE,
-                                               baseline / BENCHMARK_REFERENCE_BUNDLE_DIR)
+                                               baseline / BENCHMARK_REFERENCE_BUNDLE_DIR,
+                                               reviewed_sources=reference_reviewed)
+            if receipt.get('owner_reviewed_reference_sources'):
+                reviewed[platform] = receipt['owner_reviewed_reference_sources']
         except ValueError as error:
             receipt = {'status': 'REFERENCE_REVIEW_REQUIRED', 'reason': str(error)}
             reference_errors.append({'platform': platform, 'reason': str(error)})
@@ -205,6 +217,7 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
     decision = {'schema': 'coilem.qualification_carry/v1', 'status': status, 'candidate': candidate,
                 'moved_values': all_moved, 'reference_review': reference_errors,
                 'accepted_moved_values': bool(all_moved and accept_moved),
+                'owner_reviewed_reference_sources': reviewed,
                 'approved_policy_sha256': sha(baseline / POLICY), 'measurements_mutated': False}
     write(output / 'decision.json', decision)
     heading = {'READY': 'Qualification evidence ready',
@@ -213,8 +226,14 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
     lines = [f'# {heading}', '', f'Measured candidate: `{candidate}`.', '',
              '[Full old / new / approved / FEMM comparison](comparison.csv)', '']
     if reference_errors:
-        lines.extend(['Reference compatibility needs owner review. Accepting moved values cannot override this check.', ''])
+        lines.extend(['Reference compatibility needs owner review. Accepting moved values cannot override this check.',
+                      'After reviewing changed reference-sensitive source files, the owner can rerun with '
+                      '`--reference-reviewed`. A changed suite, bundle, coverage or request has no override.', ''])
         lines.extend(f'- {error["platform"]}: {error["reason"]}' for error in reference_errors)
+        lines.append('')
+    if reviewed:
+        lines.extend(['Owner-reviewed reference-sensitive source changes:', ''])
+        lines.extend(f'- {platform}: `{path}`' for platform, paths in reviewed.items() for path in paths)
         lines.append('')
     if all_moved:
         lines.extend(['| Platform | Case | Metric | Baseline | Old | New |', '|---|---|---|---|---:|---:|'])
@@ -224,6 +243,7 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
     if status != 'READY':
         return decision
     publication = output / 'publication'
+    projected = {}
     for platform, (folder, summary, receipt) in staged.items():
         base = f'benchmarks/qualification-{candidate[:12]}/{platform}'
         report_source = base + '/report'
@@ -237,7 +257,65 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT):
                       carry_receipt=base + '/carry-receipt.json', reference_reuse=base + '/reference-reuse.json')
         write(publication / base / 'carry-receipt.json', decision)
         write(publication / f'benchmarks/records/{platform}.json', record)
+        entry = {'files': redact_publication(publication / base)}
+        if (folder / 'local-collection.json').is_file():
+            # A collection made off the hosted runners says so in the published evidence.
+            entry['collection'] = read(folder / 'local-collection.json')
+        if entry['files'] or 'collection' in entry:
+            projected[platform] = entry
+    if projected:
+        write(publication / f'benchmarks/qualification-{candidate[:12]}/publication-projection.json', {
+            'schema': 'coilem.qualification_publication_projection/v2', 'measured_commit': candidate,
+            'note': 'Only machine-local diagnostic paths are redacted for publication. The joined collections '
+                    'retain their bytes. Numerical values, gate verdicts, requests and measured identities are unchanged.',
+            'platforms': projected})
     return decision
+
+
+def _only_paths_differ(original, published):
+    """True when two parsed JSON values differ only in strings that held a local path."""
+    if isinstance(original, dict) and isinstance(published, dict):
+        return original.keys() == published.keys() and all(_only_paths_differ(original[k], published[k]) for k in original)
+    if isinstance(original, list) and isinstance(published, list):
+        return len(original) == len(published) and all(map(_only_paths_differ, original, published))
+    if isinstance(original, str) and isinstance(published, str) and original != published:
+        return contains_local_path(original) and published == redact_local_paths(original)
+    return type(original) is type(published) and original == published
+
+
+def redact_publication(folder):
+    """Replace machine-local paths in one platform's copied reports; the inputs are never touched.
+
+    A report records where its solver cache was. On a runner under a home
+    directory that names the machine's user, which the publication gate
+    rejects. Returns one receipt entry per changed file.
+    """
+    changed = []
+    for path in sorted(p for p in folder.rglob('*') if p.is_file() and p.suffix in {'.json', '.html', '.md', '.csv'}):
+        original = path.read_bytes()
+        text = original.decode('utf-8')
+        if not contains_local_path(text):
+            continue
+        published = redact_local_paths(text)
+        if path.suffix == '.json' and not _only_paths_differ(json.loads(text), json.loads(published)):
+            raise ValueError(f'Path redaction would change more than local paths: {path.name}')
+        path.write_bytes(published.encode('utf-8'))
+        changed.append({'file': path.relative_to(folder).as_posix(), 'original_sha256': hashlib.sha256(original).hexdigest(),
+                        'published_sha256': sha(path), 'only_local_paths_changed': True})
+    # Each report folder indexes its own files; keep the index true for the published bytes.
+    for index in sorted({(folder / entry['file']).parent / 'artifact_manifest.json' for entry in changed}):
+        if not index.is_file():
+            continue
+        original = index.read_bytes()
+        listed = json.loads(original)
+        for name in listed:
+            if (index.parent / name).is_file():
+                listed[name] = sha(index.parent / name)
+        index.write_text(json.dumps(listed, indent=2) + '\n', encoding='utf-8', newline='\n')
+        if sha(index) != hashlib.sha256(original).hexdigest():
+            changed.append({'file': index.relative_to(folder).as_posix(), 'original_sha256': hashlib.sha256(original).hexdigest(),
+                            'published_sha256': sha(index), 'purpose': 'Index the published bytes.'})
+    return changed
 
 
 def main():
@@ -248,9 +326,13 @@ def main():
     parser.add_argument('--root', type=Path, default=ROOT, help='Candidate checkout; tooling runs from the trusted base')
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--accept-moved', action='store_true', help='Owner-reviewed numerical changes only; never overrides gates')
+    parser.add_argument('--reference-reviewed', action='store_true',
+                        help='Owner has reviewed the changed reference-sensitive source files; recorded in the receipts. '
+                             'Never overrides a changed suite, bundle, coverage or request')
     args = parser.parse_args()
     result = prepare({'windows-x86_64': args.windows, 'macos-arm64': args.macos}, baseline=args.baseline,
-                     output=args.out, accept_moved=args.accept_moved, root=args.root)
+                     output=args.out, accept_moved=args.accept_moved, root=args.root,
+                     reference_reviewed=args.reference_reviewed)
     print(result['status'])
     return 0 if result['status'] == 'READY' else 2
 
