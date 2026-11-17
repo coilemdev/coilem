@@ -994,7 +994,15 @@ for (const lessonFile of [
 assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
 assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
 assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
-assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm \};/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showPhases, fieldLineDensity, playbackRpm \};/);
+// Phases sits in Show after the arrow density: the coils by phase, which way
+// their current flows at the shown position, and the solver's A / B / C currents.
+assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}\s*<button[\s\S]*?aria-pressed=\{showPhases && Boolean\(phaseCycle\)\}[\s\S]*?aria-label="Phases"/);
+assert.match(solvedFieldSource, /const phaseCycle = useMemo\(\(\) => phaseCycleFromFrames\(result\.slot_excitation_frames\)/);
+assert.match(solvedFieldSource, /currentsA: source === 'pm' \? null : phaseCurrentsAt\(phaseCycle, shownElectricalAngleDeg\)/);
+assert.match(solvedFieldSource, /phases=\{phaseView\}/);
+assert.match(fieldResultSource, /\{hasPhaseOverlay && phases && <FieldPhaseReadout phases=\{phases\} \/>\}/);
+assert.match(styleSource, /\.public-field-phase-readout \{ position: absolute;[^}]*pointer-events: none; \}/);
 assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
 assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve

@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3681,
-      "sha256": "374184a65cedcddaeb9ae075fe716c4cfe73416233866b9bf1127b8413717dee"
+      "bytes": 3719,
+      "sha256": "c067ea6f25ccca63a84e57286c0abc6fb33eee808f80b27d81f49ade30b586f0"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6502,6 +6502,11 @@
       "path": "frontend/scripts/test-field-legend-fit.mjs",
       "bytes": 3360,
       "sha256": "885829f1fcfedd30c26dd4ddb5f26b615fdeb7f7d75f41aed479ad101eebaa71"
+    },
+    {
+      "path": "frontend/scripts/test-field-phases.mjs",
+      "bytes": 3785,
+      "sha256": "4b31bbeaf75f4864b202aee00cf8b8c7329961cc81e3280f440e6c3d4b29ef49"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -6595,8 +6600,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 181514,
-      "sha256": "8b075e255bb6b28d42e4fd61ee11ef1129ede47bfeb2b90879984397f0979ae4"
+      "bytes": 182400,
+      "sha256": "69f0492b1a245823554292cc71c2ee93e7b5af0565071b155579fe6221d4fe81"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7049,9 +7054,14 @@
       "sha256": "1bdc25fca23c5b8d76bf552757462ed61f3ed014d406d9764c913592402afd6d"
     },
     {
+      "path": "frontend/src/public/FieldPhaseReadout.tsx",
+      "bytes": 3006,
+      "sha256": "9841f2b5bd09446ba2bce7a82633f8eb07776314fe3d05ab6d6eedc35cb0fde2"
+    },
+    {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 73539,
-      "sha256": "759bb8d7a44c8f213740fb9083d14f5cecd78c25a8c157e7f443594aaa590ee0"
+      "bytes": 76138,
+      "sha256": "f65f3a65bb288980e838b6edf54593b51dabab0adc90023f968c43d44d26c0da"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7135,8 +7145,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 61929,
-      "sha256": "d8bdd18eefe5dc20b5060c9a9cb3e50d6bd04e0386751fdc69ddb41accc13571"
+      "bytes": 63653,
+      "sha256": "622fadf950375f2da155c95a221dd6913c8fb7852127ac1ce719a7ece2755118"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7225,8 +7235,8 @@
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 919,
-      "sha256": "30c709b239785a8a0ea17089cad1a77448bf6d97a2707b6685ffa56d2b2bc61c"
+      "bytes": 942,
+      "sha256": "b94ebbc3b09183e7911a19b84847ff62c186cc6f7a9ebc4ca4c1346d1a30d509"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7302,6 +7312,11 @@
       "path": "frontend/src/public/fieldLegendFit.ts",
       "bytes": 1942,
       "sha256": "65b30ae01622335dbf9d040be221ad9200e0e9eb909c22ba27f39f0306ff66aa"
+    },
+    {
+      "path": "frontend/src/public/fieldPhases.ts",
+      "bytes": 5833,
+      "sha256": "7bffd724aad75e16e0909bce1bf083006b5cba524909f926c4210d909f0adf95"
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
@@ -7460,8 +7475,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 26050,
-      "sha256": "e24b63caddda8329f322467c2c382642ab7c9b6f47c00c9caed3b06f75cc1af3"
+      "bytes": 26247,
+      "sha256": "a49f3dc3b501dfe4c3e6f3fda9e437e177d7792acd6f32ce9f489bfefd765eaa"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7545,8 +7560,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 340697,
-      "sha256": "b4e20e9d708dfdfc8f993fef3e778235a67ea66a3a95d335aad41e8a22c59502"
+      "bytes": 342691,
+      "sha256": "23f061f11cad9f8a63ce0df0bd17b8be09abf78abe6b81e6b2f911cf91b47627"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",

@@ -35,6 +35,14 @@ import {
   type FieldArrowTone,
 } from './fieldArrows';
 import {
+  coilSideDrive,
+  coilSideMark,
+  coilSidesFromGeometry,
+  type FieldPhaseView,
+} from './fieldPhases';
+import { PUBLIC_PHASE_COLORS } from './motorPalette';
+import { FieldPhaseReadout } from './FieldPhaseReadout';
+import {
   buildTriangleGrid,
   triangleGridCell,
   triangleGridItemsInRect,
@@ -619,6 +627,7 @@ export function FieldResultPlot({
   pmLines = false,
   navigationSlot = null,
   ring = null,
+  phases = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -672,6 +681,8 @@ export function FieldResultPlot({
   navigationSlot?: HTMLElement | null;
   /** An outrunner's active ring: a thin one opens on its sector (sectorFraming.ts). */
   ring?: RingMm | null;
+  /** The Phases layer: the coils by phase, their current now and an A / B / C readout (fieldPhases.ts). */
+  phases?: FieldPhaseView | null;
 }) {
   const ringInnerMm = ring?.innerMm;
   const ringOuterMm = ring?.outerMm;
@@ -704,6 +715,8 @@ export function FieldResultPlot({
     () => prepareMagnetOverlay(geometry, magnetRotationDeg),
     [geometry, magnetRotationDeg],
   );
+  // The stator's coil sides do not turn with the rotor.
+  const coilSides = useMemo(() => coilSidesFromGeometry(geometry), [geometry]);
   const statorPolarityCues = useMemo(
     () => showStatorPolarity
       ? deriveMagneticPolarityCues(statorPolarityProfile, poles, 'stator')
@@ -1308,6 +1321,7 @@ export function FieldResultPlot({
   const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
+  const hasPhaseOverlay = phases !== null && coilSides.length > 0;
   const hasFieldAxes = fieldAxes !== null
     && leadElecDeg !== null
     && axisRotorRadius > 0
@@ -1356,6 +1370,7 @@ export function FieldResultPlot({
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
     hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
+    hasPhaseOverlay ? 'stator coils coloured by phase with the way their current flows' : null,
     hasFieldAxes ? 'stator and magnet field-axis arrows with the d and q axes' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -1486,7 +1501,7 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
+          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes || hasPhaseOverlay) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
@@ -1494,6 +1509,35 @@ export function FieldResultPlot({
                   <circle className="is-halo" cx="0" cy="0" r={airgapEdges[1]} />
                   <circle cx="0" cy="0" r={airgapEdges[0]} />
                   <circle cx="0" cy="0" r={airgapEdges[1]} />
+                </g>
+              )}
+              {hasPhaseOverlay && phases && (
+                <g className="public-field-phase-coils">
+                  {coilSides.map((side, index) => {
+                    const drive = phases.currentsA ? coilSideDrive(side, phases.currentsA, phases.cycle.peakA) : 0;
+                    return (
+                      <path
+                        key={`coil-${index}`}
+                        d={`${side.points.map(([x, y], pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${x} ${-y}`).join(' ')} Z`}
+                        style={{ stroke: PUBLIC_PHASE_COLORS[side.phase], fill: PUBLIC_PHASE_COLORS[side.phase], fillOpacity: 0.08 + 0.3 * drive }}
+                      />
+                    );
+                  })}
+                  {phases.currentsA && coilSides.map((side, index) => {
+                    const outOfPage = coilSideMark(side, phases.currentsA ?? [0, 0, 0], phases.cycle.peakA);
+                    if (outOfPage === null) return null;
+                    const [x, y] = [side.centre[0], -side.centre[1]];
+                    const radius = side.markRadiusMm;
+                    const arm = radius * 0.5;
+                    return (
+                      <g key={`coil-mark-${index}`} className={`public-field-phase-mark is-${outOfPage ? 'out' : 'in'}`} style={{ stroke: PUBLIC_PHASE_COLORS[side.phase] }}>
+                        <circle cx={x} cy={y} r={radius} />
+                        {outOfPage
+                          ? <circle className="is-dot" cx={x} cy={y} r={radius * 0.26} style={{ fill: PUBLIC_PHASE_COLORS[side.phase] }} />
+                          : <path d={`M ${x - arm} ${y - arm} L ${x + arm} ${y + arm} M ${x - arm} ${y + arm} L ${x + arm} ${y - arm}`} />}
+                      </g>
+                    );
+                  })}
                 </g>
               )}
               {showMagnets && (
@@ -1579,6 +1623,7 @@ export function FieldResultPlot({
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
         })()}
+        {hasPhaseOverlay && phases && <FieldPhaseReadout phases={phases} />}
         {magnifier && (
           <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={hasLoupePoint} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
         )}

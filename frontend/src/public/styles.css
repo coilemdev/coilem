@@ -2067,6 +2067,24 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-result-pm-overlay { transition: opacity 160ms ease; }
 .public-field-result-pm-overlay.is-reference { opacity: .4; }
 .public-field-result-line { fill: none; stroke: #ffd166; stroke-width: .28; stroke-linecap: round; opacity: 1; filter: drop-shadow(0 0 .45px rgba(255,145,0,.9)); vector-effect: non-scaling-stroke; }
+/* Phases (Field solution): coils by phase, the way their current flows now, and the A / B / C readout. */
+.public-field-phase-coils path { stroke-width: 1.2px; stroke-opacity: .9; vector-effect: non-scaling-stroke; }
+.public-field-phase-mark circle { fill: rgba(3,7,15,.78); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.public-field-phase-mark circle.is-dot { stroke: none; }
+.public-field-phase-mark path { fill: none; stroke-width: 1.5px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.public-field-phase-readout { position: absolute; top: 10px; left: 10px; z-index: 3; width: 196px; padding: 8px 10px 7px; border: 1px solid var(--border-default); border-radius: 10px; background: rgba(8,10,14,.84); color: var(--text-secondary); font: 10px var(--font-mono); pointer-events: none; }
+.public-field-phase-readout header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.public-field-phase-readout header strong { color: var(--text-primary); font-size: 10px; font-weight: 700; }
+.public-field-phase-readout svg { display: block; width: 100%; height: auto; margin: 6px 0 5px; }
+.public-field-phase-readout polyline { fill: none; stroke-width: 1.4px; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.public-field-phase-readout svg.is-idle polyline { opacity: .35; }
+.public-field-phase-readout .is-axis { stroke: rgba(148,163,184,.35); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.public-field-phase-readout .is-playhead { stroke: rgba(248,250,252,.85); stroke-width: 1px; stroke-dasharray: 2 2; vector-effect: non-scaling-stroke; }
+.public-field-phase-readout dl { display: flex; justify-content: space-between; gap: 6px; margin: 0; }
+.public-field-phase-readout dl div { display: flex; gap: 4px; }
+.public-field-phase-readout dt { font-weight: 700; }
+.public-field-phase-readout dd { margin: 0; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.public-field-phase-readout p { margin: 0; }
 .public-field-lines-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 10px; color: var(--text-secondary); font: 10px var(--font-mono); }
 .public-field-lines-legend span { display: inline-flex; align-items: center; gap: 6px; }
 /* Stator + PM view (#120): each swatch is an arrow in its field's arrow colour (fieldArrows.ts). */

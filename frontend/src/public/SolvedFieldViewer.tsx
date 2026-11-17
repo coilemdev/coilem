@@ -49,6 +49,7 @@ import {
 import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
 import { describeFieldProbe } from './fieldProbeRegion';
+import { phaseCurrentsAt, phaseCycleFromFrames, type FieldPhaseView } from './fieldPhases';
 import type { FieldPositionLink } from './fieldPositionLink';
 import { magneticAirgapMm, rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
@@ -263,6 +264,7 @@ export function SolvedFieldViewer({
   const fieldLayerMenu = useLayerMenu();
   const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
+  const [showPhases, setShowPhases] = useState(solveViewMemory.field.showPhases);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
   const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
   const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
@@ -271,8 +273,8 @@ export function SolvedFieldViewer({
   const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
   useEffect(() => {
-    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm };
-  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, fieldLineDensity, playbackRpm]);
+    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showPhases, fieldLineDensity, playbackRpm };
+  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showPhases, fieldLineDensity, playbackRpm]);
   const playbackElectricalAngleRef = useRef(0);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
@@ -469,10 +471,22 @@ export function SolvedFieldViewer({
   // A frame still decoding keeps the last one drawn on screen, with the magnets
   // at its angle, instead of an older exact frame, so dragging the slider
   // never jumps backwards (#59).
+  // Phases: the A / B / C currents the solver applied at each solved position.
+  // The stator-only solve drives the same currents; the PM-only solve none.
+  const phaseCycle = useMemo(() => phaseCycleFromFrames(result.slot_excitation_frames), [result.slot_excitation_frames]);
   const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster?.source === source
     ? heldRaster
     : null;
   const visibleRaster = activeRaster ?? meshlessRaster ?? heldFrame?.raster ?? null;
+  // The position on screen: the frame still shown while the next one decodes, as the magnets use.
+  const shownElectricalAngleDeg = heldFrame?.angleDeg ?? electricalAngleDeg;
+  const phaseView = useMemo<FieldPhaseView | null>(() => (showPhases && phaseCycle
+    ? {
+      angleDeg: shownElectricalAngleDeg,
+      currentsA: source === 'pm' ? null : phaseCurrentsAt(phaseCycle, shownElectricalAngleDeg),
+      cycle: phaseCycle,
+    }
+    : null), [phaseCycle, shownElectricalAngleDeg, showPhases, source]);
   const currentPeakBT = useMemo(() => {
     const rasterPeak = activeDetailRaster?.maxB ?? visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;
@@ -1276,6 +1290,7 @@ export function SolvedFieldViewer({
               pmLines={source === 'pm'}
               fieldAxes={overlayActive ? fieldAxes : null}
               navigationSlot={zoomSlot}
+              phases={phaseView}
             />
           </>
         )}
@@ -1337,6 +1352,16 @@ export function SolvedFieldViewer({
               <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)} aria-label="Flux density"><i aria-hidden="true" /><span className="public-field-text-long">Flux density</span><span className="public-field-text-short" aria-hidden="true">Flux</span></button>
               <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field arrows" title="Small arrows along the magnetic field B"><i aria-hidden="true" /><span className="public-field-text-long">Field arrows</span><span className="public-field-text-short" aria-hidden="true">Arrows</span></button>
               {showFieldLines && renderDensityControl()}
+              <button
+                type="button"
+                aria-pressed={showPhases && Boolean(phaseCycle)}
+                disabled={!phaseCycle}
+                title={phaseCycle
+                  ? 'Coils by phase, which way their current flows at this position, and the A / B / C currents the solver applied'
+                  : 'This run did not record the phase currents it applied: solve it again to show them'}
+                onClick={() => setShowPhases((value) => !value)}
+                aria-label="Phases"
+              ><i aria-hidden="true" /><span className="public-field-text-long">Phases</span><span className="public-field-text-short" aria-hidden="true">Phases</span></button>
             </div>
             <details className="public-field-layer-menu" {...fieldLayerMenu}>
               <summary>More{moreLayersOn > 0 && <em>{moreLayersOn} on</em>}</summary>
