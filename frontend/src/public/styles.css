@@ -2067,32 +2067,16 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-result-pm-overlay { transition: opacity 160ms ease; }
 .public-field-result-pm-overlay.is-reference { opacity: .4; }
 .public-field-result-line { fill: none; stroke: #ffd166; stroke-width: .28; stroke-linecap: round; opacity: 1; filter: drop-shadow(0 0 .45px rgba(255,145,0,.9)); vector-effect: non-scaling-stroke; }
-.public-field-direction-cue path {
-  fill: none;
-  stroke: #fff3c4;
-  stroke-width: 1.35px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: .98;
-  filter: drop-shadow(0 0 1.4px rgba(255,145,0,.98)) drop-shadow(0 0 2.6px rgba(0,0,0,.92));
-  vector-effect: non-scaling-stroke;
-  animation: public-field-direction-flow 2.2s ease-in-out infinite;
-  animation-delay: var(--public-field-arrow-delay, 0s);
-}
-/* Stator + PM view (#120): PM-only lines and arrows in cyan, apart from the orange stator field. */
-.public-field-direction-cue.is-overlay path {
-  stroke: #dff7ff;
-  filter: drop-shadow(0 0 1.4px rgba(94,211,243,.98)) drop-shadow(0 0 2.6px rgba(0,0,0,.92));
-}
 .public-field-lines-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 10px; color: var(--text-secondary); font: 10px var(--font-mono); }
 .public-field-lines-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.public-field-lines-legend i { width: 18px; height: 3px; border-radius: 999px; }
-.public-field-lines-legend .is-stator { background: #ffd166; box-shadow: 0 0 4px rgba(255,145,0,.9); }
-.public-field-lines-legend .is-pm { background: #5ed3f3; box-shadow: 0 0 0 1px rgba(3,10,20,.9), 0 0 4px rgba(94,211,243,.7); }
+/* Stator + PM view (#120): each swatch is an arrow in its field's arrow colour (fieldArrows.ts). */
+.public-field-lines-legend i { width: 16px; height: 8px; clip-path: polygon(0 36%, 58% 36%, 58% 0, 100% 50%, 58% 100%, 58% 64%, 0 64%); }
+.public-field-lines-legend .is-stator { background: #ffd166; }
+.public-field-lines-legend .is-pm { background: #5ed3f3; }
 .public-field-lines-legend .public-field-lead { color: var(--text-primary); font-size: 10px; font-weight: 700; }
 .public-field-axis { fill: none; stroke-width: .8px; stroke-linecap: round; stroke-linejoin: round; }
 .public-field-axis path { vector-effect: non-scaling-stroke; }
-/* Dashed shafts keep the axis arrows light over the field lines; the heads stay solid. */
+/* Dashed shafts keep the axis arrows apart from the field arrows; the heads stay solid. */
 .public-field-axis-shaft { stroke-dasharray: 4 3; }
 .public-field-axis-ray { fill: none; stroke-width: .8px; stroke-dasharray: 2 3; stroke-linecap: round; opacity: .8; vector-effect: non-scaling-stroke; }
 .public-field-axis-ray.is-stator { stroke: #ffb547; }
@@ -2110,10 +2094,6 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-axis-label.is-note { font-weight: 500; fill: rgba(241,245,249,.88); }
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
-@keyframes public-field-direction-flow {
-  0%, 100% { transform: translateX(-1.5px); opacity: .72; }
-  50% { transform: translateX(1.5px); opacity: 1; }
-}
 .public-field-result-magnet-label { fill: rgba(255,255,255,.94); stroke: rgba(3,7,18,.9); stroke-width: .07; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 2px; font-weight: 750; letter-spacing: -.08px; pointer-events: none; }
 .public-field-result-stator-pole rect { stroke-width: .16; vector-effect: non-scaling-stroke; }
 .public-field-result-stator-pole text { stroke: rgba(3,7,18,.76); stroke-width: .06; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1.65px; font-weight: 750; letter-spacing: -.04px; pointer-events: none; }

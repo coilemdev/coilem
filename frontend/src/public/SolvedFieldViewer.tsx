@@ -64,7 +64,7 @@ import type {
 } from './model';
 
 type FieldSource = 'resultant' | 'pm' | 'armature';
-// Stator + PM draws the PM-only field's lines over the stator-only field (#120).
+// Stator + PM draws the PM-only field's arrows over the stator-only field's (#120).
 type FieldView = FieldSource | 'stator_pm';
 // A stator frame pairs with the PM frame at the same rotor position.
 const OVERLAY_ANGLE_TOLERANCE_DEG = 1e-3;
@@ -1075,7 +1075,7 @@ export function SolvedFieldViewer({
     if (nextView === 'stator_pm') {
       // Stator + PM shows no flux-density map, so it has no colour range to hold.
       setColorRangeMode('fixed');
-      // Pole labels and fewer lines keep the two fields' poles readable.
+      // Pole labels and fewer arrows keep the two fields' poles readable.
       setShowPoleLabels(true);
       setFieldLineDensity('low');
     }
@@ -1145,7 +1145,7 @@ export function SolvedFieldViewer({
   useEffect(() => () => positionLink?.setPlayhead(null), [positionLink]);
 
   const sourceLabel = overlayActive
-    ? 'Stator and PM field lines'
+    ? 'Stator and PM field arrows'
     : source === 'resultant' ? 'Resultant field' : source === 'pm' ? 'PM-only field' : 'Stator-current field';
   const sourceDetail = overlayActive
     ? 'Separate solves: in saturated steel the resultant is not their sum.'
@@ -1173,13 +1173,13 @@ export function SolvedFieldViewer({
   const loadingDetail = source === 'armature' && armatureBusy
     ? 'Solving the zero-remanence rotor sweep locally'
     : frameLoading
-      ? 'Preparing solved geometry, flux density, and contours'
+      ? 'Preparing solved geometry, flux density, and field direction'
       : source === 'armature' && !armature
         ? armatureError ?? 'Select Stator to compute the cached Br = 0 sweep.'
         : frameError;
   // The plot portals its zoom controls into the dock, off the field (#120 follow-up).
   const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
-  // Flux density and field lines change what the picture means, so they stay
+  // Flux density and field arrows change what the picture means, so they stay
   // in view; the reference layers wait in More, which counts how many are on.
   const renderMoreLayerButtons = () => (
     <>
@@ -1197,25 +1197,25 @@ export function SolvedFieldViewer({
     showAirgap,
     (hasMagnets || source === 'armature') && showPoleLabels,
   ].filter(Boolean).length;
-  // Line density sits right after Field lines as a three-way choice, and only
-  // while the lines are shown.
+  // Arrow density sits right after Field arrows as a three-way choice, and only
+  // while the arrows are shown.
   const renderDensityControl = () => {
     const densityAdjustable = !playing && Boolean(exactVectorPlot);
     const displayedDensity = exactVectorPlot ? fieldLineDensity : 'medium';
     const densityTitle = playing
-      ? 'Playback uses medium field-line density. Pause to adjust the exact frame.'
+      ? 'Playback uses medium arrow density. Pause to adjust the exact frame.'
       : densityAdjustable
-        ? 'Field-line density'
-        : 'Loading the exact frame before field-line density can be changed.';
+        ? 'Arrow density: how closely the field arrows are spaced'
+        : 'Loading the exact frame before arrow density can be changed.';
     return (
-      <span className="public-field-density-choice" role="group" aria-label="Field-line density" title={densityTitle}>
+      <span className="public-field-density-choice" role="group" aria-label="Field-arrow density" title={densityTitle}>
         {FIELD_LINE_DENSITY_STOPS.map((stop) => (
           <button
             type="button"
             aria-pressed={displayedDensity === stop}
             disabled={!densityAdjustable}
             onClick={() => setFieldLineDensity(stop)}
-            aria-label={`${stop === 'low' ? 'Low' : stop === 'medium' ? 'Medium' : 'High'} line density`}
+            aria-label={`${stop === 'low' ? 'Low' : stop === 'medium' ? 'Medium' : 'High'} arrow density`}
             key={stop}
           >
             <span className="public-field-density-long">{stop === 'low' ? 'Low' : stop === 'medium' ? 'Med' : 'High'}</span>
@@ -1325,7 +1325,7 @@ export function SolvedFieldViewer({
             <span>Field</span>
             <div className="public-field-source-controls" role="group" aria-label="Field composition">
               <button type="button" aria-label="Resultant field, permanent magnets plus stator current" title="Permanent magnets plus stator current" aria-pressed={view === 'resultant'} onClick={() => selectSource('resultant')}><strong>Resultant</strong></button>
-              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field lines together">
+              <span className={`public-field-source-pair${overlayActive ? ' is-both' : ''}`} role="group" aria-label="Separate fields: PM, Stator, or both together" title="Pick PM, Stator, or both to draw their field arrows together">
                 <button type="button" className="is-pm" aria-label="PM-only field, zero current" title="Exact zero-current Magneto2D field" aria-pressed={pmShown} disabled={!pmAvailable} onClick={() => toggleSeparateField('pm')}><strong>PM</strong></button>
                 <button type="button" className="is-stator" aria-label="Stator-current-only field, permanent-magnet remanence disabled" title={magnetoCompositionAvailable ? 'Exact zero-remanence Magneto2D field' : statorFieldUnavailableReason ?? 'Stator-only composition is available for Magneto2D results'} aria-pressed={statorShown} disabled={!magnetoCompositionAvailable} onClick={() => toggleSeparateField('armature')}><strong>Stator</strong></button>
               </span>
@@ -1335,7 +1335,7 @@ export function SolvedFieldViewer({
             <span>Show</span>
             <div className="public-field-layer-controls public-field-layer-controls-inline" role="group" aria-label="Field solution overlays">
               <button type="button" aria-pressed={showHeatmap && !overlayActive} disabled={overlayActive} title={overlayActive ? 'Off while PM and Stator are both shown: one |B| map cannot belong to both fields' : undefined} onClick={() => setShowHeatmap((value) => !value)} aria-label="Flux density"><i aria-hidden="true" /><span className="public-field-text-long">Flux density</span><span className="public-field-text-short" aria-hidden="true">Flux</span></button>
-              <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field lines"><i aria-hidden="true" /><span className="public-field-text-long">Field lines</span><span className="public-field-text-short" aria-hidden="true">Lines</span></button>
+              <button type="button" aria-pressed={showFieldLines} onClick={() => setShowFieldLines((value) => !value)} aria-label="Field arrows" title="Small arrows along the magnetic field B"><i aria-hidden="true" /><span className="public-field-text-long">Field arrows</span><span className="public-field-text-short" aria-hidden="true">Arrows</span></button>
               {showFieldLines && renderDensityControl()}
             </div>
             <details className="public-field-layer-menu" {...fieldLayerMenu}>

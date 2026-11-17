@@ -7,7 +7,9 @@ before any image is drawn and then starts drawing them there in the
 background (start_drawing); whenever an image is missing (not drawn yet, or
 removed by cache pruning) it is drawn from the run's frames when the viewer
 asks for it, starting with that frame. A run whose frames retention removed
-has no playback to draw.
+has no playback to draw. Images an older app version drew in a different
+style (0.5.9 drew field arrows in place of flux lines) are removed when a
+folder is first used, so they are drawn again in the current style.
 """
 
 from __future__ import annotations
@@ -35,6 +37,9 @@ RENDER_TIMEOUT_S = 300.0
 _IMAGE_NAME = re.compile(r"^frame_(\d{4})_[a-z_]+\.webp$")
 _JOBS_LOCK = threading.Lock()
 _JOBS: dict[Path, dict[int, Future]] = {}
+# The renderer revision a folder's images were drawn with.
+_RENDERER_STAMP = ".renderer_revision"
+_CURRENT_DIRS: set[Path] = set()
 
 
 def run_playback_dir(project_slug: str, run_id: str) -> Path:
@@ -90,6 +95,43 @@ def _stored_frames(workspace: SolveWorkspace, project_slug: str, run_id: str) ->
     return frames
 
 
+def _drop_stale_images(output_dir: Path) -> None:
+    """Remove a folder's playback images if an older renderer drew them; once per folder and process.
+
+    Saved runs keep their images in the solve cache across app versions, so
+    without this a run saved before a renderer change would keep its old
+    images until cache pruning removed them. Every job for a folder starts
+    from a call that has made this check, so none is drawing there now.
+    """
+
+    from backend.public_field_playback import PLAYBACK_RENDERER_REVISION
+
+    with _JOBS_LOCK:
+        if output_dir in _CURRENT_DIRS:
+            return
+        if output_dir.is_dir():
+            try:
+                drawn_with = (output_dir / _RENDERER_STAMP).read_text(encoding="utf-8").strip()
+            except OSError:
+                drawn_with = None
+            if drawn_with != PLAYBACK_RENDERER_REVISION:
+                for image in output_dir.glob("frame_*.webp"):
+                    image.unlink(missing_ok=True)
+                _stamp_renderer(output_dir)
+        _CURRENT_DIRS.add(output_dir)
+
+
+def _stamp_renderer(output_dir: Path) -> None:
+    """Record the current renderer; without the stamp a later start only draws the images again."""
+
+    from backend.public_field_playback import PLAYBACK_RENDERER_REVISION
+
+    try:
+        (output_dir / _RENDERER_STAMP).write_text(PLAYBACK_RENDERER_REVISION, encoding="utf-8")
+    except OSError:
+        pass
+
+
 def _render_job(workspace: SolveWorkspace, project_slug: str, run_id: str, mode: str, output_dir: Path, index: int) -> Future:
     """The render of ``index``: an unfinished one already queued, or a new job for all frames."""
 
@@ -104,6 +146,7 @@ def _render_job(workspace: SolveWorkspace, project_slug: str, run_id: str, mode:
         if index >= len(frames):
             raise FileNotFoundError("playback frame not found")
         output_dir.mkdir(parents=True, exist_ok=True)
+        _stamp_renderer(output_dir)
         executor = _playback_executor(len(frames))
         lifetime = ExitStack()
         try:
@@ -142,6 +185,7 @@ def playback_image(workspace: SolveWorkspace, project_slug: str, run_id: str, re
     mode, name, index = parsed
     workspace.resolve_run(project_slug, run_id)  # validates both names and that the run exists
     output_dir = run_playback_dir(project_slug, run_id) / mode
+    _drop_stale_images(output_dir)
     target = output_dir / name
     if target.is_file():
         return target
@@ -163,7 +207,9 @@ def start_drawing(workspace: SolveWorkspace, project_slug: str, run_id: str, mod
     if mode not in PLAYBACK_MODES:
         return
     try:
-        _render_job(workspace, project_slug, run_id, mode, run_playback_dir(project_slug, run_id) / mode, 0)
+        output_dir = run_playback_dir(project_slug, run_id) / mode
+        _drop_stale_images(output_dir)
+        _render_job(workspace, project_slug, run_id, mode, output_dir, 0)
     except Exception:  # noqa: BLE001 - drawing on demand still works
         return
 
@@ -188,6 +234,7 @@ def drawing_progress(
         raise FileNotFoundError("not a playback composition")
     total = len(_stored_frames(workspace, project_slug, run_id))
     output_dir = run_playback_dir(project_slug, run_id) / mode
+    _drop_stale_images(output_dir)
     names = {path.name for path in output_dir.iterdir()} if output_dir.is_dir() else set()
     layers = [layer.format(composition=composition) for layer in _PLAYED_LAYERS]
     missing = [

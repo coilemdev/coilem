@@ -220,11 +220,11 @@ for (const view of ['mesh-menu', 'field'] as const) {
     await expect(menu).not.toHaveAttribute('open', '');
     if (view === 'field') {
       await expect(page.getByRole('button', { name: 'Flux density', exact: true })).toHaveAttribute('aria-pressed', 'true');
-      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.getByRole('button', { name: 'Field arrows', exact: true })).toHaveAttribute('aria-pressed', 'false');
       await expect(page.locator('.public-field-result-legend')).not.toContainText('solved elements');
       expect(await page.locator('.public-field-result-legend > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
-      await page.getByRole('button', { name: 'Field lines', exact: true }).click();
-      await expect(page.getByRole('button', { name: 'Field lines', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await page.getByRole('button', { name: 'Field arrows', exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Field arrows', exact: true })).toHaveAttribute('aria-pressed', 'true');
     }
   });
 }

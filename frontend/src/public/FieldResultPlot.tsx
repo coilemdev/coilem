@@ -5,7 +5,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
@@ -18,11 +17,23 @@ import {
 } from '../components/tutorials/fieldPolarityCues';
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type {
-  FieldLineContourLevel,
   GeometryPreview,
   PublicFieldLinePlot,
   PublicFieldVectorCue,
 } from './model';
+import {
+  buildFieldArrowMesh,
+  drawFieldArrows,
+  FIELD_ARROW_COLORS,
+  FIELD_ARROW_LENGTH_FRACTION,
+  FIELD_ARROW_RING_OFFSET,
+  fieldArrowSpacingMm,
+  sampleFieldArrows,
+  visibleFieldArrowRect,
+  type FieldArrowDensity,
+  type FieldArrowMesh,
+  type FieldArrowTone,
+} from './fieldArrows';
 import {
   useViewportNavigation,
   ViewportNavigationControls,
@@ -53,16 +64,11 @@ const LOUPE_MAGNIFICATION = 3;
  * view's smaller side (viewportTransform.ts), this plot 1 / 1.05 of it.
  */
 export const FIELD_FIT_LIKE_MOTOR_CANVAS = 0.85 * 1.05;
-const FIELD_DIRECTION_CUE_TARGET = 32;
 const DETAIL_RENDER_SCALE = 1.08;
 const VIEWPORT_SCALE_SETTLE_MS = 140;
-// The second field of the Stator + PM view (#120) is drawn in cyan with a dark
-// halo, apart from the orange stator lines and the red and blue magnets.
-const OVERLAY_LINE_COLOR = '#5ed3f3';
-const OVERLAY_HALO_COLOR = 'rgba(3,10,20,.92)';
-const OVERLAY_LINE_ALPHA = 0.85;
 
-export type FieldLineDensity = 'low' | 'medium' | 'high';
+/** How closely the field arrows are spaced (the Low / Med / High control). */
+export type FieldLineDensity = FieldArrowDensity;
 /** Fixed: one 0–2.0 T scale everywhere. Viewport ("Fit view"): fitted to the zoomed area, never past 2.0 T. */
 export type FieldColorRangeMode = 'fixed' | 'viewport';
 
@@ -87,13 +93,13 @@ interface RenderedFieldLayers {
   base: HTMLCanvasElement | null;
   heat: HTMLCanvasElement;
   mesh: HTMLCanvasElement;
-  lines: HTMLCanvasElement;
 }
 
 export interface FieldResultRaster {
   base: ImageBitmap;
   heat: ImageBitmap;
   mesh?: ImageBitmap | null;
+  /** The field-arrow layer: light arrows with a dark rim (older images: flux lines). */
   lines: ImageBitmap;
   viewBox: string;
   minB: number;
@@ -113,11 +119,11 @@ export interface FieldAxesOptions {
   currentAngleDeg?: number | null;
 }
 
-/** A second field drawn as lines over the first, as in the Stator + PM view (#120). */
+/** The PM field's arrows drawn over the stator's, as in the Stator + PM view (#120). */
 export interface FieldLineOverlay {
-  /** Playback raster of the second field; only its lines layer and direction cues are drawn. */
+  /** Playback raster of the second field; only its arrow layer is drawn. */
   raster: FieldResultRaster | null;
-  /** Exact solver frame of the second field, drawn as vector lines when available. */
+  /** Exact solver frame of the second field, its arrows drawn from it when available. */
   plot: PublicFieldLinePlot | null;
 }
 
@@ -131,15 +137,19 @@ interface PreparedFieldPlot {
     points: [[number, number], [number, number], [number, number]];
     value: number | null;
   }>;
-  contourPaths: Path2D[];
   viewBox: string;
+  /** The view box's larger side, mm: the arrow spacing is a share of it. */
+  viewSize: number;
   /** Stroke-width factor for this view's size (fieldStrokeWidth). */
   strokeScale: number;
   minB: number;
   maxB: number;
   triangleCount: number;
-  contourCount: number;
-  vectorCues: PublicFieldVectorCue[];
+  /** Whether the plot carries each element's B, which the arrows need. */
+  hasArrows: boolean;
+  /** The elements indexed for the arrows, built when first drawn. */
+  arrowMesh: FieldArrowMesh | null | undefined;
+  plot: PublicFieldLinePlot;
   renderedLayers: RenderedFieldLayers | null;
 }
 
@@ -150,12 +160,6 @@ interface PreparedMagnetOverlay {
 }
 
 const preparedFieldPlotCache = new WeakMap<PublicFieldLinePlot, PreparedFieldPlot | null>();
-
-function lineDensityStride(density: FieldLineDensity): number {
-  if (density === 'low') return 3;
-  if (density === 'medium') return 2;
-  return 1;
-}
 
 // Close each triangle with an explicit edge back to its first vertex, never
 // closePath(). Chromium's Path2D closePath() costs time proportional to the
@@ -184,33 +188,6 @@ function heatPathsForScale(
     counts[bucket] += 1;
   });
   return { paths, counts };
-}
-
-function sampleDirectionCues(levels: FieldLineContourLevel[]): PublicFieldVectorCue[] {
-  const candidates = levels.flatMap((level) => level.segments_mm.flatMap((segment, index) => {
-    const bx = level.segment_bx_t?.[index];
-    const by = level.segment_by_t?.[index];
-    if (
-      segment.length < 4
-      || !segment.slice(0, 4).every(Number.isFinite)
-      || !Number.isFinite(bx)
-      || !Number.isFinite(by)
-    ) return [];
-    const length = Math.hypot(bx ?? 0, by ?? 0);
-    if (length <= 1e-12) return [];
-    const magnitude = level.segment_b_mag_t?.[index];
-    return [{
-      x: (segment[0] + segment[2]) / 2,
-      y: (segment[1] + segment[3]) / 2,
-      dx: (bx ?? 0) / length,
-      dy: (by ?? 0) / length,
-      ...(Number.isFinite(magnitude) ? { magnitude } : {}),
-    }];
-  }));
-  if (candidates.length <= FIELD_DIRECTION_CUE_TARGET) return candidates;
-  return Array.from({ length: FIELD_DIRECTION_CUE_TARGET }, (_, index) => (
-    candidates[Math.round(index * (candidates.length - 1) / (FIELD_DIRECTION_CUE_TARGET - 1))]
-  ));
 }
 
 function rotatePoint([x, y]: [number, number], angleDeg: number): [number, number] {
@@ -317,32 +294,21 @@ function prepareFieldPlot(plot: PublicFieldLinePlot): PreparedFieldPlot | null {
     FIXED_FLUX_SCALE,
   );
 
-  let contourCount = 0;
-  const contourPaths = plot.contour_levels.map((level) => {
-    const path = new Path2D();
-    level.segments_mm.forEach((segment) => {
-      if (segment.length < 4 || !segment.slice(0, 4).every(Number.isFinite)) return;
-      path.moveTo(segment[0], -segment[1]);
-      path.lineTo(segment[2], -segment[3]);
-      contourCount += 1;
-    });
-    return path;
-  });
-
   return {
     basePath,
     heatPaths,
     heatBucketCounts,
     heatPathCache: new Map(),
     triangleRecords,
-    contourPaths,
     viewBox: `${minX - padding} ${-maxY - padding} ${width + padding * 2} ${height + padding * 2}`,
+    viewSize: Math.max(width, height) + padding * 2,
     strokeScale: fieldStrokeScale(width + padding * 2, height + padding * 2),
     minB,
     maxB,
     triangleCount,
-    contourCount,
-    vectorCues: sampleDirectionCues(plot.contour_levels),
+    hasArrows: (plot.element_bx_t?.length ?? 0) > 0 && (plot.element_by_t?.length ?? 0) > 0,
+    arrowMesh: undefined,
+    plot,
     renderedLayers: null,
   };
 }
@@ -414,22 +380,32 @@ function drawMeshEdges(
   context.restore();
 }
 
-function drawFieldLines(
+/**
+ * Draw the field's B arrows through the context's world transform, over the
+ * part of the plot the canvas shows. Zooming in adds arrows in half-octave
+ * steps, so they stay small on screen (fieldArrows.ts).
+ */
+function drawFieldArrowLayer(
   context: CanvasRenderingContext2D,
   prepared: PreparedFieldPlot,
-  density: FieldLineDensity = 'high',
-  overlay = false,
+  density: FieldLineDensity,
+  tone: FieldArrowTone,
+  zoom: number,
 ): void {
-  context.strokeStyle = overlay ? OVERLAY_LINE_COLOR : '#ffd166';
-  context.lineWidth = 0.28 * prepared.strokeScale;
-  context.lineCap = 'round';
-  context.shadowColor = overlay ? OVERLAY_HALO_COLOR : 'rgba(255,145,0,.9)';
-  context.shadowBlur = overlay ? 2 : 0.45;
-  const stride = lineDensityStride(density);
-  prepared.contourPaths.forEach((path, index) => {
-    if (index % stride !== 0) return;
-    context.stroke(path);
-  });
+  if (!prepared.hasArrows) return;
+  if (prepared.arrowMesh === undefined) {
+    const { plot } = prepared;
+    prepared.arrowMesh = buildFieldArrowMesh(plot.nodes_mm, plot.triangles, plot.element_bx_t, plot.element_by_t);
+  }
+  if (!prepared.arrowMesh) return;
+  const spacing = fieldArrowSpacingMm(prepared.viewSize, density, zoom);
+  const arrows = sampleFieldArrows(
+    prepared.arrowMesh,
+    spacing,
+    tone === 'pm' ? FIELD_ARROW_RING_OFFSET.pm : FIELD_ARROW_RING_OFFSET.primary,
+    visibleFieldArrowRect(context),
+  );
+  drawFieldArrows(context, arrows, spacing * FIELD_ARROW_LENGTH_FRACTION, FIELD_ARROW_COLORS[tone]);
 }
 
 /** The square of SVG-space coordinates that a square raster with this view box covers. */
@@ -440,29 +416,34 @@ function rasterWorldSquare(viewBox: string): { left: number; top: number; size: 
   return { left: x - (size - width) / 2, top: y - (size - height) / 2, size };
 }
 
-const overlayLineLayers = new WeakMap<ImageBitmap | HTMLCanvasElement, HTMLCanvasElement>();
+const tintedArrowLayers = new WeakMap<ImageBitmap | HTMLCanvasElement, Map<string, HTMLCanvasElement>>();
 
-/** A field-line raster recoloured to the overlay colour, with its dark halo, made once per raster. */
-function overlayLineLayer(lines: ImageBitmap | HTMLCanvasElement): HTMLCanvasElement {
-  const cached = overlayLineLayers.get(lines);
+/**
+ * A playback arrow layer (light arrows, dark rim) in another field's colour:
+ * multiplying by the colour turns the light bodies to it and leaves the rims
+ * dark. Made once per image and colour.
+ */
+function tintedArrowLayer(lines: ImageBitmap | HTMLCanvasElement, tone: FieldArrowTone): ImageBitmap | HTMLCanvasElement {
+  if (tone === 'field') return lines;
+  const color = FIELD_ARROW_COLORS[tone];
+  const byColor = tintedArrowLayers.get(lines) ?? new Map<string, HTMLCanvasElement>();
+  tintedArrowLayers.set(lines, byColor);
+  const cached = byColor.get(color);
   if (cached) return cached;
-  const tint = document.createElement('canvas');
   const layer = document.createElement('canvas');
-  tint.width = layer.width = lines.width;
-  tint.height = layer.height = lines.height;
-  const tintContext = tint.getContext('2d');
+  layer.width = lines.width;
+  layer.height = lines.height;
   const context = layer.getContext('2d');
-  if (tintContext && context) {
-    tintContext.drawImage(lines, 0, 0);
-    // Keep each pixel's coverage; replace its colour.
-    tintContext.globalCompositeOperation = 'source-in';
-    tintContext.fillStyle = OVERLAY_LINE_COLOR;
-    tintContext.fillRect(0, 0, tint.width, tint.height);
-    context.shadowColor = OVERLAY_HALO_COLOR;
-    context.shadowBlur = Math.max(2, lines.width / 450);
-    context.drawImage(tint, 0, 0);
+  if (context) {
+    context.drawImage(lines, 0, 0);
+    context.globalCompositeOperation = 'multiply';
+    context.fillStyle = color;
+    context.fillRect(0, 0, layer.width, layer.height);
+    // Multiplying filled the clear pixels too; keep only the arrows' own coverage.
+    context.globalCompositeOperation = 'destination-in';
+    context.drawImage(lines, 0, 0);
   }
-  overlayLineLayers.set(lines, layer);
+  byColor.set(color, layer);
   return layer;
 }
 
@@ -472,13 +453,10 @@ function warmPreparedFieldPlot(prepared: PreparedFieldPlot | null): void {
     drawBase(context, prepared);
     drawHeat(context, prepared);
   });
-  const lines = renderPathLayer(prepared, (context) => {
-    drawFieldLines(context, prepared);
-  });
   const mesh = renderPathLayer(prepared, (context) => {
     drawMeshEdges(context, prepared);
   });
-  prepared.renderedLayers = { base: null, heat, mesh, lines };
+  prepared.renderedLayers = { base: null, heat, mesh };
 }
 
 function baseFieldLayer(prepared: PreparedFieldPlot): HTMLCanvasElement {
@@ -606,7 +584,7 @@ export function FieldResultPlot({
   describeProbe?: (probe: FieldProbe) => FieldProbeDescription;
   onViewportScaleSettled?: (scale: number) => void;
   overlay?: FieldLineOverlay | null;
-  /** Draw the field's own lines and arrows in the PM colour (the PM-only view). */
+  /** Draw the field's own arrows in the PM colour (the PM-only view). */
   pmLines?: boolean;
   fieldAxes?: FieldAxesOptions | null;
   /** Render the zoom controls here instead of over the plot (the solved-field viewer's control dock). */
@@ -683,6 +661,9 @@ export function FieldResultPlot({
   const showHeatmap = controlledShowHeatmap ?? internalShowHeatmap;
   const showMesh = controlledShowMesh ?? internalShowMesh;
   const showFieldLines = controlledShowFieldLines ?? internalShowFieldLines;
+  // The PM-only view draws its arrows in the PM colour; the Stator + PM view the
+  // stator's in amber under the PM's in cyan; any other field's are light.
+  const primaryTone: FieldArrowTone = pmLines ? 'pm' : overlay ? 'stator' : 'field';
   // Inner-rotor gap edges, or the explicit stator-OD/magnet edges of an outer rotor.
   const airgapEdges: readonly [number, number] = airgapRingMm ?? [airgapInnerRadiusMm ?? NaN, statorInnerRadiusMm ?? NaN];
   const hasAirgapOverlay = showAirgap
@@ -750,9 +731,10 @@ export function FieldResultPlot({
         }
         if (showMesh) drawMeshEdges(context, prepared, navigation.scale * LOUPE_MAGNIFICATION);
         if (showFieldLines) {
-          context.save();
-          drawFieldLines(context, prepared, fieldLineDensity, pmLines);
-          context.restore();
+          drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale * LOUPE_MAGNIFICATION);
+          if (overlayPrepared) {
+            drawFieldArrowLayer(context, overlayPrepared, fieldLineDensity, 'pm', navigation.scale * LOUPE_MAGNIFICATION);
+          }
         }
       } else {
         const sourceScale = canvas.width / width;
@@ -826,8 +808,9 @@ export function FieldResultPlot({
     navigation.pan.y,
     navigation.rotationDeg,
     navigation.scale,
-    pmLines,
+    overlayPrepared,
     prepared,
+    primaryTone,
     raster,
     showFieldLines,
     showHeatmap,
@@ -868,22 +851,17 @@ export function FieldResultPlot({
       setVectorDetailShown(shown);
     };
     // Call with the canvas transform mapping SVG-space world coordinates. Exact
-    // overlay vectors go with exact primary vectors; otherwise its playback raster.
+    // overlay arrows go with exact primary arrows; otherwise its playback raster.
     const drawOverlayLines = (context: CanvasRenderingContext2D, vectorPrimary: boolean) => {
       if (!showFieldLines || !overlay) return;
       const overlayRaster = overlay.raster;
       if (overlayPrepared && (vectorPrimary || !overlayRaster)) {
-        context.save();
-        drawFieldLines(context, overlayPrepared, fieldLineDensity, true);
-        context.restore();
+        drawFieldArrowLayer(context, overlayPrepared, fieldLineDensity, 'pm', navigation.scale);
         return;
       }
       const square = overlayRaster ? rasterWorldSquare(overlayRaster.viewBox) : null;
       if (!overlayRaster || !square) return;
-      context.save();
-      context.globalAlpha = OVERLAY_LINE_ALPHA;
-      context.drawImage(overlayLineLayer(overlayRaster.lines), square.left, square.top, square.size, square.size);
-      context.restore();
+      context.drawImage(tintedArrowLayer(overlayRaster.lines, 'pm'), square.left, square.top, square.size, square.size);
     };
     const draw = () => {
       const width = Math.max(1, canvas.clientWidth);
@@ -966,7 +944,7 @@ export function FieldResultPlot({
         drawBase(context, prepared);
         if (showHeatmap) drawHeat(context, prepared, visibleRange ? fittedFluxScale(visibleRange.minB, visibleRange.maxB) : FIXED_FLUX_SCALE);
         if (showMesh) drawMeshEdges(context, prepared, navigation.scale);
-        if (showFieldLines) drawFieldLines(context, prepared, fieldLineDensity, pmLines);
+        if (showFieldLines) drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale);
         drawOverlayLines(context, true);
         context.restore();
         return;
@@ -1015,8 +993,11 @@ export function FieldResultPlot({
           context.drawImage(prepared.renderedLayers.mesh, x, y, drawSize, drawSize);
         }
       }
+      // Arrows come from the exact frame when there is one, else from the
+      // playback image, which carries them at the medium spacing.
+      const vectorArrows = Boolean(prepared && (highResolutionPlot || !raster));
       if (showFieldLines) {
-        if (prepared && highResolutionPlot) {
+        if (prepared && vectorArrows) {
           const [viewX, viewY, viewWidth, viewHeight] = prepared.viewBox.split(' ').map(Number);
           const baseScale = Math.min(size / viewWidth, size / viewHeight);
           const baseOffsetX = (pixelWidth - viewWidth * baseScale) / 2;
@@ -1032,21 +1013,12 @@ export function FieldResultPlot({
             centerX + (baseOffsetX - viewX * baseScale - centerX) * navigation.scale + panX,
             centerY + (baseOffsetY - viewY * baseScale - centerY) * navigation.scale + panY,
           );
-          drawFieldLines(context, prepared, fieldLineDensity, pmLines);
+          drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale);
           context.restore();
-        } else {
-          context.save();
-          // Playback rasters are authored with the medium contour stride. Do
-          // not imply low/high density by changing only the image opacity.
-          // PM-only lines take the PM colour, as in the Stator + PM view.
-          if (pmLines) {
-            context.globalAlpha = OVERLAY_LINE_ALPHA;
-            context.drawImage(overlayLineLayer(layers.lines), x, y, drawSize, drawSize);
-          } else {
-            context.globalAlpha = 0.68;
-            context.drawImage(layers.lines, x, y, drawSize, drawSize);
-          }
-          context.restore();
+        } else if (raster) {
+          // The image's light arrows, in the PM colour in the PM-only view and
+          // in the stator's under the PM's in the Stator + PM view.
+          context.drawImage(tintedArrowLayer(raster.lines, primaryTone), x, y, drawSize, drawSize);
         }
         const primarySquare = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
         if (overlay && primarySquare) {
@@ -1060,7 +1032,7 @@ export function FieldResultPlot({
             x - primarySquare.left * worldScale,
             y - primarySquare.top * worldScale,
           );
-          drawOverlayLines(context, Boolean(prepared && highResolutionPlot));
+          drawOverlayLines(context, vectorArrows);
           context.restore();
         }
       }
@@ -1125,8 +1097,8 @@ export function FieldResultPlot({
     navigation.rotationDeg,
     overlay,
     overlayPrepared,
-    pmLines,
     prepared,
+    primaryTone,
     raster,
     rotorMarkDeg,
     showFieldLines,
@@ -1136,7 +1108,7 @@ export function FieldResultPlot({
 
   const hasHeatmap = raster ? true : prepared?.heatBucketCounts.some((count) => count > 0) ?? false;
   const hasMesh = Boolean(raster?.mesh || (prepared?.triangleCount ?? 0) > 0);
-  const hasFieldLines = raster ? raster.contourSegmentCount > 0 : (prepared?.contourCount ?? 0) > 0;
+  const hasFieldLines = raster ? raster.contourSegmentCount > 0 : prepared?.hasArrows ?? false;
   const viewBox = raster?.viewBox ?? prepared?.viewBox ?? '0 0 1 1';
   const minB = raster?.minB ?? prepared?.minB ?? 0;
   const maxB = raster?.maxB ?? prepared?.maxB ?? 0;
@@ -1195,15 +1167,6 @@ export function FieldResultPlot({
   // Every hook is above this line, so a plot that has no data yet keeps the same hooks.
   if (!prepared && !raster) return null;
   const triangleCount = raster?.triangleCount ?? prepared?.triangleCount ?? 0;
-  const contourLevelCount = raster?.contourLevelCount ?? plot?.contour_levels.length ?? 0;
-  const availableDirectionCues = raster?.vectorCues ?? prepared?.vectorCues ?? [];
-  const directionCueTarget = fieldLineDensity === 'low' ? 12 : fieldLineDensity === 'medium' ? 20 : 32;
-  const sampleCues = (cues: PublicFieldVectorCue[]) => (cues.length <= directionCueTarget
-    ? cues
-    : Array.from({ length: directionCueTarget }, (_, index) => (
-      cues[Math.round(index * (cues.length - 1) / (directionCueTarget - 1))]
-    )));
-  const directionCues = sampleCues(availableDirectionCues);
   const viewBoxValues = viewBox.split(/\s+/).map(Number);
   const [viewX, viewY, viewWidth, viewHeight] = viewBoxValues;
   const hasValidOverlayViewBox = viewBoxValues.length === 4
@@ -1229,14 +1192,6 @@ export function FieldResultPlot({
     overlayOffsetX,
     overlayOffsetY,
   ].join(' ');
-  const arrowSize = viewBoxValues.length === 4 && viewBoxValues.every(Number.isFinite)
-    ? Math.max(0.8, Math.min(Math.abs(viewBoxValues[2]), Math.abs(viewBoxValues[3])) * 0.014)
-    : 1;
-  const arrowPath = `M ${-arrowSize * 0.58} 0 L ${arrowSize * 0.35} 0 M ${arrowSize * 0.05} ${-arrowSize * 0.3} L ${arrowSize * 0.52} 0 L ${arrowSize * 0.05} ${arrowSize * 0.3}`;
-  const overlayDirectionCues = overlay && showFieldLines
-    ? sampleCues(overlay.raster?.vectorCues ?? overlayPrepared?.vectorCues ?? [])
-    : [];
-  const hasDirectionCues = showFieldLines && (directionCues.length > 0 || overlayDirectionCues.length > 0);
   const statorPoleLabelRadius = Number.isFinite(statorInnerRadiusMm)
     ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
     : null;
@@ -1285,8 +1240,7 @@ export function FieldResultPlot({
   const visibleLayerLabel = [
     showHeatmap && hasHeatmap ? 'flux-density heatmap' : null,
     showMesh && hasMesh ? 'solver mesh edges' : null,
-    showFieldLines && hasFieldLines ? (overlay ? 'stator field lines in orange and PM field lines in cyan' : 'magnetic field lines') : null,
-    hasDirectionCues ? 'field-direction arrows' : null,
+    showFieldLines && hasFieldLines ? (overlay ? 'stator field arrows in amber and PM field arrows in cyan' : 'field-direction arrows') : null,
     showMagnets && magnetOverlay.length > 0
       ? magnetReference ? 'dimmed permanent-magnet reference geometry' : 'permanent magnets'
       : null,
@@ -1386,7 +1340,7 @@ export function FieldResultPlot({
       : null,
     hasFieldAxes && leadElecDeg !== null ? leadAngleExplanation(leadElecDeg, axisPolePairs) : null,
     hasFieldAxes && leadElecDeg !== null && statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs
-      ? `The stator's stronger ${statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its lines seem to turn the other way.`
+      ? `The stator's stronger ${statorStrongestPolePairs}-pole-pair part gives no steady torque and can make its arrows seem to turn the other way.`
       : null,
   ].filter(Boolean).join(' ');
 
@@ -1406,7 +1360,7 @@ export function FieldResultPlot({
         {showControls && <div className="public-field-result-controls" aria-label="Field map layers">
           {hasHeatmap && <button type="button" aria-pressed={showHeatmap} onClick={() => setInternalShowHeatmap((value) => !value)}>Heatmap</button>}
           {hasMesh && <button type="button" aria-pressed={showMesh} onClick={() => setInternalShowMesh((value) => !value)}>Mesh</button>}
-          {hasFieldLines && <button type="button" aria-pressed={showFieldLines} onClick={() => setInternalShowFieldLines((value) => !value)}>Field lines</button>}
+          {hasFieldLines && <button type="button" aria-pressed={showFieldLines} onClick={() => setInternalShowFieldLines((value) => !value)}>Field arrows</button>}
         </div>}
       </div>}
       <div
@@ -1419,7 +1373,7 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {(hasDirectionCues || (showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
+          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
@@ -1429,36 +1383,6 @@ export function FieldResultPlot({
                   <circle cx="0" cy="0" r={airgapEdges[1]} />
                 </g>
               )}
-              {hasDirectionCues && directionCues.map((cue, index) => {
-                const screenAngleDeg = Math.atan2(-cue.dy, cue.dx) * 180 / Math.PI;
-                const style = {
-                  '--public-field-arrow-delay': `${-(index % 12) * 0.14}s`,
-                } as CSSProperties;
-                return (
-                  <g
-                    transform={`translate(${cue.x} ${-cue.y}) rotate(${screenAngleDeg})`}
-                    className={`public-field-direction-cue${pmLines ? ' is-overlay' : ''}`}
-                    key={`field-direction-${index}`}
-                  >
-                    <path d={arrowPath} style={style} />
-                  </g>
-                );
-              })}
-              {hasDirectionCues && overlayDirectionCues.map((cue, index) => {
-                const screenAngleDeg = Math.atan2(-cue.dy, cue.dx) * 180 / Math.PI;
-                const style = {
-                  '--public-field-arrow-delay': `${-(index % 12) * 0.14}s`,
-                } as CSSProperties;
-                return (
-                  <g
-                    transform={`translate(${cue.x} ${-cue.y}) rotate(${screenAngleDeg})`}
-                    className="public-field-direction-cue is-overlay"
-                    key={`overlay-direction-${index}`}
-                  >
-                    <path d={arrowPath} style={style} />
-                  </g>
-                );
-              })}
               {showMagnets && (
                 <g className={`public-field-result-pm-overlay${magnetReference ? ' is-reference' : ''}`}>
                   {magnetOverlay.map((magnet, index) => <path d={magnet.path} className={`public-field-result-magnet is-${magnet.polarity}`} key={`magnet-${index}`} />)}
@@ -1549,9 +1473,9 @@ export function FieldResultPlot({
       </div>
       {probeSlot && createPortal(probeReadout, probeSlot)}
       {overlay ? (
-        // One line above the view: the two line colours and the stator lead.
+        // One line above the view: the two arrow colours and the stator lead.
         // The longer notes are its tooltip, not text over the motor.
-        <div className="public-field-lines-legend" aria-label="Field-line colours" title={linesLegendNote}>
+        <div className="public-field-lines-legend" aria-label="Field-arrow colours" title={linesLegendNote}>
           <span><i className="is-stator" aria-hidden="true" />Stator</span>
           <span><i className="is-pm" aria-hidden="true" />PM</span>
           {hasFieldAxes && leadElecDeg !== null && (
@@ -1612,7 +1536,7 @@ export function FieldResultPlot({
             </button>
           </div>
         )}
-        {showStatistics && <small>{triangleCount.toLocaleString()} solved elements · {contourLevelCount} contour levels</small>}
+        {showStatistics && <small>{triangleCount.toLocaleString()} solved elements</small>}
       </div>}
     </section>
   );

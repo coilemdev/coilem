@@ -474,6 +474,50 @@ def test_starting_to_draw_a_run_without_playback_does_nothing(data_root: Path) -
     assert not run_playback_dir(location.project_slug, location.run_id).exists()
 
 
+def test_playback_images_an_older_renderer_drew_are_drawn_again(data_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A run saved before the field arrows plays them, not the cached flux-line images."""
+
+    from PIL import Image
+
+    from backend import run_field_playback
+
+    monkeypatch.setenv("COILEM_FIELD_PLAYBACK_KEEP_RUNS", "1")
+    workspace = SolveWorkspace(data_root)
+    location, _ = _deferred_run(workspace, "older-renderer")
+    output = run_playback_dir(location.project_slug, location.run_id) / "resultant_pm"
+    relative = "playback/resultant_pm/frame_0000_resultant_lines.webp"
+
+    def finish_background_images() -> None:
+        for future in run_field_playback._JOBS.get(output, {}).values():
+            future.result(timeout=60)
+
+    # The folder an older version left: its images, stamped with its renderer.
+    output.mkdir(parents=True)
+    old = output / "frame_0000_resultant_lines.webp"
+    old.write_bytes(b"flux lines")
+    (output / "frame_0001_base.webp").write_bytes(b"older base")
+    (output / ".renderer_revision").write_text("medium-contours-mesh-fixed-flux-scale-v3", encoding="utf-8")
+    image = run_field_playback.playback_image(workspace, location.project_slug, location.run_id, relative)
+    finish_background_images()
+    assert image == old
+    with Image.open(image) as drawn:
+        assert drawn.format == "WEBP"
+    assert (output / "frame_0001_base.webp").read_bytes() != b"older base"
+    assert (output / ".renderer_revision").read_text(encoding="utf-8") == public_field_playback.PLAYBACK_RENDERER_REVISION
+
+    # Images the current renderer drew stay, after a restart too.
+    run_field_playback._CURRENT_DIRS.discard(output)
+    drawn_bytes = old.read_bytes()
+    run_field_playback.playback_image(workspace, location.project_slug, location.run_id, relative)
+    assert old.read_bytes() == drawn_bytes
+    # A folder without a stamp is an older version's as well.
+    run_field_playback._CURRENT_DIRS.discard(output)
+    (output / ".renderer_revision").unlink()
+    run_field_playback.drawing_progress(workspace, location.project_slug, location.run_id, "resultant_pm", "resultant")
+    finish_background_images()
+    assert (output / ".renderer_revision").is_file()
+
+
 def _deferred_run(workspace: SolveWorkspace, tag: str):
     """A saved run whose two positions' playback images are named but not drawn yet."""
 

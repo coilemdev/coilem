@@ -530,8 +530,8 @@
     },
     {
       "path": "backend/public_field_playback.py",
-      "bytes": 32876,
-      "sha256": "22af292449a60d041db5565e0b70cdd86fd9a1450fd5e585e0dc9912561898bb"
+      "bytes": 44110,
+      "sha256": "14dca8e9d05aec3eee163f2d8d093faef1ae8fee0da03f087d2c3aa9eaf7536c"
     },
     {
       "path": "backend/public_field_playback_contract.py",
@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3604,
-      "sha256": "1816a04bb9b9289b9748590baee86731da7bce6827fb936a6b4adb9001171164"
+      "bytes": 3642,
+      "sha256": "3b56953e107f3aa22982cbcfc8fa186435887a44c38b1083557f03d4d11fc2e0"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6487,6 +6487,11 @@
       "path": "frontend/scripts/test-dq-view.mjs",
       "bytes": 5680,
       "sha256": "da8a5d8c1f9d68cf36cdfa23c062d1db58a9c069d8be77a8d3656b9b807b39d0"
+    },
+    {
+      "path": "frontend/scripts/test-field-arrows.mjs",
+      "bytes": 6981,
+      "sha256": "d9bae0f3020b38b2332b753b495e0cbdf77603276b32afb45b0c5ae6b223d620"
     },
     {
       "path": "frontend/scripts/test-field-axes.mjs",
@@ -6590,8 +6595,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 179852,
-      "sha256": "da22daa2754e99a6b9b7d15950e3e84927f2f07f29b4b7044d97c8e29519ea81"
+      "bytes": 180820,
+      "sha256": "fad9a2c80dd5b15b9985a8d5ca3585c3ea38eccae8e9eb1a0fe94ece9fa888a3"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7045,8 +7050,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 72035,
-      "sha256": "0b0daa3bd6d4e6cdd855f020cb976a669659da904410ff89c83518b83469c8b6"
+      "bytes": 68783,
+      "sha256": "dce4eaa09f2dc79ca48f7133d78b072f792e3897606d9a47c8a028514ad1097d"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7130,8 +7135,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 61833,
-      "sha256": "bcd258a42beb88d445d6fa933ccf3991bbde163a7631488253214c1f04e2246f"
+      "bytes": 61929,
+      "sha256": "d8bdd18eefe5dc20b5060c9a9cb3e50d6bd04e0386751fdc69ddb41accc13571"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7284,6 +7289,11 @@
       "sha256": "cc74a4cca94a23ac0da8ca51f047d613b5d93de3e1a882058bbecb7ab1a9e925"
     },
     {
+      "path": "frontend/src/public/fieldArrows.ts",
+      "bytes": 18208,
+      "sha256": "9694b520c7d044eb2484dac5f2532dc77a4c5b990abf347e5da5801e12e71005"
+    },
+    {
       "path": "frontend/src/public/fieldAxes.ts",
       "bytes": 5464,
       "sha256": "33d527cc92859c69b8bb46ae0c50de6f0974b04c6bcdc2e19e73144cf9007d3e"
@@ -7310,8 +7320,8 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8478,
-      "sha256": "eba7765b98f3d0bc01c24fe80f0f770fb9923fd6d414bd2ca69a2f69259b9c2d"
+      "bytes": 8958,
+      "sha256": "886b34607bd38a43889eadaba69aa90edd6e694f71c050d7f52943e6b08fb644"
     },
     {
       "path": "frontend/src/public/fieldPositionLink.ts",
@@ -7535,8 +7545,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 341479,
-      "sha256": "72f2ece770dfca0172eba7df0b1734f802effd5455f3ce01bf82eb5e878b50fc"
+      "bytes": 340697,
+      "sha256": "b4e20e9d708dfdfc8f993fef3e778235a67ea66a3a95d335aad41e8a22c59502"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7610,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 162580,
-      "sha256": "c33f7b920cae36d7cf22aedb8b48701905cecb34abf61f4766a86dfde47f070c"
+      "bytes": 162583,
+      "sha256": "c3a025002fbe674396c30eaf398adc460e891ceee9aa3d9a28832ea1a29d0677"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8260,8 +8270,8 @@
     },
     {
       "path": "tests/test_public_field_playback.py",
-      "bytes": 17596,
-      "sha256": "ca2acd3cf5c6387005fce386a63fd772a7e1c327b2c9ca92f9a61523e7294371"
+      "bytes": 23078,
+      "sha256": "c70a1451807f0390f75392889dac4ebc2b13d2de39ac32ba5c7596a80a34e37a"
     },
     {
       "path": "tests/test_public_phase_drive.py",
@@ -13005,8 +13015,8 @@
     },
     {
       "path": "backend/run_field_playback.py",
-      "bytes": 9330,
-      "sha256": "21a38daa4f15f195c0bf934af5946c7542cf4d48304f64a2d7fe77be46713a4b"
+      "bytes": 11262,
+      "sha256": "eceedd7d4c560c8aa77ee5de2ef68c95fd9d6c8a7b72105cd06a558605f1e8c0"
     },
     {
       "path": "benchmarks/abcd-v1.8/README.md",
@@ -13165,8 +13175,8 @@
     },
     {
       "path": "tests/test_compact_run_storage.py",
-      "bytes": 29127,
-      "sha256": "6d04db6ac4293881874566b54cc8a4112cd751bb32f421000398e85ca440a9f6"
+      "bytes": 31364,
+      "sha256": "7bb78da940d7e0aa3c71fe6b4c30e358d4f94b286b48790773592198aa25dc05"
     },
     {
       "path": "tests/test_lrk_reference.py",
@@ -22203,7 +22213,7 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u00a2\u00cb\u2020\u00e2\u20ac\u2122 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B Ã¢Ë†â€™ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
@@ -22233,13 +22243,13 @@
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ã‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ã‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "a482ff6e2bd9616d2ece2a68f8fa2f2c49aae45c",
@@ -22257,7 +22267,7 @@
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ã‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
@@ -24171,25 +24181,25 @@
       "base_commit": "c50cc5291f6d7422eed9da16536d4d3e92e61028",
       "path": "frontend/src/public/PublicRunComparison.tsx",
       "source_sha256": "120ff9da14b02332b800ad2352e6b1d789478f5c38c6a3df8c6525e040132615",
-      "reason": "Show Run B \u00c3\u0192\u00c2\u00a2\u00c3\u2039\u00e2\u20ac\u00a0\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u201e\u00a2 Run A in the Compare torque readout (#54)."
+      "reason": "Show Run B ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Run A in the Compare torque readout (#54)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
       "source_sha256": "73fe393933684b12e3a31de5c88e174205bdc5b29853cd72a7323e3dc855aa5e",
-      "reason": "Label the six-step chart's electrical-angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#54 follow-up)."
+      "reason": "Label the six-step chart's electrical-angle axis every 45Ãƒâ€šÃ‚Â° (#54 follow-up)."
     },
     {
       "base_commit": "1b550ec75b3f9d1a047b54226eefe3f71a771dc9",
       "path": "frontend/src/public/WaveformChart.tsx",
       "source_sha256": "92af6322c972594d86ab3f294df5cf8ae09880d10734c0f002d6e04fabedbd1e",
-      "reason": "Label the electrical-angle axis at regular steps, 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 over a full cycle (#54 follow-up)."
+      "reason": "Label the electrical-angle axis at regular steps, 45Ãƒâ€šÃ‚Â° over a full cycle (#54 follow-up)."
     },
     {
       "base_commit": "dd118faaf6655b46ca0d1b3cd4e9c4c2dc721fff",
       "path": "backend/public_report.py",
       "source_sha256": "58a2a1bcd2979669923fef2dc040f0ebe9e67a823de06ddd60b0c0383097a088",
-      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45\u00c3\u0192\u00e2\u20ac\u0161\u00c3\u201a\u00c2\u00b0 (#52 follow-up)."
+      "reason": "Keep the whole provenance table on the PDF's first page and label the plots' angle axis every 45Ãƒâ€šÃ‚Â° (#52 follow-up)."
     },
     {
       "base_commit": "0417736249ae2926e05612ac58926cdc76cc8868",
