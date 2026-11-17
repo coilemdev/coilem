@@ -12175,8 +12175,8 @@
     },
     {
       "path": "benchmarks/qualification-policy.json",
-      "bytes": 1855,
-      "sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2"
+      "bytes": 2275,
+      "sha256": "7327891a89e7b8f3d73f934f16e252ccbf80e1e7321c0299b7d6b700895e5bde"
     },
     {
       "path": "tests/test_qualification_carry.py",
@@ -19782,6 +19782,11 @@
       "path": "tools/qualify_local.py",
       "bytes": 6987,
       "sha256": "c903ede731bd7c9b522084032688573133904096708a452d3907c76dd914083f"
+    },
+    {
+      "path": "benchmarks/qualification-policy-history/protocol110-70c5e34-20261116.json",
+      "bytes": 1855,
+      "sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2"
     }
   ],
   "public_patches": [
@@ -42284,6 +42289,12 @@
       "path": "tools/qualification_carry.py",
       "source_sha256": "9312b459cd214de802fc54a398f7218263ed4596058c827817f5a05d25545eae",
       "reason": "Collect a platform locally and publish it without per-run manual edits (path redaction, report CSV rule, evidence line endings)."
+    },
+    {
+      "base_commit": "620d0ba9cbdf39b2c56597b6e973bc210fb6e631",
+      "path": "benchmarks/qualification-policy.json",
+      "source_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2",
+      "reason": "Approve the post-#317 measurements as the replay baseline; the previous policy is archived unchanged."
     }
   ]
 }
