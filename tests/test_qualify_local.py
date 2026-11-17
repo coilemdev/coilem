@@ -77,6 +77,23 @@ def test_collects_every_shard_keeps_compact_output_and_joins(checkout, tmp_path)
     assert calls == []
 
 
+def test_every_stage_is_told_which_collection_to_measure(checkout, tmp_path):
+    root, head = checkout
+    seen = []
+    stages = fake_stages([])
+
+    def run(*args, root, env):
+        seen.append(env['COILEM_BENCHMARK_COLLECTION'])
+        stages(*args, root=root, env=env)
+
+    joined = qualify_local.collect(head, tmp_path / 'sentinel', root=root, run=run, free=lambda _: 50.0, collection='sentinel')
+    assert seen and set(seen) == {'sentinel'}
+    assert json.loads((joined / 'local-collection.json').read_text())['collection'] == 'sentinel'
+    seen.clear()
+    qualify_local.collect(head, tmp_path / 'full', root=root, run=run, free=lambda _: 50.0)
+    assert set(seen) == {'registered'}
+
+
 def test_a_stopped_run_continues_from_the_first_unfinished_shard(checkout, tmp_path):
     root, head = checkout
     calls, output = [], tmp_path / 'out'

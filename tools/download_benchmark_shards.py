@@ -28,7 +28,7 @@ def compact(source, target):
                     ignore=shutil.ignore_patterns('native-runtime', '*.tar.gz', '*.tmp', 'run.lock'))
 
 
-def download(repository, run_id, runner, output, supplements=()):
+def download(repository, run_id, runner, output, supplements=(), expected=12):
     if not str(run_id).isdigit() or runner not in ('windows-2022', 'macos-15', 'ubuntu-24.04'):
         raise ValueError('Need a numeric run ID and registered platform')
     prefix = f'benchmark-shard-{runner}-'
@@ -41,8 +41,8 @@ def download(repository, run_id, runner, output, supplements=()):
             if artifact['name'].startswith(prefix) and not artifact['expired']:
                 selected[artifact['name']] = {**artifact, 'source_run_id': str(source_run)}
     artifacts = list(selected.values())
-    if len(artifacts) != 12 or len({a['name'] for a in artifacts}) != 12:
-        raise ValueError('Need all twelve platform shards; collection may still be running')
+    if len(artifacts) != expected or len({a['name'] for a in artifacts}) != expected:
+        raise ValueError(f'Need all {expected} platform shards; collection may still be running')
     output.mkdir(parents=True, exist_ok=False)
     receipts = []
     for artifact in sorted(artifacts, key=lambda a: a['name']):
@@ -66,13 +66,14 @@ def main():
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--repo', default=os.environ.get('GITHUB_REPOSITORY'))
     parser.add_argument('--supplements', default='[]', help='JSON array of repair-run IDs; later replacements take precedence')
+    parser.add_argument('--expected', type=int, default=12, help='Number of shards the collection has per platform')
     args = parser.parse_args()
     if not args.repo:
         parser.error('--repo is required outside Actions')
     supplements = json.loads(args.supplements)
     if not isinstance(supplements, list):
         parser.error('--supplements must be a JSON array')
-    download(args.repo, args.run_id, args.runner, args.out, supplements)
+    download(args.repo, args.run_id, args.runner, args.out, supplements, expected=args.expected)
 
 
 if __name__ == '__main__':

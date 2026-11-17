@@ -29,13 +29,13 @@ def run(*args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('stage', choices=['plan', 'binary', 'shard', 'join'])
+    parser.add_argument('stage', choices=['plan', 'binary', 'shard', 'join', 'shard-count'])
     parser.add_argument('--runner', default='both')
     parser.add_argument('--shard')
     parser.add_argument('--directory', type=Path, required=True)
     # The workflow sets the collection once, so plan, binary, shard and join agree on the suite.
     parser.add_argument('--collection', default=os.environ.get('COILEM_BENCHMARK_COLLECTION') or 'registered',
-                        choices=['registered', 'protocol16-native-only', 'sector'])
+                        choices=['registered', 'protocol16-native-only', 'sector', 'sentinel'])
     args = parser.parse_args()
     if requested := os.environ.get('COILEM_BUILD_COMMIT'):
         actual = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
@@ -43,9 +43,18 @@ def main():
             raise ValueError('candidate must be the exact full immutable checkout SHA')
     # The sector collection (protocol 1.11.0) solves the same cases, and the Prius jobs, as one repeating sector.
     sector = args.collection == 'sector'
-    spec = plan(suite=BENCHMARK_SECTOR_SUITE_FILE if sector else BENCHMARK_SUITE_FILE)
+    # The sentinel collection measures a covering subset with the same full-grid requests (tools.qualification_sentinel).
+    sentinel = args.collection == 'sentinel'
+    if sentinel:
+        from tools.qualification_sentinel import shard_plan
+
+        spec = shard_plan()
+    else:
+        spec = plan(suite=BENCHMARK_SECTOR_SUITE_FILE if sector else BENCHMARK_SUITE_FILE)
     directory = args.directory.resolve()
-    if args.stage == 'plan':
+    if args.stage == 'shard-count':
+        print(len(spec['shards']))
+    elif args.stage == 'plan':
         runners = ['windows-2022', 'macos-15'] if args.runner == 'both' else [args.runner]
         matrix = {'include': [{**shard, 'runner': runner} for runner in runners for shard in spec['shards']]}
         with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as stream:
@@ -92,11 +101,16 @@ def main():
             raise ValueError('Missing workflow shard')
         suite_shards = [selected[s['id']] for s in spec['shards'] if s['kind'] == 'suite']
         prius_shards = [selected[s['id']] for s in spec['shards'] if s['kind'] == 'prius']
-        join_suite(suite_shards, suite=ROOT / spec['suite'], bundle=ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR,
-                   output=directory / 'joined-suite')
-        join_prius(prius_shards, directory / 'joined-prius', symmetry='auto' if sector else 'full')
-        run('tools.report_prius_benchmark', directory / 'joined-prius', '--out', directory / 'prius-report')
-        shutil.copyfile(ROOT / 'snapshot-manifest.json', directory / 'prius-report/source-snapshot.json')
+        if sentinel:
+            from tools.qualification_sentinel import join as join_sentinel
+
+            join_sentinel(suite_shards, prius_shards, directory)
+        else:
+            join_suite(suite_shards, suite=ROOT / spec['suite'], bundle=ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR,
+                       output=directory / 'joined-suite')
+            join_prius(prius_shards, directory / 'joined-prius', symmetry='auto' if sector else 'full')
+            run('tools.report_prius_benchmark', directory / 'joined-prius', '--out', directory / 'prius-report')
+            shutil.copyfile(ROOT / 'snapshot-manifest.json', directory / 'prius-report/source-snapshot.json')
         write(directory / 'join-receipt.json', {'schema': 'coilem.qualification_ci_join/v1',
               'plan': spec, 'shards': [read(f / 'workflow-receipt.json') for f in folders]})
 

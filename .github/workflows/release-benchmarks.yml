@@ -34,9 +34,9 @@ on:
         type: string
         default: ''
       collection:
-        description: Compare to registered references, collect native only, or solve every case and Prius job as one repeating sector (protocol 1.11.0)
+        description: Compare to registered references, collect native only, solve every case and Prius job as one repeating sector (protocol 1.11.0), or measure the sentinel subset for a change expected to move no value
         type: choice
-        options: [registered, protocol16-native-only, cogging-refined-very-fine, sector]
+        options: [registered, protocol16-native-only, cogging-refined-very-fine, sector, sentinel]
         default: registered
   workflow_call:
     inputs:
@@ -293,13 +293,19 @@ jobs:
           SOURCE_RUN: ${{ inputs.reuse_run || github.run_id }}
           PLATFORM: ${{ matrix.runner }}
           SUPPLEMENTS: ${{ inputs.supplement_runs || '[]' }}
-        run: >-
-          python "$GITHUB_WORKSPACE/automation/tools/download_benchmark_shards.py"
-          --run-id "$SOURCE_RUN" --runner "$PLATFORM" --out "$RUNNER_TEMP/qualification/shards" --supplements "$SUPPLEMENTS"
+        # A sentinel collection has fewer shards; every other collection has twelve per platform.
+        run: |
+          EXPECTED=12
+          if [ "$COILEM_BENCHMARK_COLLECTION" = sentinel ]; then
+            EXPECTED=$(python -m tools.benchmark_ci shard-count --directory "$RUNNER_TEMP/qualification")
+          fi
+          python "$GITHUB_WORKSPACE/automation/tools/download_benchmark_shards.py" \
+            --run-id "$SOURCE_RUN" --runner "$PLATFORM" --out "$RUNNER_TEMP/qualification/shards" \
+            --supplements "$SUPPLEMENTS" --expected "$EXPECTED"
       - name: Verify coverage and immutable evidence, then regenerate reports
         run: python -m tools.benchmark_ci join --directory "$RUNNER_TEMP/qualification"
       - name: Build the provisional platform record without field solves
-        if: ${{ inputs.collection != 'protocol16-native-only' }}
+        if: ${{ inputs.collection != 'protocol16-native-only' && inputs.collection != 'sentinel' }}
         env:
           PYTHONPATH: ${{ github.workspace }}/candidate
         run: >-
@@ -314,6 +320,7 @@ jobs:
             ${{ runner.temp }}/qualification/joined-suite/report
             ${{ runner.temp }}/qualification/joined-suite/run_manifest.json
             ${{ runner.temp }}/qualification/prius-report
+            ${{ runner.temp }}/qualification/sentinel-prius.json
             ${{ runner.temp }}/qualification/join-receipt.json
             ${{ runner.temp }}/qualification/download-receipt.json
             ${{ runner.temp }}/qualification/platform-record.json

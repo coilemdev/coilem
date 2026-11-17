@@ -120,13 +120,28 @@ def reusable_collection(root, key, repository, branch, current_run):
     return {'reuse_run_id': '', 'collection_state': 'new', 'measurement_candidate': ''}
 
 
+def sentinel_errors(root):
+    """Why committed sentinel evidence does not cover ``root``; empty when it does."""
+    from tools.qualification_sentinel import errors
+
+    return errors(root)
+
+
 def assess(root, base):
     changed = changed_physics(root, base)
     errors = check(root) if changed else []
+    basis, sentinel = ('full collection' if changed else ''), []
+    if errors:
+        # No full collection measured this tree. A sentinel collection that reproduces
+        # the full record also passes this PR gate; the release gate never reads it.
+        sentinel = sentinel_errors(root)
+        if not sentinel:
+            errors, basis = [], 'sentinel'
     return {'schema': 'coilem.physics_impact/v1', 'base': base,
             'head': git(root, 'rev-parse', 'HEAD').decode().strip(),
             'physics_change': bool(changed), 'changed_files': changed,
             'measurement_required': bool(changed and errors), 'errors': errors,
+            'evidence_basis': '' if errors else basis, 'sentinel_errors': sentinel if errors else [],
             'status': 'qualification evidence required' if errors else 'PASS'}
 
 
@@ -155,6 +170,8 @@ def main():
     if summary := os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(summary, 'a', encoding='utf-8') as stream:
             stream.write('### Qualification evidence\n\n' + result['status'] + '\n\n')
+            if result['evidence_basis']:
+                stream.write('Evidence: ' + result['evidence_basis'] + '\n\n')
             stream.write('\n'.join(f'- `{name}`' for name in result['changed_files']) + '\n\n')
             stream.write('\n'.join(f'- {error}' for error in result['errors']) + '\n')
     return 0 if args.plan or not result['errors'] else 1
