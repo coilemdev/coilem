@@ -13,6 +13,15 @@ from tools.phase_g_loss.contract import ROOT, protocol, read, sha, write, write_
 from tools.phase_g_loss.stator_contract import PROFILE, config
 
 
+def validate_production_grid(payload, count):
+    metadata = payload["solve_metadata"]
+    angles = np.asarray(payload["torque_waveform"]["electrical_angle_deg"])
+    if metadata["rotor_positions"] != count or metadata.get("sector_repeats"):
+        raise ValueError("Production stator solve is not full-machine")
+    if angles.shape != (count,) or not np.allclose(angles, np.arange(count) * 360 / count, rtol=0, atol=1e-9):
+        raise ValueError("Production stator solve is not a complete uniform electrical cycle")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--case", required=True)
@@ -82,8 +91,7 @@ def main():
             if payload["benchmark_request"] != request:
                 raise ValueError("Production request changed")
             metadata = payload["solve_metadata"]
-            if metadata["rotor_positions"] != count or metadata.get("sector_repeats") or not metadata["loaded_cycle_complete"]:
-                raise ValueError("Production stator solve is not the registered full-machine electrical cycle")
+            validate_production_grid(payload, count)
             if metadata.get("nonlinear_worst_tolerance_ratio") is None or metadata["nonlinear_worst_tolerance_ratio"] > 1:
                 raise ValueError("Production field convergence is incomplete")
             if payload["summary"].get("rotor_iron_loss") is not None:

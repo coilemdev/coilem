@@ -110,3 +110,13 @@ def test_profile_has_separate_scope_without_changing_old_rotor_plan():
     assert profile["electrical_samples"] == 96
     assert profile["rotor_gates_included"] is False
     assert read(ROOT / "benchmarks/phase-g-v1/benchmark_spec.json")["positions"] == 384
+
+
+def test_sinusoidal_grid_is_verified_from_angles_not_six_step_metadata():
+    from tools.phase_g_loss.stator_native import validate_production_grid
+    payload = {"solve_metadata": {"rotor_positions": 24, "sector_repeats": None, "loaded_cycle_complete": None},
+               "torque_waveform": {"electrical_angle_deg": list(range(0, 360, 15))}}
+    validate_production_grid(payload, 24)
+    payload["torque_waveform"]["electrical_angle_deg"][-1] = 360
+    with pytest.raises(ValueError, match="uniform electrical cycle"):
+        validate_production_grid(payload, 24)
