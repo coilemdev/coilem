@@ -1,5 +1,9 @@
 # Qualification collection
 
+The optional [Phase G loss benchmark](../benchmarks/phase-g-v1/README.md) has
+its own four fixtures and Windows FEMM runner. It runs Magneto2D first and
+does not change the A–F requests, references or release regression collection.
+
 The release benchmark workflow builds Magneto2D once on each selected platform,
 then measures eight balanced A–F groups and four Prius groups concurrently.
 Every group uses the exact same clean candidate, locked Python environment and

@@ -1,5 +1,11 @@
 # coilEM 0.5.9 — in development
 
+- **Separate loss benchmark tooling.** Optional [Phase G](benchmarks/phase-g-v1/README.md)
+  covers four full-motor fixtures at no-load and one loaded point. It compares
+  stator/rotor iron components and independently checks DC winding resistance
+  and copper loss, running Magneto2D before Windows FEMM. Outrunner rotor loss
+  remains unavailable; numerical loss results stay experimental. A–F is unchanged.
+
 - **Experimental rotor iron loss.** An explicit option under Losses & efficiency
   adds full-motor rotor hysteresis and classical lamination eddy loss for
   supported inner SPM/flat-IPM sinusoidal models using M350-50A. Results, maps,
