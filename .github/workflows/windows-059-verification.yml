@@ -1,0 +1,58 @@
+name: Windows 0.5.9 issue verification
+
+on:
+  push:
+    branches: [codex/windows-059-verification]
+
+permissions:
+  contents: read
+
+jobs:
+  executable-lookup:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13.9'
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: '24'
+      - run: python -m pip install gmsh==4.15.2
+      - run: python -m tools.windows_release_probe lookup
+
+  installed-wheel:
+    runs-on: windows-2022
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    env:
+      COILEM_BUILD_COMMIT: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: '24'
+      - name: Build the release UI and native solver
+        run: |
+          python -m tools.release.artifacts ui --out dist/release
+          rustup toolchain install 1.94.0 --profile minimal --target x86_64-pc-windows-msvc
+          rustup default 1.94.0
+          python -m tools.release.artifacts magneto2d --target x86_64-pc-windows-msvc --out dist/release/magneto2d
+      - name: Build the Windows wheel
+        env:
+          COILEM_BUILD_UI_DIST: dist/release/ui
+          COILEM_BUILD_MAGNETO2D_BINARY: dist/release/magneto2d/magneto2d.exe
+          COILEM_WHEEL_PLATFORM_TAG: win_amd64
+        run: python -m pip wheel . --no-deps --wheel-dir dist/wheels
+      - name: Interrupt installed CLI and server during both solve stages
+        run: python -u -m tools.windows_release_probe cancel dist/wheels/*.whl
