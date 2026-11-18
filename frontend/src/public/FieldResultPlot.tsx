@@ -28,6 +28,7 @@ import {
   FIELD_ARROW_RING_OFFSET,
   fieldArrowSpacingMm,
   sampleFieldArrows,
+  tintFieldArrowImage,
   visibleFieldArrowRect,
   type FieldArrowDensity,
   type FieldArrowMesh,
@@ -119,6 +120,8 @@ export interface FieldResultRaster {
   mesh?: ImageBitmap | null;
   /** The field-arrow layer: light arrows with a dark rim (older images: flux lines). */
   lines: ImageBitmap | null;
+  /** The PM playback worker has already coloured this image cyan. */
+  pmArrowsTinted?: boolean;
   viewBox: string;
   minB: number;
   maxB: number;
@@ -573,15 +576,7 @@ function tintedArrowLayer(lines: ImageBitmap | HTMLCanvasElement, tone: FieldArr
   layer.width = lines.width;
   layer.height = lines.height;
   const context = layer.getContext('2d');
-  if (context) {
-    context.drawImage(lines, 0, 0);
-    context.globalCompositeOperation = 'multiply';
-    context.fillStyle = color;
-    context.fillRect(0, 0, layer.width, layer.height);
-    // Multiplying filled the clear pixels too; keep only the arrows' own coverage.
-    context.globalCompositeOperation = 'destination-in';
-    context.drawImage(lines, 0, 0);
-  }
+  if (context) tintFieldArrowImage(context, lines, color);
   byColor.set(color, layer);
   return layer;
 }
@@ -1105,7 +1100,8 @@ export function FieldResultPlot({
       }
       const square = overlayRaster ? rasterWorldSquare(overlayRaster.viewBox) : null;
       if (!overlayRaster?.lines || !square) return;
-      context.drawImage(tintedArrowLayer(overlayRaster.lines, 'pm'), square.left, square.top, square.size, square.size);
+      const lines = overlayRaster.pmArrowsTinted ? overlayRaster.lines : tintedArrowLayer(overlayRaster.lines, 'pm');
+      context.drawImage(lines, square.left, square.top, square.size, square.size);
     };
     const draw = () => {
       const width = Math.max(1, canvasSize.width);
@@ -1262,7 +1258,8 @@ export function FieldResultPlot({
         } else if (raster?.lines) {
           // The image's light arrows, in the PM colour in the PM-only view and
           // in the stator's under the PM's in the Stator + PM view.
-          context.drawImage(tintedArrowLayer(raster.lines, primaryTone), x, y, drawSize, drawSize);
+          const lines = raster.pmArrowsTinted ? raster.lines : tintedArrowLayer(raster.lines, primaryTone);
+          context.drawImage(lines, x, y, drawSize, drawSize);
         }
         const primarySquare = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
         if (overlay && primarySquare) {
@@ -1553,28 +1550,26 @@ export function FieldResultPlot({
     return [radius * Math.cos(angleRad), -radius * Math.sin(angleRad)] as const;
   };
   const axisPitchDeg = 360 / axisPolePairs;
-  const axisAngles = (startDeg: number) => Array.from(
-    { length: axisPolePairs },
-    (_, index) => startDeg + index * axisPitchDeg,
-  );
-  // The arc marks one rotor pole nearest the top of the view and the stator
-  // axis just ahead of it in the direction of rotation.
+  // Use the north pole nearest the top and the stator axis paired with it.
   const arcRotorDeg = hasFieldAxes && rotorAxisDeg !== null
-    ? axisAngles(rotorAxisDeg).reduce((best, angle) => (
-      Math.abs(((angle - 90) % 360 + 540) % 360 - 180) < Math.abs(((best - 90) % 360 + 540) % 360 - 180) ? angle : best
-    ))
+    ? rotorAxisDeg - Math.round((rotorAxisDeg - 90) / axisPitchDeg) * axisPitchDeg
     : 0;
   const arcSpanDeg = hasFieldAxes && leadElecDeg !== null
     ? (fieldAxes?.rotation === 'clockwise' ? -1 : 1) * leadElecDeg / axisPolePairs
     : 0;
+  const arcStatorDeg = arcRotorDeg + arcSpanDeg;
+  const axisArrows = hasFieldAxes ? {
+    pm: fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, arcRotorDeg),
+    stator: fieldAxisArrowPaths(axisStatorRadius * 1.04, axisStatorRadius * 1.32, arcStatorDeg),
+  } : null;
   const arcRadius = axisRotorRadius * 0.5;
   const [arcX1, arcY1] = polar(arcRadius, arcRotorDeg);
-  const [arcX2, arcY2] = polar(arcRadius, arcRotorDeg + arcSpanDeg);
+  const [arcX2, arcY2] = polar(arcRadius, arcStatorDeg);
   const [arcLabelX, arcLabelY] = polar(arcRadius * 0.8, arcRotorDeg + arcSpanDeg / 2);
   // Two lines from the centre to the marked rotor arrow and the stator arrow
   // ahead of it, so the lead angle reads as an angle at the shaft.
   const [rayRotorX, rayRotorY] = polar(axisRotorRadius * 0.62, arcRotorDeg);
-  const [rayStatorX, rayStatorY] = polar(axisStatorRadius * 1.04, arcRotorDeg + arcSpanDeg);
+  const [rayStatorX, rayStatorY] = polar(axisStatorRadius * 1.04, arcStatorDeg);
   const axisFontSize = Math.max(1.2, axisRotorRadius * 0.07);
   const leadLabel = `${Math.round(Math.abs(leadElecDeg ?? 0))}° elec`;
   const gammaNote = leadElecDeg !== null && leadElecDeg > 0 ? currentAngleNote(fieldAxes?.currentAngleDeg) : null;
@@ -1686,7 +1681,7 @@ export function FieldResultPlot({
   const linesLegendNote = [
     'Separate solves: in saturated steel the resultant is not their sum.',
     hasFieldAxes && leadElecDeg !== null
-      ? `Arrows: each field's ${axisPolePairs}-pole-pair flux pointing outward. ${leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}`
+      ? `The two arrows from the center mark the outward flux axes of the ${axisPolePairs}-pole-pair stator and magnet fields. ${leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}`
       : null,
     hasFieldAxes && leadElecDeg !== null ? leadAngleExplanation(leadElecDeg, axisPolePairs) : null,
     hasFieldAxes && leadElecDeg !== null && statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs
@@ -1746,31 +1741,21 @@ export function FieldResultPlot({
                   {showMagnetPolarityLabels && magnetOverlay.map((magnet, index) => <text x={magnet.center[0]} y={-magnet.center[1]} transform={upright(magnet.center[0], -magnet.center[1])} className="public-field-result-magnet-label" key={`magnet-label-${index}`}>{magnet.polarity === 'north' ? 'N' : 'S'}</text>)}
                 </g>
               )}
-              {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
+              {axisArrows && (
                 <g className="public-field-axes">
                   <path className="public-field-axis-ray is-pm" d={`M 0 0 L ${rayRotorX} ${rayRotorY}`} />
                   <path className="public-field-axis-q" d={`M 0 0 L ${qEndX} ${qEndY}`} />
                   <text className="public-field-axis-label is-dq" x={qLabelX} y={qLabelY} transform={upright(qLabelX, qLabelY)} style={{ fontSize: axisFontSize }}>q</text>
                   <text className="public-field-axis-label is-dq is-d" x={dLabelX} y={dLabelY} transform={upright(dLabelX, dLabelY)} style={{ fontSize: axisFontSize }}>d</text>
                   <path className="public-field-axis-ray is-stator" d={`M 0 0 L ${rayStatorX} ${rayStatorY}`} />
-                  {axisAngles(rotorAxisDeg).map((angle) => {
-                    const arrow = fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle);
-                    return (
-                      <g className="public-field-axis is-pm" key={`pm-axis-${angle}`}>
-                        <path className="public-field-axis-shaft" d={arrow.shaft} />
-                        <path d={arrow.head} />
-                      </g>
-                    );
-                  })}
-                  {axisAngles(statorAxisDeg).map((angle) => {
-                    const arrow = fieldAxisArrowPaths(axisStatorRadius * 1.04, axisStatorRadius * 1.32, angle);
-                    return (
-                      <g className="public-field-axis is-stator" key={`stator-axis-${angle}`}>
-                        <path className="public-field-axis-shaft" d={arrow.shaft} />
-                        <path d={arrow.head} />
-                      </g>
-                    );
-                  })}
+                  <g className="public-field-axis is-pm">
+                    <path className="public-field-axis-shaft" d={axisArrows.pm.shaft} />
+                    <path d={axisArrows.pm.head} />
+                  </g>
+                  <g className="public-field-axis is-stator">
+                    <path className="public-field-axis-shaft" d={axisArrows.stator.shaft} />
+                    <path d={axisArrows.stator.head} />
+                  </g>
                   <path
                     className="public-field-axis-arc"
                     d={`M ${arcX1} ${arcY1} A ${arcRadius} ${arcRadius} 0 0 ${arcSpanDeg > 0 ? 0 : 1} ${arcX2} ${arcY2}`}

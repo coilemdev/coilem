@@ -14,7 +14,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'image-playback' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'field-axes' | 'image-playback' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -164,6 +164,52 @@ test('field tooth poles reverse on stationary teeth while magnet labels turn wit
   await expect(toothToggle).toBeDisabled();
 });
 
+test('combined multipole field shows one aligned axis arrow per source as the rotor turns', async ({ page }) => {
+  await page.context().route('**/solve/field-frame/tooth-test-*', async route => {
+    const frame = await page.evaluate(() => (window as any).toothPoleFixture.frame);
+    await route.fulfill({ json: { field_line_frame: frame } });
+  });
+  await openViewportHarness(page, 'field-axes');
+  await page.getByRole('button', { name: /^Stator-current-only field/ }).click();
+  await page.getByRole('button', { name: /^PM-only field/ }).click();
+  const axes = page.locator('.public-field-axes');
+  const alignedRays = async () => {
+    const rays: string[] = [];
+    for (const source of ['pm', 'stator']) {
+      const arrow = axes.locator(`.public-field-axis.is-${source}`);
+      await expect(arrow).toHaveCount(1);
+      const ray = axes.locator(`.public-field-axis-ray.is-${source}`);
+      const end = await ray.evaluate((path: SVGPathElement) => {
+        const point = path.getPointAtLength(path.getTotalLength());
+        return { x: point.x, y: point.y };
+      });
+      const shaft = await arrow.locator('.public-field-axis-shaft').evaluate((path: SVGPathElement) => {
+        const start = path.getPointAtLength(0);
+        const tip = path.getPointAtLength(path.getTotalLength());
+        return { x: start.x, y: start.y, angle: Math.atan2(tip.y, tip.x) };
+      });
+      expect(shaft.x).toBeCloseTo(end.x, 4);
+      expect(shaft.y).toBeCloseTo(end.y, 4);
+      expect(shaft.angle).toBeCloseTo(Math.atan2(end.y, end.x), 4);
+      rays.push((await ray.getAttribute('d'))!);
+    }
+    return rays;
+  };
+  const first = await alignedRays();
+  const arrows = page.getByRole('button', { name: 'Field arrows', exact: true });
+  const field = page.getByRole('img', { name: /^Solved / });
+  await arrows.click();
+  await expect(field).toHaveAccessibleName(/stator field arrows in amber and PM field arrows in cyan/);
+  expect(await alignedRays()).toEqual(first);
+  await arrows.click();
+  await expect(field).not.toHaveAccessibleName(/stator field arrows in amber/);
+  await page.evaluate(() => (window as any).toothPoleFixture.positionLink.requestAngle(180));
+  await expect(page.locator('.viewport-cad-status')).toContainText('180.0° elec');
+  const second = await alignedRays();
+  expect(second[0]).not.toBe(first[0]);
+  expect(second[1]).not.toBe(first[1]);
+});
+
 test('zoomed field playback uses its raster in both the viewport and magnifier, then restores exact detail', async ({ page }) => {
   await page.addInitScript(() => {
     const drawImage = CanvasRenderingContext2D.prototype.drawImage;
@@ -216,12 +262,29 @@ test('zoomed field playback uses its raster in both the viewport and magnifier, 
 async function openImagePlaybackHarness(page: Page, missingImage?: string) {
   const layers = await page.evaluate(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = 8;
-    const clear = canvas.toDataURL('image/png').split(',')[1];
+    canvas.width = canvas.height = 32;
+    const png = () => canvas.toDataURL('image/png').split(',')[1];
+    const clear = png();
     const context = canvas.getContext('2d')!;
     context.fillStyle = '#f04080';
-    context.fillRect(0, 0, 8, 8);
-    return { clear, heat: canvas.toDataURL('image/png').split(',')[1] };
+    context.fillRect(0, 0, 32, 32);
+    const heat = png();
+    const arrow = (rotated: boolean) => {
+      context.clearRect(0, 0, 32, 32);
+      context.save();
+      if (rotated) { context.translate(32, 32); context.rotate(Math.PI); }
+      context.fillStyle = 'rgba(0,0,0,.5)';
+      context.fillRect(4, 8, 24, 12);
+      context.fillStyle = 'white';
+      context.fillRect(4, 12, 24, 4);
+      context.fillRect(20, 8, 4, 12);
+      context.fillStyle = 'black';
+      context.fillRect(4, 8, 4, 12);
+      context.fillRect(24, 8, 4, 12);
+      context.restore();
+      return png();
+    };
+    return { clear, heat, forward: arrow(false), reversed: arrow(true) };
   });
   const images: string[] = [];
   const values: number[] = [];
@@ -229,7 +292,9 @@ async function openImagePlaybackHarness(page: Page, missingImage?: string) {
     const id = route.request().url().split('/').pop()!;
     images.push(id);
     if (id === missingImage) return route.fulfill({ status: 404 });
-    const png = id.endsWith('-heat') ? layers.heat : layers.clear;
+    const index = Number(id.split('-')[2]);
+    const png = id.endsWith('-pm-arrows') ? (index % 2 === 0 ? layers.forward : layers.reversed)
+      : id.endsWith('-arrows') ? layers.reversed : id.endsWith('-heat') ? layers.heat : layers.clear;
     await route.fulfill({ contentType: 'image/png', body: Buffer.from(png, 'base64') });
   });
   await page.route('**/solve/field-frame/image-test-*-values', async route => {
@@ -266,6 +331,82 @@ test('enabling field layers at the same position loads and displays the missing 
   await expect.poll(() => layerWasFetched('arrows')).toBe(true);
   await expect(page.locator('.viewport-cad-status')).toHaveText(/^150\.0° elec/);
 });
+
+async function checkPmArrowPlayback(page: Page) {
+  const { images } = await openImagePlaybackHarness(page);
+  const speed = page.getByRole('spinbutton', { name: 'Playback speed (RPM)' });
+  await speed.fill('0.5');
+  await speed.press('Enter');
+  await page.getByRole('button', { name: /^PM-only field/ }).click();
+  const arrows = page.getByRole('button', { name: 'Field arrows', exact: true });
+  await arrows.click();
+  const canvas = page.getByRole('img', { name: /^Solved / });
+  const colors = () => canvas.evaluate((c: HTMLCanvasElement) => {
+    const context = c.getContext('2d')!;
+    const pixel = (heightFraction: number, offsetX = 0) => Array.from(context.getImageData(
+      Math.floor(c.width / 2 + c.height * offsetX), Math.floor(c.height * heightFraction), 1, 1,
+    ).data).slice(0, 3);
+    return [pixel(0.45), pixel(0.55), pixel(0.5, -0.28), pixel(0.25)];
+  });
+  // Reference colours from the original multiply / destination-in tint over this pink
+  // heatmap. Both the opaque black outline and its antialiased edge must survive decoding.
+  const cyan = [94, 211, 243], edge = [144, 85, 125], black = [0, 0, 0], heat = [240, 64, 128];
+  await expect.poll(colors).toEqual([cyan, edge, black, heat]);
+  expect(images.filter(id => id === 'image-test-0-pm-arrows')).toHaveLength(1);
+  await page.getByRole('button', { name: 'Play field clockwise' }).click();
+  await expect.poll(colors).toEqual([cyan, edge, black, heat]);
+  await expect(page.locator('.viewport-cad-status')).toHaveText(/^15\.0° elec/);
+  await expect.poll(colors).toEqual([edge, cyan, black, heat]);
+  await page.getByRole('button', { name: 'Pause clockwise field playback' }).click();
+  await arrows.click();
+  await expect.poll(colors).toEqual([heat, heat, heat, heat]);
+}
+
+test('PM-only playback follows its own arrow images and preserves their outline and transparent background', async ({ page }) => {
+  await checkPmArrowPlayback(page);
+});
+
+for (const failure of ['construction blocked', 'worker error'] as const) {
+  test(`PM-only playback falls back and releases resources with ${failure}`, async ({ page }) => {
+    await page.addInitScript(mode => {
+      const state = { attempted: 0, started: 0, terminated: 0, bitmaps: [] as ImageBitmap[] };
+      Object.assign(window, { fallbackResources: state });
+      window.Worker = class extends Worker {
+        constructor(url: string | URL, options?: WorkerOptions) {
+          state.attempted++;
+          if (mode === 'construction blocked') throw new DOMException('Worker blocked', 'SecurityError');
+          super(url, options);
+          state.started++;
+        }
+        terminate() { state.terminated++; super.terminate(); }
+      };
+      window.createImageBitmap = new Proxy(window.createImageBitmap, {
+        async apply(original, context, args) {
+          const bitmap = await Reflect.apply(original, context, args);
+          state.bitmaps.push(bitmap);
+          return bitmap;
+        },
+      });
+    }, failure);
+    if (failure === 'worker error') {
+      await page.route('**/fieldPlaybackWorker.ts?*', route => route.fulfill({
+        contentType: 'text/javascript', body: "self.onmessage = () => { throw new Error('Worker failed'); };",
+      }));
+    }
+    await checkPmArrowPlayback(page);
+    const resources = () => page.evaluate(() => {
+      const { attempted, started, terminated, bitmaps } = (window as any).fallbackResources;
+      return { attempted, started, terminated, openBitmaps: bitmaps.filter((bitmap: ImageBitmap) => bitmap.width > 0).length };
+    });
+    const before = await resources();
+    expect(before.attempted).toBeGreaterThan(0);
+    if (failure === 'worker error') expect(before.terminated).toBeGreaterThan(0);
+    else expect(before.started).toBe(0);
+    expect(before.openBitmaps).toBeGreaterThan(0);
+    await page.evaluate(() => (window as any).viewportTest.renderMesh(0));
+    await expect.poll(resources).toEqual({ ...before, terminated: before.started, openBitmaps: 0 });
+  });
+}
 
 test('image playback reloads an evicted raster even when its numerical frame was inspected', async ({ page }) => {
   const { images, values } = await openImagePlaybackHarness(page);

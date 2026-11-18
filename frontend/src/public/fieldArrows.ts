@@ -318,6 +318,17 @@ export function offsetFieldArrowOutline(outline: ReadonlyArray<readonly [number,
 
 type ArrowContext = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
+/** Recolour the light bodies of a playback image while preserving its dark rims and coverage. */
+export function tintFieldArrowImage(context: ArrowContext, image: ImageBitmap | HTMLCanvasElement, color: string): void {
+  context.globalCompositeOperation = 'copy';
+  context.drawImage(image, 0, 0);
+  context.globalCompositeOperation = 'multiply';
+  context.fillStyle = color;
+  context.fillRect(0, 0, image.width, image.height);
+  context.globalCompositeOperation = 'destination-in';
+  context.drawImage(image, 0, 0);
+}
+
 /** The model-space rectangle a context's canvas shows through its current transform (y up). */
 export function visibleFieldArrowRect(context: ArrowContext): FieldArrowRect | null {
   const transform = context.getTransform();

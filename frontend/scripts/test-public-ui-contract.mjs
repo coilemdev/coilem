@@ -109,6 +109,7 @@ const halbachStyleSource = await readFile(
 const waveformSource = await readFile(path.join(frontendRoot, 'src/public/WaveformChart.tsx'), 'utf8');
 const waveformReadoutSource = await readFile(path.join(frontendRoot, 'src/public/WaveformReadout.tsx'), 'utf8');
 const fieldResultSource = await readFile(path.join(frontendRoot, 'src/public/FieldResultPlot.tsx'), 'utf8');
+const fieldArrowsSource = await readFile(path.join(frontendRoot, 'src/public/fieldArrows.ts'), 'utf8');
 const packageSource = await readFile(path.join(frontendRoot, 'package.json'), 'utf8');
 const solvedFieldSource = await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8');
 const playbackContractSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackContract.ts'), 'utf8');
@@ -1100,7 +1101,7 @@ assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
 // shows in the title bar; play resumes there, stop goes back to the first.
 assert.doesNotMatch(solvedFieldSource, /type="range"|Solved rotor position|public-field-position-control|playbackSliderRef/);
 assert.match(solvedFieldSource, /aria-label="Stop and go to the first position"/);
-assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);\s*\};/);
+assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{[^}]*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);/);
 // Play waits until a saved run's playback images are drawn (they are drawn after the result is saved).
 assert.match(solvedFieldSource, /getPublicPlaybackStatus\(check\.artifactId, check\.composition\)/);
 assert.match(solvedFieldSource, /ref\.byte_count === null/);
@@ -1316,7 +1317,7 @@ assert.match(solvedFieldSource, /className=\{`public-field-source-pair\$\{overla
 assert.match(solvedFieldSource, /pmLines=\{source === 'pm'\}/);
 assert.match(fieldResultSource, /const primaryTone: FieldArrowTone = pmLines \? 'pm' : overlay \? 'stator' : 'field';/);
 assert.match(fieldResultSource, /drawFieldArrowLayer\(context, prepared, fieldLineDensity, primaryTone, navigation\.scale\)/);
-assert.match(fieldResultSource, /context\.drawImage\(tintedArrowLayer\(raster\.lines, primaryTone\), x, y, drawSize, drawSize\);/);
+assert.match(fieldResultSource, /raster\.pmArrowsTinted \? raster\.lines : tintedArrowLayer\(raster\.lines, primaryTone\)/);
 assert.match(styleSource, /\.public-field-dock \.public-field-dock-controls \.public-field-source-pair \.is-pm\[aria-pressed="true"\] \{ color: #5ed3f3;/);
 assert.doesNotMatch(styleSource, /\.public-field-source-pair\.is-both \.is-pm/);
 // Every hook in the field plot runs before it returns nothing for a plot without data.
@@ -1337,8 +1338,8 @@ assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', overlayLaye
 assert.match(solvedFieldSource, /if \(heldOverlayRaster\) shown\.add\(heldOverlayRaster\)/);
 // The playback images' light arrows take the PM or stator colour by multiplying,
 // which keeps their dark rims; the PM field's sit between the stator's rings.
-assert.match(fieldResultSource, /globalCompositeOperation = 'multiply'/);
-assert.match(fieldResultSource, /globalCompositeOperation = 'destination-in'/);
+assert.match(fieldArrowsSource, /globalCompositeOperation = 'multiply'/);
+assert.match(fieldArrowsSource, /globalCompositeOperation = 'destination-in'/);
 assert.match(fieldResultSource, /drawFieldArrowLayer\(context, overlayPrepared, fieldLineDensity, 'pm', navigation\.scale\)/);
 assert.match(fieldResultSource, /tone === 'pm' \? FIELD_ARROW_RING_OFFSET\.pm : FIELD_ARROW_RING_OFFSET\.primary/);
 // Stator + PM: one legend line above the view (colours and the stator lead),
@@ -1374,14 +1375,14 @@ assert.match(styleSource, /\.public-field-axis \{ fill: none; stroke-width: \.8p
 assert.match(styleSource, /\.public-field-axis-shaft \{ stroke-dasharray: 4 3; \}/);
 // Centre lines to the marked rotor arrow and the stator arrow ahead of it frame the lead angle.
 assert.match(fieldResultSource, /polar\(axisRotorRadius \* 0\.62, arcRotorDeg\)/);
-assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \+ arcSpanDeg\)/);
+assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcStatorDeg\)/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
 // The lead label's \"?\" explains why 90° elec is not a right angle on screen.
 assert.match(fieldResultSource, /<g className=\"public-field-axis-help\" transform=\{upright\(arcLabelX, arcLabelY\)\}>\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
 assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
-assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
-assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, arcStatorDeg\)/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisRotorRadius \* 0\.62, axisRotorRadius \* 0\.96, arcRotorDeg\)/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
 assert.match(solvedFieldSource, /armature\?\.airgap_profiles \?\? \[\]/);
 assert.match(solvedFieldSource, /airgap_brbt: airgapProfile\?\.airgap_brbt \?\? solvedFrame\?\.airgap_brbt \?\? null/);

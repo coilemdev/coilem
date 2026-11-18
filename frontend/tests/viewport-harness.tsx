@@ -157,7 +157,7 @@ if (mode === 'tutorial-scale') {
     mechanical_loss_W: 0, total_loss_W: 15, shaft_power_W: 314, input_power_W: 329,
     efficiency_pct: null, efficiency_status: 'unavailable', efficiency_status_reason: 'Efficiency needs the iron loss.' } as LossBreakdown;
   root.render(<div style={{ width: 850, padding: 24 }}><LossesCard loss={loss} /></div>);
-} else if (mode === 'tooth-poles') {
+} else if (mode === 'tooth-poles' || mode === 'field-axes') {
   const geometry: GeometryPreview = {
     ...phaseGeometry,
     regions: [
@@ -178,7 +178,14 @@ if (mode === 'tutorial-scale') {
     { angle_deg: 0, phase_current_a: [2, -2, 0] }, { angle_deg: 150, phase_current_a: [-2, 2, 0] },
     { angle_deg: 180, phase_current_a: [2, -2, 0] },
   ] };
-  const armatureFrames = [frames[0], { ...frames[1], angle_deg: 150 }];
+  const armatureFrames = mode === 'field-axes' ? frames.map(frame => {
+    const bins = Array.from({ length: 32 }, (_, i) => {
+      const angle = i * 360 / 32;
+      const br = Math.cos((4 * angle + frame.angle_deg + 90) * Math.PI / 180);
+      return { mech_angle_deg: angle, br_t: br, bt_t: 0, br_bt_t2: 0, samples: 1 };
+    });
+    return { ...frame, airgap_brbt: { span_deg: 360, bin_count: bins.length, sample_count: bins.length, bins } };
+  }) : [frames[0], { ...frames[1], angle_deg: 150 }];
   const positionLink = createFieldPositionLink();
   Object.assign(window, { toothPoleFixture: { frame: { ...plot, noload_plot: plot }, positionLink } });
   root.render(<div style={{ width: 1100, height: 700 }}>
@@ -194,11 +201,13 @@ if (mode === 'tutorial-scale') {
     const image = (layer: string) => ({ artifact_id: `image-test-${index}-${layer}`, media_type: 'image/png' as const, byte_count: 80 });
     const resultant = { base: image('base'), flux_density: image('heat'), mesh: image('mesh'), field_lines: image('arrows'),
       view_box: '-10 -10 20 20', min_b_t: 0, max_b_t: 1.5, triangle_count: 2, contour_level_count: 1, contour_segment_count: 1 };
-    return { index, angle_deg: index * 15, compositions: { resultant } };
+    return { index, angle_deg: index * 15, compositions: {
+      resultant, pm: { ...resultant, field_lines: image('pm-arrows') },
+    } };
   });
   const imageResult: SolveResult = {
     ...result, field_line_plot: null, field_playback: {
-      schema_version: 'coilem.field_playback.v1', encoding: 'layered-webp-v1', width_px: 8, height_px: 8,
+      schema_version: 'coilem.field_playback.v1', encoding: 'layered-webp-v1', width_px: 32, height_px: 32,
       frame_count: frames.length, frames, numerical_snapshots: frames.map(({ index }) => ({
         artifact_id: `image-test-${index}-values`, media_type: 'application/json+gzip',
       })),

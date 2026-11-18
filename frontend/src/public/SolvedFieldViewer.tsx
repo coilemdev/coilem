@@ -41,6 +41,7 @@ import {
   PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM,
   PUBLIC_FIELD_PLAYBACK_MAX_RPM,
   PUBLIC_FIELD_PLAYBACK_MIN_RPM,
+  PUBLIC_FIELD_PLAYBACK_PM_ARROW_FPS,
   publicFieldPlaybackBufferFrames,
   publicFieldPlaybackCacheFrames,
   scrubNeighbourIndices,
@@ -287,6 +288,7 @@ export function SolvedFieldViewer({
   const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
   const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
   const [playing, setPlaying] = useState(false);
+  const [pmPlaybackLimited, setPmPlaybackLimited] = useState(false);
   const [playbackRpm, setPlaybackRpm] = useState(solveViewMemory.field.playbackRpm ?? PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM);
   const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
@@ -365,7 +367,7 @@ export function SolvedFieldViewer({
   // direction conversion twice and make the motor play counterclockwise.
   const angleFrames = resultantFrames.length > 0 ? resultantFrames : armatureFrames;
   const boundedIndex = Math.min(frameIndex, Math.max(0, angleFrames.length - 1));
-  const playbackSpanDeg = playbackCycleSpanDeg(angleFrames);
+  const playbackSpanDeg = useMemo(() => playbackCycleSpanDeg(angleFrames), [angleFrames]);
   // A Preview run solves only a window of the cycle; the slider covers it once.
   const playbackSpan = useMemo(() => playbackSpanOf(angleFrames), [angleFrames]);
   const playbackSpanRef = useRef(playbackSpan);
@@ -572,11 +574,15 @@ export function SolvedFieldViewer({
     IDLE_BUFFER_FRAMES,
     publicFieldPlaybackBufferFrames(playbackRpm),
   );
+  const fastPmArrows = view === 'pm' && showFieldLines && !showHeatmap && !showMesh
+    && !playbackSpan.windowed && Boolean(descriptor?.playback_frame?.compositions.pm)
+    && !pmPlaybackLimited;
   const playbackStride = playbackFrameStride(
     angleFrames.length,
     playbackSpanDeg,
     playbackRpm,
     polePairs,
+    fastPmArrows ? PUBLIC_FIELD_PLAYBACK_PM_ARROW_FPS : undefined,
   );
   const playbackStrideRef = useRef(playbackStride);
   playbackStrideRef.current = playbackStride;
@@ -590,16 +596,16 @@ export function SolvedFieldViewer({
     () => playbackLookaheadFrameIndices(
       angleFrames,
       electricalAngleDeg,
-      playbackRpm,
-      polePairs,
+      playbackSpanDeg,
+      playbackStride,
       desiredBufferFrames,
     ),
     [
       angleFrames,
       desiredBufferFrames,
       electricalAngleDeg,
-      playbackRpm,
-      polePairs,
+      playbackSpanDeg,
+      playbackStride,
     ],
   );
   // Playing preloads the frames it shows next. Stopped, the slider preloads a
@@ -767,6 +773,7 @@ export function SolvedFieldViewer({
         return raster;
       })
       .catch(async () => {
+        if (frameGenerationRef.current !== generation) return null;
         const frame = await loadFrame(requestedArtifactId, requestedSource);
         if (requestedSource === 'pm' && !frame.noload_plot) throw new Error('The PM field is unavailable for this position.');
         if (frameGenerationRef.current === generation && requestedDescriptor.playback_frame) {
@@ -787,9 +794,16 @@ export function SolvedFieldViewer({
     const rasterizer = new FieldPlaybackRasterizer();
     rasterizerRef.current = rasterizer;
     return () => {
+      frameLoaderRef.current.clear();
+      frameGenerationRef.current += 1;
+      detailRequestRef.current += 1;
       if (rasterizerRef.current === rasterizer) rasterizerRef.current = null;
       rasterizer.dispose();
-      if (detailRasterRef.current) closeRaster(detailRasterRef.current.raster);
+      const departingRasters = new Set([...Object.values(rasterCacheRef.current), ...retiredRastersRef.current]);
+      if (detailRasterRef.current) departingRasters.add(detailRasterRef.current.raster);
+      departingRasters.forEach(closeRaster);
+      retiredRastersRef.current.clear();
+      rasterCacheRef.current = {};
       detailRasterRef.current = null;
     };
   }, []);
@@ -879,6 +893,8 @@ export function SolvedFieldViewer({
   useEffect(() => {
     if (!playing || angleFrames.length < 2) return undefined;
     let lastSampleAt: number | null = null;
+    let sampleWindowMs = 0;
+    let waitingMs = 0;
     let animationFrameId = 0;
     const animate = (timestamp: number) => {
       if (lastSampleAt !== null) {
@@ -915,6 +931,18 @@ export function SolvedFieldViewer({
         const nextOverlayId = nextOverlay?.field_frame_artifact.artifact_id;
         const nextOverlayReady = !nextOverlayId
           || visualFrameReady(nextOverlay, 'pm', overlayLayers);
+        // A slow decode or a tab resuming should not set the rate for a whole
+        // session. Use the normal stride if loading stalls a fifth of a second
+        // or more over one second of active playback.
+        if (fastPmArrows && elapsedMs < MAX_PLAYBACK_CATCHUP_MS) {
+          sampleWindowMs += elapsedMs;
+          if (!nextReady) waitingMs += elapsedMs;
+          if (sampleWindowMs >= 1000) {
+            if (waitingMs >= 200) setPmPlaybackLimited(true);
+            sampleWindowMs = 0;
+            waitingMs = 0;
+          }
+        }
         if (nextDescriptor && nextArtifactId && !nextReady) {
           void loadVisualFrame(nextDescriptor, source).catch(() => {
             setPlaybackWaiting(false);
@@ -943,6 +971,7 @@ export function SolvedFieldViewer({
     return () => window.cancelAnimationFrame(animationFrameId);
   }, [
     angleFrames,
+    fastPmArrows,
     loadVisualFrame,
     overlayActive,
     overlayLayers,
@@ -1178,6 +1207,7 @@ export function SolvedFieldViewer({
   // Play and pause from the shown position; stop goes back to the first, as
   // in the Geometry preview.
   const togglePlayback = () => {
+    if (!playing) setPmPlaybackLimited(false);
     setPlaybackWaiting(false);
     setPlaying(!playing);
   };
