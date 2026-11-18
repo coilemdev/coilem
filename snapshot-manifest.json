@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 78379,
-      "sha256": "9a22080297b26f60cb7e95c3fdce1f8c97945fd2f8b086f63902b60b025f7080"
+      "bytes": 78942,
+      "sha256": "389942ea2ff33eb9088dd154ede4959496e7d8b4267a7a479a097c9ec36a71c5"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -8215,8 +8215,8 @@
     },
     {
       "path": "tests/test_native_processes.py",
-      "bytes": 5172,
-      "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
+      "bytes": 5636,
+      "sha256": "8f7111cae1f65fba0c8437ae06da69ced5c47563d0f00aa8295ba8dcf38c60e9"
     },
     {
       "path": "tests/test_nonlinear_convergence.py",
@@ -8580,8 +8580,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 33633,
-      "sha256": "3df0ce500c3c09ef8856661dabe14f73eccf3b42d9aa953e8343919e97b08de4"
+      "bytes": 33797,
+      "sha256": "81f4521dc8e638e03c0d2c4ab5161a9592b2a6c3608a42eafa84b0ce33546a9a"
     },
     {
       "path": "tools/release/artifacts.py",

@@ -134,3 +134,16 @@ def test_shutdown_stops_a_process_registered_after_it_began(tmp_path: Path) -> N
     process = subprocess.Popen(SLEEPER)
     with adapter.track_native_process(process):
         assert process.wait(10) != 0
+
+
+def test_interrupting_a_tracked_reader_stops_its_native_process() -> None:
+    process = adapter.start_native_process(SLEEPER)
+    try:
+        with pytest.raises(KeyboardInterrupt), adapter.track_native_process(process, motor=True):
+            raise KeyboardInterrupt
+        assert process.wait(1) != 0
+        assert not _state._ACTIVE_MAGNETO2D_PROCESSES
+    finally:
+        if process.poll() is None:
+            process.kill()
+            process.wait()
