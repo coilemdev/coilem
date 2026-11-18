@@ -6,9 +6,11 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   executable-lookup:
+    if: ${{ !contains(github.event.head_commit.message, '[final wheel]') }}
     strategy:
       fail-fast: false
       matrix:
@@ -28,7 +30,7 @@ jobs:
       - run: python -m tools.windows_release_probe lookup
 
   installed-wheel:
-    if: ${{ !contains(github.event.head_commit.message, '[lookup only]') }}
+    if: ${{ !contains(github.event.head_commit.message, '[lookup only]') && !contains(github.event.head_commit.message, '[final wheel]') }}
     runs-on: windows-2022
     timeout-minutes: 40
     defaults:
@@ -58,3 +60,47 @@ jobs:
         run: python -m pip wheel . --no-deps --wheel-dir dist/wheels
       - name: Interrupt installed CLI and server during both solve stages
         run: python -u -m tools.windows_release_probe cancel dist/wheels/*.whl
+
+  final-wheel:
+    if: ${{ contains(github.event.head_commit.message, '[final wheel]') }}
+    runs-on: windows-2022
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    env:
+      COILEM_BUILD_COMMIT: 9f2ce84ef28de3d732b0fa5a880822c677b671c1
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: 9f2ce84ef28de3d732b0fa5a880822c677b671c1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44396810365
+          name: ui
+          path: dist/release
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          github-token: ${{ github.token }}
+          run-id: 44396810365
+          name: magneto2d-windows-amd64
+          path: dist/release/magneto2d
+      - name: Package and check the exact PR wheel
+        env:
+          COILEM_BUILD_UI_DIST: dist/release/ui
+          COILEM_BUILD_MAGNETO2D_BINARY: dist/release/magneto2d/magneto2d.exe
+          COILEM_WHEEL_PLATFORM_TAG: win_amd64
+        run: |
+          python -m pip wheel . --no-deps --wheel-dir dist/wheels
+          python -m pip install packaging
+          python -m tools.release.verify_wheel dist/wheels/*.whl --platform-tag win_amd64 --require-commit
+      - name: Run final installed acceptance outside the checkout
+        run: |
+          wheel=$(python -c 'import glob, os; print(os.path.abspath(glob.glob("dist/wheels/*.whl")[0]))')
+          cp tools/release/acceptance.py "$RUNNER_TEMP/"
+          cd "$RUNNER_TEMP"
+          python -I acceptance.py --install "$wheel"
