@@ -16,7 +16,7 @@ metric from the shared cases and Prius collection stays within the prior
 approved baseline's replay tolerances. Compared with 0.5.8, the only cases
 outside those tolerances are the six V-shape fixtures previously reviewed
 after the corner mesh refinement.
-[Prior baseline comparison](prior-baseline-comparison.csv)
+[Prior baseline comparison](prior-baseline-comparison.json)
 
 The separate Prius software suite covers 17 jobs and 568 field positions per
 platform. The ORNL Prius hardware case remains unsupported. Phase G checks
