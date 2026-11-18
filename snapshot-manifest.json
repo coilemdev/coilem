@@ -7050,8 +7050,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 304795,
-      "sha256": "32ef986a40ccf2293fdc08b407784b2e89d6fafe09667d10d38cb9d9bb18954e"
+      "bytes": 305265,
+      "sha256": "db0fdcc89244a578cb156dcb167ec2c6dd461143d0d6e8c01e58f3238e103566"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7630,8 +7630,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 181224,
-      "sha256": "e28c5f17127bc162959ba884386962360891cf1a6a961b014c719ffeca4826ff"
+      "bytes": 181505,
+      "sha256": "e602e80b47505d47f82d365c772141838f04990824955f227cd56aaaba90f81b"
     },
     {
       "path": "frontend/tsconfig.public.json",

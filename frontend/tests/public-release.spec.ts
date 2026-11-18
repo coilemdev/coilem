@@ -1234,6 +1234,10 @@ test.describe('public developer preview release rehearsal', () => {
       expect(response.status(), `${label}: ${await response.text()}`).toBe(200);
       expect(response.request().postDataJSON().stator.tooth_shoe_enabled, label).toBe(false);
       await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
+      if (label === 'IPM 10p V-shape') {
+        const qualification = page.locator('.design-health-issue').filter({ hasText: 'Experimental motor combination' });
+        await expect(qualification.locator('.design-health-issue-copy')).toHaveText('Qualification Pending');
+      }
     }
   });
 
