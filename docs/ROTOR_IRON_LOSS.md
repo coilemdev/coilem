@@ -3,7 +3,9 @@
 Rotor iron loss is an explicit option under **Losses & efficiency** in 0.5.9.
 It defaults off. The Python/CLI analysis name is `rotor_loss`; the solve-options field is
 `rotor_iron_loss`. Enabling it adds 384 full-turn poses and a fresh closure
-solve, so it can substantially increase run time.
+solve, so it can substantially increase run time. In the app the option is
+disabled, with the reason, for a design it does not support; `coilem check`
+and `coilem.check` give the same reason as a warning before any solve.
 
 The supported calculation follows fixed rotor steel cells through a complete
 mechanical turn and transforms the magnetic field into rotor coordinates.

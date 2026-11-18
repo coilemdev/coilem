@@ -316,6 +316,23 @@ def test_quick_subset_is_one_passing_case_per_phase() -> None:
     assert [case["id"] for case in command.select_cases(load_suite(SPEC), ["B"], quick=True)] == [command.QUICK_CASES[1]]
 
 
+def test_sector_list_shows_the_full_motor_times_and_unsupported_cases(capsys) -> None:
+    """#333: the sector list keeps the record's times and planned-unsupported marks, labelled as full-motor."""
+
+    assert command.main(["--list"]) == 0
+    full = capsys.readouterr().out
+    assert command.main(["--list", "--sector"]) == 0
+    sector = capsys.readouterr().out
+    unsupported = [line.split()[2] for line in full.splitlines() if line.endswith("not supported in this release")]
+    for case_id in unsupported:
+        assert any(case_id in line and line.endswith("not supported in this release") for line in sector.splitlines())
+    footer = sector.strip().splitlines()[-1]
+    if "about" in full.strip().splitlines()[-1]:
+        assert "as full-motor solves" in footer and "sectors usually take less" in footer
+    assert sum(1 for line in sector.splitlines() if line.rstrip().endswith(" min")) == sum(
+        1 for line in full.splitlines() if line.rstrip().endswith(" min"))
+
+
 def test_launcher_runs_the_benchmark_subcommand(monkeypatch) -> None:
     received = []
     monkeypatch.setattr(command, "main", lambda argv: received.append(argv) or 7)

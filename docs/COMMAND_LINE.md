@@ -34,7 +34,7 @@ folder is not on `PATH`. Bare `coilem`, its `--port`, `--no-browser` and
 
 | Command | What it does | Solver work |
 |---|---|---|
-| `coilem check DESIGN` | Chooses the run setup, builds the request and runs the app's pre-solve checks; reports the effective settings and winding warnings | None: no mesh, no solve |
+| `coilem check DESIGN` | Chooses the run setup, builds the request and runs the app's pre-solve checks; reports the effective settings and warnings (winding feasibility, and a requested rotor iron loss the design cannot get) | None: no mesh, no solve |
 | `coilem solve DESIGN` | Solves the design and writes compact results | Yes |
 | `coilem setups DESIGN` | Lists the design's saved run setups, which one is active, and whether each can be used | None |
 | `coilem schema` | Describes every design input with its unit, limits and allowed values, the run-setup format, the output documents, exit codes and error codes | None |
@@ -48,7 +48,7 @@ that the Python client reads.
 | Option | Meaning |
 |---|---|
 | `--setup NAME` | Apply this saved run setup, by name (any case) or id. `--profile` is the same option. |
-| `--analyses LIST` | Comma-separated analyses: `torque`, `back_emf`, `cogging`, `losses`, `thd`, `flux_density` |
+| `--analyses LIST` | Comma-separated analyses: `torque`, `back_emf`, `cogging`, `losses`, `rotor_loss`, `thd`, `flux_density`. With `losses`, a plan that does not already solve a full electrical cycle is solved as one, as the app does: 360° at 15° (`quick`), 7.5° (`standard`) or the custom step. `effective` shows the sweep that runs. |
 | `--quality NAME` | `quick`, `standard`, `fine` or `custom`: the app's Preview, Standard, High accuracy and Custom plans; its Maximum accuracy plan is `--quality fine --mesh very_fine` |
 | `--mesh NAME` | `coarse`, `normal`, `fine` or `very_fine`: the app's Coarse, Medium, Fine and Very fine meshes |
 | `--set NAME=VALUE` | Set any `solve_params` field, for example `--set current_amplitude_A=20`. VALUE is read as JSON when it parses (`20`, `true`, `null`), else as text. Repeat for more fields. |
@@ -96,13 +96,14 @@ messages go to standard error. Every document has:
 
 A `solve` document holds:
 
-- `solver`: `in_process` or `server`;
+- `solver`: an object with `name` (`magneto2d`), `mode` (`in_process` or
+  `server`) and `server` (the URL, or null);
 - `design`: its path and name;
 - `setup`: the source, the setup's id, version, name and kind, `modified`,
   the `run_setup` label and notes;
 - `effective`: the solved `solve_params`, `solve_options` and
   `torque_speed_analysis`;
-- `warnings`;
+- `warnings`: the pre-solve warnings `check` reports;
 - `metrics`: the headline numbers;
 - `request`: the exact request solved;
 - `result`: the app's result without the field pictures.

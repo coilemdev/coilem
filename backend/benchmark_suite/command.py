@@ -103,11 +103,21 @@ def main(argv=None):
     expected = estimate(record, cases)
 
     if args.list:
+        # A sector list shows the full-motor record's times and planned-unsupported cases for
+        # reference; the run itself is still not matched against it (#333).
+        listed = record
+        if sector:
+            listed, _ = select_record(load_records())
+            if listed is not None and not {case["id"] for case in cases} <= set(listed["cases"]):
+                listed = None
         for case in cases:
-            seconds = (record or {}).get("case_runtime_s", {}).get(case["id"])
-            note = "not supported in this release" if recorded_status(record, case) == "UNSUPPORTED" else _minutes(seconds) if seconds else ""
+            seconds = (listed or {}).get("case_runtime_s", {}).get(case["id"])
+            note = "not supported in this release" if recorded_status(listed, case) == "UNSUPPORTED" else _minutes(seconds) if seconds else ""
             print(f"{case['phase']}  {PHASE_LABELS[case['phase']]:<20} {case['id']:<48} {note}")
-        print(f"{len(cases)} cases" + (f", about {_minutes(expected)} on the computer that made the record" if expected else ""))
+        listed_total = estimate(listed, cases) if sector else expected
+        print(f"{len(cases)} cases" + (
+            f", about {_minutes(listed_total)} as full-motor solves on the computer that made the record; sectors usually take less"
+            if sector and listed_total else f", about {_minutes(listed_total)} on the computer that made the record" if listed_total else ""))
         return 0
 
     output = (args.out or Path.cwd() / f"coilem-benchmark-{datetime.now():%Y%m%d-%H%M%S}").resolve()

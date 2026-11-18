@@ -156,7 +156,7 @@ def test_the_run_pdf_and_csv_give_each_output_its_status_and_reason(monkeypatch,
         "d/q flux linkage: experimental.",
         "Ld, Lq, saliency and characteristic current: experimental.",
         f"Phase resistance and copper loss: {resistance}.",
-        "Iron loss and its density map: experimental.",
+        "Stator iron loss and its density map: experimental.",
         "Efficiency: experimental.",
     ):
         assert output in text, output
