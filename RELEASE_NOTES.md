@@ -18,10 +18,14 @@
   saved runs and exports carry the separate terms and provenance. It defaults
   off and adds a 384-pose mechanical turn plus a fresh closure solve. See
   [scope, evidence and limitations](docs/ROTOR_IRON_LOSS.md).
-- **Qualification boundary.** Remaining rotor-loss qualification and sector
-  validation are deferred to a future release. Rotor loss and efficiency stay
-  experimental, and sector rotor loss is unavailable. The release owner approved
-  the [full-motor A–G and Prius records](benchmarks/qualification-9f2ce84ef28d/README.md).
+- **Experimental sector models.** In Solve, choose **One sector (Experimental)**
+  under **Advanced options → Solved region**. The solver uses one repeating
+  sector when the geometry and winding repeat, then displays the full motor.
+  Other designs use a full-motor solve. Sector validation is deferred and
+  rotor iron loss is unavailable for sector runs.
+- **Qualification boundary.** Remaining rotor-loss qualification is deferred to
+  a future release. Rotor loss and efficiency stay experimental. The release
+  owner approved the [full-motor A–G and Prius records](benchmarks/qualification-9f2ce84ef28d/README.md).
   All 84 supported A–G cases and all ten separate Prius software checks pass
   on Windows x64 and macOS arm64. The six V-shape fixture changes from 0.5.8
   were reviewed with the corner mesh refinement. The shared cases and Prius
