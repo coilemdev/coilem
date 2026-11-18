@@ -8045,8 +8045,8 @@
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
-      "bytes": 7241,
-      "sha256": "23663cd9d6ceddc8d7841c8c477ca7467706e89bd3b6c47a1126a52dff76bceb"
+      "bytes": 7705,
+      "sha256": "c26479b31513e0898425bebd67a3affdef7f69a2e819c33a09c4c00f0cf93c02"
     },
     {
       "path": "tests/test_cogging.py",
@@ -8055,8 +8055,8 @@
     },
     {
       "path": "tests/test_cogging_phase_e.py",
-      "bytes": 16594,
-      "sha256": "668224fac7c3da218def42d4f00cce4584897f96089ea8f0e7d67084fc5c0616"
+      "bytes": 16673,
+      "sha256": "6f7dd9e0e97fce1173162787ef6f02f6a1915ac6b06cf85fc38efbd2684e1c0a"
     },
     {
       "path": "tests/test_dq_flux_linkage.py",
@@ -11630,8 +11630,8 @@
     },
     {
       "path": "tests/test_owner_decisions.py",
-      "bytes": 1610,
-      "sha256": "b54dea2b23ca93bdaeb294bb0abed72ed8d2de546e19bfee965ff9feffbe827c"
+      "bytes": 2186,
+      "sha256": "fd8e800a641a6e58c1689e4eaf6d9f0a830bf7855a8543b105c5578865d0e80b"
     },
     {
       "path": "docs/benchmarks/cogging-windows-20261103/README.md",
@@ -13210,8 +13210,8 @@
     },
     {
       "path": "tests/test_outrunner_phase_f.py",
-      "bytes": 6744,
-      "sha256": "36e236aa0a69727423139c9bbacf63ed25099cd364c3139adb1627ccdfeb7c8f"
+      "bytes": 6823,
+      "sha256": "0ede3cbc207cd1a75d5f216641f70e4d04d08a8a9ff40f136b8393692abc5661"
     },
     {
       "path": "tests/test_rotor_layout.py",

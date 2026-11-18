@@ -13,11 +13,25 @@ ROOT = Path(__file__).resolve().parents[1]
 DECISIONS = ROOT / "benchmarks/v0.5.0/owner-decisions.json"
 
 
+def _component(suite_path: Path, component_id: str) -> dict | None:
+    """The component with this id in a suite or, depth first, in the suites it is composed of."""
+
+    for component in load_suite(suite_path).get("components", []):
+        if component["id"] == component_id:
+            return component
+        found = _component(ROOT / component["suite"], component_id) if component.get("suite") else None
+        if found is not None:
+            return found
+    return None
+
+
 def test_owner_accepted_the_registered_reference_bundle():
     decisions = {item["id"]: item for item in json.loads(DECISIONS.read_text(encoding="utf-8"))["decisions"]}
     accepted = decisions["protocol16_references"]["reviewed_bundle"]
-    registered = load_suite(ROOT / resources.BENCHMARK_SUITE_FILE)
-    component = next(c for c in registered["components"] if c["id"] == "abcd")
+    # The A-D references sit inside the registered suite: since Phase G the A-G
+    # suite holds the A-F suite, which holds them.
+    component = _component(ROOT / resources.BENCHMARK_SUITE_FILE, "abcd")
+    assert component is not None
     bundle = ROOT / component["reference_bundle"]
     # A changed bundle needs the owner's acceptance again.
     assert accepted["path"] == component["reference_bundle"]
