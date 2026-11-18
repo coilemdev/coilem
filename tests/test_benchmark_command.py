@@ -325,7 +325,9 @@ def test_quick_subset_is_one_passing_case_per_phase() -> None:
 def test_sector_list_shows_the_full_motor_times_and_unsupported_cases(capsys) -> None:
     """#333: the sector list keeps the record's times and planned-unsupported marks, labelled as full-motor."""
 
-    assert command.main(["--list"]) == 0
+    # Sector coverage ends at Phase F, so compare the same cases on both paths.
+    full_motor_phases = [argument for phase in "ABCDEF" for argument in ("--phase", phase)]
+    assert command.main(["--list", *full_motor_phases]) == 0
     full = capsys.readouterr().out
     assert command.main(["--list", "--sector"]) == 0
     sector = capsys.readouterr().out

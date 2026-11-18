@@ -20,9 +20,12 @@
   [scope, evidence and limitations](docs/ROTOR_IRON_LOSS.md).
 - **Qualification boundary.** Remaining rotor-loss qualification and sector
   validation are deferred to a future release. Rotor loss and efficiency stay
-  experimental; sector rotor loss is unavailable. The assembled 0.5.9 candidate
-  still requires the full-motor A–F/Prius regression comparison against frozen
-  FEMM references and the published 0.5.8 evidence on Windows and macOS.
+  experimental, and sector rotor loss is unavailable. The release owner approved
+  the [full-motor A–G and Prius records](benchmarks/qualification-9f2ce84ef28d/README.md).
+  All 84 supported A–G cases and all ten separate Prius software checks pass
+  on Windows x64 and macOS arm64. The six V-shape fixture changes from 0.5.8
+  were reviewed with the corner mesh refinement. The shared cases and Prius
+  metrics stay within the previous approved baseline's replay tolerances.
 
 # coilEM 0.5.8 Developer Preview
 

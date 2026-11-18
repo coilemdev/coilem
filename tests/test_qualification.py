@@ -97,7 +97,10 @@ def test_basis_names_the_measured_commit_and_reference() -> None:
     assert run["status"] == "COMPLETE" and run["identity"]["dirty"] is False
     assert run["identity"]["commit"][:7] in QUALIFICATION_BASIS
     assert run["reference_mode"] == "FROZEN_REFERENCE"
-    assert run["reference_commit"] == reference["reference_commit"]
+    if "reference_commits" in reference:
+        assert run["reference_commits"] == reference["reference_commits"]
+    else:
+        assert run["reference_commit"] == reference["reference_commit"]
     assert run["selection"]["bundle_sha256"] == bundle_sha
     assert run["selection"]["spec_sha256"] == sha(measured_spec)
     # The current record measures the registered protocol; frozen FEMM data
@@ -129,9 +132,9 @@ def test_reasons_match_the_report_outcomes(measured_build) -> None:
     outcomes: dict[tuple[str, str], list[str]] = defaultdict(list)
     gates: dict[tuple[str, str], list[str]] = defaultdict(list)
     for row in REPORT["rows"]:
-        if row["phase"] in {"E", "F"}:
-            # The application combination policy retains its A-D scope; the
-            # registered E/F requests have separate benchmark qualification.
+        if row["phase"] in {"E", "F", "G"}:
+            # This test checks the A-D motor combination descriptions.
+            # Phases E, F and G have their own benchmark assertions.
             continue
         config = MotorConfig.model_validate_json(Path(row["fixture"]).read_text(encoding="utf-8"))
         qualification = classify_qualification(config)

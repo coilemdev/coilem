@@ -71,12 +71,13 @@ def reference_compatibility(summary, anchor, suite, bundle, *, reviewed_sources=
         raise ValueError('Reference model or metric interpretation needs review: ' + ', '.join(changed))
     # Only changed reference-sensitive source files can be accepted. The suite,
     # bundle, coverage and request checks above have no override.
+    reference_commit = manifest.get('reference_commit')
     return {'schema': 'coilem.reference_reuse/v1', 'candidate': run['identity']['commit'],
             **({'owner_reviewed_reference_sources': changed} if changed else {}),
             'suite_sha256': sha(suite), 'bundle_sha256': digest,
-            'reference_commit': manifest['reference_commit'], 'reference_fields_mutated': False,
-            'reference_commits': manifest.get('reference_commits', [manifest['reference_commit']]),
-            'reference_sensitive_sources': {p: run['identity']['source_files'].get(p) for p in REFERENCE_SOURCES},
+            'reference_commit': reference_commit, 'reference_fields_mutated': False,
+            'reference_commits': manifest.get('reference_commits', [reference_commit]),
+            'reference_sensitive_sources': {p: run['identity']['source_files'].get(p) for p in sensitive},
             'registered_requests_sha256': canonical({r['id']: r['configurations'] for r in summary['rows']})}
 
 
