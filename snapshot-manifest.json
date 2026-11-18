@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 33180,
-      "sha256": "f85093f1f69764cf2f31873ed2e42135af8045af4db7873c7978e0fc764a288c"
+      "bytes": 33477,
+      "sha256": "f68fbaa264d450a4cfcf5c1ab0c9ca46388cb77c3aaef0c26576c29bca680b80"
     },
     {
       "path": "SECURITY.md",
@@ -7050,8 +7050,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 304737,
-      "sha256": "2aef83d2de335074877cd6269df513b4f2844010734592829208ede7f0a875d0"
+      "bytes": 304795,
+      "sha256": "32ef986a40ccf2293fdc08b407784b2e89d6fafe09667d10d38cb9d9bb18954e"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -19210,8 +19210,8 @@
     },
     {
       "path": "frontend/tests/solve-profiles.spec.ts",
-      "bytes": 31707,
-      "sha256": "1c2ae80dc2ca63c513ee8f69ac876af275bf021574782cd0a5add777adcafdda"
+      "bytes": 32592,
+      "sha256": "94981c31e307bd9cca4a2d69ebbd931a13f20962d07a6a6d86c3d6a3a0c84d32"
     },
     {
       "path": "docs/COMPARE_RUNS.md",

@@ -47,6 +47,21 @@ async function saveSetup(page: Page, name: string, includeNumerics = true) {
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 }
 
+test('Solve identifies the sector option as experimental before and after selection', async ({ page }) => {
+  await start(page);
+  const advanced = page.locator('button[aria-controls="param-group-content-advanced"]');
+  await advanced.click();
+  const region = page.getByRole('group', { name: 'Solved region', exact: true });
+  await expect(region.getByRole('button', { name: 'Full motor', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  const sector = region.getByRole('button', { name: 'One sector (Experimental)', exact: true });
+  await expect(sector).toBeVisible();
+  await sector.click();
+  await expect(sector).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Release qualification covers full-motor solves.', { exact: false })).toBeVisible();
+  await advanced.click();
+  await expect(advanced).toContainText('One sector (Experimental)');
+});
+
 test('losses request a full cycle while mesh choices, saved setups and legacy files keep their plan', async ({ page }, info) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await start(page);

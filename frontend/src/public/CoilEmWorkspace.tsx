@@ -3864,16 +3864,17 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     { value: 'fast', label: 'Fast', title: 'About 4x faster meshing. Results move at mesh-noise level and are experimental.' },
   ];
   const symmetry = config.solve_params.symmetry ?? 'full';
+  const sectorChoiceLabel = 'One sector (Experimental)';
   const symmetryChoices: Array<{ value: MotorConfig['solve_params']['symmetry']; label: string; title: string }> = [
     { value: 'full', label: 'Full motor', title: 'Meshes and solves the whole cross-section, as the benchmark report measured.' },
-    { value: 'auto', label: 'One sector', title: 'Solves one repeating sector when the motor has one, and the full motor otherwise. Faster; results are experimental.' },
+    { value: 'auto', label: sectorChoiceLabel, title: 'Solves one repeating sector when the geometry and winding repeat. Other designs use the full motor.' },
   ];
   const meshSector = mesh?.mesh_info.sector as { repeats: number; anti_periodic: boolean } | undefined;
   // What is actually solved: a prepared mesh says so; before that, the request does.
   const solvedRegionLabel = meshSector
-    ? `1/${meshSector.repeats} sector, shown as the full motor`
+    ? `1/${meshSector.repeats} sector (Experimental), shown as the full motor`
     : symmetry === 'auto' && !mesh
-      ? 'One sector if the motor repeats'
+      ? `${sectorChoiceLabel} if the motor repeats`
       : symmetry === 'auto'
         ? 'Full motor (does not repeat)'
         : 'Full motor';
@@ -3941,7 +3942,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const selectedPreset = selectedSolvePlan(config);
   const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
-  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''} · ${symmetry === 'auto' ? 'One sector' : 'Full motor'}`;
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''} · ${symmetry === 'auto' ? sectorChoiceLabel : 'Full motor'}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -4510,7 +4511,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
               </div>
               {meshSector && <p className="public-mesh-build-note">This motor repeats {meshSector.repeats} times: one sector of {Number(mesh?.mesh_info.num_triangles ?? 0).toLocaleString()} triangles is solved. In the Mesh view the solved sector is bright and its copies around the motor are dimmed. While the rotor turns the whole motor is drawn; stop it to see the sector solved at that angle.</p>}
               {symmetry === 'auto' && !meshSector && mesh && <p className="public-mesh-build-note">This motor is solved in full{typeof mesh.mesh_info.sector_fallback_reason === 'string' ? `: ${mesh.mesh_info.sector_fallback_reason}` : ''}.</p>}
-              {symmetry === 'auto' && <p className="public-mesh-build-note">Solves one repeating sector and shows the full motor. A motor that does not repeat is solved in full. Results match the full motor to mesh-noise level and are marked experimental.</p>}
+              {symmetry === 'auto' && <p className="public-mesh-build-note">Shows the full motor after solving one repeating sector. Designs with no repeating sector use a full-motor solve. Release qualification covers full-motor solves.</p>}
               {sectorCoggingNote(config, selectedSolver) && <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, selectedSolver)}</p>}
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
