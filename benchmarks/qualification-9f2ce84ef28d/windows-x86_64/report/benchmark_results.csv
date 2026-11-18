@@ -1,0 +1,678 @@
+phase,topology,fixture,status,coverage_label,gate,gate_status,value
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple__high_current,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple__tight_airgap,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple_noload__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple_noload__high_current,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,torque_method,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_4p12s_simple_noload__tight_airgap,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__high_current,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__tight_airgap,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_reference_angle30__baseline,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_example_shoed,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_example_shoed,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_example_shoed,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_example_shoed,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_example_shoed,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_example_shoed,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_60C,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_60C,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_60C,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_60C,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_60C,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_60C,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_100C,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_100C,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_100C,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_100C,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_100C,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__magnet_100C,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,lambda_d,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,lambda_q,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g0,PASS,PASS,reference_dq_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,lambda_d,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,lambda_q,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g30,PASS,PASS,reference_dq_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,lambda_d,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,lambda_q,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I20_g60,PASS,PASS,reference_dq_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,lambda_d,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,lambda_q,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g0,PASS,PASS,reference_dq_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,lambda_d,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,lambda_q,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g30,PASS,PASS,reference_dq_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,mean_torque,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,bemf_fundamental,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,bemf_peak,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,torque_method,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,native_mesh,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,angle_grids,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,lambda_d,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,lambda_q,PASS,
+A,SPM,spm_8p12s_concentrated__dq_I40_g60,PASS,PASS,reference_dq_torque,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_12s10p_fscw_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_24s16p_industrial_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_4p12s_micro_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_angled_pocket_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_thin_bridge_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_baseline_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_deep_apex_high_output_v1,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_narrow_angle_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_pocket_offset_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_thin_bridge_contract,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_vshape_8p12s_wide_angle_high_output_v1,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_60C,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_60C,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_60C,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_60C,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_60C,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_60C,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_100C,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_100C,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_100C,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_100C,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_100C,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__magnet_100C,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,lambda_d,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,lambda_q,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g0,PASS,PASS,reference_dq_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,lambda_d,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,lambda_q,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g30,PASS,PASS,reference_dq_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,lambda_d,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,lambda_q,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I50_g60,PASS,PASS,reference_dq_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,lambda_d,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,lambda_q,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g0,PASS,PASS,reference_dq_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,lambda_d,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,lambda_q,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g30,PASS,PASS,reference_dq_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,mean_torque,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,bemf_fundamental,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,bemf_peak,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,torque_method,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,native_mesh,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,angle_grids,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,lambda_d,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,lambda_q,PASS,
+B,IPM,ipm_flat_8p12s_fsae_contract__dq_I100_g60,PASS,PASS,reference_dq_torque,PASS,
+C,Distributed Winding,ornl_prius_2004_ipm,UNSUPPORTED,Deferred hardware coverage (v0.5.0),,,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_12p36s_distributed_femm_validation,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_8p24s_distributed_femm_validation,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_8p48s_chorded_5_6,PASS,PASS,angle_grids,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,mean_torque,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,bemf_fundamental,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,bemf_peak,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,torque_method,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,native_mesh,PASS,
+C,Distributed Winding,spm_8p48s_distributed_femm_validation,PASS,PASS,angle_grids,PASS,
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,mean_torque_delta_pct,PASS,0.28446480828136766
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,torque_waveform_nrmse_pct,PASS,0.45331434285681116
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,commutation_transition_delta_samples,PASS,0
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,power_torque_delta_pct,PASS,0.21314225476059662
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_standard_to_fine_mean_torque_delta_pct,PASS,0.03898770100551107
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_standard_to_fine_ripple_delta_percentage_points,PASS,0.005379930284650669
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native_fine_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,femm_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,analytical_low_current_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,native-fine_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,analytical_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_14p12s_high_pole,PASS,PASS,femm-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,mean_torque_delta_pct,PASS,0.08386755673877658
+D,BLDC,spm_4p12s_small,PASS,PASS,torque_waveform_nrmse_pct,PASS,0.3091337178111743
+D,BLDC,spm_4p12s_small,PASS,PASS,commutation_transition_delta_samples,PASS,0
+D,BLDC,spm_4p12s_small,PASS,PASS,power_torque_delta_pct,PASS,0.1679236568610411
+D,BLDC,spm_4p12s_small,PASS,PASS,native_standard_to_fine_mean_torque_delta_pct,PASS,0.1882019242655742
+D,BLDC,spm_4p12s_small,PASS,PASS,native_standard_to_fine_ripple_delta_percentage_points,PASS,0.39236335957694024
+D,BLDC,spm_4p12s_small,PASS,PASS,native_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,native_fine_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,femm_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,analytical_low_current_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_4p12s_small,PASS,PASS,native-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,native-fine_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,analytical_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_4p12s_small,PASS,PASS,femm-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,mean_torque_delta_pct,PASS,0.5412442458853828
+D,BLDC,spm_8p12s_reference,PASS,PASS,torque_waveform_nrmse_pct,PASS,0.8944951084971339
+D,BLDC,spm_8p12s_reference,PASS,PASS,commutation_transition_delta_samples,PASS,0
+D,BLDC,spm_8p12s_reference,PASS,PASS,power_torque_delta_pct,PASS,0.11215598122312383
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_standard_to_fine_mean_torque_delta_pct,PASS,0.008240430204896012
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_standard_to_fine_ripple_delta_percentage_points,PASS,0.014670425273152432
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,native_fine_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,femm_standard_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,analytical_low_current_current_properties,PASS,"{'max_zero_sum_abs_A': 0.0, 'max_plateau_error_abs_A': 0.0, 'max_zero_phase_abs_A': 0.0, 'invalid_conduction_samples': 0}"
+D,BLDC,spm_8p12s_reference,PASS,PASS,native-standard_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,native-fine_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,analytical_golden_current_sequence,PASS,matches frozen golden current table
+D,BLDC,spm_8p12s_reference,PASS,PASS,femm-standard_golden_current_sequence,PASS,matches frozen golden current table
+E,Cogging,spm_4p12s_simple__baseline__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_4p12s_simple__baseline__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_4p12s_simple__baseline__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_4p12s_simple__baseline__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_4p12s_simple__baseline__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_4p12s_simple__baseline__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_4p12s_simple__tight_airgap__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_4p12s_simple__tight_airgap__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_4p12s_simple__tight_airgap__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_4p12s_simple__tight_airgap__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_4p12s_simple__tight_airgap__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_4p12s_simple__tight_airgap__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_8p12s_concentrated__baseline__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_8p12s_concentrated__baseline__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_8p12s_concentrated__baseline__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_8p12s_concentrated__baseline__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_8p12s_concentrated__baseline__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_8p12s_concentrated__baseline__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_8p12s_concentrated__tight_airgap__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_8p12s_concentrated__tight_airgap__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_8p12s_concentrated__tight_airgap__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_8p12s_concentrated__tight_airgap__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_8p12s_concentrated__tight_airgap__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_8p12s_concentrated__tight_airgap__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_8p12s_example_shoed__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_8p12s_example_shoed__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_8p12s_example_shoed__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_8p12s_example_shoed__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_8p12s_example_shoed__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_8p12s_example_shoed__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_contract__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_contract__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_contract__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_contract__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_contract__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_contract__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_angled_pocket_contract__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_angled_pocket_contract__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_angled_pocket_contract__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_angled_pocket_contract__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_angled_pocket_contract__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,ipm_flat_8p12s_fsae_angled_pocket_contract__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,ipm_flat_12s10p_fscw_contract__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,ipm_flat_12s10p_fscw_contract__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,ipm_flat_12s10p_fscw_contract__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,ipm_flat_12s10p_fscw_contract__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,ipm_flat_12s10p_fscw_contract__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,ipm_flat_12s10p_fscw_contract__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,ipm_flat_24s16p_industrial_contract__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,ipm_flat_24s16p_industrial_contract__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,ipm_flat_24s16p_industrial_contract__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,ipm_flat_24s16p_industrial_contract__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,ipm_flat_24s16p_industrial_contract__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,ipm_flat_24s16p_industrial_contract__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_8p24s_distributed_femm_validation__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_8p24s_distributed_femm_validation__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_8p24s_distributed_femm_validation__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_8p24s_distributed_femm_validation__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_8p24s_distributed_femm_validation__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_8p24s_distributed_femm_validation__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_8p48s_distributed_femm_validation__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_8p48s_distributed_femm_validation__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_8p48s_distributed_femm_validation__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_8p48s_distributed_femm_validation__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_8p48s_distributed_femm_validation__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_8p48s_distributed_femm_validation__cogging,PASS,PASS,reference_cogging_mean,PASS,
+E,Cogging,spm_12p36s_distributed_femm_validation__cogging,PASS,PASS,cogging_method,PASS,
+E,Cogging,spm_12p36s_distributed_femm_validation__cogging,PASS,PASS,cogging_angle_grid,PASS,
+E,Cogging,spm_12p36s_distributed_femm_validation__cogging,PASS,PASS,cogging_peak_to_peak,PASS,
+E,Cogging,spm_12p36s_distributed_femm_validation__cogging,PASS,PASS,cogging_first_harmonic,PASS,
+E,Cogging,spm_12p36s_distributed_femm_validation__cogging,PASS,PASS,reference_cogging_period,PASS,
+E,Cogging,spm_12p36s_distributed_femm_validation__cogging,PASS,PASS,reference_cogging_mean,PASS,
+F,Outrunner,spm_outer_14p12s_drone__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_14p12s_drone__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_14p12s_drone__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_14p12s_drone__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_14p12s_drone__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_14p12s_drone__baseline,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_14p12s_drone__high_current,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_14p12s_drone__high_current,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_14p12s_drone__high_current,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_14p12s_drone__high_current,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_14p12s_drone__high_current,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_14p12s_drone__high_current,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_14p12s_drone__tight_airgap,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_14p12s_drone__tight_airgap,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_14p12s_drone__tight_airgap,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_14p12s_drone__tight_airgap,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_14p12s_drone__tight_airgap,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_14p12s_drone__tight_airgap,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_14p12s_drone__angle30,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_14p12s_drone__angle30,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_14p12s_drone__angle30,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_14p12s_drone__angle30,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_14p12s_drone__angle30,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_14p12s_drone__angle30,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_14p12s_drone_noload__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_14p12s_drone_noload__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_14p12s_drone_noload__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_14p12s_drone_noload__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_14p12s_drone_noload__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_14p12s_drone_noload__baseline,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_12p9s_micro__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_12p9s_micro__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_12p9s_micro__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_12p9s_micro__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_12p9s_micro__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_12p9s_micro__baseline,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_12p9s_micro_noload__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_12p9s_micro_noload__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_12p9s_micro_noload__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_12p9s_micro_noload__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_12p9s_micro_noload__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_12p9s_micro_noload__baseline,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_10p12s_single_layer__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_10p12s_single_layer__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_10p12s_single_layer__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_10p12s_single_layer__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_10p12s_single_layer__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_10p12s_single_layer__baseline,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_28p24s_multirotor__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_28p24s_multirotor__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_28p24s_multirotor__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_28p24s_multirotor__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_28p24s_multirotor__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_28p24s_multirotor__baseline,PASS,PASS,angle_grids,PASS,
+F,Outrunner,spm_outer_30p27s_hub__baseline,PASS,PASS,mean_torque,PASS,
+F,Outrunner,spm_outer_30p27s_hub__baseline,PASS,PASS,bemf_fundamental,PASS,
+F,Outrunner,spm_outer_30p27s_hub__baseline,PASS,PASS,bemf_peak,PASS,
+F,Outrunner,spm_outer_30p27s_hub__baseline,PASS,PASS,torque_method,PASS,
+F,Outrunner,spm_outer_30p27s_hub__baseline,PASS,PASS,native_mesh,PASS,
+F,Outrunner,spm_outer_30p27s_hub__baseline,PASS,PASS,angle_grids,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,field_convergence,PASS,0.9800057225625954
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.015116737942694414
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.07506779146380937
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,iron_loss_W,PASS,0.09018452940650334
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_inner_spm_no_load_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,3.9473236902731745e-07
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,field_convergence,PASS,0.9800057225194653
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.030233475884477556
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.3002711658492725
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,iron_loss_W,PASS,0.3305046417337536
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_inner_spm_no_load_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,3.9473236902731745e-07
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,field_convergence,PASS,0.7378370257569422
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.015584737895579792
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.07558496069136611
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,iron_loss_W,PASS,0.09116969858694546
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,copper_loss_W,PASS,0.00023683942141872194
+G,Stator / DC losses,loss_inner_spm_loaded_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,3.9473236902731745e-07
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,field_convergence,PASS,0.7378370257569422
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.03116947579135143
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.30233984277464643
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,iron_loss_W,PASS,0.33350931856599786
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,copper_loss_W,PASS,0.00023683942141872194
+G,Stator / DC losses,loss_inner_spm_loaded_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,3.9473236902731745e-07
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,field_convergence,PASS,0.8489481737344027
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.003264917643966969
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.01307928439122974
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,iron_loss_W,PASS,0.00981436674726277
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_flat_ipm_no_load_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,6.938893903907228e-17
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,field_convergence,PASS,0.8489481737344027
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.006529835287933938
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.05231713756491896
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,iron_loss_W,PASS,0.045787302276984576
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_flat_ipm_no_load_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,6.938893903907228e-17
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,field_convergence,PASS,0.9227869210885298
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.0032362301683326322
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.01497182294511401
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,iron_loss_W,PASS,0.011735592776781267
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,copper_loss_W,PASS,2.8421709430404007e-13
+G,Stator / DC losses,loss_flat_ipm_loaded_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,6.938893903907228e-17
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,field_convergence,PASS,0.9227869210885298
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.0064724603366652644
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.05988729178045604
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,iron_loss_W,PASS,0.053414831443790334
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,copper_loss_W,PASS,2.8421709430404007e-13
+G,Stator / DC losses,loss_flat_ipm_loaded_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,6.938893903907228e-17
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,field_convergence,PASS,0.9498596282352106
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.2090499758555211
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,3.158973664804776
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,iron_loss_W,PASS,3.368023640660283
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_distributed_spm_no_load_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,2.7755575615628914e-17
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,field_convergence,PASS,0.9498596282352106
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.4180999517110422
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,12.635894659219105
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,iron_loss_W,PASS,13.053994610930147
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_distributed_spm_no_load_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,2.7755575615628914e-17
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,field_convergence,PASS,0.8468250934725403
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.20947198567364467
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,3.163558601802876
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,iron_loss_W,PASS,3.3730305874765065
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,copper_loss_W,PASS,3.552713678800501e-15
+G,Stator / DC losses,loss_distributed_spm_loaded_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,2.7755575615628914e-17
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,field_convergence,PASS,0.8468250934725403
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.41894397134728933
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,12.654234407211504
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,iron_loss_W,PASS,13.073178378558794
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,copper_loss_W,PASS,3.552713678800501e-15
+G,Stator / DC losses,loss_distributed_spm_loaded_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,2.7755575615628914e-17
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,field_convergence,PASS,0.9922288087304446
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.0004664794875315348
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.024015063645951296
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,iron_loss_W,PASS,0.02354858415841976
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_outer_spm_no_load_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,3.853414696705637e-07
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,field_convergence,PASS,0.9922288087304446
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.0009329589750630696
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.09606025458380518
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,iron_loss_W,PASS,0.09512729560874211
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,copper_loss_W,PASS,0.0
+G,Stator / DC losses,loss_outer_spm_no_load_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,3.853414696705637e-07
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,field_convergence,PASS,0.9564277485646467
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.0005516569806562899
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.023161139387613217
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,iron_loss_W,PASS,0.022609482406956927
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,copper_loss_W,PASS,0.00013005274601418648
+G,Stator / DC losses,loss_outer_spm_loaded_1500rpm,PASS,PASS,phase_resistance_ohm,PASS,3.853414696705637e-07
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,full_motor,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,rotor_loss_excluded,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,loss_requested,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,complete_electrical_grid,PASS,96
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,field_convergence,PASS,0.9564277485646467
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,native_mesh,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,iron_component_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,dc_copper_balance,PASS,
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,iron_hysteresis_loss_W,PASS,0.0011033139613125797
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,iron_eddy_loss_W,PASS,0.09264455755045287
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,iron_loss_W,PASS,0.09154124358914029
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,copper_loss_W,PASS,0.00013005274601418648
+G,Stator / DC losses,loss_outer_spm_loaded_3000rpm,PASS,PASS,phase_resistance_ohm,PASS,3.853414696705637e-07

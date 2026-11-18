@@ -32,10 +32,10 @@ measured material/motor qualification. Original point-field diagnostic failures
 remain visible in the qualification record under its integrated-loss policy.
 
 Historical A–F and sector protocol 1.11.0 remain replayable. Sector collection
-keeps A–F only; `--sector --phase G` is rejected explicitly. Existing Native
-platform records cover A–F, not the new full A–G selection. Fresh full A–G
-Windows/macOS measurements are required before publishing matching platform
-records. No old result is retagged as an A–G measurement.
+keeps A–F only and rejects `--sector --phase G`. The
+[approved 0.5.9 full-motor measurements](../qualification-9f2ce84ef28d/README.md)
+provide the current A–G records for Windows x64 and macOS arm64. The historical
+records retain their original measured commits and protocol versions.
 
 Record replay stores all five G quantities. Its initial same-platform numerical
 replay bounds are 0.5% or 0.001 W for loss and 1e-6 relative or 1e-9 ohm for

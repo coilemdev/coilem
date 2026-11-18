@@ -1,0 +1,112 @@
+{
+  "status": "APPROVED",
+  "measured_commit": "9f2ce84ef28de3d732b0fa5a880822c677b671c1",
+  "protocol_version": "1.12.0",
+  "collection": "https://github.com/coilemdev/coilem/actions/runs/44396810368",
+  "approved_by": "release owner",
+  "approval_date": "2026-11-18",
+  "prior_policy": "benchmarks/qualification-policy-history/protocol110-5e6fab2-20261118.json",
+  "prior_policy_sha256": "7327891a89e7b8f3d73f934f16e252ccbf80e1e7321c0299b7d6b700895e5bde",
+  "platforms": {
+    "windows-x86_64": {
+      "registered_suite_sha256": "420eb2ebe92e5109d97246fd883e83636650ba3f3d8d21908cf1573f1d3a5c3a",
+      "reference_bundle_sha256": "963ed0a6148b0088b21faca8456db95d93ad7a2d35dd9514942366017db56cc0",
+      "registered_requests_sha256": "53c4906aa7caf138d06b74b30f45efefab977b7ecd6c7b33dd652f74aea1a3e9",
+      "reference_commits": [
+        "341cd09342d58323689491ca060a913a34474ed1",
+        "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+        "7d9445c7f328fabb8aff13141b105769f1c1f644",
+        "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+        "faced858937e93740ddf7f6f3583a3ad5ec35646"
+      ],
+      "reference_sensitive_source_changes": {
+        "backend/reference_models/prius.py": {
+          "previous": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
+          "approved": "334e1cec53d5a8335ace024fd96023453c4e780f8103ce4fcec77391649ed2d5"
+        },
+        "backend/models/config.py": {
+          "previous": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c",
+          "approved": "a701bd00888fdb727a083ac0e3220ccd5167011d43ed73b078f379137d6b3dd2"
+        },
+        "backend/iron_loss.py": {
+          "previous": "070fe8a53400c1a760b5c919a13a4604fe63727eaf7461b9995ee1d3efbc0fe7",
+          "approved": "28ae69b78b37c66147949f363bed2b28e05624ef34ddb198c6ce95cb004c6021"
+        }
+      },
+      "shared_cases": 69,
+      "new_phase_g_cases": [
+        "loss_inner_spm_no_load_1500rpm",
+        "loss_inner_spm_no_load_3000rpm",
+        "loss_inner_spm_loaded_1500rpm",
+        "loss_inner_spm_loaded_3000rpm",
+        "loss_flat_ipm_no_load_1500rpm",
+        "loss_flat_ipm_no_load_3000rpm",
+        "loss_flat_ipm_loaded_1500rpm",
+        "loss_flat_ipm_loaded_3000rpm",
+        "loss_distributed_spm_no_load_1500rpm",
+        "loss_distributed_spm_no_load_3000rpm",
+        "loss_distributed_spm_loaded_1500rpm",
+        "loss_distributed_spm_loaded_3000rpm",
+        "loss_outer_spm_no_load_1500rpm",
+        "loss_outer_spm_no_load_3000rpm",
+        "loss_outer_spm_loaded_1500rpm",
+        "loss_outer_spm_loaded_3000rpm"
+      ],
+      "passed_cases": 84,
+      "planned_unsupported_cases": [
+        "ornl_prius_2004_ipm"
+      ],
+      "prius_passing_checks": 10
+    },
+    "macos-arm64": {
+      "registered_suite_sha256": "420eb2ebe92e5109d97246fd883e83636650ba3f3d8d21908cf1573f1d3a5c3a",
+      "reference_bundle_sha256": "963ed0a6148b0088b21faca8456db95d93ad7a2d35dd9514942366017db56cc0",
+      "registered_requests_sha256": "53c4906aa7caf138d06b74b30f45efefab977b7ecd6c7b33dd652f74aea1a3e9",
+      "reference_commits": [
+        "341cd09342d58323689491ca060a913a34474ed1",
+        "5291451ca8fd307a2216cee219b9c7d2a7b30332",
+        "7d9445c7f328fabb8aff13141b105769f1c1f644",
+        "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+        "faced858937e93740ddf7f6f3583a3ad5ec35646"
+      ],
+      "reference_sensitive_source_changes": {
+        "backend/reference_models/prius.py": {
+          "previous": "28229921cd09ece511b6e9b9a8ed6d192bb60d9b748270b74af948621d254e3f",
+          "approved": "334e1cec53d5a8335ace024fd96023453c4e780f8103ce4fcec77391649ed2d5"
+        },
+        "backend/models/config.py": {
+          "previous": "e32a50cdac680dbdfc9e257a714f5fd5b98c27cf710fb1870ef5bab941e0068c",
+          "approved": "a701bd00888fdb727a083ac0e3220ccd5167011d43ed73b078f379137d6b3dd2"
+        },
+        "backend/iron_loss.py": {
+          "previous": "070fe8a53400c1a760b5c919a13a4604fe63727eaf7461b9995ee1d3efbc0fe7",
+          "approved": "28ae69b78b37c66147949f363bed2b28e05624ef34ddb198c6ce95cb004c6021"
+        }
+      },
+      "shared_cases": 69,
+      "new_phase_g_cases": [
+        "loss_inner_spm_no_load_1500rpm",
+        "loss_inner_spm_no_load_3000rpm",
+        "loss_inner_spm_loaded_1500rpm",
+        "loss_inner_spm_loaded_3000rpm",
+        "loss_flat_ipm_no_load_1500rpm",
+        "loss_flat_ipm_no_load_3000rpm",
+        "loss_flat_ipm_loaded_1500rpm",
+        "loss_flat_ipm_loaded_3000rpm",
+        "loss_distributed_spm_no_load_1500rpm",
+        "loss_distributed_spm_no_load_3000rpm",
+        "loss_distributed_spm_loaded_1500rpm",
+        "loss_distributed_spm_loaded_3000rpm",
+        "loss_outer_spm_no_load_1500rpm",
+        "loss_outer_spm_no_load_3000rpm",
+        "loss_outer_spm_loaded_1500rpm",
+        "loss_outer_spm_loaded_3000rpm"
+      ],
+      "passed_cases": 84,
+      "planned_unsupported_cases": [
+        "ornl_prius_2004_ipm"
+      ],
+      "prius_passing_checks": 10
+    }
+  }
+}

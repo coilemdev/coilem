@@ -1,0 +1,32 @@
+{
+  "schema": "coilem.qualification_publication_projection/v2",
+  "measured_commit": "9f2ce84ef28de3d732b0fa5a880822c677b671c1",
+  "note": "Only machine-local diagnostic paths are redacted. Measurements, requests and gate results retain their original values.",
+  "platforms": {
+    "windows-x86_64": {
+      "files": []
+    },
+    "macos-arm64": {
+      "files": [
+        {
+          "file": "report/benchmark_summary.json",
+          "original_sha256": "5f1cf12d8444824efefd1b801ba3f87abd8295410abcc957ded92a1f82dee58b",
+          "published_sha256": "ca6b9f5ab770bf0061daee8320e31870587f058eba46f702b4f6b2a784a29e1b",
+          "only_local_paths_changed": true
+        },
+        {
+          "file": "report/coilem_benchmark_report.html",
+          "original_sha256": "3a1eb26c3249c51908de5a74479a981d27b8e96dac765b3dfbb29a0bea7d1e4b",
+          "published_sha256": "68ca424d6c4b05684c42e0536d00140fcfc5f3c7475deb17eb0418a02e5ad48d",
+          "only_local_paths_changed": true
+        },
+        {
+          "file": "report/artifact_manifest.json",
+          "original_sha256": "1f17378eac23abf774ac85e9869c9e78ba02310e4ef9d161a68af6863ccbbc81",
+          "published_sha256": "3d932bcdf5bc7e3abad8646944ba8071f282c8268c0406d54ff99377bfe787d8",
+          "purpose": "Index the published bytes."
+        }
+      ]
+    }
+  }
+}
