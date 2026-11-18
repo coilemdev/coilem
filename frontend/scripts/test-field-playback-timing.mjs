@@ -5,6 +5,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const {
   PUBLIC_FIELD_PLAYBACK_LOOP_CACHE_FRAMES,
   PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS,
+  PUBLIC_FIELD_PLAYBACK_PM_ARROW_FPS,
   advancePlaybackElectricalAngle,
   playbackFrameStride,
   playbackLookaheadFrameIndices,
@@ -45,6 +46,9 @@ assert.equal(playbackFrameStride(48, 360, 18, 4), 2);
 assert.equal(playbackFrameStride(48, 360, 30, 4), 3);
 assert.equal(playbackFrameStride(48, 360, 30, 7), 3);
 assert.equal(playbackFrameStride(16, 360, 100, 12), 1, 'a 16-frame loop always fits the cache');
+assert.equal(playbackFrameStride(48, 360, 5, 12), 2, 'the standard budget loads alternate 24-pole positions at 5 RPM');
+assert.equal(playbackFrameStride(48, 360, 5, 12, PUBLIC_FIELD_PLAYBACK_PM_ARROW_FPS), 1, 'PM arrows can load all 48');
+assert.equal(playbackFrameStride(48, 360, 0.8, 12), 1, 'slow playback already shows every position');
 // Playback runs down to 0.1 RPM: the 40-pole joint motor then turns 12 elec deg a second,
 // and a slower request is held at 0.1.
 assert.equal(playbackFrameStride(48, 360, 0.1, 20), 1);
@@ -54,9 +58,9 @@ assert.ok(Math.abs(advancePlaybackElectricalAngle(0, 1000, 0.01, 20) - 12) < 1e-
 // Every frame the playback clock shows was preloaded, in order, whatever the
 // display refresh rate. When the display is at least as fast as the stride
 // grid, it shows exactly the preloaded frames, so no decode is wasted.
-for (const [rpm, polePairs, refreshHz] of [[8, 4, 60], [30, 4, 60], [30, 7, 120], [30, 7, 34], [60, 7, 60]]) {
-  const stride = playbackFrameStride(frames.length, 360, rpm, polePairs);
-  const lookahead = playbackLookaheadFrameIndices(frames, 0, rpm, polePairs, 10);
+for (const [rpm, polePairs, refreshHz, budget] of [[8, 4, 60], [30, 4, 60], [30, 7, 120], [30, 7, 34], [60, 7, 60], [5, 12, 60, PUBLIC_FIELD_PLAYBACK_PM_ARROW_FPS]]) {
+  const stride = playbackFrameStride(frames.length, 360, rpm, polePairs, budget);
+  const lookahead = playbackLookaheadFrameIndices(frames, 0, 360, stride, 10);
   // Run the clock until the last preloaded frame would hand over to the next.
   const horizonDeg = frames[lookahead.at(-1)].angle_deg + (7.5 * stride) / 2;
   const tickDeg = advancePlaybackElectricalAngle(0, 1000 / refreshHz, rpm, polePairs);

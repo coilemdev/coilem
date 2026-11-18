@@ -8,6 +8,7 @@ import {
   FIELD_ARROW_RING_OFFSET,
   fieldArrowSpacingMm,
   sampleFieldArrows,
+  tintFieldArrowImage,
 } from './fieldArrows';
 import { fieldStrokeScale } from './fieldStrokeWidth';
 import { FIXED_FLUX_SCALE, FLUX_OVER_RANGE_INDEX, fluxColor, fluxColorIndex } from './fluxColorScale';
@@ -19,6 +20,23 @@ interface RasterRequest {
   apiBase: string;
   artifactId: string;
   source: RasterSource;
+}
+
+interface PmArrowRequest {
+  requestId: number;
+  pmArrowBlob: Blob;
+}
+
+let pmArrowCanvas: OffscreenCanvas | null = null;
+
+function tintPmArrows(image: ImageBitmap): ImageBitmap {
+  if (pmArrowCanvas?.width !== image.width || pmArrowCanvas.height !== image.height) {
+    pmArrowCanvas = new OffscreenCanvas(image.width, image.height);
+  }
+  const context = pmArrowCanvas.getContext('2d');
+  if (!context) throw new Error('Arrow tinting is unavailable.');
+  tintFieldArrowImage(context, image, FIELD_ARROW_COLORS.pm);
+  return pmArrowCanvas.transferToImageBitmap();
 }
 
 interface FieldPlotPayload {
@@ -184,11 +202,24 @@ function rasterize(plot: FieldPlotPayload, source: RasterSource) {
       vectorCandidates[Math.round(index * (vectorCandidates.length - 1) / (DIRECTION_CUE_TARGET - 1))]
     ));
 
+  let lines = lineLayer.canvas.transferToImageBitmap();
+  let pmArrowsTinted = false;
+  if (source === 'pm') {
+    try {
+      const tinted = tintPmArrows(lines);
+      lines.close();
+      lines = tinted;
+      pmArrowsTinted = true;
+    } catch {
+      // Keep the neutral image for display on browsers without worker compositing.
+    }
+  }
   return {
     base: baseLayer.canvas.transferToImageBitmap(),
     heat: heatLayer.canvas.transferToImageBitmap(),
     mesh: meshLayer.canvas.transferToImageBitmap(),
-    lines: lineLayer.canvas.transferToImageBitmap(),
+    lines,
+    pmArrowsTinted,
     viewBox: viewBox.join(' '),
     minB,
     maxB,
@@ -200,9 +231,19 @@ function rasterize(plot: FieldPlotPayload, source: RasterSource) {
   };
 }
 
-self.onmessage = async (event: MessageEvent<RasterRequest>) => {
+self.onmessage = async (event: MessageEvent<RasterRequest | PmArrowRequest>) => {
   const request = event.data;
   try {
+    if ('pmArrowBlob' in request) {
+      const original = await createImageBitmap(request.pmArrowBlob);
+      try {
+        const lines = tintPmArrows(original);
+        self.postMessage({ requestId: request.requestId, ok: true, lines }, { transfer: [lines] });
+      } finally {
+        original.close();
+      }
+      return;
+    }
     const response = await fetch(`${request.apiBase}/solve/field-frame/${encodeURIComponent(request.artifactId)}`);
     if (!response.ok) throw new Error(`Field frame request failed with HTTP ${response.status}.`);
     const payload = await response.json() as { field_line_frame?: FieldPlotPayload };

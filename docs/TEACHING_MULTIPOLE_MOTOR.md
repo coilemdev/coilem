@@ -10,12 +10,13 @@ are two slots per pole per phase.
 
 1. In **Solve → Field solution**, expand the view and select **Stator only**.
    Let the separate stator-current field solve finish.
-2. Show **Field lines**, hide **Flux density** and **PM reference**, and use
-   Medium line density. Follow one of the six field lobes near the airgap and
+2. Show **Field arrows**, hide **Flux density** and **PM reference**, and use
+   Medium arrow density. Follow one of the six field lobes near the airgap and
    its return path through the stator yoke.
-3. Play at **3 RPM**. The three north–south pairs move together around the
-   airgap, clockwise in the public view.
-4. Select **PM only** and show **Magnets** and **Pole labels** to connect the
+3. Enable **More → Tooth poles** and play at **3 RPM**. Follow one stator tooth
+   as it changes between red (N) and blue (S). The three north–south pairs
+   travel clockwise around the airgap.
+4. Select **PM only** and show **Magnets** and **Magnet labels** to connect the
    repeated field pattern to the six alternating rotor poles.
 5. Select **Resultant** to inspect the field with magnets and current active.
    Show the heatmap when exploring how individual teeth carry flux.

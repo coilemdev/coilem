@@ -12,7 +12,6 @@ import { useMagnifierCanvas, ViewportMagnifier } from './ViewportMagnifier';
 
 import {
   airgapHarmonic,
-  deriveMagneticPolarityCues,
   strongestAirgapPolePairs,
 } from '../components/tutorials/fieldPolarityCues';
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
@@ -29,6 +28,7 @@ import {
   FIELD_ARROW_RING_OFFSET,
   fieldArrowSpacingMm,
   sampleFieldArrows,
+  tintFieldArrowImage,
   visibleFieldArrowRect,
   type FieldArrowDensity,
   type FieldArrowMesh,
@@ -39,12 +39,13 @@ import {
   coilSideMark,
   coilSidesFromGeometry,
   phaseCycleSampler,
+  statorTeethFromGeometry,
   type CoilMark,
   type CoilSide,
   type FieldPhaseView,
 } from './fieldPhases';
-import { PUBLIC_PHASE_COLORS } from './motorPalette';
-import { phaseDriveFrame, phaseStrips, type PhaseCurrentSampler } from './phaseDrive';
+import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
+import { phaseDriveFrame, phaseStrips, toothPoleFillOpacity, toothPoleLabelOpacity, toothPoleLabelSize, type PhaseCurrentSampler } from './phaseDrive';
 import { drawCurrentMarker, drawPhaseDriveWired } from './phaseDrivePanel';
 import {
   buildTriangleGrid,
@@ -114,11 +115,13 @@ interface RenderedFieldLayers {
 }
 
 export interface FieldResultRaster {
-  base: ImageBitmap;
-  heat: ImageBitmap;
+  base: ImageBitmap | null;
+  heat: ImageBitmap | null;
   mesh?: ImageBitmap | null;
   /** The field-arrow layer: light arrows with a dark rim (older images: flux lines). */
-  lines: ImageBitmap;
+  lines: ImageBitmap | null;
+  /** The PM playback worker has already coloured this image cyan. */
+  pmArrowsTinted?: boolean;
   viewBox: string;
   minB: number;
   maxB: number;
@@ -242,6 +245,10 @@ function polygonCentroid(points: Array<[number, number]>): [number, number] {
   return [center[0] / points.length, center[1] / points.length];
 }
 
+function polygonPath(points: Array<[number, number]>): string {
+  return `M ${points.map(([x, y]) => `${x} ${-y}`).join(' L ')} Z`;
+}
+
 function prepareMagnetOverlay(
   geometry: GeometryPreview | null | undefined,
   rotorAngleDeg: number,
@@ -259,7 +266,7 @@ function prepareMagnetOverlay(
       return {
         center: polygonCentroid(points),
         polarity,
-        path: `${points.map((point, pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${point[0]} ${-point[1]}`).join(' ')} Z`,
+        path: polygonPath(points),
       };
     });
 }
@@ -512,7 +519,7 @@ function drawCoilPhases(
   context: CanvasRenderingContext2D,
   toCanvas: DOMMatrix,
   pixelRatio: number,
-  coilSides: readonly CoilSide[],
+  coilOutlines: ReadonlyMap<CoilSide['phase'], Path2D>,
   coilMarks: readonly CoilMark[],
   phases: FieldPhaseView,
 ): void {
@@ -523,12 +530,9 @@ function drawCoilPhases(
   context.lineWidth = (1.3 * pixelRatio) / pixelsPerMm;
   context.lineJoin = 'round';
   context.globalAlpha = 0.95;
-  coilSides.forEach((side) => {
-    context.beginPath();
-    side.points.forEach(([x, y], index) => (index === 0 ? context.moveTo(x, -y) : context.lineTo(x, -y)));
-    context.closePath();
-    context.strokeStyle = PUBLIC_PHASE_COLORS[side.phase];
-    context.stroke();
+  coilOutlines.forEach((path, phase) => {
+    context.strokeStyle = PUBLIC_PHASE_COLORS[phase];
+    context.stroke(path);
   });
   context.globalAlpha = 1;
   context.setTransform(1, 0, 0, 1, 0, 0);
@@ -572,15 +576,7 @@ function tintedArrowLayer(lines: ImageBitmap | HTMLCanvasElement, tone: FieldArr
   layer.width = lines.width;
   layer.height = lines.height;
   const context = layer.getContext('2d');
-  if (context) {
-    context.drawImage(lines, 0, 0);
-    context.globalCompositeOperation = 'multiply';
-    context.fillStyle = color;
-    context.fillRect(0, 0, layer.width, layer.height);
-    // Multiplying filled the clear pixels too; keep only the arrows' own coverage.
-    context.globalCompositeOperation = 'destination-in';
-    context.drawImage(lines, 0, 0);
-  }
+  if (context) tintFieldArrowImage(context, lines, color);
   byColor.set(color, layer);
   return layer;
 }
@@ -650,8 +646,7 @@ export function FieldResultPlot({
   airgapRingMm,
   showMagnetPolarityLabels = true,
   magnetReference = false,
-  showStatorPolarity = false,
-  showPolarityLegend = false,
+  toothPoleStrengths = null,
   statorPolarityProfile,
   statorPolarityRotationDeg = 0,
   statorInnerRadiusMm,
@@ -697,8 +692,8 @@ export function FieldResultPlot({
   airgapRingMm?: readonly [number, number];
   showMagnetPolarityLabels?: boolean;
   magnetReference?: boolean;
-  showStatorPolarity?: boolean;
-  showPolarityLegend?: boolean;
+  /** Winding polarity at each stationary tooth, N positive, for the displayed frame. */
+  toothPoleStrengths?: number[] | null;
   statorPolarityProfile?: AirgapBrBtProfile | null;
   statorPolarityRotationDeg?: number;
   statorInnerRadiusMm?: number;
@@ -760,22 +755,60 @@ export function FieldResultPlot({
     [overlay?.plot],
   );
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hasField = Boolean(prepared || raster);
+  const [canvasSize, setCanvasSize] = useState<{ width: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const measure = () => {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      setCanvasSize((previous) => previous?.width === width && previous.height === height ? previous : { width, height });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [hasField]);
   const magnetOverlay = useMemo(
     () => prepareMagnetOverlay(geometry, magnetRotationDeg),
     [geometry, magnetRotationDeg],
   );
   // The stator's coil sides and their ⊙ / ⊗ places do not turn with the rotor.
-  const coilSides = useMemo(() => coilSidesFromGeometry(geometry), [geometry]);
+  const coilOutlines = useMemo(() => {
+    const paths = new Map<CoilSide['phase'], Path2D>();
+    for (const { phase, points } of coilSidesFromGeometry(geometry)) {
+      const path = paths.get(phase) ?? new Path2D();
+      path.addPath(new Path2D(polygonPath(points)));
+      paths.set(phase, path);
+    }
+    return paths;
+  }, [geometry]);
   const coilMarks = useMemo(() => coilMarksFromGeometry(geometry), [geometry]);
-  const phasesShown = phases !== null && coilSides.length > 0;
+  const phasesShown = phases !== null && coilOutlines.size > 0;
   const phaseCycle = phases?.cycle ?? null;
   const phaseSampler = useMemo(() => (phaseCycle ? phaseCycleSampler(phaseCycle) : null), [phaseCycle]);
-  const statorPolarityCues = useMemo(
-    () => showStatorPolarity
-      ? deriveMagneticPolarityCues(statorPolarityProfile, poles, 'stator')
-      : [],
-    [poles, showStatorPolarity, statorPolarityProfile],
-  );
+  const toothCount = toothPoleStrengths?.length ?? 0;
+  const toothShapes = useMemo(() => {
+    if (!toothCount) return [];
+    return statorTeethFromGeometry(geometry).map(({ points, center, index }) => {
+      const path = polygonPath(points);
+      return {
+        index, x: center[0], y: -center[1], path, canvasPath: new Path2D(path),
+        fontSize: toothPoleLabelSize(Math.hypot(...center), toothCount),
+      };
+    });
+  }, [geometry, toothCount]);
+  const toothOverlay = useMemo(() => toothShapes.flatMap((shape) => {
+    const strength = toothPoleStrengths?.[shape.index] ?? 0;
+    const opacity = toothPoleFillOpacity(strength);
+    if (!opacity) return [];
+    return [{
+      ...shape, opacity, labelOpacity: toothPoleLabelOpacity(strength),
+      label: strength > 0 ? 'N' : 'S',
+      color: strength > 0 ? PUBLIC_MOTOR_COLORS.magnetNorth : PUBLIC_MOTOR_COLORS.magnetSouth,
+    }];
+  }), [toothShapes, toothPoleStrengths]);
   const axisPolePairs = Math.max(1, Math.round(poles / 2));
   const statorAxisDeg = useMemo(() => {
     if (!fieldAxes) return null;
@@ -936,6 +969,27 @@ export function FieldResultPlot({
           worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, x, y]));
         }
       }
+      // Tooth poles are an SVG overlay in the main view. Include them in both
+      // the magnified playback image and the magnified numerical field.
+      if (worldTransform && toothOverlay.length) {
+        context.save();
+        for (const tooth of toothOverlay) {
+          context.setTransform(worldTransform);
+          context.globalAlpha = tooth.opacity;
+          context.fillStyle = tooth.color;
+          context.fill(tooth.canvasPath);
+          if (!tooth.labelOpacity) continue;
+          context.translate(tooth.x, tooth.y);
+          context.rotate(-navigation.rotationDeg * Math.PI / 180);
+          context.globalAlpha = tooth.labelOpacity;
+          context.fillStyle = '#f8fafc';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.font = `800 ${tooth.fontSize}px ui-monospace, monospace`;
+          context.fillText(tooth.label, 0, 0);
+        }
+        context.restore();
+      }
       // The main view's airgap rings are an SVG overlay, so neither its canvas
       // nor a fresh vector redraw contains them. Draw both edges here as well.
       if (hasAirgapOverlay && worldTransform) {
@@ -951,8 +1005,9 @@ export function FieldResultPlot({
           }
         }
       }
-      if (phasesShown && phases && worldTransform) {
-        drawCoilPhases(context, worldTransform, pixelRatio, coilSides, coilMarks, phases);
+      // The sampled main canvas already includes its coils and current marks.
+      if (prepared && phasesShown && phases && worldTransform) {
+        drawCoilPhases(context, worldTransform, pixelRatio, coilOutlines, coilMarks, phases);
       }
       // A small cross marks the point under the pointer.
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -974,6 +1029,9 @@ export function FieldResultPlot({
   }, [
     airgapEdges[0],
     airgapEdges[1],
+    canvasSize,
+    coilOutlines,
+    coilMarks,
     colorRangeMode,
     fieldLineDensity,
     fitScale,
@@ -992,6 +1050,7 @@ export function FieldResultPlot({
     raster,
     phases,
     scheduleLoupeDraw,
+    toothOverlay,
     showFieldLines,
     showHeatmap,
     showMesh,
@@ -1010,7 +1069,7 @@ export function FieldResultPlot({
   useEffect(() => {
     const canvas = canvasRef.current;
     const layers = raster ?? prepared?.renderedLayers;
-    if (!canvas || !layers) return undefined;
+    if (!canvas || !layers || !canvasSize) return;
     const publishViewportRange = (nextRange: FieldViewportRange | null) => {
       const currentRange = viewportRangeRef.current;
       const unchanged = currentRange === nextRange
@@ -1040,12 +1099,13 @@ export function FieldResultPlot({
         return;
       }
       const square = overlayRaster ? rasterWorldSquare(overlayRaster.viewBox) : null;
-      if (!overlayRaster || !square) return;
-      context.drawImage(tintedArrowLayer(overlayRaster.lines, 'pm'), square.left, square.top, square.size, square.size);
+      if (!overlayRaster?.lines || !square) return;
+      const lines = overlayRaster.pmArrowsTinted ? overlayRaster.lines : tintedArrowLayer(overlayRaster.lines, 'pm');
+      context.drawImage(lines, square.left, square.top, square.size, square.size);
     };
     const draw = () => {
-      const width = Math.max(1, canvas.clientWidth);
-      const height = Math.max(1, canvas.clientHeight);
+      const width = Math.max(1, canvasSize.width);
+      const height = Math.max(1, canvasSize.height);
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
       const pixelWidth = Math.max(1, Math.round(width * pixelRatio));
       const pixelHeight = Math.max(1, Math.round(height * pixelRatio));
@@ -1136,14 +1196,14 @@ export function FieldResultPlot({
       const y = (pixelHeight - drawSize) / 2 + panY;
       context.imageSmoothingEnabled = true;
       context.imageSmoothingQuality = 'high';
-      if (raster) {
+      if (raster?.base) {
         canvas.dataset.renderMode = raster.base.width > FIELD_RASTER_SIZE
           ? 'detail-raster'
           : 'playback-raster';
         canvas.dataset.sourceResolution = `${raster.base.width}x${raster.base.height}`;
         context.drawImage(raster.base, x, y, drawSize, drawSize);
-        if (showHeatmap) context.drawImage(raster.heat, x, y, drawSize, drawSize);
-      } else if (prepared && layers) {
+        if (showHeatmap && raster.heat) context.drawImage(raster.heat, x, y, drawSize, drawSize);
+      } else if (prepared && layers.heat) {
         canvas.dataset.renderMode = 'prepared-raster';
         canvas.dataset.sourceResolution = `${layers.heat.width}x${layers.heat.height}`;
         context.drawImage(showHeatmap ? layers.heat : baseFieldLayer(prepared), x, y, drawSize, drawSize);
@@ -1195,10 +1255,11 @@ export function FieldResultPlot({
           );
           drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale);
           context.restore();
-        } else if (raster) {
+        } else if (raster?.lines) {
           // The image's light arrows, in the PM colour in the PM-only view and
           // in the stator's under the PM's in the Stator + PM view.
-          context.drawImage(tintedArrowLayer(raster.lines, primaryTone), x, y, drawSize, drawSize);
+          const lines = raster.pmArrowsTinted ? raster.lines : tintedArrowLayer(raster.lines, primaryTone);
+          context.drawImage(lines, x, y, drawSize, drawSize);
         }
         const primarySquare = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
         if (overlay && primarySquare) {
@@ -1223,7 +1284,7 @@ export function FieldResultPlot({
       const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
       const context = canvas.getContext('2d');
       if (rotorMarkDeg === null || !square || !context) return;
-      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const pixelRatio = canvas.width / Math.max(1, canvasSize.width);
       const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
       const worldScale = drawSize / square.size;
       const originX = (canvas.width - drawSize) / 2 + navigation.pan.x * pixelRatio - square.left * worldScale;
@@ -1264,7 +1325,7 @@ export function FieldResultPlot({
       const context = canvas.getContext('2d');
       const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
       if (!phasesShown || !phases || !context || !square) return;
-      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const pixelRatio = canvas.width / Math.max(1, canvasSize.width);
       const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
       const worldScale = drawSize / square.size;
       const panX = navigation.pan.x * pixelRatio;
@@ -1283,18 +1344,13 @@ export function FieldResultPlot({
           (canvas.width - drawSize) / 2 + panX - square.left * worldScale,
           (canvas.height - drawSize) / 2 + panY - square.top * worldScale,
         ]));
-      drawCoilPhases(context, toCanvas, pixelRatio, coilSides, coilMarks, phases);
+      drawCoilPhases(context, toCanvas, pixelRatio, coilOutlines, coilMarks, phases);
     };
-    const drawWithRotorMark = () => {
-      draw();
-      drawPhases();
-      drawRotorMark();
-    };
-    drawWithRotorMark();
-    const observer = new ResizeObserver(drawWithRotorMark);
-    observer.observe(canvas);
-    return () => observer.disconnect();
+    draw();
+    drawPhases();
+    drawRotorMark();
   }, [
+    canvasSize,
     colorRangeMode,
     highResolutionPlot,
     fieldLineDensity,
@@ -1308,7 +1364,7 @@ export function FieldResultPlot({
     phases,
     phasesShown,
     coilMarks,
-    coilSides,
+    coilOutlines,
     prepared,
     primaryTone,
     raster,
@@ -1397,7 +1453,9 @@ export function FieldResultPlot({
     observer.observe(root);
     return () => observer.disconnect();
   }, [phasesShown]);
-  const driveFrame = phasesShown && plotSize ? phaseDriveFrame(plotSize.width, plotSize.height) : null;
+  const driveFrame = useMemo(() => (
+    phasesShown && plotSize ? phaseDriveFrame(plotSize.width, plotSize.height) : null
+  ), [phasesShown, plotSize]);
   const driveMarginPx = driveFrame && plotSize
     ? Math.round(driveFrame.panel.x + driveFrame.panel.width + Math.max(36, plotSize.width * 0.05))
     : 0;
@@ -1447,7 +1505,10 @@ export function FieldResultPlot({
       sample,
       title: phases.currentsA ? undefined : 'PM ONLY · NO STATOR CURRENT',
     });
-  });
+  }, [
+    driveFrame, phases, phaseSampler, fitScale, canvasSize, motorFitWidth,
+    navigation.viewportRef, navigation.pan.x, navigation.pan.y, navigation.scale,
+  ]);
 
   // Every hook is above this line, so a plot that has no data yet keeps the same hooks.
   if (!prepared && !raster) return null;
@@ -1477,10 +1538,6 @@ export function FieldResultPlot({
     overlayOffsetX,
     overlayOffsetY,
   ].join(' ');
-  const statorPoleLabelRadius = Number.isFinite(statorInnerRadiusMm)
-    ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
-    : null;
-  const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
   const hasPhaseOverlay = phasesShown;
@@ -1493,28 +1550,26 @@ export function FieldResultPlot({
     return [radius * Math.cos(angleRad), -radius * Math.sin(angleRad)] as const;
   };
   const axisPitchDeg = 360 / axisPolePairs;
-  const axisAngles = (startDeg: number) => Array.from(
-    { length: axisPolePairs },
-    (_, index) => startDeg + index * axisPitchDeg,
-  );
-  // The arc marks one rotor pole nearest the top of the view and the stator
-  // axis just ahead of it in the direction of rotation.
+  // Use the north pole nearest the top and the stator axis paired with it.
   const arcRotorDeg = hasFieldAxes && rotorAxisDeg !== null
-    ? axisAngles(rotorAxisDeg).reduce((best, angle) => (
-      Math.abs(((angle - 90) % 360 + 540) % 360 - 180) < Math.abs(((best - 90) % 360 + 540) % 360 - 180) ? angle : best
-    ))
+    ? rotorAxisDeg - Math.round((rotorAxisDeg - 90) / axisPitchDeg) * axisPitchDeg
     : 0;
   const arcSpanDeg = hasFieldAxes && leadElecDeg !== null
     ? (fieldAxes?.rotation === 'clockwise' ? -1 : 1) * leadElecDeg / axisPolePairs
     : 0;
+  const arcStatorDeg = arcRotorDeg + arcSpanDeg;
+  const axisArrows = hasFieldAxes ? {
+    pm: fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, arcRotorDeg),
+    stator: fieldAxisArrowPaths(axisStatorRadius * 1.04, axisStatorRadius * 1.32, arcStatorDeg),
+  } : null;
   const arcRadius = axisRotorRadius * 0.5;
   const [arcX1, arcY1] = polar(arcRadius, arcRotorDeg);
-  const [arcX2, arcY2] = polar(arcRadius, arcRotorDeg + arcSpanDeg);
+  const [arcX2, arcY2] = polar(arcRadius, arcStatorDeg);
   const [arcLabelX, arcLabelY] = polar(arcRadius * 0.8, arcRotorDeg + arcSpanDeg / 2);
   // Two lines from the centre to the marked rotor arrow and the stator arrow
   // ahead of it, so the lead angle reads as an angle at the shaft.
   const [rayRotorX, rayRotorY] = polar(axisRotorRadius * 0.62, arcRotorDeg);
-  const [rayStatorX, rayStatorY] = polar(axisStatorRadius * 1.04, arcRotorDeg + arcSpanDeg);
+  const [rayStatorX, rayStatorY] = polar(axisStatorRadius * 1.04, arcStatorDeg);
   const axisFontSize = Math.max(1.2, axisRotorRadius * 0.07);
   const leadLabel = `${Math.round(Math.abs(leadElecDeg ?? 0))}° elec`;
   const gammaNote = leadElecDeg !== null && leadElecDeg > 0 ? currentAngleNote(fieldAxes?.currentAngleDeg) : null;
@@ -1531,7 +1586,7 @@ export function FieldResultPlot({
       ? magnetReference ? 'dimmed permanent-magnet reference geometry' : 'permanent magnets'
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
-    hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
+    toothOverlay.length ? 'stator tooth poles in red for north and blue for south' : null,
     hasPhaseOverlay ? 'stator coils coloured by phase with the way their current flows' : null,
     hasFieldAxes ? 'stator and magnet field-axis arrows with the d and q axes' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
@@ -1626,7 +1681,7 @@ export function FieldResultPlot({
   const linesLegendNote = [
     'Separate solves: in saturated steel the resultant is not their sum.',
     hasFieldAxes && leadElecDeg !== null
-      ? `Arrows: each field's ${axisPolePairs}-pole-pair flux pointing outward. ${leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}`
+      ? `The two arrows from the center mark the outward flux axes of the ${axisPolePairs}-pole-pair stator and magnet fields. ${leadElecDeg >= 0 ? 'The magnets are pulled after the stator field.' : 'The stator field holds the magnets back.'}`
       : null,
     hasFieldAxes && leadElecDeg !== null ? leadAngleExplanation(leadElecDeg, axisPolePairs) : null,
     hasFieldAxes && leadElecDeg !== null && statorStrongestPolePairs !== null && statorStrongestPolePairs !== axisPolePairs
@@ -1640,12 +1695,6 @@ export function FieldResultPlot({
         <div>
           <strong>{title}</strong>
           <span>{subtitle}</span>
-          {showPolarityLegend && showMagnets && hasStatorPolarityCues && (
-            <div className="public-field-pole-legend" aria-label="Magnetic pole label legend">
-              <span><i className="is-pm" aria-hidden="true" />Letter inside magnet · inactive PM</span>
-              <span><i className="is-stator" aria-hidden="true">Nₛ</i>Color badge · stator pole</span>
-            </div>
-          )}
         </div>
         {showControls && <div className="public-field-result-controls" aria-label="Field map layers">
           {hasHeatmap && <button type="button" aria-pressed={showHeatmap} onClick={() => setInternalShowHeatmap((value) => !value)}>Heatmap</button>}
@@ -1668,8 +1717,16 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
+          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || toothOverlay.length > 0 || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
+              {toothOverlay.map((tooth) => (
+                <g className="public-field-tooth-pole" key={tooth.index}>
+                  <path d={tooth.path} fill={tooth.color} fillOpacity={tooth.opacity} />
+                  {tooth.labelOpacity > 0 && (
+                    <text x={tooth.x} y={tooth.y} transform={upright(tooth.x, tooth.y)} fontSize={tooth.fontSize} opacity={tooth.labelOpacity}>{tooth.label}</text>
+                  )}
+                </g>
+              ))}
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
                   <circle className="is-halo" cx="0" cy="0" r={airgapEdges[0]} />
@@ -1684,31 +1741,21 @@ export function FieldResultPlot({
                   {showMagnetPolarityLabels && magnetOverlay.map((magnet, index) => <text x={magnet.center[0]} y={-magnet.center[1]} transform={upright(magnet.center[0], -magnet.center[1])} className="public-field-result-magnet-label" key={`magnet-label-${index}`}>{magnet.polarity === 'north' ? 'N' : 'S'}</text>)}
                 </g>
               )}
-              {hasFieldAxes && statorAxisDeg !== null && rotorAxisDeg !== null && (
+              {axisArrows && (
                 <g className="public-field-axes">
                   <path className="public-field-axis-ray is-pm" d={`M 0 0 L ${rayRotorX} ${rayRotorY}`} />
                   <path className="public-field-axis-q" d={`M 0 0 L ${qEndX} ${qEndY}`} />
                   <text className="public-field-axis-label is-dq" x={qLabelX} y={qLabelY} transform={upright(qLabelX, qLabelY)} style={{ fontSize: axisFontSize }}>q</text>
                   <text className="public-field-axis-label is-dq is-d" x={dLabelX} y={dLabelY} transform={upright(dLabelX, dLabelY)} style={{ fontSize: axisFontSize }}>d</text>
                   <path className="public-field-axis-ray is-stator" d={`M 0 0 L ${rayStatorX} ${rayStatorY}`} />
-                  {axisAngles(rotorAxisDeg).map((angle) => {
-                    const arrow = fieldAxisArrowPaths(axisRotorRadius * 0.62, axisRotorRadius * 0.96, angle);
-                    return (
-                      <g className="public-field-axis is-pm" key={`pm-axis-${angle}`}>
-                        <path className="public-field-axis-shaft" d={arrow.shaft} />
-                        <path d={arrow.head} />
-                      </g>
-                    );
-                  })}
-                  {axisAngles(statorAxisDeg).map((angle) => {
-                    const arrow = fieldAxisArrowPaths(axisStatorRadius * 1.04, axisStatorRadius * 1.32, angle);
-                    return (
-                      <g className="public-field-axis is-stator" key={`stator-axis-${angle}`}>
-                        <path className="public-field-axis-shaft" d={arrow.shaft} />
-                        <path d={arrow.head} />
-                      </g>
-                    );
-                  })}
+                  <g className="public-field-axis is-pm">
+                    <path className="public-field-axis-shaft" d={axisArrows.pm.shaft} />
+                    <path d={axisArrows.pm.head} />
+                  </g>
+                  <g className="public-field-axis is-stator">
+                    <path className="public-field-axis-shaft" d={axisArrows.stator.shaft} />
+                    <path d={axisArrows.stator.head} />
+                  </g>
                   <path
                     className="public-field-axis-arc"
                     d={`M ${arcX1} ${arcY1} A ${arcRadius} ${arcRadius} 0 0 ${arcSpanDeg > 0 ? 0 : 1} ${arcX2} ${arcY2}`}
@@ -1730,17 +1777,6 @@ export function FieldResultPlot({
                   </g>
                 </g>
               )}
-              {hasStatorPolarityCues && statorPolarityCues.map((cue, index) => {
-                const angleRad = (cue.angleDeg + statorPolarityRotationDeg) * Math.PI / 180;
-                const x = statorPoleLabelRadius * Math.cos(angleRad);
-                const y = -statorPoleLabelRadius * Math.sin(angleRad);
-                return (
-                  <g className={`public-field-result-stator-pole is-${cue.label === 'N' ? 'north' : 'south'}`} transform={upright(x, y)} key={`stator-pole-${index}`}>
-                    <rect x={x - 2.2} y={y - 1.45} width="4.4" height="2.9" rx="1.1" />
-                    <text x={x} y={y}>{cue.label}ₛ</text>
-                  </g>
-                );
-              })}
             </g>
           </svg>}
         </div>

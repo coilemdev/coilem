@@ -248,7 +248,7 @@ export function windingSymbolSide(label: string | null | undefined): Pick<Windin
  * conductors. An "in" side carries +J, out of the page (the solver's source sign,
  * and the cross-section's ⊙); each side holds an equal share of its slot.
  */
-export function slotCurrents(sides: WindingSide[], slotCount: number, currents: [number, number, number]): number[] {
+export function slotCurrents(sides: WindingSide[], slotCount: number, currents: readonly [number, number, number]): number[] {
   const perSlot = new Array<number>(slotCount).fill(0);
   sides.forEach((side) => { if (side.slot_index >= 0 && side.slot_index < slotCount) perSlot[side.slot_index] += 1; });
   const out = new Array<number>(slotCount).fill(0);
@@ -283,4 +283,30 @@ export function toothIndexAt(angleRad: number, slotCount: number): number {
   const pitch = (2 * Math.PI) / Math.max(1, slotCount);
   const turn = ((angleRad % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
   return Math.floor(turn / pitch) % Math.max(1, slotCount);
+}
+
+/** The label position on a stator tooth and its index in the winding's tooth-pole array. */
+export function toothPosition(points: Array<[number, number]>, slotCount: number) {
+  const center = points.reduce<[number, number]>(
+    (sum, [x, y]) => [sum[0] + x / points.length, sum[1] + y / points.length],
+    [0, 0],
+  );
+  return { center, index: toothIndexAt(Math.atan2(center[1], center[0]), slotCount) };
+}
+
+/** Tooth tint and lettering fade independently as the tooth approaches neutral. */
+export function toothPoleFillOpacity(strength: number): number {
+  const magnitude = Math.abs(strength);
+  return magnitude > 0.06 ? 0.14 + 0.5 * magnitude : 0;
+}
+
+export function toothPoleLabelOpacity(strength: number): number {
+  const magnitude = Math.abs(strength);
+  return magnitude >= 0.3 ? 0.45 + 0.55 * magnitude : 0;
+}
+
+/** Letter height given the tooth-center radius, in the same units as that radius. */
+export function toothPoleLabelSize(radius: number, slotCount: number): number {
+  const toothWidth = (2 * Math.PI * radius / slotCount) * 0.42;
+  return toothWidth * 0.55;
 }

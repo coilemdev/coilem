@@ -109,6 +109,7 @@ const halbachStyleSource = await readFile(
 const waveformSource = await readFile(path.join(frontendRoot, 'src/public/WaveformChart.tsx'), 'utf8');
 const waveformReadoutSource = await readFile(path.join(frontendRoot, 'src/public/WaveformReadout.tsx'), 'utf8');
 const fieldResultSource = await readFile(path.join(frontendRoot, 'src/public/FieldResultPlot.tsx'), 'utf8');
+const fieldArrowsSource = await readFile(path.join(frontendRoot, 'src/public/fieldArrows.ts'), 'utf8');
 const packageSource = await readFile(path.join(frontendRoot, 'package.json'), 'utf8');
 const solvedFieldSource = await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8');
 const playbackContractSource = await readFile(path.join(frontendRoot, 'src/public/fieldPlaybackContract.ts'), 'utf8');
@@ -1002,12 +1003,13 @@ for (const lessonFile of [
 assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
 assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
 assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
-assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showPhases, fieldLineDensity, playbackRpm \};/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, fieldLineDensity, playbackRpm \};/);
 // Phases sits in Show after the arrow density: the coils by phase, which way
 // their current flows at the shown position, and the solver's A / B / C currents.
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}\s*<button[\s\S]*?aria-pressed=\{showPhases && Boolean\(phaseCycle\)\}[\s\S]*?aria-label="Phases"/);
 assert.match(solvedFieldSource, /const phaseCycle = useMemo\(\(\) => phaseCycleFromFrames\(result\.slot_excitation_frames\)/);
-assert.match(solvedFieldSource, /currentsA: source === 'pm' \? null : phaseCurrentsAt\(phaseCycle, shownElectricalAngleDeg\)/);
+assert.match(solvedFieldSource, /source !== 'pm' && \(showPhases \|\| showToothPoles\)\s*\? phaseCurrentsAt\(phaseCycle, shownElectricalAngleDeg\)/);
+assert.match(solvedFieldSource, /currentsA: shownCurrents/);
 assert.match(solvedFieldSource, /phases=\{phaseView\}/);
 // Its panel is the Geometry view's drive panel, wired into the motor, with the
 // solve's recorded currents as its waveforms; the field box narrows to make room.
@@ -1016,12 +1018,12 @@ assert.match(fieldResultSource, /\.\.\.\(driveMarginPx \? \{ marginLeft: driveMa
 assert.match(fieldResultSource, /<div className="public-winding-key public-field-phase-key" aria-label="Winding phase and current direction legend">/);
 // Coils and ⊙ / ⊗ are drawn on the field canvas (and the magnifier) at screen
 // size with the Geometry view's marker, so they stay crisp and readable zoomed in.
-assert.match(fieldResultSource, /drawCoilPhases\(context, toCanvas, pixelRatio, coilSides, coilMarks, phases\);/);
-assert.match(fieldResultSource, /drawCoilPhases\(context, worldTransform, pixelRatio, coilSides, coilMarks, phases\);/);
+assert.match(fieldResultSource, /drawCoilPhases\(context, toCanvas, pixelRatio, coilOutlines, coilMarks, phases\);/);
+assert.match(fieldResultSource, /drawCoilPhases\(context, worldTransform, pixelRatio, coilOutlines, coilMarks, phases\);/);
 assert.match(fieldResultSource, /drawCurrentMarker\(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS\[mark\.phase\]\);/);
 assert.doesNotMatch(fieldResultSource, /public-field-phase-coils|public-field-phase-mark/);
 assert.match(phaseDrivePanelSource, /export function drawCurrentMarker\(/);
-assert.doesNotMatch(fieldResultSource, /FieldPhaseReadout|fillOpacity/);
+assert.doesNotMatch(fieldResultSource, /FieldPhaseReadout/);
 assert.match(styleSource, /\.public-field-result > \.public-field-drive-panel \{ position: absolute; inset: 0;[^}]*pointer-events: none; \}/);
 assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
 assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
@@ -1043,7 +1045,7 @@ assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
 // The Mesh tab's element count and quality are in the run plan, not the title bar.
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
-assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{shownElectricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.
 assert.match(styleSource, /\.public-field-dock \{ border: 0; border-top: 1px solid var\(--border-default\); border-radius: 0;/);
@@ -1060,7 +1062,7 @@ assert.match(solvedFieldSource, /<span className="public-field-text-long">Field 
 // The field panel stays two lines (controls, then playback): narrower panels
 // tighten the controls, then shorten the two toggles and the readout.
 assert.match(solvedFieldSource, /<span className="public-field-text-long">Flux density<\/span><span className="public-field-text-short" aria-hidden="true">Flux<\/span>/);
-assert.match(solvedFieldSource, /\{electricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\|/);
+assert.match(solvedFieldSource, /\{shownElectricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\|/);
 assert.match(styleSource, /@container \(max-width: 900px\) \{\s*\.public-field-dock \.public-field-dock-controls \{ gap: 8px; \}/);
 assert.match(styleSource, /@container \(max-width: 720px\) \{\s*\.public-field-dock \.public-field-text-long \{ display: none; \}/);
 assert.match(solvedFieldSource, /<summary>More\{moreLayersOn > 0 && <em>\{moreLayersOn\} on<\/em>\}<\/summary>\s*<div className="public-field-layer-controls" role="group" aria-label="More field layers">\s*\{renderMoreLayerButtons\(\)\}/);
@@ -1099,7 +1101,7 @@ assert.doesNotMatch(solvedFieldSource, /public-field-playback-meta/);
 // shows in the title bar; play resumes there, stop goes back to the first.
 assert.doesNotMatch(solvedFieldSource, /type="range"|Solved rotor position|public-field-position-control|playbackSliderRef/);
 assert.match(solvedFieldSource, /aria-label="Stop and go to the first position"/);
-assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{\s*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);\s*\};/);
+assert.match(solvedFieldSource, /const togglePlayback = \(\) => \{[^}]*setPlaybackWaiting\(false\);\s*setPlaying\(!playing\);/);
 // Play waits until a saved run's playback images are drawn (they are drawn after the result is saved).
 assert.match(solvedFieldSource, /getPublicPlaybackStatus\(check\.artifactId, check\.composition\)/);
 assert.match(solvedFieldSource, /ref\.byte_count === null/);
@@ -1165,13 +1167,8 @@ assert.match(fieldResultSource, /hasAirgapOverlay/);
 assert.match(fieldResultSource, /prepareMagnetOverlay/);
 assert.match(fieldResultSource, /public-field-result-magnet is-/);
 assert.match(fieldResultSource, /public-field-result-magnet-label/);
-assert.match(fieldResultSource, /deriveMagneticPolarityCues\(statorPolarityProfile, poles, 'stator'\)/);
-assert.match(fieldResultSource, /public-field-result-stator-pole is-/);
+assert.match(fieldResultSource, /public-field-tooth-pole/);
 assert.match(fieldResultSource, /public-field-result-pm-overlay.*is-reference/);
-assert.match(fieldResultSource, /Letter inside magnet · inactive PM/);
-assert.match(fieldResultSource, /Color badge · stator pole/);
-assert.match(fieldResultSource, /\{cue\.label\}ₛ/);
-assert.match(fieldResultSource, /<rect x=\{x - 2\.2\} y=\{y - 1\.45\} width="4\.4" height="2\.9" rx="1\.1" \/>/);
 assert.match(fieldResultSource, /useViewportNavigation/);
 assert.match(fieldResultSource, /ViewportNavigationControls/);
 assert.match(fieldResultSource, /public-viewport-navigation-content/);
@@ -1196,7 +1193,7 @@ assert.match(fieldResultSource, /Waiting for samples|Completed Magneto2D solutio
 assert.match(fieldResultSource, /visibleLayerLabel/);
 assert.match(fieldResultSource, /probeEnabled\?: boolean/);
 assert.match(fieldResultSource, /\|\| !probeEnabled/);
-assert.match(solvedFieldSource, /probeEnabled=\{!playing && Boolean\(exactVectorPlot\) && !overlayActive\}/);
+assert.match(solvedFieldSource, /probeEnabled=\{Boolean\(highResolutionPlot\) && !overlayActive\}/);
 assert.match(solvedFieldSource, /disabled=\{!densityAdjustable\}/);
 assert.match(solvedFieldSource, /Playback uses medium arrow density/);
 assert.match(materialWorkspaceSource, /<MaterialCurveChart key=\{model\.id\} model=\{model\}/);
@@ -1205,11 +1202,7 @@ assert.match(styleSource, /\.public-field-result-line \{[^}]*stroke: #ffd166[^}]
 assert.match(styleSource, /\.public-field-result-magnet\.is-north \{ fill: #ef4444; \}/);
 assert.match(styleSource, /\.public-field-result-magnet\.is-south \{ fill: #3b82f6; \}/);
 assert.match(styleSource, /\.public-field-result-magnet-label \{[^}]*stroke-width: \.07;[^}]*font-size: 2px;[^}]*font-weight: 750;/s);
-assert.match(styleSource, /\.public-field-result-stator-pole\.is-north rect \{ fill: rgba\(127,29,29,\.86\); stroke: #fb7185; \}/);
-assert.match(styleSource, /\.public-field-result-stator-pole\.is-south rect \{ fill: rgba\(30,58,138,\.86\); stroke: #60a5fa; \}/);
 assert.match(styleSource, /\.public-field-result-pm-overlay\.is-reference \{ opacity: \.4; \}/);
-assert.match(styleSource, /\.public-field-result-stator-pole rect \{[^}]*stroke-width: \.16;[^}]*vector-effect: non-scaling-stroke;/s);
-assert.match(styleSource, /\.public-field-pole-legend \{/);
 // Field details share the playback row's one info popover with the composition note.
 assert.match(solvedFieldSource, /<details className="public-field-physics-info">\s*<summary aria-label="Field details" title="Field details">i<\/summary>\s*<div className="public-field-summary-panel">[\s\S]*?className="public-field-summary-note">PM-only and Stator-only are separate nonlinear solves/);
 assert.doesNotMatch(solvedFieldSource, /<details className="public-field-summary"/);
@@ -1250,7 +1243,8 @@ assert.match(solvedFieldSource, />Flux density</);
 assert.match(solvedFieldSource, />Airgap</);
 assert.match(solvedFieldSource, />Field arrows</);
 assert.match(solvedFieldSource, /'PM reference' : 'Magnets'/);
-assert.match(solvedFieldSource, />Pole labels</);
+assert.match(solvedFieldSource, />Magnet labels</);
+assert.match(solvedFieldSource, />Tooth poles</);
 assert.match(solvedFieldSource, /fieldLineDensity/);
 assert.match(solvedFieldSource, /FIELD_LINE_DENSITY_STOPS\.map\(\(stop\) => \(/);
 assert.match(solvedFieldSource, /aria-pressed=\{displayedDensity === stop\}\s*disabled=\{!densityAdjustable\}\s*onClick=\{\(\) => setFieldLineDensity\(stop\)\}/);
@@ -1323,7 +1317,7 @@ assert.match(solvedFieldSource, /className=\{`public-field-source-pair\$\{overla
 assert.match(solvedFieldSource, /pmLines=\{source === 'pm'\}/);
 assert.match(fieldResultSource, /const primaryTone: FieldArrowTone = pmLines \? 'pm' : overlay \? 'stator' : 'field';/);
 assert.match(fieldResultSource, /drawFieldArrowLayer\(context, prepared, fieldLineDensity, primaryTone, navigation\.scale\)/);
-assert.match(fieldResultSource, /context\.drawImage\(tintedArrowLayer\(raster\.lines, primaryTone\), x, y, drawSize, drawSize\);/);
+assert.match(fieldResultSource, /raster\.pmArrowsTinted \? raster\.lines : tintedArrowLayer\(raster\.lines, primaryTone\)/);
 assert.match(styleSource, /\.public-field-dock \.public-field-dock-controls \.public-field-source-pair \.is-pm\[aria-pressed="true"\] \{ color: #5ed3f3;/);
 assert.doesNotMatch(styleSource, /\.public-field-source-pair\.is-both \.is-pm/);
 // Every hook in the field plot runs before it returns nothing for a plot without data.
@@ -1340,12 +1334,12 @@ assert.match(solvedFieldSource, /OVERLAY_ANGLE_TOLERANCE_DEG/);
 assert.match(solvedFieldSource, /showHeatmap=\{showHeatmap && !overlayActive\}/);
 assert.match(solvedFieldSource, /Off while PM and Stator are both shown: one \|B\| map cannot belong to both fields/);
 assert.match(solvedFieldSource, /overlay=\{fieldLineOverlay\}/);
-assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', false\)/);
+assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', overlayLayers\)/);
 assert.match(solvedFieldSource, /if \(heldOverlayRaster\) shown\.add\(heldOverlayRaster\)/);
 // The playback images' light arrows take the PM or stator colour by multiplying,
 // which keeps their dark rims; the PM field's sit between the stator's rings.
-assert.match(fieldResultSource, /globalCompositeOperation = 'multiply'/);
-assert.match(fieldResultSource, /globalCompositeOperation = 'destination-in'/);
+assert.match(fieldArrowsSource, /globalCompositeOperation = 'multiply'/);
+assert.match(fieldArrowsSource, /globalCompositeOperation = 'destination-in'/);
 assert.match(fieldResultSource, /drawFieldArrowLayer\(context, overlayPrepared, fieldLineDensity, 'pm', navigation\.scale\)/);
 assert.match(fieldResultSource, /tone === 'pm' \? FIELD_ARROW_RING_OFFSET\.pm : FIELD_ARROW_RING_OFFSET\.primary/);
 // Stator + PM: one legend line above the view (colours and the stator lead),
@@ -1364,7 +1358,7 @@ assert.doesNotMatch(styleSource, /\.public-field-toolbar-groups \{ grid-column: 
 assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? fieldAxes : null\}/);
 // The Stator + PM view notes the run's current angle: the stator field sits at 90° + γ.
 assert.match(solvedFieldSource, /\.\.\.CLOCKWISE_FIELD_AXES,\s*currentAngleDeg: config\.solve_params\.excitation_mode === 'sinusoidal'/);
-assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setFieldLineDensity\('low'\);/);
+assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setShowToothPoles\(true\);\s*setFieldLineDensity\('low'\);/);
 assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
 assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);
 assert.match(fieldResultSource, /className="public-field-axis is-stator"/);
@@ -1381,23 +1375,21 @@ assert.match(styleSource, /\.public-field-axis \{ fill: none; stroke-width: \.8p
 assert.match(styleSource, /\.public-field-axis-shaft \{ stroke-dasharray: 4 3; \}/);
 // Centre lines to the marked rotor arrow and the stator arrow ahead of it frame the lead angle.
 assert.match(fieldResultSource, /polar\(axisRotorRadius \* 0\.62, arcRotorDeg\)/);
-assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcRotorDeg \+ arcSpanDeg\)/);
+assert.match(fieldResultSource, /polar\(axisStatorRadius \* 1\.04, arcStatorDeg\)/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-pm\" d=\{`M 0 0 L \$\{rayRotorX\} \$\{rayRotorY\}`\}/);
 assert.match(fieldResultSource, /className=\"public-field-axis-ray is-stator\" d=\{`M 0 0 L \$\{rayStatorX\} \$\{rayStatorY\}`\}/);
 // The lead label's \"?\" explains why 90° elec is not a right angle on screen.
 assert.match(fieldResultSource, /<g className=\"public-field-axis-help\" transform=\{upright\(arcLabelX, arcLabelY\)\}>\s*<title>\{leadAngleExplanation\(leadElecDeg \?\? 0, axisPolePairs\)\}<\/title>/);
 assert.match(styleSource, /\.public-field-axis-help \{ pointer-events: auto; cursor: help; \}/);
-assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, angle\)/);
-assert.match(fieldResultSource, /<path className=\"public-field-axis-shaft\" d=\{arrow\.shaft\} \/>/);
-assert.match(solvedFieldSource, /showPolarityLegend=\{source === 'armature' && showPoleLabels\}/);
-assert.match(solvedFieldSource, /showStatorPolarity=\{source === 'armature' && showPoleLabels\}/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisStatorRadius \* 1\.04, axisStatorRadius \* 1\.32, arcStatorDeg\)/);
+assert.match(fieldResultSource, /fieldAxisArrowPaths\(axisRotorRadius \* 0\.62, axisRotorRadius \* 0\.96, arcRotorDeg\)/);
 assert.match(solvedFieldSource, /nearestAirgapProfile/);
 assert.match(solvedFieldSource, /armature\?\.airgap_profiles \?\? \[\]/);
 assert.match(solvedFieldSource, /airgap_brbt: airgapProfile\?\.airgap_brbt \?\? solvedFrame\?\.airgap_brbt \?\? null/);
 assert.match(solvedFieldSource, /const statorPolarityRotationDeg = source === 'armature'/);
 assert.match(solvedFieldSource, /\? -mechanicalAngleDeg/);
 assert.match(solvedFieldSource, /statorPolarityRotationDeg=\{statorPolarityRotationDeg\}/);
-assert.match(fieldResultSource, /cue\.angleDeg \+ statorPolarityRotationDeg/);
+assert.match(fieldResultSource, /harmonic\.peakDeg \+ statorPolarityRotationDeg/);
 assert.match(resultSummarySource, /Solver time is the wall-clock time for meshing, solving and building the result/);
 assert.doesNotMatch(workspaceSource, /may sum parallel tasks/);
 assert.match(solvedFieldSource, /setPlaying/);
@@ -1419,7 +1411,7 @@ assert.match(solvedFieldSource, /Play field clockwise/);
 // The electrical angle rides on the position readout; the mechanical angle and
 // the clockwise direction are in the field details, and the frame status shows
 // only while frames are still loading.
-assert.match(solvedFieldSource, /\{electricalAngleDeg\.toFixed\(1\)\}° elec<span/);
+assert.match(solvedFieldSource, /\{shownElectricalAngleDeg\.toFixed\(1\)\}° elec<span/);
 assert.match(solvedFieldSource, /<div><dt>Playback<\/dt><dd>Clockwise<\/dd><\/div>/);
 assert.doesNotMatch(solvedFieldSource, /MAX_CACHED_FRAMES/);
 assert.match(solvedFieldSource, /window\.requestAnimationFrame\(animate\)/);
@@ -1436,9 +1428,9 @@ assert.match(solvedFieldSource, /windowPlaybackFrameIndex\(angleFrames, nextPlay
 assert.match(solvedFieldSource, /frameLoaderRef\.current\.request\(\(\) => loadVisualFrame\(descriptor, source\)\)/);
 assert.match(solvedFieldSource, /if \(angleFrames\.length < 2 \|\| \(scrubbing && !playing\)\) return;/);
 assert.match(solvedFieldSource, /scrubNeighbourIndices\(angleFrames\.length, boundedIndex, scrubDirection, !playbackSpan\.windowed\)/);
-assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster\?\.source === source/);
+assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !partialRaster && !exactVectorPlot && heldRaster\?\.source === source/);
 assert.match(solvedFieldSource, /if \(heldRaster\) shown\.add\(heldRaster\.raster\);/, 'a held frame is never closed while on screen');
-assert.match(solvedFieldSource, /magnetRotationDeg=\{\(heldFrame\?\.angleDeg \?\? electricalAngleDeg\) \/ polePairs\}/);
+assert.match(solvedFieldSource, /magnetRotationDeg=\{mechanicalAngleDeg\}/);
 // Solve-page updates are a thin banner under the top bar, in the page flow, so
 // they never cover the motor view's tabs (owner QA of #64).
 assert.match(workspaceSource, /<div className="public-solve-stage">\s*\{\/\*[^]*?\*\/\}\s*\{transientNotice && \(\s*<div className="public-solve-banner" role="status">/);
@@ -1446,9 +1438,10 @@ assert.doesNotMatch(workspaceSource, /public-solve-toast/);
 assert.doesNotMatch(styleSource, /public-solve-toast/);
 assert.match(styleSource, /\.public-solve-stage > \.public-solve-workspace \{\s*flex: 1 1 auto;/);
 assert.doesNotMatch(styleSource.match(/\.public-solve-banner \{[^}]*\}/)?.[0] ?? '', /position: (absolute|fixed)/, 'the banner takes its own space');
-// #59: the mesh layer is decoded only while the Mesh overlay is shown.
-assert.match(playbackRasterizerSource, /layers\.mesh && withMesh \? load\(layers\.mesh\.artifact_id\)/);
-assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh,/);
+// Each selected layer is decoded separately, including just the PM arrows in Stator + PM.
+assert.match(playbackRasterizerSource, /layers\.mesh && \(requestedLayers & FieldRasterLayer\.Mesh\) \? load\(layers\.mesh\.artifact_id\)/);
+assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*requestedLayers,/);
+assert.match(solvedFieldSource, /const overlayLayers = showFieldLines \? FieldRasterLayer\.Lines : 0;/);
 assert.match(solvedFieldSource, /<RpmField\s+value=\{playbackRpm\}\s+min=\{PUBLIC_FIELD_PLAYBACK_MIN_RPM\}\s+max=\{PUBLIC_FIELD_PLAYBACK_MAX_RPM\}\s+label="Speed"\s+ariaLabel="Playback speed \(RPM\)"/);
 assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
@@ -1487,7 +1480,7 @@ assert.match(solvedFieldSource, /renderDetail\(source, descriptor\.playback_fram
 assert.match(solvedFieldSource, /Prefer exact solver vectors for a stopped, zoomed frame/);
 assert.match(solvedFieldSource, /loadNumericalDetail\(\)\.then/);
 assert.match(solvedFieldSource, /loadedNumericalDetail \|\| detailRequestRef\.current !== requestId/);
-assert.match(solvedFieldSource, /highResolutionPlot=\{exactVectorPlot\}/);
+assert.match(solvedFieldSource, /highResolutionPlot=\{highResolutionPlot\}/);
 assert.match(solvedFieldSource, /onViewportScaleSettled=\{setFieldViewportScale\}/);
 assert.match(fieldResultSource, /preparedFieldPlotCache/);
 assert.match(fieldResultSource, /cachedFieldPlot/);

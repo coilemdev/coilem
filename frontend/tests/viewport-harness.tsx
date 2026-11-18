@@ -12,6 +12,7 @@ import { MotorCanvas } from '../src/public/MotorCanvas';
 import { SolvedFieldViewer } from '../src/public/SolvedFieldViewer';
 import { WindingLayoutView } from '../src/public/WindingLayoutView';
 import { phaseDriveFrame } from '../src/public/phaseDrive';
+import { createFieldPositionLink } from '../src/public/fieldPositionLink';
 import { DEFAULT_CONFIG, type GeometryPreview, type MaterialCatalog, type MeshPreview, type PublicFieldLinePlot, type SolveResult } from '../src/public/model';
 import m350Curve from '../../materials/electrical-steel/M350-50A.csv?raw';
 import { useLayerMenu } from '../src/public/useLayerMenu';
@@ -156,6 +157,67 @@ if (mode === 'tutorial-scale') {
     mechanical_loss_W: 0, total_loss_W: 15, shaft_power_W: 314, input_power_W: 329,
     efficiency_pct: null, efficiency_status: 'unavailable', efficiency_status_reason: 'Efficiency needs the iron loss.' } as LossBreakdown;
   root.render(<div style={{ width: 850, padding: 24 }}><LossesCard loss={loss} /></div>);
+} else if (mode === 'tooth-poles' || mode === 'field-axes') {
+  const geometry: GeometryPreview = {
+    ...phaseGeometry,
+    regions: [
+      { region_type: 'stator_tooth', points: [[6, 1], [8, 1], [8, 3], [6, 3]] },
+      { region_type: 'stator_tooth', points: [[-6, -1], [-8, -1], [-8, -3], [-6, -3]] },
+      { region_type: 'slot_0_(a+)', points: [[6, -1], [8, -1], [8, 0], [6, 0]] },
+      { region_type: 'magnet_0_north', points: [[4, -1], [5, -1], [5, 1], [4, 1]] },
+    ],
+    winding_layout: [
+      { slot_index: 0, phase: 'A', direction: 'in', layer: 1 },
+      { slot_index: 1, phase: 'A', direction: 'out', layer: 1 },
+      { slot_index: 6, phase: 'B', direction: 'in', layer: 1 },
+      { slot_index: 7, phase: 'B', direction: 'out', layer: 1 },
+    ],
+  };
+  const frames = [0, 180].map(angle => ({ angle_deg: angle, field_frame_artifact: { artifact_id: `tooth-test-${angle}` }, has_pm_only: true }));
+  const loadedResult = { ...result, field_line_frames: frames, slot_excitation_frames: [
+    { angle_deg: 0, phase_current_a: [2, -2, 0] }, { angle_deg: 150, phase_current_a: [-2, 2, 0] },
+    { angle_deg: 180, phase_current_a: [2, -2, 0] },
+  ] };
+  const armatureFrames = mode === 'field-axes' ? frames.map(frame => {
+    const bins = Array.from({ length: 32 }, (_, i) => {
+      const angle = i * 360 / 32;
+      const br = Math.cos((4 * angle + frame.angle_deg + 90) * Math.PI / 180);
+      return { mech_angle_deg: angle, br_t: br, bt_t: 0, br_bt_t2: 0, samples: 1 };
+    });
+    return { ...frame, airgap_brbt: { span_deg: 360, bin_count: bins.length, sample_count: bins.length, bins } };
+  }) : [frames[0], { ...frames[1], angle_deg: 150 }];
+  const positionLink = createFieldPositionLink();
+  Object.assign(window, { toothPoleFixture: { frame: { ...plot, noload_plot: plot }, positionLink } });
+  root.render(<div style={{ width: 1100, height: 700 }}>
+    <SolvedFieldViewer viewControls="Field solution" config={smallConfig} geometry={geometry} result={loadedResult}
+      armature={{ schema_version: 'coilem.public_field_composition.armature.v1', source: 'magneto2d_exact_br_zero',
+        cache_hit: true, elapsed_s: 0, frame_count: armatureFrames.length, frames: armatureFrames }}
+      armatureBusy={false} armatureError={null} magnetoCompositionAvailable onRequestArmature={() => {}} positionLink={positionLink} />
+  </div>);
+} else if (mode === 'image-playback') {
+  const positionLink = createFieldPositionLink();
+  Object.assign(window, { imagePlaybackFixture: { frame: plot, positionLink } });
+  const frames = Array.from({ length: 24 }, (_, index) => {
+    const image = (layer: string) => ({ artifact_id: `image-test-${index}-${layer}`, media_type: 'image/png' as const, byte_count: 80 });
+    const resultant = { base: image('base'), flux_density: image('heat'), mesh: image('mesh'), field_lines: image('arrows'),
+      view_box: '-10 -10 20 20', min_b_t: 0, max_b_t: 1.5, triangle_count: 2, contour_level_count: 1, contour_segment_count: 1 };
+    return { index, angle_deg: index * 15, compositions: {
+      resultant, pm: { ...resultant, field_lines: image('pm-arrows') },
+    } };
+  });
+  const imageResult: SolveResult = {
+    ...result, field_line_plot: null, field_playback: {
+      schema_version: 'coilem.field_playback.v1', encoding: 'layered-webp-v1', width_px: 32, height_px: 32,
+      frame_count: frames.length, frames, numerical_snapshots: frames.map(({ index }) => ({
+        artifact_id: `image-test-${index}-values`, media_type: 'application/json+gzip',
+      })),
+    },
+  };
+  root.render(<div style={{ width: 1100, height: 700 }}>
+    <SolvedFieldViewer viewControls="Field solution" config={smallConfig} geometry={null} result={imageResult}
+      armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false}
+      onRequestArmature={() => {}} positionLink={positionLink} />
+  </div>);
 } else if (mode === 'field' || mode === 'pruned-field') {
   root.render(<div style={{ width: 1100, height: 700 }}>
     <SolvedFieldViewer viewControls="Field solution" config={DEFAULT_CONFIG} geometry={null} result={mode === 'pruned-field' ? savedResultPlayback({ ...result, field_line_frames: [{ angle_deg: 0, field_frame_artifact: { artifact_id: 'removed' } }, { angle_deg: 30, field_frame_artifact: { artifact_id: 'removed-too' } }] }, { available: false }) : result}

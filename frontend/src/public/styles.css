@@ -2099,17 +2099,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
 .public-field-result-magnet-label { fill: rgba(255,255,255,.94); stroke: rgba(3,7,18,.9); stroke-width: .07; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 2px; font-weight: 750; letter-spacing: -.08px; pointer-events: none; }
-.public-field-result-stator-pole rect { stroke-width: .16; vector-effect: non-scaling-stroke; }
-.public-field-result-stator-pole text { stroke: rgba(3,7,18,.76); stroke-width: .06; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1.65px; font-weight: 750; letter-spacing: -.04px; pointer-events: none; }
-.public-field-result-stator-pole.is-north rect { fill: rgba(127,29,29,.86); stroke: #fb7185; }
-.public-field-result-stator-pole.is-north text { fill: #fecdd3; }
-.public-field-result-stator-pole.is-south rect { fill: rgba(30,58,138,.86); stroke: #60a5fa; }
-.public-field-result-stator-pole.is-south text { fill: #dbeafe; }
-.public-field-pole-legend { display: flex; align-items: center; gap: 10px; margin-top: 3px; padding-top: 5px; border-top: 1px solid rgba(148,163,184,.12); }
-.public-field-pole-legend span { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font: 7px var(--font-mono); white-space: nowrap; }
-.public-field-pole-legend i { display: inline-grid; flex: 0 0 auto; place-items: center; font-style: normal; }
-.public-field-pole-legend .is-pm { width: 13px; height: 5px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: linear-gradient(90deg, #ef4444 0 50%, #3b82f6 50%); opacity: .55; }
-.public-field-pole-legend .is-stator { width: 15px; height: 10px; border: 1px solid #fb7185; border-radius: 4px; color: #fecdd3; background: rgba(127,29,29,.78); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 6px; font-weight: 700; }
+.public-field-tooth-pole text { fill: #f8fafc; stroke: rgba(3,7,18,.78); stroke-width: .065em; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: ui-monospace, monospace; font-weight: 800; }
 .public-field-result-legend { display: flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--text-muted); font: 10px var(--font-mono); }
 .public-field-result-legend i { width: min(280px, 36vw); height: 8px; border-radius: 999px; background: linear-gradient(90deg, #142a61, #1855a7, #1b8eb7, #2ab673, #a7c83a, #f1c232, #f58b24, #dc3d3d); }
 .public-field-result-legend small { margin-left: auto; color: var(--text-muted); font: 9px var(--font-mono); }

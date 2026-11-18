@@ -6060,8 +6060,8 @@
     },
     {
       "path": "docs/TEACHING_MULTIPOLE_MOTOR.md",
-      "bytes": 4009,
-      "sha256": "b134a56cd2a1c04f3de94f3e2bbdfbc40066296194bead8c13d9add796597123"
+      "bytes": 4093,
+      "sha256": "dac41fdad671f3959999e38b6c5fdd0086d3586ccd3c5c7993390bcc6c0c2e3d"
     },
     {
       "path": "docs/VALIDATION.md",
@@ -6520,8 +6520,8 @@
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
-      "bytes": 10765,
-      "sha256": "4c6505f4b567b492cc0e490395d8da29d530cc9fdbf8cc462a7be6f88d0ea1c2"
+      "bytes": 11206,
+      "sha256": "b2124b59d6bc4329ef301bc790b971c011466e3527def30f1c3f278a872920bf"
     },
     {
       "path": "frontend/scripts/test-field-position-link.mjs",
@@ -6610,8 +6610,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 186031,
-      "sha256": "ae001496f2e22044ba1c245ebb636a9bc097a176f78ceb92b456cd31af4f6db7"
+      "bytes": 185353,
+      "sha256": "2d4e6b73375f197e35ce27d04fb0586c1e48c341cff15fd97eb821e32bed4ba3"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7065,8 +7065,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 82674,
-      "sha256": "6ad7c1eda7c18f611e7b312a24dfc6d33c9e0d412452a8b2dfbe8a0cf5981989"
+      "bytes": 84001,
+      "sha256": "ca1e83d2bcf2ed045c9a4f854592d824f1993487b5d47c2dbbe02d2f9aca99d0"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7085,8 +7085,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 102905,
-      "sha256": "4e9baa125f094f94e62858bb156e9d49bc452bffc8de5f79121b242bbaa0e060"
+      "bytes": 102841,
+      "sha256": "4cea8063d0741df3e0be0ca26108bab10131a25f6c6ed918dfb37e652d8ea442"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7150,8 +7150,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 64681,
-      "sha256": "b7eb21377e5299a7f5e32427fa73714ed5b1cfd9c93db98d6c7061af85bc455d"
+      "bytes": 70163,
+      "sha256": "49525720cad7d0b89500f6d79bd82093e3ecc1169023510c9a9502792357968e"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7240,8 +7240,8 @@
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 942,
-      "sha256": "b94ebbc3b09183e7911a19b84847ff62c186cc6f7a9ebc4ca4c1346d1a30d509"
+      "bytes": 969,
+      "sha256": "8a8d67ca84e9f8ae508ab84b11f00914a737a66b00dde54686832dfa7962dd6b"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7305,8 +7305,8 @@
     },
     {
       "path": "frontend/src/public/fieldArrows.ts",
-      "bytes": 15987,
-      "sha256": "2e3733df444b9ce615be6e73727e086fd823616ace2b51a78edbde0c2c680dcf"
+      "bytes": 16509,
+      "sha256": "e50560cddd124abc6ce3a700e5f06db54681cc99d620315e267a12a837ccfd7d"
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
@@ -7320,8 +7320,8 @@
     },
     {
       "path": "frontend/src/public/fieldPhases.ts",
-      "bytes": 8195,
-      "sha256": "5310bdd6972322199d3c77d2a1770ebcf76b64658eecaf34afdd412d047ffc55"
+      "bytes": 8753,
+      "sha256": "2c5f673a8a109a100be707ec47862feb22ec2c1105af1863bcbd230e4c96152d"
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
@@ -7330,18 +7330,18 @@
     },
     {
       "path": "frontend/src/public/fieldPlaybackRasterizer.ts",
-      "bytes": 5713,
-      "sha256": "0cc11d3f916d4a9f2bc996f96d168b148327676b7c47ae5458fd8a0fc167af04"
+      "bytes": 8446,
+      "sha256": "bf5af5f054b7a6bfa10f476c3c63465ea619c49181f4dc522ba6c22047f9c370"
     },
     {
       "path": "frontend/src/public/fieldPlaybackTiming.ts",
-      "bytes": 12827,
-      "sha256": "89ffcc5fe14e211f60b9ede3bce0523db751deccd039ee042cf40609f0540c11"
+      "bytes": 12931,
+      "sha256": "684375ee31a8f8374f55c6c711fd0f435f3f97f3eb1021fc2f1cdb1e6c975f5c"
     },
     {
       "path": "frontend/src/public/fieldPlaybackWorker.ts",
-      "bytes": 8958,
-      "sha256": "886b34607bd38a43889eadaba69aa90edd6e694f71c050d7f52943e6b08fb644"
+      "bytes": 10222,
+      "sha256": "2a9634ee3073656076fb8acdb81e2abb24e3488382562b7b9afbe810a7db13d3"
     },
     {
       "path": "frontend/src/public/fieldPositionLink.ts",
@@ -7525,8 +7525,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 12696,
-      "sha256": "a0987c8fe027f65f43eedcf207c5abe891035b4edaabc37fe8e920f1bdc407d7"
+      "bytes": 13793,
+      "sha256": "f2064cfed1a4f22ff5f7e6e8f7f6b9b4eda54c3149f27e51a6d5571a4bf83058"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -7565,8 +7565,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 341232,
-      "sha256": "a1c77491f36318414f1088f67bfb1c34b874d78a3f27ec9961409c3098f275f8"
+      "bytes": 339820,
+      "sha256": "bfae9eaab82bb58350548a292dc25424d03907acee25ab4f7f6767053862ef43"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7630,8 +7630,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 162583,
-      "sha256": "c3a025002fbe674396c30eaf398adc460e891ceee9aa3d9a28832ea1a29d0677"
+      "bytes": 181224,
+      "sha256": "e28c5f17127bc162959ba884386962360891cf1a6a961b014c719ffeca4826ff"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -13105,8 +13105,8 @@
     },
     {
       "path": "docs/OUTRUNNER.md",
-      "bytes": 6204,
-      "sha256": "39706c01d7db376b67c87839403d029b4dcd240c630004fd5c62d13854bd7ffa"
+      "bytes": 6248,
+      "sha256": "d4ffa245dc30bd664602d8766b50eefc12edc98f8eaba680e4dd730ecdbf59ea"
     },
     {
       "path": "docs/OUTRUNNER_FEMM_REQUEST.md",
@@ -18225,8 +18225,8 @@
     },
     {
       "path": "frontend/tests/viewport-harness.tsx",
-      "bytes": 10750,
-      "sha256": "27325b5c4d82bb2ecbdd4f1a128b5486ea812095b7a285f3563617b02493faf0"
+      "bytes": 14703,
+      "sha256": "a5e4ad2cf8102466b01b71cea7332ab68beb6c6078113a5728e5b21ae4c6c229"
     },
     {
       "path": "tests/test_construction_preview.py",

@@ -13,6 +13,7 @@
 
 import {
   coilSideOutOfPage,
+  toothPosition,
   windingSymbolSide,
   wrap360,
   type PhaseCurrentSampler,
@@ -142,6 +143,16 @@ export function coilSidesFromGeometry(geometry: GeometryPreview | null | undefin
     const side = coilRegionSide(region.region_type);
     if (!side || region.points.length < 3) return [];
     return [{ ...side, points: region.points.map(([x, y]) => [x, y] as [number, number]) }];
+  });
+}
+
+/** Stationary tooth polygons in model millimetres, indexed the same way as Geometry's tooth poles. */
+export function statorTeethFromGeometry(geometry: GeometryPreview | null | undefined) {
+  const slotCount = Number(geometry?.metadata?.slot_count);
+  if (!geometry || !Number.isInteger(slotCount) || slotCount <= 0) return [];
+  return geometry.regions.flatMap(({ region_type, points }) => {
+    if (!/stator_tooth/i.test(region_type) || points.length < 3) return [];
+    return [{ points, ...toothPosition(points, slotCount) }];
   });
 }
 

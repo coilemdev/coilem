@@ -23,6 +23,7 @@ export const solveViewMemory = {
     showMagnets: false,
     showAirgap: false,
     showPoleLabels: false,
+    showToothPoles: false,
     showPhases: false,
     fieldLineDensity: 'medium',
     playbackRpm: null as number | null,
