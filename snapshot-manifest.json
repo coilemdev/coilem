@@ -430,8 +430,8 @@
     },
     {
       "path": "backend/magneto2d_adapter/__init__.py",
-      "bytes": 78379,
-      "sha256": "9a22080297b26f60cb7e95c3fdce1f8c97945fd2f8b086f63902b60b025f7080"
+      "bytes": 78942,
+      "sha256": "389942ea2ff33eb9088dd154ede4959496e7d8b4267a7a479a097c9ec36a71c5"
     },
     {
       "path": "backend/magneto2d_adapter/_state.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 10629,
-      "sha256": "ac8381d7b83c7d2f20003b9d696e8898b974982ee9bdfe40b083d1df6ca61136"
+      "bytes": 10790,
+      "sha256": "8b9f85b5fde3ab073de336c475e321b92b043cdee1dbc3067717ed7e7c5ff6b5"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -8215,8 +8215,8 @@
     },
     {
       "path": "tests/test_native_processes.py",
-      "bytes": 5172,
-      "sha256": "bc4f556fd203fc16e86058e6cfa0cef82d91a78fc49d0870e12085b0bd28aa50"
+      "bytes": 5636,
+      "sha256": "8f7111cae1f65fba0c8437ae06da69ced5c47563d0f00aa8295ba8dcf38c60e9"
     },
     {
       "path": "tests/test_nonlinear_convergence.py",
@@ -8580,8 +8580,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 33633,
-      "sha256": "3df0ce500c3c09ef8856661dabe14f73eccf3b42d9aa953e8343919e97b08de4"
+      "bytes": 33797,
+      "sha256": "81f4521dc8e638e03c0d2c4ab5161a9592b2a6c3608a42eafa84b0ce33546a9a"
     },
     {
       "path": "tools/release/artifacts.py",
@@ -8670,8 +8670,8 @@
     },
     {
       "path": "tools/run_public_benchmark.py",
-      "bytes": 5790,
-      "sha256": "2cd224b20c7681a6baae705c29ccc7ce9bdc8b26d0e23592a22c0a494b4f5cd9"
+      "bytes": 5827,
+      "sha256": "7cd41512e403b0cd5b683e08c8e353b4cc5afab61520c2c11570fc1b5ad8aee8"
     },
     {
       "path": "tools/run_reference_benchmark.py",
@@ -11735,8 +11735,8 @@
     },
     {
       "path": "tools/check_performance_acceptance.py",
-      "bytes": 20497,
-      "sha256": "595330c53eac5723906ff9b50270fb0c814158cd838dc36869529b0d359f3761"
+      "bytes": 20535,
+      "sha256": "930ded2adf22bec10c42c5c50181c2337ce99066c9435997cb5d79ae1a362062"
     },
     {
       "path": "docs/benchmarks/performance-acceptance-139-142/README.md",
@@ -12220,8 +12220,8 @@
     },
     {
       "path": "tests/test_qualification_publish.py",
-      "bytes": 3029,
-      "sha256": "eda57a6c02cf8951c20bb8f2f62f4f2ed9f02015f2824baf598700904c668fc1"
+      "bytes": 3074,
+      "sha256": "1e03497d7bd5809b667dd870d6552ebe278b26d46f8ffd8144c11b07b9e34e90"
     },
     {
       "path": "tools/qualification_carry.py",
@@ -12230,8 +12230,8 @@
     },
     {
       "path": "tools/qualification_publish.py",
-      "bytes": 4453,
-      "sha256": "b02a11ef080906cdf87762f1114fd458455b0ed4abb8ce654bf2b11b49cfc3cf"
+      "bytes": 4439,
+      "sha256": "4ab4e2a133c58e2fd5797487ffd54899528732a8883c30d4d98ef8882b4a4f6d"
     },
     {
       "path": "benchmarks/records-historical/v050/macos-arm64.json",
@@ -15585,8 +15585,8 @@
     },
     {
       "path": "tools/cogging_qualification.py",
-      "bytes": 6620,
-      "sha256": "abf5374bedf0b4e79bf53f595cae5005153f8e6e50efadd74ac79834f933f648"
+      "bytes": 6657,
+      "sha256": "764fbc02bd7c494a4b6420cfbc300d9eb80433d6a9974bc6bc0afc255bc58bb1"
     },
     {
       "path": "benchmarks/cogging-refined-v1/qualification-20261110/macos-arm64.json",
@@ -18270,8 +18270,8 @@
     },
     {
       "path": "tools/vshape_mesh_study.py",
-      "bytes": 6934,
-      "sha256": "595d99fe29a6702aba719e493a2f11d8fd8324d8970815bdd0654b37f74313ad"
+      "bytes": 6994,
+      "sha256": "dc59625e0c5af80e21cc590b3a0365bf3ba7602db26f7ba9fcf5de6a007ec6e3"
     },
     {
       "path": "benchmarks/qualification-78e6f4fc8aa8/macos-arm64/carry-receipt.json",

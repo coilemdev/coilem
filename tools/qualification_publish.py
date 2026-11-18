@@ -18,9 +18,10 @@ ROOT = Path(__file__).resolve().parents[1]
 def apply(publication, root, candidate):
     if not re.fullmatch('[0-9a-f]{40}', candidate):
         raise ValueError('Need an immutable candidate SHA')
-    actual = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
+    git = [shutil.which('git') or 'git', '-C', str(root)]
+    actual = subprocess.check_output([*git, 'rev-parse', 'HEAD'], text=True).strip()
     if actual != candidate:
-        ancestor = subprocess.run(['git', '-C', str(root), 'merge-base', '--is-ancestor', candidate, actual],
+        ancestor = subprocess.run([*git, 'merge-base', '--is-ancestor', candidate, actual],
                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if ancestor.returncode:
             raise ValueError('PR advanced incompatibly after measurement; do not overwrite it')
@@ -64,13 +65,13 @@ def apply(publication, root, candidate):
         raise
     snapshot_path = root / 'snapshot-manifest.json'
     snapshot = read(snapshot_path)
-    tracked = set(subprocess.check_output(['git', '-C', str(root), 'ls-files'], text=True).splitlines()) | names
+    tracked = set(subprocess.check_output([*git, 'ls-files'], text=True).splitlines()) | names
     tracked.discard('snapshot-manifest.json')
     order = [e['path'] for e in snapshot['files'] if e['path'] in tracked]
     order.extend(sorted(tracked - set(order)))
     snapshot['files'] = [{'path': name, 'bytes': (root / name).stat().st_size, 'sha256': sha(root / name)} for name in order]
     for name in sorted(records):
-        old = subprocess.check_output(['git', '-C', str(root), 'show', f'HEAD:{name}'])
+        old = subprocess.check_output([*git, 'show', f'HEAD:{name}'])
         snapshot['public_patches'].append({'base_commit': candidate, 'path': name,
             'source_sha256': hashlib.sha256(old).hexdigest(), 'reason': 'Publish fresh measured qualification evidence (#194).'})
     write(snapshot_path, snapshot)

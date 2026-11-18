@@ -8,6 +8,7 @@ import hashlib
 import json
 import platform
 import shlex
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -26,7 +27,7 @@ def _sha256(path: Path) -> str:
 
 def _commit(root: Path) -> str:
     completed = subprocess.run(
-        ["git", "-C", str(root), "rev-parse", "HEAD"],
+        [shutil.which("git") or "git", "-C", str(root), "rev-parse", "HEAD"],
         capture_output=True,
         text=True,
         check=False,

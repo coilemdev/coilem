@@ -362,8 +362,9 @@ class Acceptance:
         )
         self.check(
             "the packaged benchmark lists its quick cases with the record's times",
-            listed.returncode == 0 and "spm_4p12s_small" in listed.stdout and "6 cases" in listed.stdout
-            and "__cogging" in listed.stdout and "spm_outer_" in listed.stdout,
+            listed.returncode == 0 and "spm_4p12s_small" in listed.stdout and "7 cases" in listed.stdout
+            and "__cogging" in listed.stdout and "spm_outer_" in listed.stdout
+            and "loss_inner_spm_loaded_3000rpm" in listed.stdout,
             (listed.stdout + listed.stderr).strip()[-400:],
         )
 
@@ -557,7 +558,11 @@ class Acceptance:
         except (OSError, ValueError):
             error = {}
         cancelled = code == 130 and error.get("error_code") == "SOLVER_CANCELLED"
-        self.check("interrupting a CLI solve exits 130 with SOLVER_CANCELLED", cancelled, f"exit={code}")
+        self.check(
+            "interrupting a CLI solve exits 130 with SOLVER_CANCELLED",
+            cancelled,
+            f"exit={code}, error={error}" if not cancelled else f"exit={code}",
+        )
         remaining = self.solver_processes()
         self.check("no Magneto2D process remains after the CLI interrupt", not remaining, f"{remaining}")
 

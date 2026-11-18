@@ -1539,6 +1539,11 @@ def start_native_process(command: list[str], **popen_kwargs: Any) -> subprocess.
     """Start a native solver process unless the application is shutting down."""
     if _NATIVE_SHUTDOWN.is_set():
         raise Magneto2DExecutionError("coilEM is shutting down; the solve was not started.")
+    if os.name == "nt":
+        # Only coilEM handles console interrupts. Its cancellation path stops
+        # the solver; an inherited Ctrl+Break can race that path and look like
+        # an ordinary native solve failure.
+        popen_kwargs["creationflags"] = popen_kwargs.get("creationflags", 0) | subprocess.CREATE_NO_WINDOW
     return subprocess.Popen(command, **popen_kwargs)
 
 
@@ -1555,6 +1560,11 @@ def track_native_process(process: subprocess.Popen, *, motor: bool = False):
         if shutting_down:
             _stop_native_process(process)
         yield process
+    except BaseException:
+        # An interrupt or a failed progress callback can unwind the reader
+        # before the native process exits. Stop it while it is still tracked.
+        _stop_native_process(process)
+        raise
     finally:
         with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
             registry.discard(process)
