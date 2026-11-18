@@ -5,8 +5,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 3505,
-      "sha256": "ce4f2e67fcbcb44d14727ecd3c42c8a8b1b6c6f4595441aa440ae132ab246064"
+      "bytes": 3882,
+      "sha256": "b4fe54fad4ffb1ea79195e7c7d0090db4e47a690136ff00671cae286922910ce"
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -65,13 +65,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 7643,
-      "sha256": "32f063669b20a858f83c6110af8872f95166665d265e9ef5b5f874f645b01753"
+      "bytes": 7645,
+      "sha256": "9901be56763a52697c5cb1312cd199f9a74f14869bf0a9b79011115ce7af5460"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 32912,
-      "sha256": "af03ecacb82885a2efdb8a5929b06347466e92983ea59c49a435a4d52755addc"
+      "bytes": 32934,
+      "sha256": "d73ab5b2eb622031401d328f8e3b8633d457ddbd677bd6c0fba335c86c06c30c"
     },
     {
       "path": "SECURITY.md",
@@ -110,8 +110,8 @@
     },
     {
       "path": "backend/benchmark_suite/__init__.py",
-      "bytes": 810,
-      "sha256": "5d63c27e7974f39d062db3b7ebc820fde0379cfb857c5b1bb1ba0ead6213c222"
+      "bytes": 852,
+      "sha256": "dc41f48a86d6c9f4f118f586ed8b59122b5d40893531a3aa34b093f2e7e669da"
     },
     {
       "path": "backend/benchmark_suite/abc_metrics.py",
@@ -125,8 +125,8 @@
     },
     {
       "path": "backend/benchmark_suite/cli.py",
-      "bytes": 23144,
-      "sha256": "cf1fa11451cfb497799ec9a1710915912042f1126380fd9aaec036319d74775b"
+      "bytes": 24051,
+      "sha256": "1156efdf852e58704206c5536412c916f8794053d47878727cf149debfa239a2"
     },
     {
       "path": "backend/benchmark_suite/cogging_metrics.py",
@@ -135,13 +135,13 @@
     },
     {
       "path": "backend/benchmark_suite/command.py",
-      "bytes": 9522,
-      "sha256": "63713c65817b7c7e6762619a20f80e3faec41f0be5b6c45621a12b1430c9c95c"
+      "bytes": 9696,
+      "sha256": "fccd34b91e456d7cffad59160f7104bb680f5c0e025d09d9536dc7270ea23be7"
     },
     {
       "path": "backend/benchmark_suite/contract.py",
-      "bytes": 7011,
-      "sha256": "cc1541632bc3795edb23fce38d93c617702c931bb4f0713af282b018244cbafd"
+      "bytes": 7183,
+      "sha256": "b6db0a2daa9571224ca19ef796f7f6dcbc20430131554ed4825d2c3f1e5f0bd2"
     },
     {
       "path": "backend/benchmark_suite/dq_metrics.py",
@@ -160,23 +160,23 @@
     },
     {
       "path": "backend/benchmark_suite/physics.py",
-      "bytes": 4753,
-      "sha256": "721632548a4e98486fddf95f08d3d8834b1b24be8d491876ae5036bd00e74739"
+      "bytes": 4918,
+      "sha256": "f4e3e8094f2707e155c9b9d97754fd934e2a64566ff33a66b0a2b415813bdf33"
     },
     {
       "path": "backend/benchmark_suite/record.py",
-      "bytes": 12180,
-      "sha256": "4a2a21e8fbe8b03f446ee47b51a66a8dd2e4b64f02199a68e0293ad997073739"
+      "bytes": 13283,
+      "sha256": "651158e7a643caa5b2e2a1642a88545b3e02d2d060e5fef8647887328215323c"
     },
     {
       "path": "backend/benchmark_suite/references.py",
-      "bytes": 22596,
-      "sha256": "0f1c86bcfd6dd865e574c9ed223408b946b4d1af5f8cdc046a798d5cb2447551"
+      "bytes": 23594,
+      "sha256": "60fbd1b0652d7dc22f53c366f30bff29fc0edf8f1deb5570b714742dd45dd227"
     },
     {
       "path": "backend/benchmark_suite/report.py",
-      "bytes": 32490,
-      "sha256": "e8a95f747ee34493292169adc9d8e4ea5d359a3d835ce247da0b814c313933a7"
+      "bytes": 33118,
+      "sha256": "cab466ba9be716375413a819a43182a74b1f13e1608fb278b8cf73fd10a2be42"
     },
     {
       "path": "backend/benchmark_suite/resistance_metrics.py",
@@ -630,8 +630,8 @@
     },
     {
       "path": "backend/resources.py",
-      "bytes": 10462,
-      "sha256": "512ab35d54d1b6394227aaf3efdbe14d29c49daabf5f7a33e1f6c5853e2196de"
+      "bytes": 10629,
+      "sha256": "ac8381d7b83c7d2f20003b9d696e8898b974982ee9bdfe40b083d1df6ca61136"
     },
     {
       "path": "backend/solve_estimate.py",
@@ -715,8 +715,8 @@
     },
     {
       "path": "benchmarks/README.md",
-      "bytes": 13494,
-      "sha256": "67c49e5202e70d7b5e80ef252ed8233944b94cd17d91fbe8905bb95e1937e792"
+      "bytes": 13981,
+      "sha256": "c4ccc27b0d1117c449b995f3b6fcd0e0c541e515d01741d9d36c3e8a14d810d6"
     },
     {
       "path": "benchmarks/abcd-v1.1/README.md",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 55463,
-      "sha256": "74a3a4361037538e3832590335971a9823e07900fe0e3c143a3ebe52def7ccd0"
+      "bytes": 56275,
+      "sha256": "768a0d9cb13166e6e8a8ea881461eebf54f3b375f53540af420dda3a3606cb23"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -8005,8 +8005,8 @@
     },
     {
       "path": "tests/test_benchmark_command.py",
-      "bytes": 24130,
-      "sha256": "c851729d0305e9a9d21b4e7667c64dd5603f03e839f60ce9c10fc30460ccebc4"
+      "bytes": 24429,
+      "sha256": "8a1b349cdc2a278d986d6faf1b5a181435a016a9561e8e7c558462344e42f8f5"
     },
     {
       "path": "tests/test_benchmark_runtime.py",
@@ -8016,12 +8016,12 @@
     {
       "path": "tests/test_benchmark_suite.py",
       "bytes": 31282,
-      "sha256": "001205dc248b38f73760d5b0cbfe928ca04f45c87063bdb002ec72494ccbd641"
+      "sha256": "784f1ffcd29328e0cc7ceb662179e16006347e56153ea434dabdd696588805a6"
     },
     {
       "path": "tests/test_benchmark_v16_registration.py",
       "bytes": 8591,
-      "sha256": "2165873f42b6c296754c39aee6def3ca5accbdcd1994a7968aa5bf896d372bbc"
+      "sha256": "8b8465ae5ead5e739a1c5ee769044b034d408bd59f2c1f7da1a14a472e12bf86"
     },
     {
       "path": "tests/test_bldc_angle_contract.py",
@@ -8246,7 +8246,7 @@
     {
       "path": "tests/test_prius_benchmark_case.py",
       "bytes": 11200,
-      "sha256": "7e965a0a7afbfac6e638f50887a1bec39109ffaf4ba4376c9fb23daf7c9c85bf"
+      "sha256": "7b11313db885e88e38aa046e37caea129907c0bd90fadc8dc527d3b7cf459d6e"
     },
     {
       "path": "tests/test_prius_benchmark_collection.py",
@@ -8350,8 +8350,8 @@
     },
     {
       "path": "tests/test_release_qualification.py",
-      "bytes": 18626,
-      "sha256": "ed396d48afa1bd5242665040f017cef3655701c51bda9a6d747cf1115c1fa952"
+      "bytes": 19258,
+      "sha256": "bcc8861620a5b4619bae464c9b444b7a6b32a2f7f4c22b3fc2747d2d7868ec3e"
     },
     {
       "path": "tests/test_release_tools.py",
@@ -8361,7 +8361,7 @@
     {
       "path": "tests/test_shoed_benchmark_case.py",
       "bytes": 3006,
-      "sha256": "735d628810397aec074995a65069e93531f9cdb46835e5fb34f589987d3acb2d"
+      "sha256": "dc04ebc2c8783cc173a01eb00ff72fa1157cd9dacf5a919bfca84a20176cf6e7"
     },
     {
       "path": "tests/test_slot_current_density.py",
@@ -8455,8 +8455,8 @@
     },
     {
       "path": "tools/build_benchmark_record.py",
-      "bytes": 10213,
-      "sha256": "fb5586237eb4b120c96747dec3768447787b6313960dcf97801075efd01c5242"
+      "bytes": 10502,
+      "sha256": "61210479a0f0e9502b2065639c0ad130c38c8f86797f2928771d04f91a157055"
     },
     {
       "path": "tools/compare_pyleecan_bemf.py",
@@ -8600,8 +8600,8 @@
     },
     {
       "path": "tools/release/qualification.py",
-      "bytes": 16681,
-      "sha256": "56031a5f9da8f7f3b2fc3579f57b39878dd68a6a4e2c6990be8ce9ff0b759c86"
+      "bytes": 17547,
+      "sha256": "6befb014b3033a39741266ab4fadbdfd3630ff0152acaab5c6f548f1cd0faaaa"
     },
     {
       "path": "tools/release/release_notes.py",
@@ -12145,8 +12145,8 @@
     },
     {
       "path": "docs/BENCHMARK_AUTOMATION.md",
-      "bytes": 12822,
-      "sha256": "6daf393b2822afeb46d938d7438740dab1be3d6944379c4d7095b14ff69be3a4"
+      "bytes": 12940,
+      "sha256": "16fc30f9d9e63334dfca5d0591ea6ce156d819abf041fd5a2146b02853e4e68d"
     },
     {
       "path": "tests/test_benchmark_shards.py",
@@ -12165,8 +12165,8 @@
     },
     {
       "path": "tools/benchmark_ci.py",
-      "bytes": 5616,
-      "sha256": "3890d85f9e88d95bfa8fe2b566229e3872d64960fb732d0539d78de24f3ab588"
+      "bytes": 5726,
+      "sha256": "9a5069c40b92095043f60aeea722f4dfb0361fb9e1fcdd168f57a7ae26b724bb"
     },
     {
       "path": "tools/benchmark_shards.py",
@@ -12205,8 +12205,8 @@
     },
     {
       "path": "tools/qualification_carry.py",
-      "bytes": 21045,
-      "sha256": "70cc5459f901cff300da8cb105705015c68853c3a0bbbd578b7f824c6559ab03"
+      "bytes": 21487,
+      "sha256": "3c62692de07de667f390c22a31967923faad0ced6488299d8bcf1c979380149b"
     },
     {
       "path": "tools/qualification_publish.py",
@@ -14061,7 +14061,7 @@
     {
       "path": "tests/test_benchmark_newton_registration.py",
       "bytes": 6994,
-      "sha256": "4f9c2c9c3d779dcf90e75613828f73763e3364dcb11efd1d66ddcd1fa813faff"
+      "sha256": "7ee79ad652fe4cc4f58b777c63cca59c4c0ab905ff275a3c7fec5cc80db82d6b"
     },
     {
       "path": "tools/make_newton_protocol.py",
@@ -16245,8 +16245,8 @@
     },
     {
       "path": "tests/test_combined_benchmark_protocol.py",
-      "bytes": 7792,
-      "sha256": "5e040d3aeaeba3483c4e9258357d150ccccc5b01d95d171f5a80d4d0f84b43df"
+      "bytes": 7955,
+      "sha256": "a3e5030d0d389b256a8c40a51a548d7fa24235333e59998e3245c05707e336c5"
     },
     {
       "path": "tests/test_gmsh_runtime_owner.py",
@@ -19130,8 +19130,8 @@
     },
     {
       "path": "tests/test_benchmark_sector_registration.py",
-      "bytes": 7844,
-      "sha256": "2b544fcf4b8a0422e8af4ab76e4ac6a7f4f2832f9b9055cf106c683455148ca9"
+      "bytes": 7995,
+      "sha256": "a00835e6ef3691d53f0b6e486919b4adaf00e51370ab4ababf9782299d0cc9a6"
     },
     {
       "path": "tests/test_ci_plan.py",
@@ -19145,8 +19145,8 @@
     },
     {
       "path": "tools/make_sector_protocol.py",
-      "bytes": 4946,
-      "sha256": "49b4cfbbd8115ee0bfd82ce9495e2ab4ff86499a75711b9e23975ca7fea41437"
+      "bytes": 5002,
+      "sha256": "465bfc9b306c2fa080f47e6e8fa6cc2a8fb8589b3fe27fa2b00586943492dcf9"
     },
     {
       "path": "docs/SOLVE_SETUPS.md",
@@ -20540,8 +20540,8 @@
     },
     {
       "path": "docs/ROTOR_IRON_LOSS.md",
-      "bytes": 4263,
-      "sha256": "b2c30c0fff7cc1bcdd6feaba25677bba6d08c4d83b190f74ff62d79a025216fd"
+      "bytes": 4521,
+      "sha256": "4a4d6e37b4ed3b05af6b32630599e0e477f9b79559720898f3e3f5bbbffd4884"
     },
     {
       "path": "tests/test_rotor_matrix_contract.py",
@@ -20570,8 +20570,8 @@
     },
     {
       "path": "benchmarks/phase-g-v1/README.md",
-      "bytes": 9238,
-      "sha256": "c05eb33e641f35fd8b71860bd8fac81ffe0b74764d1a7eeec62a47819d16cf07"
+      "bytes": 9625,
+      "sha256": "b829bf84c1b848954e97e92742bfeaea8d4c2183e32f3b5726835f8913f49a0c"
     },
     {
       "path": "benchmarks/phase-g-v1/benchmark_spec.json",
@@ -20640,8 +20640,8 @@
     },
     {
       "path": "benchmarks/phase-g-v1/STATOR_COPPER_59.md",
-      "bytes": 4991,
-      "sha256": "4246599c4c515712ef773f7e6339f1fced156235fa6bb7a730452f7833403671"
+      "bytes": 5507,
+      "sha256": "b74aebebc600c34b09b970b34e44b763fa6b50f3fb4e42c2fa6275369fd5cb51"
     },
     {
       "path": "benchmarks/phase-g-v1/stator-copper-59.json",
@@ -20687,6 +20687,296 @@
       "path": "tools/phase_g_loss/stator_reproduction.py",
       "bytes": 2852,
       "sha256": "e474fa4115ece56944c93cd4bf350a3167f78229670c8218c9b52b491b82f5a2"
+    },
+    {
+      "path": "backend/benchmark_suite/loss_metrics.py",
+      "bytes": 4889,
+      "sha256": "cc78987d7c84eebb1cdc19851134b184f1f52f9588c078a0671fffb47cc1217b"
+    },
+    {
+      "path": "backend/benchmark_suite/loss_registry.py",
+      "bytes": 8317,
+      "sha256": "e10e5405f4659bad4605064c5f2e9428838d51fdc878e5462529c54c93b7b031"
+    },
+    {
+      "path": "benchmarks/ag-v1.12/README.md",
+      "bytes": 2415,
+      "sha256": "5837825c36bde04d565f77155589b17db287af4ac7bd316e568293e550336254"
+    },
+    {
+      "path": "benchmarks/ag-v1.12/benchmark_spec.json",
+      "bytes": 49997,
+      "sha256": "420eb2ebe92e5109d97246fd883e83636650ba3f3d8d21908cf1573f1d3a5c3a"
+    },
+    {
+      "path": "benchmarks/loss-v1/benchmark_spec.json",
+      "bytes": 9267,
+      "sha256": "3401f0d687c61244b0444ab52c7fcc7d5565be403ff225278cdf7aad164292d3"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_distributed_spm_loaded_1500rpm.json",
+      "bytes": 2788,
+      "sha256": "725ff12f669c855a26c9097a69c6d06cb53a21d0faf01947711906d3843876d8"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_distributed_spm_loaded_3000rpm.json",
+      "bytes": 2788,
+      "sha256": "0beecd4cd249fd49d1a912696c79db1682c8e05db85aa835077ccf2283016aeb"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_distributed_spm_no_load_1500rpm.json",
+      "bytes": 2788,
+      "sha256": "5c30e67cf67585ed73ce77e9232fca41fa5f16e6d0c6dd9534ea75690ea4a5b9"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_distributed_spm_no_load_3000rpm.json",
+      "bytes": 2788,
+      "sha256": "25f3a267c7a850acf7609cb91b2d6fbb0a3281c2d305af603fa0b4ca37a7c174"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_flat_ipm_loaded_1500rpm.json",
+      "bytes": 2828,
+      "sha256": "12e5aa6fd41a2f320cd977fdb632729264794279973d234b8dbeaa708e747473"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_flat_ipm_loaded_3000rpm.json",
+      "bytes": 2828,
+      "sha256": "f2d919d5492ca9de9daff0649834a4051f5cc12d2c6fff9d2328ae38fa515250"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_flat_ipm_no_load_1500rpm.json",
+      "bytes": 2827,
+      "sha256": "bdfe831827c375ccb05976b1025bdc2a8423bf6c094798840bc88fba514ce0fc"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_flat_ipm_no_load_3000rpm.json",
+      "bytes": 2827,
+      "sha256": "a7683cfa57ca9aa3f7f76caaa23c1ad6fd11b76426afd76b887171d2de2ed2b5"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_inner_spm_loaded_1500rpm.json",
+      "bytes": 2787,
+      "sha256": "6d1b57b65d985ffc8a014bcf964d56a50347b51757c91de02c2125e4ded02404"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_inner_spm_loaded_3000rpm.json",
+      "bytes": 2787,
+      "sha256": "66723ce3a9f7f15a6333177d4de1f651f5020926fcd33fbd33566ee5eb311235"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_inner_spm_no_load_1500rpm.json",
+      "bytes": 2786,
+      "sha256": "5499d9977935ffc712f1130c80c384efb679c5fcb820a8c163116496127c4568"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_inner_spm_no_load_3000rpm.json",
+      "bytes": 2786,
+      "sha256": "1d4a517092c4d6cbe2c2bd42c3f8dc3babc9e167f33247d265590a66a2be0478"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_outer_spm_loaded_1500rpm.json",
+      "bytes": 2814,
+      "sha256": "8dc6c6e7239647754b15942a54f28b54bf06f859226e13ce5ea179fca91b2060"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_outer_spm_loaded_3000rpm.json",
+      "bytes": 2814,
+      "sha256": "725a211dc36ee9d2ed9a7903c8303f805bcee09d828bb5689d9a45c6418b416f"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_outer_spm_no_load_1500rpm.json",
+      "bytes": 2813,
+      "sha256": "470a276dd37fa6c078e82549413452b8431f9db21fa11f2c319e6bf745833642"
+    },
+    {
+      "path": "benchmarks/loss-v1/fixtures/loss_outer_spm_no_load_3000rpm.json",
+      "bytes": 2813,
+      "sha256": "afe81b12d282786650fb32f01280dbdc23ed4a079ff906e99be9b337930c7677"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_distributed_spm_loaded_1500rpm.json",
+      "bytes": 920,
+      "sha256": "8e7d88a094f9cc17fa1d2806cda1445d551fbf82647bf795d383c082d62bef8a"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_distributed_spm_loaded_3000rpm.json",
+      "bytes": 920,
+      "sha256": "d0c30222c42a4e230f7d1758f6535d6beeca2b052ff86b31c46c59558f383c52"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_distributed_spm_no_load_1500rpm.json",
+      "bytes": 906,
+      "sha256": "b21a5d7e1a627eca476c958bf9f224f8895b0568311a879f2f28860fed4dbdfa"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_distributed_spm_no_load_3000rpm.json",
+      "bytes": 908,
+      "sha256": "711493807f96a12f300bf73f10f7521e2a05422a8dabd1f51085723259289493"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_flat_ipm_loaded_1500rpm.json",
+      "bytes": 913,
+      "sha256": "00ddf7a772b7de9160e95142e25d46bc544606efbb4ad7da60c6a31a917b1cd3"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_flat_ipm_loaded_3000rpm.json",
+      "bytes": 912,
+      "sha256": "0c46b8f33b587b56318fe4d500e14570153f777840cdbaae323178a74dd570f0"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_flat_ipm_no_load_1500rpm.json",
+      "bytes": 899,
+      "sha256": "958a40e09b91240072beb2bd82bfa186f64188b3625684567ad57a194f1fb6a8"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_flat_ipm_no_load_3000rpm.json",
+      "bytes": 899,
+      "sha256": "fdf2a98d86da935d06a4b2ce6fc24cac924a31a5543195c7f0d189c97ed61de8"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_inner_spm_loaded_1500rpm.json",
+      "bytes": 913,
+      "sha256": "e87143c6497ce13f35416a9d395e92761d0604d6f64d158cf65a428169182e84"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_inner_spm_loaded_3000rpm.json",
+      "bytes": 914,
+      "sha256": "74548756f85bd0e06afd495222135534701859616dea8de720894a242ff52d35"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_inner_spm_no_load_1500rpm.json",
+      "bytes": 901,
+      "sha256": "d211f699c8369841c32e0bd92f1726eb6f25c3b6ee72c4697372b481a05086c7"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_inner_spm_no_load_3000rpm.json",
+      "bytes": 901,
+      "sha256": "4a422f189a39a3dc070484f31746fa01bdc5e7d0e8c8eb82053f3ff618b07387"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_outer_spm_loaded_1500rpm.json",
+      "bytes": 915,
+      "sha256": "57cbe979ce02ff4191a017d7e8834b2b1873beea6c4460c0db911890f18ce309"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_outer_spm_loaded_3000rpm.json",
+      "bytes": 915,
+      "sha256": "c3819b16686b785bdd14367f123d358f2c7d7e9b17ff30ecece343b5bf771900"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_outer_spm_no_load_1500rpm.json",
+      "bytes": 900,
+      "sha256": "dcce3662c972e0eef4e5cedd457fc71f58921003d0a23854b36ce8ff6ed66a45"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/loss_outer_spm_no_load_3000rpm.json",
+      "bytes": 900,
+      "sha256": "39592dc4d97d2c749632b9caaff80fb586c0666fad4172ec2b1a78820e438164"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/manifest.json",
+      "bytes": 5313,
+      "sha256": "0de84d0cf5591c85ade49ccb3f25ae031954913f45b8a00f435d140026fe3eab"
+    },
+    {
+      "path": "benchmarks/reference-baselines/loss-stator-dc-20261117/review.json",
+      "bytes": 911,
+      "sha256": "19b1660ebabe1f60bc765f8dc96ee0a145676423b6b216bc42f5193027d4b236"
+    },
+    {
+      "path": "benchmarks/reference-baselines/protocol112-combined-20261117/manifest.json",
+      "bytes": 37572,
+      "sha256": "d805fcc167d56aff35aa536ba0fc98bfa943794cdf00a4a11c0b265a4cd92ad8"
+    },
+    {
+      "path": "benchmarks/reference-baselines/protocol112-combined-20261117/review.json",
+      "bytes": 536,
+      "sha256": "abd59f2eb74db43168b07d7fd0990bb483ed277860538aaa555e47fa49b40ea1"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/README.md",
+      "bytes": 9038,
+      "sha256": "b36fa71d7ef7ef6512794c84f889a0bc8e04351e09e6d52969a71ea8ee8b7de2"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/artifact-manifest.json",
+      "bytes": 2195,
+      "sha256": "6cadf6320efa9fb47081c49667883b9fe695c2f002d22ecfb1078298a64eafe4"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/convergence.json",
+      "bytes": 66967,
+      "sha256": "19055a9d5feb12fb4b6f1c79f8b774fee4b6c942dcad59f6a8437ae07e5a7243"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/distributed-spm-loaded.json",
+      "bytes": 4807,
+      "sha256": "db5481413d40dc326e2c3a2102711f56825e1e76a041a81f57ccbe41bd356a6c"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/distributed-spm-no-load.json",
+      "bytes": 4784,
+      "sha256": "a1c26274d7f000f612767b6c8821ad8186523a1a08de93d97c80fd1c170049f7"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/flat-ipm-loaded.json",
+      "bytes": 4812,
+      "sha256": "d3a43864625f433fa35953cf3b4904e77de9157a0b588a54f900fe5dfd179d26"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/flat-ipm-no-load.json",
+      "bytes": 4782,
+      "sha256": "6fab8045427b26024b0ac70dd326e003d87cb74baca83d85b5677b44a884dc91"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/inner-spm-loaded.json",
+      "bytes": 4806,
+      "sha256": "05f189047099503d6b77a8a9d2ebe08626c7af0910df9cabcec50a36a315f126"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/inner-spm-no-load.json",
+      "bytes": 4779,
+      "sha256": "9274c8d82ba96ae6d058d2813b291d802fea18c174b7451f50e00473cb5859aa"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/outer-spm-loaded.json",
+      "bytes": 4809,
+      "sha256": "18944cdd4ceae40922d496dc775d986265a3da82316b0ebfd954c820a9719e5b"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/outer-spm-no-load.json",
+      "bytes": 4780,
+      "sha256": "fdcaabc2f85560bc0552908621fb4f0ccb7eeeed907fe93ceacdfb71c20d6221"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/provenance.json",
+      "bytes": 47716,
+      "sha256": "ef776b8f365a504f961fd79a0ef78296c50ae95428288497bc08fe36e3055160"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/qualification-completion-audit.json",
+      "bytes": 5417,
+      "sha256": "2ec4aeb462560bade371a42d46b62514343cfd88baeef84bf08abbcb5a03f74d"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/requested-configs.json",
+      "bytes": 24284,
+      "sha256": "847a330c583089fac216080230962873e6b24f71ec0f41e15fb14d1b5ae9ee4d"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/run-state.json",
+      "bytes": 750,
+      "sha256": "bb20c53e5655b913b20913f6036763845aab9b977130be9a232dae373c6930a9"
+    },
+    {
+      "path": "docs/qualification/stator-copper-femm-20261117/summary.json",
+      "bytes": 43641,
+      "sha256": "103b14619b78ddd23bcdb19bd359ce6e5e53c691c8c4fe9e6825e8aa9e63e100"
+    },
+    {
+      "path": "tests/test_phase_g_registration.py",
+      "bytes": 8337,
+      "sha256": "32804bd3d8f99199e3c04899eb524edad27977f2892815dc22eeafea86dc3242"
     }
   ],
   "public_patches": [

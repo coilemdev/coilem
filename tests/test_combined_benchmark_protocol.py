@@ -7,7 +7,9 @@ import pytest
 from backend import resources
 from backend.benchmark_suite import COMMAND_PHASES, PROTOCOL_VERSION, command, composition, references
 from backend.benchmark_suite.cli import inputs
-from backend.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, canonical, read, sha
+from backend.benchmark_suite.contract import AF_BUNDLE as DEFAULT_BUNDLE
+from backend.benchmark_suite.contract import AF_SPEC as SPEC
+from backend.benchmark_suite.contract import ROOT, canonical, read, sha
 from backend.benchmark_suite.ef_review import audit
 from tools import make_combined_protocol
 from tools.release.qualification import _review_errors
@@ -15,8 +17,8 @@ from tools.release.qualification import _review_errors
 
 def test_default_suite_covers_all_six_phases_without_changing_existing_requests():
     spec = references.load_suite(SPEC)
-    assert PROTOCOL_VERSION == spec["protocol_version"] == "1.10.0"
-    assert COMMAND_PHASES == tuple("ABCDEF")
+    assert spec["protocol_version"] == "1.10.0" and PROTOCOL_VERSION == "1.12.0"
+    assert COMMAND_PHASES == tuple("ABCDEFG")
     assert Counter(c["phase"] for c in spec["cases"]) == {"A": 19, "B": 20, "C": 5, "D": 3, "E": 12, "F": 10}
     assert spec["cases"][:47] == read(ROOT / "benchmarks/abcd-v1.9/benchmark_spec.json")["cases"]
     configs, _, _ = inputs(spec, spec["cases"])
@@ -39,7 +41,7 @@ def test_combined_reference_preserves_four_source_commits_and_all_reviews():
     assert manifest["reference_commit"] is None and len(manifest["reference_commits"]) == 4
     assert len(manifest["components"]) == 5
     assert references.require_reviewed_bundle(DEFAULT_BUNDLE, manifest, spec)["decision"] == "ACCEPTED_FOR_REGISTERED_PARITY"
-    assert _review_errors(ROOT, resources.BENCHMARK_REFERENCE_BUNDLE_DIR, manifest, spec, sha(SPEC)) == []
+    assert _review_errors(ROOT, resources.BENCHMARK_AF_REFERENCE_BUNDLE_DIR, manifest, spec, sha(SPEC)) == []
     hub = manifest["records"]["spm_outer_30p27s_hub__baseline"]
     assert hub["component"] == "f-hub" and hub["reference_commit"] == "5291451ca8fd307a2216cee219b9c7d2a7b30332"
 
@@ -98,7 +100,7 @@ def packaged(tmp_path, monkeypatch):
 def test_wheel_contains_all_review_dependencies_without_git_or_reference_tools(packaged):
     spec = references.load_suite(packaged / resources.BENCHMARK_SUITE_FILE)
     manifest, fields, _ = references.load_bundle(packaged / resources.BENCHMARK_REFERENCE_BUNDLE_DIR, spec)
-    assert len(fields) == 68
+    assert len(fields) == 84
     references.require_reviewed_bundle(packaged / resources.BENCHMARK_REFERENCE_BUNDLE_DIR, manifest, spec)
 
 
@@ -115,12 +117,12 @@ def test_changed_packaged_review_or_fields_fail_closed(packaged, name):
 
 
 def test_quick_selection_includes_one_complete_request_per_phase_and_cli_lists_them(capsys):
-    cases = command.select_cases(references.load_suite(SPEC), list(COMMAND_PHASES), True)
-    assert [c["phase"] for c in cases] == list("ABCDEF")
+    cases = command.select_cases(references.load_suite(ROOT / resources.BENCHMARK_SUITE_FILE), list(COMMAND_PHASES), True)
+    assert [c["phase"] for c in cases] == list("ABCDEFG")
     assert {c["id"] for c in cases} == set(command.QUICK_CASES)
     assert command.main(["--quick", "--list"]) == 0
     listed = capsys.readouterr().out
-    assert "6 cases" in listed and "__cogging" in listed and "spm_outer_" in listed
+    assert "7 cases" in listed and "__cogging" in listed and "spm_outer_" in listed
 
 
 def test_an_older_record_does_not_claim_coverage_of_new_phases(monkeypatch, capsys):

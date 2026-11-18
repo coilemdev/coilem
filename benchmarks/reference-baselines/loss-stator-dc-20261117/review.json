@@ -1,0 +1,15 @@
+{
+  "schema": "coilem.loss_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "scope": "Numerical stator/DC components only",
+  "suite_sha256": "3401f0d687c61244b0444ab52c7fcc7d5565be403ff225278cdf7aad164292d3",
+  "rotor_loss_included": false,
+  "material_accuracy_qualified": false,
+  "full_motor_efficiency_qualified": false,
+  "completion_audit_sha256": "2ec4aeb462560bade371a42d46b62514343cfd88baeef84bf08abbcb5a03f74d",
+  "evidence_files": {
+    "docs/qualification/stator-copper-femm-20261117/summary.json": "103b14619b78ddd23bcdb19bd359ce6e5e53c691c8c4fe9e6825e8aa9e63e100",
+    "docs/qualification/stator-copper-femm-20261117/qualification-completion-audit.json": "2ec4aeb462560bade371a42d46b62514343cfd88baeef84bf08abbcb5a03f74d",
+    "docs/qualification/stator-copper-femm-20261117/requested-configs.json": "847a330c583089fac216080230962873e6b24f71ec0f41e15fb14d1b5ae9ee4d"
+  }
+}

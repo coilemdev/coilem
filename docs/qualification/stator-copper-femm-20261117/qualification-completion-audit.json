@@ -1,0 +1,106 @@
+{
+  "schema": "coilem.stator_dc_copper_completion_audit/v1",
+  "observed_utc": "2026-11-17T23:31:59.150217+00:00",
+  "source_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+  "original_registration_candidate": "32dad312212195262fe1ccbf0482575b0c617571",
+  "acquisition_profile_sha256": "feb09190ef9a87db1de2fb4aadb0902c26dacb0b5f9e61f4961365e37a22fc17",
+  "integrated_loss_policy_sha256": "ddb8b94affd5507c46d69dfdcd89e1abf4052b30b534f819dd6889ac2d576ef6",
+  "conditions_passed": 8,
+  "evaluation_speeds_rpm": [
+    1500,
+    3000
+  ],
+  "verified_reference_poses": 776,
+  "new_reference_field_solves": 341,
+  "reused_reference_poses": 435,
+  "maximum_component_differences": {
+    "hysteresis_W": {
+      "absolute_percent": 0.282333510324297,
+      "signed_percent": -0.282333510324297,
+      "case_id": "flat-ipm-no-load",
+      "rpm": 1500
+    },
+    "lamination_eddy_W": {
+      "absolute_percent": 4.580168107088097,
+      "signed_percent": 4.580168107088097,
+      "case_id": "distributed-spm-loaded",
+      "rpm": 1500
+    },
+    "total_W": {
+      "absolute_percent": 2.7259375409895505,
+      "signed_percent": 2.7259375409895505,
+      "case_id": "distributed-spm-loaded",
+      "rpm": 3000
+    },
+    "copper_W": {
+      "absolute_percent": 0.0009684273965820269,
+      "signed_percent": -0.0009684273965820269,
+      "case_id": "outer-spm-loaded"
+    }
+  },
+  "original_native_point_field_diagnostic_failures_retained": [
+    "inner-spm-no-load",
+    "inner-spm-loaded",
+    "flat-ipm-no-load",
+    "flat-ipm-loaded",
+    "distributed-spm-no-load",
+    "distributed-spm-loaded",
+    "outer-spm-no-load",
+    "outer-spm-loaded"
+  ],
+  "reported_fields_corrected": false,
+  "numerical_component_reference_checks_complete": true,
+  "rotor_loss_status": "experimental",
+  "full_motor_efficiency_qualified": false,
+  "material_accuracy_qualified": false,
+  "evidence": {
+    "inner-spm-no-load": {
+      "comparison_sha256": "9274c8d82ba96ae6d058d2813b291d802fea18c174b7451f50e00473cb5859aa",
+      "native_protocol_sha256": "2f7f2a97fcc3f6c2c8c48040061a5b16f76ca5ec3d46a090cbc175cbabdb6ef1",
+      "native_completed_sha256": "d514498e48518a75b6118985bb1358acbe71661b2c46ce8b9931a4b32ef218ba",
+      "femm_protocol_sha256": "7e8aee9a94dda7c5e5f0115aae1297b28d12dbe2125570e18a6fafe36d992f22"
+    },
+    "inner-spm-loaded": {
+      "comparison_sha256": "05f189047099503d6b77a8a9d2ebe08626c7af0910df9cabcec50a36a315f126",
+      "native_protocol_sha256": "106a4bbeb1335608970b225d1bee2a87655b0e3ea048f14a69eed7484e789846",
+      "native_completed_sha256": "e83438892a7807483c35e4a8a8b626ba831f448831eb74e49fbcfc0e1ada0217",
+      "femm_protocol_sha256": "e0fd9f8f8307c41ed278d74df0cc364fa7dc4c1cf95ced5ab1e886b9a91f4e1c"
+    },
+    "flat-ipm-no-load": {
+      "comparison_sha256": "6fab8045427b26024b0ac70dd326e003d87cb74baca83d85b5677b44a884dc91",
+      "native_protocol_sha256": "0cb865c1e642876abbb4cf8d0826f583e1e3291d683d55bfb853268e005fda4c",
+      "native_completed_sha256": "1cf76c6acc9420bf50da46b5c74038202afd892a8d34fd8bd86589b8055a9859",
+      "femm_protocol_sha256": "f117c55526ff32ffc8586f4f89f2a068577a5f285b8c70cf74fe9a381798b09b"
+    },
+    "flat-ipm-loaded": {
+      "comparison_sha256": "d3a43864625f433fa35953cf3b4904e77de9157a0b588a54f900fe5dfd179d26",
+      "native_protocol_sha256": "b14b37cacdad63fa55a60e70e64d64ffd7bee70113491a64e0ce73e7e5463a48",
+      "native_completed_sha256": "585cd49c1801c92533cf5476b475f6429e2605023d184409b17edbef49ca75af",
+      "femm_protocol_sha256": "b517e21899dbf996e3f5bad4c8fd777624f07e87449432de2b48ce62fb252016"
+    },
+    "distributed-spm-no-load": {
+      "comparison_sha256": "a1c26274d7f000f612767b6c8821ad8186523a1a08de93d97c80fd1c170049f7",
+      "native_protocol_sha256": "640f5f6ca8adc5b67ec4da681ac68ee07e6ea59243ab8e430ffc6fcf647fd6ca",
+      "native_completed_sha256": "0d54fb3e71c89968a7dc8775c4f9e6f5e72cadef0da6df01cb650837b9d3580d",
+      "femm_protocol_sha256": "e8d83dcb024b9d4c70a1208f7b9f86a33720ae40560534bd0fced6a62c82c80b"
+    },
+    "distributed-spm-loaded": {
+      "comparison_sha256": "db5481413d40dc326e2c3a2102711f56825e1e76a041a81f57ccbe41bd356a6c",
+      "native_protocol_sha256": "66538d09cc6a011813cc1e71af2bd4e183a6d2dbf1fde1c7cf24a455ee0207d2",
+      "native_completed_sha256": "a0b42d2d4cc15171e1253b55c2ea8ccdb2582ef6cfcf3a973fff2b9f29cdc406",
+      "femm_protocol_sha256": "66dfe380269fcc17f37f317c38587bfcf9ee2bfef7dba0d454c8c9d6d9c32113"
+    },
+    "outer-spm-no-load": {
+      "comparison_sha256": "fdcaabc2f85560bc0552908621fb4f0ccb7eeeed907fe93ceacdfb71c20d6221",
+      "native_protocol_sha256": "29f6a14227b03a6cc005090a7ea41219ac81798bbc4b87c3973d50bb3e07f94c",
+      "native_completed_sha256": "3ce384f729e331495be9474c536a94ae082da2ea8eb789e3e310d35066dea25b",
+      "femm_protocol_sha256": "a121bb21b915377a39dfeeea2420cfeb2a50c996c13a96130fb47571cdc45cc1"
+    },
+    "outer-spm-loaded": {
+      "comparison_sha256": "18944cdd4ceae40922d496dc775d986265a3da82316b0ebfd954c820a9719e5b",
+      "native_protocol_sha256": "3f03fcf81655c4a937817944504e924b52ebb0ce144383d40567eab07fb9bfbf",
+      "native_completed_sha256": "671bd7077de00ea1352ddbd80648951ed7532cebca076e3182611c0ed5e11313",
+      "femm_protocol_sha256": "9e455f15666200a1e737573381e2234febaaa99117e3dc155874aa16fa9c1a77"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "case_id": "loss_flat_ipm_loaded_3000rpm",
+  "phase": "G",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "reference_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+  "input_sha256": "05c7f6b58fabd225d177b82a810ed9d2137a27306bedcb458d62ba866732ca1c",
+  "result": {
+    "schema": "coilem.stator_dc_reference/v1",
+    "speed_rpm": 3000,
+    "electrical_samples": 96,
+    "source_reference_protocol_sha256": "b517e21899dbf996e3f5bad4c8fd777624f07e87449432de2b48ce62fb252016",
+    "reference_loss_history_pass": true,
+    "rotor_loss_included": false,
+    "full_motor_efficiency_qualified": false,
+    "model_status": "experimental",
+    "values": {
+      "iron_hysteresis_loss_W": 2.6454780620608096,
+      "iron_eddy_loss_W": 3.4266399022047205,
+      "iron_loss_W": 6.07211796426553,
+      "copper_loss_W": 299.25200431730315,
+      "phase_resistance_ohm": 0.0798005344846142
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "coilem.combined_reference_review/v1",
+  "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+  "suite_sha256": "420eb2ebe92e5109d97246fd883e83636650ba3f3d8d21908cf1573f1d3a5c3a",
+  "components": {
+    "af": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "7f5828c000bbf902cc8c36653eeafd48a5acc55c65601e8f399be081d6a56d12"
+    },
+    "losses": {
+      "decision": "ACCEPTED_FOR_REGISTERED_PARITY",
+      "review_sha256": "19b1660ebabe1f60bc765f8dc96ee0a145676423b6b216bc42f5193027d4b236"
+    }
+  }
+}

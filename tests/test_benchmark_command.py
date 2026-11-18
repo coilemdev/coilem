@@ -52,10 +52,15 @@ def test_wheel_data_covers_everything_the_suite_registers() -> None:
             assert case["protocol"] in files
     bundle = [path for path in files if path.startswith(resources.BENCHMARK_REFERENCE_BUNDLE_DIR)]
     manifest = read(REPO_ROOT / resources.BENCHMARK_REFERENCE_BUNDLE_DIR / "manifest.json")
-    assert len(bundle) == 1 + len(manifest.get("review_artifacts", []))
-    for component in manifest["components"]:
-        child = read(REPO_ROOT / component["reference_bundle"] / "manifest.json")
-        assert {f"{component['reference_bundle']}/{entry['file']}" for entry in child["records"].values()} <= files
+    assert len(bundle) == 2 + len(manifest.get("review_artifacts", []))
+    def check_bundle(relative):
+        child = read(REPO_ROOT / relative / "manifest.json")
+        if child["schema"] == "coilem.combined_reference_bundle/v1":
+            for component in child["components"]:
+                check_bundle(component["reference_bundle"])
+        else:
+            assert {f"{relative}/{entry['file']}" for entry in child["records"].values()} <= files
+    check_bundle(resources.BENCHMARK_REFERENCE_BUNDLE_DIR)
     assert {f"{resources.BENCHMARK_RECORDS_DIR}/{key}.json" for key in EVIDENCE} <= files
     assert all((REPO_ROOT / path).is_file() for path in files)
 
@@ -219,6 +224,7 @@ def test_physics_check_reads_this_checkout_and_names_a_change(monkeypatch) -> No
     baseline = record.check_physics(published)
     assert baseline["files"] == len(published["physics_files"])
     actual = {**record.installed_physics_hashes()[0], **record.installed_physics_hashes()[1]}
+    actual.pop("backend/iron_loss.py", None)  # This historical record gates A-F quantities only.
     expected = sorted({path for path, digest in published["physics_files"].items() if actual.get(path) != digest}
                       | (set(actual) - set(published["physics_files"])))
     assert set(baseline["differs"]) == set(expected) and not baseline["unverified"]

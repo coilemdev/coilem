@@ -1,4 +1,4 @@
-"""``coilem benchmark``: run the registered A-F suite on this installation (#71).
+"""``coilem benchmark``: run the registered A-G suite on this installation (#71).
 
 It solves every selected case with the installed Magneto2D, grades it against
 the frozen FEMM reference that ships with coilEM, matches the outcome against
@@ -30,6 +30,7 @@ QUICK_CASES = (
     "spm_4p12s_small",
     "spm_4p12s_simple__baseline__cogging",
     "spm_outer_14p12s_drone__baseline",
+    "loss_inner_spm_loaded_3000rpm",
 )
 OPTIONS_FILE = "benchmark-options.json"
 
@@ -37,14 +38,14 @@ OPTIONS_FILE = "benchmark-options.json"
 def build_parser():
     parser = argparse.ArgumentParser(
         prog="coilem benchmark",
-        description="Solve the published A-F benchmark on this computer, grade it against the frozen FEMM "
+        description="Solve the published A-G benchmark on this computer, grade it against the frozen FEMM "
         "reference, and check it matches the published record for this platform.",
         epilog="Runtime depends on this computer and the selected phases. A full run needs at least 3 GB of free disk space; "
         "each case's solver files "
         "are deleted when it finishes.",
     )
     parser.add_argument("--phase", action="append", choices=list(COMMAND_PHASES), help="run only this phase (A SPM, B IPM, "
-                        "C distributed winding, D BLDC, E cogging, F outrunner); repeat for several")
+                        "C distributed winding, D BLDC, E cogging, F outrunner, G stator/DC losses); repeat for several")
     parser.add_argument("--quick", action="store_true", help="run one complete-grid case per selected phase")
     parser.add_argument("--sector", action="store_true", help="solve each case as one repeating sector where the motor repeats "
                         "(protocol 1.11.0), graded against the same FEMM references; there is no published sector record to match")
@@ -87,7 +88,10 @@ def main(argv=None):
     if args.resume and options_path.is_file():
         options = read(options_path)
     else:
-        options = {"phases": [p for p in COMMAND_PHASES if p in (args.phase or COMMAND_PHASES)], "quick": args.quick}
+        phases = COMMAND_PHASES[:-1] if args.sector else COMMAND_PHASES
+        options = {"phases": [p for p in phases if p in (args.phase or phases)], "quick": args.quick}
+        if args.sector and args.phase and "G" in args.phase:
+            parser.error("Phase G loss checks require the full motor; sector loss qualification is deferred")
         if args.sector:
             options["sector"] = True
     phases, quick, sector = options["phases"], options["quick"], bool(options.get("sector"))
@@ -106,10 +110,8 @@ def main(argv=None):
         # A sector list shows the full-motor record's times and planned-unsupported cases for
         # reference; the run itself is still not matched against it (#333).
         listed = record
-        if sector:
+        if sector or listed is None:
             listed, _ = select_record(load_records())
-            if listed is not None and not {case["id"] for case in cases} <= set(listed["cases"]):
-                listed = None
         for case in cases:
             seconds = (listed or {}).get("case_runtime_s", {}).get(case["id"])
             note = "not supported in this release" if recorded_status(listed, case) == "UNSUPPORTED" else _minutes(seconds) if seconds else ""

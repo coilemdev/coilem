@@ -1,7 +1,9 @@
 # Developer-preview validation
 
-[Protocol 1.10.0](../benchmarks/af-v1.10/README.md) is the default A–F
-benchmark. The [qualification reports](../benchmarks/qualification-70c5e3404c19/README.md)
+[Protocol 1.12.0](../benchmarks/ag-v1.12/README.md) is the default A–G benchmark.
+Its new Phase G has [completed Windows stator/DC-copper numerical evidence](qualification/stator-copper-femm-20261117/README.md);
+the full new A–G platform records still require collection. Historical
+[A–F qualification reports](../benchmarks/qualification-70c5e3404c19/README.md)
 measure the same Magneto2D 0.5.0 candidate on Windows x86-64 and macOS arm64.
 The comparisons use the frozen, reviewed FEMM references. The separately
 collected Prius software evidence accompanies both platform reports.
@@ -172,18 +174,26 @@ final-candidate run.
 
 ## Run the benchmark yourself
 
-An installed coilEM carries the [combined A-F protocol 1.10.0](../benchmarks/af-v1.10/README.md),
+An installed coilEM carries the [combined A–G protocol 1.12.0](../benchmarks/ag-v1.12/README.md),
 its reviewed frozen reference components and the
 [published records](../benchmarks/records/README.md), so anyone can check
 their own installation:
 
 ```sh
-coilem benchmark --quick    # one complete-grid case in each of six phases
-coilem benchmark            # all 69 registered cases
+coilem benchmark --quick    # one complete-grid case in each of seven phases
+coilem benchmark            # all 85 registered cases
+coilem benchmark --phase G  # 16 full-motor stator/DC-copper operating points
 coilem benchmark --list     # case selection and recorded times when available
 ```
 
 `--phase B` runs one phase (repeatable), and `--out` names the output folder.
+G compares hysteresis, lamination eddy, stator total, DC copper and resistance
+with the frozen FEMM/geometry reference. Rotor loss is excluded and experimental;
+material accuracy and full efficiency remain unqualified. Its completed baseline
+and retained diagnostic failures are linked above. Sector runs retain A–F;
+G requires the full motor. Until full A–G records are collected, a complete
+A–G run has no matching published Native platform record; A–F-only selections
+retain their existing records and tolerances.
 The command solves each case with the installed Magneto2D and grades it
 against the frozen reference with the registered gates. It then matches the outcome
 against the record for the platform. A match needs the same verdicts and gate

@@ -62,6 +62,10 @@ loss qualification on Windows and macOS remains deferred.
 
 ## 0.5.9 release boundary
 
+The [completed stator/DC-copper FEMM record](qualification/stator-copper-femm-20261117/README.md)
+supplies Phase G of the A–G benchmark. It excludes rotor loss and does not close
+the deferred rotor-history, material-accuracy or sector qualification work.
+
 The release owner approved landing the physics implementation while retaining
 experimental status. Remaining rotor-loss qualification is a future-release
 follow-up, [#330](https://github.com/coilemdev/coilem/issues/330). The immediate 0.5.9 validation priority is

@@ -109,11 +109,11 @@ Run the same benchmark suite on your own computer:
 coilem benchmark --quick
 ```
 
-That solves one complete-grid case in each of the six phases and compares it
-with the frozen reference that ships with coilEM. Drop `--quick` for all 69
+That solves one complete-grid case in each of the seven phases and compares it
+with the frozen reference that ships with coilEM. Drop `--quick` for all 85
 cases, or use `--list` to see the selection and recorded runtime estimates.
 It needs no Git, Rust, Node.js or FEMM. See
-[benchmark protocol 1.10.0](benchmarks/af-v1.10/README.md).
+[benchmark protocol 1.12.0](benchmarks/ag-v1.12/README.md).
 
 ## Script it from Python or the command line
 

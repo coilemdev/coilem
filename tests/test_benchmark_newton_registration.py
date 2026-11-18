@@ -20,7 +20,7 @@ MEASURED = ROOT / "benchmarks/abcd-v1.6/benchmark_spec.json"
 def test_protocol_1_9_remains_a_supported_historical_suite():
     spec = load_suite(SUITE)
     assert spec["protocol_version"] == "1.9.0" and "1.9.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.10.0" and resources.BENCHMARK_SUITE_FILE == "benchmarks/af-v1.10/benchmark_spec.json"
+    assert PROTOCOL_VERSION == "1.12.0" and resources.BENCHMARK_SUITE_FILE == "benchmarks/ag-v1.12/benchmark_spec.json"
 
 
 def test_the_generator_reproduces_the_registered_requests_and_suite():
