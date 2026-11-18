@@ -1,15 +1,4 @@
 {
   "schema": "coilem.npm_audit_exceptions/v1",
-  "exceptions": [
-    {
-      "id": "GHSA-fc5q-39xc-vjpf",
-      "package": "picomatch",
-      "vulnerable_range": "<=4.0.7",
-      "severity": "high",
-      "reason": "ReDoS through single-branch repeated extglobs, with no fixed picomatch release (latest 4.0.7). picomatch is reached only through Vite's build and dev-server tooling (vite, fdir, tinyglobby), a devDependency that is not part of the shipped UI bundle; the app serves the built files and does not run Vite. The glob patterns come from this repository's build configuration and Vite's defaults, not from users.",
-      "reviewed": "2026-11-17",
-      "review_by": "2027-01-31",
-      "issue": "https://github.com/coilemdev/coilem/issues/333"
-    }
-  ]
+  "exceptions": []
 }

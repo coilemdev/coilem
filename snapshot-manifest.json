@@ -6415,8 +6415,8 @@
     },
     {
       "path": "frontend/audit-exceptions.json",
-      "bytes": 767,
-      "sha256": "1bb2dcc79b6420817ce5a016e72ee9a1ae28fd600a2a742a91c655cd18cc6b3c"
+      "bytes": 69,
+      "sha256": "f7a363ce661888acb48ac24d3edfda3bc5554d172b62700dbd02e8823e52fc70"
     },
     {
       "path": "frontend/package-lock.json",
