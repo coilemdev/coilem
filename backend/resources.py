@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 from collections.abc import Iterable
 from functools import reduce
@@ -237,8 +238,10 @@ def source_checkout_commit(root: Path) -> str:
     if isinstance(snapshot_commit, str) and re.fullmatch(r"[0-9a-f]{40}", snapshot_commit):
         return snapshot_commit
     try:
+        # Resolve through Python's PATH, even if the native Windows search
+        # path has changed since Python started.
         completed = subprocess.run(
-            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            [shutil.which("git") or "git", "-C", str(root), "rev-parse", "HEAD"],
             capture_output=True,
             check=False,
             text=True,

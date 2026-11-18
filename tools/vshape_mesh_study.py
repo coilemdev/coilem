@@ -7,6 +7,7 @@ import importlib.metadata
 import json
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -90,7 +91,7 @@ def point(case: str, density: str) -> dict:
     return {
         "case": case, "mesh_density": density, "request": body,
         "identity_sha256": identity["sha256"],
-        "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "source_commit": subprocess.check_output([shutil.which("git") or "git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "fixture_sha256": hashlib.sha256(fixture_bytes).hexdigest(),
         "elapsed_s": round(time.monotonic() - started, 2), "mesh_elements": result.solve_metadata.mesh_element_count,
         "average_torque_Nm": result.summary.avg_torque_Nm, "back_emf_fundamental_V": result.summary.back_emf_fundamental_V,
@@ -114,7 +115,7 @@ def main() -> None:
     identity = study_identity()
     report = {
         "scope": "Mesh sensitivity only; no FEMM or hardware qualification. Full-cycle 7.5-degree electrical sampling.",
-        "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "source_commit": subprocess.check_output([shutil.which("git") or "git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "platform": platform.platform(),
         "identity": identity,
         "dependencies": identity["dependencies"],

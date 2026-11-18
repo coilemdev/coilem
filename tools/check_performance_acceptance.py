@@ -12,6 +12,7 @@ import hashlib
 import io
 import json
 import math
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -54,7 +55,7 @@ def javascript_digest(path: Path, key: str | None = None) -> str:
     # is parsed as data by a fixed script; none of its content is executed.
     script = "const fs=require('node:fs'),c=require('node:crypto');let v=JSON.parse(fs.readFileSync(0,'utf8'));"
     script += "if(process.argv[1])v=v[process.argv[1]];process.stdout.write(c.createHash('sha256').update(JSON.stringify(v)).digest('hex'));"
-    return subprocess.run(['node', '-e', script, key or ''], input=path.read_text(encoding='utf-8'),
+    return subprocess.run([shutil.which('node') or 'node', '-e', script, key or ''], input=path.read_text(encoding='utf-8'),
                           text=True, check=True, capture_output=True).stdout
 
 

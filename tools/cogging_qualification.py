@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from datetime import datetime
@@ -89,7 +90,7 @@ def main():
     options.directory.mkdir(parents=True, exist_ok=True)
     output = options.directory / "out"
     if not options.assess_only:
-        head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+        head = subprocess.check_output([shutil.which("git") or "git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
         if head != options.candidate:
             raise ValueError("Checkout does not match the pinned qualification candidate")
         completed = subprocess.run([sys.executable, "-B", "-u", "-m", "tools.run_benchmarks",
