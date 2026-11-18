@@ -1009,7 +1009,13 @@ assert.match(solvedFieldSource, /phases=\{phaseView\}/);
 assert.match(fieldResultSource, /drawPhaseDriveWired\(context, driveFrame\.panel, phases\.drive, phases\.angleDeg, sample\(phases\.angleDeg\), leads, phases\.rpm, \{/);
 assert.match(fieldResultSource, /\.\.\.\(driveMarginPx \? \{ marginLeft: driveMarginPx \} : \{\}\)/);
 assert.match(fieldResultSource, /<div className="public-winding-key public-field-phase-key" aria-label="Winding phase and current direction legend">/);
-assert.match(fieldResultSource, /phases\.currentsA && coilMarks\.map\(/);
+// Coils and ⊙ / ⊗ are drawn on the field canvas (and the magnifier) at screen
+// size with the Geometry view's marker, so they stay crisp and readable zoomed in.
+assert.match(fieldResultSource, /drawCoilPhases\(context, toCanvas, pixelRatio, coilSides, coilMarks, phases\);/);
+assert.match(fieldResultSource, /drawCoilPhases\(context, worldTransform, pixelRatio, coilSides, coilMarks, phases\);/);
+assert.match(fieldResultSource, /drawCurrentMarker\(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS\[mark\.phase\]\);/);
+assert.doesNotMatch(fieldResultSource, /public-field-phase-coils|public-field-phase-mark/);
+assert.match(phaseDrivePanelSource, /export function drawCurrentMarker\(/);
 assert.doesNotMatch(fieldResultSource, /FieldPhaseReadout|fillOpacity/);
 assert.match(styleSource, /\.public-field-result > \.public-field-drive-panel \{ position: absolute; inset: 0;[^}]*pointer-events: none; \}/);
 assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);

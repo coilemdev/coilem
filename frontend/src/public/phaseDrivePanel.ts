@@ -162,3 +162,49 @@ export function drawPhaseDriveWired(
   context.restore();
 
 }
+
+/**
+ * A coil side's current mark: ⊙ out of the page, ⊗ into it, white on a dark disc
+ * ringed in the phase colour. Shared by the Geometry view and the Field
+ * solution's Phases, drawn at screen size so it reads at any zoom.
+ */
+export function drawCurrentMarker(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  radius: number,
+  outOfPage: boolean,
+  ringColor: string,
+): void {
+  context.save();
+  context.shadowColor = 'rgba(3, 5, 9, 0.6)';
+  context.shadowBlur = radius * 0.9;
+  context.shadowOffsetY = radius * 0.16;
+  context.beginPath();
+  context.arc(x, y, radius, 0, Math.PI * 2);
+  context.fillStyle = 'rgba(8, 10, 14, 0.82)';
+  context.fill();
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  context.shadowOffsetY = 0;
+  context.strokeStyle = ringColor;
+  context.lineWidth = Math.max(1.1, radius * 0.18);
+  context.stroke();
+  if (outOfPage) {
+    context.beginPath();
+    context.arc(x, y, Math.max(1.3, radius * 0.34), 0, Math.PI * 2);
+    context.fillStyle = '#f8fafc';
+    context.fill();
+  } else {
+    const reach = radius * 0.52;
+    context.strokeStyle = '#f8fafc';
+    context.lineWidth = Math.max(1.1, radius * 0.22);
+    context.beginPath();
+    context.moveTo(x - reach, y - reach);
+    context.lineTo(x + reach, y + reach);
+    context.moveTo(x + reach, y - reach);
+    context.lineTo(x - reach, y + reach);
+    context.stroke();
+  }
+  context.restore();
+}

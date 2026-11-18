@@ -39,11 +39,13 @@ import {
   coilSideMark,
   coilSidesFromGeometry,
   phaseCycleSampler,
+  type CoilMark,
+  type CoilSide,
   type FieldPhaseView,
 } from './fieldPhases';
 import { PUBLIC_PHASE_COLORS } from './motorPalette';
 import { phaseDriveFrame, phaseStrips, type PhaseCurrentSampler } from './phaseDrive';
-import { drawPhaseDriveWired } from './phaseDrivePanel';
+import { drawCurrentMarker, drawPhaseDriveWired } from './phaseDrivePanel';
 import {
   buildTriangleGrid,
   triangleGridCell,
@@ -499,6 +501,51 @@ function drawFieldArrowLayer(
   drawFieldArrows(context, arrows, spacing * FIELD_ARROW_LENGTH_FRACTION, FIELD_ARROW_COLORS[tone]);
 }
 
+/**
+ * Phases on a canvas: each coil outlined in its phase colour and, where its
+ * phase carries current, the Geometry view's ⊙ / ⊗ at its glyph. `toCanvas`
+ * maps the plot's drawing space (x, -y in mm) to canvas pixels. Drawn at screen
+ * size, not scaled with the view, so the marks stay crisp and readable at any
+ * zoom (an SVG overlay is stretched as one image while zooming).
+ */
+function drawCoilPhases(
+  context: CanvasRenderingContext2D,
+  toCanvas: DOMMatrix,
+  pixelRatio: number,
+  coilSides: readonly CoilSide[],
+  coilMarks: readonly CoilMark[],
+  phases: FieldPhaseView,
+): void {
+  const pixelsPerMm = Math.hypot(toCanvas.a, toCanvas.b);
+  if (!(pixelsPerMm > 0)) return;
+  context.save();
+  context.setTransform(toCanvas);
+  context.lineWidth = (1.3 * pixelRatio) / pixelsPerMm;
+  context.lineJoin = 'round';
+  context.globalAlpha = 0.95;
+  coilSides.forEach((side) => {
+    context.beginPath();
+    side.points.forEach(([x, y], index) => (index === 0 ? context.moveTo(x, -y) : context.lineTo(x, -y)));
+    context.closePath();
+    context.strokeStyle = PUBLIC_PHASE_COLORS[side.phase];
+    context.stroke();
+  });
+  context.globalAlpha = 1;
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  if (phases.currentsA) {
+    coilMarks.forEach((mark) => {
+      const outOfPage = coilSideMark(mark, phases.currentsA ?? [0, 0, 0], phases.cycle.peakA);
+      if (outOfPage === null) return;
+      const { x, y } = toCanvas.transformPoint({ x: mark.centre[0], y: -mark.centre[1] });
+      // The glyph's size, as the Geometry view draws it, but never smaller than
+      // a readable mark nor so large it hides the slot when zoomed in.
+      const radius = Math.min(10 * pixelRatio, Math.max(4 * pixelRatio, mark.radiusMm * 1.1 * pixelsPerMm));
+      drawCurrentMarker(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS[mark.phase]);
+    });
+  }
+  context.restore();
+}
+
 /** The square of SVG-space coordinates that a square raster with this view box covers. */
 function rasterWorldSquare(viewBox: string): { left: number; top: number; size: number } | null {
   const [x, y, width, height] = viewBox.split(/\s+/).map(Number);
@@ -720,6 +767,7 @@ export function FieldResultPlot({
   // The stator's coil sides and their ⊙ / ⊗ places do not turn with the rotor.
   const coilSides = useMemo(() => coilSidesFromGeometry(geometry), [geometry]);
   const coilMarks = useMemo(() => coilMarksFromGeometry(geometry), [geometry]);
+  const phasesShown = phases !== null && coilSides.length > 0;
   const phaseCycle = phases?.cycle ?? null;
   const phaseSampler = useMemo(() => (phaseCycle ? phaseCycleSampler(phaseCycle) : null), [phaseCycle]);
   const statorPolarityCues = useMemo(
@@ -903,6 +951,9 @@ export function FieldResultPlot({
           }
         }
       }
+      if (phasesShown && phases && worldTransform) {
+        drawCoilPhases(context, worldTransform, pixelRatio, coilSides, coilMarks, phases);
+      }
       // A small cross marks the point under the pointer.
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
@@ -939,6 +990,7 @@ export function FieldResultPlot({
     prepared,
     primaryTone,
     raster,
+    phases,
     scheduleLoupeDraw,
     showFieldLines,
     showHeatmap,
@@ -1206,8 +1258,36 @@ export function FieldResultPlot({
       context.stroke();
       context.restore();
     };
+    // Phases: the coils and their ⊙ / ⊗ over the field, through the same
+    // transform the field is drawn with, at screen size.
+    const drawPhases = () => {
+      const context = canvas.getContext('2d');
+      const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
+      if (!phasesShown || !phases || !context || !square) return;
+      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
+      const worldScale = drawSize / square.size;
+      const panX = navigation.pan.x * pixelRatio;
+      const panY = navigation.pan.y * pixelRatio;
+      const pivotX = canvas.width / 2 + panX;
+      const pivotY = canvas.height / 2 + panY;
+      const toCanvas = new DOMMatrix()
+        .translateSelf(pivotX, pivotY)
+        .rotateSelf(navigation.rotationDeg)
+        .translateSelf(-pivotX, -pivotY)
+        .multiply(new DOMMatrix([
+          worldScale,
+          0,
+          0,
+          worldScale,
+          (canvas.width - drawSize) / 2 + panX - square.left * worldScale,
+          (canvas.height - drawSize) / 2 + panY - square.top * worldScale,
+        ]));
+      drawCoilPhases(context, toCanvas, pixelRatio, coilSides, coilMarks, phases);
+    };
     const drawWithRotorMark = () => {
       draw();
+      drawPhases();
       drawRotorMark();
     };
     drawWithRotorMark();
@@ -1225,6 +1305,10 @@ export function FieldResultPlot({
     navigation.rotationDeg,
     overlay,
     overlayPrepared,
+    phases,
+    phasesShown,
+    coilMarks,
+    coilSides,
     prepared,
     primaryTone,
     raster,
@@ -1297,7 +1381,6 @@ export function FieldResultPlot({
   // box itself narrows, so the view's zoom, probe and magnifier are unchanged.
   const driveCanvasRef = useRef<HTMLCanvasElement>(null);
   const [plotSize, setPlotSize] = useState<{ width: number; height: number } | null>(null);
-  const phasesShown = phases !== null && coilSides.length > 0;
   useLayoutEffect(() => {
     const root = plotRootRef.current;
     if (!phasesShown || !root) {
@@ -1585,7 +1668,7 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes || hasPhaseOverlay) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
+          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
@@ -1593,33 +1676,6 @@ export function FieldResultPlot({
                   <circle className="is-halo" cx="0" cy="0" r={airgapEdges[1]} />
                   <circle cx="0" cy="0" r={airgapEdges[0]} />
                   <circle cx="0" cy="0" r={airgapEdges[1]} />
-                </g>
-              )}
-              {hasPhaseOverlay && phases && (
-                <g className="public-field-phase-coils">
-                  {/* Outlines only, so the field shows through the slots. */}
-                  {coilSides.map((side, index) => (
-                    <path
-                      key={`coil-${index}`}
-                      d={`${side.points.map(([x, y], pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${x} ${-y}`).join(' ')} Z`}
-                      style={{ stroke: PUBLIC_PHASE_COLORS[side.phase] }}
-                    />
-                  ))}
-                  {phases.currentsA && coilMarks.map((side, index) => {
-                    const outOfPage = coilSideMark(side, phases.currentsA ?? [0, 0, 0], phases.cycle.peakA);
-                    if (outOfPage === null) return null;
-                    const [x, y] = [side.centre[0], -side.centre[1]];
-                    const radius = side.radiusMm * 1.1;
-                    const arm = radius * 0.5;
-                    return (
-                      <g key={`coil-mark-${index}`} className={`public-field-phase-mark is-${outOfPage ? 'out' : 'in'}`} style={{ stroke: PUBLIC_PHASE_COLORS[side.phase] }}>
-                        <circle cx={x} cy={y} r={radius} />
-                        {outOfPage
-                          ? <circle className="is-dot" cx={x} cy={y} r={radius * 0.26} style={{ fill: PUBLIC_PHASE_COLORS[side.phase] }} />
-                          : <path d={`M ${x - arm} ${y - arm} L ${x + arm} ${y + arm} M ${x - arm} ${y + arm} L ${x + arm} ${y - arm}`} />}
-                      </g>
-                    );
-                  })}
                 </g>
               )}
               {showMagnets && (
