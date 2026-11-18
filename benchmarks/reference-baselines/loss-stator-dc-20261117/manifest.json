@@ -1,0 +1,110 @@
+{
+  "schema": "coilem.frozen_reference_bundle/v1",
+  "protocol_version": "1.12.0",
+  "convention": "public-clockwise-v2",
+  "normalized": true,
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "reference_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+  "reference_commit_scope": "Loss postprocessor; original field-producer identities remain in the bound evidence",
+  "suite_sha256": "3401f0d687c61244b0444ab52c7fcc7d5565be403ff225278cdf7aad164292d3",
+  "records": {
+    "loss_inner_spm_no_load_1500rpm": {
+      "file": "loss_inner_spm_no_load_1500rpm.json",
+      "sha256": "d211f699c8369841c32e0bd92f1726eb6f25c3b6ee72c4697372b481a05086c7",
+      "input_sha256": "c12630cdc71f194b5675afb85b9384c1c15537791a912a3c133dbffdc5a6414d"
+    },
+    "loss_inner_spm_no_load_3000rpm": {
+      "file": "loss_inner_spm_no_load_3000rpm.json",
+      "sha256": "4a422f189a39a3dc070484f31746fa01bdc5e7d0e8c8eb82053f3ff618b07387",
+      "input_sha256": "90e006bfbeafa6a1fd2e9e4723581b5e47ab7b5cdc19badef53d8bf1bda20af5"
+    },
+    "loss_inner_spm_loaded_1500rpm": {
+      "file": "loss_inner_spm_loaded_1500rpm.json",
+      "sha256": "e87143c6497ce13f35416a9d395e92761d0604d6f64d158cf65a428169182e84",
+      "input_sha256": "44b92fd0d42e47ca26f1af2ae3cdfc78a52c8504d9acba34d99a927ae4f66ef0"
+    },
+    "loss_inner_spm_loaded_3000rpm": {
+      "file": "loss_inner_spm_loaded_3000rpm.json",
+      "sha256": "74548756f85bd0e06afd495222135534701859616dea8de720894a242ff52d35",
+      "input_sha256": "57eb334eb92232896075c1b767311ecd29803962902f5de70762cdd8428c16cd"
+    },
+    "loss_flat_ipm_no_load_1500rpm": {
+      "file": "loss_flat_ipm_no_load_1500rpm.json",
+      "sha256": "958a40e09b91240072beb2bd82bfa186f64188b3625684567ad57a194f1fb6a8",
+      "input_sha256": "04100b58f576722b02835a4d3bdc8aeeb350fb3177a0f600f54b13c68a4a1ec5"
+    },
+    "loss_flat_ipm_no_load_3000rpm": {
+      "file": "loss_flat_ipm_no_load_3000rpm.json",
+      "sha256": "fdf2a98d86da935d06a4b2ce6fc24cac924a31a5543195c7f0d189c97ed61de8",
+      "input_sha256": "8675088407a7329e30eebf13d7ad66227b49362d17e2195f877f4be6e0854f1e"
+    },
+    "loss_flat_ipm_loaded_1500rpm": {
+      "file": "loss_flat_ipm_loaded_1500rpm.json",
+      "sha256": "00ddf7a772b7de9160e95142e25d46bc544606efbb4ad7da60c6a31a917b1cd3",
+      "input_sha256": "392e6f17962adf75ef9c352d01cb6958f4581ea8a958d068b1b6c1c5ef69a8be"
+    },
+    "loss_flat_ipm_loaded_3000rpm": {
+      "file": "loss_flat_ipm_loaded_3000rpm.json",
+      "sha256": "0c46b8f33b587b56318fe4d500e14570153f777840cdbaae323178a74dd570f0",
+      "input_sha256": "05c7f6b58fabd225d177b82a810ed9d2137a27306bedcb458d62ba866732ca1c"
+    },
+    "loss_distributed_spm_no_load_1500rpm": {
+      "file": "loss_distributed_spm_no_load_1500rpm.json",
+      "sha256": "b21a5d7e1a627eca476c958bf9f224f8895b0568311a879f2f28860fed4dbdfa",
+      "input_sha256": "cca0681d3436a3d0b71d15b1f24e20545e2b5af261a72fd7a471418398f7e466"
+    },
+    "loss_distributed_spm_no_load_3000rpm": {
+      "file": "loss_distributed_spm_no_load_3000rpm.json",
+      "sha256": "711493807f96a12f300bf73f10f7521e2a05422a8dabd1f51085723259289493",
+      "input_sha256": "1ea00c9a58a88b0fcad0ef26e4ff5a9eca6fd9aea84fd9ee6984a15e746b2508"
+    },
+    "loss_distributed_spm_loaded_1500rpm": {
+      "file": "loss_distributed_spm_loaded_1500rpm.json",
+      "sha256": "8e7d88a094f9cc17fa1d2806cda1445d551fbf82647bf795d383c082d62bef8a",
+      "input_sha256": "fa662963876f4f3c767af7902a66c1ade3fd1122bbfb7f60889824f0793c2909"
+    },
+    "loss_distributed_spm_loaded_3000rpm": {
+      "file": "loss_distributed_spm_loaded_3000rpm.json",
+      "sha256": "d0c30222c42a4e230f7d1758f6535d6beeca2b052ff86b31c46c59558f383c52",
+      "input_sha256": "878b1126b5eae4146871bf61237fa5448e3cac704b042ed5b5e066c52f97cc66"
+    },
+    "loss_outer_spm_no_load_1500rpm": {
+      "file": "loss_outer_spm_no_load_1500rpm.json",
+      "sha256": "dcce3662c972e0eef4e5cedd457fc71f58921003d0a23854b36ce8ff6ed66a45",
+      "input_sha256": "feb1ed4cd3e9862668705d793d2accf225a0c546875b685ddec27e5ae328d0c9"
+    },
+    "loss_outer_spm_no_load_3000rpm": {
+      "file": "loss_outer_spm_no_load_3000rpm.json",
+      "sha256": "39592dc4d97d2c749632b9caaff80fb586c0666fad4172ec2b1a78820e438164",
+      "input_sha256": "ed49eee8cd5c48ededd61133f879be3258bb71e95e647bbaeb90006e8dfa216e"
+    },
+    "loss_outer_spm_loaded_1500rpm": {
+      "file": "loss_outer_spm_loaded_1500rpm.json",
+      "sha256": "57cbe979ce02ff4191a017d7e8834b2b1873beea6c4460c0db911890f18ce309",
+      "input_sha256": "42ef6b7b37a1d45b6d508efa6a5723000334c97d2d9a1d301b6eb9cf7cb004e1"
+    },
+    "loss_outer_spm_loaded_3000rpm": {
+      "file": "loss_outer_spm_loaded_3000rpm.json",
+      "sha256": "c3819b16686b785bdd14367f123d358f2c7d7e9b17ff30ecece343b5bf771900",
+      "input_sha256": "8f94b4191a951b049e726a752debd1c9e8132777f2c3c44dbbb01a3c88197c78"
+    }
+  },
+  "validation_status": "REVIEWED_FOR_REGISTERED_PARITY",
+  "review": {
+    "file": "review.json",
+    "sha256": "19b1660ebabe1f60bc765f8dc96ee0a145676423b6b216bc42f5193027d4b236"
+  }
+}

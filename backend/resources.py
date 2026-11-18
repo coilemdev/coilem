@@ -57,10 +57,12 @@ PACKAGE_DATA_FILES = (
 # registers, the frozen reference bundle and the published per-platform
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
-BENCHMARK_SUITE_FILE = "benchmarks/af-v1.10/benchmark_spec.json"
+BENCHMARK_AF_SUITE_FILE = "benchmarks/af-v1.10/benchmark_spec.json"
+BENCHMARK_SUITE_FILE = "benchmarks/ag-v1.12/benchmark_spec.json"
 # The same cases solved as one repeating sector (protocol 1.11.0), graded against the same references.
 BENCHMARK_SECTOR_SUITE_FILE = "benchmarks/af-v1.11-sector/benchmark_spec.json"
-BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol110-combined-20261110"
+BENCHMARK_AF_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol110-combined-20261110"
+BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol112-combined-20261117"
 # Beside a reviewed geometry review: renewals that accept changed sources whose geometry is unchanged.
 GEOMETRY_RENEWALS_FILE = "geometry-renewals.json"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"

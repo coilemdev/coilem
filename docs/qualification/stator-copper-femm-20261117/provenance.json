@@ -1,0 +1,655 @@
+{
+  "schema": "coilem.loss_qualification_provenance/v1",
+  "measurement_commit": "ef8904b12a30d61a20c5b29d1e3e3abf7b027bad",
+  "original_registration_candidate": "32dad312212195262fe1ccbf0482575b0c617571",
+  "original_registration_sha256": "be5045d934a152da7992a32ab2cbdf417a828001f45fef7b29b12082feca67ec",
+  "platform": "Windows x86_64",
+  "native_runtime": {
+    "binary_sha256": "19851c45543cb3c1b64a1533f0d0a851df74348345e4dbe374c49a27ac0b69a9",
+    "python": "3.11.0b4",
+    "numpy": "2.4.6",
+    "pydantic": "2.13.4",
+    "gmsh": "4.15.2"
+  },
+  "common_measured_source_sha256": {
+    "tools/rotor_native_pilot.py": "6aea18af4f794cace37f66b59ec04f34ae9b053be334f038374d8bc340d6685e",
+    "backend/__init__.py": "566d7f60987bee900dc08f2a54149999b661e4d1fce6c7ae0ec5744d99b30fbd",
+    "backend/airgap_sampling.py": "958520a6b21d7f31245b3b6bd1c47d3f66f5e13c090557cc4330ae2199602a46",
+    "backend/back_emf_harmonics.py": "2e0e5538312c31d0dbe101a2a8887163deaab6e4e0d81925a21ae8b5af451c11",
+    "backend/benchmark_suite/__init__.py": "5d63c27e7974f39d062db3b7ebc820fde0379cfb857c5b1bb1ba0ead6213c222",
+    "backend/benchmark_suite/abc_metrics.py": "206570f11d661feb2c95e4cf5ed939ddec0b1adc9c760b91631fd39b013767b8",
+    "backend/benchmark_suite/bldc_metrics.py": "79b912dc1190ceaebdcbcb5ec0eea83f519063b9a16783bd5b80a2c31c447716",
+    "backend/benchmark_suite/cli.py": "cf1fa11451cfb497799ec9a1710915912042f1126380fd9aaec036319d74775b",
+    "backend/benchmark_suite/cogging_metrics.py": "354affe9cf9957724303a8420bf1d510577d192822a321bede64e0c4f40d695e",
+    "backend/benchmark_suite/command.py": "92fbdfe1ec5f684bb4689ba5e1ab219164f3ca103f6d76b6a7d2abd27f45a87b",
+    "backend/benchmark_suite/composition.py": "0103dd8843108d8d365ce8f48b1fb2a4f9aa68eb9d4db6ae941d8904d06f660c",
+    "backend/benchmark_suite/contract.py": "cc1541632bc3795edb23fce38d93c617702c931bb4f0713af282b018244cbafd",
+    "backend/benchmark_suite/dq_metrics.py": "39953cba8897b819f1c1d72dbbbd3b251a43879ddb7406cc58ab95f453a8093b",
+    "backend/benchmark_suite/ef_review.py": "06d8ed25fa7012be952e6a3f2afd2989e29bee7076cb98c4ad429fff00ac070c",
+    "backend/benchmark_suite/hardware.py": "6204d74fca84aad9297d368cbe03027277d7724e518c5ff747c767e541fb18cb",
+    "backend/benchmark_suite/metrics.py": "1c54eee6f036c360da2cb42a41261f6360fade9908defcc2862562503ec1052a",
+    "backend/benchmark_suite/physics.py": "721632548a4e98486fddf95f08d3d8834b1b24be8d491876ae5036bd00e74739",
+    "backend/benchmark_suite/record.py": "4a2a21e8fbe8b03f446ee47b51a66a8dd2e4b64f02199a68e0293ad997073739",
+    "backend/benchmark_suite/references.py": "0f1c86bcfd6dd865e574c9ed223408b946b4d1af5f8cdc046a798d5cb2447551",
+    "backend/benchmark_suite/report.py": "e8a95f747ee34493292169adc9d8e4ea5d359a3d835ce247da0b814c313933a7",
+    "backend/benchmark_suite/resistance_metrics.py": "984665c631649cc64e0d6f73a5df43dcdb710a9d537886e1eeb32672faf08513",
+    "backend/benchmark_suite/share.py": "57fc6e6da6546472e1c8b94cadc95cfaf8f93f61ac98fa1b8bb17860f37eaf5e",
+    "backend/benchmark_suite/worker.py": "82bb836000973b718be6f3ed3e01e5e734792c7f637e0b721ca10ddcda694e6f",
+    "backend/client/__init__.py": "88093b591c2b3cd76371aa9163f129eed822f0a18ef700fa8b90785a50419ab7",
+    "backend/client/_cli.py": "61b50d8147b80774a739afc3caba6a59b6d07887eeda45046790c733d9dcac82",
+    "backend/client/_errors.py": "af8f57ca810acf574b42a8a93636230666b2f5c757327d22cf0a2408ddb429ac",
+    "backend/client/_inputs.py": "db04e1934bf5d51ede40af3655487fe10390d8cc411b3bb8aa420ff9b5b8cb47",
+    "backend/client/_results.py": "66a5e3fde95207d55ddea014439a6a0ae6e01fa1daa6ea66afa23e05351b3676",
+    "backend/client/_setups.py": "101595b7a04b0733e74e7e951ced387e5506e63a81e5dd19bf4e24ed1479cd13",
+    "backend/client/_solve.py": "3b6cd9e84eca8017c1a619f8676b36d3c73145baed9c17e45a16df236ce6c8c6",
+    "backend/cogging.py": "523cab95d8260a557794c4e965afa979168f0a7008559e37c88e302c6bb0e7ff",
+    "backend/convergence_reporting.py": "9529f71230ea82b1e801d5bf391d0eff97c89d18dbab7efe1c8dd58d61ac723d",
+    "backend/custom_materials.py": "792f6f66531abab3c10108f8f2809a9525520b7eeb69601b31252ecdf2fec161",
+    "backend/dq_flux_linkage.py": "da7d91c6076191c28fba4a34e4ef60858bf38c3f2498105e784299bfb748a6f8",
+    "backend/drive_performance.py": "ecf8ee0c42fd95496b7fdc0b5cca764a0dbb51e8912e7566d10b177ba090ee03",
+    "backend/elmer/__init__.py": "f0fd39fb911a0878c30cc907f91f27ffe17cb609ef77707e824b13cfb4100b4c",
+    "backend/elmer/adapter.py": "d5e64956fb0ccace905f4ff2bee2e0c792dee678f09ff7464689f5c53842394b",
+    "backend/elmer/capabilities.py": "4571beb2c320664896b3646b52d3495a2060f6bd8dc8e624558558bbb7784b65",
+    "backend/elmer/case.py": "fb9d97688575fa15c412c91bb1d79ccf8ed792bbc0b46690f8a40c7e52a92823",
+    "backend/elmer/errors.py": "7e5756105e1f7c27b888066f3887d4d8b651807e890433716d02750e6bd5d8fb",
+    "backend/elmer/mesh.py": "c8f69bd52341532a6145b873f7fe056b3547491ac25e8ddf13c9c37f408487b0",
+    "backend/elmer/process.py": "5c6f50c6e7adcdbe23fc70e0c91d52ca440ca109618c46fd0356705276112212",
+    "backend/elmer/profile.py": "2631532cb38e3430b4beb83c119d2363c97bbf686b7eda574822e24982f21d9d",
+    "backend/elmer/results.py": "93c53df13df80ed5b2fac7cf0f1443c47296a10e100988ce1b2802eba908998b",
+    "backend/excitation.py": "7614004a7a623d1aed43693115458e06f21938a1b7705eb57d8333b2ee8380ab",
+    "backend/export_safety.py": "c8da6bc46751002c6403d063034df03d7d5c0e7372fa4c567241db4dae869890",
+    "backend/fast_json.py": "200b36a4f0e654265847823d4ac22c5f4d5297161ae8a787023b01b2b9bcd404",
+    "backend/field_artifacts.py": "1ff7cd51536165bf24d77fefd51bba3516bbd5628c5d41dad580d43d2f7ec7b7",
+    "backend/field_composition.py": "53e4a43949f217d95a9acfba3a5565382e9494646437a3fa5ee5096f726f25e7",
+    "backend/field_frame_codec.py": "f11bcbb3c284c04eb0b32084be38d9acea945a907f4d18ef2b2eced7ef097e3f",
+    "backend/field_lines.py": "10dd79b810788aaf3ec4d9e447aebac7cf110b2f5c6aac0f73405e37d4febbc0",
+    "backend/flux_linkage_map.py": "f643836afded8ef85025b0844783645a81216b6a68c304ebacc2e38bd5e11248",
+    "backend/geometry.py": "75d36dd236b3b276b2fde1a058e8896af2f2508709a0cb1de9e8c77c94f84610",
+    "backend/geometry_drawer.py": "b6ca5041899c9d48fc49cd73189b7dd89cf4b4f599e69130702bd6a3318a903e",
+    "backend/geometry_ir.py": "be247780f34527dd78efa4962f76e1fdef197b4144bb50dd813dc27674d380d6",
+    "backend/geometry_ir_tessellation.py": "4efd902bad677863c27ab2c379b480affe880a690bb8c59efef5c506ee4abfec",
+    "backend/gmsh_mesh_rotation.py": "609984687a2f0f8bf5e3bab5bc9f41d2629836857e7cf4b173552a9a69beae1e",
+    "backend/gmsh_solver.py": "99e3eb163b1ab52f406ee83728eb8b5843096f0c8400146423e53dde36a4b12a",
+    "backend/halbach/__init__.py": "4589f3c4384db0bc139c83db732036e87ccdbe9f7d7e1e98f67b20a5806d7d69",
+    "backend/halbach/exports.py": "af1c9a33846eef66b2b773bfe7c1247cae32eb863620a51a6a26a3091f5bad44",
+    "backend/halbach/geometry.py": "980f8092b696faefc22be7cccf60fb76c7d69bdd51f9d0a961c83358e52beb3a",
+    "backend/halbach/gmsh_adapter.py": "fa07601465c8999e378d03d99dcbee19424dfec9e7bdd41a97494ba3c585af85",
+    "backend/halbach/linear_geometry.py": "cf97f7fa5a0b3bc41763f1d0fa48fb5574f336223cef69e476c9232284cb9f0c",
+    "backend/halbach/linear_gmsh_adapter.py": "178b133772d1a81584ce1780abd4641da57a8c679d30defede57f9f40e8409a8",
+    "backend/halbach/linear_models.py": "597d8ab510715af4fa90915e646b99435fbfb4c390f5257f697c04cd1d0fc9e9",
+    "backend/halbach/linear_postprocess.py": "7c6707110fbbe5f61e715d69cbdec15d393bf5daac2905f154d9129ba6486469",
+    "backend/halbach/linear_solver.py": "0d979f3bc5a3c28fa7dc495087f23eee6b8b6c9497bf10557859a01f5914ecba",
+    "backend/halbach/materials.py": "0e2f21fac1daf437945eadb49e4300f7a1fca14160bce07143bb65e9fd6e81c0",
+    "backend/halbach/models.py": "08491dddf0ea35359273737cf10e73fd3c6f30dfd4cd8df29ec608e179420874",
+    "backend/halbach/postprocess.py": "5222ee6dd5673a6d5884ae58d0a18cc88a1eace82dbfb36f71ac41dee3317d7a",
+    "backend/halbach/solver.py": "74f7984e5c33d544fe3a1fd09078d08363d82f157e4f22f8f392e3089d442965",
+    "backend/input_advisories.py": "a70b3fe2167d34c929bb01be7cfa0eb25398f4a505c20e1fffd110de94a9532f",
+    "backend/iron_loss.py": "28ae69b78b37c66147949f363bed2b28e05624ef34ddb198c6ce95cb004c6021",
+    "backend/launcher.py": "6a2f891241cf667bd7a16f162ce628f910472d3fb39673998ade0445bf98edda",
+    "backend/learning_progress.py": "e52b735a7c1bf5ffa15dbe8bf6e98cbb05e11c92b4423587248318e3518f6d6a",
+    "backend/local_file_safety.py": "9d6430cac80c866ab54e2cdcaeaf2a08435265a23ba75f365925e84b1e7083ac",
+    "backend/local_paths.py": "c9a0855930f0aa36d520cfcbea5da2222ce569c5ac199677f10e2dce50a9141a",
+    "backend/logging_utils.py": "a0f4f289c013d2697e56f2fd9a5ca21e1a119cfb2d93bb490d499319278a9ea6",
+    "backend/loss_breakdown.py": "36b312b151ae7f584605d7e972bb69aeb599ffa8f9bd8ed14db5c5dc40757e66",
+    "backend/machine_constants.py": "c5bc059993b475228cf9d60a5fc51bee4f8814bc8b0412202aa39ff34a3f1437",
+    "backend/magnet_temperature.py": "c03844516639014ccf80aa2500ca311cbffc8073e327d21a410cf6334fdcaf0e",
+    "backend/magneto2d_adapter/__init__.py": "9a22080297b26f60cb7e95c3fdce1f8c97945fd2f8b086f63902b60b025f7080",
+    "backend/magneto2d_adapter/_state.py": "71cba96ae3c9685381a77c76fcd736728d10da0d842a4e436c729d2b320c87f5",
+    "backend/magneto2d_adapter/streaming.py": "2622b8a1f7bec529e168030f43971070b5396520e3391cd45e89de1d0d3e9b19",
+    "backend/material_catalog.py": "80e4d2aa946e72a36e9a54e73c54bed51ce1e98053acad19b5fdd6b920f55262",
+    "backend/material_contract.py": "a171739b17fbd29047b5b1747c14f2b3094a845ec50ba3b02764512b4105fd07",
+    "backend/mesh_evidence.py": "5c48878678dc34549af3001710d6b7b9449eb2129e79911bd0e9f0cdca7dc185",
+    "backend/models/__init__.py": "9459797a11993aa2b6b4fc47f287a26afa4656b59a7d15077a0e2ee3aa90e364",
+    "backend/models/config.py": "a701bd00888fdb727a083ac0e3220ccd5167011d43ed73b078f379137d6b3dd2",
+    "backend/models/errors.py": "a31f9c3683f9eee4a2c9490f6d7f468590815903a00c4330b2f6c5cfbc5f18b9",
+    "backend/models/field.py": "d5a16aa60ee1cfdf3802dc90d10b404a35cff7c81d9f1fc4b6bad292cc31e7a4",
+    "backend/models/geometry.py": "25528b3a8c32730d8860ba2f4f3792496597a87f7e25e78808d8886449b74f2e",
+    "backend/models/mesh.py": "b739ab587d7db3b300994926eb59932c4e1992660bb7fe8950bf1940528b082e",
+    "backend/models/performance.py": "09f3cff7129998bb8e29eb7d0410360579c7afb26c17ca9686ce70a42ff21b14",
+    "backend/models/result.py": "271fc78da593f690324fc5c786b7b66a1bf0b8fb04bd07e7cce384b92e395ebb",
+    "backend/models/waveforms.py": "797a83fc318429cda57b8119367282323d1be3676780c28820aecce897389876",
+    "backend/performance_report.py": "49d944b70d255e360ab93c481fe79bd5c9ae80fda6af785bcb40ed7193ca929e",
+    "backend/platform_info.py": "66e0561fb3bd6c4de9e5287a5546db5da5d7b0bcc9f2582fb8cbcb9c8f5bad01",
+    "backend/preview.py": "0b18942e7797b9861f2f86a62480524f8f37c80a8c21583ebff9ad5f9a0f4f03",
+    "backend/preview_from_ir.py": "dcad2fb353bea0b38efec10ca7e59459d83f9830e50b931d10594963ce1dcad2",
+    "backend/public_field_playback.py": "22af292449a60d041db5565e0b70cdd86fd9a1450fd5e585e0dc9912561898bb",
+    "backend/public_field_playback_contract.py": "c1f4c2e30b560f11c8e0f14504389aaffa1cd7dc5ad6e3376b7217feaf80f105",
+    "backend/public_main.py": "c45411505ced3434d6238ac12fd496d5a509c9c320167bf474fdac714b8ccada",
+    "backend/public_material_catalog.py": "51bd3790fc6e954a4aacf1fcd9c099eb04585d295133198f4fd4639e085f33b3",
+    "backend/public_policy.py": "a23f9ef1d673f5404f9a703441f4895187c5cd81ceaa9a85504b4343f086ec6b",
+    "backend/public_report.py": "90ad827ec6a9702fb175441827260eea10daaf2e7fd8c08d1ef7b8e95b151a21",
+    "backend/public_routes/__init__.py": "9d618f4d5ce4533d14c318f65d071363e32de63c7089a92f91871fa2ccb50ff6",
+    "backend/public_routes/halbach.py": "ede0ab04eacd57f6f790d027cfbc2109b8e357bb7a2a15b05dacb535c50b4b81",
+    "backend/public_routes/performance.py": "32f10583dbfa5422b30c337b54220fc879571cbd03b2a11a43a41102603ae844",
+    "backend/public_routes/preview.py": "44a22090eb7a57400054a8c7d04e47acbdd2e46fcd985fc92d2c4cd13a8a17b8",
+    "backend/public_routes/runs.py": "11d231d053daad9db9ae40678109b046e94d4913988727b4f0d3d9d7af3338a6",
+    "backend/public_routes/solve.py": "a3d6e7f69eae75d11347e5e03799d0bfad2f1fac487f5573d5c08c4fdb07508e",
+    "backend/public_routes/tutorials.py": "e6ac7aa50092841bb5c98c22fa6d629f11e73db4cec00edbc3ce28d5d1036181",
+    "backend/public_security.py": "dd6ba3adc9a0118b0e3ac9554f3306a9fec1e40b967013447cbb1bfa49c40bc5",
+    "backend/public_ui.py": "bf136ae9740e2250490450c0a6c663269442966dc0e2ee1f379d464fd9952de4",
+    "backend/qualification.py": "effca3cd6b50cf09e0eee3bfc552d37aac6940862b6f234a121d7d59436f5508",
+    "backend/reference_models/__init__.py": "6d9e8224d8beb5267292603f0cb94409b33434918d36300bcbe050fb7e0f529d",
+    "backend/reference_models/lrk.py": "e337eeec7dc3a45668778ff6cee86414782b8479a914a30f51da9cb186a8cf43",
+    "backend/reference_models/prius.py": "334e1cec53d5a8335ace024fd96023453c4e780f8103ce4fcec77391649ed2d5",
+    "backend/report_numbers.py": "05b3f7913ac0afcee4f5d415ce5ee977873595d132e3cfd49f7b789d8d535ce0",
+    "backend/resources.py": "512ab35d54d1b6394227aaf3efdbe14d29c49daabf5f7a33e1f6c5853e2196de",
+    "backend/rotor_construction_preview.py": "5ce79dba68a3c699cf76db72b557ffa02fde7177953ef4794dcf63560e131c0a",
+    "backend/rotor_iron_loss.py": "7e8042dbaa5cfebce789e2d8b8c72d52a06c711c68a4a43a68870318305a252f",
+    "backend/rotor_layout.py": "0f45b1a64358a34cef1ce8ea3db2524716f10491ee85634108ca726fc1672b27",
+    "backend/rotor_loss_solver.py": "75a27db1380e0205819133db80d6607b034deee7d1b6abbd1e52d75c2e537ba8",
+    "backend/rotor_motion_mesh.py": "37b4c12d29771249d0c4ead8110c48f7d0c353256a2bb7cbfcc1278ef4ecf610",
+    "backend/run_field_playback.py": "21a38daa4f15f195c0bf934af5946c7542cf4d48304f64a2d7fe77be46713a4b",
+    "backend/sector_geometry.py": "8ce9c6fb464a0d63ecb634110a5b95905bdd02267866a2397cb97c90f3c46db3",
+    "backend/sector_tiling.py": "522f18be9f28a5ff7468c97c50e75f35179adea9f55b2bb941cf2525d8dbf37b",
+    "backend/selected_analyses.py": "78e6256811a25ac037854278f0cb36ecdb9f165455a0b5a1f3d7e15b57c1e06b",
+    "backend/solve_estimate.py": "0a6c5e61af111e6da9f1492797e28eed362f4cccf0e58b1fccf13000b0bae873",
+    "backend/solve_profile.py": "3db5521d6a306add757416dc69f650642d450104138b01f3f2e63dc188e8190a",
+    "backend/solve_workspace.py": "31c541362fe492a731c003500d19809aa463bcaf5116eaa4399b075a342a6efe",
+    "backend/solver/__init__.py": "16eee4c59debedef6b37159f6f7788146fb50308002845b900f0acad5f1a7012",
+    "backend/solver/_helpers.py": "5b8b41d5fced24257afda5b3d177dad3f15c744e0d54c02d1b02242e79c340b7",
+    "backend/solver/_mesh_pool.py": "03badfb53eb6b4d68ce35b2402213f61afb3f03ebe1897dbcfe78abebc11abc4",
+    "backend/solver/_process_pool.py": "7da4cbe64f1451056644825628f6cf9945447c852efc00718247d34f5c8f708e",
+    "backend/solver/convergence.py": "ef8aff1cc1d91bcd9a30b87a7d9d0ec743712dcf853c493de0a2b5432ab77e93",
+    "backend/solver_contract.py": "fcc680bdfb83c9a1a960c71f9a0f20c9d4149b09d5931c320a0e7d51f65c5046",
+    "backend/solver_environment.py": "9f623790efdcdc915cc693bb16cb4675bcbc1c21188176caccfe53fb3984b06f",
+    "backend/stator_construction_preview.py": "fb04595743c091c58a49ead501690c26d5d85cd7af7ede48cefe179bf0746169",
+    "backend/steel_flux_metrics.py": "cf77192b3754e26facb8a4a81ae169e280fe46b19673581438f2b0f14e05b5aa",
+    "backend/sweep_planning.py": "26211c44bb637a8472b468a612737e4847040c189b5aba2ced56e24025afe77c",
+    "backend/topology_provenance.py": "769e8e6019cacf5fed7d01a0c527462dc7f832cd278cc028437c7445b00a0966",
+    "backend/torque_metrics.py": "1174aded8f337de4105cd0d1f3b03a38f8256f9aa868b129539637ff3c419e68",
+    "backend/tutorial_fields.py": "2b08e9d3f17f9c166395386003d15261e8707fcc1866a98c63cca9be580239c9",
+    "backend/winding_resistance.py": "8d999cb72a3cb8caaf67b0a5c52188c49c12c52f7580e617836da4c219445440",
+    "backend/winding_utils.py": "63c58cdf306665ed8b184b36072c8feb312033afddfb0c6097ec476152578954",
+    "solvers/magneto2d/src/assembly.rs": "6023b61a0e4c9ac160ce495b03b69ec40989709e0ce006a979b89b2cafe3c938",
+    "solvers/magneto2d/src/field.rs": "b17f20a984d78adeeb2989e4a0b3ef6fa7280aa05da4e00cbe508eceee8188a0",
+    "solvers/magneto2d/src/lib.rs": "16130a039f710cc6d74b6564af5a066358b2fc5a3895caa37660cc47d484ef84",
+    "solvers/magneto2d/src/magnet_fraction.rs": "095c7ac9c8eb2d00c4c268855f4a1e61a1500b0b6a69ebbe8f0ece48e58edc2a",
+    "solvers/magneto2d/src/main.rs": "48f811c7b0175cb84568c4997ed678244c0b6323f5407817a579a09b8fcabe4a",
+    "solvers/magneto2d/src/materials.rs": "bd0ea38b6bd405657ace25496711b59cd447e3e5e4fed47b9e0014b0ce0a0699",
+    "solvers/magneto2d/src/mesh.rs": "f2665ebec31b802d7cfb60caa7a28347a3afb2f01bc674ae8463191d59c0ad3d",
+    "solvers/magneto2d/src/motor.rs": "1b8cccbe7c4603100ced441f0f4fa59efe84178a81d21a732d287eb53d4587b8",
+    "solvers/magneto2d/src/postprocess/summary.rs": "75a567d6b26579aec566fba256311876d339587332fde97f4d8ee862e73546b0",
+    "solvers/magneto2d/src/postprocess/tests.rs": "e5b50eb0b3812afb752d5b4ea638d6771adeae2bc09be6b91cafd952e9785ba9",
+    "solvers/magneto2d/src/postprocess/torque/env_flags.rs": "5f838a51b6deb4e61f9ea34161d3cbde24bc062cfbdd11aab1dd5c4c0843549a",
+    "solvers/magneto2d/src/postprocess/torque/localization.rs": "fc850cee925b0158be741b3d3e2a616144218ff563d00e180fbc09fe0fb4d5c8",
+    "solvers/magneto2d/src/postprocess/torque/mod.rs": "abb5cae14a4f61744c7a083527ad5c45f374b9e07851ee481846038d8baa14c5",
+    "solvers/magneto2d/src/postprocess.rs": "fa071db8735f8ff26ea6de97a3b37ef84cda628679888ec4f0b4001fae234c3e",
+    "solvers/magneto2d/src/run_config.rs": "7a588d6e47cacbfbf2ecf046f0b8fb0d028cd5b5bc85d39c3fa08fc528c66e54",
+    "solvers/magneto2d/src/schema.rs": "81a2b611c15736cb7851af8dd33f0260c48a3e2e1103bf21b6a17e8640cf83cd",
+    "solvers/magneto2d/src/solve/context.rs": "48e777b8678dec6cc59b63af46bbe5ef320c6bf5aac84a8dddcfb923723dd9f4",
+    "solvers/magneto2d/src/solve/mesh_metadata.rs": "46431789284d60d68689980f93cd59b6e6231466a9d78d87769e87eaab41e73b",
+    "solvers/magneto2d/src/solve/metrics.rs": "cde1d765e21376773d93f8f7541954a82e8e6fffc08dcfb94cd74f683139be60",
+    "solvers/magneto2d/src/solve/mod.rs": "631cc479a213440345460b65bb605be5bb2635c1043e32f9722eae4840432a90",
+    "solvers/magneto2d/src/solve/model/ipm.rs": "4c48ee72bf5964fd89de9ac5db8af4bd973f6e3ebfa46310edb84b30e398a6e0",
+    "solvers/magneto2d/src/solve/model/mod.rs": "714736b57d6ef1d2ec77f2e07846b10bb7fe29957e195a4e9f5e2af1576cad91",
+    "solvers/magneto2d/src/solve/model/spm.rs": "7f7d1009a5b84672e155475e99ae3e07c7956d9e0b9d976ad9e474019589ffd3",
+    "solvers/magneto2d/src/solve/newton.rs": "448b51881e6f6b289d9841791f0b15a2eb0298b55e3f2e6fcc0afcf18ec1fe0e",
+    "solvers/magneto2d/src/solve/nonlinear.rs": "4c8f58ea693e4e1fe682967daad045c0d78453c587047e77c53d3d599c32eec4",
+    "solvers/magneto2d/src/solve/picard.rs": "154d3ec52e191939f5bbe1601a5bbeac2e07b69f0249d5fdfeac29e8c808d4bc",
+    "solvers/magneto2d/src/solve/problem.rs": "e2b82d01dbe57a3d4b45f2df3912648ffe42d400e8683ec7941cd16d3dab7460",
+    "solvers/magneto2d/src/solve/tests.rs": "e399014af1800210a6e015934bd9b113acec422d579a4a1d143839ef46f945e4",
+    "solvers/magneto2d/src/solve/types.rs": "9317e59676377aa6142d23ad1a0c88651b420c61e25a5b553dadeef230bc0318",
+    "solvers/magneto2d/src/sources.rs": "f18aeecb5cd04e686681345914a8b54149f2e25eb714d5f0d5c412cbcc1eec8e",
+    "solvers/magneto2d/src/sparse.rs": "b4caa680a8665afc39e77f320eca1836261add97b22b6533919a1dda54048ac9",
+    "solvers/magneto2d/src/teaching.rs": "069e4bb52eb87f8f17662ee303dc90ada9fa1d1c4a21066fddd8a73ebd3dc32e",
+    "solvers/magneto2d/src/thermal/assembly.rs": "6aabcdf62cac02d5fddd7fcb814476a035b3736dbe3632047c1d14a924b9076c",
+    "solvers/magneto2d/src/thermal/bc.rs": "412e794c98e336c3392c05af404b928f858e4a1827cb21a42f58df8c4dcaf90e",
+    "solvers/magneto2d/src/thermal/contacts.rs": "eeb807390c2950403d7c678b102b926a9b75f5e1700cb8b061868b35596f5196",
+    "solvers/magneto2d/src/thermal/energy.rs": "d04b3c421ff139df54eb52f1e0c46c59a83e6769221397f97bdd15d783fc6bcf",
+    "solvers/magneto2d/src/thermal/materials.rs": "6707c82ed221f2309adf29d3dbbcea29215be77bd431852e8de96c65725bb649",
+    "solvers/magneto2d/src/thermal/mod.rs": "f13a19917f6ab1c8ecb5e81cd5770b1baa792a9133d4604ebb7490958263442f",
+    "solvers/magneto2d/src/thermal/solve.rs": "27d8ed386732808fac671b0b93663d10c825dccbef7c14771bfa3b0b7c019b13",
+    "solvers/magneto2d/src/thermal/sources.rs": "9ed205522bc6308891e17a2cfab5ad2e1ab0229f318cc4d90308ce5eac4d24cf",
+    "solvers/magneto2d/src/thermal/tests.rs": "4366d1f53400910b7bde26d20c69a3989750e11f6b64e565ff8bfe94064b31b7",
+    "solvers/magneto2d/src/thermal/types.rs": "f2c6d76d589e03e71cf49d38a68b5eb25b3c001e863bdc6b0191c1e41a6c49af",
+    "solvers/magneto2d/Cargo.toml": "f6d50b1cae24d1020b1538cd023ba6565bbab96a760670a69272395c49e913c6",
+    "solvers/magneto2d/Cargo.lock": "4664ca8863cb3668f0a095f5231b322264f23ffed4a446b1f271fcbf91b6ed76",
+    "tools/phase_g_loss/stator_contract.py": "d8478353e762d0ba0cd45564c4c6877eee6596a7b308689007e5cbd2e887edb9",
+    "backend/mesh_profiles/gmsh_profiles.json": "bd562f6a13920871ac83d40e1cf4e0765c5974aeed15f4d9dd2ab0564f27abd6",
+    "materials/electrical-steel/M350-50A.csv": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
+  },
+  "per_case_source_overrides": {
+    "inner-spm-no-load": {
+      "tools/phase_g_loss/stator_native.py": "1edf3e8f369d916b18d3885d8aede3635ded555657bedb0806fda3318e0e4aab"
+    },
+    "inner-spm-loaded": {
+      "tools/phase_g_loss/stator_native.py": "1edf3e8f369d916b18d3885d8aede3635ded555657bedb0806fda3318e0e4aab"
+    },
+    "flat-ipm-no-load": {
+      "tools/phase_g_loss/stator_native.py": "1edf3e8f369d916b18d3885d8aede3635ded555657bedb0806fda3318e0e4aab"
+    },
+    "flat-ipm-loaded": {
+      "tools/phase_g_loss/stator_native.py": "1edf3e8f369d916b18d3885d8aede3635ded555657bedb0806fda3318e0e4aab"
+    },
+    "distributed-spm-no-load": {
+      "tools/phase_g_loss/stator_native.py": "1edf3e8f369d916b18d3885d8aede3635ded555657bedb0806fda3318e0e4aab"
+    },
+    "distributed-spm-loaded": {
+      "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b"
+    },
+    "outer-spm-no-load": {
+      "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b"
+    },
+    "outer-spm-loaded": {
+      "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b"
+    }
+  },
+  "reference_provenance": {
+    "inner-spm-no-load": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "E",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {},
+      "raw_fields_distributed": false
+    },
+    "inner-spm-loaded": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "E",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {},
+      "raw_fields_distributed": false
+    },
+    "flat-ipm-no-load": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "E",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {},
+      "raw_fields_distributed": false
+    },
+    "flat-ipm-loaded": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "E",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {},
+      "raw_fields_distributed": false
+    },
+    "distributed-spm-no-load": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "E",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {
+        "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b",
+        "tools/phase_g_loss/stator_reproduction.py": "e474fa4115ece56944c93cd4bf350a3167f78229670c8218c9b52b491b82f5a2"
+      },
+      "raw_fields_distributed": false
+    },
+    "distributed-spm-loaded": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "E",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {
+        "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b",
+        "tools/phase_g_loss/stator_reproduction.py": "e474fa4115ece56944c93cd4bf350a3167f78229670c8218c9b52b491b82f5a2"
+      },
+      "raw_fields_distributed": false
+    },
+    "outer-spm-no-load": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "F",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {
+        "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b",
+        "tools/phase_g_loss/stator_reproduction.py": "e474fa4115ece56944c93cd4bf350a3167f78229670c8218c9b52b491b82f5a2"
+      },
+      "raw_fields_distributed": false
+    },
+    "outer-spm-loaded": {
+      "reference_identity": {
+        "schema": "coilem.femm_reference_adapter/v1",
+        "phase": "F",
+        "source_manifest_sha256": "b7779e88fef286aa42dc31954e0e4c67f1562b84e9f1bdc9afa8bbc399bb3cd8",
+        "verified_files": 110,
+        "implementation_sha256": {
+          "__init__.py": "6dac7c8077d7cbc4b4d4c7b6166512726f01d6f56e5621d49b25694fa9a6a087",
+          "__main__.py": "4cf551f60a105b03e1591fb6e3b6f4fec825bbe8e11022fb3cad5f79782c2dd6",
+          "automation.py": "ca537a0152d28829efb6d1ca3fe884fa246dc7ff8bc5c63607704a88ef5939dc",
+          "e_producer.py": "21cc0a1f1e5b8a8576520dc7aeb811538469e7d1347d6da2528b1ad379c3783d",
+          "f_producer.py": "78a7595b4e01c395fd5a3647af14bfe0c13cf191389a4c2cca9a36f7d5a0ed21",
+          "hub.py": "6ea27acaae6a00a0f33188c6ef2edae76bfe2c4058b282186f7d89d8b5c8b0f8",
+          "ir_helpers.py": "59d316d71f4993032a523cb400f247516a5b09e832ea29c497784784099fda9b",
+          "phase_e.py": "88dbc5ba037a3a34c1cfef72f738b095089361441f56bb0e62de8e89ad5a5377",
+          "phase_f.py": "b048bf99f8a360696e3f1121e03d1656bcaeba921e210f6b04a58ac24de7ac65",
+          "rotor_airgap.py": "93247da49bc0d5a550016c783d441720d95e7c2b3618f32c6bd1f9ca8d8a29a5",
+          "rotor_excitation_probe.py": "414188215c70f270dfdbaabd90206ff2a0c160a0873fccc296badcfb0f5366ee",
+          "rotor_loss_pilot.py": "deb7f83b2ded537220e4ff137e38be3aaebeebbbfc778037e83d091cfe586bdd",
+          "rotor_matched_history.py": "43cf4b880fb285c985c4f5ab271ccffe5e7cc708449e5d3f6776a8a1f7101944",
+          "rotor_matrix_history.py": "a8ec7abeee0288309eaff87ae05eb09220f2a773840f4634dc84bea6cbd9ee11",
+          "runtime.py": "e4466757e37f6950b7c1f2985b37ef1035e965e26d0af394c9982e8c108e6a64"
+        },
+        "dependencies": {
+          "numpy": "2.4.4",
+          "pydantic": "2.13.3",
+          "pyfemm": "0.1.3",
+          "pywin32": "311"
+        },
+        "femm_binaries": {
+          "femm.exe": "5e83cf0899cabae2017868ddcce338e3ba4ac25d1bf8e511eac77eda2bc92a21",
+          "fkn.exe": "2330a02b08b846fc6090c05f7fd5edbc1c910582bfd36721ecc0287c787b4eb0",
+          "triangle.exe": "6222b2a5cc9d68121e73f2d3f07b1715ffcb3f253dcbe799da20bf7878d863b8"
+        },
+        "scientific_status": "REVIEW_REQUIRED",
+        "physics_policy": "Preserved E/F meshes, materials, extraction methods and complete angle grids",
+        "cache_reuse_enabled": false,
+        "native_results_read": false
+      },
+      "reference_collector_sha256": "b30aa6a06bd3f60bf1c9ca6c58a11856c79e419096b6e9dee3a76624f244548d",
+      "archive_source_sha256": {
+        "tools/phase_g_loss/stator_native.py": "b9cecffa962a17b10d89e44955acdbba3d412b2d71240aacec71e0ce8214d77b",
+        "tools/phase_g_loss/stator_reproduction.py": "e474fa4115ece56944c93cd4bf350a3167f78229670c8218c9b52b491b82f5a2"
+      },
+      "raw_fields_distributed": false
+    }
+  },
+  "publication_base_commit": "e6c4ab922da8fc4017d3b463c6b8d6a357e9803c",
+  "publication_base_changed_measured_sources": {
+    "backend/benchmark_suite/__init__.py": {
+      "measured_sha256": "5d63c27e7974f39d062db3b7ebc820fde0379cfb857c5b1bb1ba0ead6213c222",
+      "publication_base_sha256": "dc41f48a86d6c9f4f118f586ed8b59122b5d40893531a3aa34b093f2e7e669da"
+    },
+    "backend/benchmark_suite/cli.py": {
+      "measured_sha256": "cf1fa11451cfb497799ec9a1710915912042f1126380fd9aaec036319d74775b",
+      "publication_base_sha256": "1156efdf852e58704206c5536412c916f8794053d47878727cf149debfa239a2"
+    },
+    "backend/benchmark_suite/command.py": {
+      "measured_sha256": "92fbdfe1ec5f684bb4689ba5e1ab219164f3ca103f6d76b6a7d2abd27f45a87b",
+      "publication_base_sha256": "c858da741580b1524d55c35ee25279f3756db144980d2e9947dde78317fbebc0"
+    },
+    "backend/benchmark_suite/physics.py": {
+      "measured_sha256": "721632548a4e98486fddf95f08d3d8834b1b24be8d491876ae5036bd00e74739",
+      "publication_base_sha256": "06b99986d26917ecec702e0f1696257bac489113c35d38f179c9f252cfaa60d2"
+    },
+    "backend/benchmark_suite/record.py": {
+      "measured_sha256": "4a2a21e8fbe8b03f446ee47b51a66a8dd2e4b64f02199a68e0293ad997073739",
+      "publication_base_sha256": "6fa2441d4c917340f4ea4620dba09276ee245b719652cdb59e303fa31d3e0286"
+    },
+    "backend/benchmark_suite/references.py": {
+      "measured_sha256": "0f1c86bcfd6dd865e574c9ed223408b946b4d1af5f8cdc046a798d5cb2447551",
+      "publication_base_sha256": "60fbd1b0652d7dc22f53c366f30bff29fc0edf8f1deb5570b714742dd45dd227"
+    },
+    "backend/client/_inputs.py": {
+      "measured_sha256": "db04e1934bf5d51ede40af3655487fe10390d8cc411b3bb8aa420ff9b5b8cb47",
+      "publication_base_sha256": "ff805f99c5af4612624a0c15c1f2e0975cb56e3b16114640a1226a52b1293e7f"
+    },
+    "backend/client/_solve.py": {
+      "measured_sha256": "3b6cd9e84eca8017c1a619f8676b36d3c73145baed9c17e45a16df236ce6c8c6",
+      "publication_base_sha256": "e8e2091c21431213d7f64a68f933ad918a9f7a1721461794f07b494bb9b19f52"
+    },
+    "backend/public_report.py": {
+      "measured_sha256": "90ad827ec6a9702fb175441827260eea10daaf2e7fd8c08d1ef7b8e95b151a21",
+      "publication_base_sha256": "cacac6d833c59451cf3cf1a2b95815c49633f1575ae0b040e58ac4e1b2c95de7"
+    },
+    "backend/resources.py": {
+      "measured_sha256": "512ab35d54d1b6394227aaf3efdbe14d29c49daabf5f7a33e1f6c5853e2196de",
+      "publication_base_sha256": "ac8381d7b83c7d2f20003b9d696e8898b974982ee9bdfe40b083d1df6ca61136"
+    }
+  },
+  "later_candidate_carry_qualification_claimed": false,
+  "material": {
+    "steel": "M350-50A",
+    "sheet_thickness_mm": 0.5,
+    "resistivity_ohm_m": 4.22e-07,
+    "density_kg_m3": 7650,
+    "stacking_factor": 1.0,
+    "loss_coefficients": {
+      "kh": 0.02363080387956422,
+      "alpha": 2.1133208693341228,
+      "kc": 0.0001273839224087156,
+      "density_kg_m3": 7650.0
+    }
+  },
+  "full_motor_efficiency_qualified": false,
+  "rotor_loss_status": "experimental",
+  "material_accuracy_qualified": false
+}

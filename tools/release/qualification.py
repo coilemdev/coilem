@@ -136,7 +136,7 @@ def _prius_errors(root, prius_path, prius_sources, candidate, suite_identity=Non
     return errors
 
 
-def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None = None) -> list[str]:
+def check(root: Path = ROOT, *, protocol: str | None = None, candidate: str | None = None) -> list[str]:
     errors: list[str] = []
     try:
         primary = _data(root, "benchmarks/records/windows-x86_64.json")
@@ -156,6 +156,8 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
             errors.append("qualification report did not measure the frozen candidate")
         suite_path = _constant(root / "backend/resources.py", "BENCHMARK_SUITE_FILE")
         suite = _data(root, suite_path)
+        if protocol is None:
+            protocol = suite["protocol_version"]
         suite_sha = hashlib.sha256((root / suite_path).read_bytes()).hexdigest()
         if suite["protocol_version"] != protocol or identity["protocol_version"] != protocol:
             errors.append(f"registered suite and measured report must both use protocol {protocol}")
@@ -168,7 +170,8 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
         spec = importlib.util.spec_from_file_location("release_physics", root / "backend/benchmark_suite/physics.py")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        actual = {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in module.physics_sources(root)}
+        sources = module.physics_sources(root, include_losses=True) if protocol == "1.12.0" else module.physics_sources(root)
+        actual = {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in sources}
         for name, digest in actual.items():
             if identity["source_files"].get(name) != digest:
                 errors.append(f"qualification physics mismatch: {name}")
@@ -202,11 +205,23 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
         if not required <= set(reference["records"]):
             errors.append("registered frozen bundle is missing supported reference records")
         for cid in required & set(reference["records"]):
-            entry = reference["records"][cid]
             record_bundle = bundle_path
-            if combined:
-                record_bundle = next(component["reference_bundle"] for component in reference["components"]
-                                     if component["id"] == entry["component"])
+            record_manifest = reference
+            entry = record_manifest["records"][cid]
+            visited = set()
+            while record_manifest.get("schema") == "coilem.combined_reference_bundle/v1":
+                if record_bundle in visited:
+                    raise ValueError("Cyclic combined reference bundle")
+                visited.add(record_bundle)
+                binding = entry
+                record_bundle = next(component["reference_bundle"] for component in record_manifest["components"]
+                                     if component["id"] == binding["component"])
+                if "file" in binding and "sha256" in binding:
+                    # Historical A-F manifests already flatten the leaf record.
+                    entry = binding
+                    break
+                record_manifest = _data(root, record_bundle + "/manifest.json")
+                entry = record_manifest["records"][cid]
             if hashlib.sha256(_file(root / record_bundle, entry["file"]).read_bytes()).hexdigest() != entry["sha256"]:
                 errors.append(f"registered reference record hash mismatch: {cid}")
         measured_platforms = {}
@@ -262,7 +277,7 @@ def check(root: Path = ROOT, *, protocol: str = "1.10.0", candidate: str | None 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", help="exact commit measured before evidence publication")
-    parser.add_argument("--protocol", default="1.10.0")
+    parser.add_argument("--protocol", default="1.12.0")
     args = parser.parse_args(argv)
     errors = check(protocol=args.protocol, candidate=args.candidate)
     print(json.dumps({"status": "BLOCKED" if errors else "PASS", "errors": errors}, indent=2))

@@ -33,6 +33,7 @@ from backend.benchmark_suite.metrics import energy_balance_ratio, evaluate_abc, 
 from backend.benchmark_suite.references import load_bundle, load_suite, verify_materials
 from backend.benchmark_suite.report import build
 from backend.benchmark_suite.worker import compact
+from backend.resources import BENCHMARK_AF_REFERENCE_BUNDLE_DIR
 
 # Each job's native runtime (meshes, field frames, solve cache) can reach about
 # 1 GB. It is deleted when the job finishes, and no job starts below this much
@@ -147,6 +148,12 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
                 evaluation = evaluate_cogging(measurements["native"], reference, configs[case["id"], "native"], case["cogging_floor_Nm"])
             except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
                 evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
+        elif case["phase"] == "G":
+            from backend.benchmark_suite.loss_metrics import evaluate_loss
+            try:
+                evaluation = evaluate_loss(measurements["native"], reference, configs[case["id"], "native"])
+            except (ValueError, KeyError, TypeError, ZeroDivisionError) as exc:
+                evaluation = {"status": "INCOMPLETE", "gates": [], "reason": str(exc)}
         else:
             try:
                 evaluation = evaluate_abc(measurements["native"], reference, configs[case["id"], "native"])
@@ -170,7 +177,7 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
             row["protocol"] = protocols[case["id"]]
         elif case["phase"] == "E":
             row["base_case"] = case["base_case"]
-        else:
+        elif case["phase"] != "G":
             # Diagnostic only, outside the recorded evaluation: torque over the
             # torque its own back-EMF and current imply (#80).
             config = configs[case["id"], "native"]
@@ -201,6 +208,9 @@ def evaluate(output, manifest, selected, configs, protocols, golden, references,
 def execute(args):
     spec_path = getattr(args, "suite", SPEC).resolve()
     spec = load_suite(spec_path)
+    reference_directory = args.reference_bundle.resolve()
+    if reference_directory == DEFAULT_BUNDLE.resolve() and spec["protocol_version"] in ("1.10.0", "1.11.0"):
+        reference_directory = DATA_ROOT / BENCHMARK_AF_REFERENCE_BUNDLE_DIR
     selected = [c for c in spec["cases"] if c["phase"] in args.phases and (not args.case or c["id"] in args.case)]
     if args.case and set(args.case) - {c["id"] for c in selected}:
         raise ValueError("Unknown case or case excluded by --phases")
@@ -219,7 +229,7 @@ def execute(args):
         raise ValueError("Keep generated artifacts outside the source checkout or installation (--out-dir ../benchmark-output/run-id)")
     references, reference_manifest, bundle_sha = {}, {}, None
     if not args.no_reference and not args.smoke:
-        reference_manifest, references, bundle_sha = load_bundle(args.reference_bundle.resolve(), spec)
+        reference_manifest, references, bundle_sha = load_bundle(reference_directory, spec)
         # Reject corrupt or mismatched frozen numerical arrays before spending time on fields.
         for case in selected:
             reference = references.get(case["id"])
@@ -227,6 +237,9 @@ def execute(args):
                 continue
             if case["phase"] == "D":
                 validate_lane_result("femm-standard", reference, protocols[case["id"]], golden=golden)
+            elif case["phase"] == "G":
+                from backend.benchmark_suite.loss_metrics import validate_reference
+                validate_reference(reference, configs[case["id"], "native"])
             elif case["phase"] != "E":
                 # A cogging reference carries only its period's waveform; evaluate_cogging checks it.
                 validate_abc(reference, configs[case["id"], "native"], native=False)
@@ -373,7 +386,7 @@ def execute(args):
             hardware_targets(selected)
             if sha(spec_path) != selection["spec_sha256"]:
                 raise ValueError("Registered suite changed")
-            if bundle_sha is not None and load_bundle(args.reference_bundle.resolve(), spec)[2] != bundle_sha:
+            if bundle_sha is not None and load_bundle(reference_directory, spec)[2] != bundle_sha:
                 raise ValueError("Reference bundle changed during the run")
             if identity(binary, protocol_version=spec["protocol_version"]) != runtime:
                 raise ValueError("Runtime changed; remaining jobs were not launched")
@@ -398,7 +411,7 @@ def main():
     parser.add_argument("--case", action="append", help="Select a registered case id; repeat for multiple cases")
     parser.add_argument(
         "--suite", type=Path, default=SPEC,
-        help="Select a registered suite; default is the combined A-F protocol 1.10.0",
+        help="Select a registered suite; default is the combined A-G protocol 1.12.0",
     )
     parser.add_argument("--reference-bundle", type=Path, default=DEFAULT_BUNDLE)
     parser.add_argument("--out-dir", type=Path)

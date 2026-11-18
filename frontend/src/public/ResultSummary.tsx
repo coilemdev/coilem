@@ -104,6 +104,9 @@ export function ResultSummary({
     ...(hasBackEmf ? [`Back EMF ${result.back_emf_waveform.electrical_angle_deg.length}`] : []),
     ...(result.cogging_torque_waveform ? [`Cogging ${result.cogging_torque_waveform.electrical_angle_deg.length}`] : []),
     ...(summary.loss_breakdown ? [`Losses ${metadata.rotor_positions}`] : []),
+    // The full-turn poses plus the closure solve, counted as the run plan counts them (#333).
+    ...(summary.rotor_iron_loss?.samples_per_mechanical_turn && summary.rotor_iron_loss.status !== 'unavailable'
+      ? [`Rotor iron loss ${summary.rotor_iron_loss.samples_per_mechanical_turn + 1}`] : []),
   ].join(' · ');
   const chips = [
     !hasTorque && !summary.loss_breakdown

@@ -168,7 +168,7 @@ assert.doesNotMatch(
 );
 assert.match(appSource, /void prepareMesh\(/);
 assert.match(appSource, /const refreshSolveValidation = useCallback/);
-assert.match(appSource, /void refreshSolveValidation\(config\)/);
+assert.match(appSource, /void refreshSolveValidation\(config, mesh\?\.solve_mesh_key\)/);
 assert.match(appSource, /validationChecking=\{validationChecking\}/);
 assert.match(appSource, /useState<PublicSolverId>\(initialSetup\.solver \?\? 'magneto2d'\)/);
 assert.match(appSource, /elmerCapabilityFromHealth/);
@@ -322,8 +322,13 @@ assert.match(workspaceSource, /elmerAvailable \? `Version \$\{elmerCapability\.s
 assert.match(workspaceSource, /&& elmerCapability\.adapter_ready/);
 assert.match(workspaceSource, /Qualified Elmer 26\.2 profile/);
 assert.match(workspaceSource, /magnetoCompositionAvailable=\{selectedSolver === 'magneto2d'\}/);
-assert.match(workspaceSource, /Prepare mesh/);
-assert.match(workspaceSource, /Regenerate mesh/);
+// #333: mesh settings re-mesh on their own, so there is no separate mesh button; with no mesh the
+// run button prepares one (Regenerate after a failed attempt), then becomes Run analysis.
+assert.doesNotMatch(workspaceSource, /public-prepare-mesh-btn/);
+assert.match(workspaceSource, /const meshNeeded = !mesh && busy === null && !cancellingSolve;/);
+assert.match(workspaceSource, /const meshActionLabel = error \? 'Regenerate mesh' : 'Prepare mesh';/);
+assert.match(workspaceSource, /onClick=\{meshNeeded \? onGenerateMesh : busy === 'solve' \? onCancelSolve/);
+assert.match(workspaceSource, /onClick=\{meshNeeded \? onGenerateMesh : handleStartSolve\}>\{meshNeeded \? meshActionLabel : 'Run again'\}/);
 assert.match(workspaceSource, /className="results-dashboard public-report-stage"/);
 assert.match(workspaceSource, /className="public-saved-run"/);
 const reportStageIndex = workspaceSource.indexOf('className="results-dashboard public-report-stage"');
@@ -1684,7 +1689,7 @@ assert.match(styleSource, /\.public-run-plan-resizer,\s*\.public-solve-setup-res
 assert.match(workspaceSource, /const RUN_PLAN_ACTIVE_WIDTH = 440/);
 assert.match(workspaceSource, /setRunPlanWidth\(\(currentWidth\) => Math\.max/);
 assert.match(workspaceSource, /runPlanScrollRef\.current\?\.scrollTo/);
-assert.match(workspaceSource, /onClick=\{busy === 'solve' \? onCancelSolve : busy === 'field' \? onCancelArmatureField : handleStartSolve\}/);
+assert.match(workspaceSource, /onClick=\{meshNeeded \? onGenerateMesh : busy === 'solve' \? onCancelSolve : busy === 'field' \? onCancelArmatureField : handleStartSolve\}/);
 assert.match(workspaceSource, /solveInProgress \? ' is-run-plan-focused'/);
 assert.match(styleSource, /\.public-run-plan-resizer/);
 assert.match(styleSource, /cursor: col-resize/);
@@ -2281,4 +2286,16 @@ assert.match(workspaceSource, /<span className="param-label">Wire<small>publishe
     await Promise.all([occupied, ...probes].map(server => new Promise(resolve => server.close(resolve))));
   }
 }
+// #333: a mesh-setting change meshes again at once, and the run plan never claims a mesh is preparing when none is.
+const meshSettingHandler = appSource.slice(appSource.indexOf('const updateMeshSetting'), appSource.indexOf('const updateSolveSetting'));
+assert.match(meshSettingHandler, /void prepareMesh\(next\);/, 'a mesh setting change prepares the new mesh');
+assert.doesNotMatch(appSource, /Prepare a new mesh to apply them/, 'no manual Prepare-mesh notice after a setting change');
+assert.match(workspaceSource, /busy === 'mesh' \? 'Meshing…' : 'Not prepared'/, 'the run plan reports the real mesh state');
+assert.doesNotMatch(workspaceSource, /meshElements\.toLocaleString\(\)\} elements` : 'Preparing…'/);
+// The run plan's estimate uses the prepared mesh's element count.
+assert.match(appSource, /refreshSolveValidation\(config, mesh\?\.solve_mesh_key\)/);
+assert.match(appSource.slice(appSource.indexOf('const refreshSolveValidation'), appSource.indexOf('const refreshSolveValidation') + 1200), /solve_mesh_key: solveMeshKey/);
+// A sector's quality counts are the solved sector's, as its Mesh row is; Results list the rotor-loss positions.
+assert.match(workspaceSource, /Counts are for the solved sector; the Mesh tab draws its \{qualityRepeats\} copies around the motor\./);
+assert.match(resultSummarySource, /`Rotor iron loss \$\{summary\.rotor_iron_loss\.samples_per_mechanical_turn \+ 1\}`/);
 console.log('public UI contract audit passed');

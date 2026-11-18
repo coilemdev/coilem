@@ -527,7 +527,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
               <tbody>{losses.map(row => <tr key={row.key} className={row.indent ? 'public-run-compare-loss-component' : undefined}>
                 <th scope="row">{row.label}</th>
                 <ComparisonCells runs={runs} values={row.cells.map((cell, index) => <LossComparisonValue cell={cell} label={`${runs[index].label} ${row.label}`} unit={row.unit} />)}
-                  differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
+                  differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : row.basisNotes[index] ? <>— <InfoTip label={`${row.label}: different loss basis`}>{row.basisNotes[index]}</InfoTip></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
               </tr>)}</tbody>
             </>}
           </table>

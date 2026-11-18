@@ -54,6 +54,7 @@ export function compareMultipleLosses(results: ComparisonResult[]) {
   return rows.map(row => ({ ...row,
     cells: [row.before, ...pairs.map(pair => pair?.find(candidate => candidate.key === row.key)?.after ?? missing)],
     comparable: [false, ...pairs.map(pair => pair?.find(candidate => candidate.key === row.key)?.comparable ?? false)],
+    basisNotes: [null, ...pairs.map(pair => pair?.find(candidate => candidate.key === row.key)?.basisNote ?? null)],
   })).filter(row => !['total', 'subtotal'].includes(row.key) || row.cells.some(cell => cell.value !== null));
 }
 

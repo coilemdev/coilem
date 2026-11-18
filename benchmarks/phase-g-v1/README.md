@@ -1,9 +1,15 @@
-# Phase G: independent full-motor loss checks
+# Phase G: full-motor loss checks
 
-For the current 5.9 release scope, use the separate
-[stator iron and DC copper qualification](STATOR_COPPER_59.md).
+Phase G is now part of the default [A–G benchmark](../ag-v1.12/README.md).
+Its 16 operating points compare stator iron and DC copper against the
+[completed FEMM qualification](../../docs/qualification/stator-copper-femm-20261117/README.md).
+Use `coilem benchmark --phase G` to run only those full-motor loss points.
+The [electrical-cycle qualification workflow](STATOR_COPPER_59.md) below retains
+the sampling/convergence and reference-collection evidence behind those gates.
 The original full-turn rotor campaign below remains experimental and is retained
 as diagnostic evidence; rotor qualification does not gate the stator/DC scope.
+
+## Historical full-turn rotor pilot
 
 Phase G is a separately selected, experimental loss benchmark for 0.5.9.
 It does not change the registered A–F suite, its FEMM references, or its gates.

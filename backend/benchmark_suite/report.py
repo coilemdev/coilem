@@ -177,6 +177,14 @@ def charts(row):
         return ""
     data = row.get("measurements", {})
     reference = row.get("reference")
+    if row["phase"] == "G":
+        comparison = row["evaluation"].get("loss_comparison", {})
+        body = "".join(f"<tr><td>{html.escape(name)}</td><td>{v['candidate']:.8g}</td><td>{v['reference']:.8g}</td></tr>"
+                       for name, v in comparison.items())
+        return ("<p>Experimental material model; numerical stator/DC components only. Rotor loss excluded; "
+                "complete motor loss and efficiency are not qualified.</p>"
+                "<table><tr><th>Component (W; resistance in ohm)</th><th>coilEM</th><th>Frozen FEMM / geometry reference</th></tr>"
+                + body + "</table>")
     if row["phase"] != "D":
         native = data.get("native")
         if not native:

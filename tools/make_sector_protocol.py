@@ -21,7 +21,8 @@ from pathlib import Path
 
 from backend.benchmark_suite import SECTOR_PROTOCOL_VERSION
 from backend.benchmark_suite.contract import canonical, read, sha, write
-from backend.resources import BENCHMARK_SECTOR_SUITE_FILE, BENCHMARK_SUITE_FILE
+from backend.resources import BENCHMARK_AF_SUITE_FILE as BENCHMARK_SUITE_FILE
+from backend.resources import BENCHMARK_SECTOR_SUITE_FILE
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = str(Path(BENCHMARK_SECTOR_SUITE_FILE).parent.as_posix())

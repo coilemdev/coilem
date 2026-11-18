@@ -1,13 +1,14 @@
 # Qualification collection
 
-The optional [Phase G loss benchmark](../benchmarks/phase-g-v1/README.md) has
-its own four fixtures and Windows FEMM runner. It runs Magneto2D first and
-does not change the A–F requests, references or release regression collection.
-For 5.9, [stator iron and DC copper](../benchmarks/phase-g-v1/STATOR_COPPER_59.md)
-have a separate electrical-cycle qualification; rotor loss remains experimental.
+The default [A–G benchmark](../benchmarks/ag-v1.12/README.md) retains the original
+A–F requests/references and adds 16 Phase G full-motor stator/DC-copper points.
+G uses the [completed Windows FEMM qualification](qualification/stator-copper-femm-20261117/README.md)
+as frozen scalar references. Normal collection runs Magneto2D only; fresh FEMM
+reference collection remains the separate [qualification workflow](../benchmarks/phase-g-v1/STATOR_COPPER_59.md).
+Rotor loss remains experimental and excluded from G.
 
 The release benchmark workflow builds Magneto2D once on each selected platform,
-then measures eight balanced A–F groups and four Prius groups concurrently.
+then measures eight balanced A–G groups and four Prius groups concurrently.
 Every group uses the exact same clean candidate, locked Python environment and
 binary. The join verifies complete coverage, requests and result hashes before
 building a derived report. It rejects duplicate, missing, failed or mixed runs.
@@ -51,7 +52,7 @@ of repair-run IDs); every original request and result keeps its measured bytes.
 
 ## Disk and retention
 
-Keep output outside the checkout. A–F jobs use `--archive-runtime`: every raw
+Keep output outside the checkout. A–G jobs use `--archive-runtime`: every raw
 runtime is compressed, read back and checked file by file before deleting its
 temporary directory. Prius retains its existing independently hashed field
 copies and also removes its live cache after each completed job. Archives and

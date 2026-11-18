@@ -1,5 +1,13 @@
 # 5.9 stator iron and DC copper qualification
 
+The [final Windows results](../../docs/qualification/stator-copper-femm-20261117/README.md)
+pass the declared integrated-loss gates for all eight full-motor fixture/load
+conditions at both speeds. The frozen FEMM values now supply
+[Phase G of the default A–G benchmark](../ag-v1.12/README.md).
+Regular G runs use one qualified 96-position request per operating point;
+the 24/48/96 refinements and independent endpoints belong to this retained
+qualification campaign. Rotor loss remains experimental and excluded.
+
 Owner decision: prioritize the dominant stator/DC-copper terms for 5.9. Rotor
 iron loss remains experimental and its qualification is deferred. The original
 384-pose histories, failed gates and references are retained unchanged.

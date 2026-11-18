@@ -1,18 +1,16 @@
 # coilEM 0.5.9 — in development
 
-- **Independent stator/DC-copper qualification.** A separate
-  [electrical-cycle workflow](benchmarks/phase-g-v1/STATOR_COPPER_59.md) exercises
-  the production loss path with rotor loss off, checks 24/48/96-position
-  convergence and compares stator iron and specified-wire DC copper against
-  independent FEMM-based references. It reuses verified completed poses and
-  leaves rotor qualification, empirical iron-model accuracy and full efficiency
-  experimental.
-
-- **Separate loss benchmark tooling.** Optional [Phase G](benchmarks/phase-g-v1/README.md)
-  covers four full-motor fixtures at no-load and one loaded point. It compares
-  stator/rotor iron components and independently checks DC winding resistance
-  and copper loss, running Magneto2D before Windows FEMM. Outrunner rotor loss
-  remains unavailable; numerical loss results stay experimental. A–F is unchanged.
+- **Phase G loss benchmark and FEMM evidence.** The default
+  [A–G benchmark](benchmarks/ag-v1.12/README.md) adds 16 full-motor stator/DC-copper
+  operating points to the original 69 A–F cases. `coilem benchmark --phase G`
+  runs these points against frozen FEMM-based loss references without a FEMM
+  installation. The [completed Windows qualification](docs/qualification/stator-copper-femm-20261117/README.md)
+  passes all eight fixture/load conditions at 1500/3000 rpm; maximum differences
+  are 0.282334% hysteresis, 4.580168% lamination eddy, 2.725938% stator total and
+  0.000969% loaded DC copper. Original field-repeatability failures remain
+  diagnostic under the documented integrated-loss policy. Rotor loss is excluded
+  and remains experimental; material accuracy and full efficiency are unqualified.
+  These component results do not constitute a complete new A–G platform record.
 
 - **Experimental rotor iron loss.** An explicit option under Losses & efficiency
   adds full-motor rotor hysteresis and classical lamination eddy loss for

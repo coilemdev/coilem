@@ -1,0 +1,157 @@
+{
+  "schema": "coilem.stator_dc_copper_comparison/v1",
+  "case_id": "flat-ipm-loaded",
+  "stator": {
+    "1500": {
+      "native_W": {
+        "hysteresis_W": 1.3195028008620722,
+        "lamination_eddy_W": 0.8716317984962941,
+        "total_W": 2.1911345993583664
+      },
+      "femm_W": {
+        "hysteresis_W": 1.3227390310304048,
+        "lamination_eddy_W": 0.8566599755511801,
+        "total_W": 2.179399006581585
+      },
+      "gates": {
+        "hysteresis_W": true,
+        "lamination_eddy_W": true,
+        "total_W": true
+      }
+    },
+    "3000": {
+      "native_W": {
+        "hysteresis_W": 2.6390056017241443,
+        "lamination_eddy_W": 3.4865271939851765,
+        "total_W": 6.12553279570932
+      },
+      "femm_W": {
+        "hysteresis_W": 2.6454780620608096,
+        "lamination_eddy_W": 3.4266399022047205,
+        "total_W": 6.07211796426553
+      },
+      "gates": {
+        "hysteresis_W": true,
+        "lamination_eddy_W": true,
+        "total_W": true
+      }
+    }
+  },
+  "native_protocol_sha256": "b14b37cacdad63fa55a60e70e64d64ffd7bee70113491a64e0ce73e7e5463a48",
+  "reference_protocol_sha256": "b517e21899dbf996e3f5bad4c8fd777624f07e87449432de2b48ce62fb252016",
+  "stator_reference_pass": true,
+  "dc_copper_reference_pass": true,
+  "reference_checks_pass": true,
+  "copper": {
+    "native": {
+      "phase_resistance_ohm": 0.07980053448461413,
+      "W": 299.25200431730286
+    },
+    "femm_geometry_reference": {
+      "phase_resistance_ohm": 0.0798005344846142,
+      "W": 299.25200431730315
+    },
+    "gates": {
+      "phase_resistance_ohm": true,
+      "W": true
+    }
+  },
+  "native_repeatability": {
+    "pass": false,
+    "area_weighted_rms_T": 0.006912258672850844,
+    "rms_relative": 0.05026700429421432,
+    "max_T": 0.44164415663579026,
+    "unweighted_rms_T": 0.006639998378112195,
+    "strict_rotor_style_closure_pass": false,
+    "loss_sensitivity": {
+      "1500": {
+        "unmodified_W": {
+          "hysteresis_W": 1.3195029021770972,
+          "lamination_eddy_W": 0.8716318591549526,
+          "total_W": 2.1911347613320498
+        },
+        "diagnostic_only_W": {
+          "hysteresis_W": 1.3187110640389808,
+          "lamination_eddy_W": 0.8650046115396776,
+          "total_W": 2.183715675578658
+        },
+        "gates": {
+          "hysteresis_W": true,
+          "lamination_eddy_W": true,
+          "total_W": true
+        }
+      },
+      "3000": {
+        "unmodified_W": {
+          "hysteresis_W": 2.6390058043541944,
+          "lamination_eddy_W": 3.4865274366198102,
+          "total_W": 6.125533240974004
+        },
+        "diagnostic_only_W": {
+          "hysteresis_W": 2.6374221280779615,
+          "lamination_eddy_W": 3.4600184461587102,
+          "total_W": 6.097440574236671
+        },
+        "gates": {
+          "hysteresis_W": true,
+          "lamination_eddy_W": true,
+          "total_W": true
+        }
+      }
+    },
+    "raw_fields_corrected": false
+  },
+  "reference_repeatability": {
+    "pass": true,
+    "area_weighted_rms_T": 2.1682488730512315e-05,
+    "rms_relative": 0.0001573852237096602,
+    "max_T": 0.0011975774952662777,
+    "unweighted_rms_T": 4.717394345865803e-05,
+    "strict_rotor_style_closure_pass": false,
+    "loss_sensitivity": {
+      "1500": {
+        "unmodified_W": {
+          "hysteresis_W": 1.3227390310304048,
+          "lamination_eddy_W": 0.8566599755511801,
+          "total_W": 2.179399006581585
+        },
+        "diagnostic_only_W": {
+          "hysteresis_W": 1.3227390305214697,
+          "lamination_eddy_W": 0.8566595424697999,
+          "total_W": 2.1793985729912695
+        },
+        "gates": {
+          "hysteresis_W": true,
+          "lamination_eddy_W": true,
+          "total_W": true
+        }
+      },
+      "3000": {
+        "unmodified_W": {
+          "hysteresis_W": 2.6454780620608096,
+          "lamination_eddy_W": 3.4266399022047205,
+          "total_W": 6.07211796426553
+        },
+        "diagnostic_only_W": {
+          "hysteresis_W": 2.6454780610429394,
+          "lamination_eddy_W": 3.4266381698791997,
+          "total_W": 6.0721162309221395
+        },
+        "gates": {
+          "hysteresis_W": true,
+          "lamination_eddy_W": true,
+          "total_W": true
+        }
+      }
+    },
+    "raw_fields_corrected": false
+  },
+  "loss_policy_sha256": "ddb8b94affd5507c46d69dfdcd89e1abf4052b30b534f819dd6889ac2d576ef6",
+  "point_field_repeatability_is_diagnostic": true,
+  "rotor_loss_status": "experimental",
+  "rotor_gates_used": false,
+  "model_status": "experimental",
+  "full_motor_efficiency_qualified": false,
+  "new_reference_field_solves": 0,
+  "reused_reference_poses": 97
+}
