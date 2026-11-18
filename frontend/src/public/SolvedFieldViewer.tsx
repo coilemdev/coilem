@@ -49,7 +49,8 @@ import {
 import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
 import { describeFieldProbe } from './fieldProbeRegion';
-import { phaseCurrentsAt, phaseCycleFromFrames, type FieldPhaseView } from './fieldPhases';
+import { isSteppedCycle, phaseCurrentsAt, phaseCycleFromFrames, type FieldPhaseView } from './fieldPhases';
+import type { PhaseDrive } from './phaseDrive';
 import type { FieldPositionLink } from './fieldPositionLink';
 import { magneticAirgapMm, rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
@@ -480,13 +481,30 @@ export function SolvedFieldViewer({
   const visibleRaster = activeRaster ?? meshlessRaster ?? heldFrame?.raster ?? null;
   // The position on screen: the frame still shown while the next one decodes, as the magnets use.
   const shownElectricalAngleDeg = heldFrame?.angleDeg ?? electricalAngleDeg;
-  const phaseView = useMemo<FieldPhaseView | null>(() => (showPhases && phaseCycle
+  // The drive panel's caption and frequency: six-step when the recorded currents
+  // are, and the motor's poles. Its waveforms are the recorded currents.
+  const phaseDrive = useMemo<PhaseDrive | null>(() => (phaseCycle
+    ? {
+      mode: (phaseCycle.peakA > 0 ? isSteppedCycle(phaseCycle) : config.solve_params.excitation_mode === 'ideal_six_step_120')
+        ? 'ideal_six_step_120'
+        : 'sinusoidal',
+      currentAngleDeg: config.solve_params.current_angle_deg,
+      currentAngleReference: 'q_axis',
+      currentAmplitudeA: phaseCycle.peakA,
+      commutationAdvanceDeg: config.solve_params.commutation_advance_deg,
+      axisOffsetDeg: 0,
+      poleCount: config.rotor.pole_count,
+    }
+    : null), [config.rotor.pole_count, config.solve_params.commutation_advance_deg, config.solve_params.current_angle_deg, config.solve_params.excitation_mode, phaseCycle]);
+  const phaseView = useMemo<FieldPhaseView | null>(() => (showPhases && phaseCycle && phaseDrive
     ? {
       angleDeg: shownElectricalAngleDeg,
       currentsA: source === 'pm' ? null : phaseCurrentsAt(phaseCycle, shownElectricalAngleDeg),
       cycle: phaseCycle,
+      drive: phaseDrive,
+      rpm: playbackRpm,
     }
-    : null), [phaseCycle, shownElectricalAngleDeg, showPhases, source]);
+    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, source]);
   const currentPeakBT = useMemo(() => {
     const rasterPeak = activeDetailRaster?.maxB ?? visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;

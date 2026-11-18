@@ -6505,8 +6505,8 @@
     },
     {
       "path": "frontend/scripts/test-field-phases.mjs",
-      "bytes": 3785,
-      "sha256": "4b31bbeaf75f4864b202aee00cf8b8c7329961cc81e3280f440e6c3d4b29ef49"
+      "bytes": 5715,
+      "sha256": "775caf0dcebf1e467242d902dd3fedf9d82fedda12e10f9fc9b9e2bf387ea627"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -6600,8 +6600,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 182400,
-      "sha256": "69f0492b1a245823554292cc71c2ee93e7b5af0565071b155579fe6221d4fe81"
+      "bytes": 183331,
+      "sha256": "525423844e15b10aada37df77d76cef6d4cc6fd601af4323b52910d863b4f825"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7054,14 +7054,9 @@
       "sha256": "1bdc25fca23c5b8d76bf552757462ed61f3ed014d406d9764c913592402afd6d"
     },
     {
-      "path": "frontend/src/public/FieldPhaseReadout.tsx",
-      "bytes": 3006,
-      "sha256": "9841f2b5bd09446ba2bce7a82633f8eb07776314fe3d05ab6d6eedc35cb0fde2"
-    },
-    {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 76138,
-      "sha256": "f65f3a65bb288980e838b6edf54593b51dabab0adc90023f968c43d44d26c0da"
+      "bytes": 80874,
+      "sha256": "89349a4675ab43e3e1135b0749e294f95274c1dd1732ab07eafaf60e5341380b"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7145,8 +7140,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 63653,
-      "sha256": "622fadf950375f2da155c95a221dd6913c8fb7852127ac1ce719a7ece2755118"
+      "bytes": 64681,
+      "sha256": "b7eb21377e5299a7f5e32427fa73714ed5b1cfd9c93db98d6c7061af85bc455d"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7315,8 +7310,8 @@
     },
     {
       "path": "frontend/src/public/fieldPhases.ts",
-      "bytes": 5833,
-      "sha256": "7bffd724aad75e16e0909bce1bf083006b5cba524909f926c4210d909f0adf95"
+      "bytes": 8195,
+      "sha256": "5310bdd6972322199d3c77d2a1770ebcf76b64658eecaf34afdd412d047ffc55"
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
@@ -7520,8 +7515,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 12253,
-      "sha256": "b08736fab8c944e867880583c0e8a8102a011a0337bc630c203fd7e26fc5ee33"
+      "bytes": 12696,
+      "sha256": "a0987c8fe027f65f43eedcf207c5abe891035b4edaabc37fe8e920f1bdc407d7"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -7560,8 +7555,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 342691,
-      "sha256": "23f061f11cad9f8a63ce0df0bd17b8be09abf78abe6b81e6b2f911cf91b47627"
+      "bytes": 341856,
+      "sha256": "46872fb37582c18691ffdbbf619df75de6550fabd840a5652ce62eb5d4acd91f"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -18140,8 +18135,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrivePanel.ts",
-      "bytes": 6097,
-      "sha256": "b0b33081b3d0f5f2a7a0e76b722cd2d0d399d8570df95218b64d000511a1d885"
+      "bytes": 6404,
+      "sha256": "919e7b2e7c770a644431377613435b61c35a67ea4bd8b9385a18b098922b39af"
     },
     {
       "path": "frontend/src/public/progressiveDesign.ts",

@@ -4,12 +4,14 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 // The Field solution's Phases layer (fieldPhases.ts): the currents the solver
 // applied at each solved position, and the ⊙ / ⊗ each coil side shows for them.
 const {
+  coilMarksFromGeometry,
   coilRegionSide,
-  coilSideDrive,
   coilSideMark,
   coilSidesFromGeometry,
+  isSteppedCycle,
   phaseCurrentsAt,
   phaseCycleFromFrames,
+  phaseCycleSampler,
 } = await importTypeScriptModule(new URL('../src/public/fieldPhases.ts', import.meta.url));
 
 // The example SPM 8p/12s at 30 A rms: its result's slot_excitation_frames at
@@ -47,14 +49,30 @@ const at22 = phaseCurrentsAt(cycle, 22.5);
 recorded.forEach(([phase, direction, density], slot) => {
   assert.equal(coilSideMark({ phase, direction }, at22, cycle.peakA), density > 0, `slot ${slot + 1} ${phase} ${direction}`);
 });
-// At 0° phase C carries nothing: its sides show no mark and no drive.
+// At 0° phase C carries nothing: its sides show no mark.
 const at0 = phaseCurrentsAt(cycle, 0);
 assert.equal(coilSideMark({ phase: 'C', direction: 'in' }, at0, cycle.peakA), null);
-assert.equal(coilSideDrive({ phase: 'C' }, at0, cycle.peakA), 0);
-assert.equal(coilSideDrive({ phase: 'B' }, at22, cycle.peakA), 1);
-assert.ok(Math.abs(coilSideDrive({ phase: 'A' }, at22, cycle.peakA) - 25.827560074612762 / 42.06344307899867) < 1e-12);
 
-// Coil sides come from the geometry preview's coil regions, with a mark at the centroid.
+// The drive panel's waveforms are the recorded currents as shares of their
+// peak: exact at each solved position, straight between them.
+const sample = phaseCycleSampler(cycle);
+const near = (actual, expected) => actual.every((value, index) => Math.abs(value - expected[index]) < 1e-12);
+assert.ok(near(sample(22.5), at22.map((current) => current / cycle.peakA)));
+assert.ok(near(sample(3.75), [0, 1, 2].map((phase) => (frames[1].phase_current_a[phase] + frames[2].phase_current_a[phase]) / 2 / cycle.peakA)));
+// Past the last position it runs on to the first, round the cycle.
+assert.ok(near(sample(191.25), [0, 1, 2].map((phase) => (at22[phase] + at0[phase]) / 2 / cycle.peakA)));
+assert.equal(isSteppedCycle(cycle), false);
+// A six-step drive's currents are off or at full: they are held from one position to the next.
+const sixStep = phaseCycleFromFrames([
+  { angle_deg: 0, phase_current_a: [10, -10, 0] },
+  { angle_deg: 60, phase_current_a: [0, -10, 10] },
+]);
+assert.equal(isSteppedCycle(sixStep), true);
+assert.deepEqual(phaseCycleSampler(sixStep)(45), [1, -1, 0]);
+assert.deepEqual(phaseCycleSampler(sixStep)(75), [0, -1, 1]);
+assert.deepEqual(phaseCycleSampler(phaseCycleFromFrames([{ angle_deg: 0, phase_current_a: [0, 0, 0] }]))(10), [0, 0, 0]);
+
+// Coil outlines come from the geometry preview's coil regions.
 const sides = coilSidesFromGeometry({
   regions: [
     { region_type: 'slot_1_(b−)', points: [[10, 0], [12, 0], [12, 4], [10, 4]] },
@@ -63,10 +81,23 @@ const sides = coilSidesFromGeometry({
   ],
 });
 assert.equal(sides.length, 1);
-assert.deepEqual(sides[0].centre, [11, 2]);
 assert.equal(sides[0].phase, 'B');
 assert.equal(sides[0].direction, 'out');
-assert.ok(Math.abs(sides[0].markRadiusMm - Math.sqrt(8) * 0.24) < 1e-12);
 assert.deepEqual(coilSidesFromGeometry(null), []);
+
+// ⊙ / ⊗ go where the preview draws its glyphs, as in the Geometry view: a ⊗'s
+// two bars count once, centred between them; each glyph's size sets the mark's.
+const square = (x, y, half) => [[x - half, y - half], [x + half, y - half], [x + half, y + half], [x - half, y + half], [x - half, y - half]];
+const marks = coilMarksFromGeometry({
+  regions: [
+    { region_type: 'winding_symbol', label: 'A+ (in)', points: square(10, 0, 0.5) },
+    { region_type: 'winding_symbol', label: 'A− (out)', points: square(20, 0, 0.5) },
+    { region_type: 'winding_symbol', label: 'A− (out)', points: square(20.4, 0, 0.5) },
+    { region_type: 'winding_symbol', label: 'B− (out)', points: square(30, 0, 0.5) },
+    { region_type: 'slot_1_(a+)', label: 'Slot 1 (A+)', points: square(10, 0, 3) },
+  ],
+});
+assert.deepEqual(marks.map((mark) => [mark.phase, mark.direction, Number(mark.centre[0].toFixed(6))]), [['A', 'in', 10], ['A', 'out', 20.2], ['B', 'out', 30]]);
+assert.ok(Math.abs(marks[0].radiusMm - Math.SQRT1_2) < 1e-12);
 
 console.log('field phases: recorded currents, nearest position and ⊙ / ⊗ match the solver');

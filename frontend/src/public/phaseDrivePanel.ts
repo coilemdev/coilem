@@ -10,6 +10,7 @@ import {
   phaseChargeShift,
   phaseStrips,
   waveformTrace,
+  type PhaseCurrentSampler,
   type PhaseDrive,
   type Rect,
 } from './phaseDrive';
@@ -24,8 +25,10 @@ export interface PhaseLead {
 
 /**
  * The A / B / C waveform strips and the wires from them into the motor, shared by
- * the 2D cross-section and the 3D view. Each wire leaves its strip level, turns
- * once through a right angle at its terminal, and runs level to where it enters.
+ * the 2D cross-section, the 3D view and the Field solution. Each wire leaves its
+ * strip level, turns once through a right angle at its terminal, and runs level
+ * to where it enters. `sample` replaces the drive settings' currents (the Field
+ * solution passes its solve's), and `title` the caption above the strips.
  */
 export function drawPhaseDriveWired(
   context: CanvasRenderingContext2D,
@@ -35,6 +38,7 @@ export function drawPhaseDriveWired(
   currents: [number, number, number],
   leads: PhaseLead[],
   previewRpm: number,
+  { sample, title }: { sample?: PhaseCurrentSampler; title?: string } = {},
 ): void {
   const phases = ['A', 'B', 'C'] as const;
   // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
@@ -47,7 +51,7 @@ export function drawPhaseDriveWired(
   context.font = '700 10px ui-monospace, monospace';
   context.textAlign = 'left';
   context.textBaseline = 'bottom';
-  context.fillText(`${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
+  context.fillText(title ?? `${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
   // What sets the frequency, and the sweep the strips show.
   context.fillStyle = 'rgba(148, 163, 184, 0.6)';
   context.font = '600 9px ui-monospace, monospace';
@@ -89,7 +93,7 @@ export function drawPhaseDriveWired(
     context.textBaseline = 'top';
     context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
 
-    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg);
+    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg, undefined, sample);
     context.beginPath();
     context.moveTo(trace[0][0], trace[0][1]);
     for (const [x, y] of trace.slice(1)) context.lineTo(x, y);
@@ -141,7 +145,7 @@ export function drawPhaseDriveWired(
     context.globalAlpha = 0.25 + 0.75 * level;
     context.lineWidth = 1.6 + 2.2 * level;
     context.setLineDash([7, 11]);
-    context.lineDashOffset = -phaseChargeShift(drive, index, rotorElecDeg) * 26;
+    context.lineDashOffset = -phaseChargeShift(drive, index, rotorElecDeg, undefined, sample) * 26;
     wire();
     context.setLineDash([]);
     context.lineDashOffset = 0;

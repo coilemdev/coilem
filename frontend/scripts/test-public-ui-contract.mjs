@@ -722,10 +722,13 @@ assert.match(motorCanvasSource, /const halvesFit = halfSpots\.length === 2/);
 // The Phases strips are a 1 s scope at the preview speed, frequency shown in the
 // heading and in each strip (test-phase-drive.mjs checks the cycle count).
 assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
-// The waveform drawing is shared by the 2D cross-section and the 3D view (phaseDrivePanel.ts).
+// The waveform drawing is shared by the 2D cross-section, the 3D view and the
+// Field solution's Phases (phaseDrivePanel.ts); the Field solution passes its
+// solve's recorded currents as `sample`, the others draw the drive settings'.
 const phaseDrivePanelSource = await readFile(path.join(frontendRoot, 'src/public/phaseDrivePanel.ts'), 'utf8');
 assert.match(phaseDrivePanelSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
-assert.match(phaseDrivePanelSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg\)/);
+assert.match(phaseDrivePanelSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg, undefined, sample\)/);
+assert.match(phaseDrivePanelSource, /\{ sample, title \}: \{ sample\?: PhaseCurrentSampler; title\?: string \} = \{\}/);
 assert.match(phaseDrivePanelSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
 assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
@@ -1001,8 +1004,14 @@ assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}\
 assert.match(solvedFieldSource, /const phaseCycle = useMemo\(\(\) => phaseCycleFromFrames\(result\.slot_excitation_frames\)/);
 assert.match(solvedFieldSource, /currentsA: source === 'pm' \? null : phaseCurrentsAt\(phaseCycle, shownElectricalAngleDeg\)/);
 assert.match(solvedFieldSource, /phases=\{phaseView\}/);
-assert.match(fieldResultSource, /\{hasPhaseOverlay && phases && <FieldPhaseReadout phases=\{phases\} \/>\}/);
-assert.match(styleSource, /\.public-field-phase-readout \{ position: absolute;[^}]*pointer-events: none; \}/);
+// Its panel is the Geometry view's drive panel, wired into the motor, with the
+// solve's recorded currents as its waveforms; the field box narrows to make room.
+assert.match(fieldResultSource, /drawPhaseDriveWired\(context, driveFrame\.panel, phases\.drive, phases\.angleDeg, sample\(phases\.angleDeg\), leads, phases\.rpm, \{/);
+assert.match(fieldResultSource, /\.\.\.\(driveMarginPx \? \{ marginLeft: driveMarginPx \} : \{\}\)/);
+assert.match(fieldResultSource, /<div className="public-winding-key public-field-phase-key" aria-label="Winding phase and current direction legend">/);
+assert.match(fieldResultSource, /phases\.currentsA && coilMarks\.map\(/);
+assert.doesNotMatch(fieldResultSource, /FieldPhaseReadout|fillOpacity/);
+assert.match(styleSource, /\.public-field-result > \.public-field-drive-panel \{ position: absolute; inset: 0;[^}]*pointer-events: none; \}/);
 assert.doesNotMatch(workspaceSource, /Preparing mesh|native Gmsh mesh/);
 assert.match(workspaceSource, /setDockFitHeight\(Math\.max\(\.\.\.Object\.values\(fits\.heights\)\)\)/);
 // Every bottom panel opens with a title bar of one level of tabs: the Solve
@@ -1060,7 +1069,7 @@ assert.match(styleSource, /@container \(max-width: 340px\) \{\s*\.public-dock-st
 // legend label at its height; a legend below the plot (Results) moves nothing.
 assert.match(fieldResultSource, /const next = motorFitWidthBesideLegend\(root\.clientWidth, box\.clientHeight, parts\);/);
 assert.match(fieldResultSource, /\.filter\(\(element\) => !element\.classList\.contains\('public-visually-hidden'\)\)/);
-assert.match(fieldResultSource, /style=\{motorFitWidth === null \? undefined : \{ flex: `0 0 \$\{motorFitWidth\.toFixed\(1\)\}px` \}\}/);
+assert.match(fieldResultSource, /\.\.\.\(motorFitWidth === null \? \{\} : \{ flex: `0 0 \$\{motorFitWidth\.toFixed\(1\)\}px` \}\)/);
 assert.match(fieldResultSource, /className=\{`public-field-result-legend\$\{legendScale\.fixed \? ' is-fixed' : ''\}`\} ref=\{legendRef\}/);
 assert.match(packageSource, /node scripts\/test-field-legend-fit\.mjs/);
 // The probe names magnet_pocket_air as air (shaft bore or the air around the

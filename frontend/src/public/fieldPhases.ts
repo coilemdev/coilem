@@ -1,15 +1,24 @@
 /**
- * The Field solution's Phases layer: which coils carry current at the rotor
- * position on screen, and which way, beside the field they make.
+ * The Field solution's Phases layer: the Geometry view's drive panel (A / B / C
+ * waveforms wired into the motor) beside the field, the coils outlined by phase,
+ * and a ⊙ or ⊗ on each coil side for the way its current flows at the position
+ * on screen.
  *
  * The currents are the ones the solver applied at each solved position, as the
- * result records them (slot_excitation_frames), so the marks belong to the frame
- * shown and not to a model of it. The coils and their in / out sides come from
- * the design's geometry preview, as in the Geometry view's Phases
- * (phaseDrive.ts): an "in" side carries +J, out of the page (⊙).
+ * result records them (slot_excitation_frames), so the marks and waveforms
+ * belong to the frame shown even if the design's drive settings have changed
+ * since. The coils and their marks come from the design's geometry preview, as
+ * in the Geometry view (phaseDrive.ts): an "in" side carries +J, out of the page.
  */
 
-import { COIL_SIDE_CURRENT_FLOOR, coilSideOutOfPage, wrap360, type WindingSide } from './phaseDrive';
+import {
+  coilSideOutOfPage,
+  windingSymbolSide,
+  wrap360,
+  type PhaseCurrentSampler,
+  type PhaseDrive,
+  type WindingSide,
+} from './phaseDrive';
 import type { GeometryPreview } from './model';
 
 export type PhaseId = WindingSide['phase'];
@@ -34,6 +43,10 @@ export interface FieldPhaseView {
   /** The currents in this field's solve, A; null for a field with no stator current (PM only). */
   currentsA: PhaseCurrents | null;
   cycle: PhaseCycle;
+  /** The drive's kind and poles, for the panel's caption and frequency. */
+  drive: PhaseDrive;
+  /** Playback speed: the panel's waveforms show the cycles the drive runs at it in one second. */
+  rpm: number;
 }
 
 /** A coil side of the stator, in model millimetres (y up). */
@@ -41,9 +54,14 @@ export interface CoilSide {
   phase: PhaseId;
   direction: WindingSide['direction'];
   points: Array<[number, number]>;
+}
+
+/** A ⊙ / ⊗ place from the geometry preview's glyphs, in model millimetres. */
+export interface CoilMark {
+  phase: PhaseId;
+  direction: WindingSide['direction'];
   centre: [number, number];
-  /** A mark radius that fits inside the side, mm. */
-  markRadiusMm: number;
+  radiusMm: number;
 }
 
 interface RecordedFrame {
@@ -74,6 +92,42 @@ export function phaseCurrentsAt(cycle: PhaseCycle, angleDeg: number): PhaseCurre
   return cycle.samples.reduce((best, sample) => (gap(sample) < gap(best) ? sample : best)).currentsA;
 }
 
+/** Whether every recorded current is off or at full, as a six-step drive's are. */
+export function isSteppedCycle(cycle: PhaseCycle): boolean {
+  if (!(cycle.peakA > 0)) return false;
+  return cycle.samples.every((sample) => sample.currentsA.every((current) => {
+    const share = Math.abs(current) / cycle.peakA;
+    return share < 1e-3 || Math.abs(share - 1) < 1e-3;
+  }));
+}
+
+/**
+ * The recorded currents as shares of their peak at any angle, for the drive
+ * panel's waveforms: straight between solved positions, or held from one to the
+ * next where every current is off or at full (six-step), so its steps stay steps.
+ */
+export function phaseCycleSampler(cycle: PhaseCycle): PhaseCurrentSampler {
+  const { samples, peakA } = cycle;
+  if (!(peakA > 0)) return () => [0, 0, 0];
+  const shares = samples.map((sample) => sample.currentsA.map((current) => current / peakA) as [number, number, number]);
+  const stepped = isSteppedCycle(cycle);
+  return (angleDeg) => {
+    const angle = wrap360(angleDeg);
+    // The last position at or before the angle, wrapping to the cycle's end.
+    let index = samples.length - 1;
+    for (let candidate = 0; candidate < samples.length; candidate += 1) {
+      if (samples[candidate].angleDeg <= angle) index = candidate;
+      else break;
+    }
+    const next = (index + 1) % samples.length;
+    if (stepped || samples.length === 1) return [...shares[index]] as [number, number, number];
+    const start = samples[index].angleDeg;
+    const span = wrap360(samples[next].angleDeg - start) || 360;
+    const t = Math.min(1, wrap360(angle - start) / span);
+    return shares[index].map((value, phase) => value + (shares[next][phase] - value) * t) as [number, number, number];
+  };
+}
+
 /** The phase and side of a coil region from its type, "slot_3_(a−)": "+" goes in, "−" comes out. */
 export function coilRegionSide(regionType: string): Pick<CoilSide, 'phase' | 'direction'> | null {
   const match = /\(([abc])([+\-−])\)/i.exec(regionType);
@@ -81,42 +135,50 @@ export function coilRegionSide(regionType: string): Pick<CoilSide, 'phase' | 'di
   return { phase: match[1].toUpperCase() as PhaseId, direction: match[2] === '+' ? 'in' : 'out' };
 }
 
-function polygonArea(points: ReadonlyArray<readonly [number, number]>): number {
-  let twice = 0;
-  points.forEach(([x, y], index) => {
-    const [nextX, nextY] = points[(index + 1) % points.length];
-    twice += x * nextY - nextX * y;
-  });
-  return twice / 2;
-}
-
-/** Every coil side in the geometry preview, with its place for a ⊙ / ⊗ mark. */
+/** Every coil side in the geometry preview, for its outline. */
 export function coilSidesFromGeometry(geometry: GeometryPreview | null | undefined): CoilSide[] {
   if (!geometry) return [];
   return geometry.regions.flatMap((region): CoilSide[] => {
     const side = coilRegionSide(region.region_type);
     if (!side || region.points.length < 3) return [];
-    const points = region.points.map(([x, y]) => [x, y] as [number, number]);
-    const area = polygonArea(points);
-    let centre: [number, number];
-    if (Math.abs(area) > 1e-12) {
-      let cx = 0;
-      let cy = 0;
-      points.forEach(([x, y], index) => {
-        const [nextX, nextY] = points[(index + 1) % points.length];
-        const cross = x * nextY - nextX * y;
-        cx += (x + nextX) * cross;
-        cy += (y + nextY) * cross;
-      });
-      centre = [cx / (6 * area), cy / (6 * area)];
-    } else {
-      centre = [
-        points.reduce((sum, [x]) => sum + x, 0) / points.length,
-        points.reduce((sum, [, y]) => sum + y, 0) / points.length,
-      ];
-    }
-    return [{ ...side, points, centre, markRadiusMm: Math.sqrt(Math.abs(area)) * 0.24 }];
+    return [{ ...side, points: region.points.map(([x, y]) => [x, y] as [number, number]) }];
   });
+}
+
+/**
+ * The ⊙ / ⊗ places the geometry preview draws (its winding_symbol glyphs, as the
+ * Geometry view reads them): one per coil side, a ⊗'s two bars counted once and
+ * centred between them.
+ */
+export function coilMarksFromGeometry(geometry: GeometryPreview | null | undefined): CoilMark[] {
+  if (!geometry) return [];
+  const marks: CoilMark[] = [];
+  let lastOut: CoilMark | null = null;
+  geometry.regions.forEach((region) => {
+    if (region.region_type !== 'winding_symbol') return;
+    const side = windingSymbolSide(region.label);
+    if (!side) return;
+    const corners = region.points.length > 1 ? region.points.slice(0, -1) : region.points;
+    if (corners.length === 0) return;
+    const centre: [number, number] = [
+      corners.reduce((sum, [x]) => sum + x, 0) / corners.length,
+      corners.reduce((sum, [, y]) => sum + y, 0) / corners.length,
+    ];
+    const radiusMm = Math.max(...corners.map(([x, y]) => Math.hypot(x - centre[0], y - centre[1])));
+    if (
+      side.direction === 'out'
+      && lastOut?.phase === side.phase
+      && Math.hypot(centre[0] - lastOut.centre[0], centre[1] - lastOut.centre[1]) < radiusMm
+    ) {
+      lastOut.centre = [(centre[0] + lastOut.centre[0]) / 2, (centre[1] + lastOut.centre[1]) / 2];
+      lastOut = null;
+      return;
+    }
+    const mark: CoilMark = { ...side, centre, radiusMm };
+    marks.push(mark);
+    lastOut = side.direction === 'out' ? mark : null;
+  });
+  return marks;
 }
 
 /**
@@ -126,11 +188,4 @@ export function coilSidesFromGeometry(geometry: GeometryPreview | null | undefin
 export function coilSideMark(side: Pick<CoilSide, 'phase' | 'direction'>, currentsA: PhaseCurrents, peakA: number): boolean | null {
   const current = currentsA[{ A: 0, B: 1, C: 2 }[side.phase]];
   return coilSideOutOfPage(side.direction, peakA > 0 ? current / peakA : 0);
-}
-
-/** How strongly a side's phase is driven now, 0–1 of the cycle's peak. */
-export function coilSideDrive(side: Pick<CoilSide, 'phase'>, currentsA: PhaseCurrents, peakA: number): number {
-  if (!(peakA > 0)) return 0;
-  const share = Math.abs(currentsA[{ A: 0, B: 1, C: 2 }[side.phase]]) / peakA;
-  return share < COIL_SIDE_CURRENT_FLOOR ? 0 : Math.min(1, share);
 }
