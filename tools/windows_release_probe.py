@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 from collections import deque
 from pathlib import Path
 
@@ -91,8 +92,12 @@ def reproduce_lookup_failure(paths):
         print("Source commit, benchmark provenance, and Node receipt digest pass with divergent Windows PATH")
 
 
-def interrupt(acceptance, process, ready, stage, log, expected_exit, detail):
-    sent = ready.wait(120) and process.poll() is None
+def interrupt(acceptance, process, ready, ended, stage, log, expected_exit, detail):
+    deadline = time.monotonic() + 120
+    while not ready.wait(0.1):
+        if ended.is_set() or time.monotonic() >= deadline or process.poll() is not None:
+            break
+    sent = ready.is_set() and not ended.is_set() and process.poll() is None
     if sent:
         process.send_signal(signal.CTRL_BREAK_EVENT)
     try:
@@ -128,6 +133,7 @@ def cli(acceptance, stage, attempt):
         stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
     )
     ready = threading.Event()
+    ended = threading.Event()
     log = deque(maxlen=20)
 
     def follow():
@@ -141,6 +147,7 @@ def cli(acceptance, stage, attempt):
                 "progress", {"stage": stage, "position": event.get("done"), "total": event.get("total")},
             ):
                 ready.set()
+        ended.set()
 
     def detail():
         result = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
@@ -148,7 +155,7 @@ def cli(acceptance, stage, attempt):
         return error.get("error_code") == "SOLVER_CANCELLED", error
 
     threading.Thread(target=follow, daemon=True).start()
-    interrupt(acceptance, process, ready, f"CLI {stage} #{attempt}", log, 130, detail)
+    interrupt(acceptance, process, ready, ended, f"CLI {stage} #{attempt}", log, 130, detail)
 
 
 def launcher(acceptance, stage, attempt):
@@ -158,6 +165,7 @@ def launcher(acceptance, stage, attempt):
     port = []
     started = threading.Event()
     ready = threading.Event()
+    ended = threading.Event()
     log = deque(maxlen=20)
 
     def follow():
@@ -180,10 +188,14 @@ def launcher(acceptance, stage, attempt):
         try:
             with urllib.request.urlopen(request, timeout=180) as response:
                 for event, payload in sse_events(line.decode() for line in response):
+                    if event == "error":
+                        log.append(json.dumps(payload))
                     if magneto2d_solving(event, payload) and payload.get("stage") == stage:
                         ready.set()
         except (OSError, ValueError):
             pass
+        finally:
+            ended.set()
 
     def detail():
         data = acceptance.data_root
@@ -198,7 +210,7 @@ def launcher(acceptance, stage, attempt):
             acceptance.check("launcher started for interruption probe", False, str(list(log)))
             return
         threading.Thread(target=stream, daemon=True).start()
-        interrupt(acceptance, server, ready, f"server {stage} #{attempt}", log, 0, detail)
+        interrupt(acceptance, server, ready, ended, f"server {stage} #{attempt}", log, 0, detail)
     finally:
         if server.poll() is None:
             server.kill()
