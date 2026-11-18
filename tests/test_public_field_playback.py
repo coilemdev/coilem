@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import gzip
 import json
+import math
 import re
 from pathlib import Path
 
 import pytest
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from backend import public_field_playback
 from backend.public_field_playback_contract import (
@@ -24,6 +25,8 @@ def _plot(angle_deg: float, scale: float = 1.0) -> dict:
         "triangles": [[0, 1, 2], [0, 2, 3]],
         "regions": ["steel", "steel"],
         "element_b_mag_t": [0.5 * scale, 1.2 * scale],
+        "element_bx_t": [0.5 * scale, 0.0],
+        "element_by_t": [0.0, 1.2 * scale],
         "contour_levels": [
             {
                 "level": 0.1,
@@ -85,7 +88,7 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert manifest is not None
     assert manifest["schema_version"] == "coilem.field_playback.v2"
     assert manifest["encoding"] == "layered-raster-v1"
-    assert manifest["renderer_revision"] == "medium-contours-mesh-fixed-flux-scale-v3"
+    assert manifest["renderer_revision"] == "medium-b-arrows-mesh-fixed-flux-scale-v5"
     assert manifest["width_px"] == 1536
     assert manifest["height_px"] == 1536
     assert "detail_width_px" not in manifest
@@ -148,7 +151,7 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
             },
         ]
         # Geometry, flux density and mesh are lossless WebP (PNG's pixels at
-        # under half the bytes); field lines stay lossy WebP.
+        # under half the bytes); the field-arrow layer stays lossy WebP.
         expected_formats = {
             "geometry": ("WEBP", "image/webp"),
             "flux_density": ("WEBP", "image/webp"),
@@ -187,17 +190,121 @@ def test_playback_medium_density_uses_every_second_contour_level() -> None:
     assert [segment[0] for segment in segments] == [0.0, 2.0, 4.0]
 
 
-def test_playback_medium_density_matches_frontend_worker_stride() -> None:
-    worker_source = Path("frontend/src/public/fieldPlaybackWorker.ts").read_text(
-        encoding="utf-8"
-    )
-    match = re.search(
-        r"const MEDIUM_CONTOUR_LEVEL_STRIDE = (\d+);",
-        worker_source,
-    )
+def _field_arrows_source() -> str:
+    return Path("frontend/src/public/fieldArrows.ts").read_text(encoding="utf-8")
 
-    assert match is not None
-    assert int(match.group(1)) == public_field_playback.PLAYBACK_CONTOUR_LEVEL_STRIDE
+
+def _ts_number(expression: str) -> float:
+    """A TypeScript number literal or ``a / b``, as the arrow constants are written."""
+
+    if expression.strip() == "Number.POSITIVE_INFINITY":
+        return math.inf
+    parts = [float(part) for part in expression.split("/")]
+    return parts[0] / parts[1] if len(parts) == 2 else parts[0]
+
+
+def test_playback_arrows_use_the_viewers_spacing_rings_and_fading() -> None:
+    """The images' arrows are the ones a paused frame draws (frontend/src/public/fieldArrows.ts)."""
+
+    source = _field_arrows_source()
+    spacing = re.search(r"FIELD_ARROW_SPACING_FRACTION[^=]*= \{(.*?)\};", source, re.S)
+    assert spacing is not None
+    assert {
+        name: _ts_number(value)
+        for name, value in re.findall(r"(\w+): ([\d. /]+),", spacing.group(1))
+    } == pytest.approx(public_field_playback.FIELD_ARROW_SPACING_FRACTION)
+    length = re.search(r"FIELD_ARROW_LENGTH_FRACTION = ([\d.]+);", source)
+    assert length is not None and float(length.group(1)) == public_field_playback.FIELD_ARROW_LENGTH_FRACTION
+    offsets = re.search(r"FIELD_ARROW_RING_OFFSET = \{ primary: ([\d.]+), pm: ([\d.]+) \}", source)
+    assert offsets is not None
+    assert {"primary": float(offsets.group(1)), "pm": float(offsets.group(2))} == public_field_playback.FIELD_ARROW_RING_OFFSET
+    for name in (
+        "FIELD_ARROW_REFERENCE_PERCENTILE",
+        "FIELD_ARROW_HIDE_BELOW_SHARE",
+        "FIELD_ARROW_MIN_T",
+        "FIELD_ARROW_SHAFT_HALF_WIDTH",
+        "FIELD_ARROW_HEAD_HALF_WIDTH",
+        "FIELD_ARROW_RIM",
+    ):
+        value = re.search(rf"{name} = ([\d.e-]+);", source)
+        assert value is not None and float(value.group(1)) == getattr(public_field_playback, name), name
+    steps = re.search(r"FIELD_ARROW_OPACITY_STEPS[^=]*= \[(.*?)\];", source, re.S)
+    assert steps is not None
+    assert tuple(
+        (_ts_number(upper), float(opacity))
+        for upper, opacity in re.findall(r"\[([\w.]+), ([\d.]+)\]", steps.group(1))
+    ) == public_field_playback.FIELD_ARROW_OPACITY_STEPS
+
+
+def _disc_plot(b_at) -> dict:
+    """A 64-gon disc of radius 10.2 mm as a fan about its centre (as in test-field-arrows.mjs)."""
+
+    nodes = [[0.0, 0.0]] + [
+        [10.2 * math.cos(2 * math.pi * index / 64), 10.2 * math.sin(2 * math.pi * index / 64)]
+        for index in range(64)
+    ]
+    triangles = [[0, 1 + index, 1 + (index + 1) % 64] for index in range(64)]
+    fields = [
+        b_at(sum(nodes[node][0] for node in triangle) / 3, sum(nodes[node][1] for node in triangle) / 3)
+        for triangle in triangles
+    ]
+    return {
+        "nodes_mm": nodes,
+        "triangles": triangles,
+        "element_bx_t": [bx for bx, _ in fields],
+        "element_by_t": [by for _, by in fields],
+    }
+
+
+def test_playback_arrows_sample_the_same_rings_as_the_viewer() -> None:
+    mesh = public_field_playback._arrow_mesh(_disc_plot(lambda x, y: (0.8, 0.0)))
+    assert mesh is not None
+    primary = public_field_playback._sample_field_arrows(mesh, 1.0, 0.5)
+    # Rings at 0.5 … 9.5 mm with round(2πr) arrows each; the PM field's at 1 … 10 mm.
+    assert len(primary) == 314
+    assert len(public_field_playback._sample_field_arrows(mesh, 1.0, 1.0)) == 346
+    assert [(round(x, 6), round(y, 6)) for x, y, *_ in primary[:3]] == [(0.5, 0.0), (-0.25, 0.433013), (-0.25, -0.433013)]
+    assert math.atan2(primary[3][1], primary[3][0]) == pytest.approx(math.pi / 9)
+    assert all(
+        ux == pytest.approx(1.0) and uy == pytest.approx(0.0) and b == pytest.approx(0.8) and opacity == 1.0
+        for _, _, ux, uy, b, opacity in primary
+    )
+    assert mesh.reference_t == pytest.approx(0.8)
+
+    circulating = public_field_playback._arrow_mesh(_disc_plot(lambda x, y: (-0.2 * y, 0.2 * x)))
+    assert circulating is not None
+    for x, y, ux, uy, *_ in public_field_playback._sample_field_arrows(circulating, 1.0, 0.5):
+        assert abs(ux * x + uy * y) / math.hypot(x, y) < 0.06
+        assert ux * -y + uy * x > 0
+
+    quiet = public_field_playback._arrow_mesh(_disc_plot(lambda x, y: (0.01 if x > 0 else 1.0, 0.0)))
+    assert quiet is not None
+    assert all(x < 0.6 for x, *_ in public_field_playback._sample_field_arrows(quiet, 1.0, 0.5))
+    assert public_field_playback._arrow_mesh({"nodes_mm": [[0, 0]], "triangles": [[0, 0, 0]]}) is None
+    # Fading is a share of each field's strong |B|; a field with nothing in it shows nothing.
+    opacity = public_field_playback._field_arrow_opacity
+    assert [opacity(value, 1.0) for value in (0.01, 0.05, 0.15, 1.4)] == [0.0, 0.35, 0.65, 1.0]
+    assert [opacity(0.03, 0.2), opacity(0.2, 0.2), opacity(5e-5, 1e-3)] == [0.65, 1.0, 0.0]
+
+
+def test_playback_arrow_layer_draws_light_arrows_with_a_dark_rim() -> None:
+    plot = _disc_plot(lambda x, y: (0.0, 1.0))
+    view_box = (-10.71, -10.71, 21.42, 21.42)
+    layer = public_field_playback._render_arrows(Image, ImageDraw, plot, view_box, ring_offset=0.5)
+    assert layer.size == (1536, 1536)
+    alpha = layer.getchannel("A")
+    assert alpha.getbbox() is not None
+    # The first arrow sits 0.5 spacings right of the axis, pointing up the image.
+    point = public_field_playback._pixel_mapper(view_box)
+    spacing = 21.42 * public_field_playback.FIELD_ARROW_SPACING_FRACTION["medium"]
+    centre_x, centre_y = point(0.5 * spacing, 0.0)
+    red, green, blue, opacity = layer.getpixel((round(centre_x), round(centre_y)))
+    assert opacity > 200 and min(red, green, blue) > 200
+    length_px = spacing * public_field_playback.FIELD_ARROW_LENGTH_FRACTION * 1536 / 21.42
+    rim_red, _, _, rim_opacity = layer.getpixel((round(centre_x), round(centre_y + length_px / 2 + 1)))
+    assert rim_opacity > 120 and rim_red < 80
+    empty = public_field_playback._render_arrows(Image, ImageDraw, {"nodes_mm": [], "triangles": []}, view_box, ring_offset=0.5)
+    assert empty.getchannel("A").getbbox() is None
 
 
 def test_failed_packaging_keeps_every_numerical_frame(monkeypatch, tmp_path) -> None:
@@ -374,8 +481,6 @@ def test_v2_contract_supports_tutorial_timelines_and_arbitrary_compositions() ->
 def test_composition_reuses_the_frame_geometry_exactly(monkeypatch, tmp_path) -> None:
     """Passing the frame's own geometry renders the same layers, and the frame builds it once per plot."""
 
-    from PIL import ImageDraw, ImageFilter
-
     cache_dir = tmp_path / "magneto2d-test"
     source = cache_dir / "field_line_frames" / "frame_000.json.gz"
     _write_frame(source, 0.0)
@@ -390,7 +495,6 @@ def test_composition_reuses_the_frame_geometry_exactly(monkeypatch, tmp_path) ->
         rendered[label] = public_field_playback._render_composition(
             Image,
             ImageDraw,
-            ImageFilter,
             plot,
             output_dir=output_dir,
             frame_index=0,

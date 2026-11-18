@@ -5,7 +5,7 @@ post-processing, and resolution-independent inspection. Browser playback uses
 independently toggleable high-resolution raster layers so animation does not
 need to download or rasterize those full arrays. Flat geometry, heatmap and
 mesh layers use lossless WebP (the same pixels as PNG at well under half the
-size); detailed field lines use lossy WebP, which their antialiased strokes
+size); the field-arrow layer uses lossy WebP, which its antialiased edges
 compress far better than lossless.
 
 One numerical frame is retained for every raster frame behind the lazy
@@ -23,6 +23,7 @@ import json
 import math
 import os
 from concurrent.futures import Executor, ProcessPoolExecutor, ThreadPoolExecutor
+from dataclasses import dataclass
 from multiprocessing import get_context
 from pathlib import Path
 from typing import Any, Literal
@@ -47,11 +48,32 @@ PLAYBACK_SIZE_PX = 1536
 PLAYBACK_STYLE_REFERENCE_SIZE_PX = 768
 PLAYBACK_DIRECTION_CUE_TARGET = 32
 PLAYBACK_DIRECTION_CUE_LIMIT = 48
-# Match the public viewer's Medium setting: render every second contour level
-# into the compact animation artifact. Exact stopped frames still load the full
-# numerical contour set for interactive density changes and zoom inspection.
+# The contour statistics and direction cues describe every second contour level.
 PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
-PLAYBACK_RENDERER_REVISION = "medium-contours-mesh-fixed-flux-scale-v3"
+# v4 drew small B arrows in the lines layer in place of flux lines; v5 thins them.
+PLAYBACK_RENDERER_REVISION = "medium-b-arrows-mesh-fixed-flux-scale-v5"
+# Field arrows: the viewer draws the same ones from an exact frame
+# (frontend/src/public/fieldArrows.ts); tests hold these constants equal. The
+# images carry the Medium spacing; a paused frame draws Low or High itself.
+FIELD_ARROW_SPACING_FRACTION = {"low": 1 / 24, "medium": 1 / 34, "high": 1 / 48}
+FIELD_ARROW_LENGTH_FRACTION = 0.64
+# Shaft half-width, head half-width and dark rim, as shares of the arrow's length.
+FIELD_ARROW_SHAFT_HALF_WIDTH = 0.045
+FIELD_ARROW_HEAD_HALF_WIDTH = 0.18
+FIELD_ARROW_RIM = 0.055
+FIELD_ARROW_RING_OFFSET = {"primary": 0.5, "pm": 1.0}
+# Fading is a share of each field's strong |B| (its 95th-percentile element),
+# so the stator's field alone reads as clearly as the resultant.
+FIELD_ARROW_REFERENCE_PERCENTILE = 0.95
+FIELD_ARROW_HIDE_BELOW_SHARE = 0.015
+FIELD_ARROW_MIN_T = 1e-4
+FIELD_ARROW_OPACITY_STEPS = ((0.07, 0.35), (0.2, 0.65), (math.inf, 1.0))
+# Light arrows with a dark rim (rgba(3,7,15,.82)); the viewer tints the light
+# part to the PM or stator colour where a view needs it.
+_ARROW_FILL = (248, 250, 252)
+_ARROW_HALO = (3, 7, 15, 209)
+# Drawn at twice the size and reduced, for smooth edges.
+_ARROW_SUPERSAMPLE = 2
 _PLAYBACK_PROCESS_MIN_FRAMES = 8
 _PLAYBACK_MAX_PROCESSES = 8
 # View box, pixel mapper and (triangle index, pixel-space corners) pairs.
@@ -495,53 +517,264 @@ def _render_heat(
     return image, min_b, max_b
 
 
-def _render_lines(
+@dataclass(frozen=True, slots=True)
+class _ArrowMesh:
+    """A plot's elements indexed for finding the one under a point (FieldArrowMesh in fieldArrows.ts)."""
+
+    xs: list[float]
+    ys: list[float]
+    corners: list[list[int]]
+    bx: list[float]
+    by: list[float]
+    min_x: float
+    min_y: float
+    cell: float
+    columns: int
+    rows: int
+    # Elements whose bounding box meets cell c are cell_items[cell_start[c]:cell_start[c + 1]].
+    cell_start: list[int]
+    cell_items: list[int]
+    max_radius: float
+    # The field's strong |B| (T), which the fading is a share of.
+    reference_t: float
+
+
+def _arrow_mesh(plot: dict[str, Any]) -> _ArrowMesh | None:
+    """Index a plot's usable elements (finite corners and B); None when there are none."""
+
+    raw_nodes = plot.get("nodes_mm") or []
+    raw_triangles = plot.get("triangles") or []
+    raw_bx = plot.get("element_bx_t")
+    raw_by = plot.get("element_by_t")
+    if not raw_nodes or not raw_triangles or not isinstance(raw_bx, list) or not isinstance(raw_by, list):
+        return None
+    nodes = np.full((len(raw_nodes), 2), np.nan)
+    for index, node in enumerate(raw_nodes):
+        if isinstance(node, (list, tuple)) and len(node) >= 2:
+            x, y = _finite_number(node[0]), _finite_number(node[1])
+            if x is not None and y is not None:
+                nodes[index] = (x, y)
+    try:
+        triangles = np.asarray(raw_triangles, dtype=np.int64)
+    except (TypeError, ValueError):
+        return None
+    if triangles.ndim != 2 or triangles.shape[1] != 3:
+        return None
+    count = len(triangles)
+    bx = np.full(count, np.nan)
+    by = np.full(count, np.nan)
+    for target, values in ((bx, raw_bx), (by, raw_by)):
+        for index, value in enumerate(values[:count]):
+            number = _finite_number(value)
+            if number is not None:
+                target[index] = number
+    in_range = np.all((triangles >= 0) & (triangles < len(nodes)), axis=1)
+    safe = np.where(in_range[:, None], triangles, 0)
+    corners_xy = nodes[safe]  # (count, 3, 2)
+    usable = in_range & np.all(np.isfinite(corners_xy), axis=(1, 2)) & np.isfinite(bx) & np.isfinite(by)
+    if not np.any(usable):
+        return None
+    triangles, corners_xy, bx, by = triangles[usable], corners_xy[usable], bx[usable], by[usable]
+    finite_nodes = nodes[np.all(np.isfinite(nodes), axis=1)]
+    max_radius = float(np.max(np.hypot(finite_nodes[:, 0], finite_nodes[:, 1])))
+    low = corners_xy.min(axis=1)
+    high = corners_xy.max(axis=1)
+    min_x, min_y = float(low[:, 0].min()), float(low[:, 1].min())
+    width = max(float(high[:, 0].max()) - min_x, 1e-9)
+    height = max(float(high[:, 1].max()) - min_y, 1e-9)
+    usable_count = len(triangles)
+    # About two elements per cell on average; large elements span several.
+    cell = max(math.sqrt(width * height / usable_count) * 1.4, 1e-6)
+    columns = max(1, math.ceil(width / cell))
+    rows = max(1, math.ceil(height / cell))
+    column0 = np.clip(np.floor((low[:, 0] - min_x) / cell), 0, columns - 1).astype(np.int64)
+    column1 = np.clip(np.floor((high[:, 0] - min_x) / cell), 0, columns - 1).astype(np.int64)
+    row0 = np.clip(np.floor((low[:, 1] - min_y) / cell), 0, rows - 1).astype(np.int64)
+    row1 = np.clip(np.floor((high[:, 1] - min_y) / cell), 0, rows - 1).astype(np.int64)
+    span_columns = column1 - column0 + 1
+    spans = span_columns * (row1 - row0 + 1)
+    elements = np.repeat(np.arange(usable_count), spans)
+    within = np.arange(int(spans.sum())) - np.repeat(np.cumsum(spans) - spans, spans)
+    cells = (row0[elements] + within // span_columns[elements]) * columns + column0[elements] + within % span_columns[elements]
+    order = np.argsort(cells, kind="stable")
+    magnitudes = np.sort(np.hypot(bx, by))
+    cell_start = np.zeros(columns * rows + 1, dtype=np.int64)
+    cell_start[1:] = np.cumsum(np.bincount(cells, minlength=columns * rows))
+    return _ArrowMesh(
+        xs=nodes[:, 0].tolist(),
+        ys=nodes[:, 1].tolist(),
+        corners=triangles.tolist(),
+        bx=bx.tolist(),
+        by=by.tolist(),
+        min_x=min_x,
+        min_y=min_y,
+        cell=cell,
+        columns=columns,
+        rows=rows,
+        cell_start=cell_start.tolist(),
+        cell_items=elements[order].tolist(),
+        max_radius=max_radius,
+        reference_t=float(magnitudes[math.floor(FIELD_ARROW_REFERENCE_PERCENTILE * (usable_count - 1))]),
+    )
+
+
+def _locate_arrow_element(mesh: _ArrowMesh, x: float, y: float) -> int:
+    """The usable element under a point, or -1 outside the mesh."""
+
+    column = math.floor((x - mesh.min_x) / mesh.cell)
+    row = math.floor((y - mesh.min_y) / mesh.cell)
+    # The bounding box's far edges fall in the last cell.
+    if not (0 <= column <= mesh.columns and 0 <= row <= mesh.rows):
+        return -1
+    cell = min(mesh.rows - 1, row) * mesh.columns + min(mesh.columns - 1, column)
+    xs, ys = mesh.xs, mesh.ys
+    for element in mesh.cell_items[mesh.cell_start[cell] : mesh.cell_start[cell + 1]]:
+        a, b, c = mesh.corners[element]
+        denominator = (ys[b] - ys[c]) * (xs[a] - xs[c]) + (xs[c] - xs[b]) * (ys[a] - ys[c])
+        if abs(denominator) <= 1e-18:
+            continue
+        first = ((ys[b] - ys[c]) * (x - xs[c]) + (xs[c] - xs[b]) * (y - ys[c])) / denominator
+        second = ((ys[c] - ys[a]) * (x - xs[c]) + (xs[a] - xs[c]) * (y - ys[c])) / denominator
+        if first >= -1e-9 and second >= -1e-9 and 1 - first - second >= -1e-9:
+            return element
+    return -1
+
+
+def _sample_field_arrows(mesh: _ArrowMesh, spacing: float, ring_offset: float) -> list[tuple[float, float, float, float, float, float]]:
+    """(x, y, ux, uy, |B|, opacity) on rings at (k + ring_offset) * spacing, as fieldArrows.ts samples them."""
+
+    arrows: list[tuple[float, float, float, float, float, float]] = []
+    if not spacing > 0:
+        return arrows
+    last_ring = math.floor(mesh.max_radius / spacing - ring_offset)
+    for ring in range(0, last_ring + 1):
+        radius = (ring + ring_offset) * spacing
+        if radius <= 0:
+            continue
+        # JavaScript's Math.round, not Python's round-half-to-even.
+        count = max(1, math.floor(2 * math.pi * radius / spacing + 0.5))
+        step = 2 * math.pi / count
+        phase = (ring % 2) * step / 2
+        for index in range(count):
+            angle = phase + index * step
+            x = radius * math.cos(angle)
+            y = radius * math.sin(angle)
+            element = _locate_arrow_element(mesh, x, y)
+            if element < 0:
+                continue
+            bx, by = mesh.bx[element], mesh.by[element]
+            magnitude = math.hypot(bx, by)
+            opacity = _field_arrow_opacity(magnitude, mesh.reference_t)
+            if opacity <= 0:
+                continue
+            arrows.append((x, y, bx / magnitude, by / magnitude, magnitude, opacity))
+    return arrows
+
+
+def _field_arrow_opacity(magnitude: float, reference_t: float) -> float:
+    """fieldArrowOpacity: 0 to leave the arrow out, else by its share of the field's strong |B|."""
+
+    if not magnitude >= max(FIELD_ARROW_MIN_T, FIELD_ARROW_HIDE_BELOW_SHARE * reference_t):
+        return 0.0
+    share = magnitude / reference_t
+    return next(opacity for upper, opacity in FIELD_ARROW_OPACITY_STEPS if share < upper)
+
+
+def _arrow_outline(
+    centre: tuple[float, float],
+    direction: tuple[float, float],
+    length: float,
+    shaft_half_width: float,
+) -> list[tuple[float, float]]:
+    """One arrow's outline in pixels (y down), as fieldArrowOutline draws it."""
+
+    ux, uy = direction
+    nx, ny = -uy, ux
+    cx, cy = centre
+    tail, tip = -length / 2, length / 2
+    head_base = tip - length * 0.4
+    head_half_width = max(length * FIELD_ARROW_HEAD_HALF_WIDTH, shaft_half_width * 2.2)
+
+    def point(along: float, across: float) -> tuple[float, float]:
+        return (cx + ux * along + nx * across, cy + uy * along + ny * across)
+
+    return [
+        point(tail, -shaft_half_width),
+        point(head_base, -shaft_half_width),
+        point(head_base, -head_half_width),
+        point(tip, 0.0),
+        point(head_base, head_half_width),
+        point(head_base, shaft_half_width),
+        point(tail, shaft_half_width),
+    ]
+
+
+def _offset_outline(outline: list[tuple[float, float]], distance: float) -> list[tuple[float, float]]:
+    """The outline moved outward by ``distance`` along each corner's mitre (offsetFieldArrowOutline)."""
+
+    count = len(outline)
+    twice_area = sum(
+        x * outline[(index + 1) % count][1] - outline[(index + 1) % count][0] * y
+        for index, (x, y) in enumerate(outline)
+    )
+    sign = 1.0 if twice_area >= 0 else -1.0
+
+    def normal(start: tuple[float, float], end: tuple[float, float]) -> tuple[float, float]:
+        dx, dy = end[0] - start[0], end[1] - start[1]
+        length = math.hypot(dx, dy) or 1.0
+        return sign * dy / length, -sign * dx / length
+
+    offset: list[tuple[float, float]] = []
+    for index, point in enumerate(outline):
+        ax, ay = normal(outline[index - 1], point)
+        bx, by = normal(point, outline[(index + 1) % count])
+        factor = distance / max(1 + ax * bx + ay * by, 2 / 9)
+        offset.append((point[0] + (ax + bx) * factor, point[1] + (ay + by) * factor))
+    return offset
+
+
+def _render_arrows(
     image_module: Any,
     image_draw_module: Any,
-    image_filter_module: Any,
-    segments: list[tuple[float, float, float, float]],
-    point: Any,
+    plot: dict[str, Any],
+    view_box: tuple[float, float, float, float],
     *,
+    ring_offset: float,
     size_px: int = PLAYBACK_SIZE_PX,
 ) -> Any:
-    glow = image_module.new(
-        "RGBA",
-        (size_px, size_px),
-        (0, 0, 0, 0),
-    )
-    core = image_module.new(
-        "RGBA",
-        (size_px, size_px),
-        (0, 0, 0, 0),
-    )
-    glow_draw = image_draw_module.Draw(glow, "RGBA")
-    core_draw = image_draw_module.Draw(core, "RGBA")
-    line_scale = size_px / PLAYBACK_STYLE_REFERENCE_SIZE_PX
-    for x1, y1, x2, y2 in segments:
-        pixels = [point(x1, y1), point(x2, y2)]
-        glow_draw.line(
-            pixels,
-            fill=(255, 145, 0, 135),
-            width=max(1, round(4 * line_scale)),
-        )
-        core_draw.line(
-            pixels,
-            fill=(255, 209, 102, 245),
-            width=max(1, round(line_scale)),
-        )
-    glow = glow.filter(
-        image_filter_module.GaussianBlur(
-            radius=0.9 * size_px / PLAYBACK_STYLE_REFERENCE_SIZE_PX
-        )
-    )
-    glow.alpha_composite(core)
-    return glow
+    """The field-arrow layer at the Medium spacing (transparent where the plot has no B)."""
+
+    mesh = _arrow_mesh(plot)
+    if mesh is None:
+        return image_module.new("RGBA", (size_px, size_px), (0, 0, 0, 0))
+    spacing = max(view_box[2], view_box[3]) * FIELD_ARROW_SPACING_FRACTION["medium"]
+    arrows = _sample_field_arrows(mesh, spacing, ring_offset)
+    drawn_px = size_px * _ARROW_SUPERSAMPLE
+    point = _pixel_mapper(view_box, size_px=drawn_px)
+    pixels_per_mm = min(drawn_px / view_box[2], drawn_px / view_box[3])
+    length = spacing * FIELD_ARROW_LENGTH_FRACTION * pixels_per_mm
+    # fieldArrowWidths, with one output pixel being _ARROW_SUPERSAMPLE drawn ones.
+    shaft_half_width = max(length * FIELD_ARROW_SHAFT_HALF_WIDTH, 0.55 * _ARROW_SUPERSAMPLE)
+    rim = max(length * FIELD_ARROW_RIM, 0.8 * _ARROW_SUPERSAMPLE)
+    image = image_module.new("RGBA", (drawn_px, drawn_px), (0, 0, 0, 0))
+    draw = image_draw_module.Draw(image, "RGBA")
+    by_opacity: dict[float, list[tuple[float, float, float, float, float, float]]] = {}
+    for arrow in arrows:
+        by_opacity.setdefault(arrow[5], []).append(arrow)
+    for opacity in sorted(by_opacity):
+        halo = (*_ARROW_HALO[:3], round(_ARROW_HALO[3] * opacity))
+        fill = (*_ARROW_FILL, round(255 * opacity))
+        for x, y, ux, uy, _, _ in by_opacity[opacity]:
+            # Pixels run down the image, so the direction's y turns over.
+            outline = _arrow_outline(point(x, y), (ux, -uy), length, shaft_half_width)
+            draw.polygon(_offset_outline(outline, rim), fill=halo)
+            draw.polygon(outline, fill=fill)
+    return image.resize((size_px, size_px), image_module.Resampling.BOX)
 
 
 def _render_composition(
     image_module: Any,
     image_draw_module: Any,
-    image_filter_module: Any,
     plot: dict[str, Any],
     *,
     output_dir: Path,
@@ -563,7 +796,12 @@ def _render_composition(
         level_stride=PLAYBACK_CONTOUR_LEVEL_STRIDE,
     )
     heat_path = output_dir / f"frame_{frame_index:04d}_{composition}_flux.webp"
+    # The field-arrow layer keeps the "lines" name the playback contract and
+    # saved runs use for it.
     lines_path = output_dir / f"frame_{frame_index:04d}_{composition}_lines.webp"
+    # The PM field's arrows sit between the others' rings, so the Stator + PM
+    # view's two sets interleave.
+    ring_offset = FIELD_ARROW_RING_OFFSET["pm" if composition == "pm" else "primary"]
     if draw:
         heat, min_b, max_b = _render_heat(
             image_module,
@@ -572,12 +810,12 @@ def _render_composition(
             triangles,
             point,
         )
-        lines = _render_lines(
+        lines = _render_arrows(
             image_module,
             image_draw_module,
-            image_filter_module,
-            segments,
-            point,
+            plot,
+            view_box,
+            ring_offset=ring_offset,
         )
         heat_ref = _save_lossless_webp(heat, heat_path)
         lines_ref = _save_webp(lines, lines_path, quality=90)
@@ -634,13 +872,14 @@ def _layer_catalog() -> list[dict[str, Any]]:
             "unit": "T",
         },
         {
+            # Small arrows along B; the id and role are the contract's names
+            # for the layer drawn over the flux density.
             "id": "field_lines",
-            "label": "Field lines",
+            "label": "Field arrows",
             "role": "contours",
             "media_type": "image/webp",
             "default_visible": True,
-            "quantity": "magnetic_vector_potential",
-            "unit": "Wb/m",
+            "quantity": "magnetic_flux_density_direction",
         },
         {
             "id": "mesh",
@@ -757,19 +996,18 @@ def _render_playback_layers(
     base_path = output_dir / f"frame_{frame_index:04d}_base.webp"
     mesh_path = output_dir / f"frame_{frame_index:04d}_mesh.webp"
     if draw:
-        from PIL import Image, ImageDraw, ImageFilter  # type: ignore
+        from PIL import Image, ImageDraw  # type: ignore
 
         base_ref = _save_lossless_webp(_render_base(Image, ImageDraw, triangles, point), base_path)
         mesh_ref = _save_lossless_webp(_render_mesh(Image, ImageDraw, triangles, point), mesh_path)
     else:
-        Image = ImageDraw = ImageFilter = None
+        Image = ImageDraw = None
         base_ref = _deferred_image_ref(base_path)
         mesh_ref = _deferred_image_ref(mesh_path)
     compositions: dict[str, Any] = {
         "armature" if mode == "armature" else "resultant": _render_composition(
             Image,
             ImageDraw,
-            ImageFilter,
             outer,
             output_dir=output_dir,
             frame_index=frame_index,
@@ -786,7 +1024,6 @@ def _render_playback_layers(
             compositions["pm"] = _render_composition(
                 Image,
                 ImageDraw,
-                ImageFilter,
                 pm_plot,
                 output_dir=output_dir,
                 frame_index=frame_index,
