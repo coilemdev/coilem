@@ -14,7 +14,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -105,6 +105,63 @@ test('rotated mesh hit targets follow the rotor and leave stator targets fixed',
   await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection)).toBeNull();
   await page.mouse.click(box.x + 121.5, box.y + 283);
   await expect.poll(() => page.evaluate(() => (window as any).viewportTest.state.selection?.index)).toBe(1);
+});
+
+test('field tooth poles reverse on stationary teeth while magnet labels turn with the rotor', async ({ page }) => {
+  // Exercise the numerical fallback and hold the next field until the slider has moved.
+  await page.context().route('**/fieldPlaybackWorker.ts?*', route => route.fulfill({
+    contentType: 'text/javascript',
+    body: 'self.onmessage = ({data}) => postMessage({requestId: data.requestId, ok: false});',
+  }));
+  let releaseFrame!: () => void;
+  const blockedFrame = new Promise<void>(resolve => { releaseFrame = resolve; });
+  await page.context().route('**/solve/field-frame/tooth-test-*', async route => {
+    if (route.request().url().endsWith('tooth-test-180')) await blockedFrame;
+    const frame = await page.evaluate(() => (window as any).toothPoleFixture.frame);
+    await route.fulfill({ json: { field_line_frame: frame } });
+  });
+  await openViewportHarness(page, 'tooth-poles');
+  await page.getByRole('button', { name: /^Stator-current-only field/ }).click();
+  const menu = page.locator('details.public-field-layer-menu');
+  await menu.locator('summary').click();
+  const teeth = page.locator('.public-field-tooth-pole');
+  const magnets = page.locator('.public-field-result-magnet-label');
+  const toothToggle = menu.getByRole('button', { name: 'Tooth poles', exact: true });
+  const magnetToggle = menu.getByRole('button', { name: 'Magnet labels', exact: true });
+  await expect(magnetToggle).toBeDisabled();
+  await toothToggle.click();
+  await expect(teeth.locator('text')).toHaveText(['N', 'S']);
+  await expect(magnets).toHaveCount(0);
+  await menu.getByRole('button', { name: 'PM reference', exact: true }).click();
+  await magnetToggle.click();
+  await expect(magnets).toHaveText(['N']);
+  const toothPaths = await teeth.locator('path').evaluateAll(paths => paths.map(path => path.getAttribute('d')));
+  const labelAnchors = () => teeth.locator('text').evaluateAll(labels => labels.map(label => {
+    const text = label as SVGTextElement;
+    const anchor = new DOMPoint(text.x.baseVal[0]?.value ?? 0, text.y.baseVal[0]?.value ?? 0).matrixTransform(text.getScreenCTM()!);
+    return [anchor.x, anchor.y];
+  }));
+  const anchors = await labelAnchors();
+  const magnetStart = await magnets.boundingBox();
+  await page.evaluate(() => (window as any).toothPoleFixture.positionLink.requestAngle(180));
+  // The waveform requests 180° but the 0° frame is still the one on screen.
+  await expect.poll(() => page.evaluate(() => (window as any).toothPoleFixture.positionLink.getPlayhead())).toBe(180);
+  await expect(teeth.locator('text')).toHaveText(['N', 'S']);
+  expect(await magnets.boundingBox()).toEqual(magnetStart);
+  releaseFrame();
+  await expect(teeth.locator('text')).toHaveText(['S', 'N']);
+  // The nearest stator-only solve was actually at 150°.
+  await expect(page.locator('.viewport-cad-status')).toContainText('150.0° elec');
+  expect(await teeth.locator('path').evaluateAll(paths => paths.map(path => path.getAttribute('d')))).toEqual(toothPaths);
+  expect(await labelAnchors()).toEqual(anchors);
+  expect(await magnets.boundingBox()).not.toEqual(magnetStart);
+  await toothToggle.click();
+  await expect(teeth).toHaveCount(0);
+  await expect(magnets).toHaveText(['N']);
+  await page.getByRole('button', { name: /^Resultant field/ }).click();
+  await page.getByRole('button', { name: /^PM-only field/ }).click();
+  await menu.locator('summary').click();
+  await expect(toothToggle).toBeDisabled();
 });
 
 test('a zoomed rotor retains elements that rotate into view and reuses bounded bitmaps', async ({ page }) => {

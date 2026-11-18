@@ -12,7 +12,6 @@ import { useMagnifierCanvas, ViewportMagnifier } from './ViewportMagnifier';
 
 import {
   airgapHarmonic,
-  deriveMagneticPolarityCues,
   strongestAirgapPolePairs,
 } from '../components/tutorials/fieldPolarityCues';
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
@@ -39,12 +38,13 @@ import {
   coilSideMark,
   coilSidesFromGeometry,
   phaseCycleSampler,
+  statorTeethFromGeometry,
   type CoilMark,
   type CoilSide,
   type FieldPhaseView,
 } from './fieldPhases';
-import { PUBLIC_PHASE_COLORS } from './motorPalette';
-import { phaseDriveFrame, phaseStrips, type PhaseCurrentSampler } from './phaseDrive';
+import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
+import { phaseDriveFrame, phaseStrips, toothPoleFillOpacity, toothPoleLabelOpacity, toothPoleLabelSize, type PhaseCurrentSampler } from './phaseDrive';
 import { drawCurrentMarker, drawPhaseDriveWired } from './phaseDrivePanel';
 import {
   buildTriangleGrid,
@@ -242,6 +242,10 @@ function polygonCentroid(points: Array<[number, number]>): [number, number] {
   return [center[0] / points.length, center[1] / points.length];
 }
 
+function polygonPath(points: Array<[number, number]>): string {
+  return `M ${points.map(([x, y]) => `${x} ${-y}`).join(' L ')} Z`;
+}
+
 function prepareMagnetOverlay(
   geometry: GeometryPreview | null | undefined,
   rotorAngleDeg: number,
@@ -259,7 +263,7 @@ function prepareMagnetOverlay(
       return {
         center: polygonCentroid(points),
         polarity,
-        path: `${points.map((point, pointIndex) => `${pointIndex === 0 ? 'M' : 'L'} ${point[0]} ${-point[1]}`).join(' ')} Z`,
+        path: polygonPath(points),
       };
     });
 }
@@ -650,8 +654,7 @@ export function FieldResultPlot({
   airgapRingMm,
   showMagnetPolarityLabels = true,
   magnetReference = false,
-  showStatorPolarity = false,
-  showPolarityLegend = false,
+  toothPoleStrengths = null,
   statorPolarityProfile,
   statorPolarityRotationDeg = 0,
   statorInnerRadiusMm,
@@ -697,8 +700,8 @@ export function FieldResultPlot({
   airgapRingMm?: readonly [number, number];
   showMagnetPolarityLabels?: boolean;
   magnetReference?: boolean;
-  showStatorPolarity?: boolean;
-  showPolarityLegend?: boolean;
+  /** Winding polarity at each stationary tooth, N positive, for the displayed frame. */
+  toothPoleStrengths?: number[] | null;
   statorPolarityProfile?: AirgapBrBtProfile | null;
   statorPolarityRotationDeg?: number;
   statorInnerRadiusMm?: number;
@@ -770,12 +773,27 @@ export function FieldResultPlot({
   const phasesShown = phases !== null && coilSides.length > 0;
   const phaseCycle = phases?.cycle ?? null;
   const phaseSampler = useMemo(() => (phaseCycle ? phaseCycleSampler(phaseCycle) : null), [phaseCycle]);
-  const statorPolarityCues = useMemo(
-    () => showStatorPolarity
-      ? deriveMagneticPolarityCues(statorPolarityProfile, poles, 'stator')
-      : [],
-    [poles, showStatorPolarity, statorPolarityProfile],
-  );
+  const toothCount = toothPoleStrengths?.length ?? 0;
+  const toothShapes = useMemo(() => {
+    if (!toothCount) return [];
+    return statorTeethFromGeometry(geometry).map(({ points, center, index }) => {
+      const path = polygonPath(points);
+      return {
+        index, x: center[0], y: -center[1], path, canvasPath: new Path2D(path),
+        fontSize: toothPoleLabelSize(Math.hypot(...center), toothCount),
+      };
+    });
+  }, [geometry, toothCount]);
+  const toothOverlay = useMemo(() => toothShapes.flatMap((shape) => {
+    const strength = toothPoleStrengths?.[shape.index] ?? 0;
+    const opacity = toothPoleFillOpacity(strength);
+    if (!opacity) return [];
+    return [{
+      ...shape, opacity, labelOpacity: toothPoleLabelOpacity(strength),
+      label: strength > 0 ? 'N' : 'S',
+      color: strength > 0 ? PUBLIC_MOTOR_COLORS.magnetNorth : PUBLIC_MOTOR_COLORS.magnetSouth,
+    }];
+  }), [toothShapes, toothPoleStrengths]);
   const axisPolePairs = Math.max(1, Math.round(poles / 2));
   const statorAxisDeg = useMemo(() => {
     if (!fieldAxes) return null;
@@ -936,6 +954,27 @@ export function FieldResultPlot({
           worldTransform = intoLoupe.multiply(new DOMMatrix([scale, 0, 0, scale, x, y]));
         }
       }
+      // Tooth poles are an SVG overlay in the main view. Include them in both
+      // the magnified playback image and the magnified numerical field.
+      if (worldTransform && toothOverlay.length) {
+        context.save();
+        for (const tooth of toothOverlay) {
+          context.setTransform(worldTransform);
+          context.globalAlpha = tooth.opacity;
+          context.fillStyle = tooth.color;
+          context.fill(tooth.canvasPath);
+          if (!tooth.labelOpacity) continue;
+          context.translate(tooth.x, tooth.y);
+          context.rotate(-navigation.rotationDeg * Math.PI / 180);
+          context.globalAlpha = tooth.labelOpacity;
+          context.fillStyle = '#f8fafc';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.font = `800 ${tooth.fontSize}px ui-monospace, monospace`;
+          context.fillText(tooth.label, 0, 0);
+        }
+        context.restore();
+      }
       // The main view's airgap rings are an SVG overlay, so neither its canvas
       // nor a fresh vector redraw contains them. Draw both edges here as well.
       if (hasAirgapOverlay && worldTransform) {
@@ -992,6 +1031,7 @@ export function FieldResultPlot({
     raster,
     phases,
     scheduleLoupeDraw,
+    toothOverlay,
     showFieldLines,
     showHeatmap,
     showMesh,
@@ -1477,10 +1517,6 @@ export function FieldResultPlot({
     overlayOffsetX,
     overlayOffsetY,
   ].join(' ');
-  const statorPoleLabelRadius = Number.isFinite(statorInnerRadiusMm)
-    ? (statorInnerRadiusMm ?? 0) + Math.max(3.2, Math.min(5, (statorInnerRadiusMm ?? 0) * 0.075))
-    : null;
-  const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
   const hasPhaseOverlay = phasesShown;
@@ -1531,7 +1567,7 @@ export function FieldResultPlot({
       ? magnetReference ? 'dimmed permanent-magnet reference geometry' : 'permanent magnets'
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
-    hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
+    toothOverlay.length ? 'stator tooth poles in red for north and blue for south' : null,
     hasPhaseOverlay ? 'stator coils coloured by phase with the way their current flows' : null,
     hasFieldAxes ? 'stator and magnet field-axis arrows with the d and q axes' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
@@ -1640,12 +1676,6 @@ export function FieldResultPlot({
         <div>
           <strong>{title}</strong>
           <span>{subtitle}</span>
-          {showPolarityLegend && showMagnets && hasStatorPolarityCues && (
-            <div className="public-field-pole-legend" aria-label="Magnetic pole label legend">
-              <span><i className="is-pm" aria-hidden="true" />Letter inside magnet · inactive PM</span>
-              <span><i className="is-stator" aria-hidden="true">Nₛ</i>Color badge · stator pole</span>
-            </div>
-          )}
         </div>
         {showControls && <div className="public-field-result-controls" aria-label="Field map layers">
           {hasHeatmap && <button type="button" aria-pressed={showHeatmap} onClick={() => setInternalShowHeatmap((value) => !value)}>Heatmap</button>}
@@ -1668,8 +1698,16 @@ export function FieldResultPlot({
       >
         <canvas ref={canvasRef} role="img" aria-label={`Solved ${visibleLayerLabel}`} />
         <div className="public-viewport-navigation-content public-field-overlay-navigation" style={navigation.contentStyle}>
-          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || hasStatorPolarityCues || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
+          {((showMagnets && magnetOverlay.length > 0) || hasAirgapOverlay || toothOverlay.length > 0 || hasFieldAxes) && <svg viewBox={`0 0 ${FIELD_RASTER_SIZE} ${FIELD_RASTER_SIZE}`} className="public-field-result-overlay" style={fitScale === 1 ? undefined : { transform: `scale(${fitScale})` }} aria-hidden="true">
             <g className="public-field-result-overlay-world" transform={`matrix(${overlayTransform})`}>
+              {toothOverlay.map((tooth) => (
+                <g className="public-field-tooth-pole" key={tooth.index}>
+                  <path d={tooth.path} fill={tooth.color} fillOpacity={tooth.opacity} />
+                  {tooth.labelOpacity > 0 && (
+                    <text x={tooth.x} y={tooth.y} transform={upright(tooth.x, tooth.y)} fontSize={tooth.fontSize} opacity={tooth.labelOpacity}>{tooth.label}</text>
+                  )}
+                </g>
+              ))}
               {hasAirgapOverlay && (
                 <g className="public-field-result-airgap-overlay">
                   <circle className="is-halo" cx="0" cy="0" r={airgapEdges[0]} />
@@ -1730,17 +1768,6 @@ export function FieldResultPlot({
                   </g>
                 </g>
               )}
-              {hasStatorPolarityCues && statorPolarityCues.map((cue, index) => {
-                const angleRad = (cue.angleDeg + statorPolarityRotationDeg) * Math.PI / 180;
-                const x = statorPoleLabelRadius * Math.cos(angleRad);
-                const y = -statorPoleLabelRadius * Math.sin(angleRad);
-                return (
-                  <g className={`public-field-result-stator-pole is-${cue.label === 'N' ? 'north' : 'south'}`} transform={upright(x, y)} key={`stator-pole-${index}`}>
-                    <rect x={x - 2.2} y={y - 1.45} width="4.4" height="2.9" rx="1.1" />
-                    <text x={x} y={y}>{cue.label}ₛ</text>
-                  </g>
-                );
-              })}
             </g>
           </svg>}
         </div>

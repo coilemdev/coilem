@@ -50,7 +50,7 @@ import { LatestFrameLoader } from './latestFrameLoader';
 import { RpmField } from './RpmField';
 import { describeFieldProbe } from './fieldProbeRegion';
 import { isSteppedCycle, phaseCurrentsAt, phaseCycleFromFrames, type FieldPhaseView } from './fieldPhases';
-import type { PhaseDrive } from './phaseDrive';
+import { slotCurrents, toothPoles, type PhaseDrive } from './phaseDrive';
 import type { FieldPositionLink } from './fieldPositionLink';
 import { magneticAirgapMm, rotorAirgapBoundaryRadiusMm } from './motorAirgap';
 import type {
@@ -265,6 +265,7 @@ export function SolvedFieldViewer({
   const fieldLayerMenu = useLayerMenu();
   const [showAirgap, setShowAirgap] = useState(solveViewMemory.field.showAirgap);
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
+  const [showToothPoles, setShowToothPoles] = useState(solveViewMemory.field.showToothPoles);
   const [showPhases, setShowPhases] = useState(solveViewMemory.field.showPhases);
   const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
   const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
@@ -274,8 +275,8 @@ export function SolvedFieldViewer({
   const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
   useEffect(() => {
-    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showPhases, fieldLineDensity, playbackRpm };
-  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showPhases, fieldLineDensity, playbackRpm]);
+    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, fieldLineDensity, playbackRpm };
+  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, fieldLineDensity, playbackRpm]);
   const playbackElectricalAngleRef = useRef(0);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
@@ -288,7 +289,7 @@ export function SolvedFieldViewer({
   const activeRasterKeyRef = useRef<string | null>(null);
   const frameGenerationRef = useRef(0);
   const frameIndexRef = useRef(0);
-  const [retainedPlot, setRetainedPlot] = useState<{ source: FieldSource; plot: PublicFieldLinePlot } | null>(null);
+  const [retainedPlot, setRetainedPlot] = useState<{ source: FieldSource; plot: PublicFieldLinePlot; angleDeg: number } | null>(null);
   const [frameLoading, setFrameLoading] = useState(false);
   const [frameError, setFrameError] = useState<string | null>(null);
   const [settledArtifactId, setSettledArtifactId] = useState<string | null>(null);
@@ -421,6 +422,7 @@ export function SolvedFieldViewer({
     ? `Preparing playback ${playbackReadiness.drawn}/${playbackReadiness.total}`
     : 'Preparing playback…';
   const descriptor = streamingArmatureFrame ?? nearestFrame(sourceFrames, electricalAngleDeg);
+  const descriptorAngleDeg = descriptor?.angle_deg ?? electricalAngleDeg;
   const artifactId = descriptor?.field_frame_artifact.artifact_id ?? null;
   const exactFrameSettled = artifactId !== null && settledArtifactId === artifactId;
   const overlayDescriptor = overlayActive && descriptor
@@ -463,24 +465,41 @@ export function SolvedFieldViewer({
     ? detailPlot.plot
     : null;
   const exactVectorPlot = activePlot ?? activeDetailPlot;
-  const armatureReferencePlot = source === 'armature' && armatureBusy
-    ? retainedPlot?.plot ?? result.field_line_plot ?? null
+  const exactVectorAngleDeg = exactVectorPlot?.angle_deg ?? (selectedPlot || activeDetailPlot ? descriptorAngleDeg : 0);
+  const heldVector = retainedPlot?.source === source || (source === 'armature' && armatureBusy)
+    ? retainedPlot
     : null;
-  const visiblePlot = exactVectorPlot
-    ?? (retainedPlot?.source === source ? retainedPlot.plot : null)
-    ?? armatureReferencePlot;
-  // A frame still decoding keeps the last one drawn on screen, with the magnets
-  // at its angle, instead of an older exact frame, so dragging the slider
-  // never jumps backwards (#59).
-  // Phases: the A / B / C currents the solver applied at each solved position.
-  // The stator-only solve drives the same currents; the PM-only solve none.
-  const phaseCycle = useMemo(() => phaseCycleFromFrames(result.slot_excitation_frames), [result.slot_excitation_frames]);
+  const armatureReferencePlot = source === 'armature' && armatureBusy
+    ? result.field_line_plot ?? null
+    : null;
+  const visiblePlot = exactVectorPlot ?? heldVector?.plot ?? armatureReferencePlot;
+  // Keep the last raster visible while the next position decodes.
   const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster?.source === source
     ? heldRaster
     : null;
-  const visibleRaster = activeRaster ?? meshlessRaster ?? heldFrame?.raster ?? null;
-  // The position on screen: the frame still shown while the next one decodes, as the magnets use.
-  const shownElectricalAngleDeg = heldFrame?.angleDeg ?? electricalAngleDeg;
+  const drawnRaster = activeRaster ?? meshlessRaster;
+  const visibleRaster = drawnRaster ?? heldFrame?.raster ?? null;
+  // Keep overlays at the position of whichever raster or numerical plot is on screen.
+  const vectorAngleDeg = exactVectorPlot ? exactVectorAngleDeg : heldVector?.angleDeg ?? armatureReferencePlot?.angle_deg ?? 0;
+  const shownElectricalAngleDeg = activeDetailRaster || drawnRaster
+    ? descriptorAngleDeg
+    : heldFrame?.angleDeg ?? (visiblePlot ? vectorAngleDeg : descriptorAngleDeg);
+  // Both winding overlays use the recorded currents for the frame on screen.
+  const phaseCycle = useMemo(() => phaseCycleFromFrames(result.slot_excitation_frames), [result.slot_excitation_frames]);
+  const shownCurrents = useMemo(() => phaseCycle && source !== 'pm' && (showPhases || showToothPoles)
+    ? phaseCurrentsAt(phaseCycle, shownElectricalAngleDeg)
+    : null, [phaseCycle, source, showPhases, showToothPoles, shownElectricalAngleDeg]);
+  const slotCount = Number(geometry?.metadata.slot_count);
+  const hasToothGeometry = useMemo(() => Boolean(
+    geometry?.winding_layout?.length && Number.isInteger(slotCount) && slotCount > 0
+    && geometry.regions.some((region) => /stator_tooth/i.test(region.region_type) && region.points.length >= 3)
+  ), [geometry, slotCount]);
+  const toothPolesAvailable = source !== 'pm' && Boolean(phaseCycle?.peakA) && hasToothGeometry;
+  const toothPoleStrengths = useMemo(() => {
+    if (!showToothPoles || !toothPolesAvailable || !shownCurrents || !geometry?.winding_layout) return null;
+    const currents = slotCurrents(geometry.winding_layout, slotCount, shownCurrents);
+    return toothPoles(currents, geometry.metadata.rotor_layout === 'outer' ? 'outward' : 'inward');
+  }, [geometry, slotCount, showToothPoles, toothPolesAvailable, shownCurrents]);
   // The drive panel's caption and frequency: six-step when the recorded currents
   // are, and the motor's poles. Its waveforms are the recorded currents.
   const phaseDrive = useMemo<PhaseDrive | null>(() => (phaseCycle
@@ -499,12 +518,12 @@ export function SolvedFieldViewer({
   const phaseView = useMemo<FieldPhaseView | null>(() => (showPhases && phaseCycle && phaseDrive
     ? {
       angleDeg: shownElectricalAngleDeg,
-      currentsA: source === 'pm' ? null : phaseCurrentsAt(phaseCycle, shownElectricalAngleDeg),
+      currentsA: shownCurrents,
       cycle: phaseCycle,
       drive: phaseDrive,
       rpm: playbackRpm,
     }
-    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, source]);
+    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, shownCurrents]);
   const currentPeakBT = useMemo(() => {
     const rasterPeak = activeDetailRaster?.maxB ?? visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;
@@ -516,7 +535,7 @@ export function SolvedFieldViewer({
     [config, materials],
   );
   const polePairs = Math.max(1, config.rotor.pole_count / 2);
-  const mechanicalAngleDeg = electricalAngleDeg / polePairs;
+  const mechanicalAngleDeg = shownElectricalAngleDeg / polePairs;
   const statorPolarityRotationDeg = source === 'armature'
     && armature?.field_playback
     && (armature.airgap_profiles?.length ?? 0) < 2
@@ -750,10 +769,9 @@ export function SolvedFieldViewer({
     });
   }, [detailRaster, heldOverlayRaster, heldRaster, rasterCache]);
 
-  const drawnRaster = activeRaster ?? meshlessRaster;
   useEffect(() => {
-    if (drawnRaster) setHeldRaster({ source, raster: drawnRaster, angleDeg: electricalAngleDeg });
-  }, [drawnRaster, electricalAngleDeg, source]);
+    if (drawnRaster) setHeldRaster({ source, raster: drawnRaster, angleDeg: descriptorAngleDeg });
+  }, [drawnRaster, descriptorAngleDeg, source]);
 
   useEffect(() => {
     if (overlayRaster) setHeldOverlayRaster(overlayRaster);
@@ -904,8 +922,8 @@ export function SolvedFieldViewer({
   ]);
 
   useEffect(() => {
-    if (activePlot) setRetainedPlot({ source, plot: activePlot });
-  }, [activePlot, source]);
+    if (exactVectorPlot) setRetainedPlot({ source, plot: exactVectorPlot, angleDeg: exactVectorAngleDeg });
+  }, [exactVectorPlot, exactVectorAngleDeg, source]);
 
   useEffect(() => {
     if (playing || !artifactId) return undefined;
@@ -1107,8 +1125,9 @@ export function SolvedFieldViewer({
     if (nextView === 'stator_pm') {
       // Stator + PM shows no flux-density map, so it has no colour range to hold.
       setColorRangeMode('fixed');
-      // Pole labels and fewer arrows keep the two fields' poles readable.
+      // Show each field's poles when comparing the stator and magnets.
       setShowPoleLabels(true);
+      setShowToothPoles(true);
       setFieldLineDensity('low');
     }
     setDetailPlot(null);
@@ -1219,7 +1238,17 @@ export function SolvedFieldViewer({
       {hasMagnets && <button type="button" aria-pressed={showMagnets} onClick={() => setShowMagnets((value) => !value)}><i aria-hidden="true" />{source === 'armature' && !overlayActive ? 'PM reference' : 'Magnets'}</button>}
       <button type="button" aria-pressed={showMesh} onClick={() => setShowMesh((value) => !value)}><i aria-hidden="true" />Mesh</button>
       <button type="button" aria-pressed={showAirgap} onClick={() => setShowAirgap((value) => !value)}><i aria-hidden="true" />Airgap</button>
-      {(hasMagnets || source === 'armature') && <button type="button" aria-pressed={showPoleLabels} onClick={() => setShowPoleLabels((value) => !value)}><i aria-hidden="true" />Pole labels</button>}
+      {hasMagnets && <button type="button" aria-pressed={showMagnets && showPoleLabels} disabled={!showMagnets} title="Label the displayed rotor magnets N or S" onClick={() => setShowPoleLabels((value) => !value)}><i aria-hidden="true" />Magnet labels</button>}
+      <button
+        type="button"
+        aria-pressed={toothPolesAvailable && showToothPoles}
+        disabled={!toothPolesAvailable}
+        title={toothPolesAvailable
+          ? 'Color each stator tooth red for north or blue for south at this position'
+          : source === 'pm' ? 'The PM-only field has zero stator current'
+            : 'Tooth poles need stator tooth geometry and recorded winding currents with nonzero excitation'}
+        onClick={() => setShowToothPoles((value) => !value)}
+      ><i aria-hidden="true" />Tooth poles</button>
     </>
   );
   const moreLayersOn = [
@@ -1227,7 +1256,8 @@ export function SolvedFieldViewer({
     hasMagnets && showMagnets,
     showMesh,
     showAirgap,
-    (hasMagnets || source === 'armature') && showPoleLabels,
+    hasMagnets && showMagnets && showPoleLabels,
+    toothPolesAvailable && showToothPoles,
   ].filter(Boolean).length;
   // Arrow density sits right after Field arrows as a three-way choice, and only
   // while the arrows are shown.
@@ -1270,23 +1300,22 @@ export function SolvedFieldViewer({
               highResolutionPlot={exactVectorPlot}
               probeEnabled={!playing && Boolean(exactVectorPlot) && !overlayActive}
               geometry={geometry}
-              magnetRotationDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
+              magnetRotationDeg={mechanicalAngleDeg}
               showMagnets={showMagnets}
               showStatistics={false}
               magnifier={magnifier}
               magnifierSlot={magnifierSlot}
               probeSlot={probeSlot}
               fitScale={FIELD_FIT_LIKE_MOTOR_CANVAS}
-              rotorMarkDeg={(heldFrame?.angleDeg ?? electricalAngleDeg) / polePairs}
+              rotorMarkDeg={mechanicalAngleDeg}
               showAirgap={showAirgap}
-              // The field axes and stator pole labels assume an inner rotor.
+              // The field axes assume an inner rotor.
               airgapInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : rotorAirgapBoundaryRadiusMm(config)}
               // An outer rotor's gap runs from the stator's outside out to the magnets' inner face.
               airgapRingMm={config.rotor_layout === 'outer' ? [config.stator.OD_mm / 2, config.stator.OD_mm / 2 + magneticAirgapMm(config)] : undefined}
               showMagnetPolarityLabels={showPoleLabels}
               magnetReference={source === 'armature' && !overlayActive}
-              showStatorPolarity={source === 'armature' && showPoleLabels}
-              showPolarityLegend={source === 'armature' && showPoleLabels}
+              toothPoleStrengths={toothPoleStrengths}
               statorPolarityProfile={descriptor?.airgap_brbt ?? exactVectorPlot?.airgap_brbt}
               statorPolarityRotationDeg={statorPolarityRotationDeg}
               statorInnerRadiusMm={config.rotor_layout === 'outer' ? undefined : config.stator.ID_mm / 2}
@@ -1328,7 +1357,7 @@ export function SolvedFieldViewer({
             {(activeDetailRaster || visibleRaster || visiblePlot) && (
               <div className="viewport-cad-status">
                 {playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… </small>}
-                {electricalAngleDeg.toFixed(1)}° elec<span className="public-field-text-long"> · peak |B| {currentPeakBT.toFixed(2)} T</span>
+                {shownElectricalAngleDeg.toFixed(1)}° elec<span className="public-field-text-long"> · peak |B| {currentPeakBT.toFixed(2)} T</span>
               </div>
             )}
             <details className="public-field-physics-info">
@@ -1340,7 +1369,7 @@ export function SolvedFieldViewer({
                 {(activeDetailRaster || visibleRaster || visiblePlot) && (
                   <dl>
                     <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
-                    <div><dt>Position</dt><dd>{electricalAngleDeg.toFixed(1)}° elec</dd></div>
+                    <div><dt>Position</dt><dd>{shownElectricalAngleDeg.toFixed(1)}° elec</dd></div>
                     <div><dt>Mechanical</dt><dd>{mechanicalAngleDeg.toFixed(2)}°</dd></div>
                     <div><dt>Playback</dt><dd>Clockwise</dd></div>
                     <div><dt>Frames</dt><dd>{bufferStatus}</dd></div>

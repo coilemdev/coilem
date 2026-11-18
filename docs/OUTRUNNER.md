@@ -77,9 +77,9 @@ redistribution rights of the source model's B-H curves are confirmed.
 ## Current limits
 
 - SPM only; two-layer windings must be tooth coils (side by side).
-- Elmer, the fixed-mesh rotation lane and the dimension overlay are not available
-  for outer rotors; the solved-field view omits the air-gap ring and stator pole
-  labels.
+- Outer rotors support the **Airgap** and **Tooth poles** overlays in the
+  solved-field view. Elmer, the fixed-mesh rotation lane, the dimension overlay
+  and the field-axis overlay currently require an inner rotor.
 
 ## Validation
 
