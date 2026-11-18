@@ -1,6 +1,7 @@
 """Temporary hosted Windows probes for issues #234 and #316."""
 
 import ctypes
+import hashlib
 import json
 import os
 import re
@@ -52,7 +53,42 @@ def lookup() -> int:
         result = subprocess.check_output([absolute, "--version"], text=True).strip()
         assert result == expected[name]
         print(f"{name} absolute lookup after Gmsh: {result}")
+    reproduce_lookup_failure(paths)
     return 0
+
+
+def reproduce_lookup_failure(paths):
+    from backend.resources import source_checkout_commit
+    from tools.check_performance_acceptance import javascript_digest
+    from tools.run_public_benchmark import _commit
+
+    kernel = ctypes.windll.kernel32
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        git = [paths["git"], "-C", directory]
+        subprocess.run([*git, "init"], check=True)
+        subprocess.run(
+            [*git, "-c", "user.name=CI", "-c", "user.email=ci@example.invalid", "commit", "--allow-empty", "-m", "probe"],
+            check=True,
+        )
+        commit = subprocess.check_output([*git, "rev-parse", "HEAD"], text=True).strip()
+        data = b'{"ready":true}'
+        document = root / "data.json"
+        document.write_bytes(data)
+        assert kernel.SetEnvironmentVariableW("PATH", str(Path(os.environ["SystemRoot"]) / "System32"))
+        for name, path in paths.items():
+            assert shutil.which(name) == path
+            try:
+                subprocess.run([name, "--version"], check=True, capture_output=True)
+            except FileNotFoundError as error:
+                assert error.winerror == 2
+                print(f"Reproduced WinError 2 with bare {name} after native PATH changed")
+            else:
+                raise AssertionError(f"bare {name} unexpectedly found")
+        assert source_checkout_commit(root) == commit
+        assert _commit(root) == commit
+        assert javascript_digest(document) == hashlib.sha256(data).hexdigest()
+        print("Source commit, benchmark provenance, and Node receipt digest pass with divergent Windows PATH")
 
 
 def interrupt(acceptance, process, ready, stage, log, expected_exit, detail):
