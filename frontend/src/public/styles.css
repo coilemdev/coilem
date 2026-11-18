@@ -2067,6 +2067,11 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-result-pm-overlay { transition: opacity 160ms ease; }
 .public-field-result-pm-overlay.is-reference { opacity: .4; }
 .public-field-result-line { fill: none; stroke: #ffd166; stroke-width: .28; stroke-linecap: round; opacity: 1; filter: drop-shadow(0 0 .45px rgba(255,145,0,.9)); vector-effect: non-scaling-stroke; }
+/* Phases (Field solution): the drive panel wired into the motor, coils outlined by phase, ⊙ / ⊗ for the current now. */
+.public-field-result > .public-field-drive-panel { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; pointer-events: none; }
+.public-field-result .public-field-phase-key { position: absolute; z-index: 7; top: 12px; right: 12px; gap: 10px; padding: 7px 10px; border: 1px solid rgba(148,163,184,.16); border-radius: 8px; background: rgba(7,9,14,.82); box-shadow: var(--shadow-sm); font: 11px var(--font-mono); pointer-events: none; }
+.public-field-result .public-field-phase-key i { width: 9px; height: 9px; }
+.public-field-result .public-field-phase-key .direction-key { display: inline-flex; }
 .public-field-lines-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 10px; color: var(--text-secondary); font: 10px var(--font-mono); }
 .public-field-lines-legend span { display: inline-flex; align-items: center; gap: 6px; }
 /* Stator + PM view (#120): each swatch is an arrow in its field's arrow colour (fieldArrows.ts). */

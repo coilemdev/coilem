@@ -35,6 +35,18 @@ import {
   type FieldArrowTone,
 } from './fieldArrows';
 import {
+  coilMarksFromGeometry,
+  coilSideMark,
+  coilSidesFromGeometry,
+  phaseCycleSampler,
+  type CoilMark,
+  type CoilSide,
+  type FieldPhaseView,
+} from './fieldPhases';
+import { PUBLIC_PHASE_COLORS } from './motorPalette';
+import { phaseDriveFrame, phaseStrips, type PhaseCurrentSampler } from './phaseDrive';
+import { drawCurrentMarker, drawPhaseDriveWired } from './phaseDrivePanel';
+import {
   buildTriangleGrid,
   triangleGridCell,
   triangleGridItemsInRect,
@@ -489,6 +501,51 @@ function drawFieldArrowLayer(
   drawFieldArrows(context, arrows, spacing * FIELD_ARROW_LENGTH_FRACTION, FIELD_ARROW_COLORS[tone]);
 }
 
+/**
+ * Phases on a canvas: each coil outlined in its phase colour and, where its
+ * phase carries current, the Geometry view's ⊙ / ⊗ at its glyph. `toCanvas`
+ * maps the plot's drawing space (x, -y in mm) to canvas pixels. Drawn at screen
+ * size, not scaled with the view, so the marks stay crisp and readable at any
+ * zoom (an SVG overlay is stretched as one image while zooming).
+ */
+function drawCoilPhases(
+  context: CanvasRenderingContext2D,
+  toCanvas: DOMMatrix,
+  pixelRatio: number,
+  coilSides: readonly CoilSide[],
+  coilMarks: readonly CoilMark[],
+  phases: FieldPhaseView,
+): void {
+  const pixelsPerMm = Math.hypot(toCanvas.a, toCanvas.b);
+  if (!(pixelsPerMm > 0)) return;
+  context.save();
+  context.setTransform(toCanvas);
+  context.lineWidth = (1.3 * pixelRatio) / pixelsPerMm;
+  context.lineJoin = 'round';
+  context.globalAlpha = 0.95;
+  coilSides.forEach((side) => {
+    context.beginPath();
+    side.points.forEach(([x, y], index) => (index === 0 ? context.moveTo(x, -y) : context.lineTo(x, -y)));
+    context.closePath();
+    context.strokeStyle = PUBLIC_PHASE_COLORS[side.phase];
+    context.stroke();
+  });
+  context.globalAlpha = 1;
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  if (phases.currentsA) {
+    coilMarks.forEach((mark) => {
+      const outOfPage = coilSideMark(mark, phases.currentsA ?? [0, 0, 0], phases.cycle.peakA);
+      if (outOfPage === null) return;
+      const { x, y } = toCanvas.transformPoint({ x: mark.centre[0], y: -mark.centre[1] });
+      // The glyph's size, as the Geometry view draws it, but never smaller than
+      // a readable mark nor so large it hides the slot when zoomed in.
+      const radius = Math.min(10 * pixelRatio, Math.max(4 * pixelRatio, mark.radiusMm * 1.1 * pixelsPerMm));
+      drawCurrentMarker(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS[mark.phase]);
+    });
+  }
+  context.restore();
+}
+
 /** The square of SVG-space coordinates that a square raster with this view box covers. */
 function rasterWorldSquare(viewBox: string): { left: number; top: number; size: number } | null {
   const [x, y, width, height] = viewBox.split(/\s+/).map(Number);
@@ -619,6 +676,7 @@ export function FieldResultPlot({
   pmLines = false,
   navigationSlot = null,
   ring = null,
+  phases = null,
 }: {
   plot?: PublicFieldLinePlot | null;
   raster?: FieldResultRaster | null;
@@ -672,6 +730,8 @@ export function FieldResultPlot({
   navigationSlot?: HTMLElement | null;
   /** An outrunner's active ring: a thin one opens on its sector (sectorFraming.ts). */
   ring?: RingMm | null;
+  /** The Phases layer: the coils by phase, their current now and an A / B / C readout (fieldPhases.ts). */
+  phases?: FieldPhaseView | null;
 }) {
   const ringInnerMm = ring?.innerMm;
   const ringOuterMm = ring?.outerMm;
@@ -704,6 +764,12 @@ export function FieldResultPlot({
     () => prepareMagnetOverlay(geometry, magnetRotationDeg),
     [geometry, magnetRotationDeg],
   );
+  // The stator's coil sides and their ⊙ / ⊗ places do not turn with the rotor.
+  const coilSides = useMemo(() => coilSidesFromGeometry(geometry), [geometry]);
+  const coilMarks = useMemo(() => coilMarksFromGeometry(geometry), [geometry]);
+  const phasesShown = phases !== null && coilSides.length > 0;
+  const phaseCycle = phases?.cycle ?? null;
+  const phaseSampler = useMemo(() => (phaseCycle ? phaseCycleSampler(phaseCycle) : null), [phaseCycle]);
   const statorPolarityCues = useMemo(
     () => showStatorPolarity
       ? deriveMagneticPolarityCues(statorPolarityProfile, poles, 'stator')
@@ -885,6 +951,9 @@ export function FieldResultPlot({
           }
         }
       }
+      if (phasesShown && phases && worldTransform) {
+        drawCoilPhases(context, worldTransform, pixelRatio, coilSides, coilMarks, phases);
+      }
       // A small cross marks the point under the pointer.
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       context.strokeStyle = 'rgba(255, 255, 255, 0.85)';
@@ -921,6 +990,7 @@ export function FieldResultPlot({
     prepared,
     primaryTone,
     raster,
+    phases,
     scheduleLoupeDraw,
     showFieldLines,
     showHeatmap,
@@ -1188,8 +1258,36 @@ export function FieldResultPlot({
       context.stroke();
       context.restore();
     };
+    // Phases: the coils and their ⊙ / ⊗ over the field, through the same
+    // transform the field is drawn with, at screen size.
+    const drawPhases = () => {
+      const context = canvas.getContext('2d');
+      const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
+      if (!phasesShown || !phases || !context || !square) return;
+      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
+      const worldScale = drawSize / square.size;
+      const panX = navigation.pan.x * pixelRatio;
+      const panY = navigation.pan.y * pixelRatio;
+      const pivotX = canvas.width / 2 + panX;
+      const pivotY = canvas.height / 2 + panY;
+      const toCanvas = new DOMMatrix()
+        .translateSelf(pivotX, pivotY)
+        .rotateSelf(navigation.rotationDeg)
+        .translateSelf(-pivotX, -pivotY)
+        .multiply(new DOMMatrix([
+          worldScale,
+          0,
+          0,
+          worldScale,
+          (canvas.width - drawSize) / 2 + panX - square.left * worldScale,
+          (canvas.height - drawSize) / 2 + panY - square.top * worldScale,
+        ]));
+      drawCoilPhases(context, toCanvas, pixelRatio, coilSides, coilMarks, phases);
+    };
     const drawWithRotorMark = () => {
       draw();
+      drawPhases();
       drawRotorMark();
     };
     drawWithRotorMark();
@@ -1207,6 +1305,10 @@ export function FieldResultPlot({
     navigation.rotationDeg,
     overlay,
     overlayPrepared,
+    phases,
+    phasesShown,
+    coilMarks,
+    coilSides,
     prepared,
     primaryTone,
     raster,
@@ -1274,6 +1376,79 @@ export function FieldResultPlot({
     return () => observer.disconnect();
   }, [legendShown, legendTicks.length, legendScale.fixed, legendScale.overAboveT, showRangeControl]);
 
+  // Phases: the Geometry view's drive panel on the left, wired into the motor,
+  // which is fitted in what is left on the right (phaseDriveFrame). The field
+  // box itself narrows, so the view's zoom, probe and magnifier are unchanged.
+  const driveCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [plotSize, setPlotSize] = useState<{ width: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const root = plotRootRef.current;
+    if (!phasesShown || !root) {
+      setPlotSize(null);
+      return undefined;
+    }
+    const measure = () => setPlotSize((current) => (
+      current?.width === root.clientWidth && current?.height === root.clientHeight
+        ? current
+        : { width: root.clientWidth, height: root.clientHeight }
+    ));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [phasesShown]);
+  const driveFrame = phasesShown && plotSize ? phaseDriveFrame(plotSize.width, plotSize.height) : null;
+  const driveMarginPx = driveFrame && plotSize
+    ? Math.round(driveFrame.panel.x + driveFrame.panel.width + Math.max(36, plotSize.width * 0.05))
+    : 0;
+  useEffect(() => {
+    const overlay = driveCanvasRef.current;
+    const root = plotRootRef.current;
+    const box = navigation.viewportRef.current;
+    if (!overlay || !root || !box || !phases || !driveFrame || !phaseSampler) return;
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const width = root.clientWidth;
+    const height = root.clientHeight;
+    if (overlay.width !== Math.round(width * pixelRatio) || overlay.height !== Math.round(height * pixelRatio)) {
+      overlay.width = Math.round(width * pixelRatio);
+      overlay.height = Math.round(height * pixelRatio);
+    }
+    const context = overlay.getContext('2d');
+    if (!context) return;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    context.clearRect(0, 0, width, height);
+    // The motor's centre and outer edge in the plot, as the field box draws them.
+    const rootBounds = root.getBoundingClientRect();
+    const boxBounds = box.getBoundingClientRect();
+    const boxLeft = boxBounds.left - rootBounds.left;
+    const boxTop = boxBounds.top - rootBounds.top;
+    const drawSize = Math.min(box.clientWidth, box.clientHeight) * fitScale * navigation.scale;
+    const origin: [number, number] = [boxLeft + box.clientWidth / 2 + navigation.pan.x, boxTop + box.clientHeight / 2 + navigation.pan.y];
+    // The plot pads the motor by 2.5% of its size on each side.
+    const radius = drawSize / 2.1;
+    // As in the Geometry view: A enters above the centre, C below, each wire with
+    // one right-angle turn, staggered so that no two cross.
+    const strips = phaseStrips(driveFrame.panel);
+    const stripRight = driveFrame.panel.x + driveFrame.panel.width;
+    const entryStep = radius * Math.sin((16 * Math.PI) / 180);
+    const motorLeft = Math.max(boxLeft, origin[0] - radius);
+    const lane = Math.max(6, Math.min(16, (motorLeft - stripRight) / 5));
+    const wiresDrop = strips[1].y + strips[1].height / 2 <= origin[1];
+    const leads = [-1, 0, 1].map((side, index) => {
+      const y = origin[1] + side * entryStep;
+      return {
+        motor: [Math.max(boxLeft, origin[0] - Math.sqrt(Math.max(0, radius ** 2 - (side * entryStep) ** 2))), y] as [number, number],
+        terminal: [motorLeft - lane * (wiresDrop ? index + 1 : 3 - index), y] as [number, number],
+      };
+    });
+    // The PM-only solve has no stator current: flat traces and dark wires.
+    const sample: PhaseCurrentSampler = phases.currentsA ? phaseSampler : () => [0, 0, 0];
+    drawPhaseDriveWired(context, driveFrame.panel, phases.drive, phases.angleDeg, sample(phases.angleDeg), leads, phases.rpm, {
+      sample,
+      title: phases.currentsA ? undefined : 'PM ONLY · NO STATOR CURRENT',
+    });
+  });
+
   // Every hook is above this line, so a plot that has no data yet keeps the same hooks.
   if (!prepared && !raster) return null;
   const triangleCount = raster?.triangleCount ?? prepared?.triangleCount ?? 0;
@@ -1308,6 +1483,7 @@ export function FieldResultPlot({
   const hasStatorPolarityCues = statorPoleLabelRadius !== null && statorPolarityCues.length > 0;
   const axisRotorRadius = airgapInnerRadiusMm ?? 0;
   const axisStatorRadius = statorInnerRadiusMm ?? 0;
+  const hasPhaseOverlay = phasesShown;
   const hasFieldAxes = fieldAxes !== null
     && leadElecDeg !== null
     && axisRotorRadius > 0
@@ -1356,6 +1532,7 @@ export function FieldResultPlot({
       : null,
     hasAirgapOverlay ? 'airgap boundary contour' : null,
     hasStatorPolarityCues ? 'current-induced stator pole labels' : null,
+    hasPhaseOverlay ? 'stator coils coloured by phase with the way their current flows' : null,
     hasFieldAxes ? 'stator and magnet field-axis arrows with the d and q axes' : null,
   ].filter(Boolean).join(' and ') || 'magnetic field geometry';
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -1479,7 +1656,12 @@ export function FieldResultPlot({
       <div
         className={`public-field-result-canvas public-viewport-navigation${navigation.panEnabled ? ' is-pannable' : ''}${navigation.isDragging ? ' is-dragging' : ''}`}
         ref={navigation.viewportRef}
-        style={motorFitWidth === null ? undefined : { flex: `0 0 ${motorFitWidth.toFixed(1)}px` }}
+        style={motorFitWidth === null && !driveMarginPx
+          ? undefined
+          : {
+            ...(motorFitWidth === null ? {} : { flex: `0 0 ${motorFitWidth.toFixed(1)}px` }),
+            ...(driveMarginPx ? { marginLeft: driveMarginPx } : {}),
+          }}
         {...navigation.bind}
         onPointerMove={handlePointerMove}
         onPointerLeave={() => { if (!probeSlot) setProbe(null); }}
@@ -1579,11 +1761,20 @@ export function FieldResultPlot({
           );
           return navigationSlot ? createPortal(zoomControls, navigationSlot) : zoomControls;
         })()}
+        {hasPhaseOverlay && (
+          <div className="public-winding-key public-field-phase-key" aria-label="Winding phase and current direction legend">
+            <span><i className="phase-a" />A</span>
+            <span><i className="phase-b" />B</span>
+            <span><i className="phase-c" />C</span>
+            <span className="direction-key">⊙ out · ⊗ in</span>
+          </div>
+        )}
         {magnifier && (
           <ViewportMagnifier slot={magnifierSlot} canvasRef={loupeCanvasRef} hasPoint={hasLoupePoint} magnification={LOUPE_MAGNIFICATION} label="Field magnifier" />
         )}
         {!probeSlot && probeReadout}
       </div>
+      {driveFrame && <canvas ref={driveCanvasRef} className="public-field-drive-panel" aria-hidden="true" />}
       {probeSlot && createPortal(probeReadout, probeSlot)}
       {overlay ? (
         // One line above the view: the two arrow colours and the stator lead.

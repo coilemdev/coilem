@@ -615,6 +615,8 @@ export interface SolveResult {
   field_line_plot?: PublicFieldLinePlot | null;
   iron_loss_density?: IronLossDensity | null;
   field_line_frames?: PublicFieldFrameDescriptor[] | null;
+  /** The A / B / C currents the solver applied at each solved position (the Field solution's Phases). */
+  slot_excitation_frames?: Array<{ angle_deg: number; phase_current_a: number[] }> | null;
   field_playback?: PublicFieldPlaybackManifest | null;
   saved_run?: PublicSavedRun | null;
   /** Read-only presentation of recorded solver evidence; absent in older responses. */

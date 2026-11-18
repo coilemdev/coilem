@@ -6420,8 +6420,8 @@
     },
     {
       "path": "frontend/package.json",
-      "bytes": 3681,
-      "sha256": "374184a65cedcddaeb9ae075fe716c4cfe73416233866b9bf1127b8413717dee"
+      "bytes": 3719,
+      "sha256": "c067ea6f25ccca63a84e57286c0abc6fb33eee808f80b27d81f49ade30b586f0"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -6502,6 +6502,11 @@
       "path": "frontend/scripts/test-field-legend-fit.mjs",
       "bytes": 3360,
       "sha256": "885829f1fcfedd30c26dd4ddb5f26b615fdeb7f7d75f41aed479ad101eebaa71"
+    },
+    {
+      "path": "frontend/scripts/test-field-phases.mjs",
+      "bytes": 5715,
+      "sha256": "775caf0dcebf1e467242d902dd3fedf9d82fedda12e10f9fc9b9e2bf387ea627"
     },
     {
       "path": "frontend/scripts/test-field-playback-timing.mjs",
@@ -6595,8 +6600,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 181514,
-      "sha256": "8b075e255bb6b28d42e4fd61ee11ef1129ede47bfeb2b90879984397f0979ae4"
+      "bytes": 183955,
+      "sha256": "1a0d756b9431c3d33ed59ac21d2c45111882cc68901e82d3e101db0dd43072eb"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7050,8 +7055,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 73539,
-      "sha256": "759bb8d7a44c8f213740fb9083d14f5cecd78c25a8c157e7f443594aaa590ee0"
+      "bytes": 82674,
+      "sha256": "6ad7c1eda7c18f611e7b312a24dfc6d33c9e0d412452a8b2dfbe8a0cf5981989"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7070,8 +7075,8 @@
     },
     {
       "path": "frontend/src/public/MotorCanvas.tsx",
-      "bytes": 104135,
-      "sha256": "8458a33d4c17ca82300177b1dda2a1799384be0bbbd13f78fac3f32afa396c21"
+      "bytes": 102905,
+      "sha256": "4e9baa125f094f94e62858bb156e9d49bc452bffc8de5f79121b242bbaa0e060"
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
@@ -7135,8 +7140,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 61929,
-      "sha256": "d8bdd18eefe5dc20b5060c9a9cb3e50d6bd04e0386751fdc69ddb41accc13571"
+      "bytes": 64681,
+      "sha256": "b7eb21377e5299a7f5e32427fa73714ed5b1cfd9c93db98d6c7061af85bc455d"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7225,8 +7230,8 @@
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 919,
-      "sha256": "30c709b239785a8a0ea17089cad1a77448bf6d97a2707b6685ffa56d2b2bc61c"
+      "bytes": 942,
+      "sha256": "b94ebbc3b09183e7911a19b84847ff62c186cc6f7a9ebc4ca4c1346d1a30d509"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
@@ -7302,6 +7307,11 @@
       "path": "frontend/src/public/fieldLegendFit.ts",
       "bytes": 1942,
       "sha256": "65b30ae01622335dbf9d040be221ad9200e0e9eb909c22ba27f39f0306ff66aa"
+    },
+    {
+      "path": "frontend/src/public/fieldPhases.ts",
+      "bytes": 8195,
+      "sha256": "5310bdd6972322199d3c77d2a1770ebcf76b64658eecaf34afdd412d047ffc55"
     },
     {
       "path": "frontend/src/public/fieldPlaybackContract.ts",
@@ -7460,8 +7470,8 @@
     },
     {
       "path": "frontend/src/public/model.ts",
-      "bytes": 26050,
-      "sha256": "e24b63caddda8329f322467c2c382642ab7c9b6f47c00c9caed3b06f75cc1af3"
+      "bytes": 26247,
+      "sha256": "a49f3dc3b501dfe4c3e6f3fda9e437e177d7792acd6f32ce9f489bfefd765eaa"
     },
     {
       "path": "frontend/src/public/motor3DCamera.ts",
@@ -7505,8 +7515,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrive.ts",
-      "bytes": 12253,
-      "sha256": "b08736fab8c944e867880583c0e8a8102a011a0337bc630c203fd7e26fc5ee33"
+      "bytes": 12696,
+      "sha256": "a0987c8fe027f65f43eedcf207c5abe891035b4edaabc37fe8e920f1bdc407d7"
     },
     {
       "path": "frontend/src/public/previewContours.ts",
@@ -7545,8 +7555,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 340697,
-      "sha256": "b4e20e9d708dfdfc8f993fef3e778235a67ea66a3a95d335aad41e8a22c59502"
+      "bytes": 341435,
+      "sha256": "d3cffa1cb832c4d6912025b4aadbc26d871a3512267ef72bcef472b3862f0c0a"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -18125,8 +18135,8 @@
     },
     {
       "path": "frontend/src/public/phaseDrivePanel.ts",
-      "bytes": 6097,
-      "sha256": "b0b33081b3d0f5f2a7a0e76b722cd2d0d399d8570df95218b64d000511a1d885"
+      "bytes": 7830,
+      "sha256": "d1750f40a176f42571ea3fc15254b31cf42122bef26a6304869c11c05f834603"
     },
     {
       "path": "frontend/src/public/progressiveDesign.ts",
