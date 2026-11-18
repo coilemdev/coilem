@@ -1,4 +1,5 @@
 """The publisher accepts compact evidence only, and fails without partial writes."""
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -21,12 +22,14 @@ def publication(tmp_path):
     for platform in ('windows-x86_64', 'macos-arm64'):
         write(root / f'benchmarks/records/{platform}.json', {'original': True})
     write(root / 'snapshot-manifest.json', {'files': [], 'public_patches': []})
-    subprocess.run(['git', 'init', str(root)], check=True, capture_output=True)
+    git_executable = shutil.which('git') or 'git'
+    subprocess.run([git_executable, 'init', str(root)], check=True, capture_output=True)
+    git = [git_executable, '-C', str(root)]
     for key, value in [('user.name', 'Test'), ('user.email', 'test@example.com')]:
-        subprocess.run(['git', '-C', str(root), 'config', key, value], check=True)
-    subprocess.run(['git', '-C', str(root), 'add', '.'], check=True)
-    subprocess.run(['git', '-C', str(root), 'commit', '-m', 'candidate'], check=True, capture_output=True)
-    candidate = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
+        subprocess.run([*git, 'config', key, value], check=True)
+    subprocess.run([*git, 'add', '.'], check=True)
+    subprocess.run([*git, 'commit', '-m', 'candidate'], check=True, capture_output=True)
+    candidate = subprocess.check_output([*git, 'rev-parse', 'HEAD'], text=True).strip()
     folder = tmp_path / 'publication'
     for platform in ('windows-x86_64', 'macos-arm64'):
         write(folder / f'benchmarks/records/{platform}.json', {'measured_commit': candidate})
