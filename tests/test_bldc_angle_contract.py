@@ -7,7 +7,7 @@ import pytest
 
 from backend.benchmark_suite.bldc_metrics import golden_sector, validate_lane_result
 from backend.benchmark_suite.cli import inputs
-from backend.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SPEC, sha
+from backend.benchmark_suite.contract import AF_BUNDLE, AF_SPEC, DEFAULT_BUNDLE, ROOT, SPEC, sha
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.excitation import phase_axis_offset_deg
 from backend.models import MotorConfig
@@ -19,14 +19,20 @@ AXES = {"spm_14p12s_high_pole":15.0, "spm_4p12s_small":0.0, "spm_8p12s_reference
 
 
 def test_default_retains_reconciled_contract_in_the_reviewed_protocol16_bundle():
-    assert SPEC == ROOT / "benchmarks/af-v1.10/benchmark_spec.json"
-    assert DEFAULT_BUNDLE == ROOT / "benchmarks/reference-baselines/protocol110-combined-20261110"
-    current, previous = load_suite(SPEC), load_suite(NEW)
-    _, current_protocols, _ = inputs(current, current["cases"])
+    # Since Phase G the registered default is the A-G suite; its A-F part is the
+    # A-F suite and bundle unchanged. Both keep the reconciled BLDC contract.
+    assert SPEC == ROOT / "benchmarks/ag-v1.12/benchmark_spec.json"
+    assert DEFAULT_BUNDLE == ROOT / "benchmarks/reference-baselines/protocol112-combined-20261117"
+    assert AF_SPEC == ROOT / "benchmarks/af-v1.10/benchmark_spec.json"
+    assert AF_BUNDLE == ROOT / "benchmarks/reference-baselines/protocol110-combined-20261110"
+    previous = load_suite(NEW)
     _, previous_protocols, _ = inputs(previous, previous["cases"])
-    assert current_protocols == previous_protocols
-    manifest, records, _ = load_bundle(DEFAULT_BUNDLE, current)
-    assert len(records) == 68 and manifest["validation_status"] == "REVIEWED_FOR_REGISTERED_PARITY"
+    for spec, bundle, record_count in ((SPEC, DEFAULT_BUNDLE, 84), (AF_SPEC, AF_BUNDLE, 68)):
+        current = load_suite(spec)
+        _, current_protocols, _ = inputs(current, current["cases"])
+        assert current_protocols == previous_protocols
+        manifest, records, _ = load_bundle(bundle, current)
+        assert len(records) == record_count and manifest["validation_status"] == "REVIEWED_FOR_REGISTERED_PARITY"
 
 
 def test_angle_revision_changes_only_validation_and_keeps_historical_bytes():

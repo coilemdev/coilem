@@ -23,12 +23,13 @@ def _fixture(case) -> dict:
     return json.loads((ROOT / case["jobs"][0]["fixture"]).read_text(encoding="utf-8"))
 
 
-def test_phase_f_is_its_own_suite_and_1_9_is_the_default() -> None:
+def test_phase_f_is_its_own_suite_apart_from_the_default() -> None:
     spec = load_suite(SPEC)
     assert PHASE_LABELS["F"] == "Outrunner"
     assert "F" in COMMAND_PHASES
     assert spec["protocol_version"] == "1.8.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.10.0"
+    # The registered default is the A-G suite (protocol 1.12.0) since Phase G.
+    assert PROTOCOL_VERSION == "1.12.0"
     assert {case["phase"] for case in spec["cases"]} == {"F"}
     assert len(spec["cases"]) == len({case["id"] for case in spec["cases"]}) == 10
     assert spec["phase_f"]["status"] == "PROPOSED_NOT_REGISTERED"
