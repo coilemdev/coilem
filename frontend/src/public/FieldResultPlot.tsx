@@ -114,11 +114,11 @@ interface RenderedFieldLayers {
 }
 
 export interface FieldResultRaster {
-  base: ImageBitmap;
-  heat: ImageBitmap;
+  base: ImageBitmap | null;
+  heat: ImageBitmap | null;
   mesh?: ImageBitmap | null;
   /** The field-arrow layer: light arrows with a dark rim (older images: flux lines). */
-  lines: ImageBitmap;
+  lines: ImageBitmap | null;
   viewBox: string;
   minB: number;
   maxB: number;
@@ -516,7 +516,7 @@ function drawCoilPhases(
   context: CanvasRenderingContext2D,
   toCanvas: DOMMatrix,
   pixelRatio: number,
-  coilSides: readonly CoilSide[],
+  coilOutlines: ReadonlyMap<CoilSide['phase'], Path2D>,
   coilMarks: readonly CoilMark[],
   phases: FieldPhaseView,
 ): void {
@@ -527,12 +527,9 @@ function drawCoilPhases(
   context.lineWidth = (1.3 * pixelRatio) / pixelsPerMm;
   context.lineJoin = 'round';
   context.globalAlpha = 0.95;
-  coilSides.forEach((side) => {
-    context.beginPath();
-    side.points.forEach(([x, y], index) => (index === 0 ? context.moveTo(x, -y) : context.lineTo(x, -y)));
-    context.closePath();
-    context.strokeStyle = PUBLIC_PHASE_COLORS[side.phase];
-    context.stroke();
+  coilOutlines.forEach((path, phase) => {
+    context.strokeStyle = PUBLIC_PHASE_COLORS[phase];
+    context.stroke(path);
   });
   context.globalAlpha = 1;
   context.setTransform(1, 0, 0, 1, 0, 0);
@@ -763,14 +760,37 @@ export function FieldResultPlot({
     [overlay?.plot],
   );
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hasField = Boolean(prepared || raster);
+  const [canvasSize, setCanvasSize] = useState<{ width: number; height: number } | null>(null);
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const measure = () => {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      setCanvasSize((previous) => previous?.width === width && previous.height === height ? previous : { width, height });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [hasField]);
   const magnetOverlay = useMemo(
     () => prepareMagnetOverlay(geometry, magnetRotationDeg),
     [geometry, magnetRotationDeg],
   );
   // The stator's coil sides and their ⊙ / ⊗ places do not turn with the rotor.
-  const coilSides = useMemo(() => coilSidesFromGeometry(geometry), [geometry]);
+  const coilOutlines = useMemo(() => {
+    const paths = new Map<CoilSide['phase'], Path2D>();
+    for (const { phase, points } of coilSidesFromGeometry(geometry)) {
+      const path = paths.get(phase) ?? new Path2D();
+      path.addPath(new Path2D(polygonPath(points)));
+      paths.set(phase, path);
+    }
+    return paths;
+  }, [geometry]);
   const coilMarks = useMemo(() => coilMarksFromGeometry(geometry), [geometry]);
-  const phasesShown = phases !== null && coilSides.length > 0;
+  const phasesShown = phases !== null && coilOutlines.size > 0;
   const phaseCycle = phases?.cycle ?? null;
   const phaseSampler = useMemo(() => (phaseCycle ? phaseCycleSampler(phaseCycle) : null), [phaseCycle]);
   const toothCount = toothPoleStrengths?.length ?? 0;
@@ -990,8 +1010,9 @@ export function FieldResultPlot({
           }
         }
       }
-      if (phasesShown && phases && worldTransform) {
-        drawCoilPhases(context, worldTransform, pixelRatio, coilSides, coilMarks, phases);
+      // The sampled main canvas already includes its coils and current marks.
+      if (prepared && phasesShown && phases && worldTransform) {
+        drawCoilPhases(context, worldTransform, pixelRatio, coilOutlines, coilMarks, phases);
       }
       // A small cross marks the point under the pointer.
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
@@ -1013,6 +1034,9 @@ export function FieldResultPlot({
   }, [
     airgapEdges[0],
     airgapEdges[1],
+    canvasSize,
+    coilOutlines,
+    coilMarks,
     colorRangeMode,
     fieldLineDensity,
     fitScale,
@@ -1050,7 +1074,7 @@ export function FieldResultPlot({
   useEffect(() => {
     const canvas = canvasRef.current;
     const layers = raster ?? prepared?.renderedLayers;
-    if (!canvas || !layers) return undefined;
+    if (!canvas || !layers || !canvasSize) return;
     const publishViewportRange = (nextRange: FieldViewportRange | null) => {
       const currentRange = viewportRangeRef.current;
       const unchanged = currentRange === nextRange
@@ -1080,12 +1104,12 @@ export function FieldResultPlot({
         return;
       }
       const square = overlayRaster ? rasterWorldSquare(overlayRaster.viewBox) : null;
-      if (!overlayRaster || !square) return;
+      if (!overlayRaster?.lines || !square) return;
       context.drawImage(tintedArrowLayer(overlayRaster.lines, 'pm'), square.left, square.top, square.size, square.size);
     };
     const draw = () => {
-      const width = Math.max(1, canvas.clientWidth);
-      const height = Math.max(1, canvas.clientHeight);
+      const width = Math.max(1, canvasSize.width);
+      const height = Math.max(1, canvasSize.height);
       const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
       const pixelWidth = Math.max(1, Math.round(width * pixelRatio));
       const pixelHeight = Math.max(1, Math.round(height * pixelRatio));
@@ -1176,14 +1200,14 @@ export function FieldResultPlot({
       const y = (pixelHeight - drawSize) / 2 + panY;
       context.imageSmoothingEnabled = true;
       context.imageSmoothingQuality = 'high';
-      if (raster) {
+      if (raster?.base) {
         canvas.dataset.renderMode = raster.base.width > FIELD_RASTER_SIZE
           ? 'detail-raster'
           : 'playback-raster';
         canvas.dataset.sourceResolution = `${raster.base.width}x${raster.base.height}`;
         context.drawImage(raster.base, x, y, drawSize, drawSize);
-        if (showHeatmap) context.drawImage(raster.heat, x, y, drawSize, drawSize);
-      } else if (prepared && layers) {
+        if (showHeatmap && raster.heat) context.drawImage(raster.heat, x, y, drawSize, drawSize);
+      } else if (prepared && layers.heat) {
         canvas.dataset.renderMode = 'prepared-raster';
         canvas.dataset.sourceResolution = `${layers.heat.width}x${layers.heat.height}`;
         context.drawImage(showHeatmap ? layers.heat : baseFieldLayer(prepared), x, y, drawSize, drawSize);
@@ -1235,7 +1259,7 @@ export function FieldResultPlot({
           );
           drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale);
           context.restore();
-        } else if (raster) {
+        } else if (raster?.lines) {
           // The image's light arrows, in the PM colour in the PM-only view and
           // in the stator's under the PM's in the Stator + PM view.
           context.drawImage(tintedArrowLayer(raster.lines, primaryTone), x, y, drawSize, drawSize);
@@ -1263,7 +1287,7 @@ export function FieldResultPlot({
       const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
       const context = canvas.getContext('2d');
       if (rotorMarkDeg === null || !square || !context) return;
-      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const pixelRatio = canvas.width / Math.max(1, canvasSize.width);
       const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
       const worldScale = drawSize / square.size;
       const originX = (canvas.width - drawSize) / 2 + navigation.pan.x * pixelRatio - square.left * worldScale;
@@ -1304,7 +1328,7 @@ export function FieldResultPlot({
       const context = canvas.getContext('2d');
       const square = rasterWorldSquare(raster?.viewBox ?? prepared?.viewBox ?? '');
       if (!phasesShown || !phases || !context || !square) return;
-      const pixelRatio = canvas.width / Math.max(1, canvas.clientWidth);
+      const pixelRatio = canvas.width / Math.max(1, canvasSize.width);
       const drawSize = Math.min(canvas.width, canvas.height) * fitScale * navigation.scale;
       const worldScale = drawSize / square.size;
       const panX = navigation.pan.x * pixelRatio;
@@ -1323,18 +1347,13 @@ export function FieldResultPlot({
           (canvas.width - drawSize) / 2 + panX - square.left * worldScale,
           (canvas.height - drawSize) / 2 + panY - square.top * worldScale,
         ]));
-      drawCoilPhases(context, toCanvas, pixelRatio, coilSides, coilMarks, phases);
+      drawCoilPhases(context, toCanvas, pixelRatio, coilOutlines, coilMarks, phases);
     };
-    const drawWithRotorMark = () => {
-      draw();
-      drawPhases();
-      drawRotorMark();
-    };
-    drawWithRotorMark();
-    const observer = new ResizeObserver(drawWithRotorMark);
-    observer.observe(canvas);
-    return () => observer.disconnect();
+    draw();
+    drawPhases();
+    drawRotorMark();
   }, [
+    canvasSize,
     colorRangeMode,
     highResolutionPlot,
     fieldLineDensity,
@@ -1348,7 +1367,7 @@ export function FieldResultPlot({
     phases,
     phasesShown,
     coilMarks,
-    coilSides,
+    coilOutlines,
     prepared,
     primaryTone,
     raster,
@@ -1437,7 +1456,9 @@ export function FieldResultPlot({
     observer.observe(root);
     return () => observer.disconnect();
   }, [phasesShown]);
-  const driveFrame = phasesShown && plotSize ? phaseDriveFrame(plotSize.width, plotSize.height) : null;
+  const driveFrame = useMemo(() => (
+    phasesShown && plotSize ? phaseDriveFrame(plotSize.width, plotSize.height) : null
+  ), [phasesShown, plotSize]);
   const driveMarginPx = driveFrame && plotSize
     ? Math.round(driveFrame.panel.x + driveFrame.panel.width + Math.max(36, plotSize.width * 0.05))
     : 0;
@@ -1487,7 +1508,10 @@ export function FieldResultPlot({
       sample,
       title: phases.currentsA ? undefined : 'PM ONLY · NO STATOR CURRENT',
     });
-  });
+  }, [
+    driveFrame, phases, phaseSampler, fitScale, canvasSize, motorFitWidth,
+    navigation.viewportRef, navigation.pan.x, navigation.pan.y, navigation.scale,
+  ]);
 
   // Every hook is above this line, so a plot that has no data yet keeps the same hooks.
   if (!prepared && !raster) return null;

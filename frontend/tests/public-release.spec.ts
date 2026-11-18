@@ -14,7 +14,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'image-playback' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -162,6 +162,146 @@ test('field tooth poles reverse on stationary teeth while magnet labels turn wit
   await page.getByRole('button', { name: /^PM-only field/ }).click();
   await menu.locator('summary').click();
   await expect(toothToggle).toBeDisabled();
+});
+
+test('zoomed field playback uses its raster in both the viewport and magnifier, then restores exact detail', async ({ page }) => {
+  await page.addInitScript(() => {
+    const drawImage = CanvasRenderingContext2D.prototype.drawImage;
+    CanvasRenderingContext2D.prototype.drawImage = new Proxy(drawImage, {
+      apply(original, context, args) {
+        if (context.canvas.closest('.public-field-loupe') && args[0] instanceof HTMLCanvasElement
+          && args[0].dataset.renderMode === 'playback-raster') context.canvas.dataset.sampledPlayback = 'true';
+        return Reflect.apply(original, context, args);
+      },
+    });
+  });
+  await page.context().route('**/solve/field-frame/tooth-test-*', async route => {
+    const frame = await page.evaluate(() => (window as any).toothPoleFixture.frame);
+    await route.fulfill({ json: { field_line_frame: frame } });
+  });
+  await openViewportHarness(page, 'tooth-poles');
+  const canvas = page.getByRole('img', { name: /^Solved / });
+  await page.getByRole('button', { name: 'Phases', exact: true }).click();
+  const waveform = page.locator('.public-field-drive-panel');
+  await expect(waveform).toBeVisible();
+  await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  await page.getByRole('button', { name: 'Field arrows', exact: true }).click();
+  await expect(canvas).toHaveAttribute('data-render-mode', 'vector-detail');
+  await waveform.evaluate((canvas: HTMLCanvasElement) => {
+    const context = canvas.getContext('2d')!;
+    const clearRect = context.clearRect.bind(context);
+    canvas.dataset.paints = '0';
+    context.clearRect = (...rect) => {
+      canvas.dataset.paints = String(Number(canvas.dataset.paints) + 1);
+      clearRect(...rect);
+    };
+  });
+  const high = page.getByRole('button', { name: 'High arrow density' });
+  await high.click();
+  await expect(high).toHaveAttribute('aria-pressed', 'true');
+  // Changing the arrows leaves the phase currents and chart layout unchanged.
+  await expect(waveform).toHaveAttribute('data-paints', '0');
+  await page.getByRole('button', { name: 'Play field clockwise' }).click();
+  await expect(canvas).toHaveAttribute('data-render-mode', 'playback-raster');
+  await expect(page.getByRole('button', { name: 'Medium arrow density' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(high).toBeDisabled();
+  await page.locator('.public-field-result-canvas').hover();
+  await expect(page.locator('.public-field-loupe canvas')).toHaveAttribute('data-sampled-playback', 'true');
+  await expect.poll(() => waveform.getAttribute('data-paints').then(Number)).toBeGreaterThan(0);
+  await page.getByRole('button', { name: 'Pause clockwise field playback' }).click();
+  await expect(canvas).toHaveAttribute('data-render-mode', 'vector-detail');
+  await expect(high).toHaveAttribute('aria-pressed', 'true');
+});
+
+async function openImagePlaybackHarness(page: Page, missingImage?: string) {
+  const layers = await page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 8;
+    const clear = canvas.toDataURL('image/png').split(',')[1];
+    const context = canvas.getContext('2d')!;
+    context.fillStyle = '#f04080';
+    context.fillRect(0, 0, 8, 8);
+    return { clear, heat: canvas.toDataURL('image/png').split(',')[1] };
+  });
+  const images: string[] = [];
+  const values: number[] = [];
+  await page.route('**/solve/playback-frame/image-test-*', async route => {
+    const id = route.request().url().split('/').pop()!;
+    images.push(id);
+    if (id === missingImage) return route.fulfill({ status: 404 });
+    const png = id.endsWith('-heat') ? layers.heat : layers.clear;
+    await route.fulfill({ contentType: 'image/png', body: Buffer.from(png, 'base64') });
+  });
+  await page.route('**/solve/field-frame/image-test-*-values', async route => {
+    const index = Number(route.request().url().match(/image-test-(\d+)-values/)![1]);
+    values.push(index);
+    const frame = await page.evaluate(() => (window as any).imagePlaybackFixture.frame);
+    await route.fulfill({ json: { field_line_frame: { ...frame, angle_deg: index * 15 } } });
+  });
+  await openViewportHarness(page, 'image-playback');
+  return { images, values };
+}
+
+test('enabling field layers at the same position loads and displays the missing images', async ({ page }) => {
+  const { images, values } = await openImagePlaybackHarness(page);
+  const flux = page.getByRole('button', { name: 'Flux density', exact: true });
+  const arrows = page.getByRole('button', { name: 'Field arrows', exact: true });
+  await flux.click();
+  await expect(arrows).toHaveAttribute('aria-pressed', 'false');
+  await page.evaluate(() => (window as any).imagePlaybackFixture.positionLink.requestAngle(150));
+  await expect.poll(() => values.includes(10)).toBe(true);
+  const layerWasFetched = (layer: string) => images.includes(`image-test-10-${layer}`);
+  await expect.poll(() => layerWasFetched('mesh')).toBe(true);
+  expect(layerWasFetched('heat')).toBe(false);
+  expect(layerWasFetched('arrows')).toBe(false);
+
+  const canvas = page.getByRole('img', { name: /^Solved / });
+  const centerColor = () => canvas.evaluate((c: HTMLCanvasElement) =>
+    Array.from(c.getContext('2d')!.getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data));
+  await flux.click();
+  await expect.poll(() => layerWasFetched('heat')).toBe(true);
+  await expect.poll(centerColor).toEqual([240, 64, 128, 255]);
+  expect(layerWasFetched('arrows')).toBe(false);
+  await arrows.click();
+  await expect.poll(() => layerWasFetched('arrows')).toBe(true);
+  await expect(page.locator('.viewport-cad-status')).toHaveText(/^150\.0° elec/);
+});
+
+test('image playback reloads an evicted raster even when its numerical frame was inspected', async ({ page }) => {
+  const { images, values } = await openImagePlaybackHarness(page);
+  const canvas = page.getByRole('img', { name: /^Solved / });
+  const frameZeroLoads = () => images.filter(id => id === 'image-test-0-base').length;
+  await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
+  await expect(canvas).toHaveAttribute('data-render-mode', 'vector-detail');
+  expect(values).toContain(0);
+  // Distant positions and their scrub neighbours displace frame zero's image.
+  // Only the three inspected numerical frames are cached.
+  for (const index of [10, 17]) {
+    await page.evaluate(angle => (window as any).imagePlaybackFixture.positionLink.requestAngle(angle), index * 15);
+    await expect.poll(() => values.includes(index)).toBe(true);
+    await expect.poll(() => images.includes(`image-test-${index + 3}-base`)).toBe(true);
+    await expect(canvas).toHaveAttribute('data-render-mode', 'vector-detail');
+  }
+  expect(frameZeroLoads()).toBe(1);
+  await page.getByRole('button', { name: 'Play field clockwise' }).click();
+  await expect.poll(frameZeroLoads).toBeGreaterThan(1);
+  await expect(page.locator('.viewport-cad-status')).toHaveText(/^0\.0° elec/);
+  await expect(canvas).toHaveAttribute('data-render-mode', 'playback-raster');
+  expect(values.filter(index => index === 0)).toHaveLength(1);
+});
+
+test('a missing playback image uses its numerical frame and playback continues', async ({ page }) => {
+  const missingImage = 'image-test-0-base';
+  const { images, values } = await openImagePlaybackHarness(page, missingImage);
+  const canvas = page.getByRole('img', { name: /^Solved / });
+  await expect(canvas).toHaveAttribute('data-render-mode', 'prepared-raster');
+  expect(values).toContain(0);
+  await page.getByRole('button', { name: 'Play field clockwise' }).click();
+  await expect(canvas).toHaveAttribute('data-render-mode', 'playback-raster');
+  await page.getByRole('button', { name: 'Pause clockwise field playback' }).click();
+  await page.evaluate(() => (window as any).imagePlaybackFixture.positionLink.requestAngle(0));
+  await expect(canvas).toHaveAttribute('data-render-mode', 'prepared-raster');
+  expect(images.filter(id => id === missingImage)).toHaveLength(1);
 });
 
 test('a zoomed rotor retains elements that rotate into view and reuses bounded bitmaps', async ({ page }) => {

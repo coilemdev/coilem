@@ -1017,8 +1017,8 @@ assert.match(fieldResultSource, /\.\.\.\(driveMarginPx \? \{ marginLeft: driveMa
 assert.match(fieldResultSource, /<div className="public-winding-key public-field-phase-key" aria-label="Winding phase and current direction legend">/);
 // Coils and ⊙ / ⊗ are drawn on the field canvas (and the magnifier) at screen
 // size with the Geometry view's marker, so they stay crisp and readable zoomed in.
-assert.match(fieldResultSource, /drawCoilPhases\(context, toCanvas, pixelRatio, coilSides, coilMarks, phases\);/);
-assert.match(fieldResultSource, /drawCoilPhases\(context, worldTransform, pixelRatio, coilSides, coilMarks, phases\);/);
+assert.match(fieldResultSource, /drawCoilPhases\(context, toCanvas, pixelRatio, coilOutlines, coilMarks, phases\);/);
+assert.match(fieldResultSource, /drawCoilPhases\(context, worldTransform, pixelRatio, coilOutlines, coilMarks, phases\);/);
 assert.match(fieldResultSource, /drawCurrentMarker\(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS\[mark\.phase\]\);/);
 assert.doesNotMatch(fieldResultSource, /public-field-phase-coils|public-field-phase-mark/);
 assert.match(phaseDrivePanelSource, /export function drawCurrentMarker\(/);
@@ -1044,7 +1044,7 @@ assert.match(workspaceSource, /navigationSlot=\{navigationSlot\}/);
 assert.match(motorCanvasSource, /return navigationSlot \? createPortal\(zoomControls, navigationSlot\) : zoomControls;/);
 // The Mesh tab's element count and quality are in the run plan, not the title bar.
 assert.doesNotMatch(workspaceSource, /elements\{meshQualitySummary \? ` · min q/);
-assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(activeDetailRaster \|\| visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{shownElectricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
+assert.match(solvedFieldSource, /<div className="public-dock-strip-end">\s*\{\(visibleRaster \|\| visiblePlot\) && \(\s*<div className="viewport-cad-status">\s*\{playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… <\/small>\}\s*\{shownElectricalAngleDeg\.toFixed\(1\)\}° elec<span className="public-field-text-long"> · peak \|B\| \{currentPeakBT\.toFixed\(2\)\} T<\/span>\s*<\/div>\s*\)\}\s*<details className="public-field-physics-info">[\s\S]*?<\/details>\s*<span className="public-field-zoom-slot" ref=\{setZoomSlot\} \/>\s*\{expandControl\}/);
 // The field panel matches the motor panels: full width, same title bar,
 // segmented field choice, dot toggles and labelled slider boxes.
 assert.match(styleSource, /\.public-field-dock \{ border: 0; border-top: 1px solid var\(--border-default\); border-radius: 0;/);
@@ -1192,7 +1192,7 @@ assert.match(fieldResultSource, /Waiting for samples|Completed Magneto2D solutio
 assert.match(fieldResultSource, /visibleLayerLabel/);
 assert.match(fieldResultSource, /probeEnabled\?: boolean/);
 assert.match(fieldResultSource, /\|\| !probeEnabled/);
-assert.match(solvedFieldSource, /probeEnabled=\{!playing && Boolean\(exactVectorPlot\) && !overlayActive\}/);
+assert.match(solvedFieldSource, /probeEnabled=\{Boolean\(highResolutionPlot\) && !overlayActive\}/);
 assert.match(solvedFieldSource, /disabled=\{!densityAdjustable\}/);
 assert.match(solvedFieldSource, /Playback uses medium arrow density/);
 assert.match(materialWorkspaceSource, /<MaterialCurveChart key=\{model\.id\} model=\{model\}/);
@@ -1333,7 +1333,7 @@ assert.match(solvedFieldSource, /OVERLAY_ANGLE_TOLERANCE_DEG/);
 assert.match(solvedFieldSource, /showHeatmap=\{showHeatmap && !overlayActive\}/);
 assert.match(solvedFieldSource, /Off while PM and Stator are both shown: one \|B\| map cannot belong to both fields/);
 assert.match(solvedFieldSource, /overlay=\{fieldLineOverlay\}/);
-assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', false\)/);
+assert.match(solvedFieldSource, /loadVisualFrame\(nextOverlay, 'pm', overlayLayers\)/);
 assert.match(solvedFieldSource, /if \(heldOverlayRaster\) shown\.add\(heldOverlayRaster\)/);
 // The playback images' light arrows take the PM or stator colour by multiplying,
 // which keeps their dark rims; the PM field's sit between the stator's rings.
@@ -1427,7 +1427,7 @@ assert.match(solvedFieldSource, /windowPlaybackFrameIndex\(angleFrames, nextPlay
 assert.match(solvedFieldSource, /frameLoaderRef\.current\.request\(\(\) => loadVisualFrame\(descriptor, source\)\)/);
 assert.match(solvedFieldSource, /if \(angleFrames\.length < 2 \|\| \(scrubbing && !playing\)\) return;/);
 assert.match(solvedFieldSource, /scrubNeighbourIndices\(angleFrames\.length, boundedIndex, scrubDirection, !playbackSpan\.windowed\)/);
-assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster\?\.source === source/);
+assert.match(solvedFieldSource, /const heldFrame = !activeRaster && !partialRaster && !exactVectorPlot && heldRaster\?\.source === source/);
 assert.match(solvedFieldSource, /if \(heldRaster\) shown\.add\(heldRaster\.raster\);/, 'a held frame is never closed while on screen');
 assert.match(solvedFieldSource, /magnetRotationDeg=\{mechanicalAngleDeg\}/);
 // Solve-page updates are a thin banner under the top bar, in the page flow, so
@@ -1437,9 +1437,10 @@ assert.doesNotMatch(workspaceSource, /public-solve-toast/);
 assert.doesNotMatch(styleSource, /public-solve-toast/);
 assert.match(styleSource, /\.public-solve-stage > \.public-solve-workspace \{\s*flex: 1 1 auto;/);
 assert.doesNotMatch(styleSource.match(/\.public-solve-banner \{[^}]*\}/)?.[0] ?? '', /position: (absolute|fixed)/, 'the banner takes its own space');
-// #59: the mesh layer is decoded only while the Mesh overlay is shown.
-assert.match(playbackRasterizerSource, /layers\.mesh && withMesh \? load\(layers\.mesh\.artifact_id\)/);
-assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*withMesh,/);
+// Each selected layer is decoded separately, including just the PM arrows in Stator + PM.
+assert.match(playbackRasterizerSource, /layers\.mesh && \(requestedLayers & FieldRasterLayer\.Mesh\) \? load\(layers\.mesh\.artifact_id\)/);
+assert.match(solvedFieldSource, /requestedDescriptor\.playback_frame,\s*requestedLayers,/);
+assert.match(solvedFieldSource, /const overlayLayers = showFieldLines \? FieldRasterLayer\.Lines : 0;/);
 assert.match(solvedFieldSource, /<RpmField\s+value=\{playbackRpm\}\s+min=\{PUBLIC_FIELD_PLAYBACK_MIN_RPM\}\s+max=\{PUBLIC_FIELD_PLAYBACK_MAX_RPM\}\s+label="Speed"\s+ariaLabel="Playback speed \(RPM\)"/);
 assert.doesNotMatch(solvedFieldSource, /type="range"[^>]*Playback speed/);
 assert.doesNotMatch(solvedFieldSource, /PLAYBACK_RATES|PlaybackRate|Field playback speed/);
@@ -1478,7 +1479,7 @@ assert.match(solvedFieldSource, /renderDetail\(source, descriptor\.playback_fram
 assert.match(solvedFieldSource, /Prefer exact solver vectors for a stopped, zoomed frame/);
 assert.match(solvedFieldSource, /loadNumericalDetail\(\)\.then/);
 assert.match(solvedFieldSource, /loadedNumericalDetail \|\| detailRequestRef\.current !== requestId/);
-assert.match(solvedFieldSource, /highResolutionPlot=\{exactVectorPlot\}/);
+assert.match(solvedFieldSource, /highResolutionPlot=\{highResolutionPlot\}/);
 assert.match(solvedFieldSource, /onViewportScaleSettled=\{setFieldViewportScale\}/);
 assert.match(fieldResultSource, /preparedFieldPlotCache/);
 assert.match(fieldResultSource, /cachedFieldPlot/);

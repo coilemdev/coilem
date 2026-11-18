@@ -163,6 +163,7 @@ if (mode === 'tutorial-scale') {
     regions: [
       { region_type: 'stator_tooth', points: [[6, 1], [8, 1], [8, 3], [6, 3]] },
       { region_type: 'stator_tooth', points: [[-6, -1], [-8, -1], [-8, -3], [-6, -3]] },
+      { region_type: 'slot_0_(a+)', points: [[6, -1], [8, -1], [8, 0], [6, 0]] },
       { region_type: 'magnet_0_north', points: [[4, -1], [5, -1], [5, 1], [4, 1]] },
     ],
     winding_layout: [
@@ -185,6 +186,28 @@ if (mode === 'tutorial-scale') {
       armature={{ schema_version: 'coilem.public_field_composition.armature.v1', source: 'magneto2d_exact_br_zero',
         cache_hit: true, elapsed_s: 0, frame_count: armatureFrames.length, frames: armatureFrames }}
       armatureBusy={false} armatureError={null} magnetoCompositionAvailable onRequestArmature={() => {}} positionLink={positionLink} />
+  </div>);
+} else if (mode === 'image-playback') {
+  const positionLink = createFieldPositionLink();
+  Object.assign(window, { imagePlaybackFixture: { frame: plot, positionLink } });
+  const frames = Array.from({ length: 24 }, (_, index) => {
+    const image = (layer: string) => ({ artifact_id: `image-test-${index}-${layer}`, media_type: 'image/png' as const, byte_count: 80 });
+    const resultant = { base: image('base'), flux_density: image('heat'), mesh: image('mesh'), field_lines: image('arrows'),
+      view_box: '-10 -10 20 20', min_b_t: 0, max_b_t: 1.5, triangle_count: 2, contour_level_count: 1, contour_segment_count: 1 };
+    return { index, angle_deg: index * 15, compositions: { resultant } };
+  });
+  const imageResult: SolveResult = {
+    ...result, field_line_plot: null, field_playback: {
+      schema_version: 'coilem.field_playback.v1', encoding: 'layered-webp-v1', width_px: 8, height_px: 8,
+      frame_count: frames.length, frames, numerical_snapshots: frames.map(({ index }) => ({
+        artifact_id: `image-test-${index}-values`, media_type: 'application/json+gzip',
+      })),
+    },
+  };
+  root.render(<div style={{ width: 1100, height: 700 }}>
+    <SolvedFieldViewer viewControls="Field solution" config={smallConfig} geometry={null} result={imageResult}
+      armature={null} armatureBusy={false} armatureError={null} magnetoCompositionAvailable={false}
+      onRequestArmature={() => {}} positionLink={positionLink} />
   </div>);
 } else if (mode === 'field' || mode === 'pruned-field') {
   root.render(<div style={{ width: 1100, height: 700 }}>

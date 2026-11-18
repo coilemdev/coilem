@@ -7,6 +7,14 @@ import type {
 
 export type FieldRasterSource = 'resultant' | 'pm' | 'armature';
 
+export enum FieldRasterLayer {
+  Base = 1,
+  Heat = 2,
+  Mesh = 4,
+  Lines = 8,
+  All = Base | Heat | Mesh | Lines,
+}
+
 interface RasterTask {
   requestId: number;
   artifactId: string;
@@ -60,19 +68,19 @@ export class FieldPlaybackRasterizer {
     });
   }
 
-  /** `withMesh` false skips the mesh layer, a quarter of the decode work, while it is hidden. */
+  /** Each saved layer is a full bitmap, so decode only the ones this view draws. */
   render(
     artifactId: string,
     source: FieldRasterSource,
     playbackFrame?: PublicFieldPlaybackFrame,
-    withMesh = true,
+    requestedLayers: number = FieldRasterLayer.All,
   ): Promise<FieldResultRaster> {
     if (this.disposed) return Promise.reject(new Error('The field playback renderer is unavailable.'));
     const composition = playbackFrame?.compositions[source];
     if (playbackFrame && !composition) {
       return Promise.reject(new Error('The requested field composition is unavailable.'));
     }
-    if (composition) return this.renderRasterLayers(composition, false, withMesh);
+    if (composition) return this.renderRasterLayers(composition, false, requestedLayers);
     return new Promise((resolve, reject) => {
       this.queue.push({
         requestId: this.nextRequestId++,
@@ -97,9 +105,10 @@ export class FieldPlaybackRasterizer {
   private async renderRasterLayers(
     composition: PublicFieldPlaybackComposition,
     detail = false,
-    withMesh = true,
+    requestedLayers: number = FieldRasterLayer.All,
   ): Promise<FieldResultRaster> {
     const bitmaps: ImageBitmap[] = [];
+    let failed = false;
     try {
       const load = async (artifactId: string) => {
         const response = await fetch(
@@ -109,16 +118,17 @@ export class FieldPlaybackRasterizer {
           throw new Error(`Playback layer request failed with HTTP ${response.status}.`);
         }
         const bitmap = await createImageBitmap(await response.blob());
-        bitmaps.push(bitmap);
+        if (failed) bitmap.close();
+        else bitmaps.push(bitmap);
         return bitmap;
       };
       const layers = detail ? composition.detail : composition;
       if (!layers) throw new Error('The detailed playback layers are unavailable.');
       const [base, heat, mesh, lines] = await Promise.all([
-        load(layers.base.artifact_id),
-        load(layers.flux_density.artifact_id),
-        layers.mesh && withMesh ? load(layers.mesh.artifact_id) : Promise.resolve(null),
-        load(layers.field_lines.artifact_id),
+        requestedLayers & FieldRasterLayer.Base ? load(layers.base.artifact_id) : null,
+        requestedLayers & FieldRasterLayer.Heat ? load(layers.flux_density.artifact_id) : null,
+        layers.mesh && (requestedLayers & FieldRasterLayer.Mesh) ? load(layers.mesh.artifact_id) : null,
+        requestedLayers & FieldRasterLayer.Lines ? load(layers.field_lines.artifact_id) : null,
       ]);
       return {
         base,
@@ -142,6 +152,7 @@ export class FieldPlaybackRasterizer {
         vectorCues: composition.vector_cues ?? [],
       };
     } catch (error) {
+      failed = true;
       bitmaps.forEach((bitmap) => bitmap.close());
       throw error;
     }

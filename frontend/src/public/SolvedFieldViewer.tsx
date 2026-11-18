@@ -25,6 +25,7 @@ import { normalizeFieldPlaybackManifest } from './fieldPlaybackContract';
 import { statorSteelSaturationTicks } from './fluxColorScale';
 import {
   FieldPlaybackRasterizer,
+  FieldRasterLayer,
   type FieldRasterSource,
 } from './fieldPlaybackRasterizer';
 import {
@@ -100,27 +101,41 @@ function prepareFrameForPlayback(
   });
 }
 
-function rasterCacheKey(artifactId: string, source: FieldRasterSource, withMesh = false): string {
-  return `${source}:${withMesh ? 'mesh:' : ''}${artifactId}`;
+function rasterCacheKey(artifactId: string, source: FieldRasterSource, layers: number = FieldRasterLayer.All): string {
+  return `${source}:${layers}:${artifactId}`;
 }
 
-// Playback rasters skip the mesh layer while it is hidden. One decoded with
-// its mesh also serves a view without it.
+// Turning off a layer can reuse a frame that already contains it.
+function availableRasterKey(
+  cache: Record<string, FieldResultRaster>,
+  artifactId: string,
+  source: FieldRasterSource,
+  requestedLayers: number,
+): string {
+  const requestedKey = rasterCacheKey(artifactId, source, requestedLayers);
+  if (cache[requestedKey]) return requestedKey;
+  for (let layers = requestedLayers + 1; layers <= FieldRasterLayer.All; layers += 1) {
+    if ((layers & requestedLayers) !== requestedLayers) continue;
+    const key = rasterCacheKey(artifactId, source, layers);
+    if (cache[key]) return key;
+  }
+  return requestedKey;
+}
+
 function cachedRaster(
   cache: Record<string, FieldResultRaster>,
   artifactId: string,
   source: FieldRasterSource,
-  withMesh: boolean,
+  layers: number,
 ): FieldResultRaster | undefined {
-  return cache[rasterCacheKey(artifactId, source, true)]
-    ?? (withMesh ? undefined : cache[rasterCacheKey(artifactId, source)]);
+  return cache[availableRasterKey(cache, artifactId, source, layers)];
 }
 
 function closeRaster(raster: FieldResultRaster): void {
-  raster.base.close();
-  raster.heat.close();
+  raster.base?.close();
+  raster.heat?.close();
   raster.mesh?.close();
-  raster.lines.close();
+  raster.lines?.close();
 }
 
 // Drop the oldest rasters beyond the limit, keeping the ones on screen or about
@@ -251,15 +266,16 @@ export function SolvedFieldViewer({
   // Stator + PM loads, caches and plays the stator field as Stator only does;
   // the PM frame at the same position loads beside it.
   const source: FieldSource = overlayActive ? 'armature' : view;
-  const sourceRef = useRef<FieldSource>('resultant');
-  sourceRef.current = source;
   const [frameIndex, setFrameIndex] = useState(0);
   // The layer choices start from where the field view was last left.
   const [showHeatmap, setShowHeatmap] = useState(solveViewMemory.field.showHeatmap);
   const [showMesh, setShowMesh] = useState(solveViewMemory.field.showMesh);
-  const showMeshRef = useRef(solveViewMemory.field.showMesh);
-  showMeshRef.current = showMesh;
   const [showFieldLines, setShowFieldLines] = useState(solveViewMemory.field.showFieldLines);
+  const primaryLayers = FieldRasterLayer.Base
+    | (showHeatmap && !overlayActive ? FieldRasterLayer.Heat : 0)
+    | (showMesh ? FieldRasterLayer.Mesh : 0)
+    | (showFieldLines ? FieldRasterLayer.Lines : 0);
+  const overlayLayers = showFieldLines ? FieldRasterLayer.Lines : 0;
   const [showMagnets, setShowMagnets] = useState(solveViewMemory.field.showMagnets);
   const [magnifier, setMagnifier] = useState(solveViewMemory.field.magnifier);
   const fieldLayerMenu = useLayerMenu();
@@ -285,6 +301,7 @@ export function SolvedFieldViewer({
   const rasterCacheRef = useRef<Record<string, FieldResultRaster>>({});
   const frameRequestsRef = useRef<Map<string, Promise<PublicFieldLinePlot>>>(new Map());
   const rasterRequestsRef = useRef<Map<string, Promise<FieldResultRaster | null>>>(new Map());
+  const failedRasterKeysRef = useRef(new Set<string>());
   const rasterizerRef = useRef<FieldPlaybackRasterizer | null>(null);
   const activeRasterKeyRef = useRef<string | null>(null);
   const frameGenerationRef = useRef(0);
@@ -433,23 +450,23 @@ export function SolvedFieldViewer({
     ? overlayDescriptor.field_frame_artifact.artifact_id
     : null;
   const overlayRasterKeyRef = useRef<string | null>(null);
-  overlayRasterKeyRef.current = overlayArtifactId ? rasterCacheKey(overlayArtifactId, 'pm') : null;
-  const overlayRaster = overlayArtifactId ? cachedRaster(rasterCache, overlayArtifactId, 'pm', false) ?? null : null;
+  overlayRasterKeyRef.current = overlayArtifactId ? availableRasterKey(rasterCache, overlayArtifactId, 'pm', overlayLayers) : null;
+  const overlayRaster = overlayRasterKeyRef.current ? rasterCache[overlayRasterKeyRef.current] ?? null : null;
   const overlayPlot = overlayArtifactId ? frameCache[overlayArtifactId]?.noload_plot ?? null : null;
-  const visibleOverlayRaster = overlayActive ? overlayRaster ?? heldOverlayRaster : null;
+  const visibleOverlayRaster = overlayActive ? overlayRaster ?? (overlayPlot ? null : heldOverlayRaster) : null;
   const fieldLineOverlay = useMemo<FieldLineOverlay | null>(
     () => (overlayActive && (visibleOverlayRaster || overlayPlot)
-      ? { raster: visibleOverlayRaster, plot: overlayPlot }
+      ? { raster: visibleOverlayRaster, plot: playing && visibleOverlayRaster ? null : overlayPlot }
       : null),
-    [overlayActive, overlayPlot, visibleOverlayRaster],
+    [overlayActive, overlayPlot, playing, visibleOverlayRaster],
   );
-  const activeRasterKey = artifactId ? rasterCacheKey(artifactId, source, showMesh) : null;
+  const activeRasterKey = artifactId ? availableRasterKey(rasterCache, artifactId, source, primaryLayers) : null;
   activeRasterKeyRef.current = activeRasterKey;
-  const activeRaster = artifactId ? cachedRaster(rasterCache, artifactId, source, showMesh) ?? null : null;
-  // Turning the mesh on keeps the frame without it until its mesh layer loads.
-  const meshlessRaster = artifactId && showMesh ? rasterCache[rasterCacheKey(artifactId, source)] ?? null : null;
+  const activeRaster = activeRasterKey ? rasterCache[activeRasterKey] ?? null : null;
+  // Keep the same frame under the overlays while a newly enabled layer loads.
+  const partialRaster = artifactId && !activeRaster ? cachedRaster(rasterCache, artifactId, source, FieldRasterLayer.Base) ?? null : null;
   const detailRasterKey = artifactId ? rasterCacheKey(artifactId, source) : null;
-  const activeDetailRaster = detailRaster?.key === detailRasterKey
+  const activeDetailRaster = !playing && detailRaster?.key === detailRasterKey
     ? detailRaster.raster
     : null;
   const artifactFrame = artifactId ? frameCache[artifactId] : null;
@@ -472,13 +489,16 @@ export function SolvedFieldViewer({
   const armatureReferencePlot = source === 'armature' && armatureBusy
     ? result.field_line_plot ?? null
     : null;
-  const visiblePlot = exactVectorPlot ?? heldVector?.plot ?? armatureReferencePlot;
   // Keep the last raster visible while the next position decodes.
-  const heldFrame = !activeRaster && !meshlessRaster && !exactVectorPlot && heldRaster?.source === source
+  const heldFrame = !activeRaster && !partialRaster && !exactVectorPlot && heldRaster?.source === source
     ? heldRaster
     : null;
-  const drawnRaster = activeRaster ?? meshlessRaster;
-  const visibleRaster = drawnRaster ?? heldFrame?.raster ?? null;
+  const drawnRaster = activeRaster ?? (exactVectorPlot ? null : partialRaster);
+  const visibleRaster = activeDetailRaster ?? drawnRaster ?? heldFrame?.raster ?? null;
+  // Zoom, arrows and the magnifier use the displayed playback image. Pausing restores
+  // exact field detail once available. A run without an image still draws its vectors.
+  const highResolutionPlot = playing ? null : exactVectorPlot;
+  const visiblePlot = visibleRaster ? highResolutionPlot : exactVectorPlot ?? heldVector?.plot ?? armatureReferencePlot;
   // Keep overlays at the position of whichever raster or numerical plot is on screen.
   const vectorAngleDeg = exactVectorPlot ? exactVectorAngleDeg : heldVector?.angleDeg ?? armatureReferencePlot?.angle_deg ?? 0;
   const shownElectricalAngleDeg = activeDetailRaster || drawnRaster
@@ -525,11 +545,11 @@ export function SolvedFieldViewer({
     }
     : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, shownCurrents]);
   const currentPeakBT = useMemo(() => {
-    const rasterPeak = activeDetailRaster?.maxB ?? visibleRaster?.maxB;
+    const rasterPeak = visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;
     const values = visiblePlot?.element_b_mag_t.filter(Number.isFinite) ?? [];
     return values.reduce((peak, value) => Math.max(peak, value), 0);
-  }, [activeDetailRaster?.maxB, visiblePlot, visibleRaster?.maxB]);
+  }, [visiblePlot, visibleRaster?.maxB]);
   const describeProbe = useCallback(
     (probe: FieldProbe) => describeFieldProbe(probe, config, materials),
     [config, materials],
@@ -602,18 +622,25 @@ export function SolvedFieldViewer({
     scrubDirection,
   ]);
   const bufferTarget = preloadIndices.length;
+  const visualFrameReady = useCallback((frame: PublicFieldFrameDescriptor | null, frameSource: FieldRasterSource, layers: number) => {
+    if (!frame) return false;
+    const id = frame.field_frame_artifact.artifact_id;
+    if (cachedRaster(rasterCacheRef.current, id, frameSource, layers)) return true;
+    // A numerical frame cached during inspection is expensive to redraw during
+    // Play. Also finish loading newly enabled layers on a paused playback image.
+    if (frame.playback_frame?.compositions[frameSource]
+      && !failedRasterKeysRef.current.has(rasterCacheKey(id, frameSource, layers))) {
+      if (playing || cachedRaster(rasterCacheRef.current, id, frameSource, layers & FieldRasterLayer.Base)) return false;
+    }
+    const exact = frameCacheRef.current[id];
+    return Boolean(frameSource === 'pm' ? exact?.noload_plot : exact);
+  }, [playing]);
   const bufferedAhead = useMemo(() => {
     let ready = 0;
     for (const preloadIndex of preloadIndices) {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
-      const preloadArtifactId = nearestFrame(sourceFrames, preloadAngle)?.field_frame_artifact.artifact_id;
-      if (
-        !preloadArtifactId
-        || (
-          !cachedRaster(rasterCache, preloadArtifactId, source, showMesh)
-          && !frameCache[preloadArtifactId]
-        )
-      ) break;
+      if (!visualFrameReady(nearestFrame(sourceFrames, preloadAngle), source, primaryLayers)) break;
+      if (overlayActive && !visualFrameReady(nearestFrame(resultantFrames, preloadAngle), 'pm', overlayLayers)) break;
       ready += 1;
     }
     return ready;
@@ -622,7 +649,11 @@ export function SolvedFieldViewer({
     frameCache,
     preloadIndices,
     rasterCache,
-    showMesh,
+    primaryLayers,
+    overlayActive,
+    overlayLayers,
+    resultantFrames,
+    visualFrameReady,
     source,
     sourceFrames,
   ]);
@@ -635,31 +666,25 @@ export function SolvedFieldViewer({
         : null;
       return [
         ...(preloadArtifactId
-          ? [rasterCacheKey(preloadArtifactId, source), rasterCacheKey(preloadArtifactId, source, true)]
+          ? [availableRasterKey(rasterCache, preloadArtifactId, source, primaryLayers)]
           : []),
         ...(overlayArtifactIdAhead
-          ? [rasterCacheKey(overlayArtifactIdAhead, 'pm'), rasterCacheKey(overlayArtifactIdAhead, 'pm', true)]
+          ? [availableRasterKey(rasterCache, overlayArtifactIdAhead, 'pm', overlayLayers)]
           : []),
       ];
     }),
-  ), [angleFrames, overlayActive, preloadIndices, resultantFrames, source, sourceFrames]);
+  ), [angleFrames, overlayActive, overlayLayers, preloadIndices, primaryLayers, rasterCache, resultantFrames, source, sourceFrames]);
   const upcomingRasterKeysRef = useRef(upcomingRasterKeys);
   upcomingRasterKeysRef.current = upcomingRasterKeys;
   const keptRasterKeys = useCallback((loadedKey?: string): Set<string> => {
     const keep = new Set(upcomingRasterKeysRef.current);
     if (loadedKey) keep.add(loadedKey);
-    if (activeRasterKeyRef.current) {
-      keep.add(activeRasterKeyRef.current);
-      keep.add(activeRasterKeyRef.current.replace(/^([^:]+):mesh:/, '$1:'));
-    }
-    if (overlayRasterKeyRef.current) {
-      keep.add(overlayRasterKeyRef.current);
-      keep.add(overlayRasterKeyRef.current.replace(/^([^:]+):/, '$1:mesh:'));
-    }
+    if (activeRasterKeyRef.current) keep.add(activeRasterKeyRef.current);
+    if (overlayRasterKeyRef.current) keep.add(overlayRasterKeyRef.current);
     return keep;
   }, []);
 
-  const loadFrame = useCallback((requestedArtifactId: string): Promise<PublicFieldLinePlot> => {
+  const loadFrame = useCallback((requestedArtifactId: string, warmSource?: FieldSource): Promise<PublicFieldLinePlot> => {
     const cached = frameCacheRef.current[requestedArtifactId];
     if (cached) return Promise.resolve(cached);
 
@@ -670,7 +695,9 @@ export function SolvedFieldViewer({
     const request = getPublicFieldFrame(requestedArtifactId)
       .then(async (payload) => {
         const frame = payload.field_line_frame as unknown as PublicFieldLinePlot;
-        await prepareFrameForPlayback(frame, sourceRef.current);
+        // A numerical-only fallback needs drawable layers. Inspecting a saved
+        // image only needs the numerical values and exact geometry on demand.
+        if (warmSource) await prepareFrameForPlayback(frame, warmSource);
         if (frameGenerationRef.current === generation) {
           const nextCache = {
             ...frameCacheRef.current,
@@ -701,12 +728,18 @@ export function SolvedFieldViewer({
   const loadVisualFrame = useCallback((
     requestedDescriptor: PublicFieldFrameDescriptor,
     requestedSource: FieldRasterSource,
-    withMesh = showMeshRef.current,
+    requestedLayers = primaryLayers,
   ): Promise<FieldResultRaster | null> => {
     const requestedArtifactId = requestedDescriptor.field_frame_artifact.artifact_id;
-    const key = rasterCacheKey(requestedArtifactId, requestedSource, withMesh);
-    const cached = cachedRaster(rasterCacheRef.current, requestedArtifactId, requestedSource, withMesh);
+    const key = rasterCacheKey(requestedArtifactId, requestedSource, requestedLayers);
+    const cached = cachedRaster(rasterCacheRef.current, requestedArtifactId, requestedSource, requestedLayers);
     if (cached) return Promise.resolve(cached);
+    // A scrub request may have queued before a previous request recovered from
+    // a missing image. Recheck its fallback when the queued request starts.
+    if (failedRasterKeysRef.current.has(key)) {
+      const exact = frameCacheRef.current[requestedArtifactId];
+      if (requestedSource === 'pm' ? exact?.noload_plot : exact) return Promise.resolve(null);
+    }
     const pending = rasterRequestsRef.current.get(key);
     if (pending) return pending;
     const generation = frameGenerationRef.current;
@@ -715,7 +748,7 @@ export function SolvedFieldViewer({
         requestedArtifactId,
         requestedSource,
         requestedDescriptor.playback_frame,
-        withMesh,
+        requestedLayers,
       )
       : Promise.reject(new Error('Field playback workers are unavailable.')))
       .then((raster) => {
@@ -723,6 +756,7 @@ export function SolvedFieldViewer({
           closeRaster(raster);
           return null;
         }
+        failedRasterKeysRef.current.delete(key);
         const nextCache = {
           ...rasterCacheRef.current,
           [key]: raster,
@@ -732,9 +766,12 @@ export function SolvedFieldViewer({
         setRasterCache(nextCache);
         return raster;
       })
-      .catch(async (error: unknown) => {
-        if (requestedDescriptor.playback_frame) throw error;
-        await loadFrame(requestedArtifactId);
+      .catch(async () => {
+        const frame = await loadFrame(requestedArtifactId, requestedSource);
+        if (requestedSource === 'pm' && !frame.noload_plot) throw new Error('The PM field is unavailable for this position.');
+        if (frameGenerationRef.current === generation && requestedDescriptor.playback_frame) {
+          failedRasterKeysRef.current.add(key);
+        }
         return null;
       })
       .finally(() => {
@@ -744,7 +781,7 @@ export function SolvedFieldViewer({
       });
     rasterRequestsRef.current.set(key, request);
     return request;
-  }, [keptRasterKeys, loadFrame, retireRaster]);
+  }, [keptRasterKeys, loadFrame, primaryLayers, retireRaster]);
 
   useEffect(() => {
     const rasterizer = new FieldPlaybackRasterizer();
@@ -792,6 +829,7 @@ export function SolvedFieldViewer({
     rasterCacheRef.current = {};
     frameRequestsRef.current.clear();
     rasterRequestsRef.current.clear();
+    failedRasterKeysRef.current.clear();
     setView('resultant');
     setHeldOverlayRaster(null);
     setFrameIndex(0);
@@ -872,16 +910,11 @@ export function SolvedFieldViewer({
         const nextAngle = angleFrames[nextIndex]?.angle_deg ?? 0;
         const nextDescriptor = nearestFrame(sourceFrames, nextAngle);
         const nextArtifactId = nextDescriptor?.field_frame_artifact.artifact_id;
-        const nextReady = nextArtifactId
-          && (
-            cachedRaster(rasterCacheRef.current, nextArtifactId, source, showMeshRef.current)
-            || frameCacheRef.current[nextArtifactId]
-          );
+        const nextReady = visualFrameReady(nextDescriptor, source, primaryLayers);
         const nextOverlay = overlayActive ? nearestFrame(resultantFrames, nextAngle) : null;
         const nextOverlayId = nextOverlay?.field_frame_artifact.artifact_id;
         const nextOverlayReady = !nextOverlayId
-          || cachedRaster(rasterCacheRef.current, nextOverlayId, 'pm', false)
-          || frameCacheRef.current[nextOverlayId];
+          || visualFrameReady(nextOverlay, 'pm', overlayLayers);
         if (nextDescriptor && nextArtifactId && !nextReady) {
           void loadVisualFrame(nextDescriptor, source).catch(() => {
             setPlaybackWaiting(false);
@@ -889,7 +922,7 @@ export function SolvedFieldViewer({
           });
           setPlaybackWaiting(true);
         } else if (nextOverlay && !nextOverlayReady) {
-          void loadVisualFrame(nextOverlay, 'pm', false).catch(() => {
+          void loadVisualFrame(nextOverlay, 'pm', overlayLayers).catch(() => {
             setPlaybackWaiting(false);
             setPlaying(false);
           });
@@ -912,6 +945,9 @@ export function SolvedFieldViewer({
     angleFrames,
     loadVisualFrame,
     overlayActive,
+    overlayLayers,
+    primaryLayers,
+    visualFrameReady,
     playing,
     polePairs,
     playbackSpan,
@@ -1005,24 +1041,12 @@ export function SolvedFieldViewer({
     for (const preloadIndex of preloadIndices) {
       const preloadAngle = angleFrames[preloadIndex]?.angle_deg ?? 0;
       const preloadDescriptor = nearestFrame(sourceFrames, preloadAngle);
-      const preloadArtifactId = preloadDescriptor?.field_frame_artifact.artifact_id;
-      if (
-        preloadDescriptor
-        && preloadArtifactId
-        && !cachedRaster(rasterCacheRef.current, preloadArtifactId, source, showMeshRef.current)
-        && !frameCacheRef.current[preloadArtifactId]
-      ) {
+      if (preloadDescriptor && !visualFrameReady(preloadDescriptor, source, primaryLayers)) {
         void loadVisualFrame(preloadDescriptor, source).catch(() => undefined);
       }
       const preloadOverlay = overlayActive ? nearestFrame(resultantFrames, preloadAngle) : null;
-      const preloadOverlayId = preloadOverlay?.field_frame_artifact.artifact_id;
-      if (
-        preloadOverlay
-        && preloadOverlayId
-        && !cachedRaster(rasterCacheRef.current, preloadOverlayId, 'pm', false)
-        && !frameCacheRef.current[preloadOverlayId]
-      ) {
-        void loadVisualFrame(preloadOverlay, 'pm', false).catch(() => undefined);
+      if (preloadOverlay && !visualFrameReady(preloadOverlay, 'pm', overlayLayers)) {
+        void loadVisualFrame(preloadOverlay, 'pm', overlayLayers).catch(() => undefined);
       }
     }
   }, [
@@ -1033,7 +1057,9 @@ export function SolvedFieldViewer({
     preloadIndices,
     resultantFrames,
     scrubbing,
-    showMesh,
+    overlayLayers,
+    primaryLayers,
+    visualFrameReady,
     source,
     sourceFrames,
   ]);
@@ -1042,11 +1068,8 @@ export function SolvedFieldViewer({
     // The PM frame on screen in Stator + PM: its playback raster at once, and
     // its exact frame once the stator frame has settled.
     if (!overlayActive || !overlayDescriptor || !overlayArtifactId) return;
-    if (
-      !cachedRaster(rasterCacheRef.current, overlayArtifactId, 'pm', false)
-      && !frameCacheRef.current[overlayArtifactId]
-    ) {
-      void loadVisualFrame(overlayDescriptor, 'pm', false).catch(() => undefined);
+    if (!visualFrameReady(overlayDescriptor, 'pm', overlayLayers)) {
+      void loadVisualFrame(overlayDescriptor, 'pm', overlayLayers).catch(() => undefined);
     }
     if (!playing && exactFrameSettled && !frameCacheRef.current[overlayArtifactId]) {
       void loadFrame(overlayArtifactId).catch(() => undefined);
@@ -1058,7 +1081,9 @@ export function SolvedFieldViewer({
     overlayActive,
     overlayArtifactId,
     overlayDescriptor,
+    overlayLayers,
     playing,
+    visualFrameReady,
   ]);
 
   useEffect(() => {
@@ -1066,10 +1091,7 @@ export function SolvedFieldViewer({
       setFrameLoading(false);
       return;
     }
-    if (
-      cachedRaster(rasterCacheRef.current, artifactId, source, showMeshRef.current)
-      || frameCacheRef.current[artifactId]
-    ) {
+    if (visualFrameReady(descriptor, source, primaryLayers)) {
       setFrameLoading(false);
       setFrameError(null);
       return;
@@ -1104,7 +1126,7 @@ export function SolvedFieldViewer({
         if (active) setFrameLoading(false);
       });
     return () => { active = false; };
-  }, [artifactId, descriptor, frameCache, loadVisualFrame, playing, rasterCache, showMesh, source]);
+  }, [artifactId, descriptor, frameCache, loadVisualFrame, playing, primaryLayers, rasterCache, source, visualFrameReady]);
 
   useEffect(() => {
     if (playing || !artifactId || activePlot || !exactFrameSettled) return;
@@ -1261,9 +1283,9 @@ export function SolvedFieldViewer({
   ].filter(Boolean).length;
   // Arrow density sits right after Field arrows as a three-way choice, and only
   // while the arrows are shown.
+  const densityAdjustable = Boolean(highResolutionPlot);
+  const displayedDensity = densityAdjustable ? fieldLineDensity : 'medium';
   const renderDensityControl = () => {
-    const densityAdjustable = !playing && Boolean(exactVectorPlot);
-    const displayedDensity = exactVectorPlot ? fieldLineDensity : 'medium';
     const densityTitle = playing
       ? 'Playback uses medium arrow density. Pause to adjust the exact frame.'
       : densityAdjustable
@@ -1291,14 +1313,14 @@ export function SolvedFieldViewer({
   return (
     <section className="public-solved-field-viewer" aria-label="Completed field solution">
       <div className="public-solved-field-canvas">
-        {(activeDetailRaster || visibleRaster || visiblePlot) && (
+        {(visibleRaster || visiblePlot) && (
           <>
             <FieldResultPlot
               ring={outerRotorRing(config)}
               plot={visiblePlot}
-              raster={activeDetailRaster ?? visibleRaster}
-              highResolutionPlot={exactVectorPlot}
-              probeEnabled={!playing && Boolean(exactVectorPlot) && !overlayActive}
+              raster={visibleRaster}
+              highResolutionPlot={highResolutionPlot}
+              probeEnabled={Boolean(highResolutionPlot) && !overlayActive}
               geometry={geometry}
               magnetRotationDeg={mechanicalAngleDeg}
               showMagnets={showMagnets}
@@ -1323,7 +1345,7 @@ export function SolvedFieldViewer({
               showHeatmap={showHeatmap && !overlayActive}
               showMesh={showMesh}
               showFieldLines={showFieldLines}
-              fieldLineDensity={exactVectorPlot ? fieldLineDensity : 'medium'}
+              fieldLineDensity={displayedDensity}
               colorRangeMode={colorRangeMode}
               saturationTicks={saturationTicks}
               onColorRangeModeChange={setRangeMode}
@@ -1354,7 +1376,7 @@ export function SolvedFieldViewer({
         <div className="public-dock-strip">
           {viewControls}
           <div className="public-dock-strip-end">
-            {(activeDetailRaster || visibleRaster || visiblePlot) && (
+            {(visibleRaster || visiblePlot) && (
               <div className="viewport-cad-status">
                 {playbackWaiting && <small className="public-field-playback-buffering" aria-live="polite">Buffering… </small>}
                 {shownElectricalAngleDeg.toFixed(1)}° elec<span className="public-field-text-long"> · peak |B| {currentPeakBT.toFixed(2)} T</span>
@@ -1366,7 +1388,7 @@ export function SolvedFieldViewer({
                 <span>Field composition</span>
                 <strong>{sourceLabel}</strong>
                 <p>{sourceDetail}</p>
-                {(activeDetailRaster || visibleRaster || visiblePlot) && (
+                {(visibleRaster || visiblePlot) && (
                   <dl>
                     <div><dt>Peak |B|</dt><dd>{currentPeakBT.toFixed(3)} T</dd></div>
                     <div><dt>Position</dt><dd>{shownElectricalAngleDeg.toFixed(1)}° elec</dd></div>
