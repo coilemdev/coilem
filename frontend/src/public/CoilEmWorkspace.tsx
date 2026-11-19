@@ -2874,6 +2874,13 @@ function readQualification(value: unknown): PublicQualification | null {
   return { status: raw.status, reason: raw.reason, caveats };
 }
 
+function qualificationForDisplay(qualification: PublicQualification | null, config: MotorConfig): PublicQualification | null {
+  if (qualification?.status === 'experimental' && config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape') {
+    return { status: qualification.status, reason: 'Qualification Pending', caveats: [] };
+  }
+  return qualification;
+}
+
 /** Status, reason and caveats, so experimental results never look qualified. */
 function QualificationNote({ qualification }: { qualification: PublicQualification }) {
   return (
@@ -3048,7 +3055,7 @@ function HealthPanel({
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
-  const qualification = geometryStale ? null : readQualification(geometry?.metadata?.qualification);
+  const qualification = geometryStale ? null : qualificationForDisplay(readQualification(geometry?.metadata?.qualification), config);
   // Can it be wound: the wire against the slot, the slot mouth and the bends it has to make (windingBuild.ts).
   const windingRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
   const windingChecks = windingRecord ? windingBuildChecks({
@@ -3898,7 +3905,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     : validationChecking
       ? 'Calculating…'
       : 'Estimate unavailable';
-  const validationQualification = readQualification(validation?.qualification);
+  const validationQualification = qualificationForDisplay(readQualification(validation?.qualification), config);
   const positionsText = validation
     ? analysisPositions(config, validation, selectedSolver)
     : validationChecking
@@ -4860,7 +4867,7 @@ function ReportStage({
   const fieldPlot = result.field_line_plot;
   const coggingWaveform = result.summary.cogging ? result.cogging_torque_waveform : null;
   const sixStep = resultUsesSixStep(result, config);
-  const reportQualification = readQualification(result.qualification);
+  const reportQualification = qualificationForDisplay(readQualification(result.qualification), config);
   const completeLoadedCycle = result.solve_metadata.loaded_cycle_complete === true;
   const backEmfLine = lineBackEmf(result);
   const backEmfSeries = (series: WaveformSeries[]): WaveformSeries[] => series.map((item) => {
