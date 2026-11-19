@@ -1232,9 +1232,11 @@ test.describe('public developer preview release rehearsal', () => {
       await page.getByRole('menuitem', { name: new RegExp(`^${label}`) }).click();
       const response = await previewed;
       expect(response.status(), `${label}: ${await response.text()}`).toBe(200);
-      expect(response.request().postDataJSON().stator.tooth_shoe_enabled, label).toBe(false);
+      const requestConfig = response.request().postDataJSON();
+      expect(requestConfig.stator.tooth_shoe_enabled, label).toBe(false);
       await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeEnabled();
       if (label === 'IPM 10p V-shape') {
+        expect(requestConfig.solve_params).toMatchObject({ solve_quality: 'fine', mesh_density: 'fine', nonlinear_solver: 'newton' });
         const qualification = page.locator('.design-health-issue').filter({ hasText: 'Experimental motor combination' });
         await expect(qualification.locator('.design-health-issue-copy')).toHaveText('Qualification Pending');
       }

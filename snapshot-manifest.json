@@ -7255,8 +7255,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 7482,
-      "sha256": "66179d0d2b9b4743f85148305d89fb82d04f54a57ca03bbfc7f983ad3a14373d"
+      "bytes": 7789,
+      "sha256": "8cb9217886489b0e15955ff4cbb6b254515bddffe08c30c289ef54b6261926aa"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -7630,8 +7630,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 181505,
-      "sha256": "e602e80b47505d47f82d365c772141838f04990824955f227cd56aaaba90f81b"
+      "bytes": 181683,
+      "sha256": "460d4316ee2ba3f5496fb9b066930ad9bcf20dbb94475f9e33377567473f20d9"
     },
     {
       "path": "frontend/tsconfig.public.json",
