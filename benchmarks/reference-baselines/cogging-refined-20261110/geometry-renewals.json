@@ -23,7 +23,6 @@
           "fixture_sha256": "7e1329e2eece8c1c7b23b0b7e862c82a3c659fced4b99b795238c4679ea3e15c",
           "config_dump_sha256": "6bf1220d549089c1d55d9a73014860182d62102393704a18a12e4feb20d6591d",
           "geometry_ir_sha256": "a15155ab22dc8e5c6eaa19a760e8995190e22347a40715fcf35a5b6fc307b601",
-          "full_motor_mesh_triangles": 32222,
           "old_graph_projection_differences": 0
         },
         "spm_8p48s_distributed_femm_validation__cogging": {
@@ -31,7 +30,6 @@
           "fixture_sha256": "851e55cebd81733996d8549f9153d2e9998b55094cc4e6332ae76cf1f76ebac1",
           "config_dump_sha256": "aad06075a423033d8e387ba37ce9b519b3a7a2ef8afada1b8fa29b622cd991c8",
           "geometry_ir_sha256": "39073dce116f00055bdc54d9d81eb71914aeb4347b4e0d5ee0a48845df1769e1",
-          "full_motor_mesh_triangles": 44612,
           "old_graph_projection_differences": 0
         },
         "spm_12p36s_distributed_femm_validation__cogging": {
@@ -39,7 +37,6 @@
           "fixture_sha256": "4e27491c2d31ea3119a3034bbcda330c016db340aab51d9f3044686ef0bfdfd8",
           "config_dump_sha256": "17331d87afa1aad230d1f545aafb874b733ea845f909f135bf52ac5095e0ce39",
           "geometry_ir_sha256": "29c20594527933c0f19cc040bf3d3ba1155291fe673be294a6788b0269b8f9d2",
-          "full_motor_mesh_triangles": 39236,
           "old_graph_projection_differences": 0
         }
       }
@@ -68,7 +65,6 @@
           "config_dump_sha256": "753429bdfdf8229ab7ea262450e26ef4e3299f6b321d44ffc74b5a656ec3fdbe",
           "geometry_ir_sha256": "671544c4a4572d4d2dc5ad9eff6accb6bc1ae6f443d829268ab8606153c99c5d",
           "full_motor_mesh_sha256": "4cdaec70535a78f3d60a6627b2fe9080b3cfbd773e88200934676e3d5b5b85e8",
-          "full_motor_mesh_triangles": 32962,
           "old_graph_projection_differences": 0
         },
         "spm_8p48s_distributed_femm_validation__cogging": {
@@ -77,7 +73,6 @@
           "config_dump_sha256": "86661c5fcb58edccc1abc21ae61880b0bd4ce1f4288d9a6248d69ad6bb0b613c",
           "geometry_ir_sha256": "ebced76920fa1652634b210ed67428cd30cd618e162c7b22124d8b55fef4033c",
           "full_motor_mesh_sha256": "c58afcd186aee585253769ea4797830f2784a82dd2f5f5d0b419e2a0edcffb17",
-          "full_motor_mesh_triangles": 45300,
           "old_graph_projection_differences": 0
         },
         "spm_12p36s_distributed_femm_validation__cogging": {
@@ -86,7 +81,6 @@
           "config_dump_sha256": "fe44e4fbf009e86402cbc33ce373a8146c99ffa889acddbbc5ffa15da819d9c6",
           "geometry_ir_sha256": "b5662076110ff2eef80b52b950deedcc7451576bc3437fe7e2cbb50fcc91d7c0",
           "full_motor_mesh_sha256": "f71d6d5c1c9d3eaa801c44604814edb400eeed5e9bef6152871c841cad0d8b53",
-          "full_motor_mesh_triangles": 39184,
           "old_graph_projection_differences": 0
         }
       }

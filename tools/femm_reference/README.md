@@ -112,23 +112,4 @@ old source directories, checkpoint recovery and FEMM installation-path forwardin
 python -m pytest tests/test_femm_reference_adapter.py tests/test_reference_positions.py -q
 ```
 
-## Reduced full-motor rotor-loss matrix (#306)
-
-`tools.rotor_matrix_native` collects the registered SPM/flat-IPM fixed-material
-histories. `tools.rotor_matrix_report native` audits each full 384-pose history
-plus endpoint and evaluates it at 1500/3000 rpm before sealing its native
-analysis for the reference collector.
-
-`python -m tools.femm_reference.rotor_matrix_history --case spm-no-load ...`
-uses the matched collector with fixture-aware input checks. Other case IDs are
-`ipm-loaded`, `ipm-loaded-finer` and `ipm-no-load`. Prepare zero once with
-`--limit 1`, then run at most two disjoint shards, `--shard 0/2` and `1/2`.
-The 96/192/384 subsets use `--stride 4`, `2`, `1` and `--resume`, preserving
-every existing checkpoint. Pin the collection sources before starting and
-keep each material mesh fixed through the full turn.
-
-`tools.rotor_matrix_report reference` audits actual saved models, currents,
-meshes, raw-field hashes, closure and independent direct-DFT loss at both
-evaluation speeds. It records collection speed separately and never rewrites
-the original protocol to reuse fields at the second speed. This development
-collection is separate from the existing A-F torque/back-EMF benchmark.
+Release reference studies use the private experiments repository and its publication policy.

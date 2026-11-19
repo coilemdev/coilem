@@ -68,6 +68,23 @@ def test_schema_describes_inputs_units_setups_and_exit_codes(capsys, tmp_path) -
     assert [setup["kind"] for setup in schema["reference_setups"]] == ["reference", "reference"]
 
 
+def test_redirected_cp1252_stdout_preserves_schema_and_input_errors(tmp_path) -> None:
+    env = {**os.environ, "PYTHONIOENCODING": "cp1252:strict", "PYTHONUTF8": "0"}
+    command = [sys.executable, "-m", "coilem"]
+    out = tmp_path / "schema.json"
+    subprocess.run([*command, "schema", "--out", str(out)], cwd=ROOT, env=env, capture_output=True, check=True)
+    schema = subprocess.run([*command, "schema"], cwd=ROOT, env=env, capture_output=True, check=True)
+    assert json.loads(schema.stdout) == json.loads(out.read_text(encoding="utf-8"))
+    assert "θ" in out.read_text(encoding="utf-8")
+
+    missing = tmp_path / "θ.coilem"
+    failure = subprocess.run([*command, "check", str(missing)], cwd=ROOT, env=env, capture_output=True)
+    document = json.loads(failure.stdout)
+    assert failure.returncode == document["exit_code"] == 3
+    assert document["error"]["error_code"] == "DESIGN_FILE_UNREADABLE"
+    assert str(missing) in document["error"]["message"]
+
+
 def test_check_reports_the_setup_and_effective_settings(capsys, design) -> None:
     code, document, err = run(capsys, "check", str(design))
     assert code == 0 and document["schema"] == "coilem.cli.check/v1"
@@ -96,6 +113,33 @@ def test_check_settings_match_the_python_client_and_the_solve_route(capsys, desi
     ours["solve_params"].pop("stream_noload_field_lines")
     route["solve_params"].pop("stream_noload_field_lines")
     assert ours == route
+
+
+def test_active_and_requested_setup_share_catalog_defaults_after_clearing_overrides(capsys, design) -> None:
+    saved = json.loads(design.read_text(encoding="utf-8"))
+    library = saved["run_setups"]
+    active = next(setup for setup in library["profiles"] if setup["id"] == library["activeId"])
+    keys = ("magnet_temperature_C", "mechanical_loss_W", "winding_temperature_C")
+    for key in keys:
+        active["parameters"][key] = None
+        saved["solve_params"].pop(key, None)
+    saved["solve_params"]["winding_temperature_C"] = None
+    original = json.dumps(saved)
+    design.write_text(original, encoding="utf-8")
+
+    default_code, default, _ = run(capsys, "check", str(design))
+    named_code, named, _ = run(capsys, "check", str(design), "--setup", active["name"])
+    assert default_code == named_code == 0
+    assert default["effective"] == named["effective"] == coilem.prepare(coilem.Motor.load(design)).effective_settings()
+    assert default["setup"]["run_setup"] == named["setup"]["run_setup"] == coilem.prepare(design).setup.label
+    assert default["setup"]["modified"] is named["setup"]["modified"] is False
+    assert design.read_text(encoding="utf-8") == original
+
+    saved["solve_params"].update(magnet_temperature_C=100, winding_temperature_C=80, mechanical_loss_W=7)
+    cleared = coilem.prepare(saved, setup=active["name"])
+    assert cleared.effective_settings() == named["effective"]
+    assert all(key not in cleared.request["solve_params"] for key in keys)
+    assert saved["solve_params"]["magnet_temperature_C"] == 100
 
 
 def test_setups_lists_the_designs_setups(capsys, design) -> None:

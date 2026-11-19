@@ -2,10 +2,7 @@
 
 Magneto2D 0.6.0 is coilEM's native Rust 2D magnetostatic finite-element solver
 and postprocessor. It is bundled by the coilEM source application; the solver
-and application have separate version numbers. Magneto2D 0.6.0 is the solver in
-the coilEM 0.5.8 release candidate, which has not yet been qualified. Magneto2D
-0.5.0, the solver in coilEM 0.5.6 and 0.5.7, passed the registered
-qualification on Windows and macOS; see [release status](../PUBLICATION_STATUS.md). The public application uses
+and application have separate version numbers. The 0.5.9 candidate has changed physics relative to the last public A-F measurement. See [validation](VALIDATION.md#qualification-status) for the measured source and scope. The public application uses
 Python and Gmsh to build tagged solve meshes, then invokes Magneto2D for field
 solving and electromagnetic postprocessing.
 
@@ -25,7 +22,7 @@ limitations.
 | --- | --- |
 | Physics | 2D magnetostatic FEM with nonlinear electrical steel |
 | Rotor layout | Inner rotor, or outer rotor (outrunner) for SPM only; see [Outrunner](OUTRUNNER.md) |
-| Qualified motor paths | Per [Validation](VALIDATION.md#qualification-status), for inner-rotor machines with the bundled M350-50A steel: SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings (full pitch or 5/6 short pitch) under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
+| Motor paths covered by the historical full-motor record | Per [Validation](VALIDATION.md#qualification-status), for inner-rotor machines with the bundled M350-50A steel: SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings (full pitch or 5/6 short pitch) under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
 | Experimental motor paths | V-shape IPM (all six fixtures pass, but its fundamental Back-EMF error against FEMM has grown), outer-rotor SPM, single-layer distributed and two-layer concentrated windings, imported steels, the Fast mesh build, and accepted combinations the benchmark did not measure, such as six-step with distributed windings or IPM with distributed windings |
 | Mesh producer | Native Gmsh only |
 | Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). The Design panel calls this **Wound teeth**: Alternate or All. Other concentrated layouts wind one phase per slot in one layer |
@@ -742,10 +739,7 @@ full-circle solve of the same mesh would. Slots keep their true global index
 wherever the wedge lies, which keeps their winding direction right when a
 slot-pitch rotation of the mesh is reused for another rotor position.
 
-A sector solve reproduces the full-circle solve of its own mesh, copied around
-the circle, to round-off; `tests/test_sector_symmetry.py` checks this on inner
-and outer rotors, periodic and anti-periodic. Against an independently meshed
-full circle it agrees to mesh noise.
+Sector modeling is experimental. The symmetry tests exercise periodic and anti-periodic boundaries on inner and outer rotors.
 
 **Results and storage.** Field frames are drawn and post-processed as the full
 motor. A stored frame keeps one sector and is rebuilt as the full motor when it
@@ -756,7 +750,7 @@ position through the sweep. The full motor's stator mesh is the same at every
 rotor position. A sector's stator cut moves with the rotor, so a sector meshed
 freely would mesh its stator differently at most positions, and looking each
 element's flux density up in a different triangle each time reads as extra
-harmonics: sector yoke iron loss came out 19-69% high on the outrunners. The
+harmonics and overestimate loss. The
 sector's stator iron (teeth and yoke) is therefore cut into slot pitches at the
 tooth centres. Gmsh meshes the first pitch and makes each next one an exact
 turned copy (periodic surfaces, each chained to the one before, so every curve
@@ -767,9 +761,7 @@ fixed order. The mesh is then turned back, and nodes on the cut edges are put
 back exactly on the cuts. Boundaries the iron shares are broken at the new
 points (the tooth tips with the air gap), so the mesh stays joined. The lines
 through the tooth centres are mesh lines only: no tie or boundary condition
-acts on them. Every position then has the same stator iron mesh, to about
-1e-5 mm, and sector iron loss is within 1% of the full motor's on every A-F
-benchmark case. The rotor is meshed freely at each position, as in the full
+acts on them. The stator iron mesh repeats at each position. The rotor is meshed freely at each position, as in the full
 motor; a loss that follows rotor elements through a sweep would need the same
 treatment there (pole-pitch pieces in a fixed frame).
 
@@ -793,15 +785,7 @@ chosen and otherwise solves the full motor ([Saved run setups](SOLVE_SETUPS.md))
 **Cogging from a sector.** At each rotor position the stator is cut through
 the tooth nearest the rotor cut, so the two cuts stay within half the common
 pitch of slots and poles, and a position one cogging period on is cut the same
-way. A cut held at one tooth let the rotor cut drift up to half a pole pitch
-away over a sweep; that steady change in the mesh where the wedges meet moved
-the cogging fundamental 7% from a full-motor solve on the shoed 8p/12s example
-and 3% on the flat IPM 24s/16p. With the nearest tooth, all 12 benchmark
-cogging cases are within 5.9% of FEMM as sectors and 6.0% as full motors at
-their registered meshes; sector and full differ from each other by at most 5.3
-points on peak-to-peak, each carrying its own Medium-mesh noise, and agree
-within 0.4% at the Very fine mesh. Loaded torque, ripple and back-EMF agree at
-every mesh. The app still warns when One sector and Cogging torque are both
+way. The app warns when One sector and Cogging torque are both
 selected below the Very fine mesh, and the warning is repeated in the pre-solve
 checks and with the results.
 

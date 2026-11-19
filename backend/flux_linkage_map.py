@@ -374,7 +374,8 @@ def run_flux_linkage_map(
         gamma_deg=gammas,
         reference_speed_rpm=solve_params.rated_speed_rpm,
         magnet_temperature_C=solve_params.magnet_temperature_C,
-        rotor_positions=max(2, positions),
+        # A map assembled entirely from saved points still uses the preset's loaded sweep.
+        rotor_positions=positions or map_positions_per_point(preset),
         mesh_density=str(solve_params.mesh_density),
         torque_method=solve_params.torque_method,
         rotor_iron_loss_requested=bool(config.solve_options and config.solve_options.rotor_iron_loss),

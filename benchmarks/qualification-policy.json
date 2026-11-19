@@ -2,12 +2,12 @@
   "schema": "coilem.qualification_policy/v1",
   "approved_reports": {
     "windows-x86_64": {
-      "file": "benchmarks/qualification-9f2ce84ef28d/windows-x86_64/report/benchmark_summary.json",
-      "sha256": "e3e143921ea32987b09526dca17a20c819f5e2f31f51dfbc072e1727721b898c"
+      "file": "benchmarks/qualification-5e6fab283d16/windows-x86_64/report/benchmark_summary.json",
+      "sha256": "28289334453652775a84d0ae7cd4894a34fe4f224b07466ec532beb37f4c3726"
     },
     "macos-arm64": {
-      "file": "benchmarks/qualification-9f2ce84ef28d/macos-arm64/report/benchmark_summary.json",
-      "sha256": "ca6b9f5ab770bf0061daee8320e31870587f058eba46f702b4f6b2a784a29e1b"
+      "file": "benchmarks/qualification-5e6fab283d16/macos-arm64/report/benchmark_summary.json",
+      "sha256": "9c4ae0e0ffef9f8fcb6aed6df795b969c7373fdf2e17bee440e19f307ff97373"
     }
   },
   "additional_replay_tolerances": {
@@ -24,27 +24,25 @@
       1e-06
     ]
   },
-  "note": "Release owner approved protocol 1.12.0 for coilEM 0.5.9. All 69 retained A\u2013F requests match the prior approved policy within the existing replay tolerances. All 16 new Phase G cases and the separate Prius software checks pass on both platforms. The prior policy remains in the history.",
-  "protocol_version": "1.12.0",
+  "note": "Protocol 1.10.0 baselines after the V-shape corner mesh patch (#317). The six ipm_vshape_8p12s cases moved with that change and were accepted by the owner; every other suite and Prius value agreed with the previous approved baseline within the replay tolerances. Prior records and policy remain immutable. Replay tolerances, FEMM gates and the registered suite and reference bundle are unchanged.",
+  "protocol_version": "1.10.0",
   "registered_scope": {
-    "candidate_commit": "9f2ce84ef28de3d732b0fa5a880822c677b671c1",
-    "publication_projection": "benchmarks/qualification-9f2ce84ef28d/publication-projection.json",
-    "publication_projection_sha256": "8200c337124493cfc0749b8857a7066da6a856a01ee5de69cac1badbdc841fcb",
-    "protocol_registration": "benchmarks/ag-v1.12/benchmark_spec.json",
-    "protocol_registration_sha256": "420eb2ebe92e5109d97246fd883e83636650ba3f3d8d21908cf1573f1d3a5c3a",
-    "approval": "benchmarks/qualification-9f2ce84ef28d/qualification.json",
-    "approval_sha256": "e2fd4b7c2bad8fdb5f4816364e70d7bb438e34f13acbbcb2de7fcfb09b0ac496",
-    "previous_policy": "benchmarks/qualification-policy-history/protocol110-5e6fab2-20261118.json",
-    "previous_policy_sha256": "7327891a89e7b8f3d73f934f16e252ccbf80e1e7321c0299b7d6b700895e5bde"
+    "candidate_commit": "5e6fab283d165dc9e2ccec7e1a477c7080a993c4",
+    "publication_projection": "benchmarks/qualification-5e6fab283d16/publication-projection.json",
+    "publication_projection_sha256": "1e462828f50949d3bda45bcb44b1b456621feac97d2d4c6947d9a064126b3da2",
+    "protocol_registration": "benchmarks/qualification-70c5e3404c19/qualification.json",
+    "protocol_registration_sha256": "e97815eba5d7a0c6a1e0c0851f44be9e4b4bca7fde9abaf6b62138a3638581cb",
+    "previous_policy": "benchmarks/qualification-policy-history/protocol110-70c5e34-20261116.json",
+    "previous_policy_sha256": "db3b75f06607b6d8f88709fc7d8135452a401e0807b3319e5ed45a2ed92201f2"
   },
   "approved_prius_reports": {
     "windows-x86_64": {
-      "file": "benchmarks/qualification-9f2ce84ef28d/windows-x86_64/prius/app-results.json",
-      "sha256": "c8de5d28be977a1d0e0d841036a96df52113ac16ae49d91e8e9b132f493a97ba"
+      "file": "benchmarks/qualification-5e6fab283d16/windows-x86_64/prius/app-results.json",
+      "sha256": "64e29621dc81f9b817abf5bbb6c691d0c08830f1f6e9b5a8376b256a56f6fe04"
     },
     "macos-arm64": {
-      "file": "benchmarks/qualification-9f2ce84ef28d/macos-arm64/prius/app-results.json",
-      "sha256": "73450a80c4b33b3b4fd171d9a3cda68b51d1c24b70ee603713d75d66e1f1f70b"
+      "file": "benchmarks/qualification-5e6fab283d16/macos-arm64/prius/app-results.json",
+      "sha256": "25b4a75e635c4d8a75e615f41805e682d22dc4bf586c2b575a6ef920dc58b7c9"
     }
   }
 }

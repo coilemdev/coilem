@@ -1653,6 +1653,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       config,
       designName ?? `coilem-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
       library,
+      selectedSolver,
     ).then((saved) => {
       if (!saved) return;
       // The saved file can reopen this library, so this browser keeps it from now on.
@@ -1752,10 +1753,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           saved_run: payload.saved_run,
           qualification: provenance?.qualification ?? null,
         } as unknown as SolveResult);
-        setView('solve');
-        // Prepare the mesh as Continue to Solve does, so Run again is available
-        // without a trip back to Design; the stored result stays on show meanwhile.
-        if (!guidedActive) void prepareMesh(parsed.config);
+        // Back to Solve prepares the mesh when the user chooses to rerun.
+        setView('report');
         const completedAt = typeof savedRun.completed_at === 'string' ? new Date(savedRun.completed_at).toLocaleString() : null;
         const playback = payload.field_playback as { available?: unknown } | undefined;
         setNotice([

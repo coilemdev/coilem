@@ -7,9 +7,7 @@ import pytest
 from backend import resources
 from backend.benchmark_suite import PROTOCOL_VERSION, SECTOR_PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS, references
 from backend.benchmark_suite.cli import inputs
-from backend.benchmark_suite.contract import AF_BUNDLE as DEFAULT_BUNDLE
-from backend.benchmark_suite.contract import AF_SPEC as SPEC
-from backend.benchmark_suite.contract import ROOT, SECTOR_SPEC, canonical, read
+from backend.benchmark_suite.contract import DEFAULT_BUNDLE, ROOT, SECTOR_SPEC, SPEC, canonical, read
 from backend.benchmark_suite.references import load_bundle, load_suite
 from backend.benchmark_suite.report import solved_region_summary, solved_region_text
 from tools import make_sector_protocol
@@ -20,7 +18,7 @@ from tools.benchmark_shards import plan
 def test_the_sector_suite_is_supported_but_not_the_default():
     spec = load_suite(SECTOR_SPEC)
     assert spec["protocol_version"] == SECTOR_PROTOCOL_VERSION == "1.11.0" and "1.11.0" in SUPPORTED_PROTOCOL_VERSIONS
-    assert PROTOCOL_VERSION == "1.12.0" and resources.BENCHMARK_SUITE_FILE == "benchmarks/ag-v1.12/benchmark_spec.json"
+    assert PROTOCOL_VERSION == "1.10.0" and resources.BENCHMARK_SUITE_FILE == "benchmarks/af-v1.10/benchmark_spec.json"
     assert resources.BENCHMARK_SECTOR_SUITE_FILE == "benchmarks/af-v1.11-sector/benchmark_spec.json"
 
 
@@ -123,7 +121,7 @@ def test_the_sector_bridge_rejects_unregistered_changes(monkeypatch, mutation):
 
 
 def test_the_sector_collection_plans_the_same_shards_on_the_sector_suite():
-    registered, sector = plan(suite=resources.BENCHMARK_AF_SUITE_FILE), plan(suite=resources.BENCHMARK_SECTOR_SUITE_FILE)
+    registered, sector = plan(), plan(suite=resources.BENCHMARK_SECTOR_SUITE_FILE)
     assert sector["suite"] == resources.BENCHMARK_SECTOR_SUITE_FILE and sector["plan_sha256"] != registered["plan_sha256"]
     assert sector["shards"] == registered["shards"] and sector["prius_jobs"] == registered["prius_jobs"]
 

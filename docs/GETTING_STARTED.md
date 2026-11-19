@@ -6,8 +6,8 @@ report export. If you installed coilEM with `uv tool install coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 
-The source application in this guide is coilEM 0.5.8 and the bundled solver is
-Magneto2D 0.6.0. This release candidate has not yet been qualified or released.
+This guide follows the coilEM 0.5.9 development branch with Magneto2D 0.6.0.
+Run `coilem version` to identify your installed build.
 coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
 guidance, not a broad operating-system support guarantee. Record the exact
@@ -165,6 +165,12 @@ efficiency includes the loaded fields it needs even when Torque is off.
 Selecting an accuracy preset keeps your analysis choices. Unrequested results
 are left out of Results and exports rather than reported as zero.
 
+For an experimental rotor iron loss estimate, enable **Losses & efficiency**
+and select the rotor iron loss option. It applies to sinusoidal full-motor
+inner SPM and flat-IPM runs using the bundled M350-50A rotor steel and Newton solver.
+It adds a dedicated 384-position mechanical turn and a closure solve. Review
+the separate hysteresis and lamination eddy terms in Results and exports.
+
 Selecting **Torque–speed map** reveals its peak and continuous phase-current
 limits, DC bus, top speed, drive control and map grid. Enter your supply
 voltage; when the design has none, the initial value is 48 V. **Run analysis**
@@ -197,16 +203,12 @@ makes each Gmsh mesh about four times faster with nearly the same element
 count. Results move at mesh-noise level. The benchmark measured Precise
 meshes, so a Fast run is experimental.
 
-**Solved region → One sector** meshes and solves one repeating sector of the
-motor instead of the whole cross-section: a quarter of a 12-slot, 4-pole motor,
-an eighth of a 48-slot, 8-pole one. coilEM finds the sector from the slot and
-pole counts and checks that the geometry and the winding really repeat over it;
-a motor that does not repeat is solved in full. The pinned Prius and LRK
-reference models solve as sectors too. Torque, flux linkage, Back-EMF and losses are those of the whole motor,
-and the field view shows the whole motor. Results match a full solve to
-mesh-noise level. The benchmark measured full-motor solves, so a sector run is
-experimental. **Full motor** is the default and always solves the whole
-cross-section.
+**Solved region → One sector (Experimental)** meshes and solves a repeating
+part of the motor, then reconstructs the full field view. coilEM checks whether
+the geometry and winding repeat over the chosen sector. If they do not, it
+uses the full motor. Check the actual solved region in Results. **Full motor**
+is the default. Use it for reference results, particularly cogging torque, and
+for experimental rotor iron loss.
 
 When meshing completes, confirm:
 
@@ -236,9 +238,10 @@ completed run.
 Tick **Cogging torque** under **Analysis** to add a no-current sweep over
 one cogging period, 180·gcd(slots, poles)/slots electrical degrees, at 12, 24
 or 48 positions per period for Preview, Standard and High accuracy (Maximum
-accuracy uses High accuracy's 48), plus the repeated end. The run estimate includes it. Cogging torque is experimental: it
-has no FEMM gate yet. Keep **Corner refinement** on: without it, cogging on the
-example design is about twenty times noisier.
+accuracy uses High accuracy's 48), plus the repeated end. The run estimate
+includes this sweep. Keep **Corner refinement** on when inspecting cogging
+torque. See [Validation](VALIDATION.md) for the measured full-motor cases
+and mesh conditions.
 
 If you only want a fast pipeline check, choose **Preview**. Preview does not
 report an under-sampled THD value. Use **Standard** for the release walkthrough; it
@@ -246,8 +249,7 @@ reports Back-EMF THD and the H1-H12 spectrum. **High accuracy** is the UI name
 for the `fine` preset; it uses a fine mesh and extends the spectrum through H24,
 but it is not a separate launch benchmark requirement. **Maximum accuracy** is High
 accuracy's angle grid on the Very fine mesh, about 3–6 times Medium's elements
-and correspondingly slower; use it for cogging, especially from a one-sector
-solve, and to check that results have converged.
+and correspondingly slower. Use it to check how sensitive a result is to mesh density.
 
 ## 9. Review the result
 

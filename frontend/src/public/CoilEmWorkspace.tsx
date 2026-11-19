@@ -3782,9 +3782,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
   const hasLoadedWindow = config.solve_options.torque_sweep || config.solve_options.losses_efficiency;
-  const partialPlanNote = !hasLoadedWindow ? null : config.solve_params.solve_quality === 'quick'
-    ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window. Iron loss and efficiency may be unavailable; choose Custom with a full electrical cycle for cycle-average comparisons.'
-    : config.solve_params.solve_quality === 'custom' && sweepRangeDeg < 360
+  const partialPlanNote = !hasLoadedWindow ? null : lossesSweep.solve_params.solve_quality === 'quick'
+    ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window.'
+    : lossesSweep.solve_params.solve_quality === 'custom' && lossesSweep.solve_params.rotor_sweep_range_deg < 360
       ? 'This custom sweep covers a partial electrical window. Torque and d/q averages describe only that window.' : null;
   const sweepPoleCount = config.rotor.pole_count;
   useEffect(() => {

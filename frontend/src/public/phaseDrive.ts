@@ -59,7 +59,7 @@ export function rotorElectricalDeg(rotorMechDeg: number, poleCount: number): num
  * settings give them by default; the Field solution passes the currents its
  * solve recorded, so the waveforms belong to the field on screen.
  */
-export type PhaseCurrentSampler = (rotorElecDeg: number) => [number, number, number];
+export type PhaseCurrentSampler = (rotorElecDeg: number) => [number, number, number] | null;
 
 /** A / B / C terminal currents at a rotor electrical angle, each in -1..1. */
 export function phaseCurrents(drive: PhaseDrive, rotorElecDeg: number): [number, number, number] {
@@ -140,7 +140,8 @@ export function phaseChargeShift(
   let sum = 0;
   for (let angle = 0; angle < end; angle += stepDeg) {
     const width = Math.min(stepDeg, end - angle);
-    sum += sample(angle + width / 2)[phaseIndex] * width;
+    const currents = sample(angle + width / 2);
+    if (currents) sum += currents[phaseIndex] * width;
   }
   return (sum * Math.PI) / 180;
 }
@@ -205,7 +206,7 @@ export function waveformTrace(
   windowElecDeg = 360,
   samples = Math.min(1440, Math.max(180, Math.ceil((windowElecDeg / 360) * 72))),
   sample: PhaseCurrentSampler = (angle) => phaseCurrents(drive, angle),
-): Array<[number, number]> {
+): Array<[number, number | null]> {
   const left = strip.x + STRIP_LABEL;
   const right = strip.x + strip.width - STRIP_END;
   const mid = strip.y + strip.height / 2;
@@ -213,8 +214,8 @@ export function waveformTrace(
   const amplitude = strip.height * TRACE_AMPLITUDE;
   return Array.from({ length: samples + 1 }, (_, step) => {
     const t = step / samples;
-    const value = sample(wrap360(rotorElecDeg - (1 - t) * windowElecDeg))[phaseIndex];
-    return [left + (right - left) * t, mid - value * amplitude];
+    const currents = sample(wrap360(rotorElecDeg - (1 - t) * windowElecDeg));
+    return [left + (right - left) * t, currents ? mid - currents[phaseIndex] * amplitude : null];
   });
 }
 

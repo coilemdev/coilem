@@ -256,6 +256,13 @@ class RotorIronLoss(BaseModel):
     endpoint_rms_component_difference_T: Optional[float] = Field(default=None, ge=0)
     history_sha256: Optional[str] = None
 
+    @property
+    def history_positions_including_closure(self) -> int | None:
+        """Only a completed rotor_material_harmonic/v1 record proves the independent endpoint."""
+        if self.status == "unavailable" or self.samples_per_mechanical_turn is None:
+            return None
+        return self.samples_per_mechanical_turn + 1
+
     @model_validator(mode="after")
     def values_follow_status(self):
         metadata = (self.speed_rpm, self.mechanical_frequency_Hz, self.endpoint_max_component_difference_T,

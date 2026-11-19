@@ -246,9 +246,8 @@ def test_public_docs_match_reduced_release_contract() -> None:
     assert "H24" in documents["docs/GETTING_STARTED.md"]
     guide_text = " ".join(documents["docs/GETTING_STARTED.md"].split())
     assert "Preview does not report an under-sampled THD value" in guide_text
-    assert "Cogging torque is experimental: it\nhas no FEMM gate yet." in documents[
-        "docs/GETTING_STARTED.md"
-    ]
+    assert "Keep **Corner refinement** on when inspecting cogging torque." in guide_text
+    assert "[Validation](VALIDATION.md) for the measured full-motor cases and mesh conditions." in guide_text
     assert "Ideal six-step (120°)" in documents["docs/GETTING_STARTED.md"]
     assert "two conducting phases and one floating phase" in documents[
         "docs/GETTING_STARTED.md"

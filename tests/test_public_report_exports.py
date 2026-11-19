@@ -797,4 +797,3 @@ def test_pdf_loss_shares_add_up_like_the_losses_card() -> None:
     assert texts[4:] == ["<1%", "<1%"]
     numbers = [int(text[:-1]) for text in texts if text != "<1%"]
     assert sum(numbers) == 100
-

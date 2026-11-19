@@ -44,7 +44,13 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/reference_models/__init__.py",
     "backend/reference_models/prius.py",
     "backend/reference_models/lrk.py",
+    "backend/iron_loss.py",
+    "backend/rotor_iron_loss.py",
     "backend/rotor_layout.py",
+    "backend/rotor_loss_solver.py",
+    "backend/rotor_motion_mesh.py",
+    "backend/sector_geometry.py",
+    "backend/sector_tiling.py",
     "backend/solver/__init__.py",
     "backend/solver/_helpers.py",
     "backend/solver_contract.py",
@@ -57,7 +63,6 @@ PHYSICS_PYTHON_SOURCES = (
     "backend/loss_breakdown.py",
     "backend/winding_utils.py",
 )
-LOSS_PHYSICS_PYTHON_SOURCES = ("backend/iron_loss.py",)
 PHYSICS_DATA_SOURCES = (
     "materials/electrical-steel/M350-50A.csv",
     "backend/reference_models/pyleecan_prius_2004.json",
@@ -103,11 +108,10 @@ def solver_physics_sources(root: Path) -> tuple[str, ...]:
     return (SOLVER_LOCK_FILE, *sorted(sources))
 
 
-def physics_sources(root: Path, *, include_losses: bool = False) -> tuple[str, ...]:
+def physics_sources(root: Path) -> tuple[str, ...]:
     """Every physics source of a source checkout, as repository paths."""
 
-    losses = LOSS_PHYSICS_PYTHON_SOURCES if include_losses else ()
-    return (*PHYSICS_PYTHON_SOURCES, *losses, *PHYSICS_DATA_SOURCES, *solver_physics_sources(root))
+    return (*PHYSICS_PYTHON_SOURCES, *PHYSICS_DATA_SOURCES, *solver_physics_sources(root))
 
 
 def solver_source_hashes(root: Path) -> dict[str, str]:

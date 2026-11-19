@@ -170,7 +170,7 @@ def check(root: Path = ROOT, *, protocol: str | None = None, candidate: str | No
         spec = importlib.util.spec_from_file_location("release_physics", root / "backend/benchmark_suite/physics.py")
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        sources = module.physics_sources(root, include_losses=True) if protocol == "1.12.0" else module.physics_sources(root)
+        sources = module.physics_sources(root)
         actual = {name: hashlib.sha256((root / name).read_bytes()).hexdigest() for name in sources}
         for name, digest in actual.items():
             if identity["source_files"].get(name) != digest:
@@ -277,7 +277,7 @@ def check(root: Path = ROOT, *, protocol: str | None = None, candidate: str | No
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidate", help="exact commit measured before evidence publication")
-    parser.add_argument("--protocol", default="1.12.0")
+    parser.add_argument("--protocol", default="1.10.0")
     args = parser.parse_args(argv)
     errors = check(protocol=args.protocol, candidate=args.candidate)
     print(json.dumps({"status": "BLOCKED" if errors else "PASS", "errors": errors}, indent=2))

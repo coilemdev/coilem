@@ -14,14 +14,23 @@ SPEC = ROOT / "benchmarks/abcd-v1.4/benchmark_spec.json"
 DEFAULT_BUNDLE = ROOT / "benchmarks/reference-baselines/ipm-high-output-v3"
 
 
-@pytest.fixture(autouse=True)
-def historical_cap_context(monkeypatch):
-    """Exercise the original cap bridge independently of the active release suite."""
-    monkeypatch.setattr(resources, "BENCHMARK_SUITE_FILE", "benchmarks/abcd-v1.4/benchmark_spec.json")
-    monkeypatch.setattr(resources, "BENCHMARK_REFERENCE_BUNDLE_DIR", "benchmarks/reference-baselines/ipm-high-output-v3")
+@pytest.fixture
+def historical_package_files(monkeypatch):
+    """Reconstruct the protocol 1.4 wheel inventory using its own frozen inputs."""
+    # Built with the historical packaging code at 33a25e18 and the byte-identical
+    # platform records now archived under records-historical/v040.
+    with monkeypatch.context() as archived:
+        suite = SPEC.relative_to(ROOT).as_posix()
+        archived.setattr(resources, "BENCHMARK_SUITE_FILE", suite)
+        archived.setattr(resources, "BENCHMARK_SECTOR_SUITE_FILE", suite)
+        archived.setattr(resources, "BENCHMARK_REFERENCE_BUNDLE_DIR", DEFAULT_BUNDLE.relative_to(ROOT).as_posix())
+        archived.setattr(resources, "BENCHMARK_RECORDS_DIR", "benchmarks/records-historical/v040")
+        archived.setattr(resources, "FROZEN_BENCHMARK_DATA_SHA256",
+                         "813d21d481008375252f8fbc057a881cde84a351d56bb2174532107c223ea558")
+        return resources.benchmark_data_files(ROOT)
 
 
-def test_cap_registration_changes_only_nine_caps_and_keeps_frozen_references():
+def test_cap_registration_changes_only_nine_caps_and_keeps_frozen_references(historical_package_files):
     old = load_suite(ROOT / "benchmarks/abcd-v1.3/benchmark_spec.json")
     new = load_suite(SPEC)
     old_configs, old_protocols, old_golden = inputs(old, old["cases"])
@@ -46,21 +55,21 @@ def test_cap_registration_changes_only_nine_caps_and_keeps_frozen_references():
     before_hashes = {p: sha(p) for p in DEFAULT_BUNDLE.glob("*.json")}
     assert load_bundle(DEFAULT_BUNDLE, new) == load_bundle(DEFAULT_BUNDLE, old)
     assert before_hashes == {p: sha(p) for p in DEFAULT_BUNDLE.glob("*.json")}
-    # The wheel must carry the historical requests needed to validate the bridge.
-    packaged = set(resources.benchmark_data_files(ROOT))
+    # The historical wheel carried every request needed to validate its cap bridge.
+    packaged = set(historical_package_files)
     assert new["reference_compatibility"]["iteration_cap_change"]["measured_suite"] in packaged
     for case in old["cases"]:
         assert all(job["fixture"] in packaged for job in case["jobs"])
 
 
-def test_packaged_cap_bridge_loads_without_source_checkout(tmp_path, monkeypatch):
-    for name in resources.benchmark_data_files(ROOT):
+def test_packaged_cap_bridge_loads_without_source_checkout(tmp_path, monkeypatch, historical_package_files):
+    for name in historical_package_files:
         target = tmp_path / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, target)
     monkeypatch.setattr(references, "DATA_ROOT", tmp_path)
-    spec = load_suite(tmp_path / resources.BENCHMARK_SUITE_FILE)
-    _, records, _ = load_bundle(tmp_path / resources.BENCHMARK_REFERENCE_BUNDLE_DIR, spec)
+    spec = load_suite(tmp_path / SPEC.relative_to(ROOT))
+    _, records, _ = load_bundle(tmp_path / DEFAULT_BUNDLE.relative_to(ROOT), spec)
     assert len(records) == 29
 
 

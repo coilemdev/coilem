@@ -19,7 +19,6 @@ from datetime import datetime
 from backend.benchmark_suite.contract import CHECKOUT, DATA_ROOT, ROOT, machine_name, read, sha
 from backend.benchmark_suite.physics import (
     BUILD_INFO_KEY,
-    LOSS_PHYSICS_PYTHON_SOURCES,
     PHYSICS_DATA_SOURCES,
     PHYSICS_DEPENDENCIES,
     PHYSICS_PYTHON_SOURCES,
@@ -35,12 +34,6 @@ RECORD_SCHEMA = "coilem.benchmark_record/v1"
 # about 2.5 times that spread; the floors cover values near zero, such as
 # no-load torque.
 TOLERANCES = {
-    # Same-platform loss replay limits; frozen FEMM acceptance remains 10%/1 mW.
-    "iron_hysteresis_loss_W": (0.005, 0.001),
-    "iron_eddy_loss_W": (0.005, 0.001),
-    "iron_loss_W": (0.005, 0.001),
-    "copper_loss_W": (0.005, 0.001),
-    "phase_resistance_ohm": (1e-6, 1e-9),
     "mean_torque_Nm": (0.005, 0.001),
     "back_emf_fundamental_V": (0.0005, 0.001),
     "back_emf_peak_V": (0.015, 0.001),
@@ -48,11 +41,6 @@ TOLERANCES = {
     "cogging_first_harmonic_Nm": (0.005, 0.0001),
 }
 VALUE_LABELS = {
-    "iron_hysteresis_loss_W": ("stator hysteresis", "W"),
-    "iron_eddy_loss_W": ("stator lamination eddy", "W"),
-    "iron_loss_W": ("stator iron", "W"),
-    "copper_loss_W": ("DC copper", "W"),
-    "phase_resistance_ohm": ("phase resistance", "ohm"),
     "mean_torque_Nm": ("mean torque", "N·m"),
     "back_emf_fundamental_V": ("back-EMF fundamental", "V"),
     "back_emf_peak_V": ("back-EMF peak", "V"),
@@ -90,9 +78,6 @@ def gated_values(row):
     if row["status"] not in EVALUATED:
         return {}
     measurements = row["measurements"]
-    if row["phase"] == "G":
-        from backend.benchmark_suite.loss_metrics import values
-        return values(measurements["native"])
     if row["phase"] == "E":
         cogging = measurements["native"]["summary"]["cogging"]
         return {"cogging_peak_to_peak_Nm": cogging["peak_to_peak_Nm"],
@@ -199,8 +184,7 @@ def installed_physics_hashes():
 
     from backend.magneto2d_adapter import MAGNETO2D_BINARY_ENV
 
-    hashes = {path: sha(ROOT / path) if (ROOT / path).is_file() else None
-              for path in (*PHYSICS_PYTHON_SOURCES, *LOSS_PHYSICS_PYTHON_SOURCES)}
+    hashes = {path: sha(ROOT / path) if (ROOT / path).is_file() else None for path in PHYSICS_PYTHON_SOURCES}
     hashes.update({path: sha((ROOT if path.startswith("backend/") else DATA_ROOT) / path)
                    if ((ROOT if path.startswith("backend/") else DATA_ROOT) / path).is_file() else None
                    for path in PHYSICS_DATA_SOURCES})
@@ -229,10 +213,6 @@ def check_physics(record):
     """Whether this installation runs the physics sources and dependencies the record measured."""
 
     hashes, solver = installed_physics_hashes()
-    if not any(case.get("phase") == "G" for case in record.get("cases", {}).values()) and "backend/iron_loss.py" not in record["physics_files"]:
-        # Legacy A-F records gate torque/BEMF/cogging, not iron-loss outputs.
-        # Phase G records additionally guard the loss kernel introduced here.
-        hashes.pop("backend/iron_loss.py", None)
     differs, unverified = [], []
     for path, expected in sorted(record["physics_files"].items()):
         actual = hashes[path] if path in hashes else solver.get(path)

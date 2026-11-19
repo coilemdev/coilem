@@ -39,13 +39,14 @@ import {
   coilSideMark,
   coilSidesFromGeometry,
   phaseCycleSampler,
+  recordedPhaseHistory,
   statorTeethFromGeometry,
   type CoilMark,
   type CoilSide,
   type FieldPhaseView,
 } from './fieldPhases';
 import { PUBLIC_MOTOR_COLORS, PUBLIC_PHASE_COLORS } from './motorPalette';
-import { phaseDriveFrame, phaseStrips, toothPoleFillOpacity, toothPoleLabelOpacity, toothPoleLabelSize, type PhaseCurrentSampler } from './phaseDrive';
+import { phaseDriveFrame, phaseStrips, scopeWindowElecDeg, toothPoleFillOpacity, toothPoleLabelOpacity, toothPoleLabelSize, type PhaseCurrentSampler } from './phaseDrive';
 import { drawCurrentMarker, drawPhaseDriveWired } from './phaseDrivePanel';
 import {
   buildTriangleGrid,
@@ -788,6 +789,12 @@ export function FieldResultPlot({
   const phasesShown = phases !== null && coilOutlines.size > 0;
   const phaseCycle = phases?.cycle ?? null;
   const phaseSampler = useMemo(() => (phaseCycle ? phaseCycleSampler(phaseCycle) : null), [phaseCycle]);
+  const sample: PhaseCurrentSampler | null = useMemo(() => phaseSampler && phases?.pmOnly
+    ? (angle: number) => phaseSampler(angle) ? [0, 0, 0] : null
+    : phaseSampler, [phaseSampler, phases?.pmOnly]);
+  const phaseHistory = useMemo(() => phases && sample && !phases.cycle.complete ? recordedPhaseHistory(
+    phases.cycle, sample, phases.angleDeg, scopeWindowElecDeg(phases.rpm, phases.drive.poleCount),
+  ) : undefined, [phases, sample]);
   const toothCount = toothPoleStrengths?.length ?? 0;
   const toothShapes = useMemo(() => {
     if (!toothCount) return [];
@@ -1463,7 +1470,7 @@ export function FieldResultPlot({
     const overlay = driveCanvasRef.current;
     const root = plotRootRef.current;
     const box = navigation.viewportRef.current;
-    if (!overlay || !root || !box || !phases || !driveFrame || !phaseSampler) return;
+    if (!overlay || !root || !box || !phases || !driveFrame || !sample) return;
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
     const width = root.clientWidth;
     const height = root.clientHeight;
@@ -1499,14 +1506,12 @@ export function FieldResultPlot({
         terminal: [motorLeft - lane * (wiresDrop ? index + 1 : 3 - index), y] as [number, number],
       };
     });
-    // The PM-only solve has no stator current: flat traces and dark wires.
-    const sample: PhaseCurrentSampler = phases.currentsA ? phaseSampler : () => [0, 0, 0];
     drawPhaseDriveWired(context, driveFrame.panel, phases.drive, phases.angleDeg, sample(phases.angleDeg), leads, phases.rpm, {
-      sample,
-      title: phases.currentsA ? undefined : 'PM ONLY · NO STATOR CURRENT',
+      sample, history: phaseHistory,
+      title: phases.pmOnly ? 'PM ONLY · NO STATOR CURRENT' : undefined,
     });
   }, [
-    driveFrame, phases, phaseSampler, fitScale, canvasSize, motorFitWidth,
+    driveFrame, phases, sample, phaseHistory, fitScale, canvasSize, motorFitWidth,
     navigation.viewportRef, navigation.pan.x, navigation.pan.y, navigation.scale,
   ]);
 
@@ -1810,7 +1815,8 @@ export function FieldResultPlot({
         )}
         {!probeSlot && probeReadout}
       </div>
-      {driveFrame && <canvas ref={driveCanvasRef} className="public-field-drive-panel" aria-hidden="true" />}
+      {driveFrame && <canvas ref={driveCanvasRef} className="public-field-drive-panel" role="img"
+        aria-label={`Recorded phase currents${phaseHistory?.gaps.length ? '. Gaps: Outside solved sweep' : ''}`} />}
       {probeSlot && createPortal(probeReadout, probeSlot)}
       {overlay ? (
         // One line above the view: the two arrow colours and the stator lead.
@@ -1827,18 +1833,24 @@ export function FieldResultPlot({
         </div>
       ) : <div className={`public-field-result-legend${legendScale.fixed ? ' is-fixed' : ''}`} ref={legendRef}>
         <strong>Flux density <span>|B| (T)</span></strong>
-        <span className="is-min">{legendLabel(legendScale.minB)}</span>
-        <i aria-hidden="true">
-          {legendTicks.map((tick) => (
-            <b
-              className={`public-field-legend-tick is-${tick.label}`}
-              key={tick.label}
-              style={{ ['--tick-at' as never]: `${(((tick.bT - legendScale.minB) / (legendScale.maxB - legendScale.minB)) * 100).toFixed(2)}%` }}
-            >
-              <em>{tick.bT.toFixed(2)} {tick.label === 'knee' ? 'knee' : 'sat.'}</em>
-            </b>
-          ))}
-        </i>
+        <div className="public-field-scale">
+          <i aria-hidden="true">
+            {legendTicks.map((tick) => (
+              <b
+                className={`public-field-legend-tick is-${tick.label}`}
+                key={tick.label}
+                style={{ ['--tick-at' as never]: `${(((tick.bT - legendScale.minB) / (legendScale.maxB - legendScale.minB)) * 100).toFixed(2)}%` }}
+              >
+                <em>{tick.bT.toFixed(2)} {tick.label === 'knee' ? 'knee' : 'sat.'}</em>
+              </b>
+            ))}
+          </i>
+          <div className="public-field-scale-values">
+            <span className="is-min">{legendLabel(legendScale.minB)}</span>
+            <span className="is-mid">{legendLabel((legendScale.minB + legendScale.maxB) / 2)}</span>
+            <span className="is-max">{legendLabel(legendScale.maxB)}</span>
+          </div>
+        </div>
         {legendScale.overAboveT !== null && (
           <span
             className="is-over"
@@ -1847,8 +1859,6 @@ export function FieldResultPlot({
             <b aria-hidden="true" />&gt; {legendScale.overAboveT.toFixed(1)} T
           </span>
         )}
-        <span className="is-mid">{legendLabel((legendScale.minB + legendScale.maxB) / 2)}</span>
-        <span className="is-max">{legendLabel(legendScale.maxB)}</span>
         {legendTicks.length > 0 && (
           <span className="public-visually-hidden">
             {legendTicks.map((tick) => `${tick.steelName} ${tick.label} at ${tick.bT.toFixed(2)} T, where its relative permeability falls to ${tick.relativePermeability}.`).join(' ')}

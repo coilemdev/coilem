@@ -115,6 +115,13 @@ export interface RotorIronLoss {
   history_sha256?: string | null;
 }
 
+/** A completed v1 history has an independent closure position beyond the sampled turn. */
+export function rotorHistoryPositions(rotor?: RotorIronLoss | null): number | null {
+  const samples = rotor?.samples_per_mechanical_turn;
+  return rotor?.method === 'rotor_material_harmonic/v1' && (rotor.status === 'experimental' || rotor.status === 'qualified')
+    && typeof samples === 'number' && Number.isSafeInteger(samples) && samples >= 8 ? samples + 1 : null;
+}
+
 /** Stator iron loss over one electrical period at the solved point (#138). */
 export interface IronLoss {
   status: PerformanceOutputStatus;

@@ -1,10 +1,10 @@
 # Developer-preview validation
 
-[Protocol 1.12.0](../benchmarks/ag-v1.12/README.md) is the default A–G benchmark.
-Its new Phase G has [completed Windows stator/DC-copper numerical evidence](qualification/stator-copper-femm-20261117/README.md);
-the full new A–G platform records still require collection. Historical
-[A–F qualification reports](../benchmarks/qualification-70c5e3404c19/README.md)
-measure the same Magneto2D 0.5.0 candidate on Windows x86-64 and macOS arm64.
+The last public full-motor A-F record used protocol 1.10.0 and measured commit `5e6fab283d165dc9e2ccec7e1a477c7080a993c4`. Its results apply to that measured physics. Public benchmark publication is paused. The application checks its physics against that record before assigning a benchmark-qualified status.
+
+[Protocol 1.10.0](../benchmarks/af-v1.10/README.md) is the default A–F
+benchmark. The [qualification reports](../benchmarks/qualification-5e6fab283d16/publication-projection.json)
+identify the measured candidate on Windows x86-64 and macOS arm64.
 The comparisons use the frozen, reviewed FEMM references. The separately
 collected Prius software evidence accompanies both platform reports.
 
@@ -174,26 +174,18 @@ final-candidate run.
 
 ## Run the benchmark yourself
 
-An installed coilEM carries the [combined A–G protocol 1.12.0](../benchmarks/ag-v1.12/README.md),
+An installed coilEM carries the [combined A-F protocol 1.10.0](../benchmarks/af-v1.10/README.md),
 its reviewed frozen reference components and the
 [published records](../benchmarks/records/README.md), so anyone can check
 their own installation:
 
 ```sh
-coilem benchmark --quick    # one complete-grid case in each of seven phases
-coilem benchmark            # all 85 registered cases
-coilem benchmark --phase G  # 16 full-motor stator/DC-copper operating points
+coilem benchmark --quick    # one complete-grid case in each of six phases
+coilem benchmark            # all 69 registered cases
 coilem benchmark --list     # case selection and recorded times when available
 ```
 
 `--phase B` runs one phase (repeatable), and `--out` names the output folder.
-G compares hysteresis, lamination eddy, stator total, DC copper and resistance
-with the frozen FEMM/geometry reference. Rotor loss is excluded and experimental;
-material accuracy and full efficiency remain unqualified. Its completed baseline
-and retained diagnostic failures are linked above. Sector runs retain A–F;
-G requires the full motor. Until full A–G records are collected, a complete
-A–G run has no matching published Native platform record; A–F-only selections
-retain their existing records and tolerances.
 The command solves each case with the installed Magneto2D and grades it
 against the frozen reference with the registered gates. It then matches the outcome
 against the record for the platform. A match needs the same verdicts and gate
@@ -216,7 +208,7 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The current [registered parity reports](../benchmarks/qualification-70c5e3404c19/README.md)
+The earlier [registered parity reports](../benchmarks/qualification-70c5e3404c19/README.md)
 cover 68 supported A–F cases and 468 passing gates on each platform, plus one
 planned unsupported Prius fixture. The separate Prius software benchmark
 passes all 10 checks across 17 jobs and 568 field reports on each platform.
@@ -586,15 +578,7 @@ using M350-50A. It defaults off and adds 384 poses plus a fresh closure solve.
 Requested completed rotor loss is included exactly once in totals and maps;
 an unavailable requested term withholds efficiency instead of implying zero.
 
-The completed loaded-SPM pilot and additional working-mesh comparisons are
-numerical development evidence. Remaining loss qualification and sector
-validation are deferred beyond 0.5.9 by the release owner. Rotor loss and
-efficiency remain experimental. Sector rotor loss is unavailable; existing
-limited sector functionality remains experimental. See
-[Rotor iron loss](ROTOR_IRON_LOSS.md) for supported requests, measured
-differences, model omissions and outstanding checks. Full-motor A–F/Prius
-regression of the assembled 0.5.9 build against the frozen FEMM references and
-published 0.5.8 evidence is a separate release check.
+Rotor loss and efficiency remain experimental. Sector rotor loss is unavailable. See [Rotor iron loss](ROTOR_IRON_LOSS.md) for supported requests, sampling and material limits.
 
 ### Efficiency at the operating point
 
@@ -925,14 +909,8 @@ Historical platform records are rebuilt with their original source registry
 using `tools.build_benchmark_record --historical-record`; no measured hash,
 number, or tolerance is rewritten to match a development checkout.
 
-Before publishing v0.5, run `python -m tools.release.qualification` on the
-frozen candidate. This strict publication gate requires protocol 1.6, complete
-registered coverage against the reviewed frozen bundle, matching measured
-physics, both platform records, and current Prius measured-source evidence.
-It exits nonzero while that work is pending and is required by the v0.5 tag
-publication workflow. `--candidate` additionally binds the measured report to
-an exact frozen commit. A green development PR is not release qualification.
-
-Freeze and qualify the exact candidate on `release/v0.5.0`; advance `main`
-after qualification passes. Record any evidence-only publication commit and
-preserve the measured candidate pin explicitly.
+For 0.5.9, the release owner reviews private Windows and macOS qualification
+for the registered A–F protocol 1.10.0 and Prius runs before tagging the exact
+final commit. The public workflow checks the tag and the commit recorded in
+each wheel. The public A–F records retain their original measured commit.
+See the [release procedure](RELEASING.md#publishing-a-release).

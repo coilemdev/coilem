@@ -1770,7 +1770,6 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-compare-field-card .public-field-result { margin: 0; padding: 10px; border: 0; }
 .public-compare-field-card .public-field-result-canvas { min-height: 280px; max-height: 560px; aspect-ratio: 1; }
 .public-compare-field-card .public-field-result-legend { flex-wrap: wrap; }
-.public-compare-field-card .public-field-result-legend i { flex: 1; min-width: 70px; }
 .public-compare-field-card .public-field-result-legend small { flex-basis: 100%; margin: 0; }
 @media (max-width: 720px) { .public-compare-field-grid { grid-template-columns: 1fr; } }
 .public-run-compare-loss-component th { padding-left: 30px; color: var(--text-muted) !important; }
@@ -2100,16 +2099,22 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
 .public-field-result-magnet-label { fill: rgba(255,255,255,.94); stroke: rgba(3,7,18,.9); stroke-width: .07; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 2px; font-weight: 750; letter-spacing: -.08px; pointer-events: none; }
 .public-field-tooth-pole text { fill: #f8fafc; stroke: rgba(3,7,18,.78); stroke-width: .065em; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: ui-monospace, monospace; font-weight: 800; }
-.public-field-result-legend { display: flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--text-muted); font: 10px var(--font-mono); }
-.public-field-result-legend i { width: min(280px, 36vw); height: 8px; border-radius: 999px; background: linear-gradient(90deg, #142a61, #1855a7, #1b8eb7, #2ab673, #a7c83a, #f1c232, #f58b24, #dc3d3d); }
+.public-field-result-legend { container: field-legend / inline-size; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 10px; color: var(--text-muted); font: 10px var(--font-mono); }
+.public-field-scale { flex: 1 1 180px; min-width: min(160px, 100%); max-width: 640px; }
+.public-field-scale:has(.public-field-legend-tick) { padding-top: 16px; }
+.public-field-scale > i { display: block; position: relative; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #142a61, #1855a7, #1b8eb7, #2ab673, #a7c83a, #f1c232, #f58b24, #dc3d3d); }
+.public-field-scale-values { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 3px; }
+.public-field-scale-values .is-mid { justify-self: center; }
+.public-field-scale-values .is-max { justify-self: end; }
+@container field-legend (max-width: 420px) {
+  .public-field-scale { order: 1; flex-basis: 100%; }
+}
 .public-field-result-legend small { margin-left: auto; color: var(--text-muted); font: 9px var(--font-mono); }
 /* The finished field view carries the same strip under the motor as the
    in-run preview: the scale runs left to right and nothing covers the plot. */
 .public-solved-field-canvas .public-field-result { flex-direction: column; }
 .public-solved-field-canvas .public-field-result-legend,
 .public-viewport-stage-2d > .public-field-result .public-field-result-legend { flex: none; justify-content: center; margin: 0; padding: 8px 16px 14px; }
-.public-solved-field-canvas .public-field-result-legend i,
-.public-viewport-stage-2d > .public-field-result .public-field-result-legend i { position: relative; flex: 1 1 420px; min-width: 80px; max-width: 640px; }
 .public-solved-field-canvas .public-field-result-legend small,
 .public-viewport-stage-2d > .public-field-result .public-field-result-legend small { margin-left: 12px; }
 .public-solved-field-canvas .public-field-result-legend > strong,
@@ -5055,21 +5060,13 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 /* Fixed flux-density scale: one 0–2.0 T bar for every frame and design, the
    stator steel's knee and saturation marked on it, and a magenta swatch for
    values above 2.0 T. */
-.public-field-result-legend i { position: relative; }
-.public-field-result-legend > strong,
-.public-field-result-legend > .is-min,
-.public-field-result-legend > i,
-.public-field-result-legend > .is-mid,
-.public-field-result-legend > .is-max { order: 0; }
-.public-field-result-legend > .is-over { order: 1; }
 .public-field-result-legend > .public-field-range-control,
 .public-field-result-legend > small { order: 2; }
-.public-field-result-legend.is-fixed { padding-top: 18px; padding-bottom: 4px; }
-.public-field-legend-tick { position: absolute; top: -3px; bottom: -3px; left: var(--tick-at); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(241,245,249,.92); box-shadow: 0 0 0 1px rgba(7,9,14,.65); }
-.public-field-legend-tick em { position: absolute; bottom: calc(100% + 2px); left: 50%; color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; transform: translateX(-50%); }
-/* The knee and saturation marks sit close together: one label reads to the left of its mark, the other to the right. */
-.public-field-legend-tick.is-knee em { left: auto; right: 100%; padding-right: 3px; transform: none; }
-.public-field-legend-tick:not(.is-knee) em { left: 100%; padding-left: 3px; transform: none; }
+.public-field-legend-tick { position: absolute; inset: -3px 0; }
+.public-field-legend-tick::before { position: absolute; inset-block: 0; left: var(--tick-at); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(241,245,249,.92); box-shadow: 0 0 0 1px rgba(7,9,14,.65); content: ''; }
+.public-field-legend-tick em { position: absolute; bottom: calc(100% + 2px); color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; }
+.public-field-legend-tick.is-knee em { right: clamp(0px, calc(100% - var(--tick-at) + 3px), calc(100% - 9ch)); }
+.public-field-legend-tick.is-saturation em { left: clamp(0px, calc(var(--tick-at) + 3px), calc(100% - 9ch)); }
 .public-field-result-legend .is-over { display: inline-flex; align-items: center; gap: 4px; color: var(--text-secondary); white-space: nowrap; }
 .public-field-result-legend .is-over b { width: 12px; height: 8px; border-radius: 2px; background: #f43cf5; }
 /* On the solve page the bar stands at the canvas edge: the swatch sits just

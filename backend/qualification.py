@@ -1,17 +1,12 @@
-"""Qualification status under the reviewed protocol 1.6 parity report.
+"""Runtime qualification against the frozen public A-F platform record.
 
-docs/VALIDATION.md#qualification-status is the source: a combination of
-rotor, winding and excitation is qualified when every registered fixture for
-it passes its FEMM parity gates in QUALIFICATION_REPORT, which measured the
-current winding, current-angle, slot-layer and Precise mesh models at 88aae101.
-Combinations the benchmark did not measure, or measured with failures, are
-experimental. The result travels with previews, solve validation and saved
-runs, so the app and its exports say what the docs say.
+Application scope, output gates and caveats travel with previews, solves and
+saved runs. A changed or unverifiable physics source cannot inherit a
+benchmark qualification from the measured candidate.
 """
 
 from __future__ import annotations
 
-import re
 from fractions import Fraction
 from typing import Literal, TypedDict
 
@@ -41,7 +36,7 @@ def _registered_qualification():
     try:
         record = read_data_json(f"{BENCHMARK_RECORDS_DIR}/windows-x86_64.json")
         if (isinstance(record, dict) and record.get("schema") == "coilem.benchmark_record/v1"
-                and isinstance(record.get("measured_commit"), str) and re.fullmatch("[0-9a-f]{40}", record["measured_commit"])
+                and record.get("measured_commit") == "5e6fab283d165dc9e2ccec7e1a477c7080a993c4"
                 and isinstance(record.get("source"), str)):
             return record
         return {}

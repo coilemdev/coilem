@@ -5,7 +5,7 @@ import math
 
 from backend.benchmark_suite import CONVENTION, SUPPORTED_PROTOCOL_VERSIONS
 from backend.benchmark_suite.contract import DATA_ROOT, canonical, checked_json, read, sha
-from backend.resources import BENCHMARK_AF_SUITE_FILE, GEOMETRY_RENEWALS_FILE
+from backend.resources import BENCHMARK_SUITE_FILE, GEOMETRY_RENEWALS_FILE
 
 
 def load_suite(path):
@@ -20,9 +20,6 @@ def load_suite(path):
         components(spec, DATA_ROOT)
     elif spec["protocol_version"] == "1.11.0":
         _sector_suite_measured(spec)
-    elif spec["protocol_version"] == "1.12.0":
-        from backend.benchmark_suite.loss_registry import verify_ag, verify_loss_suite
-        (verify_loss_suite if spec.get("component") == "losses" else verify_ag)(spec, DATA_ROOT)
     for case in spec["cases"]:
         # A Phase E case is graded against its own registered absolute floor (protocol 1.7.0).
         floor = case.get("cogging_floor_Nm")
@@ -141,7 +138,7 @@ def _sector_suite_measured(spec):
         raise ValueError("Protocol 1.11.0 is only the combined A-F suite solved as sectors")
     _solve_option_compatible_inputs(spec, bridge)
     measured = checked_json(DATA_ROOT, change["measured_suite"], change["measured_suite_sha256"])
-    if change["measured_suite"] != BENCHMARK_AF_SUITE_FILE or measured.get("protocol_version") != "1.10.0":
+    if change["measured_suite"] != BENCHMARK_SUITE_FILE or measured.get("protocol_version") != "1.10.0":
         raise ValueError("Protocol 1.11.0 must bridge the registered combined A-F suite")
     components(measured, DATA_ROOT)
     return measured
@@ -206,9 +203,6 @@ def _combined_suite(spec):
 def load_bundle(directory, spec):
     manifest = read(directory / "manifest.json")
     if manifest.get("schema") == "coilem.combined_reference_bundle/v1":
-        if manifest.get("protocol_version") == "1.12.0":
-            from backend.benchmark_suite.loss_registry import load_ag
-            return load_ag(directory, spec, DATA_ROOT, load_bundle, require_reviewed_bundle)
         from backend.benchmark_suite.composition import load
 
         # The sector suite grades against the combined records unchanged; its bridge was checked above.
@@ -264,10 +258,6 @@ def require_reviewed_bundle(directory, manifest, spec):
     if manifest.get("validation_status") != "REVIEWED_FOR_REGISTERED_PARITY":
         raise ValueError("Reference bundle still requires review")
     if manifest.get("schema") == "coilem.combined_reference_bundle/v1":
-        if manifest.get("protocol_version") == "1.12.0":
-            from backend.benchmark_suite.loss_registry import load_ag
-            load_ag(directory, spec, DATA_ROOT, load_bundle, require_reviewed_bundle)
-            return checked_json(directory, manifest["review"]["file"], manifest["review"]["sha256"])
         from backend.benchmark_suite.composition import load
 
         load(directory, _combined_suite(spec), DATA_ROOT, load_bundle, require_reviewed_bundle)
@@ -276,9 +266,6 @@ def require_reviewed_bundle(directory, manifest, spec):
     review = checked_json(directory, entry["file"], entry["sha256"])
     # A solve-option bridge (protocol 1.9.0) reuses the review of the suite it was measured for.
     reviewed = _reviewed_suite(spec)
-    if review.get("schema") == "coilem.loss_reference_review/v1":
-        from backend.benchmark_suite.loss_registry import verify_loss_review
-        return verify_loss_review(directory, manifest, reviewed, review, DATA_ROOT)
     if review.get("schema") == "coilem.cogging_reference_review/v1":
         return _require_cogging_review(directory, manifest, reviewed, review)
     if review.get("schema") == "coilem.ef_component_reference_review/v1":

@@ -189,7 +189,7 @@ export async function loadPublicRunComparison(projectSlug: string, runId: string
   const payload = await requestJson(
     `/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/comparison`,
   ) as PublicRunComparisonPayload;
-  return { ...payload, result: normalizeComparisonResult(payload.result) };
+  return { ...payload, result: normalizeComparisonResult(payload.result, payload.inputs) };
 }
 
 export function loadPublicRunComparisonField(projectSlug: string, runId: string, signal?: AbortSignal): Promise<PublicJson> {

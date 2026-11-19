@@ -35,6 +35,9 @@ export interface PhaseCycleSample {
 export interface PhaseCycle {
   samples: PhaseCycleSample[];
   peakA: number;
+  complete: boolean;
+  /** Contiguous measured windows, in unwrapped electrical degrees. */
+  windows: Array<[number, number]>;
 }
 
 /** What the Phases layer shows for the frame on screen. */
@@ -43,6 +46,7 @@ export interface FieldPhaseView {
   angleDeg: number;
   /** The currents in this field's solve, A; null for a field with no stator current (PM only). */
   currentsA: PhaseCurrents | null;
+  pmOnly: boolean;
   cycle: PhaseCycle;
   /** The drive's kind and poles, for the panel's caption and frequency. */
   drive: PhaseDrive;
@@ -71,20 +75,57 @@ interface RecordedFrame {
 }
 
 /** The solver's applied currents per position, from a result's slot_excitation_frames; null without them. */
-export function phaseCycleFromFrames(frames: readonly RecordedFrame[] | null | undefined): PhaseCycle | null {
-  const samples = (frames ?? []).flatMap((frame): PhaseCycleSample[] => {
-    const angle = Number(frame?.angle_deg);
-    const currents = Array.isArray(frame?.phase_current_a) ? frame.phase_current_a.map(Number) : [];
-    if (!Number.isFinite(angle) || currents.length !== 3 || !currents.every(Number.isFinite)) return [];
-    return [{ angleDeg: wrap360(angle), currentsA: [currents[0], currents[1], currents[2]] }];
-  }).sort((first, second) => first.angleDeg - second.angleDeg);
-  if (samples.length === 0) return null;
+export function phaseCycleFromFrames(frames: readonly RecordedFrame[] | null | undefined,
+  complete?: boolean | null, positions?: number, loadedAngles: readonly number[] = []): PhaseCycle | null {
+  const measured = new Map<number, PhaseCurrents>();
+  const grid = new Set(loadedAngles.filter(Number.isFinite).map(wrap360));
+  for (const frame of frames ?? []) {
+    if (typeof frame?.angle_deg !== 'number' || !Number.isFinite(frame.angle_deg)) continue;
+    const angle = wrap360(frame.angle_deg);
+    grid.add(angle);
+    const currents = frame.phase_current_a;
+    if (Array.isArray(currents) && currents.length === 3 && currents.every(Number.isFinite)) {
+      measured.set(angle, [currents[0], currents[1], currents[2]]);
+    }
+  }
+  if (!measured.size) return null;
+  const angles = [...grid].sort((a, b) => a - b);
+  const gaps = angles.map((angle, i) => (angles[i + 1] ?? angles[0] + 360) - angle);
+  // Uniform grids are emitted half-open. Declared full runs give the expected step even when
+  // excitation frames are missing. Older results carry their grid in the recorded angles.
+  const step = complete === true && positions && positions > 1 ? 360 / positions : Math.min(...gaps);
+  const tolerance = Math.max(1e-6, step * 1e-3);
+  const full = complete !== false && measured.size >= 3 && measured.size === angles.length
+    && (!positions || positions === measured.size) && gaps.every(gap => Math.abs(gap - step) <= tolerance);
+  const samples = [...measured].sort(([a], [b]) => a - b).map(([angleDeg, currentsA]) => ({ angleDeg, currentsA }));
+  const windows: Array<[number, number]> = [];
+  // A partial window may straddle zero. Unroll it at the largest gap, preferring the normal
+  // boundary at zero when gaps tie. Missing currents inside the swept window split it again.
+  const largest = Math.max(...gaps);
+  const start = gaps[gaps.length - 1] >= largest - tolerance ? 0 : angles[gaps.indexOf(largest) + 1];
+  const ordered = samples.map(({ angleDeg }) => angleDeg < start ? angleDeg + 360 : angleDeg).sort((a, b) => a - b);
+  for (const angle of ordered) {
+    const previous = windows[windows.length - 1];
+    if (previous && angle - previous[1] <= step + tolerance) previous[1] = angle;
+    else windows.push([angle, angle]);
+  }
   const peakA = samples.reduce((peak, sample) => Math.max(peak, ...sample.currentsA.map(Math.abs)), 0);
-  return { samples, peakA };
+  return { samples, peakA, complete: full, windows };
+}
+
+function recordedAngle(cycle: PhaseCycle, angleDeg: number) {
+  const angle = wrap360(angleDeg);
+  return cycle.windows[cycle.windows.length - 1][1] >= 360 && angle < cycle.windows[0][0] ? angle + 360 : angle;
+}
+
+function angleCovered(cycle: PhaseCycle, angleDeg: number) {
+  const angle = recordedAngle(cycle, angleDeg);
+  return cycle.complete || cycle.windows.some(([start, end]) => angle >= start - 1e-7 && angle <= end + 1e-7);
 }
 
 /** The currents at the solved position nearest an angle (wrapping round the cycle). */
-export function phaseCurrentsAt(cycle: PhaseCycle, angleDeg: number): PhaseCurrents {
+export function phaseCurrentsAt(cycle: PhaseCycle, angleDeg: number): PhaseCurrents | null {
+  if (!angleCovered(cycle, angleDeg)) return null;
   const target = wrap360(angleDeg);
   const gap = (sample: PhaseCycleSample) => {
     const difference = Math.abs(sample.angleDeg - target);
@@ -109,10 +150,10 @@ export function isSteppedCycle(cycle: PhaseCycle): boolean {
  */
 export function phaseCycleSampler(cycle: PhaseCycle): PhaseCurrentSampler {
   const { samples, peakA } = cycle;
-  if (!(peakA > 0)) return () => [0, 0, 0];
-  const shares = samples.map((sample) => sample.currentsA.map((current) => current / peakA) as [number, number, number]);
+  const shares = samples.map((sample) => sample.currentsA.map((current) => peakA > 0 ? current / peakA : 0) as [number, number, number]);
   const stepped = isSteppedCycle(cycle);
   return (angleDeg) => {
+    if (!angleCovered(cycle, angleDeg)) return null;
     const angle = wrap360(angleDeg);
     // The last position at or before the angle, wrapping to the cycle's end.
     let index = samples.length - 1;
@@ -127,6 +168,44 @@ export function phaseCycleSampler(cycle: PhaseCycle): PhaseCurrentSampler {
     const t = Math.min(1, wrap360(angle - start) / span);
     return shares[index].map((value, phase) => value + (shares[next][phase] - value) * t) as [number, number, number];
   };
+}
+
+export interface RecordedPhaseHistory {
+  segments: Array<Array<{ fraction: number; currents: PhaseCurrents }>>;
+  gaps: Array<[number, number]>;
+}
+
+/** Draw the measured history once, with a separate path for each contiguous set of positions. */
+export function recordedPhaseHistory(cycle: PhaseCycle, sample: PhaseCurrentSampler, angleDeg: number, span: number): RecordedPhaseHistory {
+  const end = recordedAngle(cycle, angleDeg);
+  const start = end - span;
+  const stepped = isSteppedCycle(cycle);
+  const segments: RecordedPhaseHistory['segments'] = [];
+  const recorded = cycle.samples.map(point => recordedAngle(cycle, point.angleDeg)).sort((a, b) => a - b);
+  for (const [first, last] of cycle.windows) {
+    const left = Math.max(first, start);
+    const right = Math.min(last, end);
+    if (right < left) continue;
+    const interior = recorded.filter(angle => angle > left && angle < right);
+    const angles = left === right ? [left] : [left, ...interior, right];
+    const segment: (typeof segments)[number] = [];
+    for (const angle of angles) {
+      const currents = sample(angle);
+      if (!currents) continue;
+      const fraction = span ? (angle - start) / span : 1;
+      if (stepped && segment.length) segment.push({ fraction, currents: segment[segment.length - 1].currents });
+      segment.push({ fraction, currents });
+    }
+    if (segment.length) segments.push(segment);
+  }
+  const gaps: RecordedPhaseHistory['gaps'] = [];
+  let coveredTo = 0;
+  for (const segment of segments) {
+    if (segment[0].fraction > coveredTo + 1e-7) gaps.push([coveredTo, segment[0].fraction]);
+    coveredTo = segment[segment.length - 1].fraction;
+  }
+  if (coveredTo < 1 - 1e-7) gaps.push([coveredTo, 1]);
+  return { segments, gaps };
 }
 
 /** The phase and side of a coil region from its type, "slot_3_(a−)": "+" goes in, "−" comes out. */
