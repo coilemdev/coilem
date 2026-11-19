@@ -90,13 +90,8 @@ export function coggingPlanNote(
   return `Adds a no-current sweep over one cogging period${span}${sampling}.${preview}${corners}`;
 }
 
-/**
- * One-sector cogging (#222) is noisier than a full-motor solve at the meshes the app offers: on the
- * benchmark's cogging cases its fundamental moved up to 8.5% (Medium) and 6% (Fine) from the full
- * motor, and only the Very fine mesh brought it within 0.4%. Loaded torque, ripple and back-EMF
- * agreed. Keep this text equal to backend/input_advisories.py SECTOR_COGGING_ADVISORY.
- */
-export const SECTOR_COGGING_NOTE = 'Cogging torque from one sector can differ from a full-motor solve by up to 9% at the Coarse, Medium and Fine meshes. Choose Maximum accuracy or the Very fine mesh, or solve the full motor, when cogging matters; loaded torque, ripple and back-EMF are not affected.';
+/** Keep equal to SECTOR_COGGING_ADVISORY in backend/input_advisories.py. */
+export const SECTOR_COGGING_NOTE = 'In the cogging cases tested, sector and full-motor results differed more on coarser meshes. Try Maximum accuracy or the Very fine mesh. Compare with a full-motor solve to check your design.';
 
 /** The warning for a one-sector Magneto2D request with cogging below the Very fine mesh, or null. */
 export function sectorCoggingNote(

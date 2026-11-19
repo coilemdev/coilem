@@ -47,8 +47,8 @@ const fluxMap = {
 };
 const [row] = inductanceTable(fluxMap);
 {
-  const rotorCsv = mapCsv({ ...fluxMap, rotor_iron_loss_requested: true, points: fluxMap.points.map(point => ({
-    ...point, rotor_iron_loss: { status: 'experimental', method: 'rotor_material_harmonic/v1',
+  const rotorCsv = mapCsv({ ...fluxMap, rotor_iron_loss_requested: true, points: fluxMap.points.map((point, index) => ({
+    ...point, rotor_iron_loss: { status: index === 0 ? 'unavailable' : 'experimental', method: 'rotor_material_harmonic/v1',
       rotor_iron_loss_W: 5, rotor_hysteresis_loss_W: 2, rotor_lamination_eddy_loss_W: 3,
       samples_per_mechanical_turn: 384, history_sha256: '0'.repeat(64), coefficients: { kh: 0.02, kc: 0.0001 } },
   })) });
@@ -56,6 +56,11 @@ const [row] = inductanceTable(fluxMap);
   assert.match(rotorCsv, /rotor_iron_loss_W,rotor_hysteresis_loss_W,rotor_lamination_eddy_loss_W/);
   assert.match(rotorCsv, /rotor_material_harmonic\/v1/);
   assert.match(rotorCsv, /rotor_history_sha256/);
+  assert.match(rotorCsv, /17 loaded sweep positions per point/);
+  assert.match(rotorCsv, /384 samples per mechanical turn \+ 1 closure position per completed history. Complete histories in 3 of 4 grid rows/);
+  const [header, unavailable, completed] = rotorCsv.trimEnd().split('\n').filter(line => !line.startsWith('#'));
+  assert.ok(header.endsWith(',rotor_history_positions_including_closure'));
+  assert.ok(unavailable.endsWith(',') && completed.endsWith(',385'));
 }
 assert.equal(row.currentA, 10);
 assert.ok(Math.abs(row.ldH - 0.00005) < 1e-12, 'Ld = (10.5 − 11) mWb / −10 A');

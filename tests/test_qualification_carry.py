@@ -76,18 +76,6 @@ def test_protocol_1_6_evidence_cannot_carry_into_the_newton_default_suite():
                                       ROOT / 'benchmarks/reference-baselines/protocol110-combined-20261110')
 
 
-def test_combined_ag_bundle_records_each_frozen_reference_commit():
-    suite = ROOT / 'benchmarks/ag-v1.12/benchmark_spec.json'
-    bundle = ROOT / 'benchmarks/reference-baselines/protocol112-combined-20261117'
-    report = read(ROOT / 'benchmarks/qualification-9f2ce84ef28d/windows-x86_64/report/benchmark_summary.json')
-    receipt = carry.reference_compatibility(report, report, suite, bundle)
-    assert receipt['reference_commits'] == report['run']['reference_commits']
-    assert len(receipt['reference_commits']) > 1
-    assert receipt['reference_sensitive_sources']['backend/iron_loss.py'] == (
-        report['run']['identity']['source_files']['backend/iron_loss.py']
-    )
-
-
 @pytest.fixture
 def platform_inputs(tmp_path, monkeypatch):
     # These scenarios replay the approved v0.5.0 context, independently of

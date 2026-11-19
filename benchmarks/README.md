@@ -1,14 +1,6 @@
 # Benchmark reports and protocols
 
-The default is now [A–G protocol 1.12.0](ag-v1.12/README.md): 85 cases,
-91 Native jobs and 84 supported reference comparisons. Phase G adds the
-16 full-motor stator/DC-copper points from the
-[completed Windows FEMM qualification](../docs/qualification/stator-copper-femm-20261117/README.md).
-Rotor loss remains experimental and excluded from G. Full new A–G platform
-records still require collection; the current published platform records retain
-their measured A–F coverage.
-
-[Protocol 1.10.0](af-v1.10/README.md) remains the frozen combined A-F suite: 69 cases, 75 jobs and 68 reference records, with the existing planned unsupported Prius row. It retains the protocol 1.9.0 A-D requests and adds all 12 E and 10 F requests, using the registered very-fine native cohort for the three distributed cogging cases. Its registry preserves each reviewed reference source, the separate hub recipe and all original gates. The [Windows and macOS qualification](qualification-70c5e3404c19/README.md) passed all 68 supported cases and 468 gates on each platform at the same candidate. The [current platform records](records/README.md) cover the full A-F selection.
+[Protocol 1.10.0](af-v1.10/README.md) is the default combined A-F suite: 69 cases, 75 jobs and 68 reference records, with the existing planned unsupported Prius row. It retains the protocol 1.9.0 A-D requests and adds all 12 E and 10 F requests, using the registered very-fine native cohort for the three distributed cogging cases. Its registry preserves each reviewed reference source, the separate hub recipe and all original gates. The [Windows and macOS qualification](qualification-5e6fab283d16/publication-projection.json) passed all 68 supported cases and 468 gates on each platform at the same candidate. The [current platform records](records/README.md) cover the full A-F selection.
 
 [Protocol 1.9.0](abcd-v1.9/README.md) remains available for historical A-D replay. It changes only Picard to Newton in the 28 relevant protocol 1.6.0 requests, reusing the reviewed frozen references through its existing hash-bound bridge.
 

@@ -12,7 +12,7 @@ from pathlib import Path
 
 from backend.benchmark_suite import COMMAND_PHASES
 from backend.benchmark_suite.contract import identity, read, sha, write
-from backend.resources import BENCHMARK_AF_REFERENCE_BUNDLE_DIR, BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SECTOR_SUITE_FILE, BENCHMARK_SUITE_FILE
+from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SECTOR_SUITE_FILE, BENCHMARK_SUITE_FILE
 from tools.benchmark_shards import plan
 from tools.join_benchmark_runs import join_prius, join_suite
 
@@ -92,8 +92,7 @@ def main():
             raise ValueError('Missing workflow shard')
         suite_shards = [selected[s['id']] for s in spec['shards'] if s['kind'] == 'suite']
         prius_shards = [selected[s['id']] for s in spec['shards'] if s['kind'] == 'prius']
-        bundle = ROOT / (BENCHMARK_AF_REFERENCE_BUNDLE_DIR if sector else BENCHMARK_REFERENCE_BUNDLE_DIR)
-        join_suite(suite_shards, suite=ROOT / spec['suite'], bundle=bundle,
+        join_suite(suite_shards, suite=ROOT / spec['suite'], bundle=ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR,
                    output=directory / 'joined-suite')
         join_prius(prius_shards, directory / 'joined-prius', symmetry='auto' if sector else 'full')
         run('tools.report_prius_benchmark', directory / 'joined-prius', '--out', directory / 'prius-report')

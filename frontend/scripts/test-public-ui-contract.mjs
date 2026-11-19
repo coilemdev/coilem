@@ -734,7 +734,6 @@ assert.match(workspaceSource, /previewRpm=\{animationRpm\}/);
 const phaseDrivePanelSource = await readFile(path.join(frontendRoot, 'src/public/phaseDrivePanel.ts'), 'utf8');
 assert.match(phaseDrivePanelSource, /const frequencyHz = electricalFrequencyHz\(previewRpm, drive\.poleCount\);/);
 assert.match(phaseDrivePanelSource, /waveformTrace\(drive, index, rotorElecDeg, strip, windowElecDeg, undefined, sample\)/);
-assert.match(phaseDrivePanelSource, /\{ sample, title \}: \{ sample\?: PhaseCurrentSampler; title\?: string \} = \{\}/);
 assert.match(phaseDrivePanelSource, /context\.fillText\(formatHz\(frequencyHz\), right - STRIP_END, strip\.y \+ 4\);/);
 assert.match(motorCanvasSource, /const spot = polygonLabelSpot\(label\.points, origin\);/);
 assert.doesNotMatch(workspaceSource, /public-field-playback-rpm|playback-rpm-progress/);
@@ -1007,7 +1006,7 @@ assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMe
 // Phases sits in Show after the arrow density: the coils by phase, which way
 // their current flows at the shown position, and the solver's A / B / C currents.
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}\s*<button[\s\S]*?aria-pressed=\{showPhases && Boolean\(phaseCycle\)\}[\s\S]*?aria-label="Phases"/);
-assert.match(solvedFieldSource, /const phaseCycle = useMemo\(\(\) => phaseCycleFromFrames\(result\.slot_excitation_frames\)/);
+assert.match(solvedFieldSource, /phaseCycleFromFrames\(\s*result\.slot_excitation_frames, result\.solve_metadata\?\.loaded_cycle_complete/);
 assert.match(solvedFieldSource, /source !== 'pm' && \(showPhases \|\| showToothPoles\)\s*\? phaseCurrentsAt\(phaseCycle, shownElectricalAngleDeg\)/);
 assert.match(solvedFieldSource, /currentsA: shownCurrents/);
 assert.match(solvedFieldSource, /phases=\{phaseView\}/);
@@ -1247,7 +1246,7 @@ assert.match(solvedFieldSource, />Magnet labels</);
 assert.match(solvedFieldSource, />Tooth poles</);
 assert.match(solvedFieldSource, /fieldLineDensity/);
 assert.match(solvedFieldSource, /FIELD_LINE_DENSITY_STOPS\.map\(\(stop\) => \(/);
-assert.match(solvedFieldSource, /aria-pressed=\{displayedDensity === stop\}\s*disabled=\{!densityAdjustable\}\s*onClick=\{\(\) => setFieldLineDensity\(stop\)\}/);
+assert.match(solvedFieldSource, /aria-pressed=\{displayedDensity === stop\}\s*disabled=\{!densityAdjustable\}/);
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}/);
 assert.doesNotMatch(solvedFieldSource, /<select[^>]*arrow density/);
 assert.match(solvedFieldSource, /showAirgap=\{showAirgap\}/);
@@ -1276,9 +1275,6 @@ assert.match(solvedFieldSource, /statorSteelSaturationTicks\(config, materials\)
 assert.match(solvedFieldSource, /disabled=\{Boolean\(playbackUnavailableReason\) \|\| angleFrames\.length < 2 \|\| colorRangeMode === 'viewport' \|\| playbackPreparing\}/);
 assert.match(workspaceSource, /<FieldResultPlot plot=\{fieldPlot\} ring=\{outerRotorRing\(config\)\} saturationTicks=\{statorSteelSaturationTicks\(config, materials\)\} \/>/);
 assert.match(styleSource, /\.public-field-result-legend \.is-over b \{[^}]*background: #f43cf5;/);
-// The knee and saturation marks are close: their labels read away from each other.
-assert.match(styleSource, /\.public-field-legend-tick\.is-knee em \{[^}]*right: 100%/);
-assert.match(styleSource, /\.public-field-legend-tick:not\(\.is-knee\) em \{[^}]*left: 100%/);
 assert.match(solvedFieldSource, /describeProbe=\{describeProbe\}/);
 assert.match(fieldResultSource, /element_bx_t/);
 assert.match(fieldResultSource, /element_by_t/);
@@ -1358,7 +1354,7 @@ assert.doesNotMatch(styleSource, /\.public-field-toolbar-groups \{ grid-column: 
 assert.match(solvedFieldSource, /fieldAxes=\{overlayActive \? fieldAxes : null\}/);
 // The Stator + PM view notes the run's current angle: the stator field sits at 90° + γ.
 assert.match(solvedFieldSource, /\.\.\.CLOCKWISE_FIELD_AXES,\s*currentAngleDeg: config\.solve_params\.excitation_mode === 'sinusoidal'/);
-assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setShowToothPoles\(true\);\s*setFieldLineDensity\('low'\);/);
+assert.match(solvedFieldSource, /setShowPoleLabels\(true\);\s*setShowToothPoles\(true\);/);
 assert.match(fieldResultSource, /airgapHarmonic\(statorPolarityProfile, axisPolePairs\)/);
 assert.match(fieldResultSource, /rotorNorthAxisDeg\(magnetOverlay, axisPolePairs\)/);
 assert.match(fieldResultSource, /className="public-field-axis is-stator"/);

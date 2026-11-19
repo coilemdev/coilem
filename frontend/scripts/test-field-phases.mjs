@@ -12,6 +12,7 @@ const {
   phaseCurrentsAt,
   phaseCycleFromFrames,
   phaseCycleSampler,
+  recordedPhaseHistory,
 } = await importTypeScriptModule(new URL('../src/public/fieldPhases.ts', import.meta.url));
 
 // The example SPM 8p/12s at 30 A rms: its result's slot_excitation_frames at
@@ -28,8 +29,8 @@ assert.equal(cycle.peakA, 42.06344307899867);
 assert.equal(phaseCycleFromFrames([]), null);
 assert.equal(phaseCycleFromFrames(undefined), null);
 // The nearest solved position, wrapping round the cycle.
-assert.equal(phaseCurrentsAt(cycle, 21)[0], 25.827560074612762);
-assert.equal(phaseCurrentsAt(cycle, 359)[0], 36.74234614174767);
+assert.equal(phaseCurrentsAt(cycle, 21), null);
+assert.equal(phaseCurrentsAt(cycle, 359), null);
 assert.equal(phaseCurrentsAt(cycle, 4)[1], -39.2);
 
 // Coil regions: "slot_3_(a−)" is phase A's out side, "+" an in side.
@@ -59,8 +60,9 @@ const sample = phaseCycleSampler(cycle);
 const near = (actual, expected) => actual.every((value, index) => Math.abs(value - expected[index]) < 1e-12);
 assert.ok(near(sample(22.5), at22.map((current) => current / cycle.peakA)));
 assert.ok(near(sample(3.75), [0, 1, 2].map((phase) => (frames[1].phase_current_a[phase] + frames[2].phase_current_a[phase]) / 2 / cycle.peakA)));
-// Past the last position it runs on to the first, round the cycle.
-assert.ok(near(sample(191.25), [0, 1, 2].map((phase) => (at22[phase] + at0[phase]) / 2 / cycle.peakA)));
+// Neither a missing current record nor the rest of an unsolved cycle is interpolated.
+assert.equal(sample(15), null);
+assert.equal(sample(191.25), null);
 assert.equal(isSteppedCycle(cycle), false);
 // A six-step drive's currents are off or at full: they are held from one position to the next.
 const sixStep = phaseCycleFromFrames([
@@ -69,8 +71,32 @@ const sixStep = phaseCycleFromFrames([
 ]);
 assert.equal(isSteppedCycle(sixStep), true);
 assert.deepEqual(phaseCycleSampler(sixStep)(45), [1, -1, 0]);
-assert.deepEqual(phaseCycleSampler(sixStep)(75), [0, -1, 1]);
-assert.deepEqual(phaseCycleSampler(phaseCycleFromFrames([{ angle_deg: 0, phase_current_a: [0, 0, 0] }]))(10), [0, 0, 0]);
+assert.equal(phaseCycleSampler(sixStep)(75), null);
+const single = phaseCycleFromFrames([{ angle_deg: 0, phase_current_a: [0, 0, 0] }]);
+assert.deepEqual(phaseCycleSampler(single)(0), [0, 0, 0]);
+assert.equal(phaseCycleSampler(single)(10), null);
+
+const observed = angles => angles.map(angle_deg => ({ angle_deg, phase_current_a: [Math.cos(angle_deg * Math.PI / 180), -0.5, 0] }));
+for (const declared of [true, undefined]) {
+  const full = phaseCycleFromFrames(observed([0, 90, 180, 270, 360]), declared, 4);
+  assert.ok(full.complete);
+  assert.ok(near(phaseCycleSampler(full)(315), phaseCycleSampler(full)(-45)));
+}
+assert.equal(phaseCycleFromFrames(observed([0, 90, 180, 270]), false).complete, false);
+const missing = phaseCycleFromFrames(observed([0, 15, 45, 60]), true, 24);
+assert.equal(missing.complete, false);
+assert.equal(phaseCycleSampler(missing)(30), null);
+const history = recordedPhaseHistory(missing, phaseCycleSampler(missing), 60, 720);
+assert.equal(history.gaps.length, 2);
+assert.deepEqual(history.segments.map(s => s.map(p => Math.round(p.fraction * 720 - 660))), [[0, 15], [45, 60]]);
+const wrapped = phaseCycleFromFrames(observed([0, 15, 345]), false);
+assert.deepEqual(wrapped.windows, [[345, 375]]);
+const covered = recordedPhaseHistory(wrapped, phaseCycleSampler(wrapped), 15, 30);
+assert.equal(covered.gaps.length, 0);
+assert.deepEqual(covered.segments[0].map(p => p.fraction), [0, 0.5, 1]);
+assert.equal(phaseCycleSampler(wrapped)(90), null);
+const steps = recordedPhaseHistory(sixStep, phaseCycleSampler(sixStep), 60, 60);
+assert.deepEqual(steps.segments[0].map(p => [p.fraction, p.currents[0]]), [[0, 1], [1, 1], [1, 0]]);
 
 // Coil outlines come from the geometry preview's coil regions.
 const sides = coilSidesFromGeometry({

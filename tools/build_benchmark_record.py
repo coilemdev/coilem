@@ -71,9 +71,6 @@ def regrade(summary, *, suite=SPEC, bundle=DEFAULT_BUNDLE):
 
             evaluation = evaluate_cogging(row["measurements"]["native"], reference,
                                           configs[row["id"], "native"], case["cogging_floor_Nm"])
-        elif case["phase"] == "G":
-            from backend.benchmark_suite.loss_metrics import evaluate_loss
-            evaluation = evaluate_loss(row["measurements"]["native"], reference, configs[row["id"], "native"])
         else:
             evaluation = evaluate_abc(row["measurements"]["native"], reference, configs[row["id"], "native"])
             if case.get("dq_reference") and reference is not None and evaluation["status"] in ("PASS", "YELLOW", "FAIL"):
@@ -129,7 +126,7 @@ def main(argv=None):
     if identity.get("dirty"):
         raise SystemExit("The run measured uncommitted code; a record needs a clean commit")
     measured = identity["source_files"]
-    sources = list(physics_sources(CHECKOUT, include_losses=any(row["phase"] == "G" for row in summary["rows"])))
+    sources = list(physics_sources(CHECKOUT))
     if args.historical_record:
         historical = read(args.historical_record)
         args.suite, args.reference_bundle = historical_basis(historical, suite=args.suite, bundle=args.reference_bundle)

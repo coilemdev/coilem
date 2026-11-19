@@ -1,3 +1,10 @@
+import type { FieldArrowDensity } from './fieldArrows';
+
+export type FieldView = 'resultant' | 'pm' | 'armature' | 'stator_pm';
+const defaultDensities: Record<FieldView, FieldArrowDensity> = {
+  resultant: 'medium', pm: 'medium', armature: 'medium', stator_pm: 'low',
+};
+
 /**
  * How the Solve canvas was left, so coming back from Design or Results shows
  * the same thing. The Solve stage is unmounted on the other steps, so this
@@ -25,7 +32,7 @@ export const solveViewMemory = {
     showPoleLabels: false,
     showToothPoles: false,
     showPhases: false,
-    fieldLineDensity: 'medium',
+    fieldLineDensity: defaultDensities,
     playbackRpm: null as number | null,
   },
 };

@@ -1,4 +1,4 @@
-import { solveViewMemory } from './solveViewMemory';
+import { solveViewMemory, type FieldView } from './solveViewMemory';
 import { useLayerMenu } from './useLayerMenu';
 import {
   useCallback,
@@ -67,9 +67,8 @@ import type {
   SolveResult,
 } from './model';
 
-type FieldSource = 'resultant' | 'pm' | 'armature';
 // Stator + PM draws the PM-only field's arrows over the stator-only field's (#120).
-type FieldView = FieldSource | 'stator_pm';
+type FieldSource = Exclude<FieldView, 'stator_pm'>;
 // A stator frame pairs with the PM frame at the same rotor position.
 const OVERLAY_ANGLE_TOLERANCE_DEG = 1e-3;
 // Public playback turns clockwise (the solve angle convention).
@@ -284,7 +283,7 @@ export function SolvedFieldViewer({
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
   const [showToothPoles, setShowToothPoles] = useState(solveViewMemory.field.showToothPoles);
   const [showPhases, setShowPhases] = useState(solveViewMemory.field.showPhases);
-  const [fieldLineDensity, setFieldLineDensity] = useState<FieldLineDensity>(solveViewMemory.field.fieldLineDensity as FieldLineDensity);
+  const [fieldLineDensity, setFieldLineDensity] = useState(solveViewMemory.field.fieldLineDensity);
   const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
   const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
   const [playing, setPlaying] = useState(false);
@@ -507,7 +506,10 @@ export function SolvedFieldViewer({
     ? descriptorAngleDeg
     : heldFrame?.angleDeg ?? (visiblePlot ? vectorAngleDeg : descriptorAngleDeg);
   // Both winding overlays use the recorded currents for the frame on screen.
-  const phaseCycle = useMemo(() => phaseCycleFromFrames(result.slot_excitation_frames), [result.slot_excitation_frames]);
+  const phaseCycle = useMemo(() => phaseCycleFromFrames(
+    result.slot_excitation_frames, result.solve_metadata?.loaded_cycle_complete, result.solve_metadata?.rotor_positions,
+    result.torque_waveform?.electrical_angle_deg,
+  ), [result.slot_excitation_frames, result.solve_metadata?.loaded_cycle_complete, result.solve_metadata?.rotor_positions, result.torque_waveform]);
   const shownCurrents = useMemo(() => phaseCycle && source !== 'pm' && (showPhases || showToothPoles)
     ? phaseCurrentsAt(phaseCycle, shownElectricalAngleDeg)
     : null, [phaseCycle, source, showPhases, showToothPoles, shownElectricalAngleDeg]);
@@ -541,11 +543,12 @@ export function SolvedFieldViewer({
     ? {
       angleDeg: shownElectricalAngleDeg,
       currentsA: shownCurrents,
+      pmOnly: source === 'pm',
       cycle: phaseCycle,
       drive: phaseDrive,
       rpm: playbackRpm,
     }
-    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, shownCurrents]);
+    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, shownCurrents, source]);
   const currentPeakBT = useMemo(() => {
     const rasterPeak = visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;
@@ -1179,7 +1182,6 @@ export function SolvedFieldViewer({
       // Show each field's poles when comparing the stator and magnets.
       setShowPoleLabels(true);
       setShowToothPoles(true);
-      setFieldLineDensity('low');
     }
     setDetailPlot(null);
     replaceDetailRaster(null);
@@ -1314,7 +1316,7 @@ export function SolvedFieldViewer({
   // Arrow density sits right after Field arrows as a three-way choice, and only
   // while the arrows are shown.
   const densityAdjustable = Boolean(highResolutionPlot);
-  const displayedDensity = densityAdjustable ? fieldLineDensity : 'medium';
+  const displayedDensity = densityAdjustable ? fieldLineDensity[view] : 'medium';
   const renderDensityControl = () => {
     const densityTitle = playing
       ? 'Playback uses medium arrow density. Pause to adjust the exact frame.'
@@ -1328,7 +1330,7 @@ export function SolvedFieldViewer({
             type="button"
             aria-pressed={displayedDensity === stop}
             disabled={!densityAdjustable}
-            onClick={() => setFieldLineDensity(stop)}
+            onClick={() => setFieldLineDensity(previous => ({ ...previous, [view]: stop }))}
             aria-label={`${stop === 'low' ? 'Low' : stop === 'medium' ? 'Medium' : 'High'} arrow density`}
             key={stop}
           >

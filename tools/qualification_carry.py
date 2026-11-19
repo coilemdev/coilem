@@ -46,12 +46,12 @@ def policy_report(root, entry):
 
 
 def reference_compatibility(summary, anchor, suite, bundle, *, reviewed_sources=False):
-    run, old = summary['run'], anchor['run']
-    if run['selection']['spec_sha256'] != sha(suite) or old['selection']['spec_sha256'] != sha(suite):
-        raise ValueError('Reference reuse requires the same registered suite')
     spec = load_suite(suite)
     manifest, _, digest = load_bundle(bundle, spec)
     require_reviewed_bundle(bundle, manifest, spec)
+    run, old = summary['run'], anchor['run']
+    if run['selection']['spec_sha256'] != sha(suite) or old['selection']['spec_sha256'] != sha(suite):
+        raise ValueError('Reference reuse requires the same registered suite')
     if any(r['selection']['bundle_sha256'] != digest for r in (run, old)):
         raise ValueError('Reference reuse requires the approved registered bundle')
     before = {row['id']: row for row in anchor['rows']}
@@ -62,22 +62,20 @@ def reference_compatibility(summary, anchor, suite, bundle, *, reviewed_sources=
     for row in summary['rows']:
         if row['configurations'] != before[row['id']]['configurations']:
             raise ValueError(f'Reference input interpretation needs review: {row["id"]}')
-    sensitive = (*REFERENCE_SOURCES, *(("backend/iron_loss.py",) if any(c['phase'] == 'G' for c in spec['cases']) else ()))
     changed = {path: {'approved_sha256': old['identity']['source_files'].get(path),
                       'candidate_sha256': run['identity']['source_files'].get(path)}
-               for path in sensitive
+               for path in REFERENCE_SOURCES
                if run['identity']['source_files'].get(path) != old['identity']['source_files'].get(path)}
     if changed and not reviewed_sources:
         raise ValueError('Reference model or metric interpretation needs review: ' + ', '.join(changed))
     # Only changed reference-sensitive source files can be accepted. The suite,
     # bundle, coverage and request checks above have no override.
-    reference_commit = manifest.get('reference_commit')
     return {'schema': 'coilem.reference_reuse/v1', 'candidate': run['identity']['commit'],
             **({'owner_reviewed_reference_sources': changed} if changed else {}),
             'suite_sha256': sha(suite), 'bundle_sha256': digest,
-            'reference_commit': reference_commit, 'reference_fields_mutated': False,
-            'reference_commits': manifest.get('reference_commits', [reference_commit]),
-            'reference_sensitive_sources': {p: run['identity']['source_files'].get(p) for p in sensitive},
+            'reference_commit': manifest['reference_commit'], 'reference_fields_mutated': False,
+            'reference_commits': manifest.get('reference_commits', [manifest['reference_commit']]),
+            'reference_sensitive_sources': {p: run['identity']['source_files'].get(p) for p in REFERENCE_SOURCES},
             'registered_requests_sha256': canonical({r['id']: r['configurations'] for r in summary['rows']})}
 
 
@@ -154,15 +152,10 @@ def prepare(platforms, *, baseline=ROOT, output, accept_moved=False, root=ROOT, 
         raise ValueError('Both platform collections are required')
     output.mkdir(parents=True, exist_ok=False)
     staged, all_moved, table, candidate, reference_errors, reviewed = {}, [], [], None, [], {}
-    physical = None
+    physical = {name: sha(root / name) for name in physics_sources(root)}
     tolerances = {**TOLERANCES, **policy['additional_replay_tolerances']}
     for platform, folder in platforms.items():
         summary = read(folder / 'joined-suite/report/benchmark_summary.json')
-        sources = physics_sources(root, include_losses=True) if any(r.get('phase') == 'G' for r in summary['rows']) else physics_sources(root)
-        guarded = {name: sha(root / name) for name in sources}
-        if physical is not None and physical != guarded:
-            raise ValueError('Platform collections have different loss-physics coverage')
-        physical = guarded
         run = summary['run']
         candidate = candidate or run['identity']['commit']
         if not re.fullmatch('[0-9a-f]{40}', candidate):

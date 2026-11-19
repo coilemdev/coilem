@@ -21,7 +21,7 @@ import numpy as np
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
 from backend.client._inputs import Motor, OperatingPoint, refuse_unknown_inputs, solve_options_for
 from backend.client._results import Result
-from backend.client._setups import SetupStatus, SetupUse, after_changes, library_of, resolve_setup, setup_statuses
+from backend.client._setups import UNSET_DEFAULTS, SetupStatus, SetupUse, after_changes, library_of, resolve_setup, setup_statuses
 from backend.models.config import MotorConfig, SolveOptionsConfig, SolveParams
 
 QUALITIES: tuple[str, ...] = get_args(SolveParams.model_fields["solve_quality"].annotation)
@@ -116,6 +116,11 @@ def _request(
             raise InputError("solve_params must be a mapping of solve_params field names to values", field="solve_params")
         refuse_unknown_inputs(SolveParams, solve_params, "solve_params")
         params.update(solve_params)
+    # A saved setup uses null to clear a design's catalog overrides. After all overrides
+    # have been applied, omission requests the same default as a freshly exported design.
+    for key in UNSET_DEFAULTS:
+        if params.get(key) is None:
+            params.pop(key, None)
     body["solve_params"] = params
     if analyses is not None:
         body["solve_options"] = solve_options_for(analyses, body.get("solve_options"))

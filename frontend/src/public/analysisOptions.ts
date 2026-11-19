@@ -39,6 +39,13 @@ export function rotorIronLossSelected(config: MotorConfig, solver: PublicSolverI
     && rotorIronLossUnavailableReason(config, solver) === null;
 }
 
+/** Files, saved setups and requests carry only a rotor-loss stage this design can run. */
+export function effectiveRotorLossOptions(config: MotorConfig, solver: PublicSolverId) {
+  const options = { ...config.solve_options };
+  if (!rotorIronLossSelected(config, solver)) delete options.rotor_iron_loss;
+  return options;
+}
+
 export function selectedAnalyses(config: MotorConfig, solver: PublicSolverId = 'magneto2d'): AnalysisKey[] {
   return (Object.keys(ANALYSIS_LABELS) as AnalysisKey[]).filter((key) => (
     key === 'rotor_iron_loss' ? rotorIronLossSelected(config, solver)

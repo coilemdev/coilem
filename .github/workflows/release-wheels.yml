@@ -43,7 +43,6 @@ env:
   RUST_TOOLCHAIN: "1.94.0"
   NODE_VERSION: "24"
   BUILD_PYTHON: "3.12"
-  COILEM_BUILD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
   # TestPyPI never accepts a version twice; rehearsals publish <version>.dev<run><attempt>.
   COILEM_VERSION_SUFFIX: ${{ inputs.publish == 'testpypi' && format('.dev{0}{1}', github.run_id, github.run_attempt) || '' }}
 
@@ -54,10 +53,12 @@ defaults:
 jobs:
   policy:
     name: Compatibility policy
+    if: github.event.deleted != true
     runs-on: ubuntu-24.04
     outputs:
       policy: ${{ steps.policy.outputs.policy }}
       version: ${{ steps.version.outputs.version }}
+      commit: ${{ steps.source.outputs.commit }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
@@ -71,9 +72,15 @@ jobs:
           version=$(python -m tools.release.version "${args[@]}")
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "Package version: $version"
-      - name: Require complete qualification before publishing v0.5
-        if: startsWith(github.ref, 'refs/tags/v0.5.')
-        run: python -m tools.release.qualification
+      - name: Identify the exact source used by this build
+        id: source
+        run: |
+          commit=$(git rev-parse --verify 'HEAD^{commit}')
+          test "$commit" = "$(git rev-parse --verify "$GITHUB_SHA^{commit}")"
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            test "$commit" = "$(git rev-parse --verify "$GITHUB_REF^{commit}")"
+          fi
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
       - run: python -m pip install packaging
       - name: Compute platform floors from the pinned runtime wheels
         id: policy
@@ -175,6 +182,7 @@ jobs:
             executable: magneto2d.exe
     runs-on: ${{ matrix.runner }}
     env:
+      COILEM_BUILD_COMMIT: ${{ needs.policy.outputs.commit }}
       PLATFORM_TAG: ${{ fromJSON(needs.policy.outputs.policy)[matrix.target].platform_tag }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -198,7 +206,7 @@ jobs:
       - name: Check metadata, contents and build identity
         run: |
           python -m pip install packaging
-          python -m tools.release.verify_wheel dist/wheels/*.whl --platform-tag "$PLATFORM_TAG" --require-commit
+          python -m tools.release.verify_wheel dist/wheels/*.whl --platform-tag "$PLATFORM_TAG" --expect-commit "$COILEM_BUILD_COMMIT"
       - name: Check native dependencies (auditwheel)
         if: matrix.target == 'linux-x86_64'
         run: |
@@ -344,8 +352,9 @@ jobs:
           VERSION: ${{ needs.policy.outputs.version }}
         run: |
           ls -l dist
-          test "$(ls dist/*.whl | wc -l)" -eq 4
-          for wheel in dist/*.whl; do
+          wheels=(dist/*.whl)
+          test "${#wheels[@]}" -eq 4
+          for wheel in "${wheels[@]}"; do
             case "$(basename "$wheel")" in "coilem-$VERSION-py3-none-"*) ;; *) echo "unexpected wheel: $wheel"; exit 1 ;; esac
           done
       - name: Upload with trusted publishing
@@ -416,10 +425,22 @@ jobs:
           VERSION: ${{ needs.policy.outputs.version }}
         run: |
           ls -l dist
-          test "$(ls dist/*.whl | wc -l)" -eq 4
-          for wheel in dist/*.whl; do
+          wheels=(dist/*.whl)
+          test "${#wheels[@]}" -eq 4
+          for wheel in "${wheels[@]}"; do
             case "$(basename "$wheel")" in "coilem-$VERSION-py3-none-"*) ;; *) echo "unexpected wheel: $wheel"; exit 1 ;; esac
           done
+      - &verify-live-tag
+        name: Confirm the release tag still identifies the accepted wheel source
+        env:
+          RELEASE_COMMIT: ${{ needs.policy.outputs.commit }}
+        run: |
+          rows=$(git ls-remote --exit-code --tags "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY.git" "$GITHUB_REF" "$GITHUB_REF^{}")
+          live=$(awk -v ref="$GITHUB_REF" '$2 == ref {direct=$1} $2 == ref "^{}" {peeled=$1} END {print (peeled ? peeled : direct)}' <<< "$rows")
+          if [ "$live" != "$RELEASE_COMMIT" ]; then
+            echo "Release tag no longer matches the accepted wheel source." >&2
+            exit 1
+          fi
       - name: Upload with trusted publishing
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
 
@@ -482,6 +503,7 @@ jobs:
           pattern: wheel-*
           path: dist
           merge-multiple: true
+      - *verify-live-tag
       - name: Create or update the draft release for this tag
         env:
           GH_TOKEN: ${{ github.token }}

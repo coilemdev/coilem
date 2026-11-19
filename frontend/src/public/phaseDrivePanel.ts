@@ -1,4 +1,5 @@
 import { PUBLIC_PHASE_COLORS } from './motorPalette';
+import type { RecordedPhaseHistory } from './fieldPhases';
 import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -35,10 +36,10 @@ export function drawPhaseDriveWired(
   panel: Rect,
   drive: PhaseDrive,
   rotorElecDeg: number,
-  currents: [number, number, number],
+  currents: [number, number, number] | null,
   leads: PhaseLead[],
   previewRpm: number,
-  { sample, title }: { sample?: PhaseCurrentSampler; title?: string } = {},
+  { sample, title, history }: { sample?: PhaseCurrentSampler; title?: string; history?: RecordedPhaseHistory } = {},
 ): void {
   const phases = ['A', 'B', 'C'] as const;
   // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
@@ -57,12 +58,18 @@ export function drawPhaseDriveWired(
   context.font = '600 9px ui-monospace, monospace';
   context.textBaseline = 'top';
   context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${formatRevPerSecond(previewRpm)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+  if (history?.gaps.length) {
+    context.fillStyle = 'rgba(203, 213, 225, 0.9)';
+    context.fillText('Outside solved sweep', panel.x, panel.y + panel.height + 18);
+  }
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];
-    const level = Math.abs(currents[index]);
+    const level = Math.abs(currents?.[index] ?? 0);
     const mid = strip.y + strip.height / 2;
     const right = strip.x + strip.width;
+    const nowX = right - STRIP_END;
+    const left = strip.x + STRIP_LABEL;
 
     context.beginPath();
     if (typeof context.roundRect === 'function') context.roundRect(strip.x, strip.y, strip.width, strip.height, 8);
@@ -73,6 +80,10 @@ export function drawPhaseDriveWired(
     context.lineWidth = 1;
     context.stroke();
 
+    context.fillStyle = 'rgba(148, 163, 184, 0.09)';
+    for (const [from, to] of history?.gaps ?? []) {
+      context.fillRect(left + from * (nowX - left), strip.y + 2, (to - from) * (nowX - left), strip.height - 4);
+    }
     context.setLineDash([3, 4]);
     context.beginPath();
     context.moveTo(strip.x + STRIP_LABEL, mid);
@@ -93,25 +104,39 @@ export function drawPhaseDriveWired(
     context.textBaseline = 'top';
     context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
 
-    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg, undefined, sample);
-    context.beginPath();
-    context.moveTo(trace[0][0], trace[0][1]);
-    for (const [x, y] of trace.slice(1)) context.lineTo(x, y);
+    const swing = strip.height * TRACE_AMPLITUDE;
+    const traces = history
+      ? history.segments.map(segment => segment.map(({ fraction, currents }) =>
+        [left + fraction * (nowX - left), mid - currents[index] * swing] as const))
+      : [waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg, undefined, sample)];
     context.strokeStyle = colour;
     context.lineWidth = 1.8;
     context.lineJoin = 'round';
-    context.stroke();
-    const [nowX, nowY] = trace[trace.length - 1];
-    context.beginPath();
-    context.arc(nowX, nowY, 3.2, 0, Math.PI * 2);
     context.fillStyle = colour;
-    context.fill();
+    for (const trace of traces) {
+      context.beginPath();
+      if (trace.length === 1) {
+        const [x, y] = trace[0];
+        if (y === null) continue;
+        context.arc(x, y, 1.8, 0, Math.PI * 2);
+        context.fill();
+      } else {
+        let drawing = false;
+        for (const [x, y] of trace) {
+          if (y !== null) {
+            if (drawing) context.lineTo(x, y);
+            else context.moveTo(x, y);
+          }
+          drawing = y !== null;
+        }
+        context.stroke();
+      }
+    }
 
     // The wire is fixed: it leaves from a terminal on the strip's centre line. The
     // wave's newest point rides a short rail beside it and a stem ties the two, so
     // the wave still reads as what feeds the wire.
     const { motor, terminal } = leads[index];
-    const swing = strip.height * TRACE_AMPLITUDE;
     context.strokeStyle = 'rgba(148, 163, 184, 0.3)';
     context.lineWidth = 1;
     context.beginPath();
@@ -121,10 +146,16 @@ export function drawPhaseDriveWired(
     context.strokeStyle = colour;
     context.lineWidth = 2;
     context.lineCap = 'round';
-    context.beginPath();
-    context.moveTo(nowX, nowY);
-    context.lineTo(nowX, mid);
-    context.stroke();
+    if (currents) {
+      const nowY = mid - currents[index] * swing;
+      context.beginPath();
+      context.arc(nowX, nowY, 3.2, 0, Math.PI * 2);
+      context.fill();
+      context.beginPath();
+      context.moveTo(nowX, nowY);
+      context.lineTo(nowX, mid);
+      context.stroke();
+    }
     // Level out of the strip, one right-angle turn down or up to the terminal, then level into the motor.
     context.lineJoin = 'miter';
     const wire = () => {

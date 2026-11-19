@@ -2,7 +2,8 @@ import { readProfileDocument, type SolveProfileDocument } from './solveProfiles'
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema';
 import { parseTorqueSpeedSettings, torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
-import type { MotorConfig } from './model';
+import type { MotorConfig, PublicSolverId } from './model';
+import { effectiveRotorLossOptions } from './analysisOptions';
 import { parseCustomSteels } from './customSteel';
 import type { WireSpec } from './performance';
 import { PUBLISHED_REFERENCES, publishedReference, type PublishedReferenceId } from './publishedReferences';
@@ -274,7 +275,7 @@ export function designFileBaseName(name: string, fallback = 'coilem-design'): st
   return name.trim().replace(/\.(?:coilem|openem|json)$/i, '').trim() || fallback;
 }
 
-export function serializeDesignFile(config: MotorConfig, name: string, runSetups?: SolveProfileDocument): string {
+export function serializeDesignFile(config: MotorConfig, name: string, runSetups?: SolveProfileDocument, solver: PublicSolverId = 'magneto2d'): string {
   return `${JSON.stringify(
     {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
@@ -284,6 +285,7 @@ export function serializeDesignFile(config: MotorConfig, name: string, runSetups
       ...(publishedReference(config)?.fileNotice
         ? { reference_notice: publishedReference(config)?.fileNotice } : {}),
       ...applyPublicSolverSettings(config),
+      solve_options: effectiveRotorLossOptions(config, solver),
     },
     null,
     2,
@@ -291,9 +293,9 @@ export function serializeDesignFile(config: MotorConfig, name: string, runSetups
 }
 
 /** Save via the browser's file picker when available, else download. */
-export async function saveDesignFileAs(config: MotorConfig, name: string, runSetups?: SolveProfileDocument): Promise<boolean> {
+export async function saveDesignFileAs(config: MotorConfig, name: string, runSetups?: SolveProfileDocument, solver: PublicSolverId = 'magneto2d'): Promise<boolean> {
   const filename = `${designFileBaseName(name)}${DESIGN_FILE_EXTENSION}`;
-  const blob = new Blob([serializeDesignFile(config, name, runSetups)], { type: 'application/json' });
+  const blob = new Blob([serializeDesignFile(config, name, runSetups, solver)], { type: 'application/json' });
   const picker = (window as { showSaveFilePicker?: (options: unknown) => Promise<any> }).showSaveFilePicker;
   if (typeof picker === 'function') {
     try {

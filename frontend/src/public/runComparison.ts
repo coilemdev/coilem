@@ -1,9 +1,13 @@
 import type { SolveResult } from './model';
 import { isSolveTimeBreakdown } from './solveTime';
+import { rotorHistoryPositions } from './performance';
+import type { ComparisonInputs } from './runInputChanges';
+import { record } from './solveProfiles';
 import type { LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult } from './performance';
 
 /** Envelope curves are stored outputs; map grids, efficiency matrices and field meshes are omitted. */
 export type ComparisonResult = Pick<SolveResult, 'summary' | 'solve_metadata' | 'torque_waveform' | 'back_emf_waveform' | 'cogging_torque_waveform'> & {
+  rotorLossRequested?: boolean;
   torque_speed_analysis?: Pick<TorqueSpeedAnalysisResult, 'status' | 'status_reason' | 'settings' | 'envelope'> | null;
 };
 
@@ -38,7 +42,8 @@ export function previousCompletedRun<T extends RecordedRun>(runs: T[], current: 
 const samples = (value: unknown): number[] => Array.isArray(value) ? value : [];
 
 /** Older comparison responses use {} when an analysis has no CSV rows. */
-export function normalizeComparisonResult(result: ComparisonResult): ComparisonResult {
+export function normalizeComparisonResult(result: ComparisonResult, inputs?: ComparisonInputs | null): ComparisonResult {
+  const options = inputs?.config?.solve_options;
   const cogging = result.cogging_torque_waveform;
   const coggingAngles = samples(cogging?.electrical_angle_deg);
   const coggingValues = samples(cogging?.torque_Nm);
@@ -46,6 +51,8 @@ export function normalizeComparisonResult(result: ComparisonResult): ComparisonR
     && coggingAngles.every(Number.isFinite) && coggingValues.every(Number.isFinite);
   return {
     ...result,
+    // The saved solve_options object omits rotor_iron_loss when it is off.
+    ...(record(options) ? { rotorLossRequested: options.rotor_iron_loss === true } : {}),
     cogging_torque_waveform: hasCogging ? { ...cogging, electrical_angle_deg: coggingAngles, torque_Nm: coggingValues } : null,
     torque_waveform: {
       ...result.torque_waveform,
@@ -74,6 +81,12 @@ export interface ComparisonTimingRow {
 const nonnegative = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
 const count = (value: unknown): number | null => Number.isInteger(value) ? nonnegative(value) : null;
 
+function recordedRotorHistoryPositions(result: ComparisonResult): number | null {
+  const rotor = result.summary.rotor_iron_loss;
+  if (!rotor && result.rotorLossRequested === false) return 0;
+  return rotorHistoryPositions(rotor);
+}
+
 /** Compare elapsed partitions, never the overlapping sums of worker stage times. */
 export function compareRunTiming(before: ComparisonResult, after: ComparisonResult) {
   const a = isSolveTimeBreakdown(before.solve_metadata.time_breakdown) ? before.solve_metadata.time_breakdown : null;
@@ -90,7 +103,8 @@ export function compareRunTiming(before: ComparisonResult, after: ComparisonResu
   }
   const work = [
     ['mesh_elements', 'Mesh elements', before.solve_metadata.mesh_element_count, after.solve_metadata.mesh_element_count],
-    ['rotor_positions', 'Rotor positions', before.solve_metadata.rotor_positions, after.solve_metadata.rotor_positions],
+    ['rotor_positions', 'Loaded sweep positions', before.solve_metadata.rotor_positions, after.solve_metadata.rotor_positions],
+    ['rotor_history_positions', 'Rotor iron loss positions (history + closure)', recordedRotorHistoryPositions(before), recordedRotorHistoryPositions(after)],
     ['meshes_built', 'Meshes generated', a?.counts?.meshes_built, b?.counts?.meshes_built],
     ['meshes_rotated', 'Meshes rotated', a?.counts?.meshes_rotated, b?.counts?.meshes_rotated],
     ['solves', 'Field solves', a?.counts?.solves, b?.counts?.solves],

@@ -86,7 +86,7 @@ env:
 
 jobs:
   plan:
-    if: ${{ !inputs.reuse_run && inputs.collection != 'cogging-refined-very-fine' }}
+    if: ${{ github.repository == 'coilemdev/coilem-experiments' && github.event.repository.private == true && !inputs.reuse_run && inputs.collection != 'cogging-refined-very-fine' }}
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.filter.outputs.matrix }}
@@ -265,7 +265,7 @@ jobs:
 
   join:
     needs: [plan, collect]
-    if: ${{ always() && inputs.collection != 'cogging-refined-very-fine' && !inputs.source_run && (inputs.reuse_run || needs.collect.result == 'success') }}
+    if: ${{ github.repository == 'coilemdev/coilem-experiments' && github.event.repository.private == true && always() && inputs.collection != 'cogging-refined-very-fine' && !inputs.source_run && (inputs.reuse_run || needs.collect.result == 'success') }}
     strategy:
       fail-fast: false
       matrix:
@@ -320,7 +320,7 @@ jobs:
           retention-days: 90
 
   cogging-qualification:
-    if: ${{ inputs.collection == 'cogging-refined-very-fine' }}
+    if: ${{ github.repository == 'coilemdev/coilem-experiments' && github.event.repository.private == true && inputs.collection == 'cogging-refined-very-fine' }}
     strategy:
       fail-fast: false
       matrix:

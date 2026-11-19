@@ -40,7 +40,7 @@ const LABELS: Record<string, string> = {
   'config.solve_params.current_amplitude_convention': 'Current convention',
   'config.solve_params.current_angle_deg': 'Current angle', 'config.solve_params.magnet_temperature_C': 'Magnet temperature',
   'config.solve_params.winding_temperature_C': 'Winding temperature',
-  'config.solve_params.solve_quality': 'Accuracy plan', 'config.solve_params.mesh_density': 'Mesh density',
+  'config.solve_params.solve_quality': 'Effective accuracy plan', 'config.solve_params.mesh_density': 'Mesh density',
   'config.solve_params.rotor_step_deg': 'Electrical-angle step', 'config.solve_params.rotor_sweep_range_deg': 'Electrical-angle sweep',
   'config.solve_params.max_nonlinear_iterations': 'Maximum nonlinear iterations',
   'config.solve_params.nonlinear_solver': 'Nonlinear solver',

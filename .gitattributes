@@ -29,14 +29,6 @@ benchmarks/reference-baselines/cogging-refined-20261110/** -text -eol whitespace
 # Protocol 1.10 hashes bind the measured JSON bytes on every platform.
 benchmarks/af-v1.10/**/*.json -text -eol whitespace=cr-at-eol
 benchmarks/af-v1.10/*.json -text -eol whitespace=cr-at-eol
-# Phase G registrations bind the original measured fixture bytes too.
-docs/qualification/stator-copper-femm-20261117/** -text -eol whitespace=cr-at-eol
-benchmarks/ag-v1.12/** -text -eol whitespace=cr-at-eol
-benchmarks/loss-v1/** -text -eol whitespace=cr-at-eol
-benchmarks/reference-baselines/loss-stator-dc-20261117/** -text -eol whitespace=cr-at-eol
-benchmarks/reference-baselines/protocol112-combined-20261117/** -text -eol whitespace=cr-at-eol
-benchmarks/phase-g-v1/**/*.json -text -eol whitespace=cr-at-eol
-benchmarks/phase-g-v1/*.json -text -eol whitespace=cr-at-eol
 benchmarks/reference-baselines/e-normal-20261110/** -text -eol whitespace=cr-at-eol
 benchmarks/reference-baselines/f-original-20261110/** -text -eol whitespace=cr-at-eol
 benchmarks/reference-baselines/f-hub-20261110/** -text -eol whitespace=cr-at-eol

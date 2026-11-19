@@ -56,11 +56,14 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
           {row.key === 'losses_efficiency' && !elmer && options.losses_efficiency && (
             <div className="public-losses-full-cycle">
               <p role="note">Full 360° electrical sweep selected for stator losses and efficiency.</p>
-              <label className="public-check-row">
-                <input type="checkbox" checked={!rotorLossUnavailable && Boolean(options.rotor_iron_loss)} disabled={busy || rotorLossUnavailable !== null}
-                  aria-describedby={`${id}-rotor-loss-note`} onChange={(event) => onChange('rotor_iron_loss', event.target.checked)} />
-                <span>Include rotor iron loss</span>
-              </label>
+              <div className="public-analysis-heading">
+                <label className="public-check-row">
+                  <input type="checkbox" checked={!rotorLossUnavailable && Boolean(options.rotor_iron_loss)} disabled={busy || rotorLossUnavailable !== null}
+                    aria-describedby={`${id}-rotor-loss-status ${id}-rotor-loss-note`} onChange={(event) => onChange('rotor_iron_loss', event.target.checked)} />
+                  <span>Include rotor iron loss</span>
+                </label>
+                <span id={`${id}-rotor-loss-status`}><StatusBadge status="experimental" /></span>
+              </div>
               <p role="note" id={`${id}-rotor-loss-note`}>{rotorLossUnavailable
                 ?? 'Adds 384 positions over a full mechanical turn plus a closure solve. Supports full inner-rotor SPM/flat-IPM models with M350-50A rotor steel and sinusoidal excitation.'}</p>
             </div>

@@ -1,35 +1,31 @@
 # coilEM 0.5.9 — in development
 
-- **Phase G loss benchmark and FEMM evidence.** The default
-  [A–G benchmark](benchmarks/ag-v1.12/README.md) adds 16 full-motor stator/DC-copper
-  operating points to the original 69 A–F cases. `coilem benchmark --phase G`
-  runs these points against frozen FEMM-based loss references without a FEMM
-  installation. The [completed Windows qualification](docs/qualification/stator-copper-femm-20261117/README.md)
-  passes all eight fixture/load conditions at 1500/3000 rpm; maximum differences
-  are 0.282334% hysteresis, 4.580168% lamination eddy, 2.725938% stator total and
-  0.000969% loaded DC copper. Original field-repeatability failures remain
-  diagnostic under the documented integrated-loss policy. Rotor loss is excluded
-  and remains experimental; material accuracy and full efficiency are unqualified.
-  These component results do not constitute a complete new A–G platform record.
-
-- **Experimental rotor iron loss.** An explicit option under Losses & efficiency
-  adds full-motor rotor hysteresis and classical lamination eddy loss for
-  supported inner SPM/flat-IPM sinusoidal models using M350-50A. Results, maps,
-  saved runs and exports carry the separate terms and provenance. It defaults
-  off and adds a 384-pose mechanical turn plus a fresh closure solve. See
-  [scope, evidence and limitations](docs/ROTOR_IRON_LOSS.md).
-- **Experimental sector models.** In Solve, choose **One sector (Experimental)**
-  under **Advanced options → Solved region**. The solver uses one repeating
-  sector when the geometry and winding repeat, then displays the full motor.
-  Other designs use a full-motor solve. Sector validation is deferred and
-  rotor iron loss is unavailable for sector runs.
-- **Qualification boundary.** Remaining rotor-loss qualification is deferred to
-  a future release. Rotor loss and efficiency stay experimental. The release
-  owner approved the [full-motor A–G and Prius records](benchmarks/qualification-9f2ce84ef28d/README.md).
-  All 84 supported A–G cases and all ten separate Prius software checks pass
-  on Windows x64 and macOS arm64. The six V-shape fixture changes from 0.5.8
-  were reviewed with the corner mesh refinement. The shared cases and Prius
-  metrics stay within the previous approved baseline's replay tolerances.
+- **Experimental rotor iron loss.** In **Solve → Analysis → Losses & efficiency**,
+  opt in to estimate rotor hysteresis and classical lamination eddy loss. The
+  option supports sinusoidal inner SPM and flat-IPM full-motor runs with the
+  bundled M350-50A steel and Newton solver. It adds 384 rotor positions and a
+  separate closure solve per requested rotor cycle. Results, saved runs,
+  torque–speed maps and exports identify the loss components and their basis.
+  See the [rotor iron loss guide](docs/ROTOR_IRON_LOSS.md).
+- **Experimental sector modeling.** **Solve → Advanced options → Solved region**
+  offers one repeating sector for compatible geometry and windings. Results
+  display the reconstructed full motor. Full motor is the default and the
+  fallback for designs that do not repeat. Use full motor for reference work.
+- **Field inspection.** Switch between the resultant, stator and permanent-magnet
+  fields, overlay the stator and magnet arrows, inspect a region with the
+  magnifier, or follow the winding phases during playback. The phase traces
+  leave gaps outside the solved angles on a partial sweep.
+- **Mesh and run planning.** Changing mesh settings prepares a new mesh.
+  The run plan uses the prepared mesh to estimate elapsed time. Maximum accuracy
+  uses the Very fine mesh with the High accuracy angle grid. The V-shape IPM
+  example starts with a Fine mesh and Newton iteration.
+- **Saved setups and Windows runs.** Design files carry named run setups for
+  reuse in the UI, CLI and Python. **Open results** opens a saved report directly.
+  **Rerun settings** restores its inputs in Solve. Windows runs include fixes for cancellation
+  and for locating executables after Gmsh loads.
+- **Public qualification.** The published A–F record remains protocol 1.10.0,
+  measured at `5e6fab283d165dc9e2ccec7e1a477c7080a993c4`. Its scope and
+  source identity are recorded in [Validation](docs/VALIDATION.md).
 
 # coilEM 0.5.8 Developer Preview
 

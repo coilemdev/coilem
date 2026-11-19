@@ -210,6 +210,44 @@ test('combined multipole field shows one aligned axis arrow per source as the ro
   expect(second[1]).not.toBe(first[1]);
 });
 
+test('field compositions remember their arrow densities after switching and playback', async ({ page }) => {
+  await page.route('**/solve/field-frame/tooth-test-*', async route => {
+    const frame = await page.evaluate(() => (window as any).toothPoleFixture.frame);
+    await route.fulfill({ json: { field_line_frame: frame } });
+  });
+  await openViewportHarness(page, 'field-axes');
+  await page.getByRole('button', { name: 'Field arrows', exact: true }).click();
+  const pm = page.getByRole('button', { name: /^PM-only field/ });
+  const stator = page.getByRole('button', { name: /^Stator-current-only field/ });
+  const resultant = page.getByRole('button', { name: /^Resultant field/ });
+  const density = (name: string) => page.getByRole('button', { name: `${name} arrow density`, exact: true });
+  const expectDensity = async (name: string) => {
+    await expect(density(name)).toBeEnabled();
+    await expect(density(name)).toHaveAttribute('aria-pressed', 'true');
+  };
+  await expectDensity('Medium');
+  await density('High').click();
+  await pm.click();
+  await expectDensity('Medium');
+  await density('Low').click();
+  await stator.click();
+  await expectDensity('Low');
+  await density('High').click();
+  await pm.click();
+  await expectDensity('Medium');
+  await pm.click();
+  await expectDensity('High');
+  await stator.click();
+  await expectDensity('Low');
+  await page.getByRole('button', { name: 'Play field clockwise' }).click();
+  await expect(density('Medium')).toHaveAttribute('aria-pressed', 'true');
+  await expect(density('High')).toBeDisabled();
+  await page.getByRole('button', { name: 'Pause clockwise field playback' }).click();
+  await expectDensity('Low');
+  await resultant.click();
+  await expectDensity('High');
+});
+
 test('zoomed field playback uses its raster in both the viewport and magnifier, then restores exact detail', async ({ page }) => {
   await page.addInitScript(() => {
     const drawImage = CanvasRenderingContext2D.prototype.drawImage;
@@ -230,6 +268,7 @@ test('zoomed field playback uses its raster in both the viewport and magnifier, 
   await page.getByRole('button', { name: 'Phases', exact: true }).click();
   const waveform = page.locator('.public-field-drive-panel');
   await expect(waveform).toBeVisible();
+  await expect(waveform).toHaveAccessibleName(/Outside solved sweep/);
   await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
   await page.getByRole('button', { name: 'Field arrows', exact: true }).click();
   await expect(canvas).toHaveAttribute('data-render-mode', 'vector-detail');
@@ -560,7 +599,7 @@ for (const view of ['mesh-menu', 'field'] as const) {
       await expect(page.getByRole('button', { name: 'Flux density', exact: true })).toHaveAttribute('aria-pressed', 'true');
       await expect(page.getByRole('button', { name: 'Field arrows', exact: true })).toHaveAttribute('aria-pressed', 'false');
       await expect(page.locator('.public-field-result-legend')).not.toContainText('solved elements');
-      expect(await page.locator('.public-field-result-legend > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
+      expect(await page.locator('.public-field-scale > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
       await page.getByRole('button', { name: 'Field arrows', exact: true }).click();
       await expect(page.getByRole('button', { name: 'Field arrows', exact: true })).toHaveAttribute('aria-pressed', 'true');
     }
@@ -1752,7 +1791,7 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
 });
 
 
-test('An opened saved run prepares its mesh so it can be run again', async ({ page }) => {
+test('Open results shows the stored report and Rerun settings opens Solve', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   const fixture = JSON.parse(execFileSync(process.env.COILEM_TEST_PYTHON || 'python', ['-c', `
@@ -1776,11 +1815,15 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
   await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
   await dialog.locator('[data-run-id="stored"]').getByRole('button', { name: 'Open results', exact: true }).click();
-  // The stored result stays viewable while the mesh is prepared, as Continue to Solve
-  // prepares it, and the run can then be solved again without going back to Design.
-  await expect(page.getByRole('button', { name: 'View Results →', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Download PDF', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '← Back to Solve', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Run again', exact: true })).toBeEnabled({ timeout: 120_000 });
-  await expect(page.getByText(/^Showing the saved result/)).toBeVisible();
+  await page.getByRole('button', { name: 'View Results →', exact: true }).click();
+  await openMoreRunActions(page);
+  await page.getByRole('button', { name: 'Rerun settings', exact: true }).click();
+  await expect(page.getByText(/^Saved Magneto2D settings restored/)).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
@@ -1887,7 +1930,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   await expect(dialog.getByRole('status').filter({ hasText: /Loading saved runs|Preparing comparison/ })).toHaveCount(0);
   await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
   await dialog.locator('[data-run-id="current"]').getByRole('button', { name: 'Open results', exact: true }).click();
-  await page.getByRole('button', { name: 'Full results →', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Compare with previous run', exact: true }).click();
   const left = page.getByRole('combobox', { name: 'Run A · baseline', exact: true });
   const right = page.getByRole('combobox', { name: 'Run B · candidate', exact: true });
@@ -2123,7 +2166,7 @@ test('priority fixes: a partial loaded sweep keeps its averaging warning in Resu
   await expect(page.locator('.public-report-stage').getByRole('status').filter({ hasText: 'Partial electrical sweep:' })).toBeVisible();
 });
 
-for (const width of [1500, 900, 375]) {
+for (const width of [1500, 900, 375, 320]) {
   test(`small release fixes: horizontal field labels do not overlap at ${width}px`, async ({ page }, info) => {
     await page.setViewportSize({ width, height: 850 });
     await openViewportHarness(page, 'horizontal-legend');
@@ -2134,8 +2177,19 @@ for (const width of [1500, 900, 375]) {
     const a = (await knee.boundingBox())!;
     const b = (await saturation.boundingBox())!;
     expect(a.x + a.width + 2).toBeLessThanOrEqual(b.x);
-    expect(a.x).toBeGreaterThanOrEqual(0);
-    expect(b.x + b.width).toBeLessThanOrEqual(width);
+    const legend = page.locator('.public-field-result-legend');
+    const bounds = (await legend.boundingBox())!;
+    for (const label of [knee, saturation, legend.locator('strong'), legend.locator('.is-over'), legend.locator('small')]) {
+      const box = (await label.boundingBox())!;
+      expect(box.x).toBeGreaterThanOrEqual(bounds.x - 1);
+      expect(box.x + box.width).toBeLessThanOrEqual(bounds.x + bounds.width + 1);
+    }
+    const ramp = (await legend.locator('i').boundingBox())!;
+    const midpoint = (await legend.locator('.is-mid').boundingBox())!;
+    expect(Math.abs(midpoint.x + midpoint.width / 2 - ramp.x - ramp.width / 2)).toBeLessThan(1);
+    expect((await legend.locator('.is-min').boundingBox())!.x).toBeCloseTo(ramp.x, 0);
+    const max = (await legend.locator('.is-max').boundingBox())!;
+    expect(max.x + max.width).toBeCloseTo(ramp.x + ramp.width, 0);
     await page.screenshot({ path: info.outputPath(`horizontal-legend-${width}.png`) });
   });
 }
