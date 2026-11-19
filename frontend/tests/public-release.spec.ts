@@ -1166,7 +1166,7 @@ async function solveStandard(page: Page, mode: Excitation): Promise<void> {
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Saved solve run' })).toBeVisible();
   // The starter SPM 8p/12s is a qualified combination under the FEMM v3 benchmark report.
-  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText(/Qualified|Experimental|Benchmark Qualification Pending/);
+  await expect(page.locator('.public-report-stage').getByRole('note', { name: 'Benchmark qualification' })).toContainText(/Qualified|Experimental|Not publicly qualified/);
   for (const tabName of ['Back EMF', 'Torque']) {
     const tab = page.getByRole('tab', { name: tabName, exact: true });
     await tab.click();
@@ -1279,6 +1279,10 @@ test.describe('public developer preview release rehearsal', () => {
         const qualification = page.locator('.design-health-issue').filter({ hasText: 'Experimental motor combination' });
         await expect(qualification.locator('.design-health-issue-copy')).toHaveText('Qualification Pending');
       }
+      // The older validation files were saved on Preview with Picard; they open on the app's defaults.
+      if (label === 'IPM 14p flat buried' || label === 'SPM 24p') {
+        expect(requestConfig.solve_params).toMatchObject({ solve_quality: 'standard', mesh_density: 'normal', nonlinear_solver: 'newton' });
+      }
     }
   });
 
@@ -1313,7 +1317,11 @@ test.describe('public developer preview release rehearsal', () => {
       await info.attach('public-landing-page', { path: landingScreenshot, contentType: 'image/png' });
       await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
       await expect(page.getByRole('navigation', { name: 'Motor workflow' })).toBeVisible();
-      await expect(page.getByText(/^((Qualified|Experimental) motor combination|Benchmark Qualification Pending)$/)).toBeVisible();
+      await expect(page.getByText(/^((Qualified|Experimental) motor combination|Not publicly qualified)$/)).toBeVisible();
+      // A build without a published benchmark record is a note, not a warning about the example.
+      if (await page.locator('.design-health-issue[aria-label="Benchmark qualification"]').count()) {
+        await expect(page.locator('.design-health-panel .design-health-score-label')).toHaveText('Ready to solve');
+      }
       await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
       // A mouse click on Examples hovers it first; the submenu must stay open.
       await page.getByRole('menuitem', { name: 'Examples', exact: true }).click();

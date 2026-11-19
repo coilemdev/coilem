@@ -18,14 +18,39 @@
 - **Mesh and run planning.** Changing mesh settings prepares a new mesh.
   The run plan uses the prepared mesh to estimate elapsed time. Maximum accuracy
   uses the Very fine mesh with the High accuracy angle grid. The V-shape IPM
-  example starts with a Fine mesh and Newton iteration.
+  example starts with a Fine mesh and Newton iteration. The flat-IPM and SPM 24p
+  examples start on the Standard plan with Newton iteration.
 - **Saved setups and Windows runs.** Design files carry named run setups for
   reuse in the UI, CLI and Python. **Open results** opens a saved report directly.
-  **Rerun settings** restores its inputs in Solve. Windows runs include fixes for cancellation
+  **Rerun settings** restores its inputs in Solve and prepares the mesh. Windows runs include fixes for cancellation
   and for locating executables after Gmsh loads.
+- **Six-step chart.** Sector bands, the pointer readout and the waveform table
+  follow the recorded conducting phases ([#345](https://github.com/coilemdev/coilem/issues/345)).
 - **Public qualification.** The published A–F record remains protocol 1.10.0,
   measured at `5e6fab283d165dc9e2ccec7e1a477c7080a993c4`. Its scope and
-  source identity are recorded in [Validation](docs/VALIDATION.md).
+  source identity are recorded in [Validation](docs/VALIDATION.md). This
+  release changes solver sources that the record guards, so designs the record
+  covers are labelled **Not publicly qualified** and their results
+  Experimental. The label describes the build, not your design, and Design
+  Health does not count it as a warning.
+
+## Known limitations
+
+Rotor iron loss and sector solves are experimental. Rotor iron loss covers
+full-motor inner SPM and flat-IPM runs with sinusoidal current, the bundled
+M350-50A steel and the Newton solver; it is unavailable on a sector solve
+([#319](https://github.com/coilemdev/coilem/issues/319)). The Solver
+convergence card covers the loaded and no-load sweeps, not the rotor iron loss
+positions.
+
+This build has no published benchmark qualification; see
+[Validation](docs/VALIDATION.md#qualification-status).
+
+Mesh convergence remains open for V-shape cogging, flat-IPM corners and
+outer-rotor hub cogging ([#321](https://github.com/coilemdev/coilem/issues/321)).
+Windows solve cancellation ([#234](https://github.com/coilemdev/coilem/issues/234))
+remains open. Hardware accuracy, 3D end effects and Experimental outputs
+remain outside any software parity claim.
 
 # coilEM 0.5.8 Developer Preview
 

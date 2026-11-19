@@ -83,7 +83,7 @@ import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
 import { ResultDiagnostics } from './SolverConvergenceCard';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
-import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
+import { rotorHistoryPositions, type TorqueSpeedAnalysisSettings, type WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
 import { StatusBadge } from './OutputStatusBadge';
 import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
@@ -2853,13 +2853,21 @@ const QUALIFICATION_LABELS: Record<PublicQualification['status'], string> = {
   unsupported: 'Unsupported',
 };
 
+// The first sentence of BUILD_NOT_PUBLICLY_QUALIFIED_REASON in backend/qualification.py,
+// and the wording stored in runs saved before it. Recognizing both needs no saved-run migration.
+const BUILD_NOT_PUBLICLY_QUALIFIED_PREFIXES = [
+  "The public benchmark record does not cover this build's physics.",
+  "This build's physics do not match the measured benchmark basis.",
+];
+
+/** True when the status describes this build's benchmark record, not the design. */
+function buildNotPubliclyQualified(qualification: PublicQualification): boolean {
+  return qualification.status === 'experimental'
+    && BUILD_NOT_PUBLICLY_QUALIFIED_PREFIXES.some((prefix) => qualification.reason.startsWith(prefix));
+}
+
 function qualificationLabel(qualification: PublicQualification, suffix = ''): string {
-  // The existing reason is also stored in older runs, so recognize it without
-  // changing their qualification status or requiring a saved-run migration.
-  if (qualification.status === 'experimental'
-    && qualification.reason.startsWith("This build's physics do not match the measured benchmark basis.")) {
-    return 'Benchmark Qualification Pending';
-  }
+  if (buildNotPubliclyQualified(qualification)) return 'Not publicly qualified';
   return `${QUALIFICATION_LABELS[qualification.status]}${suffix}`;
 }
 
@@ -3056,6 +3064,7 @@ function HealthPanel({
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
   const qualification = geometryStale ? null : qualificationForDisplay(readQualification(geometry?.metadata?.qualification), config);
+  const buildNote = qualification && buildNotPubliclyQualified(qualification) ? qualification : null;
   // Can it be wound: the wire against the slot, the slot mouth and the bends it has to make (windingBuild.ts).
   const windingRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
   const windingChecks = windingRecord ? windingBuildChecks({
@@ -3076,7 +3085,9 @@ function HealthPanel({
       copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` }] as DesignHealthIssue[] : []),
     { severity: balancedSlots ? 'positive' : 'warning', title: !slotInputsReady ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: slotInputsReady ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
     { severity: !error && geometry && !geometryStale ? 'positive' : 'info', title: error ? 'Preview waiting for valid inputs' : geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: error ? 'Correct the input errors to refresh the preview.' : geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
-    ...(qualification ? [{
+    // A build without a published benchmark record says nothing about this design:
+    // it is shown as a note below and never counts as a warning.
+    ...(qualification && !buildNote ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
       title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
@@ -3132,6 +3143,12 @@ function HealthPanel({
             <span className="design-health-issue-body"><span className="design-health-issue-title">{issue.title}</span><span className="design-health-issue-copy">{issue.copy}</span></span>
           </div>
         ))}
+        {buildNote && (
+          <div className="design-health-issue severity-info" role="note" aria-label="Benchmark qualification">
+            <span className="design-health-issue-icon"><StatusGlyph tone="info" /></span>
+            <span className="design-health-issue-body"><span className="design-health-issue-title">{qualificationLabel(buildNote)}</span><span className="design-health-issue-copy">{[buildNote.reason, ...buildNote.caveats].join(' ')}</span></span>
+          </div>
+        )}
       </div>
     </aside>
   );
@@ -5076,7 +5093,8 @@ function ReportStage({
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
       {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
-      <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown} />
+      <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown}
+        rotorHistoryPositions={rotorHistoryPositions(result.summary.rotor_iron_loss)} />
       </>}
     </div>
   );

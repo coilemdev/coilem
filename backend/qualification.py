@@ -54,6 +54,14 @@ LEGACY_PRIUS_QUALIFICATION_REPORT = "benchmarks/candidate-qualification-20261103
 PRIUS_QUALIFICATION_REPORT = _QUALIFICATION_RECORD.get(
     "prius_report", LEGACY_PRIUS_QUALIFICATION_REPORT)
 QUALIFICATION_REFERENCE = "https://github.com/coilemdev/coilem/blob/main/docs/VALIDATION.md#qualification-status"
+# A fact about the build, not the design: the app shows it as a note, never as a
+# design warning. Keep the first sentence equal to BUILD_NOT_PUBLICLY_QUALIFIED_PREFIXES
+# in frontend/src/public/CoilEmWorkspace.tsx, which also recognizes the 0.5.9
+# pre-release wording stored in earlier runs.
+BUILD_NOT_PUBLICLY_QUALIFIED_REASON = (
+    "The public benchmark record does not cover this build's physics. "
+    "Its qualification has not been published."
+)
 _QUALIFIED_STEEL = "M350-50A"
 _QUALIFIED_IPM = "flat_buried"
 _EXPERIMENTAL_IPM = "v_shape"
@@ -185,10 +193,7 @@ def classify_qualification(config: MotorConfig) -> Qualification:
     if status == "qualified" and config.solve_params is not None and config.solve_params.symmetry != "full":
         status, reason = "experimental", "Sector solve: the benchmark measured full-circle solves."
     if status == "qualified" and not evidence_matches_runtime():
-        status, reason = "experimental", (
-            "This build's physics do not match the measured benchmark basis. "
-            "Candidate qualification is pending; the historical report does not qualify this build."
-        )
+        status, reason = "experimental", BUILD_NOT_PUBLICLY_QUALIFIED_REASON
     return _result(status, reason, _caveats(config) if status != "unsupported" else [])
 
 

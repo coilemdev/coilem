@@ -1796,6 +1796,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-export-status.success { color: var(--success); }
 .public-export-status.error { color: var(--error); }
 .public-report-stage .public-timing-note,
+.public-report-stage > .performance-message,
 .public-report-stage .metric-grid,
 .public-report-stage .chart-shell { max-width: 1080px; margin-right: auto; margin-left: auto; }
 .public-report-stage .chart-shell { margin-top: 18px; }
@@ -3467,7 +3468,8 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-status-tag-details a { color: var(--text-primary); text-decoration: underline; }
 /* Run plan header tags anchor their details to the group's right edge, so the
    details stay inside the panel at its minimum width. */
-.public-run-plan-tags { position: relative; display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: 6px; }
+/* Two long tags (a run state and "Not publicly qualified") wrap rather than clip. */
+.public-run-plan-tags { position: relative; display: flex; min-width: 0; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
 .public-run-plan-tags .public-status-tag { position: static; }
 .public-qualification-note {
   display: flex;

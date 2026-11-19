@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 33144,
-      "sha256": "3bd766e1b65d4dfebc9e065ad95def71927904c3828a0ba96f072d73389b2374"
+      "bytes": 34570,
+      "sha256": "25eca0472ab534888611e5930456d4f21b8deda5b2b40be784066f423813d945"
     },
     {
       "path": "SECURITY.md",
@@ -605,8 +605,8 @@
     },
     {
       "path": "backend/qualification.py",
-      "bytes": 12102,
-      "sha256": "722d67ed8d0d9289310477283bb13c12d5076dcefc259d0c41c3f55cdf816549"
+      "bytes": 12402,
+      "sha256": "57f8170b6867990b8aee66231e79807f58a892569248840ae297b2ae536fee66"
     },
     {
       "path": "backend/reference_models/__init__.py",
@@ -6065,8 +6065,8 @@
     },
     {
       "path": "docs/VALIDATION.md",
-      "bytes": 54965,
-      "sha256": "ea627cf98a6179b20ddc06ccf77bd803b191cb01a61ab72744f68212e92739b1"
+      "bytes": 55517,
+      "sha256": "f3e8a5e40bb8e7001c362ed409e62270995339c47b8a8fc86aae4ade2ec937eb"
     },
     {
       "path": "docs/VERIFICATION.md",
@@ -6450,8 +6450,8 @@
     },
     {
       "path": "frontend/scripts/test-bldc-chart-paths.mjs",
-      "bytes": 5104,
-      "sha256": "1d7a2c25dbdf42708728e2066ea15ce50e9832321c8f03fcd51e31f2ec82e709"
+      "bytes": 6810,
+      "sha256": "1876f2fac0b0625801af588681f0069016e1b8a81015639621bc13ab904cd195"
     },
     {
       "path": "frontend/scripts/test-canvas-labels.mjs",
@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 184897,
-      "sha256": "5228bcba8b85cecebe7cfcb8ec84229f0f242c3edbd6b9e13219e557c9d617ff"
+      "bytes": 185165,
+      "sha256": "80f5e008e94d79e1cbe5ac3151e8ee1473078023dbb8bf34c5dfa7dfea3583f3"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7015,13 +7015,13 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 92546,
-      "sha256": "3d2b8075e7ddb0999710b273d0688abab8e446441beca387bc86906d416aea0b"
+      "bytes": 92709,
+      "sha256": "0c998e5d900e552fb0e4f52e8017b948ceda68b833adc2363663249881863e32"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
-      "bytes": 11778,
-      "sha256": "388b0c2273bcd1d2c7fb1e17d4c3f0a51628ea711ce0997a52bae21841467519"
+      "bytes": 11825,
+      "sha256": "a348dc834c313684fbd8d836b4b90fb9bb2ae4844f1b369ae0f386c21dbd25fa"
     },
     {
       "path": "frontend/src/public/CoggingCard.tsx",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 305189,
-      "sha256": "ba7294b61c719d028075e0ae6e005513aa298b175477a9203ef7bc03f453721d"
+      "bytes": 306491,
+      "sha256": "e8d1255404475dc5146ae22809465af1b92043836e8e44404ce233c93b0622f5"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7165,8 +7165,8 @@
     },
     {
       "path": "frontend/src/public/bldcChartPaths.ts",
-      "bytes": 1151,
-      "sha256": "5630590265b8d02821ba60706eb007447568abf83a66ca92730fe08528f69a78"
+      "bytes": 3347,
+      "sha256": "3487833dcf9d8aca797b36584695ae1bb9418af58e107b5fcc9a2eaf3d64cfca"
     },
     {
       "path": "frontend/src/public/canvasLabels.ts",
@@ -7235,8 +7235,8 @@
     },
     {
       "path": "frontend/src/public/exampleDesigns.ts",
-      "bytes": 7789,
-      "sha256": "8cb9217886489b0e15955ff4cbb6b254515bddffe08c30c289ef54b6261926aa"
+      "bytes": 8212,
+      "sha256": "fa8b28bf0e0e3ed63d7a8ca5eb548a621e9dfd65adcc909c09d35ee52978a7ed"
     },
     {
       "path": "frontend/src/public/examples/honda_accord_2005.coilem",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 339621,
-      "sha256": "6c9c732606fb3cfe554f64b9121374d96d3b719ede8e186e8d193765c2934c68"
+      "bytes": 339769,
+      "sha256": "ea0db1ff9714045a7c8655563787aa813140940df36aab1fab6cfbfa6194a38f"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -7600,8 +7600,8 @@
     },
     {
       "path": "frontend/tests/public-release.spec.ts",
-      "bytes": 184665,
-      "sha256": "f068c90964c0fe69d921db6045d1e8b704760c20264441ee1f75db3ca6214e1d"
+      "bytes": 185292,
+      "sha256": "27477dcfe66697b92d6f674dc3e81f9293ef1b0160c0821629df9a53dd36d02e"
     },
     {
       "path": "frontend/tsconfig.public.json",
@@ -8325,8 +8325,8 @@
     },
     {
       "path": "tests/test_qualification.py",
-      "bytes": 19769,
-      "sha256": "316689d07a4c7a3359b2eaef904ffbfb7a08fef21edaddb0216dd7dc53dec158"
+      "bytes": 19999,
+      "sha256": "4c1c9cfc8eed6e8199986922b90b8b4ff05e661c7de950784b9f738e559d4d63"
     },
     {
       "path": "tests/test_reference_recovery.py",
@@ -12110,8 +12110,8 @@
     },
     {
       "path": "frontend/src/public/SolverConvergenceCard.tsx",
-      "bytes": 11066,
-      "sha256": "7394f9fd77f592de90c5e5b4a12917d5d912f16dd2721700aa921153b5ada97b"
+      "bytes": 11644,
+      "sha256": "66ade102852486570bf034fd1cbfb97b7b10e268d2902a6e920ea608a35397ed"
     },
     {
       "path": "tests/test_convergence_reporting.py",

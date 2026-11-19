@@ -162,6 +162,12 @@ export function createPublicExampleDesign(exampleId: PublicExampleId): { name: s
     config = applyPublicSolvePreset(fileConfig, 'fine', capturePublicPresetSweep(fileConfig));
     config.solve_params.nonlinear_solver = 'newton';
   }
+  // These validation files were saved on the Preview plan with Picard. They open on the
+  // app's defaults, so the recommended plan is selected and Newton-only options are offered.
+  if (exampleId === 'ipm-14p-flat-buried-large' || exampleId === 'spm-24p-small') {
+    config = applyPublicSolvePreset(fileConfig, 'standard', capturePublicPresetSweep(fileConfig));
+    config.solve_params.nonlinear_solver = 'newton';
+  }
   const option = PUBLIC_EXAMPLE_OPTIONS.find((candidate) => candidate.id === exampleId);
   return {
     name: name || option?.label || 'Example motor',

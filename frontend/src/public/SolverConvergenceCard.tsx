@@ -151,7 +151,11 @@ function PositionTable({ report }: { report: SolverConvergenceReport }) {
  * The backend report's own rows (shared with the PDF) sit under technical
  * details; every position's record is in the CSV.
  */
-export function SolverConvergenceCard({ report }: { report?: SolverConvergenceReport | null }) {
+export function SolverConvergenceCard({ report, rotorHistoryPositions }: {
+  report?: SolverConvergenceReport | null;
+  /** Positions of a completed rotor iron loss history, which the report does not cover. */
+  rotorHistoryPositions?: number | null;
+}) {
   const headingId = useId();
   const overview = convergenceOverview(report);
   const chart = convergenceChart(report);
@@ -168,6 +172,11 @@ export function SolverConvergenceCard({ report }: { report?: SolverConvergenceRe
         </span>
       </header>
       <p className="public-convergence-verdict">{overview.verdict}</p>
+      {recorded && rotorHistoryPositions ? (
+        <p className="public-convergence-note">
+          This record covers the loaded and no-load sweeps. The {rotorHistoryPositions.toLocaleString('en-US')} rotor iron loss positions are solved separately and are not included.
+        </p>
+      ) : null}
       {overview.facts.length > 0 && (
         <dl className="public-convergence-facts">{overview.facts.map(fact => (
           <div key={fact.key}><dt>{fact.label}</dt><dd>{fact.value}</dd>{fact.hint && <p>{fact.hint}</p>}</div>
@@ -201,13 +210,17 @@ export function SolverConvergenceCard({ report }: { report?: SolverConvergenceRe
 }
 
 /** The end of Results: checks on how the numbers were computed. */
-export function ResultDiagnostics({ report, timeBreakdown }: { report?: SolverConvergenceReport | null; timeBreakdown?: SolveTimeBreakdown | null }) {
+export function ResultDiagnostics({ report, timeBreakdown, rotorHistoryPositions }: {
+  report?: SolverConvergenceReport | null;
+  timeBreakdown?: SolveTimeBreakdown | null;
+  rotorHistoryPositions?: number | null;
+}) {
   const headingId = useId();
   return (
     <section className="public-diagnostics" aria-labelledby={headingId}>
       <h2 id={headingId}>Diagnostics</h2>
       <p className="public-diagnostics-intro">How far to trust the results above, and where the solve spent its time.</p>
-      <SolverConvergenceCard report={report} />
+      <SolverConvergenceCard report={report} rotorHistoryPositions={rotorHistoryPositions} />
       <SolveTimeCard breakdown={timeBreakdown} />
     </section>
   );

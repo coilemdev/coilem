@@ -516,7 +516,10 @@ assert.match(runComparisonSource, /groupLabel: `\$\{run.label\}/);
 assert.doesNotMatch(runComparisonSource, /label="Three-phase back EMF comparison"[^\n]*readoutDifference/);
 assert.match(bldcChartSource, /\.\.\.\(showTorque \? \[\{ key: 'torque', label: 'Torque'/);
 assert.match(bldcChartSource, /\.\.\.\(showPhaseCurrents\s*\? \[phaseA, phaseB, phaseC\]\.map/);
-assert.match(bldcChartSource, /angleNote=\{readout\.shownAngle === null \? undefined : `sector S\$\{sectorAt\(readout\.shownAngle, commutationAdvanceDeg\) \+ 1\}`\}/);
+assert.match(bldcChartSource, /angleNote=\{readout\.shownAngle === null \? undefined : `sector S\$\{sectorOf\(readout\.shownAngle\) \+ 1\}`\}/);
+// #345: sector bands, the readout and the data table follow the recorded conducting pairs.
+assert.match(bldcChartSource, /recordedSectorSegments\(plotAngles, phaseA, phaseB, phaseC, angleSector, cycleComplete\)/);
+assert.match(bldcChartSource, /<td>S\{sampleSector\(index\) \+ 1\}<\/td>/);
 assert.match(bldcChartSource, /<svg ref=\{readout\.svgRef\}/);
 assert.match(waveformReadoutSource, /getScreenCTM\(\)/, 'the click maps through the SVG transform, so letterboxing cannot shift it');
 assert.match(waveformReadoutSource, /event\.pointerType !== 'mouse'/, 'only a mouse hover previews; touch selects on tap');
