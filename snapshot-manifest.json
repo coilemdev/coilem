@@ -46,7 +46,7 @@
     {
       "path": "CITATION.cff",
       "bytes": 580,
-      "sha256": "92b5406b7b51318eb0afd69361f16640201b67c805d58f9c9fca46cf646ed70a"
+      "sha256": "9d4e4786310e453ebb295ff17cd42825d6083545dcd52243869d12ff28d23225"
     },
     {
       "path": "LICENSE",
@@ -60,18 +60,18 @@
     },
     {
       "path": "PUBLICATION_STATUS.md",
-      "bytes": 9334,
-      "sha256": "8d9e0af8920a5275cde823a1667ffc12b62d274324d338f2d9c33c5fcc16b436"
+      "bytes": 9853,
+      "sha256": "21729cfdcaf7770591eda393eddf35ef8dfc7f3f100da75b9b29ba56059aa15b"
     },
     {
       "path": "README.md",
       "bytes": 7643,
-      "sha256": "32f063669b20a858f83c6110af8872f95166665d265e9ef5b5f874f645b01753"
+      "sha256": "2376dac2f8b54fa3fa29237acd04f9e07616e46544694eafe0585fa81788bc22"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 34570,
-      "sha256": "25eca0472ab534888611e5930456d4f21b8deda5b2b40be784066f423813d945"
+      "bytes": 34760,
+      "sha256": "c155bfd3b0e2d5814434026ba4c22d5490258ef848f7cf9934c57514c3376596"
     },
     {
       "path": "SECURITY.md",
@@ -96,7 +96,7 @@
     {
       "path": "backend/__init__.py",
       "bytes": 53,
-      "sha256": "566d7f60987bee900dc08f2a54149999b661e4d1fce6c7ae0ec5744d99b30fbd"
+      "sha256": "9bf30e91305164a3360e006897534b053679d2d504d5fcab32460abbd288084f"
     },
     {
       "path": "backend/airgap_sampling.py",
@@ -6416,12 +6416,12 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 64759,
-      "sha256": "96ad6358d84de6546609daebced10518941f321caae8d9c252e621f9de054445"
+      "sha256": "1be7c77da3cb221769275627a5274dcf8b4ea1967b0dad3dc190a9b9a98ac8a2"
     },
     {
       "path": "frontend/package.json",
       "bytes": 3820,
-      "sha256": "f72e774938f8ce67c969197020260a9584d79d7214ae7503622598b06eeb50d6"
+      "sha256": "2fc3c4fd9812b120dbda5e166a62799e88f7fefed0fe1ef005a005abd9ebdcbf"
     },
     {
       "path": "frontend/playwright.public.config.ts",
@@ -7211,7 +7211,7 @@
     {
       "path": "frontend/src/public/designFile.ts",
       "bytes": 17888,
-      "sha256": "aa04791636bbf3761f442628feca22b0255ca764b7f16a925cfe37fd9eefd262"
+      "sha256": "7255720a01b0da924c71180ca952460119ab101bf7dd6d7fc985d0021d2303b3"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -18886,7 +18886,7 @@
     {
       "path": "tests/fixtures/run_setup_parity.json",
       "bytes": 239981,
-      "sha256": "90524c42c1d1fb128f42e42bb8aec4b943a4c80e29793e476fff334eb7d4e1ee"
+      "sha256": "82dc1fb0bc6be6b5a62f49ebb96a4c40f72544895959789ed436ca43332e0c24"
     },
     {
       "path": "tests/test_cli.py",
