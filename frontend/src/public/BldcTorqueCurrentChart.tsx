@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { currentStepSegments } from './bldcChartPaths';
+import { currentStepSegments, recordedSector, recordedSectorSegments } from './bldcChartPaths';
 import { WaveformReadoutBar, WaveformReadoutMarker, useWaveformReadout } from './WaveformReadout';
 import { electricalAngleTicks, formatElectricalAngleTick, formatValueTick, valueAxis } from './chartAxis';
 import { waveformReadoutAngles, waveformReadoutValues, type WaveformReadoutSeries } from './chartReadout';
@@ -24,19 +24,6 @@ function wrap360(value: number): number {
 
 function sectorAt(angle: number, advance: number): number {
   return Math.floor(wrap360(angle + advance) / 60) % 6;
-}
-
-function sectorSegments(advance: number): Array<{ start: number; end: number; sector: number }> {
-  const boundaries = [0, 360];
-  for (let sector = 0; sector < 6; sector += 1) {
-    const boundary = wrap360(sector * 60 - advance);
-    if (boundary > 1e-9 && boundary < 360 - 1e-9) boundaries.push(boundary);
-  }
-  boundaries.sort((left, right) => left - right);
-  return boundaries.slice(0, -1).map((start, index) => {
-    const end = boundaries[index + 1];
-    return { start, end, sector: sectorAt((start + end) / 2, advance) };
-  });
 }
 
 function conductingPhases(a: number, b: number, c: number): string {
@@ -102,7 +89,13 @@ export function BldcTorqueCurrentChart({
   const stepSegments = (values: number[]) => currentStepSegments(
     angles, values, x, currentY, cycleComplete ? width - margin.right : undefined,
   );
-  const segments = sectorSegments(commutationAdvanceDeg);
+  // Sectors follow the recorded conducting pairs; the angle rule only covers a sample without one.
+  const angleSector = (angle: number) => sectorAt(angle, commutationAdvanceDeg);
+  const segments = recordedSectorSegments(plotAngles, phaseA, phaseB, phaseC, angleSector, cycleComplete);
+  const sampleSector = (index: number) => recordedSector(phaseA[index], phaseB[index], phaseC[index]) ?? angleSector(angles[index]);
+  // The readout sits on a solved angle: use that sample's own pair.
+  const sectorOf = (angle: number) => sampleSector(plotAngles.reduce((nearest, value, index) => (
+    Math.abs(value - wrap360(angle)) < Math.abs(plotAngles[nearest] - wrap360(angle)) ? index : nearest), 0));
   const torqueTicks = torqueAxis.ticks;
   const currentTicks = [-maxCurrent, 0, maxCurrent];
   // Not x(): wrap360 would put 360° back at the left edge.
@@ -154,7 +147,7 @@ export function BldcTorqueCurrentChart({
       <WaveformReadoutBar
         id={readout.readoutId}
         angleDeg={readout.shownAngle}
-        angleNote={readout.shownAngle === null ? undefined : `sector S${sectorAt(readout.shownAngle, commutationAdvanceDeg) + 1}`}
+        angleNote={readout.shownAngle === null ? undefined : `sector S${sectorOf(readout.shownAngle) + 1}`}
         values={readoutValues}
         previewing={readout.previewing}
       />
@@ -171,7 +164,7 @@ export function BldcTorqueCurrentChart({
                 height={plotHeight}
                 className={`public-bldc-sector sector-${segment.sector % 2}`}
               />
-              <text x={(x(segment.start) + x(segment.end === 360 ? 359.999999 : segment.end)) / 2} y={margin.top + 12} textAnchor="middle" className="public-bldc-sector-label">S{segment.sector + 1}{index === 0 && segment.start > 0 ? ' (wrap)' : ''}</text>
+              <text x={(x(segment.start) + x(segment.end === 360 ? 359.999999 : segment.end)) / 2} y={margin.top + 12} textAnchor="middle" className="public-bldc-sector-label">S{segment.sector + 1}</text>
             </g>
           ))}
           {showTorque && torqueTicks.map((tick) => {
@@ -204,7 +197,7 @@ export function BldcTorqueCurrentChart({
         <div tabIndex={0} role="region" aria-label="Scrollable six-step waveform data">
           <table>
             <thead><tr><th>Angle</th><th>Sector</th><th>Conducting phases</th><th>Ia</th><th>Ib</th><th>Ic</th><th>Torque</th></tr></thead>
-            <tbody>{angles.map((angle, index) => <tr key={`${angle}-${index}`}><td>{angle.toFixed(3)}°</td><td>S{sectorAt(angle, commutationAdvanceDeg) + 1}</td><td>{conductingPhases(phaseA[index], phaseB[index], phaseC[index])}</td><td>{phaseA[index].toFixed(6)} A</td><td>{phaseB[index].toFixed(6)} A</td><td>{phaseC[index].toFixed(6)} A</td><td>{torqueNm[index].toFixed(6)} N·m</td></tr>)}</tbody>
+            <tbody>{angles.map((angle, index) => <tr key={`${angle}-${index}`}><td>{angle.toFixed(3)}°</td><td>S{sampleSector(index) + 1}</td><td>{conductingPhases(phaseA[index], phaseB[index], phaseC[index])}</td><td>{phaseA[index].toFixed(6)} A</td><td>{phaseB[index].toFixed(6)} A</td><td>{phaseC[index].toFixed(6)} A</td><td>{torqueNm[index].toFixed(6)} N·m</td></tr>)}</tbody>
           </table>
         </div>
       </details>

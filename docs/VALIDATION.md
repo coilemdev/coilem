@@ -225,6 +225,14 @@ Windows was collected on a hosted runner. macOS was collected on a local Apple
 silicon Mac (macOS 27.2) with the same workflow commands, because hosted macOS
 runners were not available; the linked receipt records this.
 
+The app compares its installed solver sources with the sources that record
+measured. When they differ or cannot be checked, a design the record covers is labelled **Not
+publicly qualified** and its results Experimental: the public record does not
+describe that build. coilEM 0.5.9 is such a build. The label is a fact about
+the build, not a finding about the design, so Design Health shows it as a note
+and does not count it as a warning. Runs saved by 0.5.9 pre-release builds
+carry the earlier wording of the same status and display the same label.
+
 The [protocol 1.6.0 comparison](../benchmarks/candidate-qualification-20261103/README.md)
 and its review retain the historical 46-record basis. The current combined
 registry retains the reviewed FEMM source identities and scope for each

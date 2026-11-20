@@ -1766,10 +1766,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
         return;
       }
       setView(destination);
+      // Rerun settings lands in Solve as Continue to Solve does: with the mesh being prepared.
+      if (destination === 'solve' && !guidedActive) void prepareMesh(parsed.config);
       const restoredNotice = destination === 'solve'
         ? replaySolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)
           ? 'Saved Elmer settings restored, but Elmer is not currently available. Magneto2D remains selected.'
-          : `Saved ${replaySolver === 'elmer' ? 'Elmer' : 'Magneto2D'} settings restored. Prepare the mesh, review them, then explicitly start a new analysis.`
+          : `Saved ${replaySolver === 'elmer' ? 'Elmer' : 'Magneto2D'} settings restored. Review them, then explicitly start a new analysis.`
         : 'Saved project opened. Its stored result remains immutable; edit or solve explicitly.';
       setNotice([restoredNotice, parsed.solverSettingsNotice, parsed.runSetupsNotice].filter(Boolean).join(' '));
     } catch (requestError) {
