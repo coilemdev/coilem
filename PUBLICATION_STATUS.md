@@ -5,6 +5,16 @@ Published November 16, 2026 (UTC): **coilEM 0.5.8 Developer Preview**, with
 was integrated into `main` by [PR #292](https://github.com/coilemdev/coilem/pull/292);
 later 0.5.8 work merged into `main` directly.
 
+## 0.5.9 release candidate
+
+coilEM 0.5.9 is a release candidate and is not published. It bundles Magneto2D
+0.6.0. Still pending: the merge of `release/v0.5.9` into `main`, the private
+release review of that exact commit, the TestPyPI rehearsal, platform wheel
+acceptance, the tag and the PyPI upload. Public benchmark publication is
+paused; the published A–F record remains the one measured at
+`5e6fab283d165dc9e2ccec7e1a477c7080a993c4`. See the
+[release notes](RELEASE_NOTES.md) and [releasing](docs/RELEASING.md).
+
 ## 0.5.8 qualification and publication
 
 The formal release qualification gate passes for measured candidate

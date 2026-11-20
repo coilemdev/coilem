@@ -1,4 +1,7 @@
-# coilEM 0.5.9 — in development
+# coilEM 0.5.9 Developer Preview — release candidate
+
+This candidate bundles Magneto2D 0.6.0. Platform wheel acceptance, the private
+release review and publication are pending; see [release status](PUBLICATION_STATUS.md).
 
 - **Experimental rotor iron loss.** In **Solve → Analysis → Losses & efficiency**,
   opt in to estimate rotor hysteresis and classical lamination eddy loss. The
