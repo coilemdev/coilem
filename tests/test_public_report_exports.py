@@ -783,3 +783,17 @@ def test_pdf_does_not_normalize_cogging_by_near_zero_mean(current, expected_labe
     assert "16.7 N m" in text
     assert "329698" not in text and "329,698" not in text
     assert result == original, "Presentation must not rewrite stored numerical evidence"
+
+
+def test_pdf_loss_shares_add_up_like_the_losses_card() -> None:
+    """#333: shares are rounded by largest remainder, so each group's parts add up to the group."""
+
+    from backend.public_report import _loss_share_texts
+
+    # The owner's 24-pole SPM: 13 % + 84 % under a 97 % stator iron row, 2 % + 1 % copper.
+    parts = [("copper", 2.04), ("copper", 0.578), ("stator", 11.7), ("stator", 79.1), ("rotor", 0.0005), ("rotor", 0.0127)]
+    texts = _loss_share_texts(parts)
+    assert texts[:4] == ["2%", "1%", "13%", "84%"] or sum(int(t[:-1]) for t in texts[2:4]) == 97
+    assert texts[4:] == ["<1%", "<1%"]
+    numbers = [int(text[:-1]) for text in texts if text != "<1%"]
+    assert sum(numbers) == 100

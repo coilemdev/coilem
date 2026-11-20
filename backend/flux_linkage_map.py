@@ -95,7 +95,7 @@ def map_solve_count(currents: Sequence[float], gammas: Sequence[float]) -> int:
 # identity, but determine the flux and loss values persisted in map points.
 _MAP_SOURCES = (
     "flux_linkage_map.py", "dq_flux_linkage.py", "iron_loss.py",
-    "magnet_temperature.py", "models/performance.py",
+    "magnet_temperature.py", "models/performance.py", "rotor_iron_loss.py", "rotor_motion_mesh.py", "rotor_loss_solver.py",
 )
 
 
@@ -138,6 +138,8 @@ def map_scope_key(config: MotorConfig, preset: MapPreset = "preview") -> str:
         "cogging_torque": False, "losses_efficiency": True,
         "thd_analysis": False, "torque_speed_envelope": False,
     }
+    if config.solve_options and config.solve_options.rotor_iron_loss:
+        raw["solve_options"]["rotor_iron_loss"] = True
     solve_params = dict(raw.get("solve_params") or {})
     for name in _OPERATING_POINT_FIELDS:
         solve_params.pop(name, None)
@@ -213,6 +215,7 @@ def point_from_result(current_peak_A: float, gamma_deg: float, result: Any) -> F
         iron_loss_W=_finite(getattr(iron, "iron_loss_W", None)),
         iron_hysteresis_loss_W=_finite(getattr(iron, "iron_hysteresis_loss_W", None)),
         iron_eddy_loss_W=_finite(getattr(iron, "iron_eddy_loss_W", None)),
+        rotor_iron_loss=getattr(summary, "rotor_iron_loss", None),
         nonlinear_iterations_max=getattr(metadata, "nonlinear_max_iterations_used", None),
         nonlinear_residual_max=_finite(getattr(metadata, "nonlinear_worst_final_mismatch", None)),
     )
@@ -229,11 +232,14 @@ class MapStore:
     def _name(current: float, gamma: float) -> str:
         return f"I{current:.9g}_g{gamma:.9g}.json".replace("-", "m")
 
-    def load(self, current: float, gamma: float) -> FluxLinkageMapPoint | None:
+    def load(self, current: float, gamma: float, *, require_rotor_loss: bool = False) -> FluxLinkageMapPoint | None:
         path = self.directory / self._name(current, gamma)
         try:
             point = FluxLinkageMapPoint.model_validate_json(path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
+            return None
+        rotor = point.rotor_iron_loss
+        if (require_rotor_loss and rotor is None) or (rotor is not None and rotor.status == "unavailable"):
             return None
         return point if point.status == "ok" else None
 
@@ -268,6 +274,8 @@ class MapStore:
         usable = [
             flux_map for flux_map in self.stored_maps()
             if all(point.status == "ok" for point in flux_map.points)
+            and (not flux_map.rotor_iron_loss_requested or all(
+                point.rotor_iron_loss is not None and point.rotor_iron_loss.status != "unavailable" for point in flux_map.points))
             and peak_current_A * (1 - 1e-9) <= flux_map.current_peak_A[-1] <= _REUSE_HEADROOM * peak_current_A
         ]
         return min(usable, key=lambda flux_map: flux_map.current_peak_A[-1], default=None)
@@ -311,6 +319,7 @@ def run_flux_linkage_map(
     done = 0
     solve_seconds: list[float] = []
     positions = 0
+    rotor_requested = bool(config.solve_options and config.solve_options.rotor_iron_loss)
 
     def finish(point: FluxLinkageMapPoint, *, solved: bool) -> None:
         nonlocal done
@@ -343,7 +352,7 @@ def run_flux_linkage_map(
 
     for current in currents:
         if current == 0:
-            stored = store.load(0.0, gammas[0]) if store is not None else None
+            stored = store.load(0.0, gammas[0], require_rotor_loss=rotor_requested) if store is not None else None
             zero = stored or solve_point(0.0, 0.0)
             for gamma in gammas:
                 points[(0.0, gamma)] = zero.model_copy(update={"gamma_deg": gamma})
@@ -353,7 +362,7 @@ def run_flux_linkage_map(
                     store.save(points[(0.0, gamma)])
             continue
         for gamma in gammas:
-            stored = store.load(current, gamma) if store is not None else None
+            stored = store.load(current, gamma, require_rotor_loss=rotor_requested) if store is not None else None
             point = stored or solve_point(current, gamma)
             points[(current, gamma)] = point
             finish(point, solved=stored is None)
@@ -365,9 +374,11 @@ def run_flux_linkage_map(
         gamma_deg=gammas,
         reference_speed_rpm=solve_params.rated_speed_rpm,
         magnet_temperature_C=solve_params.magnet_temperature_C,
-        rotor_positions=max(2, positions),
+        # A map assembled entirely from saved points still uses the preset's loaded sweep.
+        rotor_positions=positions or map_positions_per_point(preset),
         mesh_density=str(solve_params.mesh_density),
         torque_method=solve_params.torque_method,
+        rotor_iron_loss_requested=bool(config.solve_options and config.solve_options.rotor_iron_loss),
         points=[points[(current, gamma)] for current in currents for gamma in gammas],
     )
     if store is not None:

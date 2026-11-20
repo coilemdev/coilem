@@ -111,6 +111,34 @@ where
             sum_w[n] += area;
         }
     }
+    if let Some(sector) = &mesh.info.sector {
+        // A node on a sector edge has half its neighbours in the next sector.
+        // Its partner node holds their equivalents, turned by the sector span
+        // and, for an anti-periodic sector, negated; share the two half sums
+        // so both nodes get the average a full-circle mesh would give.
+        let sign = if sector.anti_periodic { -1.0 } else { 1.0 };
+        for &(master, slave) in &mesh.sector_edge_pairs {
+            if master == slave || master >= n_nodes || slave >= n_nodes {
+                continue;
+            }
+            let [mx, my] = mesh.nodes[master];
+            let [sx, sy] = mesh.nodes[slave];
+            let turn = sy.atan2(sx) - my.atan2(mx);
+            let (sin_t, cos_t) = turn.sin_cos();
+            // The slave's sum seen from the master: turned back and signed.
+            let back_x = sign * (sum_bx[slave] * cos_t + sum_by[slave] * sin_t);
+            let back_y = sign * (-sum_bx[slave] * sin_t + sum_by[slave] * cos_t);
+            let total_x = sum_bx[master] + back_x;
+            let total_y = sum_by[master] + back_y;
+            let total_w = sum_w[master] + sum_w[slave];
+            sum_bx[master] = total_x;
+            sum_by[master] = total_y;
+            sum_w[master] = total_w;
+            sum_bx[slave] = sign * (total_x * cos_t - total_y * sin_t);
+            sum_by[slave] = sign * (total_x * sin_t + total_y * cos_t);
+            sum_w[slave] = total_w;
+        }
+    }
     (0..n_nodes)
         .map(|n| {
             if sum_w[n] > 0.0 {
@@ -341,12 +369,15 @@ fn interpolate_az_from_record(az: &[f64], record: &AirgapTriangleRecord, weights
 }
 
 fn sample_az_on_airgap(
+    info: &crate::mesh::MeshInfo,
     records: &AirgapTriangleRecords,
     az: &[f64],
     point_xy_m: [f64; 2],
 ) -> Option<f64> {
+    // A point outside a sector mesh takes its value from the equivalent point inside.
+    let (point_xy_m, sign) = info.fold_point(point_xy_m);
     let (record, weights) = find_airgap_triangle_match(records, point_xy_m)?;
-    Some(interpolate_az_from_record(az, record, weights))
+    Some(sign * interpolate_az_from_record(az, record, weights))
 }
 
 fn choose_az_contour_radial_step(mesh: &TriMesh, contour_radius_m: f64) -> f64 {
@@ -402,6 +433,7 @@ fn choose_az_contour_radial_step(mesh: &TriMesh, contour_radius_m: f64) -> f64 {
 }
 
 fn sample_contour_field_from_az(
+    info: &crate::mesh::MeshInfo,
     records: &AirgapTriangleRecords,
     az: &[f64],
     point_xy_m: [f64; 2],
@@ -414,8 +446,9 @@ fn sample_contour_field_from_az(
     }
 
     let theta = point_xy_m[1].atan2(point_xy_m[0]);
-    let (center_record, _) = find_airgap_triangle_match(records, point_xy_m)?;
+    let (center_record, _) = find_airgap_triangle_match(records, info.fold_point(point_xy_m).0)?;
     let a_r_plus = sample_az_on_airgap(
+        info,
         records,
         az,
         [
@@ -424,6 +457,7 @@ fn sample_contour_field_from_az(
         ],
     )?;
     let a_r_minus = sample_az_on_airgap(
+        info,
         records,
         az,
         [
@@ -432,6 +466,7 @@ fn sample_contour_field_from_az(
         ],
     )?;
     let a_theta_plus = sample_az_on_airgap(
+        info,
         records,
         az,
         [
@@ -440,6 +475,7 @@ fn sample_contour_field_from_az(
         ],
     )?;
     let a_theta_minus = sample_az_on_airgap(
+        info,
         records,
         az,
         [
@@ -500,9 +536,11 @@ fn full_coverage_airgap_radii(mesh: &TriMesh) -> Vec<f64> {
         let candidate_radius = 0.5 * (window[0] + window[1]);
         let mut covered = true;
         for sample_index in 0..coverage_samples {
-            let theta = total_span_rad * sample_index as f64 / coverage_samples as f64;
-            let x = candidate_radius * theta.cos();
-            let y = candidate_radius * theta.sin();
+            let theta = mesh.info.sector_start_rad()
+                + total_span_rad * sample_index as f64 / coverage_samples as f64;
+            let ([x, y], _) = mesh
+                .info
+                .fold_point([candidate_radius * theta.cos(), candidate_radius * theta.sin()]);
             let matched = grid.candidates(x, y).iter().any(|&index| {
                 let (tri_xy, bbox) = airgap_triangles[index];
                 !(x < bbox[0] - pad || x > bbox[1] + pad || y < bbox[2] - pad || y > bbox[3] + pad)

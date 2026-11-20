@@ -250,6 +250,18 @@ def test_missing_evidence_fails_closed(tmp_path):
     assert check(tmp_path)
 
 
+def test_cyclic_nested_reference_fails_closed(tmp_path, monkeypatch):
+    _measured(tmp_path)
+    monkeypatch.setattr("tools.release.qualification._review_errors", lambda *_: [])
+    path = tmp_path / "references/manifest.json"
+    ref = json.loads(path.read_text())
+    ref["schema"] = "coilem.combined_reference_bundle/v1"
+    ref["components"] = [{"id":"self", "reference_bundle_sha256":"x", "reference_bundle":"references"}]
+    ref["records"] = {"motor":{"component":"self", "record":{}}}
+    _write(tmp_path, "references/manifest.json", ref)
+    assert any("Cyclic combined reference" in error for error in check(tmp_path))
+
+
 def test_supported_failure_or_yellow_cannot_pass_the_release_gate(tmp_path):
     _measured(tmp_path)
     for status in ("FAIL", "YELLOW", "UNSUPPORTED"):

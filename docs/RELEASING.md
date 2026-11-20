@@ -47,6 +47,12 @@ image, `manylinux_2_28`, exceeds the 2.27 floor.
 - CI audits each supported Python's pins with pip-audit. `python -m
   tools.release.policy --audit-pins DIR` writes them without markers,
   because pip-audit skips pins whose markers do not match its interpreter.
+- CI audits the locked frontend dependencies with `npm run audit:deps`
+  (`frontend/scripts/audit-dependencies.mjs`). It fails on any high or critical
+  npm advisory unless `frontend/audit-exceptions.json` lists it with a reason,
+  its vulnerable range and a `review_by` date. An exception lapses, and the
+  audit fails again, when npm stops reporting the advisory, when a version
+  outside that range is published, or when the date passes.
 - Release builds use the pinned Rust toolchain with `cargo build --release
   --locked` and the frontend's `npm ci`. The UI is built once and shared by
   every wheel.
@@ -153,15 +159,16 @@ Each release:
 1. On a branch, set the version in `backend/__init__.py`,
    `frontend/package.json` (and its lock file) and `COILEM_APP_VERSION` in
    `frontend/src/public/designFile.ts`; `tests/test_public_candidate.py`
-   checks that they agree. Give `RELEASE_NOTES.md` the new heading and a
-   "Reproduce this record" section. It names the version and the records'
-   commit, and gives the `coilem benchmark` commands from the
-   [records README](../benchmarks/records/README.md#reproduce-this-record).
-   If the release changes a physics source, `coilem benchmark` reports
-   NOT_COMPARABLE until new records are built from a complete run on each
-   platform.
-2. Merge, then run a TestPyPI rehearsal on that `main` commit and try the
-   build by hand on each platform.
+   checks that they agree. Update `CITATION.cff` and describe the release in
+   `RELEASE_NOTES.md`.
+2. Merge, identify the full commit SHA on `main`, and rehearse its wheels on
+   TestPyPI. Run the registered release qualification against that exact commit
+   in the private experiments repository. A squash, merge, version change or
+   other edit that produces a new commit requires qualification of that SHA.
+   Before tagging, the release owner checks that the private review passed
+   for that SHA. Keep the review and measurements in the private repository.
+   The existing A–F measurements in the public package retain their original
+   measured commit.
 3. Tag that commit and push the tag. The tag must name the version exactly,
    such as `v0.3.1` for 0.3.1, or the policy job stops the run;
    `python -m tools.release.version --tag v0.3.1` runs the same check.
@@ -171,9 +178,10 @@ Each release:
    git push origin v0.3.1
    ```
 
-4. The workflow builds and accepts the wheels as for any run, then waits for
-   approval of the `pypi` environment. Approving it uploads the four wheels
-   with trusted publishing.
+4. The workflow checks the commit recorded in each wheel and runs the platform
+   acceptance tests. After the existing `pypi` environment approval, it
+   rechecks that the live tag still points to that commit and uploads the four
+   wheels with trusted publishing.
 5. On each platform, the workflow downloads the wheel from PyPI, checks it is
    byte-identical to the wheel CI built, and repeats the acceptance test. It
    finds the wheel by its SHA-256 through PyPI's JSON API, which is current as

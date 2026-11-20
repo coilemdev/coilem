@@ -47,6 +47,21 @@ async function saveSetup(page: Page, name: string, includeNumerics = true) {
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 }
 
+test('Solve identifies the sector option as experimental before and after selection', async ({ page }) => {
+  await start(page);
+  const advanced = page.locator('button[aria-controls="param-group-content-advanced"]');
+  await advanced.click();
+  const region = page.getByRole('group', { name: 'Solved region', exact: true });
+  await expect(region.getByRole('button', { name: 'Full motor', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  const sector = region.getByRole('button', { name: 'One sector (Experimental)', exact: true });
+  await expect(sector).toBeVisible();
+  await sector.click();
+  await expect(sector).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Release qualification covers full-motor solves.', { exact: false })).toBeVisible();
+  await advanced.click();
+  await expect(advanced).toContainText('One sector (Experimental)');
+});
+
 test('losses request a full cycle while mesh choices, saved setups and legacy files keep their plan', async ({ page }, info) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await start(page);
@@ -62,7 +77,9 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   await openAnalysis();
   const losses = analysis.getByRole('checkbox', { name: 'Losses & efficiency', exact: true });
   await losses.check();
-  await expect(analysis.getByRole('note')).toHaveText('Full 360° electrical sweep selected for losses and efficiency.');
+  // The rotor-loss option adds its own note under the full-cycle one.
+  const fullCycleNote = analysis.getByRole('note').filter({ hasText: 'Full 360°' });
+  await expect(fullCycleNote).toHaveText('Full 360° electrical sweep selected for stator losses and efficiency.');
   await openPlan();
   const plan = page.locator('[data-guide="solve-plan"]');
   const planHeader = page.locator('button[aria-controls="param-group-content-plan"]');
@@ -70,6 +87,8 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   await expect(plan.getByRole('spinbutton', { name: 'Step Size (° elec)', exact: true })).toHaveCount(0);
   await plan.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
   await expect(plan.getByRole('button', { name: /Preview.*Coarse mesh/ })).toHaveAttribute('aria-pressed', 'true');
+  const partialWarning = page.getByRole('status').filter({ hasText: 'Preview samples a partial electrical window' });
+  await expect(partialWarning).toHaveCount(0);
   await planHeader.click();
   await expect(planHeader).toContainText('Preview · 360° at 15° for losses');
   await openPlan();
@@ -86,9 +105,10 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   expect(file.run_setups.profiles.find((profile: { id: string }) => profile.id === id).parameters.rotor_sweep_range_deg).toBe(360);
   await openAnalysis(); await losses.uncheck();
   await openPlan(); await plan.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
+  await expect(partialWarning).toBeVisible();
   await selectSetup(page, ''); await selectSetup(page, id);
   await openAnalysis(); await expect(losses).toBeChecked();
-  await expect(analysis.getByRole('note')).toContainText('360°');
+  await expect(analysis.getByRole('note').filter({ hasText: 'Full 360°' })).toContainText('360°');
   const legacy = structuredClone(file);
   Object.assign(legacy.solve_params, { solve_quality: 'standard', rotor_sweep_range_deg: 60 });
   legacy.run_setups.scope += '-legacy';
@@ -110,6 +130,43 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   expect(submitted.config.solve_options.losses_efficiency).toBe(true);
   expect(submitted.config.solve_options.cogging_torque).toBe(false);
   expect(errors).toEqual([]);
+});
+
+test('saved designs and named setups use the effective experimental rotor iron loss selection', async ({ page }, info) => {
+  await start(page);
+  const openSection = async (section: string) => {
+    const header = page.locator(`button[aria-controls="param-group-content-${section}"]`);
+    if (await header.getAttribute('aria-expanded') !== 'true') await header.click();
+  };
+  await openSection('analysis');
+  await page.getByRole('checkbox', { name: 'Losses & efficiency', exact: true }).check();
+  const rotor = page.getByRole('checkbox', { name: 'Include rotor iron loss', exact: true });
+  await expect(rotor).toHaveAccessibleDescription(/Experimental/i);
+  await rotor.check();
+  await saveSetup(page, 'Full motor loss');
+  const initial = await saveFile(page, info.outputPath('full.coilem'));
+  expect(initial.solve_options.rotor_iron_loss).toBe(true);
+  for (const [group, value, restored] of [
+    ['Solved region', 'One sector (Experimental)', 'Full motor'],
+    ['Nonlinear solver', 'Picard', 'Newton'],
+  ]) {
+    await openSection('advanced');
+    const choices = page.getByRole('group', { name: group, exact: true });
+    await choices.getByRole('button', { name: value, exact: true }).click();
+    await openSection('analysis');
+    await expect(rotor).toBeDisabled();
+    await expect(rotor).not.toBeChecked();
+    await saveSetup(page, value);
+    const saved = await saveFile(page, info.outputPath(`${restored}.coilem`));
+    expect(saved.solve_options.losses_efficiency).toBe(true);
+    expect(saved.solve_options).not.toHaveProperty('rotor_iron_loss');
+    expect(saved.run_setups.profiles.find((p: { id: string }) => p.id === saved.run_setups.activeId).outputs).not.toHaveProperty('rotor_iron_loss');
+    expect(saved.run_setups.profiles.find((p: { name: string }) => p.name === 'Full motor loss').outputs.rotor_iron_loss).toBe(true);
+    await openSection('advanced');
+    await choices.getByRole('button', { name: restored, exact: true }).click();
+    await openSection('analysis');
+    await expect(rotor).toBeChecked();
+  }
 });
 
 test('user setups support save, apply, update, rename, copy, delete and file round-trip', async ({ page }, info) => {

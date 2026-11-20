@@ -2,12 +2,53 @@ import assert from 'node:assert/strict';
 import { importTypeScriptModule } from './import-typescript-module.mjs';
 
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
-const { analysisSummary, analysisPositions, setAnalysisOption, hasTorqueResult, hasBackEmfResult, defaultResultPlot } = await importTypeScriptModule(new URL('../src/public/analysisOptions.ts', import.meta.url));
+const { analysisSummary, analysisPositions, setAnalysisOption, hasTorqueResult, hasBackEmfResult, defaultResultPlot, rotorIronLossUnavailableReason, rotorIronLossSelected } = await importTypeScriptModule(new URL('../src/public/analysisOptions.ts', import.meta.url));
 const { asPublicConfig } = await importTypeScriptModule(new URL('../src/public/publicRequest.ts', import.meta.url));
-const { applyPublicSolvePreset, ensureLossesFullCycle } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
+const { applyPublicSolvePreset, ensureLossesFullCycle, selectedSolvePlan } = await importTypeScriptModule(new URL('../src/public/solvePlan.ts', import.meta.url));
 const { parseDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
 
 let config = cloneDefaultConfig();
+{
+  assert.equal(asPublicConfig(config).solve_options.rotor_iron_loss, undefined, 'legacy requests do not opt in');
+  const selected = setAnalysisOption(config, 'rotor_iron_loss', true);
+  assert.equal(selected.solve_options.losses_efficiency, true, 'rotor selection includes its loss dependency');
+  assert.equal(asPublicConfig(selected).solve_options.rotor_iron_loss, true);
+  assert.equal(asPublicConfig(selected, 'elmer').solve_options.rotor_iron_loss, undefined);
+  assert.equal(setAnalysisOption(selected, 'losses_efficiency', false).solve_options.rotor_iron_loss, undefined);
+  assert.equal(parseDesignFile(JSON.stringify(selected)).config.solve_options.rotor_iron_loss, true);
+  assert.match(analysisPositions(selected, { analysis_positions: { rotor_iron_loss: 385 } }, 'magneto2d'), /Rotor iron loss 385/);
+}
+{
+  // Rotor iron loss is only offered, sent and listed for designs the backend can solve it for.
+  const supported = setAnalysisOption(cloneDefaultConfig(), 'rotor_iron_loss', true);
+  assert.equal(rotorIronLossUnavailableReason(supported), null);
+  assert.equal(rotorIronLossSelected(supported), true);
+  const cases = [
+    [(c) => { c.rotor_layout = 'outer'; }, /outer-rotor/],
+    [(c) => { c.topology = 'IPM'; c.rotor.ipm_topology = 'v_shape'; }, /V-shape/],
+    [(c) => { c.solve_params.excitation_mode = 'ideal_six_step_120'; }, /sinusoidal/],
+    [(c) => { c.solve_params.symmetry = 'auto'; }, /full motor/],
+    [(c) => { c.solve_params.nonlinear_solver = 'picard'; }, /Newton/],
+    [(c) => { c.materials.rotor_steel = 'M400-50A'; }, /M350-50A/],
+    [(c) => { c.solve_params.rated_speed_rpm = 0; }, /speed/],
+    [(c) => { c.geometry_reference = 'pyleecan_prius_2004'; }, /reference/],
+  ];
+  for (const [change, reason] of cases) {
+    const unsupported = structuredClone(supported);
+    change(unsupported);
+    assert.match(rotorIronLossUnavailableReason(unsupported), reason);
+    assert.equal(rotorIronLossSelected(unsupported), false);
+    const request = asPublicConfig(unsupported).solve_options;
+    assert.equal(request.rotor_iron_loss, undefined, 'an unsupported design is sent without the rotor request');
+    assert.equal(request.losses_efficiency, true, 'the other losses and efficiency are still requested');
+    assert.doesNotMatch(analysisSummary(unsupported), /Rotor iron loss/);
+    assert.equal(unsupported.solve_options.rotor_iron_loss, true, 'the choice is kept for when the design supports it again');
+  }
+  const flat = structuredClone(supported);
+  flat.topology = 'IPM'; flat.rotor.ipm_topology = 'flat_buried';
+  assert.equal(rotorIronLossUnavailableReason(flat), null);
+  assert.match(rotorIronLossUnavailableReason(supported, 'elmer'), /Magneto2D/);
+}
 assert.equal(analysisSummary(config), 'Torque · Back EMF');
 assert.equal(config.solve_options.cogging_torque, false);
 assert.equal(config.solve_options.losses_efficiency, false);
@@ -83,4 +124,18 @@ assert.equal(defaultResultPlot({ ...result, summary: { ...result.summary, back_e
 assert.throws(() => parseDesignFile(JSON.stringify({ ...mapOnly, torque_speed_analysis: {
   ...mapOnly.torque_speed_analysis, limits: { ...mapOnly.torque_speed_analysis.limits, dc_bus_V: -5 },
 } })), /Invalid torque–speed map settings/);
+// The Maximum accuracy plan is High accuracy's grid on the Very fine mesh, and lights up only for that pair.
+{
+  const sweep = { rotor_sweep_range_deg: 60, rotor_step_deg: 15 };
+  const base = setAnalysisOption(cloneDefaultConfig(), 'back_emf', true);
+  const veryFine = applyPublicSolvePreset(base, 'very_fine', sweep);
+  assert.equal(veryFine.solve_params.solve_quality, 'fine');
+  assert.equal(veryFine.solve_params.mesh_density, 'very_fine');
+  assert.equal(veryFine.solve_options.thd_analysis, true);
+  assert.equal(selectedSolvePlan(veryFine), 'very_fine');
+  assert.equal(selectedSolvePlan(applyPublicSolvePreset(base, 'fine', sweep)), 'fine');
+  assert.equal(selectedSolvePlan({ ...base, solve_params: { ...base.solve_params, solve_quality: 'standard', mesh_density: 'very_fine' } }), 'standard');
+  assert.equal(applyPublicSolvePreset(veryFine, 'standard', sweep).solve_params.mesh_density, 'normal');
+  assert.equal(selectedSolvePlan(parseDesignFile(JSON.stringify(veryFine)).config), 'very_fine', 'files reopen on the Maximum accuracy plan');
+}
 console.log('Analysis defaults, selection, standalone requests, roundtrip and result availability pass.');

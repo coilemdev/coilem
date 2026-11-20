@@ -8,6 +8,7 @@
  */
 
 import type { DqFluxLinkage, DriveLimits, EfficiencyMap, FluxLinkageMap, TorqueSpeedCurve, TorqueSpeedEnvelope } from './performance';
+import { rotorHistoryPositions } from './performance';
 import { rampColor } from './lossesView';
 import { formatSignificant } from './numberFormat';
 import { FLUX_LINKAGE_MAP_STATUS_REASON } from './outputStatus';
@@ -292,11 +293,25 @@ export function mapCsv(map: FluxLinkageMap): string {
   const header = [
     `# coilEM flux-linkage map, scope ${map.scope_key}`,
     `# ${map.pole_pairs} pole pairs; currents are peak phase amperes; id = -I sin(gamma), iq = I cos(gamma); amplitude-invariant Park`,
-    `# iron loss at ${map.reference_speed_rpm} rpm; ${map.rotor_positions} rotor positions per point; mesh ${map.mesh_density}`,
+    `# iron loss at ${map.reference_speed_rpm} rpm; ${map.rotor_positions} loaded sweep positions per point; mesh ${map.mesh_density}`,
     `# experimental: ${FLUX_LINKAGE_MAP_STATUS_REASON}`,
   ];
-  const rows = map.points.map((point) => CSV_COLUMNS.map(([, read]) => csvCell(read(point))).join(','));
-  return [...header, CSV_COLUMNS.map(([name]) => name).join(','), ...rows].join('\n') + '\n';
+  const columns = [...CSV_COLUMNS];
+  if (map.rotor_iron_loss_requested || map.points.some(point => point.rotor_iron_loss)) {
+    const completed = map.points.map(point => rotorHistoryPositions(point.rotor_iron_loss)).filter(finite);
+    const sizes = [...new Set(completed.map(positions => positions - 1))].sort((a, b) => a - b);
+    const sampling = sizes.length ? `${sizes.join(' or ')} samples per mechanical turn + 1 closure position per completed history.` : 'No complete rotor history recorded.';
+    header.push(`# Rotor iron loss requested (experimental). ${sampling} Complete histories in ${completed.length} of ${map.points.length} grid rows.`);
+    for (const field of ['rotor_iron_loss_W', 'rotor_hysteresis_loss_W', 'rotor_lamination_eddy_loss_W', 'status', 'status_reason',
+      'method', 'reference_frame', 'solved_region', 'steel', 'coefficient_source', 'speed_rpm', 'samples_per_mechanical_turn',
+      'share_above_validated_frequency', 'share_above_validated_flux_density', 'history_sha256'] as const) {
+      columns.push([field.startsWith('rotor_') ? field : `rotor_${field}`, (point) => point.rotor_iron_loss?.[field]]);
+    }
+    columns.push(['rotor_coefficients', point => point.rotor_iron_loss?.coefficients ? JSON.stringify(point.rotor_iron_loss.coefficients) : null]);
+    columns.push(['rotor_history_positions_including_closure', point => rotorHistoryPositions(point.rotor_iron_loss)]);
+  }
+  const rows = map.points.map((point) => columns.map(([, read]) => csvCell(read(point))).join(','));
+  return [...header, columns.map(([name]) => name).join(','), ...rows].join('\n') + '\n';
 }
 
 export interface MapEstimateInput {

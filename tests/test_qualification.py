@@ -304,7 +304,9 @@ def test_changed_or_unverifiable_physics_cannot_keep_a_qualified_label(monkeypat
     monkeypatch.setattr(qualification_module, "evidence_matches_runtime", lambda: False)
     result = classify_qualification(MotorConfig.model_validate(SPM_CONCENTRATED))
     assert result["status"] == "experimental"
-    assert "qualification is pending" in result["reason"]
+    # The reason is about the build, in words a user can act on; the app shows it as a note.
+    assert result["reason"] == qualification_module.BUILD_NOT_PUBLICLY_QUALIFIED_REASON
+    assert result["reason"].startswith("The public benchmark record does not cover this build's physics.")
 
 
 def test_installed_evidence_requires_matching_record_identity(monkeypatch):

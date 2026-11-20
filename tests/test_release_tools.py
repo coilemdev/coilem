@@ -318,6 +318,7 @@ def test_native_dependency_parsers_and_rules(tmp_path: Path) -> None:
 def _write_wheel(
     path: Path, *, requires: list[str], binary: bytes = b"binary", stamp_binary: bytes | None = None,
     runtime_version: str = "0.2.0", crate_licenses: str | None = None, without: tuple[str, ...] = (),
+    commit: str = "a" * 40,
 ) -> Path:
     dist_info = "coilem-0.2.0.dist-info"
     ui = {"index.html": b"<!doctype html>", "assets/index-AbCd1234.js": b"export {};", "assets/Lesson-AbCd1234.js": b"export {};"}
@@ -326,7 +327,7 @@ def _write_wheel(
     ).hexdigest()
     build = {
         "application_version": "0.2.0",
-        "application_commit": "a" * 40,
+        "application_commit": commit,
         "magneto2d_version": "0.3.2",
         "magneto2d_target": "aarch64-apple-darwin",
         "magneto2d_sha256": hashlib.sha256(stamp_binary or binary).hexdigest(),
@@ -392,6 +393,24 @@ def test_wheel_checks(tmp_path: Path) -> None:
     public = ("coilem/__init__.py", "coilem/__main__.py")
     unnamed = _write_wheel(tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl", requires=lock, without=public)
     assert verify_wheel.check_wheel(unnamed)[0] == "unexpected top-level entries: []; missing: ['coilem']"
+
+
+def test_wheel_requires_the_exact_expected_commit(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    lock = [str(item) for item in policy.read_lock(REPO_ROOT / "requirements.lock")]
+    path = tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl"
+    commit = "a" * 40
+    wheel = _write_wheel(path, requires=lock, commit=commit)
+    assert verify_wheel.main([str(wheel), "--expect-commit", commit]) == 0
+    assert verify_wheel.main([str(wheel), "--expect-commit", "b" * 40]) == 1
+    assert "application_commit differs from the expected commit" in capsys.readouterr().err
+
+    invalid = _write_wheel(path, requires=lock, commit="unknown")
+    assert verify_wheel.check_wheel(invalid, expect_commit="unknown") == [
+        "expected application commit must be a full lowercase hexadecimal commit hash"
+    ]
+    assert verify_wheel.check_wheel(invalid, require_commit=True) == [
+        "build info application_commit is not a full commit hash"
+    ]
 
 
 @pytest.mark.parametrize("newline", ["\n", "\r\n"])
@@ -470,11 +489,14 @@ def test_release_workflow_publishes_only_after_acceptance() -> None:
     assert "if: github.event_name == 'push' && github.ref_type == 'tag'" in pypi
     assert "name: pypi" in pypi and "id-token: write" in pypi
     assert "repository-url" not in pypi
+    assert '--expect-commit "$COILEM_BUILD_COMMIT"' in _job(workflow, "wheel")
+    assert pypi.index("&verify-live-tag") < pypi.index("pypa/gh-action-pypi-publish")
     assert 'args=(--tag "$GITHUB_REF_NAME")' in _job(workflow, "policy")
     assert "--index-url https://pypi.org/simple/ --expect-sha256" in _job(workflow, "pypi-acceptance")
     release = _job(workflow, "github-release")
     assert "needs: [policy, pypi-acceptance]" in release
     assert "contents: write" in release and "--draft --verify-tag" in release
+    assert release.index("*verify-live-tag") < release.index("gh release create")
     assert workflow.count("contents: write") == 1
 
 

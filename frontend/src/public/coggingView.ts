@@ -90,6 +90,18 @@ export function coggingPlanNote(
   return `Adds a no-current sweep over one cogging period${span}${sampling}.${preview}${corners}`;
 }
 
+/** Keep equal to SECTOR_COGGING_ADVISORY in backend/input_advisories.py. */
+export const SECTOR_COGGING_NOTE = 'In the cogging cases tested, sector and full-motor results differed more on coarser meshes. Try Maximum accuracy or the Very fine mesh. Compare with a full-motor solve to check your design.';
+
+/** The warning for a one-sector Magneto2D request with cogging below the Very fine mesh, or null. */
+export function sectorCoggingNote(
+  config: { solve_params: { symmetry?: string; mesh_density?: string }; solve_options: { cogging_torque?: boolean } },
+  solver: string = 'magneto2d',
+): string | null {
+  return solver === 'magneto2d' && config.solve_params.symmetry === 'auto' && config.solve_options.cogging_torque
+    && config.solve_params.mesh_density !== 'very_fine' ? SECTOR_COGGING_NOTE : null;
+}
+
 /** The card's content, or null for a run without a cogging sweep. */
 export function coggingView(
   result: { summary: Pick<SolveResult['summary'], 'cogging'>; cogging_torque_waveform?: SolveResult['cogging_torque_waveform'] },

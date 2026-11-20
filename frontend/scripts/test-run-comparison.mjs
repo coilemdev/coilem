@@ -160,6 +160,16 @@ assert.equal(timing.recordedBefore, true);
 assert.deepEqual(timing.rows.filter(row => row.group === 'Elapsed time').map(row => [row.before, row.after]), [[60, 90], [30, 45], [20, 30], [10, 15]]);
 assert.deepEqual(timing.rows.find(row => row.key === 'meshes_rotated'), { key: 'meshes_rotated', label: 'Meshes rotated', group: 'Work performed', unit: '', before: 0, after: 8 });
 assert.equal(timing.rows.find(row => row.key === 'solves').after, 192);
+const completedRotor = { status: 'experimental', method: 'rotor_material_harmonic/v1', samples_per_mechanical_turn: 384 };
+const rotorOn = { ...timedB, summary: { ...timedB.summary, rotor_iron_loss: completedRotor } };
+const rotorOff = normalizeComparisonResult(timedA, { config: { solve_options: {} } });
+const incomplete = { ...timedA, summary: { ...timedA.summary, rotor_iron_loss: { ...completedRotor, status: 'unavailable' } } };
+const history = (before, after) => compareRunTiming(before, after).rows.find(row => row.key === 'rotor_history_positions');
+assert.equal(timing.rows.find(row => row.key === 'rotor_positions').label, 'Loaded sweep positions');
+assert.deepEqual([history(rotorOff, rotorOn).before, history(rotorOff, rotorOn).after], [0, 385]);
+assert.equal(history(incomplete, rotorOn).before, null);
+assert.equal(history(torqueOnly, rotorOn).before, null);
+assert.equal(history(normalizeComparisonResult(timedA, { config: { solve_options: { rotor_iron_loss: true } } }), rotorOn).before, null);
 const missingTime = compareRunTiming(torqueOnly, timedB);
 assert.equal(missingTime.recordedBefore, false);
 assert.equal(missingTime.rows.find(row => row.key === 'meshing').before, null);
@@ -190,6 +200,19 @@ assert.equal(lossRows.find(row => row.key === 'eddy').before.value, 0);
 assert.equal(lossRows.find(row => row.key === 'total').after.value, 80, 'compare reads stored totals without summing component fields');
 assert.equal(lossRows.some(row => row.key === 'subtotal'), false);
 assert.equal(JSON.stringify([lossA, lossB]), lossesOriginal);
+// #333: rotor iron loss in one run only puts the totals, shaft output and efficiency on different bases.
+const withRotor = withLoss({ ...fullLoss, rotor_iron_loss_W: 20, rotor_hysteresis_loss_W: 5, rotor_lamination_eddy_loss_W: 15,
+  rotor_iron_loss_status: 'experimental', total_loss_W: 120, shaft_power_W: 880, efficiency_pct: 88 });
+const scopeRows = compareRunLosses(lossA, withRotor);
+for (const key of ['efficiency', 'shaft', 'shaft_torque', 'total']) {
+  const row = scopeRows.find(item => item.key === key);
+  assert.equal(row.comparable, false, `${key} has no delta across loss bases`);
+  assert.match(row.basisNote, /Only one of these runs includes rotor iron loss/);
+}
+for (const key of ['copper', 'iron', 'input']) assert.equal(scopeRows.find(item => item.key === key).comparable, true, `${key} is unaffected by rotor loss`);
+assert.equal(compareRunLosses(withRotor, withRotor).find(row => row.key === 'total').comparable, true, 'same basis keeps its delta');
+const unavailableRotor = withLoss({ ...fullLoss, rotor_iron_loss_W: null, rotor_iron_loss_status: 'unavailable' });
+assert.equal(compareRunLosses(lossA, unavailableRotor).find(row => row.key === 'shaft').basisNote, undefined, 'an unavailable term is the partial rule, not this one');
 assert.equal(compareRunLosses(torqueOnly, torqueOnly), null);
 assert.equal(compareRunLosses(torqueOnly, lossB).find(row => row.key === 'efficiency').before.missing, 'Not recorded');
 const partialLoss = { ...fullLoss, iron_loss_W: null, iron_hysteresis_loss_W: null, iron_eddy_loss_W: null,
@@ -257,6 +280,16 @@ assert.deepEqual(envelope.map(row => [row.path, row.before, row.after, row.missi
   ['config.torque_speed_analysis.speeds_rpm.1', 'Not set', '1000', false],
   ['config.torque_speed_analysis.speeds_rpm.2', 'Not set', '2000', false]]);
 assert.deepEqual(inputChanges(null, null), []);
+// Saved configs leave out the full motor and an inner rotor, so a run without them solved those.
+const sectorRun = inputChanges({ config: { solve_params: { mesh_build: 'precise' } } }, { config: { solve_params: { mesh_build: 'precise', symmetry: 'auto' } } });
+assert.deepEqual(sectorRun, [{ path: 'config.solve_params.symmetry', group: 'Accuracy and solver', label: 'Solved region',
+  before: 'Full motor', after: 'One sector', missing: false }]);
+assert.deepEqual(inputChanges({ config: { solve_params: {} } }, { config: { solve_params: { symmetry: 'full' } } }), []);
+// #333: a request leaves rotor iron loss out whenever it is off, so absent reads as Off, not Not recorded.
+assert.deepEqual(inputChanges({ config: { solve_options: { losses_efficiency: true } } }, { config: { solve_options: { losses_efficiency: true, rotor_iron_loss: true } } })
+  .map(row => [row.label, row.before, row.after, row.missing]), [['Rotor iron loss', 'Off', 'On', false]]);
+const outerRun = inputChanges({ config: { topology: 'SPM' } }, { config: { topology: 'SPM', rotor_layout: 'outer' } });
+assert.deepEqual(outerRun.map(row => [row.label, row.before, row.after, row.missing]), [['Rotor arrangement', 'inner', 'outer', false]]);
 
 const current = { project_slug: 'motor', run_id: 'current', status: 'complete', solver_name: 'magneto2d-test', completed_at: '2026-11-14T12:00:00Z' };
 const run = (run_id, minutes, extra = {}) => ({ ...current, run_id, completed_at: `2026-11-14T11:${minutes}:00Z`, ...extra });
@@ -298,6 +331,8 @@ assert.deepEqual(multiInputs.find(row => row.path === 'config.solve_params.curre
   ['20 A rms', '30 A rms', '20 A peak', 'Not recorded']);
 assert.equal(multiInputs.find(row => row.path === 'config.rotor.magnet_thickness_mm').knownChanged, true, 'a missing third record does not hide known changes');
 assert.equal(recordedInputValue({ config: { rotor: { test: null } } }, 'config.rotor.test'), 'Not set');
+assert.equal(recordedInputValue({ config: { solve_params: {} } }, 'config.solve_params.symmetry'), 'Full motor');
+assert.equal(recordedInputValue({ config: null }, 'config.solve_params.symmetry'), 'Not recorded');
 const multipleLosses = compareMultipleLosses([withLoss(fullLoss), lossB, withLoss(partialLoss), torqueOnly]);
 assert.deepEqual(multipleLosses.find(row => row.key === 'total').cells.map(cell => cell.missing ?? cell.value),
   [fullLoss.total_loss_W, lossB.summary.loss_breakdown.total_loss_W, 'Unavailable', 'Not recorded']);
@@ -333,12 +368,17 @@ console.log('Multi-run comparison preserves pinned identities, the six-run limit
           base_speed_rpm: 500, max_speed_rpm: 1000, peak_power_W: 2000 }] } } },
   });
   const runs = [2, 0, 1, 3, 4, 5].map(makeRun);
+  runs[0].result = normalizeComparisonResult(runs[0].result, { config: { solve_options: {} } });
+  runs[1].result.summary.rotor_iron_loss = completedRotor;
   const before = structuredClone(runs);
   const csv = comparisonCsv(runs), table = parseCsv(csv), header = table[0];
   assert.equal(csv.charCodeAt(0), 0xfeff, 'UTF-8 BOM keeps scientific symbols readable in spreadsheets');
   assert.ok(table.every(row => row.length === header.length), 'every section uses the same columns');
   assert.deepEqual(header.slice(9, 15), ['Run C', 'Run A', 'Run B', 'Run D', 'Run E', 'Run F']);
   const row = (section, metric, record = 'value', coordinate = '', group) => table.find(item => item[0] === section && item[2] === metric && item[3] === record && item[6] === String(coordinate) && (group === undefined || item[1] === group));
+  assert.deepEqual(row('Solve time breakdown', 'Loaded sweep positions').slice(9, 11), ['48', '48']);
+  assert.deepEqual(row('Solve time breakdown', 'Rotor iron loss positions (history + closure)').slice(9, 12), ['0', '385', 'Not recorded']);
+  assert.match(row('Run details', 'Rotor positions')[10], /384 rotor history \+ 1 closure/);
   assert.deepEqual(row('Run details', 'Role').slice(9, 15), ['Pinned baseline', 'Candidate', 'Candidate', 'Candidate', 'Candidate', 'Candidate']);
   assert.equal(row('Run details', 'Design')[9], 'Motor, "α"\r\nsecond line', 'quoted multiline names round-trip');
   assert.equal(row('Run details', 'Setup name')[9], '\'=HYPERLINK("example", "profile")', 'formula-like text is escaped');
@@ -396,4 +436,19 @@ console.log('Multi-run comparison preserves pinned identities, the six-run limit
   const missing = makeRun(5); missing.result.summary.avg_torque_Nm = NaN;
   assert.doesNotMatch(comparisonCsv([zero, missing]), /NaN|Infinity/);
   console.log('Comparison CSV preserves pinned identities, precision, statuses, partial bases and exact sample grids with safe spreadsheet text.');
+}
+
+{
+  // Run details name what each run actually solved: its sector and its rotor positions.
+  const { actualMeshProvenance, actualPositionsProvenance } = await importTypeScriptModule(new URL('../src/public/comparisonMetrics.ts', import.meta.url));
+  const run = (metadata, summary = {}, angles = []) => ({ solve_metadata: { mesh_source: 'native', mesher: 'gmsh', mesh_density: 'fine', ...metadata },
+    summary, torque_waveform: { electrical_angle_deg: angles, torque_Nm: angles.map(() => 1) } });
+  const grid = (count) => Array.from({ length: count }, (_, index) => index * 360 / count);
+  assert.equal(actualMeshProvenance(run({ sector_repeats: 2 })), 'native · gmsh · fine · 1/2 sector');
+  assert.equal(actualMeshProvenance(run({ sector_repeats: null })), 'native · gmsh · fine');
+  assert.equal(actualMeshProvenance(run({})), 'native · gmsh · fine');
+  assert.equal(actualPositionsProvenance(run({}, { cogging: { positions_per_period: 48 } }, grid(96))), '96 loaded · 48 per cogging period');
+  assert.equal(actualPositionsProvenance(run({}, {}, grid(48))), '48 loaded');
+  assert.equal(actualPositionsProvenance(run({}, {})), 'Not recorded');
+  console.log('Run details name the solved sector and the rotor positions of each run.');
 }

@@ -1516,6 +1516,7 @@ fn build_follow_flux_mesh(
             stator_slot_outer_radius_mm: 0.0,
             stator_outer_radius_mm: 0.0,
             outer_rotor: None,
+            sector: None,
         },
     };
     Ok((mesh, materials, current_densities, region_labels))
@@ -2212,6 +2213,7 @@ mod tests {
                 dirichlet_az_zero_nodes: mesh.boundary_nodes.clone(),
                 paired_nodes: Vec::new(),
                 periodic_penalty: 1.0e10,
+                exact_pairs: false,
             },
             options: crate::field::SolveOptions {
                 linear: crate::field::LinearSolveOptions {

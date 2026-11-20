@@ -16,7 +16,7 @@ from pathlib import Path
 from backend import __version__
 from backend.benchmark_suite import COMMAND_PHASES, PHASE_LABELS
 from backend.benchmark_suite.cli import DEFAULT_MIN_FREE_GB, DiskFloorError, execute
-from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SPEC, read, write
+from backend.benchmark_suite.contract import DEFAULT_BUNDLE, SECTOR_SPEC, SPEC, read, write
 from backend.benchmark_suite.record import check_physics, compare_run, load_records, platform_key, select_record
 from backend.benchmark_suite.references import load_suite
 from backend.benchmark_suite.share import match_sentence, tolerance_text, write_share_report
@@ -46,6 +46,8 @@ def build_parser():
     parser.add_argument("--phase", action="append", choices=list(COMMAND_PHASES), help="run only this phase (A SPM, B IPM, "
                         "C distributed winding, D BLDC, E cogging, F outrunner); repeat for several")
     parser.add_argument("--quick", action="store_true", help="run one complete-grid case per selected phase")
+    parser.add_argument("--sector", action="store_true", help="solve each case as one repeating sector where the motor repeats "
+                        "(protocol 1.11.0), graded against the same FEMM references; there is no published sector record to match")
     parser.add_argument("--out", type=Path, help="output folder (default: a new coilem-benchmark-<date>-<time> folder here)")
     parser.add_argument("--resume", action="store_true", help="continue a stopped run in --out with its original options")
     parser.add_argument("--list", action="store_true", help="list the selected cases and expected times, then exit")
@@ -86,10 +88,14 @@ def main(argv=None):
         options = read(options_path)
     else:
         options = {"phases": [p for p in COMMAND_PHASES if p in (args.phase or COMMAND_PHASES)], "quick": args.quick}
-    phases, quick = options["phases"], options["quick"]
-    spec = load_suite(SPEC)
+        if args.sector:
+            options["sector"] = True
+    phases, quick, sector = options["phases"], options["quick"], bool(options.get("sector"))
+    suite = SECTOR_SPEC if sector else SPEC
+    spec = load_suite(suite)
     cases = select_cases(spec, phases, quick)
-    record, cross_platform = select_record(load_records())
+    # Published records are full-motor solves; a sector run's values differ at mesh level, so it is not matched.
+    record, cross_platform = select_record(load_records()) if not sector else (None, False)
     # Historical A-D records remain usable for their covered subsets. They do
     # not establish a baseline for the newly registered full A-F selection.
     if record is not None and not {case["id"] for case in cases} <= set(record["cases"]):
@@ -97,20 +103,32 @@ def main(argv=None):
     expected = estimate(record, cases)
 
     if args.list:
+        # A sector list shows the full-motor record's times and planned-unsupported cases for
+        # reference; the run itself is still not matched against it (#333).
+        listed = record
+        if sector:
+            listed, _ = select_record(load_records())
+            if listed is not None and not {case["id"] for case in cases} <= set(listed["cases"]):
+                listed = None
         for case in cases:
-            seconds = (record or {}).get("case_runtime_s", {}).get(case["id"])
-            note = "not supported in this release" if recorded_status(record, case) == "UNSUPPORTED" else _minutes(seconds) if seconds else ""
+            seconds = (listed or {}).get("case_runtime_s", {}).get(case["id"])
+            note = "not supported in this release" if recorded_status(listed, case) == "UNSUPPORTED" else _minutes(seconds) if seconds else ""
             print(f"{case['phase']}  {PHASE_LABELS[case['phase']]:<20} {case['id']:<48} {note}")
-        print(f"{len(cases)} cases" + (f", about {_minutes(expected)} on the computer that made the record" if expected else ""))
+        listed_total = estimate(listed, cases) if sector else expected
+        print(f"{len(cases)} cases" + (
+            f", about {_minutes(listed_total)} as full-motor solves on the computer that made the record; sectors usually take less"
+            if sector and listed_total else f", about {_minutes(listed_total)} on the computer that made the record" if listed_total else ""))
         return 0
 
     output = (args.out or Path.cwd() / f"coilem-benchmark-{datetime.now():%Y%m%d-%H%M%S}").resolve()
     print(f"coilEM {__version__} benchmark on {platform_key()}: {len(cases)} cases"
-          + (" (quick subset)" if quick else "") + f", phases {' '.join(phases)}.", flush=True)
+          + (" (quick subset)" if quick else "") + (" as sectors" if sector else "") + f", phases {' '.join(phases)}.", flush=True)
     if expected:
         print(f"Expect about {_minutes(expected)}; the record's computer took that long.", flush=True)
     physics = None
-    if record is None:
+    if sector:
+        print("Sector run: each case is graded against the FEMM reference; no published sector record to match.", flush=True)
+    elif record is None:
         print(f"No published record for {platform_key()}: verdicts will be shown but not matched.", flush=True)
     else:
         physics = check_physics(record)
@@ -122,7 +140,7 @@ def main(argv=None):
         write(output / OPTIONS_FILE, options)
 
     namespace = argparse.Namespace(
-        phases=phases, case=[case["id"] for case in cases] if quick else None, suite=SPEC, reference_bundle=DEFAULT_BUNDLE,
+        phases=phases, case=[case["id"] for case in cases] if quick else None, suite=suite, reference_bundle=DEFAULT_BUNDLE,
         out_dir=output, list=False, resume=args.resume, report_only=False, no_reference=False, smoke=False,
         allow_dirty=True, pdf=False, min_free_gb=args.min_free_gb, keep_runtime=args.keep_runtime,
     )

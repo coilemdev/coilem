@@ -69,12 +69,32 @@ def geometry_input_advisories(config: MotorConfig) -> list[str]:
     ]
 
 
+# Keep equal to SECTOR_COGGING_NOTE in frontend/src/public/coggingView.ts.
+SECTOR_COGGING_ADVISORY = (
+    "In the cogging cases tested, sector and full-motor results differed more on coarser meshes. "
+    "Try Maximum accuracy or the Very fine mesh. Compare with a full-motor solve to check your design."
+)
+
+
+def _sector_cogging_advisory(config: MotorConfig) -> str | None:
+    params, options = config.solve_params, config.solve_options
+    if params is None or options is None or params.symmetry != "auto" or not options.cogging_torque or params.mesh_density == "very_fine":
+        return None
+    # A motor that does not repeat is solved in full, so the note would not apply.
+    from backend.solve_estimate import sector_repeats
+
+    return SECTOR_COGGING_ADVISORY if sector_repeats(config) > 1 else None
+
+
 def geometry_mesh_advisories(config: MotorConfig) -> list[str]:
+    sector = _sector_cogging_advisory(config)
+    advisories = [sector] if sector else []
     if not vshape_input_facts(config):
-        return []
+        return advisories
     return [
         "V-shape results are mesh-sensitive, especially cogging torque. Compare progressively refined meshes "
         "for this design before relying on the values; a Fine mesh alone does not establish convergence.",
+        *advisories,
     ]
 
 

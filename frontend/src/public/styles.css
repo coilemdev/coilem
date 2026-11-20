@@ -1355,7 +1355,6 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .public-mesh-build-note { margin: 0; color: var(--text-muted); font-size: 9px; line-height: 1.45; }
 .public-advanced-controls-section .public-param-row + .public-param-row { border-top: 1px solid rgba(255,255,255,.035); }
 .public-advanced-output-section .public-output-chips { margin-top: 1px; }
-.public-prepare-mesh-btn { min-height: 34px; border: 1px solid var(--border-accent); border-radius: 7px; color: var(--text-accent); background: rgba(245,158,11,.08); font-size: 11px; font-weight: 700; }
 .public-back-link { min-height: 36px; border: 1px solid var(--border-default); border-radius: 8px; color: var(--text-secondary); background: var(--bg-surface-2); font-size: 9px; }
 .public-solve-footer { flex: 0 0 auto; padding: 10px 14px 14px; border-top: 1px solid var(--border-subtle); background: rgba(13, 15, 20, 0.96); }
 .public-solve-footer .public-run-btn,
@@ -1384,7 +1383,7 @@ button.landing-motor-type:hover, button.landing-motor-type:focus-visible { backg
 .motor-constants-note { margin: 5px 0 0; color: var(--text-muted); font-size: 8px; line-height: 1.4; }
 /* Losses & efficiency (#138). Series colors are the validated dark-surface categorical slots, in order. */
 /* Copper losses in copper shades, iron losses in steel shades (palette-checked on the dark surface). */
-.losses-card { --loss-copper-stack: #a34922; --loss-copper-end: #c88335; --loss-iron-hysteresis: #296b9f; --loss-iron-eddy: #4d9ecd; --loss-mechanical: #2fa35a; }
+.losses-card { --loss-copper-stack: #a34922; --loss-copper-end: #c88335; --loss-iron-hysteresis: #296b9f; --loss-iron-eddy: #4d9ecd; --loss-rotor-hysteresis: #7a63a8; --loss-rotor-eddy: #af91cf; --loss-mechanical: #2fa35a; }
 /* --font-ui: --font-sans is not defined, which voided this shorthand and let the badge take its parent's size. */
 .losses-status { margin-left: 6px; padding: 0 5px; border: 1px solid currentColor; border-radius: 999px; background: transparent; font: 700 8px/1.6 var(--font-ui); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
 .losses-status.is-experimental, .losses-status.is-mixed { color: var(--warning); }
@@ -1433,10 +1432,21 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .losses-bar-segment { min-width: 2px; transition: opacity .12s; }
 .losses-bar-segment.is-dimmed { opacity: .35; }
 .losses-bar-readout { margin: 4px 0 3px; color: var(--text-secondary); font: 10px var(--font-mono); font-variant-numeric: tabular-nums; }
-.losses-legend { display: flex; flex-wrap: wrap; gap: 3px 12px; margin: 0; padding: 0; list-style: none; }
-.losses-legend li { display: inline-flex; align-items: center; gap: 5px; color: var(--text-muted); font: 10px var(--font-ui); cursor: default; }
-.losses-swatch { width: 8px; height: 8px; border-radius: 2px; }
-.losses-legend-value { color: var(--text-secondary); font: 10px var(--font-mono); font-variant-numeric: tabular-nums; }
+/* The table is the bar's legend: loss rows open on their segment rows, each with the bar segment's swatch and share. */
+.losses-swatch { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 2px; vertical-align: -0.5px; }
+.losses-group-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.losses-group-toggle:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 3px; }
+/* Chevron, swatch and blank slot share one 8px column, so every loss row's name lines up. */
+.losses-chevron { display: inline-block; box-sizing: border-box; width: 6px; height: 6px; margin: 0 1px 1px; border-right: 1.5px solid var(--text-secondary); border-bottom: 1.5px solid var(--text-secondary); transform: rotate(-45deg); transition: transform .12s; }
+.losses-group-toggle[aria-expanded="true"] .losses-chevron { margin-bottom: 3px; transform: rotate(45deg); }
+.losses-group-toggle:hover .losses-chevron { border-color: var(--text-primary); }
+.losses-swatch.is-blank { background: none; }
+.losses-card tr.is-segment th { padding-left: 14px; color: var(--text-muted); }
+.losses-card tr.is-segment .motor-constants-value { color: var(--text-secondary); font-weight: 500; }
+.losses-card.is-report tr.is-segment th { font-size: 10px; }
+.losses-share-cell { width: 1%; padding: 3px 0 3px 10px; color: var(--text-muted); font: 9px/1.6 var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.losses-card.is-report .losses-share-cell { font-size: 10px; }
+.losses-card tr.is-lit > * { background: rgba(148, 163, 184, .08); }
 .losses-map { display: grid; justify-items: center; gap: 6px; margin: 0; }
 .losses-map-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; width: 100%; }
 .losses-map-heading h4 { margin: 0; color: var(--text-muted); font: 700 9px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
@@ -1760,7 +1770,6 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-compare-field-card .public-field-result { margin: 0; padding: 10px; border: 0; }
 .public-compare-field-card .public-field-result-canvas { min-height: 280px; max-height: 560px; aspect-ratio: 1; }
 .public-compare-field-card .public-field-result-legend { flex-wrap: wrap; }
-.public-compare-field-card .public-field-result-legend i { flex: 1; min-width: 70px; }
 .public-compare-field-card .public-field-result-legend small { flex-basis: 100%; margin: 0; }
 @media (max-width: 720px) { .public-compare-field-grid { grid-template-columns: 1fr; } }
 .public-run-compare-loss-component th { padding-left: 30px; color: var(--text-muted) !important; }
@@ -1787,6 +1796,7 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-export-status.success { color: var(--success); }
 .public-export-status.error { color: var(--error); }
 .public-report-stage .public-timing-note,
+.public-report-stage > .performance-message,
 .public-report-stage .metric-grid,
 .public-report-stage .chart-shell { max-width: 1080px; margin-right: auto; margin-left: auto; }
 .public-report-stage .chart-shell { margin-top: 18px; }
@@ -2056,32 +2066,21 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-result-pm-overlay { transition: opacity 160ms ease; }
 .public-field-result-pm-overlay.is-reference { opacity: .4; }
 .public-field-result-line { fill: none; stroke: #ffd166; stroke-width: .28; stroke-linecap: round; opacity: 1; filter: drop-shadow(0 0 .45px rgba(255,145,0,.9)); vector-effect: non-scaling-stroke; }
-.public-field-direction-cue path {
-  fill: none;
-  stroke: #fff3c4;
-  stroke-width: 1.35px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: .98;
-  filter: drop-shadow(0 0 1.4px rgba(255,145,0,.98)) drop-shadow(0 0 2.6px rgba(0,0,0,.92));
-  vector-effect: non-scaling-stroke;
-  animation: public-field-direction-flow 2.2s ease-in-out infinite;
-  animation-delay: var(--public-field-arrow-delay, 0s);
-}
-/* Stator + PM view (#120): PM-only lines and arrows in cyan, apart from the orange stator field. */
-.public-field-direction-cue.is-overlay path {
-  stroke: #dff7ff;
-  filter: drop-shadow(0 0 1.4px rgba(94,211,243,.98)) drop-shadow(0 0 2.6px rgba(0,0,0,.92));
-}
+/* Phases (Field solution): the drive panel wired into the motor, coils outlined by phase, ⊙ / ⊗ for the current now. */
+.public-field-result > .public-field-drive-panel { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; pointer-events: none; }
+.public-field-result .public-field-phase-key { position: absolute; z-index: 7; top: 12px; right: 12px; gap: 10px; padding: 7px 10px; border: 1px solid rgba(148,163,184,.16); border-radius: 8px; background: rgba(7,9,14,.82); box-shadow: var(--shadow-sm); font: 11px var(--font-mono); pointer-events: none; }
+.public-field-result .public-field-phase-key i { width: 9px; height: 9px; }
+.public-field-result .public-field-phase-key .direction-key { display: inline-flex; }
 .public-field-lines-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 10px; color: var(--text-secondary); font: 10px var(--font-mono); }
 .public-field-lines-legend span { display: inline-flex; align-items: center; gap: 6px; }
-.public-field-lines-legend i { width: 18px; height: 3px; border-radius: 999px; }
-.public-field-lines-legend .is-stator { background: #ffd166; box-shadow: 0 0 4px rgba(255,145,0,.9); }
-.public-field-lines-legend .is-pm { background: #5ed3f3; box-shadow: 0 0 0 1px rgba(3,10,20,.9), 0 0 4px rgba(94,211,243,.7); }
+/* Stator + PM view (#120): each swatch is an arrow in its field's arrow colour (fieldArrows.ts). */
+.public-field-lines-legend i { width: 16px; height: 8px; clip-path: polygon(0 36%, 58% 36%, 58% 0, 100% 50%, 58% 100%, 58% 64%, 0 64%); }
+.public-field-lines-legend .is-stator { background: #ffd166; }
+.public-field-lines-legend .is-pm { background: #5ed3f3; }
 .public-field-lines-legend .public-field-lead { color: var(--text-primary); font-size: 10px; font-weight: 700; }
 .public-field-axis { fill: none; stroke-width: .8px; stroke-linecap: round; stroke-linejoin: round; }
 .public-field-axis path { vector-effect: non-scaling-stroke; }
-/* Dashed shafts keep the axis arrows light over the field lines; the heads stay solid. */
+/* Dashed shafts keep the axis arrows apart from the field arrows; the heads stay solid. */
 .public-field-axis-shaft { stroke-dasharray: 4 3; }
 .public-field-axis-ray { fill: none; stroke-width: .8px; stroke-dasharray: 2 3; stroke-linecap: round; opacity: .8; vector-effect: non-scaling-stroke; }
 .public-field-axis-ray.is-stator { stroke: #ffb547; }
@@ -2099,32 +2098,24 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-field-axis-label.is-note { font-weight: 500; fill: rgba(241,245,249,.88); }
 .public-field-axis-arc { fill: none; stroke: rgba(241,245,249,.8); stroke-width: 1.4px; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .public-field-axis-label { fill: #f8fafc; stroke: rgba(3,7,18,.9); stroke-width: .12; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); font-weight: 700; pointer-events: none; }
-@keyframes public-field-direction-flow {
-  0%, 100% { transform: translateX(-1.5px); opacity: .72; }
-  50% { transform: translateX(1.5px); opacity: 1; }
-}
 .public-field-result-magnet-label { fill: rgba(255,255,255,.94); stroke: rgba(3,7,18,.9); stroke-width: .07; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 2px; font-weight: 750; letter-spacing: -.08px; pointer-events: none; }
-.public-field-result-stator-pole rect { stroke-width: .16; vector-effect: non-scaling-stroke; }
-.public-field-result-stator-pole text { stroke: rgba(3,7,18,.76); stroke-width: .06; paint-order: stroke; text-anchor: middle; dominant-baseline: central; alignment-baseline: middle; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1.65px; font-weight: 750; letter-spacing: -.04px; pointer-events: none; }
-.public-field-result-stator-pole.is-north rect { fill: rgba(127,29,29,.86); stroke: #fb7185; }
-.public-field-result-stator-pole.is-north text { fill: #fecdd3; }
-.public-field-result-stator-pole.is-south rect { fill: rgba(30,58,138,.86); stroke: #60a5fa; }
-.public-field-result-stator-pole.is-south text { fill: #dbeafe; }
-.public-field-pole-legend { display: flex; align-items: center; gap: 10px; margin-top: 3px; padding-top: 5px; border-top: 1px solid rgba(148,163,184,.12); }
-.public-field-pole-legend span { display: inline-flex; align-items: center; gap: 4px; color: var(--text-muted); font: 7px var(--font-mono); white-space: nowrap; }
-.public-field-pole-legend i { display: inline-grid; flex: 0 0 auto; place-items: center; font-style: normal; }
-.public-field-pole-legend .is-pm { width: 13px; height: 5px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: linear-gradient(90deg, #ef4444 0 50%, #3b82f6 50%); opacity: .55; }
-.public-field-pole-legend .is-stator { width: 15px; height: 10px; border: 1px solid #fb7185; border-radius: 4px; color: #fecdd3; background: rgba(127,29,29,.78); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 6px; font-weight: 700; }
-.public-field-result-legend { display: flex; align-items: center; gap: 8px; margin-top: 10px; color: var(--text-muted); font: 10px var(--font-mono); }
-.public-field-result-legend i { width: min(280px, 36vw); height: 8px; border-radius: 999px; background: linear-gradient(90deg, #142a61, #1855a7, #1b8eb7, #2ab673, #a7c83a, #f1c232, #f58b24, #dc3d3d); }
+.public-field-tooth-pole text { fill: #f8fafc; stroke: rgba(3,7,18,.78); stroke-width: .065em; paint-order: stroke; text-anchor: middle; dominant-baseline: central; font-family: ui-monospace, monospace; font-weight: 800; }
+.public-field-result-legend { container: field-legend / inline-size; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 10px; color: var(--text-muted); font: 10px var(--font-mono); }
+.public-field-scale { flex: 1 1 180px; min-width: min(160px, 100%); max-width: 640px; }
+.public-field-scale:has(.public-field-legend-tick) { padding-top: 16px; }
+.public-field-scale > i { display: block; position: relative; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #142a61, #1855a7, #1b8eb7, #2ab673, #a7c83a, #f1c232, #f58b24, #dc3d3d); }
+.public-field-scale-values { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 3px; }
+.public-field-scale-values .is-mid { justify-self: center; }
+.public-field-scale-values .is-max { justify-self: end; }
+@container field-legend (max-width: 420px) {
+  .public-field-scale { order: 1; flex-basis: 100%; }
+}
 .public-field-result-legend small { margin-left: auto; color: var(--text-muted); font: 9px var(--font-mono); }
 /* The finished field view carries the same strip under the motor as the
    in-run preview: the scale runs left to right and nothing covers the plot. */
 .public-solved-field-canvas .public-field-result { flex-direction: column; }
 .public-solved-field-canvas .public-field-result-legend,
 .public-viewport-stage-2d > .public-field-result .public-field-result-legend { flex: none; justify-content: center; margin: 0; padding: 8px 16px 14px; }
-.public-solved-field-canvas .public-field-result-legend i,
-.public-viewport-stage-2d > .public-field-result .public-field-result-legend i { position: relative; flex: 1 1 420px; min-width: 80px; max-width: 640px; }
 .public-solved-field-canvas .public-field-result-legend small,
 .public-viewport-stage-2d > .public-field-result .public-field-result-legend small { margin-left: 12px; }
 .public-solved-field-canvas .public-field-result-legend > strong,
@@ -3222,6 +3213,12 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
   background: rgba(26, 28, 34, 0.5);
   font: 600 9px var(--font-mono);
 }
+/* Four plans: one row when the setup panel has room, otherwise two by two. */
+.public-solve-plan-frame { container-type: inline-size; }
+.public-solve-plan-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@container (min-width: 420px) {
+  .public-solve-plan-choices { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 .public-solve-plan-choices button {
   position: relative;
   min-height: 78px;
@@ -3471,7 +3468,8 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 .public-status-tag-details a { color: var(--text-primary); text-decoration: underline; }
 /* Run plan header tags anchor their details to the group's right edge, so the
    details stay inside the panel at its minimum width. */
-.public-run-plan-tags { position: relative; display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: 6px; }
+/* Two long tags (a run state and "Not publicly qualified") wrap rather than clip. */
+.public-run-plan-tags { position: relative; display: flex; min-width: 0; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
 .public-run-plan-tags .public-status-tag { position: static; }
 .public-qualification-note {
   display: flex;
@@ -5064,21 +5062,13 @@ button.losses-status:focus-visible, .status-dot:focus-visible, .info-tip:focus-v
 /* Fixed flux-density scale: one 0–2.0 T bar for every frame and design, the
    stator steel's knee and saturation marked on it, and a magenta swatch for
    values above 2.0 T. */
-.public-field-result-legend i { position: relative; }
-.public-field-result-legend > strong,
-.public-field-result-legend > .is-min,
-.public-field-result-legend > i,
-.public-field-result-legend > .is-mid,
-.public-field-result-legend > .is-max { order: 0; }
-.public-field-result-legend > .is-over { order: 1; }
 .public-field-result-legend > .public-field-range-control,
 .public-field-result-legend > small { order: 2; }
-.public-field-result-legend.is-fixed { padding-top: 18px; padding-bottom: 4px; }
-.public-field-legend-tick { position: absolute; top: -3px; bottom: -3px; left: var(--tick-at); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(241,245,249,.92); box-shadow: 0 0 0 1px rgba(7,9,14,.65); }
-.public-field-legend-tick em { position: absolute; bottom: calc(100% + 2px); left: 50%; color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; transform: translateX(-50%); }
-/* The knee and saturation marks sit close together: one label reads to the left of its mark, the other to the right. */
-.public-field-legend-tick.is-knee em { left: auto; right: 100%; padding-right: 3px; transform: none; }
-.public-field-legend-tick:not(.is-knee) em { left: 100%; padding-left: 3px; transform: none; }
+.public-field-legend-tick { position: absolute; inset: -3px 0; }
+.public-field-legend-tick::before { position: absolute; inset-block: 0; left: var(--tick-at); width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(241,245,249,.92); box-shadow: 0 0 0 1px rgba(7,9,14,.65); content: ''; }
+.public-field-legend-tick em { position: absolute; bottom: calc(100% + 2px); color: var(--text-secondary); font: 9px var(--font-mono); font-style: normal; white-space: nowrap; }
+.public-field-legend-tick.is-knee em { right: clamp(0px, calc(100% - var(--tick-at) + 3px), calc(100% - 9ch)); }
+.public-field-legend-tick.is-saturation em { left: clamp(0px, calc(var(--tick-at) + 3px), calc(100% - 9ch)); }
 .public-field-result-legend .is-over { display: inline-flex; align-items: center; gap: 4px; color: var(--text-secondary); white-space: nowrap; }
 .public-field-result-legend .is-over b { width: 12px; height: 8px; border-radius: 2px; background: #f43cf5; }
 /* On the solve page the bar stands at the canvas edge: the swatch sits just

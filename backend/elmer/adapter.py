@@ -333,6 +333,11 @@ class ElmerSolver(Solver):
             )
         if config.solve_params.linear_steel_mu_rel is not None:
             raise ElmerUnsupportedError("Elmer v1 does not accept a linear steel override")
+        if config.solve_params.symmetry != "full":
+            raise ElmerUnsupportedError(
+                "Elmer v1 solves the full circle and does not support "
+                f"symmetry={config.solve_params.symmetry!r}"
+            )
         if config.solve_params.nonlinear_solver != "picard":
             raise ElmerUnsupportedError(
                 "Elmer v1 uses the frozen Picard nonlinear profile and does not support "

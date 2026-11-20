@@ -2,6 +2,7 @@ import { motorConstantsView } from './machineConstants';
 import { torqueRippleView } from './resultMetrics';
 import { COGGING_METHOD_LABELS } from './coggingView';
 import type { ComparisonResult } from './runComparison';
+import { rotorHistoryPositions } from './performance';
 
 export const COMPARISON_METRICS: Array<{
   label: string;
@@ -31,8 +32,23 @@ export const COMPARISON_METRICS: Array<{
 
 export function actualMeshProvenance(result: ComparisonResult): string {
   const metadata = result.solve_metadata;
-  return [metadata.mesh_source, metadata.mesher, metadata.mesh_density, metadata.mesh_source_detail]
+  // What was actually solved: a sector request on a motor that does not repeat solves the full motor.
+  const sector = typeof metadata.sector_repeats === 'number' && metadata.sector_repeats > 1 ? `1/${metadata.sector_repeats} sector` : null;
+  return [metadata.mesh_source, metadata.mesher, metadata.mesh_density, metadata.mesh_source_detail, sector]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' · ') || 'Not recorded';
+}
+
+/** The loaded sweep, cogging period, and separate rotor-material history recorded by the run. */
+export function actualPositionsProvenance(result: ComparisonResult): string {
+  const loaded = result.solve_metadata.rotor_positions ?? result.torque_waveform?.electrical_angle_deg?.length ?? 0;
+  const cogging = result.summary.cogging?.positions_per_period;
+  const rotor = result.summary.rotor_iron_loss;
+  const history = rotorHistoryPositions(rotor);
+  const rotorText = history !== null ? `${history - 1} rotor history + 1 closure`
+    : rotor?.status === 'unavailable' ? 'Rotor history unavailable' : null;
+  return [loaded > 0 ? `${loaded} loaded` : null, typeof cogging === 'number' && cogging > 0 ? `${cogging} per cogging period` : null, rotorText]
+    .filter((value): value is string => value !== null)
     .join(' · ') || 'Not recorded';
 }
 

@@ -6,8 +6,8 @@ report export. If you installed coilEM with `uv tool install coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 
-The source application in this guide is coilEM 0.5.8 and the bundled solver is
-Magneto2D 0.6.0. This release candidate has not yet been qualified or released.
+This guide follows the coilEM 0.5.9 development branch with Magneto2D 0.6.0.
+Run `coilem version` to identify your installed build.
 coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
 guidance, not a broad operating-system support guarantee. Record the exact
@@ -152,9 +152,11 @@ dead time, startup, or ESC dynamics.
 
 ## 7. Prepare and inspect the mesh
 
-The Solve stage begins preparing a mesh when it does not already have one.
-You can also open **Advanced options → Mesh preparation** and select
-**Prepare mesh** explicitly.
+The Solve stage begins preparing a mesh when it does not already have one,
+and prepares a new one as soon as you change a setting under **Advanced
+options → Mesh preparation**. If there is no mesh (for example after a failed
+attempt), the run button reads **Prepare mesh** or **Regenerate mesh**; once
+the mesh is ready it becomes **Run analysis**.
 
 Under **Analysis**, Torque and Back EMF start on. Cogging torque and
 Losses & efficiency and Torque–speed map are optional. Each analysis can run on its own: Back EMF
@@ -162,6 +164,12 @@ and cogging use zero current and do not run a loaded torque sweep. Losses &
 efficiency includes the loaded fields it needs even when Torque is off.
 Selecting an accuracy preset keeps your analysis choices. Unrequested results
 are left out of Results and exports rather than reported as zero.
+
+For an experimental rotor iron loss estimate, enable **Losses & efficiency**
+and select the rotor iron loss option. It applies to sinusoidal full-motor
+inner SPM and flat-IPM runs using the bundled M350-50A rotor steel and Newton solver.
+It adds a dedicated 384-position mechanical turn and a closure solve. Review
+the separate hysteresis and lamination eddy terms in Results and exports.
 
 Selecting **Torque–speed map** reveals its peak and continuous phase-current
 limits, DC bus, top speed, drive control and map grid. Enter your supply
@@ -195,6 +203,13 @@ makes each Gmsh mesh about four times faster with nearly the same element
 count. Results move at mesh-noise level. The benchmark measured Precise
 meshes, so a Fast run is experimental.
 
+**Solved region → One sector (Experimental)** meshes and solves a repeating
+part of the motor, then reconstructs the full field view. coilEM checks whether
+the geometry and winding repeat over the chosen sector. If they do not, it
+uses the full motor. Check the actual solved region in Results. **Full motor**
+is the default. Use it for reference results, particularly cogging torque, and
+for experimental rotor iron loss.
+
 When meshing completes, confirm:
 
 - the geometry and mesh views match the intended motor;
@@ -202,8 +217,8 @@ When meshing completes, confirm:
 - the minimum-quality row says **Pass**; and
 - the solver gate reports no weak-element blocker.
 
-If you change mesh density or refinement, select **Regenerate mesh** under
-**Advanced options → Mesh preparation** before running the analysis.
+Changing mesh density, refinement, mesh build or solved region prepares the
+new mesh at once; check these rows again before running the analysis.
 
 ## 8. Run the electromagnetic analysis
 
@@ -222,16 +237,19 @@ completed run.
 
 Tick **Cogging torque** under **Analysis** to add a no-current sweep over
 one cogging period, 180·gcd(slots, poles)/slots electrical degrees, at 12, 24
-or 48 positions per period for Preview, Standard and High accuracy, plus the
-repeated end. The run estimate includes it. Cogging torque is experimental: it
-has no FEMM gate yet. Keep **Corner refinement** on: without it, cogging on the
-example design is about twenty times noisier.
+or 48 positions per period for Preview, Standard and High accuracy (Maximum
+accuracy uses High accuracy's 48), plus the repeated end. The run estimate
+includes this sweep. Keep **Corner refinement** on when inspecting cogging
+torque. See [Validation](VALIDATION.md) for the measured full-motor cases
+and mesh conditions.
 
 If you only want a fast pipeline check, choose **Preview**. Preview does not
 report an under-sampled THD value. Use **Standard** for the release walkthrough; it
 reports Back-EMF THD and the H1-H12 spectrum. **High accuracy** is the UI name
 for the `fine` preset; it uses a fine mesh and extends the spectrum through H24,
-but it is not a separate launch benchmark requirement.
+but it is not a separate launch benchmark requirement. **Maximum accuracy** is High
+accuracy's angle grid on the Very fine mesh, about 3–6 times Medium's elements
+and correspondingly slower. Use it to check how sensitive a result is to mesh density.
 
 ## 9. Review the result
 

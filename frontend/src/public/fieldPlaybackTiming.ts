@@ -9,6 +9,9 @@ export const PUBLIC_FIELD_PLAYBACK_DEFAULT_RPM = 5;
  * next to rendering. Faster playback shows every n-th solved frame instead.
  */
 export const PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS = 30;
+// With just the base and worker-tinted PM arrows, a 48-position sweep can
+// display every solved position at one electrical revolution per second.
+export const PUBLIC_FIELD_PLAYBACK_PM_ARROW_FPS = 48;
 
 /**
  * Longest playback loop held decoded in full (each frame is ~38 MB of
@@ -138,6 +141,7 @@ export function playbackFrameStride(
   cycleSpanDeg: number,
   rpm: number,
   polePairs: number,
+  maxLoadedFps = PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS,
 ): number {
   if (frameCount < 2) return 1;
   const stepDeg = cycleSpanDeg / frameCount;
@@ -146,7 +150,7 @@ export function playbackFrameStride(
     if (frameCount % stride !== 0) continue;
     if (
       frameCount / stride <= PUBLIC_FIELD_PLAYBACK_LOOP_CACHE_FRAMES
-      || solvedFramesPerSecond / stride <= PUBLIC_FIELD_PLAYBACK_MAX_LOADED_FPS
+      || solvedFramesPerSecond / stride <= maxLoadedFps
     ) return stride;
   }
   return frameCount;
@@ -175,8 +179,8 @@ export function playbackStrideFrameIndex(
 export function playbackLookaheadFrameIndices(
   frames: readonly PublicFieldPlaybackAngleFrame[],
   electricalAngleDeg: number,
-  rpm: number,
-  polePairs: number,
+  cycleSpanDeg: number,
+  stride: number,
   requestedCount: number,
 ): number[] {
   const count = Math.min(
@@ -185,8 +189,6 @@ export function playbackLookaheadFrameIndices(
   );
   if (frames.length < 2 || count === 0) return [];
 
-  const cycleSpanDeg = playbackCycleSpanDeg(frames);
-  const stride = playbackFrameStride(frames.length, cycleSpanDeg, rpm, polePairs);
   const gridDeg = (cycleSpanDeg / frames.length) * stride;
   const currentIndex = playbackStrideFrameIndex(
     frames,

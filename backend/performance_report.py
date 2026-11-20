@@ -2,7 +2,7 @@
 
 A run's own PDF and CSV are written when its solve completes and are bound by
 hash to the stored run. Torque-speed results come later, from a flux-linkage
-map and the drive limits set on the Torque-speed tab, so this report is built
+map and the drive limits configured in Solve, so this report is built
 on demand from the request the tab sends to /performance/drive, with the same
 functions: it carries the values the tab shows.
 
@@ -389,7 +389,11 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
     row("map", "currents", len(flux_map.current_peak_A))
     row("map", "current_angles", len(flux_map.gamma_deg))
     row("map", "largest_current_peak", flux_map.current_peak_A[-1], "A")
-    row("map", "rotor_positions_per_point", flux_map.rotor_positions)
+    row("map", "rotor_positions_per_point", flux_map.rotor_positions)  # Existing v1 field for the loaded sweep.
+    row("map", "loaded_sweep_positions_per_point", flux_map.rotor_positions)
+    sampling = _rotor_sampling_description(flux_map)
+    if sampling:
+        row("map", "rotor_iron_loss_sampling", sampling)
     row("map", "mesh_density", flux_map.mesh_density)
     row("map", "reference_speed", flux_map.reference_speed_rpm, "rpm")
     row("map", "magnet_temperature", flux_map.magnet_temperature_C, "degC")
@@ -443,6 +447,8 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
             row("efficiency_map", "efficiency", value, "%", index)
             row("efficiency_map", "copper_loss", efficiency.copper_loss_W[row_index][column], "W", index)
             row("efficiency_map", "iron_loss", efficiency.iron_loss_W[row_index][column], "W", index)
+            if efficiency.rotor_iron_loss_W is not None:
+                row("efficiency_map", "rotor_iron_loss", efficiency.rotor_iron_loss_W[row_index][column], "W", index)
             if efficiency.phase_current_rms_A is not None:
                 row("efficiency_map", "current_rms", efficiency.phase_current_rms_A[row_index][column], "A", index)
             if efficiency.current_angle_deg is not None:
@@ -450,6 +456,9 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
             index += 1
     row("efficiency_map", "mechanical_loss", efficiency.mechanical_loss_W, "W")
     row("efficiency_map", "control", efficiency.control)
+    row("efficiency_map", "loss_scope", efficiency.loss_scope)
+    if efficiency.rotor_iron_loss_status is not None:
+        row("efficiency_map", "rotor_iron_loss_status", efficiency.rotor_iron_loss_status)
 
     for section, rows in (("mtpa", data.mtpa), ("idiq_table", data.idiq)):
         for index, entry in enumerate(rows):
@@ -477,6 +486,15 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
         row("map_point", "lambda_d", point.lambda_d_Wb, "Wb", index)
         row("map_point", "lambda_q", point.lambda_q_Wb, "Wb", index)
         row("map_point", "iron_loss", point.iron_loss_W, "W", index)
+        if point.rotor_iron_loss is not None:
+            rotor = point.rotor_iron_loss
+            row("map_point", "rotor_iron_loss", rotor.rotor_iron_loss_W, "W", index)
+            row("map_point", "rotor_hysteresis_loss", rotor.rotor_hysteresis_loss_W, "W", index)
+            row("map_point", "rotor_lamination_eddy_loss", rotor.rotor_lamination_eddy_loss_W, "W", index)
+            for name in ("status", "status_reason", "method", "reference_frame", "solved_region", "steel",
+                         "coefficient_source", "speed_rpm", "samples_per_mechanical_turn", "history_sha256"):
+                row("map_point", "rotor_" + name, getattr(rotor, name), sample_index=index)
+            row("map_point", "rotor_history_positions_including_closure", rotor.history_positions_including_closure, sample_index=index)
         row("map_point", "torque_agreement", agreement[index], "%", index)
 
     for index, note in enumerate(_notes(data)):
@@ -797,13 +815,24 @@ def _selected(count: int, wanted: int) -> list[int]:
     return sorted({round(index * (count - 1) / (wanted - 1)) for index in range(wanted)})
 
 
+def _rotor_sampling_description(flux_map: FluxLinkageMap) -> str | None:
+    records = [p.rotor_iron_loss for p in flux_map.points if p.rotor_iron_loss is not None]
+    if not (flux_map.rotor_iron_loss_requested or records):
+        return None
+    completed = [r for r in records if r.history_positions_including_closure is not None]
+    sizes = sorted({r.samples_per_mechanical_turn for r in completed})
+    sampling = (" or ".join(map(str, sizes)) + " samples per mechanical turn + 1 closure position per completed history."
+                if sizes else "No complete rotor history recorded.")
+    return f"{sampling} Complete histories in {len(completed)} of {len(flux_map.points)} grid rows."
+
+
 def _map_description(flux_map: FluxLinkageMap, context: ReportContext) -> str:
     grid = f", {context.map_preset} grid" if context.map_preset else ""
     derating = f", {context.magnet_temperature_status.status} derating" if context.magnet_temperature_derated else ""
     magnets = f"; magnets at {_g(flux_map.magnet_temperature_C)} degC{derating}" if flux_map.magnet_temperature_C is not None else ""
     return (
         f"{len(flux_map.current_peak_A)} currents up to {_g(flux_map.current_peak_A[-1])} A peak x {len(flux_map.gamma_deg)} angles "
-        f"({_g(flux_map.gamma_deg[0])} to {_g(flux_map.gamma_deg[-1])} deg), {flux_map.rotor_positions} rotor positions each, "
+        f"({_g(flux_map.gamma_deg[0])} to {_g(flux_map.gamma_deg[-1])} deg), {flux_map.rotor_positions} loaded sweep positions per point, "
         f"{flux_map.mesh_density} mesh{grid}; iron loss at {_g(flux_map.reference_speed_rpm)} rpm{magnets}"
     )
 
@@ -849,8 +878,8 @@ def build_performance_pdf(data: PerformanceData, context: ReportContext) -> byte
     story: list[Any] = [
         Paragraph("Torque-speed and efficiency report", styles["title"]),
         _safe_paragraph(
-            f"{name}. Built on demand from the design's flux-linkage map and the drive limits set on the Torque-speed tab, "
-            "with the same calculation the tab uses. The run's own report records the single solved operating point.",
+            f"{name}. This report uses the design's flux-linkage map and recorded drive limits. "
+            "Edit the limits in Solve > Analysis > Torque–speed map. The run's own report records the single solved operating point.",
             styles["subtitle"],
         ),
         _section("Key results", styles),
@@ -899,6 +928,7 @@ def build_performance_pdf(data: PerformanceData, context: ReportContext) -> byte
                 ),
                 ("Mechanical loss", f"{_g(data.mechanical_loss_W)} W"),
                 ("Flux-linkage map", _map_description(flux_map, context)),
+                *([("Rotor iron loss (experimental)", sampling)] if (sampling := _rotor_sampling_description(flux_map)) else []),
                 ("Map scope key", flux_map.scope_key),
                 ("coilEM", application_commit()),
             ],

@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 from collections.abc import Iterable
 from functools import reduce
@@ -58,8 +59,16 @@ PACKAGE_DATA_FILES = (
 # records. ``benchmark_data_files`` lists them; the build copies them into
 # ``backend/_data`` like the files above.
 BENCHMARK_SUITE_FILE = "benchmarks/af-v1.10/benchmark_spec.json"
+# The same cases solved as one repeating sector (protocol 1.11.0), graded against the same references.
+BENCHMARK_SECTOR_SUITE_FILE = "benchmarks/af-v1.11-sector/benchmark_spec.json"
 BENCHMARK_REFERENCE_BUNDLE_DIR = "benchmarks/reference-baselines/protocol110-combined-20261110"
+# Beside a reviewed geometry review: renewals that accept changed sources whose geometry is unchanged.
+GEOMETRY_RENEWALS_FILE = "geometry-renewals.json"
 BENCHMARK_RECORDS_DIR = "benchmarks/records"
+# The last public A-F platform records measured 5e6fab283d16. New release
+# evidence is retained privately. A package may only carry these exact records.
+FROZEN_PUBLIC_PLATFORMS = ("windows-x86_64", "macos-arm64")
+FROZEN_BENCHMARK_DATA_SHA256 = "83975295858499943902fb66303428a18672dc58990285e4ab558123822f9e1b"
 
 
 def package_resource(*parts: str) -> Traversable:
@@ -138,10 +147,22 @@ def benchmark_data_files(root: Path) -> tuple[str, ...]:
             if review.get("current_geometry_review"):
                 geometry = read(relative + "/" + review["current_geometry_review"]["file"])
                 files.update(geometry["current_sources"])
+                if (root / relative / GEOMETRY_RENEWALS_FILE).is_file():
+                    read(relative + "/" + GEOMETRY_RENEWALS_FILE)
 
     suite(BENCHMARK_SUITE_FILE)
+    suite(BENCHMARK_SECTOR_SUITE_FILE)
     bundle(BENCHMARK_REFERENCE_BUNDLE_DIR)
-    files.update(path.relative_to(root).as_posix() for path in (root / BENCHMARK_RECORDS_DIR).glob("*.json"))
+    files.update(f"{BENCHMARK_RECORDS_DIR}/{platform}.json" for platform in FROZEN_PUBLIC_PLATFORMS)
+    # Pin the complete package data list and its bytes, including the sector
+    # requests. Geometry source code is shipped separately and checked against
+    # the historical physics by the runtime qualification check.
+    package_data = hashlib.sha256()
+    geometry_sources = {"backend/geometry_drawer.py", "backend/geometry_ir.py", "backend/models/config.py"}
+    for name in sorted(files - geometry_sources):
+        package_data.update(name.encode("utf-8") + b"\0" + hashlib.sha256((root / name).read_bytes()).digest())
+    if package_data.hexdigest() != FROZEN_BENCHMARK_DATA_SHA256:
+        raise ValueError("Package benchmark data differ from the frozen public A-F registration")
     return tuple(sorted(files))
 
 
@@ -228,8 +249,10 @@ def source_checkout_commit(root: Path) -> str:
     if isinstance(snapshot_commit, str) and re.fullmatch(r"[0-9a-f]{40}", snapshot_commit):
         return snapshot_commit
     try:
+        # Resolve through Python's PATH, even if the native Windows search
+        # path has changed since Python started.
         completed = subprocess.run(
-            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            [shutil.which("git") or "git", "-C", str(root), "rev-parse", "HEAD"],
             capture_output=True,
             check=False,
             text=True,

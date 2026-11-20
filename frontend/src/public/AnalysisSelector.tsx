@@ -1,6 +1,6 @@
 import { useId } from 'react';
-import { coggingPlanNote } from './coggingView';
-import type { AnalysisKey } from './analysisOptions';
+import { coggingPlanNote, sectorCoggingNote } from './coggingView';
+import { rotorIronLossUnavailableReason, type AnalysisKey } from './analysisOptions';
 import type { MotorConfig, PublicSolverId } from './model';
 import { InfoTip } from './Popover';
 import { StatusBadge } from './OutputStatusBadge';
@@ -19,6 +19,7 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
   const id = useId();
   const options = config.solve_options;
   const elmer = solver === 'elmer';
+  const rotorLossUnavailable = rotorIronLossUnavailableReason(config, solver);
   const rows: Array<{ key: AnalysisKey; label: string; hint: string; unavailable?: boolean; experimentalReason?: string }> = [
     { key: 'torque_sweep', label: 'Torque', hint: 'Loaded torque waveform, mean torque and ripple.' },
     { key: 'back_emf', label: 'Back EMF', hint: 'No-current voltage waveform at the rated speed.' },
@@ -49,8 +50,23 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
               </div>
             </InfoTip>
           </div>
+          {row.key === 'cogging_torque' && sectorCoggingNote(config, solver) && (
+            <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, solver)}</p>
+          )}
           {row.key === 'losses_efficiency' && !elmer && options.losses_efficiency && (
-            <p className="public-losses-full-cycle" role="note">Full 360° electrical sweep selected for losses and efficiency.</p>
+            <div className="public-losses-full-cycle">
+              <p role="note">Full 360° electrical sweep selected for stator losses and efficiency.</p>
+              <div className="public-analysis-heading">
+                <label className="public-check-row">
+                  <input type="checkbox" checked={!rotorLossUnavailable && Boolean(options.rotor_iron_loss)} disabled={busy || rotorLossUnavailable !== null}
+                    aria-describedby={`${id}-rotor-loss-status ${id}-rotor-loss-note`} onChange={(event) => onChange('rotor_iron_loss', event.target.checked)} />
+                  <span>Include rotor iron loss</span>
+                </label>
+                <span id={`${id}-rotor-loss-status`}><StatusBadge status="experimental" /></span>
+              </div>
+              <p role="note" id={`${id}-rotor-loss-note`}>{rotorLossUnavailable
+                ?? 'Adds 384 positions over a full mechanical turn plus a closure solve. Supports full inner-rotor SPM/flat-IPM models with M350-50A rotor steel and sinusoidal excitation.'}</p>
+            </div>
           )}
           {row.key === 'torque_speed_envelope' && !elmer && options.torque_speed_envelope && (
             <TorqueSpeedSettings config={config} busy={busy} onChange={onTorqueSpeedChange} />

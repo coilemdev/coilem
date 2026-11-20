@@ -1,6 +1,6 @@
 import type { AirgapBrBtProfile } from '../components/tutorials/lessonSolveTypes';
 import type { CustomSteel } from './customSteel';
-import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
+import type { DqFluxLinkage, IronLoss, IronLossDensity, LossBreakdown, PerformanceOutputStatus, RotorIronLoss, TorqueSpeedAnalysisResult, TorqueSpeedAnalysisSettings, WireSpec } from './performance';
 import type { SolveTimeBreakdown } from './solveTime';
 import type { WindingResistance } from './windingResistance';
 
@@ -19,6 +19,8 @@ export type SolveQuality = 'quick' | 'standard' | 'fine' | 'custom';
 export type MeshDensity = 'coarse' | 'normal' | 'fine' | 'very_fine';
 /** How exactly Gmsh places nodes along curves: Precise is what the benchmark measured. */
 export type MeshBuild = 'precise' | 'fast';
+/** How much of the motor is meshed and solved: one repeating sector when it has one, or always the full circle. */
+export type SolveSymmetry = 'auto' | 'full';
 
 export const PUBLIC_MAGNETO2D_SETTINGS = {
   torque_method: 'weighted_stress',
@@ -134,6 +136,7 @@ export interface MotorConfig {
     mesher: 'gmsh';
     corner_refinement: boolean;
     mesh_build: MeshBuild;
+    symmetry: SolveSymmetry;
     rotor_rotation_model: 'remesh_per_step';
     torque_method: 'contour' | 'arkkio' | 'weighted_stress';
     nonlinear_solver: 'picard' | 'newton';
@@ -159,6 +162,7 @@ export interface MotorConfig {
     flux_density: boolean;
     cogging_torque: boolean;
     losses_efficiency: boolean;
+    rotor_iron_loss?: boolean;
     torque_speed_envelope: boolean;
     thd_analysis: boolean;
   };
@@ -212,6 +216,22 @@ export interface GeometryPreview {
   generation_time_ms: number;
 }
 
+/**
+ * Where one solved sector is cut while the rotor is turned from the meshed angle
+ * (backend/sector_geometry.py sector_cuts_by_turn). Each entry holds from its turn
+ * (degrees, counter-clockwise positive) to the next one's: the stator cut in the
+ * stator's frame and the rotor cut in the rotor's own frame.
+ */
+export interface SectorCut {
+  turn_from_deg: number;
+  stator_cut_deg: number;
+  rotor_cut_deg: number;
+  /** The two cuts are too close to mesh between: the rotor is cut at the tooth... */
+  rotor_on_stator_cut?: boolean;
+  /** ...or, for a rotor with no room for that, the stator where the rotor is. */
+  stator_on_rotor_cut?: boolean;
+}
+
 export interface MeshPreview {
   nodes_mm: Array<[number, number]>;
   triangles: Array<[number, number, number]>;
@@ -220,6 +240,8 @@ export interface MeshPreview {
   mesh_qa: Record<string, unknown>;
   generation_time_ms: number;
   solve_mesh_key?: string;
+  /** A sector mesh: the cuts the solver makes at every rotor angle, over one revolution. */
+  sector_cuts?: SectorCut[] | null;
 }
 
 /** Benchmark qualification of a design (backend/qualification.py). */
@@ -243,7 +265,7 @@ export interface SolveValidation {
   sweep_positions: number;
   /** Cogging positions per period for the selected preset (#185), solved when Cogging torque is on. */
   cogging_positions_per_period?: number;
-  analysis_positions?: Partial<Record<'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency', number>>;
+  analysis_positions?: Partial<Record<'torque_sweep' | 'back_emf' | 'cogging_torque' | 'losses_efficiency' | 'rotor_iron_loss', number>>;
   qualification?: PublicQualification;
 }
 
@@ -498,6 +520,7 @@ export interface SolveResult {
     dq_flux_linkage?: DqFluxLinkage | null;
     loss_breakdown?: LossBreakdown | null;
     iron_loss?: IronLoss | null;
+    rotor_iron_loss?: RotorIronLoss | null;
     winding_resistance?: WindingResistance | null;
     solve_time_s: number;
   };
@@ -556,6 +579,8 @@ export interface SolveResult {
     run_setup?: { id: string; version: number; name: string; kind: 'reference' | 'user'; includes_numerics: boolean };
     solver_name: string;
     mesh_element_count: number;
+    /** Copies of the solved sector that make the motor; null or absent when the full motor was solved. */
+    sector_repeats?: number | null;
     rotor_positions: number;
     /** Where the solve's time went; absent on runs solved before it was recorded. */
     time_breakdown?: SolveTimeBreakdown | null;
@@ -590,6 +615,8 @@ export interface SolveResult {
   field_line_plot?: PublicFieldLinePlot | null;
   iron_loss_density?: IronLossDensity | null;
   field_line_frames?: PublicFieldFrameDescriptor[] | null;
+  /** The A / B / C currents the solver applied at each solved position (the Field solution's Phases). */
+  slot_excitation_frames?: Array<{ angle_deg: number; phase_current_a: number[] }> | null;
   field_playback?: PublicFieldPlaybackManifest | null;
   saved_run?: PublicSavedRun | null;
   /** Read-only presentation of recorded solver evidence; absent in older responses. */
@@ -748,6 +775,7 @@ export const DEFAULT_CONFIG: MotorConfig = {
     mesher: 'gmsh',
     corner_refinement: true,
     mesh_build: 'precise',
+    symmetry: 'full',
     rotor_rotation_model: 'remesh_per_step',
     torque_method: 'weighted_stress',
     nonlinear_solver: 'newton',

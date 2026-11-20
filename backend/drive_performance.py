@@ -61,6 +61,10 @@ class MapModel:
     iron_eddy_W: np.ndarray
     iron_loss_available: bool
     reference_frequency_Hz: float
+    rotor_hysteresis_W: np.ndarray
+    rotor_eddy_W: np.ndarray
+    rotor_loss_requested: bool
+    rotor_loss_available: bool
 
     @classmethod
     def from_map(cls, flux_map: FluxLinkageMap) -> "MapModel":
@@ -69,7 +73,7 @@ class MapModel:
         if currents.size < 2 or gammas.size < 2:
             raise ValueError("the map needs at least two currents and two current angles")
         shape = (currents.size, gammas.size)
-        grids = {name: np.full(shape, np.nan) for name in ("torque", "ld", "lq", "fh", "fe")}
+        grids = {name: np.full(shape, np.nan) for name in ("torque", "ld", "lq", "fh", "fe", "rh", "re")}
         row = {value: index for index, value in enumerate(flux_map.current_peak_A)}
         column = {value: index for index, value in enumerate(flux_map.gamma_deg)}
         for point in flux_map.points:
@@ -82,6 +86,12 @@ class MapModel:
             if point.iron_hysteresis_loss_W is not None and point.iron_eddy_loss_W is not None:
                 grids["fh"][at] = point.iron_hysteresis_loss_W
                 grids["fe"][at] = point.iron_eddy_loss_W
+            rotor = point.rotor_iron_loss
+            if rotor is not None and rotor.status != "unavailable":
+                if not math.isclose(rotor.speed_rpm, flux_map.reference_speed_rpm, rel_tol=1e-9):
+                    raise ValueError("Rotor-loss map record has a different reference speed")
+                grids["rh"][at] = rotor.rotor_hysteresis_loss_W
+                grids["re"][at] = rotor.rotor_lamination_eddy_loss_W
         missing = int(np.isnan(grids["torque"]).sum())
         if missing:
             raise ValueError(f"{missing} of {grids['torque'].size} map points have no solved result")
@@ -89,6 +99,13 @@ class MapModel:
         if not iron_available:
             grids["fh"][:] = 0.0
             grids["fe"][:] = 0.0
+        rotor_available = not (np.isnan(grids["rh"]).any() or np.isnan(grids["re"]).any())
+        if not flux_map.rotor_iron_loss_requested or not rotor_available:
+            grids["rh"][:] = 0.0
+            grids["re"][:] = 0.0
+        if flux_map.rotor_iron_loss_requested and rotor_available:
+            grids["fh"] += grids["rh"]
+            grids["fe"] += grids["re"]
         return cls(
             pole_pairs=flux_map.pole_pairs,
             currents_A=currents,
@@ -100,6 +117,8 @@ class MapModel:
             iron_eddy_W=grids["fe"],
             iron_loss_available=iron_available,
             reference_frequency_Hz=flux_map.reference_speed_rpm * flux_map.pole_pairs / 60.0,
+            rotor_hysteresis_W=grids["rh"], rotor_eddy_W=grids["re"],
+            rotor_loss_requested=flux_map.rotor_iron_loss_requested, rotor_loss_available=rotor_available,
         )
 
     def sample(self, currents_A: np.ndarray, gammas_deg: np.ndarray) -> dict[str, np.ndarray]:
@@ -121,6 +140,9 @@ class MapModel:
             ("iron_h", self.iron_hysteresis_W), ("iron_e", self.iron_eddy_W),
         ):
             out[name] = _interpolate(self.currents_A, self.gammas_deg, grid, currents, gammas)
+        if self.rotor_loss_requested:
+            for name, grid in (("rotor_h", self.rotor_hysteresis_W), ("rotor_e", self.rotor_eddy_W)):
+                out[name] = _interpolate(self.currents_A, self.gammas_deg, grid, currents, gammas)
         return out
 
 
@@ -418,6 +440,7 @@ def efficiency_map(
     efficiency = np.full(shape, np.nan)
     copper = np.full(shape, np.nan)
     iron = np.full(shape, np.nan)
+    rotor_iron = np.full(shape, np.nan)
     current_rms = np.full(shape, np.nan)
     current_angle = np.full(shape, np.nan)
     # Per-ray current at each target torque does not depend on speed.
@@ -462,6 +485,10 @@ def efficiency_map(
         efficiency[ok, column] = eta[ok]
         copper[ok, column] = cu[ok]
         iron[ok, column] = fe[ok]
+        if model.rotor_loss_requested and model.rotor_loss_available:
+            ratio = rpm / flux_map.reference_speed_rpm
+            rotor_all = np.maximum(0, looked["rotor_h"] * ratio + looked["rotor_e"] * ratio**2)
+            rotor_iron[ok, column] = rotor_all[rows, choice][ok]
         current_rms[ok, column] = amps[rows, choice][ok] / math.sqrt(2)
         current_angle[ok, column] = gammas[rows, choice][ok]
 
@@ -478,6 +505,15 @@ def efficiency_map(
         "hysteresis with frequency and eddy current with its square."
         if model.iron_loss_available else "Iron loss is not included: the map has no iron loss.",
     ]
+    missing_rotor = model.rotor_loss_requested and not model.rotor_loss_available
+    missing_requested_loss = model.rotor_loss_requested and (missing_rotor or not model.iron_loss_available)
+    if missing_requested_loss:
+        efficiency[:] = np.nan
+        iron[:] = np.nan
+        notes.append("Requested rotor iron loss is unavailable at one or more map points; efficiency is unavailable."
+                     if missing_rotor else "Stator iron loss is unavailable; combined loss and efficiency are unavailable.")
+    elif model.rotor_loss_requested:
+        notes.append("Iron loss includes stator and full-turn rotor iron loss, with each included once.")
     return EfficiencyMap(
         map_scope_key=flux_map.scope_key,
         speed_rpm=speeds.tolist(),
@@ -485,11 +521,14 @@ def efficiency_map(
         efficiency_pct=matrix(efficiency),
         copper_loss_W=matrix(copper),
         iron_loss_W=matrix(iron),
+        loss_scope="stator_and_rotor" if model.rotor_loss_requested else "stator_only",
+        rotor_iron_loss_W=matrix(rotor_iron) if model.rotor_loss_requested else None,
+        rotor_iron_loss_status=("unavailable" if missing_rotor else "experimental") if model.rotor_loss_requested else None,
         phase_current_rms_A=matrix(current_rms),
         current_angle_deg=matrix(current_angle),
         mechanical_loss_W=mechanical_loss_W,
         winding_temperature_C=winding_temperature_C,
         control=control,
-        status="experimental",
+        status="unavailable" if missing_requested_loss else "experimental",
         status_reason=" ".join(notes),
     )

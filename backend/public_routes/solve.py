@@ -47,6 +47,7 @@ from backend.public_policy import (
     public_config_support_error,
 )
 from backend.qualification import classify_qualification
+from backend.rotor_loss_solver import planned_positions as rotor_loss_positions
 from backend.selected_analyses import solve_selected_analyses
 from backend.solve_estimate import estimate_map, estimate_solve, prepared_mesh_elements
 from backend.solve_workspace import (
@@ -666,6 +667,8 @@ def _validated_solve_request(
                 "stream_noload_field_lines": False,
                 # Elmer always runs its frozen Picard profile; Newton is a Magneto2D option.
                 "nonlinear_solver": "picard",
+                # The Elmer route writes and reads back a full-circle mesh.
+                "symmetry": "full",
             }
         )
     else:
@@ -1256,7 +1259,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
     map_work = None
     map_seconds = map_low = map_high = 0.0
     if config.solve_options and config.solve_options.torque_speed_envelope and config.torque_speed_analysis:
-        from backend.flux_linkage_map import MapStore, map_scope_key
+        from backend.flux_linkage_map import MapStore, map_scope_key, point_config
 
         settings = config.torque_speed_analysis
         # The solve reuses a stored map, or the points a cancelled map finished (selected_analyses).
@@ -1264,7 +1267,9 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
             store = MapStore(user_data_root() / "performance_maps", map_scope_key(config, settings.preset))
         except (ValueError, OSError):
             store = None
-        map_estimate = estimate_map(settings, mesh_elements=estimate.mesh_elements, store=store)
+        map_estimate = estimate_map(settings, mesh_elements=estimate.mesh_elements, store=store,
+                                    rotor_positions=rotor_loss_positions(point_config(config, 0, 0, settings.preset)),
+                                    rotor_workers=solve_params.magneto2d_workers or 4)
         map_seconds, map_low, map_high = map_estimate.seconds, map_estimate.low_s, map_estimate.high_s
         map_work = {
             "solves": map_estimate.solves,
@@ -1298,6 +1303,7 @@ async def validate_solve(body: dict[str, Any]) -> dict[str, Any]:
             if config.solve_options and (config.solve_options.back_emf or config.solve_options.thd_analysis) else 0,
             "cogging_torque": len(cogging_angle_grid(config)),
             "losses_efficiency": sweep_positions if config.solve_options and config.solve_options.losses_efficiency else 0,
+            **({"rotor_iron_loss": rotor_loss_positions(config)} if config.solve_options and config.solve_options.rotor_iron_loss else {}),
         },
         "torque_speed_map": map_work,
         "qualification": classify_qualification(config),

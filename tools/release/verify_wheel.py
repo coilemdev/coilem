@@ -5,7 +5,7 @@ requirements.lock, the supported Python range, license files), the packaged
 runtime files and the stamped build identity, including that the recorded
 binary and UI hashes match the files in the wheel.
 
-    python -m tools.release.verify_wheel WHEEL [--platform-tag TAG] [--require-commit]
+    python -m tools.release.verify_wheel WHEEL [--platform-tag TAG] [--require-commit] [--expect-commit SHA]
 """
 
 from __future__ import annotations
@@ -67,7 +67,12 @@ def crates_without_license_text(report: str) -> list[str]:
     return [crate for crate in listed if crate not in covered]
 
 
-def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: bool = False, lock: Path = ROOT / "requirements.lock") -> list[str]:
+def check_wheel(
+    path: Path, *, platform_tag: str | None = None, require_commit: bool = False,
+    expect_commit: str | None = None, lock: Path = ROOT / "requirements.lock",
+) -> list[str]:
+    if expect_commit is not None and not re.fullmatch(r"[0-9a-f]{40}", expect_commit):
+        return ["expected application commit must be a full lowercase hexadecimal commit hash"]
     problems: list[str] = []
     name, parsed_version, _, tags = parse_wheel_filename(path.name)
     version = str(parsed_version)
@@ -164,6 +169,8 @@ def check_wheel(path: Path, *, platform_tag: str | None = None, require_commit: 
             problems.append(f"build info version {build.get('application_version')} differs from the wheel's {version}")
         if require_commit and not re.fullmatch(r"[0-9a-f]{40}", str(build.get("application_commit"))):
             problems.append("build info application_commit is not a full commit hash")
+        if expect_commit is not None and build.get("application_commit") != expect_commit:
+            problems.append("build info application_commit differs from the expected commit")
         if build.get("magneto2d_sha256") != hashlib.sha256(archive.read(binary_name)).hexdigest():
             problems.append("build info magneto2d_sha256 does not match the packaged binary")
         prefix = f"backend/{resources.PACKAGED_UI_DIR}/"
@@ -182,8 +189,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("wheel", type=Path)
     parser.add_argument("--platform-tag", help="expected platform tag from the release policy")
     parser.add_argument("--require-commit", action="store_true", help="require a full application commit hash")
+    parser.add_argument("--expect-commit", metavar="SHA", help="require this exact full application commit hash")
     args = parser.parse_args(argv)
-    problems = check_wheel(args.wheel, platform_tag=args.platform_tag, require_commit=args.require_commit)
+    problems = check_wheel(
+        args.wheel, platform_tag=args.platform_tag, require_commit=args.require_commit, expect_commit=args.expect_commit,
+    )
     for problem in problems:
         print(f"{args.wheel.name}: {problem}", file=sys.stderr)
     if not problems:

@@ -111,3 +111,5 @@ old source directories, checkpoint recovery and FEMM installation-path forwardin
 ```powershell
 python -m pytest tests/test_femm_reference_adapter.py tests/test_reference_positions.py -q
 ```
+
+Release reference studies use the private experiments repository and its publication policy.

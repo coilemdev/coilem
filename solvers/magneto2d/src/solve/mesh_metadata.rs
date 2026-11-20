@@ -315,7 +315,7 @@ fn validate_boundary_policy(
         }
     }
     if let Some(sector_edges) = policy.sector_edges.as_deref() {
-        if sector_edges != "none" {
+        if !matches!(sector_edges, "none" | "periodic" | "anti_periodic") {
             return Err(MeshMetadataError::UnsupportedBoundaryPolicy {
                 field: "sector_edges",
                 value: sector_edges.to_string(),

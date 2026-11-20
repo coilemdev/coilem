@@ -8,10 +8,10 @@ F uses the existing torque and back-EMF gates.
 
 | Record | Measured at | Outcome |
 | --- | --- | --- |
-| [Windows x86-64](windows-x86_64.json) | `70c5e34` | 68 PASS, 468 gates, one planned unsupported |
-| [macOS arm64](macos-arm64.json) | `70c5e34` | 68 PASS, 468 gates, one planned unsupported |
+| [Windows x86-64](windows-x86_64.json) | `5e6fab283d165dc9e2ccec7e1a477c7080a993c4` | 68 PASS, 468 gates, one planned unsupported |
+| [macOS arm64](macos-arm64.json) | `5e6fab283d165dc9e2ccec7e1a477c7080a993c4` | 68 PASS, 468 gates, one planned unsupported |
 
-[Full measured reports and Prius evidence](../qualification-70c5e3404c19/README.md)
+[Full measured reports and Prius evidence](../qualification-5e6fab283d16/publication-projection.json)
 retain the source identities and verification receipts. The
 [previous A-D records](../records-historical/protocol19-20261110/) remain
 byte-for-byte available. A Linux run can compare to the closest record; a

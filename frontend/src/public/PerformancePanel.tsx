@@ -339,7 +339,7 @@ function EfficiencyMapChart({ map, envelope, solved, formatCurrent }: {
       </div>
       <p className="performance-readout" aria-live="polite">
         {cell && hover
-          ? `${significant(cell.eta, 3)}% at ${significant(speeds[hover.column])} rpm, ${significant(torques[hover.row])} N·m · ${cell.current ? `${describeCurrent(cell.current)} · ` : ''}copper ${significant(cell.copper ?? 0)} W · iron ${significant(cell.iron ?? 0)} W`
+          ? `${significant(cell.eta, 3)}% at ${significant(speeds[hover.column])} rpm, ${significant(torques[hover.row])} N·m · ${cell.current ? `${describeCurrent(cell.current)} · ` : ''}copper ${significant(cell.copper ?? 0)} W · iron${map.loss_scope === 'stator_and_rotor' ? ' (stator + rotor)' : ''} ${significant(cell.iron ?? 0)} W`
           : ''}
       </p>
       <svg viewBox={`0 0 ${width} ${HEIGHT}`} role="img" aria-label={`Efficiency over speed and torque, from ${bands.floor}% to ${bands.top}%`} onPointerMove={onMove} onPointerLeave={() => setHover(null)}>

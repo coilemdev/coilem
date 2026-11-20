@@ -407,7 +407,7 @@ def main() -> int:
         "@types/three": "0.183.1",
         "@vitejs/plugin-react": "4.7.0",
         "typescript": "5.6.3",
-        "vite": "6.4.4",
+        "vite": "6.4.6",
     }
     if package.get("devDependencies") != expected_frontend_dev:
         failures.append(f"unexpected frontend development dependencies: {package.get('devDependencies')}")

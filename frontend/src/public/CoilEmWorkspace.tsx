@@ -83,13 +83,14 @@ import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
 import { ResultDiagnostics } from './SolverConvergenceCard';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
-import type { TorqueSpeedAnalysisSettings, WireSpec } from './performance';
+import { rotorHistoryPositions, type TorqueSpeedAnalysisSettings, type WireSpec } from './performance';
 import { readWindingResistance, windingReadout } from './windingResistance';
 import { StatusBadge } from './OutputStatusBadge';
 import { MAGNET_TEMPERATURE_STATUS_REASON, STATUS_LABEL } from './outputStatus';
 import { ResultSummary } from './ResultSummary';
 import { AnalysisOptions } from './AnalysisSelector';
 import { analysisSummary, analysisPositions, selectedAnalyses, hasTorqueResult, hasBackEmfResult, defaultResultPlot, type AnalysisKey } from './analysisOptions';
+import { sectorCoggingNote } from './coggingView';
 import { examplesByLayout, publicExampleOptions, type PublicExampleId } from './exampleDesigns';
 import {
   magneticAirgapMm,
@@ -135,7 +136,8 @@ import {
   PUBLIC_CUSTOM_SWEEP_MAX_STEP_DEG,
   PUBLIC_CUSTOM_SWEEP_MIN_STEP_DEG,
   ensureLossesFullCycle,
-  type PublicSolvePreset,
+  type PublicSolvePlanChoice,
+  selectedSolvePlan,
 } from './solvePlan';
 import {
   isPublicSolveFinalizing,
@@ -223,10 +225,10 @@ interface CoilEmWorkspaceProps {
   onConvertProjectSteelToM350: () => void;
   onImportSteel: (material: CustomSteel, target: SteelTarget) => void;
   onMeshSettingChange: (
-    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
-    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => void;
-  onSolvePlanChange: (solvePlan: PublicSolvePreset) => void;
+  onSolvePlanChange: (solvePlan: PublicSolvePlanChoice) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
     field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
@@ -2399,6 +2401,7 @@ function ViewportChrome({
               onDimensionSelect={showDimensionReadout ? setActiveDimension : undefined}
               showToothPoles={viewportMode === '2d' && showToothPoles}
               previewRpm={animationRpm}
+              rotorTurning={isAnimating || solveRotorAngleDeg !== null}
               meshDisplayMode={meshDisplayMode}
               showMeshEdges={showMeshEdges}
               meshEdgeColor={solvePulse ? SOLVING_MESH_EDGE_COLOR : null}
@@ -2850,13 +2853,21 @@ const QUALIFICATION_LABELS: Record<PublicQualification['status'], string> = {
   unsupported: 'Unsupported',
 };
 
+// The first sentence of BUILD_NOT_PUBLICLY_QUALIFIED_REASON in backend/qualification.py,
+// and the wording stored in runs saved before it. Recognizing both needs no saved-run migration.
+const BUILD_NOT_PUBLICLY_QUALIFIED_PREFIXES = [
+  "The public benchmark record does not cover this build's physics.",
+  "This build's physics do not match the measured benchmark basis.",
+];
+
+/** True when the status describes this build's benchmark record, not the design. */
+function buildNotPubliclyQualified(qualification: PublicQualification): boolean {
+  return qualification.status === 'experimental'
+    && BUILD_NOT_PUBLICLY_QUALIFIED_PREFIXES.some((prefix) => qualification.reason.startsWith(prefix));
+}
+
 function qualificationLabel(qualification: PublicQualification, suffix = ''): string {
-  // The existing reason is also stored in older runs, so recognize it without
-  // changing their qualification status or requiring a saved-run migration.
-  if (qualification.status === 'experimental'
-    && qualification.reason.startsWith("This build's physics do not match the measured benchmark basis.")) {
-    return 'Benchmark Qualification Pending';
-  }
+  if (buildNotPubliclyQualified(qualification)) return 'Not publicly qualified';
   return `${QUALIFICATION_LABELS[qualification.status]}${suffix}`;
 }
 
@@ -2869,6 +2880,13 @@ function readQualification(value: unknown): PublicQualification | null {
   if (typeof raw.reason !== 'string') return null;
   const caveats = Array.isArray(raw.caveats) ? raw.caveats.filter((caveat): caveat is string => typeof caveat === 'string') : [];
   return { status: raw.status, reason: raw.reason, caveats };
+}
+
+function qualificationForDisplay(qualification: PublicQualification | null, config: MotorConfig): PublicQualification | null {
+  if (qualification?.status === 'experimental' && config.topology === 'IPM' && config.rotor.ipm_topology === 'v_shape') {
+    return { status: qualification.status, reason: 'Qualification Pending', caveats: [] };
+  }
+  return qualification;
 }
 
 /** Status, reason and caveats, so experimental results never look qualified. */
@@ -3045,7 +3063,8 @@ function HealthPanel({
   const burialHealth = publicFlatIpmBurialHealth(config);
   const statorWidths = deriveStatorSectionWidths(config, geometryStale ? null : geometry);
   const toothWidthAdvisory = currentToothWidthAdvisory(geometry, geometryStale);
-  const qualification = geometryStale ? null : readQualification(geometry?.metadata?.qualification);
+  const qualification = geometryStale ? null : qualificationForDisplay(readQualification(geometry?.metadata?.qualification), config);
+  const buildNote = qualification && buildNotPubliclyQualified(qualification) ? qualification : null;
   // Can it be wound: the wire against the slot, the slot mouth and the bends it has to make (windingBuild.ts).
   const windingRecord = geometryStale ? null : readWindingResistance(geometry?.metadata?.winding_resistance);
   const windingChecks = windingRecord ? windingBuildChecks({
@@ -3066,13 +3085,15 @@ function HealthPanel({
       copy: reference ? reference.healthCopy : `${coverage}% pole coverage for the current rotor.` }] as DesignHealthIssue[] : []),
     { severity: balancedSlots ? 'positive' : 'warning', title: !slotInputsReady ? 'Slot count is not evaluated' : balancedSlots ? 'Slot count supports three phases' : 'Slot count does not divide across three phases', copy: slotInputsReady ? `${config.stator.slot_count} stator slots across three phases.` : 'Enter an integer from 6 through 96 before evaluating winding balance.' },
     { severity: !error && geometry && !geometryStale ? 'positive' : 'info', title: error ? 'Preview waiting for valid inputs' : geometry && !geometryStale ? 'Geometry preview is current' : 'Updating geometry preview', copy: error ? 'Correct the input errors to refresh the preview.' : geometry && !geometryStale ? `${geometry.regions.length} regions returned by the local backend.` : 'The preview will refresh after the local backend responds.' },
-    ...(qualification ? [{
+    // A build without a published benchmark record says nothing about this design:
+    // it is shown as a note below and never counts as a warning.
+    ...(qualification && !buildNote ? [{
       severity: qualification.status === 'qualified' ? 'positive' as const : 'warning' as const,
       title: qualificationLabel(qualification, ' motor combination'),
       copy: [qualification.reason, ...qualification.caveats].join(' '),
     }] : []),
     ...windingChecks,
-    ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${mesh.triangles.length.toLocaleString()} generated triangles.` }] : []),
+    ...(mesh ? [{ severity: 'positive' as const, title: 'Mesh quality gate passed', copy: `${Number(mesh.mesh_info.num_triangles ?? mesh.triangles.length).toLocaleString()} generated triangles.` }] : []),
     ...(toothWidthAdvisory && !geometryWarnings.some((warning) => /tooth-shoe shoulder|bore tooth/i.test(warning)) ? [{
       severity: toothWidthAdvisory.severity,
       title: toothWidthAdvisory.kind === 'tooth_shoe_shoulder'
@@ -3122,6 +3143,12 @@ function HealthPanel({
             <span className="design-health-issue-body"><span className="design-health-issue-title">{issue.title}</span><span className="design-health-issue-copy">{issue.copy}</span></span>
           </div>
         ))}
+        {buildNote && (
+          <div className="design-health-issue severity-info" role="note" aria-label="Benchmark qualification">
+            <span className="design-health-issue-icon"><StatusGlyph tone="info" /></span>
+            <span className="design-health-issue-body"><span className="design-health-issue-title">{qualificationLabel(buildNote)}</span><span className="design-health-issue-copy">{[buildNote.reason, ...buildNote.caveats].join(' ')}</span></span>
+          </div>
+        )}
       </div>
     </aside>
   );
@@ -3184,6 +3211,7 @@ function solveStageLabel(progress: PublicSolveProgress | null, busy: PublicBusyA
     magneto2d_single: 'Final field solve',
     magneto2d_complete: 'Finalizing results',
     magneto2d_cogging: 'Solving cogging sweep',
+    rotor_iron_loss: 'Solving full-turn rotor iron loss',
     torque_speed_map: 'Solving torque–speed map',
     // Both solvers emit these stages; the Run plan already names the solver.
     torque_sweep: 'Loaded-torque sweep',
@@ -3771,9 +3799,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const [solveRotorTurn, setSolveRotorTurn] = useState<PublicSolveRotorTurn | null>(null);
   const sweepRangeDeg = config.solve_params.rotor_sweep_range_deg;
   const hasLoadedWindow = config.solve_options.torque_sweep || config.solve_options.losses_efficiency;
-  const partialPlanNote = !hasLoadedWindow ? null : config.solve_params.solve_quality === 'quick'
-    ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window. Iron loss and efficiency may be unavailable; choose Custom with a full electrical cycle for cycle-average comparisons.'
-    : config.solve_params.solve_quality === 'custom' && sweepRangeDeg < 360
+  const partialPlanNote = !hasLoadedWindow ? null : lossesSweep.solve_params.solve_quality === 'quick'
+    ? 'Preview samples a partial electrical window. Torque and d/q averages describe that window.'
+    : lossesSweep.solve_params.solve_quality === 'custom' && lossesSweep.solve_params.rotor_sweep_range_deg < 360
       ? 'This custom sweep covers a partial electrical window. Torque and d/q averages describe only that window.' : null;
   const sweepPoleCount = config.rotor.pole_count;
   useEffect(() => {
@@ -3835,10 +3863,11 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const panelDragRef = useRef<{ panel: 'setup' | 'runPlan'; startX: number; startWidth: number } | null>(null);
   const setupRef = useRef<HTMLElement>(null);
   const runPlanRef = useRef<HTMLElement>(null);
-  const solvePlans: Array<{ value: PublicSolvePreset; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
+  const solvePlans: Array<{ value: PublicSolvePlanChoice; label: string; meshLabel: string; tradeoff: string; recommended?: boolean }> = [
     { value: 'quick', label: 'Preview', meshLabel: 'Coarse mesh', tradeoff: 'Fast iteration' },
     { value: 'standard', label: 'Standard', meshLabel: 'Medium mesh', tradeoff: 'Balanced', recommended: true },
     { value: 'fine', label: 'High accuracy', meshLabel: 'Fine mesh', tradeoff: 'Finer detail' },
+    { value: 'very_fine', label: 'Maximum accuracy', meshLabel: 'Very fine mesh', tradeoff: 'Cogging, convergence' },
   ];
   const elmerAvailable = elmerCapability.available
     && elmerCapability.qualified
@@ -3847,31 +3876,53 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const sixStepSelected = config.solve_params.excitation_mode === 'ideal_six_step_120';
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
-  const densityChoices: Array<{ value: 'coarse' | 'normal' | 'fine'; label: string }> = [
+  const densityChoices: Array<{ value: MotorConfig['solve_params']['mesh_density']; label: string; title?: string }> = [
     { value: 'coarse', label: 'Coarse' },
     { value: 'normal', label: 'Medium' },
     { value: 'fine', label: 'Fine' },
+    { value: 'very_fine', label: 'Very fine', title: 'About 3–6× the elements of Medium: slower meshing and solving. For cogging and mesh-convergence checks.' },
   ];
   const meshBuild = config.solve_params.mesh_build ?? 'precise';
   const meshBuildChoices: Array<{ value: MotorConfig['solve_params']['mesh_build']; label: string; title: string }> = [
     { value: 'precise', label: 'Precise', title: 'Places mesh nodes as the benchmark report measured.' },
     { value: 'fast', label: 'Fast', title: 'About 4x faster meshing. Results move at mesh-noise level and are experimental.' },
   ];
+  const symmetry = config.solve_params.symmetry ?? 'full';
+  const sectorChoiceLabel = 'One sector (Experimental)';
+  const symmetryChoices: Array<{ value: MotorConfig['solve_params']['symmetry']; label: string; title: string }> = [
+    { value: 'full', label: 'Full motor', title: 'Meshes and solves the whole cross-section, as the benchmark report measured.' },
+    { value: 'auto', label: sectorChoiceLabel, title: 'Solves one repeating sector when the geometry and winding repeat. Other designs use the full motor.' },
+  ];
+  const meshSector = mesh?.mesh_info.sector as { repeats: number; anti_periodic: boolean } | undefined;
+  // What is actually solved: a prepared mesh says so; before that, the request does.
+  const solvedRegionLabel = meshSector
+    ? `1/${meshSector.repeats} sector (Experimental), shown as the full motor`
+    : symmetry === 'auto' && !mesh
+      ? `${sectorChoiceLabel} if the motor repeats`
+      : symmetry === 'auto'
+        ? 'Full motor (does not repeat)'
+        : 'Full motor';
   const appliedRefinement = mesh?.mesh_info.corner_refinement === true;
   const meshQualitySummary = useMemo(() => summarizePublicMeshQuality(mesh), [mesh]);
   const qualityPasses = Boolean(mesh) && meshQualitySummary.minimum >= meshQualitySummary.threshold;
-  const weakElementCount = meshQualitySummary.weakElementIndices.length;
-  const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length);
+  // A sector's copies around the motor repeat its elements exactly, so the run plan counts
+  // the solved sector, as its Mesh row does (#333).
+  const qualityRepeats = meshSector && meshSector.repeats > 1
+    && meshQualitySummary.qualities.length === meshSector.repeats * meshElements ? meshSector.repeats : 1;
+  const qualityCounts = Object.fromEntries(Object.entries(meshQualitySummary.counts)
+    .map(([band, count]) => [band, Math.round(count / qualityRepeats)])) as typeof meshQualitySummary.counts;
+  const weakElementCount = Math.round(meshQualitySummary.weakElementIndices.length / qualityRepeats);
+  const qualityElementCount = Math.max(1, meshQualitySummary.qualities.length / qualityRepeats);
   const planLabel = config.solve_params.solve_quality === 'custom'
     ? `${lossesFullCycle ? '360° full cycle' : 'Custom'} · ${config.solve_params.rotor_step_deg}° elec`
-    : `${solvePlans.find((plan) => plan.value === config.solve_params.solve_quality)?.label
+    : `${solvePlans.find((plan) => plan.value === selectedSolvePlan(config))?.label
       ?? config.solve_params.solve_quality}${lossesSweep !== config ? ` · 360° at ${lossesSweep.solve_params.rotor_step_deg}° for losses` : ''}`;
   const estimatedTimeText = validation
     ? formatRunTimeRange(validation)
     : validationChecking
       ? 'Calculating…'
       : 'Estimate unavailable';
-  const validationQualification = readQualification(validation?.qualification);
+  const validationQualification = qualificationForDisplay(readQualification(validation?.qualification), config);
   const positionsText = validation
     ? analysisPositions(config, validation, selectedSolver)
     : validationChecking
@@ -3903,9 +3954,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     : config.solve_params.linear_solver_preconditioner === 'ic0'
       ? 'IC(0)'
       : 'Jacobi';
-  const meshDensityLabel = config.solve_params.mesh_density === 'normal'
-    ? 'Medium'
-    : config.solve_params.mesh_density.replace('_', ' ');
+  const meshDensityLabel = densityChoices.find((choice) => choice.value === config.solve_params.mesh_density)?.label
+    ?? config.solve_params.mesh_density.replace('_', ' ');
   const currentEnabled = selectedAnalyses(config, selectedSolver).some((key) => key === 'torque_sweep' || key === 'losses_efficiency');
   const mapEnabled = selectedSolver !== 'elmer' && config.solve_options.torque_speed_envelope;
   const operatingSummary = currentEnabled ? [
@@ -3913,10 +3963,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     `${Number(config.solve_params.current_amplitude_A.toFixed(2))} A ${sixStepSelected ? 'plateau' : config.solve_params.current_amplitude_convention}`,
     `${config.solve_params.rated_speed_rpm} rpm`,
   ].join(' · ') : `${mapEnabled ? 'Map current limits' : 'No current'} · ${config.solve_params.rated_speed_rpm} rpm`;
-  const selectedPreset = config.solve_params.solve_quality;
+  const selectedPreset = selectedSolvePlan(config);
   const planMeshLabel = solvePlans.find((plan) => plan.value === selectedPreset)?.meshLabel;
   const planSummary = [planLabel, planMeshLabel, estimatedTimeText].filter(Boolean).join(' · ');
-  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''}`;
+  const advancedSummary = `${torqueMethodLabel} · ${nonlinearSolverLabel} · ${linearSolverLabel} · ${meshDensityLabel}${meshBuild === 'fast' ? ' · Fast mesh' : ''} · ${symmetry === 'auto' ? sectorChoiceLabel : 'Full motor'}`;
   const runReady = Boolean(mesh)
     && Boolean(validation?.valid)
     && selectedSolverAvailable
@@ -3932,7 +3982,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
     ? 'In Advanced options, change Nonlinear solver to Newton, then run the analysis again.'
     : reviewDesignForConvergence
       ? 'Newton and a fine mesh are already selected. Review the geometry and steel B–H curve, especially near saturation, before retrying.'
-      : 'Try a finer mesh: in Advanced options, choose Fine under Mesh preparation, click Prepare mesh, then rerun. If it still fails, review the geometry and steel B–H curve.';
+      : 'Try a finer mesh: in Advanced options, choose Fine or Very fine under Mesh preparation (the mesh is rebuilt at once), then rerun. If it still fails, review the geometry and steel B–H curve.';
   const openConvergenceSettings = () => {
     recoveryFocusTargetRef.current = config.solve_params.nonlinear_solver === 'picard'
       ? nonlinearSolverRef.current
@@ -3946,6 +3996,11 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const finalizingResults = solveInProgress && isPublicSolveFinalizing(progress);
   const runDisabled = busy === 'mesh'
     || (busy !== 'solve' && busy !== 'field' && !runReady);
+  // Mesh settings re-mesh on their own; with no mesh and nothing running (the guided setup
+  // skipped it, or the last attempt failed) the run button prepares one, then becomes
+  // Run analysis (#333).
+  const meshNeeded = !mesh && busy === null && !cancellingSolve;
+  const meshActionLabel = error ? 'Regenerate mesh' : 'Prepare mesh';
   // [tag label, popover heading]
   const [runReadinessTag, runReadinessTitle] = cancellingSolve
     ? ['Stopping', 'Stopping the analysis']
@@ -4391,7 +4446,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <AnalysisOptions config={config} solver={selectedSolver} busy={busy !== null} coggingPositions={validation?.cogging_positions_per_period} onChange={onAnalysisChange} onTorqueSpeedChange={onTorqueSpeedChange} />
         </ParameterSectionBlock>
         <ParameterSectionBlock id="plan" label="Accuracy plan" summary={planSummary} active={openSetupSection === 'plan'} onToggle={toggleSetupSection} guide="solve-plan">
-          <div className="public-choice-row public-solve-plan-choices">
+          <div className="public-solve-plan-frame"><div className="public-choice-row public-solve-plan-choices">
             {solvePlans.map((plan) => (
               <button
                 type="button"
@@ -4412,7 +4467,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                   : plan.tradeoff}</small>
               </button>
             ))}
-          </div>
+          </div></div>
           <div className={`public-custom-sweep${config.solve_params.solve_quality === 'custom' ? ' active' : ''}`}>
             <button
               type="button"
@@ -4466,14 +4521,22 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <div className="public-advanced-body">
             <section className="public-advanced-section public-advanced-mesh-section" aria-labelledby="public-mesh-preparation-heading">
               <span className="public-section-kicker" id="public-mesh-preparation-heading">Mesh preparation</span>
-              <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              <div className="mesh-segmented-control">{densityChoices.map((choice) => <button ref={choice.value === 'fine' ? fineMeshRef : undefined} type="button" className={config.solve_params.mesh_density === choice.value ? 'active' : ''} aria-pressed={config.solve_params.mesh_density === choice.value} disabled={busy !== null} title={choice.title} onClick={() => onMeshSettingChange('mesh_density', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              {config.solve_params.mesh_density === 'very_fine' && <p className="public-mesh-build-note">Very fine meshes have about 3–6× the elements of Medium, so meshing and solving take several times longer and saved runs are larger. Use it for cogging and for checking that results have converged.</p>}
               <label className="public-check-row"><input type="checkbox" checked={config.solve_params.corner_refinement} disabled={busy !== null} onChange={(event) => onMeshSettingChange('corner_refinement', event.target.checked)} /> Corner refinement</label>
               <div className="public-mesh-build" role="group" aria-labelledby="public-mesh-build-label">
                 <span id="public-mesh-build-label">Mesh build</span>
                 <div className="mesh-segmented-control">{meshBuildChoices.map((choice) => <button type="button" className={meshBuild === choice.value ? 'active' : ''} aria-pressed={meshBuild === choice.value} title={choice.title} disabled={busy !== null} onClick={() => onMeshSettingChange('mesh_build', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
               </div>
               {meshBuild === 'fast' && <p className="public-mesh-build-note">About 4× faster meshing. Results move at mesh-noise level and are marked experimental.</p>}
-              <button className="public-prepare-mesh-btn" type="button" disabled={busy !== null} onClick={onGenerateMesh}>{busy === 'mesh' ? 'Meshing…' : mesh ? 'Regenerate mesh' : 'Prepare mesh'}</button>
+              <div className="public-mesh-build" role="group" aria-labelledby="public-solve-symmetry-label">
+                <span id="public-solve-symmetry-label">Solved region</span>
+                <div className="mesh-segmented-control">{symmetryChoices.map((choice) => <button type="button" className={symmetry === choice.value ? 'active' : ''} aria-pressed={symmetry === choice.value} title={choice.title} disabled={busy !== null || selectedSolver === 'elmer'} onClick={() => onMeshSettingChange('symmetry', choice.value)} key={choice.value}>{choice.label}</button>)}</div>
+              </div>
+              {meshSector && <p className="public-mesh-build-note">This motor repeats {meshSector.repeats} times: one sector of {Number(mesh?.mesh_info.num_triangles ?? 0).toLocaleString()} triangles is solved. In the Mesh view the solved sector is bright and its copies around the motor are dimmed. While the rotor turns the whole motor is drawn; stop it to see the sector solved at that angle.</p>}
+              {symmetry === 'auto' && !meshSector && mesh && <p className="public-mesh-build-note">This motor is solved in full{typeof mesh.mesh_info.sector_fallback_reason === 'string' ? `: ${mesh.mesh_info.sector_fallback_reason}` : ''}.</p>}
+              {symmetry === 'auto' && <p className="public-mesh-build-note">Shows the full motor after solving one repeating sector. Designs with no repeating sector use a full-motor solve. Release qualification covers full-motor solves.</p>}
+              {sectorCoggingNote(config, selectedSolver) && <p className="public-plan-advisory" role="note">{sectorCoggingNote(config, selectedSolver)}</p>}
             </section>
             <section className="public-advanced-section public-advanced-controls-section" aria-labelledby="public-electromagnetic-controls-heading">
               <span className="public-section-kicker" id="public-electromagnetic-controls-heading">Electromagnetic controls</span>
@@ -4524,10 +4587,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           {completedAnalysisAvailable ? (
             <>
               <button className="public-run-btn" type="button" data-guide="open-report" onClick={onOpenReport}>View Results →</button>
-              <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={runDisabled} onClick={handleStartSolve}>Run again</button>
+              <button className="public-run-again-btn" type="button" data-guide="solve-run" disabled={!meshNeeded && runDisabled} onClick={meshNeeded ? onGenerateMesh : handleStartSolve}>{meshNeeded ? meshActionLabel : 'Run again'}</button>
             </>
           ) : (
-            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={runDisabled || cancellingSolve} onClick={busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{cancellingSolve ? 'Stopping…' : busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
+            <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={!meshNeeded && (runDisabled || cancellingSolve)} onClick={meshNeeded ? onGenerateMesh : busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{cancellingSolve ? 'Stopping…' : busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : meshNeeded ? meshActionLabel : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>
@@ -4668,7 +4731,8 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
             <dl className="public-quality-list">
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
-              <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : 'Preparing…'}</dd></div>
+              <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : busy === 'mesh' ? 'Meshing…' : 'Not prepared'}</dd></div>
+              <div><dt>Solved region</dt><dd>{solvedRegionLabel}</dd></div>
               <div className="public-minimum-quality-row">
                 <dt>Minimum quality</dt>
                 <dd>
@@ -4734,22 +4798,23 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
                 {(['good', 'acceptable', 'marginal', 'failing'] as const).map((band) => (
                   <i
                     className={band}
-                    style={{ width: `${meshQualitySummary.counts[band] / qualityElementCount * 100}%` }}
+                    style={{ width: `${qualityCounts[band] / qualityElementCount * 100}%` }}
                     key={band}
                   />
                 ))}
               </div>
               <div className="public-quality-counts">
-                <span><i className="good" />Good <strong>{meshQualitySummary.counts.good.toLocaleString()}</strong></span>
-                <span><i className="acceptable" />Acceptable <strong>{meshQualitySummary.counts.acceptable.toLocaleString()}</strong></span>
-                <span><i className="marginal" />Marginal <strong>{meshQualitySummary.counts.marginal.toLocaleString()}</strong></span>
-                <span><i className="failing" />Failing <strong>{meshQualitySummary.counts.failing.toLocaleString()}</strong></span>
+                <span><i className="good" />Good <strong>{qualityCounts.good.toLocaleString()}</strong></span>
+                <span><i className="acceptable" />Acceptable <strong>{qualityCounts.acceptable.toLocaleString()}</strong></span>
+                <span><i className="marginal" />Marginal <strong>{qualityCounts.marginal.toLocaleString()}</strong></span>
+                <span><i className="failing" />Failing <strong>{qualityCounts.failing.toLocaleString()}</strong></span>
               </div>
               <p>{qualityPasses
                 ? weakElementCount > 0
                   ? `${weakElementCount.toLocaleString()} marginal elements pass the solver threshold but merit inspection.`
                   : 'All elements are comfortably above the solver threshold.'
                 : 'One or more elements must be improved before solving.'}</p>
+              {qualityRepeats > 1 && <p>Counts are for the solved sector; the Mesh tab draws its {qualityRepeats} copies around the motor.</p>}
             </div>
           </details>
         )}
@@ -4819,7 +4884,7 @@ function ReportStage({
   const fieldPlot = result.field_line_plot;
   const coggingWaveform = result.summary.cogging ? result.cogging_torque_waveform : null;
   const sixStep = resultUsesSixStep(result, config);
-  const reportQualification = readQualification(result.qualification);
+  const reportQualification = qualificationForDisplay(readQualification(result.qualification), config);
   const completeLoadedCycle = result.solve_metadata.loaded_cycle_complete === true;
   const backEmfLine = lineBackEmf(result);
   const backEmfSeries = (series: WaveformSeries[]): WaveformSeries[] => series.map((item) => {
@@ -5028,7 +5093,8 @@ function ReportStage({
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
       {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
-      <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown} />
+      <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown}
+        rotorHistoryPositions={rotorHistoryPositions(result.summary.rotor_iron_loss)} />
       </>}
     </div>
   );

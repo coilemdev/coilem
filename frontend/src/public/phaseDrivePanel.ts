@@ -1,4 +1,5 @@
 import { PUBLIC_PHASE_COLORS } from './motorPalette';
+import type { RecordedPhaseHistory } from './fieldPhases';
 import {
   PHASE_SCOPE_WINDOW_S,
   STRIP_END,
@@ -10,6 +11,7 @@ import {
   phaseChargeShift,
   phaseStrips,
   waveformTrace,
+  type PhaseCurrentSampler,
   type PhaseDrive,
   type Rect,
 } from './phaseDrive';
@@ -24,17 +26,20 @@ export interface PhaseLead {
 
 /**
  * The A / B / C waveform strips and the wires from them into the motor, shared by
- * the 2D cross-section and the 3D view. Each wire leaves its strip level, turns
- * once through a right angle at its terminal, and runs level to where it enters.
+ * the 2D cross-section, the 3D view and the Field solution. Each wire leaves its
+ * strip level, turns once through a right angle at its terminal, and runs level
+ * to where it enters. `sample` replaces the drive settings' currents (the Field
+ * solution passes its solve's), and `title` the caption above the strips.
  */
 export function drawPhaseDriveWired(
   context: CanvasRenderingContext2D,
   panel: Rect,
   drive: PhaseDrive,
   rotorElecDeg: number,
-  currents: [number, number, number],
+  currents: [number, number, number] | null,
   leads: PhaseLead[],
   previewRpm: number,
+  { sample, title, history }: { sample?: PhaseCurrentSampler; title?: string; history?: RecordedPhaseHistory } = {},
 ): void {
   const phases = ['A', 'B', 'C'] as const;
   // A scope with a fixed sweep: the strips hold the cycles the drive runs in that
@@ -47,18 +52,24 @@ export function drawPhaseDriveWired(
   context.font = '700 10px ui-monospace, monospace';
   context.textAlign = 'left';
   context.textBaseline = 'bottom';
-  context.fillText(`${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
+  context.fillText(title ?? `${drive.mode === 'ideal_six_step_120' ? 'SIX-STEP DRIVE' : 'SINE DRIVE'} · ${formatHz(frequencyHz)}`, panel.x, panel.y - 6);
   // What sets the frequency, and the sweep the strips show.
   context.fillStyle = 'rgba(148, 163, 184, 0.6)';
   context.font = '600 9px ui-monospace, monospace';
   context.textBaseline = 'top';
   context.fillText(`${Math.max(1, Math.floor(drive.poleCount / 2))} pole pairs × ${formatRevPerSecond(previewRpm)} rev/s · last ${PHASE_SCOPE_WINDOW_S} s`, panel.x, panel.y + panel.height + 6);
+  if (history?.gaps.length) {
+    context.fillStyle = 'rgba(203, 213, 225, 0.9)';
+    context.fillText('Outside solved sweep', panel.x, panel.y + panel.height + 18);
+  }
 
   strips.forEach((strip, index) => {
     const colour = PHASE_COLORS[phases[index]];
-    const level = Math.abs(currents[index]);
+    const level = Math.abs(currents?.[index] ?? 0);
     const mid = strip.y + strip.height / 2;
     const right = strip.x + strip.width;
+    const nowX = right - STRIP_END;
+    const left = strip.x + STRIP_LABEL;
 
     context.beginPath();
     if (typeof context.roundRect === 'function') context.roundRect(strip.x, strip.y, strip.width, strip.height, 8);
@@ -69,6 +80,10 @@ export function drawPhaseDriveWired(
     context.lineWidth = 1;
     context.stroke();
 
+    context.fillStyle = 'rgba(148, 163, 184, 0.09)';
+    for (const [from, to] of history?.gaps ?? []) {
+      context.fillRect(left + from * (nowX - left), strip.y + 2, (to - from) * (nowX - left), strip.height - 4);
+    }
     context.setLineDash([3, 4]);
     context.beginPath();
     context.moveTo(strip.x + STRIP_LABEL, mid);
@@ -89,25 +104,39 @@ export function drawPhaseDriveWired(
     context.textBaseline = 'top';
     context.fillText(formatHz(frequencyHz), right - STRIP_END, strip.y + 4);
 
-    const trace = waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg);
-    context.beginPath();
-    context.moveTo(trace[0][0], trace[0][1]);
-    for (const [x, y] of trace.slice(1)) context.lineTo(x, y);
+    const swing = strip.height * TRACE_AMPLITUDE;
+    const traces = history
+      ? history.segments.map(segment => segment.map(({ fraction, currents }) =>
+        [left + fraction * (nowX - left), mid - currents[index] * swing] as const))
+      : [waveformTrace(drive, index, rotorElecDeg, strip, windowElecDeg, undefined, sample)];
     context.strokeStyle = colour;
     context.lineWidth = 1.8;
     context.lineJoin = 'round';
-    context.stroke();
-    const [nowX, nowY] = trace[trace.length - 1];
-    context.beginPath();
-    context.arc(nowX, nowY, 3.2, 0, Math.PI * 2);
     context.fillStyle = colour;
-    context.fill();
+    for (const trace of traces) {
+      context.beginPath();
+      if (trace.length === 1) {
+        const [x, y] = trace[0];
+        if (y === null) continue;
+        context.arc(x, y, 1.8, 0, Math.PI * 2);
+        context.fill();
+      } else {
+        let drawing = false;
+        for (const [x, y] of trace) {
+          if (y !== null) {
+            if (drawing) context.lineTo(x, y);
+            else context.moveTo(x, y);
+          }
+          drawing = y !== null;
+        }
+        context.stroke();
+      }
+    }
 
     // The wire is fixed: it leaves from a terminal on the strip's centre line. The
     // wave's newest point rides a short rail beside it and a stem ties the two, so
     // the wave still reads as what feeds the wire.
     const { motor, terminal } = leads[index];
-    const swing = strip.height * TRACE_AMPLITUDE;
     context.strokeStyle = 'rgba(148, 163, 184, 0.3)';
     context.lineWidth = 1;
     context.beginPath();
@@ -117,10 +146,16 @@ export function drawPhaseDriveWired(
     context.strokeStyle = colour;
     context.lineWidth = 2;
     context.lineCap = 'round';
-    context.beginPath();
-    context.moveTo(nowX, nowY);
-    context.lineTo(nowX, mid);
-    context.stroke();
+    if (currents) {
+      const nowY = mid - currents[index] * swing;
+      context.beginPath();
+      context.arc(nowX, nowY, 3.2, 0, Math.PI * 2);
+      context.fill();
+      context.beginPath();
+      context.moveTo(nowX, nowY);
+      context.lineTo(nowX, mid);
+      context.stroke();
+    }
     // Level out of the strip, one right-angle turn down or up to the terminal, then level into the motor.
     context.lineJoin = 'miter';
     const wire = () => {
@@ -141,7 +176,7 @@ export function drawPhaseDriveWired(
     context.globalAlpha = 0.25 + 0.75 * level;
     context.lineWidth = 1.6 + 2.2 * level;
     context.setLineDash([7, 11]);
-    context.lineDashOffset = -phaseChargeShift(drive, index, rotorElecDeg) * 26;
+    context.lineDashOffset = -phaseChargeShift(drive, index, rotorElecDeg, undefined, sample) * 26;
     wire();
     context.setLineDash([]);
     context.lineDashOffset = 0;
@@ -157,4 +192,50 @@ export function drawPhaseDriveWired(
   });
   context.restore();
 
+}
+
+/**
+ * A coil side's current mark: ⊙ out of the page, ⊗ into it, white on a dark disc
+ * ringed in the phase colour. Shared by the Geometry view and the Field
+ * solution's Phases, drawn at screen size so it reads at any zoom.
+ */
+export function drawCurrentMarker(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  radius: number,
+  outOfPage: boolean,
+  ringColor: string,
+): void {
+  context.save();
+  context.shadowColor = 'rgba(3, 5, 9, 0.6)';
+  context.shadowBlur = radius * 0.9;
+  context.shadowOffsetY = radius * 0.16;
+  context.beginPath();
+  context.arc(x, y, radius, 0, Math.PI * 2);
+  context.fillStyle = 'rgba(8, 10, 14, 0.82)';
+  context.fill();
+  context.shadowColor = 'transparent';
+  context.shadowBlur = 0;
+  context.shadowOffsetY = 0;
+  context.strokeStyle = ringColor;
+  context.lineWidth = Math.max(1.1, radius * 0.18);
+  context.stroke();
+  if (outOfPage) {
+    context.beginPath();
+    context.arc(x, y, Math.max(1.3, radius * 0.34), 0, Math.PI * 2);
+    context.fillStyle = '#f8fafc';
+    context.fill();
+  } else {
+    const reach = radius * 0.52;
+    context.strokeStyle = '#f8fafc';
+    context.lineWidth = Math.max(1.1, radius * 0.22);
+    context.beginPath();
+    context.moveTo(x - reach, y - reach);
+    context.lineTo(x + reach, y + reach);
+    context.moveTo(x + reach, y - reach);
+    context.lineTo(x - reach, y + reach);
+    context.stroke();
+  }
+  context.restore();
 }

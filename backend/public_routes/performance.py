@@ -25,6 +25,7 @@ from backend.flux_linkage_map import (
     map_positions_per_point,
     map_scope_key,
     map_solve_count,
+    point_config,
     run_flux_linkage_map,
 )
 from backend.models.performance import DriveControl, DriveLimits, FluxLinkageMap
@@ -37,6 +38,7 @@ from backend.performance_report import (
 )
 from backend.public_policy import PublicConfigError
 from backend.public_routes import solve as solve_routes
+from backend.rotor_loss_solver import planned_positions as rotor_loss_positions
 from backend.solve_estimate import stored_map_points
 from backend.solve_workspace import user_data_root
 
@@ -120,12 +122,12 @@ async def map_status(body: dict[str, Any]) -> dict[str, Any]:
     scope_key = store.scope_key
     currents, gammas = map_grid(settings.peak_current_A, settings.preset)
     covering = store.covering_map(settings.peak_current_A)
-    finished = stored_map_points(store, currents, gammas)
+    finished = stored_map_points(store, currents, gammas, require_rotor_loss=bool(config.solve_options and config.solve_options.rotor_iron_loss))
     return {
         "scope_key": scope_key,
         "solves_total": map_solve_count(currents, gammas),
         "solves_finished": finished,
-        "positions_per_point": map_positions_per_point(settings.preset),
+        "positions_per_point": map_positions_per_point(settings.preset) + rotor_loss_positions(point_config(config, 0, 0, settings.preset)),
         **(_map_payload(covering) if covering is not None else {"map": None}),
     }
 

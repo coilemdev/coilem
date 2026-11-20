@@ -12,7 +12,7 @@ from pathlib import Path
 
 from backend.benchmark_suite import COMMAND_PHASES
 from backend.benchmark_suite.contract import identity, read, sha, write
-from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR
+from backend.resources import BENCHMARK_REFERENCE_BUNDLE_DIR, BENCHMARK_SECTOR_SUITE_FILE, BENCHMARK_SUITE_FILE
 from tools.benchmark_shards import plan
 from tools.join_benchmark_runs import join_prius, join_suite
 
@@ -33,13 +33,17 @@ def main():
     parser.add_argument('--runner', default='both')
     parser.add_argument('--shard')
     parser.add_argument('--directory', type=Path, required=True)
-    parser.add_argument('--collection', default='registered', choices=['registered', 'protocol16-native-only'])
+    # The workflow sets the collection once, so plan, binary, shard and join agree on the suite.
+    parser.add_argument('--collection', default=os.environ.get('COILEM_BENCHMARK_COLLECTION') or 'registered',
+                        choices=['registered', 'protocol16-native-only', 'sector'])
     args = parser.parse_args()
     if requested := os.environ.get('COILEM_BUILD_COMMIT'):
         actual = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
         if not re.fullmatch('[0-9a-f]{40}', requested) or requested != actual:
             raise ValueError('candidate must be the exact full immutable checkout SHA')
-    spec = plan()
+    # The sector collection (protocol 1.11.0) solves the same cases, and the Prius jobs, as one repeating sector.
+    sector = args.collection == 'sector'
+    spec = plan(suite=BENCHMARK_SECTOR_SUITE_FILE if sector else BENCHMARK_SUITE_FILE)
     directory = args.directory.resolve()
     if args.stage == 'plan':
         runners = ['windows-2022', 'macos-15'] if args.runner == 'both' else [args.runner]
@@ -67,6 +71,8 @@ def main():
             run(*options)
         else:
             options = ['tools.benchmark_prius', '--out', output, '--curve', '--refinement']
+            if sector:
+                options.extend(['--symmetry', 'auto'])
             for job in shard['cases']:
                 options.extend(['--job', job])
             run(*options)
@@ -88,7 +94,7 @@ def main():
         prius_shards = [selected[s['id']] for s in spec['shards'] if s['kind'] == 'prius']
         join_suite(suite_shards, suite=ROOT / spec['suite'], bundle=ROOT / BENCHMARK_REFERENCE_BUNDLE_DIR,
                    output=directory / 'joined-suite')
-        join_prius(prius_shards, directory / 'joined-prius')
+        join_prius(prius_shards, directory / 'joined-prius', symmetry='auto' if sector else 'full')
         run('tools.report_prius_benchmark', directory / 'joined-prius', '--out', directory / 'prius-report')
         shutil.copyfile(ROOT / 'snapshot-manifest.json', directory / 'prius-report/source-snapshot.json')
         write(directory / 'join-receipt.json', {'schema': 'coilem.qualification_ci_join/v1',

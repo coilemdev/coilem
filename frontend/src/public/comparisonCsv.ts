@@ -1,5 +1,5 @@
 import type { PublicRunListRecord } from './api';
-import { COMPARISON_METRICS, actualMeshProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
+import { COMPARISON_METRICS, actualMeshProvenance, actualPositionsProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
 import { compareRunDq } from './dqComparison';
 import { comparisonEnvelope, ENVELOPE_METRICS } from './envelopeComparison';
 import { compareMultipleLosses, compareMultipleTiming } from './multiRunComparison';
@@ -77,6 +77,7 @@ export function comparisonCsv(runs: ComparisonCsvRun[]): string {
   meta('Solver version', runs.map(run => run.result.solve_metadata.solver_name || run.record.solver_name));
   meta('Physics contract', runs.map(run => run.result.solve_metadata.physics_contract_version));
   meta('Actual mesh', runs.map(run => actualMeshProvenance(run.result)));
+  meta('Rotor positions', runs.map(run => actualPositionsProvenance(run.result)));
   meta('Torque extraction', runs.map(run => actualTorqueProvenance(run.result)));
   meta('Excitation identity', runs.map(run => excitationProvenance(run.result)));
   meta('Input snapshot', runs.map(run => run.inputs?.config ? 'Recorded' : 'Not recorded'));
@@ -101,7 +102,7 @@ export function comparisonCsv(runs: ComparisonCsvRun[]): string {
   const losses = compareMultipleLosses(results);
   if (!losses.length) add('Losses & efficiency', 'Analysis', runs.map(() => ({ value: null, missing: 'Not recorded' })), { noDelta: true });
   for (const row of losses) add('Losses & efficiency', row.label, row.cells, { unit: row.unit, deltaUnit: row.unit === '%' ? 'pp' : row.unit, comparable: row.comparable,
-    notes: row.cells.map((cell, index) => index > 0 && cell.value !== null && row.cells[0].value !== null && !row.comparable[index] ? 'Deltas require the same loss basis as the pinned baseline.' : null) });
+    notes: row.cells.map((cell, index) => index > 0 && cell.value !== null && row.cells[0].value !== null && !row.comparable[index] ? row.basisNotes[index] ?? 'Deltas require the same loss basis as the pinned baseline.' : null) });
   for (const row of compareMultipleTiming(results).rows) add('Solve time breakdown', row.label, row.values.map(value => numeric(value)), { group: row.group, unit: row.unit });
   const envelopes = results.map(comparisonEnvelope);
   for (const limit of ['peak', 'continuous'] as const) {

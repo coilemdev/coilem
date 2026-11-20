@@ -6,7 +6,7 @@ const source = await readFile(new URL('../src/public/bldcChartPaths.ts', import.
 const code = ts.transpileModule(source, {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
 }).outputText;
-const { currentStepSegments } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
+const { currentStepSegments, recordedSector, recordedSectorSegments } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`);
 const identity = (value) => value;
 
 // A -> floating -> A-: plateaus reach the actual transition, with a vertical
@@ -21,6 +21,39 @@ const fullCycle = currentStepSegments([0, 60, 120], [0, 5, 0], identity, identit
 assert.equal(fullCycle.at(-1).path, 'M 120.00 5.00 V 0.00 H 360.00');
 assert.equal(currentStepSegments([0, 60], [5, -5], identity, identity)[0].path, 'M 0.00 5.00 H 60.00 V -5.00');
 assert.deepEqual(currentStepSegments([], [], identity, identity), []);
+
+// #345: the SPM 8p/12s example commutates at 30°, 90°, … because its phase-A axis is
+// offset, so the angle alone put two pairs under S1. A label follows the recorded pair.
+assert.equal(recordedSector(30, -30, 0), 0);
+assert.equal(recordedSector(0, -30, 30), 1);
+assert.equal(recordedSector(-30, 0, 30), 2);
+assert.equal(recordedSector(30, 0, -30), 5);
+assert.equal(recordedSector(0, 0, 0), null);
+assert.equal(recordedSector(10, 10, -20), null);
+const byAngle = (angle) => Math.floor(angle / 60) % 6;
+const sweepAngles = [0, 15, 30, 45, 60, 75, 90, 105];
+const sweepA = [30, 30, 0, 0, 0, 0, -30, -30];
+const sweepB = [-30, -30, -30, -30, -30, -30, 0, 0];
+const sweepC = [0, 0, 30, 30, 30, 30, 30, 30];
+assert.deepEqual(recordedSectorSegments(sweepAngles, sweepA, sweepB, sweepC, byAngle, false), [
+  { start: 0, end: 30, sector: 0 },
+  { start: 30, end: 90, sector: 1 },
+  { start: 90, end: 105, sector: 2 },
+]);
+// A complete cycle runs its last sector to 360°, and a sweep that wraps continues from the left edge.
+assert.deepEqual(recordedSectorSegments([0, 180], [30, -30], [-30, 30], [0, 0], byAngle, true), [
+  { start: 0, end: 180, sector: 0 },
+  { start: 180, end: 360, sector: 3 },
+]);
+assert.deepEqual(recordedSectorSegments([300, 330, 0, 30], [30, 30, 30, 0], [0, 0, -30, -30], [-30, -30, 0, 30], byAngle, false), [
+  { start: 300, end: 360, sector: 5 },
+  { start: 0, end: 30, sector: 0 },
+]);
+// Currents that are not an ideal pair fall back to the angle rule.
+assert.deepEqual(recordedSectorSegments([0, 60, 120], [0, 0, 0], [0, 0, 0], [0, 0, 0], byAngle, false), [
+  { start: 0, end: 60, sector: 0 },
+  { start: 60, end: 120, sector: 1 },
+]);
 console.log('BLDC chart transition checks passed');
 
 

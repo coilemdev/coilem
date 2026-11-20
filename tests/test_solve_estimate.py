@@ -122,6 +122,41 @@ def test_prepared_mesh_supplies_the_element_count() -> None:
     assert estimate_solve(config).mesh_elements_source == "estimate"
 
 
+SPM_4P12S = "benchmarks/abcd-v1.9/fixtures/spm_4p12s_simple__baseline__native.json"
+
+
+def _fixture(path: str, **solve_params) -> MotorConfig:
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    raw["solve_params"].update(solve_params)
+    return MotorConfig.model_validate(raw)
+
+
+def test_a_sector_solve_is_estimated_from_the_sector_without_a_prepared_mesh() -> None:
+    full = _fixture(SPM_4P12S, mesh_density="coarse")
+    sector = _fixture(SPM_4P12S, mesh_density="coarse", symmetry="auto")
+    assert solve_estimate.sector_repeats(full) == 1
+    assert solve_estimate.sector_repeats(sector) == 4
+    # Elmer always solves the full motor.
+    assert solve_estimate.sector_repeats(sector, "elmer") == 1
+    full_estimate, sector_estimate = estimate_solve(full), estimate_solve(sector)
+    assert sector_estimate.mesh_elements == round(full_estimate.mesh_elements / 4)
+    assert sector_estimate.seconds < full_estimate.seconds
+    # The planned meshes and field solves do not change.
+    assert (sector_estimate.base_meshes, sector_estimate.field_solves) == (full_estimate.base_meshes, full_estimate.field_solves)
+
+
+def test_a_prepared_sector_mesh_counts_the_solved_sector_not_the_drawn_motor() -> None:
+    from backend.magneto2d_adapter import run_magneto2d_mesh_preview
+
+    config = _fixture(SPM_4P12S, mesh_density="coarse", symmetry="auto")
+    preview = run_magneto2d_mesh_preview(config, rotor_angle_deg=0.0)
+    solved = preview["mesh_info"]["num_triangles"]
+    assert len(preview["triangles"]) == 4 * solved
+    assert prepared_mesh_elements(preview["solve_mesh_key"], config) == solved
+    # The full-motor request does not pick up the sector mesh.
+    assert prepared_mesh_elements(preview["solve_mesh_key"], _fixture(SPM_4P12S, mesh_density="coarse")) is None
+
+
 def test_validate_returns_a_range() -> None:
     config = _planned("spm_8p12s", "standard").model_dump(mode="json")
     response = TestClient(app, base_url="http://127.0.0.1").post("/solve/validate", json=config)

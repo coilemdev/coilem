@@ -473,6 +473,10 @@ impl SolveMatrixPattern {
         self.prepared.add_boundary_terms(matrix);
     }
 
+    fn tie_rhs(&self, rhs: &mut [f64]) {
+        self.prepared.tie_rhs(rhs);
+    }
+
     fn apply_dirichlet(&self, matrix: &mut crate::sparse::CsrMatrix, rhs: &mut [f64]) {
         self.prepared.apply_dirichlet(matrix, rhs);
     }
@@ -497,22 +501,60 @@ impl SolveMatrixPattern {
     }
 }
 
-fn motor_boundary_set(mesh: &crate::mesh::TriMesh, n_pole_pitches: u32) -> BoundarySet {
-    let mut dirichlet_az_zero_nodes = outer_dirichlet_boundary_nodes(mesh);
-    let mut seen_dirichlet = std::collections::HashSet::new();
-    dirichlet_az_zero_nodes.retain(|node| seen_dirichlet.insert(*node));
-    let paired_nodes = if n_pole_pitches > 1 {
-        let dirichlet: std::collections::HashSet<usize> =
-            dirichlet_az_zero_nodes.iter().copied().collect();
-        let kind = if n_pole_pitches % 2 == 1 {
+/// How sector-edge node pairs are tied. A mesh that describes its sector says
+/// so directly; an older artifact goes by the parity of its pole-pitch count,
+/// and one pole pitch without a description keeps its legacy A=0 edges.
+fn sector_pair_kind(mesh: &crate::mesh::TriMesh, n_pole_pitches: u32) -> Option<PairedBoundaryKind> {
+    if let Some(sector) = &mesh.info.sector {
+        return Some(if sector.anti_periodic {
             PairedBoundaryKind::AntiPeriodic
         } else {
             PairedBoundaryKind::Periodic
-        };
+        });
+    }
+    if n_pole_pitches > 1 {
+        Some(if n_pole_pitches % 2 == 1 {
+            PairedBoundaryKind::AntiPeriodic
+        } else {
+            PairedBoundaryKind::Periodic
+        })
+    } else {
+        None
+    }
+}
+
+/// Outer A=0 nodes plus, for an anti-periodic sector, any node tied to itself:
+/// the motor axis lies on both cut edges, and A = -A leaves only zero.
+fn dirichlet_nodes_with_self_pairs(
+    mesh: &crate::mesh::TriMesh,
+    kind: Option<PairedBoundaryKind>,
+) -> Vec<usize> {
+    let mut nodes = outer_dirichlet_boundary_nodes(mesh);
+    if kind == Some(PairedBoundaryKind::AntiPeriodic) {
+        nodes.extend(
+            mesh.sector_edge_pairs
+                .iter()
+                .filter(|(left, right)| left == right)
+                .map(|(left, _)| *left),
+        );
+    }
+    let mut seen = std::collections::HashSet::new();
+    nodes.retain(|node| seen.insert(*node));
+    nodes
+}
+
+fn motor_boundary_set(mesh: &crate::mesh::TriMesh, n_pole_pitches: u32) -> BoundarySet {
+    let kind = sector_pair_kind(mesh, n_pole_pitches);
+    let mut dirichlet_az_zero_nodes = dirichlet_nodes_with_self_pairs(mesh, kind);
+    let paired_nodes = if let Some(kind) = kind {
+        let dirichlet: std::collections::HashSet<usize> =
+            dirichlet_az_zero_nodes.iter().copied().collect();
         mesh.sector_edge_pairs
             .iter()
             .copied()
-            .filter(|(left, right)| !dirichlet.contains(left) && !dirichlet.contains(right))
+            .filter(|(left, right)| {
+                left != right && !dirichlet.contains(left) && !dirichlet.contains(right)
+            })
             .map(|nodes| PairedBoundary {
                 nodes: [nodes.0, nodes.1],
                 kind,
@@ -531,6 +573,8 @@ fn motor_boundary_set(mesh: &crate::mesh::TriMesh, n_pole_pitches: u32) -> Bound
         dirichlet_az_zero_nodes,
         paired_nodes,
         periodic_penalty: 1.0e10,
+        // A described sector ties its edges exactly; older artifacts keep the penalty.
+        exact_pairs: mesh.info.sector.is_some(),
     }
 }
 
@@ -660,6 +704,7 @@ fn solve_linear_system(
     if let Some(matrix_pattern) = matrix_pattern {
         let constraint_start = Instant::now();
         matrix_pattern.add_constraint_terms(&mut k_csr);
+        matrix_pattern.tie_rhs(&mut f);
         if let Some(profile) = profile.as_deref_mut() {
             profile.constraint_apply_ms += elapsed_ms(constraint_start);
         }
@@ -766,8 +811,9 @@ fn model_constraint_terms(
     mesh: &crate::mesh::TriMesh,
     n_pole_pitches: u32,
 ) -> (Vec<usize>, Vec<(usize, usize, f64)>) {
-    let dirichlet_nodes = outer_dirichlet_boundary_nodes(mesh);
-    if n_pole_pitches > 1 {
+    let kind = sector_pair_kind(mesh, n_pole_pitches);
+    let dirichlet_nodes = dirichlet_nodes_with_self_pairs(mesh, kind);
+    if let Some(kind) = kind {
         let mut terms = Vec::new();
         let penalty = 1e10;
         let mut is_boundary = vec![false; mesh.nodes.len()];
@@ -776,30 +822,22 @@ fn model_constraint_terms(
                 is_boundary[node] = true;
             }
         }
-        if n_pole_pitches % 2 == 1 {
-            for &(left, right) in &mesh.sector_edge_pairs {
-                if is_boundary.get(left).copied().unwrap_or(false)
-                    || is_boundary.get(right).copied().unwrap_or(false)
-                {
-                    continue;
-                }
-                terms.push((left, left, penalty));
-                terms.push((left, right, penalty));
-                terms.push((right, left, penalty));
-                terms.push((right, right, penalty));
-            }
+        let off_diagonal = if kind == PairedBoundaryKind::AntiPeriodic {
+            penalty
         } else {
-            for &(left, right) in &mesh.sector_edge_pairs {
-                if is_boundary.get(left).copied().unwrap_or(false)
-                    || is_boundary.get(right).copied().unwrap_or(false)
-                {
-                    continue;
-                }
-                terms.push((left, left, penalty));
-                terms.push((left, right, -penalty));
-                terms.push((right, left, -penalty));
-                terms.push((right, right, penalty));
+            -penalty
+        };
+        for &(left, right) in &mesh.sector_edge_pairs {
+            if left == right
+                || is_boundary.get(left).copied().unwrap_or(false)
+                || is_boundary.get(right).copied().unwrap_or(false)
+            {
+                continue;
             }
+            terms.push((left, left, penalty));
+            terms.push((left, right, off_diagonal));
+            terms.push((right, left, off_diagonal));
+            terms.push((right, right, penalty));
         }
         (dirichlet_nodes, terms)
     } else {

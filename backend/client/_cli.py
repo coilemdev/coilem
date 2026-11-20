@@ -179,8 +179,12 @@ def _document(command: str, ok: bool, **content: Any) -> dict[str, Any]:
 
 
 def _write(document: Mapping[str, Any], out: str | None, compact: bool) -> None:
-    text = json.dumps(_finite(document), indent=None if compact else 2, ensure_ascii=False, allow_nan=False) + "\n"
-    if out in (None, "-"):
+    to_stdout = out in (None, "-")
+    # Redirected Windows streams can use a legacy code page. JSON escapes keep
+    # their bytes portable and round-trip every character, including error paths.
+    escape_unicode = to_stdout and (sys.stdout.encoding or "").lower() != "utf-8"
+    text = json.dumps(_finite(document), indent=None if compact else 2, ensure_ascii=escape_unicode, allow_nan=False) + "\n"
+    if to_stdout:
         sys.stdout.write(text)
         sys.stdout.flush()
         return

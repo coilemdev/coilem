@@ -90,6 +90,7 @@ _SUMMARY_RECORD_SECTIONS = {
     "winding_resistance": "winding",
     "loss_breakdown": "losses",
     "iron_loss": "iron_loss",
+    "rotor_iron_loss": "rotor_iron_loss",
 }
 _RECORD_UNIT_SUFFIXES = (
     ("_per_K", "1/K"), ("_mm2", "mm2"), ("_mm", "mm"), ("_ohm", "Ohm"), ("_Nm", "N m"),
@@ -98,7 +99,7 @@ _RECORD_UNIT_SUFFIXES = (
 )
 # Copper losses in copper shades, iron losses in steel shades, mechanical in green: palette-checked on white.
 # Each bar segment is also named in the legend.
-_LOSS_SEGMENT_COLORS = ("#943b12", "#c07525", "#14598b", "#3b8cba", "#2f8f4e")
+_LOSS_SEGMENT_COLORS = ("#943b12", "#c07525", "#14598b", "#3b8cba", "#69508e", "#9777ba", "#2f8f4e")
 # Iron-loss map on paper: pale steel (little loss) to dark slate (most), one hue, palette-checked on white.
 _STEEL_RAMP = ("#9eb8cc", "#7695ad", "#56728a", "#385169", "#203244")
 _NOT_MODELLED_FILL = "#eee7d9"
@@ -301,8 +302,11 @@ def _output_statuses(result: Mapping[str, Any]) -> list[tuple[str, str, str, str
         recorded("phase_resistance", "Phase resistance and copper loss", winding, PHASE_RESISTANCE_UNRECORDED_STATUS_REASON)
     iron = _mapping(summary.get("iron_loss"))
     if iron.get("status") in ("qualified", "experimental"):
-        statuses.append(("iron_loss", "Iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))
+        statuses.append(("iron_loss", "Stator iron loss and its density map", iron["status"], _plain(iron.get("status_reason"))))
     losses = _mapping(summary.get("loss_breakdown"))
+    rotor = _mapping(summary.get("rotor_iron_loss"))
+    if rotor.get("status") in ("qualified", "experimental"):
+        statuses.append(("rotor_iron_loss", "Rotor iron loss", rotor["status"], _plain(rotor.get("status_reason"))))
     if losses.get("efficiency_status") in ("qualified", "experimental"):
         statuses.append(("efficiency", "Efficiency", losses["efficiency_status"], _plain(losses.get("efficiency_status_reason"))))
     if is_derated_run(metadata):
@@ -643,6 +647,7 @@ _SETTING_LABELS = {
     "motor_input_dc_bus_V": "DC bus voltage",
     "linear_steel_mu_rel": "Linear steel relative permeability",
     "mesh_build": "Mesh build",
+    "symmetry": "Solved region",
     "back_emf": "Back EMF",
     "thd_analysis": "THD analysis",
 }
@@ -709,6 +714,7 @@ _SOLVE_PLAN_SETTINGS = (
     "mesh_source",
     "corner_refinement",
     "mesh_build",
+    "symmetry",
     "slot_sidewall_refinement",
     "rotor_rotation_model",
     "torque_method",
@@ -1537,9 +1543,13 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
                     ("Solved torque", f"{_number(losses.get('electromagnetic_torque_Nm'), 4)} N m"),
                     ("Shaft torque", f"{_number(losses.get('shaft_torque_Nm'), 4)} N m"),
                     ("Copper loss", f"{_number(losses.get('copper_loss_W'))} W"),
-                    ("Iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
+                    ("Stator iron loss", f"{_number(losses.get('iron_loss_W'))} W" if losses.get("iron_loss_W") is not None else "Unavailable"),
+                    *(([("Rotor iron loss", f"{_number(losses.get('rotor_iron_loss_W'))} W"
+                          if losses.get("rotor_iron_loss_W") is not None else "Unavailable")])
+                      if losses.get("rotor_iron_loss_status") is not None else []),
                     ("Mechanical loss", f"{_number(losses.get('mechanical_loss_W'))} W"),
-                    ("Known loss subtotal" if losses.get("iron_loss_W") is None else "Total loss", f"{_number(losses.get('total_loss_W'))} W"),
+                    ("Known loss subtotal" if losses.get("iron_loss_W") is None or losses.get("rotor_iron_loss_status") == "unavailable"
+                     else "Total loss", f"{_number(losses.get('total_loss_W'))} W"),
                     ("Input power", f"{_number(losses.get('input_power_W'), 4)} W"),
                     ("Shaft power", f"{_number(losses.get('shaft_power_W'), 4)} W"),
                     ("Efficiency", efficiency_text),
@@ -1558,7 +1568,7 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
             above_frequency = _percent(iron.get("share_above_validated_frequency"), 2)
             above_flux = _percent(iron.get("share_above_validated_flux_density"), 2)
             status.append(
-                f"Iron loss is experimental: {escape(str(iron.get('status_reason') or ''))} "
+                f"Stator iron loss is experimental: {escape(str(iron.get('status_reason') or ''))} "
                 f"{above_frequency} of it comes from harmonics above {_number(iron.get('validated_max_frequency_Hz'))} Hz "
                 f"and {above_flux} from flux densities above {_number(iron.get('validated_max_flux_density_T'))} T, "
                 "outside the range the model was checked over."
@@ -1568,21 +1578,33 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
         status.append(
             "Shaft torque is the solved torque less the iron and mechanical loss torque; the solved torque is unchanged. "
             "Copper loss uses the phase resistance at the winding temperature. "
-            "Not modelled: magnet and rotor eddy-current loss, AC copper loss (skin and proximity effects) and inverter loss."
+            "Not modelled: " + ("rotor iron loss, " if losses.get("rotor_iron_loss_W") is None else "")
+            + "magnet/component eddy-current loss, AC copper loss (skin and proximity effects) and inverter loss."
         )
+        rotor = _mapping(summary.get("rotor_iron_loss"))
+        if rotor.get("status_reason"):
+            status.append("Rotor iron loss: " + escape(str(rotor["status_reason"])))
+        if rotor.get("status") in ("experimental", "qualified"):
+            status.append(f"Rotor method: {escape(str(rotor.get('method')))}; {escape(str(rotor.get('steel')))}; "
+                          f"{_number(rotor.get('samples_per_mechanical_turn'))} samples per mechanical turn. "
+                          + escape(str(rotor.get("coefficient_source") or "")))
+            above = rotor.get("share_above_validated_frequency")
+            if isinstance(above, (int, float)) and above > 0:
+                status.append(f"Rotor frequency coverage: {_number(100*above)}% of estimated loss comes from harmonics "
+                              f"above {_number(rotor.get('validated_max_frequency_Hz'))} Hz, outside the material model's range.")
         story.extend(Paragraph(line, styles["small"]) for line in status)
         story.extend(_status_paragraphs(result, ("efficiency",), styles))
     density = _iron_loss_density_figure(result)
     if density is not None:
         peak = _mapping(result.get("iron_loss_density")).get("max_w_per_kg")
         story.extend([
-            _section("Where the iron loss is", styles),
+            _section("Where the stator iron loss is", styles),
             density,
             Paragraph(
                 "Iron-loss density: iron loss per kilogram of each stator element (hysteresis and eddy current together) "
                 "over one electrical period, on the first stored rotor position's mesh. Darker is more loss. "
                 f"The color scale stops at the 98th percentile; the peak is {_number(peak)} W/kg. "
-                "Rotor and magnet losses are not modelled. Copper loss is not mapped: the model carries the same "
+                "Rotor and magnets are not coloured on this density map. Copper loss is not mapped: the model carries the same "
                 "current density in every coil side.",
                 styles["small"],
             ),
@@ -1591,39 +1613,72 @@ def _winding_and_loss_story(result: Mapping[str, Any], styles: Mapping[str, Para
     return story
 
 
+def _round_shares(values: Sequence[float], total: int) -> list[int]:
+    """Whole percents adding up to ``total`` (largest remainder), as the app's Losses card rounds them."""
+
+    whole = sum(values)
+    if whole <= 0:
+        return [0] * len(values)
+    exact = [value / whole * total for value in values]
+    rounded = [math.floor(value) for value in exact]
+    order = sorted(range(len(values)), key=lambda index: (-(exact[index] - rounded[index]), index))
+    for index in order[: total - sum(rounded)]:
+        rounded[index] += 1
+    return rounded
+
+
+def _loss_share_texts(parts: Sequence[tuple[str, float]]) -> list[str]:
+    """Each part's share of the total: groups add up to 100 %, and each group's parts to the group (#333)."""
+
+    groups = list(dict.fromkeys(group for group, _ in parts))
+    group_percents = dict(zip(groups, _round_shares([sum(v for g, v in parts if g == group) for group in groups], 100)))
+    total = sum(value for _, value in parts)
+    texts = [""] * len(parts)
+    for group in groups:
+        members = [index for index, (g, _) in enumerate(parts) if g == group]
+        for index, percent in zip(members, _round_shares([parts[i][1] for i in members], group_percents[group])):
+            texts[index] = "<1%" if percent == 0 and parts[index][1] > 0 else f"{percent}%"
+    return texts if total > 0 else ["0%"] * len(parts)
+
+
 def _loss_breakdown_drawing(losses: Mapping[str, Any]) -> Drawing | None:
     """One stacked bar of the loss components, each named with its value."""
 
     hysteresis = losses.get("iron_hysteresis_loss_W")
     eddy = losses.get("iron_eddy_loss_W")
     segments = [
-        ("Copper, stack", losses.get("copper_active_loss_W")),
-        ("Copper, end turns", losses.get("copper_end_winding_loss_W")),
-        ("Iron, hysteresis", hysteresis),
-        ("Iron, eddy current", eddy),
-        ("Mechanical", losses.get("mechanical_loss_W")),
+        ("copper", "Copper, stack", losses.get("copper_active_loss_W")),
+        ("copper", "Copper, end turns", losses.get("copper_end_winding_loss_W")),
+        ("stator", "Stator iron, hysteresis", hysteresis),
+        ("stator", "Stator iron, lamination eddy", eddy),
+        ("rotor", "Rotor iron, hysteresis", losses.get("rotor_hysteresis_loss_W")),
+        ("rotor", "Rotor iron, lamination eddy", losses.get("rotor_lamination_eddy_loss_W")),
+        ("mechanical", "Mechanical", losses.get("mechanical_loss_W")),
     ]
-    segments = [
-        (label, float(value), color)
-        for (label, value), color in zip(segments, _LOSS_SEGMENT_COLORS)
+    present = [
+        (group, label, float(value), color)
+        for (group, label, value), color in zip(segments, _LOSS_SEGMENT_COLORS)
         if isinstance(value, (int, float)) and math.isfinite(value) and value > 0
     ]
+    shares = _loss_share_texts([(group, value) for group, _, value, _ in present])
+    segments = [(label, value, color) for _, label, value, color in present]
     total = sum(value for _, value, _ in segments)
     if total <= 0:
         return None
     width, bar_height = 170 * mm, 7 * mm
-    drawing = Drawing(width, 26 * mm)
+    extra = max(0, math.ceil(len(segments)/3)-2)*6*mm
+    drawing = Drawing(width, 26 * mm+extra)
     x = 0.0
     for label, value, color in segments:
         span = width * value / total
-        drawing.add(Rect(x, 17 * mm, max(span - 0.7, 0.5), bar_height, fillColor=colors.HexColor(color), strokeColor=None))
+        drawing.add(Rect(x, 17 * mm+extra, max(span - 0.7, 0.5), bar_height, fillColor=colors.HexColor(color), strokeColor=None))
         x += span
-    drawing.add(String(0, 25.2 * mm, f"Loss breakdown, {_number(total)} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
+    drawing.add(String(0, 25.2 * mm+extra, f"Loss breakdown, {_number(total)} W total", fontName="Helvetica-Bold", fontSize=8, fillColor=_NAVY))
     for index, (label, value, color) in enumerate(segments):
         column, line = index % 3, index // 3
-        lx, ly = column * 58 * mm, (11 - line * 6) * mm
+        lx, ly = column * 58 * mm, (11 - line * 6) * mm+extra
         drawing.add(Rect(lx, ly, 3 * mm, 3 * mm, fillColor=colors.HexColor(color), strokeColor=None))
-        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {_number(value)} W ({100 * value / total:.0f}%)",
+        drawing.add(String(lx + 4.5 * mm, ly + 0.6 * mm, f"{label}: {_number(value)} W ({shares[index]})",
                            fontName="Helvetica", fontSize=7.5, fillColor=_SLATE))
     return drawing
 
@@ -1675,7 +1730,7 @@ def _iron_loss_density_figure(result: Mapping[str, Any]) -> _MotorMeshFigure | N
     image.save(buffer, format="PNG")
     return _MotorMeshFigure(
         buffer.getvalue(), field_range=(0.0, high), legend_title="Iron loss (W/kg)",
-        legend_note="Cream: not modelled (rotor, magnets)\nLight grey: coil sides (copper loss is uniform)",
+        legend_note="Cream: not mapped (rotor, magnets)\nLight grey: coil sides (copper loss is uniform)",
         legend_colors=_STEEL_RAMP,
     )
 

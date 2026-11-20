@@ -188,6 +188,72 @@ def test_a_misspelt_input_is_refused_instead_of_ignored(make, field, meant) -> N
     assert caught.value.suggestion.startswith(f"Did you mean {meant}?")
 
 
+@pytest.mark.parametrize(
+    ("quality", "extra", "analyses", "expected"),
+    [
+        ("quick", {}, ["torque", "back_emf", "losses"], ("custom", 360.0, 15.0)),
+        ("standard", {}, ["torque", "losses"], ("custom", 360.0, 7.5)),
+        ("standard", {}, ["torque", "back_emf", "losses"], ("standard", None, None)),  # already a full cycle
+        ("standard", {"excitation_mode": "ideal_six_step_120", "current_amplitude_convention": "plateau"},
+         ["torque", "losses"], ("standard", None, None)),
+        ("fine", {}, ["torque", "losses"], ("fine", None, None)),
+        ("custom", {"rotor_sweep_range_deg": 60, "rotor_step_deg": 2}, ["torque", "losses"], ("custom", 360.0, 2.0)),
+        ("quick", {}, ["torque", "back_emf"], ("quick", None, None)),  # no losses: the plan is sent as chosen
+    ],
+)
+def test_losses_get_the_apps_full_cycle_sweep(quality, extra, analyses, expected) -> None:
+    """#333: the app requests a losses run that does not solve a full cycle as 360° at the plan's step."""
+
+    body = coilem.build_request(coilem.Motor.load(SPM_FIXTURE), analyses=analyses, quality=quality, solve_params=extra)
+    params = body["solve_params"]
+    assert params["solve_quality"] == expected[0]
+    if expected[1] is not None:
+        assert (params["rotor_sweep_range_deg"], params["rotor_step_deg"]) == expected[1:]
+        assert body["solve_options"]["thd_analysis"] is False
+    prepared = coilem.prepare(coilem.Motor.load(SPM_FIXTURE), analyses=analyses, quality=quality, solve_params=extra)
+    assert prepared.effective_settings()["solve_params"]["solve_quality"] == expected[0]
+
+
+def test_the_losses_sweep_leaves_the_setup_comparison_alone() -> None:
+    body = {"solve_params": {"solve_quality": "custom", "rotor_sweep_range_deg": 360.0, "rotor_step_deg": 0.1},
+            "solve_options": {"losses_efficiency": True, "thd_analysis": True}}
+    shaped = _solve.losses_full_cycle(body)
+    assert shaped["solve_params"]["rotor_step_deg"] == 0.5 and shaped["solve_options"]["thd_analysis"] is False
+    assert body["solve_params"]["rotor_step_deg"] == 0.1, "the input mapping is not changed"
+    assert _solve.losses_full_cycle({**body, "solver": "elmer"}) == {**body, "solver": "elmer"}
+
+
+@pytest.mark.parametrize(
+    ("solve_params", "reason"),
+    [
+        ({"nonlinear_solver": "picard"}, "Newton nonlinear solver"),
+        ({"symmetry": "auto"}, "full-motor solves"),
+        ({"rated_speed_rpm": 0}, "positive mechanical speed"),
+    ],
+)
+def test_check_warns_when_requested_rotor_loss_is_unavailable(solve_params, reason) -> None:
+    """#333: the reason the app shows before solving reaches check, prepare and the CLI document."""
+
+    motor = coilem.Motor.load(SPM_FIXTURE)
+    warnings = coilem.check(motor, analyses=["torque", "back_emf", "losses", "rotor_loss"], solve_params=solve_params)
+    rotor = [warning for warning in warnings if warning.startswith("Rotor iron loss will be unavailable")]
+    assert len(rotor) == 1 and reason in rotor[0] and "efficiency is withheld" in rotor[0]
+    assert not [w for w in coilem.check(motor, analyses=["torque", "back_emf", "losses"], solve_params=solve_params)
+                if w.startswith("Rotor iron loss")], "no warning when rotor loss is not requested"
+
+
+def test_check_does_not_warn_for_supported_rotor_loss() -> None:
+    motor = coilem.Motor.load(SPM_FIXTURE)
+    warnings = coilem.check(motor, analyses=["torque", "back_emf", "losses", "rotor_loss"], solve_params={"nonlinear_solver": "newton"})
+    assert not [warning for warning in warnings if warning.startswith("Rotor iron loss")]
+
+
+def test_a_section_prefix_gets_a_plain_hint() -> None:
+    with pytest.raises(coilem.InputError) as caught:
+        coilem.build_request(coilem.Motor.load(SPM_FIXTURE), solve_params={"solve_params.symmetry": "auto"})
+    assert caught.value.suggestion.startswith("Give it as symmetry, without the `solve_params.` prefix.")
+
+
 def test_check_accepts_the_fixtures_used_by_the_examples() -> None:
     for path in (SPM_FIXTURE, IPM_FIXTURE):
         assert coilem.check(coilem.Motor.load(path)) == []
@@ -536,12 +602,17 @@ def test_default_analyses_preserve_losses_and_flux_statistics_without_pictures(t
     assert full.data["field_line_frames"]
 
 
-def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch) -> None:
+@pytest.mark.parametrize("evidence_matches", [False, True])
+def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch, evidence_matches) -> None:
     # QA 0.5.8 CLI-4: only results solved in the app said whether they are qualified.
-    from backend import selected_analyses
+    from backend import qualification, selected_analyses
     from backend.qualification import classify_qualification, cogging_torque_status
     from tests.test_analysis_options import result_for
 
+    # Client/app parity must hold for both a measured build and a candidate
+    # whose changed physics correctly remains experimental pending collection.
+    monkeypatch.setattr(qualification, "evidence_matches_runtime", lambda: evidence_matches)
+    expected_status = "qualified" if evidence_matches else "experimental"
     motor = coilem.Motor.load(SPM_FIXTURE)
     solved = result_for(motor.config)
     solved.summary.cogging = {"peak_to_peak_Nm": 0.01, "first_harmonic_Nm": 0.005, "status": "experimental"}
@@ -550,8 +621,8 @@ def test_a_script_result_reports_qualification_as_the_app_does(monkeypatch) -> N
     result = coilem.solve(motor, quality="quick", mesh="coarse")
     config = _solve.prepared_config(coilem.prepare(motor, quality="quick", mesh="coarse").request)
     assert result.data["qualification"] == dict(classify_qualification(config))
-    assert result.data["qualification"]["status"] == "qualified"
-    assert result.data["summary"]["cogging"]["status"] == cogging_torque_status(config)[0] == "qualified"
+    assert result.data["qualification"]["status"] == expected_status
+    assert result.data["summary"]["cogging"]["status"] == cogging_torque_status(config)[0] == expected_status
     assert isinstance(result.data["solver_convergence"], dict) and "status" in result.data["solver_convergence"]
 
 

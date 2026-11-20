@@ -66,6 +66,8 @@ def test_the_csv_holds_the_same_numbers(data):
     cells = sum(value is not None for line in data.efficiency.efficiency_pct for value in line)
     assert sum(row[0] == "efficiency_map" and row[1] == "efficiency" for row in rows) == cells
     assert _value(rows, "input", "peak_current_rms") == pytest.approx(LIMITS.peak_current_A / math.sqrt(2))
+    assert _value(rows, "map", "loaded_sweep_positions_per_point") == data.flux_map.rotor_positions
+    assert all(row[1] != "rotor_iron_loss_sampling" for row in rows)
     assert next(row[3] for row in rows if row[1] == "dc_bus_source") == "estimated"
     assert sum(row[0] == "map_point" and row[1] == "status" for row in rows) == len(data.flux_map.points)
 
@@ -144,6 +146,24 @@ def test_the_pdf_shows_the_results_with_their_status(data):
     assert "IPM <test> & co" in text and "estimated from the back EMF" in text
     assert text.count("Experimental") >= 5  # every chart carries its status
     assert "Solved point" in text and "e+0" not in text
+    assert "Edit the limits in Solve > Analysis > Torque–speed map" in " ".join(text.split())
+
+
+def test_reports_distinguish_rotor_history_from_the_loaded_sweep():
+    from tests.test_rotor_loss_integration import rotor_map
+
+    flux_map = rotor_map(missing=True)
+    data = performance_data(flux_map, LIMITS, **INPUTS)
+    rows = _csv_rows(build_performance_csv(data, CONTEXT))
+    sampling = next(row[3] for row in rows if row[:2] == ["map", "rotor_iron_loss_sampling"])
+    assert "384 samples per mechanical turn + 1 closure position" in sampling
+    assert f"{len(flux_map.points) - 1} of {len(flux_map.points)} grid rows" in sampling
+    counts = [row[3] for row in rows if row[:2] == ["map_point", "rotor_history_positions_including_closure"]]
+    assert counts == ["", *(["385"] * (len(flux_map.points) - 1))]
+    pdf = pytest.importorskip("pypdf").PdfReader(io.BytesIO(build_performance_pdf(data, CONTEXT)))
+    text = " ".join(" ".join(page.extract_text() for page in pdf.pages).split())
+    assert f"{flux_map.rotor_positions} loaded sweep positions per point" in text
+    assert sampling in text
 
 
 @pytest.fixture

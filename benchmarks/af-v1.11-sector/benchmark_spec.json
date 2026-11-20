@@ -1,0 +1,1382 @@
+{
+  "schema": "coilem.benchmark_spec/v1",
+  "protocol_version": "1.11.0",
+  "convention": "public-clockwise-v2",
+  "material_contract": {
+    "steel_grade": "M350-50A",
+    "curve_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+    "magnets": {
+      "N42": {
+        "Br_T": 1.315,
+        "mu_r": 1.05
+      },
+      "N35": {
+        "Br_T": 1.23,
+        "mu_r": 1.05
+      }
+    }
+  },
+  "golden": "benchmarks/main-20261009-bad71d9/protocols/golden_commutation_vectors.json",
+  "golden_sha256": "0914644d93f05fa5738534c518e2ecffeca2d129d8a38fbe8b8df2f65c695b86",
+  "scope": "Combined A-F benchmark; existing grids and numerical gates; three registered very-fine E requests; every request solved as one repeating sector where the motor repeats",
+  "cases": [
+    {
+      "id": "spm_4p12s_simple__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__baseline__native.json",
+          "fixture_sha256": "349cc49cbf3fa7e8472b5ac54a3bee94c0c0d19e620c3ee6085fd20a5d89b116",
+          "input_sha256": "a0fdf959e85b6e52e69ded4953146379c3749f3e2a172c78e733814cc17b7366"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__high_current__native.json",
+          "fixture_sha256": "a95118df0889868be8f2e9a131e89494338f4869bd905d67ffbd154a76ace997",
+          "input_sha256": "8e54b31ad35b5e28332212b08c38cf3021c12c0994c970fe8984313353360da5"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__tight_airgap__native.json",
+          "fixture_sha256": "b5d80d4ea47dcfaad37c1339a57ff631b291dcec2c19e4ceb356d4547bf4c099",
+          "input_sha256": "0559dd02b254b12d25207e326efde527d63851f342204d733fbab2b4f16aa04c"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple_noload__baseline__native.json",
+          "fixture_sha256": "aaf815ecdc0fda33d37262cea9c350d7e4f6c80669bac48596d7e95ed11087d5",
+          "input_sha256": "2fbdb3cc0ae176a06a5543523c37d93e267a19134c5178c576638f27dbee39c8"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple_noload__high_current__native.json",
+          "fixture_sha256": "9b1aff8fbfc3398bf8d092b43c7da16527e91e09075eea28a25aa2044e8a91c6",
+          "input_sha256": "2715ee09e0f76b5d36b12c83d1b862ebf654af2f07c3bf2aef0b6bab163db312"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple_noload__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple_noload__tight_airgap__native.json",
+          "fixture_sha256": "8ef9fc4b7d6b034a5fdd1313bdd3748391f81f4db522da0246e9c6cd6f775082",
+          "input_sha256": "7b0da7b392f1a631155665e8b9d2d7fb1bffd24c6f34f6a81eab08c792cfbd9b"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__baseline__native.json",
+          "fixture_sha256": "9943e72449e1b4a1bfdc569568ac91925e1577e768a1a878a903f29e6187c24f",
+          "input_sha256": "7765573a342eed3d6e3860aab762a2df2b14f4fd86d5b10e7a4543adcc2b90ab"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__high_current",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__high_current__native.json",
+          "fixture_sha256": "3cd9299a85c2859f52b4ed648bed7771fe280ac6c0c7a14425854ec51d05565d",
+          "input_sha256": "b264e4de9ff9833f42ad2fa1f1c753baf524ad98ff64dda71c0e647a480d3c7b"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__tight_airgap__native.json",
+          "fixture_sha256": "2fc8a3cf46f2b97dadb82cbd1af2c0e99694d832d7c888a159c73bdef9944992",
+          "input_sha256": "360ebafdeac92c04b8b224e69debc73a584c556cbfd6122458ee2d8755283432"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_reference_angle30__baseline",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference_angle30__baseline__native.json",
+          "fixture_sha256": "c18f84cfb9e92a198acd81d43fbf1401518d60a65f07da5bb79443314fa84f25",
+          "input_sha256": "8da32ed6e3f72e8eda19d0e79e3cf41a06bb25d2830e04027b6aaa6496bd5745"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_12s10p_fscw_contract__native.json",
+          "fixture_sha256": "f19e56abdc72faa5f9cfac475938af94a5ef92d370661fc3376e0df6d8c3098c",
+          "input_sha256": "6c5079edcdb427c42bd545394731412c6557edc1ffc7f35dc90d5a25f763a039"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_24s16p_industrial_contract__native.json",
+          "fixture_sha256": "2667e730458d4d30751a6fc09791a6e432b2f60f63e21fa708e9a6e2f96c6c3a",
+          "input_sha256": "6fa9948161225995a2321e14a4c14732ee06d21ee4c037151a63911ba7e28d34"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_4p12s_micro_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_4p12s_micro_contract__native.json",
+          "fixture_sha256": "fa3bce4b9be6e1613ede2fad2ebbf32a7adc947052f1812c31c8235bf1d0c48f",
+          "input_sha256": "9e29111708dfd8cdbe3fa2bd1d336686a28c519430c70b77781d2b2e409af695"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__native.json",
+          "fixture_sha256": "a9c5e8ed067c772f2d59f7df587fa0a8bcb1f6f6042a0cdc3c45b8ec492b51d0",
+          "input_sha256": "d2b5577d552c9b76776059ba2de21ebf82eed240f39f1e2cb3c57b2eced2a7a3"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__native.json",
+          "fixture_sha256": "a9133f4db6be735a23af3f6a5fe66e75a2478ba3f78d8cfbc7940baa72e33455",
+          "input_sha256": "154af34748cdc8e0bab02b743630278dc0af20a3400a85059af31942f0098341"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_thin_bridge_contract__native.json",
+          "fixture_sha256": "688199235f20296968acef0399766115adb983a6eb64bf72f2a3241db8cbca07",
+          "input_sha256": "217b2c47ff9700a55981c1cd0cc70822f867375574a9b1069683649e389b9082"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_baseline_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_baseline_contract__native.json",
+          "fixture_sha256": "4fab344d634f6345ed4dd825f4f272106a788a5d5780082416ca497ca2927363",
+          "input_sha256": "58d0d01dabfa4e068fcc60831835caca75aa594a8909e2311fa9e0a823ede1cf"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_deep_apex_high_output_v1__native.json",
+          "fixture_sha256": "d2f8623e5326e4c342f2f6f5d46f0bd2549599c00dbcf7f1d5bcef332f83b76a",
+          "input_sha256": "5e531fe8477c3335823736d5df456fd5c7fd8db86c36bec82f8268e4dd30481b"
+        }
+      ],
+      "coverage": "higher-output replacement of ipm_vshape_8p12s_deep_apex_contract; original retained in archived protocol 1.0.0"
+    },
+    {
+      "id": "ipm_vshape_8p12s_narrow_angle_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_narrow_angle_contract__native.json",
+          "fixture_sha256": "f46cf081c7fbd01517d8eeff28647bc61341528dd6db4e8dc26b733997fc0523",
+          "input_sha256": "f8e5bca655734931a2dc5596c2c16ce617255426a592e32a4cecc48f9fdfc155"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_pocket_offset_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_pocket_offset_contract__native.json",
+          "fixture_sha256": "c08c8c4e09de4c650b99329d7509d75db3434cdf0870d09b1c4ab92b29819fc7",
+          "input_sha256": "a6d6e5712b37ef211a38d8a66ccccc876cdb7158d978314105c817c9bf40bbdb"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_thin_bridge_contract",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_thin_bridge_contract__native.json",
+          "fixture_sha256": "04e50547b07353a39022c5a9f7d97dba242c850a3b234aed34b2c8ab0564878f",
+          "input_sha256": "c67aaa7d698cbecefd1138ebd9d7086fb97faff2b30876f6cffe62617676904a"
+        }
+      ]
+    },
+    {
+      "id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+      "phase": "B",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_vshape_8p12s_wide_angle_high_output_v1__native.json",
+          "fixture_sha256": "87625fb2609bb7123dfcea95325f99b8b0657bf16af8d4e1bab313d44254c84d",
+          "input_sha256": "18c21bc9f46578b25ebcb6ad7ca8a5b066d3cda7d8ce5c17989e0ba7f73d6354"
+        }
+      ],
+      "coverage": "higher-output replacement of ipm_vshape_8p12s_wide_angle_contract; original retained in archived protocol 1.0.0"
+    },
+    {
+      "id": "ornl_prius_2004_ipm",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ornl_prius_2004_ipm__native.json",
+          "fixture_sha256": "e21248be2619c9e2ab7bed5cfabd787025daf477dc6809e2d61d5b2438ecd9d6",
+          "input_sha256": "327bd048e74015640e84ae2991603cb7060117c19d19adc35d570ed1e507d1c7"
+        }
+      ]
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_12p36s_distributed_femm_validation__native.json",
+          "fixture_sha256": "7b33b6089a21526f83d4f0416e6d2e7a7ee30041b971e7aa3b2ba70b25f80d43",
+          "input_sha256": "f02ee4b8eda73a36856d29664ababa303546eae79d2946d84d6b237a35bbd99a"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p24s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p24s_distributed_femm_validation__native.json",
+          "fixture_sha256": "4141508dd0633a52380984fce6077fcf091b07833fede37dc7286964d6aac67c",
+          "input_sha256": "bd66fd2991c5d4b2c948ea9fc2b4dd768dee87e2f5e3b3dccca931e79ae2e080"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_chorded_5_6",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p48s_chorded_5_6__native.json",
+          "fixture_sha256": "d0a5c77f1ad58babd282b41a6c240eee028f013a5b703700d3cf0e39fdbd29e0",
+          "input_sha256": "dd764a323a964651c2ad833bba354cc6728e4ed7bada03b842710eae2b09584f"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation",
+      "phase": "C",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p48s_distributed_femm_validation__native.json",
+          "fixture_sha256": "94e210140c0c37ce3b6c638279a22bc9552793de4bf6cd6a0ec6ff79badb2c40",
+          "input_sha256": "40b18f674173e18f0f55a7bb664781e597a3332a75e98cb67bb61b050e0392b7"
+        }
+      ]
+    },
+    {
+      "id": "spm_14p12s_high_pole",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_14p12s_high_pole__native-standard.json",
+          "fixture_sha256": "75a8e99f1e62ebafa77232cbf4d392b46e866dda4fe9dabed1639dc779a42b00",
+          "input_sha256": "6089f5f698fa6dadc0fef0a7d8bfe55c463157486cfeaf770a81f6262871409b"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_14p12s_high_pole__native-fine.json",
+          "fixture_sha256": "f59c5209927235009c1501f34786b46413fa23ab34825035b5df465963022a75",
+          "input_sha256": "636be181e341103bc33f521331f93ac5a8a1083be9dc215e57b4920b86598b55"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_14p12s_high_pole__analytical.json",
+          "fixture_sha256": "80dc465637ca9a711f4ded6f8c968eebb71e8d876ca42b11edc92552c2c6798e",
+          "input_sha256": "90356f0fe81ad9e38442319ebfd3dddecddec2bd9395bb00cc77811302223a1c"
+        }
+      ],
+      "protocol": "benchmarks/abcd-v1.3/protocols/spm_14p12s_high_pole.json",
+      "protocol_sha256": "d47aca42dc38c7d921ed88bf355163ab5a894920780058875f6b0d139cc1982b"
+    },
+    {
+      "id": "spm_4p12s_small",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_small__native-standard.json",
+          "fixture_sha256": "182d1e96127c31b2345b0b9e2a5413d3f577de764a99e32714ee5a7226d50aaa",
+          "input_sha256": "dae7d523beca6600b117efa7f330b5232e5d3b996eac6d062a71cef8f3d326cf"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_small__native-fine.json",
+          "fixture_sha256": "174ddbdeb15e50dadb3a7c0c80e24b0473373cd326d69f06b4ac54ab6f298b4d",
+          "input_sha256": "bb974fa67e640f313c280099d6a96d9ac91710420b9d1190f4e86bbc25de59b0"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_small__analytical.json",
+          "fixture_sha256": "9e72a2d27c0828e14a42e38ce722f3b2304372b690173667309442ec2d5e7742",
+          "input_sha256": "61930198ac6b48b31e1628ad9f40338887282c7a7d03cbcd9b4146f64b3f74b3"
+        }
+      ],
+      "protocol": "benchmarks/abcd-v1.3/protocols/spm_4p12s_small.json",
+      "protocol_sha256": "30c164bfb9fac53ffce1eef07f6c68147f1935f8ab59d2f74c004edd79a0bef4"
+    },
+    {
+      "id": "spm_8p12s_reference",
+      "phase": "D",
+      "jobs": [
+        {
+          "stage": "native-standard",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference__native-standard.json",
+          "fixture_sha256": "9c3e921a468640d6d1ef268ce09af439bf3536e0b066f8f76fd0a5b7b01df66c",
+          "input_sha256": "051a18c00c0d749f9d937a3c6f4c3f9983aa3ba71891f792e32c81ecf6e113f8"
+        },
+        {
+          "stage": "native-fine",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference__native-fine.json",
+          "fixture_sha256": "dc5903df469b463052d630170f959a9f3b47c6ec4fb36ba6f61240b2ca070d77",
+          "input_sha256": "c1e9c0558d21ecc0b9c931a415294dfb040b4d2066e8aff9d9dc620cf15ca43a"
+        },
+        {
+          "stage": "analytical",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_reference__analytical.json",
+          "fixture_sha256": "ec98f290b5a9fe70ce9ad82e0f46d34e4239da724085ffce598a055d8ecd7073",
+          "input_sha256": "faf55aad1f4df039f7307e657d5085c08b2e0eec07873ac1492b8775ddfe4800"
+        }
+      ],
+      "protocol": "benchmarks/abcd-v1.3/protocols/spm_8p12s_reference.json",
+      "protocol_sha256": "56d8421901292e036197f7b7da17c131938746996241edacec46a457d821182e"
+    },
+    {
+      "id": "spm_8p12s_example_shoed",
+      "phase": "A",
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_example_shoed__native.json",
+          "fixture_sha256": "fc40460c7e0f2f23ee3071d51a1e65f0a69c207a70a7168822208a283f0556f3",
+          "input_sha256": "633d75b5d2e46636591fee0a46f202532201f73bd9a3270b21fd843092602566"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__magnet_60C",
+      "phase": "A",
+      "magnet_temperature_C": 60.0,
+      "magnet_remanence_T": 1.25188,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__magnet_60C__native.json",
+          "fixture_sha256": "d0c12c0bb3e6520adca581af4c9527e743b83a0efe4d318d45c483b2b6060b83",
+          "input_sha256": "682a4c569a235e6ac0e9158ec51575914d061dee7dfdc2b1da68eccb1505bee9"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__magnet_100C",
+      "phase": "A",
+      "magnet_temperature_C": 100.0,
+      "magnet_remanence_T": 1.18876,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__magnet_100C__native.json",
+          "fixture_sha256": "95f5ac903331138a27079f9a50e7048cd58f5e463438993a982d0103e329f0ed",
+          "input_sha256": "fbb72454ebf56f47e4bdb07e66db31d60620f907c83e4cd3272ae7dbd1bc185b"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g0",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I20_g0__native.json",
+          "fixture_sha256": "9943e72449e1b4a1bfdc569568ac91925e1577e768a1a878a903f29e6187c24f",
+          "input_sha256": "7765573a342eed3d6e3860aab762a2df2b14f4fd86d5b10e7a4543adcc2b90ab"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g30",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I20_g30__native.json",
+          "fixture_sha256": "d16d68fdb8a9f5dfba0dfab245e5d9ea45cea21c4d5e296375e708ad9dd9acb1",
+          "input_sha256": "040146b45bd364d5d757257629c5911e69a091f48f518a4707c28fe313a5fac0"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I20_g60",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I20_g60__native.json",
+          "fixture_sha256": "6e24359b6fb411332c931763731c814aea448d7d98a6d4ba4bd9d55ad57e64af",
+          "input_sha256": "e4ffce2d40a35dd1953e5f2a7384a52b4b3750967b1171eb1ba72e8740e16334"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g0",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I40_g0__native.json",
+          "fixture_sha256": "1e6682cb99556b6d7af9fa94810b15458217b8c1dca54068d029beaaaf861099",
+          "input_sha256": "05f91da2ea7e95fce228e612bbb8645967bbd7f7674b9ca3f70dfa0fd0b3fead"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g30",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I40_g30__native.json",
+          "fixture_sha256": "fe8996e3b11d367b3a591aa3c159252d55d27b8622ce32864986e5c45067c5e5",
+          "input_sha256": "f6c120cc04d100a7ea4ecee8bdb2c1ecfe5be96f62a344e07665622a36a2135c"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__dq_I40_g60",
+      "phase": "A",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__dq_I40_g60__native.json",
+          "fixture_sha256": "a4e83726a524b78d5fb2853488a39302386132563111c9dd0bb62e969069c58f",
+          "input_sha256": "1027b055fd41ddbb3c30e6a08ea74decdf824c2d7dd668553a1c0825d3cfdf69"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+      "phase": "B",
+      "magnet_temperature_C": 60.0,
+      "magnet_remanence_T": 1.25188,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__magnet_60C__native.json",
+          "fixture_sha256": "a796a862aa1eca8b3c673ab053b89bd988d45e08d56f94f746096ad2fb280f2b",
+          "input_sha256": "c2cc34d87f1e308f2eff15fc3abcdb1fa143a46f81c85aa6a076c80dd6317779"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+      "phase": "B",
+      "magnet_temperature_C": 100.0,
+      "magnet_remanence_T": 1.18876,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__magnet_100C__native.json",
+          "fixture_sha256": "6b553feae3bb104c8b4ff14c8e3fe56fca9037c83282c37e8fbc012538bb8ac4",
+          "input_sha256": "df88bb676f137d9abbf4cc2da5106b99948d4d665045ca80546c24b3b3b0b5de"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g0__native.json",
+          "fixture_sha256": "a9133f4db6be735a23af3f6a5fe66e75a2478ba3f78d8cfbc7940baa72e33455",
+          "input_sha256": "154af34748cdc8e0bab02b743630278dc0af20a3400a85059af31942f0098341"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g30__native.json",
+          "fixture_sha256": "fba6731337b6f40a5b2f8c42483a90a1b25fa56049a7d586b47e5b94df88f102",
+          "input_sha256": "d230dcfed6e951ab43834178e222f6da62739f591b7c0ff884c14dd79dd908dc"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I50_g60__native.json",
+          "fixture_sha256": "5f0fbf28148ff97f4242ffdfc6f5f086575542ef5a426b5c6b3938ab1fc7f9e7",
+          "input_sha256": "55cbe6f53a20ddacd0014b14c985701be41b06c6226b1a3c93858af27acd865a"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g0__native.json",
+          "fixture_sha256": "6bff745ffbcb4693b767578689079c681e164abbd5008233bf36f81b551bf17a",
+          "input_sha256": "f1995bf06c73a7ddad80c0250a1b9690697bc1a22d818590c7c5a195bf2b0452"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g30__native.json",
+          "fixture_sha256": "2d5e2a3b42988067d8ab274035d790c78c52092bc8882c1668a3061fecf36e85",
+          "input_sha256": "e1a7b3a07837b512901fb440712dabb1dc4ca0d839304e8d9e3bfc4394e08eef"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+      "phase": "B",
+      "dq_reference": true,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__dq_I100_g60__native.json",
+          "fixture_sha256": "a3bd8e28eb9e6d5d55c6fca92513cfddc673e5da2aff953c0d2281a8ba8d8c81",
+          "input_sha256": "96ab1b67837e52cc366fb297c93a19b4946037838fc7a8864c6589babbbbf8e4"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__baseline__cogging",
+      "phase": "E",
+      "base_case": "spm_4p12s_simple__baseline",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 12,
+      "cogging_floor_Nm": 0.002385,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_4p12s_simple__baseline.json",
+        "avg_torque_Nm": 0.47707813670238686
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__baseline__cogging__native.json",
+          "fixture_sha256": "5220e03f94d2e90e14c5efdb7e46f2c2e0dd53abb475559b4cdc641613e8842e",
+          "input_sha256": "7f266162b4ba029225f9e28a8db6c87c28b02e190d115ee5e43ca7a597ed7b2c"
+        }
+      ]
+    },
+    {
+      "id": "spm_4p12s_simple__tight_airgap__cogging",
+      "phase": "E",
+      "base_case": "spm_4p12s_simple__tight_airgap",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 12,
+      "cogging_floor_Nm": 0.002925,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_4p12s_simple__tight_airgap.json",
+        "avg_torque_Nm": 0.5850121670208285
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_4p12s_simple__tight_airgap__cogging__native.json",
+          "fixture_sha256": "947d40c0e72bf103ebf812d7224e6fb28e82e515f5021fb83d0081c5e6b51a50",
+          "input_sha256": "13ca2b464f98f51753482df4f2a7aec1f60d4403c1a91e4a2e5eb9a77d9f1751"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__baseline__cogging",
+      "phase": "E",
+      "base_case": "spm_8p12s_concentrated__baseline",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.011069,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p12s_concentrated__baseline.json",
+        "avg_torque_Nm": 2.213722975816425
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__baseline__cogging__native.json",
+          "fixture_sha256": "97828c516869b02c3e7ef2789fc79d29cb401c4c05aa3c280d6cafc6cd2d8d9b",
+          "input_sha256": "a7a915bd0793eefc466cfa7d3b8e33bf2ad49845f09001390fda090e725e038e"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_concentrated__tight_airgap__cogging",
+      "phase": "E",
+      "base_case": "spm_8p12s_concentrated__tight_airgap",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.011785,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p12s_concentrated__tight_airgap.json",
+        "avg_torque_Nm": 2.357065017182515
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_concentrated__tight_airgap__cogging__native.json",
+          "fixture_sha256": "01aab6adaeecca13c7cb4b76cff454f65c8a0c7640e45fdbf27bbab30ce85464",
+          "input_sha256": "2a8c90889c03f140be30cd96cae31bfef9f251d905f1944a91363f0742816fca"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p12s_example_shoed__cogging",
+      "phase": "E",
+      "base_case": "spm_8p12s_example_shoed",
+      "base_phase": "A",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.055702,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p12s_example_shoed.json",
+        "avg_torque_Nm": 11.140423976492054
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p12s_example_shoed__cogging__native.json",
+          "fixture_sha256": "2d0d4c40cdb17845c403034ef5d0695abb0ce89cd1532bcc37bb666e9fc4af7f",
+          "input_sha256": "0371fce9dc2c66595a1ed5f75c763484842823a2f2157b772e33dcaaeeff411e"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_8p12s_fsae_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.012879,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_8p12s_fsae_contract.json",
+        "avg_torque_Nm": 2.575709705414214
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_contract__cogging__native.json",
+          "fixture_sha256": "9372670ddbbcb05a757f13eea47392ec5ffb948bce31a32ecaca4157bc1cffcd",
+          "input_sha256": "182469b5931470597f7594e9b8e460f93c1f027af76d20d4ba6a460f2acb32db"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.010774,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_8p12s_fsae_angled_pocket_contract.json",
+        "avg_torque_Nm": 2.154819961289557
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_8p12s_fsae_angled_pocket_contract__cogging__native.json",
+          "fixture_sha256": "3753685aeb0d506b7b85fd8cbdbcb68179502d35f8d4171cbef6a03d374d8f60",
+          "input_sha256": "2d67fb0478b6d972802c8a2b0c3d448d14ebdc4487a1dc8b79c339c16ed2c93a"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_12s10p_fscw_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_12s10p_fscw_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 60,
+      "cogging_floor_Nm": 0.024013,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_12s10p_fscw_contract.json",
+        "avg_torque_Nm": 4.802681722828231
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_12s10p_fscw_contract__cogging__native.json",
+          "fixture_sha256": "328b2247e7f753b5f41983bc092fa9dc0c7f4a6d55436b80e6f84e8c7cc6b5f4",
+          "input_sha256": "97af3564f5bfc57bde14e58b91f92162c28d8180c4a58527eaa0d10b5052147d"
+        }
+      ]
+    },
+    {
+      "id": "ipm_flat_24s16p_industrial_contract__cogging",
+      "phase": "E",
+      "base_case": "ipm_flat_24s16p_industrial_contract",
+      "base_phase": "B",
+      "cogging_cycles_per_revolution": 48,
+      "cogging_floor_Nm": 0.097627,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/ipm_flat_24s16p_industrial_contract.json",
+        "avg_torque_Nm": 19.525404740094906
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/ipm_flat_24s16p_industrial_contract__cogging__native.json",
+          "fixture_sha256": "fbed8454ebe5a8c8fba5bbc44805ee3e0839a4e7a4a15d2da386a2a42f79d43c",
+          "input_sha256": "b3bcb0a1fbb433e9d526bf92cb25aa7e7cd8a17772fe71c184c738b5e3f95f08"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p24s_distributed_femm_validation__cogging",
+      "phase": "E",
+      "base_case": "spm_8p24s_distributed_femm_validation",
+      "base_phase": "C",
+      "cogging_cycles_per_revolution": 24,
+      "cogging_floor_Nm": 0.02831,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p24s_distributed_femm_validation.json",
+        "avg_torque_Nm": 5.662010743893206
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p24s_distributed_femm_validation__cogging__native.json",
+          "fixture_sha256": "58dd6c39cc3f6fda7475693bc22f7b2d448c5f7b1cd8bea9aaf9dd311d503abd",
+          "input_sha256": "632b08f7928df2d5917fb32807cdf911b0dec8892d68393a7044245ecd6d7643"
+        }
+      ]
+    },
+    {
+      "id": "spm_8p48s_distributed_femm_validation__cogging",
+      "phase": "E",
+      "base_case": "spm_8p48s_distributed_femm_validation",
+      "base_phase": "C",
+      "cogging_cycles_per_revolution": 48,
+      "cogging_floor_Nm": 0.031519,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_8p48s_distributed_femm_validation.json",
+        "avg_torque_Nm": 6.303735218583883
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_8p48s_distributed_femm_validation__cogging__native.json",
+          "fixture_sha256": "a2b77cf9ff4603743424906e66e0ac919a0217ee11210fe84a59d10c97d41150",
+          "input_sha256": "02a7fb84ef4210d3eb525ac3161cbe3272d81f818cf2a26b1eee7a759803b8ea"
+        }
+      ]
+    },
+    {
+      "id": "spm_12p36s_distributed_femm_validation__cogging",
+      "phase": "E",
+      "base_case": "spm_12p36s_distributed_femm_validation",
+      "base_phase": "C",
+      "cogging_cycles_per_revolution": 36,
+      "cogging_floor_Nm": 0.026074,
+      "cogging_floor_basis": {
+        "rule": "0.5% of the base case's FEMM mean loaded torque",
+        "reference_record": "benchmarks/reference-baselines/protocol16-reviewed-20261103/spm_12p36s_distributed_femm_validation.json",
+        "avg_torque_Nm": 5.214834188473855
+      },
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_12p36s_distributed_femm_validation__cogging__native.json",
+          "fixture_sha256": "ed3cae84555cfec7e8b14cff25cefaaa271eb135e893e2661a9dc3d4892191dc",
+          "input_sha256": "68525454ee3beb3f37221c0e07c10f0e76fef24fb2d2bc2df6fd8e0dc96bd7b2"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__baseline",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__baseline__native.json",
+          "fixture_sha256": "99b76be099afaf98020fbb83771ecfdf16f1b4b406da3900ad3cae6352be3560",
+          "input_sha256": "fdceaf208a50b36a9e0c7db18b017de71806d261f678ae646b179cc0c64d3a92"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__high_current",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__high_current__native.json",
+          "fixture_sha256": "c19a5189b30af4580e1dc202fef7ff564629a7eab2cb54d5b37503e0f0dbb459",
+          "input_sha256": "88dd46544da8dc37ea9334f370089ef9665cd3cad915c1ed10f6d62f39a949ed"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__tight_airgap",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__tight_airgap__native.json",
+          "fixture_sha256": "c4547c24699568a4cdff7d8cf31472547f9841e842f693a20180503fb8375a80",
+          "input_sha256": "1de585ec2e81050f2435e50e8101e13a5b0b5c9fa0886600da7b37509938d7de"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone__angle30",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone__angle30__native.json",
+          "fixture_sha256": "0140ea8fb09ebbe3437458f3b410f68bb80b71f6be47109cb32f34b987c25ccd",
+          "input_sha256": "038efcdf6a4fa61d7b0d5160c73e4fbfb1f9b7c36e9945b636c2645e7bab4fd8"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_14p12s_drone_noload__baseline",
+      "phase": "F",
+      "design": "14p12s_drone",
+      "slots": 12,
+      "poles": 14,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_14p12s_drone_noload__baseline__native.json",
+          "fixture_sha256": "911e607eabfc106dcc870ba7f3546c990db4826597be0479372fdc72cee4c69e",
+          "input_sha256": "7d4df9ede7c39bef92ec2a90365210f3de23a6f8f33b75dfcfebccb7e0954672"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_12p9s_micro__baseline",
+      "phase": "F",
+      "design": "12p9s_micro",
+      "slots": 9,
+      "poles": 12,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_12p9s_micro__baseline__native.json",
+          "fixture_sha256": "ee0239a357662fb56e7b8d83d812016adff29885601d455b6319897798dc3f77",
+          "input_sha256": "0f4541d1ef9e48364f0d2ecb43a41fe245a52c3678f11ddffa0811567bba6cdb"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_12p9s_micro_noload__baseline",
+      "phase": "F",
+      "design": "12p9s_micro",
+      "slots": 9,
+      "poles": 12,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_12p9s_micro_noload__baseline__native.json",
+          "fixture_sha256": "f6ebc408c0bd7b386951d8dc1dccc4042285e9ebadcec06b11de5290aa6c346a",
+          "input_sha256": "178e3fa34c39385c4b1aa0b61bad5d9eb37ffb46b62a78cebe4a85cff47fd3bd"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_10p12s_single_layer__baseline",
+      "phase": "F",
+      "design": "10p12s_single_layer",
+      "slots": 12,
+      "poles": 10,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_10p12s_single_layer__baseline__native.json",
+          "fixture_sha256": "1c0831f47d8d3905468dd2c2b1e60adb35cc380d63719cf10fca65a815caeeda",
+          "input_sha256": "c7727fc34c6388195b6dc31184918b921fad41de77943153477bbf30742f6b59"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_28p24s_multirotor__baseline",
+      "phase": "F",
+      "design": "28p24s_multirotor",
+      "slots": 24,
+      "poles": 28,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_28p24s_multirotor__baseline__native.json",
+          "fixture_sha256": "85857765399f12e49013f76a0e6a62c173798b5da8e755d532a09c78b88f3529",
+          "input_sha256": "ffef73ed7ca64fe69fa15ff58eb5e3795c89f5f2f4899909bdc6a096494281d7"
+        }
+      ]
+    },
+    {
+      "id": "spm_outer_30p27s_hub__baseline",
+      "phase": "F",
+      "design": "30p27s_hub",
+      "slots": 27,
+      "poles": 30,
+      "jobs": [
+        {
+          "stage": "native",
+          "fixture": "benchmarks/af-v1.11-sector/fixtures/spm_outer_30p27s_hub__baseline__native.json",
+          "fixture_sha256": "9b5ca051b8eb88a2ca0b5a963a7a2e40e26657393bf8e4202b5595c1883c069e",
+          "input_sha256": "4d36f9133f85cbc0c4afb1680a8f2601485b1399d8f63ddf4befa4d4ad0914e3"
+        }
+      ]
+    }
+  ],
+  "request_change": {
+    "prior_protocol": "1.10.0",
+    "solve_params": {
+      "symmetry": {
+        "from": "full",
+        "to": "auto"
+      }
+    },
+    "requests": [
+      {
+        "case_id": "spm_4p12s_simple__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple__high_current",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__high_current",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple_noload__tight_airgap",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__high_current",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__tight_airgap",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_reference_angle30__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_12s10p_fscw_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_24s16p_industrial_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_4p12s_micro_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_thin_bridge_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_baseline_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_deep_apex_high_output_v1",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_narrow_angle_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_pocket_offset_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_thin_bridge_contract",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_vshape_8p12s_wide_angle_high_output_v1",
+        "stage": "native"
+      },
+      {
+        "case_id": "ornl_prius_2004_ipm",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_12p36s_distributed_femm_validation",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p24s_distributed_femm_validation",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p48s_chorded_5_6",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p48s_distributed_femm_validation",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "stage": "native-standard"
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "stage": "native-fine"
+      },
+      {
+        "case_id": "spm_14p12s_high_pole",
+        "stage": "analytical"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "stage": "native-standard"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "stage": "native-fine"
+      },
+      {
+        "case_id": "spm_4p12s_small",
+        "stage": "analytical"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "stage": "native-standard"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "stage": "native-fine"
+      },
+      {
+        "case_id": "spm_8p12s_reference",
+        "stage": "analytical"
+      },
+      {
+        "case_id": "spm_8p12s_example_shoed",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__magnet_60C",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__magnet_100C",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I20_g0",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I20_g30",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I20_g60",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I40_g0",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I40_g30",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__dq_I40_g60",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__magnet_60C",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__magnet_100C",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g0",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g30",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I50_g60",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g0",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g30",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__dq_I100_g60",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple__baseline__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_4p12s_simple__tight_airgap__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__baseline__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_concentrated__tight_airgap__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p12s_example_shoed__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_contract__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_8p12s_fsae_angled_pocket_contract__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_12s10p_fscw_contract__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "ipm_flat_24s16p_industrial_contract__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p24s_distributed_femm_validation__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_8p48s_distributed_femm_validation__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_12p36s_distributed_femm_validation__cogging",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__high_current",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__tight_airgap",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone__angle30",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_14p12s_drone_noload__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_12p9s_micro__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_12p9s_micro_noload__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_10p12s_single_layer__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_28p24s_multirotor__baseline",
+        "stage": "native"
+      },
+      {
+        "case_id": "spm_outer_30p27s_hub__baseline",
+        "stage": "native"
+      }
+    ]
+  },
+  "reference_compatibility": {
+    "schema": "coilem.reference_validation_bridge/v1",
+    "measured_protocol_version": "1.10.0",
+    "reason": "Only coilEM's solved region changes: every request sets solve_params.symmetry to auto, so coilEM meshes and solves one repeating sector when the geometry and winding repeat around the circle, and the full motor otherwise. FEMM always solves the whole motor and never reads this field, so the frozen protocol 1.10.0 references remain valid for the changed requests. Motors, materials, currents, grids, iteration caps, floors and gates are unchanged. A sector solve reproduces the full-circle solve of the same mesh to round-off (tests/test_sector_symmetry.py); against a separately meshed full motor it differs at mesh level.",
+    "solve_option_change": {
+      "schema": "coilem.solve_option_bridge/v1",
+      "measured_suite": "benchmarks/af-v1.10/benchmark_spec.json",
+      "measured_suite_sha256": "14f80962ecb09ef4c5df569d0e5c89158dc7b2516cc9a8e47df34a57f501bcc4",
+      "solve_params": {
+        "symmetry": {
+          "from": "full",
+          "to": "auto"
+        }
+      },
+      "reason": "Only coilEM's solved region changes: every request sets solve_params.symmetry to auto, so coilEM meshes and solves one repeating sector when the geometry and winding repeat around the circle, and the full motor otherwise. FEMM always solves the whole motor and never reads this field, so the frozen protocol 1.10.0 references remain valid for the changed requests. Motors, materials, currents, grids, iteration caps, floors and gates are unchanged. A sector solve reproduces the full-circle solve of the same mesh to round-off (tests/test_sector_symmetry.py); against a separately meshed full motor it differs at mesh level."
+    }
+  }
+}

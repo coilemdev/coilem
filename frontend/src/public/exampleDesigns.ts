@@ -15,6 +15,7 @@ import lrkFixedCurrent from './examples/lrk-12s14p-fixed-current-v1.coilem?raw';
 
 import { parseDesignFile } from './designFile';
 import { cloneDefaultConfig, type MotorConfig } from './model';
+import { applyPublicSolvePreset, capturePublicPresetSweep } from './solvePlan';
 
 export type PublicExampleId =
   | 'prius-2004-tutorial-bemf-v1'
@@ -155,10 +156,21 @@ export function createPublicExampleDesign(exampleId: PublicExampleId): { name: s
   if (exampleId === 'spm-8p12s') {
     return { name: 'Example SPM 8p/12s', config: cloneDefaultConfig() };
   }
-  const parsed = parseDesignFile(BUNDLED_EXAMPLE_FILES[exampleId]);
+  const { name, config: fileConfig } = parseDesignFile(BUNDLED_EXAMPLE_FILES[exampleId]);
+  let config = fileConfig;
+  if (exampleId === 'ipm-10p-v-shape-medium') {
+    config = applyPublicSolvePreset(fileConfig, 'fine', capturePublicPresetSweep(fileConfig));
+    config.solve_params.nonlinear_solver = 'newton';
+  }
+  // These validation files were saved on the Preview plan with Picard. They open on the
+  // app's defaults, so the recommended plan is selected and Newton-only options are offered.
+  if (exampleId === 'ipm-14p-flat-buried-large' || exampleId === 'spm-24p-small') {
+    config = applyPublicSolvePreset(fileConfig, 'standard', capturePublicPresetSweep(fileConfig));
+    config.solve_params.nonlinear_solver = 'newton';
+  }
   const option = PUBLIC_EXAMPLE_OPTIONS.find((candidate) => candidate.id === exampleId);
   return {
-    name: parsed.name || option?.label || 'Example motor',
-    config: parsed.config,
+    name: name || option?.label || 'Example motor',
+    config,
   };
 }

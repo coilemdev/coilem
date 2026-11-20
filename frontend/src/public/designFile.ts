@@ -2,7 +2,8 @@ import { readProfileDocument, type SolveProfileDocument } from './solveProfiles'
 import { migrateProjectFile, COILEM_SCHEMA_VERSION } from '../api/projectSchema';
 import { parseTorqueSpeedSettings, torqueSpeedSettings } from './torqueSpeedAnalysis';
 import { applyPublicSolverSettings, cloneDefaultConfig, HOLEM50_FIELDS, PUBLIC_MAGNETO2D_SETTINGS } from './model';
-import type { MotorConfig } from './model';
+import type { MotorConfig, PublicSolverId } from './model';
+import { effectiveRotorLossOptions } from './analysisOptions';
 import { parseCustomSteels } from './customSteel';
 import type { WireSpec } from './performance';
 import { PUBLISHED_REFERENCES, publishedReference, type PublishedReferenceId } from './publishedReferences';
@@ -30,7 +31,7 @@ export const DESIGN_FILE_EXTENSION = '.coilem';
 export const DESIGN_FILE_ACCEPT = `${DESIGN_FILE_EXTENSION},.openem,.json,application/json`;
 export const DESIGN_FILE_SCHEMA_VERSION = COILEM_SCHEMA_VERSION;
 /** Application version stamped into saved designs; tests/test_public_candidate.py keeps it in sync. */
-export const COILEM_APP_VERSION = '0.5.8';
+export const COILEM_APP_VERSION = '0.5.9';
 
 export interface ParsedDesignFile {
   name: string | null;
@@ -53,6 +54,7 @@ const FLAT_BURIED_MAGNET_SHAPES = new Set(['straight', 'legacy_arc']);
 const SOLVE_QUALITIES = new Set(['quick', 'standard', 'fine', 'custom']);
 const MESH_DENSITIES = new Set(['coarse', 'normal', 'fine', 'very_fine']);
 const NONLINEAR_SOLVERS = new Set(['picard', 'newton']);
+const SOLVE_SYMMETRIES = new Set(['auto', 'full']);
 const CURRENT_CONVENTIONS = new Set(['rms', 'peak', 'plateau']);
 const EXCITATION_MODES = new Set(['sinusoidal', 'ideal_six_step_120']);
 
@@ -219,6 +221,7 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     || solve.linear_solver_preconditioner !== PUBLIC_MAGNETO2D_SETTINGS.linear_solver_preconditioner;
   Object.assign(solve, PUBLIC_MAGNETO2D_SETTINGS);
   if (!NONLINEAR_SOLVERS.has(solve.nonlinear_solver)) solve.nonlinear_solver = defaults.solve_params.nonlinear_solver;
+  if (!SOLVE_SYMMETRIES.has(solve.symmetry)) solve.symmetry = defaults.solve_params.symmetry;
   if (!CURRENT_CONVENTIONS.has(solve.current_amplitude_convention)) {
     solve.current_amplitude_convention = defaults.solve_params.current_amplitude_convention;
   }
@@ -242,6 +245,11 @@ export function parseDesignFile(text: string): ParsedDesignFile {
   if (config.solve_options.torque_speed_envelope && !config.torque_speed_analysis) config.torque_speed_analysis = torqueSpeedSettings(config);
   config.solve_options.cogging_torque = config.solve_options.cogging_torque === true;
   config.solve_options.losses_efficiency = config.solve_options.losses_efficiency === true;
+  if (isRecord(source.solve_options) && source.solve_options.rotor_iron_loss === true) {
+    config.solve_options.rotor_iron_loss = true;
+    config.solve_options.losses_efficiency = true;
+  }
+  else delete config.solve_options.rotor_iron_loss;
   config.solve_options.torque_sweep = config.solve_options.torque_sweep !== false;
   config.solve_options.back_emf = config.solve_options.back_emf !== false;
   // Public presets own the spectrum bandwidth: Standard reports H1-H12 and
@@ -267,7 +275,7 @@ export function designFileBaseName(name: string, fallback = 'coilem-design'): st
   return name.trim().replace(/\.(?:coilem|openem|json)$/i, '').trim() || fallback;
 }
 
-export function serializeDesignFile(config: MotorConfig, name: string, runSetups?: SolveProfileDocument): string {
+export function serializeDesignFile(config: MotorConfig, name: string, runSetups?: SolveProfileDocument, solver: PublicSolverId = 'magneto2d'): string {
   return `${JSON.stringify(
     {
       openem_schema_version: DESIGN_FILE_SCHEMA_VERSION,
@@ -277,6 +285,7 @@ export function serializeDesignFile(config: MotorConfig, name: string, runSetups
       ...(publishedReference(config)?.fileNotice
         ? { reference_notice: publishedReference(config)?.fileNotice } : {}),
       ...applyPublicSolverSettings(config),
+      solve_options: effectiveRotorLossOptions(config, solver),
     },
     null,
     2,
@@ -284,9 +293,9 @@ export function serializeDesignFile(config: MotorConfig, name: string, runSetups
 }
 
 /** Save via the browser's file picker when available, else download. */
-export async function saveDesignFileAs(config: MotorConfig, name: string, runSetups?: SolveProfileDocument): Promise<boolean> {
+export async function saveDesignFileAs(config: MotorConfig, name: string, runSetups?: SolveProfileDocument, solver: PublicSolverId = 'magneto2d'): Promise<boolean> {
   const filename = `${designFileBaseName(name)}${DESIGN_FILE_EXTENSION}`;
-  const blob = new Blob([serializeDesignFile(config, name, runSetups)], { type: 'application/json' });
+  const blob = new Blob([serializeDesignFile(config, name, runSetups, solver)], { type: 'application/json' });
   const picker = (window as { showSaveFilePicker?: (options: unknown) => Promise<any> }).showSaveFilePicker;
   if (typeof picker === 'function') {
     try {

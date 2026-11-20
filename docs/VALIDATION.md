@@ -1,8 +1,10 @@
 # Developer-preview validation
 
+The last public full-motor A-F record used protocol 1.10.0 and measured commit `5e6fab283d165dc9e2ccec7e1a477c7080a993c4`. Its results apply to that measured physics. Public benchmark publication is paused. The application checks its physics against that record before assigning a benchmark-qualified status.
+
 [Protocol 1.10.0](../benchmarks/af-v1.10/README.md) is the default A–F
-benchmark. The [qualification reports](../benchmarks/qualification-70c5e3404c19/README.md)
-measure the same Magneto2D 0.5.0 candidate on Windows x86-64 and macOS arm64.
+benchmark. The [qualification reports](../benchmarks/qualification-5e6fab283d16/publication-projection.json)
+identify the measured candidate on Windows x86-64 and macOS arm64.
 The comparisons use the frozen, reviewed FEMM references. The separately
 collected Prius software evidence accompanies both platform reports.
 
@@ -206,7 +208,7 @@ no local paths and passes the publication path check.
 
 ## Qualification status
 
-The current [registered parity reports](../benchmarks/qualification-70c5e3404c19/README.md)
+The earlier [registered parity reports](../benchmarks/qualification-70c5e3404c19/README.md)
 cover 68 supported A–F cases and 468 passing gates on each platform, plus one
 planned unsupported Prius fixture. The separate Prius software benchmark
 passes all 10 checks across 17 jobs and 568 field reports on each platform.
@@ -222,6 +224,14 @@ Prius value agrees with the previous record within the replay tolerances.
 Windows was collected on a hosted runner. macOS was collected on a local Apple
 silicon Mac (macOS 27.2) with the same workflow commands, because hosted macOS
 runners were not available; the linked receipt records this.
+
+The app compares its installed solver sources with the sources that record
+measured. When they differ or cannot be checked, a design the record covers is labelled **Not
+publicly qualified** and its results Experimental: the public record does not
+describe that build. coilEM 0.5.9 is such a build. The label is a fact about
+the build, not a finding about the design, so Design Health shows it as a note
+and does not count it as a warning. Runs saved by 0.5.9 pre-release builds
+carry the earlier wording of the same status and display the same label.
 
 The [protocol 1.6.0 comparison](../benchmarks/candidate-qualification-20261103/README.md)
 and its review retain the historical 46-record basis. The current combined
@@ -565,8 +575,18 @@ one, in equal steps.
   and from flux densities above 1.5 T, outside what the grade limits cover. In
   the Prius loaded case 67% of the iron loss is above 1.5 T, so treat that
   value as an order of magnitude.
-- **Not modelled:** rotor iron loss, excess loss as a separate term, and the
-  extra loss from cutting and pressing.
+- **Not modelled by the stator estimate:** rotor iron loss, excess loss as a
+  separate term, and the extra loss from cutting and pressing.
+
+### Rotor iron loss in 0.5.9
+
+An explicit opt-in adds experimental full-motor rotor hysteresis and classical
+lamination eddy loss for supported inner SPM and flat-IPM sinusoidal requests
+using M350-50A. It defaults off and adds 384 poses plus a fresh closure solve.
+Requested completed rotor loss is included exactly once in totals and maps;
+an unavailable requested term withholds efficiency instead of implying zero.
+
+Rotor loss and efficiency remain experimental. Sector rotor loss is unavailable. See [Rotor iron loss](ROTOR_IRON_LOSS.md) for supported requests, sampling and material limits.
 
 ### Efficiency at the operating point
 
@@ -897,14 +917,8 @@ Historical platform records are rebuilt with their original source registry
 using `tools.build_benchmark_record --historical-record`; no measured hash,
 number, or tolerance is rewritten to match a development checkout.
 
-Before publishing v0.5, run `python -m tools.release.qualification` on the
-frozen candidate. This strict publication gate requires protocol 1.6, complete
-registered coverage against the reviewed frozen bundle, matching measured
-physics, both platform records, and current Prius measured-source evidence.
-It exits nonzero while that work is pending and is required by the v0.5 tag
-publication workflow. `--candidate` additionally binds the measured report to
-an exact frozen commit. A green development PR is not release qualification.
-
-Freeze and qualify the exact candidate on `release/v0.5.0`; advance `main`
-after qualification passes. Record any evidence-only publication commit and
-preserve the measured candidate pin explicitly.
+For 0.5.9, the release owner reviews private Windows and macOS qualification
+for the registered A–F protocol 1.10.0 and Prius runs before tagging the exact
+final commit. The public workflow checks the tag and the commit recorded in
+each wheel. The public A–F records retain their original measured commit.
+See the [release procedure](RELEASING.md#publishing-a-release).

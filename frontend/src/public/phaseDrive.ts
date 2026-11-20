@@ -54,6 +54,13 @@ export function rotorElectricalDeg(rotorMechDeg: number, poleCount: number): num
   return wrap360(rotorMechDeg * Math.max(1, Math.floor(poleCount / 2)));
 }
 
+/**
+ * A / B / C currents, each in -1..1, at a rotor electrical angle. The drive
+ * settings give them by default; the Field solution passes the currents its
+ * solve recorded, so the waveforms belong to the field on screen.
+ */
+export type PhaseCurrentSampler = (rotorElecDeg: number) => [number, number, number] | null;
+
 /** A / B / C terminal currents at a rotor electrical angle, each in -1..1. */
 export function phaseCurrents(drive: PhaseDrive, rotorElecDeg: number): [number, number, number] {
   if (!(drive.currentAmplitudeA > 0)) return [0, 0, 0];
@@ -122,12 +129,19 @@ export function phasePanelTop(panel: Rect, height: number, coveredBottomPx: numb
  * current does not stream one way; it runs in while the current is positive and
  * back out while it is negative, and the wire's flow marks follow this.
  */
-export function phaseChargeShift(drive: PhaseDrive, phaseIndex: number, rotorElecDeg: number, stepDeg = 5): number {
+export function phaseChargeShift(
+  drive: PhaseDrive,
+  phaseIndex: number,
+  rotorElecDeg: number,
+  stepDeg = 5,
+  sample: PhaseCurrentSampler = (angle) => phaseCurrents(drive, angle),
+): number {
   const end = wrap360(rotorElecDeg);
   let sum = 0;
   for (let angle = 0; angle < end; angle += stepDeg) {
     const width = Math.min(stepDeg, end - angle);
-    sum += phaseCurrents(drive, angle + width / 2)[phaseIndex] * width;
+    const currents = sample(angle + width / 2);
+    if (currents) sum += currents[phaseIndex] * width;
   }
   return (sum * Math.PI) / 180;
 }
@@ -191,7 +205,8 @@ export function waveformTrace(
   strip: Rect,
   windowElecDeg = 360,
   samples = Math.min(1440, Math.max(180, Math.ceil((windowElecDeg / 360) * 72))),
-): Array<[number, number]> {
+  sample: PhaseCurrentSampler = (angle) => phaseCurrents(drive, angle),
+): Array<[number, number | null]> {
   const left = strip.x + STRIP_LABEL;
   const right = strip.x + strip.width - STRIP_END;
   const mid = strip.y + strip.height / 2;
@@ -199,8 +214,8 @@ export function waveformTrace(
   const amplitude = strip.height * TRACE_AMPLITUDE;
   return Array.from({ length: samples + 1 }, (_, step) => {
     const t = step / samples;
-    const value = phaseCurrents(drive, wrap360(rotorElecDeg - (1 - t) * windowElecDeg))[phaseIndex];
-    return [left + (right - left) * t, mid - value * amplitude];
+    const currents = sample(wrap360(rotorElecDeg - (1 - t) * windowElecDeg));
+    return [left + (right - left) * t, currents ? mid - currents[phaseIndex] * amplitude : null];
   });
 }
 
@@ -234,7 +249,7 @@ export function windingSymbolSide(label: string | null | undefined): Pick<Windin
  * conductors. An "in" side carries +J, out of the page (the solver's source sign,
  * and the cross-section's ⊙); each side holds an equal share of its slot.
  */
-export function slotCurrents(sides: WindingSide[], slotCount: number, currents: [number, number, number]): number[] {
+export function slotCurrents(sides: WindingSide[], slotCount: number, currents: readonly [number, number, number]): number[] {
   const perSlot = new Array<number>(slotCount).fill(0);
   sides.forEach((side) => { if (side.slot_index >= 0 && side.slot_index < slotCount) perSlot[side.slot_index] += 1; });
   const out = new Array<number>(slotCount).fill(0);
@@ -269,4 +284,30 @@ export function toothIndexAt(angleRad: number, slotCount: number): number {
   const pitch = (2 * Math.PI) / Math.max(1, slotCount);
   const turn = ((angleRad % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
   return Math.floor(turn / pitch) % Math.max(1, slotCount);
+}
+
+/** The label position on a stator tooth and its index in the winding's tooth-pole array. */
+export function toothPosition(points: Array<[number, number]>, slotCount: number) {
+  const center = points.reduce<[number, number]>(
+    (sum, [x, y]) => [sum[0] + x / points.length, sum[1] + y / points.length],
+    [0, 0],
+  );
+  return { center, index: toothIndexAt(Math.atan2(center[1], center[0]), slotCount) };
+}
+
+/** Tooth tint and lettering fade independently as the tooth approaches neutral. */
+export function toothPoleFillOpacity(strength: number): number {
+  const magnitude = Math.abs(strength);
+  return magnitude > 0.06 ? 0.14 + 0.5 * magnitude : 0;
+}
+
+export function toothPoleLabelOpacity(strength: number): number {
+  const magnitude = Math.abs(strength);
+  return magnitude >= 0.3 ? 0.45 + 0.55 * magnitude : 0;
+}
+
+/** Letter height given the tooth-center radius, in the same units as that radius. */
+export function toothPoleLabelSize(radius: number, slotCount: number): number {
+  const toothWidth = (2 * Math.PI * radius / slotCount) * 0.42;
+  return toothWidth * 0.55;
 }

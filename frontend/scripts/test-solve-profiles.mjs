@@ -8,6 +8,18 @@ const { torqueSpeedSettings } = await importTypeScriptModule(new URL('../src/pub
 const { captureProfile, applyProfile, profileMatches, profileCompatible, profileProvenance, builtinProfiles,
   newProfileDocument, saveProfile, parseProfileDocument, restoreActiveProfile, readProfileDocument, mergeProfileDocuments } = profiles;
 const original = cloneDefaultConfig();
+{
+  const selected = structuredClone(original);
+  selected.solve_options.losses_efficiency = true;
+  selected.solve_options.rotor_iron_loss = true;
+  const saved = captureProfile(selected, 'Rotor losses', true, 'magneto2d', 'rotor-test');
+  assert.equal(saved.outputs.rotor_iron_loss, true);
+  assert.equal(applyProfile(original, saved).solve_options.rotor_iron_loss, true);
+  assert.equal(profileMatches(saved, selected, 'magneto2d'), true);
+  const disabled = { ...saved, outputs: { ...saved.outputs, rotor_iron_loss: false } };
+  const doc = { ...newProfileDocument('rotor-test'), profiles: [disabled] };
+  assert.equal(parseProfileDocument(doc).profiles[0].outputs.rotor_iron_loss, undefined);
+}
 const oldLossProfile = { ...captureProfile(original, 'Old loss setup', true, 'magneto2d', 'old-loss'),
   outputs: { ...original.solve_options, losses_efficiency: true } };
 const oldLossSnapshot = JSON.stringify(oldLossProfile);

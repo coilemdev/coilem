@@ -557,7 +557,11 @@ class Acceptance:
         except (OSError, ValueError):
             error = {}
         cancelled = code == 130 and error.get("error_code") == "SOLVER_CANCELLED"
-        self.check("interrupting a CLI solve exits 130 with SOLVER_CANCELLED", cancelled, f"exit={code}")
+        self.check(
+            "interrupting a CLI solve exits 130 with SOLVER_CANCELLED",
+            cancelled,
+            f"exit={code}, error={error}" if not cancelled else f"exit={code}",
+        )
         remaining = self.solver_processes()
         self.check("no Magneto2D process remains after the CLI interrupt", not remaining, f"{remaining}")
 

@@ -1,9 +1,13 @@
 import type { SolveResult } from './model';
 import { isSolveTimeBreakdown } from './solveTime';
+import { rotorHistoryPositions } from './performance';
+import type { ComparisonInputs } from './runInputChanges';
+import { record } from './solveProfiles';
 import type { LossBreakdown, PerformanceOutputStatus, TorqueSpeedAnalysisResult } from './performance';
 
 /** Envelope curves are stored outputs; map grids, efficiency matrices and field meshes are omitted. */
 export type ComparisonResult = Pick<SolveResult, 'summary' | 'solve_metadata' | 'torque_waveform' | 'back_emf_waveform' | 'cogging_torque_waveform'> & {
+  rotorLossRequested?: boolean;
   torque_speed_analysis?: Pick<TorqueSpeedAnalysisResult, 'status' | 'status_reason' | 'settings' | 'envelope'> | null;
 };
 
@@ -38,7 +42,8 @@ export function previousCompletedRun<T extends RecordedRun>(runs: T[], current: 
 const samples = (value: unknown): number[] => Array.isArray(value) ? value : [];
 
 /** Older comparison responses use {} when an analysis has no CSV rows. */
-export function normalizeComparisonResult(result: ComparisonResult): ComparisonResult {
+export function normalizeComparisonResult(result: ComparisonResult, inputs?: ComparisonInputs | null): ComparisonResult {
+  const options = inputs?.config?.solve_options;
   const cogging = result.cogging_torque_waveform;
   const coggingAngles = samples(cogging?.electrical_angle_deg);
   const coggingValues = samples(cogging?.torque_Nm);
@@ -46,6 +51,8 @@ export function normalizeComparisonResult(result: ComparisonResult): ComparisonR
     && coggingAngles.every(Number.isFinite) && coggingValues.every(Number.isFinite);
   return {
     ...result,
+    // The saved solve_options object omits rotor_iron_loss when it is off.
+    ...(record(options) ? { rotorLossRequested: options.rotor_iron_loss === true } : {}),
     cogging_torque_waveform: hasCogging ? { ...cogging, electrical_angle_deg: coggingAngles, torque_Nm: coggingValues } : null,
     torque_waveform: {
       ...result.torque_waveform,
@@ -74,6 +81,12 @@ export interface ComparisonTimingRow {
 const nonnegative = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
 const count = (value: unknown): number | null => Number.isInteger(value) ? nonnegative(value) : null;
 
+function recordedRotorHistoryPositions(result: ComparisonResult): number | null {
+  const rotor = result.summary.rotor_iron_loss;
+  if (!rotor && result.rotorLossRequested === false) return 0;
+  return rotorHistoryPositions(rotor);
+}
+
 /** Compare elapsed partitions, never the overlapping sums of worker stage times. */
 export function compareRunTiming(before: ComparisonResult, after: ComparisonResult) {
   const a = isSolveTimeBreakdown(before.solve_metadata.time_breakdown) ? before.solve_metadata.time_breakdown : null;
@@ -90,7 +103,8 @@ export function compareRunTiming(before: ComparisonResult, after: ComparisonResu
   }
   const work = [
     ['mesh_elements', 'Mesh elements', before.solve_metadata.mesh_element_count, after.solve_metadata.mesh_element_count],
-    ['rotor_positions', 'Rotor positions', before.solve_metadata.rotor_positions, after.solve_metadata.rotor_positions],
+    ['rotor_positions', 'Loaded sweep positions', before.solve_metadata.rotor_positions, after.solve_metadata.rotor_positions],
+    ['rotor_history_positions', 'Rotor iron loss positions (history + closure)', recordedRotorHistoryPositions(before), recordedRotorHistoryPositions(after)],
     ['meshes_built', 'Meshes generated', a?.counts?.meshes_built, b?.counts?.meshes_built],
     ['meshes_rotated', 'Meshes rotated', a?.counts?.meshes_rotated, b?.counts?.meshes_rotated],
     ['solves', 'Field solves', a?.counts?.solves, b?.counts?.solves],
@@ -117,6 +131,8 @@ export interface ComparisonLossRow {
   before: ComparisonLossCell;
   after: ComparisonLossCell;
   comparable: boolean;
+  /** Why a delta is withheld although both values exist. */
+  basisNote?: string;
   indent?: boolean;
 }
 
@@ -126,7 +142,7 @@ const outputStatus = (value: unknown): PerformanceOutputStatus | undefined => va
 /** Read recorded losses only; incomplete shaft outputs and full outputs have different bases. */
 export function compareRunLosses(before: ComparisonResult, after: ComparisonResult, includeAllTotals = false): ComparisonLossRow[] | null {
   if (!before.summary.loss_breakdown && !after.summary.loss_breakdown) return null;
-  type Descriptor = { key: string; label: string; field: keyof LossBreakdown; unit: ComparisonLossRow['unit']; indent?: boolean; status?: 'efficiency' | 'iron' | 'copper'; };
+  type Descriptor = { key: string; label: string; field: keyof LossBreakdown; unit: ComparisonLossRow['unit']; indent?: boolean; status?: 'efficiency' | 'iron' | 'rotor' | 'copper'; };
   const descriptors: Descriptor[] = [
     { key: 'efficiency', label: 'Efficiency', field: 'efficiency_pct', unit: '%', status: 'efficiency' },
     { key: 'input', label: 'Input power', field: 'input_power_W', unit: 'W' },
@@ -135,9 +151,12 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
     { key: 'copper', label: 'Copper loss', field: 'copper_loss_W', unit: 'W', status: 'copper' },
     { key: 'copper_active', label: 'Copper, stack', field: 'copper_active_loss_W', unit: 'W', indent: true },
     { key: 'copper_end', label: 'Copper, end turns', field: 'copper_end_winding_loss_W', unit: 'W', indent: true },
-    { key: 'iron', label: 'Iron loss', field: 'iron_loss_W', unit: 'W', status: 'iron' },
-    { key: 'hysteresis', label: 'Iron, hysteresis', field: 'iron_hysteresis_loss_W', unit: 'W', indent: true, status: 'iron' },
-    { key: 'eddy', label: 'Iron, eddy current', field: 'iron_eddy_loss_W', unit: 'W', indent: true, status: 'iron' },
+    { key: 'iron', label: 'Stator iron loss', field: 'iron_loss_W', unit: 'W', status: 'iron' },
+    { key: 'hysteresis', label: 'Stator iron, hysteresis', field: 'iron_hysteresis_loss_W', unit: 'W', indent: true, status: 'iron' },
+    { key: 'eddy', label: 'Stator iron, lamination eddy', field: 'iron_eddy_loss_W', unit: 'W', indent: true, status: 'iron' },
+    { key: 'rotor_iron', label: 'Rotor iron loss', field: 'rotor_iron_loss_W', unit: 'W', status: 'rotor' },
+    { key: 'rotor_hysteresis', label: 'Rotor iron, hysteresis', field: 'rotor_hysteresis_loss_W', unit: 'W', indent: true, status: 'rotor' },
+    { key: 'rotor_eddy', label: 'Rotor iron, lamination eddy', field: 'rotor_lamination_eddy_loss_W', unit: 'W', indent: true, status: 'rotor' },
     { key: 'mechanical', label: 'Mechanical loss', field: 'mechanical_loss_W', unit: 'W' },
     { key: 'total', label: 'Total loss', field: 'total_loss_W', unit: 'W' },
     { key: 'subtotal', label: 'Known loss subtotal', field: 'total_loss_W', unit: 'W' },
@@ -145,20 +164,33 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
   const cell = (run: ComparisonResult, row: Descriptor): ComparisonLossCell => {
     const loss = run.summary.loss_breakdown;
     if (!loss) return { value: null, missing: 'Not recorded' };
-    const partial = finiteNumber(loss.iron_loss_W) === null || loss.iron_loss_status === 'unavailable';
+    const partial = finiteNumber(loss.iron_loss_W) === null || loss.iron_loss_status === 'unavailable' || loss.rotor_iron_loss_status === 'unavailable';
     if (row.key === 'total' && partial) return { value: null, missing: 'Unavailable' };
     if (row.key === 'subtotal' && !partial) return { value: null, missing: 'Not applicable' };
     const status = outputStatus(row.status === 'efficiency' ? loss.efficiency_status
-      : row.status === 'iron' ? loss.iron_loss_status : row.status === 'copper' ? run.summary.winding_resistance?.status : undefined);
+      : row.status === 'iron' ? loss.iron_loss_status : row.status === 'rotor' ? loss.rotor_iron_loss_status
+        : row.status === 'copper' ? run.summary.winding_resistance?.status : undefined);
     const reason = row.status === 'efficiency' ? loss.efficiency_status_reason
-      : row.status === 'iron' ? loss.iron_loss_status_reason : row.status === 'copper' ? run.summary.winding_resistance?.status_reason : undefined;
+      : row.status === 'iron' ? loss.iron_loss_status_reason : row.status === 'rotor' ? loss.rotor_iron_loss_status_reason
+        : row.status === 'copper' ? run.summary.winding_resistance?.status_reason : undefined;
     const value = status === 'unavailable' ? null : finiteNumber(loss[row.field]);
     return { value, ...(value === null ? { missing: status === 'unavailable' ? 'Unavailable' as const : 'Not recorded' as const } : {}),
       status, reason: reason || undefined, partial: value !== null && partial && (row.key === 'shaft' || row.key === 'shaft_torque') };
   };
-  return descriptors.map(row => {
+  const hasRotorRecord = before.summary.loss_breakdown?.rotor_iron_loss_status != null || after.summary.loss_breakdown?.rotor_iron_loss_status != null;
+  // Rotor iron loss enters the total, the shaft output and so the efficiency: with it in one
+  // run only, those rows are on different loss bases and get no delta (#333).
+  const rotorIncluded = (run: ComparisonResult) => {
+    const loss = run.summary.loss_breakdown;
+    return Boolean(loss) && loss!.rotor_iron_loss_status !== 'unavailable' && finiteNumber(loss!.rotor_iron_loss_W) !== null;
+  };
+  const scopeDiffers = Boolean(before.summary.loss_breakdown && after.summary.loss_breakdown) && rotorIncluded(before) !== rotorIncluded(after);
+  const scopeRows = new Set(['efficiency', 'shaft', 'shaft_torque', 'total', 'subtotal']);
+  return descriptors.filter(row => row.status !== 'rotor' || hasRotorRecord).map(row => {
     const a = cell(before, row), b = cell(after, row);
+    const sameBasis = !(scopeDiffers && scopeRows.has(row.key));
     return { key: row.key, label: row.label, unit: row.unit, indent: row.indent, before: a, after: b,
-      comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) };
+      comparable: a.value !== null && b.value !== null && Boolean(a.partial) === Boolean(b.partial) && sameBasis,
+      ...(sameBasis ? {} : { basisNote: 'Only one of these runs includes rotor iron loss, so this value is on a different loss basis.' }) };
   }).filter(row => includeAllTotals || !['total', 'subtotal'].includes(row.key) || row.before.value !== null || row.after.value !== null);
 }

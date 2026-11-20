@@ -421,6 +421,15 @@ class SolveParams(BaseModel):
             "element counts within 1%, moving results at mesh-noise level."
         ),
     )
+    symmetry: Literal["auto", "full"] = Field(
+        default="full",
+        description=(
+            "How much of the motor is meshed and solved. 'auto' solves one "
+            "repeating sector when the geometry and winding repeat around the "
+            "circle, and the full circle otherwise; 'full' always solves the "
+            "full circle."
+        ),
+    )
     slot_sidewall_refinement: bool = Field(
         default=False,
         description=(
@@ -624,6 +633,16 @@ class SolveParams(BaseModel):
         ),
     )
 
+    @model_serializer(mode="wrap")
+    def omit_full_circle_symmetry(self, handler):
+        # The full circle is what every earlier request solved. Leaving it out
+        # keeps every existing config dump, cache key, request hash and run
+        # record byte-identical.
+        data = handler(self)
+        if data.get("symmetry") == "full":
+            del data["symmetry"]
+        return data
+
     def effective_step_deg(self) -> float:
         """Return the rotor step in electrical degrees based on solve_quality preset.
 
@@ -677,6 +696,7 @@ class SolveOptionsConfig(BaseModel):
     flux_density: bool = Field(default=True, description="Extract flux density map")
     cogging_torque: bool = Field(default=False, description="Run zero-current cogging torque sweep")
     losses_efficiency: bool = Field(default=True, description="Compute operating-point losses and efficiency; requires a loaded field sweep")
+    rotor_iron_loss: bool = Field(default=False, description="Opt in to full-motor rotor iron loss using 384 mechanical-turn poses plus closure")
     torque_speed_envelope: bool = Field(default=False, description="Run solver-derived torque-speed sweep")
     thd_analysis: bool = Field(
         default=False,
@@ -685,6 +705,19 @@ class SolveOptionsConfig(BaseModel):
             "flux-linkage DFT (requires at least 48 positions)"
         ),
     )
+
+    @model_validator(mode="after")
+    def rotor_loss_requires_loss_analysis(self):
+        if self.rotor_iron_loss and not self.losses_efficiency:
+            raise ValueError("rotor_iron_loss requires losses_efficiency")
+        return self
+
+    @model_serializer(mode="wrap")
+    def omit_disabled_rotor_loss(self, handler):
+        result = handler(self)
+        if not self.rotor_iron_loss:
+            result.pop("rotor_iron_loss", None)
+        return result
 
 
 

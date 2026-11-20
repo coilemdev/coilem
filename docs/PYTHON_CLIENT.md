@@ -91,9 +91,23 @@ result = coilem.solve(motor, point, analyses=["torque", "back_emf"], quality="st
                       solve_params={"nonlinear_solver": "newton"})
 ```
 
-- `analyses` names what runs: `torque`, `back_emf`, `cogging`, `losses`,
+- `analyses` names what runs: `torque`, `back_emf`, `cogging`, `losses`, `rotor_loss`,
   `thd` and `flux_density`. Left out, the motor's saved selection is used, or
   the app's defaults for a motor with none.
+  `rotor_loss` also selects `losses` and adds 384 full mechanical-turn poses
+  plus an independently solved endpoint. It is an experimental option for
+  full inner-rotor SPM and flat-IPM models with sinusoidal excitation and
+  M350-50A rotor steel. Sector rotor loss is unavailable in 0.5.9.
+  `coilem.check(...)` warns before solving when a requested `rotor_loss`
+  cannot be computed for the design, with the reason.
+  With `losses`, a plan that does not already solve a full electrical cycle
+  is requested as one, as the app does: 360° at the plan's step (15° for
+  `quick`, 7.5° for `standard`, or the custom step), with THD off. High
+  accuracy, and Standard with back-EMF or six-step drive, are kept. Iron loss
+  and efficiency need that full cycle. `coilem.build_request(...)` shows the
+  sweep that runs.
+  Results expose `summary.rotor_iron_loss` separately; totals include its watts
+  once. A missing requested history withholds efficiency instead of using zero.
 - `quality` is `quick`, `standard`, `fine` or `custom` (then set
   `rotor_step_deg` and `rotor_sweep_range_deg` in `solve_params`): the app's
   Preview, Standard, High accuracy and Custom plans. `mesh` is `coarse`,
@@ -110,7 +124,8 @@ result = coilem.solve(motor, point, analyses=["torque", "back_emf"], quality="st
   operating point, `quality`, `mesh` and `solve_params`.
 - `coilem.build_request(...)` returns the exact request `solve` would send,
   and `coilem.check(...)` runs the app's pre-solve checks and returns its
-  winding warnings, both without solving. `coilem.prepare(...)` does both
+  warnings (winding feasibility, and a requested rotor iron loss the design
+  cannot get), both without solving. `coilem.prepare(...)` does both
   and also says which run setup is used (below).
 
 ## Saved run setups

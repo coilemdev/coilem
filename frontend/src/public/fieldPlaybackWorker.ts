@@ -1,5 +1,15 @@
 /// <reference lib="webworker" />
 
+import {
+  buildFieldArrowMesh,
+  drawFieldArrows,
+  FIELD_ARROW_COLORS,
+  FIELD_ARROW_LENGTH_FRACTION,
+  FIELD_ARROW_RING_OFFSET,
+  fieldArrowSpacingMm,
+  sampleFieldArrows,
+  tintFieldArrowImage,
+} from './fieldArrows';
 import { fieldStrokeScale } from './fieldStrokeWidth';
 import { FIXED_FLUX_SCALE, FLUX_OVER_RANGE_INDEX, fluxColor, fluxColorIndex } from './fluxColorScale';
 
@@ -12,10 +22,29 @@ interface RasterRequest {
   source: RasterSource;
 }
 
+interface PmArrowRequest {
+  requestId: number;
+  pmArrowBlob: Blob;
+}
+
+let pmArrowCanvas: OffscreenCanvas | null = null;
+
+function tintPmArrows(image: ImageBitmap): ImageBitmap {
+  if (pmArrowCanvas?.width !== image.width || pmArrowCanvas.height !== image.height) {
+    pmArrowCanvas = new OffscreenCanvas(image.width, image.height);
+  }
+  const context = pmArrowCanvas.getContext('2d');
+  if (!context) throw new Error('Arrow tinting is unavailable.');
+  tintFieldArrowImage(context, image, FIELD_ARROW_COLORS.pm);
+  return pmArrowCanvas.transferToImageBitmap();
+}
+
 interface FieldPlotPayload {
   nodes_mm: number[][];
   triangles: number[][];
   element_b_mag_t: number[];
+  element_bx_t?: number[];
+  element_by_t?: number[];
   contour_levels: Array<{
     segments_mm: number[][];
     segment_b_mag_t?: number[];
@@ -60,7 +89,7 @@ function configuredCanvas(
   return { canvas, context };
 }
 
-function rasterize(plot: FieldPlotPayload) {
+function rasterize(plot: FieldPlotPayload, source: RasterSource) {
   const xValues = plot.nodes_mm.map((node) => node[0]).filter(Number.isFinite);
   const yValues = plot.nodes_mm.map((node) => node[1]).filter(Number.isFinite);
   if (xValues.length === 0 || yValues.length === 0) throw new Error('The solved field frame has no drawable nodes.');
@@ -129,23 +158,21 @@ function rasterize(plot: FieldPlotPayload) {
   const playbackContourLevels = plot.contour_levels.filter(
     (_, index) => index % MEDIUM_CONTOUR_LEVEL_STRIDE === 0,
   );
-  const lineLayer = configuredCanvas(viewBox);
-  lineLayer.context.beginPath();
   let contourSegmentCount = 0;
   playbackContourLevels.forEach((level) => {
-    level.segments_mm.forEach((segment) => {
-      if (segment.length < 4 || !segment.slice(0, 4).every(Number.isFinite)) return;
-      lineLayer.context.moveTo(segment[0], -segment[1]);
-      lineLayer.context.lineTo(segment[2], -segment[3]);
-      contourSegmentCount += 1;
-    });
+    contourSegmentCount += level.segments_mm.filter(
+      (segment) => segment.length >= 4 && segment.slice(0, 4).every(Number.isFinite),
+    ).length;
   });
-  lineLayer.context.strokeStyle = '#ffd166';
-  lineLayer.context.lineWidth = 0.28 * strokeScale;
-  lineLayer.context.lineCap = 'round';
-  lineLayer.context.shadowColor = 'rgba(255,145,0,.9)';
-  lineLayer.context.shadowBlur = 0.45;
-  lineLayer.context.stroke();
+  // Light arrows along B at the medium spacing, as in the server's images; the
+  // viewer tints them to the PM or stator colour where it needs to.
+  const lineLayer = configuredCanvas(viewBox);
+  const arrowMesh = buildFieldArrowMesh(plot.nodes_mm, plot.triangles, plot.element_bx_t, plot.element_by_t);
+  const spacing = fieldArrowSpacingMm(Math.max(viewBox[2], viewBox[3]), 'medium');
+  const arrows = arrowMesh
+    ? sampleFieldArrows(arrowMesh, spacing, source === 'pm' ? FIELD_ARROW_RING_OFFSET.pm : FIELD_ARROW_RING_OFFSET.primary)
+    : [];
+  drawFieldArrows(lineLayer.context, arrows, spacing * FIELD_ARROW_LENGTH_FRACTION, FIELD_ARROW_COLORS.field);
 
   const vectorCandidates = playbackContourLevels.flatMap((level) => (
     level.segments_mm.flatMap((segment, index) => {
@@ -175,11 +202,24 @@ function rasterize(plot: FieldPlotPayload) {
       vectorCandidates[Math.round(index * (vectorCandidates.length - 1) / (DIRECTION_CUE_TARGET - 1))]
     ));
 
+  let lines = lineLayer.canvas.transferToImageBitmap();
+  let pmArrowsTinted = false;
+  if (source === 'pm') {
+    try {
+      const tinted = tintPmArrows(lines);
+      lines.close();
+      lines = tinted;
+      pmArrowsTinted = true;
+    } catch {
+      // Keep the neutral image for display on browsers without worker compositing.
+    }
+  }
   return {
     base: baseLayer.canvas.transferToImageBitmap(),
     heat: heatLayer.canvas.transferToImageBitmap(),
     mesh: meshLayer.canvas.transferToImageBitmap(),
-    lines: lineLayer.canvas.transferToImageBitmap(),
+    lines,
+    pmArrowsTinted,
     viewBox: viewBox.join(' '),
     minB,
     maxB,
@@ -191,9 +231,19 @@ function rasterize(plot: FieldPlotPayload) {
   };
 }
 
-self.onmessage = async (event: MessageEvent<RasterRequest>) => {
+self.onmessage = async (event: MessageEvent<RasterRequest | PmArrowRequest>) => {
   const request = event.data;
   try {
+    if ('pmArrowBlob' in request) {
+      const original = await createImageBitmap(request.pmArrowBlob);
+      try {
+        const lines = tintPmArrows(original);
+        self.postMessage({ requestId: request.requestId, ok: true, lines }, { transfer: [lines] });
+      } finally {
+        original.close();
+      }
+      return;
+    }
     const response = await fetch(`${request.apiBase}/solve/field-frame/${encodeURIComponent(request.artifactId)}`);
     if (!response.ok) throw new Error(`Field frame request failed with HTTP ${response.status}.`);
     const payload = await response.json() as { field_line_frame?: FieldPlotPayload };
@@ -201,7 +251,7 @@ self.onmessage = async (event: MessageEvent<RasterRequest>) => {
     if (!outerPlot) throw new Error('The field frame payload is missing.');
     const selectedPlot = request.source === 'pm' ? outerPlot.noload_plot : outerPlot;
     if (!selectedPlot) throw new Error('The requested field composition is unavailable.');
-    const raster = rasterize(selectedPlot);
+    const raster = rasterize(selectedPlot, request.source);
     self.postMessage(
       { requestId: request.requestId, ok: true, raster },
       { transfer: [raster.base, raster.heat, raster.mesh, raster.lines] },

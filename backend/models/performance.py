@@ -228,6 +228,77 @@ class WindingResistance(BaseModel):
     status_reason: Optional[str] = PHASE_RESISTANCE_STATUS_REASON
 
 
+class RotorIronLoss(BaseModel):
+    """Full-mechanical-turn rotor steel loss; missing values never mean zero."""
+
+    status: OutputStatus
+    status_reason: Optional[str] = None
+    method: Literal["rotor_material_harmonic/v1"] = "rotor_material_harmonic/v1"
+    reference_frame: Literal["rotor_material"] = "rotor_material"
+    solved_region: Literal["full_motor", "sector"] = "full_motor"
+    steel: str
+    coefficient_source: Optional[str] = None
+    coefficients: Optional[dict[str, float]] = None
+    stacking_factor: Optional[float] = Field(default=None, gt=0, le=1)
+    speed_rpm: Optional[float] = Field(default=None, gt=0)
+    mechanical_frequency_Hz: Optional[float] = Field(default=None, gt=0)
+    samples_per_mechanical_turn: Optional[int] = Field(default=None, ge=8)
+    mechanical_span_deg: Literal[360] = 360
+    rotor_iron_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_hysteresis_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_lamination_eddy_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_iron_mass_kg: Optional[float] = Field(default=None, gt=0)
+    share_above_validated_frequency: Optional[float] = Field(default=None, ge=0, le=1)
+    share_above_validated_flux_density: Optional[float] = Field(default=None, ge=0, le=1)
+    validated_max_frequency_Hz: float = Field(default=1000, gt=0)
+    validated_max_flux_density_T: float = Field(default=1.5, gt=0)
+    endpoint_max_component_difference_T: Optional[float] = Field(default=None, ge=0)
+    endpoint_rms_component_difference_T: Optional[float] = Field(default=None, ge=0)
+    history_sha256: Optional[str] = None
+
+    @property
+    def history_positions_including_closure(self) -> int | None:
+        """Only a completed rotor_material_harmonic/v1 record proves the independent endpoint."""
+        if self.status == "unavailable" or self.samples_per_mechanical_turn is None:
+            return None
+        return self.samples_per_mechanical_turn + 1
+
+    @model_validator(mode="after")
+    def values_follow_status(self):
+        metadata = (self.speed_rpm, self.mechanical_frequency_Hz, self.endpoint_max_component_difference_T,
+                    self.endpoint_rms_component_difference_T, self.validated_max_frequency_Hz, self.validated_max_flux_density_T)
+        if any(v is not None and not math.isfinite(v) for v in metadata):
+            raise ValueError("rotor loss metadata must be finite")
+        values = (self.rotor_iron_loss_W, self.rotor_hysteresis_loss_W,
+                  self.rotor_lamination_eddy_loss_W, self.rotor_iron_mass_kg)
+        if self.status == "unavailable":
+            if not self.status_reason or any(v is not None for v in values):
+                raise ValueError("unavailable rotor loss needs a reason and no loss/mass values")
+            return self
+        if self.solved_region != "full_motor":
+            raise ValueError("rotor iron loss on sector solves is not supported")
+        if any(v is None or not math.isfinite(v) for v in values):
+            raise ValueError("available rotor loss needs finite components and mass")
+        if abs(self.rotor_hysteresis_loss_W + self.rotor_lamination_eddy_loss_W - self.rotor_iron_loss_W) > _SUM_TOLERANCE_W:
+            raise ValueError("rotor hysteresis + lamination eddy must equal rotor iron loss")
+        if (not self.coefficient_source or not self.coefficients or self.stacking_factor is None
+                or self.samples_per_mechanical_turn is None or self.speed_rpm is None or self.mechanical_frequency_Hz is None):
+            raise ValueError("available rotor loss needs material provenance and a complete sampling plan")
+        if (self.endpoint_max_component_difference_T is None or self.endpoint_rms_component_difference_T is None
+                or self.endpoint_max_component_difference_T > 1e-6 or self.endpoint_rms_component_difference_T > 1e-7
+                or self.history_sha256 is None or len(self.history_sha256) != 64
+                or any(c not in "0123456789abcdef" for c in self.history_sha256)):
+            raise ValueError("available rotor loss needs a converged independent endpoint and history identity")
+        if abs(self.mechanical_frequency_Hz - self.speed_rpm/60) > 1e-9:
+            raise ValueError("rotor history frequency must use mechanical speed")
+        required = {"kh", "kc", "alpha", "density_kg_m3"}
+        if (set(self.coefficients) != required or not all(math.isfinite(v) for v in self.coefficients.values())
+                or self.coefficients["kh"] < 0 or self.coefficients["kc"] < 0
+                or self.coefficients["alpha"] <= 0 or self.coefficients["density_kg_m3"] <= 0):
+            raise ValueError("rotor loss coefficients need finite physical values and density")
+        return self
+
+
 class LossBreakdown(BaseModel):
     """Losses and efficiency at the solved operating point.
 
@@ -252,6 +323,12 @@ class LossBreakdown(BaseModel):
     iron_eddy_loss_W: Optional[float] = Field(default=None, ge=0)
     iron_loss_status: OutputStatus
     iron_loss_status_reason: Optional[str] = None
+    rotor_iron_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_hysteresis_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_lamination_eddy_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_iron_loss_status: Optional[OutputStatus] = None
+    rotor_iron_loss_status_reason: Optional[str] = None
+    loss_scope: Literal["stator_only", "rotor_only", "stator_and_rotor"] = "stator_only"
     mechanical_loss_W: float = Field(default=0.0, ge=0, description="User input; 0 when not stated")
     total_loss_W: float = Field(ge=0)
     shaft_power_W: float
@@ -270,9 +347,20 @@ class LossBreakdown(BaseModel):
         elif self.iron_hysteresis_loss_W is not None and self.iron_eddy_loss_W is not None:
             if abs(self.iron_hysteresis_loss_W + self.iron_eddy_loss_W - self.iron_loss_W) > _SUM_TOLERANCE_W:
                 raise ValueError("iron_hysteresis_loss_W + iron_eddy_loss_W must equal iron_loss_W")
-        expected_total = self.copper_loss_W + (self.iron_loss_W or 0.0) + self.mechanical_loss_W
+        if self.rotor_iron_loss_W is None:
+            if self.rotor_iron_loss_status not in (None, "unavailable") or self.loss_scope != "stator_only":
+                raise ValueError("missing rotor loss cannot be included or available")
+        else:
+            expected_scope = "stator_and_rotor" if self.iron_loss_W is not None else "rotor_only"
+            if self.rotor_iron_loss_status not in ("experimental", "qualified") or self.loss_scope != expected_scope:
+                raise ValueError("included rotor loss needs an available status and matching loss scope")
+            if self.rotor_hysteresis_loss_W is None or self.rotor_lamination_eddy_loss_W is None:
+                raise ValueError("rotor loss components must be reported separately")
+            if abs(self.rotor_hysteresis_loss_W + self.rotor_lamination_eddy_loss_W - self.rotor_iron_loss_W) > _SUM_TOLERANCE_W:
+                raise ValueError("rotor loss components must sum to rotor iron loss")
+        expected_total = self.copper_loss_W + (self.iron_loss_W or 0.0) + (self.rotor_iron_loss_W or 0.0) + self.mechanical_loss_W
         if abs(self.total_loss_W - expected_total) > _SUM_TOLERANCE_W:
-            raise ValueError("total_loss_W must equal copper + iron + mechanical loss")
+            raise ValueError("total_loss_W must equal copper + stator iron + rotor iron + mechanical loss")
         if abs(self.input_power_W - self.shaft_power_W - self.total_loss_W) > _SUM_TOLERANCE_W:
             raise ValueError("input_power_W must equal shaft_power_W + total_loss_W")
         if self.efficiency_pct is None and self.efficiency_status != "unavailable":
@@ -352,6 +440,7 @@ class FluxLinkageMapPoint(BaseModel):
     iron_loss_W: Optional[float] = Field(default=None, ge=0, description="At the map's reference speed")
     iron_hysteresis_loss_W: Optional[float] = Field(default=None, ge=0)
     iron_eddy_loss_W: Optional[float] = Field(default=None, ge=0)
+    rotor_iron_loss: Optional[RotorIronLoss] = None
     nonlinear_iterations_max: Optional[int] = Field(default=None, ge=0)
     nonlinear_residual_max: Optional[float] = Field(default=None, ge=0)
     error: Optional[str] = None
@@ -385,6 +474,7 @@ class FluxLinkageMap(BaseModel):
     rotor_positions: int = Field(ge=2)
     mesh_density: str
     torque_method: Optional[str] = None
+    rotor_iron_loss_requested: bool = False
     points: list[FluxLinkageMapPoint]
 
     @model_validator(mode="after")
@@ -482,6 +572,9 @@ class EfficiencyMap(BaseModel):
     efficiency_pct: list[list[Optional[float]]]
     copper_loss_W: list[list[Optional[float]]]
     iron_loss_W: list[list[Optional[float]]]
+    loss_scope: Literal["stator_only", "stator_and_rotor"] = "stator_only"
+    rotor_iron_loss_W: Optional[list[list[Optional[float]]]] = None
+    rotor_iron_loss_status: Optional[OutputStatus] = None
     phase_current_rms_A: Optional[list[list[Optional[float]]]] = Field(
         default=None, description="The least-loss phase current at each point, rms"
     )
@@ -500,7 +593,7 @@ class EfficiencyMap(BaseModel):
             if any(later <= earlier for earlier, later in zip(axis, axis[1:])):
                 raise ValueError(f"{name} must be strictly increasing")
         rows, columns = len(self.torque_Nm), len(self.speed_rpm)
-        for name in ("efficiency_pct", "copper_loss_W", "iron_loss_W", "phase_current_rms_A", "current_angle_deg"):
+        for name in ("efficiency_pct", "copper_loss_W", "iron_loss_W", "rotor_iron_loss_W", "phase_current_rms_A", "current_angle_deg"):
             matrix = getattr(self, name)
             if matrix is None:
                 continue

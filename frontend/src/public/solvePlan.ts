@@ -23,6 +23,23 @@ export const PUBLIC_SOLVE_PLAN_MESH_DENSITY = {
   fine: 'fine',
 } as const satisfies Record<PublicSolvePreset, MotorConfig['solve_params']['mesh_density']>;
 
+/** The Accuracy plan buttons: the three preset grids, and Maximum accuracy, which is High accuracy's grid
+ * on the Very fine mesh. A plan is only these two settings, so saved setups, design files and the
+ * backend need no new value. */
+export type PublicSolvePlanChoice = PublicSolvePreset | 'very_fine';
+export const PUBLIC_SOLVE_PLAN_SETTINGS = {
+  quick: { solve_quality: 'quick', mesh_density: 'coarse' },
+  standard: { solve_quality: 'standard', mesh_density: 'normal' },
+  fine: { solve_quality: 'fine', mesh_density: 'fine' },
+  very_fine: { solve_quality: 'fine', mesh_density: 'very_fine' },
+} as const satisfies Record<PublicSolvePlanChoice, { solve_quality: PublicSolvePreset; mesh_density: MotorConfig['solve_params']['mesh_density'] }>;
+
+/** The plan button a design's settings light up: Very fine for High accuracy's grid on the Very fine mesh. */
+export function selectedSolvePlan(config: MotorConfig): PublicSolvePlanChoice | 'custom' {
+  const { solve_quality: quality, mesh_density: mesh } = config.solve_params;
+  return quality === 'fine' && mesh === 'very_fine' ? 'very_fine' : quality;
+}
+
 /** The step of a loss sweep whose plan does not already solve a full cycle: Preview keeps a
  * quick 15° grid and Standard its own 7.5°. High accuracy always solves a full cycle. */
 const LOSSES_FULL_CYCLE_STEP_DEG: Record<PublicSolvePreset, number> = { quick: 15, standard: 7.5, fine: 3.75 };
@@ -79,19 +96,19 @@ export function applyPublicCustomSweep(config: MotorConfig, requestedStepDeg: nu
 
 export function applyPublicSolvePreset(
   config: MotorConfig,
-  solvePlan: PublicSolvePreset,
+  solvePlan: PublicSolvePlanChoice,
   presetSweep: PublicSweepSampling,
 ): MotorConfig {
+  const settings = PUBLIC_SOLVE_PLAN_SETTINGS[solvePlan];
   return {
     ...config,
     solve_options: {
       ...config.solve_options,
-      thd_analysis: config.solve_options.back_emf && (solvePlan === 'standard' || solvePlan === 'fine'),
+      thd_analysis: config.solve_options.back_emf && (settings.solve_quality === 'standard' || settings.solve_quality === 'fine'),
     },
     solve_params: {
       ...config.solve_params,
-      solve_quality: solvePlan,
-      mesh_density: PUBLIC_SOLVE_PLAN_MESH_DENSITY[solvePlan],
+      ...settings,
       ...presetSweep,
     },
   };

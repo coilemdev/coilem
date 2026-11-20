@@ -16,7 +16,7 @@ import { COMPARISON_STYLES, addComparisonRun, compareMultipleLosses, compareMult
 import { formatSignificant, torqueDecimals } from './numberFormat';
 import { WaveformChart } from './WaveformChart';
 import { InfoTip } from './Popover';
-import { COMPARISON_METRICS as METRICS, actualMeshProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
+import { COMPARISON_METRICS as METRICS, actualMeshProvenance, actualPositionsProvenance, actualTorqueProvenance, excitationProvenance } from './comparisonMetrics';
 import { comparisonCsv, comparisonCsvFilename } from './comparisonCsv';
 import { formatSeconds } from './solveTime';
 import { StatusDot } from './OutputStatusBadge';
@@ -463,7 +463,8 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
         {compareWithPrevious && baselineSlot.key === previousKey && selection.slots.find(slot => slot.id === 'run-b')?.key === currentKey && <p className="public-run-compare-previous-note">Run A is the previous completed run in this saved project. Run B is the result you opened.</p>}
         <RunInputChanges runs={runs.map(run => ({ ...run, details: {
           Design: run.record.project_name || run.record.project_slug,
-          'Actual mesh': actualMeshProvenance(run.result), 'Torque extraction': actualTorqueProvenance(run.result),
+          'Actual mesh': actualMeshProvenance(run.result), 'Rotor positions': actualPositionsProvenance(run.result),
+          'Torque extraction': actualTorqueProvenance(run.result),
           'Excitation identity': excitationProvenance(run.result), Completed: formatRunTime(run.record.completed_at, 'Not recorded'),
         } }))} />
         {runs.length > 2 && <p className="public-run-compare-delta-note">Values below include Δ and percentage change from {runs[0].label}, the pinned baseline.</p>}
@@ -526,7 +527,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
               <tbody>{losses.map(row => <tr key={row.key} className={row.indent ? 'public-run-compare-loss-component' : undefined}>
                 <th scope="row">{row.label}</th>
                 <ComparisonCells runs={runs} values={row.cells.map((cell, index) => <LossComparisonValue cell={cell} label={`${runs[index].label} ${row.label}`} unit={row.unit} />)}
-                  differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
+                  differences={row.cells.map((cell, index) => ({ absolute: row.comparable[index] ? <>{lossDelta(row.cells[0].value, cell.value, row.unit)} <small>{row.unit === '%' ? 'pp' : row.unit}</small></> : row.basisNotes[index] ? <>— <InfoTip label={`${row.label}: different loss basis`}>{row.basisNotes[index]}</InfoTip></> : '—', percent: row.comparable[index] ? percentDelta(row.cells[0].value, cell.value) : '—' }))} />
               </tr>)}</tbody>
             </>}
           </table>

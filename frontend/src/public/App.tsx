@@ -92,7 +92,7 @@ import {
   applyPublicSolvePreset,
   capturePublicPresetSweep,
   PUBLIC_DEFAULT_PRESET_SWEEP,
-  type PublicSolvePreset,
+  type PublicSolvePlanChoice,
   type PublicSweepSampling,
 } from './solvePlan';
 import { EMPTY_PUBLIC_SOLVE_PROGRESS_BAR, nextPublicSolveProgressBar, withFirstPublicSolveFieldFrame } from './solveProgress';
@@ -930,14 +930,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, [editFeedback, invalidateGeometryPreview, resetComputedState]);
 
   const updateMeshSetting = useCallback((
-    field: 'mesh_density' | 'corner_refinement' | 'mesh_build',
-    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | boolean,
+    field: 'mesh_density' | 'corner_refinement' | 'mesh_build' | 'symmetry',
+    value: MotorConfig['solve_params']['mesh_density'] | MotorConfig['solve_params']['mesh_build'] | MotorConfig['solve_params']['symmetry'] | boolean,
   ) => {
     validationRequestId.current += 1;
-    setConfig((current) => ({
-      ...current,
-      solve_params: { ...current.solve_params, [field]: value },
-    }));
+    const next: MotorConfig = { ...config, solve_params: { ...config.solve_params, [field]: value } };
+    setConfig(next);
     setMesh(null);
     setValidation(null);
     setValidationChecking(false);
@@ -946,8 +944,10 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     setProgress(null);
     setLiveSamples([]);
     setError(null);
-    setNotice('Mesh settings changed. Prepare a new mesh to apply them.');
-  }, []);
+    // A mesh setting takes effect at once: mesh again right after the change, so a run is
+    // never left waiting on a mesh nobody asked for (#333).
+    void prepareMesh(next);
+  }, [config, prepareMesh]);
 
   const updateSolveSetting = useCallback((
     field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
@@ -1057,7 +1057,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       : 'Elmer is disabled for this launch. Magneto2D is selected.');
   }, [connectionStatus, elmerCapability, selectedSolver]);
 
-  const updateSolvePlan = useCallback((solvePlan: PublicSolvePreset) => {
+  const updateSolvePlan = useCallback((solvePlan: PublicSolvePlanChoice) => {
     validationRequestId.current += 1;
     const presetSweep = config.solve_params.solve_quality === 'custom'
       ? presetSweepRef.current
@@ -1131,7 +1131,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     }
   }, [constructionPreview, statorOnlyPreview, diagnosticPreview]);
 
-  const refreshSolveValidation = useCallback(async (nextConfig: MotorConfig) => {
+  const refreshSolveValidation = useCallback(async (nextConfig: MotorConfig, solveMeshKey?: string) => {
     const requestId = ++validationRequestId.current;
     setValidationChecking(true);
     setValidationError(null);
@@ -1141,6 +1141,9 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
         solver: selectedSolver,
         project_name: designName
           ?? `coilEM-${nextConfig.topology.toLowerCase()}-${nextConfig.rotor.pole_count}p${nextConfig.stator.slot_count}s`,
+        // The prepared mesh lets the run-time estimate use its real element count
+        // instead of a guess from the slot and pole counts (#333).
+        ...(selectedSolver === 'magneto2d' && solveMeshKey ? { solve_mesh_key: solveMeshKey } : {}),
       };
       const checked = await validatePublicSolve(request) as unknown as SolveValidation;
       if (requestId !== validationRequestId.current) return;
@@ -1243,10 +1246,10 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   useEffect(() => {
     if (view !== 'solve' || busy !== null) return undefined;
     const timer = window.setTimeout(() => {
-      void refreshSolveValidation(config);
+      void refreshSolveValidation(config, mesh?.solve_mesh_key);
     }, 140);
     return () => window.clearTimeout(timer);
-  }, [busy, config, refreshSolveValidation, view]);
+  }, [busy, config, mesh?.solve_mesh_key, refreshSolveValidation, view]);
 
   const generateMesh = (): Promise<MeshPreview | null> => prepareMesh(config);
 
@@ -1650,6 +1653,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       config,
       designName ?? `coilem-${config.topology.toLowerCase()}-${config.rotor.pole_count}p${config.stator.slot_count}s`,
       library,
+      selectedSolver,
     ).then((saved) => {
       if (!saved) return;
       // The saved file can reopen this library, so this browser keeps it from now on.
@@ -1749,10 +1753,8 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           saved_run: payload.saved_run,
           qualification: provenance?.qualification ?? null,
         } as unknown as SolveResult);
-        setView('solve');
-        // Prepare the mesh as Continue to Solve does, so Run again is available
-        // without a trip back to Design; the stored result stays on show meanwhile.
-        if (!guidedActive) void prepareMesh(parsed.config);
+        // Back to Solve prepares the mesh when the user chooses to rerun.
+        setView('report');
         const completedAt = typeof savedRun.completed_at === 'string' ? new Date(savedRun.completed_at).toLocaleString() : null;
         const playback = payload.field_playback as { available?: unknown } | undefined;
         setNotice([
@@ -1764,10 +1766,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
         return;
       }
       setView(destination);
+      // Rerun settings lands in Solve as Continue to Solve does: with the mesh being prepared.
+      if (destination === 'solve' && !guidedActive) void prepareMesh(parsed.config);
       const restoredNotice = destination === 'solve'
         ? replaySolver === 'elmer' && !elmerCapabilityIsReady(elmerCapability)
           ? 'Saved Elmer settings restored, but Elmer is not currently available. Magneto2D remains selected.'
-          : `Saved ${replaySolver === 'elmer' ? 'Elmer' : 'Magneto2D'} settings restored. Prepare the mesh, review them, then explicitly start a new analysis.`
+          : `Saved ${replaySolver === 'elmer' ? 'Elmer' : 'Magneto2D'} settings restored. Review them, then explicitly start a new analysis.`
         : 'Saved project opened. Its stored result remains immutable; edit or solve explicitly.';
       setNotice([restoredNotice, parsed.solverSettingsNotice, parsed.runSetupsNotice].filter(Boolean).join(' '));
     } catch (requestError) {

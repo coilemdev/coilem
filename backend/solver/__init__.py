@@ -66,6 +66,7 @@ from backend.models import (
     IronLossDensity,
     MotorConfig,
     PhaseCurrentWaveform,
+    RotorIronLoss,
     SolveMetadata,
     SolveOptionsConfig,
     SolveResult,
@@ -1279,9 +1280,14 @@ def _build_field_line_frame_in_subprocess(
     # for a 48-position IPM run).
     steel_accumulator = new_steel_flux_density_rms_accumulator()
     with solve_profile.span("frame worker: flux statistics and iron-loss sample"):
-        update_steel_flux_density_rms_accumulator(steel_accumulator, frame_payload)
-        # The stator part of the field is what iron loss needs from each position,
-        # taken here for the same reason.
+        sector_tiling = (frame.get("mesh_info") or {}).get("sector_tiling")
+        update_steel_flux_density_rms_accumulator(
+            steel_accumulator,
+            frame_payload,
+            # A sector solve's frame is its sector followed by identical copies.
+            element_count=int(sector_tiling["triangles"]) if isinstance(sector_tiling, dict) else None,
+        )
+        # The stator part of the field is what iron loss needs from each position.
         stator_sample = stator_field_sample(frame_payload) if capture_stator_field else None
     solve_profile.mark("frame finished")
     check_process_worker_cancelled()
@@ -3328,6 +3334,20 @@ class Magneto2DSolver(Solver):
             sweep_report.get("steel_flux_density_rms"),
         ) or steel_flux_density_rms_from_frames(field_line_frames or [])
         iron_loss = _validated_iron_loss(sweep_report.get("iron_loss")) if losses_requested else None
+        rotor_iron_loss = None
+        if losses_requested and result_solve_options.rotor_iron_loss:
+            from backend.rotor_loss_solver import unavailable, unavailable_reason
+
+            try:
+                rotor_iron_loss = RotorIronLoss.model_validate(sweep_report.get("rotor_iron_loss"))
+            except ValueError:
+                rotor_iron_loss = unavailable(config, "No complete rotor-material history in these reports; rerun with rotor iron loss selected.")
+            if (rotor_iron_loss.status != "unavailable"
+                    and (rotor_iron_loss.steel != config.materials.rotor_steel
+                         or abs(rotor_iron_loss.speed_rpm-solve_params.rated_speed_rpm) > 1e-9)):
+                rotor_iron_loss = unavailable(config, "Stored rotor loss uses different material or speed; rerun the rotor-loss analysis.")
+            if unavailable_reason(config):
+                rotor_iron_loss = unavailable(config, unavailable_reason(config))
         iron_loss_density_raw = sweep_report.get("iron_loss_density") if losses_requested else None
         if losses_requested and iron_loss is None and field_line_frames:
             # Sweeps without per-position stator samples (the batch path, or a
@@ -3358,7 +3378,7 @@ class Magneto2DSolver(Solver):
         if summary_slot_excitation is None and slot_excitation_frames:
             summary_slot_excitation = [contribution.model_dump(mode="json") for contribution in slot_excitation_frames[0].contributions]
         if losses_requested:
-            winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss)
+            winding_record, loss_breakdown = operating_point_losses(config, avg_torque_nm, iron_loss, rotor_iron_loss=rotor_iron_loss)
         else:
             # Resistance is a winding property, independent of the loss analysis.
             try:
@@ -3524,6 +3544,7 @@ class Magneto2DSolver(Solver):
                 rms_flux_density_teeth_T=steel_b_rms.get("teeth") if steel_b_rms else None,
                 rms_flux_density_yoke_T=steel_b_rms.get("yoke") if steel_b_rms else None,
                 iron_loss=iron_loss,
+                rotor_iron_loss=rotor_iron_loss,
                 winding_resistance=winding_record,
                 efficiency_pct=efficiency,
                 loss_breakdown=loss_breakdown,
@@ -3589,6 +3610,7 @@ class Magneto2DSolver(Solver):
                 torque_sweep_computed=torque_requested,
                 solver_environment=single_report.get("solver_environment"),
                 mesh_element_count=mesh_info["num_triangles"],
+                sector_repeats=(mesh_info.get("sector") or {}).get("repeats"),
                 rotor_positions=len(sweep["rotor_positions_elec_deg"]),
                 timestamp=datetime.now(timezone.utc),
                 current_amplitude_A=operating_point["resolved_phase_current_peak_a"],
@@ -3811,9 +3833,25 @@ class Magneto2DSolver(Solver):
         solve_started = time.perf_counter()
         self._raise_if_cancelled()
         original_progress = on_progress
+        rotor_work = 0
+        if config.solve_options is not None and config.solve_options.rotor_iron_loss:
+            from backend.rotor_loss_solver import planned_positions
+
+            if not config.solve_options.losses_efficiency:
+                raise ValueError("rotor_iron_loss requires losses_efficiency")
+            rotor_work = planned_positions(config)
+        field_progress_total = 0
+        rotor_finished = False
 
         def checked_progress(*args, **kwargs):
+            nonlocal field_progress_total
             self._raise_if_cancelled()
+            if rotor_work and not rotor_finished and len(args) >= 4 and args[3] == "magneto2d_complete":
+                args = (*args[:3], "magneto2d_sweep", *args[4:])
+            if (rotor_work and len(args) >= 2 and isinstance(args[1], (int, float)) and args[1] > 0
+                    and (len(args) < 4 or args[3] != "rotor_iron_loss")):
+                field_progress_total = max(field_progress_total, int(args[1]))
+                args = (args[0], args[1]+rotor_work, *args[2:])
             if original_progress is not None:
                 return original_progress(*args, **kwargs)
 
@@ -3833,7 +3871,30 @@ class Magneto2DSolver(Solver):
             solve_mesh_artifact: dict[str, Any] | None = None,
             solve_mesh_key: str | None = None,
         ) -> SolveResult:
+            nonlocal rotor_finished
             self._raise_if_cancelled()
+            if config.solve_options is not None and config.solve_options.rotor_iron_loss and pipeline_stage == "field_solve":
+                from backend.rotor_loss_solver import compute_or_cached
+
+                native_config = _clockwise_excitation_config(config) if self._launch_surface else config
+                direction = -1 if self._launch_surface else 1
+
+                def rotor_progress(position, total, angle):
+                    on_progress(field_progress_total+position, field_progress_total+total, None, "rotor_iron_loss",
+                                None if angle is None else (-1 if self._launch_surface else 1)*angle*config.rotor.pole_count/2)
+
+                with solve_profile.span("rotor iron loss: full mechanical turn"):
+                    rotor_record = compute_or_cached(native_config, direction=direction,
+                        cache_dir=_magneto2d_summary_cache_dir(solve_cache_dir), on_progress=rotor_progress,
+                        check_cancelled=self._raise_if_cancelled,
+                        workers=getattr(native_config.solve_params, "magneto2d_workers", None) or 4)
+                self._raise_if_cancelled()
+                rotor_finished = True
+                sweep_report["rotor_iron_loss"] = rotor_record.model_dump(mode="json")
+                summary_dir = _magneto2d_summary_cache_dir(solve_cache_dir)
+                if summary_dir is not None:
+                    summary_dir.mkdir(parents=True, exist_ok=True)
+                    (summary_dir / "sweep_report.json").write_text(json.dumps(sweep_report), encoding="utf-8")
             result_start = time.perf_counter()
             with solve_profile.span("result: assemble from reports"):
                 result = self.build_result_from_reports(

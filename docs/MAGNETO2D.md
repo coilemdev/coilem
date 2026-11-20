@@ -2,10 +2,7 @@
 
 Magneto2D 0.6.0 is coilEM's native Rust 2D magnetostatic finite-element solver
 and postprocessor. It is bundled by the coilEM source application; the solver
-and application have separate version numbers. Magneto2D 0.6.0 is the solver in
-the coilEM 0.5.8 release candidate, which has not yet been qualified. Magneto2D
-0.5.0, the solver in coilEM 0.5.6 and 0.5.7, passed the registered
-qualification on Windows and macOS; see [release status](../PUBLICATION_STATUS.md). The public application uses
+and application have separate version numbers. The 0.5.9 candidate has changed physics relative to the last public A-F measurement. See [validation](VALIDATION.md#qualification-status) for the measured source and scope. The public application uses
 Python and Gmsh to build tagged solve meshes, then invokes Magneto2D for field
 solving and electromagnetic postprocessing.
 
@@ -25,7 +22,7 @@ limitations.
 | --- | --- |
 | Physics | 2D magnetostatic FEM with nonlinear electrical steel |
 | Rotor layout | Inner rotor, or outer rotor (outrunner) for SPM only; see [Outrunner](OUTRUNNER.md) |
-| Qualified motor paths | Per [Validation](VALIDATION.md#qualification-status), for inner-rotor machines with the bundled M350-50A steel: SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings (full pitch or 5/6 short pitch) under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
+| Motor paths covered by the historical full-motor record | Per [Validation](VALIDATION.md#qualification-status), for inner-rotor machines with the bundled M350-50A steel: SPM with concentrated windings under sinusoidal or ideal six-step current; SPM with two-layer distributed windings (full pitch or 5/6 short pitch) under sinusoidal current; flat-buried IPM with concentrated windings under sinusoidal current |
 | Experimental motor paths | V-shape IPM (all six fixtures pass, but its fundamental Back-EMF error against FEMM has grown), outer-rotor SPM, single-layer distributed and two-layer concentrated windings, imported steels, the Fast mesh build, and accepted combinations the benchmark did not measure, such as six-step with distributed windings or IPM with distributed windings |
 | Mesh producer | Native Gmsh only |
 | Concentrated windings | Fractional-slot layouts (`q < 1`) are tooth coils: one layer winds every other tooth, two layers every tooth (experimental). The Design panel calls this **Wound teeth**: Alternate or All. Other concentrated layouts wind one phase per slot in one layer |
@@ -410,9 +407,9 @@ Finally, Magneto2D applies the model constraints:
 
 - $A_z=0$ on the outer boundary (an outer-rotor mesh names its own Dirichlet
   nodes); and
-- no sector coupling for public motor meshes, which are full machines. The
-  motor solver keeps anti-periodic pole-pitch coupling for sector artifacts,
-  and field mode accepts periodic or anti-periodic paired boundaries.
+- periodic or anti-periodic coupling on sector edges when a sector model is
+  used (see [Sector models](#sector-models)).
+
 
 These constraints remove the arbitrary constant in $A_z$, close the linear
 system, and preserve the symmetric matrix structure needed by the linear
@@ -690,6 +687,107 @@ It then derives the requested outputs, including:
 A sweep repeats the per-angle process, normally reusing mesh structure and
 nearby nonlinear states where the rotation model permits it, then aggregates
 the angle results into torque, flux-linkage, and Back-EMF waveforms.
+
+### Sector models
+
+A motor with $Q$ slots and $2p$ poles repeats around the circle. With
+`solve_params.symmetry = "auto"` the backend meshes one repeating sector and
+Magneto2D solves it; `"full"`, the default, always solves the full circle.
+
+**Choosing the sector.** A sector that holds a whole number of slots and of
+poles repeats the iron and the magnets; an odd number of poles makes the next
+sector its negative (anti-periodic). The backend tries the smallest such sector
+first and keeps it only if the winding table and the region layout both repeat
+over it. A single-layer winding on alternate teeth, for example, needs twice
+the sector its slot and pole counts suggest. If nothing repeats, or the
+geometry cannot be cut cleanly, the full circle is meshed and `mesh.info`
+records why in `sector_fallback_reason`. Published reference models are cut the
+same way: their air-gap faces follow the slot openings and tooth tips, so the
+wedges meet on the circle midway between the innermost stator point and the
+outermost rotor point of the gap. A reference that extracts its own flux
+linkage (the Prius) sums the winding regions of the sector and multiplies by
+the number of sectors.
+
+**Cutting it.** The stator is cut through the middle of a tooth, so every slot
+stays whole. The rotor is cut between two poles, along a line that turns with
+it, so no magnet or pocket is ever cut whatever the rotor angle. The two wedges
+therefore start at different angles and meet on a circle in the middle of the
+air gap. Where they do not overlap, the stator-only arc of that circle and the
+rotor-only arc are exactly one sector apart. Gmsh gives every cut edge, and
+those two arcs, matching nodes one sector apart; the artifact lists them in
+`sector_edge_pairs` and describes the wedges in `mesh.info.sector`. Where the
+two cuts would leave an arc too short to mesh well (under half the air-gap
+element size), the rotor is cut at the tooth instead: a fraction of a degree,
+which keeps the stator in whole slot pitches. A rotor with a corner near that
+line (the published Prius has corners on its pole boundary) would get a sliver
+there, so for such a rotor the stator cut moves onto the rotor cut instead.
+
+**Tying the edges.** For a described sector each pair is tied exactly: the
+second node takes the first node's unknown, negated for an anti-periodic
+sector. Every matrix entry and source term of the second node moves onto the
+first, and the second keeps one equation that holds it to its partner, scaled
+by its own diagonal so the matrix stays symmetric positive definite and well
+conditioned. A node on the motor axis lies on both cut edges; an anti-periodic
+sector holds it at zero. Older artifacts without `mesh.info.sector` keep the
+penalty coupling.
+
+**Post-processing.** Torque, flux linkage and energies are scaled by the number
+of sectors. Anything sampled along a circle (the mid-gap torque contour, tooth
+and yoke flux-density points) uses the full circle's own sample points, folded
+into the sector with the sector's sign, so a sector integrates exactly what a
+full-circle solve of the same mesh would. Slots keep their true global index
+wherever the wedge lies, which keeps their winding direction right when a
+slot-pitch rotation of the mesh is reused for another rotor position.
+
+Sector modeling is experimental. The symmetry tests exercise periodic and anti-periodic boundaries on inner and outer rotors.
+
+**Results and storage.** Field frames are drawn and post-processed as the full
+motor. A stored frame keeps one sector and is rebuilt as the full motor when it
+is read, so saved runs shrink with the sector.
+
+**The stator iron mesh.** Iron loss follows each stator element of the first
+position through the sweep. The full motor's stator mesh is the same at every
+rotor position. A sector's stator cut moves with the rotor, so a sector meshed
+freely would mesh its stator differently at most positions, and looking each
+element's flux density up in a different triangle each time reads as extra
+harmonics and overestimate loss. The
+sector's stator iron (teeth and yoke) is therefore cut into slot pitches at the
+tooth centres. Gmsh meshes the first pitch and makes each next one an exact
+turned copy (periodic surfaces, each chained to the one before, so every curve
+has one master). Gmsh meshes a turned copy of a shape differently, so the
+sector is meshed in a frame turned to put its stator cut on the same tooth
+every time, from coordinates rounded to 1e-9 mm, with the iron built first in a
+fixed order. The mesh is then turned back, and nodes on the cut edges are put
+back exactly on the cuts. Boundaries the iron shares are broken at the new
+points (the tooth tips with the air gap), so the mesh stays joined. The lines
+through the tooth centres are mesh lines only: no tie or boundary condition
+acts on them. The stator iron mesh repeats at each position. The rotor is meshed freely at each position, as in the full
+motor; a loss that follows rotor elements through a sweep would need the same
+treatment there (pole-pitch pieces in a fixed frame).
+
+For 0.5.9, new rotor iron-loss support targets full-motor solves (#306).
+Rotor loss on sector runs is deferred to #319; the sector's existing stator
+loss and other implemented outputs retain their current scope. A missing
+rotor-loss term must not be interpreted as zero.
+
+**In the app.** The run-time estimate counts the solved sector's elements, from
+the prepared mesh or, before one exists, from the same repeat check without
+meshing. Compare lists a change between the full motor and one sector as
+**Solved region**; a saved run without the field solved the full motor. The
+Mesh view draws the whole motor. Stopped, the sector solved at that rotor angle
+is bright and its copies dimmed, cut exactly as the solver cuts it there (the
+mesh preview carries the cuts over one revolution, `sector_cuts`). While the
+rotor turns (Spin, or during a solve) the whole motor is drawn, because which
+identical copy is solved changes as it turns. A saved
+setup with accuracy and solver settings records **One sector** when it was
+chosen and otherwise solves the full motor ([Saved run setups](SOLVE_SETUPS.md)).
+
+**Cogging from a sector.** At each rotor position the stator is cut through
+the tooth nearest the rotor cut, so the two cuts stay within half the common
+pitch of slots and poles, and a position one cogging period on is cut the same
+way. The app warns when One sector and Cogging torque are both
+selected below the Very fine mesh, and the warning is repeated in the pre-solve
+checks and with the results.
 
 ### Teaching-mode exception
 

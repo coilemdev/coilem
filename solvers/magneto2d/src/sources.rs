@@ -169,8 +169,13 @@ pub fn compute_current_densities_from_phase_currents(
 
         let theta = centroid[1].atan2(centroid[0]);
         let theta_positive = if theta < 0.0 { theta + 2.0 * PI } else { theta };
-        let slot_local = slot_index_from_theta(theta_positive, slot_pitch_rad, total_slots_in_span);
-        let slot_global = slot_local % slot_count as usize;
+        let slot_local = mesh.info.slot_local_from_theta(
+            theta_positive,
+            slot_pitch_rad,
+            total_slots_in_span,
+            slot_count as usize,
+        );
+        let slot_global = mesh.info.slot_global(slot_local, slot_count as usize);
         let slot_current_sum: f64 = slot_winding_layers(
             winding_type,
             slot_global,
@@ -261,7 +266,12 @@ pub(crate) fn mesh_slot_areas_mm2(
 
         let theta = centroid[1].atan2(centroid[0]);
         let theta_positive = if theta < 0.0 { theta + 2.0 * PI } else { theta };
-        let slot_local = slot_index_from_theta(theta_positive, slot_pitch_rad, total_slots_in_span);
+        let slot_local = mesh.info.slot_local_from_theta(
+            theta_positive,
+            slot_pitch_rad,
+            total_slots_in_span,
+            slot_count as usize,
+        );
         let [i, j, k] = mesh.triangles[tri_idx];
         slot_area_total_m2[slot_local] += triangle_area(&mesh.nodes, i, j, k);
     }
@@ -331,8 +341,13 @@ pub fn compute_slot_excitation_summary_from_phase_currents(
 
         let theta = centroid[1].atan2(centroid[0]);
         let theta_positive = if theta < 0.0 { theta + 2.0 * PI } else { theta };
-        let slot_local = slot_index_from_theta(theta_positive, slot_pitch_rad, total_slots_in_span);
-        let slot_global = slot_local % slot_count as usize;
+        let slot_local = mesh.info.slot_local_from_theta(
+            theta_positive,
+            slot_pitch_rad,
+            total_slots_in_span,
+            slot_count as usize,
+        );
+        let slot_global = mesh.info.slot_global(slot_local, slot_count as usize);
 
         let [i, j, k] = mesh.triangles[tri_idx];
         let area_m2 = triangle_area(&mesh.nodes, i, j, k);
@@ -356,7 +371,7 @@ pub fn compute_slot_excitation_summary_from_phase_currents(
             continue;
         }
 
-        let slot_global = slot_local % slot_count as usize;
+        let slot_global = mesh.info.slot_global(slot_local, slot_count as usize);
         let phase_idx = slot_phase[slot_local];
         let effective_current_density = slot_amp_turns[slot_local] / slot_area_total[slot_local];
         let slot_current_a = slot_amp_turns[slot_local] / turns_per_coil as f64;
@@ -369,7 +384,7 @@ pub fn compute_slot_excitation_summary_from_phase_currents(
             } else {
                 "out".to_string()
             },
-            center_angle_mech_deg: slot_center_angle_rad(slot_local, slot_pitch_rad).to_degrees(),
+            center_angle_mech_deg: slot_center_angle_rad(slot_global, slot_pitch_rad).to_degrees(),
             slot_area_m2: slot_area_total[slot_local],
             effective_current_density_a_per_m2: effective_current_density,
             integrated_amp_turns_a: slot_amp_turns[slot_local],
@@ -1071,6 +1086,7 @@ mod tests {
                 stator_slot_outer_radius_mm: 0.0,
                 stator_outer_radius_mm: 0.0,
                 outer_rotor: None,
+                sector: None,
             },
         };
         let centroids = vec![[0.001667, 0.000333], [0.002333, 0.000667]];

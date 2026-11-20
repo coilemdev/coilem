@@ -11,13 +11,14 @@ permissions:
 
 jobs:
   measure:
+    if: ${{ github.repository == 'coilemdev/coilem-experiments' && github.event.repository.private == true }}
     uses: ./.github/workflows/release-benchmarks.yml
     with:
       candidate: ${{ github.sha }}
 
   compare:
     needs: measure
-    if: always()
+    if: ${{ always() && github.repository == 'coilemdev/coilem-experiments' && github.event.repository.private == true }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -42,7 +43,7 @@ jobs:
           --macos "$RUNNER_TEMP/measured/benchmark-joined-macos-15"
           --out "$RUNNER_TEMP/review"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: always()
+        if: ${{ always() && github.repository == 'coilemdev/coilem-experiments' && github.event.repository.private == true }}
         with:
           name: weekly-qualification-comparison
           path: ${{ runner.temp }}/review

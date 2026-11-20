@@ -152,6 +152,7 @@ fn nonlinear_residual_norm(
     let k_csr = if let Some(matrix_pattern) = matrix_pattern {
         let mut k_csr = matrix_pattern.assemble_stiffness(mesh, materials);
         matrix_pattern.add_constraint_terms(&mut k_csr);
+        matrix_pattern.tie_rhs(&mut f);
         matrix_pattern.apply_dirichlet(&mut k_csr, &mut f);
         k_csr
     } else {
@@ -237,6 +238,7 @@ fn solve_newton_correction(
     if let Some(matrix_pattern) = matrix_pattern {
         let constraint_start = Instant::now();
         matrix_pattern.add_constraint_terms(&mut residual_k);
+        matrix_pattern.tie_rhs(&mut f);
         if let Some(profile) = profile.as_deref_mut() {
             profile.constraint_apply_ms += elapsed_ms(constraint_start);
         }
@@ -326,6 +328,7 @@ fn solve_newton_correction(
     if let Some(matrix_pattern) = matrix_pattern {
         let tangent_constraint_start = Instant::now();
         matrix_pattern.add_constraint_terms(&mut tangent);
+        matrix_pattern.tie_rhs(&mut tangent_rhs);
         if let Some(profile) = profile.as_deref_mut() {
             profile.constraint_apply_ms += elapsed_ms(tangent_constraint_start);
         }

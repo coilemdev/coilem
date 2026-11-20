@@ -21,7 +21,7 @@ import numpy as np
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
 from backend.client._inputs import Motor, OperatingPoint, refuse_unknown_inputs, solve_options_for
 from backend.client._results import Result
-from backend.client._setups import SetupStatus, SetupUse, after_changes, library_of, resolve_setup, setup_statuses
+from backend.client._setups import UNSET_DEFAULTS, SetupStatus, SetupUse, after_changes, library_of, resolve_setup, setup_statuses
 from backend.models.config import MotorConfig, SolveOptionsConfig, SolveParams
 
 QUALITIES: tuple[str, ...] = get_args(SolveParams.model_fields["solve_quality"].annotation)
@@ -33,6 +33,14 @@ MESH_DENSITIES: tuple[str, ...] = get_args(SolveParams.model_fields["mesh_densit
 # fixed_mesh default is refused for surface-magnet rotors. Applied only where
 # a request leaves the field unset.
 APP_SOLVE_DEFAULTS: dict[str, Any] = {"rotor_rotation_model": "remesh_per_step", "corner_refinement": True}
+
+# Iron loss and efficiency need the loaded sweep to cover one uniform electrical cycle. The app
+# requests a losses run whose plan does not already solve one as 360° at the plan's own step
+# (ensureLossesFullCycle in frontend/src/public/solvePlan.ts); the client does the same (#333).
+LOSSES_FULL_CYCLE_STEP_DEG: dict[str, float] = {"quick": 15.0, "standard": 7.5, "fine": 3.75}
+_CUSTOM_SWEEP_RANGE_DEG = 360.0
+_CUSTOM_SWEEP_STEP_LIMITS_DEG = (0.5, 30.0)
+_DEFAULT_CUSTOM_STEP_DEG = 15.0
 
 ProgressCallback = Callable[[int, int, "str | None"], Any]
 MotorLike = Motor | Mapping[str, Any] | str | Path
@@ -67,7 +75,9 @@ def build_request(
     ``solve_params`` (any other ``solve_params`` field, by its request name)
     are applied over them, and ``analyses`` replaces the saved analysis
     selection. A motor with no saved settings and no operating point is
-    solved at 0 A.
+    solved at 0 A. With losses, a plan that does not already solve a full
+    electrical cycle is requested as one, as the app does
+    (:func:`losses_full_cycle`).
     """
 
     return _request(motor, operating_point, analyses=analyses, quality=quality, mesh=mesh, solve_params=solve_params, setup=setup)[0]
@@ -106,11 +116,74 @@ def _request(
             raise InputError("solve_params must be a mapping of solve_params field names to values", field="solve_params")
         refuse_unknown_inputs(SolveParams, solve_params, "solve_params")
         params.update(solve_params)
+    # A saved setup uses null to clear a design's catalog overrides. After all overrides
+    # have been applied, omission requests the same default as a freshly exported design.
+    for key in UNSET_DEFAULTS:
+        if params.get(key) is None:
+            params.pop(key, None)
     body["solve_params"] = params
     if analyses is not None:
         body["solve_options"] = solve_options_for(analyses, body.get("solve_options"))
     Motor.from_request(body)  # Validates the whole request; errors name solve_params.<field>.
-    return body, after_changes(use, body)
+    # The setup comparison sees the settings as chosen; only the request gets the losses sweep.
+    use = after_changes(use, body)
+    return losses_full_cycle(body), use
+
+
+def losses_full_cycle(body: Mapping[str, Any]) -> dict[str, Any]:
+    """The request with the app's full-cycle sweep for losses, or unchanged.
+
+    A plan that already solves a uniform 360° electrical cycle is kept: High
+    accuracy, and Standard with Back EMF or six-step drive. Any other plan with
+    losses is requested as a 360° custom sweep at the plan's own step (15°,
+    7.5° or 3.75°; a custom plan keeps its step), with THD off, as the app
+    sends it. The chosen plan and the saved setup are not changed.
+    """
+
+    request = dict(body)
+    options = dict(request.get("solve_options") or {})
+    if not options.get("losses_efficiency") or request.get("solver") == "elmer":
+        return request
+    params = dict(request.get("solve_params") or {})
+    quality = params.get("solve_quality", "standard")
+    if quality == "fine" or (
+        quality == "standard" and (options.get("back_emf") or params.get("excitation_mode") == "ideal_six_step_120")
+    ):
+        return request
+    step = params.get("rotor_step_deg") if quality == "custom" else LOSSES_FULL_CYCLE_STEP_DEG.get(quality)
+    if not isinstance(step, (int, float)) or isinstance(step, bool) or not math.isfinite(step):
+        step = _DEFAULT_CUSTOM_STEP_DEG
+    low, high = _CUSTOM_SWEEP_STEP_LIMITS_DEG
+    step = min(high, max(low, float(step)))
+    if (
+        quality == "custom"
+        and params.get("rotor_sweep_range_deg") == _CUSTOM_SWEEP_RANGE_DEG
+        and params.get("rotor_step_deg") == step
+        and not options.get("thd_analysis")
+    ):
+        return request
+    params.update(solve_quality="custom", rotor_sweep_range_deg=_CUSTOM_SWEEP_RANGE_DEG, rotor_step_deg=step)
+    options["thd_analysis"] = False
+    request["solve_params"], request["solve_options"] = params, options
+    return request
+
+
+def rotor_loss_warnings(config: MotorConfig) -> list[str]:
+    """Why a requested rotor iron loss will come back unavailable, before anything is solved (#333)."""
+
+    options = config.solve_options
+    if options is None or not options.rotor_iron_loss:
+        return []
+    from backend.rotor_loss_solver import unavailable_reason
+
+    reason = unavailable_reason(config)
+    if reason is None:
+        return []
+    return [
+        f"Rotor iron loss will be unavailable for this request: {reason} The other analyses still run, "
+        "but efficiency is withheld while a requested loss is missing. Leave rotor_loss out of the analyses "
+        "to get efficiency from the stator and copper losses."
+    ]
 
 
 def prepared_config(body: Mapping[str, Any]) -> MotorConfig:
@@ -213,7 +286,8 @@ def check(
     """Run the app's pre-solve checks without solving.
 
     Raises :class:`InputError` for anything the app would refuse to solve,
-    and returns the app's non-blocking winding warnings. See :func:`prepare`
+    and returns the app's non-blocking warnings: winding feasibility, and a
+    requested rotor iron loss this design cannot get. See :func:`prepare`
     for the request and run setup the checks used.
     """
 
@@ -227,8 +301,8 @@ class PreparedSolve:
     """A request that passed the app's pre-solve checks, not yet solved.
 
     ``request`` is the exact request :func:`solve` would send, ``setup`` which
-    saved run setup it uses, and ``warnings`` the app's non-blocking winding
-    warnings.
+    saved run setup it uses, and ``warnings`` the app's non-blocking warnings
+    (winding feasibility, and a requested rotor iron loss the design cannot get).
     """
 
     request: dict[str, Any]
@@ -268,7 +342,7 @@ def prepare(
     config = prepared_config(body)
     _raise_for_unsolvable(config)
     _raise_for_geometry(config)
-    return PreparedSolve(body, use, list(winding_feasibility_warnings(config)))
+    return PreparedSolve(body, use, [*winding_feasibility_warnings(config), *rotor_loss_warnings(config)])
 
 
 # -- Worker processes and the main module ------------------------------------------

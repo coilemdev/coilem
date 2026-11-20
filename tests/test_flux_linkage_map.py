@@ -123,6 +123,9 @@ def test_a_cancelled_map_resumes_without_solving_finished_points(tmp_path):
     assert len(resumed.calls) == 29 - 10
     assert (0.0, 0.0) not in resumed.calls
     assert all(point.status == "ok" for point in flux_map.points)
+    cached = FakeSolver()
+    replay = run_flux_linkage_map(config, solve=cached, peak_current_A=20.0, store=store)
+    assert cached.calls == [] and replay.rotor_positions == flux_map.rotor_positions == 12
 
 
 def test_a_failed_point_is_recorded_and_solved_again_on_the_next_run(tmp_path):

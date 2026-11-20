@@ -52,6 +52,7 @@ NUMERICAL_KEYS: tuple[str, ...] = (
     "mesher",
     "corner_refinement",
     "mesh_build",
+    "symmetry",
     "rotor_rotation_model",
     "torque_method",
     "nonlinear_solver",
@@ -86,6 +87,7 @@ ENUMS: dict[str, tuple[str, ...]] = {
     "mesh_source": ("native",),
     "mesher": ("gmsh",),
     "mesh_build": ("precise", "fast"),
+    "symmetry": ("full", "auto"),
     "rotor_rotation_model": ("remesh_per_step",),
     "torque_method": ("contour", "arkkio", "weighted_stress"),
     "nonlinear_solver": ("picard", "newton"),
@@ -255,7 +257,9 @@ def parse_setup(raw: Any) -> RunSetup:
     if (
         any(key not in allowed or not (value is None or isinstance(value, (bool, str)) or _number(value)) for key, value in parameters.items())
         or any(not isinstance(outputs.get(key), bool) for key in OUTPUT_KEYS)
-        or any(key not in OUTPUT_KEYS for key in outputs)
+        or any(key not in (*OUTPUT_KEYS, "rotor_iron_loss") for key in outputs)
+        or ("rotor_iron_loss" in outputs and not isinstance(outputs["rotor_iron_loss"], bool))
+        or (outputs.get("rotor_iron_loss") and not outputs.get("losses_efficiency"))
     ):
         raise SetupFormatError("This file has invalid run-setup settings.")
     nullable = {*UNSET_DEFAULTS, "max_nonlinear_iterations"}
@@ -285,7 +289,7 @@ def parse_setup(raw: Any) -> RunSetup:
         reference_model=reference_model,
         reference_case=reference_case,
         parameters=copy.deepcopy(dict(parameters)),
-        outputs=copy.deepcopy(dict(outputs)),
+        outputs=copy.deepcopy({key: value for key, value in outputs.items() if key != "rotor_iron_loss" or value}),
         map=None if raw.get("map") is None else parse_torque_speed_settings(raw["map"]),
         solver=raw["solver"] if includes_numerics else None,
     )
@@ -461,6 +465,10 @@ def _with_unset_defaults(parameters: Mapping[str, Any], body: Mapping[str, Any])
             result[key] = default if value is None else value
         else:
             result[key] = None if _number(value) and value == default else value
+    # The full motor is left out, as saved run configs leave it out, so a setup saved
+    # before sector solves existed still matches a full-motor design.
+    if result.get("symmetry") == "full":
+        del result["symmetry"]
     return result
 
 
@@ -485,7 +493,12 @@ def apply_setup(body: Mapping[str, Any], setup: RunSetup) -> dict[str, Any]:
             suggestion="List the design's setups with `coilem setups DESIGN` and choose one marked compatible.",
         )
     result = copy.deepcopy(dict(body))
-    parameters = {**(result.get("solve_params") or {}), **_with_unset_defaults(copy.deepcopy(setup.parameters), body)}
+    # A setup with accuracy and solver settings that names no solved region solves the full motor.
+    parameters = {
+        **(result.get("solve_params") or {}),
+        **({"symmetry": "full"} if setup.includes_numerics else {}),
+        **_with_unset_defaults(copy.deepcopy(setup.parameters), body),
+    }
     if parameters.get("max_nonlinear_iterations") is None:
         parameters.pop("max_nonlinear_iterations", None)
     outputs = {**copy.deepcopy(setup.outputs), "thd_analysis": _thd(setup.outputs["back_emf"], parameters.get("solve_quality"))}
@@ -514,6 +527,8 @@ def _captured(body: Mapping[str, Any], includes_numerics: bool, solver: str) -> 
         "losses_efficiency": not elmer and bool(saved_options.get("losses_efficiency")),
         "torque_speed_envelope": not elmer and bool(saved_options.get("torque_speed_envelope")),
     }
+    if elmer or not options["losses_efficiency"] or not options.get("rotor_iron_loss"):
+        options.pop("rotor_iron_loss", None)
     if "back_emf" in saved_options:
         options["thd_analysis"] = _thd(saved_options["back_emf"], params.get("solve_quality"))
     else:

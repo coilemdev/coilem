@@ -26,6 +26,7 @@ from backend.models import MotorConfig, SolveOptionsConfig
 from backend.reference_models import reference_model
 from backend.resources import PACKAGED_BIN_DIR, packaged_file_path
 from backend.rotor_layout import is_outer_rotor
+from backend.sector_tiling import tile_sector_mesh_preview
 from backend.solver_environment import solver_environment_provenance, solver_process_environment, solver_setting
 from backend.sweep_planning import loaded_angle_grid, loaded_sweep_plan
 from backend.topology_provenance import (
@@ -1538,6 +1539,11 @@ def start_native_process(command: list[str], **popen_kwargs: Any) -> subprocess.
     """Start a native solver process unless the application is shutting down."""
     if _NATIVE_SHUTDOWN.is_set():
         raise Magneto2DExecutionError("coilEM is shutting down; the solve was not started.")
+    if os.name == "nt":
+        # Only coilEM handles console interrupts. Its cancellation path stops
+        # the solver; an inherited Ctrl+Break can race that path and look like
+        # an ordinary native solve failure.
+        popen_kwargs["creationflags"] = popen_kwargs.get("creationflags", 0) | subprocess.CREATE_NO_WINDOW
     return subprocess.Popen(command, **popen_kwargs)
 
 
@@ -1554,6 +1560,11 @@ def track_native_process(process: subprocess.Popen, *, motor: bool = False):
         if shutting_down:
             _stop_native_process(process)
         yield process
+    except BaseException:
+        # An interrupt or a failed progress callback can unwind the reader
+        # before the native process exits. Stop it while it is still tracked.
+        _stop_native_process(process)
+        raise
     finally:
         with _ACTIVE_MAGNETO2D_PROCESS_LOCK:
             registry.discard(process)
@@ -1829,7 +1840,7 @@ def run_magneto2d_mesh_preview(
                 config,
                 solve_mesh_artifact,
             )
-        return report
+        return tile_sector_mesh_preview(report)
     log_event(
         "MAGNETO2D",
         f"mesh-preview start mesher={mesher_choice or 'gmsh'} topology={config.topology}",
