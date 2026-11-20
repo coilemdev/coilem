@@ -1367,13 +1367,16 @@ test.describe('public developer preview release rehearsal', () => {
       try {
         await openMoreRunActions(page);
         await page.getByRole('button', { name: 'Rerun settings', exact: true }).click();
+        // The restore message is a short toast: read it before waiting on the mesh.
+        await expect(page.getByRole('status').filter({ hasText: /settings restored/ })).toBeVisible();
         await pendingPreview;
         await openSetupSection(page, 'plan');
-        await expect(page.getByRole('button', { name: /Standard.*Medium mesh/ })).toBeEnabled();
+        // Rerun settings prepares the mesh; the plan is usable again once it is ready.
+        await expect(page.getByRole('button', { name: /Standard.*Medium mesh/ })).toBeEnabled({ timeout: 60_000 });
       } finally {
         releasePreview();
       }
-      await expect(page.getByRole('status').filter({ hasText: /settings restored/ })).toBeVisible();
+      await expect(page.getByRole('button', { name: /Run analysis/ })).toBeVisible({ timeout: 60_000 });
       await expect(page.getByRole('navigation', { name: 'Motor workflow' }).getByRole('button', { name: /Results$/ })).toBeDisabled();
       await openSetupSection(page, 'operating');
       await page.getByRole('radio', { name: /Ideal six-step/ }).click();
