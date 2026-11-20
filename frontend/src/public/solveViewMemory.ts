@@ -32,6 +32,8 @@ export const solveViewMemory = {
     showPoleLabels: false,
     showToothPoles: false,
     showPhases: false,
+    // Under Phases the coils are outlined in their phase colours until this is turned off.
+    showCoilColors: true,
     fieldLineDensity: defaultDensities,
     playbackRpm: null as number | null,
   },

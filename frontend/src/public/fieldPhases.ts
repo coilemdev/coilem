@@ -47,6 +47,8 @@ export interface FieldPhaseView {
   /** The currents in this field's solve, A; null for a field with no stator current (PM only). */
   currentsA: PhaseCurrents | null;
   pmOnly: boolean;
+  /** Outline the coils and ring their marks in phase colours; off leaves plain marks over the field. */
+  coilColors: boolean;
   cycle: PhaseCycle;
   /** The drive's kind and poles, for the panel's caption and frequency. */
   drive: PhaseDrive;

@@ -235,6 +235,14 @@ assert.match(dimensionsSource, /borePitchMm - boreOpeningMm \+ toothShoeAddition
 assert.match(dimensionsSource, /label: 'Bore tooth'/);
 assert.match(dimensionsSource, /label: 'Yoke tooth'/);
 assert.match(dimensionsSource, /label: 'Bore opening'/);
+// With tooth shoes the body opening and the physical mouth are separate rows and lines.
+assert.match(dimensionsSource, /label: 'Body opening'/);
+assert.match(dimensionsSource, /id: 'slot-mouth',\s+label: 'Slot mouth'/);
+assert.match(dimensionsSource, /const mouthMm = Math\.max\(0, s\.slot_opening_mm - 2 \* overhangMm\)/);
+// Field solution: Coil colors can be turned off under Phases, as in the Geometry view.
+assert.match(solvedFieldSource, /aria-pressed=\{phasesOn && showCoilColors\}/);
+assert.match(solvedFieldSource, /coilColors: showCoilColors,/);
+assert.match(fieldResultSource, /if \(phases\.coilColors\) \{\s+coilOutlines\.forEach/);
 assert.match(dimensionsSource, /label: 'Slot at yoke'/);
 assert.doesNotMatch(dimensionsSource, /label: 'Tooth width'/);
 assert.match(workspaceSource, /className="param-row public-param-row public-derived-row"><span className="param-label">Coverage/);
@@ -1005,7 +1013,7 @@ for (const lessonFile of [
 assert.match(workspaceSource, /solveViewMemory\.stage\.mesh === mesh && solveViewMemory\.stage\.result === result/);
 assert.match(workspaceSource, /solveViewMemory\.stage = \{ result, mesh, solveView, meshDisplayMode, showMeshEdges \};/);
 assert.match(solvedFieldSource, /useState\(solveViewMemory\.field\.showMesh\)/);
-assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, fieldLineDensity, playbackRpm \};/);
+assert.match(solvedFieldSource, /solveViewMemory\.field = \{ showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, showCoilColors, fieldLineDensity, playbackRpm \};/);
 // Phases sits in Show after the arrow density: the coils by phase, which way
 // their current flows at the shown position, and the solver's A / B / C currents.
 assert.match(solvedFieldSource, /\{showFieldLines && renderDensityControl\(\)\}\s*<button[\s\S]*?aria-pressed=\{showPhases && Boolean\(phaseCycle\)\}[\s\S]*?aria-label="Phases"/);
@@ -1022,7 +1030,7 @@ assert.match(fieldResultSource, /<div className="public-winding-key public-field
 // size with the Geometry view's marker, so they stay crisp and readable zoomed in.
 assert.match(fieldResultSource, /drawCoilPhases\(context, toCanvas, pixelRatio, coilOutlines, coilMarks, phases\);/);
 assert.match(fieldResultSource, /drawCoilPhases\(context, worldTransform, pixelRatio, coilOutlines, coilMarks, phases\);/);
-assert.match(fieldResultSource, /drawCurrentMarker\(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS\[mark\.phase\]\);/);
+assert.match(fieldResultSource, /drawCurrentMarker\(context, x, y, radius, outOfPage, phases\.coilColors \? PUBLIC_PHASE_COLORS\[mark\.phase\] : PLAIN_COIL_MARK_RING\);/);
 assert.doesNotMatch(fieldResultSource, /public-field-phase-coils|public-field-phase-mark/);
 assert.match(phaseDrivePanelSource, /export function drawCurrentMarker\(/);
 assert.doesNotMatch(fieldResultSource, /FieldPhaseReadout/);
