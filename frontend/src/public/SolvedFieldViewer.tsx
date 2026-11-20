@@ -283,6 +283,7 @@ export function SolvedFieldViewer({
   const [showPoleLabels, setShowPoleLabels] = useState(solveViewMemory.field.showPoleLabels);
   const [showToothPoles, setShowToothPoles] = useState(solveViewMemory.field.showToothPoles);
   const [showPhases, setShowPhases] = useState(solveViewMemory.field.showPhases);
+  const [showCoilColors, setShowCoilColors] = useState(solveViewMemory.field.showCoilColors);
   const [fieldLineDensity, setFieldLineDensity] = useState(solveViewMemory.field.fieldLineDensity);
   const [colorRangeMode, setColorRangeMode] = useState<FieldColorRangeMode>('fixed');
   const saturationTicks = useMemo(() => statorSteelSaturationTicks(config, materials), [config, materials]);
@@ -292,8 +293,8 @@ export function SolvedFieldViewer({
   const playbackRpmRef = useRef(playbackRpm);
   playbackRpmRef.current = playbackRpm;
   useEffect(() => {
-    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, fieldLineDensity, playbackRpm };
-  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, fieldLineDensity, playbackRpm]);
+    solveViewMemory.field = { showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, showCoilColors, fieldLineDensity, playbackRpm };
+  }, [showHeatmap, showMesh, magnifier, showFieldLines, showMagnets, showAirgap, showPoleLabels, showToothPoles, showPhases, showCoilColors, fieldLineDensity, playbackRpm]);
   const playbackElectricalAngleRef = useRef(0);
   const [playbackWaiting, setPlaybackWaiting] = useState(false);
   const [frameCache, setFrameCache] = useState<Record<string, PublicFieldLinePlot>>({});
@@ -544,11 +545,12 @@ export function SolvedFieldViewer({
       angleDeg: shownElectricalAngleDeg,
       currentsA: shownCurrents,
       pmOnly: source === 'pm',
+      coilColors: showCoilColors,
       cycle: phaseCycle,
       drive: phaseDrive,
       rpm: playbackRpm,
     }
-    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, shownCurrents, source]);
+    : null), [phaseCycle, phaseDrive, playbackRpm, shownElectricalAngleDeg, showPhases, showCoilColors, shownCurrents, source]);
   const currentPeakBT = useMemo(() => {
     const rasterPeak = visibleRaster?.maxB;
     if (Number.isFinite(rasterPeak)) return rasterPeak ?? 0;
@@ -1286,6 +1288,7 @@ export function SolvedFieldViewer({
   const [zoomSlot, setZoomSlot] = useState<HTMLSpanElement | null>(null);
   // Flux density and field arrows change what the picture means, so they stay
   // in view; the reference layers wait in More, which counts how many are on.
+  const phasesOn = showPhases && Boolean(phaseCycle);
   const renderMoreLayerButtons = () => (
     <>
       <button type="button" aria-pressed={magnifier} title="Show an enlarged view of the area under the pointer" onClick={() => setMagnifier((value) => !value)}><i aria-hidden="true" />Magnifier</button>
@@ -1303,9 +1306,20 @@ export function SolvedFieldViewer({
             : 'Tooth poles need stator tooth geometry and recorded winding currents with nonzero excitation'}
         onClick={() => setShowToothPoles((value) => !value)}
       ><i aria-hidden="true" />Tooth poles</button>
+      {/* As in the Geometry view: Phases brings the coil colours with it, and they can be turned off again. */}
+      <button
+        type="button"
+        aria-pressed={phasesOn && showCoilColors}
+        disabled={!phasesOn}
+        title={!phasesOn ? 'Turn on Phases to color the coils by phase'
+          : showCoilColors ? 'Hide the phase colors on the coils; the current marks and the A / B / C traces stay'
+            : 'Outline each coil in its phase color'}
+        onClick={() => setShowCoilColors((value) => !value)}
+      ><i aria-hidden="true" />Coil colors</button>
     </>
   );
   const moreLayersOn = [
+    phasesOn && showCoilColors,
     magnifier,
     hasMagnets && showMagnets,
     showMesh,

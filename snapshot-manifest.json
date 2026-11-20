@@ -6590,8 +6590,8 @@
     },
     {
       "path": "frontend/scripts/test-public-ui-contract.mjs",
-      "bytes": 185165,
-      "sha256": "80f5e008e94d79e1cbe5ac3151e8ee1473078023dbb8bf34c5dfa7dfea3583f3"
+      "bytes": 185872,
+      "sha256": "360695a68dc570dec1cb8771d57afcbfbaa6c4e54859d7b80b19d2f8c7ec3acf"
     },
     {
       "path": "frontend/scripts/test-result-summary.mjs",
@@ -7045,8 +7045,8 @@
     },
     {
       "path": "frontend/src/public/FieldResultPlot.tsx",
-      "bytes": 84616,
-      "sha256": "b32f23082c9fa4daeaf9dad4be63d7b4834ba9910443391eef9d54466e9a602c"
+      "bytes": 84832,
+      "sha256": "1c26f97eb69093f0909830574b794da052e81e20fd17df65d58b85633bcd0ab4"
     },
     {
       "path": "frontend/src/public/GuidedSetup.tsx",
@@ -7130,8 +7130,8 @@
     },
     {
       "path": "frontend/src/public/SolvedFieldViewer.tsx",
-      "bytes": 70402,
-      "sha256": "68d6b6ae12dddcf13c32a3adc10a3efaa7c94b73197e4a26ff98cc815a108c34"
+      "bytes": 71246,
+      "sha256": "87e30ac6b210ec802eb54f21feba01c7d55e7d9da53147d676fcb1574206168c"
     },
     {
       "path": "frontend/src/public/ViewportNavigation.tsx",
@@ -7220,13 +7220,13 @@
     },
     {
       "path": "frontend/src/public/solveViewMemory.ts",
-      "bytes": 1249,
-      "sha256": "1f8d571620a66e69d5e78524c93fc1b18b01f54fa60ee6c173aab07c6d351f94"
+      "bytes": 1367,
+      "sha256": "08b81d9c756ddf6bb5960501b39028b0ef35c26f2edaecdff062925f031288c0"
     },
     {
       "path": "frontend/src/public/dimensionAnnotations.ts",
-      "bytes": 24627,
-      "sha256": "b693524e8b6391ddfb2a82d632b470d24b07e7671b9120c4ada3a04979f0e52a"
+      "bytes": 26198,
+      "sha256": "19f91f847260ba01abfc0d439921f6d9c5910c6faaeca04b5a702cd87a40d532"
     },
     {
       "path": "frontend/src/public/dqView.ts",
@@ -20250,8 +20250,8 @@
     },
     {
       "path": "frontend/src/public/fieldPhases.ts",
-      "bytes": 12816,
-      "sha256": "5416711e9461d7e6ee45efaf59068164d22a3d681fcaddd8b711c6dcfbabfffe"
+      "bytes": 12944,
+      "sha256": "deacf27bd72e0036a90b4b26dd42a92f2c24566c2486e621cd77043bc49b56e8"
     },
     {
       "path": "frontend/src/public/sectorCuts.ts",

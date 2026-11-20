@@ -516,6 +516,8 @@ function drawFieldArrowLayer(
  * size, not scaled with the view, so the marks stay crisp and readable at any
  * zoom (an SVG overlay is stretched as one image while zooming).
  */
+const PLAIN_COIL_MARK_RING = '#e5e7eb';
+
 function drawCoilPhases(
   context: CanvasRenderingContext2D,
   toCanvas: DOMMatrix,
@@ -531,10 +533,12 @@ function drawCoilPhases(
   context.lineWidth = (1.3 * pixelRatio) / pixelsPerMm;
   context.lineJoin = 'round';
   context.globalAlpha = 0.95;
-  coilOutlines.forEach((path, phase) => {
-    context.strokeStyle = PUBLIC_PHASE_COLORS[phase];
-    context.stroke(path);
-  });
+  if (phases.coilColors) {
+    coilOutlines.forEach((path, phase) => {
+      context.strokeStyle = PUBLIC_PHASE_COLORS[phase];
+      context.stroke(path);
+    });
+  }
   context.globalAlpha = 1;
   context.setTransform(1, 0, 0, 1, 0, 0);
   if (phases.currentsA) {
@@ -545,7 +549,8 @@ function drawCoilPhases(
       // The glyph's size, as the Geometry view draws it, but never smaller than
       // a readable mark nor so large it hides the slot when zoomed in.
       const radius = Math.min(10 * pixelRatio, Math.max(4 * pixelRatio, mark.radiusMm * 1.1 * pixelsPerMm));
-      drawCurrentMarker(context, x, y, radius, outOfPage, PUBLIC_PHASE_COLORS[mark.phase]);
+      // With Coil colors off the marks keep their direction and lose the phase ring colour.
+      drawCurrentMarker(context, x, y, radius, outOfPage, phases.coilColors ? PUBLIC_PHASE_COLORS[mark.phase] : PLAIN_COIL_MARK_RING);
     });
   }
   context.restore();

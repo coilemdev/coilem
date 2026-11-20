@@ -23,6 +23,7 @@ export type DimensionId =
   | 'bore-tooth-width'
   | 'tooth-width-at-yoke'
   | 'bore-slot-opening'
+  | 'slot-mouth'
   | 'slot-width-at-yoke'
   | 'yoke-thickness'
   | 'shoe-height'
@@ -117,6 +118,45 @@ const tangentialSpan = (
     to: polar(radiusMm, angleRad + halfRad),
   };
 };
+
+/**
+ * The opening between two teeth at the air gap. `slot_opening_mm` is the gap between
+ * the tooth bodies. Tooth shoes narrow the physical mouth by two overhangs, so with
+ * shoes the two are drawn apart: the body opening behind the shoes, where it is, and
+ * the mouth between the shoe tips. One line across the shoes would read as the mouth.
+ */
+function slotOpeningAnnotations(
+  config: MotorConfig,
+  gapRadiusMm: number,
+  slotCentreRad: number,
+  plain: Pick<DimensionAnnotation, 'label' | 'note'>,
+): DimensionAnnotation[] {
+  const s = config.stator;
+  const overhangMm = s.tooth_shoe_enabled ? Math.max(0, s.tooth_shoe_overhang_mm ?? 0) : 0;
+  const heightMm = s.tooth_shoe_enabled ? Math.max(0, s.tooth_shoe_height_mm ?? 0) : 0;
+  const value = `${s.slot_opening_mm.toFixed(1)} mm`;
+  if (!(overhangMm > 0 && heightMm > 0 && gapRadiusMm > 0)) {
+    return [{ id: 'bore-slot-opening', ...plain, value, dash: [2, 2], shapes: [tangentialSpan(gapRadiusMm, slotCentreRad, s.slot_opening_mm)] }];
+  }
+  const shoulderMm = gapRadiusMm + (config.rotor_layout === 'outer' ? -heightMm : heightMm);
+  const mouthMm = Math.max(0, s.slot_opening_mm - 2 * overhangMm);
+  return [{
+    id: 'bore-slot-opening',
+    label: 'Body opening',
+    value,
+    dash: [2, 2],
+    // The bodies' edges are radial lines set at the gap radius: keep their angle at the shoulder.
+    shapes: [tangentialSpan(shoulderMm, slotCentreRad, s.slot_opening_mm * shoulderMm / gapRadiusMm)],
+    note: 'the gap between tooth bodies, behind the shoes',
+  }, {
+    id: 'slot-mouth',
+    label: 'Slot mouth',
+    value: `${mouthMm.toFixed(1)} mm`,
+    dash: [1, 2],
+    shapes: [tangentialSpan(gapRadiusMm, slotCentreRad, mouthMm)],
+    note: 'the opening between shoe tips at the air gap: body opening minus two overhangs',
+  }];
+}
 
 /** Tooth widths follow an arc at the exact section used by the field. */
 const toothWidthArc = (radiusMm: number, centreRad: number, widthMm: number): DimensionArc => ({
@@ -386,14 +426,10 @@ export function buildDimensionAnnotations(
       shapes: [toothWidthArc(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
       note: 'controlled by Yoke Tooth Width',
     });
-    annotations.push({
-      id: 'bore-slot-opening',
+    annotations.push(...slotOpeningAnnotations(config, boreMm, slotCentreRad, {
       label: 'Bore opening',
-      value: mm(config.stator.slot_opening_mm),
-      dash: [2, 2],
-      shapes: [tangentialSpan(boreMm, slotCentreRad, config.stator.slot_opening_mm)],
       note: 'calculated from bore pitch minus the bore tooth width',
-    });
+    }));
     annotations.push({
       id: 'slot-width-at-yoke',
       label: 'Slot at yoke',
@@ -608,14 +644,10 @@ function buildOuterRotorDimensionAnnotations(
       shapes: [toothWidthArc(yokeRadiusMm, tooth.centreRad, statorWidths.toothWidthAtYokeMm)],
       note: 'the tooth body where it meets the yoke',
     });
-    annotations.push({
-      id: 'bore-slot-opening',
+    annotations.push(...slotOpeningAnnotations(config, gapFaceMm, slotCentreRad, {
       label: 'Slot opening',
-      value: mm(config.stator.slot_opening_mm),
-      dash: [2, 2],
-      shapes: [tangentialSpan(gapFaceMm, slotCentreRad, config.stator.slot_opening_mm)],
       note: 'the gap between tooth tips at the air gap',
-    });
+    }));
   }
 
   annotations.push({
