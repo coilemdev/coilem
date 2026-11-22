@@ -3508,7 +3508,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   // With no current (or a near-zero average) ripple % means nothing: show the swing.
   const ripple = torqueRippleView(result);
   const allResultCount = 3 + (hasTorque ? 2 + (ripple.ripplePct === null ? 1 : 0) : 0) + (hasBackEmf ? 2 : 0)
-    + (cogging ? 1 : 0) + (result.torque_speed_analysis ? 1 : 0) + (losses ? 2 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
+    + (cogging ? 1 : 0) + (result.torque_speed_analysis ? 1 : 0) + (losses ? 2 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 5 : 0);
   // Read like the motor constants below: one row per value, numbers in one
   // right-aligned column, units beside them, a rule between groups.
   const resultRow = (label: string, value: string, unit: string, groupStart = false, title?: string) => (

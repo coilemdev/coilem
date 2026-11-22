@@ -6550,8 +6550,8 @@
     },
     {
       "path": "frontend/scripts/test-motor-constants.mjs",
-      "bytes": 5937,
-      "sha256": "58e0360c33fe693f251ca80a79639f321d45b8c59d7d551c7510f73481463fb1"
+      "bytes": 6513,
+      "sha256": "f6631eb611fd747eb954d3f2c5b1def3ab5da928246d33bd8460c63905994331"
     },
     {
       "path": "frontend/scripts/test-outrunner-design-guides.mjs",
@@ -7031,7 +7031,7 @@
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
       "bytes": 306491,
-      "sha256": "e8d1255404475dc5146ae22809465af1b92043836e8e44404ce233c93b0622f5"
+      "sha256": "6719d94105af4fcf4cbe8787e474e20aae8dfd7b3d6b742607884d3abfd4b5c0"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7070,8 +7070,8 @@
     },
     {
       "path": "frontend/src/public/MotorConstants.tsx",
-      "bytes": 3900,
-      "sha256": "7230469ce44c2e7470878b90e40a6213f626d677474a461ffd537bf3c9d098a4"
+      "bytes": 4225,
+      "sha256": "f882c9632df1a675fdf1ae3f55aa12d21865a10cb5d9a8b93d857ca5fd1219c9"
     },
     {
       "path": "frontend/src/public/OutputStatusBadge.tsx",
@@ -7415,8 +7415,8 @@
     },
     {
       "path": "frontend/src/public/machineConstants.ts",
-      "bytes": 6163,
-      "sha256": "0fa2aa551872b1096ec19bd3eeb6fc7307ab990703ed2692e04d634840d22deb"
+      "bytes": 6511,
+      "sha256": "8f754d23f7527b8495c351a9d416a759ba93d8f096fe9e232e5701abc3ea7315"
     },
     {
       "path": "frontend/src/public/magnetCoverage.ts",
