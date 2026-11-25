@@ -250,6 +250,9 @@ class Acceptance:
             "USERPROFILE": str(home),
             "CARGO": str(work / "no-cargo"),
             "COILEM_USER_DATA_ROOT": str(self.data_root),
+            # This environment drops CI, so say it here: a test install must not
+            # ask coilem.com for updates, or it is counted as a real new install.
+            "COILEM_UPDATE_CHECK": "0",
             "PYTHONUNBUFFERED": "1",
         }
         for name in ("SystemRoot", "TEMP", "TMP", "TMPDIR", "LANG", "LC_ALL"):
@@ -421,6 +424,14 @@ class Acceptance:
             status == 200 and health.get("version") == self.version
             and (health.get("build") or {}).get("application_version") == self.version,
             f"installed={self.version}, health={health.get('version')}",
+        )
+        status, _, body = request("GET", base + "/updates")
+        updates = json.loads(body) if status == 200 else {}
+        self.check(
+            "the update check stays off and never ran",
+            status == 200 and updates.get("disabled_by") == "environment" and updates.get("checked_at") is None
+            and not any("coilem.com" in line for line in self.log),
+            f"{status} disabled_by={updates.get('disabled_by')} checked_at={updates.get('checked_at')}",
         )
         status, headers, body = request("GET", base + "/")
         self.check("index", status == 200 and b'<div id="root">' in body and headers.get("cache-control") == "no-store", str(status))
