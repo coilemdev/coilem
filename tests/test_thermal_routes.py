@@ -427,7 +427,9 @@ def test_a_speed_whose_direct_solve_fails_is_unavailable_in_the_record_and_both_
     pdf = client.get(f"/performance/thermal/report/{record['id']}/pdf").content
     # Paragraphs wrap, so compare with single spaces.
     extracted = " ".join(" ".join(page.extract_text() for page in PdfReader(io.BytesIO(pdf)).pages).split())
-    assert "Magneto2D stopped: forced test failure" in extracted
+    assert "Not confirmed by the direct solve" in extracted
+    assert "Magneto2D stopped: forced test failure" not in extracted
+    assert any("Magneto2D stopped: forced test failure" in line[3] for line in rows)
     for index, row in enumerate(record["result"]["points"]):
         if not row["point"]:
             continue
@@ -470,11 +472,13 @@ def test_exports_leave_out_the_torque_of_every_speed_without_a_result():
         assert value not in extracted, value
     # The curve ends at the first speed with no result: it is shown with its reason and the speeds
     # above it are counted, not listed. The CSV below still has every speed.
-    assert rejected in extracted and "forced test failure" not in extracted
+    assert "Not confirmed by the direct solve" in extracted
+    assert rejected not in extracted and "Direct check." not in extracted and "forced test failure" not in extracted
     assert "The 2 speeds above it, 1000 to 1500 rpm, have no result either." in extracted
     # The performance report flattens the rating itself; the frozen record nests it under "result".
     for record, root in ((rating, "points"), ({"result": rating}, "result.points")):
         cells = {row[1]: row for row in thermal_csv_rows(record)}
+        assert cells[f"{root}[1].status_reason"][3] == rejected
         assert cells[f"{root}[0].point.torque_Nm"][3] == 5.25
         for index in (1, 2):
             for name in ("torque_Nm", "winding_temperature_C", "magnet_temperature_C"):
