@@ -164,6 +164,12 @@ test('the estimate runs from Solve, shows in Results part by part and exports it
   await expect(page.getByRole('button', { name: '▶ Run thermal estimate', exact: true })).toBeDisabled();
   await ambient.fill('25');
 
+  const advanced = await openThermalSection(page, 'advanced');
+  await advanced.getByLabel('Thermal resistance multiplier', { exact: true }).fill('1.1');
+  await advanced.getByLabel('Calibration measurement', { exact: true }).fill('Winding resistance rise');
+  await advanced.getByLabel('Calibration operating point', { exact: true }).fill('10 A at 1,000 rpm');
+  await advanced.getByLabel('Calibration cooling', { exact: true }).fill('Still air');
+
   const computed = page.waitForResponse((response) => new URL(response.url()).pathname === '/performance/thermal/point' && response.request().method() === 'POST');
   await page.getByRole('button', { name: '▶ Run thermal estimate', exact: true }).click();
   // The estimate returns in milliseconds. Its running state is held long enough to be seen.
@@ -174,11 +180,12 @@ test('the estimate runs from Solve, shows in Results part by part and exports it
   expect(response.status(), await response.text()).toBe(200);
   const analysis = await response.json();
   expect(analysis.result.status).toBe('experimental');
+  expect(analysis.result.calibrated).toBe(true);
   expect(Object.keys(analysis.result.nodes)).toEqual(expect.arrayContaining(['winding', 'end_winding', 'teeth', 'yoke', 'housing', 'magnets']));
   await expect(runStatus(page)).toContainText('Estimate ready: hottest part is the ');
   await expect(monitor(page)).toContainText('Complete');
   await expect(monitor(page).getByRole('progressbar')).toHaveCount(0);
-  for (const line of ['Hottest part', 'Winding against its', 'Magnets', 'Heat to remove', 'Finished ']) {
+  for (const line of ['Hottest part', 'Winding against its', 'Magnets', 'Heat to remove', 'Finished ', 'Experimental · calibrated']) {
     await expect(monitor(page)).toContainText(line);
   }
   await page.screenshot({ path: info.outputPath('thermal-complete.png'), animations: 'disabled' });
@@ -313,7 +320,7 @@ test('a torque curve stays beside the estimate and says why speeds are missing',
   await section.getByRole('button', { name: 'Run torque curve', exact: true }).click();
 
   // The finished curve is added to the monitor; the estimate is still there.
-  await expect(monitor(page)).toContainText('Torque curve · 2 of 8 speeds');
+  await expect(monitor(page)).toContainText('Torque curve · 2 of 8 speeds · Experimental');
   await expect(monitor(page)).toContainText('Held at 0 rpm');
   await expect(monitor(page)).toContainText('Held at 1,200 rpm');
   await expect(monitor(page)).not.toContainText('Held at 1,700 rpm');
@@ -387,7 +394,7 @@ test('an edit to the thermal inputs marks the saved estimate as from the previou
   await expect(monitor(page)).toContainText('Inputs changed');
   await expect(monitor(page)).toContainText('The temperatures below are from the previous inputs.');
   await expect(monitor(page).getByRole('table', { name: 'Previous estimate, from the previous inputs', exact: true })).toBeVisible();
-  await expect(monitor(page)).toContainText('From the previous inputs · uncalibrated');
+  await expect(monitor(page)).toContainText('From the previous inputs · Experimental · uncalibrated');
   await expect(monitor(page)).not.toContainText('Finished ');
   await page.screenshot({ path: info.outputPath('thermal-previous-inputs.png'), animations: 'disabled' });
 

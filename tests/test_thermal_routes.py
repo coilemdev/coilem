@@ -36,8 +36,14 @@ def point_body():
                 inputs=inputs(cooling="forced_air", housing_h_W_m2K=50).model_dump(mode="json"), design_name="Registered test")
 
 
-def test_point_freezes_all_statuses_and_exports_same_numbers(client):
-    response = client.post("/performance/thermal/point", json=point_body())
+@pytest.mark.parametrize("calibrated", [False, True])
+def test_point_freezes_all_statuses_and_exports_same_numbers(client, calibrated):
+    body = point_body()
+    if calibrated:
+        body["inputs"].update(calibration_multiplier=1.1, calibration_source={
+            "measurement": "Winding resistance rise", "operating_point": "10 A at 1,000 rpm", "cooling": "Still air",
+        })
+    response = client.post("/performance/thermal/point", json=body)
     assert response.status_code == 200, response.text
     analysis = response.json()
     restored = client.get(f"/performance/thermal/record/{analysis['id']}").json()
@@ -55,12 +61,17 @@ def test_point_freezes_all_statuses_and_exports_same_numbers(client):
     text = client.get(f"/performance/thermal/report/{analysis['id']}/csv").text
     rows = list(csv.reader(io.StringIO(text)))
     assert any(row[0] == "thermal" and row[1] == "nodes.winding.temperature_C" for row in rows)
-    assert any("Uncalibrated estimate" in str(row) for row in rows)
+    thermal_values = {row[1]: row[3] for row in rows if row[0] == "thermal"}
+    reason = "Calibrated estimate" if calibrated else "Uncalibrated estimate"
+    assert thermal_values["status"] == analysis["result"]["status"] == "experimental"
+    assert thermal_values["nodes.winding.status"] == "experimental"
+    assert thermal_values["status_reason"].startswith(reason)
     multiplier = next(row for row in rows if row[0] == "thermal" and row[1] == "inputs.calibration_multiplier")
     assert "cannot identify several uncertain heat paths" in multiplier[4]
     pdf = client.get(f"/performance/thermal/report/{analysis['id']}/pdf").content
     extracted = "\n".join(page.extract_text() for page in PdfReader(io.BytesIO(pdf)).pages)
     assert "Steady-state thermal estimate" in extracted
+    assert f"experimental: {reason}" in extracted
     assert "Copper-temperature feedback" in extracted
     assert "Rotor and magnet heating scope" in extracted
     assert "Heat transfer only at rotor/magnets" in extracted

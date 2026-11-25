@@ -449,6 +449,7 @@ def thermal_estimate(
         additional_heat_W=inputs.extra_rotor_heat_W, mechanical_heat_to_rotor_W=mechanical_rotor,
     )
     calibrated = inputs.calibration_source is not None
+    estimate_reason = "Calibrated estimate against the recorded measurement. No independent bench qualification." if calibrated else CORE_REASON
     for name, temperature in temperatures.items():
         if name not in RESULT_NODES:
             continue  # Internal surface ports are not component-average outputs.
@@ -461,7 +462,7 @@ def thermal_estimate(
             reason = ("Heat-transfer estimate under entered cooling and heat assumptions. Missing rotor/magnet losses "
                       "may change this temperature. No bench qualification.")
         if calibrated and not experimental_rotor:
-            reason = "Calibrated estimate against the recorded measurement; no independent bench qualification."
+            reason = estimate_reason
         limit = None
         if name in {"winding", "end_winding"}:
             limit = INSULATION_LIMIT_C[inputs.insulation_class] - inputs.hotspot_allowance_K
@@ -475,7 +476,7 @@ def thermal_estimate(
     if baseline is not None:
         baseline = {name: value for name, value in baseline.items() if name in nodes and nodes[name].temperature_C is not None}
     return ThermalResult(
-        inputs=inputs, nodes=nodes, baseline_without_extra_rotor_C=baseline, network=network,
+        inputs=inputs, status_reason=estimate_reason, nodes=nodes, baseline_without_extra_rotor_C=baseline, network=network,
         total_heat_W=sum(network.heat_W.values()), rejected_heat_W=rejection, energy_balance_error_W=error,
         hottest_node=max((n for n in nodes if n in MATERIAL_NODES and nodes[n].temperature_C is not None),
                          key=lambda n: nodes[n].temperature_C),
