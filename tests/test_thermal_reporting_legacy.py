@@ -134,9 +134,11 @@ def check_exports(rating: dict, cells: dict, root: str, extracted: str):
         assert value not in extracted, value
     for value in ("5.25", "61.5", "44.25", "5.678", "62.71", "44.83"):
         assert value in extracted, value
-    assert READABLE in extracted
+    assert "Not confirmed by the direct solve" in extracted
     assert "The direct solve of this point failed" not in extracted
-    assert "differs from the maps beyond the registered band in: iron loss" in extracted
+    assert "Differs" in extracted and "Agrees" in extracted
+    assert READABLE not in extracted
+    assert "differs from the maps beyond the registered band in: iron loss" not in extracted
 
     for name in ("torque_Nm", "winding_temperature_C", "magnet_temperature_C"):
         assert cells[f"{root}[2].point.{name}"][3] in ("", None), name
