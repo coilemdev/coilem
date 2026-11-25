@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 8931,
-      "sha256": "3a6088f99445fa9bce38334bbbbe128ebe6224c0f693674d9be1fd5f162c2b4a"
+      "bytes": 9071,
+      "sha256": "9aa23f546bcef7130ef313c9e0539accb96f20856d8c75dbabc05a542f080a95"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -46591,6 +46591,12 @@
       "path": "README.md",
       "source_sha256": "6a978cb982826d99ea5a24b936d03f30442a43592856d459d0e563e754385104",
       "reason": "README update-check wording"
+    },
+    {
+      "base_commit": "4e87733e9c51c273e5f0d8a0410ac4ced0be73e5",
+      "path": "README.md",
+      "source_sha256": "3a6088f99445fa9bce38334bbbbe128ebe6224c0f693674d9be1fd5f162c2b4a",
+      "reason": "README: save before Upgrade and restart, link the privacy page"
     }
   ]
 }
