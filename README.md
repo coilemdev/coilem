@@ -36,6 +36,23 @@ On Windows PowerShell:
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
+### Update check
+
+Once a day, `coilem` asks coilem.com whether a newer version is released, and
+an **Update** tag appears beside the version in the app when there is one. On
+macOS and Linux the tag opens **Upgrade and restart**: coilEM stops, upgrades itself the
+way it was installed (`uv tool`, `uvx` or pip), starts again in the same
+terminal and reloads the page. It is refused while a solve is running, and if
+the upgrade fails the version you had starts again and the tag says why. On
+Windows, and for other installs, stop coilEM and run `uv tool upgrade coilem`
+(with uvx, `uvx coilem@latest`). The request carries the
+coilEM version, your operating system (for example `coilEM/0.5.10 (Windows)`)
+and whether it is the first check from your computer this week or this month,
+which lets installs be counted without an identifier. Nothing else is sent: no
+identifier and nothing about your designs or runs. To turn
+it off, set `COILEM_UPDATE_CHECK=0` where you start coilEM. coilEM works the
+same offline.
+
 Supported platforms: macOS 12 or newer on Apple silicon, macOS 10.15 or newer
 on Intel, 64-bit Windows, and x86_64 Linux with glibc 2.27 or newer. Linux and
 Windows on ARM are not supported yet. On Debian and Ubuntu, install the

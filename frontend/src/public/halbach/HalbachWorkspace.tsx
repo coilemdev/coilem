@@ -1,4 +1,5 @@
 import { humanizeGeometryMessage } from '../designErrors';
+import { VersionLabel } from '../VersionLabel';
 import {
   useEffect,
   useMemo,
@@ -417,7 +418,7 @@ function CylindricalHalbachWorkspace({
             <img className="logo-mark" src="/brand/coilem-mark.svg" alt="" aria-hidden="true" />
             <span className="logo-word">coil<span className="logo-em">EM</span><sup className="logo-stage">Beta</sup></span>
           </button>
-          {appVersion && <span className="logo-version" title={`coilEM version ${appVersion}`}>v{appVersion}</span>}
+          <VersionLabel version={appVersion} />
           <div className="public-project-chip-wrap" ref={projectMenuRef}>
             <button
               className="project-chip"

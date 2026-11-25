@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from backend import __version__
+from backend import __version__, self_upgrade, update_check
 from backend.custom_materials import SteelImportRequest, import_steel
 from backend.elmer.capabilities import discover_elmer
 from backend.platform_info import get_platform_info
@@ -118,6 +118,8 @@ PUBLIC_API_PATHS = frozenset(
         "/tutorials/rotor-chase/solve",
         "/tutorials/three-phase-motor/geometry",
         "/tutorials/three-phase-motor/sweep",
+        "/updates",
+        "/updates/upgrade",
     }
 )
 
@@ -201,6 +203,56 @@ async def health_check() -> dict[str, Any]:
             },
         },
     }
+
+
+@system_router.get("/updates", tags=["system"])
+async def update_status(request: Request) -> dict[str, Any]:
+    """Say whether a newer coilEM is released, from the last daily check.
+
+    Reading this never waits on the network. Under the launcher it starts the
+    background check once the day has changed, so an app left open still hears
+    of a release; the answer shows on the next read.
+    """
+
+    return await asyncio.to_thread(_update_status, request.app)
+
+
+def _update_status(application: FastAPI) -> dict[str, Any]:
+    update_check.check_if_due()
+    status = update_check.status()
+    can_restart = getattr(application.state, "request_upgrade", None) is not None
+    return {
+        **status,
+        # Whether "Upgrade and restart" can do the upgrade itself (backend/self_upgrade.py).
+        "self_upgrade": bool(status["latest"]) and can_restart and self_upgrade.plan() is not None,
+        "last_upgrade": self_upgrade.last_outcome(),
+    }
+
+
+@system_router.post("/updates/upgrade", tags=["system"], status_code=202)
+async def upgrade_and_restart(request: Request) -> dict[str, Any]:
+    """Stop serving, upgrade coilEM and start it again on the same port.
+
+    The launcher does the work after this answers; see backend/self_upgrade.py.
+    Refused while a solve is running, because stopping would discard it.
+    """
+
+    status = await asyncio.to_thread(_update_status, request.app)
+    steps = self_upgrade.plan() if status["self_upgrade"] else None
+    if steps is None:
+        raise HTTPException(
+            status_code=409,
+            detail={"error_code": "UPGRADE_UNAVAILABLE", "message": "This copy of coilEM cannot upgrade itself. Upgrade it from a terminal."},
+        )
+    from backend.public_routes.solve import _ACTIVE_SOLVE
+
+    if _ACTIVE_SOLVE["running"]:
+        raise HTTPException(
+            status_code=409,
+            detail={"error_code": "SOLVE_RUNNING", "message": "A solve is running. Wait for it to finish, or cancel it, then upgrade."},
+        )
+    request.app.state.request_upgrade(steps)
+    return {"restarting": True, "from": status["current"], "to": status["latest"]}
 
 
 @system_router.get("/materials", tags=["system"])

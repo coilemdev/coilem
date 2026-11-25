@@ -171,6 +171,32 @@ export function getPublicHealth(): Promise<PublicJson> {
   return requestJson('/health');
 }
 
+/** The local backend's daily update check, as `GET /updates` reports it. */
+export interface UpdateStatus {
+  current: string;
+  enabled: boolean;
+  disabled_by: 'environment' | null;
+  switch: string;
+  checked_at: string | null;
+  up_to_date: boolean;
+  latest: string | null;
+  release_url: string | null;
+  upgrade_command: string | null;
+  /** Whether the app can upgrade and restart itself; otherwise it shows the command. */
+  self_upgrade: boolean;
+  /** What the last upgrade from the app did, for an hour after the restart. */
+  last_upgrade: { ok: boolean; from: string; to: string | null; message: string | null; manual: string | null } | null;
+}
+
+export function getUpdateStatus(): Promise<UpdateStatus> {
+  return requestJson('/updates') as unknown as Promise<UpdateStatus>;
+}
+
+/** Ask the launcher to stop, upgrade coilEM and start it again on the same port. */
+export function startUpgradeAndRestart(): Promise<PublicJson> {
+  return requestJson('/updates/upgrade', { method: 'POST' });
+}
+
 export function getPublicMaterials(): Promise<PublicJson> {
   return requestJson('/materials');
 }
