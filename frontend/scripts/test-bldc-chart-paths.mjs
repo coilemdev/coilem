@@ -123,5 +123,11 @@ console.log('BLDC project draft lifecycle checks passed');
   state.config.solve_params.current_amplitude_A = 12;
   state = switchExcitationMode(state.config, 'ideal_six_step_120', state.drafts);
   assert.equal(state.config.solve_params.current_amplitude_A, 12, 'an edited current carries back too');
+  // Under sinusoidal, 12 A peak relabelled as 12 A rms is a larger current: it carries back as its peak, 16.97 A.
+  state = switchExcitationMode(state.config, 'sinusoidal', state.drafts);
+  assert.equal(state.config.solve_params.current_amplitude_A, 12);
+  state.config.solve_params.current_amplitude_convention = 'rms';
+  state = switchExcitationMode(state.config, 'ideal_six_step_120', state.drafts);
+  assert.equal(state.config.solve_params.current_amplitude_A, 16.97, 'a changed convention is a changed current');
   console.log('drive switch keeps the current');
 }

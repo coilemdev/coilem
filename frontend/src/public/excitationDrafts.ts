@@ -6,7 +6,7 @@ export interface ExcitationDrafts {
   sinusoidal: { currentAmplitudeA: number; currentConvention: 'rms' | 'peak'; currentAngleDeg: number };
   sixStep: { currentAmplitudeA: number; commutationAdvanceDeg: number };
   /** The last switch: the drive it left and the current it set, so switching straight back returns the exact value. */
-  last?: { from: Mode; setAmplitudeA: number };
+  last?: { from: Mode; setAmplitudeA: number; setConvention: SolveParams['current_amplitude_convention'] };
 }
 
 /** Four significant figures for a converted current: 30 A rms is a 42.43 A peak, not 42.42640687. */
@@ -39,7 +39,9 @@ export function switchExcitationMode(config: MotorConfig, mode: Mode, drafts: Ex
   const current = config.solve_params;
   // Switching straight back with the current untouched returns the exact value it had, with no rounding
   // from the conversion there and back. Otherwise the present current carries over at the same peak.
-  const untouched = drafts.last?.from === mode && drafts.last.setAmplitudeA === current.current_amplitude_A;
+  // Changing rms to peak changes the current even when the number stays, so the convention counts too.
+  const untouched = drafts.last?.from === mode && drafts.last.setAmplitudeA === current.current_amplitude_A
+    && drafts.last.setConvention === current.current_amplitude_convention;
   if (mode === 'ideal_six_step_120') {
     const amplitude = untouched ? drafts.sixStep.currentAmplitudeA : tidy(peakA(current));
     return {
@@ -47,7 +49,7 @@ export function switchExcitationMode(config: MotorConfig, mode: Mode, drafts: Ex
         currentAmplitudeA: current.current_amplitude_A,
         currentConvention: current.current_amplitude_convention === 'peak' ? 'peak' as const : 'rms' as const,
         currentAngleDeg: current.current_angle_deg,
-      }, last: { from: current.excitation_mode, setAmplitudeA: amplitude } },
+      }, last: { from: current.excitation_mode, setAmplitudeA: amplitude, setConvention: 'plateau' as const } },
       config: { ...config, solve_params: { ...current,
         excitation_mode: mode, current_amplitude_A: amplitude,
         current_amplitude_convention: 'plateau' as const, current_angle_deg: 0,
@@ -62,7 +64,7 @@ export function switchExcitationMode(config: MotorConfig, mode: Mode, drafts: Ex
     drafts: { ...drafts, sixStep: {
       currentAmplitudeA: current.current_amplitude_A,
       commutationAdvanceDeg: current.commutation_advance_deg,
-    }, last: { from: current.excitation_mode, setAmplitudeA: amplitude } },
+    }, last: { from: current.excitation_mode, setAmplitudeA: amplitude, setConvention: convention } },
     config: { ...config, solve_params: { ...current,
       excitation_mode: mode, current_amplitude_A: amplitude,
       current_amplitude_convention: convention,
