@@ -2,8 +2,8 @@
 
 coilEM is an open-source app for designing electric motors. Draw a motor, mesh
 it, solve it with the built-in 2D finite-element solver, and read off torque,
-back-EMF and field plots. It runs on your computer, with no account and
-nothing sent anywhere.
+back-EMF and field plots. It runs on your computer, with no account, and
+your designs stay there.
 
 Website: [coilem.com](https://coilem.com)
 
@@ -36,25 +36,6 @@ On Windows PowerShell:
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### Update check
-
-Once a day, `coilem` asks coilem.com whether a newer version is released, and
-an **Update** tag appears beside the version in the app when there is one. On
-macOS and Linux the tag opens **Upgrade and restart**: coilEM stops, upgrades
-itself the way it was installed (`uv tool`, `uvx` or pip), starts again in the
-same terminal and reloads the page, so save your design before you click it. It
-is refused while a solve is running, and if the upgrade fails the version you
-had starts again and the tag says why. On Windows, and for other installs, stop
-coilEM and run `uv tool upgrade coilem` (with uvx, `uvx coilem@latest`). The
-request carries the coilEM version, your operating system (for example
-`coilEM/0.5.10 (Windows)`), whether it is the first check from your computer
-this week or this month, and whether coilEM had never run on your computer
-before, which lets installs and new installs be counted without an identifier.
-Nothing else is sent: no identifier and nothing about your designs or runs. To
-turn it off, set `COILEM_UPDATE_CHECK=0` where you start coilEM. coilEM works
-the same offline. The [privacy page](https://coilem.com/privacy) covers the
-update check and the coilem.com website.
-
 Supported platforms: macOS 12 or newer on Apple silicon, macOS 10.15 or newer
 on Intel, 64-bit Windows, and x86_64 Linux with glibc 2.27 or newer. Linux and
 Windows on ARM are not supported yet. On Debian and Ubuntu, install the
@@ -64,7 +45,7 @@ libraries the mesher needs first:
 sudo apt-get install libglu1-mesa libgl1 libx11-6 libxcursor1 libxext6 libxfixes3 libxft2 libxinerama1 libxrender1 libfontconfig1 libgomp1
 ```
 
-Upgrade with `uv tool upgrade coilem`; remove it with `uv tool uninstall coilem`.
+Remove it with `uv tool uninstall coilem`.
 If `coilem` is not found after installing, run `uv tool update-shell` and open
 a new terminal. [The `coilem` launcher](docs/RUNTIME_SETTINGS.md#the-coilem-launcher)
 covers ports and options.
@@ -95,18 +76,37 @@ coilEM is a developer preview. Every release is compared with FEMM, a
 reference 2D finite-element solver, on a fixed set of benchmark motors: mean
 torque must agree within 8% and back-EMF within 10%.
 
-| Motor | Status |
-| --- | --- |
-| Inner-rotor SPM, concentrated or two-layer distributed winding | Checked against FEMM |
-| Flat-buried IPM, concentrated winding | Checked against FEMM |
-| V-shape IPM | Experimental |
-| Outrunner (outer-rotor SPM), concentrated winding | Checked against FEMM with sinusoidal current; six-step drive is Experimental |
+What each output has been checked against, by motor type:
 
-Of the other outputs, phase resistance and copper loss are checked against hand
-calculations. Cogging torque, d/q quantities, the maps, iron loss, efficiency
-and magnet temperature are experimental, and the app, PDF and CSV label each
-one. Agreement with FEMM is agreement between two solvers, not a hardware
-measurement.
+| Output | Inner-rotor SPM | Flat-buried IPM | V-shape IPM | Outrunner SPM |
+| --- | --- | --- | --- | --- |
+| Torque and back-EMF, sinusoidal current | Qualified | Qualified | Experimental | Qualified |
+| Torque and back-EMF, six-step (BLDC) drive | Qualified | — | — | Experimental |
+| Cogging torque | Qualified | Qualified | Experimental | Experimental |
+| d/q flux linkage (λd, λq) | Qualified | Qualified | Experimental | Experimental |
+| Inductances (Ld, Lq) and flux-linkage map | Experimental | Experimental | Experimental | Experimental |
+| Magnet temperature (20–100 °C) | Qualified | Qualified | Experimental | Experimental |
+| Phase resistance and copper loss | Qualified | Qualified | Qualified | Qualified |
+| Stator iron loss | Experimental | Experimental | Experimental | Experimental |
+| Rotor iron loss (opt-in) | Experimental | Experimental | — | Experimental |
+| Efficiency | Experimental | Experimental | Experimental | Experimental |
+| Torque–speed and efficiency maps | Experimental | Experimental | Experimental | Experimental |
+| Thermal estimate and thermally limited torque | Experimental | Experimental | Experimental | Experimental |
+
+- **Qualified**: passes the benchmark on motors of that type, against FEMM, or
+  against hand calculations for phase resistance and copper loss (with a wire
+  chosen).
+- **Experimental**: available, but not checked against a second solver or a
+  measurement. The app, PDF and CSV label it.
+- **—**: not available for that motor type.
+
+Qualified covers the windings the benchmark measured: single-layer
+concentrated windings (one or two layers on an outrunner), and two-layer
+distributed windings on inner-rotor SPM for torque, back-EMF and cogging, where
+cogging needs the very fine mesh. d/q flux linkage is qualified at current
+angles of 0–60°. Other windings, and any solve with the **Fast** mesh build,
+are Experimental. Agreement with FEMM is agreement between two solvers,
+not a hardware measurement.
 
 Things the model leaves out:
 
@@ -199,6 +199,14 @@ npm run dev
 
 Open [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the backend bound to
 loopback.
+
+## Updates
+
+When you start coilEM, it checks coilem.com at most once a day for a newer
+version and shows an **Update** tag in the app if there is one. On macOS and
+Linux the tag offers **Upgrade and restart**; elsewhere, stop coilEM and run
+`uv tool upgrade coilem`. Turn the check off with `COILEM_UPDATE_CHECK=0`. The
+[privacy page](https://coilem.com/privacy) lists what it sends.
 
 ## More
 

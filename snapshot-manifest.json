@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 9071,
-      "sha256": "9aa23f546bcef7130ef313c9e0539accb96f20856d8c75dbabc05a542f080a95"
+      "bytes": 9571,
+      "sha256": "2bcfdb61bfcdae41e741775a3ba3022707ab62734700fbc4727519bf94a30012"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -75,8 +75,8 @@
     },
     {
       "path": "SECURITY.md",
-      "bytes": 1603,
-      "sha256": "349ca5b3861659a333b42956c1eabdc9969df4cf5016df34f029423b3bab1b1e"
+      "bytes": 1598,
+      "sha256": "e1ee28bcf402ed0770bf5a8cae928d2cd4aed6012416260f463c117ac87100a1"
     },
     {
       "path": "SUPPORT.md",
@@ -46603,6 +46603,18 @@
       "path": "tools/release/acceptance.py",
       "source_sha256": "7500044e639cfac91263e1c79ab249d82ab86f3992861eeab96119c7889db40c",
       "reason": "Keep the update check off in wheel acceptance tests"
+    },
+    {
+      "base_commit": "74a0b111563d12cdad658a4f15d83823cc8b2a57",
+      "path": "README.md",
+      "source_sha256": "9aa23f546bcef7130ef313c9e0539accb96f20856d8c75dbabc05a542f080a95",
+      "reason": "README: feature and motor-type matrix; short Updates section"
+    },
+    {
+      "base_commit": "74a0b111563d12cdad658a4f15d83823cc8b2a57",
+      "path": "SECURITY.md",
+      "source_sha256": "349ca5b3861659a333b42956c1eabdc9969df4cf5016df34f029423b3bab1b1e",
+      "reason": "README: feature and motor-type matrix; short Updates section"
     }
   ]
 }
