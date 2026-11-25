@@ -9,7 +9,7 @@ from xml.sax.saxutils import escape
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import KeepTogether, Paragraph, Spacer, Table, TableStyle
 
 from backend.export_safety import literal_csv_cell
 
@@ -115,13 +115,24 @@ def thermal_csv_rows(record, prefix="thermal"):
     yield from walk(record, "")
 
 
-def thermal_story(record, *, rating=False):
+def thermal_story(record, *, rating=False, figure=None, heading=None):
+    """The thermal pages of a report.
+
+    ``figure`` is drawn under the status line (the run report's part heat map).
+    ``heading`` builds a section heading from its title, so the pages take the
+    headings of the report they are part of.
+    """
     styles = getSampleStyleSheet()
     body = styles["BodyText"]
     body.fontSize = 8
     body.leading = 11
     body.spaceBefore = 3
     styles["Heading3"].keepWithNext = True
+    # The run report's heading blue, so the thermal pages read as part of it.
+    for name in ("Heading2", "Heading3"):
+        styles[name].textColor = colors.HexColor("#1E40AF")
+    styles["Heading3"].fontName = "Helvetica-Bold"
+    styles["Heading3"].fontSize = 10.5
 
     def text(value):
         if isinstance(value, float):
@@ -134,12 +145,20 @@ def thermal_story(record, *, rating=False):
 
     def table(headers, rows, widths):
         result = Table([[text(cell) for cell in headers], *[[text(cell) for cell in row] for row in rows]], colWidths=widths, repeatRows=1)
-        result.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e7edf5")),
+        result.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#CFDCEE")),
+                                   ("LINEBELOW", (0, 0), (-1, 0), 0.8, colors.HexColor("#1E40AF")),
+                                   ("LINEBELOW", (0, 1), (-1, -1), 0.25, colors.HexColor("#CBD5E1")),
                                    ("VALIGN", (0, 0), (-1, -1), "TOP"), ("BOTTOMPADDING", (0, 0), (-1, -1), 3)]))
         return result
 
-    story = [Spacer(1, 4 * mm), Paragraph("Thermally limited torque" if rating else "Steady-state thermal estimate", styles["Heading2"]),
-             text(record.get("status", "unavailable") + ": " + record.get("status_reason", "No record"))]
+    title = "Thermally limited torque" if rating else "Steady-state thermal estimate"
+    opening = [heading(title) if heading else Paragraph(title, styles["Heading2"]),
+               text(record.get("status", "unavailable") + ": " + record.get("status_reason", "No record"))]
+    if figure is not None and not rating:
+        opening += [figure, text("Each part is drawn in the colour of its estimated temperature. Parts outside this cross-section "
+                                 "(end winding, housing or mount, bearings) are in the table below.")]
+    # The heading stays with what it introduces.
+    story = [Spacer(1, 4 * mm), KeepTogether(opening)]
     if rating:
         rows = []
         # Read each speed as this version records it, so an older record says what a new one would.

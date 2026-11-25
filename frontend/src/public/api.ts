@@ -233,14 +233,24 @@ export function openPublicRunFolder(projectSlug: string, runId: string): Promise
   );
 }
 
+/** The saved thermal results of a run, by record id: they go into its PDF and CSV report. */
+export interface RunThermalRecords { estimate?: string | null; curve?: string | null }
+
 export async function downloadPublicRunExport(
   projectSlug: string,
   runId: string,
   exportKind: PublicRunExportKind,
+  thermal: RunThermalRecords = {},
 ): Promise<void> {
   const suffix = exportKind === 'package' ? 'package.zip' : `report.${exportKind}`;
+  // The stored report is written when the run completes; one with the run's thermal results is built on request.
+  const query = new URLSearchParams();
+  if (exportKind !== 'package') {
+    if (thermal.estimate) query.set('thermal', thermal.estimate);
+    if (thermal.curve) query.set('thermal_curve', thermal.curve);
+  }
   const response = await fetch(
-    `${PUBLIC_API_BASE}/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/${suffix}`,
+    `${PUBLIC_API_BASE}/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/${suffix}${query.size ? `?${query}` : ''}`,
   );
   if (!response.ok) {
     throw await parseApiError(response);

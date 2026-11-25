@@ -192,8 +192,10 @@ function RatingResult({ rating, envelope }: { rating: ThermalRating; envelope?: 
 }
 
 /** The thermal result for a run: key numbers, the coloured cross-section and a table of parts. */
-export function ThermalCard({ analysis, plot, envelope, origin, label = 'Thermal results' }: {
+export function ThermalCard({ analysis, plot, envelope, origin, label = 'Thermal results', inRunReport = false }: {
   origin?: SolveResult['saved_run']; analysis: ThermalAnalysis | null; plot?: PublicFieldLinePlot | null; envelope?: TorqueSpeedEnvelope | null; label?: string;
+  /** The run is saved, so its own PDF and CSV (Download PDF, at the top of Results) carry this result. */
+  inRunReport?: boolean;
 }) {
   const [message, setMessage] = useState<string | null>(null);
   if (!analysis) return null;
@@ -202,10 +204,12 @@ export function ThermalCard({ analysis, plot, envelope, origin, label = 'Thermal
   return <section className="thermal-card" aria-label={label}>
     {result.kind === 'steady_state_thermal' ? <PointResult key={analysis.id} result={result} plot={plot} /> : <RatingResult rating={result} envelope={envelope} />}
     <details className="thermal-notes"><summary>Recorded inputs</summary><dl className="thermal-recorded-inputs">{Object.entries(result.inputs).map(([key, value]) => <div key={key}><dt>{key.replace(/_/g, ' ')}</dt><dd>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</dd></div>)}</dl></details>
-    <div className="thermal-card-actions">
-      <button type="button" onClick={() => void download('pdf')}>{analysis.kind === 'point' ? 'Run + thermal PDF' : 'Thermal performance PDF'}</button>
-      <button type="button" onClick={() => void download('csv')}>{analysis.kind === 'point' ? 'Run + thermal CSV' : 'Thermal performance CSV'}</button>
-    </div>
+    {inRunReport
+      ? <p className="thermal-card-report-note" role="note">{analysis.kind === 'point' ? 'This estimate is' : 'This torque curve is'} included in the run's report: use <strong>Download PDF</strong> at the top of Results, or Download CSV under More.</p>
+      : <div className="thermal-card-actions">
+        <button type="button" onClick={() => void download('pdf')}>{analysis.kind === 'point' ? 'Run + thermal PDF' : 'Thermal performance PDF'}</button>
+        <button type="button" onClick={() => void download('csv')}>{analysis.kind === 'point' ? 'Run + thermal CSV' : 'Thermal performance CSV'}</button>
+      </div>}
     {message && <p role="alert">{message}</p>}
   </section>;
 }
@@ -258,11 +262,11 @@ export function ThermalPanel({ config, result, designName }: { config: MotorConf
     {run.message && <p className="thermal-run-status needs-attention" role="alert">{run.message}</p>}
     {run.job && <p className="thermal-run-status" role="status">{run.job.stage}{run.job.error ? `: ${run.job.error}` : ''}</p>}
     {run.analysis
-      ? <ThermalCard analysis={run.analysis} origin={result.saved_run} plot={result.field_line_plot} envelope={envelope} />
+      ? <ThermalCard analysis={run.analysis} origin={result.saved_run} plot={result.field_line_plot} envelope={envelope} inRunReport={Boolean(result.saved_run)} />
       : <p className="thermal-empty">{run.loadingPoint ? 'Loading the saved thermal estimate…' : 'No thermal estimate for this run yet. It takes a moment and uses the setup from Solve → Thermal.'}</p>}
     {run.rating && <>
       <h4 className="thermal-group-title">Thermally limited torque curve</h4>
-      <ThermalCard analysis={run.rating} envelope={envelope} label="Thermally limited torque curve" />
+      <ThermalCard analysis={run.rating} envelope={envelope} label="Thermally limited torque curve" inRunReport={Boolean(result.saved_run)} />
     </>}
     <p className="thermal-visual-note">To change the cooling, the limits or the torque curve, go back to Solve and open the Thermal setup.</p>
   </section>;

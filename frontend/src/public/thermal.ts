@@ -184,14 +184,17 @@ function optionalRangeProblem(key: string, value: number): string | null {
 export type RotorLayout = 'inner' | 'outer';
 export const rotorLayoutOf = (config: { rotor_layout?: string | null }): RotorLayout => config.rotor_layout === 'outer' ? 'outer' : 'inner';
 
+/** A label inside a sentence: its first letter in lower case, its units as written (W/m²K, °C). */
+const lowerFirst = (label: string) => label.charAt(0).toLowerCase() + label.slice(1);
+
 export function thermalInputs(values: Record<string, string>, mechanicalW = 0, layout: RotorLayout = 'inner', unit: TemperatureUnit = 'C', conductor: string | null = null): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   // The form does not offer the conductor's conductivity, so an aluminium winding sends aluminium's.
   if (conductor === 'aluminum') result.conductor_k_W_mK = ALUMINIUM_CONDUCTOR_K_W_MK;
   for (const [key, label] of THERMAL_FIELDS) {
     const value = Number(values[key]);
-    if (!values[key]?.trim() || !Number.isFinite(value)) throw new Error(`Enter ${label.toLowerCase()}.`);
-    if (key !== 'ambient_C' && (key === 'hotspot_allowance_K' ? value < 0 : value <= 0)) throw new Error(`Check ${label.toLowerCase()}.`);
+    if (!values[key]?.trim() || !Number.isFinite(value)) throw new Error(`Enter ${lowerFirst(label)}.`);
+    if (key !== 'ambient_C' && (key === 'hotspot_allowance_K' ? value < 0 : value <= 0)) throw new Error(`Check ${lowerFirst(label)}.`);
     if (key === 'ambient_C' && (value <= -273.15 || value > 200)) throw new Error(`Ambient or coolant temperature must be between ${Math.round(temperatureIn(-273.15, unit))} and ${Math.round(temperatureIn(200, unit))} ${unitSymbol(unit)}.`);
     result[key] = value;
   }

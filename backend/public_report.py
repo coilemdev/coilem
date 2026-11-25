@@ -33,6 +33,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 from reportlab.platypus import (
     Flowable,
+    HRFlowable,
     KeepTogether,
     PageBreak,
     Paragraph,
@@ -75,7 +76,10 @@ _BLUE = colors.HexColor("#2563EB")
 _GREEN = colors.HexColor("#059669")
 _RED = colors.HexColor("#DC2626")
 _SLATE = colors.HexColor("#475569")
-_LIGHT = colors.HexColor("#F1F5F9")
+_LIGHT = colors.HexColor("#E2EAF4")
+# The report's two accents: section headings and key values in a deep blue, rules and markers in amber.
+_HEADING = colors.HexColor("#1E40AF")
+_ACCENT = colors.HexColor("#D97706")
 _BORDER = colors.HexColor("#CBD5E1")
 _WHITE = colors.white
 
@@ -514,6 +518,9 @@ def build_public_run_csv(
     thermal = _mapping(summary.get("thermal"))
     if thermal:
         writer.writerows(thermal_csv_rows(thermal))
+    thermal_curve = _mapping(result.get("thermal_torque_curve"))
+    if thermal_curve:
+        writer.writerows(thermal_csv_rows(thermal_curve, "thermal_torque_curve"))
     for index, limitation in enumerate(PUBLIC_REPORT_LIMITATIONS[1:] if thermal else PUBLIC_REPORT_LIMITATIONS):
         row("known_limitation", "message", limitation, sample_index=index)
     limitation_index = len(PUBLIC_REPORT_LIMITATIONS)
@@ -558,9 +565,9 @@ def _report_styles() -> dict[str, ParagraphStyle]:
             fontName="Helvetica-Bold",
             fontSize=13,
             leading=16,
-            textColor=_NAVY,
-            spaceBefore=5 * mm,
-            spaceAfter=2.5 * mm,
+            textColor=_HEADING,
+            spaceBefore=0,
+            spaceAfter=0,
         ),
         "body": ParagraphStyle(
             "ReportBody",
@@ -592,7 +599,7 @@ def _report_styles() -> dict[str, ParagraphStyle]:
             fontName="Helvetica-Bold",
             fontSize=11,
             leading=14,
-            textColor=_NAVY,
+            textColor=_HEADING,
         ),
         "group": ParagraphStyle(
             "SettingsGroup",
@@ -607,8 +614,94 @@ def _report_styles() -> dict[str, ParagraphStyle]:
     }
 
 
-def _section(title: str, styles: Mapping[str, ParagraphStyle]) -> Paragraph:
-    return Paragraph(escape(title), styles["heading"])
+def _section(title: str, styles: Mapping[str, ParagraphStyle]) -> Table:
+    """A section heading: an amber marker, the title, and a rule under both."""
+    heading = Table([["", Paragraph(escape(title), styles["heading"])]], colWidths=[1.6 * mm, 178.4 * mm], hAlign="LEFT")
+    heading.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (0, 0), _ACCENT),
+        ("LINEBELOW", (0, 0), (-1, 0), 0.6, _HEADING),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (0, 0), 0), ("RIGHTPADDING", (0, 0), (0, 0), 0),
+        ("LEFTPADDING", (1, 0), (1, 0), 2 * mm),
+        ("TOPPADDING", (0, 0), (-1, -1), 0.8 * mm), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.2 * mm),
+    ]))
+    heading.spaceBefore, heading.spaceAfter = 4 * mm, 2 * mm
+    return heading
+
+
+_THERMAL_REGION_NODE = {"winding": "winding", "magnet": "magnets", "rotor": "rotor", "shaft": "rotor"}
+
+
+def _thermal_heatmap_figure(plot: Mapping[str, Any], project: Mapping[str, Any], thermal: Mapping[str, Any]) -> _MotorMeshFigure | None:
+    """The motor's cross-section with each part in the colour of its estimated temperature.
+
+    One colour per part, as the app's Thermal tab draws it: the estimate is a
+    temperature per part, not a field. The stator is split into teeth and yoke
+    at the yoke's radius. Parts outside this section (end winding, housing or
+    mount, bearings) are in the table that follows.
+    """
+    mesh = _saved_motor_mesh(plot)
+    nodes_C = {name: _mapping(node).get("temperature_C") for name, node in _mapping(thermal.get("nodes")).items()}
+    nodes_C = {name: float(value) for name, value in nodes_C.items()
+               if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)}
+    if mesh is None or not nodes_C:
+        return None
+    nodes, triangles, groups = mesh
+    stator = _mapping(project.get("stator"))
+    try:
+        outer_r, inner_r, yoke = float(stator["OD_mm"]) / 2, float(stator["ID_mm"]) / 2, float(stator["yoke_thickness_mm"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    outer_rotor = project.get("rotor_layout") == "outer"
+    raw_regions = [str(region) for region in _sequence(plot.get("regions"))]
+
+    def part(index: int) -> str | None:
+        group = groups[index]
+        if group == "stator":
+            a, b, c = (nodes[i] for i in triangles[index])
+            radius = math.hypot((a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3)
+            in_yoke = radius < inner_r + yoke if outer_rotor else radius > outer_r - yoke
+            return "yoke" if in_yoke else "teeth"
+        if group == "air":
+            return "airgap" if raw_regions[index] == "airgap" else None
+        return _THERMAL_REGION_NODE.get(group)
+
+    parts = [part(index) for index in range(len(triangles))]
+    shown = sorted({nodes_C[name] for name in parts if name in nodes_C})
+    if not shown:
+        return None
+    ambient = _mapping(thermal.get("inputs")).get("ambient_C")
+    low = float(ambient) if isinstance(ambient, (int, float)) and not isinstance(ambient, bool) and ambient < shown[0] else shown[0]
+    high = max(nodes_C.values())
+    used = {index for triangle in triangles for index in triangle}
+    min_x, max_x = min(nodes[i][0] for i in used), max(nodes[i][0] for i in used)
+    min_y, max_y = min(nodes[i][1] for i in used), max(nodes[i][1] for i in used)
+    span = max(max_x - min_x, max_y - min_y)
+    if span <= 0:
+        return None
+    size = 1200
+    scale = size * 0.94 / span
+    center_x, center_y = (min_x + max_x) / 2, (min_y + max_y) / 2
+    pixels = [(size / 2 + (x - center_x) * scale, size / 2 - (y - center_y) * scale) for x, y in nodes]
+    image = PILImage.new("RGB", (size, size), "white")
+    draw = ImageDraw.Draw(image)
+    edges: dict[tuple[int, int], list[str | None]] = {}
+    for triangle, name in zip(triangles, parts):
+        if name in nodes_C:
+            bucket = min(7, int((nodes_C[name] - low) / (high - low) * 8)) if high > low else 7
+            draw.polygon([pixels[i] for i in triangle], fill=_HEAT_COLORS[bucket])
+        for a, b in ((triangle[0], triangle[1]), (triangle[1], triangle[2]), (triangle[2], triangle[0])):
+            edges.setdefault((min(a, b), max(a, b)), []).append(name)
+    for (a, b), adjacent in edges.items():
+        if len(adjacent) == 1 or len(set(adjacent)) > 1:
+            draw.line([pixels[a], pixels[b]], fill="#334155", width=2)
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    return _MotorMeshFigure(
+        buffer.getvalue(), field_range=(low, high), legend_title="Part temperature (C)",
+        legend_note="One colour per part,\nnot a temperature field",
+        value_format=lambda value: format_report_number(value, decimal_places=1),
+    )
 
 
 def _build_rows(build: Mapping[str, Any]) -> list[tuple[str, Any]]:
@@ -1831,6 +1924,12 @@ def build_public_run_pdf(
     styles = _report_styles()
     buffer = io.BytesIO()
     run_id = _plain(manifest.get("run_id"))
+    # The report is named after its design: "Example SPM 8p/12s Solve Report".
+    report_title = f"{_plain(manifest.get('project_name')) or 'Motor'} Solve Report"
+    # A long design name takes a smaller title, so page 1 still holds the whole provenance table.
+    title_size = 24 if len(report_title) <= 36 else 17 if len(report_title) <= 60 else 13
+    title_style = ParagraphStyle("ReportTitleSized", parent=styles["title"], fontSize=title_size, leading=title_size * 1.2,
+                                 spaceAfter=2.5 * mm)
     document = SimpleDocTemplate(
         buffer,
         pagesize=A4,
@@ -1838,18 +1937,20 @@ def build_public_run_pdf(
         rightMargin=15 * mm,
         topMargin=18 * mm,
         bottomMargin=16 * mm,
-        title=f"coilEM solve report - {run_id}",
+        title=f"{report_title} - {run_id}",
         author="coilEM",
         subject="Immutable local electromagnetic solve record",
     )
 
     def page_chrome(pdf: canvas.Canvas, doc: SimpleDocTemplate) -> None:
         pdf.saveState()
+        pdf.setStrokeColor(_ACCENT)
+        pdf.setLineWidth(1.1)
+        pdf.line(15 * mm, A4[1] - 12 * mm, A4[0] - 15 * mm, A4[1] - 12 * mm)
         pdf.setStrokeColor(_BORDER)
         pdf.setLineWidth(0.4)
-        pdf.line(15 * mm, A4[1] - 12 * mm, A4[0] - 15 * mm, A4[1] - 12 * mm)
-        pdf.setFont("Helvetica-Bold", 7)
-        pdf.setFillColor(_NAVY)
+        pdf.setFont("Helvetica-Bold", 7.5)
+        pdf.setFillColor(_HEADING)
         pdf.drawString(15 * mm, A4[1] - 9 * mm, "coilEM")
         pdf.setFont("Helvetica", 6.5)
         pdf.setFillColor(_SLATE)
@@ -1860,7 +1961,8 @@ def build_public_run_pdf(
         pdf.restoreState()
 
     story: list[Any] = [
-        Paragraph("Electromagnetic solve report", styles["title"]),
+        Paragraph(escape(report_title), title_style),
+        HRFlowable(width=34 * mm, thickness=2.2, color=_ACCENT, hAlign="LEFT", spaceBefore=0, spaceAfter=2.5 * mm),
         Paragraph(
             "A replayable, immutable record generated from the stored project, resolved request, material contract, result, and solve provenance.",
             styles["subtitle"],
@@ -2027,7 +2129,12 @@ def build_public_run_pdf(
     story.extend(_torque_speed_story(result, styles))
     thermal = _mapping(summary.get("thermal"))
     if thermal:
-        story.extend(thermal_story(thermal))
+        story.extend(thermal_story(
+            thermal, figure=_thermal_heatmap_figure(_mapping(result.get("field_line_plot")), project, thermal),
+            heading=lambda title: _section(title, styles)))
+    thermal_curve = _mapping(result.get("thermal_torque_curve"))
+    if thermal_curve:
+        story.extend(thermal_story(thermal_curve, rating=True, heading=lambda title: _section(title, styles)))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:

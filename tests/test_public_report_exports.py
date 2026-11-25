@@ -814,3 +814,31 @@ def test_pdf_loss_shares_add_up_like_the_losses_card() -> None:
     assert texts[4:] == ["<1%", "<1%"]
     numbers = [int(text[:-1]) for text in texts if text != "<1%"]
     assert sum(numbers) == 100
+
+
+def test_the_run_report_is_named_after_its_design_and_carries_its_thermal_estimate():
+    """The Results PDF holds the thermal estimate and its part heat map when the run has one."""
+    from backend.public_report import _thermal_heatmap_figure
+
+    result = _result_with_motor_field()
+    nodes = {name: {"temperature_C": value, "heat_W": 1.0, "status": "experimental", "status_reason": "Estimate.", "margin_K": None}
+             for name, value in {"winding": 120.0, "end_winding": 125.0, "teeth": 110.0, "yoke": 100.0, "magnets": 70.0, "rotor": 68.0}.items()}
+    thermal = {"kind": "steady_state_thermal", "status": "experimental", "status_reason": "Uncalibrated estimate.",
+               "inputs": {"ambient_C": 25.0}, "nodes": nodes, "hottest_node": "end_winding", "notes": []}
+    figure = _thermal_heatmap_figure(result["field_line_plot"], CONFIG, thermal)
+    assert figure is not None and figure.field_range == (25.0, 125.0) and figure.legend_title == "Part temperature (C)"
+    # No temperatures, no picture; a run without an estimate has no thermal section at all.
+    assert _thermal_heatmap_figure(result["field_line_plot"], CONFIG, {"nodes": {}}) is None
+
+    arguments = dict(project=CONFIG, request={"resolved_config": CONFIG}, material={}, manifest={"project_name": "Bench motor", "run_id": "r1"})
+    plain = "\n".join(page.extract_text() for page in pypdf.PdfReader(io.BytesIO(build_public_run_pdf(result=result, **arguments))).pages)
+    assert "Bench motor Solve Report" in plain and "Electromagnetic solve report" not in plain
+    assert "Steady-state thermal estimate" not in plain and "temperature prediction is not included" in plain
+
+    result["summary"] = {**result["summary"], "thermal": thermal}
+    reader = pypdf.PdfReader(io.BytesIO(build_public_run_pdf(result=result, **arguments)))
+    text = "\n".join(page.extract_text() for page in reader.pages)
+    assert "Steady-state thermal estimate" in text and "Part temperature (C)" in text
+    assert "temperature prediction is not included" not in text
+    page = next(page for page in reader.pages if "Part temperature (C)" in page.extract_text())
+    assert len(page.images) >= 1

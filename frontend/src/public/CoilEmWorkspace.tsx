@@ -86,7 +86,7 @@ import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
 import { ResultDiagnostics } from './SolverConvergenceCard';
 import { ThermalResultsTab } from './ThermalResultsTab';
 import { LossMapPanel, hasLossMap } from './LossesCard';
-import { ThermalRatingControls, ThermalRunControls, ThermalRunMonitor, useThermalRun } from './ThermalRun';
+import { ThermalRatingControls, ThermalRunControls, ThermalRunMonitor, useThermalRecord, useThermalRun } from './ThermalRun';
 import { TemperatureUnitPicker, ThermalAdvancedFields, ThermalConstructionFields, ThermalCoolingFields, ThermalInsulationFields, ThermalRotorFields, useThermalSetup } from './ThermalSetup';
 import { useTemperatureUnit } from './useTemperatureUnit';
 import { rotorLayoutOf, thermalProblemSection, thermalSectionSummary, type ThermalSetupSection } from './thermal';
@@ -127,7 +127,7 @@ import type {
   SolveValidation,
 } from './model';
 import { HOLEM50_FIELDS } from './model';
-import type { PublicRunExportKind } from './api';
+import type { PublicRunExportKind, RunThermalRecords } from './api';
 import type { PublicSolveProgress } from './api';
 import { LessonProgressStepper } from '../components/tutorials/LessonProgressStepper';
 import { designErrorSection, designErrorText, enteredGeometryError, humanizeGeometryMessage } from './designErrors';
@@ -260,6 +260,7 @@ interface CoilEmWorkspaceProps {
   onDownloadRunExport: (
     savedRun: PublicSavedRun,
     exportKind: PublicRunExportKind,
+    thermal?: RunThermalRecords,
   ) => Promise<void>;
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
@@ -4910,6 +4911,7 @@ function ReportStage({
   onDownloadRunExport: (
     savedRun: PublicSavedRun,
     exportKind: PublicRunExportKind,
+    thermal?: RunThermalRecords,
   ) => Promise<void>;
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
@@ -5035,6 +5037,10 @@ function ReportStage({
     { label: 'Rotor positions', value: String(result.solve_metadata.rotor_positions) },
     { label: 'Mesh density', value: meshDensityLabel(result.solve_metadata.mesh_density) ?? 'native' },
   ];
+  // The run's saved thermal estimate and torque curve, if any: its PDF and CSV include them.
+  const thermalEstimate = useThermalRecord(config, result);
+  const thermalCurve = useThermalRecord(config, result, 'rating');
+  const thermalRecords: RunThermalRecords = { estimate: thermalEstimate?.id ?? null, curve: thermalCurve?.id ?? null };
   const runSavedAction = async (
     action: string,
     workingMessage: string,
@@ -5078,11 +5084,11 @@ function ReportStage({
         )}
       </div>
       <div className="public-saved-run-actions" ref={moreActionsRef}>
-        <button type="button" className="primary" disabled={exportBusy} onClick={() => void runSavedAction('pdf', 'Preparing stored PDF…', 'Downloaded the immutable PDF report.', () => onDownloadRunExport(result.saved_run!, 'pdf'))}>Download PDF</button>
+        <button type="button" className="primary" disabled={exportBusy} onClick={() => void runSavedAction('pdf', 'Preparing stored PDF…', thermalRecords.estimate || thermalRecords.curve ? 'Downloaded the PDF report with its thermal results.' : 'Downloaded the immutable PDF report.', () => onDownloadRunExport(result.saved_run!, 'pdf', thermalRecords))}>Download PDF</button>
         <button type="button" aria-expanded={moreActionsOpen} aria-controls={moreActionsId} onClick={() => setMoreActionsOpen((open) => !open)}>More ▾</button>
         {moreActionsOpen && (
           <div id={moreActionsId} className="public-saved-run-menu" role="group" aria-label="More run actions">
-            <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('csv', 'Preparing stored CSV…', 'Downloaded the immutable CSV data.', () => onDownloadRunExport(result.saved_run!, 'csv')))}>Download CSV</button>
+            <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('csv', 'Preparing stored CSV…', thermalRecords.estimate || thermalRecords.curve ? 'Downloaded the CSV data with its thermal results.' : 'Downloaded the immutable CSV data.', () => onDownloadRunExport(result.saved_run!, 'csv', thermalRecords)))}>Download CSV</button>
             <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('folder', 'Opening result folder…', 'Opened the local result folder.', () => onOpenRunFolder(result.saved_run!)))}>Open result folder</button>
             <button type="button" disabled={exportBusy} onClick={moreAction(() => void runSavedAction('package', 'Preparing replay package…', 'Saved the replayable run package.', () => onDownloadRunExport(result.saved_run!, 'package')))}>Save replayable run package</button>
             <button type="button" onClick={moreAction(() => onOpenRunProject(result.saved_run!))}>Open project</button>

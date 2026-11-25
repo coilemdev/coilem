@@ -581,5 +581,8 @@ def test_the_torque_curve_report_writes_high_speeds_in_full():
     story = thermal_story(dict(status="experimental", status_reason="Experimental.", inputs={}, notes=[], points=[
         dict(speed_rpm=12000.0, status="experimental", status_reason="Held.", limiting_constraint="voltage",
              point=dict(status="experimental", torque_Nm=1.25, winding_temperature_C=80.0, magnet_temperature_C=60.0))]), rating=True)
-    cells = [cell.getPlainText() for cell in story[3]._cellvalues[1]]
+    from reportlab.platypus import Table
+
+    table = next(item for item in story if isinstance(item, Table))
+    cells = [cell.getPlainText() for cell in table._cellvalues[1]]
     assert cells[:2] == ["12000", "1.25"]  # not 1.2e+04

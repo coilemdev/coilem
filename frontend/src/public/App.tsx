@@ -22,6 +22,7 @@ import {
   type PublicApiError,
   type PublicJson,
   type PublicRunExportKind,
+  type RunThermalRecords,
   type PublicSolveProgress,
   type PublicSolveRequest,
 } from './api';
@@ -1687,12 +1688,14 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const downloadSavedRunExport = async (
     savedRun: PublicSavedRun,
     exportKind: PublicRunExportKind,
+    thermal: RunThermalRecords = {},
   ) => {
     try {
       await downloadPublicRunExport(
         savedRun.project_slug,
         savedRun.run_id,
         exportKind,
+        thermal,
       );
       setNotice(exportKind === 'package'
         ? 'Saved the replayable run package.'

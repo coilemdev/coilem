@@ -5,7 +5,7 @@ from __future__ import annotations
 import subprocess
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
@@ -136,10 +136,62 @@ def load_run_comparison_field(project_slug: str, run_id: str) -> dict[str, Any]:
         raise _invalid(exc) from exc
 
 
-@router.get("/runs/{project_slug}/{run_id}/report.pdf", tags=["runs"])
-async def download_run_pdf(project_slug: str, run_id: str) -> FileResponse:
-    """Download the stored single-run PDF without re-running analysis."""
+def _run_export_with_thermal(project_slug: str, run_id: str, kind: str, thermal: str | None, thermal_curve: str | None) -> Response:
+    """The run's report with its thermal results in it, built for this download.
 
+    The stored report is written when the run completes and never changes. A
+    thermal estimate or torque curve is computed afterwards from that run, so a
+    report that includes them is built on request from the stored run and the
+    saved thermal records. Nothing is solved and nothing stored is changed.
+    """
+    from backend.public_report import build_public_run_csv, build_public_run_pdf
+    from backend.public_routes.thermal import ThermalRunRef, _record, _saved_report
+
+    # The verified stored run, as the thermal routes read it (404 if it is gone, 409 if it fails its checks).
+    run = ThermalRunRef(project_slug=project_slug, run_id=run_id)
+    arguments = _saved_report(run)
+    result = dict(arguments["result"])
+    summary = dict(result.get("summary") or {})
+    for identity, kind_wanted, place in ((thermal, "point", "thermal"), (thermal_curve, "rating", "thermal_torque_curve")):
+        if not identity:
+            continue
+        record = _record(identity)
+        # A thermal result belongs to the run it was computed from; one saved before runs were recorded
+        # with it is matched on its design.
+        origin = record.get("saved_run")
+        same = (origin == run.model_dump() if origin
+                else _design_parts(record.get("config")) == _design_parts(arguments["request"].get("resolved_config")))
+        if record.get("kind") != kind_wanted or not same:
+            raise HTTPException(status.HTTP_409_CONFLICT, "That thermal result was not computed for this run.")
+        if place == "thermal":
+            summary["thermal"] = record["result"]
+        else:
+            result[place] = record["result"]
+    result["summary"] = summary
+    arguments = {**arguments, "result": result}
+    content = build_public_run_pdf(**arguments) if kind == "pdf" else build_public_run_csv(**arguments)
+    media = "application/pdf" if kind == "pdf" else "text/csv; charset=utf-8"
+    return Response(content, media_type=media, headers={
+        "Content-Disposition": f'attachment; filename="coilem-{project_slug}-{run_id}.{kind}"'})
+
+
+def _design_parts(config: Any) -> Any:
+    """The parts of a design a thermal result depends on; the operating point may differ between a run and its torque curve."""
+    if not isinstance(config, dict):
+        return None
+    return [config.get(name) for name in ("topology", "rotor_layout", "stator", "rotor", "winding", "materials")]
+
+
+@router.get("/runs/{project_slug}/{run_id}/report.pdf", tags=["runs"])
+async def download_run_pdf(project_slug: str, run_id: str, thermal: str | None = None, thermal_curve: str | None = None) -> Response:
+    """Download the single-run PDF without re-running analysis.
+
+    Without thermal results this is the stored report. ``thermal`` and
+    ``thermal_curve`` name saved thermal records to include.
+    """
+
+    if thermal or thermal_curve:
+        return _run_export_with_thermal(project_slug, run_id, "pdf", thermal, thermal_curve)
     return _run_export(
         project_slug,
         run_id,
@@ -150,9 +202,11 @@ async def download_run_pdf(project_slug: str, run_id: str) -> FileResponse:
 
 
 @router.get("/runs/{project_slug}/{run_id}/report.csv", tags=["runs"])
-async def download_run_csv(project_slug: str, run_id: str) -> FileResponse:
-    """Download the stored long-form CSV without re-running analysis."""
+async def download_run_csv(project_slug: str, run_id: str, thermal: str | None = None, thermal_curve: str | None = None) -> Response:
+    """Download the long-form CSV without re-running analysis; ``thermal`` as for the PDF."""
 
+    if thermal or thermal_curve:
+        return _run_export_with_thermal(project_slug, run_id, "csv", thermal, thermal_curve)
     return _run_export(
         project_slug,
         run_id,

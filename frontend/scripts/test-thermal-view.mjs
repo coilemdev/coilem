@@ -5,6 +5,7 @@ const values = {ambient_C:'20', housing_h_W_m2K:'10', end_space_h_W_m2K:'10', ai
   slot_liner_mm:'.1', contact_m2K_W:'.001', bearing_to_housing_K_W:'2', rotor_to_bearing_K_W:'3', hotspot_allowance_K:'15',
   cooling:'still_air', insulation_class:'F', coefficient_source:'Explicit test assumption'};
 assert.throws(() => thermalInputs({}), /Enter/);
+assert.throws(() => thermalInputs({...values, housing_h_W_m2K: ''}), /W\/m²K/, 'Units keep their capitals in a message');
 assert.equal(thermalInputs(values).airgap_h_W_m2K,20);
 assert.equal(thermalInputs(values).slot_k_model,'series_lower_bound');
 assert.throws(() => thermalInputs(values,10), /mechanical-loss/);

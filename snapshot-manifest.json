@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 102199,
-      "sha256": "8447cb1149c8ac86bd41509cf2789e2e15dd0ab8e9065454de64ce1f34008a7d"
+      "bytes": 108239,
+      "sha256": "ae66bcb86c9b909a1cc2810d92b3538a47bbc3b5175f1ef608d66b20015b77c5"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -580,8 +580,8 @@
     },
     {
       "path": "backend/public_routes/runs.py",
-      "bytes": 7247,
-      "sha256": "11d231d053daad9db9ae40678109b046e94d4913988727b4f0d3d9d7af3338a6"
+      "bytes": 10410,
+      "sha256": "3fab834491833be3a1c03625ec3485bd31e04fadc00fa376b5bc03215c97961c"
     },
     {
       "path": "backend/public_routes/solve.py",
@@ -7015,8 +7015,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 93683,
-      "sha256": "7d184f63df8c9160e8fd13e13c02e6ece9d88c7f92f364f8710cf468fef14a8e"
+      "bytes": 93763,
+      "sha256": "bf0c49caf1a8f8b31d7ec99b851b9daeebb029022b9334fe18a4a525f715b48d"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 314948,
-      "sha256": "33d480135dd28e73e320b0f35fac174af26a8bcae72551496a9033ba3ddd8603"
+      "bytes": 315634,
+      "sha256": "5465136b5ab7329089b42f36fc969731a0c0d3bf4ad869c807428e63b868a770"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 18036,
-      "sha256": "d1da63b4513585ff3cfabaa7f76848557f35773cbc006851ef611e246457621f"
+      "bytes": 18608,
+      "sha256": "8301e3f0b6b1034a4639202c755365db411f62b3067b47d66a94281716852d83"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 362284,
-      "sha256": "8044cb8efea3845b0ab685b6f8dbbb2b8884bf176bf75965bf92ee78fcb15b1e"
+      "bytes": 362480,
+      "sha256": "da757fef93c96b444ea893105645103f90c3ec496c061f464dc68bd978c50229"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -8270,8 +8270,8 @@
     },
     {
       "path": "tests/test_public_report_exports.py",
-      "bytes": 35760,
-      "sha256": "a5df8f09551d3309e90fdb6a49003921de891ae951ea3b412f1261468cb0b99f"
+      "bytes": 37928,
+      "sha256": "2071cc748ff960a655d31d29e1f6388fb46fdc07b2c3ab1b2540c3a6b226a71e"
     },
     {
       "path": "tests/test_public_security.py",
@@ -20530,8 +20530,8 @@
     },
     {
       "path": "backend/thermal_reporting.py",
-      "bytes": 12280,
-      "sha256": "6775e614e5199df91e18c3f08bf9f80c7cc659c38350a80f3d4dc21ecce14b97"
+      "bytes": 13459,
+      "sha256": "a4fb2904fd63c964eeceb43b494de89a16e5b516dfb16df65ed9f2bbaa02d48e"
     },
     {
       "path": "benchmarks/thermal-v0.6/ANALYTICAL_PROTOCOL.md",
@@ -20595,8 +20595,8 @@
     },
     {
       "path": "frontend/scripts/test-thermal-view.mjs",
-      "bytes": 27818,
-      "sha256": "6f2b4091a87e6740784eb346fecc1e33890c2f9da78d51233b54bc43e2f99ba5"
+      "bytes": 27941,
+      "sha256": "4f5f962b80e4dc1ef27fe26c35c40c2c6265839b3d34df19054322efc9de83d1"
     },
     {
       "path": "frontend/src/public/ThermalMotorView.tsx",
@@ -20605,8 +20605,8 @@
     },
     {
       "path": "frontend/src/public/ThermalPanel.tsx",
-      "bytes": 24490,
-      "sha256": "9d1340a2e04c3272513cf960b14edca3b9fee75d46b3777c352239eadf5c20f9"
+      "bytes": 25004,
+      "sha256": "c65917ed62ee715ea809af91db9abba42feebc229616b913e18fd5a6506227b0"
     },
     {
       "path": "frontend/src/public/ThermalResultsTab.tsx",
@@ -20620,8 +20620,8 @@
     },
     {
       "path": "frontend/src/public/thermal.ts",
-      "bytes": 30856,
-      "sha256": "d4a6b465e9b0ce7b7aa0293dee368952c030fc62845e5f89e7ce808198a25e26"
+      "bytes": 31041,
+      "sha256": "dc02e344f6a024875e016a1ee8b17703eedc8717fe04403fe59418671a4ee77b"
     },
     {
       "path": "frontend/src/public/thermalCrossSection.ts",
@@ -20680,8 +20680,8 @@
     },
     {
       "path": "tests/test_thermal_routes.py",
-      "bytes": 30539,
-      "sha256": "bc832bd66e4c1357e6190aa04efaefb8087ad31cb9973efdf87b3ea83093ea6b"
+      "bytes": 30646,
+      "sha256": "6f28d31edcc7a333874e8fbdbcad6e29bdb175f9d87cd8159e2379f185430991"
     },
     {
       "path": "tests/test_thermal_slab.py",
@@ -46244,6 +46244,78 @@
       "path": "tests/test_loss_phase_g.py",
       "source_sha256": "50a397902d7d05a106d28d15d17957d1fdce1d5820e54c869cdf8e91f48cb16b",
       "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "backend/public_report.py",
+      "source_sha256": "8447cb1149c8ac86bd41509cf2789e2e15dd0ab8e9065454de64ce1f34008a7d",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "backend/public_routes/runs.py",
+      "source_sha256": "11d231d053daad9db9ae40678109b046e94d4913988727b4f0d3d9d7af3338a6",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "7d184f63df8c9160e8fd13e13c02e6ece9d88c7f92f364f8710cf468fef14a8e",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "33d480135dd28e73e320b0f35fac174af26a8bcae72551496a9033ba3ddd8603",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "d1da63b4513585ff3cfabaa7f76848557f35773cbc006851ef611e246457621f",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "8044cb8efea3845b0ab685b6f8dbbb2b8884bf176bf75965bf92ee78fcb15b1e",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "tests/test_public_report_exports.py",
+      "source_sha256": "a5df8f09551d3309e90fdb6a49003921de891ae951ea3b412f1261468cb0b99f",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "backend/thermal_reporting.py",
+      "source_sha256": "6775e614e5199df91e18c3f08bf9f80c7cc659c38350a80f3d4dc21ecce14b97",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/scripts/test-thermal-view.mjs",
+      "source_sha256": "6f2b4091a87e6740784eb346fecc1e33890c2f9da78d51233b54bc43e2f99ba5",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/src/public/ThermalPanel.tsx",
+      "source_sha256": "9d1340a2e04c3272513cf960b14edca3b9fee75d46b3777c352239eadf5c20f9",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "frontend/src/public/thermal.ts",
+      "source_sha256": "d4a6b465e9b0ce7b7aa0293dee368952c030fc62845e5f89e7ce808198a25e26",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "84084e7990cf5c12cd55bb0d9f0b2b066305be77",
+      "path": "tests/test_thermal_routes.py",
+      "source_sha256": "bc832bd66e4c1357e6190aa04efaefb8087ad31cb9973efdf87b3ea83093ea6b",
+      "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
     }
   ]
 }
